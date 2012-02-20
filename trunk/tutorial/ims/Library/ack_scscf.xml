@@ -1,0 +1,24 @@
+<!--Verifie si requete ACK et qu une reponse 4XX a ete envoye-->
+<if>
+	<condition>
+		<test parameter="[lastSIPMethod]" condition="equals" value="ACK"/>
+		<test parameter="[URI[lastCall-ID]]" condition="exists"/>
+	</condition>
+	<then>
+		<if>
+			<condition>
+				<test parameter="[rep[lastCall-ID]]" condition="exists"/>
+			</condition>
+			<then>
+				<parameter name="[URI[lastCall-ID]]" 		operation="unset" />
+				<parameter name="[ROUTE[lastCall-ID]]" 		operation="unset" />
+				<parameter name="[rep[lastCall-ID]]" 		operation="unset" />
+				<goto  name="loop" label="Begin" state="true"/>
+			</then>
+			<else>
+				<parameter name="[URI[lastCall-ID]]" 		operation="unset" />
+				<parameter name="[ROUTE[lastCall-ID]]" 		operation="unset" />
+			</else>
+		</if>
+	</then>
+</if>

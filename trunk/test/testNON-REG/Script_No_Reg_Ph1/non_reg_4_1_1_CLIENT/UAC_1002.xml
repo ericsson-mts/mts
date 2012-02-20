@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+
+<!DOCTYPE library [
+<!ENTITY libC_Call_Service_Server	SYSTEM "..\library\libC_Call_Service_Server.xml">
+<!ENTITY libC_Caller_to_Called_Ph1	SYSTEM "..\library\libC_Caller_to_Called_Ph1.xml">
+<!ENTITY libC_Caller_to_Called_Ph2	SYSTEM "..\library\libC_Caller_to_Called_Ph2.xml">
+<!ENTITY libC_Caller_to_Called_Ph3	SYSTEM "..\library\libC_Caller_to_Called_Ph3.xml">
+]>
+
+
+<scenario name="client_1002_non_reg_4_1_1">
+
+
+
+<parameter name="[sbcPort]" operation="set" value="[SBC_Port_1002]" description="Port decoute du SBC"/>   
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_Port]" operation="set" value="[Provider_1002]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localPort="[provider_Port]"/>
+
+
+<semaphore name="JetonUAC1000_UAC1002" action="wait"/>
+
+
+<parameter name="[called_Subscriber]" operation="set" value="[subscriber_1000]"/>
+<parameter name="[domainName_Service]" operation="set" value="[domainName]"/>
+<parameter name="[caller_Subscriber]" operation="set" value="[subscriber_1002]"/>
+<parameter name="[int_caller_Subscriber]" operation="set" value="[int_subscriber_1002]"/>
+
+<parameter name="[caller_ipAddressSip]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[caller_portSip]" operation="set" value="[provider_Port]"/>
+<parameter name="[caller_ipAddressSdp]" operation="set" value="[ipAddressSdp]"/>
+<parameter name="[caller_ipAddressSrc]" operation="set" value="[ipAddressSrc]"/>
+<parameter name="[caller_portSdp]" operation="set" value="[portSdpSubscriber_1002]"/>
+<parameter name="[sbcHost_Service]" operation="set" value="[SBC_IP_1002]"/>
+<parameter name="[sbcPort_Service]" operation="set" value="[SBC_Port_1002]"/>
+
+<parameter name="[endRtpDialog_Timer]" operation="set" value="5"/>
+<parameter name="[expected_Scenario]" operation="set" value="FULL_SUCCESS_ESTABLISHMENT" />
+
+<parameter name="[UserName]" operation="set" value="[Username_1002]"/>
+<parameter name="[Password]" operation="set" value="[Passwd_1002]"/>
+
+&libC_Caller_to_Called_Ph1;
+&libC_Caller_to_Called_Ph2;
+&libC_Caller_to_Called_Ph3;
+
+
+<semaphore name="JetonUAC1002_UAC1000" action="notify"/>
+
+
+<closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/>
+
+</scenario>

@@ -1,0 +1,243 @@
+<!--
+To use this part of XML code in a scenario,
+- input parameters must be defined and setted locally (by the caller scenario).
+- output parameters may be used in the scenario after the "call".
+
+Input parameters :
+
+****** RADIUS ******
+- [source_ip]          : 
+- [nas_port]           : 
+- [secret]             : 
+- [radius_ip]          : 
+- [radius_auth_port]   : 
+- [msisdn]             : 
+- [radius_acct_port]   : 
+- [nas_ip_address]     : 
+- [calling_station_id] : 
+- [called_station_id]  : 
+- [Acct-Session-Id]    : 
+- [3gpp_charging_id]   : 
+- [3gpp_sgsn_address]  : 
+- [nas_identifier]     :
+
+****** SMTP ******
+- [destination_ips]    : 
+- [smtp_port]          : 
+- [bigAttach_size]     : 
+- [emails]             : 
+- [bigAttach]          : 
+
+
+
+Output parameters :
+- [RADIUSsocketName]   : 
+- [RADIUSsocketOpen]   : 
+- [SMTPconnectionName] : 
+- [SMTPconnectionOpen] : 
+
+-->
+
+      <!-- open RADIUS Connection -->
+      <parameter name="[RADIUSsocketName]" operation="set" value="client_[testcase:index]_SMTP"/>
+      <openSocketRadius socketName="[RADIUSsocketName]" localHost="[source_ip]" localPort="[nas_port]" secret="[secret]"/>
+      <parameter name="[RADIUSsocketOpen]" operation="set" value="true"/>
+
+      <!-- send Radius Access-Request -->
+      <sendRequestRadius socketName="[RADIUSsocketName]" remoteHost="[radius_host_smtp]" remotePort="[radius_port_smtp_auth]">
+        <!-- Header -->
+        <header code="1"/>
+
+        <!-- AVPs -->
+        <!-- User-Name (1) -->
+        <avp code="1" value="[msisdn]"/>
+
+        <!-- User-Password (2) -->
+        <avp code="2" value="User-Password"/>
+
+        <!-- Nas-IP-Address (4) -->
+        <avp code="4" value="[source_ip]"/>
+
+        <!-- Code: Nas-Port (5) -->
+        <avp code="5" value="[nas_port]"/>
+
+        <!-- Calling-Station-Id (31) -->
+        <avp code="31" value=""/>
+
+        <!-- Called-Station-Id (30) -->
+        <avp code="30" value=""/>
+      </sendRequestRadius>
+      <receiveResponseRadius socketName="[RADIUSsocketName]"/>
+
+      <!--pause name="temps d'attente" milliseconds="50" /-->
+
+      <!-- send Radius Accounting-Request Start -->
+      <parameter name="[timestamp]" operation="setFromSystem" value="Timestamp" value2="1970"/>
+      <parameter name="[timestamp]" operation="divide" value="[timestamp]" value2="1000"/>
+      <sendRequestRadius socketName="[RADIUSsocketName]" remoteHost="[radius_host_smtp]" remotePort="[radius_port_smtp_acct]">
+        <!-- Header -->
+        <header code="4"/>
+
+        <!-- AVPs -->
+        <!--Acct-Status-Type(40) -->
+        <avp code="40" value="Start"/>
+
+        <!-- User-Name (1) -->
+        <avp code="1" value="[msisdn]"/>
+
+        <!-- NAS-IP-Address(4) -->
+        <avp code="4" value="[nas_ip_address]"/>
+
+        <!-- NAS-Port(5) -->
+        <avp code="5" value="[nas_port]"/>
+
+        <!-- Framed-IP-Address(8) -->
+        <avp code="8" value="[source_ip]"/>
+
+        <!-- Calling-Station-Id(31) -->
+        <avp code="31" value="[calling_station_id]"/>
+
+        <!-- Called-Station-Id(30) -->
+        <avp code="30" value="[called_station_id]"/>
+
+        <!-- Acct-Session-Id(44) -->
+        <avp code="44" value="[Acct-Session-Id]"/>
+
+        <!-- Event-Timestamp(55) -->
+        <avp code="55" value="[timestamp]"/>
+
+        <!-- Framed-Protocol(7) -->
+        <avp code="7" value="GPRS-PDP-Context"/>
+
+        <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+        <avp code="26" value="3GPP">
+          <avp code="2" value="[3gpp_charging_id]"/>
+        </avp>
+
+        <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+        <avp code="26" value="3GPP">
+          <avp code="6" value="[3gpp_sgsn_address]"/>
+        </avp>
+
+        <!-- NAS-Identifier(32) -->
+        <avp code="32" value="[nas_identifier]"/>
+      </sendRequestRadius>
+      <receiveResponseRadius socketName="[RADIUSsocketName]"/>
+      <!--pause name="temps d'attente" milliseconds="10" /-->
+
+      <!-- Changement de socket pour browsing -->
+      <!-- open SMTP Connection -->
+      <parameter name="[SMTPconnectionName]" operation="set" value="connection_SMTP_[testcase:index]"/>     
+      <parameter name="[destination_ip]"     operation="set" value="[destination_ips([i])]"/>
+      <openSessionSMTP sessionName="[SMTPconnectionName]" localHost="[source_ip]" remoteHost="[destination_ip]" remotePort="[smtp_port]"/>
+      <parameter name="[SMTPconnectionOpen]" operation="set" value="true"/>
+    
+      <parameter name="[j]" operation="set" value="0"/>
+      <while>
+        <condition>
+          <test parameter="[j]" condition="lowerThan" value="[bigAttach_size]"/>
+        </condition>
+        <do>
+         <!-- send SMTP Request -->
+          <parameter name="[email]" operation="set" value="[emails([i])]"/>                
+          <parameter name="[uid]" operation="identifier" value="nextInteger" value2=""/>          
+          <parameter name="[session_name]" operation="set" value="[SMTPconnectionName]"/>
+          
+<sendRequestSMTP name="Attente reponse ouverture de session" sessionName="[session_name]" state= "true"><![CDATA[EHLO gmail.com]]>
+</sendRequestSMTP>
+<receiveResponseSMTP name="Attente reponse ouverture de session" sessionName="[session_name]" state= "true">
+</receiveResponseSMTP>
+
+<sendRequestSMTP name="Attente reponse ouverture de session" sessionName="[session_name]" state= "true"><![CDATA[MAIL FROM:<[email]>]]>
+</sendRequestSMTP>
+<receiveResponseSMTP name="Attente reponse ouverture de session" sessionName="[session_name]" state= "true">	
+</receiveResponseSMTP>
+
+<sendRequestSMTP name="Attente reponse ouverture de session" sessionName="[session_name]" state= "true"><![CDATA[RCPT TO:<Jones@hotmail.com>]]>
+</sendRequestSMTP>
+<receiveResponseSMTP name="Attente reponse ouverture de session" sessionName="[session_name]" state= "true">	
+</receiveResponseSMTP>
+
+<sendRequestSMTP name="Attente reponse ouverture de session" sessionName="[session_name]" state= "true"><![CDATA[DATA]]>
+</sendRequestSMTP>
+<receiveResponseSMTP name="Attente reponse ouverture de session" sessionName="[session_name]" commandName="DATA" replyCode="354" state= "true">	
+</receiveResponseSMTP>
+
+<sendRequestSMTP name="Attente reponse ouverture de session" sessionName="[session_name]" state= "true"><![CDATA[[bigAttach([j])]
+.
+]]></sendRequestSMTP>
+<receiveResponseSMTP name="Attente reponse ouverture de session" sessionName="[session_name]" commandName="CNTT" replyCode="250" state= "true">	
+</receiveResponseSMTP>
+
+<sendRequestSMTP name="Attente reponse ouverture de session" sessionName="[session_name]" state= "true"><![CDATA[QUIT]]>
+</sendRequestSMTP>
+<receiveResponseSMTP name="Attente reponse ouverture de session" sessionName="[session_name]" commandName="QUIT" replyCode="221" state= "true">	
+</receiveResponseSMTP>
+
+
+
+          <!-- Next SMTP resource -->
+          <parameter name="[j]" operation="add" value="[j]" value2="1"/>
+        </do>
+      </while>
+
+      <!-- close SMTP Connection -->
+      <closeSessionSMTP sessionName="[SMTPconnectionName]"/>
+      <parameter name="[SMTPconnectionOpen]" operation="set" value="false"/>
+        
+      <!-- send Radius Accounting-Request Stop -->
+      <parameter name="[timestamp]" operation="setFromSystem" value="Timestamp" value2="1970"/>
+      <parameter name="[timestamp]" operation="divide" value="[timestamp]" value2="1000"/>
+      <sendRequestRadius socketName="[RADIUSsocketName]" remoteHost="[radius_host_smtp]" remotePort="[radius_port_smtp_acct]">
+        <!-- Header -->
+        <header code="4"/>
+
+        <!-- AVPs -->
+        <!--Acct-Status-Type(40) -->
+        <avp code="40" value="Stop"/>
+
+        <!-- User-Name (1) -->
+        <avp code="1" value="[msisdn]"/>
+
+        <!-- NAS-IP-Address(4) -->
+        <avp code="4" value="[nas_ip_address]"/>
+
+        <!-- NAS-Port(5) -->
+        <avp code="5" value="[nas_port]"/>
+
+        <!-- Framed-IP-Address(8) -->
+        <avp code="8" value="[source_ip]"/>
+
+        <!-- Calling-Station-Id(31) -->
+        <avp code="31" value="[calling_station_id]"/>
+
+        <!-- Called-Station-Id(30) -->
+        <avp code="30" value="[called_station_id]"/>
+
+        <!-- Acct-Session-Id(44) -->
+        <avp code="44" value="[msisdn][index][smtp_port]"/>
+
+        <!-- Event-Timestamp(55) -->
+        <avp code="55" value="[timestamp]"/>
+
+        <!-- Framed-Protocol(7) -->
+        <avp code="7" value="GPRS-PDP-Context"/>
+
+        <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+        <avp code="26" value="3GPP">
+          <avp code="2" value="[3gpp_charging_id]"/>
+        </avp>
+
+        <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+        <avp code="26" value="3GPP">
+          <avp code="6" value="[3gpp_sgsn_address]"/>
+        </avp>
+
+        <!-- NAS-Identifier(32) -->
+        <avp code="32" value="[nas_identifier]"/>
+      </sendRequestRadius>
+      <receiveResponseRadius socketName="[RADIUSsocketName]"/>
+
+      <!-- close RADIUS Connection -->
+      <closeSocketRadius socketName="[RADIUSsocketName]"/>
+      <parameter name="[RADIUSsocketOpen]" operation="set" value="false"/>

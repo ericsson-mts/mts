@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <!-- attend message FETCH-->
+    <receiveMessageIMAP request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse FETCH -->
+    <sendMessageIMAP name="Send FETCH" channel="[connection]">
+<![CDATA[
+* 2 FETCH ....
+]]>
+    </sendMessageIMAP>
+
+    <sendMessageIMAP name="Send FETCH" channel="[connection]">
+<![CDATA[
+* 3 FETCH ....
+* 4 FETCH ....
+[tag] OK FETCH completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message FETCH-->
+    <receiveMessageIMAP request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse FETCH-->
+    <sendMessageIMAP name="Send FETCH" channel="[connection]">
+<![CDATA[
+* 12 FETCH (BODY[HEADER] {342}
+Date: Wed, 17 Jul 1996 02:23:25 -0700 (PDT)
+From: Terry Gray <gray@cac.washington.edu>
+Subject: IMAP4rev1 WG mtg summary and minutes
+To: imap@cac.washington.edu
+cc: minutes@CNRI.Reston.VA.US, John Klensin <KLENSIN@MIT.EDU>
+Message-Id: <B27397-0100000@cac.washington.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+
+)
+[tag] OK FETCH completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message FETCH-->
+    <receiveMessageIMAP channel="[connection]" request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final FETCH-->
+    <sendMessageIMAP name="Send FETCH" channel="[connection]">
+<![CDATA[
+* 12 FETCH (FLAGS (\Seen) INTERNALDATE "17-Jul-1996 02:44:25 -0700" RFC822.SIZE 4286 ENVELOPE ("Wed, 17 Jul 1996 02:23:25 -0700 (PDT)" "IMAP4rev1 WG mtg summary and minutes" (("Terry Gray" NIL "gray" "cac.washington.edu")) (("Terry Gray" NIL "gray" "cac.washington.edu")) (("Terry Gray" NIL "gray" "cac.washington.edu")) ((NIL NIL "imap" "cac.washington.edu")) ((NIL NIL "minutes" "CNRI.Reston.VA.US") ("John Klensin" NIL "KLENSIN" "MIT.EDU")) NIL NIL "<B27397-0100000@cac.washington.edu>") BODY ("TEXT" "PLAIN" ("CHARSET" "US-ASCII") NIL NIL "7BIT" 3028 92))
+[tag] OK FETCH completed
+]]>
+    </sendMessageIMAP>
+
+</scenario>

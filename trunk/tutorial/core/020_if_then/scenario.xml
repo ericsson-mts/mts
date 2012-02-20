@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+	
+	<parameter name="[var_1]" operation="set" value="toto"/>
+	<parameter name="[not_1]" operation="set" value="true"/>	
+		
+	<if>
+        <condition>
+            <test parameter="[var_1]" condition="string.equals" value="toto"/>
+            <test parameter="[var_1]" condition="string.equals" value="[var_1]"/>
+            <test parameter="[var_1]" condition="string.equals" value="titi" not="true"/>
+            <test parameter="[var_1]" condition="string.equals" value="titi" not="[not_1]"/>            
+        </condition>
+		<then>
+
+		</then>
+		<else>
+			<exit name="failed exit" failed="true"/>
+		</else>
+	</if>
+
+	<if>
+        <condition>
+            <test parameter="[var_1]" condition="string.equals" value="toto" not="true"/>
+        </condition>
+		<then>
+			<exit name="failed exit" failed="true"/>
+		</then>
+		<else>
+
+		</else>
+	</if>
+</scenario>

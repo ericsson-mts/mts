@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="SIP regression tests">
+    
+    <parameter name="[Host-Tester]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+    <parameter name="[Port-Tester]" operation="setFromConfig" value="sip.properties" value2="DEFAULT_PORT"/>
+    <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]"/>	
+   
+    <parameter name="[Host-Server]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+    <parameter name="[Port-Server]" operation="setFromConfig" value="sip.properties" value2="DEFAULT_PORT"/>
+    <!--parameter name="[Port-Server]" operation="set" value="5060"/-->
+    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server(0)]:[Port-Server]"/>	
+	
+	<!-- Provider parameters --> 
+	<parameter name="[Port-Prepaid]" operation="set" value="7070"/>	
+	<parameter name="[Port-Vod]" operation="set" value="7071"/>	
+	<parameter name="[Port-Mailbox]" operation="set" value="7072"/>	
+	<parameter name="[Port-Presence]" operation="set" value="7073"/>	
+	<parameter name="[Port-Conference]" operation="set" value="7074"/>	
+	
+
+    <testcase name="000_prepaid" description="Prepaid(7070) Proxy " state="true">
+        <scenario name="Prepaid">000_prepaid/SIP.xml</scenario>
+    </testcase>
+
+    <testcase name="001_vod" description="VodServer(7071) UAS " state="true">
+        <scenario name="Vod">001_vod/SIP.xml</scenario>
+    </testcase>
+
+    <testcase name="002_mailbox" description="Mailbox(7072) UAS " state="true">
+        <scenario name="Mailbox">002_mailbox/SIP.xml</scenario>
+    </testcase>
+	
+    <testcase name="003_presence" description="Presence(7073) UAS " state="true">
+        <scenario name="Presence">003_presence/SIP.xml</scenario>
+    </testcase>
+	
+	<testcase name="004_conference" description="Conference(7074) B2B " state="true">
+        <scenario name="Conference">004_conference/SIP.xml</scenario>
+    </testcase>
+
+</test>

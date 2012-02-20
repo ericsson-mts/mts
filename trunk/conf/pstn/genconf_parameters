@@ -1,0 +1,169 @@
+#
+# /etc/dahdi/genconf_parameters
+#
+# This file contains parameters that affect the
+# dahdi_genconf configuration generator.
+#
+# Syntax:
+# 	* A comment from '#' to end of line
+# 	* Blank lines ignored
+# 	* Whitespace at end of line trimmed
+# 	* Single valued items:
+# 	     key <whitespace...> value
+# 	* List valued items:
+# 	     key
+# 	     <whitespace...>value1
+# 	     <whitespace...>value2
+# 	     ...
+#
+
+# When generating extensions for chan_dahdi.conf or users.conf etc: the 
+# extension number will be channel_number+base_exten . The default is:
+#base_exten		4000
+#
+# Make FXS (analog phones) extensions answer immediately (sets
+# 'immediate = yes' for them in chan_dahdi.conf). Don't enable this before 
+# you're read documentation about this option.
+#fxs_immediate		yes
+#
+# For FXS (analog phones) - use KS or LS? ks is the only method for
+# Asterisk to provide disconnect supervision and thus it would normally
+# be preferred and is the default.
+#fxs_default_start	ls
+#
+# For FXO (analog lines) - use KS or LS? KS is the default and is
+# normally the better choice as it allows detecting hang-ups on many
+# lines.
+#fxo_default_start	ls
+
+# Set tone zone values. This is used for playing tones (busy, dial-tone
+# and such). The default is 'us'. This sets the value for both loadzone
+# and defaultzone in system.conf .
+lc_country		fr
+
+# The dialplan context into which to send trunks in chan_dahdi.conf or
+# users.conf. The default value is:
+#context_lines		from-pstn
+#
+# The dialplan context into which to send extensions in chan_dahdi.conf or
+# users.conf. The default value is:
+#context_phones		from-internal
+#
+# Two extra contexts for the input ports and output ports of an
+# Astribank. Default values are:
+#context_input		astbank-input
+#context_output		astbank-output
+
+# A group to put all analog phones in. By default 0, so you can dial to
+# the 'first phone available' using Dahdi/g5 .
+#group_phones		5
+#
+# A group in which to put all the channels belonging to some trunk.
+# Thus you can dial through "some trunk" using Dahdi/G0/NUMBER
+#group_lines		0
+
+# Channels of digital trunk of span N are also added to group 10+N (that 
+# is: 14 for channels of span 4).
+
+# Do we want to use PtP ('bri') or PtMP ('bri_ptmp') for BRI? PtMP 
+# allows connecting several CPE devices on the same network device 
+# (several BRI phones on the same line, kind of like several analog 
+# phones on the same analog line). However it is generally brings 
+# unnecessary complexity for a pbx-pbx connection. It is still the 
+# default as this is normally what you get for a BRI PSTN connection.
+#bri_sig_style		bri
+#
+# If this option is set (that is: not remmed-out), BRI NT ports will 
+# also be set as overlap. This is useful if you want to connect ISDN 
+# phones.
+#brint_overlap
+
+# The echo canceler to use. If you have a hardware echo canceler, just 
+# leave it be, as this one won't be used anyway.
+#
+# The default is mg2, but it may change in the future. E.g: a packager
+# that bundles a better echo canceler may set it as the default, or
+# dahdi_genconf will scan for the "best" echo canceler.
+#
+#echo_can		hpec
+#echo_can		oslec
+#echo_can		none  # to avoid echo canceler altogether
+
+# bri_hardhdlc:
+#   'yes'  - forces BRI cards to use 'hardhdlc' signalling.
+#   'no'   - forces BRI cards to use 'dchan' (an alias for 'fcshdlc').
+#            It is usefull only for dahdi with the bristuff patch.
+#
+# If it is left out or set to 'auto':
+#   * Information supplied by the driver is used to decide:
+#     - Currently implemented for Astribanks.
+#     - Taken from /sys/bus/xpds/drivers/bri/dchan_hardhdlc.
+#   * Without this info, falls back to 'hardhdlc'.
+#bri_hardhdlc		auto
+
+# For MFC/R2 Support: 'R2' will make E1 spans CAS and with the
+# 'r2_idle_bits' bit in system.conf . It will also make dahdi_genconf default
+# to generating the channels of this card in unicall.conf rather than in
+# chan_dahdi.conf . The meaning of this may be extended somehow to support
+# R2 through openr2/chan_dahdi later on.
+#pri_connection_type	R2
+#pri_connection_type	CAS
+#
+# Explicitly set the idle bits for E1 CAS (Sample value is the default):
+#r2_idle_bits		1101
+#
+# Set T1 framing type to d4 instead of esf:
+#tdm_framing		d4
+#
+# Use E&M on CAS (default is FXS/FXO). If set, E1 spans will be used as
+# E&M-E1 and T1 will use the requested type:
+#em_signalling em
+#em_signalling em_w
+#em_signalling featd
+#em_signalling featdtmf
+#em_signalling featdtmf_ta
+#em_signalling featb
+#em_signalling fgccama
+#em_signalling fgccamamf
+#
+# pri_termtype contains a list of settings:
+# Currently the only setting is for TE or NT (the default is TE). This
+# sets two different but normally related configuration items:
+# 
+# A TE span will have *_cpe signalling in Asterisk and will also get
+# timing from the remote party.
+# 
+# A NT span will have *_new signalling in Asterisk and will provide
+# timing to the remote party.
+#
+# pri_termtype is a list if span specs and configuration (TE/NT) for
+# them. The first spec that matches is used. The matching is of perl
+# regular expressions, but with '*' and '?' have their meaning from
+# basic regular expressions.
+#pri_termtype
+#	SPAN/2		NT
+#	SPAN/4		NT
+#
+#pri_termtype
+#	SPAN/*		NT
+#
+# Astribanks can be matched by span and also by their:
+#    LABEL + XPD number:
+#      this is burned into the Astribank and won't change
+#      if it's connected via different USB port/hub
+#    CONNECTOR + XPD number:
+#      The USB path to which the Astribank is connected.
+#      Replacing an Astribank and connecting to the same USB port/hub
+#      would not change this property. However, any change in USB
+#      wiring (e.g: adding another hub) may alter this.
+#    NUM (XBUS number) + XPD number:
+#      The XBUS number. This is not stable and may even change
+#      between boots.
+#
+#pri_termtype
+#	LABEL/usb:INT01216/XPD-0[123]            NT
+#	LABEL/usb:INT00375/XPD-0[123]            NT
+#	CONNECTOR/@usb-0000:00:1d.7-1/XPD-0[123]            NT
+#	CONNECTOR/@usb-0000:00:1d.7-2/XPD-0[123]            NT
+#	NUM/XBUS-01/XPD-0[123]            NT
+#	NUM/XBUS-03/XPD-0[123]            NT

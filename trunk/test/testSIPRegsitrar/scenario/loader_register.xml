@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- 
+AUTEUR : R&D/CORE/M2V/TSC/JD
+OBJET : Injecteur de REGISTER
+
+MODIF :
+			31/05/2011. Ajout option Far end NAT
+			07/06/2001. Ajout Next Nonce 
+--> 
+<!DOCTYPE Library [
+ <!ENTITY initvarStatsParam SYSTEM "./initvarStatsParam.xml">
+  <!ENTITY nextNonceCompute SYSTEM "./nextNonceCompute.xml">
+]>
+<scenario>
+	&initvarStatsParam;
+
+	<if>
+	    <condition> 	<test parameter="[testcase:indexReg]" condition="list.exists" not="true"/> 	</condition>
+        <then>
+			<!-- premiere execution du scenario. Initialisations . --> 
+	        <parameter name="[testcase:indexReg]" operation="set" value="0"/>
+			<parameter name="[testcase:allUserRegisteredOnce]" operation="set" value="false"/>	
+        </then>
+    </if>
+
+	<parameter name="[testcase:indexReg]" operation="number.add" value="[testcase:indexReg]" value2="1"/>    			
+    <if> <condition> <test parameter="[testcase:indexReg]" condition="number.greaterThan" value="[RangeNumberUser]"/> </condition>
+    <then>	<parameter name="[testcase:indexReg]" operation="set" value="1"/> </then>
+	</if>
+	<if> <condition> <test parameter="[testcase:indexReg]" condition="number.greaterEqualThan" value="[RangeNumberUser]"/> </condition>
+    <then>	<parameter name="[test:startCall]" operation="system.semaphorenotify" value="10"/> </then>
+	</if>
+	
+	<parameter name="[Port-Tester]" operation="number.substract" value="65536" value2="[testcase:indexReg]"/>
+	<parameter name="[listenpoint_Register]" operation="set" value="listenpoint_[Port-Tester]"/>
+	<parameter name="[userName]" operation="set" value="[userTab([testcase:indexReg])]"/>
+	<createListenpointSIP name="[listenpoint_Register]" localHost="[Host-Tester([test:IndexSourceIPRegister])]" localPort="[Port-Tester]" transport="UDP"/>
+				
+  	<parameter name="[userNumberPhone]" operation="set" value="+[userTabNP([testcase:indexReg])]"/>
+	<parameter name="[localTag]" operation="string.random" value="20"/>
+	<parameter name="[newCallId]" operation="number.random" value="100000000000000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="20"/> 
+	<!--parameter name="[URI]" operation="set" value="sip:[userName]@[domainName]" /-->
+	<parameter name="[URI]" operation="set" value="sip:[domainName]" />
+
+	 <!-- Next Nonce  --> 
+	 	<parameter name="[Method]" operation="set" value="REGISTER" />
+	&nextNonceCompute; 
+	<if>	<condition>	<test parameter="[farEndNAT]" condition="string.equals" value="true"/>	</condition>
+	<then>	
+	<!-- modifier les champs contact et Via avec les valeurs du fichier user.csv --> 
+	<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint_Register]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+<![CDATA[
+REGISTER [URI] SIP/2.0
+To: "[userName]" <sip:[userNumberPhone]@[domainName]>
+From: "[userName]" <sip:[userNumberPhone]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [userTabPrivateIP([testcase:indexReg])]:[Port-Tester];branch=z9hG4bK-[newBranchId]
+Contact: <sip:[userNumberPhone]@[userTabPrivateIP([testcase:indexReg])]:[Port-Tester]>
+Expires: [RegisterExpires]
+Max-Forwards: 70 [authorization]
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+	</then>	
+	<else>
+	<!-- pas de NAT : Via et Contact = @ de transport  --> 
+	<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint_Register]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+<![CDATA[
+REGISTER [URI] SIP/2.0
+To: "[userName]" <sip:[userNumberPhone]@[domainName]>
+From: "[userName]" <sip:[userNumberPhone]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [Host-Tester([test:IndexSourceIPRegister])]:[Port-Tester];branch=z9hG4bK-[newBranchId]
+Contact: <sip:[userNumberPhone]@[Host-Tester([test:IndexSourceIPRegister])]:[Port-Tester]>
+Expires: [RegisterExpires]
+Max-Forwards: 70 [authorization]
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+	</else>
+	</if>
+	
+		<if>
+			<condition> <test parameter="[testcase:allUserRegisteredOnce]" condition="string.equals" value="false"/>  </condition>
+		<then>
+			<parameter name="[test:listListenPointName]" operation="list.addLast" value="[test:listListenPointName]" value2="[listenpoint_Register]" />
+			<parameter name="[test:listUsedPort]" operation="list.addLast" value="[test:listUsedPort]" value2="[Port-Tester]" />
+		 	 <parameter name="[test:listUsedIp]" operation="list.addLast" value="[test:listUsedIp]" value2="[Host-Tester([test:IndexSourceIPRegister])]" />
+		</then>
+		</if>	
+		<if>
+			<condition> <test parameter="[testcase:indexReg]" condition="number.greaterEqualThan" value="[RangeNumberUser]"/>   </condition>
+    	<then>	<parameter name="[testcase:allUserRegisteredOnce]" operation="set" value="true"/>	</then>
+		</if>
+	<stats>
+	<counter name="REG out"><increase>1</increase></counter>
+	</stats>
+		
+<finally>
+ 		<parameter name="[test:IndexSourceIPRegister]" operation="number.add" value="[test:IndexSourceIPRegister]" value2="1"/> 
+		<if>
+			<condition> <test parameter="[test:IndexSourceIPRegister]" condition="number.greaterEqualThan" value="[maxSourceIP]"/>  </condition>
+			<then>	<parameter name="[test:IndexSourceIPRegister]" operation="set" value="0"/>  </then>
+		</if>	
+</finally>
+
+</scenario>

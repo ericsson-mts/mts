@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="[list_subnet]" operation="setFromCsv" value="list_subnet.csv" value2="0"/>
+    <!-- generer la liste d'ip -->
+    <parameter name="[ips]" operation="system.iplist" value="[list_subnet]" />
+
+
+    <parameter name="[list_msisdn]" operation="setFromCsv" value="list_msisdn.csv" value2="0"/>
+    <!-- generer la liste de msisdn -->
+    <parameter name="[msisdns]" operation="list.create" />
+    <while>
+        <condition>
+            <not>
+                <test parameter="[list_msisdn]" condition="list.isempty" />
+            </not>
+        </condition>
+        <do>
+            <parameter name="[msisdn_range]" operation="list.getfirst" value="[list_msisdn]" />
+            <parameter name="[list_msisdn]" operation="list.removefirst" value="[list_msisdn]" />
+            <if>
+                <condition>
+                    <test parameter="[msisdn_range]" condition="string.contains" value="-" />
+                </condition>
+                <then>
+                    <parameter name="[msisdn_split]" operation="string.split" value="[msisdn_range]" value2="-" />
+                    <parameter name="[msisdn_current]" operation="set" value="[msisdn_split(0)]" />
+                    <while>
+                        <condition>
+                            <not>
+                                <test parameter="[msisdn_current]" condition="number.greaterThan" value="[msisdn_split(1)]"/>
+                            </not>
+                        </condition>
+                        <do>
+                            <parameter name="[msisdns]" operation="list.addLast" value="[msisdns]" value2="[msisdn_current]" />
+                            <parameter name="[msisdn_current]" operation="number.add" value="[msisdn_current]" value2="1" />
+                        </do>
+                    </while>
+                </then>
+                <else>
+                    <parameter name="[msisdns]" operation="list.addLast" value="[msisdns]" value2="[msisdn_range]" />
+                </else>
+            </if>
+        </do>
+    </while>
+
+
+
+    <parameter name="[RADIUSsocketName]" operation="set" value="radius_socket"/>
+
+    <!-- open RADIUS Connection -->
+    <openSocketRadius socketName="[RADIUSsocketName]" localHost="[source_ip]" localPort="[nas_port]" secret="[secret]"/>
+    <try>
+        <do>
+            <while>
+                <condition>
+                    <!-- tant qu'il reste des IP -->
+                    <not>
+                        <test parameter="[ip_list]" condition="list.isempty" />
+                    </not>
+                </condition>
+                <do>
+                    <!-- prendre une IP -->
+                    <parameter name="[ip]" operation="list.getfirst" value="[ips]" />
+                    <parameter name="[ips]" operation="list.removefirst" value="[ips]" />
+
+                    <!-- prendre un MSISDN -->
+                    <parameter name="[msisdn]" operation="list.getfirst" value="[msisdns]" />
+                    <parameter name="[msisdns]" operation="list.removefirst" value="[msisdns]" />
+
+
+                    <!-- remettre le MSISDN -->
+                    <parameter name="[msisdns]" operation="list.addlast" value="[msisdns]" value2="[msisdn]"/>
+
+                    <!-- send Radius Access-Request -->
+                    <sendRequestRadius socketName="[RADIUSsocketName]" remoteHost="[radius_host]" remotePort="[radius_auth_port]">
+                        <!-- Header -->
+                        <header code="1"/>
+                        <!-- AVPs -->
+                        <!-- User-Name (1) -->
+                        <avp code="1" value="[msisdn]"/>
+                        <!-- User-Password (2) -->
+                        <avp code="2" value="User-Password"/>
+                        <!-- Nas-IP-Address (4) -->
+                        <avp code="4" value="[source_ip]"/>
+                        <!-- Code: Nas-Port (5) -->
+                        <avp code="5" value="[nas_port]"/>
+                        <!-- Calling-Station-Id (31) -->
+                        <avp code="31" value=""/>
+                        <!-- Called-Station-Id (30) -->
+                        <avp code="30" value=""/>
+                    </sendRequestRadius>
+                    <receiveResponseRadius socketName="[RADIUSsocketName]"/>
+
+                    <!-- send Radius Accounting-Request Start -->
+                    <parameter name="[Acct-Session-Id]" operation="identifier" value="nextInteger" value2="inutile"/>
+                    <parameter name="[timestamp]" operation="setFromSystem" value="Timestamp" value2="1970"/>
+                    <parameter name="[timestamp]" operation="divide" value="[timestamp]" value2="1000"/>
+
+                    <!-- peut etre pas supporte dans les versions anciennes, dans un tel cas, commenter -->
+                    <parameter name="[timestamp]" operation="number.round" value="[timestamp]" />
+                    
+                    <sendRequestRadius socketName="[RADIUSsocketName]" remoteHost="[radius_host]" remotePort="[radius_acct_port]">
+                        <!-- Header -->
+                        <header code="4"/>
+                        <!-- AVPs -->
+                        <!--Acct-Status-Type(40) -->
+                        <avp code="40" value="Start"/>
+                        <!-- User-Name (1) -->
+                        <avp code="1" value="[msisdn]"/>
+                        <!-- NAS-IP-Address(4) -->
+                        <avp code="4" value="[nas_ip_address]"/>
+                        <!-- NAS-Port(5) -->
+                        <avp code="5" value="[nas_port]"/>
+                        <!-- Framed-IP-Address(8) -->
+                        <avp code="8" value="[ip]"/>
+                        <!-- Calling-Station-Id(31) -->
+                        <avp code="31" value="[calling_station_id]"/>
+                        <!-- Called-Station-Id(30) -->
+                        <avp code="30" value="[called_station_id]"/>
+                        <!-- Acct-Session-Id(44) -->
+                        <avp code="44" value="[Acct-Session-Id]"/>
+                        <!-- Event-Timestamp(55) -->
+                        <avp code="55" value="[timestamp]"/>
+                        <!-- Framed-Protocol(7) -->
+                        <avp code="7" value="GPRS-PDP-Context"/>
+                        <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+                        <avp code="26" value="3GPP">
+                            <avp code="2" value="[3gpp_charging_id]"/>
+                        </avp>
+                        <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+                        <avp code="26" value="3GPP">
+                            <avp code="6" value="[3gpp_sgsn_address]"/>
+                        </avp>
+                        <!-- NAS-Identifier(32) -->
+                        <avp code="32" value="[nas_identifier]"/>
+                    </sendRequestRadius>
+                    <receiveResponseRadius socketName="[RADIUSsocketName]"/>
+                </do>
+            </while>
+        </do>
+        <finally>
+            <closeSocketRadius socketName="[RADIUSsocketName]"/>
+        </finally>
+    </try>
+</scenario> 

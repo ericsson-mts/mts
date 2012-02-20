@@ -1,0 +1,699 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 12">
+<meta name=Originator content="Microsoft Word 12">
+<link rel=File-List href="IMSLoader_integration_QC_fichiers/filelist.xml">
+<title>Automatisation de tests IMS Loader avec Quality Center</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>tevano</o:Author>
+  <o:LastAuthor>fhenry</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>4492</o:TotalTime>
+  <o:Created>2012-01-19T15:20:00Z</o:Created>
+  <o:LastSaved>2012-01-19T15:20:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>635</o:Words>
+  <o:Characters>3494</o:Characters>
+  <o:Company>Siemens AG</o:Company>
+  <o:Lines>29</o:Lines>
+  <o:Paragraphs>8</o:Paragraphs>
+  <o:CharactersWithSpaces>4121</o:CharactersWithSpaces>
+  <o:Version>12.00</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<link rel=themeData href="IMSLoader_integration_QC_fichiers/themedata.thmx">
+<link rel=colorSchemeMapping
+href="IMSLoader_integration_QC_fichiers/colorschememapping.xml">
+<!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:TrackMoves>false</w:TrackMoves>
+  <w:TrackFormatting/>
+  <w:HyphenationZone>21</w:HyphenationZone>
+  <w:PunctuationKerning/>
+  <w:ValidateAgainstSchemas/>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:DoNotPromoteQF/>
+  <w:LidThemeOther>FR</w:LidThemeOther>
+  <w:LidThemeAsian>X-NONE</w:LidThemeAsian>
+  <w:LidThemeComplexScript>X-NONE</w:LidThemeComplexScript>
+  <w:Compatibility>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+   <w:DontGrowAutofit/>
+   <w:DontUseIndentAsNumberingTabStop/>
+   <w:FELineBreak11/>
+   <w:WW11IndentRules/>
+   <w:DontAutofitConstrainedTables/>
+   <w:AutofitLikeWW11/>
+   <w:HangulWidthLikeWW11/>
+   <w:UseNormalStyleForList/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+  <m:mathPr>
+   <m:mathFont m:val="Cambria Math"/>
+   <m:brkBin m:val="before"/>
+   <m:brkBinSub m:val="--"/>
+   <m:smallFrac m:val="off"/>
+   <m:dispDef/>
+   <m:lMargin m:val="0"/>
+   <m:rMargin m:val="0"/>
+   <m:defJc m:val="centerGroup"/>
+   <m:wrapIndent m:val="1440"/>
+   <m:intLim m:val="subSup"/>
+   <m:naryLim m:val="undOvr"/>
+  </m:mathPr></w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" DefUnhideWhenUsed="false"
+  DefSemiHidden="false" DefQFormat="false" LatentStyleCount="267">
+  <w:LsdException Locked="false" QFormat="true" Name="Normal"/>
+  <w:LsdException Locked="false" QFormat="true" Name="heading 1"/>
+  <w:LsdException Locked="false" QFormat="true" Name="heading 2"/>
+  <w:LsdException Locked="false" QFormat="true" Name="heading 3"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="heading 4"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="heading 5"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="heading 6"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="heading 7"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="heading 8"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="heading 9"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="caption"/>
+  <w:LsdException Locked="false" QFormat="true" Name="Title"/>
+  <w:LsdException Locked="false" QFormat="true" Name="Subtitle"/>
+  <w:LsdException Locked="false" QFormat="true" Name="Strong"/>
+  <w:LsdException Locked="false" QFormat="true" Name="Emphasis"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   Name="Placeholder Text"/>
+  <w:LsdException Locked="false" Priority="1" QFormat="true" Name="No Spacing"/>
+  <w:LsdException Locked="false" Priority="60" Name="Light Shading"/>
+  <w:LsdException Locked="false" Priority="61" Name="Light List"/>
+  <w:LsdException Locked="false" Priority="62" Name="Light Grid"/>
+  <w:LsdException Locked="false" Priority="63" Name="Medium Shading 1"/>
+  <w:LsdException Locked="false" Priority="64" Name="Medium Shading 2"/>
+  <w:LsdException Locked="false" Priority="65" Name="Medium List 1"/>
+  <w:LsdException Locked="false" Priority="66" Name="Medium List 2"/>
+  <w:LsdException Locked="false" Priority="67" Name="Medium Grid 1"/>
+  <w:LsdException Locked="false" Priority="68" Name="Medium Grid 2"/>
+  <w:LsdException Locked="false" Priority="69" Name="Medium Grid 3"/>
+  <w:LsdException Locked="false" Priority="70" Name="Dark List"/>
+  <w:LsdException Locked="false" Priority="71" Name="Colorful Shading"/>
+  <w:LsdException Locked="false" Priority="72" Name="Colorful List"/>
+  <w:LsdException Locked="false" Priority="73" Name="Colorful Grid"/>
+  <w:LsdException Locked="false" Priority="60" Name="Light Shading Accent 1"/>
+  <w:LsdException Locked="false" Priority="61" Name="Light List Accent 1"/>
+  <w:LsdException Locked="false" Priority="62" Name="Light Grid Accent 1"/>
+  <w:LsdException Locked="false" Priority="63" Name="Medium Shading 1 Accent 1"/>
+  <w:LsdException Locked="false" Priority="64" Name="Medium Shading 2 Accent 1"/>
+  <w:LsdException Locked="false" Priority="65" Name="Medium List 1 Accent 1"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true" Name="Revision"/>
+  <w:LsdException Locked="false" Priority="34" QFormat="true"
+   Name="List Paragraph"/>
+  <w:LsdException Locked="false" Priority="29" QFormat="true" Name="Quote"/>
+  <w:LsdException Locked="false" Priority="30" QFormat="true"
+   Name="Intense Quote"/>
+  <w:LsdException Locked="false" Priority="66" Name="Medium List 2 Accent 1"/>
+  <w:LsdException Locked="false" Priority="67" Name="Medium Grid 1 Accent 1"/>
+  <w:LsdException Locked="false" Priority="68" Name="Medium Grid 2 Accent 1"/>
+  <w:LsdException Locked="false" Priority="69" Name="Medium Grid 3 Accent 1"/>
+  <w:LsdException Locked="false" Priority="70" Name="Dark List Accent 1"/>
+  <w:LsdException Locked="false" Priority="71" Name="Colorful Shading Accent 1"/>
+  <w:LsdException Locked="false" Priority="72" Name="Colorful List Accent 1"/>
+  <w:LsdException Locked="false" Priority="73" Name="Colorful Grid Accent 1"/>
+  <w:LsdException Locked="false" Priority="60" Name="Light Shading Accent 2"/>
+  <w:LsdException Locked="false" Priority="61" Name="Light List Accent 2"/>
+  <w:LsdException Locked="false" Priority="62" Name="Light Grid Accent 2"/>
+  <w:LsdException Locked="false" Priority="63" Name="Medium Shading 1 Accent 2"/>
+  <w:LsdException Locked="false" Priority="64" Name="Medium Shading 2 Accent 2"/>
+  <w:LsdException Locked="false" Priority="65" Name="Medium List 1 Accent 2"/>
+  <w:LsdException Locked="false" Priority="66" Name="Medium List 2 Accent 2"/>
+  <w:LsdException Locked="false" Priority="67" Name="Medium Grid 1 Accent 2"/>
+  <w:LsdException Locked="false" Priority="68" Name="Medium Grid 2 Accent 2"/>
+  <w:LsdException Locked="false" Priority="69" Name="Medium Grid 3 Accent 2"/>
+  <w:LsdException Locked="false" Priority="70" Name="Dark List Accent 2"/>
+  <w:LsdException Locked="false" Priority="71" Name="Colorful Shading Accent 2"/>
+  <w:LsdException Locked="false" Priority="72" Name="Colorful List Accent 2"/>
+  <w:LsdException Locked="false" Priority="73" Name="Colorful Grid Accent 2"/>
+  <w:LsdException Locked="false" Priority="60" Name="Light Shading Accent 3"/>
+  <w:LsdException Locked="false" Priority="61" Name="Light List Accent 3"/>
+  <w:LsdException Locked="false" Priority="62" Name="Light Grid Accent 3"/>
+  <w:LsdException Locked="false" Priority="63" Name="Medium Shading 1 Accent 3"/>
+  <w:LsdException Locked="false" Priority="64" Name="Medium Shading 2 Accent 3"/>
+  <w:LsdException Locked="false" Priority="65" Name="Medium List 1 Accent 3"/>
+  <w:LsdException Locked="false" Priority="66" Name="Medium List 2 Accent 3"/>
+  <w:LsdException Locked="false" Priority="67" Name="Medium Grid 1 Accent 3"/>
+  <w:LsdException Locked="false" Priority="68" Name="Medium Grid 2 Accent 3"/>
+  <w:LsdException Locked="false" Priority="69" Name="Medium Grid 3 Accent 3"/>
+  <w:LsdException Locked="false" Priority="70" Name="Dark List Accent 3"/>
+  <w:LsdException Locked="false" Priority="71" Name="Colorful Shading Accent 3"/>
+  <w:LsdException Locked="false" Priority="72" Name="Colorful List Accent 3"/>
+  <w:LsdException Locked="false" Priority="73" Name="Colorful Grid Accent 3"/>
+  <w:LsdException Locked="false" Priority="60" Name="Light Shading Accent 4"/>
+  <w:LsdException Locked="false" Priority="61" Name="Light List Accent 4"/>
+  <w:LsdException Locked="false" Priority="62" Name="Light Grid Accent 4"/>
+  <w:LsdException Locked="false" Priority="63" Name="Medium Shading 1 Accent 4"/>
+  <w:LsdException Locked="false" Priority="64" Name="Medium Shading 2 Accent 4"/>
+  <w:LsdException Locked="false" Priority="65" Name="Medium List 1 Accent 4"/>
+  <w:LsdException Locked="false" Priority="66" Name="Medium List 2 Accent 4"/>
+  <w:LsdException Locked="false" Priority="67" Name="Medium Grid 1 Accent 4"/>
+  <w:LsdException Locked="false" Priority="68" Name="Medium Grid 2 Accent 4"/>
+  <w:LsdException Locked="false" Priority="69" Name="Medium Grid 3 Accent 4"/>
+  <w:LsdException Locked="false" Priority="70" Name="Dark List Accent 4"/>
+  <w:LsdException Locked="false" Priority="71" Name="Colorful Shading Accent 4"/>
+  <w:LsdException Locked="false" Priority="72" Name="Colorful List Accent 4"/>
+  <w:LsdException Locked="false" Priority="73" Name="Colorful Grid Accent 4"/>
+  <w:LsdException Locked="false" Priority="60" Name="Light Shading Accent 5"/>
+  <w:LsdException Locked="false" Priority="61" Name="Light List Accent 5"/>
+  <w:LsdException Locked="false" Priority="62" Name="Light Grid Accent 5"/>
+  <w:LsdException Locked="false" Priority="63" Name="Medium Shading 1 Accent 5"/>
+  <w:LsdException Locked="false" Priority="64" Name="Medium Shading 2 Accent 5"/>
+  <w:LsdException Locked="false" Priority="65" Name="Medium List 1 Accent 5"/>
+  <w:LsdException Locked="false" Priority="66" Name="Medium List 2 Accent 5"/>
+  <w:LsdException Locked="false" Priority="67" Name="Medium Grid 1 Accent 5"/>
+  <w:LsdException Locked="false" Priority="68" Name="Medium Grid 2 Accent 5"/>
+  <w:LsdException Locked="false" Priority="69" Name="Medium Grid 3 Accent 5"/>
+  <w:LsdException Locked="false" Priority="70" Name="Dark List Accent 5"/>
+  <w:LsdException Locked="false" Priority="71" Name="Colorful Shading Accent 5"/>
+  <w:LsdException Locked="false" Priority="72" Name="Colorful List Accent 5"/>
+  <w:LsdException Locked="false" Priority="73" Name="Colorful Grid Accent 5"/>
+  <w:LsdException Locked="false" Priority="60" Name="Light Shading Accent 6"/>
+  <w:LsdException Locked="false" Priority="61" Name="Light List Accent 6"/>
+  <w:LsdException Locked="false" Priority="62" Name="Light Grid Accent 6"/>
+  <w:LsdException Locked="false" Priority="63" Name="Medium Shading 1 Accent 6"/>
+  <w:LsdException Locked="false" Priority="64" Name="Medium Shading 2 Accent 6"/>
+  <w:LsdException Locked="false" Priority="65" Name="Medium List 1 Accent 6"/>
+  <w:LsdException Locked="false" Priority="66" Name="Medium List 2 Accent 6"/>
+  <w:LsdException Locked="false" Priority="67" Name="Medium Grid 1 Accent 6"/>
+  <w:LsdException Locked="false" Priority="68" Name="Medium Grid 2 Accent 6"/>
+  <w:LsdException Locked="false" Priority="69" Name="Medium Grid 3 Accent 6"/>
+  <w:LsdException Locked="false" Priority="70" Name="Dark List Accent 6"/>
+  <w:LsdException Locked="false" Priority="71" Name="Colorful Shading Accent 6"/>
+  <w:LsdException Locked="false" Priority="72" Name="Colorful List Accent 6"/>
+  <w:LsdException Locked="false" Priority="73" Name="Colorful Grid Accent 6"/>
+  <w:LsdException Locked="false" Priority="19" QFormat="true"
+   Name="Subtle Emphasis"/>
+  <w:LsdException Locked="false" Priority="21" QFormat="true"
+   Name="Intense Emphasis"/>
+  <w:LsdException Locked="false" Priority="31" QFormat="true"
+   Name="Subtle Reference"/>
+  <w:LsdException Locked="false" Priority="32" QFormat="true"
+   Name="Intense Reference"/>
+  <w:LsdException Locked="false" Priority="33" QFormat="true" Name="Book Title"/>
+  <w:LsdException Locked="false" Priority="37" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Bibliography"/>
+  <w:LsdException Locked="false" Priority="39" SemiHidden="true"
+   UnhideWhenUsed="true" QFormat="true" Name="TOC Heading"/>
+ </w:LatentStyles>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;
+	mso-font-charset:1;
+	mso-generic-font-family:roman;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:0 0 0 0 0 0;}
+@font-face
+	{font-family:"Arial Unicode MS";
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:128;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:-134238209 -371195905 63 0 4129279 0;}
+@font-face
+	{font-family:"\@Arial Unicode MS";
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:128;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:-134238209 -371195905 63 0 4129279 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:"Arial","sans-serif";
+	mso-font-kerning:16.0pt;}
+h2
+	{mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:14.0pt;
+	font-family:"Arial","sans-serif";
+	font-style:italic;}
+h3
+	{mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-link:"Titre 3 Car";
+	mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:13.0pt;
+	font-family:"Arial","sans-serif";}
+a:link, span.MsoHyperlink
+	{mso-style-unhide:no;
+	color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-unhide:no;
+	color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p.TDParagraph, li.TDParagraph, div.TDParagraph
+	{mso-style-name:TDParagraph;
+	mso-style-unhide:no;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Arial Unicode MS","sans-serif";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	mso-ansi-language:EN-US;
+	mso-fareast-language:EN-US;}
+span.TDLabel
+	{mso-style-name:TDLabel;
+	mso-style-unhide:no;
+	font-family:"Arial Unicode MS","sans-serif";
+	mso-ascii-font-family:"Arial Unicode MS";
+	mso-fareast-font-family:"Arial Unicode MS";
+	mso-hansi-font-family:"Arial Unicode MS";
+	mso-bidi-font-family:"Arial Unicode MS";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+span.TDContents
+	{mso-style-name:TDContents;
+	mso-style-unhide:no;
+	font-family:"Arial Unicode MS","sans-serif";
+	mso-ascii-font-family:"Arial Unicode MS";
+	mso-fareast-font-family:"Arial Unicode MS";
+	mso-hansi-font-family:"Arial Unicode MS";
+	mso-bidi-font-family:"Arial Unicode MS";}
+p.Normal14pt, li.Normal14pt, div.Normal14pt
+	{mso-style-name:"Normal + 14 pt\,Bold";
+	mso-style-unhide:no;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:center;
+	mso-pagination:widow-orphan;
+	font-size:14.0pt;
+	font-family:"Times New Roman","serif";
+	mso-fareast-font-family:"Times New Roman";
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+span.Titre3Car
+	{mso-style-name:"Titre 3 Car";
+	mso-style-unhide:no;
+	mso-style-locked:yes;
+	mso-style-link:"Titre 3";
+	mso-ansi-font-size:13.0pt;
+	mso-bidi-font-size:13.0pt;
+	font-family:"Arial","sans-serif";
+	mso-ascii-font-family:Arial;
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	mso-ansi-language:FR;
+	mso-fareast-language:FR;
+	mso-bidi-language:AR-SA;
+	font-weight:bold;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:70.85pt 70.85pt 70.85pt 70.85pt;
+	mso-header-margin:35.4pt;
+	mso-footer-margin:35.4pt;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:248541078;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-1532080008 1722177242 -2037872118 67895323 67895311 67895321 67895323 67895311 67895321 67895323;}
+@list l0:level1
+	{mso-level-text:%1-;
+	mso-level-tab-stop:53.4pt;
+	mso-level-number-position:left;
+	margin-left:53.4pt;
+	text-indent:-18.0pt;}
+@list l0:level2
+	{mso-level-number-format:alpha-lower;
+	mso-level-text:%2-;
+	mso-level-tab-stop:89.4pt;
+	mso-level-number-position:left;
+	margin-left:89.4pt;
+	text-indent:-18.0pt;}
+@list l1
+	{mso-list-id:659624425;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-192226526 959076682 67895321 67895323 67895311 67895321 67895323 67895311 67895321 67895323;}
+@list l1:level1
+	{mso-level-start-at:2;
+	mso-level-number-format:alpha-lower;
+	mso-level-text:%1-;
+	mso-level-tab-stop:36.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l2
+	{mso-list-id:796677234;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-742769376 1459628566 67895321 67895323 67895311 67895321 67895323 67895311 67895321 67895323;}
+@list l2:level1
+	{mso-level-text:%1-;
+	mso-level-tab-stop:36.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;}
+@list l3
+	{mso-list-id:1006709040;
+	mso-list-type:hybrid;
+	mso-list-template-ids:2145781140 126531824 67895321 67895323 67895311 67895321 67895323 67895311 67895321 67895323;}
+@list l3:level1
+	{mso-level-start-at:2;
+	mso-level-number-format:alpha-lower;
+	mso-level-text:%1-;
+	mso-level-tab-stop:53.4pt;
+	mso-level-number-position:left;
+	margin-left:53.4pt;
+	text-indent:-18.0pt;}
+ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Tableau Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-unhide:no;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman","serif";}
+table.MsoTableGrid
+	{mso-style-name:"Grille du tableau";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-unhide:no;
+	border:solid windowtext 1.0pt;
+	mso-border-alt:solid windowtext .5pt;
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-border-insideh:.5pt solid windowtext;
+	mso-border-insidev:.5pt solid windowtext;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman","serif";}
+</style>
+<![endif]--><!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="2050"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body lang=FR link=blue vlink=purple style='tab-interval:35.4pt'>
+
+<div class=Section1>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b style='mso-bidi-font-weight:
+normal'><span style='font-size:14.0pt'><o:p>&nbsp;</o:p></span></b></p>
+
+<p class=Normal14pt><span class=SpellE>Procedure</span> pour automatiser des
+tests sous QC depuis la bureautique</p>
+
+<p class=Normal14pt><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<h1>1 - <span class=SpellE>preparation</span> de l'environnement</h1>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<h2>1.1 - sur PC bureautique</h2>
+
+<h3>1.1.1 Installation de l'environnement d'<span class=SpellE>execution</span>
+de tests</h3>
+
+<p class=MsoNormal>Pour pouvoir utiliser l'automatisation de tests sur QC, il
+faut que vous ayez les outils suivants installes sur votre PC :</p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>    </span>- <span
+class=SpellE>Putty</span></p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>    </span>- <span
+class=SpellE>Plink</span></p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>    </span>- Excel</p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>    </span></p>
+
+<p class=MsoNormal><span class=Titre3Car><span style='font-size:13.0pt'>1.1.2
+Copier les fichiers suivants dans le <span class=SpellE>repertoire</span>
+c:\scripts_QC_Auto\ ; le <span class=SpellE>creer</span> s'il n'existe</span></span>
+pas</p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>    </span>-
+parametres_QC_pour_IMS_Loader.xls : Fichier Excel de <span class=SpellE>definition</span>
+des <span class=SpellE>parametres</span> de connexion avec la machine <span
+class=SpellE>hebergeant</span> IMSLoader, ce fichier est a particulariser pour <span
+class=SpellE>repondre</span> a votre <span class=SpellE>environneemnt</span> de
+test</p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>    </span>-
+script_qc_talkpc_excel.bas : script a charger <span class=SpellE>ds</span> QC
+pour chaque test a automatiser par la <span class=SpellE>procedure</span> <span
+class=SpellE>decrite</span> ci-dessous<span style='mso-spacerun:yes'>   </span></p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>    </span>- Preparation.txt
+: ce fichier d'aide</p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>    </span>-
+talktv_imsloader.reg : ce fichier un <span class=SpellE>un</span> <span
+class=SpellE>modele</span> de session <span class=SpellE>putty</span> utilisant
+un tunnel <span class=SpellE>ssh</span>, il suffit de l'adapter a vos besoins
+en modifiant l'adresse et le port destination<span
+style='mso-spacerun:yes'>      </span><span style='mso-spacerun:yes'>  </span></p>
+
+<p class=MsoNormal>Ces fichiers sont disponible sur
+I:\PROJETS_ANTICIPATION\XML_Loader\scripts\scripts_QC_Auto ; il suffit de
+copier ce <span class=SpellE>repertoire</span> localement sur la racine de
+votre disque C:</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<h3>1.1.3 <span class=SpellE>preparation</span> session <span class=SpellE>putty</span></h3>
+
+<p class=MsoNormal>pour permettre le lancement de IMSLoader sur la machine
+distante, il faut <span class=SpellE>creer</span> la session <span
+class=SpellE>putty</span> soit en double cliquant sur le fichier .reg fourni ou
+en suivant la <span class=SpellE>procedure</span> suivante :</p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>    </span>- si vous utilisez
+un tunnel <span class=SpellE>ssh</span> il faut <span class=SpellE>creer</span>
+une session <span class=SpellE>putty</span> utilisable par QC pour traverser ce
+tunnel</p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>      </span><span
+style='mso-spacerun:yes'>  </span>- dans l'item Session</p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>            </span>- <span
+class=SpellE>parametrer</span> le host <span class=SpellE>name</span> avec
+l'adresse IP de la machine sur laquelle on souhaite se connecter, dans le cas
+d'un tunnel <span class=SpellE>ssh</span>, le host <span class=SpellE>name</span>
+sera <span class=SpellE>localhost</span> et le port celui <span class=SpellE>defini</span>
+par le tunnel</p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>            </span>- donner
+un nom a &quot;<span class=SpellE>Saved</span> Session&quot; (sans <span
+class=SpellE>caracters</span> <span class=SpellE>speciaux</span>) ex <span
+class=SpellE>Ma_session</span></p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>            </span>-
+sauvegarder cette configuration </p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>        </span>- dans item <span
+class=SpellE>Connection</span></p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>            </span>- mettre
+la valeur 30 dans le champ &quot;Seconds <span class=SpellE>between</span> <span
+class=SpellE>keepalives</span>&quot; ; ceci est <span class=SpellE>deja</span>
+fait dans le <span class=SpellE>modele</span></p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>       </span><span
+style='mso-spacerun:yes'> </span>- revenir sur item Session</p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>            </span>-
+sauvegarder l'ensemble de ces <span class=SpellE>parametres</span> en <span
+class=SpellE>clquant</span> sur le bouton &quot;Save&quot;</p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>  </span></p>
+
+<h3>1.1.4 -Vérification</h3>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'> </span><span class=SpellE>verifier</span>
+que la connexion fonctionne</p>
+
+<p class=MsoNormal>essayer d'ouvrir la session <span class=SpellE>putty</span>
+que vous venez de <span class=SpellE>creer</span></p>
+
+<p class=MsoNormal>si vous arriver a vous connecter a la machine distance sur
+laquelle est <span class=SpellE>heberge</span> IMSLoader vous pouvez tester
+l'utilitaire qui sera utilise pour le lancement automatique des tests :</p>
+
+<p class=MsoNormal><span class=SpellE>plink</span> -l <span class=SpellE>username</span>
+-<span class=SpellE>pw</span> <span class=SpellE>passwd</span> <span
+class=SpellE>machine_cible</span> commande</p>
+
+<p class=MsoNormal><span class=SpellE>verifier</span> que le <span
+class=SpellE>resultat</span> de la commande est le mm que si elle avait <span
+class=SpellE>etee</span> <span class=SpellE>executee</span> en local sur la
+&quot;<span class=SpellE>machine_cible</span>&quot;</p>
+
+<p class=MsoNormal>Attention dans le cas d'utilisation de rebond <span
+class=SpellE>ssh</span>, ne pas oublier d'ouvrir une session sur la machine qui
+<span class=SpellE>heberge</span> les rebonds avant de faire ce test ; dans ce
+cas, &quot;machine cible&quot; sera le nom de la <span class=SpellE>sesssion</span>
+<span class=SpellE>putty</span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<h2>1.2 - sur machine cible IMSLoader</h2>
+
+<p class=MsoNormal>de <span class=SpellE>preference</span> une machine Linux</p>
+
+<h3>1.2.1 préparation IMSloader</h3>
+
+<p class=MsoNormal>modifier le fichier d'<span class=SpellE>execution</span> de
+IMSLoader en commande ligne</p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>    </span>- Linux : dans le
+fichier startCmd.sh : ajouter la ligne &quot;cd &lt;<span class=SpellE>repertoire</span>
+<span class=SpellE>bin</span> d'installation d'IMSLoader&gt;&quot;</p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>    </span>- Windows : dans
+le fichier startCmd.bat : ajouter 2 lignes ; une avec le changement de lecteur
+sur lequel est installe IMSLoader en <span class=SpellE>general</span>
+&quot;c:&quot; puis le changement de <span class=SpellE>repertoire</span> avec
+la commande &quot;cd &lt;\<span class=SpellE>repertoire</span> d'installation
+d'IMSLoader&gt;&quot;</p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>    </span></p>
+
+<p class=MsoNormal><span style='mso-spacerun:yes'>    </span></p>
+
+<h1>2 - <span class=SpellE>preparation</span> de QC</h1>
+
+<p class=MsoNormal>- ouvrir QC</p>
+
+<p class=MsoNormal>- ouvrir le test plan</p>
+
+<p class=MsoNormal>- <span class=SpellE>selectionner</span> le test a
+automatiser</p>
+
+<p class=MsoNormal>- cliquer sur l'onglet &quot;design <span class=SpellE>steps</span>&quot;</p>
+
+<p class=MsoNormal>- dans le bandeau sous l'onglet, cliquer sur le bouton
+d'automatisation (une trace de pas avec un petit carre hachure et une <span
+class=SpellE>fleche</span>)</p>
+
+<p class=MsoNormal>- dans le sous menu qui s'affiche <span class=SpellE>selectionner</span>
+'VAPI-XP-TEST', une <span class=SpellE>fenetre</span> s'ouvre proposant
+certaines actions, cliquer sur finish </p>
+
+<p class=MsoNormal>- <span class=SpellE>selectionner</span> l'onglet Test
+Script</p>
+
+<p class=MsoNormal>- effacer le contenu de la <span class=SpellE>fenetre</span>
+pour le remplacer par le script générique (script_qc_talkpc_excel.bas) adapte a
+vos besoins</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<h1>3 - <span class=SpellE>execution</span> du test</h1>
+
+<p class=MsoNormal>- aller dans le test <span class=SpellE>lab</span></p>
+
+<p class=MsoNormal>- <span class=SpellE>selectionner</span> le test a <span
+class=SpellE>executer</span></p>
+
+<p class=MsoNormal>- cocher si <span class=SpellE>necesssaire</span> la case
+&quot;<span class=SpellE>Run</span> All Tests <span class=SpellE>Localy</span>&quot;</p>
+
+<p class=MsoNormal>- cliquer sur la <span class=SpellE>fleche</span> verte
+&quot;<span class=SpellE>run</span>&quot;</p>
+
+<p class=MsoNormal>- attendre le <span class=SpellE>resultat</span> du test</p>
+
+</div>
+
+</body>
+
+</html>

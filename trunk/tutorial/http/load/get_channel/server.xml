@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+    <receiveMessageHTTP request="true">
+        <parameter name="transaction_id" operation="protocol.setFromMessage" value="message.transactionId"/>
+    </receiveMessageHTTP>
+
+    <sendMessageHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: utf-8
+User-Agent: XMLLoader
+Content-Length: x
+
+[content]
+]]>
+    </sendMessageHTTP>
+
+</scenario>

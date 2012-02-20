@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+<!-- donnees pour reponse message SIP -->
+<parameter name="[optionsAcceptContact]" operation="set" value='*;+couscous;+g.3gpp.cs-voice;+g.3gpp.app_ref="urn%3Aurn-xxx%3A3gpp-application.ims.iari.gsma-is";explicit'/>
+<parameter name="[optionsAllow]" operation="set" value="COUSCOUS, PRACK, SUBSCRIBE, NOTIFY, REFER, INVITE, ACK, BYE, CANCEL, UPDATE, OPTIONS, INFO, PUBLISH"/>
+<parameter name="[optionsSupported]" operation="set" value="couscous, replaces, 100rel"/>
+<parameter name="[optionsAccept]" operation="set" value="couscous/merguez, application/sdp, application/dtmf-relay, application/simple-message-summary, audio/tone, audio/telephone-event"/>
+<parameter name="[optionsSdpContent]" operation="set" value="v=0&#13;&#10;o=+12345 67890 12345 IN IP4 [ipAddressSrc]&#13;&#10;s=-&#13;&#10;c=IN IP4 [ipAddressSrc]&#13;&#10;t=0 0&#13;&#10;m=message 0 TCP/MSRP *&#13;&#10;a=accept-types:image/bmp image/jpeg image/png&#13;&#10;a=file-selector&#13;&#10;a=max-size:524288"/>
+<parameter name="[inviteSupported]" operation="set" value="couscous, replaces, 100rel"/>
+<parameter name="[sessionExpires]" operation="set" value="2000"/>
+<parameter name="[MinSE]" operation="set" value="300"/>
+<parameter name="[newToTag]" operation="string.random" value="10"/>
+
+	<!--  ################# RECEIVE A SIP MESSAGE  ################ --> 
+	<!--  ################################################## -->
+    	<parameter name="[received]" operation="set" value="false"/>
+	<receiveMessageSIP name="wait_SIP_unexpectedrequest" timeout="[TestDurationSec]" failedOnTimeout="false">
+		<parameter name="[received]" operation="set" value="true"/>
+		<parameter name="[lastListenpoint]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+		<parameter name="[lastLocalHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>
+		<parameter name="[lastLocalPort]" operation="protocol.setFromMessage" value="listenpoint.localPort"/>
+	<parameter name="[lastMethod]" operation="protocol.setFromMessage" value="message:type"/> 
+	<parameter name="[firstlineStatusCode]" operation="protocol.setFromMessage" value="firstline:StatusCode"/>
+	 <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header:To"/>
+	 <parameter name="[lastToHost]" operation="protocol.setFromMessage" value="header.To.Address.URI.Host"/>      	 
+		<parameter name="[lastToUser]" operation="protocol.setFromMessage" value="header.To.Address.URI.User"/>     
+	 <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header:From"/>   
+	 <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header:Call-Id"/>
+	 <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header:CSeq"/>
+	<parameter name="[lastCSeqNumber]" operation="protocol.setFromMessage" value="header:CSeq:Number"/>
+	 <parameter name="[lastRecordRoute]" operation="protocol.setFromMessage" value="header:Record-Route"/>
+	 <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header:Via"/>
+	 <parameter name="[lastMessage]" operation="protocol.setFromMessage" value="message"/>
+	</receiveMessageSIP>
+
+		<if>
+	    <condition>   <test parameter="[received]" condition="string.equals" value="false"/>  </condition>
+	    <then>	<exit name="exit" failed="false"/>  </then>
+	</if>
+	
+	<parameter name="[contact]" operation="set" value="&lt;sip:[lastToUser]@[lastLocalHost]:[lastLocalPort]&gt;"/>
+	<parameter name="[optionsContact]" operation="set" value='[contact];+couscous;+g.3gpp.cs-voice;+g.3gpp.app_ref="urn%3Aurn-xxx%3A3gpp-application.ims.iari.gsma-is";explicit'/>
+	
+	<switch parameter="[lastMethod]">
+	 <case equals="BYE">
+	 		 <log level="ERROR" type="Main"> BYE not correctly switched </log> 
+	</case> 
+	<case equals="ACK">
+		 		 <log level="ERROR" type="Main"> ACK not correctly switched </log> 
+	</case> 
+	<!-- ###################
+                #                OPTIONS
+                ##################-->
+	<case equals="OPTIONS">
+				<stats>
+					<counter name="OPTIONS in" summary="OPTIONS in" complete="OPTIONS received"/>	
+					 <counter name="OPTIONS in"><increase>1</increase></counter>
+				</stats>
+		<sendMessageSIP name="Send answer options" delay="0" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo];tag=[newToTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: [optionsContact]
+Max-Forwards: 70
+Server: [server]
+Accept: [optionsAccept]
+Accept-Contact: [optionsAcceptContact]
+Allow: [optionsAllow]
+Supported: [optionsSupported]
+Content-Type: application/sdp
+Content-Length: x
+
+[optionsSdpContent]
+]]>
+		</sendMessageSIP>
+ 		<parameter name="[messageAlreadySent]" operation="set" value="true"/>
+		<log level="ERROR" type="Main"> Receive unexpected OPTIONS [lastMessage] </log> 
+	</case> 
+	<!-- ###################
+                #                 (re_)INVITE
+                ##################--> 
+	<case equals="INVITE">
+			<stats>
+					<counter name="reINVITE in" summary="reINVITE in" complete="reINVITE received"/>	
+					 <counter name="reINVITE in"><increase>1</increase></counter>
+				</stats>
+				
+		<sendMessageSIP name="Send answer invite" delay="0" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: [contact]
+Supported: [inviteSupported]
+Require: timer
+Session-Expires: [sessionExpiresReceiver];refresher=uac
+Content-Length: 0
+]]>
+			</sendMessageSIP>
+		 	<parameter name="[messageAlreadySent]" operation="set" value="true"/>
+			<log level="ERROR" type="Main"> Receive unexpected reINVITE  [lastMessage] </log> 
+	</case>
+	<!-- ###################
+                #                 CANCEL
+                ################### -->    
+	<case equals="CANCEL">
+	
+				<stats>
+					<counter name="CANCEL in" summary="CANCEL in" complete="CANCEL received"/>	
+					 <counter name="CANCEL in"><increase>1</increase></counter>
+				</stats>
+				
+		<sendMessageSIP name="Send answer" delay="0" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Content-Length: 0
+]]>
+			</sendMessageSIP>
+			<pause name="pause" seconds="0.5"  state="true"/>
+			<sendMessageSIP name="Send answer" delay="0" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[SIP/2.0 487 Request Terminated
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCSeqNumber] INVITE
+Content-Length: 0
+]]>
+			</sendMessageSIP>
+		 	<parameter name="[messageAlreadySent]" operation="set" value="true"/>
+			<log level="ERROR" type="Main"> Receive unexpected CANCEL  [lastMessage]</log> 
+	</case>
+	<!-- ###################
+                #                 UPDATE
+                ################### -->                            
+	<case equals="UPDATE">
+	
+				<stats>
+					<counter name="UPDATE in" summary="UPDATE in" complete="UPDATE received"/>	
+					 <counter name="UPDATE in"><increase>1</increase></counter>
+				</stats>
+				
+		<sendMessageSIP name="Send answer update" delay="0" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+SIP/2.0 200 OK
+To: <sip:[lastToUser]@[lastToHost]>;tag=[newToTag]
+From: [lastFrom]
+Via: [lastVia]
+Record-Route: [lastRecordRoute]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[lastToUser]@[lastLocalHost]:[lastLocalPort]>
+Max-Forwards: 70
+Server: [server]
+]]>
+			</sendMessageSIP>
+		 	<parameter name="[messageAlreadySent]" operation="set" value="true"/>
+			<log level="ERROR" type="Main"> Receive unexpected UPDATE  [lastMessage]</log> 
+	</case>
+	<case equals="PUBLISH">
+				<stats>
+					<counter name="PUBLISH in" summary="PUBLISH in" complete="PUBLISH received"/>	
+					 <counter name="PUBLISH in"><increase>1</increase></counter>
+				</stats>
+		 		 <log level="ERROR" type="Main"> Receive unexpected PUBLISH  [lastMessage]</log> 
+	</case>
+	<case equals="SUBSCRIBE">
+					<stats>
+					<counter name="SUBSCRIBE in" summary="SUBSCRIBE in" complete="SUBSCRIBE received"/>	
+					 <counter name="SUBSCRIBE in"><increase>1</increase></counter>
+				</stats>
+				 		 <log level="ERROR" type="Main"> Receive unexpected SUBSCRIBE  [lastMessage]</log> 
+	</case>
+	<case equals="NOTIFY">
+						<stats>
+					<counter name="NOTIFY in" summary="NOTIFY in" complete="NOTIFY received"/>	
+					 <counter name="NOTIFY in"><increase>1</increase></counter>
+					</stats>
+					<sendMessageSIP name="Send answer update" delay="0" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+SIP/2.0 200 OK
+To: <sip:[lastToUser]@[lastToHost]>;tag=[newToTag]
+From: [lastFrom]
+Via: [lastVia]
+Record-Route: [lastRecordRoute]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[lastToUser]@[lastLocalHost]:[lastLocalPort]>
+Max-Forwards: 70
+Server: [server]
+]]>
+			</sendMessageSIP>
+					 <log level="ERROR" type="Main"> Receive unexpected NOTIFY  [lastMessage] </log> 
+	</case>
+	<case equals="INFO">
+							<stats>
+					<counter name="INFO in" summary="INFO in" complete="INFO received"/>	
+					 <counter name="INFO in"><increase>1</increase></counter>
+				</stats>
+			 		 <log level="ERROR" type="Main"> Receive unexpected INFO  [lastMessage]</log> 
+	</case>
+ 	<default>
+		<!-- Wooooups  --> 
+					 		 <log level="ERROR" type="Main"> Receive unexpected message [lastMethod]   [lastMessage] </log> 
+	 </default>
+	</switch>
+
+	<if> <condition> <test parameter="[messageAlreadySent]" condition="string.equals" value="false"/> </condition>
+		<then>
+			<sendMessageSIP name="Send answer" delay="0" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Content-Length: 0
+]]>
+		</sendMessageSIP>
+		</then>
+	</if>
+
+</scenario>

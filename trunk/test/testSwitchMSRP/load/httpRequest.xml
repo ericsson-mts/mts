@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- httpRequest is used to simulate an HTTP server in order to receive notfications sent by the MSRP Switch -->
+
+<scenario>
+
+	<!-- Label de debut de boucle automate -->
+	<label name="Begin"/>
+
+	<receiveRequestHTTP name="Wait GET|POST"  timeout="0" failedOnTimeout="false">
+		<!-- Enregistrement de la transactionID du message HTTP recu -->
+		<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+		<!-- To store the entire message for logging notification purpose -->
+		<parameter name="[messageEvent]" operation="protocol.setFromMessage" value="message" />
+	</receiveRequestHTTP>
+
+	<!-- USER DEBUG -->
+	<log level="[LogLevel]">Received MESSAGE : [messageEvent] </log>
+	
+	<!-- Storing notifications events in a LOG file named "events_notifs.log" -->
+	<parameter name="[result]" operation="file.writestring"  value="events_notifs.log" value2="[messageEvent]"/>
+		
+	<!-- Acquittement des NOTIFS by sending HTTP 20 OK -->
+	<if>
+		<condition>
+			<test parameter="[transaction_id]" condition="list.exists"/> 
+		</condition>
+		<then>
+		
+			<sendResponseHTTP name="Send 200 OK" transactionId="[transaction_id]">
+<![CDATA[
+HTTP/1.1 200 OK
+Content-Encoding:utf-8
+User-Agent:XMLLoader01
+]]>
+			</sendResponseHTTP>
+
+			<!-- Suppression de la variable de contexte transaction_id -->
+			<parameter name="[transaction_id]" operation="list.remove"/>
+				
+		</then>
+		<else />
+	</if>
+	
+	<!-- Retour entree automate -->            
+	<goto  name="loop" label="Begin" state="true"/>	
+
+</scenario>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE library [
+<!ENTITY lib_charge_INVITE_av_session_ID	SYSTEM "./lib_charge_INVITE_av_session_ID.xml">
+]>
+
+<scenario>
+
+<parameter name="[Source_Port]" operation="set" value="5160"/>
+
+
+<openProviderSIP name="open SIP provider" providerName="[Source_Port]" localHost="[Host-Tester]" localPort="[Source_Port]" transport="UDP"/>    		
+
+
+<parameter name="[inviteeName]" operation="set" value="000005161"/>
+<parameter name="[inviterName]" operation="set" value="000005160"/>
+<parameter name="[Target_Port]" operation="set" value="[Port-MRF_A]"/>
+
+
+<parameter name="[test:Index_Charge]" operation="add" value="[test:Index_Charge]" value2="1"/>    			
+<if>
+<condition>
+<test parameter="[test:Index_Charge]" condition="greaterThan" value="999999"/>       	     
+</condition>
+<then>
+<parameter name="[test:Index_Charge]" operation="set" value="0"/>    				    	
+</then>
+</if>
+
+<parameter name="[CallID_Charge]" operation="set"    value="[Target_Port]" />
+<parameter name="[CallID_Charge]" operation="concat" value="[CallID_Charge]"      value2="-" />
+<parameter name="[CallID_Charge]" operation="concat" value="[CallID_Charge]"      value2="[inviterName]" />
+<parameter name="[CallID_Charge]" operation="concat" value="[CallID_Charge]"      value2="-" />
+<parameter name="[CallID_Charge]" operation="concat" value="[CallID_Charge]"      value2="[test:Index_Charge]" />
+
+<parameter name="[Duree_pause_INVITE_ACK]" operation="set" value="0"/>
+<parameter name="[Duree_pause_INVITE_BYE]" operation="set" value="0"/>
+
+<parameter name="[Have_to_send_the_BYE]" operation="set" value="true"/>
+<parameter name="[Have_to_send_the_second_Invite]" operation="set" value="false"/>
+
+&lib_charge_INVITE_av_session_ID;
+
+<!--
+-->
+	             	        	        	        
+</scenario>

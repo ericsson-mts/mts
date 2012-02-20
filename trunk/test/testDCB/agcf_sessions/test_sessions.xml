@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="DCB session injector">
+    <!-- parametres pour le bouchon de test -->
+    <parameter name="[radius_test_port]"     operation="set" value="12345"/>
+    <parameter name="[radius_auth_port]"     operation="set" value="[radius_test_port]"/> <!-- std=1812 -->
+    <parameter name="[radius_acct_port]"     operation="set" value="[radius_test_port]"/> <!-- std=1813 -->
+    <parameter name="[radius_server_secret]" operation="set" value="secret"/>
+    <!-- fin des parametres pour le bouchon de test -->
+
+
+
+    <parameter name="[source_ip]"          operation="set" value="172.16.21.61"/>
+    
+    <parameter name="[radius_host]"        operation="set" value="172.16.21.61"/>
+    <parameter name="[radius_auth_port]"   operation="set" value="12345"/>
+    <parameter name="[radius_acct_port]"   operation="set" value="12345"/>
+
+    <parameter name="[nas_port]"           operation="set" value="49101" />
+    <parameter name="[nas_ip_address]"     operation="set" value="195.168.201.31" />
+    <parameter name="[secret]"             operation="set" value="secret" />
+    <parameter name="[calling_station_id]" operation="set" value="33607000101" />
+    <parameter name="[called_station_id]"  operation="set" value="orange.fr" />
+    <parameter name="[nas_identifier]"     operation="set" value="orange.fr" />
+    <parameter name="[3gpp_charging_id]"   operation="set" value="101" />
+    <parameter name="[3gpp_sgsn_address]"  operation="set" value="195.184.65.41" />
+
+    <testcase name="server" state="false">
+        <scenario name="RADIUS">server/server_radius.xml</scenario>
+    </testcase>
+
+    <testcase name="client" state="true">
+        <scenario name="scenario">client.xml</scenario>
+    </testcase>
+</test>

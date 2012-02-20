@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="GTPP" description="GTPP regression tests">
+
+    <parameter name="[listenIp]" operation="set" value="0.0.0.0" editable="true" />
+    <parameter name="[serverRemoteIp]" operation="system.ipaddress" />
+    <parameter name="[serverRemoteIp]" operation="set" value="[serverRemoteIp]" editable="true" />
+    <parameter name="[serverRemotePort]" operation="file.readproperty" value="gtpp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[serverRemotePort]" operation="set" value="[serverRemotePort]" editable="true" />
+
+    <testcase name="gtpp/001_echo" state="true">
+        <scenario name="client">001_echo/client.xml</scenario>
+        <scenario name="GTPP">001_echo/server.xml</scenario>
+    </testcase>
+
+    <testcase name="gtpp/002_nodeAlive" state="true">
+        <scenario name="client">002_nodeAlive/client.xml</scenario>
+        <scenario name="GTPP">002_nodeAlive/server.xml</scenario>
+    </testcase>
+
+    <testcase name="gtpp/003_redirection" state="true">
+        <scenario name="client">003_redirection/client.xml</scenario>
+        <scenario name="GTPP">003_redirection/server.xml</scenario>
+    </testcase>
+
+    <testcase name="gtpp/004_dataRecordTransfer" state="true">
+        <scenario name="client">004_dataRecordTransfer/client.xml</scenario>
+        <scenario name="GTPP">004_dataRecordTransfer/server.xml</scenario>
+    </testcase>
+
+</test>

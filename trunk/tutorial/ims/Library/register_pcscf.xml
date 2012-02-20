@@ -1,0 +1,63 @@
+<if>
+	<condition>
+		<test parameter="[lastSIPMethod]" condition="equals" value="REGISTER"/>
+	</condition>
+	<then>	<!--verifie si le terminal supporte le header path path-->	
+		<parameter name="[lastSupported]" 		operation="setFromMessage" value="header:Supported" value2="[lastMessage]"/>
+		<if>
+			<condition>
+					<test parameter="[lastSupported]" condition="contains" value="path"/>
+			</condition>
+			<then>
+				<!--ajout du Path contenant l adresse du pcscf-->
+				<parameter name="[lastHeader]" 			operation="addfirst" 	value="[lastHeader]" value2="[Path]"/>
+				<!--supprime le header Supported-->
+				<parameter name="[index]" 				operation="findMatches" value="[lastHeader]" value2="Supported.*"/>
+				<parameter name="[lastHeader]"			operation="removeat" 	value="[lastHeader]" value2="[index]"/>
+				<!--supprime le header contenant sec agree-->
+				<parameter name="[index]" 				operation="findMatches" value="[lastHeader]" value2=".*sec-agree.*"/>
+				<parameter name="[lastHeader]"			operation="removeat" 	value="[lastHeader]" value2="[index]"/>
+				<!--recupere le header service verify et Authorization-->
+				<parameter name="[Service-Verify]" 		operation="setFromMessage" value="header:Service-Verify" 	value2="[lastMessage]"/>
+				<parameter name="[Authorization]" 		operation="setFromMessage" value="header:Authorization" 	value2="[lastMessage]"/>
+				<!--Supprime le champs authorization-->
+				<parameter name="[index]" 			operation="findMatches" value="[lastHeader]" 	value2="Authorization.*"/>	
+				<parameter name="[lastHeader]" 		operation="removeat" 	value="[lastHeader]" 	value2="[index]"/>	
+				<!--verifie que Service Verify est egale Service Server-->
+				<if>
+					<condition>
+						<test parameter="[Service-Verify]" condition="equals" value="[Service-Server]"/>
+					</condition>
+					<then>
+						<!--Supprime le champs  service verify-->
+						<parameter name="[index]" 			operation="findMatches" value="[lastHeader]" 	value2="Service-Verify.*"/>	
+						<parameter name="[lastHeader]" 		operation="removeat" 	value="[lastHeader]" 	value2="[index]"/>	
+						<!--si c est le cas ajout des parametres integity protected=yes-->
+						<parameter name="[lastHeader]"	operation="addfirst" 	value="[lastHeader]" value2="Authorization: [Authorization],integrity-protected=yes"/>
+					</then>
+					<else>
+						<!--si c est pas le cas ajout des parametres integity protected=no-->
+						<parameter name="[lastHeader]" 	operation="addfirst" 	value="[lastHeader]" value2="Authorization: [Authorization],integrity-protected=no"/>
+					</else>
+				</if>	
+			</then>
+			<else>
+				<!--envoi reponse erreur si il ne supporte pas path et retouren attendre un message-->	
+				<sendResponseSIP name="Answer 420 Unsupported header indicating  PATH " providerName="[scenarioName]">
+<![CDATA[SIP/2.0 420 Unsupported header indicating  "PATH" 
+Via: [lastVia]
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCall-ID]
+CSeq: [lastCSeq]
+Content-Length: 0]]>
+				</sendResponseSIP>
+				<goto  name="loop" label="Begin" state="true"/>
+			</else>
+		</if>
+	</then>
+</if>
+	 
+
+	
+	

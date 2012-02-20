@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="SIP" description="SIP regression tests">
+    
+    <!-- SIP local address -->
+    <parameter name="[Host-Tester]" operation="system.ipaddress"/>
+    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]"/>
+    <parameter name="[Port-Tester]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]"/>	
+   
+   
+    <!-- SIP remote address -->
+    <parameter name="[Host-Server]" operation="system.ipaddress"/>
+    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]"/>
+    <!-- HUAYAE platform-->
+    <parameter name="[Host-Server]" operation="set" value="10.24.0.9"/>
+    <!-- ASTERISK-->
+    <!--parameter name="[Host-Server]" operation="set" value="172.30.2.2"/-->
+    <!--parameter name="[Host-Server]" operation="set" value="172.30.2.86"/-->
+    <!-- ASTERISK parameter name="[Host-Server]" operation="set" value="192.168.90.247"/-->
+    <!-- VOXPILOT parameter name="[Host-Server]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[Port-Server]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!-- ASTERISK VOXPILOT parameter name="[Port-Server]" operation="set" value="5060"/-->
+    <parameter name="[Port-Server]" operation="set" value="5060"/>
+    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server]:[Port-Server]"/>	
+
+    <!-- DIAMETER remote address -->
+    <parameter name="[Remote-Host]" operation="system.ipaddress"/>
+    <parameter name="[Remote-Host]" operation="set" value="[Remote-Host(0)]"/>
+    <!-- HUAYAE platform-->
+    <!--parameter name="[Remote-Host]" operation="set" value="10.24.0.?"/-->
+    <parameter name="[Remote-Port]" operation="file.readProperty" value="diameter.properties" value2="node.LISTENING_PORT"/>
+    <!-- HUAYAE platform-->
+    <!--parameter name="[Remote-Port]" operation="set" value="3868"/-->         
+    <parameter name="[Remote-Address]" operation="set" value="[Remote-Host]:[Remote-Port]"/>
+	
+    <!-- transport parameters-->
+    <parameter name="[transportRequest]" operation="set" value="udp"/>
+    <parameter name="[transportResponse]" operation="set" value="UDP"/>
+        
+    <!-- timers for the retransmissions-->
+    <parameter name="[retransmitNumber]" operation="set" value="4"/>
+    <parameter name="[RetransTimeout]" operation="set" value="0.5"/>
+        
+    <parameter name="[retransmitTimers(0)]" operation="set" value="500"/>     	
+    <parameter name="[retransmitTimers(1)]" operation="set" value="1000"/>     	
+    <parameter name="[retransmitTimers(2)]" operation="set" value="2000"/>     	
+    <parameter name="[retransmitTimers(3)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(4)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(5)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(6)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(7)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(8)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(9)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(10)]" operation="set" value="4000"/>
+    
+    <parameter name="fileWave" operation="file.readwave" value="102_sip_register_call_digest_rtp/rtpflow.wav" value2="20"/>
+    
+    <testcase name="#0 sip_register" description="sip registration phase" state="true">
+      	<parameter name="[domainName]" operation="set" value="ims.beltel.by"/>
+      	<parameter name="[userFrom]" operation="set" value="+375173914666"/>
+        <parameter name="[userTo]" operation="set" value="+375173914667"/>
+      	<parameter name="[passwordFrom]" operation="set" value="12344321"/>
+        <parameter name="[passwordTo]" operation="set" value="12344321"/>
+
+        <scenario name="5070">102_sip_register_digest/UAC.xml</scenario>
+        <scenario name="5080">102_sip_register_digest/UAS.xml</scenario>
+        <!--scenario name="7070">102_sip_register_digest/registrar.xml</scenario-->
+    </testcase>
+
+    <testcase name="#1 sip_call" description="sip basic call setup : originating and terminating" state="true">
+      	<parameter name="[domainName]" operation="set" value="ims.beltel.by"/>
+      	<parameter name="[userFrom]" operation="set" value="+375173914666"/>
+        <parameter name="[userTo]" operation="set" value="+375173914667"/>
+      	<parameter name="[passwordFrom]" operation="set" value="12344321"/>
+        <parameter name="[passwordTo]" operation="set" value="12344321"/>
+
+        <scenario name="5070">102_sip_register_call_digest/UAC.xml</scenario>
+        <scenario name="5080">102_sip_register_call_digest/UAS.xml</scenario>
+        <!--scenario name="7070">102_sip_register_call_digest/registrar.xml</scenario-->
+    </testcase>
+    
+    <testcase name="#2 sip_call_media" description="sip basic call setup and rtp media : originating and terminating" state="true">
+        <parameter name="[domainName]" operation="set" value="ims.beltel.by"/>
+      	<parameter name="[userFrom]" operation="set" value="+375173914666"/>
+        <parameter name="[userTo]" operation="set" value="+375173914667"/>
+      	<parameter name="[passwordFrom]" operation="set" value="12344321"/>
+        <parameter name="[passwordTo]" operation="set" value="12344321"/>
+        <scenario name="5070">102_sip_register_call_digest_rtp/UAC.xml</scenario>
+        <scenario name="5080">102_sip_register_call_digest_rtp/UAS.xml</scenario>
+        <!--scenario name="7070">102_sip_register_call_digest/registrar.xml</scenario-->
+    </testcase>
+
+    <testcase name="#3 diameter_cx_ua_client" description="diameter CX interface User Agent message : client side" state="true">
+        <parameter name="[domainName]" operation="set" value="ims.beltel.by"/>
+        <scenario name="5070">101_cx_uar/client.xml</scenario>
+    </testcase>
+
+    <testcase name="#4 diameter_cx_ua_server" description="diameter CX interface User Agent message : server side" state="true">
+        <parameter name="[domainName]" operation="set" value="ims.beltel.by"/>
+        <scenario name="DIAMETER">101_cx_uar/server.xml</scenario>
+    </testcase>
+    
+    <testcase name="#5 sip_call_public" description="sip basic call setup and rtp media : originating only" state="true">
+        <parameter name="[domainName]" operation="set" value="ims.beltel.by"/>
+      	<parameter name="[userFrom]" operation="set" value="+375173914667"/>
+        <!--parameter name="[userFrom]" operation="set" value="200"/-->
+      	<parameter name="[userTo]" operation="set" value="+375173914666"/>        
+        <!--parameter name="[userTo]" operation="set" value="2101003"/-->
+      	<!--parameter name="[userTo]" operation="set" value="201"/-->
+      	<parameter name="[passwordFrom]" operation="set" value="12344321"/>
+        <!--parameter name="[PasswordFrom]" operation="set" value="200"/-->
+        <parameter name="[passwordTo]" operation="set" value="12344321"/>
+        <!--parameter name="[PasswordTo]" operation="set" value="201"/-->
+       <scenario name="5070">102_sip_register_call_public_rtp/UAC.xml</scenario>
+        <!--scenario name="5080">102_sip_register_call_public_rtp/UAS.xml</scenario-->
+        <!--scenario name="7070">102_sip_register_call_diges/registrar.xml</scenario-->
+    </testcase>
+
+    <testcase name="#6 http_get" description="http get a web page on a HTTT server" state="true">
+       <!--parameter name="[proxyURL]" operation="set" value="http://192.168.90.20:3128"/-->
+       <parameter name="[proxyURL]" operation="set" value="http://213.186.33.5:80"/>
+       <parameter name="[httpServerURL]" operation="set" value="www.voxpilot.com"/>
+       <scenario name="client">203_http_get_client_server/client.xml</scenario>
+       <!--scenario name="HTTP">203_http_get_client_server/server.xml</scenario-->
+    </testcase>
+    
+</test>

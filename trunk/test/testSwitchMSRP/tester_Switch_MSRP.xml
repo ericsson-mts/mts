@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test name="Switch_MSRP" description="Switch_MSRP"> 
+		
+	<!-- Recuperation de la table d'adresses ethx du PC -->
+	<parameter name="[ipAddressEthX]" operation="system.IPAddress"/>
+	<!-- Adresse eth0 source, flux  HTTP et MSRP -->         
+	<parameter name="[ipAddressSrc]" operation="set" value="[ipAddressEthX(0)]"/>  
+
+	<!-- Definition du port cmd HTTP cote IMSLoader -->         
+	<parameter name="[HTTP_Cmd_LocalPort]" operation="set" value="15000"/>  
+	
+	<!-- Definition du port MSRP cote IMSLoader -->         
+	<parameter name="[MSRP_LocalPort]" operation="set" value="16000"/>  
+       
+	<!-- @IP and ports of the MSRP Switch | to handle commands -->
+	<parameter name="[IP_SwitchMSRP_HTTP_Cmd]" operation="set" value="10.194.124.154"/>
+	<parameter name="[Port_SwitchMSRP_HTTP_Cmd]" operation="set" value="80"/>
+	<parameter name="[Remote-Address]" operation="set" value="[IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]"/>
+	<!-- @IP and ports to handle notifications -->
+	<parameter name="[IP_SwitchMSRP_HTTP_Notif]" operation="set" value="[ipAddressEthX(0)]"/>
+	<parameter name="[Port_SwitchMSRP_HTTP_Notif]" operation="set" value="8080"/>
+
+	<parameter name="[IP_SwitchMSRP_MSRP]" operation="set" value="10.194.124.154"/>
+	<parameter name="[Port_SwitchMSRP_MSRP]" operation="set" value="5060"/>
+
+	<!-- Niveau de definition des logs 2=USER --> 
+	<parameter name="[LogLevel]" operation="set" value="2"/>
+
+	<!-- Defining connections names -->
+	<parameter name="[HTTP_Connection]" operation="set" value="HTTPCnxName"/>  
+	<parameter name="[MSRP_Connection_1]" operation="set" value="MSRPCnxName1"/>
+	<parameter name="[MSRP_Connection_2]" operation="set" value="MSRPCnxName2"/>    
+
+	<!-- Definition des testcases -->
+	<testcase name="Functional_mode_normal" description="Tests fonctionnels sur Switch MSRP | Mode normal " state="false">
+
+		<scenario name="Loader">./scenarios/loader.xml</scenario>
+        <scenario name="HTTP|false">./scenarios/httpResponse.xml</scenario>
+		<scenario name="MSRP">./scenarios/msrp.xml</scenario>  
+		<scenario name="HTTP|true">./scenarios/httpRequest.xml</scenario>
+		
+    </testcase>
+
+<!--
+    <testcase name="Functional_Switch_MSRP" description="Tests fonctionnels sur Switch MSRP " state="false">
+		
+        <scenario name="Loader">./scenarios/loader.xml</scenario>
+        <scenario name="HTTP|true">./scenarios/httpRequest.xml</scenario>
+         
+    </testcase> -->
+
+
+	<testcase name="Functional_mode_SF_actif" description="Tests fonctionnels sur Switch MSRP " state="false">
+		<scenario name="Loader">./scenarios/loader.xml</scenario>
+        <scenario name="HTTP|false">./scenarios/httpResponseInject.xml</scenario>
+		<scenario name="MSRP">./scenarios/msrpInject.xml</scenario> 
+		<scenario name="HTTP|true">./scenarios/httpRequest.xml</scenario> 
+        
+    </testcase>
+	
+</test>

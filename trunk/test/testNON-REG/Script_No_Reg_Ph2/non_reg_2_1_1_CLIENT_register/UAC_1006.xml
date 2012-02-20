@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!DOCTYPE library [
+<!ENTITY libC_Register	SYSTEM "../library/libC_Register.xml">
+]>
+
+
+<scenario>
+
+
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_Port]" operation="set" value="[Provider_1006]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localPort="[provider_Port]"/>
+
+
+<parameter name="[inviter]" operation="set" value="[int_subscriber_1006]"/>
+
+<parameter name="[sbcHost]" operation="set" value="[SBC_IP_1006]"/>
+<parameter name="[sbcPort]" operation="set" value="[SBC_Port_1006]"/>
+<parameter name="[portSip]" operation="set" value="[Provider_1006]"/>
+
+<parameter name="[Password]" operation="set" value="[Passwd_1006]"/>
+<parameter name="[UserName]" operation="set" value="[Username_1006]"/>
+
+<parameter name="[Registration_Duration]" operation="set" value="3600"/>
+
+
+&libC_Register;
+
+
+<finally><closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/></finally>
+
+</scenario>

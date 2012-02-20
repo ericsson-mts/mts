@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE Library [
+ <!ENTITY initvarStatsParam SYSTEM "./initvarStatsParam.xml">
+]>
+<scenario>
+	&initvarStatsParam;
+	
+	<!-- start main loop -->
+	<!-- ========================= -->
+	<label name="begin"/>
+	<!-- ========================= -->
+	
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/> 
+	<!--parameter name="[URI]" operation="set" value="sip:[userName]@[domainName]" /-->
+	<parameter name="[URI]" operation="set" value="sip:[domainName]" />
+	
+		<parameter name="[received]" operation="set" value="false"/>		
+	<receiveMessageSIP name="receive REGISTER response" type="REGISTER" failedOnTimeout="false">
+		<parameter name="[received]" operation="set" value="true"/>		
+		<parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.StatusCode"/>
+		<parameter name="[lastListenpoint]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+		<parameter name="[lastLocalHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>
+		<parameter name="[lastLocalPort]" operation="protocol.setFromMessage" value="listenpoint.localPort"/>
+		<parameter name="[lastMethod]" operation="protocol.setFromMessage" value="message.type"/>
+		<parameter name="[lastIsRequest]" operation="protocol.setFromMessage" value="message.request"/>
+		<parameter name="[lastResult]" operation="protocol.setFromMessage" value="message.result"/>
+		<parameter name="[lastFirstline]" operation="protocol.setFromMessage" value="firstline"/>
+		<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>
+		<parameter name="[lastToUser]" operation="protocol.setFromMessage" value="header.To.Address.URI.User"/>
+		<parameter name="[lastToTag]" operation="protocol.setFromMessage" value="header.To.parameter.tag"/>
+	  	<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
+		<parameter name="[lastFromUser]" operation="protocol.setFromMessage" value="header.From.Address.URI.User"/>
+	  	<parameter name="[lastFromTag]" operation="protocol.setFromMessage" value="header.From.parameter.tag"/>
+	  	<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+	  	<parameter name="[lastCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    	<parameter name="[lastCSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+	  	<parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+	  	<parameter name="[lastViaBranch]" operation="protocol.setFromMessage" value="header.Via.Parameter.branch"/>
+	  	<parameter name="[lastRoute]" operation="protocol.setFromMessage" value="header.Route"/>
+		<parameter name="[lastRouteUser]" operation="protocol.setFromMessage" value="header.Route.Address.URI.User"/>
+	  	<parameter name="[lastRecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route"/>
+	  	<parameter name="[lastContact]" operation="protocol.setFromMessage" value="header.Contact"/>
+		<parameter name="[WWWAuthRealm]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.realm"/>									
+		<parameter name="[WWWAuthNonce]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.nonce"/>					
+		<parameter name="[WWWAuthQop]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.qop"/>
+		<parameter name="[ProxyAuthRealm]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.realm"/>
+		<parameter name="[ProxyAuthNonce]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.nonce"/>
+		<parameter name="[ProxyAuthQop]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.qop"/>
+			  	<parameter name="[lastMessage]" operation="protocol.setFromMessage" value="message"/>
+	</receiveMessageSIP>
+
+	<if>
+		<condition>
+			<or>
+				<test parameter="[StatusCode]" condition="string.equals" value="401" />
+				<test parameter="[StatusCode]" condition="string.equals" value="407" />
+			</or>
+		</condition>
+		<then>
+		
+			<!--parameter name="[Password]" operation="set" value="nsnims2008"/-->		
+			<parameter name="[Method]" operation="set" value="REGISTER"/>				
+			<parameter name="[HA2]" operation="digest" value2="MD5" value="[Method]:[URI]" />
+			<parameter name="[NonceCount]" operation="set" value="00000001" />
+			<parameter name="[CNonce]"     operation="set" value="7dbc2"/>
+			<parameter name="[newBranchId]" operation="string.random" value="10"/>
+			<parameter name="[newCseq]" operation="add" value="[lastCSeqNumber]" value2="1"/>
+
+			<if>
+				<condition>
+					<and>
+						<test parameter="[WWWAuthRealm]" condition="list.isempty" value="true"/>
+						<test parameter="[WWWAuthNonce]" condition="list.isempty" value="true"/>
+						<test parameter="[WWWAuthQop]" condition="list.isempty" value="true"/>
+					</and>	
+				</condition>
+				<then>
+					<!-- Proxy -->
+					<parameter name="[HA1]" operation="digest" value2="MD5" value="[lastFromUser]@[domainName]:[ProxyAuthRealm]:[Password]"/>
+					<parameter name="[AuthResponse]" operation="digest" value2="MD5" value="[HA1]:[ProxyAuthNonce]:[NonceCount]:[CNonce]:[ProxyAuthQop]:[HA2]" />
+				</then>
+				<else>
+					<!-- Terminal -->
+					<parameter name="[HA1]" operation="digest" value2="MD5" value="[lastFromUser]@[domainName]:[WWWAuthRealm]:[Password]"/>
+					<parameter name="[AuthResponse]" operation="digest" value2="MD5" value="[HA1]:[WWWAuthNonce]:[NonceCount]:[CNonce]:[WWWAuthQop]:[HA2]" />
+				</else>
+			</if>
+
+			<if>
+				<condition>
+					<test parameter="[StatusCode]" condition="string.equals" value="401" />
+				</condition>
+				<then>
+					<sendMessageSIP name="Send REGISTER" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[REGISTER [URI] SIP/2.0
+To: "[lastFromUser]" <sip:[lastFromUser]@[domainName]>
+From: "[lastFromUser]" <sip:[lastFromUser]@[domainName]>;tag=[localTag]
+Call-ID:[lastCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [lastLocalHost]:[lastLocalPort];branch=z9hG4bK-[newBranchId]
+Max-Forwards: 70
+Contact: <sip:[lastFromUser]@[lastLocalHost]:[lastLocalPort]>
+Authorization: Digest username="[lastFromUser]@[domainName]", realm="[WWWAuthRealm]", nonce="[WWWAuthNonce]",uri="[URI]", response="[AuthResponse]", algorithm=MD5, cnonce="[CNonce]", opaque="opaqueData", qop="[WWWAuthQop]", nc=[NonceCount]
+Expires: 0
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+					</sendMessageSIP>
+					<!--stats> <counter name="401 UNREG in"><increase>1</increase></counter> </stats-->
+					<goto  name="goto_begin" label="begin" state="true"/>
+				</then>
+				<else>
+					<sendMessageSIP name="Send REGISTER" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[REGISTER [URI] SIP/2.0
+To: "[lastFromUser]" <sip:[lastFromUser]@[domainName]>
+From: "[lastFromUser]" <sip:[lastFromUser]@[domainName]>;tag=[localTag]
+Call-ID:[lastCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [lastLocalHost]:[lastLocalPort;branch=z9hG4bK-[newBranchId]
+Max-Forwards: 70
+Contact: <sip:[lastFromUser]@[lastLocalHost]:[lastLocalPort]>
+Proxy-Authorization: Digest username="[lastFromUser]@[domainName]", realm="[ProxyAuthRealm]", nonce="[ProxyAuthNonce]",uri="[URI]",response="[AuthResponse]", algorithm=MD5, cnonce="[CNonce]", opaque="opaqueData", qop="[ProxyAuthQop]", nc=[NonceCount]
+Expires: 0
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+
+					</sendMessageSIP>
+					<!--stats>	<counter name="407 UNREG in"><increase>1</increase></counter> </stats-->
+					<goto  name="goto_begin" label="begin" state="true"/>
+				</else>
+			</if>
+		
+			</then>
+	</if>	
+				
+		<if>	<condition> <test parameter="[StatusCode]" condition="number.equals" value="200"/>	</condition>
+		<then>
+				<stats>	<counter name="200 UNREG in"><increase>1</increase></counter> </stats>
+				<goto  name="goto_begin" label="begin" state="true"/>
+		</then>	
+		</if>
+			
+			<if>	<condition><test parameter="[received]" condition="string.equals" value="false"/>	</condition>
+			<then> <exit name="exit" failed="false"/> </then>	
+			</if>	
+
+	<if> <condition> 	<test parameter="[StatusCode]" condition="number.greaterEqualThan" value="300"/> </condition>
+	<then>	<log type="Main" level="ERROR">
+		<![CDATA[	    	
+	    	StatusCode = #[StatusCode] for the DE-REGISTRATION from "[lastFromUser]"  
+message : [lastMessage]
+		]]>		
+			</log>
+	</then>
+	</if>
+
+	<goto  name="goto_begin" label="begin" state="true"/>
+	
+</scenario>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE Library [
+  <!ENTITY Refresh_REGISTER SYSTEM "..\Library\Refresh_REGISTER.xml">
+]>
+<!-- name="Refresh REGISTER" -->
+<scenario>
+
+  <parameter name="[ExpiresReg]" operation="set" value="30"/>
+
+  <parameter name="[UserName]"    operation="set" value="[UserPrivIdInvitee]@[domainName]"/>           
+  <parameter name="[Password]"    operation="set" value="[Password]"/>                       
+  <parameter name="[Request-URI]" operation="set" value="sip:[domainName]" />
+
+  <parameter name="[FromTag]"     operation="identifier" value="newString"   value2="10"/>
+  <parameter name="[newCallId]"   operation="identifier" value="newInteger"  value2="1000000"/>
+  <parameter name="[newCSeq]"     operation="identifier" value="newInteger"  value2="1000000"/>
+  <parameter name="[newBranchId]" operation="identifier" value="newString"   value2="10"/>
+  <parameter name="[MaxForwards]" operation="set"        value="70"/>
+
+  <pause name="pause" seconds="0.5" state="true"/>
+
+  <parameter name="[UserInfo]" operation="set" value="[invitee]"/>           
+  &Refresh_REGISTER;
+
+</scenario>

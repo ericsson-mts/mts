@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE Library [
+  <!ENTITY UnREGISTER_MD5  SYSTEM "..\Library\UnREGISTER_MD5.xml">
+]>
+
+<scenario name="REGISTER-INVITE-RTP-BYE-UNREGISTER">
+<!-- Send REGISTER until 200 OK is received. Perform MD5 algorithm on a 401 response. -->
+<!-- Notify UAC. -->
+
+<!-- Receive INVITE (recvonly). -->
+<!-- Send 100 Trying. -->
+<!-- Send 180 Ringing. -->
+<!-- Send 200 OK (sendonly). -->
+<!-- Receive ACK. -->
+<!-- Notify UAC. -->
+
+<!-- Open RTP connection. -->
+<!-- Receive 1 RTP packet. -->
+<!-- Close RTP connection. -->
+
+<!-- Receive BYE. -->
+<!-- Send 200 OK. -->
+
+<!-- Send UNREGISTER until 200 OK is received. Perform MD5 algorithm on a 401 response. -->
+
+  <!--parameter name="[UserName]" operation="set" value="33875621612@sip.mobistar.com"/-->
+  <parameter name="[UserName]" operation="set" value="privid33900000005@sip.mobistar.com"/>               
+  <parameter name="[Password]" operation="set" value="imt30imt30"/>                       
+  <parameter name="[URI]"      operation="set" value="sip:sip.mobistar.com:5060" />
+
+  <parameter name="[FromTag]"       operation="identifier" value="newString"    value2="10"/>
+  <parameter name="[newCallId]"      operation="identifier" value="nextInteger"  value2="1000000"/>
+  <parameter name="[newCSeq]"        operation="identifier" value="nextInteger"  value2="1000000"/>
+  <parameter name="[MaxForwards]"    operation="set"        value="70"/>
+  <parameter name="[newBranchId]"    operation="identifier" value="newString"    value2="10"/>
+  <parameter name="[portSdpInvitee]" operation="set" value="11000" description="Port pour le bloc sdp de l'invitee du XMLloader"/>                        
+
+  <pause name="pause"     seconds="0.1"  state="true"/>
+
+  <sendRequestSIP name="Send REGISTER">
+<![CDATA[
+REGISTER sip:[domainName]:5060 SIP/2.0
+To: "[invitee]" <sip:[invitee]@[domainName]>
+From: "[invitee]" <sip:[invitee]@[domainName]>;tag=[FromTag]
+Call-ID:[newCallId]
+Expires:3600
+CSeq: [newCSeq] REGISTER
+Via: SIP/2.0/UDP [ipAddressSip]:[portSip];branch=[newBranchId]
+Max-Forwards: [MaxForwards]
+Contact: <sip:[invitee]@[ipAddressSip]:[portSip]>
+Content-Length: 0
+]]>
+  </sendRequestSIP>
+
+  <label name="REGISTER"/>
+  <receiveResponseSIP name="receive REGISTER response" method="REGISTER">
+    <parameter name="[StatusCode]" operation="setFromMessage" value="firstline:StatusCode"/>        
+
+    <parameter name="[WWWAuthRealm]" operation="setFromMessage" value="header:WWW-Authenticate:Parameter:realm"/>                                                                   
+    <parameter name="[WWWAuthNonce]" operation="setFromMessage" value="header:WWW-Authenticate:Parameter:nonce"/>                                   
+    <parameter name="[WWWAuthQop]" operation="setFromMessage" value="header:WWW-Authenticate:Parameter:qop"/>
+  </receiveResponseSIP>
+
+  <if>
+    <condition>
+      <test parameter="[StatusCode]" condition="equals" value="401" />
+    </condition>
+    <then>  
+      <parameter name="[WWWAuthRealm401]" operation="set" value="[WWWAuthRealm]" />
+      <parameter name="[WWWAuthNonce401]" operation="set" value="[WWWAuthNonce]" />
+      <parameter name="[WWWAuthQop401]"   operation="set" value="[WWWAuthQop]" />
+
+      <parameter name="[HA1]" operation="set"    value="[UserName]" />
+      <parameter name="[HA1]" operation="concat" value="[HA1]"      value2=":" />
+      <parameter name="[HA1]" operation="concat" value="[HA1]"      value2="[WWWAuthRealm401]" />
+      <parameter name="[HA1]" operation="concat" value="[HA1]"      value2=":" />
+      <parameter name="[HA1]" operation="concat" value="[HA1]"      value2="[Password]" />
+      <parameter name="[HA1]" operation="digest" value="[HA1]"      value2="MD5" />
+
+      <parameter name="[Method]" operation="set" value="REGISTER"/>                           
+
+      <parameter name="[HA2]" operation="set"    value="[Method]" />
+      <parameter name="[HA2]" operation="concat" value="[HA2]"      value2=":" />
+      <parameter name="[HA2]" operation="concat" value="[HA2]"      value2="[URI]" />
+      <parameter name="[HA2]" operation="digest" value="[HA2]"      value2="MD5" />
+                
+      <parameter name="[NonceCount]" operation="set" value="00000001" />
+      <parameter name="[CNonce]"     operation="set" value="11fc4a68" />
+
+      <parameter name="[AuthResponse]" operation="set"    value="[HA1]" />
+      <parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+      <parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[WWWAuthNonce401]" />
+      <parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+      <parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[NonceCount]" />
+      <parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+      <parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[CNonce]" />
+      <parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+      <parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[WWWAuthQop401]" />
+      <parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+      <parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[HA2]" />
+      <parameter name="[AuthResponse]" operation="digest" value="[AuthResponse]" value2="MD5" />
+
+      <parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+      <parameter name="[newCSeq]" operation="add" value="[newCSeq]" value2="1"/>      
+      <parameter name="[FromTag]" operation="identifier" value="newString" value2="10"/>
+
+      <sendRequestSIP name="Send REGISTER">
+<![CDATA[               
+REGISTER sip:[domainName]:5060 SIP/2.0
+To: "[invitee]" <sip:[invitee]@[domainName]>
+From: "[invitee]" <sip:[invitee]@[domainName]>;tag=[FromTag]
+Call-ID:[newCallId]
+Expires:3600
+CSeq: [newCSeq] REGISTER
+Via: SIP/2.0/UDP [ipAddressSip]:[portSip];branch=[newBranchId]
+Max-Forwards: [MaxForwards]
+Contact: <sip:[invitee]@[ipAddressSip]:[portSip]>
+Authorization: Digest username="[UserName]", realm="[WWWAuthRealm401]", nonce="[WWWAuthNonce401]", algorithm=MD5, opaque="", uri="[URI]", response="[AuthResponse]", cnonce="[CNonce]", qop=[WWWAuthQop401], nc=[NonceCount]
+Content-Length: 0
+]]>
+      </sendRequestSIP>       
+      <goto label="REGISTER" name="loop : wait 200 OK"  state="true"/>
+    </then>
+    <else>
+      <if>
+        <condition>
+          <test parameter="[StatusCode]" condition="equals" value="200" />
+        </condition>
+        <then>
+          <!-- Continue -->
+        </then>
+        <else>
+          <goto label="REGISTER" name="loop : wait 200 OK"  state="true"/>
+        </else>
+      </if> 
+    </else>
+  </if>
+
+  <semaphore name="WaitREGISTERInvitee" action="notify"/>
+  <semaphore name="WaitREGISTERInviter" action="wait"/>
+
+  <receiveRequestSIP name="Wait INVITE" method="INVITE">
+                <parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>       
+                <parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>   
+                <parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-Id"/>
+                <parameter name="[lastCseq]" operation="setFromMessage" value="header:CSeq"/>
+                <parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/>
+                <parameter name="[MaxForwards]" operation="setFromMessage" value="header:Max-Forwards"/>
+                <parameter name="[FromTag]" operation="identifier" value="newString" value2="10"/>
+                <parameter name="[SDPConnectionAddress0]" operation="setFromMessage" value="content(0):Sdp:Connection:Address"/>                
+                <parameter name="[SDPMediaPort0]" operation="setFromMessage" value="content(0):Sdp:Media:Port"/>                                
+  </receiveRequestSIP>
+
+  <sendResponseSIP name="Send 100 Trying">
+<![CDATA[
+SIP/2.0 100 Trying
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[invitee]@[ipAddressSip]:[portSip]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Length: 0
+]]>
+  </sendResponseSIP>
+
+  <pause name="pause"     seconds="0.1"  state="true"/>
+
+  <sendResponseSIP name="Send 180 Ringing">
+<![CDATA[
+SIP/2.0 180 Ringing
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[invitee]@[ipAddressSip]:[portSip]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Length: 0
+]]>
+  </sendResponseSIP>
+
+  <pause name="pause"     seconds="3"  state="true"/>
+
+  <sendResponseSIP name="Send 200 OK">
+<![CDATA[
+SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[invitee]@[ipAddressSip]:[portSip]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[invitee] 999 999 IN IP4 [ipAddressSrc]
+s=-
+c=IN IP4 [ipAddressSdp]
+t=0 0
+m=audio [portSdpInvitee] RTP/AVP 18 8
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=sendonly
+]]>
+  </sendResponseSIP>
+
+  <receiveRequestSIP name="Wait ACK" method="ACK">
+  </receiveRequestSIP>
+
+  <semaphore name="WaitACKInvitee" action="notify"/>
+  <semaphore name="WaitACKInviter" action="wait"/>
+
+  <openConnectionRTP name="OpenConnection" state="true"
+                     sessionName="invitee" 
+                     localHost="[ipAddressSrc]" localPort="[portSdpInvitee]" 
+                     remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]"/>
+
+  <semaphore name="WaitOpenRTPInvitee" action="notify"/>
+  <semaphore name="WaitOpenRTPInviter" action="wait"/>
+
+  <receivePacketRTP name="receivePacketRTP1" payloadType="17" timeout="3" successOnTimeout="true">
+  </receivePacketRTP>             
+<!--
+  <receivePacketRTP name="receivePacketRTP2" payloadType="17"/>
+  <receivePacketRTP name="receivePacketRTP3" payloadType="17"/>   
+
+  <sendPacketRTP name="sendPacketRTP" state="true"
+                 sessionName="invitee" destScenario="+33900000004">
+    <packet>        
+      <header ssrc="0" payloadType="27" seqnum="1000" timestamp="1000"/>
+      <payload format="text">Packet #1</payload>              
+    </packet>                   
+  </sendPacketRTP>                
+-->
+  <closeConnectionRTP name="CloseConnection" state="true" sessionName="invitee" />        
+
+  <semaphore name="WaitCloseRTPInvitee" action="notify"/>
+  <semaphore name="WaitCloseRTPInviter" action="wait"/>
+
+  <receiveRequestSIP name="Wait BYE" method="BYE">
+    <parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>       
+    <parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>   
+    <parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-Id"/>      
+    <parameter name="[lastCSeq]" operation="setFromMessage" value="header:CSeq"/>           
+    <parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/> 
+    <parameter name="[MaxForwards]" operation="setFromMessage" value="header:Max-Forwards"/>                
+  </receiveRequestSIP>
+
+  <sendResponseSIP name="Send 200 OK">
+<![CDATA[
+SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Contact: <sip:[invitee]@[ipAddressSip]:[portSip]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Max-Forwards: 70
+Content-Length: 0
+]]>
+  </sendResponseSIP>
+
+  <!-- UnREGISTER -->
+  <parameter name="[Request-URI]"  operation="set" value="sip:[domainName]"/>
+  <!-- XML : '<' <=> &lt; '>' <=> &gt; not allowed in "value" attribute -->
+  <parameter name="[To]"           operation="set" value='"[invitee]" &lt;sip:[invitee]@[domainName]&gt;'/>
+  <parameter name="[From]"         operation="set" value='"[invitee]" &lt;sip:[invitee]@[domainName]&gt;'/>
+  <parameter name="[FromTag]"      operation="identifier" value="newString"    value2="10"/>
+  <parameter name="[Call-ID]"      operation="identifier" value="nextInteger"  value2="1000000"/>
+  <parameter name="[CSeq]"         operation="identifier" value="nextInteger"  value2="1000000"/>
+  <parameter name="[Max-Forwards]" operation="set" value="[MaxForwards]"/>
+  <parameter name="[Via]"          operation="set" value="SIP/2.0/UDP [ipAddressSip]:[portSip]"/>
+  <parameter name="[branchId]"     operation="identifier" value="newString"    value2="10"/>
+
+  <parameter name="[AuthUserName]"  operation="set" value='"[UserName]"'/>
+  <parameter name="[AuthRealm]"     operation="set" value='"[WWWAuthRealm401]"'/>
+  <parameter name="[AuthNonce]"     operation="set" value='"[WWWAuthNonce401]"'/>
+  <parameter name="[AuthAlgorithm]" operation="set" value="MD5"/>
+  <parameter name="[AuthOpaque]"    operation="set" value='""'/>
+  <parameter name="[AuthURI]"       operation="set" value='"[URI]"'/>
+  <parameter name="[AuthResponse]"  operation="set" value='"[AuthResponse]"'/>
+  <parameter name="[AuthCnonce]"    operation="set" value='"[CNonce]"'/>
+  <parameter name="[AuthQop]"       operation="set" value="[WWWAuthQop401]"/>
+  <parameter name="[AuthNc]"        operation="set" value="[NonceCount]"/>
+  &UnREGISTER_MD5;
+
+</scenario>

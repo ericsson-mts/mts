@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE library [
+<!ENTITY lib_Subscribers	SYSTEM "../library/lib_Subscribers.xml">
+<!ENTITY lib_http_MRFA_1	SYSTEM "../library/lib_http_MRFA_1.xml">
+<!ENTITY lib_http_MRFA_2	SYSTEM "../library/lib_http_MRFA_2.xml">
+<!ENTITY lib_http_MRFB_1	SYSTEM "../library/lib_http_MRFB_1.xml">
+<!ENTITY lib_http_MRFB_2	SYSTEM "../library/lib_http_MRFB_2.xml">
+]>
+
+<scenario>
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_IP]" operation="set" value="[Host-Tester]"/>
+<parameter name="[provider_Port]" operation="set" value="[Port-Subs_A]"/>
+<openProviderSIP name="[provider_Name]" providerName="[provider_Name]" localHost="[Host-Tester]" localPort="[provider_Port]" transport="UDP"/>
+
+<parameter name="[WhichSide]" operation="set" value="SubsASide"/>	
+<parameter name="[RangePortRTP-UAS]" operation="set" value="[RangePortRTP-UAS_SUBSA]"/>
+
+
+&lib_Subscribers;    	                	        	        
+
+<closeProviderSIP name="[provider_Name]" providerName="[provider_Name]"/>
+
+</scenario>

@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-server browser -->
+
+<!-- 
+    list cookie: JSESSIONID
+                 BIGipServerpool
+                 BAYEUX
+    
+    list state: state
+                phoneNumber
+                
+    list id:    sasId
+                clientId
+-->
+<scenario>
+    
+    <while>
+    <condition/>
+    <do>
+        <receiveMessageHTTP name="Receive Response" request="false" timeout="[longPollingTimeout]">
+            <parameter name="[connection]" operation="protocol.setFromMessage" value="channel:name"/>
+            <parameter name="[cmd]" operation="protocol.setFromMessage" value="message:type"/>
+            <parameter name="[firstline]" operation="protocol.setFromMessage" value="firstline"/>
+            <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+            <parameter name="[cookie]" operation="protocol.setFromMessage" value="header:Cookie"/>
+            <parameter name="[set-cookie]" operation="protocol.setFromMessage" value="header:Set-Cookie"/>
+        </receiveMessageHTTP>
+
+        <parameter name="[treated]" operation="set" value="false"/>
+        
+        <!-- si reponse a la requete initial, envoi de get-->
+        <if>
+        <condition>
+            <and>
+                <test parameter="[content]" condition="string.contains" value="[initialFirstResponse]"/>
+                <not><test parameter="[content]" condition="string.contains" value="window.close()"/></not>
+            </and>
+        </condition>
+        <then>
+            <parameter name="[treated]" operation="set" value="true"/>
+            <if>
+            <condition>
+                <or>
+                    <test parameter="[content]" condition="string.contains" value="Une erreur s'est produite"/>
+                    <and>
+                        <test parameter="[content]" condition="string.contains" value="Service momentan"/>
+                        <test parameter="[content]" condition="string.contains" value="ment indisponible."/>
+                    </and>
+                </or>
+            </condition>
+            <then>
+                <log level="warn">An error occured at call establishment, test stopped!</log>
+            </then>
+            <else>
+              <!-- enregistrement du numero de session(cookie), creation d'un parametre portant le nom du cookie -->
+              <parameter name="[cookie0]" operation="string.regexMatches" value="[set-cookie(0)]" value2="JSESSIONID=.*;"/>
+              <parameter name="[cookie0]" operation="string.regexReplaces" value="[cookie0]" value2=";" value3=""/>
+              
+              <!-- recuperation du sasId -->
+              <parameter name="[sasId]" operation="string.regexMatches" value="[content]" value2="id=&quot;sasId&quot;.*value=&quot;.*&quot;"/>
+              <parameter name="[sasId]" operation="string.regexReplaces" value="[sasId]" value2="id=&quot;sasId&quot;.*value=&quot;" value3=""/>
+              <parameter name="[sasId]" operation="string.regexReplaces" value="[sasId]" value2="&quot;" value3=""/>
+              
+              <parameter name="[clientPhoneNumber]" operation="list.getLast" value="[[connection]-state]"/>
+              <parameter name="[[connection]-state]" operation="list.removeLast" value="[[connection]-state]"/>
+              
+              <parameter name="[clientPhoneNumber]" operation="string.regexReplaces" value="[clientPhoneNumber]" value2="\[connection" value3=""/>
+              <parameter name="[clientPhoneNumber]" operation="string.regexReplaces" value="[clientPhoneNumber]" value2="-.*state\]" value3=""/>
+              
+              <parameter name="[value]" operation="set" value="0"/>
+              <parameter name="[[connection]-state]" operation="list.addFirst" value="[[connection]-state]" value2="get[value]"/>
+              <parameter name="[[connection]-state]" operation="list.addLast" value="[[connection]-state]" value2="[clientPhoneNumber]"/>
+              
+              <parameter name="[[connection]-cookie]" operation="list.create"/>
+              <parameter name="[[connection]-cookie]" operation="list.addFirst" value="[[connection]-cookie]" value2="[cookie0]"/>
+              
+              <parameter name="[[connection]-id]" operation="list.create"/>
+              <parameter name="[[connection]-id]" operation="list.addFirst" value="[[connection]-id]" value2="[sasId]"/>
+              
+              <parameter name="[if-none-match]" operation="number.random" value="5"/>
+              
+              <!-- envoi du premier get -->
+              <sendMessageHTTP channel="[connection]">
+<![CDATA[
+GET [firstGetURL([value])] HTTP/1.1
+Host: [WebASIp]:[WebASPort]
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)
+Accept: text/css,*/*;q=0.1
+Accept-Language: fr,fr-fr;q=0.8,en-us;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Keep-Alive: 300
+Connection: keep-alive
+Referer: http://[WebASIp]:[WebASPort]/WebASC2C/call.create.do?webASC2CClientTypeId=undef&webASC2CCountryId=FRE&toURI=[clientPhoneNumber]&callerIdentificationRestriction=NumberDisplayed
+]]>
+               </sendMessageHTTP>
+            </else></if>
+        </then>
+        <else><if>
+            <condition>
+                <test parameter="[[connection]-state]" condition="exists"/>
+            </condition>
+            <then>
+                <parameter name="[value]" operation="list.getFirst" value="[[connection]-state]"/>
+                <if>
+                <condition><!-- si reponse a un get-->
+                    <and>
+                        <test parameter="[cmd]" condition="string.equals" value="GET"/>
+                        <not><test parameter="[content]" condition="string.contains" value="[initialFirstResponse]"/></not>
+                        <test parameter="[treated]" condition="boolean.equals" value="false"/>
+                    </and>
+                </condition>
+                <then>
+                    <parameter name="[treated]" operation="set" value="true"/>
+                    <if>
+                    <condition><!-- tous les get n'ont pas encore ete envoye -->
+                        <not><test parameter="[value]" condition="string.equals" value="get[firstGetURLMax]"/></not>    
+                        <not><test parameter="[value]" condition="string.contains" value="post"/></not>    
+                    </condition>
+                    <then>
+                        <parameter name="[value]" operation="string.regexMatches" value="[value]" value2="\d*"/>
+                        <parameter name="[value]" operation="number.add" value="[value]" value2="1"/>
+                        
+                        <parameter name="[clientPhoneNumber]" operation="list.getLast" value="[[connection]-state]"/>
+                        <parameter name="[[connection]-state]" operation="list.removeFirst" value="[[connection]-state]"/>
+                        <parameter name="[[connection]-state]" operation="list.addFirst" value="[[connection]-state]" value2="get[value]"/>
+                        
+                        <!--<parameter name="[cookie]" operation="list.getLast" value="[[connection]-cookie]"/>-->
+                        <parameter name="[sasId]" operation="list.getFirst" value="[[connection]-id]"/>
+                        <parameter name="[if-none-match]" operation="number.random" value="5"/>
+                        
+                        <!-- envoi du get -->
+                        <sendMessageHTTP channel="[connection]">
+<![CDATA[
+GET [firstGetURL([value])] HTTP/1.1
+Host: [WebASIp]:[WebASPort]
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)
+Accept: */*
+Accept-Language: fr,fr-fr;q=0.8,en-us;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Keep-Alive: 300
+Connection: keep-alive
+Referer: http://[WebASIp]:[WebASPort]/WebASC2C/call.create.do?webASC2CClientTypeId=undef&webASC2CCountryId=FRE&toURI=[clientPhoneNumber]&callerIdentificationRestriction=NumberDisplayed
+]]>
+                        </sendMessageHTTP>
+                    </then>
+                    <else><if>
+                        <condition><!-- pas de post encore envoye, alors envoi du premier -->
+                            <test parameter="[value]" condition="string.equals" value="get[firstGetURLMax]"/>
+                        </condition>
+                        <then>
+                            <parameter name="[clientPhoneNumber]" operation="list.getLast" value="[[connection]-state]"/>
+                            <parameter name="[[connection]-state]" operation="list.removeFirst" value="[[connection]-state]"/>
+                            <parameter name="[[connection]-state]" operation="list.addFirst" value="[[connection]-state]" value2="post0"/>                   
+                            <parameter name="[cookie0]" operation="list.getFirst" value="[[connection]-cookie]"/>
+                            <parameter name="[sasId]" operation="list.getFirst" value="[[connection]-id]"/>
+                        
+                            <sendMessageHTTP channel="[connection]">
+<![CDATA[
+POST /WebASC2C/cometd/c2cNotifService/ HTTP/1.1
+Accept: */*
+Accept-Language: fr
+Referer: http://[WebASIp]:[WebASPort]/WebASC2C/call.create.do?webASC2CClientTypeId=undef&webASC2CCountryId=FRE&toURI=[clientPhoneNumber]&callerIdentificationRestriction=NumberDisplayed
+x-requested-with: XMLHttpRequest
+Content-Type: application/x-www-form-urlencoded
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)
+Host: [WebASIp]:[WebASPort]
+Content-Length: 264
+Connection: Keep-Alive
+Cache-Control: no-cache
+Cookie: [cookie0]
+
+message=%5B%7B%22version%22%3A%221.0%22%2C%22minimumVersion%22%3A%220.9%22%2C%22channel%22%3A%22%2Fmeta%2Fhandshake%22%2C%22id%22%3A%220%22%2C%22supportedConnectionTypes%22%3A%5B%22long-polling%22%2C%22long-polling-json-encoded%22%2C%22callback-polling%22%5D%7D%5D]]>
+                        </sendMessageHTTP>
+                        </then>
+                        <else><!-- si reception d'une reponse GET en meme temps que les POST-->
+                            <parameter name="[[connection]-id]" operation="list.remove"/>
+                            <parameter name="[[connection]-state]" operation="list.remove"/>
+                            <parameter name="[[connection]-cookie]" operation="list.remove"/>
+                            <closeChannelHTTP name="[connection]"/>
+                            <parameter name="[connection]" operation="list.remove"/>
+                        </else></if>
+                    </else></if>
+                </then>
+                <else><if>
+                <condition><!-- si reponse a un POST-->
+                    <and>
+                        <test parameter="[value]" condition="string.contains" value="post"/>
+                        <test parameter="[treated]" condition="boolean.equals" value="false"/>
+                    </and>    
+                </condition>
+                <then>
+                    <parameter name="[treated]" operation="set" value="true"/>
+                    <!-- envoi du post suivant -->
+                    <if>
+                    <condition>
+                        <test parameter="[value]" condition="string.equals" value="post0"/>
+                    </condition>
+                    <then>
+                        <!-- recuperation du cookie BAYEUX_BROWSER -->
+                        <parameter name="[bayeux]" operation="string.regexMatches" value="[set-cookie]" value2="BAYEUX_BROWSER=.*;"/>
+                        <parameter name="[bayeux]" operation="string.regexReplaces" value="[bayeux]" value2=";" value3=""/>
+                        
+                        <!-- recuperation du clientID pour le renvoyer -->
+                        <parameter name="[clientId]" operation="string.regexMatches" value="[content]" value2="&quot;clientId&quot;:&quot;.*&quot;,&quot;"/>
+                        <parameter name="[clientId]" operation="string.regexReplaces" value="[clientId]" value2="&quot;clientId&quot;:&quot;" value3=""/>
+                        <parameter name="[clientId]" operation="string.regexReplaces" value="[clientId]" value2="&quot;.*&quot;" value3=""/>
+                        
+                        <parameter name="[clientPhoneNumber]" operation="list.getLast" value="[[connection]-state]"/>
+                        <parameter name="[[connection]-state]" operation="list.removeFirst" value="[[connection]-state]"/>
+                        <parameter name="[[connection]-state]" operation="list.addFirst" value="[[connection]-state]" value2="post1"/>                   
+                        
+                        <parameter name="[cookie0]" operation="list.getFirst" value="[[connection]-cookie]"/>
+                        <parameter name="[[connection]-cookie]" operation="list.addLast" value="[[connection]-cookie]" value2="[bayeux]"/>
+                        
+                        <parameter name="[sasId]" operation="list.getFirst" value="[[connection]-id]"/>
+                        <parameter name="[[connection]-id]" operation="list.addLast" value="[[connection]-id]" value2="[clientId]"/>
+                            
+                        <sendMessageHTTP channel="[connection]">
+<![CDATA[
+POST /WebASC2C/cometd/c2cNotifService/ HTTP/1.1
+Accept: */*
+Accept-Language: fr
+Referer: http://[WebASIp]:[WebASPort]/WebASC2C/call.create.do?webASC2CClientTypeId=undef&webASC2CCountryId=FRE&toURI=[clientPhoneNumber]&callerIdentificationRestriction=NumberDisplayed
+x-requested-with: XMLHttpRequest
+Content-Type: text/json;charset=UTF-8
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)
+Host: [WebASIp]:[WebASPort]
+Content-Length: 102
+Connection: Keep-Alive
+Cache-Control: no-cache
+Cookie: [cookie0]; [bayeux]
+
+[{"channel":"/meta/connect","clientId":"[clientId]","connectionType":"long-polling","id":"1"}]
+]]>
+                        </sendMessageHTTP>
+                    </then>
+                    </if>
+                    
+                    <if>
+                    <condition>
+                        <test parameter="[value]" condition="string.equals" value="post1"/>
+                    </condition>
+                    <then>
+                        <parameter name="[cookie0]" operation="list.getFirst" value="[[connection]-cookie]"/>
+                        <parameter name="[bayeux]" operation="list.getLast" value="[[connection]-cookie]"/>
+                        <parameter name="[[connection]-cookie]" operation="list.removeLast" value="[[connection]-cookie]"/>
+                        <parameter name="[[connection]-cookie]" operation="list.addLast" value="[[connection]-cookie]" value2="[bayeux]"/>
+                        
+                        <parameter name="[clientId]" operation="list.getLast" value="[[connection]-id]"/>
+                        <parameter name="[sasId]" operation="list.getFirst" value="[[connection]-id]"/>
+                        <parameter name="[clientPhoneNumber]" operation="list.getLast" value="[[connection]-state]"/>
+                        <parameter name="[[connection]-state]" operation="list.removeFirst" value="[[connection]-state]"/>
+                        <parameter name="[[connection]-state]" operation="list.addFirst" value="[[connection]-state]" value2="post2"/>                   
+                       
+                        <sendMessageHTTP channel="[connection]">
+<![CDATA[
+POST /WebASC2C/cometd/c2cNotifService/ HTTP/1.1
+Accept: */*
+Accept-Language: fr
+Referer: http://[WebASIp]:[WebASPort]/WebASC2C/call.create.do?webASC2CClientTypeId=undef&webASC2CCountryId=FRE&toURI=[clientPhoneNumber]&callerIdentificationRestriction=NumberDisplayed
+x-requested-with: XMLHttpRequest
+Content-Type: text/json;charset=UTF-8
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)
+Host: [WebASIp]:[WebASPort]
+Content-Length: 182
+Connection: Keep-Alive
+Cache-Control: no-cache
+Cookie: [cookie0]; [bayeux]
+
+[{"channel":"/meta/subscribe","subscription":"/c2cNotif/[sasId]","clientId":"[clientId]","id":"2"}]
+]]>
+                        </sendMessageHTTP>
+                    </then>
+                    </if>
+                    
+                    <if>
+                    <condition>
+                        <and>
+                            <not><test parameter="[value]" condition="string.equals" value="post0"/></not>
+                            <not><test parameter="[value]" condition="string.equals" value="post1"/></not>
+                            <not><test parameter="[value]" condition="string.equals" value="postGet"/></not>
+                            <not><test parameter="[value]" condition="string.equals" value="postEnd"/></not>
+                        </and>
+                    </condition>
+                    <then>
+                        <if>
+                        <condition>
+                            <test parameter="[content]" condition="string.contains" value="Validation de l'appel"/>      
+                        </condition>
+                        <then>
+                            <parameter name="[getURL]" operation="list.addLast" value="[getURL]" value2="[state_1_C]"/>
+                            <parameter name="[getURL]" operation="list.addLast" value="[getURL]" value2="[state_2_B]"/>
+                            <parameter name="[getURL]" operation="list.addLast" value="[getURL]" value2="[phones_02]"/>
+                            <!-- <parameter name="[getURL]" operation="list.addLast" value="[getURL]" value2="[bgd_information]"/> -->
+                        </then>
+                        </if>
+                        
+                        <if>
+                        <condition>
+                            <and>
+                                <test parameter="[content]" condition="string.contains" value="Appel du num"/>
+                                <test parameter="[content]" condition="string.contains" value="ro en cours"/>
+                            </and>
+                        </condition>
+                        <then>
+                            <parameter name="[getURL]" operation="list.addLast" value="[getURL]" value2="[state_2_C]"/>
+                            <parameter name="[getURL]" operation="list.addLast" value="[getURL]" value2="[state_3_B]"/>
+                            <parameter name="[getURL]" operation="list.addLast" value="[getURL]" value2="[phones_03]"/>
+                        </then>
+                        </if>
+                        
+                        <if>
+                        <condition>
+                            <test parameter="[content]" condition="string.contains" value="Communication en cours"/>
+                        </condition>
+                        <then>
+                            <parameter name="[getURL]" operation="list.addLast" value="[getURL]" value2="[state_3_C]"/>
+                            <parameter name="[getURL]" operation="list.addLast" value="[getURL]" value2="[phones_04]"/>
+                            <!--<parameter name="[getURL]" operation="list.addLast" value="[getURL]" value2="[bgd_communication]"/>-->
+                            <parameter name="[getURL]" operation="list.addLast" value="[getURL]" value2="[bt_hangDown_R]"/>
+                        </then>
+                        </if>
+                        
+                        <if>
+                        <condition>
+                            <test parameter="[content]" condition="string.contains" value="Appel termin"/>
+                        </condition>
+                        <then>
+                            <parameter name="[getURL]" operation="list.addLast" value="[getURL]" value2="[phones_off]"/>
+                            <parameter name="[getURL]" operation="list.addLast" value="[getURL]" value2="[bt_close_R]"/>
+                            <parameter name="[getURL]" operation="list.addLast" value="[getURL]" value2="[bt_close_E]"/>
+                        </then>
+                        </if>
+                        
+                        <parameter name="[cookie0]" operation="list.getFirst" value="[[connection]-cookie]"/>
+                        <parameter name="[bayeux]" operation="list.getLast" value="[[connection]-cookie]"/>
+                        <parameter name="[[connection]-cookie]" operation="list.removeLast" value="[[connection]-cookie]"/>
+                        <parameter name="[[connection]-cookie]" operation="list.addLast" value="[[connection]-cookie]" value2="[bayeux]"/>
+                        <parameter name="[clientPhoneNumber]" operation="list.getLast" value="[[connection]-state]"/>
+                        <parameter name="[channelSend]" operation="set" value="[connection]"/>
+                        
+                        <while>
+                        <condition>
+                            <not>
+                                <test parameter="[getURL]" condition="list.isEmpty"/>
+                            </not> 
+                        </condition>
+                        <do>
+                            <parameter name="[index]" operation="string.regexReplaces" value="[channelSend]" value2=".*-" value3=""/>
+                            <parameter name="[index]" operation="number.add" value="[index]" value2="1"/>
+                            <parameter name="[channelSend]" operation="set" value="connection[clientPhoneNumber]-[index]"/>
+                            <parameter name="[[channelSend]-state]" operation="list.create"/>
+                            <parameter name="[[channelSend]-state]" operation="list.addFirst" value="[[channelSend]-state]" value2="postGet"/>
+                            <parameter name="[[channelSend]-state]" operation="list.addLast" value="[[channelSend]-state]" value2="[clientPhoneNumber]"/>
+                                
+                            <parameter name="[if-none-match]" operation="number.random" value="5"/>
+                            
+                            <!-- start get for some gif-->
+                            <openChannelHTTP name="[channelSend]" remoteURL="http://[WebASIp]:[WebASPort]"/>
+                            <sendMessageHTTP channel="[channelSend]">
+<![CDATA[
+GET [getURL(0)] HTTP/1.1
+Accept: */*
+Referer: http://[WebASIp]:[WebASPort]/WebASC2C/call.create.do?webASC2CClientTypeId=undef&webASC2CCountryId=FRE&toURI=[clientPhoneNumber]&callerIdentificationRestriction=NumberDisplayed
+Accept-Language: fr
+Accept-Encoding: gzip, deflate
+If-Modified-Since: Fri, 10 Apr 2009 07:34:10 GMT
+If-None-Match: W/"[if-none-match]-1239348850000"
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)
+Host: [WebASIp]:[WebASPort]
+Connection: Keep-Alive
+]]>
+                            </sendMessageHTTP>
+                            <parameter name="[getURL]" operation="list.removeFirst" value="[getURL]"/>
+
+                        </do>
+                        </while>    
+                        
+                        <parameter name="[sasId]" operation="list.getFirst" value="[[connection]-id]"/>
+                        <parameter name="[clientId]" operation="list.getLast" value="[[connection]-id]"/>
+                        <parameter name="[idPost]" operation="string.regexMatches" value="[value]" value2="\d*"/>
+                        <parameter name="[idPost]" operation="number.add" value="[idPost]" value2="1"/>
+                        
+                        <if>
+                        <condition><!-- continue d'envoyer des post si l'appel n'est pas termine -->
+                            <not>
+                                <test parameter="[content]" condition="string.contains" value="[endOfCall]"/>
+                            </not>
+                        </condition>
+                        <then>
+                            <parameter name="[[connection]-state]" operation="list.removeFirst" value="[[connection]-state]"/>
+                            <parameter name="[[connection]-state]" operation="list.addFirst" value="[[connection]-state]" value2="post[idPost]"/>
+                            
+                            <sendMessageHTTP channel="[connection]">
+<![CDATA[
+POST /WebASC2C/cometd/c2cNotifService/ HTTP/1.1
+Accept: */*
+Accept-Language: fr
+Referer: http://[WebASIp]:[WebASPort]/WebASC2C/call.create.do?webASC2CClientTypeId=undef&webASC2CCountryId=FRE&toURI=[clientPhoneNumber]&callerIdentificationRestriction=NumberDisplayed
+x-requested-with: XMLHttpRequest
+Content-Type: text/json;charset=UTF-8
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)
+Host: [WebASIp]:[WebASPort]
+Content-Length: 102
+Connection: Keep-Alive
+Cache-Control: no-cache
+Cookie: [cookie0]; [bayeux]
+
+[{"channel":"/meta/connect","connectionType":"long-polling","clientId":"[clientId]","id":"[idPost]"}]
+]]>
+                            </sendMessageHTTP>
+                        </then>
+                        <else>
+                            <!-- send last post of long polling-->
+                            <parameter name="[channelSend]" operation="set" value="connection[clientPhoneNumber]-post"/>
+                            <openChannelHTTP name="[channelSend]" remoteURL="http://[WebASIp]:[WebASPort]"/>
+                            <sendMessageHTTP channel="[channelSend]">
+<![CDATA[
+POST /WebASC2C/cometd/c2cNotifService/ HTTP/1.1
+Accept: */*
+Accept-Language: fr
+Referer: http://[WebASIp]:[WebASPort]/WebASC2C/call.create.do?webASC2CClientTypeId=undef&webASC2CCountryId=FRE&toURI=[clientPhoneNumber]&callerIdentificationRestriction=NumberDisplayed
+x-requested-with: XMLHttpRequest
+Content-Type: text/json;charset=UTF-8
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)
+Host: [WebASIp]:[WebASPort]
+Content-Length: 102
+Connection: Keep-Alive
+Cache-Control: no-cache
+Cookie: [cookie0]; [bayeux]
+
+[{"channel":"/meta/connect","connectionType":"long-polling","clientId":"[clientId]","id":"[idPost]"}]]]>
+                            </sendMessageHTTP>
+                                
+                            <parameter name="[idPost]" operation="number.add" value="[idPost]" value2="1"/>
+                            
+                            <!-- send last to unsuscribe in the WebAS -->
+                            <parameter name="[channelSend]" operation="set" value="connection[clientPhoneNumber]-postUnsubscribe"/>
+                            <openChannelHTTP name="[channelSend]" remoteURL="http://[WebASIp]:[WebASPort]"/>
+                            <sendMessageHTTP channel="[channelSend]">
+<![CDATA[
+POST /WebASC2C/cometd/c2cNotifService/ HTTP/1.1
+Accept: */*
+Accept-Language: fr
+Referer: http://[WebASIp]:[WebASPort]/WebASC2C/call.create.do?webASC2CClientTypeId=undef&webASC2CCountryId=FRE&toURI=[clientPhoneNumber]&callerIdentificationRestriction=NumberDisplayed
+x-requested-with: XMLHttpRequest
+Content-Type: text/json;charset=UTF-8
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)
+Host: [WebASIp]:[WebASPort]
+Content-Length: 102
+Connection: Keep-Alive
+Cache-Control: no-cache
+Cookie: [cookie0]; [bayeux]
+
+[{"channel":"/meta/unsuscribe","subscription":"/c2cNotif/[sasId]","clientId":"[clientId]","id":"[idPost]"}]
+]]>
+                            </sendMessageHTTP>
+                            
+                            <parameter name="[idPost]" operation="number.add" value="[idPost]" value2="1"/>
+                            
+                            <!-- send last to disconnect from the WebAS -->
+                            <parameter name="[channelSend]" operation="set" value="connection[clientPhoneNumber]-postDisconnect"/>
+                            <openChannelHTTP name="[channelSend]" remoteURL="http://[WebASIp]:[WebASPort]"/>
+                            <sendMessageHTTP channel="[channelSend]">
+<![CDATA[
+POST /WebASC2C/cometd/c2cNotifService/ HTTP/1.1
+Accept: */*
+Accept-Language: fr
+Referer: http://[WebASIp]:[WebASPort]/WebASC2C/call.create.do?webASC2CClientTypeId=undef&webASC2CCountryId=FRE&toURI=[clientPhoneNumber]&callerIdentificationRestriction=NumberDisplayed
+x-requested-with: XMLHttpRequest
+Content-Type: text/json;charset=UTF-8
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)
+Host: [WebASIp]:[WebASPort]
+Content-Length: 102
+Connection: Keep-Alive
+Cache-Control: no-cache
+Cookie: [cookie0]; [bayeux]
+
+[{"channel":"/meta/disconnect","clientId":"[clientId]","id":"[idPost]"}]
+]]>
+                            </sendMessageHTTP>
+                            
+                            <!-- send last post to unregister in the WebAS -->    
+                            <parameter name="[[connection]-state]" operation="list.removeFirst" value="[[connection]-state]"/>
+                            <parameter name="[[connection]-state]" operation="list.addFirst" value="[[connection]-state]" value2="postEnd"/>
+                                                                          
+                            <sendMessageHTTP channel="[connection]">
+<![CDATA[
+POST /WebASC2C/call.end.do?sasId=[sasId] HTTP/1.1
+Host: [WebASIp]:[WebASPort]
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.8
+Accept: text/html,application/xhtml+xml,application/xml
+Accept-Language: fr,fr-fr;q=0.8,en-us;q=0.5,en;q=0.3
+Accept-Encoding: gzip,deflate
+Accept-Charset: ISO-8859-1,utf-8
+Keep-Alive: 300
+Connection: keep-alive
+Referer: http://[WebASIp]:[WebASPort]/WebASC2C/call.create.do?webASC2CClientTypeId=undef&webASC2CCountryId=FRE&toURI=[clientPhoneNumber]&callerIdentificationRestriction=NumberDisplayed
+Cookie: [cookie0]; [bayeux]
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 0
+]]>
+                            </sendMessageHTTP>
+                        </else>
+                        </if>
+                    </then>
+                    </if>
+                    
+                    <if>
+                    <condition>
+                        <and>
+                            <test parameter="[value]" condition="string.equals" value="postEnd"/>
+                            <test parameter="[content]" condition="string.contains" value="window.close()"/>
+                        </and>
+                    </condition>
+                    <then>
+                        <if>
+                        <condition>
+                            <test parameter="[session]" condition="list.exists"/>
+                        </condition>
+                        <then>
+                            <parameter name="[session]" operation="number.add" value="[session]" value2="1"/>
+                        </then>
+                        <else>
+                            <parameter name="[session]" operation="set" value="1"/>
+                        </else>
+                        </if>
+                        <!-- dernier message recu -->
+                        <log level="warn">session [session] is finished</log>
+                        
+                        <parameter name="[[connection]-id]" operation="list.remove"/>
+                        <parameter name="[[connection]-state]" operation="list.remove"/>
+                        <parameter name="[[connection]-cookie]" operation="list.remove"/>
+                        <closeChannelHTTP name="[connection]"/>
+                        <parameter name="[connection]" operation="list.remove"/>
+                    </then>
+                    <else>
+                        <if>
+                        <condition>
+                            <test parameter="[value]" condition="string.equals" value="postEnd"/>
+                        </condition>
+                        <then>
+                            <parameter name="[[connection]-id]" operation="list.remove"/>
+                            <parameter name="[[connection]-state]" operation="list.remove"/>
+                            <parameter name="[[connection]-cookie]" operation="list.remove"/>
+                            <closeChannelHTTP name="[connection]"/>
+                            <parameter name="[connection]" operation="list.remove"/>
+                        </then>
+                        </if>
+                    </else>
+                    </if>
+                </then>
+                <else><!-- not a Get and not a Post=> state unknown for this response -->
+                    <log level="error">unknown state for this response:</log>
+                    <log level="error">[firstline]</log>
+                    <log level="error">[content]</log>
+                </else>
+                </if>
+                </else></if>
+            </then>
+            <else><!-- check it will works (can cause pb with first if)-->
+                <!--<log level="warn">connectionstate parameter does not exists</log>-->
+                <parameter name="[[connection]-id]" operation="list.remove"/>
+                <parameter name="[[connection]-state]" operation="list.remove"/>
+                <parameter name="[[connection]-cookie]" operation="list.remove"/>
+                <closeChannelHTTP name="[connection]"/>
+                <parameter name="[connection]" operation="list.remove"/>
+            </else></if>
+        </else></if>
+       
+        
+    </do>
+    </while>
+        
+</scenario>

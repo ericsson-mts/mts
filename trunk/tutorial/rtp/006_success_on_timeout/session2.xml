@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTP name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]"/>
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+	<parameter name="[testcase:SEM2]" operation="system.semaphorewait" />
+			  
+	<receiveMessageRTP name="ReceivePacketRTP1" type="DVI4:17"/>
+	<receiveMessageRTP name="ReceivePacketRTP2" type="DVI4:17"/>
+	<!-- to avoid lost of packets -->
+	<receivePacketRTP name="ReceivePacketRTP3" payloadType="DVI4:17"/>
+
+  	<parameter name="[ssrc]" operation="number.random" value="2147483647"/>
+	<sendMessageRTP listenpoint="invitee" remoteHost="[localHostRTP(0)]" remotePort="[localPortRTP]">
+	    <header ssrc="[ssrc]" payloadType="27" seqnum="2" timestamp="2000"/>
+	    <payload format="text">Packet #3</payload>
+	</sendMessageRTP>
+	
+	<finally>				
+		<removeListenpointRTP name="invitee" />
+	</finally>
+	
+</scenario>

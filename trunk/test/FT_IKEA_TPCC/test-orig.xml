@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="Load tests">
+
+	<parameter name="[TryingDuration]" operation="set" value="0.1" description="Duration (in sec.) between 100 and 180"  		editable="true"/>
+	<parameter name="[RingingDuration]" operation="set" value="2" description="Duration (in sec.) between 180 and 200"     		editable="true"/>
+	<parameter name="[CallDurationSec]" operation="set" value="5" description="Duration (in sec.) of the call"           		editable="true"/>    	
+	<parameter name="[CAPS]" operation="set" value="30" description="Call Attempting per Second"                           		editable="true"/>
+	<parameter name="[TestDurationDay]" operation="set" value="0" description="Duration (in day) of the test "        		    editable="true"/>
+	<parameter name="[TestDurationHour]" operation="set" value="0" description="Duration (in hour) of the test "        		editable="true"/>
+	<parameter name="[TestDurationMin]" operation="set" value="1" description="Duration (in min.) of the test "         		editable="true"/>    	
+	<parameter name="[TestDurationSec]" operation="set" value="0" description="Duration (in sec.) of the test "         		editable="true"/>    	
+	<parameter name="[RangeIndexUser]" operation="set" value="0" description="Index of the range of the user phone number"  	editable="true"/>
+	<parameter name="[NumberScenario]" operation="set" value="1" description="Index of the range of the user phone number"  	editable="true"/>
+    <parameter name="[SendByeUAC]" operation="set" value="true" description="Flag to send the BYE on UAC side"                  editable="true"/>
+    <parameter name="[SendByeUAS]" operation="set" value="true" description="Flag to send the BYE on UAC side"                  editable="true"/>
+
+	<!--                     -->
+	<!-- INTERNAL PARAMETERS -->
+	<!--                     -->	
+	<parameter name="[Host-Tester]" operation="system.ipaddress" value="eth0" description="Host du IMSloader"/>
+	<parameter name="[Port-Tester]" operation="set" value="7070" description="Port du IMSloader"		editable="true"/>
+	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]" description="Addresse du IMSloader"/>
+
+	<parameter name="[Host-Server]" operation="system.ipaddress" value="eth0" description="Host du IMSloader"/>
+	<!--parameter name="[Host-Server]" operation="set" value="10.194.124.134" description="Addresse de l'AS" 		editable="true"/-->	        
+	<parameter name="[Port-Server]" operation="set" value="7070" description="Port du IMSloader"		editable="true"/>
+	<!--parameter name="[Port-Server]" operation="set" value="5060" description="Port de l'AS"				editable="true"/-->
+	<parameter name="[Adresse-Server]" operation="set" value="[Host-Server(0)]:[Port-Server]"/>
+
+	<parameter name="[RangeNumberUser]" operation="set" value="5000"/>
+
+	<!-- calculate the test duration -->			
+	<parameter name="[TestDurationDay]" operation="number.multiply" value="[TestDurationDay]" value2="24"/>
+	<parameter name="[TestDurationHour]" operation="number.add" value="[TestDurationHour]" value2="[TestDurationDay]"/>				
+	<parameter name="[TestDurationHour]" operation="number.multiply" value="[TestDurationHour]" value2="60"/>
+	<parameter name="[TestDurationMin]" operation="number.add" value="[TestDurationMin]" value2="[TestDurationHour]"/>					
+	<parameter name="[TestDurationMin]" operation="number.multiply" value="[TestDurationMin]" value2="60"/>
+	<parameter name="[TestDurationSec]" operation="number.add" value="[TestDurationSec]" value2="[TestDurationMin]"/>							
+
+	<parameter name="[RangePortRTP-UAC]" operation="set" value="29000"/>				
+	<parameter name="[RangePortRTP-UAS]" operation="set" value="39000"/>
+		
+	<!--                   -->
+	<!-- CSV PARAMETERS -->
+	<!--                   -->
+	<parameter name="[inviterTab]" operation="file.readCsv" value="./testAS_uac.csv" value2="inviter" />
+	<!--parameter name="[inviteeTab]" operation="file.readCsv" value="./testAS_uas1.csv" value2="invitee" /-->    	
+	<parameter name="[inviteeTab]" operation="file.readCsv" value="./testAS_uas2.csv" value2="invitee" />    	
+
+	<parameter name="[test:indexUser]" operation="set" value="0"/>
+
+	
+	<!--interruptible="false"-->
+	<for index="[index]" from="1" to="[NumberScenario]" step="1">
+		<testcase name="responder[index]" description="passive testcase for reponse and subsequent management" state="true">        			
+			<runProfile>                
+				<step time="0" period="0"/>
+				<step time="10" period="0"/>        
+                <end delay="[TestDurationSec]"/>                
+			</runProfile>
+			<scenario name="7070">orig/responder.xml</scenario>
+		</testcase>
+	</for>
+
+	<testcase name="loader" description="passive testcase for invite sending" state="true">
+	<!--                   -->
+	<!-- RUNNER PARAMETERS -->
+	<!--                   -->
+	<parameter name="[CAPSlow]" operation="number.divide" value="[CAPS]" value2="10" />    	
+	<runProfile>
+		<step time="0" frequency="[CAPS]"/>
+		<step time="600" frequency="[CAPS]"/>
+		<step time="2400" frequency="[CAPS]"/>
+		<step time="3000" frequency="[CAPS]"/>
+		<step time="3600" frequency="[CAPS]"/>
+        <end delay="[TestDurationSec]"/>                
+	</runProfile>
+	<scenario name="inviter">orig/loader.xml</scenario>
+	</testcase>
+
+</test>

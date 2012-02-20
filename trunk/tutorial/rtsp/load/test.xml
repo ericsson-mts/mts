@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="RTSP non regression load tests">
+    
+    <for index="[i]" from="9140" to="9145">
+        <testcase name="test_[i]" state="true">
+            <parameter name="[port]" operation="set" value="[i]" />
+            <scenario name="client_[i]">scenario/UAC.xml</scenario>
+            <scenario name="[i]">scenario/UAS.xml</scenario>
+        </testcase>
+    </for>
+</test>

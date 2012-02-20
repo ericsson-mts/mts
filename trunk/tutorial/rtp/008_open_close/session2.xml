@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTP name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]"/>
+
+	<parameter name="[testcase:semaphore1]" operation="system.semaphorenotify"/>
+  
+	<receiveMessageRTP listenpoint="invitee" type="DVI4:17">
+		<parameter name="localHost" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+		<parameter name="localPort" operation="protocol.setFromMessage" value="channel.remotePort"/>		
+	</receiveMessageRTP>
+	
+	<receiveMessageRTP listenpoint="invitee" type="DVI4:17"/>
+	<!-- to avoid lost of packets -->
+	<receiveMessageRTP listenpoint="invitee" type="DVI4:17"/>
+			
+	<removeListenpointRTP name="invitee"/>
+
+    <pause name="Wait remove" seconds="0.01"/>
+
+	<createListenpointRTP name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]"/>
+			  
+	<parameter name="[testcase:semaphore2]" operation="system.semaphorenotify"/>
+
+	<receiveMessageRTP listenpoint="invitee" type="DVI4:17">
+		<parameter name="localHost" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+		<parameter name="localPort" operation="protocol.setFromMessage" value="channel.remotePort"/>		
+	</receiveMessageRTP>
+	
+	<receiveMessageRTP listenpoint="invitee" type="DVI4:17"/>
+	<!-- to avoid lost of packets -->
+	<receiveMessageRTP listenpoint="invitee" type="DVI4:17"/>
+			
+	<removeListenpointRTP name="invitee" />
+
+    <pause name="Wait remove" seconds="0.01"/>
+
+	<createListenpointRTP name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]"/>
+
+	<finally>							
+		<removeListenpointRTP name="invitee" />
+	</finally>
+
+</scenario>

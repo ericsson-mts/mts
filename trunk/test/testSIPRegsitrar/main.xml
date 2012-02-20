@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+<!DOCTYPE Library [
+ <!ENTITY initvarProtocolParam SYSTEM "./scenario/initvarProtocolParam.xml">
+ <!ENTITY initvarLoadParam SYSTEM "./scenario/initvarLoadParam.xml">
+ <!ENTITY initvarStatsParam SYSTEM "./scenario/initvarStatsParam.xml">
+  <!ENTITY initvarRadiusParam SYSTEM "./scenario/initvarRadiusParam.xml">
+]>
+<!-- 
+AUTEUR : R&D/CORE/M2V/TSC/JD
+OBJET : Programme Principal / lanceur des scenarios 
+
+MODIF : 20/05/2011. Ajout parametrage SDP pour differenciation du traffic
+                               message ou audio ou video
+			31/05/2011. Ajout option Far end NAT
+			06/06/2011. Ajout option support Next Nonce 
+--> 
+<test name="load">
+&initvarLoadParam;   
+&initvarProtocolParam;
+&initvarRadiusParam;
+	<!-- CSV PARAMETERS    --> 
+	<parameter name="[userTab]" operation="file.readCsv" value="./shellScripts/user.csv" value2="inviter" />
+	<parameter name="[userTabNP]" operation="file.readCsv" value="./shellScripts/user.csv" value2="NumberPhone" />
+	<!--parameter name="[userTabPrivateIP]" operation="file.readCsv" value="./shellScripts/user.csv" value2="privateIp" /-->
+	<!-- sous linux . Ecrasement des ficheirs temporaires --> 
+	<!-- A MODIFIER POUR FAIRE PLUS MIEUX --> 
+	<!--parameter name="[cmd]" operation="system.command" value="rm -rf /usr/local/IMSLoaderScriptCharge/temp"/-->	
+	<!--parameter name="[cmd]" operation="system.command" value="mkdir /usr/local/IMSLoaderScriptCharge/temp"/-->	
+							
+	<!--testcase name="Create Sockets" description="Create Sockets" state="false" number="1">
+		<runProfile>
+			<step time="0"  period="0"/>
+			<end iteration="[RangeNumberUser]"/>
+		</runProfile>
+		<scenario name="default">scenario/create_sockets.xml</scenario>
+	</testcase-->
+	<!--testcase name="Register" description="Register agent" state="false" >
+		<runProfile>
+			<start delay="[delay]"/>
+			<step time="0" frequency="[RAPS]"/>
+			<end delay="[TestDurationSec]"/>
+		</runProfile>
+		<scenario name="false|REGISTER">scenario/register.xml</scenario>
+	</testcase-->
+<testcase name="-----  REGISTER -----------------------  " description="   " state="false">  <scenario name="vide"></scenario> </testcase>
+
+	<testcase name="GIBA Register_loader" description="Register agent" state="false" >
+		<runProfile>
+			<start delay="[delay]"/>
+			<step time="0" frequency="[RAPS]"/>
+			<end delay="[TestDurationSec]"/>
+		</runProfile>
+		<scenario name="loader_register_GIBA">scenario/loader_register_GIBA.xml</scenario>
+	</testcase>
+	
+	<testcase name="Register_loader (continue) " description="Register agent" state="true" >
+		<runProfile>
+			<start delay="[delay]"/>
+			<step time="0" frequency="[RAPS]"/>
+			<end delay="[TestDurationSec]"/>
+		</runProfile>
+		<scenario name="loader_register">scenario/loader_register.xml</scenario>
+	</testcase>
+	
+	<testcase name="Register_loader (one shot only) " description="Register agent" state="false" >
+		<runProfile>
+			<start delay="[delay]"/>
+			<step time="0" frequency="[RAPS]"/>
+			<end iteration="[RangeNumberUser]"/>
+		</runProfile>
+		<scenario name="loader_register">scenario/loader_register.xml</scenario>
+	</testcase>
+	
+	<testcase name="Register_responder" description="Register agent" state="true" >
+		<runProfile>
+			<start delay="[delay]"/>
+			<step time="0" period="0"/>
+			<end delay="[TestDurationSec]"/>
+		</runProfile>
+		<scenario name="false|REGISTER">scenario/responder_register.xml</scenario>
+	</testcase>
+	
+		<testcase name="Register_responder (Adaptative)" description="Register agent" state="false" >
+		<runProfile>
+			<start delay="[delay]"/>
+			<step time="0" period="0"/>
+			<end delay="[TestDurationSec]"/>
+		</runProfile>
+		<scenario name="false|REGISTER">scenario/responder_register_adaptatif.xml</scenario>
+	</testcase>
+	
+<testcase name="-----  INVITE Dialogs -----------------------  " description="   " state="false">  <scenario name="vide"></scenario> </testcase>
+<!-- ajout du Step mode --> 
+
+	<testcase name="loader INVITE step by step " description="passive testcase for invite sending" state="false">
+	<!-- passage progressif de 10 a 50 CAPS par paliers --> 
+		<runProfile>	<start delay="[delay]"/> 
+		<step time="0" frequency="1"/> 
+		<step time="3600" frequency="20"/> 
+		<step time="7200" frequency="20"/> 
+		<step time="10800" frequency="30"/> 
+		<step time="14400" frequency="30"/> 
+		<step time="18000" frequency="40"/> 
+		<step time="21600" frequency="40"/> 
+		<step time="25200" frequency="10"/> 
+		<step time="28800" frequency="40"/> 
+		<step time="32400" frequency="10"/> 
+		<step time="36000" frequency="50"/> 
+		<step time="39600" frequency="10"/> 
+		<step time="43200" frequency="60"/> 
+		<step time="[TestDurationSec]" frequency="10"/> 
+		<end delay="[TestDurationSec]"/> </runProfile>
+		<scenario name="inviter_bysteps">scenario/loader.xml</scenario>
+		<!-- utilise pour le test by Step du 25 au 26 -->
+		<!--step time="0" frequency="1"/> 
+		<step time="3600" frequency="10"/> 
+		<step time="7200" frequency="10"/> 
+		<step time="10800" frequency="15"/> 
+		<step time="14400" frequency="15"/> 
+		<step time="18000" frequency="20"/> 
+		<step time="21600" frequency="20"/> 
+		<step time="25200" frequency="25"/> 
+		<step time="28800" frequency="25"/> 
+		<step time="32400" frequency="30"/> 
+		<step time="36000" frequency="30"/> 
+		<step time="39600" frequency="35"/> 
+		<step time="43200" frequency="35"/> 
+		<step time="46800" frequency="40"/> 
+		<step time="50400" frequency="40"/--> 
+	</testcase>
+	
+	<testcase name="loader INVITE " description="passive testcase for invite sending" state="true">
+		<runProfile>	<start delay="[delay]"/> <step time="0" frequency="[CAPS]"/> <end delay="[TestDurationSec]"/> </runProfile>
+		<scenario name="inviter_option">scenario/loader.xml</scenario>
+	</testcase>
+	
+	<for index="[index]" from="1" to="[NumberScenario]" step="1">
+		<testcase name="responder_INVITE_answer[index]" interruptible="true" description=" " state="true">
+			<runProfile> <step time="0" period="0"/> <end delay="[TestDurationSec]" /> </runProfile>
+			<scenario name="false|INVITE">scenario/responder.xml</scenario>
+		</testcase>
+	</for>
+	
+	<for index="[index]" from="1" to="[NumberScenario]" step="1">
+		<testcase name="responder_INVITE_requests[index]" interruptible="true" description=" " state="true">
+			<runProfile> <step time="0" period="0"/> <end delay="[TestDurationSec]" /> </runProfile>
+			<scenario name="true|INVITE">scenario/responder.xml</scenario>
+		</testcase>
+	</for>
+	
+	<for index="[index]" from="1" to="[NumberScenario]" step="1">
+		<testcase name="responder_BYE_requests[index]" interruptible="true" description=" " state="true">
+			<runProfile> <step time="0" period="0"/> <end delay="[TestDurationSec]" /> </runProfile>
+			<scenario name="true|BYE">scenario/responder.xml</scenario>
+		</testcase>
+	</for>
+
+	<for index="[index]" from="1" to="[NumberScenario]" step="1">
+		<testcase name="responder_BYE_answers[index]" interruptible="true" description=" " state="true">
+			<runProfile> <step time="0" period="0"/> <end delay="[TestDurationSec]" /> </runProfile>
+			<scenario name="false|BYE">scenario/responder.xml</scenario>
+		</testcase>
+	</for>
+	
+	<for index="[index]" from="1" to="[NumberScenario]" step="1">
+		<testcase name="responder_ACK_request[index]" interruptible="true" description=" " state="true">
+			<runProfile> <step time="0" period="0"/> <end delay="[TestDurationSec]" /> </runProfile>
+			<scenario name="true|ACK">scenario/responder.xml</scenario>
+		</testcase>
+	</for>
+	<testcase name="-----  OPTIONS Load  ----------------------------------------  " description="   " state="false">  <scenario name="vide"></scenario> </testcase>
+	<testcase name="loader OPTIONS" description=" " state="false">
+		<!-- cas nominal ou le distant est enregistre -->
+		<runProfile> <start delay="[delay]"/> <step time="0" frequency="[OTAPS]"/> <end delay="[TestDurationSec]"/> </runProfile>
+		<scenario name="opt_inviter">scenario/loader_options.xml</scenario>
+	</testcase>
+	<testcase name="loader OPTIONS 404" description=" " state="false">
+		<!-- user B inconnu ou non RCS -->   
+		<runProfile> <start delay="[delay]"/> <step time="0" frequency="[OTAPS]"/> <end delay="[TestDurationSec]"/> </runProfile>
+		<scenario name="opt_404_inviter">scenario/loader_options_404.xml</scenario>
+	</testcase>
+	<testcase name="loader OPTIONS 480 or 408" description=" " state="false">
+		 <!-- user B non enregistre  -->   
+		<runProfile> <start delay="[delay]"/> <step time="0" frequency="[OTAPS]"/> <end delay="[TestDurationSec]"/> </runProfile>
+		<scenario name="opt_480_inviter">scenario/loader_options_480.xml</scenario>
+	</testcase>	
+	<testcase name="responder_OPTIONS_requests" interruptible="true" description="  " state="false">
+		<runProfile>	<step time="0" period="0"/> 	<end delay="[TestDurationSec]" /> </runProfile>
+		<scenario name="true|OPTIONS">scenario/responder_options.xml</scenario>
+	</testcase>
+	<testcase name="responder_OPTIONS_answers" interruptible="true" description="  " state="false">
+		<runProfile>	<step time="0" period="0"/> 	<end delay="[TestDurationSec]" /> </runProfile>
+		<scenario name="false|OPTIONS">scenario/responder_options.xml</scenario>
+	</testcase>
+	<testcase name="-----  MESSAGE Load  ----------------------------------------  " description="   " state="false">  <scenario name="vide"></scenario> </testcase>
+	<testcase name="loader MESSAGE" description=" " state="false">
+		<runProfile> <start delay="[delay]"/> <step time="0" frequency="[MAPS]"/> <end delay="[TestDurationSec]"/> </runProfile>
+		<scenario name="mes_inviter">scenario/loader_message.xml</scenario>
+	</testcase>	
+	<testcase name="responder_MESSAGE_requests" interruptible="true" description="  " state="false">
+		<runProfile>	<step time="0" period="0"/> 	<end delay="[TestDurationSec]" /> </runProfile>
+		<scenario name="true|MESSAGE">scenario/responder_message.xml</scenario>
+	</testcase>
+	<testcase name="responder_MESSAGE_responses" interruptible="true" description="  " state="false">
+		<runProfile>	<step time="0" period="0"/> 	<end delay="[TestDurationSec]" /> </runProfile>
+		<scenario name="false|MESSAGE">scenario/responder_message.xml</scenario>
+	</testcase>
+	<testcase name="-----  Other Load  ----------------------------------------  " description="   " state="false">  <scenario name="vide"></scenario> </testcase>	
+		<testcase name="responder_NOTIFY_requests" interruptible="true" description=" " state="false">
+			<runProfile>	<step time="0" period="0"/> 	<end delay="[TestDurationSec]" /> </runProfile>
+			<scenario name="true|NOTIFY">scenario/responder_unexpected.xml</scenario>
+		</testcase>
+		<testcase name="responder_INFO_requests" interruptible="true" description="  " state="false">
+			<runProfile>	<step time="0" period="0"/> 	<end delay="[TestDurationSec]" /> </runProfile>
+			<scenario name="true|INFO">scenario/responder_unexpected.xml</scenario>
+		</testcase>
+
+		<testcase name="responder_UPDATE_requests" interruptible="true" description=" " state="false">
+			<runProfile>	<step time="0" period="0"/> 	<end delay="[TestDurationSec]" /> </runProfile>
+			<scenario name="true|UPDATE">scenario/responder_unexpected.xml</scenario>
+		</testcase>
+		<testcase name="responder_CANCEL_requests" interruptible="true" description="passive testcase for reponse " state="false">
+			<runProfile>	<step time="0" period="0"/> 	<end delay="[TestDurationSec]" /> </runProfile>
+			<scenario name="true|CANCEL">scenario/responder_unexpected.xml</scenario>
+		</testcase>
+	<!--testcase name="UnRegister" description="UnRegister agent " state="false" number="1">
+		<runProfile>
+			<step time="0" frequency="[RAPS]"/>
+			<end iteration="[RangeNumberUser]"/>
+		</runProfile>
+		<scenario name="false|REGISTER">scenario/unregister_manual.xml</scenario>
+	</testcase-->
+	<testcase name="-----  UNREGISTER  ----------------------------------------  " description="   " state="false">  <scenario name="vide"></scenario> </testcase>
+	<testcase name="UnRegister_loader" description="Register agent" state="false" >
+		<runProfile> <start delay="[delay]"/> <step time="0" frequency="[RAPS]"/> <end iteration="[RangeNumberUser]"/> </runProfile>
+		<scenario name="loader_register">scenario/loader_unregister.xml</scenario>
+	</testcase>
+	
+	<testcase name="GIBA_UnRegister_loader" description="Register agent" state="false" >
+		<runProfile> <start delay="[delay]"/> <step time="0" frequency="[RAPS]"/> <end iteration="[RangeNumberUser]"/> </runProfile>
+		<scenario name="loader_register">scenario/loader_unregister_GIBA.xml</scenario>
+	</testcase>
+	
+	<testcase name="UnRegister_responder" description="Register agent" state="false" >
+		<runProfile> <start delay="[delay]"/> <step time="0" period="0"/> <end delay="[TestDurationSec]"/> </runProfile>
+		<scenario name="false|REGISTER">scenario/responder_unregister.xml</scenario>
+	</testcase>
+	<testcase name="-----  Default SIP  ----------------------------------------  " description="   " state="false">  <scenario name="vide"></scenario> </testcase>
+	<for index="[index]" from="1" to="[NumberScenario]" step="1">
+		<testcase name="responder_default[index]" interruptible="true" description=" " state="false">
+			<runProfile> <step time="0" period="0"/> <end delay="[TestDurationSec]" /> </runProfile>
+			<scenario name="default">scenario/responder.xml</scenario>
+		</testcase>
+	</for>
+	<testcase name="-----  For Dev   ----------------------------------------  " description="   " state="false">  <scenario name="vide"></scenario> </testcase>
+	<testcase name="test" description="test" state="false" >
+		<!--scenario name="ClientRadius">scenario/testradiusclient.xml</scenario-->
+		<scenario name="MonPtitTest">tmp/fileRW.xml</scenario>
+	</testcase>
+	
+	
+</test>

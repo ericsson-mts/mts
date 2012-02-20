@@ -1,0 +1,58 @@
+<!-- PROC : Stockage du nonce --> 
+<log type="Scenario" level="2">--Entering Include Function : nextNonceSave.xml</log>
+<!-- 
+AUTEUR : R&D/CORE/M2V/TSC/JD
+OBJET : Sauvegarde du Nonce pour le once caching
+
+MODIF : 24/06/2011 , utiliser un fichier temp csv et pas "properties" car
+			properties est en memoire cache (pas de relecture possible)
+			12/07/2011 : nonce count sur un format 8LHex
+--> 
+<!--
+   ENTREE : nextNonce lu ds la reponse recue
+   --> 
+<!-- stockage Next Nonce --> 
+<if>	<condition>	<test parameter="[activateNextNonce]" condition="string.equals" value="false"/>	</condition>
+<then>	<goto label="the_end1" /> </then> 
+</if> 
+
+<if> <condition> <test parameter="[nextNonce]" condition="list.isempty" value="true"/></condition>
+<then> <goto label="the_end1" /> </then>
+</if>
+<!-- ici on a recu un next nonce -->
+<!-- enlever les guillemets --> 
+  <parameter name="[nextNonce]" operation="regexReplaces" value="[nextNonce]" value2="&quot;" value3=""/>
+<!-- enlever le "nextnonce=" dans nextNonce --> 
+<parameter name="[nextNonceValue]" operation="regexReplaces" value="[nextNonce]" value2="nextnonce=" value3=""/>
+ 
+<parameter name="[result]" operation="file.exists" value="./temp/nonce[userNumberPhone].var" />
+<if> <condition> <test parameter="[result]" condition="boolean.equals" value="false"/> </condition> 
+<then> <!-- pas de Next Nonce encore recu auparavant . Cree le fichier -->  
+		<parameter name="[result]" operation="file.create" value="./temp/nonce[userNumberPhone].var"/>
+		<parameter name="[nonceCount]" operation="set" value="00000001" />			
+</then>
+<else> <!-- fichier existe : lire les valeurs --> 
+	<parameter name="[oldNonce]" operation="file.readcsv"  value="./temp/nonce[userNumberPhone].var" value2="0"/>
+	<parameter name="[nonceCount]" operation="file.readcsv"  value="./temp/nonce[userNumberPhone].var" value2="1"/>	
+	<!-- DEBUG log type="Main" level="ERROR">	<![CDATA[ READ nextNonceSave oldNonce = #[oldNonce] for "[userNumberPhone]"   nonceCount : [nonceCount] ]]>	</log -->	
+
+	<if> <condition> <test parameter="[oldNonce]" condition="string.equals" value="[nextNonceValue]"/> </condition> 
+	<then> <!-- le nonce a pas change --> 
+		<!-- ne toucher a rien
+		<parameter name="[nonceCount]" operation="number.add" value="[nonceCount]" value2="1"/>
+		<parameter name="[nonceCount]" operation="binary.parse" value="d[nonceCount]:4" />
+		--> 
+	</then>
+	<else> <!-- le nonce a change --> 
+		<parameter name="[nonceCount]" operation="set" value="00000001" />		
+	</else>
+	</if>
+</else>
+</if> 
+	
+<!-- sauver dans le fichier , mais comme on peut pas re-ecrire un enregistrement , il faut recreer le fichier --> 
+<parameter name="[result]" operation="file.remove" value="./temp/nonce[userNumberPhone].var"/>
+<parameter name="[result]" operation="file.create" value="./temp/nonce[userNumberPhone].var"/>
+<parameter name="[result]" operation="file.writestring"  value="./temp/nonce[userNumberPhone].var" value2="[nextNonceValue];[nonceCount]"/>
+<!-- DEBUG log type="Main" level="ERROR">	<![CDATA[ WRITE nextNonceSave nextNonce = #[nextNonce] for "[userNumberPhone]"   nonceCount : [nonceCount] ]]>	</log -->	
+<label name="the_end1"/>

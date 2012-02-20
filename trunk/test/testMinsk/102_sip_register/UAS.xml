@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>   
+    
+	<receiveMessageSIP name="Wait REGISTER" request="true" type="REGISTER">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+		<parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+		<parameter name="[localTag]" operation="string.random" value="10"/>
+	</receiveMessageSIP>
+		
+	<sendMessageSIP name="Answer 200 OK" remoteHost="[Host-Server]" remotePort="[Port-Server]" >
+<![CDATA[SIP/2.0 200 OK
+Via: [Via]
+From: [From]
+To: [To];tag=[localTag]
+Call-ID: [CallId]
+CSeq: [Cseq]
+Contact: [Contact]
+Content-Length: 0
+]]>
+        </sendMessageSIP>
+
+	<receiveMessageSIP name="Wait REGISTER" request="true" type="REGISTER">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+		<parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+		<parameter name="[localTag]" operation="string.random" value="10"/>
+	</receiveMessageSIP>
+		
+	<sendMessageSIP name="Answer 200 OK" remoteHost="[Host-Server]" remotePort="[Port-Server]" >
+<![CDATA[SIP/2.0 200 OK
+Via: [Via]
+From: [From]
+To: [To];tag=[localTag]
+Call-ID: [CallId]
+CSeq: [Cseq]
+Contact: [Contact]
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+</scenario>

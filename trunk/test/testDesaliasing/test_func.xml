@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="desaliasing_tests">
+    <parameter name="[enabler_host]" operation="set" value="192.168.70.2" editable="true"/>
+    <parameter name="[enabler_port]" operation="set" value="9043" editable="true"/>
+
+    <parameter name="[enabler_url]" operation="set" value="https://[enabler_host]:[enabler_port]" />
+
+    <parameter name="[signature_secret]" operation="set" value="toto" editable="true"/>
+
+    <parameter name="[max_successive_requests]" operation="set" value="98" editable="true"/>
+
+    <parameter name="[delayed_server_delay]" operation="set" value="4000" />
+
+    <testcase name="900_fw_simulator" state="false">
+        <scenario name="HTTP">900_fw_simulator/server.xml</scenario>
+    </testcase>
+
+    <testcase name="100_client_acc" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_acc">100_client_acc/scenario.xml</scenario>
+    </testcase>
+    
+    <testcase name="110_client_rej" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_rej">110_client_rej/scenario.xml</scenario>
+    </testcase>
+
+    <testcase name="111_client_rej_not_in_wl" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_unknown">111_client_rej_not_in_wl/scenario.xml</scenario>
+    </testcase>
+    
+    <testcase name="112_client_rej_aliasing" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_rej_aliasing">112_client_rej_aliasing/scenario.xml</scenario>
+    </testcase>
+
+    <testcase name="113_client_missing_param" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_missing_param">113_client_missing_param/scenario.xml</scenario>
+    </testcase>
+
+    <testcase name="114_client_invalid_hash" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_invalid_hash">114_client_invalid_hash/scenario.xml</scenario>
+    </testcase>
+
+    <testcase name="115_client_empty_answer" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_empty_answer">115_client_empty_answer/scenario.xml</scenario>
+    </testcase>
+
+    <testcase name="116_client_msisdn_mismatch" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_msisdn_mismatch">116_client_msisdn_mismatch/scenario.xml</scenario>
+    </testcase>
+
+    <testcase name="test_client_timeout" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_timeout">120_client_timeout/scenario.xml</scenario>
+    </testcase>
+</test>

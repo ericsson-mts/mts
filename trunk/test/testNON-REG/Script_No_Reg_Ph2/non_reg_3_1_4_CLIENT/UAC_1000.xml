@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+
+<!DOCTYPE library [
+<!ENTITY libC_Call_Service_Server	SYSTEM "../library/libC_Call_Service_Server.xml">
+<!ENTITY libC_Caller_to_Called_Ph1	SYSTEM "../library/libC_Caller_to_Called_Ph1.xml">
+<!ENTITY libC_Caller_to_Called_Ph2	SYSTEM "../library/libC_Caller_to_Called_Ph2.xml">
+<!ENTITY libC_Caller_to_Called_Ph3	SYSTEM "../library/libC_Caller_to_Called_Ph3.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph1		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph1.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph2		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph2.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph3		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph3.xml">
+]>
+
+
+<scenario>
+
+
+<parameter name="[sbcPort]" operation="set" value="[SBC_Port_1000]" description="Port decoute du SBC"/>   
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_Port]" operation="set" value="[Provider_1000]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localPort="[provider_Port]"/>
+
+
+
+<!--
+|
+|
+Set CFA for subscriber_1000
+|
+|
+-->
+
+<parameter name="[concated_called_nb]" operation="set"    value="*21*" />
+		<parameter name="[concated_called_nb]" operation="concat" value="[concated_called_nb]"      value2="[subscriber_1001]" />
+
+
+<parameter name="[service_Nb]" operation="set" value="[concated_called_nb]"/>
+<parameter name="[domainName_Service]" operation="set" value="[domainName]"/>
+<parameter name="[subscriber_Service]" operation="set" value="[subscriber_1000]"/>
+<parameter name="[int_caller_Subscriber]" operation="set" value="[int_subscriber_1000]"/>
+
+
+<parameter name="[ipAddressSip_Service]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[portSip_Service]" operation="set" value="[provider_Port]"/>
+<parameter name="[ipAddressSdp_Service]" operation="set" value="[ipAddressSdp]"/>
+<parameter name="[ipAddressSrc_Service]" operation="set" value="[ipAddressSrc]"/>
+<parameter name="[portSdp_subscriber_Service]" operation="set" value="[portSdpSubscriber_1000]"/>
+<parameter name="[sbcHost_Service]" operation="set" value="[SBC_IP_1000]"/>
+<parameter name="[sbcPort_Service]" operation="set" value="[SBC_Port_1000]"/>
+
+<parameter name="[endRtpDialog_Timer]" operation="set" value="1"/>
+
+<parameter name="[UserName]" operation="set" value="[Username_1000]"/>
+<parameter name="[Password]" operation="set" value="[Passwd_1000]"/>
+
+&libC_Call_Service_Server;
+
+<!--
+Synchronization with UAC_1003
+-->
+
+<semaphore name="JetonUAC1000_UAC1001" action="notify"/>
+
+<!--
+First call initiated by Subs_1003 to Subs_1000 is forwarded
+=> Test that the call is not received by Subs_1000
+-->
+
+
+<parameter name="[message_received]" operation="set" value="false"/>
+
+<receiveRequestSIP name="Wait INVITE" method="INVITE" failedOnTimeout="false" timeout="10">
+	<parameter name="[message_received]" operation="set" value="true"/> 		
+</receiveRequestSIP>
+
+<if>
+    <condition>
+      <test parameter="[message_received]" condition="equals" value="true" />
+    </condition>
+<then>
+<log level="3"> Call has not been forwarded since Invite has been received => exit with error</log>
+<exit name="Call has not been forwarded since Invite has been received" failed="true"/>
+</then>
+<else>
+</else></if>
+
+<semaphore name="JetonUAC1003_UAC1000" action="wait"/>
+
+<!--
+Step 3: Reset CFA for subscriber_1000
+-->
+
+
+<parameter name="[service_Nb]" operation="set" value="*211*"/>
+<parameter name="[domainName_Service]" operation="set" value="[domainName]"/>
+<parameter name="[subscriber_Service]" operation="set" value="[subscriber_1000]"/>
+<parameter name="[int_caller_Subscriber]" operation="set" value="[int_subscriber_1000]"/>
+
+<parameter name="[ipAddressSip_Service]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[portSip_Service]" operation="set" value="[provider_Port]"/>
+<parameter name="[ipAddressSdp_Service]" operation="set" value="[ipAddressSdp]"/>
+<parameter name="[ipAddressSrc_Service]" operation="set" value="[ipAddressSrc]"/>
+<parameter name="[portSdp_subscriber_Service]" operation="set" value="[portSdpSubscriber_1000]"/>
+<parameter name="[sbcHost_Service]" operation="set" value="[SBC_IP_1000]"/>
+<parameter name="[sbcPort_Service]" operation="set" value="[SBC_Port_1000]"/>
+
+<parameter name="[endRtpDialog_Timer]" operation="set" value="1"/>
+
+&libC_Call_Service_Server;
+
+<semaphore name="JetonUAC1000_UAC1001" action="notify"/>
+
+<finally><closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/></finally>
+
+</scenario>

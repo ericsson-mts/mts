@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="DCB Policy manager traffic simulation" home="../config/">
+
+    <!-- Lecture des parametres de configuration -->
+    <parameter name="[radius_host]"             operation="file.readProperty" value="flux.properties" value2="radius_host" />
+    <parameter name="[radius_port]"             operation="file.readProperty" value="flux.properties" value2="radius_port" />
+    <parameter name="[radius_secret]"           operation="file.readProperty" value="flux.properties" value2="radius_secret" />
+
+    <parameter name="[radius_nas_port]"         operation="file.readProperty" value="flux.properties" value2="radius_nas_port" />
+    <parameter name="[nas_identifier]"          operation="file.readProperty" value="flux.properties" value2="nas_identifier" />
+    <parameter name="[nas_ip_address]"          operation="file.readProperty" value="flux.properties" value2="nas_ip_address" />
+    <parameter name="[called_station_id]"       operation="file.readProperty" value="flux.properties" value2="called_station_id" />
+    <parameter name="[3gpp_sgsn_address]"       operation="file.readProperty" value="flux.properties" value2="3gpp_sgsn_address" />
+    <parameter name="[3gpp_charging_id]"        operation="file.readProperty" value="flux.properties" value2="3gpp_charging_id" />
+    <parameter name="[imsi]"                    operation="file.readProperty" value="flux.properties" value2="imsi" />
+
+    <parameter name="[config_profils_path]"     operation="file.readProperty" value="flux.properties" value2="config_profils_path" />
+    <parameter name="[traffic_percentage_list]" operation="file.readCSV"      value="[config_profils_path]" value2="traffic percentage" />
+    <parameter name="[delay_list]"              operation="file.readCSV"      value="[config_profils_path]" value2="delay between start and stop requests (in seconds)" />
+    <parameter name="[profils_list_size]"       operation="list.size"         value="[traffic_percentage_list]" />
+    <parameter name="[profils_list_size]"       operation="number.substract"  value="[profils_list_size]" value2="1" />
+
+    <parameter name="[maxTraffic]" description="nombre de requêtes par secondes" operation="set" value="60" editable="true"/><!-- nombre maximum de req/s-->
+    <parameter name="[testDurationInSeconds]" description="durée du test en secondes" operation="set" value="0" editable="true"/>
+
+    <parameter name="[msisdnMin]" operation="set" value="200000000" editable="true"/>
+    <parameter name="[msisdnMax]" operation="set" value="299999999" editable="true"/>
+    <parameter name="[msisdnIndex]" operation="set" value="[msisdnMin]"/>
+
+    <parameter name="[firstIPOctets]" operation="set" value="10.162" editable="true"/>
+    <parameter name="[thirdIPOctetsMin]" operation="set" value="0" editable="true"/>
+    <parameter name="[thirdIPOctetsMax]" operation="set" value="255" editable="true"/>
+    <parameter name="[fourthIPOctetsMin]" operation="set" value="0" editable="true"/>
+    <parameter name="[fourthIPOctetsMax]" operation="set" value="255" editable="true"/>
+    
+    <parameter name="[thirdIPOctetsIndex]" operation="set" value="[thirdIPOctetsMin]"/>
+    <parameter name="[fourthIPOctetsIndex]" operation="set" value="[fourthIPOctetsMin]"/>
+    <parameter name="[ipIndex]" operation="set" value="[firstIPOctets].[thirdIPOctetsMin].[fourthIPOctetsMin]"/>
+
+    <parameter name="[test:msisdn_mutex]"   operation="system.semaphoreNotify"/>
+    <parameter name="[test:ip_mutex]"       operation="system.semaphoreNotify"/>
+
+    <testcase name="server" state="false">
+        <scenario name="server">server/server_radius.xml</scenario>
+    </testcase>
+
+    <for index="[i]" from="0" to="[profils_list_size]" step="1" >
+        <testcase name="client_[i]_[traffic_percentage_list([i])]_percent" state="true">
+            <parameter name="[index]" operation="set" value="[i]"/>
+                        
+            <parameter name="[traffic_percentage]"  operation="set"    value="[traffic_percentage_list([i])]"/>
+            <parameter name="[delay]"               operation="set"    value="[delay_list([i])]"/>
+
+            <parameter name="[frequency]" operation="number.multiply" value="[traffic_percentage]" value2="[maxTraffic]"/>
+            <parameter name="[frequency]" operation="number.divide" value="[frequency]" value2="100"/>
+            <parameter name="[frequency]" operation="number.divide" value="[frequency]" value2="2"/>
+            <!-- divide by 2 here because there are 2 radius requests in the client scenario, so it give the number of request by seconds for this scenario-->
+
+            <runProfile>
+                <step time="0" frequency="[frequency]"/>
+                <end delay="[testDurationInSeconds]"/>
+            </runProfile>
+
+            <scenario name="client_[i]">client/client.xml</scenario>
+        </testcase>
+    </for>
+</test>

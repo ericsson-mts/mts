@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE Library [
+ <!ENTITY initvarRadiusParam SYSTEM "./initvarRadiusParam.xml">
+]>
+<scenario>
+	&initvarRadiusParam;
+
+			   <createListenpointRADIUS name="GGSN_to_HSS" secret="[test:RADsharedSecret]" localHost="[RADlocalHost]" localPort="[RADlocalPort]"/>
+			              <!-- NOTE :  <avp code="???" vendorId="" mandatory="true/false" private="true/false" 
+						       type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 
+							   / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated
+							   / IPFilterRule / QoSFilterRule" value="???"/>
+          </avp> --> 
+<parameter name="[NasIpAddress]" operation="set" value="10.164.16.218"/>	
+<!--Hostname du client radius GGSN / P-GW  (RFC 2865 Radius) --> 
+<parameter name="[NasIdentifier]" operation="set" value="GGSN1_Lacassagne"/>	
+<parameter name="[CalledStationId]" operation="set" value="ftrd2viasherlock"/>	
+<!-- protocole utilise par le user (RFC 2865 Radius) --> 
+<parameter name="[FramedProtocol]" operation="set" value="GPRS-PDP-Context"/>	
+<!-- type de service demande par le user  (RFC 2865 Radius) --> 
+<parameter name="[ServiceType]" operation="set" value="Framed-User"/>	
+<parameter name="[UserName]" operation="set" value="void"/>	
+<parameter name="[AcctSessionTime]" operation="set" value="0"/>	
+<parameter name="[AcctAuthentic]" operation="set" value="RADIUS"/>	
+<parameter name="[AcctDelayTime]" operation="set" value="0"/>
+<!-- Type = IPv4 (0) IPv6 (2)  ou IPv4v6 (3) ou PPP (1)(conditional) TS 29.061 --> 	
+<parameter name="[3gppPdpType]" operation="set" value="0"/>	
+<parameter name="[3gppSGSNAddress]" operation="set" value="80.10.1.129"/>	
+<parameter name="[3gppGGSNAddress]" operation="set" value="80.10.2.178"/>	
+<parameter name="[3gppChargingCharacteristics]" operation="set" value="0800"/>	
+<parameter name="[3gppSGSNMccMnc]" operation="set" value="20801"/>	
+<!-- RAdio Access Type   (optional) TS 29.061 + TS 29.274 --> 
+<parameter name="[3gppRatType]" operation="set" value="1"/>	
+
+		<sendMessageRADIUS listenpoint="GGSN_to_HSS" remoteHost="[RADhssHost]" remotePort="[RADhssPort]">
+        <header code="4" />
+        <avp code="NAS-IP-Address" value="[NasIpAddress]" />
+        <avp code="NAS-Identifier" value="[NasIdentifier]" />
+	    <avp code="Called-Station-Id" value="[CalledStationId]" />
+	     <avp code="Framed-Protocol" value="[FramedProtocol]" />	
+	    <avp code="Service-Type" value="[ServiceType]" />	
+	    <avp code="Calling-Station-Id" value="33786094322" />	
+	    <avp code="Acct-Status-Type" value="Start" />	
+	    <avp code="User-Name" value="[UserName]" />	
+	    <avp code="Acct-Session-Time" value="[AcctSessionTime]" />	
+	    <avp code="Acct-Authentic" value="[AcctAuthentic]" />	
+	    <avp code="Acct-Delay-Time" value="[AcctDelayTime]" />	
+        <avp code="vendor-specific" value="3GPP"> <avp code="3GPP-IMSI" type="string" value="208013002648583"/> </avp>
+		 <avp code="vendor-specific" value="3GPP"> <avp code="3GPP-Charging-ID" type="integer" value="12345"/> </avp>
+		 <avp code="vendor-specific" value="3GPP"> <avp code="3GPP-PDP-Type" type="integer" value="[3gppPdpType]"/> </avp>
+		 <avp code="vendor-specific" value="3GPP"> <avp code="3GPP-SGSN-Address" type="ipaddr" value="[3gppSGSNAddress]"/> </avp>
+		 <avp code="vendor-specific" value="3GPP"> <avp code="3GPP-GGSN-Address" type="ipaddr" value="[3gppGGSNAddress]"/> </avp>
+		 <avp code="vendor-specific" value="3GPP"> <avp code="3GPP-Charging-Characteristics" type="string" value="[3gppChargingCharacteristics]"/> </avp>
+		 <avp code="vendor-specific" value="3GPP"> <avp code="3GPP-SGSN-MCC-MNC" type="string" value="20801"/> </avp>
+		 <avp code="vendor-specific" value="3GPP"> <avp code="3GPP-IMEISV" type="string" value="3578410332935500"/> </avp>
+		 <avp code="vendor-specific" value="3GPP"> <avp code="3GPP-RAT-Type" type="octets" value="[3gppRatType]"/> </avp>
+		 <avp code="vendor-specific" value="3GPP"> <avp code="3GPP-User-Location-Info" type="octets" value="0102F810631EDB83"/> </avp>
+	    </sendMessageRADIUS>
+	</scenario>
+	

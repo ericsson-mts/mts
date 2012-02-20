@@ -1,0 +1,117 @@
+<!--
+To use this part of XML code in a scenario,
+- input parameters must be defined and setted locally (by the caller scenario).
+- output parameters may be used in the scenario after the "call".
+
+Input parameters :
+- [Request-URI]  : The Request-URI names the domain of the location service for which the registration is meant (for example, "sip:chicago.com").  The "userinfo" and "@" components of the SIP URI MUST NOT be present.
+- [To]           : value of To           header field.
+- [From]         : value of From         header field without tag parameter.
+- [FromTag]      : value of From tag parameter.
+- [Call-ID]      : value of Call-ID      header field.
+- [CSeq]         : value of CSeq         header field.
+- [Expires]      : value of Expires      header field.
+- [Contact]      : value of Contact      header field.
+- [Max-Forwards] : value of Max-Forwards header field.
+- [Via]          : value of Via          header field without branch parameter.
+- [branchId]     : value of branch parameter.
+- [UserName]     : username-value  for calculating the Digest response directive.
+- [Password]     : user's password for calculating the Digest response directive.
+- [Request-URI]  : Request-URI     for calculating the Digest response directive.
+
+Output parameters :
+- [StatusCode]      : operation="setFromMessage" value="firstline:StatusCode"/>        
+- [WWWAuthRealm]    : operation="setFromMessage" value="header:WWW-Authenticate:Parameter:realm"/>                                                                   
+- [WWWAuthNonce]    : operation="setFromMessage" value="header:WWW-Authenticate:Parameter:nonce"/>                                   
+- [WWWAuthQop]      : operation="setFromMessage" value="header:WWW-Authenticate:Parameter:qop"/>
+- [WWWAuthRealm401] : operation="set"            value="[WWWAuthRealm]" />
+- [WWWAuthNonce401] : operation="set"            value="[WWWAuthNonce]" />
+- [WWWAuthQop401]   : operation="set"            value="[WWWAuthQop]" />
+- [Method]          : operation="set"            value="REGISTER"/>                           
+- [NonceCount]      : operation="set"            value="00000001" />
+- [CNonce]          : operation="set"            value="11fc4a68"/>
+- [HA1]             : operation="digest"         value="[UserName]:[WWWAuthRealm401]:[Password]" value2="MD5"/>
+- [HA2]             : operation="digest"         value="[Method]:[Request-URI]" value2="MD5" />
+- [AuthResponse]    : operation="digest"         value="[HA1]:[WWWAuthNonce401]:[NonceCount]:[CNonce]:[WWWAuthQop401]:[HA2]" value2="MD5" />
+- [newBranchId]     : operation="identifier"     value="newString" value2="10"/>
+- [newCSeq]         : operation="add"            value="[newCSeq]" value2="1"/>      
+- [FromTag]         : operation="identifier"     value="newString" value2="10"/>
+
+
+-->
+  <sendRequestSIP name="Send REGISTER">
+<![CDATA[
+REGISTER [Request-URI] SIP/2.0
+To: [To]
+From: [From];tag=[FromTag]
+Call-ID:[Call-ID]
+CSeq: [CSeq] REGISTER
+Expires:[Expires]
+Contact: [Contact]
+Max-Forwards: [Max-Forwards]
+Via: [Via];branch=[magicCookie][branchId]
+Content-Length: 0
+]]>
+  </sendRequestSIP>
+
+  <label name="REGISTER"/>
+  <receiveResponseSIP name="receive REGISTER response" method="REGISTER">
+    <parameter name="[StatusCode]" operation="setFromMessage" value="firstline:StatusCode"/>        
+
+    <parameter name="[WWWAuthRealm]" operation="setFromMessage" value="header:WWW-Authenticate:Parameter:realm"/>                                                                   
+    <parameter name="[WWWAuthNonce]" operation="setFromMessage" value="header:WWW-Authenticate:Parameter:nonce"/>                                   
+    <parameter name="[WWWAuthQop]"   operation="setFromMessage" value="header:WWW-Authenticate:Parameter:qop"/>
+  </receiveResponseSIP>
+
+  <if>
+    <condition>
+      <test parameter="[StatusCode]" condition="equals" value="401" />
+    </condition>
+    <then>  
+      <parameter name="[WWWAuthRealm401]" operation="set" value="[WWWAuthRealm]" />
+      <parameter name="[WWWAuthNonce401]" operation="set" value="[WWWAuthNonce]" />
+      <parameter name="[WWWAuthQop401]"   operation="set" value="[WWWAuthQop]" />
+
+      <parameter name="[Method]"     operation="set" value="REGISTER"/>                           
+      <parameter name="[NonceCount]" operation="set" value="00000001" />
+      <parameter name="[CNonce]"     operation="set" value="11fc4a68"/>
+
+      <parameter name="[HA1]"          operation="digest" value="[UserName]:[WWWAuthRealm401]:[Password]" value2="MD5"/>
+      <parameter name="[HA2]"          operation="digest" value="[Method]:[Request-URI]" value2="MD5" />
+      <parameter name="[AuthResponse]" operation="digest" value="[HA1]:[WWWAuthNonce401]:[NonceCount]:[CNonce]:[WWWAuthQop401]:[HA2]" value2="MD5" />
+
+      <parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+      <parameter name="[newCSeq]"     operation="add"        value="[newCSeq]" value2="1"/>      
+      <parameter name="[FromTag]"     operation="identifier" value="newString" value2="10"/>
+
+      <sendRequestSIP name="Send REGISTER">
+<![CDATA[               
+REGISTER [Request-URI] SIP/2.0
+To: [To]
+From: [From];tag=[FromTag]
+Call-ID:[Call-ID]
+CSeq: [newCSeq] REGISTER
+Expires:[Expires]
+Contact: [Contact]
+Max-Forwards: [Max-Forwards]
+Via: [Via];branch=[magicCookie][newBranchId]
+Authorization: Digest username="[UserName]", realm="[WWWAuthRealm401]", nonce="[WWWAuthNonce401]", algorithm=MD5, opaque="", uri="[Request-URI]", response="[AuthResponse]", cnonce="[CNonce]", qop=[WWWAuthQop401], nc=[NonceCount]
+Content-Length: 0
+]]>
+      </sendRequestSIP>       
+      <goto label="REGISTER" name="loop : wait 200 OK"  state="true"/>
+    </then>
+    <else>
+      <if>
+        <condition>
+          <test parameter="[StatusCode]" condition="equals" value="200" />
+        </condition>
+        <then>
+          <!-- Continue -->
+        </then>
+        <else>
+          <goto label="REGISTER" name="loop : wait 200 OK"  state="true"/>
+        </else>
+      </if> 
+    </else>
+  </if>

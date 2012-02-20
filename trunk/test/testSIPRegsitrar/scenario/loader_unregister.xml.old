@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE Library [
+ <!ENTITY initvarStatsParam SYSTEM "./initvarStatsParam.xml">
+]>
+<scenario>
+	&initvarStatsParam;
+
+	<if>
+	    <condition>
+	    	<test parameter="[testcase:indexReg]" condition="list.exists" not="true"/>       	     
+    	</condition>
+        <then>
+	        <parameter name="[testcase:indexReg]" operation="set" value="0"/>
+        </then>
+    </if>
+
+	<parameter name="[testcase:indexReg]" operation="number.add" value="[testcase:indexReg]" value2="1"/>    			
+	<parameter name="[allUserRegisteredOnce]" operation="number.substract" value="[RangeNumberUser]" value2="1"/> 
+	<!--parameter name="[allUserRegisteredOnce]" operation="number.divide" value="[RangeNumberUser]" value2="2"/-->    	   	
+    <if>
+	    <condition>
+			<or>
+		    <test parameter="[testcase:indexReg]" condition="number.equals" value="[allUserRegisteredOnce]"/>      
+    		<test parameter="[testcase:indexReg]" condition="number.greaterThan" value="[allUserRegisteredOnce]"/>    
+			</or>
+   	    </condition>
+    	<then>		   	
+	    	<parameter name="[test:startCall]" operation="system.semaphorenotify" value="2"/>
+			<!--<parameter name="[test:receive]" operation="system.semaphorenotify"/> -->
+	    </then>
+	</if>
+	
+	    <if>
+	    <condition>
+    		<test parameter="[testcase:indexReg]" condition="number.greaterThan" value="[RangeNumberUser]"/>    
+   	    </condition>
+    	<then>
+	    	<parameter name="[testcase:indexReg]" operation="set" value="1"/>				   	
+	    </then>
+	</if>
+	
+	
+	<parameter name="[ModuloIndexReg]" operation="number.modulo" value="[testcase:indexReg]" value2="2"/>
+	<if>
+		<condition>
+			<test parameter="[ModuloIndexReg]" condition="number.equals" value="0" not="true"/>
+		</condition>	
+		<then>
+			<parameter name="[Port-Tester]" operation="number.substract" value="65536" value2="[testcase:indexReg]"/>
+			<parameter name="[listenpoint]" operation="set" value="listenpoint_[Port-Tester]"/>
+			<createListenpointSIP name="[listenpoint]" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="UDP"/>
+			<parameter name="[listenpoint_Register]" operation="set" value="[listenpoint]"/>
+			<parameter name="[Host-Tester_Register]" operation="set" value="[Host-Tester]"/>
+			<parameter name="[userName]" operation="set" value="[userTab([testcase:indexReg])]"/>
+		</then>
+		<else>
+			<parameter name="[Port-Tester]" operation="number.substract" value="65536" value2="[testcase:indexReg]"/>
+			<parameter name="[listenpoint_called]" operation="set" value="listenpoint_called_[Port-Tester]"/>
+			<createListenpointSIP name="[listenpoint_called]" localHost="[Host-Tester_called]" localPort="[Port-Tester]" transport="UDP"/>
+			<parameter name="[listenpoint_Register]" operation="set" value="[listenpoint_called]"/>
+			<parameter name="[Host-Tester_Register]" operation="set" value="[Host-Tester_called]"/>
+			<parameter name="[userName]" operation="set" value="[userTab([testcase:indexReg])]"/>
+		</else>
+	</if>
+		
+  	<parameter name="[userNumberPhone]" operation="set" value="[userTabNP([testcase:indexReg])]"/>
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/> 
+	<!--parameter name="[URI]" operation="set" value="sip:[userName]@[domainName]" /-->
+	<parameter name="[URI]" operation="set" value="sip:[domainName]" />
+	
+	<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint_Register]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+<![CDATA[
+REGISTER [URI] SIP/2.0
+To: "[userName]" <sip:+[userNumberPhone]@[domainName]>
+From: "[userName]" <sip:+[userNumberPhone]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [Host-Tester_Register]:[Port-Tester];branch=z9hG4bK-[newBranchId]
+Contact: <sip:+[userNumberPhone]@[Host-Tester_Register]:[Port-Tester]>
+Expires: 0
+Max-Forwards: 70
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+<stats>
+<counter name="UNREG out"><increase>1</increase></counter>
+</stats>
+
+</scenario>

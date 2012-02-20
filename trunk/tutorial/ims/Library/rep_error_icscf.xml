@@ -1,0 +1,16 @@
+<!--recupere le no de Cseq et l URI-->
+<parameter name="[lastCseqNumber]" 	operation="setFromMessage" 	value="header:CSeqNumber" 	value2="[lastMessage]" />
+<parameter name="[lastURI]" 		operation="setFromMessage" 	value="firstline:URI"		value2="[lastMessage]"/>	
+
+<sendRequestSIP name="ACK_request" providerName="[scenarioName]">
+<![CDATA[ACK [lastURI] SIP/2.0 
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCall-ID]
+[route[lastCall-ID]]
+[Via]
+Max-Forward: 70
+Cseq: [numberCseq] ACK
+Content-Length: 0
+]]>
+</sendRequestSIP> 	

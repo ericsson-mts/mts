@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <parameter name="[test:RADIUSsocketName[index]]" operation="set" value="client[index]"/>
+    <createListenpointRADIUS name="[test:RADIUSsocketName[index]]" localPort="3000[index]" secret="[radius_secret]"/>
+
+    <!-- search an msisdn which is not already taken -->
+    <!-- search is block with semaphore to not taken the same msisdn two times by two different testcases -->
+    <parameter name="[test:msisdn_mutex]"   operation="system.semaphoreWait"/>
+    <parameter name="[currentMsisdnSet]" operation="set" value="false"/>
+    <while>
+        <condition>
+            <test parameter="[currentMsisdnSet]" condition="boolean.equals" value="false"/>
+        </condition>
+        <do>
+            <if>
+            <condition>
+                <test parameter="[[test:msisdnIndex]]" condition="list.exists"/>
+            </condition>
+            <then><!-- if msisdn is already taken -->
+                <parameter name="[test:msisdnIndex]" operation="number.add" value="[test:msisdnIndex]" value2="1"/>
+                <if>
+                    <condition>
+                        <test parameter="[test:msisdnIndex]" condition="number.greaterThan" value="[msisdnMax]"/>
+                    </condition>
+                    <then>
+                        <parameter name="[test:msisdnIndex]" operation="set" value="[msisdnMin]"/>
+                    </then>
+                </if>
+            </then>
+            <else>
+                <parameter name="[[test:msisdnIndex]]" operation="set" value="[test:msisdnIndex]"/>
+                <parameter name="[msisdn]" operation="set" value="0[test:msisdnIndex]"/>
+                <parameter name="[currentMsisdnSet]" operation="set" value="true"/>
+                <parameter name="[test:msisdnIndex]" operation="number.add" value="[test:msisdnIndex]" value2="1"/>
+                <if>
+                    <condition>
+                        <test parameter="[test:msisdnIndex]" condition="number.greaterThan" value="[msisdnMax]"/>
+                    </condition>
+                    <then>
+                        <parameter name="[test:msisdnIndex]" operation="set" value="[msisdnMin]"/>
+                    </then>
+                </if>
+            </else>
+            </if>
+        </do>
+    </while>
+
+    <parameter name="[test:msisdn_mutex]"    operation="system.semaphoreNotify"/>
+
+    <parameter name="[33msisdn]"             operation="string.regexMatches" value="[msisdn]" value2="[0-9]{9}$" />
+    <parameter name="[calling_station_id]"   operation="set" value="33[33msisdn]"/>
+    <parameter name="[test:Acct-Session-Id]" operation="number.uid"/>
+    
+    <!-- search an ip which is not already taken -->
+    <!-- search is block with semaphore to not taken the same ip two times by two different testcases -->
+    <parameter name="[test:ip_mutex]"   operation="system.semaphoreWait"/>
+    <parameter name="[currentIPSet]" operation="set" value="false"/>
+    <while>
+        <condition>
+            <test parameter="[currentIPSet]" condition="boolean.equals" value="false"/>
+        </condition>
+        <do>
+            <if>
+            <condition>
+                <test parameter="[[test:ipIndex]]" condition="list.exists"/>
+            </condition>
+            <then><!-- if ip is already taken -->
+                <parameter name="[test:fourthIPOctetsIndex]" operation="number.add" value="[test:fourthIPOctetsIndex]" value2="1"/>
+
+                <if>
+                    <condition>
+                        <test parameter="[test:fourthIPOctetsIndex]" condition="number.greaterThan" value="[fourthIPOctetsMax]"/>
+                    </condition>
+                    <then>
+                        <parameter name="[test:fourthIPOctetsIndex]" operation="set" value="[fourthIPOctetsMin]"/>
+                        <parameter name="[test:thirdIPOctetsIndex]" operation="number.add" value="[test:thirdIPOctetsIndex]" value2="1"/>
+                        <if>
+                            <condition>
+                                <test parameter="[test:thirdIPOctetsIndex]" condition="number.greaterThan" value="[thirdIPOctetsMax]"/>
+                            </condition>
+                            <then>
+                                <parameter name="[test:thirdIPOctetsIndex]" operation="set" value="[thirdIPOctetsMin]"/>
+                            </then>
+                        </if>
+                    </then>
+                </if>
+                <parameter name="[test:ipIndex]" operation="set" value="[firstIPOctets].[test:thirdIPOctetsIndex].[test:fourthIPOctetsIndex]"/>
+            </then>
+            <else>
+                <parameter name="[test:ipIndex]" operation="set" value="[firstIPOctets].[test:thirdIPOctetsIndex].[test:fourthIPOctetsIndex]"/>
+                <parameter name="[[test:ipIndex]]" operation="set" value="[firstIPOctets].[test:thirdIPOctetsIndex].[test:fourthIPOctetsIndex]"/>
+                <parameter name="[ip]" operation="set" value="[test:ipIndex]"/>
+                <parameter name="[currentIPSet]" operation="set" value="true"/>
+                <parameter name="[test:fourthIPOctetsIndex]" operation="number.add" value="[test:fourthIPOctetsIndex]" value2="1"/>
+                <if>
+                    <condition>
+                        <test parameter="[test:fourthIPOctetsIndex]" condition="number.greaterThan" value="[fourthIPOctetsMax]"/>
+                    </condition>
+                    <then>
+                        <parameter name="[test:fourthIPOctetsIndex]" operation="set" value="[fourthIPOctetsMin]"/>
+                        <parameter name="[test:thirdIPOctetsIndex]" operation="number.add" value="[test:thirdIPOctetsIndex]" value2="1"/>
+                        <if>
+                            <condition>
+                                <test parameter="[test:thirdIPOctetsIndex]" condition="number.greaterThan" value="[thirdIPOctetsMax]"/>
+                            </condition>
+                            <then>
+                                <parameter name="[test:thirdIPOctetsIndex]" operation="set" value="[thirdIPOctetsMin]"/>
+                            </then>
+                        </if>
+                    </then>
+                </if>
+            </else>
+            </if>
+        </do>
+    </while>
+    <parameter name="[test:ip_mutex]"   operation="system.semaphoreNotify"/>
+
+    <!-- send Radius Accounting-Request Start -->
+    <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+    <parameter name="[timestamp]" operation="number.divide" value="[timestamp]" value2="1000"/>
+    <parameter name="[timestamp]" operation="number.floor" value="[timestamp]" />
+
+    <sendMessageRADIUS listenpoint="[test:RADIUSsocketName[index]]" remoteHost="[radius_host]" remotePort="[radius_port]">
+        <!-- Header -->
+        <header code="4"/>
+        <!-- AVPs -->
+        <!--Acct-Status-Type(40) -->
+        <avp code="40" value="Start"/>
+        <!-- User-Name (1) -->
+        <avp code="1" value="[msisdn]"/><!-- old value [msisdn]-->
+        <!-- NAS-IP-Address(4) -->
+        <avp code="4" value="[nas_ip_address]"/>
+        <!-- NAS-Port(5) -->
+        <!-- <avp code="5" value="[radius_nas_port]"/> -->
+        <!-- Framed-IP-Address(8) -->
+        <avp code="8" value="[ip]"/>
+        <!-- Calling-Station-Id(31) -->
+        <avp code="31" value="[calling_station_id]"/>
+        <!-- Called-Station-Id(30) -->
+        <avp code="30" value="[called_station_id]"/>
+        <!-- Acct-Session-Id(44) -->
+        <avp code="44" value="[Acct-Session-Id]"/>
+        <!-- Event-Timestamp(55) -->
+        <!-- <avp code="55" value="[timestamp]"/> -->
+        <!-- Framed-Protocol(7) -->
+        <avp code="7" value="GPRS-PDP-Context"/>
+        <!-- Vendor-Specific(26) 3GPP-IMSI -->
+        <avp code="26" value="3GPP">
+            <avp code="1" value="[imsi]"/>
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+        <avp code="26" value="3GPP">
+            <avp code="2" value="[3gpp_charging_id]"/>
+        </avp>
+        <avp code="26" value="3GPP">
+            <avp code="3" value="0"/><!-- IPV4 (0)-->
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+        <avp code="26" value="3GPP">
+            <avp code="6" value="[3gpp_sgsn_address]"/>
+        </avp>
+        <avp code="26" value="3GPP">
+            <avp code="20" value="33353739393430313033343330323635"/><!-- IMEISV -->
+        </avp>
+
+        <avp code="26" value="3GPP">
+            <avp code="21" value="01"/><!-- UTRAN -->
+        </avp>
+
+        <avp code="26" value="3GPP">
+            <avp code="22" value="0102F810970378FD"/><!-- UserLocationInfo -->
+        </avp>
+
+        <!-- NAS-Identifier(32) -->
+        <avp code="32" value="[nas_identifier]"/>
+
+        <!-- Service-Type(6) -->
+        <avp code="6" value="Framed-User"/>
+        <!-- NAS-Port-Type(61) -->
+        <avp code="61" value="Virtual"/>
+        <!-- Vendor-Specific(26) 3GPP-GGSN-Address -->
+        <avp code="26" value="3GPP">
+            <avp code="7" value="212.234.96.26"/>
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-Gharging-Characteristics-->
+        <avp code="26" value="3GPP">
+            <avp code="13" value="0800"/>
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-SGSN-MMC-MNC-->
+        <avp code="26" value="3GPP">
+            <avp code="18" value="20801"/>
+        </avp>
+        <!-- Acct-Authentic(45)-->
+        <avp code="45" value="Local"/>
+        <!-- Acct-Delay-Time(41)-->
+        <avp code="41" value="0"/>
+    </sendMessageRADIUS>
+
+    <receiveMessageRADIUS listenpoint="[test:RADIUSsocketName[index]]" name="Wait Access or Accounting Request" request="false"/>
+
+    <!-- send Radius Accounting-Request Stop -->
+    <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+    <parameter name="[timestamp]" operation="number.divide" value="[timestamp]" value2="1000"/>
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="[delay]"/>
+    <parameter name="[timestamp]" operation="number.floor" value="[timestamp]" />
+
+    <sendMessageRADIUS listenpoint="[test:RADIUSsocketName[index]]" remoteHost="[radius_host]" remotePort="[radius_port]" delay="[delay]">
+        <!-- Header -->
+        <header code="4"/>
+
+        <!-- AVPs -->
+        <!--Acct-Status-Type(40) -->
+        <avp code="40" value="Stop"/>
+
+        <!-- User-Name (1) -->
+        <avp code="1" value="[msisdn]"/>
+
+        <!-- NAS-IP-Address(4) -->
+        <avp code="4" value="[nas_ip_address]"/>
+
+        <!-- NAS-Port(5) -->
+        <avp code="5" value="[radius_nas_port]"/>
+
+        <!-- Framed-IP-Address(8) -->
+        <avp code="8" value="[ip]"/>
+
+        <!-- Calling-Station-Id(31) -->
+        <avp code="31" value="[calling_station_id]"/>
+
+        <!-- Called-Station-Id(30) -->
+        <avp code="30" value="[called_station_id]"/>
+
+        <!-- Acct-Session-Id(44) -->
+        <avp code="44" value="[Acct-Session-Id]"/>
+
+        <!-- Event-Timestamp(55) -->
+        <avp code="55" value="[timestamp]"/>
+
+        <!-- Framed-Protocol(7) -->
+        <avp code="7" value="GPRS-PDP-Context"/>
+
+        <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+        <avp code="26" value="3GPP">
+          <avp code="2" value="[3gpp_charging_id]"/>
+        </avp>
+
+        <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+        <avp code="26" value="3GPP">
+          <avp code="6" value="[3gpp_sgsn_address]"/>
+        </avp>
+
+        <!-- NAS-Identifier(32) -->
+        <avp code="32" value="[nas_identifier]"/>
+    </sendMessageRADIUS>
+
+</scenario> 

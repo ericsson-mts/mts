@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE Library [
+  <!ENTITY REGISTER_MD5      SYSTEM "..\Library\REGISTER_MD5.xml">
+  <!ENTITY Refresh_SUBSCRIBE SYSTEM "..\Library\Refresh_SUBSCRIBE.xml">
+  <!ENTITY UnREGISTER_MD5    SYSTEM "..\Library\UnREGISTER_MD5.xml">
+]>
+<!-- name="REGISTER-INVITE-RTP-INVITE-RTP-BYE-UNREGISTER" -->
+<scenario>
+<!-- Send REGISTER until 200 OK is received. Perform MD5 algorithm on a 401 response. -->
+<!-- Wait invitee. -->
+
+<!-- Send SUBSCRIBE. -->
+<!-- Receive 200 OK SUBSCRIBE. -->
+
+<!-- Receive NOTIFY. -->
+<!-- Send 200 OK NOTIFY. -->
+
+<!-- Send UNREGISTER until 200 OK is received. Perform MD5 algorithm on a 401 response. -->
+
+  <!-- REGISTER -->
+  <parameter name="[UserName]"    operation="set" value="[UserPrivIdSubscriber1]@[domainName]"/>           
+  <parameter name="[Password]"    operation="set" value="imt30imt30"/>                       
+  <parameter name="[Request-URI]" operation="set" value="sip:[domainName]" />
+
+  <parameter name="[FromTag]"     operation="identifier" value="newString"   value2="10"/>
+  <parameter name="[newCallId]"   operation="identifier" value="nextInteger" value2="Inutile"/>
+  <parameter name="[newCSeq]"     operation="identifier" value="nextInteger" value2="Inutile"/>
+  <parameter name="[MaxForwards]" operation="set"        value="70"/>
+  <parameter name="[newBranchId]" operation="identifier" value="newString"   value2="10"/>
+
+  <!-- XML : '<' <=> &lt; '>' <=> &gt; not allowed in "value" attribute -->
+  <parameter name="[To]"           operation="set"        value='"[inviter]" &lt;sip:[inviter]@[domainName]&gt;'/>
+  <parameter name="[From]"         operation="set"        value='"[inviter]" &lt;sip:[inviter]@[domainName]&gt;'/>
+  <parameter name="[FromTag]"      operation="identifier" value="newString" value2="10"/>
+  <parameter name="[Call-ID]"      operation="identifier" value="nextInteger"  value2="Inutile"/>
+  <parameter name="[CSeq]"         operation="identifier" value="nextInteger"  value2="Inutile"/>
+  <parameter name="[Expires]"      operation="set"        value="3600"/>
+  <parameter name="[Contact]"      operation="set"        value="&lt;sip:[inviter]@[ipAddressSip]:[portSip]&gt;"/>
+  <parameter name="[Max-Forwards]" operation="set"        value="[MaxForwards]"/>
+  <parameter name="[Via]"          operation="set"        value="SIP/2.0/UDP [ipAddressSip]:[portSip]"/>
+  <parameter name="[branchId]"     operation="identifier" value="newString"    value2="10"/>
+  &REGISTER_MD5;
+
+  <!--semaphore name="WaitREGISTERInviter" action="notify"/>
+  <semaphore name="WaitREGISTERInvitee" action="wait"/-->
+
+  <!-- SUBSCRIBE -->
+  <parameter name="[FromTag]"     operation="identifier" value="newString"    value2="10"/>
+  <parameter name="[Call-ID]"     operation="identifier" value="nextInteger"  value2="Inutile"/>
+  <parameter name="[CSeq]"        operation="identifier" value="nextInteger"  value2="Inutile"/>
+  <parameter name="[newBranchId]" operation="identifier" value="newString"    value2="10"/>
+  <parameter name="[MaxForwards]" operation="set"        value="70"/>
+  <parameter name="[Subscriber]"  operation="set"        value="[test:Subscriber]" description="Num de tel de l'appelant"/>
+  &Refresh_SUBSCRIBE;
+
+  <!-- UnREGISTER -->
+  <!-- XML : '<' <=> &lt; '>' <=> &gt; not allowed in "value" attribute -->
+  <!--parameter name="[To]"           operation="set" value='"[inviter]" &lt;sip:[inviter]@[domainName]&gt;'/-->
+  <!--parameter name="[From]"         operation="set" value='"[inviter]" &lt;sip:[inviter]@[domainName]&gt;'/-->
+  <!--parameter name="[FromTag]"      operation="identifier" value="newString"    value2="10"/-->
+  <parameter name="[Call-ID]"      operation="identifier" value="nextInteger"  value2="Inutile"/>
+  <parameter name="[CSeq]"         operation="identifier" value="nextInteger"  value2="Inutile"/>
+  <!--parameter name="[Max-Forwards]" operation="set" value="[MaxForwards]"/-->
+  <!--parameter name="[Via]"          operation="set" value="SIP/2.0/UDP [ipAddressSip]:[portSip]"/-->
+  <parameter name="[branchId]"     operation="identifier" value="newString"    value2="10"/>
+
+  <parameter name="[AuthUserName]"  operation="set" value='"[UserName]"'/>
+  <parameter name="[AuthRealm]"     operation="set" value='"[WWWAuthRealm401]"'/>
+  <parameter name="[AuthNonce]"     operation="set" value='"[WWWAuthNonce401]"'/>
+  <parameter name="[AuthAlgorithm]" operation="set" value="MD5"/>
+  <parameter name="[AuthOpaque]"    operation="set" value='""'/>
+  <parameter name="[AuthURI]"       operation="set" value='"[Request-URI]"'/>
+  <parameter name="[AuthResponse]"  operation="set" value='"[AuthResponse]"'/>
+  <parameter name="[AuthCnonce]"    operation="set" value='"[CNonce]"'/>
+  <parameter name="[AuthQop]"       operation="set" value="[WWWAuthQop401]"/>
+  <parameter name="[AuthNc]"        operation="set" value="[NonceCount]"/>
+<!--  &UnREGISTER_MD5;-->
+
+</scenario>

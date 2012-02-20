@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!-- Pense bete SWE
+non interpretation XML de inferieur par    &lt;
+non interpretation XML de superieur par    &gt;
+-->
+
+<!DOCTYPE library [
+<!ENTITY libS_Proxy_Server			SYSTEM "..\library\Bouchon_Proxy_Server.xml">
+<!ENTITY libS_Own_Invite				SYSTEM "..\library\Bouchon_Own_Invite.xml">
+]>
+
+<scenario>
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_IP]" operation="set" value="[Host-Server]"/>
+<parameter name="[provider_Port]" operation="set" value="[Port-Enabler]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localHost="[Host-Enabler]" localPort="[provider_Port]" transport="UDP"/>
+
+<!--
+Semaphore Synchro fin de phase d'initialisation
+-->
+<parameter name="[test:FIN_Init_Loader_vers_Bouchon]" operation="semaphore.wait" value="1" value2="0"/>
+
+<parameter name="[newRoute_IP]" operation="set" value="[Host-Tester]"/>
+<parameter name="[newRoute_Port]" operation="set" value="[Port-Subs_B]"/>
+<parameter name="[called_Subscriber]" operation="set" value="OWN_CALL_0_MFR_A"/>
+<parameter name="[expected_Scenario]" operation="set" value="PROXY"/>
+
+<!-- Proxy de l'INVITE -->
+<log level="1"> PROXY_THE_INVITE </log>
+&libS_Proxy_Server;
+<!-- Filtrage du 100 - SWESWE a confirmer -->
+<log level="1"> NOT_PROXY_THE_100 </log>
+&libS_Proxy_Server;
+<!-- Proxy du 180 -->
+<log level="1"> PROXY_THE_180 </log>
+&libS_Proxy_Server;
+<!-- Proxy du 200 ok -->
+<log level="1"> PROXY_THE_200 </log>
+&libS_Proxy_Server;
+<!-- Proxy du ACK -->
+<log level="1"> PROXY_THE_ACK </log>
+&libS_Proxy_Server;
+
+
+<openConnectionHTTP connectionName="Notification_to_AS" localHost="[Host-Enabler]" remoteURL="http://[Host-Tester]:[Port-AS]"/> 
+    	                	        	        
+<sendRequestHTTP name="Send POST" server="http://[Host-Tester]:[Port-AS]" delay="0">
+
+<![CDATA[
+POST /mockCallNotification HTTP/1.1
+Content-Type: text/xml; charset=UTF-8
+SOAPAction: ""
+Accept: *
+User-Agent: XMLLoader
+Host: [Host-Tester]
+Connection: Keep-Alive
+Content-Length: x
+
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+<soap:Body><ns2:notifyCallEvent xmlns:ns2="http://www.csapi.org/schema/parlayx/call_notification/v3_2/local">
+<ns2:correlator>toto2</ns2:correlator>
+<ns2:eventNotified><CallEvent>CalledNumber</CallEvent><Description>no description</Description></ns2:eventNotified>
+<ns2:callingParticipant>sip:33975630254@10.194.124.162</ns2:callingParticipant>
+<ns2:callingTerminal></ns2:callingTerminal><ns2:callingParticipantName></ns2:callingParticipantName>
+<ns2:calledParticipant>sip:33975630255@10.194.124.162</ns2:calledParticipant>
+<ns2:calledTerminal></ns2:calledTerminal>
+<ns2:callSessionIdentifier>app-1qp6q7godwsq9|CALL_ID13_00D0E90206BE_T205963172@10.194.124.215|7265350063ccdfc3</ns2:callSessionIdentifier>
+</ns2:notifyCallEvent>
+</soap:Body>
+</soap:Envelope>
+]]>
+	
+</sendRequestHTTP>
+
+
+<receiveResponseHTTP result="200" timeout="5"/>
+
+
+<!-- Proxy du BYE -->
+<log level="1"> PROXY_THE_BYE </log>
+&libS_Proxy_Server;
+<log level="1"> PROXY_THE_200ok_du_BYE </log>
+&libS_Proxy_Server;
+
+<sendRequestHTTP name="Send POST" server="http://[Host-Tester]:[Port-AS]" delay="0">
+
+<![CDATA[
+POST /mockCallNotification HTTP/1.1
+Content-Type: text/xml; charset=UTF-8
+SOAPAction: ""
+Accept: *
+User-Agent: XMLLoader
+Host: [Host-Tester]
+Connection: Keep-Alive
+Content-Length: x
+
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+<soap:Body><ns2:notifyCallEvent xmlns:ns2="http://www.csapi.org/schema/parlayx/call_notification/v3_2/local">
+<ns2:correlator>toto2</ns2:correlator>
+<ns2:eventNotified><CallEvent>CalledNumber</CallEvent><Description>no description</Description></ns2:eventNotified>
+<ns2:callingParticipant>sip:33975630254@10.194.124.162</ns2:callingParticipant>
+<ns2:callingTerminal></ns2:callingTerminal><ns2:callingParticipantName></ns2:callingParticipantName>
+<ns2:calledParticipant>sip:33975630255@10.194.124.162</ns2:calledParticipant>
+<ns2:calledTerminal></ns2:calledTerminal>
+<ns2:callSessionIdentifier>app-1qp6q7godwsq9|CALL_ID13_00D0E90206BE_T205963172@10.194.124.215|7265350063ccdfc3</ns2:callSessionIdentifier>
+</ns2:notifyCallEvent>
+</soap:Body>
+</soap:Envelope>
+]]>
+	
+</sendRequestHTTP>
+
+
+<receiveResponseHTTP result="200" timeout="5"/>
+
+<closeConnectionHTTP connectionName="Notification_to_AS"/>
+
+<closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/>
+
+</scenario>

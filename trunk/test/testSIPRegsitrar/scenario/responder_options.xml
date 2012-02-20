@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE Library [
+ <!ENTITY initvarStatsParam SYSTEM "./initvarStatsParam.xml">
+]>
+<scenario>
+&initvarStatsParam;
+<parameter name="[alwaysTrue]" operation="set" value="true"/>
+
+<while>
+ <condition>  <test parameter="[alwaysTrue]" condition="string.equals" value="true"/> </condition>
+ <do>
+
+	<!--  ################# RECEIVE A SIP MESSAGE  ################ --> 
+	<!--  ################################################## -->
+	<parameter name="[received]" operation="set" value="false"/>
+	<receiveMessageSIP name="wait_SIP_request" timeout="[MaxWaitSIPMessage]" failedOnTimeout="false">
+	<parameter name="[received]" operation="set" value="true"/>
+	<parameter name="[lastListenpoint]" operation="protocol.setFromMessage" value="listenpoint.name"/> 
+	<parameter name="[lastListenpointHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/> 
+	<parameter name="[lastListenpointPort]" operation="protocol.setFromMessage" value="listenpoint.localPort"/> 
+	<parameter name="[lastMethod]" operation="protocol.setFromMessage" value="message:type"/> 
+	<parameter name="[lastIsRequest]" operation="protocol.setFromMessage" value="message.request"/>
+	<parameter name="[lastResult]" operation="protocol.setFromMessage" value="message.result"/>
+	<parameter name="[firstlineStatusCode]" operation="protocol.setFromMessage" value="firstline:StatusCode"/>
+	 <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header:To"/>   
+	<parameter name="[lastToUser]" operation="protocol.setFromMessage" value="header.To.Address.URI.User"/>	 
+	 <parameter name="[lastToHost]" operation="protocol.setFromMessage" value="header.To.Address.URI.Host"/>      
+	 <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header:From"/>   
+	 <parameter name="[lastFromUser]" operation="protocol.setFromMessage" value="header.From.Address.URI.User"/>
+	 <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header:Call-Id"/>
+	 <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header:CSeq"/>
+	<parameter name="[lastCSeqNumber]" operation="protocol.setFromMessage" value="header:CSeq:Number"/>
+	 <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header:Via"/>
+	 <parameter name="[lastRecordRoute]" operation="protocol.setFromMessage" value="header:Record-Route"/>
+	 <parameter name="[lastRouteUser]" operation="protocol.setFromMessage" value="header.Route.Address.URI.User"/>
+	 <parameter name="[AuthRealm]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.realm"/>
+	<parameter name="[AuthNonce]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.nonce"/>                                   
+	<parameter name="[AuthQop]"   operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.qop"/>
+	<parameter name="[lastMessage]" operation="protocol.setFromMessage" value="message"/>
+	</receiveMessageSIP>
+
+	<!-- Condition pour arret du scenario  : pas de message recu sur expiration de tempo --> 
+	<if> <condition> <test parameter="[received]" condition="string.equals" value="false"/> </condition>
+	<then>	<exit name="exit" failed="false"/> </then>	    
+	</if>
+
+	<if> <condition> <test parameter="[lastIsRequest]" condition="string.equals" value="true"/>	</condition>
+	<then>
+<!-- ##################################"
+		SI REQUEST RECU
+		################################## -->
+
+	<switch parameter="[lastMethod]">
+	 <case equals="BYE">
+	</case> 
+	<case equals="ACK">
+	</case> 
+	<!-- ###################
+                #                OPTIONS
+                ##################-->
+	<case equals="OPTIONS">
+		<parameter name="[newToTag]" operation="string.random" value="10"/>
+		<!-- pause name="pause" seconds="100" state="true"/ -->
+		 	<sendMessageSIP name="Send answer options" delay="0" listenpoint="[lastListenpoint]" 
+					remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">				
+<![CDATA[
+SIP/2.0 200 OK
+To: <sip:[lastToUser]@[lastToHost]>;tag=[newToTag]
+From: [lastFrom]
+Via: [lastVia]
+Record-Route: [lastRecordRoute]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[lastToUser]@[lastListenpointHost]:[lastListenpointPort]>[200optionsContact]
+Max-Forwards: 70
+Server: [userAgent]
+Accept: [200optionsAccept]
+Accept-Contact: [200optionsAcceptContact]
+Allow: [200optionsAllow]
+Supported: [200optionsSupported]
+]]>
+		</sendMessageSIP>
+<!-- Pas supporte quand il y a le HiQ
+<![CDATA[
+SIP/2.0 200 OK
+To: <sip:[lastToUser]@[domainName]>;tag=[newToTag]
+From: [lastFrom]
+Via: [lastVia]
+Record-Route: [lastRecordRoute]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[lastToUser]@[lastListenpointHost]:[lastListenpointPort]>[200optionsContact]
+Max-Forwards: 70
+Server: [userAgent]
+Accept: [200optionsAccept]
+Accept-Contact: [200optionsAcceptContact]
+Allow: [200optionsAllow]
+Supported: [200optionsSupported]
+Content-Type: application/sdp
+Content-Length: x
+
+[200optionsSdpContent]
+]]>
+--> 
+			<stats>
+				<!--counter name="OPTIONSlost"><decrease>1</decrease></counter-->		
+				<counter name="OPTIONSin"><increase>1</increase></counter>
+				<!--counter name="OPTIONS2xxOut"><increase>1</increase></counter-->		
+				<!--counter name="OPTIONS2xxlost"><increase>1</increase></counter-->						
+			</stats>
+			
+	</case> 
+	<!-- ###################
+                #                 (re_)INVITE
+                ##################--> 
+	<case equals="INVITE">	
+	</case>
+	<!-- ###################
+                #                 CANCEL
+                ################### -->    
+	<case equals="CANCEL">
+	</case>
+	<!-- ###################
+                #                 UPDATE
+                ################### -->                            
+	<case equals="UPDATE">
+	</case>
+	<case equals="PUBLISH">
+	</case>
+	<case equals="SUBSCRIBE">
+	</case>
+	<case equals="NOTIFY">
+	</case>
+	<case equals="INFO">
+	</case>
+	 <default>
+		<!-- Wooooups  --> 
+	 </default>
+	</switch>
+	
+	</then>
+	<else>
+<!-- ##################################"
+		SI RESPONSES RECU
+		################################## -->
+
+	<switch parameter="[lastResult]">
+	<case matches="[1][0-9][0-9]">
+			<stats>
+				<counter name="OPTIONS1XX_In"><increase>1</increase></counter>					
+			</stats>
+	
+	</case> 
+	<case matches="407">
+			<!--parameter name="[newFromTag]" operation="string.random" value="10"/-->
+			<parameter name="[URI]" operation="set" value="sip:[lastToUser]@[lastToHost]" />
+			<!-- CALCULATE RESPONSE -->
+			<parameter name="[Method]" operation="set" value="OPTIONS"/>				
+			<parameter name="[HA2]" operation="string.digest" value2="MD5" value="[Method]:[URI]" />
+			<parameter name="[NonceCount]" operation="set" value="00000001" />
+			<parameter name="[CNonce]"     operation="set" value="5c0b2" />
+			<parameter name="[newBranchId]" operation="string.random" value="10"/>
+			<parameter name="[HA1]" operation="string.digest" value2="MD5" value="[lastFromUser]@[domainName]:[AuthRealm]:[Password]"/>
+			<parameter name="[AuthResponse]" operation="string.digest" value2="MD5" value="[HA1]:[AuthNonce]:[NonceCount]:[CNonce]:[AuthQop]:[HA2]" />
+			<parameter name="[CseqNumber]" operation="number.add" value="[lastCSeqNumber]" value2="1"/>
+
+			<!--if> <condition> <test parameter="[lastFromUser]" condition="string.startswith" value="00" />   </condition>
+			<then>
+				<parameter name="[finNum]" operation="string.substring" value="[lastFromUser]" value2="2"/>				
+				<parameter name="[index_number_phone]" operation="list.find" value="[userTab]" value2="+[finNum]"/>	
+			</then>
+			<else>
+				<parameter name="[index_number_phone]" operation="list.find" value="[userTab]" value2="[lastFromUser]"/>	
+			</else>
+			</if-->		   
+		
+	
+			<sendMessageSIP name="Send options auth" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+OPTIONS sip:[lastToUser]@[lastToHost] SIP/2.0
+To: <sip:[lastToUser]@[lastToHost]>
+From: [lastFrom]
+Record-Route: [lastRecordRoute]
+Call-ID: [lastCallId]
+CSeq: [lastCseq] 
+Via: SIP/2.0/UDP [lastListenpointHost]:[lastListenpointPort];branch=z9hG4bK-[newBranchId]
+Max-Forwards: 70
+User-Agent: [UserAgent]
+Contact: <sip:[lastFromUser]@[lastListenpointHost]:[lastListenpointPort]>
+Proxy-Authorization: Digest username="[lastFromUser]@[domainName]",realm="[AuthRealm]",nonce="[AuthNonce]",uri="[URI]",response="[AuthResponse]",algorithm=MD5,cnonce="[CNonce]",opaque="opaqueData",qop=[AuthQop],nc=[NonceCount]
+]]>
+	</sendMessageSIP>
+
+	</case>
+		<case matches="[4-6][0-9][0-9]">
+			<stats>
+				<counter name="OPTIONSError_in"><increase>1</increase></counter>					
+			</stats>
+				   <log type="Main" level="ERROR">
+		<![CDATA[	    	
+	    	 Resp. #[lastResult] in OPTIONS from "[lastFromUser]" to "[lastToUser]" 
+message : [lastMessage]
+		]]>		
+			</log>
+	</case>
+	<case matches="200">	
+				<stats>
+				<counter name="OPTIONS2xxIn"><increase>1</increase></counter>		
+				<counter name="ActiveSessionOPTIONS"><decrease>1</decrease></counter>			
+				<!--counter name="OPTIONS2xxlost"><decrease>1</decrease></counter-->						
+			</stats>	
+	</case>
+		<case matches="[2][0-9][1-9]">	
+			<stats>
+				<counter name="OPTIONSError_in"><increase>1</increase></counter>					
+			</stats>
+		   <log type="Main" level="ERROR">
+		<![CDATA[	    	
+	    	 Resp. #[lastResult] in OPTIONS from "[lastFromUser]" to "[lastToUser]" 
+message : [lastMessage]
+		]]>		
+			</log>
+	</case>
+ 	<default>
+		   <log type="Main" level="ERROR">
+		<![CDATA[	    	
+	    	Error Default #[lastResult] in OPTIONS from "[lastFromUser]" to "[lastToUser]" 
+message : [lastMessage]
+		]]>		
+			</log>
+		<!-- Wooooups  --> 
+	 </default>
+	</switch>
+</else>
+	</if>
+ </do>
+</while>
+
+</scenario>

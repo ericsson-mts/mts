@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="Functional tests SIP">
+    
+    <parameter name="[Host-Tester]" operation="system.ipaddress"/>
+    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]"/>
+    <parameter name="[Port-Tester]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]"/>	
+   
+    <parameter name="[Host-Server]" operation="system.ipaddress"/>
+    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]"/>
+    <!--parameter name="[Host-Server]" operation="set" value="192.168.0.1"/-->
+    <parameter name="[Port-Server]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[Port-Server]" operation="set" value="7070"/-->
+    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server(0)]:[Port-Server]"/>	
+
+	
+    <!-- transport parameters-->
+    <parameter name="[transportRequest]" operation="set" value="udp"/>
+    <parameter name="[transportResponse]" operation="set" value="udp"/>
+        
+    <!-- timers for the retransmissions-->
+    <parameter name="[retransmitNumber]" operation="set" value="4"/>
+    <parameter name="[RetransTimeout]" operation="set" value="0.5"/>
+        
+    <parameter name="[retransmitTimers(0)]" operation="set" value="500"/>     	
+    <parameter name="[retransmitTimers(1)]" operation="set" value="1000"/>     	
+    <parameter name="[retransmitTimers(2)]" operation="set" value="2000"/>     	
+    <parameter name="[retransmitTimers(3)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(4)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(5)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(6)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(7)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(8)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(9)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(10)]" operation="set" value="4000"/>
+    
+    <testcase name="100_invite_bye" description="test sip" state="true">
+        <scenario name="alice">../../sip/100_sip_invite_bye/UAC.xml</scenario>        
+        <scenario name="bob">../../sip/100_sip_invite_bye/UAS.xml</scenario>
+    </testcase>
+
+    <testcase name="100_invite_404" description="test sip" state="true">
+        <scenario name="alice">../../sip/100_sip_invite_404/UAC.xml</scenario>        
+        <scenario name="bob">../../sip/100_sip_invite_404/UAS.xml</scenario>
+    </testcase>
+
+    <testcase name="100_sip_invite_no200" description="test sip" state="true">
+        <scenario name="alice">../../sip/100_sip_invite_no200/UAC.xml</scenario>        
+        <scenario name="bob">../../sip/100_sip_invite_no200/UAS.xml</scenario>
+    </testcase>
+
+    <testcase name="100_sip_invite_nobye" description="test sip" state="true">
+        <scenario name="alice">../../sip/100_sip_invite_nobye/UAC.xml</scenario>        
+        <scenario name="bob">../../sip/100_sip_invite_nobye/UAS.xml</scenario>
+    </testcase>
+
+    <testcase name="100_sip_invite_cancel" description="test sip" state="true">
+        <scenario name="alice">../../sip/100_sip_invite_cancel/UAC.xml</scenario>
+        <scenario name="bob">../../sip/100_sip_invite_cancel/UAS.xml</scenario>
+    </testcase>
+
+   <testcase name="800_sip_probe_demo" description="test sip" state="false">
+        <scenario name="default">../../sip/800_sip_probe_demo/monitor.xml</scenario>
+    </testcase>
+
+</test>

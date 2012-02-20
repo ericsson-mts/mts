@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="HTTP" description="HTTP regression tests">
+
+    <!-- IP address and port for HTTP protocol -->
+	<parameter name="[Local-Host]" operation="system.ipaddress"/>
+    <parameter name="[Local-Host]" operation="set" value="[Local-Host(0)]"/>
+    <!--parameter name="[Local-Host]" operation="set" value="172.16.21.32"/-->
+	<!--parameter name="[Remote-Port]" operation="file.readproperty" value="http.properties" value2="server.HTTP_PORT"/-->
+	<parameter name="[Local-Port]" operation="set" value="8080"/>
+	<parameter name="[Local-Address]" operation="set" value="[Local-Host]:[Local-Port]"/>	
+
+   	<parameter name="[Remote-Host]" operation="system.ipaddress"/>
+    <parameter name="[Remote-Host]" operation="set" value="[Remote-Host(0)]"/>
+	<!--parameter name="[Remote-Host]" operation="set" value="172.16.21.32"/-->
+	<!--parameter name="[Remote-Port]" operation="file.readproperty" value="http.properties" value2="server.HTTP_PORT"/-->
+	<parameter name="[Remote-Port]" operation="set" value="8080"/>
+	<parameter name="[Remote-Address]" operation="set" value="[Remote-Host]:[Remote-Port]"/>
+
+    <!-- IP address and port for SIP protocol -->
+	<parameter name="[Host-Tester]" operation="system.ipaddress"/>
+    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]"/>
+    <!--parameter name="[Host-Tester]" operation="set" value="172.16.21.32"/-->
+	<parameter name="[Port-Tester]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+	<!--parameter name="[Port-Tester]" operation="set" value="7070"/-->
+	<parameter name="[Address-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]"/>	
+
+   	<parameter name="[Host-Server]" operation="system.ipaddress"/>
+    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]"/>
+	<!-- MARGAUX -->
+    <!--parameter name="[Host-Server]" operation="set" value="ftnp1csas1clfront.sip.mobistar.fr"/-->	        
+	<!--parameter name="[Host-Server]" operation="set" value="172.16.21.32"/-->
+	<parameter name="[Port-Server]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+	<!--parameter name="[Port-Server]" operation="set" value="7070"/-->
+	<parameter name="[Address-Server]" operation="set" value="[Host-Server]:[Port-Server]"/>
+	        
+    <!-- subscriber parameters-->
+    <parameter name="[callingURI]" operation="file.readcsv" value="users.csv" value2="callingURI" />
+    <parameter name="[callingNameStatus]" operation="file.readcsv" value="users.csv" value2="callingNameStatus" />
+    <parameter name="[callingName]" operation="file.readcsv" value="users.csv" value2="callingName" />
+    <parameter name="[callingNamePresIndicator]" operation="file.readcsv" value="users.csv" value2="callingNamePresIndicator" />
+    <parameter name="[userDomain]" operation="set" value="sip.mobistar.com"/>
+
+    <parameter name="[inviterName]" operation="set" value="900030000"/>
+    <parameter name="[inviteeName]" operation="set" value="900020000"/>
+
+    <testcase name="http/soap_server" description="CNIP soap server using the user.csv file to make intelligent response" state="true">
+        <scenario name="HTTP">soap_server/server.xml</scenario>
+    </testcase>
+
+    <testcase name="http/soap_client" description="test the CNIP soap server : right request" state="true">
+        <scenario name="client">soap_client/client.xml</scenario>
+    </testcase>
+
+    <testcase name="http/soap_client_bad" description="test the CNIP soap server : bad request (not in the csv file)" state="true">
+        <scenario name="client">soap_client_bad/client.xml</scenario>
+    </testcase>
+
+    <testcase name="sip/call_orig" description="basic call for originating leg" state="true">
+        <scenario name="UAC">call_orig/UAC.xml</scenario>
+        <scenario name="UAS">call_orig/UAS.xml</scenario>
+    </testcase>
+
+    <testcase name="sip/call_term" description="basic call for terminating leg" state="true">
+        <scenario name="UAC">call_term/UAC.xml</scenario>
+        <scenario name="UAS">call_term/UAS.xml</scenario>
+    </testcase>
+
+    <testcase name="http/soap_client_OK" description="simulate the AS for call OK (send the rigth SOAP request)" state="true">
+        <scenario name="client">soap_client_OK/client.xml</scenario>
+    </testcase>
+
+    <testcase name="sip http/call_OK" description="call standard with HTTP integrated (straigth line)" state="true">
+        <scenario name="HTTP">call_OK/UAC.xml</scenario>
+        <scenario name="UAS">call_OK/UAS.xml</scenario>
+    </testcase>
+
+</test>

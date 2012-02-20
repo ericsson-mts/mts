@@ -1,0 +1,35 @@
+<!-- liste des methodes pour la pile Radius -->
+<!-- Deprecated part -->
+<xs:element name="openSocketRadius"    type="openSocketRadiusType"    minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="closeSocketRadius"   type="closeSocketRadiusType"   minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="sendRequestRadius"          type="sendRequestRadiusType"          minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="receiveRequestRadius"       type="receiveRequestRadiusType"       minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="sendResponseRadius"          type="sendResponseRadiusType"          minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="receiveResponseRadius"       type="receiveResponseRadiusType"       minOccurs="0" maxOccurs="unbounded" />
+<!-- Deprecated part -->
+
+<xs:element name="createListenpointRADIUS" type="createListenpointRADIUSType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To start listening for the RADIUS protocol.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+<xs:element name="removeListenpointRADIUS" type="removeListenpointRADIUSType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To stop listening for the RADIUS protocol.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="sendMessageRADIUS" type="sendMessageRADIUSType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To send a message for the RADIUS protocol using a channel or a listenpoint (user defined or the default one).</xs:documentation>
+    </xs:annotation>
+</xs:element>
+<xs:element name="receiveMessageRADIUS" type="receiveMessageRADIUSType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To wait until a message of the RADIUS protocol is received. The operation fails if no message is received until a given timeout value.</xs:documentation>
+    </xs:annotation>
+</xs:element>

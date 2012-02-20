@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario name="Send REGISTER to Invitee">
+ 	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+	<parameter name="[newCallId]" operation="identifier" value="newInteger" value2="10000000"/>
+	<parameter name="[newCseq]" operation="identifier" value="newInteger" value2="10000000"/>
+  	<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+  	<parameter name="[MaxForwards]" operation="set" value="70"/>
+
+	<sendRequestSIP name="Send REGISTER">
+<![CDATA[
+REGISTER sip:[domainName] SIP/2.0
+To: "[inviter]" <sip:[inviter]@[domainName]>
+From: "[inviter]" <sip:[inviter]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+Expires:0
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/UDP [ipAddressSip]:[portSip];branch=[newBranchId]
+Max-Forwards: [MaxForwards]
+Contact: sip:[inviter]@[ipAddressSip]:[portSip]
+Content-Length: 0
+]]>
+        </sendRequestSIP>
+
+	<receiveResponseSIP name="200 OK" method="REGISTER" result="200">
+	</receiveResponseSIP>
+
+</scenario>
