@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE Library [
+  <!ENTITY register    SYSTEM "../Library\register_provider.xml">
+ ]>
+
+<scenario>
+	<parameter name="[clientName]" operation="set" value="[client_UAS]"/>
+	<parameter name="[clientName2]" operation="set" value="[client_UAC]"/>
+	<parameter name="[100_DOMAIN_ADDR]" operation="set" value="[domaine]"/>
+	<parameter name="[Expires]" 		operation="set" value="3600"/>
+	
+	<parameter name="[LocalHost]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+	<parameter name="[LocalPort]" operation="set" value="[port_UAS]"/>
+	<parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort(0)]"/>	
+	<parameter name="[LocalTransport]" operation="set" value="udp"/>  
+	
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+	
+	&register;
+
+	
+<parameter name="[newCallId]" operation="identifier" value="newInteger" value2="10000000"/>	 
+	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+	<parameter name="[newCseq]" operation="set" value="1"/>			
+	<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+  
+	<sendRequestSIP name="Send Subscribe" providerName="[scenarioName]">
+<![CDATA[SUBSCRIBE sip:[clientName]@[100_DOMAIN_ADDR] SIP/2.0
+Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
+Max-Forwards: 70
+Route: [SCSCF]
+From: "[clientName]"<sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
+To: sip:[clientName]@[100_DOMAIN_ADDR]
+Call-ID: [newCallId]
+CSeq: [newCseq] SUBSCRIBE
+Contact: "[clientName]"<sip:[clientName]@[LocalAddress]>
+User-Agent: [UserAgent]
+Accept: application/reginfo+xml
+Event: reg
+Expires: 3600
+Content-Length: 0
+]]>
+	</sendRequestSIP>
+		
+	<receiveResponseSIP name="Wait 200 OK" method="SUBSCRIBE" result="200">
+	</receiveResponseSIP>
+	
+	<receiveRequestSIP name="Wait NOTIFY" method="NOTIFY">
+		<parameter name="[To]" operation="setFromMessage" value="header:To"/>  	
+		<parameter name="[From]" operation="setFromMessage" value="header:From"/>  	
+		<parameter name="[CallId]" operation="setFromMessage" value="header:Call-Id"/>  	
+		<parameter name="[CSeq]" operation="setFromMessage" value="header:CSeq"/>  	 		
+		<parameter name="[Via]" operation="setFromMessage" value="header:Via"/>
+		<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/> 
+	</receiveRequestSIP>
+	
+	  <sendResponseSIP name="Send 200 OK" providerName="[scenarioName]">
+<![CDATA[SIP/2.0 200 OK
+To: [From]
+From: [To]
+Via: [Via]
+Call-ID: [CallId]
+CSeq: [CSeq]
+Max-Forwards: 70
+Content-Length: 0
+]]>
+  </sendResponseSIP>
+  
+
+
+
+ <parameter name="[Expires]" 		operation="set" value="0"/>
+	
+	
+	&register;
+	
+	
+	
+	  <receiveRequestSIP name="Wait NOTIFY" method="NOTIFY">
+		<parameter name="[To]" operation="setFromMessage" value="header:To"/>  	
+		<parameter name="[From]" operation="setFromMessage" value="header:From"/>  	
+		<parameter name="[CallId]" operation="setFromMessage" value="header:Call-Id"/>  	
+		<parameter name="[CSeq]" operation="setFromMessage" value="header:CSeq"/>  	 		
+		<parameter name="[Via]" operation="setFromMessage" value="header:Via"/>
+		<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/> 
+	</receiveRequestSIP>
+  
+  
+		 <sendResponseSIP name="Send 200 OK" providerName="[scenarioName]">
+<![CDATA[SIP/2.0 200 OK
+To: [From]
+From: [To]
+Via: [Via]
+Call-ID: [CallId]
+CSeq: [CSeq]
+Max-Forwards: 70
+Content-Length: 0
+]]>
+  </sendResponseSIP>
+ 
+	
+</scenario>

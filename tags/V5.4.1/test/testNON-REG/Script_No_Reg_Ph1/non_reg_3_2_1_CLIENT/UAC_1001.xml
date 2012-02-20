@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE library [
+<!ENTITY libS_Service_Server_Simulator			SYSTEM "..\library\libS_Service_Server_Simulator.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph1		SYSTEM "..\library\libS_Subscriber_Response_Simulator_Ph1.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph2		SYSTEM "..\library\libS_Subscriber_Response_Simulator_Ph2.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph3		SYSTEM "..\library\libS_Subscriber_Response_Simulator_Ph3.xml">
+]>
+
+<scenario name="client_1001_non_reg_3_2_1">
+
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_Port]" operation="set" value="[Provider_1001]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localPort="[provider_Port]"/>
+
+<!--
+
+-->
+
+<parameter name="[portSdp_ServiceSide]" operation="set" value="11000"/>
+<parameter name="[service_Nb]" operation="set" value="[subscriber_1001]"/>
+<parameter name="[ipAddressSip_Service]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[portSip_Service]" operation="set" value="[provider_Port]"/>			
+<parameter name="[ipAddressSdp_Service]" operation="set" value="[ipAddressSdp]"/>
+<parameter name="[ipAddressSrc_Service]" operation="set" value="[ipAddressSrc]"/>
+
+<parameter name="[endRtpDialog_Timer]" operation="set" value="1"/>
+<parameter name="[expected_Scenario]" operation="set" value="FULL_SUCCESS_ESTABLISHMENT" />
+<parameter name="[RTP_Flow]" operation="set" value="BOTH_WAYS" />
+
+
+&libS_Subscriber_Response_Simulator_Ph1;
+
+
+&libS_Subscriber_Response_Simulator_Ph2;
+&libS_Subscriber_Response_Simulator_Ph3;
+
+<closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/>
+
+</scenario>

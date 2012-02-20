@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageUCP request="true" type="LegitimisationCodeManagementOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="AdC" operation="protocol.setFromMessage" value="attribute.AdC"/>
+        <parameter name="AC" operation="protocol.setFromMessage" value="attribute.AC"/>
+        <parameter name="LAC" operation="protocol.setFromMessage" value="attribute.LAC"/>
+        <parameter name="L1P" operation="protocol.setFromMessage" value="attribute.L1P"/>
+        <parameter name="L3P" operation="protocol.setFromMessage" value="attribute.L3P"/>
+        <parameter name="LRC" operation="protocol.setFromMessage" value="attribute.LRC"/>
+        <parameter name="LUM" operation="protocol.setFromMessage" value="attribute.LUM"/>
+        <parameter name="LRP" operation="protocol.setFromMessage" value="attribute.LRP"/>
+        <parameter name="LST" operation="protocol.setFromMessage" value="attribute.LST"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[AdC]" condition="number.equals" value="1234"/>
+        <test parameter="[AC]" condition="string.equals" value="abcd"/>
+        <test parameter="[LAC]" condition="string.equals" value=""/>
+        <test parameter="[L1P]" condition="string.equals" value="1"/>
+        <test parameter="[L3P]" condition="string.equals" value="2"/>
+        <test parameter="[LRC]" condition="string.equals" value="3"/>
+        <test parameter="[LUM]" condition="string.equals" value="4"/>
+        <test parameter="[LRP]" condition="string.equals" value="5"/>
+        <test parameter="[LST]" condition="string.equals" value="6"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="LegitimisationCodeManagementOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="SM" value="ca roule:une fois de plus"/>
+    </sendMessageUCP>
+
+</scenario>

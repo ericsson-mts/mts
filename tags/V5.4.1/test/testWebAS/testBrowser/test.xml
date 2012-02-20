@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test name="WebAS load tests">
+	
+    <!-- IP Address and port parameter -->
+    <parameter name="[WebASIp]" operation="set" value="172.16.21.207" editable="true"/>
+    <parameter name="[WebASPort]" operation="set" value="1080" editable="true"/>
+    
+    <!-- default phone number to use-->
+    <parameter name="[intDefaultPhoneNumberMin]" operation="set" value="33296000000"/>
+    <parameter name="[intDefaultPhoneNumberMax]" operation="set" value="33297000000"/>
+    
+    <parameter name="[defaultPhoneNumberMinToCall]" operation="set" value="33298000000"/>
+    <parameter name="[defaultPhoneNumberMaxtoCall]" operation="set" value="33299000000"/>
+    
+    <!-- for client initiator browser request -->
+    <parameter name="[currentPhoneNumber]" operation="set" value="[defaultPhoneNumberMinToCall]"/>
+
+    <!-- time parameter between post notifications -->
+    <parameter name="[longPollingTimeout]" operation="set" value="310" editable="true"/><!-- 240 seconds + delta 10 seconds si WebAS plus lent en charge-->
+    <parameter name="[timePOST1]" operation="set" value="0" editable="true"/><!-- 1temps entre l'enregistrement du WebAS et la sonnerie de l'appellant -->
+    <parameter name="[timePOST2]" operation="set" value="3" editable="true"/><!-- 3temps entre la sonnerie de l'appellant et le moment ou l'appelant decroche-->
+    <parameter name="[timePOST3]" operation="set" value="2" editable="true"/><!-- 2temps entre le decrochage de l'appellant et la sonnerie l'appelle-->
+    <parameter name="[timePOST4]" operation="set" value="5" editable="true"/><!-- 5temps entre la sonnerie de l'appelle et le decrochage de l'appelle-->
+    <parameter name="[timePOST5]" operation="set" value="10" editable="true"/><!-- 10duree de l'appel 300s par exemple-->
+    
+    <parameter name="[nb req/sec]" operation="set" value="2" editable="true"/>
+    <parameter name="[test_duration]" operation="set" value="3600" editable="true"/>
+        
+    <!-- define channel parameter -->
+    <parameter name="[channelNumber]" operation="set" value="0"/>
+    <parameter name="[channelNumberMax]" operation="set" value="100000"/>
+    
+    <!-- define string to check for inital request and end of call -->
+    <parameter name="[initialFirstResponse]" operation="set" value="Click to Phone"/>
+    <parameter name="[endOfCall]" operation="set" value="Appel termin"/>
+    
+    <!-- URL de fichier a recuperer (GET) sur des POST-->
+    <!-- messages suivant la reponse au post id3 -->
+    <parameter name="[state_1_C]" operation="set" value="/images/state_1_C.gif"/>
+    <parameter name="[state_2_B]" operation="set" value="/images/state_2_B.gif"/>
+    <parameter name="[phones_02]" operation="set" value="/images/phones_02.gif"/>
+    <parameter name="[bgd_information]" operation="set" value="/images/bgd_information.gif"/>
+    
+    <!-- messages suivant la reponse au post id4 -->
+    <parameter name="[state_2_C]" operation="set" value="/images/state_2_C.gif"/>
+    <parameter name="[state_3_B]" operation="set" value="/images/state_3_B.gif"/>
+    <parameter name="[phones_03]" operation="set" value="/images/phones_03.gif"/>
+    
+    <!-- messages suivant la reponse au post id5 -->
+    <parameter name="[state_3_C]" operation="set" value="/images/state_3_C.gif"/>
+    <parameter name="[phones_04]" operation="set" value="/images/phones_04.gif"/>
+    <parameter name="[bgd_communication]" operation="set" value="/images/bgd_communication.gif"/>
+    <parameter name="[bt_hangDown_R]" operation="set" value="/images/bt_hangDown_R.gif"/>
+    
+    <!-- messages suivant la reponse au post de fin d'appel -->
+    <parameter name="[phones_off]" operation="set" value="/images/phones_off.gif"/>
+    <parameter name="[bt_close_R]" operation="set" value="/images/bt_close_R.gif"/>
+    <parameter name="[bt_close_E]" operation="set" value="/images/bt_close_E.gif"/>
+    
+    <!-- messages suivant la reponse a la requete initiale -->
+    <parameter name="[clientPhoneNumber]" operation="set" value="0296053487"/>
+    <parameter name="[firstGetURL]" operation="list.create" value=""/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/common/style.css"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/resources/dojo/dojo.js"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/js/c2cNotif.js"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/resources/dojox/cometd.js"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/resources/dojox/cometd/_base.js"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/resources/dojo/AdapterRegistry.js"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/resources/dojox/cometd/longPollTransport.js"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/resources/dojox/cometd/longPollTransportJsonEncoded.js"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/resources/dojox/cometd/callbackPollTransport.js"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/resources/dojo/io/script.js"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/images/win_background.gif"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/images/win_logo.gif"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/images/state_1_B.gif"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/images/state_2_A.gif"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/images/state_3_A.gif"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/images/phones_00.gif"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/images/bt_cancel_R.gif"/>
+    <parameter name="[firstGetURL]" operation="list.addLast" value="[firstGetURL]" value2="/favicon.ico"/>
+    <parameter name="[firstGetURLSize]" operation="list.size" value="[firstGetURL]"/>
+    <parameter name="[firstGetURLMax]" operation="number.substract" value="[firstGetURLSize]" value2="1"/>
+    
+    <!-- !!! SIMULATOR PART !!! -->
+    <!-- time for simulator Browser WebAS Interface-->    
+    <!--<parameter name="[simuIfBrowsertimePOST1]" operation="set" value="0"/>
+    <parameter name="[simuIfBrowsertimePOST2]" operation="set" value="0"/>
+    <parameter name="[simuIfBrowsertimePOST3]" operation="set" value="0"/>
+    <parameter name="[simuIfBrowsertimePOST4]" operation="set" value="1"/>
+    <parameter name="[simuIfBrowsertimePOST5]" operation="set" value="3"/>
+    <parameter name="[simuIfBrowsertimePOST6]" operation="set" value="2"/>
+    <parameter name="[simuIfBrowsertimePOST7]" operation="set" value="5"/>
+    <parameter name="[simuIfBrowsertimePOST8]" operation="set" value="50"/>
+    <parameter name="[C2CIp]" operation="system.ipaddress" value="eth0"/>-->
+    <!-- !!! SIMULATOR PART !!! -->
+    
+    <!-- by default, routing by transactionId is deactivated (route.DEFAULT_RESPONSE = false) -->
+    <testcase name="Browser Initiator Request" state="true">
+        <!-- part to give instruction for load test-->
+        <runProfile><!-- duration of test-->
+            <step time="00" frequency="[nb req/sec]"/><!-- frequency during interval -->
+            <step time="05" frequency="[nb req/sec]"/>
+            <end delay="[test_duration]"/>
+        </runProfile>
+
+        <scenario name="initRequest">Browser/clientInitiateur.xml</scenario>
+	</testcase>
+    <testcase name="Browser client" state="true"><!-- interruptible="true">-->
+        <scenario name="HTTP">Browser/client-server.xml</scenario>
+	</testcase>
+    <!-- for this test, need to desactivate routing by transactionId (route.DEFAULT_RESPONSE = false)-->
+    <!--<testcase name="Browser interface WebAS simulator" state="false">
+        <scenario name="[WebASPort]">Browser/simulatorWebASBrowserInterface.xml</scenario>
+	</testcase>-->
+    
+</test>

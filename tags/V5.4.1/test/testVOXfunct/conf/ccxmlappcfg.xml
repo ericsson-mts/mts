@@ -1,0 +1,37 @@
+<?xml version="1.0"?> 
+<!-- 
+* CCXML Application Configuration.
+* 
+* It is not recommended that you modify this file while
+* the Call Server is running.
+* 
+-->
+<config>
+    <applications>
+        <application id="10">
+          <number-range>media.%</number-range>
+          <script type="CCXML">file://c:/voxpilot/callserver/www/ccxml/inbound.ccxml</script>
+          <dialog-route>127.0.0.1:7070[0]</dialog-route>
+          <outbound-route>route-0[0]</outbound-route>
+        </application>
+        <application id="30">
+          <number-range>conf.%</number-range>
+          <script type="CCXML">file://c:/voxpilot/callserver/www/ccxml/testConference2.ccxml</script>
+          <dialog-route>127.0.0.1:7070[0]</dialog-route>
+          <outbound-route>route-0[0]</outbound-route>
+        </application>
+        <application id="31">
+          <number-range>8888</number-range>
+          <script type="CCXML">file://c:/voxpilot/callserver/www/ccxml/testConference1-dialog.ccxml</script>
+          <dialog-route>127.0.0.1:7070[0]</dialog-route>
+          <outbound-route>route-0[0]</outbound-route>
+        </application>
+        <application id="99">
+          <number-range>.%</number-range>
+          <script type="CCXML">file://c:/voxpilot/callserver/www/ccxml/outbound.ccxml</script>
+          <dialog-route>127.0.0.1:7070[0]</dialog-route>
+          <outbound-route>route-0[0]</outbound-route>
+        </application>
+	</applications>
+</config>
+

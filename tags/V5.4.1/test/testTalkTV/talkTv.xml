@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="HTTP" description="HTTP regression tests">
+
+	<!--  Call Parameters  -->
+	<parameter name="[TryingDuration]"	operation="set" value="0.01"	description="Duration (in sec.) between 100 and 180"	editable="true"/>
+	<parameter name="[RingingDuration]"	operation="set" value="2" 		description="Duration (in sec.) between 180 and 200"	editable="true"/>
+	<parameter name="[CallDuration]"	operation="set" value="10"		description="Duration (in sec.) of the call"			editable="true"/>
+	<parameter name="[CAPS]"			operation="set" value="5"		description="Call Attempting per Second"				editable="true"/>
+	<parameter name="[RatioOrig]"		operation="set" value="0"		description="Ratio (in percent) for originating call"	editable="true"/>
+	<!--  Test Duration  -->
+	<parameter name="[DelayDurationSec]"	operation="set" value="1"	description="Delay (in second) before the test starts"	editable="true"/>
+	<parameter name="[TestDurationDay]"		operation="set" value="0"	description="Duration (in day) of the test "		editable="true"/>
+	<parameter name="[TestDurationHour]"	operation="set" value="0"	description="Duration (in hour) of the test "		editable="true"/>
+	<parameter name="[TestDurationMin]"		operation="set" value="1"	description="Duration (in min.) of the test "		editable="true"/>    	
+	<parameter name="[TestDurationSec]"		operation="set" value="0"	description="Duration (in sec.) of the test "		editable="true"/>    	
+	<!-- calculate the test duration -->			
+	<parameter name="[TestDurationDay]" 	operation="number.multiply"		value="[TestDurationDay]" 	value2="24"/>
+	<parameter name="[TestDurationHour]" 	operation="number.add"			value="[TestDurationHour]" 	value2="[TestDurationDay]"/>
+	<parameter name="[TestDurationHour]" 	operation="number.multiply"		value="[TestDurationHour]" 	value2="60"/>
+	<parameter name="[TestDurationMin]" 	operation="number.add"			value="[TestDurationMin]" 	value2="[TestDurationHour]"/>					
+	<parameter name="[TestDurationMin]" 	operation="number.multiply"		value="[TestDurationMin]" 	value2="60"/>
+	<parameter name="[TestDurationSec]" 	operation="number.add"			value="[TestDurationSec]" 	value2="[TestDurationMin]" />
+	<!--  scenarii Parameters  -->
+	<parameter name="[RangeIndexUser]"		operation="set" value="0"	description="First used in csv file"			editable="true"/>
+	<parameter name="[RangeNumberUser]" 	operation="set" value="999"	description="Last user used in csv file"		editable="true"/>
+	<parameter name="[NumberScenario_SIP]"	operation="set" value="1"	description="Number of testcase for the SIP responder"	editable="true"/>
+	<parameter name="[NumberScenario_CNIP]"	operation="set" value="1"	description="Number of testcase for the CNIP server"	editable="true"/>
+	<parameter name="[NumberScenario_WAS]"	operation="set" value="1"	description="Number of testcase for the WAS server"		editable="true"/>
+	<parameter name="[NumberScenario_STB]"	operation="set" value="1"	description="Number of testcase for the STB simulator"	editable="true"/>
+	<parameter name="[RangePortRTP-UAC]" 	operation="set" value="29000"/>				
+	<parameter name="[RangePortRTP-UAS]" 	operation="set" value="39000"/>
+	<parameter name="[timeoutResponder]" 	operation="set" value="[TryingDuration]" />    	
+	<parameter name="[timeoutResponder]" 	operation="number.add" value="[timeoutResponder]" value2="[RingingDuration]"/>    	
+	<parameter name="[timeoutResponder]" 	operation="number.add" value="[timeoutResponder]" value2="[CallDuration]"/>    	
+	<parameter name="[timeoutResponder]" 	operation="number.add" value="[timeoutResponder]" value2="10"/>    	
+	
+              	
+	<!--                        -->
+	<!-- Adresses and ports     -->
+	<!--                        -->	
+	<parameter name="[userDomain]" operation="set" value="sip.pfdev.fr" description="Domaine de l'AS" editable="true"/>
+	<!--   IMSLoader            -->
+	<!--   SIP protocol         -->
+	<parameter name="[IMSLoader-SIP-Host]" operation="system.ipaddress" description="Host du IMSloader"/>
+	<parameter name="[IMSLoader-SIP-Host]" operation="set" value="[IMSLoader-SIP-Host(1)]"/>
+	<parameter name="[IMSLoader-SIP-Port]" operation="set" value="7070" description="Port du IMSloader"/>
+	<parameter name="[IMSLoader-SIP-Adresse]" operation="set" value="[IMSLoader-SIP-Host(0)]:[IMSLoader-SIP-Port]" description="Addresse du IMSloader"/>
+	<!--   SNMP protocol        -->
+	<parameter name="[IMSLoader-SNMP-Host]" operation="system.ipaddress"/>
+	<parameter name="[IMSLoader-SNMP-Host]" operation="set" value="[IMSLoader-SNMP-Host(0)]"/>
+	<parameter name="[IMSLoader-SNMP-Port]" operation="set" value="32819"/>
+	<parameter name="[IMSLoader-SNMP-Adresse]" operation="set" value="[IMSLoader-SNMP-Host]:[IMSLoader-SNMP-Port]"/>	
+	<!--   HTTP protocol        -->
+   	<parameter name="[IMSLoader-HTTP-Host]" operation="system.ipaddress"/>
+	<parameter name="[IMSLoader-HTTP-Host]" operation="set" value="[IMSLoader-HTTP-Host(0)]"/>
+	<parameter name="[IMSLoader-HTTP-Port]" operation="set" value="80"/>
+	<parameter name="[IMSLoader-HTTP-Adresse]" operation="set" value="[IMSLoader-HTTP-Host]:[IMSLoader-HTTP-Port]"/>
+
+   	<parameter name="[IMSLoader-HTTP-Host-1]" operation="system.ipaddress"/>
+	<parameter name="[IMSLoader-HTTP-Host-1]" operation="set" value="[IMSLoader-HTTP-Host-1(1)]"/>
+	<parameter name="[IMSLoader-HTTP-Port-1]" operation="set" value="80"/>
+	<parameter name="[IMSLoader-HTTP-Adresse-1]" operation="set" value="[IMSLoader-HTTP-Host-1]:[IMSLoader-HTTP-Port-1]"/>
+
+	<!--   AS                   -->
+	<!--   SIP protocol         -->
+	<parameter name="[AS-SIP-Host]" operation="set" value="10.10.70.12" description="Addresse de l'AS Call Mgt" editable="true"/>
+	<parameter name="[AS-SIP-Port]" operation="set" value="5060" description="Port de l'AS" editable="true"/>      
+	<parameter name="[AS-SIP-Adresse]" operation="set" value="[AS-SIP-Host(0)]:[AS-SIP-Port]"/>
+	<!--   SNMP protocol        -->
+   	<parameter name="[AS-SNMP-Host]" operation="system.ipaddress"/>
+	<parameter name="[AS-SNMP-Host]" operation="set" value="[AS-SNMP-Host(1)]"/>
+	<parameter name="[AS-SNMP-Port]" operation="set" value="161"/>
+	<parameter name="[AS-SNMP-Adresse]" operation="set" value="[AS-SNMP-Host]:[AS-SNMP-Port]"/>
+	<!--   HTTP protocol        -->
+	<parameter name="[AS-HTTP-Adresse]" operation="set" value="10.10.71.13:1080" description="Addresse du WAS" editable="true"/>
+			
+	<!--   Load balancer        -->
+	<!--   SIP protocol         -->
+	<parameter name="[LB-SIP-Host]" operation="set" value="10.194.124.60" description="Addresse du Load Balancer" editable="true"/>
+	<parameter name="[LB-SIP-Port]" operation="set" value="6060" description="Port du Load Balancer" editable="true"/>      
+	<parameter name="[LB-SIP-Adresse]" operation="set" value="[LB-SIP-Host(0)]:[LB-SIP-Port]"/>
+
+	<!--                   -->
+	<!-- SIP CSV PARAMETERS    -->
+	<!--                   -->
+	<parameter name="[inviterTab]" operation="file.readCsv" value="./testAS_uac.csv" value2="inviter" />
+	<parameter name="[inviteeTab]" operation="file.readCsv" value="./testAS_uas.csv" value2="invitee" />
+	<parameter name="[test:indexUser]" operation="set" value="0" />
+		
+
+	<!--                          -->
+	<!-- Testcases Definitions    -->
+	<!--                          -->
+
+
+	<!--             -->
+	<!-- Set Top Box -->
+	<!--             -->
+
+	<for index="[index]" from="1" to="[NumberScenario_STB]" step="1">
+		<testcase name="simul SetTopBox (HTTP + SNMP) [index]" interruptible="true" description="simulate the set top box processing" state="false">
+
+			<!-- RUNPROFILE PARAMETERS -->
+			<runProfile>
+				<step time="0" period="0"/>
+				<end delay="[TestDurationSec]"/>
+			</runProfile>
+			<scenario name="server">SetTopBox/bouchon_SetTopBox.xml</scenario>
+		</testcase>
+	</for>
+
+	<!--               -->
+	<!-- SIP responder -->
+	<!--               -->
+
+	<for index="[index]" from="1" to="[NumberScenario_SIP]" step="1">
+		<testcase name="SIP_responder_[index]" interruptible="true" description="passive testcase for reponse and subsequent management" state="true">   			
+			<!-- RUNPROFILE PARAMETERS -->
+			<runProfile>
+				<step time="0" period="0"/>
+				<end delay="[TestDurationSec]"/>
+			</runProfile>
+			<scenario name="[IMSLoader-SIP-Port]">SIP_reponder/SIP_responder.xml</scenario>
+		</testcase> 
+	</for>
+
+	<!--              -->
+	<!-- Bouchon WAS  -->
+	<!--              -->
+
+	<for index="[index]" from="1" to="[NumberScenario_WAS]" step="1">
+		<testcase name="Bouchon_WAS_[index]" interruptible="true" description="WAS simulator" state="true">   			
+			<!-- RUNPROFILE PARAMETERS -->
+			<runProfile>
+				<step time="0" period="0"/>
+				<end delay="[TestDurationSec]"/>
+			</runProfile>
+			<scenario name="1080">Bouchon_WAS/WAS_server.xml</scenario>
+		</testcase> 
+	</for>
+
+	<!--                      -->
+	<!-- Bouchon Server CNIP  -->
+	<!--                      -->
+
+	<for index="[index]" from="1" to="[NumberScenario_CNIP]" step="1">
+		<testcase name="CNIP_server_[index]" interruptible="true" description="passive testcase for CNIP request" state="true">   			
+			<!-- RUNPROFILE PARAMETERS -->
+			<runProfile>
+				<step time="0" period="0"/>
+				<end delay="[TestDurationSec]"/>
+			</runProfile>
+			<scenario name="80">CNIP_server/CNIP_server.xml</scenario>
+		</testcase> 
+	</for>
+
+	<!--              -->
+	<!-- SIP loader   -->
+	<!--              -->
+
+	<testcase name="SIP_loader" interruptible="true" description="passive testcase for invite sending" state="true">
+		<!--                       -->
+		<!-- RUNPROFILE PARAMETERS -->
+		<!--                       -->    
+		<parameter name="[temp]" operation="number.substract" value="100" value2="[RatioOrig]" />
+		<parameter name="[CAPSTerm]" operation="number.multiply" value="[CAPS]" value2="[temp]" />
+		<parameter name="[CAPSTerm]" operation="number.divide" value="[CAPSTerm]" value2="100" />    	
+		<runProfile>
+			<start delay="[DelayDurationSec]"/>
+			<step time="0" frequency="[CAPSTerm]"/>
+			<end delay="[TestDurationSec]"/>
+		</runProfile>
+      		<scenario name="loader_term">SIP_term/SIP_loader.xml</scenario>
+	</testcase>
+	       
+</test>

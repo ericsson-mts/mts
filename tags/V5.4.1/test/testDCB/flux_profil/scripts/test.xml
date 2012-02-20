@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="DCB traffic simulation" home="../config_exemple/">
+
+
+    <!--
+      - Diverses constantes que l'utilisateur ne devrait pas avoir a modifier.
+      -->
+    <parameter name="[vendorId_FT]"          operation="set" value="1368"/>
+
+    <!--
+      - Lecture des parametres de configuration HTTP.
+      -->
+    <parameter name="[http_protocol]"           operation="file.readProperty" value="flux.properties" value2="http_protocol" />
+    <parameter name="[http_server_host]"        operation="file.readProperty" value="flux.properties" value2="http_server_host" />
+    <parameter name="[http_server_port]"        operation="file.readProperty" value="flux.properties" value2="http_server_port" />
+
+    <parameter name="[csv_path_resources]"      operation="file.readProperty" value="flux.properties" value2="http_resources_path" />
+    <parameter name="[resources_protocols]"     operation="file.readCSV"      value="[csv_path_resources]" value2="0"/>
+    <parameter name="[resources_hosts]"         operation="file.readCSV"      value="[csv_path_resources]" value2="1"/>
+    <parameter name="[resources_resources]"     operation="file.readCSV"      value="[csv_path_resources]" value2="2"/>
+    <parameter name="[resources_size]"          operation="list.size"         value="[resources_resources]"/>
+
+    <!--
+      - Lecture des parametres de configuration SMTP.
+      -->
+    <parameter name="[destination_ip]"          operation="file.readProperty" value="flux.properties" value2="smtp_server_host"/>
+    <parameter name="[smtp_port]"               operation="file.readProperty" value="flux.properties" value2="smtp_server_port"/> <!-- std=25 -->
+    <parameter name="[bigcsv]"                  operation="file.readProperty" value="flux.properties" value2="smtp_resources_path"/>
+    <parameter name="[bigAttach]"               operation="file.readCSV"    value="[bigcsv]" value2="0"/>
+    <parameter name="[bigAttach_size]"          operation="list.size"          value="[bigAttach]"/>
+
+
+    <!--
+      - Lecture des parametres de configuration RADIUS.
+      -->
+    <parameter name="[radius_secret]"           operation="file.readProperty" value="flux.properties" value2="radius_secret" />
+    <parameter name="[radius_nas_port]"         operation="file.readProperty" value="flux.properties" value2="radius_nas_port" />
+
+    <parameter name="[radius_host_http]"        operation="file.readProperty" value="flux.properties" value2="radius_host_http" />
+    <parameter name="[radius_port_http_auth]"   operation="file.readProperty" value="flux.properties" value2="radius_port_http_auth" />
+    <parameter name="[radius_port_http_acct]"   operation="file.readProperty" value="flux.properties" value2="radius_port_http_acct" />
+    <parameter name="[radius_host_smtp]"        operation="file.readProperty" value="flux.properties" value2="radius_host_smtp" />
+    <parameter name="[radius_port_smtp_auth]"   operation="file.readProperty" value="flux.properties" value2="radius_port_smtp_auth" />
+    <parameter name="[radius_port_smtp_acct]"   operation="file.readProperty" value="flux.properties" value2="radius_port_smtp_acct" />
+    <parameter name="[radius_host_chat]"        operation="file.readProperty" value="flux.properties" value2="radius_host_chat" />
+    <parameter name="[radius_port_chat]"        operation="file.readProperty" value="flux.properties" value2="radius_port_chat" />
+    <parameter name="[radius_host_mail]"        operation="file.readProperty" value="flux.properties" value2="radius_host_mail" />
+    <parameter name="[radius_port_mail]"        operation="file.readProperty" value="flux.properties" value2="radius_port_mail" />
+    <parameter name="[radius_host_omm]"         operation="file.readProperty" value="flux.properties" value2="radius_host_omm" />
+    <parameter name="[radius_port_omm]"         operation="file.readProperty" value="flux.properties" value2="radius_port_omm" />
+    <parameter name="[radius_host_owl]"         operation="file.readProperty" value="flux.properties" value2="radius_host_owl" />
+    <parameter name="[radius_port_owl]"         operation="file.readProperty" value="flux.properties" value2="radius_port_owl" />
+    <parameter name="[radius_host_webxms]"      operation="file.readProperty" value="flux.properties" value2="radius_host_webxms" />
+    <parameter name="[radius_port_webxms]"      operation="file.readProperty" value="flux.properties" value2="radius_port_webxms" />
+    <parameter name="[radius_host_wifi]"        operation="file.readProperty" value="flux.properties" value2="radius_host_wifi" />
+    <parameter name="[radius_port_wifi]"        operation="file.readProperty" value="flux.properties" value2="radius_port_wifi" />
+    <parameter name="[radius_host_imap]"        operation="file.readProperty" value="flux.properties" value2="radius_host_imap" />
+    <parameter name="[radius_port_imap_auth]"   operation="file.readProperty" value="flux.properties" value2="radius_port_imap_auth" />
+    <parameter name="[radius_port_imap_acct]"   operation="file.readProperty" value="flux.properties" value2="radius_port_imap_acct" />
+    <parameter name="[radius_host_rtsp]"        operation="file.readProperty" value="flux.properties" value2="radius_host_rtsp" />
+    <parameter name="[radius_port_rtsp_auth]"   operation="file.readProperty" value="flux.properties" value2="radius_port_rtsp_auth" />
+    <parameter name="[radius_port_rtsp_acct]"   operation="file.readProperty" value="flux.properties" value2="radius_port_rtsp_acct" />
+    <parameter name="[radius_host_pop]"        operation="file.readProperty" value="flux.properties" value2="radius_host_pop" />
+    <parameter name="[radius_port_pop_auth]"   operation="file.readProperty" value="flux.properties" value2="radius_port_pop_auth" />
+    <parameter name="[radius_port_pop_acct]"   operation="file.readProperty" value="flux.properties" value2="radius_port_pop_acct" />
+
+    <parameter name="[nas_ip_address]"          operation="file.readProperty" value="flux.properties" value2="nas_ip_address" />
+    <parameter name="[called_station_id]"       operation="file.readProperty" value="flux.properties" value2="called_station_id" />
+    <parameter name="[3gpp_sgsn_address]"       operation="file.readProperty" value="flux.properties" value2="3gpp_sgsn_address" />
+    <parameter name="[nas_identifier]"          operation="file.readProperty" value="flux.properties" value2="nas_identifier" />
+
+    <!--
+      - Lecture des parametres "divers"
+      -->
+    <parameter name="[profile_id]"              operation="file.readProperty" value="flux.properties" value2="profile_id" />
+    <parameter name="[wifi_hotspot_id]"         operation="file.readProperty" value="flux.properties" value2="wifi_hotspot_id" />
+    <parameter name="[specific_volume]"         operation="file.readProperty" value="flux.properties" value2="specific_volume" />
+    <parameter name="[plmn-id]"                 operation="file.readProperty" value="flux.properties" value2="plmn_id" />
+
+    <!--
+      - Lecture des parametres de configuration IMAP.
+      -->
+    <parameter name="[imap_destination_ip]"     operation="file.readProperty" value="flux.properties" value2="imap_server_host"/>
+    <parameter name="[imap_port]"               operation="file.readProperty" value="flux.properties" value2="imap_server_port"/> <!-- std=143 -->
+    <parameter name="[imap_bigcsv]"             operation="file.readProperty" value="flux.properties" value2="imap_resources_path"/>
+    <parameter name="[imap_bigAttach]"          operation="file.readCSV"    value="[imap_bigcsv]" value2="0"/>
+    <parameter name="[imap_bigAttach_size]"     operation="string.length"        value="[imap_bigAttach(0)]"/>
+
+    <!--
+      - Lecture des parametres de configuration RTSP.
+      -->
+    <parameter name="[rtsp_destination_ip]"     operation="file.readProperty" value="flux.properties" value2="rtsp_server_host"/>
+    <parameter name="[rtsp_port]"               operation="file.readProperty" value="flux.properties" value2="rtsp_server_port"/> <!-- std=554 -->
+        
+    <!--
+      - Lecture des parametres de configuration RTP.
+      -->
+    <parameter name="[rtp_client_port_min]"     operation="file.readProperty" value="flux.properties" value2="rtp_client_port_min"/>
+    <parameter name="[rtp_client_port_max]"     operation="file.readProperty" value="flux.properties" value2="rtp_client_port_max"/>
+    <parameter name="[rtp_server_port_min]"     operation="file.readProperty" value="flux.properties" value2="rtp_server_port_min"/>
+    <parameter name="[rtp_server_port_max]"     operation="file.readProperty" value="flux.properties" value2="rtp_server_port_max"/>
+    <parameter name="[current_rtp_client_port]" operation="set" value="[rtp_client_port_min]" />
+    <parameter name="[current_rtp_server_port]" operation="set" value="[rtp_server_port_min]" />
+    <parameter name="[test:mtxConnectionRTP]"   operation="system.semaphoreNotify" />
+    <parameter name="[test:connectionRTP]"      operation="list.create"/>
+
+    <!--
+      - Lecture des parametres de configuration POP.
+      -->
+    <parameter name="[pop_destination_ip]"     operation="file.readProperty" value="flux.properties" value2="pop_server_host"/>
+    <parameter name="[pop_port]"               operation="file.readProperty" value="flux.properties" value2="pop_server_port"/> <!-- std=110 -->
+    <parameter name="[pop_bigcsv]"             operation="file.readProperty" value="flux.properties" value2="pop_resources_path"/>
+    <parameter name="[pop_bigAttach]"          operation="file.readCSV"    value="[pop_bigcsv]" value2="0"/>
+    <parameter name="[pop_bigAttach_size]"     operation="string.length"        value="[pop_bigAttach(0)]"/>
+    
+    <!--
+      - Liste des addresses IP source utilisables.
+      - Cette liste est partagee entre tous les testcases via un systeme de semaphore:
+      -  * seul un testcase a la fois peut lire/modifier la liste (source_ips_mutex).
+      -  * lorsque la liste est vide (toutes les IP en utilisation), un scenario
+      -    voulant acceder a la liste sera en attente (source_ips_token).
+      -->
+    <parameter name="[config_source_ip_path]"   operation="file.readProperty" value="flux.properties" value2="config_source_ip_path" />
+    <parameter name="[source_ips]"              operation="file.readCSV" value="[config_source_ip_path]" value2="0" />
+    <parameter name="[source_ips_number]"       operation="list.size" value="[source_ips]" />
+    <parameter name="[radius_sockets_names]"    operation="string.equals" value="[source_ips]" value2="" />
+
+    <parameter name="[test:source_ips_mutex]"   operation="system.semaphoreNotify" />
+    <parameter name="[test:source_ips_token]"   operation="system.semaphoreNotify" value="[source_ips_number]" />
+
+    <parameter name="[ggsn_source_ip]"          operation="file.readProperty" value="flux.properties" value2="config_ggsn_source_ip" />
+    <parameter name="[ggsn_source_port]"        operation="file.readProperty" value="flux.properties" value2="config_ggsn_source_port" />
+    <parameter name="[ggsn_radius_socket_name]" operation="set" value="false"/>
+
+    <!--
+      - Lecture de la liste des profils.
+      -->
+    <parameter name="[config_profils_path]"     operation="file.readProperty"   value="flux.properties" value2="config_profils_path" />
+    <parameter name="[profils_name_list]"       operation="file.readCSV"      value="[config_profils_path]" value2="profil_name" />
+    <parameter name="[profils_path_list]"       operation="file.readCSV"      value="[config_profils_path]" value2="profil_file" />
+    <parameter name="[profils_path_list_size]"  operation="list.size"            value="[profils_path_list]" />
+    <parameter name="[profils_path_list_size]"  operation="number.substract"       value="[profils_path_list_size]" value2="1" />
+
+    <parameter name="[http_ratio_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="http_ratio" />
+    <parameter name="[smtp_ratio_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="smtp_ratio" />
+    <parameter name="[xms_ratio_list]"   operation="file.readCSV"    value="[config_profils_path]" value2="xms_ratio" />
+    <parameter name="[omm_ratio_list]"   operation="file.readCSV"    value="[config_profils_path]" value2="omm_ratio" />
+    <parameter name="[owl_ratio_list]"   operation="file.readCSV"    value="[config_profils_path]" value2="owl_ratio" />
+    <parameter name="[mail_ratio_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="mail_ratio" />
+    <parameter name="[wifi_ratio_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="wifi_ratio" />
+    <parameter name="[chat_ratio_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="chat_ratio" />
+    <parameter name="[imap_ratio_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="imap_ratio" />
+    <parameter name="[rtsp_ratio_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="rtsp_ratio" />
+    <parameter name="[pop_ratio_list]"   operation="file.readCSV"    value="[config_profils_path]" value2="pop_ratio" />
+            
+    <parameter name="[http_result_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="http_result" />
+    <parameter name="[smtp_result_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="smtp_result" />
+    <parameter name="[xms_result_list]"   operation="file.readCSV"    value="[config_profils_path]" value2="xms_result" />
+    <parameter name="[omm_result_list]"   operation="file.readCSV"    value="[config_profils_path]" value2="omm_result" />
+    <parameter name="[owl_result_list]"   operation="file.readCSV"    value="[config_profils_path]" value2="owl_result" />
+    <parameter name="[mail_result_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="mail_result" />
+    <parameter name="[wifi_result_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="wifi_result" />
+    <parameter name="[chat_result_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="chat_result" />
+    <parameter name="[imap_result_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="imap_result" />
+    <parameter name="[rtsp_result_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="rtsp_result" />
+    <parameter name="[pop_result_list]"   operation="file.readCSV"    value="[config_profils_path]" value2="pop_result" />
+    <parameter name="[rtp_result_list]"   operation="file.readCSV"    value="[config_profils_path]" value2="rtp_result" />
+
+    <parameter name="[tempo_inter_msisdn_list]"  operation="file.readCSV"    value="[config_profils_path]" value2="tempo_inter_msisdn" />
+    <parameter name="[time_receive_rtp_list]"    operation="file.readCSV"    value="[config_profils_path]" value2="time_receive_rtp" />
+    
+    <!-- create counters of ratio(requests/responses) for received response for each protocol-->
+    <parameter name="httpRequest" operation="set" value="0"/>
+    <parameter name="httpResponse" operation="set" value="0"/>
+    <parameter name="imapRequest" operation="set" value="0"/>
+    <parameter name="imapResponse" operation="set" value="0"/>
+    <parameter name="popRequest" operation="set" value="0"/>
+    <parameter name="popResponse" operation="set" value="0"/>
+    <parameter name="smtpRequest" operation="set" value="0"/>
+    <parameter name="smtpResponse" operation="set" value="0"/>
+    <parameter name="rtspRequest" operation="set" value="0"/>
+    <parameter name="rtspResponse" operation="set" value="0"/>
+    <parameter name="radiusRequest" operation="set" value="0"/>
+    <parameter name="radiusResponse" operation="set" value="0"/>
+    
+    <testcase name="server" state="false">
+        <parameter name="[local_host]" operation="set"    value="10.0.0.1"/>
+        <scenario name="HTTP">server/server_http.xml</scenario>     <!-- http.properties   : route.SCENARIO_NAME = message:protocol. -->
+        <scenario name="RADIUS">server/server_radius.xml</scenario> <!-- radius.properties : route.SCENARIO_NAME = message:protocol. -->
+        <scenario name="SMTP">server/server_smtp.xml</scenario>     <!-- smtp.properties   : route.SCENARIO_NAME = message:remotePort. -->  
+        <scenario name="IMAP">server/server_imap.xml</scenario>     <!-- imap.properties   : route.SCENARIO_NAME = message:remotePort. -->  
+        <scenario name="RTSP">server/server_rtsp.xml</scenario>     <!-- rtsp.properties   : route.SCENARIO_NAME = message:remotePort. -->  
+        <scenario name="RTP">server/server_rtp.xml</scenario>       <!-- rtp.properties    : route.SCENARIO_NAME = message:remotePort. -->  
+        <scenario name="POP">server/server_pop.xml</scenario>       <!-- pop.properties    : route.SCENARIO_NAME = message:protocol. -->  
+    </testcase>
+    
+    <for index="[i]" from="0" to="[profils_path_list_size]" step="1" >
+        <testcase name="client_[i]_[profils_name_list([i])]" state="true">
+            <parameter name="[index]" operation="set" value="[i]"/>
+                
+            <!-- create counters of ratio(requests/responses) for received response for each profil-->
+            <parameter name="profilRequest_[i]" operation="set" value="0"/>
+            <parameter name="profilResponse_[i]" operation="set" value="0"/>
+                        
+            <parameter name="[profil_path]" operation="set"    value="[profils_path_list([i])]"/>
+            <parameter name="[profil_name]" operation="set"    value="[profils_name_list([i])]"/>
+
+            <parameter name="[ratio_list]"  operation="set"        value="[http_ratio_list([i])]"/>
+            <parameter name="[ratio_list]"  operation="list.addLast"    value="[ratio_list]" value2="[smtp_ratio_list([i])]" />
+            <parameter name="[ratio_list]"  operation="list.addLast"    value="[ratio_list]" value2="[xms_ratio_list([i])]" />
+            <parameter name="[ratio_list]"  operation="list.addLast"    value="[ratio_list]" value2="[omm_ratio_list([i])]" />
+            <parameter name="[ratio_list]"  operation="list.addLast"    value="[ratio_list]" value2="[owl_ratio_list([i])]" />
+            <parameter name="[ratio_list]"  operation="list.addLast"    value="[ratio_list]" value2="[mail_ratio_list([i])]" />
+            <parameter name="[ratio_list]"  operation="list.addLast"    value="[ratio_list]" value2="[wifi_ratio_list([i])]" />
+            <parameter name="[ratio_list]"  operation="list.addLast"    value="[ratio_list]" value2="[chat_ratio_list([i])]" />
+            <parameter name="[ratio_list]"  operation="list.addLast"    value="[ratio_list]" value2="[imap_ratio_list([i])]" />
+            <parameter name="[ratio_list]"  operation="list.addLast"    value="[ratio_list]" value2="[rtsp_ratio_list([i])]" />
+            <parameter name="[ratio_list]"  operation="list.addLast"    value="[ratio_list]" value2="[pop_ratio_list([i])]" />
+            
+            <parameter name="[ratio_list_computed]"  operation="set"    value="false" />
+
+            <parameter name="[http_result]"  operation="set"    value="[http_result_list([i])]" />
+            <parameter name="[smtp_result]"  operation="set"    value="[smtp_result_list([i])]" />
+            <parameter name="[xms_result]"   operation="set"    value="[xms_result_list([i])]" />
+            <parameter name="[omm_result]"   operation="set"    value="[omm_result_list([i])]" />
+            <parameter name="[owl_result]"   operation="set"    value="[owl_result_list([i])]" />
+            <parameter name="[mail_result]"  operation="set"    value="[mail_result_list([i])]" />
+            <parameter name="[wifi_result]"  operation="set"    value="[wifi_result_list([i])]" />
+            <parameter name="[chat_result]"  operation="set"    value="[chat_result_list([i])]" />
+            <parameter name="[imap_result]"  operation="set"    value="[imap_result_list([i])]" />
+            <parameter name="[rtsp_result]"  operation="set"    value="[rtsp_result_list([i])]" />
+            <parameter name="[pop_result]"   operation="set"    value="[pop_result_list([i])]" />
+            <parameter name="[rtp_result]"   operation="set"    value="[rtp_result_list([i])]" />
+
+            <parameter name="[tempo_inter_msisdn]"  operation="set"    value="[tempo_inter_msisdn_list([i])]" />
+            <parameter name="[time_receive_rtp]"    operation="set"    value="[time_receive_rtp_list([i])]" />
+            
+            <parameter name="[MSISDNs]"                 operation="file.readCSV" value="[profil_path]" value2="msisdn"/>
+            <parameter name="[3gpp_charging_ids]"       operation="file.readCSV" value="[profil_path]" value2="3gpp_charging_id"/>
+            <parameter name="[imsis]"                   operation="file.readCSV" value="[profil_path]" value2="imsi"/>
+            <parameter name="[charging-types]"          operation="file.readCSV" value="[profil_path]" value2="charging-type"/>
+            <parameter name="[source-access-types]"     operation="file.readCSV" value="[profil_path]" value2="source-access-type"/>
+            <parameter name="[webxms_content_types]"    operation="file.readCSV" value="[profil_path]" value2="webxms_content_type"/>
+            <parameter name="[mail_content_types]"      operation="file.readCSV" value="[profil_path]" value2="mail_content_type"/>
+            <parameter name="[omm_content_types]"       operation="file.readCSV" value="[profil_path]" value2="omm_content_type"/>
+            <parameter name="[chat_service_names]"      operation="file.readCSV" value="[profil_path]" value2="chat_service_name"/>
+            
+            <parameter name="[MSISDNs_size]"        operation="list.size" value="[MSISDNs]"/>
+            <parameter name="[msisdn_index]"        operation="set"  value="[MSISDNs_size]"/>
+            
+            <scenario name="client_[i]">client/client.xml</scenario>
+        </testcase>
+    </for>
+</test>

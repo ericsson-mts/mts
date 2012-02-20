@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE library [<!ENTITY libS_Service_Server_Simulator	SYSTEM "..\library\libS_Service_Server_Simulator.xml">]>
+
+<scenario name="server_1001_non_reg_4_2">
+
+<!--
+ScenarioName implicite parameter of the software that remember the name of the scenario given in the test level file
+ScenarioName (defined in test level file), ProviderName (SIP connection)and sessionName (RTP connection) has to be set
+to the same value, so the same scenario can receive and treat both SIP and RTP traffic
+route.SCENARIO_NAME has to be set to connection:name in sip.proprieties and rtp .proprieties
+-->
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_Port]" operation="set" value="[SBC_Port_1001]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localPort="[provider_Port]"/>
+
+<!--
+Server Simulator for Test of CF toward toward VM
+-->
+
+<parameter name="[portSdp_ServiceSide]" operation="set" value="11000"/>
+<parameter name="[service_Nb]" operation="set" value="[subscriber_1001]"/>
+<parameter name="[ipAddressSip_Service]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[portSip_Service]" operation="set" value="[provider_Port]"/>			
+<parameter name="[ipAddressSdp_Service]" operation="set" value="[ipAddressSdp]"/>
+<parameter name="[ipAddressSrc_Service]" operation="set" value="[ipAddressSrc]"/>
+
+&libS_Service_Server_Simulator;
+
+<closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/>
+
+</scenario>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario agent -->
+<scenario>
+    
+    <receiveMessageSNMP request="true">
+        <parameter name="remoteHost" operation="protocol.setFromMessage" value="message.remoteHost"/>
+        <parameter name="remotePort" operation="protocol.setFromMessage" value="message.remotePort"/>
+        <parameter name="variables" operation="protocol.setFromMessage" value="variables.name"/>
+        <parameter name="oids" operation="protocol.setFromMessage" value="variables.oid"/>
+        <parameter name="requestId" operation="protocol.setFromMessage" value="header.requestId"/>
+    </receiveMessageSNMP>
+
+    <sendMessageSNMP remoteHost="[remoteHost]" remotePort="[remotePort]">
+        <header version="2" community="public"/>
+        <pdu name="response" requestId="[requestId]">
+            <variableBinding name="[oids].1" type="integer32" value="2"/>
+        </pdu>
+    </sendMessageSNMP>
+
+    <receiveMessageSNMP request="true">
+        <parameter name="remoteHost" operation="protocol.setFromMessage" value="message.remoteHost"/>
+        <parameter name="remotePort" operation="protocol.setFromMessage" value="message.remotePort"/>
+        <parameter name="variables" operation="protocol.setFromMessage" value="variables.name"/>
+        <parameter name="oids" operation="protocol.setFromMessage" value="variables.oid"/>
+        <parameter name="mibs" operation="protocol.setFromMessage" value="variables.mib"/>
+        <parameter name="requestId" operation="protocol.setFromMessage" value="header.requestId"/>
+    </receiveMessageSNMP>
+
+    <!-- TODO: not concat .2, but instead replace last .1 with .2 usually -->
+    <sendMessageSNMP remoteHost="[remoteHost]" remotePort="[remotePort]">
+        <header version="2" community="public"/>
+        <pdu name="response" requestId="[requestId]">
+            <variableBinding name="[oids].2" type="integer32" value="46"/>
+        </pdu>
+    </sendMessageSNMP>
+
+</scenario>

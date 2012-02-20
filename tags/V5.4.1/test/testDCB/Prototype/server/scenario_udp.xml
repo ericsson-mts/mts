@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <openSocketUDP socketName="server" localPort="12345" />
+    
+    <while>
+        <condition />
+        <do>
+          	<receiveDataUDP timeout="0">
+		        <parameter name="[remoteHost]" operation="setFromMessage" value="message:remoteHost"/>
+		        <parameter name="[remotePort]" operation="setFromMessage" value="message:remotePort"/>
+		        <parameter name="[data]" operation="setFromMessage" value="data:binary"/>
+	        </receiveDataUDP>
+	
+	        <sendDataUDP socketName="server" remoteHost="[remoteHost]" remotePort="[remotePort]">
+                <data format="binary">
+                    [data]
+                </data>
+    	    </sendDataUDP>
+	    </do>
+	</while>
+	
+	<finally>
+	   <closeSocketUDP socketName="server" />
+	</finally>
+	
+</scenario>

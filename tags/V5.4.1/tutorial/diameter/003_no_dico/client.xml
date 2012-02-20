@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!--  name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)" -->
+<scenario>
+    <label name="SendRequestMAR"/>
+    
+    <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[Remote-Address]" destScenario="server">
+	<header request="true" command="506" applicationId="16777216" proxiable="true"/>		
+	<avp code="263" value="CXCSCFCX.sip.france.fr;45e45ee4;046725;5cd579ef" type="OctetString" mandatory="true"/>
+	<avp code="264" value="[Local-Host]" type="OctetString" mandatory="true"/>
+	<avp code="296" value="[Local-Realm]" type="OctetString" mandatory="true"/>
+	<avp code="293" value="[Remote-Host]" type="OctetString" mandatory="true"/>
+	<avp code="283" value="[Remote-Realm]" type="OctetString" mandatory="true"/>
+	<avp code="260" type="Grouped" mandatory="true">
+		<avp code="266" value="10415" type="Integer32" mandatory="true"/>
+		<avp code="258" value="16777216" type="Integer32" mandatory="true"/>
+	</avp>
+	<avp code="999990" value="1" type="Integer32" mandatory="true"/>
+	<avp code="999991" value="sip:+33875610603@sip.france.fr" vendorId="10415" type="OctetString" mandatory="true"/>
+	<avp code="999992" value="1" type="Integer32" mandatory="true"/>
+	<avp code="999993" type="Grouped" mandatory="true">
+		<avp code="999994" value="0" type="Integer32" mandatory="true"/>
+    		<avp code="999995" value="2" type="Integer32" mandatory="true"/>
+    		<avp code="999996" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5' type="OctetString"/>
+    		<avp code="999977" value="INVITE" type="OctetString"/>
+	</avp>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer (MAA)" request="false" type="506" result="2001">
+    </receiveMessageDIAMETER>
+
+</scenario>

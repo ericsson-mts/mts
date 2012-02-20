@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+
+<!DOCTYPE library [
+<!ENTITY libC_Call_Service_Server	SYSTEM "../library/libC_Call_Service_Server.xml">
+<!ENTITY libC_Caller_to_Called_Ph1	SYSTEM "../library/libC_Caller_to_Called_Ph1.xml">
+<!ENTITY libC_Caller_to_Called_Ph2	SYSTEM "../library/libC_Caller_to_Called_Ph2.xml">
+<!ENTITY libC_Caller_to_Called_Ph3	SYSTEM "../library/libC_Caller_to_Called_Ph3.xml">
+]>
+
+
+<scenario>
+
+
+<parameter name="[sbcPort]" operation="set" value="[SBC_Port_1001]" description="Port decoute du SBC"/>   
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_Port]" operation="set" value="[Provider_1001]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localPort="[provider_Port]"/>
+
+
+<semaphore name="JetonUAC1710_UAC1001" action="wait"/>
+
+
+
+
+<parameter name="[called_Subscriber]" operation="set" value="[subscriber_1710]"/>
+<parameter name="[domainName_Service]" operation="set" value="[domainName]"/>
+<parameter name="[caller_Subscriber]" operation="set" value="[subscriber_1001]"/>
+<parameter name="[int_caller_Subscriber]" operation="set" value="[int_subscriber_1001]"/>
+
+<parameter name="[caller_ipAddressSip]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[caller_portSip]" operation="set" value="[provider_Port]"/>
+<parameter name="[caller_ipAddressSdp]" operation="set" value="[ipAddressSdp]"/>
+<parameter name="[caller_ipAddressSrc]" operation="set" value="[ipAddressSrc]"/>
+<parameter name="[caller_portSdp]" operation="set" value="[portSdpSubscriber_1001]"/>
+<parameter name="[sbcHost_Service]" operation="set" value="[SBC_IP_1001]"/>
+<parameter name="[sbcPort_Service]" operation="set" value="[SBC_Port_1001]"/>
+
+<parameter name="[endRtpDialog_Timer]" operation="set" value="5"/>
+
+<!--parameter name="[expected_Scenario]" operation="set" value="CALL_FORWARDED_AFTER_3_RINGS" /-->
+<parameter name="[expected_Scenario]" operation="set" value="FULL_SUCCESS_ESTABLISHMENT" />
+
+<parameter name="[UserName]" operation="set" value="[Username_1001]"/>
+<parameter name="[Password]" operation="set" value="[Passwd_1001]"/>
+
+<!--
+Shuntage SBC
+-->
+<parameter name="[sbcHost_Service]" operation="set" value="[CSCF_Direct_IP]"/>
+<parameter name="[sbcPort_Service]" operation="set" value="[CSCF_Direct_Port]"/>
+<parameter name="[ShunTheSBC]" operation="set" value="True"/>
+
+
+<!-- TEST du Connection Info du SDP: permet de verifier la cnx au bon media server
+-->
+<parameter name="[Control_Connection_Info]" operation="set" value="true"/>
+<parameter name="[Foreseen_Connection_Info_Value_1]" operation="set" value="[3_2_4_Foreseen_Connection_Info_Value_1]"/>
+
+
+
+&libC_Caller_to_Called_Ph1;
+&libC_Caller_to_Called_Ph2;
+&libC_Caller_to_Called_Ph3;
+
+<semaphore name="JetonUAC1001_UAC1710" action="notify"/>
+
+
+
+<parameter name="[endRtpDialog_Timer]" operation="set" value="1"/>
+
+<finally><closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/></finally>
+
+</scenario>

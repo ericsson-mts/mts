@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+    <parameter name="[timestamps]" operation="file.readcsv" value="110_stats/flow_list.csv" value2="timestamp"/>
+    <parameter name="[timestampZero]" operation="system.timestamp" />
+    <parameter name="[timestamps]" operation="number.add" value="[timestamps]" value2="[timestampZero]"/>
+
+    <parameter name="[values]" operation="file.readcsv" value="110_stats/flow_list.csv" value2="value"/>
+
+    <stats>
+        <flow name="flowList1" summary="flowShortListD1" complete="flowLongD1">
+            <increase milliseconds="[timestamps]" value="[values]" />
+        </flow>
+    </stats>
+    
+</scenario>

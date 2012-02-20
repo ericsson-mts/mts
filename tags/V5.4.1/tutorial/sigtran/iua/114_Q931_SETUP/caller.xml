@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--
+   
+    Reference document : T-REC-Q.931-199805-I!!PDF-E.pdf
+    Message : SETUP(5)
+
+    The following scenarios send the Q931 message with the following elements :
+
+    Chapter : 3.1.14 => Circuit
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Sending complete 4.5 Both O (Note 1) 1
+Repeat indicator 4.5 Both O (Note 2) 1
+Bearer capability 4.5 Both M (Note 3) 4-12
+Channel identification 4.5 Both O (Note 4) 2-*
+Progress indicator 4.5 Both O (Note 5) 2-4
+Network-specific facilities 4.5 Both O (Note 6) 2-*
+Display 4.5 n-u O (Note 7) (Note 8)
+Date/Time 4.5 u-n O (Note 19) 8
+Keypad facility 4.5 u-n O (Note 9) 2-34
+Signal 4.5 n-u O (Note 10) 2-3
+Calling party number 4.5 Both O (Note 11) 2-*
+Calling party subaddress 4.5 Both O (Note 12) 2-23
+Called party number 4.5 Both O (Note 13) 2-*
+Called party subaddress 4.5 Both O (Note 14) 2-23
+Transit network selection 4.5 u-n O (Note 15) 2-*
+Repeat indicator 4.5 Both O (Note 16) 1
+Low layer compatibility 4.5 Both O (Note 17) 2-18
+High layer compatibility
+    
+    Chapter : 3.2.9 => Packet
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Bearer capability 4.5 Both M (Note 1) 4-12
+Channel identification 4.5 Both O (Note 2) 2-*
+Progress indicator 4.5 u n O (Note 3) 2-4
+Display 4.5 n u O (Note 4) (Note 5)
+Information rate 4.6 n u O (Note 6) 2-6
+End-end transit delay 4.6 n u O (Note 8) 2-11
+Transit delay selection and indication 4.6 n u O (Note 7) 2-5
+Packet layer binary parameters 4.6 n u O (Note 9) 2-3
+Packet layer window size 4.6 n u O (Note 10) 2-4
+Packet size 4.6 n u O (Note 11) 2-4
+Closed user group 4.6 n u O (Note 12) 4-7
+Reverse charging indication 4.6 n u O (Note 13) 3
+Calling party number 4.5 Both O (Note 14) 2-*
+Calling party subaddress 4.5 Both O (Note 15) 2-23
+Called party number 4.5 n u O (Note 16) 2-*
+Called party subaddress 4.5 n u O (Note 17) 2-23
+Redirecting number 4.6 n u O (Note 18) 2-*
+User-user 4.5 n u O (Note 19) (Note 20)
+
+    Chapter : 3.3.9 => Bearer
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Sending complete 4.5 Both O (Note 1) 1
+Bearer capability 4.5 Both M (Note 2) 6-8
+Channel identification 4.5 Both M 3-*
+Network-specific facility 4.5 Both O (Note 3) 2-*
+Display 4.5 n u O (Note 4) (Note 5)
+Keypad facility 4.5 u n O (Note 6) 2-34
+Calling party number 4.5 Both O (Note 7) 2-*
+Calling party subaddress 4.5 Both O (Note 8) 2-23
+Called party number 4.5 Both O (Note 9) 2-*
+Called party subaddress 4.5 Both O (Note 10) 2-23
+Transit network selection 4.5 u n O (Note 11) 2-*
+Low layer compatibility 4.5 Both O (Note 12) 2-18
+High layer compatibility 4.5 Both O (Note 13) 2-5
+
+-->
+
+<scenario>
+
+    <sendMessageSIGTRAN name="Send SIGTRAN ALERTING" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+    	
+        <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+
+	    <!-- SETUP = b00000101 = h5 = d5-->
+            <header discriminator="Recommendation Q.931/I.451" callReference="h0065"  type="SETUP"/>
+
+	    <!-- Sending complete= b10100001 = hA1 = d161-->
+            <!-- ONLY for Circuit, Bearer message -->            	    
+    	    <element identifier="Sending complete"/>
+
+	    <!-- Repeat indicator = b11010010 = hD2 = d210-->
+	    <!--field Repeat indicator = Prioritized list for selecting one possibility -->
+            <!-- ONLY for Circuit message -->            	    
+    	   <element identifier="Repeat indicator = Prioritized"/>
+
+	    <!-- Bearer capability = b0000100 =h4 = d4--> 
+            <element identifier="Bearer capability">
+                <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+                <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+                <field name="Information transfert capability" lengthBit="5" type="integer" value="Speech"/>
+                <field name="ext2" lengthBit="1" type="boolean" value="1" />
+                <field name="Transfert mode" lengthBit="2" type="enumeration" value="Circuit mode"/>
+                <field name="Information transfert rate" lengthBit="5" type="enumeration" value="64 kbit/s -"/>
+                <field name="ext3" lengthBit="1" type="boolean" value="1" />
+                <field name="Layer 1 ident" lengthBit="2" type="integer" value="1"/>
+                <field name="User information layer 1 protocol" lengthBit="5" type="enumeration" value="G.711 A-law"/>
+            </element>
+            
+	    <!-- Channel identification = b0011000 = h18 = d24-->
+            <element identifier="Channel identification">
+                <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+                <field name="Interface identifier present" lengthBit="1" type="enumeration" value="1"/>
+                <field name="Interface type" lengthBit="1" type="enumeration" value="Basic interface"/>
+                <field name="Spare" lengthBit="1" type="integer" value="0"/>
+                <field name="Preferred/Exclusive" lengthBit="1" type="enumeration" value="preferred"/>
+                <field name="D-channel indicator" lengthBit="1" type="enumeration" value="not D-channel"/>
+                <field name="Information channel selection" lengthBit="2" type="enumeration" value="No channel"/>
+                <field name="ext2" lengthBit="1" type="boolean" value="1"/>
+                <field name="Interface identifier" lengthBit="7" type="integer" value="65"/>
+                <field name="ext3" lengthBit="1" type="boolean" value="1"/>
+                <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+                <field name="Number/map" lengthBit="1" type="enumeration" value="0"/>
+                <field name="Channel type/map element type" lengthBit="4" type="enumeration" value="B-channel units"/>
+                <field name="ext4" lengthBit="1" type="boolean" value="1"/>
+                <field name="Channel number" lengthBit="7" type="integer" value="70"/>
+            </element>
+            
+            <!-- Progress indicator= b0011110 = h1E = d30-->
+            <!-- ONLY for Circuit, Packet message -->            	                
+            <element identifier="Progress indicator">
+                <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+                <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+                <field name="Spare" lengthBit="1" type="integer" value="0"/>
+                <field name="Location" lengthBit="4" type="enumeration" value="User"/>
+                <field name="ext2" lengthBit="1" type="boolean" value="1"/>
+                <field name="Progress description" lengthBit="7" type="enumeration" value="Call is not end-to-end ISDN; further call progress information may be available in-band"/>
+            </element>
+                        
+            <!-- Network-specific facilities= b0100000 = h20 = d32 -->
+            <!-- ONLY for Circuit, Bearer message -->            	                            
+	    <element identifier="Network-specific facilities">
+	        <field name="Length of network identification" lengthBit="8" type="integer" value="199"/>
+	        <field name="ext" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Type of network identification" lengthBit="3" type="enumeration" value="International network identification"/>
+	        <field name="Network identification plan" lengthBit="4" type="enumeration" value="Carrier Identification Code"/>        
+	        <field name="Network identification" type="string" value="network identification"/>
+	        <field name="Network-specific facilities" lengthBit="32" type="integer" value="1999999999"/>
+	    </element>
+            
+            <!-- Display identification = b0101000 = h28 = d40-->
+	    <element identifier="Display identification">
+	        <field name="Display identification" type="string" value="display information"/>
+	    </element>
+            
+            <!-- Date/time= b0101001 = h29= d41-->
+            <!-- ONLY for Circuit message -->            	                
+	    <element identifier="Date/time">
+	        <field name="Year" lengthBit="8" type="integer" value="11"/>
+	        <field name="Month" lengthBit="8" type="integer" value="09"/>
+	        <field name="Day" lengthBit="8" type="integer" value="16"/>
+	        <field name="Hour" lengthBit="8" type="integer" value="11"/>
+	        <field name="Minute" lengthBit="8" type="integer" value="37"/>
+	        <field name="Second" lengthBit="8" type="integer" value="45"/>
+	    </element>
+
+            <!-- Keypad facility = b0101100 = h2C = d44-->
+            <!-- ONLY for Circuit, Bearer message -->            	                                        
+	    <element identifier="Keypad facility">
+		<field name="Display identification" type="string" value="Keypad facility"/>
+	    </element>
+
+	    <!-- Signal= b0110100 =h34 =d52-->
+            <!-- ONLY for Circuit message -->            	    	    
+	    <element identifier="Signal">
+		<field name="Signal value" lengthBit="8" type="enumeration" value="Ring back tone on"/>
+	    </element>
+
+            <!-- Information rate = b1100000 =h60 =d96-->
+            <!-- ONLY for Packet message -->            	    	                
+	    <element identifier="Information rate">
+	        <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Spare1" lengthBit="2" type="integer" value="0"/>
+	        <field name="Incoming information rate" lengthBit="5" type="enumeration" value="Reserved"/>
+	        <field name="ext2" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Spare2" lengthBit="2" type="integer" value="1"/>
+	        <field name="Outgoing information rate" lengthBit="5" type="enumeration" value="1200 bit/s"/>
+	        <field name="ext3" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Spare3" lengthBit="2" type="integer" value="2"/>
+	        <field name="Minimum incoming information rate" lengthBit="5" type="enumeration" value="9600 bit/s"/>
+	        <field name="ext4" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Spare4" lengthBit="2" type="integer" value="3"/>
+	        <field name="Minimum outgoing information rate" lengthBit="5" type="enumeration"  value="64000 bit/s"/>	        
+	    </element>
+
+	    <!-- End-to-end transit delay = b1000010 =h42 =d66-->
+            <!-- ONLY for Packet message -->            	    	                	    
+	    <element identifier="End-to-end transit delay">
+	        <field name="ext1" lengthBit="1" type="boolean" value="0" />
+	        <field name="Spare1" lengthBit="5" type="integer" value="0" />
+	        <field name="Cumulative transit delay value1" lengthBit="2" type="integer" value="1" />
+	        <field name="ext2" lengthBit="1" type="boolean" value="0" />
+	        <field name="Cumulative transit delay value2" lengthBit="7" type="integer" value="10" />
+	        <field name="ext3" lengthBit="1" type="boolean" value="1" />
+	        <field name="Cumulative transit delay value3" lengthBit="7" type="integer" value="100" />
+	        <field name="ext4" lengthBit="1" type="boolean" value="0" />
+	        <field name="Spare4" lengthBit="5" type="integer" value="1" />
+	        <field name="Requested end-to-end transit delay value1" lengthBit="2" type="integer" value="2" />
+	        <field name="ext5" lengthBit="1" type="boolean" value="0" />
+	        <field name="Requested end-to-end transit delay value2" lengthBit="7" type="integer" value="20"/>
+	        <field name="ext6" lengthBit="1" type="boolean" value="1" />
+	        <field name="Requested end-to-end transit delay value3" lengthBit="7" type="integer" value="200" />
+	        <field name="ext7" lengthBit="1" type="boolean" value="0" />
+	        <field name="Spare7" lengthBit="5" type="integer" value="2" />
+	        <field name="Maximum transit delay value1" lengthBit="2" type="integer" value="3" />
+	        <field name="ext8" lengthBit="1" type="boolean" value="0" />
+	        <field name="Maximum transit delay value2" lengthBit="7" type="integer" value="30" />
+	        <field name="ext9" lengthBit="1" type="boolean" value="1" />
+	        <field name="Maximum transit delay value3" lengthBit="7" type="integer" value="300" />
+	    </element>
+
+	    <!-- Transit delay selection and indication = b1000011 =h43 =d67-->
+            <!-- ONLY for Packet message -->            	    	                	    
+	    <element identifier="Transit delay selection and indication">
+	        <field name="ext1" lengthBit="1" type="boolean" value="0"/>
+	        <field name="Spare1" lengthBit="5" type="integer" value="0"/>
+	        <field name="Transit delay selection and indication value1" lengthBit="2" type="integer" value="1" />
+	        <field name="ext2" lengthBit="1" type="boolean" value="0" />
+	        <field name="Transit delay selection and indication value2" lengthBit="7" type="integer" value="10" />
+	        <field name="ext3" lengthBit="1" type="boolean" value="1" />
+	        <field name="Transit delay selection and indication value3" lengthBit="7" type="integer" value="100" />
+	    </element>
+
+	    <!-- Packet layer binary parameters = b1000100 =h44 =d68-->
+            <!-- ONLY for Packet message -->            	    	                	    
+	    <element identifier="Packet layer binary parameters">
+	        <field name="ext" lengthBit="1" type="boolean" value="1" />
+	        <field name="Spare" lengthBit="2" type="integer" value="0" />
+	        <field name="Fast selected" lengthBit="2" type="enumeration" value="Fast select requested with no restriction of response" />
+	        <field name="Expedited data" lengthBit="1" type="enumeration" value="Request indicated/request accepted" />
+	        <field name="Delivery confirmation" lengthBit="1" type="enumeration" value="Link-by-link confirmation" />
+	        <field name="Modulus" lengthBit="1" type="enumeration" value="Modulus 128 sequencing" />
+	    </element>
+
+	    <!-- Packet layer window size = b1000101 =h45 =d69-->
+            <!-- ONLY for Packet message -->            	    	                	    
+	    <element identifier="Packet layer window size">
+	        <field name="ext1" lengthBit="1" type="boolean" value="1" />
+	        <field name="Forward value" lengthBit="7" type="integer" value="127" />
+	        <field name="ext2" lengthBit="1" type="boolean" value="1" />
+	        <field name="Backward value" lengthBit="7" type="integer" value="255" />
+	    </element>
+
+	    <!-- Packet size = b1000110 =h46 =d70-->
+            <!-- ONLY for Packet message -->            	    	                	    
+	    <element identifier="Packet size">
+	        <field name="ext1" lengthBit="1" type="boolean" value="1" />
+	        <field name="Forward value" lengthBit="7" type="integer" value="63" />
+	        <field name="ext2" lengthBit="1" type="boolean" value="1" />
+	        <field name="Backward value" lengthBit="7" type="integer" value="64" />
+	    </element>
+
+	    <!-- Closed user group = b1000111 =h47 =d71-->
+            <!-- ONLY for Packet message -->            	    	                	    
+	    <element identifier="Closed user group">
+	        <field name="ext" lengthBit="1" type="boolean" value="1"/>
+	        <field name="spare" lengthBit="4" type="integer" value="11" />
+	        <field name="CUG indication" lengthBit="3" type="enumeration" value="Closed user group with outgoing access selection and indication" />
+	        <field name="CUG index code" type="string" value="1234" />
+	    </element>
+
+	    <!-- Reverse charging indication = b1001010 =h4A =d74-->
+            <!-- ONLY for Packet message -->            	    	                	    
+	    <element identifier="Reverse charging indication">
+	        <field name="ext1" lengthBit="1" type="boolean" value="1" />
+	        <field name="spare" lengthBit="4" type="integer" value="0" />
+	        <field name="Reverse charging indication" lengthBit="3" type="enumeration" value="Reverse charging requested" />
+	    </element>
+	    
+	    <!-- Calling party number = b01101100 = h6C = d108-->
+	    <element identifier="Calling party number">
+	        <field name="ext1" lengthBit="1" type="boolean"  value="0"/>
+	        <field name="Type of number" lengthBit="3" type="enumeration" value="National number"/>
+	        <field name="Numbering plan identification" lengthBit="4" type="enumeration" value="ISDN/telephony numbering plan"/>
+  	        <field name="ext2" lengthBit="1" type="boolean"  value="1"/>
+	        <field name="Presentation indicator" lengthBit="2" type="enumeration" value="Presentation allowed"/>
+	        <field name="ext3" lengthBit="3" type="integer" value="0"/>        
+	        <field name="Screening indicator" lengthBit="2" type="enumeration" value="User-provided, not screened"/>        
+	        <field name="Number digits"  type="string" value="1000000101"/>
+	    </element>
+	    
+            <!-- Calling party subaddress = b1101101 =h6D = d109-->
+	    <element identifier=" Calling party subaddress">
+	        <field name="ext" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Type of subaddress" lengthBit="3" type="enumeration" value="User specified"/>
+	        <field name="Odd/even indicator" lengthBit="1" type="enumeration"  value="Even number"/>
+	        <!--field name="Spare" lengthBit="3" type="integer" value="b111"/-->
+	        <field name="Spare" lengthBit="3" type="integer" value="7"/>
+	        <field name="Subaddress information"  type="string" value="Subaddress information"/>
+	    </element>
+	   
+            <!-- Called party number = b1110000 =h70 = d112-->
+	    <element identifier="Called party number ">
+	        <field name="ext" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Type of number" lengthBit="3" type="enumeration" value="Network specific number"/>
+	        <field name="Numbering plan identification" lengthBit="4" type="enumeration" value="Private numbering plan"/>
+	        <field name="Number digits" type="string" value="Number digits"/>
+	    </element>
+
+	    <!-- Called party subaddress = b01110001 = h71 = d113-->
+	    <element identifier="Called party subaddress">
+	        <field name="ext" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Type of subaddress" lengthBit="3" type="enumeration" value="User specified"/>
+	        <field name="Odd/even indicator" lengthBit="1" type="enumeration" value="Odd number"/>	           
+	        <field name="Spare" lengthBit="3" type="integer" value="0"/>
+	        <field name="Subaddress information"  type="string" value="Subaddress information"/>
+	    </element>
+
+	    <!-- Transit network selection = b1111000 = h78 = d120-->
+	    <!-- ONLY for Circuit, Bearer message -->            	    	                
+	    <element identifier="Transit network selection">
+	        <field name="ext" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Type of network identification" lengthBit="3" type="enumeration" value="National network identification"/>
+	        <field name="Network identification plan" lengthBit="4" type="enumeration" value="Data network identification code"/>
+	        <field name=" Network identification" type="string" value=" Network identification"/>
+	    </element>
+
+	    <!-- Repeat indicator = b11010010 = hD2 = d210-->
+	    <!--field Repeat indicator = Prioritized list for selecting one possibility -->
+            <!-- ONLY for Circuit message -->            	    	                	    
+    	    <element identifier="Repeat indicator = Prioritized"/>
+
+	    <!-- Low layer compatibility = b1111100 = h7C = d124--> 	
+            <!-- ONLY for Circuit, Bearer message -->            	    	                	    	    
+	    <element identifier="Low layer compatibility">
+	        <field name="ext1" value="1" lengthBit="1" type="boolean" />
+	        <field name="Coding standard" value="Standard defined for the network" lengthBit="2" type="enumeration" />
+	        <field name="Information transfer capability" value="Video" lengthBit="5" type="enumeration" />
+	        <field name="ext2" value="1" lengthBit="1" type="boolean" />
+	        <field name="Negotiation indicator" value="Out-band negotiation possible" lengthBit="1" type="enumeration" />       
+	        <field name="spare1" value="1" lengthBit="6" type="integer" />	        
+        	<field name="ext3" value="1" lengthBit="1" type="boolean" />		        
+	        <field name="Transfer mode" value="Circuit mode" lengthBit="2" type="enumeration" />        
+	        <field name="Information transfer rate" value="Multirate (64 kbit/s base rate)" lengthBit="5" type="enumeration" />        
+	        <field name="ext4" value="1" lengthBit="1" type="boolean" />
+	        <field name="Rate multiplier" value="255" lengthBit="7" type="integer" />
+	        <field name="ext5" value="1" lengthBit="1" type="boolean" />
+	        <field name="Layer 1 ident" value="1" lengthBit="2" type="integer"/>
+	        <field name="User information layer 1 protocol" value="ITU-T X.31 HDLC" lengthBit="5" type="enumeration" />
+	        <field name="ext6" value="1" lengthBit="1" type="boolean" />
+	        <field name="Synchronous/Asynchronous" value="Asynchronous data" lengthBit="1" type="enumeration" />
+	        <field name="Negotiation" value="In-band negotiation possible" lengthBit="1" type="enumeration" />
+	        <field name="User rate" value="12 kbit/s" lengthBit="5" type="enumeration" />
+                <field name="ext7" value="1" lengthBit="1" type="boolean" />
+	        <field name="Intermediate rate" value="32 kbit/s" lengthBit="2" type="enumeration"/>
+	        <field name="NIC on Tx" value="Required to send data with NIC" lengthBit="1" type="enumeration"/>
+	        <field name="NIC on Rx" value="Can accept data with NIC" lengthBit="1" type="enumeration"/>
+	        <field name="Flow control on Tx" value="Required to send data with flow control mechanism" lengthBit="1" type="enumeration"/>
+	        <field name="Flow control on Rx" value="Can accept data with flow control mechanism" lengthBit="1" type="enumeration"/>
+		<field name="spare2" value="0" lengthBit="1" type="integer" />	                        
+	        <field name="ext8" value="1" lengthBit="1" type="boolean" />
+	        <field name="Rate adaption header/no header" value="Rate adaption header included" lengthBit="1" type="enumeration"/>
+	        <field name="Multiple frame establishment support in data link" value="Multiple frame establishment supported" lengthBit="1" type="enumeration"/>
+	        <field name="Mode of operation layer 1" value="Protocol sensitive mode of operation" lengthBit="1" type="enumeration"/>
+	        <field name="Logical link identifier negotiation" value="Full protocol negotiation" lengthBit="1" type="enumeration"/>
+	        <field name="Assignor/assignee" value="Message originator is 'assignor only'" lengthBit="1" type="enumeration"/>
+	        <field name="In-band/out-band negotiation" value="Negotiation is done in-band using logical link zero" lengthBit="1" type="enumeration"/>
+		<field name="spare3" value="0" lengthBit="1" type="integer" />	                        
+	        <field name="ext9" value="1" lengthBit="1" type="boolean" />
+	        <field name="Number of stop bits" value="2 bits" lengthBit="2" type="enumeration"/>
+	        <field name="Number of data bits excluding parity bit if present" value="8 bits" lengthBit="2" type="enumeration"/>
+	        <field name="Parity information" value="Forced to 1" lengthBit="3" type="enumeration"/>
+	        <field name="ext10" value="1" lengthBit="1" type="boolean" />
+	        <field name="Duplex mode" value="Full duplex" lengthBit="1" type="enumeration"/>
+	        <field name="Modem type" value="User specified" lengthBit="6" type="enumeration"/>
+		<field name="ext11" value="1" lengthBit="1" type="boolean" />        
+	        <field name="Layer 2 identifier" value="2" lengthBit="2" type="integer"/>
+	        <field name="User information layer 2 protocol" value="ISO/IEC 7776 DTE-DCE operation" lengthBit="5" type="enumeration"/>
+		<field name="ext12" value="1" lengthBit="1" type="boolean" />        
+	        <field name="Mode of operation layer 2" value="Extended mode of operation" lengthBit="2" type="enumeration"/>
+		<field name="spare4" value="0" lengthBit="3" type="integer" />	                                
+	        <field name="Q.933 use" value="for use when the coding defined in Recommendation Q.933 is not used" lengthBit="2" type="enumeration"/>
+		<field name="ext13" value="1" lengthBit="1" type="boolean" />        
+	        <field name="User specified layer 2 protocol information" value="127" lengthBit="7" type="integer"/>
+		<field name="ext14" value="1" lengthBit="1" type="boolean" />        
+	        <field name="Window size (k)" value="127" lengthBit="7" type="integer"/>
+		<field name="ext15" value="1" lengthBit="1" type="boolean" />        
+	        <field name="Layer 3 identifier" value="3" lengthBit="2" type="integer"/>
+	        <field name="User information layer 3 protocol" value="User specified" lengthBit="5" type="enumeration"/>
+		<field name="ext16" value="1" lengthBit="1" type="boolean" />        
+	        <field name="Optional layer 3 protocol information" value="3" lengthBit="7" type="integer"/>
+		<field name="ext17" value="1" lengthBit="1" type="boolean" />        
+	        <field name="Mode of operation layer 3" value="Extended packet sequence numbering" lengthBit="2" type="enumeration"/>
+		<field name="spare5" value="0" lengthBit="5" type="integer" />	                                        
+		<field name="ext18" value="1" lengthBit="1" type="boolean" />        	
+		<field name="spare6" value="0" lengthBit="3" type="integer" />	                                        	
+	        <field name="Default packet size" value="Default packet size 4096 octets" lengthBit="4" type="enumeration"/>
+		<field name="ext19" value="1" lengthBit="1" type="boolean" />        	
+		<field name="Packet window size" value="127" lengthBit="7" type="integer" />	                                        	
+		<field name="ext20" value="1" lengthBit="1" type="boolean" />        	
+		<field name="spare7" value="0" lengthBit="3" type="integer" />	
+		<field name="Additional layer 3 protocol information HIGH" value="15" lengthBit="4" type="integer" />	                                        	
+		<field name="ext21" value="1" lengthBit="1" type="boolean" />        	
+		<field name="spare8" value="0" lengthBit="3" type="integer" />	
+		<field name="Additional layer 3 protocol information LOW" value="15" lengthBit="4" type="integer" />	                                        		        
+	    </element>
+	    
+    	    <!-- High layer compatibility = b1111101 = h7D = d125-->
+            <!-- ONLY for Circuit message -->    	
+	    <element identifier="High layer compatibility">
+		<field name="ext1" lengthBit="1" type="boolean" value="1"/>
+		<field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+		<field name="Interpretation" lengthBit="3" type="enumeration" value="First high layer characteristics identification"/>
+		<field name="Presentation method of protocol profile" lengthBit="2" type=" enumeration" value="High layer protocol profile"/>
+		<field name="ext2" lengthBit="1" type="boolean" value="1"/>
+		<field name="High layer characteristics identification" lengthBit="7" type="enumeration" value="Telephony"/>
+                <field name="ext3" lengthBit="1" type="boolean" value="1"/>
+		<field name="Extended high layer characteristics identification" lengthBit="7" type="enumeration" value="Telephony"/>
+		<field name="ext4" lengthBit="1" type="boolean" value="1"/>
+		<field name="Extended videotelephony characteristics identification" lengthBit="7" type="enumeration" value="Capability set of initial channel of H.221"/>
+	    </element>
+
+	    <!-- Redirecting number = b1110100 =h74 =d116-->
+            <!-- ONLY for Packet message -->            	    	                	    	    	    
+	    <element identifier="Redirecting number">
+	        <field name="ext1" lengthBit="1" type="boolean" value="0" />
+	        <field name="Type of number" lengthBit="3" type="enumeration" value="International number" />
+	        <field name="Numbering plan identification" lengthBit="4" type="enumeration" value="National standard numbering plan" />
+	        <field name="ext2" lengthBit="1" type="boolean" value="0" />
+	        <field name="Presentation indicator" lengthBit="2" type="enumeration" value="Number not available due to interworking" />
+	        <field name="spare2" lengthBit="3" type="integer" value="0"/>        
+	        <field name="Screening indicator" lengthBit="2" type="enumeration" value="Network provided" />
+	        <field name="ext3" lengthBit="1" type="boolean" value="1" />
+	        <field name="spare3" lengthBit="3" type="integer" value="0" />        
+	        <field name="Reason for redirection" lengthBit="4" type="enumeration" value="Call forwarding busy or called DTE busy" />
+	        <field name="Number digits" type="string" value="11111111" />            
+	    </element>
+
+            <!-- User-user= b1111110 = h7E = d126-->
+            <!-- ONLY for Packet message -->                        
+    	    <element identifier="User-User">
+        	<field name="Protocol discriminator" lengthBit="8" type="enumeration" value="X.208 and X.209 coded user information"/>
+    		<field name="User information" type="binary" value="20a8060008914a0004014006006d002e006a0065006d0065006322c00900003d1443616c6c67656e33323320706f67616373616d00000a302e39616c706861340000000a01061206b800f8fdf93ecd9ed6119ab2000476222017005d0d8007000a01038f80231100c0fef93ecd9ed6119ab2000476222017010001000100010002800100"/>    
+	    </element>
+	    	           
+        </ISDN>
+
+        <UA name="IUA" file="iua.xml">
+            <header messageClass="QPTM:Q.921/Q.931 Boundary Primitives Transport" messageType="Data_Request"/>						
+            <parameter tag="Integer_Interface_Identifier">
+                <field name="Interface_Identifier"  value="2"/>
+            </parameter>
+            <parameter tag="DLCI">
+            	    <field name="SAPI" value="0"/>
+	            <field name="Spare_Bit" value="0"/>
+	            <field name="Zero_Bit" value="0"/>
+	            <field name="TEI" value="1"/>
+	            <field name="Un_Bit" value="1"/>
+	            <field name="Spare" value="0"/>
+	    </parameter>
+            <parameter tag="Protocol_Data">
+                <field name="Protocol_Data" value=""/>
+            </parameter>
+        </UA>	
+     
+    </sendMessageSIGTRAN>
+
+</scenario>

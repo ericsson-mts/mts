@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE Flux [
+  <!ENTITY Flux_HTTP   SYSTEM "../Flux_HTTP/Flux_HTTP.xml">
+  <!ENTITY Flux_SMTP   SYSTEM "../Flux_SMTP/Flux_SMTP.xml">
+  <!ENTITY Flux_Wifi   SYSTEM "../Flux_RADIUS_Wifi/Flux_Wifi.xml">
+  <!ENTITY Flux_Chat   SYSTEM "../Flux_RADIUS_Chat/Flux_Chat.xml">
+  <!ENTITY Flux_WebxMS SYSTEM "../Flux_RADIUS_WebxMS/Flux_WebxMS.xml">
+  <!ENTITY Flux_EMail  SYSTEM "../Flux_RADIUS_EMail/Flux_EMail.xml">
+  <!ENTITY Flux_OMM    SYSTEM "../Flux_RADIUS_OMM/Flux_OMM.xml">
+  <!ENTITY Flux_OWL    SYSTEM "../Flux_RADIUS_OWL/Flux_OWL.xml">
+]>
+
+<scenario>
+  <!-- Do radius over RADIUS Stack here -->
+  <!--pause name="temps d'attente" milliseconds="1000" /-->
+  <parameter name="[RADIUSsocketOpen]"   operation="set" value="false"/>
+  <parameter name="[HTTPconnectionOpen]" operation="set" value="false"/>  
+  <parameter name="[SMTPconnectionOpen]" operation="set" value="false"/>
+  <parameter name="[i]" operation="set" value="0"/>
+  <while>
+    <condition>
+      <test parameter="[i]" condition="lowerThan" value="[MSISDNs_size]"/>
+    </condition>
+    <do>
+      <parameter name="[protocol]"           operation="set" value="[protocols([i])]"/>
+      <parameter name="[server]"             operation="set" value="[servers([i])]"/>
+      <parameter name="[msisdn]"             operation="set" value="[MSISDNs([i])]"/>
+      <parameter name="[nas_port]"           operation="set" value="[nas_ports([i])]"/>
+      <parameter name="[nas_ip_address]"     operation="set" value="[nas_ip_addresses([i])]"/>
+      <parameter name="[secret]"             operation="set" value="[secrets([i])]"/>      
+      <parameter name="[calling_station_id]" operation="set" value="[calling_station_ids([i])]"/>      
+      <parameter name="[called_station_id]"  operation="set" value="[called_station_ids([i])]"/>      
+      <parameter name="[nas_identifier]"     operation="set" value="[nas_identifiers([i])]"/>
+      <parameter name="[3gpp_charging_id]"   operation="set" value="[3gpp_charging_ids([i])]"/>
+      <parameter name="[3gpp_sgsn_address]"  operation="set" value="[3gpp_sgsn_addresses([i])]"/>
+
+      <parameter name="[email]"		     operation="set" value="[emails([i])]"/>
+ 
+      <parameter name="[imsi]"                  operation="set" value="[imsis([i])]"/>
+      <parameter name="[plmn-id]"               operation="set" value="[plmn-ids([i])]"/>
+      <parameter name="[charging-type]"         operation="set" value="[charging-types([i])]"/>
+      <parameter name="[subscriber-identifier]" operation="set" value="[subscriber-identifiers([i])]"/>
+      <parameter name="[profileID]"             operation="set" value="[profileIDs([i])]"/>
+      <parameter name="[user-login]"            operation="set" value="[user-logins([i])]"/>
+      <parameter name="[Hot_Spot_Id]"           operation="set" value="[Hot_Spot_Ids([i])]"/>
+
+      <parameter name="[specific-volume]"    operation="set" value="[specific-volumes([i])]"/>
+      <parameter name="[content-type]"       operation="set" value="[content-types([i])]"/>
+      <parameter name="[source-access-type]" operation="set" value="[source-access-types([i])]"/>
+
+      <!-- Flux HTTP -->
+      <parameter name="[Acct-Session-Id]" operation="identifier" value="nextInteger" value2="inutile"/>
+      <if>
+        <condition>
+          <test parameter="[Flux_HTTP]" condition="equals" value="true"/>
+        </condition>
+        <then>
+          &Flux_HTTP;
+        </then>
+      </if>
+      <pause name="temps d'attente" milliseconds="100"/>
+      <!-- Flux SMTP -->
+      <parameter name="[Acct-Session-Id]" operation="identifier" value="nextInteger" value2="inutile"/>
+      <if>
+        <condition>
+          <test parameter="[Flux_SMTP]" condition="equals" value="true"/>
+        </condition>
+        <then>
+          &Flux_SMTP;
+        </then>
+      </if>
+      <!-- Flux RADIUS Wifi -->
+      <if>
+        <condition>
+          <test parameter="[Flux_Wifi]" condition="equals" value="true"/>
+        </condition>
+        <then>
+          &Flux_Wifi;
+        </then>
+      </if>
+      <!-- Flux RADIUS Chat -->
+      <if>
+        <condition>
+          <test parameter="[Flux_Chat]" condition="equals" value="true"/>
+        </condition>
+        <then>
+          &Flux_Chat;
+        </then>
+      </if>
+      <if>
+        <condition>
+          <test parameter="[Flux_WebxMS]" condition="equals" value="true"/>
+        </condition>
+        <then>
+          &Flux_WebxMS;
+        </then>
+      </if>
+      <if>
+        <condition>
+          <test parameter="[Flux_EMail]" condition="equals" value="true"/>
+        </condition>
+        <then>
+          &Flux_EMail;
+        </then>
+      </if>
+      <if>
+        <condition>
+          <test parameter="[Flux_OMM]" condition="equals" value="true"/>
+        </condition>
+        <then>
+          &Flux_OMM;
+        </then>
+      </if>
+      <if>
+        <condition>
+          <test parameter="[Flux_OWL]" condition="equals" value="true"/>
+        </condition>
+        <then>
+          &Flux_OWL;
+        </then>
+      </if>
+
+      <!-- Next MSISDN -->
+      <parameter name="[i]" operation="add" value="[i]" value2="1"/>
+    </do>
+  </while>
+
+  <finally>
+    <if>
+      <condition>
+        <test parameter="[RADIUSsocketOpen]" condition="equals" value="true"/>
+      </condition>
+      <then>
+      <!-- send Radius Accounting-Request Stop -->
+      <parameter name="[timestamp]" operation="setFromSystem" value="Timestamp" value2="1970"/>
+      <parameter name="[timestamp]" operation="divide" value="[timestamp]" value2="1000"/>
+      <sendRequestRadius socketName="[RADIUSsocketName]" remoteHost="[radius_ip]" remotePort="[radius_acct_port]">
+        <!-- Header -->
+        <header code="4"/>
+
+        <!-- AVPs -->
+        <!--Acct-Status-Type(40) -->
+        <avp code="40" value="Stop"/>
+
+        <!-- User-Name (1) -->
+        <avp code="1" value="[msisdn]"/>
+
+        <!-- NAS-IP-Address(4) -->
+        <avp code="4" value="[nas_ip_address]"/>
+
+        <!-- NAS-Port(5) -->
+        <avp code="5" value="[nas_port]"/>
+
+        <!-- Framed-IP-Address(8) -->
+        <avp code="8" value="[source_ip]"/>
+
+        <!-- Calling-Station-Id(31) -->
+        <avp code="31" value="[calling_station_id]"/>
+
+        <!-- Called-Station-Id(30) -->
+        <avp code="30" value="[called_station_id]"/>
+
+        <!-- Acct-Session-Id(44) -->
+        <avp code="44" value="[msisdn][index][smtp_port]"/>
+
+        <!-- Event-Timestamp(55) -->
+        <avp code="55" value="[timestamp]"/>
+
+        <!-- Framed-Protocol(7) -->
+        <avp code="7" value="GPRS-PDP-Context"/>
+
+        <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+        <avp code="26" value="3GPP">
+          <avp code="2" value="[3gpp_charging_id]"/>
+        </avp>
+
+        <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+        <avp code="26" value="3GPP">
+          <avp code="6" value="[3gpp_sgsn_address]"/>
+        </avp>
+
+        <!-- NAS-Identifier(32) -->
+        <avp code="32" value="[nas_identifier]"/>
+      </sendRequestRadius>
+      
+      <receiveResponseRadius socketName="[RADIUSsocketName]" failedOnTimeout="false"/>
+      
+      <closeSocketRadius socketName="[RADIUSsocketName]"/>
+      </then>
+    </if>
+    <if>
+      <condition>
+        <test parameter="[HTTPconnectionOpen]" condition="equals" value="true"/>
+      </condition>
+      <then>
+        <closeConnectionHTTP connectionName="[HTTPconnectionName]"/>
+      </then>
+    </if>
+    <if>
+      <condition>
+        <test parameter="[SMTPconnectionOpen]" condition="equals" value="true"/>
+      </condition>
+      <then>
+        <closeConnectionHTTP connectionName="[SMTPconnectionName]"/>
+      </then>
+    </if>
+    <!--pause name="temps d'attente" milliseconds="100"/-->
+  </finally>
+</scenario> 

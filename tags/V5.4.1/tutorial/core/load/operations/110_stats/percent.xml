@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+    <parameter name="[timestamp]" operation="system.timestamp" />
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
+
+    <stats>
+        <percent name="percent1" summary="percentShortD1" complete="percentLongD1">
+            <incValue>10</incValue>
+            <incValue>10</incValue>
+            <incTotal>30</incTotal>
+            <incValue milliseconds="[timestamp]">10</incValue>
+            <incValue milliseconds="[timestamp]">10</incValue>
+            <incTotal milliseconds="[timestamp]">20</incTotal>
+            
+        </percent>
+        <percent name="percent2" summary="percentShortD2" complete="percentLongD2">
+        </percent>        
+    </stats>
+    
+    <pause name="tempo" seconds="0.1"/>    
+    <parameter name="[timestamp]" operation="system.timestamp" />
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
+    
+    <stats>
+        <percent name="percent1" summary="percentShortD1" complete="percentLongD1">
+            <incValue>10</incValue>
+            <incTotal>30</incTotal>            
+            <incValue milliseconds="[timestamp]">10</incValue>
+            <incTotal milliseconds="[timestamp]">30</incTotal>
+        </percent>                
+        <percent name="percent2">
+            <incValue>10</incValue>
+            <incTotal>50</incTotal>
+            <incValue milliseconds="[timestamp]">10</incValue>
+            <incTotal milliseconds="[timestamp]">50</incTotal>
+        </percent>                        
+    </stats>
+
+    <pause name="tempo" seconds="0.1"/>    
+    <parameter name="[timestamp]" operation="system.timestamp" />
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
+    
+    <stats>
+        <percent name="percent1">
+            <incValue>-20</incValue>
+            <incTotal>40</incTotal>            
+            <incValue milliseconds="[timestamp]">-20</incValue>
+            <incTotal milliseconds="[timestamp]">40</incTotal>
+        </percent>                
+        <percent name="percent2">
+            <incTotal>50</incTotal>
+            <incTotal milliseconds="[timestamp]">50</incTotal>
+        </percent>                        
+    </stats>
+
+</scenario>

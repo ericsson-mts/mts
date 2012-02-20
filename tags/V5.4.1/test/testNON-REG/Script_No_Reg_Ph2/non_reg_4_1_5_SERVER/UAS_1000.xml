@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE library [
+<!ENTITY libS_Service_Server_Simulator			SYSTEM "../library/libS_Service_Server_Simulator.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph1		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph1.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph2		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph2.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph3		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph3.xml">
+<!ENTITY libS_Proxy_Server				SYSTEM "../library/libS_Proxy_Server.xml">
+]>
+
+<scenario>
+
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_Port]" operation="set" value="[SBC_Port_1000]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localPort="[provider_Port]"/>
+
+
+
+<!--
+Server proxy to reroute the message
+-->
+
+
+<parameter name="[newRoute_IP]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[newRoute_Port]" operation="set" value="[Provider_1001]"/>
+<parameter name="[called_Subscriber]" operation="set" value="[subscriber_1001]"/>
+
+
+<!-- Proxy the INVITE -->
+&libS_Proxy_Server;
+&libS_Proxy_Server;
+&libS_Proxy_Server;
+<!-- Proxy the 200 ok -->
+&libS_Proxy_Server;
+<!-- Proxy the ACK -->
+&libS_Proxy_Server;
+<!-- Proxy the BYE Ok -->
+&libS_Proxy_Server;
+<!-- Proxy the 200 Ok -->
+&libS_Proxy_Server;
+
+<finally><closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/></finally>
+
+</scenario>

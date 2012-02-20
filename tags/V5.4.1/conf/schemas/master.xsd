@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema  xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+                
+    <xs:element name="master" type="masterType" />
+
+    <xs:complexType name="masterType">
+        <xs:sequence minOccurs="0" maxOccurs="1" >
+            <xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="name"        type="xs:string" use="required" />
+        <xs:attribute name="description" type="xs:string" use="optional" />
+    </xs:complexType>
+    
+    <xs:complexType name="testType">
+        <xs:sequence minOccurs="0" maxOccurs="1" >
+            <xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="name"   type="xs:string" use="required" />
+        <xs:attribute name="runner" type="xs:string" use="required" />
+        <xs:attribute name="slave"  type="xs:string" use="required" />
+        <xs:attribute name="path"   type="xs:string" use="required" />
+        <xs:attribute name="description" type="xs:string" use="optional" />
+        <xs:attribute name="home"   type="xs:string" />
+    </xs:complexType>
+
+
+<!--                                                                                   parameter -->
+    <xs:complexType name="operationType">
+        <xs:attribute name="name"    	    type="xs:string"        use="optional">    
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Generic: The operation name</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+        <xs:attribute name="description"    type="xs:string"        use="optional">
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Generic: The operation description (just a comment)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+        <xs:attribute name="state"    	    type="xs:string"        use="optional">    
+			<xs:annotation>
+				<xs:appinfo>Boolean</xs:appinfo>
+				<xs:documentation>Generic: A flag to run or not the operation (equivalent to put the operation in comment code)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="operationTypeSimple">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">    
+            <xs:attribute name="name"    	    type="xs:string"        use="optional">    
+    			<xs:annotation>
+    				<xs:appinfo>String</xs:appinfo>
+    				<xs:documentation>Generic: The operation name</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>
+            <xs:attribute name="description"    type="xs:string"        use="optional">
+    			<xs:annotation>
+    				<xs:appinfo>String</xs:appinfo>
+    				<xs:documentation>Generic: The operation description (just a comment)</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>
+            <xs:attribute name="state"    	    type="xs:string"        use="optional">    
+    			<xs:annotation>
+    				<xs:appinfo>Boolean</xs:appinfo>
+    				<xs:documentation>Generic: A flag to run or not the operation (equivalent to put the operation in comment code)</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>
+            </xs:extension>
+      	</xs:simpleContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="parameterType">
+        <xs:simpleContent>
+            <xs:extension base="operationTypeSimple">
+                <xs:attribute name="operation" type="xs:string" />
+            	<xs:attribute name="value"     type="xs:string" />
+            	<xs:attribute name="value2"    type="xs:string" />
+            	<xs:attribute name="value3"    type="xs:string" />
+            	<xs:attribute name="value4"    type="xs:string" />
+            	<xs:attribute name="editable"  type="xs:boolean" />
+            </xs:extension>
+        </xs:simpleContent>            
+    </xs:complexType>
+    
+</xs:schema>

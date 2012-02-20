@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="connection" />
+
+    <openChannelGTPP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
+
+    <sendMessageGTPP name="node alive request" channel="[connection]">
+        <header name="nodeAliveRequest" sequenceNumber="1"/>
+        <tlv tag="251" value="172.16.21.207"/>
+    </sendMessageGTPP>
+
+    <receiveMessageGTPP name="node alive response">
+    </receiveMessageGTPP>
+
+    <finally>
+        <closeChannelGTPP name="[connection]"/>
+    </finally>
+    
+</scenario>

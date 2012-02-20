@@ -1,0 +1,121 @@
+<!--
+Function description: Library http MFRB side
+Premiere partie synchronisee sur l INVITE
+
+Input parameters:
+
+
+	
+Output parameters :
+
+
+	
+-->
+
+<!--
+Procedure d'ouverture retardee de la cnx HTTP entre MRFB et l'AS FT pour eviter 
+le time_out de non-activite genere par l'AS avant l envoi du premier message GET
+-->
+<!--
+Modification: nv cnx http cree pour chaque nv requete http a envoyer
+
+<if>
+<condition>
+<test parameter="[PremiereExecution]" condition="equals" value="true"/>
+</condition>
+<then>
+<openConnectionHTTP connectionName="HTTP_MRFB" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+<parameter name="[PremiereExecution]" operation="set" value="false"/>
+</then></if>
+-->
+
+<!--
+Sauvegarde Session_id dans contexte identifie par le CallId
+Modification 20012009: Variable niveau test pour pourvoir lancer plusieurs fois le scenario
+-->
+
+<parameter name="[test:store_B_[lastCallId]]" operation="set" value="[SessionId]"/>
+<log level="1">Balise stored_value = [test:store_B_[lastCallId]]</log>
+
+
+<!--
+Envoi des message HTTP synchronise sur l'INVITE
+
+<openConnectionHTTP connectionName="HTTP_MRFB" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+-->
+
+
+
+<!-- Ouverture d une nv cnx HTTP avec un nv nom de cnx -->
+<parameter name="[IndiceHTTPCnx]" operation="add" value="[IndiceHTTPCnx]" value2="1"/>
+<if>
+<condition>
+<test parameter="[IndiceHTTPCnx]" condition="equals" value="100000"/>
+</condition>
+<then>	
+<parameter name="[IndiceHTTPCnx]" operation="set" value="0"/>
+</then></if>
+<parameter name="[HTTPCnxName]" operation="set" value="HTTP_MRFB"/>
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="-" />
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="[IndiceHTTPCnx]" />
+<openConnectionHTTP connectionName="[HTTPCnxName]" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+
+
+
+<sendRequestHTTP connectionName="[HTTPCnxName]" delay="0">
+	
+<![CDATA[
+GET /ASFMseSipApplication/http/StopSecretSipApp/OMS_Files/stopSecret/B_welcome_dialog.jsp;sipappsessionid=[SessionId] HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Cache-Control: max-age=0
+Cache-Control: max-stale=0
+]]>
+
+</sendRequestHTTP>
+
+<!--
+    Lecture du transaction ID pour comparaison avec celui de la réponse recue.
+    On ne veut lire le cookie que s'il s'agit de celui de la bonne réponse.
+-->
+<parameter name="[sentTransactionId]" operation="setFromMessage" value="message.transactionid" />
+
+<receiveResponseHTTP name="Send 200 OK" result="200">
+        <parameter name="[reveivedTransactionId]" operation="setFromMessage" value="message.transactionid" />
+        <test parameter="[reveivedTransactionId]" condition="string.equals" value="[sentTransactionId]" />
+		<parameter name="[test:lastCookie_[lastCallId]]" operation="setFromMessage" value="header:Set-Cookie"/>
+</receiveResponseHTTP>
+
+
+
+<!-- Ouverture d une nv cnx HTTP avec un nv nom de cnx -->
+<parameter name="[IndiceHTTPCnx]" operation="add" value="[IndiceHTTPCnx]" value2="1"/>
+<if>
+<condition>
+<test parameter="[IndiceHTTPCnx]" condition="equals" value="100000"/>
+</condition>
+<then>	
+<parameter name="[IndiceHTTPCnx]" operation="set" value="0"/>
+</then></if>
+<parameter name="[HTTPCnxName]" operation="set" value="HTTP_MRFB"/>
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="-" />
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="[IndiceHTTPCnx]" />
+<openConnectionHTTP connectionName="[HTTPCnxName]" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+
+
+<sendRequestHTTP connectionName="[HTTPCnxName]" delay="0">
+	
+<![CDATA[
+GET /ASFMseSipApplication/http/StopSecretSipApp/OMS_Files/stopSecret/vxml_scripts/root.vxml HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Referer: [Host-Server]:[Port-AS_http]/StopSecretSipApp/
+Cache-Control: max-age=0
+Cache-Control: max-stale=0
+If-Modified-Since: Tue, 16 Feb 2010 16:03:22 GMT
+Cookie: [test:lastCookie_[lastCallId]]
+]]>
+
+</sendRequestHTTP>

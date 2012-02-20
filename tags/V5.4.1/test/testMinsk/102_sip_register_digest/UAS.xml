@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE SIPimport [
+  <!ENTITY register SYSTEM "./register.xml">
+
+]>
+
+<scenario>
+
+  <parameter name="[LocalHost]" operation="system.ipaddress"/>  
+  <parameter name="[LocalPort]" operation="set" value="[scenarioName]"/>
+  <parameter name="[LocalPortRTP]" operation="number.add" value="[scenarioName]" value2="10000"/>
+  <parameter name="[userName]" operation="set" value="[userTo]"/>
+  <parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort]"/>
+  <createListenpointSIP name="listenpointUAS" localHost="[LocalHost(0)]" localPort="[LocalPort(0)]"/>
+
+  <parameter name="[userName]" operation="set" value="[userTo]"/>
+  <parameter name="[Password]" operation="set" value="[passwordTo]"/>
+  <parameter name="[Expires]" operation="set" value="3600"/>
+  <parameter name="[listenpoint]" operation="set" value="listenpointUAS"/>	
+  &register;
+  
+  <parameter name="[testcase:registerOK]" operation="system.semaphorenotify" value="1"/>
+  
+  <parameter name="[userName]" operation="set" value="[userTo]"/>
+  <parameter name="[Password]" operation="set" value="[passwordTo]"/>
+  <parameter name="[Expires]" operation="set" value="0"/>
+  <parameter name="[listenpoint]" operation="set" value="listenpointUAS"/>	
+  &register;
+
+   <removeListenpointSIP name="listenpointUAS"/>
+
+</scenario>

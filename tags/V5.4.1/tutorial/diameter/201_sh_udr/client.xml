@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Sh User-Data request (UDR)" -->
+<scenario>
+
+<!--
+From 3GPP TS29.329.730 :
+User-Data-Request ::= < Diameter Header: 306, REQ, PXY, 16777217 >
+                         < Session-Id >
+                         { Vendor-Specific-Application-Id }
+                           Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                1* [ Vendor-Id ]
+                                                                0*1{ Auth-Application-Id }
+                                                                0*1{ Acct-Application-Id }
+                         { Auth-Session-State }
+                         { Origin-Host }
+                         { Origin-Realm }
+                         [ Destination-Host ]
+                         { Destination-Realm }
+
+                        *[ Supported-Features ]
+                           Supported-Features ::=  < AVP header: 628 10415 >
+                                                      { Vendor-Id }
+                                                      { Feature-List-ID }
+                                                      { Feature-List }
+                                                     *[AVP]
+                         { User-Identity }
+                           User-Identity ::= < AVP header: 700 10415 >
+                                                 [Public-Identity]
+                                                 [MSISDN]
+                                                *[AVP]
+                         [ Server-Name ]
+                        *[ Service-Indication ]
+                        *{ Data-Reference }
+                        *[ Identity-Set ]
+                         [ Requested-Domain ]
+                         [ Current-Location ]
+                        *[ AVP ]
+
+                        *[ Proxy-Info ]
+                           Proxy-Info ::= < AVP Header: 284 >
+                                              { Proxy-Host }
+                                              { Proxy-State }
+                                            * [ AVP ]
+                        *[ Route-Record ]
+
+-->
+
+    <sendMessageDIAMETER name="Send Request 3GPP/SH/UDR" remoteURL="diameter://[Remote-Address]" destScenario="server">
+        <header request="true" command="User-Data" applicationId="16777217" proxiable="true" error="false" retransmit="false"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
+          <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777217"/>
+            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777217"/-->
+          </avp>
+
+          <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
+          <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
+          <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
+
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[Remote-Host]"/>
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
+
+          <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports (3GPP TS29.229.750). -->
+          <avp code="Supported-Features" vendorId="10415">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <!-- The Feature-List-ID AVP contains the identity of a feature list (3GPP TS29.229.750). -->
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/>
+            <!-- The Feature-List AVP contains a bit mask indicating the supported features of an application (3GPP TS29.229.750). -->
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/> 
+          </avp>
+          <avp code="Supported-Features" vendorId="10415">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/>
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/> 
+          </avp>
+
+          <!-- The User-Identity AVP contains either a Public-Identity AVP or an MSISDN AVP. -->
+          <avp code="User-Identity" vendorId="10415">
+            <!-- The Public-Identity AVP contains a Public User Identity. -->
+            <avp code="Public-Identity" mandatory="true" type="UTF8String" value="PublicIdentity1" vendorId="10415"/>                   
+            <!-- The MSISDN AVP contains an MSISDN, in international number format as described in ITU-T Rec E.164 [8], encoded as a TBCD-string. -->
+            <avp code="MSISDN" mandatory="true" type="OctetString" value="MSISDN1" vendorId="10415"/>                    
+          </avp>
+
+          <!-- The Server-Name AVP contains a SIP-URL used to identify an AS. -->
+          <avp code="Server-Name" mandatory="true" type="UTF8String" value="Server-Name" vendorId="10415"/>
+
+          <!-- The Service-Indication AVP contains the Service Indication that identifies a service in an AS. -->
+          <avp code="Service-Indication" mandatory="true" type="OctetString" value="Service-Indication1" vendorId="10415"/>
+          <avp code="Service-Indication" mandatory="true" type="OctetString" value="Service-Indication2" vendorId="10415"/>
+
+          <!-- The Data-Reference AVP indicates the type of the requested user data. -->
+          <!-- Possible enumerated values : RepositoryData (0) / IMSPublicIdentity (10) / IMSUserState (11) / S-CSCFName (12) / InitialFilterCriteria (13) / LocationInformation (14) / UserState (15) / ChargingInformation (16)  / MSISDN (17) / PSIActivation (18) / DSAI (19) / AliasesRepositoryData (20). -->
+          <avp code="Data-Reference" mandatory="true" type="Enumerated" value="0" vendorId="10415"/>
+          <avp code="Data-Reference" mandatory="true" type="Enumerated" value="10" vendorId="10415"/>
+
+          <!-- The Identity-Set AVP indicates the requested set of IMS Public Identities. -->
+          <!-- Possible enumerated values : ALL_IDENTITIES (0) / REGISTERED_IDENTITIES (1) / IMPLICIT_IDENTITIES (2) / ALIAS_IDENTITIES (3). -->
+          <avp code="Identity-Set" mandatory="false"  type="Enumerated" value="1" vendorId="10415"/>
+          <avp code="Identity-Set" mandatory="false"  type="Enumerated" value="2" vendorId="10415"/>
+
+          <!-- The Requested-Domain AVP indicates the access domain for which certain data (e.g. user state) are requested. -->
+          <!-- Possible enumerated values : CS-Domain (0) / PS-Domain (1). -->
+          <avp code="Requested-Domain" mandatory="true" type="Enumerated" value="0" vendorId="10415"/>
+
+          <!-- The Current-Location AVP indicates whether an active location retrieval has to be initiated or not. -->
+          <!-- Possible enumerated values : DoNotNeedInitiateActiveLocationRetrieval (0) / InitiateActiveLocationRetrieval (1). -->
+          <avp code="Current-Location" mandatory="true" type="Enumerated" value="0" vendorId="10415"/>
+
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer 3GPP/SH/UDA" request="false" type="User-Data:306" result="DIAMETER_SUCCESS:2001">
+    </receiveMessageDIAMETER>
+    
+</scenario>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Cx/Dx User-Authorization answer (UAA)" -->
+
+<scenario>
+    
+    <receiveMessageDIAMETER name="Receive Request 3GPP/CX-DX/UAR" request="true">
+                <parameter name="hopByHop" operation="protocol.setFromMessage" value="header.hopByHop"/>
+                <parameter name="endToEnd" operation="protocol.setFromMessage" value="header.endToEnd"/>
+    </receiveMessageDIAMETER>
+
+<!--
+From 3GPP TS 29.229 V7.5.0 :
+User-Authorization-Answer> ::= < Diameter Header: 300, PXY, 16777216 >
+                                  < Session-Id >
+                                  { Vendor-Specific-Application-Id }
+                                    Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                         1* [ Vendor-Id ]
+                                                                         0*1{ Auth-Application-Id }
+                                                                         0*1{ Acct-Application-Id }
+                                  [ Result-Code ]
+                                  [ Experimental-Result ]
+                                    Experimental-Result ::= < AVP Header: 297 >
+                                                              { Vendor-Id }
+                                                              { Experimental-Result-Code }
+                                  { Auth-Session-State }
+                                  { Origin-Host }
+                                  { Origin-Realm }
+                                 *[ Supported-Features ]
+                                    Supported-Features ::=  < AVP header: 628 10415 >
+                                                               { Vendor-Id }
+                                                               { Feature-List-ID }
+                                                               { Feature-List }
+                                                              *[AVP]
+                                  [ Server-Name ]
+                                  [ Server-Capabilities ]
+                                    Server-Capabilities ::= < AVP header: 603 10415 >
+                                                              *[Mandatory-Capability]
+                                                              *[Optional-Capability]
+                                                              *[Server-Name]
+                                                              *[AVP]
+                                 *[ AVP ]
+                                 *[ Failed-AVP ]
+                                    Failed-AVP ::= < AVP Header: 279 >
+                                                     1* {AVP}
+                                 *[ Proxy-Info ]
+                                    Proxy-Info ::= < AVP Header: 284 >
+                                                       { Proxy-Host }
+                                                       { Proxy-State }
+                                                     * [ AVP ]
+                                 *[ Route-Record ]
+
+-->
+
+    <sendMessageDIAMETER name="Send Answer 3GPP/CX-DX/UAA">
+        <header request="false" command="User-Authorization" applicationId="16777216" proxiable="true" error="false" retransmit="false" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
+          <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777217"/>
+            <avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777217"/>
+          </avp>
+
+          <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>              
+          <avp code="Experimental-Result">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <avp code="Experimental-Result-Code" mandatory="true" type="Unsigned32" value="2001" vendorId="10415"/>
+          </avp>
+
+          <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
+          <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
+          <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
+
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Remote-Host]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>
+
+          <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports. -->
+          <avp code="Supported-Features" vendorId="10415">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <!-- The Feature-List-ID AVP contains the identity of a feature list. -->
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/>
+            <!-- The Feature-List AVP contains a bit mask indicating the supported features of an application. -->
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/> 
+          </avp>
+          <avp code="Supported-Features" vendorId="10415">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/>
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/> 
+          </avp>
+
+          <!-- The Server-Name AVP contains a SIP-URL. -->
+          <avp code="Server-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>
+
+          <!-- The Server-Capabilities AVP contains information to assist the I-CSCF in the selection of an S-CSCF. -->
+          <avp code="Server-Capabilities" mandatory="true" vendorId="10415">
+            <!-- The value included in the Mandatory-Capability AVP can be used to represent a single determined mandatory capability of an S-CSCF. -->
+            <avp code="Mandatory-Capability" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>
+            <avp code="Mandatory-Capability" mandatory="true" type="Unsigned32" value="2" vendorId="10415"/>
+            <!-- The value included in the Optional-Capability AVP can be used to represent a single determined optional capability of an S-CSCF. -->
+            <avp code="Optional-Capability" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>
+            <avp code="Optional-Capability" mandatory="true" type="Unsigned32" value="2" vendorId="10415"/>
+          </avp>
+<!--
+          <avp code="Failed-AVP">
+            <avp code="???" vendorId="10415" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+          </avp>
+          <avp code="Failed-AVP">
+            <avp code="???" vendorId="10415" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+          </avp>
+-->
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+    </sendMessageDIAMETER>
+    
+</scenario>

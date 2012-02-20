@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+    
+		<receiveMessageSIP name="Wait INFO" request="true" type="FOO">
+		<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
+        <parameter name="[localTag]" operation="setFromAddress" value="[lastFrom]" value2="Parameter.tag"/>  	
+		<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  	
+		<parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>  	 		 
+		<parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+		<parameter name="[localTag]" operation="string.random" value="10"/>
+		</receiveMessageSIP>
+		<sendMessageSIP name="Send 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+		</sendMessageSIP>
+
+</scenario>

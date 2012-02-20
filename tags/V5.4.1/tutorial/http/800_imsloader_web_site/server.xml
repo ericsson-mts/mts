@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+            <label name="ReceiveMessageHTTP"/>
+
+  	<receiveMessageHTTP name="Wait POST" timeout="0" request="true">
+		<parameter name="transaction_id" operation="protocol.setFromMessage" value="message.transactionId"/>
+	</receiveMessageHTTP>
+    
+    <sendMessageHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[
+HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html;charset=utf-8
+User-Agent:XMLLoader
+SOAPAction: ""
+Content-Length: x
+
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<META NAME="TITLE" CONTENT="IMS LOADER">
+			<META NAME="DESCRIPTION" CONTENT="description">
+				<META NAME="KEYWORDS" CONTENT="mots cles,protocol">
+					<META NAME="LANGUAGE" CONTENT="EN">
+						<META NAME="SUBJECT" CONTENT="Sujet">
+							<META NAME="ROBOTS" CONTENT="All">
+								<META NAME="AUTHOR" CONTENT="devoteam">
+									<META NAME="OWNER" CONTENT="imsloader@devoteam.com">
+										<META NAME="RATING" CONTENT="telecoms">
+										<META NAME="ABSTRACT" CONTENT="description">
+										<META NAME="REVISIT-AFTER" CONTENT="7 DAYS">
+										
+										<TITLE>IMSLoader Web page</TITLE>
+										<TABLE>
+										<H1> Hello !!!</H1>
+										<HR>
+										<TR><TD>
+										<H1>My name is IMSLoader and I will present you quickly My main features : </H1>
+									</TD></TR>
+								<TR><TD>
+										<H2> <BR><LI> A multi-protocol test tool</LI></H2>
+										</TD></TR>
+									<TR><TD>
+										<H2> <BR><LI> Designed for functional and load tests or server-side simulation</H2>
+										</TD></TR>
+									<TR><TD>
+										<H2> <BR><LI> Easy to configure tests and scenarios in XML files</LI></H2>
+										</TD></TR>
+									<TR><TD>
+										<H2> <BR><LI> Graphical and command line user interfaces</LI></H2>
+										</TD></TR>
+									<TR><TD>
+										<H2> <BR><LI> Easy to run with logging and statistics features</LI></H2>
+										</TD></TR>
+									<TR><TD>
+										<H2> <BR><LI> Scalable with a master/slave mechanism for running test remotely</LI></H2>
+										</TD></TR>
+									<TR><TD>
+										<HR>
+										<H1> BYE BYE !</H1>
+									</TD></TR>
+							</body>
+						</html>
+]]>
+<!--******************** END MESSAGE *********************-->
+	</sendMessageHTTP>
+	
+	<goto name="goto_ReceiveMessageHTTP" label="ReceiveMessageHTTP" state="true"/>
+</scenario>

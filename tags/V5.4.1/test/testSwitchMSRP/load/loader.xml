@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Loader is used to initiate tests by sending an HTTP GET Request -->
+
+<scenario>
+
+	<!-- Opening an HTTP Channel between HTTP Client and the Switch MSRP -->
+
+	<parameter name="[HTTP_Connection_Name]" operation="string.random" value="10" />
+	<openChannelHTTP name="[HTTP_Connection_Name]" localHost="[ipAddressSrc]" remoteURL="http://[IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]"/> 
+	
+
+	<!-- ATTENTION: DANS LA VERSION DEFINITIVE IL FAUDRA FORCER LE PORT LOCAL cf commentaire ci dessus 
+	<openChannelHTTP name="[HTTP_Connection]" remoteURL="http://[IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]"/>  -->
+
+	
+	<sendRequestHTTP connectionName="[HTTP_Connection_Name]" delay="0">
+	
+<![CDATA[
+GET /msrp/newhub HTTP/1.1
+User-Agent: XMLLoader
+Host: [IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]
+]]>
+
+	</sendRequestHTTP>
+
+</scenario>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="connection" />
+
+    <openChannelGTPP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
+
+    <sendMessageGTPP name="send redirection request" channel="[connection]">
+        <header name="redirectionRequest" sequenceNumber="1"/>
+        <tlv tag="1" value="9"/>
+        <tlv tag="254" value="172.16.21.207"/>
+    </sendMessageGTPP>
+
+    <receiveMessageGTPP name="receive redirection response">
+    </receiveMessageGTPP>
+
+    <finally>
+        <closeChannelGTPP name="[connection]"/>
+    </finally>
+    
+</scenario>

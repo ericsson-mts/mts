@@ -1,0 +1,120 @@
+<!--
+To use this part of XML code in a scenario,
+- input parameters must be defined and setted locally (by the caller scenario).
+- output parameters may be used in the scenario after the "call".
+
+Input parameters :
+- [RADIUSsocketOpen]      : 
+- [source_ip]             : 
+- [nas_port]              : 
+- [secret]                : 
+- [radius_ip]             : 
+- [radius_auth_port]      : 
+- [vendorId_FT]           : 
+- [msisdn]                : 
+- [imsi]                  : 
+- [plmn-id]               : 
+- [charging-type]         : 
+- [subscriber-identifier] : 
+- [profileID]             : 
+- [user-login]            : 
+- [nas_ip_address]        : 
+- [Hot_Spot_Id]           : 
+
+Output parameters :
+- [RADIUSsocketName] : 
+- [RADIUSsocketOpen] : 
+
+-->
+
+      <!-- open RADIUS Connection -->
+      <parameter name="[RADIUSsocketName]" operation="set" value="client_[testcase:index]_Wifi"/>
+      <openSocketRadius socketName="[RADIUSsocketName]" localHost="[source_ip]" localPort="[nas_port]" secret="[secret]"/>
+      <parameter name="[RADIUSsocketOpen]" operation="set" value="true"/>
+
+      <parameter name="[timestamp]" operation="setFromSystem" value="Timestamp" value2="1970"/>
+      <parameter name="[timestamp]" operation="divide" value="[timestamp]" value2="1000"/>
+
+      <parameter name="[transaction-id]" operation="identifier"   value="nextInteger" value2="inutile" />
+      <parameter name="[transaction-id]" operation="regexMatches" value="00[transaction-id]" value2="[0-9]{3}$" />
+      <parameter name="[transaction-id]" operation="set"          value="[timestamp][transaction-id]" />
+      <parameter name="[transaction-id]" operation="regexMatches" value="[transaction-id]" value2="[0-9]{8}$" />
+      <parameter name="[transaction-id]" operation="set"          value="WF[transaction-id]" />
+
+      <!-- send Radius Access-Request -->
+      <sendRequestRadius socketName="[RADIUSsocketName]" remoteHost="[radius_host_wifi]" remotePort="[radius_port_wifi]">
+        <!-- Header -->
+        <header code="1"/>
+
+        <!-- AVPs -->
+        <!-- c.f. Technical Interface Specifications FusionWorks WIFI interface with the FusionWorks Content Billing platform G2R0 -->
+        <!-- Framed-IP-Address (8) -->
+        <avp code="8" value="[source_ip]"/>
+
+        <!-- Vendor-Specific (26) -->
+        <avp code="26" value="[vendorId_FT]">
+          <data value="d15"/>
+          <!-- 26.1368.15.0   : transaction-id -->
+          <avp code="0"   value="[transaction-id]" type="string"/>
+          <!-- 26.1368.15.1   : transaction-type -->
+          <avp code="1"   value="1" type="octet"/> <!-- 1=Delivery Confirmation -->
+          <!-- 26.1368.15.2   : msisdn -->
+          <avp code="2"   value="[msisdn]" type="string"/>
+          <!-- 26.1368.15.4   : imsi -->
+          <avp code="4"   value="[imsi]" type="string"/>
+          <!-- 26.1368.15.5   : ? -->
+          <avp code="5"   value="[imsi]" type="string"/>
+          <!-- 26.1368.15.6   : timestamp -->
+          <avp code="6"   value="[timestamp]" type="string"/>
+          <!-- 26.1368.15.7   : plmn-id -->
+          <avp code="7"   value="[plmn-id]" type="string"/>
+          <!-- 26.1368.15.8   : service-pf-id -->
+          <avp code="8"   value="WIFI01" type="string"/> <!-- "WIFI01" for WiFi -->
+          <!-- 26.1368.15.11  : provider-id -->
+          <avp code="11"  value="wifi" type="string"/>
+          <!-- 26.1368.15.12  : content-type -->
+          <avp code="12"  value="wifi_access" type="string"/>
+          <!-- 26.1368.15.13  : rating-level -->
+          <avp code="13"  value="level-1" type="string"/>
+          <!-- 26.1368.15.18  : direct-accounting-flag -->
+          <avp code="18"  value="1" type="octet"/> <!-- 1=Direct accounting without a previous credit-reservation -->
+        </avp>
+        <!-- Vendor-Specific (26) -->
+        <avp code="26" value="[vendorId_FT]">
+          <data value="d15"/>
+          <!-- 26.1368.15.26  : data-volume-incoming -->
+          <avp code="26"  value="200" type="integer"/>
+          <!-- 26.1368.15.27  : data-volume-outcoming -->
+          <avp code="27"  value="100" type="integer"/>
+          <!-- 26.1368.15.33  : source-access-type -->
+          <avp code="33"  value="13" type="octet"/> <!-- 13=wifi -->
+          <!-- 26.1368.15.34  : destination-access-type -->
+          <avp code="34"  value="13" type="octet"/> <!-- 13=wifi -->
+          <!-- 26.1368.15.39  : termination-cause -->
+          <avp code="39"  value="1" type="string"/>
+          <!-- 26.1368.15.116 : session-duration -->
+          <avp code="116" value="120" type="string"/>
+          <!-- 26.1368.15.150 : charging-type -->
+          <avp code="150" value="[charging-type]" type="string"/>
+          <!-- 26.1368.15.151 : subscriber-identifier -->
+          <avp code="151" value="[subscriber-identifier]" type="string"/>
+          <!-- 26.1368.15.152 : profile -->
+          <avp code="152" value="[profileID]" type="string"/>
+          <!-- 26.1368.15.153 : user-login -->
+          <avp code="153" value="[user-login]" type="string"/>
+          <!-- 26.1368.15.154 : access-identifier -->
+          <avp code="154" value="[nas_ip_address]" type="string"/>
+          <!-- 26.1368.15.155 : hot-spot-identifier -->
+          <avp code="155" value="[Hot_Spot_Id]" type="string"/>
+          <!-- 26.1368.15.156 : visited-network-identifier -->
+          <avp code="156" value="20801" type="string"/>
+          <!-- 26.1368.15.157 : ? -->
+          <avp code="157" value="20801" type="string"/>
+        </avp>
+      </sendRequestRadius>
+      <receiveResponseRadius socketName="[RADIUSsocketName]"/>
+
+
+      <!-- close RADIUS Connection -->
+      <closeSocketRadius socketName="[RADIUSsocketName]"/>
+      <parameter name="[RADIUSsocketOpen]" operation="set" value="false"/>

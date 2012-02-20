@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario><!--name="Send Request to server"-->
+<openChannelSMTP name="session1" localHost="[localHost]" remoteHost="[remoteHost]" remotePort="2220" />
+<!--openChannelSMTP name="session1" localHost="[localHost]" localPort="12345" remoteHost="localhost" remotePort="2222" /-->
+<!--*************************************EHLO******************************************************-->
+<sendMessageSMTP name="Send EHLO" channel="session1" ><![CDATA[EHLO gmail.com]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" >	
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[reason]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>
+</receiveMessageSMTP>
+<log level="0">transactionId = [tranid] </log>
+<if>
+	<condition>
+		<test parameter="[result]" condition="string.equals" value="250"/>
+	</condition>
+	<then>
+		<parameter name="[res]" operation="set" value="OK"/>
+		<log level="0"> : Response - [result], state - [res]</log>
+	</then>
+	<else>
+		<parameter name="[res]" operation="set" value="KO"/>
+		<parameter name="[comment]" operation="set" value="Failed"/>
+		<log level="0">[result] is [comment] ! In fact, the result should be 250 ! </log>
+	</else>
+</if>
+<if>
+	<condition>
+		<test parameter="[reason]" condition="string.equals" value="size.does.matter.af.MIL offers FIFTEEN extensions:8BITMIMEPIPELININGDSNENHANCEDSTATUSCODESEXPNHELPSAMLSENDSIZE 51200000"/>
+	</condition>
+	<then>
+		<parameter name="[res]" operation="set" value="OK"/>
+		<log level="0"> : Reason - [reason], state - [res]</log>
+	</then>
+	<else>
+		<parameter name="[res]" operation="set" value="KO"/>
+		<parameter name="[comment]" operation="set" value="Failed"/>
+		<log level="0">"[reason]" is [comment] !  </log>
+	</else>
+</if>
+<!--*************************************MAIL******************************************************-->
+<sendMessageSMTP name="Send MAIL FROM" channel="session1" ><![CDATA[MAIL FROM:<Smith@gmail.com> parametre]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" >	
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[reason]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>
+</receiveMessageSMTP>
+<log level="0">transactionId = [tranid] </log>
+<if>
+	<condition>
+		<test parameter="[result]" condition="string.equals" value="250"/>
+	</condition>
+	<then>
+		<parameter name="[res]" operation="set" value="OK"/>
+		<log level="0"> : Response - [result], state - [res]</log>
+	</then>
+	<else>
+		<parameter name="[res]" operation="set" value="KO"/>
+		<parameter name="[comment]" operation="set" value="Failed"/>
+		<log level="0">[result] is [comment] ! In fact, the result should be 250 ! </log>
+	</else>
+</if>
+<if>
+	<condition>
+		<test parameter="[reason]" condition="string.equals" value="OK"/>
+	</condition>
+	<then>
+		<parameter name="[res]" operation="set" value="OK"/>
+		<log level="0"> : Reason - [reason], state - [res]</log>
+	</then>
+	<else>
+		<parameter name="[res]" operation="set" value="KO"/>
+		<parameter name="[comment]" operation="set" value="Failed"/>
+		<log level="0">"[reason]" is [comment] !  </log>
+	</else>
+</if>
+<!--*************************************RCPT******************************************************-->
+<sendMessageSMTP name="Send RCPT TO" channel="session1" ><![CDATA[RCPT TO:@hotmail.com:Jones@XYZ.COM]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" >	
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[reason]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>
+</receiveMessageSMTP>
+<log level="0">transactionId = [tranid] </log>
+<if>
+	<condition>
+		<test parameter="[result]" condition="string.equals" value="550"/>
+	</condition>
+	<then>
+		<parameter name="[res]" operation="set" value="OK"/>
+		<log level="0"> : Response - [result], state - [res]</log>
+	</then>
+	<else>
+		<parameter name="[res]" operation="set" value="KO"/>
+		<parameter name="[comment]" operation="set" value="Failed"/>
+		<log level="0">[result] is [comment] ! In fact, the result should be 550 ! </log>
+	</else>
+</if>
+<if>
+	<condition>
+		<test parameter="[reason]" condition="string.equals" value="No such user here"/>
+	</condition>
+	<then>
+		<parameter name="[res]" operation="set" value="OK"/>
+		<log level="0"> : Reason - [reason], state - [res]</log>
+	</then>
+	<else>
+		<parameter name="[res]" operation="set" value="KO"/>
+		<parameter name="[comment]" operation="set" value="Failed"/>
+		<log level="0">"[reason]" is [comment] ! should be "No such user here" </log>
+	</else>
+</if>
+<!--*************************************DATA***************************************************-->
+<sendMessageSMTP name="Send DATA" channel="session1" ><![CDATA[DATA]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" >	
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[reason]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>
+</receiveMessageSMTP>
+<log level="0">transactionId = [tranid] </log>
+<if>
+	<condition>
+		<test parameter="[result]" condition="string.equals" value="354"/>
+	</condition>
+	<then>
+		<parameter name="[res]" operation="set" value="OK"/>
+		<log level="0"> : Response - [result], state - [res]</log>
+	</then>
+	<else>
+		<parameter name="[res]" operation="set" value="KO"/>
+		<parameter name="[comment]" operation="set" value="Failed"/>
+		<log level="0">[result] is [comment] ! In fact, the result should be 354 ! </log>
+	</else>
+</if>
+<if>
+	<condition>
+		<test parameter="[reason]" condition="string.equals" value="Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;"/>
+	</condition>
+	<then>
+		<parameter name="[res]" operation="set" value="OK"/>
+		<log level="0"> : Reason - [reason], state - [res]</log>
+	</then>
+	<else>
+		<parameter name="[res]" operation="set" value="KO"/>
+		<parameter name="[comment]" operation="set" value="Failed"/>
+		<log level="0">"[reason]" is [comment] ! should be "Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;"!  </log>
+	</else>
+</if>
+<!--*************************************1BLA BLA BLA*********************************************-->
+<sendMessageSMTP name="Send CNTT" channel="session1" ><![CDATA[Date: Thu, 21 May 1998 05:33:29 -0700
+From: John Q. Public <JQP@gmail.com>
+Subject: The Next Meeting of the Board
+To: Jones@xyz.com
+
+Bill:
+The next meeting of the board of directors will be
+on Tuesday.
+
+		John.
+.
+]]></sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" >	
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[reason]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>
+</receiveMessageSMTP>
+<log level="0">transactionId = [tranid] </log>
+<if>
+	<condition>
+		<test parameter="[result]" condition="string.equals" value="250"/>
+	</condition>
+	<then>
+		<parameter name="[res]" operation="set" value="OK"/>
+		<log level="0"> : Response - [result], state - [res]</log>
+	</then>
+	<else>
+		<parameter name="[res]" operation="set" value="KO"/>
+		<parameter name="[comment]" operation="set" value="Failed"/>
+		<log level="0">[result] is [comment] ! In fact, the result should be 250 ! </log>
+	</else>
+</if>
+<if>
+	<condition>
+		<test parameter="[reason]" condition="string.equals" value="OK"/>
+	</condition>
+	<then>
+		<parameter name="[res]" operation="set" value="OK"/>
+		<log level="0"> : Reason - [reason], state - [res]</log>
+	</then>
+	<else>
+		<parameter name="[res]" operation="set" value="KO"/>
+		<parameter name="[comment]" operation="set" value="Failed"/>
+		<log level="0">"[reason]" is [comment] ! should be "OK"  </log>
+	</else>
+</if>
+<!--*************************************QUIT***************************************************-->
+<sendMessageSMTP name="Send QUIT" channel="session1" ><![CDATA[QUIT]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" >	
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[reason]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>
+</receiveMessageSMTP>
+<log level="0">transactionId = [tranid] </log>
+<if>
+	<condition>
+		<test parameter="[result]" condition="string.equals" value="221"/>
+	</condition>
+	<then>
+		<parameter name="[res]" operation="set" value="OK"/>
+		<log level="0"> : Response - [result], state - [res]</log>
+	</then>
+	<else>
+		<parameter name="[res]" operation="set" value="KO"/>
+		<parameter name="[comment]" operation="set" value="Failed"/>
+		<log level="0">[result] is [comment] ! In fact, the result should be 221 ! </log>
+	</else>
+</if>	
+<if>
+	<condition>
+		<test parameter="[reason]" condition="string.equals" value="hotmail.com Service closing transmission channel"/>
+	</condition>
+	<then>
+		<parameter name="[res]" operation="set" value="OK"/>
+		<log level="0"> : Reason - [reason], state - [res]</log>
+	</then>
+	<else>
+		<parameter name="[res]" operation="set" value="KO"/>
+		<parameter name="[comment]" operation="set" value="Failed"/>
+		<log level="0">"[reason]" is [comment] !  </log>
+	</else>
+</if>
+<closeChannelSMTP name="session1"/>
+</scenario>

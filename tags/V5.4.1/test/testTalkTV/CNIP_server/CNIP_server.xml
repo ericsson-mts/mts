@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<label name="Begin"/>
+    
+	<receiveMessageHTTP name="Wait POST" type="POST" request="true" timeout="0">
+		<parameter name="transaction_id" operation="protocol.setFromMessage" value="message:transactionId"/>
+		<parameter name="[soap]" operation="protocol.setFromMessage" value="content"/>
+	</receiveMessageHTTP>
+	
+	<parameter name="[callingURI]" 	operation="string.xpath" value="[soap]" value2="//caller/text()"/>
+	<parameter name="[callingURI]" 	operation="string.split" value="[callingURI]" value2=":"/>
+	<parameter name="[callingURI]" 	operation="string.split" value="[callingURI(1)]" value2="@"/>
+	<parameter name="[callingURI]" 	operation="set" value="[callingURI(0)]" />
+	<parameter name="[callingURI]" 	operation="string.substring" value="[callingURI]" value2="3" value3="1000" />
+
+	<!--Transfer-Encoding: chunked-->
+	<sendMessageHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+<![CDATA[
+HTTP/1.1 200 OK
+X-Powered-By: Servlet/3.0
+Server: GlassFish v3
+Content-Type: text/xml;charset=utf-8
+Date: Fri, 15 Jan 2010 16:05:00 GMT
+Content-Length: x
+
+<?xml version='1.0' encoding='UTF-8'?>
+<soapenv:Envelope 
+xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" 
+xmlns:cnip="http://asf.orange.com/CNIPInterface/">
+<soapenv:Header/>
+	<soapenv:Body>
+		<cnip:getCallerInfoResponse>
+			<!--Optional:-->
+			<name>CNIP [callingURI]</name>
+			<!--Optional:-->
+			<photoUrl>photo_[callingURI].jpg</photoUrl>
+		</cnip:getCallerInfoResponse>
+	</soapenv:Body>
+</soapenv:Envelope>
+]]>
+	</sendMessageHTTP>
+
+	<goto  name="loop" label="Begin" state="true"/>
+	
+</scenario>

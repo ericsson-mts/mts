@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : server.xml
+    Created on : 19/08/2011
+    Author     : fhenry
+    Description: Receive a IUA message 
+-->
+
+<scenario>
+
+    <receiveMessageSIGTRAN name="Wait DATA1"/>
+
+    <!-- test UA  setFromMessage -->
+    <parameter name="[ppid]" operation="protocol.setFromMessage" value="ua.ppid"/>
+    <test parameter="[ppid]" condition="number.equals" value="1"/>
+    
+    <parameter name="[version]" operation="protocol.setFromMessage" value="ua.header.version"/>
+    <test parameter="[version]" condition="number.equals" value="1"/>
+
+    <parameter name="[reserved]" operation="protocol.setFromMessage" value="ua.header.reserved"/>
+    <test parameter="[reserved]" condition="number.equals" value="0"/>
+
+    <parameter name="[messageClass]" operation="protocol.setFromMessage" value="ua.header.messageClass"/>
+    <test parameter="[messageClass]" condition="number.equals" value="5"/>
+
+    <parameter name="[messageType]" operation="protocol.setFromMessage" value="ua.header.messageType"/>
+    <test parameter="[messageType]" condition="number.equals" value="1"/>
+
+    <parameter name="[messageLength]" operation="protocol.setFromMessage" value="ua.header.messageLength"/>
+    <test parameter="[messageLength]" condition="number.equals" value="64"/>
+
+    <parameter name="[parameterIIIname]" operation="protocol.setFromMessage" value="ua.parameter.Integer_Interface_Identifier.name"/>
+    <test parameter="[parameterIIIname]" condition="string.equals" value="Integer_Interface_Identifier"/>
+
+    <parameter name="[parameterIIItag]" operation="protocol.setFromMessage" value="ua.parameter.Integer_Interface_Identifier.tag"/>
+    <test parameter="[parameterIIItag]" condition="number.equals" value="1"/>
+
+    <parameter name="[parameterIIIlength]" operation="protocol.setFromMessage" value="ua.parameter.Integer_Interface_Identifier.length"/>
+    <test parameter="[parameterIIIlength]" condition="number.equals" value="8"/>
+
+    <!-- parameter name="[parameterIIIformat]" operation="protocol.setFromMessage" value="ua.parameter.Integer_Interface_Identifier.format"/ -->
+    <!-- test parameter="[parameterIIIformat]" condition="string.equals" value="grouped"/ -->
+
+    <parameter name="[parameterIIIfieldIIname]" operation="protocol.setFromMessage" value="ua.parameter.Integer_Interface_Identifier.field.Interface_Identifier.name"/>
+    <test parameter="[parameterIIIfieldIIname]" condition="string.equals" value="Interface_Identifier"/>
+
+    <parameter name="[parameterIIIfieldIIlength]" operation="protocol.setFromMessage" value="ua.parameter.Integer_Interface_Identifier.field.Interface_Identifier.length"/>
+    <test parameter="[parameterIIIfieldIIlength]" condition="number.equals" value="4"/>
+
+    <parameter name="[parameterIIIfieldIIformat]" operation="protocol.setFromMessage" value="ua.parameter.Integer_Interface_Identifier.field.Interface_Identifier.format"/>
+    <test parameter="[parameterIIIfieldIIformat]" condition="string.equals" value="Integer"/>
+
+    <parameter name="[parameterIIIfieldIIvalue]" operation="protocol.setFromMessage" value="ua.parameter.Integer_Interface_Identifier.field.Interface_Identifier.value"/>
+    <test parameter="[parameterIIIfieldIIvalue]" condition="number.equals" value="1185085361"/>
+
+    <parameter name="[parameterIIIfieldIIlengthBit]" operation="protocol.setFromMessage" value="ua.parameter.Integer_Interface_Identifier.field.Interface_Identifier.lengthBit"/>
+    <test parameter="[parameterIIIfieldIIlengthBit]" condition="number.equals" value="0"/>
+
+    <!-- test ISDN setFromMessage -->
+    <parameter name="[type]" operation="protocol.setFromMessage" value="isdn.header.type"/>
+    <test parameter="[type]" condition="number.equals" value="5"/>
+    <parameter name="[discriminator]" operation="protocol.setFromMessage" value="isdn.header.discriminator"/>
+    <test parameter="[discriminator]" condition="number.equals" value="8"/>
+    <parameter name="[CallReference]" operation="protocol.setFromMessage" value="isdn.header.callReference"/>
+    <test parameter="[CallReference]" condition="number.equals" value="101"/>
+    <parameter name="[Layer3Address]" operation="protocol.setFromMessage" value="isdn.header.layer3Address"/>
+    <test parameter="[Layer3Address]" condition="list.isEmpty"/>    
+
+
+    <parameter name="[Sending complete]" operation="protocol.setFromMessage" value="isdn.element.Sending complete"/>
+    <parameter name="[Sending complete]" operation="protocol.setFromMessage" value="isdn.element.b10100001"/>
+    <parameter name="[Sending complete]" operation="protocol.setFromMessage" value="isdn.element.hA1"/>
+    <parameter name="[Sending complete]" operation="protocol.setFromMessage" value="isdn.element.d161"/>
+    <parameter name="[Sending complete]" operation="protocol.setFromMessage" value="isdn.element.161"/>
+
+    <parameter name="[BSext1]" operation="protocol.setFromMessage" value="isdn.element.Bearer capability"/>
+    <parameter name="[BSext1]" operation="protocol.setFromMessage" value="isdn.element.Bearer capability.field.ext1"/>
+    <test parameter="[BSext1]" condition="number.equals" value="1"/>
+    <parameter name="[BSCoding Standard]" operation="protocol.setFromMessage" value="isdn.element.Bearer capability.field.Coding standard"/>
+    <test parameter="[BSCoding Standard]" condition="string.equals" value="ITU-T standardized coding:0"/>
+    <parameter name="[BSInformation transfert capability]" operation="protocol.setFromMessage" value="isdn.element.Bearer capability.field.Information transfert capability"/>
+    <test parameter="[BSInformation transfert capability]" condition="string.equals" value="Speech:0"/>
+    <parameter name="[BSext2]" operation="protocol.setFromMessage" value="isdn.element.Bearer capability.field.ext2"/>
+    <test parameter="[BSext2]" condition="number.equals" value="1"/>
+    <parameter name="[BSTransfert mode]" operation="protocol.setFromMessage" value="isdn.element.Bearer capability.field.Transfert mode"/>
+    <test parameter="[BSTransfert mode]" condition="string.equals" value="Circuit mode:0"/>
+    <parameter name="[BSInformation transfert rate]" operation="protocol.setFromMessage" value="isdn.element.Bearer capability.field.Information transfert rate"/>
+    <test parameter="[BSInformation transfert rate]" condition="string.equals" value="64 kbit/s -:16"/>
+    <parameter name="[BSext3]" operation="protocol.setFromMessage" value="isdn.element.Bearer capability.field.ext3"/>
+    <test parameter="[BSext3]" condition="number.equals" value="1"/>
+    <parameter name="[BSLayer 1 ident]" operation="protocol.setFromMessage" value="isdn.element.Bearer capability.field.Layer 1 ident"/>
+    <test parameter="[BSLayer 1 ident]" condition="number.equals" value="3"/>
+    <parameter name="[BSUser information layer 1 protocol]" operation="protocol.setFromMessage" value="isdn.element.Bearer capability.field.User information layer 1 protocol"/>
+    <test parameter="[BSUser information layer 1 protocol]" condition="string.equals" value="G.711 A-law:3"/>
+
+    <parameter name="[CIext1]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.ext1"/>
+    <test parameter="[CIext1]" condition="number.equals" value="1"/>
+    <parameter name="[CIInterface identifier present]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Interface identifier present"/>
+    <test parameter="[CIInterface identifier present]" condition="string.equals" value="Interface implicitly identified:0"/>
+    <parameter name="[CIInterface type]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Interface type"/>
+    <test parameter="[CIInterface type]" condition="string.equals" value="Other interface:1"/>
+    <parameter name="[CISpare]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Spare"/>
+    <test parameter="[CISpare]" condition="number.equals" value="0"/>
+    <parameter name="[CIPreferred/Exclusive]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Preferred/Exclusive"/>
+    <test parameter="[CIPreferred/Exclusive]" condition="string.equals" value="preferred:0"/>
+    <parameter name="[CID-channel indicator]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.D-channel indicator"/>
+    <test parameter="[CID-channel indicator]" condition="string.equals" value="not D-channel:0"/>
+    <parameter name="[CIInformation channel selection]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Information channel selection"/>
+    <test parameter="[CIInformation channel selection]" condition="string.equals" value="B1 channel:1"/>
+    <parameter name="[CIext2]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.ext2"/>
+    <test parameter="[CIext2]" condition="list.isEmpty"/>
+    <parameter name="[CIInterface identifier]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Interface identifier"/>
+    <test parameter="[CIInterface identifier]" condition="list.isEmpty"/>
+    <parameter name="[CIext3]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.ext3"/>
+    <test parameter="[CIext3]" condition="number.equals" value="1"/>
+    <parameter name="[CICoding standard]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Coding standard"/>
+    <test parameter="[CICoding standard]" condition="string.equals" value="ITU-T standardized coding:0"/>
+    <parameter name="[CINumber/map]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Number/map"/>
+    <test parameter="[CINumber/map]" condition="string.equals" value="indicated by number:0"/>
+    <parameter name="[CIChannel type/map element type]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Channel type/map element type"/>
+    <test parameter="[CIChannel type/map element type]" condition="string.equals" value="B-channel units:3"/>
+    <parameter name="[CIext4]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.ext4"/>
+    <test parameter="[CIext4]" condition="number.equals" value="1"/>
+    <parameter name="[CIChannel number]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Channel number"/>
+    <test parameter="[CIChannel number]" condition="number.equals" value="1"/>
+
+    <parameter name="[CPNext1]" operation="protocol.setFromMessage" value="isdn.element.Calling party number.field.ext1"/>
+    <test parameter="[CPNext1]" condition="number.equals" value="0"/>
+    <parameter name="[CPNType of number]" operation="protocol.setFromMessage" value="isdn.element.Calling party number.field.Type of number"/>
+    <test parameter="[CPNType of number]" condition="string.equals" value="National number:2"/>
+    <parameter name="[CPNNumbering plan identification]" operation="protocol.setFromMessage" value="isdn.element.Calling party number.field.Numbering plan identification"/>
+    <test parameter="[CPNNumbering plan identification]" condition="string.equals" value="ISDN/telephony numbering plan:1"/>
+    <parameter name="[CPNext2]" operation="protocol.setFromMessage" value="isdn.element.Calling party number.field.ext2"/>
+    <test parameter="[CPNext2]" condition="number.equals" value="1"/>
+    <parameter name="[CPNPresentation indicator]" operation="protocol.setFromMessage" value="isdn.element.Calling party number.field.Presentation indicator"/>
+    <test parameter="[CPNPresentation indicator]" condition="string.equals" value="Presentation allowed:0"/>
+    <parameter name="[CPNext3]" operation="protocol.setFromMessage" value="isdn.element.Calling party number.field.ext3"/>
+    <test parameter="[CPNext3]" condition="number.equals" value="0"/>
+    <parameter name="[CPNScreening indicator]" operation="protocol.setFromMessage" value="isdn.element.Calling party number.field.Screening indicator"/>
+    <test parameter="[CPNScreening indicator]" condition="string.equals" value="User-provided, not screened:0"/>
+    <parameter name="[CPNNumber digits1]" operation="protocol.setFromMessage" value="isdn.element.Calling party number.field.Number digits"/>
+    <test parameter="[CPNNumber digits1]" condition="number.equals" value="1000000101"/>
+    <!--parameter name="[CPNNumber digits2]" operation="protocol.setFromMessage" value="isdn.element.h6C.field.Number digits"/>
+	<test parameter="[CPNNumber digits2]" condition="number.equals" value="1000000101"/-->
+    <!--parameter name="[CPNNumber digits3]" operation="protocol.setFromMessage" value="isdn.element.d108.field.Number digits"/>	
+	<test parameter="[CPNNumber digits3]" condition="number.equals" value="1000000101"/-->
+    <parameter name="[CPNNumber digits4]" operation="protocol.setFromMessage" value="isdn.element.108.field.Number digits"/>
+    <test parameter="[CPNNumber digits4]" condition="string.equals" value="1000000101"/>
+
+    <parameter name="[KFDisplay identification]" operation="protocol.setFromMessage" value="isdn.element.Keypad facility.field.Display identification"/>
+    <test parameter="[KFDisplay identification]" condition="string.equals" value="123"/>
+	
+	
+    <parameter name="[data]" value="01000501000000400001000846a2f7b10005000800030000000e00270802006505a104038090e31803a183816c0c2180313030303030303130312c0331323300" />	
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
+
+</scenario>

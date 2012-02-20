@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="SIP-RCS" description="Demos SIP MSRP combine pour passage du RCS a travers le SBC">
+
+    <parameter name="[Host-Tester]" operation="system.ipaddress"/>
+    <parameter name="[Host-Tester2]" operation="set" value="10.162.95.190"/>
+    <parameter name="[Host-Tester1]" operation="set" value="80.12.10.150"/>
+    <parameter name="[Port-Tester1]" operation="set" value="5060"/>
+    <parameter name="[Port-Tester2]" operation="set" value="5060"/>
+    <parameter name="[Adresse-Tester1]" operation="set" value="[Host-Tester1]:[Port-Tester1]"/>	
+    <parameter name="[Adresse-Tester2]" operation="set" value="[Host-Tester2]:[Port-Tester2]"/>	
+   
+    <parameter name="[Host-Server]" operation="system.ipaddress"/>
+    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]"/>
+    <parameter name="[Host-Server]" operation="set" value="10.162.95.185"/>
+   	<parameter name="[Port-Server1]" operation="set" value="5060"/>
+    <parameter name="[Adresse-Server1]" operation="set" value="[Host-Server]:[Port-Server1]"/>	
+   	<parameter name="[Port-Server2]" operation="set" value="5060"/>
+    <parameter name="[Adresse-Server2]" operation="set" value="[Host-Server]:[Port-Server2]"/>	
+
+    <parameter name="[domainName]" operation="set" value="test.orange-ims.fr"/>
+
+    <parameter name="[LocalTransport]" operation="set" value="tcp"/>  
+	
+    <!-- transport parameters-->
+    <parameter name="[transportRequest]" operation="set" value="udp"/>
+    <parameter name="[transportResponse]" operation="set" value="UDP"/>
+        
+    <!-- timers for the retransmissions-->
+    <parameter name="[retransmitNumber]" operation="set" value="4"/>
+    <parameter name="[RetransTimeout]" operation="set" value="0.5"/>
+        
+    <parameter name="[retransmitTimers(0)]" operation="set" value="500"/>     	
+    <parameter name="[retransmitTimers(1)]" operation="set" value="1000"/>     	
+    <parameter name="[retransmitTimers(2)]" operation="set" value="2000"/>     	
+    <parameter name="[retransmitTimers(3)]" operation="set" value="4000"/>
+    
+    
+    <!--MSRP parameters -->
+
+    <parameter name="[listenIp]" operation="set" value="0.0.0.0" />
+
+    <parameter name="[serverRemoteIp]" operation="system.ipaddress"/>
+    <parameter name="[serverRemoteIp]" operation="set" value="10.162.95.190" />
+    <parameter name="[serverPort]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT" />
+    <parameter name="[serverTlsPort]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT_TLS" />
+
+    
+    <testcase name="FILE_TRANSFER" description="FILE_TRANSFER" state="true">       
+        <parameter name="[inviterName]" operation="set" value="+33648249383"/>
+        <parameter name="[inviteeName]" operation="set" value="+33621471105"/>
+
+        <scenario name="listenpointUACreceiver">FILE_TRANSFER/UACreceiver.xml</scenario>        
+        <scenario name="listenpointUASsender">FILE_TRANSFER/UASsender.xml</scenario>
+    </testcase>
+    
+
+    <testcase name="PRESENCE" description="PRESENCE" state="true">       
+        <parameter name="[inviterName]" operation="set" value="+33648249383"/>
+        <parameter name="[inviteeName]" operation="set" value="+33621471105"/>
+
+        <scenario name="UAC">PRESENCE/UAC.xml</scenario>        
+        <scenario name="UAS">PRESENCE/UAS.xml</scenario>
+    </testcase>
+    
+</test>

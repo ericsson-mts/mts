@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageSMPP request="true" type="bind_transmitter:2">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="system_id" operation="protocol.setFromMessage" value="attribute.system_id"/>
+        <parameter name="password" operation="protocol.setFromMessage" value="attribute.password"/>
+        <parameter name="system_type" operation="protocol.setFromMessage" value="attribute.system_type"/>
+        <parameter name="interface_version" operation="protocol.setFromMessage" value="attribute.interface_version"/>
+        <parameter name="addr_ton" operation="protocol.setFromMessage" value="attribute.addr_ton"/>
+        <parameter name="addr_npi" operation="protocol.setFromMessage" value="attribute.addr_npi"/>
+        <parameter name="address_range" operation="protocol.setFromMessage" value="attribute.address_range"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[system_id]" condition="string.equals" value="IMSLoader"/>
+        <test parameter="[password]" condition="string.equals" value="coucou"/>
+        <test parameter="[system_type]" condition="string.equals" value="windows MC"/>
+        <test parameter="[interface_version]" condition="string.equals" value="2"/>
+        <test parameter="[addr_ton]" condition="string.equals" value="8"/>
+        <test parameter="[addr_npi]" condition="string.equals" value="3"/>
+        <test parameter="[address_range]" condition="string.equals" value="255.255.255.0"/>
+    </receiveMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="bind_transmitter_resp" sequence_number="[seqNum]"/>
+        <attribute name="system_id" value="test"/>
+        <tlv name="sc_interface_version" length="1" value="6"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="true" type="unbind:6">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+    </receiveMessageSMPP>
+    
+    <sendMessageSMPP channel="[connection]">
+        <header name="unbind_resp" sequence_number="[seqNum]"/>
+    </sendMessageSMPP>
+
+</scenario>

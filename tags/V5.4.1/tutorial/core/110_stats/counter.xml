@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <stats>
+    	<reset name="counter1"/>
+    	<reset name="counter2"/>
+    </stats>
+
+    <parameter name="[timestamp]" operation="system.timestamp" />
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
+
+    <stats>
+        <counter name="counter1" summary="c1" complete="counterDescr1.complete">
+            <increase>10</increase>
+            <increase>10</increase>
+            <increase>10</increase>            
+            <increase milliseconds="[timestamp]">10</increase>            
+            <increase milliseconds="[timestamp]">10</increase>            
+            <increase milliseconds="[timestamp]">10</increase>            
+        </counter>
+        <counter name="counter2" summary="c2" complete="counterDescr2.complete">
+        </counter>        
+    </stats>
+    
+    <pause name="tempo" seconds="0.1"/>    
+    <parameter name="[timestamp]" operation="system.timestamp" />
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
+    
+    <stats>
+        <counter name="counter1" summary="c1" complete="counterDescr1.complete">
+            <decrease>10</decrease>
+            <decrease milliseconds="[timestamp]">10</decrease>            
+        </counter>                
+        <counter name="counter2">
+            <increase>20</increase>
+            <increase milliseconds="[timestamp]">20</increase>            
+        </counter>                        
+    </stats>
+
+    <pause name="tempo" seconds="0.1"/>    
+    <parameter name="[timestamp]" operation="system.timestamp" />
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
+    
+    <stats>
+        <counter name="counter1">
+            <decrease>10</decrease>
+            <decrease milliseconds="[timestamp]">10</decrease>            
+        </counter>                
+        <counter name="counter2">
+            <decrease>10</decrease>
+            <decrease milliseconds="[timestamp]">10</decrease>            
+        </counter>                        
+    </stats>
+
+    <stats>
+        <counter name="float" summary="fl" complete="floatDescr.complete">
+            <increase>1.234567890e10</increase>
+            <increase milliseconds="[timestamp]">1.234567890e10</increase>            
+        </counter>
+        <counter name="negative" summary="ng" complete="negativeDescr.complete">
+            <decrease>0.000012345678901</decrease>
+            <decrease milliseconds="[timestamp]">0.000012345678901</decrease>            
+        </counter>
+        <counter name="zero" summary="0" complete="zeroDescr.complete">
+            <increase>0</increase>
+            <increase milliseconds="[timestamp]">0</increase>            
+        </counter>                
+    </stats>
+    
+</scenario>

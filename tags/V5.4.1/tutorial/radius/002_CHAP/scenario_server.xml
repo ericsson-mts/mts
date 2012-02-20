@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="[listenpoint]" operation="set" value="[scenarioName]" />
+
+    <createListenpointRADIUS name="[listenpoint]" secret="my_secret" localPort="[localPort]"/>
+
+    <parameter name="[testcase:sem2]" operation="system.semaphorenotify" />
+    <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
+
+    <receiveMessageRADIUS listenpoint="[listenpoint]" type="Access-Request:1">
+        <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort" />
+        
+        <parameter name="[chap-password]"  operation="protocol.setFromMessage" value="chap-password.octet" />
+        <parameter name="[chap-challenge]" operation="protocol.setFromMessage" value="chap-challenge.octet" />
+    </receiveMessageRADIUS>
+
+    <!--
+      - We don't analyze and check the challenge because we miss some binary
+      - operators in IMSLoader for now.
+      -->
+
+    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[remoteHost]" remotePort="[remotePort]">
+        <header code="Access-Accept" identifier="[identifier]" />
+    </sendMessageRADIUS>
+
+    <removeListenpointRADIUS name="[listenpoint]" />
+</scenario>

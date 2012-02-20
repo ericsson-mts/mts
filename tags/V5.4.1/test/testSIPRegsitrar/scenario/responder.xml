@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- 
+AUTEUR : R&D/CORE/M2V/TSC/JD
+OBJET : Repondeur pour les dialogues INVITE du loader 
+
+MODIF : 20/05/2010. Le SDP est passe en parametre du scenario de maniere a pouvoir
+ simuler du traffic de type message, ou audio ou xxxxx 
+			31/05/2011. Ajout option Far end NAT
+			24/06/2011. Correction du ACK sur 407/401 (prise en compte du NAT)
+			12/07/2011. Remove NextNonce sur 401 ou 407 (nouveau nonce)			
+--> 
+<!DOCTYPE Library [
+ <!ENTITY initvarStatsParam SYSTEM "./initvarStatsParam.xml">
+   <!ENTITY nextNonceRemove SYSTEM "./nextNonceRemove.xml">
+]>
+<scenario>
+	&initvarStatsParam;
+	<!--parameter name="[TestRangeNumberUser]" operation="set" value="[RangeNumberUser]" /-->
+	<!-- calculate the range of user from the csv files -->
+	<parameter name="[RangeNumberUser]" operation="list.size" value="[userTab]"/>
+	<parameter name="[RangeNumberUser]" operation="number.substract" value="[RangeNumberUser]" value2="1"/>
+		
+	<!--parameter name="[test:numberCallInviter]" operation="set" value="0"/>
+	<parameter name="[test:numberCallInvitee]" operation="set" value="0"/>
+	<parameter name="[test:numberCallInviterAck]" operation="set" value="0"/-->
+	
+	<!-- start main loop -->
+	<!-- ========================= -->
+	<label name="begin"/>
+	<!-- ========================= -->
+	
+	<parameter name="[received]" operation="set" value="false"/>		
+	<receiveMessageSIP name="wait_SIP_request" timeout="[MaxWaitSIPMessage]" failedOnTimeout="false">
+		<parameter name="[received]" operation="set" value="true"/>
+		<parameter name="[lastListenpoint]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+		<parameter name="[lastLocalHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>
+		<parameter name="[lastLocalPort]" operation="protocol.setFromMessage" value="listenpoint.localPort"/>
+		<parameter name="[lastMethod]" operation="protocol.setFromMessage" value="message.type"/>
+		<parameter name="[lastIsRequest]" operation="protocol.setFromMessage" value="message.request"/>
+		<parameter name="[lastResult]" operation="protocol.setFromMessage" value="message.result"/>
+		<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>
+		<parameter name="[lastToUser]" operation="protocol.setFromMessage" value="header.To.Address.URI.User"/>
+	  	<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
+		<parameter name="[lastFromUser]" operation="protocol.setFromMessage" value="header.From.Address.URI.User"/>
+	  	<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+	  	<parameter name="[lastCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    	<parameter name="[lastCSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+	  	<parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+	  	<parameter name="[lastViaBranch]" operation="protocol.setFromMessage" value="header.Via.Parameter.branch"/>
+	  	<parameter name="[lastRecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route"/>
+	  	<parameter name="[lastContact]" operation="protocol.setFromMessage" value="header.Contact"/>
+   		<parameter name="[lastContactURI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
+	  	<parameter name="[lastMessage]" operation="protocol.setFromMessage" value="message"/>
+		<parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.StatusCode"/>	
+		 <parameter name="[AuthRealm]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.realm"/>
+		<parameter name="[AuthNonce]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.nonce"/>                                   
+		<parameter name="[AuthQop]"   operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.qop"/>
+		<parameter name="[UserAgentIpAdress]" operation="protocol.setFromMessage" value="header.TopmostVia.Host"/>
+		<parameter name="[TopmostViaPort]" operation="protocol.setFromMessage" value="header.TopmostVia.Port"/>
+		<!-- extension proprietaire pour faire passer la valeur de l'IP a utiliser sur le demande  (Far End Nat) --> 
+		<parameter name="[IpCalledValue]" operation="protocol.setFromMessage" value="header.User-Agent.Parameter.xmlloader"/>
+		<parameter name="[IpCalledValueVia]" operation="protocol.setFromMessage" value="header.Via.Parameter.xmlloader"/>
+		<parameter name="[nextNonce]" operation="protocol.setFromMessage" value="header.Authentication-Info"/>
+		<!--parameter name="[wwwAuthOpaque]" operation="protocol.setFromMessage" value="header:Proxy-Authenticate:Attribute:opaque"/-->
+		<!--parameter name="[wwwNextNonce]" operation="protocol.setFromMessage" value="header:Authentication-Info:Parameter:nextnonce"/-->
+		<!--parameter name="[AuthRealm]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.realm"/>
+		<parameter name="[AuthNonce]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.nonce"/>
+		<parameter name="[AuthQop]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.qop"/-->
+		<!--test parameter="[lastToUser]" condition="list.isempty" not="true"/-->
+	</receiveMessageSIP>
+	
+	<if>  <condition>   <test parameter="[received]" condition="string.equals" value="false"/>  </condition>
+	    <then>
+		   <!-- si on ne recoit plus rien pendant MaxWaitSIPMessage, lancer les de-Reg et mettre fin au test -->  
+			<parameter name="[test:startUnReg]" operation="system.semaphorenotify"/>
+			<exit name="exit" failed="false"/>
+	    </then>
+	</if>
+
+	<if>  <condition>
+	    	<test parameter="[lastMethod]" condition="string.equals" value=""/>
+			<test parameter="[received]" condition="string.equals" value="true"/>
+	    </condition>
+		<!-- si on recoit un caca on reboucle --> 
+	    <then> <goto  name="goto_begin" label="begin" state="true"/>  </then>
+	</if>
+	
+	<if>  <condition>
+			<test parameter="[lastIsRequest]" condition="string.equals" value="true"/>		  		  		    
+	    	<test parameter="[lastMethod]" condition="string.equals" value="INVITE"/>
+	    </condition>
+		<!-- si on recoit un INVITE  se brancher sur le label  --> 
+	    <then> <goto  name="goto_recINVITE" label="recINVITE" state="true"/>	  </then>
+	</if>
+
+	<if>  <condition>
+			<test parameter="[lastIsRequest]" condition="string.equals" value="true"/>		  		  		    
+	    	<test parameter="[lastMethod]" condition="string.equals" value="ACK"/>		  		  	
+	    </condition>
+	    <then> 
+			<!-- si on recoit un ACK   se brancher sur le label  recSEND --> 
+			<!-- normalement, le seul ACK recu est celui sur le 200 OK emis par le demandé -->     	
+			<goto  name="goto_recSEND" label="recSEND" state="true"/>	    			
+	    </then>
+	</if>
+
+	<if>  <condition>
+	    	<test parameter="[received]" condition="string.equals" value="true"/>		  		  		    
+			<test parameter="[lastIsRequest]" condition="string.equals" value="false"/>		  		  		    		
+	    	<test parameter="[lastMethod]" condition="string.equals" value="INVITE"/>
+	    	<test parameter="[lastResult]" condition="number.greaterEqualThan" value="200"/>	    		    	
+	    </condition>
+	    <then>
+			<!-- on a recu une reponse non provisoire sur INVITE  --> 
+			<goto  name="goto_Request" label="recINVITE23456xx" state="true"/>	    	
+	    </then>
+	</if>
+
+	<if>   <condition>
+	    	<test parameter="[received]" condition="string.equals" value="true"/>		  		  		    	    
+			<test parameter="[lastIsRequest]" condition="string.equals" value="true"/>		  		  		    
+	    </condition>
+		<then>
+		   <!-- on a recu une requete qui n'est pas un INVITE ni un ACK  (un BYE, un CANCEL, autre chose) --> 
+			<goto  name="goto_recOTHERS" label="recOTHERS" state="true"/>	    	
+	    </then>
+	</if>
+
+	<if>   <condition>
+	    	<test parameter="[received]" condition="string.equals" value="true"/>
+			<test parameter="[lastIsRequest]" condition="string.equals" value="false"/>
+	    </condition>
+	    <then>
+		 <!-- on a recu une reponse  provisoire sur INVITE ou bien une reponse sur autre chose que l'INVITE  --> 
+			<goto  name="goto_recOTHERSxxx" label="recOTHERSxxx" state="true"/>
+		</then>
+	</if>
+
+
+	<goto  name="goto_begin" label="begin" state="true"/>
+	<!-- end main loop -->
+	
+	<!-- ========================= -->
+	<label name="recINVITE"/>	
+	 <!-- Reception d'une requete INVITE --> 
+	<!-- ========================= -->
+	<!--stats>
+		<counter name="INV lost"><decrease>1</decrease></counter>
+	</stats-->	    	    	
+	<if>   <condition> <or>
+					<test parameter="[IpCalledValue]" condition="string.equals" value="noFarEndNat"/>
+					<test parameter="[IpCalledValue]" condition="list.isempty"/>
+				</or> </condition>
+		<then>
+		   <!-- Pas de NAT --> 
+ 			 <parameter name="[UserAgentIpAdress]" operation="set" value="[lastLocalHost]" />
+	    </then>
+		<else>
+			<!-- NAT sur de la demande. L'adresse est trouvee dans un parametre proprietaire du Via --> 
+	 		<parameter name="[UserAgentIpAdress]" operation="set" value="[IpCalledValue]" />	
+		</else>
+	</if>
+	
+	<parameter name="[newToTag]" operation="string.random" value="10"/>
+
+	<!-- PATCH avec ou sans AS :  Lorsque on a le HiQ NSN il remplace le +33 du from en 0033 .
+	       Si pas de HiQ ca reste pareil. Bof... --> 
+	<!--if>
+	    <condition> 	<test parameter="[lastFromUser]" condition="string.startswith" value="00" />   </condition>
+	    <then>
+			<parameter name="[finNum]" operation="string.substring" value="[lastFromUser]" value2="2"/>				
+			<parameter name="[index_number_phone]" operation="list.find" value="[userTab]" value2="+[finNum]"/>	
+		</then>
+		<else>
+				<parameter name="[index_number_phone]" operation="list.find" value="[userTab]" value2="[lastFromUser]"/>	
+		</else>
+	</if-->		   
+		
+	<sendMessageSIP name="Send 100 Trying" delay="0" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+SIP/2.0 100 Trying
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Via: [lastVia]
+User-Agent: [UserAgent]
+Content-Length: 0
+]]>			
+  	</sendMessageSIP>
+
+    <sendMessageSIP name="Send 180 Ringing" delay="[TryingDuration]" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+SIP/2.0 180 Ringing
+To: <sip:[lastToUser]@[domainName]>;tag=[newToTag]
+From: [lastFrom]
+Call-ID: [lastCallId]
+User-Agent: [UserAgent]
+Contact: <sip:[lastToUser]@[UserAgentIpAdress]:[lastLocalPort]>
+CSeq: [lastCSeq]
+Via: [lastVia]
+Record-Route: [lastRecordRoute]
+Content-Length: 0
+
+]]>			
+    </sendMessageSIP>
+
+	<parameter name="[RandomNumber]" operation="number.random" value="20000"/>
+	<parameter name="[portLevel4]" operation="number.add" value="[RangePortRTP-UAS]" value2="[RandomNumber]"/>  
+	<!--parameter name="[test:numberCallInvitee]" operation="number.add" value="[test:numberCallInvitee]" value2="1"/-->
+
+	<sendMessageSIP name="Send 200 OK" delay="[RingingDuration]" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+SIP/2.0 200 OK
+From: [lastFrom]
+To: <sip:[lastToUser]@[domainName]>;tag=[newToTag]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Via: [lastVia]
+User-Agent: [UserAgent]
+Contact: <sip:[lastToUser]@[UserAgentIpAdress]:[lastLocalPort]>
+Record-Route: [lastRecordRoute]
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[lastToUser] 8 2 IN IP4 [UserAgentIpAdress]
+s=Charge xmlloader 5.0.0
+c=IN IP4 [UserAgentIpAdress]
+t=0 0
+[SDPmlineReceiver]
+[SDPalineReceiver]
+]]>	
+</sendMessageSIP>
+	
+			<!--stats>	<counter name="2XX INV out"><increase>1</increase></counter>  </stats-->	
+	
+	<goto  name="goto_begin" label="begin" state="true"/>	    
+
+	<!-- ========================= -->
+		<label name="recSEND"/>		
+	<!-- on se branche ici lorsque on a recu un ACK (a priori uniquement 
+	    donc dans le cas de ACK sur 200 OK emis par le demandé ) --> 
+	<!-- ========================= -->
+	
+	<stats>
+	    <counter name="ActiveSession"><increase>1</increase></counter>
+	</stats>
+	
+	<goto  name="goto_begin" label="begin" state="true"/>	   
+
+	<!-- ========================= -->
+	<label name="recINVITE23456xx"/>	
+	<!-- on a recu une reponse non provisoire sur INVITE --> 
+	<!-- ========================= -->
+	<!-- authentification -->
+	<if> <condition>
+			<or>
+				<test parameter="[StatusCode]" condition="string.equals" value="401"/>	
+				<test parameter="[StatusCode]" condition="string.equals" value="407"/>
+			</or>		
+		</condition>
+		<then>
+		<parameter name="[URI]" operation="set" value="sip:[lastToUser]@[domainName]" />
+		<!-- parameter name="[index_port_uac]" operation="list.find" value="[userTab]" value2="[lastFromUser]"/-->		
+		<!-- parameter name="[Port-Tester]" operation="number.substract" value="65536" value2="[index_port_uac]"/-->
+			<!-- SEND ACK -->
+			<parameter name="[route]" operation="list.revert" value="[lastRecordRoute]"/>
+
+			
+			<sendMessageSIP name="Send ACK" delay="0" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+ACK [URI] SIP/2.0
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCSeqNumber] ACK
+Max-Forwards: 70
+Route: [route]
+Contact: <sip:[lastFromUser]@[lastLocalHost]:[lastLocalPort]>
+Via: SIP/2.0/UDP [UserAgentIpAdress]:[TopmostViaPort];branch=[lastViaBranch]
+User-Agent: [UserAgent]
+Content-Length: 0
+
+]]>
+			</sendMessageSIP>
+
+			<!-- CALCULATE RESPONSE -->
+			<parameter name="[RandomNumber]" operation="number.random" value="20000"/>
+			<parameter name="[portLevel4]" operation="number.add" value="[RangePortRTP-UAC]" value2="[RandomNumber]"/>
+			<parameter name="[Method]" operation="set" value="INVITE"/>				
+			<parameter name="[HA2]" operation="string.digest" value2="MD5" value="[Method]:[URI]" />
+			<parameter name="[NonceCount]" operation="set" value="00000001" />
+			<parameter name="[CNonce]"     operation="set" value="5c0b2" />
+			<parameter name="[newBranchId]" operation="string.random" value="10"/>
+			<parameter name="[HA1]" operation="string.digest" value2="MD5" value="[lastFromUser]@[domainName]:[AuthRealm]:[Password]"/>
+			<parameter name="[AuthResponse]" operation="string.digest" value2="MD5" value="[HA1]:[AuthNonce]:[NonceCount]:[CNonce]:[AuthQop]:[HA2]" />
+			<parameter name="[CseqNumber]" operation="number.add" value="[lastCSeqNumber]" value2="1"/>
+
+			<!-- SEND INVITE AUTH-->
+			<sendMessageSIP name="Send INVITE AUTH" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[		
+INVITE [URI] SIP/2.0
+To: <sip:[lastToUser]@[domainName]>
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [CseqNumber] INVITE
+Via: SIP/2.0/UDP [UserAgentIpAdress]:[TopmostViaPort];branch=z9hG4bK-[newBranchId]
+Max-Forwards: 70
+User-Agent: [UserAgent];xmlloader=[IpCalledValueVia]
+Contact: <sip:[lastFromUser]@[UserAgentIpAdress]:[TopmostViaPort]>
+Proxy-Authorization: Digest username="[lastFromUser]@[domainName]",realm="[AuthRealm]",nonce="[AuthNonce]",uri="[URI]",response="[AuthResponse]",algorithm=MD5,cnonce="[CNonce]",opaque="opaqueData",qop=[AuthQop],nc=[NonceCount]
+Allow: INVITE,ACK,CANCEL,BYE,NOTIFY,OPTIONS,REFER,UPDATE
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[lastFromUser] 8 2 IN IP4 [UserAgentIpAdress]
+s=Charge xmlloader 5.0.0
+c=IN IP4 [UserAgentIpAdress]
+t=0 0
+[SDPmlineSender]
+[SDPalineSender]
+
+]]>	
+			</sendMessageSIP>
+			<parameter name="[userNumberPhone]" operation="set" value="[lastFromUser]" />
+			<!-- Remove du fichier Next Nonce le cas echeant --> 
+			&nextNonceRemove; 
+		
+			<stats>
+				<counter name="AUTH INV out"><increase>1</increase></counter>
+			</stats>	 
+			<goto  name="goto_begin" label="begin" state="true"/>
+		</then>	
+	</if>
+
+	<if>
+	    <condition>
+	    	<test parameter="[lastResult]" condition="number.greaterEqualThan" value="300"/>	    		    	
+	    </condition>
+	    <then>
+	    	<log type="Main" level="ERROR">
+		<![CDATA[	    	
+	    	Error CodeEqual : [lastResult]  : Call from : [lastFromUser] : to  : [lastToUser] :
+message : [lastMessage]
+		]]>		
+			</log>
+	    </then>
+	</if>
+  	    			
+
+	<if>
+		<condition>
+			<test parameter="[lastResult]" condition="string.matches" value="[2][0-9][0-9]"/>
+		</condition>
+		<then>
+			<parameter name="[newBranchId_temp]" operation="string.random" value="10"/>
+			<parameter name="[newBranchId]" operation="set" value="z9hG4bK-[newBranchId_temp]"/>
+			<stats>	<counter name="2XX INV in"><increase>1</increase></counter>  </stats>	
+		</then>
+		<else>
+			<parameter name="[newBranchId]" operation="set" value="[lastViaBranch]"/>
+		</else>
+    </if>
+
+    <if>
+        <condition>
+			<test parameter="[lastContactURI]" condition="list.isempty"/>
+		</condition>
+        <then>
+			<parameter name="[lastContactURI]" operation="set" value="sip:[lastToUser]@[domainName]"/>
+        </then>
+    </if>
+    
+    <parameter name="[route]" operation="list.revert" value="[lastRecordRoute]"/>
+  	
+	<sendMessageSIP name="Send ACK" delay="0" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+ACK [lastContactURI] SIP/2.0
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCSeqNumber] ACK
+Max-Forwards: 70
+Route: [route]
+Via: SIP/2.0/UDP [UserAgentIpAdress]:[TopmostViaPort];branch=[newBranchId]
+User-Agent: [UserAgent]
+Content-Length: 0
+
+]]>
+  	</sendMessageSIP>
+<!-- <![CDATA[
+ACK [lastContactURI] SIP/2.0
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCSeqNumber] ACK
+Max-Forwards: 70
+Route: [route]
+Contact: <sip:+[lastFromNumberPhone]@[Host-Tester]:[Port-Tester]>
+Via: SIP/2.0/UDP [lastLocalHost]:[lastLocalPort];branch=z9hG4bK-[newBranchId]
+User-Agent: [UserAgent]
+Content-Length: 0
+
+]]>
+--> 
+	<if>
+	    <condition>
+	    	<test parameter="[lastResult]" condition="string.matches" value="[3-9][0-9][0-9]"/>
+	    </condition>
+	    <then>  
+			<stats>	<counter name="INV Err Ans"><increase>1</increase></counter>  </stats>			
+			<goto  name="goto_begin" label="begin" state="true"/>
+	    </then>
+	</if>
+	
+	<stats>
+	    <counter name="ActiveSession"><increase>1</increase></counter>
+	</stats>
+
+
+	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+	<parameter name="[newCseqNumber]" operation="number.uid" value="10"/>
+	<parameter name="[route]" operation="list.revert" value="[lastRecordRoute]"/>
+	<parameter name="[CseqNumberBye]" operation="number.add" value="1" value2="[lastCSeqNumber]"/>
+  	<sendMessageSIP name="Send BYE" delay="[CallDurationSec]" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]"> 
+<![CDATA[
+BYE [lastContactURI] SIP/2.0
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [CseqNumberBye] BYE
+Max-Forwards: 70
+Route: [route]
+Via: SIP/2.0/UDP [UserAgentIpAdress]:[TopmostViaPort];branch=z9hG4bK-[newBranchId]
+Content-Length: 0
+
+]]>
+  	</sendMessageSIP>
+		<!--stats>		<counter name="BYE lost"><increase>1</increase></counter> </stats-->
+		<!--stats>		<counter name="BYE out"><increase>1</increase></counter> </stats-->
+		<!--stats>		<counter name="ActiveSession"><decrease>1</decrease></counter> </stats-->
+	<goto  name="goto_begin" label="begin" state="true"/>
+	
+	<!-- ========================= -->
+	<label name="recOTHERS"/>
+	<!-- on a recu une requete qui n'est pas un INVITE ni un ACK  (un BYE, un CANCEL, autre chose) --> 
+	<!-- ========================= -->
+	
+	<if>
+	    <condition>
+	    	<test parameter="[lastMethod]" condition="string.equals" value="BYE"/>
+	    </condition>
+	    <then>
+			<stats>
+				<!--counter name="BYE in"><increase>1</increase></counter-->
+				<!--counter name="BYE lost"><decrease>1</decrease></counter-->
+				<counter name="ActiveSession"><decrease>1</decrease></counter>
+    		</stats>
+	    </then>
+	</if>
+  
+	<parameter name="[newToTag]" operation="string.random" value="10"/>
+
+	<sendMessageSIP name="Send 200 OK" delay="0" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Via: [lastVia]
+Content-Length: 0
+
+]]>
+	</sendMessageSIP>
+
+	<goto  name="goto_begin" label="begin" state="true"/>
+
+	<!-- ========================= -->
+	<label name="recOTHERSxxx"/>
+	<!-- on a recu une reponse  provisoire sur INVITE ou bien une reponse sur autre chose que l'INVITE  --> 
+	<!-- ========================= -->
+	<if>
+		<condition>
+	    	<test parameter="[lastMethod]" condition="string.equals" value="BYE"/>
+	    </condition>
+	    <then>
+			<stats>
+				<!--counter name="xxx BYE in"><increase>1</increase></counter-->
+				<counter name="ActiveSession"><decrease>1</decrease></counter>
+    		</stats>
+	    </then>
+	</if>
+
+	<goto  name="goto_begin" label="begin" state="true"/>
+
+</scenario>

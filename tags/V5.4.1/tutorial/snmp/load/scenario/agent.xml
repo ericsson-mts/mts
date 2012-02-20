@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario agent -->
+<scenario>   
+
+    <parameter name="[listenpoint]" operation="set" value="listenpoint_[port]" />
+    <createListenpointSNMP name="[listenpoint]" localPort="[port]"/>
+
+    <receiveMessageSNMP request="true">
+        <parameter name="remoteHost" operation="protocol.setFromMessage" value="message.remoteHost"/>
+        <parameter name="remotePort" operation="protocol.setFromMessage" value="message.remotePort"/>
+        <parameter name="reqId" operation="protocol.setFromMessage" value="header.requestId"/>
+        <parameter name="version" operation="protocol.setFromMessage" value="header.version"/>
+        <parameter name="community" operation="protocol.setFromMessage" value="header.community"/>
+        <parameter name="oids" operation="protocol.setFromMessage" value="variables.oid"/>
+    </receiveMessageSNMP>
+
+    <sendMessageSNMP remoteHost="[remoteHost]" remotePort="[remotePort]">
+        <header version="[version]" community="[community]"/>
+        <pdu name="response" requestId="[reqId]">
+            <variableBinding name="[oids]" value="23"/>
+        </pdu>
+    </sendMessageSNMP>
+
+    <!--<finally>
+        <removeListenpointSNMP name="[listenpoint]"/>
+    </finally>-->
+</scenario>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <!-- test exists / create / delete -->
+
+	<parameter name="[result1]" operation="string.tobinary"   value="123" />
+	<parameter name="[result2]" operation="binary.parse"      value="h31 h32 h33" />
+    <test parameter="[result1]" condition="binary.equals"     value="[result2]"/>
+
+	<parameter name="[result2]" operation="binary.tostring"   value="[result1]" />
+    <test parameter="[result2]" condition="string.equals"     value="123"/>
+
+	<parameter name="[result2]" operation="binary.parse"      value="h32" />
+    <test parameter="[result1]" condition="binary.contains"   value="[result2]"/>
+
+	<parameter name="[result3]" operation="binary.indexof"    value="[result1]" value2="[result2]"/>
+    <test parameter="[result3]" condition="string.equals"            value="1"/>
+
+	<parameter name="[result4]" operation="binary.tobase64"   value="31323334" />
+	<parameter name="[result5]" operation="binary.frombase64" value="[result4]" />
+
+    <test parameter="[result5]" condition="binary.equals"     value="31323334"/>
+
+    <parameter name="[result5]" operation="binary.indexof"    value="3132333431323334" value2="3233" value3="3"/>
+    <test parameter="[result5]" condition="string.equals"    value="5"/>
+
+    <parameter name="[result5]" operation="binary.subbinary"  value="3132333431323334" value2="5" value3="2"/>
+    <test parameter="[result5]" condition="binary.equals"     value="3233"/>
+
+    <parameter name="[result]"  operation="binary.random" value="8"/>
+
+
+
+    <parameter name="[secret]" operation="string.tobinary" value="0123456789012345"/>
+    <parameter name="[data]"   operation="string.tobinary" value="myDatas"/>
+    <!-- do some padding to datas; need a multiple of 16 bytes -->
+    <parameter name="[data.length]"   operation="string.length" value="[data]"/>
+    <parameter name="[data.length]"   operation="number.divide" value="[data.length]" value2="2" />
+    <parameter name="[data.overhead]"   operation="number.modulo" value="[data.length]" value2="16" />
+    <if>
+        <condition><test parameter="[data.overhead]" condition="number.greaterthan" value="0" /></condition>
+        <then>
+            <parameter name="[data.padding]" operation="number.substract" value="16" value2="[data.overhead]" />
+            <parameter name="[data.padding]" operation="number.multiply" value="[data.padding]" value2="2" />
+            <parameter name="[data.padding]" operation="list.set" value="0" value2="[data.padding]" />
+            <parameter name="[data]" operation="set" value="[data][data.padding(0)]" />
+        </then>
+    </if>
+
+    <parameter name="[binary]" operation="set" value="00000000000000000000000000000000"/>
+    <parameter name="[encrypted]"  operation="binary.encrypt" value="[data]" value2="AES/CBC/NoPadding" value3="[secret]" value4="[binary]"/>
+    <parameter name="[decrypted]"  operation="binary.decrypt" value="[encrypted]" value2="AES/CBC/NoPadding" value3="[secret]" value4="[binary]"/>
+    <test parameter="[data]" condition="binary.equals"     value="[decrypted]"/>
+
+    <parameter name="[binary]" operation="set" value="f0f1f2f3f4f5f6f7f8f9f9f9f9f8f7f6f5f4f3f2f2f0"/>
+    <parameter name="[statMax]" operation="binary.statMax" value="[binary]"/>
+    <test parameter="[statMax]" condition="binary.equals"     value="f9"/>
+    <parameter name="[statMin]" operation="binary.statMin" value="[binary]"/>
+    <test parameter="[statMin]" condition="binary.equals"     value="f0"/>
+    <parameter name="[statAverage]" operation="binary.statAverage" value="[binary]"/>
+    <test parameter="[statAverage]" condition="binary.equals"     value="f5"/>
+    <parameter name="[statVariance]" operation="binary.statVariance" value="[binary]"/>
+    <test parameter="[statVariance]" condition="number.equals"     value="9"/>
+    <parameter name="[statDeviation]" operation="binary.statDeviation" value="[binary]"/>
+    <test parameter="[statDeviation]" condition="number.equals"     value="3"/>
+    <parameter name="[statPopular]" operation="binary.statPopular" value="[binary]"/>
+    <test parameter="[statPopular]" condition="binary.equals"     value="f9"/>
+    <parameter name="[statPopular]" operation="binary.statMaxFreq" value="[binary]"/>
+    <test parameter="[statPopular]" condition="number.equals"     value="0.181818"/>
+    
+</scenario>

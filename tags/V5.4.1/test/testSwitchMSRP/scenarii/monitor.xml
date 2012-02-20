@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+	<parameter name="[plink]" operation="set" value="/usr/bin/plink"/>
+	<parameter name="[nb_iterations]" 	operation="number.divide" value="[vmstatInterval]" value2="[interval]"/>
+	<parameter name="[nb_iterations]" operation="number.add" value="[nb_iterations]" value2="1"/>
+	
+	<if>
+		<condition>
+			<test parameter="[server]" condition="string.equals" value="localhost"/>
+		</condition>
+		<then>
+			<parameter name="[result]" operation="system.command" description="vmstat [server]" value="vmstat [interval] [nb_iterations]"/>
+		</then>
+		<else>
+			<parameter name="[result]" operation="system.command" description="vmstat [server]" value="[plink] -l [login] -pw [passwd] [server] vmstat [interval] [nb_iterations]"/>
+		</else>
+	</if>
+	<!--parameter name="[result]" operation="system.command" description="vmstat [server]" value="[plink] -l [login] -pw [passwd] [server] vmstat 1 2"/-->
+
+
+	<log> [result.standardOut] </log>
+
+
+	<parameter name="[line]" operation="string.regexmatches" value="[result.standardOut]" value2="[^\r\n]+"/>
+
+	<parameter name="[name(0)]" operation="set" value="procs.r"/>
+	<parameter name="[name(1)]" operation="set" value="procs.b"/>
+	<parameter name="[name(2)]" operation="set" value="memory.swpd"/>
+	<parameter name="[name(3)]" operation="set" value="memory.free"/>
+	<parameter name="[name(4)]" operation="set" value="memory.buff"/>
+	<parameter name="[name(5)]" operation="set" value="memory.cache"/>
+	<parameter name="[name(6)]" operation="set" value="swap.si"/>
+	<parameter name="[name(7)]" operation="set" value="swap.so"/>
+	<parameter name="[name(8)]" operation="set" value="io.bi"/>
+	<parameter name="[name(9)]" operation="set" value="io.bo"/>
+	<parameter name="[name(10)]" operation="set" value="system.in"/>
+	<parameter name="[name(11)]" operation="set" value="system.cs"/>
+	<parameter name="[name(12)]" operation="set" value="cpu.us"/>
+	<parameter name="[name(13)]" operation="set" value="cpu.sy"/>
+	<parameter name="[name(14)]" operation="set" value="cpu.id"/>
+	<parameter name="[name(15)]" operation="set" value="cpu.wa"/>
+	<parameter name="[name(16)]" operation="set" value="cpu.st"/>
+
+	<parameter name="[nbLine]" operation="list.size" value="[line]"/>
+
+	<parameter name="[indexLine]" operation="set" value="3"/>
+	<while>
+		<condition>
+			<test parameter="[indexLine]" condition="number.lowerThan" value="[nbLine]"/>
+		</condition>
+		<do>
+			<parameter name="[value]" operation="string.regexmatches" value="[line([indexLine])]" value2="[^ ]+"/>
+			<parameter name="[valueSize]" operation="list.size" value="[value]"/>
+			<parameter name="[index]" operation="set" value="0"/>
+			<!--log> [value(8)];[value(9)];[value(10)];[value(14)] </log-->
+			<while>
+				<condition>
+					<test parameter="[index]" condition="number.lowerThan" value="[valueSize]"/>
+				</condition>
+				<do>
+					<stats>
+						<histogram name="[name([index])_[index]]" shortDesc="[name([index])]" description="vmstat column [index] [name([index])]" longDesc="vmstat column [index] [name([index])]">
+							<newValue>[value([index])]</newValue>
+						</histogram>
+					</stats>
+
+					<parameter name="writeItem" operation="file.writestring" value="[csvFilename]" value2="[value([index])];"/>
+
+
+					<parameter name="[index]" operation="number.add" value="[index]" value2="1"/>
+				</do>
+			</while>
+			<parameter name="writeItem" operation="file.writestring" value="[csvFilename]" value2="&#x0d;&#x0a;"/>
+
+			<parameter name="[indexLine]" operation="number.add" value="[indexLine]" value2="1"/>
+		</do>
+	</while>
+
+
+
+
+
+
+</scenario>
+

@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!-- Pense bete SWE
+non interpretation XML de inferieur par    &lt;
+non interpretation XML de superieur par    &gt;
+-->
+
+<!DOCTYPE library [
+<!ENTITY libS_Proxy_Server			SYSTEM "..\library\Bouchon_Proxy_Server.xml">
+<!ENTITY libS_Own_Invite				SYSTEM "..\library\Bouchon_Own_Invite.xml">
+]>
+
+<scenario>
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_IP]" operation="set" value="[Host-Server]"/>
+<parameter name="[provider_Port]" operation="set" value="[Port-Server]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localHost="[Host-Server]" localPort="[provider_Port]" transport="UDP"/>
+
+
+<parameter name="[MRF_A_IP]" operation="set" value="[Host-Tester]"/>
+<parameter name="[MRF_B_IP]" operation="set" value="[Host-Tester]"/>
+<parameter name="[Subs_B_IP]" operation="set" value="[Host-Tester]"/>
+<parameter name="[Subs_A_IP]" operation="set" value="[Host-Tester]"/>
+
+
+<!--
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_Port]" operation="set" value="[Port-Server]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localPort="[provider_Port]"/>
+-->
+
+
+<!-- 
+
+
+OWN_INVITE_0 en modifiant juste le FIRST LINE 
+
+
+
+-->
+
+<receiveMessage name="wait_SIP_request" timeout="50">
+<parameter name="[lastSIPMethod]" operation="setFromMessage" value="firstline:Method"/>	
+<parameter name="[lastIsRequest]" operation="setFromMessage" value="message:request"/>  		
+<parameter name="[lastResult]" operation="setFromMessage" value="message:result"/>  				
+<parameter name="[lastFirstline]" operation="setFromMessage" value="firstline"/>  	
+<parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>  	
+<parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>  	
+<parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-ID"/>		  		  	
+<parameter name="[lastCSeq]" operation="setFromMessage" value="header:CSeq"/>
+<parameter name="[lastCSeqNumber]" operation="setFromMessage" value="header:CSeqNumber"/>
+<parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/>
+<parameter name="[lastRoute]" operation="setFromMessage" value="header:Route"/>		  		  	
+<parameter name="[lastRecord-Route]" operation="setFromMessage" value="header:Record-Route"/>		  	
+<parameter name="[lastContact]" operation="setFromMessage" value="header:Contact"/>		  		  	
+<parameter name="[lastMax-Forwards]" operation="setFromMessage" value="header:Max-Forwards"/>		  		  	
+<parameter name="[lastHeaderOthers]" operation="setFromMessage" value="header:Others"/>		  		  		  	
+<parameter name="[lastContent]" operation="setFromMessage" value="content"/></receiveMessage>
+
+
+<parameter name="[ancien_lastSIPMethod]" operation="set" value="[lastSIPMethod]"/>	
+<parameter name="[ancien_lastIsRequest]" operation="set" value="[lastIsRequest]"/>  		
+<parameter name="[ancien_lastResult]" operation="set" value="[lastResult]"/>  				
+<parameter name="[ancien_lastFirstline]" operation="set" value="[lastFirstline]"/>  	
+<parameter name="[ancien_lastVia]" operation="set" value="[lastVia]"/>
+<parameter name="[ancien_lastRoute]" operation="set" value="[lastRoute]"/>		  		  	
+<parameter name="[ancien_lastRecord-Route]" operation="set" value="[lastRecord-Route]"/>		  	
+<parameter name="[ancien_lastContact]" operation="set" value="[lastContact]"/>		  		  	
+<parameter name="[ancien_lastMax-Forwards]" operation="set" value="[lastMax-Forwards]"/>		  		  	
+<parameter name="[ancien_lastHeaderOthers]" operation="set" value="[lastHeaderOthers]"/>		  		  		  	
+<parameter name="[ancien_lastContent]" operation="set" value="[lastContent]"/>
+<parameter name="[ancien_lastTo]" operation="set" value="[lastTo]"/>  	
+<parameter name="[ancien_lastFrom]" operation="set" value="[lastFrom]"/>  	
+<parameter name="[ancien_lastCallId]" operation="set" value="[lastCallId]"/>		  		  	
+<parameter name="[ancien_lastCSeq]" operation="set" value="[lastCSeq]"/>
+<parameter name="[ancien_lastCSeqNumber]" operation="set" value="[lastCSeqNumber]"/>
+
+
+
+<parameter name="[newRoute_IP]" operation="set" value="[MRF_A_IP]"/>
+<parameter name="[newRoute_Port]" operation="set" value="[Port-MRF_A]"/>
+<parameter name="[called_Subscriber]" operation="set" value="OWN_CALL_0_MFR_A"/>
+
+<parameter name="[newSessionId]" operation="set" value="7sBsLGYK2QHQ25GMSQD2VsCDzTLhG5sqLDBJlxJ4vvZGDCZ1RWz5!1473881111!NONE"/>
+<parameter name="[newFirstLine]" operation="set" value="INVITE sip:dialog@"/>
+<parameter name="[newFirstLine]" operation="concat" value="[newFirstLine]" value2="[Host-Tester]" />
+<parameter name="[newFirstLine]" operation="concat" value="[newFirstLine]" value2=";voicexml=http://" />
+<parameter name="[newFirstLine]" operation="concat" value="[newFirstLine]" value2="[Host-Tester]" />
+<parameter name="[newFirstLine]" operation="concat" value="[newFirstLine]" value2="/StopSecretSipApp/A_welcome_dialog.jsp%3bjsessionid%3d" />
+<parameter name="[newFirstLine]" operation="concat" value="[newFirstLine]" value2="[newSessionId]" />
+<parameter name="[newFirstLine]" operation="concat" value="[newFirstLine]" value2=" SIP/2.0" />
+
+<parameter name="[newTo]" operation="set" value="To: "/>
+<parameter name="[newTo]" operation="concat" value="[newTo]" value2="[lastTo]" />
+
+<parameter name="[newFrom]" operation="set" value="From: "/>
+<parameter name="[newFrom]" operation="concat" value="[newFrom]" value2="[lastFrom]" />
+
+<parameter name="[Bouffe_180_200_puis_ACK]" operation="set" value="FALSE"/>
+
+&libS_Own_Invite;
+
+<!-- On triche en proxiant entre A et MRF_A les echanges entre "A et AS" et "AS et MRF_A" -->
+<parameter name="[expected_Scenario]" operation="set" value="PROXY"/>
+
+<!-- Filtrage du 100 - SWESWE a confirmer -->
+<log level="1"> NOT_PROXY_THE_100 </log>
+&libS_Proxy_Server;
+<!-- Proxy du 180 -->
+<log level="1"> PROXY_THE_180 </log>
+&libS_Proxy_Server;
+<!-- Proxy du 200 ok -->
+<log level="1"> PROXY_THE_200 </log>
+&libS_Proxy_Server;
+<!-- Proxy du ACK -->
+<log level="1"> PROXY_THE_ACK </log>
+&libS_Proxy_Server;
+
+<!--
+
+
+Initialisation/envoi OWN_INVITE_1 
+
+
+
+-->
+
+<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+<parameter name="[newRoute_IP]" operation="set" value="[MRF_B_IP]"/>
+<parameter name="[newRoute_Port]" operation="set" value="[Port-MRF_B]"/>
+<parameter name="[called_Subscriber]" operation="set" value="OWN_CALL_1_MFR_B"/>
+
+<parameter name="[newSessionId]" operation="set" value="P13wLGYMNVmcQh2fvbBTPmgTGNQnyJNL6h6qtPLz0KFgl21MJ8Ty!1473882222!NONE"/>
+<parameter name="[newFirstLine]" operation="set" value="INVITE sip:dialog@"/>
+<parameter name="[newFirstLine]" operation="concat" value="[newFirstLine]" value2="[Host-Tester]" />
+<parameter name="[newFirstLine]" operation="concat" value="[newFirstLine]" value2=";voicexml=http://" />
+<parameter name="[newFirstLine]" operation="concat" value="[newFirstLine]" value2="[Host-Tester]" />
+<parameter name="[newFirstLine]" operation="concat" value="[newFirstLine]" value2="/StopSecretSipApp/A_welcome_dialog.jsp%3bjsessionid%3d" />
+<parameter name="[newFirstLine]" operation="concat" value="[newFirstLine]" value2="[newSessionId]" />
+<parameter name="[newFirstLine]" operation="concat" value="[newFirstLine]" value2=" SIP/2.0" />
+
+<parameter name="[newTo]" operation="set" value="To: sip:dialog@"/>
+<parameter name="[newTo]" operation="concat" value="[newTo]" value2="[Host-Tester]" />
+
+<parameter name="[newFrom]" operation="set" value="From: User_975630001 &lt;sip:+33975630001@sip.pfdev.fr;user=phone&gt;;tag=4a4915b9"/>
+
+<parameter name="[Bouffe_180_200_puis_ACK]" operation="set" value="TRUE"/>
+
+&libS_Own_Invite;
+
+
+<!--
+
+
+
+Initialisation/envoi OWN_INVITE_2 
+
+
+
+
+-->
+
+<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+<parameter name="[newRoute_IP]" operation="set" value="[Subs_B_IP]"/>
+<parameter name="[newRoute_Port]" operation="set" value="[Port-Subs_B]"/>
+<parameter name="[called_Subscriber]" operation="set" value="OWN_CALL_2_Subs_B"/>
+
+<parameter name="[newFirstLine]" operation="set" value="INVITE sip:+33975630046@sip.pfdev.fr SIP/2.0"/>
+
+<parameter name="[newTo]" operation="set" value="To: &lt;sip:0975630046@sip.pfdev.fr;user=phone&gt;"/>
+
+<parameter name="[newFrom]" operation="set" value="From: User_975630045 &lt;sip:+33975630045@sip.pfdev.fr;user=phone&gt;;tag=be996561"/>
+
+<parameter name="[Bouffe_180_200_puis_ACK]" operation="set" value="TRUE"/>
+
+&libS_Own_Invite;
+
+<!--
+
+
+
+Reception du BYE du MRFB et reponse 200ok
+
+
+
+-->
+
+
+<parameter name="[message_received]" operation="set" value="false"/>
+
+<log level="1"> Attente Reception du BYE du MRFB </log>
+
+<receiveRequestSIP name="Wait BYE" method="BYE" failedOnTimeout="false" timeout="50">
+	<parameter name="[message_received]" operation="set" value="true"/> 
+	<parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>  	
+	<parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>  	
+	<parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-Id"/>  	
+	<parameter name="[lastCSeq]" operation="setFromMessage" value="header:CSeq"/>  		
+	<parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/> 
+	<parameter name="[MaxForwards]" operation="setFromMessage" value="header:Max-Forwards"/>  		
+</receiveRequestSIP>
+
+<if>
+    <condition>
+      <test parameter="[message_received]" condition="equals" value="true" />
+    </condition>
+
+<then>
+<!-- If a BYE is received from AS, sending of a 200 ok -->
+
+<log level="1"> BYE du MRFB recu et renvoi du 200 ok </log>
+
+<sendResponseSIP name="Send 200 OK" providerName="[provider_Name]">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Contact: <sip:[ipAddressSip_Service]:[portSip_Service]>
+User-Agent: XMLLoader
+Max-Forwards: 70
+Content-Length: 0
+]]></sendResponseSIP>
+</then></if>
+
+<!--
+
+
+
+Initialisation/envoi OWN_INVITE_3 
+
+
+
+-->
+
+<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+<parameter name="[newRoute_IP]" operation="set" value="[Subs_A_IP]"/>
+<parameter name="[newRoute_Port]" operation="set" value="[Port-Subs_A]"/>
+<parameter name="[called_Subscriber]" operation="set" value="OWN_CALL_3_Subs_A"/>
+
+<parameter name="[newFirstLine]" operation="set" value="INVITE sip:10.194.124.26:6060 SIP/2.0"/>
+
+<parameter name="[newTo]" operation="set" value="To: User_975630045 &lt;sip:+33975630045@sip.pfdev.fr;user=phone&gt;;tag=1"/>
+
+<parameter name="[newFrom]" operation="set" value="From: &lt;sip:0975630046@sip.pfdev.fr;user=phone&gt;;tag=fa45bc38"/>
+
+<parameter name="[Bouffe_180_200_puis_ACK]" operation="set" value="TRUE"/>
+
+<parameter name="[ContentLength]" operation="set" value="0"/>
+
+
+&libS_Own_Invite;
+
+
+
+
+<!--
+
+
+
+Initialisation/envoi OWN_INVITE_4 
+
+
+-->
+
+<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+<parameter name="[newRoute_IP]" operation="set" value="[Subs_B_IP]"/>
+<parameter name="[newRoute_Port]" operation="set" value="[Port-Subs_B]"/>
+<parameter name="[called_Subscriber]" operation="set" value="OWN_CALL_4_Subs_B"/>
+
+<parameter name="[newFirstLine]" operation="set" value="INVITE sip:10.194.124.26:6090;transport=UDP SIP/2.0"/>
+
+<parameter name="[newTo]" operation="set" value="To: &lt;sip:0975630046@sip.pfdev.fr;user=phone&gt;"/>
+
+<parameter name="[newFrom]" operation="set" value="From: User_975630045 &lt;sip:+33975630045@sip.pfdev.fr;user=phone&gt;;tag=be996561"/>
+
+<parameter name="[Bouffe_180_200_puis_ACK]" operation="set" value="TRUE"/>
+
+&libS_Own_Invite;
+
+
+
+<!--
+
+
+
+BYE envoye vers MSRF_A
+
+
+-->
+
+<parameter name="[newRoute_IP]" operation="set" value="[MRF_A_IP]"/>
+<parameter name="[newRoute_Port]" operation="set" value="[Port-MRF_A]"/>
+<parameter name="[called_Subscriber]" operation="set" value="OWN_CALL_5_MFR_A"/>
+
+<sendRequestSIP name="Send BYE" providerName="[provider_Name]">
+    	
+<![CDATA[BYE sip:10.194.124.26:6090;transport=UDP SIP/2.0
+To: <sip:dialog@10.194.124.26:6080>;tag=1
+From: <sip:StopSecretAS@sip.pfdev.fr>;tag=7ed7962e
+Call-ID: [lastCallId]
+CSeq: [newCseqNumber] BYE
+Via: SIP/2.0/UDP [Host-Server]:[provider_Port];branch=z9hG4bK[newBranchId]
+Route: <sip:[called_Subscriber]@[newRoute_IP]:[newRoute_Port];lr>
+Contact: <sip:[Host-Tester]:[provider_Port]>
+Max-Forwards: 70
+User-Agent: XMLLoader
+Content-Length: 0
+]]></sendRequestSIP>
+
+<receiveResponseSIP name="Wait 200 OK" providerName="[provider_Name]" method="BYE" result="200">
+</receiveResponseSIP>
+
+
+
+<!--
+
+
+
+Proxy du BYE et du 200 ok entre Subs_A et Subs_B
+
+
+
+-->
+
+<parameter name="[newRoute_Port]" operation="set" value="[Port-Subs_B]"/>
+<parameter name="[expected_Scenario]" operation="set" value="PROXY"/>
+
+<log level="1"> PROXY_THE_BYE Entre SubsA et B</log>
+&libS_Proxy_Server;
+<log level="1"> PROXY_THE_200_of the BYE </log>
+&libS_Proxy_Server;
+
+
+
+
+
+<closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/>
+
+</scenario>
