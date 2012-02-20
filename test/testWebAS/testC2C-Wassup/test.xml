@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test name="WebAS load tests">
+	
+    <!-- IP Address and port parameter -->
+    <parameter name="[WebASIp]" operation="set" value="10.194.124.171" editable="true"/>
+    <parameter name="[WebASPort]" operation="set" value="1080" editable="true"/>
+    <parameter name="[WassupIp]" operation="system.ipaddress" value="eth0"/>
+    <parameter name="[WassupPort]" operation="set" value="8081" editable="true"/>
+    <parameter name="[C2CIp]" operation="system.ipaddress" value="eth0"/>
+    <parameter name="[C2CPort]" operation="set" value="8080" editable="true"/>
+    
+    
+    <!-- default phone number to use-->
+    <parameter name="[intDefaultPhoneNumberMin]" operation="set" value="33296000000"/>
+    <parameter name="[intDefaultPhoneNumberMax]" operation="set" value="33297000000"/>
+    
+    <parameter name="[defaultPhoneNumberMinToCall]" operation="set" value="33298000000"/>
+    <parameter name="[defaultPhoneNumberMaxtoCall]" operation="set" value="33299000000"/>
+
+    <!-- time parameter between post notifications -->
+    <parameter name="[longPollingTimeout]" operation="set" value="250"/><!-- 240 seconds + delta 10 seconds si WebAS plus lent en charge-->
+    <parameter name="[timePOST1]" operation="set" value="2" editable="true"/><!-- 2temps entre l'enregistrement du WebAS et la sonnerie de l'appellant -->
+    <parameter name="[timePOST2]" operation="set" value="1" editable="true"/><!-- 3temps entre la sonnerie de l'appellant et le moment ou l'appelant decroche-->
+    <parameter name="[timePOST3]" operation="set" value="1" editable="true"/><!-- 2temps entre le decrochage de l'appellant et la sonnerie l'appelle-->
+    <parameter name="[timePOST4]" operation="set" value="1" editable="true"/><!-- 5temps entre la sonnerie de l'appelle et le decrochage de l'appelle-->
+    <parameter name="[timePOST5]" operation="set" value="1" editable="true"/><!-- 10duree de l'appel 300s par exemple-->
+    
+    <parameter name="[nb req/sec]" operation="set" value="2" editable="true"/>
+    <parameter name="[test_duration]" operation="set" value="3600" editable="true"/>
+    
+    <!-- !!! SIMULATOR PART !!! -->
+    <!-- for simulator WebAS C2C Enabler -->
+    <!--<parameter name="[phoneNumberCalling]" operation="set" value="[defaultPhoneNumberMinToCall]"/>
+    <parameter name="[phoneNumber]" operation="set" value="[intDefaultPhoneNumberMin]"/>-->
+    <!-- !!! SIMULATOR PART !!! -->
+    
+    <!-- allowed the semaphore by C2C Enabler for access to timestamp parameter -->
+    <parameter name="[test:semTimestamp]" operation="system.semaphorenotify" value="1"/>
+    
+    <!-- by default routing by transactionId is deactivated (route.DEFAULT_RESPONSE = false)-->
+    <testcase name="Wassup server" state="true">
+		<scenario name="[WassupPort]">Wassup/wassupServer.xml</scenario>
+	</testcase>
+    <!-- for this test, need to activate routing by transactionId (route.DEFAULT_RESPONSE = true)-->
+	<!--<testcase name="Wassup interface WebAS Simulator" state="false">
+        <loadProfile duration ="[test_duration]">
+            <step time="00" frequency="[nb req/sec]"/>
+            <step time="05" frequency="[nb req/sec]"/>
+        </loadProfile>
+		<scenario name="WebASSimuWassup">Wassup/simulatorWebASWassupInterface.xml</scenario>
+	</testcase>-->
+    
+    <testcase name="C2C enabler server/client" state="true">
+		<scenario name="HTTP">C2CEnabler/serverC2C.xml</scenario>
+        <scenario name="scheduler">C2CEnabler/scheduler.xml</scenario>
+	</testcase>
+    <!-- for this test, need to activate routing by transactionId (route.DEFAULT_RESPONSE = true)-->
+    <!--<testcase name="C2C interface WebAS simulator" state="false">
+        <loadProfile duration ="[test_duration]">
+            <step time="00" frequency="[nb req/sec]"/>
+            <step time="05" frequency="[nb req/sec]"/>
+        </loadProfile>
+        <scenario name="[WebASPort]">C2CEnabler/simulatorWebASC2CInterface.xml</scenario>
+	</testcase>-->
+    
+</test>

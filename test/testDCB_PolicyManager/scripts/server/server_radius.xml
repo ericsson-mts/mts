@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <parameter name="[RADIUSsocketName]" operation="set" value="server"/>
+    <createListenpointRADIUS name="[RADIUSsocketName]" localPort="[radius_port]" secret="[radius_secret]"/>
+
+    <while>
+        <condition/>
+        <do>
+
+            <receiveMessageRADIUS listenpoint="[RADIUSsocketName]" timeout="0" name="Wait Access or Accounting Request" request="true">
+                <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+                <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+                <parameter name="[code]"       operation="protocol.setFromMessage" value="header.code"/>
+                <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier"/>
+                <parameter name="[listenpointRadius]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+            </receiveMessageRADIUS>
+
+            <parameter name="[code]" operation="number.add" value="[code]" value2="1"/>
+            <sendMessageRADIUS listenpoint="[listenpointRadius]" remoteHost="[remoteHost]" remotePort="[remotePort]">
+                <header code="[code]" identifier="[identifier]"/>
+            </sendMessageRADIUS>
+
+        </do>
+    </while>
+
+    <finally>
+        <removeListenpointRADIUS name="[RADIUSsocketName]" />
+    </finally>
+
+</scenario>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTPFLOW name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]" />
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+
+    <receiveMessageRTPFLOW listenpoint="invitee" type="DVI4:17" timeout="30">
+        <parameter name="[flowPayloadBinary]" operation="protocol.setFromMessage" value="flow.payload.binary"/>        
+    </receiveMessageRTPFLOW>
+
+    <test parameter="[flowPayloadBinary]" condition="binary.equals" value="[payloadList]"/>
+
+    <finally>
+		<removeListenpointRTPFLOW name="invitee" />
+	</finally>
+    
+</scenario>

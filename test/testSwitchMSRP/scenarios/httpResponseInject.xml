@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- httpResponse is used to simulate an HTTP client | he generates commandes [AS simulation] -->
+
+<scenario>
+
+<!-- Label de debut de boucle automate -->
+<label name="Begin"/>
+
+<receiveMessageHTTP name="Wait" failedOnTimeout="false" >
+
+	<parameter name="[entity]" operation="protocol.setFromMessage" value="content"/>
+	<parameter name="[transaction_id]" operation="protocol.setFromMessage" value="message.transactionId"/>	
+	<parameter name="[Firstline]" operation="protocol.setFromMessage" value="firstline"/>  	  	
+  	<parameter name="[Version]" operation="protocol.setFromMessage" value="firstline.version"/>  	
+  	<parameter name="[Method]" operation="protocol.setFromMessage" value="firstline.method"/>  	  		
+  	<parameter name="[Uri]" operation="protocol.setFromMessage" value="firstline.uri"/>  	  		  		  		
+  	<parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.statuscode"/>  	
+  	<parameter name="[ReasonPhrase]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>  	  			
+	<parameter name="[ContentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>
+	<parameter name="[Content]" operation="protocol.setFromMessage" value="content"/>	
+
+</receiveMessageHTTP>
+
+<!--
+CONTOURNEMENT RECUPERATION DU HUB_ID VIA LE TRANSACTION ID
+-->
+<if>
+	<condition>
+		<test parameter="[test:Context_HubId_[transaction_id]]" condition="list.exists"/> 
+	</condition>
+	<then>
+		<parameter name="[HubId]" operation="set" value="[test:Context_HubId_[transaction_id]]"/>
+		<parameter name="[test:Context_HubId_[transaction_id]]" operation="list.remove"/>
+		<log level="[LogLevel]">RECUPERATION HubID Via TRANSACTION_Id1 = [HubId]</log>
+	</then>
+</if>
+
+<!--
+
+TRAITEMENT_1
+ 
+Input: Traitement reception HTTP 200 OK /msrp/newhub ( hub cree )
+Output: creation session MSRP Client_1
+
+-->
+
+<if>
+    <condition>
+            <test parameter="[Content]" condition="string.contains" value="hub="/>
+    </condition>
+    <then>
+	<log level="[LogLevel]">ENTREE TRAITEMENT_1</log>
+	
+	<!--openConnectionHTTP connectionName="" localHost="[ipAddressSrc]" remoteURL="http://[IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]"/
+	<openChannelHTTP name="[HTTP_Connection]" remoteURL="http://[IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]"/>
+	-->
+	
+	<!-- Extraction du parametre HubId du Content text/plain -->
+	<!--<parameter name="[OutputTable]" operation="string.regexmatches" value="[Content]" value2="hub=[0-9\:]*" />-->
+	<parameter name="[OutputTable]" operation="string.regexmatches" value="[Content]" value2="hub=[^\n\r]*" />
+	<parameter name="[OutputTable]" operation="string.split" value="[OutputTable]" value2="=" />
+	<parameter name="[HubId]" operation="set" value="[OutputTable(1)]"/>   
+	<log level="[LogLevel]">HubId = [HubId]</log>
+	<parameter name="[RamdomNb]" operation="string.random" value="10"/>
+	<parameter name="[UserAddress]" operation="set" value="Client_1[RamdomNb]@toto.com"/>
+	<log level="[LogLevel]">UserAddress = [UserAddress]</log>
+	
+	<!-- Demande creation session MSRP Client_1 -->
+<sendRequestHTTP connectionName="[HTTP_Connection]" delay="0">
+<![CDATA[
+GET /msrp/newsess?hub=[HubId]&user=sip:[UserAddress]&cb=http://[IP_SwitchMSRP_HTTP_Notif]:[Port_SwitchMSRP_HTTP_Notif]/&reuse=1 HTTP/1.1
+User-Agent: XMLLoader
+Host: [IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]
+]]>
+</sendRequestHTTP> 
+
+	<!-- Enregistrement de la transactionID de la requete envoyee -->
+	<parameter name="[transaction_id_envoye]" operation="protocol.setFromMessage" value="message.transactionId"/>      
+
+	<!-- Stokage des variables d environnement -->
+	<parameter name="[test:Context_AutomateState_[HubId]]" operation="set" value="Client_1_Creation_en_Cours"/>
+	<parameter name="[test:Context_HubId_[transaction_id_envoye]]" operation="set" value="[HubId]"/>
+
+	<!-- Retour entree automate -->            
+	<goto  name="loop" label="Begin" state="true"/>	    
+	
+    </then>
+	
+<else/>
+</if>
+
+
+<!--
+
+TRAITEMENT_2
+
+Input TRA: Traitement reception HTTP 200 OK /msrp/newsess du client_1 ( Client_1_cree )
+Output: creation session MSRP Client_2
+
+-->
+
+<if>
+    <condition>
+        <test parameter="[Content]" condition="string.contains" value="sess=msrp"/>
+        <test parameter="[test:Context_AutomateState_[HubId]]" condition="string.equals" value="Client_1_Creation_en_Cours" />
+    </condition>
+    <then>
+
+	<log level="[LogLevel]">ENTREE TRAITEMENT_2</log>
+    
+	<!--openConnectionHTTP connectionName="" localHost="[ipAddressSrc]" remoteURL="http://[IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]"/
+	<openChannelHTTP name="[HTTP_Connection]" remoteURL="http://[IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]"/>
+	-->
+
+	<!-- Extraction du Path MSRP cote Switch Server du Content text/plain -->
+	<parameter name="[OutputTable]" operation="string.regexmatches" value="[Content]" value2="sess=[^\n\r]*" />
+	<parameter name="[OutputTable]" operation="string.split" value="[OutputTable]" value2="=" />
+	<parameter name="[Path_Client]" operation="set" value="[OutputTable(1)]"/>   
+	<!-- Extraction du port dans le msrp path -->
+	<parameter name="[OutputTable1]" operation="string.split" value="[Path_Client]" value2="/" />
+	<parameter name="[OutputTable2]" operation="string.split" value="[OutputTable1(2)]" value2=":" />
+	<parameter name="[Port_Client]" operation="set" value="[OutputTable2(1)]"/>   
+	
+	<log level="[LogLevel]">Path_Client1 = [Path_Client]</log>
+	<log level="[LogLevel]">Port_Client1 = [Port_Client]</log>
+ 
+	<parameter name="[RamdomNb]" operation="string.random" value="10"/>
+	<parameter name="[UserAddress]" operation="set" value="Client_2[RamdomNb]@toto.com"/>
+	<log level="[LogLevel]">UserAddress = [UserAddress]</log>
+
+	<!-- Demande creation session MSRP Client_2 -->
+<sendRequestHTTP connectionName="[HTTP_Connection]" delay="0">
+	
+<![CDATA[
+GET /msrp/newsess?hub=[HubId]&user=sip:[UserAddress]&cb=http://[IP_SwitchMSRP_HTTP_Notif]:[Port_SwitchMSRP_HTTP_Notif]/&reuse=1 HTTP/1.1
+User-Agent: XMLLoader
+Host: [IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]
+]]>
+
+</sendRequestHTTP>       
+
+	<!-- Enregistrement de la transactionID de la requete envoyee -->
+	<parameter name="[transaction_id_envoye]" operation="protocol.setFromMessage" value="message.transactionId"/> 
+
+	<!-- Stokage des variables d environnement -->
+	<parameter name="[test:Context_PathServer1_[HubId]]" operation="set" value="[Path_Client]"/>
+	<parameter name="[test:Context_PortServer1_[HubId]]" operation="set" value="[Port_Client]"/>
+	<parameter name="[test:Context_AutomateState_[HubId]]" operation="set" value="Client_2_Creation_en_Cours"/>
+	<parameter name="[test:Context_HubId_[transaction_id_envoye]]" operation="set" value="[HubId]"/>
+
+	<!-- Retour entree automate -->            
+	<goto  name="loop" label="Begin" state="true"/>	                      
+            
+    </then>
+<else/>
+</if>
+
+
+<!--
+
+TRAITEMENT_3
+
+Input TRA: Traitement reception HTTP 200 OK /msrp/newsess du client_2 ( Client_2_cree )
+Output: Binding Client_1
+
+-->
+
+
+<if>
+    <condition>
+            <test parameter="[Content]" condition="string.contains" value="sess=msrp"/>
+            <test parameter="[test:Context_AutomateState_[HubId]]" condition="string.equals" value="Client_2_Creation_en_Cours" />
+    </condition>
+    <then>
+
+	<log level="[LogLevel]">ENTREE TRAITEMENT_3</log>
+  
+	<!-- Extraction du Path MSRP cote Switch Server du Content text/plain -->
+	<parameter name="[OutputTable]" operation="string.regexmatches" value="[Content]" value2="sess=[^\n\r]*" />
+	<parameter name="[OutputTable]" operation="string.split" value="[OutputTable]" value2="=" />
+	<parameter name="[Path_Client]" operation="set" value="[OutputTable(1)]"/>   
+	<!-- Extract IP adress and port in the msrp path returned in the 200 OK message -->
+	<parameter name="[OutputTable1]" operation="string.split" value="[Path_Client]" value2="/" />
+	<parameter name="[OutputTable2]" operation="string.split" value="[OutputTable1(2)]" value2=":" />
+	<parameter name="[IP_Path_MSRP]" operation="set" value="[OutputTable2(0)]"/>  
+	<parameter name="[Port_Client]" operation="set" value="[OutputTable2(1)]"/>  
+
+	<log level="[LogLevel]">Path_Client2 = [Path_Client]</log>
+	<log level="[LogLevel]">Port_Client2 = [Port_Client]</log>
+	<log level="[LogLevel]">IP_Path_MSRP = [IP_Path_MSRP]</log>
+ 
+	<!-- Creation Local MSRP Path Client_1 -->
+	<parameter name="[RamdomNb]" operation="string.random" value="10"/>
+	<parameter name="[MSRP_LocalPort_1]" operation="number.random" value="5000"/>
+	<parameter name="[MSRP_LocalPort_1]" operation="set" value="1[MSRP_LocalPort_1]"/>
+	<parameter name="[Local_MSRP_Path]" operation="set" value="msrp://[ipAddressSrc]:[MSRP_LocalPort_1]/[RamdomNb];tcp"/>
+
+	<!-- Demande binding session MSRP Client_1 -->
+<sendRequestHTTP connectionName="[HTTP_Connection]" delay="0.5">
+
+<!-- GET /msrp/bindsess?hub=[HubId]&sess=[test:Context_PathServer1_[HubId]]&peer=[Local_MSRP_Path] HTTP/1.1 -->
+	
+<![CDATA[
+GET /msrp/bindsess?hub=[HubId]&sess=[test:Context_PathServer1_[HubId]]&peer=[Local_MSRP_Path] HTTP/1.1
+User-Agent: XMLLoader
+Host: [IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]
+]]>
+
+</sendRequestHTTP> 
+
+	<!-- Enregistrement de la transactionID de la requete envoyee-->
+	<parameter name="[transaction_id_envoye]" operation="protocol.setFromMessage" value="message.transactionId"/> 
+
+	<!-- Stokage des variables d environnement -->
+	<parameter name="[test:Context_PathServer2_[HubId]]" operation="set" value="[Path_Client]"/>
+	<parameter name="[test:Context_PortServer2_[HubId]]" operation="set" value="[Port_Client]"/>
+	<parameter name="[test:Context_PathClient1_[HubId]]" operation="set" value="[Local_MSRP_Path]"/>
+	<parameter name="[test:Context_LocalPortClient1_[HubId]]" operation="set" value="[MSRP_LocalPort_1]"/>
+	<parameter name="[test:Context_AutomateState_[HubId]]" operation="set" value="Client_1_Binding_en_Cours"/>
+	<parameter name="[test:Context_HubId_[transaction_id_envoye]]" operation="set" value="[HubId]"/>
+
+	<log level="[LogLevel]">Stockage DOUBLE ENCAPSULAGE = [test:Context_HubId_[transaction_id_envoye]]</log>
+	<log level="[LogLevel]">Stockage DOUBLE ENCAPSULAGE_1 = [test:Context_AutomateState_[HubId]]</log>
+	
+	<!-- Retour entree automate -->            
+	<goto  name="loop" label="Begin" state="true"/>	                      
+            
+    </then>
+<else/>
+</if>
+
+
+<!--
+
+TRAITEMENT_4
+
+Input : Traitement reception HTTP 200 OK /msrp/bindsess du client_1 ( Client_1_binded )
+Output: Binding Client_2
+
+-->
+
+<if>
+    <condition>
+            <test parameter="[test:Context_AutomateState_[HubId]]" condition="string.equals" value="Client_1_Binding_en_Cours" />
+    </condition>
+    <then>
+
+	<log level="[LogLevel]">ENTREE TRAITEMENT_4</log>
+ 
+	<!-- Creation Local MSRP Path Client_2 -->
+	<parameter name="[RamdomNb]" operation="string.random" value="10"/>
+	<parameter name="[MSRP_LocalPort_2]" operation="number.random" value="8000"/>
+	<parameter name="[MSRP_LocalPort_2]" operation="set" value="2[MSRP_LocalPort_2]"/>
+	<parameter name="[Local_MSRP_Path]" operation="set" value="msrp://[ipAddressSrc]:[MSRP_LocalPort_2]/[RamdomNb];tcp"/>
+
+	<!-- Demande binding session MSRP Client_2 -->
+<sendRequestHTTP connectionName="[HTTP_Connection]" delay="0.5">
+
+<![CDATA[
+GET /msrp/bindsess?hub=[HubId]&sess=[test:Context_PathServer2_[HubId]]&peer=[Local_MSRP_Path] HTTP/1.1
+User-Agent: XMLLoader
+Host: [IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]
+]]>
+
+</sendRequestHTTP> 
+
+	<!-- Enregistrement de la transactionID de la requete envoyee-->
+	<parameter name="[transaction_id_envoye]" operation="protocol.setFromMessage" value="message.transactionId"/> 
+	
+	<!-- Stokage des variables d environnement -->
+	<parameter name="[test:Context_PathClient2_[HubId]]" operation="set" value="[Local_MSRP_Path]"/>
+	<parameter name="[test:Context_LocalPortClient2_[HubId]]" operation="set" value="[MSRP_LocalPort_2]"/>
+	<parameter name="[test:Context_AutomateState_[HubId]]" operation="set" value="Client_2_Binding_en_Cours"/>
+	<parameter name="[test:Context_HubId_[transaction_id_envoye]]" operation="set" value="[HubId]"/>
+
+	<!-- Getting stats -->
+<sendRequestHTTP connectionName="[HTTP_Connection]" delay="0">
+
+<![CDATA[
+GET /msrp/stats HTTP/1.1
+User-Agent: XMLLoader
+Host: [IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]
+]]>
+
+</sendRequestHTTP>
+
+<receiveMessageHTTP name="Wait" timeout="0">
+
+	<parameter name="[stats]" operation="protocol.setFromMessage" value="content"/>	
+
+</receiveMessageHTTP>
+
+	<parameter name="[date]" operation="system.timestamp" />             
+	<parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+	<parameter name="[dateInString]" operation="string.regexreplaces" value="[dateInString]" value2="[/]" value3="-"/>
+
+	<!-- USER DEBUG -->
+	<log level="[LogLevel]">Received MESSAGE : [stats] </log>
+	
+	<!-- Storing notifications events in a LOG file named "sys_stats.log" -->
+	<parameter name="[result]" operation="file.writestring"  value="sys_stats.log" value2="[dateInString]	[stats]"/>
+
+	<!-- Retour entree automate -->            
+	<goto  name="loop" label="Begin" state="true"/>	                      
+         
+    </then>
+<else/>
+</if>
+
+
+<!--
+
+TRAITEMENT_5
+
+Input : Traitement reception HTTP 200 OK /msrp/bindsess du client_2 ( Client_2_binded )
+Output: Injection de message msrp via HTTP
+
+-->
+
+<if>
+    <condition>
+            <test parameter="[test:Context_AutomateState_[HubId]]" condition="string.equals" value="Client_2_Binding_en_Cours" />
+    </condition>
+    <then>
+
+	<log level="[LogLevel]">ENTREE TRAITEMENT_5</log>
+
+	<!-- Creation de connexions MSRP et definition de parametres du message a envoyer -->
+	<parameter name="[localTransactionID]" operation="string.random" value="10"/>
+	<parameter name="[localMessageID]" operation="string.random" value="10"/>
+  
+	<!-- Opening MSRP channels in order to send message Client_1 to Client_2 trought the MSRP Switch -->
+<openChannelMSRP name="[MSRP_Connection_1]" localHost="[ipAddressSrc]" localPort="[test:Context_LocalPortClient1_[HubId]]" remoteHost="[IP_Path_MSRP]" remotePort="[test:Context_PortServer1_[HubId]]" />
+
+<openChannelMSRP name="[MSRP_Connection_2]" localHost="[ipAddressSrc]" localPort="[test:Context_LocalPortClient2_[HubId]]" remoteHost="[IP_Path_MSRP]" remotePort="[test:Context_PortServer2_[HubId]]" />
+
+	<log level="[LogLevel]">MSRP Local Port for [MSRP_Connection_1]: [test:Context_LocalPortClient1_[HubId]] </log>
+
+<!-- Injection de message via l'interface nord -->
+<log level="[LogLevel]">Local MessageID sent = [localMessageID]</log>
+
+<sendRequestHTTP connectionName="[HTTP_Connection]" delay="0">
+
+<![CDATA[
+POST /msrp/sendmsg?hub=[HubId]&sess=[test:Context_PathServer1_[HubId]]&msgid=[localMessageID] HTTP/1.1
+Host: [IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]
+Content-Type: text/plain
+User-Agent: XMLLoader
+
+test
+]]>
+
+</sendRequestHTTP>
+
+<receiveMessageHTTP name="Wait" timeout="0">
+
+</receiveMessageHTTP> 
+
+
+	<!-- Stokage des variables d environnement -->
+	<parameter name="[Variable_Temp]" operation="set" value="[test:Context_PathClient1_[HubId]]"/>
+	<parameter name="[test:Context_MSRP_[Variable_Temp]]" operation="set" value="[HubId]"/>
+	<parameter name="[test:Context_AutomateState_[HubId]]" operation="set" value="Client_1_MSRP_SENT"/>
+
+	<log level="[LogLevel]">Nom_Variable_Lien_HubId_via_ToPath_en_ENTREE = test:Context_MSRP_[Variable_Temp]</log>
+	<log level="[LogLevel]">Contenu_Variable_Lien_HubId_via_ToPath_en_ENTREE = [test:Context_MSRP_[Variable_Temp]]</log>
+
+	<!-- Retour entree automate -->            
+	<goto  name="loop" label="Begin" state="true"/>	                      
+            
+    </then>
+<else/>
+</if>
+
+
+<!--
+
+TRAITEMENT_6
+
+Input : Traitement reception HTTP 200 OK /msrp/deletesess du client_1 ( Client_1_deleted )
+Output: Delete Client_2
+
+-->
+
+<if>
+    <condition>
+            <test parameter="[test:Context_AutomateState_[HubId]]" condition="string.equals" value="Client_1_Delete_en_Cours" />
+    </condition>
+    <then>
+
+	<log level="[LogLevel]">ENTREE TRAITEMENT_6</log>
+  
+
+	<!-- Demande Delete Client_2-->
+
+<sendRequestHTTP connectionName="[HTTP_Connection]" delay="0">
+	
+<![CDATA[
+GET /msrp/deletesess?hub=[HubId]&sess=[test:Context_PathServer2_[HubId]] HTTP/1.1
+User-Agent: XMLLoader
+Host: [IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]
+]]>
+
+</sendRequestHTTP> 
+
+	<!-- Enregistrement de la transactionID de la requete envoyee-->
+	<parameter name="[transaction_id_envoye]" operation="protocol.setFromMessage" value="message.transactionId"/> 
+
+	<!-- Stokage des variables d environnement -->
+	<parameter name="[test:Context_HubId_[transaction_id_envoye]]" operation="set" value="[HubId]"/>
+	<parameter name="[test:Context_AutomateState_[HubId]]" operation="set" value="Client_2_Delete_en_Cours"/>
+
+	<!-- Retour entree automate -->            
+	<goto  name="loop" label="Begin" state="true"/>	                      
+            
+    </then>
+<else/>
+</if>
+
+
+<!--
+
+TRAITEMENT_7
+
+Input : Traitement reception HTTP 200 OK /msrp/deletesess du client_1 ( Client_1_deleted )
+Output: Delete Hub
+
+-->
+
+<if>
+    <condition>
+        <test parameter="[test:Context_AutomateState_[HubId]]" condition="string.equals" value="Client_2_Delete_en_Cours" />
+    </condition>
+    <then>
+
+	<log level="[LogLevel]">ENTREE TRAITEMENT_7</log>
+
+
+	<!-- Demande Delete Hub-->
+
+<sendRequestHTTP connectionName="[HTTP_Connection]" delay="0">
+	
+<![CDATA[
+GET /msrp/deletehub?hub=[HubId] HTTP/1.1
+User-Agent: XMLLoader
+Host: [IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]
+]]>
+
+</sendRequestHTTP> 
+
+	<!-- Enregistrement de la transactionID de la requete envoyee-->
+	<parameter name="[transaction_id_envoye]" operation="protocol.setFromMessage" value="message.transactionId"/> 
+
+	<!-- Stokage des variables d environnement -->
+	<parameter name="[test:Context_HubId_[transaction_id_envoye]]" operation="set" value="[HubId]"/>
+	<parameter name="[test:Context_AutomateState_[HubId]]" operation="set" value="Hub_Delete_en_Cours"/>
+	<parameter name="[booleanAutomateState]" value="[test:Context_AutomateState_[HubId]]" operation="string.equals"  value2="Hub_Delete_en_Cours" />
+	
+	<!-- Retour entree automate -->            
+	<goto  name="loop" label="Begin" state="true"/>	                      
+            
+    </then>
+<else/>
+</if>
+
+
+<!--
+
+TRAITEMENT_8
+
+Input : Traitement reception HTTP 200 OK /msrp/deletehub ( Hub_deleted )
+Output: Suppression de toutes les variables d'environnement de l instaance de call
+
+-->
+
+<if>
+    <condition>
+        <test parameter="[test:Context_AutomateState_[HubId]]" condition="string.equals" value="Hub_Delete_en_Cours" />
+    </condition>
+    <then>
+
+	<log level="[LogLevel]">ENTREE TRAITEMENT_8</log>
+
+	<!--
+	Suppression de toutes les variables d'environnement de l instaance de call et fermeture des cannaux de communications
+	TO BE COMPLETED
+	-->
+	<parameter name="[test:Context_HubId_[transaction_id_envoye]]" operation="list.remove"/>
+	<parameter name="[test:Context_PathServer1_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_PathServer2_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_PortServer1_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_PortServer2_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_PathClient1_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_PathClient2_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_LocalPortClient1_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_LocalPortClient2_[HubId]]" operation="list.remove"/>
+	<parameter name="[Variable_Temp]" operation="list.remove"/>
+	<parameter name="[test:Context_MSRP_[Variable_Temp]]" operation="list.remove"/>
+	<parameter name="[test:Context_MSRP_[to]]" operation="list.remove"/>
+	
+</then>
+</if>
+
+<finally>
+	
+	<!-- Deleting hub if the test failed or stoped by the user -->
+	<if>
+	    <condition>
+			<test parameter="[booleanAutomateState]" condition="boolean.equals" value="false" />
+    	</condition>
+    	<then>
+
+		<sendRequestHTTP connectionName="[HTTP_Connection]" delay="0">
+<![CDATA[
+GET /msrp/deletehub?hub=[HubId] HTTP/1.1
+User-Agent: XMLLoader
+Host: [IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]
+]]>
+		</sendRequestHTTP> 
+
+		<receiveMessageHTTP name="200 OK" >
+
+		</receiveMessageHTTP>
+
+		</then>
+	</if>  
+
+	<!-- Deleting temporary varibale if not done in TRAITEMENT_8 -->
+	<parameter name="[test:Context_AutomateState_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_HubId_[transaction_id_envoye]]" operation="list.remove"/>
+	<parameter name="[test:Context_PathServer1_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_PathServer2_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_PortServer2_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_PathClient1_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_PathClient1_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_PathClient2_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_LocalPortClient1_[HubId]]" operation="list.remove"/>
+	<parameter name="[test:Context_LocalPortClient2_[HubId]]" operation="list.remove"/>
+	<parameter name="[Variable_Temp]" operation="list.remove"/>
+	<parameter name="[test:Context_MSRP_[Variable_Temp]]" operation="list.remove"/>
+	<parameter name="[test:Context_MSRP_[to]]" operation="list.remove"/>
+
+	<pause name="pause" seconds="2" state="true"/>
+	<!-- Closing opened channels -->
+	<closeChannelMSRP name="[MSRP_Connection_1]"/>
+	<closeChannelMSRP name="[MSRP_Connection_2]"/>
+	
+	<pause name="pause" seconds="3" state="true"/>
+	<closeChannelHTTP name="[HTTP_Connection]"/>
+
+</finally>
+
+</scenario>

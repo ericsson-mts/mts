@@ -1,0 +1,20 @@
+<!-- PROC : Stockage du nonce --> 
+<log type="Scenario" level="2">--Entering Include Function : nextNonceSave.xml</log>
+<!-- 
+AUTEUR : R&D/CORE/M2V/TSC/JD
+OBJET : Remove du fichier nextNonce 
+            (Pour le cas ou on recoit un 407 INVITE par exemple)
+
+MODIF :
+--> 
+<!--
+   ENTREE :
+   --> 
+<!-- stockage Next Nonce --> 
+<if>	<condition>	<test parameter="[activateNextNonce]" condition="string.equals" value="false"/>	</condition>
+<then>	<goto label="the_end2" /> </then> 
+</if> 
+<!-- ecraser le fichier  --> 
+<parameter name="[result]" operation="file.remove" value="./temp/nonce[userNumberPhone].var"/>
+
+<label name="the_end2"/>

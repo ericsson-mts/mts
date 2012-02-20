@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+	<parameter name="[sizeOfMessage]" operation="set" value="[pop_bigAttach_size]"/>
+	<parameter name="[sizeOfMessage]" operation="number.add" value="[sizeOfMessage]" value2="232"/>
+
+<while>
+<condition />
+<do>
+
+
+<receiveMessagePOP name="Receive Message POP" request="true" timeout="0" >
+	<parameter name="[cmd]" operation="protocol.setFromMessage" value="request:command"/>
+	<parameter name="[arguments]" operation="protocol.setFromMessage" value="request:arguments"/>
+	<parameter name="[transactionId]" operation="protocol.setFromMessage" value="message:transactionId"/>
+</receiveMessagePOP>
+<parameter name="[inDiction]" operation="set" value="false"/>
+
+
+<!--*************************************USER******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="USER"/>
+	</condition>
+
+	<then>
+		<sendMessagePOP name="send USER response" transactionId="[transactionId]">
+<![CDATA[
++OK [arguments] is known
+]]>
+		</sendMessagePOP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************PASS******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="PASS"/>
+	</condition>
+
+	<then>
+		<sendMessagePOP name="Send PASS response" transactionId="[transactionId]">
+<![CDATA[
++OK Registered
+]]>
+		</sendMessagePOP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************LIST******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="LIST"/>
+	</condition>
+
+	<then>
+		<sendMessagePOP name="Send LIST response" transactionId="[transactionId]">
+<![CDATA[
++OK 1 message ([sizeOfMessage] octets)
+1 [sizeOfMessage]
+.
+]]>
+		</sendMessagePOP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************RETR******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="RETR"/>
+	</condition>
+
+	<then>
+		<sendMessagePOP name="Send RETR response" transactionId="[transactionId]">
+<![CDATA[
++OK [sizeOfMessage] octets
+Date: Fri, 17 Oct 2008 21:52:25
+From: Me <theTester@imsloader.com>
+Subject: test to write message
+To: anyone@devoteam.com
+Message-Id: <B27397-0100000@devoteam.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+
+[pop_bigAttach(0)]
+.
+]]>
+		</sendMessagePOP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+
+<!--*************************************DELE******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="DELE"/>
+	</condition>
+
+	<then>
+		<sendMessagePOP name="Send DELE response" transactionId="[transactionId]">
+<![CDATA[
++OK message 1 deleted
+]]>
+		</sendMessagePOP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************QUIT******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="QUIT"/>
+	</condition>
+
+	<then>
+		<sendMessagePOP name="Send QUIT response" transactionId="[transactionId]">
+<![CDATA[
++OK IMSLoader POP3 Server saying goodbye...
+]]>
+		</sendMessagePOP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+
+<!--*************************************UNKNOWN COMMAND******************************************************-->
+<if>
+	<condition>
+		<test parameter="[inDiction]" condition="string.equals" value="false"/>
+	</condition>
+
+	<then>
+		<sendMessagePOP name="Send unknown command response" transactionId="[transactionId]">
+<![CDATA[
+-ERR Command Unknown
+]]>
+		</sendMessagePOP>
+	</then>
+</if>
+
+</do>
+</while>
+</scenario>

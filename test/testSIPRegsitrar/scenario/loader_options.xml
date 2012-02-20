@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE Library [
+ <!ENTITY initvarStatsParam SYSTEM "./initvarStatsParam.xml">
+]>
+<scenario>
+	&initvarStatsParam;
+	<!-- se mettre en attente sur semaphore si synchro necessaire avec les premiers REGISTER --> 
+    <if>  <condition> <test parameter="[testcase:IndexCallOptions]" condition="list.exists" not="true"/> </condition>
+     <then>
+			<if> <condition> <test parameter="[WaitEndOfFirstRegisterBurst]" condition="string.equals" value="true"/> </condition>	
+			<then> <parameter name="[test:startCall]" operation="system.semaphorewait" value2="0"/> </then>
+			</if>
+			<parameter name="[testcase:IndexCallOptions]" operation="set" value="-1"/>
+	</then>
+    </if>
+	
+  	<parameter name="[testcase:IndexCallOptions]" operation="number.add" value="[testcase:IndexCallOptions]" value2="2"/>
+
+    <if> <condition> <test parameter="[testcase:IndexCallOptions]" condition="number.greaterEqualThan" value="[RangeNumberUser]"/> </condition>
+    <then>  <parameter name="[testcase:IndexCallOptions]" operation="set" value="1"/> </then>
+	</if>
+	
+	<parameter name="[IndexCallOptions]" operation="set"  value="[testcase:IndexCallOptions]"/>
+	<parameter name="[IndexCallOptionsPlusUn]" operation="number.add" value="[IndexCallOptions]" value2="1"/>
+	 <parameter name="[IndexCallOptionsMoinsUn]" operation="number.substract" value="[IndexCallOptions]" value2="1"/>
+	 
+    <parameter name="[inviterName]" operation="set" value="[userTab([IndexCallOptions])]"/>
+	<parameter name="[inviterNumberPhone]" operation="set" value="[userTabNP([IndexCallOptions])]"/>
+	<parameter name="[inviteeName]" operation="set" value="[userTabNP([IndexCallOptionsPlusUn])]"/>
+	
+	<parameter name="[RandomNumberTag1]" operation="number.random" value="99999999"/>
+	<parameter name="[RandomNumberTag2]" operation="number.random" value="99999999"/>
+	<parameter name="[RandomNumberTag3]" operation="number.random" value="99999999"/>
+	<parameter name="[newCseqNumber]" operation="number.uid" value="10"/>
+
+   <parameter name="[listenpoint]" operation="set" value="[test:listListenPointName([IndexCallOptionsMoinsUn])]" />
+    <parameter name="[sourceIp]" operation="set" value="[test:listUsedIp([IndexCallOptionsMoinsUn])]" />
+    <parameter name="[sourcePort]" operation="set" value="[test:listUsedPort([IndexCallOptionsMoinsUn])]" />
+	  
+	<sendMessageSIP name="Send OPTIONS" listenpoint="[listenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+OPTIONS sip:+[inviteeName]@[domainName] SIP/2.0
+From: <sip:[inviterName]@[domainName]>;tag=[RandomNumberTag1]
+To: <sip:+[inviteeName]@[domainName]>
+Call-ID: [RandomNumberTag2]
+CSeq: [newCseqNumber] OPTIONS
+Via: SIP/2.0/UDP [sourceIp]:[sourcePort];branch=z9hG4bK-[RandomNumberTag3]
+Max-Forwards: 70
+User-Agent: [UserAgent]
+Contact: <sip:+[inviterNumberPhone]@[sourceIp]:[sourcePort]>
+Content-Length: 0
+]]>
+	</sendMessageSIP>
+<!-- pas supporte par le HiQ?? 
+<![CDATA[
+OPTIONS sip:+[inviteeName]@[domainName] SIP/2.0
+From: <sip:[inviterName]@[domainName]>;tag=[RandomNumberTag1]
+To: <sip:+[inviteeName]@[domainName]>
+Call-ID: [RandomNumberTag2]
+CSeq: [newCseqNumber] OPTIONS
+Via: SIP/2.0/UDP [Host-Tester]:[Port-Tester];branch=z9hG4bK-[RandomNumberTag3]
+Max-Forwards: 70
+User-Agent: [UserAgent]
+Contact: <sip:+[inviterNumberPhone]@[Host-Tester]:[Port-Tester]>[optionsContact]
+Accept: [optionsAccept]
+Accept-Contact: [optionsAcceptContact]
+Allow: [optionsAllow]
+Supported: [optionsSupported]
+Content-Length: 0
+]]>
+-->
+	<stats>
+		<counter name="ActiveSessionOPTIONS"><increase>1</increase></counter>  	
+		<counter name="OPTIONSout"><increase>1</increase></counter>
+		<!--counter name="OPTIONSlost"><increase>1</increase></counter-->
+	</stats>	  
+	
+</scenario>

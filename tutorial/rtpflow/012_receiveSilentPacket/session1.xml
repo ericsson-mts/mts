@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <parameter name="[payload]" operation="set" value="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000011"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="Packet RTP1"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="Packet RTP2"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="Packet RTP3"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="Packet RTP4"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="22222222222"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="Packet RTP5"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="33000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <!-- end flow 1 -->
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="55000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <!-- end flow silent -->
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="66000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="Packet RTP6"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="Packet RTP7"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="77000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="88888888888"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="Packet RTP8"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="Packet RTP9"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000099"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <!-- end flow 2 -->
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <parameter name="[payload]" operation="list.addLast" value="[payload]" value2="00000000000"/>
+    <!-- end flow silent -->        
+    <parameter name="[nbPackets]" operation="list.size" value="[payload]"/>
+    
+	<createListenpointRTPFLOW name="inviter" localHost="[localHostRTP]" localPort="[localPortRTP]"/>
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP]" remotePort="[remotePortRTP]">
+	    <flow packetNumber="[nbPackets]" deltaTime="200" deltaTimestamp="1600">
+            <header ssrc="123456789" payloadType="8" seqnum="123" timestamp="456"/>
+            <payload format="text">[payload]</payload>
+	    </flow>
+	</sendMessageRTPFLOW>
+    
+	<finally>
+		<removeListenpointRTPFLOW name="inviter" />
+	</finally>
+
+</scenario>
+

@@ -1,0 +1,216 @@
+
+SIP: Session Initiation Protocol
+
+
+19.1 SIP and SIPS Uniform Resource Indicators
+
+   A SIP or SIPS URI identifies a communications resource.  Like all
+   URIs, SIP and SIPS URIs may be placed in web pages, email messages,
+   or printed literature.  They contain sufficient information to
+   initiate and maintain a communication session with the resource.
+
+   Examples of communications resources include the following:
+
+      o  a user of an online service
+
+      o  an appearance on a multi-line phone
+
+      o  a mailbox on a messaging system
+
+      o  a PSTN number at a gateway service
+
+      o  a group (such as "sales" or "helpdesk") in an organization
+
+   A SIPS URI specifies that the resource be contacted securely.  This
+   means, in particular, that TLS is to be used between the UAC and the
+   domain that owns the URI.  From there, secure communications are used
+   to reach the user, where the specific security mechanism depends on
+   the policy of the domain.  Any resource described by a SIP URI can be
+   "upgraded" to a SIPS URI by just changing the scheme, if it is
+   desired to communicate with that resource securely.
+
+19.1.1 SIP and SIPS URI Components
+
+   The "sip:" and "sips:" schemes follow the guidelines in RFC 2396 [5].
+   They use a form similar to the mailto URL, allowing the specification
+   of SIP request-header fields and the SIP message-body.  This makes it
+   possible to specify the subject, media type, or urgency of sessions
+   initiated by using a URI on a web page or in an email message.  The
+   formal syntax for a SIP or SIPS URI is presented in Section 25.  Its
+   general form, in the case of a SIP URI, is:
+
+      sip:user:password@host:port;uri-parameters?headers
+
+   The format for a SIPS URI is the same, except that the scheme is
+   "sips" instead of sip.  These tokens, and some of the tokens in their
+   expansions, have the following meanings:
+
+      user: The identifier of a particular resource at the host being
+         addressed.  The term "host" in this context frequently refers
+         to a domain.  The "userinfo" of a URI consists of this user
+         field, the password field, and the @ sign following them.  The
+         userinfo part of a URI is optional and MAY be absent when the
+
+
+
+Rosenberg, et. al.          Standards Track                   [Page 148]
+
+RFC 3261            SIP: Session Initiation Protocol           June 2002
+
+
+         destination host does not have a notion of users or when the
+         host itself is the resource being identified.  If the @ sign is
+         present in a SIP or SIPS URI, the user field MUST NOT be empty.
+
+         If the host being addressed can process telephone numbers, for
+         instance, an Internet telephony gateway, a telephone-
+         subscriber field defined in RFC 2806 [9] MAY be used to
+         populate the user field.  There are special escaping rules for
+         encoding telephone-subscriber fields in SIP and SIPS URIs
+         described in Section 19.1.2.
+
+      password: A password associated with the user.  While the SIP and
+         SIPS URI syntax allows this field to be present, its use is NOT
+         RECOMMENDED, because the passing of authentication information
+         in clear text (such as URIs) has proven to be a security risk
+         in almost every case where it has been used.  For instance,
+         transporting a PIN number in this field exposes the PIN.
+
+         Note that the password field is just an extension of the user
+         portion.  Implementations not wishing to give special
+         significance to the password portion of the field MAY simply
+         treat "user:password" as a single string.
+
+      host: The host providing the SIP resource.  The host part contains
+         either a fully-qualified domain name or numeric IPv4 or IPv6
+         address.  Using the fully-qualified domain name form is
+         RECOMMENDED whenever possible.
+
+      port: The port number where the request is to be sent.
+
+      URI parameters: Parameters affecting a request constructed from
+         the URI.
+
+         URI parameters are added after the hostport component and are
+         separated by semi-colons.
+
+         URI parameters take the form:
+
+            parameter-name "=" parameter-value
+
+         Even though an arbitrary number of URI parameters may be
+         included in a URI, any given parameter-name MUST NOT appear
+         more than once.
+
+         This extensible mechanism includes the transport, maddr, ttl,
+         user, method and lr parameters.
+
+
+
+
+
+Rosenberg, et. al.          Standards Track                   [Page 149]
+
+RFC 3261            SIP: Session Initiation Protocol           June 2002
+
+
+         The transport parameter determines the transport mechanism to
+         be used for sending SIP messages, as specified in [4].  SIP can
+         use any network transport protocol.  Parameter names are
+         defined for UDP (RFC 768 [14]), TCP (RFC 761 [15]), and SCTP
+         (RFC 2960 [16]).  For a SIPS URI, the transport parameter MUST
+         indicate a reliable transport.
+
+         The maddr parameter indicates the server address to be
+         contacted for this user, overriding any address derived from
+         the host field.  When an maddr parameter is present, the port
+         and transport components of the URI apply to the address
+         indicated in the maddr parameter value.  [4] describes the
+         proper interpretation of the transport, maddr, and hostport in
+         order to obtain the destination address, port, and transport
+         for sending a request.
+
+         The maddr field has been used as a simple form of loose source
+         routing.  It allows a URI to specify a proxy that must be
+         traversed en-route to the destination.  Continuing to use the
+         maddr parameter this way is strongly discouraged (the
+         mechanisms that enable it are deprecated).  Implementations
+         should instead use the Route mechanism described in this
+         document, establishing a pre-existing route set if necessary
+         (see Section 8.1.1.1).  This provides a full URI to describe
+         the node to be traversed.
+
+         The ttl parameter determines the time-to-live value of the UDP
+         multicast packet and MUST only be used if maddr is a multicast
+         address and the transport protocol is UDP.  For example, to
+         specify a call to alice@atlanta.com using multicast to
+         239.255.255.1 with a ttl of 15, the following URI would be
+         used:
+
+            sip:alice@atlanta.com;maddr=239.255.255.1;ttl=15
+
+         The set of valid telephone-subscriber strings is a subset of
+         valid user strings.  The user URI parameter exists to
+         distinguish telephone numbers from user names that happen to
+         look like telephone numbers.  If the user string contains a
+         telephone number formatted as a telephone-subscriber, the user
+         parameter value "phone" SHOULD be present.  Even without this
+         parameter, recipients of SIP and SIPS URIs MAY interpret the
+         pre-@ part as a telephone number if local restrictions on the
+         name space for user name allow it.
+
+         The method of the SIP request constructed from the URI can be
+         specified with the method parameter.
+
+
+
+
+Rosenberg, et. al.          Standards Track                   [Page 150]
+
+RFC 3261            SIP: Session Initiation Protocol           June 2002
+
+
+         The lr parameter, when present, indicates that the element
+         responsible for this resource implements the routing mechanisms
+         specified in this document.  This parameter will be used in the
+         URIs proxies place into Record-Route header field values, and
+         may appear in the URIs in a pre-existing route set.
+
+         This parameter is used to achieve backwards compatibility with
+         systems implementing the strict-routing mechanisms of RFC 2543
+         and the rfc2543bis drafts up to bis-05.  An element preparing
+         to send a request based on a URI not containing this parameter
+         can assume the receiving element implements strict-routing and
+         reformat the message to preserve the information in the
+         Request-URI.
+
+         Since the uri-parameter mechanism is extensible, SIP elements
+         MUST silently ignore any uri-parameters that they do not
+         understand.
+
+      Headers: Header fields to be included in a request constructed
+         from the URI.
+
+         Headers fields in the SIP request can be specified with the "?"
+         mechanism within a URI.  The header names and values are
+         encoded in ampersand separated hname = hvalue pairs.  The
+         special hname "body" indicates that the associated hvalue is
+         the message-body of the SIP request.
+
+   Table 1 summarizes the use of SIP and SIPS URI components based on
+   the context in which the URI appears.  The external column describes
+   URIs appearing anywhere outside of a SIP message, for instance on a
+   web page or business card.  Entries marked "m" are mandatory, those
+   marked "o" are optional, and those marked "-" are not allowed.
+   Elements processing URIs SHOULD ignore any disallowed components if
+   they are present.  The second column indicates the default value of
+   an optional element if it is not present.  "--" indicates that the
+   element is either not optional, or has no default value.
+
+   URIs in Contact header fields have different restrictions depending
+   on the context in which the header field appears.  One set applies to
+   messages that establish and maintain dialogs (INVITE and its 200 (OK)
+   response).  The other applies to registration and redirection
+   messages (REGISTER, its 200 (OK) response, and 3xx class responses to
+   any method).
+

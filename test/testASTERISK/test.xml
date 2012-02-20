@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="SIP" description="SIP regression tests">
+    
+    <parameter name="[Host-Tester]" operation="system.ipaddress"/>
+    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]"/>
+    <parameter name="[Port-Tester]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]"/>	
+   
+    <parameter name="[Host-Server]" operation="system.ipaddress"/>
+    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]"/>
+    <!-- ASTERISK parameter name="[Host-Server]" operation="set" value="192.168.90.247"/-->
+    <!-- VOXPILOT parameter name="[Host-Server]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[Host-Server]" operation="set" value="192.168.90.247"/>
+    <parameter name="[Port-Server]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--VOXPILOT parameter name="[Port-Server]" operation="set" value="5070"/-->
+    <!--ASTERISK parameter name="[Port-Server]" operation="set" value="5060"/-->
+    <parameter name="[Port-Server]" operation="set" value="5060"/>
+    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server]:[Port-Server]"/>	
+	
+    <!-- transport parameters-->
+    <parameter name="[transportRequest]" operation="set" value="udp"/>
+    <parameter name="[transportResponse]" operation="set" value="UDP"/>
+        
+    <!-- timers for the retransmissions-->
+    <parameter name="[retransmitNumber]" operation="set" value="4"/>
+    <parameter name="[RetransTimeout]" operation="set" value="0.5"/>
+        
+    <parameter name="[retransmitTimers(0)]" operation="set" value="500"/>     	
+    <parameter name="[retransmitTimers(1)]" operation="set" value="1000"/>     	
+    <parameter name="[retransmitTimers(2)]" operation="set" value="2000"/>     	
+    <parameter name="[retransmitTimers(3)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(4)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(5)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(6)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(7)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(8)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(9)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(10)]" operation="set" value="4000"/>
+
+    <!--parameter name="[domainName]" operation="set" value="[Adresse-Server]"/-->
+    <parameter name="[domainName]" operation="set" value="asterisk.fr"/>
+    <parameter name="[NumberScenario]" operation="set" value="1"/>
+    
+    <testcase name="100_sip_registrar" description="test sip" state="true">
+      	<parameter name="[userTo]" operation="set" value="9999"/>
+        <parameter name="[userFrom]" operation="set" value="8888"/>
+
+        <scenario name="alice">100_sip_registrar/UAC.xml</scenario>
+        <scenario name="7070">100_sip_registrar/UAS.xml</scenario>
+        <!--scenario name="registrar">102_sip_register_call/registrar.xml</scenario-->
+    </testcase>
+
+    <for index="[index]" from="1" to="[NumberScenario]" step="1">    
+        <testcase name="300_conference_[index]" description="test sip" state="true">
+            <!--parameter name="[inviteeName]" operation="set" value="111[index]"/-->
+            <!--parameter name="[inviterName1]" operation="set" value="000[index]"/-->
+            <!--parameter name="[inviterName2]" operation="set" value="222[index]"/-->
+
+            <parameter name="[inviteeName]" operation="set" value="3333"/>
+            <parameter name="[inviterName1]" operation="set" value="0000"/>
+            <parameter name="[inviterName2]" operation="set" value="1111"/>
+            <parameter name="[inviterName3]" operation="set" value="2222"/>
+
+            <parameter name="[inviterHostRTP1]" operation="set" value="[Host-Tester]"/>
+            <parameter name="[inviterPortRTP1]" operation="number.multiply" value="[index]" value2="2"/>
+            <parameter name="[inviterPortRTP1]" operation="number.add" value="20000" value2="[inviterPortRTP1]"/>
+            <parameter name="[inviterHostRTP2]" operation="set" value="[Host-Tester]"/>
+            <parameter name="[inviterPortRTP2]" operation="number.multiply" value="[index]" value2="2"/>
+            <parameter name="[inviterPortRTP2]" operation="number.add" value="30000" value2="[inviterPortRTP2]"/>
+            <parameter name="[inviterHostRTP3]" operation="set" value="[Host-Tester]"/>
+            <parameter name="[inviterPortRTP3]" operation="number.multiply" value="[index]" value2="2"/>
+            <parameter name="[inviterPortRTP3]" operation="number.add" value="40000" value2="[inviterPortRTP3]"/>
+
+            <scenario name="0000">300_conference/UACsender.xml</scenario>        
+            <scenario name="1111">300_conference/UACreceiver1.xml</scenario>        
+            <scenario name="2222">300_conference/UACreceiver2.xml</scenario>        
+        </testcase>
+    </for>
+
+</test>

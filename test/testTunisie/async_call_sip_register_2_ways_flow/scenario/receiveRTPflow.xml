@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<stats>
+		<counter name="ListenPointReceive" summary="LPReceive" complete="Listen point receive"/>
+		<counter name="RTPFlowMissed" summary="RTP Flow unreceived" complete="RTP Flow send but unreceived"/>
+		<counter name="ReceiveTimeout" summary="RTP Flow unreceived" complete="RTP Flow send but unreceived"/>
+	</stats>
+
+	<!--<pause name="waiting register" seconds="[RangeNumberUser]"/>-->
+	<!--<parameter name="[SemaphoreTimeOut]" operation="number.multiply" value="[CallDurationSec]" value2="3"/>-->
+	<!--<parameter name="[test:receive]" operation="system.semaphorewait" value2="[SemaphoreTimeOut]"/>-->
+	<parameter name="[test:startCall]" operation="system.semaphorewait" value2="0"/>
+	<parameter name="[CallDurationSecReceive]" operation="number.multiply" value="[CallDurationSec]" value2="10"/>
+
+	<if>
+		<condition>
+			<test parameter="[testcase:indexCall]" condition="list.exists" not="true"/>
+    	</condition>
+        <then>
+			<parameter name="[numberReceive]" operation="set" value="0"/>
+		</then>
+    </if>
+	
+	<parameter name="[indexFile]" operation="set" value="1"/>
+	
+	<label name="BEGIN"/>
+	
+	<parameter name="[received]" operation="set" value="false"/>
+
+	<receiveMessageRTPFLOW timeout="[CallDurationSecReceive]" failedOnTimeout="false">
+		<parameter name="[received]" operation="set" value="true"/>
+		<parameter name="[ssrc]" operation="protocol.setFromMessage" value="header.ssrc"/>
+		<parameter name="[payloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>	
+		<parameter name="[lastListenpoint]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+		<parameter name="[lastListenpointPort]" operation="protocol.setFromMessage" value="listenpoint.localport"/>
+		<parameter name="[flowPayloadPlayer]" operation="protocol.setFromMessage" value="flow.payload.player"/>
+		<parameter name="[packetNumberRec]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
+		<!--<parameter name="[flowPayloadText]" operation="protocol.setFromMessage" value="flow.payload.text"/> -->
+		<parameter name="[packetLostRec]" operation="protocol.setFromMessage" value="qos.packetLost"/> 
+		<parameter name="[packetSpacingMeanRec]" operation="protocol.setFromMessage" value="qos.packetSpacingMean"/>
+		<parameter name="[deltaTimeMeanRec]" operation="protocol.setFromMessage" value="qos.deltaTimeMean"/>
+		<parameter name="[jitterDelayMeanRec]" operation="protocol.setFromMessage" value="qos.jitterDelayMean"/>
+		<parameter name="[mos]" operation="protocol.setFromMessage" value="qos.mos"/>
+	</receiveMessageRTPFLOW>
+
+	<if>
+		<condition>
+			<test parameter="[received]" condition="string.equals" value="true"/>
+		</condition>	
+		<then>
+			<parameter name="[numberReceive]" operation="number.add" value="[numberReceive]" value2="1"/>
+		</then>
+		<else>
+			<stats>
+				<counter name="ReceiveTimeout"><increase>1</increase></counter>
+			</stats>
+			<exit/>
+		</else>	
+	</if>
+	
+		
+	<if>
+		<condition>
+			<test parameter="[ReceiveRTPControl]" condition="number.greaterthan" value="100"/>
+		</condition>
+		<then>
+			<parameter name="[ReceiveRTPControl]" operation="set" value="100"/>
+		</then>
+	</if>	
+
+	<if>
+		<condition>
+			<test parameter="[ReceiveRTPControl]" condition="number.greaterthan" value="0"/>
+		</condition>
+		<then>
+			
+			<parameter name="[RecRTPCtrl]" operation="number.divide" value="[ReceiveRTPControl]" value2="100"/>
+			<parameter name="[moduloControlRTP]" operation="number.modulo" value="[numberReceive]" value2="[RecRTPCtrl]"/>
+			
+			<if>
+				<condition>
+					<test parameter="[moduloControlRTP]" condition="number.greaterthan" value="0"/>
+				</condition>
+				<then>
+					<parameter name="[moduloControlRTP]" operation="number.divide" value="[numberReceive]" value2="[RecRTPCtrl]"/>
+					<parameter name="[moduloControlRTP]" operation="number.floor" value="[moduloControlRTP]"/>
+				</then>
+			</if>	
+			
+			<parameter name="[RecRTPCtrl]" operation="number.divide" value="1" value2="[RecRTPCtrl]"/>
+			<parameter name="[moduloControlRTP]" operation="number.modulo" value="[numberReceive]" value2="[RecRTPCtrl]"/>
+
+			<log level="info">modulo control : [moduloControlRTP]</log>
+			<log level="info">nombre de receive : [numberReceive]</log>
+	
+			<if>				
+				<condition>
+					<test parameter="[moduloControlRTP]" condition="number.lowerthan" value="1"/>
+				</condition>
+				<then>
+					<log level="info">On traite le controle du flux</log>
+					<!--<parameter name="[payloadList]" operation="set" value="[[fileWave_inviter(0)]]"/>-->
+
+					<if>
+						<condition>
+							<test parameter="[fileWave_test]" condition="binary.contains" value="[flowPayloadPlayer]" not="true"/>
+						</condition>
+						<then>
+							<log level="info">fichier différent, on l'écrit</log>	
+							<!-- value2 = payloadType, do not change it -->
+							<!-- value3 = payloadPLayer, do not change it -->
+							<!-- value4 = bitsPerSample (optional) -->
+							<!-- value5 = sampleRate (optional) (8000 Hz for PCMA or PCMU) -->
+							<!-- value6 = number of channel (optional) (1 for mono, 2 for stereo) -->
+
+							<parameter name="file" operation="file.writewave" value="ReceivedFlow/rtpflowReceived_test_[indexFile].wav" 
+							value2="[payloadType]"	
+							value3="[flowPayloadPlayer]"
+							value4="8"
+							value5="8000"
+							value6="2"
+							/> 
+
+							<log level="info"> ssrc : [ssrc] </log>
+							<log level="info"> flowPayloadPlayer : [flowPayloadPlayer(0)] </log>
+							<log level="info"> payloadType : [payloadType] </log>
+							<log level="info"> packetNumberRec : [packetNumberRec] </log>
+							<log level="info"> packetLostRec : [packetLostRec] </log>
+							
+							<parameter name="[indexFile]" operation="number.add" value="[indexFile]" value2="1"/>
+						</then>
+					</if>
+
+				</then>
+			</if>
+		</then>
+	</if>
+
+	<stats>
+		<percent name="packetLostRec" summary="p_lost_out" complete="received packets lost for outgoing flow ">
+			<incValue>[packetLostRec]</incValue>
+			<incTotal>[packetNumberRec]</incTotal>
+		</percent>	
+		<value name="packetSpacingMeanRec" summary="packet_spacing_mean" complete="received packet spacing mean">
+			<newValue value="[packetSpacingMeanRec]"/>
+		</value>
+		<value name="deltaTimeMeanRec" summary="delta_time_mean" complete="received delta time mean">
+			<newValue value="[deltaTimeMeanRec]"/>
+		</value>
+		<value name="jitterDelayMeanRec" summary="jitter_delay_mean" complete="received jitter delay for outgoing flow between real and theorical timestamp">
+			<newValue value="[jitterDelayMeanRec]"/>
+		</value>
+	</stats>
+
+	<stats>
+		<counter name="ListenPointReceive"><increase>1</increase></counter>
+		<counter name="RTPFlowMissed"><decrease>1</decrease></counter>
+	</stats>
+
+	<try>
+		<do>
+			<removeListenpointRTPFLOW name="[lastListenpoint]"/>
+			<stats>
+				<counter name="ListenPointReceive"><decrease>1</decrease></counter>
+			</stats>	
+		</do>
+		<finally>
+			<log level="info">Listenpoint enleve [lastListenpoint]</log>
+		</finally>	
+	</try>	
+
+	<goto  name="goto_begin" label="BEGIN" state="true"/>
+
+</scenario>

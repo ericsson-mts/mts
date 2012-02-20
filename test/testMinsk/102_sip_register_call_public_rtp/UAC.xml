@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE SIPimport [
+  <!ENTITY register SYSTEM "./register.xml">
+
+]>
+
+<scenario>
+
+  <parameter name="[LocalHost]" operation="system.ipaddress"/>  
+  <parameter name="[LocalPort]" operation="set" value="[scenarioName]"/>
+  <parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort]"/>
+  <parameter name="[LocalPortRTP]" operation="number.add" value="[scenarioName]" value2="10000"/>
+  <createListenpointSIP name="listenpointUAC" localHost="[LocalHost(0)]" localPort="[LocalPort(0)]"/>
+
+  <parameter name="[userName]" operation="set" value="[userFrom]"/>
+  <parameter name="[Password]" operation="set" value="[passwordFrom]"/>
+  <parameter name="[Expires]" operation="set" value="3600"/>
+  <parameter name="[listenpoint]" operation="set" value="listenpointUAC"/>	
+  &register;
+  
+ <!--parameter name="[testcase:registerOK]" operation="system.semaphorewait" value="1"/-->
+
+  <createListenpointRTPFLOW name="listenpointUAC" localHost="[LocalHost(0)]" localPort="[LocalPortRTP(0)]"/>
+
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseq]" operation="set" value="1"/>
+  	<parameter name="[MaxForwards]" operation="set" value="70"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
+  <sendMessageSIP name="Send INVITE" listenpoint="listenpointUAC">
+<![CDATA[INVITE sip:[userTo]@[domainName] SIP/2.0
+Route: <sip:[Adresse-Server];lr>
+CSeq: [newCseq] INVITE
+Via: SIP/2.0/[transportResponse] [LocalAddress];branch=z9hG4bK[newBranchId]
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+From: "[userFrom]" <sip:[userFrom]@[domainName]>;tag=[localTag]
+Call-ID: [newCallId]
+To: <sip:[userTo]@[domainName]>
+Contact: <sip:[userFrom]@[LocalAddress]>
+Proxy-Authorization: Digest username="[userFrom]", realm="[WWWAuthRealm]", nonce="[WWWAuthNonce]", uri="[URI]" algorithm=md5, response="[AuthResponse]"
+Allow: INVITE, ACK, OPTIONS, BYE, CANCEL, NOTIFY, REFER, MESSAGE
+Content-Type: application/sdp
+Content-Length: x
+Max-Forwards: 70
+
+v=0
+o=- 3 2 IN IP4 [Host-Tester]
+s=CounterPath X-Lite 3.0
+c=IN IP4 [Host-Tester]
+t=0 0
+m=audio [LocalPortRTP] RTP/AVP 107 119 0 98 8 3 101
+a=alt:1 1 : VgrnSDYX Y5HY1YQw 172.16.21.32 28756
+a=fmtp:101 0-15
+a=rtpmap:107 BV32/16000
+a=rtpmap:119 BV32-FEC/16000
+a=rtpmap:98 iLBC/8000
+a=rtpmap:101 telephone-event/8000
+a=sendrecv
+]]>
+  </sendMessageSIP>                            
+    
+  <!--receiveMessageSIP name="Wait 407 OK" request="false" type="INVITE" result="407">
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>                     
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>                         
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/> 
+    <parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>   
+    <parameter name="[contactURI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+    <parameter name="[RecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route"/>  
+    <parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.StatusCode"/>	
+		<parameter name="[WWWAuthRealm]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.realm"/>									
+		<parameter name="[WWWAuthNonce]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.nonce"/>					
+		<parameter name="[WWWAuthQop]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.qop"/>        
+  </receiveMessageSIP>
+
+    <parameter name="[Request-URI]" operation="set" value="[contactURI]"/>
+    <parameter name="[Route]" operation="list.revert" value="[RecordRoute]"/>
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+      	
+  <sendMessageSIP name="Send ACK" listenpoint="listenpointUAC">
+<![CDATA[ACK sip:[userTo]@[domainName] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [lastCseqNumber] ACK
+Via: SIP/2.0/[transportResponse] [LocalAddress];branch=z9hG4bK[newBranchId]
+Contact: <sip:[userFrom]@[LocalAddress]>
+Route: [Route]
+Max-Forwards: 70
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Route: <sip:[userFrom]@[Adresse-Server];mode=originating;transport=[transportRequest];lr>
+Route: <sip:[userFrom]@[Adresse-Tester];mode=originating;transport=[transportRequest];lr>
+Allow: INVITE, ACK, CANCEL, BYE, NOTIFY
+Content-Length: 0
+]]>
+  </sendMessageSIP-->
+			
+		<!--parameter name="[UserName]" operation="set" value="[userFrom]"/>		
+		<parameter name="[HA1]" operation="string.digest" value2="MD5" value="[UserName]:[WWWAuthRealm]:[Password]" />
+
+		<parameter name="[Method]" operation="set" value="INVITE"/>				
+		<parameter name="[URI]"      operation="set" value="sip:[userTo]@[domainName]" />	
+		<parameter name="[HA2]" operation="string.digest" value2="MD5" value="[Method]:[URI]" /-->
+	
+  	<!--parameter name="[WWWAuthNonce]" operation="set" value="561781b0" /-->	
+		<!--parameter name="[NonceCount]" operation="set" value="00000001" />
+		<parameter name="[CNonce]"     operation="set" value="11fc4a0e" /-->
+  	<!--parameter name="[AuthResponse]" operation="string.digest" value2="MD5" value="[HA1]:[WWWAuthNonce]:[NonceCount]:[CNonce]:[WWWAuthQop]:[HA2]" /-->
+		<!--parameter name="[AuthResponse]" operation="string.digest" value2="MD5" value="[HA1]:[WWWAuthNonce]:[HA2]" /-->
+
+	 <!--parameter name="[localTag]" operation="string.random" value="10"/>
+	  <parameter name="[newCseq]" operation="number.add" value="[newCseq]" value2="1"/>
+  	<parameter name="[MaxForwards]" operation="set" value="70"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
+  <sendMessageSIP name="Send INVITE" listenpoint="listenpointUAC">
+<![CDATA[INVITE sip:[userTo]@[domainName] SIP/2.0
+Route: <sip:[Adresse-Server];lr>
+CSeq: [newCseq] INVITE
+Via: SIP/2.0/[transportResponse] [LocalAddress];branch=z9hG4bK[newBranchId]
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+From: "[userFrom]" <sip:[userFrom]@[domainName]>;tag=[localTag]
+Call-ID: [newCallId]
+To: <sip:[userTo]@[domainName]>
+Contact: <sip:[userFrom]@[LocalAddress]>
+Allow: INVITE, ACK, OPTIONS, BYE, CANCEL, NOTIFY, REFER, MESSAGE
+Content-Type: application/sdp
+Content-Length: x
+Max-Forwards: 70
+
+v=0
+o=- 1302102015 1302102015 IN IP4 [Host-Tester]
+s=Opal SIP Session
+c=IN IP4 [Host-Tester]
+t=0 0
+m=audio [LocalPortRTP] RTP/AVP 96 3 107 110 0 8 101
+a=rtpmap:96 SPEEX/16000
+a=rtpmap:3 GSM/8000
+a=rtpmap:107 MS-GSM/8000
+a=rtpmap:110 SPEEX/8000
+a=rtpmap:0 PCMU/8000
+a=rtpmap:8 PCMA/8000
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-15
+m=video 5014 RTP/AVP 31
+a=rtpmap:31 H261/90000
+]]>
+  </sendMessageSIP-->
+
+  <receiveMessageSIP name="Wait 200 OK" request="false" type="INVITE" result="200">
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>                     
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>                         
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/> 
+    <parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>   
+    <parameter name="[contactURI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+    <parameter name="[RecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route"/>  
+    <parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.StatusCode"/>
+    <parameter name="[SDPMediaConnectionAddress0]" operation="protocol.setFromMessage" value="content.Sdp.Connection.Address"/>
+    <parameter name="[SDPMediaPort0]" operation="protocol.setFromMessage" value="content.Sdp.Media.Port"/>             
+  </receiveMessageSIP>
+
+   <parameter name="[Request-URI]" operation="set" value="[contactURI]"/>
+    <parameter name="[Route]" operation="list.revert" value="[RecordRoute]"/>
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+
+		<parameter name="[UserName]" operation="set" value="[userFrom]"/>		
+		<parameter name="[HA1]" operation="string.digest" value2="MD5" value="[UserName]:[WWWAuthRealm]:[Password]" />
+
+		<parameter name="[Method]" operation="set" value="ACK"/>				
+		<parameter name="[URI]"      operation="set" value="[Request-URI]" />	
+		<parameter name="[HA2]" operation="string.digest" value2="MD5" value="[Method]:[URI]" />
+	
+  	<!--parameter name="[WWWAuthNonce]" operation="set" value="2725ddaf" /-->	
+		<parameter name="[NonceCount]" operation="set" value="00000001" />
+		<parameter name="[CNonce]"     operation="set" value="11fc4a0e" />
+  		<!--parameter name="[AuthResponse]" operation="string.digest" value2="MD5" value="[HA1]:[WWWAuthNonce]:[NonceCount]:[CNonce]:[WWWAuthQop]:[HA2]" /-->
+			<parameter name="[AuthResponse]" operation="string.digest" value2="MD5" value="[HA1]:[WWWAuthNonce]:[HA2]" />
+      	
+  <sendMessageSIP name="Send ACK" listenpoint="listenpointUAC">
+<![CDATA[ACK [Request-URI] SIP/2.0
+CSeq: [lastCseqNumber] ACK
+Via: SIP/2.0/[transportResponse] [LocalAddress];branch=z9hG4bK[newBranchId]
+From: [From]
+Call-ID: [CallId]
+To: [To]
+Contact: <sip:[userFrom]@[LocalAddress]>
+Proxy-Authorization: Digest username="[userFrom]", realm="[WWWAuthRealm]", nonce="[WWWAuthNonce]", uri="[URI]" algorithm=md5, response="[AuthResponse]"
+Allow: INVITE, ACK, OPTIONS, BYE, CANCEL, NOTIFY, REFER, MESSAGE
+Content-Length: 0
+Max-Forwards: 70
+]]>
+  </sendMessageSIP>
+
+	<parameter name="[testcase:payloadList]" operation="set" value="[[fileWave(0)]]"/>
+	<parameter name="[payloadType]" operation="set" value="[[fileWave(1)]]"/>
+	<parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>
+	<parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/>
+	<parameter name="[nbPacket]" operation="number.divide" value="[nbPacket]" value2="2"/>
+	
+	<sendMessageRTPFLOW listenpoint="listenpointUAC" remoteHost="[SDPMediaConnectionAddress0(0)]" remotePort="[SDPMediaPort0]">    
+	    <flow packetNumber="[nbPacket]" bitRate="[bitRate]" synchronous="true" packetLost="0">
+	    <header ssrc="875" payloadType="[payloadType]" seqnum="10" timestamp="200"/>
+	    <payload format="binary">[payloadList]</payload>
+	    </flow>
+	</sendMessageRTPFLOW>
+
+  <pause name="call duration" seconds="0"/>
+
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>
+  <parameter name="[newCseq]" operation="number.add" value="[newCseq]" value2="1"/>
+    
+  <sendMessageSIP name="Send BYE" listenpoint="listenpointUAC">
+<![CDATA[BYE [Request-URI] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [newCseq] BYE
+Contact: <sip:[userFrom]@[LocalAddress]>
+Route: [Route]
+Via: SIP/2.0/[transportResponse] [LocalAddress];branch=z9hG4bK[newBranchId]
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Max-Forwards: 70
+Content-Length: 0
+]]>
+  </sendMessageSIP>
+                
+  <receiveMessageSIP name="Wait 200 OK" request="false" type="BYE" result="200">
+  </receiveMessageSIP>
+
+  <parameter name="[userName]" operation="set" value="[userFrom]"/>
+  <parameter name="[Password]" operation="set" value="[passwordFrom]"/>
+  <parameter name="[Expires]" operation="set" value="0"/>
+  <parameter name="[listenpoint]" operation="set" value="listenpointUAC"/>	
+  &register;
+
+   <removeListenpointSIP name="listenpointUAC"/>
+
+</scenario>

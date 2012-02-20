@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE library [
+<!ENTITY libS_Service_Server_Simulator			SYSTEM "../library/libS_Service_Server_Simulator.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph1		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph1.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph2		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph2.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph3		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph3.xml">
+<!ENTITY libS_Proxy_Server				SYSTEM "../library/libS_Proxy_Server.xml">
+]>
+
+<scenario>
+
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_Port]" operation="set" value="[SBC_Port_1001]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localPort="[provider_Port]"/>
+
+
+
+<!--
+Server proxy to reroute the message
+-->
+
+
+<parameter name="[newRoute_IP]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[newRoute_Port]" operation="set" value="[Provider_1006]"/>
+<parameter name="[called_Subscriber]" operation="set" value="[subscriber_1006]"/>
+
+<!-- Proxy the INVITE -->
+&libS_Proxy_Server;
+
+<!-- Sauvegarde des parametres de l'INVITE Initial -->
+
+<parameter name="[ancien_lastSIPMethod]" operation="set" value="[lastSIPMethod]"/>	
+<parameter name="[ancien_lastIsRequest]" operation="set" value="[lastIsRequest]"/>  		
+<parameter name="[ancien_lastResult]" operation="set" value="[lastResult]"/>  				
+<parameter name="[ancien_lastFirstline]" operation="set" value="[lastFirstline]"/>  	
+<parameter name="[ancien_lastVia]" operation="set" value="[lastVia]"/>
+<parameter name="[ancien_lastRoute]" operation="set" value="[lastRoute]"/>		  		  	
+<parameter name="[ancien_lastRecord-Route]" operation="set" value="[lastRecord-Route]"/>		  	
+<parameter name="[ancien_lastContact]" operation="set" value="[lastContact]"/>		  		  	
+<parameter name="[ancien_lastMax-Forwards]" operation="set" value="[lastMax-Forwards]"/>		  		  	
+<parameter name="[ancien_lastHeaderOthers]" operation="set" value="[lastHeaderOthers]"/>		  		  		  	
+<parameter name="[ancien_lastContent]" operation="set" value="[lastContent]"/>
+<parameter name="[ancien_lastTo]" operation="set" value="[lastTo]"/>  	
+<parameter name="[ancien_lastFrom]" operation="set" value="[lastFrom]"/>  	
+<parameter name="[ancien_lastCallId]" operation="set" value="[lastCallId]"/>		  		  	
+<parameter name="[ancien_lastCSeq]" operation="set" value="[lastCSeq]"/>
+<parameter name="[ancien_lastCSeqNumber]" operation="set" value="[lastCSeqNumber]"/>
+
+
+
+
+<!-- Filtrage du 100 -->
+&libS_Proxy_Server;
+<!-- Proxy du 180 -->
+&libS_Proxy_Server;
+
+
+
+<!-- Envoi 181 call is being forwarded a subscriber_1001 -->
+
+<!-- PAS DE 181 SUR Les TRaces FT
+<sendResponseSIP name="Send 181 Call Is Being Forwarded">
+<![CDATA[SIP/2.0 181 Call Is Being Forwarded
+To: [ancien_lastTo]
+From: [ancien_lastFrom]
+Via: [ancien_lastVia]
+Call-ID: [ancien_lastCallId]
+CSeq: [ancien_lastCSeq]
+Contact: <sip:[ipAddressSip]:[Provider_1000]>
+Max-Forwards: 70
+User-Agent: XMLLoader
+Content-Length: 0
+]]></sendResponseSIP>
+
+<log level="3">Balise apres 181</log>
+-->
+
+<!-- Envoi du CANCEL a subscriber_1006 -->
+
+<pause name="pause"     seconds="5"  state="true"/>
+
+<if>
+<condition>
+<test parameter="[3_5_3_Rallonge_CANCEL_Tempo_only_for_TOKAY]" condition="exists" />	  		  		    		  		  	
+</condition>
+<then>
+<pause name="pause"     seconds="175"  state="true"/>
+</then></if>
+
+<sendRequestSIP name="CANCEL" providerName="[provider_Name]">
+
+<![CDATA[CANCEL sip:[subscriber_1000]@[domainName] SIP/2.0
+To: [lastTo]
+From: [lastFrom]
+Via: SIP/2.0/UDP [ipAddressSip]:[SBC_Port_1001];branch=[newBranchId]
+Call-ID: [lastCallId]
+CSeq: [ancien_lastCSeqNumber] CANCEL
+Route: <sip:[subscriber_1006]@[ipAddressSip]:[Provider_1006];lr>  
+Max-Forwards: 70
+Contact: <sip:[subscriber_1001]@[ipAddressSip]:[Provider_1001]>
+User-Agent: XMLLoader
+Content-Length: 0
+]]></sendRequestSIP>
+
+<log level="3">Balise apres Cancel</log>
+
+<!-- Attente du 200 ok de subscriber_1000 -->
+
+<receiveResponseSIP name="Wait 200 OK" providerName="[provider_Name]" method="CANCEL" result="200">
+</receiveResponseSIP>
+
+<log level="3">Balise apres le 200 ok du CANCEL</log>
+
+<receiveResponseSIP name="Wait 487 OK" providerName="[provider_Name]" method="INVITE" result="487">
+</receiveResponseSIP>
+
+<log level="3">Balise apres le 487</log>
+
+<!-- 
+|
+|
+|
+Envoi de l'invite cette fois-ci a subscriber_1001 
+|
+|
+|
+-->
+
+<parameter name="[newRoute_IP]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[newRoute_Port]" operation="set" value="[Provider_1007]"/>
+<parameter name="[called_Subscriber]" operation="set" value="[subscriber_1007]"/>
+
+<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>   
+	
+
+<sendRequestSIP name="proxy_SIP_request" providerName="[provider_Name]">		
+<![CDATA[
+[ancien_lastFirstline]
+To: [ancien_lastTo]
+From: [ancien_lastFrom]
+Call-ID: [ancien_lastCallId]
+CSeq: [ancien_lastCSeq]
+Via: SIP/2.0/UDP [ipAddressSip]:[provider_Port];branch=z9hG4bK[newBranchId]
+Via: [ancien_lastVia]
+Route: <sip:[called_Subscriber]@[newRoute_IP]:[newRoute_Port];lr> 
+Contact: [ancien_lastContact]
+Max-Forwards: [ancien_lastMax-Forwards]
+[ancien_lastHeaderOthers]
+[ancien_lastContent]]]></sendRequestSIP>	
+
+<!-- Non Proxy du 100 -->
+&libS_Proxy_Server;
+<log level="3">Balise SWE: 100  recu </log>
+<!-- Proxy du 180 -->
+<parameter name="[expected_Scenario]" operation="set" value="NOT_PROXY_THE_180" />
+&libS_Proxy_Server;
+<log level="3">Balise SWE: 180  recu </log>
+<!-- Proxy the 200 ok -->
+<log level="3">Balise SWE: 200 Ok  recu </log>
+&libS_Proxy_Server;
+<!-- Proxy the ACK -->
+<log level="3">Balise SWE: ACK recu </log>
+&libS_Proxy_Server;
+<!-- Proxy the BYE Ok -->
+<log level="3">Balise SWE: BYE  recu </log>
+&libS_Proxy_Server;
+<!-- Proxy the 200 Ok -->
+<log level="3">Balise SWE: 200 ok  recu </log>
+&libS_Proxy_Server;
+
+<finally><closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/></finally>
+
+</scenario>

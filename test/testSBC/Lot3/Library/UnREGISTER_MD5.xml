@@ -1,0 +1,112 @@
+<!--
+To use this part of XML code in a scenario,
+- input parameters must be defined and setted locally (by the caller scenario).
+- output parameters may be used in the scenario after the "call".
+
+Input parameters :
+- [Request-URI]  : The Request-URI names the domain of the location service for which the registration is meant (for example, "sip:chicago.com").  The "userinfo" and "@" components of the SIP URI MUST NOT be present.
+- [To]           : value of To           header field.
+- [From]         : value of From         header field without tag parameter.
+- [FromTag]      : value of From tag parameter.
+- [Call-ID]      : value of Call-ID      header field.
+- [CSeq]         : value of CSeq         header field.
+- [Max-Forwards] : value of Max-Forwards header field.
+- [Via]          : value of Via          header field without branch parameter.
+- [branchId]     : value of branch parameter.
+- [AuthUserName] : value of username  Authorization header field parameter.
+- [AuthRealm]    : value of realm     Authorization header field parameter.
+- [AuthNonce]    : value of nonce     Authorization header field parameter.
+- [AuthAlgorithm]: value of algorithm Authorization header field parameter.
+- [AuthOpaque]   : value of opaque    Authorization header field parameter.
+- [AuthURI]      : value of uri       Authorization header field parameter.
+- [AuthResponse] : value of response  Authorization header field parameter.
+- [AuthCnonce]   : value of cnonce    Authorization header field parameter.
+- [AuthQop]      : value of qop       Authorization header field parameter.
+- [AuthNc]       : value of nc        Authorization header field parameter.
+- [UserName]     : username-value  for calculating the Digest response directive.
+- [Password]     : user's password for calculating the Digest response directive.
+- [Request-URI]  : Request-URI     for calculating the Digest response directive.
+
+Output parameters :
+None.
+
+-->
+  <sendRequestSIP name="Send UNREGISTER">
+<![CDATA[
+REGISTER [Request-URI] SIP/2.0
+To: [To]
+From: [From];tag=[FromTag]
+Call-ID:[Call-ID]
+CSeq: [CSeq] REGISTER
+Contact:*
+Expires:0
+Max-Forwards: [Max-Forwards]
+Via: [Via];branch=[magicCookie][branchId]
+Authorization: Digest username=[AuthUserName], realm=[AuthRealm], nonce=[AuthNonce], algorithm=[AuthAlgorithm], opaque=[AuthOpaque], uri=[AuthURI], response=[AuthResponse], cnonce=[AuthCnonce], qop=[AuthQop], nc=[AuthNc]
+Content-Length: 0
+]]>
+  </sendRequestSIP>
+
+  <label name="UNREGISTER"/>
+  <receiveResponseSIP name="receive UNREGISTER response" method="REGISTER">
+    <parameter name="[StatusCode]" operation="setFromMessage" value="firstline:StatusCode"/>        
+
+    <parameter name="[WWWAuthRealm]" operation="setFromMessage" value="header:WWW-Authenticate:Parameter:realm"/>                                                                   
+    <parameter name="[WWWAuthNonce]" operation="setFromMessage" value="header:WWW-Authenticate:Parameter:nonce"/>                                   
+    <parameter name="[WWWAuthQop]"   operation="setFromMessage" value="header:WWW-Authenticate:Parameter:qop"/>
+  </receiveResponseSIP>
+
+  <if>
+    <condition>
+      <test parameter="[StatusCode]" condition="equals" value="401" />
+    </condition>
+    <then>  
+      <parameter name="[WWWAuthRealm401]" operation="set" value="[WWWAuthRealm]" />
+      <parameter name="[WWWAuthNonce401]" operation="set" value="[WWWAuthNonce]" />
+      <parameter name="[WWWAuthQop401]"   operation="set" value="[WWWAuthQop]" />
+
+      <parameter name="[Method]"     operation="set" value="REGISTER"/>                           
+      <parameter name="[NonceCount]" operation="set" value="00000001" />
+      <parameter name="[CNonce]"     operation="set" value='"11fc4a68"'/>
+
+      <parameter name="[HA1]"          operation="digest" value="[UserName]:[WWWAuthRealm401]:[Password]" value2="MD5" />
+      <parameter name="[HA2]"          operation="digest" value="[Method]:[Request-URI]" value2="MD5" />
+      <parameter name="[AuthResponse]" operation="digest" value="[HA1]:[WWWAuthNonce401]:[NonceCount]:[CNonce]:[WWWAuthQop401]:[HA2]" value2="MD5" />
+
+
+      <parameter name="[newFromTag]"  operation="identifier" value="newString" value2="10"/>
+      <parameter name="[newCSeq]"     operation="add"        value="[CSeq]"    value2="1"/>      
+      <parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+      <sendRequestSIP name="Send UNREGISTER">
+<![CDATA[               
+REGISTER [Request-URI] SIP/2.0
+To: [To]
+From: [From];tag=[newFromTag]
+Call-ID:[Call-ID]
+CSeq: [newCSeq] REGISTER
+Contact:*
+Expires:0
+Max-Forwards: [Max-Forwards]
+Via: [Via];branch=[magicCookie][newBranchId]
+Authorization: Digest username=[AuthUserName], realm="[WWWAuthRealm401]", nonce="[WWWAuthNonce401]", algorithm=[AuthAlgorithm], opaque=[AuthOpaque], uri=[AuthURI], response="[AuthResponse]", cnonce=[CNonce], qop=[WWWAuthQop401], nc=[NonceCount]
+Content-Length: 0
+]]>
+      </sendRequestSIP>       
+      <goto label="UNREGISTER" name="loop : wait 200 OK"  state="true"/>
+    </then>
+    <else>
+      <if>
+        <condition>
+          <test parameter="[StatusCode]" condition="equals" value="200" />
+        </condition>
+        <then>
+          <!-- Continue -->
+        </then>
+        <else>
+          <goto label="UNREGISTER" name="loop : wait 200 OK"  state="true"/>
+        </else>
+      </if> 
+    </else>
+  </if>
+

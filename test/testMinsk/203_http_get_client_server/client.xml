@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+	<sendMessageHTTP name="Send GET" remoteURL="[proxyURL]">
+<![CDATA[
+GET http://[httpServerURL]/web/guest/home/ HTTP/1.1
+Accept: image/gif, image/jpeg, image/pjpeg, image/pjpeg, application/x-shockwave-flash, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, application/xaml+xml, application/x-ms-xbap, application/x-ms-application, */*
+Accept-Language: fr
+User-Agent: IMSloader 5.1
+Accept-Encoding: gzip, deflate
+Proxy-Connection: Keep-Alive
+Host: [httpServerURL]
+]]>
+	</sendMessageHTTP>
+		
+	<receiveMessageHTTP name="Send 200 OK" result="200">
+	</receiveMessageHTTP>
+</scenario> 

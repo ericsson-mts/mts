@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ccxml version="1.0">
+
+  <script><![CDATA[
+  var re_userphone = new RegExp( "sip:([^@]*)@([^;]*)(;[\d\w\s]*=[\d\w\s]*)*(;user=phone){1}" );
+  var re_phone = new RegExp( "tel:([^;]*)" );
+  var re_sipuri = new RegExp( "(<)?sip:([^@]*)@([^;>]*)");
+  var re_callModeVideo = new RegExp( "callmode=video" );
+  var re_callModeVoice = new RegExp( "callmode=voice" );
+  
+  function getCallMode( uri ) {
+    var m = re_callModeVideo.exec( uri );
+        
+    if (m == null) {
+    	m = re_callModeVoice.exec( uri );
+    	if (m == null)
+        	return '';
+        else
+      		return ';' + m[0];
+    } else {
+      return ';' + m[0];
+    }
+  }
+
+  function convertUri( uri ) {
+    var m = re_userphone.exec( uri );
+    if (m == null) {
+      	m = re_phone.exec( uri );
+      	if (m == null) {
+        	m = re_sipuri.exec( uri );
+        	if (m == null) {
+            		return uri;
+            	}
+        	else{
+            		return 'sip:' + m[2] + '@' + m[3] + getCallMode( uri ); 
+        	} 
+      	} 
+      	else {
+        	return 'tel:' + m[1] + getCallMode( uri );    
+      	}
+    } 
+    else {
+      return 'tel:' + m[1] + getCallMode( uri );
+    }
+  }
+
+  ]]>
+  </script>
+
+  <var name="callingparty"  expr="''" />
+  <var name="in_connectionid"  expr="-1" />
+  <var name="out_connectionid" expr="-1" />
+  <var name="dialogid" expr="-1" />
+  <var name="result"           expr="-1" />
+  <var name="state" expr="'init'" />
+  <var name="in_vxmlConnectionid"  expr="-1" />
+  <var name="bridge_uri" expr="''" />
+  <var name="bridge_aai" expr="''" />
+
+  <eventprocessor statevariable="state">
+ 
+     <transition state="init" event="connection.alerting" name="evt">
+      	<log expr="'Session started : alerting received (' + evt.connectionid + ') protocol(' + evt.protocol + ') local(' + evt.connection.local + ') remote (' + evt.connection.remote + ')'"/>
+		<assign name="in_connectionid" expr="evt.connectionid"/>
+		<assign name="callingparty" expr="evt.connection.remote"/>
+		<log expr="'Transfer create call'"/>
+		<assign name="in_vxmlConnectionid" expr="evt.connectionid"/>
+		<assign name="state" expr="'CallingDest'" />
+	    <createcall dest="'sip:dest@172.16.21.32:7070'" callerid="callingparty" timeout="'60s'" connectionid="out_connectionid" hints="{setdisplay:'Voxpilot 2310'}"/>
+		<!--createcall dest="'sip:111@172.16.24.101:5060'" callerid="callingparty" timeout="'60s'" connectionid="out_connectionid" hints="{setdisplay:'Voxpilot 2310'}"/-->
+		<!--createcall dest="'tel:9152'" callerid="callingparty" timeout="'360s'" connectionid="out_connectionid" hints="{setdisplay:'Voxpilot 2310'}"/-->
+        <log expr="'Bridge transfer : create call out_connectionid = ' + out_connectionid"/>
+    </transition>
+
+    <!-- Accept the incoming call -->
+		<transition state="CallingDest" event="connection.connected" name="evt">
+		<log expr="'Accept the incoming call'"/>
+		<assign name="state" expr="'AcceptIncoming'" />
+		<accept connectionid="in_connectionid"/>
+    </transition>
+
+    <!-- Join -->
+		<transition state="AcceptIncoming" event="connection.connected" name="evt">
+		<log expr="'Join ' + in_connectionid + ' / ' + out_connectionid"/>
+		<assign name="state" expr="'Joining'" />
+		<join id1="in_connectionid" id2="out_connectionid"/>       
+    </transition>
+
+    <transition state='Joining' event="conference.joined" name="evt">
+      	<log expr="in_connectionid + ' / ' + out_connectionid + 'joined'"/>
+		<assign name="state" expr="'Joined'" />
+    </transition> 
+
+    <transition event="connection.disconnected" name="evt">
+      <if cond="evt.connectionid == in_connectionid">
+		<log expr="in_connectionid + 'hung up'"/>
+		<disconnect connectionid="out_connectionid"/>
+      <else/>
+		<log expr="out_connectionid + 'hung up'"/>
+		<disconnect connectionid="in_connectionid"/>
+      </if>
+      <exit/>
+    </transition>	
+    
+    <transition event="connection.failed" name="evt">         
+	  <if cond="evt.connectionid == in_connectionid">
+		<log expr="in_connectionid + 'end'"/>
+		<disconnect connectionid="out_connectionid"/>
+      <else/>
+		<log expr="out_connectionid + 'end'"/>
+		<disconnect connectionid="in_connectionid"/>
+    </if>
+	  <exit/>
+    </transition>    
+	
+  </eventprocessor>
+</ccxml>
+
+

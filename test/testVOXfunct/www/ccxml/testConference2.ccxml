@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+ 
+<ccxml version="1.0" xmlns="http://www.w3.org/2002/09/ccxml">
+  <var name="in_connectionid" expr="''" /> 
+  <var name="confid" expr="''" /> 
+  <var name="out_connectionid2" expr="''" /> 
+  <var name="state" expr="'init'" />
+ 
+<eventprocessor statevariable="state">
+    <transition state="init" event="connection.alerting" name="evt">
+      	<log expr="'Session started : alerting received (' + evt.connectionid + ') callmode(' + evt.connection.callmode + ') protocol(' + evt.protocol + ') local(' + evt.connection.local + ') remote (' + evt.connection.remote + ')'"/>
+		<assign name="in_connectionid" expr="evt.connectionid"/>
+       <accept connectionid="in_connectionid"/>
+    </transition>
+
+<transition state="init" event="connection.connected" name="evt" cond="true">
+	<log label="ccxml" expr="'connection.connected :' + evt.connectionid + ' create a conference now'" />
+	<createconference conferenceid="confid" confname="'maconference'" reservedtalkers="'2'" reservedlisteners="'0'" />
+</transition>
+  
+<transition event="conference.created" name="evt" cond="true">
+	<log label="ccxml" expr="'conference.created :' + evt.conferenceid" />
+  	<assign name="state" expr="'confok'"/>
+    <join id1="in_connectionid" id2="confid" duplex="'half'" />
+</transition>
+
+<transition event="error.conference.create" name="evt">
+	<exit /> 
+</transition>
+
+<transition event="conference.destroyed" name="evt" cond="true">
+	<log label="ccxml" expr="'conference.destroyed :' + evt.conferenceid" />
+  	<exit /> 
+</transition>
+
+<transition event="conference.joined" name="evt" cond="true">
+	<log label="ccxml" expr="'conference.joined :' + evt.id1 + ' to ' + evt.id2" />
+</transition>
+
+<transition event="connection.disconnected" name="evt" cond="true">
+	<log label="ccxml" expr="'conference.disconnected :' + evt.connectionid" />
+  	<!--destroyconference conferenceid="confid" /-->
+  	<exit /> 
+</transition>
+
+<transition event="conference.unjoined" name="evt" cond="true">
+	<log label="ccxml" expr="'conference.unjoined of ' + evt.id1 + ' and ' + evt.id2" />
+</transition>
+
+</eventprocessor>
+</ccxml>

@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario WebAS bouchon pour faire les tests-->
+<scenario>
+   
+    <!-- mise en ecoute en conf du port 1080 pour les connections du browser web PC-->
+    
+<while>
+<condition/>
+<do>
+
+    <receiveMessageHTTP name="Receive HTTP request" timeout="0">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message:transactionId"/>
+        <parameter name="[cmd]" operation="protocol.setFromMessage" value="firstline:method"/>
+        <parameter name="[URI]" operation="protocol.setFromMessage" value="firstline:uri"/>
+        <parameter name="[content_type]" operation="protocol.setFromMessage" value="header:Content-Type"/>
+        <parameter name="[etag]" operation="protocol.setFromMessage" value="header:If-None-Match"/>
+        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+    </receiveMessageHTTP>
+    
+    <parameter name="[handled]" operation="set" value="false"/>
+    
+    <if><!-- requete initiale du browser -->
+    <condition>
+        <and>
+            <test parameter="[URI]" condition="string.contains" value="/WebASC2C/call.create.do?webASC2CClientTypeId=undef"/>
+            <test parameter="[cmd]" condition="string.equals" value="GET"/>
+        </and>
+    </condition>
+    <then>
+        <!-- generation d'un cookie-->
+        <parameter name="[cookie]" operation="string.random" value="32"/>
+        <parameter name="[cookie2]" operation="string.random" value="32"/>
+        
+        <!-- envoi de la reponse au browser -->
+        <sendMessageHTTP name="Browser Init reponse" transactionId="[transactionId]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Wed, 15 Apr 2009 09:03:00 GMT
+Server: Apache/2.2.3 (Red Hat)
+Set-Cookie: JSESSIONID=[cookie]; Path=/WebASC2C
+Content-Language: fr
+Content-Length: 2137
+Connection: close
+Content-Type: text/html;charset=ISO-8859-1
+Set-Cookie: BIGipServerpool_vs_http_c2pa=[cookie2]; path=/
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+.
+ 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+
+.<head>
+..<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" /> 
+..<title>Click to Phone</title>
+..<!--[if !IE]><!-->
+....<link rel="stylesheet" href="common/style.css" media="screen" type="text/css" />
+...<!--<![endif]--> 
+..<!--[if lte IE 6]>
+...<link rel="stylesheet" href="common/style_ie6.css" media="screen" type="text/css" /> 
+..<![endif]-->
+..<script type="text/javascript" src="resources/dojo/dojo.js"></script>
+..<script type="text/javascript" src="js/c2cNotif.js"></script>
+.</head>
+.
+.<body>
+..<div id="bloc">
+...<input id="sasId" type="hidden" value="app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51"/>
+...<div id="interieur">
+....<img src="images/win_logo.gif" alt="Logo Orange Click to Phone" />
+....<div id="etapes">
+.....<div id="numeros">
+......<img src="images/state_1_B.gif" alt="Etape 1 active" />
+......<img src="images/state_2_A.gif" alt="Etape 2 inactive" />
+......<img src="images/state_3_A.gif" alt="Etape 3 inactive" />
+.....</div>
+.....<div id="titre">
+......<h1>Pr.paration de l'appel</h1>
+.....</div>
+....</div>
+....<div id="suivi">
+.....<p id="appel">Appel vers <strong>08 75 63 16 40</strong></p>
+.....<img src="images/phones_00.gif" alt="T.l.phones pr.ts" id="visuel" />
+.....<div id="msgVide">
+......<p id="txtVide">
+......
+......
+......</p>
+.....</div>
+....</div>
+....<div id="releaseFormID">
+.....<form name="releaseForm" method="post" action="call.release.do?sasId=app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51">
+......<div id="bouton">
+.......<img id="button" src="images/bt_cancel_R.gif" 
+.......alt="Annuler" 
+.......title="Annuler"
+.......onmousedown="document.images['button'].src='images/bt_cancel_E.gif'"
+.......onmouseup="document.images['button'].src='images/bt_cancel_R.gif'"
+.......onclick="document.forms['releaseForm'].submit()" />....
+......</div>
+.....</form>
+....</div>
+...</div>
+..</div>..
+.</body>
+</html>
+]]>
+        </sendMessageHTTP>
+        <parameter name="[handled]" operation="set" value="true"/>
+    </then>
+    </if>
+
+    <if><!-- requete GET -->
+    <condition>
+        <and>
+        <or>
+            <test parameter="[URI]" condition="string.contains" value="/common"/>
+            <test parameter="[URI]" condition="string.contains" value="/resources"/>
+            <test parameter="[URI]" condition="string.contains" value="/js"/>
+            <test parameter="[URI]" condition="string.contains" value="/images"/>
+            <test parameter="[URI]" condition="string.contains" value="/favicon.ico"/>
+        </or>
+            <test parameter="[cmd]" condition="string.equals" value="GET"/>
+        </and>
+    </condition>
+    <then>
+        <sendMessageHTTP name="GET response" transactionId="[transactionId]">
+<![CDATA[
+HTTP/1.1 304 Not Modified
+Date: Wed, 15 Apr 2009 09:03:01 GMT
+Server: Apache/2.2.3 (Red Hat)
+Connection: close
+ETag: [etag]
+]]>
+        </sendMessageHTTP>
+        <parameter name="[handled]" operation="set" value="true"/>
+    </then>
+    </if>
+    
+    <if><!-- requete POST -->
+    <condition>
+        <test parameter="[cmd]" condition="string.equals" value="POST"/>
+    </condition>
+    <then>
+        <if><!-- first POST -->
+        <condition>
+            <and>
+                <test parameter="[content_type]" condition="string.equals" value="application/x-www-form-urlencoded"/>
+                <test parameter="[URI]" condition="string.equals" value="/WebASC2C/cometd/c2cNotifService/"/>
+            </and>
+        </condition>
+        <then>        
+            <!-- generation d'un cookie-->
+            <parameter name="[bayeux]" operation="string.random" value="20"/>
+        
+            <sendMessageHTTP name="POST 1" transactionId="[transactionId]" delay="[simuIfBrowsertimePOST1]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Wed, 15 Apr 2009 09:03:02 GMT
+Server: Apache/2.2.3 (Red Hat)
+Set-Cookie: BAYEUX_BROWSER=fffffffffffffffft[bayeux]-1; Path=/
+Content-Length: 255
+Connection: close
+Content-Type: text/json;charset=utf-8
+
+[{"minimumVersion":"0.9","supportedConnectionTypes":["long-polling","callback-polling"],"clientId":"xx01ai5vpx3aaa19w8","channel":"/meta/handshake","successful":true,"id":"0","version":"1.0","advice":{"reconnect":"retry","interval":0,"timeout":240000}}]
+]]>
+            </sendMessageHTTP>
+            <parameter name="[handled]" operation="set" value="true"/>
+        </then>
+        </if>
+        
+        <if><!-- second POST-->
+        <condition>
+            <test parameter="[content]" condition="string.contains" value="[{&quot;channel&quot;:&quot;/meta/connect&quot;,&quot;clientId&quot;:&quot;xx01ai5vpx3aaa19w8&quot;,&quot;connectionType&quot;:&quot;long-polling&quot;,&quot;id&quot;:&quot;1&quot;}]"/>
+        </condition>
+        <then>        
+            <sendMessageHTTP name="POST 2" transactionId="[transactionId]" delay="[simuIfBrowsertimePOST2]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Wed, 15 Apr 2009 09:03:02 GMT
+Server: Apache/2.2.3 (Red Hat)
+Content-Length: 119
+Connection: close
+Content-Type: text/json;charset=utf-8
+
+[{"successful":true,"channel":"/meta/connect","id":"1","advice":{"reconnect":"retry","interval":0,"timeout":240000}}]
+]]>
+            </sendMessageHTTP>
+            <parameter name="[handled]" operation="set" value="true"/>
+        </then>
+        </if>
+        
+        <if><!-- troisieme POST-->
+        <condition>
+            <test parameter="[content]" condition="string.contains" value="[{&quot;channel&quot;:&quot;/meta/subscribe&quot;,&quot;subscription&quot;:&quot;/c2cNotif/app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51&quot;,&quot;clientId&quot;:&quot;xx01ai5vpx3aaa19w8&quot;,&quot;id&quot;:&quot;2&quot;}]"/>
+        </condition>
+        <then>        
+            <sendMessageHTTP name="POST 3" transactionId="[transactionId]" delay="[simuIfBrowsertimePOST3]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Wed, 15 Apr 2009 09:03:02 GMT
+Server: Apache/2.2.3 (Red Hat)
+Content-Length: 170
+Connection: close
+Content-Type: text/json;charset=utf-8
+
+[{"subscription":"/c2cNotif/app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51","successful":true,"channel":"/meta/subscribe","id":"2"}]
+]]>
+            </sendMessageHTTP>
+            <parameter name="[handled]" operation="set" value="true"/>
+        </then>
+        </if>
+        
+        <if><!-- quatrieme POST-->
+        <condition>
+            <test parameter="[content]" condition="string.contains" value="[{&quot;channel&quot;:&quot;/meta/connect&quot;,&quot;connectionType&quot;:&quot;long-polling&quot;,&quot;clientId&quot;:&quot;xx01ai5vpx3aaa19w8&quot;,&quot;id&quot;:&quot;3&quot;}]"/>
+        </condition>
+        <then>        
+            <sendMessageHTTP name="POST 4" transactionId="[transactionId]" delay="[simuIfBrowsertimePOST4]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Wed, 15 Apr 2009 09:03:02 GMT
+Server: Apache/2.2.3 (Red Hat)
+Content-Length: 1067
+Connection: close
+Content-Type: text/json;charset=utf-8
+
+[{"channel":"/c2cNotif/app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51","id":"toq68p","data":{"totalTime":"","state2ImageAlt":"Etape 2 active","releaseFormButton":"images/bt_cancel_R.gif","calleeURI":"08 75 63 16 40","releaseFormAction":"call.release.do?sasId=app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51","state3ImageAlt":"Etape 3 inactive","connectionImage":"images/phones_02.gif","headerMessage":"Validation de l'appel","messageDisplayedOrTotalTime":"Appuyez sur # sur votre t..l..phone","connectionImageAlt":"Faites le # sur votre t..l..phone","releaseFormButtonAlt":"Annuler","sasId":"app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51","state3Image":"images/state_3_A.gif","releaseFormButtonDown":"images/bt_cancel_E.gif","divMsg":"msgAppel","divTxt":"txtAppel","state1ImageAlt":"Etape 1 finie","state2Image":"images/state_2_B.gif","labelCallee":"Appel vers ","state1Image":"images/state_1_C.gif"}},{"successful":true,"channel":"/meta/connect","id":"3"}]
+]]>
+            </sendMessageHTTP>
+            <parameter name="[handled]" operation="set" value="true"/>
+        </then>
+        </if>
+        
+        <if><!-- cinquieme POST-->
+        <condition>
+            <test parameter="[content]" condition="string.contains" value="[{&quot;channel&quot;:&quot;/meta/connect&quot;,&quot;connectionType&quot;:&quot;long-polling&quot;,&quot;clientId&quot;:&quot;xx01ai5vpx3aaa19w8&quot;,&quot;id&quot;:&quot;4&quot;}]"/>
+        </condition>
+        <then>        
+            <sendMessageHTTP name="POST 5" transactionId="[transactionId]" delay="[simuIfBrowsertimePOST5]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Wed, 15 Apr 2009 09:03:03 GMT
+Server: Apache/2.2.3 (Red Hat)
+Content-Length: 1064
+Connection: close
+Content-Type: text/json;charset=utf-8
+
+[{"channel":"/c2cNotif/app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51","id":"toq68p","data":{"totalTime":"","state2ImageAlt":"Etape 2 finie","releaseFormButton":"images/bt_cancel_R.gif","calleeURI":"08 75 63 16 40","releaseFormAction":"call.release.do?sasId=app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51","state3ImageAlt":"Etape 3 active","connectionImage":"images/phones_03.gif","headerMessage":"Appel du num..ro en cours","messageDisplayedOrTotalTime":"Merci de patienter...","connectionImageAlt":"Le t..l..phone de votre correspondant sonne","releaseFormButtonAlt":"Annuler","sasId":"app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51","state3Image":"images/state_3_B.gif","releaseFormButtonDown":"images/bt_cancel_E.gif","divMsg":"msgAppel","divTxt":"txtAppel","state1ImageAlt":"Etape 1 finie","state2Image":"images/state_2_C.gif","labelCallee":"Appel vers ","state1Image":"images/state_1_C.gif"}},{"successful":true,"channel":"/meta/connect","id":"4"}]
+]]>
+            </sendMessageHTTP>
+            <parameter name="[handled]" operation="set" value="true"/>
+        </then>
+        </if>
+        
+        <if><!-- sixieme POST-->
+        <condition>
+            <test parameter="[content]" condition="string.contains" value="[{&quot;channel&quot;:&quot;/meta/connect&quot;,&quot;connectionType&quot;:&quot;long-polling&quot;,&quot;clientId&quot;:&quot;xx01ai5vpx3aaa19w8&quot;,&quot;id&quot;:&quot;5&quot;}]"/>
+        </condition>
+        <then>        
+            <sendMessageHTTP name="POST 6" transactionId="[transactionId]" delay="[simuIfBrowsertimePOST6]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Wed, 15 Apr 2009 09:03:10 GMT
+Server: Apache/2.2.3 (Red Hat)
+Content-Length: 1071
+Connection: close
+Content-Type: text/json;charset=utf-8
+
+[{"data":{"totalTime":"","state2ImageAlt":"Etape 2 finie","releaseFormButton":"images/bt_hangDown_R.gif","calleeURI":"08 75 63 16 40","releaseFormAction":"call.release.do?sasId=app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51","state3ImageAlt":"Etape 3 finie","connectionImage":"images/phones_04.gif","headerMessage":"Communication en cours","messageDisplayedOrTotalTime":"Communication en cours.","connectionImageAlt":"La communication est ..tablie","releaseFormButtonAlt":"Raccrocher","sasId":"app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51","state3Image":"images/state_3_C.gif","releaseFormButtonDown":"images/bt_hangDown_E.gif","divMsg":"msgCommunication","divTxt":"txtCommunication","state1ImageAlt":"Etape 1 finie","state2Image":"images/state_2_C.gif","labelCallee":"Appel vers ","state1Image":"images/state_1_C.gif"},"channel":"/c2cNotif/app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51","id":"tvlq6o"},{"successful":true,"channel":"/meta/connect","id":"5"}]
+]]>
+            </sendMessageHTTP>
+            <parameter name="[handled]" operation="set" value="true"/>
+        </then>
+        </if>
+        
+        <if><!-- septieme POST-->
+        <condition>
+            <test parameter="[content]" condition="string.contains" value="[{&quot;channel&quot;:&quot;/meta/connect&quot;,&quot;connectionType&quot;:&quot;long-polling&quot;,&quot;clientId&quot;:&quot;xx01ai5vpx3aaa19w8&quot;,&quot;id&quot;:&quot;6&quot;}]"/>
+        </condition>
+        <then>        
+            <sendMessageHTTP name="POST 7" transactionId="[transactionId]" delay="[simuIfBrowsertimePOST7]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Wed, 15 Apr 2009 09:03:13 GMT
+Server: Apache/2.2.3 (Red Hat)
+Content-Length: 58
+Connection: close
+Content-Type: text/json;charset=utf-8
+
+[{"successful":true,"channel":"/meta/connect","id":"6"}]
+]]>
+            </sendMessageHTTP>
+            <parameter name="[handled]" operation="set" value="true"/>
+        </then>
+        </if>
+        
+        <!-- to comment to not send intermediate post during call (usefull for long call) -->
+        <!-- change id number of following post when comment this part -->
+        <if>
+        <condition>
+            <test parameter="[content]" condition="string.contains" value="[{&quot;channel&quot;:&quot;/meta/connect&quot;,&quot;connectionType&quot;:&quot;long-polling&quot;,&quot;clientId&quot;:&quot;xx01ai5vpx3aaa19w8&quot;,&quot;id&quot;:&quot;7&quot;}]"/>
+        </condition>
+        <then>        
+            <sendMessageHTTP name="POST long call" transactionId="[transactionId]" delay="50">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Wed, 15 Apr 2009 09:03:13 GMT
+Server: Apache/2.2.3 (Red Hat)
+Content-Length: 58
+Connection: close
+Content-Type: text/json;charset=utf-8
+
+[{"successful":true,"channel":"/meta/connect","id":"7"}]
+]]>
+            </sendMessageHTTP>
+            <parameter name="[handled]" operation="set" value="true"/>
+        </then>
+        </if>
+        
+        <if><!-- huitieme POST-->
+        <condition>
+            <test parameter="[content]" condition="string.contains" value="[{&quot;channel&quot;:&quot;/meta/connect&quot;,&quot;connectionType&quot;:&quot;long-polling&quot;,&quot;clientId&quot;:&quot;xx01ai5vpx3aaa19w8&quot;,&quot;id&quot;:&quot;8&quot;}]"/>
+        </condition>
+        <then>        
+            <sendMessageHTTP name="POST 8" transactionId="[transactionId]" delay="[simuIfBrowsertimePOST8]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Wed, 15 Apr 2009 09:07:13 GMT
+Server: Apache/2.2.3 (Red Hat)
+Content-Length: 1119
+Connection: close
+Content-Type: text/json;charset=utf-8
+
+[{"channel":"/c2cNotif/app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51","id":"toq68p","data":{"totalTime":"Dur..e de l'appel:  6 minute(s) et  3 seconde(s).","state2ImageAlt":"Etape 2 finie","releaseFormButton":"images/bt_close_R.gif","calleeURI":"08 75 63 16 40","releaseFormAction":"call.end.do?sasId=app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51","state3ImageAlt":"Etape 3 finie","connectionImage":"images/phones_off.gif","headerMessage":"Appel termin..","messageDisplayedOrTotalTime":"Dur..e de l'appel:  6 minute(s) et  3 seconde(s).","connectionImageAlt":"Communication termin..e","releaseFormButtonAlt":"Fermer","sasId":"app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51","state3Image":"images/state_3_C.gif","releaseFormButtonDown":"images/bt_close_E.gif","divMsg":"msgCommunication","divTxt":"txtCommunication","state1ImageAlt":"Etape 1 finie","state2Image":"images/state_2_C.gif","labelCallee":"Appel vers ","state1Image":"images/state_1_C.gif"}},{"successful":true,"channel":"/meta/connect","id":"8"}]
+]]>
+            </sendMessageHTTP>
+            <parameter name="[handled]" operation="set" value="true"/>
+        </then>
+        </if>
+        
+        <if><!-- huitieme POST-->
+        <condition>
+            <test parameter="[content]" condition="string.contains" value="[{&quot;channel&quot;:&quot;/meta/connect&quot;,&quot;connectionType&quot;:&quot;long-polling&quot;,&quot;clientId&quot;:&quot;xx01ai5vpx3aaa19w8&quot;,&quot;id&quot;:&quot;9&quot;}]"/>
+        </condition>
+        <then>        
+            <sendMessageHTTP name="POST 8" transactionId="[transactionId]" delay="[simuIfBrowsertimePOST7]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Wed, 15 Apr 2009 09:03:13 GMT
+Server: Apache/2.2.3 (Red Hat)
+Content-Length: 58
+Connection: close
+Content-Type: text/json;charset=utf-8
+
+[{"successful":true,"channel":"/meta/connect","id":"9"}]
+]]>
+            </sendMessageHTTP>
+            <parameter name="[handled]" operation="set" value="true"/>
+        </then>
+        </if>
+        
+        <if><!-- unsuscribe POST-->
+        <condition>
+            <test parameter="[content]" condition="string.contains" value="/meta/unsuscribe"/>
+        </condition>
+        <then>        
+            <sendMessageHTTP name="POST unsuscribe" transactionId="[transactionId]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Tue, 05 May 2009 15:24:11 GMT
+Server: Apache/2.2.3 (Red Hat)
+Content-Language: fr
+Content-Length: 171
+Connection: close
+Content-Type: text/html;charset=ISO-8859-1
+
+[{"subscription":"/c2cNotif/app-15wylv213l0sg|d2c8dfb22f18e336d881cce19696a705@[C2CIp]|-17225da4fdae3c51","successful":true,"channel":"/meta/unsubscribe","id":"10"}]
+]]>
+            </sendMessageHTTP>
+            <parameter name="[handled]" operation="set" value="true"/>
+        </then>
+        </if>
+        
+        <if><!-- disconnect POST-->
+        <condition>
+            <test parameter="[content]" condition="string.contains" value="/meta/disconnect"/>
+        </condition>
+        <then>        
+            <sendMessageHTTP name="POST disconnect" transactionId="[transactionId]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Tue, 05 May 2009 15:24:11 GMT
+Server: Apache/2.2.3 (Red Hat)
+Content-Language: fr
+Content-Length: 491
+Connection: close
+Content-Type: text/html;charset=ISO-8859-1
+
+["successful":true,"channel":"/meta/disconnect","id":"11"}]
+]]>
+            </sendMessageHTTP>
+            <parameter name="[handled]" operation="set" value="true"/>
+        </then>
+        </if>
+        
+        <if><!-- neuxieme et dernier POST-->
+        <condition>
+            <test parameter="[URI]" condition="string.contains" value="/WebASC2C/call.end.do?"/>
+        </condition>
+        <then>        
+            <sendMessageHTTP name="POST 9" transactionId="[transactionId]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Tue, 05 May 2009 15:24:11 GMT
+Server: Apache/2.2.3 (Red Hat)
+Content-Language: fr
+Content-Length: 491
+Connection: close
+Content-Type: text/html;charset=ISO-8859-1
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+
+.<head>
+..<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" /> 
+..<title>Click to Phone</title>
+..<link rel="stylesheet" href="common/style.css" media="screen" type="text/css" /> 
+..<script type="text/javascript">
+ ...window.close();...
+..</script> 
+.</head>
+.
+.<body>
+.
+.</body>
+</html>
+]]>
+            </sendMessageHTTP>
+            <parameter name="[handled]" operation="set" value="true"/>
+        </then>
+        </if>
+        
+    </then>
+    </if>
+    
+    <if>
+    <condition>
+        <test parameter="[handled]" condition="boolean.equals" value="false"/>
+    </condition>
+    <then>
+        <!--<log level="warn">No response was sent for a message with transactionId [transactionId]</log>-->
+    </then>
+    </if>
+
+</do>
+</while>
+</scenario>

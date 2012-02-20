@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE Library [
+ <!ENTITY initvarStatsParam SYSTEM "./initvarStatsParam.xml">
+]>
+<scenario>
+	&initvarStatsParam;
+
+	<if> <condition> <test parameter="[testcase:indexReg]" condition="list.exists" not="true"/> </condition>
+     <then>  <parameter name="[testcase:indexReg]" operation="set" value="0"/> </then>
+    </if>
+
+	<parameter name="[testcase:indexReg]" operation="number.add" value="[testcase:indexReg]" value2="1"/>    			
+	
+	<parameter name="[Port-Tester]" operation="number.substract" value="65536" value2="[testcase:indexReg]"/>
+	<parameter name="[listenpoint_Register]" operation="set" value="listenpoint_[Port-Tester]"/>
+	<parameter name="[userName]" operation="set" value="[userTab([testcase:indexReg])]"/>
+	<createListenpointSIP name="[listenpoint_Register]" localHost="[Host-Tester([test:IndexSourceIPRegister])]" localPort="[Port-Tester]" transport="UDP"/>
+				
+  	<parameter name="[userNumberPhone]" operation="set" value="[userTabNP([testcase:indexReg])]"/>
+	<parameter name="[localTag]" operation="string.random" value="20"/>
+	<parameter name="[newCallId]" operation="number.random" value="100000000000000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="20"/> 
+	<!--parameter name="[URI]" operation="set" value="sip:[userName]@[domainName]" /-->
+	<parameter name="[URI]" operation="set" value="sip:[domainNameForGIBA]" />
+	<parameter name="[finNum]" operation="string.substring" value="[userNumberPhone]" value2="1"/>
+	<parameter name="[IMSI]" operation="string.regexreplaces" value="[userNumberPhone]" value2="[userNumberPhone]" value3="20801[finNum]"/>
+	
+	<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint_Register]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+<![CDATA[
+REGISTER [URI] SIP/2.0
+To:<sip:[IMSI]@[domainNameForGIBA]>
+From:<sip:[IMSI]@[domainNameForGIBA]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [Host-Tester([test:IndexSourceIPRegister])]:[Port-Tester];branch=z9hG4bK-[newBranchId]
+Contact: <sip:[Host-Tester([test:IndexSourceIPRegister])]:[Port-Tester]>
+Expires: 0
+Max-Forwards: 70
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+	<!-- Pour GIBA ouverture de la socket GGSN/WISP <=> HSS  (Ref. TS 33.178) --> 
+	<!-- openSocketRadius socketName="GGSN_to_HSS" secret="[test:RADsharedSecret]"/ -->
+	 <createListenpointRADIUS name="GGSN_to_HSS" secret="[RADsharedSecret]" localHost="[RADlocalHost]" localPort="[RADlocalPort]"/>
+	 
+	<sendMessageRADIUS listenpoint="GGSN_to_HSS" remoteHost="[RADhssHost]" remotePort="[RADhssPort]" >
+	<!-- Accounting Request (RFC 2865 Radius) --> 
+	<header code="4" />
+	<!-- @ du client radius GGSN / P-GW  (RFC 2865 Radius) --> 
+	<avp code="NAS-IP-Address" value="[NasIpAddress]" />
+	<!-- Hostname du client radius GGSN / P-GW  (RFC 2865 Radius) --> 
+	<avp code="NAS-Identifier" value="[NasIdentifier]" />
+	<!-- identifiant du point d'acces utilise par le user (RFC 2865 Radius)  -->
+	<avp code="Called-Station-Id" value="[CalledStationId]" />
+	<!-- @ a configurer pour le user (RFC 2865 Radius)  --> 
+	<avp code="Framed-IP-Address" value="[Host-Tester([test:IndexSourceIPRegister])]" />	
+	<!-- Start / Stop/ Interim-Update (RFC2866 Radius Accounting) --> 		
+	<avp code="Acct-Status-Type" value="Stop" />	
+	<!-- Session Id . Dans notre cas on utilise le number phone pour pouvoir le recuperer lors du stop (RFC2866 Radius Accounting) --> 
+	 <avp code="Acct-Session-Id" value="[userNumberPhone]" />		
+	<!-- Type = IPv4 (0) IPv6 (2)  ou IPv4v6 (3) ou PPP (1)(conditional) TS 29.061 --> 
+	<avp code="vendor-specific" value="3GPP"> <avp code="3GPP-PDP-Type" type="integer" value="[3gppPdpType]"/> </avp>
+	</sendMessageRADIUS>
+		
+		<!-- on attend même pas la réponse  (qui ne contient rien de particulier, juste acquittement) Accounting Resp --> 
+		<!-- receiveMessageRADIUS listenpoint="GGSN_to_HSS" timeout="[MaxWaitHSSMessage]" failedOnTimeout="false">
+        <parameter name="[message]" operation="protocol.setFromMessage" value="message" />
+		</receiveMessageRADIUS -->
+	
+	<stats> <counter name="UNREG out"><increase>1</increase></counter> </stats>
+ 	<parameter name="[test:IndexSourceIPRegister]" operation="number.add" value="[test:IndexSourceIPRegister]" value2="1"/> 
+	<if> <condition> <test parameter="[test:IndexSourceIPRegister]" condition="number.greaterEqualThan" value="[maxSourceIP]"/> </condition>
+	<then> <parameter name="[test:IndexSourceIPRegister]" operation="set" value="0"/>   </then>
+	</if>		
+	
+</scenario>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="UCP">
+
+    <parameter name="[listenIp]" operation="set" value="0.0.0.0" editable="true" />
+
+    <parameter name="[serverRemoteIp]" operation="system.ipaddress"/>
+    <parameter name="[serverRemoteIp]" operation="set" value="[serverRemoteIp(0)]" editable="true"/>
+    <parameter name="[serverPort]" operation="file.readproperty" value="ucp.properties" value2="listenpoint.LOCAL_PORT" />
+    <parameter name="[serverPort]" operation="set" value="[serverPort]" editable="true" />
+
+    <testcase name="ucp/000_enquiryOperation" state="true">
+        <scenario name="client">000_enquiryOperation/client.xml</scenario>
+        <scenario name="UCP">000_enquiryOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/001_callInputOperation" state="true">
+        <scenario name="client">001_callInputOperation/client.xml</scenario>
+        <scenario name="UCP">001_callInputOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/002_multipleCallInputOperation" state="true">
+        <scenario name="client">002_multipleCallInputOperation/client.xml</scenario>
+        <scenario name="UCP">002_multipleCallInputOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/003_callInputSupplementaryServicesOperation" state="true">
+        <scenario name="client">003_callInputSupplementaryServicesOperation/client.xml</scenario>
+        <scenario name="UCP">003_callInputSupplementaryServicesOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/004_addressListInformationOperation" state="true">
+        <scenario name="client">004_addressListInformationOperation/client.xml</scenario>
+        <scenario name="UCP">004_addressListInformationOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/005_changeAddressListOperation" state="true">
+        <scenario name="client">005_changeAddressListOperation/client.xml</scenario>
+        <scenario name="UCP">005_changeAddressListOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/006_adviceAccumulatedChargesOperation" state="true">
+        <scenario name="client">006_adviceAccumulatedChargesOperation/client.xml</scenario>
+        <scenario name="UCP">006_adviceAccumulatedChargesOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/007_passwordManagementOperation" state="true">
+        <scenario name="client">007_passwordManagementOperation/client.xml</scenario>
+        <scenario name="UCP">007_passwordManagementOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/008_legitimisationCodeManagementOperation" state="true">
+        <scenario name="client">008_legitimisationCodeManagementOperation/client.xml</scenario>
+        <scenario name="UCP">008_legitimisationCodeManagementOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/009_standardTextInformationOperation" state="true">
+        <scenario name="client">009_standardTextInformationOperation/client.xml</scenario>
+        <scenario name="UCP">009_standardTextInformationOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/010_changeStandardTextOperation" state="true">
+        <scenario name="client">010_changeStandardTextOperation/client.xml</scenario>
+        <scenario name="UCP">010_changeStandardTextOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/011_requestRoamingInformationOperation" state="true">
+        <scenario name="client">011_requestRoamingInformationOperation/client.xml</scenario>
+        <scenario name="UCP">011_requestRoamingInformationOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/012_changeRoamingOperation" state="true">
+        <scenario name="client">012_changeRoamingOperation/client.xml</scenario>
+        <scenario name="UCP">012_changeRoamingOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/013_roamingResetOperation" state="true">
+        <scenario name="client">013_roamingResetOperation/client.xml</scenario>
+        <scenario name="UCP">013_roamingResetOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/014_messageRetrievalOperation" state="true">
+        <scenario name="client">014_messageRetrievalOperation/client.xml</scenario>
+        <scenario name="UCP">014_messageRetrievalOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/015_callBarringOperation" state="true">
+        <scenario name="client">015_callBarringOperation/client.xml</scenario>
+        <scenario name="UCP">015_callBarringOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/016_callDiversionOperation" state="true">
+        <scenario name="client">016_callDiversionOperation/client.xml</scenario>
+        <scenario name="UCP">016_callDiversionOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/017_deferredDelivery" state="true">
+        <scenario name="client">017_deferredDelivery/client.xml</scenario>
+        <scenario name="UCP">017_deferredDelivery/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/018_lastMessages" state="true">
+        <scenario name="client">018_lastMessages/client.xml</scenario>
+        <scenario name="UCP">018_lastMessages/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/019_smsMessageTransferOperation" state="true">
+        <scenario name="client">019_smsMessageTransferOperation/client.xml</scenario>
+        <scenario name="UCP">019_smsMessageTransferOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/020_smtAlertOperation" state="true">
+        <scenario name="client">020_smtAlertOperation/client.xml</scenario>
+        <scenario name="UCP">020_smtAlertOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/021_submitShortMessage" state="true">
+        <scenario name="client">021_submitShortMessage/client.xml</scenario>
+        <scenario name="UCP">021_submitShortMessage/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/022_deliveryShortMessage" state="true">
+        <scenario name="listenpointUCP1">022_deliveryShortMessage/SMSC.xml</scenario>
+        <scenario name="listenpointUCP2">022_deliveryShortMessage/ESME.xml</scenario>
+    </testcase>
+    <testcase name="ucp/023_deliveryNotificationOperation" state="true">
+        <scenario name="client">023_deliveryNotificationOperation/client.xml</scenario>
+        <scenario name="UCP">023_deliveryNotificationOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/024_modifyShortMessageOperation" state="true">
+        <scenario name="client">024_modifyShortMessageOperation/client.xml</scenario>
+        <scenario name="UCP">024_modifyShortMessageOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/025_inquiryMessageOperation" state="true">
+        <scenario name="client">025_inquiryMessageOperation/client.xml</scenario>
+        <scenario name="UCP">025_inquiryMessageOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/026_deleteMessageOperation" state="true">
+        <scenario name="client">026_deleteMessageOperation/client.xml</scenario>
+        <scenario name="UCP">026_deleteMessageOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/027_responseInquiryMessageOperation" state="true">
+        <scenario name="client">027_responseInquiryMessageOperation/client.xml</scenario>
+        <scenario name="UCP">027_responseInquiryMessageOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/028_responseDeleteMessageOperation" state="true">
+        <scenario name="client">028_responseDeleteMessageOperation/client.xml</scenario>
+        <scenario name="UCP">028_responseDeleteMessageOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/029_sessionManagementOperation" state="true">
+        <scenario name="client">029_sessionManagementOperation/client.xml</scenario>
+        <scenario name="UCP">029_sessionManagementOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/030_provisioningActionsOperation" state="true">
+        <scenario name="client">030_provisioningActionsOperation/client.xml</scenario>
+        <scenario name="UCP">030_provisioningActionsOperation/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/031_testAllParameters" state="true">
+        <scenario name="client">031_testAllParameters/client.xml</scenario>
+        <scenario name="UCP">031_testAllParameters/server.xml</scenario>
+    </testcase>
+    <testcase name="ucp/032_exampleMessageId" state="true">
+        <scenario name="client">032_exampleMessageId/client.xml</scenario>
+        <scenario name="server">032_exampleMessageId/server.xml</scenario>
+    </testcase>
+</test>

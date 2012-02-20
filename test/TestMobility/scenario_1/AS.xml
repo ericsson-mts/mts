@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<scenario>
+
+<!--
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_IP]" operation="set" value="[Host-Tester]"/>
+<parameter name="[provider_Port]" operation="set" value="[Port-Subscription_Module]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localHost="[Host-Tester]" localPort="[provider_Port]" transport="UDP"/>
+-->
+
+<!--
+Semaphore Synchro fin de phase d'initialisation
+A mettre en commentaire pour tests boucle locale
+
+<parameter name="[test:FIN_Init_Loader_vers_AS]" operation="semaphore.wait" value="1" value2="0"/>
+-->
+
+
+<!--
+Boucle infinie reception / acquitement de requetes SOAP
+-->
+
+
+<parameter name="[message_received]" operation="set" value="true"/>
+
+<while>
+	<condition>
+  	<test parameter="[message_received]" condition="equals" value="true" /> 
+  	</condition>
+<do>
+	<parameter name="[message_received]" operation="set" value="false"/>
+	
+	<!--receiveRequestHTTP name="Wait POST" method="POST" timeout="10" failedOnTimeout="false"-->
+  <receiveRequestHTTP name="Wait HTTP message" timeout="10" failedOnTimeout="false">
+  <parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+  <parameter name="Received_Method" operation="setFromMessage" value="firstline:Method"/>
+  <parameter name="Received_Uri" operation="setFromMessage" value="firstline:URI"/>
+  
+  <parameter name="[message_received]" operation="set" value="true"/>
+  </receiveRequestHTTP>
+
+
+<!--
+Case if a HTTP POST message is received including a SOAP StartCallNotification
+En pratique, cette section est uniquement utilisee pour les tests en boucle locale
+-->
+
+<if>
+<condition>
+<test parameter="[message_received]" condition="equals" value="true"/>
+<test parameter="[Received_Uri]" condition="contains" value="CallNotificationManager"/>
+<test parameter="[Received_Method]" condition="equals" value="POST"/>
+</condition>
+<then>
+
+	<sendResponseHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+<![CDATA[HTTP/1.1 200 OK
+Content-Type:text/html; charset=utf-8
+Content-Length:x
+
+Server: Jetty(6.1.x)
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:loc="http://www.csapi.org/schema/parlayx/call_notification/v3_2/local">
+<soapenv:Header/>
+<soapenv:Body>
+<loc:notifyCallEventResponse/>
+</soapenv:Body>
+</soapenv:Envelope>]]>
+	</sendResponseHTTP>
+
+<log level="1">Balise Response to StartCallNotification 1ier type</log>
+
+</then></if>
+
+<!--
+Case if a HTTP POST message is received including a SOAP CallNotification
+-->
+
+<if>
+<condition>
+<test parameter="[message_received]" condition="equals" value="true"/>
+<test parameter="[Received_Uri]" condition="contains" value="mockCallNotification"/>
+<test parameter="[Received_Method]" condition="equals" value="POST"/>
+</condition>
+<then>
+
+	<sendResponseHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Transfer-Encoding: chunked
+Content-Type: text/xml; charset=UTF-8
+SOAPAction: ""
+X-Powered-By: Servlet/2.4 JSP/2.0
+Content-Length:x
+
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+<soap:Body>
+<ns2:startCallNotificationResponse xmlns:ns2="http://www.csapi.org/schema/parlayx/call_notification/notification_manager/v3_1/local"/>
+</soap:Body>
+</soap:Envelope>
+]]>
+	</sendResponseHTTP>
+
+
+<log level="1">Balise Response to CallNotification 2ieme type</log>
+
+</then></if>
+
+</do></while>
+
+
+
+<!--
+<closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/>
+-->
+
+</scenario>

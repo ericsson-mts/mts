@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
+
+    <parameter name="[connection]" operation="set" value="scenario_[port]" />
+    <openChannelRTSP name="[connection]" remoteHost="localhost" remotePort="[port]"/>
+
+    <parameter name="[cseq]" operation="number.random" value="999999999999" />
+    <sendMessageRTSP name="Send Options" channel="[connection]">
+<![CDATA[OPTIONS rtsp://localhost:[port]/vod_1 RTSP/1.0
+CSeq: [cseq]
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="OPTIONS" result="200">
+    </receiveMessageRTSP>
+
+    <parameter name="[cseq]" operation="number.random" value="999999999999" />
+    <sendMessageRTSP name="Send Describe" channel="[connection]">
+<![CDATA[DESCRIBE rtsp://localhost:[port]/vod_1 RTSP/1.0
+CSeq: [cseq]
+Accept: application/sdp
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="DESCRIBE" result="200">
+        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+    </receiveMessageRTSP>
+
+    <parameter name="[cseq]" operation="number.random" value="999999999999" />
+    <sendMessageRTSP name="Send Setup" channel="[connection]">
+<![CDATA[SETUP rtsp://localhost:[port]/vod_1 RTSP/1.0
+CSeq: [cseq]
+Transport: RTP/AVP;unicast;client_port=4588-4589
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="SETUP" result="200">
+        <parameter name="[session]" operation="protocol.setFromMessage" value="header.Session"/>
+    </receiveMessageRTSP>
+
+    <parameter name="[cseq]" operation="number.random" value="999999999999" />
+    <sendMessageRTSP name="Send Play" channel="[connection]">
+<![CDATA[PLAY rtsp://localhost:[port]/vod_1 RTSP/1.0
+CSeq: [cseq]
+Session: [session]
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="PLAY" result="200">
+    </receiveMessageRTSP>
+
+    <parameter name="[cseq]" operation="number.random" value="999999999999" />
+    <sendMessageRTSP name="Send Pause" channel="[connection]">
+<![CDATA[PAUSE rtsp://localhost:[port]/vod_1 RTSP/1.0
+CSeq: [cseq]
+Session: [session]
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="PAUSE" result="200">
+    </receiveMessageRTSP>
+
+    <parameter name="[cseq]" operation="number.random" value="999999999999" />
+    <sendMessageRTSP name="Send Teardown" channel="[connection]">
+<![CDATA[TEARDOWN rtsp://localhost:[port]/vod_1 RTSP/1.0
+CSeq: [cseq]
+Session: [session]
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="TEARDOWN" result="200">
+    </receiveMessageRTSP>
+
+</scenario>

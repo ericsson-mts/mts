@@ -1,0 +1,95 @@
+ <if>
+        <condition>
+          <test parameter="[testCaseNumber]" condition="equals" value="0" />
+        </condition>
+        <then>
+		<parameter name="[NotExpectedFlowFromInviterToInvitee]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+		 <goto label="RTPConnexion" name="continue scenario"  state="true"/>		
+       </then>
+</if>
+
+    <if>
+        <condition>
+          <test parameter="[testCaseNumber]" condition="equals" value="1" />
+        </condition>
+        <then>  
+		<if>
+        <condition>
+          <test parameter="[RestrictedLatching]" condition="equals" value="false" />
+        </condition>
+		<then>
+	 	<parameter name="[NotExpectedFlowFromInviterToInvitee]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/> 
+       </then>
+	   <else>
+	   	<parameter name="[NotExpectedFlowFromInviteeToInviter]" operation="set" value="true"    description="true : flow blocked, false : flow crossed."/>      
+      </else>
+	  </if>		
+		<parameter name="[portMediaInvitee]" operation="set" value="13000" description="Port pour le flux media"/>   
+           <goto label="RTPConnexion" name="continue scenario"  state="true"/>		  
+    </then>
+</if>
+ 
+  <if>
+        <condition>
+          <test parameter="[testCaseNumber]" condition="equals" value="2" />
+        </condition>
+        <then>  
+		<if>
+        <condition>
+          <test parameter="[RestrictedLatching]" condition="equals" value="false" />
+        </condition>
+		<then>
+	 	<parameter name="[NotExpectedFlowFromInviterToInvitee]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+		 </then>
+	   <else>
+	   	<parameter name="[NotExpectedFlowFromInviteeToInviter]" operation="set" value="true"    description="true : flow blocked, false : flow crossed."/>      
+      </else>
+	  </if>	
+	  <parameter name="[IpMediaSDPInvitee]"    operation="set" value="[newIPAddress2]" description="Ip used for RTP media "/>   	
+			<goto label="RTPConnexion" name="continue scenario"  state="true"/>
+    </then>
+</if>
+
+ <if>
+        <condition>
+          <test parameter="[testCaseNumber]" condition="equals" value="3" />
+        </condition>
+        <then>  
+	 	<if>
+        <condition>
+          <test parameter="[RestrictedLatching]" condition="equals" value="false" />
+        </condition>
+		<then>
+		<parameter name="[NotExpectedFlowFromInviterToInvitee]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+		 </then>
+	   <else>
+	   	<parameter name="[NotExpectedFlowFromInviteeToInviter]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+       </else>
+	   </if>	
+	  <parameter name="[SDPMediaPort0]" operation="set" value="13000" description="Port pour le flux media"/>                        
+		 <goto label="RTPConnexion" name="continue scenario"  state="true"/>
+    </then>
+</if>
+ <if>
+        <condition>
+          <test parameter="[testCaseNumber]" condition="equals" value="4" />
+        </condition>
+        <then>  
+	 	<if>
+        <condition>
+          <test parameter="[RestrictedLatching]" condition="equals" value="false" />
+        </condition>
+		<then>
+		<parameter name="[NotExpectedFlowFromInviterToInvitee]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+		 </then>
+	   <else>
+	   	<parameter name="[NotExpectedFlowFromInviteeToInviter]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+       </else>
+	   </if>	
+	   <parameter name="[SDPConnectionAddress0]" operation="set" value="[newIPAddress2]" description="Port pour le flux media"/>                        
+			 <goto label="RTPConnexion" name="continue scenario"  state="true"/>
+    </then>
+</if>
+
+
+	  

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <parameter name="[testcase:conn_counter]" operation="add" value="[testcase:conn_counter]" value2="1" />
+    <if>
+        <condition>
+            <test parameter="[testcase:conn_counter]" condition="equals" value="[max_successive_requests]" />
+        </condition>
+        <then>
+            <closeConnectionHTTP connectionName="http_soap_[scenarioId]" />
+            <parameter name="[testcase:conn_counter]" operation="set" value="0" />
+        </then>
+    </if>
+    
+    <openConnectionHTTP connectionName="http_soap_[scenarioId]" remoteURL="[enabler_url]" />
+
+    <parameter name="[timestamp]" operation="setFromSystem" value="Timestamp" value2="1970" />
+    <parameter name="[timestamp]" operation="divide" value="[timestamp]" value2="1000" />
+
+    <parameter name="[transactionId_uid]" operation="identifier" value="nextInteger" value2="" />
+    
+    <parameter name="[timestamp]" operation="divide" value="[timestamp]" value2="1000" />
+    <sendRequestHTTP connectionName="http_soap_[scenarioId]">
+<![CDATA[POST /DesaliasingEA-wa/Desaliasing HTTP/1.1
+Content-Type: text/xml; charset=utf-8
+Content-Length: 1062
+SOAPAction: ""
+User-Agent: Java/1.5.0_11
+Host: 172.16.21.150:9000
+Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+Via: 1.1 squidint.devoteam.com:8080 (squid/2.5.STABLE7)
+X-Forwarded-For: unknown
+Cache-Control: max-age=259200
+Connection: keep-alive
+
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns0="urn:basicat.francetelecom.com:types:Desaliasing:G0">
+    <env:Body>
+        <ns0:authorization>
+            <v00>[transactionId_uid][timestamp]</v00>
+            <sva>1</sva>
+            <alias>[correct_alias]</alias>
+            <groupID>[correct_groupId]</groupID>
+            <v06>[timestamp]</v06>
+            <variables>
+                <name>v80</name>
+                <value>value0</value>
+            </variables>
+            <variables>
+                <name>v81</name>
+                <value>value1</value>
+            </variables>
+        </ns0:authorization>
+    </env:Body>
+</env:Envelope>]]>
+    </sendRequestHTTP>
+    
+    <receiveResponseHTTP result="200" timeout="20">
+        <parameter name="[content]" operation="setFromMessage" value="content" />
+        <test parameter="[content]" condition="contains" value="&lt;failed&gt;false&lt;/failed&gt;"/>
+    </receiveResponseHTTP>
+
+    <parameter name="[v11]" operation="regexMatches" value="[content]" value2="&lt;v11&gt;[^&lt;]*&lt;/v11&gt;" />
+    <parameter name="[failed]" operation="regexMatches" value="[content]" value2="&lt;failed&gt;[^&lt;]*&lt;/failed&gt;" />
+    
+    <log>
+v11: [v11]
+failed: [failed]
+    </log>
+    
+</scenario>

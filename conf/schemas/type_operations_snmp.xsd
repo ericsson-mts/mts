@@ -1,0 +1,224 @@
+<!--                                                                      BEGIN OF SNMP PROTOCOL -->
+
+<!--                                                                          createListenpointSNMP -->
+    <xs:complexType name="createListenpointSNMPType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+				<xs:attribute name="localHost" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The listenpoint local host i.e. the IP address we are listening to. It should of course be one of the local addresses of the host or a host name with a DNS resolution. The default value is configurable(ppp.properties/listenpoint.LOCAL_HOST)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="localPort" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>The listenpoint local port i.e. the port we are listening to. The default value is configurable(ppp.properties/listenpoint.LOCAL_PORT)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenUDP" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>A flag to specify whether we are listening to the UDP transport. The default value is configurable(ppp.properties/listenpoint.LISTEN_UDP)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenTCP" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>A flag to specify whether we are listening to the TCP transport. The default value is configurable(ppp.properties/listenpoint.LISTEN_TCP)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenSCTP" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>A flag to specify whether we are listening to the SCTP transport. The default value is configurable(ppp.properties/listenpoint.LISTEN_SCTP)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenTLS" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>A flag to specify whether we are listening to the TLS transport. The default value is configurable(ppp.properties/listenpoint.LISTEN_TLS)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="localPortTLS" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>The listenpoint local port for TLS transport i.e. the port we are listening to. The default value is LOCAL_PORT + 1</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="transport" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>enumeration (UDP, TCP, SCTP, TLS)</xs:appinfo>
+						<xs:documentation>The default transport when the listenpoint is used to send message. The default value is configurable(ppp.properties/listenpoint.TRANSPORT)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                         removeListenpointSNMP -->
+    <xs:complexType name="removeListenpointSNMPType">
+        <xs:complexContent>
+            <xs:extension base="operationType" />
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                                sendMessageSNMP -->
+    <xs:complexType name="sendMessageSNMPType">
+        <xs:complexContent>
+            <xs:extension base="operationType" >
+                <xs:sequence>
+                    <xs:element name="header"  	  type="headerSNMPType"      minOccurs="1" maxOccurs="1"/>
+                    <xs:element name="pdu"        type="pduSNMPType"         minOccurs="1" maxOccurs="1" />
+                </xs:sequence>
+				<xs:attribute name="channel" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The name of the channel to transport the message. Don't use it with listenpoint (incompatible)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenpoint" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The name of the listenpoint to transport the message. Don't use it with channel (incompatible)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="remoteHost" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The remote host to send the message to. Don't use it with the channel (incompatible).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="remotePort" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>The remote port to send the message to. Don't use it with the channel (incompatible)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="remoteURL" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String (url)</xs:appinfo>
+						<xs:documentation>The remote URL to send the message to. Don't use it with the channel (incompatible).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="transport" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>enumeration (UDP, TCP, SCTP, TLS)</xs:appinfo>
+						<xs:documentation>The protocol transport to send the message to. Don't use it with the channel (incompatible).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="destScenario" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String (scenario name)</xs:appinfo>
+						<xs:documentation>The destination scenario if the request commes to IMSloader again (case of proxy testing). This attribute should contain the name of the scenario to route the same message to.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="delay" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Float</xs:appinfo>
+						<xs:documentation>The time delay (in seconds) when the message sending is differed.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+            </xs:extension>            
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                             receiveMessage -->
+    <xs:complexType name="receiveMessageSNMPType">
+        <xs:complexContent>
+            <xs:extension base="operationType" >
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="parameter"  type="parameterType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="test"       type="testType"      minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="and"        type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="or"         type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="not"        type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>     
+				<xs:attribute name="channel" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The channel name to transport the message. Don't use it with listenpoint (incompatible)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenpoint" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The listenpoint name to transport the message. Don't use it with channel (incompatible)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="request" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>True means that we are waiting for a request whereas false means a response. If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="type" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The message type we are waiting for. If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="result" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The message result (for response only) we are waiting for. If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="timeout" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Float</xs:appinfo>
+						<xs:documentation>The timeout i.e. the maximum time (in seconds) we are waiting for. The default value is configurable (ppp.properties/operations.RECEIVE_TIMEOUT) If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="failedOnReceive" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>True means that we are not waiting a message i.e. if we will receive a message , then the operation status is set to FAILED. The default value is false.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="failedOnTimeout" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>True means that we are waiting a message i.e. if we won't receive any message , then the operation status is set to FAILED. The default value is true.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                                 header -->
+    <xs:complexType name="headerSNMPType">
+        <xs:attribute name="version"            type="xs:string" use="required"/>
+        <xs:attribute name="community"            type="xs:string" use="required"/>
+    </xs:complexType>
+
+<!--                                                                                     pdu -->
+    <xs:complexType name="pduSNMPType">
+        <xs:sequence>
+            <xs:element name="variableBinding"  	  type="variableBindingSNMPType"  minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name"                type="xs:string" />
+        <xs:attribute name="type"                type="xs:string"/>
+        <xs:attribute name="requestId"           type="xs:string" />
+        <xs:attribute name="errorStatus"         type="xs:string"/>
+        <xs:attribute name="errorIndex"          type="xs:string"/>
+        <xs:attribute name="nonRepeaters"        type="xs:string"/>
+        <xs:attribute name="maxRepetitions"      type="xs:string"/>
+        <xs:attribute name="enterprise"          type="xs:string"/>
+        <xs:attribute name="agentAddress"        type="xs:string"/>
+        <xs:attribute name="genericTrap"         type="xs:string"/>
+        <xs:attribute name="specificTrap"        type="xs:string"/>
+        <xs:attribute name="timestamp"           type="xs:string"/>
+    </xs:complexType>
+
+<!--                                                                                variableBinding -->
+    <xs:complexType name="variableBindingSNMPType">
+        <xs:complexContent>
+            <xs:extension base="operationType" >
+                <xs:attribute name="value"      type="xs:string"/>
+                <xs:attribute name="type"       type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+<!--                                                                             END OF SNMP PROTOCOL -->

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<stats>
+		<counter name="ActiveSession" shortDesc="Act Sess" description="Active session" longDesc="Count of active sessions"/>	
+		<counter name="INVITEout" shortDesc="INV_out" description="INVITE outgoing" longDesc="Send an outgoing INVITE"/>        	
+		<counter name="INVITE2xxin" shortDesc="INV2xx_in" description="INVITE/2xx incoming" longDesc="Receive an incoming INVITE/2xx OK"/>        
+		<counter name="ACKout" shortDesc="ACK_out" description="ACK outgoing" longDesc="Send an outgoing ACK"/>        	   
+		<counter name="BYEout" shortDesc="BYE_out" description="BYE outgoing" longDesc="Send an outgoing BYE"/>        	   		
+		<counter name="BYExxxin" shortDesc="BYExxx_in" description="BYE/xxx incoming" longDesc="Receive an incoming BYE/XXX OK"/>			
+	</stats>
+
+	<createListenpointSIP name="provider" localHost="[IMSLoader-SIP-Host]" localPort="[IMSLoader-SIP-Port]" transport="UDP"/>    		
+  				               	  		       	       	        
+	<stats>
+		<counter name="ActiveSession"><increase>1</increase></counter>  	
+		<counter name="INVITEout"><increase>1</increase></counter>
+		<counter name="INVITElost"><increase>1</increase></counter>
+	</stats>	    	    			
+	
+	<parameter name="[test:indexUser]" operation="number.add" value="[test:indexUser]" value2="1"/>    			
+	<if>
+		<condition>
+			<test parameter="[test:indexUser]" condition="number.greaterThan" value="[RangeNumberUser]"/>       	     
+		</condition>
+		<then>
+			<parameter name="[test:indexUser]" operation="set" value="0"/>    				    	
+		</then>
+	</if>
+
+	<parameter name="[tempPortRTP]" operation="number.multiply" value="[test:indexUser]" value2="2"/>
+	<parameter name="[portRTP]" operation="number.add" value="[RangePortRTP-UAC]" value2="[test:indexUser]"/>   	
+
+	<parameter name="[tempIndexUser]" operation="number.add" value="[RangeIndexUser]" value2="[test:indexUser]"/>
+	<parameter name="[inviteeName]" operation="set" value="[inviteeTab([tempIndexUser])]"/>    	
+	<parameter name="[inviterName]" operation="set" value="[inviterTab([tempIndexUser])]"/>
+
+	<parameter name="[newFromTag]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseqNumber]" operation="set" value="1"/>
+	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
+	  		
+	<sendMessageSIP name="Send INVITE" listenpoint="provider" remoteHost="[AS-SIP-Host]" remotePort="[AS-SIP-Port]">
+<![CDATA[	
+INVITE sip:+33[inviteeName]@[userDomain] SIP/2.0
+To: "User_[inviteeName]" <sip:+33[inviteeName]@[userDomain]>
+From: "User_[inviterName]" <sip:0[inviterName]@[userDomain];user=phone>;tag=[newFromTag]
+Call-ID: [newCallId]-[inviterName]@[AS-SIP-Adresse]
+CSeq: [newCseqNumber] INVITE
+Max-Forwards: 8
+Content-Length: x
+Via: SIP/2.0/UDP [IMSLoader-SIP-Adresse];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/UDP [IMSLoader-SIP-Host]:7000;branch=z9hG4bKb90b735c0903ed490945d8b15139b3fcjaaaaaaiaaaaaawm2dpva3Zqkv7c1rdzosejahcpa
+Route: <sip:[LB-SIP-Adresse];lr;call=term_registered>
+Route: <sip:3Zqkv7%23aGWiqaaatCSSRWO2xA92Jw4JY6DgrvCOicWsip%3A%2B33975621722%40[userDomain]ZtdNeqeaeai@[IMSLoader-SIP-Adresse];lr>
+Record-Route: <sip:3Zqkv7%0BaGqiyU5TPKWsip%3A%2B33975621722%40[userDomain]@scscf.[userDomain]:7070;maddr=[IMSLoader-SIP-Host];lr>
+Contact: <sip:[IMSLoader-SIP-Adresse]>
+Content-Type: application/sdp
+Allow: ACK, BYE, CANCEL, INFO, INVITE, OPTIONS, PRACK, REFER, NOTIFY, UPDATE
+Accept: multipart/mixed
+Accept: application/dtmf-relay
+Accept: application/media_control+xml
+Accept: application/sdp
+P-Asserted-Identity: "User [inviterName]"<sip:+33[inviterName]@[userDomain]>
+P-Asserted-Identity: "User [inviterName]"<tel:+33[inviterName]>
+Privacy: none
+P-Charging-Vector: icid-value=eqrc7g46o1823o87ihckjqk63rr4nida92k2jr86ehc03n46k9cs2pc6o9c6jp07o1g2jr86ehc03n46k9cs2pc6o1;icid-generated-at=172.20.141.238;orig-ioi=[userDomain]
+Session-Expires: 86400
+Min-SE: 900
+P-Charging-Function-Addresses: ccf="aaa://pcfa1.[userDomain]:3868;transport=tcp"
+
+v=0
+o=+33[inviterName] 2211961014 2211961014 IN IP4 [IMSLoader-SIP-Host]
+s=VOIP P160SLD 02.11.08
+c=IN IP4 [IMSLoader-SIP-Host]
+t=0 0
+m=audio [portRTP] RTP/AVP 0 18 4
+a=rtpmap:0 PCMU/8000/1
+a=rtpmap:18 G729/8000/1
+a=fmtp:18 annexb=no
+a=rtpmap:4 G723/8000/1
+a=sendrecv
+
+]]>			
+	</sendMessageSIP>
+	             	        	        	        
+</scenario>

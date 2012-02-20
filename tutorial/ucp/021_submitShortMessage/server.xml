@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageUCP request="true" type="SubmitShortMessage">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="XSer" operation="protocol.setFromMessage" value="attribute.XSer"/>
+        <parameter name="AMsg" operation="protocol.setFromMessage" value="attribute.AMsg"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[AMsg]" condition="string.contains" value="azerty_{}[]()^~ @à"/>
+        <test parameter="[XSer]" condition="string.contains" value="060504157200001234567889010234"/>
+        <test parameter="[XSer]" condition="string.contains" value="00"/>
+        <test parameter="[XSer]" condition="string.contains" value="02"/>
+        <test parameter="[XSer]" condition="string.contains" value="020A"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="SubmitShortMessage" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="MVP" value="test"/>
+        <attribute name="SM"  value="well done"/>
+    </sendMessageUCP>
+
+</scenario>

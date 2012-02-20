@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTPFLOW name="inviter" localHost="[localHostRTP(0)]" localPort="[localPortRTP]"/>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+        <flow packetNumber="160" bitRate="10" synchronous="true">
+            <header ssrc="963" payloadType="8" seqnum="123" timestamp="456"/>
+            <payload format="text">Packet 1Packet 2Packet 3Packet 4Packet 1Packet 2Packet 3Packet 4</payload>
+	    </flow>
+	</sendMessageRTPFLOW>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+	<finally>
+		<removeListenpointRTPFLOW name="inviter" />
+	</finally>
+		
+</scenario>

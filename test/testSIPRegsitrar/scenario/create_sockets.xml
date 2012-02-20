@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<if>
+	    <condition>
+	    	<test parameter="[testcase:indexReg]" condition="list.exists" not="true"/>       	     
+    	</condition>
+        <then>
+	        <parameter name="[testcase:indexReg]" operation="set" value="0"/>
+        </then>
+    </if>
+	
+	<parameter name="[testcase:indexReg]" operation="number.add" value="[testcase:indexReg]" value2="1"/>    			
+	<parameter name="[allUserRegisteredOnce]" operation="number.substract" value="[RangeNumberUser]" value2="1"/> 
+	<!--parameter name="[allUserRegisteredOnce]" operation="number.divide" value="[RangeNumberUser]" value2="2"/-->    	   	
+    <if>
+	    <condition>
+			<or>
+		    <test parameter="[testcase:indexReg]" condition="number.equals" value="[allUserRegisteredOnce]"/>      
+    		<test parameter="[testcase:indexReg]" condition="number.greaterThan" value="[allUserRegisteredOnce]"/>    
+			</or>
+   	    </condition>
+    	<then>		   	
+	    	<parameter name="[test:startCall]" operation="system.semaphorenotify" value="2"/>
+			<!--<parameter name="[test:receive]" operation="system.semaphorenotify"/> -->
+	    </then>
+	</if>
+		
+	<parameter name="[ModuloIndexReg]" operation="number.modulo" value="[testcase:indexReg]" value2="2"/>
+	<if>
+		<condition>
+			<test parameter="[ModuloIndexReg]" condition="number.equals" value="0" not="true"/>
+		</condition>	
+		<then>
+			<parameter name="[Port-Tester]" operation="number.substract" value="65536" value2="[testcase:indexReg]"/>
+			<parameter name="[listenpoint]" operation="set" value="listenpoint_[Port-Tester]"/>
+			<createListenpointSIP name="[listenpoint]" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="UDP"/>
+		</then>
+		<else>
+			<parameter name="[Port-Tester]" operation="number.substract" value="65536" value2="[testcase:indexReg]"/>
+			<parameter name="[listenpoint_called]" operation="set" value="listenpoint_called_[Port-Tester]"/>
+			<createListenpointSIP name="[listenpoint_called]" localHost="[Host-Tester_called]" localPort="[Port-Tester]" transport="UDP"/>
+		</else>
+	</if>
+
+</scenario>

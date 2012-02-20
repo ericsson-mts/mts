@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="SIP regression tests">
+    
+   	<parameter name="[client_UAS]" 		operation="set" value="bob"/>
+	<parameter name="[client_UAC]" 		operation="set" value="alice"/>
+	<parameter name="[domaine]"			operation="set" value="ims.net"/>
+
+	<parameter name="[UserAgent]" 		operation="set" value="Fraunhofer FOKUS/NGNI Java IMS UserEndpoint FoJIE 0.1 (jdk1.3)"/>
+	
+	<parameter name="[port_UAC]" 		operation="set" value="7071"/>
+	<parameter name="[port_UAS]" 		operation="set" value="7072"/>
+	<parameter name="[port_UAS1]" 		operation="set" value="7073"/>
+	<parameter name="[port_UAS2]" 		operation="set" value="7074"/>
+	<parameter name="[port_UAS3]" 		operation="set" value="7075"/>
+   
+		
+    <!--parameter name="[Host-Server]" 	operation="set" value="172.16.21.26"/-->
+    <parameter name="[Host-Server]" 	operation="set" value="192.168.130.20"/>
+    <parameter name="[Port-Server]" 	operation="set" value="4060"/>
+    <parameter name="[Adresse-Server]" 	operation="set" value="[Host-Server]:[Port-Server]"/>	
+	
+   
+	<testcase name="register_Alice" 	description="simulation register" 	state="true">
+        <scenario name="[port_UAC]">registerA.xml</scenario>
+    </testcase>
+	
+	<testcase name="register_Bob" 		description="simulation register" 	state="true">
+        <scenario name="[port_UAS]">registerB.xml</scenario>
+    </testcase>
+	
+	<testcase name="appel_A_vers_B" 	description="simulation appel" 		state="true">
+        <scenario name="[port_UAC]">InviteA.xml</scenario>
+        <scenario name="[port_UAS]">InviteB.xml</scenario>
+    </testcase>
+		
+	<testcase name="PRACK_A_vers_B" 	description="simulation prack" 		state="true">
+        <scenario name="[port_UAC]">PrackA.xml</scenario>
+        <scenario name="[port_UAS]">PrackB.xml</scenario>
+    </testcase>
+	
+	<testcase name="Message_A_vers_B" 	description="simulation message" 	state="true">
+        <scenario name="[port_UAC]">MessageA.xml</scenario>
+        <scenario name="[port_UAS]">MessageB.xml</scenario>
+    </testcase>
+	
+	<testcase name="Cancel_A_vers_B" 	description="simulation cancel" 	state="true">
+        <scenario name="[port_UAC]">CancelA.xml</scenario>
+        <scenario name="[port_UAS]">CancelB.xml</scenario>
+    </testcase>
+	
+	<testcase name="Fork_A_vers_B1_B2_B3" 	description="simulation fork" 	state="false">
+        <scenario name="[port_UAC]">ForkA.xml</scenario>
+        <scenario name="[port_UAS1]">ForkB1.xml</scenario>
+		<scenario name="[port_UAS2]">ForkB2.xml</scenario>
+		<scenario name="[port_UAS3]">ForkB3.xml</scenario>
+    </testcase>
+	
+	<testcase name="Subscribe" 			description="simulation Subscribe" 	state="false">
+        <scenario name="[port_UAS]">Subscribe.xml</scenario>
+    </testcase>
+	
+</test>

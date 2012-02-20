@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE library [
+<!ENTITY libS_Service_Server_Simulator			SYSTEM "../library/libS_Service_Server_Simulator.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph1		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph1.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph2		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph2.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph3		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph3.xml">
+<!ENTITY libS_Proxy_Server				SYSTEM "../library/libS_Proxy_Server.xml">
+]>
+
+<scenario>
+
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_Port]" operation="set" value="[SBC_Port_1001]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localPort="[provider_Port]"/>
+
+
+
+<!--
+Server proxy to reroute the message
+-->
+
+
+<parameter name="[newRoute_IP]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[newRoute_Port]" operation="set" value="[Provider_1710]"/>
+<parameter name="[called_Subscriber]" operation="set" value="[subscriber_1710]"/>
+
+<!-- Proxy the INVITE -->
+&libS_Proxy_Server;
+
+<!-- Sauvegarde des parametres de l'INVITE Initial -->
+
+<parameter name="[ancien_lastSIPMethod]" operation="set" value="[lastSIPMethod]"/>	
+<parameter name="[ancien_lastIsRequest]" operation="set" value="[lastIsRequest]"/>  		
+<parameter name="[ancien_lastResult]" operation="set" value="[lastResult]"/>  				
+<parameter name="[ancien_lastFirstline]" operation="set" value="[lastFirstline]"/>  	
+<parameter name="[ancien_lastVia]" operation="set" value="[lastVia]"/>
+<parameter name="[ancien_lastRoute]" operation="set" value="[lastRoute]"/>		  		  	
+<parameter name="[ancien_lastRecord-Route]" operation="set" value="[lastRecord-Route]"/>		  	
+<parameter name="[ancien_lastContact]" operation="set" value="[lastContact]"/>		  		  	
+<parameter name="[ancien_lastMax-Forwards]" operation="set" value="[lastMax-Forwards]"/>		  		  	
+<parameter name="[ancien_lastHeaderOthers]" operation="set" value="[lastHeaderOthers]"/>		  		  		  	
+<parameter name="[ancien_lastContent]" operation="set" value="[lastContent]"/>
+<parameter name="[ancien_lastTo]" operation="set" value="[lastTo]"/>  	
+<parameter name="[ancien_lastFrom]" operation="set" value="[lastFrom]"/>  	
+<parameter name="[ancien_lastCallId]" operation="set" value="[lastCallId]"/>		  		  	
+<parameter name="[ancien_lastCSeq]" operation="set" value="[lastCSeq]"/>
+<parameter name="[ancien_lastCSeqNumber]" operation="set" value="[lastCSeqNumber]"/>
+
+
+
+
+<!-- Filtrage du 100 -->
+&libS_Proxy_Server;
+<!-- Proxy du 180 -->
+&libS_Proxy_Server;
+
+<pause name="pause"     seconds="0.5"  state="true"/>
+
+<!-- Envoi 181 call is being forwarded a subscriber_1001 -->
+
+<!-- PAS DE 181 SUR Les TRaces FT
+<sendResponseSIP name="Send 181 Call Is Being Forwarded">
+<![CDATA[SIP/2.0 181 Call Is Being Forwarded
+To: [ancien_lastTo]
+From: [ancien_lastFrom]
+Via: [ancien_lastVia]
+Call-ID: [ancien_lastCallId]
+CSeq: [ancien_lastCSeq]
+Contact: <sip:[ipAddressSip]:[Provider_1000]>
+Max-Forwards: 70
+User-Agent: XMLLoader
+Content-Length: 0
+]]></sendResponseSIP>
+
+<log level="3">Balise apres 181</log>
+-->
+
+<!-- Envoi du CANCEL a subscriber_1000 -->
+
+
+
+<sendRequestSIP name="CANCEL" providerName="[provider_Name]">
+
+<![CDATA[CANCEL sip:[subscriber_1710]@[domainName] SIP/2.0
+To: [lastTo]
+From: [lastFrom]
+Via: SIP/2.0/UDP [ipAddressSip]:[SBC_Port_1001];branch=[newBranchId]
+Call-ID: [lastCallId]
+CSeq: [ancien_lastCSeqNumber] CANCEL
+Route: <sip:[subscriber_1710]@[ipAddressSip]:[Provider_1710];lr>  
+Max-Forwards: 70
+Contact: <sip:[subscriber_1001]@[ipAddressSip]:[Provider_1001]>
+User-Agent: XMLLoader
+Content-Length: 0
+]]></sendRequestSIP>
+
+<log level="3">Balise apres Cancel</log>
+
+<!-- Attente du 200 ok de subscriber_1710 -->
+
+<receiveResponseSIP name="Wait 200 OK" providerName="[provider_Name]" method="CANCEL" result="200">
+</receiveResponseSIP>
+
+<log level="3">Balise apres le 200 ok du CANCEL</log>
+
+<receiveResponseSIP name="Wait 487 OK" providerName="[provider_Name]" method="INVITE" result="487">
+</receiveResponseSIP>
+
+<log level="3">Balise apres le 487</log>
+
+<!-- 
+|
+|
+|
+Reponse 200 ok a 1001
+Reception ACK
+Generation Flux RTP
+Attente BYE
+Acquittement du BYE 
+|
+|
+|
+-->
+
+<log level="3">Ancien_lastvia [ancien_lastVia]</log>
+
+<sendResponseSIP name="Send 200 OK" providerName="[provider_Name]">
+
+<![CDATA[SIP/2.0 200 OK
+To: [ancien_lastTo]
+From: [ancien_lastFrom]
+Via: [ancien_lastVia]
+Call-ID: [ancien_lastCallId]
+CSeq: [ancien_lastCSeqNumber] INVITE
+Contact: <sip:[ipAddressSip]:[SBC_Port_1001]>
+Max-Forwards: 10
+User-Agent: XMLLoader
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=*41*12345678 999 999 IN IP4 172.16.21.8
+s=-
+c=IN IP4 172.16.21.8
+t=0 0
+m=audio 11057 RTP/AVP 18 8
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=sendrecv
+]]></sendResponseSIP>
+
+<!-- COnnection Information original
+c=IN IP4 [ipAddressSdp_Service]
+-->
+
+<receiveRequestSIP name="Wait ACK" method="ACK">
+</receiveRequestSIP>
+
+<!--		
+<semaphore name="WaitACKservice" action="notify"/>
+-->
+	
+<openConnectionRTP name="OpenConnection" state="true"
+			  sessionName="[scenarioName]" 
+			  localHost="[ipAddressSip]" localPort="11057" 
+			  remoteHost="[ipAddressSip]" remotePort="[portSdpSubscriber_1001]"/>
+			  
+
+<log level="3">Balise Caller_to_Called_Ph2: localPort= [portSdp_ServiceSide]</log>
+<log level="3">Balise Caller_to_Called_Ph2: remoteHost=[SDPConnectionAddress0]</log>
+<log level="3">Balise Caller_to_Called_Ph2: remotePort=[SDPMediaPort0]</log>	
+		   
+	<sendPacketRTP name="sendPacketRTP" state="true" sessionName="[scenarioName]">	
+	    <packet>	    
+		<header ssrc="0" payloadType="27" seqnum="0" timestamp="0"/>
+		<payload format="text">Packet #1</payload>		
+	    </packet>	    		
+	</sendPacketRTP>		
+
+
+<closeConnectionRTP name="CloseConnection" state="true" sessionName="[scenarioName]" />	
+		
+<receiveRequestSIP name="Wait BYE" method="BYE">
+	<parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>  	
+	<parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>  	
+	<parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-Id"/>  	
+	<parameter name="[lastCSeq]" operation="setFromMessage" value="header:CSeq"/>  		
+	<parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/> 
+	<parameter name="[MaxForwards]" operation="setFromMessage" value="header:Max-Forwards"/>  		
+</receiveRequestSIP>
+	
+<sendResponseSIP name="Send 200 OK" providerName="[provider_Name]">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Contact: <sip:[ipAddressSip]:[SBC_Port_1001]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Max-Forwards: 70
+Content-Length: 0
+]]></sendResponseSIP>
+
+<finally><closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/></finally>
+
+</scenario>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <parameter name="[listenpoint]" operation="set" value="listenpoint_[port]" />
+
+    <createListenpointPOP name="[listenpoint]" localHost="[listenIp]" localPort="[port]"/>
+    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
+
+    <!-- attend message USER-->
+    <receiveMessagePOP listenpoint="[listenpoint]" request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[arg]" operation="protocol.setFromMessage" value="request.arguments" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="USER"/>
+        <test parameter="[arg]" condition="string.equals" value="testUSER"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse USER-->
+    <sendMessagePOP name="Send USER" transactionId="[transactionId]">
+<![CDATA[
++OK [arg] is a real hoopy frood
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message PASS-->
+    <receiveMessagePOP listenpoint="[listenpoint]" request="true">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+    </receiveMessagePOP>
+
+    <!-- envoi reponse PASS-->
+    <sendMessagePOP name="PASS" transactionId="[transactionId]">
+<![CDATA[
++OK [arg]'s maildrop has 2 messages (320 octets)
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message STAT-->
+    <receiveMessagePOP listenpoint="[listenpoint]" request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="STAT"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse STAT-->
+    <sendMessagePOP name="Send STAT response" transactionId="[transactionId]">
+<![CDATA[
++OK 2 320
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message LIST-->
+    <receiveMessagePOP listenpoint="[listenpoint]" request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="LIST"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse LIST-->
+    <sendMessagePOP name="Send LIST response" transactionId="[transactionId]">
+<![CDATA[
++OK
+1 120
+2 200
+.
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message QUIT-->
+    <receiveMessagePOP listenpoint="[listenpoint]" request="true">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+    </receiveMessagePOP>
+
+    <!-- envoi reponse QUIT-->
+    <sendMessagePOP name="Send QUIT response" transactionId="[transactionId]">
+<![CDATA[
++OK dewey POP server signing off
+]]>
+    </sendMessagePOP>
+    
+</scenario>

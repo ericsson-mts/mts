@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <if>
+        <condition>
+    		<test parameter="[waitSemaphore]" condition="boolean.equals" value="true"/>
+     	</condition>
+	<then>        
+  		<parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
+	</then>
+    </if>
+
+    <createListenpointRTP name="inviter" localHost="[localHostRTP(0)]" localPort="[localPortRTP]"/>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+    <pause name="wait between RTP packet" seconds="0.1"/>
+    <sendMessageRTP listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <packet>
+            <header ssrc="10" payloadType="8" seqnum="65534" timestamp="123" mark="1"/>
+            <payload format="text">Packet #1</payload>
+    	    </packet>
+    </sendMessageRTP>
+
+    <pause name="wait between RTP packet" seconds="0.1"/>
+    <sendMessageRTP listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <packet>
+            <header ssrc="10" payloadType="8" seqnum="0" timestamp="132" mark="0"/>
+            <payload format="text">Packet #3</payload>
+    	    </packet>
+    </sendMessageRTP>
+
+    <pause name="wait between RTP packet" seconds="0.1"/>
+    <sendMessageRTP listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <packet>
+            <header ssrc="10" payloadType="8" seqnum="1" timestamp="141" mark="1"/>
+            <payload format="text">Packet #4</payload>
+        </packet>
+    </sendMessageRTP>
+
+    <pause name="wait between RTP packet" seconds="0.1"/>
+    <sendMessageRTP listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <packet>
+            <header ssrc="10" payloadType="8" seqnum="65535" timestamp="150" mark="0"/>
+            <payload format="text">Packet #2</payload>
+        </packet>
+    </sendMessageRTP>
+
+    <pause name="wait between RTP packet" seconds="0.1"/>
+    <sendMessageRTP listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <packet>
+            <header ssrc="10" payloadType="8" seqnum="2" timestamp="159" mark="1"/>
+            <payload format="text">Packet #5</payload>
+        </packet>
+    </sendMessageRTP>
+
+    <removeListenpointRTP name="inviter" />
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+    
+    <createListenpointRTPFLOW name="inviter" localHost="[localHostRTP(0)]" localPort="[localPortRTP]"/>
+
+    <parameter name="[payloadList]" operation="set" value="PACKET #10" />
+    <parameter name="[payloadList]" operation="list.addLast" value="[payloadList]" value2="PACKET #11" />
+    <parameter name="[payloadList]" operation="list.addLast" value="[payloadList]" value2="PACKET #12" />
+    <parameter name="[payloadList]" operation="list.addLast" value="[payloadList]" value2="PACKET #13" />
+    <parameter name="[payloadList]" operation="list.addLast" value="[payloadList]" value2="PACKET #14" />
+    <parameter name="[payloadList]" operation="list.addLast" value="[payloadList]" value2="PACKET #15" />
+    <parameter name="[payloadList]" operation="list.addLast" value="[payloadList]" value2="PACKET #16" />
+    <parameter name="[payloadList]" operation="list.addLast" value="[payloadList]" value2="PACKET #17" />
+    <parameter name="[payloadList]" operation="list.addLast" value="[payloadList]" value2="PACKET #18" />
+
+    <parameter name="[payloadList]" operation="string.tobinary" value="[payloadList]"/>
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <flow packetNumber="9" bitRate="64" synchronous="true">
+            <header ssrc="123456" payloadType="8" seqnum="10" timestamp="200"/>
+            <payload format="binary">[payloadList]</payload>
+	    </flow>
+	</sendMessageRTPFLOW>
+
+    <removeListenpointRTPFLOW name="inviter" />
+
+</scenario>

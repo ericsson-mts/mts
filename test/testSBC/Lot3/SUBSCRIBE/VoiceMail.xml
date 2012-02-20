@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="200 OK for SUBSCRIBE" -->
+<scenario>
+<!-- Receive SUBSCRIBE. -->
+<!-- Send 200 OK SUBSCRIBE. -->
+
+  <label name="WaitSUBSCRIBE"/>
+  <receiveRequestSIP name="Wait SUBSCRIBE" method="SUBSCRIBE" timeout="0">
+    <parameter name="[lastTo]"         operation="setFromMessage" value="header:To"/>       
+    <parameter name="[ToTag]"          operation="setFromMessage" value="header:To:Parameter:tag"/>                                                                   
+    <parameter name="[lastFrom]"       operation="setFromMessage" value="header:From"/>   
+    <parameter name="[lastContactURI]" operation="setFromMessage" value="header:Contact:Address:URI"/>                      
+    <parameter name="[lastCallId]"     operation="setFromMessage" value="header:Call-Id"/>
+    <parameter name="[lastCseq]"       operation="setFromMessage" value="header:CSeq"/>
+    <parameter name="[lastExpires]"    operation="setFromMessage" value="header:Expires"/>
+    <parameter name="[lastVia]"        operation="setFromMessage" value="header:Via"/>
+    <parameter name="[MaxForwards]"    operation="setFromMessage" value="header:Max-Forwards"/>
+    <parameter name="[FromTag]"        operation="identifier"     value="newString" value2="10"/>
+  </receiveRequestSIP>
+
+  <if>
+    <condition>
+      <test parameter="[ToTag]" condition="isEmpty"/>
+    </condition>
+    <then>
+      <parameter name="[ToTag]"  operation="identifier" value="newString" value2="10"/>
+      <parameter name="[lastTo]" operation="set"        value="[lastTo];tag=[ToTag]"/>       
+    </then>
+  </if>
+
+  <sendResponseSIP name="Send 200 OK">
+<![CDATA[
+SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Expires: 30
+Contact: <sip:[Notifier]@[ipAddressSip]:[portSip]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Length: 0
+]]>
+  </sendResponseSIP>
+
+  <goto name="loop" label="WaitSUBSCRIBE" state="true"/>
+
+</scenario>

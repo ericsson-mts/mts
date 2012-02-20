@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[LocalPort]" operation="set" value="[PortUAC]"/>
+	<parameter name="[LocalAddressUAC]" operation="set" value="[HardAddressUAC]"/>	
+
+	
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+
+
+
+	<parameter name="[NewCallID]" operation="identifier" value="newInteger" value2="10000000"/>	 
+	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+	<parameter name="[NewCseq]" operation="set" value="1"/>			
+	<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+
+<sendRequestSIP name="Send Invite" providerName="[scenarioName]">
+<![CDATA[INVITE sip:[HardAddressUAS] SIP/2.0
+Call-ID: [NewCallID]
+CSeq: [NewCseq] INVITE
+From: "[InviterName]" <sip:[LocalAddressUAC]>;tag=[localTag]
+To: "[InviteeName]" <sip:[HardAddressUAS]>
+Via: SIP/2.0/UDP [LocalAddressUAC];branch=z9hG4bK[newBranchId]
+Max-Forwards: 10
+Route: <sip:[Adresse-Proxy];lr>
+Contact: "[InviterName]"<sip:[LocalAddressUAC]>
+Content-Type: application/sdp
+User-Agent: [UserAgent]
+Content-Length: 0
+]]>
+</sendRequestSIP>
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
+
+	<parameter name="[408received]" operation="set" value="false"/>
+	
+	<receiveResponseSIP name="Wait 408 Request Timeout" method="INVITE" result="408" timeout="[Retransmittimeout]" failedOnTimeout="false" failedOnReceive="false">
+	<parameter name="[480received]" operation="set" value="true"/>
+	</receiveResponseSIP>
+
+	<if>
+		<condition>
+			<test parameter="[408received]" condition="equals" value="false"/>
+		</condition>
+	<then>
+		<log level="2">No 408 - timeout received from the proxy!!! Please fix this problem</log>
+	</then>
+	</if>
+	
+	
+	
+</scenario>

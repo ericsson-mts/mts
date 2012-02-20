@@ -1,0 +1,78 @@
+<!--
+Function description: RTP dialog (second part libS_Subscriber_Response_Simulator_Ph1)
+Please also refer to libS_Subscriber_Response_Simulator_Ph1 and libS_Subscriber_Response_Simulator_Ph3
+-->
+
+
+<openConnectionRTP name="OpenConnection" state="true"
+			  sessionName="[scenarioName]" 
+			  localHost="[ipAddressSrc_Service]" localPort="[portSdp_ServiceSide]" 
+			  remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]"/>
+
+<!--			  
+<log level="3">Balise Caller_to_Called_Ph2: localHost= [ipAddressSrc_Service]</log>
+<log level="3">Balise Caller_to_Called_Ph2: localPort= [portSdp_ServiceSide]</log>
+<log level="3">Balise Caller_to_Called_Ph2: remoteHost=[SDPConnectionAddress0]</log>
+<log level="3">Balise Caller_to_Called_Ph2: remotePort=[SDPMediaPort0]</log>	
+-->
+
+<!--
+|
+|
+If only one way for RTC flow
+|
+|
+-->
+		   
+	<sendPacketRTP name="sendPacketRTP" state="true" sessionName="[scenarioName]">	
+	    <packet>	    
+		<header ssrc="0" payloadType="27" seqnum="0" timestamp="0"/>
+		<payload format="text">Packet #1</payload>		
+	    </packet>	    		
+	</sendPacketRTP>
+	
+<!--
+|
+|
+If both ways RTC flow is requested
+|
+|
+-->
+
+<if>
+	<condition>
+      		<test parameter="[RTP_Flow]" condition="equals" value="BOTH_WAYS" />
+	</condition>
+<then>
+	
+	
+<parameter name="[message_received]" operation="set" value="true"/>
+
+<while>
+	<condition>
+  	<test parameter="[message_received]" condition="equals" value="true" /> 
+  	</condition>
+<do>
+	<parameter name="[message_received]" operation="set" value="false"/>
+
+	<!--receivePacketRTP name="receivePacketRTP1" payloadType="27" failedOnTimeout="false" failedOnReceive="false" timeout="[endRtpDialog_Timer]"-->	
+	<receivePacketRTP name="receivePacketRTP1" failedOnTimeout="false" failedOnReceive="false" timeout="[endRtpDialog_Timer]">
+		<parameter name="[message_received]" operation="set" value="true"/>
+		<parameter name="[headerSsrc]" operation="setFromMessage" value="header:ssrc"/>
+		<parameter name="[headerPayloadType]" operation="setFromMessage" value="header:payloadType"/>
+		<parameter name="[headerSeqnum]" operation="setFromMessage" value="header:seqnum"/>
+		<parameter name="[headerTimestamp]" operation="setFromMessage" value="header:timestamp"/>
+		<parameter name="[payloadText]" operation="setFromMessage" value="payload:text"/>
+		<parameter name="[payloadBinary]" operation="setFromMessage" value="payload:binary"/>			
+	</receivePacketRTP>
+
+</do>
+</while>
+	
+		
+</then><else></else></if>
+
+	
+
+
+<closeConnectionRTP name="CloseConnection" state="true" sessionName="[scenarioName]" />	

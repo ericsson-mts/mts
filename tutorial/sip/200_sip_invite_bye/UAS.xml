@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE SIPimport [
+  <!ENTITY createResponse SYSTEM "../library/createResponse.xml">
+
+]>	
+<!--
+~~~~~~~~~~~~~~~~~~~
+|     Parameters INPUT     |
+~~~~~~~~~~~~~~~~~~~
+- statusCode
+- reasonPhrase
+- contentSDP
+- inviteeName
+- Adresse-Testee
+
+-->
+
+<scenario>
+
+  <parameter name="[inviteeName]" operation="set" value="bob"/>
+  <parameter name="[100_DOMAIN_ADDR]" operation="set" value="devoteam.com"/>
+  <parameter name="[clientName]" operation="set" value="alice"/>
+
+  <receiveMessageSIP name="Wait INVITE" type="INVITE" />
+
+  <parameter name="[statusCode]" operation="set" value="100"/>
+  <parameter name="[reasonPhrase]" operation="set" value="Trying"/>
+  <parameter name="[contentSDP]" operation="set" value=""/>
+  &createResponse;
+ 
+
+  <pause name="Pause before 180 OK" seconds="0.0"/>
+  <parameter name="[statusCode]" operation="set" value="180"/>
+  <parameter name="[reasonPhrase]" operation="set" value="Ringing"/>
+  <parameter name="[contentSDP]" operation="set" value=""/>
+  &createResponse;
+ 
+  <pause name="Pause before 200 OK" seconds="0.0"/>
+  <parameter name="[statusCode]" operation="set" value="200"/>
+  <parameter name="[reasonPhrase]" operation="set" value="OK"/>  
+  <parameter name="[contentSDP]" operation="file.readstring" value="200_sip_invite_bye/contentSDP.txt"/>
+  &createResponse;
+ 
+
+  <receiveMessageSIP name="Wait ACK" request="true" type="ACK" />
+  <receiveMessageSIP name="Wait BYE" request="true" type="BYE" />
+  
+  <parameter name="[statusCode]" operation="set" value="200"/>
+  <parameter name="[reasonPhrase]" operation="set" value="OK"/>
+  <parameter name="[contentSDP]" operation="set" value=""/>
+  &createResponse;
+
+
+</scenario>

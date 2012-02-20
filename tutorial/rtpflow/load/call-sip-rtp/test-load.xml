@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="Load test SIP_RTP">
+
+    <parameter name="[CallDurationSec]" operation="set" value="30" editable="true" description="Duration (in sec.) of the call"/>    	       	       
+    <parameter name="[TestDurationSec]" operation="set" value="600000" editable="true" description="Duration (in sec.) of the test "/>   	       
+    <parameter name="[TestcaseNumber]" operation="set" value="80" editable="true" description="Number of simultaneous testcase (call) in parallel"/>
+    <parameter name="[dialingDelay]" operation="set" value="0.5" editable="true" description="Dialing delay (in seconds) : time between INVITE and 180 response"/>    	       	       
+    <parameter name="[timeSpacing]" operation="set" value="0.005" editable="true" description="Time spacing (in seconds) : time between real and theorical timestamp"/>    	       	       
+    <parameter name="[packetLost]" operation="set" value="0.1" editable="true" description="Packets lost (in percent)"/>    	       	       
+
+    <parameter name="[domainName]" operation="set" value="devoteam.com" editable="true" description="Domain name for inviter and invitee identities"/>
+    <parameter name="[inviter]" operation="set" value="bob" editable="true" description="Inviter user name"/>
+    <parameter name="[invitee]" operation="set" value="alice" editable="true" description="Invitee user name"/>	
+	
+    <parameter name="[localHostSIP]" operation="system.ipaddress" value="eth0"/>        
+    <!-- parameter name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.DEFAULT_PORT" description="Remote host for the SIP protocol"/-->
+    <parameter name="[localPortSIP]" operation="set" value="7070" description="local port for the SIP protocol"/>    
+    <parameter name="[remoteHostSIP]" operation="system.ipaddress" value="eth0"/>
+    <!--parameter name="[remotePortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.DEFAULT_PORT" description="Remote port for the SIP protocol"/-->
+    <parameter name="[remotePortSIP]" operation="set" value="7070" description="Remote port for the SIP protocol"/>
+        
+    <parameter name="[localHostRTP]" operation="system.ipaddress" value="eth0"/>
+    <parameter name="[inviterBaseRTP]" operation="set" value="15000" editable="true" description="Start of the range port for the RTP protocol for the inviter"/>
+    <parameter name="[remoteHostRTP]" operation="system.ipaddress" value="eth0"/>    
+    <parameter name="[inviteeBaseRTP]" operation="set" value="16000" editable="true" description="Start of the range port for the RTP protocol for the invitee"/>
+                      
+    <parameter name="[filename]" operation="set" value="rtpflow.wav" editable="true"/>
+    <parameter name="fileWave" operation="file.readwave" value="[filename]" value2="20"/>
+    <parameter name="[payloadList]" operation="set" value="[[fileWave(0)]]"/>
+    <parameter name="[payloadType]" operation="set" value="[[fileWave(1)]]"/>
+    <parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>
+    <parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/>
+           	              	                  	       
+    <for index="[number]" from="01" to="[TestcaseNumber]" step="1">          	       
+
+    	<testcase name="call[number]" description="Call with mixed SIP/RTP protocol" state="true">
+		    <parameter name="[inviter]" operation="set" value="bob[number]"/>
+    		<parameter name="[invitee]" operation="set" value="alice[number]"/>
+            <parameter name="[nb]" operation="set" value="[number]"/>
+    		<parameter name="[num]" operation="number.multiply" value="[number]" value2="2"/>
+            <parameter name="[remotePortRTP]" operation="number.add" value="[inviteeBaseRTP]" value2="[num]"/>
+            <parameter name="[localPortRTP]" operation="number.add" value="[inviterBaseRTP]" value2="[num]"/>
+
+            <runProfile>
+                <start delay="[number]"/>
+                <step time="0" period="0"/>
+                <step time="5" period="0"/>
+                <end delay="[TestDurationSec]"/>
+            </runProfile>
+
+        	<scenario name="bob[number]">UAC.xml</scenario>
+        	<scenario name="alice[number]">UAS.xml</scenario>
+    	</testcase>
+
+    </for>
+    
+</test>

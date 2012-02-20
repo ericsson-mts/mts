@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario agent -->
+<scenario>   
+
+    <receiveMessageSNMP request="true">
+        <parameter name="remoteHost" operation="protocol.setFromMessage" value="message.remoteHost"/>
+        <parameter name="remotePort" operation="protocol.setFromMessage" value="message.remotePort"/>
+        <parameter name="reqId" operation="protocol.setFromMessage" value="header.requestId"/>
+        <parameter name="version" operation="protocol.setFromMessage" value="header.version"/>
+        <parameter name="type" operation="protocol.setFromMessage" value="header.type"/>
+        <parameter name="errorStatus" operation="protocol.setFromMessage" value="header.errorStatus"/>
+        <parameter name="errorIndex" operation="protocol.setFromMessage" value="header.errorIndex"/>
+        <parameter name="community" operation="protocol.setFromMessage" value="header.community"/>
+        <parameter name="variables" operation="protocol.setFromMessage" value="variables.name"/>
+        <parameter name="oids" operation="protocol.setFromMessage" value="variables.oid"/>
+        <parameter name="mibs" operation="protocol.setFromMessage" value="variables.mib"/>
+        <parameter name="types" operation="protocol.setFromMessage" value="variables.type"/>
+        <parameter name="val" operation="protocol.setFromMessage" value="variables.value"/>
+    </receiveMessageSNMP>
+
+    <test parameter="[reqId]" condition="number.equals" value="[testcase:requestId]"/>
+    <test parameter="[version]" condition="number.equals" value="1"/>
+    <test parameter="[type]" condition="string.equals" value="SET"/>
+    <test parameter="[errorStatus]" condition="number.equals" value="0"/>
+    <test parameter="[errorIndex]" condition="number.equals" value="0"/>
+    <test parameter="[community]" condition="string.equals" value="public"/>
+    <test parameter="[variables]" condition="string.equals" value="sysApplInstallPkgIndex"/>
+    <test parameter="[oids]" condition="string.equals" value="1.3.6.1.2.1.54.1.1.1.1.1"/>
+    <test parameter="[types]" condition="string.equalsIgnoreCase" value="integer32"/>
+    <test parameter="[val]" condition="number.equals" value="10"/>
+
+    <sendMessageSNMP remoteHost="[remoteHost]" remotePort="[remotePort]">
+        <header version="[version]" community="[community]"/>
+        <pdu name="response" requestId="[reqId]">
+            <variableBinding name="[oids]" value="[val]"/>
+        </pdu>
+    </sendMessageSNMP>
+
+</scenario>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : dictionary.xsd
+    Created on : 28 mai 2007, 21:14
+    Author     : Gege
+    Description:
+        Purpose of XML Schema document follows.
+-->
+
+<!DOCTYPE scenario [
+	<!ENTITY list_core_do SYSTEM "list_core_do.xsd">
+	<!ENTITY type_operations_core SYSTEM "type_operations_core.xsd">
+	<!ENTITY list_1 SYSTEM "list_protocol.xsd">
+	<!ENTITY type_operations_1 SYSTEM "type_operations_protocol.xsd">
+]>
+
+
+<xs:schema  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+            elementFormDefault="qualified">
+
+    <xs:element name="scenario" type="scenarioType" />
+    
+    <xs:complexType name="scenarioType">
+        <xs:complexContent>
+            <xs:extension base="doType">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded" >
+                    <xs:element name="finally" type="doType" minOccurs="0" maxOccurs="unbounded" />
+               </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="doType">
+        <xs:complexContent>
+                <xs:extension base="operationType">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded" >
+                    &list_1;
+               </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    &type_operations_core;
+    &type_operations_1;
+
+</xs:schema>

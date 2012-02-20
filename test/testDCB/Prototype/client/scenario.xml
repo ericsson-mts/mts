@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <!-- Do radius over UDP here -->
+    <pause name="temps d'attente" milliseconds="1000" /> 
+    <openSocketUDP socketName="client_[testcase:index]" localHost="[source_ip]" localPort="[nas_port]"/>
+
+
+    <!-- compute ip address -->
+    <parameter name="[address_ip_array]" operation="regexMatches" value="[source_ip]" value2="[0-9]+" />
+
+    <!-- create random numbers for authenticator 8x2 bytes = 16 bytes-->
+    <parameter name="[rand_0]" operation="identifier" value="newInteger" value2="65535" />
+    <parameter name="[rand_1]" operation="identifier" value="newInteger" value2="65535" />
+    <parameter name="[rand_2]" operation="identifier" value="newInteger" value2="65535" />
+    <parameter name="[rand_3]" operation="identifier" value="newInteger" value2="65535" />
+    <parameter name="[rand_4]" operation="identifier" value="newInteger" value2="65535" />
+    <parameter name="[rand_5]" operation="identifier" value="newInteger" value2="65535" />
+    <parameter name="[rand_6]" operation="identifier" value="newInteger" value2="65535" />
+    <parameter name="[rand_7]" operation="identifier" value="newInteger" value2="65535" />
+
+    <parameter name="[identifier]" operation="set" value="0" />
+    
+    <sendDataUDP socketName="client_[testcase:index]" remoteHost="[radius_ip]" remotePort="[radius_auth_port]">
+        <!-- code -->
+        <data format="binary">h01</data>
+        <!-- packet identifier -->
+        <data format="binary">h01</data>
+        <!-- length -->
+        <data format="binary">h00 h42</data>
+        <!-- authenticator -->
+        <data format="binary">d[rand_0]:2 d[rand_1]:2 d[rand_2]:2 d[rand_3]:2 d[rand_4]:2 d[rand_5]:2 d[rand_6]:2 d[rand_7]:2</data>
+        <!-- avps -->
+            <!-- code: user-name (1) -->
+            <data format="binary">h01</data>
+            <!-- length -->
+            <data format="binary">h0c</data>
+            <!-- data -->
+            <data format="text">[msisdn]</data>
+
+            <!-- code: user-password (2) -->
+            <data format="binary">h02</data>
+            <!-- length -->
+            <data format="binary">h12</data>
+            <!-- data -->
+            <data format="binary">hbd hd9 hce ha9 h40 h39 h75 h4b hd3 h69 h57 h95 hc9 h9f hd3 h65</data>
+            
+            <!-- code: nas-IP-address (4) -->
+            <data format="binary">h04</data>
+            <!-- length -->
+            <data format="binary">h06</data>
+            <!-- data -->
+            <data format="binary">d[address_ip_array(0)]:1 d[address_ip_array(1)]:1 d[address_ip_array(2)]:1 d[address_ip_array(3)]:1</data>
+
+            <!-- code: nas-port (5) -->
+            <data format="binary">h05</data>
+            <!-- length -->
+            <data format="binary">h06</data>
+            <!-- data -->
+            <data format="binary">d[nas_port]:4</data>
+
+            <!-- code: calling station id (31) -->
+            <data format="binary">h1f</data>
+            <!-- length -->
+            <data format="binary">h02</data>
+            <!-- data -->
+
+            <!-- code: called station id (30) -->
+            <data format="binary">h1e</data>
+            <!-- length -->
+            <data format="binary">h02</data>
+            <!-- data -->
+    </sendDataUDP>
+            
+    <receiveDataUDP />
+    
+    <pause name="temps d'attente" milliseconds="50" />
+    <!--
+      In Accounting-Request Packets, the Authenticator value is a 16
+      octet MD5 [5] checksum, called the Request Authenticator.
+
+      The NAS and RADIUS accounting server share a secret.  The Request
+      Authenticator field in Accounting-Request packets contains a one-
+      way MD5 hash calculated over a stream of octets consisting of the
+      Code + Identifier + Length + 16 zero octets + request attributes +
+      shared secret (where + indicates concatenation).  The 16 octet MD5
+      hash value is stored in the Authenticator field of the
+      Accounting-Request packet.
+      
+    -->
+    <parameter name="[total_length]" operation="set" value="2" /> <!-- 2 bytes for the length field itself -->
+
+    <parameter name="[code]" operation="set" value="h04" />
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="1" />
+
+    <parameter name="[identifier]" operation="add" value="[identifier]" value2="1" />
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="1" />
+
+    <parameter name="[avps]" operation="set" value=""/>
+
+
+    <!--Acct-Status-Type(40) -->
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h28 h06 h0001:4"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="6" />
+
+    <!--User-Name(1) -->
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h01 h0c s[msisdn]:10"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="12" />
+
+    <!-- NAS-IP-Address(4) -->
+    <parameter name="[address_ip_array]" operation="regexMatches" value="[nas_ip_address]" value2="[0-9]+" />
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h04 h06 d[address_ip_array(0)]:1 d[address_ip_array(1)]:1 d[address_ip_array(2)]:1 d[address_ip_array(3)]:1"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="6" />
+
+    <!-- NAS-Port(5) -->
+    <!-- <parameter name="[avps]" operation="concat" value="[avps]" value2=" h05 h06 d[nas_port]:4"/> -->
+     <parameter name="[avps]" operation="concat" value="[avps]" value2=" h05 h06 h00 h00 h0b h72"/>
+   <parameter name="[total_length]" operation="add" value="[total_length]" value2="6" />
+
+    <!-- Framed-IP-Address(8) -->
+    <parameter name="[address_ip_array]" operation="regexMatches" value="[source_ip]" value2="[0-9]+" />
+      <!--parameter name="[avps]" operation="concat" value="[avps]" value2=" h08 h06 h0a ha2 hbe hb2"/-->
+  <parameter name="[avps]" operation="concat" value="[avps]" value2=" h08 h06 d[address_ip_array(0)]:1 d[address_ip_array(1)]:1 d[address_ip_array(2)]:1 d[address_ip_array(3)]:1"/>
+   <parameter name="[total_length]" operation="add" value="[total_length]" value2="6" />
+
+    <!-- Calling-Station-Id(31) -->
+    <parameter name="[length]" operation="add" value="[calling_station_id_len]" value2="2" />
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h1f d[length]:1 s[calling_station_id]:[calling_station_id_len]"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="[length]" />
+
+    <!-- Called-Station-Id(30) -->
+    <parameter name="[length]" operation="add" value="[called_station_id_len]" value2="2" />
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h1e d[length]:1 s[called_station_id]:[called_station_id_len]"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="[length]" />
+
+    <!-- Acct-Session-Id(44) -->
+    <parameter name="[timestamp]" operation="setFromSystem" value="Timestamp" value2="1970" />
+    <parameter name="[timestamp]" operation="divide" value="[timestamp]" value2="1000" />
+    <parameter name="[uid]" operation="identifier" value="nextInteger" value2="" />
+    <!--parameter name="[acct_session_id]" operation="set" value="s[timestamp]:4 s[uid]:4" /-->
+    <!--parameter name="[acct_session_id]" operation="set" value="s4c08b200:8" /-->
+	<parameter name="[acct_session_id]" operation="set" value="s[msisdn]:8" />
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h2c h0a s[acct_session_id]"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="10" />
+
+    <!-- Event-Timestamp(55) -->
+   <parameter name="[avps]" operation="concat" value="[avps]" value2=" h37 h06 d[timestamp]:4"/> 
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="6" />
+    
+    <!-- Framed-Protocol(7) -->
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h07 h06 h07:4"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="6" />
+    
+    <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h1a h0c h000028af:4 h02:1 h06:1 [3gpp_charging_id]:4"/>    
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="12" />
+
+    <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+    <parameter name="[address_ip_array]" operation="regexMatches" value="[3gpp_sgsn_address]" value2="[0-9]+" />
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h1a h0c h000028af:4 h06:1 h06:1 d[address_ip_array(0)]:1 d[address_ip_array(1)]:1 d[address_ip_array(2)]:1 d[address_ip_array(3)]:1"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="12" />
+    
+    <!-- NAS-Identifier(32) -->
+    <parameter name="[length]" operation="add" value="[nas_identifier_len]" value2="3" />
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h20 d[length]:1 s[nas_identifier]:[nas_identifier_len] h00:1 "/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="[length]" />
+
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="16" />
+    <!-- <parameter name="[authenticator]" operation="set" value=" [code] [identifier] [total_length] h00:16 [avps] s[secret]" /> -->
+    <parameter name="[authenticator]" operation="set" value=" h04:1 h01:1 h008a:2 h00:16 [avps] h736563726574:6 " />
+   <parameter name="[authenticator]" operation="MD5" value="[authenticator]" value2="binary" />
+
+    <sendDataUDP socketName="client_[testcase:index]" remoteHost="[radius_ip]" remotePort="[radius_acct_port]">
+        <!-- code -->
+        <data format="binary">[code]</data>
+        <!-- packet identifier -->
+        <data format="binary">[identifier]</data>
+        <!-- length -->
+        <data format="binary">[total_length]:2</data>
+        <!-- authenticator -->
+        <data format="binary">h[authenticator]:16</data>
+        <!-- avps -->
+        <data format="binary">
+            [avps]
+        </data>
+    </sendDataUDP>
+
+    <receiveDataUDP />
+    
+    
+    <!--exit failed="false" /-->
+    
+    <pause name="temps d'attente" milliseconds="10" />
+    
+<!-- Changement de socket pour browsing -->
+    
+    <openConnectionHTTP connectionName="connection_http_[testcase:index]" localHost="[source_ip]" remoteURL="[protocol]://[server]:80" />
+
+    <parameter name="[i]" operation="set" value="0" />
+        
+    <while>
+        <condition>
+            <test parameter="[i]" condition="lowerThan" value="[resources_size]" />
+        </condition>
+        <do>
+            <parameter name="[resource]" operation="set" value="[resources([i])]" />
+            <parameter name="[uid]" operation="identifier" value="nextInteger" value2="" />
+        	<sendRequestHTTP connectionName="connection_http_[testcase:index]">
+<![CDATA[GET [resource] HTTP/1.1
+Host: [server]
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: utf-8;iso-8859
+User-Agent: XMLLoader
+Test-Header: [uid]
+]]>
+        	</sendRequestHTTP>
+		
+        	<receiveResponseHTTP result="200" />
+
+    	    <parameter name="[i]" operation="add" value="[i]" value2="1"/>
+    	</do>
+	</while>
+
+	
+	
+	
+	
+	<!-- SAME PACKET BUT THE IDENTIFIER Acct-Status-Type = 2-->
+    <parameter name="[total_length]" operation="set" value="2" /> <!-- 2 bytes for the length field itself -->
+
+    <parameter name="[code]" operation="set" value="h04" />
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="1" />
+
+    <parameter name="[identifier]" operation="add" value="[identifier]" value2="1" />
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="1" />
+
+    <parameter name="[avps]" operation="set" value=""/>
+
+
+    <!--Acct-Status-Type(40) -->
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h28 h06 h0002:4"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="6" />
+
+    <!--User-Name(1) -->
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h01 h0c s[msisdn]:10"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="12" />
+
+    <!-- NAS-IP-Address(4) -->
+    <parameter name="[address_ip_array]" operation="regexMatches" value="[nas_ip_address]" value2="[0-9]+" />
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h04 h06 d[address_ip_array(0)]:1 d[address_ip_array(1)]:1 d[address_ip_array(2)]:1 d[address_ip_array(3)]:1"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="6" />
+
+    <!-- NAS-Port(5) -->
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h05 h06 d[nas_port]:4"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="6" />
+
+    <!-- Framed-IP-Address(8) -->
+    <parameter name="[address_ip_array]" operation="regexMatches" value="[source_ip]" value2="[0-9]+" />
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h08 h06 d[address_ip_array(0)]:1 d[address_ip_array(1)]:1 d[address_ip_array(2)]:1 d[address_ip_array(3)]:1"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="6" />
+
+    <!-- Calling-Station-Id(31) -->
+    <parameter name="[length]" operation="add" value="[calling_station_id_len]" value2="2" />
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h1f d[length]:1 s[calling_station_id]:[calling_station_id_len]"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="[length]" />
+
+    <!-- Called-Station-Id(30) -->
+    <parameter name="[length]" operation="add" value="[called_station_id_len]" value2="2" />
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h1e d[length]:1 s[called_station_id]:[called_station_id_len]"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="[length]" />
+
+    <!-- Acct-Session-Id(44) -->
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h2c h0a [acct_session_id]"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="10" />
+
+    <!-- Event-Timestamp(55) -->
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h37 h06 d[timestamp]:4"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="6" />
+    
+    <!-- Framed-Protocol(7) -->
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h07 h06 h07:4"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="6" />
+    
+    <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h1a h0c h000028af:4 h02:1 h06:1 [3gpp_charging_id]:4"/>    
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="12" />
+
+    <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+    <parameter name="[address_ip_array]" operation="regexMatches" value="[3gpp_sgsn_address]" value2="[0-9]+" />
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h1a h0c h000028af:4 h06:1 h06:1 d[address_ip_array(0)]:1 d[address_ip_array(1)]:1 d[address_ip_array(2)]:1 d[address_ip_array(3)]:1"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="12" />
+    
+    <!-- NAS-Identifier(32) -->
+    <parameter name="[length]" operation="add" value="[nas_identifier_len]" value2="2" />
+    <parameter name="[avps]" operation="concat" value="[avps]" value2=" h20 d[length]:1 s[nas_identifier]:[nas_identifier_len]"/>
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="[length]" />
+
+    <parameter name="[authenticator]" operation="set" value=" [code]:1 [identifier]:1 h0089:2 h00:16 [avps] h736563726574:6 " />
+    <parameter name="[authenticator]" operation="MD5" value="[authenticator]" value2="binary" />
+    <parameter name="[total_length]" operation="add" value="[total_length]" value2="16" />
+
+
+    <sendDataUDP socketName="client_[testcase:index]" remoteHost="[radius_ip]" remotePort="[radius_acct_port]">
+        <!-- code -->
+        <data format="binary">[code]</data>
+        <!-- packet identifier -->
+        <data format="binary">[identifier]</data>
+        <!-- length -->
+        <data format="binary">[total_length]:2</data>
+        <!-- authenticator -->
+        <data format="binary">h[authenticator]:16</data>
+        <!-- avps -->
+        <data format="binary">
+            [avps]
+        </data>
+    </sendDataUDP>
+
+    <receiveDataUDP />
+    
+    	<finally>
+    	<closeConnectionHTTP connectionName="connection_http_[testcase:index]" />
+    	<closeSocketUDP socketName="client_[testcase:index]" />
+    	<pause name="temps d'attente" milliseconds="100" />
+	</finally>
+</scenario> 

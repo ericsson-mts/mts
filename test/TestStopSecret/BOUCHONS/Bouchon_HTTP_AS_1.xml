@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE library [
+<!ENTITY libS_Proxy_Server				SYSTEM "..\library\libS_Proxy_Server.xml">
+<!ENTITY libS_Own_Invite				SYSTEM "..\library\libS_Own_Invite.xml">
+]>
+
+<scenario>
+
+
+<!--
+
+
+
+
+HTTP messages from MRFA side
+
+8 GET
+1 POST
+
+
+
+
+-->
+
+<receiveRequestHTTP name="Wait GET" method="GET" timeout="100" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+	<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader01
+]]>
+<!--******************** END MESSAGE *********************-->
+	</sendResponseHTTP>
+	
+	
+
+<receiveRequestHTTP name="Wait GET" method="GET" timeout="100" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+	<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader01
+]]>
+<!--******************** END MESSAGE *********************-->
+	</sendResponseHTTP>
+	
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" timeout="100" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+	<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader01
+]]>
+<!--******************** END MESSAGE *********************-->
+	</sendResponseHTTP>
+	
+	
+
+<receiveRequestHTTP name="Wait GET" method="GET" timeout="100" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+	<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader01
+]]>
+<!--******************** END MESSAGE *********************-->
+	</sendResponseHTTP>
+	
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" timeout="100" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+	<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader01
+]]>
+<!--******************** END MESSAGE *********************-->
+	</sendResponseHTTP>
+	
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" timeout="100" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+	<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader01
+]]>
+<!--******************** END MESSAGE *********************-->
+	</sendResponseHTTP>
+	
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" timeout="100" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+	<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader01
+]]>
+<!--******************** END MESSAGE *********************-->
+	</sendResponseHTTP>
+	
+	
+
+<receiveRequestHTTP name="Wait GET" method="GET" timeout="100" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+	<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader01
+]]>
+<!--******************** END MESSAGE *********************-->
+	</sendResponseHTTP>
+	
+
+<!--
+
+POST with Wav file
+
+-->
+
+<receiveRequestHTTP name="Wait POST" method="POST" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+</receiveRequestHTTP>
+	
+	<sendResponseHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader02
+Content-Length:12
+
+host message]]>
+<!--******************** END MESSAGE *********************-->
+	</sendResponseHTTP>
+
+
+
+
+<!--
+
+
+
+
+HTTP messages from MRFB side
+
+10 GET
+1 POST
+3 GET
+
+
+
+-->
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader04
+]]>
+</sendResponseHTTP>
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader04
+]]>
+</sendResponseHTTP>
+
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader04
+]]>
+</sendResponseHTTP>
+
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader04
+]]>
+</sendResponseHTTP>
+
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader04
+]]>
+</sendResponseHTTP>
+
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader04
+]]>
+</sendResponseHTTP>
+
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader04
+]]>
+</sendResponseHTTP>
+
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader04
+]]>
+</sendResponseHTTP>
+
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader04
+]]>
+</sendResponseHTTP>
+
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader04
+]]>
+</sendResponseHTTP>
+
+
+
+
+
+
+
+
+<receiveRequestHTTP name="Wait POST" method="POST" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+</receiveRequestHTTP>
+	
+	<sendResponseHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader02
+Content-Length:12
+
+host message]]>
+<!--******************** END MESSAGE *********************-->
+	</sendResponseHTTP>
+
+
+
+
+
+
+
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader04
+]]>
+</sendResponseHTTP>
+
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader04
+]]>
+</sendResponseHTTP>
+
+
+
+<receiveRequestHTTP name="Wait GET" method="GET" >
+<parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+
+</receiveRequestHTTP>
+	
+<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader04
+]]>
+</sendResponseHTTP>
+
+
+</scenario>

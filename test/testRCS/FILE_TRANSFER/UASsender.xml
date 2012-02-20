@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+	
+	<createListenpointSIP name="listenpointUASsender" localHost="[Host-Tester1]" localPort="[Port-Tester1]" listenUDP="true" listenTCP="false" listenSCTP="false" listenTLS="false" transport="[LocalTransport]" />
+
+	<receiveMessageSIP name="Wait INVITE" request="true" type="INVITE">
+			<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>
+			<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
+			<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+			<parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+			<parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+			<parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+			<parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+			<parameter name="[localTag]" operation="string.random" value="10"/>
+			<parameter name="[RecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route"/>
+			<parameter name="[SDPConnectionAddress0]" operation="protocol.setFromMessage" value="content(0).Sdp.Connection.Address"/>
+			<parameter name="[SDPMediaPort0]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Port"/>
+			<parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+	</receiveMessageSIP>
+	
+<sendMessageSIP name="Send 100 Trying" listenpoint="listenpointUASsender">
+<![CDATA[SIP/2.0 100 Trying
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Content-Length: 0
+]]>
+</sendMessageSIP>
+
+<pause name="Pause before 200 OK" seconds="0.1"/>
+
+<sendMessageSIP name="Send 200 OK" listenpoint="listenpointUASsender">
+<![CDATA[SIP/2.0 200 OK
+Via: [lastVia]
+From: [lastFrom]
+To: [lastTo];tag=[localTag]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Record-Route: [RecordRoute]
+Accept-Contact: *;+g.oma.sip-im;explicit
+User-Agent: IM-client/OMA1.0
+Allow: INVITE,PRACK,OPTIONS,ACK,BYE,SUBSCRIBE,CANCEL,NOTIFY,UPDATE
+Contact: <sip:[inviteeName]@[Adresse-Tester1]>
+Content-Type: application/sdp
+Content-Length: x
+P-Asserted-Identity: <tel:+33621471106>
+P-Asserted-Identity: <sip:+33621471106@ims.mnc010.mcc208.3gppnetwork.org;user=phone>
+Session-Expires: 3600;refresher=uac
+Supported: timer
+Require: timer
+Server: Alcatel-Lucent-HPSS/3.0.3
+
+v=0
+o=SAMSUNG-IMS-UE 0 0 IN IP4 [Host-Tester1]
+s=-
+c=IN IP4 [Host-Tester1]
+t=0 0
+m=message 2855 TCP/MSRP *
+a=recvonly
+a=accept-types:text/plain image/jpeg image/gif image/bmp image/png audio/amr audio/mp3 video/3gpp video/mp4 application/pdf application/msword
+a=file-disposition:attachment
+a=file-selector:name:"smiley-rire.jpg" type:image/jpeg size:54008
+a=file-transfer-id:ILA6ra
+a=setup:passive
+a=msrp-acm
+a=max-size:5242880
+a=path:msrp://10.47.2.153:7150/Q34hPCWSVEmtuhTrUDfiX2sPcZ;tcp
+
+]]>
+</sendMessageSIP>
+
+	<receiveMessageSIP name="Wait ACK" request="true" type="ACK">
+			<parameter name="[newTo]" operation="protocol.setFromMessage" value="header.To"/>
+			<parameter name="[newFrom]" operation="protocol.setFromMessage" value="header.From"/>
+	</receiveMessageSIP>
+	
+	<!--MSRP Message -->
+	
+	<parameter name="[connection]" operation="set" value="channelMSRP_TLS" />
+  <parameter name="[localTransactionID]" operation="string.random" value="10"/>
+  <parameter name="[localMessageID]" operation="string.random" value="10"/>
+  
+<createListenpointMSRP name="listenpointUASsender" localHost="[Host-Tester1]" localPort="2855" listenTCP="true" listenTLS="false" transport="[LocalTransport]"/>
+
+<sendMessageMSRP listenpoint="listenpointUASsender" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]">
+<![CDATA[MSRP [localTransactionID] SEND
+To-Path: msrp://10.47.2.153:7150/Q34hPCWSVEmtuhTrUDfiX2sPcZ;tcp
+From-Path: msrp://193.249.208.6:7150/tOvFWJ1pM2IDteyPKSgcKOzn;tcp
+Message-ID: QPGuw520M9
+Success-Report: no
+Failure-Report: no
+-------[localTransactionID]$
+]]>
+</sendMessageMSRP > 
+	
+
+	
+<receiveMessageMSRP listenpoint="listenpointUASsender"/>
+
+  <receiveMessageMSRP name="Wait SEND"  type="SEND" request="true">
+      <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+      <parameter name="[localTransactionID]" operation="protocol.setFromMessage" value="firstline.Transaction-ID"/>        
+  </receiveMessageMSRP> 
+ 
+<sendMessageMSRP listenpoint="listenpointUASsender">
+<![CDATA[MSRP [localTransactionID] 200 OK
+To-Path: msrp://10.47.2.153:7150/Q34hPCWSVEmtuhTrUDfiX2sPcZ;tcp
+From-Path: msrp://193.249.208.6:7150/tOvFWJ1pM2IDteyPKSgcKOzn;tcp
+-------[localTransactionID]$
+]]>
+</sendMessageMSRP>
+
+ <parameter name="[binary]" operation="file.readbinary"   value="smile.jpg"/>
+ <parameter name="[string]" operation="binary.toString"   value="[binary]"/>
+ 
+<sendMessageMSRP listenpoint="listenpointUASsender" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]">
+<![CDATA[MSRP C9IGhYT3M8Qju SEND
+To-Path: msrp://10.47.2.153:7150/Q34hPCWSVEmtuhTrUDfiX2sPcZ;tcp
+From-Path: msrp://193.249.208.6:7150/tOvFWJ1pM2IDteyPKSgcKOzn;tcp
+Message-ID: nO6gBS58ndWwT1e6
+Success-Report: yes
+Failure-Report: no
+Byte-Range: 1-54008/54008
+Content-Type: image/jpeg
+
+[string]
+]]>
+</sendMessageMSRP > 
+	
+
+	
+<receiveMessageMSRP listenpoint="listenpointUASsender"/>
+
+<!--<closeChannelMSRP name="[connection]" />-->
+<!--Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]-->
+
+	<receiveMessageSIP name="Wait BYE" request="true" type="BYE">
+	  <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>         
+	  <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
+	  <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>          
+	  <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>       
+	  <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>                 
+	  <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
+	  <parameter name="[RecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route"/>              
+	  <!--<parameter name="[Via]" operation="string.regexReplaces" value="[Via]" value2=":6060" value3=":5050"/>-->
+	</receiveMessageSIP>
+
+
+	<sendMessageSIP name="Send 200 OK" listenpoint="listenpointUASsender">
+<![CDATA[SIP/2.0 200 OK
+Via: [Via]
+From: [From]
+To: [To];tag=[localTag]
+Call-ID: [CallId]
+CSeq: [CSeq]
+Contact: <sip:[inviteeName]@[Adresse-Tester2]>
+Date: Fri, 23 Jul 2010 09:52:51 GMT
+Server: Alcatel-Lucent-HPSS/3.0.3
+Content-Length: 0
+]]>
+  </sendMessageSIP>
+
+<finally>
+
+    <removeListenpointMSRP name="listenpointUASsender"/>
+    <removeListenpointSIP name="listenpointUASsender"/>
+
+</finally>  
+
+</scenario>

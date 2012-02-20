@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <createListenpointRTPFLOW name="inviter" localHost="[localHostRTP(0)]" localPort="[localPortRTP]"/>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+    <parameter name="[testcase:payloadList]" operation="set" value="[[fileWave(0)]]"/>
+    <parameter name="[payloadType]" operation="set" value="[[fileWave(1)]]"/>
+    <parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <flow duration="5" bitRate="[bitRate]" synchronous="false">
+            <header ssrc="987654" payloadType="[payloadType]" seqnum="10" timestamp="200"/>
+            <payload format="binary">[payloadList]</payload>
+	    </flow>
+    </sendMessageRTPFLOW>
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="11001">
+	    <flow duration="10" deltaTime="20" synchronous="true">
+            <header ssrc="1276417" payloadType="[payloadType]" seqnum="1" timestamp="600"/>
+            <payload format="text">Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP</payload>
+	    </flow>
+    </sendMessageRTPFLOW>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+    <parameter name="[payloadType]" operation="set" value="[[fileWave(1)]]"/>
+    
+    <receiveMessageRTPFLOW listenpoint="inviter" type="[payloadType]">
+        <parameter name="[ssrc]" operation="protocol.setFromMessage" value="header.ssrc"/>
+        <parameter name="[payloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>
+        <parameter name="[seqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>
+        <parameter name="[timestamp]" operation="protocol.setFromMessage" value="header.timestamp"/>
+        <parameter name="[payloadText]" operation="protocol.setFromMessage" value="flow.payload.text"/>
+        <parameter name="[payloadBinary]" operation="protocol.setFromMessage" value="flow.payload.binary"/>
+        <parameter name="[payloadLength]" operation="string.length" value="[payloadText]"/>
+        <parameter name="[packetNumber]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
+        <parameter name="[packetTimestamp]" operation="protocol.setFromMessage" value="flow.packetTimestamp"/>
+        <parameter name="[packetTimestampLength]" operation="list.size" value="[packetTimestamp]"/>
+        <parameter name="[packetLost]" operation="protocol.setFromMessage" value="qos.packetLost"/>
+        <parameter name="[packetDuplicated]" operation="protocol.setFromMessage" value="qos.packetDuplicated"/>
+        <parameter name="[packetMissSequence]" operation="protocol.setFromMessage" value="qos.packetMissSequence"/>
+        <parameter name="[packetSpacingMean]" operation="protocol.setFromMessage" value="qos.packetSpacingMean"/>
+        <parameter name="[packetSpacing]" operation="protocol.setFromMessage" value="qos.packetSpacing"/>
+        <parameter name="[packetSpacingLength]" operation="list.size" value="[packetSpacing]"/>
+        <parameter name="[deltaTimeMean]" operation="protocol.setFromMessage" value="qos.deltaTimeMean"/>
+        <parameter name="[deltaTime]" operation="protocol.setFromMessage" value="qos.deltaTime"/>
+        <parameter name="[deltaTimeLength]" operation="list.size" value="[deltaTime]"/>
+        <parameter name="[jitterDelayMean]" operation="protocol.setFromMessage" value="qos.jitterDelayMean"/>
+        <parameter name="[jitterDelay]" operation="protocol.setFromMessage" value="qos.jitterDelay"/>
+        <parameter name="[jitterDelayLength]" operation="list.size" value="[jitterDelay]"/>
+        <parameter name="[bitrate]" operation="protocol.setFromMessage" value="qos.bitRate"/>
+        <parameter name="[mos]" operation="protocol.setFromMessage" value="qos.mos"/>
+    </receiveMessageRTPFLOW>
+
+    <finally>
+	<removeListenpointRTPFLOW name="inviter" />
+    </finally>
+		
+</scenario>

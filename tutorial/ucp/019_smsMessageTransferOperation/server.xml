@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageUCP request="true" type="SMSMessageTransferOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="AdC" operation="protocol.setFromMessage" value="attribute.AdC"/>
+        <parameter name="OAdC" operation="protocol.setFromMessage" value="attribute.OAdC"/>
+        <parameter name="AC" operation="protocol.setFromMessage" value="attribute.AC"/>
+        <parameter name="NRq" operation="protocol.setFromMessage" value="attribute.NRq"/>
+        <parameter name="NAd" operation="protocol.setFromMessage" value="attribute.NAd"/>
+        <parameter name="NPID" operation="protocol.setFromMessage" value="attribute.NPID"/>
+        <parameter name="DD" operation="protocol.setFromMessage" value="attribute.DD"/>
+        <parameter name="DDT" operation="protocol.setFromMessage" value="attribute.DDT"/>
+        <parameter name="VP" operation="protocol.setFromMessage" value="attribute.VP"/>
+        <parameter name="AMsg" operation="protocol.setFromMessage" value="attribute.AMsg"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[AdC]" condition="string.equals" value="012345"/>
+        <test parameter="[OAdC]" condition="string.equals" value=""/>
+        <test parameter="[AC]" condition="string.equals" value="azerty"/>
+        <test parameter="[NRq]" condition="string.equals" value=""/>
+        <test parameter="[NAd]" condition="string.equals" value="4"/>
+        <test parameter="[NPID]" condition="string.equals" value="0539"/>
+        <test parameter="[DD]" condition="string.equals" value="1"/>
+        <test parameter="[DDT]" condition="string.equals" value=""/>
+        <test parameter="[VP]" condition="string.equals" value=""/>
+        <test parameter="[AMsg]" condition="string.equals" value="toto"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="SMSMessageTransferOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="MVP" value="9999999999"/>
+        <attribute name="SM"  value="is it good"/>
+    </sendMessageUCP>
+
+</scenario>

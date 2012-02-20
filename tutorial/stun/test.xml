@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="STUN" description="STUN regression tests">
+
+
+    
+    <parameter name="[Host-Tester]" operation="system.ipaddress"/>
+    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]" editable="true"/>
+    <parameter name="[Port-Tester]" operation="file.readProperty" value="stun.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[Port-Tester]" operation="set" value="[Port-Tester]" editable="true"/>
+    <parameter name="[Host-Server]" operation="system.ipaddress"/>
+    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]" editable="true"/>
+    <parameter name="[Port-Server]" operation="file.readProperty" value="stun.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[Port-Server]" operation="set" value="[Port-Server]" editable="true"/>
+    <!--parameter name="[Host-Server]" operation="set" value="192.168.90.206"/-->
+    
+    <testcase name="000_bindingRequest" description="test a binding request" state="true">
+        <scenario name="Stun_client">000_bindingRequest/Stun_client.xml</scenario>
+        <scenario name="STUN">000_bindingRequest/Stun_server.xml</scenario>
+    </testcase>
+
+    
+    <testcase name="001_setFromMessage" description="test the setFromMessage operation" state="true">
+        <scenario name="Stun_client">001_setFromMessage/Stun_client.xml</scenario>
+        <scenario name="STUN">001_setFromMessage/Stun_server.xml</scenario>
+    </testcase>
+
+
+   
+    
+</test>

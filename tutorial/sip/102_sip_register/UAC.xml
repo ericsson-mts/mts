@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  	<parameter name="[domainName]" operation="set" value="devoteam.com"/>
+  	<parameter name="[userName]" operation="set" value="alice"/>
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[MaxForwards]" operation="set" value="70"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
+
+	<sendMessageSIP name="Send REGISTER" remoteHost="[Host-Server]" remotePort="[Port-Server]" destScenario="bob">
+<![CDATA[
+REGISTER sip:[userName]@[Adresse-Server] SIP/2.0
+To: "[userName]" <sip:[userName]@[domainName]>
+From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Max-Forwards: [MaxForwards]
+Contact: <sip:[userName]@[Adresse-Tester]>
+Expires: 3600
+Content-Length: 0
+]]>
+        </sendMessageSIP>
+
+	<receiveMessageSIP name="200 OK" type="REGISTER" result="200">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+		<parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+	</receiveMessageSIP>
+
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
+  	<parameter name="[newCseq]" operation="number.add" value="[newCseq]" value2="1"/>  
+	<sendMessageSIP name="Send REGISTER" remoteHost="[Host-Server]" remotePort="[Port-Server]" destScenario="bob">
+<![CDATA[
+REGISTER sip:[userName]@[Adresse-Server] SIP/2.0
+To: [To]
+From: [From]
+Call-ID:[CallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Max-Forwards: [MaxForwards]
+Contact: <sip:[userName]@[Adresse-Tester]>
+Expires: 0
+Content-Length: 0
+]]>
+        </sendMessageSIP>
+
+	<receiveMessageSIP name="200 OK" type="REGISTER" result="200">
+	</receiveMessageSIP>
+
+</scenario>

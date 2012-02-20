@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <parameter name="[frequence_recepteur_sequence]" operation="set" value="0"/>
+    <parameter name="[frequence_recepteur_evolue]" operation="set" value="200"/>
+    <parameter name="[transmission_statistique]" operation="set" value="1"/>
+    <parameter name="[frequence_statistique]" operation="set" value="1"/>
+    <parameter name="[temps_emission]" operation="set" value="1"/>
+    <parameter name="[fichier_media_codec]" operation="set" value="/home/raptor/raptor/sound/pcma_20ms_etalon.rtp"/>
+
+    <parameter name="[indexRaptor]" operation="set" value="0"/>
+    <createListenpointTCP name="listenpoint" localHost="[ListenTCP-Raptor]" localPort="[Port-Raptor]" />
+
+    <pause name="delai 1 sec" seconds="0"/>
+
+    <parameter name="[indexRaptor]" operation="set" value="0"/>   
+    <while>
+        <condition>
+            <test parameter="[indexRaptor]" condition="number.lowerthan" value="[countRaptor]"/>
+        </condition>
+        <do>
+            <!-- launch the raptor process -->
+            <log>plink [Host-Raptor([indexRaptor])] -l raptor -pw raptor /usr/bin/screen -d -m /home/raptor/raptor1008/raptor -a[ListenTCP-Raptor] -p[Port-Raptor] -i</log>
+
+            <parameter name="[result]" operation="system.command" value="plink [Host-Raptor([indexRaptor])] -l raptor -pw raptor /usr/bin/screen -d -m /home/raptor/raptorImsLoader/raptor -a[ListenTCP-Raptor] -p[Port-Raptor] -i"/>
+	    <receiveMessageTCP listenpoint="listenpoint" timeout="0">
+         	<parameter name="TCPMessage" operation="protocol.setFromMessage" value="data.text" />
+		<test parameter="[TCPMessage]" condition="string.contains" value="HELLO" />
+              	<parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+              	<parameter name="[test:channel_[remoteHost]]" operation="protocol.setFromMessage" value="channel.name" />
+	    </receiveMessageTCP>
+        
+            <sendMessageTCP channel="[test:channel_[remoteHost]]">
+                <data format="binary">[indexRaptor]:1 </data>                       <!-- ID coupleur-->
+                <data format="binary">1:1 </data>                                   <!-- Code operation 1=START -->
+                <data format="binary">[frequence_recepteur_sequence]:1 </data>      <!-- Frequence de creation des recepteurs evolues verifiant le sequencement -->
+                <data format="binary">[frequence_recepteur_evolue]:1 </data>        <!-- Frequence de creation des recepteurs evolues verifiant les intervalles de temps -->
+                <data format="binary">0:4 </data>                                   <!-- Heure de reference -->
+                <data format="binary">[transmission_statistique]:1 </data>          <!-- Transmission des statistiques -->
+                <data format="binary">[frequence_statistique]:2 </data>             <!-- Frequence Statistique -->
+                <data format="binary">[temps_emission]:2 </data>                    <!-- Temps avant d'emettre -->
+                <data format="binary">1:1 </data>                                   <!-- Validation fichier -->
+                <data format="binary">s[fichier_media_codec] 0:1</data>             <!-- Nom du fichier -->
+            </sendMessageTCP>
+            <parameter name="[indexRaptor]" operation="number.add" value="[indexRaptor]" value2="1"/>
+	    <!--sauvergarde de l ancien fichier de log -->
+	    <parameter name="[result]" operation="system.command" value="mv ./raptor_stat_[remoteHost].log ./raptor_stat_[remoteHost].log.old"/>
+        </do>
+    </while>
+
+    <parameter name="[test:raptorOK]" operation="system.semaphorenotify" />
+
+    <parameter name="[timeout]" operation="number.add" value="[frequence_statistique]" value2="10"/>
+    <parameter name="[received]" operation="set" value="true"/>   
+    <while>
+        <condition>
+            <test parameter="[test:raptorEND]" condition="boolean.equals" value="true" not="true"/>
+        </condition>
+        <do>
+	<receiveMessageTCP listenpoint="listenpoint" timeout="[timeout]">
+         	<parameter name="[TCPMessage]" operation="protocol.setFromMessage" value="data.text" />
+              	<parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+              	<parameter name="[test:channel_[remoteHost]]" operation="protocol.setFromMessage" value="channel.name" />
+	</receiveMessageTCP>
+          	<parameter name="[TCPMessage]" operation="protocol.setFromMessage" value="data.text" />
+	<parameter name="[fileResult]" operation="file.writeString" value="./raptor_stat_[remoteHost].log" value2="[TCPMessage]&#x0D;&#x0A;"/>
+	</do>
+    </while>
+
+    <finally>
+
+        <parameter name="[indexRaptor]" operation="set" value="0"/>
+        <while>
+            <condition>
+                <test parameter="[indexRaptor]" condition="number.lowerthan" value="[countRaptor]"/>
+            </condition>
+            <do>
+	        <parameter name="[RaptorAddress]" operation="set" value="[Host-Raptor([indexRaptor])]" />
+                <sendMessageTCP channel="[test:channel_[RaptorAddress]]">
+                    <data format="binary">[indexRaptor]:1 </data>                       <!-- ID coupleur-->
+                    <data format="binary">4:1 </data>                                   <!-- Code operation 4=STOP -->
+                </sendMessageTCP>
+                <closeChannelTCP name="[channel_[RaptorAddress]]"/>
+                <parameter name="[indexRaptor]" operation="number.add" value="[indexRaptor]" value2="1"/>
+            </do>
+        </while>
+        <removeListenpointTCP name="listenpoint" />
+        
+    </finally>
+
+</scenario>

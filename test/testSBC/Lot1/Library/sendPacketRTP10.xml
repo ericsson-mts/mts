@@ -1,0 +1,103 @@
+<!--
+To use this part of XML code in a scenario,
+- input parameters must be defined and setted locally (by the caller scenario).
+- output parameters may be used in the scenario after the "call".
+
+Input parameters :
+- [destScenario] : Value of "destScenario" tag.
+- [sessionName]  : Value of "sessionName" tag.
+- [payloadType]  : Value of "payloadType" tag.
+
+Output parameters :
+None.
+
+-->
+
+  <sendPacketRTP name="sendPacketRTP01" state="true"
+                 sessionName="[sessionName]" destScenario="[destScenario]">
+    <packet>        
+      <header ssrc="0" payloadType="[payloadType]" seqnum="1" timestamp="0"/>
+      <payload format="text">Packet #1</payload>              
+      <payload format="text">abcdefghijklmnopqrstuvwxyz</payload>             
+      <payload format="text">0123456789</payload>             
+      <payload format="binary">
+      0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+      <!--$0 $01 $2 $03 $4 $5 $06 $7 $8 $09 $A $b $0C $d $E $0f $10 -->
+      <!--o0123 o4567 o12 o o00 o11 -->               
+      <!--b01010101 b10101010 b11111111 b0 b101 -->           
+      </payload>
+      <payload format="text">ABCDEFGHIJKLMNOPQRSTUVWXYZ</payload>
+    </packet>   
+  </sendPacketRTP>                
+
+  <sendPacketRTP name="sendPacketRTP02" state="true"
+                 sessionName="[sessionName]" destScenario="[destScenario]">
+    <packet>        
+      <header ssrc="0" payloadType="[payloadType]" seqnum="2" timestamp="1000"/>
+      <payload format="text">Packet #2</payload>              
+    </packet>   
+  </sendPacketRTP>                
+
+  <sendPacketRTP name="sendPacketRTP03" state="true"
+                 sessionName="[sessionName]" destScenario="[destScenario]">
+    <packet>        
+      <header ssrc="0" payloadType="[payloadType]" seqnum="3" timestamp="2000"/>
+      <payload format="text">Packet #3</payload>              
+    </packet>               
+  </sendPacketRTP>                
+
+  <sendPacketRTP name="sendPacketRTP04" state="true"
+                 sessionName="[sessionName]" destScenario="[destScenario]">
+    <packet>        
+      <header ssrc="0" payloadType="[payloadType]" seqnum="4" timestamp="2000"/>
+      <payload format="text">Packet #4</payload>              
+    </packet>               
+  </sendPacketRTP>                
+
+  <sendPacketRTP name="sendPacketRTP05" state="true"
+                 sessionName="[sessionName]" destScenario="[destScenario]">
+    <packet>        
+      <header ssrc="0" payloadType="[payloadType]" seqnum="5" timestamp="2000"/>
+      <payload format="text">Packet #5</payload>              
+    </packet>               
+  </sendPacketRTP>                
+
+  <sendPacketRTP name="sendPacketRTP06" state="true"
+                 sessionName="[sessionName]" destScenario="[destScenario]">
+    <packet>        
+      <header ssrc="0" payloadType="[payloadType]" seqnum="6" timestamp="2000"/>
+      <payload format="text">Packet #6</payload>              
+    </packet>               
+  </sendPacketRTP>                
+
+  <sendPacketRTP name="sendPacketRTP07" state="true"
+                 sessionName="[sessionName]" destScenario="[destScenario]">
+    <packet>        
+      <header ssrc="0" payloadType="[payloadType]" seqnum="7" timestamp="2000"/>
+      <payload format="text">Packet #7</payload>              
+    </packet>               
+  </sendPacketRTP>                
+
+  <sendPacketRTP name="sendPacketRTP08" state="true"
+                 sessionName="[sessionName]" destScenario="[destScenario]">
+    <packet>        
+      <header ssrc="0" payloadType="[payloadType]" seqnum="8" timestamp="2000"/>
+      <payload format="text">Packet #8</payload>              
+    </packet>               
+  </sendPacketRTP>                
+
+  <sendPacketRTP name="sendPacketRTP09" state="true"
+                 sessionName="[sessionName]" destScenario="[destScenario]">
+    <packet>        
+      <header ssrc="0" payloadType="[payloadType]" seqnum="9" timestamp="2000"/>
+      <payload format="text">Packet #9</payload>              
+    </packet>               
+  </sendPacketRTP>                
+
+  <sendPacketRTP name="sendPacketRTP10" state="true"
+                 sessionName="[sessionName]" destScenario="[destScenario]">
+    <packet>        
+      <header ssrc="0" payloadType="[payloadType]" seqnum="10" timestamp="2000"/>
+      <payload format="text">Packet #10</payload>              
+    </packet>               
+  </sendPacketRTP>                
