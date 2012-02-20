@@ -1,0 +1,1074 @@
+<project name="MTS" default="distribute" basedir=".">
+	<property file="build.properties"/>
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="${imsloader.3pp}/apache-ant-1.7.1/lib/ant-contrib-1.0b3.jar"/>
+		</classpath>
+	</taskdef>
+	<!--                  -->
+	<!-- Define classpath -->
+	<!--                  -->
+	<path id="imsloader.classpath">
+		<fileset dir="${imsloader.lib}">
+			<include name="*.jar"/>
+		</fileset>
+		<pathelement path="${imsloader.3pp}/gp-net-radius/gp-net-radius-latest.jar"/>
+		<pathelement path="${imsloader.3pp}/gp-utils/gp-utils-latest.jar"/>
+		<pathelement path="${imsloader.3pp}/Diameter-0.9.6.4/Diameter-0.9.6.4.jar"/>
+		<pathelement path="${imsloader.3pp}/JavaSCTP-0-5-7/JavaSCTP-0-5-7.jar"/>
+		<pathelement path="${imsloader.3pp}/jain-sip1.2/JainSipApi1.2.jar"/>
+		<pathelement path="${imsloader.3pp}/jain-sip1.2/JainSipRi1.2.jar"/>
+		<pathelement path="${imsloader.3pp}/jain-sip1.2/nist-sdp-1.0.jar"/>
+		<pathelement path="${imsloader.3pp}/httpdcore-4.0/httpcore-4.0.jar"/>
+		<pathelement path="${imsloader.3pp}/httpdcore-4.0/httpcore-nio-4.0.jar"/>
+		<pathelement path="${imsloader.3pp}/opencsv/opencsv-1.8.jar"/>
+		<pathelement path="${imsloader.3pp}/jfreechart-1.0.9/jcommon-1.0.12.jar"/>
+		<pathelement path="${imsloader.3pp}/jfreechart-1.0.9/jfreechart-1.0.9.jar"/>
+		<pathelement path="${imsloader.3pp}/javolution/javolution-5.2.6.jar"/>
+		<pathelement path="${imsloader.3pp}/jpcap/jpcap.jar"/>
+		<pathelement path="${imsloader.3pp}/pcp/pcm.jar"/>
+		<pathelement path="${imsloader.3pp}/pcp/pcmext.jar"/>
+		<pathelement path="${imsloader.3pp}/snmp4j/snmp4j-1.11.jar"/>
+		<pathelement path="${imsloader.3pp}/mibble/mibble-parser-2.9.2.jar"/>
+		<pathelement path="${imsloader.3pp}/BinaryNotes1.5.2/binarynotes.jar"/>
+		<pathelement path="${java.class.path}"/>
+	</path>
+
+
+	<!--       -->
+	<!-- Clean -->
+	<!--       -->
+	<target name="clean" description="clean build directory">
+		<delete dir="${imsloader.build}"/>
+	</target>
+
+
+	<target name="clean_release" description="creation of directories ">
+		<delete dir="${imsloader.build.release}"/>
+	</target>
+
+
+	<target name="version" description="change imsloader version">
+			<replaceregexp 	file="${imsloader.src}/com/devoteam/srit/xmlloader/core/licence/Version.java" 
+							match="public static final String version = .*" 
+							replace="public static final String version = &quot;${imsloader.release.version}&quot;;" 
+							flags="g"/>
+
+	</target>
+
+
+	<!--                 -->
+	<!-- Compile classes -->
+	<!--                 -->
+	<target name="compile" description="build" depends="generate_xsd, version">
+		<mkdir dir="${imsloader.build.classes}"/>
+		<mkdir dir="${imsloader.build.release.modules}"/>
+		<javac 	srcdir="${imsloader.src}" 
+				destdir="${imsloader.build.classes}" 
+				debug="on" 
+				deprecation="false" 
+				source="1.6" 
+				optimize="on" 
+				target="1.6" 
+				includeAntRuntime="false"
+				includes="com/devoteam/srit/xmlloader/core/utils/Config.java,com/devoteam/srit/xmlloader/diameter/IDProvider.java">
+			<classpath refid="imsloader.classpath"/>
+		</javac>
+		<javac 	srcdir="${imsloader.3pp}/Diameter-0.9.6.4/src" 
+				destdir="${imsloader.build.classes}" 
+				debug="on" 
+				deprecation="false" 
+				source="1.6" 
+				optimize="on" 
+				includeAntRuntime="false"
+				target="1.6">
+			<classpath refid="imsloader.classpath"/>
+		</javac>
+		<javac 	srcdir="${imsloader.3pp}/jain-sip1.2/jain-sip/src" 
+				destdir="${imsloader.build.classes}" 
+				debug="on" 
+				deprecation="false" 
+				source="1.6" 
+				optimize="on" 
+				includeAntRuntime="false"
+				target="1.6">
+			<classpath refid="imsloader.classpath"/>
+		</javac>
+		<javac 	srcdir="${imsloader.3pp}/jain-sip1.2/jain-sip/src" 
+				destdir="${imsloader.build.classes}" 
+				debug="on" 
+				deprecation="false" 
+				source="1.6" 
+				optimize="on" 
+				includeAntRuntime="false"
+				target="1.6">
+			<classpath refid="imsloader.classpath"/>
+		</javac>
+		<javac 	srcdir="${imsloader.3pp}/JavaSCTP-0-5-7/src" 
+				destdir="${imsloader.build.classes}" 
+				debug="on" 
+				deprecation="false" 
+				source="1.6" 
+				optimize="on" 
+				includeAntRuntime="false"
+				target="1.6">
+			<classpath refid="imsloader.classpath"/>
+		</javac>
+		<javac 	srcdir="${imsloader.src}" 
+				destdir="${imsloader.build.classes}" 
+				debug="on" 
+				deprecation="false" 
+				source="1.6" 
+				optimize="on" 
+				includeAntRuntime="false"
+				target="1.6">
+			<classpath refid="imsloader.classpath"/>
+		</javac>
+		<copy todir="${imsloader.build.classes.icons}">
+			<fileset dir="${imsloader.src.icons}/"/>
+		</copy>
+	</target>
+
+
+	<!--                 -->
+	<!-- Make jar file -->
+	<!--                 -->
+	<target name="jar_core" description="Make jar file for core module">
+		<jar jarfile="${imsloader.build.release.modules}/core.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/core/**,org/dom4j/**, icons/**"/>
+	</target>
+
+
+	<target name="jar_master" description="Make jar file for master module">
+		<jar jarfile="${imsloader.build.release.modules}/master.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/master/**"/>
+	</target>
+
+
+	<target name="jar_gui" description="Make jar file for gui module">
+		<jar jarfile="${imsloader.build.release.modules}/gui.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/gui/**"/>
+	</target>
+
+
+	<target name="jar_cmd" description="make jar file for cmd module">
+		<jar jarfile="${imsloader.build.release.modules}/cmd.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/cmd/**"/>
+	</target>
+
+
+	<target name="jar_diameter" description="make jar file for diameter module">
+		<jar jarfile="${imsloader.build.release.modules}/diameter.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/diameter/**,dk/i1/diameter/**"/>
+	</target>
+
+
+	<target name="jar_http" description="make jar file for http module">
+		<jar jarfile="${imsloader.build.release.modules}/http.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/http/**,org/apache/**"/>
+	</target>
+
+
+	<target name="jar_rtp" description="make jar file for rtp module">
+		<jar jarfile="${imsloader.build.release.modules}/rtp.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/rtp/**,com/sun/**,javax/**"/>
+	</target>
+
+
+	<target name="jar_tcp" description="make jar file for tcp module">
+		<jar jarfile="${imsloader.build.release.modules}/tcp.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/tcp/**"/>
+	</target>
+
+
+	<target name="jar_smtp" description="make jar file for smtp module">
+		<jar jarfile="${imsloader.build.release.modules}/smtp.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/smtp/**"/>
+	</target>
+
+
+	<target name="jar_rtsp" description="make jar file for rtsp module" depends="jar_tcp,jar_udp">
+		<jar jarfile="${imsloader.build.release.modules}/rtsp.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/rtsp/**"/>
+	</target>
+
+
+	<target name="jar_udp" description="make jar file for udp module">
+		<jar jarfile="${imsloader.build.release.modules}/udp.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/udp/**"/>
+	</target>
+
+
+	<target name="jar_radius" description="make jar file for radius module">
+		<jar jarfile="${imsloader.build.release.modules}/radius.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/radius/**"/>
+	</target>
+
+
+	<target name="jar_sctp" description="make jar file for sctp module">
+		<jar jarfile="${imsloader.build.release.modules}/sctp.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/sctp/**,dk/i1/sctp/**"/>
+	</target>
+
+
+	<target name="jar_sip" description="make jar file for sip module" depends="jar_udp,jar_tcp,jar_sctp,jar_tls">
+		<jar jarfile="${imsloader.build.release.modules}/sip.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/sip/**,gov/**"/>
+	</target>
+
+
+	<target name="jar_imap" description="make jar file for imap module" depends="jar_tcp, jar_tls">
+		<jar jarfile="${imsloader.build.release.modules}/imap.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/imap/**"/>
+	</target>
+
+
+	<target name="jar_pop" description="make jar file for pop module" depends="jar_tcp">
+		<jar jarfile="${imsloader.build.release.modules}/pop.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/pop/**"/>
+	</target>
+
+
+	<target name="jar_smpp" description="make jar file for smpp module" depends="jar_tcp">
+		<jar jarfile="${imsloader.build.release.modules}/smpp.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/smpp/**"/>
+	</target>
+
+
+	<target name="jar_ucp" description="make jar file for ucp module" depends="jar_tcp">
+		<jar jarfile="${imsloader.build.release.modules}/ucp.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/ucp/**"/>
+	</target>
+
+
+	<target name="jar_sigtran" description="make jar file for sigtran module" depends="jar_tcp, jar_sctp">
+		<jar jarfile="${imsloader.build.release.modules}/sigtran.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/sigtran/**"/>
+	</target>
+
+
+	<target name="jar_tls" description="make jar file for tls module">
+		<jar jarfile="${imsloader.build.release.modules}/tls.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/tls/**"/>
+	</target>
+
+
+	<target name="jar_h248" description="make jar file for h248 module">
+		<jar jarfile="${imsloader.build.release.modules}/h248.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/h248/**"/>
+	</target>
+
+
+	<target name="jar_msrp" description="make jar file for msrp module">
+		<jar jarfile="${imsloader.build.release.modules}/msrp.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/msrp/**"/>
+	</target>
+
+
+	<target name="jar_snmp" description="make jar file for snmp module">
+		<jar jarfile="${imsloader.build.release.modules}/snmp.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/snmp/**"/>
+	</target>
+
+
+	<target name="jar_stun" description="make jar file for stun module">
+		<jar jarfile="${imsloader.build.release.modules}/stun.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/stun/**"/>
+	</target>
+
+
+	<target name="jar_mgcp" description="make jar file for mgcp module">
+		<jar jarfile="${imsloader.build.release.modules}/mgcp.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/mgcp/**"/>
+	</target>
+
+
+	<target name="jar_genscript" description="make jar file for genscript module">
+		<jar jarfile="${imsloader.build.release.modules}/genscript.jar" update="false" basedir="${imsloader.build.classes}" includes="com/devoteam/srit/xmlloader/genscript/**"/>
+	</target>
+
+
+	<!-- release -->
+	<target name="release_core" description="release core module" depends="jar_core, jar_gui">
+		<copy file="${imsloader.bin}/classpath_release" tofile="${imsloader.build.release.bin}/classpath_release"/>
+		<copy file="${imsloader.bin}/classpath" tofile="${imsloader.build.release.bin}/classpath"/>
+		<copy file="${imsloader.bin}/java_home_release" tofile="${imsloader.build.release.bin}/java_home_release"/>
+		<copy file="${imsloader.bin}/java_home" tofile="${imsloader.build.release.bin}/java_home"/>
+		<copy file="${imsloader.bin}/memory" tofile="${imsloader.build.release.bin}/memory"/>
+		<copy file="${imsloader.bin}/memory_release" tofile="${imsloader.build.release.bin}/memory_release"/>
+		<copy file="${imsloader.bin}/uninstall.bat" tofile="${imsloader.build.release.bin}/uninstall.bat"/>
+		<copy file="${imsloader.bin}/uninstall.sh" tofile="${imsloader.build.release.bin}/uninstall.sh"/>
+		<copy file="${imsloader.bin}/setEnv.bat" tofile="${imsloader.build.release.bin}/setEnv.bat"/>
+		<copy file="${imsloader.bin}/setEnvAppend.bat" tofile="${imsloader.build.release.bin}/setEnvAppend.bat"/>
+		<copy file="${imsloader.bin}/setEnv.sh" tofile="${imsloader.build.release.bin}/setEnv.sh"/>
+		<copy file="${imsloader.bin}/postinstall.sh" tofile="${imsloader.build.release.bin}/postinstall.sh"/>
+		<copy todir="${imsloader.build.release.bin}/audio_comparison">
+			<fileset dir="${imsloader.bin}/audio_comparison"/>
+		</copy>
+		<copy file="${imsloader.conf}/tester.properties" tofile="${imsloader.build.release.conf}/tester.properties"/>
+		<mkdir dir="${imsloader.build.release.conf}/licence"/>
+		<copy todir="${imsloader.build.release.conf.stats}">
+			<fileset dir="${imsloader.conf.stats}"/>
+		</copy>
+		<!-- Copy the xsd files -->
+		<copy file="${imsloader.conf.schemas}/test.xsd" tofile="${imsloader.build.release.conf.schemas}/test.xsd"/>
+		<copy file="${imsloader.conf.schemas}/scenario_release.xsd" tofile="${imsloader.build.release.conf.schemas}/scenario.xsd"/>
+		<copy file="${imsloader.conf.schemas}/list_core_do.xsd" tofile="${imsloader.build.release.conf.schemas}/list_core_do.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_core.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_core.xsd"/>
+		<!-- Copy the libraries -->
+		<copy todir="${imsloader.build.release.lib}">
+			<fileset dir="${imsloader.lib}"/>
+		</copy>
+		<copy file="${imsloader.3pp}/jain-sip1.2/JainSipApi1.2.jar" tofile="${imsloader.build.release.lib}/JainSipApi1.2.jar"/>
+		<copy file="${imsloader.3pp}/jain-sip1.2/JainSipRi1.2.jar" tofile="${imsloader.build.release.lib}/JainSipRi1.2.jar"/>
+		<copy file="${imsloader.3pp}/jain-sip1.2/nist-sdp-1.0.jar" tofile="${imsloader.build.release.lib}/nist-sdp-1.0.jar"/>
+		<copy file="${imsloader.3pp}/jpcap/jpcap.jar" tofile="${imsloader.build.release.lib}/jpcap.jar"/>
+		<copy file="${imsloader.3pp}/opencsv/opencsv-1.8.jar" tofile="${imsloader.build.release.lib}/opencsv-1.8.jar"/>
+		<copy file="${imsloader.3pp}/jfreechart-1.0.9/jcommon-1.0.12.jar" tofile="${imsloader.build.release.lib}/jcommon-1.0.12.jar"/>
+		<copy file="${imsloader.3pp}/jfreechart-1.0.9/jfreechart-1.0.9.jar" tofile="${imsloader.build.release.lib}/jfreechart-1.0.9.jar"/>
+		<copy file="${imsloader.3pp}/javolution/javolution-5.2.6.jar" tofile="${imsloader.build.release.lib}/javolution-5.2.6.jar"/>
+		<copy file="${imsloader.3pp}/jaxen/jaxen-1.1.1.jar" tofile="${imsloader.build.release.lib}/jaxen-1.1.1.jar"/>
+		<copy file="${imsloader.3pp}/gp-utils/gp-utils-latest.jar" tofile="${imsloader.build.release.lib}/gp-utils-latest.jar"/>
+		<copy file="${imsloader.3pp}/mysql-connector-java/mysql-connector-java-5.1.7-bin.jar" tofile="${imsloader.build.release.lib}/mysql-connector-java-5.1.7-bin.jar"/>
+		<!-- Copy the tutorial for the core -->
+		<copy todir="${imsloader.build.release.tutorial.core}">
+			<fileset dir="${imsloader.tutorial.core}"/>
+		</copy>
+		<!-- Copy the tutorial for the demos -->
+		<copy todir="${imsloader.build.release.tutorial.demos}">
+			<fileset dir="${imsloader.tutorial.demos}"/>
+		</copy>
+		<!-- Copy the Licence and Readme html files -->
+		<copy file="${imsloader.distrib}/Readme.html" tofile="${imsloader.build.release}/Readme.html"/>
+		<copy file="${imsloader.distrib}/Licence.html" tofile="${imsloader.build.release}/Licence.html"/>
+		<!-- Copy the documentation -->
+		<copy file="${imsloader.doc}/IMSLoader-Pres-demos.ppt" tofile="${imsloader.build.release.doc}/IMSLoader-Pres-demos.ppt"/>
+		<copy file="${imsloader.doc}/IMSLoader-Pres-technical.ppt" tofile="${imsloader.build.release.doc}/IMSLoader-Pres-technical.ppt"/>
+		<copy file="${imsloader.doc}/IMSLoader-ReleaseNotes.txt" tofile="${imsloader.build.release.doc}/IMSLoader-ReleaseNotes.txt"/>
+		<copy file="${imsloader.doc}/IMSLoader_benchmark.doc" tofile="${imsloader.build.release.doc}/IMSLoader_benchmark.doc"/>
+		<copy file="${imsloader.doc}/IMSLoader_quick_start.doc" tofile="${imsloader.build.release.doc}/IMSLoader_quick_start.doc"/>
+		<copy file="${imsloader.doc}/IMSLoader_doc_index.doc" tofile="${imsloader.build.release.doc}/IMSLoader_doc_index.doc"/>
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_core.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_core.doc"/>
+		<copy file="${imsloader.doc}/IMSLoader_integration_QC.doc" tofile="${imsloader.build.release.doc}/IMSLoader_integration_QC.doc"/>
+		<!-- Copy the documentation html files-->
+		<copy file="${imsloader.doc}/IMSLoader_benchmark.htm" tofile="${imsloader.build.release.doc}/IMSLoader_benchmark.htm"/>
+		<copy file="${imsloader.doc}/IMSLoader_doc_index.htm" tofile="${imsloader.build.release.doc}/IMSLoader_doc_index.htm"/>
+		<copy todir="${imsloader.build.release.doc}/IMSLoader_quick_start_fichiers">
+			<fileset dir="${imsloader.doc}/IMSLoader_quick_start_fichiers"/>
+		</copy>
+		<copy file="${imsloader.doc}/IMSLoader_integration_QC.htm" tofile="${imsloader.build.release.doc}/IMSLoader_integration_QC.htm"/>
+		<copy todir="${imsloader.build.release.doc}/IMSLoader_integration_QC_fichiers">
+			<fileset dir="${imsloader.doc}/IMSLoader_integration_QC_fichiers"/>
+		</copy>
+		<copy file="${imsloader.doc}/IMSLoader_quick_start.htm" tofile="${imsloader.build.release.doc}/IMSLoader_quick_start.htm"/>
+		<!-- Copy the doc schemas -->
+		<unzip src="${imsloader.doc}/schemas.zip" dest="${imsloader.build.release.doc}"/>
+		<replaceregexp file="${imsloader.build.release.doc}/schemas/test.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+		<replaceregexp file="${imsloader.build.release.doc}/schemas/scenario.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+		<replaceregexp file="${imsloader.build.release.doc}/schemas/master.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+		<replaceregexp file="${imsloader.build.release.doc}/schemas/parameter_operation.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+		<replaceregexp file="${imsloader.build.release.doc}/schemas/test_condition.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+		<replaceregexp file="${imsloader.build.release.doc}/schemas/scenario_protocol.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+		<!-- Copy the tutorial for the references -->
+		<copy todir="${imsloader.build.release.doc.reference}">
+			<fileset dir="${imsloader.doc.reference}"/>
+		</copy>
+		<!-- Create the log directory -->
+		<mkdir dir="${imsloader.build.release}/logs"/>
+	</target>
+
+
+	<target name="release_gui" description="release gui module" depends="jar_gui">
+		<copy file="${imsloader.bin}/startGui.bat" tofile="${imsloader.build.release.bin}/startGui.bat"/>
+		<copy file="${imsloader.bin}/startGui.sh" tofile="${imsloader.build.release.bin}/startGui.sh"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_gui.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_gui.doc"/>
+	</target>
+
+
+	<target name="release_master" description="release master module" depends="jar_master">
+		<copy file="${imsloader.bin}/startMaster.bat" tofile="${imsloader.build.release.bin}/startMaster.bat"/>
+		<copy file="${imsloader.bin}/startMaster.sh" tofile="${imsloader.build.release.bin}/startMaster.sh"/>
+		<copy file="${imsloader.bin}/startSlave.bat" tofile="${imsloader.build.release.bin}/startSlave.bat"/>
+		<copy file="${imsloader.bin}/startSlave.sh" tofile="${imsloader.build.release.bin}/startSlave.sh"/>
+		<copy file="${imsloader.conf.schemas}/master.xsd" tofile="${imsloader.build.release.conf.schemas}/master.xsd"/>
+		<copy file="${imsloader.conf}/master.properties" tofile="${imsloader.build.release.conf}/master.properties"/>
+		<copy todir="${imsloader.build.release.tutorial}/master">
+			<fileset dir="${imsloader.tutorial}/master"/>
+		</copy>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_master.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_master.doc"/>
+	</target>
+
+
+	<target name="release_cmd" description="release cmd module" depends="jar_cmd">
+		<copy file="${imsloader.bin}/startCmd.bat" tofile="${imsloader.build.release.bin}/startCmd.bat"/>
+		<copy file="${imsloader.bin}/startCmd.sh" tofile="${imsloader.build.release.bin}/startCmd.sh"/>
+		<copy file="${imsloader.bin}/QCscript.vbs" tofile="${imsloader.build.release.bin}/QCscript.vbs"/>
+		<copy file="${imsloader.bin}/QCparam.xls" tofile="${imsloader.build.release.bin}/QCparam.xls"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_cmd.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_cmd.doc"/>
+	</target>
+
+
+	<target name="release_diameter" description="release diameter module" depends="jar_diameter">
+		<!-- Modify the scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity1_list@" value="&lt;!ENTITY list_1 SYSTEM 'list_diameter.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity1_operations@" value="&lt;!ENTITY type_operations_1 SYSTEM 'type_operations_diameter.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_diameter.xsd" tofile="${imsloader.build.release.conf.schemas}/list_diameter.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_diameter.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_diameter.xsd"/>
+		<!-- Copy the project libraries -->
+		<copy file="${imsloader.3pp}/Diameter-0.9.6.4/Diameter-0.9.6.4.jar" tofile="${imsloader.build.release.lib}/Diameter-0.9.6.4.jar"/>
+		<copy file="${imsloader.3pp}/JavaSCTP-0-5-7/JavaSCTP-0-5-7.jar" tofile="${imsloader.build.release.lib}/JavaSCTP-0-5-7.jar"/>
+		<copy file="${imsloader.3pp}/JavaSCTP-0-5-7/libdk_i1_sctp.so" tofile="${imsloader.build.release.lib}/libdk_i1_sctp.so"/>
+		<!-- Copy the bin test directory -->
+		<copy todir="${imsloader.build.release.bin}/test">
+			<fileset dir="${imsloader.bin}/test"/>
+		</copy>
+		<!-- Copy the project config files -->
+		<copy todir="${imsloader.build.release.conf}/diameter">
+			<fileset dir="${imsloader.conf}/diameter"/>
+		</copy>
+		<copy file="${imsloader.conf.schemas}/diameter-dictionary.xsd" tofile="${imsloader.build.release.conf.schemas}/diameter-dictionary.xsd"/>
+		<copy file="${imsloader.conf}/diameter.properties" tofile="${imsloader.build.release.conf}/diameter.properties"/>
+		<!-- Copy the project tutorial directory -->
+		<copy todir="${imsloader.build.release.tutorial}/diameter">
+			<fileset dir="${imsloader.tutorial}/diameter"/>
+		</copy>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_diameter.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_diameter.doc"/>
+	</target>
+
+
+	<target name="release_radius" description="release radius module" depends="jar_radius">
+		<!-- Modify the scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity9_list@" value="&lt;!ENTITY list_9 SYSTEM 'list_radius.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity9_operations@" value="&lt;!ENTITY type_operations_9 SYSTEM 'type_operations_radius.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_radius.xsd" tofile="${imsloader.build.release.conf.schemas}/list_radius.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_radius.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_radius.xsd"/>
+		<!-- Copy the project libraries -->
+		<copy file="${imsloader.3pp}/gp-net-radius/gp-net-radius-latest.jar" tofile="${imsloader.build.release.lib}/gp-net-radius-latest.jar"/>
+		<!-- Copy the project config files -->
+		<copy todir="${imsloader.build.release.conf}/radius">
+			<fileset dir="${imsloader.conf}/radius"/>
+		</copy>
+		<copy file="${imsloader.conf}/radius.properties" tofile="${imsloader.build.release.conf}/radius.properties"/>
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/radius">
+			<fileset dir="${imsloader.tutorial}/radius"/>
+		</copy>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_radius.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_radius.doc"/>
+	</target>
+
+
+	<target name="release_http" description="release http module" depends="jar_http">
+		<!-- Copy the project libraries -->
+		<copy file="${imsloader.3pp}/httpdcore-4.0/httpcore-4.0.jar" tofile="${imsloader.build.release.lib}/httpcore-4.0.jar"/>
+		<!-- Copy the project config files -->
+		<copy todir="${imsloader.build.release.conf}/certificate">
+			<fileset dir="${imsloader.conf}/certificate"/>
+		</copy>
+		<copy file="${imsloader.conf}/http.properties" tofile="${imsloader.build.release.conf}/http.properties"/>
+		<!-- Copy the tutorial for http -->
+		<copy todir="${imsloader.build.release.tutorial}/http">
+			<fileset dir="${imsloader.tutorial}/http"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity2_list@" value="&lt;!ENTITY list_2 SYSTEM 'list_http.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity2_operations@" value="&lt;!ENTITY type_operations_2 SYSTEM 'type_operations_http.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_http.xsd" tofile="${imsloader.build.release.conf.schemas}/list_http.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_http.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_http.xsd"/>
+		<copy file="${imsloader.bin}/test/runHttpStack.bat" tofile="${imsloader.build.release.bin}/test/runHttpStack.bat"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_http.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_http.doc"/>
+	</target>
+
+
+	<target name="release_rtp" description="release rtp module" depends="jar_rtp">
+		<!-- Copy the project config files -->
+		<copy file="${imsloader.conf}/rtp.properties" tofile="${imsloader.build.release.conf}/rtp.properties"/>
+		<copy file="${imsloader.conf}/rtpflow.properties" tofile="${imsloader.build.release.conf}/rtpflow.properties"/>
+		<!-- Copy the config file for rtpflow -->
+		<copy todir="${imsloader.build.release.conf}/rtpflow">
+			<fileset dir="${imsloader.conf}/rtpflow"/>
+		</copy>
+		<!-- Copy the tutorial for rtp -->
+		<copy todir="${imsloader.build.release.tutorial}/rtp">
+			<fileset dir="${imsloader.tutorial}/rtp"/>
+		</copy>
+		<!-- Copy the tutorial for rtpflow -->
+		<copy todir="${imsloader.build.release.tutorial}/rtpflow">
+			<fileset dir="${imsloader.tutorial}/rtpflow"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity3_list@" value="&lt;!ENTITY list_3 SYSTEM 'list_rtp.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity3_operations@" value="&lt;!ENTITY type_operations_3 SYSTEM 'type_operations_rtp.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_rtp.xsd" tofile="${imsloader.build.release.conf.schemas}/list_rtp.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_rtp.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_rtp.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_rtp.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_rtp.doc"/>
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_rtpflow.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_rtpflow.doc"/>
+	</target>
+
+
+	<target name="release_tcp" description="release tcp module" depends="jar_tcp">
+		<!-- Copy the project config files -->
+		<copy file="${imsloader.conf}/tcp.properties" tofile="${imsloader.build.release.conf}/tcp.properties"/>
+		<copy file="${imsloader.bin}/test/startMDPluginServer.bat" tofile="${imsloader.build.release.bin}/test/startMDPluginServer.bat"/>
+		<!-- Copy the tutorial for tcp -->
+		<copy todir="${imsloader.build.release.tutorial}/tcp">
+			<fileset dir="${imsloader.tutorial}/tcp"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity6_list@" value="&lt;!ENTITY list_6 SYSTEM 'list_tcp.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity6_operations@" value="&lt;!ENTITY type_operations_6 SYSTEM 'type_operations_tcp.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_tcp.xsd" tofile="${imsloader.build.release.conf.schemas}/list_tcp.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_tcp.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_tcp.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_tcp.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_tcp.doc"/>
+	</target>
+
+
+	<target name="release_smtp" description="release smtp module" depends="jar_smtp">
+		<!-- Copy the project config files -->
+		<copy file="${imsloader.conf}/smtp.properties" tofile="${imsloader.build.release.conf}/smtp.properties"/>
+		<!-- Copy the tutorial for smtp -->
+		<copy todir="${imsloader.build.release.tutorial}/smtp">
+			<fileset dir="${imsloader.tutorial}/smtp"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity10_list@" value="&lt;!ENTITY list_10 SYSTEM 'list_smtp.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity10_operations@" value="&lt;!ENTITY type_operations_10 SYSTEM 'type_operations_smtp.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_smtp.xsd" tofile="${imsloader.build.release.conf.schemas}/list_smtp.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_smtp.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_smtp.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_smtp.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_smtp.doc"/>
+	</target>
+
+
+	<target name="release_rtsp" description="release rtsp module" depends="jar_rtsp">
+		<!-- Copy the project config files -->
+		<copy file="${imsloader.conf}/rtsp.properties" tofile="${imsloader.build.release.conf}/rtsp.properties"/>
+		<!-- Copy the tutorial for smtp -->
+		<copy todir="${imsloader.build.release.tutorial}/rtsp">
+			<fileset dir="${imsloader.tutorial}/rtsp"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity11_list@" value="&lt;!ENTITY list_11 SYSTEM 'list_rtsp.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity11_operations@" value="&lt;!ENTITY type_operations_11 SYSTEM 'type_operations_rtsp.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_rtsp.xsd" tofile="${imsloader.build.release.conf.schemas}/list_rtsp.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_rtsp.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_rtsp.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_rtsp.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_rtsp.doc"/>
+	</target>
+
+
+	<target name="release_udp" description="release udp module" depends="jar_udp">
+		<!-- Copy the project config files -->
+		<copy file="${imsloader.conf}/udp.properties" tofile="${imsloader.build.release.conf}/udp.properties"/>
+		<!-- Copy the tutorial for udp -->
+		<copy todir="${imsloader.build.release.tutorial}/udp">
+			<fileset dir="${imsloader.tutorial}/udp"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity7_list@" value="&lt;!ENTITY list_7 SYSTEM 'list_udp.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity7_operations@" value="&lt;!ENTITY type_operations_7 SYSTEM 'type_operations_udp.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_udp.xsd" tofile="${imsloader.build.release.conf.schemas}/list_udp.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_udp.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_udp.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_udp.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_udp.doc"/>
+	</target>
+
+
+	<target name="release_sctp" description="release sctp module" depends="jar_sctp">
+		<!-- Copy the project config files -->
+		<copy file="${imsloader.conf}/sctp.properties" tofile="${imsloader.build.release.conf}/sctp.properties"/>
+		<!-- Copy the project libraries -->
+		<copy file="${imsloader.3pp}/JavaSCTP-0-5-7/JavaSCTP-0-5-7.jar" tofile="${imsloader.build.release.lib}/JavaSCTP-0-5-7.jar"/>
+		<copy file="${imsloader.3pp}/JavaSCTP-0-5-7/libdk_i1_sctp.so" tofile="${imsloader.build.release.lib}/libdk_i1_sctp.so"/>
+		<!-- Copy the tutorial for sctp -->
+		<copy todir="${imsloader.build.release.tutorial}/sctp">
+			<fileset dir="${imsloader.tutorial}/sctp"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity8_list@" value="&lt;!ENTITY list_8 SYSTEM 'list_sctp.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity8_operations@" value="&lt;!ENTITY type_operations_8 SYSTEM 'type_operations_sctp.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_sctp.xsd" tofile="${imsloader.build.release.conf.schemas}/list_sctp.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_sctp.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_sctp.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_sctp.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_sctp.doc"/>
+	</target>
+
+
+	<target name="release_sip" description="release sip module" depends="jar_sip, release_udp, release_tcp, release_sctp, release_tls">
+		<!-- Copy the project config files -->
+		<copy file="${imsloader.conf}/sip.properties" tofile="${imsloader.build.release.conf}/sip.properties"/>
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/sip">
+			<fileset dir="${imsloader.tutorial}/sip"/>
+		</copy>
+		<copy todir="${imsloader.build.release.tutorial}/ims">
+			<fileset dir="${imsloader.tutorial}/ims"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity4_list@" value="&lt;!ENTITY list_4 SYSTEM 'list_sip.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity4_operations@" value="&lt;!ENTITY type_operations_4 SYSTEM 'type_operations_sip.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_sip.xsd" tofile="${imsloader.build.release.conf.schemas}/list_sip.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_sip.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_sip.xsd"/>
+		<copy file="${imsloader.bin}/test/runSipStack.bat" tofile="${imsloader.build.release.bin}/test/runSipStack.bat"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_sip.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_sip.doc"/>
+	</target>
+
+
+	<target name="release_imap" description="release imap module" depends="jar_imap">
+		<copy file="${imsloader.conf}/imap.properties" tofile="${imsloader.build.release.conf}/imap.properties"/>
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/imap">
+			<fileset dir="${imsloader.tutorial}/imap"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity12_list@" value="&lt;!ENTITY list_12 SYSTEM 'list_imap.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity12_operations@" value="&lt;!ENTITY type_operations_12 SYSTEM 'type_operations_imap.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_imap.xsd" tofile="${imsloader.build.release.conf.schemas}/list_imap.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_imap.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_imap.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_imap.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_imap.doc"/>
+	</target>
+
+
+	<target name="release_pop" description="release pop module" depends="jar_pop">
+		<copy file="${imsloader.conf}/pop.properties" tofile="${imsloader.build.release.conf}/pop.properties"/>
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/pop">
+			<fileset dir="${imsloader.tutorial}/pop"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity13_list@" value="&lt;!ENTITY list_13 SYSTEM 'list_pop.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity13_operations@" value="&lt;!ENTITY type_operations_13 SYSTEM 'type_operations_pop.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_pop.xsd" tofile="${imsloader.build.release.conf.schemas}/list_pop.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_pop.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_pop.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_pop.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_pop.doc"/>
+	</target>
+
+
+	<target name="release_smpp" description="release smpp module" depends="jar_smpp">
+		<copy file="${imsloader.conf}/smpp.properties" tofile="${imsloader.build.release.conf}/smpp.properties"/>
+		<copy file="${imsloader.conf}/smpp/dictionary_v3.4.xml" tofile="${imsloader.build.release.conf}/smpp/dictionary_v3.4.xml"/>
+		<copy file="${imsloader.conf}/smpp/dictionary_v5.0.xml" tofile="${imsloader.build.release.conf}/smpp/dictionary_v5.0.xml"/>
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/smpp">
+			<fileset dir="${imsloader.tutorial}/smpp"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity14_list@" value="&lt;!ENTITY list_14 SYSTEM 'list_smpp.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity14_operations@" value="&lt;!ENTITY type_operations_14 SYSTEM 'type_operations_smpp.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_smpp.xsd" tofile="${imsloader.build.release.conf.schemas}/list_smpp.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_smpp.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_smpp.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_smpp.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_smpp.doc"/>
+	</target>
+
+
+	<target name="release_ucp" description="release ucp module" depends="jar_ucp">
+		<copy file="${imsloader.conf}/ucp.properties" tofile="${imsloader.build.release.conf}/ucp.properties"/>
+		<copy file="${imsloader.conf}/ucp/dictionary.xml" tofile="${imsloader.build.release.conf}/ucp/dictionary.xml"/>
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/ucp">
+			<fileset dir="${imsloader.tutorial}/ucp"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity15_list@" value="&lt;!ENTITY list_15 SYSTEM 'list_ucp.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity15_operations@" value="&lt;!ENTITY type_operations_15 SYSTEM 'type_operations_ucp.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_ucp.xsd" tofile="${imsloader.build.release.conf.schemas}/list_ucp.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_ucp.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_ucp.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_ucp.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_ucp.doc"/>
+	</target>
+
+
+	<target name="release_sigtran" description="release sigtran module" depends="jar_sigtran">
+		<copy file="${imsloader.conf}/sigtran.properties" tofile="${imsloader.build.release.conf}/sigtran.properties"/>
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.conf}/sigtran">
+			<fileset dir="${imsloader.conf}/sigtran"/>
+		</copy>
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/sigtran">
+			<fileset dir="${imsloader.tutorial}/sigtran"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity16_list@" value="&lt;!ENTITY list_16 SYSTEM 'list_sigtran.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity16_operations@" value="&lt;!ENTITY type_operations_16 SYSTEM 'type_operations_sigtran.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_sigtran.xsd" tofile="${imsloader.build.release.conf.schemas}/list_sigtran.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_sigtran.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_sigtran.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_sigtran.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_sigtran.doc"/>
+	</target>
+
+
+	<target name="release_tls" description="release tls module" depends="jar_tls">
+		<copy todir="${imsloader.build.release.conf}/certificate">
+			<fileset dir="${imsloader.conf}/certificate"/>
+		</copy>
+		<copy file="${imsloader.conf}/tls.properties" tofile="${imsloader.build.release.conf}/tls.properties"/>
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/tls">
+			<fileset dir="${imsloader.tutorial}/tls"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity17_list@" value="&lt;!ENTITY list_17 SYSTEM 'list_tls.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity17_operations@" value="&lt;!ENTITY type_operations_17 SYSTEM 'type_operations_tls.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_tls.xsd" tofile="${imsloader.build.release.conf.schemas}/list_tls.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_tls.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_tls.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_tls.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_tls.doc"/>
+	</target>
+
+
+	<target name="release_h248" description="release h248 module" depends="jar_h248">
+		<copy todir="${imsloader.build.release.conf}/h248">
+			<fileset dir="${imsloader.conf}/h248"/>
+		</copy>
+		<copy file="${imsloader.conf}/h248.properties" tofile="${imsloader.build.release.conf}/h248.properties"/>
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/h248">
+			<fileset dir="${imsloader.tutorial}/h248"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity18_list@" value="&lt;!ENTITY list_18 SYSTEM 'list_h248.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity18_operations@" value="&lt;!ENTITY type_operations_18 SYSTEM 'type_operations_h248.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_h248.xsd" tofile="${imsloader.build.release.conf.schemas}/list_h248.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_h248.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_h248.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_h248.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_h248.doc"/>
+	</target>
+
+
+	<target name="release_msrp" description="release msrp module" depends="jar_msrp">
+		<copy file="${imsloader.conf}/msrp.properties" tofile="${imsloader.build.release.conf}/msrp.properties"/>
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/msrp">
+			<fileset dir="${imsloader.tutorial}/msrp"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity20_list@" value="&lt;!ENTITY list_20 SYSTEM 'list_msrp.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity20_operations@" value="&lt;!ENTITY type_operations_20 SYSTEM 'type_operations_msrp.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_msrp.xsd" tofile="${imsloader.build.release.conf.schemas}/list_msrp.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_msrp.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_msrp.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_msrp.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_msrp.doc"/>
+	</target>
+
+
+	<target name="release_snmp" description="release snmp module" depends="jar_snmp">
+		<copy file="${imsloader.conf}/snmp.properties" tofile="${imsloader.build.release.conf}/snmp.properties"/>
+		<!-- Copy the default mib files -->
+		<copy todir="${imsloader.build.release.conf}/snmp">
+			<fileset dir="${imsloader.conf}/snmp"/>
+		</copy>
+		<!-- Copy the project libraries -->
+		<copy file="${imsloader.3pp}/snmp4j/snmp4j-1.11.jar" tofile="${imsloader.build.release.lib}/snmp4j-1.11.jar"/>
+		<copy file="${imsloader.3pp}/mibble/mibble-parser-2.9.2.jar" tofile="${imsloader.build.release.lib}/mibble-parser-2.9.2.jar"/>
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/snmp">
+			<fileset dir="${imsloader.tutorial}/snmp"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity22_list@" value="&lt;!ENTITY list_22 SYSTEM 'list_snmp.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity22_operations@" value="&lt;!ENTITY type_operations_22 SYSTEM 'type_operations_snmp.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_snmp.xsd" tofile="${imsloader.build.release.conf.schemas}/list_snmp.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_snmp.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_snmp.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_snmp.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_snmp.doc"/>
+	</target>
+
+
+	<target name="release_pstn" description="release msrp module" depends="">
+		<!-- Copy the config -->
+		<copy todir="${imsloader.build.release.conf}/pstn">
+			<fileset dir="${imsloader.conf}/pstn"/>
+		</copy>
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/pstn">
+			<fileset dir="${imsloader.tutorial}/pstn"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_pstn.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_pstn.doc"/>
+	</target>
+
+
+	<target name="release_mgcp" description="release mgcp module" depends="jar_mgcp">
+		<copy file="${imsloader.conf}/mgcp.properties" tofile="${imsloader.build.release.conf}/mgcp.properties"/>
+		<!-- Copy the project libraries -->
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/mgcp">
+			<fileset dir="${imsloader.tutorial}/mgcp"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity23_list@" value="&lt;!ENTITY list_23 SYSTEM 'list_mgcp.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity23_operations@" value="&lt;!ENTITY type_operations_23 SYSTEM 'type_operations_mgcp.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_mgcp.xsd" tofile="${imsloader.build.release.conf.schemas}/list_mgcp.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_mgcp.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_mgcp.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_mgcp.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_mgcp.doc"/>
+	</target>
+
+
+	<target name="release_stun" description="release stun module" depends="jar_stun">
+		<copy file="${imsloader.conf}/stun.properties" tofile="${imsloader.build.release.conf}/stun.properties"/>
+		<!-- Copy the default mib files -->
+		<copy todir="${imsloader.build.release.conf}/stun">
+			<fileset dir="${imsloader.conf}/stun"/>
+		</copy>
+		<!-- Copy the project libraries -->
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/stun">
+			<fileset dir="${imsloader.tutorial}/stun"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity24_list@" value="&lt;!ENTITY list_24 SYSTEM 'list_stun.xsd'&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity24_operations@" value="&lt;!ENTITY type_operations_24 SYSTEM 'type_operations_stun.xsd'&gt;"/>
+		<copy file="${imsloader.conf.schemas}/list_stun.xsd" tofile="${imsloader.build.release.conf.schemas}/list_stun.xsd"/>
+		<copy file="${imsloader.conf.schemas}/type_operations_stun.xsd" tofile="${imsloader.build.release.conf.schemas}/type_operations_stun.xsd"/>
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_stun.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_stun.doc"/>
+	</target>
+
+
+	<target name="release_genscript" description="release genscript module" depends="jar_genscript">
+		<copy file="${imsloader.bin}/genscript.bat" tofile="${imsloader.build.release.bin}/genscript.bat"/>
+		<copy file="${imsloader.bin}/genscript.sh" tofile="${imsloader.build.release.bin}/genscript.sh"/>
+		<!-- Copy the default files -->
+		<copy todir="${imsloader.build.release.conf}/genscript">
+			<fileset dir="${imsloader.conf}/genscript"/>
+		</copy>
+		<!-- Copy the project libraries -->
+		<!-- Copy the project tutorial -->
+		<copy todir="${imsloader.build.release.tutorial}/genscript">
+			<fileset dir="${imsloader.tutorial}/genscript"/>
+		</copy>
+		<!-- scenario.xsd file-->
+		<!-- Copy the Documentation -->
+		<copy file="${imsloader.doc}/IMSLoader_user_manual_genscript.doc" tofile="${imsloader.build.release.doc}/IMSLoader_user_manual_genscript.doc"/>
+	</target>
+
+
+	<target name="parsing" description="parsing non-used variables in scenario.xsd" depends="Glossary,ParsingXsd">
+	</target>
+
+
+	<target name="ParsingXsd" description="parsing non-used variables in scenario.xsd">
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity1_list@" value="&lt;!ENTITY list_1 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity1_operations@" value="&lt;!ENTITY type_operations_1 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity2_list@" value="&lt;!ENTITY list_2 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity2_operations@" value="&lt;!ENTITY type_operations_2 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity3_list@" value="&lt;!ENTITY list_3 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity3_operations@" value="&lt;!ENTITY type_operations_3 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity4_list@" value="&lt;!ENTITY list_4 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity4_operations@" value="&lt;!ENTITY type_operations_4 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity5_list@" value="&lt;!ENTITY list_5 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity5_operations@" value="&lt;!ENTITY type_operations_5 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity6_list@" value="&lt;!ENTITY list_6 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity6_operations@" value="&lt;!ENTITY type_operations_6 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity7_list@" value="&lt;!ENTITY list_7 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity7_operations@" value="&lt;!ENTITY type_operations_7 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity8_list@" value="&lt;!ENTITY list_8 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity8_operations@" value="&lt;!ENTITY type_operations_8 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity9_list@" value="&lt;!ENTITY list_9 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity9_operations@" value="&lt;!ENTITY type_operations_9 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity10_list@" value="&lt;!ENTITY list_10 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity10_operations@" value="&lt;!ENTITY type_operations_10 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity11_list@" value="&lt;!ENTITY list_11 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity11_operations@" value="&lt;!ENTITY type_operations_11 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity12_list@" value="&lt;!ENTITY list_12 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity12_operations@" value="&lt;!ENTITY type_operations_12 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity13_list@" value="&lt;!ENTITY list_13 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity13_operations@" value="&lt;!ENTITY type_operations_13 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity14_list@" value="&lt;!ENTITY list_14 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity14_operations@" value="&lt;!ENTITY type_operations_14 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity15_list@" value="&lt;!ENTITY list_15 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity15_operations@" value="&lt;!ENTITY type_operations_15 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity16_list@" value="&lt;!ENTITY list_16 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity16_operations@" value="&lt;!ENTITY type_operations_16 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity17_list@" value="&lt;!ENTITY list_17 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity17_operations@" value="&lt;!ENTITY type_operations_17 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity18_list@" value="&lt;!ENTITY list_18 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity18_operations@" value="&lt;!ENTITY type_operations_18 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity19_list@" value="&lt;!ENTITY list_19 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity19_operations@" value="&lt;!ENTITY type_operations_19 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity20_list@" value="&lt;!ENTITY list_20 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity20_operations@" value="&lt;!ENTITY type_operations_20 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity21_list@" value="&lt;!ENTITY list_21 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity21_operations@" value="&lt;!ENTITY type_operations_21 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity22_list@" value="&lt;!ENTITY list_22 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity22_operations@" value="&lt;!ENTITY type_operations_22 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity23_list@" value="&lt;!ENTITY list_23 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity23_operations@" value="&lt;!ENTITY type_operations_23 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity24_list@" value="&lt;!ENTITY list_24 ''&gt;"/>
+		<replace file="${imsloader.build.release.conf.schemas}/scenario.xsd" token="@entity24_operations@" value="&lt;!ENTITY type_operations_24 ''&gt;"/>
+	</target>
+
+
+	<!--                                                                   -->
+	<!-- Produce glossary of IMSLoader parameters                          -->
+	<!--                                                                   -->
+	<!-- A working directory to copy source files is created.              -->
+	<!-- Sources files are .properties from conf directory.                -->
+	<!-- A source file is :                                                -->
+	<!-- - Comments lines leading by # or !.                               -->
+	<!-- - Empty lines.                                                    -->
+	<!-- - Couple (parameter, value) on one line (no escaping end of line).-->
+	<!-- - Delimiter is '=' (neither white space nor ':').                 -->
+	<!-- - Parameter name is before the first '=' character.               -->
+	<!-- - No escaped white space in the name of the parameter.            -->
+	<!-- On each source file :                                             -->
+	<!-- - Only parameter definition lines are kept.                       -->
+	<!-- - White spaces before and after the parameter name are trimmed.   -->
+	<!-- - First '=' and following are replace by separator and filename.  -->
+	<!-- The result files are concatenated in the doc directory.           -->
+	<!-- Working directory is deleted.                                     -->
+	<!-- Ant properties used for glossary of IMSLoader parameters -->
+	<property name="imsloader.tmpGlossary" value="${imsloader.build.release.conf}/tmpGlossary"/>
+	<property name="GlossarySeparator" value=";"/>
+	<property name="GlossaryExtension" value=".csv"/>
+	<property name="GlossaryFile" value="Glossary${GlossaryExtension}"/>
+	<target name="Glossary" description="Glossary of parameters">
+
+		<!-- To delete a previous temporary working directory -->
+		<delete dir="${imsloader.tmpGlossary}"/>
+		<!-- To copy files for the glossary in a temporary working directory -->
+		<copy todir="${imsloader.tmpGlossary}">
+			<mapper type="glob" from="*.properties" to="*.properties${GlossaryExtension}"/>
+			<fileset id="srcGlossaryFiles" dir="${imsloader.build.release.conf}">
+				<patternset id="srcGlossaryFilesPattern" includes="*.properties"/>
+			</fileset>
+		</copy>
+		<!-- To treat each file of the fileset -->
+		<foreach param="oneGlossaryFile" target="GlossaryOneFileTreatment">
+			<fileset id="tmpGlossaryFiles" dir="${imsloader.tmpGlossary}"/>
+		</foreach>
+		<!-- To create the glossary -->
+		<concat destfile="${imsloader.build.release.doc}/${GlossaryFile}">
+			<fileset refid="tmpGlossaryFiles"/>
+		</concat>
+		<!-- To delete the temporary working directory -->
+		<delete dir="${imsloader.tmpGlossary}"/>
+	</target>
+
+
+	<target name="GlossaryOneFileTreatment">
+		<!-- To treat one file -->
+		<property name="PropertiesFile" value="${oneGlossaryFile}"/>
+		<!-- To catch the name of the properties file -->
+		<basename property="PropertiesFilename" file="${PropertiesFile}" suffix="${GlossaryExtension}"/>
+		<!-- To empty the comment lines -->
+		<replaceregexp file="${PropertiesFile}" match="^[#!].*" replace="" byline="true"/>
+		<!-- To suppress leading blanks -->
+		<replaceregexp file="${PropertiesFile}" match="^ +" replace="" byline="true"/>
+		<!-- To trim white spaces around the parameter name and append the properties filename -->
+		<replaceregexp file="${PropertiesFile}" match=" *=.*" replace="${GlossarySeparator}${PropertiesFilename}" byline="true"/>
+		<!-- To suppress blank lines (except the first) -->
+		<replaceregexp file="${PropertiesFile}" match="[\r\n]++" replace="&#x0D;&#x0A;" byline="false" flags="g"/>
+		<!-- To suppress first blank lines -->
+		<replaceregexp file="${PropertiesFile}" match="[\r\n]++" replace="" byline="false"/>
+	</target>
+
+
+
+	<!--                                                                   -->
+	<!-- Produce installer                                                 -->
+	<target name="prepare_izpack" description="prepare izpack">
+		<delete file="${imsloader.build}/izpack"/>
+		<delete file="${imsloader.build.release.bin}/classpath"/>
+		<delete file="${imsloader.build.release.bin}/java_home"/>
+		<delete file="${imsloader.build.release.bin}/memory"/>
+		<move file="${imsloader.build.release.bin}/classpath_release" tofile="${imsloader.build.release.bin}/classpath"/>
+		<move file="${imsloader.build.release.bin}/java_home_release" tofile="${imsloader.build.release.bin}/java_home"/>
+		<move file="${imsloader.build.release.bin}/memory_release" tofile="${imsloader.build.release.bin}/memory"/>
+		<copy todir="${imsloader.build}/izpack">
+			<fileset dir="${imsloader.izpack}">
+				<include name="*"/>
+			</fileset>
+		</copy>
+	</target>
+
+
+	<taskdef name="izpack" classpath="${imsloader.izpack}/standalone-compiler.jar" classname="com.izforge.izpack.ant.IzPackTask"/>
+	<target name="izpack" description="create installer">
+		<replace file="${imsloader.build.izpack}/install.xml" propertyFile="build.properties">
+			<replacefilter token="@VERSION_ANT@" property="imsloader.release.version"/>
+			<replacefilter token="@RELEASE_PATH_ANT@" property="imsloader.izpack.release"/>
+		</replace>
+		<mkdir dir="${imsloader.build.package}"/>
+		<izpack input="${imsloader.build.izpack}/install.xml" output="${imsloader.build.package}/setup_xml_loader.jar" basedir="${imsloader.build.izpack}"/>
+		<delete file="${imsloader.build.izpack}"/>
+	</target>
+
+
+	<target name="generate_xsd" description="generate scenario xsd for the application">
+		<copy file="${imsloader.conf.schemas}/test.xsd" tofile="${imsloader.doc.schemas}/test.xsd"/>
+		<xslt basedir="." in="${imsloader.conf.schemas}/scenario.xsd" out="${imsloader.doc.schemas}/scenario.xsd" processor="trax" style="${imsloader.conf.schemas}/copy.xsl"/>
+		<xslt basedir="." in="${imsloader.conf.schemas}/scenario_protocol.xsd" out="${imsloader.doc.schemas}/scenario_protocol.xsd" processor="trax" style="${imsloader.conf.schemas}/copy.xsl"/>
+		<copy file="${imsloader.conf.schemas}/parameter_operation.xsd" tofile="${imsloader.doc.schemas}/parameter_operation.xsd"/>
+		<copy file="${imsloader.conf.schemas}/test_condition.xsd" tofile="${imsloader.doc.schemas}/test_condition.xsd"/>
+		<copy file="${imsloader.conf.schemas}/master.xsd" tofile="${imsloader.doc.schemas}/master.xsd"/>
+		<replaceregexp file="${imsloader.doc.schemas}/test.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+		<replaceregexp file="${imsloader.doc.schemas}/scenario.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+		<replaceregexp file="${imsloader.doc.schemas}/master.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+		<replaceregexp file="${imsloader.doc.schemas}/parameter_operation.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+		<replaceregexp file="${imsloader.doc.schemas}/test_condition.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+		<replaceregexp file="${imsloader.doc.schemas}/scenario_protocol.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+	</target>
+
+
+
+	<target name="distribute" description="distribute of IMSloader">
+		<antcall target="dist"/>
+		<echo>Copy others files</echo>
+		<copy file="${imsloader.distrib}/Licence.html" tofile="${imsloader.dist}/Licence.html"/>
+		<copy file="${imsloader.distrib}/Readme.html" tofile="${imsloader.dist}/Readme.html"/>
+		<copy file="${imsloader.doc}/IMSLoader_quick_start.doc" tofile="${imsloader.dist.doc}/IMSLoader_quick_start.doc"/>
+		<copy file="${imsloader.doc}/IMSLoader-ReleaseNotes.txt" tofile="${imsloader.dist.doc}/IMSLoader-ReleaseNotes.txt"/>
+		<echo>Distribution files are stored in ${imsloader.dist}</echo>
+	</target>
+
+
+	<target name="release" description="release the ALL distribution" depends="clean,compile">
+		<!-- delete the old release directory -->
+		<antcall target="clean_release"/>
+		<delete dir="${imsloader.distrib.type.release}"/>
+		<delete file="${imsloader.distrib.type.release}/xml_loader_setup_all.jar"/>
+		<!-- release the selected modules-->
+		<antcall target="release_core"/>
+		<antcall target="release_gui"/>
+		<antcall target="release_cmd"/>
+		<antcall target="release_diameter"/>
+		<antcall target="release_rtp"/>
+		<antcall target="release_sip"/>
+		<antcall target="release_http"/>
+		<antcall target="release_tcp"/>
+		<antcall target="release_udp"/>
+		<antcall target="release_sctp"/>
+		<antcall target="release_radius"/>
+		<antcall target="release_smtp"/>
+		<antcall target="release_master"/>
+		<antcall target="release_rtsp"/>
+		<antcall target="release_imap"/>
+		<antcall target="release_pop"/>
+		<antcall target="release_smpp"/>
+		<antcall target="release_ucp"/>
+		<antcall target="release_sigtran"/>
+		<antcall target="release_tls"/>
+		<antcall target="release_h248"/>
+		<antcall target="release_msrp"/>
+		<antcall target="release_snmp"/>
+		<antcall target="release_pstn"/>
+		<antcall target="release_stun"/>
+		<antcall target="release_mgcp"/>
+		<antcall target="release_genscript"/>
+		<!-- parse unused variables in scenario.xsd -->
+		<antcall target="parsing"/>
+		<!-- copy script for testing -->
+		<copy file="${imsloader.distrib.type}/ant_test.bat" tofile="${imsloader.build.release.tutorial}/ant_test.bat"/>
+		<copy file="${imsloader.distrib.type}/ant_test.sh" tofile="${imsloader.build.release.tutorial}/ant_test.sh"/>
+		<!-- move the release directory in distrib directory -->
+		<move todir="${imsloader.distrib.type.release}">
+			<fileset dir="${imsloader.build.release}"/>
+		</move>
+	</target>
+
+
+	<target name="dist" description="make the archive for the ALL distribution" depends="release">
+		<!-- delete the old install package -->
+		<delete file="${imsloader.distrib.type.release}/xml_loader_setup_all.jar"/>
+		<!-- copy the release distrib directory in build directory -->
+		<delete file="${imsloader.build.release}"/>
+		<copy todir="${imsloader.build.release}">
+			<fileset dir="${imsloader.distrib.type.release}"/>
+		</copy>
+		<!-- create the install package -->
+		<antcall target="prepare_izpack"/>
+		<antcall target="izpack"/>
+		<!-- copy the install package -->
+		<move file="${imsloader.build.package}/setup_xml_loader.jar" tofile="${imsloader.dist}/imsloader_${imsloader.release.version}_setup_all.jar" overwrite="true"/>
+	</target>
+</project>
