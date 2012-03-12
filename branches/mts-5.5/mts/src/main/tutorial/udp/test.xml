@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="UDP" description="UDP regression tests">
+  
+    <!-- Parameters for proxy testcases -->
+    <parameter name="[localHost]" operation="system.ipaddress"/>
+    <!--parameter name="[localHost]" operation="set" value="127.0.0.1"/-->
+    <!--parameter name="[localHost]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[localHost]" operation="set" value="[localHost(0)]" editable="true"/>
+    <parameter name="[localPort]" operation="set" value="10000" editable="true"/>
+
+    <parameter name="[remoteHost]" operation="system.ipaddress"/>    
+    <!--parameter name="[remoteHost]" operation="set" value="127.0.0.1"/-->
+    <!--parameter name="[remoteHost]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]" editable="true"/>
+    <parameter name="[remotePort]" operation="set" value="12000" editable="true"/>
+    	
+    <parameter name="[localHost_proxy]"  operation="set" value="[localHost(0)]" editable="true"/>
+    <parameter name="[localPort_proxy]"  operation="set" value="11000" editable="true"/>
+    <parameter name="[remoteHost_proxy]" operation="set" value="[remoteHost(0)]" editable="true"/>
+    <parameter name="[remotePort_proxy]" operation="set" value="10000" editable="true"/>
+
+    <testcase name="udp/001_binary" state="true">
+        <scenario name="toto">001_binary/scenario.xml</scenario>
+    </testcase>
+
+    <testcase name="udp/001_not_connected" state="true">
+        <scenario name="socket2">001_not_connected/scenario.xml</scenario>
+    </testcase>
+
+    <testcase name="udp/002_connected" state="true">
+        <scenario name="socket2">002_connected/scenario.xml</scenario>
+    </testcase>
+
+    <testcase name="udp/003_test_connected_with_wrong_param" state="true">
+        <scenario name="socket2">003_connected_with_wrong_param/scenario1.xml</scenario>
+    </testcase>
+
+   <testcase name="udp/003_test_connected_with_wrong_param" state="true">
+        <scenario name="socket2">003_connected_with_wrong_param/scenario2.xml</scenario>
+    </testcase>
+
+    <testcase name="udp/004_param1" state="true">
+        <scenario name="socket2">004_param/scenario1.xml</scenario>
+    </testcase>
+    
+    <testcase name="udp/004_param2" state="true">
+        <scenario name="socket2">004_param/scenario2.xml</scenario>
+    </testcase>
+    
+    <testcase name="udp/005_sip_register" state="true">
+        <scenario name="toto">005_sip_register/UA.xml</scenario>
+    </testcase>
+
+    <testcase name="udp/007_listenpoint" state="true">
+        <scenario name="UDP">007_listenpoint/scenario.xml</scenario>
+    </testcase>
+
+    <testcase name="udp/sip_register_no" state="true">
+        <scenario name="toto">006_sip_register_no/UA.xml</scenario>
+    </testcase>
+    
+    <testcase name="udp/901_echo_server" state="false">
+        <scenario name="proxy_receiver">901_echo_server/scenario.xml</scenario>
+    </testcase>
+   
+    <testcase name="udp/902_echo_client" state="false">
+        <scenario name="proxy_client">902_echo_client/scenario.xml</scenario>
+    </testcase>
+	
+</test>

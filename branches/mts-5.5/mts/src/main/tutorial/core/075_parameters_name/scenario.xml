@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+    <parameter name="[timestamp]" operation="system.timestamp" value="1970" />    
+    <parameter name="[prefix_[timestamp]]" operation="set" value="toto" />
+
+    <test condition="string.equals" parameter="[prefix_[timestamp]]" value="toto" />
+
+    <parameter name ="[sessionId]" operation="set" value="0123456789"/>
+    <parameter name="[sessionTab.lastRecType_[sessionId]]" operation="set" value="lastRecType"/>
+    <parameter name="[sessionTab.lastRecNumber_[sessionId]]" operation="set" value="lastRecNumber"/>
+
+    <test parameter="[sessionTab.lastRecType_[sessionId]]" condition="string.equals" value="lastRecType" />
+    <test parameter="[sessionTab.lastRecNumber_[sessionId]]" condition="string.equals" value="lastRecNumber" />
+
+    <parameter name="[sessionTab.lastRecType_[sessionId]]" operation="list.remove"/>
+    <parameter name="[sessionTab.lastRecNumber_[sessionId]]" operation="list.remove"/>
+
+    <parameter name="[ ! #$% '  *+,-./0123456789 ; = ?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~]" operation="set" 
+               value=" ! #$% '()*+,-./0123456789:; = ?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"/>
+ <!--parameter name="[ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~]" operation="set" 
+               value=" !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"/-->
+
+</scenario>

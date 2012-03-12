@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+
+    <parameter name="[test:init]" operation="system.semaphorenotify" />
+    <parameter name="[test:init]" operation="system.semaphorenotify" />
+    <parameter name="[test:init]" operation="system.semaphorenotify" />
+
+    <parameter name="[test:mutex]" operation="system.semaphorenotify" />
+
+    <parameter name="[test:end]" operation="system.semaphorewait" />
+    <parameter name="[test:end]" operation="system.semaphorewait" />
+    <parameter name="[test:end]" operation="system.semaphorewait" />
+    
+    <if>
+        <condition>
+            <test parameter="[testcase:leveltestcase]" condition="string.contains" value="toto testcase" />
+            <test parameter="[testcase:leveltestcase]" condition="string.contains" value="1" />
+            <test parameter="[testcase:leveltestcase]" condition="string.contains" value="2" />
+            <test parameter="[testcase:leveltestcase]" condition="string.contains" value="3" />
+            <test parameter="[test:leveltest]" condition="string.contains" value="toto test" />
+            <test parameter="[test:leveltest]" condition="string.contains" value="1" />
+            <test parameter="[test:leveltest]" condition="string.contains" value="2" />
+            <test parameter="[test:leveltest]" condition="string.contains" value="3" />
+        </condition>
+        <else>
+            <exit failed="true" />
+        </else>
+    </if>
+</scenario>

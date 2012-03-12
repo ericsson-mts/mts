@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- name="Send ETSI e4 Push-Notification request (PNR)" -->
+<scenario>
+
+<!--
+From ETSI ES 283 034 V1.2.0 (2007-03) :
+Push-Notification-Request ::= < Diameter Header:  309, REQ, PXY, 16777231 >
+                                 < Session-Id >
+                                 { Vendor-Specific-Application-Id }
+                                   Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                        1* [ Vendor-Id ]
+                                                                        0*1{ Auth-Application-Id }
+                                                                        0*1{ Acct-Application-Id }
+                                 { Auth-Session-State }
+                                 { Origin-Host }
+                                 { Origin-Realm }
+                                 { Destination-Host }
+                                 { Destination-Realm }
+
+                                 [Globally-Unique-Address]
+                                  Globally-Unique-Address ::= < AVP Header: 300 13019 >
+                                                                [Framed-IP-Address]
+                                                                [Framed-IPv6-Prefix]
+                                                                [Address-Realm]
+                                 [User-Name]
+                                 [Logical-Access-Id]
+                                 [Physical-Access-Id]
+                                 [Access-Network-Type]
+                                 [Initial-Gate-Setting]
+                                  Initial-Gate-Setting ::= < AVP Header: 303 13019 >
+                                                             { NAS-Filter-Rule }
+                                                             [ Maximum-Allowed-Bandwidth-UL ]
+                                                             [ Maximum-Allowed-Bandwidth-DL ]
+                                *[QoS-Profile]
+                                  QoSProfile ::= < AVP Header: 304 13019 >
+                                                  *[ Application-Class-ID ]
+                                                  *[ Media-Type ]
+                                                   [ Reservation-Priority ]
+                                                   [ Maximum-Allowed-Bandwidth-UL ]
+                                                   [ Maximum-Allowed-Bandwidth-DL ]
+                                                   [ Transport-Class ]
+                                 [IP-Connectivity-Status]
+
+                                *[ AVP ]
+                                *[ Proxy-Info ]
+                                   Proxy-Info ::= < AVP Header: 284 >
+                                                      { Proxy-Host }
+                                                      { Proxy-State }
+                                                    * [ AVP ]
+                                *[ Route-Record ]
+
+-->
+
+    <sendMessageDIAMETER name="Send Request ETSI/e4/PNR" remoteURL="diameter://[Local-Address]" destScenario="client">
+        <header request="true" command="Push-Notification" applicationId="ETSI e2 e4" proxiable="true" error="false" retransmit="false"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
+          <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777231"/>
+            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777231"/-->
+          </avp>
+
+          <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
+          <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (ETSI ES 283 034 V1.2.0 (2007-03)). -->
+          <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
+
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Remote-Host]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/> 
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>            
+
+          <avp code="Globally-Unique-Address" mandatory="true"  vendorId="13019">
+            <avp code="Framed-IP-Address" type="OctetString" value="ToBeCompleted"/>
+            <avp code="Framed-IPv6-Prefix" type="OctetString" value="ToBeCompleted"/>
+            <avp code="Address-Realm" mandatory="true"  type="OctetString" value="ToBeCompleted" vendorId="13019"/>
+          </avp>
+
+          <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
+          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>
+
+          <avp code="Logical-Access-Id" type="OctetString" value="ToBeCompleted" vendorId="13019"/>
+          <avp code="Physical-Access-Id" type="OctetString" value="ToBeCompleted" vendorId="13019"/>
+
+          <avp code="Access-Network-Type" vendorId="13019">
+            <!-- The NAS-Port-Type AVP contains the type of the port on which the NAS is authenticating the user. -->
+            <!-- Possible enumerated values : Async (0) / Sync (1) / ISDN Sync (2) / ISDN Async V.120 (3) / ISDN Async V.110 (4) / Virtual (5) / PIAFS (6) / HDLC Clear Channel(7) / X.25 (8) / X.75 (9) / G.3 Fax (10) / SDSL - Symmetric DSL (11) / ADSL-CAP - Asymmetric DSL, Carrierless Amplitude Phase Modulation(12) / ADSL-DMT - Asymmetric DSL, Discrete Multi-Tone (13) / IDSL - ISDN Digital Subscriber Line (14) / Ethernet (15) / xDSL - Digital Subscriber Line of unknown type (16) / Cable (17) / Wireless - Other (18) / Wireless - IEEE 802.11 (19) / Token-Ring [RAD802.1X] (20) / FDDI [RAD802.1X] (21) / Wireless - CDMA2000 (22) / Wireless - UMTS (23) / Wireless - 1X-EV (24) / IAPP [IEEE 802.11f] (25). -->
+            <avp code="NAS-Port-Type" type="Enumerated" value="Async"/>
+
+            <!-- The Aggregation-Network-Type AVP is of type Enumerated. -->
+            <!-- Possible enumerated values : UNKNOWN (0) / ATM (1) / ETHERNET (2). -->
+            <avp code="Aggregation-Network-Type" type="Enumerated" value="UNKNOWN" vendorId="13019"/>
+          </avp>
+
+          <avp code="Initial-Gate-Setting" vendorId="13019">
+            <avp code="NAS-Filter-Rule" type="IPFilterRule" value="ToBeCompleted"/>
+            <avp code="Maximum-Allowed-Bandwidth-UL" type="Unsigned32" value="0" vendorId="13019"/>
+            <avp code="Maximum-Allowed-Bandwidth-DL" type="Unsigned32" value="0" vendorId="13019"/>
+          </avp>
+
+          <avp code="QoS-Profile" vendorId="13019">
+            <avp code="Application-Class-ID" type="UTF8String" value="ToBeCompleted" vendorId="13019"/>
+
+            <!-- The Media-Type AVP determines the media type of a session component. -->
+            <!-- Possible enumerated values : AUDIO (0) / VIDEO (1) / DATA (2) / APPLICATION (3) / CONTROL (4) / TEXT (5) / MESSAGE (6) / OTHER (0xFFFFFFFF). -->
+            <avp code="Media-Type" type="Enumerated" value="AUDIO" vendorId="10415"/>
+
+            <!-- The Reservation-Priority AVP is of type Enumerated. -->
+            <!-- Possible enumerated values : PRIORITY-ONE (1) / PRIORITY-TWO (2) / PRIORITY-THREE (3) / PRIORITY-FOUR (4) / PRIORITY-FIVE (5) / PRIORITY-SIX (6) / PRIORITY-SEVEN (7). -->
+            <avp code="Reservation-Priority" type="Enumerated" value="1" vendorId="13019"/>
+
+            <avp code="Maximum-Allowed-Bandwidth-UL" type="Unsigned32" value="0" vendorId="13019"/>
+            <avp code="Maximum-Allowed-Bandwidth-DL" type="Unsigned32" value="0" vendorId="13019"/>
+            <avp code="Transport-Class" type="Unsigned32" value="0" vendorId="13019"/>
+          </avp>
+          <avp code="QoS-Profile" vendorId="13019">
+            <avp code="Application-Class-ID" type="UTF8String" value="ToBeCompleted" vendorId="13019"/>
+
+            <!-- The Media-Type AVP determines the media type of a session component. -->
+            <!-- Possible enumerated values : AUDIO (0) / VIDEO (1) / DATA (2) / APPLICATION (3) / CONTROL (4) / TEXT (5) / MESSAGE (6) / OTHER (0xFFFFFFFF). -->
+            <avp code="Media-Type" type="Enumerated" value="AUDIO" vendorId="10415"/>
+
+            <!-- The Reservation-Priority AVP is of type Enumerated. -->
+            <!-- Possible enumerated values : PRIORITY-ONE (1) / PRIORITY-TWO (2) / PRIORITY-THREE (3) / PRIORITY-FOUR (4) / PRIORITY-FIVE (5) / PRIORITY-SIX (6) / PRIORITY-SEVEN (7). -->
+            <avp code="Reservation-Priority" type="Enumerated" value="1" vendorId="13019"/>
+
+            <avp code="Maximum-Allowed-Bandwidth-UL" type="Unsigned32" value="0" vendorId="13019"/>
+            <avp code="Maximum-Allowed-Bandwidth-DL" type="Unsigned32" value="0" vendorId="13019"/>
+            <avp code="Transport-Class" type="Unsigned32" value="0" vendorId="13019"/>
+          </avp>
+
+          <!-- The IP-Connectivity-Status AVP is of type Enumerated. -->
+          <!-- Possible enumerated values : IP-CONNECTIVITY-ON (0) / IP-CONNECTIVITY-LOST (1). -->
+          <avp code="IP-Connectivity-Status" type="Enumerated" value="IP-CONNECTIVITY-ON" vendorId="13019"/>
+
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer ETSI/e4/PNA" request="false" type="Push-Notification:309" result="DIAMETER_SUCCESS:2001">
+    </receiveMessageDIAMETER>
+    
+</scenario>

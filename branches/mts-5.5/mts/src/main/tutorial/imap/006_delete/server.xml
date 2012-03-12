@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <!-- attend message DELETE-->
+    <receiveMessageIMAP request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final DELETE-->
+    <sendMessageIMAP name="Send DELETE"  channel="[connection]">
+<![CDATA[
+[tag] OK DELETE completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message DELETE-->
+    <receiveMessageIMAP channel="[connection]" request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final delete-->
+    <sendMessageIMAP name="Send DELETE"  channel="[connection]">
+<![CDATA[
+[tag] NO DELETE Name "monDossier" has inferior hierarchical names
+]]>
+    </sendMessageIMAP>
+    
+</scenario>

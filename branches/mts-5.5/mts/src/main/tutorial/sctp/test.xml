@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="SCTP" description="SCTP regression tests">
+
+    <parameter name="[localHost]" operation="system.ipaddress"/>
+    <parameter name="[localHost]" operation="set" value="[localHost(0)]" editable="true"/>
+    <parameter name="[localPort]" operation="set" value="4011" editable="true"/>
+
+    <parameter name="[remoteHost]" operation="system.ipaddress"/>
+    <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]" editable="true"/>
+    <parameter name="[remotePort]" operation="file.readProperty" value="sctp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[remotePort]" operation="set" value="10000" editable="true"/-->
+    
+
+    <testcase name="001_binary" state="true">
+        <scenario name="SCTP">001_binary/scenario.xml</scenario>
+    </testcase>
+    <testcase name="002_binary" state="true">
+        <scenario name="SCTP">002_binary/scenario.xml</scenario>
+    </testcase>
+    <testcase name="003_listenpoint" state="true">
+        <scenario name="SCTP">003_listenpoint/scenario.xml</scenario>
+    </testcase>
+    <testcase name="004_passive_client" state="true">
+        <scenario name="SCTP">004_passive_client/scenario.xml</scenario>
+    </testcase>
+    <testcase name="client" state="false">
+        <scenario name="SCTP">901_client/scenario.xml</scenario>
+    </testcase>
+    <testcase name="server" state="false">
+        <scenario name="SCTP">901_server/scenario.xml</scenario>
+    </testcase>
+</test>

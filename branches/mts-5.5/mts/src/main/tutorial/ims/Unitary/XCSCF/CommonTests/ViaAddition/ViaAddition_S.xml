@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[Port-ServerCSCF]" transport="[LocalTransport]"/>
+	<parameter name="[providerName]" 		operation="set" value="[scenarioName]"/>
+
+	
+	
+	<receiveRequestSIP name="Wait INVITE"  method="INVITE">
+	<parameter name="[Via]" operation="setFromMessage" value="header:Via"/>
+	<parameter name="[AddedVia]" operation="setFromMessage" value="header:TopmostVia"/>
+	</receiveRequestSIP>
+
+	<parameter name="[SizeHeaderVia]" operation="size" value="[Via]"/>
+	<if>
+        <condition>
+            <test parameter="[SizeHeaderVia]" condition="equals" value="1"/>
+        </condition>
+		<then>
+			<log level="1">Proxy doesn't add a via header in the request he forwards (Stateless Proxy property)</log>
+		</then>
+		<else>
+			<if>
+				<condition>
+					<test parameter="[SizeHeaderVia]" condition="greaterThan" value="1"/>				
+				</condition>
+				<then>
+					<log level="1">Proxy adds a via header in the request he forwards (Transaction Stateful Proxy property)</log>
+					<log level="1">This added header contains the value : [AddedVia]</log>
+					<log level="1">Please check this address is the one of the proxy you're testing</log>
+				</then>
+			</if>
+		</else>
+	</if>
+
+
+</scenario>
+	

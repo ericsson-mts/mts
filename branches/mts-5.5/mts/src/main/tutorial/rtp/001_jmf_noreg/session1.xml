@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<openConnectionRTP name="OpenConnection" state="true"
+			  sessionName="inviter" 
+			  localHost="[localHostRTP(0)]" localPort="[localPortRTP]" 
+			  remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]"/>
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+  	<parameter name="[ssrc]" operation="number.random" value="2147483647"/>
+	<sendPacketRTP name="sendPacketRTP" state="true"
+			sessionName="inviter" destScenario="session2">
+	    <packet>	    
+		<header ssrc="[ssrc]" payloadType="17" seqnum="0" timestamp="0"/>
+		<payload format="text">Packet #1</payload>		
+		<payload format="text">abcdefghijklmnopqrstuvwxyz</payload>		
+		<payload format="text">0123456789</payload>		
+		<payload format="binary">
+		0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+		<!--$0 $01 $2 $03 $4 $5 $06 $7 $8 $09 $A $b $0C $d $E $0f $10 -->
+		<!--b01010101 b10101010 b11111111 b0 b101 -->		
+		</payload>
+		<payload format="text">ABCDEFGHIJKLMNOPQRSTUVWXYZ</payload>
+	    </packet>	
+	</sendPacketRTP>		
+
+	<sendPacketRTP name="sendPacketRTP" state="true"
+			sessionName="inviter" destScenario="session2">
+	    <packet>	    
+		<header ssrc="[ssrc]" payloadType="17" seqnum="1" timestamp="1000"/>
+		<payload format="text">Packet #2</payload>		
+	    </packet>	
+	</sendPacketRTP>		
+
+	<sendPacketRTP name="sendPacketRTP" state="true"
+			sessionName="inviter" destScenario="session2">
+	    <packet>	    
+		<header ssrc="[ssrc]" payloadType="17" seqnum="2" timestamp="2000"/>
+		<payload format="text">Packet #3</payload>		
+	    </packet>		    
+	</sendPacketRTP>		
+
+	<receivePacketRTP name="ReceivePacketRTP1" sessionName="inviter" payloadType="8"/>
+	<receivePacketRTP name="ReceivePacketRTP2" sessionName="inviter" payloadType="8"/>
+	<!-- to avoid lost of packets -->	
+	<receivePacketRTP name="ReceivePacketRTP2" sessionName="inviter" payloadType="8"/>
+
+	<finally>
+		<closeConnectionRTP name="CloseConnection" state="true" sessionName="inviter" />	
+	</finally>
+		
+</scenario>

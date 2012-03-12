@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario manager -->
+<scenario>
+    
+    <parameter name="[listenpoint]" operation="set" value="manager" />
+    <createListenpointSNMP name="[listenpoint]" localPort="162"/>
+
+    <parameter name="[testcase:sem1]" operation="system.semaphoreNotify"/>
+
+    <receiveMessageSNMP>
+    </receiveMessageSNMP>
+
+    <receiveMessageSNMP>
+    </receiveMessageSNMP>
+
+    <receiveMessageSNMP>
+    </receiveMessageSNMP>
+
+    <finally>
+        <removeListenpointSNMP name="[listenpoint]"/>
+    </finally>
+</scenario>

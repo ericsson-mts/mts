@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE Library [
+<!ENTITY register    SYSTEM "./register_lib.xml">
+]>
+<scenario>
+
+<parameter name="[test:SEM2]" 	operation="system.semaphorewait" value="1"/>
+
+<parameter name="[localIndex]" 	operation="set" value="0"/>
+
+	<while>
+		<condition>
+			<test parameter="[localIndex]"  condition="lowerEqualThan" value="[NumberUserDatabase]"/>
+		</condition>
+		<do>
+		<parameter name="[clientName]" 		operation="set" value="alice[localIndex]"/>
+		<parameter name="[100_DOMAIN_ADDR]" operation="set" value="ims.net"/>
+		<parameter name="[Expires]" 		operation="set" value="0"/>
+
+	&register;
+	
+		<parameter name="[clientName]" 		operation="set" value="bob[localIndex]"/>
+		
+	&register;
+	
+		<parameter name="[localIndex]" 		operation="add" value="[localIndex]"	value2="1"/>
+		</do>
+	</while>
+
+</scenario>

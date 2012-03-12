@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageUCP request="true" type="MessageRetrievalOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="AdC" operation="protocol.setFromMessage" value="attribute.AdC"/>
+        <parameter name="AC" operation="protocol.setFromMessage" value="attribute.AC"/>
+        <parameter name="MNo" operation="protocol.setFromMessage" value="attribute.MNo"/>
+        <parameter name="R/T" operation="protocol.setFromMessage" value="attribute.R/T"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[AdC]" condition="string.equals" value="1"/>
+        <test parameter="[AC]" condition="string.equals" value="balabalabala"/>
+        <test parameter="[MNo]" condition="string.equals" value="1234"/>
+        <test parameter="[R/T]" condition="string.equals" value="R"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="MessageRetrievalOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="NPL" value="0"/>
+        <attribute name="SM" value="well done"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP request="true" type="MessageRetrievalOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="AdC" operation="protocol.setFromMessage" value="attribute.AdC"/>
+        <parameter name="AC" operation="protocol.setFromMessage" value="attribute.AC"/>
+        <parameter name="MNo" operation="protocol.setFromMessage" value="attribute.MNo"/>
+        <parameter name="R/T" operation="protocol.setFromMessage" value="attribute.R/T"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[AdC]" condition="string.equals" value="1"/>
+        <test parameter="[AC]" condition="string.equals" value="balabalabala"/>
+        <test parameter="[MNo]" condition="string.equals" value="1234"/>
+        <test parameter="[R/T]" condition="string.equals" value="R"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="MessageRetrievalOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="NPL" value="2"/>
+        <attribute name="Msg" value="1,3,test de msg,1234567890,system message"/>
+        <attribute name="Msg" value="test de msg2"/>
+        <attribute name="SM" value="well done"/>
+    </sendMessageUCP>
+
+</scenario>

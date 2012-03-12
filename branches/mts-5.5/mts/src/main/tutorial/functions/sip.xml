@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+functions defined in this scenario
+
+"public"
+sip.sendRegister
+sip.handle401
+
+"private"
+sip.sendInitialFromScratch
+sip.sendInitialFromResponse
+
+-->
+<scenario>
+    <function name="sip.sendInitialFromScratch">
+        <input>
+            <parameter name="[function:method]" type="string"/>
+            <parameter name="[function:listenpoint]" type="string"/>
+
+            <parameter name="[function:localUsername]" type="string"/>
+            <parameter name="[function:localDisplayname]" type="string"/>
+            <parameter name="[function:localDomain]" type="string"/>
+            <parameter name="[function:localUserhost]" type="string"/>
+
+            <parameter name="[function:remoteUsername]" type="string"/>
+            <parameter name="[function:remoteDisplayname]" type="string"/>
+            <parameter name="[function:remoteDomain]" type="string"/>
+
+            <parameter name="[function:remotehost]" type="string"/>
+            <parameter name="[function:remoteport]" type="number"/>
+
+            <parameter name="[function:localUserport]" type="string" default="5060"/>
+
+            <parameter name="[function:Content]" type="string" default="EMPTY_LIST"/>
+            <parameter name="[function:Content-Type]" type="string" default="EMPTY_LIST"/>
+            <parameter name="[function:transport]" type="string" default="UDP" />
+            <parameter name="[function:Max-Forwards]" type="number" default="70" />
+            <parameter name="[function:Expires]" type="number" default="3600" />
+            <parameter name="[function:User-Headers]" type="string" default="EMPTY_LIST" />
+        </input>
+
+        <do>
+            <parameter name="[callId]" operation="number.uid" />
+            <parameter name="[fromTag]" operation="number.uid" />
+            <parameter name="[cseqNumber]" operation="number.uid" />
+            <parameter name="[branchId]" operation="number.uid" />
+
+            <sendMessageSIP listenpoint="[listenpoint]" remoteHost="[remotehost]" remotePort="[remoteport]">
+<![CDATA[
+[method] sip:[username]@[domain] SIP/2.0
+To: "[remoteDisplayname]" <sip:[remoteUsername]@[remoteDomain]>
+From: "[localDisplayname]" <sip:[localDsername]@[localDomain]>;tag=[fromTag]
+Call-ID: [callId]
+CSeq: [cseqNumber] REGISTER
+Via: SIP/2.0/[transport] [localUserhost]:[localUserport];branch=z9hG4bK[branchId]
+Contact: <sip:[localUsername]@[localUserhost]:[localUserport]>
+Max-Forwards: [Max-Forwards]
+Expires: [Expires]
+[User-Headers]
+Content-Type: [Content-Type]
+Content-Length: auto
+
+[Content]
+]]>
+            </sendMessageSIP>
+        </do>
+    </function>
+
+    <function name="sip.sendSubsequentFromResponse">
+        <input>
+            <parameter name="[function:method]" type="string"/>
+            <parameter name="[function:listenpoint]" type="string"/>
+
+            <parameter name="[function:localUsername]" type="string"/>
+            <parameter name="[function:localDisplayname]" type="string"/>
+            <parameter name="[function:localDomain]" type="string"/>
+            <parameter name="[function:localUserhost]" type="string"/>
+
+            <parameter name="[function:remoteUsername]" type="string"/>
+            <parameter name="[function:remoteDisplayname]" type="string"/>
+            <parameter name="[function:remoteDomain]" type="string"/>
+
+            <parameter name="[function:remotehost]" type="string"/>
+            <parameter name="[function:remoteport]" type="number"/>
+
+            <parameter name="[function:localUserport]" type="string" default="5060"/>
+
+            <parameter name="[function:Content]" type="string" default="EMPTY_LIST"/>
+            <parameter name="[function:Content-Type]" type="string" default="EMPTY_LIST"/>
+            <parameter name="[function:transport]" type="string" default="UDP" />
+            <parameter name="[function:Max-Forwards]" type="number" default="70" />
+            <parameter name="[function:Expires]" type="number" default="3600" />
+            <parameter name="[function:User-Headers]" type="string" default="EMPTY_LIST" />
+        </input>
+
+        <do>
+            <parameter name="[callId]" operation="number.uid" />
+            <parameter name="[fromTag]" operation="number.uid" />
+            <parameter name="[cseqNumber]" operation="number.uid" />
+            <parameter name="[branchId]" operation="number.uid" />
+
+            <sendMessageSIP listenpoint="[listenpoint]" remoteHost="[remotehost]" remotePort="[remoteport]">
+<![CDATA[
+[method] sip:[username]@[domain] SIP/2.0
+To: "[remoteDisplayname]" <sip:[remoteUsername]@[remoteDomain]>
+From: "[localDisplayname]" <sip:[localDsername]@[localDomain]>;tag=[fromTag]
+Call-ID: [callId]
+CSeq: [cseqNumber] REGISTER
+Via: SIP/2.0/[transport] [localUserhost]:[localUserport];branch=z9hG4bK[branchId]
+Contact: <sip:[localUsername]@[localUserhost]:[localUserport]>
+Max-Forwards: [Max-Forwards]
+Expires: [Expires]
+[User-Headers]
+Content-Type: [Content-Type]
+Content-Length: auto
+
+[Content]
+]]>
+            </sendMessageSIP>
+        </do>
+    </function>
+
+
+     <function name="sip.sendInitialFromResponse">
+        <input>
+            <parameter name="[function:method]" type="string"/>
+            <parameter name="[function:message]" type="mesage"/>
+
+            <parameter name="[function:Content]" type="string" default="EMPTY_LIST"/>
+            <parameter name="[function:Content-Type]" type="string" default="EMPTY_LIST"/>
+
+            <parameter name="[function:transport]" type="string" default="UDP" />
+            <parameter name="[function:Max-Forwards]" type="number" default="70" />
+            <parameter name="[function:Expires]" type="number" default="3600" />
+            <parameter name="[function:User-Headers]" type="string" default="EMPTY_LIST" />
+        </input>
+
+        <do>
+            <parameter name="[listenpoint]" operation="setFromMessage" value="listenpoint.name" value2="[message]" />
+
+            <parameter name="[localDisplayname]" operation="setFromMessage" value="listepoint.name" value2="[message]" />
+            <parameter name="[localUsername]" operation="setFromMessage" value="listepoint.name" value2="[message]" />
+            <parameter name="[localDomain]" operation="setFromMessage" value="listepoint.name" value2="[message]" />
+
+            <call name="sip.sendInitialFromScratch">
+                <input>
+                    <parameter name="[function:method]" value="[method]"/>
+                    <parameter name="[function:listenpoint]" value="[listenpoint]"/>
+
+                    <parameter name="[function:localUsername]" value="[username]"/>
+                    <parameter name="[function:localDisplayname]" value="[displayname]"/>
+                    <parameter name="[function:localDomain]" value="[domain]"/>
+
+                    <parameter name="[function:localUserhost]" value="[userhost]"/>
+                    <parameter name="[function:localUserport]" value="[userport]"/>
+
+                    <parameter name="[function:remoteUsername]" value="[username]"/>
+                    <parameter name="[function:remoteDisplayname]" value="[displayname]"/>
+                    <parameter name="[function:remoteDomain]" value="[domain]"/>
+
+                    <parameter name="[function:remotehost]" value="[remotehost]"/>
+                    <parameter name="[function:remoteport]" value="[remoteport]"/>
+
+                    <parameter name="[function:transport]" value="[transport]" />
+                    <parameter name="[function:Max-Forwards]" value="[Max-Forwards]" />
+                    <parameter name="[function:Expires]" value="[Expires]" />
+                    <parameter name="[function:User-Headers]" value="[User-Headers]" />
+                </input>
+            </call>
+        </do>
+    </function>
+
+    <function name="sip.sendRegister">
+        <input>
+            <parameter name="[function:listenpoint]" type="string"/>
+            <parameter name="[function:username]" type="string"/>
+            <parameter name="[function:displayname]" type="string"/>
+            <parameter name="[function:domain]" type="string"/>
+            <parameter name="[function:userhost]" type="string"/>
+            <parameter name="[function:remotehost]" type="string"/>
+            <parameter name="[function:remoteport]" type="number"/>
+
+            <parameter name="[function:userport]" type="string" default="5060"/>
+            <parameter name="[function:transport]" type="string" default="UDP" />
+            <parameter name="[function:Max-Forwards]" type="number" default="70" />
+            <parameter name="[function:Expires]" type="number" default="3600" />
+            <parameter name="[function:User-Headers]" type="string" default="list.create" />
+        </input>
+
+        <do>
+            <call name="sip.sendInitialFromScratch">
+                <input>
+                    <parameter name="[function:method]" value="REGISTER"/>
+                    <parameter name="[function:listenpoint]" value="[listenpoint]"/>
+
+                    <parameter name="[function:localUsername]" value="[username]"/>
+                    <parameter name="[function:localDisplayname]" value="[displayname]"/>
+                    <parameter name="[function:localDomain]" value="[domain]"/>
+                    <parameter name="[function:localUserhost]" value="[userhost]"/>
+                    <parameter name="[function:localUserport]" value="[userport]"/>
+
+                    <parameter name="[function:remoteUsername]" value="[username]"/>
+                    <parameter name="[function:remoteDisplayname]" value="[displayname]"/>
+                    <parameter name="[function:remoteDomain]" value="[domain]"/>
+
+                    <parameter name="[function:remotehost]" value="[remotehost]"/>
+                    <parameter name="[function:remoteport]" value="[remoteport]"/>
+
+                    <parameter name="[function:transport]" value="[transport]" />
+                    <parameter name="[function:Max-Forwards]" value="[Max-Forwards]" />
+                    <parameter name="[function:Expires]" value="[Expires]" />
+                    <parameter name="[function:User-Headers]" value="[User-Headers]" />
+                </input>
+            </call>
+        </do>
+    </function>
+
+    <function name="sip.sendInvite">
+        <input>
+            <parameter name="[function:listenpoint]" type="string"/>
+            <parameter name="[function:username]" type="string"/>
+            <parameter name="[function:displayname]" type="string"/>
+            <parameter name="[function:domain]" type="string"/>
+            <parameter name="[function:userhost]" type="string"/>
+            <parameter name="[function:remotehost]" type="string"/>
+            <parameter name="[function:remoteport]" type="number"/>
+
+            <parameter name="[function:userport]" type="string" default="5060"/>
+            <parameter name="[function:transport]" type="string" default="UDP" />
+            <parameter name="[function:Max-Forwards]" type="number" default="70" />
+            <parameter name="[function:Expires]" type="number" default="3600" />
+            <parameter name="[function:User-Headers]" type="string" default="list.create" />
+        </input>
+
+        <do>
+            <call name="sip.sendInitialFromScratch">
+                <input>
+                    <parameter name="[function:method]" value="REGISTER"/>
+                    <parameter name="[function:listenpoint]" value="[listenpoint]"/>
+
+                    <parameter name="[function:localUsername]" value="[username]"/>
+                    <parameter name="[function:localDisplayname]" value="[displayname]"/>
+                    <parameter name="[function:localDomain]" value="[domain]"/>
+                    <parameter name="[function:localUserhost]" value="[userhost]"/>
+                    <parameter name="[function:localUserport]" value="[userport]"/>
+
+                    <parameter name="[function:remoteUsername]" value="[username]"/>
+                    <parameter name="[function:remoteDisplayname]" value="[displayname]"/>
+                    <parameter name="[function:remoteDomain]" value="[domain]"/>
+
+                    <parameter name="[function:remotehost]" value="[remotehost]"/>
+                    <parameter name="[function:remoteport]" value="[remoteport]"/>
+
+                    <parameter name="[function:transport]" value="[transport]" />
+                    <parameter name="[function:Max-Forwards]" value="[Max-Forwards]" />
+                    <parameter name="[function:Expires]" value="[Expires]" />
+                    <parameter name="[function:User-Headers]" value="[User-Headers]" />
+                </input>
+            </call>
+        </do>
+    </function>
+
+    <function name="sip.sendAck">
+        <input>
+            <parameter name="[function:listenpoint]" type="string"/>
+            <parameter name="[function:username]" type="string"/>
+            <parameter name="[function:displayname]" type="string"/>
+            <parameter name="[function:domain]" type="string"/>
+            <parameter name="[function:userhost]" type="string"/>
+            <parameter name="[function:remotehost]" type="string"/>
+            <parameter name="[function:remoteport]" type="number"/>
+
+            <parameter name="[function:userport]" type="string" default="5060"/>
+            <parameter name="[function:transport]" type="string" default="UDP" />
+            <parameter name="[function:Max-Forwards]" type="number" default="70" />
+            <parameter name="[function:Expires]" type="number" default="3600" />
+            <parameter name="[function:User-Headers]" type="string" default="list.create" />
+        </input>
+
+        <do>
+            <call name="sip.sendSubsequentFromResponse">
+                <input>
+                    <parameter name="[function:method]" value="REGISTER"/>
+                    <parameter name="[function:listenpoint]" value="[listenpoint]"/>
+
+                    <parameter name="[function:localUsername]" value="[username]"/>
+                    <parameter name="[function:localDisplayname]" value="[displayname]"/>
+                    <parameter name="[function:localDomain]" value="[domain]"/>
+                    <parameter name="[function:localUserhost]" value="[userhost]"/>
+                    <parameter name="[function:localUserport]" value="[userport]"/>
+
+                    <parameter name="[function:remoteUsername]" value="[username]"/>
+                    <parameter name="[function:remoteDisplayname]" value="[displayname]"/>
+                    <parameter name="[function:remoteDomain]" value="[domain]"/>
+
+                    <parameter name="[function:remotehost]" value="[remotehost]"/>
+                    <parameter name="[function:remoteport]" value="[remoteport]"/>
+
+                    <parameter name="[function:transport]" value="[transport]" />
+                    <parameter name="[function:Max-Forwards]" value="[Max-Forwards]" />
+                    <parameter name="[function:Expires]" value="[Expires]" />
+                    <parameter name="[function:User-Headers]" value="[User-Headers]" />
+                </input>
+            </call>
+        </do>
+    </function>
+
+    <function name="sip.sendBye">
+        <input>
+            <parameter name="[function:listenpoint]" type="string"/>
+            <parameter name="[function:username]" type="string"/>
+            <parameter name="[function:displayname]" type="string"/>
+            <parameter name="[function:domain]" type="string"/>
+            <parameter name="[function:userhost]" type="string"/>
+            <parameter name="[function:remotehost]" type="string"/>
+            <parameter name="[function:remoteport]" type="number"/>
+
+            <parameter name="[function:userport]" type="string" default="5060"/>
+            <parameter name="[function:transport]" type="string" default="UDP" />
+            <parameter name="[function:Max-Forwards]" type="number" default="70" />
+            <parameter name="[function:Expires]" type="number" default="3600" />
+            <parameter name="[function:User-Headers]" type="string" default="list.create" />
+        </input>
+
+        <do>
+            <call name="sip.sendSubsequentFromResponse">
+                <input>
+                    <parameter name="[function:method]" value="REGISTER"/>
+                    <parameter name="[function:listenpoint]" value="[listenpoint]"/>
+
+                    <parameter name="[function:localUsername]" value="[username]"/>
+                    <parameter name="[function:localDisplayname]" value="[displayname]"/>
+                    <parameter name="[function:localDomain]" value="[domain]"/>
+                    <parameter name="[function:localUserhost]" value="[userhost]"/>
+                    <parameter name="[function:localUserport]" value="[userport]"/>
+
+                    <parameter name="[function:remoteUsername]" value="[username]"/>
+                    <parameter name="[function:remoteDisplayname]" value="[displayname]"/>
+                    <parameter name="[function:remoteDomain]" value="[domain]"/>
+
+                    <parameter name="[function:remotehost]" value="[remotehost]"/>
+                    <parameter name="[function:remoteport]" value="[remoteport]"/>
+
+                    <parameter name="[function:transport]" value="[transport]" />
+                    <parameter name="[function:Max-Forwards]" value="[Max-Forwards]" />
+                    <parameter name="[function:Expires]" value="[Expires]" />
+                    <parameter name="[function:User-Headers]" value="[User-Headers]" />
+                </input>
+            </call>
+        </do>
+    </function>
+
+
+
+    <function name="sip.sendResponse">
+        <input>
+            <parameter name="[function:code]" type="number"/>
+            <parameter name="[function:listenpoint]" type="string"/>
+
+            <parameter name="[function:phrase]" type="string" default="Default reason phrase" />
+            <parameter name="[function:Content]" type="string" default="EMPTY_LIST"/>
+            <parameter name="[function:Content-Type]" type="string" default="EMPTY_LIST"/>
+            <parameter name="[function:transport]" type="string" default="UDP" />
+            <parameter name="[function:Max-Forwards]" type="number" default="70" />
+            <parameter name="[function:Expires]" type="number" default="3600" />
+            <parameter name="[function:User-Headers]" type="string" default="EMPTY_LIST" />
+        </input>
+
+        <do>
+            <parameter name="[callId]" operation="number.uid" />
+            <parameter name="[fromTag]" operation="number.uid" />
+            <parameter name="[cseqNumber]" operation="number.uid" />
+            <parameter name="[branchId]" operation="number.uid" />
+
+            <sendMessageSIP listenpoint="[listenpoint]" remoteHost="[remotehost]" remotePort="[remoteport]">
+<![CDATA[
+[method] sip:[username]@[domain] SIP/2.0
+To: "[remoteDisplayname]" <sip:[remoteUsername]@[remoteDomain]>
+From: "[localDisplayname]" <sip:[localDsername]@[localDomain]>;tag=[fromTag]
+Call-ID: [callId]
+CSeq: [cseqNumber] REGISTER
+Via: SIP/2.0/[transport] [localUserhost]:[localUserport];branch=z9hG4bK[branchId]
+Contact: <sip:[localUsername]@[localUserhost]:[localUserport]>
+Max-Forwards: [Max-Forwards]
+Expires: [Expires]
+[User-Headers]
+Content-Type: [Content-Type]
+Content-Length: auto
+
+[Content]
+]]>
+            </sendMessageSIP>
+        </do>
+    </function>
+
+
+    <function name="sip.handle401">
+        <input>
+            <parameter name="[function:requestMessage]" type="message"/>
+            <parameter name="[function:unauthorizedMessage]" type="message"/>
+
+            <parameter name="[function:username]" type="string"/>
+            <parameter name="[function:password]" type="string"/>
+        </input>
+
+        <do>
+            <parameter name="[listenpoint]" operation="setFromMessage" value="listenpoint.name" value2="[requestMessage]" />
+            <parameter name="[remotehost]" operation="setFromMessage" value="channel.remotehost" value2="[requestMessage]" />
+            <parameter name="[remoteport]" operation="setFromMessage" value="channel.remoteport" value2="[requestMessage]" />
+
+            <parameter name="[firstline]" operation="setFromMessage" value="firstline" value2="[requestMessage]" />
+            <parameter name="[otherHeaders]" operation="setFromMessage" value="header.others" value2="[requestMessage]" />
+            <parameter name="[content]" operation="setFromMessage" value="content" value2="[requestMessage]" />
+
+            <parameter name="[From]" operation="setFromMessage" value="header.From" value2="[requestMessage]" />
+            <parameter name="[To]" operation="setFromMessage" value="header.To" value2="[requestMessage]" />
+            <parameter name="[Via]" operation="setFromMessage" value="header.Via" value2="[requestMessage]" />
+            <parameter name="[Contact]" operation="setFromMessage" value="header.Contact" value2="[requestMessage]" />
+            <parameter name="[CSeqNumber]" operation="setFromMessage" value="header.CSeq.Number" value2="[requestMessage]" />
+            <parameter name="[CSeqMethod]" operation="setFromMessage" value="header.CSeq.Method" value2="[requestMessage]" />
+            <parameter name="[Call-Id]" operation="setFromMessage" value="header.Call-Id" value2="[requestMessage]" />
+            <parameter name="[Route]" operation="setFromMessage" value="header.Route" value2="[requestMessage]" />
+            <parameter name="[Record-Route]" operation="setFromMessage" value="header.Record-Route" value2="[requestMessage]" />
+
+            <!-- Update the Via BranchId -->
+            <parameter name="[uid]" operation="number.uid" />
+            <parameter name="[Via]" operation="string.regexreplaces" value="[Via]" value2="branch=[^;$]*" value3="branch=z9hG4bK[uid]" />
+
+            <!-- Update the CSeqNumber (increment) -->
+            <parameter name="[CSeqNumber]" operation="number.add" value="[CSeqNumber]" value2="1" />
+
+            <!-- Generate the answer to the challenge -->
+            <parameter name="[WWW-Authenticate]" operation="setFromMessage" value="header.WWW-Authenticate" value2="[unauthorizedMessage]" />
+            <parameter name="[Method]" operation="setFromMessage" value="firstline.method" value2="[requestMessage]" />
+            <parameter name="[RequestUri]" operation="setFromMessage" value="firstline.uri" value2="[requestMessage]" />
+
+            <call name="digest" >
+                <input>
+                    <parameter name="[function:challenge]" value="[WWW-Authenticate]"/>
+                    <parameter name="[function:username]" value="[username]"/>
+                    <parameter name="[function:password]" value="[password]"/>
+                    <parameter name="[function:method]" value="[Method]"/>
+                    <parameter name="[function:request-uri]" value="[RequestUri]"/>
+                </input>
+
+                <output>
+                    <parameter name="[credentials]" value="[function:response]"/>
+                </output>
+            </call>
+
+            <log>[credentials]</log>
+
+            <sendMessageSIP listenpoint="[listenpoint]" remoteHost="[remotehost]" remotePort="[remoteport]">
+<![CDATA[
+[firstline]
+To: [To]
+From: [From]
+Call-ID: [Call-Id]
+CSeq: [CSeqNumber] [CSeqMethod]
+Via: [Via]
+Route: [Route]
+Record-Route: [Record-Route]
+Contact: [Contact]
+Authorization: [credentials]
+[otherHeaders]
+
+[content]
+]]>
+            </sendMessageSIP>
+        </do>
+    </function>
+
+
+    <function name="digest">
+        <input>
+            <parameter name="[function:challenge]" type="string"/>
+            <parameter name="[function:username]" type="string"/>
+            <parameter name="[function:password]" type="string"/>
+            <parameter name="[function:method]" type="string"/>
+            <parameter name="[function:request-uri]" type="string"/>
+        </input>
+
+        <do>
+            <parameter name="[realm]" operation="string.regexmatches" value="[challenge]" value2="realm=&quot;[^&quot;]*" />
+            <parameter name="[realm]" operation="string.regexreplaces" value="[realm]" value2="^[^=]*=|&quot;" value3="" />
+
+            <parameter name="[nonce]" operation="string.regexmatches" value="[challenge]" value2="nonce=&quot;[^&quot;]*" />
+            <parameter name="[nonce]" operation="string.regexreplaces" value="[nonce]" value2="^[^=]*=|&quot;" value3="" />
+
+            <!-- TODO : for now we assume algorithm is MD5 -->
+            <parameter name="[algorithm]" operation="string.regexmatches" value="[challenge]" value2="algorithm=[^ $]*" />
+            <parameter name="[algorithm]" operation="string.regexreplaces" value="[algorithm]" value2="^[^=]*=" value3="" />
+
+            <!-- TODO : check "auth" is supported -->
+            <parameter name="[qop]" operation="string.regexmatches" value="[challenge]" value2="qop=&quot;[^&quot;]*" />
+            <parameter name="[qop]" operation="string.regexreplaces" value="[qop]" value2="^[^=]*=|&quot;" value3="" />
+
+            <!-- always the same -->
+            <parameter name="[A1]" value="[username]:[realm]:[password]" />
+            <parameter name="[HA1]" operation="string.digest" value="[A1]" value2="MD5" />
+
+            <!-- always the same: qop is either auth or is not present -->
+            <parameter name="[A2]" value="[method]:[request-uri]" />
+            <parameter name="[HA2]" operation="string.digest" value="[A2]" value2="MD5" />
+
+            <if>
+                <condition>
+                    <test parameter="[qop]" condition="list.size" value="1" />
+                </condition>
+                <then>
+                    <!-- qop is present and accepts "auth" mode -->
+                    <parameter name="[nc]" operation="number.uid" />
+                    <parameter name="[cnonce]" operation="number.uid" />
+                    <parameter name="[request-digest]" operation="string.digest" value="[HA1]:[nonce]:[nc]:[cnonce]:auth:[HA2]" value2="MD5" />
+                    <parameter name="[response]" value="Digest username=&quot;[username]&quot;, realm=&quot;[realm]&quot;, nonce=&quot;[nonce]&quot;, uri=&quot;[request-uri]&quot;, qop=auth, nc=[nc], cnonce=&quot;[cnonce]&quot;, response=&quot;[request-digest]&quot;" />
+
+                </then>
+                <else>
+                    <!-- no qop, fall back in compatibility mode with RFC 2069 -->
+                    <parameter name="[request-digest]" operation="string.digest" value="[HA1]:[nonce]:[HA2]" value2="MD5" />
+                    <parameter name="[response]" value="Digest username=&quot;[username]&quot;, realm=&quot;[realm]&quot;, nonce=&quot;[nonce]&quot;, uri=&quot;[request-uri]&quot;, response=&quot;[request-digest]&quot;" />
+                </else>
+            </if>
+        </do>
+        <output>
+            <parameter name="[function:response]" />
+        </output>
+    </function>
+
+
+</scenario>

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <parameter name="[listenpoint]" operation="set" value="listenpoint_[port]" />
+
+    <createListenpointIMAP name="[listenpoint]" localHost="[listenIp]" localPort="[port]"/>
+    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
+
+    <!-- attend message capability-->
+    <receiveMessageIMAP listenpoint="[listenpoint]" request="true">
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final capability-->
+    <sendMessageIMAP name="Send CAPABILITY"  channel="[connection]">
+<![CDATA[
+* CAPABILITY IMAP4rev1 
+[tag] OK CAPABILITY completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message login-->
+    <receiveMessageIMAP listenpoint="[listenpoint]" request="true">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final login-->
+    <sendMessageIMAP name="Send LOGIN"  channel="[connection]">
+<![CDATA[
+[tag] OK LOGIN completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message select-->
+    <receiveMessageIMAP listenpoint="[listenpoint]" request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final select-->
+    <sendMessageIMAP name="Send SELECT"  channel="[connection]">
+<![CDATA[
+* 10 EXISTS
+* 1 RECENT
+* OK [UNSEEN 12] Message 12 is first unseen
+* OK [UIDVALIDITY 3857529045] UIDs valid
+* OK [UIDNEXT 4392] Predicted next UID
+* FLAGS (\Answered \Flagged \Deleted \Seen \Draft)
+* OK [PERMANENTFLAGS (\Deleted \Seen \*)] Limited
+[tag] OK [READ-WRITE] SELECT completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message EXPUNGE-->
+    <receiveMessageIMAP request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final EXPUNGE-->
+    <sendMessageIMAP name="Send EXPUNGE" channel="[connection]">
+<![CDATA[
+[tag] OK Mailbox checkpointed, but no messages expunged
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message SEARCH-->
+    <receiveMessageIMAP request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final SEARCH-->
+    <sendMessageIMAP name="Send SEARCH" channel="[connection]">
+<![CDATA[
+* SEARCH 12
+[tag] OK SEARCH completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message FETCH-->
+    <receiveMessageIMAP channel="[connection]" request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse FETCH-->
+    <sendMessageIMAP name="Send FETCH" channel="[connection]">
+<![CDATA[
+* 12 FETCH (RFC822.SIZE 8286)
+[tag] OK FETCH completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message FETCH-->
+    <receiveMessageIMAP channel="[connection]" request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse FETCH-->
+    <sendMessageIMAP name="Send FETCH" channel="[connection]">
+<![CDATA[
+* 12 FETCH (BODY[HEADER] {340}
+Date: Wed, 17 Jul 1996 02:23:25 -0700 (PDT)
+From: Terry Gray <gray@cac.washington.edu>
+Subject: IMAP4rev1 WG mtg summary and minutes
+To: imap@cac.washington.edu
+cc: minutes@CNRI.Reston.VA.US, John Klensin <KLENSIN@MIT.EDU>
+Message-Id: <B27397-0100000@cac.washington.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+
+
+[tag] OK FETCH completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message CREATE-->
+    <receiveMessageIMAP listenpoint="[listenpoint]" request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final CREATE-->
+    <sendMessageIMAP name="Send CREATE"  channel="[connection]">
+<![CDATA[
+[tag] OK CREATE completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message RENAME-->
+    <receiveMessageIMAP listenpoint="[listenpoint]" request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final RENAME-->
+    <sendMessageIMAP name="Send RENAME"  channel="[connection]">
+<![CDATA[
+[tag] OK RENAME completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message APPEND-->
+    <receiveMessageIMAP request="true">
+        <parameter name="[commandArg]" operation="protocol.setFromMessage" value="request.arguments" />
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse intermediaire APPEND-->
+    <sendMessageIMAP name="Send intermediate APPEND" channel="[connection]">
+<![CDATA[
++ ready to receive message data
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend data APPEND-->
+    <receiveMessageIMAP channel="[connection]" request="true" >
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final APPEND-->
+    <sendMessageIMAP name="Send APPEND"  channel="[connection]">
+<![CDATA[
+[tag] OK APPEND completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message STORE-->
+    <receiveMessageIMAP request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final STORE-->
+    <sendMessageIMAP name="Send STORE" channel="[connection]">
+<![CDATA[
+* 2 FETCH (FLAGS (\Deleted \Seen))
+* 3 FETCH (FLAGS (\Deleted))
+* 4 FETCH (FLAGS (\Deleted \Flagged \Seen))
+[tag] OK STORE completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message CLOSE-->
+    <receiveMessageIMAP request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final CLOSE-->
+    <sendMessageIMAP name="Send CLOSE" channel="[connection]">
+<![CDATA[
+[tag] OK CLOSE completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message DELETE-->
+    <receiveMessageIMAP listenpoint="[listenpoint]" request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final DELETE-->
+    <sendMessageIMAP name="Send DELETE"  channel="[connection]">
+<![CDATA[
+[tag] OK DELETE completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message LOGOUT-->
+    <receiveMessageIMAP listenpoint="[listenpoint]" request="true">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final LOGOUT-->
+    <sendMessageIMAP name="Send LOGOUT"  channel="[connection]">
+<![CDATA[
+* BYE You are the best!!
+[tag] OK LOGOUT completed
+]]>
+    </sendMessageIMAP>
+
+</scenario>

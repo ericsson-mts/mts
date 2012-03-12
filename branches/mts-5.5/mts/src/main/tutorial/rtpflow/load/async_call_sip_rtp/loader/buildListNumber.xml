@@ -1,0 +1,18 @@
+    <!-- build a table of number for a given range of number                -->
+    <!-- input : [rangeNumber] : the range number : format "<begin>,<end>"  -->
+    <!-- output : [tabNumber] : the range number : format "<begin>,<end>"   -->
+
+
+    <parameter name="[rangeSplit]" operation="string.split" value="[rangeNumber]" value2=","/>
+    <parameter name="[number]" operation="set" value="[rangeSplit(0)]"/>            
+
+    <parameter name="[tabNumber]" operation="list.create"/>
+    <while>
+        <condition>
+            <test parameter="[number]" condition="number.lowerEqualThan" value="[rangeSplit(1)]"/>
+        </condition>
+        <do>
+            <parameter name="[tabNumber]" operation="list.addLast" value="[tabNumber]" value2="+[number]"/>
+            <parameter name="[number]" operation="number.add" value="[number]" value2="1"/>
+        </do>
+    </while>

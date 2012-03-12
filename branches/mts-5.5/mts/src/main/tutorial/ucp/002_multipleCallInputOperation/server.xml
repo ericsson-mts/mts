@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageUCP request="true" type="MultipleCallInputOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="NPL" operation="protocol.setFromMessage" value="attribute.NPL"/>
+        <parameter name="RAd" operation="protocol.setFromMessage" value="attribute.RAd"/>
+        <parameter name="OAdC" operation="protocol.setFromMessage" value="attribute.OAdC"/>
+        <parameter name="OAC" operation="protocol.setFromMessage" value="attribute.OAC"/>
+        <parameter name="MT" operation="protocol.setFromMessage" value="attribute.MT"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[NPL]" condition="number.equals" value="1"/>
+        <test parameter="[RAd]" condition="number.equals" value="123456789"/>
+        <test parameter="[OAdC]" condition="string.equals" value=""/>
+        <test parameter="[OAC]" condition="string.equals" value="10412614190438AB4D"/>
+        <test parameter="[MT]" condition="string.equals" value="1"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="MultipleCallInputOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="SM" value="good"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP request="true" type="MultipleCallInputOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="NPL" operation="protocol.setFromMessage" value="attribute.NPL"/>
+        <parameter name="RAd" operation="protocol.setFromMessage" value="attribute.RAd"/>
+        <parameter name="OAdC" operation="protocol.setFromMessage" value="attribute.OAdC"/>
+        <parameter name="OAC" operation="protocol.setFromMessage" value="attribute.OAC"/>
+        <parameter name="MT" operation="protocol.setFromMessage" value="attribute.MT"/>
+        <parameter name="NMsg" operation="protocol.setFromMessage" value="attribute.NMsg"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[NPL]" condition="number.equals" value="1"/>
+        <test parameter="[RAd]" condition="number.equals" value="22"/>
+        <test parameter="[OAdC]" condition="string.equals" value="333"/>
+        <test parameter="[OAC]" condition="string.equals" value="coucou"/>
+        <test parameter="[MT]" condition="string.equals" value="2"/>
+        <test parameter="[NMsg]" condition="string.equals" value="123456789"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="MultipleCallInputOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="SM" value="c'est bon"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP request="true" type="MultipleCallInputOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="NPL" operation="protocol.setFromMessage" value="attribute.NPL"/>
+        <parameter name="RAd" operation="protocol.setFromMessage" value="attribute.RAd"/>
+        <parameter name="OAdC" operation="protocol.setFromMessage" value="attribute.OAdC"/>
+        <parameter name="OAC" operation="protocol.setFromMessage" value="attribute.OAC"/>
+        <parameter name="MT" operation="protocol.setFromMessage" value="attribute.MT"/>
+        <parameter name="AMsg" operation="protocol.setFromMessage" value="attribute.AMsg"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[NPL]" condition="number.equals" value="1"/>
+        <test parameter="[RAd]" condition="number.equals" value="22"/>
+        <test parameter="[OAdC]" condition="string.equals" value="333"/>
+        <test parameter="[OAC]" condition="string.equals" value="coucou"/>
+        <test parameter="[MT]" condition="string.equals" value="3"/>
+        <test parameter="[AMsg]" condition="string.equals" value="test coucou"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="MultipleCallInputOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="N"/>
+        <attribute name="EC" value="01"/>
+        <attribute name="SM" value="toto"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP request="true" type="MultipleCallInputOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="NPL" operation="protocol.setFromMessage" value="attribute.NPL"/>
+        <parameter name="RAd" operation="protocol.setFromMessage" value="attribute.RAd"/>
+        <parameter name="OAdC" operation="protocol.setFromMessage" value="attribute.OAdC"/>
+        <parameter name="OAC" operation="protocol.setFromMessage" value="attribute.OAC"/>
+        <parameter name="MT" operation="protocol.setFromMessage" value="attribute.MT"/>
+        <parameter name="NB" operation="protocol.setFromMessage" value="attribute.NB"/>
+        <parameter name="TMsg" operation="protocol.setFromMessage" value="attribute.TMsg"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[NPL]" condition="number.equals" value="1"/>
+        <test parameter="[RAd]" condition="number.equals" value="22"/>
+        <test parameter="[OAdC]" condition="string.equals" value="333"/>
+        <test parameter="[OAC]" condition="string.equals" value="coucou"/>
+        <test parameter="[MT]" condition="string.equals" value="4"/>
+        <test parameter="[NB]" condition="string.equals" value="1"/>
+        <test parameter="[TMsg]" condition="string.equals" value="msg T"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="MultipleCallInputOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="SM" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP request="true" type="MultipleCallInputOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="NPL" operation="protocol.setFromMessage" value="attribute.NPL"/>
+        <parameter name="RAd" operation="protocol.setFromMessage" value="attribute.RAd"/>
+        <parameter name="OAdC" operation="protocol.setFromMessage" value="attribute.OAdC"/>
+        <parameter name="OAC" operation="protocol.setFromMessage" value="attribute.OAC"/>
+        <parameter name="MT" operation="protocol.setFromMessage" value="attribute.MT"/>
+        <parameter name="PNC" operation="protocol.setFromMessage" value="attribute.PNC"/>
+        <parameter name="LNo" operation="protocol.setFromMessage" value="attribute.LNo"/>
+        <parameter name="LST" operation="protocol.setFromMessage" value="attribute.LST"/>
+        <parameter name="TNo" operation="protocol.setFromMessage" value="attribute.TNo"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[NPL]" condition="number.equals" value="1"/>
+        <test parameter="[RAd]" condition="number.equals" value="22"/>
+        <test parameter="[OAdC]" condition="string.equals" value="333"/>
+        <test parameter="[OAC]" condition="string.equals" value="coucou"/>
+        <test parameter="[MT]" condition="string.equals" value="5"/>
+        <test parameter="[PNC]" condition="string.equals" value=""/>
+        <test parameter="[LNo]" condition="string.equals" value="11223344"/>
+        <test parameter="[LST]" condition="string.equals" value=""/>
+        <test parameter="[TNo]" condition="string.equals" value=""/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="MultipleCallInputOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="SM" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP request="true" type="MultipleCallInputOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="NPL" operation="protocol.setFromMessage" value="attribute.NPL"/>
+        <parameter name="RAd" operation="protocol.setFromMessage" value="attribute.RAd"/>
+        <parameter name="OAdC" operation="protocol.setFromMessage" value="attribute.OAdC"/>
+        <parameter name="OAC" operation="protocol.setFromMessage" value="attribute.OAC"/>
+        <parameter name="MT" operation="protocol.setFromMessage" value="attribute.MT"/>
+        <parameter name="AMsg" operation="protocol.setFromMessage" value="attribute.AMsg"/>
+        <parameter name="CS" operation="protocol.setFromMessage" value="attribute.CS"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[NPL]" condition="number.equals" value="1"/>
+        <test parameter="[RAd]" condition="number.equals" value="22"/>
+        <test parameter="[OAdC]" condition="string.equals" value="333"/>
+        <test parameter="[OAC]" condition="string.equals" value="coucou"/>
+        <test parameter="[MT]" condition="string.equals" value="6"/>
+        <test parameter="[AMsg]" condition="string.equals" value="test AMsg"/>
+        <test parameter="[CS]" condition="string.equals" value="03"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="MultipleCallInputOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="SM" value="ca marche"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP request="true" type="MultipleCallInputOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="true"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="MultipleCallInputOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="NACK" value="N"/>
+        <attribute name="EC" value="10"/>
+        <attribute name="SM" value="ca ne doit pas avoir marche"/>
+    </sendMessageUCP>
+
+</scenario>

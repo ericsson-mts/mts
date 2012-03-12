@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+	<!--name="Receive SMTP from Inviter"-->
+	<!--openSessionSMTP sessionName="session1" localHost="localhost" localPort="2222" /-->
+	<!-- <sendResponseSMTP name="Server is well prepared" sessionName="session1" state= "true">
+	<![CDATA[220 hotmail.com Simple Mail Transfer Service Ready ]]>	
+</sendResponseSMTP-->
+
+<receiveRequestSMTP name="Receive EHLO" state="true">
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveRequestSMTP>
+<sendResponseSMTP name="Receive EHLO" transactionId="[tranid]" state="true"><![CDATA[250-hotmail.com
+250-8BITMIME
+250-SIZE
+250 DSN
+]]></sendResponseSMTP>
+	
+	
+<receiveRequestSMTP name="Receive Send MAIL request"  state= "true">	
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveRequestSMTP>
+<sendResponseSMTP name="Receive Send MAIL request" transactionId="[tranid]" state= "true"><![CDATA[250 OK]]>
+</sendResponseSMTP>
+
+		
+<receiveRequestSMTP name="Receive Request RCPT request"  state= "true">	
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveRequestSMTP>
+<sendResponseSMTP name="Send Response RCPT request" transactionId="[tranid]" state= "true"><![CDATA[250 OK]]>
+</sendResponseSMTP>
+
+
+<receiveRequestSMTP name="Receive Request RCPT request"  state= "true">	
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveRequestSMTP>
+<sendResponseSMTP name="Send Response RCPT request" transactionId="[tranid]" state= "true"><![CDATA[550 No such user here]]>
+</sendResponseSMTP>
+
+</scenario>

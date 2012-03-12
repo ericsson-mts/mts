@@ -1,0 +1,37 @@
+<!-- liste des methodes pour la pile http -->
+<!-- deprecated part -->
+<xs:element name="openConnectionHTTP"  type="openConnectionHTTPType"   minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="closeConnectionHTTP" type="closeConnectionHTTPType"  minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="sendRequestHTTP"     type="sendRequestHTTPType"      minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="sendResponseHTTP"    type="sendResponseHTTPType"     minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="receiveRequestHTTP"  type="receiveRequestHTTPType"   minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="receiveResponseHTTP" type="receiveResponseHTTPType"  minOccurs="0" maxOccurs="unbounded" />
+<!-- deprecated part -->
+
+<xs:element name="openChannelHTTP"  type="openChannelHTTPType"   minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To open a channel for the HTTP protocol.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="closeChannelHTTP" type="closeChannelHTTPType"  minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To close a channel for the HTTP protocol.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="sendMessageHTTP"     type="sendMessageHTTPType"      minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To send a message for the HTTP protocol using a channel or with the transactionId (user defined).</xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="receiveMessageHTTP"  type="receiveMessageHTTPType"   minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To wait until a message of the HTTP protocol is received. The operation fails if no message is received until a given timeout value.</xs:documentation>
+    </xs:annotation>
+</xs:element>

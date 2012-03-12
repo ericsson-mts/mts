@@ -1,0 +1,1 @@
+startClass com.devoteam.srit.xmlloader.master.SlaveImplementation nofork %*
