@@ -77,7 +77,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>copy-resources-all</id>
+                        <id>copy-resources-all-no-parsing</id>
                         <phase>package</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -94,6 +94,28 @@
                                         <include>doc/**</include>
                                         <include>logs/**</include>
                                         <include>tutorial/**</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>conf/version.txt</exclude>
+                                    </excludes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-resources-version-with-parsing</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${target.mts.dir}</outputDirectory>
+                            <resources>          
+                                <resource>
+                                    <directory>${basedir}/src/main/</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>conf/version.txt</include>
                                     </includes>
                                 </resource>
                             </resources>
@@ -141,12 +163,11 @@
                 </dependencies>
                 <configuration>
                     <izpackBasedir>${target.izpack.dir}</izpackBasedir>
-                    <!--customPanelDirectory>${staging.dir}</customPanelDirectory-->
                 </configuration>
                 <executions>
                     <execution>
                         <id>standard-installer</id>
-                        <phase>package</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>izpack</goal>
                         </goals>
@@ -167,8 +188,6 @@
             <url>http://maven.cloudhopper.com/repos/third-party/</url>
         </repository>        
     </repositories>
-    
-    
     
     
     <dependencies>
