@@ -1,25 +1,4 @@
 /*
-* Copyright 2012 Devoteam http://www.devoteam.com
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
-*
-*
-* This file is part of Multi-Protocol Test Suite (MTS).
-*
-* Multi-Protocol Test Suite (MTS) is free software: you can redistribute
-* it and/or modify it under the terms of the GNU General Public License 
-* as published by the Free Software Foundation, either version 3 of the 
-* License.
-* 
-* Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
-* be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with Multi-Protocol Test Suite (MTS).  
-* If not, see <http://www.gnu.org/licenses/>. 
-*
-*//*
  * Created on Oct 29, 2004
  */
 package com.devoteam.srit.xmlloader.gui;
@@ -27,8 +6,6 @@ package com.devoteam.srit.xmlloader.gui;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import java.awt.Component;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
@@ -36,29 +13,19 @@ import javax.swing.table.TableColumn;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.log.TextListener;
-import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.*;
-import com.devoteam.srit.xmlloader.core.log.FileTextListener;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
 import javax.swing.JTextArea;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.JViewport;
-import javax.swing.table.TableCellRenderer;
 
 /**
  * @author pn007888

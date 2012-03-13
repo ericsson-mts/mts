@@ -1,49 +1,9 @@
 /*
-* Copyright 2012 Devoteam http://www.devoteam.com
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
-*
-*
-* This file is part of Multi-Protocol Test Suite (MTS).
-*
-* Multi-Protocol Test Suite (MTS) is free software: you can redistribute
-* it and/or modify it under the terms of the GNU General Public License 
-* as published by the Free Software Foundation, either version 3 of the 
-* License.
-* 
-* Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
-* be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with Multi-Protocol Test Suite (MTS).  
-* If not, see <http://www.gnu.org/licenses/>. 
-*
-*//*
  * Created on Oct 11, 2004
  */
 package com.devoteam.srit.xmlloader.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Cursor;
-import java.io.File;
-import java.io.PrintStream;
-
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-
-import com.devoteam.srit.xmlloader.core.Test;
-import com.devoteam.srit.xmlloader.core.TestRunnerSingle;
-import com.devoteam.srit.xmlloader.core.Testcase;
-import com.devoteam.srit.xmlloader.core.Tester;
+import com.devoteam.srit.xmlloader.core.*;
 import com.devoteam.srit.xmlloader.core.log.FileTextListenerProvider;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -51,48 +11,38 @@ import com.devoteam.srit.xmlloader.core.log.TextListenerProviderRegistry;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.BetterFileChooser;
-import com.devoteam.srit.xmlloader.core.utils.JDialogError;
 import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
-import com.devoteam.srit.xmlloader.gui.components.ComponentRenderer;
-import com.devoteam.srit.xmlloader.gui.components.MouseOverJTable;
+import com.devoteam.srit.xmlloader.gui.better.RegistryTestRunner;
+import com.devoteam.srit.xmlloader.gui.better.TestPanelCtrl;
+import com.devoteam.srit.xmlloader.gui.better.TestPanelView;
+import com.devoteam.srit.xmlloader.gui.conf.JFrameConf;
 import com.devoteam.srit.xmlloader.gui.frames.JFrameEditableParameters;
 import com.devoteam.srit.xmlloader.gui.logs.GUITextListenerProvider;
-import com.devoteam.srit.xmlloader.gui.conf.JFrameConf;
-
-import com.devoteam.srit.xmlloader.gui.wrappers.WrapperTest;
-import com.devoteam.srit.xmlloader.gui.wrappers.WrapperTestcase;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
+import java.io.File;
+import java.io.PrintStream;
 import java.net.URI;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import javax.swing.ToolTipManager;
-import javax.swing.UIManager;
-import javolution.util.FastList;
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 
 /**
  * @author pn007888 A class to implement Tester class GUI.
  */
 public class TesterGui {
 
-    private final static String DEFAULT_TITLE = "IMSLoader";
-    private final static String[] NAMES = {"Testcase", "N.", "Run", "%", "Logs", "Status", "Action", "Profile"};
+    private final static String DEFAULT_TITLE = "MTS";
     private static TesterGui instance = null;
     private Tester tester;
-    private JTable jTableTestcases;
-    private JScrollPane jTableTestcasesScrollPane;
-    private DefaultTableModel defaultTableModel;
+    private JScrollPane _jScrollPane;
     private GUIMenuHelper guiMenuHelper;
     private TesterGuiHelper testerGuiHelper;
     private JFrameEditableParameters jFrameEditableParameters;
     private JFrame jFrame;
     private File openFileDirectory;
-
+    private TestPanelCtrl _testPanelCtrl;
+    
     static public TesterGui instance() {
         if (instance == null) {
             instance = new TesterGui(Tester.getInstance());
@@ -115,6 +65,9 @@ public class TesterGui {
         tester = aTester;
         jFrame = new JFrame(DEFAULT_TITLE);
         jFrame.setLocationByPlatform(true);
+        jFrame.setPreferredSize(new Dimension(800, 540));
+        jFrame.setSize(new Dimension(800, 540));
+        jFrame.setIconImage(java.awt.Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icon.png")));
         testerGuiHelper = new TesterGuiHelper(this);
         guiMenuHelper = new GUIMenuHelper(testerGuiHelper);
 
@@ -124,10 +77,20 @@ public class TesterGui {
      * Create and set up the window.
      */
     public void realize() {
-        this.jTableTestcasesScrollPane = new JScrollPane(setUpTable());
+        _jScrollPane = new JScrollPane();
+        _jScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jFrame.getContentPane().add(guiMenuHelper.getJMenuBar(), BorderLayout.NORTH);
-        jFrame.getContentPane().add(jTableTestcasesScrollPane, BorderLayout.CENTER);
+
+        jFrame.setJMenuBar(guiMenuHelper.getJMenuBar());
+        jFrame.setLayout(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(4, 4, 4, 4);
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        
+        jFrame.getContentPane().add(_jScrollPane, constraints);
         //jFrame.getContentPane().add(getButtonPanel(), BorderLayout.EAST);
 
         jFrame.pack();
@@ -142,68 +105,6 @@ public class TesterGui {
 
     public GUIMenuHelper getGUIMenuHelper() {
         return this.guiMenuHelper;
-    }
-
-    private JTable setUpTable() {
-        defaultTableModel = new DefaultTableModel(NAMES, 0);
-        jTableTestcases = new MouseOverJTable(defaultTableModel);
-        jTableTestcases.setRowHeight(25);
-        for (int i = 0; i < jTableTestcases.getColumnCount(); i++) {
-            TableColumn column = jTableTestcases.getColumnModel().getColumn(i);
-
-            column.setCellRenderer(new ComponentRenderer());
-            column.setCellEditor(new ComponentRenderer());
-
-            switch (i) {
-                // testcase name + active checkbox
-                case 0:
-                    column.setPreferredWidth(150);
-                    break;
-                // spinner    
-                case 1:
-                    column.setMaxWidth(60);
-                    column.setMinWidth(60);
-                    column.setPreferredWidth(60);
-                    break;
-                // run button
-                case 2:
-                    column.setMaxWidth(80);
-                    column.setMinWidth(80);
-                    column.setPreferredWidth(80);
-                    break;
-                // progress bar
-                case 3:
-                    column.setMaxWidth(100);
-                    column.setMinWidth(100);
-                    column.setPreferredWidth(100);
-                    break;
-                // logs checkbox
-                case 4:
-                    column.setMaxWidth(60);
-                    column.setMinWidth(60);
-                    column.setPreferredWidth(60);
-                    break;
-                // status icon
-                case 5:
-                    column.setMaxWidth(40);
-                    column.setMinWidth(40);
-                    column.setPreferredWidth(40);
-                    break;
-                // show button
-                case 6:
-                    column.setMaxWidth(80);
-                    column.setMinWidth(80);
-                    column.setPreferredWidth(80);
-                    break;
-                case 7:
-                    column.setMaxWidth(80);
-                    column.setMinWidth(80);
-                    column.setPreferredWidth(80);
-                    break;
-            }
-        }
-        jTableTestcases.setPreferredScrollableViewportSize(new Dimension(800, 480));
-        return jTableTestcases;
     }
 
     /**
@@ -246,11 +147,14 @@ public class TesterGui {
 
         if (null != filename) {
             try {
+                close_closeGui();
+                close_closeFile();
+
                 this.guiMenuHelper.addToRecents(filename.toString());
-                this.getJFrameEditableParameters().clear();
                 this.open_openFile(filename);
                 this.open_openGui();
 
+                this.getJFrameEditableParameters().clear();
                 this.getJFrameEditableParameters().fill(tester.getTest().getEditableParameters());
                 guiMenuHelper.updateMenuStates(true, false, false, false);
             }
@@ -299,7 +203,7 @@ public class TesterGui {
 
         tester.open_reset();
         tester.open_openFile(path, this.getJFrameEditableParameters());
-        
+
         StatPool.getInstance().reset();
     }
 
@@ -308,6 +212,7 @@ public class TesterGui {
         this.jFrame.setTitle("IMSLoader : " + tester.getTest().getXMLDocument().getXMLFile());
         guiMenuHelper.updateLogStorageFromConfig();
         guiMenuHelper.updateLogLevelFromConfig();
+        guiMenuHelper.updateMenuStatesFile(true);
     }
 
     /**
@@ -322,36 +227,12 @@ public class TesterGui {
 
     public void close_closeGui() {
         jFrame.setTitle(DEFAULT_TITLE);
-
-        testcaseToWrapper.clear();
-        wrapperTestcases.clear();
-
-        try {
-            if (null != this.jTableTestcases.getCellEditor()) {
-                this.jTableTestcases.getCellEditor().cancelCellEditing();
-            }
-        }
-        catch (Exception e) {/* ignore */
-
-        }
-
-
-        defaultTableModel.setRowCount(0);
-
-        guiMenuHelper.updateMenuStates(false, false, false, false);
+        _jScrollPane.setViewportView(null);
+        guiMenuHelper.updateMenuStatesFile(false);
     }
 
     protected void selected(final boolean selected) {
-        EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                for (WrapperTestcase wrapperTestcase : wrapperTestcases) {
-                    if (null == wrapperTestcase.getParent() || !wrapperTestcase.getParent().getRunning()) {
-                        wrapperTestcase.setActive(selected);
-                    }
-                }
-            }
-        });
+        _testPanelCtrl.setAllTestLineSelected(selected);
     }
 
     /**
@@ -371,16 +252,12 @@ public class TesterGui {
         catch (Exception e) {
             e.printStackTrace();
         }
-        //
-        // sets the default font for all Swing components.
-        //
-        java.util.Enumeration keys = UIManager.getDefaults().keys();
-        while (keys.hasMoreElements()) {
-            Object key = keys.nextElement();
-            Object value = UIManager.get(key);
-            if (value instanceof javax.swing.plaf.FontUIResource) {
-                UIManager.put(key, new javax.swing.plaf.FontUIResource("Sans", Font.PLAIN, 12));
-            }
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
 
         /*
@@ -388,7 +265,6 @@ public class TesterGui {
          */
         SingletonFSInterface.setInstance(new LocalFSInterface());
 
-	
         //
         // Some SWING ToolTip configuration
         //
@@ -459,118 +335,53 @@ public class TesterGui {
         new JFrameConf(this.jFrame, true).setVisible(true);
     }
 
-    // Handle JTable
-    public void fireTableRowsUpdated(int firstRow, int lastRow) {
-        this.defaultTableModel.fireTableRowsUpdated(firstRow, lastRow);
-    }
     // <editor-fold desc="New TestcaseGui">
-    private LinkedHashMap<Testcase, WrapperTestcase> testcaseToWrapper = new LinkedHashMap<Testcase, WrapperTestcase>();
-    private FastList<WrapperTestcase> wrapperTestcases = new FastList<WrapperTestcase>();
-
     private void initialize(Test test) {
-        testcaseToWrapper.clear();
-        wrapperTestcases.clear();
+        TestPanelView testPanelView = new TestPanelView();
+        _testPanelCtrl = new TestPanelCtrl(testPanelView, test);
+        testPanelView.revalidate();
+        _jScrollPane.setViewportView(testPanelView);
+        _jScrollPane.revalidate();
+        testPanelView.revalidate();
 
-        try {
-            if (null != this.jTableTestcases.getCellEditor()) {
-                this.jTableTestcases.getCellEditor().cancelCellEditing();
-            }
-        }
-        catch (Exception e) {
-            //ignore
-        }
-
-        defaultTableModel.setRowCount(0);
-
-        int i = 0;
-        for (Testcase testcase : test.getTestcaseList()) {
-            WrapperTestcase wrapperTestcase = new WrapperTestcase(testcase, i++);
-            testcaseToWrapper.put(testcase, wrapperTestcase);
-            wrapperTestcases.add(wrapperTestcase);
-            defaultTableModel.addRow(wrapperTestcase.getComponents());
-        }
-    }
-    private FastList<WrapperTest> wrapperTests = new FastList<WrapperTest>();
-
-    synchronized public void startTestcase(Testcase testcase) {
-        WrapperTest wrapperTest = new WrapperTest(Tester.getInstance().getTest(), testcaseToWrapper.get(testcase));
-        wrapperTest.startSingle();
     }
 
     synchronized public void startTestcasesLoad() {
-        LinkedList<WrapperTestcase> wrapperTestcasesToStart = new LinkedList<WrapperTestcase>();
-
-        for (WrapperTestcase wrapperTestcase : wrapperTestcases) {
-            if (wrapperTestcase.getActive()) {
-                wrapperTestcasesToStart.add(wrapperTestcase);
-            }
+        try {
+            TestRunnerLoad testRunnerLoad = new TestRunnerLoad(Tester.getInstance().getTest());
+            RegistryTestRunner.getInstance().registerTestRunner(testRunnerLoad);
+            testRunnerLoad.start();
         }
-
-        WrapperTest wrapperTest = new WrapperTest(Tester.getInstance().getTest(), wrapperTestcasesToStart);
-        wrapperTest.startLoad();
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     synchronized public void startTestcasesSequential() {
-        LinkedList<WrapperTestcase> wrapperTestcasesToStart = new LinkedList<WrapperTestcase>();
-
-        for (WrapperTestcase wrapperTestcase : wrapperTestcases) {
-            if (wrapperTestcase.getActive()) {
-                wrapperTestcasesToStart.add(wrapperTestcase);
-            }
+        try {
+            TestRunnerSequential testRunnerSequential = new TestRunnerSequential(Tester.getInstance().getTest());
+            RegistryTestRunner.getInstance().registerTestRunner(testRunnerSequential);
+            testRunnerSequential.start();
         }
-
-        WrapperTest wrapperTest = new WrapperTest(Tester.getInstance().getTest(), wrapperTestcasesToStart);
-        wrapperTest.startSequential();
-    }
-
-    synchronized public void startWrapperTest(WrapperTest wrapperTest) {
-        if(!wrapperTests.contains(wrapperTest)){
-            this.wrapperTests.add(wrapperTest);
+        catch (Exception e) {
+            e.printStackTrace();
         }
-    }
-
-    synchronized public void stopWrapperTest(WrapperTest wrapperTest) {
-        this.wrapperTests.remove(wrapperTest);
     }
 
     synchronized public void updateMenuState(boolean opening) {
-        boolean testRunning = false;
-        boolean testcaseRunning = false;
-        for (WrapperTest wrapperTest : wrapperTests) {
-            if (wrapperTest.getRunning()) {
-                if (wrapperTest.getRunner() instanceof TestRunnerSingle) {
-                    testcaseRunning = true;
-                }
-                else {
-                    testRunning = true;
-                }
-            }
-        }
-        this.guiMenuHelper.updateMenuStates(true, opening, testRunning, testcaseRunning);
+        throw new UnsupportedOperationException();
     }
 
     public void stopAll() {
-        for (WrapperTest wrapperTest : wrapperTests) {
-            try {
-                wrapperTest.getRunner().stop();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+        for(TestRunner testRunner : RegistryTestRunner.getInstance().getActiveTestRunners()){
+            testRunner.stop();
         }
     }
 
     public void stopRun() {
-        for (WrapperTest wrapperTest : wrapperTests) {
-            if (wrapperTest.getRunning()) {
-                if (wrapperTest.getTestcaseNumber() > 1) {
-                    try {
-                        wrapperTest.getRunner().stop();
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+        for(TestRunner testRunner : RegistryTestRunner.getInstance().getActiveTestRunners()){
+            if(testRunner instanceof TestRunnerLoad || testRunner instanceof TestRunnerSequential){
+                testRunner.stop();
             }
         }
     }

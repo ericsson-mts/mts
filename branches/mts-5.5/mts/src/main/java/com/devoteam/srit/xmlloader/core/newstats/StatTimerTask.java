@@ -1,25 +1,4 @@
 /*
-* Copyright 2012 Devoteam http://www.devoteam.com
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
-*
-*
-* This file is part of Multi-Protocol Test Suite (MTS).
-*
-* Multi-Protocol Test Suite (MTS) is free software: you can redistribute
-* it and/or modify it under the terms of the GNU General Public License 
-* as published by the Free Software Foundation, either version 3 of the 
-* License.
-* 
-* Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
-* be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with Multi-Protocol Test Suite (MTS).  
-* If not, see <http://www.gnu.org/licenses/>. 
-*
-*//*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -31,8 +10,9 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.report.ReportGenerator;
 import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.master.mastergui.JFrameMaster;
-import com.devoteam.srit.xmlloader.master.masterutils.MasterRunner;
+//import com.devoteam.srit.xmlloader.master.mastergui.JFrameMaster;
+//import com.devoteam.srit.xmlloader.master.masterutils.MasterRunner;
+import com.devoteam.srit.xmlloader.master.master.gui.JFrameMasterCtrl;
 import java.util.TimerTask;
 
 /**
@@ -67,12 +47,9 @@ public class StatTimerTask extends TimerTask
             }
             else if(mode.equalsIgnoreCase("master"))
             {
-                MasterRunner masterRunner = JFrameMaster.instance().getJPanelMaster().getMasterRunner();
-                name = "/MASTER_" + masterRunner.getMaster().attributeValue("name");
-                stat = masterRunner.getAndResetStatPool();
-                zeroTimestamp = masterRunner.getZeroTimestamp();
+                JFrameMasterCtrl.getInstance().doClickReport();
             }
-            
+
             // generate stat report
         	String dirName = Config.getConfigByName("tester.properties").getString("stats.REPORT_DIRECTORY","../reports/");
         	String fileName = dirName + name;

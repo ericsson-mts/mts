@@ -1,32 +1,10 @@
 /*
-* Copyright 2012 Devoteam http://www.devoteam.com
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
-*
-*
-* This file is part of Multi-Protocol Test Suite (MTS).
-*
-* Multi-Protocol Test Suite (MTS) is free software: you can redistribute
-* it and/or modify it under the terms of the GNU General Public License 
-* as published by the Free Software Foundation, either version 3 of the 
-* License.
-* 
-* Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
-* be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with Multi-Protocol Test Suite (MTS).  
-* If not, see <http://www.gnu.org/licenses/>. 
-*
-*//*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package com.devoteam.srit.xmlloader.cmd;
 
 import com.devoteam.srit.xmlloader.core.PropertiesEnhanced;
-import com.devoteam.srit.xmlloader.core.RunnerState.State;
 import com.devoteam.srit.xmlloader.core.log.FileTextListenerProvider;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -46,7 +24,8 @@ import java.util.List;
 
 /**
  *
- * @author gpasquiers
+ * @author
+ * gpasquiers
  */
 public class TextImplementation {
 
@@ -61,51 +40,13 @@ public class TextImplementation {
         ExceptionHandlerSingleton.setInstance(new TextExceptionHandler());
 
         /*
-         * Set the FSInterface to LocalFS.
+         * Set
+         * the
+         * FSInterface
+         * to
+         * LocalFS.
          */
         SingletonFSInterface.setInstance(new LocalFSInterface());
-
-        /* Remove the licence control
-        try {
-            Licence.instance().isComplete();
-        }
-        catch (Exception e) {
-            displayErrorLicence();
-        }
-
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            Date currentDate = new Date();
-            Date licenceDate = sdf.parse(Licence.instance().getDate());
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(licenceDate);
-
-            if ((Licence.instance().getValidity().length() != 0)
-                    && (Integer.parseInt(Licence.instance().getValidity()) != 0))//for non infinite period
-            {
-                calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(Licence.instance().getValidity()));
-                Date licenceDateExpiration = calendar.getTime();
-
-                if (currentDate.after(licenceDateExpiration)) {
-                    System.out.println(Licence.getExpiredLicenceMessage());
-                    return;
-                }
-            }
-        }
-        catch (Exception ex) {
-            displayErrorLicence();
-        }
-
-        if (Licence.instance().isTrial()) {
-            System.out.println(Licence.getTrialMessage());
-        }
-
-        if (!Licence.instance().versionMatches()) {
-            System.out.println(Licence.getBadVersionLicenceMessage());
-            return;
-        }
-        */
 
         String testFilename = args[0];
         String runnerName = "-seq";
@@ -216,7 +157,11 @@ public class TextImplementation {
         }
 
         /*
-         * Register the File logger provider
+         * Register
+         * the
+         * File
+         * logger
+         * provider
          */
         TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
 
@@ -253,48 +198,46 @@ public class TextImplementation {
             textTester.getRunner().getTest().generateTestplan();
             // Return the status to the process
 
-            State state = textTester.getRunner().getState().getState();
-            if (state == State.SUCCEEDED) {
-                System.exit(0);
+            if (textTester.getRunner().getState().isFailed() || textTester.getRunner().getState().isInterrupted()) {
+                System.exit(1);
             }
             else {
-                System.exit(1);
+                System.exit(0);
             }
         }
         catch (Exception e) {
             ExceptionHandlerSingleton.instance().display(e, null);
         }
 
-        try {
-            URI uri = new File(testFilename).toURI();
-            MasterTextTester textTester = new MasterTextTester(uri, runnerName);
-            System.out.println("Run master \"" + testFilename + "\"");
-
-            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "testFilename = ", testFilename);
-            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "runnerName = ", runnerName);
-
-            textTester.start();
-            textTester.acquire();
-
-            // Shows report according to the showReport boolean
-            boolean automaticGenerate = Config.getConfigByName("tester.properties").getBoolean("stats.AUTOMATIC_GENERATE", false);
-            if (automaticGenerate) {
-                textTester.getMaster().report_generate();
-            }
-
-            // Return the status to the process
-            State state = textTester.getMasterRunner().getRunnerState().getState();
-            if (state == State.SUCCEEDED) {
-                System.exit(0);
-            }
-            else {
-                System.exit(1);
-            }
-        }
-        catch (Exception e) {
-            ExceptionHandlerSingleton.instance().display(e, null);
-            System.exit(2);//exit with code 2 meaning error at parsing xml file
-        }
+//        try {
+//            URI uri = new File(testFilename).toURI();
+//            MasterTextTester textTester = new MasterTextTester(uri, runnerName);
+//            System.out.println("Run master \"" + testFilename + "\"");
+//
+//            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "testFilename = ", testFilename);
+//            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "runnerName = ", runnerName);
+//
+//            textTester.start();
+//            textTester.acquire();
+//
+//            // Shows report according to the showReport boolean
+//            boolean automaticGenerate = Config.getConfigByName("tester.properties").getBoolean("stats.AUTOMATIC_GENERATE", false);
+//            if (automaticGenerate) {
+//                textTester.getMaster().report_generate();
+//            }
+//
+//            // Return the status to the process
+//            if (textTester.getMasterRunner().getRunnerState().getState().isFailed() || textTester.getMasterRunner().getRunnerState().getState().isInterrupted()) {
+//                System.exit(1);
+//            }
+//            else {
+//                System.exit(0);
+//            }
+//        }
+//        catch (Exception e) {
+//            ExceptionHandlerSingleton.instance().display(e, null);
+//            System.exit(2);//exit with code 2 meaning error at parsing xml file
+//        }
     }
 
     static public void usage(String message) {

@@ -1,25 +1,4 @@
 /*
-* Copyright 2012 Devoteam http://www.devoteam.com
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
-*
-*
-* This file is part of Multi-Protocol Test Suite (MTS).
-*
-* Multi-Protocol Test Suite (MTS) is free software: you can redistribute
-* it and/or modify it under the terms of the GNU General Public License 
-* as published by the Free Software Foundation, either version 3 of the 
-* License.
-* 
-* Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
-* be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with Multi-Protocol Test Suite (MTS).  
-* If not, see <http://www.gnu.org/licenses/>. 
-*
-*//*
  * Copyright (c) 2005 Srit Devoteam. All rights reserved.
  */
 package com.devoteam.srit.xmlloader.core;
@@ -165,15 +144,7 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
      * <for> tag as many time as required and delete the corresponding <for> tag
      */
     private void initForLoopsTestcasesRunProfile() throws Exception {
-        Runner runner = new Runner(_name) {
-            @Override
-            public void start() {
-            }
-
-            @Override
-            public void stop() {
-            }
-        };
+        Runner runner = new Runner(_name);
 
         runner.setParameterPool(_parameters);
 
@@ -475,19 +446,17 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
                     String reportFileName = Config.getConfigByName("tester.properties").getString("stats.REPORT_DIRECTORY", "../reports/");
                     String[] files = new File(reportFileName).list();
                     File latest = null;
-                    if (files != null)
-                    {
-	                    for (String file : files) {
-	                        File aFile = new File(reportFileName + "/" + file);
-	                        if (aFile.isDirectory()) {
-	                            if (null == latest || aFile.lastModified() > latest.lastModified()) {
-	                                latest = aFile;
-	                            }
-	                        }
-	                    }
-	                    GlobalLogger.instance().getApplicationLogger().info(Topic.CORE, "Opening latest report: ", latest.toURI().resolve("_report.html"));
-	                    ReportGenerator.showReport(latest.toURI().resolve("_report.html"));	                    
-                    }                }
+                    for (String file : files) {
+                        File aFile = new File(reportFileName + "/" + file);
+                        if (aFile.isDirectory()) {
+                            if (null == latest || aFile.lastModified() > latest.lastModified()) {
+                                latest = aFile;
+                            }
+                        }
+                    }
+                    GlobalLogger.instance().getApplicationLogger().info(Topic.CORE, "Opening latest report: ", latest.toURI().resolve("_report.html"));
+                    ReportGenerator.showReport(latest.toURI().resolve("_report.html"));
+                }
                 catch (Exception e) {
                     GlobalLogger.instance().getApplicationLogger().error(Topic.CORE, e, "Error occured while opening latest report");
                     e.printStackTrace();

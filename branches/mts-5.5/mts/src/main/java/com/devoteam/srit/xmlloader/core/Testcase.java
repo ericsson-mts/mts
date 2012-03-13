@@ -1,43 +1,18 @@
-/*
-* Copyright 2012 Devoteam http://www.devoteam.com
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
-*
-*
-* This file is part of Multi-Protocol Test Suite (MTS).
-*
-* Multi-Protocol Test Suite (MTS) is free software: you can redistribute
-* it and/or modify it under the terms of the GNU General Public License 
-* as published by the Free Software Foundation, either version 3 of the 
-* License.
-* 
-* Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
-* be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with Multi-Protocol Test Suite (MTS).  
-* If not, see <http://www.gnu.org/licenses/>. 
-*
-*/package com.devoteam.srit.xmlloader.core;
+package com.devoteam.srit.xmlloader.core;
 
-import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.operations.basic.OperationParameter;
 
 
-import com.devoteam.srit.xmlloader.core.utils.URIFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementDefaultParser;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.utils.XMLTree;
 import com.devoteam.srit.xmlloader.core.utils.hierarchy.DefaultHierarchyMember;
 import com.devoteam.srit.xmlloader.core.utils.hierarchy.HierarchyMember;
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -49,14 +24,15 @@ import org.dom4j.Element;
 public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
 
     private String _name;
-    private LinkedHashMap<String, Scenario> scenarioPathByName;
+    private boolean _state;
+    private int _number;
+    private LinkedHashMap<String, Scenario> scenarioByName;
     private Element _root;
     private int _runId = 0;
-    private boolean _parsedScenarios;
     private boolean _interruptible;
     private RunProfile _runProfile;
     private transient ParameterPool _parameters;
-
+    private transient TestcaseRunner _testcaseRunner;
     /**
      * create the testcase object
      *  1 - init parameter pool: execute the "parameter" operations
@@ -67,21 +43,22 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
         defaultHierarchyMember = new DefaultHierarchyMember<Test, Scenario>();
         defaultHierarchyMember.setParent(test);
         _root = root;
-        _parsedScenarios = false;
         _parameters = new ParameterPool(null, ParameterPool.Level.testcase, test.getParameterPool());
         _interruptible = Boolean.valueOf(_root.attributeValue("interruptible", "true"));
         _name = _root.attributeValue("name");
+        _number = 1;
+        _state = Boolean.parseBoolean(_root.attributeValue("state"));
         _name = Utils.replaceFileName(this._name);
 
         // assert the name is not empty (can cause problems with log files and stats)
-
         if (_name == null || _name.trim().isEmpty()) {
             throw new ParsingException("testcase name should not be empty " + _root.asXML());
         }
 
         // do 1, 2, 3 in one go because of runner
         initParametersRunProfileScenarios();
-
+        
+        _testcaseRunner = new TestcaseRunner(this);
     }
 
     /**
@@ -92,16 +69,7 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
      * @throws ParsingException
      */
     private void initParametersRunProfileScenarios() throws Exception {
-        Runner runner = new Runner(getId()) {
-
-            @Override
-            public void start() {
-            }
-
-            @Override
-            public void stop() {
-            }
-        };
+        Runner runner = new Runner(getId());
 
         runner.setParameterPool(_parameters);
 
@@ -145,47 +113,45 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
             scenario = xmlTree.getTreeRoot();
         }
 
-        // fill a map with scenario name <=> file path
-        scenarioPathByName = new LinkedHashMap<String, Scenario>();
-        for (Element elements : (List<Element>) _root.selectNodes("./scenario")) {
-            Scenario scenario = new Scenario(elements, this);
+        // fill a map with "scenario name" => "scenario object"
+        scenarioByName = new LinkedHashMap<String, Scenario>();
+        for (Element element : (List<Element>) _root.selectNodes("./scenario")) {
+            Scenario scenario = new Scenario(element, this);
 
             String name = scenario.getName();
-            if (null != name && scenarioPathByName.containsKey(name)) {
+            if (null != name && scenarioByName.containsKey(name)) {
                 throw new ParsingException("Duplicate scenario identifier (name) : " + name + "; the scenario identifier must be unique because it is used for message routing between scenarios.");
             }
 
-            scenarioPathByName.put(name, scenario);
+            addChild(scenario);
+
+            scenarioByName.put(name, scenario);
         }
     }
 
     public boolean parsedScenarios() throws Exception {
-        return this._parsedScenarios;
+        for (Entry<String, Scenario> entry : scenarioByName.entrySet()) {
+            if(!entry.getValue().isParsed()){
+                return false;
+            }
+        }
+        return true;
     }
 
     public void parseScenarios() throws Exception {
-        reset();
-
-        // get scenarios ids and files path
-        Iterator iter = scenarioPathByName.values().iterator();
-        while (iter.hasNext()) {
-            Scenario scenario = (Scenario) iter.next();
-            ;
-
-            String relativePath = scenario.getFilename();
-
-            XMLDocument scenarioDocument = XMLDocumentCache.get(URIRegistry.IMSLOADER_TEST_HOME.resolve(relativePath), URIFactory.newURI("../conf/schemas/scenario.xsd"));
-
-            scenario.parse(scenarioDocument.getDocument().getRootElement());
-            this.addChild(scenario);
+        for (Entry<String, Scenario> entry : scenarioByName.entrySet()) {
+            entry.getValue().parse();
         }
-
-        this._parsedScenarios = true;
     }
 
-    public void reset() {
-        _parsedScenarios = false;
-        getChildren().clear();
+    public void free() {
+        for (Entry<String, Scenario> entry : scenarioByName.entrySet()) {
+            entry.getValue().free();
+        }
+    }
+
+    public TestcaseRunner getTestcaseRunner(){
+        return _testcaseRunner;
     }
 
     public ParameterPool getParameterPool() {
@@ -197,7 +163,7 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
     }
 
     public LinkedHashMap<String, Scenario> getScenarioPathByNameMap() {
-        return scenarioPathByName;
+        return scenarioByName;
     }
 
     public String getId() {
@@ -220,13 +186,30 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
         _runId = runId;
     }
 
-    public boolean interruptible() {
+    public synchronized void setNumber(int value){
+        _number = value;
+    }
+
+    public synchronized int getNumber(){
+        return _number;
+    }
+
+    public synchronized void setState(boolean value){
+        _state = value;
+    }
+
+    public synchronized boolean getState(){
+        return _state;
+    }
+
+    public boolean isInterruptible() {
         return this._interruptible;
     }
 
     public RunProfile getProfile() throws Exception {
         return this._runProfile;
     }
+    
     // <editor-fold defaultstate="collapsed" desc="Hierarchy implementation">
     private DefaultHierarchyMember<Test, Scenario> defaultHierarchyMember;
 

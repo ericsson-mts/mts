@@ -1,25 +1,4 @@
 /*
-* Copyright 2012 Devoteam http://www.devoteam.com
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
-*
-*
-* This file is part of Multi-Protocol Test Suite (MTS).
-*
-* Multi-Protocol Test Suite (MTS) is free software: you can redistribute
-* it and/or modify it under the terms of the GNU General Public License 
-* as published by the Free Software Foundation, either version 3 of the 
-* License.
-* 
-* Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
-* be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with Multi-Protocol Test Suite (MTS).  
-* If not, see <http://www.gnu.org/licenses/>. 
-*
-*//*
  * Created on Oct 25, 2004
  */
 package com.devoteam.srit.xmlloader.gui;
@@ -486,9 +465,7 @@ public class GUIMenuHelper {
     private JMenu createJMenuHelp(ActionListener actionListener) {
         JMenu jMenu = new JMenu("Help");
         jMenu.add(createJMenuItem(actionListener, "About", HELP_ABOUT));
-        /* Remove the licence control
         jMenu.add(createJMenuItem(actionListener, "License", HELP_LICENSE));
-        */
         jMenu.add(createJMenuItem(actionListener, "Documentation", HELP_DOCUMENTATION));
         jMenu.add(createJMenuItem(actionListener, "WebSite", HELP_WEBSITE));
         return jMenu;
@@ -536,6 +513,29 @@ public class GUIMenuHelper {
         this.dumpRecentsToFile();
     }
 
+    private boolean _file = false;
+    private boolean _opening = false;
+    private boolean _test = false;
+    private boolean _testcase = false;
+    
+    public void updateMenuStatesFile(final boolean file) {
+        _file = file;
+        updateMenuStates(_file, _opening, _test, _testcase);
+    }
+    public void updateMenuStatesOpening(final boolean opening) {
+        _opening = opening;
+        updateMenuStates(_file, _opening, _test, _testcase);
+    }
+    public void updateMenuStatesTest(final boolean test) {
+        _test = test;
+        updateMenuStates(_file, _opening, _test, _testcase);
+    }
+    public void updateMenuStatesTestcase(final boolean testcase) {
+        _testcase = testcase;
+        updateMenuStates(_file, _opening, _test, _testcase);
+    }
+    
+    
     /* file:     true if a file is opened
      * opening:  true if a test is being opened
      * test:     true if a test is running
@@ -543,7 +543,6 @@ public class GUIMenuHelper {
      */
     public void updateMenuStates(final boolean file, final boolean opening, final boolean test, final boolean testcase) {
         EventQueue.invokeLater(new Runnable() {
-
             public void run() {
                 jMenuItemOpen.setEnabled(!opening && !test && !testcase);
                 jMenuRecents.setEnabled(!opening && !test && !testcase);
@@ -559,22 +558,22 @@ public class GUIMenuHelper {
 
                 jMenuItemStop.setEnabled(file && !opening && test);
                 jMenuItemStopAll.setEnabled(file && !opening && (test || testcase));
-                jMenuItemSelectAll.setEnabled(file /*&& !test && !testcase*/);
-                jMenuItemUnselectAll.setEnabled(file /*&& !test && !testcase*/);
+                jMenuItemSelectAll.setEnabled(file);
+                jMenuItemUnselectAll.setEnabled(file);
 
                 jMenuParameters.setEnabled(file);
                 jMenuConf.setEnabled(file);
                 TesterGui.instance().getJFrameEditableParameters().setReadOnly(!test && !testcase);
                 jMenuOpenTestFile.setEnabled(file);
 
-                jRadioButtonMenuItemDebugLevel.setEnabled(file && !opening);// && !test && !testcase);
-                jRadioButtonMenuItemInfoLevel.setEnabled(file && !opening);// && !test && !testcase);
-                jRadioButtonMenuItemWarningLevel.setEnabled(file && !opening);// && !test && !testcase);
-                jRadioButtonMenuItemErrorLevel.setEnabled(file && !opening);// && !test && !testcase);
+                jRadioButtonMenuItemDebugLevel.setEnabled(file && !opening);
+                jRadioButtonMenuItemInfoLevel.setEnabled(file && !opening);
+                jRadioButtonMenuItemWarningLevel.setEnabled(file && !opening);
+                jRadioButtonMenuItemErrorLevel.setEnabled(file && !opening);
 
-                jRadioButtonMenuItemLogsModeGui.setEnabled(file && !opening);// && !test && !testcase);
-                jRadioButtonMenuItemLogsModeFile.setEnabled(file && !opening);// && !test && !testcase);
-                jRadioButtonMenuItemLogsModeNone.setEnabled(file && !opening);// && !test && !testcase);
+                jRadioButtonMenuItemLogsModeGui.setEnabled(file && !opening);
+                jRadioButtonMenuItemLogsModeFile.setEnabled(file && !opening);
+                jRadioButtonMenuItemLogsModeNone.setEnabled(file && !opening);
             }
         });
     }

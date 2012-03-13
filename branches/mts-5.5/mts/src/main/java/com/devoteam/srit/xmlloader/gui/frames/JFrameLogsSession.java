@@ -1,25 +1,4 @@
 /*
-* Copyright 2012 Devoteam http://www.devoteam.com
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
-*
-*
-* This file is part of Multi-Protocol Test Suite (MTS).
-*
-* Multi-Protocol Test Suite (MTS) is free software: you can redistribute
-* it and/or modify it under the terms of the GNU General Public License 
-* as published by the Free Software Foundation, either version 3 of the 
-* License.
-* 
-* Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
-* be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with Multi-Protocol Test Suite (MTS).  
-* If not, see <http://www.gnu.org/licenses/>. 
-*
-*//*
  * JFrameLogsSession.java
  *
  * Created on 7 novembre 2007, 12:05
@@ -30,8 +9,8 @@ import com.devoteam.srit.xmlloader.core.TestcaseRunner;
 import com.devoteam.srit.xmlloader.core.Testcase;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.gui.JTableLogs;
+import com.devoteam.srit.xmlloader.gui.better.TestcaseLineCtrl;
 import com.devoteam.srit.xmlloader.gui.logs.LoggingSet;
-import com.devoteam.srit.xmlloader.gui.wrappers.WrapperTestcase;
 import java.awt.CardLayout;
 import java.io.File;
 import java.net.URI;
@@ -39,7 +18,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
 /**
@@ -283,8 +261,8 @@ public class JFrameLogsSession extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowClosing
     {//GEN-HEADEREND:event_formWindowClosing
-        if (null != this.wrapperTestcase) {
-            this.wrapperTestcase.setLogs(false);
+        if(null != _testcaseLineCtrl){
+            _testcaseLineCtrl.setLogSelected(false);
         }
     }//GEN-LAST:event_formWindowClosing
 
@@ -322,10 +300,9 @@ public class JFrameLogsSession extends javax.swing.JFrame {
 
     private void jMenuItemCloseActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItemCloseActionPerformed
     {//GEN-HEADEREND:event_jMenuItemCloseActionPerformed
-        if (null != this.wrapperTestcase) {
-            this.wrapperTestcase.setLogs(false);
+        if(null != _testcaseLineCtrl){
+            _testcaseLineCtrl.setLogSelected(false);
         }
-        this.setVisible(false);
 }//GEN-LAST:event_jMenuItemCloseActionPerformed
 
     private void jMenuItemClearActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItemClearActionPerformed
@@ -401,7 +378,7 @@ public class JFrameLogsSession extends javax.swing.JFrame {
     private void jMenuItemSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSearchActionPerformed
         JDialogSearch searchDialog = new JDialogSearch(this, false);
         searchDialog.setVisible(true);
-       
+
     }//GEN-LAST:event_jMenuItemSearchActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemCALLFLOW;
@@ -434,11 +411,10 @@ public class JFrameLogsSession extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     // <editor-fold defaultstate="collapsed" desc=" User Code ">                          
     private LinkedHashMap<String, LoggingSet> logTables;
-    private WrapperTestcase wrapperTestcase;
-    //private static ArrayList<JFrameLogsSession> myJFrameLogsSession;
     private boolean mainLogs;
     private JTableLogs jMainTableLogs;
-
+    private TestcaseLineCtrl _testcaseLineCtrl;
+    
     public void initUserCode(boolean mainLogs) {
         //myJFrameLogsSession.add(this);
 
@@ -449,7 +425,7 @@ public class JFrameLogsSession extends javax.swing.JFrame {
         this.mainLogs = mainLogs;
         if (!mainLogs) {
             this.logTables = new LinkedHashMap();
-            this.setWrapperTestcase(null);
+            this.setTestcaseLineCtrl(null);
             this.jMainTableLogs = null;
             ((CardLayout) this.jPanel3.getLayout()).show(jPanel3, "card2");
         }
@@ -472,32 +448,19 @@ public class JFrameLogsSession extends javax.swing.JFrame {
         synchronized (logTables) {
             LoggingSet loggingSet = logTables.get(runId);
 
-
             if (null == loggingSet) {
                 loggingSet = new LoggingSet(runner, runId);
                 logTables.put(runId, loggingSet);
                 this.jComboBoxRuns.addItem(runId);
-
-                /*
-                 * Cause of out of memory if load testing with enabled gui logs.
-                 * We should try not to keep all runs of the past (ex. only keep the
-                 * 100 last runs) but this causes problems with the JComboBoxRuns
-                 * component that has a bad behaviour when adding/removing items
-                 * fast.
-                 */
-//            if(this.jComboBoxRuns.getItemCount() > 100)
-//            {
-//                if(this.jComboBoxRuns.getSelectedIndex() != 0) this.jComboBoxRuns.removeItemAt(0);
-//                else this.jComboBoxRuns.removeItemAt(1);
-//            }
             }
+            
             return loggingSet;
         }
 
     }
 
-    public void setWrapperTestcase(WrapperTestcase wrapperTestcase) {
-        this.wrapperTestcase = wrapperTestcase;
+    public void setTestcaseLineCtrl(TestcaseLineCtrl testcaseLineCtrl) {
+        _testcaseLineCtrl = testcaseLineCtrl;
     }
 
     private void updateHideShow() {
@@ -685,30 +648,4 @@ public class JFrameLogsSession extends javax.swing.JFrame {
     public boolean mainLog() {
         return this.mainLogs;
     }
-    /**public WrapperTestcase getWrapperTestcase()
-    {
-    return this.wrapperTestcase;
-    }*/
-    /**public void clearLogTable (){
-    if(null != this.logTables){
-    this.jTabbedPane.removeAll();
-    this.jComboBoxRuns.removeAllItems();
-    this.logTables.clear();
-    }
-    if(null != this.jMainTableLogs){
-    DefaultTableModel defaultTableModel = (DefaultTableModel) this.jMainTableLogs.getModel();
-    while(defaultTableModel.getRowCount() >0){
-    defaultTableModel.removeRow(0);
-    }
-    }
-    }*/
-    /**public void setLogsTab(JTableLogs jTableLogs){
-    this.jMainTableLogs = jTableLogs;
-    }*/
-    /**public boolean getMainLogs(){
-    return this.mainLogs;
-    }*/
-    /**public ArrayList<JFrameLogsSession> getMyJFrameLogsSession(){
-    return this.myJFrameLogsSession;
-    }*/
 }

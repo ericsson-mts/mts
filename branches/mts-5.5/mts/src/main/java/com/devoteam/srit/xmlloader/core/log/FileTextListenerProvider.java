@@ -1,25 +1,4 @@
 /*
-* Copyright 2012 Devoteam http://www.devoteam.com
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
-*
-*
-* This file is part of Multi-Protocol Test Suite (MTS).
-*
-* Multi-Protocol Test Suite (MTS) is free software: you can redistribute
-* it and/or modify it under the terms of the GNU General Public License 
-* as published by the Free Software Foundation, either version 3 of the 
-* License.
-* 
-* Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
-* be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with Multi-Protocol Test Suite (MTS).  
-* If not, see <http://www.gnu.org/licenses/>. 
-*
-*//*
  * Created on Nov 9, 2004
  */
 package com.devoteam.srit.xmlloader.core.log;
@@ -48,12 +27,10 @@ public class FileTextListenerProvider implements TextListenerProvider {
         if (null != key && key instanceof TestcaseRunner) {
             return null;
         }
+
         if (null != key && key instanceof ScenarioRunner) {
-            switch (((ScenarioRunner) key).getState().getState()) {
-                case SUCCEEDED:
-                case FAILED:
-                case INTERRUPTED:
-                    return null;
+            if (((ScenarioRunner) key).getState().isFinished()){
+                return null;
             }
         }
 
@@ -75,7 +52,7 @@ public class FileTextListenerProvider implements TextListenerProvider {
                 listener = new FileTextListener(filename, true);
             }
             else {
-                filename = Config.getConfigByName("tester.properties").getString("logs.STORAGE_DIRECTORY", "../logs") + ((ScenarioRunner) key).getTestcaseRunner().getRunId() + "/" + ((ScenarioRunner) key).getScenario().getName() + extensionFile;
+                filename = Config.getConfigByName("tester.properties").getString("logs.STORAGE_DIRECTORY", "../logs") + ((ScenarioRunner) key).getParent().getRunId() + "/" + ((ScenarioRunner) key).getScenario().getName() + extensionFile;
                 listener = new FileTextListener(filename, false);
             }
             registry.put(key, listener);

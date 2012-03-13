@@ -1,51 +1,29 @@
 /*
-* Copyright 2012 Devoteam http://www.devoteam.com
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
-*
-*
-* This file is part of Multi-Protocol Test Suite (MTS).
-*
-* Multi-Protocol Test Suite (MTS) is free software: you can redistribute
-* it and/or modify it under the terms of the GNU General Public License 
-* as published by the Free Software Foundation, either version 3 of the 
-* License.
-* 
-* Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
-* be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with Multi-Protocol Test Suite (MTS).  
-* If not, see <http://www.gnu.org/licenses/>. 
-*
-*//*
  * Created on Nov 26, 2004
  */
 package com.devoteam.srit.xmlloader.gui;
 
 import com.devoteam.srit.xmlloader.core.RunProfile;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import com.devoteam.srit.xmlloader.core.Test;
 import com.devoteam.srit.xmlloader.core.Tester;
 import com.devoteam.srit.xmlloader.core.ThreadPool;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
+import com.devoteam.srit.xmlloader.core.newstats.StatPool;
+import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.gui.frames.JFrameAbout;
 import com.devoteam.srit.xmlloader.gui.frames.JFrameLogsSession;
+import com.devoteam.srit.xmlloader.gui.frames.JFrameRTStats;
 import com.devoteam.srit.xmlloader.gui.frames.JFrameRunProfile;
 import com.devoteam.srit.xmlloader.gui.logs.GUITextListenerProvider;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.File;
-import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
-import com.devoteam.srit.xmlloader.core.newstats.StatPool;
-import com.devoteam.srit.xmlloader.gui.frames.JFrameRTStats;
 import java.net.URI;
 
 /**
@@ -310,11 +288,6 @@ class TesterGuiHelper implements ActionListener {
         else if (actionCommand.equals(GUIMenuHelper.HELP_ABOUT)) {
             new JFrameAbout().setVisible(true);
         }
-        /* Remove the licence control
-        else if (actionCommand.equals(GUIMenuHelper.HELP_LICENSE)) {
-            new JFrameLicense().setVisible(true);
-        }
-        */
         else if (actionCommand.equals(GUIMenuHelper.HELP_DOCUMENTATION)) {
             try {
                 String browser = Config.getConfigByName("tester.properties").getString("stats.BROWSER_PATH");
@@ -351,7 +324,7 @@ class TesterGuiHelper implements ActionListener {
                 if (browser == null) {
                     throw new Exception("null browser path");
                 }
-                String urlName = "https://sites.google.com/site/multiprotocoltestsuite/";
+                String urlName = "http://www.imsloader.com/";
                 try {
                     Runtime.getRuntime().exec(browser + " " + urlName); // le lien est dans urlName
                 }

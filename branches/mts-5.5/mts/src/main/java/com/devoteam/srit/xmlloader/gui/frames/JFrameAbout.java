@@ -1,25 +1,4 @@
 /*
-* Copyright 2012 Devoteam http://www.devoteam.com
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
-*
-*
-* This file is part of Multi-Protocol Test Suite (MTS).
-*
-* Multi-Protocol Test Suite (MTS) is free software: you can redistribute
-* it and/or modify it under the terms of the GNU General Public License 
-* as published by the Free Software Foundation, either version 3 of the 
-* License.
-* 
-* Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
-* be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with Multi-Protocol Test Suite (MTS).  
-* If not, see <http://www.gnu.org/licenses/>. 
-*
-*//*
  * JFrameAbout.java
  *
  * Created on 8 novembre 2007, 09:06
@@ -65,16 +44,19 @@ public class JFrameAbout extends javax.swing.JFrame
         setLocationByPlatform(true);
         setResizable(false);
 
-//        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-//        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/voxpilot_logo.png"))); // NOI18N
-//        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 5));
-//        jLabel1.setFocusable(false);
+        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/voxpilot_logo.png"))); // NOI18N
+        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 5));
+        jLabel1.setFocusable(false);
 
-        jLabel2.setText("<html> MTS is a GPLV3 software https://sites.google.com/site/multiprotocoltestsuite/ </html>");
+        jLabel2.setText("<html> IMSLoader is developped by <b>VoxPilot</b> </html>");
 
         jLabelVersion.setFont(new java.awt.Font("Dialog", 1, 24));
         jLabelVersion.setText("VERSION_LABEL");
 
+        jLabel4.setText("<html> © Copyright <b>VoxPilot</b> 2010. All rights reserved. </html>");
+
+        jLabel5.setText("For more information, contact imsloader@devoteam.com");
 
         jLabel6.setText("jre version:");
 

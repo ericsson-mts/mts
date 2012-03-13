@@ -1,1 +1,1 @@
-startClass com.devoteam.srit.xmlloader.master.MasterImplementation fork %*
+startClass com.devoteam.srit.xmlloader.master.Master fork %*

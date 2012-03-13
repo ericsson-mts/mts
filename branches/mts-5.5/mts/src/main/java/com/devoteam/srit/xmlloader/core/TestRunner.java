@@ -1,31 +1,9 @@
 /*
-* Copyright 2012 Devoteam http://www.devoteam.com
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
-*
-*
-* This file is part of Multi-Protocol Test Suite (MTS).
-*
-* Multi-Protocol Test Suite (MTS) is free software: you can redistribute
-* it and/or modify it under the terms of the GNU General Public License 
-* as published by the Free Software Foundation, either version 3 of the 
-* License.
-* 
-* Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
-* be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with Multi-Protocol Test Suite (MTS).  
-* If not, see <http://www.gnu.org/licenses/>. 
-*
-*//*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package com.devoteam.srit.xmlloader.core;
 
-import com.devoteam.srit.xmlloader.core.RunnerState.State;
 import com.devoteam.srit.xmlloader.core.newstats.StatKey;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.utils.Helper;
@@ -68,13 +46,14 @@ public abstract class TestRunner extends Runner implements HierarchyMember<Objec
         this.defaultHierarchyMember.removeChild(child);
     }
     // </editor-fold>
+    
     // <editor-fold defaultstate="collapsed" desc="NotificationSender Implementation">
     private DefaultNotificationSender<Notification<String, RunnerState>> defaultNotificationSender;
 
     public void addListener(NotificationListener<Notification<String, RunnerState>> listener) {
         this.defaultNotificationSender.addListener(listener);
 
-        listener.notificationReceived(new Notification<String, RunnerState>(this.getName(), this.getState()));
+        listener.notificationReceived(new Notification<String, RunnerState>(this.getName(), this.getState().clone()));
     }
 
     public void removeListener(NotificationListener listener) {
@@ -85,10 +64,11 @@ public abstract class TestRunner extends Runner implements HierarchyMember<Objec
         this.defaultNotificationSender.notifyAll(notification);
     }
 
-    public void notifyAll(RunnerState runnerState) {
-        this.defaultNotificationSender.notifyAll(new Notification<String, RunnerState>(this.getName(), runnerState));
+    public void doNotifyAll() {
+        this.notifyAll(new Notification<String, RunnerState>(this.getName(), getState().clone()));
     }
     // </editor-fold>
+
     private Test test;
 
     public TestRunner(String name, Test test) {
@@ -105,18 +85,12 @@ public abstract class TestRunner extends Runner implements HierarchyMember<Objec
         }
 
         this.addListener(new NotificationListener<Notification<String, RunnerState>>() {
-
-            private State lastState = null;
+            private boolean finishedOld = false;
+            private boolean startedOld = false;
 
             public void notificationReceived(Notification<String, RunnerState> notification) {
-                // starting of test
-                if (lastState != State.RUNNING
-                        && lastState != State.FAILING
-                        && lastState != State.INTERRUPTING && (notification.getData().getState() == State.RUNNING
-                        || notification.getData().getState() == State.FAILING
-                        || notification.getData().getState() == State.INTERRUPTING)) {
+                if (!startedOld && notification.getData().isStarted()) {
                     TestRunnerCounter.instance().runningTestsIncreased();
-                                       
                     // add static stat counters for test and parameters sections            	    
                     StatPool.getInstance().addStatsStaticTestParameters(getTest());
                     StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_TEST, getTest().getName(), "_startNumber"), 1);
@@ -131,11 +105,7 @@ public abstract class TestRunner extends Runner implements HierarchyMember<Objec
                 }
 
                 // ending of test
-                if (lastState != State.SUCCEEDED
-                        && lastState != State.FAILED
-                        && lastState != State.INTERRUPTED && (notification.getData().getState() == State.SUCCEEDED
-                        || notification.getData().getState() == State.FAILED
-                        || notification.getData().getState() == State.INTERRUPTED)) {
+                if (!finishedOld && notification.getData().isFinished()) {
                     TestRunnerCounter.instance().runningTestsDecreased();
                     StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_TEST, getTest().getName(), "_completeNumber"), 1);
                     StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_TEST, getTest().getName(), "_currentNumber"), -1);
@@ -147,8 +117,9 @@ public abstract class TestRunner extends Runner implements HierarchyMember<Objec
                     String testDuration = Helper.getElapsedTimeString(duration);
                     StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_TEST, getTest().getName(), "_testDuration"), testDuration);                    
                 }
-
-                lastState = notification.getData().getState();
+                
+                startedOld = notification.getData().isStarted();
+                finishedOld = notification.getData().isFinished();
             }
         });
 
@@ -162,6 +133,10 @@ public abstract class TestRunner extends Runner implements HierarchyMember<Objec
         this.statAddValue(0, sure);
     }
 
+    public abstract void start();
+
+    public abstract void stop();
+    
     final protected void statAddValue(long duration, boolean sure) {
         DateFormat df1 = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
         long endTimestamp = getTest().getBeginTime() + duration;
