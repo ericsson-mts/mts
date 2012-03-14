@@ -62,8 +62,10 @@ public class TestcaseLineView extends javax.swing.JPanel {
         add(jSpinnerNumber, gridBagConstraints);
 
         jButtonAction.setText("Start");
-        jButtonAction.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        jButtonAction.setPreferredSize(new java.awt.Dimension(58, 23));
+        jButtonAction.setMargin(new java.awt.Insets(2, 6, 2, 6));
+        jButtonAction.setMaximumSize(new java.awt.Dimension(80, 23));
+        jButtonAction.setMinimumSize(new java.awt.Dimension(80, 23));
+        jButtonAction.setPreferredSize(new java.awt.Dimension(80, 23));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
