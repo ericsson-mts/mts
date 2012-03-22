@@ -29,13 +29,14 @@ package com.devoteam.srit.xmlloader.core.utils.filesystem;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
  *
  * @author gpasquiers
  */
-public interface FSInterface
+public interface FSInterface extends Remote 
 {
     public InputStream getInputStream(URI path) throws RemoteException;
 

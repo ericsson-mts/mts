@@ -30,16 +30,22 @@ import javax.swing.UIManager;
 public class Master {
 
     /**
-     * @param
-     * args
-     * the
-     * command
-     * line
-     * arguments
+     * @param args the command line arguments
      */
     public static void main(String args[]) {
+        // Redirect the output in a file but only when starting the master GUI
+        try {
+            File file = new File("../logs/stdout_master.log");
+            PrintStream print = new PrintStream(file);
+            System.setOut(print);
+            System.setErr(print);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         init();
-
+        
         JFrameMasterView jFrameMasterView = new JFrameMasterView();
 
         ExceptionHandlerSingleton.setInstance(new SwingExceptionHandler(jFrameMasterView));
@@ -49,69 +55,32 @@ public class Master {
 
     public static void init() {
 
-        // Redirect the output in a file
-        try {
-            File file = new File("../logs/stdout.log");
-            PrintStream print = new PrintStream(file);
-//            System.setOut(print);
-//            System.setErr(print);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 
         // Init FSInterface
         SingletonFSInterface.setInstance(new LocalFSInterface());
 
-        /*
-         * Override
-         * tester.properties/logs.STORAGE_DIRECTORY
-         * for
-         * the
-         * master
-         * filename
-         * =
-         * Config.getConfigByName("tester.properties").getString("logs.STORAGE_DIRECTORY","../logs")
-         * +
-         * "/application.log";
-         */
+        // Override tester.properties/logs.STORAGE_DIRECTORY for the master filename = Config.getConfigByName("tester.properties").getString("logs.STORAGE_DIRECTORY","../logs") + "/application.log";
         PropertiesEnhanced properties = new PropertiesEnhanced();
         properties.addPropertiesEnhancedComplete("logs.STORAGE_DIRECTORY", Config.getConfigByName("tester.properties").getString("logs.STORAGE_DIRECTORY", "../logs") + "/master");
         Config.overrideProperties("tester.properties", properties);
 
-        /*
-         * Register
-         * the
-         * GUI
-         * logger
-         * provider
-         */
+        // Register the GUI logger provider
         TextListenerProviderRegistry.instance().register(GUITextListenerProvider.instance());
 
-        /*
-         * Register
-         * the
-         * File
-         * logger
-         * provider
-         */
+        // Register the File logger provider
         TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
 
-
-        //
         // Initialize the pluggable components
-        //
         ParameterOperatorRegistry.initialize();
         ParameterTestRegistry.initialize();
 
-        //
         // Initialize the Statistics to automatically generate periodically statistics report
-        //
         StatPool.initialize("master");
     }
 }

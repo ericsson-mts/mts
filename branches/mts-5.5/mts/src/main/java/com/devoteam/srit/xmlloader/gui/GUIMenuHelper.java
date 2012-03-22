@@ -78,7 +78,6 @@ public class GUIMenuHelper {
     public static final String RESET_STATS = "RESET_STATS";
     // Help jMenu action commands
     public static final String HELP_ABOUT = "HELP_ABOUT";
-    public static final String HELP_LICENSE = "HELP_LICENSE";
     //-----------------------------------------
     public static final String HELP_DOCUMENTATION = "HELP_DOCUMENTATION";
     public static final String HELP_WEBSITE = "HELP_WEBSITE";
@@ -258,7 +257,6 @@ public class GUIMenuHelper {
         // initialize recents menu
 
         this.jMenuRecents = new javax.swing.JMenu();
-        //this.jMenuRecents.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/document-open.png"))); // NOI18N
         this.jMenuRecents.setText("Open");
         jMenu.add(this.jMenuRecents);
 
@@ -465,7 +463,6 @@ public class GUIMenuHelper {
     private JMenu createJMenuHelp(ActionListener actionListener) {
         JMenu jMenu = new JMenu("Help");
         jMenu.add(createJMenuItem(actionListener, "About", HELP_ABOUT));
-        jMenu.add(createJMenuItem(actionListener, "License", HELP_LICENSE));
         jMenu.add(createJMenuItem(actionListener, "Documentation", HELP_DOCUMENTATION));
         jMenu.add(createJMenuItem(actionListener, "WebSite", HELP_WEBSITE));
         return jMenu;
@@ -482,7 +479,6 @@ public class GUIMenuHelper {
         jMenuFile.setEnabled(true);
         jMenuBar.add(jMenuFile);
 
-        //TODO: no yet suported
         jMenuItemReload.setEnabled(false);
 
         jMenuTest = createJMenuTest(actionListener);
@@ -497,14 +493,11 @@ public class GUIMenuHelper {
         jMenuReport.setEnabled(true);
         jMenuBar.add(jMenuReport);
 
-        //Put help menu in the right side
-        //jMenuBar.add(Box.createHorizontalGlue());
-
         jMenuHelp = createJMenuHelp(actionListener);
         jMenuHelp.setEnabled(true);
         jMenuBar.add(jMenuHelp);
 
-        this.jMenuFile.revalidate();
+        jMenuFile.revalidate();
     }
 
     private void jMenuItemClearActionPerformed(java.awt.event.ActionEvent evt) {

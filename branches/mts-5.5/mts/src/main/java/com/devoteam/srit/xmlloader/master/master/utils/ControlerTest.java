@@ -92,15 +92,15 @@ public class ControlerTest {
         _dataTest = testData;
     }
 
-    public DefaultNotificationSender<ConnectionState> getNotificationSenderForConnectionState() {
+    public DefaultNotificationSenderWithCache<ConnectionState> getNotificationSenderForConnectionState() {
         return _notificationSenderForConnectionState;
     }
 
-    public DefaultNotificationSender<DeploymentState> getNotificationSenderForDeploymentState() {
+    public DefaultNotificationSenderWithCache<DeploymentState> getNotificationSenderForDeploymentState() {
         return _notificationSenderForDeploymentState;
     }
 
-    public DefaultNotificationSender<RunnerState> getNotificationSenderForRunnerState() {
+    public DefaultNotificationSenderWithCache<RunnerState> getNotificationSenderForRunnerState() {
         return _notificationSenderForRunnerState;
     }
 

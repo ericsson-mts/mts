@@ -1,173 +1,238 @@
-///*
-// * To change this template, choose Tools | Templates
-// * and open the template in the editor.
-// */
-//package com.devoteam.srit.xmlloader.cmd;
-//
-//import com.devoteam.srit.xmlloader.core.RunnerState;
-//import com.devoteam.srit.xmlloader.core.Test;
-//import com.devoteam.srit.xmlloader.core.Testcase;
-//import com.devoteam.srit.xmlloader.core.report.ReportGenerator;
-//import com.devoteam.srit.xmlloader.core.report.ReportStatus;
-//import com.devoteam.srit.xmlloader.core.utils.URIFactory;
-//import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
-//import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.ExceptionHandlerSingleton;
-//import com.devoteam.srit.xmlloader.core.utils.notifications.Notification;
-//import com.devoteam.srit.xmlloader.core.utils.notifications.NotificationListener;
-//import com.devoteam.srit.xmlloader.master.MasterImplementation;
-//import com.devoteam.srit.xmlloader.master.masterutils.Master;
-//import com.devoteam.srit.xmlloader.master.masterutils.MasterRunner;
-//import com.devoteam.srit.xmlloader.master.masterutils.MasterRunnerSequential;
-//import com.devoteam.srit.xmlloader.master.masterutils.MasterRunnerSimultaneous;
-//import com.devoteam.srit.xmlloader.master.masterutils.RemoteTesterRunner;
-//import java.net.URI;
-//import java.util.concurrent.Semaphore;
-//
-///**
-// *
-// * @author
-// * gpasquiers
-// */
-//public class MasterTextTester {
-//
-//    private Master master;
-//    private Semaphore semaphore;
-//    private final MasterTextTester _this = this;
-//    private String runnerName;
-//    private MasterRunner masterRunner;
-//
-//    public MasterTextTester(URI uri, String runnerName) throws Exception {
-//        try {
-//            XMLDocument xmlDocument = new XMLDocument();
-//            xmlDocument.setXMLFile(uri);
-//            xmlDocument.setXMLSchema(URIFactory.newURI("../conf/schemas/master.xsd"));
-//            xmlDocument.parse();
-//            this.master = new Master(xmlDocument, URIFactory.resolve(uri, "."));
-//            this.semaphore = new Semaphore(0);
-//            this.runnerName = runnerName;
-//        }
-//        catch (Exception e) {
-//            throw e;
-//        }
-//    }
-//
-//    public void acquire() throws InterruptedException {
-//        this.semaphore.acquire();
-//    }
-//
-//    public void start() {
-//        MasterImplementation.init();
-//        try {
-//            if (runnerName.equalsIgnoreCase("simultaneous")) {
-//                masterRunner = new MasterRunnerSimultaneous(master, master.getTestDatas());
-//            }
-//            else if (runnerName.equalsIgnoreCase("sequential")) {
-//                masterRunner = new MasterRunnerSequential(master, master.getTestDatas());
-//            }
-//            else //default: simultaneous
-//            {
-//                masterRunner = new MasterRunnerSimultaneous(master, master.getTestDatas());
-//            }
-//
-//            masterRunner.start();
-//
-//            for (final RemoteTesterRunner remoteTesterRunner : this.masterRunner.getChildren()) {
-//                final String testName = remoteTesterRunner.getTestData().attributeValue("name");
-//                remoteTesterRunner.addListener(new NotificationListener<Notification<String, RunnerState>>() {
-//
-//                    boolean didRegister = false;
-//
-//                    public void notificationReceived(Notification<String, RunnerState> notification) {
-//                        if (this.didRegister) {
-//                            return;
-//                        }
-//
-//                        switch (notification.getData().getState()) {
-//                            case RUNNING:
-//                            case FAILING:
-//                            case INTERRUPTING:
-//                            case INTERRUPTED:
-//                            case FAILED:
-//                            case SUCCEEDED:
-//                                this.didRegister = true;
-//                                Test test = remoteTesterRunner.getTest();
-//                                for (Testcase testcase : test.getChildren()) {
-//                                    if (testcase.attributeValue("state") == null || testcase.attributeValue("state").equalsIgnoreCase("true")) {
-//                                        try {
-//                                            final String testcaseName = testcase.attributeValue("name");
-//                                            MasterImplementation.instance().addMultiplexedListener(new NotificationListener<Notification<String, RunnerState>>() {
-//
-//                                                public void notificationReceived(Notification<String, RunnerState> notification) {
-//                                                    switch (notification.getData().getState()) {
-//                                                        case FAILING:
-//                                                        case INTERRUPTING:
-//                                                        case FAILED:
-//                                                        case INTERRUPTED:
-//                                                            System.out.println(notification.getData().getState() + ": " + master.attributeValue("name") + " / " + testName + " / " + testcaseName);
-//                                                            try {
-//                                                                MasterImplementation.instance().removeMultiplexedListener(this);
-//                                                            }
-//                                                            catch (Exception e) {
-//                                                                // ignore
-//                                                            }
-//                                                    }
-//                                                }
-//                                            }, remoteTesterRunner.getRemoteTester(), testName, testcaseName, null);
-//                                        }
-//                                        catch (Exception e) {
-//                                            ExceptionHandlerSingleton.instance().display(e, null);
-//                                        }
-//                                    }
-//                                }
-//                        }
-//                    }
-//                ;
-//            }
-//            );
-//            }
-//
-//            masterRunner.addListener(new NotificationListener<Notification<String, RunnerState>>() {
-//
-//                public void notificationReceived(Notification<String, RunnerState> notification) {
-//                    switch (notification.getData().getState()) {
-//                        case OPEN_FAILED:
-//                        case SUCCEEDED:
-//                        case FAILED:
-//                        case INTERRUPTED:
-//                            _this.semaphore.release();
-//                            break;
-//                    }
-//                }
-//            });
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void report() throws Exception {
-//        try {
-//            ReportGenerator reportGenerator = masterRunner.report();
-//            reportGenerator.addListener(new NotificationListener<Notification<String, ReportStatus>>() {
-//
-//                public void notificationReceived(Notification<String, ReportStatus> notification) {
-//                    if (notification.getData().getProgress() == 100) {
-//                        _this.semaphore.release();
-//                    }
-//                }
-//            });
-//        }
-//        catch (Exception e) {
-//            this.semaphore.release();
-//            ExceptionHandlerSingleton.instance().display(e, null);
-//        }
-//    }
-//
-//    public Master getMaster() {
-//        return master;
-//    }
-//
-//    public MasterRunner getMasterRunner() {
-//        return masterRunner;
-//    }
-//}
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.devoteam.srit.xmlloader.cmd;
+
+import com.devoteam.srit.xmlloader.core.RunnerState;
+import com.devoteam.srit.xmlloader.core.ThreadPool;
+import com.devoteam.srit.xmlloader.core.newstats.StatPool;
+import com.devoteam.srit.xmlloader.core.report.ReportGenerator;
+import com.devoteam.srit.xmlloader.core.report.ReportStatus;
+import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.URIFactory;
+import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
+import com.devoteam.srit.xmlloader.core.utils.notifications.Notification;
+import com.devoteam.srit.xmlloader.core.utils.notifications.NotificationListener;
+import com.devoteam.srit.xmlloader.core.utils.notifications.NotificationSender;
+import com.devoteam.srit.xmlloader.master.Master;
+import com.devoteam.srit.xmlloader.master.master.utils.DataMaster;
+import com.devoteam.srit.xmlloader.master.master.utils.DataTest;
+import java.net.URI;
+import java.util.concurrent.Semaphore;
+
+/**
+ *
+ * @author
+ * gpasquiers
+ */
+public class MasterTextTester {
+
+    private Semaphore _semaphoreIntern;
+    private final MasterTextTester _this = this;
+    private String _mode;
+    private DataMaster _dataMaster;
+
+    public MasterTextTester(URI uri, String mode) throws Exception {
+        try {
+            XMLDocument xmlDocument = new XMLDocument();
+            xmlDocument.setXMLFile(uri);
+            xmlDocument.setXMLSchema(URIFactory.newURI("../conf/schemas/master.xsd"));
+            xmlDocument.parse();
+
+            _dataMaster = new DataMaster(xmlDocument, URIFactory.resolve(uri, "."));
+
+            _semaphoreIntern = new Semaphore(0);
+            _mode = mode;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public void run() throws Exception {
+        Master.init();
+
+        try {
+            if (_mode.equalsIgnoreCase("sequential")) {
+                try {
+                    for (DataTest dataTest : _dataMaster.getDataTests()) {
+                        dataTest.getControlerTest().connect();
+                    }
+
+                    long timestamp = System.currentTimeMillis();
+                    for (DataTest dataTest : _dataMaster.getDataTests()) {
+                        dataTest.getControlerTest().setResetInhibited(false);
+                        dataTest.getControlerTest().resetStats(timestamp);
+                        dataTest.getControlerTest().setResetInhibited(true);
+                    }
+                }
+                catch (Exception e) {
+                    // nothing to do, could not connect to all slave, the stats will not be synched
+                }
+
+                for (DataTest dataTest : _dataMaster.getDataTests()) {
+                    dataTest.getControlerTest().open(true);
+                    dataTest.getControlerTest().start();
+                    final Semaphore semaphoreSeq = new Semaphore(0);
+                    final NotificationSender<RunnerState> sender = dataTest.getControlerTest().getNotificationSenderForRunnerState();
+                    sender.addListener(new NotificationListener<RunnerState>() {
+
+                        boolean _couldBeFinished = false;
+
+                        @Override
+                        public void notificationReceived(RunnerState notification) {
+                            System.out.println(notification);
+                            if (_couldBeFinished && (notification.isFinished() || notification.couldNotStart())) {
+                                sender.removeListener(this);
+                                semaphoreSeq.release();
+                            }
+                            else {
+                                _couldBeFinished = true;
+                            }
+                        }
+                    });
+                    try {
+                        // wait for the test to end
+                        semaphoreSeq.acquire();
+                        _semaphoreIntern.release();
+                        Thread.sleep(500);
+                    }
+                    catch (Exception e) {
+                        throw e;
+                    }
+                }
+            }
+            else { //default: simultaneous
+                try {
+                    for (DataTest dataTest : _dataMaster.getDataTests()) {
+                        dataTest.getControlerTest().connect();
+                    }
+
+                    for (DataTest dataTest : _dataMaster.getDataTests()) {
+                        dataTest.getControlerTest().open(true);
+                    }
+
+                    long timestamp = System.currentTimeMillis();
+                    for (DataTest dataTest : _dataMaster.getDataTests()) {
+                        dataTest.getControlerTest().resetStats(timestamp);
+
+                        // add a listener that will give a token to the semaphore at each test's end
+                        final NotificationSender<RunnerState> sender = dataTest.getControlerTest().getNotificationSenderForRunnerState();
+                        sender.addListener(new NotificationListener<RunnerState>() {
+
+                            boolean _couldBeFinished = false;
+
+                            @Override
+                            public void notificationReceived(RunnerState notification) {
+                                System.out.println(notification);
+                                if (_couldBeFinished && (notification.isFinished() || notification.couldNotStart())) {
+                                    sender.removeListener(this);
+                                    _semaphoreIntern.release();
+                                }
+                                else {
+                                    _couldBeFinished = true;
+                                }
+                            }
+                        });
+                    }
+
+                    for (DataTest dataTest : _dataMaster.getDataTests()) {
+                        dataTest.getControlerTest().start();
+                    }
+                }
+                catch (Exception e) {
+                    throw e;
+                }
+            }
+
+            _semaphoreIntern.acquireUninterruptibly(_dataMaster.getDataTests().size());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("run ended");
+    }
+
+    public void report() throws Exception {
+        System.out.println("Start generating report.");
+        // check slaves are synched
+        long timestamp = Long.MIN_VALUE;
+        long earliest = 0;
+        long latest = 0;
+        for (DataTest dataTest : _dataMaster.getDataTests()) {
+            if (earliest == 0) {
+                earliest = dataTest.getControlerTest().getStartTimestamp();
+                latest = earliest;
+            }
+            else {
+                earliest = Math.min(earliest, dataTest.getControlerTest().getStartTimestamp());
+                latest = Math.max(latest, dataTest.getControlerTest().getStartTimestamp());
+            }
+        }
+
+        if (latest - earliest > 1000) {
+            System.out.println("The slaves test pools were initialized up to " + (latest - earliest) / 1000 + "s apart.\nNo merged report will be generated");
+            return;
+        }
+
+        // compute merges stat pool
+        StatPool statPool = null;
+        for (DataTest dataTest : _dataMaster.getDataTests()) {
+            if (null == statPool) {
+                statPool = dataTest.getControlerTest().getStatPool().clone();
+            }
+            else {
+                statPool.merge(dataTest.getControlerTest().getStatPool());
+            }
+        }
+
+        final StatPool finalStatPool = statPool;
+        final long finalTimestamp = timestamp;
+        // generate stat report
+        String dirName = Config.getConfigByName("tester.properties").getString("stats.REPORT_DIRECTORY", "../reports/");
+        String fileName = dirName + "/MASTER_TEST";
+        final ReportGenerator reportGenerator = new ReportGenerator(fileName);
+
+        ThreadPool.reserve().start(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    reportGenerator.generateReport(finalStatPool, finalTimestamp);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        final Semaphore semaphore = new Semaphore(0);
+        reportGenerator.addListener(new NotificationListener<Notification<String, ReportStatus>>() {
+
+            @Override
+            public void notificationReceived(Notification<String, ReportStatus> notification) {
+                System.out.println(notification.getData().getProgress());
+                if (100 == notification.getData().getProgress()) {
+                    semaphore.release();
+                }
+            }
+        });
+        semaphore.acquire();
+        System.out.println("Report generated.");
+    }
+    
+    public RunnerState getGlobalState(){
+        RunnerState finalState = null;
+        for (DataTest dataTest : _dataMaster.getDataTests()) {
+            RunnerState state = dataTest.getControlerTest().getNotificationSenderForRunnerState().getLastNotification();
+            if(finalState == null){
+                finalState = state.clone();
+            }
+            else{
+                finalState.merge(state);
+            }
+        }
+        
+        return finalState;
+    }
+}

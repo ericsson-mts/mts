@@ -137,7 +137,7 @@ public class ReportGenerator implements NotificationSender<Notification<String, 
             statPool.setUpdateLastTimestamp(false);
             
             this.sectionRP = new SectionReportGenerator(statPool, this.reportDirectory);
-            if (Tester.getInstance() != null)            
+            if (Tester.getInstance() != null && Tester.getInstance().getTest() != null)            
             {
             	statPool.addStatsStaticTestParameters(Tester.getInstance().getTest());
             }

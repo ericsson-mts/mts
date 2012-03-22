@@ -24,7 +24,7 @@ public class SlaveReference {
     private FSInterfaceImpl _fsInterfaceImpl;
 
     protected SlaveReference(String url) throws RemoteException, NotBoundException {
-        int port = 1099;
+        int port = 2099;
         String host;
         if (url.contains(":")) {
             host = url.split(":")[0];

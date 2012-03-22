@@ -209,35 +209,34 @@ public class TextImplementation {
             ExceptionHandlerSingleton.instance().display(e, null);
         }
 
-//        try {
-//            URI uri = new File(testFilename).toURI();
-//            MasterTextTester textTester = new MasterTextTester(uri, runnerName);
-//            System.out.println("Run master \"" + testFilename + "\"");
-//
-//            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "testFilename = ", testFilename);
-//            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "runnerName = ", runnerName);
-//
-//            textTester.start();
-//            textTester.acquire();
-//
-//            // Shows report according to the showReport boolean
-//            boolean automaticGenerate = Config.getConfigByName("tester.properties").getBoolean("stats.AUTOMATIC_GENERATE", false);
-//            if (automaticGenerate) {
-//                textTester.getMaster().report_generate();
-//            }
-//
-//            // Return the status to the process
-//            if (textTester.getMasterRunner().getRunnerState().getState().isFailed() || textTester.getMasterRunner().getRunnerState().getState().isInterrupted()) {
-//                System.exit(1);
-//            }
-//            else {
-//                System.exit(0);
-//            }
-//        }
-//        catch (Exception e) {
-//            ExceptionHandlerSingleton.instance().display(e, null);
-//            System.exit(2);//exit with code 2 meaning error at parsing xml file
-//        }
+        try {
+            URI uri = new File(testFilename).toURI();
+            MasterTextTester textTester = new MasterTextTester(uri, runnerName);
+            System.out.println("Run master \"" + testFilename + "\"");
+
+            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "testFilename = ", testFilename);
+            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "runnerName = ", runnerName);
+
+            textTester.run();
+
+            // Shows report according to the AUTOMATIC_GENERATE boolean
+            boolean automaticGenerate = Config.getConfigByName("tester.properties").getBoolean("stats.AUTOMATIC_GENERATE", false);
+            if (automaticGenerate) {
+                textTester.report();
+            }
+
+            // Return the status to the process
+            if (textTester.getGlobalState() == null || textTester.getGlobalState().isFailed() || textTester.getGlobalState().isInterrupted()) {
+                System.exit(1);
+            }
+            else {
+                System.exit(0);
+            }
+        }
+        catch (Exception e) {
+            ExceptionHandlerSingleton.instance().display(e, null);
+            System.exit(2);//exit with code 2 meaning error at parsing xml file
+        }
     }
 
     static public void usage(String message) {

@@ -13,6 +13,8 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import com.devoteam.srit.xmlloader.master.slave.SlaveImpl;
+import java.io.File;
+import java.io.PrintStream;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.security.Permission;
@@ -35,12 +37,11 @@ public class Slave {
         // Register the File logger provider
         TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
 
-        //
         // Read arguments
-        //
         if (args.length == 0) {
         }
         else if (args.length == 1) {
+            // override the port number
             PropertiesEnhanced properties = new PropertiesEnhanced();
             properties.addPropertiesEnhancedComplete("slave.rmi.port", String.valueOf(Integer.parseInt(args[0])));
             Config.overrideProperties("master.properties", properties);
@@ -49,12 +50,20 @@ public class Slave {
             System.out.println("Usage: startSlave <portNumber>\n");
             System.exit(1);
         }
+        
+        // Redirect the output in a file
+        try {
+            File file = new File("../logs/stdout_slave_" + Config.getConfigByName("master.properties").getInteger("slave.rmi.port") + ".log");
+            PrintStream print = new PrintStream(file);
+            System.setOut(print);
+            System.setErr(print);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        //
         // Init SecurityManager
-        //
         SecurityManager securityManager = new SecurityManager() {
-
             @Override
             public void checkPermission(Permission permission) {
             }
@@ -67,11 +76,6 @@ public class Slave {
         // create and register the slave interface
         try {
             int port = Config.getConfigByName("master.properties").getInteger("slave.rmi.port");
-            
-            if(args.length >= 2){
-                port = Integer.parseInt(args[1]);
-            }
-            
             String host = Config.getConfigByName("master.properties").getString("slave.rmi.host", "");
             if (host != null && host.equals("")) {
                 host = Utils.getLocalAddress().getHostAddress().toString();

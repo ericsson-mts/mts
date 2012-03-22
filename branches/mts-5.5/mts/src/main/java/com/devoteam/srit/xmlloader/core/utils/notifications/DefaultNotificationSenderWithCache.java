@@ -24,4 +24,8 @@ public class DefaultNotificationSenderWithCache<N> extends DefaultNotificationSe
             listener.notificationReceived(_lastNotification);
         }
     }    
+    
+    synchronized public N getLastNotification() {
+        return _lastNotification;
+    }    
 }

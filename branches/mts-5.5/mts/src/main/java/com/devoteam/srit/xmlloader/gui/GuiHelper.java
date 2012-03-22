@@ -3,27 +3,14 @@
  */
 package com.devoteam.srit.xmlloader.gui;
 
-import java.awt.Color;
-
-import javax.swing.ImageIcon;
-import javax.swing.table.TableColumn;
-
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.utils.Helper;
+import java.awt.Color;
 
 /**
  * @author pn007888 A class that contains all icons
  */
 public final class GuiHelper
 {
-    
-    // Icons
-    public static final ImageIcon ICON_IDLE    = new javax.swing.ImageIcon(Class.class.getResource("/icons/idle.gif"), "IDLE");
-    public static final ImageIcon ICON_KO      = new javax.swing.ImageIcon(Class.class.getResource("/icons/ko.gif"), "KO");
-    public static final ImageIcon ICON_OK      = new javax.swing.ImageIcon(Class.class.getResource("/icons/ok.gif"), "OK");
-    public static final ImageIcon ICON_RUNNING = new javax.swing.ImageIcon(Class.class.getResource("/icons/running.gif"), "Running");
-    //public static final ImageIcon ICON_WAITING = new javax.swing.ImageIcon(Class.class.getResource("/icons/waiting.gif"), "Waiting");
-    
     // Text colors
     public final static Color DEBUG       = new Color(150, 150, 150);
     public final static Color INFO        = new Color( 10,  10, 200);
