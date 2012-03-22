@@ -309,6 +309,10 @@
 		<copy todir="${imsloader.build.release.tutorial.core}">
 			<fileset dir="${imsloader.tutorial.core}"/>
 		</copy>
+		<!-- Copy the tutorial for the functions -->
+		<copy todir="${imsloader.build.release.tutorial.functions}">
+			<fileset dir="${imsloader.tutorial.functions}"/>
+		</copy>
 		<!-- Copy the tutorial for the demos -->
 		<copy todir="${imsloader.build.release.tutorial.demos}">
 			<fileset dir="${imsloader.tutorial.demos}"/>
@@ -1014,7 +1018,7 @@
 
 	<target name="release" description="release the ALL distribution" depends="clean,compile">
 		<!-- delete the old release directory -->
-		<antcall target="clean_release"/>
+		<!--antcall target="clean_release"/-->
 		<delete dir="${imsloader.distrib.type.release}"/>
 		<delete file="${imsloader.distrib.type.release}/xml_loader_setup_all.jar"/>
 		<!-- release the selected modules-->
