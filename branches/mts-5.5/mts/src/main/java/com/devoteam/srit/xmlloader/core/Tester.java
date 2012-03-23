@@ -105,7 +105,7 @@ public class Tester
     
     public void open_openFile(URI path, EditableParameterProvider provider) throws Exception
     {
-        OperationFunction.importDir("../tutorial/functions/", URIRegistry.IMSLOADER_BIN);
+        OperationFunction.importDir("../functions/", URIRegistry.IMSLOADER_BIN);
 
         this.test = new Test(XMLDocumentCache.get(path, URIFactory.newURI("../conf/schemas/test.xsd")), provider);
 
