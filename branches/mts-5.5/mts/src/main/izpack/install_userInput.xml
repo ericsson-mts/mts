@@ -3,9 +3,11 @@
     <panel order="0">
         <field type="title" txt="Configuration of the application" align="left"/>
         <field type="search" variable="NGN_JAVA_HOME">
-            <spec txt="JRE root path (directory) :" type="directory" result="directory"  checkfilename="lib/rt.jar">
+            <spec txt="Java home :" type="directory" result="directory">
+                <choice value="$JAVA_HOME"                        os="windows"/>			
                 <choice value="C:\Program Files\Java\jre6"        os="windows"/>			
                 <choice value="C:\Program Files\Java (x86)\jre6"  os="windows"/>			
+                <choice value="C:\Program Files\Java\jre7" 	  os="windows"/>			
                 <choice value="C:\Program Files\Java\jre7" 	  os="windows"/>			
                 <choice value="C:\Program Files\Java (x86)\jre7"  os="windows"/>			
                 <choice value="C:\Program Files\Java\jre1.6.0_30" os="windows"/>
@@ -38,11 +40,8 @@
                 <choice value="C:\Program Files\Java\jre1.6.0_03" os="windows"/>
                 <choice value="C:\Program Files\Java\jre1.6.0_02" os="windows"/>
                 <choice value="C:\Program Files\Java\jre1.6.0_01" os="windows"/>
-                <choice value="C:\Program Files\Java" os="windows"/>
-                <choice value="C:\Java" os="windows"/>
 
-
-
+                <choice value="$JAVA_HOME"                  os="unix"/>			
                 <choice value="/usr/lib/jvm/java-7-sun/jre" os="unix"/>
                 <choice value="/usr/lib/jvm/java-6-sun/jre" os="unix"/>
                 <choice value="/usr/java/jre1.6.0_30" os="unix"/>
@@ -75,14 +74,14 @@
                 <choice value="/usr/java/jre1.6.0_03" os="unix"/>
                 <choice value="/usr/java/jre1.6.0_02" os="unix"/>
                 <choice value="/usr/java/jre1.6.0_01" os="unix"/>
-                <choice value="/usr/lib/java/"  os="unix"/>
-                <choice value="/opt/java"       os="unix"/>
+                <choice value="/usr/lib/java"         os="unix"/>
+                <choice value="/opt/java"             os="unix"/>
             </spec>
             <createForPack name="base"/>
         </field>
         <field type="search" variable="BROWSER_PATH">
             <spec txt="WEB browser (statistic report) :" type="file" result="file">
-                <choice value="/usr/bin/firefox"  os="unix"/>
+                <choice value="/usr/firefox"  os="unix"/>
                 <choice value="C:\Program Files\Mozilla Firefox\firefox.exe" os="windows"/>
                 <choice value="C:\Program Files\Internet Explorer\iexplore.exe" os="windows"/>
             </spec>
@@ -90,7 +89,7 @@
         </field>
         <field type="search" variable="EDITOR_PATH">
             <spec txt="Text editor (XML scripts) :" type="file" result="file">
-                <choice value="/usr/bin/gedit"  os="unix"/>
+                <choice value="/usr/gedit"  os="unix"/>
                 
                 <choice value="C:\Program Files (x86)\Notepad++\notepad++.exe" os="windows"/>
                 <choice value="C:\Program Files\Notepad++\notepad++.exe" os="windows"/>
