@@ -21,7 +21,7 @@
             <parameter name="[contextId]" value="[test:[lastToUser]_invite_contextId]" />
             <parameter name="[item]" value="[test:context_[contextId]_lastReceivedInvite]" />
             
-            <parameter name="[unused]" operation="utils.mutex.release" value="contextMutex" />
+            <parameter name="[test:contextMutex]" operation="system.semaphorenotify" />
         </finally>
     </try>
     
