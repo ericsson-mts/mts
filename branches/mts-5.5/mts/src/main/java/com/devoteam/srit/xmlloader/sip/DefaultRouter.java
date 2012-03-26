@@ -1,31 +1,26 @@
-/*
- * Conditions Of Use 
+/* 
+ * Copyright 2012 Devoteam http://www.devoteam.com
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  * 
- * This software was developed by employees of the National Institute of
- * Standards and Technology (NIST), an agency of the Federal Government.
- * Pursuant to title 15 Untied States Code Section 105, works of NIST
- * employees are not subject to copyright protection in the United States
- * and are considered to be in the public domain.  As a result, a formal
- * license is not needed to use the software.
  * 
- * This software is provided by NIST as a service and is expressly
- * provided "AS IS."  NIST MAKES NO WARRANTY OF ANY KIND, EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTY OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT
- * AND DATA ACCURACY.  NIST does not warrant or make any representations
- * regarding the use of the software or the results thereof, including but
- * not limited to the correctness, accuracy, reliability or usefulness of
- * the software.
+ * This file is part of Multi-Protocol Test Suite (MTS).
  * 
- * Permission to use this software is contingent upon your acceptance
- * of the terms of this agreement
- *  
- * .
+ * Multi-Protocol Test Suite (MTS) is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation, either version 3 of the
+ * License.
+ * 
+ * Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Multi-Protocol Test Suite (MTS).
+ * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-/*******************************************************************************
- * Product of NIST/ITL Advanced Networking Technologies Division (ANTD).       *
- ******************************************************************************/
+
 package com.devoteam.srit.xmlloader.sip;
 
 import gov.nist.javax.sip.message.*;
