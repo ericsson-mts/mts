@@ -3,11 +3,21 @@
     <while>
         <condition/>
         <do>
-            <receiveMessageSIP timeout="0">
+            <parameter name="[item]" operation="list.remove" />
+            <receiveMessageSIP timeout="[queueTimeout]" failedOnTimeout="false">
                 <parameter name="[item]" operation="setFromMessage" value="message" />
             </receiveMessageSIP>
+            
+            <if>
+                <condition>
+                    <not><test parameter="[item]" condition="list.exists" /></not>
+                </condition>
+                <then>
+                    <exit failed="false" />
+                </then>
+            </if>
     
-<!-- (specific) : build fifo name the way you want -->
+            <!-- (specific) : build fifo name the way you want -->
             <parameter name="[type]" operation="setFromMessage" value="message.type" value2="[item]" />
             <parameter name="[request]" operation="setFromMessage" value="message.request" value2="[item]" />
             <parameter name="[result]" operation="setFromMessage" value="message.result" value2="[item]" />
