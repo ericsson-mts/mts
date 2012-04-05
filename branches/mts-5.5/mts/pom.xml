@@ -33,15 +33,30 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
-                    <!-- copy all dependencies to ${target.lib.dir} -->
+                    <!-- copy all dependencies but nist-sdp to ${target.mts.dir}/lib/ext -->
                     <execution>
-                        <id>copy-dependencies</id>
+                        <id>copy-dependencies-ext</id>
                         <phase>package</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${target.mts.dir}/lib/ext</outputDirectory>
+                            <outputDirectory>${target.mts.dir}/lib/ext2</outputDirectory>
+                            <excludeArtifactIds>jain-sip-ri</excludeArtifactIds>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                    <!-- copy nist-sdp to ${target.mts.dir}/lib -->
+                    <execution>
+                        <id>copy-dependencies-lib</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${target.mts.dir}/lib/ext1</outputDirectory>
+                            <includeArtifactIds>jain-sip-ri</includeArtifactIds>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
