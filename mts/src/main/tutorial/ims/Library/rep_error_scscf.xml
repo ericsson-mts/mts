@@ -1,0 +1,59 @@
+<!--recupere le no de Cseq-->
+<parameter name="[lastCseqNumber]" 				operation="setFromMessage" 	value="header:CSeqNumber" 				value2="[lastMessage]" />
+<!--Recherche par le Via la route et la requete URI pour realiser un ack-->
+<parameter name="[index]" 					operation="findmatches" 	value="[Viaf[lastCall-ID]]" value2=".*[lastVia(0)].*"/> 
+<!--envoi d une reponse ACK-->
+<if>
+	<condition>
+		<test parameter="[index]" condition="matches" value="[0-9]+"/>
+	</condition>
+	<then>
+<sendRequestSIP name="ACK_request" providerName="[scenarioName]">
+<![CDATA[ACK [contfork[lastCall-ID]([index])] SIP/2.0 
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCall-ID]
+[proxfork[lastCall-ID]([index])]
+[Via]
+Cseq: [lastCseqNumber] ACK
+Content-Length: 0
+]]>
+</sendRequestSIP> 	
+	</then>
+	<else>
+		<parameter name="[sizeROUTE[lastCall-ID]]" 		operation="size" 	value="[ROUTE[lastCall-ID]]"/> 
+		<if>
+			<condition>
+				<test parameter="[sizeROUTE[lastCall-ID]]" condition="equals" value="1"/>
+			</condition>
+			<then>
+<sendRequestSIP name="ACK_request" providerName="[scenarioName]">
+<![CDATA[ACK [URI[lastCall-ID]] SIP/2.0 
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCall-ID]
+[Via]
+[ROUTE[lastCall-ID]]
+Cseq: [lastCseqNumber] ACK
+Content-Length: 0
+]]>
+</sendRequestSIP> 
+			</then>
+			<else>
+<sendRequestSIP name="ACK_request" providerName="[scenarioName]">
+<![CDATA[ACK [URI[lastCall-ID]]	SIP/2.0 
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCall-ID]
+[Via]
+Cseq: [lastCseqNumber] ACK
+Content-Length: 0
+]]>
+</sendRequestSIP> 	
+			</else>
+		</if>	
+	</else>
+</if>
+<!--Cree un variable pour attendre la reception d une requete ack-->
+<parameter name="[rep[Call-ID]]" 		operation="create" />
+

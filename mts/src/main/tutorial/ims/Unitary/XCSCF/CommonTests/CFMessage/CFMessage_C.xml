@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[Port-TesterCSCF]" transport="[LocalTransport]"/>
+	<parameter name="[providerName]" 		operation="set" value="[scenarioName]"/>
+
+  
+	<parameter name="[NewCallID]" 		operation="identifier" 	value="newInteger" 	value2="10000000"/>	 
+	<parameter name="[localTag]" 		operation="identifier" 	value="newString" 	value2="10"/>
+	<parameter name="[NewCseqNumber]" 	operation="set" 		value="1"/>			
+	<parameter name="[InviteBranchId]" 	operation="identifier" 	value="newString"	value2="10"/>
+	<parameter name="[clientName]" 		operation="set" 		value="Inviter"/>
+
+	
+  <sendRequestSIP name="Send MESSAGE" providerName="[scenarioName]">
+<![CDATA[MESSAGE sip:[InviteeName]@[Domain] SIP/2.0
+To: "[InviteeName]" <sip:[InviteeName]@[Domain]>
+From: "[InviterName]" <sip:[InviterName]@[Domain]>;tag=[localTag]
+Via: SIP/2.0/UDP [Adresse-TesterCSCF];branch=z9hG4bK[InviteBranchId]
+Call-ID: [NewCallID]
+CSeq: [NewCseqNumber] MESSAGE
+Max-Forwards: [MaxForwardsDefaultValue]
+Route: <sip:[Adresse-TestedCSCF];lr>,<sip:[Adresse-ServerCSCF];lr>
+Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH, PRACK
+Contact: "[InviterName]" <sip:[InviterName]@[Domain]>
+P-Preferred-Identity: "[InviterName]" <sip:[InviterName]@[Domain]>
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+Privacy: none
+User-Agent: [UserAgent]
+Route: <sip:[Adresse-TestedCSCF];lr>
+Content-Type: application/vnd.poc.group-advertisement+xml
+Content-Length: x
+
+<?xml version="1.0" encoding="UTF-8"?><group-advertisement xmlns="urn:oma:params:xml:ns:poc:group-advertisement" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oma:params:xml:ns:poc:group-advertisement">
+<note>Hello, this is my message</note>
+<group>
+    <type>"dialed-out"</type>
+    <display-name>null</display-name>
+    <uri>sip:blablabla</uri>
+</group>
+</group-advertisement>
+]]>
+</sendRequestSIP>
+
+
+<receiveResponseSIP name="Wait 200 OK" method="MESSAGE" result="200">
+		</receiveResponseSIP>
+        
+</scenario>

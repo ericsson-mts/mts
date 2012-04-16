@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+    <receiveMessageMSRP name="Wait SEND"  type="SEND" request="true">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[transactionID]" operation="protocol.setFromMessage" value="firstline.Transaction-ID"/>        
+    </receiveMessageMSRP>
+    
+    <sendMessageMSRP channel="[channel]">
+<![CDATA[MSRP [transactionID] 200 OK
+To-Path: msrp://alice.exemple.com:7777/564;tcp
+From-Path: msrp://bob.exemple.com:8888/74986;tcp
+-------[transactionID]$
+]]></sendMessageMSRP>
+
+</scenario>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<scenario>
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[Port-ServerCSCF]" transport="[LocalTransport]"/>
+	<parameter name="[providerName]" 		operation="set" value="[scenarioName]"/>
+	
+	
+	
+	<receiveRequestSIP name="Wait INVITE"  method="INVITE">
+		<parameter name="[Temp]" 				operation="setFromMessage" value="content"/>
+		<parameter name="[ReceivedCSeqNumber]" 	operation="setFromMessage" value="header:CSeqNumber"/>
+		<parameter name="[FromAddress]" 		operation="setFromMessage" value="header:From:Address:URI"/>
+		<parameter name="[ToAddress]" 			operation="setFromMessage" value="header:To:Address:URI"/>
+		<parameter name="[CallId]" 				operation="setFromMessage" value="header:Call-ID"/>
+		<parameter name="[firstlineMethod]" 	operation="setFromMessage" value="firstline:Method"/>
+		<parameter name="[NotAHeader]"			operation="setFromMessage" value="header:NotAHeader"/>
+		<parameter name="[AccessNetwork]"		operation="setFromMessage" value="header:P-Access-Network-Info"/>
+		<parameter name="[Privacy]" 			operation="setFromMessage" value="header:Privacy"/>
+	</receiveRequestSIP>
+
+	<!--Writing the Received content header in a table, in order to use the same structre as the variable Content-->
+
+	<parameter name="[ReceivedContent]" operation="regexmatches" value="[Temp]" value2=".+"/>
+	
+	<if>
+		<condition>
+			<test parameter="[ReceivedContent]" 	condition="equals" value="[testcase:Content]"/>
+			<test parameter="[ReceivedCSeqNumber]" 	condition="equals" value="[testcase:NewCseq]"/>
+			<test parameter="[FromAddress]" 		condition="equals" value="sip:[InviterName]@[Domain]"/>
+			<test parameter="[ToAddress]" 			condition="equals" value="sip:[InviteeName]@[Domain]"/>
+			<test parameter="[CallId]" 				condition="equals" value="[testcase:NewCallID]"/>
+			<test parameter="[firstlineMethod]" 	condition="equals" value="INVITE"/>
+			<test parameter="[NotAHeader]"		 	condition="equals" value="NotAMessage"/>
+			<test parameter="[AccessNetwork]"		condition="equals" value="3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000"/>
+			<test parameter="[Privacy]"		 		condition="equals" value="none"/>
+		</condition>
+	<then>
+		<log level="0">Message not modified by the proxy</log>
+	</then>
+	<else>
+		<log level="3">Message modified by the proxy! Please fix this problem</log>
+		<exit name="exit" failed="true"/>
+	</else>
+	</if>
+
+	
+</scenario>

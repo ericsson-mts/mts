@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+<!--
+From RFC 3588 September 2003 :
+Disconnect-Peer-Request ::= < Diameter Header: 282, REQ >
+                            { Origin-Host }
+                            { Origin-Realm }
+                            { Disconnect-Cause }      
+-->
+
+    <sendMessageDIAMETER name="Send Request RFC3588 DPR" remoteURL="diameter://[Remote-Address]" destScenario="peer2">
+        <header request="true" command="Disconnect-Peer" applicationId="0" proxiable="false" error="false" retransmit="false"/>
+
+        <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
+        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
+        <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
+        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>
+
+        <!-- A Diameter node MUST include the Disconnect-Cause AVP in the Disconnect-Peer-Request message to inform the peer of the reason for its intention to shutdown the transport connection. -->
+        <!-- Possible enumerated values : REBOOTING(0) / BUSY(1) / DO_NOT_WANT_TO_TALK_TO_YOU(2) -->
+        <avp code="Disconnect-Cause" mandatory="true" type="Enumerated" value="REBOOTING"/>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer RFC3588 DPA" request="false" type="Disconnect-Peer:282" result="DIAMETER_SUCCESS:2001">
+    </receiveMessageDIAMETER>
+    
+</scenario>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageUCP request="true" type="CallInputSupplementaryServicesOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="RAd" operation="protocol.setFromMessage" value="attribute.RAd"/>
+        <parameter name="OAdC" operation="protocol.setFromMessage" value="attribute.OAdC"/>
+        <parameter name="OAC" operation="protocol.setFromMessage" value="attribute.OAC"/>
+        <parameter name="NPL" operation="protocol.setFromMessage" value="attribute.NPL"/>
+        <parameter name="GA" operation="protocol.setFromMessage" value="attribute.GA"/>
+        <parameter name="RP" operation="protocol.setFromMessage" value="attribute.RP"/>
+        <parameter name="LRP" operation="protocol.setFromMessage" value="attribute.LRP"/>
+        <parameter name="PR" operation="protocol.setFromMessage" value="attribute.PR"/>
+        <parameter name="LPR" operation="protocol.setFromMessage" value="attribute.LPR"/>
+        <parameter name="UM" operation="protocol.setFromMessage" value="attribute.UM"/>
+        <parameter name="LUM" operation="protocol.setFromMessage" value="attribute.LUM"/>
+        <parameter name="RC" operation="protocol.setFromMessage" value="attribute.RC"/>
+        <parameter name="LRC" operation="protocol.setFromMessage" value="attribute.LRC"/>
+        <parameter name="DD" operation="protocol.setFromMessage" value="attribute.DD"/>
+        <parameter name="DDT" operation="protocol.setFromMessage" value="attribute.DDT"/>
+        <parameter name="MT" operation="protocol.setFromMessage" value="attribute.MT"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[RAd]" condition="number.equals" value="1"/>
+        <test parameter="[OAdC]" condition="string.equals" value="987"/>
+        <test parameter="[OAC]" condition="string.equals" value="10412614190438AB4D"/>
+        <test parameter="[NPL]" condition="string.equals" value="2"/>
+        <test parameter="[GA(0)]" condition="string.equals" value="GA moi"/>
+        <test parameter="[GA(1)]" condition="string.equals" value="GA toi"/>
+        <test parameter="[RP]" condition="string.equals" value="1"/>
+        <test parameter="[LRP]" condition="string.equals" value="11111"/>
+        <test parameter="[PR]" condition="string.equals" value="2"/>
+        <test parameter="[LPR]" condition="string.equals" value="22222"/>
+        <test parameter="[UM]" condition="string.equals" value="3"/>
+        <test parameter="[LUM]" condition="string.equals" value="33333"/>
+        <test parameter="[RC]" condition="string.equals" value="4"/>
+        <test parameter="[LRC]" condition="string.equals" value="44444"/>
+        <test parameter="[DD]" condition="string.equals" value="5"/>
+        <test parameter="[DDT]" condition="string.equals" value="5555555555"/>
+        <test parameter="[MT]" condition="string.equals" value="1"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="CallInputSupplementaryServicesOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="SM" value="good"/>
+    </sendMessageUCP>
+
+
+</scenario>

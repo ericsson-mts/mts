@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+	<sendMessageHTTP name="Send HTTP:GET" remoteURL="http://[Proxy-Address]">
+<![CDATA[
+GET http://[Remote-Address]/ HTTP/1.1
+Accept: image/gif, image/jpeg, image/pjpeg, image/pjpeg, application/x-shockwave-flash, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, application/xaml+xml, application/x-ms-xbap, application/x-ms-application, */*
+Referer: http://www.imsloader.com/
+Accept-Language: fr
+User-Agent: XMLLoader 5.2
+Proxy-Connection: Keep-Alive
+Host: [Remote-Address]
+
+]]></sendMessageHTTP>
+
+	<receiveMessageHTTP name="Send 200 OK" result="200">
+		<parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+	</receiveMessageHTTP>
+
+</scenario> 

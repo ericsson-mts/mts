@@ -1,0 +1,24 @@
+<!--envoi requete UAR-->
+ <sendRequestAAA name="Send Request 3GPP/CX-DX/UAR" server="[Default_HSS]" state="true">
+    <header command="User-Authorization" applicationId="16777216" proxiable="true" error="false" retransmit="false"/>
+    <avp code="Session-Id" mandatory="true" type="UTF8String" value="[nom_icscf];45e45ee4;046725;5cd579ef"/>
+    <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[nom_icscf]"/>
+	<avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[domaine]"/>            
+	<avp code="Vendor-Specific-Application-Id">
+		<avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+		<avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/>
+	</avp>
+	<!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
+	<!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
+	<avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
+	<avp code="User-Name" mandatory="true" type="UTF8String" value="[impi]"/>
+	<!-- The Public-Identity AVP contains a Public User Identity. -->
+	<avp code="Public-Identity" mandatory="true" type="UTF8String" value="[impu]" vendorId="10415"/>                   
+	<!-- The Visited-Network-Identifier AVP contains an identifier that helps the home network to identify the visited network (e.g. the visited network domain name). -->
+	<avp code="Visited-Network-Identifier" mandatory="true" type="UTF8String" value="[P-Visited-Network]" vendorId="10415"/>                   
+	<!-- The User-Authorization-Type AVP indicates the type of user authorization being performed in a User Authorization operation, i.e. UAR command. -->
+</sendRequestAAA>
+<!--reception d une reponse UAA-->
+<receiveAnswerAAA name="Receive Answer 3GPP/CX-DX/UAA" state="true">
+	<parameter name="[index]" operation="setFromMessage" value="602:value"/>
+</receiveAnswerAAA>

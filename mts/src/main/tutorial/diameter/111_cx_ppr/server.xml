@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Cx/Dx Push-Profile request (PPR)" -->
+<scenario>
+
+<!--
+From 3GPP TS 29.229 V7.5.0 :
+Push-Profile-Request ::= < Diameter Header: 305, REQ, PXY, 16777216 >
+                            < Session-Id >
+                            { Vendor-Specific-Application-Id }
+                              Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                   1* [ Vendor-Id ]
+                                                                   0*1{ Auth-Application-Id }
+                                                                   0*1{ Acct-Application-Id }
+                            { Auth-Session-State }
+                            { Origin-Host }
+                            { Origin-Realm }
+                            { Destination-Host }
+                            { Destination-Realm }
+                            { User-Name }
+                           *[ Supported-Features ]
+                              Supported-Features ::=  < AVP header: 628 10415 >
+                                                         { Vendor-Id }
+                                                         { Feature-List-ID }
+                                                         { Feature-List }
+                                                        *[AVP]
+                            [ User-Data ]
+                            [ Charging-Information ]
+                              Charging-Information :: = < AVP Header : 618 10415 >
+                                                           [ Primary-Event-Charging-Function-Name ]
+                                                           [ Secondary-Event-Charging-Function-Name ]
+                                                           [ Primary-Charging-Collection-Function-Name ]
+                                                           [ Secondary-Charging-Collection-Function-Name ]
+                                                          *[ AVP]
+                           *[ AVP ]
+                           *[ Proxy-Info ]
+                              Proxy-Info ::= < AVP Header: 284 >
+                                                 { Proxy-Host }
+                                                 { Proxy-State }
+                                               * [ AVP ]
+                           *[ Route-Record ]
+
+-->
+
+    <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/PPR" remoteURL="diameter://[Local-Address]" destScenario="client">
+        <header request="true" command="Push-Profile" applicationId="16777216" proxiable="true" error="false" retransmit="false"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
+          <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/>
+            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/-->
+          </avp>
+
+          <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
+          <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
+          <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
+
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Remote-Host]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/> 
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>            
+
+          <avp code="User-Name" vendorId="10415" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
+
+          <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports (3GPP TS29.229.750). -->
+          <avp code="Supported-Features" vendorId="10415">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <!-- The Feature-List-ID AVP contains the identity of a feature list (3GPP TS29.229.750). -->
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/>
+            <!-- The Feature-List AVP contains a bit mask indicating the supported features of an application (3GPP TS29.229.750). -->
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/> 
+          </avp>
+          <avp code="Supported-Features" vendorId="10415">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/>
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/> 
+          </avp>
+
+          <!-- The User-Data AVP contains the user data required to give service to a user. -->
+          <avp code="User-Data" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>              
+
+          <!-- The Charging-Information AVP contains the addresses of the charging functions. -->
+          <avp code="Charging-Information" vendorId="10415">
+            <!-- The Primary-Event-Charging-Function-Name AVP contains the address of the Primary Online Charging Function. -->
+            <avp code="Primary-Event-Charging-Function-Name" mandatory="true" type="DiameterURI" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]" vendorId="10415"/>              
+            <!-- The Secondary-Event-Charging-Function-Name AVP contains the address of the Secondary Online Charging Function. -->
+            <avp code="Secondary-Event-Charging-Function-Name" mandatory="true" type="DiameterURI" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]" vendorId="10415"/>              
+            <!-- The Primary-Charging-Collection-Function-Name AVP contains the address of the Primary Charging Data Function. -->
+            <avp code="Primary-Charging-Collection-Function-Name" mandatory="true" type="DiameterURI" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]" vendorId="10415"/>              
+            <!-- The Secondary-Charging-Collection-Function-Name AVP contains the address of the Secondary Charging Data Function. -->
+            <avp code="Secondary-Charging-Collection-Function-Name" mandatory="true" type="DiameterURI" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]" vendorId="10415"/>              
+          </avp>
+
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer 3GPP/CX-DX/PPA" request="false" type="Push-Profile:305" result="DIAMETER_SUCCESS:2001">
+    </receiveMessageDIAMETER>
+    
+</scenario>

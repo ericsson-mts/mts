@@ -1,0 +1,59 @@
+<!--
+Function description: Session release (third part after LibS_Subscriber_Response_Simulator_Ph2
+Please also refer to LibS_Subscriber_Response_Simulator_Ph1 and LibS_Subscriber_Response_Simulator_Ph2
+-->
+
+<!--
+|
+|
+Expected procedure is "RTP_WITHOUT_ESTABLISHMENT"
+|
+|
+-->
+<if>
+	<condition>
+      		<test parameter="[expected_Scenario]" condition="equals" value="RTP_WITHOUT_ESTABLISHMENT" />
+	</condition>
+	<then> 
+
+		<sendMessageSIP name="Send 487 Request Terminated" listenpoint="[provider_Name]">
+<![CDATA[SIP/2.0 487 Request Terminated
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: [lastContact]
+Max-Forwards: 70
+Content-Length: 0
+]]>
+		</sendMessageSIP>
+	</then>
+
+	<else>
+		<receiveMessageSIP name="Wait BYE" type="BYE">
+			<parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>  	
+			<parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>  	
+			<parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-Id"/>  	
+			<parameter name="[lastCSeq]" operation="setFromMessage" value="header:CSeq"/>  		
+			<parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/> 
+			<parameter name="[MaxForwards]" operation="setFromMessage" value="header:Max-Forwards"/>  		
+		</receiveMessageSIP>
+	
+		<sendMessageSIP name="Send 200 OK" listenpoint="[provider_Name]">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Contact: <sip:[ipAddressSip_Service]:[portSip_Service]>
+Max-Forwards: [MaxForwards]
+User-Agent: IMSLoader
+Max-Forwards: 70
+Content-Length: 0
+]]>
+		</sendMessageSIP>
+
+	</else>
+</if>

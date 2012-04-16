@@ -1,0 +1,59 @@
+    <!-- pause -->
+    <pause name="pause"     seconds="0.0"  state="true"/>
+
+    <!-- goto label (unconditional branching) -->
+    <parameter name="[aParameter]" operation="set" value="gotoLabel" />
+    <goto  name="goto_goto_label" label="[aParameter]" state="true"/>
+    <label name="gotoLabel"/>
+
+    <!-- if (conditional branching) -->
+	<parameter name="[var_1]" operation="set" value="toto"/>	
+	<!--if>
+        <condition>
+            <test parameter="[var_1]" condition="string.equals" value="toto"/>
+        </condition>
+		<then-->
+            <!-- do nothing, success -->
+		<!--/then>
+		<else>
+            <exit failed="true" />
+		</else>
+	</if-->
+
+    <!-- semaphore -->
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+    <!-- log -->
+    <log level="0">Write in "Scenario" log with level "DEBUG" : [aParameter]</log>
+
+    <!-- stat -->
+    <stats>
+        <counter name="counter1" summary="c1" complete="counterDescr1.complete">
+            <increase>10</increase>
+            <increase>10</increase>
+            <increase>10</increase>            
+        </counter>
+        <counter name="counter2" summary="c2" complete="counterDescr2.complete">
+        </counter>        
+    </stats>
+
+    <!-- try -->
+    <!--try>
+        <do>
+            <parameter name="[param_1]" operation="number.add" value="2" value2="a" />
+        </do>
+        <finally>
+        
+        </finally>
+    </try-->
+
+    <parameter name="[parameter]" operation="set" value="true" />
+    <switch parameter="[parameter]">
+        <case equals="[success_value]">
+            <!-- do nothing, success -->
+        </case>
+        <case equals="[failure_value]">
+            <exit failed="true" />
+        </case>
+    </switch>

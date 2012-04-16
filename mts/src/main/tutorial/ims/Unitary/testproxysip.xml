@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+
+<test name="SIP regression tests">
+
+	<parameter name="[Host-Tester]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+    <parameter name="[Port-Tester]" operation="setFromConfig" value="sip.properties" value2="DEFAULT_PORT"/>
+    <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]"/>	
+
+	<parameter name="[Domain]" operation="set" value="ims.net"/>
+	<parameter name="[InviterName]" operation="set" value="inviter"/>
+	<parameter name="[InviteeName]" operation="set" value="invitee"/>
+
+	<parameter name="[UserAgent]" operation="set" value="IMSLoader Client"/>
+	
+	<parameter name="[LocalHostUAC]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+	<parameter name="[LocalHostUAS]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+	<parameter name="[PortUAC]" operation="set" value="7071"/>
+	<parameter name="[PortUAS]" operation="set" value="7073"/>
+	<parameter name="[LocalTransport]" operation="set" value="udp"/>  
+	
+	<parameter name="[HardAddressUAC]" operation="set" value="[LocalHostUAC]:[PortUAC]"/>
+	<parameter name="[HardAddressUAS]" operation="set" value="[LocalHostUAS]:[PortUAS]"/>
+	
+	<parameter name="[Host-Proxy]" operation="set" value="[LocalHostUAC]"/>
+	<parameter name="[Port-Proxy]" operation="set" value="8080"/>
+	<parameter name="[Adresse-Proxy]" operation="set" value="[Host-Proxy]:[Port-Proxy]"/>
+	
+	<parameter name="[timeout]" operation="set" value="2"/>	
+	<parameter name="[Retransmittimeout]" operation="set" value="6"/>
+	<parameter name="[retransmitNumber]" operation="set" value="10"/>
+	<parameter name="[ConstantBranch]" operation="set" value="z9hG4bK87asdks7"/>
+
+
+    <testcase name="max forward gestion" description="Test on the coverage of the Max-Forwards operations by the proxy" state="true">
+        <scenario name="[PortUAC]">ProxySIP/MaxFwd/maxF_C.xml</scenario>
+        <scenario name="[PortUAS]">ProxySIP/MaxFwd/maxF_S.xml</scenario>
+    </testcase>
+	
+    <testcase name="message integrity" description="This testcase checks if your proxy doesn't modify the message content" state="true">
+        <scenario name="[PortUAC]">ProxySIP/MsgIntegrity/MsgIntegrity_C.xml</scenario>
+        <scenario name="[PortUAS]">ProxySIP/MsgIntegrity/MsgIntegrity_S.xml</scenario>
+    </testcase>
+	
+    <testcase name="route self-removing" description="Does the proxy remove himself from the Route header?" state="true">
+        <scenario name="[PortUAC]">ProxySIP/RouteRmv/RouteRmv_C.xml</scenario>
+        <scenario name="[PortUAS]">ProxySIP/RouteRmv/RouteRmv_S.xml</scenario>
+    </testcase>
+	
+	<testcase name="100 trying emission" description="Does your proxy send a 100 Trying when processing a request? " state="true">
+		<scenario name="[PortUAC]">ProxySIP/100TryingEmission/100Emission_C.xml</scenario>
+		<scenario name="[PortUAS]">ProxySIP/100TryingEmission/100Emission_S.xml</scenario>
+	</testcase>
+	
+	<testcase name="100 trying absorption" description="This testcase checks if your proxy doesn't forward a 100 Trying he received " state="true">
+		<scenario name="[PortUAC]">ProxySIP/100TryingAbsorption/100Absorption_C.xml</scenario>
+		<scenario name="[PortUAS]">ProxySIP/100TryingAbsorption/100Absorption_S.xml</scenario>
+	</testcase>
+
+	<testcase name="Responses without via treatment" description="This testcase checks if your proxy doesn't forward a response without via header (responses for the proxy itself) " state="true">
+		<scenario name="[PortUAC]">ProxySIP/Noviainresponse/Noviainresponse_C.xml</scenario>
+		<scenario name="[PortUAS]">ProxySIP/Noviainresponse/Noviainresponse_S.xml</scenario>
+	</testcase>
+	
+	<testcase name="Retransmissions Tempo" description="This testcase checks if your proxy is able to send retransmissions when he doesn't receive any response, and shows the timers in the logs" state="true">
+		<scenario name="[PortUAC]">ProxySIP/RetransmissionsTempo/RetransmissionsTempo_C.xml</scenario>
+		<scenario name="[PortUAS]">ProxySIP/RetransmissionsTempo/RetransmissionsTempo_S.xml</scenario>
+	</testcase>
+	
+	<testcase name="ACK gestion over 200 OK" description="This testcase checks if your proxy forwards the ACK end-to-end over a positive response " state="true">
+		<scenario name="[PortUAC]">ProxySIP/ACKgestionok/ACKgestionok_C.xml</scenario>
+		<scenario name="[PortUAS]">ProxySIP/ACKgestionok/ACKgestionok_S.xml</scenario>
+	</testcase>
+	
+	<testcase name="ACK gestion over 486 busy" description="This testcase checks if your proxy forwards the ACK hop-by-hop over a negative response " state="true">
+		<scenario name="[PortUAC]">ProxySIP/ACKgestionbusy/ACKgestionbusy_C.xml</scenario>
+		<scenario name="[PortUAS]">ProxySIP/ACKgestionbusy/ACKgestionbusy_S.xml</scenario>
+	</testcase>
+	
+	<testcase name="ViaAddition" description="Does your proxy add a Via header in the requests he forwards? " state="true">
+		<scenario name="[PortUAC]">ProxySIP/ViaAddition/ViaAddition_C.xml</scenario>
+		<scenario name="[PortUAS]">ProxySIP/ViaAddition/ViaAddition_S.xml</scenario>
+	</testcase>	
+	
+	<testcase name="RecRouteAddition" description="Does your proxy add a Record-Route header in the requests he forwards? " state="true">
+		<scenario name="[PortUAC]">ProxySIP/RecRouteAddition/RecRouteAddition_C.xml</scenario>
+		<scenario name="[PortUAS]">ProxySIP/RecRouteAddition/RecRouteAddition_S.xml</scenario>
+	</testcase>
+	
+	<testcase name="Call-Flow : Invite Cancel" description="Call-Flow Test" state="true">
+		<scenario name="[PortUAC]">ProxySIP/CFInviteCancel/CFInviteCancel_C.xml</scenario>
+		<scenario name="[PortUAS]">ProxySIP/CFInviteCancel/CFInviteCancel_S.xml</scenario>
+	</testcase>
+	
+	<testcase name="Call-Flow : Invite Info Bye" description="Call-Flow Test" state="true">
+		<scenario name="[PortUAC]">ProxySIP/CFInviteBye/CFInviteBye_C.xml</scenario>
+		<scenario name="[PortUAS]">ProxySIP/CFInviteBye/CFInviteBye_S.xml</scenario>
+	</testcase>
+	
+	<testcase name="Call-Flow : Invite Prack Bye" description="Call-Flow Test" state="true">
+		<scenario name="[PortUAC]">ProxySIP/CFInvitePrack/CFInvitePrack_C.xml</scenario>
+		<scenario name="[PortUAS]">ProxySIP/CFInvitePrack/CFInvitePrack_S.xml</scenario>
+	</testcase>
+	
+	<testcase name="Call-Flow : Message" description="Call-Flow Test" state="true">
+		<scenario name="[PortUAC]">ProxySIP/CFMessage/CFMessage_C.xml</scenario>
+		<scenario name="[PortUAS]">ProxySIP/CFMessage/CFMessage_S.xml</scenario>
+	</testcase>
+	
+	<testcase name="Call-Flow : Suscribe/notify" description="Call-Flow Test" state="true">
+		<scenario name="[PortUAC]">ProxySIP/CFSuscnot/CFSuscnot_C.xml</scenario>
+		<scenario name="[PortUAS]">ProxySIP/CFSuscnot/CFSuscnot_S.xml</scenario>
+	</testcase>
+	
+
+	<testcase name="proxy dialog stateful" description="Proxy" state="false">
+        <scenario name="[Port-Proxy]">../sip/152_sip_proxy/SIP.xml</scenario>
+    </testcase>
+	
+	<testcase name="Proxy stateless" description="Proxy" state="false">
+        <scenario name="[Port-Proxy]">../sip/155_sip_stateless/SIP.xml</scenario>
+    </testcase>
+	
+	<testcase name="Registrar" description="registrar" state="false">
+        <scenario name="[Port-Proxy]">../sip/154_sip_registrar/SIP.xml</scenario>
+    </testcase>
+	
+</test>

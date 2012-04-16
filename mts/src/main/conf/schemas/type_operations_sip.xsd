@@ -1,0 +1,318 @@
+
+
+<!--                                                                       START OF SIP PROTOCOL -->
+
+	<!--                                                                          createListenpoint -->
+	<xs:complexType name="createListenpointSIPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="localHost" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The listenpoint local host i.e. the IP address we are listening to. It should of course be one of the local addresses of the host or a host name with a DNS resolution. The default value is configurable(ppp.properties/listenpoint.LOCAL_HOST)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="localPort" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>The listenpoint local port i.e. the port we are listening to. The default value is configurable(ppp.properties/listenpoint.LOCAL_PORT)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenUDP" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>A flag to specify whether we are listening to the UDP transport. The default value is configurable(ppp.properties/listenpoint.LISTEN_UDP)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenTCP" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>A flag to specify whether we are listening to the TCP transport. The default value is configurable(ppp.properties/listenpoint.LISTEN_TCP)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenSCTP" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>A flag to specify whether we are listening to the SCTP transport. The default value is configurable(ppp.properties/listenpoint.LISTEN_SCTP)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenTLS" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>A flag to specify whether we are listening to the TLS transport. The default value is configurable(ppp.properties/listenpoint.LISTEN_TLS)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="localPortTLS" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>The listenpoint local port for TLS transport i.e. the port we are listening to. The default value is LOCAL_PORT + 1</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="transport" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>enumeration (UDP, TCP, SCTP, TLS, RFC)</xs:appinfo>
+						<xs:documentation>The default transport used to transport messages (in case the transport is not specified int the message content). The default value is configurable(ppp.properties/listenpoint.TRANSPORT)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                         removeListenpoint -->
+	<xs:complexType name="removeListenpointSIPType">
+		<xs:complexContent>
+			<xs:extension base="operationType"/>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!--                                                                          createProbe -->
+	<xs:complexType name="createProbeSIPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="networkInterface" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The network interface to capture on. It should of course something like "eth#N" or "lo".</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="captureFilter" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The capturing filter : the syntax of the attribute is the same as tcpdump ou Wireshark tool. If not set, then we will capture all packets without any filtering.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="filename" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The filename to capture the network packets.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+                		<xs:attribute name="regexFilter" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The regular expression filter : the syntax of the attribute is the same as Java regular expression. If not set, then we will capture all packets without any specific filtering.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="promiscuousMode" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>The promiscuous mode : In promiscuous mode (true), you can capture packets every packet from the wire, i.e., even if its source or destination MAC address is not same as the MAC address of the interface you are opening. In non-promiscuous mode, you can only capture packets send and received by your host. If not set, default value is "true".</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                         removeProbe -->
+	<xs:complexType name="removeProbeSIPType">
+		<xs:complexContent>
+			<xs:extension base="operationType"/>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!--                                                                          sendMessage -->
+	<xs:complexType name="sendMessageSIPType">
+		<xs:simpleContent>
+			<xs:extension base="operationTypeSimple">
+				<xs:attribute name="listenpoint" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The name of the listenpoint to transport the message. Don't use it with channel (incompatible)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="remoteHost" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The remote host to send the message to. Don't use it with the channel (incompatible).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="remotePort" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>The remote port to send the message to. Don't use it with the channel (incompatible)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="remoteURL" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String (url)</xs:appinfo>
+						<xs:documentation>The remote URL to send the message to. Don't use it with the channel (incompatible).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="transport" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>enumeration (UDP, TCP, SCTP, TLS, RFC)</xs:appinfo>
+						<xs:documentation>The protocol transport to send the message to. Don't use it with the channel (incompatible).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="destScenario" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String (scenario name)</xs:appinfo>
+						<xs:documentation>The destination scenario if the request commes to IMSloader again (case of proxy testing). This attribute should contain the name of the scenario to route the same message to.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="delay" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Float</xs:appinfo>
+						<xs:documentation>The time delay (in seconds) when the message sending is differed.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                         receiveMessage -->
+	<xs:complexType name="receiveMessageSIPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="parameter"  type="parameterType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="test"       type="testType"      minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="and"        type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="or"         type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="not"        type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+				<xs:attribute name="channel" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The channel name to transport the message. Don't use it with listenpoint (incompatible)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenpoint" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The listenpoint name to transport the message. Don't use it with channel (incompatible)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="probe" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The probe name to capture the message on.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="request" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>True means that we are waiting for a request whereas false means a response. If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="type" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The message type we are waiting for. If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="result" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The message result (for response only) we are waiting for. If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="timeout" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Float</xs:appinfo>
+						<xs:documentation>The timeout i.e. the maximum time (in seconds) we are waiting for. The default value is configurable (ppp.properties/operations.RECEIVE_TIMEOUT) If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="failedOnReceive" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>True means that we are not waiting a message i.e. if we will receive a message , then the operation status is set to FAILED. The default value is false.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="failedOnTimeout" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>True means that we are waiting a message i.e. if we won't receive any message , then the operation status is set to FAILED. The default value is true.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+<!--************************************************************************************************-->
+<!--**************************************** OBSOLETE **********************************************-->
+<!--************************************************************************************************-->
+
+<!--                                                                              openProviderSIP -->
+    <xs:complexType name="openProviderSIPType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:attribute name="providerName"  type="xs:string" use="required"/>            
+                <xs:attribute name="localHost"     type="xs:string" />
+                <xs:attribute name="localPort"     type="xs:string" use="required"/>
+                <xs:attribute name="transport"     type="xs:string" />                
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                              closeProviderSIP -->
+    <xs:complexType name="closeProviderSIPType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:attribute name="providerName"  type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                              sendRequestSIP -->
+    <xs:complexType name="sendRequestSIPType">
+        <xs:simpleContent>
+            <xs:extension base="operationTypeSimple">            
+                <xs:attribute name="providerName"  type="xs:string" />                        
+                <xs:attribute name="destScenario"  type="xs:string" />
+                <xs:attribute name="delay"         type="xs:string" />
+                <xs:attribute name="remoteHost"    type="xs:string" />
+                <xs:attribute name="remotePort"    type="xs:string" />
+                <xs:attribute name="remoteURL"     type="xs:string" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+<!--                                                                               sendResponseSIP -->
+    <xs:complexType name="sendResponseSIPType">
+        <xs:simpleContent>
+            <xs:extension base="operationTypeSimple">
+                <xs:attribute name="providerName"  type="xs:string" />                        
+                <xs:attribute name="delay"         type="xs:string" />                
+                <xs:attribute name="remoteHost"    type="xs:string" />
+                <xs:attribute name="remotePort"    type="xs:string" />
+                <xs:attribute name="remoteURL"     type="xs:string" />                
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+<!--                                                                           receiveRequestSIP -->
+    <xs:complexType name="receiveRequestSIPType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="parameter"  type="parameterType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="test"       type="testType"      minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="and"        type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="or"         type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="not"        type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+                <xs:attribute name="providerName"       type="xs:string" />                            
+                <xs:attribute name="method"             type="xs:string" />               
+                <xs:attribute name="timeout"            type="xs:string" />                
+                <xs:attribute name="failedOnTimeout"    type="xs:string" />
+                <xs:attribute name="failedOnReceive"    type="xs:string" />            
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                            receiveResponseSIP -->
+    <xs:complexType name="receiveResponseSIPType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="parameter"  type="parameterType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="test"       type="testType"      minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+                <xs:attribute name="providerName" type="xs:string" />                                            
+                <xs:attribute name="method"       type="xs:string" />
+                <xs:attribute name="result"       type="xs:string" />
+		<xs:attribute name="timeout"      type="xs:string" />                
+                <xs:attribute name="failedOnTimeout"    type="xs:string" />
+                <xs:attribute name="failedOnReceive"    type="xs:string" />            
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+<!--                                                                         END OF SIP PROTOCOL -->

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+    <function file="023_function/function.xml" />
+    
+    <function name="add">
+        <input>
+            <parameter name="[function:a]" type="number" />
+            <parameter name="[function:b]" type="number" default="1" />
+        </input>
+    
+        <do>
+            <parameter name="[res]" operation="number.add" value="[a]" value2="[b]" />
+        </do>
+      
+        <output>
+            <parameter name="[function:res]" />
+        </output>
+    </function>
+
+	<call name="add" >
+        <input>
+            <parameter name="[function:a]" value="7"/>
+            <parameter name="[function:b]" value="9"/>
+        </input>
+
+        <output>
+            <parameter name="[function:res]" />
+        </output>
+    </call>
+    
+    <test parameter="[res]" condition="number.equals" value="16" />
+    
+	<call name="add_import" >
+        <input>
+            <parameter name="[function:a]" value="7"/>
+            <parameter name="[function:b]" value="13"/>
+        </input>
+
+        <output>
+            <parameter name="[function:res]" />
+        </output>
+    </call>
+    
+    <test parameter="[res]" condition="number.equals" value="20" />
+        
+	<call name="add" >
+        <input>
+            <parameter name="[function:a]" value="2"/>
+            <parameter name="[function:b]" value="9"/>
+        </input>
+
+        <output>
+            <parameter name="[res2]" value="[function:res]" />
+        </output>
+    </call>
+    
+    <test parameter="[res2]" condition="number.equals" value="11" />
+
+</scenario>

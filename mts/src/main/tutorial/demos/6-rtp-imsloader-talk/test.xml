@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="RTP regression tests">
+
+    <parameter name="[domainName]" operation="set" value="devoteam.com"/>
+    <parameter name="[inviter]" operation="set" value="bob"/>
+    <parameter name="[invitee]" operation="set" value="alice"/>	
+    	
+    <parameter name="[localHostSIP]" operation="system.ipaddress"/>        
+    <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]"/>        
+    <parameter name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>    	    
+    <parameter name="[remoteHostSIP]" operation="system.ipaddress"/>    
+    <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]"/>        
+    <parameter name="[remotePortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>    	    
+    
+    <parameter name="[localHostRTP]" operation="system.ipaddress"/>
+    <parameter name="[localHostRTP]" operation="set" value="[localHostRTP(0)]"/>        
+    <parameter name="[localPortRTP]" operation="set" value="10000"/>
+    <parameter name="[remoteHostRTP]" operation="system.ipaddress"/>    
+    <!--parameter name="[remoteHostRTP]" operation="set" value="172.16.21.253" /-->    
+    <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]"/>        
+    <parameter name="[remotePortRTP]" operation="set" value="11000"/>
+
+    <parameter name="[localHostRTP_proxy]"  operation="set" value="[localHostRTP(0)]" />
+    <parameter name="[localPortRTP_proxy]"  operation="set" value="1111" />
+    
+    <parameter name="[remoteHostRTP_proxy]" operation="set" value="[localHostRTP(0)]" />
+    <parameter name="[remotePortRTP_proxy]" operation="set" value="[localPortRTP(0)]" />
+
+
+    <!-- Parameters for proxy testcases -->
+    <parameter name="[localHostRTP_client]" operation="system.ipaddress"/>
+    <parameter name="[localPortRTP_client]" operation="set" value="10000"/>
+    <parameter name="[remoteHostRTP_client]" operation="system.ipaddress"/>     
+    <parameter name="[remotePortRTP_client]" operation="set" value="11000"/>
+    	
+    <parameter name="[localHostRTP_proxy_receiver]"  operation="set" value="[localHostRTP_client(0)]" />
+    <parameter name="[localPortRTP_proxy_receiver]"  operation="set" value="11000" />
+    
+    <parameter name="[remoteHostRTP_proxy_receiver]" operation="set" value="[localHostRTP_client(0)]" />
+    <parameter name="[remotePortRTP_proxy_receiver]" operation="set" value="12000" />
+
+    <parameter name="[localHostRTP_proxy_sender]"  operation="set" value="[localHostRTP_client(0)]" />
+    <parameter name="[localPortRTP_proxy_sender]"  operation="set" value="13000" />
+    
+    <parameter name="[remoteHostRTP_proxy_sender]" operation="set" value="[localHostRTP_client(0)]" />
+    <parameter name="[remotePortRTP_proxy_sender]" operation="set" value="10000" />
+
+
+
+    <testcase name="001_jmf_noreg" description="RTP protocol" state="false">
+        <scenario name="session1">../../rtp/001_jmf_noreg/session1.xml</scenario>
+	<scenario name="session2">../../rtp/001_jmf_noreg/session2.xml</scenario>
+    </testcase>
+
+    <testcase name="002_control" description="RTCP protocol" state="false">
+        <scenario name="inviter">../../rtp/002_control/session1.xml</scenario>
+	<scenario name="invitee">../../rtp/002_control/session2.xml</scenario>
+    </testcase>
+
+    <testcase name="005_set_from_msg" description="setFromMessage" state="true">
+        <scenario name="inviter">../../rtp/005_set_from_msg/session1.xml</scenario>
+    	<scenario name="invitee">../../rtp/005_set_from_msg/session2.xml</scenario>
+    </testcase>
+
+    <testcase name="006_success_on_timeout" description="setFromMessage" state="true">
+        <scenario name="inviter">../../rtp/006_success_on_timeout/session1.xml</scenario>
+        <scenario name="invitee">../../rtp/006_success_on_timeout/session2.xml</scenario>
+    </testcase>
+
+    <testcase name="007_no_local" description="setFromMessage" state="true">
+        <scenario name="inviter">../../rtp/007_no_local/session1.xml</scenario>
+        <scenario name="invitee">../../rtp/007_no_local/session2.xml</scenario>
+    </testcase>
+
+    <testcase name="008_open_close" description="setFromMessage" state="true">
+        <scenario name="inviter">../../rtp/008_open_close/session1.xml</scenario>
+        <scenario name="invitee">../../rtp/008_open_close/session2.xml</scenario>
+    </testcase>
+    
+    <testcase name="120_connection" description="setFromMessage" state="true">
+        <scenario name="invitee">../../rtp/120_connection/session1.xml</scenario>
+    </testcase>
+
+    <testcase name="131_rtp_sip" description="Mixed SIP/RTP protocol" state="true">
+        <scenario name="UAC">131_rtp_sip/UAC.xml</scenario>
+        <scenario name="UAS">131_rtp_sip/UAS.xml</scenario>
+    </testcase>
+
+    <testcase name="132_sip_register_call" description="Mixed SIP/RTP + register" state="true">
+    	<parameter name="[inviter]" operation="set" value="alice"/>
+    	<parameter name="[invitee]" operation="set" value="bob"/>  	
+    	<parameter name="[domainName]" operation="set" value="devoteam.com"/>
+    
+        <scenario name="Registrar">132_rtp_register_call/Registrar.xml</scenario>	        
+	    <scenario name="Register-UAC">132_rtp_register_call/Register-UAC.xml</scenario>
+	    <scenario name="Register-UAS">132_rtp_register_call/Register-UAS.xml</scenario>
+	    <scenario name="[localPortSIP]">132_rtp_register_call/UAS.xml</scenario>
+	    <scenario name="alice">132_rtp_register_call/UAC.xml</scenario>
+    </testcase>
+
+    <testcase name="133_rtp_qos" description="Mixed SIP/RTP + qos" state="true">
+        <parameter name="[CallDurationSec]" operation="set" value="10" editable="true" description="Duration (in sec.) of the call"/>    	       	       
+        <parameter name="[payloadTypeRTP]" operation="set" value="17" editable="true" description="Payload type for the media flow"/>    	       	       
+        <parameter name="[byteRateRTP]" operation="set" value="4000" editable="true" description="Bytes rate (in byte/sec) for the media flow"/>    	       	           
+        <parameter name="[tempPacketRTP]" operation="divide" value="[byteRateRTP]" value2="160"/>    
+        <parameter name="[delayPacketRTP]" operation="divide" value="1000" value2="[tempPacketRTP]"/>
+
+        <parameter name="[dialingDelay]" operation="set" value="0.5" editable="true" description="Dialing delay (in seconds) : time between INVITE and 180 response"/>    	       	       
+        <parameter name="[timeSpacing]" operation="set" value="0.0045" editable="true" description="Time spacing (in seconds) : time between real and theorical timestamp"/>    	       	       
+        <parameter name="[packetLost]" operation="set" value="1" editable="true" description="Packets lost (in percent)"/>    	       	       
+
+        <scenario name="UAC">load/call-sip-rtp/UAC.xml</scenario>
+        <scenario name="[localPortSIP]">load/call-sip-rtp/UAS.xml</scenario>
+    </testcase>
+
+    <testcase name="134_rtp_event_sip" description="RTP Event message" state="true">
+      	<parameter name="[payloadType]" operation="list.set" value="106"/>      	
+        <parameter name="[volume]" operation="list.set" value="10"/>
+        <parameter name="[duration]" operation="list.set" value="160"/>
+
+        <scenario name="inviter">134_rtp_events/UAC.xml</scenario>
+        <scenario name="invitee">134_rtp_events/UAS.xml</scenario>
+    </testcase>
+    
+    <testcase name="801_imsloader_talk" state="false">
+        <scenario name="[localPortSIP]">../../rtp/801_imsloader_talk/scenario.xml</scenario>
+    </testcase>
+
+    <testcase name="901_rtp_proxy" description="test fonction RTP proxy with B2B SIP agent" state="false">
+        <!--<<<<<<<<<<<<<<<<<<<<<<<<<<  initial ports>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+        <parameter name="[listOfnbs]" operation="list.create" />
+        <parameter name="[sizeProxy]"	operation="set"	value="9999" description="should be more than 1"/> 
+        <parameter name="[sizeProxy]"	operation="number.multiply"	value="[sizeProxy]" value2="2" description="for the reason of RTCP/RTP"/>  
+        <parameter name="[RTPportInviterLocalBase]"	operation="set"	value="20000"/>  
+        <parameter name="[RTPportInviteeLocalBase]"	operation="set"	value="40000"/>	
+        <parameter name="[nb]" operation="set" value="0"/>
+        <!--<<<<<<<<<<<<<<<<<<<<<<<<<< fini initial ports>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+        <!--======================  RTP=========================-->
+    	<parameter name="[RTPportInviteeRemote]"	operation="set"	value="10000" description="defined in 200 OK"/>
+    	<parameter name="[SDPinviter]" operation="set" value="v=0" description="[SDPConnectionAddress0]"/>
+    	<parameter name="[SDPinvitee]" operation="set" value="v=0" description="[SDPConnectionAddress0]"/>
+    	<!--parameter name="[isBYE]" operation="set" value="" description="true"/-->
+        <!--====================== fini RTP=========================-->
+		<!-- ################## verrou ##################-->
+		<parameter name="[testcase:nbStart]" operation="system.semaphorenotify" />
+		<!-- ################## fini verrou ##################-->
+        <scenario name="[localPortSIP]">901_rtp_proxy/SIP.xml</scenario>
+		<scenario name="RTP">901_rtp_proxy/RTP.xml</scenario>
+    </testcase>
+
+    <testcase name="902_echo_server" state="false">
+        <scenario name="RTP">902_echo_server/scenario.xml</scenario>
+    </testcase>
+
+    <testcase name="904_load" state="false">
+        <scenario name="session1">904_load/session1.xml</scenario>
+        <scenario name="session2">904_load/session2.xml</scenario>
+    </testcase>
+	
+</test>

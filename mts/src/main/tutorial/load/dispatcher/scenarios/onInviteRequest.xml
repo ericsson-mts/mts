@@ -1,0 +1,127 @@
+
+<scenario>
+    <parameter name="[item]" operation="list.dequeue" value="[testcaseName]" value2="[queueTimeout]" />
+
+    <if>
+        <condition>
+            <test parameter="[item]" condition="list.isEmpty" />
+        </condition>
+        <then>
+            <exit failed="false" />
+        </then>
+    </if>
+    
+<!-- (specific) : do your job with [item]  -->
+
+
+    <!-- when receiving an invite request, send MESSAGE/now, 100@INVITE/now, 180@INVITE/[TryingDuration] -->
+    <parameter name="[lastListenpoint]" operation="protocol.setFromMessage" value="listenpoint.name" value2="[item]" />
+    <parameter name="[lastLocalPort]" operation="protocol.setFromMessage" value="listenpoint.localport" value2="[item]" />
+    <parameter name="[lastLocalHostPort]" operation="protocol.setFromMessage" value="listenpoint.localhost" value2="[item]" />
+
+    <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To" value2="[item]" />
+    <parameter name="[lastToUser]" operation="protocol.setFromMessage" value="header.To.Address.Uri.User" value2="[item]" />
+    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From" value2="[item]" />
+    <parameter name="[lastFromUser]" operation="protocol.setFromMessage" value="header.From.Address.Uri.User" value2="[item]" />
+    <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID" value2="[item]" />
+    <parameter name="[lastCSeq]" operation="protocol.setFromMessage" value="header.CSeq" value2="[item]" />
+    <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via" value2="[item]" />
+    <parameter name="[lastRecord-Route]" operation="protocol.setFromMessage" value="header.Record-Route" value2="[item]" />
+    
+    
+    <!-- put the invite in context -->
+    <try>
+        <finally>
+            <parameter name="[test:contextMutex]" operation="system.semaphorewait" value2="0" />
+            
+            <parameter name="[contextId]" value="[test:[lastToUser]_invite_contextId]" />
+            <parameter name="[test:context_[contextId]_lastReceivedInvite]" value="[item]" />
+            
+            <parameter name="[test:contextMutex]" operation="system.semaphorenotify" />
+        </finally>
+    </try>
+    
+    <sendMessageSIP listenpoint="[lastListenpoint]"  remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+SIP/2.0 100 Trying
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Via: [lastVia]
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+
+    <parameter name="[localTag]" operation="number.uid" />
+    
+    <sendMessageSIP listenpoint="[lastListenpoint]" delay="[TryingDuration]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+SIP/2.0 180 Ringing
+To: <sip:[lastToUser]@[domainName]>;tag=[localTag]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Via: [lastVia]
+Record-Route: [lastRecordRoute]
+Content-Length: 0
+
+]]>			
+    </sendMessageSIP>
+
+    <parameter name="[RandomNumberTag2]" operation="number.random" value="99999999"/>
+    <parameter name="[RandomNumberTag3]" operation="number.random" value="9999"/>
+    <parameter name="[RandomNumberTag4]" operation="number.random" value="99999"/>
+    <parameter name="[RandomNumberTag5]" operation="number.random" value="999"/>
+    <parameter name="[RandomNumberTag7]" operation="number.random" value="99999999"/>
+    <parameter name="[RandomNumberTag8]" operation="number.random" value="99999999"/>
+    <parameter name="[CallID-Message]" operation="set" value="[RandomNumberTag7]-[RandomNumberTag2]-[RandomNumberTag3]-[RandomNumberTag4]-[RandomNumberTag5]-[RandomNumberTag8]-[RandomNumberTag5]"/>
+
+    <parameter name="[newMessageTag]" operation="string.random" value="10"/>
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+    <parameter name="[newCseqNumber]" operation="number.uid" value="10"/>
+
+    <parameter name="[dateMessage]" operation="system.timestamp" value="1970"/>
+    <parameter name="[dateMessageDate]" operation="number.toDate" value="[dateMessage]" value2="yyyy-MM-dd"/>
+    <parameter name="[dateMessageHeure]" operation="number.toDate" value="[dateMessage]" value2="HH:mm:ss"/>
+    <parameter name="[dateMessage]" operation="set" value="[dateMessageDate]T[dateMessageHeure].000Z"/>
+
+    <parameter name="[imdnMessageId]" operation="string.random" value="13"/>
+    
+    <sendMessageSIP listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+MESSAGE sip:[lastFromUser]@[domainName] SIP/2.0
+To: <sip:[lastFromUser]@[domainName]>
+From: <sip:[lastToUser]@[domainName]>;tag=[newMessageTag]
+Call-ID: [CallID-Message]
+CSeq: [newCseqNumber] MESSAGE
+Via: SIP/2.0/UDP [Host-Tester]:[lastLocalPort];branch=z9hG4bK-[newBranchId]
+Max-Forwards: 70
+User-Agent: IMSLoader
+Accept-Contact: +g.poc.groupad;require;explicit
+Server: PoC-client/OMA1.0 Siemens/v2.0
+Content-Type: message/cpim
+Content-Length: x
+
+From: sip:[lastToUser]@[domainName]
+To: <sip:[lastFromUser]@[domainName]>
+NS: imdn <urn:ietf:params:imdn>
+imdn.Message-ID: [imdnMessageId]
+DateTime: [dateMessage]
+Content-Disposition: notification
+
+Content-type: message/imdn+xml
+Content-Length: x
+
+<?xml version="1.0" encoding="UTF-8"?>
+<imdn xmlns="urn:ietf:params:xml:ns:imdn">
+ <message-id>[imdnMessageId]</message-id>
+ <datetime>[dateMessage]</datetime>
+ <delivery-notification><status><delivered/></status></delivery-notification>
+</imdn>
+]]>
+    </sendMessageSIP>
+    
+<!-- (specific) : end  -->
+</scenario>

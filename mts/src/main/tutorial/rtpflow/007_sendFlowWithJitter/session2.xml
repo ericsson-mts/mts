@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTPFLOW name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]" />
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+
+    <receiveMessageRTPFLOW listenpoint="invitee" type="G729:18" timeout="130">
+        <parameter name="[packetNumber]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
+        <parameter name="[packetTimestamp]" operation="protocol.setFromMessage" value="flow.packetTimestamp"/>
+        <parameter name="[jitterDelayMean]" operation="protocol.setFromMessage" value="qos.jitterDelayMean"/>
+        <parameter name="[jitterDelay]" operation="protocol.setFromMessage" value="qos.jitterDelay"/>
+        <parameter name="[packetLost]" operation="protocol.setFromMessage" value="qos.packetLost"/>
+        <parameter name="[deltaTime]" operation="protocol.setFromMessage" value="qos.deltaTime"/>
+    </receiveMessageRTPFLOW>
+
+    <test parameter="[jitterDelayMean]" condition="number.greaterThan" value="10"/>
+    <test parameter="[jitterDelayMean]" condition="number.lowerThan" value="14"/>
+
+    <stats>
+        <flow name="packetNumberFlow" summary="pkt num" complete="packet number flow of the RTP flow">
+            <increase value="[packetNumber]"/>
+        </flow>
+    </stats>
+
+    <stats>
+        <value name="jitterDelayValue" summary="jitter" complete="jitter delay of the RTP flow">
+            <newValue milliseconds="[packetTimestamp]" value="[jitterDelay]"/>
+        </value>
+    </stats>
+
+    <stats>
+        <value name="deltaTimeValue" summary="delta time" complete="delta time of the RTP flow">
+            <newValue milliseconds="[packetTimestamp]" value="[deltaTime]"/>
+        </value>
+    </stats>
+
+    <finally>
+		<removeListenpointRTPFLOW name="invitee" />
+	</finally>
+    
+</scenario>

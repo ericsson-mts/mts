@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <!-- attend message USER-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[arg]" operation="protocol.setFromMessage" value="request.arguments" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="USER"/>
+    </receiveMessagePOP>
+    
+    <!-- envoi reponse USER-->
+    <sendMessagePOP name="Send USER" transactionId="[transactionId]">
+<![CDATA[
++OK [arg] is a real hoopy frood
+]]>
+    </sendMessagePOP>
+    
+    <!-- attend message PASS-->
+    <receiveMessagePOP request="true">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+    </receiveMessagePOP>
+
+    <!-- envoi reponse PASS-->
+    <sendMessagePOP name="Send PASS" transactionId="[transactionId]">
+<![CDATA[
+-ERR maildrop already locked
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message USER-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[argument]" operation="protocol.setFromMessage" value="request.arguments" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="USER"/>
+    </receiveMessagePOP>
+    
+    <!-- envoi reponse USER-->
+    <sendMessagePOP name="Send USER" transactionId="[transactionId]">
+<![CDATA[
++OK [arg] is a real hoopy frood
+]]>
+    </sendMessagePOP>
+    
+    <!-- attend message PASS-->
+    <receiveMessagePOP request="true">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+    </receiveMessagePOP>
+
+    <!-- envoi reponse PASS-->
+    <sendMessagePOP name="PASS"  transactionId="[transactionId]">
+<![CDATA[
++OK [arg]'s maildrop has 2 messages (320 octets)
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message NOOP-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="NOOP"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse NOOP-->
+    <sendMessagePOP name="Send NOOP response" transactionId="[transactionId]">
+<![CDATA[
++OK dewey POP server signing off
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message STAT-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="STAT"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse STAT-->
+    <sendMessagePOP name="Send STAT response" transactionId="[transactionId]">
+<![CDATA[
++OK 2 320
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message LIST-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="LIST"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse LIST-->
+    <sendMessagePOP name="Send LIST response" transactionId="[transactionId]">
+<![CDATA[
+-ERR no such message, only 2 messages in maildrop
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message LIST-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="LIST"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse LIST-->
+    <sendMessagePOP name="Send LIST response" transactionId="[transactionId]">
+<![CDATA[
++OK 2 messages (320 octets)
+1 120
+2 200
+.
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message RETR-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="RETR"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse RETR-->
+    <sendMessagePOP name="Send RETR response" transactionId="[transactionId]">
+<![CDATA[
++OK 354 octets
+Date: Fri, 17 Oct 2008 21:52:25
+From: Me <theTester@imsloader.com>
+Subject: test to write message
+To: anyone@devoteam.com
+Message-Id: <B27397-0100000@devoteam.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+
+Hy all! Is this test working or not???
+This line is useful to check the good working of the TOP command in pop.
+Bye.
+.
+]]>
+    </sendMessagePOP>
+
+   <!-- attend message DELE-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="DELE"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse DELE-->
+    <sendMessagePOP name="Send DELE response" transactionId="[transactionId]">
+<![CDATA[
++OK message 1 deleted
+]]>
+    </sendMessagePOP>
+
+   <!-- attend message DELE-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="DELE"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse DELE-->
+    <sendMessagePOP name="Send DELE response" transactionId="[transactionId]">
+<![CDATA[
+-ERR message 2 already deleted
+]]>
+    </sendMessagePOP>
+
+   <!-- attend message RSET-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="RSET"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse RSET-->
+    <sendMessagePOP name="Send RSET response" transactionId="[transactionId]">
+<![CDATA[
++OK maildrop has 2 messages (320 octets)
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message TOP-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="TOP"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse TOP-->
+    <sendMessagePOP name="Send TOP response" transactionId="[transactionId]">
+<![CDATA[
++OK
+Date: Fri, 17 Oct 2008 21:52:25
+From: Me <theTester@imsloader.com>
+Subject: test to write message
+To: anyone@devoteam.com
+Message-Id: <B27397-0100000@devoteam.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+
+Hy all! Is this test working or not???
+.
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message UIDL-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="UIDL"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse UIDL-->
+    <sendMessagePOP name="Send UIDL response" transactionId="[transactionId]">
+<![CDATA[
++OK
+1 whqtswO00WBw418f9t5JxYwZ
+2 QhdPYR:00WBw1Ph7x7
+.
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message UIDL-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="UIDL"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse UIDL-->
+    <sendMessagePOP name="Send UIDL response" transactionId="[transactionId]">
+<![CDATA[
++OK 2 QhdPYR:00WBw1Ph7x7
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message APOP-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="APOP"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse APOP-->
+    <sendMessagePOP name="Send APOP response" transactionId="[transactionId]">
+<![CDATA[
++OK maildrop has 1 message (369 octets)
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message QUIT-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="QUIT"/>
+    </receiveMessagePOP>
+
+    <!-- envoi reponse QUIT-->
+    <sendMessagePOP name="Send QUIT response" transactionId="[transactionId]">
+<![CDATA[
++OK dewey POP server signing off
+]]>
+    </sendMessagePOP>
+
+</scenario>

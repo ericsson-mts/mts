@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="POP">    
+    <parameter name="[listenIp]" operation="set" value="0.0.0.0" editable="true"/>
+
+    <parameter name="[serverRemoteIp]" operation="system.ipaddress"/>
+    <parameter name="[serverRemoteIp]" operation="set" value="[serverRemoteIp(0)]" editable="true"/>
+    <parameter name="[serverPort]" operation="file.readproperty" value="pop.properties" value2="listenpoint.LOCAL_PORT" />
+    <parameter name="[serverPort]" operation="set" value="[serverPort]" editable="true" />
+
+    <testcase name="pop/000_classicSequence" state="true">
+        <scenario name="client">000_classicSequence/client.xml</scenario>
+        <scenario name="POP">000_classicSequence/server.xml</scenario>
+    </testcase>
+    <testcase name="pop/001_testAllMessages" state="true">
+        <scenario name="client">001_testAllMessages/client.xml</scenario>
+        <scenario name="POP">001_testAllMessages/server.xml</scenario>
+    </testcase>
+    <testcase name="pop/002_testAllParameters" state="true">
+        <scenario name="client">002_testAllParameters/client.xml</scenario>
+        <scenario name="POP">002_testAllParameters/server.xml</scenario>
+    </testcase>
+    <testcase name="pop/client" state="false">
+        <scenario name="POP">client/client.xml</scenario>
+    </testcase>
+    <testcase name="pop/server" state="false">
+        <scenario name="POP">server/server.xml</scenario>
+    </testcase>
+</test>

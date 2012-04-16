@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageUCP request="true" type="EnquiryOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="OT" operation="protocol.setFromMessage" value="header.OT"/>
+        <parameter name="name" operation="protocol.setFromMessage" value="header.name"/>
+        <parameter name="length" operation="protocol.setFromMessage" value="header.length"/>
+        <parameter name="TRN" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="content" operation="protocol.setFromMessage" value="content"/>
+        <parameter name="dataRaw" operation="protocol.setFromMessage" value="dataRaw"/>
+    </receiveMessageUCP>
+
+    <!-- perform test -->
+    <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+    <test parameter="[OT]" condition="string.equals" value="00"/>
+    <test parameter="[name]" condition="string.equals" value="EnquiryOperation"/>
+    <test parameter="[length]" condition="string.equals" value="00020"/>
+    <test parameter="[TRN]" condition="string.equals" value="01"/>
+    <test parameter="[dataRaw]" condition="string.equals" value="01/00020/O/00/1///7C"/>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="ProvisioningActionsOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="SM"  value="well done"/>
+    </sendMessageUCP>
+
+</scenario>

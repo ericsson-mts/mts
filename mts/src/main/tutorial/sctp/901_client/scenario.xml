@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<openChannelSCTP name="proxy_client" remoteHost="[remoteHost]" remotePort="[remotePort]"  ostreams="7" instreams="6" />
+   
+	<sendMessageSCTP channel="proxy_client">
+		<data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageSCTP>
+	  
+	<receiveMessageSCTP>
+        <parameter name="[stream]" operation="protocol.setFromMessage" value="header.stream"/>
+        <parameter name="[ssn]" operation="protocol.setFromMessage" value="header.ssn"/>
+        <parameter name="[ppid]" operation="protocol.setFromMessage" value="header.ppid"/>
+        <parameter name="[tsn]" operation="protocol.setFromMessage" value="header.tsn"/>
+        <parameter name="[aid]" operation="protocol.setFromMessage" value="header.aid"/>
+        <parameter name="[sourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
+     	<parameter name="[sourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>  
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
+    </receiveMessageSCTP>
+        
+    <!--test parameter="[aid]" condition="string.equals" value="1" /-->
+    <test parameter="[sourceHost]" condition="string.equals" value="[localHost]" />
+    <!--test parameter="[sourcePort]" condition="string.equals" value="[localPort]" /-->
+    <test parameter="[contents]" condition="string.equals" value="AAAAA" />
+
+    <finally>
+        <!--closeChannelSCTP name="proxy_client"/-->
+    </finally>
+
+    				
+</scenario>

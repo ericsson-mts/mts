@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="Load tests">
+
+	<parameter name="[speedTestcase]" operation="set" value="50" description="number of testcase per second"   		editable="true"/>	
+    <parameter name="[TestDurationSec]" operation="set" value="360000" description="Duration (in sec.) of the test"   	    editable="true"/>
+    <parameter name="[NumberTestcase]" operation="set" value="10" description="number of testcase"   			        editable="true"/>
+
+	<parameter name="[Host-Tester]" operation="system.ipaddress" description="Addresse du XMLloader" />
+    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]" />
+	<parameter name="[Port-Tester]" operation="file.readproperty" value="h248.properties" value2="listenpoint.LOCAL_PORT" description="Port du XMLloader"/>
+	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]" />
+
+    <parameter name="[Host-Server]" operation="system.ipaddress" description="Addresse de l'AS" />
+    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]" />
+    <!--parameter name="[Host-Server]" operation="set" value="172.16.21.31" description="Addresse de l'AS" /-->   	   	
+	<parameter name="[Port-Server]" operation="file.readproperty" value="h248.properties" value2="listenpoint.LOCAL_PORT" description="Port du XMLloader"/>
+	<!--parameter name="[Port-Server]" operation="set" value="5060"/-->    	
+	<parameter name="[Adresse-Server]" operation="set" value="[Host-Server(0)]:[Port-Server]" />
+
+    <parameter name="[domainName]" operation="set" value="devoteam.com"/>
+	<parameter name="[inviteeName]" operation="set" value="bob"/>
+	<parameter name="[inviterName]" operation="set" value="alice"/>
+
+    <!-- transport parameters-->
+	<parameter name="[transportRequest]" operation="set" value="udp"/>
+	<parameter name="[transportResponse]" operation="set" value="UDP"/>
+
+   	<parameter name="[speedTestcase]" operation="number.divide" value="[speedTestcase]" value2="[NumberTestcase]"/>	
+
+	<!--                       -->
+    <!-- RUNPROFILE PARAMETERS -->
+    <!--                       -->    
+    <runProfile>
+        <step time="0" frequency="[speedTestcase]"/>
+        <end delay="[TestDurationSec]"/>
+    </runProfile>
+
+    <for index="[index]" from="001" to="[NumberTestcase]" step="1">   
+	    <testcase name="Testcase[index]" description="load [index]" state="true" number="1">
+			<parameter name="[inviterName]" operation="set" value="client[index]"/>
+		    <parameter name="[inviteeName]" operation="set" value="server[index]"/>
+			
+		    <scenario name="client[index]">client.xml</scenario>
+		    <scenario name="server[index]">server.xml</scenario>
+	    </testcase>
+    </for>
+
+</test>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <parameter name="[listenpoint]" operation="set" value="listenpoint_[port]" />
+
+    <createListenpointUCP name="[listenpoint]" localHost="[listenIp]" localPort="[port]"/>
+    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
+
+    <receiveMessageUCP request="true" type="EnquiryOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="EnquiryOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="BAS" value="F"/>
+        <attribute name="LAR" value=""/>
+        <attribute name="L1R" value=""/>
+        <attribute name="L3R" value=""/>
+        <attribute name="LCR" value=""/>
+        <attribute name="LUR" value=""/>
+        <attribute name="LRR" value=""/>
+        <attribute name="RT" value="3"/>
+        <attribute name="NoN" value="22"/>
+        <attribute name="NoA" value=""/>
+        <attribute name="NoB" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP request="true" type="CallInputOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="CallInputOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="SM" value="c'est bon"/>
+    </sendMessageUCP>
+
+</scenario>

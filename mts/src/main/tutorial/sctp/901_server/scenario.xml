@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+   <while>
+        <condition>       </condition>
+        <do>
+   <receiveMessageSCTP type="DATA" timeout="0">
+        <parameter name="[proxy]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[sourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
+     	<parameter name="[sourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
+  		<parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
+   </receiveMessageSCTP>
+    
+    <!--openConnectionSCTP connectionName="proxy" localHost="127.0.0.1" localPort="4022" remoteHost="[sourceHost]" remotePort="4001"/-->    	
+        
+    <sendMessageSCTP channel="[proxy]">
+    <!--sendDataSCTP connectionName="proxy"--> 
+		<data format="text">[contents]</data>
+    </sendMessageSCTP>
+          
+    <!--closeConnectionSCTP connectionName="proxy"/-->    	
+        
+     </do>
+  </while>
+ 
+</scenario>

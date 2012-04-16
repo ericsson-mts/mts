@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <parameter name="file" operation="file.readmedia" value="008_sendFilePDMLWireshark/rtpflow.pdml"/>
+
+	<createListenpointRTPFLOW name="inviter" localHost="[localHostRTP(0)]" localPort="[localPortRTP]"/>
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+    <parameter name="[testcase:payloadList]" operation="set" value="[[file(0)]]"/>
+    <parameter name="timestampList" operation="set" value="[[file(1)]]"/>
+    <parameter name="seqList" operation="set" value="[[file(2)]]"/>
+    <parameter name="payloadType" operation="set" value="[[file(3)]]"/>
+    <parameter name="deltaTime" operation="set" value="[[file(4)]]"/>
+    <parameter name="markList" operation="set" value="[[file(5)]]"/>
+    <parameter name="nbPacket" operation="list.size" value="[payloadList]"/>
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <flow packetNumber="[nbPacket]" deltaTime="[deltaTime]">
+            <header ssrc="148" payloadType="[payloadType]" seqnum="[seqList]" timestamp="[timestampList]" mark="[markList]"/>
+            <payload format="binary">[payloadList]</payload>
+	    </flow>
+	</sendMessageRTPFLOW>
+
+	<finally>
+		<removeListenpointRTPFLOW name="inviter" />
+	</finally>
+		
+</scenario>

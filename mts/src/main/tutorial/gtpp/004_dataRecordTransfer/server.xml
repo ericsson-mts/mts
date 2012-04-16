@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageGTPP name="receive data record transfer request">
+        <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    </receiveMessageGTPP>
+
+    <sendMessageGTPP name="send data record transfer response" channel="[channel]">
+        <header type="241" sequenceNumber="[seqNum]"/>
+        <tlv name="cause" value="1"/>
+        <tlv name="requestsResponded">
+            <attribute name="sequenceNumber" value="10"/>
+        </tlv>
+    </sendMessageGTPP>
+
+    <receiveMessageGTPP name="receive data record transfer request">
+        <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    </receiveMessageGTPP>
+
+    <sendMessageGTPP name="send data record transfer response" channel="[channel]">
+        <header type="241" sequenceNumber="[seqNum]"/>
+        <tlv name="cause" value="2"/>
+        <tlv name="requestsResponded">
+            <attribute name="sequenceNumber" value="18"/>
+            <attribute name="sequenceNumber" value="302"/>
+        </tlv>
+    </sendMessageGTPP>
+
+    <receiveMessageGTPP name="receive data record transfer request">
+        <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    </receiveMessageGTPP>
+
+    <sendMessageGTPP name="send data record transfer response" channel="[channel]">
+        <header type="241" sequenceNumber="[seqNum]"/>
+        <tlv name="cause" value="3"/>
+        <tlv name="requestsResponded">
+            <attribute name="sequenceNumber" value="1"/>
+        </tlv>
+    </sendMessageGTPP>
+
+</scenario>
