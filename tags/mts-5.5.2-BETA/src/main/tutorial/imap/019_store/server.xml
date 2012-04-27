@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <!-- attend message STORE-->
+    <receiveMessageIMAP request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final STORE-->
+    <sendMessageIMAP name="Send STORE" channel="[connection]">
+<![CDATA[
+* 2 FETCH (FLAGS (\Deleted \Seen))
+* 3 FETCH (FLAGS (\Deleted))
+* 4 FETCH (FLAGS (\Deleted \Flagged \Seen))
+[tag] OK STORE completed
+]]>
+    </sendMessageIMAP>
+
+</scenario>

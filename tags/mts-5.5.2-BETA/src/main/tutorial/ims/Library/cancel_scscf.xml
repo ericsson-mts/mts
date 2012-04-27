@@ -1,0 +1,54 @@
+<if>
+	<condition>
+		<test parameter="[lastSIPMethod]" condition="equals" value="CANCEL"/>
+	</condition>
+		<then>
+			<!--envoi d un 200 OK-->
+<sendResponseSIP name="Answer 200 OK" providerName="[scenarioName]">
+<![CDATA[SIP/2.0 200 OK
+Via: [lastVia]
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCall-ID]
+CSeq: [lastCSeq]
+Content-Length: 0]]>
+</sendResponseSIP>
+			<!--verifie si une nouvelle route existe -->
+			<parameter name="[lastRoute]" 	operation="setFromMessage" 	value="header:route"	value2="[lastMessage]"/>
+			<parameter name="[sizelastRoute]" 	operation="size" 	value="[lastRoute]"/>
+			
+			<if>
+			<condition>
+					<test parameter="[sizelastRoute]" condition="greaterthan" value="1"/>
+			</condition>	
+			<then/>
+			<else>
+				<!--si ce n est pas la cas envoye le cancel vers le destinataire -->
+				<parameter name="[lastCSeqNumber]" operation="setFromMessage" value="header:CSeqNumber"	value2="[lastMessage]" />
+				<parameter name="[size]" 	operation="size" 			value="[Viafork[lastCall-ID]]"/>
+				<parameter name="[index]" 	operation="set" 			value="0"/>
+				<while>
+					<condition>
+						<test parameter="[index]" condition="lowerThan" value="[size]"/>
+					</condition>
+					<do>
+<sendRequestSIP name="Send Cancel" providerName="[scenarioName]">
+<![CDATA[CANCEL [contfork[lastCall-ID]([index])] SIP/2.0
+Call-ID: [lastCall-ID]
+CSeq: [lastCSeqNumber] CANCEL
+From: [lastFrom]
+To: [TO[lastCall-ID]]
+[Viafork[lastCall-ID]([index])]
+Max-Forwards: 70
+[proxfork[lastCall-ID]([index])]
+Content-Length: 0
+]]>
+</sendRequestSIP>
+						<parameter name="[index]" 	operation="add" 	value="[index]" value2="1"/>
+					</do>
+				</while>
+				<goto  name="goto_Begin" label="Begin" state="true"/>
+			</else>
+		</if>
+	</then>
+</if>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[LocalPort]" 		operation="set" value="[PortUAS]"/>
+	<parameter name="[LocalAddressUAS]" operation="set" value="[HardAddressUAS]"/>	
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+	
+	
+
+  <receiveRequestSIP name="Wait INVITE" method="INVITE">
+    <parameter name="[lastTo]" 			operation="setFromMessage" 	value="header:To"/>       
+    <parameter name="[lastFrom]" 		operation="setFromMessage" 	value="header:From"/>   
+    <parameter name="[lastCallId]" 		operation="setFromMessage" 	value="header:Call-Id"/>
+    <parameter name="[lastCseq]" 		operation="setFromMessage" 	value="header:CSeq"/>
+    <parameter name="[lastVia]" 		operation="setFromMessage" 	value="header:Via"/>
+    <parameter name="[contact]" 		operation="setFromMessage" 	value="header:Contact"/>
+    <parameter name="[MaxForwards]" 	operation="setFromMessage" 	value="header:Max-Forwards"/>
+	<parameter name="[lastcontent]" 	operation="setFromMessage" 	value="content"/>
+    <parameter name="[localTag]" 		operation="identifier" 		value="newString" value2="10"/>
+	<parameter name="[lastCseqNumber]"	operation="setFromMessage"	value="header:CSeqNumber"/>
+  </receiveRequestSIP>
+  
+
+
+  <sendResponseSIP name="Send 100 Trying">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 100 Trying
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+User-Agent: [UserAgent]
+Max-Forwards: 70
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+  </sendResponseSIP>
+
+  <pause name="Pause before 180 OK" seconds="0.0"/>
+  
+  <sendResponseSIP name="Send 180 Ringing">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 180 Ringing
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+User-Agent: [UserAgent]
+Max-Forwards: 70
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+  </sendResponseSIP>
+
+  <pause name="Pause before 200 OK" seconds="0.3"/>
+  
+  <sendResponseSIP name="Send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: [lastTo]
+Max-Forwards: 70
+Content-Type: application/sdp
+Content-Length: x
+
+[lastcontent]
+]]>
+</sendResponseSIP>
+
+  <receiveRequestSIP name="Wait ACK" method="ACK">
+  </receiveRequestSIP>
+
+  <parameter name="[CseqNumber]" 	operation="add" 		value="[lastCseqNumber]" 	value2="1"/>
+  <parameter name="[localTag]" 		operation="identifier" 	value="newString" 			value2="10"/>
+  <parameter name="[newBranchId]" 	operation="identifier" 	value="newString"			value2="10"/>
+  
+	<sendRequestSIP name="INFO" providerName="[scenarioName]">
+<![CDATA[INFO sip:[HardAddressUAC] SIP/2.0
+To: [lastFrom]
+From: [lastTo];tag=[localTag]
+Via: SIP/2.0/UDP [HardAddressUAS];branch=z9hG4bK[newBranchId]
+Call-ID: [lastCallId]
+CSeq: [CseqNumber] INFO
+Route: <sip:[Adresse-Proxy];lr>
+Contact: [lastTo]
+Max-Forwards: 70
+Content-Type: application/sdp
+Content-Length: x
+]]>
+</sendRequestSIP>
+
+  <receiveRequestSIP name="Wait BYE" >
+    <parameter name="[To]" 			operation="setFromMessage" value="header:To"/>         
+    <parameter name="[From]" 		operation="setFromMessage" value="header:From"/>       
+    <parameter name="[CallId]" 		operation="setFromMessage" value="header:Call-Id"/>          
+    <parameter name="[CSeq]" 		operation="setFromMessage" value="header:CSeq"/>       
+    <parameter name="[Contact]" 	operation="setFromMessage" value="header:Contact"/>                 
+    <parameter name="[Via]" 		operation="setFromMessage" value="header:Via"/> 
+    <parameter name="[MaxForwards]" operation="setFromMessage" value="header:Max-Forwards"/>  
+  </receiveRequestSIP>
+  
+  
+  
+
+  <sendResponseSIP name="Send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [To];tag=[localTag]
+From: [From]
+Via: [Via]
+Call-ID: [CallId]
+CSeq: [CSeq]
+Contact: [contact]
+Max-Forwards: [MaxForwards]  
+User-Agent: [UserAgent]
+Max-Forwards: 70
+Content-Length: 0
+]]>
+  </sendResponseSIP>
+
+</scenario>

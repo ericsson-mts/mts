@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTP name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]" />
+	
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+
+	<receiveMessageRTP type="DVI4:17">
+		<parameter name="[connectionName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+		<parameter name="[connLocalHost]" operation="protocol.setFromMessage" value="channel.localHost"/>		
+		<parameter name="[connLocalPort]" operation="protocol.setFromMessage" value="channel.localPort"/>		
+		<parameter name="[connRemoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>		
+		<parameter name="[connRemotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>				
+		<parameter name="[headerSsrc]" operation="protocol.setFromMessage" value="header.ssrc"/>
+		<parameter name="[headerPayloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>
+		<parameter name="[headerSeqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>
+		<parameter name="[headerTimestamp]" operation="protocol.setFromMessage" value="header.timestamp"/>
+        <parameter name="[headerMark]" operation="protocol.setFromMessage" value="header.mark"/>
+	</receiveMessageRTP>
+
+    <!-- perform test -->
+    <test parameter="[connectionName]" condition="string.equals" value="invitee"/>      
+	<test parameter="[connLocalHost]" condition="string.equals" value="[remoteHostRTP]"/>      
+	<test parameter="[connLocalPort]" condition="string.equals" value="[remotePortRTP]"/>            
+	<test parameter="[connRemoteHost]" condition="string.equals" value="[localHostRTP]"/>      
+	<test parameter="[connRemotePort]" condition="string.equals" value="[localPortRTP]"/>                  
+	<test parameter="[headerSsrc]" condition="string.equals" value="0"/>      
+	<test parameter="[headerPayloadType]" condition="string.equals" value="17"/>      
+    <test parameter="[headerTimestamp]" condition="string.equals" value="0"/>
+    <test parameter="[headerMark]" condition="number.equals" value="0"/>
+
+	<test parameter="[headerSeqnum]" condition="string.equals" value="0"/>      
+	<parameter name="[payloadText]" operation="protocol.setFromMessage" value="payload.text"/>
+	<parameter name="[payloadTextLength]" operation="string.length" value="[payloadText]"/>
+	<test parameter="[payloadTextLength]" condition="number.equals" value="108"/>
+	<test parameter="[payloadText]" condition="string.contains" value="Packet #"/>
+	<test parameter="[payloadText]" condition="string.contains" value="abcdefghijklmnopqrstuvwxyz"/>  
+	<test parameter="[payloadText]" condition="string.contains" value="0123456789"/>  
+	<test parameter="[payloadText]" condition="string.contains" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ"/>        
+
+	<parameter name="[payloadBinary]" operation="protocol.setFromMessage" value="payload.binary"/>	
+    <!-- BUG should miss : -->  
+	<!-- parameter name="[payloadBinaryLength]" operation="binary.length" value="[payloadBinary]"/>
+	<test parameter="[payloadBinaryLength]" condition="number.equals" value="111"/-->
+	<test parameter="[payloadBinary]" condition="string.contains" value="000102030405060708090a0b0c0d0e0f"/>  
+    <test parameter="[payloadBinary]" condition="string.contains" value="808182838485868788898a8b8c8d8e8f"/>  
+    <!-- BUG normally should be : -->  
+    <!-- test parameter="[payloadBinary]" condition="string.contains" value="55aaff0005"/ -->  
+    <test parameter="[payloadBinary]" condition="binary.contains" value="55aaff0005"/>  
+
+	<receiveMessageRTP type="DVI4:17">
+        <parameter name="[headerMark]" operation="protocol.setFromMessage" value="header.mark"/>
+    </receiveMessageRTP>
+    <test parameter="[headerMark]" condition="number.equals" value="1"/>
+    
+	<!-- to avoid lost of packets -->
+	<receivePacketRTP name="ReceivePacketRTP3" payloadType="DVI4:17"/>
+	
+	<sendMessageRTP listenpoint="invitee" remoteHost="[localHostRTP(0)]" remotePort="[localPortRTP]">
+	    <header ssrc="0" payloadType="27" seqnum="1000" timestamp="1000"/>
+	    <payload format="text">Packet #1</payload>		
+	</sendMessageRTP>
+
+	<sendMessageRTP listenpoint="invitee" remoteHost="[localHostRTP(0)]" remotePort="[localPortRTP]">
+	    <header ssrc="0" payloadType="27" seqnum="2000" timestamp="2000"/>
+	    <payload format="text">Packet #2</payload>		
+	</sendMessageRTP>
+
+	<sendMessageRTP listenpoint="invitee" remoteHost="[localHostRTP(0)]" remotePort="[localPortRTP]">
+	    <header ssrc="0" payloadType="27" seqnum="3000" timestamp="3000"/>
+	    <payload format="text">Packet #3</payload>		
+	</sendMessageRTP>
+
+	<finally>			
+		<removeListenpointRTP name="invitee" />
+	</finally>	
+	
+</scenario>

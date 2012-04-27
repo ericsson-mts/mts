@@ -1,0 +1,65 @@
+<!--tache a effectuer si requete CANCEL-->
+&cancel_scscf; 
+<!--tache a effectuer si requete REGISTER-->
+&registrar_scscf; 
+<!--Difference entre un Ack 200 et un ack erreur-->
+&ack_scscf;
+<!--tache de proxy a effectuer-->
+&prox_scscf;
+<!--tache a effectuer si requete INVITE-->
+&invite_scscf;
+<!--recuperation du header route-->
+<parameter name="[lastRoute]" 		operation="setFromMessage" 			value="header:route" value2="[lastMessage]"/>	
+<parameter name="[lastRoute]" 		operation="removeAt" 				value="[lastRoute]" value2="0"/>
+<!--supprime les champs route-->
+<parameter name="[index]" 		operation="findMatches" 	value="[lastHeader]" 	value2="Route.*"/>
+<parameter name="[lastHeader]" 	operation="removeAt" 		value="[lastHeader]" 	value2="[index]"/>
+<parameter name="[sizelastRoute]" 	operation="size" 					value="[lastRoute]"/>
+<if>
+	<condition>
+		<test parameter="[sizelastRoute]" condition="equals" value="0"/>
+	</condition>	
+	<then>
+		<!--le scscf se met dans le record-route-->		
+		<parameter name="[Record-Route]" 	operation="setFromMessage" 	value="header:Record-Route"	value2="[lastMessage]"/>
+		<parameter name="[sizeRecord-Route]" 	operation="size" 		value="[Record-Route]"/>
+		<if>
+			<condition>
+				<test parameter="[sizeRecord-Route]" condition="greaterthan" value="0"/>
+			</condition>
+			<then>
+				<!--supprime le champs Record Route-->
+				<parameter name="[index]" 			operation="findMatches" 	value="[lastHeader]" value2="Record.*"/>
+				<parameter name="[lastHeader]" 		operation="removeat" 		value="[lastHeader]" value2="[index]"/>	
+				<!--Ajoute son adresse dans le record route-->
+				<parameter name="[lastHeader]" 	operation="addFirst" 		value="[lastHeader]"	value2="Record-Route: [Record-Route]"/>
+				<parameter name="[lastHeader]" 	operation="addFirst" 		value="[lastHeader]"	value2="Record-Route: sip:[Adresse-Tester];lr"/>
+			</then>
+		</if>
+	</then>
+	<else>
+		<parameter name="[lastHeader]" 	operation="addFirst" 		value="[lastHeader]"	value2="Route: [lastRoute]"/>
+	</else>
+</if>	
+<!-- verifie si terminating ou originating--> 		
+
+<parameter name="[P-Charging-Vector]" 	operation="setFromMessage" 	value="header:P-Charging-Vector"	value2="[lastMessage]"/>
+<if>
+	<condition>
+		<test parameter="[P-Charging-Vector]" condition="contains" value="orig"/>
+	</condition>
+	<then>
+		<parameter name="[SC]" operation="set" value="1"/>
+		&ifc_scscf;
+		<parameter name="[index]" 				operation="findMatches" 	value="[lastHeader]"	value2="P-Charging-Vector.*"/>
+		<parameter name="[lastHeader]" 			operation="removeAt" 		value="[lastHeader]"  value2="[index]"/>
+		&term_scscf;
+	</then>
+	<else>
+		<parameter name="[SC]" operation="set" value="0"/>
+		&ifc_scscf;
+		<parameter name="[index]" 				operation="findMatches" 	value="[lastHeader]"	value2="P-Charging-Vector.*"/>
+		<parameter name="[lastHeader]" 			operation="removeAt" 		value="[lastHeader]"  value2="[index]"/>
+		&orig_scscf;
+	</else>
+</if>

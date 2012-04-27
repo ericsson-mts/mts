@@ -1,0 +1,32 @@
+<!-- liste des methodes pour la pile udp -->
+<!-- deprecated part -->
+<xs:element name="openSocketUDP"    type="openSocketUDPType"    minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="closeSocketUDP"   type="closeSocketUDPType"   minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="sendDataUDP"          type="sendDataUDPType"          minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="receiveDataUDP"       type="receiveDataUDPType"       minOccurs="0" maxOccurs="unbounded" />
+<!-- deprecated part -->
+
+<xs:element name="createListenpointUDP" type="createListenpointUDPType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To start listening for the UDP protocol.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+<xs:element name="removeListenpointUDP" type="removeListenpointUDPType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To stop listening for the UDP protocol.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+<xs:element name="sendMessageUDP" type="sendMessageUDPType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To send a message for the UDP protocol a listenpoint (user defined or the default one).</xs:documentation>
+    </xs:annotation>
+</xs:element>
+<xs:element name="receiveMessageUDP" type="receiveMessageUDPType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To wait until a message of the UDP protocol is received. The operation fails if no message is received until a given timeout value.</xs:documentation>
+    </xs:annotation>
+</xs:element>

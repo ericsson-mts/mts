@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageUCP request="true" type="ChangeStandardTextOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="AdC" operation="protocol.setFromMessage" value="attribute.AdC"/>
+        <parameter name="AC" operation="protocol.setFromMessage" value="attribute.AC"/>
+        <parameter name="LNo" operation="protocol.setFromMessage" value="attribute.LNo"/>
+        <parameter name="TNo" operation="protocol.setFromMessage" value="attribute.TNo"/>
+        <parameter name="STX" operation="protocol.setFromMessage" value="attribute.STX"/>
+        <parameter name="CS" operation="protocol.setFromMessage" value="attribute.CS"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[AdC]" condition="string.equals" value="1"/>
+        <test parameter="[AC]" condition="string.equals" value="coucou"/>
+        <test parameter="[LNo]" condition="string.equals" value="22"/>
+        <test parameter="[TNo]" condition="string.equals" value="333"/>
+        <test parameter="[STX]" condition="string.equals" value="c'est moi"/>
+        <test parameter="[CS]" condition="string.equals" value=""/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="ChangeStandardTextOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="SM" value="ca roule:une fois de plus"/>
+    </sendMessageUCP>
+
+</scenario>

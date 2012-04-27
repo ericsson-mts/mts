@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <createListenpointRTSP name="session1" localHost="0.0.0.0" localPort="6554"/>
+
+    <sendMessageRTSP name="Send Options" listenpoint="session1">
+<![CDATA[OPTIONS rtsp://[ipAddress]:5554/vod_1 RTSP/1.0
+CSeq: 1
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="OPTIONS" result="200">
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send Describe" listenpoint="session1">
+<![CDATA[DESCRIBE rtsp://[ipAddress]:5554/vod_1 RTSP/1.0
+CSeq: 2
+Accept: application/sdp
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="DESCRIBE" result="200">
+        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+    </receiveMessageRTSP>
+
+    <parameter name="[canal]" operation="string.regexmatches" value="[content]" value2="a=control:.*"/>
+    <parameter name="[canal]" operation="regexReplaces" value="[canal]" value2="a=control:" value3=""/>
+
+    <sendMessageRTSP name="Send Setup" listenpoint="session1">
+<![CDATA[SETUP [canal(0)] RTSP/1.0
+CSeq: 3
+Transport: RTP/AVP;unicast;client_port=4588-4589
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="SETUP" result="200">
+        <parameter name="[session]" operation="protocol.setFromMessage" value="header.Session"/>
+    </receiveMessageRTSP>
+
+    <parameter name="[session]" operation="regexReplaces" value="[session]" value2=";.*" value3=""/>
+
+    <sendMessageRTSP name="Send Setup" listenpoint="session1">
+<![CDATA[SETUP [canal(1)] RTSP/1.0
+CSeq: 4
+Session: [session]
+Transport: RTP/AVP;unicast;client_port=4590-4591
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="SETUP" result="200">
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send Play" listenpoint="session1">
+<![CDATA[PLAY rtsp://[ipAddress]:5554/vod_1 RTSP/1.0
+CSeq: 5
+Session: [session]
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="PLAY" result="200">
+    </receiveMessageRTSP>
+
+    <createListenpointRTP name="socketRTP" localHost="[ipAddress]" localPort="4588" />
+    
+    <receiveMessageRTP timeout="5">
+        <parameter name="[temp]" operation="protocol.setFromMessage" value="message.binary" />
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="message.text" />
+    </receiveMessageRTP>
+    
+    <sendMessageRTSP name="Send Pause" listenpoint="session1">
+<![CDATA[PAUSE rtsp://[ipAddress]:5554/vod_1 RTSP/1.0
+CSeq: 6
+Session: [session]
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="PAUSE" result="200">
+    </receiveMessageRTSP>
+
+    <pause seconds="3"/>
+    
+    <sendMessageRTSP name="Send Teardown" listenpoint="session1">
+<![CDATA[TEARDOWN rtsp://[ipAddress]:5554/vod_1 RTSP/1.0
+CSeq: 7
+Session: [session]
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="TEARDOWN" result="200">
+    </receiveMessageRTSP>
+
+    <finally>
+	    <removeListenpointRTP name="socketRTP" />
+        <removeListenpointRTSP name="session1"/>
+    </finally>
+
+</scenario>

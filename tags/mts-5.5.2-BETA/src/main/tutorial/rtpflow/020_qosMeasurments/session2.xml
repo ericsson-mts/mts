@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTPFLOW name="invitee" localHost="[remoteHostRTP]" localPort="[remotePortRTP]" />
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+	
+    <receiveMessageRTPFLOW listenpoint="invitee" type="G723:4" timeout="10">
+        <parameter name="[packetLost]" operation="protocol.setFromMessage" value="qos.packetLost"/>
+        <parameter name="[packetDuplicated]" operation="protocol.setFromMessage" value="qos.packetDuplicated"/>
+        <parameter name="[packetMissSequence]" operation="protocol.setFromMessage" value="qos.packetMissSequence"/>
+        <parameter name="[packetSpacingMean]" operation="protocol.setFromMessage" value="qos.packetSpacingMean"/>
+        <parameter name="[packetSpacing]" operation="protocol.setFromMessage" value="qos.packetSpacing"/>
+        <parameter name="[deltaTimeMean]" operation="protocol.setFromMessage" value="qos.deltaTimeMean"/>
+        <parameter name="[deltaTime]" operation="protocol.setFromMessage" value="qos.deltaTime"/>
+        <parameter name="[jitterDelayMean]" operation="protocol.setFromMessage" value="qos.jitterDelayMean"/>
+        <parameter name="[jitterDelay]" operation="protocol.setFromMessage" value="qos.jitterDelay"/>
+    </receiveMessageRTPFLOW>
+
+    <test parameter="[packetLost]" condition="number.equals" value="1"/>
+    <test parameter="[packetDuplicated]" condition="number.equals" value="4"/>
+    <test parameter="[packetMissSequence]" condition="number.equals" value="8"/>
+    <!--test parameter="[packetSpacingMean]" condition="number.equals" value="0"/-->
+    <!--test parameter="[deltaTimeMean]" condition="number.equals" value="0"/-->
+    <!--test parameter="[jitterDelayMean]" condition="number.equals" value="0"/-->
+
+    <finally>
+		<removeListenpointRTPFLOW name="invitee" />
+	</finally>
+    
+</scenario>

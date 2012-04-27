@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="Load tests">
+
+	     <!--                     -->
+    	 <!-- INTERNAL PARAMETERS -->
+    	 <!--                     -->
+    	<parameter name="[Host-Tester]" operation="system.ipaddress" description="Addresse du XMLloader" />
+    	<parameter name="[Port-Tester]" operation="set" value="10000"/>
+    	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]" />
+
+    	<parameter name="[Host-Server]" operation="system.ipaddress" description="Addresse du XMLloader" />
+    	<parameter name="[Port-Server]" operation="set" value="10000"/>
+    	<parameter name="[Adresse-Server]" operation="set" value="[Host-Tester(0)]:[Port-Tester]" />
+
+    	<!--                       -->
+        <!-- RUNPROFILE PARAMETERS -->
+        <!--                       -->    
+        <runProfile>
+            <step time="0" period="0"/>
+            <end delay="0"/>
+        </runProfile>
+
+  		<testcase name="UDP" description="load [number]" state="true" number="1">    			
+			     <scenario name="socket">scenario.xml</scenario>
+		  </testcase>
+	
+</test>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageUCP request="true" type="RequestRoamingInformationOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="AdC" operation="protocol.setFromMessage" value="attribute.AdC"/>
+        <parameter name="AC" operation="protocol.setFromMessage" value="attribute.AC"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[AdC]" condition="string.equals" value="1"/>
+        <test parameter="[AC]" condition="string.equals" value="coucou"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="RequestRoamingInformationOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="NPL" value="1"/>
+        <attribute name="GAR" value="test2"/>
+        <attribute name="SM" value="ca roule:une fois de plus"/>
+    </sendMessageUCP>
+
+</scenario>

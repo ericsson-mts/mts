@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Cx/Dx Multimedia-Auth request (MAR)" -->
+<scenario>
+
+<!--
+From 3GPP TS 29.229 V7.5.0 :
+Multimedia-Auth-Request > ::= < Diameter Header: 303, REQ, PXY, 16777216 >
+                                 < Session-Id >
+                                 { Vendor-Specific-Application-Id }
+                                   Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                        1* [ Vendor-Id ]
+                                                                        0*1{ Auth-Application-Id }
+                                                                        0*1{ Acct-Application-Id }
+                                 { Auth-Session-State }
+                                 { Origin-Host }
+                                 { Origin-Realm }
+                                 { Destination-Realm }
+                                 [ Destination-Host ]
+                                 { User-Name }
+                                *[ Supported-Features ]
+                                   Supported-Features ::=  < AVP header: 628 10415 >
+                                                              { Vendor-Id }
+                                                              { Feature-List-ID }
+                                                              { Feature-List }
+                                                             *[AVP]
+                                 { Public-Identity }
+                                 [ SIP-Auth-Data-Item ]
+                                   SIP-Auth-Data-Item :: = < AVP Header : 612 10415 >
+                                                              [ SIP-Item-Number ]
+                                                              [ SIP-Authentication-Scheme ]
+                                                              [ SIP-Authenticate ]
+                                                              [ SIP-Authorization ]
+                                                              [ SIP-Authentication-Context ]
+                                                              [Confidentiality-Key]
+                                                              [Integrity-Key]
+                                                             *[AVP]
+                                 [ SIP-Number-Auth-Items ] 
+                                 { Server-Name }
+                                *[ AVP ]
+                                *[ Proxy-Info ]
+                                   Proxy-Info ::= < AVP Header: 284 >
+                                                      { Proxy-Host }
+                                                      { Proxy-State }
+                                                    * [ AVP ]
+                                *[ Route-Record ]
+
+-->
+
+    <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/MAR" remoteURL="diameter://[Remote-Address]" destScenario="server">
+        <header request="true" command="Multimedia-Auth" applicationId="16777216" proxiable="true" error="false" retransmit="false"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
+          <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/>
+            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/-->
+          </avp>
+
+          <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
+          <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
+          <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
+
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[Remote-Host]"/> 
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
+
+          <avp code="User-Name" vendorId="10415" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
+
+          <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports (3GPP TS29.229.750). -->
+          <avp code="Supported-Features" vendorId="10415">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <!-- The Feature-List-ID AVP contains the identity of a feature list (3GPP TS29.229.750). -->
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/>
+            <!-- The Feature-List AVP contains a bit mask indicating the supported features of an application (3GPP TS29.229.750). -->
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/> 
+          </avp>
+          <avp code="Supported-Features" vendorId="10415">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/>
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/> 
+          </avp>
+
+          <!-- The Public-Identity AVP contains a Public User Identity. -->
+          <avp code="Public-Identity" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>                   
+
+          <!-- The SIP-Auth-Data-Item AVP contains the authentication and/or authorization information for the Diameter client. -->
+          <avp code="SIP-Auth-Data-Item" mandatory="true" vendorId="10415">
+            <!-- SIP-Auth-Data-Item AVP with a low SIP-Item-Number value should be processed before SIP-Auth-Data-Items AVPs with a high SIP-Item-Number value. -->
+            <avp code="SIP-Item-Number" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
+            <!-- The SIP-Authentication-Scheme AVP indicates the authentication scheme used in the authentication of SIP messages. -->
+            <avp code="SIP-Authentication-Scheme" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+            <!-- The SIP-Authenticate AVP contains specific parts of the data portion of the WWW-Authenticate or Proxy-Authenticate SIP headers that are to be present in a SIP response. -->
+            <avp code="SIP-Authenticate" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+            <!-- The SIP-Authorization AVP contains specific parts of the data portion of the Authorization or Proxy-Authorization SIP headers suitable for inclusion in a SIP request. -->
+            <avp code="SIP-Authorization" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+            <!-- The SIP-Authentication-Context AVP contains authentication-related information relevant for performing the authentication but that is not part of the SIP authentication headers. -->
+            <avp code="SIP-Authentication-Context" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+            <!-- The Confidentiality-Key AVP contains the Confidentiality Key (CK). -->
+            <avp code="Confidentiality-Key" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+            <!-- The Integrity-Key AVP contains the Integrity Key (IK). -->
+            <avp code="Integrity-Key" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+          </avp>
+
+          <!-- When used in a request, the SIP-Number-Auth-Items AVP indicates the number of authentication vectors the S-CSCF is requesting. -->
+          <avp code="SIP-Number-Auth-Items" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>                   
+
+          <!-- The Server-Name AVP contains a SIP-URL. -->
+          <avp code="Server-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>
+
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer 3GPP/CX-DX/MAA" request="false" type="Multimedia-Auth:303" result="DIAMETER_SUCCESS:2001">
+    </receiveMessageDIAMETER>
+    
+</scenario>

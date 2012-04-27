@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTPFLOW name="invitee" localHost="[remoteHostRTP]" localPort="[remotePortRTP]" />
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+
+    <receiveMessageRTPFLOW listenpoint="invitee" type="PCMA:8" timeout="30">
+        <parameter name="ssrc" operation="protocol.setFromMessage" value="header.ssrc"/>
+        <parameter name="seqnum" operation="protocol.setFromMessage" value="header.seqnum"/>
+        <parameter name="timestamp" operation="protocol.setFromMessage" value="header.timestamp"/>
+        <parameter name="payloadType" operation="protocol.setFromMessage" value="header.payloadType"/>
+        <parameter name="payloadText" operation="protocol.setFromMessage" value="flow.payload.text"/>
+        <parameter name="payloadBinary" operation="protocol.setFromMessage" value="flow.payload.binary"/>
+    </receiveMessageRTPFLOW>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+
+    <receiveMessageRTPFLOW listenpoint="invitee" type="8" timeout="30">
+        <parameter name="packetNumber" operation="protocol.setFromMessage" value="flow.packetNumber"/>
+    </receiveMessageRTPFLOW>
+
+    <test parameter="[packetNumber]" condition="number.equals" value="500"/>
+    
+    <finally>
+		<removeListenpointRTPFLOW name="invitee" />
+	</finally>
+    
+</scenario>

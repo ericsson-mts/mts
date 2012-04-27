@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageSMPP request="true">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="id" operation="protocol.setFromMessage" value="header.id"/>
+        <test parameter="[id]" condition="string.equals" value="0"/>
+    </receiveMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="generic_nack" sequence_number="[seqNum]"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="true">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="id" operation="protocol.setFromMessage" value="header.id"/>
+        <test parameter="[id]" condition="string.equals" value="0"/>
+    </receiveMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="generic_nack" sequence_number="[seqNum]"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="true">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="id" operation="protocol.setFromMessage" value="header.id"/>
+        <test parameter="[id]" condition="string.equals" value="0"/>
+    </receiveMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="generic_nack" sequence_number="[seqNum]"/>
+    </sendMessageSMPP>
+    
+</scenario>

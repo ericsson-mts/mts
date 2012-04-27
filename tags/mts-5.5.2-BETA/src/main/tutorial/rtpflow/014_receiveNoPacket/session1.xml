@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+    
+    <createListenpointRTPFLOW name="inviter" localHost="[localHostRTP]" localPort="[localPortRTP]"/>
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP]" remotePort="[remotePortRTP]">
+	    <flow packetNumber="50" deltaTime="20" deltaTimestamp="160">
+            <header ssrc="4376" payloadType="8" seqnum="123" timestamp="456"/>
+            <payload format="text">test send RTP packet</payload>
+	    </flow>
+    </sendMessageRTPFLOW>
+
+    <pause name="wait between RTP flow" seconds="1"/>
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP]" remotePort="[remotePortRTP]">
+	    <flow packetNumber="50" deltaTime="20" deltaTimestamp="160">
+            <header ssrc="4376" payloadType="8" seqnum="123" timestamp="456"/>
+            <payload format="text">test send RTP packet</payload>
+	    </flow>
+    </sendMessageRTPFLOW>
+
+    <parameter name="[testcase:SEM2]" operation="system.semaphorewait" />
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP]" remotePort="[remotePortRTP]">
+	    <flow packetNumber="50" deltaTime="20" deltaTimestamp="160">
+            <header ssrc="4376" payloadType="8" seqnum="123" timestamp="456"/>
+            <payload format="text">test send RTP packet</payload>
+	    </flow>
+    </sendMessageRTPFLOW>
+
+    <pause name="wait between RTP flow" seconds="4.5"/>
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP]" remotePort="[remotePortRTP]">
+	    <flow packetNumber="50" deltaTime="20" deltaTimestamp="160">
+            <header ssrc="4376" payloadType="8" seqnum="123" timestamp="456"/>
+            <payload format="text">test send RTP packet</payload>
+	    </flow>
+    </sendMessageRTPFLOW>
+    
+    <finally>
+	<removeListenpointRTPFLOW name="inviter" />
+    </finally>
+
+</scenario>
+

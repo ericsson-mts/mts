@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+	<!--name="Receive SMTP from Inviter"-->
+	<!--openChannelSMTP name="session1" localHost="localhost" localPort="2222" /-->
+	<!-- <sendMessageSMTP name="Server is well prepared" channel="session1" >
+	<![CDATA[220 hotmail.com Simple Mail Transfer Service Ready ]]>	
+</sendMessageSMTP-->	
+	
+<!--************************************RCPT***************************************************-->
+
+<receiveMessageSMTP name="Receive Request RCPT request" request="true">
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+	<parameter name="[cmd]" operation="protocol.setFromMessage" value="firstline.commandName"/>
+</receiveMessageSMTP>
+<log level="0">transactionId = [tranid] </log>
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="RCPT"/>
+	</condition>
+	<then>
+		<parameter name="[result]" operation="set" value="OK"/>
+		<log level="0"> : Command - [cmd], state - [result]</log>
+	</then>
+	<else>
+		<parameter name="[result]" operation="set" value="KO"/>
+		<parameter name="[comment]" operation="set" value="Failed"/>
+		<log level="0">[result] in Command [cmd] ! [comment] </log>
+	</else>
+</if>
+<sendMessageSMTP name="Send Response RCPT request" transactionId="[tranid]" ><![CDATA[550 No such user here]]>
+</sendMessageSMTP>
+
+</scenario>

@@ -1,0 +1,42 @@
+<!-- <if>
+	<condition>
+		<test parameter="[lastSIPMethod]" condition="equals" value="INVITE"/>
+	</condition>
+	<then>
+		<parameter name="[method]" 			operation="set" 			value="OK"/>
+	</then>
+	<else>
+		<if>
+			<condition>
+				<test parameter="[lastSIPMethod]" condition="equals" value="MESSAGE"/>
+			</condition>
+			<then>
+				<parameter name="[method]" 			operation="set" 			value="OK"/>
+			</then>	
+			<else>
+				<parameter name="[method]" 			operation="set" 			value="KO"/>
+			</else>
+		</if>
+	</else>
+</if>
+
+<if>
+	<condition>
+		<test parameter="[method]" condition="equals" value="OK"/>
+	</condition>
+	<then> -->
+<!--rajoute orig au p charging vector-->
+<parameter name="[lastHeader]" 	operation="addfirst" 	value="[lastHeader]"	value2="P-Charging-Vector: [P-Charging-Vector]; orig-ioi=[domaine]"/>
+
+<!--enregistrement route uri via to-->
+<parameter name="[nextURI]" 			operation="setFromMessage" 	value="firstline:URI " 		value2="[lastMessage]"/> 
+
+<parameter name="[index]" 				operation="findMatches" 	value="[lastHeader]" 			value2="Route.*"/> 
+<parameter name="[nextROUTE]" 			operation="set" 			value="[lastHeader([index])]"/>
+
+<parameter name="[VIA[lastCall-ID]]" 	operation="set" 		value="[Via]"/>	
+<parameter name="[URI[lastCall-ID]]" 	operation="set" 		value="[nextURI]"/>
+<parameter name="[ROUTE[lastCall-ID]]" 	operation="set"			value="[nextROUTE]"/>
+<parameter name="[TO[lastCall-ID]]" 	operation="set"			value="[lastTo]"/>
+	<!-- </then>
+</if> -->

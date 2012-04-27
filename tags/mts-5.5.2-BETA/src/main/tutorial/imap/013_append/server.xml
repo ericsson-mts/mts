@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <!-- attend message APPEND-->
+    <receiveMessageIMAP request="true">
+        <parameter name="[commandArg]" operation="protocol.setFromMessage" value="request.arguments" />
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse intermediaire APPEND-->
+    <sendMessageIMAP name="Send intermediate APPEND" channel="[connection]">
+<![CDATA[
++
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend data APPEND-->
+    <receiveMessageIMAP channel="[connection]" request="true" >
+        <parameter name="[commandArg]" operation="protocol.setFromMessage" value="request.arguments" />
+        <parameter name="data" operation="protocol.setFromMessage" value="data" />
+        <parameter name="tag2" operation="protocol.setFromMessage" value="request.tag" />
+        <test parameter="[tag2]" condition="string.equals" value="[tag]"/>
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final APPEND-->
+    <sendMessageIMAP name="Send APPEND"  channel="[connection]">
+<![CDATA[
+[tag] OK APPEND completed
+]]>
+    </sendMessageIMAP>
+    
+</scenario>
