@@ -220,20 +220,26 @@ public class TestcaseRunner extends Runner implements Task,
         }
     }
 
-    @Override
-    public void init() throws Exception {
-        this.init(true);
-    }
-
     /**
-     * Parse all scenarios and create associated scenarioRunners.
-     * @param force force the parsing of the scenario XML files, even if it has already been done.
+     * Parse all scenarios.
      * @throws java.lang.Exception
      */
-    public void init(boolean force) throws Exception {
-        // TODO remove this method and use 'init'
-        _testcase.parseScenarios();
+    @Override
+    public void init() throws Exception {
+        try {
+            _testcase.parseScenarios();
+        }
+        catch (Exception e) {
+            GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, e, "Error parsing scenarios in TestcaseRunner");
+            getState().setFlag(RunnerState.F_STARTED, true);
+            getState().setFlag(RunnerState.F_FAILED, true);
+            getState().setFlag(RunnerState.F_FINISHED, true);
+            doNotifyAll();
+            throw e;
+        }
     }
+
+
 
     public void reset() {
         _stopped = false;
@@ -257,7 +263,6 @@ public class TestcaseRunner extends Runner implements Task,
              */
             _profile = _testcase.getProfile();
             _context = _profile.createContext();
-            init();
 
             getState()._executionsCurrent = 0;
             getState()._executionsEnd = Math.max(1, _testcase.getNumber());
@@ -268,6 +273,7 @@ public class TestcaseRunner extends Runner implements Task,
             _startedLoad = false;
             _startedSingle = true;
             doNotifyAll();
+            init();
             synchronized (this) {
                 _scheduled = true;
                 _scheduler.execute(this, false);

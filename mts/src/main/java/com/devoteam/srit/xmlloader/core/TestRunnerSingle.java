@@ -25,7 +25,6 @@ package com.devoteam.srit.xmlloader.core;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-
 import com.devoteam.srit.xmlloader.core.utils.notifications.Notification;
 import com.devoteam.srit.xmlloader.core.utils.notifications.NotificationListener;
 
@@ -45,7 +44,7 @@ public class TestRunnerSingle extends TestRunner implements NotificationListener
         if(_testcaseRunner.attach(this)){
             _testcaseRunner.reset();
             _testcaseRunner.addListener(this);
-            _testcaseRunner.init(true);
+            _testcaseRunner.init();
         }
         else{
             //TODO: some error

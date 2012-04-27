@@ -387,10 +387,6 @@ public class TesterGui {
         }
     }
 
-    synchronized public void updateMenuState(boolean opening) {
-        throw new UnsupportedOperationException();
-    }
-
     public void stopAll() {
         for(TestRunner testRunner : RegistryTestRunner.getInstance().getActiveTestRunners()){
             testRunner.stop();
