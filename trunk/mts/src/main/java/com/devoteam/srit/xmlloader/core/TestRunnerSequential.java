@@ -167,7 +167,7 @@ public class TestRunnerSequential extends TestRunner implements Runnable, Notifi
                 if (!_stopped && testcase.getState() && _currentTestcaseRunner.attach(this)) {
                     _currentTestcaseRunner.reset();
                     _currentTestcaseRunner.addListener(this);
-                    _currentTestcaseRunner.init(true);
+                    _currentTestcaseRunner.init();
                     _currentTestcaseRunner.startSingle();
                 }
                 else {
