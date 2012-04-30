@@ -2,7 +2,7 @@
 
 rmdir out /s/q
 
-cd ..\..\bin\tools
+cd ..\..\bin
 
 echo --------------------------------------------
 echo -- TEST SIP SUR UDP AVEC PORT PAR DEFAULT --
