@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.core.protocol.probe;
 
 import java.net.InetAddress;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -74,7 +75,7 @@ public class PJpcapThread implements PacketReceiver, Runnable {
             captor = JpcapCaptor.openDevice(networkInterface, DEFAULT_SNAPLENGHT, probe.getPromiscuousMode(), 10);
             captor.setFilter(probe.getCaptureFilter(), true);
         }
-        else {
+        else if (probe.getFilename() != null) {
             captor = JpcapCaptor.openFile(probe.getFilename());
             if (probe.getCaptureFilter() != null) {
                 captor.setFilter(probe.getCaptureFilter(), true);
@@ -155,19 +156,22 @@ public class PJpcapThread implements PacketReceiver, Runnable {
         // try to find a java device having the same name
         java.net.NetworkInterface javaNetworkInterface = java.net.NetworkInterface.getByName(networkName);
         if (javaNetworkInterface != null) {
-            // try to find a jpcap device having an ip address in common with the java device
-
-            // select the first of the InetAdresse of the java device
-            InetAddress inetAddress = javaNetworkInterface.getInetAddresses().nextElement();
-            for (NetworkInterface networkInterface : JpcapCaptor.getDeviceList()) {
-                // compare all of the adresses of the jpcap interface against the address of the java interface
-                for (NetworkInterfaceAddress networkInterfaceAddress : networkInterface.addresses) {
-                    byte[] jpcapAddress = networkInterfaceAddress.address.getAddress();
-                    byte[] javaAddress = inetAddress.getAddress();
-                    if (new DefaultArray(javaAddress).equals(new DefaultArray(jpcapAddress))) {
-                        return networkInterface;
-                    }
-                }
+            // try to 	find a jpcap device having an ip address in common with the java device
+        	Enumeration<java.net.InetAddress> addrs = javaNetworkInterface.getInetAddresses();
+            if (addrs.hasMoreElements())
+            {
+	            // select the first of the InetAdresse of the java device
+	            InetAddress inetAddress = javaNetworkInterface.getInetAddresses().nextElement();
+	            for (NetworkInterface networkInterface : JpcapCaptor.getDeviceList()) {
+	                // compare all of the adresses of the jpcap interface against the address of the java interface
+	                for (NetworkInterfaceAddress networkInterfaceAddress : networkInterface.addresses) {
+	                    byte[] jpcapAddress = networkInterfaceAddress.address.getAddress();
+	                    byte[] javaAddress = inetAddress.getAddress();
+	                    if (new DefaultArray(javaAddress).equals(new DefaultArray(jpcapAddress))) {
+	                        return networkInterface;
+	                    }
+	                }
+	            }
             }
         }
 
@@ -184,7 +188,7 @@ public class PJpcapThread implements PacketReceiver, Runnable {
             // compare all of the adresses of the jpcap interface agains the address
             for (NetworkInterfaceAddress networkInterfaceAddress : networkInterface.addresses) {
                 byte[] jpcapAddress = networkInterfaceAddress.address.getAddress();
-                if (parsedIP.equals(new DefaultArray(jpcapAddress))) {
+                if (new DefaultArray(jpcapAddress).equals(parsedIP)) {
                     return networkInterface;
                 }
             }

@@ -5,8 +5,6 @@ set OPTIONS=-level:DEBUG -stor:file -gen:false -show:false
 rem run the unit tests
 cd ..\bin
 
-call startCmd.bat ..\tutorial\mgcp\test.xml -sequential %OPTIONS%
-
 REM ******************************************* protocol modules
 call startCmd.bat ..\tutorial\core\test.xml -sequential %OPTIONS% -param:param_1+one -param:[param_2]+two -param:[param_3]+three
 call startCmd.bat ..\tutorial\diameter\test.xml -sequential %OPTIONS%
