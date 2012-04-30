@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!--  name="Send 3GPP CX Multimedia Authentication answer (MAR/MAA)" -->
+<scenario>
+
+    <createListenpointDIAMETER name="proxy" localHost="[Listen-Proxy-Host]" localPort="[Listen-Proxy-Port]">
+    	<nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
+	<avp code="Origin-Host" value="[Local-Host]" type="DiameterIdentity" mandatory="true"/>
+	<avp code="Origin-Realm" value="[Local-Realm]" type="DiameterIdentity" mandatory="true"/>
+	<avp code="Host-IP-Address" value="[Local-Host]" type="IPAddress" mandatory="true"/>
+	<avp code="Vendor-Id" value="TGPP" type="VendorId" mandatory="true"/>
+	<avp code="Product-Name" value="IMSLoader - MTS" type="UTF8String" mandatory="true"/>
+	<avp code="Origin-State-Id" value="123456789" type="Unsigned32" mandatory="true"/>
+	<avp code="Firmware-Revision" value="987654321" type="Unsigned32" mandatory="true"/>
+	<avp code="Vendor-Specific-Application-Id" type="Grouped" mandatory="true">		
+		<avp code="Vendor-Id" value="TGPP" type="VendorId" mandatory="true"/>
+		<avp code="Auth-Application-Id" value="IMS_Cx_Dx" type="AppId" mandatory="true"/>
+	</avp>	
+    </createListenpointDIAMETER>
+
+    <label name="ReceiveRequestMAR"/>
+    
+    <receiveMessageDIAMETER name="ReceiveRequestMAR" listenpoint="proxy">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[request]" operation="protocol.setFromMessage" value="header.request"/>
+        <parameter name="[error]" operation="protocol.setFromMessage" value="header.error"/>
+        <parameter name="[proxiable]" operation="protocol.setFromMessage" value="header.proxiable"/>
+        <parameter name="[retransmit]" operation="protocol.setFromMessage" value="header.retransmit"/>
+        <parameter name="[avpsCode]" operation="protocol.setFromMessage" value="avp.Route-Record.value"/>
+    </receiveMessageDIAMETER>
+
+    <sendMessageDIAMETER name="SendAnswerMAA"  remoteURL="diameter://[Remote-Address]">
+    
+        <header request="[request]" command="User-Authorization" applicationId="16777216" proxiable="[proxiable]" endToEnd="[endToEnd]"/>
+        
+        <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/>
+            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/-->
+         </avp>
+
+        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
+        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>
+        <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[Remote-Host]"/> 
+        <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>
+         
+        <avp code="Route-Record" mandatory="true" value="[avpsCode]"/>
+        
+    </sendMessageDIAMETER>
+
+    <!--goto name="goto ReceiveRequestMAR" label="ReceiveRequestMAR" /-->
+    
+</scenario>
