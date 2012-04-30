@@ -231,6 +231,12 @@ public class Scenario implements Serializable {
             ope = parseReceiveAAA(StackFactory.PROTOCOL_DIAMETER, true, root);
         }
         // deprecated part
+        else if (rootName.equals("createListenpointDIAMETER")) {
+            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_DIAMETER, root);
+        }
+        else if (rootName.equals("removeListenpointDIAMETER")) {
+            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_DIAMETER, root);
+        }
         else if (rootName.equals("openChannelDIAMETER")) {
             ope = new OperationOpenChannel(StackFactory.PROTOCOL_DIAMETER, root);
         }
