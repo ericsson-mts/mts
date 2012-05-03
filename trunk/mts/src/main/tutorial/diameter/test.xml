@@ -266,6 +266,16 @@
         <scenario name="274">944_gqp/AF-Gqp-ASA.xml</scenario>
     </testcase>
 
+    <testcase name="996_proxy" description="diameter" state="false">
+        <parameter name="[Listen-Proxy-Host]" operation="set" value="[Local-Host]"/>
+        <parameter name="[Listen-Proxy-Port]" operation="set" value="3880"/>
+        <parameter name="[Remote-Proxy-Host]" operation="set" value="[Remote-Host]"/>
+        <parameter name="[Remote-Proxy-Port]" operation="set" value="[Remote-Port]"/>        
+        <scenario name="proxy">996_proxy/proxy.xml</scenario>
+        <scenario name="client">996_proxy/client.xml</scenario>
+        <scenario name="DIAMETER">996_proxy/server.xml</scenario>             
+    </testcase>
+
     <testcase name="997_boucle" description="diameter" state="false">
         <scenario name="client">997_boucle/client.xml</scenario>
         <scenario name="server">997_boucle/server.xml</scenario>        
