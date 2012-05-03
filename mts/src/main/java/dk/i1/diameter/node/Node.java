@@ -1065,10 +1065,19 @@ public class Node {
 						reported_capabilities.addVendorAcctApp(vendor_id,app);
 					} else
 						throw new InvalidAVPValueException(a);
+				} else if(g.length>=2 && g[1].code==ProtocolConstants.DI_VENDOR_ID) {
+					int vendor_id = new AVP_Unsigned32(g[1]).queryValue();
+					int app = new AVP_Unsigned32(g[0]).queryValue();
+					if(g[0].code==ProtocolConstants.DI_AUTH_APPLICATION_ID) {
+						reported_capabilities.addVendorAuthApp(vendor_id,app);
+					} else if(g[0].code==ProtocolConstants.DI_ACCT_APPLICATION_ID) {
+						reported_capabilities.addVendorAcctApp(vendor_id,app);
+					} else
+						throw new InvalidAVPValueException(a);
 				} else
 					throw new InvalidAVPValueException(a);
 			}
-			
+
 			Capability result_capabilities = node_validator.authorizeNode(conn.host_id, settings, reported_capabilities);
 			if(logger.isLoggable(Level.FINEST)) {
 				String s = "";
