@@ -112,8 +112,11 @@ public class OperationSendMsg extends Operation
         	msg.setTransport(transport);
         }
 
-        Listenpoint listenpoint = StackFactory.getStack(protocol).getListenpoint(null);
-        msg.setListenpoint(listenpoint);
+        if (msg.getListenpoint() == null)
+        {
+        	Listenpoint listenpoint = StackFactory.getStack(protocol).getListenpoint(null);
+        	msg.setListenpoint(listenpoint);
+        }
         
         String transactionIdAttribute = getAttribute("transactionId");
         if(null != transactionIdAttribute)
