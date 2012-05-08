@@ -184,9 +184,6 @@ public class TesterGui {
                 guiMenuHelper.updateMenuStates(false, false, false, false);
             }
         }
-        else {
-            guiMenuHelper.updateMenuStates(false, false, false, false);
-        }
     }
 
     public void reload(boolean resetEditableParameters) {
