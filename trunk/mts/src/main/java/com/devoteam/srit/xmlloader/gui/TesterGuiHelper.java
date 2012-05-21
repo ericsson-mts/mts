@@ -314,7 +314,7 @@ class TesterGuiHelper implements ActionListener {
                 if (browser == null) {
                     throw new Exception("null browser path");
                 }
-                String urlName = "../doc/IMSLoader_doc_index.htm";
+                String urlName = "../doc/MTS_doc_index.htm";
                 File index = new File(urlName);
                 try {
                     GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Opening web browser with command :\n", browser, " ", index.toURI());
