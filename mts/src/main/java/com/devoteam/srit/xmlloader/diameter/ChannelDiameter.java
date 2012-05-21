@@ -58,7 +58,7 @@ public class ChannelDiameter extends Channel
 
     public ChannelDiameter(Peer peer, ConnectionKey connKey) throws Exception
     {
-        super(null, peer.uri().toString(), (peer.transportProtocol().equals(Peer.TransportProtocol.sctp)) ? StackFactory.PROTOCOL_SCTP : StackFactory.PROTOCOL_TCP);
+        super(null, peer.uri().toString(), (Peer.TransportProtocol.sctp).equals(peer.transportProtocol()) ? StackFactory.PROTOCOL_SCTP : StackFactory.PROTOCOL_TCP);
         this.peer = peer;
         this.connKey = connKey; 
         this.transport = peer.transportProtocol().name().toUpperCase();

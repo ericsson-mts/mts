@@ -122,10 +122,23 @@ public class DiameterNodeManager extends NodeManager {
         try
         {
             msg = new MsgDiameter(message);
-                        
-            Channel channel = new ChannelDiameter(peer, connkey);
-            msg.setChannel(channel);
+            
             msg.setListenpoint(listenpoint);
+            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, null, "peer = " + peer);
+            if (peer != null)
+            {
+            	GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, null, "peer.uri() = " + peer.uri());
+            	if (peer.uri() != null)
+            	{
+            		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, null, "peer.uri().toString = " + peer.uri().toString());
+            	}
+            	GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, null, "peer.transportProtocol() = " + peer.transportProtocol());
+            }
+            if (peer != null && peer.uri() != null && peer.transportProtocol() != null)
+            {
+            	Channel channel = new ChannelDiameter(peer, connkey);
+            	msg.setChannel(channel);
+            }
                                                       
             StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER).receiveMessage(msg);
         }
