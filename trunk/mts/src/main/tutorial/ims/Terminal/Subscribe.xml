@@ -10,24 +10,24 @@
 	<parameter name="[100_DOMAIN_ADDR]" operation="set" value="[domaine]"/>
 	<parameter name="[Expires]" 		operation="set" value="3600"/>
 	
-	<parameter name="[LocalHost]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+	<parameter name="[LocalHost]" operation="system.ipaddress" value="eth0"/>
 	<parameter name="[LocalPort]" operation="set" value="[port_UAS]"/>
 	<parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort(0)]"/>	
 	<parameter name="[LocalTransport]" operation="set" value="udp"/>  
 	
-	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<createListenpointSIP name="[scenarioName]" localHost="[LocalHost]" localPort="[LocalPort]" transport="[LocalTransport]"/>
 
 	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
 	
 	&register;
 
 	
-<parameter name="[newCallId]" operation="identifier" value="newInteger" value2="10000000"/>	 
-	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+<parameter name="[newCallId]" operation="number.random" value="10000000"/>	 
+	<parameter name="[localTag]" operation="string.random" value="10"/>
 	<parameter name="[newCseq]" operation="set" value="1"/>			
-	<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+	<parameter name="[newBranchId]" operation="string.random" value="10"/>
   
-	<sendRequestSIP name="Send Subscribe" providerName="[scenarioName]">
+	<sendMessageSIP name="Send Subscribe" listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
 <![CDATA[SUBSCRIBE sip:[clientName]@[100_DOMAIN_ADDR] SIP/2.0
 Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
 Max-Forwards: 70
@@ -43,21 +43,21 @@ Event: reg
 Expires: 3600
 Content-Length: 0
 ]]>
-	</sendRequestSIP>
+	</sendMessageSIP>
 		
-	<receiveResponseSIP name="Wait 200 OK" method="SUBSCRIBE" result="200">
-	</receiveResponseSIP>
+	<receiveMessageSIP name="Wait 200 OK" type="SUBSCRIBE" result="200" request="false">
+	</receiveMessageSIP>
 	
-	<receiveRequestSIP name="Wait NOTIFY" method="NOTIFY">
-		<parameter name="[To]" operation="setFromMessage" value="header:To"/>  	
-		<parameter name="[From]" operation="setFromMessage" value="header:From"/>  	
-		<parameter name="[CallId]" operation="setFromMessage" value="header:Call-Id"/>  	
-		<parameter name="[CSeq]" operation="setFromMessage" value="header:CSeq"/>  	 		
-		<parameter name="[Via]" operation="setFromMessage" value="header:Via"/>
-		<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/> 
-	</receiveRequestSIP>
+	<receiveMessageSIP name="Wait NOTIFY" type="NOTIFY" request="true">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>  	
+		<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>  	 		
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		<parameter name="[localTag]" operation="string.random" value="10"/> 
+	</receiveMessageSIP>
 	
-	  <sendResponseSIP name="Send 200 OK" providerName="[scenarioName]">
+	  <sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
 <![CDATA[SIP/2.0 200 OK
 To: [From]
 From: [To]
@@ -67,7 +67,7 @@ CSeq: [CSeq]
 Max-Forwards: 70
 Content-Length: 0
 ]]>
-  </sendResponseSIP>
+  </sendMessageSIP>
   
 
 
@@ -79,17 +79,17 @@ Content-Length: 0
 	
 	
 	
-	  <receiveRequestSIP name="Wait NOTIFY" method="NOTIFY">
-		<parameter name="[To]" operation="setFromMessage" value="header:To"/>  	
-		<parameter name="[From]" operation="setFromMessage" value="header:From"/>  	
-		<parameter name="[CallId]" operation="setFromMessage" value="header:Call-Id"/>  	
-		<parameter name="[CSeq]" operation="setFromMessage" value="header:CSeq"/>  	 		
-		<parameter name="[Via]" operation="setFromMessage" value="header:Via"/>
-		<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/> 
-	</receiveRequestSIP>
+	  <receiveMessageSIP name="Wait NOTIFY" type="NOTIFY" request="true">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>  	
+		<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>  	 		
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		<parameter name="[localTag]" operation="string.random" value="10"/> 
+	</receiveMessageSIP>
   
   
-		 <sendResponseSIP name="Send 200 OK" providerName="[scenarioName]">
+		 <sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
 <![CDATA[SIP/2.0 200 OK
 To: [From]
 From: [To]
@@ -99,7 +99,7 @@ CSeq: [CSeq]
 Max-Forwards: 70
 Content-Length: 0
 ]]>
-  </sendResponseSIP>
+  </sendMessageSIP>
  
 	
 </scenario>

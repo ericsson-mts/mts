@@ -9,12 +9,12 @@
 	<parameter name="[clientName2]" operation="set" value="[client_UAC]"/>
 	<parameter name="[100_DOMAIN_ADDR]" operation="set" value="[domaine]"/>
 	
-	<parameter name="[LocalHost]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+	<parameter name="[LocalHost]" operation="system.ipaddress" value="eth0"/>
 	<parameter name="[LocalPort]" operation="set" value="[port_UAS]"/>
 	<parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort(0)]"/>	
 	<parameter name="[LocalTransport]" operation="set" value="udp"/>  
 	
-	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<createListenpointSIP name="[scenarioName]"  localHost="[LocalHost]" localPort="[LocalPort]" transport="[LocalTransport]"/>
 	
 	
 		<parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
@@ -27,19 +27,19 @@
 		
 	<parameter name="[testcase:SEM2]" operation="system.semaphorenotify"/>
 	
-	<receiveRequestSIP name="Wait INVITE"  method="INVITE">
-	<parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>       
-    <parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>   
-    <parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-Id"/>
-    <parameter name="[lastCseq]" operation="setFromMessage" value="header:CSeq"/>
-    <parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/>
-    <parameter name="[contact]" operation="setFromMessage" value="header:Contact"/>
-    <parameter name="[MaxForwards]" operation="setFromMessage" value="header:Max-Forwards"/>
-    <parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
-	<parameter name="[Record-Route]" operation="setFromMessage" value="header:Record-Route"/>
-    </receiveRequestSIP>
+	<receiveMessageSIP name="Wait INVITE"  type="INVITE" request="true">
+	<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>       
+    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>   
+    <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>
+    <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+    <parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+    <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[Record-Route]" operation="protocol.setFromMessage" value="header.Record-Route"/>
+    </receiveMessageSIP>
 
-	  <sendResponseSIP name="Send 100 Trying" providerName="[scenarioName]">
+	  <sendMessageSIP name="Send 100 Trying" listenpoint="[scenarioName]">
 <![CDATA[SIP/2.0 100 Trying
 To: [lastTo];tag=[localTag]
 From: [lastFrom]
@@ -49,11 +49,11 @@ CSeq: [lastCseq]
 P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
 Content-Length: 0
 ]]>
-  </sendResponseSIP>
+  </sendMessageSIP>
   
   
   
-  <sendResponseSIP name="Send 180 Ringing" providerName="[scenarioName]">
+  <sendMessageSIP name="Send 180 Ringing" listenpoint="[scenarioName]">
 <![CDATA[SIP/2.0 180 Ringing
 To: [lastTo];tag=[localTag]
 From: [lastFrom]
@@ -64,14 +64,14 @@ Contact: "[clientName]"<sip:Adresse-Tester]>
 P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
 Content-Length: 0
 ]]>
- </sendResponseSIP>
+ </sendMessageSIP>
  
  
- <receiveRequestSIP name="Wait ACK" method="CANCEL">
-  <parameter name="[lastCseq1]" operation="setFromMessage" value="header:CSeq"/>
-  </receiveRequestSIP>
+ <receiveMessageSIP name="Wait CANCEL" type="CANCEL" request="true">
+  <parameter name="[lastCseq1]" operation="protocol.setFromMessage" value="header.CSeq"/>
+  </receiveMessageSIP>
  
-<sendResponseSIP name="Send 200 OK" providerName="[scenarioName]">
+<sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
 <![CDATA[SIP/2.0 200 OK
 Record-Route:[Record-Route]
 To: [lastTo];tag=[localTag]
@@ -83,9 +83,9 @@ Contact: "[clientName]"<sip:[Adresse-Tester]>
 P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
 Content-Length: 0
 ]]>
-</sendResponseSIP>
+</sendMessageSIP>
   <parameter name="[testcase:SEM3]" operation="system.semaphorewait" />
-    <sendResponseSIP name="Send 487" providerName="[scenarioName]">
+    <sendMessageSIP name="Send 487" listenpoint="[scenarioName]">
 <![CDATA[SIP/2.0 487 OK
 Record-Route:[Record-Route]
 To: [lastTo];tag=[localTag]
@@ -97,10 +97,10 @@ Contact: "[clientName]"<sip:[Adresse-Tester]>
 P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
 Content-Length: 0
 ]]>
-</sendResponseSIP>
+</sendMessageSIP>
 
-  <receiveRequestSIP name="Wait ACK" method="ACK">
-  </receiveRequestSIP>
+  <receiveMessageSIP name="Wait ACK" type="ACK" request="true">
+  </receiveMessageSIP>
   
   
 <parameter name="[testcase:SEM8]" operation="system.semaphorewait" />

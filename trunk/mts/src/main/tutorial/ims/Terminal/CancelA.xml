@@ -11,12 +11,12 @@
 	<parameter name="[clientName2]" operation="set" value="[client_UAS]"/>
 	<parameter name="[100_DOMAIN_ADDR]" operation="set" value="[domaine]"/>
 	
-	<parameter name="[LocalHost]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+	<parameter name="[LocalHost]" operation="system.ipaddress" value="eth0"/>
 	<parameter name="[LocalPort]" operation="set" value="[port_UAC]"/>
 	<parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort(0)]"/>	
 	<parameter name="[LocalTransport]" operation="set" value="udp"/>  
 	
-	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<createListenpointSIP name="[scenarioName]"  localHost="[LocalHost]" localPort="[LocalPort]" transport="[LocalTransport]"/>
 
 	<parameter name="[Expires]" 		operation="set" value="3600"/>
 	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
@@ -27,12 +27,12 @@
 	 <parameter name="[testcase:SEM2]" operation="system.semaphorewait"/>
 	 
 	 
-	    <parameter name="[newCallID]" operation="identifier" value="newInteger" value2="10000000"/>	 
-	 	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
-	    <parameter name="[newCseq]" operation="add" value="[newCseq]" value2="1"/>			
-	    <parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+	    <parameter name="[newCallID]" operation="number.random" value="10000000"/>	 
+	 	<parameter name="[localTag]" operation="string.random" value="10"/>
+	    <parameter name="[newCseq]" operation="number.add" value="[newCseq]" value2="1"/>			
+	    <parameter name="[newBranchId]" operation="string.random" value="10"/>
 	    
-<sendRequestSIP name="Send Invite" providerName="[scenarioName]">
+<sendMessageSIP name="Send Invite" listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
 <![CDATA[INVITE sip:[clientName2]@[100_DOMAIN_ADDR] SIP/2.0
 Call-ID: [newCallID]
 CSeq: [newCseq] INVITE
@@ -56,23 +56,25 @@ c=IN IP4 [LocalPort]
 t=0 0
 m=audio 8000 RTP/AVP 0
 ]]>
-</sendRequestSIP>	
+</sendMessageSIP>	
    
    	
    
-<receiveResponseSIP name="Wait 100 Trying" method="INVITE" result="100">
-</receiveResponseSIP>
+<receiveMessageSIP name="Wait 100 Trying" type="INVITE" result="100" request="false">
+</receiveMessageSIP>
 
-<receiveResponseSIP name="Wait 180 Ringing" method="INVITE" result="180">
-</receiveResponseSIP>
+<receiveMessageSIP name="Wait 180 Ringing" type="INVITE" result="180" request="false">
+	<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/> 
+	<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>	
+</receiveMessageSIP>
 
  
- <sendRequestSIP name="Send Cancel" providerName="[scenarioName]">
+ <sendMessageSIP name="Send Cancel" listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
 <![CDATA[CANCEL sip:[clientName2]@[100_DOMAIN_ADDR] SIP/2.0
 Call-ID: [newCallID]
 CSeq: [newCseq] CANCEL
-From: "[clientName]"<sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
-To: sip:[clientName2]@[100_DOMAIN_ADDR]
+From: [From]
+To: [To]
 Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
 Max-Forwards: 70
 Route: [SCSCF]
@@ -82,19 +84,17 @@ Privacy: none
 User-Agent: IMSLoader
 Content-Length: 0
 ]]>
-</sendRequestSIP>	 
+</sendMessageSIP>	 
 
-	<receiveResponseSIP name="Wait 200 OK" method="CANCEL" result="200">             
-	</receiveResponseSIP> 
+	<receiveMessageSIP name="Wait 200 OK" type="CANCEL" result="200" request="false">             
+	</receiveMessageSIP> 
 	
       <parameter name="[testcase:SEM3]" operation="system.semaphorenotify"/>
 	  
-<receiveResponseSIP name="Wait 487" method="INVITE" >    
-	<parameter name="[From]" operation="setFromMessage" value="header:From"/> 
-	<parameter name="[To]" operation="setFromMessage" value="header:To"/>	
-</receiveResponseSIP> 
+<receiveMessageSIP name="Wait 487" type="INVITE" request="false">    
+</receiveMessageSIP> 
     
-<sendRequestSIP name="Send ACK" providerName="[scenarioName]">
+<sendMessageSIP name="Send ACK" listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
 <![CDATA[ACK sip:[clientName2]@[100_DOMAIN_ADDR] SIP/2.0
 Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
 Max-Forwards: 70
@@ -110,7 +110,7 @@ Privacy: none
 P-Asserted-Identity: <sip:bob@ims.net>
 Content-Length: 0
 ]]> 
-</sendRequestSIP> 
+</sendMessageSIP> 
   
 <parameter name="[testcase:SEM8]" operation="system.semaphorenotify"/>
   

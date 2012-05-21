@@ -9,12 +9,12 @@
 	<parameter name="[clientName2]" operation="set" value="[client_UAS]"/>
 	<parameter name="[100_DOMAIN_ADDR]" operation="set" value="[domaine]"/>
 	
-	<parameter name="[LocalHost]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+	<parameter name="[LocalHost]"    operation="system.ipaddress" value="eth0"/>
 	<parameter name="[LocalPort]" operation="set" value="[port_UAC]"/>
 	<parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort(0)]"/>	
 	<parameter name="[LocalTransport]" operation="set" value="udp"/>  
 	
-	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<createListenpointSIP name="[scenarioName]" localHost="[LocalHost]" localPort="[LocalPort]" transport="[LocalTransport]"/>
 
 	<parameter name="[Expires]" 		operation="set" value="3600"/>
 	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
@@ -25,14 +25,14 @@
 	 <parameter name="[testcase:SEM2]" operation="system.semaphorewait"/>
 	 
 	 
-	    <parameter name="[newCallID]" operation="identifier" value="newInteger" value2="10000000"/>	 
-	 	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
-		<parameter name="[newCseqI]" operation="add" value="[newCseq]" value2="1"/>
-	    <parameter name="[newCseq]" operation="add" value="[newCseq]" value2="1"/>	
+	    <parameter name="[newCallID]" operation="number.random" value="10000000"/>	 
+	 	<parameter name="[localTag]" operation="string.random" value="10"/>
+		<parameter name="[newCseqI]" operation="number.add" value="[newCseq]" value2="1"/>
+	    <parameter name="[newCseq]" operation="number.add" value="[newCseq]" value2="1"/>	
 		
-	    <parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+	    <parameter name="[newBranchId]" operation="string.random" value="10"/>
 	    
-<sendRequestSIP name="Send Invite"  providerName="[scenarioName]">
+<sendMessageSIP name="Send Invite"  listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
 <![CDATA[INVITE sip:[clientName2]@[100_DOMAIN_ADDR] SIP/2.0
 Call-ID: [newCallID]
 CSeq: [newCseqI] INVITE
@@ -74,47 +74,48 @@ a=des: mandatory remote sendrecv
 a=rtpmap:97 AMR
 a=fmtp:97 mode-set=1,2,5,7 maxframes=2
 a=rtpmap:96 telephone-event]]>
-</sendRequestSIP>	
+</sendMessageSIP>	
    
    	
    
-	<receiveResponseSIP name="Wait 100 Trying" method="INVITE" result="100">
-	</receiveResponseSIP>
+	<receiveMessageSIP name="Wait 100 Trying" type="INVITE" result="100" request="false">
+	</receiveMessageSIP>
 
-	<receiveResponseSIP name="Wait 183 Session Progress" method="INVITE" result="183">
-	 <parameter name="[Rseq]" operation="setFromMessage" value="header:Rseq"/>
-	 <parameter name="[Record-Route]" operation="setFromMessage" value="header:Record-Route"/>
-	 <parameter name="[From]" operation="setFromMessage" value="header:From"/> 
-	<parameter name="[To]" operation="setFromMessage" value="header:To"/>	                      
-    <parameter name="[Request-URI]" operation="setFromMessage" value="header:Contact:Address:URI"/>	
+	<receiveMessageSIP name="Wait 183 Session Progress" type="INVITE" result="183" request="false">
+	 <parameter name="[Rseq]" operation="protocol.setFromMessage" value="header.Rseq"/>
+	 <parameter name="[Record-Route]" operation="protocol.setFromMessage" value="header.Record-Route"/>
+	 <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/> 
+	<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>	
+	<parameter name="[CallID]" operation="protocol.setFromMessage" value="header.Call-ID"/>                      
+    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
 
-	</receiveResponseSIP>
+	</receiveMessageSIP>
    
-   	<parameter name="[Record-Route-Size]" operation="size" value="[Record-Route]"/>
-    <parameter name="[Record-Route-Inv]" operation="create" />
+   	<parameter name="[Record-Route-Size]" operation="list.size" value="[Record-Route]"/>
+    <parameter name="[Record-Route-Inv]" operation="list.create" />
     <while>
 	<condition>
-		<test parameter="[Record-Route-Size]" condition="greaterThan" value="0" />
+		<test parameter="[Record-Route-Size]" condition="number.greaterThan" value="0" />
 	</condition>
 	<do>
-		<parameter name="[temp]" operation="getFirst" value="[Record-Route]" />
-		<parameter name="[Record-Route]" operation="removeFirst" value="[Record-Route]" />
-		<parameter name="[Record-Route-Inv]" operation="addFirst" value="[Record-Route-Inv]" value2="[temp]"/>
-		<parameter name="[Record-Route-Size]" operation="size" value="[Record-Route]"/>
+		<parameter name="[temp]" operation="list.getFirst" value="[Record-Route]" />
+		<parameter name="[Record-Route]" operation="list.removeFirst" value="[Record-Route]" />
+		<parameter name="[Record-Route-Inv]" operation="list.addFirst" value="[Record-Route-Inv]" value2="[temp]"/>
+		<parameter name="[Record-Route-Size]" operation="list.size" value="[Record-Route]"/>
 	</do>
     </while>
    
-   <parameter name="[newCseqP]" operation="add" value="[newCseq]" value2="1"/>
+   <parameter name="[newCseqP]" operation="number.add" value="[newCseq]" value2="1"/>
 	
-	<sendRequestSIP name="Send Prack"  providerName="[scenarioName]">
+	<sendMessageSIP name="Send Prack"  listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
 <![CDATA[PRACK [Request-URI] SIP/2.0
 Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
 Max-Forwards: 70
 P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
 Route: [Record-Route-Inv]
-From: "[clientName]"<sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
-To: sip:[clientName2]@[100_DOMAIN_ADDR]
-Call-ID: [newCallID]
+From: [From]
+To: [To]
+Call-ID: [CallID]
 CSeq: [newCseqP] PRACK
 Require: precondition, sec-agree
 Proxy-Require: sec-agree
@@ -145,27 +146,27 @@ a=des: mandatory remote sendrecv
 a=rtpmap:97 AMR
 a=fmtp:97 mode-set=1,2,5,7 maxframes=2
 a=rtpmap:96 telephone-event]]>
-</sendRequestSIP>
+</sendMessageSIP>
 
 
 
 	
-  <receiveResponseSIP name="Wait 200 OK" method="PRACK" result="200">             
-    <parameter name="[From]" operation="setFromMessage" value="header:From"/> 
-	<parameter name="[To]" operation="setFromMessage" value="header:To"/>	
-    <parameter name="[CallId]" operation="setFromMessage" value="header:Call-Id"/> 
-    <parameter name="[nextCseqNumber]" operation="add" value="[newCseq]" value2="1"/>   
-    <parameter name="[nextNextCseqNumber]" operation="add" value="[nextCseqNumber]" value2="1"/>                               
-    <parameter name="[Request-URI]" operation="setFromMessage" value="header:Contact:Address:URI"/>	
-	<parameter name="[Record-Route]" operation="setFromMessage" value="header:Record-Route"/>	
-	<parameter name="[Contact]" operation="setFromMessage" value="header:Contact"/>
-  </receiveResponseSIP> 
+  <receiveMessageSIP name="Wait 200 OK" type="PRACK" result="200" request="false">             
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/> 
+	<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>	
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-Id"/> 
+    <parameter name="[nextCseqNumber]" operation="number.add" value="[newCseq]" value2="1"/>   
+    <parameter name="[nextNextCseqNumber]" operation="number.add" value="[nextCseqNumber]" value2="1"/>                               
+    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+	<parameter name="[Record-Route]" operation="protocol.setFromMessage" value="header.Record-Route"/>	
+	<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+  </receiveMessageSIP> 
   
 
 
-	<parameter name="[newCseqU]" operation="add" value="[newCseqP]" value2="1"/>
+	<parameter name="[newCseqU]" operation="number.add" value="[newCseqP]" value2="1"/>
 	
- <sendRequestSIP name="Send UPDATE"  providerName="[scenarioName]">
+ <sendMessageSIP name="Send UPDATE"  listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
 <![CDATA[UPDATE [Request-URI] SIP/2.0
 Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
 Max-Forwards: 70
@@ -203,43 +204,43 @@ a=des: mandatory remote sendrecv
 a=rtpmap:97 AMR
 a=fmtp:97 mode-set=1,2,5,7 maxframes=2
 a=rtpmap:96 telephone-event]]> 
-  </sendRequestSIP> 
+  </sendMessageSIP> 
   
 	
-  <receiveResponseSIP name="Wait 200 OK" method="UPDATE" result="200">             
-    <parameter name="[From]" operation="setFromMessage" value="header:From"/> 
-    <parameter name="[CallId]" operation="setFromMessage" value="header:Call-Id"/> 
-    <parameter name="[nextCseqNumber]" operation="add" value="[newCseq]" value2="1"/>   
-    <parameter name="[nextNextCseqNumber]" operation="add" value="[nextCseqNumber]" value2="1"/>                               
-    <parameter name="[Request-URI]" operation="setFromMessage" value="header:Contact:Address:URI"/>	
-	<parameter name="[Record-Route]" operation="setFromMessage" value="header:Record-Route"/>	
-	<parameter name="[Contact]" operation="setFromMessage" value="header:Contact"/>
-  </receiveResponseSIP> 
+  <receiveMessageSIP name="Wait 200 OK" type="UPDATE" result="200" request="false">             
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/> 
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-Id"/> 
+    <parameter name="[nextCseqNumber]" operation="number.add" value="[newCseq]" value2="1"/>   
+    <parameter name="[nextNextCseqNumber]" operation="number.add" value="[nextCseqNumber]" value2="1"/>                               
+    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+	<parameter name="[Record-Route]" operation="protocol.setFromMessage" value="header.Record-Route"/>	
+	<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+  </receiveMessageSIP> 
    
 <parameter name="[testcase:SEMA]" operation="system.semaphorenotify"/>
    
    
-   <receiveResponseSIP name="Wait 180 Ringing" method="INVITE" result="180">
-	 <parameter name="[Rseq]" operation="setFromMessage" value="header:Rseq"/>
-	 <parameter name="[Record-Route]" operation="setFromMessage" value="header:Record-Route"/>
-	 <parameter name="[From]" operation="setFromMessage" value="header:From"/> 
+   <receiveMessageSIP name="Wait 180 Ringing" type="INVITE" result="180" request="false">
+	 <parameter name="[Rseq]" operation="protocol.setFromMessage" value="header.Rseq"/>
+	 <parameter name="[Record-Route]" operation="protocol.setFromMessage" value="header.Record-Route"/>
+	 <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/> 
                    
-    <parameter name="[Request-URI]" operation="setFromMessage" value="header:Contact:Address:URI"/>	
+    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
 
-	</receiveResponseSIP>
+	</receiveMessageSIP>
    
     
       
 
 
    
-   	    <parameter name="[newCseq]" operation="add" value="[newCseqU]" value2="1"/>		
+   	    <parameter name="[newCseq]" operation="number.add" value="[newCseqU]" value2="1"/>		
   	
 	    
 	    
 	    
 	    
-  	<sendRequestSIP name="Send Prack" providerName="[scenarioName]">
+  	<sendMessageSIP name="Send Prack" listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
 <![CDATA[PRACK [Request-URI]  SIP/2.0
 Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
 Max-Forwards: 70
@@ -254,20 +255,20 @@ Proxy-Require: sec-agree
 RAck: [Rseq] [newCseqI] INVITE
 Content-Length: 0
 ]]>
-  </sendRequestSIP>
+  </sendMessageSIP>
                 
-  <receiveResponseSIP name="Wait 200 OK" method="PRACK" result="200">
-  </receiveResponseSIP>
+  <receiveMessageSIP name="Wait 200 OK" type="PRACK" result="200" request="false">
+  </receiveMessageSIP>
   
 <parameter name="[testcase:SEM8]" operation="system.semaphorewait"/>
    
-	<receiveResponseSIP name="200 OK" method="INVITE" result="200">
+	<receiveMessageSIP name="200 OK" type="INVITE" result="200" request="false">
 	
-	</receiveResponseSIP>
+	</receiveMessageSIP>
 	
 	 		
-  	 <parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/> 
-	<sendRequestSIP name="Send ACK" providerName="[scenarioName]">
+  	 <parameter name="[newBranchId]" operation="string.random" value="10"/> 
+	<sendMessageSIP name="Send ACK" listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
  <![CDATA[ACK [Request-URI] SIP/2.0
 Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
 Max-Forwards: 70
@@ -284,11 +285,11 @@ User-Agent: [UserAgent]
 P-Asserted-Identity: <sip:bob@ims.net>
 Content-Length: 0
 ]]> 
-  </sendRequestSIP> 
-	<parameter name="[newCseq]" operation="add" value="[newCseqP]" value2="1"/>		
-  	    <!--<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/> -->	    
+  </sendMessageSIP> 
+	<parameter name="[newCseq]" operation="number.add" value="[newCseqP]" value2="1"/>		
+  	    <!--<parameter name="[newBranchId]" operation="string.random" value="10"/> -->	    
   	 <parameter name="[testcase:SEM7]" operation="system.semaphorewait"/>
- <sendRequestSIP name="Send BYE" providerName="[scenarioName]">
+ <sendMessageSIP name="Send BYE" listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
 <![CDATA[BYE [Request-URI] SIP/2.0
 Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
 Max-Forwards: 70
@@ -305,10 +306,10 @@ User-Agent: [UserAgent]
 P-Asserted-Identity: <sip:bob@ims.net>
 Content-Length: 0
 ]]>
-  </sendRequestSIP>
+  </sendMessageSIP>
                 
-  <receiveResponseSIP name="Wait 200 OK" method="BYE" result="200">
-  </receiveResponseSIP>
+  <receiveMessageSIP name="Wait 200 OK" type="BYE" result="200" request="false">
+  </receiveMessageSIP>
 	
   <parameter name="[testcase:SEM5]" operation="system.semaphorenotify"/>
   
