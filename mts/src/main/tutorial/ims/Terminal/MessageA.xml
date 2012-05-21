@@ -10,12 +10,12 @@
 	<parameter name="[clientName2]" operation="set" value="[client_UAS]"/>
 	<parameter name="[100_DOMAIN_ADDR]" operation="set" value="[domaine]"/>
 	
-	<parameter name="[LocalHost]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+	<parameter name="[LocalHost]"  operation="system.ipaddress" value="eth0"/>
 	<parameter name="[LocalPort]" operation="set" value="[port_UAC]"/>
 	<parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort(0)]"/>	
 	<parameter name="[LocalTransport]" operation="set" value="udp"/>  
 	
-	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<createListenpointSIP name="[scenarioName]" localHost="[LocalHost]" localPort="[LocalPort]" transport="[LocalTransport]"/>
 
 	<parameter name="[Expires]" 		operation="set" value="3600"/>
 	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
@@ -25,12 +25,12 @@
 	 <parameter name="[testcase:SEM2]" operation="system.semaphorewait"/>
 	 
 	 
-	    <parameter name="[newCallID]" operation="identifier" value="newInteger" value2="10000000"/>	 
-	 		<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
-	    <parameter name="[newCseq" operation="add" value="[newCseq]" value2="1"/>			
-	    <parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+	    <parameter name="[newCallID]" operation="number.random" value="10000000"/>	 
+	 		<parameter name="[localTag]" operation="string.random" value="10"/>
+	    <parameter name="[newCseq" operation="number.add" value="[newCseq]" value2="1"/>			
+	    <parameter name="[newBranchId]" operation="string.random" value="10"/>
 	    
-<sendRequestSIP name="Send Message" providerName="[scenarioName]">
+<sendMessageSIP name="Send Message" listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
 <![CDATA[MESSAGE sip:[clientName2]@[100_DOMAIN_ADDR] SIP/2.0
 Call-ID: [newCallID]
 CSeq: [newCseq] MESSAGE
@@ -49,12 +49,12 @@ Content-Length: x
 
 Ad'taleur
 ]]>
-</sendRequestSIP>	
+</sendMessageSIP>	
    
   
                 
-  <receiveResponseSIP name="Wait 200 OK" method="MESSAGE" result="200">
-  </receiveResponseSIP>
+  <receiveMessageSIP name="Wait 200 OK" type="MESSAGE" result="200" request="false">
+  </receiveMessageSIP>
 
   <parameter name="[testcase:SEM5]" operation="system.semaphorenotify"/>
   
