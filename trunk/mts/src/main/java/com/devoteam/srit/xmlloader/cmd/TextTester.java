@@ -56,7 +56,6 @@ public class TextTester {
     private Tester tester;
     private TestRunner runner;
     private Semaphore semaphore;
-    private ModelEditableParameters modelEditableParameters = new ModelEditableParameters();
 
     public TextTester(URI testFilename, String runnerName, List<String> parameterEditable) throws Exception {
         this.semaphore = new Semaphore(0);
@@ -150,12 +149,14 @@ public class TextTester {
     }
 
     public void start() throws Exception {
-        //
         // Start the input handler
         ThreadPool.reserve().start(new InputHandler(this));
-
-        // register listeners
-        for (final TestcaseRunner testcaseRunner : this.runner.getChildren()) {
+        this.runner.init();
+        
+        for (Testcase testcase : this.runner.getTest().getChildren()) {
+            final TestcaseRunner testcaseRunner = testcase.getTestcaseRunner();
+            
+            // register listener for FAILING or INTERRUPTING state
             testcaseRunner.addListener(new NotificationListener<Notification<String, RunnerState>>() {
 
                 public void notificationReceived(Notification<String, RunnerState> notification) {
@@ -170,13 +171,27 @@ public class TextTester {
                     }
                 }
             });
+            
+            // register listener for FAILED or INTERRUPTED state
+            testcaseRunner.addListener(new NotificationListener<Notification<String, RunnerState>>() {
+
+                public void notificationReceived(Notification<String, RunnerState> notification) {
+                    if ((notification.getData().isFailed() || notification.getData().isInterrupted()) && notification.getData().isFinished()) {
+                        System.out.println(notification.getData().toLegacyStatus() + ": " + testcaseRunner.getParent().getName() + " / " + testcaseRunner.getName());
+                        try {
+                            testcaseRunner.removeListener(this);
+                        }
+                        catch (Exception e) {
+                            // ignore
+                        }
+                    }
+                }
+            });
         }
 
-        //
         // Start the runner
         this.runner.start();
 
-        //
         // Wait for the end of the runner and release the semaphore
         runner.addListener(new NotificationListener<Notification<String, RunnerState>>() {
 
