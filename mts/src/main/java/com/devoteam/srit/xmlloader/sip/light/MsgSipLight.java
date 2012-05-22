@@ -1,26 +1,32 @@
-/* 
- * Copyright 2012 Devoteam http://www.devoteam.com
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- * 
- * 
- * This file is part of Multi-Protocol Test Suite (MTS).
- * 
- * Multi-Protocol Test Suite (MTS) is free software: you can redistribute
- * it and/or modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation, either version 3 of the
- * License.
- * 
- * Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
- * be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with Multi-Protocol Test Suite (MTS).
- * If not, see <http://www.gnu.org/licenses/>.
- * 
+/*
+* Copyright 2012 Devoteam http://www.devoteam.com
+* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+*
+*
+* This file is part of Multi-Protocol Test Suite (MTS).
+*
+* Multi-Protocol Test Suite (MTS) is free software: you can redistribute
+* it and/or modify it under the terms of the GNU General Public License 
+* as published by the Free Software Foundation, either version 3 of the 
+* License.
+* 
+* Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
+* be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with Multi-Protocol Test Suite (MTS).  
+* If not, see <http://www.gnu.org/licenses/>. 
+*
+*//*
+ * MsgHttp.java
+ *
+ * Created on 6 avril 2007, 16:49
+ *
+ * To change this template, choose Tools | Template Manager
+ * and open the template in the editor.
  */
-
 package com.devoteam.srit.xmlloader.sip.light;
 
 import java.util.HashMap;
@@ -365,9 +371,15 @@ public class MsgSipLight extends MsgSip
 	    {
             var.addHeader(header);
 	        return true;
-	    }
+	    }	    
+	    //---------------------------------------------------------------------- header:CSeq:Namevalue -
+        if (params.length == 3 && params[2].equalsIgnoreCase("Namevalue"))
+	    {
+            var.addHeaderNamevalue(header);
+	        return true;
+	    }	    	    
 	    //---------------------------------------------------------------------- header:CSeq:Number -
-	    if (params.length == 3  && params[1].equalsIgnoreCase("CSeq") && params[2].equalsIgnoreCase("Number"))
+	    if (params.length == 3 && params[2].equalsIgnoreCase("Number"))
 	    {
 			MsgParser parser = new MsgParser(); 
 			parser.splitHeader(header, " ");
@@ -375,7 +387,7 @@ public class MsgSipLight extends MsgSip
 	        return true;
 	    }
 	    //---------------------------------------------------------------------- header:CSeq:Method -
-	    if (params.length == 3  && params[1].equalsIgnoreCase("CSeq") && params[2].equalsIgnoreCase("Method"))
+	    if (params.length == 3 && params[2].equalsIgnoreCase("Method"))
 	    {
 			MsgParser parser = new MsgParser(); 
 			parser.splitHeader(header, " ");
@@ -394,6 +406,12 @@ public class MsgSipLight extends MsgSip
             var.addHeader(header);
 	        return true;
 	    }
+	    //---------------------------------------------------------------------- header:RAck:Namevalue -
+        if (params[2].equalsIgnoreCase("Namevalue"))
+	    {
+            var.addHeaderNamevalue(header);
+	        return true;
+	    }	    
 	    //---------------------------------------------------------------------- header:RAck:Number -
 	    if (params.length == 3 && params[2].equalsIgnoreCase("Number"))
 	    {
@@ -430,6 +448,12 @@ public class MsgSipLight extends MsgSip
             var.addHeader(header);
             return true;
         }
+        //---------------------------------------------------------------------- header:Yyyyy:Namevalue -
+        if (params[2].equalsIgnoreCase("Namevalue"))
+        {
+            var.addHeaderNamevalue(header);
+            return true;
+        }                
         //---------------------------------------------------------------------- header:Yyyyy:Scheme -
         if (params.length == 3 && params[2].equalsIgnoreCase("Scheme"))
         {
@@ -447,7 +471,7 @@ public class MsgSipLight extends MsgSip
     		parser.parse(value, " ,", '=', "\"\"");
    			var.addHeader(parser.getHeader(params[3]));   			
             return true;
-        }               
+        }
         return false;
     }
         
@@ -458,11 +482,18 @@ public class MsgSipLight extends MsgSip
 		parser.parseHeader(header, ";", '=', "<>", "\"\"");    
     	Header via = parser.getHeader(null);
 
+        //---------------------------------------------------------------------- header:TopMostVia:Protocol or header:Via:Protocol-
         if (params.length == 2)
         {
             var.addHeader(header);
         	return true;
         }
+        //---------------------------------------------------------------------- header:TopMostVia:Namevalue or header:Via:Namevalue-
+        if (params[2].equalsIgnoreCase("Namevalue"))
+        {
+            var.addHeaderNamevalue(header);
+        	return true;
+        }        
         //---------------------------------------------------------------------- header:TopMostVia:Protocol or header:Via:Protocol-
         if (params.length == 3 && params[2].equalsIgnoreCase("Protocol"))
         {
@@ -538,11 +569,18 @@ public class MsgSipLight extends MsgSip
     /** Get the elements of XXX header of this message */
     private boolean addSIPHeaderGenericXXX(Parameter var, String[] params, Header header) throws Exception
     {    	
+        //---------------------------------------------------------------------- header:Xxxx -
         if (params.length == 2)
         {
             var.addHeader(header);
        		return true;
       	}
+        //---------------------------------------------------------------------- header:Xxxx:Namevalue -
+        if (params[2].equalsIgnoreCase("Namevalue"))
+        {
+            var.addHeaderNamevalue(header);
+       		return true;
+      	}        
         //---------------------------------------------------------------------- header:Xxxx:URI:... -
         if (params[2].equalsIgnoreCase("URI"))
         {            	            
@@ -597,6 +635,8 @@ public class MsgSipLight extends MsgSip
             var.addHeader(parser.getHeader(Integer.parseInt(params[3])));       		
             return true;
         }
+        //---------------------------------------------------------------------- header:Xxxx:Argument:Yyyy -
+    
    		return false;
    	}
 
@@ -629,7 +669,7 @@ public class MsgSipLight extends MsgSip
     @Override
     public byte[] getBytesData()
     {
-        return message.getMessage().getBytes();
+         return message.getMessage().getBytes();
     }
 
     /** Returns a short description of the message. Used for logging as INFO level */
