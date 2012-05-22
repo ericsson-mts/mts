@@ -155,23 +155,7 @@ public class TextTester {
         
         for (Testcase testcase : this.runner.getTest().getChildren()) {
             final TestcaseRunner testcaseRunner = testcase.getTestcaseRunner();
-            
-            // register listener for FAILING or INTERRUPTING state
-            testcaseRunner.addListener(new NotificationListener<Notification<String, RunnerState>>() {
-
-                public void notificationReceived(Notification<String, RunnerState> notification) {
-                    if (notification.getData().isFailed() || notification.getData().isInterrupted()) {
-                        System.out.println(notification.getData().toLegacyStatus() + ": " + testcaseRunner.getParent().getName() + " / " + testcaseRunner.getName());
-                        try {
-                            testcaseRunner.removeListener(this);
-                        }
-                        catch (Exception e) {
-                            // ignore
-                        }
-                    }
-                }
-            });
-            
+          
             // register listener for FAILED or INTERRUPTED state
             testcaseRunner.addListener(new NotificationListener<Notification<String, RunnerState>>() {
 
