@@ -114,6 +114,15 @@ public class Parameter {
     public void addHeader(Header value) {
     	addHeader(value, false);
     }
+	
+	public void addHeaderNamevalue(Header value) {
+        modified();
+        for (int i = 0; i < value.getSize(); i++) {
+            if (value.getHeader(i) != null) {
+           		add(value.getName() + ": " + value.getHeader(i).toString());
+            }
+        }
+    }
 
     public void addHeader(Header value, boolean noMagic) {
         modified();
@@ -217,7 +226,7 @@ public class Parameter {
                 res += "{" + MAX_STRING_LENGTH + " of " + array.get(i).toString().length() + "}" + array.get(i).toString().substring(0, MAX_STRING_LENGTH) + ",";
             }
             else {
-                res += array.get(i) + ",";
+                res += array.get(i) + "|";
             }
             i++;
         }
