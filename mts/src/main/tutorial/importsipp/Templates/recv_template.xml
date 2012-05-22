@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-2" ?>
+<template>
+<receiveMessageSIP>
+<parameter name="[_result]" operation="setFromMessage" value="message.result"/>
+<parameter name="[_request]" operation="setFromMessage" value="message.type"/>
+<or>
+<test parameter="[_result]" condition="number.equal" value="200"/>
+<test parameter="[_request]" condition="string.equal" value="INVITE"/>
+</or>
+<parameter name="[last_Message]" operation="setFromMessage" value="Message" />
+</receiveMessageSIP>
+<goto label="xpath:./@next" />
+</template>
