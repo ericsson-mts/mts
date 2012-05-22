@@ -82,7 +82,9 @@ public class TextMessage {
         msg = Utils.replaceNoRegex(msg, "\n", "\r\n");
 
         msg = msg.replace('\t', ' ');
-        msg = Utils.replaceNoRegex(msg, "\r\n ", " ");
+        msg = msg.replaceAll(",[ ]*\r\n ", ", ");
+        msg = msg.replaceAll(":[ ]*\r\n ", ": ");
+        msg = msg.replaceAll("\\n[ ]+", "\n");
 
         // get of the content of the message
         int iPosContent = msg.indexOf("\r\n\r\n");
