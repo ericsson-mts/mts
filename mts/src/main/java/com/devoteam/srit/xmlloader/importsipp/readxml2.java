@@ -25,7 +25,7 @@ public class readxml2 {
  	static boolean optional = false; 
  	static String[] values;
   	static String valeur_globale = null;
-  	
+	static Object result = null; 
  public static void main(String argv[]) {
  
 	 try {
@@ -132,9 +132,11 @@ public class readxml2 {
 	   }
  }
 	
- @SuppressWarnings({ "rawtypes", "unused" })
+ @SuppressWarnings({ "unused" })
 public static void addNode(Node sippNode, Node main_root, Document doc, Document doc2, String saved_value) throws ParserConfigurationException, SAXException, IOException
 	{	
+	 optional = false; 
+	 next = false; 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		factory.setValidating(true);
@@ -145,7 +147,7 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 		//ROOT ELEMENT 
 		Node root_element = file.getDocumentElement();
 		String newline = System.getProperty("line.separator");
-
+	
 		//Get all the child nodes
 		String valeur = null; 
 		NodeList allnodes = root_element.getChildNodes();
@@ -153,115 +155,80 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 		{	
 			//Get the name of the child node
 			String template_node_name = allnodes.item(i).getNodeName().toString();
-		
+			String saved_template_text = allnodes.item(i).getTextContent();
+			
 			//If it's not a commentary or text replace the original node
 			if(!template_node_name.equals("#text") && !template_node_name.equals("#comment"))
 			{	
 				/* Create a new element*/ 
 				Element newelement  = doc2.createElement(template_node_name);
 				newelement.setNodeValue(allnodes.item(i).getNodeValue());
+				newelement.setTextContent(saved_template_text);
 				
-				//newelement = (Element) allnodes.item(i).cloneNode(true);
+				if(newelement.getNodeName().equals("sendMessageSIP")){	
+					newelement.setTextContent(newline+"<![CDATA["+saved_value+"]]>"+newline);
+				}
+				
+				if(newelement.getNodeName().toString().equals("receiveMessageSIP"))
+				{	
+					for (int p=0; p<attributes_list.getLength();p++){
+						newelement.setAttribute(attributes_list.item(p).getNodeName().toString(), attributes_list.item(p).getNodeValue().toString());
+						
+						if(attributes_list.item(p).getNodeName().toString().equals("optional"))
+							optional = true;
+						if(attributes_list.item(p).getNodeName().toString().equals("next"))
+							next = true; 
+					}
+					
+					if (optional && next)
+						main_root.appendChild(newelement);
+					else if(!optional)
+						main_root.appendChild(newelement);
+				}
+				
 				/* Set the newelement attributes same as from the template file */ 
-				if(allnodes.item(i).hasAttributes())
+				else if(allnodes.item(i).hasAttributes())
 				{
 					NamedNodeMap template_nodemap = allnodes.item(i).getAttributes(); 
 					for (int k=0; k<template_nodemap.getLength();k++){
 						String attribut_value = template_nodemap.item(k).getNodeValue().toString(); 
-						 if(attribut_value.startsWith("xpath:"))
-						{
-						    /* Recherche de la liste des patients       */  
-				            
+					if(attribut_value.startsWith("xpath:"))
+						{ 		
 				            try {
 								XPathFactory xpathfactory = XPathFactory.newInstance();
 								XPath xpath = xpathfactory.newXPath();
 								XPathExpression expr;
 								String xpath_value = attribut_value.substring(6);
 								expr = xpath.compile(xpath_value);
-								Object result = expr.evaluate(sippNode, XPathConstants.STRING);
-								System.out.println(sippNode.getNodeName().toString());
-								System.out.println(result.toString());
-								newelement.setAttribute(template_nodemap.item(k).getNodeName().toString(),result.toString());
+								result = expr.evaluate(sippNode, XPathConstants.STRING);
+								if(!result.toString().isEmpty())
+								{
+									newelement.setAttribute(template_nodemap.item(k).getNodeName().toString(),result.toString());
+									main_root.appendChild(newelement);
+								}
 				            } 
 								catch (XPathExpressionException e) {
 									e.printStackTrace();
 								}
-
 						}
-						else 
-							newelement.setAttribute(template_nodemap.item(k).getNodeName().toString(), template_nodemap.item(k).getNodeValue().toString());
-						
+					else 
+						{
+						newelement.setAttribute(template_nodemap.item(k).getNodeName().toString(), template_nodemap.item(k).getNodeValue().toString());
+							if(newelement.getNodeName().equals("parameter")){
+								if(saved_value.contains(newelement.getAttribute("name"))){
+									main_root.appendChild(newelement);
+								}
+							}
+							else
+							main_root.appendChild(newelement);
+						}
 					}
 				} 
-				/* Get the node attributes from original file */
-				if(attributes_list.getLength()>0)
-				{	
-					/* If it's a receive, we set the attributes to the new element */
-					if(newelement.getNodeName().toString().equals("receiveMessageSIP") ||
-							newelement.getNodeName().toString().equals("sendMessageSIP")){
-						for (int p=0; p<attributes_list.getLength();p++){
-							newelement.setAttribute(attributes_list.item(p).getNodeName().toString(), attributes_list.item(p).getNodeValue().toString());
-						}
-					}
-					/* If it's a pause, we set only the milliseconds attribute */
-					if(newelement.getNodeName().toString().equals("pause"))
-					{	
-						String[] names = new String[attributes_list.getLength()];
-						for(int n=0; n<attributes_list.getLength();n++){
-							names[n] = attributes_list.item(n).getNodeName();
-						}
-						for (int n=0; n<names.length; n++) {
-							if(!names[n].toString().equals("milliseconds"))
-								attributes_list.removeNamedItem(names[n]);
-							}
-						for (int p=0; p<attributes_list.getLength();p++){
-							newelement.setAttribute(attributes_list.item(p).getNodeName().toString(), attributes_list.item(p).getNodeValue().toString());
-						}
-					}
-				} 			
-				/* If the parameter does not exist in the sendMessageSIP node, we don't append it */
-				if(newelement.getNodeName().equals("parameter")){
-					if(saved_value.contains(newelement.getAttribute("name"))){
-						main_root.appendChild(newelement);
-					}
-				}
-				/* If it's a send, we add the CDATA and we do the manipulation */
-				else if(newelement.getNodeName().equals("sendMessageSIP")){	
-					newelement.setTextContent(newline+"<![CDATA["+saved_value+"]]>"+newline);
-					valeur = manipulation(newelement, main_root);
-					removeAllAttributes(newelement);
-				}
-				/* if it's a receive we do the manipulation, save the next value if it exists
-				   and remove all other attributes */
-				else if(newelement.getNodeName().equals("receiveMessageSIP")){	
-					newelement.setTextContent(saved_value);
-					valeur = manipulation(newelement, main_root);
-                //removeAllAttributes(newelement);
-				}
-				/* If there is a next, we add the goto node with the label value */
-				else if(newelement.getNodeName().equals("goto"))
-				{
-					//newelement.setAttribute("label", valeur);
-					//if(next)
-						main_root.appendChild(newelement);	
-				}
-				
-				else if(newelement.getNodeName().equals("label"))
-				{
-					String[] names = new String[attributes_list.getLength()];
-					for(int n=0; n<attributes_list.getLength();n++){
-						names[n] = attributes_list.item(n).getNodeName();
-					}
-					for (int p=0; p<attributes_list.getLength();p++){
-						newelement.setAttribute("name", attributes_list.item(p).getNodeValue().toString());
-					}
-					main_root.appendChild(newelement);	
-				}
-				/* Anything else, we append it */
-				else
-					main_root.appendChild(newelement);	
+				else 
+					main_root.appendChild(newelement);
 			}
 		}
+
 	}
 
  public static void addGlobalNode(String template_filename, Node main_root, Document doc, Document doc2, String saved_value) throws ParserConfigurationException, SAXException, IOException
@@ -322,8 +289,8 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
   }
 	
 	//Remove empty text nodes
- public static void stripSpace(Node node){                      
-	         
+ public static void stripSpace(Node node)
+ {                      
 		Node child = node.getFirstChild();
 	    while(child!=null){
 	    //Save the sibling of the node that will perhaps be removed and set to null
@@ -334,7 +301,7 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 	    	stripSpace(child);                                     
 	       	child=c;
 	    }
-	}
+ }
 	
  public static void replaceInFile(String filename, String what, String to) throws IOException {
 		
@@ -359,44 +326,6 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 	            ioe.printStackTrace();
 	        }
 	}
- 
-  public static String manipulation (Element newelement, Node main_root)
-  {
-	  	optional = false ;
-		NamedNodeMap receive_attribute = newelement.getAttributes();
-		String[] names = new String[receive_attribute.getLength()];
-		
-		values = new String[receive_attribute.getLength()];
-		for (int n=0; n<names.length; n++) {
-			names[n]= receive_attribute.item(n).getNodeName();
-		}
-		for (int n=0; n<names.length; n++) {
-			if(names[n].toString().equals("next")){
-				next = true;
-				values[0] = receive_attribute.item(n).getNodeValue();
-				valeur_globale = values[0];
-				break;
-			}
-			else 
-				next = false; 
-		}
-		
-		/* for (int n=0; n<names.length; n++) {
-			if(names[n].toString().equals("optional")){
-				optional = true;
-				break; 
-			}
-			else{
-				optional = false;
-			}
-			
-		}
-		*/
-		if(!optional)
-			main_root.appendChild(newelement);
-		
-		return valeur_globale;
-  }
   
   public static void removeAllAttributes(Element element)
   {
