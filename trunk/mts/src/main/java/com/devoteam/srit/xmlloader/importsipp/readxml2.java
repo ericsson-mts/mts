@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
@@ -14,12 +12,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
 
-import org.jdom2.JDOMException;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
  
-@SuppressWarnings("deprecation")
 public class readxml2 {
 	
 	static String filename = "branchs";
@@ -416,26 +412,5 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 			}
 		}
   }
-  
-  public static void recv_manip(String filepath)
-  {
-	  	DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = null;
-		try {
-			docBuilder = docFactory.newDocumentBuilder();
-			Document doc = docBuilder.parse("../mts/src/main/tutorial/importsipp/"+filepath);
-			
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		docFactory.setValidating(true);
-		docFactory.setIgnoringElementContentWhitespace(true);
-		
-		
-  }
+
 }
