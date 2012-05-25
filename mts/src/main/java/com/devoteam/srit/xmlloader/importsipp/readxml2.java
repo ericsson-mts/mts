@@ -17,8 +17,7 @@ import org.xml.sax.SAXException;
 
  
 public class readxml2 {
-	
-	static String filename = "branchs";
+	static String filename = "branchc";
 	static String filetype = ".xml";
 	static NamedNodeMap attributes_list = null; 
  	static boolean next = false; 
@@ -26,29 +25,30 @@ public class readxml2 {
  	static String[] values;
   	static String valeur_globale = null;
 	static Object result = null; 
+	
  public static void main(String argv[]) {
  
 	 try {
-		String filepath = filename+filetype; 
-		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-		Document doc = docBuilder.parse("../mts/src/main/tutorial/importsipp/"+filepath);
-		docFactory.setValidating(true);
-		docFactory.setIgnoringElementContentWhitespace(true);
-
-		/*CREATE ANOTHER DOCUMENT WHERE TO WRITE THE RESULTS*/
-		DocumentBuilderFactory doc2Factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder doc2Builder = doc2Factory.newDocumentBuilder();
-		Document doc2 = doc2Builder.newDocument(); 
-		/* Create a root element in the new file */
-		Element rootElement = doc2.createElement("scenario");
-		doc2.appendChild(rootElement);
-		
-		/* Get the root of the current document */
-		Node root = doc.getDocumentElement();
+		 	String filepath = filename+filetype; 
+		 	DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		 	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+		 	Document doc = docBuilder.parse("../mts/src/main/tutorial/importsipp/"+filepath);
+		 	docFactory.setValidating(true);
+		 	docFactory.setIgnoringElementContentWhitespace(true);
+		 	
+		 	/*CREATE ANOTHER DOCUMENT WHERE TO WRITE THE RESULTS*/
+		 	DocumentBuilderFactory doc2Factory = DocumentBuilderFactory.newInstance();
+		 	DocumentBuilder doc2Builder = doc2Factory.newDocumentBuilder();
+		 	Document doc2 = doc2Builder.newDocument(); 
+		 	/* Create a root element in the new file */
+		 	Element rootElement = doc2.createElement("scenario");
+		 	doc2.appendChild(rootElement);
+		 	
+		 	/* Get the root of the current document */
+		 	Node root = doc.getDocumentElement();
 		
 		if(root.hasAttributes())
-			{ 	
+			{
 				NamedNodeMap attrs = root.getAttributes();
 				String[] names = new String[attrs.getLength()];
 				for (int n=0; n<names.length; n++) {
@@ -66,10 +66,9 @@ public class readxml2 {
 		addGlobalNode("global_template.xml", rootElement, doc, doc2, "");
 		
 		for(int x=0;x<allnodes.getLength();x++)
-		{			
+		{
 			/* Get the name of the node we are working on */
-			String nodename = allnodes.item(x).getNodeName().toString();
-			
+			String nodename = allnodes.item(x).getNodeName().toString();	
 			//SAVE THE TEXT OF THE NODE IN A STRING
 			String saved_text = allnodes.item(x).getTextContent();
 			
@@ -103,9 +102,8 @@ public class readxml2 {
 					for(int i = 0; i<childNodeList.getLength(); i++)
 					{
 						String childNodename = childNodeList.item(i).getNodeName().toString();
-						if(!childNodename.equals("#comment") && !childNodename.equals("#text")&& !childNodename.equals("#cdata-section"))
-							{//addNode(childNodename+"_template.xml", rootElement, doc, doc2, saved_text);}
-						addNode(childNodeList.item(i), rootElement, doc, doc2, saved_text);}
+						if(!childNodename.equals("#comment") && !childNodename.equals("#text")&& !childNodename.equals("#cdata-section")){
+							addNode(childNodeList.item(i), rootElement, doc, doc2, saved_text);}
 					}		
 				}	
 				addNode(allnodes.item(x), rootElement, doc, doc2, saved_text);
@@ -163,8 +161,9 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 				/* Create a new element*/ 
 				Element newelement  = doc2.createElement(template_node_name);
 				newelement.setNodeValue(allnodes.item(i).getNodeValue());
-				newelement.setTextContent(saved_template_text);
-				
+				//newelement.setTextContent(saved_template_text)
+				dealWithChildren(allnodes.item(i), newelement, doc2, sippNode);
+
 				if(newelement.getNodeName().equals("sendMessageSIP")){	
 					newelement.setTextContent(newline+"<![CDATA["+saved_value+"]]>"+newline);
 				}
@@ -172,7 +171,7 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 				if(newelement.getNodeName().toString().equals("receiveMessageSIP"))
 				{	
 					for (int p=0; p<attributes_list.getLength();p++){
-						newelement.setAttribute(attributes_list.item(p).getNodeName().toString(), attributes_list.item(p).getNodeValue().toString());
+						//newelement.setAttribute(attributes_list.item(p).getNodeName().toString(), attributes_list.item(p).getNodeValue().toString());
 						
 						if(attributes_list.item(p).getNodeName().toString().equals("optional"))
 							optional = true;
@@ -181,11 +180,14 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 					}
 					
 					if (optional && next)
-						main_root.appendChild(newelement);
+						{
+							main_root.appendChild(newelement);
+						}
 					else if(!optional)
+					{
 						main_root.appendChild(newelement);
+					}
 				}
-				
 				/* Set the newelement attributes same as from the template file */ 
 				else if(allnodes.item(i).hasAttributes())
 				{
@@ -193,8 +195,8 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 					for (int k=0; k<template_nodemap.getLength();k++){
 						String attribut_value = template_nodemap.item(k).getNodeValue().toString(); 
 					if(attribut_value.startsWith("xpath:"))
-						{ 		
-				            try {
+						{	
+				           try {
 								XPathFactory xpathfactory = XPathFactory.newInstance();
 								XPath xpath = xpathfactory.newXPath();
 								XPathExpression expr;
@@ -206,12 +208,12 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 									newelement.setAttribute(template_nodemap.item(k).getNodeName().toString(),result.toString());
 									main_root.appendChild(newelement);
 								}
-				            } 
+				            }
 								catch (XPathExpressionException e) {
 									e.printStackTrace();
 								}
 						}
-					else 
+					else
 						{
 						newelement.setAttribute(template_nodemap.item(k).getNodeName().toString(), template_nodemap.item(k).getNodeValue().toString());
 							if(newelement.getNodeName().equals("parameter")){
@@ -220,13 +222,17 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 								}
 							}
 							else
-							main_root.appendChild(newelement);
+							{
+								main_root.appendChild(newelement);
+							}
 						}
 					}
 				} 
-				else 
+				else
+				{
 					main_root.appendChild(newelement);
-			}
+				}
+			}	
 		}
 
 	}
@@ -270,25 +276,25 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 	}
 		
  public static void rightFinalResult(Document main_doc)
-	{	
-		try {
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			DOMSource source = new DOMSource(main_doc);
-			StreamResult result = new StreamResult(new File(filename+"_mts.xml"));
-			//Keep the original structure
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-			transformer.setOutputProperty(OutputKeys.CDATA_SECTION_ELEMENTS, "no");
-			transformer.transform(source, result);
+ {
+	 	try {
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				DOMSource source = new DOMSource(main_doc);
+				StreamResult result = new StreamResult(new File(filename+"_mts.xml"));
+				//Keep the original structure
+				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+				transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+				transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+				transformer.setOutputProperty(OutputKeys.CDATA_SECTION_ELEMENTS, "no");
+				transformer.transform(source, result);
 			}
-		catch (TransformerException tfe) {
+		catch (TransformerException tfe){
 				tfe.printStackTrace();
 			   }
-  }
+ }
 	
-	//Remove empty text nodes
+//Remove empty text nodes
  public static void stripSpace(Node node)
  {                      
 		Node child = node.getFirstChild();
@@ -314,7 +320,6 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 	        	oldtext += line + "\r\n";
 	      }
 	    reader.close();
-	            
 	    //Replace a word in a file
 	    String newtext = oldtext.replaceAll(what, to);   
 	    FileWriter writer = new FileWriter(filename);
@@ -339,6 +344,55 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 			for (int n=0; n<names.length; n++) {
 			    attrs.removeNamedItem(names[n]);
 			}
+		}
+  }
+  
+  public static void dealWithChildren(Node noeud, Element pere, Document doc, Node sippNode)
+  {
+		if(noeud.hasChildNodes())
+		{		
+				Element child_element = null;
+				NodeList list = noeud.getChildNodes();
+				for (int c=0; c<list.getLength(); c++) 
+				{	
+					String child_name = list.item(c).getNodeName().toString();
+					if(!child_name.equals("#text") && !child_name.equals("#comment"))
+					{
+						child_element = doc.createElement(child_name);
+						pere.appendChild(child_element); 
+					}
+					if(list.item(c).hasAttributes())
+					{
+						NamedNodeMap child_attributesMap = list.item(c).getAttributes();
+						for (int p=0; p<child_attributesMap.getLength();p++){
+							
+							String child_attribut_value = child_attributesMap.item(p).getNodeValue().toString();
+							child_element.setAttribute(child_attributesMap.item(p).getNodeName().toString(), child_attribut_value);
+							if(child_attribut_value.startsWith("xpath:"))
+							{	
+					           try {
+									XPathFactory xpathfactory = XPathFactory.newInstance();
+									XPath xpath = xpathfactory.newXPath();
+									XPathExpression expr;
+									String xpath_value = child_attribut_value.substring(6);
+									expr = xpath.compile(xpath_value);
+									Object resultat = expr.evaluate(sippNode, XPathConstants.STRING);
+									if(!resultat.toString().isEmpty())
+									{
+										child_element.setAttribute(child_attributesMap.item(p).getNodeName().toString(), resultat.toString());
+									}
+									else
+										pere.removeChild(child_element);
+					            }
+									catch (XPathExpressionException e) {
+										e.printStackTrace();
+									}
+							}
+						}
+					}
+					dealWithChildren(list.item(c), child_element, doc, sippNode );
+				}
+
 		}
   }
 
