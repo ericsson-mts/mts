@@ -21,12 +21,15 @@ public class readxml2 {
 	static String filetype = ".xml";
 	static NamedNodeMap attributes_list = null; 
  	static boolean next = false; 
- 	static boolean optional = false; 
+ 	static boolean optional = false;
+ 	static boolean test = false ; 
+ 	static boolean bilal = false; 
  	static String[] values;
   	static String valeur_globale = null;
 	static Object result = null; 
+	static Element if_element = null;
 	
- public static void main(String argv[]) {
+public static void main(String argv[]) {
  
 	 try {
 		 	String filepath = filename+filetype; 
@@ -71,7 +74,7 @@ public class readxml2 {
 			String nodename = allnodes.item(x).getNodeName().toString();	
 			//SAVE THE TEXT OF THE NODE IN A STRING
 			String saved_text = allnodes.item(x).getTextContent();
-			
+			//String nextsibling = null; 
 			/*GET ALL ATTRIBUTES OF THE CURRENT NODE SO WE CAN ADD THEM LATER TO THE NEW
 			NODE IN THE RESULT FILE */
 			if(allnodes.item(x).hasAttributes())
@@ -88,14 +91,6 @@ public class readxml2 {
 			
 			if(!nodename.equals("#comment") && !nodename.equals("#text")){	
 				//Adding the corresponding node from template document to result document
-				if(nodename.equals("recv"))
-				{	
-					String siblingname = allnodes.item(x).getNextSibling().getNodeName().toString();
-					if(siblingname.equals("recv"))
-					{
-						System.out.println("hi");
-					}
-				}
 				if(allnodes.item(x).hasChildNodes())
 				{	  
 					NodeList childNodeList = allnodes.item(x).getChildNodes(); 
@@ -135,6 +130,8 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 	{	
 	 optional = false; 
 	 next = false; 
+	 test= false; 
+
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		factory.setValidating(true);
@@ -161,15 +158,12 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 				/* Create a new element*/ 
 				Element newelement  = doc2.createElement(template_node_name);
 				newelement.setNodeValue(allnodes.item(i).getNodeValue());
+				
 				//newelement.setTextContent(saved_template_text)
 				dealWithChildren(allnodes.item(i), newelement, doc2, sippNode);
 
-				if(newelement.getNodeName().equals("sendMessageSIP")){	
-					newelement.setTextContent(newline+"<![CDATA["+saved_value+"]]>"+newline);
-				}
-				
 				if(newelement.getNodeName().toString().equals("receiveMessageSIP"))
-				{	
+				{			
 					for (int p=0; p<attributes_list.getLength();p++){
 						//newelement.setAttribute(attributes_list.item(p).getNodeName().toString(), attributes_list.item(p).getNodeValue().toString());
 						
@@ -178,18 +172,42 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 						if(attributes_list.item(p).getNodeName().toString().equals("next"))
 							next = true; 
 					}
-					
+
 					if (optional && next)
-						{
-							main_root.appendChild(newelement);
-						}
-					else if(!optional)
 					{
+						test = true;
+						Document if_recv = builder.parse("../mts/src/main/tutorial/importsipp/Templates/if_recv_template.xml");
+						Node if_recv_root = if_recv.getDocumentElement();
+						NodeList if_recv_nodes = if_recv_root.getChildNodes();
+						for(int r=0;r<if_recv_nodes.getLength();r++)
+						{	
+							String if_recv_name = if_recv_nodes.item(r).getNodeName().toString();
+							if(!if_recv_name.equals("#text") && !if_recv_name.equals("#comment"))
+							{
+								if_element  = doc2.createElement(if_recv_name);
+								if(if_recv_nodes.item(r).hasAttributes())
+								{
+									NamedNodeMap if_recv_nodemap = if_recv_nodes.item(r).getAttributes();
+									for (int k=0; k<if_recv_nodemap.getLength();k++){
+										if_element.setAttribute(if_recv_nodemap.item(k).getNodeName().toString(), if_recv_nodemap.item(k).getNodeValue().toString());
+									}
+								}
+
+							}
+						}
+					}
+					else if(!optional)
+					{	
 						main_root.appendChild(newelement);
 					}
 				}
+				
+				else if(newelement.getNodeName().equals("sendMessageSIP")){
+					newelement.setTextContent(newline+"<![CDATA["+saved_value+"]]>"+newline);					
+				}
+				
 				/* Set the newelement attributes same as from the template file */ 
-				else if(allnodes.item(i).hasAttributes())
+				if(allnodes.item(i).hasAttributes())
 				{
 					NamedNodeMap template_nodemap = allnodes.item(i).getAttributes(); 
 					for (int k=0; k<template_nodemap.getLength();k++){
@@ -212,27 +230,24 @@ public static void addNode(Node sippNode, Node main_root, Document doc, Document
 								catch (XPathExpressionException e) {
 									e.printStackTrace();
 								}
-						}
+						}					
 					else
 						{
-						newelement.setAttribute(template_nodemap.item(k).getNodeName().toString(), template_nodemap.item(k).getNodeValue().toString());
+							newelement.setAttribute(template_nodemap.item(k).getNodeName().toString(), template_nodemap.item(k).getNodeValue().toString());
 							if(newelement.getNodeName().equals("parameter")){
 								if(saved_value.contains(newelement.getAttribute("name"))){
 									main_root.appendChild(newelement);
 								}
 							}
-							else
-							{
-								main_root.appendChild(newelement);
-							}
 						}
 					}
-				} 
-				else
-				{
-					main_root.appendChild(newelement);
 				}
-			}	
+				else
+				{	
+					if(!newelement.getNodeName().toString().equals("receiveMessageSIP"))
+						main_root.appendChild(newelement);
+				}
+			}
 		}
 
 	}
