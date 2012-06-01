@@ -47,6 +47,9 @@ import dk.i1.diameter.AVP_OctetString;
 import dk.i1.diameter.AVP_Unsigned32;
 import dk.i1.diameter.AVP_Unsigned64;
 import dk.i1.diameter.Message;
+import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
+
 import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -188,10 +191,26 @@ public class MsgDiameter extends Msg
                 i++ ;
             }
             
-            if(params[params.length-1].equalsIgnoreCase("value"))
+            if(params[params.length-1].equalsIgnoreCase("code"))
+            {
+                Iterator<AVP> iterator = baseAvps.iterator();
+                while(iterator.hasNext())
+                {             	
+                	var.add(Integer.toString(iterator.next().code));
+                }
+            }
+            else if(params[params.length-1].equalsIgnoreCase("value"))
             {
                 Iterator<AVP> iterator = baseAvps.iterator();
                 while(iterator.hasNext()) var.add(getAvpStringValue(iterator.next()));
+            }
+            else if(params[params.length-1].equalsIgnoreCase("binary"))
+            {
+                Iterator<AVP> iterator = baseAvps.iterator();
+                while(iterator.hasNext())
+                {             	
+                	var.add(Array.toHexString(new DefaultArray(new AVP_OctetString(iterator.next()).queryValue())));
+                }
             }
             else if(params[params.length-1].equalsIgnoreCase("vendorId"))
             {
