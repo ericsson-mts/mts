@@ -6,34 +6,37 @@
     
     <parameter name="[timeout]" operation="set" value="10" />
 
-    <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[Remote-Address]" destScenario="server">
-	<header request="true" command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx" proxiable="true"/>
-	<avp code="Origin-Host" value="[Local-Host]"/>
-	<avp code="Origin-Realm" value="[Local-Realm]"/>
-	<avp code="Destination-Host" value="[Remote-Host]"/>	
-	<avp code="Destination-Realm" value="[Remote-Realm]"/>		
-	<avp code="Vendor-Specific-Application-Id">
-	        <avp code="Vendor-Id" value="TGPP"/>
-	        <avp code="Auth-Application-Id" value="IMS_Cx_Dx"/>
-	</avp>
-	<avp code="Session-Id" value="CXCSCFCX.sip.pfdev.fr;45e45ee4;046725;5cd579ef"/>
-	<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-	<avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
-    	<avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
-    	<avp code="Auth-Data-Item" vendorId="TGPP" state="true">
-	        <avp code="Item-Number" value="0" vendorId="TGPP"/>
-	        <avp code="Authentication-Scheme" value="DIGEST" vendorId="TGPP"/>
-	        <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5' vendorId="TGPP"/>
-	        <avp code="Authentication-Context" value="INVITE" vendorId="TGPP"/>
-    	</avp>
-    	<avp code="badCommandCode" value="badValue" vendorId="TGPP" state="false"/>
-	<avp code="badCommandCode" vendorId="TGPP" state="false">
-	        <avp code="badSubCommandCode1" value="badValue1" vendorId="TGPP" state="false"/>
-	        <avp code="badSubCommandCode2" value="badValue2" vendorId="TGPP" state="true"/>
-	        <avp code="badSubCommandCode3" value="badValue3" vendorId="TGPP" state="false"/>
-	        <avp code="badSubCommandCode4" value="badValue4" vendorId="TGPP" state="true"/>
-    	</avp>
+    <parameter name="[emptyList]" operation="list.create"/>
 
+    <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[Remote-Address]" destScenario="server">
+      	<header request="true" command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx" proxiable="true"/>
+      	<avp code="Origin-Host" value="[Local-Host]"/>
+      	<avp code="Origin-Realm" value="[Local-Realm]"/>
+      	<avp code="Destination-Host" value="[Remote-Host]"/>	
+      	<avp code="Destination-Realm" value="[Remote-Realm]"/>		
+      	<avp code="Vendor-Specific-Application-Id">
+      	    <avp code="Vendor-Id" value="TGPP"/>
+      	    <avp code="Auth-Application-Id" value="IMS_Cx_Dx"/>
+      	</avp>
+      	<avp code="Session-Id" value="CXCSCFCX.sip.pfdev.fr;45e45ee4;046725;5cd579ef"/>
+      	<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+      	<avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
+        <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
+        <avp code="Auth-Data-Item" vendorId="TGPP" state="true">
+      	    <avp code="Item-Number" value="0" vendorId="TGPP"/>
+      	    <avp code="Authentication-Scheme" value="DIGEST" vendorId="TGPP"/>
+      	    <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5' vendorId="TGPP"/>
+      	    <avp code="Authentication-Context" value="INVITE" vendorId="TGPP"/>
+        </avp>
+        <avp code="10000" value="badValue" vendorId="TGPP" state="false"/>
+      	<avp code="IMS-Information" vendorId="TGPP" state="true">
+      	    <avp code="Event-Type" value="badValue1" vendorId="TGPP" state="false"/>
+      	    <avp code="Role-Of-Node" value="[emptyList]" vendorId="TGPP" state="false"/>
+      	    <avp code="Node-Functionality" value="1212121" vendorId="TGPP" state="true"/>
+      	    <avp code="User-Session-ID" value="[emptyList]" vendorId="TGPP" state="true"/>
+      	    <avp code="Calling-Party-Address" value="badValue5" vendorId="TGPP"/>
+      	    <avp code="Called-Party-Address" value="[emptyList]" vendorId="TGPP"/>
+        </avp>
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="Receive Answer (MAA)" request="false" type="Multimedia-Authentitcation:506" result="DIAMETER_SUCCESS:2001"  timeout="[timeout]">
