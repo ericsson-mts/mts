@@ -68,6 +68,24 @@
     <parameter name="[avp3vendor]" operation="protocol.setFromMessage" value="avp.283.vendorId"/>    
     <test parameter="[avp3vendor]" condition="string.equals" value="0"/>
 
+    <parameter name="[avp4code]" operation="protocol.setFromMessage" value="avp.IMS-Information.Event-Type.value"/>        
+    <test parameter="[avp4code]" condition="list.isEmpty"/>
+
+    <parameter name="[avp5code]" operation="protocol.setFromMessage" value="avp.IMS-Information.Role-Of-Node.value"/>        
+    <test parameter="[avp5code]" condition="list.isEmpty"/>
+
+    <parameter name="[avp6code]" operation="protocol.setFromMessage" value="avp.IMS-Information.Node-Functionality.value"/>        
+    <test parameter="[avp6code]" condition="string.equals" value="1212121"/>
+
+    <parameter name="[avp7code]" operation="protocol.setFromMessage" value="avp.IMS-Information.User-Session-ID.value"/>
+    <test parameter="[avp7code]" condition="list.isEmpty"/>
+    
+    <parameter name="[avp8code]" operation="protocol.setFromMessage" value="avp.IMS-Information.Calling-Party-Address.value"/>        
+    <test parameter="[avp8code]" condition="string.equals" value="badValue5"/>
+    
+    <parameter name="[avp9code]" operation="protocol.setFromMessage" value="avp.IMS-Information.Called-Party-Address.value"/>
+    <test parameter="[avp9code]" condition="list.isEmpty"/>
+    
     <sendMessageDIAMETER name="SendAnswerMAA">
 	<header request="false" command="Multimedia-Authentitcation" applicationId="4321" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
 	<avp code="Origin-Host" value="[Remote-Host]"/>
