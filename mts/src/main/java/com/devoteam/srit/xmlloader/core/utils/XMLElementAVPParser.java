@@ -92,11 +92,11 @@ public class XMLElementAVPParser implements XMLElementReplacer
                         hasParameter = true;
                         if (variable != null)
                         {
-                            if(allowedParameterLength == -1)
+                            if(allowedParameterLength == -1 || allowedParameterLength == 1)
                             {
                                 allowedParameterLength = variable.length();
                             }
-                            else if(allowedParameterLength != variable.length())
+                            else if(variable.length() != 1 && allowedParameterLength != variable.length())
                             {
                                 throw new ExecutionException("Invalid length of variables : a variable of length " + allowedParameterLength + " has been found but " + variableStr + " has a length of " + variable.length());
                             }
@@ -131,8 +131,13 @@ public class XMLElementAVPParser implements XMLElementReplacer
 
                         if (parameterPool.exists(matcher.group()))
                         {
-                            value = before + "(" + i + ")" + after;
-                            offset += ((String) "(" + i + ")").length();
+                            int index = i;
+                            if(parameterPool.get(matcher.group()).length() == 1){
+                                index = 0;
+                            }
+                                    
+                            value = before + "(" + index + ")" + after;
+                            offset += ((String) "(" + index + ")").length();
                         }
                         
                     }
