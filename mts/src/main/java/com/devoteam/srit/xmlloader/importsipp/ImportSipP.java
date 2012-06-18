@@ -22,7 +22,7 @@ import org.xml.sax.SAXException;
 
 @SuppressWarnings("rawtypes")
 public class ImportSipP {
-		static String filename = "branchc";
+		static String filename = "uac";
 		static String filetype = ".xml";
 
 	public static void main(String argv[]) throws DocumentException, ParserConfigurationException, SAXException {
@@ -160,7 +160,7 @@ public class ImportSipP {
         			xPath(result_doc,template_element,sippNode,result_doc_root);
         		}
         	}
-        	else
+        	else 
         		xPath(result_doc,template_element,sippNode,result_doc_root);
 		}
 	}
@@ -182,7 +182,7 @@ public class ImportSipP {
 			String attribut_value = attribute.getValue().toString(); 
 			//If the value contains an xpath expression
 			if(attribut_value.startsWith("xpath:"))
-				{	//Go through the nodes in the nodes list
+				{	//Go through the nodes in the nodes list_
 					for(int j=0; j<sippNode.size(); j++)
 					{
 						xpath_exist= true;
@@ -197,7 +197,6 @@ public class ImportSipP {
 				    		  /*If the XPath is an instance of an Attribute we create a list for all xpath
 				    		   * values, and we add every xpath attribute found, to the list. 
 				    		   */
-				    		  
 				    		  ArrayList<Attribute> list = att.get(attribut_value); 
 				    		  if(list == null)
 				    		  {
@@ -211,11 +210,12 @@ public class ImportSipP {
 		}
 	  	int max = 0 ;
 	  	//We go through the values of the Attributes list, and we get the maximum size 
-		for (ArrayList<Attribute> value : att.values()) {
-				if(value.size()>max)
-				{
-					max = value.size();
-				}
+		for (ArrayList<Attribute> value : att.values()) 
+		{
+			if(value.size()>max)
+			{
+				max = value.size();
+			}
 		}
 		//A loop from 0 to the max
 		for(int k =0; k<max; k++)	
@@ -286,15 +286,8 @@ public class ImportSipP {
 			for (Iterator i = template_root.elementIterator();i.hasNext();) 
 			{
 				Element template_element = (Element) i.next();
-		        	if(template_element.getName().equals("parameter"))
-		        	{
-		        		if(sippNode.getStringValue().contains(template_element.attribute("name").getValue()))
-		        		{
-		        			xPath(doc2,template_element,sippNodeList,main_root);
-		        		}
-		        	}
-		        	else
-		        		xPath(doc2,template_element,sippNodeList,main_root);
+				xPath(doc2,template_element,sippNodeList,main_root);
+
 			}
 		}
 	}
