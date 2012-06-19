@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-2" ?>
 <template>
-<if response="xpath:.[@optional = 'true']/@response"> 
-<goto label="xpath:./@next" />
+<if> 
+<condition>
+	<test parameter="[_response]" condition="number.equals" value="xpath:.[@optional = 'true']/@response"/>
+</condition>
+<then>
+	<goto label="xpath:./@next" />
+</then>
 </if>
 </template>
