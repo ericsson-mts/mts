@@ -164,13 +164,16 @@ public class TesterGui {
                 filename = null;
             }
         }
-
+        
         if (null != filename) {
             try {
                 close_closeGui();
                 close_closeFile();
 
                 this.guiMenuHelper.addToRecents(filename.toString());
+                
+                this.getJFrameEditableParameters().clear();
+                
                 this.open_openFile(filename);
                 this.open_openGui();
 
