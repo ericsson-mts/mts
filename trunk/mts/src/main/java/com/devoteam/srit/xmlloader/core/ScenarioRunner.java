@@ -124,19 +124,22 @@ public class ScenarioRunner extends Runner
     public void assertIsNotInterrupting() throws InterruptedExecutionException {
         if (getState().isInterrupted() || getState().isFinished()) {
             if (_stopped && !isInFinally()) {
-                throw new InterruptedExecutionException("scenario runner is currently stopping or already stopped " + "getState()=" + getState());
+                throw new InterruptedExecutionException("scenario runner is currently stopping or already stopped getState()=" + getState());
             }
         }
     }
 
     public void reset() {
         resetState();
+        
         doNotifyAll();
     }
 
     public void resetToOpened() {
         resetState();
         getState().setFlag(RunnerState.F_OPENED, true);
+        getState().setFlag(RunnerState.F_INTERRUPTED, _stopped);
+
         doNotifyAll();
     }
 
@@ -183,9 +186,9 @@ public class ScenarioRunner extends Runner
      * Stops the thread of the ScenarioRunner
      */
     public synchronized void stop() {
-        _stopped = true;
-
         getState().setFlag(RunnerState.F_INTERRUPTED, true);
+
+        _stopped = true;
 
         if (!isInFinally()) {
             if (_thread != null) {
