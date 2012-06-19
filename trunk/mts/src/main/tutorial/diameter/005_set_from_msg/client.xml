@@ -7,6 +7,7 @@
     <parameter name="[timeout]" operation="set" value="10" />
 
     <parameter name="[emptyList]" operation="list.create"/>
+    <parameter name="[stateValue]" operation="set" value="true"/>
 
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[Remote-Address]" destScenario="server">
       	<header request="true" command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx" proxiable="true"/>
@@ -32,8 +33,8 @@
       	<avp code="IMS-Information" vendorId="TGPP" state="true">
       	    <avp code="Event-Type" value="badValue1" vendorId="TGPP" state="false"/>
       	    <avp code="Role-Of-Node" value="[emptyList]" vendorId="TGPP" state="false"/>
-      	    <avp code="Node-Functionality" value="1212121" vendorId="TGPP" state="true"/>
-      	    <avp code="User-Session-ID" value="[emptyList]" vendorId="TGPP" state="true"/>
+      	    <avp code="Node-Functionality" value="1212121" vendorId="TGPP" state="[stateValue]"/>
+      	    <avp code="User-Session-ID" value="[emptyList]" vendorId="TGPP" state="[stateValue]"/>
       	    <avp code="Calling-Party-Address" value="badValue5" vendorId="TGPP"/>
       	    <avp code="Called-Party-Address" value="[emptyList]" vendorId="TGPP"/>
         </avp>
