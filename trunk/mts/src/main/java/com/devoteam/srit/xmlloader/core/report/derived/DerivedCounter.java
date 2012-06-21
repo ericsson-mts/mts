@@ -60,6 +60,7 @@ import com.devoteam.srit.xmlloader.gui.frames.JFrameRTStats;
 import com.devoteam.srit.xmlloader.gui.model.ModelTreeRTStats;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.DateFormat;
 import java.util.SimpleTimeZone;
 import javax.swing.JPanel;
 import org.jfree.chart.ChartPanel;
@@ -70,7 +71,8 @@ public abstract class DerivedCounter
     public StatKey id;
     public CounterReportTemplate template;
     protected StatCounter counter;
-    protected long reportTimestamp;
+    protected long reportEndTimestamp;
+    protected long reportZeroTimestamp;
     private boolean createCharts;
     private boolean createCSVs;
     private char csvSeparator;
@@ -85,11 +87,12 @@ public abstract class DerivedCounter
     // Color (in hexa) for titles
     String bgColorTitle = "#E2E7DE";
 
-    public DerivedCounter(long timestamp, StatCounter counter) throws ParsingException
+    public DerivedCounter(long endTimestamp, long zeroTimestamp, StatCounter counter) throws ParsingException
     {
         this.counter = counter.clone();
         mean = std_dv = new Double(0);
-        this.reportTimestamp = timestamp;
+        this.reportEndTimestamp = endTimestamp;
+        this.reportZeroTimestamp = zeroTimestamp;
         this.createCharts = Config.getConfigByName("tester.properties").getBoolean("stats.GENERATE_CHARTS_PICTURES");
         this.createCSVs = Config.getConfigByName("tester.properties").getBoolean("stats.GENERATE_CHARTS_CSVS");
         this.csvSeparator = ';';
@@ -136,15 +139,15 @@ public abstract class DerivedCounter
                 weight = weightTable[i];
             }
 
-            if (nextTimestamp <= this.reportTimestamp &&
-                    timestamp <= this.reportTimestamp)
+            if (nextTimestamp <= this.reportEndTimestamp &&
+                    timestamp <= this.reportEndTimestamp)
             {
                 hits += weight;
             }
             else
             {
-                if (nextTimestamp >= this.reportTimestamp &&
-                        timestamp <= this.reportTimestamp)
+                if (nextTimestamp >= this.reportEndTimestamp &&
+                        timestamp <= this.reportEndTimestamp)
                 {
                     if (null != weightTable)
                     {
@@ -152,12 +155,12 @@ public abstract class DerivedCounter
                     }
                     else
                     {
-                        hits += ((double) (this.reportTimestamp % this.counter.graphDataset.graphParameters.graphPeriod)) / ((double) this.counter.graphDataset.graphParameters.graphPeriod);
+                        hits += ((double) (this.reportEndTimestamp % this.counter.graphDataset.graphParameters.graphPeriod)) / ((double) this.counter.graphDataset.graphParameters.graphPeriod);
                     }
                 }
                 else
                 {
-                    if (timestamp > this.reportTimestamp)
+                    if (timestamp > this.reportEndTimestamp)
                     {
                         break;
                     }
@@ -207,9 +210,18 @@ public abstract class DerivedCounter
 
         double hits = 0;
 
+        long offset;
+        boolean absoluteDate = Config.getConfigByName("tester.properties").getBoolean("stats.CHARTS_ABSOLUTE_DATE", false);
+        if(absoluteDate){
+            offset = reportZeroTimestamp;
+        }
+        else{
+            offset = 0;
+        }
+        System.out.println("offset = " + offset);
         for (int i = 0; i < graphTable.length; i++)
         {
-            long timestamp = i * this.counter.graphDataset.graphParameters.graphPeriod;
+            long timestamp = offset + i * this.counter.graphDataset.graphParameters.graphPeriod;
             timeSeries.add(new FixedMillisecond(timestamp), graphTable[i], false);
         }
 
@@ -233,9 +245,18 @@ public abstract class DerivedCounter
 
         chart.getXYPlot().setDomainAxis(new DateAxis());
         DateAxis axis = (DateAxis) chart.getXYPlot().getDomainAxis();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-        simpleDateFormat.setTimeZone(new SimpleTimeZone(0, "GMT"));
-        axis.setDateFormatOverride(simpleDateFormat);
+        DateFormat dateFormat;
+        
+        if(absoluteDate){
+            dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
+            axis.setVerticalTickLabels(true);
+        }
+        else{
+            dateFormat = new SimpleDateFormat("HH:mm:ss");
+            dateFormat.setTimeZone(new SimpleTimeZone(0, "GMT"));
+        }
+        axis.setDateFormatOverride(dateFormat);
+
         chart.setBackgroundPaint(Color.WHITE);
         return chart;
     }
@@ -254,7 +275,7 @@ public abstract class DerivedCounter
         {
             long timestamp = i * this.counter.graphDataset.graphParameters.graphPeriod;
 
-            if (timestamp > this.reportTimestamp)
+            if (timestamp > this.reportEndTimestamp)
             {
                 break;
             }

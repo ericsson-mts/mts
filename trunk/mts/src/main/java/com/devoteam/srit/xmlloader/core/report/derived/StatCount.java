@@ -38,9 +38,9 @@ import org.jfree.chart.JFreeChart;
 
 public class StatCount extends DerivedCounter
 {
-    public StatCount(long timestamp, StatKey id, StatCounter statCounter, CounterReportTemplate template) throws ParsingException
+    public StatCount(long timestamp, long zeroTimestamp, StatKey id, StatCounter statCounter, CounterReportTemplate template) throws ParsingException
     {
-        super(timestamp, statCounter);
+        super(timestamp, zeroTimestamp, statCounter);
         this.id = id;
 
         double[] graphArray = this.counter.graphDataset.getGraphArray();

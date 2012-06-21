@@ -153,7 +153,7 @@ public class CounterReportTemplate implements Serializable
 
                 if (arg1counter != null)
                 {
-                    StatFlow statFlow = new StatFlow(pool.getLastTimestamp(), afterMatchStatKey, arg1counter, this);
+                    StatFlow statFlow = new StatFlow(pool.getLastTimestamp(), pool.getZeroTimestamp(), afterMatchStatKey, arg1counter, this);
                     return statFlow;
                 }
             }
@@ -171,7 +171,7 @@ public class CounterReportTemplate implements Serializable
 
                 if (arg1counter != null && arg2counter != null)
                 {
-                    StatValue average = new StatValue(pool.getLastTimestamp(), afterMatchStatKey, arg1counter, arg2counter, this);
+                    StatValue average = new StatValue(pool.getLastTimestamp(), pool.getZeroTimestamp(), afterMatchStatKey, arg1counter, arg2counter, this);
                     return average;
                 }
 
@@ -188,7 +188,7 @@ public class CounterReportTemplate implements Serializable
 
                 if (arg1counter != null)
                 {
-                    StatCount statValue = new StatCount(pool.getLastTimestamp(), afterMatchStatKey, arg1counter, this);
+                    StatCount statValue = new StatCount(pool.getLastTimestamp(), pool.getZeroTimestamp(), afterMatchStatKey, arg1counter, this);
                     return statValue;
                 }
             }
@@ -206,7 +206,7 @@ public class CounterReportTemplate implements Serializable
 
                 if (arg1counter != null && arg2counter != null)
                 {
-                    StatPercent statPercent = new StatPercent(pool.getLastTimestamp(), afterMatchStatKey, arg1counter, arg2counter, this);
+                    StatPercent statPercent = new StatPercent(pool.getLastTimestamp(), pool.getZeroTimestamp(), afterMatchStatKey, arg1counter, arg2counter, this);
                     return statPercent;
                 }
             }
@@ -222,7 +222,7 @@ public class CounterReportTemplate implements Serializable
 
                 if (arg1counter != null)
                 {
-                    StatText statText = new StatText(pool.getLastTimestamp(), afterMatchStatKey, arg1counter, this);
+                    StatText statText = new StatText(pool.getLastTimestamp(), pool.getZeroTimestamp(), afterMatchStatKey, arg1counter, this);
                     return statText;
                 }
             }

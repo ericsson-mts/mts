@@ -43,9 +43,9 @@ public class StatPercent extends DerivedCounter
     
     private double cumulated;
     
-    public StatPercent(long timestamp, StatKey id, StatCounter p1, StatCounter p2, CounterReportTemplate template) throws ParsingException
+    public StatPercent(long timestamp, long zeroTimestamp, StatKey id, StatCounter p1, StatCounter p2, CounterReportTemplate template) throws ParsingException
     {
-        super(timestamp, p1);
+        super(timestamp, zeroTimestamp, p1);
         this.id = id;
         this.template = template;
 
