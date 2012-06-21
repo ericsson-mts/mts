@@ -41,9 +41,9 @@ public class StatValue extends DerivedCounter
     private double max;
     protected StatCounter eventCounter;
     
-    public StatValue(long timestamp, StatKey id, StatCounter valueCounter, StatCounter eventCounter, CounterReportTemplate template) throws ParsingException
+    public StatValue(long timestamp, long zeroTimestamp, StatKey id, StatCounter valueCounter, StatCounter eventCounter, CounterReportTemplate template) throws ParsingException
     {
-        super(timestamp, valueCounter);
+        super(timestamp, zeroTimestamp, valueCounter);
         this.eventCounter = eventCounter;
         this.min = valueCounter.globalDataset.getMin();
         this.max = valueCounter.globalDataset.getMax();

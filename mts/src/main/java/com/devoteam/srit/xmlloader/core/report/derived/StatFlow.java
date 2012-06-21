@@ -41,9 +41,9 @@ public class StatFlow extends DerivedCounter
     private double min;
     private double max;
     
-    public StatFlow(long timestamp, StatKey id, StatCounter counter, CounterReportTemplate template) throws ParsingException
+    public StatFlow(long timestamp, long zeroTimestamp, StatKey id, StatCounter counter, CounterReportTemplate template) throws ParsingException
     {
-        super(timestamp, counter);
+        super(timestamp, zeroTimestamp, counter);
         super.id = id;
         super.template = template;
         this.counter.graphDataset.divide((double) this.counter.graphDataset.graphParameters.graphPeriod / (double) 1000);
@@ -76,7 +76,7 @@ public class StatFlow extends DerivedCounter
         StringBuilder sb = new StringBuilder();
 
         String[] values = {Utils.formatdouble(this.counter.globalDataset.getValue()),
-                           Utils.formatdouble((this.counter.globalDataset.getValue() * 1000 / this.reportTimestamp)) + "/s"
+                           Utils.formatdouble((this.counter.globalDataset.getValue() * 1000 / this.reportEndTimestamp)) + "/s"
                           };
         
         sb.append(createToolTip(values, link));
@@ -145,7 +145,7 @@ public class StatFlow extends DerivedCounter
                             ) +
                             HTML.tableRow("", "",
                                 HTML.tableCell("", "key", "Av") +
-                                HTML.tableCell("", "value", Utils.formatdouble(this.counter.globalDataset.getValue() * 1000 / this.reportTimestamp) + "/s")
+                                HTML.tableCell("", "value", Utils.formatdouble(this.counter.globalDataset.getValue() * 1000 / this.reportEndTimestamp) + "/s")
                             ) +
                             HTML.tableRow("", "",
                                 HTML.tableCell("", "key", "Dev") +
@@ -173,7 +173,7 @@ public class StatFlow extends DerivedCounter
         panel.setLayout(new javax.swing.BoxLayout(panel, javax.swing.BoxLayout.Y_AXIS));
 
         panel.add(new JLabel(Utils.formatdouble(this.counter.globalDataset.getValue())));
-        panel.add(new JLabel(Utils.formatdouble((this.counter.globalDataset.getValue() * 1000 / this.reportTimestamp)) + "/s"));
+        panel.add(new JLabel(Utils.formatdouble((this.counter.globalDataset.getValue() * 1000 / this.reportEndTimestamp)) + "/s"));
 
         panel.setToolTipText(generateRTStatsToolTip());
 
@@ -221,7 +221,7 @@ public class StatFlow extends DerivedCounter
         // All parameters of this counter
         htmlPanel += "<tr><td width=\"50%\" bgcolor=\""+bgColorTitle+"\">"+"Count"+"</td><td>"+Utils.formatdouble(this.counter.globalDataset.getValue())+"</td></tr>";
         htmlPanel += "<tr><td bgcolor=\""+bgColorTitle+"\">"+"Min"+"</td><td>"+Utils.formatdouble(this.min) + "/s"+"</td></tr>";
-        htmlPanel += "<tr><td bgcolor=\""+bgColorTitle+"\">"+"Av"+"</td><td>"+Utils.formatdouble(this.counter.globalDataset.getValue() * 1000 / this.reportTimestamp) + "/s"+"</td></tr>";
+        htmlPanel += "<tr><td bgcolor=\""+bgColorTitle+"\">"+"Av"+"</td><td>"+Utils.formatdouble(this.counter.globalDataset.getValue() * 1000 / this.reportEndTimestamp) + "/s"+"</td></tr>";
         htmlPanel += "<tr><td bgcolor=\""+bgColorTitle+"\">"+"Dev"+"</td><td>"+Utils.formatdouble(this.std_dv) + "/s"+"</td></tr>";
         htmlPanel += "<tr><td bgcolor=\""+bgColorTitle+"\">"+"Max"+"</td><td>"+Utils.formatdouble(this.max) + "/s"+"</td></tr>";
         htmlPanel += "</table>";
@@ -249,7 +249,7 @@ public class StatFlow extends DerivedCounter
 		runner.getParameterPool().createSimple(min, this.min);
     	String av = resultant + ".Av";
     	param.add(av); 
-		runner.getParameterPool().createSimple(av, this.counter.globalDataset.getValue() * 1000 / this.reportTimestamp);
+		runner.getParameterPool().createSimple(av, this.counter.globalDataset.getValue() * 1000 / this.reportEndTimestamp);
 		String dev = resultant + ".Dev";
     	param.add(dev); 
 		runner.getParameterPool().createSimple(dev, this.std_dv);		
