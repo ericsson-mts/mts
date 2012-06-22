@@ -47,7 +47,7 @@ public class ImportSipP {
 			            root.remove(attribute);
 				  }
 				//Add the global parameters from the global template xml file
-				addGlobalNode(resultDoc,rootElement);
+				addGlobalNode(resultDoc,rootElement, "global_template");
 				
 				//Run through the elements (nodes) of the source xml file 
 				for (Iterator i = root.elementIterator(); i.hasNext();) 
@@ -89,13 +89,16 @@ public class ImportSipP {
 				}
 		
 				//Function to write the result, to the resulting xml file
-				rightFinalResult(resultDoc);
+				rightFinalResult(resultDoc, filename+"_mts");
 				
 				//Function to replace strings in a file
 				replaceInFile(filename+"_mts.xml", "&lt;", "<");
 				replaceInFile(filename+"_mts.xml", "&gt;", ">");
 				replaceInFile(filename+"_mts.xml", "&#13;", "");
-			
+				
+				//Create the corresponding TEST file
+				createTestFile("test.xml", "001_stats"); 
+				
 				//Write 'DONE' on the system out
 				System.out.println("Done");
 			
@@ -109,11 +112,11 @@ public class ImportSipP {
 	 * @param document
 	 * @throws IOException
 	 */
-	public static void rightFinalResult(Document document) throws IOException
+	public static void rightFinalResult(Document document, String fileName) throws IOException
 	{	
 		 OutputFormat format = OutputFormat.createPrettyPrint();
 		 //We define the result xml file name
-		 XMLWriter writer = new XMLWriter(new FileWriter(filename+"_mts.xml" ), format); 
+		 XMLWriter writer = new XMLWriter(new FileWriter(fileName), format); 
 		 writer.write(document);
 	     writer.close();
 	}
@@ -297,10 +300,10 @@ public class ImportSipP {
 	 * @param mainNode
 	 * @throws DocumentException
 	 */
-	public static void addGlobalNode(Document Doc, Element mainNode) throws DocumentException
+	public static void addGlobalNode(Document Doc, Element mainNode, String global_file) throws DocumentException
 	{
 		SAXReader reader = new SAXReader();
-	 	Document template = reader.read("../mts/src/main/conf/importsipp/Templates/global_template.xml");
+	 	Document template = reader.read("../mts/src/main/conf/importsipp/Templates/"+global_file+".xml");
 		Element template_root = template.getRootElement();
 		for (Iterator i = template_root.elementIterator();i.hasNext();) 
 		{
@@ -337,6 +340,52 @@ public class ImportSipP {
 
 			}
 		}
+	}
+	
+	public static void createTestFile(String testFileName,String testName)
+	{	
+		try {	
+				boolean exists = (new File(testFileName)).exists();
+				if (exists) {
+					SAXReader reader = new SAXReader();
+					Document doc = reader.read(testFileName);
+					Element root = doc.getRootElement();
+					Element testcase = root.element("testcase");
+					Element scenario = testcase.element("scenario");
+					if( scenario != null)
+					{
+						if(!scenario.getStringValue().toString().equals(filename+"_mts"+filetype))
+						{	
+							Element scenario2 = testcase.addElement("scenario");
+							scenario2.addAttribute("name", "bob");
+							scenario2.addText(filename+"_mts"+filetype);
+						}
+					}
+					rightFinalResult(doc, testFileName);
+				}
+				else {
+					Document doc = DocumentHelper.createDocument();
+					Element rootElement = doc.addElement("test");
+					addGlobalNode(doc, rootElement, "test_Template");
+					Element testCase = rootElement.addElement("testcase");
+					testCase.addAttribute("name", testName);
+					testCase.addAttribute("description", "test sip"); 
+					testCase.addAttribute("state", "true");
+					
+					Element scenario = testCase.addElement("scenario");
+					scenario.addAttribute("name", "alice");
+					scenario.addText(filename+"_mts"+filetype);
+					rightFinalResult(doc, testFileName);
+				}
+			} 
+		catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 }
