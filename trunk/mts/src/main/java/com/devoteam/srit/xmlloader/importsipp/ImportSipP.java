@@ -17,11 +17,11 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
-
 import org.xml.sax.SAXException;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 @SuppressWarnings("rawtypes")
 public class ImportSipP {
@@ -54,7 +54,7 @@ public class ImportSipP {
 			            root.remove(attribute);
 				  }
 				//Add the global parameters from the global template xml file
-				addGlobalNode(resultDoc,rootElement, "global_template");
+				addGlobalNode(resultDoc,rootElement, "scenario_template");
 				
 				//Run through the elements (nodes) of the source xml file 
 				for (Iterator i = root.elementIterator(); i.hasNext();) 
@@ -94,7 +94,6 @@ public class ImportSipP {
 						nodes.clear();
 					}
 				}
-		
 				//Function to write the result, to the resulting xml file
 				rightFinalResult(resultDoc, args[0]+"_mts.xml");
 				
@@ -112,7 +111,8 @@ public class ImportSipP {
 		 catch (IOException ioe) {
 			 log(ioe);    
 		}
-}
+	}
+	
 	/**
 	 * Function that writes something to a file
 	 * @param document
@@ -149,7 +149,6 @@ public class ImportSipP {
 		    writer.write(newtext);
 		    writer.close();
 		}
-		       
 		catch (IOException ioe){
 			log(ioe);             
 		}
@@ -395,6 +394,7 @@ public class ImportSipP {
 						Element scenario = testcase2.addElement("scenario");
 						scenario.addAttribute("name", "alice");
 						scenario.addText(inputFileName+"_mts"+filetype);
+						
 					}						
 					rightFinalResult(doc, testFileName);
 				}
@@ -430,13 +430,14 @@ public class ImportSipP {
 	 */
 	static public void usage(String message) {
         System.out.println(message);
-        System.out.println("Usage: startCmd <inputFileName>|<testFileName>|<testName>\n");
+        System.out.println("Usage: importSipp <inputFileName>|<testFileName>|<testName>\n");
         System.exit(10);
     }
 	
-	static public void log(Exception e){	
+	static public void log(Exception e ){	
 		e.printStackTrace();
 		GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e);
 	}
+
 	
 }
