@@ -20,17 +20,24 @@ import org.dom4j.io.XMLWriter;
 
 import org.xml.sax.SAXException;
 
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent;
+
 @SuppressWarnings("rawtypes")
 public class ImportSipP {
-		static String filename = "branchs";
+		//static String input_filename = "branchs";
 		static String filetype = ".xml";
 
-	public static void main(String argv[]) throws DocumentException, ParserConfigurationException, SAXException {
+	public static void main(String... args) throws DocumentException, ParserConfigurationException, SAXException {
 		
+		 if (args.length <= 0) {
+	            usage("All arguments are required !");
+	        }
+		 
 		ArrayList<Element> nodes = new ArrayList<Element>(); 
 		 try {
 			 	//Get the source xml file, and parse it using SAX parser */
-			 	String filepath = filename+filetype; 
+			 	String filepath = args[0]+filetype; 
 			 	SAXReader reader = new SAXReader();
 			 	Document source_doc = reader.read("../mts/src/main/tutorial/importsipp/"+filepath);
 			 		
@@ -89,31 +96,29 @@ public class ImportSipP {
 				}
 		
 				//Function to write the result, to the resulting xml file
-				rightFinalResult(resultDoc, filename+"_mts");
+				rightFinalResult(resultDoc, args[0]+"_mts.xml");
 				
 				//Function to replace strings in a file
-				replaceInFile(filename+"_mts.xml", "&lt;", "<");
-				replaceInFile(filename+"_mts.xml", "&gt;", ">");
-				replaceInFile(filename+"_mts.xml", "&#13;", "");
+				replaceInFile(args[0]+"_mts.xml", "&lt;", "<");
+				replaceInFile(args[0]+"_mts.xml", "&gt;", ">");
+				replaceInFile(args[0]+"_mts.xml", "&#13;", "");
 				
 				//Create the corresponding TEST file
-				createTestFile("test.xml", "001_stats"); 
+				createTestFile(args[1]+".xml", args[2], args[0]); 
 				
 				//Write 'DONE' on the system out
 				System.out.println("Done");
-			
 		}
 		 catch (IOException ioe) {
-			ioe.printStackTrace();
-		   }
+			 log(ioe);    
+		}
 }
 	/**
-	 * Function that writes something to an xml file
+	 * Function that writes something to a file
 	 * @param document
 	 * @throws IOException
 	 */
-	public static void rightFinalResult(Document document, String fileName) throws IOException
-	{	
+	public static void rightFinalResult(Document document, String fileName) throws IOException{	
 		 OutputFormat format = OutputFormat.createPrettyPrint();
 		 //We define the result xml file name
 		 XMLWriter writer = new XMLWriter(new FileWriter(fileName), format); 
@@ -146,8 +151,8 @@ public class ImportSipP {
 		}
 		       
 		catch (IOException ioe){
-		            ioe.printStackTrace();
-		        }
+			log(ioe);             
+		}
 	 }
 	
 	/**
@@ -162,8 +167,7 @@ public class ImportSipP {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public static void addNode(ArrayList<Element> sippNode, Element resultDocRoot, Document resultDoc, String templateFile) throws SAXException, IOException, DocumentException
-	{		
+	public static void addNode(ArrayList<Element> sippNode, Element resultDocRoot, Document resultDoc, String templateFile) throws SAXException, IOException, DocumentException{		
 		//Parsing the corresponding template file
 	 	SAXReader reader = new SAXReader();
 	 	Document template = reader.read("../mts/src/main/conf/importsipp/Templates/"+templateFile+"_template.xml");
@@ -195,8 +199,7 @@ public class ImportSipP {
 	 * @param sippNode
 	 * @param resultDocRoot
 	 */
-	public static void xPath(Document resultDocument, Element currentTemplateNode, ArrayList<Element> sippNode, Element resultDocRoot)
-	{			
+	public static void xPath(Document resultDocument, Element currentTemplateNode, ArrayList<Element> sippNode, Element resultDocRoot){			
 		Element newelement = null;
 		Map<String,ArrayList<Attribute>> att = new HashMap<String, ArrayList<Attribute>>(); 
 		boolean xpath_exist = false; 
@@ -300,8 +303,7 @@ public class ImportSipP {
 	 * @param mainNode
 	 * @throws DocumentException
 	 */
-	public static void addGlobalNode(Document Doc, Element mainNode, String global_file) throws DocumentException
-	{
+	public static void addGlobalNode(Document Doc, Element mainNode, String global_file) throws DocumentException{
 		SAXReader reader = new SAXReader();
 	 	Document template = reader.read("../mts/src/main/conf/importsipp/Templates/"+global_file+".xml");
 		Element template_root = template.getRootElement();
@@ -323,8 +325,7 @@ public class ImportSipP {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public static void addNode2(ArrayList<Element> nodes, Element main_root, Document doc2, String template_file) throws SAXException, IOException, DocumentException
-	{	
+	public static void addNode2(ArrayList<Element> nodes, Element main_root, Document doc2, String template_file) throws SAXException, IOException, DocumentException{	
 		SAXReader reader = new SAXReader();
 		Document template = reader.read("../mts/src/main/conf/importsipp/Templates/"+template_file+"_template.xml");
 		Element template_root = template.getRootElement(); 
@@ -342,30 +343,67 @@ public class ImportSipP {
 		}
 	}
 	
-	public static void createTestFile(String testFileName,String testName)
-	{	
+	/**
+	 * This function creates the Test file to be used by MTS.  
+	 * @param testFileName
+	 * @param testName
+	 * @param inputFileName
+	 */
+	public static void createTestFile(String testFileName,String testName, String inputFileName){	
+		boolean scenarioExists = false ;
+		boolean testcaseExists = false; 
 		try {	
 				boolean exists = (new File(testFileName)).exists();
+				//If the file exists, add the element to it's corresponding place in the file
 				if (exists) {
 					SAXReader reader = new SAXReader();
 					Document doc = reader.read(testFileName);
 					Element root = doc.getRootElement();
-					Element testcase = root.element("testcase");
-					Element scenario = testcase.element("scenario");
-					if( scenario != null)
+					Element testCaseMain = null ; 
+					for(Iterator j = root.elementIterator(); j.hasNext();)
 					{
-						if(!scenario.getStringValue().toString().equals(filename+"_mts"+filetype))
+						testCaseMain = (Element) j.next();
+						if(testCaseMain.attribute("name").getValue().equals(testName))
 						{	
-							Element scenario2 = testcase.addElement("scenario");
-							scenario2.addAttribute("name", "bob");
-							scenario2.addText(filename+"_mts"+filetype);
+							testcaseExists = true; 
+							for (Iterator i = testCaseMain.elementIterator(); i.hasNext();) 
+							{
+								Element scenario = (Element) i.next();
+								if(scenario.getStringValue().equals(inputFileName+"_mts"+filetype))
+									scenarioExists = true;  
+							}
+							break;
 						}
 					}
+					//If tests, to assure not duplicating the tags
+					if(testcaseExists == true)
+					{
+						if(scenarioExists == false)
+						{
+							Element scenario2 = testCaseMain.addElement("scenario");
+							scenario2.addAttribute("name", "SIP");
+							scenario2.addText(inputFileName+"_mts"+filetype);
+						}
+					}
+					//If the file exists and the testcase tag doesn't exist, add the tag and the elements
+					else
+					{
+						Element testcase2 = root.addElement("testcase"); 
+						testcase2.addAttribute("name", testName);
+						testcase2.addAttribute("description", "test sip"); 
+						testcase2.addAttribute("state", "true");
+						Element scenario = testcase2.addElement("scenario");
+						scenario.addAttribute("name", "alice");
+						scenario.addText(inputFileName+"_mts"+filetype);
+					}						
 					rightFinalResult(doc, testFileName);
 				}
+				//If the file doesn't exist, create it and add the elements
 				else {
 					Document doc = DocumentHelper.createDocument();
 					Element rootElement = doc.addElement("test");
+					rootElement.addAttribute("name", "importsipp");
+					rootElement.addAttribute("description", "imported from sipp scenario");
 					addGlobalNode(doc, rootElement, "test_Template");
 					Element testCase = rootElement.addElement("testcase");
 					testCase.addAttribute("name", testName);
@@ -374,18 +412,31 @@ public class ImportSipP {
 					
 					Element scenario = testCase.addElement("scenario");
 					scenario.addAttribute("name", "alice");
-					scenario.addText(filename+"_mts"+filetype);
+					scenario.addText(inputFileName+"_mts"+filetype);
 					rightFinalResult(doc, testFileName);
 				}
-			} 
+			}
 		catch (DocumentException e) {
-			e.printStackTrace();
+			log(e);
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log(e); 		
 		}
-		
+	}
+	
+	/**
+	 * Function that define usage for the user
+	 * @param message
+	 */
+	static public void usage(String message) {
+        System.out.println(message);
+        System.out.println("Usage: startCmd <inputFileName>|<testFileName>|<testName>\n");
+        System.exit(10);
+    }
+	
+	static public void log(Exception e){	
+		e.printStackTrace();
+		GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e);
 	}
 	
 }
