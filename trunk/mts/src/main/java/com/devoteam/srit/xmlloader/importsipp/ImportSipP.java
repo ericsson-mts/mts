@@ -281,11 +281,17 @@ public class ImportSipP {
 		}
 		/*If the TEMPLATE node is a 'sendMessageSIP', we have to add the same CDATA section from the SIPP
 		 * node to the newly created element
-		 */
-		//A VOIR
-		if(currentTemplateNode.getName().equals("sendMessageSIP"))
-		{	
-			newelement.addCDATA(sippNode.get(sippNode.size()-1).getStringValue());
+		 */	
+		if(currentTemplateNode.getStringValue().contains("xpath:"))
+		{
+			String xpath_value = currentTemplateNode.getStringValue().substring(7);
+			XPath xpath = resultDocument.createXPath(xpath_value);
+			Object obj = xpath.evaluate(sippNode);
+			if(obj instanceof Text)
+			{	
+				//List 
+			//	newelement.setContent(arg0)(((Text) obj).getStringValue());
+			}
 		}
 		//If the new element has been assigned successfully we do the same to the TEMPLATE node CHILDS
 		if(newelement != null)
