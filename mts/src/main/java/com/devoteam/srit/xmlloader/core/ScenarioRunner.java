@@ -130,6 +130,7 @@ public class ScenarioRunner extends Runner
     }
 
     public void reset() {
+        _stopped = false;
         resetState();
         
         doNotifyAll();
