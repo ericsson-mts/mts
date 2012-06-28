@@ -25,8 +25,48 @@
 
 	<parameter name="[Port-Tester]" operation="number.substract" value="65535" value2="[test:indexReg]"/>
 	<parameter name="[listenpoint]" operation="set" value="listenpoint_[Port-Tester]"/>
-  	<createListenpointSIP name="[listenpoint]" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="UDP"/>
-    <parameter name="[userName]" operation="set" value="[userTab([test:indexReg])]"/>    	
+	
+  <if>
+	   <condition>
+	      <test parameter="[transport]" condition="string.equals" value="UDP"/>
+	   </condition>
+	   <then>
+        <createListenpointSIP name="[listenpoint]" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="UDP" 
+        listenUDP="true" listenTCP="false" listenSCTP="false" listenTLS="false"/>
+     </then>
+  </if>
+
+  <if>
+	   <condition>
+	      <test parameter="[transport]" condition="string.equals" value="TCP"/>
+	   </condition>
+	   <then>
+        <createListenpointSIP name="[listenpoint]" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="TCP" 
+        listenUDP="false" listenTCP="true" listenSCTP="false" listenTLS="false"/>
+     </then>
+  </if>
+  
+  <if>
+	   <condition>
+	      <test parameter="[transport]" condition="string.equals" value="SCTP"/>
+	   </condition>
+	   <then>
+        <createListenpointSIP name="[listenpoint]" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="SCTP" 
+        listenUDP="false" listenTCP="false" listenSCTP="true" listenTLS="false"/>
+     </then>
+  </if>
+  
+  <if>
+	   <condition>
+	      <test parameter="[transport]" condition="string.equals" value="TLS"/>
+	   </condition>
+	   <then>
+        <createListenpointSIP name="[listenpoint]" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="TLS" 
+        listenUDP="false" listenTCP="false" listenSCTP="false" listenTLS="true"/>
+     </then>
+  </if>
+
+  <parameter name="[userName]" operation="set" value="[userTab([test:indexReg])]"/>    	
 
 	<parameter name="[localTag]" operation="string.random" value="10"/>
 	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
@@ -41,7 +81,7 @@ From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
 Call-ID:[newCallId]
 CSeq: [newCseq] REGISTER
 Via: SIP/2.0/[transport] [Host-Tester]:[Port-Tester];branch=z9hG4bK[newBranchId]
-Contact: <sip:[userName]@[Host-Tester]:[Port-Tester]>
+Contact: <sip:[userName]@[Host-Tester]:[Port-Tester];transport=[transport]>
 Expires: 3600
 Max-Forwards: 70
 Content-Length: 0

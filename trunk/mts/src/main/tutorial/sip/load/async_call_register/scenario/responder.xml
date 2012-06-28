@@ -169,7 +169,7 @@ SIP/2.0 180 Ringing
 To: [lastTo];tag=[newToTag]
 From: [lastFrom]
 Call-ID: [lastCallId]
-Contact: <sip:[lastToUser]@[lastLocalHost]:[lastLocalPort];transport=udp>
+Contact: <sip:[lastToUser]@[lastLocalHost]:[lastLocalPort];transport=[transport]>
 CSeq: [lastCSeq]
 Via: [lastVia]
 Record-Route: [lastRecordRoute]
@@ -200,7 +200,7 @@ To: [lastTo];tag=[newToTag]
 Call-ID: [lastCallId]
 CSeq: [lastCSeq]
 Via: [lastVia]
-Contact: <sip:[lastToUser]@[lastLocalHost]:[lastLocalPort];transport=udp>
+Contact: <sip:[lastToUser]@[lastLocalHost]:[lastLocalPort];transport=[transport]>
 Record-Route: [lastRecordRoute]
 Content-Type: application/sdp
 Content-Length: x
@@ -245,7 +245,8 @@ message : [lastMessage]
 	
     <parameter name="[newBranchId]" operation="string.random" value="10"/>
     <parameter name="[route]" operation="list.revert" value="[lastRecordRoute]"/>
-  	<sendMessageSIP name="Send ACK" delay="0" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+  	<sendMessageSIP name="Send ACK" delay="0" listenpoint="[lastListenpoint]" 
+    remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
 <![CDATA[
 ACK [lastContactURI] SIP/2.0
 To: [lastTo]
@@ -254,7 +255,7 @@ Call-ID: [lastCallId]
 CSeq: [lastCSeqNumber] ACK
 Max-Forwards: 70
 Route: [lastRecordRoute]
-Via: SIP/2.0/UDP [lastLocalHost]:[lastLocalPort];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/[transport] [lastLocalHost]:[lastLocalPort];branch=z9hG4bK[newBranchId]
 User-Agent: XMLLoader
 Content-Length: 0
 
@@ -282,16 +283,17 @@ Content-Length: 0
 	<parameter name="[newBranchId]" operation="string.random" value="10"/>
 	<parameter name="[newCseqNumber]" operation="number.uid" value="10"/>
 	<parameter name="[route]" operation="list.revert" value="[lastRecordRoute]"/>
-  	<sendMessageSIP name="Send BYE" delay="[CallDurationSec]" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]"> 
+  	<sendMessageSIP name="Send BYE" delay="[CallDurationSec]" listenpoint="[lastListenpoint]" 
+    remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]"> 
 <![CDATA[
-BYE sip:[lastContactURI] SIP/2.0
+BYE [lastContactURI] SIP/2.0
 To: [lastTo]
 From: [lastFrom]
 Call-ID: [lastCallId]
 CSeq: [newCseqNumber] BYE
 Max-Forwards: 70
 Route: [lastRecordRoute]
-Via: SIP/2.0/UDP [lastLocalHost]:[lastLocalPort];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/[transport] [lastLocalHost]:[lastLocalPort];branch=z9hG4bK[newBranchId]
 Content-Length: 0
 
 ]]>

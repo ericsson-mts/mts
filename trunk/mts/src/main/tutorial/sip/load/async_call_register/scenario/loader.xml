@@ -55,7 +55,8 @@
 	<parameter name="[Port-Tester]" operation="number.substract" value="65535" value2="[test:indexCall]"/>
 	<parameter name="[listenpoint]" operation="set" value="listenpoint_[Port-Tester]"/>
 
-	<sendMessageSIP name="Send INVITE" listenpoint="[listenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+	<sendMessageSIP name="Send INVITE" listenpoint="[listenpoint]" 
+  remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
 <![CDATA[		
 INVITE sip:[inviteeName]@sip.pfdev.fr SIP/2.0
 To: <sip:[inviteeName]@sip.pfdev.fr:5060>
@@ -63,10 +64,10 @@ From: "+33[inviterName]" <sip:+33[inviterName]@sip.pfdev.fr:5060>;tag=[newFromTa
 Call-ID: [newCallId]-[inviterName]@[Host-Tester]:[Port-Tester]
 CSeq: [newCseqNumber] INVITE
 Max-Forwards: 70
-Via: SIP/2.0/UDP [Host-Tester]:[Port-Tester];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/[transport] [Host-Tester]:[Port-Tester];branch=z9hG4bK[newBranchId]
 Route: <sip:+33[inviteeName]@[Adresse-Server];lr;call=orig>
 Record-Route: <sip:+33[inviteeName]@[Host-Tester]:[Port-Tester];maddr=[Host-Tester];lr>
-Contact: <sip:+33[inviterName]@[Host-Tester]:[Port-Tester];transport=udp>
+Contact: <sip:+33[inviterName]@[Host-Tester]:[Port-Tester];transport=[transport]>
 Content-Type: application/sdp
 User-Agent: XMLLoader
 Content-Length: x

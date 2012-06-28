@@ -23,9 +23,10 @@
 	
 	<label name="Begin"/>
 
-	<receiveMessageSIP name="wait_SIP_request" timeout="0">	
+	<receiveMessageSIP name="wait_SIP_request" timeout="0"/>	
 		<parameter name="[test:lastIsRequest]" operation="protocol.setFromMessage" value="message.request"/>  		
-		<parameter name="[test:lastResult]" operation="protocol.setFromMessage" value="message.result"/>  				
+		<parameter name="[test:lastResult]" operation="protocol.setFromMessage" value="message.result"/>
+    <parameter name="[test:lastTransport]" operation="protocol.setFromMessage" value="channel.transport"/>
 		
 		<parameter name="[test:lastFirstline]" operation="protocol.setFromMessage" value="firstline"/>  	
 		<parameter name="[test:lastFirstLineVersion]" operation="protocol.setFromMessage" value="firstline.Version"/>  	
@@ -40,6 +41,7 @@
 	  	<parameter name="[test:lastCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
 	  	<parameter name="[test:lastCSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
 	  	<parameter name="[test:lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+	  	<parameter name="[test:lastViaTransport]" operation="protocol.setFromMessage" value="header.Via.transport"/>
 	  	<parameter name="[test:lastRoute]" operation="protocol.setFromMessage" value="header.Route"/>		  		  	
 	  	<parameter name="[test:lastRecord-Route]" operation="protocol.setFromMessage" value="header.Record-Route"/>		  	
 	  	<parameter name="[test:lastContact]" operation="protocol.setFromMessage" value="header.Contact"/>		  		  	
@@ -52,8 +54,6 @@
 	  	<parameter name="[test:lastContent]" operation="protocol.setFromMessage" value="content"/>		  		  	
 	  	<parameter name="[test:lastExpires]" operation="protocol.setFromMessage" value="header.expires"/>		  		  	
 		<parameter name="[test:lastSIPMethod]" operation="protocol.setFromMessage" value="firstline.Method"/>		  		  	
-		
-	</receiveMessageSIP>
 	
 		<!-- Remove the "max-forwards" line in lastHeaderOthers -->
 			
@@ -169,9 +169,9 @@ To: [test:lastTo]
 From: [test:lastFrom]
 Call-ID: [test:lastCallId]
 CSeq: [test:lastCSeq]
-Via: SIP/2.0/[transportResponse] [test:Adresse-Tester];branch=z9hG4bK[test:newBranchId]
+Via: SIP/2.0/[lastViaTransport] [test:Adresse-Tester];branch=z9hG4bK[test:newBranchId]
 Via: [test:lastVia]
-Record-Route: <sip:[test:Adresse-Tester];transport=[transportRequest];lr>
+Record-Route: <sip:[test:Adresse-Tester];transport=[lastTransport];lr>
 Record-Route: [test:lastRecord-Route]
 Contact: [test:lastContact]
 Max-Forwards: [test:newMax-Forwards]
@@ -225,10 +225,9 @@ To: [test:lastTo]
 From: [test:lastFrom]
 Call-ID: [test:lastCallId]
 CSeq: [test:lastCSeq]
-Via: SIP/2.0/[transportResponse] [test:Adresse-Tester];branch=z9hG4bK[test:newBranchId]
+Via: SIP/2.0/[lastViaTransport] [test:Adresse-Tester];branch=z9hG4bK[test:newBranchId]
 Via: [test:lastVia]
-Route: [test:lastRoute]
-Record-Route: <sip:[test:Adresse-Tester];transport=[transportRequest];lr>
+Record-Route: <sip:[test:Adresse-Tester];transport=[lastTransport];lr>
 Record-Route: [test:lastRecord-Route]
 Contact: [test:lastContact]
 Max-Forwards: [test:newMax-Forwards]
@@ -298,8 +297,8 @@ From: [test:lastFrom]
 Call-ID: [test:lastCallId]
 CSeq: [test:lastCSeqNumber] ACK
 Via: [test:firstLastVia]
-Route: <[test:[test:lastToURI]];transport=[transportRequest];lr>
-Record-Route: <sip:[test:Adresse-Tester];transport=[transportRequest];lr>
+Route: <[test:[test:lastToURI]];transport=[lastTransport];lr>
+Record-Route: <sip:[test:Adresse-Tester];transport=[lastTransport];lr>
 Record-Route: [test:lastRecord-Route]
 Contact: [test:lastContact]
 Max-Forwards: 70
@@ -408,9 +407,9 @@ To: [test:lastTo]
 From: [test:lastFrom]
 Call-ID: [test:lastCallId]
 CSeq: [test:lastCSeq]
-Via: SIP/2.0/[transportResponse] [test:Adresse-Tester];branch=z9hG4bK[test:lastInviteBranchId]
+Via: SIP/2.0/[lastViaTransport] [test:Adresse-Tester];branch=z9hG4bK[test:lastInviteBranchId]
 Via: [test:lastVia]
-Record-Route: <sip:[test:Adresse-Tester];transport=[transportRequest];lr>
+Record-Route: <sip:[test:Adresse-Tester];transport=[lastTransport];lr>
 Record-Route: [test:lastRecord-Route]
 Contact: [test:lastContact]
 Max-Forwards: [test:newMax-Forwards]
@@ -432,7 +431,7 @@ From: [test:lastFrom]
 To: [test:lastTo];tag=[test:localTag]
 Call-ID: [test:lastCallId]
 CSeq: [test:lastCSeq]
-Record-Route: <sip:[test:Adresse-Tester];transport=[transportRequest];lr>
+Record-Route: <sip:[test:Adresse-Tester];transport=[lastTransport];lr>
 Record-Route: [test:lastRecord-Route]
 Content-Length: 0]]>
 <!--******************** END MESSAGE *********************-->
@@ -498,7 +497,7 @@ From: [test:lastFrom]
 To: [test:lastTo]
 Call-ID: [test:lastCallId]
 CSeq: [test:lastCSeq]
-Record-Route: <sip:[test:Adresse-Tester];transport=[transportRequest];lr>
+Record-Route: <sip:[test:Adresse-Tester];transport=[lastTransport];lr>
 Record-Route: [test:lastRecord-Route]
 Content-Length: 0]]>
 <!--******************** END MESSAGE *********************-->
@@ -512,9 +511,9 @@ To: [test:lastTo]
 From: [test:lastFrom]
 Call-ID: [test:lastCallId]
 CSeq: [test:lastCSeq]
-Via: SIP/2.0/[transportResponse] [test:Adresse-Tester];branch=z9hG4bK[test:newBranchId]
+Via: SIP/2.0/[lastViaTransport] [test:Adresse-Tester];branch=z9hG4bK[test:newBranchId]
 Via: [test:lastVia]
-Record-Route: <sip:[test:Adresse-Tester];transport=[transportRequest];lr>
+Record-Route: <sip:[test:Adresse-Tester];transport=[lastTransport];lr>
 Record-Route: [test:lastRecord-Route]
 Contact: [test:lastContact]
 Max-Forwards: [test:newMax-Forwards]
@@ -536,7 +535,7 @@ From: [test:lastFrom]
 To: [test:lastTo];tag=[test:localTag]
 Call-ID: [test:lastCallId]
 CSeq: [test:lastCSeq]
-Record-Route: <sip:[test:Adresse-Tester];transport=[transportRequest];lr>
+Record-Route: <sip:[test:Adresse-Tester];transport=[lastTransport];lr>
 Record-Route: [test:lastRecord-Route]
 Content-Length: 0]]>
 <!--******************** END MESSAGE *********************-->
