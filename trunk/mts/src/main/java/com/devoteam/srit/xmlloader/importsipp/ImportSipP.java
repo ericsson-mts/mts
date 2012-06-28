@@ -21,7 +21,6 @@ import org.xml.sax.SAXException;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 @SuppressWarnings("rawtypes")
 public class ImportSipP {
@@ -72,7 +71,7 @@ public class ImportSipP {
 						}
 						//If the recv node does not contain the 'optional' attribute, then it's the last
 						//recv node after sequence of recv nodes
-						else if(!element.attributes().toString().contains("optional"))
+						else if(!element.attributes().toString().contains("optional")&& !nodes.isEmpty())
 						{	
 							//We add this node to the list of nodes
 							nodes.add(element);
@@ -80,6 +79,15 @@ public class ImportSipP {
 							addNode(nodes, rootElement, resultDoc,nodename);
 							//We apply the if_recv template
 							addNode2(nodes, rootElement, resultDoc,"if_"+nodename);
+							//We clear the saved nodes list
+							nodes.clear();
+						}
+						else if(!element.attributes().toString().contains("optional"))
+						{
+							//We add this node to the list of nodes
+							nodes.add(element);
+							//We apply the normal template of the recv
+							addNode(nodes, rootElement, resultDoc,nodename);
 							//We clear the saved nodes list
 							nodes.clear();
 						}
@@ -120,8 +128,8 @@ public class ImportSipP {
 	 */
 	public static void rightFinalResult(Document document, String fileName) throws IOException{	
 		 OutputFormat format = OutputFormat.createPrettyPrint();
-		 //We define the result xml file name
-		 XMLWriter writer = new XMLWriter(new FileWriter(fileName), format); 
+		 //We define the result xml file name 
+		 XMLWriter writer = new XMLWriter(new FileWriter(fileName), format);
 		 writer.write(document);
 	     writer.close();
 	}
@@ -282,16 +290,9 @@ public class ImportSipP {
 		/*If the TEMPLATE node is a 'sendMessageSIP', we have to add the same CDATA section from the SIPP
 		 * node to the newly created element
 		 */	
-		if(currentTemplateNode.getStringValue().contains("xpath:"))
+		if(currentTemplateNode.getStringValue().contains("xpath"))
 		{
-			String xpath_value = currentTemplateNode.getStringValue().substring(7);
-			XPath xpath = resultDocument.createXPath(xpath_value);
-			Object obj = xpath.evaluate(sippNode);
-			if(obj instanceof Text)
-			{	
-				//List 
-			//	newelement.setContent(arg0)(((Text) obj).getStringValue());
-			}
+			newelement.addCDATA(sippNode.get(0).getStringValue());
 		}
 		//If the new element has been assigned successfully we do the same to the TEMPLATE node CHILDS
 		if(newelement != null)
@@ -343,7 +344,6 @@ public class ImportSipP {
 			{
 				Element template_element = (Element) i.next();
 				xPath(doc2,template_element,sippNodeList,main_root);
-
 			}
 		}
 	}
