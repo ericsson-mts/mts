@@ -62,7 +62,6 @@ public class ListenpointTcpNIO extends Listenpoint
     @Override
     public boolean create(String protocol) throws Exception
     {
-		StatPool.beginStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_TCP, protocol);
 		this.startTimestamp = System.currentTimeMillis();
     	
         if (!super.create(protocol))
@@ -106,9 +105,7 @@ public class ListenpointTcpNIO extends Listenpoint
         super.remove();
 
         if (this.socketListenerTcp != null)
-        {
-    		StatPool.endStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_TCP, getProtocol(), startTimestamp);
-    		
+        {	
             this.socketListenerTcp.close();
             this.socketListenerTcp = null;
         }
