@@ -6,12 +6,12 @@
 	<parameter name="[TryingDuration]" operation="set" value="0.1" description="Duration (in sec.) between 100 and 180" editable="true"/>
 	<parameter name="[RingingDuration]" operation="set" value="3" description="Duration (in sec.) between 180 and 200" editable="true"/>
 	<parameter name="[CallDurationSec]" operation="set" value="2" description="Duration (in sec.) of the call" editable="true"/>
-	<parameter name="[RegisterExpires]" operation="set" value="30" description="Expiration time (in sec) for the register" editable="true"/>
+	<parameter name="[RegisterExpires]" operation="set" value="300" description="Expiration time (in sec) for the register" editable="true"/>
 	<parameter name="[ErlangTraffic]" operation="set" value="0.1" description="Number of erlang to define the phone traffic" editable="true"/>
-	<parameter name="[RangeNumberUser]" operation="set" value="1000" description="Number of subscribers" editable="true"/>
+	<parameter name="[RangeNumberUser]" operation="set" value="10000" description="Number of subscribers" editable="true"/>
 	<parameter name="[TestDurationDay]" operation="set" value="0" description="Duration (in day) of the test" editable="true"/>
 	<parameter name="[TestDurationHour]" operation="set" value="0" description="Duration (in hour) of the test" editable="true"/>
-	<parameter name="[TestDurationMin]" operation="set" value="1" description="Duration (in min.) of the test" editable="true"/>
+	<parameter name="[TestDurationMin]" operation="set" value="10" description="Duration (in min.) of the test" editable="true"/>
 	<parameter name="[TestDurationSec]" operation="set" value="0" description="Duration (in sec.) of the test" editable="true"/>
 	<parameter name="[RangeIndexUser]" operation="set" value="0" description="Index of the range of the user phone number" editable="true"/>
 	<parameter name="[NumberScenario]" operation="set" value="5" description="Index of the range of the user phone number" editable="true"/>
@@ -50,22 +50,24 @@
 	<parameter name="[CAPS]" operation="number.divide" value="[CAPS]" value2="2"/>
 	<parameter name="[CAPS]" operation="number.round" value="[CAPS]"/>
 	<parameter name="[CAPS]" operation="number.add" value="[CAPS]" value2="1"/>
-
+	  
 	<parameter name="[RAPS]" operation="number.divide" value="[RangeNumberUser]" value2="[RegisterExpires]"/>
-	<parameter name="[RAPS]" operation="number.multiply" value="[RAPS]" value2="1"/>
+  <parameter name="[RAPS]" operation="number.multiply" value="[RAPS]" value2="1"/>
 	<parameter name="[RAPS]" operation="number.round" value="[RAPS]"/>
-	<parameter name="[RAPS]" operation="number.add" value="[RAPS]" value2="1"/>
-
+  <parameter name="[RAPS]" operation="number.add" value="[RAPS]" value2="1"/>
+	  
 	<!--                   -->
 	<!-- CSV PARAMETERS    -->
 	<!--                   -->
 	<parameter name="[userTab]" operation="file.readCsv" value="./user.csv" value2="inviter" />
 
-	<testcase name="Registrar[index]" description="Registrar SIP agent [index]" state="false" number="1">
+	<testcase name="Registrar[0]" description="Registrar SIP agent [index]" state="false" number="1">
 		<scenario name="[Port-Server]">registrar/SIP.xml</scenario>
 	</testcase>
 
-	<testcase name="Register" description="Register agent" state="true" number="1">
+	
+  <testcase name="Register" description="Register agent" state="true" number="1">
+  
 		<runProfile>
 		  <start delay="0"/>			
 			<step time="0" frequency="[RAPS]"/>
@@ -77,9 +79,6 @@
 	<for index="[index]" from="1" to="[NumberScenario]" step="1">
 		<testcase name="responder[index]" interruptible="true" description="passive testcase for reponse and subsequent management" state="true">
 
-			<!--                       -->
-			<!-- RUNPROFILE PARAMETERS -->
-			<!--                       -->
 			<runProfile>
         <start delay="[RegisterExpires]"/>			
 				<step time="0" period="0"/>
@@ -90,11 +89,7 @@
 	</for>
 
 	<testcase name="loader" description="passive testcase for invite sending" state="true">
-
-		<!--                       -->
-		<!-- RUNPROFILE PARAMETERS -->
-		<!--                       -->
-		<parameter name="[CAPSlow]" operation="number.divide" value="[CAPS]" value2="2" />
+	
 		<runProfile>
         <start delay="[RegisterExpires]"/>
 			  <step time="0" frequency="[CAPS]"/>
@@ -105,7 +100,7 @@
 
 	</testcase>
 
-	<testcase name="UnRegister" description="UnRegister agent " state="false" number="1">
+	<testcase name="UnRegister" description="UnRegister agent " state="true" number="1">
 		<runProfile>
       <start delay="[TestDurationSec]"/>
 			<step time="0" frequency="[RAPS]"/>
