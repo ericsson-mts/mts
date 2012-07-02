@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="MGCP" description="MGCP regression tests">
+
+
+    
+    <parameter name="[Host-Tester]" operation="system.ipaddress"/>
+    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]" editable="true"/>
+	<parameter name="[Port-Tester]" operation="file.readProperty" value="mgcp.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter name="[Port-Tester]" operation="set" value="[Port-Tester]" editable="true"/>
+    <parameter name="[Host-Server]" operation="system.ipaddress"/>
+    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]" editable="true"/>
+    <parameter name="[Port-Server]" operation="file.readProperty" value="mgcp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[Port-Server]" operation="set" value="[Port-Server]" editable="true"/>
+    
+    <testcase name="mgcp/000_createConnection" description="test createConnection" state="true">
+        <scenario name="Call_Agent">000_createConnection/Call_Agent.xml</scenario>
+        <scenario name="MGCP">000_createConnection/Gateway.xml</scenario>
+    </testcase>
+
+
+    <testcase name="mgcp/001_ModifyConnection" description="test modifyConnection" state="true">
+        <scenario name="Call_Agent">001_ModifyConnection/Call_Agent.xml</scenario>
+        <scenario name="MGCP">001_ModifyConnection/Gateway.xml</scenario>
+    </testcase>
+
+    <testcase name="mgcp/002_deleteConnection" description="test deleteConnection" state="true">
+        <scenario name="Call_Agent">002_deleteConnection/Call_Agent.xml</scenario>
+        <scenario name="MGCP">002_deleteConnection/Gateway.xml</scenario>
+    </testcase>
+    
+   
+    <testcase name="mgcp/004_auditEndpoint" description="test auditEndpoint" state="true">
+        <scenario name="Call_Agent">004_auditEndpoint/Call_Agent.xml</scenario>
+        <scenario name="MGCP">004_auditEndpoint/Gateway.xml</scenario>
+    </testcase>
+    <testcase name="mgcp/005_auditConnection" description="test auditConnection" state="true">
+        <scenario name="Call_Agent">005_auditConnection/Call_Agent.xml</scenario>
+        <scenario name="MGCP">005_auditConnection/Gateway.xml</scenario>
+    </testcase>
+    <testcase name="mgcp/006_restartInProgress" description="test restartInProgress" state="true">
+        <scenario name="Gateway">006_restartInProgress/Gateway.xml</scenario>
+        <scenario name="MGCP">006_restartInProgress/Call_Agent.xml</scenario>
+        
+    </testcase>
+     <testcase name="mgcp/007_notificationRequest" description="test notificationRequest" state="true">
+        <scenario name="Call_Agent">007_notificationRequest/Call_Agent.xml</scenario>
+        <scenario name="MGCP">007_notificationRequest/Gateway.xml</scenario>
+    </testcase>
+    <testcase name="mgcp/008_notify" description="test notify" state="true">
+        <scenario name="Call_Agent">008_notify/Call_Agent.xml</scenario>
+        <scenario name="MGCP">008_notify/Gateway.xml</scenario>
+    </testcase>
+	 <testcase name="mgcp/009_endpointConfiguration" description="test endpointConfiguration" state="true">
+        <scenario name="Call_Agent">009_endpointConfiguration/Call_Agent.xml</scenario>
+        <scenario name="MGCP">009_endpointConfiguration/Gateway.xml</scenario>
+    </testcase>
+
+    
+</test>

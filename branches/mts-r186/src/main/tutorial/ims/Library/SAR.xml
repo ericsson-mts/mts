@@ -1,0 +1,29 @@
+<!--Envoi d une requete SAR-->
+<sendRequestAAA name="Send Request 3GPP/CX-DX/SAR" server="[Default_HSS]" state="true">
+       <header command="Server-Assignment" applicationId="16777216" proxiable="true" error="false" retransmit="false"/>
+      		<avp code="Session-Id" mandatory="true" type="UTF8String" value="[nom_scscf];45e45ee4;046725;5cd579fj"/>
+        	<avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[nom_scscf]"/>
+         	<avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[domaine]"/>
+         	<avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[domaine]"/>            
+			<avp code="Vendor-Specific-Application-Id">
+            	<avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            	<avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/>
+           	</avp>
+	      	<!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
+	        <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
+	        <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
+	        <!-- The Public-Identity AVP contains a Public User Identity. -->
+			<avp code="Public-Identity" mandatory="true" type="UTF8String" value="[impu]" vendorId="10415"/>                   
+ 			<!-- The User-Name AVP contains a Private User Identity. --> 
+			<avp code="User-Name" mandatory="true" type="UTF8String" value="[impi]"/> 
+			<!-- The Server-Name AVP contains a SIP-URL. -->
+			<avp code="Server-Name" value="[Default_SCSCF]"/>
+	        <!-- The Server-Assignment-Type AVP indicates the type of server update being performed in a Server-Assignment-Request operation. -->
+	        <!-- Possible enumerated values : NO_ASSIGNMENT (0) / REGISTRATION (1) / RE_REGISTRATION (2) / UNREGISTERED_USER (3) / TIMEOUT_DEREGISTRATION (4) / USER_DEREGISTRATION (5) / TIMEOUT_DEREGISTRATION_STORE_SERVER_NAME (6) / USER_DEREGISTRATION_STORE_SERVER_NAME (7) / ADMINISTRATIVE_DEREGISTRATION (8) / AUTHENTICATION_FAILURE (9) / AUTHENTICATION_TIMEOUT (10) / DEREGISTRATION_TOO_MUCH_DATA (11). -->
+	        <avp code="Server-Assignment-Type" mandatory="true" type="Enumerated" value="[operation]" vendorId="10415"/>
+	        <avp code="User-Data-Already-Available" mandatory="true" type="Enumerated" value="0" vendorId="10415"/>
+</sendRequestAAA>
+<!--Reception d une reponseSAA-->
+<receiveAnswerAAA name="Receive Answer 3GPP/CX-DX/SAA" state="true">
+		<parameter name="[SP[impu]]" 		operation="setFromMessage" 	value="606:value"/>
+</receiveAnswerAAA>

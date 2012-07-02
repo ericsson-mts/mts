@@ -1,0 +1,695 @@
+/*
+* Copyright 2012 Devoteam http://www.devoteam.com
+* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+*
+*
+* This file is part of Multi-Protocol Test Suite (MTS).
+*
+* Multi-Protocol Test Suite (MTS) is free software: you can redistribute
+* it and/or modify it under the terms of the GNU General Public License 
+* as published by the Free Software Foundation, either version 3 of the 
+* License.
+* 
+* Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
+* be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with Multi-Protocol Test Suite (MTS).  
+* If not, see <http://www.gnu.org/licenses/>. 
+*
+*//*
+ * MsgHttp.java
+ *
+ * Created on 6 avril 2007, 16:49
+ *
+ * To change this template, choose Tools | Template Manager
+ * and open the template in the editor.
+ */
+package com.devoteam.srit.xmlloader.sip.light;
+
+import java.util.HashMap;
+import java.util.HashSet;
+
+import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromAddress;
+import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromURI;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.coding.text.FirstLine;
+import com.devoteam.srit.xmlloader.core.coding.text.MsgParser;
+import com.devoteam.srit.xmlloader.core.coding.text.Header;
+import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
+import com.devoteam.srit.xmlloader.sip.MsgSip;
+
+/**
+ *
+ * @author fhenry
+ */
+public class MsgSipLight extends MsgSip
+{    
+	private TextMessage message = null;
+    	
+	private static HashSet<String> multiHeader = new HashSet<String>();	
+	private static HashMap<String, String> compressedHeader = new HashMap<String, String>();
+	
+	static 
+	{
+		// all headers except : Authorization,Call-ID,Content-Encoding,Content-Length,Content-Type,
+		// CSeq,Date,expires,From,Max-Forwards,MIME-Version,Min-Expires,Organization,Priority,
+		// Proxy-Authenticate,Proxy-Authorization,Reply-To,Retry-After,Server,Subject,Timestamp,To,
+		// User-Agent,WWW-Authenticate, <generic>
+		multiHeader.add("accept");multiHeader.add("accept-encoding");multiHeader.add("accept-language");
+		multiHeader.add("alert-Info");multiHeader.add("allow");multiHeader.add("authentication-info");
+		multiHeader.add("call-info");multiHeader.add("contact");multiHeader.add("content-encoding");
+		multiHeader.add("content-language");multiHeader.add("error-info");multiHeader.add("in-reply-to");
+		multiHeader.add("proxy-require");multiHeader.add("record-route");multiHeader.add("require");
+		multiHeader.add("route");multiHeader.add("supported");multiHeader.add("Unsupported");
+		multiHeader.add("via");multiHeader.add("warning");
+		
+		compressedHeader.put("i", "call-id");
+		compressedHeader.put("m", "contact");
+		compressedHeader.put("e", "content-encoding");
+		compressedHeader.put("l", "content-length");
+		compressedHeader.put("c", "content-type");
+		compressedHeader.put("f", "from");
+		compressedHeader.put("s", "subject");
+		compressedHeader.put("t", "to");
+		compressedHeader.put("v", "via");
+		compressedHeader.put("r", "route");
+	}
+
+    /** Creates a new instance of MsgSip */
+    public MsgSipLight(String text, boolean completeContentLength, int addCRLFContent) throws Exception
+    {
+		// bug NSN equipment : add a CRLF at the end of the Content
+        this.message = new TextMessage(getProtocol(), completeContentLength, addCRLFContent);
+        this.message.setCompressedHeader(compressedHeader);
+        this.message.setMultiHeader(multiHeader);
+        this.message.parse(text);
+        this.message.setGenericfirstline(new FirstLine(this.message.getFirstLineString(),getProtocol()));
+    }
+    
+    /** Get a parameter from the message */
+    public Parameter getParameter(String path) throws Exception
+    {
+        Parameter var = super.getParameter(path);
+        if (var != null)
+        {
+            return var;
+        }
+    	
+    	var = new Parameter();               
+        String[] params = Utils.splitPath(path);
+        
+        if (params.length >= 1 && params[0].equalsIgnoreCase("firstline"))
+        {
+    		FirstLine firstline = ((FirstLine)(this.message.getGenericfirstline()));
+    		if (params.length == 1)
+            {
+                //---------------------------------------------------------------------- firstline -
+                var.add(firstline.getLine());
+                return var;
+            }
+            //---------------------------------------------------------------------- firstline:Version -
+        	if (params.length == 2 && params[1].equalsIgnoreCase("Version"))
+            {
+                var.add(firstline.getVersion());
+                return var;
+            }
+            //---------------------------------------------------------------------- firstline:Method -
+        	if (params.length == 2 && params[1].equalsIgnoreCase("Method"))
+            {
+            	var.add(firstline.getMethod());
+                return var;
+            }
+            //---------------------------------------------------------------------- firstline:URI -
+        	if (params.length >= 2 && params[1].equalsIgnoreCase("URI"))
+            {
+            	Header header = new Header(null);
+            	header.addHeader(firstline.getUri());
+            	addSIPURIHeader(var, params, header);
+                return var;
+            }
+            //---------------------------------------------------------------------- firstline:StatusCode -
+        	if (params.length == 2 && params[1].equalsIgnoreCase("StatusCode"))            
+            {
+				var.add(firstline.getStatusCode());
+	            return var;
+            }
+            //----------------------------------------------------------------------- firstline:ReasonPhrase -
+        	if (params.length == 2 && params[1].equalsIgnoreCase("ReasonPhrase")) 
+			{
+				var.add(firstline.getReasonPhrase());
+	            return var;
+			}
+            else
+            {
+            	Parameter.throwBadPathKeywordException(path);
+            }
+        }
+        else if (params.length >= 1 && params[0].equalsIgnoreCase("header"))
+        {
+            //---------------------------------------------------------------------- header -
+            if (params.length == 1)
+            {
+    			message.addHeaderIntoParameter(var);
+                return var;
+            }
+            //---------------------------------------------------------------------- header:Others -
+            else if (params.length == 2 && params[1].equalsIgnoreCase("Others"))
+            {
+                message.addOtherIntoParameter(var);
+                return var;
+            }
+            //---------------------------------------------------------------------- header:Authorization -
+            //---------------------------------------------------------------------- header:WWW-Authenticate -
+            //---------------------------------------------------------------------- header:Proxy-Authorization -
+            //---------------------------------------------------------------------- header:Proxy-Authenticate -
+            else if (params.length >= 2 && 
+               (params[1].equalsIgnoreCase("Authorization") ||
+                params[1].equalsIgnoreCase("WWW-Authenticate") ||
+                params[1].equalsIgnoreCase("Proxy-Authorization") ||
+                params[1].equalsIgnoreCase("Proxy-Authenticate")))                                
+            {
+            	if (addSIPHeaderAuthentication(var, params, message.getHeader(params[1])))
+            	{
+            		return var;
+            	}
+                // DEPRECATED value
+                //---------------------------------------------------------------------- header:Yyyyy:URI -        
+                if (params.length >= 3 && params[2].equalsIgnoreCase("URI"))
+                {
+                	String newPath = "header:" + params[1] + ":Attribute:uri";
+                	var = getParameter(newPath);
+                	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=" + path, "setFromMessage value=" + newPath);
+        	        return var;
+                }        
+                //---------------------------------------------------------------------- header:Yyyyy:Parameter:Zzzzz -        
+                if (params.length >= 4 && params[2].equalsIgnoreCase("Parameter"))
+                {
+                	String newPath = "header:" + params[1] + ":Attribute:" + params[3];
+                	var = getParameter(newPath);
+                	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=" + path, "setFromMessage value=" + newPath);
+        	        return var;
+                }
+                else
+                {
+                	Parameter.throwBadPathKeywordException(path);
+                }
+            }
+            //---------------------------------------------------------------------- header:CSeq:* -
+            else if (params.length >= 2 && params[1].toLowerCase().startsWith("cseq"))
+            {
+            	Header header = message.getHeader("CSeq");
+                if (addSIPHeaderCSeq(var, params, header))
+                {
+                	return var;
+                }
+                // DEPRECATED value
+        	    if (params.length == 2 && params[1].equalsIgnoreCase("CSeqNumber"))
+        	    {
+                	String newPath = "header:CSeq:Number";
+                	var = getParameter(newPath);
+                	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=" + path, "setFromMessage value=" + newPath);
+        	        return var;
+        	    }
+                // DEPRECATED value
+        	    if (params.length == 2 && params[1].equalsIgnoreCase("CSeqMethod"))
+        	    {
+                	String newPath = "header:CSeq:Method";
+                	var = getParameter(newPath);
+                	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=" + path, "setFromMessage value=" + newPath);
+        	        return var;
+        	    }
+                else
+                {
+                	Parameter.throwBadPathKeywordException(path);
+                }
+            }
+            //---------------------------------------------------------------------- header:RSeq -
+            else if (params.length >= 2 && params[1].equalsIgnoreCase("RSeq"))
+            {
+            	Header header = message.getHeader("rseq");
+                var.addHeaderInteger(header);
+           		return var;
+          	}
+            //---------------------------------------------------------------------- header:RAck:* -
+            else if (params.length >= 2 && params[1].toLowerCase().startsWith("rack"))
+            {
+            	Header header = message.getHeader("rack");
+                if (addSIPHeaderRAck(var, params, header))
+                {
+                	return var;
+                }
+            }
+            //---------------------------------------------------------------------- header:TopMostVia:* -
+            else if (params.length >= 2 && params[1].equalsIgnoreCase("TopmostVia"))
+            {
+            	String topmostVia = message.getHeader("Via").getHeader(0);
+            	Header header = new Header("Via");
+            	header.addHeader(topmostVia); 
+                if (addSIPHeaderVia(var, params, header))
+                {
+                	return var;
+                }
+            }
+            //---------------------------------------------------------------------- header:Via:* -
+            else if (params.length >= 2 && params[1].equalsIgnoreCase("Via"))
+            {
+            	Header header = message.getHeader("Via");
+                if (addSIPHeaderVia(var, params, header))
+                {
+                	return var;
+                }
+            }
+            //---------------------------------------------------------------------- header:From -
+            else if (params.length == 2 && params[1].equalsIgnoreCase("DialogId"))
+            {
+            	var.add(getDialogId().toString());
+                return var;
+            }            
+            //---------------------------------------------------------------------- header:Xxxxx -
+            else if (addSIPHeaderGenericXXX(var, params, message.getHeader(params[1])))
+            {
+            	return var;
+            }
+        }
+        else if (params[0].toLowerCase().startsWith("content"))
+        {
+        	message.addContentParameter(var, params, path);
+            return var;
+        }
+        // DEPRECATED value
+        else if ("header:Contact:QValue".equalsIgnoreCase(path))
+        {
+        	String newPath = "header:Contact:Parameter:q";
+        	var = getParameter(newPath);
+        	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=" + path, "setFromMessage value=" + newPath);
+            return var;
+        }
+        else if ("header:To:Tag".equalsIgnoreCase(path))
+        {
+        	String newPath = "header:To:Parameter:tag";
+        	var = getParameter(newPath);
+        	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=" + path, "setFromMessage value=" + newPath);
+            return var;
+        }
+        else if ("header:From:Tag".equalsIgnoreCase(path))
+        {
+        	String newPath = "header:From:Parameter:tag";
+        	var = getParameter(newPath);
+        	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=" + path, "setFromMessage value=" + newPath);
+            return var;
+        }
+        else if ("header:Call-Id".equalsIgnoreCase(path))
+        {
+        	String newPath = "header:Call-ID";
+        	var = getParameter(newPath);
+        	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=" + path, "setFromMessage value=" + newPath);
+            return var;
+        }
+        else
+        {
+        	Parameter.throwBadPathKeywordException(path);
+        }
+
+        return var;
+    }
+          
+    /** Get the message Address of this message */
+    private void addSIPAddressHeader(Parameter var, String[] params, Header header) throws Exception
+    {
+        if (params.length == 3)
+        {
+            var.addHeader(header);
+        }
+        else
+        {
+            String operandeAddress = "";
+            for (int i = 3; i < params.length; i++)
+            {
+                operandeAddress += params[i] + ".";
+            }
+            operandeAddress = operandeAddress.substring(0, operandeAddress.length() - 1);
+            for (int i = 0; i < header.getSize(); i++)            
+            {
+            	var.add(PluggableParameterOperatorSetFromAddress.setFromAddress(header.getHeader(i), operandeAddress));
+            }
+        }
+    }
+
+    /** Get the message Uri of this message */
+    private void addSIPURIHeader(Parameter var, String[] params, Header header) throws Exception
+    {
+        if (params.length == 2)
+        {
+            var.addHeader(header);
+        }
+        else
+        {
+            String operandeAddress = "";
+            for (int i = 2; i < params.length; i++)
+            {
+                operandeAddress += params[i] + ".";
+            }
+            operandeAddress = operandeAddress.substring(0, operandeAddress.length() - 1);
+            for (int i = 0; i < header.getSize(); i++)            
+            {
+                var.add(PluggableParameterOperatorSetFromURI.setFromUri(header.getHeader(i), operandeAddress));
+            }
+            
+        }
+    }
+
+    /** Get the elements of CSeq header of this message */
+    private boolean addSIPHeaderCSeq(Parameter var, String[] params, Header header) throws Exception
+    {
+	    //---------------------------------------------------------------------- header:CSeq -
+	    if (params.length == 2 && params[1].equalsIgnoreCase("CSeq"))
+	    {
+            var.addHeader(header);
+	        return true;
+	    }	    
+	    //---------------------------------------------------------------------- header:CSeq:Namevalue -
+        if (params.length == 3 && params[2].equalsIgnoreCase("Namevalue"))
+	    {
+            var.addHeaderNamevalue(header);
+	        return true;
+	    }	    	    
+	    //---------------------------------------------------------------------- header:CSeq:Number -
+	    if (params.length == 3 && params[2].equalsIgnoreCase("Number"))
+	    {
+			MsgParser parser = new MsgParser(); 
+			parser.splitHeader(header, " ");
+            var.addHeaderInteger(parser.getHeader(0));
+	        return true;
+	    }
+	    //---------------------------------------------------------------------- header:CSeq:Method -
+	    if (params.length == 3 && params[2].equalsIgnoreCase("Method"))
+	    {
+			MsgParser parser = new MsgParser(); 
+			parser.splitHeader(header, " ");
+            var.addHeader(parser.getHeader(1));
+	        return true;
+	    }
+	    return false;
+    }
+    
+    /** Get the elements of RAck header of this message */
+    private boolean addSIPHeaderRAck(Parameter var, String[] params, Header header) throws Exception
+    {
+	    //---------------------------------------------------------------------- header:RAck -
+	    if (params.length == 2)
+	    {
+            var.addHeader(header);
+	        return true;
+	    }
+	    //---------------------------------------------------------------------- header:RAck:Namevalue -
+        if (params[2].equalsIgnoreCase("Namevalue"))
+	    {
+            var.addHeaderNamevalue(header);
+	        return true;
+	    }	    
+	    //---------------------------------------------------------------------- header:RAck:Number -
+	    if (params.length == 3 && params[2].equalsIgnoreCase("Number"))
+	    {
+			MsgParser parser = new MsgParser(); 
+			parser.splitHeader(header, " ");
+            var.addHeaderInteger(parser.getHeader(0));
+	        return true;
+	    }
+	    //---------------------------------------------------------------------- header:RAck:CSeq -
+	    if (params.length == 3 && params[2].equalsIgnoreCase("CSeqNumber"))
+	    {
+			MsgParser parser = new MsgParser(); 
+			parser.splitHeader(header, " ");
+            var.addHeaderInteger(parser.getHeader(1));
+	        return true;
+	    }
+	    //---------------------------------------------------------------------- header:RAck:Method -
+	    if (params.length == 3 && params[2].equalsIgnoreCase("Method"))
+	    {
+			MsgParser parser = new MsgParser(); 
+			parser.splitHeader(header, " ");
+            var.addHeader(parser.getHeader(2));
+	        return true;
+	    }
+	    return false;
+    }
+
+    /** Get the elements of Authentication headers of this message */
+    private boolean addSIPHeaderAuthentication(Parameter var, String[] params, Header header) throws Exception
+    {
+        //---------------------------------------------------------------------- header:Yyyyy -
+        if (params.length == 2)
+        {
+            var.addHeader(header);
+            return true;
+        }
+        //---------------------------------------------------------------------- header:Yyyyy:Namevalue -
+        if (params[2].equalsIgnoreCase("Namevalue"))
+        {
+            var.addHeaderNamevalue(header);
+            return true;
+        }                
+        //---------------------------------------------------------------------- header:Yyyyy:Scheme -
+        if (params.length == 3 && params[2].equalsIgnoreCase("Scheme"))
+        {
+        	String value = header.getHeader(0);
+    		MsgParser parser = new MsgParser(); 
+    		parser.parse(value, " ,", '=', "\"\"");
+   			var.addHeader(parser.getHeader(null));        	
+            return true;
+        }
+        //---------------------------------------------------------------------- header:Yyyyy:Attribute:Zzzzz -
+        if (params.length == 4 && params[2].equalsIgnoreCase("Attribute"))
+        {
+        	String value = header.getHeader(0);
+    		MsgParser parser = new MsgParser(); 
+    		parser.parse(value, " ,", '=', "\"\"");
+   			var.addHeader(parser.getHeader(params[3]));   			
+            return true;
+        }
+        return false;
+    }
+        
+    /** Get the elements of Via header of this message */
+    private boolean addSIPHeaderVia(Parameter var, String[] params, Header header) throws Exception
+    {
+       	MsgParser parser = new MsgParser(); 
+		parser.parseHeader(header, ";", '=', "<>", "\"\"");    
+    	Header via = parser.getHeader(null);
+
+        //---------------------------------------------------------------------- header:TopMostVia:Protocol or header:Via:Protocol-
+        if (params.length == 2)
+        {
+            var.addHeader(header);
+        	return true;
+        }
+        //---------------------------------------------------------------------- header:TopMostVia:Namevalue or header:Via:Namevalue-
+        if (params[2].equalsIgnoreCase("Namevalue"))
+        {
+            var.addHeaderNamevalue(header);
+        	return true;
+        }        
+        //---------------------------------------------------------------------- header:TopMostVia:Protocol or header:Via:Protocol-
+        if (params.length == 3 && params[2].equalsIgnoreCase("Protocol"))
+        {
+    		MsgParser parser1 = new MsgParser(); 
+    		parser1.splitHeader(via, " ");
+    		MsgParser parser2 = new MsgParser(); 
+    		parser2.splitHeader(parser1.getHeader(0), "/");
+    		addSIPViaTransport(var, parser2);
+    		return true;
+        }
+        //---------------------------------------------------------------------- header:TopMostVia:Transport or header:Via:Transport-
+        if (params.length == 3 && params[2].equalsIgnoreCase("Transport"))
+        {
+    		MsgParser parser1 = new MsgParser(); 
+    		parser1.splitHeader(via, " ");
+    		MsgParser parser2 = new MsgParser(); 
+    		parser2.splitHeader(parser1.getHeader(0), "/");
+            var.addHeader(parser2.getHeader(2));
+    		return true;
+        }
+        //---------------------------------------------------------------------- header:TopMostVia:Host or header:Via:Host-
+        if (params.length == 3 && params[2].equalsIgnoreCase("Host"))
+        {
+    		MsgParser parser1 = new MsgParser(); 
+    		parser1.splitHeader(via, " ");
+    		MsgParser parser2 = new MsgParser(); 
+    		parser2.splitHeader(parser1.getHeader(1), ":");
+            var.addHeader(parser2.getHeader(0));
+    		return true;
+        }
+        //---------------------------------------------------------------------- header:TopMostVia:Port or header:Via:Port-
+        if (params.length == 3 && params[2].equalsIgnoreCase("Port"))
+        {
+    		MsgParser parser1 = new MsgParser(); 
+    		parser1.splitHeader(via, " ");
+    		MsgParser parser2 = new MsgParser(); 
+    		parser2.splitHeader(parser1.getHeader(1), ":");
+            var.addHeader(parser2.getHeader(1));    		
+    		return true;
+        }
+        //---------------------------------------------------------------------- header:TopmostVia:Parameter:Xxxx or header:Via:Parameter:Xxxx-
+        if (params.length == 4 && params[2].equalsIgnoreCase("Parameter"))
+        {
+    		boolean noMagic = false;
+    		if (params[3].equalsIgnoreCase("branchNoMagic"))
+    		{
+    			params[3] = "branch";
+    			noMagic = true;
+    		}
+            var.addHeader(parser.getHeader(params[3]), noMagic);
+    		return true;
+        }
+		return false;
+    }
+    
+    /** Get the elements of  header of this message */
+    private void addSIPViaTransport(Parameter var, MsgParser parser) throws Exception
+    {
+    	Header header0 = parser.getHeader(0);
+    	Header header1 = parser.getHeader(1);
+    	int num0 = header0.getSize();
+    	int num1 = header1.getSize();
+    	int numMax = num0;
+    	if (num1 > num0) numMax = num1;
+    	String value;
+    	for (int i = 0; i < numMax; i++)
+    	{
+    		value = header0.getHeader(i) + "/" + header1.getHeader(i);
+    		var.add(value);
+    	}
+    }
+    
+    /** Get the elements of XXX header of this message */
+    private boolean addSIPHeaderGenericXXX(Parameter var, String[] params, Header header) throws Exception
+    {    	
+        //---------------------------------------------------------------------- header:Xxxx -
+        if (params.length == 2)
+        {
+            var.addHeader(header);
+       		return true;
+      	}
+        //---------------------------------------------------------------------- header:Xxxx:Namevalue -
+        if (params[2].equalsIgnoreCase("Namevalue"))
+        {
+            var.addHeaderNamevalue(header);
+       		return true;
+      	}        
+        //---------------------------------------------------------------------- header:Xxxx:URI:... -
+        if (params[2].equalsIgnoreCase("URI"))
+        {            	            
+        	Header token = header.parseParameter(null, ";", '=', "<>", "\"\"");
+        	addSIPURIHeader(var, params, token);
+       		return true;
+        } 
+        //---------------------------------------------------------------------- header:Xxxx:Address:... -
+        if (params[2].equalsIgnoreCase("Address"))
+        {
+        	Header token = header.parseParameter(null, ";", '=', "<>", "\"\"");
+            addSIPAddressHeader(var, params, token);
+       		return true;
+        }        
+        //---------------------------------------------------------------------- header:Xxxx:Parameter:Yyyy -
+        else if (params[2].equalsIgnoreCase("Parameter"))
+        {
+        	if (params.length == 3)
+        	{
+	        	Header token = header.parseParameter(null, ";", '=', "<>", "\"\"");
+	            var.addHeader(token);
+	       		return true;        		
+        	} 
+        	else
+        	{	
+	        	Header token = header.parseParameter(params[3], ";", '=', "<>", "\"\"");
+	            var.addHeader(token);
+	       		return true;
+        	}
+        }
+        //---------------------------------------------------------------------- header:Xxxx:Argument:Yyyy -
+        else if (params[2].equalsIgnoreCase("Attribute"))
+        {
+        	if (params.length == 3)
+        	{
+	        	Header token = header.parseParameter(null, ",", '=', "<>", "\"\"");
+	            var.addHeader(token);
+	       		return true;
+        	}
+        	else
+        	{	
+	        	Header token = header.parseParameter(params[3], ",", '=', "<>", "\"\"");
+	            var.addHeader(token);
+	       		return true;
+        	}
+        }
+        //---------------------------------------------------------------------- header:Xxxx:Argument:Yyyy -
+        else if (params[2].equalsIgnoreCase("Argument"))
+        {
+        	MsgParser parser = new MsgParser(); 
+			parser.splitHeader(header, " ");
+            var.addHeader(parser.getHeader(Integer.parseInt(params[3])));       		
+            return true;
+        }
+        //---------------------------------------------------------------------- header:Xxxx:Argument:Yyyy -
+    
+   		return false;
+   	}
+
+    /*
+     * Complete the Via header with Received and RPort paramter if needed
+     * 
+     */
+    public void completeViaTopmostHeader() throws Exception
+    {
+    	Header via = message.getHeader("Via");
+		Parameter viaHostParam = getParameter("header.TopmostVia.Host");
+		if (viaHostParam.length() > 0)
+		{		
+			String viaHost = viaHostParam.get(0).toString();
+			if ("no".equalsIgnoreCase(viaHost))
+			{
+				String received = getChannel().getRemoteHost(); 
+				int rPort = getChannel().getRemotePort();
+				String topmostVia = via.getHeader(0).toString();
+				via.setHeader(0, topmostVia + ";Received=" + received + ";RPort=" + rPort);
+			}
+		}
+    }
+    
+    public boolean isRequest() {
+		return ((FirstLine)(this.message.getGenericfirstline())).isRequest();
+	}
+
+    /** Get the data (as binary) of this message */
+    @Override
+    public byte[] getBytesData()
+    {
+         return message.getMessage().getBytes();
+    }
+
+    /** Returns a short description of the message. Used for logging as INFO level */
+    /** This methods HAS TO be quick to execute for performance reason */
+    @Override
+    public String toShortString() throws Exception 
+    {
+    	String ret = super.toShortString();
+    	String firstline =((FirstLine)(message.getGenericfirstline())).getLine().trim();
+    	ret += "<" + firstline + ">";
+	    String transId = getTransactionId().toString();
+	    ret += "<transactionId=\"" + transId + "\">"; 
+	    String dialogId = getDialogId();
+	    ret+= "<DialogId=\"" + dialogId + "\">";
+        return ret;
+    }
+    
+    /** Get the XML representation of the message; for the genscript module. */
+    @Override
+    public String toXml() throws Exception {        
+        return message.getMessage().toString();
+    }
+}

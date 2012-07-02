@@ -1,0 +1,46 @@
+<!-- liste des methodes pour la pile smtp -->
+<!-- deprecated part -->
+<xs:element name="openSessionSMTP"    type="openSessionSMTPType"    minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="closeSessionSMTP"   type="closeSessionSMTPType"   minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="sendRequestSMTP"	  type="sendRequestSMTPType"    minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="sendResponseSMTP"	  type="sendResponseSMTPType"    minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="receiveRequestSMTP"    type="receiveRequestSMTPType"    minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="receiveResponseSMTP"	  type="receiveResponseSMTPType"    minOccurs="0" maxOccurs="unbounded" />
+<!-- deprecated part -->
+
+<xs:element name="openChannelSMTP" type="openChannelSMTPType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To open a channel for the SMTP protocol.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+<xs:element name="closeChannelSMTP" type="closeChannelSMTPType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To close a channel for the SMTP protocol.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+<xs:element name="createListenpointSMTP" type="createListenpointSMTPType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To start listening for the SMTP protocol.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+<xs:element name="removeListenpointSMTP" type="removeListenpointSMTPType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To stop listening for the SMTP protocol.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+<xs:element name="sendMessageSMTP" type="sendMessageSMTPType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To send a message for the SMTP protocol using a channel or a listenpoint (user defined or the default one).</xs:documentation>
+    </xs:annotation>
+</xs:element>
+<xs:element name="receiveMessageSMTP" type="receiveMessageSMTPType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To wait until a message of the SMTP protocol is received. The operation fails if no message is received until a given timeout value.</xs:documentation>
+    </xs:annotation>
+</xs:element>

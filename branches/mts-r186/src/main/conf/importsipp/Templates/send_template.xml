@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-2" ?>
+<template>
+<parameter name="[branch]" operation="string.random" value="10"/>
+<parameter name="[last_Via:]" operation="setFromMessage" value="header.Via.Namevalue" value2="[last_Message]"/>
+<parameter name="[last_From:]" operation="setFromMessage" value="header.From.Namevalue" value2="[last_Message]"/>
+<parameter name="[last_To:]" operation="setFromMessage" value="header.To.Namevalue" value2="[last_Message]"/>
+<parameter name="[last_Call-ID:]" operation="setFromMessage" value="header.Call-ID.Namevalue" value2="[last_Message]"/>
+<parameter name="[last_CSeq:]" operation="setFromMessage" value="header.CSeq.Namevalue" value2="[last_Message]"/>
+<parameter name="[cseq]" operation="setFromMessage" value="header.CseqNumber" />
+<parameter name="[next_url]" operation="setFromMessage" value="header.Contact.address.Uri" />
+<parameter name="[routes]" operation="setFromMessage" value="header.RecordRoute" />
+<parameter name="[peer_tag_param]" operation="setFromMessage" value="header.To.parameter.tag"/>
+<parameter name="[peer_tag_param]" operation="set" value=";tag=[peer_tag_param]"/>
+<sendMessageSIP remoteHost="[remote_ip]" remotePort="[remote_port]">
+xpath:./text()
+</sendMessageSIP>
+<goto label="xpath:./@next" />
+</template>

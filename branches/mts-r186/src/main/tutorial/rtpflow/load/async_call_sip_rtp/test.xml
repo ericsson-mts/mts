@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="Load tests">
+
+    <parameter name="[TryingDuration]" operation="set" value="0.1" description="Duration (in sec.) between 100 and 180"  	editable="true"/>
+    <parameter name="[RingingDuration]" operation="set" value="4" description="Duration (in sec.) between 180 and 200"     	editable="true"/>
+    <parameter name="[CallDuration]" operation="set" value="10" description="Duration (in sec.) of the call"           	    editable="true"/>
+    <parameter name="[CAPS]" operation="set" value="10" description="Call Attempting per Second"                           	editable="true"/>
+    <parameter name="[DelayDurationSec]" operation="set" value="0" description="Delay (in second) before the test starts"   editable="true"/>
+    <parameter name="[TestDurationDay]" operation="set" value="10" description="Duration (in day) of the test "        		editable="true"/>
+    <parameter name="[TestDurationHour]" operation="set" value="0" description="Duration (in hour) of the test "        	editable="true"/>
+    <parameter name="[TestDurationMin]" operation="set" value="0" description="Duration (in min.) of the test "         	editable="true"/>    	
+    <parameter name="[TestDurationSec]" operation="set" value="0" description="Duration (in sec.) of the test "         	editable="true"/>    	
+    <parameter name="[RangeIndexUser]" operation="set" value="0" description="Index of the range of the user phone number"  editable="true"/>
+    <parameter name="[SendByeUAC]" operation="set" value="true" description="Flag to send the BYE on UAC side"              editable="true"/>
+    <parameter name="[SendByeUAS]" operation="set" value="false" description="Flag to send the BYE on UAC side"             editable="true"/>
+	<parameter name="fileWave" operation="file.readwave" value="rtpflow.wav" value2="20"/>
+	
+    <!-- RAPTOR list addresses and port -->
+    <parameter name="[Host-Raptor]" operation="set" value="172.16.21.32" description="Addresse de RAPTOR"      editable="true"/>
+    <parameter name="[Host-Raptor]" operation="system.ipaddress" value="eth0" description="Addresse de la MG" />
+
+    <parameter name="[Host-Raptor-RTP]" operation="set" value="[Host-Raptor]" description="Addresse de RAPTOR"      editable="true"/>
+
+    <parameter name="[ListenTCP-Raptor]" operation="set" value="[Host-Raptor]" description="Addresse TCP locale de IMSLoader pour RAPTOR"         editable="true"/>
+    <parameter name="[Port-Raptor]" operation="set" value="5000" description="Port de RAPTOR"                    editable="true"/>    	    
+    <parameter name="[countRaptor]" operation="list.size" value="[Host-Raptor]"/>
+
+    <!-- USER PHONE number ranges -->
+    <!--parameter name="[RangeInviterNumber]" operation="set" value="0296000000,0296009999" description="Range phone number for inviter"    editable="true"/-->
+    <parameter name="[RangeInviterNumber]" operation="set" value="0296000000,0296000099" description="Range phone number for inviter"       editable="true"/>
+    <!--parameter name="[RangeInviteeNumber]" operation="set" value="33321220000,33321229999" description="Range phone number for invitee"  editable="true"/-->
+    <parameter name="[RangeInviteeNumber]" operation="set" value="33321220000,33321220099" description="Range phone number for invitee"     editable="true"/>
+	<parameter name="[RangeInviterRTPPort]" operation="set" value="10000"/>				
+	<parameter name="[RangeInviteeRTPPort]" operation="set" value="40000"/>
+    <parameter name="[userDomain]" operation="set" value="load.sip.fr:5060" description="domain operator"                                   editable="true"/>
+    
+		
+    <!-- SIP address and port -->
+	<parameter name="[Host-Tester]" operation="set" value="172.16.21.32" description="Host du IMSloader"/>
+	<parameter name="[Host-Tester]" operation="system.ipaddress" value="eth0" description="Addresse de la MG" />
+	<parameter name="[Port-Tester]" operation="set" value="5060" description="Port du IMSloader"/>
+	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]" description="Addresse du IMSloader"/>
+
+    <!-- MG M8k -->
+    <parameter name="[Host-Server]" operation="set" value="172.16.21.32" description="Addresse de l'AS"/>
+    <parameter name="[Host-Server]" operation="system.ipaddress" value="eth0" description="Addresse de la MG" />
+    <parameter name="[Port-Server]" operation="set" value="5060" description="Port de l'AS"/>    	    
+    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server(0)]:[Port-Server]"/>
+    
+    <!--                     -->
+	<!-- INTERNAL PARAMETERS -->
+	<!--                     -->	
+    <parameter name="[RangeNumberUser]" operation="set" value="5000"/>
+	    
+	<!-- calculate the test duration -->			
+	<parameter name="[TestDurationDay]" operation="number.multiply" value="[TestDurationDay]" value2="24"/>
+	<parameter name="[TestDurationHour]" operation="number.add" value="[TestDurationHour]" value2="[TestDurationDay]"/>				
+	<parameter name="[TestDurationHour]" operation="number.multiply" value="[TestDurationHour]" value2="60"/>
+	<parameter name="[TestDurationMin]" operation="number.add" value="[TestDurationMin]" value2="[TestDurationHour]"/>					
+	<parameter name="[TestDurationMin]" operation="number.multiply" value="[TestDurationMin]" value2="60"/>
+	<parameter name="[TestDurationSec]" operation="number.add" value="[TestDurationSec]" value2="[TestDurationMin]"/>											
+
+	<!--RPT Parameter-->
+	<parameter name="[payloadTypeRTP]" operation="set" value="17" editable="true" description="Payload type for the media flow"/>    	       	       
+	<parameter name="[byteRateRTP]" operation="set" value="8000" editable="true" description="Bytes rate (in byte/sec) for the media flow"/>   
+
+	
+	<testcase name="loader_sip" description="send invite with the CAPS number" state="true">
+
+    	<!--                       -->
+        <!-- RUNPROFILE PARAMETERS -->
+        <!--                       -->    
+        <runProfile>
+            <start delay="[DelayDurationSec]"/>
+            <step time="0" frequency="[CAPS]"/>
+            <end delay="[TestDurationSec]"/>
+            <!--end iteration="10"/-->
+        </runProfile>
+
+      			
+		<scenario name="loader_sip">loader/loader.xml</scenario>
+
+	</testcase>
+		
+    <for index="[index]" from="1" to="1" step="1">
+	   <testcase name="responder[index]" description="passive testcase for reponse and subsequent management" 
+                    interruptible="true" state="true">   			
+
+        	<!--                       -->
+            <!-- RUNPROFILE PARAMETERS -->
+            <!--                       -->    
+            <runProfile>
+                <start delay="[DelayDurationSec]"/>
+
+                <step time="0" period="0"/>
+                <end delay="[TestDurationSec]"/>
+            </runProfile>
+
+		    <scenario name="[Port-Tester]">responder/responder.xml</scenario>
+
+	   </testcase>
+    </for>
+
+	<testcase name="CPU" description="Test system monitoring " state="false">
+        <scenario name="cpu">cpu/scenario.xml</scenario>
+    </testcase>
+	
+</test>

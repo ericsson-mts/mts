@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+    
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+    
+	<receiveMessageSIP name="Wait MESSAGE" request="true" type="MESSAGE">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+		<parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+	</receiveMessageSIP>
+
+	<sendMessageSIP name="Answer 407 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 407 Unauthorized
+Via: [Via]
+From: [From]
+To: [To]
+Call-ID: [CallId]
+CSeq: [Cseq]
+Contact: [Contact]
+WWW-Authenticate: 
+	Digest realm="sip.mobistar.fr",
+	domain="sip:ttcnserver@sip.mobistar.fr",
+	nonce="1af6e6744f2880715614625e0da87566",
+	stale=false,
+	qop="auth",
+	algorithm=MD5
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+        </sendMessageSIP>
+
+	<receiveMessageSIP name="Wait MESSAGE" request="true" type="MESSAGE">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+		<parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+		<parameter name="[AuthResponse]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.response"/>
+	</receiveMessageSIP>
+
+   	<test parameter="[AuthResponse]" condition="string.equals" value="84f72fb091d4e053097bfbd3be43251c"/>
+		
+	<sendMessageSIP name="Answer 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+Via: [Via]
+From: [From]
+To: [To]
+Call-ID: [CallId]
+CSeq: [Cseq]
+Contact: [Contact]
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+        </sendMessageSIP>
+
+</scenario>

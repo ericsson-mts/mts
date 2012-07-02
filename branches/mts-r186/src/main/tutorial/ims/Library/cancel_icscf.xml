@@ -1,0 +1,17 @@
+<if>
+	<condition>
+		<test parameter="[lastSIPMethod]" condition="equals" value="CANCEL"/>
+	</condition>
+	<then>
+	<!--envoi d un 200 OK-->
+<sendResponseSIP name="Answer 200 OK" providerName="[scenarioName]">
+<![CDATA[SIP/2.0 200 OK
+Via: [lastVia]
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCall-ID]
+CSeq: [lastCSeq]
+Content-Length: 0]]>
+</sendResponseSIP>
+		</then>
+</if>

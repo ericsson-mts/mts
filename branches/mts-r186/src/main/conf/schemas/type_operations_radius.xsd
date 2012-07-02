@@ -1,0 +1,309 @@
+<!--                                                                       START OF Radius PROTOCOL -->
+
+<!--                                                                          createListenpoint -->
+	<xs:complexType name="createListenpointRADIUSType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="localHost" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The listenpoint local host i.e. the IP address we are listening to. It should of course be one of the local addresses of the host or a host name with a DNS resolution. The default value is configurable(ppp.properties/listenpoint.LOCAL_HOST)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="localPort" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>The listenpoint local port i.e. the port we are listening to. The default value is configurable(ppp.properties/listenpoint.LOCAL_PORT)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenUDP" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>A flag to specify whether we are listening to the UDP transport. The default value is configurable(ppp.properties/listenpoint.LISTEN_UDP)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenTCP" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>A flag to specify whether we are listening to the TCP transport. The default value is configurable(ppp.properties/listenpoint.LISTEN_TCP)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenSCTP" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>A flag to specify whether we are listening to the SCTP transport. The default value is configurable(ppp.properties/listenpoint.LISTEN_SCTP)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenTLS" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>A flag to specify whether we are listening to the TLS transport. The default value is configurable(ppp.properties/listenpoint.LISTEN_TLS)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="localPortTLS" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>The listenpoint local port for TLS transport i.e. the port we are listening to. The default value is LOCAL_PORT + 1</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="transport" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>enumeration (UDP, TCP, SCTP, TLS)</xs:appinfo>
+						<xs:documentation>The default transport when the listenpoint is used to send message. The default value is configurable(ppp.properties/listenpoint.TRANSPORT)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+                <xs:attribute name="secret"         type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+    
+	<!--                                                                         removeListenpoint -->
+	<xs:complexType name="removeListenpointRADIUSType">
+		<xs:complexContent>
+			<xs:extension base="operationType"/>
+		</xs:complexContent>
+	</xs:complexType>
+
+    <!--                                                                          sendMessage -->
+	<xs:complexType name="sendMessageRADIUSType">
+		<xs:complexContent>
+			<!--<xs:extension base="operationTypeSimple">-->
+            <xs:extension base="operationType">
+                <xs:sequence>
+                    <xs:element name="header"     type="headerRadiusType" />
+                    <xs:element name="avp"        type="avpRadiusType"       minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+				<xs:attribute name="listenpoint" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The name of the listenpoint to transport the message. Don't use it with channel (incompatible)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="remoteHost" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The remote host to send the message to. Don't use it with the channel (incompatible).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="remotePort" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>The remote port to send the message to. Don't use it with the channel (incompatible)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="remoteURL" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String (url)</xs:appinfo>
+						<xs:documentation>The remote URL to send the message to. Don't use it with the channel (incompatible).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="transport" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>enumeration (UDP, TCP, SCTP, TLS)</xs:appinfo>
+						<xs:documentation>The protocol transport to send the message to. Don't use it with the channel (incompatible).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="destScenario" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String (scenario name)</xs:appinfo>
+						<xs:documentation>The destination scenario if the request commes to IMSloader again (case of proxy testing). This attribute should contain the name of the scenario to route the same message to.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="delay" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Float</xs:appinfo>
+						<xs:documentation>The time delay (in seconds) when the message sending is differed.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+                <xs:attribute name="request"      type="xs:string" >
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>The flag to indicate whether the message is a request ("True") or a response ("false").</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+    <!--                                                                         receiveMessage -->
+	<xs:complexType name="receiveMessageRADIUSType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="parameter"  type="parameterType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="test"       type="testType"      minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="and"        type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="or"         type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="not"        type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+				<xs:attribute name="listenpoint" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The listenpoint name to transport the message. Don't use it with channel (incompatible)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="request" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>True means that we are waiting for a request whereas false means a response. If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="type" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The message type we are waiting for. If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="result" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The message result (for response only) we are waiting for. If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="timeout" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Float</xs:appinfo>
+						<xs:documentation>The timeout i.e. the maximum time (in seconds) we are waiting for. The default value is configurable (RADIUS.properties/operations.RECEIVE_TIMEOUT) If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="failedOnReceive" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>True means that we are not waiting a message i.e. if we will receive a message , then the operation status is set to FAILED. The default value is false.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="failedOnTimeout" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>True means that we are waiting a message i.e. if we won't receive any message , then the operation status is set to FAILED. The default value is true.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+    
+<!--                                                                                   header -->
+    <xs:complexType name="headerRadiusType">
+        <xs:attribute name="identifier"     type="xs:string" />
+        <xs:attribute name="code"           type="xs:string" use="required" />
+        <xs:attribute name="authenticator"  type="xs:string" />
+    </xs:complexType>
+
+<!--                                                                                         avp -->
+    <xs:complexType name="avpRadiusType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="avp"  type="vendorAvp"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="data"  type="vendorData"  minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="code"           type="xs:string" use="required" />
+        <xs:attribute name="value"          type="xs:string" use="required" />
+        <xs:attribute name="type"           type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="vendorAvp">
+        <xs:attribute name="code"         type="xs:string" use="required" />
+        <xs:attribute name="value"        type="xs:string" use="required" />
+        <xs:attribute name="type"         type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="vendorData">
+        <xs:attribute name="value"        type="xs:string" use="required" />
+    </xs:complexType>
+
+<!--************************************************************************************************-->
+<!--**************************************** OBSOLETE **********************************************-->
+<!--************************************************************************************************-->
+
+<!--                                                                          openSocketRadius -->
+    <xs:complexType name="openSocketRadiusType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:attribute name="socketName"     type="xs:string" use="required" />
+                <xs:attribute name="localHost"      type="xs:string" />
+                <xs:attribute name="localPort"      type="xs:string" />
+                <xs:attribute name="remoteHost"     type="xs:string" />
+                <xs:attribute name="remotePort"     type="xs:string" />   
+                <xs:attribute name="secret"         type="xs:string" use="required" />   
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                         closeSocketRadius -->
+    <xs:complexType name="closeSocketRadiusType">
+        <xs:complexContent>
+            <xs:extension base="operationType" >
+                <xs:attribute name="socketName" 	type="xs:string" use="required" />
+            </xs:extension>
+
+        </xs:complexContent>
+    </xs:complexType>
+<!--                                                                              sendRequestRadius -->
+    <xs:complexType name="sendRequestRadiusType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:sequence>
+                    <xs:element name="header"  	  type="headerRadiusType" />
+                    <xs:element name="avp"        type="avpRadiusType"       minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+                <xs:attribute name="socketName"   type="xs:string" />
+                <xs:attribute name="remoteHost"   type="xs:string" />
+                <xs:attribute name="remotePort"   type="xs:string" />
+                <xs:attribute name="destScenario" type="xs:string" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                               sendResponseRadius -->
+    <xs:complexType name="sendResponseRadiusType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:sequence>
+                    <xs:element name="header"     type="headerRadiusType" />
+                    <xs:element name="avp"        type="avpRadiusType"       minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+                <xs:attribute name="socketName"   type="xs:string" use="required" />
+                <xs:attribute name="remoteHost"   type="xs:string" />
+                <xs:attribute name="remotePort"   type="xs:string" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+<!--                                                                           receiveRequestRadius -->
+    <xs:complexType name="receiveRequestRadiusType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="parameter"  type="parameterType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="test"       type="testType"      minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="and"        type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="or"         type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="not"        type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+                <xs:attribute name="timeout"      type="xs:string" />
+                <xs:attribute name="socketName"   type="xs:string" />
+                <xs:attribute name="type"               type="xs:string" />
+                <xs:attribute name="failedOnTimeout"    type="xs:string" />
+                <xs:attribute name="failedOnReceive"    type="xs:string" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                            receiveResponseRadius -->
+    <xs:complexType name="receiveResponseRadiusType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="parameter"  type="parameterType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="test"       type="testType"      minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+                <xs:attribute name="timeout"            type="xs:string" />                
+                <xs:attribute name="socketName"         type="xs:string" />
+                <xs:attribute name="type"               type="xs:string" />
+                <xs:attribute name="result"             type="xs:string" />
+                <xs:attribute name="failedOnTimeout"    type="xs:string" />
+                <xs:attribute name="failedOnReceive"    type="xs:string" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                         END OF Radius PROTOCOL -->

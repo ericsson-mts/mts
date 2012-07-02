@@ -1,0 +1,29 @@
+<!-- liste des methodes pour la pile SNMP -->
+<xs:element name="createListenpointSNMP"  type="createListenpointSNMPType"  minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To start listening for the SNMP protocol.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="removeListenpointSNMP"  type="removeListenpointSNMPType"  minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To stop listening for the SNMP protocol.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="sendMessageSNMP"      type="sendMessageSNMPType"      minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To send a message for the SNMP protocol using a channel or with the transactionId (user defined).</xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="receiveMessageSNMP"   type="receiveMessageSNMPType"   minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To wait until a message of the SNMP protocol is received. The operation fails if no message is received until a given timeout value.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+

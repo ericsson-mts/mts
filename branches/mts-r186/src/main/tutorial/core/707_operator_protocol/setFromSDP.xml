@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <parameter name="[sdp]" operation="set">
+<![CDATA[
+v=0
+o=mhandley 2890844526 2890842807 IN IP4 126.16.64.4
+s=SDP Seminar
+i=A Seminar on the session description protocol
+u=http://www.cs.ucl.ac.uk/staff/M.Handley/sdp.03.ps
+e=mjh@isi.edu (Mark Handley)
+c=IN IP4 224.2.17.12/127
+t=3034423619 3042462419
+a=type:H332
+a=recvonly:20
+b=CT:128
+m=video 49232/2 RTP/AVP 98
+i=mavideo
+a=rtpmap:98 amr/8000/1
+a=fmtp:98 mode-set=1;octet-align=1;crc=0
+b=SA:256
+c=IN IP4 224.2.17.12/127
+m=audio 49230/3 RTP/AVP 96
+i=monaudio
+a=rtpmap:96 L8/8000
+b=CT:128
+c=IN IP4 224.2.17.12/127
+]]></parameter>
+
+    <!-- test Version:xxx -->
+    <parameter name="[SDPVersion0]" operation="protocol.setFromSDP" value="[sdp]" value2="version"/>
+    <test parameter="[SDPVersion0]" condition="string.equals" value="0"/>
+
+    <!-- test Origin:xxx -->
+    <parameter name="[SDPOrigin0]" operation="protocol.setFromSDP" value="[sdp]" value2="origin"/>
+    <test parameter="[SDPOrigin0]" condition="string.contains" value="mhandley 2890844526 2890842807 IN IP4 126.16.64.4"/>
+    <parameter name="[SDPOriginAddress]" operation="protocol.setFromSDP" value="[sdp]" value2="origin.address"/>
+    <test parameter="[SDPOriginAddress]" condition="string.equals" value="126.16.64.4"/>
+    <parameter name="[SDPOriginAddressType]" operation="protocol.setFromSDP" value="[sdp]" value2="origin.addressType"/>
+    <test parameter="[SDPOriginAddressType]" condition="string.equals" value="IP4"/>
+    <parameter name="[SDPOriginSessionVersion0]" operation="protocol.setFromSDP" value="[sdp]" value2="origin.sessionVersion"/>
+    <test parameter="[SDPOriginSessionVersion0]" condition="string.equals" value="2890842807"/>
+    <parameter name="[SDPOriginSessionId0]" operation="protocol.setFromSDP" value="[sdp]" value2="origin.sessionId"/>
+    <test parameter="[SDPOriginSessionId0]" condition="string.equals" value="2890844526"/>
+    <parameter name="[SDPOriginNetworkType]" operation="protocol.setFromSDP" value="[sdp]" value2="origin.networkType"/>
+    <test parameter="[SDPOriginNetworkType]" condition="string.equals" value="IN"/>
+    <parameter name="[SDPOriginAddress]" operation="protocol.setFromSDP" value="[sdp]" value2="origin.address"/>
+    <test parameter="[SDPOriginAddress]" condition="string.equals" value="126.16.64.4"/>
+    <parameter name="[SDPOriginUserName0]" operation="protocol.setFromSDP" value="[sdp]" value2="origin.userName"/>
+    <test parameter="[SDPOriginUserName0]" condition="string.equals" value="mhandley"/>
+
+    <!-- test Email:xxx -->
+    <parameter name="[SDPEmail0]" operation="protocol.setFromSDP" value="[sdp]" value2="email"/>
+    <test parameter="[SDPEmail0]" condition="string.contains" value="mjh@isi.edu"/>
+
+    <!-- test Connection:xxx -->
+    <parameter name="[SDPConnection0]" operation="protocol.setFromSDP" value="[sdp]" value2="connection"/>
+    <test parameter="[SDPConnection0]" condition="string.contains" value="IN IP4 224.2.17.12/127"/>
+    <parameter name="[SDPConnectionAddress0]" operation="protocol.setFromSDP" value="[sdp]" value2="connection.address"/>
+    <test parameter="[SDPConnectionAddress0]" condition="string.equals" value="224.2.17.12"/>
+    <parameter name="[SDPConnectionAddressType0]" operation="protocol.setFromSDP" value="[sdp]" value2="connection.addressType"/>
+    <test parameter="[SDPConnectionAddressType0]" condition="string.equals" value="IP4"/>
+    <parameter name="[SDPConnectionNetworkType0]" operation="protocol.setFromSDP" value="[sdp]" value2="connection.networkType"/>
+    <test parameter="[SDPConnectionNetworkType0]" condition="string.equals" value="IN"/>
+
+    <!-- test Information:xxx -->
+    <parameter name="[SDPInformation0]" operation="protocol.setFromSDP" value="[sdp]" value2="information"/>
+    <test parameter="[SDPInformation0]" condition="string.contains" value="A Seminar on the session description protocol"/>
+
+    <!-- test Uri:xxx -->
+    <parameter name="[SDPUri0]" operation="protocol.setFromSDP" value="[sdp]" value2="uri"/>
+    <test parameter="[SDPUri0]" condition="string.contains" value="http://www.cs.ucl.ac.uk/staff/M.Handley/sdp.03.ps"/>
+
+    <!-- test media:xxx -->
+    <parameter name="[SDPMedia0]" operation="protocol.setFromSDP" value="[sdp]" value2="media"/>
+    <test parameter="[SDPMedia0(0)]" condition="string.contains" value="49232/2 RTP/AVP 98"/>
+    <test parameter="[SDPMedia0(1)]" condition="string.contains" value="49230/3 RTP/AVP 96"/>
+    <parameter name="[SDPMediaInformation0]" operation="protocol.setFromSDP" value="[sdp]" value2="media.information"/>
+    <test parameter="[SDPMediaInformation0(0)]" condition="string.equals" value="mavideo"/>
+    <test parameter="[SDPMediaInformation0(1)]" condition="string.equals" value="monaudio"/>
+    <parameter name="[SDPMediaAttribute0]" operation="protocol.setFromSDP" value="[sdp]" value2="media.attribut"/>
+    <test parameter="[SDPMediaAttribute0(0)]" condition="string.contains" value="a=rtpmap:98 amr/8000/1"/>
+    <test parameter="[SDPMediaAttribute0(1)]" condition="string.contains" value="a=fmtp:98 mode-set=1;octet-align=1;crc=0"/>
+    <test parameter="[SDPMediaAttribute0(2)]" condition="string.contains" value="a=rtpmap:96 L8/8000"/>
+    <parameter name="[SDPMediaAttributeRTPMAPValue0]" operation="protocol.setFromSDP" value="[sdp]" value2="media.attribut.rtpmap"/>
+    <test parameter="[SDPMediaAttributeRTPMAPValue0(0)]" condition="string.equals" value="98 amr/8000/1"/>
+    <test parameter="[SDPMediaAttributeRTPMAPValue0(1)]" condition="string.equals" value="96 L8/8000"/>
+    <parameter name="[SDPMediaAttributeFMTPValue0]" operation="protocol.setFromSDP" value="[sdp]" value2="media.attribut.fmtp"/>
+    <test parameter="[SDPMediaAttributeFMTPValue0(0)]" condition="string.contains" value="98 mode-set=1;octet-align=1;crc=0"/>
+    <parameter name="[SDPMediaPort0]" operation="protocol.setFromSDP" value="[sdp]" value2="media.port"/>
+    <test parameter="[SDPMediaPort0(0)]" condition="string.equals" value="49232"/>
+    <test parameter="[SDPMediaPort0(1)]" condition="string.equals" value="49230"/>
+    <!-- deprecated -->
+    <parameter name="[SDPMediaPort0]" operation="protocol.setFromSDP" value="[sdp]" value2="media:port"/>
+    <test parameter="[SDPMediaPort0(0)]" condition="string.equals" value="49232"/>
+    <test parameter="[SDPMediaPort0(1)]" condition="string.equals" value="49230"/>
+    <parameter name="[SDPMediaProtocol0]" operation="protocol.setFromSDP" value="[sdp]" value2="media.protocol"/>
+    <test parameter="[SDPMediaProtocol0(0)]" condition="string.equals" value="RTP/AVP"/>
+    <test parameter="[SDPMediaProtocol0(1)]" condition="string.equals" value="RTP/AVP"/>
+    <parameter name="[SDPMediaFormat0]" operation="protocol.setFromSDP" value="[sdp]" value2="media.format"/>
+    <test parameter="[SDPMediaFormat0(0)]" condition="string.equals" value="98"/>
+    <test parameter="[SDPMediaFormat0(1)]" condition="string.equals" value="96"/>
+    <parameter name="[SDPMediaPortCount0]" operation="protocol.setFromSDP" value="[sdp]" value2="media.portCount"/>
+    <test parameter="[SDPMediaPortCount0(0)]" condition="string.equals" value="2"/>
+    <test parameter="[SDPMediaPortCount0(1)]" condition="string.equals" value="3"/>
+    <parameter name="[SDPMediaType0]" operation="protocol.setFromSDP" value="[sdp]" value2="media.type"/>
+    <test parameter="[SDPMediaType0(0)]" condition="string.equals" value="video"/>
+    <test parameter="[SDPMediaType0(1)]" condition="string.equals" value="audio"/>
+    <parameter name="[SDPMediaBandWidth]" operation="protocol.setFromSDP" value="[sdp]" value2="media.bandWidth"/>
+    <test parameter="[SDPMediaBandWidth(0)]" condition="string.contains" value="b=SA:256"/>
+    <test parameter="[SDPMediaBandWidth(1)]" condition="string.contains" value="b=CT:128"/>
+    <parameter name="[SDPMediaBandWidthType]" operation="protocol.setFromSDP" value="[sdp]" value2="media.bandWidth.type"/>
+    <test parameter="[SDPMediaBandWidthType(0)]" condition="string.equals" value="SA"/>
+    <test parameter="[SDPMediaBandWidthType(1)]" condition="string.equals" value="CT"/>
+    <parameter name="[SDPMediaBandWidthValue]" operation="protocol.setFromSDP" value="[sdp]" value2="media.bandWidth.value"/>
+    <test parameter="[SDPMediaBandWidthValue(0)]" condition="string.equals" value="256"/>
+    <test parameter="[SDPMediaBandWidthValue(1)]" condition="string.equals" value="128"/>
+    <parameter name="[SDPMediaMimeParameters0]" operation="protocol.setFromSDP" value="[sdp]" value2="media.mimeParameters"/>
+    <!-- BUG : return always empty ? -->
+    <test parameter="[SDPMediaMimeParameters0]" condition="list.isEmpty"/>
+    <parameter name="[SDPMediaMimeTypes0]" operation="protocol.setFromSDP" value="[sdp]" value2="media.mimeTypes"/>
+    <!-- BUG : return always empty ? -->
+    <test parameter="[SDPMediaMimeTypes0]" condition="list.isEmpty"/>
+
+    <!-- test SessionName:xxx -->
+    <parameter name="[SDPSessionName]" operation="protocol.setFromSDP" value="[sdp]" value2="sessionName"/>
+    <test parameter="[SDPSessionName]" condition="string.contains" value="SDP Seminar"/>
+
+    <!-- test Time:xxx -->
+    <parameter name="[SDPTime]" operation="protocol.setFromSDP" value="[sdp]" value2="time"/>
+    <test parameter="[SDPTime]" condition="string.contains" value="t=3034423619 3042462419"/>
+    <parameter name="[SDPTimeStart]" operation="protocol.setFromSDP" value="[sdp]" value2="time.start"/>
+    <!--test parameter="[SDPTimeStart]" condition="string.equals" value="2873397496"/-->
+    <parameter name="[SDPTimeStop]" operation="protocol.setFromSDP" value="[sdp]" value2="time.stop"/>
+    <!--test parameter="[SDPTimeStop]" condition="string.equals" value="2873404696"/-->
+
+    <!-- test bandWidth:xxx -->
+    <parameter name="[SDPbandWidth]" operation="protocol.setFromSDP" value="[sdp]" value2="bandWidth"/>
+    <test parameter="[SDPbandWidth]" condition="string.contains" value="b=CT:128"/>
+    <parameter name="[SDPbandWidthType]" operation="protocol.setFromSDP" value="[sdp]" value2="bandWidth.type"/>
+    <test parameter="[SDPbandWidthType]" condition="string.equals" value="CT"/>
+    <parameter name="[SDPbandWidthValue]" operation="protocol.setFromSDP" value="[sdp]" value2="bandWidth.value"/>
+    <test parameter="[SDPbandWidthValue]" condition="string.equals" value="128"/>
+
+    <!-- test Attribut:xxx -->
+    <parameter name="[SDPAttribute0]" operation="protocol.setFromSDP" value="[sdp]" value2="attribut"/>
+    <test parameter="[SDPAttribute0(0)]" condition="string.contains" value="a=type:H332"/>
+    <test parameter="[SDPAttribute0(1)]" condition="string.contains" value="a=recvonly:20"/>
+    <parameter name="[SDPAttributeRecvonly0]" operation="protocol.setFromSDP" value="[sdp]" value2="attribut.recvonly"/>
+    <test parameter="[SDPAttributeRecvonly0]" condition="string.equals" value="20"/>
+
+    <!-- test ZoneAdjustment:xxx -->
+    <!-- BUG : perform an exception if z= line is present -->
+    <parameter name="[SDPZoneAdjustment]" operation="protocol.setFromSDP" value="[sdp]" value2="zoneAdjustment"/>
+
+    <!-- test content(N):Sdp:RepeatTime:xxx -->
+    <!-- BUG : perform a loop if r= line is present -->
+    <parameter name="[SDPRepeatTime]" operation="protocol.setFromSDP" value="[sdp]" value2="repeatTime"/>
+    <parameter name="[SDPRepeatTimeDuration]" operation="protocol.setFromSDP" value="[sdp]" value2="repeatTime.duration"/>
+    <parameter name="[SDPRepeatTimeInterval]" operation="protocol.setFromSDP" value="[sdp]" value2="repeatTime.duration.interval"/>
+    <parameter name="[SDPRepeatTimeOffset]" operation="protocol.setFromSDP" value="[sdp]" value2="RepeatTime.duration.offset"/>
+
+</scenario>

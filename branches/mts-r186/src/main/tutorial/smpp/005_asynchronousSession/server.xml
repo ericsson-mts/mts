@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageSMPP request="true" type="bind_transmitter:2">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="bind_transmitter_resp" sequence_number="[seqNum]"/>
+        <attribute name="system_id" value="test"/>
+        <tlv name="sc_interface_version" length="1" value="6"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="true" type="submit_sm:4"><!-- 2 -->
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSMPP>
+
+    <receiveMessageSMPP request="true" type="submit_sm:4"><!-- 3 -->
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSMPP>
+
+    <receiveMessageSMPP request="true" type="submit_sm:4"><!-- 4 -->
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSMPP>
+
+    <receiveMessageSMPP request="true" type="submit_sm:4"><!-- 5 -->
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSMPP>
+
+    <receiveMessageSMPP request="true" type="submit_sm:4"><!-- 6 -->
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm_resp" sequence_number="2"/>
+        <attribute name="message_id" value="1"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="true" type="submit_sm:4"><!-- 7 -->
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSMPP>
+
+    <receiveMessageSMPP request="true" type="submit_sm:4"><!-- 8 -->
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSMPP>
+    
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm_resp" sequence_number="3"/>
+        <attribute name="message_id" value="1"/>
+    </sendMessageSMPP>
+    
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm_resp" sequence_number="8"/>
+        <attribute name="message_id" value="1"/>
+    </sendMessageSMPP>
+    
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm_resp" sequence_number="4"/>
+        <attribute name="message_id" value="1"/>
+    </sendMessageSMPP>
+    
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm_resp" sequence_number="7"/>
+        <attribute name="message_id" value="1"/>
+    </sendMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm_resp" sequence_number="5"/>
+        <attribute name="message_id" value="1"/>
+    </sendMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm_resp" sequence_number="6"/>
+        <attribute name="message_id" value="1"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="true" type="unbind:6">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSMPP>
+    
+    <sendMessageSMPP channel="[connection]">
+        <header name="unbind_resp" sequence_number="[seqNum]"/>
+    </sendMessageSMPP>
+
+</scenario>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <parameter name="[content]" operation="set" value="0123465789" />
+    <parameter name="[content_length]" operation="string.length" value="[content]" />
+
+    <while>
+        <condition>
+            <test parameter="[content_length]" condition="number.lowerThan" value="1000000" />
+        </condition>
+        <do>
+            <parameter name="[content]" operation="set" value="[content][content][content][content][content][content][content][content][content][content]" />
+            <parameter name="[content_length]" operation="string.length" value="[content]" />
+        </do>
+    </while>
+    
+	<parameter name="[testcase:parameter generated]" operation="system.semaphorenotify" />
+
+  	<receiveMessageHTTP type="GET" request="true">
+		<parameter name="transaction_id" operation="protocol.setFromMessage" value="message.transactionId"/>
+	</receiveMessageHTTP>
+
+	
+	<sendMessageHTTP transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[
+HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader
+Content-Length:x
+
+[content]
+]]>
+<!--******************** END MESSAGE *********************-->
+	</sendMessageHTTP>
+	
+</scenario>

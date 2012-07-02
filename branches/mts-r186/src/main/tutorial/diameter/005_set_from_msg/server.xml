@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP CX Multimedia Authentication answer (MAR/MAA)" -->
+
+<scenario>
+
+     <pause name="pause" seconds="1" />
+    
+    <receiveMessageDIAMETER name="ReceiveRequestMAR" request="true" type="Multimedia-Authentitcation:506">
+		<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>    
+		<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+    </receiveMessageDIAMETER>
+    
+    <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.1018.1024.code"/>    
+    <test parameter="[avp1code]" condition="string.equals" value="1024"/>
+
+    <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+    <test parameter="[listenpointName]" condition="list.isEmpty"/>
+    <parameter name="[listenpointHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>        
+    <test parameter="[listenpointHost]" condition="string.equals" value="0.0.0.0"/>
+    <parameter name="[listenpointPort]" operation="protocol.setFromMessage" value="listenpoint.localPort"/>    
+    <test parameter="[listenpointPort]" condition="string.equals" value="[Local-Port]"/>
+    
+    <parameter name="[request2]" operation="protocol.setFromMessage" value="message.request"/>    
+    <test parameter="[request2]" condition="string.equals" value="true"/>
+    <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>    
+    <test parameter="[type]" condition="string.equals" value="Multimedia-Authentitcation:506"/>
+    
+    <parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/>    
+    <test parameter="[protocol]" condition="string.equals" value="DIAMETER"/>
+    <parameter name="[request1]" operation="protocol.setFromMessage" value="header.request"/>        
+    <test parameter="[request1]" condition="string.equals" value="true"/>    
+    <parameter name="[code]" operation="protocol.setFromMessage" value="header.command"/>    
+    <test parameter="[code]" condition="string.equals" value="506"/>    
+    <parameter name="[error]" operation="protocol.setFromMessage" value="header.error"/>    
+    <test parameter="[error]" condition="string.equals" value="false"/>        
+    <parameter name="[appId]" operation="protocol.setFromMessage" value="header.applicationId"/>    
+    <test parameter="[appId]" condition="string.equals" value="16777216"/>    
+    <parameter name="[proxiable]" operation="protocol.setFromMessage" value="header.proxiable"/>    
+    <test parameter="[proxiable]" condition="string.equals" value="true"/>
+    <parameter name="[retransmit]" operation="protocol.setFromMessage" value="header.retransmit"/>    
+    <test parameter="[retransmit]" condition="string.equals" value="false"/>
+    
+    <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.1018.code"/>    
+    <test parameter="[avp1code]" condition="number.equals" value="1018"/>
+    <parameter name="[avp1value]" operation="protocol.setFromMessage" value="avp.1018.value"/>    
+    <test parameter="[avp1value]" condition="string.equals" value="grouped"/>        
+    <parameter name="[avp1binary]" operation="protocol.setFromMessage" value="avp.1018.binary"/>    
+    <!--test parameter="[avp1binary]" condition="string.equals" value="h49 h4e h56 h49 h54 h45 "/-->   
+    <parameter name="[avp1vendor]" operation="protocol.setFromMessage" value="avp.1018.vendorId"/>    
+    <test parameter="[avp1vendor]" condition="string.equals" value="10415"/>
+    
+    <parameter name="[avp2code]" operation="protocol.setFromMessage" value="avp.1018.1024.code"/>    
+    <test parameter="[avp2code]" condition="number.equals" value="1024"/>
+    <parameter name="[avp2value]" operation="protocol.setFromMessage" value="avp.1018.1024.value"/>    
+    <test parameter="[avp2value]" condition="string.equals" value="h49 h4e h56 h49 h54 h45 "/>        
+    <parameter name="[avp2binary]" operation="protocol.setFromMessage" value="avp.1018.1024.binary"/>    
+    <test parameter="[avp2binary]" condition="string.equals" value="494e56495445"/>    
+    <parameter name="[avp2vendor]" operation="protocol.setFromMessage" value="avp.1018.1024.vendorId"/>    
+    <test parameter="[avp2vendor]" condition="string.equals" value="10415"/>
+        
+    <parameter name="[avp3code]" operation="protocol.setFromMessage" value="avp.283.code"/>        
+    <test parameter="[avp3code]" condition="string.equals" value="283"/>
+    <parameter name="[avp3value]" operation="protocol.setFromMessage" value="avp.283.value"/>        
+    <test parameter="[avp3value]" condition="string.equals" value="[Remote-Realm]"/>
+    <parameter name="[avp3binary]" operation="protocol.setFromMessage" value="avp.283.binary"/>    
+    <test parameter="[avp3binary]" condition="string.equals" value="636c69656e742e6672"/>      
+    <parameter name="[avp3vendor]" operation="protocol.setFromMessage" value="avp.283.vendorId"/>    
+    <test parameter="[avp3vendor]" condition="string.equals" value="0"/>
+
+    <parameter name="[avp4code]" operation="protocol.setFromMessage" value="avp.IMS-Information.Event-Type.value"/>        
+    <test parameter="[avp4code]" condition="list.isEmpty"/>
+
+    <parameter name="[avp5code]" operation="protocol.setFromMessage" value="avp.IMS-Information.Role-Of-Node.value"/>        
+    <test parameter="[avp5code]" condition="list.isEmpty"/>
+
+    <parameter name="[avp6code]" operation="protocol.setFromMessage" value="avp.IMS-Information.Node-Functionality.value"/>        
+    <test parameter="[avp6code]" condition="string.equals" value="1212121"/>
+
+    <parameter name="[avp7code]" operation="protocol.setFromMessage" value="avp.IMS-Information.User-Session-ID.value"/>
+    <test parameter="[avp7code]" condition="list.isEmpty"/>
+    
+    <parameter name="[avp8code]" operation="protocol.setFromMessage" value="avp.IMS-Information.Calling-Party-Address.value"/>        
+    <test parameter="[avp8code]" condition="string.equals" value="badValue5"/>
+    
+    <parameter name="[avp9code]" operation="protocol.setFromMessage" value="avp.IMS-Information.Called-Party-Address.value"/>
+    <test parameter="[avp9code]" condition="list.isEmpty"/>
+    
+    <sendMessageDIAMETER name="SendAnswerMAA">
+	<header request="false" command="Multimedia-Authentitcation" applicationId="4321" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+	<avp code="Origin-Host" value="[Remote-Host]"/>
+	<avp code="Origin-Realm" value="[Remote-Realm]"/>
+	<avp code="Vendor-Specific-Application-Id">
+		<avp code="Vendor-Id" value="10415"/>
+		<avp code="Auth-Application-Id" value="16777216"/>
+	</avp>
+	<avp code="Session-Id" value="CXCSCFCX.sip.pfdev.fr;45e45ee4;046725;5cd579ef"/>
+	<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+	<avp code="Result-Code" value="2001"/>		
+	<avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr"/>
+	<avp code="Number-Authentication-Items" value="1"/>
+	<avp code="Auth-Data-Item">
+	        <avp code="Item-Number" value="0"/>
+	        <avp code="Authentication-Scheme" value="DIGEST"/>
+	        <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+	        <avp code="Authentication-Context" value="INVITE"/>
+	</avp>
+    </sendMessageDIAMETER>
+    
+</scenario>

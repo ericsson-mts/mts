@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+    <parameter name="[TempDuration]" operation="set" value="[TryingDuration]"/>
+    <parameter name="[TempDuration]" operation="number.add" value="[TempDuration]" value2="[RingingDuration]"/>
+    <parameter name="[TempDuration]" operation="number.add" value="[TempDuration]" value2="[CallDuration]"/>
+    <parameter name="[TempDuration]" operation="number.add" value="[TempDuration]" value2="30"/>
+	
+	<!-- start main loop -->	
+    <label name="begin"/>
+
+    <parameter name="[received]" operation="set" value="false"/>
+    <receiveMessageRTPFLOW timeout="[TempDuration]" failedOnTimeout="false">
+        <parameter name="[rtp_port]" operation="setFromMessage" value="listenpoint.localport"/>
+        <parameter name="[received]" operation="set" value="true"/>
+    </receiveMessageRTPFLOW>
+
+    <if>
+        <condition>
+            <test parameter="[received]" condition="string.equals" value="false"/>
+        </condition>
+        <then>
+            <exit failed="false"/>
+        </then>
+    </if>
+
+    <parameter name="[test:users_list_mutex]" operation="system.semaphorewait" value2="0" />
+
+        <parameter name="[ctx_uid]" value="[test:ctx_by_rtp_port_[rtp_port]]" />
+        <parameter name="[test:ctx_[ctx_uid]_rtp_done_count]" operation="number.add" value="[test:ctx_[ctx_uid]_rtp_done_count]" value2="1" />
+
+        <if>
+            <condition>
+                <test parameter="[test:ctx_[ctx_uid]_sip_done]" condition="boolean.equals" value="true" />
+                <test parameter="[test:ctx_[ctx_uid]_rtp_done_count]" condition="number.equals" value="2" />
+            </condition>
+            <then>
+                <try>
+                  <do>
+                    <removeListenpointRTPFLOW name="[test:ctx_[ctx_uid]_invitee_rtp_listenpoint]" />
+                    <removeListenpointRTPFLOW name="[test:ctx_[ctx_uid]_inviter_rtp_listenpoint]" />
+                  </do>
+                </try>
+                <parameter name="[test:users_list]" operation="list.addlast" value="[test:users_list]" value2="[test:ctx_[ctx_uid]_invitee]"/>
+                <parameter name="[test:users_list]" operation="list.addlast" value="[test:users_list]" value2="[test:ctx_[ctx_uid]_invitee]"/>
+                <parameter name="[test:users_concurrent_calls_sem]" operation="system.semaphorenotify" />
+            </then>
+        </if>
+
+    <parameter name="[test:users_list_mutex]" operation="system.semaphorenotify" />
+	
+    <goto  name="goto_begin" label="begin" state="true"/>
+</scenario>

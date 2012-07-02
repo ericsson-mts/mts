@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario manager -->
+<scenario>
+    
+    <parameter name="[listenpoint]" operation="set" value="scenario_[port]" />
+    <createListenpointSNMP name="[listenpoint]"/>
+
+    <parameter name="[requestId]" operation="number.random" value="100000000"/>
+    <sendMessageSNMP listenpoint="[listenpoint]" remoteHost="[serverRemoteIp(0)]" remotePort="[port]">
+        <header version="1" community="public"/>
+        <pdu name="get" requestId="[requestId]">
+            <variableBinding name="sysApplInstallPkgIndex"/>
+        </pdu>
+    </sendMessageSNMP>
+
+    <receiveMessageSNMP request="false"/>
+
+    <!--<finally>
+        <removeListenpointSNMP name="[listenpoint]"/>
+    </finally>-->
+</scenario>

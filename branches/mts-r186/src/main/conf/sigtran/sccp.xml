@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Document   : dictionnary_sccp.xml
+    Created on : 25 juin 2009
+    Author     : jbrisseau
+    Description:
+-->
+
+<dictionary>
+    <header	id="0" length="1" littleEndian="true">
+        <field name="Message_Type"	length="1" />
+    </header>
+
+	<messages>
+	
+		<message typeCode="1" typeName="Connection_request">
+			<parameter	name="Source_local_reference"		type="F"	length="3"	/>
+			<parameter	name="Protocol_class"				type="F"	length="1"	/>
+			<parameter	name="Called_party_address"			type="V"	length="3"	/>
+			<parameter	name="Credit"						type="O"	length="3"	/>
+			<parameter	name="Calling_party_address"		type="O"	length="4"	/>
+			<parameter	name="Data"							type="O"	length="3"	/>
+			<parameter	name="Hop_counter"					type="O"	length="3"	/>
+			<parameter	name="Importance"					type="O"	length="3"	/>
+			<parameter	name="End_of_optional_parameters"	type="O"	length="1"	/>
+		</message>
+		
+		<message typeCode="6" typeName="UnitData">
+			<parameter	name="Destination_local_reference"	type="F"	length="3"	/>
+			<parameter	name="Segmenting/reassembling"		type="F"	length="1"	/>
+			<parameter	name="Data"							type="V"	length="2"	/>
+		</message>
+		
+		<message typeCode="9" typeName="UnitData">
+			<parameter	name="Protocol_class"				type="F"	length="1"	/>
+			<parameter	name="Called_party_address"			type="V"	length="3"	/>
+			<parameter	name="Calling_party_address"		type="V"	length="3"	/>
+			<parameter	name="Data"							type="V"	length="2"	/>
+		</message>
+		
+		<message typeCode="13" typeName="Reset_request">
+			<parameter	name="Destination_local_reference"	type="F"	length="3"	/>
+			<parameter	name="Source_local_reference"		type="F"	length="3"	/>
+			<parameter	name="Reset_cause"					type="F"	length="1"	/>
+		</message>
+		
+	</messages>
+	
+	<parameters>
+	
+		<parameter id="1"	name="Destination_local_reference" littleEndian="true">
+			<field		name="Destination_local_reference"				length="3"/>
+		</parameter>
+		
+		<parameter id="2"	name="Source_local_reference" littleEndian="true">
+			<field		name="Source_local_reference"					length="3"/>
+		</parameter>
+		
+		<parameter id="8"	name="Sequencing/Segmenting">
+			<field		name="P(S)"										lengthBit="7"/>
+			<field		name="spare"									lengthBit="1"/>
+			<field		name="P(R)"										lengthBit="7"/>
+			<field		name="M"										lengthBit="1"/>
+		</parameter>
+		
+		<parameter id="12"	name="Reset_cause">
+			<field		name="Reset_cause"								length="1"/>
+		</parameter>
+		
+	</parameters>
+	
+	<enumerations>
+	
+		<enumeration	name="M">
+			<value		code="0"		name="no more data"/>
+			<value		code="1"		name="more data"/>
+		</enumeration>
+		
+		<enumeration	name="Reset_cause">
+			<value		code="0"		name="end user originated"/>
+			<value		code="1"		name="SCCP user originated"/>
+			<value		code="2"		name="message out of order ? incorrect P(S)"/>
+			<value		code="3"		name="message out of order ? incorrect P(R)"/>
+			<value		code="4"		name="remote procedure error ? message out ofwindow"/>
+			<value		code="5"		name="remote procedure error ? incorrect P(S) after (re)initialization"/>
+			<value		code="6"		name="remote procedure error ? general"/>
+			<value		code="7"		name="remote end user operational"/>
+			<value		code="8"		name="network operational"/>
+			<value		code="9"		name="access operational"/>
+			<value		code="10"		name="network congestion"/>
+			<value		code="12"		name="unqualified"/>
+		</enumeration>
+		
+	</enumerations>
+	
+</dictionary>			

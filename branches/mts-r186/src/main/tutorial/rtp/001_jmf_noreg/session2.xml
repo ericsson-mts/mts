@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<openConnectionRTP name="OpenConnection" state="true"
+			  sessionName="invitee" 
+			  localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]" 
+			  remoteHost="[localHostRTP(0)]" remotePort="[localPortRTP]"/>
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+			  
+	<receivePacketRTP name="ReceivePacketRTP1" sessionName="invitee" payloadType="17"/>
+	<receivePacketRTP name="ReceivePacketRTP2" sessionName="invitee" payloadType="17"/>
+	<!-- to avoid lost of packets -->
+	<receivePacketRTP name="ReceivePacketRTP3" sessionName="invitee" payloadType="17"/>
+	
+  	<parameter name="[ssrc]" operation="number.random" value="2147483647"/>
+	<sendPacketRTP name="sendPacketRTP" state="true"
+		sessionName="invitee" destScenario="session1">
+	    <packet>	    
+		<header ssrc="[ssrc]" payloadType="8" seqnum="1000" timestamp="1000"/>
+		<payload format="text">Packet #1</payload>		
+	    </packet>	    		
+	</sendPacketRTP>		
+
+	<sendPacketRTP name="sendPacketRTP" state="true"
+		sessionName="invitee" destScenario="session1">
+	    <packet>	    
+		<header ssrc="[ssrc]" payloadType="8" seqnum="2000" timestamp="2000"/>
+		<payload format="text">Packet #2</payload>		
+	    </packet>	    		
+	</sendPacketRTP>		
+		
+	<sendPacketRTP name="sendPacketRTP" state="true"
+		sessionName="invitee" destScenario="session1">
+	    <packet>	    
+		<header ssrc="[ssrc]" payloadType="8" seqnum="3000" timestamp="3000"/>
+		<payload format="text">Packet #3</payload>		
+	    </packet>	    		
+	</sendPacketRTP>		
+		
+	<finally>			
+		<closeConnectionRTP name="CloseConnection" state="true" sessionName="invitee" />
+	</finally>	
+</scenario>

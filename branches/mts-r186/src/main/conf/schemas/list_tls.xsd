@@ -1,0 +1,29 @@
+<!-- liste des methodes pour la pile tls -->
+
+<xs:element name="openChannelTLS" type="openChannelTLSType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To open a channel for the TLS protocol.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+<xs:element name="closeChannelTLS" type="closeChannelTLSType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To close a channel for the TLS protocol.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+<xs:element name="sendMessageTLS" type="sendMessageTLSType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To send a message for the TLS protocol using a channel or a listenpoint (user defined or the default one).</xs:documentation>
+    </xs:annotation>
+</xs:element>
+<xs:element name="receiveMessageTLS" type="receiveMessageTLSType" minOccurs="0" maxOccurs="unbounded">
+    <xs:annotation>
+        <xs:appinfo>mixed [0,N]</xs:appinfo>
+        <xs:documentation>To wait until a message of the TLS protocol is received. The operation fails if no message is received until a given timeout value.</xs:documentation>
+    </xs:annotation>
+</xs:element>
+
+<xs:element name="createListenpointTLS"     type="createListenpointTLSType"     minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="removeListenpointTLS"     type="removeListenpointTLSType"     minOccurs="0" maxOccurs="unbounded" />

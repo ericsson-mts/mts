@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageSMPP request="true">
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="id" operation="protocol.setFromMessage" value="header.id"/>
+        <parameter name="name" operation="protocol.setFromMessage" value="header.name"/>
+        <parameter name="lg" operation="protocol.setFromMessage" value="header.length"/>
+        <parameter name="status" operation="protocol.setFromMessage" value="header.status"/>
+        <parameter name="content" operation="protocol.setFromMessage" value="content"/>
+        <parameter name="sys" operation="protocol.setFromMessage" value="attribute.system_id"/>
+        <parameter name="passw" operation="protocol.setFromMessage" value="attribute.password"/>
+        <parameter name="type" operation="protocol.setFromMessage" value="attribute.system_type"/>
+        <parameter name="interface_version" operation="protocol.setFromMessage" value="attribute.interface_version"/>
+        <parameter name="addr_ton" operation="protocol.setFromMessage" value="attribute.addr_ton"/>
+        <parameter name="addr_npi" operation="protocol.setFromMessage" value="attribute.addr_npi"/>
+        <parameter name="addr" operation="protocol.setFromMessage" value="attribute.address_range"/>
+    </receiveMessageSMPP>
+
+    <!-- perform test -->
+    <test parameter="[seqNum]" condition="string.equals" value="1"/>
+    <test parameter="[id]" condition="string.equals" value="2"/>
+    <test parameter="[name]" condition="string.equals" value="bind_transmitter"/>
+    <test parameter="[lg]" condition="string.equals" value="61"/>
+    <test parameter="[status]" condition="string.equals" value="0"/>
+    <test parameter="[sys]" condition="string.contains" value="IMSLoader"/>
+    <test parameter="[passw]" condition="string.contains" value="coucou"/>
+    <test parameter="[type]" condition="string.contains" value="windows MC"/>
+    <test parameter="[interface_version]" condition="string.equals" value="2"/>
+    <test parameter="[addr_ton]" condition="string.equals" value="8"/>
+    <test parameter="[addr_npi]" condition="string.equals" value="3"/>
+    <test parameter="[addr]" condition="string.contains" value="255.255.255.0"/>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="bind_transmitter_resp" sequence_number="[seqNum]" status="3"/>
+        <attribute name="system_id" value="test"/>
+        <tlv name="sc_interface_version" length="1" value="6"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="true">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="shortMsg" operation="protocol.setFromMessage" value="attribute.short_message"/>
+    </receiveMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm_resp" sequence_number="[seqNum]"/>
+        <attribute name="message_id" value="2"/>
+    </sendMessageSMPP>
+
+    <!-- receive message with bad sm_length value-->
+    <receiveMessageSMPP request="true">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="shortMsg" operation="protocol.setFromMessage" value="attribute.short_message"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+    </receiveMessageSMPP>
+
+    <test parameter="[malformed]" condition="boolean.equals" value="true"/>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm_resp" sequence_number="[seqNum]"/>
+        <attribute name="message_id" value="2"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="true">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSMPP>
+    
+    <sendMessageSMPP channel="[connection]">
+        <header name="unbind_resp" sequence_number="[seqNum]"/>
+    </sendMessageSMPP>
+
+</scenario>

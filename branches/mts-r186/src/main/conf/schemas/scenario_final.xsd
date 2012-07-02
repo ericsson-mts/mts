@@ -1,0 +1,1335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 rel. 2 sp1 (http://www.altova.com) by Fabien HENRY (Devoteam) -->
+<!--
+    Document   : dictionary.xsd
+    Created on : 28 mai 2007, 21:14
+    Author     : Gege
+    Description:
+        Purpose of XML Schema document follows.
+-->
+<!DOCTYPE scenario [
+	<!ENTITY list_core_scenario SYSTEM "list_core_scenario.xsd">
+	<!ENTITY list_core_thenElse SYSTEM "list_core_thenElse.xsd">
+	<!ENTITY list_core_do SYSTEM "list_core_do.xsd">
+	<!ENTITY type_operations_core SYSTEM "type_operations_core.xsd">
+	<!ENTITY list_1 SYSTEM "list_aaa.xsd">
+	<!ENTITY type_operations_1 SYSTEM "type_operations_aaa.xsd">
+	<!ENTITY list_2 SYSTEM "list_sip.xsd">
+	<!ENTITY type_operations_2 SYSTEM "type_operations_sip.xsd">
+	<!ENTITY list_3 SYSTEM "list_rtp.xsd">
+	<!ENTITY type_operations_3 SYSTEM "type_operations_rtp.xsd">
+	<!ENTITY list_4 SYSTEM "list_http.xsd">
+	<!ENTITY type_operations_4 SYSTEM "type_operations_http.xsd">
+	<!ENTITY list_6 SYSTEM "list_tcp.xsd">
+	<!ENTITY type_operations_6 SYSTEM "type_operations_tcp.xsd">
+	<!ENTITY list_7 SYSTEM "list_udp.xsd">
+	<!ENTITY type_operations_7 SYSTEM "type_operations_udp.xsd">
+	<!ENTITY list_8 SYSTEM "list_sctp.xsd">
+	<!ENTITY type_operations_8 SYSTEM "type_operations_sctp.xsd">
+	<!ENTITY list_9 SYSTEM "list_radius.xsd">
+	<!ENTITY type_operations_9 SYSTEM "type_operations_radius.xsd">
+	<!ENTITY list_10 SYSTEM "list_smtp.xsd">
+	<!ENTITY type_operations_10 SYSTEM "type_operations_smtp.xsd">
+	<!ENTITY list_11 SYSTEM "list_rtsp.xsd">
+	<!ENTITY type_operations_11 SYSTEM "type_operations_rtsp.xsd">
+]>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://schemas.xmlsoap.org/soap/encoding/" elementFormDefault="qualified">
+	<xs:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="../soap/envelope.xsd"/>
+	<xs:import namespace="http://schemas.xmlsoap.org/soap/encoding/" schemaLocation="../soap/encoding.xsd"/>
+	<xs:element name="scenario" type="scenarioTypeType"/>
+	<xs:complexType name="scenarioTypeType">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<!-- FH &list_core_scenario;-->
+			<xs:element name="pause" type="pauseType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="exit" type="exitType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="system" type="systemType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="semaphore" type="semaphoreType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sqlQuery" type="sqlQueryType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="if" type="ifType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="while" type="whileType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveMessage" type="receiveMessageType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="log" type="logType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="stats" type="statsType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="goto" type="gotoType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="label" type="labelType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="finally" type="doType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- FH &list_1; -->
+			<!-- liste des methodes pour la pile aaa -->
+			<xs:element name="sendRequestAAA" type="sendRequestAAAType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendAnswerAAA" type="sendAnswerAAAType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveRequestAAA" type="receiveRequestAAAType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveAnswerAAA" type="receiveAnswerAAAType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- FH &list_2; -->
+			<!-- liste des methodes pour la pile sip -->
+			<xs:element name="openProviderSIP" type="openProviderSIPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="closeProviderSIP" type="closeProviderSIPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendRequestSIP" type="sendRequestSIPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendResponseSIP" type="sendResponseSIPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveRequestSIP" type="receiveRequestSIPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveResponseSIP" type="receiveResponseSIPType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- FH &list_3;-->
+			<!-- liste des methodes pour la pile rtp -->
+			<xs:element name="openConnectionRTP" type="openConnectionRTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="closeConnectionRTP" type="closeConnectionRTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendPacketRTP" type="sendPacketRTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receivePacketRTP" type="receivePacketRTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- FH &list_4; -->
+			<!-- liste des methodes pour la pile http -->
+			<xs:element name="openConnectionHTTP" type="openConnectionHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="closeConnectionHTTP" type="closeConnectionHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendRequestHTTP" type="sendRequestHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendResponseHTTP" type="sendResponseHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveRequestHTTP" type="receiveRequestHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveResponseHTTP" type="receiveResponseHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- FH &list_6;-->
+			<!-- liste des methodes pour la pile rtp -->
+			<xs:element name="openConnectionTCP" type="openConnectionTCPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="closeConnectionTCP" type="closeConnectionTCPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendDataTCP" type="sendDataTCPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveDataTCP" type="receiveDataTCPType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- FH &list_7; -->
+			<!-- liste des methodes pour la pile udp -->
+			<xs:element name="openSocketUDP" type="openSocketUDPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="closeSocketUDP" type="closeSocketUDPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendDataUDP" type="sendDataUDPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveDataUDP" type="receiveDataUDPType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- FH &list_8; -->
+			<!-- liste des methodes pour la pile sctp -->
+			<xs:element name="openConnectionSCTP" type="openConnectionSCTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="closeConnectionSCTP" type="closeConnectionSCTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendDataSCTP" type="sendDataSCTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveDataSCTP" type="receiveDataSCTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- FH &list_9; -->
+			<!-- liste des methodes pour la pile Radius -->
+			<xs:element name="openSocketRadius" type="openSocketRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="closeSocketRadius" type="closeSocketRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendRequestRadius" type="sendRequestRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveRequestRadius" type="receiveRequestRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendResponseRadius" type="sendResponseRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveResponseRadius" type="receiveResponseRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- FH &list_10; -->
+			<!-- liste des methodes pour la pile smtp -->
+			<xs:element name="openSessionSMTP" type="openSessionSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="closeSessionSMTP" type="closeSessionSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendRequestSMTP" type="sendRequestSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendResponseSMTP" type="sendResponseSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveRequestSMTP" type="receiveRequestSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveResponseSMTP" type="receiveResponseSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- FH &list_11; -->
+			<!-- liste des methodes pour la pile rtsp -->
+			<xs:element name="openProviderRTSP" type="openProviderRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="closeProviderRTSP" type="closeProviderRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendRequestRTSP" type="sendRequestRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sendResponseRTSP" type="sendResponseRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveRequestRTSP" type="receiveRequestRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="receiveResponseRTSP" type="receiveResponseRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="error" type="thenElseType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="thenElseType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<!-- FH &list_core_thenElse;-->
+					<xs:element name="pause" type="pauseType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="exit" type="exitType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="system" type="systemType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="semaphore" type="semaphoreType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sqlQuery" type="sqlQueryType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="if" type="ifType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="while" type="whileType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveMessage" type="receiveMessageType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="log" type="logType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="stats" type="statsType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="goto" type="gotoType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="label" type="labelType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_1;-->
+					<!-- liste des methodes pour la pile aaa -->
+					<xs:element name="sendRequestAAA" type="sendRequestAAAType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendAnswerAAA" type="sendAnswerAAAType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveRequestAAA" type="receiveRequestAAAType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveAnswerAAA" type="receiveAnswerAAAType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_2; -->
+					<!-- liste des methodes pour la pile sip -->
+					<xs:element name="openProviderSIP" type="openProviderSIPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeProviderSIP" type="closeProviderSIPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendRequestSIP" type="sendRequestSIPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendResponseSIP" type="sendResponseSIPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveRequestSIP" type="receiveRequestSIPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveResponseSIP" type="receiveResponseSIPType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_3;-->
+					<!-- liste des methodes pour la pile rtp -->
+					<xs:element name="openConnectionRTP" type="openConnectionRTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeConnectionRTP" type="closeConnectionRTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendPacketRTP" type="sendPacketRTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receivePacketRTP" type="receivePacketRTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_4; -->
+					<!-- liste des methodes pour la pile http -->
+					<xs:element name="openConnectionHTTP" type="openConnectionHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeConnectionHTTP" type="closeConnectionHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendRequestHTTP" type="sendRequestHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendResponseHTTP" type="sendResponseHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveRequestHTTP" type="receiveRequestHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveResponseHTTP" type="receiveResponseHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_6;-->
+					<!-- liste des methodes pour la pile rtp -->
+					<xs:element name="openConnectionTCP" type="openConnectionTCPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeConnectionTCP" type="closeConnectionTCPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendDataTCP" type="sendDataTCPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveDataTCP" type="receiveDataTCPType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_7; -->
+					<!-- liste des methodes pour la pile udp -->
+					<xs:element name="openSocketUDP" type="openSocketUDPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeSocketUDP" type="closeSocketUDPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendDataUDP" type="sendDataUDPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveDataUDP" type="receiveDataUDPType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_8; -->
+					<!-- liste des methodes pour la pile sctp -->
+					<xs:element name="openConnectionSCTP" type="openConnectionSCTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeConnectionSCTP" type="closeConnectionSCTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendDataSCTP" type="sendDataSCTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveDataSCTP" type="receiveDataSCTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_9; -->
+					<!-- liste des methodes pour la pile Radius -->
+					<xs:element name="openSocketRadius" type="openSocketRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeSocketRadius" type="closeSocketRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendRequestRadius" type="sendRequestRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveRequestRadius" type="receiveRequestRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendResponseRadius" type="sendResponseRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveResponseRadius" type="receiveResponseRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_10; -->
+					<!-- liste des methodes pour la pile smtp -->
+					<xs:element name="openSessionSMTP" type="openSessionSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeSessionSMTP" type="closeSessionSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendRequestSMTP" type="sendRequestSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendResponseSMTP" type="sendResponseSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveRequestSMTP" type="receiveRequestSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveResponseSMTP" type="receiveResponseSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_11; -->
+					<!-- liste des methodes pour la pile rtsp -->
+					<xs:element name="openProviderRTSP" type="openProviderRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeProviderRTSP" type="closeProviderRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendRequestRTSP" type="sendRequestRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendResponseRTSP" type="sendResponseRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveRequestRTSP" type="receiveRequestRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveResponseRTSP" type="receiveResponseRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="doType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<!-- FH &list_core_do; -->
+					<xs:element name="pause" type="pauseType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="exit" type="exitType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="system" type="systemType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="semaphore" type="semaphoreType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sqlQuery" type="sqlQueryType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="if" type="ifType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="while" type="whileType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveMessage" type="receiveMessageType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="log" type="logType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="stats" type="statsType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="goto" type="gotoType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="label" type="labelType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_1; -->
+					<!-- liste des methodes pour la pile aaa -->
+					<xs:element name="sendRequestAAA" type="sendRequestAAAType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendAnswerAAA" type="sendAnswerAAAType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveRequestAAA" type="receiveRequestAAAType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveAnswerAAA" type="receiveAnswerAAAType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_2; -->
+					<!-- liste des methodes pour la pile sip -->
+					<xs:element name="openProviderSIP" type="openProviderSIPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeProviderSIP" type="closeProviderSIPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendRequestSIP" type="sendRequestSIPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendResponseSIP" type="sendResponseSIPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveRequestSIP" type="receiveRequestSIPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveResponseSIP" type="receiveResponseSIPType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_3;-->
+					<!-- liste des methodes pour la pile rtp -->
+					<xs:element name="openConnectionRTP" type="openConnectionRTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeConnectionRTP" type="closeConnectionRTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendPacketRTP" type="sendPacketRTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receivePacketRTP" type="receivePacketRTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_4; -->
+					<!-- liste des methodes pour la pile http -->
+					<xs:element name="openConnectionHTTP" type="openConnectionHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeConnectionHTTP" type="closeConnectionHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendRequestHTTP" type="sendRequestHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendResponseHTTP" type="sendResponseHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveRequestHTTP" type="receiveRequestHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveResponseHTTP" type="receiveResponseHTTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_6;-->
+					<!-- liste des methodes pour la pile rtp -->
+					<xs:element name="openConnectionTCP" type="openConnectionTCPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeConnectionTCP" type="closeConnectionTCPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendDataTCP" type="sendDataTCPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveDataTCP" type="receiveDataTCPType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_7; -->
+					<!-- liste des methodes pour la pile udp -->
+					<xs:element name="openSocketUDP" type="openSocketUDPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeSocketUDP" type="closeSocketUDPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendDataUDP" type="sendDataUDPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveDataUDP" type="receiveDataUDPType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_8; -->
+					<!-- liste des methodes pour la pile sctp -->
+					<xs:element name="openConnectionSCTP" type="openConnectionSCTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeConnectionSCTP" type="closeConnectionSCTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendDataSCTP" type="sendDataSCTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveDataSCTP" type="receiveDataSCTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_9; -->
+					<!-- liste des methodes pour la pile Radius -->
+					<xs:element name="openSocketRadius" type="openSocketRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeSocketRadius" type="closeSocketRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendRequestRadius" type="sendRequestRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveRequestRadius" type="receiveRequestRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendResponseRadius" type="sendResponseRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveResponseRadius" type="receiveResponseRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_10; -->
+					<!-- liste des methodes pour la pile smtp -->
+					<xs:element name="openSessionSMTP" type="openSessionSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeSessionSMTP" type="closeSessionSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendRequestSMTP" type="sendRequestSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendResponseSMTP" type="sendResponseSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveRequestSMTP" type="receiveRequestSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveResponseSMTP" type="receiveResponseSMTPType" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- FH &list_11; -->
+					<!-- liste des methodes pour la pile rtsp -->
+					<xs:element name="openProviderRTSP" type="openProviderRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="closeProviderRTSP" type="closeProviderRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendRequestRTSP" type="sendRequestRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="sendResponseRTSP" type="sendResponseRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveRequestRTSP" type="receiveRequestRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="receiveResponseRTSP" type="receiveResponseRTSPType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- FH &type_operations_core; -->
+	<xs:complexType name="operationType">
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="state" type="xs:string"/>
+		<xs:attribute name="description" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="operationStringType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="state" type="xs:string"/>
+				<xs:attribute name="name" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                                       pause -->
+	<xs:complexType name="pauseType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="seconds" type="xs:string"/>
+				<xs:attribute name="milliseconds" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                        goto -->
+	<xs:complexType name="gotoType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="label" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                       label -->
+	<xs:complexType name="labelType">
+		<xs:complexContent>
+			<xs:extension base="operationType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                       exit -->
+	<xs:complexType name="exitType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="failed" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                   semaphore -->
+	<xs:complexType name="semaphoreType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="action" type="semaphoreActionType" use="required"/>
+				<xs:attribute name="timeout" type="xs:string" default="30"/>
+				<xs:attribute name="permits" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="semaphoreActionType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="notify"/>
+			<xs:enumeration value="wait"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--                                                                                    sqlQuery -->
+	<xs:complexType name="sqlQueryType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="query" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                    function -->
+	<xs:complexType name="functionType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="params" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                      system -->
+	<xs:complexType name="systemType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="command" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                          if -->
+	<xs:complexType name="ifType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence>
+					<xs:element name="condition" type="conditionType"/>
+					<xs:element name="then" type="thenElseType" minOccurs="0"/>
+					<xs:element name="else" type="thenElseType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="conditionType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                          while -->
+	<xs:complexType name="whileType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence>
+					<xs:element name="condition" type="conditionType"/>
+					<xs:element name="do" type="doType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                        test -->
+	<xs:complexType name="testType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="parameter" type="xs:string" use="required"/>
+				<xs:attribute name="condition" type="xs:string" use="required"/>
+				<xs:attribute name="value" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                   parameter -->
+	<xs:complexType name="parameterType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="operation" type="xs:string" use="required"/>
+				<xs:attribute name="value" type="xs:string"/>
+				<xs:attribute name="value2" type="xs:string"/>
+				<xs:attribute name="value3" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                     generic receiveMessage -->
+	<xs:complexType name="receiveMessageType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                       log -->
+	<xs:complexType name="logType">
+		<xs:simpleContent>
+			<xs:extension base="operationStringType">
+				<xs:attribute name="level" type="xs:string"/>
+				<xs:attribute name="type" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                                      user statistics -->
+	<xs:complexType name="statsType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="counter" type="statsCounterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="flow" type="statsFlowType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="histogram" type="statsHistogramType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="percent" type="statsPercentType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="statsCounterType">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="increase" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="decrease" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="shortDesc" type="xs:string"/>
+		<xs:attribute name="description" type="xs:string"/>
+		<xs:attribute name="longDesc" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="statsFlowType">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="increase" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="decrease" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="shortDesc" type="xs:string"/>
+		<xs:attribute name="description" type="xs:string"/>
+		<xs:attribute name="longDesc" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="statsHistogramType">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="newValue" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="shortDesc" type="xs:string"/>
+		<xs:attribute name="description" type="xs:string"/>
+		<xs:attribute name="longDesc" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="statsPercentType">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="incValue" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="incTotal" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="shortDesc" type="xs:string"/>
+		<xs:attribute name="description" type="xs:string"/>
+		<xs:attribute name="longDesc" type="xs:string"/>
+	</xs:complexType>
+	<!-- &type_operations_1; -->
+	<!--                                                                       START OF AAA PROTOCOL -->
+	<!--                                                                              sendRequestAAA -->
+	<xs:complexType name="sendRequestAAAType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence>
+					<xs:element name="header" type="headerAAAType"/>
+					<xs:element name="avp" type="avpType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="server" type="xs:string"/>
+				<xs:attribute name="destScenario" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                               sendAnswerAAA -->
+	<xs:complexType name="sendAnswerAAAType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence>
+					<xs:element name="header" type="headerAAAType"/>
+					<xs:element name="avp" type="avpType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+			<!--
+                <xs:attribute name="server"       type="xs:string" />
+                <xs:attribute name="destScenario" type="xs:string" />
+                -->
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                           receiveRequestAAA -->
+	<xs:complexType name="receiveRequestAAAType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="command" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                            receiveAnswerAAA -->
+	<xs:complexType name="receiveAnswerAAAType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="command" type="xs:string"/>
+				<xs:attribute name="result" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                   header -->
+	<xs:complexType name="headerAAAType">
+		<xs:attribute name="command" type="xs:string" use="required"/>
+		<xs:attribute name="applicationId" type="xs:string" use="required"/>
+		<xs:attribute name="hopByHop" type="xs:string"/>
+		<xs:attribute name="endToEnd" type="xs:string"/>
+		<xs:attribute name="proxiable" type="xs:string"/>
+		<xs:attribute name="error" type="xs:string"/>
+		<xs:attribute name="retransmit" type="xs:string"/>
+		<xs:attribute name="version" type="xs:string"/>
+		<xs:attribute name="flags" type="xs:string"/>
+	</xs:complexType>
+	<!--                                                                                         avp -->
+	<xs:complexType name="avpType">
+		<xs:sequence>
+			<xs:element name="avp" type="avpType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="code" type="xs:string" use="required"/>
+		<xs:attribute name="value" type="xs:string"/>
+		<xs:attribute name="type" type="xs:string"/>
+		<xs:attribute name="mandatory" type="xs:string"/>
+		<xs:attribute name="private" type="xs:string"/>
+		<xs:attribute name="vendorSpecific" type="xs:string"/>
+		<xs:attribute name="vendorId" type="xs:string"/>
+		<xs:attribute name="flags" type="xs:string"/>
+	</xs:complexType>
+	<!--                                                                         END OF AAA PROTOCOL -->
+	<!-- FH &type_operations_2; -->
+	<!--                                                                       START OF SIP PROTOCOL -->
+	<!--                                                                              openProviderSIP -->
+	<xs:complexType name="openProviderSIPType">
+		<xs:simpleContent>
+			<xs:extension base="operationStringType">
+				<xs:attribute name="providerName" type="xs:string" use="required"/>
+				<xs:attribute name="localHost" type="xs:string"/>
+				<xs:attribute name="localPort" type="xs:string" use="required"/>
+				<xs:attribute name="transport" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                              closeProviderSIP -->
+	<xs:complexType name="closeProviderSIPType">
+		<xs:simpleContent>
+			<xs:extension base="operationStringType">
+				<xs:attribute name="providerName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                              sendRequestSIP -->
+	<xs:complexType name="sendRequestSIPType">
+		<xs:simpleContent>
+			<xs:extension base="operationStringType">
+				<xs:attribute name="providerName" type="xs:string"/>
+				<xs:attribute name="destScenario" type="xs:string"/>
+				<xs:attribute name="delay" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                               sendResponseSIP -->
+	<xs:complexType name="sendResponseSIPType">
+		<xs:simpleContent>
+			<xs:extension base="operationStringType">
+				<xs:attribute name="providerName" type="xs:string"/>
+				<xs:attribute name="delay" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                           receiveRequestSIP -->
+	<xs:complexType name="receiveRequestSIPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="providerName" type="xs:string"/>
+				<xs:attribute name="method" type="xs:string"/>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                            receiveResponseSIP -->
+	<xs:complexType name="receiveResponseSIPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="providerName" type="xs:string"/>
+				<xs:attribute name="method" type="xs:string"/>
+				<xs:attribute name="result" type="xs:string"/>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                         END OF SIP PROTOCOL -->
+	<!-- FH &type_operations_3; -->
+	<!--                                                                         BEGIN OF RTP PROTOCOL -->
+	<!--                                                                           openConnectionRTP -->
+	<xs:complexType name="openConnectionRTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="sessionName" type="xs:string" use="required"/>
+				<xs:attribute name="localHost" type="xs:string"/>
+				<xs:attribute name="localPort" type="xs:string"/>
+				<xs:attribute name="remoteHost" type="xs:string" use="required"/>
+				<xs:attribute name="remotePort" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                           closeConnectionRTP -->
+	<xs:complexType name="closeConnectionRTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="sessionName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                           sendPacketRTP -->
+	<xs:complexType name="sendPacketRTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence>
+					<xs:element name="packet" type="packetType" minOccurs="0"/>
+					<!--xs:element name="packet" type="packetType" minOccurs="0" maxOccurs="unbounded"/-->
+				</xs:sequence>
+				<xs:attribute name="sessionName" type="xs:string"/>
+				<xs:attribute name="destScenario" type="xs:string"/>
+			</xs:extension>
+			<!--xs:attribute name="payloadType" type="xs:string" /-->
+			<!--xs:attribute name="ssrc" 	    type="xs:string" /-->
+			<!--xs:attribute name="bandwith"    type="xs:string" /-->
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                           receivePacketRTP -->
+	<xs:complexType name="receivePacketRTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="sessionName" type="xs:string"/>
+				<xs:attribute name="payloadType" type="xs:string"/>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                   packet -->
+	<xs:complexType name="packetType">
+		<xs:sequence>
+			<xs:element name="header" type="headerRTPType"/>
+			<xs:element name="payload" type="payloadType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--                                                                                   header -->
+	<xs:complexType name="headerRTPType">
+		<xs:attribute name="channel" type="xs:string"/>
+		<xs:attribute name="ssrc" type="xs:string" use="required"/>
+		<xs:attribute name="payloadType" type="xs:string" use="required"/>
+		<xs:attribute name="seqnum" type="xs:string"/>
+		<xs:attribute name="timestamp" type="xs:string"/>
+	</xs:complexType>
+	<!--                                                                                   payload -->
+	<xs:complexType name="payloadType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="format" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                         END OF RTP PROTOCOL -->
+	<!-- FH &type_operations_4; -->
+	<!--                                                                       START OF HTTP PROTOCOL -->
+	<!--                                                                          openConnectionHTTP -->
+	<xs:complexType name="openConnectionHTTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="connectionName" type="xs:string" use="required"/>
+				<xs:attribute name="localPort" type="xs:string"/>
+				<xs:attribute name="localHost" type="xs:string"/>
+				<xs:attribute name="remoteURL" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                         closeConnectionHTTP -->
+	<xs:complexType name="closeConnectionHTTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="connectionName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                              sendRequestHTTP -->
+	<xs:complexType name="sendRequestHTTPType">
+		<xs:simpleContent>
+			<xs:extension base="operationStringType">
+				<xs:attribute name="connectionName" type="xs:string"/>
+				<xs:attribute name="server" type="xs:string"/>
+				<xs:attribute name="destScenario" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                               sendResponseHTTP -->
+	<xs:complexType name="sendResponseHTTPType">
+		<xs:simpleContent>
+			<xs:extension base="operationStringType">
+				<xs:attribute name="transactionId" type="xs:string" use="required"/>
+			</xs:extension>
+			<!--
+                <xs:attribute name="server"        type="xs:string" />                        	
+                <xs:attribute name="destScenario"  type="xs:string" />                
+                -->
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                           receiveRequestHTTP -->
+	<xs:complexType name="receiveRequestHTTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="method" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                            receiveResponseHTTP -->
+	<xs:complexType name="receiveResponseHTTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="method" type="xs:string"/>
+				<xs:attribute name="result" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- FH &type_operations_6; -->
+	<!--                                                                      BEGIN OF TCP PROTOCOL -->
+	<!--                                                                          openConnectionTCP -->
+	<xs:complexType name="openConnectionTCPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="connectionName" type="xs:string" use="required"/>
+				<xs:attribute name="localPort" type="xs:string"/>
+				<xs:attribute name="localHost" type="xs:string"/>
+				<xs:attribute name="remoteHost" type="xs:string" use="required"/>
+				<xs:attribute name="remotePort" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                         closeConnectionTCP -->
+	<xs:complexType name="closeConnectionTCPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="connectionName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                sendDataTCP -->
+	<xs:complexType name="sendDataTCPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence>
+					<xs:element name="data" type="dataType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="connectionName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                             receiveDataTCP -->
+	<xs:complexType name="receiveDataTCPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="connectionName" type="xs:string"/>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                       data -->
+	<xs:complexType name="dataType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="format" type="dataTypeType"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                                   dataType -->
+	<xs:simpleType name="dataTypeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="text"/>
+			<xs:enumeration value="binary"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--                                                                        END OF TCP PROTOCOL -->
+	<!-- FH &type_operations_7; -->
+	<!--                                                                      BEGIN OF UDP PROTOCOL -->
+	<!--                                                                          openSocketUDP -->
+	<xs:complexType name="openSocketUDPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="socketName" type="xs:string" use="required"/>
+				<xs:attribute name="localHost" type="xs:string"/>
+				<xs:attribute name="localPort" type="xs:string"/>
+				<xs:attribute name="remoteHost" type="xs:string"/>
+				<xs:attribute name="remotePort" type="xs:string"/>
+				<xs:attribute name="connected" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                         closeSocketUDP -->
+	<xs:complexType name="closeSocketUDPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="socketName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                sendDataUDP -->
+	<xs:complexType name="sendDataUDPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence>
+					<xs:element name="data" type="dataUdpType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="socketName" type="xs:string" use="required"/>
+				<xs:attribute name="remoteHost" type="xs:string"/>
+				<xs:attribute name="remotePort" type="xs:string"/>
+				<xs:attribute name="length" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                             receiveDataUDP -->
+	<xs:complexType name="receiveDataUDPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="socketName" type="xs:string"/>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                       data -->
+	<xs:complexType name="dataUdpType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="format" type="dataUdpFormatType"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                                   dataUdpFormatType -->
+	<xs:simpleType name="dataUdpFormatType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="text"/>
+			<xs:enumeration value="binary"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--                                                                        END OF UDP PROTOCOL -->
+	<!-- FH &type_operations_8; -->
+	<!--                                                                      BEGIN OF SCTP PROTOCOL -->
+	<!--                                                                          openConnectionSCTP -->
+	<xs:complexType name="openConnectionSCTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="connectionName" type="xs:string" use="required"/>
+				<xs:attribute name="localHost" type="xs:string"/>
+				<xs:attribute name="localPort" type="xs:string"/>
+				<xs:attribute name="remoteHost" type="xs:string" use="required"/>
+				<xs:attribute name="remotePort" type="xs:string" use="required"/>
+				<xs:attribute name="ostreams" type="xs:string"/>
+				<xs:attribute name="instreams" type="xs:string"/>
+				<xs:attribute name="attempts" type="xs:string"/>
+				<xs:attribute name="timeo" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                         closeConnectionSCTP -->
+	<xs:complexType name="closeConnectionSCTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="connectionName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                sendDataSCTP -->
+	<xs:complexType name="sendDataSCTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence>
+					<xs:element name="data" type="dataSctpType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="connectionName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                             receiveDataSCTP -->
+	<xs:complexType name="receiveDataSCTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="connectionName" type="xs:string"/>
+				<xs:attribute name="stream" type="xs:string"/>
+				<xs:attribute name="ppid" type="xs:string"/>
+				<xs:attribute name="tsn" type="xs:string"/>
+				<xs:attribute name="aid" type="xs:string"/>
+				<xs:attribute name="sourceHost" type="xs:string"/>
+				<xs:attribute name="sourcePort" type="xs:string"/>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                       data -->
+	<xs:complexType name="dataSctpType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="format" type="dataSctpFormatType"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                                   dataSctpFormatType -->
+	<xs:simpleType name="dataSctpFormatType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="text"/>
+			<xs:enumeration value="binary"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--                                                                        END OF SCTP PROTOCOL -->
+	<!-- FH &type_operations_9; -->
+	<!--                                                                       START OF Radius PROTOCOL -->
+	<!--                                                                          openSocketRadius -->
+	<xs:complexType name="openSocketRadiusType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="socketName" type="xs:string" use="required"/>
+				<xs:attribute name="localHost" type="xs:string"/>
+				<xs:attribute name="localPort" type="xs:string"/>
+				<xs:attribute name="remoteHost" type="xs:string"/>
+				<xs:attribute name="remotePort" type="xs:string"/>
+				<xs:attribute name="secret" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                         closeSocketRadius -->
+	<xs:complexType name="closeSocketRadiusType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="socketName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                              sendRequestRadius -->
+	<xs:complexType name="sendRequestRadiusType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence>
+					<xs:element name="header" type="headerRadiusType"/>
+					<xs:element name="avp" type="avpRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="socketName" type="xs:string"/>
+				<xs:attribute name="remoteHost" type="xs:string"/>
+				<xs:attribute name="remotePort" type="xs:string"/>
+				<xs:attribute name="destScenario" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                               sendResponseRadius -->
+	<xs:complexType name="sendResponseRadiusType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence>
+					<xs:element name="header" type="headerRadiusType"/>
+					<xs:element name="avp" type="avpRadiusType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="socketName" type="xs:string" use="required"/>
+				<xs:attribute name="remoteHost" type="xs:string"/>
+				<xs:attribute name="remotePort" type="xs:string"/>
+				<xs:attribute name="destScenario" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                           receiveRequestRadius -->
+	<xs:complexType name="receiveRequestRadiusType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="socketName" type="xs:string"/>
+				<xs:attribute name="command" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                            receiveResponseRadius -->
+	<xs:complexType name="receiveResponseRadiusType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="socketName" type="xs:string"/>
+				<xs:attribute name="code" type="xs:string"/>
+				<xs:attribute name="result" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                   header -->
+	<xs:complexType name="headerRadiusType">
+		<xs:attribute name="identifier" type="xs:string"/>
+		<xs:attribute name="code" type="xs:string" use="required"/>
+		<xs:attribute name="authenticator" type="xs:string"/>
+	</xs:complexType>
+	<!--                                                                                         avp -->
+	<xs:complexType name="avpRadiusType">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="avp" type="vendorAvp" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="data" type="vendorData" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="code" type="xs:string" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="vendorAvp">
+		<xs:attribute name="code" type="xs:string" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="vendorData">
+		<xs:attribute name="value" type="xs:string" use="required"/>
+	</xs:complexType>
+	<!--                                                                         END OF Radius PROTOCOL -->
+	<!-- FH &type_operations_10; -->
+	<!--                                                                      BEGIN OF SMTP PROTOCOL -->
+	<!--                                                                          openConnectionSMTP -->
+	<xs:complexType name="openSessionSMTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="sessionName" type="xs:string" use="required"/>
+				<xs:attribute name="localPort" type="xs:string"/>
+				<xs:attribute name="localHost" type="xs:string"/>
+				<xs:attribute name="remoteHost" type="xs:string" use="required"/>
+				<xs:attribute name="remotePort" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                         closeConnectionSMTP -->
+	<xs:complexType name="closeSessionSMTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:attribute name="sessionName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                sendDataSMTP -->
+	<xs:complexType name="sendRequestSMTPType">
+		<xs:simpleContent>
+			<xs:extension base="operationStringType">
+				<xs:attribute name="sessionName" type="xs:string" use="required"/>
+			</xs:extension>
+			<!--xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="data" type="dataType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence-->
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                             receiveDataSMTP -->
+	<xs:complexType name="sendResponseSMTPType">
+		<xs:simpleContent>
+			<xs:extension base="operationStringType">
+				<xs:attribute name="transactionId" type="xs:string" use="required"/>
+			</xs:extension>
+			<!--xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="data" type="dataType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence-->
+			<!--xs:attribute name="commandName" type="xs:string"/-->
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                                sendDataSMTP -->
+	<xs:complexType name="receiveRequestSMTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="sessionName" type="xs:string"/>
+				<xs:attribute name="commandName" type="xs:string"/>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                             receiveDataSMTP -->
+	<xs:complexType name="receiveResponseSMTPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="sessionName" type="xs:string"/>
+				<xs:attribute name="commandName" type="xs:string"/>
+				<xs:attribute name="replyCode" type="xs:string"/>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                                       data 
+    <xs:complexType name="dataType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="format"       type="dataTypeType" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+                                                                                   dataType 
+    <xs:simpleType name="dataTypeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="text" />
+            <xs:enumeration value="binary" />
+        </xs:restriction>
+    </xs:simpleType>
+
+END OF SMTP PROTOCOL -->
+	<!-- FH &type_operations_11; -->
+	<!--                                                                       START OF RTSP PROTOCOL -->
+	<!--                                                                              openProviderRTSP -->
+	<xs:complexType name="openProviderRTSPType">
+		<xs:simpleContent>
+			<xs:extension base="operationStringType">
+				<xs:attribute name="providerName" type="xs:string" use="required"/>
+				<xs:attribute name="localHost" type="xs:string"/>
+				<xs:attribute name="localPort" type="xs:string"/>
+			</xs:extension>
+			<!--xs:attribute name="remotePort"    type="xs:string" /-->
+			<!--xs:attribute name="transport"     type="xs:string" /-->
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                              closeProviderRTSP -->
+	<xs:complexType name="closeProviderRTSPType">
+		<xs:simpleContent>
+			<xs:extension base="operationStringType">
+				<xs:attribute name="providerName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                              sendRequestRTSP -->
+	<xs:complexType name="sendRequestRTSPType">
+		<xs:simpleContent>
+			<xs:extension base="operationStringType">
+				<xs:attribute name="providerName" type="xs:string"/>
+				<xs:attribute name="destScenario" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                               sendResponseRTSP -->
+	<xs:complexType name="sendResponseRTSPType">
+		<xs:simpleContent>
+			<xs:extension base="operationStringType">
+				<xs:attribute name="providerName" type="xs:string"/>
+				<xs:attribute name="remoteHost" type="xs:string" use="required"/>
+				<xs:attribute name="remotePort" type="xs:string" use="required"/>
+			</xs:extension>
+			<!--xs:attribute name="transactionId"  type="xs:string"/-->
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--                                                                           receiveRequestRTSP -->
+	<xs:complexType name="receiveRequestRTSPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="providerName" type="xs:string"/>
+				<xs:attribute name="method" type="xs:string"/>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+			<!--xs:attribute name="transactionId" 		type="xs:string" /-->
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                            receiveResponseRTSP -->
+	<xs:complexType name="receiveResponseRTSPType">
+		<xs:complexContent>
+			<xs:extension base="operationType">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="test" type="testType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="providerName" type="xs:string"/>
+				<xs:attribute name="method" type="xs:string"/>
+				<xs:attribute name="result" type="xs:string"/>
+				<xs:attribute name="timeout" type="xs:string"/>
+				<xs:attribute name="failedOnTimeout" type="xs:string"/>
+				<xs:attribute name="failedOnReceive" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--                                                                         END OF RTSP PROTOCOL -->
+</xs:schema>

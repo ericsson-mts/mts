@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageUCP request="true" type="AddressListInformationOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="GAdC" operation="protocol.setFromMessage" value="attribute.GAdC"/>
+        <parameter name="AC" operation="protocol.setFromMessage" value="attribute.AC"/>
+        <parameter name="OAdC" operation="protocol.setFromMessage" value="attribute.OAdC"/>
+        <parameter name="OAC" operation="protocol.setFromMessage" value="attribute.OAC"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[GAdC]" condition="number.equals" value="1234"/>
+        <test parameter="[AC]" condition="string.equals" value="abcd"/>
+        <test parameter="[OAdC]" condition="string.equals" value="5678"/>
+        <test parameter="[OAC]" condition="string.equals" value="efgh"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="AddressListInformationOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="NPL" value="1"/>
+        <attribute name="RAd" value="coucou"/>
+        <attribute name="GAdC" value="999"/>
+        <attribute name="SM" value=""/>
+    </sendMessageUCP>
+
+</scenario>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <!-- attend message UNSUBSCRIBE-->
+    <receiveMessageIMAP request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final UNSUBSCRIBE-->
+    <sendMessageIMAP name="Send UNSUBSCRIBE"  channel="[connection]">
+<![CDATA[
+[tag] OK UNSUBSCRIBE completed
+]]>
+    </sendMessageIMAP>
+    
+</scenario>

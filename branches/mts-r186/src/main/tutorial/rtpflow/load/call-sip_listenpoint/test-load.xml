@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="Load test SIP_RTP">
+
+    <parameter name="[CallDurationSec]" operation="set" value="30" editable="true" description="Duration (in sec.) of the call"/>    	       	       
+    <parameter name="[TestDurationSec]" operation="set" value="3000000" editable="true" description="Duration (in sec.) of the test "/>   	       
+    <parameter name="[TestcaseNumber]" operation="set" value="250" editable="true" description="Number of simultaneous testcase (call) in parallel"/>
+    <parameter name="[dialingDelay]" operation="set" value="0.0" editable="true" description="Dialing delay (in seconds) : time between INVITE and 180 response"/>    	       	       
+    <parameter name="[timeSpacing]" operation="set" value="0.000" editable="true" description="Time spacing (in seconds) : time between real and theorical timestamp"/>    	       	       
+    <parameter name="[packetLost]" operation="set" value="0.0" editable="true" description="Packets lost (in percent)"/>    	       	       
+    <parameter name="[payloadTypeRTP]" operation="set" value="0" editable="true" description="Payload type for the media flow"/>    	       	       
+    <parameter name="[byteRateRTP]" operation="set" value="8000" editable="true" description="Bytes rate (in byte/sec) for the media flow"/>    	       	           
+
+    <parameter name="[domainName]" operation="set" value="devoteam.com" editable="true" description="Domain name for inviter and invitee identities"/>
+    <parameter name="[inviter]" operation="set" value="5555" editable="true" description="Inviter user name"/>
+    <parameter name="[invitee]" operation="set" value="6666" editable="true" description="Invitee user name"/>	
+	
+    <parameter name="[localHostSIP]" operation="system.ipaddress"/>        
+    <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]"/>
+    <parameter name="[inviterBaseSIP]" operation="set" value="6000" editable="true" description="Start of the range port for the SIP protocol for the inviter"/>
+    <parameter name="[remoteHostSIP]" operation="system.ipaddress"/>
+    <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]"/>
+    <!--parameter name="[remoteHostSIP]" operation="set" value="192.168.190.12"/-->
+    <parameter name="[inviteeBaseSIP]" operation="set" value="7000" editable="true" description="Start of the range port for the SIP protocol for the inviter"/>
+            
+    <parameter name="[localHostRTP]" operation="system.ipaddress"/>
+    <parameter name="[localHostRTP]" operation="set" value="[localHostRTP(0)]"/>
+    <parameter name="[inviterBaseRTP]" operation="set" value="10000" editable="true" description="Start of the range port for the RTP protocol for the inviter"/>
+    <parameter name="[remoteHostRTP]" operation="system.ipaddress"/>    
+    <parameter name="[remoteHostRTP]" operation="set" value="172.16.21.44"/>
+    <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]"/>
+    <parameter name="[inviteeBaseRTP]" operation="set" value="11000" editable="true" description="Start of the range port for the RTP protocol for the invitee"/>
+                      
+    <parameter name="[temp]" operation="file.create" value="dialingDelay.csv"/>
+    <parameter name="[tempPacketRTP]" operation="number.divide" value="[byteRateRTP]" value2="160"/>
+    <parameter name="[delayPacketRTP]" operation="number.divide" value="1000" value2="[tempPacketRTP]"/>
+           	              	                  	       
+    <for index="[number]" from="01" to="[TestcaseNumber]" step="1">          	       
+
+    	<testcase name="call[number]" description="Call with mixed SIP/RTP protocol" state="true">
+		    <parameter name="[inviter]" operation="set" value="[number][inviter]"/>
+    		<parameter name="[invitee]" operation="set" value="[number][invitee]"/>
+            <parameter name="[nb]" operation="set" value="[number]"/>
+    	    <parameter name="[num]" operation="number.multiply" value="[number]" value2="2"/>
+    	    
+            <parameter name="[remotePortSIP]" operation="number.add" value="[inviteeBaseSIP]" value2="[num]"/>
+            <parameter name="[localPortSIP]" operation="number.add" value="[inviterBaseSIP]" value2="[num]"/>
+            
+            <parameter name="[remotePortRTP]" operation="number.add" value="[inviteeBaseRTP]" value2="[num]"/>
+            <parameter name="[localPortRTP]" operation="number.add" value="[inviterBaseRTP]" value2="[num]"/>
+
+            <parameter name="[delay]" operation="number.divide" value="[CallDurationSec]" value2="[TestcaseNumber]"/>
+            <parameter name="[delay]" operation="number.multiply" value="[delay]" value2="[number]"/>
+            
+            <runProfile>
+                <start delay="[delay]"/>
+                <!--start delay="0"/-->
+                <step time="0" period="0"/>
+                <end delay="[TestDurationSec]"/>
+            </runProfile>
+
+        	<scenario name="[number][inviter]">UAC.xml</scenario>
+        	<scenario name="[number][invitee]">UAS.xml</scenario>
+    	</testcase>
+
+    </for>
+    
+</test>
