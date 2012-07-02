@@ -1,1 +1,0 @@
-startClass.bat com.devoteam.srit.xmlloader.genscript.genscriptCmd nofork %*

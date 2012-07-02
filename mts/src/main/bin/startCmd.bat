@@ -1,1 +1,0 @@
-startClass com.devoteam.srit.xmlloader.cmd.TextImplementation nofork %*
