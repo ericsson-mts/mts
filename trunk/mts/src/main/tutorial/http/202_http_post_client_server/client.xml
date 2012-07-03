@@ -8,11 +8,38 @@
 Host: [Remote-Address]
 Accept-charset: text/html
 Content-Type: text/html
-Content-Encoding: utf-8;iso-8859
 User-Agent: XMLLoader
-Content-Length: 2
+Content-Type: multipart/mixed;boundary="----=_Part_0"
+Content-Length: x
 
-un]]>
+------=_Part_0
+Content-Type: application/sdp
+
+v=0
+o=[clientName] 999 999 IN IP4 [Host-Tester]
+s=-
+c=IN IP4 [Host-Tester]
+t=0 0
+m=audio 45200 RTP/AVP 97
+a=rtpmap:97 amr/8000/1
+a=fmtp:97 mode-set=1;octet-align=1;crc=0
+a=+g.poc.talkburst
+a=maxptime:200
+a=ptime:200
+m=application 25463 udp TBCP
+a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0
+
+------=_Part_0
+Content-Type: application/resource-lists+xml
+Content-Disposition: recipient-list
+
+<?xml version="1.0" encoding="UTF-8"?>
+<resource-lists xmlns="urn:ietf:params:xml:ns:resource-lists" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<list>
+<entry uri="[inviteeName1]"/>
+</list>
+</resource-lists>
+------=_Part_0--]]>
 		<!--******************** END MESSAGE *********************-->
 	</sendMessageHTTP>
 		
