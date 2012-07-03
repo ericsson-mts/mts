@@ -26,8 +26,8 @@ package com.devoteam.srit.xmlloader.core;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.DateUtils;
-
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Vector;
 import org.dom4j.Element;
 
@@ -50,7 +50,7 @@ public class RunProfile implements Cloneable, Serializable
 
     private long profilePeriod;
     private int profileSize;
-    private Vector<Point> points;
+    private ArrayList<Point> points;
 
     private Element root;
 
@@ -85,7 +85,7 @@ public class RunProfile implements Cloneable, Serializable
     
     public void parse(RunProfile profile)
     {
-        this.points = (Vector<Point>) profile.points.clone();
+        this.points = (ArrayList<Point>) profile.points.clone();
         this.profilePeriod = profile.profilePeriod;
         this.profileSize = profile.profileSize;
         this.executions = profile.executions;
@@ -98,7 +98,7 @@ public class RunProfile implements Cloneable, Serializable
         long now = System.currentTimeMillis();
         
         this.executions = 0;
-        this.points = new Vector();
+        this.points = new ArrayList();
         this.profilePeriod = PROFILE_INF;
 
         Element start = root.element("start");
@@ -294,7 +294,7 @@ public class RunProfile implements Cloneable, Serializable
         return context;
     }
 
-    public Vector<Point> getPoints()
+    public ArrayList<Point> getPoints()
     {
         return this.points;
     }

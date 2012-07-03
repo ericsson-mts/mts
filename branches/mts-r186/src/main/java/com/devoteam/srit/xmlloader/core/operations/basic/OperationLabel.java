@@ -20,7 +20,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.core.operations.basic;
 
 import com.devoteam.srit.xmlloader.core.Runner;
@@ -35,40 +34,42 @@ import org.dom4j.Element;
  *
  * @author gpasquiers
  */
-public class OperationLabel extends Operation
-{
+public class OperationLabel extends Operation {
 
     private String name;
 
     /**
      * Creates a new instance of OperationLabel
      */
-    public OperationLabel(Element root)
-    {
-        super(root);
+    public OperationLabel(Element root) {
+        super(root, XMLElementDefaultParser.instance());
         this.name = null;;
     }
-    
-    public Operation execute(Runner runner) throws Exception
-    {
-        restore();
 
+    public Operation execute(Runner runner) throws Exception {
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, this);
 
-        // Replace elements in XMLTree
-        replace(runner, new XMLElementDefaultParser(runner.getParameterPool()), TextEvent.Topic.CORE);
-        
-        this.name = this.getAttribute("name");
+        try {
+            lockAndReplace(runner);
+            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "Operation after pre-parsing \n", this);
+            this.name = getAttribute("name");
+        }
+        finally {
+            unlockAndRestore();
+        }
 
         return null;
     }
 
-    public String getLabelName(Runner runner) throws Exception
-    {
-        if(null == this.name)
-        {
-            replace(runner, new XMLElementDefaultParser(runner.getParameterPool()), TextEvent.Topic.CORE);
-            return this.getAttribute("name");
+    public String getLabelName(Runner runner) throws Exception {
+        if (null == this.name) {
+            try {
+                lockAndReplace(runner);
+                return this.getAttribute("name");
+            }
+            finally {
+                unlockAndRestore();
+            }
         }
         return this.name;
     }

@@ -135,8 +135,8 @@ public class StackMsrp extends Stack {
 	}
 
 	/** Returns the replacer used to parse sendMsg Operations */
-	public XMLElementReplacer getElementReplacer(ParameterPool variables) {
-		return new XMLElementTextMsgParser(variables);
+	public XMLElementReplacer getElementReplacer() {
+		return XMLElementTextMsgParser.instance();
 	}
 
     /**

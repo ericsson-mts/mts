@@ -20,7 +20,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.core.operations.protocol;
 
 import com.devoteam.srit.xmlloader.core.Runner;
@@ -36,63 +35,61 @@ import org.dom4j.Element;
 
 /**
  * TODO : statistics; request or answer ;
+ *
  * @author gpasquiers
  */
-public class OperationCreateListenpoint extends Operation
-{
-    
-    private String protocol;    
-    
-    /** Creates a new instance */
-    public OperationCreateListenpoint(String aProtocol, Element rootNode) throws Exception
-    {
-        super(rootNode);
+public class OperationCreateListenpoint extends Operation {
+
+    private String protocol;
+
+    /**
+     * Creates a new instance
+     */
+    public OperationCreateListenpoint(String aProtocol, Element rootNode) throws Exception {
+        super(rootNode, XMLElementDefaultParser.instance());
         protocol = aProtocol;
 
         // deprecated message
         String rootName = rootNode.getName();
-        if ("openProviderSIP".equals(rootName))
-        {
-        	GlobalLogger.instance().logDeprecatedMessage("openProviderSIP .../", "createListenpointSIP .../");        	
+        if ("openProviderSIP".equals(rootName)) {
+            GlobalLogger.instance().logDeprecatedMessage("openProviderSIP .../", "createListenpointSIP .../");
         }
     }
-    
-    /** Executes the operation */
-    public Operation execute(Runner runner) throws Exception
-    {
-        restore();
 
-
+    /**
+     * Executes the operation
+     */
+    public Operation execute(Runner runner) throws Exception {
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.PROTOCOL, this);
 
-        // Replace elements in XMLTree
-        replace(runner, new XMLElementDefaultParser(runner.getParameterPool()), TextEvent.Topic.PROTOCOL);
-
-        Element root = getRootElement();
-
-        //
-        // Instanciate the listenpoint from Xml file
-        //
-        Listenpoint listenpoint = StackFactory.getStack(protocol).parseListenpointFromXml(root);
+        Listenpoint listenpoint;
+        try {
+            lockAndReplace(runner);
+            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.PROTOCOL, "Operation after pre-parsing \n", this);
+            listenpoint = StackFactory.getStack(protocol).parseListenpointFromXml(getRootElement());
+        }
+        finally {
+            unlockAndRestore();
+        }
 
         //
         // Get if she does not already exists and compare to the existing one
         //
-        synchronized  (StackFactory.getStack(protocol)) {
-        	
-        	Listenpoint oldListenpoint = StackFactory.getStack(protocol).getListenpoint(listenpoint.getName());        
-	        if ((oldListenpoint != null) && (!listenpoint.equals(oldListenpoint))) {	        	
-	            throw new ExecutionException("A listenpoint <name=" + listenpoint.getName() + "> already exists with other attributes.");
-	        }
+        synchronized (StackFactory.getStack(protocol)) {
 
-	        if (oldListenpoint == null) {
-	        	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " listenpoint <", listenpoint, ">");	        		        	
-	            GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " listenpoint <", listenpoint, ">");
-	            
-	            StackFactory.getStack(protocol).createListenpoint(listenpoint,protocol);
-	        }
-        }        
-        
-        return null ;
+            Listenpoint oldListenpoint = StackFactory.getStack(protocol).getListenpoint(listenpoint.getName());
+            if ((oldListenpoint != null) && (!listenpoint.equals(oldListenpoint))) {
+                throw new ExecutionException("A listenpoint <name=" + listenpoint.getName() + "> already exists with other attributes.");
+            }
+
+            if (oldListenpoint == null) {
+                GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " listenpoint <", listenpoint, ">");
+                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " listenpoint <", listenpoint, ">");
+
+                StackFactory.getStack(protocol).createListenpoint(listenpoint, protocol);
+            }
+        }
+
+        return null;
     }
 }

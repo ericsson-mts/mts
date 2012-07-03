@@ -64,7 +64,7 @@ public class XMLDocumentCache
         }
 
         
-        return xmlDocument.duplicate();
+        return xmlDocument;
     }
     
     static public void reset()

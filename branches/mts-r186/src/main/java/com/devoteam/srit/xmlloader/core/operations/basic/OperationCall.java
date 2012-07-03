@@ -36,8 +36,6 @@ import com.devoteam.srit.xmlloader.core.operations.functions.FunctionsCache;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import java.util.HashMap;
 import java.util.LinkedList;
-
-
 import org.dom4j.Element;
 
 /**
@@ -56,7 +54,7 @@ public class OperationCall extends Operation {
      * @param pause OperationPause value
      */
     public OperationCall(Element root) {
-        super(root);
+        super(root, null);
     }
 
     /**
@@ -65,16 +63,9 @@ public class OperationCall extends Operation {
      * @param session Current session
      * @return Next operation or null by default
      */
+    @Override
     public Operation execute(Runner runner) throws Exception {
-
-        // restore xml
-        restore();
-
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, this);
-
-        // Replace elements in XMLTree
-        // TODO : use a replacer that will not recurse
-        //replace(runner, new XMLElementDefaultParser(runner.getParameterPool()), TextEvent.Topic.CORE);
 
         // get the function
         String name = getRootElement().attributeValue("name");

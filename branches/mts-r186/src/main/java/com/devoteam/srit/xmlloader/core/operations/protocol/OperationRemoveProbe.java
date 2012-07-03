@@ -43,23 +43,27 @@ public class OperationRemoveProbe extends Operation
     /** Creates a new instance of ReceiveMsgOperation */
     public OperationRemoveProbe(String protocol, Element rootElement) throws Exception
     {
-        super(rootElement);
+        super(rootElement, XMLElementDefaultParser.instance());
         this.protocol = protocol;        
     }
     
     /** Executes the operation (retrieve and check message) */
     public Operation execute(Runner runner) throws Exception
     {
-        restore();
-
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.PROTOCOL, this);
 
-        // Replace elements in XMLTree
-        replace(runner, new XMLElementDefaultParser(runner.getParameterPool()), TextEvent.Topic.PROTOCOL);
 
-        Element root = getRootElement();        
-        String probeName = root.attributeValue("name");
+        String probeName;
 
+        try {
+            lockAndReplace(runner);
+            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.PROTOCOL, "Operation after pre-parsing \n", this);
+            probeName = getAttribute("name");
+        }
+        finally {
+            unlockAndRestore();
+        }
+        
     	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " capture probe <name= \"", probeName, "\">");	        	
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " capture probe <name= \"", probeName, "\">");       
         

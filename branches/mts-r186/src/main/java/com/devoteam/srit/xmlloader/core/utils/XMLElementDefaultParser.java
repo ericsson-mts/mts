@@ -20,7 +20,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.core.utils;
 
 import com.devoteam.srit.xmlloader.core.ParameterPool;
@@ -33,39 +32,40 @@ import org.dom4j.Element;
 
 /**
  * Generic replacer to replace only the attributes of the XML tag
- * 
+ *
  * @author Gege
  */
-public class XMLElementDefaultParser implements XMLElementReplacer
-{
-    private ParameterPool parameterPool;
-    
-    public XMLElementDefaultParser(ParameterPool aParameterPool)
-    {
-        parameterPool = aParameterPool;
+public class XMLElementDefaultParser implements XMLElementReplacer {
 
+    static private XMLElementReplacer instance = null;
+
+    static public XMLElementReplacer instance() {
+        if (null == instance) {
+            instance = new XMLElementDefaultParser();
+        }
+        return instance;
     }
     
-    public List<Element> replace(Element element) throws Exception
-    {
+    protected XMLElementDefaultParser(){
+    }
+    
+    public List<Element> replace(Element element, ParameterPool parameterPool) throws Exception {
         List<Element> list = new LinkedList<Element>();
-        
+
         Element newElement = element.createCopy();
         list.add(newElement);
         List<Attribute> attributes = newElement.attributes();
-        
- 
-        for(Attribute attribute:attributes)
-        {
+
+
+        for (Attribute attribute : attributes) {
             String value = attribute.getValue();
-            
+
             LinkedList<String> parsedValue = parameterPool.parse(value);
-            
-            if(parsedValue.size() != 1)
-            {
+
+            if (parsedValue.size() != 1) {
                 throw new ExecutionException("Invalid size of variables in attribute " + value);
             }
-            
+
             attribute.setValue(parsedValue.getFirst());
         }
         return list;

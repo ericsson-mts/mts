@@ -35,8 +35,6 @@ import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
 import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import java.net.URI;
-
-
 import org.dom4j.Element;
 
 /**
@@ -50,7 +48,7 @@ public class OperationFunction extends Operation {
      * Constructor
      */
     public OperationFunction(Element root) throws Exception {
-        super(root);
+        super(root, null);
         String file = root.attributeValue("file");
         String name = root.attributeValue("name");
 

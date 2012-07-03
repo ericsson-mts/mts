@@ -82,13 +82,10 @@ public class DataMaster {
 
         List<Element> elementsTest = (List<Element>) root.elements("test");
         for (Element test : elementsTest) {
-            XMLElementDefaultParser xmlElementDefaultParser;
-            xmlElementDefaultParser = new XMLElementDefaultParser(runner.getParameterPool());
-
             XMLTree xmlTree;
             xmlTree = new XMLTree(test);
             xmlTree.compute(Parameter.EXPRESSION, false);
-            xmlTree.replace(xmlElementDefaultParser);
+            xmlTree.replace(XMLElementDefaultParser.instance(), runner.getParameterPool());
             DefaultElementInterface.insertNode((DefaultElement) test.getParent(), test, xmlTree.getTreeRoot());
             root.remove(test);
         }

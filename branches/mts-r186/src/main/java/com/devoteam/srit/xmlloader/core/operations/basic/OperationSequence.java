@@ -50,7 +50,7 @@ public class OperationSequence extends Operation {
     private ArrayList<Operation> operations;
 
     public OperationSequence(Element root, Scenario scenario) throws Exception {
-        super(root);
+        super(root, null);
         this.scenario = scenario;
         this.operations = new ArrayList<Operation>();
         HashSet<String> labelNames = new HashSet();
@@ -83,8 +83,6 @@ public class OperationSequence extends Operation {
      */
     @Override
     public Operation execute(Runner runner) throws Exception {
-        restore();
-
         ScenarioRunner scenarioRunner = (ScenarioRunner) runner;
         int index = 0;
         int size = this.operations.size();
@@ -92,9 +90,7 @@ public class OperationSequence extends Operation {
             scenarioRunner.assertIsNotInterrupting();
 
             try {
-                // GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, "START operation : " + this.operations.get(index));
                 this.operations.get(index).executeAndStat(runner);
-                // GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, "END operation : " + this.operations.get(index));
                 index++;
             }
             catch (GotoExecutionException e) {

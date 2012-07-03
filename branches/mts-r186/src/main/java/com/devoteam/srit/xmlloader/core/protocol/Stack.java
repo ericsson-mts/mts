@@ -229,7 +229,7 @@ public abstract class Stack
     /** Returns the Config object to access the protocol config file */
     public abstract Config getConfig() throws Exception;
 
-    public abstract XMLElementReplacer getElementReplacer(ParameterPool parameterPool);
+    public abstract XMLElementReplacer getElementReplacer();
 
     /** Open a channel */
     public boolean openChannel(Channel channel) throws Exception

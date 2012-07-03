@@ -67,7 +67,7 @@ public class OperationReceiveMsg extends Operation
     /** Creates a new instance of ReceiveMsgOperation */
     public OperationReceiveMsg(String protocol, boolean request, String channel, String listenpoint, String type, String result, Element root, Scenario aScenario) throws Exception
     {
-        super(root, false);
+        super(root, XMLElementDefaultParser.instance(), false);
         this.protocol = protocol;
         operations = new LinkedList<Operation>();
         scenario = aScenario ;
@@ -104,7 +104,7 @@ public class OperationReceiveMsg extends Operation
     
     public OperationReceiveMsg(Element root, Scenario aScenario) throws Exception
     {
-        super(root, false);
+        super(root, XMLElementDefaultParser.instance(), false);
         scenario = aScenario ;
         operations = new LinkedList<Operation>();
         parse(root);
@@ -113,53 +113,61 @@ public class OperationReceiveMsg extends Operation
     /** Executes the operation (retrieve and check message) */
     public Operation execute(Runner aRunner) throws Exception
     {               
-        restore();
-
     	ScenarioRunner runner = (ScenarioRunner) aRunner;
     	
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.PROTOCOL, this);
         
-        // Replace elements in XMLTree
-        replace(runner, new XMLElementDefaultParser(runner.getParameterPool()), TextEvent.Topic.PROTOCOL);
-        
-        String failedOnTimeout = this.getAttribute("failedOnTimeout");
-                
-        if(null == failedOnTimeout)
-        {
-            failedOnTimeout = "true";
+        String failedOnTimeoutStr;
+        String failedOnReceiveStr;
+        String timeoutStr;
+
+        try {
+            lockAndReplace(runner);
+            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.PROTOCOL, "Operation after pre-parsing \n", this);
+            failedOnTimeoutStr = getAttribute("failedOnTimeout");
+            failedOnReceiveStr = getAttribute("failedOnReceive");
+            timeoutStr = getAttribute("timeout");
+        }
+        finally {
+            unlockAndRestore();
         }
         
-        if(failedOnTimeout.equalsIgnoreCase("false"))
+        // Replace elements in XMLTree
+       
+        if(null == failedOnTimeoutStr)
+        {
+            failedOnTimeoutStr = "true";
+        }
+        
+        if(failedOnTimeoutStr.equalsIgnoreCase("false"))
         {
             this.failedOnTimeout = false;
         }
-        else if(failedOnTimeout.equalsIgnoreCase("true"))
+        else if(failedOnTimeoutStr.equalsIgnoreCase("true"))
         {
             this.failedOnTimeout = true;
         }
         else
         {
-            throw new ExecutionException("failedOnTimeout (" + failedOnTimeout + ") should be a boolean");
+            throw new ExecutionException("failedOnTimeout (" + failedOnTimeoutStr + ") should be a boolean");
         }
          
-        String failedOnReceive = this.getAttribute("failedOnReceive");
-                
-        if(null == failedOnReceive)
+        if(null == failedOnReceiveStr)
         {
-            failedOnReceive = "false";
+            failedOnReceiveStr = "false";
         }
         
-        if(failedOnReceive.equalsIgnoreCase("false"))
+        if(failedOnReceiveStr.equalsIgnoreCase("false"))
         {
             this.failedOnReceive = false;
         }
-        else if(failedOnReceive.equalsIgnoreCase("true"))
+        else if(failedOnReceiveStr.equalsIgnoreCase("true"))
         {
             this.failedOnReceive = true;
         }
         else
         {
-            throw new ExecutionException("failedOnReceive (" + failedOnReceive + ") should be a boolean");
+            throw new ExecutionException("failedOnReceive (" + failedOnReceiveStr + ") should be a boolean");
         }        
         
                 
@@ -174,7 +182,6 @@ public class OperationReceiveMsg extends Operation
         }
         
         Msg msg ;
-        String timeoutStr = getRootElement().attributeValue("timeout");
        
         long timeout;
         if (timeoutStr != null)

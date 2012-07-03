@@ -117,7 +117,7 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
 
             GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Testcase RunProfile before parsing\n", xmlTree);
 
-            xmlTree.replace(new XMLElementDefaultParser(runner.getParameterPool()));
+            xmlTree.replace(XMLElementDefaultParser.instance(), runner.getParameterPool());
 
             GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Testcase RunProfile after parsing\n", xmlTree);
 
@@ -130,7 +130,7 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
 
             GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Scenario before parsing\n", xmlTree);
 
-            xmlTree.replace(new XMLElementTextMsgParser(runner.getParameterPool()));
+            xmlTree.replace(XMLElementTextMsgParser.instance(), runner.getParameterPool());
 
             GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Scenario RunProfile after parsing\n", xmlTree);
             scenario = xmlTree.getTreeRoot();

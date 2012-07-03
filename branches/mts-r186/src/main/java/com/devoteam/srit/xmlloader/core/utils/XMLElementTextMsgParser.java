@@ -20,42 +20,40 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.core.utils;
 
 import com.devoteam.srit.xmlloader.core.ParameterPool;
-
 import java.util.List;
 import org.dom4j.Element;
 
-
 /**
- * Generic replacer to replace only the attributes and
- * the content of the XML tag
- * 
+ * Generic replacer to replace only the attributes and the content of the XML tag
+ *
  * @author gpasquiers
  */
-public class XMLElementTextMsgParser implements XMLElementReplacer
-{
-    private ParameterPool variables;
-    
-    private XMLElementDefaultParser xmlElementDefaultParser;
-    private XMLElementTextOnlyParser xmlElementTextOnlyParser;
-    
-    public XMLElementTextMsgParser(ParameterPool aParameterPool)
-    {
-        variables = aParameterPool;
-        xmlElementDefaultParser = new XMLElementDefaultParser(variables);
-        xmlElementTextOnlyParser = new XMLElementTextOnlyParser(variables);
+public class XMLElementTextMsgParser implements XMLElementReplacer {
+    static private XMLElementReplacer instance = null;
+
+    static public XMLElementReplacer instance() {
+        if (null == instance) {
+            instance = new XMLElementTextMsgParser();
+        }
+        return instance;
     }
-    
-    public List<Element> replace(Element element) throws Exception
-    {
-        List<Element> result ;
-        
-        result = xmlElementDefaultParser.replace(element);
+    private XMLElementReplacer xmlElementDefaultParser;
+    private XMLElementReplacer xmlElementTextOnlyParser;
+
+    protected XMLElementTextMsgParser() {
+        xmlElementDefaultParser = XMLElementDefaultParser.instance();
+        xmlElementTextOnlyParser = XMLElementTextOnlyParser.instance();
+    }
+
+    public List<Element> replace(Element element, ParameterPool variables) throws Exception {
+        List<Element> result;
+
+        result = xmlElementDefaultParser.replace(element, variables);
         element = result.get(0);
-        result = xmlElementTextOnlyParser.replace(element);
+        result = xmlElementTextOnlyParser.replace(element, variables);
         return result;
     }
 }
