@@ -112,6 +112,9 @@
 
 <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>       
 <test parameter="[CSeq]" condition="string.equals" value="0001111  INVITE"/>
+<parameter name="[CSeq]" operation="string.regexmatches" value="[text]" value2="CSeq:.*"/>
+<parameter name="[CSeqValue]" operation="string.substring" value="[CSeq]" value2="6"/>
+<test parameter="[CSeqValue]" condition="string.equals" value="0001111  INVITE"/>
 <parameter name="[CSeqNV]" operation="protocol.setFromMessage" value="header.CSeq.Namevalue"/>       
 <test parameter="[CSeqNV]" condition="string.equals" value="CSeq: 0001111  INVITE"/>
 
