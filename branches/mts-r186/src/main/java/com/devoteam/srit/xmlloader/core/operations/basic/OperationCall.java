@@ -70,7 +70,7 @@ public class OperationCall extends Operation {
         // get the function
         String name = getRootElement().attributeValue("name");
         
-        Function function = FunctionsCache.instance().getFunction(name, ((ScenarioRunner)runner).getScenario());
+        Function function = FunctionsCache.instance().getFunction(name, ((ScenarioRunner)runner).getScenarioReference());
 
         // prepare input arguments (copy parameters in hashmap)
         HashMap<String, Parameter> inputs  = new HashMap();

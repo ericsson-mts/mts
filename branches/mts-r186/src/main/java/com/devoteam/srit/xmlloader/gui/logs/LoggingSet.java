@@ -23,8 +23,7 @@
 
 package com.devoteam.srit.xmlloader.gui.logs;
 
-import com.devoteam.srit.xmlloader.core.Scenario;
-import com.devoteam.srit.xmlloader.core.ScenarioRunner;
+import com.devoteam.srit.xmlloader.core.ScenarioReference;
 import com.devoteam.srit.xmlloader.core.Testcase;
 import com.devoteam.srit.xmlloader.core.TestcaseRunner;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
@@ -64,7 +63,7 @@ public class LoggingSet {
         titles[2] = "Topic";
 
         int i = 3;
-        for (Scenario scenario : testcase.getChildren()) {
+        for (ScenarioReference scenario : testcase.getChildren()) {
             titles[i++] = scenario.getName();
         }
 
@@ -74,7 +73,7 @@ public class LoggingSet {
         /*
          * Initialize each scenario logtable
          */
-        for (Scenario scenario : testcase.getChildren()) {
+        for (ScenarioReference scenario : testcase.getChildren()) {
             JTableLogs jTableLogs = new JTableLogs(scenario.getName(), null, testCaseName);
             this.jTableMap.put(scenario.getName(), jTableLogs);
             jTableLogs.setTestcaseTableLogs(this.jTableMap.get(null));

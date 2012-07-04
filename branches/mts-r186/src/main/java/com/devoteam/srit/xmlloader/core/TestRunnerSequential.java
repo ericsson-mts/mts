@@ -73,7 +73,7 @@ public class TestRunnerSequential extends TestRunner implements Runnable, Notifi
     public TestRunnerSequential(Test test) throws Exception {
         super(test.attributeValue("name"), test);
         _stopped = false;
-        XMLDocumentCache.reset();
+        Cache.reset();
         getState()._progression = 0;
         _threadRunner = null;
         _currentTestcaseRunner = null;

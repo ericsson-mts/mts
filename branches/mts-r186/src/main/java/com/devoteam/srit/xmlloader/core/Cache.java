@@ -20,7 +20,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.core;
 
 import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
@@ -31,44 +30,58 @@ import java.util.HashMap;
  *
  * @author gpasquiers
  */
-public class XMLDocumentCache
-{
-    static private HashMap<String, XMLDocument> cache = new HashMap<String, XMLDocument>();
+public class Cache {
+
+    static private HashMap<String, XMLDocument> _xmlCache = new HashMap<String, XMLDocument>();
+    static private HashMap<XMLDocument, Scenario> _scenarioCache = new HashMap<XMLDocument, Scenario>();
     static private boolean _enabled = true;
 
-    static public void enable(){
+    static public void enable() {
         _enabled = true;
     }
 
-    static public void disable(){
+    static public void disable() {
         _enabled = false;
     }
 
-    static public XMLDocument get(URI pathXML, URI pathXSD) throws Exception
-    {
+    static public XMLDocument getXMLDocument(URI pathXML, URI pathXSD) throws Exception {
         XMLDocument xmlDocument = null;
 
-        if(_enabled){
-            xmlDocument = cache.get(pathXML.toString());
+        if (_enabled) {
+            xmlDocument = _xmlCache.get(pathXML.toString());
         }
 
-        if(null == xmlDocument)
-        {
+        if (null == xmlDocument) {
             xmlDocument = new XMLDocument();
             xmlDocument.setXMLSchema(pathXSD);
             xmlDocument.setXMLFile(pathXML);
             xmlDocument.parse();
-            if(_enabled){
-                cache.put(pathXML.toString(), xmlDocument);
+            if (_enabled) {
+                _xmlCache.put(pathXML.toString(), xmlDocument);
             }
         }
 
-        
+
         return xmlDocument;
     }
-    
-    static public void reset()
-    {
-        cache.clear();
+
+    static public Scenario getScenario(XMLDocument document) throws Exception {
+        Scenario scenario = null;
+
+        scenario = _scenarioCache.get(document);
+
+        if (null == scenario) {
+            scenario = new Scenario(document);
+            if (_enabled) {
+                _scenarioCache.put(document, scenario);
+            }
+        }
+
+        return scenario;
+    }
+
+    static public void reset() {
+        _xmlCache.clear();
+        _scenarioCache.clear();
     }
 }

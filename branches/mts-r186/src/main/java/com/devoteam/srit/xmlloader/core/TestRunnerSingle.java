@@ -38,7 +38,7 @@ public class TestRunnerSingle extends TestRunner implements NotificationListener
     public TestRunnerSingle(Test test, Testcase testcase) throws Exception {
         super(test.attributeValue("name"), test);
 
-        XMLDocumentCache.reset();
+        Cache.reset();
 
         _testcaseRunner = testcase.getTestcaseRunner();
         if(_testcaseRunner.attach(this)){

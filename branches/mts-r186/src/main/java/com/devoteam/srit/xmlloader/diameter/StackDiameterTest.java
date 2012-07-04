@@ -30,7 +30,7 @@ import junit.framework.TestCase;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.devoteam.srit.xmlloader.core.Scenario;
+import com.devoteam.srit.xmlloader.core.ScenarioReference;
 import com.devoteam.srit.xmlloader.core.ScenarioRunner;
 import com.devoteam.srit.xmlloader.core.Tester;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
@@ -83,9 +83,9 @@ public class StackDiameterTest extends TestCase {
         MsgDiameter request = (MsgDiameter) StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER).parseMsgFromXml(true, scElem, null);
         MsgDiameter response = new MsgDiameter(prepareResponse(request.getMessage(), ProtocolConstants.DIAMETER_RESULT_SUCCESS));
         
-        Scenario src = new Scenario("srcScenario");
+        ScenarioReference src = new ScenarioReference("srcScenario");
         ScenarioRunner srcRunner = new ScenarioRunner(null, src);
-        Scenario dest = new Scenario("destScenario");
+        ScenarioReference dest = new ScenarioReference("destScenario");
         ScenarioRunner destRunner = new ScenarioRunner(null, dest);
         
         int maxIter = Config.getConfigByName("diameter.properties").getInteger("NB_ITERATION");

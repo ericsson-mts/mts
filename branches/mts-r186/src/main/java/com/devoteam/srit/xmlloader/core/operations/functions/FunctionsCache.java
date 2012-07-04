@@ -23,7 +23,7 @@
 
 package com.devoteam.srit.xmlloader.core.operations.functions;
 
-import com.devoteam.srit.xmlloader.core.Scenario;
+import com.devoteam.srit.xmlloader.core.ScenarioReference;
 import java.util.HashMap;
 import java.util.LinkedList;
 import org.dom4j.Element;
@@ -55,7 +55,7 @@ public class FunctionsCache {
     /**
      * gets the Function instance; from cache if possible, else, create it.
      */
-    public Function getFunction(String name, Scenario scenario) throws Exception{
+    public Function getFunction(String name, ScenarioReference scenario) throws Exception{
         Function function = null;
 
         // get the list of function instances matching the name and try to get one
@@ -84,7 +84,7 @@ public class FunctionsCache {
             }
 
             if(null != root && null != version){
-                function = new Function(root, scenario, version);
+                function = new Function(root, scenario.getScenario(), version);
             }
         }
         return function;

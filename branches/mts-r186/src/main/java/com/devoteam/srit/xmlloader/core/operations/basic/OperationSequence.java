@@ -28,13 +28,8 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.Scenario;
 import com.devoteam.srit.xmlloader.core.ScenarioRunner;
 import com.devoteam.srit.xmlloader.core.exception.GotoExecutionException;
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.operations.Operation;
-import com.devoteam.srit.xmlloader.core.protocol.Stack;
-
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import org.dom4j.Element;

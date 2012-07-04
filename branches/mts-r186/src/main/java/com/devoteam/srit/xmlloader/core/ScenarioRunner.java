@@ -93,7 +93,7 @@ public class ScenarioRunner extends Runner
         this.defaultNotificationSender.notifyAll(new Notification<String, RunnerState>(this.getName(), getState().clone()));
     }
     // </editor-fold>
-    private Scenario _scenario;
+    private ScenarioReference _scenario;
     private ThreadRunner _thread;
     private BufferMsg _bufferMsg;
     private long startTimestamp;
@@ -101,7 +101,7 @@ public class ScenarioRunner extends Runner
     private int finallyCount;
 
     /** Creates a new instance of ScenarioRunner */
-    public ScenarioRunner(TestcaseRunner aTestcaseRunner, Scenario scenario) {
+    public ScenarioRunner(TestcaseRunner aTestcaseRunner, ScenarioReference scenario) {
         super(scenario.getName());
 
         defaultHierarchyMember = new DefaultHierarchyMember<TestcaseRunner, Object>();
@@ -156,11 +156,11 @@ public class ScenarioRunner extends Runner
             getParameterPool().clear();
 
             Parameter parameter = new Parameter();
-            parameter.add(getScenario().getName());
+            parameter.add(getScenarioReference().getName());
             getParameterPool().set("[scenarioName]", parameter);
 
             parameter = new Parameter();
-            parameter.add(getScenario().getId());
+            parameter.add(getScenarioReference().getId());
             getParameterPool().set("[scenarioId]", parameter);
 
             doNotifyAll();
@@ -236,7 +236,7 @@ public class ScenarioRunner extends Runner
          * Then execute the operations of the scenario
          */
         try {
-            _scenario.executeScenario(this);
+            _scenario.getScenario().executeScenario(this);
         }
         catch (Exception e) {
             GlobalLogger.instance().getSessionLogger().error(this, TextEvent.Topic.CORE, e, "Exception in ScenarioRunner\n");
@@ -258,7 +258,7 @@ public class ScenarioRunner extends Runner
          */
         this.finallyEnter();
         try {
-            _scenario.executeFinally(this);
+            _scenario.getScenario().executeFinally(this);
         }
         catch (Exception e) {
 
@@ -326,7 +326,7 @@ public class ScenarioRunner extends Runner
         doNotifyAll();
     }
 
-    public Scenario getScenario() {
+    public ScenarioReference getScenarioReference() {
         return _scenario;
     }
 

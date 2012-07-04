@@ -27,7 +27,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.ThreadPool;
-import com.devoteam.srit.xmlloader.core.XMLDocumentCache;
+import com.devoteam.srit.xmlloader.core.Cache;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
@@ -65,7 +65,7 @@ public class DataMaster {
         this.root = xmlDocument.getDocument().getRootElement();
         this.name = root.attributeValue("name");
 
-        XMLDocumentCache.reset();
+        Cache.reset();
         Runner runner = new Runner(name);
         runner.setParameterPool(new ParameterPool(runner, ParameterPool.Level.standalone, null));
         preparse(runner);
