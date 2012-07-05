@@ -159,19 +159,6 @@ public class StackFactory
         {
             stackToLoad = PROTOCOL_HTTP_STACK_CLASS;
         }
-        else if (PROTOCOL_MGCP.equalsIgnoreCase(protocol))
-        {
-            stackToLoad = PROTOCOL_MGCP_STACK_CLASS;
-        }
-         else if (PROTOCOL_STUN.equalsIgnoreCase(protocol))
-        {
-            stackToLoad = PROTOCOL_STUN_STACK_CLASS;
-        }
-         else if (PROTOCOL_H225CS.equalsIgnoreCase(protocol))
-        {
-            stackToLoad = PROTOCOL_H225CS_STACK_CLASS;
-        }
-
         else if (PROTOCOL_RTP.equalsIgnoreCase(protocol))
         {
             stackToLoad = PROTOCOL_RTP_STACK_CLASS;
@@ -248,6 +235,18 @@ public class StackFactory
         {
             stackToLoad = PROTOCOL_SNMP_STACK_CLASS;
         }
+        else if (PROTOCOL_MGCP.equalsIgnoreCase(protocol))
+        {
+            stackToLoad = PROTOCOL_MGCP_STACK_CLASS;
+        }
+         else if (PROTOCOL_STUN.equalsIgnoreCase(protocol))
+        {
+            stackToLoad = PROTOCOL_STUN_STACK_CLASS;
+        } 
+        else if (PROTOCOL_H225CS.equalsIgnoreCase(protocol))
+        {
+            stackToLoad = PROTOCOL_H225CS_STACK_CLASS;
+        }
         else
         {
             throw new ExecutionException("Unknown stack" + protocol);
@@ -277,9 +276,6 @@ public class StackFactory
         {
             stack = getStack(PROTOCOL_DIAMETER);
             stack = getStack(PROTOCOL_SIP);
-            stack = getStack(PROTOCOL_MGCP);
-            stack = getStack(PROTOCOL_STUN);
-            stack = getStack(PROTOCOL_H225CS);
             stack = getStack(PROTOCOL_HTTP);
             stack = getStack(PROTOCOL_RTP);
             stack = getStack(PROTOCOL_TCP);
@@ -301,6 +297,9 @@ public class StackFactory
             stack = getStack(PROTOCOL_MSRP);
             // stack = getStack(PROTOCOL_GTPP); // experimental : not yet integrated to IMSloader
             stack = getStack(PROTOCOL_SNMP);
+            stack = getStack(PROTOCOL_MGCP);
+            stack = getStack(PROTOCOL_STUN);            
+            stack = getStack(PROTOCOL_H225CS);
         }
         catch (Exception e)
         {

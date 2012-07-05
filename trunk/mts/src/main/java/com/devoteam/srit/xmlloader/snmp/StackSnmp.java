@@ -25,6 +25,8 @@ package com.devoteam.srit.xmlloader.snmp;
 
 import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
@@ -101,24 +103,36 @@ public class StackSnmp extends Stack
         for(int i = 0; i < files.length; i++)
         {
             if(!path.endsWith("/"))
+            {	
                 currentPath.append(path).append("/");
+            }
             currentPath.append(files[i]);
             
             if(SingletonFSInterface.instance().isFile(new URI(currentPath.toString())))//if it's a file
             {
                 try
                 {
-                    mibLoader.load(files[i]);
+                	if(!files[i].startsWith("."))
+                	{
+                		mibLoader.load(files[i]);
+                	}
                 }
                 catch(Exception e)
                 {
-                    e.printStackTrace();
-                    ((MibLoaderException)e).getLog().printTo(new PrintStream("../logs/snmpStack.log"));
+                	GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e, "ERROR : loading the MIBS files");
+                	if (e instanceof MibLoaderException)
+                	{
+                		((MibLoaderException)e).getLog().printTo(new PrintStream("../logs/snmpStack.log"));
+                	}
                 }
             }
             else//if it's a directory, load it and all it's content
-                loadDirectory(SingletonFSInterface.instance().list(new URI(currentPath.toString())), currentPath.toString());
-
+            {
+            	if(!files[i].startsWith("."))
+            	{
+            		loadDirectory(SingletonFSInterface.instance().list(new URI(currentPath.toString())), currentPath.toString());
+            	}
+            }
             //reset currentPath
             currentPath.delete(0, currentPath.length());
         }
