@@ -100,7 +100,14 @@ public class MsgSipLight extends MsgSip
             return var;
         }
     	
-    	var = new Parameter();               
+    	var = new Parameter();
+    	// bidouille pour importSIPP pour générer des path keyword de la forme header.Xxxxx:
+    	path = path.trim();
+    	if (path.endsWith(":"))
+    	{
+    		path = path.substring(0, path.length() - 1);
+    	}
+    	
         String[] params = Utils.splitPath(path);
         
         if (params.length >= 1 && params[0].equalsIgnoreCase("firstline"))
@@ -169,9 +176,9 @@ public class MsgSipLight extends MsgSip
             //---------------------------------------------------------------------- header:Proxy-Authenticate -
             else if (params.length >= 2 && 
                (params[1].equalsIgnoreCase("Authorization") ||
-                params[1].equalsIgnoreCase("WWW-Authenticate") ||
-                params[1].equalsIgnoreCase("Proxy-Authorization") ||
-                params[1].equalsIgnoreCase("Proxy-Authenticate")))                                
+            	params[1].equalsIgnoreCase("WWW-Authenticate") ||
+            	params[1].equalsIgnoreCase("Proxy-Authorization") ||
+            	params[1].equalsIgnoreCase("Proxy-Authenticate")))                                
             {
             	if (addSIPHeaderAuthentication(var, params, message.getHeader(params[1])))
             	{
@@ -236,7 +243,7 @@ public class MsgSipLight extends MsgSip
            		return var;
           	}
             //---------------------------------------------------------------------- header:RAck:* -
-            else if (params.length >= 2 && params[1].toLowerCase().startsWith("rack"))
+            else if (params.length >= 2 && params[1].equalsIgnoreCase("RAck"))
             {
             	Header header = message.getHeader("rack");
                 if (addSIPHeaderRAck(var, params, header))
@@ -272,9 +279,9 @@ public class MsgSipLight extends MsgSip
             }            
             //---------------------------------------------------------------------- header:Xxxxx -
             else if (addSIPHeaderGenericXXX(var, params, message.getHeader(params[1])))
-            {
-            	return var;
-            }
+        	{
+        		return var;
+        	}
         }
         else if (params[0].toLowerCase().startsWith("content"))
         {
@@ -482,7 +489,7 @@ public class MsgSipLight extends MsgSip
 		parser.parseHeader(header, ";", '=', "<>", "\"\"");    
     	Header via = parser.getHeader(null);
 
-        //---------------------------------------------------------------------- header:TopMostVia:Protocol or header:Via:Protocol-
+        //---------------------------------------------------------------------- header:TopMostVia or header:Via-
         if (params.length == 2)
         {
             var.addHeader(header);
