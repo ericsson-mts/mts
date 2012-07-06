@@ -58,71 +58,6 @@ public class SocketServerHttp
         this.messagesToSend = new HashMap<TransactionId, MsgHttp>();
     }
 
-    public void run()
-    {
-        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PROTOCOL, "ServerSocketHttp started");
-        
-        try
-        {
-            while (true)
-            {
-                GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "ServerSocketHttp waiting for header");
-                
-                HttpRequest request = defaultHttpServerConnection.receiveRequestHeader();
-                
-                if(request instanceof HttpEntityEnclosingRequest)
-                {
-                    GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "ServerSocketHttp receiving entity");
-                    defaultHttpServerConnection.receiveRequestEntity((HttpEntityEnclosingRequest)request);
-                }
-                
-                MsgHttp msgRequest = new MsgHttp(request);                
-                //
-                // Set the channel attached to the msg
-                //
-                msgRequest.setChannel(this.connHttp);
-                
-                synchronized(messagesReceived)
-                {
-                    messagesReceived.addLast(msgRequest);
-                }                
-                
-                //
-                // Call back to the generic stack
-                //
-                StackFactory.getStack(StackFactory.PROTOCOL_HTTP).receiveMessage(msgRequest);
-            }
-        }
-        catch(Exception e)
-        {
-            if(messagesReceived.isEmpty())
-            {
-                GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, e, "Exception in ServerSocketHttp without pending messages");
-            }
-            else
-            {
-                GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e, "Exception in ServerSocketHttp with pending messages");
-            }
-        }
-        
-        //
-        // try to close itself
-        //
-        try
-        {
-            if(defaultHttpServerConnection.isOpen())
-            {
-                StackFactory.getStack(StackFactory.PROTOCOL_HTTP).closeChannel(this.connHttp.getName());
-            }
-        }
-        catch(Exception e)
-        {
-            GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e, "Error while closing connection ", this.connHttp);
-        }
-        
-        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PROTOCOL, "ServerSocketHttp ended");
-    }
-    
     public synchronized void sendMessage(MsgHttp msgHttp) throws ExecutionException
     {
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "SocketServerHttp: sendMessage() ", msgHttp);
@@ -195,7 +130,8 @@ public class SocketServerHttp
     protected void doSendMessage(MsgHttp msgHttp) throws Exception
     {
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "SocketServerHttp: doSendMessage() ", msgHttp);
-
+        
+        long start = System.currentTimeMillis();
         synchronized(this)
         {
             HttpResponse response = (HttpResponse) msgHttp.getMessage();
@@ -203,6 +139,7 @@ public class SocketServerHttp
             defaultHttpServerConnection.sendResponseEntity(response);
             defaultHttpServerConnection.flush();
         }
+        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "321987654: doSendMessage() duration = ", System.currentTimeMillis() - start);
     }
 
     public void shutdown() throws Exception
