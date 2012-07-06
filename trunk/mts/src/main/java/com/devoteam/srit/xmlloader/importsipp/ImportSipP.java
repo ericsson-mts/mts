@@ -80,7 +80,7 @@ public class ImportSipP {
 							//We add this node to the list of nodes
 							nodes.add(element);
 							//We apply the normal template of the recv
-							addNodeReceive(nodes, rootElement, resultDocument,nodename);
+							addNodeOther(nodes, rootElement, resultDocument,nodename);
 							//We apply the if_recv template
 							addNodeReceive(nodes, rootElement, resultDocument,"if_"+nodename);
 							//We clear the saved nodes list
@@ -92,7 +92,7 @@ public class ImportSipP {
 							//We add this node to the list of nodes
 							nodes.add(element);
 							//We apply the normal template of the recv
-							addNodeReceive(nodes, rootElement, resultDocument,nodename);
+							addNodeOther(nodes, rootElement, resultDocument,nodename);
 							//We clear the saved nodes list
 							nodes.clear();
 						}
@@ -282,6 +282,10 @@ public class ImportSipP {
 			    			  att.put(attributeValue,list); 
 			    		  }
 			    			  list.add((Attribute) obj); 
+			    	  }
+			    	  else if(obj instanceof Attribute)
+			    	  {
+		    			  System.out.println(obj.toString());
 			    	  }
 				}
 			}
@@ -478,7 +482,7 @@ public class ImportSipP {
 					Element rootElement = doc.addElement("test");
 					rootElement.addAttribute("name", "importsipp");
 					rootElement.addAttribute("description", "imported from sipp scenario");
-					addGlobalNode(doc, rootElement, "test_Template");
+					addGlobalNode(doc, rootElement, "testSuite_template");
 					Element testCase = rootElement.addElement("testcase");
 					testCase.addAttribute("name", testName);
 					testCase.addAttribute("description", "test sip"); 
