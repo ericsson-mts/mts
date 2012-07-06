@@ -227,9 +227,7 @@ public class OperationParameter extends Operation
             if(null == result) return null;
 
 
-            /*
-             * Go write the result
-             */
+            // if there is no index in the parameter name
             if(-1 == resultantIndex)
             {
                 runner.getParameterPool().set(resultantName, result);
@@ -239,10 +237,18 @@ public class OperationParameter extends Operation
                 if(1 != result.length()) throw new ParameterException("we should write the result in one cell, but the size of the result is greater than 1 (!)");
 
                 Parameter param;
-
-                if(runner.getParameterPool().exists(resultantName)) param = runner.getParameterPool().get(resultantName);
-                else runner.getParameterPool().set(resultantName, param = new Parameter());
-
+                // if the parameter already exists in the pool, 
+                if(runner.getParameterPool().exists(resultantName))
+                {
+                	// then retrieve it
+                	param = runner.getParameterPool().get(resultantName);
+                }
+                // if the parameter does not exist in the pool 
+                else 
+                {
+                	// then create it
+                	runner.getParameterPool().set(resultantName, param = new Parameter());
+                }
                 param.set(resultantIndex, result.get(0));
             }
 
