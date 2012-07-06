@@ -84,6 +84,12 @@
 
 <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
 <test parameter="[From]" condition="string.contains" value=" &lt;sip:alice@devoteam.com;TesterId=6789&gt;;tag="/>
+<!-- trip for importSIPP module -->
+<parameter name="[FromNV]" operation="protocol.setFromMessage" value="header.From.NameValue"/>       
+<test parameter="[FromNV]" condition="string.contains" value=" &lt;sip:alice@devoteam.com;TesterId=6789&gt;;tag="/>
+<test parameter="[FromNV]" condition="string.startsWith" value="From: "/>
+<parameter name="[FromSIPP]" operation="protocol.setFromMessage" value="header.From: "/>       
+<test parameter="[FromSIPP]" condition="string.contains" value=" &lt;sip:alice@devoteam.com;TesterId=6789&gt;;tag="/>
 
 <parameter name="[FromAddress]" operation="protocol.setFromMessage" value="header.From.Address"/>                
 <test parameter="[FromAddress]" condition="string.contains" value=" &lt;sip:alice@devoteam.com;TesterId=6789&gt;"/>            
@@ -112,11 +118,14 @@
 
 <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>       
 <test parameter="[CSeq]" condition="string.equals" value="0001111  INVITE"/>
-<parameter name="[CSeq]" operation="string.regexmatches" value="[text]" value2="CSeq:.*"/>
-<parameter name="[CSeqValue]" operation="string.substring" value="[CSeq]" value2="6"/>
-<test parameter="[CSeqValue]" condition="string.equals" value="0001111  INVITE"/>
+<!-- trip for importSIPP module -->
 <parameter name="[CSeqNV]" operation="protocol.setFromMessage" value="header.CSeq.Namevalue"/>       
 <test parameter="[CSeqNV]" condition="string.equals" value="CSeq: 0001111  INVITE"/>
+<parameter name="[CSeqSIPP]" operation="protocol.setFromMessage" value="header.CSeq: "/>       
+<test parameter="[CSeqSIPP]" condition="string.equals" value="0001111  INVITE"/>
+<parameter name="[CSeqRegex]" operation="string.regexmatches" value="[text]" value2="CSeq:.*"/>
+<parameter name="[CSeqValue]" operation="string.substring" value="[CSeqRegex]" value2="6"/>
+<test parameter="[CSeqValue]" condition="string.equals" value="0001111  INVITE"/>
 
 <parameter name="[CSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>   
 <test parameter="[CSeqNumber]" condition="string.equals" value="1111"/>
@@ -197,6 +206,11 @@
 
 <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
 <test parameter="[Via]" condition="string.contains" value="SIP/2.0/[transportResponse]"/>
+<!-- trip for importSIPP module -->
+<parameter name="[ViaNV]" operation="protocol.setFromMessage" value="header.Via.NameValue "/> 
+<test parameter="[ViaNV]" condition="string.startsWith" value="VIA: SIP/2.0/[transportResponse]"/>
+<parameter name="[ViaSIPP]" operation="protocol.setFromMessage" value="header.Via: "/> 
+<test parameter="[ViaSIPP]" condition="string.startsWith" value="SIP/2.0/[transportResponse]"/>
 
 <parameter name="[ViaProtocol]" operation="protocol.setFromMessage" value="header.Via.Protocol"/>
 <test parameter="[ViaProtocol]" condition="string.equals" value="SIP/2.0"/>
@@ -268,6 +282,11 @@
 
 <parameter name="[Authorization]" operation="protocol.setFromMessage" value="header.Authorization"/> 
 <test parameter="[Authorization]" condition="string.contains" value="username="/>
+<!-- trip for importSIPP module -->
+<parameter name="[AuthorizationNV]" operation="protocol.setFromMessage" value="header.Authorization.NameValue"/>
+<test parameter="[AuthorizationNV]" condition="string.startsWith" value="Authorization: Digest username="/>
+<parameter name="[AuthorizationSIPP]" operation="protocol.setFromMessage" value="header.Authorization: "/> 
+<test parameter="[AuthorizationSIPP]" condition="string.contains" value="username="/>
 
 <parameter name="[AuthorizationScheme]" operation="protocol.setFromMessage" value="header.Authorization.Scheme"/> 
 <test parameter="[AuthorizationScheme]" condition="string.equals" value="Digest"/>

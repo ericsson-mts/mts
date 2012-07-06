@@ -126,7 +126,8 @@ public class Utils
 
     public static String[] splitPath(String path)
     {
-        if(path.indexOf(':') != -1){
+    	int pos2Dots = path.indexOf(':');
+        if(pos2Dots > 0 && pos2Dots < path.length() - 1){
             GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE,
     			"Deprecated separator \":\" in path " + path,
     			" please use \".\" instead.");
