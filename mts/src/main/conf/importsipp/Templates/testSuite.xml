@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-2" ?>
+<template>
+
+<parameter editable="true" name="[service]" operation="set" value="service"/>
+
+<parameter name="[local_ip]" operation="system.ipaddress"/>
+<parameter name="[local_ip]" operation="set" value="[local_ip(0)]" editable="true"/>
+<parameter name="[local_port]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+<parameter name="[local_port]" operation="set" value="[local_port]" editable="true"/>
+
+<parameter name="[remote_ip]" operation="system.ipaddress"/>
+<parameter name="[remote_ip]" operation="set" value="[remote_ip(0)]"  editable="true"/>
+<parameter name="[remote_port]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+<parameter name="[remote_port]" operation="set" value="[remote_port]" editable="true"/>
+
+<parameter name="[media_ip]" operation="system.ipaddress"/>
+<parameter name="[media_ip]" operation="set" value="[media_ip(0)]" editable="true"/>
+<parameter name="[media_port]" operation="set" value="10000" editable="true"/>
+<parameter name="[auto_media_port]" operation="set" value="20000" editable="true"/>
+
+<parameter name="[transport]" operation="set" value="UDP" editable="true"/>
+<parameter name="[_pauseDuration]" operation="set" value="1000" editable="true"/>
+
+<parameter name="[_fileName]" operation="set" value="nomfichier.csv" editable="true"/>
+</template>
