@@ -8,17 +8,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.dom4j.*;
-import org.dom4j.DocumentException;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.dom4j.tree.DefaultCDATA;
+import org.dom4j.tree.DefaultElement;
 
 import org.xml.sax.SAXException;
 
@@ -56,7 +58,7 @@ public class ImportSipP {
 			            root.remove(attribute);
 				  }
 				//Add the global parameters from the global template xml file
-				addGlobalNode(resultDocument,rootElement, "scenario_template"); 
+				addGlobalNode(resultDocument,rootElement, "scenario"); 
 				
 				//Run through the elements (nodes) of the source xml file 
 				for (Iterator i = root.elementIterator(); i.hasNext();) 
@@ -194,6 +196,35 @@ public class ImportSipP {
 	 }
 	
 	/**
+	 * Same as 'addNode' functionality but for the 'if_receive' templates
+	 * @param nodes
+	 * @param main_root
+	 * @param doc2
+	 * @param template_file
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws DocumentException
+	 */
+	public static void addNodeReceive(ArrayList<Element> nodes, Element main_root, Document doc2, String template_file) throws SAXException, IOException, DocumentException{	
+		SAXReader reader = new SAXReader();
+		Document template = reader.read("../mts/src/main/conf/importsipp/Templates/"+template_file+".xml");
+		Element template_root = template.getRootElement();
+		main_root.addComment(nodes.get(0).getName());
+		
+		for(int n = 0; n<nodes.size(); n++)
+		{
+			Element sippNode = nodes.get(n);
+			ArrayList<Element> sippNodeList = new ArrayList<Element>(); 
+			sippNodeList.add(sippNode);
+			for (Iterator i = template_root.elementIterator();i.hasNext();) 
+			{
+				Element template_element = (Element) i.next();
+				xPath(doc2,template_element,sippNodeList,main_root);
+			}
+		}
+	}
+	
+	/**
 	 * Function that adds a node to the resulting file
 	 * It takes an array list of Nodes, the root of the result document, the result document and
 	  	the template file name
@@ -208,7 +239,7 @@ public class ImportSipP {
 	public static void addNodeOther(ArrayList<Element> sippNode, Element resultDocRoot, Document resultDoc, String templateFile) throws SAXException, IOException, DocumentException{		
 		//Parsing the corresponding template file
 	 	SAXReader reader = new SAXReader();
-	 	Document template = reader.read("../mts/src/main/conf/importsipp/Templates/"+templateFile+"_template.xml");
+	 	Document template = reader.read("../mts/src/main/conf/importsipp/Templates/"+templateFile+".xml");
 		Element template_root = template.getRootElement(); 
 		resultDocRoot.addComment(sippNode.get(0).getName());
 		
@@ -218,19 +249,36 @@ public class ImportSipP {
 			Element template_element = (Element) i.next();
 			/*Test each element. If it's a 'parameter', the parameter name should exist in the 'send'
 			  CDATA section to be added to the file. If not, this parameter wont be added*/
-        	if(template_element.getName().equals("parameter"))
+        	if(template_element.getName().equals("parameter") && !template_element.attribute("name").getValue().equals("[last_*]"))
         	{
         		if(sippNode.get(sippNode.size()-1).getStringValue().contains(template_element.attribute("name").getValue()))
         		{	
         			//Execute the xPath function which is responsible of adding elements and attributes 
-        			xPath(resultDoc,template_element,sippNode,resultDocRoot);
+        			xPath(resultDoc,template_element,sippNode,resultDocRoot );
         		}
         	}
-        	else 
+        	else
         		xPath(resultDoc,template_element,sippNode,resultDocRoot);
 		}	
 	}
-
+	
+	public static String[] goThroughValues(Element currentTemplateNode)
+	{ 	
+		String[] values = new String[2]; 
+		for(Iterator i = currentTemplateNode.elementIterator(); i.hasNext();)
+		{
+			Element templateChildElement = (Element) i.next();
+			if(!templateChildElement.getStringValue().isEmpty())
+			{
+				values[0] = templateChildElement.getStringValue(); 
+				values[1] = templateChildElement.getName();
+			}
+			goThroughValues(templateChildElement);
+			//break;
+		}
+		
+		return values; 
+	}
 	/**
 	 * xPath function, permits to add a node, manipulate attributes containing xpath expressions or not, 
 	 * manipulate children and adding them to the resulting xml file
@@ -241,9 +289,10 @@ public class ImportSipP {
 	 */
 	public static void xPath(Document resultDocument, Element currentTemplateNode, ArrayList<Element> sippNode, Element resultDocRoot){			
 		Element newelement = null;
-		Map<String,ArrayList<Attribute>> att = new HashMap<String, ArrayList<Attribute>>(); 
+		Map<String,ArrayList<String>> att = new HashMap<String, ArrayList<String>>(); 
 		boolean xpathExists = false; 
-		
+		ArrayList<String> numberOfLast = new ArrayList<String>();
+		ArrayList<String> fileName = new ArrayList<String>(); 
 		//Run through all attributes of the current template element
 		for (Iterator i = currentTemplateNode.attributeIterator();i.hasNext();) 
 		{
@@ -261,44 +310,108 @@ public class ImportSipP {
 					Pattern pattern = Pattern.compile("[\\{}]");
 					//String[] part = attributeValue.split("[{|}]");
 					String[] part = pattern.split(attributeValue);
-					//System.out.println(part[1]);
-					System.out.println(part[0]);
-					String after = attributeValue.substring(attributeValue.lastIndexOf('}') + 1);
-					System.out.println(after);
 					String xpathValue = part[1].substring(6);
 					//Create an XPath on the result document
 			    	XPath xpath = resultDocument.createXPath(xpathValue);
 			    	//Get the XPath returning value
 			    	Object obj = xpath.evaluate(sippNode.get(j));
+			    	
+			    	//if the obj is an attribute
 			    	  if(obj instanceof Attribute)
 			    	  {
 			    		  /*If the XPath is an instance of an Attribute we create a list for all xpath
 			    		   * values, and we add every xpath attribute found, to the list. 
 			    		   */
-			    		  ArrayList<Attribute> list = att.get(attributeValue); 
+			    		  ArrayList<String> list = att.get(attributeValue); 
 			    		  if(list == null)
 			    		  {
-			    			  list = new ArrayList<Attribute>() ; 
+			    			  list = new ArrayList<String>() ; 
 			    			  att.put(attributeValue,list); 
 			    		  }
-			    			  list.add((Attribute) obj); 
+			    			  list.add(((Attribute) obj).getValue()); 
 			    	  }
-			    	  else if(obj instanceof Attribute)
+			    	  //If the obj returns an Element
+			    	  else if(obj instanceof Element)
 			    	  {
-		    			  System.out.println(obj.toString());
+			    		  ArrayList<String> list = att.get(attributeValue); 
+			    		  if(list == null)
+			    		  {
+			    			  list = new ArrayList<String>() ; 
+			    			  att.put(attributeValue,list); 
+			    		  }
+			    			  list.add(((Element) obj).getName()); 
+			    	  }
+			    	  //If the obj returns double
+			    	  else if(obj instanceof Double)
+			    	  {
+			    		  ArrayList<String> list = att.get(attributeValue); 
+			    		  if(list == null)
+			    		  {
+			    			  list = new ArrayList<String>() ; 
+			    			  att.put(attributeValue,list); 
+			    		  }
+			    			  list.add(((Double) obj).toString()); 
+			    	  }
+			    	  //If it contains a CDATA bloc
+			    	  else if(obj instanceof ArrayList)
+			    	  {
+						ArrayList cdataResult = null ; 
+						cdataResult = (ArrayList) obj ; 
+						DefaultCDATA cdataBloc = (DefaultCDATA) cdataResult.get(1); 
+						String cdataContent = cdataBloc.getText();
+						//Get everything variable name that contains 'last' from the CDATA bloc
+						Pattern last = Pattern.compile("\\b(\\w*?last_)\\w+\\b");  
+						//Get all the 'file' names in the CDATA section
+						Pattern file = Pattern.compile("file=\"[^\"]*\"");
+						//Get the matching variables
+						Matcher variableMatcher = last.matcher(cdataContent);
+						//Get the matching file names
+						Matcher fileMatcher = file.matcher(cdataContent); 
+						while (variableMatcher.find())  
+						{  
+							//Add every occurrence found to an array list
+							numberOfLast.add(variableMatcher.group());
+						}
+						while(fileMatcher.find())
+						{
+							System.out.println((fileMatcher.group().replaceAll("file=", "")).replaceAll("\"", ""));
+							fileName.add((fileMatcher.group().replaceAll("file=", "")).replaceAll("\"", ""));
+						}
 			    	  }
 				}
 			}
 		}
 	  	int max = 0 ;
 	  	//We go through the values of the Attributes list, and we get the maximum size 
-		for (ArrayList<Attribute> value : att.values()) 
+		for (ArrayList<String> value : att.values()) 
 		{
 			if(value.size()>max)
 			{
 				max = value.size();
 			}
 		}
+		 if(!fileName.isEmpty())
+		 {
+			 for(int l =0; l<fileName.size(); l++)
+			 {
+				 Element newParameter = resultDocRoot.addElement("parameter");
+				 newParameter.addAttribute("name", "[filedNumber]");
+				 newParameter.addAttribute("operation", "file.readcsv"); 
+				 newParameter.addAttribute("value", fileName.get(l));
+			 }
+		 }
+		//Add the parameters corresponding to the variables used in the CDATA section
+		 if(!numberOfLast.isEmpty())
+		 {
+			 for(int l =0; l<numberOfLast.size(); l++)
+			{	
+				 Element newParameter = resultDocRoot.addElement("parameter");
+				 newParameter.addAttribute("name", "["+numberOfLast.get(l)+":]");
+				 newParameter.addAttribute("operation", "setFromMessage"); 
+				 newParameter.addAttribute("value", "header."+ numberOfLast.get(l).substring(numberOfLast.get(l).indexOf("_")+ "_".length())+".Namevalue");
+				 newParameter.addAttribute("value2", "[last_Message]");
+			}
+		 }
 		//A loop from 0 to the max
 		for(int k =0; k<max; k++)	
 		{	//Create a new element in the result document with the same name as the current template 
@@ -311,7 +424,7 @@ public class ImportSipP {
 				 */
 				Attribute attribute = (Attribute) i.next();
 				String attribut_value = attribute.getValue().toString(); 
-				ArrayList <Attribute> newAttribute = att.get(attribut_value);
+				ArrayList <String> newAttribute = att.get(attribut_value);
 				//TEST
 				Pattern pattern = Pattern.compile("[\\{}]");
 				String[] part = pattern.split(attribute.getValue());
@@ -319,7 +432,7 @@ public class ImportSipP {
 				//
 				if(newAttribute != null)
 				{	
-					newelement.addAttribute(attribute.getName(),part[0]+newAttribute.get(k).getValue()+after); 
+					newelement.addAttribute(attribute.getName(),part[0]+newAttribute.get(k)+after); 
 				}
 				else
 				{	
@@ -341,7 +454,7 @@ public class ImportSipP {
 		 * node to the newly created element
 		 */	
 		if(currentTemplateNode.getText().contains("xpath"))
-		{	
+		{
 			String content = currentTemplateNode.getText();
 			Pattern pattern = Pattern.compile("[\\{}]");
 			String[] part = pattern.split(content);
@@ -364,11 +477,14 @@ public class ImportSipP {
 		}
 		//If the new element has been assigned successfully we do the same to the TEMPLATE node CHILDS
 		if(newelement != null)
-		for (Iterator k = currentTemplateNode.elementIterator(); k.hasNext();)
-	    {
-			Element child_template = (Element) k.next();
-			xPath(resultDocument, child_template, sippNode,newelement); 
-	    }
+			for (Iterator k = currentTemplateNode.elementIterator(); k.hasNext();)
+		    {	
+				Element child_template = (Element) k.next();
+				//System.out.println(child_template.getName());
+				//child_template.setText(template_content);
+				xPath(resultDocument, child_template, sippNode,newelement); 
+		    }
+		resultDocRoot.getName();
 	}
 	
 	/**
@@ -387,35 +503,6 @@ public class ImportSipP {
 			Element template_element = (Element) i.next();
 			Element new_element = mainNode.addElement(template_element.getName());
 			new_element.setAttributes(template_element.attributes());
-		}
-	}
-	
-	/**
-	 * Same as 'addNode' functionality but for the 'if_receive' templates
-	 * @param nodes
-	 * @param main_root
-	 * @param doc2
-	 * @param template_file
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws DocumentException
-	 */
-	public static void addNodeReceive(ArrayList<Element> nodes, Element main_root, Document doc2, String template_file) throws SAXException, IOException, DocumentException{	
-		SAXReader reader = new SAXReader();
-		Document template = reader.read("../mts/src/main/conf/importsipp/Templates/"+template_file+"_template.xml");
-		Element template_root = template.getRootElement();
-		main_root.addComment(nodes.get(0).getName());
-		
-		for(int n = 0; n<nodes.size(); n++)
-		{
-			Element sippNode = nodes.get(n);
-			ArrayList<Element> sippNodeList = new ArrayList<Element>(); 
-			sippNodeList.add(sippNode);
-			for (Iterator i = template_root.elementIterator();i.hasNext();) 
-			{
-				Element template_element = (Element) i.next();
-				xPath(doc2,template_element,sippNodeList,main_root);
-			}
 		}
 	}
 	
@@ -482,7 +569,7 @@ public class ImportSipP {
 					Element rootElement = doc.addElement("test");
 					rootElement.addAttribute("name", "importsipp");
 					rootElement.addAttribute("description", "imported from sipp scenario");
-					addGlobalNode(doc, rootElement, "testSuite_template");
+					addGlobalNode(doc, rootElement, "testSuite");
 					Element testCase = rootElement.addElement("testcase");
 					testCase.addAttribute("name", testName);
 					testCase.addAttribute("description", "test sip"); 
