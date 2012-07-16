@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.operations.Operation;
+import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Probe;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementDefaultParser;
@@ -45,27 +46,25 @@ public class OperationCreateProbe extends Operation
     /** Creates a new instance */
     public OperationCreateProbe(String aProtocol, Element rootNode) throws Exception
     {
-        super(rootNode);
+        super(rootNode, XMLElementDefaultParser.instance());
         protocol = aProtocol;
     }
     
     /** Executes the operation */
     public Operation execute(Runner runner) throws Exception
     {
-        restore();
-
-
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.PROTOCOL, this);
 
         // Replace elements in XMLTree
-        replace(runner, new XMLElementDefaultParser(runner.getParameterPool()), TextEvent.Topic.PROTOCOL);
-
-        Element root = getRootElement();
-
-        //
-        // Instanciate the connection from Xml file
-        //
-        Probe probe = StackFactory.getStack(protocol).parseProbeFromXml(root);
+        Probe probe;
+        try {
+            lockAndReplace(runner);
+            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.PROTOCOL, "Operation after pre-parsing \n", this);
+            probe = StackFactory.getStack(protocol).parseProbeFromXml(getRootElement());
+        }
+        finally {
+            unlockAndRestore();
+        }
 
         //
         // Get if she does not already exists and compare to the existing one

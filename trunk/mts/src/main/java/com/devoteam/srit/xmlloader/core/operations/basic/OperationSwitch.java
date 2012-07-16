@@ -61,7 +61,7 @@ public class OperationSwitch extends Operation
      */
     public OperationSwitch(Element root, Scenario scenario) throws Exception
     {
-        super(root);
+        super(root, null);
         this.scenario = scenario;
         this.parameter = root.attributeValue("parameter");
         List<Element> list = root.elements("case");
@@ -101,8 +101,6 @@ public class OperationSwitch extends Operation
      */
     public Operation execute(Runner runner) throws Exception
     {
-        restore();
-
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, this);
 
         // Replace elements in XMLTree

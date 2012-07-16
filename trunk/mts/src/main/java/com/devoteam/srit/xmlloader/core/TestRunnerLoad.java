@@ -44,7 +44,7 @@ public class TestRunnerLoad extends TestRunner implements Runnable, Notification
     /** Creates a new instance of TestRunnerSequential */
     public TestRunnerLoad(Test test) throws Exception {
         super(test.attributeValue("name"), test);
-        XMLDocumentCache.reset();
+        Cache.reset();
 
         _thread = null;
 
@@ -120,7 +120,7 @@ public class TestRunnerLoad extends TestRunner implements Runnable, Notification
      */
     @Override
     public void run() {
-        XMLDocumentCache.reset();
+        Cache.reset();
         // start TestcaseRunners
         for (TestcaseRunner runner : getChildren()) {
             try {

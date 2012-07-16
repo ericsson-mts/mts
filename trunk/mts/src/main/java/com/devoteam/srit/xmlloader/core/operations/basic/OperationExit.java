@@ -20,7 +20,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.core.operations.basic;
 
 import com.devoteam.srit.xmlloader.core.Runner;
@@ -36,36 +35,38 @@ import org.dom4j.Element;
  *
  * @author gpasquiers
  */
-public class OperationExit extends Operation
-{
-    
+public class OperationExit extends Operation {
+
     /**
      * Creates a new instance of OperationExit
      */
-    public OperationExit(Element root)
-    {
-        super(root);
+    public OperationExit(Element root) {
+        super(root, XMLElementDefaultParser.instance());
     }
-    
-    public Operation execute(Runner runner) throws Exception
-    {
-        restore();
 
+    @Override
+    public Operation execute(Runner runner) throws Exception {
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, this);
 
-        // Replace elements in XMLTree
-        replace(runner, new XMLElementDefaultParser(runner.getParameterPool()), TextEvent.Topic.CORE);
 
-        boolean failed = Boolean.parseBoolean(getAttribute("failed"));
-        
-        if (failed) 
-        {
-        	GlobalLogger.instance().getSessionLogger().error(runner, TextEvent.Topic.CORE, "Exit failed = ", failed);
-        } else 
-        {
-        	GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Exit failed = ", failed);
+        boolean failed;
+
+        try {
+            lockAndReplace(runner);
+            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "Operation after pre-parsing \n", this);
+            failed = Boolean.parseBoolean(getAttribute("failed"));
+        }
+        finally {
+            unlockAndRestore();
+        }
+
+        // Replace elements in XMLTree
+        if (failed) {
+            GlobalLogger.instance().getSessionLogger().error(runner, TextEvent.Topic.CORE, "Exit failed = ", failed);
+        }
+        else {
+            GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Exit failed = ", failed);
         }
         throw new ExitExecutionException(failed, "Exit Failed Exception");
     }
-    
 }

@@ -227,9 +227,9 @@ public abstract class StackSip extends Stack
     }
 
     /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer(ParameterPool variables)
+    public XMLElementReplacer getElementReplacer()
     {
-        return new XMLElementTextMsgParser(variables);
+        return XMLElementTextMsgParser.instance();
     }
 
 	protected String reader(InputStream  inputStream) throws Exception {

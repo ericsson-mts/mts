@@ -20,7 +20,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.core.operations.protocol;
 
 import com.devoteam.srit.xmlloader.core.Runner;
@@ -36,62 +35,58 @@ import org.dom4j.Element;
  *
  * @author gpasquiers
  */
-public class OperationCloseChannel extends Operation
-{      
+public class OperationCloseChannel extends Operation {
+
     private String protocol;
-    
-    /** Creates a new instance of ReceiveMsgOperation */
-    public OperationCloseChannel(String protocol, Element rootElement) throws Exception
-    {
-        super(rootElement);
+
+    /**
+     * Creates a new instance of ReceiveMsgOperation
+     */
+    public OperationCloseChannel(String protocol, Element rootElement) throws Exception {
+        super(rootElement, XMLElementDefaultParser.instance());
 
         this.protocol = protocol;
     }
-    
-    /** Executes the operation (retrieve and check message) */
-    public Operation execute(Runner runner) throws Exception
-    {
-        restore();
 
+    /**
+     * Executes the operation (retrieve and check message)
+     */
+    public Operation execute(Runner runner) throws Exception {
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.PROTOCOL, this);
 
         // Replace elements in XMLTree
-        replace(runner, new XMLElementDefaultParser(runner.getParameterPool()), TextEvent.Topic.PROTOCOL);
+        String name;
+        try {
+            lockAndReplace(runner);
+            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.PROTOCOL, "Operation after pre-parsing \n", this);
+            Element root = getRootElement();
+            name = getAttribute("connectionName");
+            if (null == name) {
+                name = getAttribute("sessionName");
+            }
 
+            if (null == name) {
+                name = getAttribute("providerName");
+            }
 
-        Element root = getRootElement();
-        
-        // instanciates the channel
-        
-        String name = root.attributeValue("connectionName");
+            if (null == name) {
+                name = getAttribute("socketName");
+            }
 
-        if(null == name)
-        {
-        	name = root.attributeValue("sessionName");
+            if (null == name) {
+                name = getAttribute("name");
+            }
+        }
+        finally {
+            unlockAndRestore();
         }
 
-        if(null == name)
-        {
-        	name = root.attributeValue("providerName");
-        }
-        
-        if(null == name)
-        {
-        	name = root.attributeValue("socketName");
-        }
-                
-        if(null == name)
-        {
-        	name = root.attributeValue("name");
-        }
-
-    	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>CLOSE ", protocol, " channel <name = \"", name, "\">");	        	
+        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>CLOSE ", protocol, " channel <name = \"", name, "\">");
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CLOSE ", protocol, " channel <name = \"", name, "\">");
-        
+
         // close the channel
-        StackFactory.getStack(protocol).closeChannel(name);       
-        
+        StackFactory.getStack(protocol).closeChannel(name);
+
         return null;
     }
-    
 }

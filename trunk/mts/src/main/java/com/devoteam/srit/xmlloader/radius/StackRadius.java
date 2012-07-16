@@ -395,9 +395,9 @@ public class StackRadius extends Stack
     }
 
     /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer(ParameterPool variables)
+    public XMLElementReplacer getElementReplacer()
     {
-        return new XMLElementTextMsgParser(variables);
+        return XMLElementTextMsgParser.instance();
     }
 
     public RadiusDictionary getRadiusDictionary()

@@ -167,7 +167,7 @@ public class TestcaseRunner extends Runner implements Task,
         _scheduled = false;
 
         // create scenario runners and add listeners
-        for (Scenario scenario : testcase.getChildren()) {
+        for (ScenarioReference scenario : testcase.getChildren()) {
             ScenarioRunner runner = new ScenarioRunner(this, scenario);
             scenario.setScenarioRunner(runner);
             runner.addListener(this);

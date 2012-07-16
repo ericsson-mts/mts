@@ -150,8 +150,8 @@ public class StackDiameter extends Stack {
         return Config.getConfigByName(configFile);
     }
     
-    public XMLElementReplacer getElementReplacer(ParameterPool parameterPool) {
-        return new XMLElementAVPParser(parameterPool);
+    public XMLElementReplacer getElementReplacer() {
+        return XMLElementAVPParser.instance();
     }
     
 }

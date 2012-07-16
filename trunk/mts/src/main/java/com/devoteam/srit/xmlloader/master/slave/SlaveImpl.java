@@ -31,7 +31,7 @@ import com.devoteam.srit.xmlloader.core.TestRunnerSequential;
 import com.devoteam.srit.xmlloader.core.Testcase;
 import com.devoteam.srit.xmlloader.core.TestcaseRunner;
 import com.devoteam.srit.xmlloader.core.Tester;
-import com.devoteam.srit.xmlloader.core.XMLDocumentCache;
+import com.devoteam.srit.xmlloader.core.Cache;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.parameters.EditableParameterProviderHashMap;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
@@ -145,7 +145,7 @@ public class SlaveImpl extends UnicastRemoteObject implements SlaveIntf {
                 return Tester.instance().getTest();
             }
             else {
-                XMLDocumentCache.reset();
+                Cache.reset();
                 Tester.cleanInstance();
                 Tester.buildInstance();
                 Tester.instance().open_openFile(path, new EditableParameterProviderHashMap(initialParametersValues));

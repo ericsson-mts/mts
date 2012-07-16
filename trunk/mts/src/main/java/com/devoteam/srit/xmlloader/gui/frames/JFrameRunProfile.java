@@ -25,8 +25,8 @@ package com.devoteam.srit.xmlloader.gui.frames;
 
 import com.devoteam.srit.xmlloader.core.RunProfile;
 import com.devoteam.srit.xmlloader.core.RunProfile.Point;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 import org.dom4j.tree.DefaultElement;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -98,7 +98,7 @@ public class JFrameRunProfile extends javax.swing.JFrame {
     // 0 is delay
     // 1 is frequency
     private void refreshGraph(int type){
-        Vector<Point> vector = runProfile.getPoints();
+        ArrayList<Point> vector = runProfile.getPoints();
         this.jPanelGraph.removeAll();
 
         if(type == 1) // delay graph

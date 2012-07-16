@@ -376,9 +376,9 @@ public class StackHttp extends Stack
         return super.sendMessage(msg);
     }
 
-    public XMLElementReplacer getElementReplacer(ParameterPool variables)
+    public XMLElementReplacer getElementReplacer()
     {
-        return new XMLElementTextMsgParser(variables);
+        return XMLElementTextMsgParser.instance();
     }
 
     /** Returns the Config object to access the protocol config file*/

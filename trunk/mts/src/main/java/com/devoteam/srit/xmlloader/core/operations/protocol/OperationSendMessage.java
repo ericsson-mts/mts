@@ -20,9 +20,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.core.operations.protocol;
-
 
 import com.devoteam.srit.xmlloader.diameter.MsgDiameterParser;
 import com.devoteam.srit.xmlloader.core.Runner;
@@ -45,21 +43,21 @@ import org.dom4j.Element;
 
 /**
  * TODO : statistics; request or answer ;
+ *
  * @author gpasquiers
  */
-public class OperationSendMessage extends Operation
-{
-    
-    private String protocol;           
-    
-    /** Creates a new instance */
-    public OperationSendMessage(String aProtocol, Element rootNode) throws Exception
-    {
-        super(rootNode);
+public class OperationSendMessage extends Operation {
+
+    private String protocol;
+
+    /**
+     * Creates a new instance
+     */
+    public OperationSendMessage(String aProtocol, Element rootNode) throws Exception {
+        super(rootNode, null);
         protocol = aProtocol;
-        
-        if(protocol.equals(StackFactory.PROTOCOL_DIAMETER))
-        {
+
+        if (protocol.equals(StackFactory.PROTOCOL_DIAMETER)) {
             //
             // Read ApplicationId
             //
@@ -67,170 +65,170 @@ public class OperationSendMessage extends Operation
             MsgDiameterParser.getInstance().doDictionnary(this.getRootElement(), applicationId, true);
         }
     }
-    
-    /** Executes the operation */
-    public Operation execute(Runner aRunner) throws Exception
-    {
-        restore();
 
-    	Stack stack = StackFactory.getStack(protocol);
+    /**
+     * Executes the operation
+     */
+    public Operation execute(Runner aRunner) throws Exception {
+        Stack stack = StackFactory.getStack(protocol);
+        setReplacer(stack.getElementReplacer());
+
         ScenarioRunner runner = (ScenarioRunner) aRunner;
-    	
+
         GlobalLogger.instance().getSessionLogger().info(aRunner, TextEvent.Topic.PROTOCOL, this);
 
-        // Replace elements in XMLTree
-        replace(runner, stack.getElementReplacer(runner.getParameterPool()), TextEvent.Topic.PROTOCOL);
-
-        Element root = getRootElement();
-        
-        // deprecated 
-        String request = getAttribute("request");
+        String request;
+        String listenpointName;
+        String channelName;
+        String remoteHost;
+        String remotePort;
+        String remoteUrl;
+        String transport;
+        String transactionIdAttribute;
+        String destScenarioAttribute;
+        String strDelay;
+        String answerHandlerAttribute;
+        Msg msg;
         Boolean req = null;
-        if(null != request)
-        {
-            if (StackFactory.PROTOCOL_DIAMETER.equalsIgnoreCase(protocol))
-            {
-            	GlobalLogger.instance().logDeprecatedMessage( root.getName() + " request=\"xxx\" .../", "sendMessage" + protocol + " .../><header request=\"xxx\" .../");
-            } 
-            else if (StackFactory.PROTOCOL_RADIUS.equalsIgnoreCase(protocol))
-            {
-            	GlobalLogger.instance().logDeprecatedMessage( root.getName() + " request=\"xxx\" .../", "sendMessage" + protocol + " .../");
+
+        try {
+            lockAndReplace(runner);
+            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.PROTOCOL, "Operation after pre-parsing \n", this);
+            Element root = getRootElement();
+            // deprecated 
+            
+            request = getAttribute("request");
+            listenpointName = getAttribute("listenpoint");
+            channelName = getAttribute("channel");
+            remoteHost = getAttribute("remoteHost");
+            remotePort = getAttribute("remotePort");
+            remoteUrl = getAttribute("remoteURL");
+            transport = getAttribute("transport");
+            transactionIdAttribute = getAttribute("transactionId");
+            destScenarioAttribute = getAttribute("destScenario");
+            strDelay = getAttribute("delay");
+            answerHandlerAttribute = getAttribute("answerHandler");
+            
+            if (null != request) {
+                if (StackFactory.PROTOCOL_DIAMETER.equalsIgnoreCase(protocol)) {
+                    GlobalLogger.instance().logDeprecatedMessage(root.getName() + " request=\"xxx\" .../", "sendMessage" + protocol + " .../><header request=\"xxx\" .../");
+                }
+                else if (StackFactory.PROTOCOL_RADIUS.equalsIgnoreCase(protocol)) {
+                    GlobalLogger.instance().logDeprecatedMessage(root.getName() + " request=\"xxx\" .../", "sendMessage" + protocol + " .../");
+                }
+                req = Boolean.valueOf(request);
             }
-             req = Boolean.valueOf(request);
+
+            // instanciates the msg
+            msg = stack.parseMsgFromXml(req, root, runner);
+            msg.setSend(true);
+        }
+        finally {
+            unlockAndRestore();
         }
 
-        // instanciates the msg
-        Msg msg = stack.parseMsgFromXml(req, root, runner);
-        msg.setSend(true);
 
-        String listenpointName = getAttribute("listenpoint");
-        String channelName = getAttribute("channel");
-        String remoteHost = getAttribute("remoteHost");
-        String remotePort = getAttribute("remotePort");
-        String remoteUrl = getAttribute("remoteURL");
-        String transport = getAttribute("transport");
 
-        if((null != listenpointName) && (null != channelName))
-        {
+
+
+
+        if ((null != listenpointName) && (null != channelName)) {
             throw new Exception("There must be just a listenpoint or a channel to send message, not both");
         }
-        if(((null != remoteHost) || (null != remoteHost) || (null != remoteUrl)) && 
-            (null != channelName))
-        {
+        if (((null != remoteHost) || (null != remoteHost) || (null != remoteUrl))
+                && (null != channelName)) {
             throw new Exception("RemoteHost and remotePort cannot be set with the channel");
         }
 
-        if(null != channelName)
-        {
+        if (null != channelName) {
             Channel channel = stack.getChannel(channelName);
-            if (channel == null)
-            {
+            if (channel == null) {
                 throw new ExecutionException("The channel <name=" + channelName + "> does not exist");
             }
             msg.setChannel(channel);
-        } 
-        
+        }
+
         Listenpoint listenpoint = stack.getListenpoint(listenpointName);
-        if (listenpointName != null && listenpoint == null)
-        {
+        if (listenpointName != null && listenpoint == null) {
             throw new ExecutionException("The listenpoint <name=" + listenpointName + "> does not exist");
         }
         msg.setListenpoint(listenpoint);
-        
-        if(null != remoteHost)
-        {
-        	msg.setRemoteHost(remoteHost);
+
+        if (null != remoteHost) {
+            msg.setRemoteHost(remoteHost);
         }
-        if(null != remotePort)
-        {
-        	msg.setRemotePort(Integer.parseInt(remotePort));
+        if (null != remotePort) {
+            msg.setRemotePort(Integer.parseInt(remotePort));
         }
-        if(null != remoteUrl)
-        {
-        	msg.setRemoteUrl(remoteUrl);
-        }        
-        if(null != transport)
-        {        
-        	msg.setTransport(transport);
+        if (null != remoteUrl) {
+            msg.setRemoteUrl(remoteUrl);
         }
-               
+        if (null != transport) {
+            msg.setTransport(transport);
+        }
+
         // Not a generic mechanism : USED only for HTTP and IMAP
         // Should be copy to StackHttp and StackImap in the parseMsgFromXml() method
-        String transactionIdAttribute = getAttribute("transactionId");
-        if(null != transactionIdAttribute)
-        {
+        if (null != transactionIdAttribute) {
             msg.setTransactionId(new TransactionId(transactionIdAttribute));
         }
+
         
-        String destScenarioAttribute = getAttribute("destScenario");
         Runner destRunner = null;
-        if(null != destScenarioAttribute)
-        {
+        if (null != destScenarioAttribute) {
             ScenarioRunner scenarioRunner = (ScenarioRunner) runner;
-            
-            for(ScenarioRunner aScenarioRunner:scenarioRunner.getParent().getChildren())
-            {
-                if(aScenarioRunner.getName().equals(destScenarioAttribute))
-                {
+
+            for (ScenarioRunner aScenarioRunner : scenarioRunner.getParent().getChildren()) {
+                if (aScenarioRunner.getName().equals(destScenarioAttribute)) {
                     destRunner = aScenarioRunner;
                 }
             }
-            
-            if (null == destRunner)
-            {
+
+            if (null == destRunner) {
                 GlobalLogger.instance().getSessionLogger().error(runner, TextEvent.Topic.PROTOCOL, "Unknown destination scenario ", destScenarioAttribute);
                 throw new ExecutionException("The destination scenario '" + destScenarioAttribute + "' mentioned in the scenario is not defined");
             }
         }
 
-        String strDelay = getAttribute("delay");
-        if(null != strDelay)
-        {
-            long lDelay = (long) (Float.parseFloat(strDelay) *  1000);
+        if (null != strDelay) {
+            long lDelay = (long) (Float.parseFloat(strDelay) * 1000);
             msg.setTimestamp(System.currentTimeMillis() + lDelay);
         }
 
         Runner answerHandler = null;
-        String answerHandlerAttribute = getAttribute("answerHandler");
-        if(null == answerHandlerAttribute)
-        {
+        if (null == answerHandlerAttribute) {
             answerHandler = runner;
         }
-        else
-        {
+        else {
             ScenarioRunner scenarioRunner = (ScenarioRunner) runner;
-            
-            for(ScenarioRunner aScenarioRunner:scenarioRunner.getParent().getChildren())
-            {
-                if(aScenarioRunner.getName().equals(answerHandlerAttribute))
-                {
+
+            for (ScenarioRunner aScenarioRunner : scenarioRunner.getParent().getChildren()) {
+                if (aScenarioRunner.getName().equals(answerHandlerAttribute)) {
                     answerHandler = aScenarioRunner;
                 }
             }
-            
-            if (null == answerHandlerAttribute)
-            {
+
+            if (null == answerHandlerAttribute) {
                 GlobalLogger.instance().getSessionLogger().error(runner, TextEvent.Topic.PROTOCOL, "Unknown answerHandler scenario ", destScenarioAttribute);
                 throw new ExecutionException("The answerHandler scenario '" + answerHandlerAttribute + "' mentioned in the scenario is not defined");
             }
-            
 
-        }        
+
+        }
         // send the request via the stack
         StackFactory.getStack(protocol).sendMessage(msg, (ScenarioRunner) runner, (ScenarioRunner) destRunner, (ScenarioRunner) answerHandler);
 
-        if(protocol.equals(StackFactory.PROTOCOL_RTPFLOW))
-        {
-            if(((com.devoteam.srit.xmlloader.rtp.flow.MsgRtpFlow)msg).isSynchronous())//wait for the end of the flow
+        if (protocol.equals(StackFactory.PROTOCOL_RTPFLOW)) {
+            if (((com.devoteam.srit.xmlloader.rtp.flow.MsgRtpFlow) msg).isSynchronous())//wait for the end of the flow
             {
                 //take a mutex which will be given by the end of the flow
-                ((com.devoteam.srit.xmlloader.rtp.flow.MsgRtpFlow)msg).getSynchronousSemaphore().acquire();
+                ((com.devoteam.srit.xmlloader.rtp.flow.MsgRtpFlow) msg).getSynchronousSemaphore().acquire();
             }
         }
-        
+
         // set the implicit message into the runner (for setFromMessage operation)
         runner.setCurrentMsg(msg);
-        
-        return null ;
+
+        return null;
     }
 }

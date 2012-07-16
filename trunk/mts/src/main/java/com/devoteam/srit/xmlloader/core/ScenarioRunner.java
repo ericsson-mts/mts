@@ -25,14 +25,13 @@ package com.devoteam.srit.xmlloader.core;
 
 import com.devoteam.srit.xmlloader.core.exception.InterruptedExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.protocol.BufferMsg;
-import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextListenerKey;
 import com.devoteam.srit.xmlloader.core.log.TextListenerProviderRegistry;
 import com.devoteam.srit.xmlloader.core.newstats.StatKey;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
-
+import com.devoteam.srit.xmlloader.core.protocol.BufferMsg;
+import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.utils.hierarchy.DefaultHierarchyMember;
 import com.devoteam.srit.xmlloader.core.utils.hierarchy.HierarchyMember;
 import com.devoteam.srit.xmlloader.core.utils.notifications.DefaultNotificationSender;
@@ -94,7 +93,7 @@ public class ScenarioRunner extends Runner
         this.defaultNotificationSender.notifyAll(new Notification<String, RunnerState>(this.getName(), getState().clone()));
     }
     // </editor-fold>
-    private Scenario _scenario;
+    private ScenarioReference _scenario;
     private ThreadRunner _thread;
     private BufferMsg _bufferMsg;
     private long startTimestamp;
@@ -102,7 +101,7 @@ public class ScenarioRunner extends Runner
     private int finallyCount;
 
     /** Creates a new instance of ScenarioRunner */
-    public ScenarioRunner(TestcaseRunner aTestcaseRunner, Scenario scenario) {
+    public ScenarioRunner(TestcaseRunner aTestcaseRunner, ScenarioReference scenario) {
         super(scenario.getName());
 
         defaultHierarchyMember = new DefaultHierarchyMember<TestcaseRunner, Object>();
@@ -157,11 +156,11 @@ public class ScenarioRunner extends Runner
             getParameterPool().clear();
 
             Parameter parameter = new Parameter();
-            parameter.add(getScenario().getName());
+            parameter.add(getScenarioReference().getName());
             getParameterPool().set("[scenarioName]", parameter);
 
             parameter = new Parameter();
-            parameter.add(getScenario().getId());
+            parameter.add(getScenarioReference().getId());
             getParameterPool().set("[scenarioId]", parameter);
 
             doNotifyAll();
@@ -237,7 +236,7 @@ public class ScenarioRunner extends Runner
          * Then execute the operations of the scenario
          */
         try {
-            _scenario.executeScenario(this);
+            _scenario.getScenario().executeScenario(this);
         }
         catch (Exception e) {
             GlobalLogger.instance().getSessionLogger().error(this, TextEvent.Topic.CORE, e, "Exception in ScenarioRunner\n");
@@ -259,7 +258,7 @@ public class ScenarioRunner extends Runner
          */
         this.finallyEnter();
         try {
-            _scenario.executeFinally(this);
+            _scenario.getScenario().executeFinally(this);
         }
         catch (Exception e) {
 
@@ -327,7 +326,7 @@ public class ScenarioRunner extends Runner
         doNotifyAll();
     }
 
-    public Scenario getScenario() {
+    public ScenarioReference getScenarioReference() {
         return _scenario;
     }
 

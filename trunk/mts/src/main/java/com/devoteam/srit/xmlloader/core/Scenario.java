@@ -20,98 +20,47 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.core;
 
-import java.util.List;
-
-
-import org.dom4j.Element;
-
-import com.devoteam.srit.xmlloader.diameter.dictionary.CommandDef;
-import com.devoteam.srit.xmlloader.diameter.dictionary.Dictionary;
 import com.devoteam.srit.xmlloader.core.exception.ExitExecutionException;
 import com.devoteam.srit.xmlloader.core.exception.GotoExecutionException;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.operations.Operation;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationCall;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationExit;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationFor;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationFunction;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationGoto;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationIf;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationLabel;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationLog;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationParameter;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationPause;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationSemaphore;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationSequence;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationStats;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationSwitch;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationSystem;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationTest;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationTestAnd;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationTestNot;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationTestOr;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationTry;
-import com.devoteam.srit.xmlloader.core.operations.basic.OperationWhile;
-import com.devoteam.srit.xmlloader.core.operations.protocol.OperationCloseChannel;
-import com.devoteam.srit.xmlloader.core.operations.protocol.OperationCreateListenpoint;
-import com.devoteam.srit.xmlloader.core.operations.protocol.OperationCreateProbe;
-import com.devoteam.srit.xmlloader.core.operations.protocol.OperationOpenChannel;
-import com.devoteam.srit.xmlloader.core.operations.protocol.OperationReceiveMessage;
-import com.devoteam.srit.xmlloader.core.operations.protocol.OperationReceiveMsg;
-import com.devoteam.srit.xmlloader.core.operations.protocol.OperationRemoveListenpoint;
-import com.devoteam.srit.xmlloader.core.operations.protocol.OperationRemoveProbe;
-import com.devoteam.srit.xmlloader.core.operations.protocol.OperationSendMessage;
-import com.devoteam.srit.xmlloader.core.operations.protocol.OperationSendMsg;
+import com.devoteam.srit.xmlloader.core.operations.basic.*;
+import com.devoteam.srit.xmlloader.core.operations.protocol.*;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.URIFactory;
 import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
+import com.devoteam.srit.xmlloader.diameter.dictionary.CommandDef;
+import com.devoteam.srit.xmlloader.diameter.dictionary.Dictionary;
 import java.io.Serializable;
+import java.util.List;
+import org.dom4j.Element;
 
 /**
  * Scenario to be played
+ *
  * @author JM. Auffret
  */
 public class Scenario implements Serializable {
 
-    /** Name of the scenario */
-    private String name;
-    private String description;
-    private String filename;
-    private OperationSequence operationSequenceScenario;
-    private OperationSequence operationSequenceFinally;
-    private Testcase testcase;
-    private boolean _parsed = false;
-    private transient ScenarioRunner _scenarioRunner;
-    
-    /** Constructor */
-    public Scenario(String name) {
-        this.name = name;
-    }
+    private OperationSequence _operationSequenceScenario;
+    private OperationSequence _operationSequenceFinally;
 
-    public Scenario(Element elements, Testcase testcase) {
-        this.name = elements.attributeValue("name");
-        this.description = elements.attributeValue("description");
-        this.filename = elements.getStringValue().trim();
-        this.testcase = testcase;
-        this.operationSequenceScenario = null;
-        this.operationSequenceFinally = null;
-    }
-
-    public void setScenarioRunner(ScenarioRunner value){
-        _scenarioRunner = value;
+    public Scenario(XMLDocument xmlDocument) throws Exception {
+        _operationSequenceScenario = null;
+        _operationSequenceFinally = null;
+        parse(xmlDocument);
     }
 
     public void executeScenario(ScenarioRunner runner) throws Exception {
         try {
             GlobalLogger.instance().getSessionLogger().info(runner, Topic.CORE, "<scenario>");
-            this.operationSequenceScenario.execute(runner);
+            this._operationSequenceScenario.execute(runner);
             GlobalLogger.instance().getSessionLogger().info(runner, Topic.CORE, "</scenario>");
         }
         catch (ExitExecutionException e) {
@@ -125,11 +74,11 @@ public class Scenario implements Serializable {
     }
 
     public void executeFinally(ScenarioRunner runner) throws Exception {
-        if (null != this.operationSequenceFinally) {
+        if (null != this._operationSequenceFinally) {
             try {
                 runner.finallyEnter();
                 GlobalLogger.instance().getSessionLogger().info(runner, Topic.CORE, "<finally>");
-                this.operationSequenceFinally.execute(runner);
+                this._operationSequenceFinally.execute(runner);
                 GlobalLogger.instance().getSessionLogger().info(runner, Topic.CORE, "</finally>");
             }
             catch (ExitExecutionException e) {
@@ -146,26 +95,18 @@ public class Scenario implements Serializable {
         }
     }
 
-    public Testcase getTestcase() {
-        return testcase;
-    }
-
     public void free() {
-        _parsed = false;
-        operationSequenceFinally = null;
-        operationSequenceScenario = null;
+        _operationSequenceFinally = null;
+        _operationSequenceScenario = null;
     }
 
-    public boolean isParsed() {
-        return _parsed;
-    }
+    /**
+     * Parse the scenario
+     */
+    private void parse(XMLDocument scenarioDocument) throws Exception {
+        //String relativePath = getFilename();
 
-    /** Parse the scenario */
-    public void parse() throws Exception {
-        _parsed = true;
-        String relativePath = getFilename();
-
-        XMLDocument scenarioDocument = XMLDocumentCache.get(URIRegistry.IMSLOADER_TEST_HOME.resolve(relativePath), URIFactory.newURI("../conf/schemas/scenario.xsd"));
+        //XMLDocument scenarioDocument = XMLDocumentCache.getXMLDocument(URIRegistry.IMSLOADER_TEST_HOME.resolve(relativePath), URIFactory.newURI("../conf/schemas/scenario.xsd"));
 
         Element root = scenarioDocument.getDocument().getRootElement();
 
@@ -192,23 +133,21 @@ public class Scenario implements Serializable {
         }
 
         /**
-         * Create the finally operations sequence. If there is a finally then the
-         * sequence is created and then the finally tag is removed from the scenario.
-         * To allow the creation of the scenario operations sequence.
+         * Create the finally operations sequence. If there is a finally then the sequence is created and then the finally tag is removed from the scenario. To allow the creation of the scenario
+         * operations sequence.
          */
         if (finallyInstances == 1) {
             Element finallyRoot = root.element("finally");
             root.remove(finallyRoot);
-            this.operationSequenceFinally = new OperationSequence(finallyRoot, this);
+            this._operationSequenceFinally = new OperationSequence(finallyRoot, this);
         }
 
-        operationSequenceScenario = new OperationSequence(root, this);
-
-        _scenarioRunner.getState().setFlag(RunnerState.F_OPENED, true);
-        _scenarioRunner.doNotifyAll();
+        _operationSequenceScenario = new OperationSequence(root, this);
     }
 
-    /** Parse an operation */
+    /**
+     * Parse an operation
+     */
     public Operation parseOperation(Element root) throws Exception {
         Operation ope = null;
         String rootName = root.getName();
@@ -866,13 +805,15 @@ public class Scenario implements Serializable {
             ope = new OperationFunction(root);
         }
         else {
-            throw new ParsingException("Unknown operation <" + rootName + "> in file " + filename);
+            throw new ParsingException("Unknown operation " + rootName);
         }
 
         return ope;
     }
 
-    /** Parse a ReceiveXXXXXAAA operation */
+    /**
+     * Parse a ReceiveXXXXXAAA operation
+     */
     @Deprecated
     private Operation parseReceiveAAA(String protocol, boolean request, Element node) throws Exception {
         String type = node.attributeValue("command");
@@ -889,7 +830,9 @@ public class Scenario implements Serializable {
         return new OperationReceiveMsg(StackFactory.PROTOCOL_DIAMETER, request, null, null, type, result, node, this);
     }
 
-    /** Parse a ReceiveXXXXXAAA operation */
+    /**
+     * Parse a ReceiveXXXXXAAA operation
+     */
     @Deprecated
     private Operation parseReceiveRadius(String protocol, boolean request, Element node) throws Exception {
         String type = node.attributeValue("type");
@@ -901,7 +844,9 @@ public class Scenario implements Serializable {
         return new OperationReceiveMsg(StackFactory.PROTOCOL_RADIUS, request, channel, null, type, result, node, this);
     }
 
-    /** Parse a ReceiveXXXXXSIP operation */
+    /**
+     * Parse a ReceiveXXXXXSIP operation
+     */
     @Deprecated
     private Operation parseReceiveSIP(String protocol, boolean request, Element node) throws Exception {
         String provider = node.attributeValue("providerName");
@@ -911,7 +856,9 @@ public class Scenario implements Serializable {
         return new OperationReceiveMsg(StackFactory.PROTOCOL_SIP, request, null, provider, type, result, node, this);
     }
 
-    /** Parse a ReceiveXXXXXHTTP operation */
+    /**
+     * Parse a ReceiveXXXXXHTTP operation
+     */
     @Deprecated
     private Operation parseReceiveHTTP(String protocol, boolean request, Element node) throws Exception {
         String type = node.attributeValue("method");
@@ -920,7 +867,9 @@ public class Scenario implements Serializable {
         return new OperationReceiveMsg(StackFactory.PROTOCOL_HTTP, request, null, null, type, result, node, this);
     }
 
-    /** Parse a ReceivePacketRTP operation */
+    /**
+     * Parse a ReceivePacketRTP operation
+     */
     @Deprecated
     private Operation parseReceiveRTP(String protocol, Element node) throws Exception {
         String channel = node.attributeValue("sessionName");
@@ -929,14 +878,18 @@ public class Scenario implements Serializable {
         return new OperationReceiveMsg(StackFactory.PROTOCOL_RTP, true, channel, null, type, null, node, this);
     }
 
-    /** Parse a ReceivePacketTCP operation */
+    /**
+     * Parse a ReceivePacketTCP operation
+     */
     @Deprecated
     private Operation parseReceiveTCP(String protocol, Element node) throws Exception {
         String channel = node.attributeValue("connexionName");
         return new OperationReceiveMsg(StackFactory.PROTOCOL_TCP, true, channel, null, null, null, node, this);
     }
 
-    /** Parse a ReceivePacketSMTP operation */
+    /**
+     * Parse a ReceivePacketSMTP operation
+     */
     @Deprecated
     private Operation parseReceiveSMTP(String protocol, boolean request, Element node) throws Exception {
         String channel = node.attributeValue("sessionName");
@@ -945,7 +898,9 @@ public class Scenario implements Serializable {
         return new OperationReceiveMsg(StackFactory.PROTOCOL_SMTP, request, channel, null, type, result, node, this);
     }
 
-    /** Parse a ReceivePacketMGCP operation */
+    /**
+     * Parse a ReceivePacketMGCP operation
+     */
     @Deprecated
     private Operation parseReceiveMGCP(String protocol, boolean request, Element node) throws Exception {
         String channel = node.attributeValue("sessionName");
@@ -970,41 +925,21 @@ public class Scenario implements Serializable {
         return new OperationReceiveMsg(StackFactory.PROTOCOL_H225CS, request, channel, null, type, result, node, this);
     }
 
-    /** Parse a ReceivePacketUDP operation */
+    /**
+     * Parse a ReceivePacketUDP operation
+     */
     @Deprecated
     private Operation parseReceiveUDP(String protocol, Element node) throws Exception {
         String channel = node.attributeValue("connexionName");
         return new OperationReceiveMsg(StackFactory.PROTOCOL_UDP, true, channel, null, null, null, node, this);
     }
 
-    /** Parse a ReceivePacketSCTP operation */
+    /**
+     * Parse a ReceivePacketSCTP operation
+     */
     @Deprecated
     private Operation parseReceiveSCTP(String protocol, Element node) throws Exception {
         String channel = node.attributeValue("connexionName");
         return new OperationReceiveMsg(StackFactory.PROTOCOL_SCTP, true, channel, null, null, null, node, this);
-    }
-
-    /** Returns the name */
-    public String getName() {
-        return name;
-    }
-
-    /** Returns the description */
-    public String getDescription() {
-        return description;
-    }
-
-    /** Returns the filename */
-    public String getFilename() {
-        return filename;
-    }
-
-    /** Returns the id */
-    public String getId() {
-        return testcase.getId() + getName();
-    }
-
-    public String toString() {
-        return name;
     }
 }

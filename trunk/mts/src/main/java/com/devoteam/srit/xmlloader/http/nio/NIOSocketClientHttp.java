@@ -54,6 +54,7 @@ public class NIOSocketClientHttp extends SocketClientHttp implements HybridSocke
         this.connHttp = connHttp;
     }
 
+    @Override
     public boolean handle(HybridSocket hybridSocket)
     {
         if(false == init) return true;

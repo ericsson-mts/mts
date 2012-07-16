@@ -462,8 +462,8 @@ public class StackSnmp extends Stack
         return Config.getConfigByName("snmp.properties");
     }
 
-    public XMLElementReplacer getElementReplacer(ParameterPool variables)
+    public XMLElementReplacer getElementReplacer()
     {
-        return new XMLElementTextMsgParser(variables);
+        return XMLElementTextMsgParser.instance();
     }
 }

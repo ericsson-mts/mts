@@ -203,7 +203,7 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
 
             GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Test RunProfile before parsing\n", xmlTree);
 
-            xmlTree.replace(new XMLElementDefaultParser(runner.getParameterPool()));
+            xmlTree.replace(XMLElementDefaultParser.instance(), runner.getParameterPool());
 
             GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Test RunProfile after parsing\n", xmlTree);
 
@@ -231,7 +231,7 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
         // do parameter replacement in <for> element (not recursive)
         XMLTree xmlTree;
         xmlTree = new XMLTree(element, true, Parameter.EXPRESSION, false);
-        xmlTree.replace(new XMLElementDefaultParser(runner.getParameterPool()));
+        xmlTree.replace(XMLElementDefaultParser.instance(), runner.getParameterPool());
         element = xmlTree.getTreeRoot();
 
         String index = element.attributeValue("index");
@@ -280,7 +280,7 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
                 // do parameter replacement in <testcase> element (not recursive)
                 // must duplicate the element !
                 xmlTree = new XMLTree(testcase, true, Parameter.EXPRESSION, false);
-                xmlTree.replace(new XMLElementDefaultParser(runner.getParameterPool()));
+                xmlTree.replace(XMLElementDefaultParser.instance(), runner.getParameterPool());
 
                 testcase = xmlTree.getTreeRoot();
 
@@ -316,13 +316,10 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
 
     private Element replaceParameterInTestcase(Element testcase, Runner runner) throws Exception {
         // Parser for testcase
-        XMLElementDefaultParser xmlElementDefaultParser;
-        xmlElementDefaultParser = new XMLElementDefaultParser(runner.getParameterPool());
-
         XMLTree xmlTree;
         xmlTree = new XMLTree(testcase);
         xmlTree.compute(Parameter.EXPRESSION, false);
-        xmlTree.replace(xmlElementDefaultParser);
+        xmlTree.replace(XMLElementDefaultParser.instance(), runner.getParameterPool());
 
         Element newTestcase = xmlTree.getTreeRoot();
 
@@ -334,7 +331,7 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
                 innerXmlTree = new XMLTree(innerElement, false);
                 innerXmlTree.compute(Parameter.EXPRESSION, false);
 
-                innerXmlTree.replace(xmlElementDefaultParser);
+                innerXmlTree.replace(XMLElementDefaultParser.instance(), runner.getParameterPool());
             }
         }
 

@@ -79,8 +79,8 @@ public class StackH225cs extends Stack {
     }
 
     @Override
-    public XMLElementReplacer getElementReplacer(ParameterPool parameterPool) {
-        return new XMLElementTextMsgParser(parameterPool);
+    public XMLElementReplacer getElementReplacer() {
+        return XMLElementTextMsgParser.instance();
     }
 
     @Override
