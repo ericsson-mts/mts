@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.core.utils;
 
+import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 
 import java.util.List;
@@ -42,5 +43,5 @@ public interface XMLElementReplacer
      * @param element oldElement
      * @return newElement
      */
-    public List<Element> replace(Element element) throws Exception;
+    public List<Element> replace(Element element, ParameterPool variables) throws Exception;
 }

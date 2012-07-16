@@ -20,9 +20,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.core.operations.basic;
-
 
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
@@ -37,20 +35,19 @@ import org.dom4j.Element;
 /**
  * OperationGoto operation
  */
-public class OperationGoto extends Operation
-{
+public class OperationGoto extends Operation {
+
     /**
      * Constructor
-     * 
-     * 
+     *
+     *
      * @param name Ope name
      * @param label OperationGoto label
      */
-    public OperationGoto(Element root)
-    {
-        super(root);
+    public OperationGoto(Element root) {
+        super(root, XMLElementDefaultParser.instance());
     }
-    
+
     /**
      * Execute operation
      *
@@ -58,17 +55,20 @@ public class OperationGoto extends Operation
      * @return Next operation or null by default
      * @throws ExecutionException
      */
-    public Operation execute(Runner runner) throws Exception
-    {
-        restore();
-
+    public Operation execute(Runner runner) throws Exception {
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, this);
 
-        // Replace elements in XMLTree
-        replace(runner, new XMLElementDefaultParser(runner.getParameterPool()), TextEvent.Topic.CORE);
+        String label;
 
-        String label = getAttribute("label");
-
+        try {
+            lockAndReplace(runner);
+            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "Operation after pre-parsing \n", this);
+            label = getAttribute("label");
+        }
+        finally {
+            unlockAndRestore();
+        }
+        
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Branching to label ", label);
         throw new GotoExecutionException(label);
     }

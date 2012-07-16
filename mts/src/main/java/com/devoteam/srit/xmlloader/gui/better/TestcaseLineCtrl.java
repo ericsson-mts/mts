@@ -23,11 +23,7 @@
 
 package com.devoteam.srit.xmlloader.gui.better;
 
-import com.devoteam.srit.xmlloader.core.RunnerState;
-import com.devoteam.srit.xmlloader.core.Scenario;
-import com.devoteam.srit.xmlloader.core.TestRunnerSingle;
-import com.devoteam.srit.xmlloader.core.Testcase;
-import com.devoteam.srit.xmlloader.core.ThreadPool;
+import com.devoteam.srit.xmlloader.core.*;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.notifications.Notification;
 import com.devoteam.srit.xmlloader.core.utils.notifications.NotificationListener;
@@ -130,7 +126,7 @@ public class TestcaseLineCtrl implements NotificationListener<Notification<Strin
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    for (Entry<String, Scenario> scenario : _testcase.getScenarioPathByNameMap().entrySet()) {
+                    for (Entry<String, ScenarioReference> scenario : _testcase.getScenarioPathByNameMap().entrySet()) {
                         Utils.openEditor(_testcase.getParent().getXMLDocument().getXMLFile().resolve(scenario.getValue().getFilename()));
                     }
                 }

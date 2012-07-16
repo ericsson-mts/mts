@@ -28,13 +28,8 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.Scenario;
 import com.devoteam.srit.xmlloader.core.ScenarioRunner;
 import com.devoteam.srit.xmlloader.core.exception.GotoExecutionException;
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.operations.Operation;
-import com.devoteam.srit.xmlloader.core.protocol.Stack;
-
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import org.dom4j.Element;
@@ -50,7 +45,7 @@ public class OperationSequence extends Operation {
     private ArrayList<Operation> operations;
 
     public OperationSequence(Element root, Scenario scenario) throws Exception {
-        super(root);
+        super(root, null);
         this.scenario = scenario;
         this.operations = new ArrayList<Operation>();
         HashSet<String> labelNames = new HashSet();
@@ -83,8 +78,6 @@ public class OperationSequence extends Operation {
      */
     @Override
     public Operation execute(Runner runner) throws Exception {
-        restore();
-
         ScenarioRunner scenarioRunner = (ScenarioRunner) runner;
         int index = 0;
         int size = this.operations.size();
@@ -92,9 +85,7 @@ public class OperationSequence extends Operation {
             scenarioRunner.assertIsNotInterrupting();
 
             try {
-                // GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, "START operation : " + this.operations.get(index));
                 this.operations.get(index).executeAndStat(runner);
-                // GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, "END operation : " + this.operations.get(index));
                 index++;
             }
             catch (GotoExecutionException e) {

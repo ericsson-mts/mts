@@ -20,7 +20,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.core.utils;
 
 import com.devoteam.srit.xmlloader.diameter.MsgDiameterParser;
@@ -37,125 +36,110 @@ import org.dom4j.Attribute;
 import org.dom4j.Element;
 
 /**
- * specific replacer for <sendMessageDIAMETER> operation : 
- * duplicate the XML tags if there are multiple value in all 
- * parameters on the XML tag (like avp)
- * if the parameter is empty, then the XML tag is removed 
- * also used for <stats> operation 
- * 
+ * specific replacer for <sendMessageDIAMETER> operation : duplicate the XML tags if there are multiple value in all parameters on the XML tag (like avp) if the parameter is empty, then the XML tag is
+ * removed also used for <stats> operation
+ *
  * @author gpasquiers
  */
-public class XMLElementAVPParser implements XMLElementReplacer
-{
-    private ParameterPool parameterPool;
-    
-    private XMLElementDefaultParser xmlElementDefaultParser;
-    private XMLElementTextOnlyParser xmlElementTextOnlyParser;
-    
-    public XMLElementAVPParser(ParameterPool parameterPool)
-    {
-        this.parameterPool = parameterPool;
-        xmlElementDefaultParser = new XMLElementDefaultParser(parameterPool);
-        xmlElementTextOnlyParser = new XMLElementTextOnlyParser(parameterPool);
+public class XMLElementAVPParser implements XMLElementReplacer {
+
+    static private XMLElementReplacer instance = null;
+
+    static public XMLElementReplacer instance() {
+        if (null == instance) {
+            instance = new XMLElementAVPParser();
+        }
+        return instance;
     }
-    
-    public List<Element> replace(Element element) throws Exception
-    {
-        List<Element> result ;
-        
-        if(element.getName().equalsIgnoreCase("header"))
-        {
-            result = xmlElementDefaultParser.replace(element);
+    private XMLElementReplacer xmlElementDefaultParser;
+    private XMLElementReplacer xmlElementTextOnlyParser;
+
+    protected XMLElementAVPParser() {
+        xmlElementDefaultParser = XMLElementDefaultParser.instance();
+        xmlElementTextOnlyParser = XMLElementTextOnlyParser.instance();
+    }
+
+    public List<Element> replace(Element element, ParameterPool parameterPool) throws Exception {
+        List<Element> result;
+
+        if (element.getName().equalsIgnoreCase("header")) {
+            result = xmlElementDefaultParser.replace(element, parameterPool);
         }
         else // <avp .../>
         {
             LinkedList list = new LinkedList<Element>();
-            
-            List<Attribute> attributes ;
+
+            List<Attribute> attributes;
             attributes = element.attributes();
-            
+
             int allowedParameterLength = -1;
             boolean hasParameter = false;
-            
-            for(Attribute attribute:attributes)
-            {
-                String value = attribute.getValue();	                
+
+            for (Attribute attribute : attributes) {
+                String value = attribute.getValue();
                 Matcher matcher = Parameter.pattern.matcher(value);
-                
-                while(matcher.find())
-                {
+
+                while (matcher.find()) {
                     String variableStr = matcher.group();
-                    
-                    if(false == parameterPool.isConstant(variableStr))
-                    {
+
+                    if (false == parameterPool.isConstant(variableStr)) {
                         Parameter variable = parameterPool.get(variableStr);
                         hasParameter = true;
-                        if (variable != null)
-                        {
-                            if(allowedParameterLength == -1 || allowedParameterLength == 1)
-                            {
+                        if (variable != null) {
+                            if (allowedParameterLength == -1 || allowedParameterLength == 1) {
                                 allowedParameterLength = variable.length();
                             }
-                            else if(variable.length() != 1 && allowedParameterLength != variable.length())
-                            {
+                            else if (variable.length() != 1 && allowedParameterLength != variable.length()) {
                                 throw new ExecutionException("Invalid length of variables : a variable of length " + allowedParameterLength + " has been found but " + variableStr + " has a length of " + variable.length());
                             }
                         }
                     }
                 }
             }
-            
-            if (!hasParameter)
-            {
+
+            if (!hasParameter) {
                 allowedParameterLength = 1;
             }
-            
-            for(int i=0; i<allowedParameterLength; i++)
-            {
+
+            for (int i = 0; i < allowedParameterLength; i++) {
                 Element newElement = element.createCopy();
-                
-                List<Attribute> newElementAttributes ;
+
+                List<Attribute> newElementAttributes;
                 newElementAttributes = newElement.attributes();
-                
-                for(Attribute newAttribute:newElementAttributes)
-                {
+
+                for (Attribute newAttribute : newElementAttributes) {
                     String value = newAttribute.getValue();
-                    
+
                     Pattern pattern = Pattern.compile(Parameter.EXPRESSION);
                     Matcher matcher = pattern.matcher(value);
                     int offset = 0;
-                    while(matcher.find())
-                    {
-                        String before = value.substring(0, matcher.end()+offset-1);
-                        String after  = value.substring(matcher.end()+offset-1);
+                    while (matcher.find()) {
+                        String before = value.substring(0, matcher.end() + offset - 1);
+                        String after = value.substring(matcher.end() + offset - 1);
 
-                        if (parameterPool.exists(matcher.group()))
-                        {
+                        if (parameterPool.exists(matcher.group())) {
                             int index = i;
-                            if(parameterPool.get(matcher.group()).length() == 1){
+                            if (parameterPool.get(matcher.group()).length() == 1) {
                                 index = 0;
                             }
-                                    
+
                             value = before + "(" + index + ")" + after;
                             offset += ((String) "(" + index + ")").length();
                         }
-                        
+
                     }
                     newAttribute.setValue(value);
                 }
-                
-                List<Element> tempList = xmlElementDefaultParser.replace(newElement);
-                try
-                {
-                    for(Element e:tempList)
-                    {
+
+                List<Element> tempList = xmlElementDefaultParser.replace(newElement, parameterPool);
+                try {
+                    for (Element e : tempList) {
                         MsgDiameterParser.getInstance().doDictionnary(e, "base", false);
 
-                        list.addAll(xmlElementTextOnlyParser.replace(e));
+                        list.addAll(xmlElementTextOnlyParser.replace(e, parameterPool));
                     }
                 }
-                catch(ParsingException e)
-                {
+                catch (ParsingException e) {
                     throw new ExecutionException("Error while checking parsed variables against dictionary");
                 }
 
@@ -165,7 +149,7 @@ public class XMLElementAVPParser implements XMLElementReplacer
             }
             result = list;
         }
-        
+
         return result;
     }
 }

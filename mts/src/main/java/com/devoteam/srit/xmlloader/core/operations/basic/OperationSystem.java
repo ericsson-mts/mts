@@ -20,9 +20,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.core.operations.basic;
-
 
 import com.devoteam.srit.xmlloader.core.Runner;
 import java.io.IOException;
@@ -36,17 +34,16 @@ import java.io.InputStream;
 
 import java.util.concurrent.Semaphore;
 import org.dom4j.Element;
+
 /**
  * @author ma007141
  */
-public class OperationSystem extends Operation
-{
-    
-    public OperationSystem(Element root)
-    {
-        super(root);
+public class OperationSystem extends Operation {
+
+    public OperationSystem(Element root) {
+        super(root, XMLElementDefaultParser.instance());
     }
-    
+
     /**
      * Execute operation
      *
@@ -54,49 +51,49 @@ public class OperationSystem extends Operation
      * @return Next operation or null by default
      * @throws IOException
      */
-    public Operation execute(Runner runner) throws Exception
-    {
-        restore();
-
+    public Operation execute(Runner runner) throws Exception {
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, this);
-        
-        // Replace elements in XMLTree
-        replace(runner, new XMLElementDefaultParser(runner.getParameterPool()), TextEvent.Topic.CORE);
 
-        String command = getAttribute("command");
+        String command;
+
+
+        try {
+            lockAndReplace(runner);
+            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "Operation after pre-parsing \n", this);
+            command = this.getAttribute("command");
+        }
+        finally {
+            unlockAndRestore();
+        }
+
+        // Replace elements in XMLTree
         GlobalLogger.instance().logDeprecatedMessage(
-    			"system command=\"xxx\" ... \"/", 
-    			"parameter ... operation=\"" + "system.command" + "\" value=\"xxx\"/"   		
-        		);                	
-        
-        try
-        {
+                "system command=\"xxx\" ... \"/",
+                "parameter ... operation=\"" + "system.command" + "\" value=\"xxx\"/");
+
+        try {
             Process p = Runtime.getRuntime().exec(command);
-            
-            InputStreamConsumer stdInputStreamConsumer= new InputStreamConsumer(p.getInputStream());
-            InputStreamConsumer errInputStreamConsumer= new InputStreamConsumer(p.getErrorStream());
-                    
+
+            InputStreamConsumer stdInputStreamConsumer = new InputStreamConsumer(p.getInputStream());
+            InputStreamConsumer errInputStreamConsumer = new InputStreamConsumer(p.getErrorStream());
+
             stdInputStreamConsumer.acquire();
             GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, command, " (standard output):\n", stdInputStreamConsumer.getContents());
             errInputStreamConsumer.acquire();
             GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, command, " (error output):\n", errInputStreamConsumer.getContents());
             p.waitFor();
             GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, command, " system process ended");
-            
-            if( 0 != p.exitValue())
-            {
+
+            if (0 != p.exitValue()) {
                 GlobalLogger.instance().getSessionLogger().error(runner, TextEvent.Topic.CORE, command, "Return value not null \n");
                 throw new ExecutionException("Error , return value of System command : " + command + "=" + p.exitValue());
             }
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             GlobalLogger.instance().getSessionLogger().error(runner, TextEvent.Topic.CORE, command, "Exception occured\n", e);
             throw new ExecutionException("Error executing system operation command", e);
         }
-        
+
         return null;
     }
-    
-
 }

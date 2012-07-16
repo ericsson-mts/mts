@@ -24,7 +24,7 @@
 package com.devoteam.srit.xmlloader.core.operations.basic;
 
 import com.devoteam.srit.xmlloader.core.Runner;
-import com.devoteam.srit.xmlloader.core.XMLDocumentCache;
+import com.devoteam.srit.xmlloader.core.Cache;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -35,8 +35,6 @@ import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
 import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import java.net.URI;
-
-
 import org.dom4j.Element;
 
 /**
@@ -50,7 +48,7 @@ public class OperationFunction extends Operation {
      * Constructor
      */
     public OperationFunction(Element root) throws Exception {
-        super(root);
+        super(root, null);
         String file = root.attributeValue("file");
         String name = root.attributeValue("name");
 
@@ -72,7 +70,7 @@ public class OperationFunction extends Operation {
 
     public static void importFile(String file, URI relativeTo) throws Exception {
         // parse the xml file
-        XMLDocument scenarioDocument = XMLDocumentCache.get(relativeTo.resolve(file), URIFactory.newURI("../conf/schemas/scenario.xsd"));
+        XMLDocument scenarioDocument = Cache.getXMLDocument(relativeTo.resolve(file), URIFactory.newURI("../conf/schemas/scenario.xsd"));
 
         // get all <function> element
         for (Object object : scenarioDocument.getDocument().selectNodes("//function")) {

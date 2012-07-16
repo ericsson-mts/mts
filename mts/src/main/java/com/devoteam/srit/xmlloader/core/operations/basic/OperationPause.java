@@ -51,7 +51,7 @@ public class OperationPause extends Operation
      */
     public OperationPause(Element root)
     {
-        super(root);
+        super(root, XMLElementDefaultParser.instance());
     }
     
     /**
@@ -62,27 +62,35 @@ public class OperationPause extends Operation
      */
     public Operation execute(Runner runner) throws Exception
     {
-        restore();
-
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, this);                
 
-        // Replace elements in XMLTree
-        replace(runner, new XMLElementDefaultParser(runner.getParameterPool()), TextEvent.Topic.CORE);
+        String seconds;
+        String milliseconds;
 
+        try {
+            lockAndReplace(runner);
+            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "Operation after pre-parsing \n", this);
+            seconds = getAttribute("seconds");
+            milliseconds= getAttribute("milliseconds");
+        }
+        finally {
+            unlockAndRestore();
+        }
+        
         //
         // Read attribute
         //
         float pause ;
 
-        if(null != getAttribute("seconds"))
+        if(null != seconds)
         {
-            pause = Float.parseFloat(getAttribute("seconds"));
+            pause = Float.parseFloat(seconds);
             pause *= 1000;
             
         }
-        else if(null != getAttribute("milliseconds"))
+        else if(null != milliseconds)
         {
-            pause = Float.parseFloat(getAttribute("milliseconds"));           
+            pause = Float.parseFloat(milliseconds);
         }
         else
         {

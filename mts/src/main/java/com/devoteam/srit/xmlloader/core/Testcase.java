@@ -44,12 +44,12 @@ import org.dom4j.Element;
 /**
  * Testcase
  */
-public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
+public class Testcase implements HierarchyMember<Test, ScenarioReference>, Serializable {
 
     private String _name;
     private boolean _state;
     private int _number;
-    private LinkedHashMap<String, Scenario> scenarioByName;
+    private LinkedHashMap<String, ScenarioReference> scenarioByName;
     private Element _root;
     private int _runId = 0;
     private boolean _interruptible;
@@ -63,7 +63,7 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
      *  3 - init the scenario: execut a replace on <scenario>
      */
     public Testcase(Test test, Element root) throws Exception {
-        defaultHierarchyMember = new DefaultHierarchyMember<Test, Scenario>();
+        defaultHierarchyMember = new DefaultHierarchyMember<Test, ScenarioReference>();
         defaultHierarchyMember.setParent(test);
         _root = root;
         _parameters = new ParameterPool(null, ParameterPool.Level.testcase, test.getParameterPool());
@@ -117,7 +117,7 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
 
             GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Testcase RunProfile before parsing\n", xmlTree);
 
-            xmlTree.replace(new XMLElementDefaultParser(runner.getParameterPool()));
+            xmlTree.replace(XMLElementDefaultParser.instance(), runner.getParameterPool());
 
             GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Testcase RunProfile after parsing\n", xmlTree);
 
@@ -130,16 +130,16 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
 
             GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Scenario before parsing\n", xmlTree);
 
-            xmlTree.replace(new XMLElementTextMsgParser(runner.getParameterPool()));
+            xmlTree.replace(XMLElementTextMsgParser.instance(), runner.getParameterPool());
 
             GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Scenario RunProfile after parsing\n", xmlTree);
             scenario = xmlTree.getTreeRoot();
         }
 
         // fill a map with "scenario name" => "scenario object"
-        scenarioByName = new LinkedHashMap<String, Scenario>();
+        scenarioByName = new LinkedHashMap<String, ScenarioReference>();
         for (Element element : (List<Element>) _root.selectNodes("./scenario")) {
-            Scenario scenario = new Scenario(element, this);
+            ScenarioReference scenario = new ScenarioReference(element, this);
 
             String name = scenario.getName();
             if (null != name && scenarioByName.containsKey(name)) {
@@ -153,7 +153,7 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
     }
 
     public boolean parsedScenarios() throws Exception {
-        for (Entry<String, Scenario> entry : scenarioByName.entrySet()) {
+        for (Entry<String, ScenarioReference> entry : scenarioByName.entrySet()) {
             if(!entry.getValue().isParsed()){
                 return false;
             }
@@ -162,13 +162,13 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
     }
 
     public void parseScenarios() throws Exception {
-        for (Entry<String, Scenario> entry : scenarioByName.entrySet()) {
+        for (Entry<String, ScenarioReference> entry : scenarioByName.entrySet()) {
             entry.getValue().parse();
         }
     }
 
     public void free() {
-        for (Entry<String, Scenario> entry : scenarioByName.entrySet()) {
+        for (Entry<String, ScenarioReference> entry : scenarioByName.entrySet()) {
             entry.getValue().free();
         }
     }
@@ -185,7 +185,7 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
         return _root.attributeValue(name);
     }
 
-    public LinkedHashMap<String, Scenario> getScenarioPathByNameMap() {
+    public LinkedHashMap<String, ScenarioReference> getScenarioPathByNameMap() {
         return scenarioByName;
     }
 
@@ -234,13 +234,13 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
     }
     
     // <editor-fold defaultstate="collapsed" desc="Hierarchy implementation">
-    private DefaultHierarchyMember<Test, Scenario> defaultHierarchyMember;
+    private DefaultHierarchyMember<Test, ScenarioReference> defaultHierarchyMember;
 
     public Test getParent() {
         return this.defaultHierarchyMember.getParent();
     }
 
-    public List<Scenario> getChildren() {
+    public List<ScenarioReference> getChildren() {
         return this.defaultHierarchyMember.getChildren();
     }
 
@@ -248,11 +248,11 @@ public class Testcase implements HierarchyMember<Test, Scenario>, Serializable {
         this.defaultHierarchyMember.setParent(parent);
     }
 
-    public void addChild(Scenario child) {
+    public void addChild(ScenarioReference child) {
         this.defaultHierarchyMember.addChild(child);
     }
 
-    public void removeChild(Scenario child) {
+    public void removeChild(ScenarioReference child) {
         this.defaultHierarchyMember.removeChild(child);
     }
     // </editor-fold>

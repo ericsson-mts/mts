@@ -201,8 +201,8 @@ public class StackSmtp extends Stack
         return Config.getConfigByName("smtp.properties");
     }
 
-    public XMLElementReplacer getElementReplacer(ParameterPool variables)
+    public XMLElementReplacer getElementReplacer()
     {
-        return new XMLElementTextMsgParser(variables);
+        return XMLElementTextMsgParser.instance();
     }
 }

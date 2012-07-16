@@ -20,7 +20,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.core.operations.basic;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
@@ -37,45 +36,53 @@ import org.dom4j.Element;
  *
  * @author rbarbot
  */
-public class OperationFor extends Operation
-{
+public class OperationFor extends Operation {
+
     private OperationSequence operationsSequence;
-   
     private Scenario scenario;
 
-    public OperationFor(Element root, Scenario scenario) throws Exception
-    {
-        super(root,false);
-        this.scenario = scenario;        
+    public OperationFor(Element root, Scenario scenario) throws Exception {
+        super(root, XMLElementDefaultParser.instance(), false);
+        this.scenario = scenario;
 
         operationsSequence = new OperationSequence(root, this.scenario);
     }
 
     @Override
-    public Operation execute(Runner runner) throws Exception
-    {
-        restore();
-
+    public Operation execute(Runner runner) throws Exception {
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, this);
 
+        String index;
+        int from;
+        int to;
+        int step;
+        String strStep;
+
+        try {
+            lockAndReplace(runner);
+            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "Operation after pre-parsing \n", this);
+
+            index = getAttribute("index");
+            from = Integer.decode(getAttribute("from"));
+            to = Integer.decode(getAttribute("to"));
+            step = 1;
+            strStep = getAttribute("step");
+        }
+        finally {
+            unlockAndRestore();
+        }
+
         // Replace elements in XMLTree
-        replace(runner, new XMLElementDefaultParser(runner.getParameterPool()), TextEvent.Topic.CORE);
 
         // retrieve the xml attribute
-        String index = getAttribute("index");
-        int from = Integer.decode(getAttribute("from"));
-        int to = Integer.decode(getAttribute("to"));
-        int step = 1;
-        String strStep = getAttribute("step");
-        if (strStep != null)
-        {
+        if (strStep != null) {
             step = Integer.decode(strStep);
         }
-        
+
         Parameter parameterIndex = new Parameter();
 
-        for (int i=from; i <= to; i+=step) {
-            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "New iteration of "+index+"\nExecute XML\n", this);
+        for (int i = from; i <= to; i += step) {
+            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "New iteration of " + index + "\nExecute XML\n", this);
             parameterIndex.add(i);
             runner.getParameterPool().set(index, parameterIndex);
             operationsSequence.execute(runner);
@@ -86,5 +93,4 @@ public class OperationFor extends Operation
 
         return null;
     }
-
 }

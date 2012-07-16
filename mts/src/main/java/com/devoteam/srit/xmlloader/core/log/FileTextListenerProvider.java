@@ -72,7 +72,7 @@ public class FileTextListenerProvider implements TextListenerProvider {
                 listener = new FileTextListener(filename, true);
             }
             else {
-                filename = Config.getConfigByName("tester.properties").getString("logs.STORAGE_DIRECTORY", "../logs") + ((ScenarioRunner) key).getParent().getRunId() + "/" + ((ScenarioRunner) key).getScenario().getName() + extensionFile;
+                filename = Config.getConfigByName("tester.properties").getString("logs.STORAGE_DIRECTORY", "../logs") + ((ScenarioRunner) key).getParent().getRunId() + "/" + ((ScenarioRunner) key).getScenarioReference().getName() + extensionFile;
                 listener = new FileTextListener(filename, false);
             }
             registry.put(key, listener);

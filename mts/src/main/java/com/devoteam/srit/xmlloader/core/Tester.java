@@ -120,14 +120,14 @@ public class Tester
         StackFactory.reset();
         FunctionsRegistry.instance().clear();
         Config.reset();
-        XMLDocumentCache.reset();
+        Cache.reset();
     }
     
     public void open_openFile(URI path, EditableParameterProvider provider) throws Exception
     {
         OperationFunction.importDir("../functions/", URIRegistry.IMSLOADER_BIN);
 
-        this.test = new Test(XMLDocumentCache.get(path, URIFactory.newURI("../conf/schemas/test.xsd")), provider);
+        this.test = new Test(Cache.getXMLDocument(path, URIFactory.newURI("../conf/schemas/test.xsd")), provider);
 
         Config.reset();
     }

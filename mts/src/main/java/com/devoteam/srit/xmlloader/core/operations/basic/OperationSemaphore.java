@@ -20,9 +20,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.core.operations.basic;
-
 
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.ScenarioRunner;
@@ -43,8 +41,7 @@ import org.dom4j.Element;
  *
  * @author JM. Auffret
  */
-public class OperationSemaphore extends Operation
-{
+public class OperationSemaphore extends Operation {
 
     private int defaultTimeout;
 
@@ -55,13 +52,11 @@ public class OperationSemaphore extends Operation
      * @param action Type of cation to realize (create, delete, wait or notify)
      * @param timeout Timeout to wait
      */
-    public OperationSemaphore(Element aRoot)
-    {
-        super(aRoot);
+    public OperationSemaphore(Element aRoot) {
+        super(aRoot, XMLElementDefaultParser.instance());
 
         defaultTimeout = (int) (Config.getConfigByName("tester.properties").getDouble("operations.SEMAPHORE_TIMEOUT", 30) * 1000);
     }
-
 
     /**
      * Execute operation
@@ -72,72 +67,71 @@ public class OperationSemaphore extends Operation
      * @return Next operation or null by default
      * @throws ExecutionException
      */
-    public Operation execute(Runner runner) throws Exception
-    {
-        restore();
-
+    public Operation execute(Runner runner) throws Exception {
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, this);
 
-        // Replace elements in XMLTree
-        replace(runner, new XMLElementDefaultParser(runner.getParameterPool()), TextEvent.Topic.CORE);
+        String semaphoreName;
+        String semaphoreAction;
+        String semaphoreTimeoutStr;
+        String semaphorePermitsStr;
 
-        String semaphoreName       = getAttribute("name");
-        String semaphoreAction     = getAttribute("action");
-        String semaphoreTimeoutStr = getAttribute("timeout");
-        String semaphorePermitsStr = getAttribute("permits");
+        try {
+            lockAndReplace(runner);
+            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "Operation after pre-parsing \n", this);
+            semaphoreName = getAttribute("name");
+            semaphoreAction = getAttribute("action");
+            semaphoreTimeoutStr = getAttribute("timeout");
+            semaphorePermitsStr = getAttribute("permits");
+        }
+        finally {
+            unlockAndRestore();
+        }
 
         GlobalLogger.instance().logDeprecatedMessage(
-    			"semaphore name=\"" +
-    			semaphoreName +
-    			"\" action=\"" +
-    			semaphoreAction +
-    			"\"/",
-    			"parameter name=\"[testcase:" +
-    			semaphoreName +
-    			"]\" operation=\"system.semaphore" +
-    			semaphoreAction +
-    			"\"/"
-        		);
+                "semaphore name=\""
+                + semaphoreName
+                + "\" action=\""
+                + semaphoreAction
+                + "\"/",
+                "parameter name=\"[testcase:"
+                + semaphoreName
+                + "]\" operation=\"system.semaphore"
+                + semaphoreAction
+                + "\"/");
 
         //
         // Get the timeout value:
         //
-        int semaphoreTimeout ;
-        if(null == semaphoreTimeoutStr)
-        {
+        int semaphoreTimeout;
+        if (null == semaphoreTimeoutStr) {
             semaphoreTimeout = defaultTimeout;
         }
-        else
-        {
+        else {
             semaphoreTimeout = (int) (Float.parseFloat(semaphoreTimeoutStr) * 1000);
         }
 
         //
         // Get the permits value:
         //
-        int  semaphorePermits;
-        if(null == semaphorePermitsStr)
-        {
+        int semaphorePermits;
+        if (null == semaphorePermitsStr) {
             semaphorePermits = 1;
         }
-        else
-        {
+        else {
             semaphorePermits = (int) (Float.parseFloat(semaphorePermitsStr) * 1000);
         }
 
         //
         // Get the Semaphores pool
         //
-        Semaphores semaphores = ((ScenarioRunner)runner).getParent().getSemaphores();
-        if (semaphoreAction.equals("wait"))
-        {
-            GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Wait semaphore ", semaphoreName , " for ", semaphorePermits, " permits");
+        Semaphores semaphores = ((ScenarioRunner) runner).getParent().getSemaphores();
+        if (semaphoreAction.equals("wait")) {
+            GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Wait semaphore ", semaphoreName, " for ", semaphorePermits, " permits");
             semaphores.tryAcquire(semaphoreName, semaphorePermits, semaphoreTimeout, TimeUnit.MILLISECONDS);
             GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Semaphore ", semaphoreName, " unlocked");
         }
-        else if (semaphoreAction.equals("notify"))
-        {
-            GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Notify semaphore ", semaphoreName , " for ", semaphorePermits, " permits");
+        else if (semaphoreAction.equals("notify")) {
+            GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Notify semaphore ", semaphoreName, " for ", semaphorePermits, " permits");
             semaphores.release(semaphoreName, semaphorePermits);
         }
 

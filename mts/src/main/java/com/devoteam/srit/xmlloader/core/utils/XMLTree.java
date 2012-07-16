@@ -23,12 +23,15 @@
 
 package com.devoteam.srit.xmlloader.core.utils;
 
+import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -49,6 +52,8 @@ public class XMLTree implements Serializable
     
     private LinkedList<Element> elementsOrder;
     
+    private Lock lock;
+    
     public XMLTree(Element root)
     {
         this(root, true);
@@ -58,7 +63,7 @@ public class XMLTree implements Serializable
     {
         elementsOrder = new LinkedList<Element>();
         elementsMap = new HashMap<Element, List<Element>>();
-
+        lock = new ReentrantLock();
         if(duplicate)
         {
             this.root = root.createCopy();
@@ -102,12 +107,20 @@ public class XMLTree implements Serializable
         listMatchingElements(root, regex, recurse);
     }
 
+    public void lock(){
+        lock.lock();
+    }
+    
+    public void unlock(){
+        lock.unlock();
+    }
+    
     /**
      * Replace nodes previously identified by the method compute()
      * accordingly to the XMLElementReplacer.
      * @throws java.lang.Exception
      */
-    public void replace(XMLElementReplacer replacer) throws Exception
+    public void replace(XMLElementReplacer replacer, ParameterPool parameterPool) throws Exception
     {
         if(null == replacer)
         {
@@ -116,7 +129,7 @@ public class XMLTree implements Serializable
 
         for(Element e:elementsOrder)
         {
-            List<Element> newNodesList = replacer.replace(e);
+            List<Element> newNodesList = replacer.replace(e, parameterPool);
             
             if(newNodesList.isEmpty())
             {

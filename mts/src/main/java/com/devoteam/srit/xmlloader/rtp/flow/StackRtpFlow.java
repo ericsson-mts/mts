@@ -359,8 +359,8 @@ public class StackRtpFlow extends StackRtp {
     }
     
     @Override
-    public XMLElementReplacer getElementReplacer(ParameterPool variables) {
-        return new XMLElementRTPFLOWParser(variables);//do not parse text in sendMessageRTPFLOW tag
+    public XMLElementReplacer getElementReplacer() {
+        return XMLElementRTPFLOWParser.instance();//do not parse text in sendMessageRTPFLOW tag
     }
 
     public void receiveMsgRtpFlow(MsgRtpFlow msgRtpFlow) throws Exception {
