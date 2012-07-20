@@ -190,7 +190,7 @@
 					</xs:attribute>
 					<xs:attribute name="value3" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>The index that we will search from (default is 0).</xs:documentation>
+							<xs:documentation>[optional] The index that we will search from (default is 0).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>
@@ -846,7 +846,7 @@
 							<xs:documentation>File path (absolute or relative to the file).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
-                                        <xs:attribute name="value2" type="xs:string" use="required">
+              <xs:attribute name="value2" type="xs:string" use="required">
 						<xs:annotation>
 							<xs:documentation>Length of a sample in milliseconds.</xs:documentation>
 						</xs:annotation>
@@ -868,29 +868,29 @@
 							<xs:documentation>File path (absolute or relative to the file).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
-                    <xs:attribute name="value2" type="xs:string" use="required">
+              <xs:attribute name="value2" type="xs:string" use="required">
 						<xs:annotation>
 							<xs:documentation>PayloadType collected from RPTFlow message.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
-                    <xs:attribute name="value3" type="xs:string" use="required">
+              <xs:attribute name="value3" type="xs:string" use="required">
 						<xs:annotation>
 							<xs:documentation>Payload collected from RTPFlow message and completed with empty packet if needed.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
-                    <xs:attribute name="value4" type="xs:string" use="optional">
+              <xs:attribute name="value4" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>Bits per sample.</xs:documentation>
+							<xs:documentation>[optional] Bits per sample (default is 8).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
-                    <xs:attribute name="value5" type="xs:string" use="optional">
+              <xs:attribute name="value5" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>Sample Rate.</xs:documentation>
+							<xs:documentation>[optional] Sample Rate (default is 8000).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
                     <xs:attribute name="value6" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>Number of channels of the file.</xs:documentation>
+							<xs:documentation>[optional] Number of channels of the file (default is 1).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>                    
 				</xs:complexType>
@@ -960,7 +960,7 @@
 					</xs:attribute>
 					<xs:attribute name="value2" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>The number of times the value of the list will be repeated into the result.</xs:documentation>
+							<xs:documentation>[optional] The number of times to copy the list into (default is 1).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>
@@ -1386,14 +1386,14 @@
 							<xs:documentation>not used</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
-					<xs:attribute name="value" type="xs:string" use="optional">
+					<xs:attribute name="value" type="xs:string" use="required">
 						<xs:annotation>
-							<xs:documentation>name of the fifo value2 will be enqueued in</xs:documentation>
+							<xs:documentation>name of the fifo value2 will be enqueued in.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 					<xs:attribute name="value2" type="xs:string" use="required">
 						<xs:annotation>
-							<xs:documentation>parameter to put into the queue</xs:documentation>
+							<xs:documentation>parameter to put into the queue.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>
@@ -1408,14 +1408,14 @@
 							<xs:documentation>item dequeued from the queue</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
-					<xs:attribute name="value" type="xs:string" use="optional">
+					<xs:attribute name="value" type="xs:string" use="required">
 						<xs:annotation>
 							<xs:documentation>name of the fifo value2 will be dequeued from</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
-					<xs:attribute name="value2" type="xs:string" use="required">
+					<xs:attribute name="value2" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>timeout value. the operation will return an empty parameter if the operation timeouts (queue empty for too long)</xs:documentation>
+							<xs:documentation>[optional] timeout value; then the operation will return an empty parameter if the operation timeouts (default is 0 meaning no timeout)</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>
@@ -1658,7 +1658,7 @@
 			</xs:element>
 			<xs:element name="number.random">
 				<xs:annotation>
-					<xs:documentation>Returns a random number between 0 and "value".</xs:documentation>
+					<xs:documentation>Returns a random number between 2 given values".</xs:documentation>
 				</xs:annotation>
 				<xs:complexType>
 					<xs:attribute name="name" type="xs:string" use="required">
@@ -1671,6 +1671,12 @@
 							<xs:documentation>Maximum value of the randomized number.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
+          <xs:attribute name="value2" type="xs:string" use="optional">
+						<xs:annotation>
+							<xs:documentation>[optional] Minimun value of the randomized number (default is 0).</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="number.randomGaussian">
@@ -1757,14 +1763,14 @@
 							<xs:documentation>The resulting date as string.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
-					<xs:attribute name="value" type="xs:string" use="optional">
+					<xs:attribute name="value" type="xs:string" use="required">
 						<xs:annotation>
 							<xs:documentation>The timestamp defined as the number of milliseconds from 1/1/1970.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 					<xs:attribute name="value2" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>The date format under a non-static format (like dd/MM/yyyy HH:mm:ss:SSS).</xs:documentation>
+							<xs:documentation>[Optional] The date format under a non-static format (default is  dd/MM/yyyy HH:mm:ss).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 
@@ -1901,7 +1907,7 @@
 					</xs:attribute>
 					<xs:attribute name="value3" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>Base index (default is 0).</xs:documentation>
+							<xs:documentation>[optional] Base index (default is 0).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>
@@ -1950,7 +1956,7 @@
 					</xs:attribute>
 					<xs:attribute name="value3" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>End index (default is the length of the string).</xs:documentation>
+							<xs:documentation>[optional] End index (default is the length of the string).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>
@@ -2062,7 +2068,7 @@
 					</xs:attribute>
 					<xs:attribute name="value" type="xs:string" use="required">
 						<xs:annotation>
-							<xs:documentation>Lenght of the generated string.</xs:documentation>
+							<xs:documentation>Length of the generated string.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>
@@ -2238,7 +2244,7 @@
 					</xs:attribute>
 					<xs:attribute name="value" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>Selected interface like eth0/eth1 ... (default is any).</xs:documentation>
+							<xs:documentation>[optional] Selected interface like eth0/eth1 ... (default is any).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>
@@ -2255,7 +2261,7 @@
 					</xs:attribute>
 					<xs:attribute name="value" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>Number of tokens to give to the semaphore.</xs:documentation>
+							<xs:documentation>[optional] Number of tokens to give to the semaphore (default is 1).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>
@@ -2272,12 +2278,12 @@
 					</xs:attribute>
 					<xs:attribute name="value" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>Number of tokens to take from the semaphore.</xs:documentation>
+							<xs:documentation>[optional] Number of tokens to take from the semaphore (default is 1).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 					<xs:attribute name="value2" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>Timeout value (in seconds) for this operation (default value is in tester.properties).</xs:documentation>
+							<xs:documentation>[optional] Timeout value (in seconds) for this operation (default is configured in tester.properties).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>
@@ -2409,7 +2415,7 @@
 							<xs:documentation>A parameter for the result.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
-					<xs:attribute name="value" type="xs:string" use="optional">
+					<xs:attribute name="value" type="xs:string" use="required">
 						<xs:annotation>
 							<xs:documentation>The SIP address to analyse.</xs:documentation>
 						</xs:annotation>
@@ -2432,7 +2438,7 @@ for SIP address = {displayName | uri | uri:[setFromURI keyword] | parameter:[XXX
 							<xs:documentation>A parameter for the result.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
-					<xs:attribute name="value" type="xs:string" use="optional">
+					<xs:attribute name="value" type="xs:string" use="required">
 						<xs:annotation>
 							<xs:documentation>The URI to analyse.</xs:documentation>
 						</xs:annotation>
@@ -2468,7 +2474,7 @@ others are protocol specific.</xs:documentation>
 					</xs:attribute>
 					<xs:attribute name="value2" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>The message to analyse (optionally) : if not specified, then the last processed message is used.</xs:documentation>
+							<xs:documentation>[optional] The message to analyse (default is the last received or sent message).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>
@@ -2483,7 +2489,7 @@ others are protocol specific.</xs:documentation>
 							<xs:documentation>A parameter for the result.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
-					<xs:attribute name="value" type="xs:string" use="optional">
+					<xs:attribute name="value" type="xs:string" use="required">
 						<xs:annotation>
 							<xs:documentation>The SDP block to analyse.</xs:documentation>
 						</xs:annotation>
