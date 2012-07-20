@@ -206,7 +206,7 @@ public class ImportSipP {
 	 */
 	public static void addNodeWithParameters(ArrayList<Element> sippNode, Element resultDocRoot, Document resultDoc, String template_file) throws SAXException, IOException, DocumentException{	
 		SAXReader reader = new SAXReader();
-		Document template = reader.read("../mts/src/main/conf/importsipp/Templates/"+template_file+".xml");
+		Document template = reader.read("../conf/importsipp/Templates/"+template_file+".xml");
 		Element template_root = template.getRootElement();
 		if(sippNode.size()>0)
 			resultDocRoot.addComment(sippNode.get(0).getName());
@@ -248,7 +248,7 @@ public class ImportSipP {
 	public static void addNodeCheckParameters(ArrayList<Element> sippNode, Element resultDocRoot, Document resultDoc, String templateFile) throws SAXException, IOException, DocumentException{		
 		//Parsing the corresponding template file
 	 	SAXReader reader = new SAXReader();
-	 	Document template = reader.read("../mts/src/main/conf/importsipp/Templates/"+templateFile+".xml");
+	 	Document template = reader.read("../conf/importsipp/Templates/"+templateFile+".xml");
 		Element template_root = template.getRootElement(); 
 		if(sippNode.size()>0)//if scenario
 			resultDocRoot.addComment(sippNode.get(0).getName());
