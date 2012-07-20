@@ -58,6 +58,7 @@ public class PluggableParameterOperatorNumberUtils extends AbstractPluggablePara
     public Parameter operate(Runner runner, Map<String, Parameter> operands, String name, String resultant) throws ParameterException
     {
         normalizeParameters(operands);
+        
         Parameter result = new Parameter();
         if(name.equalsIgnoreCase(NAME_N_UID))
         {
@@ -68,18 +69,23 @@ public class PluggableParameterOperatorNumberUtils extends AbstractPluggablePara
 
         
         Parameter param1 = assertAndGetParameter(operands, "value");
-
-
         
         for(int i=0; i<param1.length(); i++)
         {
             double op1 = Double.parseDouble(param1.get(i).toString());
-            
+                        
             if(name.equalsIgnoreCase(NAME_ROUND) || name.equalsIgnoreCase(NAME_N_ROUND))       result.add(Math.round(op1));
             else if(name.equalsIgnoreCase(NAME_FLOOR) || name.equalsIgnoreCase(NAME_N_FLOOR))  result.add((long) Math.floor(op1));
             else if(name.equalsIgnoreCase(NAME_N_RAND))
             {
-                long number = (long) Math.floor(Math.random()*op1); // generates a new Integer between 0 and op1
+            	double op2 = 0;            
+            	if(operands.containsKey("value2"))
+                {
+            		Parameter param2 = assertAndGetParameter(operands, "value2");
+                	op2 = Double.parseDouble(param2.get(i).toString());
+                }
+
+                long number = (long) Math.floor(Math.random()*(op1 - op2) + op2); // generates a new Integer between 0 and op1
                 String res = String.valueOf(number);
                 int length = param1.get(i).toString().length();
 
