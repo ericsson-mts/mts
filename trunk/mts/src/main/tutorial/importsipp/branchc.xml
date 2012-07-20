@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE scenario SYSTEM "sipp.dtd">
 
 <!-- This program is free software; you can redistribute it and/or      -->
 <!-- modify it under the terms of the GNU General Public License as     -->
@@ -19,7 +20,6 @@
 <!--                                                                    -->
 
 <scenario name="branch_client">
-
   <send retrans="500">
     <![CDATA[
 
@@ -83,23 +83,16 @@
   <!-- Do something different on an optional receive   -->
   <recv response="403" optional="true" next="1">
   </recv>
-  
-  <recv response="404" optional="true" next="2">
-  </recv>
-  
-  <recv response="405" optional="true" next="3">
-  </recv>
-  
+
   <recv response="200">
     <action>
       <ereg regexp="ua25"
             search_in="hdr"
             header="From: "
             assign_to="8"/>
-		<log message="From is [last_From]. Custom header is [$1]"/>
     </action>
   </recv>
-	
+
   <!-- set variable 8 above on 25th call, send the ACK but skip the pause for it   -->
   <send next="1" test="8">
     <![CDATA[
@@ -141,7 +134,14 @@
 
   <recv response="200" crlf="true">
   </recv>
-	
-  <pause />
+
+  <pause milliseconds="4000"/>
+
+  <!-- definition of the response time repartition table (unit is ms)   -->
+  <ResponseTimeRepartition value="10, 20, 30, 40, 50, 100, 150, 200"/>
+
+  <!-- definition of the call length repartition table (unit is ms)     -->
+  <CallLengthRepartition value="10, 50, 100, 500, 1000, 5000, 10000"/>
+
 </scenario>
 
