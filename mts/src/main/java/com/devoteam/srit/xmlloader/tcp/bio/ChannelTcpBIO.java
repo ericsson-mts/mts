@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Config;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -104,6 +105,28 @@ public class ChannelTcpBIO extends Channel
         	
     		InetAddress localAddr = InetAddress.getByName(getLocalHost());
     		Socket socket = new Socket(getRemoteHost(), getRemotePort(), localAddr, getLocalPort());
+    		
+    		boolean keepAlive = Config.getConfigByName("tcp.properties").getBoolean("socket.KEEP_ALIVE", false);
+    		socket.setKeepAlive(keepAlive);
+       		boolean oobInline = Config.getConfigByName("tcp.properties").getBoolean("socket.OOB_INLINE", false);
+    		socket.setOOBInline(oobInline);
+    		int receiveBuffer = Config.getConfigByName("tcp.properties").getInteger("socket.RECEIVE_BUFFER", 8192);
+    		socket.setReceiveBufferSize(receiveBuffer);
+    		boolean reuseAddress = Config.getConfigByName("tcp.properties").getBoolean("socket.REUSE_ADDRESS", false);
+    		socket.setReuseAddress(reuseAddress);
+    		int sendBuffer = Config.getConfigByName("tcp.properties").getInteger("socket.SEND_BUFFER", 8192);
+    		socket.setSendBufferSize(sendBuffer);
+    		int lingerTimeout = Config.getConfigByName("tcp.properties").getInteger("socket.LINGER_TIMEOUT", -1);
+    		if (lingerTimeout >= 0)
+    			socket.setSoLinger(true, lingerTimeout);
+    		else
+    			socket.setSoLinger(false, 0);
+    		int timeout = Config.getConfigByName("tcp.properties").getInteger("socket.TIMEOUT", 0);
+    		socket.setSoTimeout(timeout);
+       		boolean tcpNoDelay = Config.getConfigByName("tcp.properties").getBoolean("socket.TCP_NO_DELAY", false);
+    		socket.setTcpNoDelay(tcpNoDelay);
+       		int trafficClass = Config.getConfigByName("tcp.properties").getInteger("socket.TRAFFIC_CLASS", 0);
+    		socket.setTrafficClass(trafficClass);
     		
             this.setLocalPort(socket.getLocalPort());
             this.setLocalHost(socket.getLocalAddress().getHostAddress());
