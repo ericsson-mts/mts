@@ -119,8 +119,7 @@ public class Trans extends GroupMsg<Msg>
     public boolean startAutomaticRetransmit() throws Exception
     {
         int retransNumber = beginMsg.getRetransNumber();
-        if (beginMsg.shallBeRetransmitted() &&
-                (retransNumber < stack.retransmitTimes.length))
+        if (beginMsg.shallBeRetransmitted() && (retransNumber < stack.retransmitTimes.length))
         {
             RetransmitTransTask retransmitTask = new RetransmitTransTask(stack, this, scRunner);
             stack.retransmissionTimer.schedule(retransmitTask, (long) (stack.retransmitTimes[retransNumber] * 1000));
