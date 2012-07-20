@@ -67,25 +67,33 @@ public class RetransmitTransTask extends TimerTask
     		{
     			int retransNumber = msg.getRetransNumber() + 1;
     			msg.setRetransNumber(retransNumber);
-    			    			
-        		if (stack.sendMessage(msg))
-        		{        		
-	                // logs in scenario and main logs as CALLFLOW topic
-	            	stack.processLogsMsgSending(msg, scRunner, Stack.SEND);                	
-		    		
-	        		// log a info message and update statistic counter
+    
+        		if (stack.sendMessage(msg)) 
+        		{
 	    			float retransmitTime = ((float) (System.currentTimeMillis()- msg.getTimestamp())) /1000;
+	    			
+	                // logs in scenario and main logs as CALLFLOW topic
+	            	stack.processLogsMsgSending(msg, scRunner, Stack.SEND);                			    		
+	            	String logMsg = "Send an auto retransmission (index=" + msg.getRetransNumber() + ",time=" + retransmitTime + "s) for the message : "; 
+                	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PROTOCOL, logMsg, msg.toShortString());
+                	GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, logMsg, msg);
+                	
+	        		// update statistic counter
 	        		if (msg.isRequest()) 
 	        		{
-	                	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PROTOCOL, "Send an auto retransmission (index=", msg.getRetransNumber(), ",time=", retransmitTime , "s) for the request : ", msg.toShortString());
 			            StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_REQUEST, msg.getProtocol(), msg.getTypeComplete() + StackFactory.PREFIX_OUTGOING, "_retransmitNumber"), 1);			            			            
 	        		} 
 	        		else 
 	        		{
-	                	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PROTOCOL, "Send an auto retransmission (index=", msg.getRetransNumber() , ",time=", retransmitTime , "s) for the response : ", msg.toShortString());
 			            StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_REQUEST, msg.getProtocol(), msg.getTypeComplete() + StackFactory.PREFIX_INCOMING, msg.getResultComplete() + StackFactory.PREFIX_OUTGOING, "_retransmitNumber"), 1);
 			            StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_RESPONSE, msg.getProtocol(), msg.getResultComplete() + StackFactory.PREFIX_OUTGOING, msg.getTypeComplete() + StackFactory.PREFIX_INCOMING, "_retransmitNumber"), 1);			            
 	        		}
+	        		
+	    			if (retransNumber >= stack.retransmitTimes.length)
+	    			{
+	    				String failureMsg = "Failure after auto retransmission (index=" + retransNumber + ",time=" + retransmitTime + "s) for the message : ";
+	    				GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, failureMsg, msg.toString());
+	    			}
         		}
 	            trans.startAutomaticRetransmit();		
     		}
