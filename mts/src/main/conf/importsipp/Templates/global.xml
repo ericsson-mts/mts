@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-2" ?>
 <template>
 <parameter name="[timestamp]" operation="system.timestamp" />
-<parameter name="[call_number]" operation="set" value="0" />
+<parameter name="[testcase:call_number]" operation="set" value="0" />
 <if> 
 <condition>
-	<test parameter="[call_number]" condition="list.exists"/>
+	<test parameter="[testcase:call_number]" condition="list.exists"/>
 </condition>
 <then>
-	<parameter name="[call_number]" operation="number.add" value="[call_number]" value2="1" />
-	<parameter name="[field0]" operation="set" value="[field0([call_number])]"/>
+	<parameter name="[testcase:call_number]" operation="number.add" value="[testcase:call_number]" value2="1" />
 </then>
 <else>
-	<parameter name="[call_number]" operation="set" value="0"/>
-	<parameter name="[field0]" operation="file.readcsv" value="[_fileName]" value2="0"/>
+	<parameter name="[testcase:call_number]" operation="set" value="0"/>
 </else>
 </if>
 <parameter name="[call_id]" operation="number.random" value="10000000" />
