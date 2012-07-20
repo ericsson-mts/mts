@@ -60,14 +60,14 @@ public class ImportSipP {
 					Element element = (Element) i.next();
 					testList.add(element);
 				}
-				//addNodeCheckParameters(testList, rootElement, resultDocument, "scenario");
+				addNodeCheckParameters(testList, rootElement, resultDocument, "scenario");
 				//Run through the elements (nodes) of the source xml file 
 				for (Iterator i = root.elementIterator(); i.hasNext();) 
 				{
 		            Element element = (Element) i.next();
 					String nodename = element.getName();
 					
-					//addNodeWithParameters(nodes, rootElement, resultDocument,"operation");
+					addNodeWithParameters(nodes, rootElement, resultDocument,"operation");
 					//If the current node is a 'recv' node
 					if(nodename.equals("recv"))
 					{
