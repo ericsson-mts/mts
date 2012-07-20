@@ -27,15 +27,15 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 
 @SuppressWarnings("rawtypes")
 public class ImportSipP {
-		//static String input_filename = "branchs";
-		static String filetype = ".xml";
+	
 	public static void main(String... args) throws DocumentException, ParserConfigurationException, SAXException {
 		
 		 if (args.length <= 0) {
 	            usage("All arguments are required !");
 	     }
+		 
 		 ArrayList<Element> testList = new ArrayList<Element>(); 
-		ArrayList<Element> nodes = new ArrayList<Element>(); 
+		 ArrayList<Element> nodes = new ArrayList<Element>(); 
 		 try {
 			 	//Get the source xml file, and parse it using SAX parser */
 			 	String filepath = args[0]; 
@@ -54,22 +54,20 @@ public class ImportSipP {
 		            Attribute attribute = (Attribute) i.next();
 		            root.remove(attribute);
 				  }
-				//Add the global parameters from the global template xml file
-				//addGlobalNodes(resultDocument,rootElement, "scenario"); 
-				//addNodeCheckParameters(nodes, rootElement, resultDocument, "scenario");
+				//Add global template nodes after checking if they exist in the original file
 				for (Iterator i = root.elementIterator(); i.hasNext();) 
 				{	
 					Element element = (Element) i.next();
 					testList.add(element);
 				}
-				addNodeCheckParameters(testList, rootElement, resultDocument, "scenario");
-				
+				//addNodeCheckParameters(testList, rootElement, resultDocument, "scenario");
 				//Run through the elements (nodes) of the source xml file 
 				for (Iterator i = root.elementIterator(); i.hasNext();) 
 				{
 		            Element element = (Element) i.next();
 					String nodename = element.getName();
-
+					
+					//addNodeWithParameters(nodes, rootElement, resultDocument,"operation");
 					//If the current node is a 'recv' node
 					if(nodename.equals("recv"))
 					{
@@ -94,7 +92,6 @@ public class ImportSipP {
 						}
 						else if(!element.attributes().toString().contains("optional"))
 						{
-							
 							//We add this node to the list of nodes
 							nodes.add(element);
 							//We apply the normal template of the recv
@@ -134,8 +131,6 @@ public class ImportSipP {
 							addNodeWithParameters(childNodes, rootElement, resultDocument,childName);
 							childNodes.clear();
 						}
-						
-						
 					}
 				}
 				//Function to write the result, to the resulting xml file
@@ -209,22 +204,31 @@ public class ImportSipP {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public static void addNodeWithParameters(ArrayList<Element> nodes, Element main_root, Document doc2, String template_file) throws SAXException, IOException, DocumentException{	
+	public static void addNodeWithParameters(ArrayList<Element> sippNode, Element resultDocRoot, Document resultDoc, String template_file) throws SAXException, IOException, DocumentException{	
 		SAXReader reader = new SAXReader();
 		Document template = reader.read("../mts/src/main/conf/importsipp/Templates/"+template_file+".xml");
 		Element template_root = template.getRootElement();
-		if(nodes.size()>0)
-			main_root.addComment(nodes.get(0).getName());
+		if(sippNode.size()>0)
+			resultDocRoot.addComment(sippNode.get(0).getName());
 		
-		for(int n = 0; n<nodes.size(); n++)
+		for(int n = 0; n<sippNode.size(); n++)
 		{
-			Element sippNode = nodes.get(n);
-			ArrayList<Element> sippNodeList = new ArrayList<Element>(); 
-			sippNodeList.add(sippNode);
+            Element sippNoeud = sippNode.get(n);
+            ArrayList<Element> sippNodeList = new ArrayList<Element>(); 
+            sippNodeList.add(sippNoeud);
 			for (Iterator i = template_root.elementIterator();i.hasNext();) 
 			{
 				Element template_element = (Element) i.next();
-				xPath(doc2,template_element,sippNodeList,main_root);
+				xPath(resultDoc,template_element,sippNodeList,resultDocRoot);
+			}
+		}
+		//For global parameters
+		if(sippNode.isEmpty())
+		{
+			for (Iterator i = template_root.elementIterator();i.hasNext();) 
+			{
+				Element template_element = (Element) i.next();
+				xPath(resultDoc,template_element,sippNode,resultDocRoot);
 			}
 		}
 	}
@@ -260,12 +264,12 @@ public class ImportSipP {
         		if(sippNode.get(sippNode.size()-1).getStringValue().contains(template_element.attribute("name").getValue()))
         		{	
         			//Execute the xPath function which is responsible of adding elements and attributes 
-        			xPath(resultDoc,template_element,sippNode,resultDocRoot );
+        			xPath(resultDoc,template_element,sippNode,resultDocRoot);
         		}
         	}
-        	else
+        	else 
         		xPath(resultDoc,template_element,sippNode,resultDocRoot);
-		}	
+		}
 	}
 	
 	/**
@@ -276,93 +280,99 @@ public class ImportSipP {
 	 * @param sippNode
 	 * @param resultDocRoot
 	 */
-	public static void xPath(Document resultDocument, Element currentTemplateNode, ArrayList<Element> sippNode, Element resultDocRoot){			
-		Element newelement = null;
-		Map<String,ArrayList<String>> att = new HashMap<String, ArrayList<String>>(); 
+	public static void xPath(Document resultDocument, Element currentTemplateNode, ArrayList<Element> sippNode, Element resultDocRoot)
+	{			
+		Map<String,ArrayList<String>> att = new HashMap<String, ArrayList<String>>();
+		Element newelement = null; 
 		boolean xpathExists = false; 
 		//Run through all attributes of the current template element
 		for (Iterator i = currentTemplateNode.attributeIterator();i.hasNext();) 
-		{
+		{	
 			Attribute attribute = (Attribute) i.next();
 			//Get each attribute value
-			String attributeValue = attribute.getValue().toString(); 
+			String attributeValue = attribute.getValue(); 
+			String attributeName = attribute.getName(); 
 			//If the value contains an xpath expression
-			if(attributeValue.contains("{xpath:"))
-			{	//Go through the nodes in the nodes list
-				for(int j=0; j<sippNode.size(); j++)
-				{
-					xpathExists= true;
-					//Get the xpath expression
-					
-					Pattern pattern = Pattern.compile("[\\{}]");
-					String[] part = pattern.split(attributeValue);
-					String xpathValue = part[1].substring(6);
-					//Create an XPath on the result document
-			    	XPath xpath = resultDocument.createXPath(xpathValue);
-			    	//Get the XPath returning value
-			    	Object obj = xpath.evaluate(sippNode.get(j));
-			    	
-			    	//if the obj is an attribute
-			    	  if(obj instanceof Attribute)
-			    	  {
-			    		  /*If the XPath is an instance of an Attribute we create a list for all xpath
-			    		   * values, and we add every xpath attribute found, to the list. 
-			    		   */
-			    		  ArrayList<String> list = att.get(attributeValue); 
-			    		  if(list == null)
-			    		  {
-			    			  list = new ArrayList<String>() ; 
-			    			  att.put(attributeValue,list); 
-			    		  }
-			    		  list.add(((Attribute) obj).getValue()); 
-			    	  }
-			    	  //If the obj returns an Element
-			    	  else if(obj instanceof Element)
-			    	  {
-			    		  ArrayList<String> list = att.get(attributeValue); 
-			    		  if(list == null)
-			    		  {
-			    			  list = new ArrayList<String>() ; 
-			    			  att.put(attributeValue,list); 
-			    		  }
-			    		  list.add(((Element) obj).getName()); 
-			    	  }
-			    	  //If the obj returns double
-			    	  else if(obj instanceof Double)
-			    	  {
-			    		  ArrayList<String> list = att.get(attributeValue); 
-			    		  if(list == null)
-			    		  {
-			    			  list = new ArrayList<String>() ; 
-			    			  att.put(attributeValue,list); 
-			    		  }
-		    			  list.add(((Double) obj).toString()); 
-			    	  }
-				}
-			}
-			else if (attributeValue.contains("{regex:"))
+			int getRegexBeginning = 0; 
+			
+			while(getRegexBeginning >= 0)
 			{	
-				xpathExists = true;
-				for(int j=0; j<sippNode.size(); j++)
-				{	
-					Pattern pattern = Pattern.compile("[\\{}]");
-					String[] part = pattern.split(attributeValue);
-					String regexValue = part[1].substring(6);
-					
-					Pattern last = Pattern.compile(regexValue);
-					Matcher variableMatcher = last.matcher(sippNode.get(j).getText());
-					while (variableMatcher.find())  
-					{ 	
-		    		  ArrayList<String> list = att.get(attributeValue); 
-		    		  if(list == null)
-		    		  {
-		    			  list = new ArrayList<String>() ; 
-		    			  att.put(attributeValue,list); 
-		    		  }
-		    		  if(variableMatcher.groupCount()>=1)
-		    			  list.add(variableMatcher.group(1)); 
+				getRegexBeginning = attributeValue.indexOf("{",getRegexBeginning);
+				if(getRegexBeginning <0 )
+					break; 
+				int getRegexEnd = attributeValue.indexOf("}", getRegexBeginning);
+				String regexValue = attributeValue.substring(getRegexBeginning, getRegexEnd+1);
+				
+				if(regexValue.startsWith("{xpath:"))
+				{	//Go through the nodes in the nodes list
+					for(int j=0; j<sippNode.size(); j++)
+					{
+						xpathExists= true;
+						//Get the xpath expression
+						//Create an XPath on the result document
+				    	XPath xpath = resultDocument.createXPath(regexValue.substring(7, regexValue.length()-1));
+				    	//Get the XPath returning value
+				    	Object obj = xpath.evaluate(sippNode.get(j));
+				    	
+				    	//if the obj is an attribute
+				    	  if(obj instanceof Attribute)
+				    	  {
+				    		  /*If the XPath is an instance of an Attribute we create a list for all xpath
+				    		   * values, and we add every xpath attribute found, to the list. 
+				    		   */
+				    		  ArrayList<String> list = att.get(attributeName+getRegexBeginning); 
+				    		  if(list == null)
+				    		  {
+				    			  list = new ArrayList<String>() ; 
+				    			  att.put(attributeName+getRegexBeginning,list); 
+				    		  }
+				    		  list.add(((Attribute) obj).getValue()); 
+				    	  }
+				    	  //If the obj returns an Element
+				    	  else if(obj instanceof Element)
+				    	  {
+				    		  ArrayList<String> list = att.get(attributeName+getRegexBeginning); 
+				    		  if(list == null)
+				    		  {
+				    			  list = new ArrayList<String>() ; 
+				    			  att.put(attributeName+getRegexBeginning,list); 
+				    		  }
+				    		  list.add(((Element) obj).getName()); 
+				    	  }
+				    	  //If the obj returns double
+				    	  else if(obj instanceof Double)
+				    	  {
+				    		  ArrayList<String> list = att.get(attributeName+getRegexBeginning); 
+				    		  if(list == null)
+				    		  {
+				    			  list = new ArrayList<String>() ; 
+				    			  att.put(attributeName+getRegexBeginning,list); 
+				    		  }
+			    			  list.add(((Double) obj).toString()); 
+				    	  }
 					}
 				}
+				else if (regexValue.startsWith("{regex:"))
+				{	
+					xpathExists = true; 
+					for(int j=0; j<sippNode.size(); j++)
+					{
+						Pattern last = Pattern.compile(regexValue.substring(7,regexValue.length()-1));
+						Matcher variableMatcher = last.matcher(sippNode.get(j).getText());
+						while (variableMatcher.find())  
+						{ 	
+			    		  ArrayList<String> list = att.get(attributeName+getRegexBeginning); 
+			    		  if(list == null)
+			    		  {
+			    			  list = new ArrayList<String>() ; 
+			    			  att.put(attributeName+getRegexBeginning,list); 
+			    		  }
+			    		  if(variableMatcher.groupCount()>=1)
+			    			  list.add(variableMatcher.group(1)); 
+						}
+					}
+				}
+				getRegexBeginning = getRegexEnd + 1; 
 			}
 		}
 	  	//We go through the values of the Attributes list, and we get the maximum size
@@ -385,17 +395,30 @@ public class ImportSipP {
 				 * for the new element created, with the same attribute name and value. 
 				 */
 				Attribute attribute = (Attribute) i.next();
-				String attribut_value = attribute.getValue().toString(); 
-				ArrayList <String> newAttribute = att.get(attribut_value);
-				//TEST
-				Pattern pattern = Pattern.compile("[\\{}]");
-				String[] part = pattern.split(attribute.getValue());
-				String after = attribute.getValue().substring(attribute.getValue().lastIndexOf('}') + 1);
-				//
+				String attribut_value = attribute.getValue();
+				String attribut_name = attribute.getName(); 
+				ArrayList <String> newAttribute = null; 
+				String replaceResult = attribut_value; 
+				int getRegexBeginning = 0;
+				
+				while(getRegexBeginning >= 0)
+				{	
+					getRegexBeginning = attribut_value.indexOf("{",getRegexBeginning);
+					if(getRegexBeginning <0 )
+						break; 
+					int getRegexEnd = attribut_value.indexOf("}", getRegexBeginning);
+					String regexValue = attribut_value.substring(getRegexBeginning, getRegexEnd+1);
+					newAttribute = att.get(attribut_name+getRegexBeginning);
+					
+					if(newAttribute != null && newAttribute.size() > k) 
+						replaceResult = replaceResult.replace(regexValue, newAttribute.get(k));
+
+					getRegexBeginning = getRegexEnd + 1 ;
+				}
 				if(newAttribute != null)
 				{	
 					if(newAttribute.size() > k) 
-						newelement.addAttribute(attribute.getName(),part[0]+newAttribute.get(k)+after); 
+						newelement.addAttribute(attribute.getName(),replaceResult); 
 				}
 				else
 				{	
@@ -509,13 +532,14 @@ public class ImportSipP {
 					rightFinalResult(doc, testFileName);
 				}
 				//If the file doesn't exist, create it and add the elements
-				else {
+				else 
+				{
 					Document doc = DocumentHelper.createDocument();
 					Element rootElement = doc.addElement("test");
 					rootElement.addAttribute("name", "importsipp");
 					rootElement.addAttribute("description", "imported from sipp scenario");
 					ArrayList<Element> nodes = new ArrayList<Element>(); 
-					addNodeCheckParameters(nodes,rootElement, doc, "testSuite");
+					addNodeWithParameters(nodes, rootElement, doc, "testSuite");
 					Element testCase = rootElement.addElement("testcase");
 					testCase.addAttribute("name", testName);
 					testCase.addAttribute("description", "test sip"); 
