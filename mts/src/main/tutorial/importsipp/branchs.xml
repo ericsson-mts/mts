@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE scenario SYSTEM "sipp.dtd">
+
 <!-- This program is free software; you can redistribute it and/or      -->
 <!-- modify it under the terms of the GNU General Public License as     -->
 <!-- published by the Free Software Foundation; either version 2 of the -->
@@ -24,7 +26,7 @@
   <send>
     <![CDATA[
 
-      sip:[field0 file="callee.csv"] SIP/2.0 200 OK
+      SIP/2.0 200 OK
       [last_Via:]
       [last_From:]
       [last_To:];tag=[pid]SIPpTag08[call_number]
@@ -33,6 +35,7 @@
       Contact: <sip:[local_ip]:[local_port];transport=[transport]>
       Content-Length: 0
       Expires: 300
+
     ]]>
   </send>
 
@@ -127,7 +130,7 @@
 
   <label id="2"/>
 
-  <recv request="BYE"> 
+  <recv request="BYE">
   </recv>
 
   <send>
@@ -148,6 +151,12 @@
   <!-- Keep the call open for a while in case the 200 is lost to be     -->
   <!-- able to retransmit it if we receive the BYE again.               -->
   <timewait milliseconds="4000"/>
+
+  <!-- Definition of the response time repartition table (unit is ms)   -->
+  <ResponseTimeRepartition value="10, 20, 30, 40, 50, 100, 150, 200"/>
+
+  <!-- Definition of the call length repartition table (unit is ms)     -->
+  <CallLengthRepartition value="10, 50, 100, 500, 1000, 5000, 10000"/>
 
 </scenario>
 
