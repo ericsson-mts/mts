@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,6 +35,9 @@ public class ImportSipP {
 	            usage("All arguments are required !");
 	     }
 		 
+		//Create the corresponding TEST file
+		 int scenarioNum = createTestFile(args[2], args[3], args[1]); 
+			
 		 ArrayList<Element> testList = new ArrayList<Element>(); 
 		 ArrayList<Element> nodes = new ArrayList<Element>(); 
 		 try {
@@ -60,14 +64,14 @@ public class ImportSipP {
 					Element element = (Element) i.next();
 					testList.add(element);
 				}
-				addNodeCheckParameters(testList, rootElement, resultDocument, "scenario");
+				addNodeCheckParameters(testList, rootElement, resultDocument, "scenario", scenarioNum);
 				//Run through the elements (nodes) of the source xml file 
 				for (Iterator i = root.elementIterator(); i.hasNext();) 
 				{
 		            Element element = (Element) i.next();
 					String nodename = element.getName();
 					
-					addNodeWithParameters(nodes, rootElement, resultDocument,"operation");
+					addNodeWithParameters(nodes, rootElement, resultDocument,"operation", scenarioNum);
 					//If the current node is a 'recv' node
 					if(nodename.equals("recv"))
 					{
@@ -84,9 +88,9 @@ public class ImportSipP {
 							//We add this node to the list of nodes
 							nodes.add(element);
 							//We apply the normal template of the recv
-							addNodeCheckParameters(nodes, rootElement, resultDocument,nodename);
+							addNodeCheckParameters(nodes, rootElement, resultDocument,nodename, scenarioNum);
 							//We apply the if_recv template
-							addNodeWithParameters(nodes, rootElement, resultDocument,"if_"+nodename);
+							addNodeWithParameters(nodes, rootElement, resultDocument,"if_"+nodename, scenarioNum);
 							//We clear the saved nodes list
 							nodes.clear();
 						}
@@ -95,7 +99,7 @@ public class ImportSipP {
 							//We add this node to the list of nodes
 							nodes.add(element);
 							//We apply the normal template of the recv
-							addNodeCheckParameters(nodes, rootElement, resultDocument,nodename);
+							addNodeCheckParameters(nodes, rootElement, resultDocument,nodename,scenarioNum);
 							//We clear the saved nodes list
 							nodes.clear();
 						}
@@ -106,7 +110,7 @@ public class ImportSipP {
 						//We add the current node to the nodes list
 						nodes.add(element);
 						//We apply the corresponding template file
-						addNodeCheckParameters(nodes, rootElement, resultDocument,nodename);
+						addNodeCheckParameters(nodes, rootElement, resultDocument,nodename, scenarioNum);
 						//We clear the saved nodes list
 						nodes.clear();
 					}
@@ -121,14 +125,14 @@ public class ImportSipP {
 							{	
 								Element childOfAction = (Element) k.next();
 								childNodes.add(childOfAction);
-								addNodeWithParameters(childNodes, rootElement, resultDocument, childOfAction.getName()); 
+								addNodeWithParameters(childNodes, rootElement, resultDocument, childOfAction.getName(), scenarioNum); 
 								childNodes.clear();
 							}
 						}
 						else
 						{
 							childNodes.add(childNodeElement); 
-							addNodeWithParameters(childNodes, rootElement, resultDocument,childName);
+							addNodeWithParameters(childNodes, rootElement, resultDocument,childName, scenarioNum);
 							childNodes.clear();
 						}
 					}
@@ -140,10 +144,6 @@ public class ImportSipP {
 				replaceInFile(args[1], "&lt;", "<");
 				replaceInFile(args[1], "&gt;", ">");
 				replaceInFile(args[1], "&#13;", "");
-				
-				//Create the corresponding TEST file
-				//testFileName,String testName, String outputFileName
-				createTestFile(args[2], args[3], args[1]); 
 				
 				//Write 'DONE' on the system out
 				System.out.println("Done");
@@ -204,7 +204,7 @@ public class ImportSipP {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public static void addNodeWithParameters(ArrayList<Element> sippNode, Element resultDocRoot, Document resultDoc, String template_file) throws SAXException, IOException, DocumentException{	
+	public static void addNodeWithParameters(ArrayList<Element> sippNode, Element resultDocRoot, Document resultDoc, String template_file, int scenarioNum) throws SAXException, IOException, DocumentException{	
 		SAXReader reader = new SAXReader();
 		Document template = reader.read("../conf/importsipp/Templates/"+template_file+".xml");
 		Element template_root = template.getRootElement();
@@ -219,7 +219,7 @@ public class ImportSipP {
 			for (Iterator i = template_root.elementIterator();i.hasNext();) 
 			{
 				Element template_element = (Element) i.next();
-				xPath(resultDoc,template_element,sippNodeList,resultDocRoot);
+				xPath(resultDoc,template_element,sippNodeList,resultDocRoot,scenarioNum);
 			}
 		}
 		//For global parameters
@@ -228,7 +228,7 @@ public class ImportSipP {
 			for (Iterator i = template_root.elementIterator();i.hasNext();) 
 			{
 				Element template_element = (Element) i.next();
-				xPath(resultDoc,template_element,sippNode,resultDocRoot);
+				xPath(resultDoc,template_element,sippNode,resultDocRoot,scenarioNum);
 			}
 		}
 	}
@@ -245,7 +245,7 @@ public class ImportSipP {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public static void addNodeCheckParameters(ArrayList<Element> sippNode, Element resultDocRoot, Document resultDoc, String templateFile) throws SAXException, IOException, DocumentException{		
+	public static void addNodeCheckParameters(ArrayList<Element> sippNode, Element resultDocRoot, Document resultDoc, String templateFile, int scenarioNum) throws SAXException, IOException, DocumentException{		
 		//Parsing the corresponding template file
 	 	SAXReader reader = new SAXReader();
 	 	Document template = reader.read("../conf/importsipp/Templates/"+templateFile+".xml");
@@ -259,18 +259,36 @@ public class ImportSipP {
 			Element template_element = (Element) i.next();
 			/*Test each element. If it's a 'parameter', the parameter name should exist in the 'send'
 			  CDATA section to be added to the file. If not, this parameter wont be added*/
-			if(template_element.getName().equals("parameter") && !template_element.attribute("name").getValue().contains("regex"))
+			/*List test = template_element.attributes();
+			if(template_element.getName().equals("parameter") 
+					&& !template_element.attribute("name").getValue().contains("regex")
+					&& !template_element.attribute("value").getValue().contains("integer")
+					&& !template_element.attribute("name").getValue().contains("xpath"))
         	{
         		if(sippNode.get(sippNode.size()-1).getStringValue().contains(template_element.attribute("name").getValue()))
         		{	
         			//Execute the xPath function which is responsible of adding elements and attributes 
-        			xPath(resultDoc,template_element,sippNode,resultDocRoot);
+        			xPath(resultDoc,template_element,sippNode,resultDocRoot,scenarioNum);
         		}
         	}
-        	else 
-        		xPath(resultDoc,template_element,sippNode,resultDocRoot);
+        	else */
+        		xPath(resultDoc,template_element,sippNode,resultDocRoot,scenarioNum);
 		}
 	}
+	
+/*	public static boolean checkElement(Element sippNode, Element templateElement, String stringToCheck)
+	{	
+		boolean check = false; 
+		List<Attribute> elementAttributes = templateElement.attributes(); 
+		for(int i=0; i<elementAttributes.size();i++)
+		{
+			if(elementAttributes.get(i).getValue().contains(stringToCheck))
+			{
+				check = true; 
+			}
+		}
+		if(comâre)
+	}*/
 	
 	/**
 	 * xPath function, permits to add a node, manipulate attributes containing xpath expressions or not, 
@@ -280,10 +298,10 @@ public class ImportSipP {
 	 * @param sippNode
 	 * @param resultDocRoot
 	 */
-	public static void xPath(Document resultDocument, Element currentTemplateNode, ArrayList<Element> sippNode, Element resultDocRoot)
+	public static void xPath(Document resultDocument, Element currentTemplateNode, ArrayList<Element> sippNode, Element resultDocRoot, int scenarioNum)
 	{			
 		Map<String,ArrayList<String>> att = new HashMap<String, ArrayList<String>>();
-		Element newelement = null; 
+		Element newelement = null;
 		boolean xpathExists = false; 
 		//Run through all attributes of the current template element
 		for (Iterator i = currentTemplateNode.attributeIterator();i.hasNext();) 
@@ -372,6 +390,18 @@ public class ImportSipP {
 						}
 					}
 				}
+				else if(regexValue.startsWith("{integer"))
+				{	
+					xpathExists= true;
+					ArrayList<String> list = att.get(attributeName+getRegexBeginning);
+					 if(list == null)
+		    		 {
+		    			  list = new ArrayList<String>() ;
+		    			  att.put(attributeName+getRegexBeginning,list); 
+		    		 }
+					 list.add(new Integer(scenarioNum).toString());
+				}
+				
 				getRegexBeginning = getRegexEnd + 1; 
 			}
 		}
@@ -390,7 +420,7 @@ public class ImportSipP {
 			//node's name
 			newelement = resultDocRoot.addElement(currentTemplateNode.getName());
 			for (Iterator i = currentTemplateNode.attributeIterator();i.hasNext();) 
-			{	
+			{
 				/*We get the current TEMPLATE node attributes, and we create an equivalent attribute
 				 * for the new element created, with the same attribute name and value. 
 				 */
@@ -470,7 +500,7 @@ public class ImportSipP {
 			for (Iterator k = currentTemplateNode.elementIterator(); k.hasNext();)
 		    {	
 				Element child_template = (Element) k.next();
-				xPath(resultDocument, child_template, sippNode,newelement); 
+				xPath(resultDocument, child_template, sippNode,newelement, scenarioNum); 
 		    }
 	}
 
@@ -480,9 +510,10 @@ public class ImportSipP {
 	 * @param testName
 	 * @param inputFileName
 	 */
-	public static void createTestFile(String testFileName,String testName, String outputFileName){	
+	public static int createTestFile(String testFileName,String testName, String outputFileName){	
 		boolean scenarioExists = false ;
 		boolean testcaseExists = false; 
+		int numScenario = 0; 
 		String fileName = outputFileName.substring(outputFileName.lastIndexOf("\\")+1);
 		try {	
 				boolean exists = (new File(testFileName)).exists();
@@ -511,7 +542,8 @@ public class ImportSipP {
 					if(testcaseExists == true)
 					{
 						if(scenarioExists == false)
-						{
+						{	
+							numScenario = testCaseMain.elements("scenario").size();
 							Element scenario2 = testCaseMain.addElement("scenario");
 							scenario2.addAttribute("name", "SIP");
 							scenario2.addText(fileName);
@@ -539,7 +571,7 @@ public class ImportSipP {
 					rootElement.addAttribute("name", "importsipp");
 					rootElement.addAttribute("description", "imported from sipp scenario");
 					ArrayList<Element> nodes = new ArrayList<Element>(); 
-					addNodeWithParameters(nodes, rootElement, doc, "testSuite");
+					addNodeWithParameters(nodes, rootElement, doc, "testSuite", 0);
 					Element testCase = rootElement.addElement("testcase");
 					testCase.addAttribute("name", testName);
 					testCase.addAttribute("description", "test sip"); 
@@ -554,6 +586,7 @@ public class ImportSipP {
 		catch (Exception e) {
 			log(e, "error", "Document exception"); 
 		}
+		return numScenario; 
 	}
 	
 	/**
