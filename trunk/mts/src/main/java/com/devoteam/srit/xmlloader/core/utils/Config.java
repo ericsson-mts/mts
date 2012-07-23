@@ -28,6 +28,9 @@ import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import com.devoteam.srit.xmlloader.core.PropertiesEnhanced;
 import com.devoteam.srit.xmlloader.gui.conf.JPanelContainer;
 import com.devoteam.srit.xmlloader.gui.conf.JPanelGeneric;
+
+import java.net.DatagramSocket;
+import java.net.Socket;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -341,4 +344,44 @@ public class Config
             return defaultValue;
         }
     }
+    
+    public static void getConfigForTCPSocket(Socket socket) throws Exception
+    {
+		boolean keepAlive = Config.getConfigByName("tcp.properties").getBoolean("socket.KEEP_ALIVE", false);
+		socket.setKeepAlive(keepAlive);
+		boolean oobInline = Config.getConfigByName("tcp.properties").getBoolean("socket.OOB_INLINE", false);
+		socket.setOOBInline(oobInline);
+		int receiveBuffer = Config.getConfigByName("tcp.properties").getInteger("socket.RECEIVE_BUFFER", 8192);
+		socket.setReceiveBufferSize(receiveBuffer);
+		boolean reuseAddress = Config.getConfigByName("tcp.properties").getBoolean("socket.REUSE_ADDRESS", false);
+		socket.setReuseAddress(reuseAddress);
+		int sendBuffer = Config.getConfigByName("tcp.properties").getInteger("socket.SEND_BUFFER", 8192);
+		socket.setSendBufferSize(sendBuffer);
+		int lingerTimeout = Config.getConfigByName("tcp.properties").getInteger("socket.LINGER_TIMEOUT", -1);
+		if (lingerTimeout >= 0)
+			socket.setSoLinger(true, lingerTimeout);
+		else
+			socket.setSoLinger(false, 0);
+		int timeout = Config.getConfigByName("tcp.properties").getInteger("socket.TIMEOUT", 0);
+		socket.setSoTimeout(timeout);
+		boolean tcpNoDelay = Config.getConfigByName("tcp.properties").getBoolean("socket.TCP_NO_DELAY", false);
+		socket.setTcpNoDelay(tcpNoDelay);
+		int trafficClass = Config.getConfigByName("tcp.properties").getInteger("socket.TRAFFIC_CLASS", 0);
+		socket.setTrafficClass(trafficClass);
+    }
+
+    public static void getConfigForUDPSocket(DatagramSocket socket) throws Exception
+    {
+		int receiveBuffer = Config.getConfigByName("udp.properties").getInteger("socket.RECEIVE_BUFFER", 8192);
+		socket.setReceiveBufferSize(receiveBuffer);
+		boolean reuseAddress = Config.getConfigByName("udp.properties").getBoolean("socket.REUSE_ADDRESS", false);
+		socket.setReuseAddress(reuseAddress);
+		int sendBuffer = Config.getConfigByName("udp.properties").getInteger("socket.SEND_BUFFER", 8192);
+		socket.setSendBufferSize(sendBuffer);
+		int timeout = Config.getConfigByName("udp.properties").getInteger("socket.TIMEOUT", 0);
+		socket.setSoTimeout(timeout);
+		int trafficClass = Config.getConfigByName("udp.properties").getInteger("socket.TRAFFIC_CLASS", 0);
+		socket.setTrafficClass(trafficClass);
+    }
+
 }

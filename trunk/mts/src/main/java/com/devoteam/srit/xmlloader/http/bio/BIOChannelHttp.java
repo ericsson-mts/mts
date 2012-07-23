@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.http.bio;
 import com.devoteam.srit.xmlloader.core.ThreadPool;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.http.ChannelHttp;
 
 import java.net.InetSocketAddress;
@@ -112,6 +113,8 @@ public class BIOChannelHttp extends ChannelHttp
                 //                
                 socket = new Socket();
             }
+    		// read all properties for the TCP socket 
+    		Config.getConfigForTCPSocket(socket);
 
             //
             // Bind the socket to the local address

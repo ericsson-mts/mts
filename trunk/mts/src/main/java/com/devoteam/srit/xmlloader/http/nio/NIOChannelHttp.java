@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.http.nio;
 import com.devoteam.srit.xmlloader.core.hybridnio.HybridSocket;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.http.ChannelHttp;
 import com.devoteam.srit.xmlloader.http.StackHttp;
 import java.net.InetSocketAddress;
@@ -84,6 +85,8 @@ public class NIOChannelHttp extends ChannelHttp
 
             this.socketClientHttp = new NIOSocketClientHttp();
             Socket socket = new HybridSocket((NIOSocketClientHttp)this.socketClientHttp);
+    		// read all properties for the TCP socket 
+    		Config.getConfigForTCPSocket(socket);
 
             if(secure) StackHttp.ioReactor.openTLS(localsocketAddress, remoteAddress, (HybridSocket) socket, StackHttp.context);
             else StackHttp.ioReactor.openTCP(localsocketAddress, remoteAddress, (HybridSocket) socket);

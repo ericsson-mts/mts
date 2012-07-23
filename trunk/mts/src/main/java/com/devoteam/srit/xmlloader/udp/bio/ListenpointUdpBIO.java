@@ -32,6 +32,7 @@ import org.dom4j.Element;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 public class ListenpointUdpBIO extends Listenpoint {
@@ -81,6 +82,8 @@ public class ListenpointUdpBIO extends Listenpoint {
         {
             datagramSocket = new DatagramSocket(getPort());
         }
+		// read all properties for the UDP socket 
+		Config.getConfigForUDPSocket(datagramSocket);
 
         this.setPort(datagramSocket.getLocalPort());
         this.setHost(datagramSocket.getLocalAddress().getHostAddress());
