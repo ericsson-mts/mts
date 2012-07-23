@@ -106,7 +106,7 @@ public class ChannelTcpBIO extends Channel
     		InetAddress localAddr = InetAddress.getByName(getLocalHost());
     		Socket socket = new Socket(getRemoteHost(), getRemotePort(), localAddr, getLocalPort());
     		// read all properties for the TCP socket 
-    		Config.getConfigForTCPSocket(socket);
+    		Config.getConfigForTCPSocket(socket, false);
     		
             this.setLocalPort(socket.getLocalPort());
             this.setLocalHost(socket.getLocalAddress().getHostAddress());
