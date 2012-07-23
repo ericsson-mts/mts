@@ -142,7 +142,7 @@ public class ChannelTls extends Channel {
 
 			SSLSocket socket = (SSLSocket) sslContext.getSocketFactory().createSocket(getRemoteHost(), getRemotePort(), localAddr, getLocalPort());
     		// read all properties for the TCP socket 
-    		Config.getConfigForTCPSocket(socket);
+    		Config.getConfigForTCPSocket(socket, true);
 
 			this.setLocalPort(socket.getLocalPort());
 			this.setLocalHost(socket.getLocalAddress().getHostAddress());

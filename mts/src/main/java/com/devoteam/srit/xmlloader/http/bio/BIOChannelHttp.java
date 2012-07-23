@@ -105,6 +105,8 @@ public class BIOChannelHttp extends ChannelHttp
                 sslContext.init(null, trustAllCerts, null);
                 
                 socket = sslContext.getSocketFactory().createSocket();
+        		// read all properties for the TCP socket 
+        		Config.getConfigForTCPSocket(socket, true);
             }
             else
             {
@@ -112,9 +114,9 @@ public class BIOChannelHttp extends ChannelHttp
                 // Create a TCP non secure socket
                 //                
                 socket = new Socket();
+        		// read all properties for the TCP socket 
+        		Config.getConfigForTCPSocket(socket, false);
             }
-    		// read all properties for the TCP socket 
-    		Config.getConfigForTCPSocket(socket);
 
             //
             // Bind the socket to the local address

@@ -86,7 +86,7 @@ public class NIOChannelHttp extends ChannelHttp
             this.socketClientHttp = new NIOSocketClientHttp();
             Socket socket = new HybridSocket((NIOSocketClientHttp)this.socketClientHttp);
     		// read all properties for the TCP socket 
-    		Config.getConfigForTCPSocket(socket);
+    		Config.getConfigForTCPSocket(socket, false);
 
             if(secure) StackHttp.ioReactor.openTLS(localsocketAddress, remoteAddress, (HybridSocket) socket, StackHttp.context);
             else StackHttp.ioReactor.openTCP(localsocketAddress, remoteAddress, (HybridSocket) socket);

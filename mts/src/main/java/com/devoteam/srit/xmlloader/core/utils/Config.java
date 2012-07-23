@@ -345,12 +345,15 @@ public class Config
         }
     }
     
-    public static void getConfigForTCPSocket(Socket socket) throws Exception
+    public static void getConfigForTCPSocket(Socket socket, boolean tlsTransport) throws Exception
     {
 		boolean keepAlive = Config.getConfigByName("tcp.properties").getBoolean("socket.KEEP_ALIVE", false);
 		socket.setKeepAlive(keepAlive);
-		boolean oobInline = Config.getConfigByName("tcp.properties").getBoolean("socket.OOB_INLINE", false);
-		socket.setOOBInline(oobInline);
+		if (!tlsTransport)
+		{
+			boolean oobInline = Config.getConfigByName("tcp.properties").getBoolean("socket.OOB_INLINE", false);
+			socket.setOOBInline(oobInline);
+		}
 		int receiveBuffer = Config.getConfigByName("tcp.properties").getInteger("socket.RECEIVE_BUFFER", 8192);
 		socket.setReceiveBufferSize(receiveBuffer);
 		boolean reuseAddress = Config.getConfigByName("tcp.properties").getBoolean("socket.REUSE_ADDRESS", false);
