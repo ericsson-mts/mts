@@ -33,6 +33,8 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 
+import com.devoteam.srit.xmlloader.core.utils.Config;
+
 /**
  *
  * @author gpasquiers
@@ -185,10 +187,13 @@ public class DatagramReactor
         dispatcher.start();
     }
 
-    public void open(SocketAddress localSocketAddress, DatagramHandler handler) throws IOException
+    public void open(SocketAddress localSocketAddress, DatagramHandler handler) throws Exception
     {
         // Create a non-blocking socket channel
         DatagramChannel channel = DatagramChannel.open();
+		// read all properties for the UDP socket 
+		Config.getConfigForUDPSocket(channel.socket());
+
         channel.socket().bind(localSocketAddress);
         channel.configureBlocking(false);
 

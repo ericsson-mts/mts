@@ -31,6 +31,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Config;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -119,6 +120,9 @@ public class ChannelTcpNIO extends Channel
             
             socketTcp = new SocketTcpNIO();
             HybridSocket hybridSocket = new HybridSocket(socketTcp);
+    		// read all properties for the TCP socket 
+    		Config.getConfigForTCPSocket(hybridSocket);
+
             socketTcp.setChannelTcp(this);
             IOReactor.instance().openTCP(local, remote, hybridSocket);
 

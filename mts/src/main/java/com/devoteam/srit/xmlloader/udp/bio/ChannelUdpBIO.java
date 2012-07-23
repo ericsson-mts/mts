@@ -32,6 +32,7 @@ import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Config;
 
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
@@ -95,6 +96,8 @@ public class ChannelUdpBIO extends Channel
             {
                 datagramSocket = new DatagramSocket(getLocalPort());
             }
+    		// read all properties for the UDP socket 
+    		Config.getConfigForUDPSocket(datagramSocket);
 
             if (!datagramSocket.isBound())
             {

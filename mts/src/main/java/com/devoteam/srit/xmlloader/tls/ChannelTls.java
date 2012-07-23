@@ -31,6 +31,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.tls.ListenpointTls;
 import com.devoteam.srit.xmlloader.tls.SocketTls;
 
@@ -140,7 +141,8 @@ public class ChannelTls extends Channel {
 			sslContext.init(null, trustAllCerts, null);
 
 			SSLSocket socket = (SSLSocket) sslContext.getSocketFactory().createSocket(getRemoteHost(), getRemotePort(), localAddr, getLocalPort());
-
+    		// read all properties for the TCP socket 
+    		Config.getConfigForTCPSocket(socket);
 
 			this.setLocalPort(socket.getLocalPort());
 			this.setLocalHost(socket.getLocalAddress().getHostAddress());
