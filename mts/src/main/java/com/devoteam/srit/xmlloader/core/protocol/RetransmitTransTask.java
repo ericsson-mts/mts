@@ -92,7 +92,7 @@ public class RetransmitTransTask extends TimerTask
 	    			if (retransNumber >= stack.retransmitTimes.length)
 	    			{
 	    				String failureMsg = "Failure after auto retransmission (index=" + retransNumber + ",time=" + retransmitTime + "s) for the message : ";
-	    				GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, failureMsg, msg.toString());
+	    				GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, failureMsg, msg.toString());
 	    			}
         		}
 	            trans.startAutomaticRetransmit();		
