@@ -73,11 +73,6 @@ public class ChannelUdpNIO extends Channel
                 localDatagramSocketAddress = new InetSocketAddress(getLocalPort());
             }
 
-            //TODO!!!!!!!!!!!!!!!!!!!!!!!!
-//            if (!datagramSocket.isBound())
-//            {
-//                GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "ChannelUdp: The datagramSocket is unbounded");
-//            }
 
             this.setLocalPort(localDatagramSocketAddress.getPort());
 
