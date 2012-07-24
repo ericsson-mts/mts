@@ -216,8 +216,8 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
                             column = Integer.parseInt(var2);
                         }
 
-                        csvReader = new CSVReader(csvPath.get(0).toString(), null, null);
-
+                        csvReader = new CSVReader(csvPath.get(0).toString(), "#", "\"");
+                        
                         List<String[]> list = csvReader.getData();
 
                         for (String[] line : list)
