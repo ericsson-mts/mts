@@ -7,7 +7,10 @@
 <parameter name="[routes]" operation="setFromMessage" value="header.RecordRoute" value2="[last_Message]"/>
 <parameter name="[peer_tag_param]" operation="setFromMessage" value="header.To.parameter.tag" value2="[last_Message]"/>
 <parameter name="[peer_tag_param]" operation="set" value=";tag=[peer_tag_param]"/>
-<sendMessageSIP remoteHost="[remote_ip]" remotePort="[remote_port]">
+<sendMessageSIP listenpoint="_listenpoint[local_port]" remoteHost="[remote_ip]" remotePort="[remote_port]" state="{regex:(SIP\/\d.\d)\n}">
+{xpath:./text()}
+</sendMessageSIP>
+<sendMessageSIP listenpoint="_listenpoint[local_port]" state="{regex:(\sSIP\/\d.\d[^\n\/])}">
 {xpath:./text()}
 </sendMessageSIP>
 <if state="{xpath:./@next}"> 

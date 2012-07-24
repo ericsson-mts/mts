@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-2" ?>
 <template>	
-<parameter name="[testcase:{regex:\b(\w*?field\d file=&quot;\w+\.\w+&quot;)}_mts]" operation="file.readcsv" value="{regex:file=\&quot;([^\&quot;]*)\&quot;}" value2="{regex:\bfield(.) file=}"/>
-
-<parameter name="[timestamp]" operation="system.timestamp" />
+<parameter name="[local_port]" operation="set" value="[localPort({integer})]"/>
+<parameter name="[remote_port]" operation="set" value="[remotePort({integer})]"/>
+<createListenpointSIP name="_listenpoint[local_port]" localHost="[local_ip]" localPort="[local_port]"/>
 <parameter name="[testcase:call_number]" operation="set" value="0" />
 <if> 
 <condition>
@@ -14,14 +14,14 @@
 <else>
 	<parameter name="[testcase:call_number]" operation="set" value="0"/>
 	
-	
 	<parameter name="[testcase:{regex:\b(\w*?field\d)\]}_mts]" operation="file.readcsv" value="[_fileName]" value2="{regex:\bfield(\d)\]}"/>
-	
+	<parameter name="[testcase:{regex:\b(\w*?field\d file=&quot;\w+\.\w+&quot;)}_mts]" operation="file.readcsv" value="{regex:file=\&quot;([^\&quot;]*)\&quot;}" value2="{regex:\bfield(.) file=}"/>
+
 	<parameter name="[testcase:{regex:(\b(\w*?field\d file=&quot;\w+\.\w+&quot;))}_size]" operation="list.size" value="[testcase:{regex:(\b(\w*?field\d file=&quot;\w+\.\w+&quot;))}_mts]" />
 	<parameter name="[testcase:{regex:(\b(\w*?field\d))\]}_size]" operation="list.size" value="[testcase:{regex:\b(\w*?field\d)\]}_mts]" />
 </else>
 </if>
-<!-- <createListenpointSIP name="_listenpoint" localHost="[local_ip]" localPort="[local_port]"/> -->
+<parameter name="[timestamp]" operation="system.timestamp" />
 <parameter name="[call_id]" operation="number.random" value="10000000" />
 <parameter name="[cseq]" operation="set" value="1" />
 <parameter name="[pid]" operation="number.random" value="10000000"/>

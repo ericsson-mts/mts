@@ -23,14 +23,32 @@ import org.dom4j.tree.DefaultCDATA;
 
 import org.xml.sax.SAXException;
 
+import com.devoteam.srit.xmlloader.core.PropertiesEnhanced;
+import com.devoteam.srit.xmlloader.core.log.FileTextListenerProvider;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.log.TextListenerProviderRegistry;
+import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.ExceptionHandlerSingleton;
+import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.TextExceptionHandler;
+import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
+import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
+import com.izforge.izpack.rules.CompareNumericsCondition;
 
 @SuppressWarnings("rawtypes")
 public class ImportSipP {
 	
 	public static void main(String... args) throws DocumentException, ParserConfigurationException, SAXException {
 		
+		  // Initialisation de IMSLoader core
+        ExceptionHandlerSingleton.setInstance(new TextExceptionHandler());
+        SingletonFSInterface.setInstance(new LocalFSInterface());
+        TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
+        // set the storage location to FILE for logging
+        PropertiesEnhanced properties = new PropertiesEnhanced();
+        properties.addPropertiesEnhancedComplete("logs.STORAGE_LOCATION", "FILE");
+        Config.overrideProperties("tester.properties", properties);
+        
 		 if (args.length <= 0) {
 	            usage("All arguments are required !");
 	     }
@@ -257,38 +275,46 @@ public class ImportSipP {
 		for (Iterator i = template_root.elementIterator();i.hasNext();) 
 		{
 			Element template_element = (Element) i.next();
-			/*Test each element. If it's a 'parameter', the parameter name should exist in the 'send'
-			  CDATA section to be added to the file. If not, this parameter wont be added*/
-			/*List test = template_element.attributes();
-			if(template_element.getName().equals("parameter") 
-					&& !template_element.attribute("name").getValue().contains("regex")
-					&& !template_element.attribute("value").getValue().contains("integer")
-					&& !template_element.attribute("name").getValue().contains("xpath"))
-        	{
-        		if(sippNode.get(sippNode.size()-1).getStringValue().contains(template_element.attribute("name").getValue()))
-        		{	
-        			//Execute the xPath function which is responsible of adding elements and attributes 
-        			xPath(resultDoc,template_element,sippNode,resultDocRoot,scenarioNum);
-        		}
-        	}
-        	else */
+			if(template_element.getName().equals("parameter"))
+			{
+				if(checkParameter(sippNode, template_element))
+					xPath(resultDoc,template_element,sippNode,resultDocRoot,scenarioNum);
+			}
+        	else
         		xPath(resultDoc,template_element,sippNode,resultDocRoot,scenarioNum);
 		}
 	}
 	
-/*	public static boolean checkElement(Element sippNode, Element templateElement, String stringToCheck)
+	public static boolean checkParameter(ArrayList<Element> sippNode, Element templateElement)
 	{	
-		boolean check = false; 
-		List<Attribute> elementAttributes = templateElement.attributes(); 
+		List<Attribute> elementAttributes = templateElement.attributes();
 		for(int i=0; i<elementAttributes.size();i++)
 		{
-			if(elementAttributes.get(i).getValue().contains(stringToCheck))
+			if(elementAttributes.get(i).getValue().contains("regex") || 
+					elementAttributes.get(i).getValue().contains("xpath") || 
+					elementAttributes.get(i).getValue().contains("integer"))
 			{
-				check = true; 
+				return true; 
 			}
 		}
-		if(comâre)
-	}*/
+		for(int k = 0; k < sippNode.size(); k++ )
+		{
+			if(sippNode.get(k).getStringValue().contains(templateElement.attribute("name").getValue()))
+			{
+				return true; 
+			}
+		}
+		for(int j=0; j<sippNode.get(sippNode.size()-1).attributes().size();j++)
+		{
+			Attribute att =  (Attribute) sippNode.get(sippNode.size()-1).attributes().get(j); 
+			if(att.getValue().contains(templateElement.attribute("name").getValue()))
+			{
+				return true; 
+			}
+		}
+		
+		return false; 
+	}
 	
 	/**
 	 * xPath function, permits to add a node, manipulate attributes containing xpath expressions or not, 
@@ -305,7 +331,7 @@ public class ImportSipP {
 		boolean xpathExists = false; 
 		//Run through all attributes of the current template element
 		for (Iterator i = currentTemplateNode.attributeIterator();i.hasNext();) 
-		{	
+		{
 			Attribute attribute = (Attribute) i.next();
 			//Get each attribute value
 			String attributeValue = attribute.getValue(); 
@@ -319,6 +345,12 @@ public class ImportSipP {
 				if(getRegexBeginning <0 )
 					break; 
 				int getRegexEnd = attributeValue.indexOf("}", getRegexBeginning);
+				if(getRegexEnd < 0)
+				{
+					log(new Exception(), "ERROR", "Template syntax error: '}' is missing");
+					System.exit(-1); 
+				}
+				
 				String regexValue = attributeValue.substring(getRegexBeginning, getRegexEnd+1);
 				
 				if(regexValue.startsWith("{xpath:"))
@@ -405,6 +437,7 @@ public class ImportSipP {
 				getRegexBeginning = getRegexEnd + 1; 
 			}
 		}
+		
 	  	//We go through the values of the Attributes list, and we get the maximum size
 		int max = 0 ;
 		for (ArrayList<String> value : att.values()) 
@@ -469,7 +502,7 @@ public class ImportSipP {
 		 * and add it to the new element
 		 */	
 		if(currentTemplateNode.getText().contains("xpath"))
-		{
+		{ 
 			String content = currentTemplateNode.getText();
 			Pattern pattern = Pattern.compile("[\\{}]");
 			String[] part = pattern.split(content);
@@ -479,7 +512,8 @@ public class ImportSipP {
 	    	 {	
 				Attribute resultat = null ; 
 				resultat = (Attribute) obj ;
-	    		newelement.addText("\n"+resultat.getValue());
+				if(newelement != null)
+					newelement.addText("\n"+resultat.getValue());
 	    	 }
 
 			else if(obj instanceof ArrayList)
@@ -487,7 +521,8 @@ public class ImportSipP {
 				ArrayList cdataResult = null ; 
 				cdataResult = (ArrayList) obj ; 
 				DefaultCDATA result = (DefaultCDATA) cdataResult.get(1); 
-				newelement.addCDATA(result.getText());
+				if(newelement != null)
+					newelement.addCDATA(result.getText());
 	    	  }
 		}
 		else
@@ -516,9 +551,10 @@ public class ImportSipP {
 		int numScenario = 0; 
 		String fileName = outputFileName.substring(outputFileName.lastIndexOf("\\")+1);
 		try {	
-				boolean exists = (new File(testFileName)).exists();
+				boolean fileExists = (new File(testFileName)).exists();
 				//If the file exists, add the element to it's corresponding place in the file
-				if (exists) {
+				if (fileExists) 
+				{
 					SAXReader reader = new SAXReader();
 					Document doc = reader.read(testFileName);
 					Element root = doc.getRootElement();
@@ -545,9 +581,16 @@ public class ImportSipP {
 						{	
 							numScenario = testCaseMain.elements("scenario").size();
 							Element scenario2 = testCaseMain.addElement("scenario");
-							scenario2.addAttribute("name", "SIP");
+							scenario2.addAttribute("name", "[localPort("+numScenario+")]");
 							scenario2.addText(fileName);
 						}
+						else
+							for (int i = 0;  i<testCaseMain.elements().size(); i++) 
+							{	
+								Element scenarioExisting = (Element) (Element)testCaseMain.elements().get(i);  
+								if(scenarioExisting.getText().equals(fileName))
+									numScenario = i ;
+							}
 					}
 					//If the file exists and the testcase tag doesn't exist, add the tag and the elements
 					else
@@ -557,7 +600,7 @@ public class ImportSipP {
 						testcase2.addAttribute("description", "test sip"); 
 						testcase2.addAttribute("state", "true");
 						Element scenario = testcase2.addElement("scenario");
-						scenario.addAttribute("name", "alice");
+						scenario.addAttribute("name", "[localPort("+numScenario+")]");
 						scenario.addText(fileName);
 						
 					}						
@@ -578,7 +621,7 @@ public class ImportSipP {
 					testCase.addAttribute("state", "true");
 					
 					Element scenario = testCase.addElement("scenario");
-					scenario.addAttribute("name", "alice");
+					scenario.addAttribute("name", "[localPort("+numScenario+")]");
 					scenario.addText(fileName);
 					rightFinalResult(doc, testFileName);
 				}
@@ -612,6 +655,7 @@ public class ImportSipP {
 			if (level.toUpperCase().equals("ERROR")) {
 	        	e.printStackTrace();
 	        	GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, e, "importSipp: "+message);
+	        	System.out.println(message);
 	        }
 	        else if (level.toUpperCase().equals("WARN")) {
 	        	e.printStackTrace();
