@@ -74,9 +74,6 @@ public class OperationSendMsg extends Operation {
 
         GlobalLogger.instance().getSessionLogger().info(aRunner, TextEvent.Topic.PROTOCOL, this);
 
-        String request;
-        String listenpointName;
-        String channelName;
         String remoteHost;
         String remotePort;
         String remoteUrl;
@@ -86,17 +83,13 @@ public class OperationSendMsg extends Operation {
         String strDelay;
         String answerHandlerAttribute;
         Msg msg;
-        Boolean req = null;
-
+        
         try {
             lockAndReplace(runner);
             GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.PROTOCOL, "Operation after pre-parsing \n", this);
             Element root = getRootElement();
             // deprecated 
             
-            request = getAttribute("request");
-            listenpointName = getAttribute("listenpoint");
-            channelName = getAttribute("channel");
             remoteHost = getAttribute("remoteHost");
             remotePort = getAttribute("remotePort");
             remoteUrl = getAttribute("remoteURL");
@@ -106,18 +99,15 @@ public class OperationSendMsg extends Operation {
             strDelay = getAttribute("delay");
             answerHandlerAttribute = getAttribute("answerHandler");
             
-            if (null != request) {
-                if (StackFactory.PROTOCOL_DIAMETER.equalsIgnoreCase(protocol)) {
+            if (StackFactory.PROTOCOL_DIAMETER.equalsIgnoreCase(protocol)) {
                     GlobalLogger.instance().logDeprecatedMessage(root.getName() + " request=\"xxx\" .../", "sendMessage" + protocol + " .../><header request=\"xxx\" .../");
-                }
-                else if (StackFactory.PROTOCOL_RADIUS.equalsIgnoreCase(protocol)) {
-                    GlobalLogger.instance().logDeprecatedMessage(root.getName() + " request=\"xxx\" .../", "sendMessage" + protocol + " .../");
-                }
-                req = Boolean.valueOf(request);
+            }
+            else if (StackFactory.PROTOCOL_RADIUS.equalsIgnoreCase(protocol)) {
+                GlobalLogger.instance().logDeprecatedMessage(root.getName() + " request=\"xxx\" .../", "sendMessage" + protocol + " .../");
             }
 
             // instanciates the msg
-            msg = stack.parseMsgFromXml(req, root, runner);
+            msg = stack.parseMsgFromXml(request, root, runner);
             msg.setSend(true);
         }
         finally {
