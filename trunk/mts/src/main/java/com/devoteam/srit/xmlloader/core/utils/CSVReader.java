@@ -72,18 +72,28 @@ public class CSVReader {
 
         csvData = new LinkedList<String[]>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(SingletonFSInterface.instance().getInputStream(uri)));
-        String line = reader.readLine();
+        String line = "";
         int colCount = 0;
         while (line != null) {
+        	line = reader.readLine();
+        	// line is null => end of file
+        	if (line == null) {
+        		break;
+        	}
+        	// blank line
         	line = line.trim();
-            if (comment != null)
-                if (line.startsWith(comment)) {
-                    line = reader.readLine();
-                    continue;
-                }
+            if ("".equals(line)) {
+                continue;
+            }
+            // comment line
+            if (line.startsWith(comment)) {
+                continue;
+            }
             int nb = countColumn(line);
-            if (nb != colCount && colCount > 0)
+            if (nb != colCount && colCount > 0) {
+            	reader.close();
                 throw new ParameterException("CSV file " + uri + " : bad format (number of column not equal)");
+            }
             else
                 colCount = nb;
             String[] data = new String[nb+1];
@@ -128,7 +138,6 @@ public class CSVReader {
                 }
             }
             csvData.add(data);
-            line = reader.readLine();
         }
         reader.close();
     }
