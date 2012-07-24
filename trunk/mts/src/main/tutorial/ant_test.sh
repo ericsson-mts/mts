@@ -35,6 +35,7 @@ sh ./startCmd.sh ../tutorial/snmp/test.xml -sequential $OPTIONS
 # sh ./startCmd.sh ../tutorial/pstn/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/mgcp/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/stun/test.xml -sequential $OPTIONS
+sh ./startCmd.sh ../tutorial/gtpp/test.xml -sequential $OPTIONS
 
 read
 
