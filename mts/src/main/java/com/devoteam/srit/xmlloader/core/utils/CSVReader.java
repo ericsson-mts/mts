@@ -75,6 +75,7 @@ public class CSVReader {
         String line = reader.readLine();
         int colCount = 0;
         while (line != null) {
+        	line = line.trim();
             if (comment != null)
                 if (line.startsWith(comment)) {
                     line = reader.readLine();
