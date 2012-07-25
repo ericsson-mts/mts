@@ -93,7 +93,7 @@ public class MosParameters {
                 throw new ParameterException("Mos parameters file " + uri + " does not exist");
 
             try {
-                csvFile = new CSVReader(uri.toString(), "#", "'");
+                csvFile = new CSVReader(uri.toString(), ";", "#", "'");
 
                 for (String[] data:csvFile.getData()) {
                     String[] codec = new String[data.length-1];

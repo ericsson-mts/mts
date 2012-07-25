@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.core.utils;
 
+import com.devoteam.srit.xmlloader.core.coding.text.MsgParser;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import java.io.BufferedReader;
@@ -31,6 +32,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
+import java.util.Vector;
 
 /**
  * Class for parsing CSV files.
@@ -55,8 +57,8 @@ public class CSVReader {
      * @throws ParameterException
      * @throws IOException
      */
-    public CSVReader(String fileName, String comment, String quote) throws RemoteException, ParameterException, IOException {
-        this.separator = Config.getConfigByName("tester.properties").getString("operations.CSV_SEPARATOR", ";");
+    public CSVReader(String fileName, String comment, String separator, String quote) throws RemoteException, ParameterException, IOException {
+        this.separator = separator;
         this.comment = comment;
         this.quote = quote;
         this.fileName = fileName;
@@ -89,6 +91,19 @@ public class CSVReader {
             if (line.startsWith(comment)) {
                 continue;
             }
+            Vector<String> parseLine = new Vector<String>();
+            MsgParser.split(parseLine, line, separator, quote);
+            
+            String[] data = new String[parseLine.size()];
+            for (int i = 0; i < parseLine.size(); i++)
+            {
+            	// String value = data[i].trim();
+            	// if (value.charAt(0) 
+            	data[i] = (String) parseLine.get(i).trim();
+            }
+            
+            csvData.add(data);
+            /*
             int nb = countColumn(line);
             if (nb != colCount && colCount > 0) {
             	reader.close();
@@ -138,6 +153,7 @@ public class CSVReader {
                 }
             }
             csvData.add(data);
+            */
         }
         reader.close();
     }
