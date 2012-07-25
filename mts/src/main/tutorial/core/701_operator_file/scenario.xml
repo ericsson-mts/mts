@@ -68,32 +68,49 @@
     <!--parameter name="[config]" operation="file.readproperty" value="701_operator_file/testProperties.xml" value2="someProperty"/>
     <test parameter="[config]" condition="string.equals" value="toto"/-->
     
-    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/test_no_header.csv" value2="2" />
-    <test parameter="[csv]" condition="string.equals"  value="toto" />
+    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/test_header.csv" value2="0" />
+    <test parameter="[csv]" condition="list.size"  value="4" />
+    <test parameter="[csv(0)]" condition="string.equals"  value="colA" />
+    <test parameter="[csv(1)]" condition="string.equals"  value="valueA0" />
+    <test parameter="[csv(2)]" condition="string.equals"  value="value;A1" />
+    <test parameter="[csv(3)]" condition="string.equals"  value=";v;;A2;;;" />
     
     <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/test_header.csv" value2="colB" />
+    <test parameter="[csv]" condition="list.size"  value="3" />
     <test parameter="[csv(0)]" condition="string.equals"  value="valueB0" />
-    <test parameter="[csv(1)]" condition="string.equals"  value="&quot; value;B1 &quot;" />
-    <test parameter="[csv(2)]" condition="string.equals"  value="valB2" />
-    <test parameter="[csv(3)]" condition="string.equals"  value="vB3" />
-        
-    <parameter name="[result]" operation="file.create" value="701_operator_file/myfile.csv" />
-    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/test_no_header.csv" value2="1" />
-    <parameter name="[csvwrite]" operation="file.writeCsvCol" value="701_operator_file/myfile.csv" value2="[csv]" />
-    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/test_no_header.csv" value2="2" />
-    <parameter name="[csvwrite]" operation="file.writeCsvCol" value="701_operator_file/myfile.csv" value2="[csv]" />
-    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/myfile.csv" value2="1" />
-    <test parameter="[csv]" condition="string.equals"  value="toto" />
-    <parameter name="[result]" operation="file.remove" value="701_operator_file/myfile.csv" />
+    <test parameter="[csv(1)]" condition="string.equals"  value="value;B1" />
+    <test parameter="[csv(2)]" condition="string.equals"  value=";v;;B2;;;" />
     
-    <parameter name="[result]" operation="file.create" value="701_operator_file/myfile.csv" />
-    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/test_no_header.csv" value2="1" />
-    <parameter name="[csvwrite]" operation="file.writeCsvRaw" value="701_operator_file/myfile.csv" value2="[csv]" />
-    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/test_no_header.csv" value2="2" />
-    <parameter name="[csvwrite]" operation="file.writeCsvRaw" value="701_operator_file/myfile.csv" value2="[csv]" />
-    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/myfile.csv" value2="2" />
-    <test parameter="[csv]" condition="string.equals"  value="toto" />
-    <parameter name="[result]" operation="file.remove" value="701_operator_file/myfile.csv" />
-	
+    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/test_header.csv" value2="colC" />
+    <test parameter="[csv]" condition="list.size"  value="3" />
+
+    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/test_header.csv" value2="3" />
+    <test parameter="[csv]" condition="list.size"  value="4" />
+                   
+    <parameter name="[result]" operation="file.create" value="701_operator_file/write_file_col.csv" />
+    <parameter name="[csvRead1]" operation="file.readcsv" value="701_operator_file/test_no_header.csv" value2="1" />
+    <parameter name="[result1]" operation="file.writeCsvCol" value="701_operator_file/write_file_col.csv" value2="[csvRead1]" />
+    <parameter name="[csvRead2]" operation="file.readcsv" value="701_operator_file/test_no_header.csv" value2="2" />
+    <parameter name="[result2]" operation="file.writeCsvCol" value="701_operator_file/write_file_col.csv" value2="[csvRead2]" />
+    <parameter name="[csvWriteRead0]" operation="file.readcsv" value="701_operator_file/write_file_col.csv" value2="0" />
+    <test parameter="[csvWriteRead0]" condition="string.equals"  value="[csvRead1]" />
+    <parameter name="[csvWriteRead1]" operation="file.readcsv" value="701_operator_file/write_file_col.csv" value2="1" />
+    <test parameter="[csvWriteRead1]" condition="string.equals"  value="[csvRead2]" />
+    
+    <parameter name="[result]" operation="file.create" value="701_operator_file/write_file_raw.csv" />
+    <parameter name="[csvRead1]" operation="file.readcsv" value="701_operator_file/test_no_header.csv" value2="1" />
+    <parameter name="[result1]" operation="file.writeCsvRaw" value="701_operator_file/write_file_raw.csv" value2="[csvRead1]" />
+    <parameter name="[csvRead2]" operation="file.readcsv" value="701_operator_file/test_no_header.csv" value2="2" />
+    <parameter name="[result]" operation="file.writeCsvRaw" value="701_operator_file/write_file_raw.csv" value2="[csvRead2]" />
+    <parameter name="[csvWriteRead0]" operation="file.readcsv" value="701_operator_file/write_file_raw.csv" value2="0" />
+    <test parameter="[csvWriteRead0]" condition="string.equals"  value="toto" />
+    <parameter name="[csvWriteRead1]" operation="file.readcsv" value="701_operator_file/write_file_raw.csv" value2="1" />
+    <test parameter="[csvWriteRead1(0)]" condition="string.equals"  value="titi" />
+    <test parameter="[csvWriteRead1(1)]" condition="string.equals"  value="toto" />
+    <parameter name="[csvWriteRead2]" operation="file.readcsv" value="701_operator_file/write_file_raw.csv" value2="2" />
+    <test parameter="[csvWriteRead2(0)]" condition="string.equals"  value="toto" />
+    <test parameter="[csvWriteRead2(1)]" condition="string.equals"  value="titi" />
+    <parameter name="[csvWriteRead3]" operation="file.readcsv" value="701_operator_file/write_file_raw.csv" value2="3" />
+    <test parameter="[csvWriteRead3]" condition="string.equals"  value="toto" />
 
 </scenario>
