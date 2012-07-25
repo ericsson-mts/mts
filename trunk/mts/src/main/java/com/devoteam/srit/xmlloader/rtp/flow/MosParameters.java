@@ -88,26 +88,19 @@ public class MosParameters {
             paramsPT = new HashMap<String, String[]>();
             URI uri = URIRegistry.IMSLOADER_BIN.resolve("../conf/rtpflow/mos_parameters.csv");
 
-            if(!SingletonFSInterface.instance().exists(uri)
-                || !SingletonFSInterface.instance().isFile(uri))
-                throw new ParameterException("Mos parameters file " + uri + " does not exist");
+            csvFile = new CSVReader(uri.toString(), "#", ";", "''");
 
-            try {
-                csvFile = new CSVReader(uri.toString(), ";", "#", "'");
-
-                for (String[] data:csvFile.getData()) {
-                    String[] codec = new String[data.length-1];
-                    String[] codecPT = new String[data.length-1];
-                    for (int i=1, max=data.length; i<max; i++) {
-                        codec[i-1] = data[i];
-                        codecPT[i-1] = data[i];
-                    }
-                    codecPT[0] = data[0];
-                    params.put(data[0], codec);
-                    paramsPT.put(data[1], codecPT);
+            for (String[] data:csvFile.getData()) {
+                String[] codec = new String[data.length-1];
+                String[] codecPT = new String[data.length-1];
+                for (int i=1, max=data.length; i<max; i++) {
+                    codec[i-1] = data[i];
+                    codecPT[i-1] = data[i];
                 }
-            } catch (IOException ex) {
-                GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, ex, "Error with MOS parameters configuration");}
+                codecPT[0] = data[0];
+                params.put(data[0], codec);
+                paramsPT.put(data[1], codecPT);
+            }
         }
 
         public HashMap<String, String[]> getParams() {

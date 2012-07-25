@@ -204,11 +204,15 @@ public class Config
         if (null == value){
             value = this.propertiesEnhanced.getDefaultValue(key);
         }
-        if (null == value){
-            return "";
+        if (value == null)
+        {
+        	value="";
         }
-        else
+        //if (null != value){
             return value.trim();
+        //}
+        //else
+        //    return null;
     }
     
     public String getString(String key, String defaultValue)

@@ -57,7 +57,7 @@ public class PluggableParameterOperatorWriteCSV  extends AbstractPluggableParame
         Parameter filePath = PluggableParameterOperatorList.assertAndGetParameter(operands, "value");
         Parameter paramData = PluggableParameterOperatorList.assertAndGetParameter(operands, "value2");
 
-        String separator = Config.getConfigByName("tester.properties").getString("operations.CSV_SEPARATOR", ";");
+        String separator = Config.getConfigByName("tester.properties").getString("operations.CSV_SEPARATOR_CHAR", ";");
         URI csvPath = URIRegistry.IMSLOADER_TEST_HOME.resolve(filePath.get(0).toString().trim());
 
         if (name.equalsIgnoreCase(S_WRITECSVCOL)) {
