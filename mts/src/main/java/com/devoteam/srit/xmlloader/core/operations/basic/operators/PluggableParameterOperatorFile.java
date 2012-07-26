@@ -48,6 +48,9 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+
+import javax.sound.sampled.AudioFileFormat;
+
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -100,7 +103,7 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
         
         if(path.length() > 0)
         {
-            URI filePath = URIRegistry.IMSLOADER_TEST_HOME.resolve(path.get(0).toString());
+            URI filePathURI = URIRegistry.IMSLOADER_TEST_HOME.resolve(path.get(0).toString());
 
             if(name.equals(NAME_B_WRITE) || name.equals(NAME_S_WRITE))
             {
@@ -108,7 +111,7 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
                 if(data.length() != 0)
                 {
                     String fileData = data.get(0).toString();
-                    File file = new File(filePath);
+                    File file = new File(filePathURI);
                     if(!file.exists()) file.createNewFile();
                     OutputStream out = new FileOutputStream(file, true);
 
@@ -130,7 +133,7 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
             }
             else if(name.equals(NAME_B_READ) || name.equals(NAME_S_READ))
             {
-                File file = new File(filePath);
+                File file = new File(filePathURI);
                 byte[] bytes = new byte[(int) file.length()];
                 InputStream in = new FileInputStream(file);
                 in.read(bytes);
@@ -147,19 +150,19 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
             }
             else if(name.equals(NAME_CREATE))
             {
-                File file = new File(filePath);
+                File file = new File(filePathURI);
                 if(file.exists()) file.delete();
                 file.createNewFile();
                 result = null;
             }
             else if(name.equals(NAME_REMOVE))
             {
-                new File(filePath).delete();
+                new File(filePathURI).delete();
                 result = null;
             }
             else if(name.equals(NAME_EXISTS))
             {
-                result.add(new File(filePath).exists());
+                result.add(new File(filePathURI).exists());
             }
             else if(name.equals(NAME_READPROPERTY))
             {
@@ -175,7 +178,6 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
             }
             else if(name.equals(NAME_READCSV))
             {
-                Parameter csvPath = path;
                 Parameter csvCol = PluggableParameterOperatorList.assertAndGetParameter(operands, "value2");
                 CSVReader csvReader = null;
 
@@ -186,12 +188,13 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
                 {
                     column = Integer.parseInt(var2);
                 }
+                
                 String comment = Config.getConfigByName("tester.properties").getString("operations.CSV_COMMENT_CHAR", "#");
                 String separator = Config.getConfigByName("tester.properties").getString("operations.CSV_SEPARATOR_CHAR", ";");
                 String escape = Config.getConfigByName("tester.properties").getString("operations.CSV_ESCAPE_CHAR", "\"");
-                csvReader = new CSVReader(csvPath.get(0).toString(), comment, separator, escape + escape);
+                csvReader = new CSVReader(filePathURI, comment, separator, escape + escape);
                 
-                List<String[]> list = csvReader.getData();
+                List<String[]> list = csvReader.loadAllData();
 
                 for (String[] line : list)
                 {
@@ -237,13 +240,19 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
 
                 String value = null;
                 Element node = null;
-                SAXReader reader = new SAXReader();
-
-                URI uri = URIFactory.resolve(URIRegistry.IMSLOADER_RESOURCES_HOME, path.get(0).toString());
-                InputStream in = SingletonFSInterface.instance().getInputStream(uri);
-                Document document = reader.read(in);
-                in.close();
-
+                
+                InputStream in = null;
+                Document document = null;
+                try {
+	                SAXReader reader = new SAXReader();
+	                in = SingletonFSInterface.instance().getInputStream(filePathURI);
+	                document = reader.read(in);
+	                in.close();
+                }
+                catch(Exception e){
+                	if (in != null) in.close();
+                    throw e;
+                }
                 //parsing du fichier
                 List listNode = document.selectNodes("//proto[@name='geninfo' or @name='rtp']/field[@name='timestamp' or @name='rtp.payload' or @name='rtp.seq' or @name='rtp.timestamp' or @name='rtp.p_type' or @name='rtp.marker']");//5s for 50000
 
@@ -310,78 +319,77 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
                 Parameter payloadType = new Parameter(resultantUnbracketed + ".payloadType");
                 Parameter bitRate = new Parameter(resultantUnbracketed + ".bitRate");
 
-                URI uri = URIFactory.resolve(URIRegistry.IMSLOADER_RESOURCES_HOME, path.get(0).toString());
-                WAVReader waveFileReader = new WAVReader();
+                InputStream in = null;
+                WAVReader waveFileReader = null;
+                AudioFileFormat format = null;
+                try {
+	                in = SingletonFSInterface.instance().getInputStream(filePathURI);
+	                waveFileReader = new WAVReader();
+	                format = waveFileReader.getAudioFileFormat(in);
+	                in.close();
+                }
+                catch(Exception e){
+                	if (in != null) in.close();
+                    throw e;
+                }	            
+                
+                if (format != null){
+                	byte[] payload = waveFileReader.getPayload();
 
-                if (SingletonFSInterface.instance().exists(uri))
-                {
-                    InputStream in = SingletonFSInterface.instance().getInputStream(uri);
-                    if(waveFileReader.getAudioFileFormat(in) != null)
-                    {
-                        if (waveFileReader.getPayload() != null){
+                    //recuperation du nombre de paquets par ech a partir du fichier xml
+                    Parameter paraDeltaTimeMilliSec = PluggableParameterOperatorList.assertAndGetParameter(operands, "value2");
+                    String deltaTimeMilliSec = paraDeltaTimeMilliSec.get(0).toString();
+                    int nbEchPerPacket = (int) (Integer.parseInt(deltaTimeMilliSec)  * waveFileReader.getBitRate() / 8);
 
-                            //recuperation du nombre de paquets par ech a partir du fichier xml
-                            Parameter paraDeltaTimeMilliSec = PluggableParameterOperatorList.assertAndGetParameter(operands, "value2");
-                            String deltaTimeMilliSec = paraDeltaTimeMilliSec.get(0).toString();
-                            int nbEchPerPacket = (int) (Integer.parseInt(deltaTimeMilliSec)  * waveFileReader.getBitRate() / 8);
+                    //recuperation du nombre totale de paquets
+                    int nbPacket = payload.length / nbEchPerPacket;
+                    int nbFullPacket = nbPacket;
+                    int nbEchInLastPacket = 0;
+                    if (payload.length % nbEchPerPacket != 0){
+                        //si la division a un reste, un rajoute un paquet qui ne sera pas plein
+                        nbEchInLastPacket = payload.length - nbEchPerPacket*nbPacket;
+                        nbPacket++;
+                    }
 
-                            //recuperation du nombre totale de paquets
-                            int nbPacket = waveFileReader.getPayload().length / nbEchPerPacket;
-                            int nbFullPacket = nbPacket;
-                            int nbEchInLastPacket = 0;
-                            if (waveFileReader.getPayload().length % nbEchPerPacket != 0){
-                                //si la division a un reste, un rajoute un paquet qui ne sera pas plein
-                                nbEchInLastPacket = waveFileReader.getPayload().length - nbEchPerPacket*nbPacket;
-                                nbPacket++;
+                    //recuperation et decoupage du payload
+                    byte[] val;
+                    for (int j = 0; j < payload.length; j += nbEchPerPacket){
+                        DefaultArray temp;
+                        if (j < nbFullPacket*nbEchPerPacket){
+                            val = new byte[nbEchPerPacket];
+                            for (int k = j; k < j+nbEchPerPacket; k++){
+                                val[k-j] = payload[k];
                             }
-
-                            //recuperation et decoupage du payload
-                            byte[] val;
-                            for (int j = 0; j < waveFileReader.getPayload().length; j += nbEchPerPacket){
-                                DefaultArray temp;
-                                if (j < nbFullPacket*nbEchPerPacket){
-                                    val = new byte[nbEchPerPacket];
-                                    for (int k = j; k < j+nbEchPerPacket; k++){
-                                        val[k-j] = waveFileReader.getPayload()[k];
-                                    }
-                                     temp = new DefaultArray(val);
-                                    payloadList.add(Array.toHexString(temp));
-                                }
-                                else{
-                                    val = new byte[nbEchInLastPacket];
-                                    //on ajoute le dernier paquet qui ne sera pas plein
-                                    for (int k = j; k < j+nbEchInLastPacket; k++){
-                                        val[k-j] = waveFileReader.getPayload()[k];
-                                    }
-                                    temp = new DefaultArray(val);
-                                    payloadList.add(Array.toHexString(temp));
-                                }
-                            }
-                        }
-
-                        if (waveFileReader.getPayloadType() == 0 || waveFileReader.getPayloadType() == 8) {
-                            payloadType.add(waveFileReader.getPayloadType());
+                             temp = new DefaultArray(val);
+                            payloadList.add(Array.toHexString(temp));
                         }
                         else{
-                            throw new ParameterException("The codec is not supported");
+                            val = new byte[nbEchInLastPacket];
+                            //on ajoute le dernier paquet qui ne sera pas plein
+                            for (int k = j; k < j+nbEchInLastPacket; k++){
+                                val[k-j] = payload[k];
+                            }
+                            temp = new DefaultArray(val);
+                            payloadList.add(Array.toHexString(temp));
                         }
-                        bitRate.add(waveFileReader.getBitRate());
-
-                        runner.getParameterPool().set("["+ resultantUnbracketed + ".payload" + "]", payloadList);
-                        runner.getParameterPool().set("["+ resultantUnbracketed + ".payloadType" + "]", payloadType);
-                        runner.getParameterPool().set("["+ resultantUnbracketed + ".bitRate" + "]", bitRate);
-                        result.add(resultantUnbracketed + ".payload");
-                        result.add(resultantUnbracketed + ".payloadType");
-                        result.add(resultantUnbracketed + ".bitRate");
                     }
-                    in.close();
-                }
-                else{
-                    throw new ParameterException("Error while reading wave file, file not found");
+                    int payloadTypeInt = waveFileReader.getPayloadType();
+                    if (!(payloadTypeInt != 0) && !(payloadTypeInt != 8)) {
+                    	throw new ParameterException("The codec is not supported : " + payloadTypeInt);
+                    }
+                    payloadType.add(payloadTypeInt);
+                    
+                    bitRate.add(waveFileReader.getBitRate());
+
+                    runner.getParameterPool().set("["+ resultantUnbracketed + ".payload" + "]", payloadList);
+                    runner.getParameterPool().set("["+ resultantUnbracketed + ".payloadType" + "]", payloadType);
+                    runner.getParameterPool().set("["+ resultantUnbracketed + ".bitRate" + "]", bitRate);
+                    result.add(resultantUnbracketed + ".payload");
+                    result.add(resultantUnbracketed + ".payloadType");
+                    result.add(resultantUnbracketed + ".bitRate");
                 }
             }
             else if(name.equals(NAME_WRITEWAVE)){
-                URI uri = URIFactory.resolve(URIRegistry.IMSLOADER_RESOURCES_HOME, path.get(0).toString());
                 byte[] chunkID = "RIFF".getBytes();
                 byte[] chunkSize;
                 byte[] format = "WAVE".getBytes();
@@ -525,18 +533,20 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
                 System.arraycopy(subChunk2ID, 0, buf, 48, 4);
                 System.arraycopy(subChunk2Size, 0, buf, 52, 4);
                 System.arraycopy(payload, 0, buf, 56, payload.length);
-                File myFile= new File(uri);
+                File myFile= new File(filePathURI);
                 if (myFile.exists()){
                     myFile.delete();
                 }
                 if (buf.length > 0 ){
+                	OutputStream out = null;
                     try{
-                        OutputStream out = SingletonFSInterface.instance().getOutputStream(uri);
+                        out = SingletonFSInterface.instance().getOutputStream(filePathURI);
                         out.write(buf);
                         out.close();
                     }
                     catch(Exception e){
-                        GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, e, "Cannot save file in writewave operation", uri);
+                    	if (out != null) out.close();
+                        throw e;
                     }
                 }
                 result = null;

@@ -88,9 +88,9 @@ public class MosParameters {
             paramsPT = new HashMap<String, String[]>();
             URI uri = URIRegistry.IMSLOADER_BIN.resolve("../conf/rtpflow/mos_parameters.csv");
 
-            csvFile = new CSVReader(uri.toString(), "#", ";", "''");
+            csvFile = new CSVReader(uri, "#", ";", "''");
 
-            for (String[] data:csvFile.getData()) {
+            for (String[] data:csvFile.loadAllData()) {
                 String[] codec = new String[data.length-1];
                 String[] codecPT = new String[data.length-1];
                 for (int i=1, max=data.length; i<max; i++) {

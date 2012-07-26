@@ -54,65 +54,74 @@ public class CSVReader
      * @param quote - quote character - can be null
      * @throws Exception
      */
-    public CSVReader(String fileName, String comment, String separator, String quote) throws Exception
+    public CSVReader(URI uri, String comment, String separator, String quote) throws Exception
     {
         this.separator = separator;
         this.comment = comment;
         this.quote = quote;
-        parseCSVFile(fileName);
+        parseCSVFile(uri);
     }
 
-    private void parseCSVFile(String fileName) throws Exception 
+    private void parseCSVFile(URI uri) throws Exception 
     {
-        URI uri = URIFactory.resolve(URIRegistry.IMSLOADER_RESOURCES_HOME, fileName);
-
         csvData = new LinkedList<String[]>();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(SingletonFSInterface.instance().getInputStream(uri)));
-        String line = "";
-        while (line != null)
-        {
-        	line = reader.readLine();
-        	// line is null => end of file
-        	if (line == null) 
-        	{
-        		break;
-        	}
-        	// blank line
-        	line = line.trim();
-            if ("".equals(line)) 
-            {
-                continue;
-            }
-            // comment line
-            if (line.startsWith(comment)) 
-            {
-                continue;
-            }
-            
-            Vector<String> parseLine = new Vector<String>();
-            MsgParser.split(parseLine, line, separator, quote);
-            
-            String[] data = new String[parseLine.size()];
-            for (int i = 0; i < parseLine.size(); i++)
-            {
-            	String value = (String) parseLine.get(i).trim();
-            	if (value.charAt(0) == quote.charAt(0))
-            	{
-            		value = value.substring(1);
-            	}
-            	if (value.charAt(value.length() -1) == quote.charAt(1))
-            	{
-            		value = value.substring(0, value.length() - 1);
-            	}            	
-            	data[i] = value.trim();
-            }
-            
-            csvData.add(data);
+        		
+        BufferedReader in = null;
+        try {
+	        in = new BufferedReader(new InputStreamReader(SingletonFSInterface.instance().getInputStream(uri)));
+	        String line = "";
+	        while (line != null)
+	        {
+	        	line = in.readLine();
+	        	// line is null => end of file
+	        	if (line == null) 
+	        	{
+	        		break;
+	        	}
+	        	// blank line
+	        	line = line.trim();
+	            if ("".equals(line)) 
+	            {
+	                continue;
+	            }
+	            // comment line
+	            if (line.startsWith(comment)) 
+	            {
+	                continue;
+	            }
+	            
+	            Vector<String> parseLine = new Vector<String>();
+	            MsgParser.split(parseLine, line, separator, quote);
+	            
+	            String[] data = new String[parseLine.size()];
+	            for (int i = 0; i < parseLine.size(); i++)
+	            {
+	            	String value = (String) parseLine.get(i).trim();
+	            	if (quote != null)
+	            	{
+	            		if (value.charAt(0) == quote.charAt(0))
+		            	{
+		            		value = value.substring(1);
+		            	}
+		            	if (value.charAt(value.length() - 1) == quote.charAt(1))
+		            	{
+		            		value = value.substring(0, value.length() - 1);
+		            	}
+	            	}
+	            	data[i] = value.trim();
+	            }
+	            
+	            csvData.add(data);
+	        }
+	        in.close();
         }
-        reader.close();
+        catch(Exception e){
+        	if (in != null) in.close();
+            throw e;
+        }		        
     }
 
-    public LinkedList<String[]> getData() {
+    public LinkedList<String[]> loadAllData() {
         return csvData;
     }
 }
