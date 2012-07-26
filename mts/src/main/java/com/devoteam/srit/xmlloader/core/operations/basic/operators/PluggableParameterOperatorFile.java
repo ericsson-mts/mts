@@ -211,7 +211,10 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
 	                	listData = csvReader.loadData(filePathURI, column, true);
 	                }
                 }
-                result.addAll(listData);
+                if (listData != null)
+                {
+                	result.addAll(listData);
+                }
             }
             else if(name.equals(NAME_READMEDIA))
             {
