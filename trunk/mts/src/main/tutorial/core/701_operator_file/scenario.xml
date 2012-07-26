@@ -64,33 +64,40 @@
     
     <parameter name="[config]" operation="file.readproperty" value="tester.properties" value2="stats.AUTOMATIC_GENERATE"/>
     <test parameter="[config]" condition="string.equals" value="false"/>
-    
-    <!--parameter name="[config]" operation="file.readproperty" value="701_operator_file/testProperties.xml" value2="someProperty"/>
-    <test parameter="[config]" condition="string.equals" value="toto"/-->
-    
-    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/test_header.csv" value2="0" />
+        
+    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_header.csv" value2="0" />
     <test parameter="[csv]" condition="list.size"  value="4" />
     <test parameter="[csv(0)]" condition="string.equals"  value="colA" />
     <test parameter="[csv(1)]" condition="string.equals"  value="valueA0" />
     <test parameter="[csv(2)]" condition="string.equals"  value="value;A1" />
     <test parameter="[csv(3)]" condition="string.equals"  value=";v;;A2;;;" />
     
-    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/test_header.csv" value2="colB" />
+    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_header.csv" value2="colB" />
     <test parameter="[csv]" condition="list.size"  value="3" />
     <test parameter="[csv(0)]" condition="string.equals"  value="valueB0" />
     <test parameter="[csv(1)]" condition="string.equals"  value="value;B1" />
     <test parameter="[csv(2)]" condition="string.equals"  value=";v;;B2;;;" />
     
-    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/test_header.csv" value2="colC" />
+    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_header.csv" value2="colC" />
     <test parameter="[csv]" condition="list.size"  value="3" />
-
-    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/test_header.csv" value2="3" />
+    
+    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_header.csv" value2="6" />
     <test parameter="[csv]" condition="list.size"  value="4" />
-                   
+    
+    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_header.csv" value2="bidon" />
+    <test parameter="[csv]" condition="list.size"  value="0" />
+    
+    <parameter name="[timestampBegin]" operation="system.timestamp" />
+    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_user.csv" value2="inviter" />
+    <test parameter="[csv]" condition="list.size"  value="79904" />
+    <parameter name="[timestampEnd]" operation="system.timestamp" />
+    <parameter name="[duration]" operation="number.substract" value="[timestampEnd]" value2="[timestampBegin]" />
+    <test parameter="[duration]" condition="number.lowerThan"  value="200" />
+    
     <parameter name="[result]" operation="file.create" value="701_operator_file/write_file_col.csv" />
-    <parameter name="[csvRead1]" operation="file.readcsv" value="701_operator_file/test_no_header.csv" value2="1" />
+    <parameter name="[csvRead1]" operation="file.readcsv" value="701_operator_file/read_no_header.csv" value2="1" />
     <parameter name="[result1]" operation="file.writeCsvCol" value="701_operator_file/write_file_col.csv" value2="[csvRead1]" />
-    <parameter name="[csvRead2]" operation="file.readcsv" value="701_operator_file/test_no_header.csv" value2="2" />
+    <parameter name="[csvRead2]" operation="file.readcsv" value="701_operator_file/read_no_header.csv" value2="2" />
     <parameter name="[result2]" operation="file.writeCsvCol" value="701_operator_file/write_file_col.csv" value2="[csvRead2]" />
     <parameter name="[csvWriteRead0]" operation="file.readcsv" value="701_operator_file/write_file_col.csv" value2="0" />
     <test parameter="[csvWriteRead0]" condition="string.equals"  value="[csvRead1]" />
@@ -98,9 +105,9 @@
     <test parameter="[csvWriteRead1]" condition="string.equals"  value="[csvRead2]" />
     
     <parameter name="[result]" operation="file.create" value="701_operator_file/write_file_raw.csv" />
-    <parameter name="[csvRead1]" operation="file.readcsv" value="701_operator_file/test_no_header.csv" value2="1" />
+    <parameter name="[csvRead1]" operation="file.readcsv" value="701_operator_file/read_no_header.csv" value2="1" />
     <parameter name="[result1]" operation="file.writeCsvRaw" value="701_operator_file/write_file_raw.csv" value2="[csvRead1]" />
-    <parameter name="[csvRead2]" operation="file.readcsv" value="701_operator_file/test_no_header.csv" value2="2" />
+    <parameter name="[csvRead2]" operation="file.readcsv" value="701_operator_file/read_no_header.csv" value2="2" />
     <parameter name="[result]" operation="file.writeCsvRaw" value="701_operator_file/write_file_raw.csv" value2="[csvRead2]" />
     <parameter name="[csvWriteRead0]" operation="file.readcsv" value="701_operator_file/write_file_raw.csv" value2="0" />
     <test parameter="[csvWriteRead0]" condition="string.equals"  value="toto" />
