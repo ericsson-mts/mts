@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.coding.text.Header;
 import java.util.Collection;
+import java.util.List;
 
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -161,10 +162,6 @@ public class Parameter {
             }
             add(val);
         }
-    }
-
-    public void addVector(Vector vector) {
-        addAll(vector);
     }
 
     public void addAll(Collection collection) {

@@ -179,50 +179,39 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
             else if(name.equals(NAME_READCSV))
             {
                 Parameter csvCol = PluggableParameterOperatorList.assertAndGetParameter(operands, "value2");
-                CSVReader csvReader = null;
 
-                String var2 = csvCol.get(0).toString();
-                int column = -1;
-
-                if (Utils.isInteger(csvCol.get(0).toString()))
-                {
-                    column = Integer.parseInt(var2);
-                }
-                
                 String comment = Config.getConfigByName("tester.properties").getString("operations.CSV_COMMENT_CHAR", "#");
                 String separator = Config.getConfigByName("tester.properties").getString("operations.CSV_SEPARATOR_CHAR", ";");
                 String escape = Config.getConfigByName("tester.properties").getString("operations.CSV_ESCAPE_CHAR", "\"");
-                csvReader = new CSVReader(comment, separator, escape + escape);
+                CSVReader csvReader = new CSVReader(comment, separator, escape + escape);
                 
-                List<String[]> list = csvReader.loadAllData(filePathURI);
+                String var2 = csvCol.get(0).toString();
+                int column = -1;
 
-                for (String[] line : list)
+                List<String> listData = null;
+                if (Utils.isInteger(var2))
                 {
-                    if (column == -1)
-                    {
-                        for (int j = 0; j < line.length; j++)
-                        {
-                            if (line[j].trim().equals(var2.trim()))
-                            {
-                                column = j;
-                                break;
-                            }
-                        }
-                        if (column == -1)
-                        {
-                            throw new ParameterException("Invalid column index " + var2 + " (" + column + ")");
-                        }
-                        continue;
-                    }
-                    if (column < line.length)
-                    {
-                    	result.add(line[column]);
-                    }
-                    else
-                    {
-                    	throw new ParameterException("Invalid column index " + var2 + " (" + column + ")");
-                    }
+                    column = Integer.parseInt(var2);
+                    listData = csvReader.loadData(filePathURI, column, false);
                 }
+                else
+                {
+	                // get the header line to retrieve the column number
+	                String[] listHeader = csvReader.loadHeader(filePathURI);
+	                for (int j = 0; j < listHeader.length; j++)
+	                {
+	                    if (listHeader[j].equals(var2.trim()))
+	                    {
+	                        column = j;
+	                        break;
+	                    }
+	                }
+	                if (column >= 0)
+	                {
+	                	listData = csvReader.loadData(filePathURI, column, true);
+	                }
+                }
+                result.addAll(listData);
             }
             else if(name.equals(NAME_READMEDIA))
             {
