@@ -117,7 +117,7 @@ public class PluggableParameterOperatorSetFromSDP extends AbstractPluggableParam
             SessionDescription sessionDesc = factory.createSessionDescription(content);
             if (params.length == index + 1)
             {
-                var.addVector(sessionDesc.getBandwidths(true));
+                var.addAll(sessionDesc.getBandwidths(true));
             }
             else
             {
@@ -167,14 +167,14 @@ public class PluggableParameterOperatorSetFromSDP extends AbstractPluggableParam
 	    {
             SdpFactory factory = SdpFactory.getInstance();
             SessionDescription sessionDesc = factory.createSessionDescription(content);
-            var.addVector(sessionDesc.getPhones(true));
+            var.addAll(sessionDesc.getPhones(true));
 	    }
 	    //---------------------------------------------------------------------- email -
 	    else if (params[index].equalsIgnoreCase("email"))
 	    {
             SdpFactory factory = SdpFactory.getInstance();
             SessionDescription sessionDesc = factory.createSessionDescription(content);
-            var.addVector(sessionDesc.getEmails(true));
+            var.addAll(sessionDesc.getEmails(true));
 	    }
 	    //---------------------------------------------------------------------- media -
 	    else if (params[index].equalsIgnoreCase("media"))
@@ -184,7 +184,7 @@ public class PluggableParameterOperatorSetFromSDP extends AbstractPluggableParam
             Vector v = sessionDesc.getMediaDescriptions(true);
             if (params.length == index + 1)
             {
-                var.addVector(v);
+                var.addAll(v);
             }
             else
             {
@@ -225,7 +225,7 @@ public class PluggableParameterOperatorSetFromSDP extends AbstractPluggableParam
             SessionDescription sessionDesc = factory.createSessionDescription(content);
             if (params.length == index + 1)
             {
-                var.addVector(sessionDesc.getTimeDescriptions(true));
+                var.addAll(sessionDesc.getTimeDescriptions(true));
             }
             else
             {
@@ -237,7 +237,7 @@ public class PluggableParameterOperatorSetFromSDP extends AbstractPluggableParam
 	    {
             SdpFactory factory = SdpFactory.getInstance();
             SessionDescription sessionDesc = factory.createSessionDescription(content);
-            var.addVector(sessionDesc.getZoneAdjustments(true));
+            var.addAll(sessionDesc.getZoneAdjustments(true));
 	    }
 	    //---------------------------------------------------------------------- repeatTime -
 	    else if (params[index].equalsIgnoreCase("repeatTime"))
@@ -249,7 +249,7 @@ public class PluggableParameterOperatorSetFromSDP extends AbstractPluggableParam
             {
                 if (params.length == index + 1)
                 {
-                    var.addVector(((TimeDescription) v.get(i)).getRepeatTimes(true));
+                    var.addAll(((TimeDescription) v.get(i)).getRepeatTimes(true));
                 }
                 else
                 {
@@ -265,7 +265,7 @@ public class PluggableParameterOperatorSetFromSDP extends AbstractPluggableParam
             SessionDescription sessionDesc = factory.createSessionDescription(content);
             if (params.length == index + 1)
             {
-                var.addVector(sessionDesc.getAttributes(true));
+                var.addAll(sessionDesc.getAttributes(true));
             //--------------------------------------------------------------- [media]:attribut:Xxxx -
             }
             else if (params.length == index + 2)
@@ -345,7 +345,7 @@ public class PluggableParameterOperatorSetFromSDP extends AbstractPluggableParam
             		Media m = ((MediaDescription) vect.get(i)).getMedia();
             		if (m != null)
             		{
-            			var.addVector(m.getMediaFormats(true));
+            			var.addAll(m.getMediaFormats(true));
             		}
             	}
             }
@@ -381,7 +381,7 @@ public class PluggableParameterOperatorSetFromSDP extends AbstractPluggableParam
             {
                 if (params.length == index + 1)
                 {
-                    var.addVector(((MediaDescription) vect.get(i)).getBandwidths(true));
+                    var.addAll(((MediaDescription) vect.get(i)).getBandwidths(true));
                 }
                 else
                 {
@@ -394,7 +394,7 @@ public class PluggableParameterOperatorSetFromSDP extends AbstractPluggableParam
         {
             for (int i = 0; i < vect.size(); i++)
             {
-                var.addVector((((MediaDescription) vect.get(i)).getMimeParameters()));
+                var.addAll((((MediaDescription) vect.get(i)).getMimeParameters()));
             }
         }
         //---------------------------------------------------------------------- media:mimeTypes
@@ -402,7 +402,7 @@ public class PluggableParameterOperatorSetFromSDP extends AbstractPluggableParam
         {
             for (int i = 0; i < vect.size(); i++)
             {
-                var.addVector((((MediaDescription) vect.get(i)).getMimeTypes()));
+                var.addAll((((MediaDescription) vect.get(i)).getMimeTypes()));
             }
         }
         //---------------------------------------------------------------------- media:attribut
@@ -412,7 +412,7 @@ public class PluggableParameterOperatorSetFromSDP extends AbstractPluggableParam
             {
                 for (int i = 0; i < vect.size(); i++)
                 {
-                    var.addVector((((MediaDescription) vect.get(i)).getAttributes(true)));
+                    var.addAll((((MediaDescription) vect.get(i)).getAttributes(true)));
                 }
             }
             else if (params.length == index + 2)

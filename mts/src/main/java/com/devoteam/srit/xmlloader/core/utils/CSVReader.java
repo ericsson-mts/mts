@@ -99,6 +99,80 @@ public class CSVReader
 	    return data;
     }
 
+    public List<String> loadData(URI uri, int column, boolean ignoreFirst) throws Exception
+    {
+    	ArrayList<String> result = new ArrayList<String>();
+		
+        BufferedReader in = null;
+        try {
+	        in = new BufferedReader(new InputStreamReader(SingletonFSInterface.instance().getInputStream(uri)));
+	        String line = "";
+	        int num = 0;
+	        while (line != null)
+	        {
+	        	line = in.readLine();
+	        	// line is null => end of file
+	        	if (line == null) 
+	        	{
+	        		break;
+	        	}
+	        	String[] data = parseCSVLine(line);
+	        	if (data != null)
+	        	{
+		        	if (num != 0 || !ignoreFirst)
+		        	{
+			        	if (column < data.length)
+			        	{
+			        		result.add(data[column]);
+			        	}
+			        	else
+			        	{
+			        		result.add("");
+			        	}
+		        	}
+		        	num = num + 1;
+	        	}
+	        }
+	        in.close();
+        }
+        catch(Exception e)
+        {
+        	if (in != null)	in.close();
+            throw e;
+        }		        
+
+        return result;
+    }
+    
+    public String[] loadHeader(URI uri) throws Exception
+    {
+    	String[] result = null;
+		
+        BufferedReader in = null;
+        try {
+	        in = new BufferedReader(new InputStreamReader(SingletonFSInterface.instance().getInputStream(uri)));
+	        String line = "";
+	        while (result == null)
+	        {
+	        	line = in.readLine();
+	        	// line is null => end of file
+	        	if (line == null) 
+	        	{
+	        		break;
+	        	}
+	        	result = parseCSVLine(line);
+	        }
+	        in.close();
+        }
+        catch(Exception e)
+        {
+        	if (in != null)	in.close();
+            throw e;
+        }		        
+
+        return result;
+    }
+    
     public List<String[]> loadAllData(URI uri) throws Exception
     {
     	ArrayList<String[]> csvData = new ArrayList<String[]>();
@@ -131,5 +205,4 @@ public class CSVReader
 
         return csvData;
     }
-    
 }
