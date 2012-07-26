@@ -31,7 +31,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -45,7 +47,6 @@ public class CSVReader
     private String separator;
     private String comment;
     private String quote;
-    private LinkedList<String[]> csvData;
 
     /**
      *
@@ -54,18 +55,54 @@ public class CSVReader
      * @param quote - quote character - can be null
      * @throws Exception
      */
-    public CSVReader(URI uri, String comment, String separator, String quote) throws Exception
+    public CSVReader(String comment, String separator, String quote) throws Exception
     {
         this.separator = separator;
         this.comment = comment;
         this.quote = quote;
-        parseCSVFile(uri);
+    }
+   
+    private String[] parseCSVLine(String line) throws Exception 
+    {
+		// blank line
+		line = line.trim();
+	    if ("".equals(line)) 
+	    {
+	        return null;
+	    }
+	    // comment line
+	    if (line.startsWith(comment)) 
+	    {
+	        return null;
+	    }
+	    
+	    Vector<String> parseLine = new Vector<String>();
+	    MsgParser.split(parseLine, line, separator, quote);
+
+    	String[] data = new String[parseLine.size()];
+	    for (int i = 0; i < parseLine.size(); i++)
+	    {
+	    	String value = (String) parseLine.get(i).trim();
+	    	if (quote != null)
+	    	{
+	    		if (value.charAt(0) == quote.charAt(0))
+	        	{
+	        		value = value.substring(1);
+	        	}
+	        	if (value.charAt(value.length() - 1) == quote.charAt(1))
+	        	{
+	        		value = value.substring(0, value.length() - 1);
+	        	}
+	    	}
+	    	data[i] = value.trim();
+	    }
+	    return data;
     }
 
-    private void parseCSVFile(URI uri) throws Exception 
+    public List<String[]> loadAllData(URI uri) throws Exception
     {
-        csvData = new LinkedList<String[]>();
-        		
+    	ArrayList<String[]> csvData = new ArrayList<String[]>();
+		
         BufferedReader in = null;
         try {
 	        in = new BufferedReader(new InputStreamReader(SingletonFSInterface.instance().getInputStream(uri)));
@@ -78,50 +115,21 @@ public class CSVReader
 	        	{
 	        		break;
 	        	}
-	        	// blank line
-	        	line = line.trim();
-	            if ("".equals(line)) 
-	            {
-	                continue;
-	            }
-	            // comment line
-	            if (line.startsWith(comment)) 
-	            {
-	                continue;
-	            }
-	            
-	            Vector<String> parseLine = new Vector<String>();
-	            MsgParser.split(parseLine, line, separator, quote);
-	            
-	            String[] data = new String[parseLine.size()];
-	            for (int i = 0; i < parseLine.size(); i++)
-	            {
-	            	String value = (String) parseLine.get(i).trim();
-	            	if (quote != null)
-	            	{
-	            		if (value.charAt(0) == quote.charAt(0))
-		            	{
-		            		value = value.substring(1);
-		            	}
-		            	if (value.charAt(value.length() - 1) == quote.charAt(1))
-		            	{
-		            		value = value.substring(0, value.length() - 1);
-		            	}
-	            	}
-	            	data[i] = value.trim();
-	            }
-	            
-	            csvData.add(data);
+	        	String[] data = parseCSVLine(line);
+	        	if (data != null)
+	        	{
+	        		csvData.add(data);
+	        	}
 	        }
 	        in.close();
         }
-        catch(Exception e){
-        	if (in != null) in.close();
+        catch(Exception e)
+        {
+        	if (in != null)	in.close();
             throw e;
         }		        
-    }
 
-    public LinkedList<String[]> loadAllData() {
         return csvData;
     }
+    
 }

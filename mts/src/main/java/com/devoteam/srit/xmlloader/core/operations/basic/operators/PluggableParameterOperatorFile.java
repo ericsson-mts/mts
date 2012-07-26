@@ -192,9 +192,9 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
                 String comment = Config.getConfigByName("tester.properties").getString("operations.CSV_COMMENT_CHAR", "#");
                 String separator = Config.getConfigByName("tester.properties").getString("operations.CSV_SEPARATOR_CHAR", ";");
                 String escape = Config.getConfigByName("tester.properties").getString("operations.CSV_ESCAPE_CHAR", "\"");
-                csvReader = new CSVReader(filePathURI, comment, separator, escape + escape);
+                csvReader = new CSVReader(comment, separator, escape + escape);
                 
-                List<String[]> list = csvReader.loadAllData();
+                List<String[]> list = csvReader.loadAllData(filePathURI);
 
                 for (String[] line : list)
                 {
