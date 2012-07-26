@@ -62,7 +62,7 @@ public class XMLElementAVPParser implements XMLElementReplacer {
     public List<Element> replace(Element element, ParameterPool parameterPool) throws Exception {
         List<Element> result;
 
-        if (element.getName().equalsIgnoreCase("header")) {
+        if (element.getName().equalsIgnoreCase("header") || element.getName().startsWith("send")) {
             result = xmlElementDefaultParser.replace(element, parameterPool);
         }
         else // <avp .../>

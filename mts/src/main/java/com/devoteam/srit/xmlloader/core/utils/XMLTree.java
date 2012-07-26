@@ -97,11 +97,6 @@ public class XMLTree implements Serializable
      * parts match the regex.
      * @param regex Regular expression used to find attributes.
      */
-    public void compute(String regex)
-    {
-        listMatchingElements(root, regex, true);
-    }
-    
     public void compute(String regex, boolean recurse)
     {
         listMatchingElements(root, regex, recurse);
@@ -175,25 +170,26 @@ public class XMLTree implements Serializable
         {
             Element e = elementsOrder.get(i);
             List<Element> list = elementsMap.get(e);
-            
-            // all Elements in this list should have the same parent
-            Element parent = list.get(0).getParent();
-            if(null != parent)
-            {
-                DefaultElementInterface.insertNode((DefaultElement) parent, list.get(0), e);
-                for(Node oldChild:list)
+            if(null != list && !list.isEmpty()){
+                // all Elements in this list should have the same parent
+                Element parent = list.get(0).getParent();
+                if(null != parent)
                 {
-                    parent.remove(oldChild);
-                }
+                    DefaultElementInterface.insertNode((DefaultElement) parent, list.get(0), e);
+                    for(Node oldChild:list)
+                    {
+                        parent.remove(oldChild);
+                    }
 
-                if(1 == list.size() && e == root){
+                    if(1 == list.size() && e == root){
+                        root = list.get(0);
+                    }
+
+                }
+                else
+                {
                     root = list.get(0);
                 }
-
-            }
-            else
-            {
-                root = list.get(0);
             }
         }
     }
