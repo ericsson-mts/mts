@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE scenario SYSTEM "sipp.dtd">
-
+<!-- Regular expressions example -->
 <scenario name="ereg example">
 <send retrans="500">
     <![CDATA[
@@ -27,7 +27,7 @@
 
     ]]>
   </send>
-  <!-- Exemple search_in -->
+  <!-- Example search_in msg -->
   <recv response="200" start_rtd="true">
   <action>
       <ereg regexp="[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[:][0-9]{1,5}" 
@@ -36,6 +36,7 @@
             assign_to="1"/>
   </action>
   </recv>
+  <!-- Example search_in hdr -->
   <recv response="200" start_rtd="true">
   <action>
       <ereg regexp=".*" 
@@ -45,15 +46,17 @@
             assign_to="6"/>
   </action>
   </recv>
+  <!-- Example search_in hdr with startline = true -->
   <recv response="200" start_rtd="true">
   <action>
       <ereg regexp="o=([[:alnum:]]*) ([[:alnum:]]*) ([[:alnum:]]*)"
             search_in="msg" 
             check_it="true" 
+			startline = "true"
             assign_to="3,4,5,8"/>
   </action>
   </recv>
-  <!-- All together -->
+  <!-- Many eregs together -->
   <recv response="200" start_rtd="true">
   <action>
        <ereg search_in="var" 
