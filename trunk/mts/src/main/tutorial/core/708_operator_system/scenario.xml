@@ -75,24 +75,35 @@
     <parameter name="[ipaddr]" operation="system.ipaddress" value="lo"/>
     <test parameter="[ipaddr]" condition="list.size" value="1"/>
     <parameter name="[ipaddr]" operation="system.ipaddress"/>
-	<or>
-		<test parameter="[ipaddr]" condition="list.size" value="2"/>
-		<test parameter="[ipaddr]" condition="list.size" value="3"/>
-	</or>	
-	<parameter name="[ipaddr.index]" operation="list.find" value="[ipaddr]" value2="127.0.0.1" />
-    <test parameter="[ipaddr.index]" condition="number.greaterequalthan" value="1"/>
-   	<parameter name="[os]" operation="system.readproperty" value="os.name"/>
-    <if>
-	<condition>
-		<test parameter="[os]" condition="string.equals" value="Linux"/> 
-	</condition>
-	<then>
-		<parameter name="[cmd]" operation="system.command" value="echo plop"/>
-	</then>	
-	<else>
-		<parameter name="[cmd]" operation="system.command" value="cmd /c echo plop"/>
-	</else>
-    </if>	
+    <or>
+		  <test parameter="[ipaddr]" condition="list.size" value="2"/>
+		  <test parameter="[ipaddr]" condition="list.size" value="3"/>
+	   </or>	
+	   <parameter name="[ipaddr.index]" operation="list.find" value="[ipaddr]" value2="127.0.0.1" />
+      <test parameter="[ipaddr.index]" condition="number.greaterequalthan" value="1"/>
+   	  <parameter name="[os]" operation="system.readproperty" value="os.name"/>
+      <!--if>
+        <condition>
+		      <test parameter="[os]" condition="string.equals" value="Linux"/> 
+	      </condition>
+	      <then>
+		      <parameter name="[cmd]" operation="system.command" value="./startCmd.sh"/>
+	      </then>	
+	      <else>
+		      <parameter name="[cmd]" operation="system.command" value="./startCmd.bat"/>
+	      </else>
+      </if-->	
+	    <if>
+	      <condition>
+		      <test parameter="[os]" condition="string.equals" value="Linux"/> 
+	      </condition>
+	      <then>
+		      <parameter name="[cmd]" operation="system.command" value="echo plop"/>
+	      </then>	
+	      <else>
+		      <parameter name="[cmd]" operation="system.command" value="cmd /c echo plop"/>
+	      </else>
+      </if>	
 	
     <test parameter="[cmd.standardOut]" condition="string.contains" value="plop"/>
     <test parameter="[cmd.errorOut]" condition="string.equals" value=""/>
