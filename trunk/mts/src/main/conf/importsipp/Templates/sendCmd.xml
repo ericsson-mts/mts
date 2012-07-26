@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-2" ?>
 <template>
-<parameter name="[test:_sendCmdParameter]" operation="set">
+<parameter name="[test:_parameter_{xpath:./@name}]" operation="set">
 {xpath:./text()}
 </parameter>
-<parameter name="[_sendCmd]" operation="system.semaphoreNotify"/>
+<parameter name="[testcase:_semaphore_{xpath:./@name}]" operation="system.semaphoreNotify"/>
+<pause milliseconds="100" />
 </template>
