@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-2" ?>
 <template>
-<parameter name="[search_in]" operation="setFromMessage" value="message" state="{xpath:.[@search_in = 'msg']/@search_in}"/>
+<parameter name="[search_in]" operation="set" value="[last_message]" state="{xpath:.[@search_in = 'msg']/@search_in}"/>
 <parameter name="[search_in]" operation="set" value="{xpath:./@variable}" state="{xpath:.[@search_in = 'var']/@search_in}"/>
 <parameter name="[search_in]" operation="setFromMessage" value="header.{xpath:./@header}" state="{xpath:.[@search_in = 'hdr' and @start_line != 'true']/@search_in}"/>
 <parameter name="[search_in]" operation="setFromMessage" value="firstline" state="{xpath:.[@search_in = 'hdr' and @start_line = 'true']/@search_in}" />
