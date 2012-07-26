@@ -275,7 +275,8 @@ public class ImportSipP {
 		for (Iterator i = template_root.elementIterator();i.hasNext();) 
 		{
 			Element template_element = (Element) i.next();
-			if(template_element.getName().equals("parameter"))
+			if(template_element.getName().equals("parameter") && !sippNode.get(0).getName().equals("recvCmd")
+					&& !sippNode.get(0).getName().equals("sendCmd"))
 			{
 				if(checkParameter(sippNode, template_element))
 					xPath(resultDoc,template_element,sippNode,resultDocRoot,scenarioNum);
