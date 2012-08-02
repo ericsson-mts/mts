@@ -754,6 +754,16 @@ public class ImportSipP {
 		}
 	}
 	
+	public static void getFilesInfo()
+	{
+		
+	}
+	/**
+	 * 
+	 * @param SourceFile
+	 * @param NewDestFile
+	 * @throws IOException
+	 */
 	public static void copyFile(String SourceFile, String NewDestFile) throws IOException
 	{	
 		File nomFichier = new File(SourceFile);
