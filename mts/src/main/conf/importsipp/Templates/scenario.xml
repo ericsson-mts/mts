@@ -14,10 +14,11 @@
 	<parameter name="[testcase:callNumber_{integer}]" operation="set" value="0"/>
 	
 	<parameter name="[testcase:{regex:\b(\w*?field\d)\]}_mts]" operation="file.readcsv" value="[_fileName]" value2="{regex:\bfield(\d)\]}"/>
-	<parameter name="[testcase:{regex:\b(\w*?field\d file=&quot;\w+\.\w+&quot;)}_mts]" operation="file.readcsv" value="{regex:file=\&quot;([^\&quot;]*)\&quot;}" value2="{regex:\bfield(.) file=}"/>
-
-	<parameter name="[testcase:{regex:(\b(\w*?field\d file=&quot;\w+\.\w+&quot;))}_size]" operation="list.size" value="[testcase:{regex:(\b(\w*?field\d file=&quot;\w+\.\w+&quot;))}_mts]" />
 	<parameter name="[testcase:{regex:(\b(\w*?field\d))\]}_size]" operation="list.size" value="[testcase:{regex:\b(\w*?field\d)\]}_mts]" />
+	
+	<parameter name="[testcase:{regex:\b(\w*?field\d file=&quot;\w+\.\w+&quot;)}_mts]" operation="file.readcsv" value="{regex:file=\&quot;([^\&quot;]*)\&quot;}" value2="{regex:\bfield(.) file=}"/>
+	<parameter name="[testcase:{regex:(\b(\w*?field\d file=&quot;\w+\.\w+&quot;))}_size]" operation="list.size" value="[testcase:{regex:(\b(\w*?field\d file=&quot;\w+\.\w+&quot;))}_mts]" />
+	
 </else>
 </if>
 <parameter name="[testcase:call_number]" operation="set" value="[testcase:callNumber_0]"/>
