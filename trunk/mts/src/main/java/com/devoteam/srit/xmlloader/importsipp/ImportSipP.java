@@ -168,6 +168,22 @@ public class ImportSipP {
 				replaceInFile(args[1], "&gt;", ">");
 				replaceInFile(args[1], "&#13;", "");
 				
+				/*
+				 * Get the file's location path, and copy all .csv files to the same directory of the 
+				 * resulting MTS XML file. 
+				 * If the file in argument does not contain a path, we get the current directory path.
+				 */
+				if(args[0].contains("\\"))
+				{
+					int indexOfLast = args[0].lastIndexOf("\\"); 
+					getFilesInfo(args[0].substring(0, indexOfLast), args[2].substring(0,args[2].lastIndexOf("\\")), filepath);
+				}
+				else
+				{
+					String currentDirectory = System.getProperty("user.dir");
+					getFilesInfo(currentDirectory, args[2].substring(0,args[2].lastIndexOf("\\")), filepath);
+				}
+				
 				//Write 'DONE' on the system out when finished
 				System.out.println("Done");
 		}
@@ -181,14 +197,14 @@ public class ImportSipP {
 	 * @param document
 	 * @throws IOException
 	 */
-		public static void rightFinalResult(Document document, String fileName) throws IOException
-		{	
-			 OutputFormat format = OutputFormat.createPrettyPrint();
-			 //We define the result xml file name 
-			 XMLWriter writer = new XMLWriter(new FileWriter(fileName), format);
-			 writer.write(document);
-		     writer.close();
-		}
+	public static void rightFinalResult(Document document, String fileName) throws IOException
+	{	
+		 OutputFormat format = OutputFormat.createPrettyPrint();
+		 //We define the result xml file name 
+		 XMLWriter writer = new XMLWriter(new FileWriter(fileName), format);
+		 writer.write(document);
+	     writer.close();
+	}
 	
 	/**
 	 * Function that replaces a String by another one in a file 
@@ -754,12 +770,46 @@ public class ImportSipP {
 		}
 	}
 	
-	public static void getFilesInfo()
+	/**
+	 * Get all the .csv files existing in the same directory of the SIPP xml file and call the copyFile
+	 * function to copy them to the same directory of the resulting MTS XML.  
+	 * @param sippFileLocation
+	 * @param TestFileLocation
+	 * @throws IOException
+	 */
+	public static void getFilesInfo(String sippFileLocation, String TestFileLocation,String sippFile) throws IOException
 	{
-		
+		//Get the location folder of the SIPP file
+		File folder = new File(sippFileLocation);
+		File[] listOfFiles = folder.listFiles();
+		for (int i = 0; i < listOfFiles.length; i++) {
+			  if (listOfFiles[i].isFile() && listOfFiles[i].toString().endsWith(".csv")) {
+				  String originFile = sippFileLocation+"\\"+listOfFiles[i].getName();
+				  String destFile = TestFileLocation+"\\"+listOfFiles[i].getName(); 
+				  /*
+				   * If the .csv file is used in the SIPP XML file we copy it, if not we don't need to 
+				   * copy it.
+				   */
+				  Scanner in = null;
+				  boolean result = false;
+			        try {
+			            in = new Scanner(new FileReader(sippFile));
+			            while(in.hasNextLine() && !result) {
+			                result = in.nextLine().indexOf(listOfFiles[i].getName()) >-1;
+			            }
+			        }
+			        catch(IOException e) {
+			            e.printStackTrace();      
+			        }
+			        if(result)
+			        {
+			        	copyFile(originFile,destFile);
+			        }
+			  } 
+		}
 	}
 	/**
-	 * 
+	 * Copy a file from a source path to a destination path
 	 * @param SourceFile
 	 * @param NewDestFile
 	 * @throws IOException
