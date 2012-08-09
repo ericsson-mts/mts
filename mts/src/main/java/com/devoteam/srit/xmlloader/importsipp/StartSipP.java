@@ -7,19 +7,21 @@ public class StartSipP {
 	/**
 	 * @param args
 	 */
+	@SuppressWarnings("unused")
 	public static void main(String... args) {
-		
+		 
+		String allOptions = null; 
 		String fileName = null; 
 		List<String> options = null ; 
 		
-		//
-        // Handle arguments
-        //
+		/*
+		 * Handle arguments
+		 */
         if (args.length <= 0) {
             usage("At least one argument is required : the scenario file path");
         }
         for(int i=0; i<args.length; i++)
-        {	
+        {
         	/*
         	 * It's an option ! 
         	 */
@@ -36,6 +38,12 @@ public class StartSipP {
         		options.add("-instances"); 
         	}
         }
+       
+        for(int j=0; j<options.size(); j++)
+        {
+        	allOptions = allOptions+" "+options.get(j); 
+        }
+        String commandTest = "cmd /c startTest.bat" + allOptions; 
         
 		String command = "cmd /c startTest.bat"; 
         Process p;
