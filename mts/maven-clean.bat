@@ -1,1 +1,1 @@
-mvn clean
+mvn clean -e
