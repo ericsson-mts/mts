@@ -182,18 +182,10 @@ public class MsgHttp extends Msg
         {
             String[] parts = line.split(" ");
 
-            HttpVersion httpVersion;
-            if (parts[0].endsWith("HTTP/1.1"))
-            {
-                httpVersion = HttpVersion.HTTP_1_1;
-            }
-            else if (parts[0].endsWith("HTTP/1.0"))
+            HttpVersion httpVersion = HttpVersion.HTTP_1_1;
+            if (parts[0].endsWith("HTTP/1.0"))
             {
                 httpVersion = HttpVersion.HTTP_1_0;
-            }
-            else
-            {
-                throw new ParsingException("invalid HTTP version " + line);
             }
 
             String phrase = "";
@@ -208,19 +200,11 @@ public class MsgHttp extends Msg
         else
         {
             String[] parts = line.split(" ");
-            HttpVersion httpVersion;
+            HttpVersion httpVersion = HttpVersion.HTTP_1_1;
             
-            if ((parts.length == 3) && (parts[2].endsWith("HTTP/1.1")))
-            {
-                httpVersion = HttpVersion.HTTP_1_1;
-            }
-            else if ((parts.length == 3) &&(parts[2].endsWith("HTTP/1.0")))
+            if ((parts.length == 3) &&(parts[2].endsWith("HTTP/1.0")))
             {
                 httpVersion = HttpVersion.HTTP_1_0;
-            }
-            else
-            {
-                throw new ParsingException("invalid HTTP version " + line);
             }
 
             request = new BasicHttpEntityEnclosingRequest(parts[0], parts[1], httpVersion);
