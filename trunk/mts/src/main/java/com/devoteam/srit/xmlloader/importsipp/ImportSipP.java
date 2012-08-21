@@ -39,7 +39,32 @@ import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 @SuppressWarnings("rawtypes")
 public class ImportSipP {
 	
+	private static String[] args;
 	public static void main(String... args) throws DocumentException, ParserConfigurationException, SAXException {
+		
+		String sippfile, mtsfile, testfile, testcase; 
+		
+		// Get all the arguments values
+		for(int i=0; i<args.length; i++)
+		{	
+			if(args[i].equals("-sippfile"))
+			{
+				sippfile = args[i+1]; 
+			}
+			if(args[i].equals("-mtsfile"))
+			{
+				mtsfile = args[i+1]; 
+			}
+			if(args[i].equals("-testfile"))
+			{
+				testfile = args[i+1]; 
+			}
+			if(args[i].equals("-testcase"))
+			{
+				testcase = args[i+1]; 
+			}
+		}
+		// If the optional arguments are empty, we specify a default value
 		
 		// Initialization of IMSLoader core
         ExceptionHandlerSingleton.setInstance(new TextExceptionHandler());
@@ -56,7 +81,10 @@ public class ImportSipP {
 	            usage("All arguments are required !");
 	     }
 		 
-		//Create the corresponding TEST file
+		/*
+		 * Create the corresponding TEST file
+		 * createTestFile(String testFileName,String testName, String outputFileName)
+		 */
 		 int scenarioNum = createTestFile(args[2], args[3], args[1]); 
 		 
 		 ArrayList<Element> testList = new ArrayList<Element>(); 
@@ -176,12 +204,12 @@ public class ImportSipP {
 				if(args[0].contains("\\"))
 				{
 					int indexOfLast = args[0].lastIndexOf("\\"); 
-					getFilesInfo(args[0].substring(0, indexOfLast), args[2].substring(0,args[2].lastIndexOf("\\")), filepath);
+					checkIfFileUsed(args[0].substring(0, indexOfLast), args[2].substring(0,args[2].lastIndexOf("\\")), filepath);
 				}
 				else
 				{
 					String currentDirectory = System.getProperty("user.dir");
-					getFilesInfo(currentDirectory, args[2].substring(0,args[2].lastIndexOf("\\")), filepath);
+					checkIfFileUsed(currentDirectory, args[2].substring(0,args[2].lastIndexOf("\\")), filepath);
 				}
 				
 				//Write 'DONE' on the system out when finished
@@ -692,11 +720,11 @@ public class ImportSipP {
 						testcase2.addAttribute("name", testName);
 						testcase2.addAttribute("description", "test sip"); 
 						testcase2.addAttribute("state", "true");
+						ArrayList<Element> nodes = new ArrayList<Element>(); 
+						addNodeWithParameters(nodes, testcase2, doc, "runprofile", 0);
 						Element scenario = testcase2.addElement("scenario");
 						scenario.addAttribute("name", "[localPort("+numScenario+")]");
 						scenario.addText(fileName);
-						ArrayList<Element> nodes = new ArrayList<Element>(); 
-						addNodeWithParameters(nodes, testcase2, doc, "runprofile", 0);
 					}						
 					rightFinalResult(doc, testFileName);
 				}
@@ -771,13 +799,14 @@ public class ImportSipP {
 	}
 	
 	/**
-	 * Get all the .csv files existing in the same directory of the SIPP xml file and call the copyFile
-	 * function to copy them to the same directory of the resulting MTS XML.  
+	 * Get all the .csv files existing in the same directory of the SIPP xml file,
+	 * checks the ones used in the SIPP scenario, and call the copyFile function to copy them to the 
+	 * same directory of the resulting MTS XML.  
 	 * @param sippFileLocation
 	 * @param TestFileLocation
 	 * @throws IOException
 	 */
-	public static void getFilesInfo(String sippFileLocation, String TestFileLocation,String sippFile) throws IOException
+	public static void checkIfFileUsed(String sippFileLocation, String TestFileLocation,String sippFile) throws IOException
 	{
 		//Get the location folder of the SIPP file
 		File folder = new File(sippFileLocation);

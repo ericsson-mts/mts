@@ -43,9 +43,9 @@ public class StartSipP {
         {
         	allOptions = allOptions+" "+options.get(j); 
         }
-        String commandTest = "cmd /c startTest.bat" + allOptions; 
+        String commandTest = "cmd /c startCmd.bat" + allOptions; 
         
-		String command = "cmd /c startTest.bat"; 
+		String command = "cmd /c startTest.bat";
         Process p;
 		try 
 		{
