@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.diameter.dictionary;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.URIFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
@@ -67,7 +68,8 @@ public class Dictionary
                 _dictionary = new Dictionary();
                 try
                 {
-                    _dictionary.parseFromFile(DICTIONARY_PATH);
+                	String dictionaryPath = Config.getConfigByName("diameter.properties").getString("dictionary.PATH", DICTIONARY_PATH);
+                    _dictionary.parseFromFile(dictionaryPath);
                 }
                 catch(Exception e)
                 {

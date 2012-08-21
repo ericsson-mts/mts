@@ -74,7 +74,7 @@ public class StackH248 extends Stack
         	Listenpoint listenpoint = new ListenpointH248(this);
             createListenpoint(listenpoint, StackFactory.PROTOCOL_H248);
         }
-        endLineCharacters = Config.getConfigByName("h248.properties").getString("END_LINE_CHARACTERS", "CRLF");
+        endLineCharacters = getConfig().getString("END_LINE_CHARACTERS", "CRLF");
     }
 
     /** Creates a Listenpoint specific to each Stack */
