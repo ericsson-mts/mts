@@ -375,13 +375,13 @@ public class MsgDiameter extends Msg
     private String headerToString() throws Exception 
     {          
         String ret = "<header command=\"" + message.hdr.command_code + "\"" +
-        " request=\""        + message.hdr.isRequest() + "\"" +
-        " applicationId=\""  + message.hdr.application_id + "\"" +
-        " hopByHop=\""       + message.hdr.hop_by_hop_identifier + "\"" +
-        " endToEnd=\""       + message.hdr.end_to_end_identifier + "\"" +
-        " proxiable=\""      + message.hdr.isProxiable() + "\"" +
-        " error=\""       + message.hdr.isError() + "\"" +
-        " retransmit=\""  + message.hdr.isRetransmit() + "\"" + "/>\n";
+        " applicationId=\"" + message.hdr.application_id + "\"" +
+        " hopByHop=\"" + message.hdr.hop_by_hop_identifier + "\"" +
+        " endToEnd=\"" + message.hdr.end_to_end_identifier + "\"" +
+        " r=\"" + message.hdr.isRequest() + "\"" +
+        " p=\"" + message.hdr.isProxiable() + "\"" +
+        " e=\"" + message.hdr.isError() + "\"" +
+        " t=\"" + message.hdr.isRetransmit() + "\"" + "/>\n";
         return ret;
     }
 
@@ -390,18 +390,10 @@ public class MsgDiameter extends Msg
     @Override
     public String toShortString() throws Exception {          
     	String ret = super.toShortString();
-    	if (message.hdr.isRequest())
-    	{
-    		ret += "<request ";
-    	}
-    	else
-    	{
-    		ret += "<answer ";
-    	}    	
-    	ret += "commandCode=\"" + getCodeString() + "(" + message.hdr.command_code + ")\" ";
-    	ret += "applicationId=\""  + getApplicationIdString() + "(" + message.hdr.application_id + ")\" ";
+  		ret += "<header "; 	
+    	ret += "applicationId=\"" + getApplicationIdString() + "(" + message.hdr.application_id + ")\" ";
     	ret += "hopByHop=\"" + message.hdr.hop_by_hop_identifier + "\" ";
-    	ret += "endToEnd=\""       + message.hdr.end_to_end_identifier + "\">";	    	
+    	ret += "endToEnd=\"" + message.hdr.end_to_end_identifier + "\">";	    	
         return ret;
     }
 
@@ -541,9 +533,9 @@ public class MsgDiameter extends Msg
         ret += " value=\"" + value + "\"";
         ret += " type=\"" + type + "\"";
         ret += " vendorId=\"" + avp.vendor_id + "\"";
-        ret += " vendorSpecific=\"" + avp.isVendorSpecific() +"\"";
-        ret += " mandatory=\"" + avp.isMandatory() + "\"";
-        ret += " private=\"" + avp.isPrivate() + "\"";
+        ret += " v=\"" + avp.isVendorSpecific() +"\"";
+        ret += " m=\"" + avp.isMandatory() + "\"";
+        ret += " p=\"" + avp.isPrivate() + "\"";
         
         if(type.equalsIgnoreCase("grouped"))
         {
