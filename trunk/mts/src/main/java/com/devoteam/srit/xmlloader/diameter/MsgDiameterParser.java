@@ -304,7 +304,7 @@ public class MsgDiameterParser
             //
             // Parse child avps
             //
-            List<AVP> avpList = new LinkedList();
+            List<AVP> avpList = new LinkedList<AVP>();
             List<Element> list = element.elements("avp");
             for(Element e:list)
             {
@@ -581,12 +581,8 @@ public class MsgDiameterParser
                         {
                             throw new ParsingException("In element: " + unmodifiedRoot + "\n" + attributeValue + " is not a valid type");
                         }
+                    }
 
-                    }
-                    else
-                    {
-                        throw new ParsingException("in element: " + unmodifiedRoot + "\n" + "No type defined");
-                    }
                 }
             }
             

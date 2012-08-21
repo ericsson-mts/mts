@@ -56,14 +56,6 @@ public class OperationSendMessage extends Operation {
     public OperationSendMessage(String aProtocol, Element rootNode) throws Exception {
         super(rootNode, null);
         protocol = aProtocol;
-
-        if (protocol.equals(StackFactory.PROTOCOL_DIAMETER)) {
-            //
-            // Read ApplicationId
-            //
-            String applicationId = rootNode.element("header").attributeValue("applicationId");
-            MsgDiameterParser.getInstance().doDictionnary(this.getRootElement(), applicationId, true);
-        }
     }
 
     /**
@@ -119,6 +111,11 @@ public class OperationSendMessage extends Operation {
                 req = Boolean.valueOf(request);
             }
 
+            if (protocol.equals(StackFactory.PROTOCOL_DIAMETER)) {
+            	String applicationId = root.element("header").attributeValue("applicationId");
+            	MsgDiameterParser.getInstance().doDictionnary(this.getRootElement(), applicationId, true);
+            }
+            
             // instanciates the msg
             msg = stack.parseMsgFromXml(req, root, runner);
             msg.setSend(true);
