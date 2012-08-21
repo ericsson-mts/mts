@@ -50,10 +50,10 @@ public class StackRtsp extends Stack {
 	public StackRtsp() throws Exception {
 		super();
 
-        if(Config.getConfigByName("rtsp.properties").getBoolean("equipment.ADD_CRLF_CONTENT", false))
+        if(getConfig().getBoolean("equipment.ADD_CRLF_CONTENT", false))
             addCRLFContent++;
 
-        addCRLFContent += Config.getConfigByName("rtsp.properties").getInteger("protocol.ADD_SPECIFIC_CONTENT_CRLF", 0);
+        addCRLFContent += getConfig().getInteger("protocol.ADD_SPECIFIC_CONTENT_CRLF", 0);
 
         // initiate a default listenpoint if port is not empty or null
         int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
