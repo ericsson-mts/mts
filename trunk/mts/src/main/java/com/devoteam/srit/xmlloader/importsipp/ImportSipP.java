@@ -42,8 +42,12 @@ public class ImportSipP {
 	private static String[] args;
 	public static void main(String... args) throws DocumentException, ParserConfigurationException, SAXException {
 		
-		String sippfile, mtsfile, testfile, testcase; 
-		
+        //Remind the user of the usage in case of lack in arguments
+		 if (args.length < 2) {
+	            usage("All arguments are required !");
+	     }
+		 
+		String sippfile = null, result = null, testfile = null , testcase = null; 
 		// Get all the arguments values
 		for(int i=0; i<args.length; i++)
 		{	
@@ -51,9 +55,9 @@ public class ImportSipP {
 			{
 				sippfile = args[i+1]; 
 			}
-			if(args[i].equals("-mtsfile"))
+			if(args[i].equals("-result"))
 			{
-				mtsfile = args[i+1]; 
+				result = args[i+1]; 
 			}
 			if(args[i].equals("-testfile"))
 			{
@@ -65,6 +69,24 @@ public class ImportSipP {
 			}
 		}
 		// If the optional arguments are empty, we specify a default value
+		if(result == null)
+		{	
+			int sippFileNamePosition1 = sippfile.lastIndexOf("\\");
+			int sippFileNamePosition2 = sippfile.indexOf(".");
+			result = sippfile.substring(0, sippFileNamePosition1)+"\\out" + sippfile.substring(sippFileNamePosition1, sippFileNamePosition2)+"_mts.xml"; 
+			
+		}
+		if(testfile == null)
+		{	
+			int sippFileNamePosition = sippfile.lastIndexOf("\\"); 
+			testfile = sippfile.substring(0, sippFileNamePosition)+"\\out\\test.xml"; 
+		}
+		if(testcase == null)
+		{	
+			int sippFileNamePosition1 = sippfile.lastIndexOf("\\");
+			int sippFileNamePosition2 = sippfile.lastIndexOf("."); 
+			testcase = sippfile.substring(sippFileNamePosition1+1, sippFileNamePosition2); 
+		}
 		
 		// Initialization of IMSLoader core
         ExceptionHandlerSingleton.setInstance(new TextExceptionHandler());
@@ -75,23 +97,18 @@ public class ImportSipP {
         PropertiesEnhanced properties = new PropertiesEnhanced();
         properties.addPropertiesEnhancedComplete("logs.STORAGE_LOCATION", "FILE");
         Config.overrideProperties("tester.properties", properties);
-        
-        //Remind the user of the usage in case of lack in arguments
-		 if (args.length < 1) {
-	            usage("All arguments are required !");
-	     }
 		 
 		/*
 		 * Create the corresponding TEST file
 		 * createTestFile(String testFileName,String testName, String outputFileName)
 		 */
-		 int scenarioNum = createTestFile(args[2], args[3], args[1]); 
+		 int scenarioNum = createTestFile(testfile, testcase, result); 
 		 
 		 ArrayList<Element> testList = new ArrayList<Element>(); 
 		 ArrayList<Element> nodes = new ArrayList<Element>(); 
 		 try {
 			 	//Get the source XML file, and parse it using SAX parser */
-			 	String filepath = args[0]; 
+			 	String filepath = sippfile; 
 			 	SAXReader reader = new SAXReader();
 			 	Document sourceDocument = reader.read(filepath);
 			 		
@@ -189,27 +206,27 @@ public class ImportSipP {
 					}
 				}
 				//Function to write the result, to the resulting XML file
-				rightFinalResult(resultDocument, args[1]);
+				rightFinalResult(resultDocument, result);
 				
 				//Function to replace strings in a file
-				replaceInFile(args[1], "&lt;", "<");
-				replaceInFile(args[1], "&gt;", ">");
-				replaceInFile(args[1], "&#13;", "");
+				replaceInFile(result, "&lt;", "<");
+				replaceInFile(result, "&gt;", ">");
+				replaceInFile(result, "&#13;", "");
 				
 				/*
 				 * Get the file's location path, and copy all .csv files to the same directory of the 
 				 * resulting MTS XML file. 
 				 * If the file in argument does not contain a path, we get the current directory path.
 				 */
-				if(args[0].contains("\\"))
+				if(sippfile.contains("\\"))
 				{
-					int indexOfLast = args[0].lastIndexOf("\\"); 
-					checkIfFileUsed(args[0].substring(0, indexOfLast), args[2].substring(0,args[2].lastIndexOf("\\")), filepath);
+					int indexOfLast = sippfile.lastIndexOf("\\"); 
+					checkIfFileUsed(sippfile.substring(0, indexOfLast), testfile.substring(0,testfile.lastIndexOf("\\")), filepath);
 				}
 				else
 				{
 					String currentDirectory = System.getProperty("user.dir");
-					checkIfFileUsed(currentDirectory, args[2].substring(0,args[2].lastIndexOf("\\")), filepath);
+					checkIfFileUsed(currentDirectory, testfile.substring(0,testfile.lastIndexOf("\\")), filepath);
 				}
 				
 				//Write 'DONE' on the system out when finished
@@ -763,7 +780,10 @@ public class ImportSipP {
 	 */
 	static public void usage(String message) {
         System.out.println(message);
-        System.out.println("Usage: importSipp <inputFileName>|<testFileName>|<testName>\n");
+        System.out.println("Usage: importSipp -sippfile <inputFileName> (Mandatory)| " +
+        		"-result <MTSFileName> (Optional)| " +
+        		"-testfile <TestFileName> (Optional)| " +
+        		"-testcase <testCaseName> (Optional)\n");
         System.exit(10);
     }
 	
