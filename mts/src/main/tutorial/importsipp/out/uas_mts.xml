@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+  <!--recv-->
+  <parameter name="[local_port]" operation="set" value="[localPort(1)]"/>
+  <parameter name="[remote_port]" operation="set" value="[remotePort(1)]"/>
+  <createListenpointSIP name="_listenpoint[local_port]" localHost="[local_ip]" localPort="[local_port]"/>
+  <if> 
+    <condition> 
+      <test parameter="[testcase:callNumber_1]" condition="list.exists"/>
+    </condition>
+    <then> 
+      <parameter name="[testcase:callNumber_1]" operation="number.add" value="[testcase:callNumber_1]" value2="1"/>
+    </then>
+    <else> 
+      <parameter name="[testcase:callNumber_1]" operation="set" value="0"/>
+    </else>
+  </if>
+  <parameter name="[pid]" operation="number.random" value="10000000"/>
+  <parameter name="[media_ip_type]" operation="set" value="4"/>
+  <parameter name="[local_ip_type]" operation="set" value="4"/>
+  <!--recv-->
+  <receiveMessageSIP listenpoint="_listenpoint[local_port]" timeout="[recv_timeout]"> 
+    <parameter name="[_response]" operation="setFromMessage" value="message.result"/>
+    <parameter name="[_request]" operation="setFromMessage" value="message.type"/>
+    <or> 
+      <test parameter="[_request]" condition="string.equals" value="INVITE"/>
+    </or>
+    <parameter name="[last_Message]" operation="setFromMessage" value="Message"/>
+  </receiveMessageSIP>
+  <!--send-->
+  <parameter name="[last_Via:]" operation="setFromMessage" value="header.Via.Namevalue" value2="[last_Message]"/>
+  <parameter name="[last_From:]" operation="setFromMessage" value="header.From.Namevalue" value2="[last_Message]"/>
+  <parameter name="[last_To:]" operation="setFromMessage" value="header.To.Namevalue" value2="[last_Message]"/>
+  <parameter name="[last_Call-ID:]" operation="setFromMessage" value="header.Call-ID.Namevalue" value2="[last_Message]"/>
+  <parameter name="[last_CSeq:]" operation="setFromMessage" value="header.CSeq.Namevalue" value2="[last_Message]"/>
+  <sendMessageSIP listenpoint="_listenpoint[local_port]" state=" SIP/2.0 "><![CDATA[
+
+      SIP/2.0 180 Ringing
+      [last_Via:]
+      [last_From:]
+      [last_To:];tag=[pid]SIPpTag01[call_number]
+      [last_Call-ID:]
+      [last_CSeq:]
+      Contact: <sip:[local_ip]:[local_port];transport=[transport]>
+      Content-Length: 0
+
+    ]]></sendMessageSIP>
+  <!--send-->
+  <parameter name="[last_Via:]" operation="setFromMessage" value="header.Via.Namevalue" value2="[last_Message]"/>
+  <parameter name="[last_From:]" operation="setFromMessage" value="header.From.Namevalue" value2="[last_Message]"/>
+  <parameter name="[last_To:]" operation="setFromMessage" value="header.To.Namevalue" value2="[last_Message]"/>
+  <parameter name="[last_Call-ID:]" operation="setFromMessage" value="header.Call-ID.Namevalue" value2="[last_Message]"/>
+  <parameter name="[last_CSeq:]" operation="setFromMessage" value="header.CSeq.Namevalue" value2="[last_Message]"/>
+  <sendMessageSIP listenpoint="_listenpoint[local_port]" state=" SIP/2.0 "><![CDATA[
+
+      SIP/2.0 200 OK
+      [last_Via:]
+      [last_From:]
+      [last_To:];tag=[pid]SIPpTag01[call_number]
+      [last_Call-ID:]
+      [last_CSeq:]
+      Contact: <sip:[local_ip]:[local_port];transport=[transport]>
+      Content-Type: application/sdp
+      Content-Length: [len]
+
+      v=0
+      o=user1 53655765 2353687637 IN IP[local_ip_type] [local_ip]
+      s=-
+      c=IN IP[media_ip_type] [media_ip]
+      t=0 0
+      m=audio [media_port] RTP/AVP 0
+      a=rtpmap:0 PCMU/8000
+
+    ]]></sendMessageSIP>
+  <!--recv-->
+  <receiveMessageSIP listenpoint="_listenpoint[local_port]" timeout="[recv_timeout]"> 
+    <parameter name="[_response]" operation="setFromMessage" value="message.result"/>
+    <parameter name="[_request]" operation="setFromMessage" value="message.type"/>
+    <or> 
+      <test parameter="[_request]" condition="string.equals" value="BYE"/>
+    </or>
+    <parameter name="[last_Message]" operation="setFromMessage" value="Message"/>
+  </receiveMessageSIP>
+  <!--send-->
+  <parameter name="[last_Via:]" operation="setFromMessage" value="header.Via.Namevalue" value2="[last_Message]"/>
+  <parameter name="[last_From:]" operation="setFromMessage" value="header.From.Namevalue" value2="[last_Message]"/>
+  <parameter name="[last_To:]" operation="setFromMessage" value="header.To.Namevalue" value2="[last_Message]"/>
+  <parameter name="[last_Call-ID:]" operation="setFromMessage" value="header.Call-ID.Namevalue" value2="[last_Message]"/>
+  <parameter name="[last_CSeq:]" operation="setFromMessage" value="header.CSeq.Namevalue" value2="[last_Message]"/>
+  <sendMessageSIP listenpoint="_listenpoint[local_port]" state=" SIP/2.0 "><![CDATA[
+
+      SIP/2.0 200 OK
+      [last_Via:]
+      [last_From:]
+      [last_To:]
+      [last_Call-ID:]
+      [last_CSeq:]
+      Contact: <sip:[local_ip]:[local_port];transport=[transport]>
+      Content-Length: 0
+
+    ]]></sendMessageSIP>
+  <!--pause-->
+  <pause milliseconds="4000"/>
+  <!--ResponseTimeRepartition-->
+  <!--CallLengthRepartition-->
+</scenario>
