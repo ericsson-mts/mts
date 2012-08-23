@@ -72,7 +72,7 @@ public class ImportSipP {
 		if(result == null)
 		{	
 			int sippFileNamePosition1 = sippfile.lastIndexOf("\\");
-			int sippFileNamePosition2 = sippfile.indexOf(".");
+			int sippFileNamePosition2 = sippfile.lastIndexOf(".");
 			result = sippfile.substring(0, sippFileNamePosition1)+"\\out" + sippfile.substring(sippFileNamePosition1, sippFileNamePosition2)+"_mts.xml"; 
 			
 		}
