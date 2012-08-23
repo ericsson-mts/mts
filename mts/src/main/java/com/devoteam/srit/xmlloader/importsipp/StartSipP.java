@@ -1,6 +1,7 @@
 package com.devoteam.srit.xmlloader.importsipp;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StartSipP {
@@ -10,9 +11,9 @@ public class StartSipP {
 	@SuppressWarnings("unused")
 	public static void main(String... args) {
 		 
-		String allOptions = null; 
-		String fileName = null; 
-		List<String> options = null ; 
+		String allOptions = ""; 
+		String fileName = null, testcase = null; 
+		List<String> options = new ArrayList() ; 
 		
 		/*
 		 * Handle arguments
@@ -27,11 +28,15 @@ public class StartSipP {
         	 */
         	if(args[i].equals("-sn"))
         	{
-        		fileName = args[i+1]+".xml"; 
+        		testcase = "test_"+args[i+1];
+        		fileName = "../conf/importsipp/out/test.xml"; 
         	}
         	if(args[i].equals("-sf"))
-        	{
-        		fileName = args[i+1]; 
+        	{	
+        		int sippFileNamePosition1 = args[i+1].lastIndexOf("\\");
+    			int sippFileNamePosition2 = args[i+1].lastIndexOf("_mts");
+    			testcase = "test_"+args[i+1].substring(sippFileNamePosition1+1, sippFileNamePosition2); 
+        		fileName = "../conf/importsipp/out/test.xml"; 
         	}
         	if(args[i].equals("-base_cseq"))
         	{
@@ -80,8 +85,8 @@ public class StartSipP {
         	if(args[i].equals("-rsa"))
         	{
         		int positionOfhost = args[i+1].lastIndexOf(":");
-        		options.add("-param:remote_host+"+args[i+1].substring(0, positionOfhost)+
-        				"-param:remotePort+"+args[i+1].substring(positionOfhost+1)); 
+        		options.add("-param:remote_ip+"+args[i+1].substring(0, positionOfhost)+
+        				" -param:remotePort+"+args[i+1].substring(positionOfhost+1)); 
         	}
         	if(args[i].equals("-s"))
         	{
@@ -109,13 +114,13 @@ public class StartSipP {
         {
         	allOptions = allOptions+" "+options.get(j); 
         }
-        String commandTest = "cmd /c startCmd.bat" + allOptions; 
+        String commandTest = "cmd /c startCmd.bat " + fileName +" "+ testcase +" "+ allOptions; 
         
-		String command = "cmd /c startTest.bat";
+		//String command = "cmd /c startTest.bat";
         Process p;
 		try 
 		{
-			p = Runtime.getRuntime().exec(command);
+			p = Runtime.getRuntime().exec(commandTest);
 			InputStream input = p.getInputStream();
 			InputStream errInput= p.getErrorStream();
 			
