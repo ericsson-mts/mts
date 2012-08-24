@@ -8,12 +8,11 @@ public class StartSipP {
 	/**
 	 * @param args
 	 */
-	@SuppressWarnings("unused")
 	public static void main(String... args) {
 		 
 		String allOptions = ""; 
 		String fileName = null; 
-		List<String> options = new ArrayList() ; 
+		List<String> options = new ArrayList<String>() ; 
 		
 		/*
 		 * Handle arguments
@@ -57,7 +56,7 @@ public class StartSipP {
         	{
         		options.add("-param:_fileName+"+args[i+1]); 
         	}
-        	if(args[i].equals("-l"))
+        	if(args[i].equals("-l") || args[i].equals("-users"))
         	{
         		options.add("-param:instances+"+args[i+1]); 
         	}
@@ -98,10 +97,6 @@ public class StartSipP {
         	if(args[i].equals("-timeout"))
         	{
         		options.add("-param:endDelay+"+args[i+1]);
-        	}
-        	if(args[i].equals("-users"))
-        	{
-        		options.add("-param:instances+"+args[i+1]);
         	}
         	if(args[i].equals("-set"))
         	{
