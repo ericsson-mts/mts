@@ -4,12 +4,13 @@
 <scenario>
 
     <receiveMessageDIAMETER name="ReceiveRequestMAR" request="true" type="506">
-		<parameter name="hopByHop" operation="protocol.setFromMessage" value="header.hopByHop"/>
-		<parameter name="endToEnd" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
     </receiveMessageDIAMETER>
 
     <sendMessageDIAMETER name="SendAnswerMAA">
-	<header request="false" command="Multimedia-Authentitcation" applicationId="Ericsson IMT 30 - Cx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+	<header request="false" command="506" applicationId="Ericsson IMT 30 - Cx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
 		<avp code="263" value="CXCSCFCX.sip.france.fr;45e45ee4;046725;5cd579ef" type="OctetString" mandatory="true"/>
 		<avp code="264" value="[Remote-Host]" type="OctetString" mandatory="true"/>
 		<avp code="296" value="[Remote-Realm]" type="OctetString" mandatory="true"/>
@@ -21,7 +22,7 @@
 		</avp>
 		<avp code="268" value="2001"/>		
 		<avp code="999990" value="1" type="Integer32" mandatory="true"/>
-		<avp code="999991" value="sip:+33875610603@sip.france.fr" vendorId="10415" type="OctetString" mandatory="true"/>
+		<avp code="999991" value="sip:+33875610603@sip.france.fr" vendorId="[vendorID]" type="OctetString" mandatory="true"/>
     		<avp code="999992" value="1" type="Integer32" mandatory="true"/>
     		<avp code="999993" type="Grouped" mandatory="true">
 			<avp code="999994" value="0" type="Integer32" mandatory="true"/>

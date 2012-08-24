@@ -7,8 +7,9 @@
      <pause name="pause" seconds="1" />
     
     <receiveMessageDIAMETER name="ReceiveRequestMAR" request="true" type="Multimedia-Authentitcation:506">
-		<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>    
-		<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>    
+    		<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>    
+    		<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
     </receiveMessageDIAMETER>
     
     <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.1018.1024.code"/>    
@@ -35,9 +36,9 @@
     <parameter name="[error]" operation="protocol.setFromMessage" value="header.error"/>    
     <test parameter="[error]" condition="string.equals" value="false"/>        
     <parameter name="[appId]" operation="protocol.setFromMessage" value="header.applicationId"/>    
-    <test parameter="[appId]" condition="string.equals" value="16777216"/>    
+    <test parameter="[appId]" condition="string.equals" value="[applicationID]"/>    
     <parameter name="[proxiable]" operation="protocol.setFromMessage" value="header.proxiable"/>    
-    <test parameter="[proxiable]" condition="string.equals" value="true"/>
+    <test parameter="[proxiable]" condition="string.equals" value="false"/>
     <parameter name="[retransmit]" operation="protocol.setFromMessage" value="header.retransmit"/>    
     <test parameter="[retransmit]" condition="string.equals" value="false"/>
     
@@ -48,7 +49,7 @@
     <parameter name="[avp1binary]" operation="protocol.setFromMessage" value="avp.1018.binary"/>    
     <!--test parameter="[avp1binary]" condition="string.equals" value="h49 h4e h56 h49 h54 h45 "/-->   
     <parameter name="[avp1vendor]" operation="protocol.setFromMessage" value="avp.1018.vendorId"/>    
-    <test parameter="[avp1vendor]" condition="string.equals" value="10415"/>
+    <test parameter="[avp1vendor]" condition="string.equals" value="[vendorID]"/>
     
     <parameter name="[avp2code]" operation="protocol.setFromMessage" value="avp.1018.1024.code"/>    
     <test parameter="[avp2code]" condition="number.equals" value="1024"/>
@@ -57,7 +58,7 @@
     <parameter name="[avp2binary]" operation="protocol.setFromMessage" value="avp.1018.1024.binary"/>    
     <test parameter="[avp2binary]" condition="string.equals" value="494e56495445"/>    
     <parameter name="[avp2vendor]" operation="protocol.setFromMessage" value="avp.1018.1024.vendorId"/>    
-    <test parameter="[avp2vendor]" condition="string.equals" value="10415"/>
+    <test parameter="[avp2vendor]" condition="string.equals" value="[vendorID]"/>
         
     <parameter name="[avp3code]" operation="protocol.setFromMessage" value="avp.283.code"/>        
     <test parameter="[avp3code]" condition="string.equals" value="283"/>
@@ -87,12 +88,12 @@
     <test parameter="[avp9code]" condition="list.isEmpty"/>
     
     <sendMessageDIAMETER name="SendAnswerMAA">
-	<header request="false" command="Multimedia-Authentitcation" applicationId="4321" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+	<header request="false" command="[commandCode]" applicationId="4321" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
 	<avp code="Origin-Host" value="[Remote-Host]"/>
 	<avp code="Origin-Realm" value="[Remote-Realm]"/>
 	<avp code="Vendor-Specific-Application-Id">
-		<avp code="Vendor-Id" value="10415"/>
-		<avp code="Auth-Application-Id" value="16777216"/>
+		<avp code="Vendor-Id" value="[vendorID]"/>
+		<avp code="Auth-Application-Id" value="[applicationID]"/>
 	</avp>
 	<avp code="Session-Id" value="CXCSCFCX.sip.pfdev.fr;45e45ee4;046725;5cd579ef"/>
 	<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>

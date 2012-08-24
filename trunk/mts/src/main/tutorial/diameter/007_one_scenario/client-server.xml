@@ -4,7 +4,7 @@
 <scenario>
     
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[Remote-Address]" destScenario="client-server">
-		<header request="true" command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx" proxiable="true"/>
+		<header request="true" command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx"/>
 		<avp code="Origin-Host" value="[Local-Host]"/>
 		<avp code="Origin-Realm" value="[Local-Realm]"/>
 		<avp code="Destination-Host" value="[Remote-Host]"/>	
@@ -26,12 +26,13 @@
     </sendMessageDIAMETER>
     
     <receiveMessageDIAMETER name="ReceiveRequestMAR" request="true" type="Multimedia-Authentitcation:506">
-		<parameter name="hopByHop" operation="protocol.setFromMessage" value="header.hopByHop"/>
-		<parameter name="endToEnd" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
     </receiveMessageDIAMETER>
 
     <sendMessageDIAMETER name="SendAnswerMAA">
-	<header request="false" command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+	<header request="false" command="[commandCode]" applicationId="IMS_Cx_Dx" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
 	<avp code="Origin-Host" value="[Remote-Host]"/>
 	<avp code="Origin-Realm" value="[Remote-Realm]"/>
 	<avp code="Vendor-Specific-Application-Id">

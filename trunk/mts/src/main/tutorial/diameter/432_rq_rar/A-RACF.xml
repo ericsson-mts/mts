@@ -32,7 +32,7 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
 -->
 
     <sendMessageDIAMETER name="Send Request ETSI/Rq/RAR" remoteURL="diameter://[Remote-Address]" destScenario="SPDF">
-        <header request="true" command="Re-Auth" applicationId="3GPP Rq Gq" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="Re-Auth" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
 
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
@@ -40,27 +40,27 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
           <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[Remote-Host]"/>
 
-          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777222"/>
+          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
 
           <!-- The Specific-Action AVP is of type Enumerated. -->
           <!-- Possible enumerated values : SERVICE_INFORMATION_REQUEST (0) / CHARGING_CORRELATION_EXCHANGE (1) / INDICATION_OF_LOSS_OF_BEARER (2) / INDICATION_OF_RECOVERY_OF_BEARER (3) / INDICATION_OF_RELEASE_OF_BEARER (4) / INDICATION_OF_ESTABLISHMENT_OF_BEARER (5). -->
-          <avp code="Specific-Action" mandatory="true" type="Enumerated" value="SERVICE_INFORMATION_REQUEST" vendorId="10415"/>
-          <avp code="Specific-Action" mandatory="true" type="Enumerated" value="CHARGING_CORRELATION_EXCHANGE" vendorId="10415"/>
+          <avp code="Specific-Action" mandatory="true" type="Enumerated" value="SERVICE_INFORMATION_REQUEST" vendorId="[vendorID]"/>
+          <avp code="Specific-Action" mandatory="true" type="Enumerated" value="CHARGING_CORRELATION_EXCHANGE" vendorId="[vendorID]"/>
 
-          <avp code="Flows" mandatory="true"  vendorId="10415">
-            <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-            <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-            <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>  
+          <avp code="Flows" mandatory="true"  vendorId="[vendorID]">
+            <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="[vendorID]"/>  
           </avp>
-          <avp code="Flows" mandatory="true"  vendorId="10415">
-            <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>
-            <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-            <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>  
+          <avp code="Flows" mandatory="true"  vendorId="[vendorID]">
+            <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="1" vendorId="[vendorID]"/>
+            <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="[vendorID]"/>  
           </avp>
 
           <!-- The Abort-Cause AVP determines the cause of a session abort request or of an RAR indicating a PDP context release. -->
           <!-- Possible enumerated values : BEARER_RELEASED (0) / INSUFFICIENT_SERVER_RESOURCES (1) / INSUFFICIENT_BEARER_RESOURCES (2). -->
-          <avp code="Abort-Cause" mandatory="true" type="Enumerated" value="BEARER_RELEASED" vendorId="10415"/>
+          <avp code="Abort-Cause" mandatory="true" type="Enumerated" value="BEARER_RELEASED" vendorId="[vendorID]"/>
 
           <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
           <avp code="Origin-State-Id" mandatory="true" type="Unsigned32" value="0"/>

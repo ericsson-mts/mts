@@ -22,8 +22,8 @@
     
      <receiveMessageDIAMETER name="ReceiveMessage" timeout="0">
         <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
-        <parameter name="[command]" operation="protocol.setFromMessage" value="header.command"/>
-        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationID]" operation="protocol.setFromMessage" value="header.applicationId"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>        
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
         <parameter name="[request]" operation="protocol.setFromMessage" value="header.request"/>
@@ -40,11 +40,11 @@
         </condition>
         <then>
             <sendMessageDIAMETER name="SendRequest" listenpoint="proxy" remoteURL="diameter://[Remote-Address]">
-                <header request="[request]" command="User-Authorization" applicationId="16777216" proxiable="[proxiable]" endToEnd="[endToEnd]"/>
+                <header request="[request]" command="[commandCode]" applicationId="[applicationID]" endToEnd="[endToEnd]"/>
                 <avp code="Vendor-Specific-Application-Id">
-                    <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
-                    <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/>
-                    <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/-->
+                    <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+                    <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
+                    <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
                  </avp>
         
                 <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
@@ -62,7 +62,7 @@
             <sendMessageDIAMETER name="SendAnswer" listenpoint="proxy">
                 <header request="[request]" command="User-Authorization" applicationId="16777216" proxiable="[proxiable]" hopByHop="[oldHopByHop]" endToEnd="[endToEnd]"/>
                 <avp code="Vendor-Specific-Application-Id">
-                    <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+                    <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
                     <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/>
                     <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/-->
                  </avp>

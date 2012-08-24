@@ -53,7 +53,7 @@ User-Authorization-Answer> ::= < Diameter Header: 300, PXY, 16777216 >
 
 -->
     <sendMessageDIAMETER name="Send Answer 3GPP/CX-DX/UAA">
-        <header request="false" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <header request="false" command="[commandCode]" applicationId="[applicationID]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
           <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
@@ -82,7 +82,7 @@ User-Authorization-Answer> ::= < Diameter Header: 300, PXY, 16777216 >
             <!-- The Feature-List AVP contains a bit mask indicating the supported features of an application. -->
             <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/> 
           </avp>
-          <avp code="Supported-Features" vendorId="10415">
+          <avp code="Supported-Features" vendorId="[vendorID]">
             <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
             <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/>
             <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/> 
@@ -102,10 +102,10 @@ User-Authorization-Answer> ::= < Diameter Header: 300, PXY, 16777216 >
           </avp>
 <!--
           <avp code="Failed-AVP">
-            <avp code="???" vendorId="10415" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+            <avp code="???" vendorId="[vendorID]" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
           <avp code="Failed-AVP">
-            <avp code="???" vendorId="10415" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+            <avp code="???" vendorId="[vendorID]" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
 -->
           <avp code="Proxy-Info">

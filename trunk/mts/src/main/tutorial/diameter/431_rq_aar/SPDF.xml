@@ -58,141 +58,141 @@ AA-Request ::= < Diameter Header: 265, REQ, PXY >
 -->
 
     <sendMessageDIAMETER name="Send Request ETSI/Rq/AAR" remoteURL="diameter://[Remote-Address]" destScenario="A-RACF">
-        <header request="true" command="AA" applicationId="3GPP Rq Gq" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="AA" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
-          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777222"/>
+          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
 
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
           <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
 
-          <avp code="AF-Charging-Identifier" mandatory="true"  type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+          <avp code="AF-Charging-Identifier" mandatory="true"  type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
 
-          <avp code="Media-Component-Description" mandatory="true"  vendorId="10415">
-            <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-            <avp code="Media-Sub-Component" mandatory="true"  vendorId="10415">
-              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="10415"/>
-              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="10415"/>
-
-              <!-- The Flow-Status AVP describes whether the IP flow(s) are enabled or disabled. -->
-              <!-- Possible enumerated values : ENABLED-UPLINK (0) / ENABLED-DOWNLINK (1) / ENABLED (2) / DISABLED (3) / REMOVED (4). -->
-              <avp code="Flow-Status" type="Enumerated" value="ENABLED" vendorId="10415"/>
-
-              <!-- The Flow-Usage AVP provides information about the usage of IP Flows.  -->
-              <!-- Possible enumerated values : NO_INFORMATION (0) / RTCP (1). -->
-              <avp code="Flow-Usage" type="Enumerated" value="NO_INFORMATION" vendorId="10415"/>
-
-              <avp code="Max-Requested-Bandwidth-UL" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-              <avp code="Max-Requested-Bandwidth-DL" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-            </avp>
-            <avp code="Media-Sub-Component" mandatory="true"  vendorId="10415">
-              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>
-              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="10415"/>
-              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="10415"/>
+          <avp code="Media-Component-Description" mandatory="true"  vendorId="[vendorID]">
+            <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="Media-Sub-Component" mandatory="true"  vendorId="[vendorID]">
+              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="[vendorID]"/>
+              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="[vendorID]"/>
 
               <!-- The Flow-Status AVP describes whether the IP flow(s) are enabled or disabled. -->
               <!-- Possible enumerated values : ENABLED-UPLINK (0) / ENABLED-DOWNLINK (1) / ENABLED (2) / DISABLED (3) / REMOVED (4). -->
-              <avp code="Flow-Status" type="Enumerated" value="ENABLED" vendorId="10415"/>
+              <avp code="Flow-Status" type="Enumerated" value="ENABLED" vendorId="[vendorID]"/>
 
               <!-- The Flow-Usage AVP provides information about the usage of IP Flows.  -->
               <!-- Possible enumerated values : NO_INFORMATION (0) / RTCP (1). -->
-              <avp code="Flow-Usage" type="Enumerated" value="NO_INFORMATION" vendorId="10415"/>
+              <avp code="Flow-Usage" type="Enumerated" value="NO_INFORMATION" vendorId="[vendorID]"/>
 
-              <avp code="Max-Requested-Bandwidth-UL" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-              <avp code="Max-Requested-Bandwidth-DL" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
+              <avp code="Max-Requested-Bandwidth-UL" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              <avp code="Max-Requested-Bandwidth-DL" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            </avp>
+            <avp code="Media-Sub-Component" mandatory="true"  vendorId="[vendorID]">
+              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="[vendorID]"/>
+              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="[vendorID]"/>
+              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="[vendorID]"/>
+
+              <!-- The Flow-Status AVP describes whether the IP flow(s) are enabled or disabled. -->
+              <!-- Possible enumerated values : ENABLED-UPLINK (0) / ENABLED-DOWNLINK (1) / ENABLED (2) / DISABLED (3) / REMOVED (4). -->
+              <avp code="Flow-Status" type="Enumerated" value="ENABLED" vendorId="[vendorID]"/>
+
+              <!-- The Flow-Usage AVP provides information about the usage of IP Flows.  -->
+              <!-- Possible enumerated values : NO_INFORMATION (0) / RTCP (1). -->
+              <avp code="Flow-Usage" type="Enumerated" value="NO_INFORMATION" vendorId="[vendorID]"/>
+
+              <avp code="Max-Requested-Bandwidth-UL" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              <avp code="Max-Requested-Bandwidth-DL" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
             </avp>
 
-            <avp code="AF-Application-Identifier" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+            <avp code="AF-Application-Identifier" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
 
             <!-- The Media-Type AVP determines the media type of a session component.  -->
             <!-- Possible enumerated values : AUDIO (0) / VIDEO (1) / DATA (2) / APPLICATION (3) / CONTROL (4) / TEXT (5) / MESSAGE (6) / OTHER (0xFFFFFFFF). -->
-            <avp code="Media-Type" type="Enumerated" value="AUDIO" vendorId="10415"/>
+            <avp code="Media-Type" type="Enumerated" value="AUDIO" vendorId="[vendorID]"/>
 
-            <avp code="Max-Requested-Bandwidth-UL" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-            <avp code="Max-Requested-Bandwidth-DL" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
+            <avp code="Max-Requested-Bandwidth-UL" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="Max-Requested-Bandwidth-DL" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
 
             <!-- The Flow-Status AVP describes whether the IP flow(s) are enabled or disabled. -->
             <!-- Possible enumerated values : ENABLED-UPLINK (0) / ENABLED-DOWNLINK (1) / ENABLED (2) / DISABLED (3) / REMOVED (4). -->
-            <avp code="Flow-Status" type="Enumerated" value="ENABLED" vendorId="10415"/>
+            <avp code="Flow-Status" type="Enumerated" value="ENABLED" vendorId="[vendorID]"/>
 
-            <avp code="RS-Bandwidth" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-            <avp code="RR-Bandwidth" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
+            <avp code="RS-Bandwidth" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="RR-Bandwidth" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
           </avp>
-          <avp code="Media-Component-Description" mandatory="true"  vendorId="10415">
-            <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>
-            <avp code="Media-Sub-Component" mandatory="true"  vendorId="10415">
-              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="10415"/>
-              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="10415"/>
+          <avp code="Media-Component-Description" mandatory="true"  vendorId="[vendorID]">
+            <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="1" vendorId="[vendorID]"/>
+            <avp code="Media-Sub-Component" mandatory="true"  vendorId="[vendorID]">
+              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="[vendorID]"/>
+              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="[vendorID]"/>
 
               <!-- The Flow-Status AVP describes whether the IP flow(s) are enabled or disabled. -->
               <!-- Possible enumerated values : ENABLED-UPLINK (0) / ENABLED-DOWNLINK (1) / ENABLED (2) / DISABLED (3) / REMOVED (4). -->
-              <avp code="Flow-Status" type="Enumerated" value="ENABLED" vendorId="10415"/>
+              <avp code="Flow-Status" type="Enumerated" value="ENABLED" vendorId="[vendorID]"/>
 
               <!-- The Flow-Usage AVP provides information about the usage of IP Flows.  -->
               <!-- Possible enumerated values : NO_INFORMATION (0) / RTCP (1). -->
-              <avp code="Flow-Usage" type="Enumerated" value="NO_INFORMATION" vendorId="10415"/>
+              <avp code="Flow-Usage" type="Enumerated" value="NO_INFORMATION" vendorId="[vendorID]"/>
 
-              <avp code="Max-Requested-Bandwidth-UL" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-              <avp code="Max-Requested-Bandwidth-DL" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
+              <avp code="Max-Requested-Bandwidth-UL" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              <avp code="Max-Requested-Bandwidth-DL" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
             </avp>
-            <avp code="Media-Sub-Component" mandatory="true"  vendorId="10415">
-              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>
-              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="10415"/>
-              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="10415"/>
+            <avp code="Media-Sub-Component" mandatory="true"  vendorId="[vendorID]">
+              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="[vendorID]"/>
+              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="[vendorID]"/>
+              <avp code="Flow-Description" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="[vendorID]"/>
 
               <!-- The Flow-Status AVP describes whether the IP flow(s) are enabled or disabled. -->
               <!-- Possible enumerated values : ENABLED-UPLINK (0) / ENABLED-DOWNLINK (1) / ENABLED (2) / DISABLED (3) / REMOVED (4). -->
-              <avp code="Flow-Status" type="Enumerated" value="ENABLED" vendorId="10415"/>
+              <avp code="Flow-Status" type="Enumerated" value="ENABLED" vendorId="[vendorID]"/>
 
               <!-- The Flow-Usage AVP provides information about the usage of IP Flows.  -->
               <!-- Possible enumerated values : NO_INFORMATION (0) / RTCP (1). -->
-              <avp code="Flow-Usage" type="Enumerated" value="NO_INFORMATION" vendorId="10415"/>
+              <avp code="Flow-Usage" type="Enumerated" value="NO_INFORMATION" vendorId="[vendorID]"/>
 
-              <avp code="Max-Requested-Bandwidth-UL" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-              <avp code="Max-Requested-Bandwidth-DL" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
+              <avp code="Max-Requested-Bandwidth-UL" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              <avp code="Max-Requested-Bandwidth-DL" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
             </avp>
 
-            <avp code="AF-Application-Identifier" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+            <avp code="AF-Application-Identifier" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
 
             <!-- The Media-Type AVP determines the media type of a session component.  -->
             <!-- Possible enumerated values : AUDIO (0) / VIDEO (1) / DATA (2) / APPLICATION (3) / CONTROL (4) / TEXT (5) / MESSAGE (6) / OTHER (0xFFFFFFFF). -->
-            <avp code="Media-Type" type="Enumerated" value="AUDIO" vendorId="10415"/>
+            <avp code="Media-Type" type="Enumerated" value="AUDIO" vendorId="[vendorID]"/>
 
-            <avp code="Max-Requested-Bandwidth-UL" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-            <avp code="Max-Requested-Bandwidth-DL" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
+            <avp code="Max-Requested-Bandwidth-UL" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="Max-Requested-Bandwidth-DL" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
 
             <!-- The Flow-Status AVP describes whether the IP flow(s) are enabled or disabled. -->
             <!-- Possible enumerated values : ENABLED-UPLINK (0) / ENABLED-DOWNLINK (1) / ENABLED (2) / DISABLED (3) / REMOVED (4). -->
-            <avp code="Flow-Status" type="Enumerated" value="ENABLED" vendorId="10415"/>
+            <avp code="Flow-Status" type="Enumerated" value="ENABLED" vendorId="[vendorID]"/>
 
-            <avp code="RS-Bandwidth" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-            <avp code="RR-Bandwidth" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
+            <avp code="RS-Bandwidth" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="RR-Bandwidth" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
           </avp>
 
-          <avp code="Flow-Grouping" mandatory="true"  vendorId="10415">
-            <avp code="Flows" mandatory="true"  vendorId="10415">
-              <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>  
+          <avp code="Flow-Grouping" mandatory="true"  vendorId="[vendorID]">
+            <avp code="Flows" mandatory="true"  vendorId="[vendorID]">
+              <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="[vendorID]"/>  
             </avp>
-            <avp code="Flows" mandatory="true"  vendorId="10415">
-              <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>
-              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>  
+            <avp code="Flows" mandatory="true"  vendorId="[vendorID]">
+              <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="1" vendorId="[vendorID]"/>
+              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="[vendorID]"/>  
             </avp>
           </avp>
-          <avp code="Flow-Grouping" mandatory="true"  vendorId="10415">
-            <avp code="Flows" mandatory="true"  vendorId="10415">
-              <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="2" vendorId="10415"/>
-              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>  
+          <avp code="Flow-Grouping" mandatory="true"  vendorId="[vendorID]">
+            <avp code="Flows" mandatory="true"  vendorId="[vendorID]">
+              <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="2" vendorId="[vendorID]"/>
+              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="[vendorID]"/>  
             </avp>
-            <avp code="Flows" mandatory="true"  vendorId="10415">
-              <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="3" vendorId="10415"/>
-              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="10415"/>
-              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>  
+            <avp code="Flows" mandatory="true"  vendorId="[vendorID]">
+              <avp code="Media-Component-Number" mandatory="true" type="Unsigned32" value="3" vendorId="[vendorID]"/>
+              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              <avp code="Flow-Number" mandatory="true" type="Unsigned32" value="1" vendorId="[vendorID]"/>  
             </avp>
           </avp>
 
@@ -201,7 +201,7 @@ AA-Request ::= < Diameter Header: 265, REQ, PXY >
           <avp code="Reservation-Priority" mandatory="false"  type="Enumerated" value="1" vendorId="13019"/>
 
           <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
-          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>
+          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>
 
           <avp code="Globally-Unique-Address" mandatory="true"  vendorId="13019">
             <avp code="Framed-IP-Address" type="OctetString" value="ToBeCompleted"/>
@@ -209,7 +209,7 @@ AA-Request ::= < Diameter Header: 265, REQ, PXY >
             <avp code="Address-Realm" mandatory="true"  type="OctetString" value="ToBeCompleted" vendorId="13019"/>
           </avp>
 
-          <avp code="Address-Realm" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+          <avp code="Address-Realm" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
 
           <avp code="Authorization-Lifetime" mandatory="true" type="Unsigned32" value="0"/>
 

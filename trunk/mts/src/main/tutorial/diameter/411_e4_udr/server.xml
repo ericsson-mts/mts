@@ -4,8 +4,9 @@
 <scenario>
     
     <receiveMessageDIAMETER name="Receive Request ETSI/e4/UDR" request="true" type="User-Data:306">
-                <parameter name="hopByHop" operation="protocol.setFromMessage" value="header.hopByHop"/>
-                <parameter name="endToEnd" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
     </receiveMessageDIAMETER>
 
 <!--
@@ -67,18 +68,18 @@ User-Data-Answer  ::= < Diameter Header: 306, PXY, 16777231 >
 -->
 
     <sendMessageDIAMETER name="Send Answer ETSI/e4/UDA">
-        <header request="false" command="User-Data" applicationId="ETSI e2 e4" proxiable="true" error="false" retransmit="false" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <header request="false" command="[commandCode]" applicationId="[applicationID]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
           <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
             <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777231"/>
-            <avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777231"/>
+            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777231"/-->
           </avp>
 
           <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>              
           <avp code="Experimental-Result">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
-            <avp code="Experimental-Result-Code" mandatory="true" type="Unsigned32" value="2001" vendorId="10415"/>
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Experimental-Result-Code" mandatory="true" type="Unsigned32" value="2001" vendorId="[vendorID]"/>
           </avp>
 
           <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
@@ -95,7 +96,7 @@ User-Data-Answer  ::= < Diameter Header: 306, PXY, 16777231 >
           </avp>
 
           <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
-          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>
+          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>
 
           <avp code="Logical-Access-Id" type="OctetString" value="ToBeCompleted" vendorId="13019"/>
           <avp code="Physical-Access-Id" type="OctetString" value="ToBeCompleted" vendorId="13019"/>
@@ -121,7 +122,7 @@ User-Data-Answer  ::= < Diameter Header: 306, PXY, 16777231 >
 
             <!-- The Media-Type AVP determines the media type of a session component. -->
             <!-- Possible enumerated values : AUDIO (0) / VIDEO (1) / DATA (2) / APPLICATION (3) / CONTROL (4) / TEXT (5) / MESSAGE (6) / OTHER (0xFFFFFFFF). -->
-            <avp code="Media-Type" type="Enumerated" value="AUDIO" vendorId="10415"/>
+            <avp code="Media-Type" type="Enumerated" value="AUDIO" vendorId="[vendorID]"/>
 
             <!-- The Reservation-Priority AVP is of type Enumerated. -->
             <!-- Possible enumerated values : PRIORITY-ONE (1) / PRIORITY-TWO (2) / PRIORITY-THREE (3) / PRIORITY-FOUR (4) / PRIORITY-FIVE (5) / PRIORITY-SIX (6) / PRIORITY-SEVEN (7). -->
@@ -136,7 +137,7 @@ User-Data-Answer  ::= < Diameter Header: 306, PXY, 16777231 >
 
             <!-- The Media-Type AVP determines the media type of a session component. -->
             <!-- Possible enumerated values : AUDIO (0) / VIDEO (1) / DATA (2) / APPLICATION (3) / CONTROL (4) / TEXT (5) / MESSAGE (6) / OTHER (0xFFFFFFFF). -->
-            <avp code="Media-Type" type="Enumerated" value="AUDIO" vendorId="10415"/>
+            <avp code="Media-Type" type="Enumerated" value="AUDIO" vendorId="[vendorID]"/>
 
             <!-- The Reservation-Priority AVP is of type Enumerated. -->
             <!-- Possible enumerated values : PRIORITY-ONE (1) / PRIORITY-TWO (2) / PRIORITY-THREE (3) / PRIORITY-FOUR (4) / PRIORITY-FIVE (5) / PRIORITY-SIX (6) / PRIORITY-SEVEN (7). -->
@@ -153,10 +154,10 @@ User-Data-Answer  ::= < Diameter Header: 306, PXY, 16777231 >
 
 <!--
           <avp code="Failed-AVP">
-            <avp code="???" vendorId="10415" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+            <avp code="???" vendorId="[vendorID]" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
           <avp code="Failed-AVP">
-            <avp code="???" vendorId="10415" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+            <avp code="???" vendorId="[vendorID]" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
 -->
           <avp code="Proxy-Info">

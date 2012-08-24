@@ -5,18 +5,19 @@
 <scenario>
 
     <receiveMessageDIAMETER name="ReceiveRequestMAR" request="true" type="Multimedia-Authentitcation:506">
-		<parameter name="hopByHop" operation="protocol.setFromMessage" value="header.hopByHop"/>
-		<parameter name="endToEnd" operation="protocol.setFromMessage" value="header.endToEnd"/>		
-		<parameter name="param" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.value"/>
-    		<parameter name="publicIdentity" operation="protocol.setFromMessage" value="avp.Public-Identity.value"/>				
-    		<parameter name="privateIdentity" operation="protocol.setFromMessage" value="avp.3.value"/>				
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+    		<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+    		<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>		
+    		<parameter name="[param]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.value"/>
+        <parameter name="[publicIdentity]" operation="protocol.setFromMessage" value="avp.Public-Identity.value"/>				
+        <parameter name="[privateIdentity]" operation="protocol.setFromMessage" value="avp.3.value"/>				
     </receiveMessageDIAMETER>
     
     <parameter name="code" operation="set" value="Auth-Data-Item"/>
     <parameter name="code" operation="list.addLast" value="[code]" value2="Auth-Data-Item"/>
 
     <sendMessageDIAMETER name="SendAnswerMAA">
-	<header request="false" command="Multimedia-Authentitcation" applicationId="Ericsson IMT 30 - Cx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+	<header request="false" command="[commandCode]" applicationId="Ericsson IMT 30 - Cx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
 	<avp code="Public-Identity" value="[PublicIdentity]1" />
 	<avp code="Origin-Host" value="[Remote-Host]"/>
 	<avp code="Origin-Realm" value="[Remote-Realm]"/>

@@ -20,7 +20,7 @@ Location-Info-Request ::= < Diameter Header: 302, REQ, PXY, 16777216 >
                              { Destination-Realm }
                              [ Originating-Request ]
                             *[ Supported-Features ]
-                               Supported-Features ::=  < AVP header: 628 10415 >
+                               Supported-Features ::=  < AVP header: 628 [vendorID] >
                                                           { Vendor-Id }
                                                           { Feature-List-ID }
                                                           { Feature-List }
@@ -37,11 +37,11 @@ Location-Info-Request ::= < Diameter Header: 302, REQ, PXY, 16777216 >
 -->
 
     <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/LIR" remoteURL="diameter://[Remote-Address]" destScenario="server">
-        <header request="true" command="Location-Info" applicationId="16777216" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="Location-Info" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
           <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
-            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/>
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
             <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/-->
           </avp>
 
@@ -56,24 +56,24 @@ Location-Info-Request ::= < Diameter Header: 302, REQ, PXY, 16777216 >
 
           <!-- The Originating-Request AVP indicates to the HSS that the request is related to an AS originating SIP request in the Location-Information-Request operation. -->
           <!-- Possible enumerated values : ORIGINATING (0). -->
-          <avp code="Originating-Request" mandatory="true" type="Enumerated" value="0" vendorId="10415"/>
+          <avp code="Originating-Request" mandatory="true" type="Enumerated" value="0" vendorId="[vendorID]"/>
 
           <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports (3GPP TS29.229.750). -->
-          <avp code="Supported-Features" vendorId="10415">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+          <avp code="Supported-Features" vendorId="[vendorID]">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
             <!-- The Feature-List-ID AVP contains the identity of a feature list (3GPP TS29.229.750). -->
-            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/>
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/>
             <!-- The Feature-List AVP contains a bit mask indicating the supported features of an application (3GPP TS29.229.750). -->
-            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/> 
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/> 
           </avp>
-          <avp code="Supported-Features" vendorId="10415">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
-            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/>
-            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/> 
+          <avp code="Supported-Features" vendorId="[vendorID]">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/>
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/> 
           </avp>
 
           <!-- The Public-Identity AVP contains a Public User Identity. -->
-          <avp code="Public-Identity" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>                   
+          <avp code="Public-Identity" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>                   
 
           <avp code="Proxy-Info">
              <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>

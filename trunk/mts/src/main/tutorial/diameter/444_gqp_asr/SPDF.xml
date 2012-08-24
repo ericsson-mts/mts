@@ -27,7 +27,7 @@ Abort-Session-Request ::= < Diameter Header: 258, REQ, PXY >
 -->
 
     <sendMessageDIAMETER name="Send Request ETSI/Gq'/ASR" remoteURL="diameter://[Remote-Address]" destScenario="AF">
-        <header request="true" command="Abort-Session" applicationId="3GPP Rq Gq" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="Abort-Session" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
 
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
@@ -35,11 +35,11 @@ Abort-Session-Request ::= < Diameter Header: 258, REQ, PXY >
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
           <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[Remote-Host]"/>
 
-          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777222"/>
+          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
 
           <!-- The Abort-Cause AVP determines the cause of a session abort request or of an RAR indicating a PDP context release. -->
           <!-- Possible enumerated values : BEARER_RELEASED (0) / INSUFFICIENT_SERVER_RESOURCES (1) / INSUFFICIENT_BEARER_RESOURCES (2). -->
-          <avp code="Abort-Cause" mandatory="true" type="Enumerated" value="BEARER_RELEASED" vendorId="10415"/>
+          <avp code="Abort-Cause" mandatory="true" type="Enumerated" value="BEARER_RELEASED" vendorId="[vendorID]"/>
 
           <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
           <avp code="Origin-State-Id" mandatory="true" type="Unsigned32" value="0"/>

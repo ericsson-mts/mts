@@ -3,8 +3,9 @@
 <scenario>
     
     <receiveMessageDIAMETER name="Receive Request ACR" request="true" type="Accounting:271">
-                <parameter name="hopByHop" operation="protocol.setFromMessage" value="header.hopByHop"/>
-                <parameter name="endToEnd" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
     </receiveMessageDIAMETER>
 
 <!--
@@ -40,7 +41,7 @@ Accounting-Answer ::= < Diameter Header: 271, PXY >
 -->
 
     <sendMessageDIAMETER name="Send Answer ACA">
-        <header request="false" command="Accounting" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <header request="false" command="[commandCode]" applicationId="Diameter Common Messages" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
         <!-- The Session-Id AVP is used to identify a specific session. -->
         <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
         <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->

@@ -4,8 +4,9 @@
 <scenario>
 
     <receiveMessageDIAMETER name="Receive Request 3GPP/Ro/CCR" request="true" type="Credit-Control:272">
-                <parameter name="hopByHop" operation="protocol.setFromMessage" value="header.hopByHop"/>
-                <parameter name="endToEnd" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>    
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
     </receiveMessageDIAMETER>
 
 <!--
@@ -406,7 +407,7 @@ Credit-Control-Answer ::= < Diameter Header: 272, PXY >
 -->
 
     <sendMessageDIAMETER name="Send Answer 3GPP/Ro/CCA">
-        <header request="false" command="Credit-Control" applicationId="4" proxiable="true" error="false" retransmit="false" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <header request="false" command="[commandCode]" applicationId="[applicationID]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
 
           <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>              
@@ -415,7 +416,7 @@ Credit-Control-Answer ::= < Diameter Header: 272, PXY >
          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>
 
           <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
-          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>
+          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>
 
           <!-- Not used avp code="Acct-Multi-Session-Id" mandatory="true" type="UTF8String" value="ToBeCompleted"/-->
 
