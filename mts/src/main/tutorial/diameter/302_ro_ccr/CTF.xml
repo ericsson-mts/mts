@@ -411,7 +411,7 @@ Credit-Control-Request ::= < Diameter Header: 272, REQ, PXY >
 -->
 
     <sendMessageDIAMETER name="Send Request 3GPP/Ro/CCR" remoteURL="diameter://[Remote-Address]" destScenario="OCF">
-        <header request="true" command="Credit-Control" applicationId="4" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="Credit-Control" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
 
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
@@ -434,7 +434,7 @@ Credit-Control-Request ::= < Diameter Header: 272, REQ, PXY >
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
 
           <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
-          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>
+          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>
 
           <!-- Not used avp code="CC-Sub-Session-Id" type="Unsigned64" value="0"/-->
           <!-- Not used avp code="Acct-Multi-Session-Id" mandatory="true" type="UTF8String" value="ToBeCompleted"/-->

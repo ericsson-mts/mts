@@ -3,8 +3,9 @@
 <scenario>
     
     <receiveMessageDIAMETER name="Receive Request RFC3588 CER" request="true" type="Capabilities-Exchange:257">
-                <parameter name="hopByHop" operation="protocol.setFromMessage" value="header.hopByHop"/>
-                <parameter name="endToEnd" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>    
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
     </receiveMessageDIAMETER>
 
 <!--
@@ -35,7 +36,7 @@ Capabilities-Exchange-Answer ::= < Diameter Header: 257 >
 -->
 
     <sendMessageDIAMETER name="Send Answer RFC3588 CEA">
-        <header request="false" command="Capabilities-Exchange" applicationId="0" proxiable="false" error="false" retransmit="false" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <header request="false" command="[commandCode]" applicationId="0" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="false" error="false" retransmit="false"/>
         <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
         <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>              
 

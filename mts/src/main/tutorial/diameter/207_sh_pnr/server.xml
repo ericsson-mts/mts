@@ -40,12 +40,12 @@ Push-Notification-Request ::= < Diameter Header:  309, REQ, PXY, 16777217 >
 -->
 
     <sendMessageDIAMETER name="Send Request 3GPP/SH/PNR" remoteURL="diameter://[Remote-Address]" destScenario="client">
-        <header request="true" command="Push-Notification" applicationId="16777217" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="Push-Notification" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
           <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
-            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777217"/>
-            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777217"/-->
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
+            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
           </avp>
 
           <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
@@ -58,29 +58,29 @@ Push-Notification-Request ::= < Diameter Header:  309, REQ, PXY, 16777217 >
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>            
 
           <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports. -->
-          <avp code="Supported-Features" vendorId="10415">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+          <avp code="Supported-Features" vendorId="[vendorID]">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
             <!-- The Feature-List-ID AVP contains the identity of a feature list. -->
-            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/>
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/>
             <!-- The Feature-List AVP contains a bit mask indicating the supported features of an application. -->
-            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/> 
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/> 
           </avp>
-          <avp code="Supported-Features" vendorId="10415">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
-            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/>
-            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/> 
+          <avp code="Supported-Features" vendorId="[vendorID]">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/>
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/> 
           </avp>
 
           <!-- The User-Identity AVP contains either a Public- Identity AVP or an MSISDN AVP. -->
-          <avp code="User-Identity" vendorId="10415">
+          <avp code="User-Identity" vendorId="[vendorID]">
             <!-- The Public-Identity AVP contains the public identity of a user in the IMS. -->
-            <avp code="Public-Identity" mandatory="true" type="UTF8String" value="PublicIdentity1" vendorId="10415"/>                   
+            <avp code="Public-Identity" mandatory="true" type="UTF8String" value="PublicIdentity1" vendorId="[vendorID]"/>                   
             <!-- The MSISDN AVP contains an MSISDN, in international number format as described in ITU-T Rec E.164 [8], encoded as a TBCD-string. -->
-            <avp code="MSISDN" mandatory="true" type="OctetString" value="MSISDN1" vendorId="10415"/>                    
+            <avp code="MSISDN" mandatory="true" type="OctetString" value="MSISDN1" vendorId="[vendorID]"/>                    
           </avp>
 
           <!-- The User-Data AVP contains the user data requested in the PUR and SNR operations and the data to be modified in the UPR operation. -->
-          <avp code="User-Data" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>              
+          <avp code="User-Data" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>              
 
           <avp code="Proxy-Info">
              <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>

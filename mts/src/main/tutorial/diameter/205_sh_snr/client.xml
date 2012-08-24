@@ -46,12 +46,12 @@ Subscribe-Notifications-Request ::= < Diameter Header: 308, REQ, PXY, 16777217 >
 -->
 
     <sendMessageDIAMETER name="Send Request 3GPP/SH/SNR" remoteURL="diameter://[Remote-Address]" destScenario="server">
-        <header request="true" command="Subscribe-Notifications" applicationId="16777217" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="Subscribe-Notifications" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
           <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
-            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777217"/>
-            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777217"/-->
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
+            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
           </avp>
 
           <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
@@ -64,53 +64,53 @@ Subscribe-Notifications-Request ::= < Diameter Header: 308, REQ, PXY, 16777217 >
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
 
           <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports. -->
-          <avp code="Supported-Features" vendorId="10415">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+          <avp code="Supported-Features" vendorId="[vendorID]">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
             <!-- The Feature-List-ID AVP contains the identity of a feature list. -->
-            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/>
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/>
             <!-- The Feature-List AVP contains a bit mask indicating the supported features of an application. -->
-            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/> 
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/> 
           </avp>
-          <avp code="Supported-Features" vendorId="10415">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
-            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/>
-            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/> 
+          <avp code="Supported-Features" vendorId="[vendorID]">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/>
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/> 
           </avp>
 
           <!-- The User-Identity AVP contains either a Public- Identity AVP or an MSISDN AVP. -->
-          <avp code="User-Identity" vendorId="10415">
+          <avp code="User-Identity" vendorId="[vendorID]">
             <!-- The Public-Identity AVP contains the public identity of a user in the IMS. -->
-            <avp code="Public-Identity" mandatory="true" type="UTF8String" value="PublicIdentity1" vendorId="10415"/>                   
+            <avp code="Public-Identity" mandatory="true" type="UTF8String" value="PublicIdentity1" vendorId="[vendorID]"/>                   
             <!-- The MSISDN AVP contains an MSISDN, in international number format as described in ITU-T Rec E.164 [8], encoded as a TBCD-string. -->
-            <avp code="MSISDN" mandatory="true" type="OctetString" value="MSISDN1" vendorId="10415"/>                    
+            <avp code="MSISDN" mandatory="true" type="OctetString" value="MSISDN1" vendorId="[vendorID]"/>                    
           </avp>
 
           <!-- The Service-Indication AVP contains the Service Indication that identifies a service in an AS. -->
-          <avp code="Service-Indication" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>                    
-          <avp code="Service-Indication" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>                    
+          <avp code="Service-Indication" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>                    
+          <avp code="Service-Indication" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>                    
           
           <!-- The Send-Data-Indication AVP indicates that the sender requests the User-Data. -->
           <!-- Possible enumerated values : USER_DATA_NOT_REQUESTED (0) / USER_DATA_REQUESTED (1). -->
-          <avp code="Send-Data-Indication" mandatory="false"  type="Enumerated" value="0" vendorId="10415"/>
+          <avp code="Send-Data-Indication" mandatory="false"  type="Enumerated" value="0" vendorId="[vendorID]"/>
 
           <!-- The Server-Name AVP contains a SIP-URL used to identify an AS. -->
-          <avp code="Server-Name" mandatory="true" type="UTF8String" value="Server-Name" vendorId="10415"/>
+          <avp code="Server-Name" mandatory="true" type="UTF8String" value="Server-Name" vendorId="[vendorID]"/>
 
           <!-- The Subs-Req-Type AVP indicates the type of the subscription-to-notifications request. -->
           <!-- Possible enumerated values : Subscribe (0) / Unsubscribe (1). -->
-          <avp code="Data-Reference" mandatory="true" type="Enumerated" value="0" vendorId="10415"/>
+          <avp code="Data-Reference" mandatory="true" type="Enumerated" value="0" vendorId="[vendorID]"/>
 
           <!-- The Data-Reference AVP indicates the type of the requested user data. -->
           <!-- Possible enumerated values : RepositoryData (0) / IMSPublicIdentity (10) / IMSUserState (11) / S-CSCFName (12) / InitialFilterCriteria (13) / LocationInformation (14) / UserState (15) / ChargingInformation (16)  / MSISDN (17) / PSIActivation (18) / DSAI (19) / AliasesRepositoryData (20). -->
-          <avp code="Data-Reference" mandatory="true" type="Enumerated" value="0" vendorId="10415"/>
-          <avp code="Data-Reference" mandatory="true" type="Enumerated" value="10" vendorId="10415"/>
+          <avp code="Data-Reference" mandatory="true" type="Enumerated" value="0" vendorId="[vendorID]"/>
+          <avp code="Data-Reference" mandatory="true" type="Enumerated" value="10" vendorId="[vendorID]"/>
 
           <!-- The Identity-Set AVP indicates the requested set of IMS Public Identities. -->
           <!-- Possible enumerated values : ALL_IDENTITIES (0) / REGISTERED_IDENTITIES (1) / IMPLICIT_IDENTITIES (2) / ALIAS_IDENTITIES (3). -->
-          <avp code="Identity-Set" mandatory="false"  type="Enumerated" value="0" vendorId="10415"/>
+          <avp code="Identity-Set" mandatory="false"  type="Enumerated" value="0" vendorId="[vendorID]"/>
 
           <!-- The Expiry-Time AVP contains the expiry time of subscriptions to notifications in the hss. -->
-          <avp code="Expiry-Time" mandatory="false"  type="Time" value="0" vendorId="10415"/>
+          <avp code="Expiry-Time" mandatory="false"  type="Time" value="0" vendorId="[vendorID]"/>
 
           <avp code="Proxy-Info">
              <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>

@@ -4,8 +4,9 @@
 <scenario>
     
     <receiveMessageDIAMETER name="Receive Request 3GPP/CX-DX/MAR" request="true" type="Multimedia-Auth:303">
-                <parameter name="hopByHop" operation="protocol.setFromMessage" value="header.hopByHop"/>
-                <parameter name="endToEnd" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
     </receiveMessageDIAMETER>
 
 <!--
@@ -58,18 +59,18 @@ Multimedia-Auth-Answer > ::= < Diameter Header: 303, PXY, 16777216 >
 -->
 
     <sendMessageDIAMETER name="Send Answer 3GPP/CX-DX/MAA">
-        <header request="false" command="Multimedia-Auth" applicationId="16777216" proxiable="true" error="false" retransmit="false" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <header request="false" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
           <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
-            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777217"/>
-            <avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777217"/>
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
+            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
           </avp>
 
           <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>              
           <avp code="Experimental-Result">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
-            <avp code="Experimental-Result-Code" mandatory="true" type="Unsigned32" value="2001" vendorId="10415"/>
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Experimental-Result-Code" mandatory="true" type="Unsigned32" value="2001" vendorId="[vendorID]"/>
           </avp>
 
           <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
@@ -79,60 +80,60 @@ Multimedia-Auth-Answer > ::= < Diameter Header: 303, PXY, 16777216 >
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Remote-Host]"/>
           <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>
 
-          <avp code="User-Name" vendorId="10415" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
+          <avp code="User-Name" vendorId="[vendorID]" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
 
           <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports. -->
-          <avp code="Supported-Features" vendorId="10415">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+          <avp code="Supported-Features" vendorId="[vendorID]">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
             <!-- The Feature-List-ID AVP contains the identity of a feature list. -->
-            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/>
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/>
             <!-- The Feature-List AVP contains a bit mask indicating the supported features of an application. -->
-            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/> 
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/> 
           </avp>
-          <avp code="Supported-Features" vendorId="10415">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
-            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/>
-            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/> 
+          <avp code="Supported-Features" vendorId="[vendorID]">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/>
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/> 
           </avp>
 
           <!-- The Public-Identity AVP contains a Public User Identity. -->
-          <avp code="Public-Identity" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>                   
+          <avp code="Public-Identity" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>                   
 
           <!-- When used in a request, the SIP-Number-Auth-Items AVP indicates the number of authentication vectors the S-CSCF is requesting. -->
-          <avp code="SIP-Number-Auth-Items" mandatory="true" type="Unsigned32" value="2" vendorId="10415"/>                   
+          <avp code="SIP-Number-Auth-Items" mandatory="true" type="Unsigned32" value="2" vendorId="[vendorID]"/>                   
 
           <!-- The SIP-Auth-Data-Item AVP contains the authentication and/or authorization information for the Diameter client. -->
-          <avp code="SIP-Auth-Data-Item" mandatory="true" vendorId="10415">
+          <avp code="SIP-Auth-Data-Item" mandatory="true" vendorId="[vendorID]">
             <!-- SIP-Auth-Data-Item AVP with a low SIP-Item-Number value should be processed before SIP-Auth-Data-Items AVPs with a high SIP-Item-Number value. -->
-            <avp code="SIP-Item-Number" mandatory="true" type="Unsigned32" value="1" vendorId="10415"/>
+            <avp code="SIP-Item-Number" mandatory="true" type="Unsigned32" value="1" vendorId="[vendorID]"/>
             <!-- The SIP-Authentication-Scheme AVP indicates the authentication scheme used in the authentication of SIP messages. -->
-            <avp code="SIP-Authentication-Scheme" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+            <avp code="SIP-Authentication-Scheme" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
             <!-- The SIP-Authenticate AVP contains specific parts of the data portion of the WWW-Authenticate or Proxy-Authenticate SIP headers that are to be present in a SIP response. -->
-            <avp code="SIP-Authenticate" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+            <avp code="SIP-Authenticate" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
             <!-- The SIP-Authorization AVP contains specific parts of the data portion of the Authorization or Proxy-Authorization SIP headers suitable for inclusion in a SIP request. -->
-            <avp code="SIP-Authorization" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+            <avp code="SIP-Authorization" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
             <!-- The SIP-Authentication-Context AVP contains authentication-related information relevant for performing the authentication but that is not part of the SIP authentication headers. -->
-            <avp code="SIP-Authentication-Context" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+            <avp code="SIP-Authentication-Context" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
             <!-- The Confidentiality-Key AVP contains the Confidentiality Key (CK). -->
-            <avp code="Confidentiality-Key" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+            <avp code="Confidentiality-Key" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
             <!-- The Integrity-Key AVP contains the Integrity Key (IK). -->
-            <avp code="Integrity-Key" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+            <avp code="Integrity-Key" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
           </avp>
-          <avp code="SIP-Auth-Data-Item" mandatory="true" vendorId="10415">
-            <avp code="SIP-Item-Number" mandatory="true" type="Unsigned32" value="2" vendorId="10415"/>
-            <avp code="SIP-Authentication-Scheme" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
-            <avp code="SIP-Authenticate" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
-            <avp code="SIP-Authorization" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
-            <avp code="SIP-Authentication-Context" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
-            <avp code="Confidentiality-Key" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
-            <avp code="Integrity-Key" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="10415"/>
+          <avp code="SIP-Auth-Data-Item" mandatory="true" vendorId="[vendorID]">
+            <avp code="SIP-Item-Number" mandatory="true" type="Unsigned32" value="2" vendorId="[vendorID]"/>
+            <avp code="SIP-Authentication-Scheme" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
+            <avp code="SIP-Authenticate" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
+            <avp code="SIP-Authorization" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
+            <avp code="SIP-Authentication-Context" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
+            <avp code="Confidentiality-Key" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
+            <avp code="Integrity-Key" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
           </avp>
 <!--
           <avp code="Failed-AVP">
-            <avp code="???" vendorId="10415" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+            <avp code="???" vendorId="[vendorID]" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
           <avp code="Failed-AVP">
-            <avp code="???" vendorId="10415" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+            <avp code="???" vendorId="[vendorID]" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
 -->
           <avp code="Proxy-Info">

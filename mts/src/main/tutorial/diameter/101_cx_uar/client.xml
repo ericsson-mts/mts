@@ -43,7 +43,7 @@ User-Authorization-Request ::= < Diameter Header: 300, REQ, PXY, 16777216 >
         <header request="true" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
           <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
             <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
             <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
           </avp>
@@ -57,17 +57,17 @@ User-Authorization-Request ::= < Diameter Header: 300, REQ, PXY, 16777216 >
           <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[Remote-Host]"/> 
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
 
-          <avp code="User-Name" vendorId="10415" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
+          <avp code="User-Name" vendorId="[vendorID]" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
 
           <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports (3GPP TS29.229.750). -->
-          <avp code="Supported-Features" vendorId="10415">
+          <avp code="Supported-Features" vendorId="[vendorID]">
             <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
             <!-- The Feature-List-ID AVP contains the identity of a feature list (3GPP TS29.229.750). -->
             <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/>
             <!-- The Feature-List AVP contains a bit mask indicating the supported features of an application (3GPP TS29.229.750). -->
             <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/> 
           </avp>
-          <avp code="Supported-Features" vendorId="10415">
+          <avp code="Supported-Features" vendorId="[vendorID]">
             <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
             <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/>
             <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/> 

@@ -5,12 +5,13 @@
 <scenario>
     
     <receiveRequestAAA name="ReceiveRequestMAR" command="Multimedia-Authentitcation:506">
-		<parameter name="hopByHop" operation="protocol.setFromMessage" value="header.hopByHop"/>
-		<parameter name="endToEnd" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+    		<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+    		<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
     </receiveRequestAAA>
 
     <sendAnswerAAA name="SendAnswerMAA">
-        <header command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <header command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Origin-Host" value="[Remote-Host]"/>
         <avp code="Origin-Realm" value="[Remote-Realm]"/>
         <avp code="Vendor-Specific-Application-Id">
@@ -31,12 +32,13 @@
     </sendAnswerAAA>
 
     <receiveRequestAAA name="ReceiveRequestMAR" command="Multimedia-Authentitcation:506">
-		<parameter name="hopByHop" operation="protocol.setFromMessage" value="header.hopByHop"/>
-		<parameter name="endToEnd" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+		    <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+		    <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
     </receiveRequestAAA>
 
     <sendAnswerAAA name="SendAnswerMAA">
-        <header command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <header command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Origin-Host" value="[Remote-Host]"/>
         <avp code="Origin-Realm" value="[Remote-Realm]"/>
         <avp code="Vendor-Specific-Application-Id">

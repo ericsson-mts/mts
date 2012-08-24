@@ -26,18 +26,18 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
 -->
 
     <sendMessageDIAMETER name="Send Request ETSI/Rq/STR" remoteURL="diameter://[Remote-Address]" destScenario="A-RACF">
-        <header request="true" command="Session-Termination" applicationId="3GPP Rq Gq" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="Session-Termination" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
 
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
           <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
 
-          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777222"/>
+          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
 
           <!-- The Termination-Cause AVP is used to indicate the reason why a session was terminated on the access device. -->
           <!-- Possible enumerated values : DIAMETER_LOGOUT(1) / DIAMETER_SERVICE_NOT_PROVIDED(2) / DIAMETER_BAD_ANSWER(3) / DIAMETER_ADMINISTRATIVE(4) / DIAMETER_LINK_BROKEN(5) / DIAMETER_AUTH_EXPIRED(6) / DIAMETER_USER_MOVED(7) / DIAMETER_SESSION_TIMEOUT(8). -->
-          <avp code="Termination-Cause" mandatory="true" type="Enumerated" value="DIAMETER_LOGOUT" vendorId="10415"/>
+          <avp code="Termination-Cause" mandatory="true" type="Enumerated" value="DIAMETER_LOGOUT" vendorId="[vendorID]"/>
 
           <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="hss.sip.france.fr"/> 
 

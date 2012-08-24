@@ -45,12 +45,12 @@ Registration-Termination-Request ::= < Diameter Header: 304, REQ, PXY, 16777216 
 -->
 
     <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/RTR" remoteURL="diameter://[Remote-Address]" destScenario="client">
-        <header request="true" command="Registration-Termination" applicationId="16777216" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="Registration-Termination" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
           <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
-            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/>
-            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/-->
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
+            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
           </avp>
 
           <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
@@ -62,37 +62,37 @@ Registration-Termination-Request ::= < Diameter Header: 304, REQ, PXY, 16777216 
           <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/> 
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>            
 
-          <avp code="User-Name" vendorId="10415" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
+          <avp code="User-Name" vendorId="[vendorID]" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
 
           <!-- The Associated-Identities AVP contains the private user identities associated to an IMS subscription. -->
-          <avp code="Associated-Identities" mandatory="false" vendorId="10415">
-            <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>
-            <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>
+          <avp code="Associated-Identities" mandatory="false" vendorId="[vendorID]">
+            <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>
+            <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>
           </avp>
 
           <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports (3GPP TS29.229.750). -->
-          <avp code="Supported-Features" vendorId="10415">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+          <avp code="Supported-Features" vendorId="[vendorID]">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
             <!-- The Feature-List-ID AVP contains the identity of a feature list (3GPP TS29.229.750). -->
-            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/>
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/>
             <!-- The Feature-List AVP contains a bit mask indicating the supported features of an application (3GPP TS29.229.750). -->
-            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="10415"/> 
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/> 
           </avp>
-          <avp code="Supported-Features" vendorId="10415">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
-            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/>
-            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="10415"/> 
+          <avp code="Supported-Features" vendorId="[vendorID]">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/>
+            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/> 
           </avp>
 
           <!-- The Public-Identity AVP contains a Public User Identity. -->
-          <avp code="Public-Identity" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>                   
-          <avp code="Public-Identity" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>                   
+          <avp code="Public-Identity" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>                   
+          <avp code="Public-Identity" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>                   
 
           <!-- The Deregistration-Reason AVP indicates the reason for a de-registration operation. -->
-          <avp code="Deregistration-Reason" mandatory="true" vendorId="10415">                   
+          <avp code="Deregistration-Reason" mandatory="true" vendorId="[vendorID]">                   
             <!-- The Reason-Code AVP defines the reason for the network initiated de-registration. -->
             <!-- Possible enumerated values : PERMANENT_TERMINATION (0) / NEW_SERVER_ASSIGNED (1) / SERVER_CHANGE (2) / REMOVE_S-CSCF (3). -->
-            <avp code="Reason-Code" mandatory="true" type="Enumerated" value="0" vendorId="10415"/>                   
+            <avp code="Reason-Code" mandatory="true" type="Enumerated" value="0" vendorId="[vendorID]"/>                   
           </avp>
 
           <avp code="Proxy-Info">

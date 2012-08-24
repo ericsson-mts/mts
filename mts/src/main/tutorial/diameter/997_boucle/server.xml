@@ -6,12 +6,14 @@
     <label name="ReceiveRequestMAR"/>
     
     <receiveMessageDIAMETER name="ReceiveRequestMAR" request="true" type="Multimedia-Auth:303">
-		<parameter name="hopByHop" operation="protocol.setFromMessage" value="header.hopByHop"/>
-		<parameter name="endToEnd" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationID]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
     </receiveMessageDIAMETER>
 
     <sendMessageDIAMETER name="SendAnswerMAA">
-	<header request="false" command="Multimedia-Auth" applicationId="IMS_Cx_Dx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+	<header request="false" command="[commandCode]" applicationId="[applicationID]" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
 	<avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Remote-Host]"/>
 	<avp code="Origin-Realm" value="[Remote-Realm]"/>
 	<avp code="Vendor-Specific-Application-Id">
