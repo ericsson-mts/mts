@@ -22,7 +22,7 @@
   <parameter name="[local_ip_type]" operation="set" value="4"/>
   <!--send-->
   <parameter name="[branch]" operation="string.random" value="10"/>
-  <sendMessageSIP listenpoint="_listenpoint[local_port]" remoteHost="[remote_ip]" remotePort="[remote_port]" state="SIP/2.0"><![CDATA[
+  <sendMessageSIP listenpoint="_listenpoint[local_port]" remoteHost="[remote_ip]" remotePort="[remote_port]" transport="[transport]" state="SIP/2.0"><![CDATA[
 
       INVITE sip:[service]@[remote_ip]:[remote_port] SIP/2.0
       Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
@@ -58,7 +58,7 @@
   <parameter name="[branch]" operation="string.random" value="10"/>
   <parameter name="[peer_tag_param]" operation="setFromMessage" value="header.To.parameter.tag" value2="[last_Message]"/>
   <parameter name="[peer_tag_param]" operation="set" value=";tag=[peer_tag_param]"/>
-  <sendMessageSIP listenpoint="_listenpoint[local_port]" remoteHost="[remote_ip]" remotePort="[remote_port]" state="SIP/2.0"><![CDATA[
+  <sendMessageSIP listenpoint="_listenpoint[local_port]" remoteHost="[remote_ip]" remotePort="[remote_port]" transport="[transport]" state="SIP/2.0"><![CDATA[
 
       ACK sip:[service]@[remote_ip]:[remote_port] SIP/2.0
       Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
@@ -72,13 +72,11 @@
       Content-Length: 0
 
     ]]></sendMessageSIP>
-  <!--pause-->
-  <pause milliseconds="[_pauseDuration]" state="pause"/>
   <!--send-->
   <parameter name="[branch]" operation="string.random" value="10"/>
   <parameter name="[peer_tag_param]" operation="setFromMessage" value="header.To.parameter.tag" value2="[last_Message]"/>
   <parameter name="[peer_tag_param]" operation="set" value=";tag=[peer_tag_param]"/>
-  <sendMessageSIP listenpoint="_listenpoint[local_port]" remoteHost="[remote_ip]" remotePort="[remote_port]" state="SIP/2.0"><![CDATA[
+  <sendMessageSIP listenpoint="_listenpoint[local_port]" remoteHost="[remote_ip]" remotePort="[remote_port]" transport="[transport]" state="SIP/2.0"><![CDATA[
 
       BYE sip:[service]@[remote_ip]:[remote_port] SIP/2.0
       Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
