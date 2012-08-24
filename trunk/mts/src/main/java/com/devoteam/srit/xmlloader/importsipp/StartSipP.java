@@ -12,7 +12,7 @@ public class StartSipP {
 	public static void main(String... args) {
 		 
 		String allOptions = ""; 
-		String fileName = null, testcase = null; 
+		String fileName = null; 
 		List<String> options = new ArrayList() ; 
 		
 		/*
@@ -28,15 +28,14 @@ public class StartSipP {
         	 */
         	if(args[i].equals("-sn"))
         	{
-        		testcase = "test_"+args[i+1];
-        		fileName = "../conf/importsipp/out/test.xml"; 
+        		fileName = "../conf/importsipp/out/test_"+args[i+1]+".xml"; 
         	}
         	if(args[i].equals("-sf"))
         	{	
         		int sippFileNamePosition1 = args[i+1].lastIndexOf("\\");
     			int sippFileNamePosition2 = args[i+1].lastIndexOf("_mts");
-    			testcase = "test_"+args[i+1].substring(sippFileNamePosition1+1, sippFileNamePosition2); 
-        		fileName = "../conf/importsipp/out/test.xml"; 
+    			String sippFile = args[i+1].substring(sippFileNamePosition1+1, sippFileNamePosition2);
+    			fileName = "../conf/importsipp/out/test_"+sippFile+".xml";  
         	}
         	if(args[i].equals("-base_cseq"))
         	{
@@ -114,7 +113,7 @@ public class StartSipP {
         {
         	allOptions = allOptions+" "+options.get(j); 
         }
-        String commandTest = "cmd /c startCmd.bat " + fileName +" "+ testcase +" "+ allOptions; 
+        String commandTest = "cmd /c startCmd.bat " + fileName +" -load "+ allOptions; 
         
 		//String command = "cmd /c startTest.bat";
         Process p;
