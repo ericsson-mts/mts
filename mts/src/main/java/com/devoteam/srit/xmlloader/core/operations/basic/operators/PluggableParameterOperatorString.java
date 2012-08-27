@@ -182,7 +182,7 @@ public class PluggableParameterOperatorString extends AbstractPluggableParameter
                 Parameter param2 = PluggableParameterOperatorList.assertAndGetParameter(operands, "value2");
                 Pattern p = Pattern.compile(param2.get(i).toString());
                 Matcher m = p.matcher(param1.get(i).toString());
-                result.add(Boolean.toString(m.matches()));
+                result.add(Boolean.toString(m.find()));
             }
             else if (name.equalsIgnoreCase(NAME_S_TOBINARY))
             {
