@@ -5,7 +5,8 @@
 <parameter name="[_request]" operation="setFromMessage" value="message.type"/>
 <or>
 <test parameter="[_response]" condition="number.equals" value="{xpath:./@response}"/>
-<test parameter="[_request]" condition="string.equals" value="{xpath:./@request}"/>
+<test parameter="[_request]" condition="string.matches" value="{xpath:.[@regexp_match = 'true']/@request}"/>
+<test parameter="[_request]" condition="string.equals" value="{xpath:.[not(@regexp_match) or @regexp_match = 'false']/@request}"/>
 </or>
 <parameter name="[last_Message]" operation="setFromMessage" value="Message" />
 </receiveMessageSIP>
