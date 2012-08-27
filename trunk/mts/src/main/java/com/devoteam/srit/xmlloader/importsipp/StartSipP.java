@@ -27,14 +27,14 @@ public class StartSipP {
         	 */
         	if(args[i].equals("-sn"))
         	{
-        		fileName = "../conf/importsipp/out/test_"+args[i+1]+".xml"; 
+        		fileName = "../conf/importsipp/test_"+args[i+1]+".xml"; 
         	}
         	if(args[i].equals("-sf"))
         	{	
         		int sippFileNamePosition1 = args[i+1].lastIndexOf("\\");
     			int sippFileNamePosition2 = args[i+1].lastIndexOf("_mts");
     			String sippFile = args[i+1].substring(sippFileNamePosition1+1, sippFileNamePosition2);
-    			fileName = "../conf/importsipp/out/test_"+sippFile+".xml";  
+    			fileName = "../conf/importsipp/test_"+sippFile+".xml";  
         	}
         	if(args[i].equals("-base_cseq"))
         	{
