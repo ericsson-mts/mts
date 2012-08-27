@@ -180,7 +180,7 @@ public class PluggableParameterOperatorString extends AbstractPluggableParameter
             else if (name.equalsIgnoreCase(NAME_MATCHES) || name.equalsIgnoreCase(NAME_S_MATCHES))
             {
                 Parameter param2 = PluggableParameterOperatorList.assertAndGetParameter(operands, "value2");
-                Pattern p = Pattern.compile(param2.get(i).toString());
+                Pattern p = Utils.compilesRegex(param2.get(i).toString());
                 Matcher m = p.matcher(param1.get(i).toString());
                 result.add(Boolean.toString(m.find()));
             }

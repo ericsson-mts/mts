@@ -36,10 +36,10 @@
 	<test parameter="[result]" condition="string.equals" value="ABb" />
 
 	<parameter name="[string]" operation="set">
-	 aABb           
+	 1aABbxyz           
   </parameter>
   <test parameter="[string]" condition="string.matches" value="[aAbB]*" />
-  <parameter name="[boolean]" value="[string]" operation="string.matches" value2="[aAbB]" />
+  <parameter name="[boolean]" value="[string]" operation="string.matches" value2="[:digit:]{1}[aAbB]{4}[:alnum:]{3}" />
 	<test parameter="[boolean]" condition="boolean.equals" value="true" />
 	
 	<test parameter="[string]" condition="string.contains" value="AB" />
