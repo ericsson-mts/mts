@@ -102,8 +102,15 @@ public class StartSipP {
         	{
         		options.add("-param:instances+"+args[i+1]+args[i+2]);
         	}
+        	
+        	if(!args[i].startsWith("-") && !args[i-1].startsWith("-"))
+        	{
+        		int positionOfHost = args[i+1].lastIndexOf(":"); 
+        		options.add("-param:remote_ip+"+args[i+1].substring(0, positionOfHost)+
+        				" -param:remotePort+"+args[i+1].substring(positionOfHost+1));
+        	}
         }
-       
+      
         for(int j=0; j<options.size(); j++)
         {
         	allOptions = allOptions+" "+options.get(j); 
