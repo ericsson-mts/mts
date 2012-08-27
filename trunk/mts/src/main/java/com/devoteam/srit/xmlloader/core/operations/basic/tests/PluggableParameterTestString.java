@@ -123,7 +123,7 @@ public class PluggableParameterTestString extends AbstractPluggableParameterTest
             {
                 Pattern p = Pattern.compile(testValue.get(i).toString());
                 Matcher m = p.matcher(param.get(i).toString());
-                if(!m.matches())
+                if(!m.find())
                 {
                     throw new AssertException("Error in string test " + name + " between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " does not matches " + testValue.get(i));
                 }

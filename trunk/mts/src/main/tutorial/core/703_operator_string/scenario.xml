@@ -2,22 +2,13 @@
 
 <scenario>
 
-	<parameter name="[string]" operation="set" value="aABb" />
+	<parameter name="[string]" operation="set" value="aABb"/>           
 	<test parameter="[string]" condition="string.equals" value="aABb" />
+	<parameter name="[boolean]" value="[string]" operation="string.equals" value2="aABb" />
+	<test parameter="[boolean]" condition="boolean.equals" value="true" />
+	
 	<test parameter="[string]" condition="string.equalsignorecase" value="AABB" />
-	<test parameter="[string]" condition="string.matches" value="[aAbB]*" />
-	<test parameter="[string]" condition="string.contains" value="AB" />
-
-	<parameter name="[boolean]" value="[string]" operation="string.equals"           value2="aABb" />
-	<test parameter="[boolean]" condition="boolean.equals" value="true" />
-
-	<parameter name="[boolean]" value="[string]" operation="string.equalsignorecase" value2="AABB" />
-	<test parameter="[boolean]" condition="boolean.equals" value="true" />
-
-	<parameter name="[boolean]" value="[string]" operation="string.matches"          value2="[aAbB]*" />
-	<test parameter="[boolean]" condition="boolean.equals" value="true" />
-
-	<parameter name="[boolean]" value="[string]" operation="string.contains"         value2="AB" />
+	<parameter name="[boolean]" value="[string]" operation="string.equalsignorecase" value2="aabb" />
 	<test parameter="[boolean]" condition="boolean.equals" value="true" />
 
 	<parameter name="[result]" operation="string.tolowercase" value="[string]" />
@@ -44,6 +35,17 @@
 	<parameter name="[result]" operation="string.substring" value="[string]" value2="1" value3="100000"/>
 	<test parameter="[result]" condition="string.equals" value="ABb" />
 
+	<parameter name="[string]" operation="set">
+	 aABb           
+  </parameter>
+  <test parameter="[string]" condition="string.matches" value="[aAbB]*" />
+  <parameter name="[boolean]" value="[string]" operation="string.matches" value2="[aAbB]" />
+	<test parameter="[boolean]" condition="boolean.equals" value="true" />
+	
+	<test parameter="[string]" condition="string.contains" value="AB" />
+	<parameter name="[boolean]" value="[string]" operation="string.contains" value2="AB" />
+	<test parameter="[boolean]" condition="boolean.equals" value="true" />
+	
 	<parameter name="[size]" operation="string.length" value="0123456789"/>
 	<parameter name="[result]" operation="string.substring" value="0123456789" value2="2"/>
 	<test parameter="[result]" condition="string.equals" value="23456789" />
