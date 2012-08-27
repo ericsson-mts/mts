@@ -1,6 +1,6 @@
 cd ..\..\bin
 
-del ..\tutorial\importsipp\out\test.xml
+del ..\tutorial\importsipp\test.xml
 
 call importsipp.bat -sippfile ..\tutorial\importsipp\uac.xml -testcase test_ua
 call importsipp.bat -sippfile ..\tutorial\importsipp\uas.xml -testcase test_ua
