@@ -47,7 +47,7 @@ public class ImportSipP {
 	            usage("All arguments are required !");
 	     }
 		 
-		String sippfile = null, result = null, testfile = null , testcase = null; 
+		String sippfile = null, result = null, testfileName = null, testfile = null , testcase = null; 
 		// Get all the arguments values
 		for(int i=0; i<args.length; i++)
 		{	
@@ -59,9 +59,9 @@ public class ImportSipP {
 			{
 				result = args[i+1]; 
 			}
-			if(args[i].equals("-testfile"))
+			if(args[i].equals("-testfileName"))
 			{
-				testfile = args[i+1]; 
+				testfileName = args[i+1]; 
 			}
 			if(args[i].equals("-testcase"))
 			{
@@ -73,13 +73,20 @@ public class ImportSipP {
 		{	
 			int sippFileNamePosition1 = sippfile.lastIndexOf("\\");
 			int sippFileNamePosition2 = sippfile.lastIndexOf(".");
-			result = sippfile.substring(0, sippFileNamePosition1)+"\\out" + sippfile.substring(sippFileNamePosition1, sippFileNamePosition2)+"_mts.xml"; 
+			new File(sippfile.substring(0, sippFileNamePosition1)+"/"+testcase).mkdirs();
+			result = sippfile.substring(0, sippFileNamePosition1)+"\\"+ testcase + sippfile.substring(sippFileNamePosition1, sippFileNamePosition2)+"_mts.xml"; 
 			
 		}
-		if(testfile == null)
+		if(testfileName == null)
 		{	
 			int sippFileNamePosition = sippfile.lastIndexOf("\\"); 
-			testfile = sippfile.substring(0, sippFileNamePosition)+"\\out\\test.xml"; 
+			testfileName = "test.xml"; 
+			testfile = sippfile.substring(0, sippFileNamePosition)+"\\"+testfileName; 
+		}
+		if(testfileName!=null)
+		{
+			int sippFileNamePosition = sippfile.lastIndexOf("\\"); 
+			testfile = sippfile.substring(0, sippFileNamePosition)+"\\"+testfileName; 
 		}
 		if(testcase == null)
 		{	
@@ -102,7 +109,7 @@ public class ImportSipP {
 		 * Create the corresponding TEST file
 		 * createTestFile(String testFileName,String testName, String outputFileName)
 		 */
-		 int scenarioNum = createTestFile(testfile, testcase, result); 
+		 int scenarioNum = createTestFile(testfile, testcase, result, testcase); 
 		 
 		 ArrayList<Element> testList = new ArrayList<Element>(); 
 		 ArrayList<Element> nodes = new ArrayList<Element>(); 
@@ -666,7 +673,7 @@ public class ImportSipP {
 	 * @param testName
 	 * @param inputFileName
 	 */
-	public static int createTestFile(String testFileName,String testName, String outputFileName){	
+	public static int createTestFile(String testFileName,String testName, String outputFileName, String testcase){	
 		boolean scenarioExists = false ;
 		boolean testcaseExists = false; 
 		int numScenario = 0; 
@@ -701,7 +708,7 @@ public class ImportSipP {
 								 * we don't add the scenario to the test tag
 								 */
 								Element scenario = (Element) i.next();
-								if(scenario.getStringValue().equals(fileName))
+								if(scenario.getStringValue().equals(testcase+"/"+fileName))
 									scenarioExists = true;  
 							}
 							break;
@@ -716,14 +723,14 @@ public class ImportSipP {
 							numScenario = testCaseMain.elements("scenario").size();
 							Element scenario2 = testCaseMain.addElement("scenario");
 							scenario2.addAttribute("name", "[localPort("+numScenario+")]");
-							scenario2.addText(fileName);
+							scenario2.addText(testcase+"/"+fileName);
 						}
 						else
 							//Scenario already existing, so we get it's position in the test tag
 							for (int i = 0;  i<testCaseMain.elements().size(); i++) 
 							{	
 								Element scenarioExisting = (Element) (Element)testCaseMain.elements().get(i);  
-								if(scenarioExisting.getText().equals(fileName))
+								if(scenarioExisting.getText().equals(testcase+"/"+fileName))
 									numScenario = i ;
 							}
 					}
@@ -741,7 +748,7 @@ public class ImportSipP {
 						addNodeWithParameters(nodes, testcase2, doc, "runprofile", 0);
 						Element scenario = testcase2.addElement("scenario");
 						scenario.addAttribute("name", "[localPort("+numScenario+")]");
-						scenario.addText(fileName);
+						scenario.addText(testcase+"/"+fileName);
 					}						
 					rightFinalResult(doc, testFileName);
 				}
@@ -764,7 +771,7 @@ public class ImportSipP {
 					
 					Element scenario = testCase.addElement("scenario");
 					scenario.addAttribute("name", "[localPort("+numScenario+")]");
-					scenario.addText(fileName);
+					scenario.addText(testcase+"/"+fileName);
 					rightFinalResult(doc, testFileName);
 				}
 			}
@@ -832,7 +839,8 @@ public class ImportSipP {
 		File folder = new File(sippFileLocation);
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
-			  if (listOfFiles[i].isFile() && listOfFiles[i].toString().endsWith(".csv")) {
+			  if (listOfFiles[i].isFile() && listOfFiles[i].toString().endsWith(".csv") ||
+					  listOfFiles[i].isFile() && listOfFiles[i].toString().endsWith(".pcap")) {
 				  String originFile = sippFileLocation+"\\"+listOfFiles[i].getName();
 				  String destFile = TestFileLocation+"\\"+listOfFiles[i].getName(); 
 				  /*
