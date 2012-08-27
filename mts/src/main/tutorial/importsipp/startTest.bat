@@ -23,5 +23,5 @@ call importsipp.bat -sippfile ..\tutorial\importsipp\uac.xml -testcase ooc
 
 call importsipp.bat -sippfile ..\tutorial\importsipp\ooc_default.xml -testcase ooc
 
-call startcmd.bat ..\tutorial\importsipp\out\test.xml -seq
+call startcmd.bat ..\tutorial\importsipp\test.xml -seq
 pause
