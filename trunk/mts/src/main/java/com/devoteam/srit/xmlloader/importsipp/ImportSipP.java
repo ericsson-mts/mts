@@ -39,7 +39,6 @@ import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 @SuppressWarnings("rawtypes")
 public class ImportSipP {
 	
-	private static String[] args;
 	public static void main(String... args) throws DocumentException, ParserConfigurationException, SAXException {
 		
         //Remind the user of the usage in case of lack in arguments
@@ -812,6 +811,7 @@ public class ImportSipP {
 	        else if (level.toUpperCase().equals("WARN")) {
 	        	e.printStackTrace();
 	        	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "importSipp: "+message);
+	        	System.out.println(message);
 	        }
 		}
 		else
@@ -821,6 +821,7 @@ public class ImportSipP {
 		    }
 	        else if (level.toUpperCase().equals("INFO")) {
 	        	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "importSipp: "+message);
+	        	System.out.println(message);
 	        }
 		}
 	}
