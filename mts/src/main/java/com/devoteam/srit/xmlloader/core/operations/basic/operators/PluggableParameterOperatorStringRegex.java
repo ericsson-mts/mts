@@ -27,6 +27,8 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -70,9 +72,9 @@ public class PluggableParameterOperatorStringRegex extends AbstractPluggablePara
         {
             for (int i = 0; i < paramData.length(); i++)
             {
-                Pattern p = Pattern.compile(paramRegex.get(i).toString());
+                Pattern p = Utils.compilesRegex(paramRegex.get(i).toString());
                 Matcher m = p.matcher(paramData.get(i).toString());
-
+                
                 while (m.find())
                 {
                     if ((m.group() != null) && (m.group().length() > 0))

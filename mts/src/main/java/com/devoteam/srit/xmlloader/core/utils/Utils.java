@@ -293,6 +293,36 @@ public class Utils
     }
 
     /**
+     * Compile a regular expression given by a string 
+     * and returns a Pattern object
+     * Replace posx and non-standard constant by their value
+     * See http://en.wikipedia.org/wiki/Regular_expression
+     */
+    public static Pattern compilesRegex(String regexp)
+    {
+    	if ((regexp.indexOf("[:") > 0) || (regexp.indexOf(":]") > 0))
+    	{
+    		regexp = Utils.replaceNoRegex(regexp, "[:alnum:]", "[A-Za-z0-9]");
+    		regexp = Utils.replaceNoRegex(regexp, "[:word:]", "[A-Za-z0-9_]");
+    		regexp = Utils.replaceNoRegex(regexp, "[:alpha:]", "[A-Za-z]");
+    		regexp = Utils.replaceNoRegex(regexp, "[:blank:]", "[ \\t]");
+    		regexp = Utils.replaceNoRegex(regexp, "[:cntrl:]", "[\\x00-\\x1F\\x7F]");
+    		regexp = Utils.replaceNoRegex(regexp, "[:digit:]", "[0-9]");
+    		regexp = Utils.replaceNoRegex(regexp, "[:graph:]", "[\\x21-\\x7E]");
+    		regexp = Utils.replaceNoRegex(regexp, "[:lower:]", "[a-z]");
+    		regexp = Utils.replaceNoRegex(regexp, "[:print:]", "[\\x20-\\x7E]");
+    		regexp = Utils.replaceNoRegex(regexp, "[:punct:]", "[\\]\\[!\"#$%&\'()*+,./:;<=>?@\\^_`{|}~-]");
+    		regexp = Utils.replaceNoRegex(regexp, "[:space:]", "[ \\t\\r\\n\\v\\f]");
+    		regexp = Utils.replaceNoRegex(regexp, "[:upper:]", "[A-Z]");
+    		regexp = Utils.replaceNoRegex(regexp, "[:xdigit:]", "[A-Fa-f0-9]");
+    	}
+    	
+        Pattern p = Pattern.compile(regexp);
+        return p;
+    }
+
+    
+    /**
      * Returns true if the regex can be found in the value
      */
     public static boolean containsRegex(String value, String regex)

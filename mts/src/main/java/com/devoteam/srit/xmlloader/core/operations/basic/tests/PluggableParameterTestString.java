@@ -29,6 +29,8 @@ import com.devoteam.srit.xmlloader.core.exception.AssertException;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.AbstractPluggableParameterOperator;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -121,7 +123,7 @@ public class PluggableParameterTestString extends AbstractPluggableParameterTest
             }
             else if(name.equalsIgnoreCase(NAME_MATCHES) || name.equalsIgnoreCase(NAME_S_MATCHES))
             {
-                Pattern p = Pattern.compile(testValue.get(i).toString());
+                Pattern p = Utils.compilesRegex(testValue.get(i).toString());
                 Matcher m = p.matcher(param.get(i).toString());
                 if(!m.find())
                 {
