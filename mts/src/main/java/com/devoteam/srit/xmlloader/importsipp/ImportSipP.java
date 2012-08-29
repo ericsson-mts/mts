@@ -39,6 +39,7 @@ import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 @SuppressWarnings("rawtypes")
 public class ImportSipP {
 	
+	private static final Exception Exception = null;
 	public static void main(String... args) throws DocumentException, ParserConfigurationException, SAXException {
 		
         //Remind the user of the usage in case of lack in arguments
@@ -93,7 +94,19 @@ public class ImportSipP {
 			int sippFileNamePosition2 = sippfile.lastIndexOf("."); 
 			testcase = sippfile.substring(sippFileNamePosition1+1, sippFileNamePosition2); 
 		}
-		
+
+		 /*-------------------------------------------------------------------------
+		  *	Logging and Writing INFO 
+		 */
+			Exception e = new Exception(); 
+			String message = "--------------------------------------\n" +
+					"SIPP file = "+ sippfile +"\n" +
+							"Testcase Name = "+ testcase + "\n" +
+									"Test Filename = "+ testfile + "\n" +
+											"--------------------------------------"; 
+			log(e, "INFO", message); 
+		 /* -------------------------------------------------------------------------*/
+			
 		// Initialization of IMSLoader core
         ExceptionHandlerSingleton.setInstance(new TextExceptionHandler());
         SingletonFSInterface.setInstance(new LocalFSInterface());
@@ -110,6 +123,14 @@ public class ImportSipP {
 		 */
 		 int scenarioNum = createTestFile(testfile, testcase, result, testcase); 
 		 
+		 /*-------------------------------------------------------------------------
+		  *	Logging and Writing INFO 
+		 */
+			message = "Creating Test File....\nDone!\n" +
+					"--------------------------------------"; 
+			log(e, "INFO", message); 
+		 /* -------------------------------------------------------------------------*/
+			
 		 ArrayList<Element> testList = new ArrayList<Element>(); 
 		 ArrayList<Element> nodes = new ArrayList<Element>(); 
 		 try {
@@ -131,14 +152,33 @@ public class ImportSipP {
 					Element element = (Element) i.next();
 					testList.add(element);
 				}
+				/*-------------------------------------------------------------------------
+				  *	Logging and Writing INFO 
+				 */
+					message = "Adding Global parameters:"; 											
+					log(e, "INFO", message); 
+				 /* -------------------------------------------------------------------------*/
+					
 				addNodeCheckParameters(testList, rootElement, resultDocument, "scenario", scenarioNum);
 				
+				/*-------------------------------------------------------------------------
+				  *	Logging and Writing INFO 
+				 */
+					message = "DONE!\n"+"--------------------------------------"; 											
+					log(e, "INFO", message); 
+				 /* -------------------------------------------------------------------------*/
+					
 				//Run through the elements (nodes) of the source XML file 
 				for (Iterator i = root.elementIterator(); i.hasNext();) 
 				{
 		            Element element = (Element) i.next();
 					String nodename = element.getName();
-					
+					/*-------------------------------------------------------------------------
+					  *	Logging and Writing INFO 
+					 */
+						message = "Current SIPp node: <"+ nodename +">"; 											
+						log(e, "INFO", message); 
+					 /* -------------------------------------------------------------------------*/
 					addNodeWithParameters(nodes, rootElement, resultDocument,"operation", scenarioNum);
 					//If the current node is a 'recv' node
 					if(nodename.equals("recv"))
@@ -236,7 +276,7 @@ public class ImportSipP {
 				}
 				
 				//Write 'DONE' on the system out when finished
-				System.out.println("Done");
+				System.out.println("============================================\nALL DONE!");
 		}
 		 catch (IOException ioe) {
 			log(ioe, "ERROR", "IO Exception");    
@@ -554,6 +594,13 @@ public class ImportSipP {
 			 * node's name 
 			 */
 			newelement = resultDocumentRoot.addElement(currentTemplateNode.getName());
+			/*-------------------------------------------------------------------------
+			  *	Logging and Writing INFO 
+			 */
+				Exception e = new Exception(); 
+				String message = "------> Adding element : <"+ newelement.getName()+">"; 											
+				log(e, "INFO", message); 
+			 /* -------------------------------------------------------------------------*/
 			for (Iterator j = currentTemplateNode.attributeIterator();j.hasNext();) 
 			{
 				/*We get the current TEMPLATE node attributes, and we create an equivalent attribute
@@ -801,29 +848,24 @@ public class ImportSipP {
 	 */
 	static public void log(Exception e, String level, String message){
 	    
-		if(e!=null)
-		{
 			if (level.toUpperCase().equals("ERROR")) {
 	        	e.printStackTrace();
-	        	GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, e, "importSipp: "+message);
+	        	//GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, e, "importSipp: "+message);
 	        	System.out.println(message);
 	        }
 	        else if (level.toUpperCase().equals("WARN")) {
 	        	e.printStackTrace();
-	        	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "importSipp: "+message);
+	        	//GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "importSipp: "+message);
 	        	System.out.println(message);
 	        }
-		}
-		else
-		{
-			if (level.toUpperCase().equals("DEBUG")) {
-				GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "importSipp: "+message);
+
+	        else if (level.toUpperCase().equals("DEBUG")) {
+				//GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "importSipp: "+message);
 		    }
 	        else if (level.toUpperCase().equals("INFO")) {
-	        	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "importSipp: "+message);
+	        	//GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "importSipp: "+message);
 	        	System.out.println(message);
 	        }
-		}
 	}
 	
 	/**
