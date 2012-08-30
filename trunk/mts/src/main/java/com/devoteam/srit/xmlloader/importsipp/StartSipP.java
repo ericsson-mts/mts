@@ -32,7 +32,7 @@ public class StartSipP {
         	if(args[i].equals("-sf"))
         	{	
         		int sippFileNamePosition1 = args[i+1].lastIndexOf("\\");
-    			int sippFileNamePosition2 = args[i+1].lastIndexOf("_mts");
+    			int sippFileNamePosition2 = args[i+1].lastIndexOf(".");
     			String sippFile = args[i+1].substring(sippFileNamePosition1+1, sippFileNamePosition2);
     			fileName = "../conf/importsipp/test_"+sippFile+".xml";  
         	}

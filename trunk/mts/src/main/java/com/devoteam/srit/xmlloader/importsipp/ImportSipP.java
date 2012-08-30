@@ -95,8 +95,7 @@ public class ImportSipP {
 		}
 		if(testfileName!=null)
 		{
-			int sippFileNamePosition = sippfile.lastIndexOf("\\"); 
-			testfile = sippfile.substring(0, sippFileNamePosition)+"\\"+testfileName; 
+			testfile = testfileName; 
 		}
 		if(testcase == null)
 		{	
