@@ -103,11 +103,11 @@ public class StartSipP {
         		options.add("-param:instances+"+args[i+1]+args[i+2]);
         	}
         	
-        	if(!args[i].startsWith("-") && !args[i-1].startsWith("-"))
+        	if(i>0 && !args[i].startsWith("-")&& !args[i-1].startsWith("-"))
         	{
-        		int positionOfHost = args[i+1].lastIndexOf(":"); 
-        		options.add("-param:remote_ip+"+args[i+1].substring(0, positionOfHost)+
-        				" -param:remotePort+"+args[i+1].substring(positionOfHost+1));
+        		int positionOfHost = args[i].lastIndexOf(":"); 
+        		options.add("-param:remote_ip+"+args[i].substring(0, positionOfHost)+
+        				" -param:remotePort+"+args[i].substring(positionOfHost+1));
         	}
         }
       
@@ -115,7 +115,7 @@ public class StartSipP {
         {
         	allOptions = allOptions+" "+options.get(j); 
         }
-        String commandTest = "cmd /c startCmd.bat " + fileName +" -load "+ allOptions; 
+        String commandTest = "cmd /c startCmd.bat " + fileName +" -load"+ allOptions; 
         
 		//String command = "cmd /c startTest.bat";
         Process p;
