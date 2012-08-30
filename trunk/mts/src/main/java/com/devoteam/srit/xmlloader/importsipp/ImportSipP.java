@@ -40,8 +40,18 @@ import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 public class ImportSipP {
 	
 	private static final Exception Exception = null;
-	public static void main(String... args) throws DocumentException, ParserConfigurationException, SAXException {
+	public static void main(String... args) throws DocumentException, ParserConfigurationException, SAXException, IOException {
 		
+		// Initialization of IMSLoader core
+        ExceptionHandlerSingleton.setInstance(new TextExceptionHandler());
+        SingletonFSInterface.setInstance(new LocalFSInterface());
+        TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
+        
+        //Set the storage location to FILE for logging
+        PropertiesEnhanced properties = new PropertiesEnhanced();
+        properties.addPropertiesEnhancedComplete("logs.STORAGE_LOCATION", "FILE");
+        Config.overrideProperties("tester.properties", properties);
+        
         //Remind the user of the usage in case of lack in arguments
 		 if (args.length < 2) {
 	            usage("All arguments are required !");
@@ -98,24 +108,16 @@ public class ImportSipP {
 		 /*-------------------------------------------------------------------------
 		  *	Logging and Writing INFO 
 		 */
+			File absolutSippFile = new File(sippfile); 
+			File absolutTestFile = new File(testfile); 
 			Exception e = new Exception(); 
 			String message = "--------------------------------------\n" +
-					"SIPP file = "+ sippfile +"\n" +
+					"SIPP file = "+ absolutSippFile.getCanonicalPath() +"\n" +
 							"Testcase Name = "+ testcase + "\n" +
-									"Test Filename = "+ testfile + "\n" +
+									"Test Filename = "+ absolutTestFile.getCanonicalPath() + "\n" +
 											"--------------------------------------"; 
 			log(e, "INFO", message); 
 		 /* -------------------------------------------------------------------------*/
-			
-		// Initialization of IMSLoader core
-        ExceptionHandlerSingleton.setInstance(new TextExceptionHandler());
-        SingletonFSInterface.setInstance(new LocalFSInterface());
-        TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
-        
-        //Set the storage location to FILE for logging
-        PropertiesEnhanced properties = new PropertiesEnhanced();
-        properties.addPropertiesEnhancedComplete("logs.STORAGE_LOCATION", "FILE");
-        Config.overrideProperties("tester.properties", properties);
 		 
 		/*
 		 * Create the corresponding TEST file
@@ -155,7 +157,8 @@ public class ImportSipP {
 				/*-------------------------------------------------------------------------
 				  *	Logging and Writing INFO 
 				 */
-					message = "Adding Global parameters:"; 											
+				File absolutResult = new File(result); 
+					message = "Creating resulting file: "+ absolutResult.getCanonicalPath() +"\n"+"Adding Global parameters:"; 											
 					log(e, "INFO", message); 
 				 /* -------------------------------------------------------------------------*/
 					
@@ -850,20 +853,20 @@ public class ImportSipP {
 	    
 			if (level.toUpperCase().equals("ERROR")) {
 	        	e.printStackTrace();
-	        	//GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, e, "importSipp: "+message);
+	        	GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, e, "importSipp: "+message);
 	        	System.out.println(message);
 	        }
 	        else if (level.toUpperCase().equals("WARN")) {
 	        	e.printStackTrace();
-	        	//GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "importSipp: "+message);
+	        	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "importSipp: "+message);
 	        	System.out.println(message);
 	        }
 
 	        else if (level.toUpperCase().equals("DEBUG")) {
-				//GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "importSipp: "+message);
+				GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "importSipp: "+message);
 		    }
 	        else if (level.toUpperCase().equals("INFO")) {
-	        	//GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "importSipp: "+message);
+	        	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "importSipp: "+message);
 	        	System.out.println(message);
 	        }
 	}
