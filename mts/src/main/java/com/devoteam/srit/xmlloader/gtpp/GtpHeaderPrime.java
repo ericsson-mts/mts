@@ -33,7 +33,7 @@ import gp.utils.arrays.SupArray;
  *
  * @author El Aly Mohamad Bilal 
  */
-public class GtpHeader {
+public class GtpHeaderPrime {
 
 	private String name;
     private int messageType;
@@ -124,9 +124,9 @@ public class GtpHeader {
     }
     
     @Override
-    public GtpHeader clone()
+    public GtpHeaderPrime clone()
     {
-    	GtpHeader clone = new GtpHeader();
+    	GtpHeaderPrime clone = new GtpHeaderPrime();
 
         clone.setName(getName());
         clone.setVersion(version);
