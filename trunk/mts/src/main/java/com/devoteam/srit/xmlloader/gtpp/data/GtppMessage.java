@@ -25,7 +25,7 @@ package com.devoteam.srit.xmlloader.gtpp.data;
 
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
-import com.devoteam.srit.xmlloader.gtpp.GtpHeader;
+import com.devoteam.srit.xmlloader.gtpp.GtpHeaderPrime;
 import com.devoteam.srit.xmlloader.gtpp.StackGtpp;
 import gp.utils.arrays.*;
 
@@ -38,13 +38,13 @@ import java.util.Vector;
  */
 public class GtppMessage
 {	
-	private GtpHeader gtpHeader= new GtpHeader(); 
+	private GtpHeaderPrime gtpHeader= new GtpHeaderPrime(); 
 	
-    public GtpHeader getGtpHeader() {
+    public GtpHeaderPrime getGtpHeader() {
 		return gtpHeader;
 	}
 
-	public void setGtpHeader(GtpHeader gtpHeader) {
+	public void setGtpHeader(GtpHeaderPrime gtpHeader) {
 		this.gtpHeader = gtpHeader;
 	}
 
