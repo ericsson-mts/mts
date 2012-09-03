@@ -3,14 +3,14 @@
 <!-- scenario server-->
 <scenario>
 
-    <receiveMessageGTPP name="receive redirection request">
+    <receiveMessageGTP name="receive redirection request">
         <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
-    </receiveMessageGTPP>
+    </receiveMessageGTP>
 
-    <sendMessageGTPP name="send redirection response" channel="[channel]">
-        <header type="7" sequenceNumber="[seqNum]"/>
+    <sendMessageGTP name="send redirection response" channel="[channel]">
+        <headerP type="7" sequenceNumber="[seqNum]"/>
         <tlv tag="1" value="7"/>
-    </sendMessageGTPP>
+    </sendMessageGTP>
 
 </scenario>

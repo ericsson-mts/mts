@@ -1,7 +1,7 @@
 <!--                                                                      BEGIN OF GTPP PROTOCOL -->
 
 <!--                                                                          openChannelGTPP -->
-    <xs:complexType name="openChannelGTPPType">
+    <xs:complexType name="openChannelGTPType">
         <xs:complexContent>
             <xs:extension base="operationType">
 				<xs:attribute name="localHost" type="xs:string" use="optional">
@@ -39,14 +39,14 @@
     </xs:complexType>
 
 <!--                                                                         closeChannelGTPP -->
-    <xs:complexType name="closeChannelGTPPType">
+    <xs:complexType name="closeChannelGTPType">
         <xs:complexContent>
             <xs:extension base="operationType" />
         </xs:complexContent>
     </xs:complexType>
 
 <!--                                                                          createListenpointGTPP -->
-    <xs:complexType name="createListenpointGTPPType">
+    <xs:complexType name="createListenpointGTPType">
         <xs:complexContent>
             <xs:extension base="operationType">
 				<xs:attribute name="localHost" type="xs:string" use="optional">
@@ -102,19 +102,20 @@
     </xs:complexType>
 
 <!--                                                                         removeListenpointGTPP -->
-    <xs:complexType name="removeListenpointGTPPType">
+    <xs:complexType name="removeListenpointGTPType">
         <xs:complexContent>
             <xs:extension base="operationType" />
         </xs:complexContent>
     </xs:complexType>
 
 <!--                                                                                sendMessageGTPP -->
-    <xs:complexType name="sendMessageGTPPType">
+    <xs:complexType name="sendMessageGTPType">
         <xs:complexContent>
             <xs:extension base="operationType" >
                 <xs:sequence>
-                    <xs:element name="header"  	  type="headerGTPPType"      minOccurs="1" maxOccurs="1"/>
-                    <xs:element name="tlv"        type="tlvGTPPType"         minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="headerP"  	  type="headerGTPPType"      minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="header"  	  type="headerGTPType"      minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="tlv"        type="tlvGTPType"         minOccurs="0" maxOccurs="unbounded" />
                 </xs:sequence>
 				<xs:attribute name="channel" type="xs:string" use="optional">
 					<xs:annotation>
@@ -169,7 +170,7 @@
     </xs:complexType>
 
 <!--                                                                             receiveMessage -->
-    <xs:complexType name="receiveMessageGTPPType">
+    <xs:complexType name="receiveMessageGTPType">
         <xs:complexContent>
             <xs:extension base="operationType" >
                 <xs:sequence minOccurs="0" maxOccurs="unbounded">
@@ -231,7 +232,7 @@
         </xs:complexContent>
     </xs:complexType>
 
-<!--                                                                                 header -->
+<!--                                                                          GTPP (PRIME) header -->
     <xs:complexType name="headerGTPPType">
         <xs:attribute name="name"            type="xs:string" />
         <xs:attribute name="type"            type="xs:string" />
@@ -239,10 +240,18 @@
         <xs:attribute name="sequenceNumber" type="xs:string" use="required" />
     </xs:complexType>
 
+<!-- 																			GTP Header -->    
+    <xs:complexType name="headerGTPType">
+        <xs:attribute name="name"            type="xs:string" />
+        <xs:attribute name="type"            type="xs:string" />
+        <xs:attribute name="length"          type="xs:string" />
+        <xs:attribute name="sequenceNumber" type="xs:string" use="required" />
+    </xs:complexType>
+
 <!--                                                                                     tlv -->
-    <xs:complexType name="tlvGTPPType">
+    <xs:complexType name="tlvGTPType">
         <xs:sequence>
-            <xs:element name="attribute"  	  type="attributeGTPPType"  minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="attribute"  	  type="attributeGTPType"  minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="name"       type="xs:string" />
         <xs:attribute name="tag"       type="xs:string"/>
@@ -251,11 +260,11 @@
     </xs:complexType>
 
 <!--                                                                                attribute -->
-    <xs:complexType name="attributeGTPPType">
+    <xs:complexType name="attributeGTPType">
         <xs:complexContent>
             <xs:extension base="operationType" >
                 <xs:sequence>
-                    <xs:element name="attribute"  type="attributeGTPPType"   minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="attribute"  type="attributeGTPType"   minOccurs="0" maxOccurs="unbounded" />
                 </xs:sequence>
                 <xs:attribute name="value"      type="xs:string"/>
                 <xs:attribute name="type"       type="xs:string"/>

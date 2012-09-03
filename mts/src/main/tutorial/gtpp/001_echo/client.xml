@@ -6,24 +6,24 @@
     <parameter name="[connection]" operation="set" value="connection" />
     
     <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
-    <openChannelGTPP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="3387"/>
+    <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="3387"/>
 
-    <sendMessageGTPP name="echo Request" channel="[connection]">
-        <header name="echoRequest" sequenceNumber="1"/>
-    </sendMessageGTPP>
+    <sendMessageGTP name="echo Request" channel="[connection]">
+        <headerP name="echoRequest" sequenceNumber="1"/>
+    </sendMessageGTP>
 
-    <receiveMessageGTPP name="echoResponse">
-    </receiveMessageGTPP>
+    <receiveMessageGTP name="echoResponse">
+    </receiveMessageGTP>
 
-    <sendMessageGTPP name="echo Request" channel="[connection]">
-        <header name="echoRequest" sequenceNumber="2"/>
-    </sendMessageGTPP>
+    <sendMessageGTP name="echo Request" channel="[connection]">
+        <headerP name="echoRequest" sequenceNumber="2"/>
+    </sendMessageGTP>
 
-    <receiveMessageGTPP name="version not supported">
-    </receiveMessageGTPP>
+    <receiveMessageGTP name="version not supported">
+    </receiveMessageGTP>
 
     <finally>
-        <closeChannelGTPP name="[connection]"/>
+        <closeChannelGTP name="[connection]"/>
     </finally>
     
 </scenario>

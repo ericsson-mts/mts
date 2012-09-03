@@ -673,22 +673,22 @@ public class Scenario implements Serializable {
             ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_MSRP, root);
         }
         //--------------------------------------------------------------------------------- GTPP -
-        else if (rootName.equals("openChannelGTPP")) {
+        else if (rootName.equals("openChannelGTP")) {
             ope = new OperationOpenChannel(StackFactory.PROTOCOL_GTPP, root);
         }
-        else if (rootName.equals("closeChannelGTPP")) {
+        else if (rootName.equals("closeChannelGTP")) {
             ope = new OperationCloseChannel(StackFactory.PROTOCOL_GTPP, root);
         }
-        else if (rootName.equals("sendMessageGTPP")) {
+        else if (rootName.equals("sendMessageGTP")) {
             ope = new OperationSendMessage(StackFactory.PROTOCOL_GTPP, root);
         }
-        else if (rootName.equals("receiveMessageGTPP")) {
+        else if (rootName.equals("receiveMessageGTP")) {
             ope = new OperationReceiveMessage(StackFactory.PROTOCOL_GTPP, root, this);
         }
-        else if (rootName.equals("createListenpointGTPP")) {
+        else if (rootName.equals("createListenpointGTP")) {
             ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_GTPP, root);
         }
-        else if (rootName.equals("removeListenpointGTPP")) {
+        else if (rootName.equals("removeListenpointGTP")) {
             ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_GTPP, root);
         }
         //--------------------------------------------------------------------------------- SNMP -

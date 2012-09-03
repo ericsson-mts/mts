@@ -77,19 +77,19 @@ public class MsgGtpp extends Msg
             {
                 if (params[1].equalsIgnoreCase("type"))
                 {
-                    var.add(message.getMessageType());
+                    var.add(message.getGtpHeader().getMessageType());
                 }
                 else if (params[1].equalsIgnoreCase("name"))
                 {
-                    var.add(message.getName());
+                    var.add(message.getGtpHeader().getName());
                 }
                 else if (params[1].equalsIgnoreCase("length"))
                 {
-                    var.add(message.getLength());
+                    var.add(message.getGtpHeader().getLength());
                 }
                 else if (params[1].equalsIgnoreCase("sequenceNumber"))
                 {
-                    var.add(message.getSequenceNumber());
+                    var.add(message.getGtpHeader().getSequenceNumber());
                 }
                 else
                 {
@@ -109,7 +109,7 @@ public class MsgGtpp extends Msg
                 }
                 else
                 {
-                    throw new Exception("The tlv <" + tlv.getName() + "> is unknown in message <" + message.getName() + ">");
+                    throw new Exception("The tlv <" + tlv.getName() + "> is unknown in message <" + message.getGtpHeader().getName() + ">");
                 }
             }
         }
@@ -159,7 +159,7 @@ public class MsgGtpp extends Msg
     /** Return true if the message is a request else return false*/
     public boolean isRequest()
     {
-        return message.getName().contains("Request") ? true : false;
+        return message.getGtpHeader().getName().contains("Request") ? true : false;
     }
 
     /** Get the command code of this message */
@@ -167,7 +167,7 @@ public class MsgGtpp extends Msg
     {
         if(type == null)
         {
-            type = message.getName();
+            type = message.getGtpHeader().getName();
         }
         return type;
     }
@@ -239,16 +239,16 @@ public class MsgGtpp extends Msg
         stringBuilder.append(super.toShortString());
         if(message.getLogError().length() != 0)
         {
-            stringBuilder.append("<MESSAGE MALFORMED name= \"" + message.getName() + "\"");
+            stringBuilder.append("<MESSAGE MALFORMED name= \"" + message.getGtpHeader().getName() + "\"");
         }
         else
         {
-            stringBuilder.append("<MESSAGE name= \"" + message.getName() + "\"");
+            stringBuilder.append("<MESSAGE name= \"" + message.getGtpHeader().getName() + "\"");
         }
 
-        stringBuilder.append(" length=\"" + message.getLength() + "\"");
-        stringBuilder.append(" type=\"" + Integer.toHexString(message.getMessageType()) + "\"");
-        stringBuilder.append(" sequenceNumber=\"" + message.getSequenceNumber() + "\"/>");
+        stringBuilder.append(" length=\"" + message.getGtpHeader().getLength() + "\"");
+        stringBuilder.append(" type=\"" + Integer.toHexString(message.getGtpHeader().getMessageType()) + "\"");
+        stringBuilder.append(" sequenceNumber=\"" + message.getGtpHeader().getSequenceNumber() + "\"/>");
         return stringBuilder.toString();
     }
 

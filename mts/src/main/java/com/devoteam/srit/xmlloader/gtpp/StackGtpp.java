@@ -122,7 +122,7 @@ public class StackGtpp extends Stack
         GtppMessage gtppMessage = null;
 
         // header
-        Element header = root.element("header");
+        Element header = root.element("headerP");
         String msgName = header.attributeValue("name");
         String msgType = header.attributeValue("type");
 
@@ -135,16 +135,16 @@ public class StackGtpp extends Stack
         if(msgName != null)
         {
             gtppMessage = dictionary.getMessageFromName(msgName);
-            gtppMessage.setMessageType(dictionary.getMessageTypeFromName(msgName));
+            gtppMessage.getGtpHeader().setMessageType(dictionary.getMessageTypeFromName(msgName));
         }
         else if(msgType != null)
             gtppMessage = dictionary.getMessageFromType(Integer.parseInt(msgType));
         
-        if((gtppMessage.getMessageType() == 0) || (gtppMessage.getName().equalsIgnoreCase("Unknown message")))
+        if((gtppMessage.getGtpHeader().getMessageType() == 0) || (gtppMessage.getGtpHeader().getName().equalsIgnoreCase("Unknown message")))
             gtppMessage.setLogError("Message <" + msgName + "> is not present in the dictionary\r\n");
  
         String msgSeqNum = header.attributeValue("sequenceNumber");
-        gtppMessage.setSequenceNumber(Integer.parseInt(msgSeqNum));
+        gtppMessage.getGtpHeader().setSequenceNumber(Integer.parseInt(msgSeqNum));
 
         parseTLVs(root, gtppMessage);
 

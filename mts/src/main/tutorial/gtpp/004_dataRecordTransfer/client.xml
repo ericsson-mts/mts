@@ -5,10 +5,10 @@
     
     <parameter name="[connection]" operation="set" value="connection" />
 
-    <openChannelGTPP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
+    <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
 
-    <sendMessageGTPP name="send data record transfer request" channel="[connection]">
-        <header type="240" sequenceNumber="1"/>
+    <sendMessageGTP name="send data record transfer request" channel="[connection]">
+        <headerP type="240" sequenceNumber="1"/>
         <tlv name="packetTransferCommand" value="16"/>
         <tlv name="dataRecordPacket">
             <attribute name="numberOfDataRecords" value="2"/>
@@ -21,38 +21,38 @@
                 <attribute name="dataRecord" value="second test"/>
             </attribute>
         </tlv>
-    </sendMessageGTPP>
+    </sendMessageGTP>
 
-    <receiveMessageGTPP name="receive data record transfer response">
-    </receiveMessageGTPP>
+    <receiveMessageGTP name="receive data record transfer response">
+    </receiveMessageGTP>
 
-    <sendMessageGTPP name="send data record transfer request" channel="[connection]">
-        <header type="240" sequenceNumber="1"/>
+    <sendMessageGTP name="send data record transfer request" channel="[connection]">
+        <headerP type="240" sequenceNumber="1"/>
         <tlv name="packetTransferCommand" value="10"/>
         <tlv name="sequenceNumberOfReleasedPackets">
             <attribute name="sequenceNumber" value="2"/>
             <attribute name="sequenceNumber" value="5"/>
             <attribute name="sequenceNumber" value="9"/>
         </tlv>
-    </sendMessageGTPP>
+    </sendMessageGTP>
 
-    <receiveMessageGTPP name="receive data record transfer response">
-    </receiveMessageGTPP>
+    <receiveMessageGTP name="receive data record transfer response">
+    </receiveMessageGTP>
 
-    <sendMessageGTPP name="send data record transfer request" channel="[connection]">
-        <header type="240" sequenceNumber="1"/>
+    <sendMessageGTP name="send data record transfer request" channel="[connection]">
+        <headerP type="240" sequenceNumber="1"/>
         <tlv name="packetTransferCommand" value="16"/>
         <tlv name="sequenceNumberOfCancelledDataRecords">
             <attribute name="sequenceNumber" value="6"/>
             <attribute name="sequenceNumber" value="1"/>
         </tlv>
-    </sendMessageGTPP>
+    </sendMessageGTP>
 
-    <receiveMessageGTPP name="receive data record transfer response">
-    </receiveMessageGTPP>
+    <receiveMessageGTP name="receive data record transfer response">
+    </receiveMessageGTP>
 
     <finally>
-        <closeChannelGTPP name="[connection]"/>
+        <closeChannelGTP name="[connection]"/>
     </finally>
     
 </scenario>
