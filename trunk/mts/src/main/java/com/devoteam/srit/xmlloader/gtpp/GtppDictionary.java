@@ -74,9 +74,9 @@ public class GtppDictionary
         {
             //create a default message for unknown name
             msg = new GtppMessage();
-            msg.setLength(6);
-            msg.setMessageType(0);
-            msg.setName(name);
+            msg.getGtpHeader().setLength(6);
+            msg.getGtpHeader().setMessageType(0);
+            msg.getGtpHeader().setName(name);
         }
         return msg;
     }
@@ -96,9 +96,9 @@ public class GtppDictionary
         {
             //create a default message for unknown id
             msg = new GtppMessage();
-            msg.setLength(6);
-            msg.setMessageType(0);
-            msg.setName("Unknown message");
+            msg.getGtpHeader().setLength(6);
+            msg.getGtpHeader().setMessageType(0);
+            msg.getGtpHeader().setName("Unknown message");
         }
         return msg;
     }
@@ -170,8 +170,8 @@ public class GtppDictionary
             node = (Element)listMessages.get(i);
 
             msg = new GtppMessage();
-            msg.setName(node.attributeValue("name"));
-            msg.setMessageType(Integer.parseInt(node.attributeValue("messageType")));
+            msg.getGtpHeader().setName(node.attributeValue("name"));
+            msg.getGtpHeader().setMessageType(Integer.parseInt(node.attributeValue("messageType")));
 
             for (Iterator it = node.elementIterator(); it.hasNext();) {
                 Element element = (Element) it.next();
@@ -194,9 +194,9 @@ public class GtppDictionary
                 }
             }
 
-            messagesList.put(msg.getName(), msg);
-            messageTypeToNameList.put(msg.getMessageType(), msg.getName());
-            messageNameToTypeList.put(msg.getName(), msg.getMessageType());
+            messagesList.put(msg.getGtpHeader().getName(), msg);
+            messageTypeToNameList.put(msg.getGtpHeader().getMessageType(), msg.getGtpHeader().getName());
+            messageNameToTypeList.put(msg.getGtpHeader().getName(), msg.getGtpHeader().getMessageType());
         }
 
         //parsing des TLV

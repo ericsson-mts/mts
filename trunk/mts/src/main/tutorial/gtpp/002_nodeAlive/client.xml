@@ -5,18 +5,18 @@
     
     <parameter name="[connection]" operation="set" value="connection" />
 
-    <openChannelGTPP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
+    <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
 
-    <sendMessageGTPP name="node alive request" channel="[connection]">
-        <header name="nodeAliveRequest" sequenceNumber="1"/>
+    <sendMessageGTP name="node alive request" channel="[connection]">
+        <headerP name="nodeAliveRequest" sequenceNumber="1"/>
         <tlv tag="251" value="172.16.21.207"/>
-    </sendMessageGTPP>
+    </sendMessageGTP>
 
-    <receiveMessageGTPP name="node alive response">
-    </receiveMessageGTPP>
+    <receiveMessageGTP name="node alive response">
+    </receiveMessageGTP>
 
     <finally>
-        <closeChannelGTPP name="[connection]"/>
+        <closeChannelGTP name="[connection]"/>
     </finally>
     
 </scenario>

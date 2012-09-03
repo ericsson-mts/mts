@@ -25,8 +25,10 @@ package com.devoteam.srit.xmlloader.gtpp.data;
 
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
+import com.devoteam.srit.xmlloader.gtpp.GtpHeader;
 import com.devoteam.srit.xmlloader.gtpp.StackGtpp;
 import gp.utils.arrays.*;
+
 import java.util.LinkedList;
 import java.util.Vector;
 
@@ -35,15 +37,18 @@ import java.util.Vector;
  * @author Benjamin Bouvier
  */
 public class GtppMessage
-{
-    private String name;
-    private int messageType;
-    private int version;
-    private int protocolType;
-    private int length = 0;
-    private int sequenceNumber;
+{	
+	private GtpHeader gtpHeader= new GtpHeader(); 
+	
+    public GtpHeader getGtpHeader() {
+		return gtpHeader;
+	}
 
-    private Vector<GtppTLV> tlvs;
+	public void setGtpHeader(GtpHeader gtpHeader) {
+		this.gtpHeader = gtpHeader;
+	}
+
+	private Vector<GtppTLV> tlvs;
     private Array data = null;
 
     private String logError = "";
@@ -52,61 +57,7 @@ public class GtppMessage
     {        
         tlvs = new Vector<GtppTLV>();
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setLength(int value)
-    {
-        this.length = value;
-    }
-
-    public int getLength()
-    {
-        return this.length;
-    }
     
-    public void setMessageType(int value)
-    {
-        this.messageType = value;
-    }
-
-    public int getMessageType()
-    {
-        return this.messageType;
-    }
-
-    public void setSequenceNumber(int value)
-    {
-        this.sequenceNumber = value;
-    }
-
-    public int getSequenceNumber()
-    {
-        return this.sequenceNumber;
-    }
-
-    public int isProtocolType() {
-        return protocolType;
-    }
-
-    public void setProtocolType(int protocolType) {
-        this.protocolType = protocolType;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
     public String getLogError()
     {
         return logError;
@@ -157,60 +108,19 @@ public class GtppMessage
         return data;
     }
 
-    public Array getArray() throws Exception
-    {
-        SupArray array = new SupArray();
-
-        for(GtppTLV tlv:tlvs)
-        {
-            if(tlv.getValueQuality())
-            {
-                array.addLast(tlv.getArray());
-            }
-        }
-
-        if((getMessageType() == 0) || (getName().equalsIgnoreCase("Unknown message")))//in case of unknown message and data present
-        {
-            if(data != null)
-                array.addLast(data);
-        }
-        
-        setLength(array.length);
-
-        //manage header data
-        SupArray supArray = new SupArray();
-
-        DefaultArray firstByte = new DefaultArray(1);//first byte data
-        firstByte.setBits(0, 3, version);
-        firstByte.setBits(3, 1, protocolType);
-        firstByte.setBits(4, 4, 15);//=> 1111 in bits
-        supArray.addFirst(firstByte);
-
-        supArray.addLast(new Integer08Array(messageType));
-        supArray.addLast(new Integer16Array(length));
-        supArray.addLast(new Integer16Array(sequenceNumber));
-        
-        array.addFirst(supArray);
-        return array;
-    }
     
     public void parseArray(Array array) throws Exception
     {
         int headerSize = 6;
-
-        setVersion(array.subArray(0, 1).getBits(0, 3));
-        setProtocolType(array.subArray(0, 1).getBits(3, 1));
-        setMessageType(new Integer08Array(array.subArray(1, 1)).getValue());
-        setLength(new Integer16Array(array.subArray(2, 2)).getValue());
-        setSequenceNumber(new Integer16Array(array.subArray(4, 2)).getValue());
-
-        data = new DefaultArray(array.subArray(headerSize, getLength()).getBytes());
-
+        data = new DefaultArray(array.subArray(headerSize, gtpHeader.getLength()).getBytes());
+        
+        gtpHeader.parseArray(array); 
+        
         GtppTLV tlv = null;
         int tag = 0;
         int index = 0; //reset index because lenght fiel don't count header
         
-        while(index < getLength())
+        while(index < gtpHeader.getLength())
         {
             tag = new Integer08Array(array.subArray(index + headerSize, 1)).getValue();
             index++;
@@ -243,7 +153,6 @@ public class GtppMessage
         }
         //display an error log if not all mandatory TLV are set
     }
-
     private int parseLinkedList(Array valueToDecode, Attribute att, int index) throws Exception
     {
         LinkedList<Object> list = (LinkedList<Object>)att.getValue();
@@ -305,25 +214,45 @@ public class GtppMessage
         }
         return index;
     }
+    
+    public Array getArray() throws Exception
+    {
+        SupArray array = new SupArray();
 
+        for(GtppTLV tlv:tlvs)
+        {
+            if(tlv.getValueQuality())
+            {
+                array.addLast(tlv.getArray());
+            }
+        }
+
+        if((gtpHeader.getMessageType() == 0) || (gtpHeader.getName().equalsIgnoreCase("Unknown message")))//in case of unknown message and data present
+        {
+            if(data != null)
+                array.addLast(data);
+        }
+        
+        gtpHeader.setLength(array.length);
+        
+        Array supArray = gtpHeader.getArray();
+        array.addFirst(supArray);
+        
+        return array; 
+     }
+    
     @Override
     public GtppMessage clone()
     {
-        GtppMessage clone = new GtppMessage();
-
-        clone.setName(getName());
-        clone.setVersion(version);
-        clone.setProtocolType(protocolType);
-        clone.setMessageType(messageType);
-        clone.setLength(length);
-        clone.setSequenceNumber(sequenceNumber);
-        
+    	GtppMessage clone = new GtppMessage();
+    	
+    	clone.setGtpHeader(gtpHeader.clone());
         for(int i=0; i< tlvs.size(); i++)
             clone.tlvs.add(tlvs.get(i).clone());
 
         return clone;
     }
-
+    
     @Override
     public String toString()
     {
@@ -333,8 +262,8 @@ public class GtppMessage
         {
             str += getLogError();
         }
-
-        str += name + ", length " + length + ", messageType " + messageType + ", version " + version + ", seqNum " + sequenceNumber + "\r\n";
+        
+        str += gtpHeader.toString(); 
         
         for(int i = 0; i < tlvs.size(); i++)
             str += tlvs.get(i).toString();

@@ -2,29 +2,29 @@
 
 <!-- scenario server-->
 <scenario>
-    <createListenpointGTPP name="listenpoint" localPort="3387"/>
+    <createListenpointGTP name="listenpoint" localPort="3387"/>
     <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
 
-    <receiveMessageGTPP name="echo request">
+    <receiveMessageGTP name="echo request">
         <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
-    </receiveMessageGTPP>
+    </receiveMessageGTP>
 
-    <sendMessageGTPP name="echo Response" channel="[channel]">
-        <header name="echoResponse" sequenceNumber="[seqNum]"/>
+    <sendMessageGTP name="echo Response" channel="[channel]">
+        <headerP name="echoResponse" sequenceNumber="[seqNum]"/>
         <tlv name="recovery" value="23"/>
-    </sendMessageGTPP>
+    </sendMessageGTP>
 
-    <receiveMessageGTPP name="echo request">
+    <receiveMessageGTP name="echo request">
         <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
-    </receiveMessageGTPP>
+    </receiveMessageGTP>
 
-    <sendMessageGTPP name="versionNotSupported" channel="[channel]">
-        <header name="versionNotSupported" sequenceNumber="[seqNum]"/>
-    </sendMessageGTPP>
+    <sendMessageGTP name="versionNotSupported" channel="[channel]">
+        <headerP name="versionNotSupported" sequenceNumber="[seqNum]"/>
+    </sendMessageGTP>
 
     <finally>
-        <removeListenpointGTPP name="listenpoint"/>
+        <removeListenpointGTP name="listenpoint"/>
     </finally>
 </scenario>
