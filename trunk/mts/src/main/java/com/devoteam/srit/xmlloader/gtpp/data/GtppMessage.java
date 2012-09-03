@@ -38,14 +38,14 @@ import java.util.Vector;
  */
 public class GtppMessage
 {	
-	private GtpHeaderPrime gtpHeader= new GtpHeaderPrime(); 
+	private GtpHeaderPrime GtpHeaderPrime= new GtpHeaderPrime(); 
 	
-    public GtpHeaderPrime getGtpHeader() {
-		return gtpHeader;
+    public GtpHeaderPrime getGtpHeaderPrime() {
+		return GtpHeaderPrime;
 	}
 
-	public void setGtpHeader(GtpHeaderPrime gtpHeader) {
-		this.gtpHeader = gtpHeader;
+	public void setGtpHeaderPrime(GtpHeaderPrime GtpHeaderPrime) {
+		this.GtpHeaderPrime = GtpHeaderPrime;
 	}
 
 	private Vector<GtppTLV> tlvs;
@@ -112,15 +112,15 @@ public class GtppMessage
     public void parseArray(Array array) throws Exception
     {
         int headerSize = 6;
-        data = new DefaultArray(array.subArray(headerSize, gtpHeader.getLength()).getBytes());
+        data = new DefaultArray(array.subArray(headerSize, GtpHeaderPrime.getLength()).getBytes());
         
-        gtpHeader.parseArray(array); 
+        GtpHeaderPrime.parseArray(array); 
         
         GtppTLV tlv = null;
         int tag = 0;
         int index = 0; //reset index because lenght fiel don't count header
         
-        while(index < gtpHeader.getLength())
+        while(index < GtpHeaderPrime.getLength())
         {
             tag = new Integer08Array(array.subArray(index + headerSize, 1)).getValue();
             index++;
@@ -227,15 +227,15 @@ public class GtppMessage
             }
         }
 
-        if((gtpHeader.getMessageType() == 0) || (gtpHeader.getName().equalsIgnoreCase("Unknown message")))//in case of unknown message and data present
+        if((GtpHeaderPrime.getMessageType() == 0) || (GtpHeaderPrime.getName().equalsIgnoreCase("Unknown message")))//in case of unknown message and data present
         {
             if(data != null)
                 array.addLast(data);
         }
         
-        gtpHeader.setLength(array.length);
+        GtpHeaderPrime.setLength(array.length);
         
-        Array supArray = gtpHeader.getArray();
+        Array supArray = GtpHeaderPrime.getArray();
         array.addFirst(supArray);
         
         return array; 
@@ -246,7 +246,7 @@ public class GtppMessage
     {
     	GtppMessage clone = new GtppMessage();
     	
-    	clone.setGtpHeader(gtpHeader.clone());
+    	clone.setGtpHeaderPrime(GtpHeaderPrime.clone());
         for(int i=0; i< tlvs.size(); i++)
             clone.tlvs.add(tlvs.get(i).clone());
 
@@ -263,7 +263,7 @@ public class GtppMessage
             str += getLogError();
         }
         
-        str += gtpHeader.toString(); 
+        str += GtpHeaderPrime.toString(); 
         
         for(int i = 0; i < tlvs.size(); i++)
             str += tlvs.get(i).toString();

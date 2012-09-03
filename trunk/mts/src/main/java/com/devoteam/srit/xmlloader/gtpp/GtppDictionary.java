@@ -74,9 +74,9 @@ public class GtppDictionary
         {
             //create a default message for unknown name
             msg = new GtppMessage();
-            msg.getGtpHeader().setLength(6);
-            msg.getGtpHeader().setMessageType(0);
-            msg.getGtpHeader().setName(name);
+            msg.getGtpHeaderPrime().setLength(6);
+            msg.getGtpHeaderPrime().setMessageType(0);
+            msg.getGtpHeaderPrime().setName(name);
         }
         return msg;
     }
@@ -96,9 +96,9 @@ public class GtppDictionary
         {
             //create a default message for unknown id
             msg = new GtppMessage();
-            msg.getGtpHeader().setLength(6);
-            msg.getGtpHeader().setMessageType(0);
-            msg.getGtpHeader().setName("Unknown message");
+            msg.getGtpHeaderPrime().setLength(6);
+            msg.getGtpHeaderPrime().setMessageType(0);
+            msg.getGtpHeaderPrime().setName("Unknown message");
         }
         return msg;
     }
@@ -170,8 +170,8 @@ public class GtppDictionary
             node = (Element)listMessages.get(i);
 
             msg = new GtppMessage();
-            msg.getGtpHeader().setName(node.attributeValue("name"));
-            msg.getGtpHeader().setMessageType(Integer.parseInt(node.attributeValue("messageType")));
+            msg.getGtpHeaderPrime().setName(node.attributeValue("name"));
+            msg.getGtpHeaderPrime().setMessageType(Integer.parseInt(node.attributeValue("messageType")));
 
             for (Iterator it = node.elementIterator(); it.hasNext();) {
                 Element element = (Element) it.next();
@@ -194,9 +194,9 @@ public class GtppDictionary
                 }
             }
 
-            messagesList.put(msg.getGtpHeader().getName(), msg);
-            messageTypeToNameList.put(msg.getGtpHeader().getMessageType(), msg.getGtpHeader().getName());
-            messageNameToTypeList.put(msg.getGtpHeader().getName(), msg.getGtpHeader().getMessageType());
+            messagesList.put(msg.getGtpHeaderPrime().getName(), msg);
+            messageTypeToNameList.put(msg.getGtpHeaderPrime().getMessageType(), msg.getGtpHeaderPrime().getName());
+            messageNameToTypeList.put(msg.getGtpHeaderPrime().getName(), msg.getGtpHeaderPrime().getMessageType());
         }
 
         //parsing des TLV
