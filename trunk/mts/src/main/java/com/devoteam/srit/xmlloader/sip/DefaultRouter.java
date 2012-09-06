@@ -400,11 +400,6 @@ public class DefaultRouter {
 			}
 		}
 	
-		// for correct management of IPv6 addresses.
-		if (host.indexOf(":") > 0)
-			if (host.indexOf("[") < 0)
-				host = "[" + host + "]";
-	
 		Hop hop = new HopImpl(host, port, transport);
 
 		return hop;
