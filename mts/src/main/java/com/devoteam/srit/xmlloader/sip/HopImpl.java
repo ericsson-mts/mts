@@ -70,7 +70,7 @@ public final class HopImpl extends Object implements javax.sip.address.Hop {
 		
 		// Added by Daniel J. Martinez Manzano <dani@dif.um.es>
 		// for correct management of IPv6 addresses.
-		if(host.indexOf(":") >= 0)
+		if(host != null && host.indexOf(":") >= 0)
 			if(host.indexOf("[") < 0)
 				host = "[" + host + "]";
 		

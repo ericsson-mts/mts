@@ -10,13 +10,12 @@
   <parameter name="[localTag]" operation="string.random" value="10"/>
   <parameter name="[newCallId]" operation="number.random" value="10000000"/>
   <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
-  <parameter name="[newBranchId]" operation="string.random" value="10"/>
-  
-  <sendMessageSIP name="Send INVITE" destScenario="bob">
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>  
+  <sendMessageSIP name="Send INVITE" transport="rfc" destScenario="bob">
 <![CDATA[INVITE sip:[inviteeName1]@[100_DOMAIN_ADDR] SIP/2.0
 To: sip:[inviteeName1]@[100_DOMAIN_ADDR]
 From: "[clientName]" <sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
-Via: SIP/2.0/TCP [Adresse-Tester];branch=z9hG4bK[newBranchId];transport=tcp
+Via: SIP/2.0/tcp [Adresse-Tester];branch=z9hG4bK[newBranchId];transport=tcp
 Call-ID: [newCallId]
 CSeq: [newCseqNumber] INVITE
 Max-Forwards: 70
@@ -34,8 +33,8 @@ P-com.Siemens.MSISDN-ID: 3381164951574
 P-com.Siemens.IMSI-ID: 81164951574
 P-com.Siemens.SGSN-ID: 139.10.69.237
 P-Charging-Function-Addresses: ccf=139.10.99.99;ccf_sec=139.10.99.99
-Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating;transport=tcp>
-Route: <sip:[clientName]@[Adresse-Tester];lr;mode=originating;transport=tcp>
+Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating;transport=udp>
+Route: <sip:[clientName]@[Adresse-Tester];lr;mode=originating;transport=udp>
 Content-Type: multipart/mixed;boundary="----=_Part_0"
 Content-Length: x
 
@@ -70,24 +69,30 @@ Content-Disposition: recipient-list
   </sendMessageSIP>
                 
   <receiveMessageSIP name="Wait 100 Trying" request="false" type="INVITE" result="100">
+    <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>      
   </receiveMessageSIP>
-
+  <test parameter="[channelTransport]" condition="string.equalsignorecase" value="TCP"/>
+  
   <receiveMessageSIP name="Wait 180 Ringing" request="false" type="INVITE" result="180">
+      <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>      
   </receiveMessageSIP>
-
-    <parameter name="[newBranchId]" operation="string.random" value="10"/>                              
-    
+  <test parameter="[channelTransport]" condition="string.equalsignorecase" value="UDP"/>
+                              
   <receiveMessageSIP name="Wait 200 OK" request="false" type="INVITE" result="200">
     <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>                     
     <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>                         
     <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/> 
     <parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>   
     <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+    <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>      
   </receiveMessageSIP>
+  <test parameter="[channelTransport]" condition="string.equalsignorecase" value="TCP"/>
 
-      	<parameter name="[newBranchId]" operation="string.random" value="10"/>
-      	
-  <sendMessageSIP name="Send ACK" destScenario="bob">
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>    	
+  <sendMessageSIP name="Send ACK" transport="RFC" destScenario="bob">
 <![CDATA[ACK [Request-URI] SIP/2.0
 To: [To]
 From: [From]
@@ -95,8 +100,8 @@ Call-ID: [CallId]
 CSeq: [lastCseqNumber] ACK
 Via: SIP/2.0/TCP [Adresse-Tester];branch=z9hG4bK[newBranchId]
 Contact: <sip:[clientName]@[Adresse-Tester]>
-Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating;transport=udp>
-Route: <sip:[clientName]@[Adresse-Tester];lr;mode=originating;transport=udp>
+Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating;transport=tcp>
+Route: <sip:[clientName]@[Adresse-Tester];lr;mode=originating;transport=tcp>
 Max-Forwards: 70
 User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
 Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
@@ -105,15 +110,14 @@ Content-Length: 0
 ]]>
   </sendMessageSIP>
 
-      	<parameter name="[newBranchId]" operation="string.random" value="10"/>
-  	<parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
-    
-  <sendMessageSIP name="Send BYE" destScenario="bob">
-<![CDATA[BYE [Request-URI] SIP/2.0
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>
+  <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>   
+  <sendMessageSIP name="Send INFO" transport="udp" destScenario="bob">
+<![CDATA[INFO [Request-URI] SIP/2.0
 To: [To]
 From: [From]
 Call-ID: [CallId]
-CSeq: [newCseqNumber] BYE
+CSeq: [newCseqNumber] INFO
 Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating;transport=tcp>
 Route: <sip:[clientName]@[Adresse-Tester];lr;mode=originating;transport=tcp>
 Contact: <sip:[clientName]@[Adresse-Tester]>
@@ -124,8 +128,37 @@ Max-Forwards: 70
 Content-Length: 0
 ]]>
   </sendMessageSIP>
+  
+  <receiveMessageSIP name="Wait 200 OK" request="false" type="INFO" result="200">
+    <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>      
+  </receiveMessageSIP>
+  <test parameter="[channelTransport]" condition="string.equalsignorecase" value="TCP"/>
+    
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>
+  <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>   
+  <sendMessageSIP name="Send BYE" destScenario="bob">
+<![CDATA[BYE [Request-URI] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [newCseqNumber] BYE
+Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating;transport=tcp>
+Route: <sip:[clientName]@[Adresse-Tester];lr;mode=originating;transport=tcp>
+Contact: <sip:[clientName]@[Adresse-Tester]>
+Via: SIP/2.0/tcp [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Max-Forwards: 70
+Content-Length: 0
+]]>
+  </sendMessageSIP>
                 
   <receiveMessageSIP name="Wait 200 OK" request="false" type="BYE" result="200">
+    <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>      
   </receiveMessageSIP>
+  <test parameter="[channelTransport]" condition="string.equalsignorecase" value="UDP"/>
+
         
 </scenario>

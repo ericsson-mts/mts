@@ -49,39 +49,63 @@ public class ListenpointSip extends Listenpoint
     public ListenpointSip(Stack stack) throws Exception
     {
         super(stack);
+        this.transport = null;
     }
 
 	/** Creates a Listenpoint specific from XML tree*/
 	public ListenpointSip(Stack stack, Element root) throws Exception	
 	{
 		super(stack, root);
+		String transportAttr = root.attributeValue("transport");
+        if (transportAttr == null)
+        {
+            this.transport = null;
+        }
 	}
         	
     /** Send a Msg to Connection */
     @Override
     public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
     {
-		if ((remoteHost == null) || (remotePort <= 0)) 
+		// case where transport is not provided into the sendMessage => take the default transport from the listenpoint
+        if (transport == null)
+        {
+        	transport = this.transport;
+        }
+		// case where remote info is not provided => take the transport from the message
+		if ((remoteHost == null) || (remotePort <= 0 || transport == null)) 
 		{        		        	
     		Hop hop = DefaultRouter.getInstance().getNextHop(msg);
-    		if (hop == null)
+    		if (hop != null)
     		{
-    			throw new ExecutionException("Could not determine the remote destination from the message : " + msg);
+				if (remoteHost == null)
+				{
+					remoteHost = hop.getHost();
+				}
+				if (remotePort <= 0)
+				{
+					remotePort = hop.getPort();
+				}
+		    	if (transport == null)
+		    	{
+		    		transport = hop.getTransport();
+		    	}
     		}
-    		if (remoteHost == null)
-    		{
-    			remoteHost = hop.getHost();
-    		}
-    		if (remotePort <= 0)
-    		{
-    			remotePort = hop.getPort();
-    		}
-            String trans = hop.getTransport();
-            if (transport == null)
-            {
-            	transport = trans;
-            }    		
-		}
+		}    
+    	// else => take the transport from the config
+    	if (transport == null)
+    	{	
+    		transport = stack.getConfig().getString("listenpoint.TRANSPORT", StackFactory.PROTOCOL_UDP);
+    	}
+        // case where transport equals RFC : transport is chosen as recommended in the 3261 RFC
+        if ("rfc".equalsIgnoreCase(transport))
+        {
+        	transport = StackFactory.PROTOCOL_UDP;
+        	if (msg.getLength() > 1300)
+        	{
+        		transport = StackFactory.PROTOCOL_TCP;
+        	}
+        }
 
 		return super.sendMessage(msg, remoteHost, remotePort, transport);
     }

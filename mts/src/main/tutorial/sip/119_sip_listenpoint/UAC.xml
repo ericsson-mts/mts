@@ -6,8 +6,8 @@
   <parameter name="[LocalHost]" operation="system.ipaddress"/>  
   <parameter name="[LocalPort]" operation="set" value="[scenarioName]"/>
   <parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort(0)]"/>	
-  <parameter name="[LocalTransport]" operation="set" value="tcp"/>  
-
+  <parameter name="[LocalPortTLS]" operation="number.add" value="[LocalPort]" value2="1"/>
+  
   <parameter name="[RemoteHost]" operation="system.ipaddress"/>
   <parameter name="[RemotePort]" operation="set" value="5080"/>
   <parameter name="[RemoteAddress]" operation="set" value="[RemoteHost(0)]:[RemotePort(0)]"/>	
@@ -15,20 +15,18 @@
   <parameter name="[inviteeName1]" operation="set" value="bob"/>
   <parameter name="[100_DOMAIN_ADDR]" operation="set" value="devoteam.com"/>
   <parameter name="[clientName]" operation="set" value="alice"/>
+  
+  <createListenpointSIP name="listenpointUAC" localHost="[LocalHost(0)]" localPort="[LocalPort(0)]" transport="RFC"/>
+  
   <parameter name="[localTag]" operation="string.random" value="10"/>
   <parameter name="[newCallId]" operation="number.random" value="10000000"/>
   <parameter name="[CSeqNumber]" operation="number.random" value="10000000"/>
-  <parameter name="[newBranchId]" operation="string.random" value="10"/>
-   
-  <parameter name="[LocalPortTLS]" operation="number.add" value="[LocalPort]" value2="1"/>
-  <createListenpointSIP name="listenpointUAC" localHost="[LocalHost(0)]" localPort="[LocalPort(0)]"/>
-  
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>  
   <sendMessageSIP name="Send INVITE" listenpoint="listenpointUAC">
-<!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[INVITE sip:[inviteeName1]@[100_DOMAIN_ADDR] SIP/2.0
 To: sip:[inviteeName1]@[100_DOMAIN_ADDR]
 From: "[clientName]" <sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
-Via: SIP/2.0/[LocalTransport] [LocalAddress];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/TCP [LocalAddress];branch=z9hG4bK[newBranchId]
 Call-ID: [newCallId]
 CSeq: [CSeqNumber] INVITE
 Max-Forwards: 70
@@ -46,8 +44,8 @@ P-com.Siemens.MSISDN-ID: 3381164951574
 P-com.Siemens.IMSI-ID: 81164951574
 P-com.Siemens.SGSN-ID: 139.10.69.237
 P-Charging-Function-Addresses: ccf=139.10.99.99;ccf_sec=139.10.99.99
-Route: <sip:[clientName]@[RemoteAddress];lr;mode=originating>
-Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating>
+Route: <sip:[clientName]@[RemoteAddress];lr;mode=originating;transport=udp>
+Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating;transport=udp>
 Content-Type: multipart/mixed;boundary="----=_Part_0"
 Content-Length: x
 
@@ -79,68 +77,98 @@ Content-Disposition: recipient-list
 </list>
 </resource-lists>
 ------=_Part_0--]]>
-<!--******************** END MESSAGE *********************-->
   </sendMessageSIP>
                 
   <receiveMessageSIP name="Wait 100 Trying" type="INVITE" result="100" listenpoint="listenpointUAC">
+    <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>    
   </receiveMessageSIP>
+  <test parameter="[channelTransport]" condition="string.equals" value="TCP"/>
 
   <receiveMessageSIP name="Wait 180 Ringing" type="INVITE" result="180" listenpoint="listenpointUAC">
+    <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>    
   </receiveMessageSIP>
+  <test parameter="[channelTransport]" condition="string.equals" value="TCP"/>
 
   <receiveMessageSIP name="Wait 200 OK" type="INVITE" result="200" listenpoint="listenpointUAC">
     <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>                     
     <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>                         
     <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>    
     <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+    <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>    
   </receiveMessageSIP>
+  <test parameter="[channelTransport]" condition="string.equalsignorecase" value="TCP"/>
 
     <parameter name="[newBranchId]" operation="string.random" value="10"/>                              
-    
   <sendMessageSIP name="Send ACK" listenpoint="listenpointUAC">
-<!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[ACK [Request-URI] SIP/2.0
 To: [To]
 From: [From]
 Call-ID: [CallId]
 CSeq: [CSeqNumber] ACK
-Via: SIP/2.0/[LocalTransport] [LocalAddress];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/tcp [LocalAddress];branch=z9hG4bK[newBranchId]
 Contact: <sip:[clientName]@[LocalAddress]>
-Route: <sip:[clientName]@[RemoteAddress];lr;mode=originating>
-Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating>
+Route: <sip:[clientName]@[RemoteAddress];lr;mode=originating;transport=tcp>
+Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating;transport=tcp>
 Max-Forwards: 70
 User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
 Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
 Allow: INVITE, ACK, CANCEL, BYE, NOTIFY
 Content-Length: 0
 ]]>
-<!--******************** END MESSAGE *********************-->
   </sendMessageSIP>
 
-  <parameter name="[CSeqNumber]" operation="number.add" value="[CSeqNumber]" value2="1"/>    
-  <parameter name="[newBranchId]" operation="string.random" value="10"/>                                  
-
-  <sendMessageSIP name="Send BYE" listenpoint="listenpointUAC">
-<!--******************* BEGIN MESSAGE ********************-->
-<![CDATA[BYE [Request-URI] SIP/2.0
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>
+  <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>   
+  <sendMessageSIP name="Send INFO" listenpoint="listenpointUAC" transport="udp">
+<![CDATA[INFO [Request-URI] SIP/2.0
 To: [To]
 From: [From]
 Call-ID: [CallId]
-CSeq: [CSeqNumber] BYE
-Route: <sip:[clientName]@[RemoteAddress];lr;mode=originating>
-Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating>
-Contact: <sip:[clientName]@[LocalAddress]>
-Via: SIP/2.0/[LocalTransport] [LocalAddress];branch=z9hG4bK[newBranchId]
+CSeq: [newCseqNumber] INFO
+Route: <sip:[clientName]@[RemoteAddress];lr;mode=originating;transport=tcp>
+Route: <sip:[clientName]@[Adresse-Tester];lr;mode=originating;transport=tcp>
+Contact: <sip:[clientName]@[Adresse-Tester]>
+Via: SIP/2.0/tcp [LocalAddress];branch=z9hG4bK[newBranchId]
 Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
 User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
 Max-Forwards: 70
 Content-Length: 0
 ]]>
-<!--******************** END MESSAGE *********************-->
+  </sendMessageSIP>
+  
+  <receiveMessageSIP name="Wait 200 OK" request="false" type="INFO" result="200">
+    <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>      
+  </receiveMessageSIP>
+  <test parameter="[channelTransport]" condition="string.equalsignorecase" value="TCP"/>
+
+  <parameter name="[CSeqNumber]" operation="number.add" value="[CSeqNumber]" value2="1"/>    
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>                                  
+  <sendMessageSIP name="Send BYE" listenpoint="listenpointUAC">
+<![CDATA[BYE [Request-URI] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [CSeqNumber] BYE
+Route: <sip:[clientName]@[RemoteAddress];lr;mode=originating;transport=udp>
+Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating;transport="udp">
+Contact: <sip:[clientName]@[LocalAddress]>
+Via: SIP/2.0/TCP [LocalAddress];branch=z9hG4bK[newBranchId]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Max-Forwards: 70
+Content-Length: 0
+]]>
   </sendMessageSIP>
                 
   <receiveMessageSIP name="Wait 200 OK" type="BYE" result="200" listenpoint="listenpointUAC">
+    <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>    
   </receiveMessageSIP>
+  <test parameter="[channelTransport]" condition="string.equalsignorecase" value="TCP"/>
 
   <!-- blocking on LINUX because of SCTP -->
   <removeListenpointSIP name="listenpointUAC"/>        
