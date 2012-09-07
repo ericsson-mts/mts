@@ -23,6 +23,10 @@
 
 package com.devoteam.srit.xmlloader.gtpp;
 
+import org.dom4j.Element;
+
+import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
+
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
@@ -34,7 +38,7 @@ import gp.utils.arrays.SupArray;
  * @author El Aly Mohamad Bilal 
  */
 public class GtpHeaderPrime {
-
+	
 	private String name;
     private int messageType;
     private int version;
@@ -116,11 +120,11 @@ public class GtpHeaderPrime {
     
     public void parseArray(Array array) throws Exception
     {
-        setVersion(array.subArray(0, 1).getBits(0, 3));
-        setProtocolType(array.subArray(0, 1).getBits(3, 1));
-        setMessageType(new Integer08Array(array.subArray(1, 1)).getValue());
-        setLength(new Integer16Array(array.subArray(2, 2)).getValue());
-        setSequenceNumber(new Integer16Array(array.subArray(4, 2)).getValue());
+        version = (array.subArray(0, 1).getBits(0, 3));
+        protocolType = (array.subArray(0, 1).getBits(3, 1));
+        messageType = (new Integer08Array(array.subArray(1, 1)).getValue());
+        length = (new Integer16Array(array.subArray(2, 2)).getValue());
+        sequenceNumber = (new Integer16Array(array.subArray(4, 2)).getValue());
     }
     
     @Override
@@ -143,5 +147,32 @@ public class GtpHeaderPrime {
     {
         String str = name + ", length " + length + ", messageType " + messageType + ", version " + version + ", seqNum " + sequenceNumber + "\r\n";
         return str;
+    }
+    
+    public void parseXml(Element header, GtppDictionary dictionary) throws Exception
+    {
+        String msgName = header.attributeValue("name");
+        String msgType = header.attributeValue("type");
+
+        if((msgType != null) && (msgName != null))
+            throw new Exception("type and name of the message " + msgName + " must not be set both");
+
+        if((msgType == null) && (msgName == null))
+            throw new Exception("One of the parameter type or name of the message header must be set");
+
+        if(msgName != null)
+        {
+            this.name = msgName;
+            this.messageType = dictionary.getMessageTypeFromName(msgName);
+        }
+        else if(msgType != null)
+        {	
+        	this.messageType = Integer.parseInt(msgType); 
+        	this.name = dictionary.getMessageNameFromType(this.messageType);
+        	
+        }
+        String msgSeqNum = header.attributeValue("sequenceNumber");
+        sequenceNumber = Integer.parseInt(msgSeqNum);
+
     }
 }
