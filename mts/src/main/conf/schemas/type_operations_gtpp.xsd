@@ -242,10 +242,17 @@
 
 <!-- 																			GTP Header -->    
     <xs:complexType name="headerGTPType">
-        <xs:attribute name="name"            type="xs:string" />
-        <xs:attribute name="type"            type="xs:string" />
-        <xs:attribute name="length"          type="xs:string" />
-        <xs:attribute name="sequenceNumber" type="xs:string" use="required" />
+        <xs:attribute name="version"	type="xs:string" use="required"/>
+        <xs:attribute name="protocolType"	type="xs:string" use="required"/>
+        <xs:attribute name="extensionHeaderFlag"	type="xs:string" use="required"/>
+        <xs:attribute name="sequenceNumberFlag" type="xs:string" use="required" />
+        <xs:attribute name="nPduNumberFlag" type="xs:string" use="required" />
+        <xs:attribute name="messageType" type="xs:string" use="required" />
+        <xs:attribute name="length" type="xs:string" use="required" />
+        <xs:attribute name="teid" type="xs:string" use="required" />
+        <xs:attribute name="sequenceNumber" type="xs:string" />
+        <xs:attribute name="nPduNumber" type="xs:string" />
+        <xs:attribute name="nextExtensionType" type="xs:string" use="required" />
     </xs:complexType>
 
 <!--                                                                                     tlv -->
@@ -273,3 +280,4 @@
     </xs:complexType>
     
 <!--                                                                             END OF GTPP PROTOCOL -->
+

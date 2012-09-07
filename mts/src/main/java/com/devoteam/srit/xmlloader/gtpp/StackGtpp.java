@@ -23,8 +23,6 @@
 
 package com.devoteam.srit.xmlloader.gtpp;
 
-import com.devoteam.srit.xmlloader.core.ParameterPool;
-
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -119,33 +117,29 @@ public class StackGtpp extends Stack
     @Override
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        GtppMessage gtppMessage = null;
+        GtppMessage gtppMessage = new GtppMessage();
 
-        // header
+        // header parsing
         Element header = root.element("headerP");
-        String msgName = header.attributeValue("name");
-        String msgType = header.attributeValue("type");
-
-        if((msgType != null) && (msgName != null))
-            throw new Exception("type and name of the message " + msgName + " must not be set both");
-
-        if((msgType == null) && (msgName == null))
-            throw new Exception("One of the parameter type or name of the message header must be set");
-
+        GtpHeaderPrime gtpHeaderPrime = new GtpHeaderPrime();
+        gtpHeaderPrime.parseXml(header, dictionary); 
+        gtppMessage.setGtpHeaderPrime(gtpHeaderPrime);
+        
+        // dictionary translation
+        String msgName = gtpHeaderPrime.getName(); 
+        int msgType = gtpHeaderPrime.getMessageType();
         if(msgName != null)
         {
             gtppMessage = dictionary.getMessageFromName(msgName);
-            gtppMessage.getGtpHeaderPrime().setMessageType(dictionary.getMessageTypeFromName(msgName));
         }
-        else if(msgType != null)
-            gtppMessage = dictionary.getMessageFromType(Integer.parseInt(msgType));
-        
-        if((gtppMessage.getGtpHeaderPrime().getMessageType() == 0) || (gtppMessage.getGtpHeaderPrime().getName().equalsIgnoreCase("Unknown message")))
+        else if(msgType != 0)
+        {
+            gtppMessage = dictionary.getMessageFromType(msgType);
+        }
+        if((gtpHeaderPrime.getMessageType() == 0) || (gtpHeaderPrime.getName().equalsIgnoreCase("Unknown message")))
             gtppMessage.setLogError("Message <" + msgName + "> is not present in the dictionary\r\n");
- 
-        String msgSeqNum = header.attributeValue("sequenceNumber");
-        gtppMessage.getGtpHeaderPrime().setSequenceNumber(Integer.parseInt(msgSeqNum));
-
+        
+        // TLV parsing
         parseTLVs(root, gtppMessage);
 
         return new MsgGtpp(gtppMessage);
