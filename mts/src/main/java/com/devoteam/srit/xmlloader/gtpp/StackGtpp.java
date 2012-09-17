@@ -118,16 +118,29 @@ public class StackGtpp extends Stack
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
         GtppMessage gtppMessage = new GtppMessage();
+        Header gtpHeader = null;
 
         // header parsing
-        Element header = root.element("headerP");
-        GtpHeaderPrime gtpHeaderPrime = new GtpHeaderPrime();
-        gtpHeaderPrime.parseXml(header, dictionary); 
-        gtppMessage.setGtpHeaderPrime(gtpHeaderPrime);
-        
+        Element xmlHeaderP = root.element("headerP");
+        Element xmlHeader = root.element("header");
+        if(xmlHeaderP != null)
+        {
+        	gtpHeader = new GtpHeaderPrime();
+        	gtpHeader.parseXml(xmlHeaderP, dictionary); 
+        	gtppMessage.setHeader(gtpHeader);
+        }
+        else if(xmlHeader != null)
+        {
+        	gtpHeader = new GtpHeader();
+        	gtpHeader.parseXml(xmlHeader, dictionary); 
+        	gtppMessage.setHeader(gtpHeader);
+        }
+        else
+        	 GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Not GTP message. <header> or <headeP> is missing.");
+    	
         // dictionary translation
-        String msgName = gtpHeaderPrime.getName(); 
-        int msgType = gtpHeaderPrime.getMessageType();
+        String msgName = gtpHeader.getName(); 
+        int msgType = gtpHeader.getMessageType();
         if(msgName != null)
         {
             gtppMessage = dictionary.getMessageFromName(msgName);
@@ -136,7 +149,7 @@ public class StackGtpp extends Stack
         {
             gtppMessage = dictionary.getMessageFromType(msgType);
         }
-        if((gtpHeaderPrime.getMessageType() == 0) || (gtpHeaderPrime.getName().equalsIgnoreCase("Unknown message")))
+        if((gtpHeader.getMessageType() == 0) || (gtpHeader.getName().equalsIgnoreCase("Unknown message")))
             gtppMessage.setLogError("Message <" + msgName + "> is not present in the dictionary\r\n");
         
         // TLV parsing
@@ -324,7 +337,7 @@ public class StackGtpp extends Stack
         //get type from message to get message from dictionary
         int type  = new Integer08Array(array.subArray(1, 1)).getValue();
         GtppMessage msg = dictionary.getMessageFromType(type);
-        msg.parseArray(array);
+        msg.parseArray(array, dictionary);
         
         return new MsgGtpp(msg);
     }

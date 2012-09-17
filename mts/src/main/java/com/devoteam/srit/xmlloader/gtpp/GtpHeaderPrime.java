@@ -37,7 +37,7 @@ import gp.utils.arrays.SupArray;
  *
  * @author El Aly Mohamad Bilal 
  */
-public class GtpHeaderPrime {
+public class GtpHeaderPrime extends Header{
 	
 	private String name;
     private int messageType;
@@ -45,6 +45,11 @@ public class GtpHeaderPrime {
     private int protocolType;
     private int length = 0;
     private int sequenceNumber;
+    
+    public int getSize()
+    {
+    	return 6; 
+    }
     
     public String getName() {
         return name;
@@ -118,11 +123,14 @@ public class GtpHeaderPrime {
         return supArray;
     }
     
-    public void parseArray(Array array) throws Exception
+    public void parseArray(Array array, GtppDictionary dictionary) throws Exception
     {
         version = (array.subArray(0, 1).getBits(0, 3));
         protocolType = (array.subArray(0, 1).getBits(3, 1));
+        
         messageType = (new Integer08Array(array.subArray(1, 1)).getValue());
+        name = dictionary.getMessageNameFromType(messageType);
+        
         length = (new Integer16Array(array.subArray(2, 2)).getValue());
         sequenceNumber = (new Integer16Array(array.subArray(4, 2)).getValue());
     }
@@ -169,7 +177,6 @@ public class GtpHeaderPrime {
         {	
         	this.messageType = Integer.parseInt(msgType); 
         	this.name = dictionary.getMessageNameFromType(this.messageType);
-        	
         }
         String msgSeqNum = header.attributeValue("sequenceNumber");
         sequenceNumber = Integer.parseInt(msgSeqNum);
