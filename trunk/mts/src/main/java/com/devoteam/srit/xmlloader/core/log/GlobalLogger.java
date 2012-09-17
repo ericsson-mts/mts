@@ -48,9 +48,9 @@ public class GlobalLogger
     private ConfigCache logLevelCache =  new ConfigCache("tester.properties", "logs.MAXIMUM_LEVEL");
     private ConfigCache logStorageCache =  new ConfigCache("tester.properties", "logs.STORAGE_LOCATION");
 
-    static private GlobalLogger instance = null;;
+    private static GlobalLogger instance = null;;
 
-    static public GlobalLogger instance()
+    public static synchronized GlobalLogger instance()
     {
     	if (instance == null){
             instance = new GlobalLogger();
