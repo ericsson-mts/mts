@@ -25,7 +25,10 @@ package com.devoteam.srit.xmlloader.gtpp.data;
 
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
+import com.devoteam.srit.xmlloader.gtpp.GtpHeader;
 import com.devoteam.srit.xmlloader.gtpp.GtpHeaderPrime;
+import com.devoteam.srit.xmlloader.gtpp.GtppDictionary;
+import com.devoteam.srit.xmlloader.gtpp.Header;
 import com.devoteam.srit.xmlloader.gtpp.StackGtpp;
 import gp.utils.arrays.*;
 
@@ -38,14 +41,14 @@ import java.util.Vector;
  */
 public class GtppMessage
 {	
-	private GtpHeaderPrime GtpHeaderPrime= new GtpHeaderPrime(); 
+	private Header header; 
 	
-    public GtpHeaderPrime getGtpHeaderPrime() {
-		return GtpHeaderPrime;
+    public Header getHeader() {
+		return header;
 	}
 
-	public void setGtpHeaderPrime(GtpHeaderPrime GtpHeaderPrime) {
-		this.GtpHeaderPrime = GtpHeaderPrime;
+	public void setHeader(Header header) {
+		this.header = header;
 	}
 
 	private Vector<GtppTLV> tlvs;
@@ -109,18 +112,26 @@ public class GtppMessage
     }
 
     
-    public void parseArray(Array array) throws Exception
-    {
-        int headerSize = 6;
-        data = new DefaultArray(array.subArray(headerSize, GtpHeaderPrime.getLength()).getBytes());
-        
-        GtpHeaderPrime.parseArray(array); 
-        
+    public void parseArray(Array array, GtppDictionary dictionary) throws Exception
+    {	
+    	
+        int protocolType = (array.subArray(0, 1).getBits(3, 1));
+        if(protocolType == 0)
+        {
+    		header = new GtpHeaderPrime();	
+        }
+        else if(protocolType == 1)
+        {
+        	header = new GtpHeader(); 
+        }
+        header.parseArray(array, dictionary);
+        int headerSize = header.getSize();
+        data = new DefaultArray(array.subArray(headerSize, header.getLength()).getBytes());
         GtppTLV tlv = null;
         int tag = 0;
         int index = 0; //reset index because lenght fiel don't count header
         
-        while(index < GtpHeaderPrime.getLength())
+        while(index < header.getLength())
         {
             tag = new Integer08Array(array.subArray(index + headerSize, 1)).getValue();
             index++;
@@ -227,15 +238,15 @@ public class GtppMessage
             }
         }
 
-        if((GtpHeaderPrime.getMessageType() == 0) || (GtpHeaderPrime.getName().equalsIgnoreCase("Unknown message")))//in case of unknown message and data present
+        if((header.getMessageType() == 0) || (header.getName().equalsIgnoreCase("Unknown message")))//in case of unknown message and data present
         {
             if(data != null)
                 array.addLast(data);
         }
         
-        GtpHeaderPrime.setLength(array.length);
+        header.setLength(array.length);
         
-        Array supArray = GtpHeaderPrime.getArray();
+        Array supArray = header.getArray();
         array.addFirst(supArray);
         
         return array; 
@@ -246,7 +257,7 @@ public class GtppMessage
     {
     	GtppMessage clone = new GtppMessage();
     	
-    	clone.setGtpHeaderPrime(GtpHeaderPrime.clone());
+    	clone.setHeader(header.clone());
         for(int i=0; i< tlvs.size(); i++)
             clone.tlvs.add(tlvs.get(i).clone());
 
@@ -263,7 +274,7 @@ public class GtppMessage
             str += getLogError();
         }
         
-        str += GtpHeaderPrime.toString(); 
+        str += header.toString(); 
         
         for(int i = 0; i < tlvs.size(); i++)
             str += tlvs.get(i).toString();

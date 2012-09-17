@@ -77,19 +77,19 @@ public class MsgGtpp extends Msg
             {
                 if (params[1].equalsIgnoreCase("type"))
                 {
-                    var.add(message.getGtpHeaderPrime().getMessageType());
+                    var.add(message.getHeader().getMessageType());
                 }
                 else if (params[1].equalsIgnoreCase("name"))
                 {
-                    var.add(message.getGtpHeaderPrime().getName());
+                    var.add(message.getHeader().getName());
                 }
                 else if (params[1].equalsIgnoreCase("length"))
                 {
-                    var.add(message.getGtpHeaderPrime().getLength());
+                    var.add(message.getHeader().getLength());
                 }
                 else if (params[1].equalsIgnoreCase("sequenceNumber"))
                 {
-                    var.add(message.getGtpHeaderPrime().getSequenceNumber());
+                    var.add(message.getHeader().getSequenceNumber());
                 }
                 else
                 {
@@ -109,7 +109,7 @@ public class MsgGtpp extends Msg
                 }
                 else
                 {
-                    throw new Exception("The tlv <" + tlv.getName() + "> is unknown in message <" + message.getGtpHeaderPrime().getName() + ">");
+                    throw new Exception("The tlv <" + tlv.getName() + "> is unknown in message <" + message.getHeader().getName() + ">");
                 }
             }
         }
@@ -159,7 +159,7 @@ public class MsgGtpp extends Msg
     /** Return true if the message is a request else return false*/
     public boolean isRequest()
     {
-        return message.getGtpHeaderPrime().getName().contains("Request") ? true : false;
+        return message.getHeader().getName().contains("Request") ? true : false;
     }
 
     /** Get the command code of this message */
@@ -167,7 +167,7 @@ public class MsgGtpp extends Msg
     {
         if(type == null)
         {
-            type = message.getGtpHeaderPrime().getName();
+            type = message.getHeader().getName();
         }
         return type;
     }
@@ -239,16 +239,16 @@ public class MsgGtpp extends Msg
         stringBuilder.append(super.toShortString());
         if(message.getLogError().length() != 0)
         {
-            stringBuilder.append("<MESSAGE MALFORMED name= \"" + message.getGtpHeaderPrime().getName() + "\"");
+            stringBuilder.append("<MESSAGE MALFORMED name= \"" + message.getHeader().getName() + "\"");
         }
         else
         {
-            stringBuilder.append("<MESSAGE name= \"" + message.getGtpHeaderPrime().getName() + "\"");
+            stringBuilder.append("<MESSAGE name= \"" + message.getHeader().getName() + "\"");
         }
 
-        stringBuilder.append(" length=\"" + message.getGtpHeaderPrime().getLength() + "\"");
-        stringBuilder.append(" type=\"" + Integer.toHexString(message.getGtpHeaderPrime().getMessageType()) + "\"");
-        stringBuilder.append(" sequenceNumber=\"" + message.getGtpHeaderPrime().getSequenceNumber() + "\"/>");
+        stringBuilder.append(" length=\"" + message.getHeader().getLength() + "\"");
+        stringBuilder.append(" type=\"" + Integer.toHexString(message.getHeader().getMessageType()) + "\"");
+        stringBuilder.append(" sequenceNumber=\"" + message.getHeader().getSequenceNumber() + "\"/>");
         return stringBuilder.toString();
     }
 
