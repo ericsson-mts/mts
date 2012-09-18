@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="connection" />
+    
+    <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
+    <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="3387"/>
+
+    <sendMessageGTP name="echo Request" channel="[connection]">
+        <header name="echoRequest" sequenceNumber="1"/>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="echoResponse">
+    </receiveMessageGTP>
+
+    <sendMessageGTP name="echo Request" channel="[connection]">
+        <header name="echoRequest" sequenceNumber="2"/>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="version not supported">
+    </receiveMessageGTP>
+
+    <finally>
+        <closeChannelGTP name="[connection]"/>
+    </finally>
+    
+</scenario>
