@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.gtpp;
 
+import java.io.InputStream;
+
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
@@ -46,6 +48,16 @@ public class GtpHeaderPrime extends Header{
     private int length = 0;
     private int sequenceNumber;
     
+    public GtpHeaderPrime() {
+		// TODO Auto-generated constructor stub
+    	this.protocolType = 0; 
+    	this.version = 0; 
+	}
+    public GtpHeaderPrime(DefaultArray flagArray) 
+    {
+        this.version = flagArray.getBits(0,3);
+        this.protocolType = flagArray.getBits(3,1);
+	}
     public int getSize()
     {
     	return 6; 
@@ -123,16 +135,24 @@ public class GtpHeaderPrime extends Header{
         return supArray;
     }
     
-    public void parseArray(Array array, GtppDictionary dictionary) throws Exception
-    {
-        version = (array.subArray(0, 1).getBits(0, 3));
-        protocolType = (array.subArray(0, 1).getBits(3, 1));
-        
-        messageType = (new Integer08Array(array.subArray(1, 1)).getValue());
+    public void parseArray(InputStream stream, GtppDictionary dictionary) throws Exception
+    {	
+    	byte[] header = new byte[1];
+    	
+        stream.read(header, 0, 1);
+        Array array = new DefaultArray(header); 
+        messageType = (new Integer08Array(array).getValue());
         name = dictionary.getMessageNameFromType(messageType);
         
-        length = (new Integer16Array(array.subArray(2, 2)).getValue());
-        sequenceNumber = (new Integer16Array(array.subArray(4, 2)).getValue());
+        header = new byte[2];
+        
+        stream.read(header, 0, 2);
+        array = new DefaultArray(header); 
+        length = (new Integer16Array(array).getValue());
+        
+        stream.read(header, 0, 2);
+		array = new DefaultArray(header); 
+		sequenceNumber = (new Integer16Array(array).getValue()); 
     }
     
     @Override

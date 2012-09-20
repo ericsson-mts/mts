@@ -32,6 +32,7 @@ import com.devoteam.srit.xmlloader.gtpp.Header;
 import com.devoteam.srit.xmlloader.gtpp.StackGtpp;
 import gp.utils.arrays.*;
 
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.Vector;
 
@@ -112,10 +113,14 @@ public class GtppMessage
     }
 
     
-    public void parseArray(Array array, GtppDictionary dictionary) throws Exception
-    {	
-    	
-        int protocolType = (array.subArray(0, 1).getBits(3, 1));
+    public void parseArray(InputStream inputStream, GtppDictionary dictionary) throws Exception
+    {
+    	byte[] headerByte = new byte[6];
+    	inputStream.read(headerByte, 0, 1);
+        int version = headerByte[0] & 0xE0; 
+        int protocolType = headerByte[0] & 0x10;
+        Array array = null; 
+        
         if(protocolType == 0)
         {
     		header = new GtpHeaderPrime();	
@@ -124,7 +129,8 @@ public class GtppMessage
         {
         	header = new GtpHeader(); 
         }
-        header.parseArray(array, dictionary);
+        header.parseArray(inputStream, dictionary);
+        
         int headerSize = header.getSize();
         data = new DefaultArray(array.subArray(headerSize, header.getLength()).getBytes());
         GtppTLV tlv = null;
