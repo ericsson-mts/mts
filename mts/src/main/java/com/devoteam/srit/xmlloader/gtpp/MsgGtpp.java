@@ -159,7 +159,7 @@ public class MsgGtpp extends Msg
     /** Return true if the message is a request else return false*/
     public boolean isRequest()
     {
-        return "Request".contains(message.getHeader().getName()) ? true : false;
+        return message.getHeader().getName().contains("Request") ? true : false;
     }
 
     /** Get the command code of this message */
