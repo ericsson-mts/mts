@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.gtpp;
 
+import java.io.InputStream;
+
 import org.dom4j.Element;
 
 import gp.utils.arrays.Array;
@@ -52,12 +54,32 @@ public class GtpHeader extends Header {
     private int nPduNumber;
     private int nextExtensionType;
     
+    public GtpHeader(DefaultArray flagArray)
+    {	
+        this.version = flagArray.getBits(0,3);
+        this.protocolType = flagArray.getBits(3,1);
+    	this.extensionHeaderFlag = flagArray.getBits(5,1);
+    	this.sequenceNumberFlag = flagArray.getBits(6,1);
+    	this.nPduNumberFlag = flagArray.getBits(7,1);
+    	
+    }
     public GtpHeader()
-    {}
+    {
+    	this.protocolType = 1;
+    	this.version = 1;
+    }
     //getSize
     public int getSize()
     {
-    	return 12; 
+    	int k = 12; 
+    	if(extensionHeaderFlag == 0)
+    		k -= 1; 
+    	if(sequenceNumberFlag == 0)
+    		k -= 1; 
+    	if(nPduNumberFlag == 0)
+    		k -= 1; 
+    	
+    	return k; 
     }
     //Getters and setters
     public String getName() {
@@ -150,29 +172,56 @@ public class GtpHeader extends Header {
         supArray.addLast(new Integer08Array(messageType));
         supArray.addLast(new Integer16Array(length));
         supArray.addLast(new Integer32Array(teid));
-        supArray.addLast(new Integer16Array(sequenceNumber));
-        supArray.addLast(new Integer08Array(nPduNumber));
-        supArray.addLast(new Integer08Array(nextExtensionType));
         
+        if(sequenceNumberFlag != 0)
+        	supArray.addLast(new Integer16Array(sequenceNumber));
+    	if(nPduNumberFlag != 0)
+    		 supArray.addLast(new Integer08Array(nPduNumber));
+    	if(extensionHeaderFlag != 0)
+    		supArray.addLast(new Integer08Array(nextExtensionType)); 
+  
         return supArray;
     }
 	
-	public void parseArray(Array array, GtppDictionary dictionary) throws Exception
+	public void parseArray(InputStream stream, GtppDictionary dictionary) throws Exception
     {
-        version = (array.subArray(0, 1).getBits(0, 3));
-        protocolType = (array.subArray(0, 1).getBits(3, 1));
-        extensionHeaderFlag = (array.subArray(0, 1).getBits(5, 1));
-        sequenceNumberFlag = (array.subArray(0, 1).getBits(6, 1));
-        nPduNumberFlag = (array.subArray(0, 1).getBits(7, 1));
-        
-        messageType = (new Integer08Array(array.subArray(1, 1)).getValue());
+		byte[] header = new byte[1];
+        stream.read(header, 0, 1);
+        Array array = new DefaultArray(header); 
+        messageType = (new Integer08Array(array).getValue());
         name = dictionary.getMessageNameFromType(messageType);
         
-        length = (new Integer16Array(array.subArray(2, 2)).getValue());
-        teid = (new Integer32Array(array.subArray(4, 4)).getValue());
-        sequenceNumber = (new Integer16Array(array.subArray(8, 2)).getValue());
-        nPduNumber = (new Integer08Array(array.subArray(10, 1)).getValue());
-        nextExtensionType = (new Integer08Array(array.subArray(11, 1)).getValue());
+        header = new byte[2];
+        stream.read(header, 0, 2);
+        array = new DefaultArray(header); 
+        length = (new Integer16Array(array).getValue());
+        
+        header = new byte[4];
+        stream.read(header, 0, 4);
+        array = new DefaultArray(header); 
+        teid = (new Integer32Array(array).getValue());
+        
+    	if(sequenceNumberFlag != 0)
+    	{	
+    		header = new byte[2];
+    		stream.read(header, 0, 2);
+    		array = new DefaultArray(header); 
+    		sequenceNumber = (new Integer16Array(array).getValue()); 
+    	}
+    	if(extensionHeaderFlag != 0)
+    	{
+    		header = new byte[1];
+    		stream.read(header, 0, 1);
+    		array = new DefaultArray(header);
+    		nPduNumber = (new Integer08Array(array).getValue());
+    	}
+    	if(extensionHeaderFlag != 0)
+    	{	
+    		header = new byte[1];
+    		stream.read(header, 0, 1);
+    		array = new DefaultArray(header);
+    		nextExtensionType = (new Integer08Array(array).getValue());
+    	}
     }
 	
 	@Override
@@ -199,7 +248,9 @@ public class GtpHeader extends Header {
 	@Override
     public String toString()
     {
-        String str = name + ", length " + length + ", messageType " + messageType + ", version " + version + ", seqNum " + sequenceNumber + "\r\n";
+        String str = name + ", length " + length + ", TEID "+ teid + ", N-PDU Number " + nPduNumber 
+        		+ ", Next Extension Header Type " + nextExtensionType + ", messageType " + messageType 
+        		+ ", version " + version + ", seqNum " + sequenceNumber + "\r\n";
         
         return str;
     }
@@ -225,9 +276,17 @@ public class GtpHeader extends Header {
         	this.messageType = Integer.parseInt(msgType); 
         	this.name = dictionary.getMessageNameFromType(this.messageType);
         }
+        
         String msgSeqNum = header.attributeValue("sequenceNumber");
-        sequenceNumber = Integer.parseInt(msgSeqNum);
+        if(msgSeqNum != null)
+        {
+        	this.sequenceNumberFlag = 1;
+        	sequenceNumber = Integer.parseInt(msgSeqNum);
+        }
+        
 
     }
+
 }
+
 

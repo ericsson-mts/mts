@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.gtpp;
 
+import java.io.InputStream;
+
 import org.dom4j.Element;
 
 import gp.utils.arrays.Array;
@@ -36,7 +38,7 @@ public abstract class Header {
 	//Abstract method
 	public Header clone(){ return null; };
 	public abstract Array getArray()throws Exception; 
-	public abstract void parseArray(Array array, GtppDictionary dictionary) throws Exception;
+	public abstract void parseArray(InputStream stream, GtppDictionary dictionary) throws Exception;
 	public abstract void parseXml(Element header, GtppDictionary dictionary) throws Exception;
 	public String toString() {return null;}; 
 	public abstract int getLength(); 

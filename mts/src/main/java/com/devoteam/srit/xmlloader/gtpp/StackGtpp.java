@@ -128,6 +128,7 @@ public class StackGtpp extends Stack
         	gtpHeader = new GtpHeaderPrime();
         	gtpHeader.parseXml(xmlHeaderP, dictionary); 
         	gtppMessage.setHeader(gtpHeader);
+ 
         }
         else if(xmlHeader != null)
         {
@@ -140,15 +141,6 @@ public class StackGtpp extends Stack
     	
         // dictionary translation
         String msgName = gtpHeader.getName(); 
-        int msgType = gtpHeader.getMessageType();
-        if(msgName != null)
-        {
-            gtppMessage = dictionary.getMessageFromName(msgName);
-        }
-        else if(msgType != 0)
-        {
-            gtppMessage = dictionary.getMessageFromType(msgType);
-        }
         if((gtpHeader.getMessageType() == 0) || (gtpHeader.getName().equalsIgnoreCase("Unknown message")))
             gtppMessage.setLogError("Message <" + msgName + "> is not present in the dictionary\r\n");
         
@@ -301,24 +293,34 @@ public class StackGtpp extends Stack
     @Override
     public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
     {
-        byte[] header = new byte[6];
+        
         byte[] buf = null;
         int nbCharRead = 0;
         int msgLength = 0;
         SupArray msgArray = new SupArray();
         DefaultArray headerArray = null;
-
+        Header gtpHeader = null; 
         synchronized (inputStream)
         {
             //read the header
-            nbCharRead = inputStream.read(header, 0, 6);
-            if(nbCharRead == -1)
-                throw new Exception("End of stream detected");
-            else if(nbCharRead < 6)
-                throw new Exception("Not enough char read");
-
-            headerArray = new DefaultArray(header);
-            msgLength = new Integer16Array(headerArray.subArray(2, 2)).getValue();
+            //nbCharRead = inputStream.read(header, 0, 6);
+        	byte[] flag = new byte[1];
+            inputStream.read(flag, 0, 1);
+            DefaultArray flagArray = new DefaultArray(flag);
+            //int protocolType = flag[0] & 0x10 >> 4;
+            int protocolType = flagArray.getBits(3,1);
+            
+            if(protocolType == 1)
+            	gtpHeader = new GtpHeader(flagArray); 
+            else if(protocolType == 0)
+            	gtpHeader = new GtpHeaderPrime(); 
+            
+            gtpHeader.getSize(); 
+            gtpHeader.parseArray(inputStream, dictionary); 
+            
+            headerArray = new DefaultArray(flag);
+            msgLength = gtpHeader.getLength(); 
+ 
             if(msgLength != 0)
             {
                 buf = new byte[msgLength];
@@ -330,14 +332,11 @@ public class StackGtpp extends Stack
                     throw new Exception("Not enough char read");
                 msgArray.addLast(new DefaultArray(buf));
             }
-            msgArray.addFirst(headerArray);
+            msgArray.addFirst(gtpHeader.getArray());
         }
-        DefaultArray array = new DefaultArray(msgArray.getBytes());
-
         //get type from message to get message from dictionary
-        int type  = new Integer08Array(array.subArray(1, 1)).getValue();
-        GtppMessage msg = dictionary.getMessageFromType(type);
-        msg.parseArray(array, dictionary);
+        GtppMessage msg = new GtppMessage();
+        msg.setHeader(gtpHeader); 
         
         return new MsgGtpp(msg);
     }
