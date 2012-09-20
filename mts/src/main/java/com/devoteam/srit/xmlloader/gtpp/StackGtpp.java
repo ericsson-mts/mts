@@ -304,7 +304,13 @@ public class StackGtpp extends Stack
         {
             //read the header
         	byte[] flag = new byte[1];
-            inputStream.read(flag, 0, 1);
+        	nbCharRead= inputStream.read(flag, 0, 1);
+        	if(nbCharRead == -1){
+        		throw new Exception("End of stream detected");
+        	}
+        	else if (nbCharRead < 1) {
+                throw new Exception("Not enough char read");
+            }
             DefaultArray flagArray = new DefaultArray(flag);
             int protocolType = flagArray.getBits(3,1);
             
