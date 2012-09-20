@@ -37,7 +37,7 @@
 		<counter name="BYExxxin" summary="BYExxx_in" complete="Receive an incoming BYE/XXX OK"/>			
     	</stats>
 
-  	<createListenpointSIP name="provider" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="UDP"/>    		
+  	<createListenpointSIP name="listenpointSIP" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="UDP"/>    		
   				               	  		       	       	        
   	<stats>
 	    <counter name="ActiveSession"><increase>1</increase></counter>  	
@@ -57,14 +57,23 @@
 	<parameter name="[tempPortRTP]" operation="number.divide" value="[test:indexUser]" value2="[test:countRaptor]"/>
 	<parameter name="[tempPortRTP]" operation="number.round" value="[tempPortRTP]"/>
 	<parameter name="[tempPortRTP]" operation="number.multiply" value="[tempPortRTP]" value2="2"/>
-	<parameter name="[portRTP]" operation="number.add" value="[RangeInviterRTPPort]" value2="[tempPortRTP]"/>    			
-
+	<parameter name="[portRTP]" operation="number.add" value="[RangeInviterRTPPort]" value2="[tempPortRTP]"/>
+  
+  <if>
+        <condition>
+            <test parameter="[SendRTPUAC]" condition="boolean.equals" value="true"/>
+        </condition>
+        <then>
+            <createListenpointRTPFLOW name="listenpointUAC_[portRTP]" localHost="[Host-Tester]" localPort="[portRTP]" transport="UDP"/>    			
+        </then>
+   </if>
+       
   	<parameter name="[newFromTag]" operation="string.random" value="10"/>
   	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
 	<parameter name="[newCseqNumber]" operation="set" value="1"/>
 	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
 	  		
-	<sendMessageSIP name="Send INVITE" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+	<sendMessageSIP name="Send INVITE" listenpoint="listenpointSIP" remoteHost="[Host-Server]" remotePort="[Port-Server]">
 <![CDATA[		
 INVITE sip:[inviteeName]@[userDomain] SIP/2.0
 Call-ID: [newCallId]-[inviterName]@[Adresse-Tester]
