@@ -303,11 +303,9 @@ public class StackGtpp extends Stack
         synchronized (inputStream)
         {
             //read the header
-            //nbCharRead = inputStream.read(header, 0, 6);
         	byte[] flag = new byte[1];
             inputStream.read(flag, 0, 1);
             DefaultArray flagArray = new DefaultArray(flag);
-            //int protocolType = flag[0] & 0x10 >> 4;
             int protocolType = flagArray.getBits(3,1);
             
             if(protocolType == 1)

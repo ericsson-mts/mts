@@ -238,9 +238,12 @@ public class GtpHeader extends Header {
         clone.setMessageType(messageType);
         clone.setLength(length);
         clone.setTeid(teid); 
-        clone.setSequenceNumber(sequenceNumber);
-        clone.setnPduNumber(nPduNumber); 
-        clone.setNextExtensionType(nextExtensionType);
+        if(sequenceNumberFlag != 0)
+        	clone.setSequenceNumber(sequenceNumber);
+        if(extensionHeaderFlag != 0)
+        	clone.setnPduNumber(nPduNumber); 
+        if(extensionHeaderFlag != 0)
+        	clone.setNextExtensionType(nextExtensionType);
 
         return clone;
     }
@@ -282,6 +285,18 @@ public class GtpHeader extends Header {
         {
         	this.sequenceNumberFlag = 1;
         	sequenceNumber = Integer.parseInt(msgSeqNum);
+        }
+        String nPduNum = header.attributeValue("nPduNumber");
+        if(nPduNum != null)
+        {
+        	this.nPduNumberFlag = 1;
+        	nPduNumber = Integer.parseInt(nPduNum);
+        }
+        String extNum = header.attributeValue("nextExtensionType");
+        if(extNum != null)
+        {
+        	this.extensionHeaderFlag = 1;
+        	nextExtensionType = Integer.parseInt(extNum);
         }
         
 
