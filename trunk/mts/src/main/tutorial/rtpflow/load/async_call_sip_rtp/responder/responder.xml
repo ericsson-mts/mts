@@ -3,9 +3,9 @@
 
 <scenario>
 
-  	<createListenpointSIP name="provider" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="UDP"/>
+  	<createListenpointSIP name="listenpointSIP" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="UDP"/>
 
-	<parameter name="[indexUser]" operation="set" value="0"/>    			
+	<parameter name="[test:indexUser]" operation="set" value="0"/>    			
 
 	<!-- calculate the range of user from the csv files -->
 	<parameter name="[RangeNumberUser]" operation="list.size" value="[inviteeTab]"/>    		
@@ -58,6 +58,7 @@
 	  	<parameter name="[lastToUser]" operation="protocol.setFromMessage" value="header.To.address.URI.User"/>  	  	
 	  	<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>		  		  	
 	  	<parameter name="[lastContactAddress]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
+	  	<parameter name="[lastRecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route"/>
 	  	<parameter name="[lastCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
     	<parameter name="[lastCSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>   	  	
 	  	<parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>    		  	
@@ -179,7 +180,7 @@
 
   	<parameter name="[newToTag]" operation="string.random" value="10"/>
   	
- 	<sendMessageSIP name="Send 100 Trying" delay="0" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+ 	<sendMessageSIP name="Send 100 Trying" delay="0" listenpoint="listenpointSIP">
 <![CDATA[
 SIP/2.0 100 Trying
 Via: [lastVia]
@@ -191,15 +192,30 @@ Content-Length: 0
 ]]>			
   	</sendMessageSIP>
 
-     <parameter name="[tempIndexUser]" operation="list.find" value="[test:inviteeTab]" value2="[lastToUser]"/>  
-    <parameter name="[indexRaptor]" operation="number.modulo" value="[tempIndexUser]" value2="[test:countRaptor]"/>   
-	<parameter name="[IPRTP]" operation="set" value="[Host-Raptor([indexRaptor])]"/>    			
-	<parameter name="[tempPortRTP]" operation="number.divide" value="[test:indexUser]" value2="[test:countRaptor]"/>
+  <!-- RAPTOR parameter name="[tempIndexUser]" operation="list.find" value="[test:inviteeTab]" value2="[lastToUser]"/>  
+  <parameter name="[indexRaptor]" operation="number.modulo" value="[tempIndexUser]" value2="[test:countRaptor]"/>   
+	<parameter name="[IPRTP]" operation="set" value="[Host-Raptor([indexRaptor])]"/-->
+	
+	<parameter name="[IPRTP]" operation="set" value="[Host-Tester]"/>
+	
+	<!-- RAPTOR parameter name="[tempPortRTP]" operation="number.divide" value="[test:indexUser]" value2="[test:countRaptor]"/>
 	<parameter name="[tempPortRTP]" operation="number.round" value="[tempPortRTP]"/>
-	<parameter name="[tempPortRTP]" operation="number.multiply" value="[tempPortRTP]" value2="2"/>
-	<parameter name="[portRTP]" operation="number.add" value="[RangeInviterRTPPort]" value2="[tempPortRTP]"/>    			
+	<parameter name="[tempPortRTP]" operation="number.multiply" value="[tempPortRTP]" value2="2"/-->
+	
+	<parameter name="[test:indexUser]" operation="number.add" value="[test:indexUser]" value2="1"/>
+	<parameter name="[tempPortRTP]" operation="number.multiply" value="[test:indexUser]" value2="2"/>
+	<parameter name="[portRTP]" operation="number.add" value="[RangeInviteeRTPPort]" value2="[tempPortRTP]"/>    			
 
-        <sendMessageSIP name="Send 180 Ringing" delay="[TryingDuration]" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+  <if>
+        <condition>
+            <test parameter="[SendRTPUAS]" condition="boolean.equals" value="true"/>
+        </condition>
+        <then>
+            <createListenpointRTPFLOW name="listenpointUAS_[portRTP]" localHost="[Host-Tester]" localPort="[portRTP]" transport="UDP"/>
+        </then>
+  </if>
+
+        <sendMessageSIP name="Send 180 Ringing" delay="[TryingDuration]" listenpoint="listenpointSIP">
 <![CDATA[
 SIP/2.0 180 Ringing
 Via: [lastVia]
@@ -229,7 +245,7 @@ a=ptime:20
 	<parameter name="[tempPortRTP]" operation="number.multiply" value="[test:indexUser]" value2="2"/>
 	<parameter name="[portRTP]" operation="number.add" value="[RangeInviteeRTPPort]" value2="[tempPortRTP]"/>    			
   
-    <sendMessageSIP name="Send 200 OK" delay="[RingingDuration]" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+    <sendMessageSIP name="Send 200 OK" delay="[RingingDuration]" listenpoint="listenpointSIP">
 <![CDATA[
 SIP/2.0 200 OK
 Via: [lastVia]
@@ -255,11 +271,14 @@ a=sendrecv
 a=ptime:20
 ]]>			
             		</sendMessageSIP>
-
 					
-					
-					
-					
+					<!-- memorize in context the SDP parameters used on UAS side after receiving the ACK message-->
+					<parameter name="[test:SDPConnectionAddress0_[lastCallId]]" operation="set" value="[SDPConnectionAddress0]"/>
+					<parameter name="[test:SDPMediaPort0_[lastCallId]]" operation="set" value="[SDPMediaPort0]"/>
+					<!-- memorize in context the SIP parameters for subsequent request -->
+					<parameter name="[test:requestURI_[lastCallId]]" operation="set" value="[lastContactAddress]"/>
+					<parameter name="[test:route_[lastCallId]]" operation="list.revert" value="[lastRecordRoute]"/>
+										
 	<goto  name="goto_begin" label="begin" state="true"/>	    	
 	<!-- end main loop -->
 	
@@ -271,7 +290,7 @@ a=ptime:20
   		    <counter name="INVITESessAudit"><increase>1</increase></counter>
     		</stats>	    	    	
 		  	  
-        <sendMessageSIP name="Send 200 OK" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+        <sendMessageSIP name="Send 200 OK" listenpoint="listenpointSIP">
 <![CDATA[
 SIP/2.0 200 OK
 Via: [lastVia]
@@ -324,15 +343,17 @@ message : [lastMessage]
     	</stats>	    	    			
     
       	<parameter name="[newBranchId]" operation="string.random" value="10"/>
-      	
-  	<sendMessageSIP name="Send ACK" delay="0" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+        <parameter name="[requestURI]" operation="set" value="[requestURI_[lastCallId]]"/>
+				<parameter name="[route]" operation="set" value="[route_[lastCallId]]"/>     	
+				
+  	<sendMessageSIP name="Send ACK" delay="0" listenpoint="listenpointSIP">
 <![CDATA[
-ACK [lastContactAddress] SIP/2.0
+ACK [requestURI] SIP/2.0
 Call-ID: [lastCallId]
-Contact: <sip:[lastToUser]@[Adresse-Tester]>
 CSeq: [lastCSeqNumber] ACK
 To: [lastTo]
 From: [lastFrom]
+Route: [route]
 Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]
 Max-Forwards: 8
 Content-Length: 0
@@ -350,6 +371,9 @@ Content-Length: 0
 		<goto  name="goto_begin" label="begin" state="true"/>	    	                
 	    </then>
 	</if>
+					<!-- memorize in context the SIP parameters for subsequent request -->
+					<parameter name="[test:requestURI_[lastCallId]]" operation="set" value="[lastContactAddress]"/>
+					<parameter name="[test:route_[lastCallId]]" operation="list.revert" value="[lastRecordRoute]"/>
 
   	<stats>
   	    	<counter name="INVITE2xxin"><increase>1</increase></counter>  	
@@ -357,20 +381,9 @@ Content-Length: 0
 
     <if>
         <condition>
-            <test parameter="[SendByeUAC]" condition="boolean.equals" value="true"/>
+            <test parameter="[SendRTPUAC]" condition="boolean.equals" value="true"/>
         </condition>
-        <then>      
-    
-            <parameter name="[tempIndexUser]" operation="list.find" value="[test:inviteeTab]" value2="[lastToUser]"/>
-            <parameter name="[indexRaptor]" operation="number.modulo" value="[tempIndexUser]" value2="[test:countRaptor]"/>   
-	        <parameter name="[IPRTP]" operation="set" value="[Host-Raptor-RTP([indexRaptor])]"/>    			
-
-        	<parameter name="[tempPortRTP]" operation="number.divide" value="[tempIndexUser]" value2="[test:countRaptor]"/>
-	        <parameter name="[tempPortRTP]" operation="number.round" value="[tempPortRTP]"/>
-	        <parameter name="[tempPortRTP]" operation="number.multiply" value="[tempPortRTP]" value2="2"/>
-	        <parameter name="[portRTP]" operation="number.add" value="[RangeInviterRTPPort]" value2="[tempPortRTP]"/>   
-
-			<createListenpointRTPFLOW name="listenpoint_[portRTP]" localHost="[Host-Tester]" localPort="[portRTP]" transport="UDP"/>
+        <then>
 
 			<parameter name="[newSsrc]" operation="number.random" value="1000000" description="random Ssrc for the RTP flow"/>
 			<parameter name="[seqnum]" operation="set" value="0"/>
@@ -392,58 +405,35 @@ Content-Length: 0
 			<log level="info"> nbPacket : [nbPacket] </log>
 			<log level="info"> nbPacketCall : [nbPacketCall] </log>
 			
-			<sendMessageRTPFLOW listenpoint="listenpoint_[portRTP]" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0(0)]">
+			<sendMessageRTPFLOW listenpoint="listenpointUAC_[portRTP]" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0(0)]">
 				<flow  packetNumber="[nbPacketCall]" deltaTimestamp="[deltaTimestamp]" synchronous="false" bitRate="[bitRate]" packetLost="0">
 					<header ssrc="[newSsrc]" payloadType="[payloadType]" seqnum="[seqnum]" timestamp="[timestamp]"/>
 					<payload format="binary">[payloadList]</payload>
 				</flow>
 			</sendMessageRTPFLOW>
 			
-<!--			
-            <parameter name="[tempIPSrc]" operation="string.split" value="[IPRTP]" value2="."/>
-            <parameter name="[binaryIPSrc]" operation="binary.parse" value="[tempIPSrc(0)]:1 [tempIPSrc(1)]:1 [tempIPSrc(2)]:1 [tempIPSrc(3)]:1"/>
-            <parameter name="[binaryPortSrc]" operation="binary.parse" value="d[portRTP]:2"/>
-
-            <parameter name="[tempIPDest]" operation="string.split" value="[SDPConnectionAddress0]" value2="."/>
-            <parameter name="[binaryIPDest]" operation="binary.parse" value="[tempIPDest(0)]:1 [tempIPDest(1)]:1 [tempIPDest(2)]:1 [tempIPDest(3)]:1"/>
-            <parameter name="[binaryPortDest]" operation="binary.parse" value="d[SDPMediaPort0]:2"/>
-
-            <parameter name="[RaptorAddress]" operation="set" value="[Host-Raptor([indexRaptor])]" />
-
-            <sendMessageTCP channel="[test:channel_[RaptorAddress]]">
-                <data format="binary">[indexRaptor]:1 </data>                       
-                <data format="binary">2:1 </data>                                 
-                <data format="binary">[tempIndexUser]:4 </data>                    
-                <data format="binary">h[binaryIPSrc] </data>                        
-                <data format="binary">h[binaryPortSrc] </data>                      
-                <data format="binary">h[binaryIPDest] </data>                     
-                <data format="binary">h[binaryPortDest] </data>                  
-                <data format="binary">h[binaryIPSrc] </data>                     
-                <data format="binary">h[binaryPortSrc] </data>                     
-                <data format="binary">0:4 </data>                                  
-                <data format="binary">0:2</data>                                    
-                <data format="binary">0:2</data>                                    
-            </sendMessageTCP>
-
-            <parameter name="[RaptorAddress]" operation="set" value="[Host-Raptor([indexRaptor])]" />
-
-            <sendMessageTCP channel="[test:channel_[RaptorAddress]]" delay="[CallDuration]">
-                <data format="binary">[indexRaptor]:1 </data>                      
-                <data format="binary">3:1 </data>                                 
-                <data format="binary">[tempIndexUser]:4 </data>                     
-            </sendMessageTCP>
-
--->
-          	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+			   </then>
+		</if>
+		
+    <if>
+        <condition>
+            <test parameter="[SendByeUAC]" condition="boolean.equals" value="true"/>
+        </condition>
+        <then>
+			
+          <parameter name="[newBranchId]" operation="string.random" value="10"/>
 	        <parameter name="[newCseqNumber]" operation="number.add" value="[lastCSeqNumber]" value2="1"/>
-        
-          	<sendMessageSIP name="Send BYE" delay="[CallDuration]" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]"> 
+          <parameter name="[requestURI]" operation="set" value="[requestURI_[lastCallId]]"/>
+					<parameter name="[route]" operation="set" value="[route_[lastCallId]]"/>
+					
+          	<sendMessageSIP name="Send BYE" delay="[CallDuration]" listenpoint="listenpointSIP"> 
 <![CDATA[
-BYE [lastContactAddress] SIP/2.0
+BYE [requestURI] SIP/2.0
 Call-ID: [lastCallId]
 CSeq: [newCseqNumber] BYE
 To: [lastTo]
 From: [lastFrom]
+Route: [route]
 Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]
 Max-Forwards: 8
 Content-Length: 0
@@ -470,18 +460,59 @@ Content-Length: 0
 
     <if>
         <condition>
-            <test parameter="[SendByeUAS]" condition="boolean.equals" value="true"/>
+            <test parameter="[SendRTPUAS]" condition="boolean.equals" value="true"/>
         </condition>
         <then>      
         
+              <parameter name="[newSsrc]" operation="number.random" value="1000000" description="random Ssrc for the RTP flow"/>
+        			<parameter name="[seqnum]" operation="set" value="0"/>
+        			<parameter name="[timestamp]" operation="set" value="0"/>
+        			<parameter name="[deltaTimestamp]" operation="set" value="160"/>
+        			<parameter name="[temp]" operation="number.divide" value="[deltaTimestamp]" value2="[byteRateRTP]"/>
+        
+        			<parameter name="[payloadList]" operation="set" value="[[fileWave(0)]]"/>
+        			<parameter name="[payloadListTaille]" operation="list.size" value="[payloadList(0)]"/>
+        			<parameter name="[payloadType]" operation="set" value="[[fileWave(1)]]"/>
+        			<parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>
+        			<parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/>
+        			<parameter name="[nbPacketCall]" operation="number.multiply" value="[CallDuration]" value2="50"/>
+        			
+        			<log level="info"> payloadList : [payloadList(0)] </log>
+        			<log level="info"> payloadListTaille : [payloadListTaille] </log>
+        			<log level="info"> payloadType : [payloadType] </log>
+        			<log level="info"> bitRate : [bitRate] </log>
+        			<log level="info"> nbPacket : [nbPacket] </log>
+        			<log level="info"> nbPacketCall : [nbPacketCall] </log>
+        			
+        		  <parameter name="[SDPConnectionAddress0]" operation="set" value="[SDPConnectionAddress0_[lastCallId]]"/>
+					    <parameter name="[SDPMediaPort0]" operation="set" value="[SDPMediaPort0_[lastCallId]]"/>
+					 
+      			 <sendMessageRTPFLOW listenpoint="listenpointUAS_[portRTP]" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]">
+      				  <flow  packetNumber="[nbPacketCall]" deltaTimestamp="[deltaTimestamp]" synchronous="false" bitRate="[bitRate]" packetLost="0">
+      					   <header ssrc="[newSsrc]" payloadType="[payloadType]" seqnum="[seqnum]" timestamp="[timestamp]"/>
+      					   <payload format="binary">[payloadList]</payload>
+      				  </flow>
+      			 </sendMessageRTPFLOW>
+      	   </then>
+        </if>
+        		
+      	<if>
+        <condition>
+            <test parameter="[SendByeUAS]" condition="boolean.equals" value="true"/>
+        </condition>
+        <then>  
+  
              <parameter name="[newBranchId]" operation="string.random" value="10"/>
-	     <parameter name="[newCseqNumber]" operation="number.add" value="[lastCSeqNumber]" value2="1"/>
-            
-             <sendMessageSIP name="Send BYE" delay="[CallDuration]" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]"> 
+	           <parameter name="[newCseqNumber]" operation="number.add" value="[lastCSeqNumber]" value2="1"/>
+             <parameter name="[requestURI]" operation="set" value="[requestURI_[lastCallId]]"/>
+					   <parameter name="[route]" operation="set" value="[route_[lastCallId]]"/>
+                         
+             <sendMessageSIP name="Send BYE" delay="[CallDuration]" listenpoint="listenpointSIP"> 
             <![CDATA[
-BYE sip:[Host-Server] SIP/2.0
+BYE [requestURI] SIP/2.0
 To: [lastFrom]
 From: [lastTo]
+Route: [route]
 Call-ID: [lastCallId]
 CSeq: [newCseqNumber] BYE
 Max-Forwards: 70
@@ -518,7 +549,7 @@ Content-Length: 0
   
     	<parameter name="[newToTag]" operation="string.random" value="10"/>
     	
-        <sendMessageSIP name="Send 200 OK" delay="0" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+        <sendMessageSIP name="Send 200 OK" delay="0" listenpoint="listenpointSIP">
 <![CDATA[
 SIP/2.0 200 OK
 Via: [lastVia]
