@@ -4,4 +4,4 @@ cd ..
 
 rm -rf ../reports
 
-./startCmd.sh regression ../tutorial/test.xml -Rsequential
+./startCmd.sh ../tutorial/core/test.xml -sequential

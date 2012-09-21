@@ -3,6 +3,6 @@ cd ..
 
 rmdir /S/Q ..\reports
 
-call startCmd_env.bat regression ../tutorial/test.xml -Rsequential
+call startCmd.bat ../tutorial/core/test.xml -sequential
 
 pause
