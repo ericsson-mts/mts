@@ -1,0 +1,62 @@
+<!-- PROC : preparation du header Authorization  --> 
+<log type="Scenario" level="2">--Entering Include Function : nextNonceCompute.xml</log>
+<!-- 
+AUTEUR : R&D/CORE/M2V/TSC/JD
+OBJET : Sauvegarde du Nonce pour le once caching
+
+MODIF : 24/06/2011 , utiliser un fichier temp csv et pas "properties" car
+			properties est en memoire cache (pas de relecture possible)
+			12/07/2011 : nonce count sur un format 8LHex
+--> 
+<!--
+   ENTREE : method / URI / userNumberPhone
+   SORTIE : Autorization header 
+   --> 
+  <parameter name="[authorization]" operation="set" value=" " />
+<!-- stockage Next Nonce --> 
+<if>	<condition>	<test parameter="[activateNextNonce]" condition="string.equals" value="false"/>	</condition>
+<then>	<goto label="the_end" /> </then> 
+</if> 
+
+<if> <condition> <test parameter="[nextNonce]" condition="list.isempty" value="true"/></condition>
+<then> <goto label="the_end" /> </then>
+</if>
+
+<parameter name="[result]" operation="file.exists" value="./temp/nonce[userNumberPhone].var" />
+<if> <condition> <test parameter="[result]" condition="boolean.equals" value="false"/> </condition> 
+<then> <!-- pas de Next Nonce. On envoi pas de Authorization  -->  
+		<goto label="the_end" />
+</then>
+</if> 
+
+<!-- enlever les guillemets (si existent) --> 
+ <parameter name="[nextNonce]" operation="regexReplaces" value="[nextNonce]" value2="&quot;" value3=""/>
+<!-- enlever le "nextnonce=" dans nextNonce --> 
+<parameter name="[nextNonceValue]" operation="regexReplaces" value="[nextNonce]" value2="nextnonce=" value3=""/>
+<!-- ici on a un nonce au frais... --> 
+<parameter name="[nonce]" operation="file.readcsv"  value="./temp/nonce[userNumberPhone].var" value2="0"/>
+<parameter name="[nonceCount]" operation="file.readcsv"  value="./temp/nonce[userNumberPhone].var" value2="1"/>		
+<!-- DEBUG log type="Main" level="ERROR">	<![CDATA[ READ nextNonceCompute nonce = #[nonce] for "[userNumberPhone]"   nonceCount : [nonceCount] ]]>	</log-->			
+<parameter name="[HA2]" operation="digest" value2="MD5" value="[Method]:[URI]" />
+<parameter name="[CNonce]"     operation="set" value="7dbc2"/>
+<parameter name="[WWWAuthRealm]"     operation="set" value="[domainName]"/>
+<parameter name="[WWWAuthQop]"     operation="set" value="auth"/>
+<parameter name="[HA1]" operation="digest" value2="MD5" value="[userNumberPhone]@[domainName]:[WWWAuthRealm]:[Password]"/>
+<parameter name="[AuthResponse]" operation="digest" value2="MD5" value="[HA1]:[nonce]:[nonceCount]:[CNonce]:[WWWAuthQop]:[HA2]" />
+
+<!--parameter name="[authorization]"   operation="set" value="<![CDATA[Authorization: Digest username="[userNumberPhone]@[domainName]", realm="[WWWAuthRealm]", nonce="[nonce]",uri="[URI]", response="[AuthResponse]", algorithm=MD5, cnonce="[CNonce]", opaque="opaqueData", qop="[WWWAuthQop]", nc=[nonceCount]
+E]]>"/-->
+<parameter name="[authorization]"   operation="set" value="&#13;&#10;Authorization: Digest username=&quot;[userNumberPhone]@[domainName]&quot;, realm=&quot;[WWWAuthRealm]&quot;, nonce=[nonce],uri=&quot;[URI]&quot;, response=&quot;[AuthResponse]&quot;, algorithm=MD5, cnonce=&quot;[CNonce]&quot;, opaque=&quot;opaqueData&quot;, qop=&quot;[WWWAuthQop]&quot;, nc=[nonceCount]
+"/>
+<!--
+<![CDATA[Authorization: Digest username="[userNumberPhone]@[domainName]", realm="[WWWAuthRealm]", nonce="[nonce]",uri="[URI]", response="[AuthResponse]", algorithm=MD5, cnonce="[CNonce]", opaque="opaqueData", qop="[WWWAuthQop]", nc=[nonceCount]
+E]]>
+--> 
+<parameter name="[nonceCount]" operation="number.add" value="[nonceCount]" value2="1"/>
+<parameter name="[nonceCount]" operation="binary.parse" value="d[nonceCount]:4" />
+<!-- sauver dans le fichier , mais comme on peut pas re-ecrire un enregistrement , il faut recreer le fichier --> 
+<parameter name="[result]" operation="file.remove" value="./temp/nonce[userNumberPhone].var"/>
+<parameter name="[result]" operation="file.create" value="./temp/nonce[userNumberPhone].var"/>
+<parameter name="[result]" operation="file.writestring"  value="./temp/nonce[userNumberPhone].var" value2="[nextNonceValue];[nonceCount]"/>
+<!-- DEBUG log type="Main" level="ERROR">	<![CDATA[ WRITE nextNonceCompute nonce = #[nonce] for "[userNumberPhone]"   nonceCount : [nonceCount] ]]>	</log-->	
+<label name="the_end"/>

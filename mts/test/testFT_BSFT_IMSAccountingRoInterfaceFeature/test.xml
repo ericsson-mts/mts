@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="DIAMETER" description="DIAMETER regression tests">
+
+	<parameter name="[Local-Host]" operation="system.ipaddress"/>
+  <parameter name="[Local-Host]" operation="set" value="[Local-Host(0)]"/>
+	<parameter name="[Local-Port]" operation="file.readproperty" value="diameter.properties" value2="node.LISTENING_PORT"/>
+	<parameter name="[Local-Address]" operation="set" value="[Local-Host]:[Local-Port]"/>	
+	<parameter name="[Local-Realm]" operation="set" value="ocs.imsloader.com"/>
+
+	<!--parameter name="[Remote-Host]" operation="system.ipaddress"/-->
+	<parameter name="[Remote-Host]" description="AS IP Address " operation="set" value="172.25.11.82" editable="true"/>
+  <parameter name="[Remote-Host]" operation="set" value="[Remote-Host(0)]"/>
+	<parameter name="[Remote-Port]" operation="file.readproperty" value="diameter.properties" value2="node.LISTENING_PORT"/>
+	<parameter name="[Remote-Address]" operation="set" value="[Remote-Host]:[Remote-Port]"/>
+	<parameter name="[Remote-Realm]" operation="set" value="inbstas2.sip.osk.com"/>
+
+	<parameter name="[userDomain]" operation="set" value="sip.osk.com"/>
+	<parameter name="[Vendor-Id]" operation="file.readproperty" value="diameter.properties" value2="capability.SUPPORTED_VENDORID.0"/>
+
+  <testcase name="Bouchon OCS" description="diameter" state="true">
+    <!--scenario name="CTF">AS.xml</scenario-->
+    <scenario name="DIAMETER">OCS.xml</scenario>
+  </testcase>
+
+</test>

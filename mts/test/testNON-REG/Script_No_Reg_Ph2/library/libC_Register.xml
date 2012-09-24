@@ -1,0 +1,152 @@
+<!--
+Function description Register: Allows to register Subscriber with MD5 authentification
+
+Input parameters:
+
+- ipAddressSip		: IP @ where the caller is located
+- portSip		: port where the caller is located
+- sbcHost		: IP @ of SBC input point to access target domain name 
+- sbcPort		: port number of SBC input point to access target domain name
+- Password		: Subscriber IMS password
+- UserName		: Subscriber private name
+- Registration_Duration	: requested duration for registration	
+	
+Output parameters :
+
+-->
+
+<!--
+Initialisation of procedure local parameters
+-->
+
+<!-- 
+|
+|
+Envoi 1ier Register et attente 401 
+|
+|
+-->
+
+<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+<parameter name="[newCallId]" operation="identifier" value="newInteger" value2="10000000"/>
+<parameter name="[newCseq]" operation="identifier" value="newInteger" value2="10000000"/>
+<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+<parameter name="[MaxForwards]" operation="set" value="70"/>
+
+<parameter name="[URI]" operation="set"    value="sip:" />
+		<parameter name="[URI]" operation="concat" value="[URI]"      value2="[domainName]" />
+		<parameter name="[URI]" operation="concat" value="[URI]"      value2=":" />
+		<parameter name="[URI]" operation="concat" value="[URI]"      value2="[sbcPort]" />
+
+<sendRequestSIP name="Send REGISTER" providerName="[provider_Name]">
+<![CDATA[
+REGISTER [URI] SIP/2.0
+To: "[inviter]" <sip:[inviter]@[domainName]>
+From: "[inviter]" <sip:[inviter]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+Expires:[Registration_Duration]
+CSeq: [newCseq] REGISTER
+Route: <sip:[inviter]@[sbcHost]:[sbcPort];lr>
+Via: SIP/2.0/UDP [ipAddressSip]:[portSip];branch=[newBranchId]
+Max-Forwards: [MaxForwards]
+Contact: <sip:[inviter]@[ipAddressSip]:[portSip]>
+Content-Length: 0]]></sendRequestSIP>
+
+<receiveResponseSIP name="receive REGISTER response" method="REGISTER">
+	<parameter name="[StatusCode]" operation="setFromMessage" value="firstline:StatusCode"/>	
+	<parameter name="[WWWAuthRealm]" operation="setFromMessage" value="header:WWW-Authenticate:Parameter:realm"/>									
+	<parameter name="[WWWAuthNonce]" operation="setFromMessage" value="header:WWW-Authenticate:Parameter:nonce"/>					
+	<parameter name="[WWWAuthQop]" operation="setFromMessage" value="header:WWW-Authenticate:Parameter:qop"/>
+</receiveResponseSIP>
+
+<if>
+<condition>
+	<test parameter="[StatusCode]" condition="equals" value="401" />
+</condition>
+<then>	
+
+<!--
+	<parameter name="[UserName]" operation="set" value="privid33900000004@sip.mobistar.com"/>		
+	<parameter name="[Password]" operation="set" value="imt30imt30"/>
+-->			
+
+	<parameter name="[HA1]" operation="set"    value="[UserName]" />
+	<parameter name="[HA1]" operation="concat" value="[HA1]"      value2=":" />
+	<parameter name="[HA1]" operation="concat" value="[HA1]"      value2="[WWWAuthRealm]" />
+	<parameter name="[HA1]" operation="concat" value="[HA1]"      value2=":" />
+	<parameter name="[HA1]" operation="concat" value="[HA1]"      value2="[Password]" />
+	<parameter name="[HA1]" operation="digest" value="[HA1]"      value2="MD5" />
+
+	<parameter name="[Method]" operation="set" value="REGISTER"/>				
+	<!--parameter name="[URI]"      operation="set" value="sip:sip.mobistar.com:5060" /-->
+	
+	<parameter name="[HA2]" operation="set"    value="[Method]" />
+	<parameter name="[HA2]" operation="concat" value="[HA2]"      value2=":" />
+	<parameter name="[HA2]" operation="concat" value="[HA2]"      value2="[URI]" />
+	<parameter name="[HA2]" operation="digest" value="[HA2]"      value2="MD5" />
+
+<!--
+	Use of CNonce and  Nonce-Counter
+-->		
+	<parameter name="[NonceCount]" operation="set" value="00000001" />
+	<parameter name="[CNonce]"     operation="set" value="11fc4a68" />
+
+		<parameter name="[AuthResponse]" operation="set"    value="[HA1]" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[WWWAuthNonce]" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[NonceCount]" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[CNonce]" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[WWWAuthQop]" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[HA2]" />
+  		<parameter name="[AuthResponse]" operation="digest" value="[AuthResponse]" value2="MD5" />
+			
+		<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+		<parameter name="[newCseq]" operation="add" value="[newCseq]" value2="1"/>	
+	 	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+	 			
+	 			
+<!-- 
+|
+|
+Envoi 2ieme Register
+|
+|
+-->
+	 			
+	 			
+<sendRequestSIP name="Send REGISTER" providerName="[provider_Name]">
+<![CDATA[		
+REGISTER [URI] SIP/2.0
+To: "[inviter]" <sip:[inviter]@[domainName]>
+From: "[inviter]" <sip:[inviter]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+Expires:[Registration_Duration]
+CSeq: [newCseq] REGISTER
+Route: <sip:[inviter]@[sbcHost]:[sbcPort];lr>
+Via: SIP/2.0/UDP [ipAddressSip]:[portSip];branch=[newBranchId]
+Max-Forwards: [MaxForwards]
+Contact: <sip:[inviter]@[ipAddressSip]:[portSip]>
+Authorization: Digest username="[UserName]", realm="[WWWAuthRealm]", nonce="[WWWAuthNonce]", algorithm=MD5, opaque="", uri="[URI]", response="[AuthResponse]", cnonce="[CNonce]", qop=[WWWAuthQop], nc=[NonceCount]
+Content-Length: 0
+]]>
+	        </sendRequestSIP>	
+	        
+	        <receiveResponseSIP name="200 OK" method="REGISTER">
+			<parameter name="[StatusCode]" operation="setFromMessage" value="firstline:StatusCode"/>		        
+		</receiveResponseSIP>
+	        
+	</then>
+	</if>
+
+	<if>
+	<condition>
+		<test parameter="[StatusCode]" condition="equals" value="200" />
+	</condition>
+	<else>
+      		<exit name="failed exit" failed="true"/>	
+	</else>	
+	</if>

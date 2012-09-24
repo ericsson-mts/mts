@@ -1,0 +1,58 @@
+<!--  ################################################## -->
+<!-- 
+                INITIALISATION DES VARIABLES decrivant le traffic
+				INITIALISATION DES VARIABLES de comportement des scenarios
+--> 
+<!-- 
+AUTEUR : R&D/CORE/M2V/TSC/JD
+OBJET : 
+
+MODIF : 	31/05/2011. Ajout option Far end NAT 
+				06/06/2011. Ajout option support Next Nonce
+--> 
+<!--  ################################################## -->
+	<parameter name="[delay]" operation="set" value="0" description="Delay before launching test (sec)"				editable="true"/>	
+	<parameter name="[CAPS]" operation="set" value="80" description="CAPS - Frequency of  Originating Calls (sec)"				editable="true"/>		
+	<parameter name="[OTAPS]" operation="set" value="0" description="OAPS - Frequency of OPTIONS Transactions Attempts Calls (sec)"				editable="true"/>			
+	<parameter name="[RAPS]" operation="set" value="80" description="RAPS - Frequency of Register Attempts (sec)"				editable="true"/>
+	<parameter name="[MAPS]" operation="set" value="0" description="MAPS - Frequency of MESSAGE Attempts (sec)"				editable="true"/>			
+	<parameter name="[RangeNumberUser]" operation="set" value="60000" description="Number of subscribers"                     		editable="true"/>
+	<parameter name="[maxSourceIP]" operation="set" value="1" description="Max number of IP source addresses " editable="true"/> 
+	<parameter name="[farEndNAT]" operation="set" value="false" description="Users behind NAT" editable="true"/> 
+	<parameter name="[activateNextNonce]" operation="set" value="true" description="Users handle Next Nonce" editable="true"/> 
+  <parameter name="[IndexSourceIPRegister]" operation="set" value="0" description="For incrementation of IP adresses  "/> 
+    <parameter name="[IndexSourceIPInviter]" operation="set" value="0" description="For incrementation of IP adresses  "/> 
+	<parameter name="[TryingDuration]" operation="set" value="0.1" description="Duration (in sec.) between 100 and 180"  		editable="true"/>
+	<parameter name="[RingingDuration]" operation="set" value="5" description="Duration (in sec.) between 180 and 200"     		editable="true"/>
+	<parameter name="[CallDurationSec]" operation="set" value="180" description="Duration (in sec.) of the call"           		editable="true"/>
+	<parameter name="[RegisterExpires]" operation="set" value="3600" description="Expiration time (in sec) for the register"    editable="true"/>
+	<parameter name="[RegisterRefresh]" operation="set" value="1" description="Time between 2 refresh bursts from Loader"    editable="false"/>
+	<parameter name="[ErlangTraffic]" operation="set" value="0.1" description="Number of erlang to define the phone traffic"    editable="false"/>
+	<parameter name="[TestDurationDay]" operation="set" value="5" description="Duration (in day) of the test "        		    editable="true"/>
+	<parameter name="[TestDurationHour]" operation="set" value="0" description="Duration (in hour) of the test "        		editable="true"/>
+	<parameter name="[TestDurationMin]" operation="set" value="0" description="Duration (in min.) of the test "         		editable="true"/>
+	<parameter name="[TestDurationSec]" operation="set" value="0" description="Duration (in sec.) of the test "         		editable="true"/>
+	<!--parameter name="[RangeIndexUser]" operation="set" value="0" description="Index of the range of the user phone number"  	editable="false"/-->
+	<parameter name="[NumberScenario]" operation="set" value="1" description="Number of responder scenario"  	editable="true"/>
+
+	<!--parameter name="[ReceiveRTPControl]" operation="set" value="100" description="Pourcentage to control RTP flow receive"		editable="true"/-->
+	<!--parameter name="[LP_inviter]" operation="set" value="100" description="Pourcentage to create ListenPoint RTP for inviter"		editable="false"/>	
+	<parameter name="[LP_invitee]" operation="set" value="100" description="Pourcentage to create ListenPoint RTP for invitee"		editable="false"/-->
+	<parameter name="[WaitEndOfFirstRegisterBurst]" operation="set" value="true" description="Wait end of 1st registration before load start"         		editable="true"/>
+	
+		<!-- calculate the test duration -->
+	<parameter name="[TestDurationDay]" operation="number.multiply" value="[TestDurationDay]" value2="24"/>
+	<parameter name="[TestDurationHour]" operation="number.add" value="[TestDurationHour]" value2="[TestDurationDay]"/>
+	<parameter name="[TestDurationHour]" operation="number.multiply" value="[TestDurationHour]" value2="60"/>
+	<parameter name="[TestDurationMin]" operation="number.add" value="[TestDurationMin]" value2="[TestDurationHour]"/>
+	<parameter name="[TestDurationMin]" operation="number.multiply" value="[TestDurationMin]" value2="60"/>
+	<parameter name="[TestDurationSec]" operation="number.add" value="[TestDurationSec]" value2="[TestDurationMin]"/>
+	
+	<!-- Variables internes --> 
+	<!-- liste des noms de listenpoint effectivement crees et utilises suite a l'enregistrement --> 
+	<parameter name="[listListenPointName]" operation="list.create"/>
+	<!-- liste des adresse sIP de transport effectivement utilises suite a l'enregistrement --> 
+	<parameter name="[listUsedIp]" operation="list.create"/>	
+	<!-- liste des port UDP effectivement utilises suite a l'enregistrement --> 
+	<parameter name="[listUsedPort]" operation="list.create"/>	
+

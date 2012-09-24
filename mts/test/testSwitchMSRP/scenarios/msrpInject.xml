@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- MSRP scenario is used to simulate MSRP end clients, he receive/send MSRP requests/responses -->
+
+<scenario>
+
+<!-- Label de debut de boucle automate -->
+<label name="Begin"/>
+
+<receiveMessageMSRP name="Wait Message" failedOnTimeout="false">
+    <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+    <parameter name="[firstline]" operation="protocol.setFromMessage" value="firstline"/>
+    <parameter name="[method]" operation="protocol.setFromMessage" value="firstline.Method"/>
+    <parameter name="[transactionID]" operation="protocol.setFromMessage" value="firstline.Transaction-ID"/>
+    <parameter name="[to]" operation="protocol.setFromMessage" value="header.To-Path"/>
+    <parameter name="[from]" operation="protocol.setFromMessage" value="header.From-Path"/>
+    <parameter name="[MessageId]" operation="protocol.setFromMessage" value="header.Message-ID"/>
+    <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+    <parameter name="[endLine]" operation="protocol.setFromMessage" value="content.End-line"/>        
+</receiveMessageMSRP>
+
+<!-- Envoi MSRP 200 Ok si MSRP SEND recu -->
+<if>
+	<condition>
+		<and>
+            <test parameter="[method]" condition="string.equals" value="SEND"/>
+            <test parameter="[transactionID]" condition="list.exists"/> 
+        </and>		
+	</condition>
+	<then>
+
+<sendMessageMSRP channel="[channel]">
+<![CDATA[MSRP [transactionID] 200 OK
+From-Path: [to]
+To-Path: [from]
+-------[transactionID]$]]>
+</sendMessageMSRP>
+	
+	<!-- Enchainement HTTP /msrp/deletesess si on est cote Client_1 sur reception 200 Ok-->
+			<log level="[LogLevel]">ToPath MSRP 200 ok recu = [to]</log>
+			<log level="[LogLevel]">Variable_Lien_HubId_via_ToPath_en_SORTIE = [test:Context_MSRP_[to]]</log>
+			
+			<parameter name="[HubId]" operation="set" value="[test:Context_MSRP_[to]]"/>
+
+			<!-- Envoi delete Client_1 
+			NB: Envoi avec Delay different de 0 car le Switch MSRP fonctionne en B2B: l' acquittement cote Client_1 ne 
+			signifie pas forcement que la transaction MSRP est finie cote Client_2
+			-->
+<sendRequestHTTP connectionName="[HTTP_Connection]" delay="3">
+	
+<![CDATA[
+GET /msrp/deletesess?hub=[HubId]&sess=[test:Context_PathServer1_[HubId]] HTTP/1.1
+User-Agent: XMLLoader
+Host: [IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]
+]]>
+
+</sendRequestHTTP> 
+
+			<parameter name="[transaction_id_envoye]" operation="protocol.setFromMessage" value="message.transactionId"/>
+
+			<!-- Stokage des variables d environnement --> 
+			<parameter name="[test:Context_HubId_[transaction_id_envoye]]" operation="set" value="[HubId]"/>
+			<parameter name="[test:Context_AutomateState_[HubId]]" operation="set" value="Client_1_Delete_en_Cours"/>
+
+		<!-- Suppression de la variable de contexte transactionID -->
+		<parameter name="[transactionID]" operation="list.remove"/>
+	
+	</then>
+
+
+<else/>
+
+</if>   
+
+<!-- Suppression de la variable de contexte associe au champ [To-Path] du message recu -->
+<parameter name="[test:Context_MSRP_[to]]" operation="list.remove"/>
+
+<!-- Retour entree automate             
+<goto  name="loop" label="Begin" state="true"/>	 -->
+
+</scenario>

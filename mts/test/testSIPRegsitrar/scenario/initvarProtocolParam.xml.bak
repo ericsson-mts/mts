@@ -1,0 +1,98 @@
+<!--  ################################################## -->
+<!-- 
+                INITIALISATION DES VARIABLES IP et UDP/TCP
+				INITIALISATION DES VARIABLES POUR SIP
+--> 
+<!--  ################################################## -->
+<!-- 
+AUTEUR : R&D/CORE/M2V/TSC/JD
+OBJET : Constantes Protocole SIP / SDP 
+MODIF : 20/05/2011. Ajout du parametrage SDP
+			28/7 Ajout delay Re-Register 
+--> 
+	<!-- duree max d'attente de message ds un scenario (sur ReceiveSIP)  -->
+	<parameter name="[MaxWaitSIPMessage]" operation="set" value="300"/>    
+	
+	<!-- delai avant de re-emettre un REGISTEr en cas de pb   -->
+	<parameter name="[delayReSendRegister]" operation="set" value="240"/>    
+	
+	<parameter name="[domainName]" operation="set" value="sip.osp.com" description="the domain for user"     editable="false"/>
+	<parameter name="[domainNameForGIBA]" operation="set" value="sip.3gppnetwork.org"  description=" "     editable="false"/>
+	<parameter name="[Password]" operation="set" value="nsnims2008" description="password for users"     editable="false"/>
+	<!--parameter name="[Host-Tester]" operation="system.ipaddress" description="Host du IMSloader"/>
+	<parameter name="[Host-Tester]" operation="set" value="172.18.128.18" editable="false"/-->
+	<parameter name="[Host-Tester]" operation="system.ipaddress" value="eth0"  description="Host du IMSloader"/>
+	<!-- parameter name="[Port-Tester]" operation="set" value="5060" description="Port du IMSloader" editable="false"/>
+	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]" description="Addresse du IMSloader"/-->
+
+	<!--parameter name="[Host-Server]" operation="system.ipaddress" description="Addresse du P-CSCF" /-->
+	<parameter name="[Host-Server]" operation="set" value="172.16.21.83" description="Addresse du P-CSCF" editable="true" />
+	<!--parameter name="[Host-Server]" operation="set" value="172.18.128.17" description="Addresse du P-CSCF" editable="true" /-->
+	<!--parameter name="[Host-Server]" operation="set" value="80.12.197.168" description="Addresse du P-CSCF" editable="true" /-->
+	<parameter name="[Port-Server]" operation="set" value="5060" description="Port du P-CSCF"				editable="true"/>
+	<parameter name="[Adresse-Server]" operation="set" value="[Host-Server]:[Port-Server]"/>
+
+	<parameter name="[RangePortRTP-UAC]" operation="set" value="10000"/>
+	<parameter name="[RangePortRTP-UAS]" operation="set" value="20000"/>
+	<parameter name="[transport]" operation="set" value="UDP" />
+	<!-- SIP parameter -->
+	<parameter name="[UserAgent]" operation="set" value="XML Loader WE04 JD" />
+	<parameter name="[server]" operation="set" value="XML Loader WE04 JD"/>
+<parameter name="[maxForwards]" operation="set" value="70"/> 
+<parameter name="[magicCookie]" operation="set" value="z9hG4bK"/>
+
+<!-- Donnees pour body SDP --> 
+<!-- profil Audio --> 
+<parameter name="[SDPmlineAudioSender]" operation="set" value="m=audio [portLevel4] RTP/AVP 8"/>
+<parameter name="[SDPmlineAudioReceiver]" operation="set" value="m=audio [portLevel4] RTP/AVP 8"/>
+<parameter name="[SDPalineAudioSender]" operation="set" value="a=sendrecv"/> 
+<parameter name="[SDPalineAudioReceiver]" operation="set" value="a=sendrecv"/> 
+
+<!-- profil Message --> 
+<parameter name="[SDPmlineMessageSender]" operation="set" value="m=message [portLevel4] TCP/MSRP *"/>
+<parameter name="[SDPmlineMessageReceiver]" operation="set" value="m=message [portLevel4] TCP/MSRP *"/>
+<parameter name="[SDPalineMessageSender]" operation="set" value="a=accept-types:text/plain application/im-iscomposing+xml&#13;&#10;a=sendrecv&#13;&#10;a=setup:active&#13;&#10;a=connection:new&#13;&#10;a=path:msrp//[UserAgentIpAdress]:[portLevel4]/[RandomNumber];tcp"/> 
+<parameter name="[SDPalineMessageReceiver]" operation="set" value="a=accept-types:text/plain application/im-iscomposing+xml&#13;&#10;a=sendrecv&#13;&#10;a=setup:passive&#13;&#10;a=connection:new&#13;&#10;a=path:msrp//[UserAgentIpAdress]:[portLevel4]/[RandomNumber];tcp"/> 
+
+<!-- profil courant pour le loader --> 
+
+<parameter name="[SDPmlineSender]" operation="set" value="[SDPmlineMessageSender]"/> 
+<parameter name="[SDPmlineReceiver]" operation="set" value="[SDPmlineMessageReceiver]"/> 
+<parameter name="[SDPalineSender]" operation="set" value="[SDPalineMessageSender]"/> 
+<parameter name="[SDPalineReceiver]" operation="set" value="[SDPalineMessageReceiver]"/> 
+<parameter name="[SDPmlineSender]" operation="set" value="[SDPmlineAudioSender]"/> 
+<parameter name="[SDPmlineReceiver]" operation="set" value="[SDPmlineAudioReceiver]"/> 
+<parameter name="[SDPalineSender]" operation="set" value="[SDPalineAudioSender]"/> 
+<parameter name="[SDPalineReceiver]" operation="set" value="[SDPalineAudioReceiver]"/> 
+<!-- donnees pour message OPTIONS -->
+<!-- URI pour un user non enregistre - pour les scenarios reponses 480 sur OPTIONS --> 
+<parameter name="[optionsUnregisteredDestination]" operation="set" value='33960319999'/>
+<!-- URI pour un user inexistant - pour les scenarios reponses 404 sur OPTIONS --> 
+<parameter name="[optionsUnknownDestination]" operation="set" value='33999999999'/>
+<!-- Domaine unknown pour les scenarios reponses 4XX sur OPTIONS --> 
+<parameter name="[optionsUnknownDomain]" operation="set" value='reseauTiers.fr'/>
+
+<parameter name="[optionsContact1]" operation="set" value=';+g.3gpp.cs-voice;+g.3gpp.app_ref="urn%3Aurn-xxx%3A3gpp-application.ims.iari.gsma-is";explicit'/>
+<parameter name="[optionsContact]" operation="set" value='+g.3gpp.cs-voice;+g.3gpp.app_ref=urn%3Aurn-7%3A3gpp-application.ims.iari.gsma-is;+g.oma.sip-im;urn%3AIMSAPI%3Acom.samsung.iari.IM;demo.smartcomms.f'/>
+<parameter name="[optionsContact]" operation="set" value=';+g.3gpp.cs-voice'/>
+<parameter name="[optionsAcceptContact1]" operation="set" value='*;+g.3gpp.cs-voice;+g.3gpp.app_ref="urn%3Aurn-xxx%3A3gpp-application.ims.iari.gsma-is";explicit'/>
+<parameter name="[optionsAcceptContact]" operation="set" value='*;+g.3gpp.cs-voice;+g.3gpp.app_ref=urn%3Aurn-xxx%3A3gpp-application.ims.iari.gsma-is;+g.oma.sip-im;urn%3AIMSAPI%3Acom.samsung.iari.IM;demo.smartcomms.f;explicit'/>
+<parameter name="[optionsAcceptContact]" operation="set" value='+g.3gpp.cs-voice;explicit'/>
+<parameter name="[optionsAllow]" operation="set" value="PRACK, SUBSCRIBE, NOTIFY, REFER, INVITE, ACK, BYE, CANCEL, UPDATE, OPTIONS, INFO, PUBLISH"/>
+<parameter name="[optionsSupported]" operation="set" value="100rel"/>
+<parameter name="[optionsAccept]" operation="set" value="couscous/merguez, application/sdp, application/dtmf-relay, application/simple-message-summary, audio/tone, audio/telephone-event"/>
+<parameter name="[optionsAccept]" operation="set" value="application/sdp"/>
+
+<!-- donnees pour reponse 200 OK message OPTIONS -->
+<parameter name="[200optionsContact]" operation="set" value=';+couscous;+g.3gpp.cs-voice;+g.3gpp.app_ref="urn%3Aurn-xxx%3A3gpp-application.ims.iari.gsma-is";explicit'/>
+<parameter name="[200optionsAcceptContact]" operation="set" value='*;+couscous;+g.3gpp.cs-voice;+g.3gpp.app_ref="urn%3Aurn-xxx%3A3gpp-application.ims.iari.gsma-is";explicit'/>
+<parameter name="[200optionsAllow]" operation="set" value="COUSCOUS, PRACK, SUBSCRIBE, NOTIFY, REFER, INVITE, ACK, BYE, CANCEL, UPDATE, OPTIONS, INFO, PUBLISH"/>
+<parameter name="[200optionsSupported]" operation="set" value="couscous, replaces, 100rel"/>
+<parameter name="[200optionsAccept]" operation="set" value="couscous/merguez, application/sdp, application/dtmf-relay, application/simple-message-summary, audio/tone, audio/telephone-event"/>
+<parameter name="[200optionsSdpContent1]" operation="set" value="v=0&#13;&#10;o=+12345 67890 12345 IN IP4 [lastListenpointHost]&#13;&#10;s=-&#13;&#10;c=IN IP4 [lastListenpointHost]&#13;&#10;t=0 0&#13;&#10;m=video 0 RTP/AVP 96&#13;&#10;a=rtpmap:96 h263-2000&#13;&#10;m=message 0 TCP/MSRP *&#13;&#10;a=accept-types:image/bmp image/jpeg image/png&#13;&#10;a=file-selector&#13;&#10;max-size:524288"/>
+<parameter name="[200optionsSdpContent3]" operation="set" value="v=0&#13;&#10;o=+12345 67890 12345 IN IP4 [Host-Tester]&#13;&#10;s=-&#13;&#10;c=IN IP4 [Host-Tester]&#13;&#10;t=0 0&#13;&#10;m=video 0 RTP/AVP 34 96 97 98&#13;&#10;a=rtpmap:96 H263-2000&#13;&#10;a=rtpmap:97 H264/90000&#13;&#10;a=rtpmap:98 MP4V-ES/90000&#13;&#10;m=message 0 TCP/MSRP *&#13;&#10;a=accept-types:image/bmp image/jpeg image/png image.gif text/plain text/html&#13;&#10;a=file-selector&#13;&#10;a=max-size:524288&#13;&#10;a=allola:boucherie-sanzot"/>
+<parameter name="[200optionsSdpContent2]" operation="set" value="v=0&#13;&#10;o=+12345 67890 12345 IN IP4 [Host-Tester]&#13;&#10;s=-&#13;&#10;c=IN IP4 [Host-Tester]&#13;&#10;t=0 0&#13;&#10;m=video 0 RTP/AVP 34 96&#13;&#10;a=rtpmap:96 h263-2000&#13;&#10;m=message 0 TCP/MSRP *&#13;&#10;a=accept-types:image/bmp image/jpeg image/png&#13;&#10;a=file-selector&#13;&#10;a=max-size:524288&#13;&#10;a=allola:boucherie-sanzot"/>
+<parameter name="[200optionsSdpContent4]" operation="set" value="v=0&#13;&#10;o=+12345 67890 12345 IN IP4 [Host-Tester]&#13;&#10;s=-&#13;&#10;c=IN IP4 [Host-Tester]&#13;&#10;t=0 0&#13;&#10;m=video 0 RTP/AVP 34 96&#13;&#10;a=rtpmap:96 h263-2000&#13;&#10;m=message 0 TCP/MSRP *&#13;&#10;m=couscous 0 RTP/AVP *&#13;&#10;a=accept-types:image/bmp image/jpeg image/png&#13;&#10;a=file-selector&#13;&#10;a=max-size:524288&#13;&#10;a=couscous:merguez#13;&#10;a=reponse:merci pour la recette je t invite demain"/>
+<parameter name="[200optionsSdpContent5]" operation="set" value="v=0&#13;&#10;o=+12345 67890 12345 IN IP4 [Host-Tester]&#13;&#10;s=-&#13;&#10;c=IN IP4 [Host-Tester]&#13;&#10;t=0 0&#13;&#10;m=video 0 RTP/AVP 34 96&#13;&#10;a=rtpmap:96 h263-2000&#13;&#10;"/>
+<parameter name="[200optionsSdpContent]" operation="set" value="v=0&#13;&#10;o=+12345 67890 12345 IN IP4 [lastListenpointHost]&#13;&#10;s=-&#13;&#10;c=IN IP4 [lastListenpointHost]&#13;&#10;t=0 0&#13;&#10;m=message 0 TCP/MSRP *&#13;&#10;a=accept-types:image/bmp image/jpeg image/png&#13;&#10;a=file-selector&#13;&#10;a=max-size:524288"/>
+

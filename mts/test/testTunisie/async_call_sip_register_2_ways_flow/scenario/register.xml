@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+	
+	<if>
+	    <condition>
+	    	<test parameter="[testcase:indexReg]" condition="list.exists" not="true"/>       	     
+    	</condition>
+        <then>
+	        <parameter name="[testcase:indexReg]" operation="set" value="0"/>
+        </then>
+    </if>
+
+	<parameter name="[testcase:indexReg]" operation="number.add" value="[testcase:indexReg]" value2="1"/>    			
+
+    <if>
+	    <condition>
+    		<test parameter="[testcase:indexReg]" condition="number.greaterThan" value="[RangeNumberUser]"/>       	     
+   	    </condition>
+    	<then>
+	    	<parameter name="[testcase:indexReg]" operation="set" value="1"/>    				   	
+	    	<parameter name="[test:startCall]" operation="system.semaphorenotify" value="2"/>
+			<!--<parameter name="[test:receive]" operation="system.semaphorenotify"/> -->
+	    </then>
+	</if>
+	
+	<parameter name="[ModuloIndexReg]" operation="number.modulo" value="[testcase:indexReg]" value2="2"/>
+	<if>
+		<condition>
+			<test parameter="[ModuloIndexReg]" condition="number.equals" value="0" not="true"/>
+		</condition>	
+		<then>
+			<log level="info"> caller [ModuloIndexReg] </log>
+			<parameter name="[Port-Tester]" operation="number.substract" value="65535" value2="[testcase:indexReg]"/>
+			<parameter name="[listenpoint]" operation="set" value="listenpoint_[Port-Tester]"/>
+			<createListenpointSIP name="[listenpoint]" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="UDP"/>
+			<parameter name="[listenpoint_Register]" operation="set" value="[listenpoint]"/>
+			<parameter name="[Host-Tester_Register]" operation="set" value="[Host-Tester]"/>
+			<parameter name="[userName]" operation="set" value="[userTab([testcase:indexReg])]"/>
+		</then>
+		<else>
+			<log level="info"> called [ModuloIndexReg] </log>
+			<parameter name="[Port-Tester]" operation="number.substract" value="65536" value2="[testcase:indexReg]"/>
+			<!-- substract by 65536 for having same port for caller and called -->
+			<parameter name="[listenpoint_called]" operation="set" value="listenpoint_called_[Port-Tester]"/>
+			<createListenpointSIP name="[listenpoint_called]" localHost="[Host-Tester_called]" localPort="[Port-Tester]" transport="UDP"/>
+			<parameter name="[listenpoint_Register]" operation="set" value="[listenpoint_called]"/>
+			<parameter name="[Host-Tester_Register]" operation="set" value="[Host-Tester_called]"/>
+			<parameter name="[userName]" operation="set" value="[userTabNP([testcase:indexReg])]"/>
+		</else>
+	</if>
+		
+  	<parameter name="[userNumberPhone]" operation="set" value="[userTabNP([testcase:indexReg])]"/>
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/> 
+	<parameter name="[URI]" operation="set" value="sip:[userName]@[domainName]" />
+	
+	<!-- register appelant ou appelé -->
+
+		
+	
+	
+	<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint_Register]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+<![CDATA[
+REGISTER [URI] SIP/2.0
+To: "[userName]" <sip:[userName]@[domainName]>
+From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [Host-Tester_Register]:[Port-Tester];branch=z9hG4bK-[newBranchId]
+Contact: <sip:+216[userNumberPhone]@[Host-Tester_Register]:[Port-Tester]>
+Expires: 3600
+Max-Forwards: 70
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+	<receiveMessageSIP name="receive REGISTER response" type="REGISTER" failedOnTimeout="false">
+		<parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.StatusCode"/>	
+		<parameter name="[WWWAuthRealm]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.realm"/>									
+		<parameter name="[WWWAuthNonce]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.nonce"/>					
+		<parameter name="[WWWAuthQop]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.qop"/>
+		<parameter name="[ProxyAuthRealm]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.realm"/>
+		<parameter name="[ProxyAuthNonce]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.nonce"/>
+		<parameter name="[ProxyAuthQop]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.qop"/>
+	</receiveMessageSIP>
+
+	<if>
+		<condition>
+			<or>
+				<test parameter="[StatusCode]" condition="string.equals" value="401" />
+				<test parameter="[StatusCode]" condition="string.equals" value="407" />
+			</or>
+		</condition>
+		<then>
+			<parameter name="[Password]" operation="set" value="123"/>		
+			<parameter name="[Method]" operation="set" value="REGISTER"/>				
+			<parameter name="[HA2]" operation="digest" value2="MD5" value="[Method]:[URI]" />
+			<parameter name="[NonceCount]" operation="set" value="00000001" />
+			<parameter name="[CNonce]"     operation="set" value="7dbc2"/>
+			<parameter name="[newBranchId]" operation="string.random" value="10"/>
+			<parameter name="[newCseq]" operation="add" value="[newCseq]" value2="1"/>
+
+			<if>
+				<condition>
+					<and>
+						<test parameter="[WWWAuthRealm]" condition="list.isempty" value="true"/>
+						<test parameter="[WWWAuthNonce]" condition="list.isempty" value="true"/>
+						<test parameter="[WWWAuthQop]" condition="list.isempty" value="true"/>
+					</and>	
+				</condition>
+				<then>
+					<!-- Proxy -->
+					<parameter name="[HA1]" operation="digest" value2="MD5" value="[userName]@[domainName]:[ProxyAuthRealm]:[Password]"/>
+					<parameter name="[AuthResponse]" operation="digest" value2="MD5" value="[HA1]:[ProxyAuthNonce]:[NonceCount]:[CNonce]:[ProxyAuthQop]:[HA2]" />
+				</then>
+				<else>
+					<!-- Terminal -->
+					<parameter name="[HA1]" operation="digest" value2="MD5" value="[userName]@[domainName]:[WWWAuthRealm]:[Password]"/>
+					<parameter name="[AuthResponse]" operation="digest" value2="MD5" value="[HA1]:[WWWAuthNonce]:[NonceCount]:[CNonce]:[WWWAuthQop]:[HA2]" />
+				</else>
+			</if>
+
+			<if>
+				<condition>
+					<test parameter="[StatusCode]" condition="string.equals" value="401" />
+				</condition>
+				<then>
+					<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint_Register]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[REGISTER [URI] SIP/2.0
+To: "[userName]" <sip:[userName]@[domainName]>
+From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [Host-Tester_Register]:[Port-Tester];branch=z9hG4bK-[newBranchId]
+Max-Forwards: 70
+Contact: <sip:+216[userNumberPhone]@[Host-Tester_Register]:[Port-Tester]>
+Authorization: Digest username="[userName]@[domainName]", realm="[WWWAuthRealm]", nonce="[WWWAuthNonce]",uri="[URI]", response="[AuthResponse]", algorithm=MD5, cnonce="[CNonce]", opaque="opaqueData", qop="[WWWAuthQop]", nc=[NonceCount]
+Expires: 3600
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+					</sendMessageSIP>
+				</then>
+				<else>
+					<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint_Register]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[REGISTER [URI] SIP/2.0
+To: "[userName]" <sip:[userName]@[domainName]>
+From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [Host-Tester_Register]:[Port-Tester];branch=z9hG4bK-[newBranchId]
+Max-Forwards: 70
+Contact: <sip:+216[userNumberPhone]@[Host-Tester_Register]:[Port-Tester]>
+Proxy-Authorization: Digest username="[userName]@[domainName]", realm="[ProxyAuthRealm]", nonce="[ProxyAuthNonce]",uri="[URI]",response="[AuthResponse]", algorithm=MD5, cnonce="[CNonce]", opaque="opaqueData", qop="[ProxyAuthQop]", nc=[NonceCount]
+Expires: 3600
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+
+					</sendMessageSIP>
+				</else>
+			</if>
+
+			<receiveMessageSIP name="200 OK" type="REGISTER"/>
+
+		</then>
+	</if>
+
+
+</scenario>

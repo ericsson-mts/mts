@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[ServiceTrigger]" operation="set" value="Presence service triggered!"/>   			
+	
+	<openProviderSIP name="open SIP provider" providerName="Presence" localHost="[Host-Tester]" localPort="[Port-Presence]"/>
+	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Presence]"/>   			
+	<label name="Begin"/>
+	
+	<receiveMessage name="wait_SIP_request" timeout="0">	
+		<parameter name="[lastMethod]" operation="setFromMessage" value="message:type"/>  		
+		<parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>  	
+	  	<parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>  	
+	  	<parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/>
+  		<parameter name="[lastCseq]" operation="setFromMessage" value="header:CSeq"/>
+	  	<parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-ID"/>	  
+	  	<parameter name="[lastRecord-Route]" operation="setFromMessage" value="header:Record-Route"/>		  		  		  	
+	  	<parameter name="[lastServiceTrigger]" operation="setFromMessage" value="header:ServiceTrigger"/>		  		  		  		  	
+		<parameter name="[lastContact]" operation="setFromMessage" value="header:Contact"/>		  		  		  
+		<parameter name="[lastContactAddress]" operation="setFromMessage" value="header:Contact:Address"/>				
+		<parameter name="[lastContactExpires]" operation="setFromMessage" value="header:Contact:Parameter:Expires"/>
+	</receiveMessage>
+	<if><condition><test parameter="[lastContactAddress]" condition="isEmpty"/></condition>
+		<then/>
+		<else>
+			<parameter name="[lastContactURI]" operation="setFromAddress" value="[lastContactAddress]" value2="URI"/>
+		</else>
+	</if>
+	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+
+	<if>
+	    <condition>	    	
+	    	<test parameter="[lastMethod]" condition="equals" value="ACK"/>		  		  		    		
+	    </condition>
+	    <then>	   
+		<goto  name="loop" label="Begin" state="true"/>			
+	    </then>
+	</if>	
+	<if>
+	    <condition>	    	
+	    	<test parameter="[lastMethod]" condition="equals" value="INVITE"/>		  		  		    		
+	    </condition>
+	    <then>	   
+		<sendResponseSIP name="Send 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Record-Route: sip:[Adresse-Tester];lr
+Record-Route: [lastRecord-Route]
+ServiceTrigger: [ServiceTrigger]
+ServiceTrigger: [lastServiceTrigger]
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[invitee] 999 999 IN IP4 [ipAddressSrc]
+s=-
+c=IN IP4 [ipAddressSdp]
+t=0 0
+m=audio [portSdpInvitee] RTP/AVP 18 8
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=sendrecv
+]]>
+<!--******************** END MESSAGE *********************-->
+		</sendResponseSIP>
+	    </then>
+	    <else>	   
+		<sendResponseSIP name="Send 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+		</sendResponseSIP>
+	    </else>
+	    
+	</if>
+
+    	<goto  name="loop" label="Begin" state="true"/>
+ </scenario>

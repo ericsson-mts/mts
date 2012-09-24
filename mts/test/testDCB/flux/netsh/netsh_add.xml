@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="[index]" operation="set" value="0" />
+    <parameter name="[size]" operation="size" value="[source_ips]" />
+
+    <while>
+        <condition>
+            <test parameter="[index]" condition="lowerThan" value="[size]" />
+        </condition>
+        <do>
+            <system command="netsh interface ip add address [nic_name] [source_ips([index])] [source_masks([index])]" />
+            <parameter name="[index]" operation="add" value="[index]" value2="1"/>
+	    </do>
+	</while>
+</scenario>

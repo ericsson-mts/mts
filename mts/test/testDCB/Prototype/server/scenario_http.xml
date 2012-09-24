@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <while>
+        <condition />
+        <do>
+          	<receiveRequestHTTP name="Wait GET" method="GET" timeout="0">
+		        <parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+	        </receiveRequestHTTP>
+	
+	        <sendResponseHTTP transactionId="[transaction_id]">
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader
+]]>
+    	    </sendResponseHTTP>
+	    </do>
+	</while>
+	
+</scenario>

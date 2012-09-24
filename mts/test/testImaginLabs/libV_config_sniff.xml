@@ -1,0 +1,123 @@
+<!--
+ ***************  libV_config_sniff    *************
+Function description: librairie de configuration du sniff pour l'exploitant
+-->
+
+<!-- adresse public XBC et port  ==> pour filtre -->
+<parameter name="[sbcHost]" operation="set" value="172.16.1.30"/>  
+<parameter name="[SBC_Port_100x]" operation="set" value="5060"/>
+
+<!-- capture sur port eth1 -->
+<parameter name="[network]" operation="set" value="eth1"/>
+
+<!-- recuperation adresse PC eth1 (3eme adresses[0,1,2,..], car 2 VLAN sur Eth0) ou adresse fixe-->
+<parameter name="[Host-Tester]" operation="system.IPAddress"/> 
+<parameter name="[Host-Tester]" operation="set" value="192.168.1.3"/>          
+    
+<parameter name="[Port-Tester]" operation="set" value="5060"/>   
+
+<!-- initialisation de la periode de supervision : a 5 minutes, soit 300s -->
+<parameter name="[PeriodSupervision]" operation="set" value="100"/>	
+
+<!-- initialisation  de la duree total (il n'y a pas de boucle: tempo) si 100jours = 100 * 24 * 60 * 60 = 8 640 000s -->
+<parameter name="[DureeTotal]" operation="set" value="300"/>	
+
+<!-- 
+*************************************************************************************************
+   Initialisation des parametres d'alarmes des TRAP pour les compteurs 
+*************************************************************************************************
+-->	
+<!-- **************  parametres pour le serveur SCRIMS ************* -->
+<parameter name="[serverRemoteIp]" operation="set" value="172.16.22.20"  description="Adresse IP du serveur SCRIMS"/>
+
+<parameter name="[serverRemotePort]" operation="set" value="162" description="Port SNMP destination"/>
+
+	<!-- global aux alarmes -->
+
+		<!-- severity  = 0 (indeterminate) -->
+		<!-- severity  = 1 (critical) -->
+		<!-- severity  = 2 (major) -->
+		<!-- severity  = 3 (minor) -->
+		<!-- severity  = 4 (warning) -->
+<parameter name="[AlarmSeverity_na]" 		operation="set" value="0" />
+<parameter name="[AlarmSeverity_critical]" 	operation="set" value="1" />
+<parameter name="[AlarmSeverity_major]" 	operation="set" value="2" />
+<parameter name="[AlarmSeverity_minor]" 	operation="set" value="3" />
+<parameter name="[AlarmSeverity_warning]" 	operation="set" value="4" />
+		<!-- severity 5 == clear alarme -->
+<parameter name="[AlarmSeverity_clear]" 	operation="set" value="5" />
+
+<!-- supervise the number of transaction -->
+<parameter name="[AlarmSeverity_Transaction_Invi]" 	operation="set" value="[AlarmSeverity_minor]"/>
+<parameter name="[AlarmSeverity_Transaction_Regi]" 	operation="set" value="[AlarmSeverity_minor]"/>
+<parameter name="[AlarmSeverity_Transaction_Mess]" 	operation="set" value="[AlarmSeverity_minor]"/>
+<parameter name="[AlarmSeverity_Transaction_Subs]" 	operation="set" value="[AlarmSeverity_minor]"/>
+<parameter name="[AlarmSeverity_Transaction_Noti]" 	operation="set" value="[AlarmSeverity_minor]"/>
+<parameter name="[AlarmSeverity_Transaction_Publ]" 	operation="set" value="[AlarmSeverity_minor]"/>
+
+<!-- supervise the percent of failed transaction -->
+<parameter name="[AlarmSeverity_Failed_Invi]" 	operation="set" value="[AlarmSeverity_critical]"/>
+<parameter name="[AlarmSeverity_Failed_Regi]" 	operation="set" value="[AlarmSeverity_critical]"/>
+<parameter name="[AlarmSeverity_Failed_Mess]" 	operation="set" value="[AlarmSeverity_critical]"/>
+<parameter name="[AlarmSeverity_Failed_Subs]" 	operation="set" value="[AlarmSeverity_critical]"/>
+<parameter name="[AlarmSeverity_Failed_Noti]" 	operation="set" value="[AlarmSeverity_critical]"/>
+<parameter name="[AlarmSeverity_Failed_Publ]" 	operation="set" value="[AlarmSeverity_critical]"/>
+
+<!-- supervise the response time -->
+<parameter name="[AlarmSeverity_onTime_Invi]" 	operation="set" value="[AlarmSeverity_major]"/>
+<parameter name="[AlarmSeverity_onTime_Regi]" 	operation="set" value="[AlarmSeverity_major]"/>
+<parameter name="[AlarmSeverity_onTime_Mess]" 	operation="set" value="[AlarmSeverity_major]"/>
+<parameter name="[AlarmSeverity_onTime_Subs]" 	operation="set" value="[AlarmSeverity_major]"/>
+<parameter name="[AlarmSeverity_onTime_Noti]" 	operation="set" value="[AlarmSeverity_major]"/>
+<parameter name="[AlarmSeverity_onTime_Publ]" 	operation="set" value="[AlarmSeverity_major]"/>
+
+<!-- supervise the retransmission percent -->
+<parameter name="[AlarmSeverity_Retrans_Invi]" 	operation="set" value="[AlarmSeverity_major]"/>
+<parameter name="[AlarmSeverity_Retrans_Regi]" 	operation="set" value="[AlarmSeverity_major]"/>
+<parameter name="[AlarmSeverity_Retrans_Mess]" 	operation="set" value="[AlarmSeverity_major]"/>
+<parameter name="[AlarmSeverity_Retrans_Subs]" 	operation="set" value="[AlarmSeverity_major]"/>
+<parameter name="[AlarmSeverity_Retrans_Noti]" 	operation="set" value="[AlarmSeverity_major]"/>
+<parameter name="[AlarmSeverity_Retrans_Publ]" 	operation="set" value="[AlarmSeverity_major]"/>
+
+<!-- 
+*************************************************************************************************
+   Initialisation des valeurs des compteurs 
+*************************************************************************************************-->
+
+    <!--<Threshold parameters for REGISTER" />	     -->
+<parameter name="[Threshold_trans_flow_REGISTER]" operation="set" value="2" description="Threshold for the transaction flow"   	    editable="true"/>	
+<parameter name="[Threshold_trans_failed_REGISTER]" operation="set" value="20" description="Threshold for the transaction failed percent" editable="true"/>	
+<parameter name="[Threshold_response_time_REGISTER]" operation="set" value="0.5" description="Threshold for the response time (in sec)" editable="true"/>	
+<parameter name="[Threshold_retransmit_REGISTER]" operation="set" value="10" description="Threshold for the retransmission percent"      editable="true"/>	
+
+    <!--<Threshold parameters for INVITE" />-->
+<parameter name="[Threshold_trans_flow_INVITE]" operation="set" value="10" description="Threshold for the transaction flow"   	    editable="true"/>	
+<parameter name="[Threshold_trans_failed_INVITE]" operation="set" value="10" description="Threshold for the transaction failed percent" editable="true"/>	
+<parameter name="[Threshold_response_time_INVITE]" operation="set" value="5" description="Threshold for the response time (in sec)" editable="true"/>	
+<parameter name="[Threshold_retransmit_INVITE]" operation="set" value="10" description="Threshold for the retransmission percent"      editable="true"/>	
+
+    <!--<Threshold parameters for MESSAGE" />-->
+<parameter name="[Threshold_trans_flow_MESSAGE]" operation="set" value="10" description="Threshold for the transaction flow"   	    editable="true"/>	
+<parameter name="[Threshold_trans_failed_MESSAGE]" operation="set" value="10" description="Threshold for the transaction failed percent" editable="true"/>	
+<parameter name="[Threshold_response_time_MESSAGE]" operation="set" value="5" description="Threshold for the response time (in sec)" editable="true"/>	
+<parameter name="[Threshold_retransmit_MESSAGE]" operation="set" value="10" description="Threshold for the retransmission percent"      editable="true"/>	
+
+    <!--<Threshold parameters for SUBSSCRIBE" />-->
+<parameter name="[Threshold_trans_flow_SUBSCRIBE]" operation="set" value="10" description="Threshold for the transaction flow"   	    editable="true"/>	
+<parameter name="[Threshold_trans_failed_SUBSCRIBE]" operation="set" value="10" description="Threshold for the transaction failed percent" editable="true"/>	
+<parameter name="[Threshold_response_time_SUBSCRIBE]" operation="set" value="5" description="Threshold for the response time (in sec)" editable="true"/>	
+<parameter name="[Threshold_retransmit_SUBSCRIBE]" operation="set" value="10" description="Threshold for the retransmission percent"      editable="true"/>	
+
+    <!--<Threshold parameters for NOTIFY" />-->
+<parameter name="[Threshold_trans_flow_NOTIFY]" operation="set" value="10" description="Threshold for the transaction flow"   	    editable="true"/>	
+<parameter name="[Threshold_trans_failed_NOTIFY]" operation="set" value="10" description="Threshold for the transaction failed percent" editable="true"/>	
+<parameter name="[Threshold_response_time_NOTIFY]" operation="set" value="5" description="Threshold for the response time (in sec)" editable="true"/>	
+<parameter name="[Threshold_retransmit_NOTIFY]" operation="set" value="10" description="Threshold for the retransmission percent"      editable="true"/>
+
+    <!--<Threshold parameters for PUBLISH" />-->
+<parameter name="[Threshold_trans_flow_PUBLISH]" operation="set" value="10" description="Threshold for the transaction flow"   	    editable="true"/>	
+<parameter name="[Threshold_trans_failed_PUBLISH]" operation="set" value="10" description="Threshold for the transaction failed percent" editable="true"/>	
+<parameter name="[Threshold_response_time_PUBLISH]" operation="set" value="5" description="Threshold for the response time (in sec)" editable="true"/>	
+<parameter name="[Threshold_retransmit_PUBLISH]" operation="set" value="10" description="Threshold for the retransmission percent"      editable="true"/>
+	
+<!--  ************************************************************************************************* -->

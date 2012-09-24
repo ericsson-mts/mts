@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--
+Scenario description:
+Permanent anonymous call (CLIR) to ACR (anonymous call rejection) UA
+-->
+
+
+<!DOCTYPE library [
+<!ENTITY libC_Call_Service_Server	SYSTEM "../library/libC_Call_Service_Server.xml">
+<!ENTITY libC_Caller_to_Called_Ph1	SYSTEM "../library/libC_Caller_to_Called_Ph1.xml">
+<!ENTITY libC_Caller_to_Called_Ph2	SYSTEM "../library/libC_Caller_to_Called_Ph2.xml">
+<!ENTITY libC_Caller_to_Called_Ph3	SYSTEM "../library/libC_Caller_to_Called_Ph3.xml">
+]>
+
+
+<scenario>
+
+
+<parameter name="[sbcPort]" operation="set" value="[SBC_Port_1006]" description="Port decoute du SBC"/>   
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_Port]" operation="set" value="[Provider_1006]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localPort="[provider_Port]"/>
+
+
+<!--
+|
+|
+Set the CLIR "260" service for subscriber_1006
+|
+|
+-->
+
+
+<parameter name="[service_Nb]" operation="set" value="*260*"/>
+<parameter name="[domainName_Service]" operation="set" value="[domainName]"/>
+<parameter name="[subscriber_Service]" operation="set" value="[subscriber_1006]"/>
+<parameter name="[int_caller_Subscriber]" operation="set" value="[int_subscriber_1006]"/>
+
+<parameter name="[ipAddressSip_Service]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[portSip_Service]" operation="set" value="[provider_Port]"/>
+<parameter name="[ipAddressSdp_Service]" operation="set" value="[ipAddressSdp]"/>
+<parameter name="[ipAddressSrc_Service]" operation="set" value="[ipAddressSrc]"/>
+<parameter name="[portSdp_subscriber_Service]" operation="set" value="[portSdpSubscriber_1006]"/>
+<parameter name="[sbcHost_Service]" operation="set" value="[SBC_IP_1006]"/>
+<parameter name="[sbcPort_Service]" operation="set" value="[SBC_Port_1006]"/>
+
+<parameter name="[endRtpDialog_Timer]" operation="set" value="1"/>
+
+<parameter name="[UserName]" operation="set" value="[Username_1006]"/>
+<parameter name="[Password]" operation="set" value="[Passwd_1006]"/>
+
+&libC_Call_Service_Server;
+
+
+
+<!--
+
+Call must failed => announce is played
+
+-->
+<pause name="pause"     seconds="0.5"  state="true"/>
+
+
+<parameter name="[called_Subscriber]" operation="set" value="[subscriber_1000]"/>
+
+<parameter name="[domainName_Service]" operation="set" value="[domainName]"/>
+<parameter name="[caller_Subscriber]" operation="set" value="[subscriber_1006]"/>
+<parameter name="[int_caller_Subscriber]" operation="set" value="[int_subscriber_1006]"/>
+
+<parameter name="[caller_ipAddressSip]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[caller_portSip]" operation="set" value="[provider_Port]"/>
+<parameter name="[caller_ipAddressSdp]" operation="set" value="[ipAddressSdp]"/>
+<parameter name="[caller_ipAddressSrc]" operation="set" value="[ipAddressSrc]"/>
+<parameter name="[caller_portSdp]" operation="set" value="[portSdpSubscriber_1006]"/>
+<parameter name="[sbcHost_Service]" operation="set" value="[SBC_IP_1006]"/>
+<parameter name="[sbcPort_Service]" operation="set" value="[SBC_Port_1006]"/>
+
+<parameter name="[endRtpDialog_Timer]" operation="set" value="1"/>
+<parameter name="[expected_Scenario]" operation="set" value="FULL_SUCCESS_ESTABLISHMENT" />
+
+<parameter name="[UserName]" operation="set" value="[Username_1006]"/>
+<parameter name="[Password]" operation="set" value="[Passwd_1006]"/>
+
+
+&libC_Caller_to_Called_Ph1;
+
+
+&libC_Caller_to_Called_Ph2;
+&libC_Caller_to_Called_Ph3;
+
+
+
+<!--
+|
+|
+UnSet the CLIR "261" service for subscriber_1006
+|
+|
+-->
+
+
+<parameter name="[service_Nb]" operation="set" value="*261*"/>
+<parameter name="[domainName_Service]" operation="set" value="[domainName]"/>
+<parameter name="[subscriber_Service]" operation="set" value="[subscriber_1006]"/>
+<parameter name="[int_caller_Subscriber]" operation="set" value="[int_subscriber_1006]"/>
+
+<parameter name="[ipAddressSip_Service]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[portSip_Service]" operation="set" value="[provider_Port]"/>
+<parameter name="[ipAddressSdp_Service]" operation="set" value="[ipAddressSdp]"/>
+<parameter name="[ipAddressSrc_Service]" operation="set" value="[ipAddressSrc]"/>
+<parameter name="[portSdp_subscriber_Service]" operation="set" value="[portSdpSubscriber_1006]"/>
+<parameter name="[sbcHost_Service]" operation="set" value="[SBC_IP_1006]"/>
+<parameter name="[sbcPort_Service]" operation="set" value="[SBC_Port_1006]"/>
+
+<parameter name="[endRtpDialog_Timer]" operation="set" value="1"/>
+
+&libC_Call_Service_Server;
+
+
+
+<finally><closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/></finally>
+
+</scenario>

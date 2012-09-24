@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE library [
+<!ENTITY lib_Subscribers	SYSTEM "..\library\lib_Subscribers.xml">
+]>
+
+<scenario>
+
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_IP]" operation="set" value="[Host-Tester]"/>
+<parameter name="[provider_Port]" operation="set" value="[Port-Subs_A_TV]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localHost="[Host-Tester]" localPort="[provider_Port]" transport="UDP"/>
+
+<!--
+Semaphore Synchro fin de phase d'initialisation
+-->
+
+<parameter name="[test:FIN_Init_Loader_vers_SubsATV]" operation="semaphore.wait" value="1" value2="0"/>
+
+
+<parameter name="[WhichSide]" operation="set" value="SubsATV_scen_2"/>	
+<parameter name="[RangePortRTP-UAS]" operation="set" value="[RangePortRTP-UAS_SUBSA_TV]"/>
+
+&lib_Subscribers;    	                	        	        
+
+<closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/>
+
+</scenario>

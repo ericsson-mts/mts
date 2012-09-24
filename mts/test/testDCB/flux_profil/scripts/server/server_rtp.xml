@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+<parameter name="[seqNumTab]" operation="list.create"/>
+<parameter name="[ssrcTab]" operation="list.create"/>
+<parameter name="[pauseTab]" operation="list.create"/>
+
+<parameter name="[byteRateRTP]" operation="set" value="4000" description="Bytes rate (in byte/sec) for the media flow"/>    	       	           
+<parameter name="[tempPacketRTP]" operation="number.divide" value="[byteRateRTP]" value2="160"/>
+<parameter name="[delayPacketRTP]" operation="number.divide" value="1000" value2="[tempPacketRTP]"/>
+    
+<while>
+<condition />
+<do>
+    <parameter name="[cpt]" operation="set" value="0"/>
+
+    <parameter name="[test:mtxWaitRTP]" operation="system.semaphoreWait" value2="0"/>
+    <parameter name="[test:mtxWaitRTP]" operation="system.semaphoreNotify"/>
+
+    <parameter name="[test:mtxConnectionRTP]" operation="system.semaphoreWait"/>
+    <parameter name="[sizeConnectionRTP]" operation="list.size" value="[test:connectionRTP]"/>
+
+    <!-- Loop to send RTP Packets to each clients-->
+    <while>
+        <condition>
+            <test parameter="[cpt]" condition="number.lowerThan" value="[sizeConnectionRTP]"/>
+        </condition>
+    <do>
+        <parameter name="[sessionRTP]" operation="set" value="[test:connectionRTP([cpt])]"/>
+        <parameter name="[rtpRemoteHost]" operation="string.regexMatches" value="[sessionRTP]" value2=".*:"/>
+        <parameter name="[rtpRemoteHost]" operation="string.regexReplaces" value="[rtpRemoteHost]" value2=":" value3=""/>
+        <parameter name="[rtpRemotePort]" operation="string.regexMatches" value="[sessionRTP]" value2=":.*"/>
+        <parameter name="[rtpRemotePort]" operation="string.regexReplaces" value="[rtpRemotePort]" value2=":" value3=""/>
+
+        <!-- get seqnum -->
+        <parameter name="[index]" operation="find" value="[seqNumTab]" value2="[sessionRTP]seqnum"/>
+        <if>
+            <condition>
+                <test parameter="[index]" condition="isEmpty"/>
+            </condition>
+            <then>        
+                <parameter name="[seqnum]" operation="set" value="0"/>    
+                <parameter name="[[sessionRTP]seqnum]" operation="set" value="[seqnum]"/>    
+                <parameter name="[seqNumTab]" operation="list.addLast" value="[seqNumTab]" value2="[sessionRTP]seqnum"/>
+            </then>
+            <else>
+                <parameter name="[nameSeqNum]" operation="set" value="[seqNumTab([index])]"/>
+                <parameter name="[seqnum]" operation="set" value="[[nameSeqNum]]"/>
+            </else>
+        </if>
+        
+        <!-- get ssrc -->
+        <parameter name="[index]" operation="find" value="[ssrcTab]" value2="[sessionRTP]ssrc"/>
+        <if>
+            <condition>
+                <test parameter="[index]" condition="isEmpty"/>
+            </condition>
+            <then>        
+                <parameter name="[ssrc]" operation="number.uid" value="newInteger" value2="1000000" description="random Ssrc for the RTP flow"/>
+                <parameter name="[[sessionRTP]ssrc]" operation="set" value="[ssrc]"/>    
+                <parameter name="[ssrcTab]" operation="list.addLast" value="[ssrcTab]" value2="[sessionRTP]ssrc"/>
+            </then>
+            <else>
+                <parameter name="[nameSsrc]" operation="set" value="[ssrcTab([index])]"/>
+                <parameter name="[ssrc]" operation="set" value="[[nameSsrc]]"/>
+            </else>
+        </if>
+        
+        <parameter name="[index]" operation="find" value="[pauseTab]" value2="[sessionRTP]pause"/>
+        <if>
+            <condition>
+                <test parameter="[index]" condition="isEmpty"/>
+            </condition>
+            <then>        
+                <parameter name="[pause]" operation="set" value="0"/>    
+            </then>
+            <else>
+                <parameter name="[namePause]" operation="set" value="[pauseTab([index])]"/>
+                <parameter name="[lastTimestamp]" operation="set" value="[[namePause]]"/>
+                <parameter name="[pauseTab]" operation="removeAt" value="[pauseTab]" value2="[index]"/>
+                <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+                <parameter name="[pause]" operation="number.substract" value="[lastTimestamp]" value2="[timestamp]"/>
+                <if>
+                    <condition>
+                        <test parameter="[pause]" condition="lowerThan" value="0"/>
+                    </condition>
+                    <then>
+                        <parameter name="[pause]" operation="set" value="0"/>
+                    </then>
+                </if>
+            </else>
+        </if>
+        
+        <pause milliseconds="[pause]"/>
+        
+        <parameter name="[lastTimestamp]" operation="system.timestamp" value="1970"/>
+        <sendMessageRTP listenpoint="[sessionRTP]" remoteHost="[rtpRemoteHost]" remotePort="[rtpRemotePort]">
+            <packet>        
+                <header ssrc="[ssrc]" payloadType="17" seqnum="[seqnum]" timestamp="0"/>
+                <payload format="binary">he7 he4 he2 he7 he2 hdf he0 hde hdd hdf he1 he0 hde he0 hdf hde hdc hdd he0 hdf hde hdf he0 he5 he6 hdf hdf he3 hea he4 hde hde hdf hdd hdd he0 hdf hdf hdd he2 he0 hdd hde he0 he6 he3 hdf he2 he5 he3 hdf hdd hdd hdf hdd hde hde he0 he0 hdf hdf hdc hdc hde hdf hdf hdc hdb hdb hdf hdc hdc hdd he4 he2 hdd hdb hdd hdf hdc hdc hde hde hdc hdc hde hde hdc hda hdb hdf hdd hda hdc hdf hdd hdc hdd he1 he0 hdd hdc hdd hda hd8 hda hdd hdc hdb hd9 hd8 hdb hd9 hd9 hda hde hdb hd8 hdb hdf hdb hd9 hdb hdc hda hd9 hdd hdf hdc hde hde hdb hd8 hdc hde hda hd8 hdb hde hd9 hd7 hdb hdf hdd hd9 hdd he4 hde hdb hde hde hda hd7 hda hde hdc hd9 hda hdd hdd</payload>        
+            </packet>    
+        </sendMessageRTP>
+        
+        <parameter name="[[sessionRTP]pause]" operation="number.add" value="[lastTimestamp]" value2="[delayPacketRTP]"/>
+        <parameter name="[pauseTab]" operation="list.addLast" value="[pauseTab]" value2="[sessionRTP]pause"/>
+    
+        <parameter name="[seqnum]" operation="number.add" value="[seqnum]" value2="1"/>
+        <parameter name="[[sessionRTP]seqnum]" operation="set" value="[seqnum]"/>
+                
+        <parameter name="[cpt]" operation="number.add" value="[cpt]" value2="1"/>
+    </do>
+    </while>
+
+    <parameter name="[test:mtxConnectionRTP]" operation="system.semaphoreNotify"/>
+
+    <pause milliseconds="20"/>
+
+</do>
+</while>
+</scenario>

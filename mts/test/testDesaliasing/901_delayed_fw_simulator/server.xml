@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <while>
+        <condition/>
+        <do>
+            <receiveRequestHTTP timeout="0">
+                <parameter name="[transaction_id]" operation="setFromMessage" value="message:transactionId"/>
+                <parameter name="[request_uri]" operation="setFromMessage" value="firstline:uri"/>
+            </receiveRequestHTTP>
+
+            <parameter name="[request_uri]" operation="regexReplaces" value="[request_uri]" value2="%20" value3=" " />
+            <parameter name="[request_uri]" operation="regexReplaces" value="[request_uri]" value2="%3D" value3="=" />
+            <parameter name="[request_uri]" operation="regexReplaces" value="[request_uri]" value2="%3B" value3=";" />
+            <parameter name="[request_uri]" operation="regexReplaces" value="[request_uri]" value2="%3A" value3=":" />
+            <parameter name="[request_uri]" operation="regexReplaces" value="[request_uri]" value2="%7B" value3="{" />
+            <parameter name="[request_uri]" operation="regexReplaces" value="[request_uri]" value2="%7D" value3="}" />
+            
+            <parameter name="[v02]" operation="regexMatches" value="[request_uri]" value2="v02=[^;]*" />
+            
+            <if>
+                <condition>
+                    <test parameter="[v02]" condition="equals" value="v02=00000003" />
+                </condition>
+                <then>
+                    <!-- timeout -->
+                    <parameter name="[send_response]" operation="set" value="false" />                
+                </then>
+                <else>
+                    <parameter name="[v00]" operation="regexMatches" value="[request_uri]" value2="v00=[^;]*" />
+                    <parameter name="[v01]" operation="regexMatches" value="[request_uri]" value2="v01=[^;]*" />
+                    <parameter name="[k]" operation="regexMatches" value="[request_uri]" value2="k=[^;]*" />
+                    <parameter name="[p]" operation="regexMatches" value="[request_uri]" value2="p=[^;]*" />
+                    <parameter name="[v]" operation="regexMatches" value="[request_uri]" value2="v=[^:]*" />
+                
+                    <if>
+                        <condition>
+                            <test parameter="[v02]" condition="equals" value="v02=00000001" />
+                        </condition>
+                        <then>
+                            <!-- accept -->
+                            <parameter name="[send_response]" operation="set" value="true" />
+                            <parameter name="[message]" operation="set" value="c=eVasAcc;v={[v00];[v01];[v02];" />
+
+                            <if>
+                                <condition>
+                                    <test parameter="[v01]" condition="equals" value="v01=0" />
+                                </condition>
+                                <then>
+                                    <parameter name="[message]" operation="set" value="[message]v10=100002,500,900;v2a=PRE;" />                                
+                                </then>
+                            </if>
+                            
+                            <if>
+                                <condition>
+                                    <test parameter="[v01]" condition="equals" value="v01=5" />
+                                </condition>
+                                <then>
+                                    <parameter name="[message]" operation="set" value="[message]v12e=bundle1\;bundle2;" />                                
+                                </then>
+                            </if>
+                            
+                            <parameter name="[message]" operation="set" value="[message]}" />
+
+                        </then>
+                    </if>
+                    <if>
+                        <condition>
+                            <test parameter="[v02]" condition="equals" value="v02=00000002" />
+                        </condition>
+                        <then>
+                            <!-- reject -->
+                            <parameter name="[send_response]" operation="set" value="true" />
+                            <parameter name="[message]" operation="set" value="c=eVasRej;v={[v00];[v01];[v02];v11=1;}" />                
+                        </then>
+                    </if>
+                </else>
+            </if>
+
+            <if>
+                <condition>
+                    <test parameter="[send_response]" condition="equals" value="true" />
+                </condition>
+                <then>
+                    <!-- enqueue response -->
+                    
+                    <parameter name="[message_length]" operation="length" value="[message]" />
+                    <parameter name="[signature]" operation="HmacMD5" value="s[message]:[message_length]" value2="[signature_secret]" />
+                    
+                    <semaphore name="mutex" action="wait" />
+                    <parameter name="[testcase:messages_transaction_ids]" operation="addLast" value="[testcase:messages_transaction_ids]" value2="[transaction_id]" />      
+                    <parameter name="[timestamp]" operation="setFromSystem" value="Timestamp" value2="1970" />
+                    <parameter name="[timestamp]" operation="add" value="[timestamp]" value2="[test:delayed_server_delay]" />
+                    <parameter name="[testcase:messages_send_date]" operation="addLast" value="[testcase:messages_send_date]" value2="[timestamp]" />      
+                    <parameter name="[testcase:messages]" operation="addLast" value="[testcase:messages]" value2="h=[signature];[p];[k];[v(0)]:{[message]}" />
+                    <semaphore name="mutex" action="notify" />      
+                </then>
+            </if>
+
+        </do>
+    </while>
+</scenario>

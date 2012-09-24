@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+
+<!DOCTYPE library [
+<!ENTITY libV_config_sniff		SYSTEM "libV_config_sniff.xml">
+]>
+
+<test name="SIP" description="SIP regression tests">
+
+<!-- init config compteur et alarme du sniff  -->
+&libV_config_sniff;
+    
+<!-- init @ip et  port :Tester -->
+    <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]"/>	
+   
+
+    <!-- transport parameters-->
+    <parameter name="[transportRequest]" operation="set" value="udp"/>
+    <parameter name="[transportResponse]" operation="set" value="UDP"/>
+        
+    <!-- timers for the retransmissions-->
+    <parameter name="[retransmitNumber]" operation="set" value="4"/>
+    <parameter name="[RetransTimeout]" operation="set" value="0.5"/>
+        
+    <parameter name="[retransmitTimers(0)]" operation="set" value="500"/>     	
+    <parameter name="[retransmitTimers(1)]" operation="set" value="1000"/>     	
+    <parameter name="[retransmitTimers(2)]" operation="set" value="2000"/>     	
+    <parameter name="[retransmitTimers(3)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(4)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(5)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(6)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(7)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(8)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(9)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(10)]" operation="set" value="4000"/>
+  
+    <parameter name="[listenIp]" operation="set" value="0.0.0.0" />
+
+
+     <parameter name="[Capture_mode]" operation="set" value="_cap" />  
+    <!-- <parameter name="[Capture_mode]" operation="set" value="_cap" /> --> 
+    <!-- <parameter name="[Capture_mode]" operation="set" value="_in" />-->
+    <!--<parameter name="[CaptuCapture_modere_mode]" operation="set" value="_out" />-->
+
+
+<!-- BEGIN TEST CAPTURE - BEGIN TEST CAPTURE - BEGIN TEST CAPTURE - BEGIN TEST CAPTURE - BEGIN TEST CAPTURE - BEGIN TEST CAPTURE  -->
+
+    <testcase name="capture" description="capture" state="true">
+	
+    	<parameter name="[LevelSupervision]" operation="set" value="WARN"/>	
+
+        <scenario name="probe">capture/probe.xml</scenario>
+        <scenario name="supervision">capture/supervision.xml</scenario>
+
+    </testcase>    
+
+<!-- END TEST CAPTURE - END TEST CAPTURE - END TEST CAPTURE - END TEST CAPTURE - END TEST CAPTURE - END TEST CAPTURE  -->
+
+
+</test>

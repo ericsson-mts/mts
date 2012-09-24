@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE Flux [
+  <!ENTITY Flux_HTTP   SYSTEM "../Flux_HTTP/Flux_HTTP.xml">
+  <!ENTITY Flux_SMTP   SYSTEM "../Flux_SMTP/Flux_SMTP.xml">
+  <!ENTITY Flux_Wifi   SYSTEM "../Flux_RADIUS_Wifi/Flux_Wifi.xml">
+  <!ENTITY Flux_Chat   SYSTEM "../Flux_RADIUS_Chat/Flux_Chat.xml">
+  <!ENTITY Flux_WebxMS SYSTEM "../Flux_RADIUS_WebxMS/Flux_WebxMS.xml">
+  <!ENTITY Flux_EMail  SYSTEM "../Flux_RADIUS_EMail/Flux_EMail.xml">
+  <!ENTITY Flux_OMM    SYSTEM "../Flux_RADIUS_OMM/Flux_OMM.xml">
+  <!ENTITY Flux_OWL    SYSTEM "../Flux_RADIUS_OWL/Flux_OWL.xml">
+  <!ENTITY Flux_IMAP   SYSTEM "../Flux_IMAP/Flux_IMAP.xml">
+  <!ENTITY Flux_RTSP   SYSTEM "../Flux_RTSP/Flux_RTSP.xml">
+  <!ENTITY Flux_POP    SYSTEM "../Flux_POP/Flux_POP.xml">
+]>
+
+<scenario>
+
+    <!--
+      - Effectue une pause (parametree dans le profil). Cette pause permet par
+      - exemple de venir specifier un profil "rare" dont un abonne s execute
+      - toutes les 10 secondes.
+      -->
+    <pause seconds="[tempo_inter_msisdn]" />
+
+    <!--
+      - Calcul (si necessaire) des deux tableaux contenant les frontieres hautes
+      - et basses des index qui emettront les differents flux.
+      -->
+    <if>
+        <condition>
+            <test parameter="[testcase:ratio_list_computed]"   condition="boolean.equals"  value="false" />
+        </condition>
+        <then>
+            <parameter name="[nb_list]" operation="number.multiply"   value="[testcase:MSISDNs_size]" value2="[ratio_list]" />
+            <parameter name="[nb_list]" operation="number.round" value="[nb_list]" />
+        
+            <parameter name="[nb_list_size]" operation="list.size"   value="[nb_list]" />
+            
+            <parameter name="[boundaries_list]" operation="set"   value="0" />
+            <parameter name="[j]" operation="set" value="0" />
+            <parameter name="[acc]" operation="set"   value="0" />
+            
+            <while>
+                <condition>
+                    <test parameter="[j]" condition="number.lowerThan" value="[nb_list_size]" />
+                </condition>
+                <do>
+                    <parameter name="[acc]" operation="number.add"   value="[acc]" value2="[nb_list([j])]" />
+                    <parameter name="[boundaries_list]" operation="list.addLast" value="[boundaries_list]" value2="[acc]" />
+                    <parameter name="[j]" operation="number.add" value="[j]" value2="1" />
+                </do>
+            </while>
+        
+            <parameter name="[testcase:lower_boundaries_list]" operation="list.removeLast"   value="[boundaries_list]" />
+            <parameter name="[testcase:upper_boundaries_list]" operation="list.removeFirst"  value="[boundaries_list]" />
+            <parameter name="[testcase:greatest_boundary]"     operation="set"  value="[acc]" />
+            <parameter name="[testcase:ratio_list_computed]"   operation="set"  value="true" />
+        </then>
+    </if>
+    
+    
+    
+    
+    
+    
+    <!--
+      - Obtention d'une adresse IP source et creation du socket radius associe si necessaire.
+      - Bloquant si aucune ip source n'est disponible.
+      -->
+    <parameter name="[test:source_ips_token]" operation="system.semaphoreWait" />
+    <parameter name="[test:source_ips_mutex]" operation="system.semaphoreWait" />
+    
+    <parameter name="[source_ip]" operation="list.getFirst" value="[test:source_ips]" />
+    <parameter name="[test:source_ips]" operation="list.removeFirst" value="[test:source_ips]" />
+
+    <parameter name="[radius_socket_name]" operation="list.getFirst" value="[test:radius_sockets_names]" />
+    <parameter name="[test:radius_sockets_names]" operation="list.removeFirst" value="[test:radius_sockets_names]" />
+
+    <if>
+        <condition>
+            <test parameter="[radius_socket_name]"   condition="string.equals"  value="false" />
+        </condition>
+        <then>
+            <parameter name="[radius_socket_name]" operation="set" value="[source_ip][radius_nas_port]_radius_socket" />
+            <createListenpointRADIUS name="[radius_socket_name]" localHost="[source_ip]" localPort="[radius_nas_port]" secret="[radius_secret]"/>
+        </then>
+    </if>
+    <parameter name="[RADIUSsocketName]"   operation="set" value="[radius_socket_name]"/>
+
+    <if>
+        <condition>
+            <test parameter="[ggsn_radius_socket_name]"   condition="boolean.equals"  value="false" />
+        </condition>
+        <then>
+            <parameter name="[ggsn_radius_socket_name]" operation="set" value="[ggsn_source_ip][ggsn_source_port]_radius_socket" />
+            <createListenpointRADIUS name="[ggsn_radius_socket_name]" localHost="[ggsn_source_ip]" localPort="[ggsn_source_port]" secret="[radius_secret]"/>
+        </then>
+    </if>
+
+    <parameter name="[test:source_ips_mutex]" operation="system.semaphoreNotify" />
+
+
+
+    <parameter name="[HTTPconnectionOpen]" operation="set" value="false"/>  
+    <parameter name="[SMTPconnectionOpen]" operation="set" value="false"/>
+    <parameter name="[IMAPconnectionOpen]" operation="set" value="false"/>
+    <parameter name="[RTSPconnectionOpen]" operation="set" value="false"/>
+    <parameter name="[RTPconnectionOpen]"  operation="set" value="false"/>
+    <parameter name="[POPconnectionOpen]"  operation="set" value="false"/>
+	
+    <parameter name="[accounting_session_running]" operation="set" value="false"/>
+
+    <parameter name="[testcase:msisdn_index]" operation="number.add" value="[testcase:msisdn_index]" value2="1"/>
+    <if>
+        <condition>
+            <test parameter="[testcase:msisdn_index]" condition="number.greaterEqualThan" value="[testcase:MSISDNs_size]"/>
+        </condition>
+        <then>
+            <parameter name="[testcase:msisdn_index]" operation="set" value="0"/>        
+        </then>
+    </if>
+    
+
+    
+    <!--parameter name="[testcase:msisdn_index]" operation="set" value="0"/>        
+    <while>
+        <condition>
+            <test parameter="[testcase:msisdn_index]" condition="lowerThan" value="[testcase:MSISDNs_size]"/>
+        </condition>
+        <do-->
+        
+            <!--
+              - Calcule, grace a [boundaries_list] quels flux doivent etre envoyes
+              -->
+<log level="debug">
+lower_boundaries_list:[lower_boundaries_list]
+</log>
+<log level="debug">
+upper_boundaries_list:[upper_boundaries_list]
+</log>
+<log level="debug">
+i:[testcase:msisdn_index]
+</log>
+
+            <parameter name="[flux_statuses]" operation="string.equals" value="[testcase:lower_boundaries_list]" value2="-1" />
+            <parameter name="[j]" operation="set" value="[testcase:msisdn_index]" />              
+            <while>
+                <condition>
+                    <test parameter="[j]" condition="number.lowerThan" value="[testcase:greatest_boundary]" />
+                </condition>
+                <do>
+                    <parameter name="[GT_LB]" operation="number.greaterEqualThan" value="[j]" value2="[testcase:lower_boundaries_list]"  />
+                    <parameter name="[LT_UB]" operation="number.lowerThan"        value="[j]" value2="[testcase:upper_boundaries_list]" />
+                    <parameter name="[temp]" operation="boolean.and" value="[GT_LB]" value2="[LT_UB]" />
+                    <parameter name="[flux_statuses]" operation="boolean.or" value="[flux_statuses]" value2="[temp]" />
+                    <parameter name="[j]" operation="number.add" value="[j]" value2="[testcase:MSISDNs_size]" />
+                    <log level="debug">GT_LB AND LT_UB = flux_statuses ----- [GT_LB] AND [LT_UB] = [flux_statuses]
+                    </log>
+                </do>
+            </while>  
+        
+            <parameter name="[Flux_HTTP]"   operation="set" value="[flux_statuses(0)]"/>
+            <parameter name="[Flux_SMTP]"   operation="set" value="[flux_statuses(1)]"/>
+            <parameter name="[Flux_WebxMS]" operation="set" value="[flux_statuses(2)]"/>
+            <parameter name="[Flux_OMM]"    operation="set" value="[flux_statuses(3)]"/>
+            <parameter name="[Flux_OWL]"    operation="set" value="[flux_statuses(4)]"/>
+            <parameter name="[Flux_EMail]"  operation="set" value="[flux_statuses(5)]"/>
+            <parameter name="[Flux_Wifi]"   operation="set" value="[flux_statuses(6)]"/>
+            <parameter name="[Flux_Chat]"   operation="set" value="[flux_statuses(7)]"/>
+            <parameter name="[Flux_IMAP]"   operation="set" value="[flux_statuses(8)]"/>
+            <parameter name="[Flux_RTSP]"   operation="set" value="[flux_statuses(9)]"/>
+            <parameter name="[Flux_POP]"    operation="set" value="[flux_statuses(10)]"/>
+        
+            <parameter name="[msisdn]"                  operation="set" value="[MSISDNs([testcase:msisdn_index])]"/>
+            <parameter name="[0msisdn]"                 operation="set" value="[msisdn]"/>
+            <parameter name="[33msisdn]"                operation="string.regexMatches" value="[msisdn]" value2="[0-9]{9}$" />
+            <parameter name="[33msisdn]"                operation="set" value="33[33msisdn]"/>
+
+            <parameter name="[calling_station_id]"      operation="set" value="[33msisdn]"/>
+            <parameter name="[subscriber-identifier]"   operation="set" value="[0msisdn]"/>
+            <parameter name="[user-login]"              operation="set" value="[0msisdn]@orange.fr"/>
+            <parameter name="[email]"                   operation="set" value="[user-login]"/>
+    
+            <parameter name="[profileID]"               operation="set" value="[test:profile_id]"/>
+            <parameter name="[Hot_Spot_Id]"             operation="set" value="[test:wifi_hotspot_id]"/>
+            <parameter name="[specific-volume]"         operation="set" value="[test:specific_volume]"/>
+
+
+            <parameter name="[3gpp_charging_id]"        operation="set" value="[3gpp_charging_ids([testcase:msisdn_index])]"/>
+
+ 
+            <parameter name="[imsi]"                    operation="set" value="[imsis([testcase:msisdn_index])]"/>
+            <parameter name="[charging-type]"           operation="set" value="[charging-types([testcase:msisdn_index])]"/>
+            <parameter name="[webxms_content_type]"     operation="set" value="[webxms_content_types([testcase:msisdn_index])]"/>
+            <parameter name="[mail_content_type]"       operation="set" value="[mail_content_types([testcase:msisdn_index])]"/>
+            <parameter name="[omm_content_type]"        operation="set" value="[omm_content_types([testcase:msisdn_index])]"/>
+            <parameter name="[chat_service_name]"       operation="set" value="[chat_service_names([testcase:msisdn_index])]"/>
+
+            <parameter name="[source-access-type]"      operation="set" value="[source-access-types([testcase:msisdn_index])]"/>
+
+            <if>
+                <condition>
+                    <test parameter="[Flux_HTTP]" condition="boolean.equals" value="true"/></condition>
+                <then>
+                    <log>MSISDN [msisdn] : FLUX HTTP</log>
+                    <parameter name="[Acct-Session-Id]" operation="number.uid"/>
+                    &Flux_HTTP;</then></if>
+      
+            <if>
+                <condition>
+                    <test parameter="[Flux_SMTP]" condition="boolean.equals" value="true"/></condition>
+                <then>
+                    <parameter name="[Acct-Session-Id]" operation="number.uid"/>
+                    <log>MSISDN [msisdn] : FLUX SMTP</log>
+                    &Flux_SMTP;</then></if>
+            
+            <if>
+                <condition>
+                    <test parameter="[Flux_Wifi]" condition="boolean.equals" value="true"/></condition>
+                <then>
+                    <log>MSISDN [msisdn] : FLUX WIFI</log>
+                    &Flux_Wifi;</then></if>
+            
+            <if>
+                <condition>
+                    <test parameter="[Flux_Chat]" condition="boolean.equals" value="true"/></condition>
+                <then>
+                    <log>MSISDN [msisdn] : FLUX CHAT</log>
+                    &Flux_Chat;</then></if>
+            
+            <if>
+                <condition>
+                    <test parameter="[Flux_WebxMS]" condition="boolean.equals" value="true"/></condition>
+                <then>
+                    <log>MSISDN [msisdn] : FLUX WEB XMS</log>
+                    &Flux_WebxMS;</then></if>
+            
+            <if>
+                <condition>
+                    <test parameter="[Flux_EMail]" condition="boolean.equals" value="true"/></condition>
+                <then>
+                    <log>MSISDN [msisdn] : FLUX MAIL</log>
+                    &Flux_EMail;</then></if>
+            
+            <if>
+                <condition>
+                    <test parameter="[Flux_OMM]" condition="boolean.equals" value="true"/></condition>
+                <then>
+                    <log>MSISDN [msisdn] : FLUX OMM</log>
+                    &Flux_OMM;</then></if>
+            
+            <if>
+                <condition>
+                    <test parameter="[Flux_OWL]" condition="boolean.equals" value="true"/></condition>
+                <then>
+                    <log>MSISDN [msisdn] : FLUX OWL</log>
+                    &Flux_OWL;</then></if>
+
+            <if>
+                <condition>
+                    <test parameter="[Flux_IMAP]" condition="boolean.equals" value="true"/></condition>
+                <then>
+                    <parameter name="[Acct-Session-Id]" operation="number.uid"/>
+                    <log>MSISDN [msisdn] : FLUX IMAP</log>
+                    &Flux_IMAP;</then></if>
+					
+			<if>
+                <condition>
+                    <test parameter="[Flux_RTSP]" condition="boolean.equals" value="true"/></condition>
+                <then>
+                    <parameter name="[Acct-Session-Id]" operation="number.uid"/>
+                    <log>MSISDN [msisdn] : FLUX RTSP</log>
+                    &Flux_RTSP;</then></if>
+
+			<if>
+                <condition>
+                    <test parameter="[Flux_POP]" condition="boolean.equals" value="true"/></condition>
+                <then>
+                    <parameter name="[Acct-Session-Id]" operation="number.uid"/>
+                    <log>MSISDN [msisdn] : FLUX POP</log>
+                    &Flux_POP;</then></if>
+					
+            <!-- Next MSISDN -->
+            <!--parameter name="[testcase:msisdn_index]" operation="add" value="[testcase:msisdn_index]" value2="1"/>
+        </do>
+    </while-->
+
+  <finally>
+    <try>
+        <do>
+            <if>
+              <condition>
+                <test parameter="[accounting_session_running]" condition="boolean.equals" value="true"/>
+              </condition>
+              <then>
+                  <!-- send Radius Accounting-Request Stop -->
+                  <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+                  <parameter name="[timestamp]" operation="number.divide" value="[timestamp]" value2="1000"/>
+                  <parameter name="[timestamp]" operation="number.floor" value="[timestamp]" />
+            
+                  <sendMessageRADIUS listenpoint="[ggsn_radius_socket_name]" remoteHost="[accounting_session_host]" remotePort="[accounting_session_port]">
+                    <!-- Header -->
+                    <header code="4"/>
+            
+                    <!-- AVPs -->
+                    <!--Acct-Status-Type(40) -->
+                    <avp code="40" value="Stop"/>
+            
+                    <!-- User-Name (1) -->
+                    <avp code="1" value="[msisdn]"/>
+            
+                    <!-- NAS-IP-Address(4) -->
+                    <avp code="4" value="[nas_ip_address]"/>
+            
+                    <!-- NAS-Port(5) -->
+                    <avp code="5" value="[radius_nas_port]"/>
+            
+                    <!-- Framed-IP-Address(8) -->
+                    <avp code="8" value="[source_ip]"/>
+            
+                    <!-- Calling-Station-Id(31) -->
+                    <avp code="31" value="[calling_station_id]"/>
+            
+                    <!-- Called-Station-Id(30) -->
+                    <avp code="30" value="[called_station_id]"/>
+            
+                    <!-- Acct-Session-Id(44) -->
+                    <avp code="44" value="[Acct-Session-Id]"/>
+            
+                    <!-- Event-Timestamp(55) -->
+                    <avp code="55" value="[timestamp]"/>
+            
+                    <!-- Framed-Protocol(7) -->
+                    <avp code="7" value="GPRS-PDP-Context"/>
+            
+                    <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+                    <avp code="26" value="3GPP">
+                      <avp code="2" value="[3gpp_charging_id]"/>
+                    </avp>
+            
+                    <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+                    <avp code="26" value="3GPP">
+                      <avp code="6" value="[3gpp_sgsn_address]"/>
+                    </avp>
+            
+                    <!-- NAS-Identifier(32) -->
+                    <avp code="32" value="[nas_identifier]"/>
+                  </sendMessageRADIUS>
+                  <parameter name="[test:radiusRequest]" operation="number.add" value="[test:radiusRequest]" value2="1"/>
+                  
+                  <receiveMessageRADIUS listenpoint="[ggsn_radius_socket_name]" failedOnTimeout="false" request="false"/>
+                  <parameter name="[test:radiusResponse]" operation="number.add" value="[test:radiusResponse]" value2="1"/>
+                </then>
+            </if>
+        </do>
+        <finally/>
+    </try>
+    
+    <!--removeListenpointRADIUS name="[RADIUSsocketName]"/-->
+
+    <try>
+        <do>
+            <if>
+              <condition>
+                <test parameter="[HTTPconnectionOpen]" condition="boolean.equals" value="true"/>
+              </condition>
+              <then>
+                <closeConnectionHTTP connectionName="[HTTPconnectionName]"/>
+              </then>
+            </if>
+        </do>
+        <finally/>
+    </try>
+    
+    <try>
+        <do>
+            <if>
+              <condition>
+                <test parameter="[SMTPconnectionOpen]" condition="boolean.equals" value="true"/>
+              </condition>
+              <then>
+                <closeSessionSMTP sessionName="[SMTPconnectionName]"/>
+              </then>
+            </if>
+        </do>
+        <finally/>
+    </try>
+
+    <try>
+        <do>
+            <if>
+              <condition>
+                <test parameter="[IMAPconnectionOpen]" condition="boolean.equals" value="true"/>
+              </condition>
+              <then>
+                <closeChannelIMAP name="[IMAPconnectionName]"/>
+              </then>
+            </if>
+        </do>
+        <finally/>
+    </try>
+
+	<try>
+        <do>
+            <if>
+              <condition>
+                <test parameter="[RTSPconnectionOpen]" condition="boolean.equals" value="true"/>
+              </condition>
+              <then>
+                <closeChannelRTSP name="[RTSPconnectionName]"/>
+              </then>
+            </if>
+        </do>
+        <finally/>
+    </try>
+    
+    <try>
+        <do>
+            <if>
+              <condition>
+                <test parameter="[RTPconnectionOpen]" condition="boolean.equals" value="true"/>
+              </condition>
+              <then>
+                 <closeConnectionRTP sessionName="[RTPconnectionName]"/>
+              </then>
+            </if>
+        </do>
+        <finally/>
+    </try>
+    
+    <try>
+        <do>
+            <if>
+              <condition>
+                <test parameter="[POPconnectionOpen]" condition="boolean.equals" value="true"/>
+              </condition>
+              <then>
+                 <closeChannelPOP name="[POPconnectionName]"/>
+              </then>
+            </if>
+        </do>
+        <finally/>
+    </try>
+  
+    <log>[index]</log>  
+    <try>
+        <do>
+            <stats>
+                <percent name="httpRatio" shortDesc="HTTP" description="percent of HTTP response">
+                    <incValue>[test:httpResponse]</incValue>
+                    <incTotal>[test:httpRequest]</incTotal>            
+                </percent>
+                <percent name="imapRatio" shortDesc="IMAP" description="percent of IMAP response">
+                    <incValue>[test:imapResponse]</incValue>
+                    <incTotal>[test:imapRequest]</incTotal>            
+                </percent>
+                <percent name="popRatio" shortDesc="POP" description="percent of POP response">
+                    <incValue>[test:popResponse]</incValue>
+                    <incTotal>[test:popRequest]</incTotal>            
+                </percent>
+                <percent name="smtpRatio" shortDesc="SMTP" description="percent of SMTP response">
+                    <incValue>[test:smtpResponse]</incValue>
+                    <incTotal>[test:smtpRequest]</incTotal>            
+                </percent>
+                <percent name="rtspRatio" shortDesc="RTSP" description="percent of RTSP response">
+                    <incValue>[test:rtspResponse]</incValue>
+                    <incTotal>[test:rtspRequest]</incTotal>            
+                </percent>
+                <percent name="radiusRatio" shortDesc="RADIUS" description="percent of RADIUS response">
+                    <incValue>[test:radiusResponse]</incValue>
+                    <incTotal>[test:radiusRequest]</incTotal>            
+                </percent>
+                <percent name="profilRatio_[index]" shortDesc="Profil [index]" description="percent of profil response [index]">
+                    <incValue>[testcase:profilResponse_[index]]</incValue>
+                    <incTotal>[testcase:profilRequest_[index]]</incTotal>            
+                </percent>
+            </stats>
+        </do>
+        <finally/>
+    </try>
+    
+    <!--
+      - Liberation de l'ip source utilisee.
+      -->
+    <parameter name="[test:source_ips_mutex]" operation="system.semaphoreWait" />
+    
+    <parameter name="[test:source_ips]"           operation="list.addLast" value="[test:source_ips]"           value2="[source_ip]" />
+    <parameter name="[test:radius_sockets_names]" operation="list.addLast" value="[test:radius_sockets_names]" value2="[radius_socket_name]" />
+
+    <parameter name="[test:source_ips_mutex]" operation="system.semaphoreNotify" />
+    <parameter name="[test:source_ips_token]" operation="system.semaphoreNotify" />
+
+  </finally>
+  
+</scenario> 

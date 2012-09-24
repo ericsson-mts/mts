@@ -1,0 +1,146 @@
+	
+  
+  <parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000"/>
+	<parameter name="[newCseq]" operation="set" value="858"/>
+ 	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+  <parameter name="[URI]"      operation="set" value="sip:[domainName]" />		
+
+	<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+REGISTER [URI] SIP/2.0
+Via: SIP/2.0/UDP [LocalAddress];rport;branch=z9hG4bK[newBranchId]
+Max-Forwards: 70
+To: "[userName]@[domainName]" <sip:[userName]@[domainName]>
+From: "[userName]@[domainName]" <sip:[userName]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Contact: <sip:[userName]@[LocalAddress]>;expires=[Expires]
+Allow: INVITE,ACK,BYE,CANCEL,OPTIONS,PRACK,REFER,NOTIFY,SUBSCRIBE,INFO,MESSAGE
+User-Agent: IMSloader V5.0.3
+Content-Length: 0
+]]>
+					</sendMessageSIP>
+
+	<receiveMessageSIP name="receive REGISTER response" request="false" type="REGISTER">
+		<parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.StatusCode"/>
+    <test parameter="[StatusCode]" condition="string.equals" value="401" />	
+		<parameter name="[WWWAuthRealm]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.realm"/>									
+		<parameter name="[WWWAuthNonce]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.nonce"/>					
+		<parameter name="[WWWAuthQop]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.qop"/>
+		<parameter name="[WWWAuthAlgorithm]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.algorithm"/>
+	</receiveMessageSIP>
+
+	<parameter name="[Method]" operation="set" value="REGISTER"/>		
+  <parameter name="[URI]"      operation="set" value="sip:[domainName]" />		
+	<parameter name="[HA2]" operation="digest" value2="MD5" value="[Method]:[URI]" />
+	<parameter name="[NonceCount]" operation="set" value="00000001" />
+	<parameter name="[CNonce]"     operation="set" value="852690o3m1"/>
+	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+	<parameter name="[newCseq]" operation="add" value="[newCseq]" value2="1"/>
+
+	<if>
+	<condition>
+		<test parameter="[StatusCode]" condition="string.equals" value="401" />
+	</condition>
+	<then>	
+
+	<if>
+			<condition>
+				<and>
+					<test parameter="[WWWAuthRealm]" condition="list.isempty" value="true"/>
+					<test parameter="[WWWAuthNonce]" condition="list.isempty" value="true"/>
+					<test parameter="[WWWAuthQop]" condition="list.isempty" value="true"/>
+					</and>	
+			</condition>
+			<then>
+					<!-- Proxy -->
+					<log level="info">Proxy</log>	
+					<parameter name="[HA1]" operation="digest" value2="MD5" value="[userName]@[domainName]:[ProxyAuthRealm]:[Password]"/>
+					<!--parameter name="[HA1]" operation="digest" value2="MD5" value="[userName]@[domainName]:[Password]"/-->
+					<!--parameter name="[HA1]" operation="digest" value2="MD5" value="[userName]:[ProxyAuthRealm]:[Password]"/-->
+					<parameter name="[AuthResponse]" operation="digest" value2="MD5" value="[HA1]:[ProxyAuthNonce]:[NonceCount]:[CNonce]:[ProxyAuthQop]:[HA2]" />					
+			</then>			
+			<else>
+			
+    			<if>
+    			   <condition>
+  		  		    <test parameter="[WWWAuthQop]" condition="list.isempty" value="true"/>	
+  			     </condition>
+  			     <then>
+                <parameter name="[WWWAuthQop]" operation="set" value="auth" />  			  
+  			     </then>
+	        </if> 
+			
+					<!-- Terminal -->
+					<log level="info">Terminal</log>	
+					<!--parameter name="[WWWAuthNonce]" operation="set" value="DpDGBblnWqi6A8vKpF/HFQ=="/-->
+					<parameter name="[HA1]" operation="digest" value2="MD5" value="[userName]@[domainName]:[WWWAuthRealm]:[Password]"/>
+					<!--parameter name="[HA1]" operation="digest" value2="MD5" value="[userName]@[domainName]:[Password]"/-->
+					<!--parameter name="[HA1]" operation="digest" value2="MD5" value="[userName]:[WWWAuthRealm]:[Password]"/-->
+					<!--parameter name="[AuthResponse]" operation="digest" value2="MD5" value="[HA1]:[WWWAuthNonce]:[NonceCount]:[CNonce]:[WWWAuthQop]:[HA2]" /-->
+				  <parameter name="[AuthResponse]" operation="digest" value2="MD5" value="[HA1]:[WWWAuthNonce]:[NonceCount]:[CNonce]:auth:[HA2]" />
+				  <parameter name="[AuthResponse]" operation="digest" value2="MD5" value="[HA1]:[WWWAuthNonce]:[HA2]" />				  
+				  
+					<log level="warn">AuthResponse : [AuthResponse]</log>
+					<log level="warn">HA1 : [HA1]</log>
+					<log level="warn">HA2 : [HA2]</log>
+					<log level="warn">WWWAuthRealm : [WWWAuthRealm]</log>
+					<log level="warn">WWWAuthNonce : [WWWAuthNonce]</log>
+					<log level="warn">WWWAuthQop : [WWWAuthQop]</log>
+			</else>
+	</if>
+			
+		<!--parameter name="[HA1]" operation="string.digest" value2="MD5" value="[userName]:[WWWAuthRealm]:[Password]" />
+
+		<parameter name="[Method]" operation="set" value="REGISTER"/>				
+		<parameter name="[URI]"      operation="set" value="sip:[domainName][domainName]" />	
+		<parameter name="[HA2]" operation="string.digest" value2="MD5" value="[Method]:[URI]" />
+		
+		<parameter name="[NonceCount]" operation="set" value="00000001" />
+		<parameter name="[CNonce]"     operation="set" value="11fc4a0e" />
+ 
+ 		<parameter name="[AuthResponse]" operation="string.digest" value2="MD5" value="[HA1]:[WWWAuthNonce]:[HA2]" />
+ 		<parameter name="[newBranchId]" operation="string.random" value="10"/-->
+			
+			<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="UDP">
+<![CDATA[
+REGISTER [URI] SIP/2.0
+Via: SIP/2.0/UDP [LocalAddress];rport;branch=z9hG4bK[newBranchId]
+Max-Forwards: 70
+To: "[userName]@[domainName]" <sip:[userName]@[domainName]>
+From: "[userName]@[domainName]" <sip:[userName]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Contact: <sip:[userName]@[LocalAddress]>;expires=[Expires]
+Authorization: Digest username="[userName]@[domainName]",realm="[WWWAuthRealm]",nonce="[WWWAuthNonce]",uri="[URI]",response="[AuthResponse]",algorithm=[WWWAuthAlgorithm],cnonce="[CNonce]",nc=[NonceCount]
+Allow: INVITE,ACK,BYE,CANCEL,OPTIONS,PRACK,REFER,NOTIFY,SUBSCRIBE,INFO,MESSAGE
+User-Agent: IMSloader V5.0.3
+Content-Length: 0
+]]>
+					</sendMessageSIP>
+			
+		<!--sendMessageSIP name="Send REGISTER" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[REGISTER sip:[domainName] SIP/2.0
+To: "[userName]" <sip:[userName]@[domainName]>
+From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transportResponse] [LocalAddress];branch=z9hG4bK[newBranchId]
+Max-Forwards: 70
+Contact: <sip:[userName]@[LocalAddress]>
+Authorization: Digest username="[userName]@[domainName]", realm="[WWWAuthRealm]", nonce="[WWWAuthNonce]", uri="[URI]", algorithm=[WWWAuthAlgorithm], response="[AuthResponse]"
+Expires: [Expires]
+Content-Length: 0
+]]>
+	        </sendMessageSIP-->
+
+    	<receiveMessageSIP name="200 OK" type="REGISTER" result="200">
+    		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+    		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+    		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    		<parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    	</receiveMessageSIP>
+      	
+	</then>
+	</if>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE library [
+<!ENTITY libS_Proxy_Server				SYSTEM "..\library\libS_Proxy_Server.xml">
+<!ENTITY libS_Own_Invite				SYSTEM "..\library\libS_Own_Invite.xml">
+]>
+
+<scenario>
+
+
+
+<!--
+Boucle infinie reception / Fermeture cnx HTTP apres reception de chaque reponse
+-->
+
+<parameter name="[message_received]" operation="set" value="true"/>
+
+<while>
+	<condition>
+  	<test parameter="[message_received]" condition="equals" value="true" /> 
+  	</condition>
+<do>
+	<parameter name="[message_received]" operation="set" value="false"/>
+	
+  <receiveMessage name="Wait HTTP message" timeout="20" failedOnTimeout="false">
+  <parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+  <parameter name="[connection_name]" operation="setFromMessage" value="channel:name"/>
+  <parameter name="[message_received]" operation="set" value="true"/>
+  <parameter name="request" operation="setFromMessage" value="message:request"/>
+  </receiveMessage>
+
+<if>
+<condition>
+<test parameter="[request]" condition="equals" value="true"/>	  		  		    		  		  	
+</condition>
+
+<then>
+<!--
+Simulateur d'AS http uniquement utilise en local
+Repond au requetes HTTP
+-->
+
+<sendResponseHTTP name="Send GET 200 OK" transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader01
+]]>
+<!--******************** END MESSAGE *********************-->
+	</sendResponseHTTP>
+
+</then>
+
+<else>
+<!--
+Rupture de connection par IMSLoader a chaque reponse http recue
+-->
+<closeConnectionHTTP connectionName="[connection_name]" />
+</else></if>
+
+</do></while>
+
+</scenario>

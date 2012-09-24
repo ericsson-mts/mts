@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <semaphore name="mutex" action="notify" />
+
+    <while>
+        <condition/>
+        <do>
+            <!-- dequeue responses -->
+            <if>
+                <condition>
+                    <test parameter="[testcase:messages]" condition="isEmpty" />
+                </condition>
+                <then>
+                    <pause milliseconds="[test:delayed_server_delay]" />                
+                </then>
+                <else>
+                    <parameter name="[message_send_date]" operation="getFirst" value="[testcase:messages_send_date]" />
+                    <parameter name="[message_transaction_id]" operation="getFirst" value="[testcase:messages_transaction_ids]" />
+                    <parameter name="[message]" operation="getFirst" value="[testcase:messages]" />
+                
+                    
+                    <parameter name="[timestamp]" operation="setFromSystem" value="Timestamp" value2="1970" />
+                    <parameter name="[pause_time]" operation="substract" value="[message_send_date]" value2="[timestamp]" />
+                    
+                    <if>
+                        <condition>
+                            <test parameter="[pause_time]" condition="greaterThan" value="20" />
+                        </condition>
+                        <then>
+                            <pause milliseconds="[pause_time]" />                
+                        </then>
+                    </if>                    
+                    
+                    <sendResponseHTTP transactionId="[message_transaction_id]">
+<![CDATA[HTTP/1.1 200 OK
+
+[message]
+]]>                
+                    </sendResponseHTTP>
+                    
+                    <semaphore name="mutex" action="wait" />
+                    <parameter name="[testcase:messages]" operation="removeFirst" value="[testcase:messages]" />
+                    <parameter name="[testcase:messages_send_date]" operation="removeFirst" value="[testcase:messages_send_date]" />
+                    <parameter name="[testcase:messages_transaction_ids]" operation="removeFirst" value="[testcase:messages_transaction_ids]" />
+                    <semaphore name="mutex" action="notify" />
+                </else>
+            </if>
+        </do>
+    </while>
+</scenario>

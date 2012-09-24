@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario Wassup -->
+<scenario>
+   
+    <!-- mise en ecoute en conf du port 8081 pour les connections du WebAS-->
+    <parameter name="[phone]" operation="set" value="[test:intDefaultPhoneNumberMin]"/>
+
+<while>
+<condition/>
+<do>
+
+    <receiveMessageHTTP name="Receive HTTP request" request="true" timeout="0">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message:transactionId"/>
+    </receiveMessageHTTP>
+    
+    <parameter name="[phone]" operation="number.add" value="[phone]" value2="1"/>
+    <sendMessageHTTP name="Wassup response" transactionId="[transactionId]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Wed, 15 Apr 2009 09:03:00 GMT
+Server: Apache/2.0.63 (Unix)
+Content-Length: 61
+Keep-Alive: timeout=15, max=100
+Connection: Keep-Alive
+Content-Type: text/html
+
+X_WASSUP_LNDIP=[phone]
+X_WASSUP_SPR=0
+X_WASSUP_STATUS=OK
+]]>
+    </sendMessageHTTP>
+
+    <if>
+    <condition>
+        <test parameter="[phone]" condition="number.equals" value="[test:intDefaultPhoneNumberMax]"/>
+    </condition>
+    <then>
+        <parameter name="[phone]" operation="set" value="[test:intDefaultPhoneNumberMin]"/>
+    </then>  
+    </if>
+</do>
+</while>
+</scenario>

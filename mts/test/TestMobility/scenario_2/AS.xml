@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<scenario>
+
+<!--
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_IP]" operation="set" value="[Host-Tester]"/>
+<parameter name="[provider_Port]" operation="set" value="[Port-Subscription_Module]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localHost="[Host-Tester]" localPort="[provider_Port]" transport="UDP"/>
+-->
+
+<!--
+Semaphore Synchro fin de phase d'initialisation
+A mettre en commentaire pour tests boucle locale
+
+<parameter name="test:FIN_Init_Loader_vers_AS" operation="semaphore.wait" value="1" value2="0"/>
+-->
+
+<!-- 
+calculate the range of user from the csv files 
+Used to determided the TV user specified in the AddCallTerminal SOAP request
+-->
+
+<parameter name="[RangeNumberUser]" operation="size" value="[inviteeTab]"/>    		
+<parameter name="[TempRangeNumberUser]" operation="size" value="[inviterTab]"/>
+<parameter name="[Temp2RangeNumberUser]" operation="size" value="[inviterTVTab]"/>   		
+	
+  <if>
+	    <condition>
+		<test parameter="[TempRangeNumberUser]" condition="lowerThan" value="[RangeNumberUser]"/>
+	    </condition>
+	    <then>
+	    	<parameter name="[RangeNumberUser]" operation="set" value="[TempRangeNumberUser]"/>
+	    </then>
+	</if>
+	<if>
+	    <condition>
+		<test parameter="[Temp2RangeNumberUser]" condition="lowerThan" value="[RangeNumberUser]"/>
+	    </condition>
+	    <then>
+	    	<parameter name="[RangeNumberUser]" operation="set" value="[Temp2RangeNumberUser]"/>
+	    </then>
+	</if>
+	
+<parameter name="[RangeNumberUser]" operation="substract" value="[RangeNumberUser]" value2="1"/>
+<parameter name="[indexTVUser]" operation="set" value="0"/>
+
+
+
+<!--
+Opening of a HTTP cnx from AS (Client) to Enabler (Server) for sending of AddCallTerminal Requests
+
+<openConnectionHTTP connectionName="HTTP_cnx_from_AS_to_ENABLER" localHost="[Host-Tester]" remoteURL="http://[Host-Enabler]:[Port-Subscription_Enabler]"/> 
+-->
+
+
+<!--
+Boucle infinie reception / acquitement de requetes SOAP
+-->
+
+
+<parameter name="[message_received]" operation="set" value="true"/>
+
+<while>
+	<condition>
+  	<test parameter="[message_received]" condition="equals" value="true" /> 
+  	</condition>
+<do>
+	<parameter name="[message_received]" operation="set" value="false"/>
+	
+	<!--receiveRequestHTTP name="Wait POST" method="POST" timeout="10" failedOnTimeout="false"-->
+  <receiveRequestHTTP name="Wait HTTP message" timeout="25" failedOnTimeout="false">
+  <parameter name="transaction_id" operation="setFromMessage" value="message:transactionId"/>
+  <parameter name="Received_Method" operation="setFromMessage" value="firstline:Method"/>
+  <parameter name="Received_Uri" operation="setFromMessage" value="firstline:URI"/>
+  <parameter name="content" operation="setFromMessage" value="content"/>
+  
+  <parameter name="[message_received]" operation="set" value="true"/>
+  </receiveRequestHTTP>
+
+
+<!--
+Case if a HTTP POST message is received including a SOAP StartCallNotification
+En pratique, cette section est uniquement utilisee pour les tests en boucle locale
+-->
+
+<if>
+<condition>
+<test parameter="[message_received]" condition="equals" value="true"/>
+<test parameter="[Received_Uri]" condition="contains" value="CallNotificationManager"/>
+<test parameter="[Received_Method]" condition="equals" value="POST"/>
+</condition>
+<then>
+
+	<sendResponseHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+<![CDATA[HTTP/1.1 200 OK
+Content-Type:text/html; charset=utf-8
+Content-Length:x
+
+Server: Jetty(6.1.x)
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:loc="http://www.csapi.org/schema/parlayx/call_notification/v3_2/local">
+<soapenv:Header/>
+<soapenv:Body>
+<loc:notifyCallEventResponse/>
+</soapenv:Body>
+</soapenv:Envelope>]]>
+	</sendResponseHTTP>
+
+<log level="1">Balise Response to StartCallNotification 1ier type</log>
+
+</then></if>
+
+<!--
+Case if a HTTP POST message is received including a SOAP CallNotification
+-->
+
+<if>
+<condition>
+<test parameter="[message_received]" condition="equals" value="true"/>
+<test parameter="[Received_Uri]" condition="contains" value="mockCallNotification"/>
+<test parameter="[Received_Method]" condition="equals" value="POST"/>
+</condition>
+<then>
+
+	<sendResponseHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Transfer-Encoding: chunked
+Content-Type: text/xml; charset=UTF-8
+SOAPAction: ""
+X-Powered-By: Servlet/2.4 JSP/2.0
+Content-Length:x
+
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+<soap:Body>
+<ns2:startCallNotificationResponse xmlns:ns2="http://www.csapi.org/schema/parlayx/call_notification/notification_manager/v3_1/local"/>
+</soap:Body>
+</soap:Envelope>
+]]>
+	</sendResponseHTTP>
+
+<log level="1">Balise Response to CallNotification 2ieme type</log>
+
+<!--
+If callNotification is received with event=answer => sending of a delayed AddCallTerminalRequest
+Test apres extraction de la valeur du champ entre les balises SOAP CallEvent
+-->
+<parameter name="[contentTemp]" operation="set" value="[content]"/>
+
+<parameter name="[CallEventTemp]" 	operation="xpath" value="[contentTemp]" value2="//CallEvent"/>
+<parameter name="[CallEventTemp]" operation="regexReplaces" value="[CallEventTemp]" value2="&lt;CallEvent&gt;" value3=""/>
+<parameter name="[CallEventTemp]" operation="regexReplaces" value="[CallEventTemp]" value2="&lt;/CallEvent&gt;" value3=""/>
+
+<if>
+<condition>
+<!--test parameter="[content]" condition="contains" value="Answer"/-->
+<test parameter="[CallEventTemp]" condition="equals" value="Answer"/>
+</condition>
+<then>
+
+<!-- 
+SWESWE Sending of addCallTerminal request
+Recuperation des parametres suivants du CallNotification precedent
+champ SOAP callSessionIdentifier
+champ SOAP callSessionIdentifier
+champ SOAP callSessionIdentifier
+
+Contournement du pb "ns2:"" avec xpath en supprimant au prealable cette chaine
+-->
+<parameter name="[contentTemp]" operation="regexReplaces" value="[content]" value2="ns2:" value3=""/>
+
+<!-- 
+Extraction du champ SOAP callSessionIdentifier
+-->
+<parameter name="[callSessionIdentifierTemp]" 	operation="xpath" value="[contentTemp]" value2="//callSessionIdentifier"/>
+<parameter name="[callSessionIdentifierTemp]" operation="regexReplaces" value="[callSessionIdentifierTemp]" value2="&lt;callSessionIdentifier&gt;" value3=""/>
+<parameter name="[callSessionIdentifierTemp]" operation="regexReplaces" value="[callSessionIdentifierTemp]" value2="&lt;/callSessionIdentifier&gt;" value3=""/>
+<log level="1">Balise callSessionIdentifier = [callSessionIdentifierTemp]</log>
+
+<!-- 
+Extraction du champ SOAP callingParticipant
+-->
+<parameter name="[callingParticipantTemp]" 	operation="xpath" value="[contentTemp]" value2="//callingParticipant"/>
+<parameter name="[callingParticipantTemp]" operation="regexReplaces" value="[callingParticipantTemp]" value2="&lt;callingParticipant&gt;" value3=""/>
+<parameter name="[callingParticipantTemp]" operation="regexReplaces" value="[callingParticipantTemp]" value2="&lt;/callingParticipant&gt;" value3=""/>
+<log level="1">Balise callingParticipant = [callingParticipantTemp]</log>
+
+
+<!-- 
+Determination du callTerminal par Range [callTerminalTemp]
+-->
+
+
+<!--
+calculate the range of user from the csv files in order to determine the TV user specified in the AddCallTerminal SOAP request  refer to CallTerminal field
+-->
+
+<parameter name="[indexTVUser]" operation="add" value="[indexTVUser]" value2="1"/>    			
+  <if>
+	    <condition>
+		<test parameter="[indexTVUser]" condition="greaterThan" value="[RangeNumberUser]"/>       	     
+    	    </condition>
+    	    <then>
+		<parameter name="[indexTVUser]" operation="set" value="0"/>    				    	
+	    </then>
+	</if>
+		
+<parameter name="[callTerminalTemp]" operation="set" value="[inviterTVTab([indexTVUser])]"/>
+
+<!--
+Opening of a HTTP cnx from AS (Client) to Enabler (Server) for sending of AddCallTerminal Requests
+One connection for each call
+-->
+<parameter name="[HTTP_cnx_name]" operation="set"    value="HTTP_cnx_from_AS_to_ENABLER" />
+		<parameter name="[HTTP_cnx_name]" operation="concat" value="[HTTP_cnx_name]"      value2="_" />
+		<parameter name="[HTTP_cnx_name]" operation="concat" value="[HTTP_cnx_name]"      value2="[indexTVUser]" />
+
+<log level="1">Balise HTTP_cnx_name = [HTTP_cnx_name]</log>
+
+<openConnectionHTTP connectionName="[HTTP_cnx_name]" localHost="[Host-Tester]" remoteURL="http://[Host-Enabler]:[Port-Subscription_Enabler]"/> 
+
+
+<sendRequestHTTP name="Send POST"  connectionName="[HTTP_cnx_name]" server="http://[Host-Enabler]:[Port-Subscription_Enabler]" delay="[CallDurationSec_AudioSeul]">
+
+<![CDATA[
+POST /north/services/ThirdPartyCall HTTP/1.1
+Content-Type: text/xml; charset=UTF-8
+SOAPAction: ""
+Service: pagure
+User-Agent: XMLLoader
+Host: [Host-Tester]
+Content-Length: x
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:loc="http://www.csapi.org/schema/parlayx/third_party_call/v3_4/local">
+<soapenv:Header/>
+<soapenv:Body>
+<loc:addCallTerminal>
+<loc:callSessionIdentifier>[callSessionIdentifierTemp]</loc:callSessionIdentifier>
+<loc:callParticipant>[callingParticipantTemp]</loc:callParticipant><loc:callTerminal>sip:+33[callTerminalTemp]@[Host-Tester]:6061</loc:callTerminal>
+<loc:TerminalState>Master</loc:TerminalState><loc:mediaInfo><media>Video</media><mediaDirection>InOut</mediaDirection></loc:mediaInfo><loc:mediaInfo><media>Audio</media><mediaDirection>Out</mediaDirection></loc:mediaInfo></loc:addCallTerminal></soapenv:Body>
+</soapenv:Envelope>
+]]>
+
+</sendRequestHTTP>
+
+
+</then></if>
+</then></if>
+
+<!--
+Case if a HTTP POST message is received including a SOAP AddCallTerminalRequest
+En pratique, cette section est uniquement utilisee pour les tests en boucle locale
+-->
+
+<if>
+<condition>
+<test parameter="[message_received]" condition="equals" value="true"/>
+<test parameter="[Received_Uri]" condition="contains" value="ThirdPartyCall"/>
+<test parameter="[Received_Method]" condition="equals" value="POST"/>
+</condition>
+<then>
+
+	<sendResponseHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+
+<![CDATA[HTTP/1.1 200 OK
+Transfer-Encoding: chunked
+Content-Type: text/xml; charset=UTF-8
+SOAPAction: ""
+X-Powered-By: Servlet/2.4 JSP/2.0
+Content-Length:x
+
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><ns2:addCallTerminalResponse xmlns:ns2="http://www.csapi.org/schema/parlayx/third_party_call/v3_4/local"/></soap:Body></soap:Envelope>
+]]>
+	</sendResponseHTTP>
+
+
+<log level="1">Balise Response to CallNotification 3ieme type</log>
+
+</then></if>
+
+
+
+</do></while>
+
+
+<!--closeConnectionHTTP connectionName="HTTP_cnx_from_AS_to_ENABLER"/-->
+
+<!--
+<closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/>
+-->
+
+</scenario>

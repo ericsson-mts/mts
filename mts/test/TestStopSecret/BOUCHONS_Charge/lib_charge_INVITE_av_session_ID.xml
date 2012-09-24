@@ -1,0 +1,199 @@
+
+<parameter name="[newFromTag]" operation="identifier" value="newString" value2="10"/>
+<parameter name="[newCseqNumber]" operation="identifier" value="nextInteger" value2="10000000"/>
+<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>  
+
+<!--
+Premier INVITE
+-->
+
+<parameter name="[newFromTag]" operation="identifier" value="newString" value2="10"/>
+<parameter name="[newCseqNumber]" operation="identifier" value="nextInteger" value2="10000000"/>
+<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/> 
+
+<sendRequestSIP name="Send INVITE" delay="0" providerName="[Source_Port]">
+<![CDATA[		
+INVITE sip:+33[inviteeName]@[Target_load-tester]:[Target_Port]/StopSecretSipApp/A_welcome_dialog.jsp%3bjsessionid%3d/7sBsLGYK2QHQ25GMSQD2VsCDzTLhG5sqLDBJlxJ4vvZGDCZ1RWz5!1473881111!NONE SIP/2.0
+To: <sip:0[inviteeName]@[Target_load-tester]:[Target_Port];user=phone>
+From: "User_[inviterName]"<sip:+33[inviterName]@sip.pfdev.fr;user=phone>;tag=1
+Call-ID: [CallID_Charge]
+CSeq: [newCseqNumber] INVITE
+Max-Forwards: 8
+Via: SIP/2.0/UDP [Host-Tester]:[Source_Port];branch=z9hG4bK[newBranchId]
+Route: <sip:3Zqkv7%20aqWhqaaapePiVzjAwvpRFu%24Us6tpS4bisip%3A%2B33975630046%40sip.pfdev.fr@[Target_load-tester]:[Target_Port];lr>
+Contact: <sip:[Host-Tester]:[Source_Port]>
+Content-Type: application/sdp
+Allow: ACK, BYE, CANCEL, INFO, INVITE, OPTIONS, PRACK, REFER, NOTIFY, UPDATE
+Accept: multipart/mixed
+Accept: application/dtmf-relay
+Accept: application/media_control+xml
+Accept: application/sdp
+P-Asserted-Identity: "User_[inviterName]"<sip:+33[inviterName]@sip.pfdev.fr>
+P-Asserted-Identity: "User_[inviterName]"<tel:+33[inviterName]>
+Privacy: user;critical;id
+P-Charging-Vector: icid-value=6bf5232302afbf708718c69cad284b;orig-ioi=sip.pfdev.fr
+Session-Expires: 86400
+Min-SE: 900
+P-Charging-Function-Addresses: ccf="aaa://devitimmm1.sip.pfdev.fr:3868;transport=tcp";ccf="aaa://devitimmm1.sip.pfdev.fr:3868;transport=tcp"
+Content-Length: x
+
+v=0
+o=BroadWorks 40761 1 IN IP4 193.253.72.154
+s=-
+c=IN IP4 193.253.72.154
+t=0 0
+m=audio 41536 RTP/AVP 0 8 18 101
+a=rtpmap:0 PCMU/8000/1
+a=rtpmap:8 PCMA/8000/1
+a=rtpmap:18 G729/8000/1
+a=fmtp:18 annexb=no
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-15
+
+]]>	
+</sendRequestSIP>
+
+
+<!--
+Premier ACK
+-->
+
+<parameter name="[newFromTag]" operation="identifier" value="newString" value2="10"/>
+<parameter name="[newCseqNumber]" operation="identifier" value="nextInteger" value2="10000000"/>
+<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+<sendRequestSIP name="Send ACK" delay="2" providerName="[Source_Port]">
+<![CDATA[
+ACK sip:[Target_load-tester] SIP/2.0
+To: <sip:0[inviteeName]@[Target_load-tester]:[Target_Port];user=phone>
+From: "User_[inviterName]"<sip:+33[inviterName]@sip.pfdev.fr;user=phone>;tag=1
+Call-ID: [CallID_Charge]
+CSeq: [newCseqNumber] ACK
+Max-Forwards: 70
+Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Route: <sip:3Zqkv7%20aqWhqaaapePiVzjAwvpRFu%24Us6tpS4bisip%3A%2B33975630046%40sip.pfdev.fr@[Target_load-tester]:[Target_Port];lr>
+Contact: <sip:[Adresse-Tester];transport=udp>
+User-Agent: XMLLoader
+Content-Length: 0
+]]>
+</sendRequestSIP>
+
+<!--
+Deuxieme INVITE
+-->
+<if>
+<condition>
+		  <test parameter="[Have_to_send_the_second_Invite]" condition="equals" value="true"/>		  		  		    		  		  	
+</condition>
+<then>   
+
+
+<parameter name="[newFromTag]" operation="identifier" value="newString" value2="10"/>
+<parameter name="[newCseqNumber]" operation="identifier" value="nextInteger" value2="10000000"/>
+<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/> 
+
+<sendRequestSIP name="Send INVITE"  delay="10" providerName="[Source_Port]">
+<![CDATA[		
+INVITE sip:+33[inviteeName]@[Target_load-tester]:[Target_Port]/StopSecretSipApp/A_welcome_dialog.jsp%3bjsessionid%3d/7sBsLGYK2QHQ25GMSQD2VsCDzTLhG5sqLDBJlxJ4vvZGDCZ1RWz5!1473881111!NONE SIP/2.0
+To: <sip:0[inviteeName]@[Target_load-tester]:[Target_Port];user=phone>
+From: "User_[inviterName]"<sip:+33[inviterName]@sip.pfdev.fr;user=phone>;tag=1
+Call-ID: [CallID_Charge]
+CSeq: [newCseqNumber] INVITE
+Max-Forwards: 8
+Via: SIP/2.0/UDP [Host-Tester]:[Source_Port];branch=z9hG4bK[newBranchId]
+Route: <sip:3Zqkv7%20aqWhqaaapePiVzjAwvpRFu%24Us6tpS4bisip%3A%2B33975630046%40sip.pfdev.fr@[Target_load-tester]:[Target_Port];lr>
+Contact: <sip:[Host-Tester]:[Source_Port]>
+Content-Type: application/sdp
+Allow: ACK, BYE, CANCEL, INFO, INVITE, OPTIONS, PRACK, REFER, NOTIFY, UPDATE
+Accept: multipart/mixed
+Accept: application/dtmf-relay
+Accept: application/media_control+xml
+Accept: application/sdp
+P-Asserted-Identity: "User_[inviterName]"<sip:+33[inviterName]@sip.pfdev.fr>
+P-Asserted-Identity: "User_[inviterName]"<tel:+33[inviterName]>
+Privacy: user;critical;id
+P-Charging-Vector: icid-value=6bf5232302afbf708718c69cad284b;orig-ioi=sip.pfdev.fr
+Session-Expires: 86400
+Min-SE: 900
+P-Charging-Function-Addresses: ccf="aaa://devitimmm1.sip.pfdev.fr:3868;transport=tcp";ccf="aaa://devitimmm1.sip.pfdev.fr:3868;transport=tcp"
+Content-Length: x
+
+v=0
+o=BroadWorks 40761 1 IN IP4 193.253.72.154
+s=-
+c=IN IP4 193.253.72.154
+t=0 0
+m=audio 41536 RTP/AVP 0 8 18 101
+a=rtpmap:0 PCMU/8000/1
+a=rtpmap:8 PCMA/8000/1
+a=rtpmap:18 G729/8000/1
+a=fmtp:18 annexb=no
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-15
+
+]]>	
+</sendRequestSIP>
+
+<!--
+Premier ACK
+-->
+
+<parameter name="[newFromTag]" operation="identifier" value="newString" value2="10"/>
+<parameter name="[newCseqNumber]" operation="identifier" value="nextInteger" value2="10000000"/>
+<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+
+<sendRequestSIP name="Send ACK" delay="12" providerName="[Source_Port]">
+<![CDATA[
+ACK sip:[Target_load-tester] SIP/2.0
+To: <sip:0[inviteeName]@[Target_load-tester]:[Target_Port];user=phone>
+From: "User_[inviterName]"<sip:+33[inviterName]@sip.pfdev.fr;user=phone>;tag=1
+Call-ID: [CallID_Charge]
+CSeq: [newCseqNumber] ACK
+Max-Forwards: 70
+Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Route: <sip:3Zqkv7%20aqWhqaaapePiVzjAwvpRFu%24Us6tpS4bisip%3A%2B33975630046%40sip.pfdev.fr@[Target_load-tester]:[Target_Port];lr>
+Contact: <sip:[Adresse-Tester];transport=udp>
+User-Agent: XMLLoader
+Content-Length: 0
+]]>
+</sendRequestSIP>
+
+</then>	    
+</if>
+
+
+
+<!--
+BYE
+-->
+
+
+<if>
+<condition>
+		  <test parameter="[Have_to_send_the_BYE]" condition="equals" value="true"/>		  		  		    		  		  	
+</condition>
+<then>   
+
+<parameter name="[newFromTag]" operation="identifier" value="newString" value2="10"/>
+<parameter name="[newCseqNumber]" operation="identifier" value="nextInteger" value2="10000000"/>
+<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+<sendRequestSIP name="Send BYE" delay="20" providerName="[Source_Port]">
+    
+<![CDATA[
+BYE sip:[Target_load-tester] SIP/2.0
+To: <sip:0[inviteeName]@[Target_load-tester]:[Target_Port];user=phone>
+From: "User_[inviterName]"<sip:+33[inviterName]@sip.pfdev.fr;user=phone>;tag=1
+Call-ID: [CallID_Charge]
+CSeq: [newCseqNumber] BYE
+Max-Forwards: 70
+Via: SIP/2.0/UDP [Host-Tester]:[Source_Port];branch=z9hG4bK[newBranchId]
+Route: <sip:3Zqkv7%20aqWhqaaapePiVzjAwvpRFu%24Us6tpS4bisip%3A%2B33975630046%40sip.pfdev.fr@[Target_load-tester]:[Target_Port];lr>
+Contact: <sip:[Adresse-Tester];transport=udp>
+Content-Length: 0
+        
+]]></sendRequestSIP>
+		
+</then>	    
+</if>

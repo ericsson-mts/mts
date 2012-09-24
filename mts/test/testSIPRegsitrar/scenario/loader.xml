@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- 
+AUTEUR : R&D/CORE/M2V/TSC/JD
+OBJET : Generateur des messages INVITE du loader 
+
+MODIF : 20/05/2010. Le SDP est passe en parametre du scenario de maniere a pouvoir
+ simuler du traffic de type message, ou audio ou xxxxx 
+			31/05/2011. Ajout option Far end NAT
+			07/06/2001. Ajout Next Nonce 			
+--> 
+<!DOCTYPE Library [
+ <!ENTITY initvarStatsParam SYSTEM "./initvarStatsParam.xml">
+ <!ENTITY nextNonceCompute SYSTEM "./nextNonceCompute.xml">
+]>
+<scenario>
+
+	&initvarStatsParam;
+
+    <if>   <condition>	<test parameter="[testcase:indexCall]" condition="list.exists" not="true"/>  </condition>
+     <then>
+			<if>	<condition> <test parameter="[WaitEndOfFirstRegisterBurst]" condition="string.equals" value="true"/> </condition>	
+			<then>
+					<parameter name="[test:startCall]" operation="system.semaphorewait" value2="0"/>
+			</then>
+			</if>
+			<parameter name="[testcase:indexCall]" operation="set" value="-1"/>
+	    </then>
+    </if>
+	
+	<stats>
+	    <counter name="INV out"><increase>1</increase></counter>
+        <!--counter name="INV lost"><increase>1</increase></counter-->
+	</stats>	    	    			
+
+	<parameter name="[testcase:indexCall]" operation="number.add" value="[testcase:indexCall]" value2="2"/>
+
+    <if> <condition> <test parameter="[testcase:indexCall]" condition="number.greaterEqualThan" value="[RangeNumberUser]"/>	</condition>
+    <then> <parameter name="[testcase:indexCall]" operation="set" value="1"/>  </then>
+	</if>
+
+	<parameter name="[IndexCall]" operation="set"  value="[testcase:indexCall]"/>
+	<parameter name="[IndexCallPlusUn]" operation="number.add" value="[IndexCall]" value2="1"/>
+	 <parameter name="[indexCallMoinsUn]" operation="number.substract" value="[IndexCall]" value2="1"/>
+
+	<parameter name="[randomRTP]" operation="number.random" value="20000"/>
+	<parameter name="[portLevel4]" operation="number.add" value="[RangePortRTP-UAC]" value2="[randomRTP]"/>  	 
+    <parameter name="[inviterName]" operation="set" value="[userTab([IndexCall])]"/>
+	<parameter name="[inviterNumberPhone]" operation="set" value="[userTabNP([IndexCall])]"/>
+	<parameter name="[inviteeName]" operation="set" value="[userTabNP([IndexCallPlusUn])]"/>
+	<parameter name="[inviteeNumberPhone]" operation="set" value="[userTabNP([IndexCallPlusUn])]"/>
+	
+	<parameter name="[RandomNumber]" operation="number.random" value="99999999"/>
+	<parameter name="[RandomNumberTag2]" operation="number.random" value="999999999999999999"/>
+	<parameter name="[RandomNumberTag3]" operation="number.random" value="99999999"/>
+	
+	<parameter name="[newCseqNumber]" operation="number.uid" value="10"/>
+<!--
+	<parameter name="[Port-Tester]" operation="number.substract" value="65536" value2="[testcase:indexCall]"/>
+	<parameter name="[listenpoint]" operation="set" value="listenpoint_[Port-Tester]"/>
+	--> 
+	   <parameter name="[listenpoint]" operation="set" value="[test:listListenPointName([indexCallMoinsUn])]" />
+      <parameter name="[lastLocalHost]" operation="set" value="[test:listUsedIp([indexCallMoinsUn])]" />
+      <parameter name="[lastLocalPort]" operation="set" value="[test:listUsedPort([indexCallMoinsUn])]" />
+	
+	<!-- Next Nonce  --> 
+	<parameter name="[Method]" operation="set" value="INVITE" />
+	<parameter name="[URI]" operation="set" value="sip:+[inviteeName]@[domainName]" />
+	<parameter name="[userNumberPhone]" operation="set" value="[inviterName]" />
+	&nextNonceCompute; 
+	
+	<if>	<condition>	<test parameter="[farEndNAT]" condition="string.equals" value="true"/>	</condition>
+	<then>	 <!-- Far en NAT : modifier le Via et la Contact et les prendre dans le tableau issu du fichier user.csv --> 
+	     <parameter name="[UserAgentIpAdress]" operation="set" value="[userTabPrivateIP([IndexCall])]" />
+		 <!-- transmettre la valeur @IP du remote dans un champ proprietaire du Via pour les besoins du scenario --> 
+		 <parameter name="[remoteUserAgentAdress]" operation="set" value="[userTabPrivateIP([indexCallMoinsUn])]" />
+	</then>
+	<else> <!-- pas de Far end NAT --> 
+		 <parameter name="[UserAgentIpAdress]" operation="set" value="[lastLocalHost]" />
+		 <parameter name="[remoteUserAgentAdress]" operation="set" value="noFarEndNat" />
+	</else>
+	</if>
+	
+	<sendMessageSIP name="Send INVITE" listenpoint="[listenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[		
+INVITE sip:+[inviteeName]@[domainName] SIP/2.0
+From: <sip:[inviterName]@[domainName]>;tag=[RandomNumber]
+To: <sip:+[inviteeName]@[domainName]>
+Call-ID: [RandomNumberTag2]
+CSeq: [newCseqNumber] INVITE
+Via: SIP/2.0/UDP  [UserAgentIpAdress]:[lastLocalPort];branch=z9hG4bK-[RandomNumberTag3];xmlloader=[remoteUserAgentAdress]
+Max-Forwards: 70[authorization]
+User-Agent: [UserAgent];xmlloader=[remoteUserAgentAdress]
+Contact: <sip:+[inviterNumberPhone]@[UserAgentIpAdress]:[lastLocalPort]>
+Allow: INVITE,ACK,CANCEL,BYE,NOTIFY,OPTIONS,REFER,UPDATE
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[inviterName] 8 2 IN IP4 [UserAgentIpAdress]
+s=Charge xmlloader 5.0.0
+c=IN IP4 [UserAgentIpAdress]
+t=0 0
+[SDPmlineSender]
+[SDPalineSender]
+]]>		
+	</sendMessageSIP>
+	
+</scenario>

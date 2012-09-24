@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="Enabler tests scenario 1">
+
+  <!-- IMSLoader AS simulator address -->
+  <parameter name="[Host-Tester]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+  <!--Tests_2_PC: Chgt a effectuer cote PC Bouchon
+  <parameter name="[Host-Tester]" operation="set" value="172.20.193.10"/>
+  --> 
+  
+  <!-- Boucle_Locale: Enabler IP address -->
+  <parameter name="[Host-Enabler]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+  <!--SWESWE Tests double PC
+  
+  <parameter name="[Host-Enabler]" operation="set" value="172.20.193.57" description="AS IP address" editable="true"/>
+  -->
+  <!--SWESWE Tests_Chez_FT: Enabler IP address
+   
+  <parameter name="[Host-Enabler]" operation="set" value="10.194.124.42" description="AS IP address" editable="true"/>
+  -->
+
+  
+  
+  <!-- Ports SIP et HTTP de l'Enabler --> 	
+  <parameter name="[Port-Enabler]" operation="set" value="5080" editable="true"/>
+  <parameter name="[Port-Subscription_Enabler]" operation="set" value="80" editable="true"/>
+  
+  <!-- Port HTTP d ecoute de IMSLoader 
+  Deja declare dans http-proprieties 
+  mais variable Port-AS necessaire:
+  - envoi du port d ecoute dans le message http/soap  de subscription
+  - utilise par les bouchons pour envoyer leur message http
+  -->  
+  <parameter name="[Port-AS]" operation="set" value="80" editable="true"/>
+  
+  <!-- Ports autres nodes simules -->
+  <parameter name="[Port-loader]" operation="set" value="9000" editable="true"/>
+  <parameter name="[Port-Subs_A]" operation="set" value="6060" editable="true"/>
+  <parameter name="[Port-Subs_B]" operation="set" value="6090" editable="true"/>
+  
+  <parameter name="[Adresse-Enabler]" operation="set" value="[Host-Enabler(0)]:[Port-Enabler]"/>
+  <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Subs_A]" description="Addresse du IMSloader"/>
+
+  <!-- RTP ports repartition for the loader(Subs_A in the first part of the scenario) and Subs_A, Subs_B, MRF_A, MRF_B sides-->	
+  <parameter name="[RangePortRTP-UAC]" operation="set" value="29000"/>				
+	<parameter name="[RangePortRTP-UAS_SUBSA]" operation="set" value="33000"/>
+	<parameter name="[RangePortRTP-UAS_SUBSB]" operation="set" value="37000"/>
+	
+	<!-- Scenario timers -->
+	
+	<!-- Timers on MRF_A side: cumulated duration
+	<parameter name="[T_MRFA_GET_Welcome]" operation="set" value="0" editable="true"/>
+	<parameter name="[T_MRFA_POST_File]" operation="set" value="16" editable="true"/>
+	<parameter name="[T_MRFA_GET_Waiting_1]" operation="set" value="17" editable="true"/>
+	<parameter name="[T_MRFA_GET_Waiting_2]" operation="set" value="38" editable="true"/>
+	<parameter name="[T_MRFA_BYE]" operation="set" value="40" editable="true"/>
+	-->
+
+	<!-- Timers on MRF_B side: cumulated duration 
+	<parameter name="[T_MRFB_GET_Welcome]" operation="set" value="0" editable="true"/>
+	<parameter name="[T_MRFB_GET_Choice]" operation="set" value="6" editable="true"/>
+	<parameter name="[T_MRFB_GET_Accept]" operation="set" value="21" editable="true"/>
+	-->
+	
+	<!-- Call duration when call is established between Subs_A and Subs_B -->
+	<parameter name="[CallDurationSec]" operation="set" value="5"/>
+	
+	<!-- Other SIP timers (common to Subs_A, Subs_B, MRF_A and MRF_B sides) -->
+	<parameter name="[TryingDuration]" operation="set" value="0.100" description="Duration (in sec.) between 100 and 180" editable="true"/>
+  <parameter name="[RingingDuration]" operation="set" value="3" description="Duration (in sec.) between 180 and 200" editable="true"/>
+  
+  
+  <!-- Specific Load Test parameters-->	
+  <parameter name="[CAPS]" operation="set" value="1" description="Call Attempting per Second"                           		editable="true"/>
+  <parameter name="[TestDurationSec]" operation="set" value="60" description="Duration (in sec.) of the test "         	editable="true"/>
+  <parameter name="[RangeIndexUser]" operation="set" value="0" description="Index of the range of the user phone number"  	editable="true"/>
+
+
+  <!-- CSV PARAMETERS -->
+  <parameter name="[inviterTab]" operation="setFromCsv" value="./testAS_uac.csv" value2="inviter" />
+  <parameter name="[inviteeTab]" operation="setFromCsv" value="./testAS_uas.csv" value2="invitee" />
+  <!-- Table inviterTVTab non utilisee dans scenario 1 mais conservee pour avoir un loader generique entre scenario 1 et scenario 2 -->
+  <parameter name="[inviterTVTab]" operation="setFromCsv" value="./testAS_uaTV.csv" value2="inviterTV" />        	
+	    	
+	<parameter name="[test:indexUser]" operation="set" value="0"/>
+	<parameter name="[test:indexUserMutex]" operation="semaphore.notify"/>
+	
+	<parameter name="[PremiereExecution]" operation="set" value="true"/>
+  
+  <!-- RUNNER PARAMETERS -->
+ 
+	<parameter name="[runnerPeriod]" operation="divide" value="1" value2="[CAPS]"/>	
+  <runner>
+        	<property name="runner.TEST_DURATION"       value="[TestDurationSec]"/>
+        	<property name="runner.TEST_DURATION"       value="0.2"/>
+        	<property name="runner.STARTUP_DURATION"    value="0"/>        
+        	<property name="runner.PERIOD"              value="[runnerPeriod]"/>               
+        	<property name="runner.STRICT_PERIOD"       value="false"/>               
+  </runner>
+  
+
+	<testcase name="Bouchons Enabler" description="Bouchons Enabler SIP et HTTP" state="true">    			
+		<scenario name="[Port-Enabler]">BOUCHONS/Bouchon_Enabler_SIP_Scen_1.xml</scenario>
+	</testcase>
+
+	<testcase name="Simulated Nodes" description="passive testcase for reponse and subsequent management" state="true">   			
+		<scenario name="[Port-Subs_A]">scenario_1/Subs_A.xml</scenario>
+		<scenario name="[Port-Subs_B]">scenario_1/Subs_B.xml</scenario>
+		<scenario name="HTTP">scenario_1/AS.xml</scenario>		
+	</testcase>
+
+	<testcase name="loader" description="passive testcase for invite sending" state="true">    			
+    <scenario name="inviter">scenario_1/loader.xml</scenario>
+	</testcase>
+
+	
+</test>

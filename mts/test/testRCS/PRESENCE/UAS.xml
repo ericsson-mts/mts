@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+    
+		<receiveMessageSIP name="Wait SUBSCRIBE" request="true" type="SUBSCRIBE">
+    		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+    		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+    		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  	
+    		<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>  	
+    		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/> 		
+    		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
+    		<parameter name="[localTag]" operation="string.random" value="10"/>
+            <parameter name="[newBranchId]" operation="string.random" value="10"/>
+    	</receiveMessageSIP>
+
+		<sendMessageSIP name="Send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+Via: [Via]
+CSeq: [CSeq]
+Expires: 3600
+Content-Length: 0
+]]>
+		</sendMessageSIP>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
+
+	<parameter name="[newCseqNumber]" operation="number.uid"/>
+	
+	<sendMessageSIP name="Send Subscribe" destScenario="alice">
+<![CDATA[NOTIFY sip:[inviteeName]@[domainName] SIP/2.0
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=[newBranchId];id=bob
+CSeq: [newCseqNumber] NOTIFY
+Max-Forwards: 70
+Subscription-State: TRUE
+Contact: <sip:[inviteeName]@[Adresse-Tester]>;+g.poc.talkburst
+Event: conference
+User-Agent: PoC-client/OMA1.0 Siemens/v2.0
+Accept-Contact: *;+g.poc.talkburst;require;explicit
+Server: PoC-client/OMA1.0 Siemens/v2.0
+Route: <sip:[Adresse-Server];transport=[transportRequest];lr>
+Route: <sip:[Adresse-Tester];transport=[transportRequest];lr>
+Expires: 3600
+Content-Length: 0
+]]>
+		</sendMessageSIP>
+		<receiveMessageSIP name="Wait 200 OK" request="false" type="NOTIFY" result="200">
+		</receiveMessageSIP>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+
+		<receiveMessageSIP name="Wait SUBSCRIBE with (expire = 0)" request="true" type="SUBSCRIBE">
+			<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+			<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+			<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  				
+			<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>	
+			<parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		</receiveMessageSIP>
+
+		<sendMessageSIP name="Send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [To]
+From: [From]
+Call-ID: [CallId]
+Via: [Via]
+CSeq: [CSeq]
+Expires: 0
+Content-Length: 0
+]]>
+		</sendMessageSIP>
+
+</scenario>

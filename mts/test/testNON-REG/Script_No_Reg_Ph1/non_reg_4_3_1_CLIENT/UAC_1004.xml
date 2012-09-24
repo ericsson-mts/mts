@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+
+<!DOCTYPE library [
+<!ENTITY libC_Call_Service_Server	SYSTEM "..\library\libC_Call_Service_Server.xml">
+<!ENTITY libC_Caller_to_Called_Ph1	SYSTEM "..\library\libC_Caller_to_Called_Ph1.xml">
+<!ENTITY libC_Caller_to_Called_Ph2	SYSTEM "..\library\libC_Caller_to_Called_Ph2.xml">
+<!ENTITY libC_Caller_to_Called_Ph3	SYSTEM "..\library\libC_Caller_to_Called_Ph3.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph1		SYSTEM "..\library\libS_Subscriber_Response_Simulator_Ph1.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph2		SYSTEM "..\library\libS_Subscriber_Response_Simulator_Ph2.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph3		SYSTEM "..\library\libS_Subscriber_Response_Simulator_Ph3.xml">
+]>
+
+
+<scenario name="client_1004_non_reg_4_3_1">
+
+
+<parameter name="[sbcPort]" operation="set" value="[SBC_Port_1004]" description="Port decoute du SBC"/>   
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_Port]" operation="set" value="[Provider_1004]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localPort="[provider_Port]"/>
+
+
+<!-- Test that Call from subscriber_1000 is not received by subscriber_1004
+-->
+
+<parameter name="[message_received]" operation="set" value="false"/>
+
+<receiveRequestSIP name="Wait INVITE" method="INVITE" failedOnTimeout="false" timeout="20">
+	<parameter name="[message_received]" operation="set" value="true"/> 		
+</receiveRequestSIP>
+
+<if>
+    <condition>
+      <test parameter="[message_received]" condition="equals" value="true" />
+    </condition>
+<then>
+<log level="3"> Call has not been ACRed since Invite has been received => exit with error</log>
+<exit name="Call has not been ACRed since Invite has been received" failed="true"/>
+</then>
+<else>
+</else></if>
+
+
+<closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/>
+
+</scenario>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="DCB traffic simulation">
+
+  <!-- Flux -->
+  <parameter name="[Flux_HTTP]" operation="set" value="true"/>
+  <parameter name="[http_port]" operation="setFromConfig" value="http.properties" value2="server.HTTP_PORT"/> <!-- std=80 -->
+  <parameter name="[csv_path_resources]" operation="set" value="Flux_HTTP/resources.csv"/>
+  <parameter name="[resources]"          operation="setFromCsv" value="[csv_path_resources]" value2="0"/>
+  <parameter name="[resources_size]"     operation="size"       value="[resources]"/>
+
+  <parameter name="[Flux_SMTP]" operation="set" value="false"/>
+  <!--parameter name="[destination_ip]" operation="set" value="127.0.0.1"/-->
+  <parameter name="[smtp_port]" operation="setFromConfig" value="smtp.properties" value2="server.LISTENING_PORTS"/> <!-- std=25 -->
+  <parameter name="[bigcsv]"    operation="set" value="Flux_SMTP/resources.csv"/>
+  <parameter name="[bigAttach]" operation="setFromCsv"    value="[bigcsv]" value2="0"/>
+  <parameter name="[bigAttach_size]"     operation="size"       value="[bigAttach]"/>
+  
+  <parameter name="[Flux_Wifi]"   operation="set" value="false"/>
+  <parameter name="[Flux_Chat]"   operation="set" value="true"/>
+  <parameter name="[Flux_WebxMS]" operation="set" value="false"/>
+  <parameter name="[Flux_EMail]"  operation="set" value="false"/>
+  <parameter name="[Flux_OMM]"    operation="set" value="false"/>
+  <parameter name="[Flux_OWL]"    operation="set" value="false"/>
+
+  <!-- Plans tarifaires -->
+  <parameter name="[csv_path_IPadresses]" operation="set" value="client/IPadresses.csv"/>
+  <!--parameter name="[server_url]" operation="set" value="http://localhost"/-->
+
+
+  <!--
+    - Define the differents remote hosts and ports for RADIUS sockets.
+    - Each "flux" has it's own remote host and port.
+    -->
+      
+  <parameter name="[radius_test_port]"     operation="set" value="12345"/>
+  <parameter name="[radius_auth_port]"     operation="set" value="[radius_test_port]"/> <!-- std=1812 -->
+  <parameter name="[radius_acct_port]"     operation="set" value="[radius_test_port]"/> <!-- std=1813 -->
+
+  <parameter name="[radius_host_http]"      operation="set" value="127.0.0.1"/>
+  <parameter name="[radius_port_http_auth]" operation="set" value="[radius_auth_port]"/>
+  <parameter name="[radius_port_http_acct]" operation="set" value="[radius_acct_port]"/>
+
+  <parameter name="[radius_host_smtp]"      operation="set" value="127.0.0.1"/>
+  <parameter name="[radius_port_smtp_auth]" operation="set" value="[radius_auth_port]"/>
+  <parameter name="[radius_port_smtp_acct]" operation="set" value="[radius_acct_port]"/>
+
+  <parameter name="[radius_host_chat]"     operation="set" value="127.0.0.1"/>
+  <parameter name="[radius_port_chat]"     operation="set" value="[radius_auth_port]"/>
+
+  <parameter name="[radius_host_mail]"     operation="set" value="127.0.0.1"/>
+  <parameter name="[radius_port_mail]"     operation="set" value="[radius_auth_port]"/>
+
+  <parameter name="[radius_host_omm]"      operation="set" value="127.0.0.1"/>
+  <parameter name="[radius_port_omm]"      operation="set" value="[radius_auth_port]"/>
+
+  <parameter name="[radius_host_owl]"      operation="set" value="127.0.0.1"/>
+  <parameter name="[radius_port_owl]"      operation="set" value="[radius_auth_port]"/>
+
+  <parameter name="[radius_host_webxms]"   operation="set" value="127.0.0.1"/>
+  <parameter name="[radius_port_webxms]"   operation="set" value="[radius_auth_port]"/>
+
+  <parameter name="[radius_host_wifi]"     operation="set" value="127.0.0.1"/>
+  <parameter name="[radius_port_wifi]"     operation="set" value="[radius_auth_port]"/>
+
+
+  <parameter name="[radius_server_secret]" operation="set" value="secret"/>
+  <parameter name="[vendorId_FT]"          operation="set" value="1368"/>
+
+  
+  
+  <parameter name="[nic_name]"     operation="set" value="&quot;Local Area Connection&quot;"/>
+  <parameter name="[source_ips]"   operation="setFromCsv" value="[csv_path_IPadresses]" value2="source_ip"/>
+  <parameter name="[source_masks]" operation="setFromCsv" value="[csv_path_IPadresses]" value2="source_mask"/>
+
+  <parameter name="[IPadresses_size]"           operation="size"      value="[source_ips]"/>
+  <parameter name="[IPadresses_size_minus_one]" operation="substract" value="[IPadresses_size]" value2="1"/>
+
+<!--
+  <testcase name="add_ip_addresses" state="false">
+    <scenario name="netsh_add">netsh/netsh_add.xml</scenario>
+  </testcase>
+
+  <testcase name="remove_ip_addresses" state="false">
+    <scenario name="netsh_del">netsh/netsh_del.xml</scenario>
+  </testcase>
+-->
+
+  <testcase name="server" state="false">
+    <scenario name="HTTP">server/server_http.xml</scenario>     <!-- http.properties   : route.SCENARIO_NAME = message:protocol. -->
+    <scenario name="RADIUS">server/server_radius.xml</scenario> <!-- radius.properties : route.SCENARIO_NAME = message:protocol. -->
+    <scenario name="SMTP">server/server_smtp.xml</scenario>     <!-- radius.properties : route.SCENARIO_NAME = message:remotePort. -->  
+  </testcase>
+
+  <for index="[i]" from="0" to="[IPadresses_size_minus_one]" step="1" >
+    <testcase name="client_[i]_[source_ips([i])]" state="true">
+      <parameter name="[source_ip]" operation="set" value="[source_ips([i])]"/>
+
+      <parameter name="[csv_path_MSISDNs]" operation="set"        value="client/IP[source_ip].csv"/>
+
+      <parameter name="[protocols]"    operation="setFromCsv" value="[csv_path_MSISDNs]" value2="protocol"/>
+      <parameter name="[servers]"      operation="setFromCsv" value="[csv_path_MSISDNs]" value2="server"/>
+
+      <parameter name="[MSISDNs]"      operation="setFromCsv" value="[csv_path_MSISDNs]" value2="msisdn"/>
+      <parameter name="[MSISDNs_size]" operation="size"       value="[MSISDNs]"/>
+
+      <parameter name="[nas_ports]"           operation="setFromCsv" value="[csv_path_MSISDNs]" value2="nas_port"/>
+      <parameter name="[nas_ip_addresses]"    operation="setFromCsv" value="[csv_path_MSISDNs]" value2="nas_ip_address"/>
+      <parameter name="[secrets]"             operation="setFromCsv" value="[csv_path_MSISDNs]" value2="secret"/>
+      <parameter name="[calling_station_ids]" operation="setFromCsv" value="[csv_path_MSISDNs]" value2="calling_station_id"/>
+      <parameter name="[called_station_ids]"  operation="setFromCsv" value="[csv_path_MSISDNs]" value2="called_station_id"/>
+      <parameter name="[nas_identifiers]"     operation="setFromCsv" value="[csv_path_MSISDNs]" value2="nas_identifier"/>
+      <parameter name="[3gpp_charging_ids]"   operation="setFromCsv" value="[csv_path_MSISDNs]" value2="3gpp_charging_id"/>
+      <parameter name="[3gpp_sgsn_addresses]" operation="setFromCsv" value="[csv_path_MSISDNs]" value2="3gpp_sgsn_address"/>
+
+      <parameter name="[emails]"	  operation="setFromCsv" value="[csv_path_MSISDNs]" value2="email"/>
+      <parameter name="[destination_ips]" operation="setFromCsv" value="[csv_path_MSISDNs]" value2="smtp_server"/>
+
+      <parameter name="[imsis]"                  operation="setFromCsv" value="[csv_path_MSISDNs]" value2="imsi"/>
+      <parameter name="[plmn-ids]"               operation="setFromCsv" value="[csv_path_MSISDNs]" value2="plmn-id"/>
+      <parameter name="[charging-types]"         operation="setFromCsv" value="[csv_path_MSISDNs]" value2="charging-type"/>
+      <parameter name="[subscriber-identifiers]" operation="setFromCsv" value="[csv_path_MSISDNs]" value2="subscriber-identifier"/>
+      <parameter name="[profileIDs]"             operation="setFromCsv" value="[csv_path_MSISDNs]" value2="profileID"/>
+      <parameter name="[user-logins]"            operation="setFromCsv" value="[csv_path_MSISDNs]" value2="user-login"/>
+      <parameter name="[Hot_Spot_Ids]"           operation="setFromCsv" value="[csv_path_MSISDNs]" value2="Hot_Spot_Id"/>
+ 
+      <parameter name="[specific-volumes]"    operation="setFromCsv" value="[csv_path_MSISDNs]" value2="specific-volume"/>
+      <parameter name="[content-types]"       operation="setFromCsv" value="[csv_path_MSISDNs]" value2="content-type"/>
+      <parameter name="[source-access-types]" operation="setFromCsv" value="[csv_path_MSISDNs]" value2="source-access-type"/>
+
+      <parameter name="[index]" operation="set" value="[i]"/>
+            
+      <scenario name="client_[i]">client/client.xml</scenario>
+    </testcase>
+  </for>
+</test>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--
+Scenario description:
+Permanent anonymous call (CLIR) to ACR (anonymous call rejection) UA
+-->
+
+
+<!DOCTYPE library [
+<!ENTITY libC_Call_Service_Server	SYSTEM "../library/libC_Call_Service_Server.xml">
+<!ENTITY libC_Caller_to_Called_Ph1	SYSTEM "../library/libC_Caller_to_Called_Ph1.xml">
+<!ENTITY libC_Caller_to_Called_Ph2	SYSTEM "../library/libC_Caller_to_Called_Ph2.xml">
+<!ENTITY libC_Caller_to_Called_Ph3	SYSTEM "../library/libC_Caller_to_Called_Ph3.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph1		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph1.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph2		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph2.xml">
+<!ENTITY libS_Subscriber_Response_Simulator_Ph3		SYSTEM "../library/libS_Subscriber_Response_Simulator_Ph3.xml">
+]>
+
+
+<scenario>
+
+
+
+<!--parameter name="[sbcPort]" operation="set" value="5150" description="Port decoute du SBC"/-->   
+
+<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+<parameter name="[provider_Port]" operation="set" value="[Provider_1000]"/>
+<openProviderSIP name="open SIP provider" providerName="[provider_Name]" localPort="[provider_Port]"/>
+
+<!--
+|
+|
+Step 1: Try  to Set "*21*112" service (CFA to emergency number) for subscriber_1000
+|
+|
+-->
+
+<parameter name="[service_Nb]" operation="set" value="*21*112"/>
+<parameter name="[domainName_Service]" operation="set" value="[domainName]"/>
+<parameter name="[subscriber_Service]" operation="set" value="[subscriber_1000]"/>
+<parameter name="[int_caller_Subscriber]" operation="set" value="[int_subscriber_1000]"/>
+
+<parameter name="[ipAddressSip_Service]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[portSip_Service]" operation="set" value="[provider_Port]"/>
+<parameter name="[ipAddressSdp_Service]" operation="set" value="[ipAddressSdp]"/>
+<parameter name="[ipAddressSrc_Service]" operation="set" value="[ipAddressSrc]"/>
+<parameter name="[portSdp_subscriber_Service]" operation="set" value="[portSdpSubscriber_1000]"/>
+<parameter name="[sbcHost_Service]" operation="set" value="[SBC_IP_1000]"/>
+<parameter name="[sbcPort_Service]" operation="set" value="[SBC_Port_1000]"/>
+
+<parameter name="[endRtpDialog_Timer]" operation="set" value="1"/>
+
+<parameter name="[UserName]" operation="set" value="[Username_1000]"/>
+<parameter name="[Password]" operation="set" value="[Passwd_1000]"/>
+
+&libC_Call_Service_Server;
+
+
+<semaphore name="JetonUAC1000_UAC1002" action="notify"/>
+
+<!--
+|
+|
+Step 2: Answer the call initiated by subscriber_1002
+|
+|
+-->
+
+
+<parameter name="[portSdp_ServiceSide]" operation="set" value="11000"/>
+<parameter name="[service_Nb]" operation="set" value="[subscriber_1002]"/>
+<parameter name="[ipAddressSip_Service]" operation="set" value="[ipAddressSip]"/>
+<parameter name="[portSip_Service]" operation="set" value="[provider_Port]"/>			
+<parameter name="[ipAddressSdp_Service]" operation="set" value="[ipAddressSdp]"/>
+<parameter name="[ipAddressSrc_Service]" operation="set" value="[ipAddressSrc]"/>
+
+<parameter name="[RTP_Flow]" operation="set" value="BOTH_WAYS" />
+
+<parameter name="[expected_Scenario]" operation="set" value="FULL_SUCCESS_ESTABLISHMENT" />
+
+&libS_Subscriber_Response_Simulator_Ph1;
+&libS_Subscriber_Response_Simulator_Ph2;
+&libS_Subscriber_Response_Simulator_Ph3;
+
+
+
+<finally><closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/></finally>
+
+</scenario>

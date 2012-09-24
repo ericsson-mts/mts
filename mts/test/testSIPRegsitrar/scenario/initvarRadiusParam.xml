@@ -1,0 +1,36 @@
+<!--  ################################################## -->
+<!-- 
+                INITIALISATION DES VARIABLES pour RADIUS sur If GGSN <=> HSS
+--> 
+<!--  ################################################## -->
+<!-- duree max d'attente de message ds un scenario (sur ReceiveSIP)  -->
+<parameter name="[MaxWaitHSSMessage]" operation="set" value="300"/>    
+	
+<parameter name="[RADsharedSecret]" operation="set" value="secret" description=" secret between radius client and server"/>
+<parameter name="[RADlocalHost]" operation="set" value="172.18.143.250"/>
+<parameter name="[RADlocalPort]" operation="set" value="1812"/>
+<parameter name="[RADhssHost]" operation="set" value="172.20.196.12"/>
+<parameter name="[RADhssPort]" operation="set" value="1812"/>	
+
+<!-- @ du client radius GGSN / P-GW  (RFC 2865 Radius) --> 
+<parameter name="[NasIpAddress]" operation="set" value="10.164.16.218"/>	
+<!--Hostname du client radius GGSN / P-GW  (RFC 2865 Radius) --> 
+<parameter name="[NasIdentifier]" operation="set" value="GGSN1_Lacassagne"/>	
+<!-- identifiant du point d'acces utilise par le user (RFC 2865 Radius)  -->
+<parameter name="[CalledStationId]" operation="set" value="ftrd2viasherlock"/>	
+<!-- protocole utilise par le user (RFC 2865 Radius) --> 
+<parameter name="[FramedProtocol]" operation="set" value="GPRS-PDP-Context"/>	
+<!-- type de service demande par le user  (RFC 2865 Radius) --> 
+<parameter name="[ServiceType]" operation="set" value="Framed-User"/>	
+<parameter name="[UserName]" operation="set" value="void"/>	
+<parameter name="[AcctSessionTime]" operation="set" value="0"/>	
+<parameter name="[AcctAuthentic]" operation="set" value="RADIUS"/>	
+<parameter name="[AcctDelayTime]" operation="set" value="0"/>
+<!-- Type = IPv4 (0) IPv6 (2)  ou IPv4v6 (3) ou PPP (1)(conditional) TS 29.061 --> 	
+<parameter name="[3gppPdpType]" operation="set" value="0"/>	
+<parameter name="[3gppSGSNAddress]" operation="set" value="80.10.1.129"/>	
+<parameter name="[3gppGGSNAddress]" operation="set" value="80.10.2.178"/>	
+<parameter name="[3gppChargingCharacteristics]" operation="set" value="0800"/>	
+<parameter name="[3gppSGSNMccMnc]" operation="set" value="20801"/>	
+<!-- RAdio Access Type   (optional) TS 29.061 + TS 29.274 --> 
+<parameter name="[3gppRatType]" operation="set" value="01"/>	

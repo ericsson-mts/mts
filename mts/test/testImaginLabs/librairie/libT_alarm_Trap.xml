@@ -1,0 +1,41 @@
+<!--
+Function description: emission alarm TRAP 
+
+Input parameters:
+-->
+
+	<parameter name="[listenIp]" operation="set" value="0.0.0.0" />
+
+<!--
+Output parameters :
+
+-->
+
+<sendMessageSNMP remoteHost="[serverRemoteIp]" remotePort="[serverRemotePort]">
+		<header version="2" community="public"/>
+		<pdu name="trap" requestId="[requestId]">
+
+			<variableBinding name="sysUpTime" type="integer32" value="25678" /> 
+			<variableBinding name="1.3.6.1.4.1.13859.10.10.1.0.1" type="oid" value=".1.3.6.1.4.1.13859.10.10.1.0.1"/> 
+			
+			<!-- id 1 -->
+			<variableBinding name="1.3.6.1.4.1.13859.10.10.1.1.1.2" type="octetstring"  value="[activeAlarmFriendlyName]"/>
+
+			<!-- id 2 -->
+			<variableBinding name="1.3.6.1.4.1.13859.10.10.1.1.1.3" type="integer32" value="[activeAlarmEventType]"/>
+
+			<!-- id 3 -->
+			<variableBinding name="1.3.6.1.4.1.13859.10.10.1.1.1.4" type="octetstring" value="[activeAlarmEventTime]"/>
+
+			<!-- id 4 -->
+			<variableBinding name="1.3.6.1.4.1.13859.10.10.1.1.1.5" type="integer32" value="[activeAlarmSeverity]"/>
+
+			<!-- id 5 -->
+			<variableBinding name="1.3.6.1.4.1.13859.10.10.1.1.1.6" type="integer32" value="[activeAlarm3GPPProbableCause]"/>
+
+			<!-- id 6 -->
+			<variableBinding name="1.3.6.1.4.1.13859.10.10.1.1.1.7" type="octetstring" value="[activeAlarmAdditionalText]"/>
+
+		</pdu>
+
+	</sendMessageSNMP>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+  
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+    <parameter name="[newCallId]" operation="number.random" value="10000000"/>
+    <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>  
+	<parameter name="[ssrc]" operation="list.set" value="442437504"/>
+  	<parameter name="[seqnum]" operation="list.set" value="20510"/>
+  	<parameter name="[timestamp]" operation="list.set" value="325295860"/>
+	
+	<createListenpointRTPFLOW name="[inviterName]_audio" localHost="[inviterHostRTPAudio]" localPort="[inviterPortRTPAudio]" />	
+	<createListenpointRTPFLOW name="[inviterName]_video" localHost="[inviterHostRTPVideo]" localPort="[inviterPortRTPVideo]" />	
+
+    <sendMessageSIP name="Send INVITE" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[INVITE sip:[inviteeName]@[domainName] SIP/2.0
+To: sip:[inviteeName]@[domainName]
+From: "[inviterName]" <sip:[inviterName]@[domainName]>;tag=[localTag]
+Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] INVITE
+Max-Forwards: 70
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
+Contact: <sip:[Adresse-Tester]>
+Supported: timer
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Session-Expires: 3600;refresher=uac
+Accept-Contact: +g.poc.talkburst;require;explicit
+P-Alerting-Mode: manual
+P-Asserted-Identity: "Bruno" <sip:[inviterName]@[domainName]>,<tel:+3381164951574>
+P-Charging-Vector: icid-value=0.6645971655716005;ggsn=139.10.69.237;pdp-sig=yes;gcid=60ee19cf;auth-token=0.4849361942495226
+P-com.Siemens.MSISDN-ID: 3381164951574
+P-com.Siemens.IMSI-ID: 81164951574
+P-com.Siemens.SGSN-ID: 139.10.69.237
+P-Charging-Function-Addresses: ccf=139.10.99.99;ccf_sec=139.10.99.99
+Route: <sip:[inviterName]@[Adresse-Server];mode=originating;transport=[transportRequest];lr>
+Route: <sip:[inviterName]@[Adresse-Tester];mode=originating;transport=[transportRequest];lr>
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[inviterName] 2890844527 2890844527 IN IP4 [inviterHostRTPAudio]
+s=-
+c=IN IP4 [inviterHostRTPAudio]
+t=0 0
+m=audio [inviterPortRTPAudio] RTP/AVP 0 101
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-15
+a=sendrecv
+m=video [inviterPortRTPVideo] RTP/AVP 115 
+a=rtpmap:115 h263-1998/90000
+a=sendrecv
+]]>
+    </sendMessageSIP>
+               
+    <receiveMessageSIP name="Wait 100 Trying" request="false" type="INVITE" result="100">
+    </receiveMessageSIP>
+        
+    <receiveMessageSIP name="Wait 200 OK" request="false" type="INVITE" result="200">
+        <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>                     
+        <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>                         
+        <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/> 
+        <parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>   
+        <parameter name="[contactURI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+        <parameter name="[RecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route"/> 
+		<parameter name="[ViaBranch]" operation="protocol.setFromMessage" value="header.Via.Parameter.branch"/>
+        <parameter name="[SDPConnectionAddress]" operation="protocol.setFromMessage" value="content(0).Sdp.Connection.Address"/>
+		<parameter name="[SDPMediaPort]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Port"/>
+    </receiveMessageSIP>
+    
+    <parameter name="[Request-URI]" operation="set" value="[contactURI]"/>
+    <parameter name="[Route]" operation="list.revert" value="[RecordRoute]"/>
+      	
+    <sendMessageSIP name="Send ACK" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[ACK [Request-URI] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [lastCseqNumber] ACK
+Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=[ViaBranch]
+Contact: <sip:[inviterName]@[Adresse-Tester]>
+Route: [Route]
+Max-Forwards: 70
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+Allow: INVITE, ACK, CANCEL, BYE, NOTIFY
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+    <!--audio audio-->
+    <receiveMessageRTPFLOW listenpoint="[inviterName]_audio" type="0" timeout="60">
+		<parameter name="[timestampList]" operation="protocol.setFromMessage" value="header.timestampList"/>
+        <parameter name="[payloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>
+		<parameter name="[flowPayloadPlayer]" operation="protocol.setFromMessage" value="flow.payload.player"/>
+        <parameter name="[packetLost]" operation="protocol.setFromMessage" value="qos.packetLost"/>
+    </receiveMessageRTPFLOW>
+	
+    <!-- value2 = payloadType, do not change it -->
+	<!-- value3 = payloadBinary, do not change it -->
+	<!-- value4 = bitsPerSample -->
+	<!-- value5 = sampleRate = 0 means value from dictionnary (8000 Hz for PCMA or PCMU) -->
+	<!-- value6 = channelNumber -->
+	<parameter name="file" operation="file.writewave" value="helloworldReceived.wav" 
+	value2="[payloadType]"
+	value3="[flowPayloadPlayer]"
+	value4="8"
+	value5="8000"
+	/>
+
+    <if>
+        <condition>
+            <!--test parameter="[packetLost]" condition="number.equals" value="0"/-->
+        </condition>
+        <then>        
+            <!-- NOUVELLE OPERATION test parameter="[flowPayloadPlayer]" condition="list.flowcontains" value="[[testcase:file(0)]]"/-->
+            <!--test parameter="[[testcase:fileAudio(0)]]" condition="binary.equals" value="[flowPayloadPlayer]"/-->
+        </then>
+    </if>
+
+    <!--video audio-->
+    <receiveMessageRTPFLOW listenpoint="[inviterName]_video" type="115" timeout="60">
+		<parameter name="[timestampList]" operation="protocol.setFromMessage" value="header.timestampList"/>
+        <parameter name="[payloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>
+		<parameter name="[flowPayloadPlayer]" operation="protocol.setFromMessage" value="flow.payload.player"/>
+        <parameter name="[packetLost]" operation="protocol.setFromMessage" value="qos.packetLost"/>
+    </receiveMessageRTPFLOW>
+	
+    <!-- value2 = payloadType, do not change it -->
+	<!-- value3 = payloadBinary, do not change it -->
+	<!-- value4 = bitsPerSample -->
+	<!-- value5 = sampleRate = 0 means value from dictionnary (8000 Hz for PCMA or PCMU) -->
+	<!-- value6 = channelNumber -->
+	<!--parameter name="file" operation="file.writewave" value="helloworldReceived.wav" 
+	value2="[payloadType]"
+	value3="[flowPayloadPlayer]"
+	value4="8"
+	value5="8000"
+	/-->
+
+    <if>
+        <condition>
+            <!--test parameter="[packetLost]" condition="number.equals" value="0"/-->
+        </condition>
+        <then>        
+            <!-- NOUVELLE OPERATION test parameter="[flowPayloadPlayer]" condition="list.flowcontains" value="[[testcase:file(0)]]"/-->
+            <!--test parameter="[[testcase:fileVideo(0)]]" condition="binary.equals" value="[flowPayloadPlayer]"/-->
+        </then>
+    </if>
+	  
+    <finally>
+    <removeListenpointRTPFLOW name="[inviterName]_video" />
+    <removeListenpointRTPFLOW name="[inviterName]_audio" />
+
+	<pause name="pause" seconds="0.1"/>
+		
+	<parameter name="[newBranchId]" operation="string.random" value="10"/>    
+    <parameter name="[Route]" operation="list.revert" value="[RecordRoute]"/>
+    <parameter name="[lastCseqNumber]" operation="number.add" value="[lastCseqNumber]" value2="1"/>
+	
+	<sendMessageSIP name="Send BYE" destScenario="7070" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[BYE [Request-URI] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [lastCseqNumber] BYE
+Route: [Route]
+Via: SIP/2.0/TCP [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Max-Forwards: 70
+Content-Length: 0
+]]>
+        </sendMessageSIP>
+ 
+        <receiveMessageSIP name="Wait 200 OK" request="false" type="BYE" result="200">
+        </receiveMessageSIP>
+    </finally>
+	 
+</scenario>

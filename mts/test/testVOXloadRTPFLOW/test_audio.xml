@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="Test_CallServeur" description="Call Serveur tests">
+
+
+    <parameter name="[Host-Tester]" operation="file.readProperty" value="tests.properties" value2="Host-Tester.ip"/>
+    <parameter name="[Packet-Percentage-Audio]" operation="file.readProperty" value="tests.properties" value2="PacketAudio.percentage" />
+    <parameter name="[Packet-Percentage-Video]" operation="file.readProperty" value="tests.properties" value2="PacketVideo.percentage" />
+
+    <parameter name="[UAC-sipPort]" operation="set" value="4000" description="ddd" editable="true"/>
+    <parameter name="[UAC-Address]" operation="set" value="[Host-Tester]:[UAC-sipPort]" description="ddd" editable="true"/>
+    <parameter name="[sipPort]" operation="set" value="[UAC-sipPort]"/>
+
+    <parameter name="[VMS-sipPort]" operation="set" value="7070" description="ddd" editable="true"/>
+    <parameter name="[VMS-Address]" operation="set" value="[Host-Tester]:[VMS-sipPort]" description="ddd" editable="true"/>
+
+    <parameter name="[CallServer-Host]" operation="file.readProperty" value="tests.properties" value2="CallServer.ip" />
+    <parameter name="[CallServer-Port]" operation="file.readProperty" value="tests.properties" value2="CallServer.port" />
+    <parameter name="[CallServer-Directory]" operation="file.readProperty" value="tests.properties" value2="CallServer.directory" />
+
+	<!-- SIP-PSTN gateway -->
+    <parameter name="[GW-Host]" operation="file.readProperty" value="tests.properties" value2="Gateway.ip" />
+    <parameter name="[GW-Port]" operation="file.readProperty" value="tests.properties" value2="Gateway.port" />
+    <parameter name="[GW-Address]" operation="set" value="[GW-Host]:[GW-Port]" />
+	
+	<!-- Benchmark Number -->
+    <parameter name="[loadTest_nb]" operation="file.readProperty" value="tests.properties" value2="LoadTest.number"/>
+    <parameter name="[loadTest_nb]" operation="set" value="[loadTest_nb]" description="ddd" editable="true"/>
+	
+	<!-- transport parameters-->
+    <parameter name="[transportRequest]" operation="set" value="UDP"/>
+    <parameter name="[transportResponse]" operation="set" value="UDP"/>
+    <parameter name="[domainName]" operation="set" value="devoteam.com"/>
+
+    <parameter name="[inviterHostRTP]" operation="set" value="[Host-Tester]" description="ddd" editable="true"/>
+    <parameter name="[inviterPortRTP]" operation="set" value="20000"/>
+    <parameter name="[inviteeHostRTP]" operation="set" value="[Host-Tester]" description="ddd" editable="true"/>
+    <parameter name="[inviteePortRTP]" operation="set" value="40000"/>
+    <parameter name="[inviterPortRTPAudio]" operation="set" value="20000"/>
+    <parameter name="[inviteePortRTPAudio]" operation="set" value="40000"/>
+	
+    <parameter name="[g711u]" operation="set" value="0" />
+    <parameter name="[g711a]" operation="set" value="8" />
+    <parameter name="[g729]" operation="set" value="18" />
+    <parameter name="[audioPayloadType]" operation="set" value="[g711u]"/>
+    <parameter name="[audiofilename]" operation="set" value="helloworld.wav" />
+
+	
+	<!-- qos -->
+    <parameter name="[recAudioPktsRate]" operation="set" value="0.95" />
+    <parameter name="[recVideoPktsRate]" operation="set" value="0.8" />
+    <parameter name="[blankPktsRate]" operation="set" value="0.30" />
+    <parameter name="[blankpattern]" operation="set" value="FEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFEFE.*" />
+		
+	<!-- sdp -->
+    <parameter name="[audioSdp_a]" operation="set" value="a=rtpmap:0 pcmu/8000" />
+    <parameter name="[audioSdp_a_dtmf]" operation="set" value="a=rtpmap:101 telephone-event/8000" />
+
+    <parameter name="[scenarName]" operation="set" value="Charge Tests"/>
+    <parameter name="[nbScenario]" operation="set" value="[loadTest_nb]"/>
+	
+    <parameter name="[param0]" operation="file.readcsv" value="test.csv" value2="call duration"/>
+    <parameter name="[serviceName]" operation="set" value="0291005555" description="ddd" editable="true"/>
+    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester]" description="ddd"  editable="true"/>
+	
+    <parameter name="[file]" operation="file.readwave" value="[audiofilename]" value2="20"/>
+    <parameter name="[payloadList]" operation="set" value="[[file(0)]]"/>
+    <parameter name="[bitRate]" operation="set" value="[[file(2)]]"/>
+    <parameter name="[nbSentPackets]" operation="list.size" value="[payloadList]"/>
+
+    <for index="[index]" from="000" to="[nbScenario]" step="1">
+        <testcase name="[scenarName][index]" description="load [index]" state="true" number="1" interruptible="false" >
+            <parameter name="[payloadList]" value="[test:payloadList]" />
+		
+            <parameter name="[inviterName]" operation="set" value="[index]5555"/>
+            <parameter name="[inviteeName]" operation="set" value="[index]6666"/>
+			
+            <parameter name="[index2]" operation="number.multiply" value="[index]" value2="2"/>
+            <parameter name="[UAC-sipPort]" operation="number.add" value="[UAC-sipPort]" value2="[index2]"/>
+			
+            <parameter name="[UAC-Address]" operation="set" value="[Host-Tester]:[UAC-sipPort]"/>
+            <parameter name="[sipPort]" operation="set" value="[UAC-sipPort]"/>
+		
+            <parameter name="[inviterPortRTP]" operation="number.add" value="[inviterPortRTP]" value2="[index2]"/>
+            <parameter name="[inviterPortRTPAudio]" operation="number.add" value="[inviterPortRTPAudio]" value2="[index2]"/>
+	
+            <parameter name="[inviteePortRTP]" operation="number.add" value="[inviteePortRTP]" value2="[index2]"/>
+            <parameter name="[inviteePortRTPAudio]" operation="number.add" value="[inviteePortRTPAudio]" value2="[index2]"/>
+
+			<!-- sdp -->
+            <parameter name="[inviter_AudioSdp_m]" operation="set" value="m=audio [inviterPortRTPAudio] RTP/AVP 0 101" />
+            <parameter name="[invitee_AudioSdp_m]" operation="set" value="m=audio [inviteePortRTPAudio] RTP/AVP 0 101" />
+			
+			<!--parameter name="[duration]" operation="set" value="[param0([index])]"/--> 
+            <parameter name="[duration]" operation="set" value="30" />
+            <parameter name="[delay]" operation="number.divide" value="[duration]" value2="[nbScenario]"/>
+            <parameter name="[delay]" operation="number.multiply" value="[delay]" value2="[index]"/>
+
+            <runProfile>
+                <start delay="[delay]"/>
+                <step time="0" period="0"/>
+                <end delay="80000"/>
+            </runProfile>
+      	 
+            <scenario name="[index]5555">Test_audio/UAC.xml</scenario>
+            <scenario name="[index]6666">Test_audio/VMS.xml</scenario>
+        </testcase>
+    </for>
+</test>
