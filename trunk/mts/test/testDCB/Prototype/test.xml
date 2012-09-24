@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="DCB traffic simulation">
+    
+    <parameter name="[csv_path_clients]" operation="set" value="clients.csv" />
+    <parameter name="[csv_path_resources]" operation="set" value="resources.csv" />
+    <!--parameter name="[server_url]" operation="set" value="http://localhost" /-->
+    <parameter name="[radius_ip]" operation="set" value="127.0.0.1" />
+    <parameter name="[radius_auth_port]" operation="set" value="12345" /> <!-- std=1812 -->
+    <parameter name="[radius_acct_port]" operation="set" value="12345" /> <!-- std=1813 -->
+    <parameter name="[nic_name]" operation="set" value="&quot;Local Area Connection&quot;" />
+
+
+    <parameter name="[source_ips]" operation="setFromCsv" value="[csv_path_clients]" value2="source_ip" />
+    <parameter name="[source_masks]" operation="setFromCsv" value="[csv_path_clients]" value2="source_mask" />
+    <parameter name="[protocols]" operation="setFromCsv" value="[csv_path_clients]" value2="protocol" />
+    <parameter name="[servers]" operation="setFromCsv" value="[csv_path_clients]" value2="server" />
+    <parameter name="[msisdns]" operation="setFromCsv" value="[csv_path_clients]" value2="msisdn" />
+    <parameter name="[nas_ports]" operation="setFromCsv" value="[csv_path_clients]" value2="nas_port" />
+    <parameter name="[nas_ip_addresses]" operation="setFromCsv" value="[csv_path_clients]" value2="nas_ip_address" />
+    <parameter name="[secrets]" operation="setFromCsv" value="[csv_path_clients]" value2="secret" />
+    <parameter name="[calling_station_ids]" operation="setFromCsv" value="[csv_path_clients]" value2="calling_station_id" />
+    <parameter name="[called_station_ids]" operation="setFromCsv" value="[csv_path_clients]" value2="called_station_id" />
+    <parameter name="[nas_identifiers]" operation="setFromCsv" value="[csv_path_clients]" value2="nas_identifier" />
+    <parameter name="[3gpp_charging_ids]" operation="setFromCsv" value="[csv_path_clients]" value2="3gpp_charging_id" />
+    <parameter name="[3gpp_sgsn_addresses]" operation="setFromCsv" value="[csv_path_clients]" value2="3gpp_sgsn_address" />
+
+    <parameter name="[resources]" operation="setFromCsv" value="[csv_path_resources]" value2="0" />
+    <parameter name="[resources_size]" operation="size" value="[resources]" />
+
+    <parameter name="[clients_size]" operation="size" value="[source_ips]" />
+    <parameter name="[clients_size_minus_one]" operation="substract" value="[clients_size]" value2="1"/>
+    
+    <testcase name="add_ip_addresses" state="false">
+        <scenario name="netsh_add">netsh/scenario_add.xml</scenario>
+    </testcase>
+
+    <testcase name="remove_ip_addresses" state="false">
+        <scenario name="netsh_rem">netsh/scenario_rem.xml</scenario>
+    </testcase>
+
+    <testcase name="server" state="false">
+        <scenario name="HTTP">server/scenario_http.xml</scenario>
+        <scenario name="server">server/scenario_udp.xml</scenario>
+    </testcase>
+
+    <for index="[i]" from="0" to="[clients_size_minus_one]" step="1" >
+        <testcase name="client_[i]_[source_ips([i])]" state="true">
+            <parameter name="[source_ip]"   operation="set" value="[source_ips([i])]" />
+            <parameter name="[protocol]"    operation="set" value="[protocols([i])]" />
+            <parameter name="[server]"      operation="set" value="[servers([i])]" />
+            <parameter name="[msisdn]"      operation="set" value="[msisdns([i])]" />
+            <parameter name="[nas_port]"    operation="set" value="[nas_ports([i])]" />
+            <parameter name="[nas_ip_address]" operation="set" value="[nas_ip_addresses([i])]" />
+
+            <parameter name="[secret]"      operation="set" value="[secrets([i])]" />
+            <parameter name="[secret_len]"  operation="length" value="[secret]" />
+            
+            <parameter name="[calling_station_id]" operation="set" value="[calling_station_ids([i])]" />
+            <parameter name="[calling_station_id_len]" operation="length" value="[calling_station_id]" />
+            
+            <parameter name="[called_station_id]" operation="set" value="[called_station_ids([i])]" />
+            <parameter name="[called_station_id_len]" operation="length" value="[called_station_id]" />
+            
+            <parameter name="[nas_identifier]" operation="set" value="[nas_identifiers([i])]" />
+            <parameter name="[nas_identifier_len]" operation="length" value="[nas_identifier]" />
+
+            <parameter name="[3gpp_charging_id]" operation="set" value="[3gpp_charging_ids([i])]" />
+            <parameter name="[3gpp_sgsn_address]" operation="set" value="[3gpp_sgsn_addresses([i])]" />
+
+            <parameter name="[index]" operation="set" value="[i]" />
+            
+            <scenario name="client_[i]">client/scenario.xml</scenario>
+        </testcase>
+    </for>
+</test>

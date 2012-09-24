@@ -1,0 +1,450 @@
+<!--
+Function description: Simulator/server for Subscriber response Ph1
+
+Input parameters:
+
+- portSdp_ServiceSide		: Sdp port that will be used on simulator side to exchange payload RTP traffic
+- service_Nb			: number dialed  to access the service
+- ipAddressSip_Service		: IP @ where subscriber who searches to activate/deactivate the service is located
+- portSip_Service		: port where subscriber who searches to activate/deactivate the service is located
+- ipAddressSdp_Service		: IP @ that will be used on subscriber side to exchange payload RTP traffic
+- ipAddressSrc_Service		: IP @ where subscriber who searches to activate/deactivate the service is located
+	
+Output parameters :
+
+-->
+
+<!--
+Initialisation of procedure local parameters: NONE
+-->
+
+<!--
+SWESWE: modification rallongement tempo CANCEL test 3_4_3 sur TOKAY
+-->
+<parameter name="[Wait_Duration]" operation="set" value="60"/>
+
+<if>
+<condition>
+<test parameter="[3_5_3_Rallonge_CANCEL_Tempo_only_for_TOKAY]" condition="exists" />
+<test parameter="[3_5_3_CANCEL_Tempo_Value_rallongee]" condition="exists" />	  		  		    		  		  	
+</condition>
+<then>
+<parameter name="[Wait_Duration]" operation="set" value="[3_5_3_CANCEL_Tempo_Value_rallongee]"/>
+</then></if>
+
+<receiveRequestSIP name="Wait INVITE" method="INVITE" timeout="[Wait_Duration]">
+  	<parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>  	
+	<parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>  	
+	<parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-Id"/>
+	<parameter name="[lastCseq]" operation="setFromMessage" value="header:CSeq"/>
+	<parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/>
+	<parameter name="[MaxForwards]" operation="setFromMessage" value="header:Max-Forwards"/>
+	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+    	<parameter name="[SDPConnectionAddress0]" operation="setFromMessage" value="content(0):Sdp:Connection:Address"/>		
+    	<parameter name="[SDPMediaPort0]" operation="setFromMessage" value="content(0):Sdp:Media:Port"/>    			  	
+</receiveRequestSIP>
+
+<!--
+|
+|
+Control the From Content
+|
+|
+-->
+
+<!-- SWESWE Phase 2: Control the value of the FROM header -->
+
+<if>
+	<condition>
+      		<test parameter="[Control_From_Value]" condition="equals" value="true" />
+	</condition>
+<then>
+	<if>
+	<condition>
+      		<test parameter="[lastFrom]" condition="contains" value="[Expected_From_Value]" />
+	</condition>
+	<then>
+		<!-- Received and foreseen values match => continue -->
+		<log level="1"> Connection Info received and foreseen values match => continue</log>
+		<parameter name="[Control_From_Value]" operation="set" value="false"/>
+	</then>
+	<else>
+		<!-- Received and foreseen values do not match => exit with error -->
+		<log level="3"> From Info received and foreseen values do not match => exit with error</log>
+		<exit name="Failed exit due to unmatching values for received and foreseen FROM header" failed="true"/>
+		
+	</else></if>
+</then><else></else></if>
+
+<!-- SWESWE Phase 2: FIN Control the value of the FROM header -->
+
+<!--
+|
+|
+Procedure to successfully answer the call
+|
+|
+-->
+
+
+<if>
+	<condition>
+      		<test parameter="[expected_Scenario]" condition="equals" value="FULL_SUCCESS_ESTABLISHMENT" />
+	</condition>
+<then> 
+
+	
+<sendResponseSIP name="Send 100 Trying" providerName="[provider_Name]">
+
+<![CDATA[SIP/2.0 100 Trying
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[ipAddressSip_Service]:[portSip_Service]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Length: 0
+]]></sendResponseSIP>
+	
+<pause name="pause" seconds="0.1" state="true"/>
+	   
+<sendResponseSIP name="Send 180 Ringing" providerName="[provider_Name]">
+<![CDATA[SIP/2.0 180 Ringing
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[ipAddressSip_Service]:[portSip_Service]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Length: 0
+]]></sendResponseSIP>
+	
+<pause name="pause"     seconds="0.1"  state="true"/>
+		
+<sendResponseSIP name="Send 200 OK" providerName="[provider_Name]">
+
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[ipAddressSip_Service]:[portSip_Service]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o= [service_Nb] 999 999 IN IP4 [ipAddressSrc_Service]
+s=-
+c=IN IP4 [ipAddressSdp_Service]
+t=0 0
+m=audio [portSdp_ServiceSide] RTP/AVP 18 8
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=sendrecv
+]]></sendResponseSIP>
+
+
+<receiveRequestSIP name="Wait ACK" method="ACK">
+</receiveRequestSIP>
+</then><else></else></if>
+
+<!--
+|
+|
+Procedure to reject the call with 433 (Anonymity Disallowed)
+|
+|
+-->
+
+<if>
+	<condition>
+      		<test parameter="[expected_Scenario]" condition="equals" value="CALL_REJECTED_433" />
+	</condition>
+<then>
+
+<sendResponseSIP name="Send 433 Anonymity Disallowed" providerName="[provider_Name]">
+<![CDATA[SIP/2.0 433 Anonymity Disallowed
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[ipAddressSip_Service]:[portSip_Service]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Length: 0
+]]></sendResponseSIP>
+
+<receiveRequestSIP name="Wait ACK" method="ACK">
+</receiveRequestSIP>
+
+<!-- Permet de sortir du scenario avec scenario_correctement_joue -->
+<!--exit name="OK exit Anonymity Disallowed" failed="false" /-->
+
+</then><else></else></if>
+
+
+
+<!--
+|
+|
+On call toward 112, send a 180 and wait for a Cancel
+|
+|
+-->
+
+<if>
+	<condition>
+      		<test parameter="[expected_Scenario]" condition="equals" value="HANG_UP_112_CALL" />
+	</condition>
+<then>
+
+<sendResponseSIP name="Send 180 Ringing" providerName="[provider_Name]">
+<![CDATA[SIP/2.0 180 Ringing
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[ipAddressSip_Service]:[portSip_Service]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Length: 0
+]]></sendResponseSIP>
+	   
+<receiveRequestSIP name="Wait CANCEL" method="CANCEL">
+    <parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>
+    <parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>
+    <parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-Id"/>
+    <parameter name="[lastCseq]" operation="setFromMessage" value="header:CSeq"/>
+    <parameter name="[lastCSeqNumber]" operation="setFromMessage" value="header:CSeqNumber"/>
+    
+    <parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/>
+    <parameter name="[lastContact]" operation="setFromMessage" value="header:Contact"/>
+</receiveRequestSIP>
+
+
+
+<sendResponseSIP name="Send 487 Request Terminated" providerName="[provider_Name]">
+<![CDATA[SIP/2.0 487 Request Terminated
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCSeqNumber] INVITE
+Contact: [lastContact]
+Max-Forwards: 70
+Content-Length: 0
+]]></sendResponseSIP>
+
+
+<!-- Permet de sortir du scenario avec scenario_correctement_joue -->
+<!--exit name="OK exit Anonymity Disallowed" failed="false" /-->
+
+</then><else></else></if>
+
+
+<!--
+|
+|
+Procedure to successfully answer the call but with 3 rings
+(Same procedure as for FULL_SUCCESS_ESTABLISHMENT But with 3 rings)
+|
+|
+-->
+
+
+<if>
+	<condition>
+      		<test parameter="[expected_Scenario]" condition="equals" value="CALL_CANCELED_AFTER_3_RINGS" />
+	</condition>
+<then> 
+
+	
+<sendResponseSIP name="Send 100 Trying" providerName="[provider_Name]">
+
+<![CDATA[SIP/2.0 100 Trying
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[ipAddressSip_Service]:[portSip_Service]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Length: 0
+]]></sendResponseSIP>
+	
+<pause name="pause" seconds="0.1" state="true"/>
+
+
+<sendResponseSIP name="Send 180 Ringing" providerName="[provider_Name]">
+<![CDATA[SIP/2.0 180 Ringing
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[ipAddressSip_Service]:[portSip_Service]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Length: 0
+]]></sendResponseSIP>
+
+<parameter name="[CseqInvite]" operation="set" value="[lastCseq]"/>
+
+<!--
+SWESWE: modification rallongement tempo CANCEL test 3_4_3 sur TOKAY
+-->
+<parameter name="[Wait_Duration]" operation="setFromConfig" value="sip.properties" value2="SIP_RECEIVE_TIMEOUT_VALUE"/>
+
+<if>
+<condition>
+<test parameter="[3_5_3_Rallonge_CANCEL_Tempo_only_for_TOKAY]" condition="exists" />
+<test parameter="[3_5_3_CANCEL_Tempo_Value_rallongee]" condition="exists" />	  		  		    		  		  	
+</condition>
+<then>
+<parameter name="[Wait_Duration]" operation="set" value="[3_5_3_CANCEL_Tempo_Value_rallongee]"/>
+</then></if>
+
+<receiveRequestSIP name="Wait CANCEL" method="CANCEL" timeout="[Wait_Duration]">
+    <parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>
+    <parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>
+    <parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-Id"/>
+    <parameter name="[lastCseq]" operation="setFromMessage" value="header:CSeq"/>
+    <parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/>
+    <parameter name="[lastContact]" operation="setFromMessage" value="header:Contact"/>
+</receiveRequestSIP>
+
+
+<sendResponseSIP name="Send 200 OK" providerName="[provider_Name]">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: [lastContact]
+Max-Forwards: 70
+Content-Length: 0
+]]></sendResponseSIP>
+
+
+<sendResponseSIP name="Send 487 Request Terminated" providerName="[provider_Name]">
+<![CDATA[SIP/2.0 487 Request Terminated
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [CseqInvite]
+Contact: [lastContact]
+Max-Forwards: 70
+Content-Length: 0
+]]></sendResponseSIP>
+
+</then><else></else></if>
+
+
+<!--
+|
+|
+Procedure to reject the call (Too Many Forwards)
+|
+|
+-->
+
+<if>
+	<condition>
+      		<test parameter="[expected_Scenario]" condition="equals" value="REJECTED_TOO_MANY_FW" />
+	</condition>
+<then>
+
+<sendResponseSIP name="Send 483 Too Many Hops" providerName="[provider_Name]">
+<![CDATA[SIP/2.0 483 Too Many Hops
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[ipAddressSip_Service]:[portSip_Service]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Length: 0
+]]></sendResponseSIP>
+
+<receiveRequestSIP name="Wait ACK" method="ACK">
+</receiveRequestSIP>
+
+<!-- Permet de sortir du scenario avec scenario_correctement_joue -->
+<!--exit name="OK exit Anonymity Disallowed" failed="false" /-->
+
+</then><else></else></if>
+
+
+
+<!--
+|
+|
+Procedure to successfully answer the call but with 3 rings
+(Same procedure as for FULL_SUCCESS_ESTABLISHMENT But with 3 rings)
+|
+|
+-->
+
+
+<if>
+	<condition>
+      		<test parameter="[expected_Scenario]" condition="equals" value="RTP_WITHOUT_ESTABLISHMENT" />
+	</condition>
+<then> 
+
+	
+<sendResponseSIP name="Send 100 Trying" providerName="[provider_Name]">
+
+<![CDATA[SIP/2.0 100 Trying
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[ipAddressSip_Service]:[portSip_Service]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Length: 0
+]]></sendResponseSIP>
+	
+<pause name="pause" seconds="0.1" state="true"/>
+
+
+<sendResponseSIP name="Send 183 Session Progress" providerName="[provider_Name]">
+<![CDATA[SIP/2.0 183 Session Progress
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[ipAddressSip_Service]:[portSip_Service]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o= [service_Nb] 999 999 IN IP4 [ipAddressSrc_Service]
+s=-
+c=IN IP4 [ipAddressSdp_Service]
+t=0 0
+m=audio [portSdp_ServiceSide] RTP/AVP 18 8
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=sendrecv
+]]></sendResponseSIP>
+
+</then><else></else></if>

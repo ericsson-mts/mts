@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+  
+  <parameter name="[newFromTag]" operation="string.random" value="10"/>
+  <parameter name="[newCallId]" operation="number.random" value="10000000"/>
+  <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>  
+  <sendMessageSIP name="Send INVITE" destScenario="UAS" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+INVITE sip:+33[inviteeName]@[userDomain] SIP/2.0
+To: <sip:0[inviteeName]@[userDomain];user=phone>
+From: "0[inviterName]" <sip:+33[inviterName]@[userDomain];user=phone>;tag=[newFromTag]
+Call-ID: [newCallId]-[inviterName]@[Address-Server]
+CSeq: [newCseqNumber] INVITE
+Max-Forwards: 8
+Content-Length: x
+Via: SIP/2.0/UDP [Address-Tester];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/UDP [Host-Tester]:7000;branch=z9hG4bKb90b735c0903ed490945d8b15139b3fcjaaaaaaiaaaaaawm2dpva3Zqkv7c1rdzosejahcpa
+Via: SIP/2.0/UDP no;branch=z9hG4bK-BroadWorks.ftnp1csas1front.sip.mobistar.fr-193.252.231.85V7070-0-393440562-1291499164-1227000044131-;received=[Address-Server]
+Route: <sip:[Address-Server];lr;call=term_registered>
+Route: <sip:3Zqkv7%23aGWiqaaatCSSRWO2xA92Jw4JY6DgrvCOicWsip%3A%2B33975621722%40sip.mobistar.comZtdNeqeaeai@[Address-Tester];lr>
+Record-Route: <sip:3Zqkv7%0BaGqiyU5TPKWsip%3A%2B33975621722%40sip.mobistar.com@scscf.sip.mobistar.fr:7070;maddr=[Host-Tester];lr>
+Record-Route: <sip:3Zqkv7%0BaGqiyU5TPL4sip%3A%2B33975621721%40sip.mobistar.com@scscf.sip.mobistar.fr:7050;maddr=[Host-Tester];lr>
+Proxy-Authorization: Digest username="impi[inviteeName]@sip.mobistar.com", realm="sip.mobistar.fr", nonce="3f06ec081980f981fa1a0d3a0f12da56", opaque="", uri="sip:0975621722@sip.mobistar.com", response="2bcc62220d16efd74083d0cdea3ebb80", cnonce="101ec884", qop=auth, nc=00000001, algorithm=MD5
+Contact: <sip:[Address-Server]>
+Content-Type: application/sdp
+Allow: ACK, BYE, CANCEL, INFO, INVITE, OPTIONS, PRACK, REFER, NOTIFY, UPDATE
+Accept: multipart/mixed
+Accept: application/dtmf-relay
+Accept: application/media_control+xml
+P-Asserted-Identity: "De 0[inviteeName]"<sip:+33[inviteeName]@sip.mobistar.com>
+P-Asserted-Identity: "De 0[inviteeName]"<tel:+33[inviteeName]>
+Privacy: none
+P-Charging-Vector: icid-value=eqrc7g46o1823o87ihckjqk63rr4nida92k2jr86ehc03n46k9cs2pc6o9c6jp07o1g2jr86ehc03n46k9cs2pc6o1;icid-generated-at=172.20.141.238;orig-ioi=sip.mobistar.fr
+P-Access-Network-Info: xdsl;line-id=ptfid_ZABPQMCDU;cc=33;oc=55;lac=22300;ali=0000
+Session-Expires: 86400
+Min-SE: 86400
+P-Charging-Function-Addresses: ccf="aaa://pcfa1.sip.mobistar.fr:3868;transport=tcp"
+
+v=0
+o=+33[inviterName] 2211961014 2211961014 IN IP4 [Host-Tester]
+s=VOIP P160SLD 02.11.08
+c=IN IP4 [Host-Tester]
+t=0 0
+m=audio [portRTP] RTP/AVP 0 18 4
+a=rtpmap:0 PCMU/8000/1
+a=rtpmap:18 G729/8000/1
+a=fmtp:18 annexb=no
+a=rtpmap:4 G723/8000/1
+a=sendrecv
+]]>			
+  </sendMessageSIP>
+                
+  <receiveMessageSIP name="Wait 100 Trying" request="false" type="INVITE" result="100">
+  </receiveMessageSIP>
+
+  <receiveMessageSIP name="Wait 180 Ringing" request="false" type="INVITE" result="180">
+  </receiveMessageSIP>
+       
+  <receiveMessageSIP name="Wait 200 OK" request="false" type="INVITE" result="200">
+    <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header:To"/>                     
+	<parameter name="[lastToUser]" operation="protocol.setFromMessage" value="header:To:Address:URI:User"/>	
+    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header:From"/>   
+	<parameter name="[lastFromUser]" operation="protocol.setFromMessage" value="header:From:Address:URI:User"/>	
+    <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header:Call-ID"/> 
+    <parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header:CSeq:Number"/>   
+    <parameter name="[contactURI]" operation="protocol.setFromMessage" value="header:Contact:Address:URI"/>	
+    <parameter name="[RecordRoute]" operation="protocol.setFromMessage" value="header:Record-Route"/>              
+  </receiveMessageSIP>
+
+    <!--parameter name="[Request-URI]" operation="set" value="[contactURI]"/-->
+    <!--parameter name="[Route]" operation="list.revert" value="[RecordRoute]"/-->
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>      
+  <sendMessageSIP name="Send ACK" destScenario="UAS">
+<![CDATA[
+ACK sip:[Address-Server] SIP/2.0
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCseqNumber] ACK
+Max-Forwards: 70
+Via: SIP/2.0/UDP [Address-Tester];branch=z9hG4bK[newBranchId]
+Contact: <sip:[lastFromUser(0)]@[Address-Tester];transport=udp>
+User-Agent: XMLLoader
+Content-Length: 0
+]]>
+  </sendMessageSIP>
+
+  <pause name="Pause before 200 OK" seconds="0.0"/>
+
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>
+  <parameter name="[newCseqNumber]" operation="number.add" value="[newCseqNumber]" value2="1"/>
+  <sendMessageSIP name="Send BYE" destScenario="UAS">
+<![CDATA[
+BYE sip:[Address-Server] SIP/2.0
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [newCseqNumber] BYE
+Max-Forwards: 70
+Via: SIP/2.0/UDP [Address-Tester];branch=z9hG4bK[newBranchId]
+Contact: <sip:[lastFromUser(0)]@[Address-Tester];transport=udp>
+Content-Length: 0
+]]>
+  </sendMessageSIP>
+                
+  <receiveMessageSIP name="Wait 200 OK" request="false" type="BYE" result="200">
+  </receiveMessageSIP>
+        
+</scenario>

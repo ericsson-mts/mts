@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Ro Credit-Control request (CCR)"-->
+<scenario>
+
+<!--
+From 3GPP TS 32.299 V7.5.0 :
+Credit-Control-Request ::= < Diameter Header: 272, REQ, PXY >
+                              < Session-Id > 
+                              { Origin-Host } 
+                              { Origin-Realm } 
+                              { Destination-Realm } 
+                              { Auth-Application-Id }
+                              { Service-Context-Id } 
+                              { CC-Request-Type } 
+                              { CC-Request-Number } 
+                              [ Destination-Host ] 
+                              [ User-Name ] 
+                    Not used  [ CC-Sub-Session-Id ] 
+                    Not used  [ Acct-Multi-Session-Id ] 
+                              [ Origin-State-Id ] 
+                              [ Event-Timestamp ] 
+                             *[ Subscription-Id ]
+                                Subscription-Id ::= < AVP Header: 443 >
+                                                      { Subscription-Id-Data }
+                                                      { Subscription-Id-Type }
+                    Not used  [ Service-Identifier ]  
+                              [ Termination-Cause ] 
+                    Not used  [ Requested-Service-Unit ] 
+                                Requested-Service-Unit ::= < AVP Header: 437 >
+                                                              [ CC-Time ]
+                                                              [ CC-Money ]
+                                                                CC-Money ::= < AVP Header: 413 >
+                                                                               { Unit-Value }
+                                                                                 Unit-Value ::= < AVP Header: 445 >
+                                                                                                  { Value-Digits }
+                                                                                                  [ Exponent ]
+                                                                               [ Currency-Code ]
+                                                              [ CC-Total-Octets ]
+                                                              [ CC-Input-Octets ]
+                                                              [ CC-Output-Octets ]
+                                                              [ CC-Service-Specific-Units ]
+                                                             *[ AVP ]
+                              [ Requested-Action ] 
+                    Not used *[ Used-Service-Unit ]
+                                Used-Service-Unit ::= < AVP Header: 446 >
+                                                         [ Tariff-Change-Usage ]
+                                                         [ CC-Time ]
+                                                         [ CC-Money ]
+                                                           CC-Money ::= < AVP Header: 413 >
+                                                                          { Unit-Value }
+                                                                            Unit-Value ::= < AVP Header: 445 >
+                                                                                             { Value-Digits }
+                                                                                             [ Exponent ]
+                                                                          [ Currency-Code ]
+                                                         [ CC-Total-Octets ]
+                                                         [ CC-Input-Octets ]
+                                                         [ CC-Output-Octets ]
+                                                         [ CC-Service-Specific-Units ]
+                                                        *[ AVP ]
+                              [ Multiple-Services-Indicator ] 
+                             *[ Multiple-Services-Credit-Control ]  
+                                Multiple-Services-Credit-Control ::= < AVP Header: 456 >
+                                                                        [ Granted-Service-Unit ]
+                                                                          Granted-Service-Unit ::= < AVP Header: 431 >
+                                                                                                      [ Tariff-Time-Change ]
+                                                                                                      [ CC-Time ]
+                                                                                            Not used  [ CC-Money ]
+                                                                                                        CC-Money ::= < AVP Header: 413 >
+                                                                                                                       { Unit-Value }
+                                                                                                                         Unit-Value ::= < AVP Header: 445 >
+                                                                                                                                          { Value-Digits }
+                                                                                                                                          [ Exponent ]
+                                                                                                                       [ Currency-Code ]
+                                                                                                      [ CC-Total-Octets ]
+                                                                                                      [ CC-Input-Octets ]
+                                                                                                      [ CC-Output-Octets ]
+                                                                                                      [ CC-Service-Specific-Units ]
+                                                                                                     *[ AVP ]
+                                
+                                                              Not used  [ Requested-Service-Unit ]
+                                                                          Requested-Service-Unit ::= < AVP Header: 437 >
+                                                                                                        [ Tariff-Time-Change ]
+                                                                                                        [ CC-Time ]
+                                                                                                        [ CC-Money ]
+                                                                                                          CC-Money ::= < AVP Header: 413 >
+                                                                                                                         { Unit-Value }
+                                                                                                                           Unit-Value ::= < AVP Header: 445 >
+                                                                                                                                            { Value-Digits }
+                                                                                                                                            [ Exponent ]
+                                                                                                                         [ Currency-Code ]
+                                                                                                        [ CC-Total-Octets ]
+                                                                                                        [ CC-Input-Octets ]
+                                                                                                        [ CC-Output-Octets ]
+                                                                                                        [ CC-Service-Specific-Units ]
+                                                                                                       *[ AVP ]
+                                                                       *[ Used-Service-Unit ]
+                                                                          Used-Service-Unit ::= < AVP Header: 446 >
+                                                                                                   [ Tariff-Change-Usage ]
+                                                                                                   [ CC-Time ]
+                                                                                                   [ CC-Money ]
+                                                                                                   [ CC-Total-Octets ]
+                                                                                                   [ CC-Input-Octets ]
+                                                                                                   [ CC-Output-Octets ]
+                                                                                                   [ CC-Service-Specific-Units ]
+                                                                                                  *[ AVP ]
+                                                              Not used  [ Tariff-Change-Usage ]
+                                                                       *[ Service-Identifier ]
+                                                                        [ Rating-Group ]
+                                                                       *[ G-S-U-Pool-Reference ]
+                                                                          G-S-U-Pool-Reference ::= < AVP Header: 457 >
+                                                                                                     { G-S-U-Pool-Identifier }
+                                                                                                     { CC-Unit-Type }
+                                                                                                     { Unit-Value }
+                                                                                                       Unit-Value ::= < AVP Header: 445 >
+                                                                                                                        { Value-Digits }
+                                                                                                                        [ Exponent ]
+                                                                        [ Validity-Time ]
+                                                                        [ Result-Code ]
+                                                                        [ Final-Unit-Indication ]
+                                                                          Final-Unit-Indication ::= < AVP Header: 430 >
+                                                                                                       { Final-Unit-Action }
+                                                                                                      *[ Restriction-Filter-Rule ]
+                                                                                                      *[ Filter-Id ]
+                                                                                                       [ Redirect-Server ]
+                                                                                                         Redirect-Server ::= < AVP Header: 434 >
+                                                                                                                               { Redirect-Address-Type }
+                                                                                                                               { Redirect-Server-Address }
+                                                                        [ Time-Quota-Threshold ]
+                                                                        [ Volume-Quota-Threshold ]
+                                                                        [ Unit-Quota-Threshold ]
+                                                                        [ Quota-Holding-Time ]
+                                                                        [ Quota-Consumption-Time ]
+                                                                       *[ Reporting-Reason ]
+                                                                       *[ Trigger-Type ]
+                                                                        [ PS-Furnish-Charging-Information ]
+                                                                          PS-Furnish-Charging-Information ::= < AVP Header: 865  >
+                                                                                                                { 3GPP-Charging-Id }
+                                                                                                                { PS-Free-Format-Data }
+                                                                                                                [ PS-Append-Free-Format-Data ]
+                                                              Not used *[ AF-Correlation-Information ]
+                                                                          AF-Correlation-Information ::= < AVP Header: 1276 >
+                                                                                                            { AF-Charging-Identifier }
+                                                                                                           *[ Flows ]
+                                                                                                              Flows ::= < AVP Header: 510 >             
+                                                                                                                           { Media-Component-Number}
+                                                                                                                          *[ Flow-Number]
+                                                                       *[ Envelope ]
+                                                                          Envelope ::= < AVP Header: 1266 > 
+                                                                                          { Envelope-Start-Time }
+                                                                                          [ Envelope-End-Time ]
+                                                                                          [ CC-Total-Octets ]
+                                                                                          [ CC-Input-Octets ]
+                                                                                          [ CC-Output-Octets ]
+                                                                                          [ CC-Service-Specific-Units ]
+                                                                                         *[ AVP ]
+                                                                        [ Envelope-Reporting ]
+                                                                        [ Time-Quota-Mechanism ]
+                                                                          Time-Quota-Mechanism ::= < AVP Header: 1270 >
+                                                                                                     { Time-Quota-Type }
+                                                                                                     { Base-Time-Interval }
+                                                              Not used *[ AVP ]
+                    Not used *[ Service-Parameter-Info ]  
+                                Service-Parameter-Info ::= < AVP Header: 440 >
+                                                             { Service-Parameter-Type }
+                                                             { Service-Parameter-Value }
+                    Not used  [ CC-Correlation-Id ] 
+                              [ User-Equipment-Info ] 
+                                User-Equipment-Info ::= < AVP Header: 458 >
+                                                          { User-Equipment-Info-Type }
+                                                          { User-Equipment-Info-Value }
+                             *[ Proxy-Info ]
+                                Proxy-Info ::= < AVP Header: 284 >
+                                                  { Proxy-Host }
+                                                  { Proxy-State }
+                                                 *[ AVP ]
+                             *[ Route-Record ]
+                              [ Service-Information ]
+                                Service-Information :: = < AVP Header: 873>
+                                                           [ Subscription-Id ]
+                                                             Subscription-Id ::= < AVP Header: 443 >
+                                                                                   { Subscription-Id-Data }
+                                                                                   { Subscription-Id-Type }
+                                                           [ PS-Information ]
+                                                             PS-Information :: = < AVP Header: 874 >
+                                                                                   [ 3GPP-Charging-Id ]
+                                                                                   [ 3GPP-PDP-Type ]
+                                                                                   [ PDP-Address ]
+                                                                                   [ 3GPP-GPRS-Negotiated-QoS-Profile ]
+                                                                                   [ SGSN-Address ]
+                                                                                   [ GGSN-Address ]
+                                                                                   [ CG-Address ]
+                                                                                   [ 3GPP-IMSI-MCC-MNC ]
+                                                                                   [ 3GPP-GGSN- MCC-MNC ]
+                                                                                   [ 3GPP-NSAPI ]
+                                                                                   [ Called-Station-Id ]
+                                                                                  [ 3GPP-Session-Stop-Indicator ]
+                                                                                   [ 3GPP-Selection-Mode ]
+                                                                                   [ 3GPP-Charging-Characteristics ]
+                                                                                   [ 3GPP-SGSN-MCC-MNC ]
+                                                                                   [ 3GPP-MS-TimeZone ]
+                                                                                  [ Charging-Rule-Base-Name ] 
+                                                                                   [ 3GPP-User-Location-Info ]
+                                                                                   [ 3GPP-RAT-Type ]
+                                                                                   [ PS-Furnish-Charging-Information ]
+                                                                                     PS-Furnish-Charging-Information ::= < AVP Header: 865 >
+                                                                                                                           { 3GPP-Charging-Id }
+                                                                                                                           { PS-Free-Format-Data }
+                                                                                                                           [ PS-Append-Free-Format-Data ]
+                                                                                   [ PDP-Context-Type ]
+                                                          [ WLAN-Information ]
+                                                            WLAN-Information :: = < AVP Header: 875 >
+                                                                                    [ WLAN-Session-Id ]
+                                                                                    [ PDG-Address ]
+                                                                                    [ PDG-Charging-Id ]
+                                                                                    [ WAG-Address ]
+                                                                                    [ WAG-PLMN-Id ]
+                                                                                    [ WLAN-Radio-Container ]
+                                                                                      WLAN-Radio-Container ::= < AVP Header: 892 >
+                                                                                                                [ Operator-Name ]
+                                                                                                                 [ Location-Type ]
+                                                                                                                   Location-Type::= < AVP Header: 1244 >
+                                                                                                                                      [ Location-Estimate-Type ]
+                                                                                                                                      [ Deferred-Location-Event-Type ]
+                                                                                                                [ Location-Information ]
+                                                                                                                 [ WLAN-Technology ]
+                                                                                    [ WLAN-UE-Local-IPAddress ]
+                                                          [ IMS-Information ]
+                                                            IMS-Information :: = < AVP Header: 876 >
+                                                                                    [ Event-Type ]
+                                                                                      Event-Type ::= < AVP Header: 823 >
+                                                                                                      [ SIP-Method ]
+                                                                                                      [ Event ]
+                                                                                                      [ Expires ]
+                                                                                    [ Role-Of-Node ]
+                                                                                    { Node-Functionality }
+                                                                                    [ User-Session-ID ]
+                                                                                   *[ Calling-Party-Address ]
+                                                                                    [ Called-Party-Address ]
+                                                                                   *[ Called-Asserted-Identity ]
+                                                                                    [ Requested-Party-Address ]
+                                                                                   *[ Associated-URI ]
+                                                                                    [ Time-Stamps ]
+                                                                                      Time-Stamps ::= < AVP Header: 833 >
+                                                                                                        [ SIP-Request-Timestamp ]
+                                                                                                        [ SIP-Response-Timestamp ]
+                                                                                   *[ Application-Server-Information ]
+                                                                                      Application-Server-Information ::= < AVP Header: 850 >
+                                                                                                                            [ Application-Server ]
+                                                                                                                           *[ Application-Provided-Called-Party-Address ]
+                                                                                   *[ Inter-Operator-Identifier ]
+                                                                                      Inter-Operator-Identifier ::= < AVP Header: 838 >
+                                                                                                                      [ Originating-IOI ]
+                                                                                                                      [ Terminating-IOI ]
+                                                                                    [ IMS-Charging-Identifier ]
+                                                                                   *[ SDP-Session-Description ]
+                                                                                   *[ SDP-Media-Component ]       
+                                                                                    [ Served-Party-IP-Address ]
+                                                                                    [ Server-Capabilities ]
+                                                                                      Server-Capabilities ::= < AVP header: 603 10415 >
+                                                                                                                *[Mandatory-Capability]
+                                                                                                                *[Optional-Capability]
+                                                                                                                *[Server-Name]
+                                                                                                                *[AVP]
+                                                                                    [ Trunk-Group-ID ]
+                                                                                      Trunk-Group-ID ::= < AVP Header: 851 >
+                                                                                                           [ Incoming-Trunk-Group-ID ]
+                                                                                                           [ Outgoing-Trunk-Group-ID ]
+                                                                                    [ Bearer-Service ]
+                                                                                    [ Service-Id ]
+                                                                                   *[ Service-Specific-Info ]
+                                                                                      Service-Specific-Info ::= < AVP Header: 1249 >
+                                                                                                                  [ Service-Specific-Data ]
+                                                                                                                  [ Service-Specific-Type ]
+                                                                                   *[ Message-Body ]
+                                                                                      Message-Body ::= < AVP Header: 889 >
+                                                                                                         { Content-Type }
+                                                                                                         { Content-Length }
+                                                                                                         [ Content-Disposition ]
+                                                                                                         [ Originator ]
+                                                                                    [ Cause-Code ] 
+                                                                                    [ Access-Network-Information ]
+                                                                                   *[ Early-Media-Description]
+                                                                                      Early-Media-Description ::= < AVP Header: 1272 >
+                                                                                                                     [ SDP-TimeStamps ] 
+                                                                                                                       SDP-TimeStamps ::= < AVP Header: 1273 >
+                                                                                                                                            [ SDP-Offer-Timestamp ]
+                                                                                                                                            [ SDP-Answer-Timestamp ]
+                                                                                                                    *[ SDP-Media-Component ]
+                                                                                                                       SDP-Media-Component ::= < AVP Header: 843 >
+                                                                                                                                                  [ SDP-Media-Name ]
+                                                                                                                                                 *[ SDP-Media-Description ]
+                                                                                                                                                  [ Media-Initiator-Flag ]
+                                                                                                                                                  [ Authorized-QoS ]
+                                                                                                                                                  [ 3GPP-Charging-Id ]
+                                                                                                                                                  [ Access-Network-Charging-Identifier-Value ]
+                                                          [ MMS-Information ]
+                                                            MMS-Information :: = < AVP Header: 877>
+                                                                                    [ Originator-Address ]
+                                                                                      Originator-Address ::= < AVP Header: 886 >
+                                                                                                               [ Address-Type ]
+                                                                                                               [ Address-Data ]
+                                                                                                               [ Address-Domain ]
+                                                                                                                 Address-Domain ::= < AVP Header: 898 >
+                                                                                                                                      [ Domain-Name ]
+                                                                                                                                      [ 3GPP-IMSI-MCC-MNC ]
+                                                                                   *[ Recipient-Address ] 
+                                                                                      Recipient-Address ::= < AVP Header: 1201 >
+                                                                                                              [ Address-Type ]
+                                                                                                              [ Address-Data ]
+                                                                                                              [ Address-Domain ]
+                                                                                                                Address-Domain ::= < AVP Header: 898 >
+                                                                                                                                     [ Domain-Name ]
+                                                                                                                                     [ 3GPP-IMSI-MCC-MNC ]
+                                                                                                              [ Addressee-Type ]
+                                                                                    [ Submission-Time ]
+                                                                                    [ MM-Content-Type ]
+                                                                                      MM-Content-Type ::= < AVP Header: 1203 >
+                                                                                                              [ Type-Number ]
+                                                                                                              [ Additional-Type-Information ]
+                                                                                                              [ Content-Size ]
+                                                                                                             *[ Additional-Content-Information ]
+                                                                                                                Additional-Content-Information ::= < AVP Header: 1207 >
+                                                                                                                                                     [ Type-Number ]
+                                                                                                                                                     [ Additional-Type-Information ]
+                                                                                                                                                     [ Content-Size ]
+                                                                                    [ Priority ]
+                                                                                    [ Message-ID ]
+                                                                                    [ Message-Type ]
+                                                                                    [ Message-Size ]
+                                                                                    [ Message-Class ]
+                                                                                      Message-Class ::= < AVP Header: 1213 >
+                                                                                                          [ Class-Identifier ]
+                                                                                                          [ Token-Text ]
+                                                                                    [ Delivery-Report-Requested ]
+                                                                                    [ Read-Reply-Report-Requested ]
+                                                                                   [ MMBox-Storage-Information ]
+                                                                                    [ Applic-ID ]
+                                                                                    [ Reply-Applic-ID ]
+                                                                                    [ Aux-Applic-Info ]
+                                                                                    [ Content-Class ]
+                                                                                    [ DRM-Content ]
+                                                                                    [ Adaptations ]
+                                                                                    [ VASP-Id ]
+                                                                                    [ VAS-Id ]
+                                                          [ LCS-Information ]
+                                                            LCS-Information :: = < AVP Header: 878>
+                                                                                   [ LCS-Client-ID ]
+                                                                                     LCS-Client-ID ::= < AVP Header: 1232 >
+                                                                                                         [ LCS-Client-Type ]
+                                                                                                         [ LCS-Client-External-ID ]
+                                                                                                         [ LCS-Client-Dialed-By-MS ]
+                                                                                                         [ LCS-Client-Name ]
+                                                                                                           LCS-Client-Name ::= < AVP Header: 1235 >
+                                                                                                                                 [ LCS-Data-Coding-Scheme ]
+                                                                                                                                 [ LCS-Name-String ]
+                                                                                                                                 [ LCS-Format-Indicator ]
+                                                                                                         [ LCS-APN ]
+                                                                                                         [ LCS-Requestor-ID ]
+                                                                                                           LCS-Requestor-ID ::= < AVP Header: 1239 >
+                                                                                                                                  [ LCS-Data-Coding-Scheme ]
+                                                                                                                                  [ LCS-Requestor-ID-String ]
+                                                                                   [ Location-Type ]
+                                                                                     Location-Type::= < AVP Header: 1244 >
+                                                                                                        [ Location-Estimate-Type ]
+                                                                                                        [ Deferred-Location-Event-Type ]
+                                                                                   [ Location-Estimate ]
+                                                                                   [ Positioning-Data ]
+                                                                                  [ IMSI ]
+                                                                                   [ MSISDN ]
+                                                          [ PoC-Information ]
+                                                            PoC-Information :: = < AVP Header: 879>
+                                                                                    [ PoC-Server-Role ]
+                                                                                    [ PoC-Session-Type ]
+                                                                                    [ PoC-User-Role]
+                                                                                      PoC-User-Role ::= < AVP header: 1252 >
+                                                                                                          [PoC-User-Role-IDs]
+                                                                                                          [PoC-User-Role-info-Units]
+                                                                                    [ PoC-Session-Initiation-type]
+                                                                                    [ Number-Of-Participants ]
+                                                                                   *[ Participants-Involved ]
+                                                                                   *[ Talk-Burst-Exchange ]
+                                                                                      Talk-Burst-Exchange ::= < AVP Header: 1255 >
+                                                                                                                { PoC-Change-Time }
+                                                                                                               [ Number-Of-Talk-Bursts ]
+                                                                                                               [ Talk-Burst-Volume ]
+                                                                                                               [ Talk Bursts-Time ]
+                                                                                                               [ Number-Of-Received-Talk-Bursts ]
+                                                                                                               [ Received-Talk-Burst-Volume ]
+                                                                                                               [ Received-Talk-Burst-Time ]
+                                                                                                                [ Number-Of-Participants ]
+                                                                                                                [ PoC-Change-Condition ]
+                                                                                    [ PoC-Controlling-Address ] 
+                                                                                    [ PoC-Group-Name ]
+                                                                                    [ PoC-Session-Id ] 
+                                                                                    [ Charged-Party ]
+                                                          [ MBMS-Information ]
+                                                            MBMS-Information :: = < AVP Header: 880>
+                                                                                     [ TMGI ]
+                                                                                     [ MBMS-Service-Type ]
+                                                                                     [ MBMS-User-Service-Type ]
+                                                                                     [ File-Repair-Supported ]
+                                                                                     [ Required-MBMS-Bearer-Capabilities ]
+                                                                                     [ MBMS-2G-3G-Indicator ]
+                                                                                     [ RAI ]
+                                                                                    *[ MBMS-Service-Area ]
+                                                                                     [ MBMS-Session-Identity ]
+                                                          [ Service-Generic-Information ]
+                             *[ AVP ]
+
+-->
+
+    <sendMessageDIAMETER name="Send Request 3GPP/Ro/CCR" remoteURL="diameter://[Remote-Address]">
+        <header request="true" command="Credit-Control" applicationId="4" proxiable="true" error="false" retransmit="false"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
+
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
+
+          <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
+          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="4"/>
+
+          <!-- The Service-Context-Id AVP contains a unique identifier of the Diameter Credit Control service specific document that applies to the request. -->
+          <avp code="Service-Context-Id" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
+
+          <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+          <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+          <avp code="CC-Request-Type" mandatory="true" type="Enumerated" value="1"/>
+
+          <!-- The CC-Request-Number AVP contains the sequence number of the transferred messages. -->
+          <avp code="CC-Request-Number" mandatory="true" type="Unsigned32" value="0"/>
+
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[Remote-Host]"/>            
+
+          <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
+          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>
+
+          <!-- Not used avp code="CC-Sub-Session-Id" type="Unsigned64" value="0"/-->
+          <!-- Not used avp code="Acct-Multi-Session-Id" mandatory="true" type="UTF8String" value="ToBeCompleted"/-->
+
+          <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
+          <avp code="Origin-State-Id" mandatory="true" type="Unsigned32" value="0"/>
+
+          <!-- The Event-Timestamp MAY be included in an Accounting-Request and Accounting-Answer messages to record the time that the reported event occurred, in seconds sinceJanuary 1, 1900 00:00 UTC. -->
+          <avp code="Event-Timestamp" mandatory="true" type="Time" value="0"/>
+
+          <!-- The Subscription-Id AVP is used to identify the end user's subscription. -->
+          <avp code="Subscription-Id">
+            <!-- The Subscription-Id-Type AVP is used to determine which type of identifier is carried by the Subscription-Id AVP. -->
+            <!-- Possible enumerated values : END_USER_E164(0) / END_USER_IMSI(1) / END_USER_SIP_URI(2) / END_USER_NAI(3) / END_USER_PRIVATE(4). -->
+            <avp code="Subscription-Id-Type" mandatory="true" private="false" type="Enumerated" value="END_USER_SIP_URI"/>
+            <!-- The Subscription-Id-Data AVP is used to identify the end user. -->
+            <avp code="Subscription-Id-Data" mandatory="true"  private="false" type="UTF8String" value="sip:+33900030100@sip.mobistar.com"/>
+          </avp>
+
+
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted1"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted1"/>
+          </avp>
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted2"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted2"/>
+          </avp>
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+
+          <!-- The Service-Information AVP allows the transmission of additional 3GPP service specific information elements. -->
+
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer 3GPP/Ro/CCA">
+    </receiveMessageDIAMETER>
+    
+</scenario>

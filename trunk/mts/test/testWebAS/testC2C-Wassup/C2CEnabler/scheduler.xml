@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario C2CEnabler client -->
+<scenario>
+
+<while>
+<condition/>
+<do>
+
+    <parameter name="timestamp" operation="system.timestamp" value="1970"/>
+    <parameter name="timestamp" operation="number.divide" value="[timestamp]" value2="1000"/>
+    <parameter name="timestamp" operation="number.round" value="[timestamp]"/>
+    
+	<parameter name="[test:semTimestamp]" operation="system.semaphorewait" value="1"/>
+    <if>
+    <condition>
+        <test parameter="[testcase:[timestamp]]" condition="list.exists"/>
+    </condition>
+    <then>
+        
+        <parameter name="[cpt]" operation="set" value="0"/>
+        <while>
+        <condition>
+            <not>
+                <test parameter="[testcase:[timestamp]]" condition="list.isEmpty"/>
+            </not>
+        </condition>
+        <do>
+        
+            <!-- recupere la premiere action a faire -->
+            <parameter name="actionToDo" operation="list.getFirst" value="[testcase:[timestamp]]"/>
+            
+            <parameter name="idWebAS" operation="string.regexMatches" value="[actionToDo]" value2="^.*;.*;"/>
+            <parameter name="[idWebAS]" operation="string.regexReplaces" value="[idWebAS]" value2=";.*;" value3=""/>
+            
+            <parameter name="action" operation="string.regexMatches" value="[actionToDo]" value2=";.*;"/>
+            <parameter name="[action]" operation="string.regexReplaces" value="[action]" value2=";" value3=""/>
+            
+            <parameter name="remoteHost" operation="string.regexMatches" value="[actionToDo]" value2=";.*;.*$"/>
+            <parameter name="[remoteHost]" operation="string.regexReplaces" value="[remoteHost]" value2=";.*;" value3=""/>
+            
+            <if>
+            <condition>
+                <test parameter="[action]" condition="string.equals" value="post1"/>
+            </condition>
+            <then>
+                <parameter name="content" operation="set" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;soapenv:Envelope xmlns:soapenv=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;&lt;soapenv:Body&gt;&lt;notifyC2CStatus xmlns=&quot;http://c2ccallnotification.orange_ft.com/V1_0/CallNotification&quot;&gt;&lt;sasId&gt;app-[idWebAS]@[C2CIp]|-17225da4fdae3c51&lt;/sasId&gt;&lt;callStatus&gt;&lt;ns1:code xmlns:ns1=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;110&lt;/ns1:code&gt;&lt;ns2:message xmlns:ns2=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;Caller is ringing&lt;/ns2:message&gt;&lt;ns3:terminationCause xmlns:ns3=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns3:terminationCause&gt;&lt;ns4:callerAnswerTime xmlns:ns4=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns4:callerAnswerTime&gt;&lt;ns5:callStartTime xmlns:ns5=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns5:callStartTime&gt;&lt;ns6:callEndTime xmlns:ns6=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns6:callEndTime&gt;&lt;/callStatus&gt;&lt;/notifyC2CStatus&gt;&lt;/soapenv:Body&gt;&lt;/soapenv:Envelope&gt;"/>
+                <parameter name="contentLength" operation="string.length" value="[content]"/>                
+            </then>
+            </if>
+            
+            <if>
+            <condition>
+                <test parameter="[action]" condition="string.equals" value="post2"/>
+            </condition>
+            <then>
+                <!-- set the content to send-->
+                <parameter name="content" operation="set" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;soapenv:Envelope xmlns:soapenv=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;&lt;soapenv:Body&gt;&lt;notifyC2CStatus xmlns=&quot;http://c2ccallnotification.orange_ft.com/V1_0/CallNotification&quot;&gt;&lt;sasId&gt;app-[idWebAS]@[C2CIp]|-17225da4fdae3c51&lt;/sasId&gt;&lt;callStatus&gt;&lt;ns1:code xmlns:ns1=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;120&lt;/ns1:code&gt;&lt;ns2:message xmlns:ns2=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;Caller has answered&lt;/ns2:message&gt;&lt;ns3:terminationCause xmlns:ns3=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns3:terminationCause&gt;&lt;ns4:callerAnswerTime xmlns:ns4=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns4:callerAnswerTime&gt;&lt;ns5:callStartTime xmlns:ns5=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns5:callStartTime&gt;&lt;ns6:callEndTime xmlns:ns6=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns6:callEndTime&gt;&lt;/callStatus&gt;&lt;/notifyC2CStatus&gt;&lt;/soapenv:Body&gt;&lt;/soapenv:Envelope&gt;"/>
+                <parameter name="contentLength" operation="string.length" value="[content]"/>                
+            </then>
+            </if>
+            
+            <if>
+            <condition>
+                <test parameter="[action]" condition="string.equals" value="post3"/>
+            </condition>
+            <then>
+                <!-- set the content to send-->
+                <parameter name="content" operation="set" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;soapenv:Envelope xmlns:soapenv=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;&lt;soapenv:Body&gt;&lt;notifyC2CStatus xmlns=&quot;http://c2ccallnotification.orange_ft.com/V1_0/CallNotification&quot;&gt;&lt;sasId&gt;app-[idWebAS]@[C2CIp]|-17225da4fdae3c51&lt;/sasId&gt;&lt;callStatus&gt;&lt;ns1:code xmlns:ns1=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;210&lt;/ns1:code&gt;&lt;ns2:message xmlns:ns2=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;Callee is ringing&lt;/ns2:message&gt;&lt;ns3:terminationCause xmlns:ns3=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns3:terminationCause&gt;&lt;ns4:callerAnswerTime xmlns:ns4=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns4:callerAnswerTime&gt;&lt;ns5:callStartTime xmlns:ns5=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns5:callStartTime&gt;&lt;ns6:callEndTime xmlns:ns6=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns6:callEndTime&gt;&lt;/callStatus&gt;&lt;/notifyC2CStatus&gt;&lt;/soapenv:Body&gt;&lt;/soapenv:Envelope&gt;"/>
+                <parameter name="contentLength" operation="string.length" value="[content]"/>                
+            </then>
+            </if>
+            
+            <if>
+            <condition>
+                <test parameter="[action]" condition="string.equals" value="post4"/>
+            </condition>
+            <then>
+                <!-- set the content to send-->
+                <parameter name="content" operation="set" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;soapenv:Envelope xmlns:soapenv=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;&lt;soapenv:Body&gt;&lt;notifyC2CStatus xmlns=&quot;http://c2ccallnotification.orange_ft.com/V1_0/CallNotification&quot;&gt;&lt;sasId&gt;app-[idWebAS]@[C2CIp]|-17225da4fdae3c51&lt;/sasId&gt;&lt;callStatus&gt;&lt;ns1:code xmlns:ns1=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;600&lt;/ns1:code&gt;&lt;ns2:message xmlns:ns2=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;Call is established&lt;/ns2:message&gt;&lt;ns3:terminationCause xmlns:ns3=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns3:terminationCause&gt;&lt;ns4:callerAnswerTime xmlns:ns4=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns4:callerAnswerTime&gt;&lt;ns5:callStartTime xmlns:ns5=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;1239786192878&lt;/ns5:callStartTime&gt;&lt;ns6:callEndTime xmlns:ns6=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns6:callEndTime&gt;&lt;/callStatus&gt;&lt;/notifyC2CStatus&gt;&lt;/soapenv:Body&gt;&lt;/soapenv:Envelope&gt;"/>
+                <parameter name="contentLength" operation="string.length" value="[content]"/>                
+            </then>
+            </if>
+            
+            <if>
+            <condition>
+                <test parameter="[action]" condition="string.equals" value="post5"/>
+            </condition>
+            <then>
+                <!-- set the content to send-->
+                <parameter name="content" operation="set" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;soapenv:Envelope xmlns:soapenv=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;&lt;soapenv:Body&gt;&lt;notifyC2CStatus xmlns=&quot;http://c2ccallnotification.orange_ft.com/V1_0/CallNotification&quot;&gt;&lt;sasId&gt;app-[idWebAS]@[C2CIp]|-17225da4fdae3c51&lt;/sasId&gt;&lt;callStatus&gt;&lt;ns1:code xmlns:ns1=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;790&lt;/ns1:code&gt;&lt;ns2:message xmlns:ns2=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;Callee hung up&lt;/ns2:message&gt;&lt;ns3:terminationCause xmlns:ns3=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;710&lt;/ns3:terminationCause&gt;&lt;ns4:callerAnswerTime xmlns:ns4=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;0&lt;/ns4:callerAnswerTime&gt;&lt;ns5:callStartTime xmlns:ns5=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;1239786192878&lt;/ns5:callStartTime&gt;&lt;ns6:callEndTime xmlns:ns6=&quot;http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI&quot;&gt;1239786477515&lt;/ns6:callEndTime&gt;&lt;/callStatus&gt;&lt;/notifyC2CStatus&gt;&lt;/soapenv:Body&gt;&lt;/soapenv:Envelope&gt;"/>
+                <parameter name="contentLength" operation="string.length" value="[content]"/>                
+            </then>
+            </if>
+            
+            <!-- send the message -->
+            <openChannelHTTP name="connection[timestamp][cpt]" remoteURL="http://[remoteHost]:[WebASPort]"/>
+            <sendMessageHTTP name="WebAS request" channel="connection[timestamp][cpt]">
+<![CDATA[
+POST /WebASC2C/services/C2CCallNotificationRemote_V1_0 HTTP/1.0
+Content-Type: text/xml; charset=utf-8
+Accept: application/soap+xml, application/dime, multipart/related, text/*
+User-Agent: Axis/1.2.1
+Host: [remoteHost]:[WebASPort]
+Cache-Control: no-cache
+Pragma: no-cache
+SOAPAction: ""
+Content-Length: [contentLength]
+
+[content]
+]]>
+            </sendMessageHTTP>
+        
+            <!-- l'action de la liste est retire une fois qu'elle est realise-->
+            <parameter name="[testcase:[timestamp]]" operation="list.removeFirst" value="[testcase:[timestamp]]"/>
+            <parameter name="[cpt]" operation="number.add" value="[cpt]" value2="1"/>
+        </do>
+        </while>
+        <!-- destroy the parameter -->
+        <parameter name="[testcase:[timestamp]]" operation="list.remove"/>
+    </then>
+    </if>
+    <parameter name="[test:semTimestamp]" operation="system.semaphorenotify" value="1"/>
+    
+    <pause milliseconds="300"/>
+    
+</do>
+</while>
+</scenario>

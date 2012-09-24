@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointSIP name="listenpointUAC" localHost="[Host-Tester]" localPort="[Port-Tester1]"/>
+
+    	<parameter name="[localTag]" operation="string.random" value="10"/>
+	    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+	    <parameter name="[newCallId]" operation="number.random" value="10000000"/>
+        <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
+
+		<sendMessageSIP name="Send Subscribe" listenpoint="listenpointUAC" destScenario="UAS">
+<![CDATA[SUBSCRIBE sip:[inviteeName]@[domainName] SIP/2.0
+To: sip:[inviteeName]@[domainName]
+From: "[inviterName]"<sip:[inviterName]@[domainName]>;tag=[localTag]
+Via: SIP/2.0/[transportResponse] [Adresse-Tester1];branch=z9hG4bK[newBranchId];id=[inviterName]
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] SUBSCRIBE
+Max-Forwards: 70
+Accept: application/conference-info+xml
+Contact: <sip:[inviterName]@[Adresse-Tester1]>;+g.poc.talkburstst
+Event: conference
+User-Agent: PoC-client/OMA1.0 Siemens/v2.0
+Accept-Contact: *;+g.poc.talkburst;require;explicit
+Server: PoC-client/OMA1.0 Siemens/v2.0
+Route: <sip:[Adresse-Server1];lr;mode=originating>
+Route: <sip:[Adresse-Tester11];lr;mode=originating>
+Expires: 3600
+Content-Length: 0
+]]>
+		</sendMessageSIP>
+		<receiveMessageSIP name="Wait 200 OK" request="false" type="SUBSCRIBE" result="200">
+		</receiveMessageSIP>
+	
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+	
+		<receiveMessageSIP name="Wait NOTIFY" request="true" type="NOTIFY">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  	
+		<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>  	 		
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		<parameter name="[localTag]" operation="string.random" value="10"/> 
+		</receiveMessageSIP>
+
+		<sendMessageSIP name="send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+Via: [Via]
+CSeq: [CSeq]
+Content-Length: 0
+]]>
+		</sendMessageSIP>
+		
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
+    
+ 	<parameter name="[localTag]" operation="string.random" value="10"/> 
+    	<parameter name="[newBranchIdSUBSCRIBE]" operation="string.random" value="10"/>  		
+
+<sendMessageSIP name="Send Subscribe with expires=0" listenpoint="listenpointUAC" destScenario="UAS">
+<![CDATA[SUBSCRIBE sip:[inviteeName]@[domainName] SIP/2.0
+To: [To]
+From: [From]
+Via: SIP/2.0/[transportResponse] [Adresse-Tester1];branch=z9hG4bK[newBranchIdSUBSCRIBE];id=[inviterName]
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] SUBSCRIBE
+Max-Forwards: 70
+Accept: application/conference-info+xml
+Contact: <sip:[inviterName]@[Adresse-Tester1]>;+g.poc.talkburstst
+Event: conference
+User-Agent: PoC-client/OMA1.0 Siemens/v2.0
+Accept-Contact: *;+g.poc.talkburst;require;explicit
+Server: PoC-client/OMA1.0 Siemens/v2.0
+Route: <sip:[Adresse-Server1];lr;mode=originating>
+Route: <sip:[Adresse-Tester11];lr;mode=originating>
+Expires: 0
+Content-Length: 0
+]]>
+		</sendMessageSIP>
+		<receiveMessageSIP name="Wait 200 OK" request="false" type="SUBSCRIBE" result="200">
+		</receiveMessageSIP>
+
+<finally>
+
+    <removeListenpointSIP name="listenpointUACreceiver"/>
+
+</finally>
+
+	
+</scenario>

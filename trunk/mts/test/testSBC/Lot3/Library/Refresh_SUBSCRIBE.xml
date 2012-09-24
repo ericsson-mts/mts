@@ -1,0 +1,94 @@
+<!--
+To use this part of XML code in a scenario,
+- input parameters must be defined and setted locally (by the caller scenario).
+- output parameters may be used in the scenario after the "call".
+
+Input parameters :
+- [Subscriber]         :
+- [domainVoiceMail]    :
+- [domainName]         :
+- [FromTag]            :
+- [Call-ID]            :
+- [CSeq]               :
+- [ipAddressSip]       :
+- [portSip]            :
+- [magicCookie]        :
+- [newBranchId]        :
+- [MaxForwards]        :
+- [perCentExpiresSub]  : percentage of Expires header field value used to refresh bindings periodically.
+
+Output parameters :
+- [ToTag]       : operation="setFromMessage" value="header:To:Parameter:tag"/>
+- [ExpiresSub]  : operation="setFromMessage" value="header:Expires"/>
+- [newCSeq]     : operation="add" value="[newCSeq]" value2="1"/>  
+- [newBranchId] : operation="identifier" value="newString" value2="10"/>
+
+-->
+<!-- Send a first REGISTER without Authorization header field. -->
+<!-- Wait the response. -->
+<!-- If 401 Unauthorized is received, calculate the Digest response directive. Send REGISTER with Authorization header field. -->
+<!-- If 200 OK           is received, wait the refresh duration. Send REGISTER with Authorization header field. -->
+<!-- Ignore the other responses. -->
+<!-- Wait the next response. -->
+
+  <sendRequestSIP name="Send SUBSCRIBE">
+<![CDATA[
+SUBSCRIBE sip:[Subscriber]@[domainVoiceMail] SIP/2.0
+To: <sip:[Subscriber]@[domainName]>
+From: <sip:[Subscriber]@[domainName]>;tag=[FromTag]
+Call-ID: [Call-ID]
+CSeq: [CSeq] SUBSCRIBE
+Via: SIP/2.0/UDP [ipAddressSip]:[portSip];branch=[magicCookie][newBranchId]
+Expires: 604800
+Event: message-summary
+Max-Forwards: [MaxForwards]
+Supported: replaces,100rel,timer
+User-Agent: XMLLoader-LiveBox 1
+X-Serialnumber: Unknown
+Accept: application/simple-message-summary
+Contact: <sip:[Subscriber]@[ipAddressSip]:[portSip]>
+Content-Length: 0
+]]>
+  </sendRequestSIP>
+
+  <label name="SUBSCRIBE"/>
+  <receiveResponseSIP name="receive SUBSCRIBE response" method="SUBSCRIBE" result="200">
+    <parameter name="[ToTag]"      operation="setFromMessage" value="header:To:Parameter:tag"/>                                                                   
+    <parameter name="[ExpiresSub]" operation="setFromMessage" value="header:Expires"/>                                                                   
+    <parameter name="[ContactExpires]" operation="setFromMessage" value="header:Contact:Parameter:expires"/>                                                                   
+  </receiveResponseSIP>
+
+  <if>
+    <condition>
+      <test parameter="[ExpiresSub]" condition="isEmpty"/>
+    </condition>
+    <then>
+      <parameter name="[ExpiresSub]" operation="set" value="[ContactExpires]"/>                                                                   
+    </then>
+  </if>
+  <parameter name="[ExpiresSub]" operation="multiply" value="[ExpiresSub]" value2="[perCentExpiresSub]"/>                                                                   
+  <parameter name="[ExpiresSub]" operation="divide"   value="[ExpiresSub]" value2="100"/>                                                                   
+  <pause name="pause" seconds="[ExpiresSub]" state="true"/>
+
+  <parameter name="[newCSeq]"     operation="add" value="[newCSeq]" value2="1"/>  
+  <parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+  <sendRequestSIP name="Send SUBSCRIBE">
+<![CDATA[
+SUBSCRIBE sip:[Subscriber]@[domainVoiceMail] SIP/2.0
+To: <sip:[Subscriber]@[domainName]>;tag=[ToTag]
+From: <sip:[Subscriber]@[domainName]>;tag=[FromTag]
+Call-ID: [Call-ID]
+CSeq: [newCSeq] SUBSCRIBE
+Via: SIP/2.0/UDP [ipAddressSip]:[portSip];branch=[magicCookie][newBranchId]
+Expires: 604800
+Event: message-summary
+Max-Forwards: [MaxForwards]
+Supported: replaces,100rel,timer
+User-Agent: XMLLoader-LiveBox 1
+X-Serialnumber: Unknown
+Accept: application/simple-message-summary
+Contact: <sip:[Subscriber]@[ipAddressSip]:[portSip]>
+Content-Length: 0
+]]>
+  </sendRequestSIP>
+  <goto label="SUBSCRIBE" name="loop : wait 200 OK" state="true"/>

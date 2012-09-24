@@ -1,0 +1,229 @@
+<!-- **************************************************************************************
+	Lib_Calcul_Subscribe : librairie pour le calcul des compteurs de transaction SUBSCRIBE
+	
+*******************************************************************************************
+wait a while: Period of Supervision  
+    <pause name="pause" seconds="[PeriodSupervision]"/>
+-->
+
+
+    <!-- ********************** supervise the number of transaction *****************************-->
+    <parameter name="[Trans]" operation="system.statCounter" value="> request > SIP > [RequestType][Capture_mode]" value2="Requests"/>
+    <if>
+        <condition>
+            <test parameter="[Trans]" condition="list.isEmpty" not="true"/>
+        </condition>
+        <then>
+            <parameter name="[transCount]" operation="list.set" value="[[Trans(0)]]"/>
+        </then>
+        <else>
+            <parameter name="[transCount]" operation="list.set" value="0"/>
+        </else>    
+    </if>
+    <parameter name="[transFlow]" operation="number.divide" value="[transCount]" value2="[PeriodSupervision]"/>        
+    <stats>
+        <value name="[RequestType] Requests flow" summary="ReqFlow" complete="[RequestType] Requests flow per seconds">
+    	    <newValue>[transFlow]</newValue>	
+        </value>                
+    </stats>
+    <if>
+        <condition>
+            <test parameter="[transFlow]" condition="number.greaterThan" value="[Threshold_trans_flow_[RequestType]]"/>
+        </condition>
+        <then>
+            <log name="log" type="scenario" level="[LevelSupervision]">[RequestType] Transaction => count=[transCount], flow=[transFlow]/s</log>
+            <log name="log" type="scenario" level="[LevelSupervision]">ALARM : [RequestType] Transaction flow greater than [Threshold_trans_flow_[RequestType]]/s</log>
+
+            <!--set a SNMP alarm to the manager-->
+            	<parameter name="[requestId]" 	operation="number.random"  	value="100000" />
+		<parameter name="[timestamp]" operation="system.timestamp" 	value="1970"/>  	
+		<parameter name="[date]" operation="number.toDate" 		value="[timestamp]" value2="yyyy-MM-dd HH:mm:ss:SSS"/>
+
+		<!-- Parametres alarme -->
+    		<parameter name="[activeAlarmFriendlyName]" 	operation="set" value="Flow for [RequestType]"/> 
+    		<parameter name="[activeAlarmEventTime]" 	operation="set" value="[date]"/>
+    		<parameter name="[activeAlarmSeverity]" 	operation="set" value="[AlarmSeverity_Transaction_Subs]" />
+    		<parameter name="[activeAlarmAdditionalText]" 	operation="set" value="Threshold flow [RequestType] exceeded (Threshold value = [Threshold_trans_flow_[RequestType]], Collected value = [transFlow])" />
+    		
+     <log name="log" type="scenario" level="[LevelSupervision]">ALARM PARAMETERS ARE SET, ALARM for "[RequestType] transaction flow" WILL BE SENT</log>
+	
+		&libT_alarm_Trap;
+	
+     <log name="log" type="scenario" level="[LevelSupervision]">ALARM HAS BEEN SENT</log>
+            
+        </then>
+    </if>
+
+
+
+   <!-- ************************  supervise the percent of failed transaction **************************-->
+
+    <parameter name="[TransFailed]" operation="system.statCounter" value="> request > SIP > [RequestType][Capture_mode] > [3-9][0-9][0-9][Capture_mode]" value2="Responses"/>
+    <if>
+        <condition>
+            <test parameter="[TransFailed]" condition="list.isEmpty" not="true"/>
+        </condition>
+        <then>
+            <parameter name="[TransFailedCount]" operation="list.set" value="[[TransFailed(0)]]"/>
+        </then>
+        <else>
+            <parameter name="[TransFailedCount]" operation="list.set" value="0"/>
+        </else>
+    </if>
+    <parameter name="[TransOK]" operation="system.statCounter" value="> request > SIP > [RequestType][Capture_mode] > [2][0-9][0-9][Capture_mode]" value2="Responses"/>
+    <if>
+        <condition>
+            <test parameter="[TransOK]" condition="list.isEmpty" not="true"/>
+        </condition>
+        <then>
+            <parameter name="[TransOKCount]" operation="list.set" value="[[TransOK(0)]]"/>
+        </then>
+        <else>
+            <parameter name="[TransOKCount]" operation="list.set" value="0"/>
+        </else>
+    </if>
+    <parameter name="[TransTotalCount]" operation="list.set" value="[TransFailedCount]"/>
+    <parameter name="[TransTotalCount]" operation="number.add" value="[TransTotalCount]" value2="[TransOKCount]"/>
+    <parameter name="[TransFailedPercent]" operation="number.divide" value="[TransFailedCount]" value2="[TransTotalCount]"/>
+    <parameter name="[TransFailedPercent]" operation="number.multiply" value="[TransFailedPercent]" value2="100"/>
+    <stats>
+        <value name="[RequestType] Response failed" summary="respKO" complete="[RequestType] Response failed (KO) in percent">
+    	    <newValue>[TransFailedPercent]</newValue>	
+        </value>                
+    </stats>
+    <if>
+        <condition>
+            <test parameter="[TransFailedPercent]" condition="number.greaterThan" value="[Threshold_trans_failed_[RequestType]]"/>
+        </condition>
+        <then>
+            <log name="log" type="scenario" level="[LevelSupervision]">[RequestType] Transaction failed => count=[TransFailedCount], percent=[TransFailedPercent]%</log>
+            <log name="log" type="scenario" level="[LevelSupervision]">ALARM : [RequestType] Transaction failed greater than [Threshold_trans_failed_[RequestType]]%</log>
+            <!-- set a SNMP alarm to the manager -->
+            	<parameter name="[requestId]" 	operation="number.random"  	value="100000" />
+		<parameter name="[timestamp]" operation="system.timestamp" 	value="1970"/>  	
+		<parameter name="[date]" operation="number.toDate" 		value="[timestamp]" value2="yyyy-MM-dd HH:mm:ss:SSS"/>
+
+		<!-- Parametres alarme -->
+    		<parameter name="[activeAlarmFriendlyName]" 	operation="set" value="Failed for [RequestType]"/>
+    		<parameter name="[activeAlarmEventTime]" 	operation="set" value="[date]"/>
+    		<parameter name="[activeAlarmSeverity]" 	operation="set" value="[AlarmSeverity_Failed_Subs]" />
+    		<parameter name="[activeAlarmAdditionalText]" 	operation="set" value="Threshold failed [RequestType] exceeded (Threshold value = [Threshold_trans_failed_[RequestType]], Collected value = [TransFailedPercent])" />
+    		
+     <log name="log" type="scenario" level="[LevelSupervision]">ALARM PARAMETERS ARE SET, ALARM for "[RequestType] failed response percentage" WILL BE SENT</log>
+
+		&libT_alarm_Trap;
+
+     <log name="log" type="scenario" level="[LevelSupervision]">ALARM HAS BEEN SENT</log>
+        </then>
+    </if>
+    
+
+
+    <!-- ***************************** supervise the response time ******************************** -->
+    <parameter name="[responseTime]" operation="system.statCounter" value="> request > SIP > [RequestType][Capture_mode] > .*[Capture_mode]" value2="Response Time"/>
+    <if>
+        <condition>
+            <test parameter="[responseTime]" condition="list.isEmpty" not="true"/>
+        </condition>
+        <then>
+            <parameter name="[responseTimeValue]" operation="list.set" value="[[responseTime(1)]]"/>
+        </then>
+        <else>
+            <parameter name="[responseTimeValue]" operation="list.set" value="0"/>
+        </else>
+    </if>
+    <stats>
+        <value name="[RequestType] Response time" summary="resp time" complete="[RequestType] Response time in seconds">
+    	    <newValue>[responseTimeValue]</newValue>	
+        </value>                
+    </stats>
+    <if>
+        <condition>
+            <test parameter="[responseTimeValue]" condition="number.greaterThan" value="[Threshold_response_time_[RequestType]]"/>
+        </condition>
+        <then>
+            <log name="log" type="scenario" level="[LevelSupervision]">[RequestType] Response Time average=[responseTimeValue]</log>
+            <log name="log" type="scenario" level="[LevelSupervision]">ALARM : [RequestType] Response time greater than [Threshold_response_time_[RequestType]]s</log>
+            <!-- set a SNMP alarm to the manager -->
+            	<parameter name="[requestId]" 	operation="number.random"  	value="100000" />
+		<parameter name="[timestamp]" operation="system.timestamp" 	value="1970"/>  	
+		<parameter name="[date]" operation="number.toDate" 		value="[timestamp]" value2="yyyy-MM-dd HH:mm:ss:SSS"/>
+
+		<!-- Parametres alarme -->
+    		<parameter name="[activeAlarmFriendlyName]" 	operation="set" value="Response for [RequestType]"/>
+    		<parameter name="[activeAlarmEventTime]" 	operation="set" value="[date]"/>
+    		<parameter name="[activeAlarmSeverity]" 	operation="set" value="[AlarmSeverity_onTime_Subs]" />
+    		<parameter name="[activeAlarmAdditionalText]" 	operation="set" value="Threshold response time [RequestType] exceeded (Threshold value = [Threshold_response_time_[RequestType]], Collected value = [responseTimeValue])" />
+    		
+     <log name="log" type="scenario" level="[LevelSupervision]">ALARM PARAMETERS ARE SET, ALARM for "[RequestType] response time" WILL BE SENT</log>
+
+		&libT_alarm_Trap;
+	
+     <log name="log" type="scenario" level="[LevelSupervision]">ALARM HAS BEEN SENT</log>
+        </then>
+    </if>
+
+
+    <!-- **************************  supervise the retransmission percent *************************** -->
+    <parameter name="[retransReq]" operation="system.statCounter"  value="> request > SIP > [RequestType][Capture_mode]" value2="Request retransmission"/>
+    <if>
+        <condition>
+            <test parameter="[retransReq]" condition="list.isEmpty" not="true"/>
+        </condition>
+        <then>
+            <parameter name="[retransTotalCount]" operation="list.set" value="[[retransReq(0)]]"/>
+            <parameter name="[retransTotalPercent]" operation="list.set" value="[[retransReq(2)]]"/>
+        </then>
+        <else>
+            <parameter name="[retransTotalCount]" operation="list.set" value="0"/>
+            <parameter name="[retransTotalPercent]" operation="list.set" value="0"/>
+        </else>
+    </if>
+
+<!-- cacul sur requettes sans les reponses **************
+    <parameter name="[retransResp]" operation="system.statCounter" value="> request > SIP > [RequestType][Capture_mode] > .*[Capture_mode]" value2="Response retransmission"/>
+    <if>
+        <condition>
+            <test parameter="[retransResp]" condition="list.isEmpty" not="true"/>
+        </condition>
+        <then>
+            <parameter name="[retransTotalCount]" operation="number.add" value="[retransTotalCount]" value2="[[retransResp(0)]]"/>
+            <parameter name="[retransTotalPercent]" operation="number.add" value="[retransTotalPercent]" value2="[[retransResp(2)]]"/>
+        </then>
+        <else>
+        </else>
+    </if>
+    <parameter name="[retransTotalPercent]" operation="number.divide" value="[retransTotalPercent]" value2="2"/>
+ ***************************************-->
+
+    <stats>
+        <value name="[RequestType] Retransmit percent" summary="retrans" complete="[RequestType] Retransmissions in percent">
+    	    <newValue>[retransTotalPercent]</newValue>	
+        </value>                
+    </stats>
+    <if>
+        <condition>
+            <test parameter="[retransTotalPercent]" condition="number.greaterThan" value="[Threshold_retransmit_[RequestType]]"/>
+        </condition>
+        <then>
+            <log name="log" type="scenario" level="[LevelSupervision]">[RequestType] Retransmissions => count=[retransTotalCount] percent=[retransTotalPercent]%</log>
+            <log name="log" type="scenario" level="[LevelSupervision]">ALARM : [RequestType] Retransmit percent > [Threshold_retransmit_[RequestType]]%</log>
+            <!-- set a SNMP alarm to the manager -->
+            	<parameter name="[requestId]" 	operation="number.random"  	value="100000" />
+		<parameter name="[timestamp]" operation="system.timestamp" 	value="1970"/>  	
+		<parameter name="[date]" operation="number.toDate" 		value="[timestamp]" value2="yyyy-MM-dd HH:mm:ss:SSS"/>
+
+		<!-- Parametres alarme -->
+    		<parameter name="[activeAlarmFriendlyName]" 	operation="set" value="Retrans for [RequestType]"/>
+    		<parameter name="[activeAlarmEventTime]" 	operation="set" value="[date]"/>
+    		<parameter name="[activeAlarmSeverity]" 	operation="set" value="[AlarmSeverity_Retrans_Subs]" />
+    		<parameter name="[activeAlarmAdditionalText]" 	operation="set" value="Threshold retransmit [RequestType] exceeded (Threshold value = [Threshold_retransmit_[RequestType]], Collected value = [retransTotalPercent])" />
+    		
+     <log name="log" type="scenario" level="[LevelSupervision]">ALARM PARAMETERS ARE SET, ALARM for "[RequestType] retransmission percentage" WILL BE SENT</log>
+
+		&libT_alarm_Trap;
+		
+     <log name="log" type="scenario" level="[LevelSupervision]">ALARM HAS BEEN SENT</log>
+        </then>
+    </if>
+

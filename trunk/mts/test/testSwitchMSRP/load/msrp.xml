@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- MSRP scenario is used to simulate MSRP end clients, he receive/send MSRP requests/responses -->
+
+<scenario>
+
+	<!-- Label de debut de boucle automate -->
+	<label name="Begin"/>
+
+	<receiveMessageMSRP name="Wait Message" timeout="0" failedOnTimeout="false">
+		<parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+		<parameter name="[firstline]" operation="protocol.setFromMessage" value="firstline"/>
+		<parameter name="[method]" operation="protocol.setFromMessage" value="firstline.Method"/>
+		<parameter name="[transactionID]" operation="protocol.setFromMessage" value="firstline.Transaction-ID"/>
+		<parameter name="[to]" operation="protocol.setFromMessage" value="header.To-Path"/>
+		<parameter name="[from]" operation="protocol.setFromMessage" value="header.From-Path"/>
+		<parameter name="[MessageId]" operation="protocol.setFromMessage" value="header.Message-ID"/>
+		<parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+		<parameter name="[endLine]" operation="protocol.setFromMessage" value="content.End-line"/>        
+		<parameter name="[isRequest]" operation="protocol.setFromMessage" value="message.request"/>        
+	</receiveMessageMSRP>
+
+	<!-- Envoi MSRP 200 Ok si MSRP SEND recu -->
+	<if>
+		<condition>
+			<and>
+		        <test parameter="[method]" condition="string.equals" value="SEND"/>
+		        <!--test parameter="[isRequest]" condition="string.equals" value="true"/-->
+		        <test parameter="[transactionID]" condition="list.exists"/> 
+		    </and>		
+		</condition>
+		<then>
+			<parameter name="[HubId]">[test:Context_MSRP_[to]]</parameter>
+			<!-- calcul du temps de traversee du switch MSRP -->
+			<if>
+				<condition>
+					<not><test parameter="[sendTime[HubId]]" condition="number.equals" value="0" /></not>
+				</condition>
+				<then>
+					<parameter name="[receiveTime]" operation="protocol.setFromMessage" value="message.timestamp"/>
+					<parameter name="[processTime]" operation="number.substract" value="[receiveTime]" value2="[sendTime[HubId]]"/>
+
+					<stats>
+						<!--counter name="NumberOfCreatedHubs"><increase>1</increase></counter-->
+						<value name="SwitchTraversalTime"><newValue>[processTime]</newValue></value>
+					</stats>
+				</then>
+			</if>
+
+
+			<sendMessageMSRP channel="[channel]">
+<![CDATA[MSRP [transactionID] 200 OK
+To-Path: [from]
+From-Path: [to]
+-------[transactionID]$]]>
+			</sendMessageMSRP>
+	
+
+
+			<parameter name="[test:Context_MSRP_Counter_[HubId]]" operation="number.add" value="1" value2="[test:Context_MSRP_Counter_[HubId]]"/> 
+			<if>
+				<condition>
+					<test parameter="[test:Context_MSRP_Counter_[HubId]]" condition="number.lowerEqualThan" value="[NumberOfMessages]" />
+				</condition>
+				<then>
+
+					<parameter name="[localTransactionID]" operation="string.random" value="10"/>
+					<parameter name="[localMessageID]" operation="string.random" value="10"/>
+					<sendMessageMSRP channel="[channel]" delay="[MessageSendDelay]">
+<![CDATA[MSRP [localTransactionID] SEND
+To-Path: [from]
+From-Path: [to]
+Message-ID: [localMessageID]
+Content-Type: text/plain
+
+[test:Context_MSRP_Counter_[HubId]]
+
+ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, ceci est un text essai, 
+
+-------[localTransactionID]$]]>
+					</sendMessageMSRP>	
+					<parameter name="[test:sendTime[HubId]]" operation="protocol.setFromMessage" value="message.timestamp"/>
+			   </then>
+		   </if>
+				<!-- Suppression de la variable de contexte transactionID -->
+				<parameter name="[transactionID]" operation="list.remove"/>
+			</then>
+
+			<!-- Enchainement HTTP /msrp/deletesess si on est cote Client_1 sur reception 200 Ok-->
+		<else>
+
+			<parameter name="[HubId]" operation="set" value="[test:Context_MSRP_[to]]"/>
+			<if>
+				<condition>
+					<test parameter="[test:Context_MSRP_[to]]" condition="list.exists"/>
+					<test parameter="[test:Context_MSRP_Counter_[HubId]]" condition="number.greaterEqualThan" value="[NumberOfMessages]" />
+				</condition>
+				<then>
+					<log level="[LogLevel]">ToPath MSRP 200 ok recu = [to]</log>
+					<log level="[LogLevel]">Variable_Lien_HubId_via_ToPath_en_SORTIE = [test:Context_MSRP_[to]]</log>
+
+					<!-- Envoi delete Client_1 
+					NB: Envoi avec Delay different de 0 car le Switch MSRP fonctionne en B2B: l' acquittement cote Client_1 ne 
+					signifie pas forcement que la transaction MSRP est finie cote Client_2
+					-->
+					<openChannelHTTP name="[test:httpCnxMsrp_[HubId]]" localHost="[ipAddressSrc]" remoteURL="http://[IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]"/> 
+
+					<sendRequestHTTP connectionName="[test:httpCnxMsrp_[HubId]]" delay="5">
+<![CDATA[
+GET /msrp/deletesess?hub=[HubId]&sess=[test:Context_PathServer1_[HubId]] HTTP/1.1
+User-Agent: XMLLoader
+Host: [IP_SwitchMSRP_HTTP_Cmd]:[Port_SwitchMSRP_HTTP_Cmd]
+]]>
+					</sendRequestHTTP> 
+
+					<parameter name="[transaction_id_envoye]" operation="protocol.setFromMessage" value="message.transactionId"/>
+					<!-- Stokage des variables d environnement --> 
+					<parameter name="[test:Context_HubId_[transaction_id_envoye]]" operation="set" value="[HubId]"/>
+					<parameter name="[test:Context_AutomateState_[HubId]]" operation="set" value="Client_1_Delete_en_Cours"/>
+				</then>
+			</if> 
+		</else>
+	</if>   
+
+	<!-- Retour entree automate -->            
+	<goto  name="loop" label="Begin" state="true"/>	  
+	 
+</scenario>

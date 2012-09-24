@@ -1,0 +1,421 @@
+<!--
+To use this part of XML code in a scenario,
+- input parameters must be defined and setted locally (by the caller scenario).
+- output parameters may be used in the scenario after the "call".
+
+Input parameters :
+
+****** RADIUS ******
+- [source_ip]          : 
+- [radius_nas_port]    : 
+- [radius_secret]      : 
+- [radius_ip]          : 
+- [radius_auth_port]   : 
+- [msisdn]             : 
+- [radius_acct_port]   : 
+- [nas_ip_address]     : 
+- [calling_station_id] : 
+- [called_station_id]  : 
+- [Acct-Session-Id]    : 
+- [3gpp_charging_id]   : 
+- [3gpp_sgsn_address]  : 
+- [nas_identifier]     :
+
+****** IMAP ******
+- [imap_destination_ips] : 
+- [imap_port]            : 
+- [user-login]           : 
+- [subscriber-identifier]:
+
+
+
+Output parameters :
+- [RADIUSsocketName]   : 
+- [RADIUSsocketOpen]   : 
+- [IMAPconnectionName] : 
+- [IMAPconnectionOpen] : 
+
+-->
+   <!--    send Radius Access-Request
+      <sendMessageRADIUS listenpoint="[ggsn_radius_socket_name]" remoteHost="[radius_host_imap]" remotePort="[radius_port_imap_auth]">
+         Header 
+        <header code="1"/>
+
+         AVPs 
+         User-Name (1) 
+        <avp code="1" value="[msisdn]"/>
+
+         User-Password (2) 
+        <avp code="2" value="User-Password"/>
+
+         Nas-IP-Address (4) 
+        <avp code="4" value="[source_ip]"/>
+
+         Code: Nas-Port (5) 
+        <avp code="5" value="[radius_nas_port]"/>
+
+         Calling-Station-Id (31) 
+        <avp code="31" value=""/>
+
+         Called-Station-Id (30) 
+        <avp code="30" value=""/>
+      </sendMessageRADIUS>
+      <parameter name="[test:radiusRequest]" operation="number.add" value="[test:radiusRequest]" value2="1"/>
+      <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+
+      <receiveMessageRADIUS listenpoint="[ggsn_radius_socket_name]" request="false"/>
+      <parameter name="[test:radiusResponse]" operation="number.add" value="[test:radiusResponse]" value2="1"/>
+      <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>-->
+
+      <!-- send Radius Accounting-Request Start -->
+      <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+      <parameter name="[timestamp]" operation="number.divide" value="[timestamp]" value2="1000"/>
+      <parameter name="[timestamp]" operation="number.floor" value="[timestamp]" />
+
+      <sendMessageRADIUS listenpoint="[ggsn_radius_socket_name]" remoteHost="[radius_host_imap]" remotePort="[radius_port_imap_acct]">
+        <!-- Header -->
+        <header code="4"/>
+        <!-- AVPs -->
+        <!--Acct-Status-Type(40) -->
+        <avp code="40" value="Start"/>
+        <!-- User-Name (1) -->
+        <avp code="1" value="void"/><!-- old value [msisdn]-->
+        <!-- NAS-IP-Address(4) -->
+        <avp code="4" value="[nas_ip_address]"/>
+        <!-- NAS-Port(5) -->
+        <!-- <avp code="5" value="[radius_nas_port]"/> -->
+        <!-- Framed-IP-Address(8) -->
+        <avp code="8" value="[source_ip]"/>
+        <!-- Calling-Station-Id(31) -->
+        <avp code="31" value="[calling_station_id]"/>
+        <!-- Called-Station-Id(30) -->
+        <avp code="30" value="[called_station_id]"/>
+        <!-- Acct-Session-Id(44) -->
+        <avp code="44" value="[Acct-Session-Id]"/>
+        <!-- Event-Timestamp(55) -->
+        <!-- <avp code="55" value="[timestamp]"/> -->
+        <!-- Framed-Protocol(7) -->
+        <avp code="7" value="GPRS-PDP-Context"/>
+        <!-- Vendor-Specific(26) 3GPP-IMSI -->
+        <avp code="26" value="3GPP">
+            <avp code="1" value="[imsi]"/>
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+        <avp code="26" value="3GPP">
+            <avp code="2" value="[3gpp_charging_id]"/>
+        </avp>
+        <avp code="26" value="3GPP">
+            <avp code="3" value="0"/><!-- IPV4 (0)-->
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+        <avp code="26" value="3GPP">
+            <avp code="6" value="[3gpp_sgsn_address]"/>
+        </avp>
+        <avp code="26" value="3GPP">
+            <avp code="20" value="33353739393430313033343330323635"/><!-- IMEISV -->
+        </avp>
+
+        <avp code="26" value="3GPP">
+            <avp code="21" value="01"/><!-- UTRAN -->
+        </avp>
+
+        <avp code="26" value="3GPP">
+            <avp code="22" value="0102F810970378FD"/><!-- UserLocationInfo -->
+        </avp>
+
+        <!-- NAS-Identifier(32) -->
+        <avp code="32" value="[nas_identifier]"/>
+
+        <!-- Service-Type(6) -->
+        <avp code="6" value="Framed-User"/>
+        <!-- NAS-Port-Type(61) -->
+        <avp code="61" value="Virtual"/>
+        <!-- Vendor-Specific(26) 3GPP-GGSN-Address -->
+        <avp code="26" value="3GPP">
+            <avp code="7" value="212.234.96.26"/>
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-Gharging-Characteristics-->
+        <avp code="26" value="3GPP">
+            <avp code="13" value="0800"/>
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-SGSN-MMC-MNC-->
+        <avp code="26" value="3GPP">
+            <avp code="18" value="20801"/>
+        </avp>
+        <!-- Acct-Authentic(45)-->
+        <avp code="45" value="Local"/>
+        <!-- Acct-Delay-Time(41)-->
+        <avp code="41" value="0"/>
+      </sendMessageRADIUS>
+      <parameter name="[test:radiusRequest]" operation="number.add" value="[test:radiusRequest]" value2="1"/>
+      <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+      
+      <receiveMessageRADIUS listenpoint="[ggsn_radius_socket_name]" request="false"/>
+      <parameter name="[test:radiusResponse]" operation="number.add" value="[test:radiusResponse]" value2="1"/>
+      <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+      
+      <parameter name="[accounting_session_running]" operation="set" value="true"/>
+      <parameter name="[accounting_session_host]" operation="set" value="[radius_host_imap]"/>
+      <parameter name="[accounting_session_port]" operation="set" value="[radius_port_imap_acct]"/>
+
+      <!-- Changement de socket pour browsing -->
+      <!-- open IMAP Connection -->
+      <parameter name="[IMAPconnectionName]" operation="set" value="connection_IMAP_[testcase:index]"/>     
+
+    <parameter name="[IMAPconnectionOpen]" operation="set" value="false"/>
+    <try>
+        <do>
+            <openChannelIMAP name="[IMAPconnectionName]" localHost="[source_ip]" remoteHost="[imap_destination_ip]" remotePort="[imap_port]"/>
+            <parameter name="[IMAPconnectionOpen]" operation="set" value="true"/>
+        </do>
+        <finally>
+            <parameter name="[expected]" value="ok" operation="string.equals" value2="[imap_result]" />
+            <if>
+                <condition>
+                    <test parameter="[IMAPconnectionOpen]" condition="boolean.equals" value="[expected]" />
+                </condition>
+                <else>
+                    <stats>
+                        <flow name="[0msisdn] imap failure" shortDesc="imap failure" description="[0msisdn] imap failure" longDesc="[0msisdn] imap failure">
+                            <increase>1</increase>
+                        </flow>
+                    </stats>
+                </else>
+            </if>
+        </finally>
+    </try>
+    
+	<!-- send IMAP Requests -->
+    <if>
+        <condition>
+            <test parameter="[IMAPconnectionOpen]" condition="boolean.equals" value="true" />
+        </condition>
+    <then>
+        <parameter name="[tagReq]" operation="set" value="A001" />
+        <sendMessageIMAP channel="[IMAPconnectionName]">
+<![CDATA[
+[tagReq] CAPABILITY
+]]>
+        </sendMessageIMAP>
+        <parameter name="[test:imapRequest]" operation="number.add" value="[test:imapRequest]" value2="1"/>
+        <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+        <receiveMessageIMAP channel="[IMAPconnectionName]">
+            <parameter name="[tag]" operation="protocol.setFromMessage" value="response:done:tag" />
+            <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+        </receiveMessageIMAP>
+        <parameter name="[test:imapResponse]" operation="number.add" value="[test:imapResponse]" value2="1"/>
+        <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+        
+        <parameter name="[tagReq]" operation="set" value="A002" />
+        <sendMessageIMAP channel="[IMAPconnectionName]">
+<![CDATA[
+[tagReq] LOGIN [user-login] [subscriber-identifier]
+]]>
+        </sendMessageIMAP>
+        <parameter name="[test:imapRequest]" operation="number.add" value="[test:imapRequest]" value2="1"/>
+        <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+        <receiveMessageIMAP channel="[IMAPconnectionName]">
+            <parameter name="[tag]" operation="protocol.setFromMessage" value="response:done:tag" />
+            <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+        </receiveMessageIMAP>
+        <parameter name="[test:imapResponse]" operation="number.add" value="[test:imapResponse]" value2="1"/>
+        <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+
+        <parameter name="[tagReq]" operation="set" value="A003" />
+        <sendMessageIMAP channel="[IMAPconnectionName]">
+<![CDATA[
+[tagReq] LSUB "" "*"
+]]>
+        </sendMessageIMAP>
+        <parameter name="[test:imapRequest]" operation="number.add" value="[test:imapRequest]" value2="1"/>
+        <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+        <receiveMessageIMAP channel="[IMAPconnectionName]">
+            <parameter name="[tag]" operation="protocol.setFromMessage" value="response:done:tag" />
+            <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+        </receiveMessageIMAP>
+        <parameter name="[test:imapResponse]" operation="number.add" value="[test:imapResponse]" value2="1"/>
+        <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+
+        <parameter name="[tagReq]" operation="set" value="A004" />
+        <sendMessageIMAP channel="[IMAPconnectionName]">
+<![CDATA[
+[tagReq] LIST "" "INBOX"
+]]>
+        </sendMessageIMAP>
+        <parameter name="[test:imapRequest]" operation="number.add" value="[test:imapRequest]" value2="1"/>
+        <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+        <receiveMessageIMAP channel="[IMAPconnectionName]">
+            <parameter name="[tag]" operation="protocol.setFromMessage" value="response:done:tag" />
+            <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+        </receiveMessageIMAP>
+        <parameter name="[test:imapResponse]" operation="number.add" value="[test:imapResponse]" value2="1"/>
+        <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+        
+        <parameter name="[tagReq]" operation="set" value="A005" />
+        <sendMessageIMAP channel="[IMAPconnectionName]">
+<![CDATA[
+[tagReq] SELECT "INBOX"
+]]>
+        </sendMessageIMAP>
+        <parameter name="[test:imapRequest]" operation="number.add" value="[test:imapRequest]" value2="1"/>
+        <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+        <receiveMessageIMAP channel="[IMAPconnectionName]">
+            <parameter name="[tag]" operation="protocol.setFromMessage" value="response:done:tag" />
+            <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+        </receiveMessageIMAP>
+        <parameter name="[test:imapResponse]" operation="number.add" value="[test:imapResponse]" value2="1"/>
+        <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+        
+        <parameter name="[tagReq]" operation="set" value="A006" />
+        <sendMessageIMAP channel="[IMAPconnectionName]">
+<![CDATA[
+[tagReq] EXPUNGE
+]]>
+        </sendMessageIMAP>
+        <parameter name="[test:imapRequest]" operation="number.add" value="[test:imapRequest]" value2="1"/>
+        <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+        <receiveMessageIMAP channel="[IMAPconnectionName]">
+            <parameter name="[tag]" operation="protocol.setFromMessage" value="response:done:tag" />
+            <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+        </receiveMessageIMAP>
+        <parameter name="[test:imapResponse]" operation="number.add" value="[test:imapResponse]" value2="1"/>
+        <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+        
+        <parameter name="[tagReq]" operation="set" value="A007" />
+        <sendMessageIMAP channel="[IMAPconnectionName]">
+<![CDATA[
+[tagReq] FETCH 1:* (FLAGS)
+]]>
+        </sendMessageIMAP>
+        <parameter name="[test:imapRequest]" operation="number.add" value="[test:imapRequest]" value2="1"/>
+        <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+        <receiveMessageIMAP channel="[IMAPconnectionName]">
+            <parameter name="[tag]" operation="protocol.setFromMessage" value="response:done:tag" />
+            <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+        </receiveMessageIMAP>
+        <parameter name="[test:imapResponse]" operation="number.add" value="[test:imapResponse]" value2="1"/>
+        <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+
+        <parameter name="[tagReq]" operation="set" value="A008" />
+        <sendMessageIMAP channel="[IMAPconnectionName]">
+<![CDATA[
+[tagReq] FETCH 5 (RFC822.SIZE FLAGS BODY.PEEK[HEADER.FIELDS(From To Cc Subject Date Message-ID Priority X-Priority References Newsgroup In-Reply-To Content-Type)])
+]]>
+        </sendMessageIMAP>
+        <parameter name="[test:imapRequest]" operation="number.add" value="[test:imapRequest]" value2="1"/>
+        <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+        <receiveMessageIMAP channel="[IMAPconnectionName]">
+            <parameter name="[tag]" operation="protocol.setFromMessage" value="response:done:tag" />
+            <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+        </receiveMessageIMAP>
+        <parameter name="[test:imapResponse]" operation="number.add" value="[test:imapResponse]" value2="1"/>
+        <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+
+        <parameter name="[tagReq]" operation="set" value="A009" />
+        <sendMessageIMAP channel="[IMAPconnectionName]">
+<![CDATA[
+[tagReq] FETCH 5 (BODY.PEEK[HEADER.FIELDS(Content-Type Content-Transfer-Encoding)] BODY.PEEK[TEXT]<0.2048>)
+]]>
+        </sendMessageIMAP>
+        <parameter name="[test:imapRequest]" operation="number.add" value="[test:imapRequest]" value2="1"/>
+        <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+        <receiveMessageIMAP channel="[IMAPconnectionName]">
+            <parameter name="[tag]" operation="protocol.setFromMessage" value="response:done:tag" />
+            <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+        </receiveMessageIMAP>
+        <parameter name="[test:imapResponse]" operation="number.add" value="[test:imapResponse]" value2="1"/>
+        <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+        
+        <parameter name="[tagReq]" operation="set" value="A010" />
+        <sendMessageIMAP channel="[IMAPconnectionName]">
+<![CDATA[
+[tagReq] LOGOUT
+]]>
+        </sendMessageIMAP>
+        <parameter name="[test:imapRequest]" operation="number.add" value="[test:imapRequest]" value2="1"/>
+        <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+        <receiveMessageIMAP channel="[IMAPconnectionName]">
+            <parameter name="[tag]" operation="protocol.setFromMessage" value="response:done:tag" />
+            <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+        </receiveMessageIMAP>
+        <parameter name="[test:imapResponse]" operation="number.add" value="[test:imapResponse]" value2="1"/>
+        <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+    </then>
+    </if>
+    
+    <!-- close IMAP Connection -->
+    <try>
+        <do>
+            <closeChannelIMAP name="[IMAPconnectionName]"/>
+        </do>
+        <finally>
+            <parameter name="[IMAPconnectionOpen]" operation="set" value="false"/>
+        </finally>
+    </try>
+        
+
+      <!-- send Radius Accounting-Request Stop -->
+      <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+      <parameter name="[timestamp]" operation="number.divide" value="[timestamp]" value2="1000"/>
+      <parameter name="[timestamp]" operation="number.floor" value="[timestamp]" />
+
+      <sendMessageRADIUS listenpoint="[ggsn_radius_socket_name]" remoteHost="[radius_host_imap]" remotePort="[radius_port_imap_acct]">
+        <!-- Header -->
+        <header code="4"/>
+
+        <!-- AVPs -->
+        <!--Acct-Status-Type(40) -->
+        <avp code="40" value="Stop"/>
+
+        <!-- User-Name (1) -->
+        <avp code="1" value="[msisdn]"/>
+
+        <!-- NAS-IP-Address(4) -->
+        <avp code="4" value="[nas_ip_address]"/>
+
+        <!-- NAS-Port(5) -->
+        <avp code="5" value="[radius_nas_port]"/>
+
+        <!-- Framed-IP-Address(8) -->
+        <avp code="8" value="[source_ip]"/>
+
+        <!-- Calling-Station-Id(31) -->
+        <avp code="31" value="[calling_station_id]"/>
+
+        <!-- Called-Station-Id(30) -->
+        <avp code="30" value="[called_station_id]"/>
+
+        <!-- Acct-Session-Id(44) -->
+        <avp code="44" value="[Acct-Session-Id]"/>
+
+        <!-- Event-Timestamp(55) -->
+        <avp code="55" value="[timestamp]"/>
+
+        <!-- Framed-Protocol(7) -->
+        <avp code="7" value="GPRS-PDP-Context"/>
+
+        <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+        <avp code="26" value="3GPP">
+          <avp code="2" value="[3gpp_charging_id]"/>
+        </avp>
+
+        <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+        <avp code="26" value="3GPP">
+          <avp code="6" value="[3gpp_sgsn_address]"/>
+        </avp>
+
+        <!-- NAS-Identifier(32) -->
+        <avp code="32" value="[nas_identifier]"/>
+      </sendMessageRADIUS>
+      <parameter name="[test:radiusRequest]" operation="number.add" value="[test:radiusRequest]" value2="1"/>
+      <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+      
+      <receiveMessageRADIUS listenpoint="[ggsn_radius_socket_name]" request="false"/>
+      <parameter name="[test:radiusResponse]" operation="number.add" value="[test:radiusResponse]" value2="1"/>
+      <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+
+      <parameter name="[accounting_session_running]" operation="set" value="false"/>
+
+      <!-- close RADIUS Connection -->
+      <!--removeListenpointRADIUS name="[RADIUSsocketName]"/-->
+      <!--parameter name="[RADIUSsocketOpen]" operation="set" value="false"/-->

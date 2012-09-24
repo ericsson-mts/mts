@@ -1,0 +1,46 @@
+<!--
+Function description: Activation/desactivation of telephony services
+
+Establish connection with IMS AS platform
+Listen to the annonce played by the IMS vocal platform
+Release the call when the annonce is finished
+
+Input parameters:
+
+- service_Nb			: number dialed  to access the service
+- domainName_Service		: target domain name
+- subscriber_Service		: E164 nb that identifies the subscriber who searches to activate/deactivate the service
+- ipAddressSip_Service		: IP @ where subscriber who searches to activate/deactivate the service is located
+- portSip_Service		: port where subscriber who searches to activate/deactivate the service is located
+- ipAddressSdp_Service		: IP @ that will be used on subscriber side to exchange payload RTP traffic
+- portSdp_subscriber_Service	: Sdp port that will be used to exchange payload RTP traffic
+- ipAddressSrc_Service		: IP @ where subscriber who searches to activate/deactivate the service is located
+- sbcHost_Service		: IP @ of SBC input point to access target domain name 
+- sbcPort_Service		: port number of SBC input point to access target domain name
+
+- endRtpDialog_Timer		: length before session release after have received the last RTP packet
+
+	
+Output parameters :
+
+-->
+
+<!--
+Parameter translation
+-->
+
+<parameter name="[called_Subscriber]" operation="set" value="[service_Nb]"/>
+<parameter name="[caller_Subscriber]" operation="set" value="[subscriber_Service]"/>
+<parameter name="[caller_ipAddressSip]" operation="set" value="[ipAddressSip_Service]"/>
+<parameter name="[caller_portSip]" operation="set" value="[portSip_Service]"/>
+<parameter name="[caller_ipAddressSdp]" operation="set" value="[ipAddressSdp_Service]"/>
+<parameter name="[caller_portSdp]" operation="set" value="[portSdp_subscriber_Service]"/>
+<parameter name="[caller_ipAddressSrc]" operation="set" value="[ipAddressSrc_Service]"/>
+
+<parameter name="[expected_Scenario]" operation="set" value="FULL_SUCCESS_ESTABLISHMENT" />
+
+
+&libC_Caller_to_Called_Ph1;
+
+&libC_Caller_to_Called_Ph2;
+&libC_Caller_to_Called_Ph3;

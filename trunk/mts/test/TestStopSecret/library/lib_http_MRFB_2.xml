@@ -1,0 +1,467 @@
+<!--
+Function description: Library http MFRB side
+Seconde partie synchronisee sur le ACK
+
+Input parameters:
+
+
+	
+Output parameters :
+
+
+	
+-->
+
+<!--
+Recuperation Session_id dans contexte identifie pa le CallId
+-->
+<if>
+<condition>
+<test parameter="[test:store_B_[lastCallId]]" condition="exists" />
+</condition>
+<then>
+<parameter name="[SessionId]" operation="set" value="[test:store_B_[lastCallId]]"/>
+
+<!--
+Envoi des message HTTP synchronise sur l'ACK
+-->
+
+
+
+
+
+
+<!-- Ouverture d une nv cnx HTTP avec un nv nom de cnx -->
+<parameter name="[IndiceHTTPCnx]" operation="add" value="[IndiceHTTPCnx]" value2="1"/>
+<if>
+<condition>
+<test parameter="[IndiceHTTPCnx]" condition="equals" value="100000"/>
+</condition>
+<then>	
+<parameter name="[IndiceHTTPCnx]" operation="set" value="0"/>
+</then></if>
+<parameter name="[HTTPCnxName]" operation="set" value="HTTP_MRFB"/>
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="-" />
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="[IndiceHTTPCnx]" />
+<openConnectionHTTP connectionName="[HTTPCnxName]" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+
+
+<sendRequestHTTP connectionName="[HTTPCnxName]" delay="0.33">
+	
+<![CDATA[
+GET /StopSecretSipApp/audio_files/a8k/MSG_011.a8k HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Referer: [Host-Server]:[Port-AS_http]/StopSecretSipApp/
+Cache-Control: max-age=0
+Cache-Control: max-stale=0
+Cookie: $Version=1; JSESSIONID=[SessionId]; $Path=/; $Domain=[Host-Server]
+]]>
+
+</sendRequestHTTP>
+
+
+
+
+
+<!-- Ouverture d une nv cnx HTTP avec un nv nom de cnx -->
+<parameter name="[IndiceHTTPCnx]" operation="add" value="[IndiceHTTPCnx]" value2="1"/>
+<if>
+<condition>
+<test parameter="[IndiceHTTPCnx]" condition="equals" value="100000"/>
+</condition>
+<then>	
+<parameter name="[IndiceHTTPCnx]" operation="set" value="0"/>
+</then></if>
+<parameter name="[HTTPCnxName]" operation="set" value="HTTP_MRFB"/>
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="-" />
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="[IndiceHTTPCnx]" />
+<openConnectionHTTP connectionName="[HTTPCnxName]" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+
+
+<sendRequestHTTP connectionName="[HTTPCnxName]" delay="0.33">
+	
+<![CDATA[
+GET /StopSecretSipApp/audio_files/a8k/MSG_013.a8k HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Referer: [Host-Server]:[Port-AS_http]/StopSecretSipApp/
+Cookie: $Version=1; JSESSIONID=[SessionId]; $Path=/; $Domain=[Host-Server]
+]]>
+
+</sendRequestHTTP>
+
+
+
+
+
+
+<!-- Ouverture d une nv cnx HTTP avec un nv nom de cnx -->
+<parameter name="[IndiceHTTPCnx]" operation="add" value="[IndiceHTTPCnx]" value2="1"/>
+<if>
+<condition>
+<test parameter="[IndiceHTTPCnx]" condition="equals" value="100000"/>
+</condition>
+<then>	
+<parameter name="[IndiceHTTPCnx]" operation="set" value="0"/>
+</then></if>
+<parameter name="[HTTPCnxName]" operation="set" value="HTTP_MRFB"/>
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="-" />
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="[IndiceHTTPCnx]" />
+<openConnectionHTTP connectionName="[HTTPCnxName]" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+
+
+<sendRequestHTTP connectionName="[HTTPCnxName]" delay="0.33">
+
+<![CDATA[
+GET /StopSecretSipApp/recorded_files/msg_1858431978.wav HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Referer: [Host-Server]:[Port-AS_http]/StopSecretSipApp/
+Cookie: $Version=1; JSESSIONID=[SessionId]; $Path=/; $Domain=[Host-Server]
+]]>
+
+</sendRequestHTTP>
+
+
+
+
+
+<!-- Ouverture d une nv cnx HTTP avec un nv nom de cnx -->
+<parameter name="[IndiceHTTPCnx]" operation="add" value="[IndiceHTTPCnx]" value2="1"/>
+<if>
+<condition>
+<test parameter="[IndiceHTTPCnx]" condition="equals" value="100000"/>
+</condition>
+<then>	
+<parameter name="[IndiceHTTPCnx]" operation="set" value="0"/>
+</then></if>
+<parameter name="[HTTPCnxName]" operation="set" value="HTTP_MRFB"/>
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="-" />
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="[IndiceHTTPCnx]" />
+<openConnectionHTTP connectionName="[HTTPCnxName]" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+
+
+<sendRequestHTTP connectionName="[HTTPCnxName]" delay="7.47">
+
+<![CDATA[
+GET /StopSecretSipApp/A_Dialog.jsp?event=waiting HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Referer: [Host-Server]:[Port-AS_http]/StopSecretSipApp/
+Cookie: $Version=1; JSESSIONID=[SessionId]; $Path=/; $Domain=[Host-Server]
+]]>
+
+</sendRequestHTTP>
+
+
+
+
+
+
+<!-- Ouverture d une nv cnx HTTP avec un nv nom de cnx -->
+<parameter name="[IndiceHTTPCnx]" operation="add" value="[IndiceHTTPCnx]" value2="1"/>
+<if>
+<condition>
+<test parameter="[IndiceHTTPCnx]" condition="equals" value="100000"/>
+</condition>
+<then>	
+<parameter name="[IndiceHTTPCnx]" operation="set" value="0"/>
+</then></if>
+<parameter name="[HTTPCnxName]" operation="set" value="HTTP_MRFB"/>
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="-" />
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="[IndiceHTTPCnx]" />
+<openConnectionHTTP connectionName="[HTTPCnxName]" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+
+
+
+<sendRequestHTTP connectionName="[HTTPCnxName]" delay="7.48">
+
+<![CDATA[
+GET /StopSecretSipApp/audio_files/a8k/MSG_009_short.a8k HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Referer: [Host-Server]:[Port-AS_http]/StopSecretSipApp/A_Dialog.jsp
+If-Modified-Since: Tue, 07 Oct 2008 07:23:36 GMT
+Cookie: $Version=1; JSESSIONID=[SessionId]; $Path=/; $Domain=[Host-Server]
+]]>
+
+</sendRequestHTTP>
+
+
+
+
+
+
+<!-- Ouverture d une nv cnx HTTP avec un nv nom de cnx -->
+<parameter name="[IndiceHTTPCnx]" operation="add" value="[IndiceHTTPCnx]" value2="1"/>
+<if>
+<condition>
+<test parameter="[IndiceHTTPCnx]" condition="equals" value="100000"/>
+</condition>
+<then>	
+<parameter name="[IndiceHTTPCnx]" operation="set" value="0"/>
+</then></if>
+<parameter name="[HTTPCnxName]" operation="set" value="HTTP_MRFB"/>
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="-" />
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="[IndiceHTTPCnx]" />
+<openConnectionHTTP connectionName="[HTTPCnxName]" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+
+
+
+<sendRequestHTTP connectionName="[HTTPCnxName]" delay="9.65">
+
+<![CDATA[
+GET /StopSecretSipApp/B_choice_dialog.jsp?event=choice HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Referer: [Host-Server]:[Port-AS_http]/StopSecretSipApp
+Cookie: $Version=1; JSESSIONID=[SessionId]; $Path=/; $Domain=[Host-Server]
+]]>
+
+</sendRequestHTTP>
+
+
+
+
+<!-- Ouverture d une nv cnx HTTP avec un nv nom de cnx -->
+<parameter name="[IndiceHTTPCnx]" operation="add" value="[IndiceHTTPCnx]" value2="1"/>
+<if>
+<condition>
+<test parameter="[IndiceHTTPCnx]" condition="equals" value="100000"/>
+</condition>
+<then>	
+<parameter name="[IndiceHTTPCnx]" operation="set" value="0"/>
+</then></if>
+<parameter name="[HTTPCnxName]" operation="set" value="HTTP_MRFB"/>
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="-" />
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="[IndiceHTTPCnx]" />
+<openConnectionHTTP connectionName="[HTTPCnxName]" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+
+
+
+<sendRequestHTTP connectionName="[HTTPCnxName]" delay="9.66">
+
+<![CDATA[
+GET /StopSecretSipApp/vxml_scripts/root.vxml HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Referer: [Host-Server]:[Port-AS_http]/StopSecretSipApp
+If-Modified-Since: Tue, 07 Oct 2008 07:23:40 GMT
+Cookie: $Version=1; JSESSIONID=[SessionId]; $Path=/; $Domain=[Host-Server]
+]]>
+
+</sendRequestHTTP>
+
+
+
+
+<!-- Ouverture d une nv cnx HTTP avec un nv nom de cnx -->
+<parameter name="[IndiceHTTPCnx]" operation="add" value="[IndiceHTTPCnx]" value2="1"/>
+<if>
+<condition>
+<test parameter="[IndiceHTTPCnx]" condition="equals" value="100000"/>
+</condition>
+<then>	
+<parameter name="[IndiceHTTPCnx]" operation="set" value="0"/>
+</then></if>
+<parameter name="[HTTPCnxName]" operation="set" value="HTTP_MRFB"/>
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="-" />
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="[IndiceHTTPCnx]" />
+<openConnectionHTTP connectionName="[HTTPCnxName]" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+
+
+<sendRequestHTTP connectionName="[HTTPCnxName]" delay="9.67">
+
+<![CDATA[
+GET /StopSecretSipApp/audio_files/a8k/MSG_014.a8k HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Referer: [Host-Server]:[Port-AS_http]/StopSecretSipApp
+Cookie: $Version=1; JSESSIONID=[SessionId]; $Path=/; $Domain=[Host-Server]
+]]>
+
+</sendRequestHTTP>
+
+
+
+
+
+<!-- Ouverture d une nv cnx HTTP avec un nv nom de cnx -->
+<parameter name="[IndiceHTTPCnx]" operation="add" value="[IndiceHTTPCnx]" value2="1"/>
+<if>
+<condition>
+<test parameter="[IndiceHTTPCnx]" condition="equals" value="100000"/>
+</condition>
+<then>	
+<parameter name="[IndiceHTTPCnx]" operation="set" value="0"/>
+</then></if>
+<parameter name="[HTTPCnxName]" operation="set" value="HTTP_MRFB"/>
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="-" />
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="[IndiceHTTPCnx]" />
+<openConnectionHTTP connectionName="[HTTPCnxName]" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+
+
+
+<sendRequestHTTP connectionName="[HTTPCnxName]" delay="11.17">
+
+<![CDATA[
+POST /StopSecretSipApp/B_Dialog.jsp?event=accep HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Referer: [Host-Server]:[Port-AS_http]/StopSecretSipApp
+Cookie: $Version=1; JSESSIONID=[SessionId]; $Path=/; $Domain=[Host-Server]
+Content-Length: x
+
+Content-Type: application/x-www-form-urlencoded
+DTMF=false&compteur=1&phase=1
+]]>
+
+</sendRequestHTTP>
+
+
+
+
+
+
+<!-- Ouverture d une nv cnx HTTP avec un nv nom de cnx -->
+<parameter name="[IndiceHTTPCnx]" operation="add" value="[IndiceHTTPCnx]" value2="1"/>
+<if>
+<condition>
+<test parameter="[IndiceHTTPCnx]" condition="equals" value="100000"/>
+</condition>
+<then>	
+<parameter name="[IndiceHTTPCnx]" operation="set" value="0"/>
+</then></if>
+<parameter name="[HTTPCnxName]" operation="set" value="HTTP_MRFB"/>
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="-" />
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="[IndiceHTTPCnx]" />
+<openConnectionHTTP connectionName="[HTTPCnxName]" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+
+
+
+<sendRequestHTTP connectionName="[HTTPCnxName]" delay="11.39">
+
+<![CDATA[
+GET /StopSecretSipApp/audio_files/a8k/MSG_029.a8k HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Referer: [Host-Server]:[Port-AS_http]/StopSecretSipApp
+Cookie: $Version=1; JSESSIONID=[SessionId]; $Path=/; $Domain=[Host-Server]
+]]>
+
+</sendRequestHTTP>
+
+
+
+
+
+
+
+<!-- Ouverture d une nv cnx HTTP avec un nv nom de cnx -->
+<parameter name="[IndiceHTTPCnx]" operation="add" value="[IndiceHTTPCnx]" value2="1"/>
+<if>
+<condition>
+<test parameter="[IndiceHTTPCnx]" condition="equals" value="100000"/>
+</condition>
+<then>	
+<parameter name="[IndiceHTTPCnx]" operation="set" value="0"/>
+</then></if>
+<parameter name="[HTTPCnxName]" operation="set" value="HTTP_MRFB"/>
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="-" />
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="[IndiceHTTPCnx]" />
+<openConnectionHTTP connectionName="[HTTPCnxName]" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+
+
+
+<sendRequestHTTP connectionName="[HTTPCnxName]" delay="12.6">
+
+<![CDATA[
+GET /StopSecretSipApp/A_Dialog.jsp?event=waiting HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Referer: [Host-Server]:[Port-AS_http]/StopSecretSipApp/A_Dialog.jsp
+Cookie: $Version=1; JSESSIONID=[SessionId]; $Path=/; $Domain=[Host-Server]
+]]>
+
+</sendRequestHTTP>
+
+
+
+<!--sendRequestHTTP connectionName="HTTP_MRFB" delay="12.61">
+
+<![CDATA[
+GET /StopSecretSipApp/audio_files/a8k/MSG_009_short.a8k  HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Referer: [Host-Server]:[Port-AS_http]/StopSecretSipApp
+Cookie: $Version=1; JSESSIONID=[SessionId]; $Path=/; $Domain=[Host-Server]
+]]>
+
+</sendRequestHTTP-->
+
+
+
+
+
+
+<!-- Ouverture d une nv cnx HTTP avec un nv nom de cnx -->
+<parameter name="[IndiceHTTPCnx]" operation="add" value="[IndiceHTTPCnx]" value2="1"/>
+<if>
+<condition>
+<test parameter="[IndiceHTTPCnx]" condition="equals" value="100000"/>
+</condition>
+<then>	
+<parameter name="[IndiceHTTPCnx]" operation="set" value="0"/>
+</then></if>
+<parameter name="[HTTPCnxName]" operation="set" value="HTTP_MRFB"/>
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="-" />
+<parameter name="[HTTPCnxName]" operation="concat" value="[HTTPCnxName]" value2="[IndiceHTTPCnx]" />
+<openConnectionHTTP connectionName="[HTTPCnxName]" localHost="[Host-Tester]" remoteURL="http://[Host-Server]:[Port-AS_http]"/>
+
+
+
+
+<sendRequestHTTP connectionName="[HTTPCnxName]" delay="12.61">
+
+<![CDATA[
+GET /StopSecretSipApp/B_Dialog.jsp HTTP/1.1
+Accept: */*
+Host: [Host-Server]:[Port-AS_http]
+User-Agent: XMLLoader
+Referer: [Host-Server]:[Port-AS_http]StopSecretSipApp
+Cookie: $Version=1; JSESSIONID=[SessionId]; $Path=/; $Domain=[Host-Server]
+]]>
+
+</sendRequestHTTP>
+
+
+
+<!--
+<closeConnectionHTTP connectionName="HTTP_MRFA"/>
+-->
+
+
+
+<!--
+Suppression du contexte identifie par le CallId et contenant le Session_id
+-->
+
+<parameter name="[test:store_B_[lastCallId]]" operation="unset"/>
+
+</then>
+<else>
+<log level="3">Balise Contexte callId non trouve]</log>
+</else></if>

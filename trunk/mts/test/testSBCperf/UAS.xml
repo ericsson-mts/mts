@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<stats>
+        	<counter name="INVITEin" shortDesc="INV_in" description="INVITE incoming" longDesc="Receive an incoming INVITE"/>
+		<counter name="ACKin" shortDesc="ACK_in" description="ACK incoming" longDesc="Receive an incoming ACK"/>        
+		<counter name="BYEin" shortDesc="BYE_in" description="BYE incoming" longDesc="Receive an incoming BYE"/>			
+    	</stats>
+
+	<!-- start main loop -->	
+	<label name="begin"/>
+		
+	<receiveMessage name="wait_SIP_request" timeout="0" failedOnTimeout="false">
+		<parameter name="[lastMethod]" operation="setFromMessage" value="firstline:Method"/>	
+		<parameter name="[lastIsRequest]" operation="setFromMessage" value="message:request"/>  		
+		<parameter name="[lastResult]" operation="setFromMessage" value="message:result"/>  				
+		<parameter name="[lastFirstline]" operation="setFromMessage" value="firstline"/>  	
+		<parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>  	
+		<parameter name="[lastToUser]" operation="setFromMessage" value="header:To:Address:URI:User"/>  	
+	  	<parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>  	
+	  	<parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-ID"/>		  		  	
+	  	<parameter name="[lastCSeq]" operation="setFromMessage" value="header:CSeq"/>
+	  	<parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/>
+	  	<parameter name="[lastRoute]" operation="setFromMessage" value="header:Route"/>		  		  	
+	  	<parameter name="[lastRecord-Route]" operation="setFromMessage" value="header:Record-Route"/>		  	
+	  	<parameter name="[lastContact]" operation="setFromMessage" value="header:Contact"/>		  		  	
+	  	<parameter name="[lastMax-Forwards]" operation="setFromMessage" value="header:Max-Forwards"/>		  		  	
+		<parameter name="[lastHeaderOthers]" operation="setFromMessage" value="header:Others"/>		  		  		  	
+	  	<parameter name="[lastContent]" operation="setFromMessage" value="content"/>		  		  	
+	  	<parameter name="[lastServiceTrigger]" operation="setFromMessage" value="header:ServiceTrigger"/>		  		  		  	
+	</receiveMessage>
+		
+	<if>
+	    <condition>
+		<test parameter="[lastIsRequest]" condition="equals" value="true"/>		  		  		    
+	    	<test parameter="[lastMethod]" condition="equals" value="INVITE"/>		  		  	
+	    </condition>
+	    <then>
+		<goto  name="goto_recINVITE" label="recINVITE" state="true"/>	    	
+	    </then>
+	</if>
+
+	<if>
+	    <condition>
+		<test parameter="[lastIsRequest]" condition="equals" value="true"/>		  		  		    
+	    	<test parameter="[lastMethod]" condition="equals" value="ACK"/>		  		  	
+	    </condition>
+	    <then>
+	  	<stats>
+  		    <counter name="ACKin"><increase>1</increase></counter>
+    		</stats>	    	    	
+		<goto  name="goto_begin" label="begin" state="true"/>	    	    		
+	    </then>
+	</if>
+
+	<if>
+	    <condition>
+		<test parameter="[lastIsRequest]" condition="equals" value="true"/>		  		  		    
+	    </condition>
+	    <then>
+		<goto  name="goto_recBYE" label="recOTHERS" state="true"/>	    	
+	    </then>
+	</if>
+
+        <goto  name="goto_begin" label="begin" state="true"/>	    	                        
+	<!-- end main loop -->	
+		
+	<label name="recINVITE"/>	
+	
+  	<stats>
+  	    <counter name="INVITEin"><increase>1</increase></counter>
+    	</stats>	    	    	
+
+  	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+
+  	<sendResponseSIP name="Send 100 Trying" delay="0">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 100 trying -- your call is important to us
+Via: [lastVia]
+From: [lastFrom]
+To: [lastTo]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Server: OpenSer (1.1.0-notls (i386/linux))
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+  	</sendResponseSIP>
+  
+  	<sendResponseSIP name="Send 180 Ringing" delay="[TryingDuration]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 180 Ringing
+Via: [lastVia]
+From: [lastFrom]
+To: [lastTo];tag=[localTag]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Server: Cisco-CP7960G/8.0
+Contact: <sip:[lastToUser]@[Adresse-Tester];transport=udp>
+Record-Route: <sip:[Adresse-Tester];lr=on;ftag=SD1nm6f01-001ebe907cd300772952909a-3d934811>
+Allow: ACK,BYE,CANCEL,INVITE,NOTIFY,OPTIONS,REFER,REGISTER,UPDATE
+Remote-Party-ID: "[lastToUser]" <sip:[lastToUser]@[Adresse-Tester]>;party=called;id-type=subscriber;privacy=off;screen=yes
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+	</sendResponseSIP>
+
+	<parameter name="[index]" operation="identifier" value="newInteger" value2="[NumberUserDatabase]"/>    			
+	<parameter name="[portRTP]" operation="add" value="39000" value2="[index]"/>    			
+  
+  	<sendResponseSIP name="Send 200 OK" delay="[RingingDuration]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+Via: [lastVia]
+From: [lastFrom]
+To: [lastTo];tag=[localTag]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Server: Cisco-CP7960G/8.0
+Contact: <sip:[lastToUser]@[Adresse-Tester];transport=udp>
+Record-Route: <sip:[Adresse-Tester];lr=on;ftag=SD1nm6f01-001ebe907cd300772952909a-3d934811>
+Allow: ACK,BYE,CANCEL,INVITE,NOTIFY,OPTIONS,REFER,REGISTER,UPDATE
+Remote-Party-ID: "[lastToUser]" <sip:[lastToUser]@[Adresse-Tester]>;party=called;id-type=subscriber;privacy=off;screen=yes
+Supported: replaces,join,norefersub
+Content-Length: x
+Content-Type: application/sdp
+Content-Disposition: session;handling=optional
+
+v=0
+o=Cisco-SIPUA 5447 0 IN IP4 [Host-Tester]
+s=SIP Call
+t=0 0
+m=audio [portRTP] RTP/AVP 8
+c=IN IP4 [Host-Tester]
+a=rtpmap:8 PCMA/8000
+a=sendrecv
+]]>
+<!--******************** END MESSAGE *********************-->
+  	</sendResponseSIP>
+
+	<goto  name="goto_begin" label="begin" state="true"/>	    	
+	
+	<label name="recOTHERS"/>	
+
+	<if>
+	    <condition>
+	    	<test parameter="[lastMethod]" condition="equals" value="BYE"/>
+	    </condition>
+	    <then>
+	  	<stats>
+  		    <counter name="BYEin"><increase>1</increase></counter>
+    		</stats>	    	    	
+	    </then>
+	</if>
+  
+    	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+  	<sendResponseSIP name="Send 200 OK" delay="0">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+Via: [lastVia]
+From: [lastFrom]
+To: [lastTo];tag=[localTag]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Server: Cisco-CP7960G/8.0
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+  	</sendResponseSIP>
+
+	<goto  name="goto_begin" label="begin" state="true"/>	    	
+	
+</scenario>

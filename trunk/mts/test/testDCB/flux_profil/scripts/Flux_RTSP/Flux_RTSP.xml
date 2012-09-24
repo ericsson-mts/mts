@@ -1,0 +1,449 @@
+<!--
+To use this part of XML code in a scenario,
+- input parameters must be defined and setted locally (by the caller scenario).
+- output parameters may be used in the scenario after the "call".
+
+Input parameters :
+
+****** RADIUS ******
+- [source_ip]          : 
+- [radius_nas_port]    : 
+- [radius_secret]      : 
+- [radius_ip]          : 
+- [radius_auth_port]   : 
+- [msisdn]             : 
+- [radius_acct_port]   : 
+- [nas_ip_address]     : 
+- [calling_station_id] : 
+- [called_station_id]  : 
+- [Acct-Session-Id]    : 
+- [3gpp_charging_id]   : 
+- [3gpp_sgsn_address]  : 
+- [nas_identifier]     :
+
+****** RTSP ******
+- [rtsp_destination_ips] : 
+- [rtsp_port]            : 
+- [user-login]           : 
+- [subscriber-identifier]:
+
+
+
+Output parameters :
+- [RADIUSsocketName]   : 
+- [RADIUSsocketOpen]   : 
+- [RTSPconnectionName] : 
+- [RTSPconnectionOpen] : 
+
+-->
+   <!--    send Radius Access-Request
+      <sendMessageRADIUS listenpoint="[ggsn_radius_socket_name]" remoteHost="[radius_host_rtsp]" remotePort="[radius_port_rtsp_auth]">
+         Header
+        <header code="1"/>
+
+         AVPs
+         User-Name (1)
+        <avp code="1" value="[msisdn]"/>
+
+         User-Password (2)
+        <avp code="2" value="User-Password"/>
+
+         Nas-IP-Address (4)
+        <avp code="4" value="[source_ip]"/>
+
+         Code: Nas-Port (5)
+        <avp code="5" value="[radius_nas_port]"/>
+
+         Calling-Station-Id (31)
+        <avp code="31" value=""/>
+
+         Called-Station-Id (30)
+        <avp code="30" value=""/>
+      </sendMessageRADIUS>
+      <parameter name="[test:radiusRequest]" operation="number.add" value="[test:radiusRequest]" value2="1"/>
+      <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+
+      <receiveMessageRADIUS listenpoint="[ggsn_radius_socket_name]" request="false"/>
+      <parameter name="[test:radiusResponse]" operation="number.add" value="[test:radiusResponse]" value2="1"/>
+      <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>-->
+
+      <!-- send Radius Accounting-Request Start -->
+      <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+      <parameter name="[timestamp]" operation="divide" value="[timestamp]" value2="1000"/>
+      <parameter name="[timestamp]" operation="number.floor" value="[timestamp]" />
+
+      <sendMessageRADIUS listenpoint="[ggsn_radius_socket_name]" remoteHost="[radius_host_rtsp]" remotePort="[radius_port_rtsp_acct]">
+        <!-- Header -->
+        <header code="4"/>
+        <!-- AVPs -->
+        <!--Acct-Status-Type(40) -->
+        <avp code="40" value="Start"/>
+        <!-- User-Name (1) -->
+        <avp code="1" value="void"/><!-- old value [msisdn]-->
+        <!-- NAS-IP-Address(4) -->
+        <avp code="4" value="[nas_ip_address]"/>
+        <!-- NAS-Port(5) -->
+        <!-- <avp code="5" value="[radius_nas_port]"/> -->
+        <!-- Framed-IP-Address(8) -->
+        <avp code="8" value="[source_ip]"/>
+        <!-- Calling-Station-Id(31) -->
+        <avp code="31" value="[calling_station_id]"/>
+        <!-- Called-Station-Id(30) -->
+        <avp code="30" value="[called_station_id]"/>
+        <!-- Acct-Session-Id(44) -->
+        <avp code="44" value="[Acct-Session-Id]"/>
+        <!-- Event-Timestamp(55) -->
+        <!-- <avp code="55" value="[timestamp]"/> -->
+        <!-- Framed-Protocol(7) -->
+        <avp code="7" value="GPRS-PDP-Context"/>
+        <!-- Vendor-Specific(26) 3GPP-IMSI -->
+        <avp code="26" value="3GPP">
+            <avp code="1" value="[imsi]"/>
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+        <avp code="26" value="3GPP">
+            <avp code="2" value="[3gpp_charging_id]"/>
+        </avp>
+        <avp code="26" value="3GPP">
+            <avp code="3" value="0"/><!-- IPV4 (0)-->
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+        <avp code="26" value="3GPP">
+            <avp code="6" value="[3gpp_sgsn_address]"/>
+        </avp>
+        <avp code="26" value="3GPP">
+            <avp code="20" value="33353739393430313033343330323635"/><!-- IMEISV -->
+        </avp>
+
+        <avp code="26" value="3GPP">
+            <avp code="21" value="01"/><!-- UTRAN -->
+        </avp>
+
+        <avp code="26" value="3GPP">
+            <avp code="22" value="0102F810970378FD"/><!-- UserLocationInfo -->
+        </avp>
+
+        <!-- NAS-Identifier(32) -->
+        <avp code="32" value="[nas_identifier]"/>
+
+        <!-- Service-Type(6) -->
+        <avp code="6" value="Framed-User"/>
+        <!-- NAS-Port-Type(61) -->
+        <avp code="61" value="Virtual"/>
+        <!-- Vendor-Specific(26) 3GPP-GGSN-Address -->
+        <avp code="26" value="3GPP">
+            <avp code="7" value="212.234.96.26"/>
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-Gharging-Characteristics-->
+        <avp code="26" value="3GPP">
+            <avp code="13" value="0800"/>
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-SGSN-MMC-MNC-->
+        <avp code="26" value="3GPP">
+            <avp code="18" value="20801"/>
+        </avp>
+        <!-- Acct-Authentic(45)-->
+        <avp code="45" value="Local"/>
+        <!-- Acct-Delay-Time(41)-->
+        <avp code="41" value="0"/>
+      </sendMessageRADIUS>
+      <parameter name="[test:radiusRequest]" operation="number.add" value="[test:radiusRequest]" value2="1"/>
+      <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+      
+      <receiveMessageRADIUS listenpoint="[ggsn_radius_socket_name]" request="false"/>
+      <parameter name="[test:radiusResponse]" operation="number.add" value="[test:radiusResponse]" value2="1"/>
+      <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+      
+      <parameter name="[accounting_session_running]" operation="set" value="true"/>
+      <parameter name="[accounting_session_host]" operation="set" value="[radius_host_rtsp]"/>
+      <parameter name="[accounting_session_port]" operation="set" value="[radius_port_rtsp_acct]"/>
+
+      <!-- Changement de socket pour browsing -->
+      <!-- open RTSP Connection -->
+      <parameter name="[RTSPconnectionName]" operation="set" value="connection_RTSP_[testcase:index]"/>     
+      <parameter name="[RTPconnectionName]" operation="set" value="[scenarioName]"/>     
+
+      <parameter name="[RTSPconnectionOpen]" operation="set" value="false"/>
+    <try>
+        <do>
+            <openChannelRTSP name="[RTSPconnectionName]" localHost="[source_ip]" remoteHost="[rtsp_destination_ip]" remotePort="[rtsp_port]"/>
+            <parameter name="[RTSPconnectionOpen]" operation="set" value="true"/>
+        </do>
+        <finally>
+            <parameter name="[expected]" value="ok" operation="string.equals" value2="[rtsp_result]" />
+            <if>
+                <condition>
+                    <test parameter="[RTSPconnectionOpen]" condition="boolean.equals" value="[expected]" />
+                </condition>
+                <else>
+                    <stats>
+                        <flow name="[0msisdn] rtsp failure" shortDesc="rtsp failure" description="[0msisdn] rtsp failure" longDesc="[0msisdn] rtsp failure">
+                            <increase>1</increase>
+                        </flow>
+                    </stats>
+                </else>
+            </if>
+        </finally>
+    </try>
+    
+	<!-- send RTSP Requests -->
+    <if>
+        <condition>
+            <test parameter="[RTSPconnectionOpen]" condition="boolean.equals" value="true" />
+        </condition>
+    <then>
+        <parameter name="[cseq]" operation="set" value="1" />
+        <sendMessageRTSP channel="[RTSPconnectionName]">
+<![CDATA[
+OPTIONS rtsp://[rtsp_destination_ip]:[rtsp_port]/vod_1 RTSP/1.0
+CSeq: [cseq]
+]]>
+        </sendMessageRTSP>
+        <parameter name="[test:rtspRequest]" operation="number.add" value="[test:rtspRequest]" value2="1"/>
+        <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+        <receiveMessageRTSP channel="[RTSPconnectionName]">
+            <parameter name="[cseqRep]" operation="protocol.setFromMessage" value="header:CSeq" />
+            <test parameter="[cseq]" condition="string.equals" value="[cseqRep]" />
+        </receiveMessageRTSP>
+        <parameter name="[test:rtspResponse]" operation="number.add" value="[test:rtspResponse]" value2="1"/>
+        <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+
+        <parameter name="[cseq]" operation="number.add" value="[cseq]" value2="1" />
+        <sendMessageRTSP channel="[RTSPconnectionName]">
+<![CDATA[
+DESCRIBE rtsp://[rtsp_destination_ip]:[rtsp_port]/vod_1 RTSP/1.0
+CSeq: [cseq]
+Accept: application/sdp
+]]>
+        </sendMessageRTSP>
+        <parameter name="[test:rtspRequest]" operation="number.add" value="[test:rtspRequest]" value2="1"/>
+        <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+        <receiveMessageRTSP channel="[RTSPconnectionName]">
+            <parameter name="[cseqRep]" operation="protocol.setFromMessage" value="header:CSeq" />
+            <test parameter="[cseq]" condition="string.equals" value="[cseqRep]" />
+        </receiveMessageRTSP>
+        <parameter name="[test:rtspResponse]" operation="number.add" value="[test:rtspResponse]" value2="1"/>
+        <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+        
+        <parameter name="[rtpPort]" operation="set" value="[current_rtp_client_port]"/>
+        <parameter name="[rtcpPort]" operation="number.add" value="[rtpPort]" value2="1"/>
+                
+        <parameter name="[cseq]" operation="number.add" value="[cseq]" value2="1" />
+        <sendMessageRTSP channel="[RTSPconnectionName]">
+<![CDATA[
+SETUP rtsp://[rtsp_destination_ip]:[rtsp_port]/vod_1 RTSP/1.0
+CSeq: [cseq]
+Transport: RTP/AVP;unicast;client_port=[rtpPort]-[rtcpPort]
+]]>
+        </sendMessageRTSP>
+        <parameter name="[test:rtspRequest]" operation="number.add" value="[test:rtspRequest]" value2="1"/>
+        <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+        <receiveMessageRTSP channel="[RTSPconnectionName]">
+            <parameter name="[cseqRep]" operation="protocol.setFromMessage" value="header:CSeq" />
+            <test parameter="[cseq]" condition="string.equals" value="[cseqRep]" />
+            <parameter name="[session]" operation="protocol.setFromMessage" value="header:Session"/>
+            <parameter name="[transport]" operation="protocol.setFromMessage" value="header:Transport"/>
+        </receiveMessageRTSP>
+        <parameter name="[test:rtspResponse]" operation="number.add" value="[test:rtspResponse]" value2="1"/>
+        <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+
+        <parameter name="[serverRtpPort]" operation="string.regexReplaces" value="[transport]" value2=".*server_port=" value3=""/>
+        <parameter name="[serverRtpPort]" operation="string.regexReplaces" value="[serverRtpPort]" value2="-.*" value3=""/>
+        <parameter name="[serverRtcpPort]" operation="string.regexReplaces" value="[transport]" value2=".*server_port=.*-" value3=""/>
+
+        <!-- Open RTP server -->
+        <try>
+            <do>
+                <createListenpointRTP name="[RTPconnectionName]" localHost="[source_ip]" localPort="[rtpPort]"/> <!-- remoteHost="[rtsp_destination_ip]" remotePort="[serverRtpPort]" -->
+                <parameter name="[RTPconnectionOpen]" operation="set" value="true"/>
+                
+                <parameter name="[current_rtp_client_port]" operation="number.add" value="[current_rtp_client_port]" value2="2"/>
+                <if>
+                    <condition>
+                        <test parameter="[current_rtp_client_port]" condition="number.greaterEqualthan" value="[rtp_client_port_max]"/>
+                    </condition>
+                    <then>
+                        <parameter name="[current_rtp_client_port]" operation="set" value="[rtp_client_port_min]"/>
+                    </then>
+                </if>
+            </do>
+            <finally>
+                <parameter name="[expected]" value="ok" operation="string.equals" value2="[rtp_result]" />
+                <if>
+                    <condition>
+                        <test parameter="[RTPconnectionOpen]" condition="boolean.equals" value="[expected]" />
+                    </condition>
+                    <else>
+                        <stats>
+                            <flow name="[0msisdn] rtp failure" shortDesc="rtp failure" description="[0msisdn] rtp failure" longDesc="[0msisdn] rtp failure">
+                                <increase>1</increase>
+                            </flow>
+                        </stats>
+                    </else>
+                </if>
+            </finally>
+        </try>
+        <!-- Open RTP server -->
+        
+        <if>
+            <condition>
+                <test parameter="[RTPconnectionOpen]" condition="boolean.equals" value="true" />
+            </condition>
+        <then>
+            <parameter name="[cseq]" operation="number.add" value="[cseq]" value2="1" />
+            <sendMessageRTSP channel="[RTSPconnectionName]">
+<![CDATA[
+PLAY rtsp://[rtsp_destination_ip]:[rtsp_port]/vod_1 RTSP/1.0
+CSeq: [cseq]
+Session: [session]
+]]>
+            </sendMessageRTSP>
+            <parameter name="[test:rtspRequest]" operation="number.add" value="[test:rtspRequest]" value2="1"/>
+            <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+            <receiveMessageRTSP channel="[RTSPconnectionName]">
+                <parameter name="[cseqRep]" operation="protocol.setFromMessage" value="header:CSeq" />
+                <test parameter="[cseq]" condition="string.equals" value="[cseqRep]" />
+            </receiveMessageRTSP>
+            <parameter name="[test:rtspResponse]" operation="number.add" value="[test:rtspResponse]" value2="1"/>
+            <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+
+            <parameter name="[time]" operation="system.timestamp" value="1970"/>
+            <parameter name="[diff]" operation="set" value="0"/>
+            <parameter name="[time_receive_rtp]" operation="number.multiply" value="[time_receive_rtp]" value2="1000"/>
+            <while>
+                <condition>
+                    <test parameter="[diff]" condition="number.lowerThan" value="[time_receive_rtp]"/>
+                </condition>
+                <do>
+                    <!-- receive RTP Packets -->
+                    <receiveMessageRTP listenpoint="[RTPconnectionName]" type="17" timeout="5" failedOnTimeout="false"/>
+
+                    <parameter name="[newtime]" operation="system.timestamp" value="1970"/>
+                    <parameter name="[diff]" operation="number.substract" value="[newtime]" value2="[time]"/>
+                </do>
+            </while>
+            
+            <parameter name="[cseq]" operation="number.add" value="[cseq]" value2="1" />
+            <sendMessageRTSP channel="[RTSPconnectionName]">
+<![CDATA[
+PAUSE rtsp://[rtsp_destination_ip]:[rtsp_port]/vod_1 RTSP/1.0
+CSeq: [cseq]
+Session: [session]
+]]>
+            </sendMessageRTSP>
+            <parameter name="[test:rtspRequest]" operation="number.add" value="[test:rtspRequest]" value2="1"/>
+            <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+            <receiveMessageRTSP channel="[RTSPconnectionName]">
+                <parameter name="[cseqRep]" operation="protocol.setFromMessage" value="header:CSeq" />
+                <test parameter="[cseq]" condition="string.equals" value="[cseqRep]" />
+            </receiveMessageRTSP>
+            <parameter name="[test:rtspResponse]" operation="number.add" value="[test:rtspResponse]" value2="1"/>
+            <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+        </then>
+        </if>
+        
+        <parameter name="[cseq]" operation="number.add" value="[cseq]" value2="1" />
+        <sendMessageRTSP channel="[RTSPconnectionName]">
+<![CDATA[
+TEARDOWN rtsp://[rtsp_destination_ip]:[rtsp_port]/vod_1 RTSP/1.0
+CSeq: [cseq]
+Session: [session]
+]]>
+        </sendMessageRTSP>
+        <parameter name="[test:rtspRequest]" operation="number.add" value="[test:rtspRequest]" value2="1"/>
+        <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+        <receiveMessageRTSP channel="[RTSPconnectionName]">
+            <parameter name="[cseqRep]" operation="protocol.setFromMessage" value="header:CSeq" />
+            <test parameter="[cseq]" condition="string.equals" value="[cseqRep]" />
+        </receiveMessageRTSP>
+        <parameter name="[test:rtspResponse]" operation="number.add" value="[test:rtspResponse]" value2="1"/>
+        <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+    </then>
+    </if>
+        
+	<!-- close RTP Connection -->
+	<try>
+        <do>
+            <removeListenpointRTP name="[RTPconnectionName]"/>
+        </do>
+        <finally>
+            <parameter name="[RTPconnectionOpen]" operation="set" value="false"/>
+        </finally>
+    </try>
+	
+    <!-- close RTSP Connection -->
+    <try>
+        <do>
+            <closeChannelRTSP name="[RTSPconnectionName]"/>
+        </do>
+        <finally>
+            <parameter name="[RTSPconnectionOpen]" operation="set" value="false"/>
+        </finally>
+    </try>
+        
+
+      <!-- send Radius Accounting-Request Stop -->
+      <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+      <parameter name="[timestamp]" operation="number.divide" value="[timestamp]" value2="1000"/>
+      <parameter name="[timestamp]" operation="number.floor" value="[timestamp]" />
+
+      <sendMessageRADIUS listenpoint="[ggsn_radius_socket_name]" remoteHost="[radius_host_rtsp]" remotePort="[radius_port_rtsp_acct]">
+        <!-- Header -->
+        <header code="4"/>
+
+        <!-- AVPs -->
+        <!--Acct-Status-Type(40) -->
+        <avp code="40" value="Stop"/>
+
+        <!-- User-Name (1) -->
+        <avp code="1" value="[msisdn]"/>
+
+        <!-- NAS-IP-Address(4) -->
+        <avp code="4" value="[nas_ip_address]"/>
+
+        <!-- NAS-Port(5) -->
+        <avp code="5" value="[radius_nas_port]"/>
+
+        <!-- Framed-IP-Address(8) -->
+        <avp code="8" value="[source_ip]"/>
+
+        <!-- Calling-Station-Id(31) -->
+        <avp code="31" value="[calling_station_id]"/>
+
+        <!-- Called-Station-Id(30) -->
+        <avp code="30" value="[called_station_id]"/>
+
+        <!-- Acct-Session-Id(44) -->
+        <avp code="44" value="[Acct-Session-Id]"/>
+
+        <!-- Event-Timestamp(55) -->
+        <avp code="55" value="[timestamp]"/>
+
+        <!-- Framed-Protocol(7) -->
+        <avp code="7" value="GPRS-PDP-Context"/>
+
+        <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+        <avp code="26" value="3GPP">
+          <avp code="2" value="[3gpp_charging_id]"/>
+        </avp>
+
+        <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+        <avp code="26" value="3GPP">
+          <avp code="6" value="[3gpp_sgsn_address]"/>
+        </avp>
+
+        <!-- NAS-Identifier(32) -->
+        <avp code="32" value="[nas_identifier]"/>
+      </sendMessageRADIUS>
+      <parameter name="[test:radiusRequest]" operation="number.add" value="[test:radiusRequest]" value2="1"/>
+      <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+      
+      <receiveMessageRADIUS listenpoint="[ggsn_radius_socket_name]" request="false"/>
+      <parameter name="[test:radiusResponse]" operation="number.add" value="[test:radiusResponse]" value2="1"/>
+      <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+    
+      <parameter name="[accounting_session_running]" operation="set" value="false"/>
+
+      <!-- close RADIUS Connection -->
+      <!--removeListenpointRADIUS name="[RADIUSsocketName]"/-->
+      <!--parameter name="[RADIUSsocketOpen]" operation="set" value="false"/-->

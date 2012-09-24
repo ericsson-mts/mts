@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario C2C enabler server -->
+<scenario>
+   
+    <!-- mise en ecoute en conf du port 8080 pour les connections du WebAS-->
+    
+<while>
+<condition/>
+<do>
+
+    <!-- reception des requetes et reponses du WebAS-->
+    <receiveMessageHTTP name="Receive HTTP message" timeout="0">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message:transactionId"/>
+        <parameter name="[isRequest]" operation="protocol.setFromMessage" value="message:request"/>
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel:name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel:remoteHost"/>
+    </receiveMessageHTTP>
+    
+    <if>
+    <condition>
+        <test parameter="[isRequest]" condition="boolean.equals" value="true"/>
+    </condition>
+    <then>
+        <!-- recuperation du numero de tel de l'appellant pour l'enregistrer dans la liste des clients C2C-->
+        <parameter name="[id1WebAS]" operation="string.random" value="13"/>
+        <parameter name="[id2WebAS]" operation="string.random" value="32"/>
+        <parameter name="[finalIdWebAS]" operation="set" value="[id1WebAS]|[id2WebAS]"/>
+          
+        <!-- this message used the chunk method to return response, its why there are 01fb before content and 0000 after -->
+        <sendMessageHTTP name="C2C Enabler first response" transactionId="[transactionId]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Wed, 15 Apr 2009 09:03:01 GMT
+Transfer-Encoding: chunked
+Content-Type: text/xml; charset=utf-8
+X-Powered-By: Servlet/2.4 JSP/2.0
+
+
+01fb
+<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><createC2CCallWithTelNumberResponse xmlns="http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CCallLauncherSEI"><sasId>app-[finalIdWebAS]@[C2CIp]|-17225da4fdae3c51</sasId></createC2CCallWithTelNumberResponse></soapenv:Body></soapenv:Envelope>
+0000
+
+]]>
+
+        </sendMessageHTTP>
+        
+        <!-- programmation du scheduler -->
+        <parameter name="timestamp" operation="system.timestamp" value="1970"/>
+        <parameter name="timestamp" operation="number.divide" value="[timestamp]" value2="1000"/>
+        <parameter name="timestamp" operation="number.round" value="[timestamp]"/>
+        
+        <parameter name="[action1]" operation="set" value="[finalIdWebAS];post1;[remoteHost]"/>
+        <parameter name="[action2]" operation="set" value="[finalIdWebAS];post2;[remoteHost]"/>
+        <parameter name="[action3]" operation="set" value="[finalIdWebAS];post3;[remoteHost]"/>
+        <parameter name="[action4]" operation="set" value="[finalIdWebAS];post4;[remoteHost]"/>
+        <parameter name="[action5]" operation="set" value="[finalIdWebAS];post5;[remoteHost]"/>
+    
+        <!-- calcule du timestamp de l'envoi de la requete post1 -->
+        <parameter name="actionTimestamp" operation="number.add" value="[timestamp]" value2="[test:timePOST1]"/>
+        
+        <parameter name="[test:semTimestamp]" operation="system.semaphorewait" value="1"/>
+        <if>
+        <condition>
+            <not>
+                <test parameter="[testcase:[actionTimestamp]]" condition="list.exists"/>
+            </not>
+        </condition>
+        <then>
+            <parameter name="[testcase:[actionTimestamp]]" operation="list.create"/>
+        </then>
+        </if>
+        <parameter name="[testcase:[actionTimestamp]]" operation="list.addLast" value="[testcase:[actionTimestamp]]" value2="[action1]"/>
+        
+        <!-- POST2 -->
+        <parameter name="actionTimestamp" operation="number.add" value="[actionTimestamp]" value2="[test:timePOST2]"/>
+        
+        <if><!-- verification que le parametre n'existe pas avant de le creer -->
+        <condition>
+            <not><test parameter="[testcase:[actionTimestamp]]" condition="list.exists"/></not>
+        </condition>
+        <then>
+            <parameter name="[testcase:[actionTimestamp]]" operation="list.create"/>
+        </then>
+        </if>
+        <parameter name="[testcase:[actionTimestamp]]" operation="list.addLast" value="[testcase:[actionTimestamp]]" value2="[action2]"/>
+        
+        <!-- POST3 -->
+        <parameter name="actionTimestamp" operation="number.add" value="[actionTimestamp]" value2="[test:timePOST3]"/>
+        <if>
+        <condition>
+            <not><test parameter="[testcase:[actionTimestamp]]" condition="list.exists"/></not>
+        </condition>
+        <then>
+            <parameter name="[testcase:[actionTimestamp]]" operation="list.create"/>
+        </then>
+        </if>
+        <parameter name="[testcase:[actionTimestamp]]" operation="list.addLast" value="[testcase:[actionTimestamp]]" value2="[action3]"/>
+        
+        <!-- POST4 -->
+        <parameter name="actionTimestamp" operation="number.add" value="[actionTimestamp]" value2="[test:timePOST4]"/>
+        <if>
+        <condition>
+            <not><test parameter="[testcase:[actionTimestamp]]" condition="list.exists"/></not>
+        </condition>
+        <then>
+            <parameter name="[testcase:[actionTimestamp]]" operation="list.create"/>
+        </then>
+        </if>
+        <parameter name="[testcase:[actionTimestamp]]" operation="list.addLast" value="[testcase:[actionTimestamp]]" value2="[action4]"/>
+        
+        <!-- POST5 -->
+        <parameter name="actionTimestamp" operation="number.add" value="[actionTimestamp]" value2="[test:timePOST5]"/>
+        <if>
+        <condition>
+            <not><test parameter="[testcase:[actionTimestamp]]" condition="list.exists"/></not>
+        </condition>
+        <then>
+            <parameter name="[testcase:[actionTimestamp]]" operation="list.create"/>
+        </then>
+        </if>
+        <parameter name="[testcase:[actionTimestamp]]" operation="list.addLast" value="[testcase:[actionTimestamp]]" value2="[action5]"/>
+        <parameter name="[test:semTimestamp]" operation="system.semaphorenotify" value="1"/>
+        
+    </then>
+    </if>
+    
+    
+    <if><!-- si reception d'une reponse, fermeture de la connection -->
+    <condition>
+        <test parameter="[isRequest]" condition="boolean.equals" value="false"/>
+    </condition>
+    <then>
+        <closeChannelHTTP name="[channel]"/>
+    </then>
+    </if>
+    
+</do>
+</while>
+</scenario>

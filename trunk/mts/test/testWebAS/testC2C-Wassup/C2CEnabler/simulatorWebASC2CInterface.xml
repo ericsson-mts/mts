@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario WebAS bouchon pour faire les tests-->
+<scenario>
+   
+    <!-- mise en ecoute en conf du port 1080 pour les connections du browser web PC-->
+
+    <if>
+    <condition>
+        <test parameter="[test:phoneNumberCalling]" condition="string.equals" value="[defaultPhoneNumberMaxToCall]"/>
+    </condition>
+    <then>
+        <parameter name="[test:phoneNumberCalling]" operation="set" value="[defaultPhoneNumberMinToCall]"/>
+    </then>
+    <else>
+        <parameter name="[test:phoneNumberCalling]" operation="number.add" value="[test:phoneNumberCalling]" value2="1"/>
+    </else>
+    </if>
+    
+    <if>
+    <condition>
+        <test parameter="[test:phoneNumber]" condition="string.equals" value="[intDefaultPhoneNumberMax]"/>
+    </condition>
+    <then>
+        <parameter name="[test:phoneNumber]" operation="set" value="[intDefaultPhoneNumberMin]"/>
+    </then>
+    <else>
+        <parameter name="[test:phoneNumber]" operation="number.add" value="[test:phoneNumber]" value2="1"/>
+    </else>
+    </if>
+
+    
+    <!-- envoi d'une requete au C2CEnabler -->
+    <openChannelHTTP name="connection[test:phoneNumber]" remoteURL="http://[C2CIp]:[C2CPort]"/>
+    <sendMessageHTTP channel="connection[test:phoneNumber]">
+<![CDATA[
+POST /C2CWS/services/C2CEnablerRemote_V1_1 HTTP/1.1
+Content-Type: text/xml; charset=UTF-8
+SOAPAction: ""
+Accept: *
+Cache-Control: no-cache
+Pragma: no-cache
+User-Agent: Java/1.5.0_16
+Host: 172.20.13.231:8080
+Connection: keep-alive
+Content-Length: 968
+
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><ns2:createC2CCallWithTelNumber xmlns="http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI" xmlns:ns2="http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CCallLauncherSEI"><ns2:ctx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/><ns2:fromURI>+[phoneNumber]</ns2:fromURI><ns2:toURI>[phoneNumberCalling]</ns2:toURI><ns2:optionsParam>profileName</ns2:optionsParam><ns2:optionsParam>notificationURL</ns2:optionsParam><ns2:optionsParam>notificationLevel</ns2:optionsParam><ns2:optionsParam>callerIdentificationRestriction</ns2:optionsParam><ns2:optionsValues>C2PA_Petrus</ns2:optionsValues><ns2:optionsValues>http://[WebASIp]:[WebASPort]/WebASC2C/services/C2CCallNotificationRemote_V1_0</ns2:optionsValues><ns2:optionsValues>CallMonitoringNotification</ns2:optionsValues><ns2:optionsValues>none</ns2:optionsValues></ns2:createC2CCallWithTelNumber></soap:Body></soap:Envelope>
+]]>
+    </sendMessageHTTP>
+    
+<while>
+<condition>
+    <not>
+        <test parameter="[content]" condition="string.contains" value="Callee hung up"/>
+    </not>
+</condition>
+<do>
+        
+    <receiveMessageHTTP name="Receive HTTP message" timeout="0">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message:transactionId"/>
+        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+        <parameter name="[isRequest]" operation="protocol.setFromMessage" value="message:request"/>
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel:name"/>
+    </receiveMessageHTTP>
+    
+    
+    <if><!-- reception d'une requete du server C2CEnabler -->
+    <condition>
+        <and>
+            <test parameter="[isRequest]" condition="boolean.equals" value="true"/>
+        </and>
+    </condition>
+    <then>
+        <!-- envoi de la reponse au C2CEnabler -->
+        <sendMessageHTTP name="C2C response" transactionId="[transactionId]">
+<![CDATA[
+HTTP/1.1 200 OK
+Date: Wed, 15 Apr 2009 09:03:01 GMT
+Server: Apache/2.2.3 (Red Hat)
+Content-Length: 279
+Connection: close
+Content-Type: text/xml;charset=UTF-8
+
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><notifyC2CStatusResponse xmlns="http://c2ccallnotification.orange_ft.com/V1_0/CallNotification" xmlns:ns2="http://com.orange.ft.enabler.sei/C2CEnabler/V1_0/C2CTypesSEI"/></soap:Body></soap:Envelope>
+]]>
+        </sendMessageHTTP>
+        
+    </then>
+    </if>
+    
+    <if><!-- reception d'une reponse du server C2CEnabler -->
+    <condition>
+        <and>
+            <test parameter="[isRequest]" condition="boolean.equals" value="false"/>
+        </and>
+    </condition>
+    <then>
+        <closeChannelHTTP name="[connection]"/>
+    </then>
+    </if>
+    
+</do>
+</while>
+</scenario>

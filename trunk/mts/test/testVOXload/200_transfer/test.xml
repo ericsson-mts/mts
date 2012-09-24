@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="SIP" description="SIP regression tests">
+    
+    <parameter name="[Host-Tester]" operation="system.ipaddress"/>
+    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]"/>
+    <parameter name="[Port-Tester]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]"/>	
+   
+    <parameter name="[Host-Server]" operation="system.ipaddress"/>
+    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]"/>
+    <!-- VOXPILOT parameter name="[Host-Server]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[Port-Server]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--VOXPILOT parameter name="[Port-Server]" operation="set" value="5070"/-->
+    <parameter name="[Port-Server]" operation="set" value="5070"/>
+    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server]:[Port-Server]"/>	
+	
+    <!-- transport parameters-->
+    <parameter name="[transportRequest]" operation="set" value="udp"/>
+    <parameter name="[transportResponse]" operation="set" value="UDP"/>
+      
+    <parameter name="[domainName]" operation="set" value="devoteam.com"/>
+    <parameter name="[NumberScenario]" operation="set" value="100"/>
+    <parameter name="[TestDurationSec]" operation="set" value="1000000"/>
+    <parameter name="[CallDurationSec]" operation="set" value="30"/>
+
+    <!-- Value2 correspond au deltaTime en millisecondes-->
+    <parameter name="[file]" operation="file.readwave" value="../helloworld.wav" value2="20"/>
+    <parameter name="[payloadList]" operation="set" value="[[file(0)]]"/>
+    <parameter name="[payloadType]" operation="set" value="[[file(1)]]"/>
+    <parameter name="[bitRate]" operation="set" value="[[file(2)]]"/>
+    <parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/>
+
+    <for index="[index]" from="1" to="[NumberScenario]" step="1">    
+        <testcase name="200_transfer_[index]" description="test sip" state="true">
+            
+            <parameter name="[inviterName]" operation="set" value="user[index]"/>
+            <parameter name="[inviteeName]" operation="set" value="trans[index]"/>
+
+            <parameter name="[inviterHostRTP]" operation="set" value="[Host-Tester(0)]"/>
+            <parameter name="[inviterPortRTP]" operation="number.multiply" value="[index]" value2="2"/>
+            <parameter name="[inviterPortRTP]" operation="number.add" value="20000" value2="[inviterPortRTP]"/>
+
+            <parameter name="[inviteeHostRTP]" operation="set" value="[Host-Tester(0)]"/>
+            <parameter name="[inviteePortRTP]" operation="number.multiply" value="[index]" value2="2"/>
+            <parameter name="[inviteePortRTP]" operation="number.add" value="40000" value2="[inviteePortRTP]"/>
+
+            <runProfile>
+                <start delay="[index]"/>
+                <step time="0" period="0"/>
+                <step time="3600" period="0"/>
+                <end delay="[TestDurationSec]"/>
+            </runProfile>
+
+            <scenario name="user[index]">UACreceiver.xml</scenario>        
+            <scenario name="trans[index]">UASsender.xml</scenario>
+        </testcase>
+    </for>
+
+</test>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE SIPimport [
+  <!ENTITY lib_reset_counters	SYSTEM "../librairie/lib_reset_counters.xml">
+  <!ENTITY libT_alarm_Trap		SYSTEM "../librairie/libT_alarm_Trap.xml">
+  <!ENTITY lib_Calcul_Invite	SYSTEM "../librairie/lib_Calcul_Invite.xml">
+  <!ENTITY lib_Calcul_Register	SYSTEM "../librairie/lib_Calcul_Register.xml">
+  <!ENTITY lib_Calcul_Message	SYSTEM "../librairie/lib_Calcul_Message.xml">
+  <!ENTITY lib_Calcul_Subscribe	SYSTEM "../librairie/lib_Calcul_Subscribe.xml">
+  <!ENTITY lib_Calcul_Notify	SYSTEM "../librairie/lib_Calcul_Notify.xml">
+  <!ENTITY lib_Calcul_Publish	SYSTEM "../librairie/lib_Calcul_Publish.xml">
+  ]>	
+
+  
+<scenario>
+
+<!-- ***************** Parametres alarme global ****************** -->
+	<!-- parametre de cause par defaut = 549 (thresold Crossed) -->
+<parameter name="[activeAlarm3GPPProbableCause]" operation="set" value="549"/>
+
+	<!-- les parametres de type par defaut = 5 (equipment alarme) -->
+<parameter name="[activeAlarmEventType]" 	operation="set" value="5"/>	
+<!-- ************************************************************* -->
+	
+  
+    <label name="Begin"/>
+
+    <!-- Reset counters  --> 
+    <parameter name="[RequestType]" operation="set" value="REGISTER"/>
+    <log name="log" type="scenario" level="[LevelSupervision]">Reset [RequestType] counter</log>
+    &lib_reset_counters;
+
+    <parameter name="[RequestType]" operation="set" value="INVITE"/>
+    <log name="log" type="scenario" level="[LevelSupervision]">Reset [RequestType] counter</log>
+    &lib_reset_counters;
+
+    <parameter name="[RequestType]" operation="set" value="MESSAGE"/>
+    <log name="log" type="scenario" level="[LevelSupervision]">Reset [RequestType] counter</log>
+    &lib_reset_counters;
+
+    <parameter name="[RequestType]" operation="set" value="SUBSCRIBE"/>
+    <log name="log" type="scenario" level="[LevelSupervision]">Reset [RequestType] counter</log>
+    &lib_reset_counters;
+    
+    <parameter name="[RequestType]" operation="set" value="NOTIFY"/>
+    <log name="log" type="scenario" level="[LevelSupervision]">Reset [RequestType] counter</log>
+    &lib_reset_counters;
+
+    <parameter name="[RequestType]" operation="set" value="PUBLISH"/>
+    <log name="log" type="scenario" level="[LevelSupervision]">Reset [RequestType] counter</log>
+    &lib_reset_counters;
+
+
+
+    <!-- wait a while: Period of Supervision  --> 
+    <log name="log" type="scenario" level="[LevelSupervision]">BEGIN: WAIT for SUPERVISION PERIOD</log>
+    <pause name="pause" seconds="[PeriodSupervision]"/>
+    <log name="log" type="scenario" level="[LevelSupervision]">END: WAIT for SUPERVISION PERIOD</log>
+
+
+
+    <!-- Calculate counters  --> 
+    <parameter name="[RequestType]" operation="set" value="INVITE"/>
+    <log name="log" type="scenario" level="[LevelSupervision]">CALCULATE COUNTERS for [RequestType]</log>
+    &lib_Calcul_Invite;
+
+    <parameter name="[RequestType]" operation="set" value="REGISTER"/>
+    <log name="log" type="scenario" level="[LevelSupervision]">CALCULATE COUNTERS for [RequestType]</log>
+    &lib_Calcul_Register;
+
+    <parameter name="[RequestType]" operation="set" value="MESSAGE"/>
+    <log name="log" type="scenario" level="[LevelSupervision]">CALCULATE COUNTERS for [RequestType]</log>
+    &lib_Calcul_Message;
+
+    <parameter name="[RequestType]" operation="set" value="SUBSCRIBE"/>
+    <log name="log" type="scenario" level="[LevelSupervision]">CALCULATE COUNTERS for [RequestType]</log>
+    &lib_Calcul_Subscribe;
+
+    <parameter name="[RequestType]" operation="set" value="NOTIFY"/>
+    <log name="log" type="scenario" level="[LevelSupervision]">CALCULATE COUNTERS for [RequestType]</log>
+    &lib_Calcul_Notify;
+ 
+    <parameter name="[RequestType]" operation="set" value="PUBLISH"/>
+    <log name="log" type="scenario" level="[LevelSupervision]">CALCULATE COUNTERS for [RequestType]</log>
+    &lib_Calcul_Publish;
+ 
+<parameter name="[result]" operation="file.remove" value="/home/imaginlab/IMSLoader-time" />
+<parameter name="[result]" operation="file.create" value="/home/imaginlab/IMSLoader-time" />
+<parameter name= "[timestamp]" operation= "system.timestamp"/>
+<parameter name= "result" operation= "file.writeString" value="/home/imaginlab/IMSLoader-time" value2="[timestamp]"/>
+
+    <goto  name="loop" label="Begin" state="true"/>
+
+</scenario>

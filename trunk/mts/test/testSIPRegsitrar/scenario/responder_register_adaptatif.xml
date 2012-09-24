@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- 
+AUTEUR : R&D/CORE/M2V/TSC/JD
+OBJET : Repondeur des messages REGISTER qui tient compte de la valeur du Expires recu en retour 
+
+MODIF : 20/05/2010. Creation 
+			07/06/2001. Ajout Next Nonce 
+			28/7 . Re-emettre le Register si Error 
+
+--> 
+<!DOCTYPE Library [
+ <!ENTITY initvarStatsParam SYSTEM "./initvarStatsParam.xml">
+  <!ENTITY nextNonceSave SYSTEM "./nextNonceSave.xml">
+  <!ENTITY nextNonceCompute SYSTEM "./nextNonceCompute.xml">
+]>
+<scenario>
+	&initvarStatsParam;
+	
+	<!-- start main loop -->
+	<!-- ========================= -->
+	<label name="begin"/>
+	<!-- ========================= -->
+	
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/> 
+	<!--parameter name="[URI]" operation="set" value="sip:[userName]@[domainName]" /-->
+	<parameter name="[URI]" operation="set" value="sip:[domainName]" />
+	<parameter name="[received]" operation="set" value="false"/>		
+	<receiveMessageSIP name="receive REGISTER response" type="REGISTER" failedOnTimeout="false">
+		<parameter name="[received]" operation="set" value="true"/>		
+		<parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.StatusCode"/>
+		<parameter name="[lastListenpoint]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+		<parameter name="[lastLocalHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>
+		<parameter name="[lastLocalPort]" operation="protocol.setFromMessage" value="listenpoint.localPort"/>
+		<parameter name="[lastMethod]" operation="protocol.setFromMessage" value="message.type"/>
+		<parameter name="[lastIsRequest]" operation="protocol.setFromMessage" value="message.request"/>
+		<parameter name="[lastResult]" operation="protocol.setFromMessage" value="message.result"/>
+		<parameter name="[lastFromUser]" operation="protocol.setFromMessage" value="header.From.Address.URI.User"/>
+	  	<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+	  	<parameter name="[lastCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    	<parameter name="[lastCSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+		<parameter name="[TopmostViaHost]" operation="protocol.setFromMessage" value="header.TopmostVia.Host"/>
+		<parameter name="[TopmostViaPort]" operation="protocol.setFromMessage" value="header.TopmostVia.Port"/>
+		<parameter name="[WWWAuthRealm]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.realm"/>									
+		<parameter name="[WWWAuthNonce]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.nonce"/>					
+		<parameter name="[WWWAuthQop]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.qop"/>
+		<parameter name="[ProxyAuthRealm]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.realm"/>
+		<parameter name="[ProxyAuthNonce]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.nonce"/>
+		<parameter name="[ProxyAuthQop]" operation="protocol.setFromMessage" value="header.Proxy-Authenticate.Attribute.qop"/>
+		<parameter name="[lastMessage]" operation="protocol.setFromMessage" value="message"/>
+		<parameter name="[ContactExpires]" operation="protocol.setFromMessage" value="header.Contact.Parameter.expires"/>
+		<parameter name="[nextNonce]" operation="protocol.setFromMessage" value="header.Authentication-Info"/>
+	</receiveMessageSIP>
+	<if>
+		<condition>
+			<or>
+				<test parameter="[StatusCode]" condition="string.equals" value="401" />
+				<test parameter="[StatusCode]" condition="string.equals" value="407" />
+			</or>
+		</condition>
+		<then>	
+			<parameter name="[Method]" operation="set" value="REGISTER"/>				
+			<parameter name="[HA2]" operation="digest" value2="MD5" value="[Method]:[URI]" />
+			<parameter name="[NonceCount]" operation="set" value="00000001" />
+			<parameter name="[CNonce]"     operation="set" value="7dbc2"/>
+			<parameter name="[newBranchId]" operation="string.random" value="10"/>
+			<parameter name="[newCseq]" operation="add" value="[lastCSeqNumber]" value2="1"/>
+
+			<if>
+				<condition>
+					<and>
+						<test parameter="[WWWAuthRealm]" condition="list.isempty" value="true"/>
+						<test parameter="[WWWAuthNonce]" condition="list.isempty" value="true"/>
+						<test parameter="[WWWAuthQop]" condition="list.isempty" value="true"/>
+					</and>	
+				</condition>
+				<then>
+					<!-- Proxy -->
+					<parameter name="[HA1]" operation="digest" value2="MD5" value="[lastFromUser]@[domainName]:[ProxyAuthRealm]:[Password]"/>
+					<parameter name="[AuthResponse]" operation="digest" value2="MD5" value="[HA1]:[ProxyAuthNonce]:[NonceCount]:[CNonce]:[ProxyAuthQop]:[HA2]" />
+				</then>
+				<else>
+					<!-- Terminal -->
+					<parameter name="[HA1]" operation="digest" value2="MD5" value="[lastFromUser]@[domainName]:[WWWAuthRealm]:[Password]"/>
+					<parameter name="[AuthResponse]" operation="digest" value2="MD5" value="[HA1]:[WWWAuthNonce]:[NonceCount]:[CNonce]:[WWWAuthQop]:[HA2]" />
+				</else>
+			</if>
+
+			<if>
+				<condition>
+					<test parameter="[StatusCode]" condition="string.equals" value="401" />
+				</condition>
+				<then>
+					<sendMessageSIP name="Send REGISTER" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[REGISTER [URI] SIP/2.0
+To: "[lastFromUser]" <sip:[lastFromUser]@[domainName]>
+From: "[lastFromUser]" <sip:[lastFromUser]@[domainName]>;tag=[localTag]
+Call-ID:[lastCallId]
+CSeq: [newCseq] REGISTER
+User-Agent: [UserAgent]
+Via: SIP/2.0/[transport] [TopmostViaHost]:[TopmostViaPort];branch=z9hG4bK-[newBranchId]
+Max-Forwards: 70
+Contact: <sip:[lastFromUser]@[TopmostViaHost]:[TopmostViaPort]>
+Authorization: Digest username="[lastFromUser]@[domainName]", realm="[WWWAuthRealm]", nonce="[WWWAuthNonce]",uri="[URI]", response="[AuthResponse]", algorithm=MD5, cnonce="[CNonce]", opaque="opaqueData", qop="[WWWAuthQop]", nc=[NonceCount]
+Expires: [RegisterExpires]
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+					</sendMessageSIP>
+					<!--stats>	<counter name="401 REG in"><increase>1</increase></counter> </stats-->
+					<goto  name="goto_begin" label="begin" state="true"/>
+				</then>
+				<else>
+					<sendMessageSIP name="Send REGISTER" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[REGISTER [URI] SIP/2.0
+To: "[lastFromUser]" <sip:[lastFromUser]@[domainName]>
+From: "[lastFromUser]" <sip:[lastFromUser]@[domainName]>;tag=[localTag]
+Call-ID:[lastCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [TopmostViaHost]:[TopmostViaPort];branch=z9hG4bK-[newBranchId]
+Max-Forwards: 70
+User-Agent: [UserAgent]
+Contact: <sip:[lastFromUser]@[TopmostViaHost]:[TopmostViaPort]>
+Proxy-Authorization: Digest username="[lastFromUser]@[domainName]", realm="[ProxyAuthRealm]", nonce="[ProxyAuthNonce]",uri="[URI]",response="[AuthResponse]", algorithm=MD5, cnonce="[CNonce]", opaque="opaqueData", qop="[ProxyAuthQop]", nc=[NonceCount]
+Expires: [RegisterExpires]
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+
+					</sendMessageSIP>
+					<goto  name="goto_begin" label="begin" state="true"/>
+				</else>
+			</if>
+		
+			</then>
+	</if>	
+	
+		<if>	<condition>	<test parameter="[received]" condition="string.equals" value="false"/>	</condition>
+		<then>	<exit name="exit" failed="false"/> </then>	
+		</if>
+		
+		<if> <condition> <test parameter="[StatusCode]" condition="number.equals" value="200"/>	</condition>
+		<then>
+				<stats>	<counter name="200 REG in"><increase>1</increase></counter> </stats>
+					<!-- preparer l emission du nouveau REGISTER en delay --> 
+					<parameter name="[localTag]" operation="string.random" value="20"/>
+					<parameter name="[newCallId]" operation="number.random" value="100000000000000000"/>
+					<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+					<parameter name="[newBranchId]" operation="string.random" value="20"/> 
+					<!-- reporter ici l'algo de la Box. (voir Aurelien)
+						S'il n'y a pas de valeur du expire dans le 200, alors on reprend la valeur par defaut 
+						S'il y a une valeur du expire et > 1200 alors new val = Expire_200 -600
+						Si expire <1200 alors val = Expire / 2. --> 
+					<if>	<condition><test parameter="[ContactExpires]" condition="list.isempty" value="true"/> </condition>
+					<then> <parameter name="[ContactExpires]" operation="set" value="[RegisterExpires]"/> </then>
+					<else>   
+						<if> <condition> <test parameter="[ContactExpires]" condition="number.greaterEqualThan" value="1200"/> </condition>
+						<then><parameter name="[ContactExpires]" operation="substract" value="[ContactExpires]" value2="600"/></then> 
+						<else> <parameter name="[ContactExpires]" operation="number.divide" value="[ContactExpires]" value2="2"/></else> 
+						</if>
+					</else> 
+					</if>
+				<!-- stocker le Next Nonce le cas echeant --> 
+				<parameter name="[authorization]" operation="set" value=""/>	 
+				<parameter name="[userNumberPhone]" operation="set" value="[lastFromUser]" />
+				<parameter name="[Method]" operation="set" value="REGISTER"/>	
+				&nextNonceSave;
+				&nextNonceCompute;
+					<sendMessageSIP name="Send re-REGISTER" delay="[ContactExpires]" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+REGISTER [URI] SIP/2.0
+To: "[lastFromUser]" <sip:[lastFromUser]@[domainName]>
+From: "[lastFromUser]" <sip:[lastFromUser]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [TopmostViaHost]:[TopmostViaPort];branch=z9hG4bK-[newBranchId]
+Contact: <sip:[lastFromUser]@[TopmostViaHost]:[TopmostViaPort]>
+Expires: [RegisterExpires]
+User-Agent: [UserAgent]
+Max-Forwards: 70 [authorization]
+Content-Length: 0
+]]>
+</sendMessageSIP>			
+			<stats>	<counter name="Re-REG Ad"><increase>1</increase></counter> </stats>	
+		</then>	
+		</if>
+			
+	<if>  <condition> <test parameter="[StatusCode]" condition="number.greaterEqualThan" value="300"/> </condition>
+	   <then>
+	    	<log type="Main" level="ERROR">
+		<![CDATA[	    	
+	    	Error CodeEqual : [StatusCode] : for the REGISTRATION from : [lastFromUser] :
+message : [lastMessage]
+		]]>		
+			</log>
+			<stats>	<counter name="REG Error "><increase>1</increase></counter> </stats>
+			<!-- modif 28/7/2011 : tenter le re-enregistrement en cas d erreur --> 
+			<sendMessageSIP name="Send re-REGISTER" delay="[delayReSendRegister]" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+REGISTER [URI] SIP/2.0
+To: "[lastFromUser]" <sip:[lastFromUser]@[domainName]>
+From: "[lastFromUser]" <sip:[lastFromUser]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [TopmostViaHost]:[TopmostViaPort];branch=z9hG4bK-[newBranchId]
+Contact: <sip:[lastFromUser]@[TopmostViaHost]:[TopmostViaPort]>
+Expires: [RegisterExpires]
+User-Agent: [UserAgent]
+Max-Forwards: 70
+Content-Length: 0
+]]>
+		</sendMessageSIP>	
+			
+	    </then>
+	</if>
+
+	<goto  name="goto_begin" label="begin" state="true"/>
+	
+</scenario>

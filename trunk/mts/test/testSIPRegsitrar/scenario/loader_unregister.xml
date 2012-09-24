@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE Library [
+ <!ENTITY initvarStatsParam SYSTEM "./initvarStatsParam.xml">
+]>
+<scenario>
+	&initvarStatsParam;
+
+	<if> <condition> <test parameter="[testcase:indexReg]" condition="list.exists" not="true"/> </condition>
+     <then>  <parameter name="[testcase:indexReg]" operation="set" value="0"/> </then>
+    </if>
+
+	<parameter name="[testcase:indexReg]" operation="number.add" value="[testcase:indexReg]" value2="1"/>    			
+	
+	<parameter name="[Port-Tester]" operation="number.substract" value="65536" value2="[testcase:indexReg]"/>
+	<parameter name="[listenpoint_Register]" operation="set" value="listenpoint_[Port-Tester]"/>
+	<parameter name="[userName]" operation="set" value="[userTab([testcase:indexReg])]"/>
+	<createListenpointSIP name="[listenpoint_Register]" localHost="[Host-Tester([test:IndexSourceIPRegister])]" localPort="[Port-Tester]" transport="UDP"/>
+				
+  	<parameter name="[userNumberPhone]" operation="set" value="[userTabNP([testcase:indexReg])]"/>
+	<parameter name="[localTag]" operation="string.random" value="20"/>
+	<parameter name="[newCallId]" operation="number.random" value="100000000000000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="20"/> 
+	<!--parameter name="[URI]" operation="set" value="sip:[userName]@[domainName]" /-->
+	<parameter name="[URI]" operation="set" value="sip:[domainName]" />
+	
+	<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint_Register]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+<![CDATA[
+REGISTER [URI] SIP/2.0
+To: "[userName]" <sip:+[userNumberPhone]@[domainName]>
+From: "[userName]" <sip:+[userNumberPhone]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [Host-Tester([test:IndexSourceIPRegister])]:[Port-Tester];branch=z9hG4bK-[newBranchId]
+Contact: <sip:+[userNumberPhone]@[Host-Tester([test:IndexSourceIPRegister])]:[Port-Tester]>
+Expires: 0
+Max-Forwards: 70
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+	<stats> <counter name="UNREG out"><increase>1</increase></counter> </stats>
+ 	<parameter name="[test:IndexSourceIPRegister]" operation="number.add" value="[test:IndexSourceIPRegister]" value2="1"/> 
+	<if> <condition> <test parameter="[test:IndexSourceIPRegister]" condition="number.greaterEqualThan" value="[maxSourceIP]"/> </condition>
+	<then> <parameter name="[test:IndexSourceIPRegister]" operation="set" value="0"/>   </then>
+	</if>		
+	
+</scenario>

@@ -1,0 +1,158 @@
+<!--
+To use this part of XML code in a scenario,
+- input parameters must be defined and setted locally (by the caller scenario).
+- output parameters may be used in the scenario after the "call".
+
+Input parameters :
+- [Request-URI]       :
+- [UserInfo]          : userinfo used in URI and display name.
+- [domainName]        :
+- [FromTag]           :
+- [newCallId]         :
+- [newCSeq]           :
+- [ipAddressSip]      :
+- [portSip]           :
+- [magicCookie]       :
+- [newBranchId]       :
+- [MaxForwards]       :
+- [UserName]          :
+- [Password]          :
+- [perCentExpiresReg] : percentage of Expires header field value used to refresh bindings periodically.
+
+Output parameters :
+- [StatusCode]      : operation="setFromMessage" value="firstline:StatusCode"/>        
+- [ToTag]           : operation="setFromMessage" value="header:To:Parameter:tag"/>                                                                   
+- [ExpiresReg]      : operation="setFromMessage" value="header:Expires"/>                                                                   
+- [WWWAuthRealm]    : operation="setFromMessage" value="header:WWW-Authenticate:Parameter:realm"/>                                                                   
+- [WWWAuthNonce]    : operation="setFromMessage" value="header:WWW-Authenticate:Parameter:nonce"/>                                   
+- [WWWAuthQop]      : operation="setFromMessage" value="header:WWW-Authenticate:Parameter:qop"/>
+- [WWWAuthRealm401] : operation="set"            value="[WWWAuthRealm]" />
+- [WWWAuthNonce401] : operation="set"            value="[WWWAuthNonce]" />
+- [WWWAuthQop401]   : operation="set"            value="[WWWAuthQop]" />
+- [Method]          : operation="set"            value="REGISTER"/>                           
+- [NonceCount]      : operation="set"            value="00000001" />
+- [CNonce]          : operation="set"            value="11fc4a68"/>
+- [HA1]             : operation="digest"         value="[UserName]:[WWWAuthRealm401]:[Password]" value2="MD5"/>
+- [HA2]             : operation="digest"         value="[Method]:[Request-URI]" value2="MD5" />
+- [AuthResponse]    : operation="digest"         value="[HA1]:[WWWAuthNonce401]:[NonceCount]:[CNonce]:[WWWAuthQop401]:[HA2]" value2="MD5" />
+- [FromTag]         : operation="identifier"     value="newString" value2="10"/>
+- [newCSeq]         : operation="add"            value="[newCSeq]" value2="1"/>  
+- [newBranchId]     : operation="identifier"     value="newString" value2="10"/>
+- [ExpiresReg]      : operation="multiply"       value="[ExpiresReg]" value2="[perCentExpiresReg]"/>                                                                   
+- [ExpiresReg]      : operation="divide"         value="[ExpiresReg]" value2="100"/>                                                                   
+- [newCSeq]         : operation="add"            value="[newCSeq]" value2="1"/>  
+- [newBranchId]     : operation="identifier"     value="newString" value2="10"/>
+
+
+-->
+<!-- Send a first REGISTER without Authorization header field. -->
+<!-- Wait the response. -->
+<!-- If 401 Unauthorized is received, calculate the Digest response directive. Send REGISTER with Authorization header field. -->
+<!-- If 200 OK           is received, wait the refresh duration. Send REGISTER with Authorization header field. -->
+<!-- Ignore the other responses. -->
+<!-- Wait the next response. -->
+
+  <sendRequestSIP name="Send REGISTER">
+<![CDATA[
+REGISTER [Request-URI] SIP/2.0
+To: "[UserInfo]" <sip:[UserInfo]@[domainName]>
+From: "[UserInfo]" <sip:[UserInfo]@[domainName]>;tag=[FromTag]
+Call-ID:[newCallId]
+Expires:3600
+CSeq: [newCSeq] REGISTER
+Via: SIP/2.0/UDP [ipAddressSip]:[portSip];branch=[magicCookie][newBranchId]
+Max-Forwards: [MaxForwards]
+Contact: <sip:[UserInfo]@[ipAddressSip]:[portSip]>
+Content-Length: 0
+]]>
+  </sendRequestSIP>
+
+  <label name="REGISTER"/>
+  <receiveResponseSIP name="receive REGISTER response" method="REGISTER">
+    <parameter name="[StatusCode]" operation="setFromMessage" value="firstline:StatusCode"/>        
+    <parameter name="[ToTag]"      operation="setFromMessage" value="header:To:Parameter:tag"/>                                                                   
+    <parameter name="[ExpiresReg]" operation="setFromMessage" value="header:Expires"/>                                                                   
+    <parameter name="[ContactExpires]" operation="setFromMessage" value="header:Contact:Parameter:expires"/>                                                                   
+
+    <parameter name="[WWWAuthRealm]" operation="setFromMessage" value="header:WWW-Authenticate:Parameter:realm"/>                                                                   
+    <parameter name="[WWWAuthNonce]" operation="setFromMessage" value="header:WWW-Authenticate:Parameter:nonce"/>                                   
+    <parameter name="[WWWAuthQop]"   operation="setFromMessage" value="header:WWW-Authenticate:Parameter:qop"/>
+  </receiveResponseSIP>
+
+  <if>
+    <condition>
+      <test parameter="[StatusCode]" condition="equals" value="401" />
+    </condition>
+    <then>
+      <parameter name="[WWWAuthRealm401]" operation="set" value="[WWWAuthRealm]" />
+      <parameter name="[WWWAuthNonce401]" operation="set" value="[WWWAuthNonce]" />
+      <parameter name="[WWWAuthQop401]"   operation="set" value="[WWWAuthQop]" />
+
+      <parameter name="[Method]"     operation="set" value="REGISTER"/>                           
+      <parameter name="[NonceCount]" operation="set" value="00000001" />
+      <parameter name="[CNonce]"     operation="set" value="11fc4a68"/>
+
+      <parameter name="[HA1]"          operation="digest" value="[UserName]:[WWWAuthRealm401]:[Password]" value2="MD5"/>
+      <parameter name="[HA2]"          operation="digest" value="[Method]:[Request-URI]" value2="MD5" />
+      <parameter name="[AuthResponse]" operation="digest" value="[HA1]:[WWWAuthNonce401]:[NonceCount]:[CNonce]:[WWWAuthQop401]:[HA2]" value2="MD5" />
+
+      <parameter name="[FromTag]"     operation="identifier" value="newString" value2="10"/>
+      <parameter name="[newCSeq]"     operation="add"        value="[newCSeq]" value2="1"/>  
+      <parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+      <sendRequestSIP name="Send REGISTER">
+<![CDATA[               
+REGISTER [Request-URI] SIP/2.0
+To: "[UserInfo]" <sip:[UserInfo]@[domainName]>
+From: "[UserInfo]" <sip:[UserInfo]@[domainName]>;tag=[FromTag]
+Call-ID:[newCallId]
+Expires:3600
+CSeq: [newCSeq] REGISTER
+Via: SIP/2.0/UDP [ipAddressSip]:[portSip];branch=[magicCookie][newBranchId]
+Max-Forwards: [MaxForwards]
+Contact: <sip:[UserInfo]@[ipAddressSip]:[portSip]>
+Authorization: Digest username="[UserName]", realm="[WWWAuthRealm401]", nonce="[WWWAuthNonce401]", algorithm=MD5, opaque="", uri="[Request-URI]", response="[AuthResponse]", cnonce="[CNonce]", qop=[WWWAuthQop401], nc=[NonceCount]
+Content-Length: 0
+]]>
+      </sendRequestSIP>       
+      <goto label="REGISTER" name="loop : wait 200 OK" state="true"/>
+    </then>
+  </if>
+  <if>
+    <condition>
+      <test parameter="[StatusCode]" condition="equals" value="200" />
+    </condition>
+    <then>
+      <if>
+        <condition>
+          <test parameter="[ExpiresReg]" condition="isEmpty"/>
+        </condition>
+        <then>
+          <parameter name="[ExpiresReg]" operation="set" value="[ContactExpires]"/>                                                                   
+        </then>
+      </if>
+      <parameter name="[ExpiresReg]" operation="multiply" value="[ExpiresReg]" value2="[perCentExpiresReg]"/>                                                                   
+      <parameter name="[ExpiresReg]" operation="divide"   value="[ExpiresReg]" value2="100"/>                                                                   
+      <pause name="pause" seconds="[ExpiresReg]" state="true"/>
+
+      <parameter name="[newCSeq]"     operation="add" value="[newCSeq]" value2="1"/>  
+      <parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+      <sendRequestSIP name="Send REGISTER">
+<![CDATA[               
+REGISTER [Request-URI] SIP/2.0
+To: "[UserInfo]" <sip:[UserInfo]@[domainName]>;tag=[ToTag]
+From: "[UserInfo]" <sip:[UserInfo]@[domainName]>;tag=[FromTag]
+Call-ID:[newCallId]
+Expires:3600
+CSeq: [newCSeq] REGISTER
+Via: SIP/2.0/UDP [ipAddressSip]:[portSip];branch=[magicCookie][newBranchId]
+Max-Forwards: [MaxForwards]
+Contact: <sip:[UserInfo]@[ipAddressSip]:[portSip]>
+Authorization: Digest username="[UserName]", realm="[WWWAuthRealm401]", nonce="[WWWAuthNonce401]", algorithm=MD5, opaque="", uri="[Request-URI]", response="[AuthResponse]", cnonce="[CNonce]", qop=[WWWAuthQop401], nc=[NonceCount]
+Content-Length: 0
+]]>
+      </sendRequestSIP>       
+      <goto label="REGISTER" name="loop : wait 200 OK" state="true"/>
+    </then>
+  </if> 
+  <goto label="REGISTER" name="loop : wait 200 OK" state="true"/>

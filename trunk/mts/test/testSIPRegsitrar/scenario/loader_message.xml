@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- 
+AUTEUR : R&D/CORE/M2V/TSC/JD
+OBJET : Generateur des messages MESSAGE du loader 
+	MESSAGE est utilise pour acquitter les messages IM en mode "store and forward". 
+	Il peut aussi etre utilise pour de l'IM en mode Pager. 
+
+MODIF : 20/05/2010. Creation 
+
+--> 
+<!DOCTYPE Library [
+ <!ENTITY initvarStatsParam SYSTEM "./initvarStatsParam.xml">
+]>
+<scenario>
+	&initvarStatsParam;
+	<!-- se mettre en attente sur semaphore si synchro necessaire avec les premiers REGISTER --> 
+    <if>  <condition> <test parameter="[testcase:IndexCallMessage]" condition="list.exists" not="true"/> </condition>
+     <then>
+			<if> <condition> <test parameter="[WaitEndOfFirstRegisterBurst]" condition="string.equals" value="true"/> </condition>	
+			<then> <parameter name="[test:startCall]" operation="system.semaphorewait" value2="0"/> </then>
+			</if>
+			<parameter name="[testcase:IndexCallMessage]" operation="set" value="-1"/>
+	</then>
+    </if>
+	
+  	<parameter name="[testcase:IndexCallMessage]" operation="number.add" value="[testcase:IndexCallMessage]" value2="2"/>
+
+    <if> <condition> <test parameter="[testcase:IndexCallMessage]" condition="number.greaterEqualThan" value="[RangeNumberUser]"/> </condition>
+    <then>  <parameter name="[testcase:IndexCallMessage]" operation="set" value="1"/> </then>
+	</if>
+	
+	<parameter name="[IndexCallMessage]" operation="set"  value="[testcase:IndexCallMessage]"/>
+	<parameter name="[IndexCallMessagePlusUn]" operation="number.add" value="[IndexCallMessage]" value2="1"/>
+	 <parameter name="[IndexCallMessageMoinsUn]" operation="number.substract" value="[IndexCallMessage]" value2="1"/>
+	 
+    <parameter name="[inviterName]" operation="set" value="[userTab([IndexCallMessage])]"/>
+	<parameter name="[inviterNumberPhone]" operation="set" value="[userTabNP([IndexCallMessage])]"/>
+	<parameter name="[inviteeName]" operation="set" value="[userTabNP([IndexCallMessagePlusUn])]"/>
+	
+	<parameter name="[RandomNumberTag1]" operation="number.random" value="99999999"/>
+	<parameter name="[RandomNumberTag2]" operation="number.random" value="99999999"/>
+	<parameter name="[RandomNumberTag3]" operation="number.random" value="99999999"/>
+	<parameter name="[newCseqNumber]" operation="number.uid" value="10"/>
+
+   <parameter name="[listenpoint]" operation="set" value="[test:listListenPointName([IndexCallMessageMoinsUn])]" />
+    <parameter name="[sourceIp]" operation="set" value="[test:listUsedIp([IndexCallMessageMoinsUn])]" />
+    <parameter name="[sourcePort]" operation="set" value="[test:listUsedPort([IndexCallMessageMoinsUn])]" />
+	 <!-- envoi d'un conternu bidon dont on fourni juste la longueur utile --> 
+	 <parameter name="[SomeContentWeDontCare]" operation="string.random"   value="500"/>
+		
+	<sendMessageSIP name="Send MESSAGE" listenpoint="[listenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+MESSAGE sip:+[inviteeName]@[domainName] SIP/2.0
+From: <sip:[inviterName]@[domainName]>;tag=[RandomNumberTag1]
+To: <sip:+[inviteeName]@[domainName]>
+Call-ID: [RandomNumberTag2]
+CSeq: [newCseqNumber] MESSAGE
+Via: SIP/2.0/UDP [sourceIp]:[sourcePort];branch=z9hG4bK-[RandomNumberTag3]
+Max-Forwards: 70
+User-Agent: [UserAgent]
+Subject: we received your message
+Contact: <sip:+[inviterNumberPhone]@[sourceIp]:[sourcePort]>
+Content-Disposition: notification
+Content-Type: message/cpim+xml
+Content-Length: x
+
+<?xml version="1.0" encoding="UTF-8"?>
+<imdn> 
+[SomeContentWeDontCare]
+</imdn>
+
+]]>
+	</sendMessageSIP>
+
+	<stats>
+		<counter name="ActiveSessionMESSAGE"><increase>1</increase></counter>  	
+		<counter name="MESSAGEout"><increase>1</increase></counter>
+		<!--counter name="MESSAGElost"><increase>1</increase></counter-->
+	</stats>	  
+	
+</scenario>

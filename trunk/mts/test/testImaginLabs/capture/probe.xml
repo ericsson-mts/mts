@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+   <try>
+        <do>
+
+
+
+<!--  filtre avec Vlan et host ==> comptage ok -->
+	<parameter name="[filter]" operation="set" value="host [sbcHost] or vlan and host [sbcHost]"/> 
+
+
+
+
+<!--	createProbeSIP name="supervision" networkInterface="[network]" captureFilter="[filter]"/-->
+    		<createProbeSIP name="supervision" networkInterface="[network]" captureFilter="[filter]"/>
+
+
+            	<pause name="attenteArretProbe"  seconds="[DureeTotal]" />
+	    	<log name="log" type="scenario" level="[probre]"> supervision en cours boucle do</log>
+ 
+       	</do>
+
+        <finally>
+            <removeProbeSIP name="supervision" />
+        </finally>
+   </try>
+
+</scenario>

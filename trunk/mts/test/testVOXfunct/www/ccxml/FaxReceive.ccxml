@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+ <ccxml version="1.0" xmlns="http://www.w3.org/2002/09/ccxml">
+ <var name="currentstate" expr="'init'" /> 
+ <var name="in_connectionid"  expr="-1" />
+ <var name="dialogid" expr="-1" />
+ <var name="faxserveruri" expr="''" />
+  
+ <eventprocessor statevariable="currentstate">
+
+ <transition state="init" event="connection.alerting" name="evt" cond="true">
+  <log label="'+++Inbound CCXML Session+++'" expr="'alerting received'" /> 
+  <assign name="in_connectionid" expr="evt.connectionid"/>
+  <assign name="currentstate" expr="'accepted'" /> 
+  <accept connectionid="in_connectionid"/>
+ </transition>
+  
+ <transition state="accepted" event="connection.connected" name="evt">
+  <log label="'+++Inbound CCXML Session+++'" expr="'connected'" /> 
+  <assign name="currentstate" expr="'connected'" /> 
+  <send target="in_connectionid" targettype="'x-FAXModule'" data="'fax.DETECT'"/> 
+ </transition>
+
+ <transition state="connected" event="connection.signal" name="evt">
+  <log label="'+++Inbound CCXML Session+++'" expr="'connection.signal received, signal type:' + evt.info.signaltype"/> 
+  <if cond="evt.info.signaltype == 'T38Fax' || evt.info.signaltype == 'CNGDetected'">
+    <assign name="currentstate" expr="'startingfaxdialog'" />
+    <assign name="faxserveruri" expr="'http://172.16.24.231/VideoVXML/StoreFaxFile.php'" /> 
+    <assign name="dialogid" expr="'-1'" /> 		  
+    <dialogstart dialogid="dialogid" src="''" connectionid="in_connectionid" type="'application/x-fax-store'" namelist="faxserveruri"/>
+  </if>
+  
+ </transition>
+
+ <transition state="startingfaxdialog" event="dialog.started" name="evt">
+   <log label="'+++Inbound CCXML Session+++'" expr="'fax dialog started'"/> 
+   <assign name="currentstate" expr="'receivingfax'" />
+ </transition>
+
+ <transition state="receivingfax" event="dialog.exit" name="evt">
+   <log label="'+++Inbound CCXML Session+++'" expr="'Dialog exit [' + evt.values['result'] + ']'"/> 
+   <exit/>
+ </transition>	
+
+
+ </eventprocessor>
+</ccxml>

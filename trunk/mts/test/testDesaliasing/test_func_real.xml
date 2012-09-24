@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="desaliasing_tests">
+    <parameter name="[enabler_host]" operation="set" value="192.168.70.2" editable="true"/>
+    <parameter name="[enabler_port]" operation="set" value="9043" editable="true"/>
+
+    <parameter name="[enabler_url]" operation="set" value="https://[enabler_host]:[enabler_port]" />
+
+    <parameter name="[signature_secret]" operation="set" value="toto" editable="true"/>
+
+    <parameter name="[max_successive_requests]" operation="set" value="98" editable="true"/>
+
+    <parameter name="[correct_alias]" operation="set" value="306980330535" editable="true"/>
+    <parameter name="[correct_groupId]" operation="set" value="0123456789" editable="true"/>
+    <parameter name="[wrong_alias]" operation="set" value="308269596905" editable="true"/>
+    <parameter name="[wrong_groupId]" operation="set" value="0123456789" editable="true"/>
+
+    <testcase name="900_fw_simulator" state="false">
+        <scenario name="HTTP">900_fw_simulator/server.xml</scenario>
+    </testcase>
+
+    <testcase name="200_client_authorization" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_acc">200_client_authorization/scenario.xml</scenario>
+    </testcase>
+
+    <testcase name="201_client_refunding" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_acc">201_client_refunding/scenario.xml</scenario>
+    </testcase>
+    
+    <testcase name="202_client_reservationCancelation" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_acc">202_client_reservationCancelation/scenario.xml</scenario>
+    </testcase>
+    
+    <testcase name="203_client_bundlePurchase" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_acc">203_client_bundlePurchase/scenario.xml</scenario>
+    </testcase>    
+    
+    <testcase name="204_client_deliveryConfirmation" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_acc">204_client_deliveryConfirmation/scenario.xml</scenario>
+    </testcase>
+    
+    <testcase name="300_client_authorization" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_acc">300_client_authorization/scenario.xml</scenario>
+    </testcase>
+
+    <testcase name="301_client_refunding" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_acc">301_client_refunding/scenario.xml</scenario>
+    </testcase>
+    
+    <testcase name="302_client_reservationCancelation" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_acc">302_client_reservationCancelation/scenario.xml</scenario>
+    </testcase>
+    
+    <testcase name="303_client_bundlePurchase" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_acc">303_client_bundlePurchase/scenario.xml</scenario>
+    </testcase>    
+    
+    <testcase name="304_client_deliveryConfirmation" state="true" >
+        <parameter name="[conn_counter]" operation="set" value="0" />
+        <scenario name="client_acc">304_client_deliveryConfirmation/scenario.xml</scenario>
+    </testcase>
+  
+</test>

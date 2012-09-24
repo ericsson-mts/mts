@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE Library [
+  <!ENTITY REGISTER_MD5    SYSTEM "..\Library\REGISTER_MD5.xml">
+  <!ENTITY sendPacketRTP10 SYSTEM "..\Library\sendPacketRTP10.xml">
+  <!ENTITY UnREGISTER_MD5  SYSTEM "..\Library\UnREGISTER_MD5.xml">
+  <!ENTITY InviterConfig   SYSTEM "..\Library\BabMediaInviterConfig.xml">
+]>
+<!-- name="REGISTER-INVITE-RTP-BYE-UNREGISTER" -->
+<scenario>
+	<!-- Send REGISTER until 200 OK is received. Perform MD5 algorithm on a 401 response. -->
+	<!-- Wait invitee. -->
+
+	<!-- Send INVITE with SDP until 200 OK is received. Perform MD5 algorithm on a 407 response. -->
+	<!-- Send ACK. -->
+	<!-- Wait invitee. -->
+
+	<!-- Open RTP connection. -->
+	<!-- Receive  1 RTP packet. -->
+	<!-- Send    10 RTP packets. -->
+	<!-- Close RTP connection. -->
+
+	<!-- Send BYE until 200 OK is received. -->
+
+	<!-- Send UNREGISTER until 200 OK is received. Perform MD5 algorithm on a 401 response. -->
+
+	<semaphore name="WaitNetshAdd" action="wait"/>
+	<parameter name="[LocalHost]" operation="set" value="[HostInviter]" />
+	<parameter name="[LocalPort]" operation="set" value="[PortInviter]" />
+	<parameter name="[LocalAddress]" operation="set"
+		value="[LocalHost(0)]:[LocalPort(0)]" />
+		
+	<openProviderSIP name="open SIP provider" providerName="Inviter"
+		localHost="[LocalHost(0)]" localPort="[LocalPort(0)]"
+		transport="[LocalTransport]" />
+	<parameter name="[portMediaInviter]" operation="set" value="20000"
+		description="Port pour le bloc SDP de l'inviter du XMLloader" />
+	<parameter name="[IpMediaSDPInviter]" operation="set"
+		value="[LocalHost]" />
+
+	<parameter name="[UserName]" operation="set"
+		value="[UserPrivIdInviter]@[domainName]" />
+	<parameter name="[Password]" operation="set" value="imt30imt30" />
+	<parameter name="[Request-URI]" operation="set"
+		value="sip:[domainName]" />
+
+	<parameter name="[FromTag]" operation="identifier" value="newString"
+		value2="10" />
+	<parameter name="[newCallId]" operation="identifier"
+		value="nextInteger" value2="Inutile" />
+	<parameter name="[newCSeq]" operation="identifier"
+		value="nextInteger" value2="Inutile" />
+	<parameter name="[MaxForwards]" operation="set" value="70" />
+	<parameter name="[newBranchId]" operation="identifier"
+		value="newString" value2="10" />
+
+	<!-- REGISTER -->
+	<!-- XML : '<' <=> &lt; '>' <=> &gt; not allowed in "value" attribute -->
+	<parameter name="[To]" operation="set"
+		value='"[inviter]" &lt;sip:[inviter]@[domainName]&gt;' />
+	<parameter name="[From]" operation="set"
+		value='"[inviter]" &lt;sip:[inviter]@[domainName]&gt;' />
+	<parameter name="[FromTag]" operation="identifier" value="newString"
+		value2="10" />
+	<parameter name="[Call-ID]" operation="identifier"
+		value="nextInteger" value2="Inutile" />
+	<parameter name="[CSeq]" operation="identifier" value="nextInteger"
+		value2="Inutile" />
+	<parameter name="[Expires]" operation="set" value="3600" />
+	<parameter name="[Contact]" operation="set"
+		value="&lt;sip:[inviter]@[LocalAddress]&gt;" />
+	<parameter name="[Max-Forwards]" operation="set"
+		value="[MaxForwards]" />
+	<!--parameter name="[Via]"          operation="set"        value="SIP/2.0/UDP [ipAddressSip]:[portSip]"/-->
+	<parameter name="[Via]" operation="set"
+		value="SIP/2.0/UDP [LocalAddress]" />
+	<parameter name="[branchId]" operation="identifier"
+		value="newString" value2="10" />
+	&REGISTER_MD5;
+
+	<semaphore name="WaitREGISTERInviter" action="notify" />
+	<semaphore name="WaitREGISTERInvitee" action="wait" />
+
+	<parameter name="[FromTag]" operation="identifier" value="newString"
+		value2="10" />
+	<parameter name="[newCallId]" operation="identifier"
+		value="nextInteger" value2="Inutile" />
+	<parameter name="[newCSeq]" operation="identifier"
+		value="nextInteger" value2="Inutile" />
+	<parameter name="[MaxForwards]" operation="set" value="70" />
+	<parameter name="[newBranchId]" operation="identifier"
+		value="newString" value2="10" />
+
+	<sendRequestSIP name="Send INVITE" providerName="Inviter"
+		destScenario="+33900000005">
+		<![CDATA[
+INVITE sip:[invitee]@[domainName] SIP/2.0
+To: "[invitee]" <sip:[invitee]@[domainName]>
+From: "[inviter]" <sip:[inviter]@[domainName]>;tag=[FromTag]
+Via: SIP/2.0/UDP [LocalAddress];branch=[magicCookie][newBranchId]
+Route: <sip:[invitee]@[sbcHost]:[sbcPort];lr>
+Call-ID: [newCallId]
+CSeq: [newCSeq] INVITE
+Max-Forwards: [MaxForwards]
+Contact: <sip:[inviter]@[LocalAddress]>
+User-Agent: XMLLoader
+Content-Type: application/sdp
+Proxy-Authorization: Digest username="[UserName]", realm="[WWWAuthRealm401]", nonce="[WWWAuthNonce401]", algorithm=MD5, opaque="", uri="[Request-URI]", response="[AuthResponse]", cnonce="[CNonce]", qop=[WWWAuthQop401], nc=[NonceCount]
+Content-Length: x
+
+v=0
+o=[inviter] 999 999 IN IP4 [IpMediaSDPInviter]
+s=-
+c=IN IP4 [IpMediaSDPInviter]
+t=0 0
+m=audio [portMediaInviter] RTP/AVP 18 8
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=[AttributMediaSDPOffer]
+]]>
+	</sendRequestSIP>
+
+	<label name="INVITE" />
+	<receiveResponseSIP name="receive INVITE response" method="INVITE"
+		providerName="Inviter">
+		<parameter name="[StatusCode]" operation="setFromMessage"
+			value="firstline:StatusCode" />
+
+		<parameter name="[WWWAuthRealm]" operation="setFromMessage"
+			value="header:Proxy-Authenticate:Parameter:realm" />
+		<parameter name="[WWWAuthNonce]" operation="setFromMessage"
+			value="header:Proxy-Authenticate:Parameter:nonce" />
+		<parameter name="[WWWAuthQop]" operation="setFromMessage"
+			value="header:Proxy-Authenticate:Parameter:qop" />
+
+		<parameter name="[lastTo]" operation="setFromMessage"
+			value="header:To" />
+		<parameter name="[lastFrom]" operation="setFromMessage"
+			value="header:From" />
+		<parameter name="[lastCallId]" operation="setFromMessage"
+			value="header:Call-Id" />
+		<!--parameter name="[lastContact]"           operation="setFromMessage" value="header:Contact"/-->
+		<parameter name="[lastContactURI]" operation="setFromMessage"
+			value="header:Contact:Address:URI" />
+		<parameter name="[SDPConnectionAddress0]"
+			operation="setFromMessage" value="content(0):Sdp:Connection:Address" />
+		<parameter name="[SDPMediaPort0]" operation="setFromMessage"
+			value="content(0):Sdp:Media:Port" />
+	</receiveResponseSIP>
+
+	<if>
+		<condition>
+			<test parameter="[StatusCode]" condition="equals"
+				value="407" />
+		</condition>
+		<then>
+			<parameter name="[WWWAuthRealm407]" operation="set"
+				value="[WWWAuthRealm]" />
+			<parameter name="[WWWAuthNonce407]" operation="set"
+				value="[WWWAuthNonce]" />
+			<parameter name="[WWWAuthQop407]" operation="set"
+				value="[WWWAuthQop]" />
+
+			<parameter name="[Method]" operation="set" value="INVITE" />
+			<parameter name="[NonceCount]" operation="set"
+				value="00000001" />
+			<parameter name="[CNonce]" operation="set" value="11fc4a68" />
+
+			<parameter name="[HA1]" operation="digest"
+				value="[UserName]:[WWWAuthRealm407]:[Password]" value2="MD5" />
+			<parameter name="[HA2]" operation="digest"
+				value="[Method]:[Request-URI]" value2="MD5" />
+			<parameter name="[AuthResponse]" operation="digest"
+				value="[HA1]:[WWWAuthNonce407]:[NonceCount]:[CNonce]:[WWWAuthQop407]:[HA2]"
+				value2="MD5" />
+
+			<sendRequestSIP name="Send ACK" providerName="Inviter"
+				destScenario="+33900000005">
+				<![CDATA[
+ACK sip:[invitee]@[domainName] SIP/2.0
+To: [lastTo]
+From: "[inviter]" <sip:[inviter]@[domainName]>;tag=[FromTag]
+Call-ID: [lastCallId]
+CSeq: [newCSeq] ACK
+Via: SIP/2.0/UDP [LocalAddress];branch=[magicCookie][newBranchId]
+Route: <sip:[invitee]@[sbcHost]:[sbcPort];lr>
+Contact: <sip:[inviter]@[LocalAddress]>
+Max-Forwards: 70
+User-Agent: XMLLoader
+Content-Length: 0
+]]>
+			</sendRequestSIP>
+
+			<parameter name="[newBranchId]" operation="identifier"
+				value="newString" value2="10" />
+			<parameter name="[newCSeq]" operation="add"
+				value="[newCSeq]" value2="1" />
+
+			<sendRequestSIP name="Send INVITE" providerName="Inviter"
+				destScenario="+33900000005">
+				<![CDATA[
+INVITE sip:[invitee]@[domainName] SIP/2.0
+To: "[invitee]" <sip:[invitee]@[domainName]>
+From: "[inviter]" <sip:[inviter]@[domainName]>;tag=[FromTag]
+Via: SIP/2.0/UDP [LocalAddress];branch=[magicCookie][newBranchId]
+Route: <sip:[invitee]@[sbcHost]:[sbcPort];lr>
+Call-ID: [newCallId]
+CSeq: [newCSeq] INVITE
+Max-Forwards: [MaxForwards]
+Contact: <sip:[inviter]@[LocalAddress]>
+User-Agent: XMLLoader
+Content-Type: application/sdp
+Proxy-Authorization: Digest username="[UserName]", realm="[WWWAuthRealm407]", nonce="[WWWAuthNonce407]", algorithm=MD5, opaque="", uri="[Request-URI]", response="[AuthResponse]", cnonce="[CNonce]", qop=[WWWAuthQop407], nc=[NonceCount]
+Content-Length: x
+
+v=0
+o=[inviter] 999 999 IN IP4 [IpMediaSDPInviter]
+s=-
+c=IN IP4 [IpMediaSDPInviter]
+t=0 0
+m=audio [portMediaInviter] RTP/AVP 18 8
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=[AttributMediaSDPOffer]
+]]>
+			</sendRequestSIP>
+			<goto label="INVITE" name="loop : wait 200 OK" state="true" />
+
+		</then>
+		<else>
+			<if>
+				<condition>
+					<test parameter="[StatusCode]" condition="equals"
+						value="200" />
+				</condition>
+				<then>
+					<!-- Continue -->
+				</then>
+				<else>
+					<goto label="INVITE" name="loop : wait 200 OK"
+						state="true" />
+				</else>
+			</if>
+		</else>
+	</if>
+
+	<parameter name="[newBranchId]" operation="identifier"
+		value="newString" value2="10" />
+
+	<sendRequestSIP name="Send ACK" providerName="Inviter"
+		destScenario="+33900000005">
+		<![CDATA[
+ACK [lastContactURI] SIP/2.0
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [newCSeq] ACK
+Via: SIP/2.0/UDP [LocalAddress];branch=[magicCookie][newBranchId]
+Route: <sip:[invitee]@[sbcHost]:[sbcPort];lr>
+Contact: <sip:[inviter]@[LocalAddress]>
+Max-Forwards: 70
+User-Agent: XMLLoader
+Content-Length: 0
+]]>
+	</sendRequestSIP>
+
+	<semaphore name="WaitACKInviter" action="notify" />
+	<semaphore name="WaitACKInvitee" action="wait" />
+	
+	<!-- Configure inviter depending on test case we use -->
+    &InviterConfig;
+	<label name="RTPConnexion" />
+	<openConnectionRTP name="OpenConnection" state="true"
+		sessionName="InviterRTPCnx" localHost="[LocalHost]"
+		localPort="[portMediaInviter]" remoteHost="[SDPConnectionAddress0]"
+		remotePort="[SDPMediaPort0]" />
+
+	<semaphore name="WaitOpenRTPInviter" action="notify" />
+	<semaphore name="WaitOpenRTPInvitee" action="wait" />
+
+
+	<receivePacketRTP name="receivePacketRTP1" payloadType="27"
+		failedOnTimeout="[ExpectedFlowFromInviteeToInviter]"
+		failedOnReceive="[NotExpectedFlowFromInviteeToInviter]" timeout="3">
+		<parameter name="[localCnxName]" operation="setFromMessage"
+			value="connection:name" />
+		<test parameter="[localCnxName]" condition="equals"
+			value="InviterRTPCnx" />
+	</receivePacketRTP>
+
+<receivePacketRTP name="receivePacketRTP1" payloadType="28"
+		failedOnTimeout="[ExpectedFlowFromInviteeToInviter]"
+		failedOnReceive="true" timeout="10">
+		<parameter name="[localCnxName]" operation="setFromMessage"
+			value="connection:name" />
+		<test parameter="[localCnxName]" condition="equals"
+			value="InviterRTPCnx" />
+	</receivePacketRTP>
+	
+	<semaphore name="WaitSendPacketInviter" action="notify" />
+	<semaphore name="WaitSendPacketInvitee" action="wait" />
+
+	<!-- Send 10 RTP packets. -->
+	<parameter name="[destScenario]" operation="set"
+		value="+33900000005" />
+	<parameter name="[sessionName]" operation="set"
+		value="InviterRTPCnx" />
+	<parameter name="[payloadType]" operation="set" value="17" />
+	&sendPacketRTP10;
+
+	<closeConnectionRTP name="CloseConnection" state="true"
+		sessionName="InviterRTPCnx" />
+
+	<parameter name="[newBranchId]" operation="identifier"
+		value="newString" value2="10" />
+	<parameter name="[newCSeq]" operation="add" value="[newCSeq]"
+		value2="1" />
+
+	<sendRequestSIP name="Send BYE" providerName="Inviter"
+		destScenario="+33900000005">
+		<![CDATA[
+BYE [lastContactURI] SIP/2.0
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [newCSeq] BYE
+Via: SIP/2.0/UDP [LocalAddress];branch=[magicCookie][newBranchId]
+Route: <sip:[invitee]@[sbcHost]:[sbcPort];lr>
+Contact: <sip:[inviter]@[LocalAddress]>
+Max-Forwards: 70
+User-Agent: XMLLoader
+Content-Length: 0
+]]>
+	</sendRequestSIP>
+
+	<receiveResponseSIP name="Wait 200 OK" method="BYE" result="200"
+		providerName="Inviter">
+	</receiveResponseSIP>
+
+	<!-- UnREGISTER -->
+	<!-- XML : '<' <=> &lt; '>' <=> &gt; not allowed in "value" attribute -->
+	<!--parameter name="[To]"           operation="set" value='"[inviter]" &lt;sip:[inviter]@[domainName]&gt;'/-->
+	<!--parameter name="[From]"         operation="set" value='"[inviter]" &lt;sip:[inviter]@[domainName]&gt;'/-->
+	<!--parameter name="[FromTag]"      operation="identifier" value="newString"    value2="10"/-->
+	<parameter name="[Call-ID]" operation="identifier"
+		value="nextInteger" value2="Inutile" />
+	<parameter name="[CSeq]" operation="identifier" value="nextInteger"
+		value2="Inutile" />
+	<!--parameter name="[Max-Forwards]" operation="set"        value="[MaxForwards]"/-->
+	<!--parameter name="[Via]"          operation="set"        value="SIP/2.0/UDP [LocalAddress]"/-->
+	<parameter name="[branchId]" operation="identifier"
+		value="newString" value2="10" />
+
+	<parameter name="[AuthUserName]" operation="set"
+		value='"[UserName]"' />
+	<parameter name="[AuthRealm]" operation="set"
+		value='"[WWWAuthRealm401]"' />
+	<parameter name="[AuthNonce]" operation="set"
+		value='"[WWWAuthNonce401]"' />
+	<parameter name="[AuthAlgorithm]" operation="set" value="MD5" />
+	<parameter name="[AuthOpaque]" operation="set" value='""' />
+	<parameter name="[AuthURI]" operation="set" value='"[Request-URI]"' />
+	<parameter name="[AuthResponse]" operation="set"
+		value='"[AuthResponse]"' />
+	<parameter name="[AuthCnonce]" operation="set" value='"[CNonce]"' />
+	<parameter name="[AuthQop]" operation="set" value="[WWWAuthQop401]" />
+	<parameter name="[AuthNc]" operation="set" value="[NonceCount]" />
+	&UnREGISTER_MD5;
+
+	<closeProviderSIP name="close SIP provider" providerName="Inviter" />
+	<!--semaphore name="WaitInviter" action="notify"/-->
+
+</scenario>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="Samples">
+
+  <parameter name="[domainName]" operation="set" value="sip.mobistar.com"/>
+
+  <!--parameter name="[sbcHost]" operation="setFromSystem" value="IPAddress" value2="eth0"/-->      
+  <parameter name="[sbcHost]" operation="set" value="172.20.141.86" description="Addresse du SBC"/>                 
+
+  <!--parameter name="[sbcPort]" operation="setFromConfig" value="sip.properties" value2="DEFAULT_PORT"/-->
+  <parameter name="[sbcPort]" operation="set" value="5060" description="Port decoute du SBC"/>            
+
+  <parameter name="[ipAddressSrc]" operation="setFromSystem" value="IPAddress" value2="eth0"/>        
+  <!--parameter name="[ipAddressSrc]" operation="set" value="10.193.7.112" description="Addresse source au niveau 3 du XMLloader"/-->
+  <!--parameter name="[ipAddressSrc]" operation="set" value="172.20.193.20" description="Addresse source au niveau 3 du XMLloader"/-->
+
+  <parameter name="[ipAddressSip]" operation="setFromSystem" value="IPAddress" value2="eth0"/>        
+  <!--parameter name="[ipAddressSip]" operation="set" value="10.193.7.112" description="Addresse pour le protocole sip du XMLloader"/-->      
+  <!--parameter name="[ipAddressSip]" operation="set" value="172.20.193.20" description="Addresse pour le protocole sip du XMLloader"/-->      
+
+    <!--parameter name="[portSip]" operation="setFromConfig" value="sip.properties" value2="DEFAULT_PORT"/-->
+  <parameter name="[portSip]" operation="set" value="5060" description="Port source et d ecoute pour le protocole sip du XMLloader"/>                
+
+  <!--parameter name="[ipAddressSdp]" operation="set" value="SBC.sip.france.fr" description="Addresse pour le bloc sdp du XMLloader"/-->
+  <!--parameter name="[ipAddressSdp]" operation="set" value="10.193.7.112" description="Addresse pour le bloc sdp du XMLloader"/-->   
+  <parameter name="[ipAddressSdp]" operation="set" value="172.20.193.20" description="Addresse pour le bloc sdp du XMLloader"/>   
+
+  <parameter name="[inviter]" operation="set" value="+33900000004" description="Num de tel de l'appelant"/>
+  <parameter name="[invitee]" operation="set" value="+33900000005" description="Num de tel de l'appele"/>
+
+  <testcase name="register_server" description="UNREGISTER callflow" state="false">
+          <scenario name="REGISTER">register_server\REGISTER.xml</scenario>                       
+  </testcase>
+
+  <testcase name="register" description="REGISTER callflow" state="true">
+          <scenario name="+33900000004">register\UAC-0.xml</scenario>                     
+          <scenario name="+33900000005">register\UAC-1.xml</scenario>                     
+  </testcase>
+
+  <testcase name="invite" description="INVITE callflow" state="true">
+          <scenario name="+33900000004">invite\UAC.xml</scenario>                 
+          <scenario name="+33900000005">invite\UAS.xml</scenario>                 
+  </testcase>
+
+  <testcase name="INVITE MD5" description="callflow" state="true">
+          <scenario name="+33900000004">INVITE_MD5\UAC.xml</scenario>                     
+          <scenario name="+33900000005">INVITE_MD5\UAS.xml</scenario>                     
+  </testcase>
+
+  <testcase name="INVITE recvonly" description="callflow" state="true">
+          <scenario name="+33900000004">INVITE_recvonly\UAC.xml</scenario>                        
+          <scenario name="+33900000005">INVITE_recvonly\UAS.xml</scenario>                        
+  </testcase>
+
+  <testcase name="ReINVITE" description="callflow" state="true">
+          <scenario name="+33900000004">ReINVITE\UAC.xml</scenario>                       
+          <scenario name="+33900000005">ReINVITE\UAS.xml</scenario>                       
+  </testcase>
+
+  <testcase name="unregister" description="UNREGISTER callflow" state="true">
+          <scenario name="+33900000004">unregister\UAC-0.xml</scenario>                   
+          <scenario name="+33900000005">unregister\UAC-1.xml</scenario>                   
+  </testcase>
+
+</test>

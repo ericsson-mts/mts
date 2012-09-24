@@ -1,0 +1,29 @@
+Dans flux_profils:
++ ajouter le fichier properties du protocole ajouté dans le rep config_exemple
+
++ fichier config_exemple/config_profils.csv:
+  - ajouter de la colonne ratio du protocole ajouté
+  - ajouter de la colonne résultat du protocole ajouté
+
++ fichier config_exemple/flux.properties:
+  - ajouter les paramètres importants utilisé par le scenario concernant le protocole (ip, port, resource, ...)
+  - ajouter aux paramètres radius les ip et port du nouveau protocol
+  
++ fichier script/text.xml
+  - dans les paramètres radius, ajouter les paramètres "radius_host_protocol" et, "radius_port_protocol" ou "radius_port_protocol_auth" et "radius_port_protocol_acc"
+  - ajouter la lecture des nouveaux paramètres de configuration du fichier flux.properties
+  - ajouter les paramètres ratio du protocole et résultat du protocole lu depuis le fichier config_profils.csv
+  - dans le testcase server, ajouter un nouveau server correspondant au protocol ajouté, préciser le type de routage(message:protocol, connection:localport, ...) => nécessite d'ajouter un fichier de scenario server pour le protocole
+  - ajouter au paramètre ratio_list le nouveau paramètre "protocol_ratio_list" et faire de même avec "protocol_result"
+
++ ajouter un fichier de scenario server pour le protocole ajouté
++ ajouter un repertoire "Flux_protocol" dans le répertoire script contenant un fichier "Flux_protocol.xml"
+
++ éditer les fichiers de scenarii client(Flux_protocol.xml) et server(server_protocol.xml) afin que le callflow soit correct
+
++ client.xml du répertoire client:
+  - ajouter le nouveau type de flux au début du fichier
+  - ajouter le paramètre booleen "ProtocolConnectionOPEN"
+  - plus loins dans le fichier, ajouter encore le "flux_protocol" avec comme valeur "flux_statuses(i)"
+  - ajouter ensuite un bloc if plus bas ajoutant ainsi le nouveau flux au traitememt
+  - ajouter ensuite un bloc try-do-finally plus bas servant à fermer les connections du flux

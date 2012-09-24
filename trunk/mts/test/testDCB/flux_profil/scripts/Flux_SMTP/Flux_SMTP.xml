@@ -1,0 +1,324 @@
+<!--
+To use this part of XML code in a scenario,
+- input parameters must be defined and setted locally (by the caller scenario).
+- output parameters may be used in the scenario after the "call".
+
+Input parameters :
+
+****** RADIUS ******
+- [source_ip]          : 
+- [radius_nas_port]           : 
+- [radius_secret]             : 
+- [radius_ip]          : 
+- [radius_auth_port]   : 
+- [msisdn]             : 
+- [radius_acct_port]   : 
+- [nas_ip_address]     : 
+- [calling_station_id] : 
+- [called_station_id]  : 
+- [Acct-Session-Id]    : 
+- [3gpp_charging_id]   : 
+- [3gpp_sgsn_address]  : 
+- [nas_identifier]     :
+
+****** SMTP ******
+- [destination_ips]    : 
+- [smtp_port]          : 
+- [bigAttach_size]     : 
+- [emails]             : 
+- [bigAttach]          : 
+
+
+
+Output parameters :
+- [RADIUSsocketName]   : 
+- [RADIUSsocketOpen]   : 
+- [SMTPconnectionName] : 
+- [SMTPconnectionOpen] : 
+
+-->
+
+   <!--    send Radius Access-Request
+      <sendMessageRADIUS listenpoint="[ggsn_radius_socket_name]" remoteHost="[radius_host_smtp]" remotePort="[radius_port_smtp_auth]">
+         Header
+        <header code="1"/>
+
+         AVPs
+         User-Name (1)
+        <avp code="1" value="[msisdn]"/>
+
+         User-Password (2)
+        <avp code="2" value="User-Password"/>
+
+         Nas-IP-Address (4)
+        <avp code="4" value="[source_ip]"/>
+
+         Code: Nas-Port (5)
+        <avp code="5" value="[radius_nas_port]"/>
+
+         Calling-Station-Id (31)
+        <avp code="31" value=""/>
+
+         Called-Station-Id (30)
+        <avp code="30" value=""/>
+      </sendMessageRADIUS>
+      <parameter name="[test:radiusRequest]" operation="number.add" value="[test:radiusRequest]" value2="1"/>
+      <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+
+      <receiveMessageRADIUS listenpoint="[ggsn_radius_socket_name]" request="false"/>
+      <parameter name="[test:radiusResponse]" operation="number.add" value="[test:radiusResponse]" value2="1"/>
+      <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>-->
+
+      <!-- send Radius Accounting-Request Start -->
+      <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+      <parameter name="[timestamp]" operation="number.divide" value="[timestamp]" value2="1000"/>
+      <parameter name="[timestamp]" operation="number.floor" value="[timestamp]" />
+
+      <sendMessageRADIUS listenpoint="[ggsn_radius_socket_name]" remoteHost="[radius_host_smtp]" remotePort="[radius_port_smtp_acct]">
+        <!-- Header -->
+        <header code="4"/>
+        <!-- AVPs -->
+        <!--Acct-Status-Type(40) -->
+        <avp code="40" value="Start"/>
+        <!-- User-Name (1) -->
+        <avp code="1" value="void"/><!-- old value [msisdn]-->
+        <!-- NAS-IP-Address(4) -->
+        <avp code="4" value="[nas_ip_address]"/>
+        <!-- NAS-Port(5) -->
+        <!-- <avp code="5" value="[radius_nas_port]"/> -->
+        <!-- Framed-IP-Address(8) -->
+        <avp code="8" value="[source_ip]"/>
+        <!-- Calling-Station-Id(31) -->
+        <avp code="31" value="[calling_station_id]"/>
+        <!-- Called-Station-Id(30) -->
+        <avp code="30" value="[called_station_id]"/>
+        <!-- Acct-Session-Id(44) -->
+        <avp code="44" value="[Acct-Session-Id]"/>
+        <!-- Event-Timestamp(55) -->
+        <!-- <avp code="55" value="[timestamp]"/> -->
+        <!-- Framed-Protocol(7) -->
+        <avp code="7" value="GPRS-PDP-Context"/>
+        <!-- Vendor-Specific(26) 3GPP-IMSI -->
+        <avp code="26" value="3GPP">
+            <avp code="1" value="[imsi]"/>
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+        <avp code="26" value="3GPP">
+            <avp code="2" value="[3gpp_charging_id]"/>
+        </avp>
+        <avp code="26" value="3GPP">
+            <avp code="3" value="0"/><!-- IPV4 (0)-->
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+        <avp code="26" value="3GPP">
+            <avp code="6" value="[3gpp_sgsn_address]"/>
+        </avp>
+        <avp code="26" value="3GPP">
+            <avp code="20" value="33353739393430313033343330323635"/><!-- IMEISV -->
+        </avp>
+
+        <avp code="26" value="3GPP">
+            <avp code="21" value="01"/><!-- UTRAN -->
+        </avp>
+
+        <avp code="26" value="3GPP">
+            <avp code="22" value="0102F810970378FD"/><!-- UserLocationInfo -->
+        </avp>
+
+        <!-- NAS-Identifier(32) -->
+        <avp code="32" value="[nas_identifier]"/>
+
+        <!-- Service-Type(6) -->
+        <avp code="6" value="Framed-User"/>
+        <!-- NAS-Port-Type(61) -->
+        <avp code="61" value="Virtual"/>
+        <!-- Vendor-Specific(26) 3GPP-GGSN-Address -->
+        <avp code="26" value="3GPP">
+            <avp code="7" value="212.234.96.26"/>
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-Gharging-Characteristics-->
+        <avp code="26" value="3GPP">
+            <avp code="13" value="0800"/>
+        </avp>
+        <!-- Vendor-Specific(26) 3GPP-SGSN-MMC-MNC-->
+        <avp code="26" value="3GPP">
+            <avp code="18" value="20801"/>
+        </avp>
+        <!-- Acct-Authentic(45)-->
+        <avp code="45" value="Local"/>
+        <!-- Acct-Delay-Time(41)-->
+        <avp code="41" value="0"/>
+      </sendMessageRADIUS>
+      <parameter name="[test:radiusRequest]" operation="number.add" value="[test:radiusRequest]" value2="1"/>
+      <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+      
+      <receiveMessageRADIUS listenpoint="[ggsn_radius_socket_name]" request="false"/>
+      <parameter name="[test:radiusResponse]" operation="number.add" value="[test:radiusResponse]" value2="1"/>
+      <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+      
+      <parameter name="[accounting_session_running]" operation="set" value="true"/>
+      <parameter name="[accounting_session_host]" operation="set" value="[radius_host_smtp]"/>
+      <parameter name="[accounting_session_port]" operation="set" value="[radius_port_smtp_acct]"/>
+
+      <!-- Changement de socket pour browsing -->
+      <!-- open SMTP Connection -->
+      <parameter name="[SMTPconnectionName]" operation="set" value="connection_SMTP_[testcase:index]"/>     
+
+    <parameter name="[SMTPconnectionOpen]" operation="set" value="false"/>
+    <try>
+        <do>
+            <openChannelSMTP name="[SMTPconnectionName]" localHost="[source_ip]" remoteHost="[destination_ip]" remotePort="[smtp_port]"/>
+            <parameter name="[SMTPconnectionOpen]" operation="set" value="true"/>
+        </do>
+        <finally>
+            <parameter name="[expected]" value="ok" operation="string.equals" value2="[smtp_result]" />
+            <if>
+                <condition>
+                    <test parameter="[SMTPconnectionOpen]" condition="boolean.equals" value="[expected]" />
+                </condition>
+                <else>
+                    <stats>
+                        <flow name="[0msisdn] smtp failure" shortDesc="smtp failure" description="[0msisdn] smtp failure" longDesc="[0msisdn] smtp failure">
+                            <increase>1</increase>
+                        </flow>
+                    </stats>
+                </else>
+            </if>
+        </finally>
+    </try>
+    
+      <parameter name="[j]" operation="set" value="0"/>
+      <while>
+        <condition>
+          <test parameter="[j]" condition="number.lowerThan" value="[bigAttach_size]"/>
+          <test parameter="[SMTPconnectionOpen]" condition="boolean.equals" value="true"/>
+        </condition>
+        <do>
+            <!-- send SMTP Requests -->
+          
+            <sendMessageSMTP channel="[SMTPconnectionName]"><![CDATA[EHLO gmail.com]]></sendMessageSMTP>
+            <parameter name="[test:smtpRequest]" operation="number.add" value="[test:smtpRequest]" value2="1"/>
+            <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+            <receiveMessageSMTP channel="[SMTPconnectionName]" request="false"/>
+            <parameter name="[test:smtpResponse]" operation="number.add" value="[test:smtpResponse]" value2="1"/>
+            <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+            
+            <sendMessageSMTP channel="[SMTPconnectionName]"><![CDATA[MAIL FROM:<[email]>]]></sendMessageSMTP>
+            <parameter name="[test:smtpRequest]" operation="number.add" value="[test:smtpRequest]" value2="1"/>
+            <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+            <receiveMessageSMTP channel="[SMTPconnectionName]" request="false"/>
+            <parameter name="[test:smtpResponse]" operation="number.add" value="[test:smtpResponse]" value2="1"/>
+            <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+            
+            <sendMessageSMTP channel="[SMTPconnectionName]"><![CDATA[RCPT TO:<Jones@hotmail.com>]]></sendMessageSMTP>
+            <parameter name="[test:smtpRequest]" operation="number.add" value="[test:smtpRequest]" value2="1"/>
+            <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+            <receiveMessageSMTP channel="[SMTPconnectionName]" request="false"/>
+            <parameter name="[test:smtpResponse]" operation="number.add" value="[test:smtpResponse]" value2="1"/>
+            <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+            
+            <sendMessageSMTP channel="[SMTPconnectionName]"><![CDATA[DATA]]></sendMessageSMTP>
+            <parameter name="[test:smtpRequest]" operation="number.add" value="[test:smtpRequest]" value2="1"/>
+            <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+            <receiveMessageSMTP channel="[SMTPconnectionName]" type="DATA" result="354" request="false"/>
+            <parameter name="[test:smtpResponse]" operation="number.add" value="[test:smtpResponse]" value2="1"/>
+            <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+            
+            <sendMessageSMTP channel="[SMTPconnectionName]"><![CDATA[[bigAttach([j])]
+.
+]]></sendMessageSMTP>
+            <parameter name="[test:smtpRequest]" operation="number.add" value="[test:smtpRequest]" value2="1"/>
+            <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+            <receiveMessageSMTP channel="[SMTPconnectionName]" type="CNTT" result="250" request="false"/>
+            <parameter name="[test:smtpResponse]" operation="number.add" value="[test:smtpResponse]" value2="1"/>
+            <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+            
+            <sendMessageSMTP channel="[SMTPconnectionName]"><![CDATA[QUIT]]></sendMessageSMTP>
+            <parameter name="[test:smtpRequest]" operation="number.add" value="[test:smtpRequest]" value2="1"/>
+            <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+            <receiveMessageSMTP channel="[SMTPconnectionName]" type="QUIT" result="221" request="false"/>
+            <parameter name="[test:smtpResponse]" operation="number.add" value="[test:smtpResponse]" value2="1"/>
+            <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+            
+            <!-- Next SMTP resource -->
+            <parameter name="[j]" operation="number.add" value="[j]" value2="1"/>
+        </do>
+      </while>
+
+    <!-- close SMTP Connection -->
+    <try>
+        <do>
+            <closeChannelSMTP name="[SMTPconnectionName]"/>
+            <parameter name="[SMTPconnectionOpen]" operation="set" value="false"/>
+        </do>
+        <finally>
+            <parameter name="[SMTPconnectionOpen]" operation="set" value="false"/>
+        </finally>
+    </try>
+        
+
+      <!-- send Radius Accounting-Request Stop -->
+      <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+      <parameter name="[timestamp]" operation="number.divide" value="[timestamp]" value2="1000"/>
+      <parameter name="[timestamp]" operation="number.floor" value="[timestamp]" />
+
+      <sendMessageRADIUS listenpoint="[ggsn_radius_socket_name]" remoteHost="[radius_host_smtp]" remotePort="[radius_port_smtp_acct]">
+        <!-- Header -->
+        <header code="4"/>
+
+        <!-- AVPs -->
+        <!--Acct-Status-Type(40) -->
+        <avp code="40" value="Stop"/>
+
+        <!-- User-Name (1) -->
+        <avp code="1" value="[msisdn]"/>
+
+        <!-- NAS-IP-Address(4) -->
+        <avp code="4" value="[nas_ip_address]"/>
+
+        <!-- NAS-Port(5) -->
+        <avp code="5" value="[radius_nas_port]"/>
+
+        <!-- Framed-IP-Address(8) -->
+        <avp code="8" value="[source_ip]"/>
+
+        <!-- Calling-Station-Id(31) -->
+        <avp code="31" value="[calling_station_id]"/>
+
+        <!-- Called-Station-Id(30) -->
+        <avp code="30" value="[called_station_id]"/>
+
+        <!-- Acct-Session-Id(44) -->
+        <avp code="44" value="[Acct-Session-Id]"/>
+
+        <!-- Event-Timestamp(55) -->
+        <avp code="55" value="[timestamp]"/>
+
+        <!-- Framed-Protocol(7) -->
+        <avp code="7" value="GPRS-PDP-Context"/>
+
+        <!-- Vendor-Specific(26) 3GPP-Charging-ID -->
+        <avp code="26" value="3GPP">
+          <avp code="2" value="[3gpp_charging_id]"/>
+        </avp>
+
+        <!-- Vendor-Specific(26) 3GPP-SGSN-Address -->
+        <avp code="26" value="3GPP">
+          <avp code="6" value="[3gpp_sgsn_address]"/>
+        </avp>
+
+        <!-- NAS-Identifier(32) -->
+        <avp code="32" value="[nas_identifier]"/>
+      </sendMessageRADIUS>
+      <parameter name="[test:radiusRequest]" operation="number.add" value="[test:radiusRequest]" value2="1"/>
+      <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+      
+      <receiveMessageRADIUS listenpoint="[ggsn_radius_socket_name]" request="false"/>
+      <parameter name="[test:radiusResponse]" operation="number.add" value="[test:radiusResponse]" value2="1"/>
+      <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+
+      <parameter name="[accounting_session_running]" operation="set" value="false"/>
+
+      <!-- close RADIUS Connection -->
+      <!--removeListenpointRADIUS name="[RADIUSsocketName]"/-->
+      <!--parameter name="[RADIUSsocketOpen]" operation="set" value="false"/-->

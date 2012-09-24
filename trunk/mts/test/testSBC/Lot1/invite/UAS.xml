@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario name="Receive INVITE from Inviter">
+
+	<parameter name="[portSdpInvitee]" operation="set" value="11000" description="Port pour le bloc sdp de l'invitee du XMLloader"/>			
+      
+  	<receiveRequestSIP name="Wait INVITE" method="INVITE">
+  		<parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>  	
+		<parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>  	
+		<parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-Id"/>
+		<parameter name="[lastCseq]" operation="setFromMessage" value="header:CSeq"/>
+		<parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/>
+		<parameter name="[MaxForwards]" operation="setFromMessage" value="header:Max-Forwards"/>
+	  	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+    		<parameter name="[SDPConnectionAddress0]" operation="setFromMessage" value="content(0):Sdp:Connection:Address"/>		
+    		<parameter name="[SDPMediaPort0]" operation="setFromMessage" value="content(0):Sdp:Media:Port"/>    			  	
+	</receiveRequestSIP>
+	
+	<sendResponseSIP name="Send 100 Trying">
+<![CDATA[SIP/2.0 100 Trying
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[invitee]@[ipAddressSip]:[portSip]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Length: 0
+]]>
+	</sendResponseSIP>
+	
+	<pause name="pause"     seconds="0.1"  state="true"/>
+	   
+	<sendResponseSIP name="Send 180 Ringing">
+<![CDATA[SIP/2.0 180 Ringing
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[invitee]@[ipAddressSip]:[portSip]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Length: 0
+]]>
+	</sendResponseSIP>
+	
+		<pause name="pause"     seconds="0.1"  state="true"/>
+		
+	<sendResponseSIP name="Send 200 OK">
+		<!--******************* BEGIN MESSAGE ********************-->
+		<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[invitee]@[ipAddressSip]:[portSip]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[invitee] 999 999 IN IP4 [ipAddressSrc]
+s=-
+c=IN IP4 [ipAddressSdp]
+t=0 0
+m=audio [portSdpInvitee] RTP/AVP 18 8
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=sendrecv
+]]>
+	</sendResponseSIP>
+
+	<receiveRequestSIP name="Wait ACK" method="ACK">
+	</receiveRequestSIP>
+		
+	<semaphore name="WaitACKInvitee" action="notify"/>
+	
+	<openConnectionRTP name="OpenConnection" state="true"
+			  sessionName="invitee" 
+			  localHost="[ipAddressSrc]" localPort="[portSdpInvitee]" 
+			  remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]"/>
+
+	<receivePacketRTP name="receivePacketRTP1" payloadType="17">
+		<parameter name="[headerSsrc]" operation="setFromMessage" value="header:ssrc"/>
+		<parameter name="[headerPayloadType]" operation="setFromMessage" value="header:payloadType"/>
+		<parameter name="[headerSeqnum]" operation="setFromMessage" value="header:seqnum"/>
+		<parameter name="[headerTimestamp]" operation="setFromMessage" value="header:timestamp"/>
+		<parameter name="[payloadText]" operation="setFromMessage" value="payload:text"/>
+		<parameter name="[payloadBinary]" operation="setFromMessage" value="payload:binary"/>		
+	</receivePacketRTP>		
+	<receivePacketRTP name="receivePacketRTP2" payloadType="17"/>
+	<receivePacketRTP name="receivePacketRTP3" payloadType="17"/>	
+	
+	<sendPacketRTP name="sendPacketRTP" state="true"
+		sessionName="invitee" destScenario="+33900000004">
+	    <packet>	    
+		<header ssrc="0" payloadType="27" seqnum="1000" timestamp="1000"/>
+		<payload format="text">Packet #1</payload>		
+	    </packet>	    		
+	</sendPacketRTP>		
+
+	<closeConnectionRTP name="CloseConnection" state="true" sessionName="invitee" />	
+		
+	<receiveRequestSIP name="Wait BYE" method="BYE">
+	  	<parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>  	
+		<parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>  	
+		<parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-Id"/>  	
+		<parameter name="[lastCSeq]" operation="setFromMessage" value="header:CSeq"/>  		
+		<parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/> 
+	  	<parameter name="[MaxForwards]" operation="setFromMessage" value="header:Max-Forwards"/>  		
+	</receiveRequestSIP>
+	
+	<sendResponseSIP name="Send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Contact: <sip:[invitee]@[ipAddressSip]:[portSip]>
+Max-Forwards: [MaxForwards]
+User-Agent: XMLLoader
+Max-Forwards: 70
+Content-Length: 0
+]]>
+	</sendResponseSIP>
+	
+</scenario>

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="Enregistrements">
+  <parameter name="[magicCookie]"    operation="set" value="z9hG4bK"/>
+  <parameter name="[LocalTransport]" operation="set" value="udp"/>  
+  <!--parameter name="[domainName]"      editable="true" operation="set" value="sip.mobistar.com"/-->
+  <parameter name="[domainName]"      editable="true" operation="set" value="sip.france.fr"/>
+  <parameter name="[domainDigest]"    editable="true" operation="set" value="sip.mobistar.fr"/>
+  <parameter name="[domainVoiceMail]" editable="true" operation="set" value="messagerie.sip.france.fr"/>
+
+  <!-- Route: <sip:[invitee]@[sbcHost]:[sbcPort];lr> -->
+  <!--parameter name="[sbcHost]" editable="false" operation="setFromSystem" value="IPAddress" value2="eth0"/-->      
+  <parameter name="[sbcHost]" editable="true"  operation="set"           value="193.252.231.193" description="Adresse du SBC"/>
+
+  <parameter name="[ipAddressSrc]" editable="false" operation="setFromSystem" value="IPAddress" value2="eth0" description="Addresse source au niveau 3 du XMLloader"/>        
+  <!--parameter name="[ipAddressSrc]" editable="true" operation="set" value="10.193.7.112" description="Addresse source au niveau 3 du XMLloader"/-->
+  <!--parameter name="[ipAddressSrc]" editable="true" operation="set" value="172.20.193.20" description="Addresse source au niveau 3 du XMLloader"/-->
+
+  <parameter name="[ipAddressSip]" editable="false" operation="setFromSystem" value="IPAddress" value2="eth0" description="Addresse pour le protocole sip du XMLloader"/>        
+ 
+  <!--parameter name="[ipAddressSip]" editable="true" operation="set" value="10.193.7.112" description="Addresse pour le protocole sip du XMLloader"/-->      
+  <!--parameter name="[ipAddressSip]" editable="true" operation="set" value="172.20.193.20" description="Addresse pour le protocole sip du XMLloader"/-->
+
+  <parameter name="[portSip]" editable="false" operation="setFromConfig" value="sip.properties" value2="DEFAULT_PORT"  description="Port source et d ecoute pour le protocole sip du XMLloader"/>
+  <parameter name="[portSip]" editable="true"  operation="set" value="5060" description="Port source et d ecoute pour le protocole sip du XMLloader"/>                
+
+  <parameter name="[ipAddressSdp]" editable="false" operation="setFromSystem" value="IPAddress" value2="eth0" description="Addresse pour le bloc sdp du XMLloader"/>
+  <!--parameter name="[ipAddressSdp]" editable="true" operation="set" value="SBC.sip.france.fr" description="Addresse pour le bloc sdp du XMLloader"/-->
+  <!--parameter name="[ipAddressSdp]" editable="true" operation="set" value="10.193.7.112"      description="Addresse pour le bloc sdp du XMLloader"/-->   
+  <!--parameter name="[ipAddressSdp]" editable="true" operation="set" value="172.20.193.20"     description="Addresse pour le bloc sdp du XMLloader"/-->
+
+  <parameter name="[inviter]"               editable="true" operation="set"           value="33700000004"      description="Num de tel de l'appelant"/>
+  <parameter name="[UserPrivIdInviter]"     editable="true" operation="set"           value="33700000004" description="User part privId"/>
+  <parameter name="[HostInviter]"           editable="false" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+  <parameter name="[PortInviter]"           editable="true" operation="set"           value="5071"/>
+  <parameter name="[Subscriber]"            editable="false" operation="set"           value="[inviter]"      description="Num de tel de l'appelant"/>
+  <parameter name="[UserPrivIdSubscriber]"  editable="false" operation="set"           value="[UserPrivIdInviter]" description="User part privId"/>
+  <parameter name="[UserPrivIdSubscriber1]" editable="false" operation="set"           value="[UserPrivIdInviter]" description="User part privId"/>
+  <parameter name="[Password]"              editable="true" operation="set"           value="imt30imt30"        description="Password"/>
+  <parameter name="[invitee]"               editable="true" operation="set"           value="33700000005"      description="Num de tel de l'appele"/>
+  <parameter name="[UserPrivIdInvitee]"     editable="true" operation="set"           value="33700000005" description="User part privId"/>
+  <parameter name="[HostInvitee]"           editable="false" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+  <parameter name="[PortInvitee]"           editable="true" operation="set"           value="5072"/>
+  <parameter name="[Notifier]"              editable="false" operation="set"           value="[invitee]"      description="Num de tel de l'appele"/>
+  <parameter name="[UserPrivIdNotifier]"    editable="false" operation="set"           value="[UserPrivIdInvitee]" description="User part privId"/>
+  <parameter name="[UserPrivIdSubscriber2]"    editable="false" operation="set"           value="[UserPrivIdInvitee]" description="User part privId"/>
+  <parameter name="[testCaseNumber]" editable="true" operation="set" value="0"/>	
+  <parameter name="[InviteeIPSrcIsEqualToMediaIP]" editable="true" operation="set" value="true"  description="Decide if IP address src equals or not Media SDP IP" />	
+  <parameter name="[RestrictedLatching]" editable="true" operation="set" value="false"  description="true if SBC performs restricted latching, false otherwise" />	
+
+  <parameter name="[perCentExpiresReg]" operation="set" value="90" description="% of Expires header field value."/>
+  <parameter name="[perCentExpiresSub]" operation="set" value="90" description="% of Expires header field value."/>
+
+  <parameter name="[InitialTimer]"           operation="set" value="10" description="No RTP flow after SDP, call is over."/>
+  <parameter name="[perCentInitialTimer]"    operation="set" value="90" description="% of InitialTimer value."/>
+  <parameter name="[SubsequentTimer]"        operation="set" value="15" description="no RTP flow after last packet, call is over."/>
+  <parameter name="[perCentSubsequentTimer]" operation="set" value="90" description="% of SubsequentTimer value."/>
+
+  <testcase name="SBC REGISTRAR" description="SBC REGISTER callflow" state="false">
+    <scenario name="REGISTER">register_server\SBC_REGISTRAR.xml</scenario>                       
+  </testcase>
+
+  <testcase name="Refresh REGISTER" description="UA REGISTER callflow" state="false">
+    <scenario name="+33900000004">register_refresh\UA1_REGISTER.xml</scenario>                     
+    <scenario name="+33900000005">register_refresh\UA2_REGISTER.xml</scenario>                     
+  </testcase>
+
+  <testcase name="Refresh REGISTER HNT" description="UA REGISTER HNT callflow" state="false">
+    <parameter name="[ipAddressSip]" operation="set" value="192.168.1.20" description="Addresse pour le protocole sip du XMLloader"/>      
+    <scenario name="+33900000004">register_refresh\UA1_REGISTER.xml</scenario>                     
+    <scenario name="+33900000005">register_refresh\UA2_REGISTER.xml</scenario>                     
+  </testcase>
+
+  <testcase name="UA UnREGISTER" description="UnREGISTER callflow" state="true">
+    <scenario name="+33900000004">unregister\UA1_UnREGISTER.xml</scenario>                   
+  </testcase>
+
+  <testcase name="UA INVITE 403" description="UA REGISTER callflow" state="false">
+    <parameter name="[ipAddressSip]" operation="set" value="192.168.1.20" description="Addresse pour le protocole sip du XMLloader"/>      
+    <parameter name="[perCentExpiresReg]" operation="set" value="120" description="% of Expires header field value."/>
+    <scenario name="+33900000004">INVITE\UA_Inviter.xml</scenario>                       
+    <scenario name="+33900000005">INVITE\UA_Invitee.xml</scenario>                       
+  </testcase>
+
+  <testcase name="ReINVITE" description="ReINVITE callflow" state="true">
+    <scenario name="+33900000004">ReINVITE\ReINVITE_Inviter.xml</scenario>
+    <scenario name="+33900000005">ReINVITE\ReINVITE_Invitee.xml</scenario>
+  </testcase>
+
+  <testcase name="ReINVITE_with_capture" description="ReINVITE callflow" state="true">
+    <scenario name="StartCapture">ReINVITE\StartCapture.xml</scenario>                       
+    <scenario name="+33900000004">ReINVITE\ReINVITE_Inviter.xml</scenario>                       
+    <scenario name="+33900000005">ReINVITE\ReINVITE_Invitee.xml</scenario>                       
+    <scenario name="StopCapture">ReINVITE\StopCapture.xml</scenario>                       
+  </testcase>
+
+  <testcase name="ReINVITE Automat" description="ReINVITE : change of Offer/Answer media" state="true">
+    <parameter name="[IpMediaSDPInviter1]"    operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+    <parameter name="[IpMediaSDPInvitee1]"    operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+    <parameter name="[IpMediaSDPInviter2]"    operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+    <parameter name="[IpMediaSDPInvitee2]"    operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+
+    <parameter name="[AttributMediaSDPO1]"    operation="set" value="sendrecv"       description="SDP a"/>      
+    <parameter name="[AttributMediaSDPA1]"    operation="set" value="sendrecv"       description="SDP a"/>      
+    <parameter name="[ExpectedFlowFromInviterToInvitee1]" operation="set" value="true"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviterToInvitee1]" operation="set" value="false" description="Not ExpectedFlowFromInviterToInvitee1."/>
+    <parameter name="[ExpectedFlowFromInviteeToInviter1]" operation="set" value="true"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviteeToInviter1]" operation="set" value="false" description="Not ExpectedFlowFromInviteeToInviter1."/>      
+      
+    <parameter name="[AttributMediaSDPO2]"    operation="set" value="sendonly"       description="SDP a"/>      
+    <parameter name="[AttributMediaSDPA2]"    operation="set" value="recvonly"       description="SDP a"/>      
+    <parameter name="[ExpectedFlowFromInviterToInvitee2]" operation="set" value="true"          description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviterToInvitee2]" operation="set" value="false"          description="true : flow blocked, false : flow crossed."/>
+    <parameter name="[ExpectedFlowFromInviteeToInviter2]" operation="set" value="false"          description="true : flow blocked, false : flow crossed."/>
+    <parameter name="[NotExpectedFlowFromInviteeToInviter2]" operation="set" value="true"          description="true : flow blocked, false : flow crossed."/>
+
+    <scenario name="+33900000004">ReINVITE_Automat\ReINVITEa_Inviter.xml</scenario>                       
+    <scenario name="+33900000005">ReINVITE_Automat\ReINVITEa_Invitee.xml</scenario>                       
+  </testcase>
+
+  <testcase name="PRACK" description="callflow" state="true">
+    <parameter name="[IpMediaSDPInviter]"  operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+    <parameter name="[IpMediaSDPInvitee1]" operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+    <parameter name="[IpMediaSDPInvitee2]" operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+
+    <parameter name="[AttributMediaSDPO]"                 operation="set" value="sendrecv" description="SDP a"/>      
+    <parameter name="[AttributMediaSDPA1]"                operation="set" value="sendrecv" description="SDP a"/>      
+    <parameter name="[ExpectedFlowFromInviterToInvitee1]" operation="set" value="true"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviterToInvitee1]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[ExpectedFlowFromInviteeToInviter1]" operation="set" value="true"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviteeToInviter1]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+
+    <parameter name="[AttributMediaSDPA2]"                operation="set" value="sendrecv" description="SDP a"/>      
+    <parameter name="[ExpectedFlowFromInviterToInvitee2]" operation="set" value="true"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviterToInvitee2]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[ExpectedFlowFromInviteeToInviter2]" operation="set" value="true"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviteeToInviter2]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+
+    <scenario name="+33900000004">PRACK\PRACK_Inviter.xml</scenario>                       
+    <scenario name="+33900000005">PRACK\PRACK_Invitee.xml</scenario>                       
+  </testcase>
+
+  <testcase name="INVITE without SDP, with early media" description="ReINVITE callflow" state="true">
+    <parameter name="[IpMediaSDPInviter1]" operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+    <parameter name="[IpMediaSDPInvitee1]" operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+    <parameter name="[IpMediaSDPInviter2]" operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+    <parameter name="[IpMediaSDPInvitee2]" operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+
+    <parameter name="[AttributMediaSDPO1]"                operation="set" value="sendrecv" description="SDP a"/>      
+    <parameter name="[AttributMediaSDPA1]"                operation="set" value="sendrecv" description="SDP a"/>      
+    <parameter name="[ExpectedFlowFromInviterToInvitee1]" operation="set" value="true"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviterToInvitee1]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[ExpectedFlowFromInviteeToInviter1]" operation="set" value="true"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviteeToInviter1]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+
+    <parameter name="[AttributMediaSDPO2]"                operation="set" value="sendrecv" description="SDP a"/>      
+    <parameter name="[AttributMediaSDPA2]"                operation="set" value="sendrecv" description="SDP a"/>      
+    <parameter name="[ExpectedFlowFromInviterToInvitee2]" operation="set" value="true"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviterToInvitee2]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[ExpectedFlowFromInviteeToInviter2]" operation="set" value="true"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviteeToInviter2]" operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+
+    <scenario name="+33900000004">INVITE_noSDP\INVITEnoSDPwithEarlyMedia_Inviter.xml</scenario>                       
+    <scenario name="+33900000005">INVITE_noSDP\INVITEnoSDPwithEarlyMedia_Invitee.xml</scenario>                       
+  </testcase>
+
+  <testcase name="INVITE without SDP, without early media" description="ReINVITE callflow" state="true">
+    <parameter name="[IpMediaSDPInviter]" operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+    <parameter name="[IpMediaSDPInvitee]" operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+
+    <parameter name="[AttributMediaSDPO]"                 operation="set" value="sendrecv" description="SDP a"/>      
+    <parameter name="[AttributMediaSDPA]"                 operation="set" value="sendrecv" description="SDP a"/>      
+    <parameter name="[ExpectedFlowFromInviterToInvitee]"  operation="set" value="true"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviterToInvitee]"  operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[ExpectedFlowFromInviteeToInviter]"  operation="set" value="true"    description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviteeToInviter]"  operation="set" value="false"    description="true : flow blocked, false : flow crossed."/>      
+
+    <scenario name="+33900000004">INVITE_noSDP\INVITEnoSDPnoEarlyMedia_Inviter.xml</scenario>                       
+    <scenario name="+33900000005">INVITE_noSDP\INVITEnoSDPnoEarlyMedia_Invitee.xml</scenario>                       
+  </testcase>
+
+  <testcase name="Media Inactivity Timer" description="Initial and Subsquent Timers." state="true">
+    <parameter name="[perCentInitialTimer]"    operation="set" value="90" description="% of InitialTimer value."/>
+    <parameter name="[perCentSubsequentTimer]" operation="set" value="90" description="% of SubsequentTimer value."/>
+
+    <parameter name="[IpMediaSDPInviter]"                operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+    <parameter name="[IpMediaSDPInvitee]"                operation="set" value="[ipAddressSdp]" description="SDP c"/>      
+
+    <parameter name="[AttributMediaSDPOffer]"            operation="set" value="sendrecv"       description="SDP a"/>      
+    <parameter name="[AttributMediaSDPAnswer]"           operation="set" value="sendrecv"       description="SDP a"/>      
+    <parameter name="[ExpectedFlowFromInviterToInvitee]" operation="set" value="true"          description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviterToInvitee]" operation="set" value="false"          description="true : flow blocked, false : flow crossed."/>
+    <parameter name="[ExpectedFlowFromInviteeToInviter]" operation="set" value="true"          description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviteeToInviter]" operation="set" value="false"          description="true : flow blocked, false : flow crossed."/>      
+
+    <scenario name="+33900000004">INVITE_Automat\INVITEa_Inviter.xml</scenario>                       
+    <scenario name="+33900000005">INVITE_Automat\INVITEa_Invitee.xml</scenario>                       
+  </testcase>
+
+  
+  
+
+  <testcase name="Bad Media Flow" description="Bad source/destination port, IP address." state="true">
+    
+	
+    <parameter name="[AttributMediaSDPOffer]"            operation="set" value="sendrecv"       description="SDP a"/>      
+    <parameter name="[AttributMediaSDPAnswer]"           operation="set" value="sendrecv"       description="SDP a"/>      
+    <parameter name="[ExpectedFlowFromInviterToInvitee]" operation="set" value="true"          description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviterToInvitee]" operation="set" value="false"          description="true : flow blocked, false : flow crossed."/>
+    <parameter name="[ExpectedFlowFromInviteeToInviter]" operation="set" value="true"          description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviteeToInviter]" operation="set" value="false"          description="true : flow blocked, false : flow crossed."/>      
+    
+
+    <scenario name="+33900000004">BadMediaFlow\BadMediaFlow_Inviter.xml</scenario>                       
+    <scenario name="+33900000005">BadMediaFlow\BadMediaFlow_Invitee.xml</scenario>                       
+  </testcase>
+
+ <testcase name="Bad Media Flow 2" description="Bad source/destination port, IP address." state="true">
+    
+	
+    <parameter name="[AttributMediaSDPOffer]"            operation="set" value="sendrecv"       description="SDP a"/>      
+    <parameter name="[AttributMediaSDPAnswer]"           operation="set" value="sendrecv"       description="SDP a"/>      
+    <parameter name="[ExpectedFlowFromInviterToInvitee]" operation="set" value="true"          description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviterToInvitee]" operation="set" value="false"          description="true : flow blocked, false : flow crossed."/>
+    <parameter name="[ExpectedFlowFromInviteeToInviter]" operation="set" value="true"          description="true : flow blocked, false : flow crossed."/>      
+    <parameter name="[NotExpectedFlowFromInviteeToInviter]" operation="set" value="false"          description="true : flow blocked, false : flow crossed."/>      
+    
+
+    <scenario name="+33900000004">BadMediaFlow2\BadMediaFlow_Inviter.xml</scenario>                       
+    <scenario name="+33900000005">BadMediaFlow2\BadMediaFlow_Invitee.xml</scenario>                       
+  </testcase>
+  
+  
+  <testcase name="Hacker" description="A spoofer send media flow to the invitee with IP adress of the inviter." state="false">
+    <scenario name="+33900000004">Hacker\Hacker_Inviter.xml</scenario>                       
+    <scenario name="+33900000005">Hacker\Hacker_Invitee.xml</scenario>                       
+    <scenario name="Hacker">Hacker\Hacker_Spoofer.xml</scenario>                       
+  </testcase>
+
+  <testcase name="SUBSCRIBE NOTIFY" description="Message Summary and Message Waiting Indication Event Package" state="true">
+    <scenario name="+33900000004">SUBSCRIBE_NOTIFY\Subscriber.xml</scenario>                     
+    <scenario name="+33900000005">SUBSCRIBE_NOTIFY\Notifier.xml</scenario>                     
+  </testcase>
+
+  <testcase name="Refresh SUBSCRIBE" description="UA SUBSCRIBE callflow" state="false">
+    <scenario name="+33900000004">SUBSCRIBE\Subscriber1.xml</scenario>                     
+    <scenario name="+33900000005">SUBSCRIBE\Subscriber2.xml</scenario>                     
+    <scenario name="SUBSCRIBE">SUBSCRIBE\VoiceMail.xml</scenario>                     
+  </testcase>
+
+  <for index="[i]" from="1" to="7" step="1">
+    <testcase name="REGISTER[i]" description="Baterie de REGISTER" state="true">
+      <parameter name="[inviterCsv]"           operation="setFromCsv" value="register_unique\REGISTER.csv" value2="0" description="Num de tel de l'appelant"/>
+      <parameter name="[inviter]"              operation="set" value="[inviterCsv([i])]"                       description="Num de tel de l'appelant"/>
+      <parameter name="[PasswordCsv]"          operation="setFromCsv" value="register_unique\REGISTER.csv" value2="1" description="Password"/>
+      <parameter name="[Password]"             operation="set" value="[PasswordCsv([i])]"                      description="Password"/>
+      <parameter name="[UserPrivIdInviterCsv]" operation="setFromCsv" value="register_unique\REGISTER.csv" value2="2" description="User part privId"/>
+      <parameter name="[UserPrivIdInviter]"    operation="set" value="[UserPrivIdInviterCsv([i])]"             description="User part privId"/>
+
+      <scenario name="StopCapture">ReINVITE\StopCapture.xml</scenario>                       
+      <scenario name="REGISTER[i]">register_unique\UA1_REGISTER.xml</scenario>
+      <scenario name="StartCapture">ReINVITE\StartCapture.xml</scenario>                       
+    </testcase>
+  </for>
+
+</test>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="SIP" description="SIP regression tests">
+    
+    <parameter name="[Host-Tester]" operation="system.ipaddress"/>
+    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]"/>
+    <parameter name="[Port-Tester]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]"/>	
+   
+    <parameter name="[Host-Server]" operation="system.ipaddress"/>
+    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]"/>
+    <!-- VOXPILOT parameter name="[Host-Server]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[Port-Server]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--VOXPILOT parameter name="[Port-Server]" operation="set" value="5070"/-->
+    <parameter name="[Port-Server]" operation="set" value="5070"/>
+    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server]:[Port-Server]"/>	
+	
+    <!-- transport parameters-->
+    <parameter name="[transportRequest]" operation="set" value="udp"/>
+    <parameter name="[transportResponse]" operation="set" value="UDP"/>
+      
+    <parameter name="[domainName]" operation="set" value="devoteam.com"/>
+
+    <!-- timers for the retransmissions-->
+    <parameter name="[retransmitNumber]" operation="set" value="4"/>
+    <parameter name="[RetransTimeout]" operation="set" value="0.5"/>
+        
+    <parameter name="[retransmitTimers(0)]" operation="set" value="500"/>     	
+    <parameter name="[retransmitTimers(1)]" operation="set" value="1000"/>     	
+    <parameter name="[retransmitTimers(2)]" operation="set" value="2000"/>     	
+    <parameter name="[retransmitTimers(3)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(4)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(5)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(6)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(7)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(8)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(9)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(10)]" operation="set" value="4000"/>
+
+    <testcase name="100_dialog" description="balise CCXML startDialog" state="true">
+        
+        <parameter name="[inviterName]" operation="set" value="user"/>
+        <parameter name="[inviteeName]" operation="set" value="media"/>
+
+        <parameter name="[inviterHostRTP]" operation="set" value="[Host-Tester(0)]"/>
+        <parameter name="[inviterPortRTP]" operation="set" value="20000"/>
+        <parameter name="[inviteeHostRTP]" operation="set" value="[Host-Tester(0)]"/>
+        <parameter name="[inviteePortRTP]" operation="set" value="40000"/>
+
+        <scenario name="user">100_dialog/UACreceiver.xml</scenario>        
+        <scenario name="7070">100_dialog/UASsender.xml</scenario>
+    </testcase>
+
+	<testcase name="101_dialog_audio_video" description="H263+ Voice video session" state="true">        
+        <parameter name="[inviterName]" operation="set" value="user"/>
+        <parameter name="[inviteeName]" operation="set" value="media"/>
+
+        <parameter name="[inviterHostRTPAudio]" operation="set" value="[Host-Tester(0)]"/>
+        <parameter name="[inviterPortRTPAudio]" operation="set" value="20000"/>
+        <parameter name="[inviterHostRTPVideo]" operation="set" value="[Host-Tester(0)]"/>
+        <parameter name="[inviterPortRTPVideo]" operation="set" value="30000"/>
+        <parameter name="[inviteeHostRTPAudio]" operation="set" value="[Host-Tester(0)]"/>
+        <parameter name="[inviteePortRTPAudio]" operation="set" value="40000"/>
+        <parameter name="[inviteeHostRTPVideo]" operation="set" value="[Host-Tester(0)]"/>
+        <parameter name="[inviteePortRTPVideo]" operation="set" value="50000"/>
+
+		<parameter name="[payloadType]" operation="list.set" value="106"/>      	
+        <parameter name="[volume]" operation="list.set" value="10"/>
+        <parameter name="[duration]" operation="list.set" value="160"/>
+		
+        <scenario name="RTPFLOW">101_dialog_audio_video/UACreceiver.xml</scenario>        
+        <scenario name="7070">101_dialog_audio_video/UASsender.xml</scenario>
+    </testcase>
+
+    <testcase name="200_transfer" description="balise CCXML createCall" state="true">
+        
+        <parameter name="[inviterName]" operation="set" value="user"/>
+        <parameter name="[inviteeName]" operation="set" value="media"/>
+
+        <parameter name="[inviterHostRTP]" operation="set" value="[Host-Tester(0)]"/>
+        <parameter name="[inviterPortRTP]" operation="set" value="20000"/>
+        <parameter name="[inviteeHostRTP]" operation="set" value="[Host-Tester(0)]"/>
+        <parameter name="[inviteePortRTP]" operation="set" value="40000"/>
+
+        <scenario name="user">100_dialog/UACreceiver.xml</scenario>        
+        <scenario name="7070">100_dialog/UASsender.xml</scenario>
+    </testcase>
+
+
+   <testcase name="300_conference" description="balise CCXML createConference" state="true">
+        <parameter name="[inviteeName]" operation="set" value="conf"/>
+        <parameter name="[inviterName1]" operation="set" value="user1"/>
+        <parameter name="[inviterName2]" operation="set" value="user2"/>
+        <parameter name="[inviterName3]" operation="set" value="user3"/>
+
+        <parameter name="[inviterHostRTP1]" operation="set" value="[Host-Tester(0)]"/>
+        <parameter name="[inviterPortRTP1]" operation="set" value="20000"/>
+        <parameter name="[inviterHostRTP2]" operation="set" value="[Host-Tester(0)]"/>
+        <parameter name="[inviterPortRTP2]" operation="set" value="30000"/>
+        <parameter name="[inviterHostRTP3]" operation="set" value="[Host-Tester(0)]"/>
+        <parameter name="[inviterPortRTP3]" operation="set" value="40000"/>
+
+        <scenario name="user1">300_conference/UACsender.xml</scenario>        
+        <scenario name="user2">300_conference/UACreceiver1.xml</scenario>        
+        <scenario name="user3">300_conference/UACreceiver2.xml</scenario>        
+    </testcase>
+
+</test>

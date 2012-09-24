@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE Library [
+ <!ENTITY initvarStatsParam SYSTEM "./initvarStatsParam.xml">
+]>
+<scenario>
+	&initvarStatsParam;
+
+	<if>
+	    <condition> 	<test parameter="[testcase:indexReg]" condition="list.exists" not="true"/> 	</condition>
+        <then>
+			<!-- premiere execution du scenario. Initialisations . --> 
+	        <parameter name="[testcase:indexReg]" operation="set" value="0"/>
+			<parameter name="[testcase:allUserRegisteredOnce]" operation="set" value="false"/>	
+			<!-- Pour GIBA ouverture de la socket GGSN/WISP <=> HSS  (Ref. TS 33.178) --> 
+			   <!-- openSocketRadius socketName="GGSN_to_HSS" secret="[test:RADsharedSecret]"/ -->
+			   <createListenpointRADIUS name="GGSN_to_HSS" secret="[RADsharedSecret]" localHost="[RADlocalHost]" localPort="[RADlocalPort]"/>
+        </then>
+    </if>
+
+	<parameter name="[testcase:indexReg]" operation="number.add" value="[testcase:indexReg]" value2="1"/>    			
+    <if>
+	    <condition> <test parameter="[testcase:indexReg]" condition="number.greaterThan" value="[RangeNumberUser]"/>   </condition>
+    	<then>		   	
+	    	<parameter name="[test:startCall]" operation="system.semaphorenotify" value="10"/>
+			<parameter name="[testcase:indexReg]" operation="set" value="1"/>		
+			<!--<parameter name="[test:receive]" operation="system.semaphorenotify"/> -->
+	    </then>
+	</if>
+		
+	<parameter name="[Port-Tester]" operation="number.substract" value="65536" value2="[testcase:indexReg]"/>
+	<parameter name="[listenpoint_Register]" operation="set" value="listenpoint_[Port-Tester]"/>
+	<parameter name="[userName]" operation="set" value="[userTab([testcase:indexReg])]"/>
+	<createListenpointSIP name="[listenpoint_Register]" localHost="[Host-Tester([test:IndexSourceIPRegister])]" localPort="[Port-Tester]" transport="UDP"/>
+				
+  	<parameter name="[userNumberPhone]" operation="set" value="[userTabNP([testcase:indexReg])]"/>
+	<parameter name="[localTag]" operation="string.random" value="20"/>
+	<parameter name="[newCallId]" operation="number.random" value="100000000000000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="20"/> 
+	<!--parameter name="[URI]" operation="set" value="sip:[userName]@[domainName]" /-->
+	<parameter name="[URI]" operation="set" value="sip:[domainNameForGIBA]" />
+	
+	<parameter name="[finNum]" operation="string.substring" value="[userNumberPhone]" value2="1"/>
+	<parameter name="[IMSI]" operation="string.regexreplaces" value="[userNumberPhone]" value2="[userNumberPhone]" value3="20801[finNum]"/>
+		
+	<if>	<condition> <test parameter="[testcase:allUserRegisteredOnce]" condition="string.equals" value="false"/>  </condition>
+	<then> <!-- Emettre le Accounting Request Start RADIUS (Ref TS 29.061)  --> 
+		<parameter name="[ChargingID]" operation="number.random" value="1000000"/>
+		<!-- declarer un MSISDN dans le domaine utilise pour GIBA  - sip.3gppnetwork.org ( sans reprendre le meme que le MSISDN utilise dans le domaine home) --> 
+		
+		<sendMessageRADIUS listenpoint="GGSN_to_HSS" remoteHost="[RADhssHost]" remotePort="[RADhssPort]" >
+		<!-- Accounting Request (RFC 2865 Radius) --> 
+        <header code="4" />
+		<!-- @ du client radius GGSN / P-GW  (RFC 2865 Radius) --> 
+        <avp code="NAS-IP-Address" value="[NasIpAddress]" />
+		<!-- Hostname du client radius GGSN / P-GW  (RFC 2865 Radius) --> 
+        <avp code="NAS-Identifier" value="[NasIdentifier]" />
+		<!-- identifiant du point d'acces utilise par le user (RFC 2865 Radius)  -->
+	    <avp code="Called-Station-Id" value="[CalledStationId]" />
+		<!-- protocole utilise par le user (RFC 2865 Radius) --> 
+	    <avp code="Framed-Protocol" value="[FramedProtocol]" />	
+		<!-- @ a configurer pour le user (RFC 2865 Radius)  --> 
+		<avp code="Framed-IP-Address" value="[Host-Tester([test:IndexSourceIPRegister])]" />	
+		<!-- type de service demande par le user  (RFC 2865 Radius) --> 
+	    <avp code="Service-Type" value="[ServiceType]" />	
+		<!-- numero du user (RFC 2865 Radius)  --> 
+		<!-- TS 29.061 : MSISDN in international format --> 
+		 <!--avp code="Calling-Station-Id" value="[userNumberPhone]" /-->	
+	    <avp code="Calling-Station-Id" value="[userNumberPhone]" />	
+		<!-- Start / Stop/ Interim-Update (RFC2866 Radius Accounting) --> 		
+	    <avp code="Acct-Status-Type" value="Start" />	
+	    <avp code="User-Name" value="[UserName]" />	
+		<!-- Session Id . Dans notre cas on utilise le number phone pour pouvoir le recuperer lors du stop (RFC2866 Radius Accounting) --> 
+	    <avp code="Acct-Session-Id" value="[userNumberPhone]" />		
+		<!-- duree negociee a l ouverture de la session (RFC2866 Radius Accounting) --> 
+	    <avp code="Acct-Session-Time" value="[AcctSessionTime]" />	
+		<!-- indique comment le user a ete authentifie (RFC2866 Radius Accounting) --> 
+	    <avp code="Acct-Authentic" value="[AcctAuthentic]" />	
+		<!-- nombre de secondes ecoulees depuis premiere tentative user d emettre Accounting Req (RFC2866 Radius Accounting) --> 
+	    <avp code="Acct-Delay-Time" value="[AcctDelayTime]" />	
+		<!-- IMSI user (optional) TS 29.061 --> 
+	     <!--avp code="vendor-specific" value="3GPP"> <avp code="3GPP-IMSI" type="string" value="208013002648583"/> </avp-->	
+        <avp code="vendor-specific" value="3GPP"> <avp code="3GPP-IMSI" type="string" value="[IMSI]"/> </avp>
+		<!-- Charging ID  (optional) TS 29.061 --> 
+		<avp code="vendor-specific" value="3GPP"> <avp code="3GPP-Charging-ID" type="integer" value="[ChargingID]"/> </avp>
+		<!-- Type = IPv4 (0) IPv6 (2)  ou IPv4v6 (3) ou PPP (1)(conditional) TS 29.061 --> 
+		<avp code="vendor-specific" value="3GPP"> <avp code="3GPP-PDP-Type" type="integer" value="[3gppPdpType]"/> </avp>
+		<!-- S-GW ou SGSN @  (optional) TS 29.061 --> 
+		<avp code="vendor-specific" value="3GPP"> <avp code="3GPP-SGSN-Address" type="ipaddr" value="[3gppSGSNAddress]"/> </avp>
+		<!-- GGSN ou P-GW  (optional) TS 29.061 --> 
+		<avp code="vendor-specific" value="3GPP"> <avp code="3GPP-GGSN-Address" type="ipaddr" value="[3gppGGSNAddress]"/> </avp>
+		<!--   (optional) TS 29.061 --> 
+		<avp code="vendor-specific" value="3GPP"> <avp code="3GPP-Charging-Characteristics" type="string" value="[3gppChargingCharacteristics]"/> </avp>
+		<!-- MCC MNC de rattachement du SGSN  (optional) TS 29.061 --> 
+		<avp code="vendor-specific" value="3GPP"> <avp code="3GPP-SGSN-MCC-MNC" type="string" value="[3gppSGSNMccMnc]"/> </avp>
+		<!-- International Mobile Equipement Id and Software Version  (optional) TS 29.061 --> 
+		<avp code="vendor-specific" value="3GPP"> <avp code="3GPP-IMEISV" type="string" value="3578410332935500"/> </avp>
+		<!-- RAdio Access Type   (optional) TS 29.061 + TS 29.274 --> 
+		<avp code="vendor-specific" value="3GPP"> <avp code="3GPP-RAT-Type" type="octets" value="[3gppRatType]"/> </avp>
+		<!-- Geo Location 1er octet = repère SAI (1 - Service Area Id) /  RAI (2 - Routing Area Id) / CGI (0 - Cell Global Id) / etc.. (optional) TS 29.061 --> 
+		<avp code="vendor-specific" value="3GPP"> <avp code="3GPP-User-Location-Info" type="octets" value="0102F810631EDB83"/> </avp>
+	    </sendMessageRADIUS>
+		
+		<!-- attendre la réponse  (qui ne contient rien de particulier, juste acquittement) Accounting Resp --> 
+		<receiveMessageRADIUS listenpoint="GGSN_to_HSS" timeout="[MaxWaitHSSMessage]" failedOnTimeout="false">
+        <parameter name="[message]" operation="protocol.setFromMessage" value="message" />
+		</receiveMessageRADIUS>
+		<!-- on analyse rien pour le moment --> 
+	</then>
+	</if>
+	
+	<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint_Register]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+<![CDATA[
+REGISTER [URI] SIP/2.0
+To:  <sip:[IMSI]@[domainNameForGIBA]>
+From: <sip:[IMSI]@[domainNameForGIBA]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [Host-Tester([test:IndexSourceIPRegister])]:[Port-Tester];branch=z9hG4bK-[newBranchId]
+Contact: <sip:[Host-Tester([test:IndexSourceIPRegister])]:[Port-Tester]>
+Expires: [RegisterExpires]
+Max-Forwards: 70
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+		<if>
+			<condition> <test parameter="[testcase:allUserRegisteredOnce]" condition="string.equals" value="false"/>  </condition>
+		<then>
+			<parameter name="[test:listListenPointName]" operation="list.addLast" value="[test:listListenPointName]" value2="[listenpoint_Register]" />
+			<parameter name="[test:listUsedPort]" operation="list.addLast" value="[test:listUsedPort]" value2="[Port-Tester]" />
+		 	 <parameter name="[test:listUsedIp]" operation="list.addLast" value="[test:listUsedIp]" value2="[Host-Tester([test:IndexSourceIPRegister])]" />
+		</then>
+		</if>	
+		<if>
+			<condition> <test parameter="[testcase:indexReg]" condition="number.greaterEqualThan" value="[RangeNumberUser]"/>   </condition>
+    	<then>	<parameter name="[testcase:allUserRegisteredOnce]" operation="set" value="true"/>	</then>
+		</if>
+	<stats>
+	<counter name="REG out"><increase>1</increase></counter>
+	</stats>
+	
+<finally>
+ 		<parameter name="[test:IndexSourceIPRegister]" operation="number.add" value="[test:IndexSourceIPRegister]" value2="1"/> 
+		<if>
+			<condition> <test parameter="[test:IndexSourceIPRegister]" condition="number.greaterEqualThan" value="[maxSourceIP]"/>  </condition>
+			<then>	<parameter name="[test:IndexSourceIPRegister]" operation="set" value="0"/>  </then>
+		</if>	
+</finally>
+
+</scenario>

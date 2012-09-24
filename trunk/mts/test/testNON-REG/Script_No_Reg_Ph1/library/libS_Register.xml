@@ -1,0 +1,158 @@
+<!--
+Function description: Simulator/server for Subscriber Registration
+
+Input parameters:
+
+
+	
+Output parameters :
+
+-->
+
+<!--
+Initialisation of procedure local parameters: NONE
+-->
+
+
+	<label name="Begin"/>
+	
+	<receiveRequestSIP name="wait_REGISTER" method="REGISTER" timeout="0">
+		<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+		<parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>  	
+		<parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>  	
+		<parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/>
+  		<parameter name="[lastCseq]" operation="setFromMessage" value="header:CSeq"/>
+		<parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-ID"/>
+		
+	  	<parameter name="[Authorization]" operation="setFromMessage" value="header:Authorization"/>
+    		<parameter name="[AuthorizationURI]" operation="setFromMessage" value="header:Authorization:URI"/> 
+    		<parameter name="[AuthorizationNonce]" operation="setFromMessage" value="header:Authorization:Parameter:nonce"/> 
+    		<parameter name="[AuthorizationResponse]" operation="setFromMessage" value="header:Authorization:Parameter:response"/>
+    		<parameter name="[AuthorizationRealm]" operation="setFromMessage" value="header:Authorization:Parameter:realm"/>
+    		<parameter name="[AuthorizationQop]" operation="setFromMessage" value="header:Authorization:Parameter:qop"/>
+    		<parameter name="[AuthorizationCnonce]" operation="setFromMessage" value="header:Authorization:Parameter:cnonce"/>
+    		<parameter name="[AuthorizationNC]" operation="setFromMessage" value="header:Authorization:Parameter:nc"/>
+    		<parameter name="[AuthorizationUsername]" operation="setFromMessage" value="header:Authorization:Parameter:username"/>
+    		<parameter name="[AuthorizationScheme]" operation="setFromMessage" value="header:Authorization:Parameter:scheme"/>
+    		<parameter name="[AuthorizationOpaque]" operation="setFromMessage" value="header:Authorization:Parameter:opaque"/>
+    		<parameter name="[AuthorizationAlgorithm]" operation="setFromMessage" value="header:Authorization:Parameter:algorithm"/>
+    		
+		<parameter name="[UserName]" operation="setFromMessage" value="header:To:Address:URI:User"/>  	    		
+		<parameter name="[Method]" operation="setFromMessage" value="firstline:Method"/>				
+		<parameter name="[URI]" operation="setFromMessage" value="firstline:URI" />
+
+	</receiveRequestSIP>
+
+	<if>
+	<condition>
+		<test parameter="[Authorization]" condition="isEmpty"/>
+	</condition>
+	<then>
+	
+		<parameter name="[Nonce]" operation="identifier" value="newString" value2="32"/>
+		<sendResponseSIP name="Send 401 Unauthorized">
+<![CDATA[SIP/2.0 401 Unauthorized
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Max-Forwards: 70
+WWW-Authenticate: Digest realm="sip.mobistar.fr", domain="sip:ttcnserver@sip.mobistar.fr", nonce="[Nonce]", stale=false, qop="auth", algorithm=MD5
+Content-Length: 0]]></sendResponseSIP>
+
+
+<goto  name="loop" label="Begin" state="true"/>
+
+	</then>
+	<else>
+		<!--parameter name="[UserName]" operation="set" value="33875621612@sip.mobistar.com"/-->	
+		<!--parameter name="[UserName]" operation="set" value="[AuthorizationUsername]"/-->
+		<!--parameter name="[Password]" operation="set" value="imt30imt30"/-->			
+			
+		<parameter name="[HA1]" operation="set"    value="[AuthorizationUsername]" />
+		<parameter name="[HA1]" operation="concat" value="[HA1]"      value2=":" />
+		<parameter name="[HA1]" operation="concat" value="[HA1]"      value2="[AuthorizationRealm]" />
+		<parameter name="[HA1]" operation="concat" value="[HA1]"      value2=":" />
+		<parameter name="[HA1]" operation="concat" value="[HA1]"      value2="[Password]" />
+		<parameter name="[HA1]" operation="digest" value="[HA1]"      value2="MD5" />
+	
+		<parameter name="[HA2]" operation="set"    value="[Method]" />
+		<parameter name="[HA2]" operation="concat" value="[HA2]"      value2=":" />
+		<parameter name="[HA2]" operation="concat" value="[HA2]"      value2="[URI]" />
+		<parameter name="[HA2]" operation="digest" value="[HA2]"      value2="MD5" />		
+
+		<parameter name="[AuthResponse]" operation="set"    value="[HA1]" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[AuthorizationNonce]" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[AuthorizationNC]" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[AuthorizationCnonce]" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[AuthorizationQop]" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2=":" />
+		<parameter name="[AuthResponse]" operation="concat" value="[AuthResponse]" value2="[HA2]" />
+ 		<parameter name="[AuthResponse]" operation="digest" value="[AuthResponse]" value2="MD5" />
+
+		<if>
+		<condition>
+			<test parameter="[AuthorizationURI]" condition="equals" value="[URI]"/>
+			<!--test parameter="[AuthorizationNonce]" condition="equals" value="[Nonce]"/-->		
+			<test parameter="[AuthorizationResponse]" condition="equals" value="[AuthResponse]"/>					
+			<test parameter="[AuthorizationRealm]" condition="equals" value="sip.mobistar.fr"/>								
+			<test parameter="[AuthorizationQop]" condition="equals" value="auth"/>					
+			<!--test parameter="[AuthorizationCnonce]" condition="equals" value="11fc4a68"/-->					
+			<test parameter="[AuthorizationNC]" condition="equals" value="00000001"/>					
+			<!--test parameter="[AuthorizationUsername]" condition="equals" value="[UserName]"/-->		
+			<test parameter="[AuthorizationOpaque]" condition="equals" value=""/>	
+			<test parameter="[AuthorizationAlgorithm]" condition="equals" value="MD5"/>				
+		</condition>
+		<then>
+		</then>
+		<else>
+			<sendResponseSIP name="Send 401 Unauthorized">
+<![CDATA[SIP/2.0 401 Unauthorized
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Max-Forwards: 70
+WWW-Authenticate: Digest realm="sip.mobistar.fr", domain="sip:ttcnserver@sip.mobistar.fr", nonce="1af6e6744f2880715614625e0da87566", stale=false, qop="auth", algorithm=MD5
+Content-Length: 0]]></sendResponseSIP>
+
+
+				
+    			<goto  name="loop" label="Begin" state="true"/>			
+    			
+		</else>
+		</if>	
+		<sendResponseSIP name="Send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Max-Forwards: 70
+WWW-Authenticate: Digest realm="sip.mobistar.fr", domain="sip:ttcnserver@sip.mobistar.fr", nonce="1af6e6744f2880715614625e0da87566", stale=false, qop="auth", algorithm=MD5
+Content-Length: 0]]></sendResponseSIP>
+
+
+
+	</else>
+	</if>
+
+ 
+<closeProviderSIP name="close SIP provider" providerName="[provider_Name]"/>
+<exit name="failed exit" failed="false"/>
+    	
+<!--goto  name="loop" label="Begin" state="true"/-->
+    	

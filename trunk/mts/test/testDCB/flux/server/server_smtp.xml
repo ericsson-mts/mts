@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+<while>
+<condition />
+<do>
+
+
+<receiveRequestSMTP name="Receive MSG" timeout="0" state="true">
+	<!--parameter name="[result]" operation="setFromMessage" value="firstline:replyCode"/-->
+	<parameter name="[dodo]" operation="setFromMessage" value="message:transactionId"/>
+	<parameter name="[cmd]" operation="setFromMessage" value="firstline:commandName"/>
+</receiveRequestSMTP>
+<parameter name="[inDiction]" operation="set" value="false"/>
+
+
+<!--*************************************EHLO******************************************************-->
+<if>
+<condition>
+<test parameter="[cmd]" condition="equals" value="EHLO"/>
+</condition>
+
+<then>
+<sendResponseSMTP name="Receive EHLO" transactionId="[dodo]" state="true"><![CDATA[250-size.does.matter.af.MIL offers FIFTEEN extensions:
+250-8BITMIME
+250-PIPELINING
+250-DSN
+250-ENHANCEDSTATUSCODES
+250-EXPN
+250-HELP
+250-SAML
+250-SEND
+250 SIZE 51200000
+]]></sendResponseSMTP>
+<parameter name="[inDiction]" operation="set" value="true"/>
+</then>
+</if>
+<!--*************************************MAIL******************************************************-->
+
+<if>
+<condition>
+<test parameter="[cmd]" condition="equals" value="MAIL"/>
+</condition>
+
+<then>
+<sendResponseSMTP name="Receive Send MAIL request" transactionId="[dodo]" state= "true"><![CDATA[250 OK]]>
+</sendResponseSMTP>
+<parameter name="[inDiction]" operation="set" value="true"/>
+</then>
+</if>
+
+
+<!--*************************************RCPT******************************************************-->
+
+<if>
+<condition>
+<test parameter="[cmd]" condition="equals" value="RCPT"/>
+</condition>
+
+<then>
+<sendResponseSMTP name="Receive recept RCPT request" transactionId="[dodo]" state= "true"><![CDATA[550 250 OK]]>
+</sendResponseSMTP>
+<parameter name="[inDiction]" operation="set" value="true"/>
+</then>
+</if>
+
+<!--*************************************DATA******************************************************-->
+
+<if>
+<condition>
+<test parameter="[cmd]" condition="equals" value="DATA"/>
+</condition>
+
+<then>
+<sendResponseSMTP name="Receive recept RCPT request" transactionId="[dodo]" state= "true"><![CDATA[354 Start mail input; end with <CRLF>.<CRLF>]]>
+</sendResponseSMTP>
+<parameter name="[inDiction]" operation="set" value="true"/>
+</then>
+</if>
+
+<!--*************************************BLA BLA BLA************************************************-->
+
+<if>
+<condition>
+<test parameter="[cmd]" condition="equals" value="CNTT"/>
+</condition>
+
+<then>
+<sendResponseSMTP name="Receive recept RCPT request" transactionId="[dodo]" state= "true"><![CDATA[250 OK]]>
+</sendResponseSMTP>
+<parameter name="[inDiction]" operation="set" value="true"/>
+</then>
+</if>
+
+<!--*************************************QUIT******************************************************-->
+
+<if>
+<condition>
+<test parameter="[cmd]" condition="equals" value="QUIT"/>
+</condition>
+
+<then>
+<sendResponseSMTP name="Quit" transactionId="[dodo]" state= "true"><![CDATA[221 hotmail.com Service closing transmission channel]]>
+</sendResponseSMTP>
+<parameter name="[inDiction]" operation="set" value="true"/>
+</then>
+</if>
+
+
+
+<if>
+<condition>
+<test parameter="[inDiction]" condition="equals" value="false"/>
+</condition>
+
+<then>
+<sendResponseSMTP name="[cmd]" transactionId="[dodo]" state= "true"><![CDATA[250 OK]]>
+</sendResponseSMTP>
+</then>
+</if>
+
+</do>
+</while>
+</scenario>

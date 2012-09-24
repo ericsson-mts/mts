@@ -1,0 +1,149 @@
+<!--
+To use this part of XML code in a scenario,
+- input parameters must be defined and setted locally (by the caller scenario).
+- output parameters may be used in the scenario after the "call".
+
+Input parameters :
+- [RADIUSsocketOpen]      : 
+- [source_ip]             : 
+- [radius_nas_port]       : 
+- [radius_secret]         : 
+- [radius_ip]             : 
+- [radius_auth_port]      : 
+- [vendorId_FT]           : 
+- [msisdn]                : 
+- [omm_content_type]      : 
+- [source-access-type]    : 
+
+Output parameters :
+- [RADIUSsocketName] : 
+- [RADIUSsocketOpen] : 
+
+-->
+
+      <!-- open RADIUS Connection -->
+      <!--parameter name="[RADIUSsocketName]" operation="set" value="client_[testcase:index]_OMM"/>
+      <openSocketRadius socketName="[RADIUSsocketName]" localHost="[source_ip]" localPort="[radius_nas_port]" secret="[radius_secret]"/>
+      <parameter name="[RADIUSsocketOpen]" operation="set" value="true"/-->
+
+      <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+      <parameter name="[timestamp]" operation="number.divide" value="[timestamp]" value2="1000"/>
+      <parameter name="[timestamp]" operation="number.floor" value="[timestamp]" />
+
+      <parameter name="[transaction-id]" operation="number.uid"   value="nextInteger" value2="inutile" />
+      <parameter name="[transaction-id]" operation="string.regexMatches" value="00[transaction-id]" value2="[0-9]{3}$" />
+      <parameter name="[transaction-id]" operation="set"          value="[timestamp][transaction-id]" />
+      <parameter name="[transaction-id]" operation="string.regexMatches" value="[transaction-id]" value2="[0-9]{8}$" />
+
+      <!-- send Radius Access-Request -->
+      <sendMessageRADIUS listenpoint="[RADIUSsocketName]" remoteHost="[radius_host_omm]" remotePort="[radius_port_omm]">
+        <!-- Header -->
+        <header code="1"/>
+
+        <!-- AVPs -->
+        <!-- c.f. E-Mail/OMM Charging Interface Contract Data & Content Billing -->
+        <!-- Vendor-Specific (26) -->
+        <avp code="26" value="[vendorId_FT]">
+          <data value="d15"/>
+          <!-- 26.1368.15.0   : transaction-id -->
+          <avp code="0"   value="h0101:2 s[transaction-id]" type="octet"/>
+          <!-- 26.1368.15.1   : transaction-type -->
+          <avp code="1"   value="0" type="octet"/> <!-- 0=Authorization Request -->
+          <!-- 26.1368.15.2   : msisdn -->
+          <avp code="2"   value="[33msisdn]" type="string"/>
+          <!-- 26.1368.15.6   : timestamp -->
+          <avp code="6"   value="[timestamp]" type="integer"/>
+          <!-- 26.1368.15.8   : service-pf-id -->
+          <avp code="8"   value="MDSP" type="string"/> <!-- Static value for MDSP CB Enabler -->
+          <!-- 26.1368.15.9   : rating-event-type -->
+          <avp code="9"   value="20020" type="string"/>
+          <!-- 26.1368.15.11  : provider-id -->
+          <avp code="11"  value="omm.orange.fr" type="string"/>
+          <!-- 26.1368.15.12  : content-type -->
+          <avp code="12"  value="[omm_content_type]" type="string"/> <!-- MAIL_[SEND_SMS/SEND_WAP/SMS_NOTIF/SUM_NOTIF/MMS_NOTIF/WAP_NOTIF/LWC_NOTIF] -->
+          <!-- 26.1368.15.13  : rating-level -->
+          <avp code="13"  value="level-1" type="string"/>
+          <!-- 26.1368.15.15  : aoc-flag -->
+          <avp code="15"  value="0" type="octet"/> <!-- 0=no Advice of charge is requested -->
+          <!-- 26.1368.15.18  : direct-accounting-flag -->
+          <avp code="18"  value="1" type="octet"/> <!-- 1=Direct accounting without any reservation -->
+          <!-- 26.1368.15.19  : zone-id -->
+          <avp code="19"  value="Orange" type="string"/>
+          <!-- 26.1368.15.26  : data-volume-incoming -->
+          <avp code="26"  value="200" type="integer"/>
+          <!-- 26.1368.15.33  : source-access-type -->
+          <avp code="33"  value="[source-access-type]" type="octet"/> <!-- 0=Wap, 2=SMS -->
+          <!-- 26.1368.15.43  : spec-supervision-flag -->
+          <avp code="43"  value="0" type="octet"/> <!-- Flag not set -->
+          <!-- 26.1368.15.44  : spec-reservation-flag -->
+          <avp code="44"  value="0" type="integer"/> <!-- Flag not set -->
+          <!-- 26.1368.15.45  : bundle-purchase-flag -->
+          <avp code="45"  value="0" type="integer"/> <!-- Flag not set -->
+          <!-- 26.1368.15.51  : recipient-nb -->
+          <avp code="51"  value="1" type="octet"/>
+          <!-- 26.1368.15.63  : Origin-operator -->
+          <avp code="63"  value="pop3.yahoo.com" type="string"/>
+        </avp>
+      </sendMessageRADIUS>
+      <parameter name="[test:radiusRequest]" operation="number.add" value="[test:radiusRequest]" value2="1"/>
+      <parameter name="[testcase:profilRequest_[index]]" operation="number.add" value="[testcase:profilRequest_[index]]" value2="1"/>
+    
+    <receiveMessageRADIUS listenpoint="[RADIUSsocketName]" request="false">
+        <parameter name="[result]" operation="protocol.setFromMessage" value="header:code" />
+    </receiveMessageRADIUS>
+    
+    <parameter name="[expected]" value="ok" operation="string.equals" value2="[omm_result]" />
+    <parameter name="[result]" value="2" operation="string.equals" value2="[result]" />
+    <if>
+        <condition>
+            <test parameter="[result]" condition="boolean.equals" value="[expected]" />
+        </condition>
+        <then>
+            <parameter name="[test:radiusResponse]" operation="number.add" value="[test:radiusResponse]" value2="1"/>
+            <parameter name="[testcase:profilResponse_[index]]" operation="number.add" value="[testcase:profilResponse_[index]]" value2="1"/>
+        </then>
+        <else>
+            <stats>
+                <flow name="[0msisdn] omm failure" shortDesc="omm failure" description="[0msisdn] omm failure" longDesc="[0msisdn] omm failure">
+                    <increase>1</increase>
+                </flow>
+            </stats>
+        </else>
+    </if>
+    
+      <!-- send Radius Access-Request : Refunding -->
+      <!--parameter name="[timestamp]" operation="system.timestamp" value="1970"/-->
+      <!--parameter name="[timestamp]" operation="number.divide" value="[timestamp]" value2="1000"/-->
+      <!--parameter name="[timestamp]" operation="number.floor" value="[timestamp]" /-->
+      <!--sendRequestRadius socketName="[RADIUSsocketName]" remoteHost="[radius_ip]" remotePort="[radius_auth_port]"-->
+        <!-- Header -->
+        <!--header code="1"/-->
+
+        <!-- AVPs -->
+        <!-- c.f. E-Mail/OMM Charging Interface Contract Data & Content Billing -->
+        <!-- Vendor-Specific (26) -->
+        <!--avp code="26" value="[vendorId_FT]"-->
+          <!--data value="d15"/-->
+          <!-- 26.1368.15.0   : transaction-id -->
+          <!--avp code="0"   value="[transaction-id]" type="string"/-->
+          <!-- 26.1368.15.1   : transaction-type -->
+          <!--avp code="1"   value="3" type="octet"/--> <!-- 3=Refunding Request -->
+          <!-- 26.1368.15.2   : msisdn -->
+          <!--avp code="2"   value="[msisdn]" type="string"/-->
+          <!-- 26.1368.15.6   : timestamp -->
+          <!--avp code="6"   value="[timestamp]" type="integer"/-->
+          <!-- 26.1368.15.40  : service-id -->
+          <!--avp code="40"  value="ToBeDefined" type="string"/-->
+          <!-- 26.1368.15.43  : spec-supervision-flag -->
+          <!--avp code="43"  value="0" type="octet"/--> <!-- Flag not set -->
+          <!-- 26.1368.15.44  : spec-reservation-flag -->
+          <!--avp code="44"  value="0" type="octet"/--> <!-- Flag not set -->
+          <!-- 26.1368.15.45  : bundle-purchase-flag -->
+          <!--avp code="45"  value="0" type="octet"/--> <!-- Flag not set -->
+        <!--/avp-->
+      <!--/sendRequestRadius-->
+      <!--receiveResponseRadius socketName="[RADIUSsocketName]"/-->
+
+      <!-- close RADIUS Connection -->
+      <!--closeSocketRadius socketName="[RADIUSsocketName]"/>
+      <parameter name="[RADIUSsocketOpen]" operation="set" value="false"/-->

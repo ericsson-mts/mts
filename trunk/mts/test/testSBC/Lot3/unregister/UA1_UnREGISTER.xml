@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!-- name="Send UnREGISTER of the Inviter" -->
+<scenario>
+<!-- Send UNREGISTER until 200 OK is received. Perform MD5 algorithm on a 401 response. -->
+
+  <!--parameter name="[UserName]" operation="set" value="33875621612@[domainName]"/-->
+  <parameter name="[UserName]"    operation="set" value="[UserPrivIdInviter]@[domainName]"/>           
+  <parameter name="[Password]"    operation="set" value="imt30imt30"/>                       
+  <parameter name="[Request-URI]" operation="set" value="sip:[domainName]" />
+
+  <parameter name="[FromTag]"       operation="identifier" value="newString"    value2="10"/>
+  <parameter name="[newCallId]"      operation="identifier" value="nextInteger"  value2="1000000"/>
+  <parameter name="[newCSeq]"        operation="identifier" value="nextInteger"  value2="1000000"/>
+  <parameter name="[newBranchId]"    operation="identifier" value="newString"    value2="10"/>
+
+  <sendRequestSIP name="Send UNREGISTER">
+<![CDATA[
+REGISTER [Request-URI] SIP/2.0
+To: "[inviter]" <sip:[inviter]@[domainName]>
+From: "[inviter]" <sip:[inviter]@[domainName]>;tag=[FromTag]
+Call-ID:[newCallId]
+Expires:0
+CSeq: [newCSeq] REGISTER
+Via: SIP/2.0/UDP [ipAddressSip]:[portSip];branch=[magicCookie][newBranchId]
+Max-Forwards: [MaxForwards]
+Contact:*
+Content-Length: 0
+]]>
+  </sendRequestSIP>
+
+  <label name="UNREGISTER"/>
+  <receiveResponseSIP name="receive UNREGISTER response" method="REGISTER">
+    <parameter name="[StatusCode]" operation="setFromMessage" value="firstline:StatusCode"/>        
+
+    <parameter name="[WWWAuthRealm]" operation="setFromMessage" value="header:WWW-Authenticate:Parameter:realm"/>                                                                   
+    <parameter name="[WWWAuthNonce]" operation="setFromMessage" value="header:WWW-Authenticate:Parameter:nonce"/>                                   
+    <parameter name="[WWWAuthQop]"   operation="setFromMessage" value="header:WWW-Authenticate:Parameter:qop"/>
+  </receiveResponseSIP>
+
+  <if>
+    <condition>
+      <test parameter="[StatusCode]" condition="equals" value="401" />
+    </condition>
+    <then>  
+      <parameter name="[WWWAuthRealm401]" operation="set" value="[WWWAuthRealm]" />
+      <parameter name="[WWWAuthNonce401]" operation="set" value="[WWWAuthNonce]" />
+      <parameter name="[WWWAuthQop401]"   operation="set" value="[WWWAuthQop]" />
+
+      <parameter name="[Method]"     operation="set" value="REGISTER"/>                           
+      <parameter name="[NonceCount]" operation="set" value="00000001" />
+      <parameter name="[CNonce]"     operation="set" value="11fc4a68"/>
+
+      <parameter name="[HA1]"          operation="digest" value="[UserName]:[WWWAuthRealm401]:[Password]" value2="MD5"/>
+      <parameter name="[HA2]"          operation="digest" value="[Method]:[Request-URI]" value2="MD5" />
+      <parameter name="[AuthResponse]" operation="digest" value="[HA1]:[WWWAuthNonce401]:[NonceCount]:[CNonce]:[WWWAuthQop401]:[HA2]" value2="MD5" />
+
+      <parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+      <parameter name="[newCSeq]"     operation="add" value="[newCSeq]" value2="1"/>      
+      <parameter name="[FromTag]"     operation="identifier" value="newString" value2="10"/>
+
+      <sendRequestSIP name="Send UNREGISTER">
+<![CDATA[               
+REGISTER [Request-URI] SIP/2.0
+To: "[inviter]" <sip:[inviter]@[domainName]>
+From: "[inviter]" <sip:[inviter]@[domainName]>;tag=[FromTag]
+Call-ID:[newCallId]
+Expires:0
+CSeq: [newCSeq] REGISTER
+Via: SIP/2.0/UDP [ipAddressSip]:[portSip];branch=[magicCookie][newBranchId]
+Max-Forwards: [MaxForwards]
+Contact:*
+Authorization: Digest username="[UserName]", realm="[WWWAuthRealm401]", nonce="[WWWAuthNonce401]", algorithm=MD5, opaque="", uri="[Request-URI]", response="[AuthResponse]", cnonce="[CNonce]", qop=[WWWAuthQop401], nc=[NonceCount]
+Content-Length: 0
+]]>
+      </sendRequestSIP>       
+      <goto label="UNREGISTER" name="loop : wait 200 OK"  state="true"/>
+    </then>
+    <else>
+      <if>
+        <condition>
+          <test parameter="[StatusCode]" condition="equals" value="200" />
+        </condition>
+        <then>
+          <!-- Continue -->
+        </then>
+        <else>
+          <goto label="UNREGISTER" name="loop : wait 200 OK"  state="true"/>
+        </else>
+      </if> 
+    </else>
+  </if>
+
+</scenario>

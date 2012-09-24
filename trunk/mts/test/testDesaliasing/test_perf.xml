@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test name="desaliasing_tests">
+    <parameter name="[enabler_host]" operation="set" value="192.168.70.2" editable="true"/>
+    <parameter name="[enabler_port]" operation="set" value="9043" editable="true"/>
+
+    <parameter name="[enabler_url]" operation="set" value="https://[enabler_host]:[enabler_port]" />
+
+    <parameter name="[signature_secret]" operation="set" value="toto" editable="true"/>
+
+    <parameter name="[max_successive_requests]" operation="set" value="98" editable="true"/>
+
+    <parameter name="[delayed_server_delay]" operation="set" value="4000" />
+
+    <testcase name="900_fw_simulator" state="false">
+        <scenario name="HTTP">900_fw_simulator/server.xml</scenario>
+    </testcase>
+
+    <testcase name="901_delayed_fw_simulator" state="false">
+        <parameter name="[messages]" operation="create" />
+        <parameter name="[messages_send_date]" operation="create" />
+        <parameter name="[messages_transaction_ids]" operation="create" />
+        
+        <scenario name="HTTP">901_delayed_fw_simulator/server.xml</scenario>
+        <scenario name="sender">901_delayed_fw_simulator/server_sender.xml</scenario>
+    </testcase>
+
+    <for index="[i]" from="0" to="25" step="1">
+        <testcase name="desaliasing_dev_client_[i]" state="true" >
+            <parameter name="[conn_counter]" operation="set" value="0" />
+            <scenario name="client">000_dev_client/scenario.xml</scenario>
+        </testcase>
+    </for>
+</test>

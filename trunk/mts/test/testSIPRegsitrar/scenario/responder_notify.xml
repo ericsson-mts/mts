@@ -1,0 +1,212 @@
+<parameter name="[impuRemote]" operation="set" value="[inviter]"/>
+<parameter name="[requestURI]" operation="set" value="sip:[impuRemote]@[domainName]"/>
+
+<!-- donnees pour reponse message OPTIONS -->
+<parameter name="[optionsContact]" operation="set" value='[contact];+couscous;+g.3gpp.cs-voice;+g.3gpp.app_ref="urn%3Aurn-xxx%3A3gpp-application.ims.iari.gsma-is";explicit'/>
+<parameter name="[optionsContact1]" operation="set" value='[contact];+g.3gpp.cs-voice'/>
+<parameter name="[optionsAcceptContact]" operation="set" value='*;+couscous;+g.3gpp.cs-voice;+g.3gpp.app_ref="urn%3Aurn-xxx%3A3gpp-application.ims.iari.gsma-is";explicit'/>
+<parameter name="[optionsAcceptContact1]" operation="set" value='*;+g.3gpp.cs-voice'/>
+<parameter name="[optionsRequestURI]" operation="set" value="sip:[impuRemote]@[domainName]"/>
+<parameter name="[optionsAllow]" operation="set" value="COUSCOUS, PRACK, SUBSCRIBE, NOTIFY, REFER, INVITE, ACK, BYE, CANCEL, UPDATE, OPTIONS, INFO, PUBLISH"/>
+<parameter name="[optionsSupported]" operation="set" value="couscous, replaces, 100rel"/>
+<parameter name="[optionsAccept]" operation="set" value="couscous/merguez, application/sdp, application/dtmf-relay, application/simple-message-summary, audio/tone, audio/telephone-event"/>
+<parameter name="[optionsSdpContent1]" operation="set" value="v=0&#13;&#10;o=+12345 67890 12345 IN IP4 [ipAddressSrc]&#13;&#10;s=-&#13;&#10;c=IN IP4 [ipAddressSrc]&#13;&#10;t=0 0&#13;&#10;m=video 0 RTP/AVP 96&#13;&#10;a=rtpmap:96 h263-2000&#13;&#10;m=message 0 TCP/MSRP *&#13;&#10;a=accept-types:image/bmp image/jpeg image/png&#13;&#10;a=file-selector&#13;&#10;max-size:524288"/>
+<parameter name="[optionsSdpContent3]" operation="set" value="v=0&#13;&#10;o=+12345 67890 12345 IN IP4 [ipAddressSrc]&#13;&#10;s=-&#13;&#10;c=IN IP4 [ipAddressSrc]&#13;&#10;t=0 0&#13;&#10;m=video 0 RTP/AVP 34 96 97 98&#13;&#10;a=rtpmap:96 H263-2000&#13;&#10;a=rtpmap:97 H264/90000&#13;&#10;a=rtpmap:98 MP4V-ES/90000&#13;&#10;m=message 0 TCP/MSRP *&#13;&#10;a=accept-types:image/bmp image/jpeg image/png image.gif text/plain text/html&#13;&#10;a=file-selector&#13;&#10;a=max-size:524288&#13;&#10;a=allola:boucherie-sanzot"/>
+<parameter name="[optionsSdpContent2]" operation="set" value="v=0&#13;&#10;o=+12345 67890 12345 IN IP4 [ipAddressSrc]&#13;&#10;s=-&#13;&#10;c=IN IP4 [ipAddressSrc]&#13;&#10;t=0 0&#13;&#10;m=video 0 RTP/AVP 34 96&#13;&#10;a=rtpmap:96 h263-2000&#13;&#10;m=message 0 TCP/MSRP *&#13;&#10;a=accept-types:image/bmp image/jpeg image/png&#13;&#10;a=file-selector&#13;&#10;a=max-size:524288&#13;&#10;a=allola:boucherie-sanzot"/>
+<parameter name="[optionsSdpContent4]" operation="set" value="v=0&#13;&#10;o=+12345 67890 12345 IN IP4 [ipAddressSrc]&#13;&#10;s=-&#13;&#10;c=IN IP4 [ipAddressSrc]&#13;&#10;t=0 0&#13;&#10;m=video 0 RTP/AVP 34 96&#13;&#10;a=rtpmap:96 h263-2000&#13;&#10;m=message 0 TCP/MSRP *&#13;&#10;m=couscous 0 RTP/AVP *&#13;&#10;a=accept-types:image/bmp image/jpeg image/png&#13;&#10;a=file-selector&#13;&#10;a=max-size:524288&#13;&#10;a=couscous:merguez#13;&#10;a=reponse:merci pour la recette je t invite demain"/>
+<parameter name="[optionsSdpContent5]" operation="set" value="v=0&#13;&#10;o=+12345 67890 12345 IN IP4 [ipAddressSrc]&#13;&#10;s=-&#13;&#10;c=IN IP4 [ipAddressSrc]&#13;&#10;t=0 0&#13;&#10;m=video 0 RTP/AVP 34 96&#13;&#10;a=rtpmap:96 h263-2000&#13;&#10;"/>
+<parameter name="[optionsSdpContent]" operation="set" value="v=0&#13;&#10;o=+12345 67890 12345 IN IP4 [ipAddressSrc]&#13;&#10;s=-&#13;&#10;c=IN IP4 [ipAddressSrc]&#13;&#10;t=0 0&#13;&#10;m=message 0 TCP/MSRP *&#13;&#10;a=accept-types:image/bmp image/jpeg image/png&#13;&#10;a=file-selector&#13;&#10;a=max-size:524288"/>
+
+<createListenpointSIP name="[listenPointName]" localHost="[ipAddressSrc]" localPort="[portSrc]" transport="[localTransport]"/>
+
+
+<if>
+	<condition> <test parameter="[whatTodo]" condition="string.equals" value="sleep"/>  </condition>
+<then>
+	<!-- Gros dodo (mais avec le port SIP ouvert) --> 
+	<pause name="pause" seconds="1000000"  state="true"/>
+</then>
+</if>
+
+
+<while>
+ <condition>  <test parameter="[waitAllMessage]" condition="string.equals" value="true"/> </condition>
+ <do>
+
+	<!--  ################# RECEIVE A SIP MESSAGE  ################ --> 
+	<!--  ################################################## -->
+      
+
+	<receiveMessageSIP name="wait_SIP_request" timeout="0" failedOnTimeout="false" listenpoint="[listenPointName]">
+	<!--receiveMessageSIP name="Wait Any" request="true" type="INVITE" listenpoint="[listenPointName]"-->
+	<parameter name="[lastMethod]" operation="protocol.setFromMessage" value="message:type"/> 
+	<parameter name="[firstlineStatusCode]" operation="protocol.setFromMessage" value="firstline:StatusCode"/>
+	 <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header:To"/>       
+	 <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header:From"/>   
+	 <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header:Call-Id"/>
+	 <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header:CSeq"/>
+	<parameter name="[lastCSeqNumber]" operation="protocol.setFromMessage" value="header:CSeq:Number"/>
+	 <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header:Via"/>
+	 <parameter name="[lastRecordRoute]" operation="protocol.setFromMessage" value="header:Record-Route"/>
+	</receiveMessageSIP>
+
+	<if>
+		<condition> <not> <test parameter="[firstlineStatusCode]" condition="list.isEmpty"/> </not></condition>
+	<then>
+		<parameter name="[lastMethod]" operation="set" value="[firstlineStatusCode]"/>
+	</then>
+	</if>
+
+	<switch parameter="[lastMethod]">
+	 <case equals="BYE">
+	</case> 
+	<case equals="ACK">
+	</case> 
+	<!-- ###################
+                #                OPTIONS
+                ##################-->
+	<case equals="OPTIONS">
+		<!-- pause name="pause" seconds="100" state="true"/ -->
+		<sendMessageSIP name="Send answer options" listenpoint="[listenPointName]">
+<![CDATA[SIP/2.0 [whatTodo]
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: [optionsContact]
+Max-Forwards: 70
+Server: [userAgent]
+Accept: [optionsAccept]
+Accept-Contact: [optionsAcceptContact]
+Allow: [optionsAllow]
+Supported: [optionsSupported]
+Couscous:merguez, ok, par, contre, ce, sera, du, boulaouenne, au, lieu, du, sidi
+Content-Type: application/sdp
+Content-Length: x
+
+[optionsSdpContent]
+]]>
+		</sendMessageSIP>
+ 		<parameter name="[messageAlreadySent]" operation="set" value="true"/>
+	</case> 
+	<!-- ###################
+                #                 (re_)INVITE
+                ##################--> 
+	<case equals="INVITE">
+		<sendMessageSIP name="Send answer invite" listenpoint="[listenPointName]">
+<![CDATA[SIP/2.0 [whatTodo]
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: [contact]
+Supported: [supported]
+Require: timer
+Session-Expires: [sessionExpiresReceiver];refresher=uac
+Content-Length: 0
+]]>
+			</sendMessageSIP>
+		 	<parameter name="[messageAlreadySent]" operation="set" value="true"/>
+	</case>
+	<!-- ###################
+                #                 CANCEL
+                ################### -->    
+	<case equals="CANCEL">
+		<sendMessageSIP name="Send answer" listenpoint="[listenPointName]">
+<![CDATA[SIP/2.0 [whatTodo]
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Content-Length: 0
+]]>
+			</sendMessageSIP>
+			<pause name="pause" seconds="0.5"  state="true"/>
+			<sendMessageSIP name="Send answer" listenpoint="[listenPointName]">
+<![CDATA[SIP/2.0 487 Request Terminated
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCSeqNumber] INVITE
+Content-Length: 0
+]]>
+			</sendMessageSIP>
+		 	<parameter name="[messageAlreadySent]" operation="set" value="true"/>
+	</case>
+	<!-- ###################
+                #                 UPDATE
+                ################### -->                            
+	<case equals="UPDATE">
+		<sendMessageSIP name="Send answer update" listenpoint="[listenPointName]">
+<![CDATA[SIP/2.0 [whatTodo]
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: [contact]
+Supported: [supported]
+Min-Se: [minSEReceiver]
+Require: timer
+Session-Expires: [sessionExpiresReceiver];refresher=uas
+Content-Length: 0
+]]>
+			</sendMessageSIP>
+		 	<parameter name="[messageAlreadySent]" operation="set" value="true"/>
+	</case>
+	<case equals="PUBLISH">
+	</case>
+	<case equals="SUBSCRIBE">
+	</case>
+	<case equals="NOTIFY">
+	</case>
+	<case equals="INFO">
+	</case>
+	<!-- ###################
+                #                 RESPONSES 
+                ##################-->
+	<case matches="[4-6][0-9][0-9]">
+		<sendMessageSIP name="Send ACK" listenpoint="[listenPointName]">    
+<![CDATA[
+ACK [requestURI] SIP/2.0
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCSeqNumber] ACK
+Max-Forwards: 70
+Content-Length: 0
+]]>
+		</sendMessageSIP>
+	</case>
+ 	<default>
+		<!-- Wooooups  --> 
+	 </default>
+	</switch>
+
+	<if> <condition> <test parameter="[messageAlreadySent]" condition="string.equals" value="false"/> </condition>
+		<then>
+			<sendMessageSIP name="Send answer" listenpoint="[listenPointName]">
+<![CDATA[SIP/2.0 [whatTodo]
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Content-Length: 0
+]]>
+		</sendMessageSIP>
+		</then>
+	</if>
+
+ </do>
+</while>
+
+<finally>
+<removeListenpointSIP name="[listenPointName]"/>
+</finally>
+</scenario>

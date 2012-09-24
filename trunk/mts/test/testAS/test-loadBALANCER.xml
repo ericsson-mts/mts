@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<test name="Load tests">
+
+        	<parameter name="[TryingDuration]" operation="set" value="0" description="Duration (in sec.) between 100 and 180"  		editable="true"/>
+        	<parameter name="[RingingDuration]" operation="set" value="0" description="Duration (in sec.) between 180 and 200"     	editable="true"/>
+        	<parameter name="[CallDuration1]" operation="set" value="0" description="Duration (in sec.) of the call"           	    editable="true"/>
+        	<parameter name="[CallDuration2]" operation="set" value="0" description="Duration (in sec.) of the call"           	    editable="true"/>          	
+        	<parameter name="[CAPS]" operation="set" value="100" description="Call Attempting per Second"                           editable="true"/>
+        	<parameter name="[NumberIteration]" operation="set" value="2" description="Number of iteration "        	            editable="true"/>
+              	
+    <!--                     -->
+	<!-- INTERNAL PARAMETERS -->
+	<!--                     -->	
+	<parameter name="[Host-Tester]" operation="system.ipaddress" value="eth0" description="Host du IMSloader"/>
+	<!--parameter name="[Host-Tester]" operation="set" value="172.20.113.3" description="Host du IMSloader"	editable="true"/-->
+	<!--parameter name="[Host-Tester]" operation="set" value="172.16.21.129" description="Host du IMSloader"	editable="true"/-->
+	<!--parameter name="[Port-Tester]" operation="setFromConfig" value="sip.properties" value2="listenpoint.DEFAULT_PORT" description="Port du IMSloader"/-->
+	<parameter name="[Port-Tester]" operation="set" value="7070" description="Port du IMSloader"		editable="true"/>
+	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]" description="Addresse du IMSloader"/>
+
+    <parameter name="[Host-Server]" operation="system.ipaddress" value="eth0" description="Addresse de l'AS" />
+    <!-- old AS -->
+    <!--parameter name="[Host-Server]" operation="set" value="172.20.113.2" description="Addresse de l'AS" 		editable="true"/-->	
+    <!-- MARGAUX -->
+    <!--parameter name="[Host-Server]" operation="set" value="ftnp1csas1clfront.sip.mobistar.fr" description="Addresse de l'AS" 		editable="true"/-->	        
+    <!--parameter name="[Port-Server]" operation="setFromConfig" value="sip.properties" value2="listenpoint.DEFAULT_PORT" description="Port de l'AS"/-->
+    <parameter name="[Port-Server]" operation="set" value="7070" description="Port de l'AS"				editable="true"/>    	    
+    <!--parameter name="[Port-Server]" operation="set" value="5060" description="Port de l'AS"				editable="true"/-->      
+	<parameter name="[Adresse-Server]" operation="set" value="[Host-Server(0)]:[Port-Server]"/>
+
+    <parameter name="[RangeNumberUser]" operation="set" value="5000"/>
+    <parameter name="[userDomain]" operation="set" value="sip.mobistar.com"/>
+	<parameter name="[RangeIndexUser]" operation="set" value="0" description="Index of the range of the user phone number"/>
+	<parameter name="[NumberScenario]" operation="set" value="1" description="Number of testcase for the responder"/>
+	    	
+	<parameter name="[RangePortRTP-UAC]" operation="set" value="29000"/>				
+	<parameter name="[RangePortRTP-UAS]" operation="set" value="39000"/>
+				
+  <parameter name="[CallDuration]" operation="set" value="[CallDuration1]"/>				
+				
+    	<!--                   -->
+    	<!-- CSV PARAMETERS -->
+    	<!--                   -->
+    	<parameter name="[inviterTab]" operation="file.readCsv" value="./testAS_uac.csv" value2="inviter" />
+    	<parameter name="[inviteeTab]" operation="file.readCsv" value="./testAS_uas.csv" value2="invitee" />    	
+	    	
+	<parameter name="[test:indexUser]" operation="set" value="0"/>
+		
+  <for index="[index]" from="1" to="[NumberScenario]" step="1">
+	   <testcase name="responder[index]" description="passive testcase for reponse and subsequent management" state="true">   			
+
+        	<!--                       -->
+            <!-- RUNPROFILE PARAMETERS -->
+            <!--                       -->    
+            <runProfile>
+                <step time="0" period="0"/>
+                <end iteration="1"/>
+            </runProfile>
+
+		    <scenario name="[Port-Tester]">reponder/responder.xml</scenario>
+
+	   </testcase>
+  </for>
+
+	<testcase name="loader" description="passive testcase for invite sending" state="true">
+
+    	<!--                       -->
+        <!-- RUNPROFILE PARAMETERS -->
+        <!--                       -->    
+        <runProfile>
+            <step time="0" frequency="[CAPS]"/>
+            <end iteration="[NumberIteration]"/>
+        </runProfile>
+      			
+		<scenario name="loader">orig/loader.xml</scenario>
+
+	</testcase>
+	
+</test>

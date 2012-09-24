@@ -1,0 +1,115 @@
+<!--
+Function description: RTP dialog (second part after libC_Caller_to_Called_Ph1)
+Please also refer to libC_Caller_to_Called_Ph1 and libC_Caller_to_Called_Ph3
+-->
+
+	
+<openConnectionRTP name="OpenConnection" state="true"
+			  sessionName="[scenarioName]"
+			  localHost="[caller_ipAddressSrc]" localPort="[caller_portSdp]" 
+			  remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]"/>
+
+
+<!--			  
+<log level="3">Balise Caller_to_Called_Ph2: localHost= [caller_ipAddressSrc]</log>
+<log level="3">Balise Caller_to_Called_Ph2: localPort= [caller_portSdp]</log>
+<log level="3">Balise Caller_to_Called_Ph2: remoteHost=[SDPConnectionAddress0]</log>
+<log level="3">Balise Caller_to_Called_Ph2: remotePort=[SDPMediaPort0]</log>		
+-->
+
+<!--
+|
+|
+If both ways RTC flow is requested
+|
+|
+-->
+
+<if>
+	<condition>
+      		<test parameter="[RTP_Flow]" condition="equals" value="BOTH_WAYS" />
+	</condition>
+<then>
+	<sendPacketRTP name="sendPacketRTP" state="true" sessionName="[scenarioName]">	
+	    <packet>	    
+		<header ssrc="0" payloadType="27" seqnum="0" timestamp="0"/>
+		<payload format="text">Packet #1</payload>		
+	    </packet>	    		
+	</sendPacketRTP>	
+</then><else></else></if>
+
+
+<!--
+|
+|
+If only one way for RTC flow
+|
+|
+-->
+
+
+<parameter name="[at_least_one_RTP_packet]" operation="set" value="false"/>
+<parameter name="[message_received]" operation="set" value="true"/>
+
+<!--
+Rajout 22012009: sortie boucle reception apres premier paquet RTP recu
+Contournement emission du bruit de confort emis par le PSTN
+Suivre variable Exit_Condition
+-->
+
+<parameter name="[Exit_Condition]" operation="set" value="false"/>
+
+<while>
+	<condition>
+  	<test parameter="[message_received]" condition="equals" value="true" />
+    <test parameter="[Exit_Condition]" condition="equals" value="false" /> 
+  	</condition>
+<do>
+	<parameter name="[message_received]" operation="set" value="false"/>
+	
+	<receivePacketRTP name="receivePacketRTP1" failedOnTimeout="false" failedOnReceive="false" timeout="[endRtpDialog_Timer]">
+		<parameter name="[message_received]" operation="set" value="true"/>
+		<parameter name="[at_least_one_RTP_packet]" operation="set" value="true"/>
+		<parameter name="[headerSsrc]" operation="setFromMessage" value="header:ssrc"/>
+		<parameter name="[headerPayloadType]" operation="setFromMessage" value="header:payloadType"/>
+		<parameter name="[headerSeqnum]" operation="setFromMessage" value="header:seqnum"/>
+		<parameter name="[headerTimestamp]" operation="setFromMessage" value="header:timestamp"/>
+		<parameter name="[payloadText]" operation="setFromMessage" value="payload:text"/>
+		<parameter name="[payloadBinary]" operation="setFromMessage" value="payload:binary"/>			
+	</receivePacketRTP>
+
+  <if>
+  <condition>
+  <test parameter="[Exit_after_first_received_packet]" condition="equals" value="true" />
+  </condition>
+  <then>
+  <parameter name="[Exit_Condition]" operation="set" value="true"/>
+  </then></if>
+
+</do>
+</while>
+
+<if>
+    <condition>
+      <test parameter="[at_least_one_RTP_packet]" condition="equals" value="false" />
+    </condition>
+<then>
+
+<!-- SWESWE Phase 2: Possibility to not test reception of RTP packets-->
+
+<if>
+    <condition>
+      <test parameter="[DO_NOT_TEST_RECEIVED_RTP]" condition="equals" value="true" />
+    </condition>
+<then>
+</then>
+<else>
+<log level="3"> No RTP packets received => exit with error</log>
+<exit name="No RTP packets received" failed="true"/>
+</else></if>
+
+<!-- SWESWE Phase 2: FIN Possibility to not test reception of RTP packets-->
+
+</then><else></else></if>
+
+<closeConnectionRTP name="CloseConnection" state="true" sessionName="[scenarioName]" />
