@@ -104,16 +104,11 @@ public abstract class Listenpoint
         if (null == this.host || this.host.length() <= 0)
         {
             this.host = "0.0.0.0";
-        }
-        
+        }        
         String portAttr = root.attributeValue("localPort");
-        if ((portAttr != null) && Utils.isInteger(portAttr))
+        if (portAttr != null)
         {
             this.port = Integer.parseInt(portAttr);
-        }
-        else
-        {
-            this.port = 0;
         }
 
         String listenUDPAttr = root.attributeValue("listenUDP");
