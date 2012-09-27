@@ -8,13 +8,9 @@
 	<openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
 	
 	<sendMessageGTP name="send tunnel endpoint identifier data" channel="[connection]">
-		<header type="errorIndication" sequenceNumber="1"/>
+		<header name="errorIndication" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
 		<tlv name="TunnelEndpointIdentifierData " value="16"/>
 		<tlv name="GSNAddress" value="ABCD"/>
-		<tlv name="privateExtension">
-			<attribute name="extensionIdentifier" value="2"/>
-			<attribute name="extensionValue" value="A"/>
-		</tlv>
 	</sendMessageGTP>
 
 </scenario>
