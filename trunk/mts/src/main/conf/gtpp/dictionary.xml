@@ -40,7 +40,17 @@
         <tlv name="cause" mandatory="true"/>
         <tlv name="privateExtension" mandatory="false"/>
     </message>
-
+	
+	<message name="errorIndication" messageType="26">
+        <tlv name="TunnelEndpointIdentifierData" mandatory="true"/>
+        <tlv name="GSNAddress" mandatory="true"/>
+        <tlv name="privateExtension" mandatory="false"/>
+    </message>
+	
+	<message name="supportedExtensionHeadersNotification" messageType="31">
+        <tlv name="extensionHeaderTypeList" mandatory="true"/>
+    </message>
+	
     <message name="dataRecordTransferRequest" messageType="240">
         <tlv name="packetTransferCommand" mandatory="true"/>
         <tlv name="dataRecordPacket" mandatory="cond"/>
@@ -54,8 +64,11 @@
         <tlv name="requestsResponded" mandatory="false"/>
         <tlv name="privateExtension" mandatory="false"/>
     </message>
-
-    <tlv name="privateExtension" tag="255"/>
+	
+    <tlv name="privateExtension" tag="255">
+		<attribute name="extensionIdentifier" length="2" format="int"/>
+        <attribute name="extensionValue" format="string"/>
+	</tlv>
     <tlv name="recovery" tag="13" length="1" format="int"/><!-- when length is present this is a TV--><!-- 13 or 14 depending on spec-->
     <tlv name="nodeAddress" tag="251" format="ip"/><!-- ip address-->
     <tlv name="cause" tag="1" length="1" format="int"/>
@@ -79,5 +92,8 @@
     <tlv name="requestsResponded" tag="253" format="list">
         <attribute name="sequenceNumber" length="2" format="int"/>
     </tlv>
-    
+    <tlv name="TunnelEndpointIdentifierData" tag="16" length="4" format="int"/>
+	<tlv name="GSNAddress" tag="133" format="string"/>
+	
+	<tlv name="extensionHeaderTypeList" tag="141" format="list"/>
 </dictionary>
