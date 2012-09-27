@@ -93,6 +93,10 @@ public class ImportSipP {
 			testfileName = "test.xml"; 
 			testfile = sippfile.substring(0, sippFileNamePosition)+"\\"+testfileName; 
 		}
+		else if(testfileName!=null)
+		{
+			testfile = testfileName; 
+		}
 		if(testcase == null)
 		{	
 			int sippFileNamePosition1 = sippfile.lastIndexOf("\\");
