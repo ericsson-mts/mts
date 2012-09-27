@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+
+	<parameter name="[connection]" operation="set" value="connection" />
+	
+	<openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
+	
+	<sendMessageGTP name="send supported Extension Headers Notification" channel="[connection]">
+		<header type="31" sequenceNumber="1"/>
+		<tlv name="extensionHeaderTypeList" value="16"/>
+	</sendMessageGTP>
+
+</scenario>
