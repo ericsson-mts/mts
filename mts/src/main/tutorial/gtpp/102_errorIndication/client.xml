@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+
+	<parameter name="[connection]" operation="set" value="connection" />
+	
+	<openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
+	
+	<sendMessageGTP name="send tunnel endpoint identifier data" channel="[connection]">
+		<header type="errorIndication" sequenceNumber="1"/>
+		<tlv name="TunnelEndpointIdentifierData " value="16"/>
+		<tlv name="GSNAddress" value="ABCD"/>
+		<tlv name="privateExtension">
+			<attribute name="extensionIdentifier" value="2"/>
+			<attribute name="extensionValue" value="A"/>
+		</tlv>
+	</sendMessageGTP>
+
+</scenario>
