@@ -315,7 +315,7 @@ public class NodeManager implements MessageDispatcher, ConnectionListener {
 			logger.log(Level.FINER,"Considering sending request to "+p.host());
 			ConnectionKey connkey = node.findConnection(p);
 			if(connkey==null) continue;
-			Peer p2 = node.connectionKey2Peer(connkey);
+			Peer p2 = node.connectionKey2InetAddress(connkey).peer;
 			if(p2==null) continue;
 			if(!node.isAllowedApplication(request,p2)) {
 				logger.log(Level.FINER,"peer "+p.host()+" cannot handle request");

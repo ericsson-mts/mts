@@ -26,10 +26,8 @@ class TCPNode extends NodeImplementation {
 		if(settings.port()!=0) {
 			// allocate an unbound server socket channel
 			serverChannel = ServerSocketChannel.open();
-			// Get the associated ServerSocket to bind it with
-			ServerSocket serverSocket = serverChannel.socket();
-			// set the port the server channel will listen to
-			serverSocket.bind(new InetSocketAddress (settings.port()));
+			// set the (host,port) into the server channel will listen to
+			serverChannel.socket().bind(new InetSocketAddress (settings.hostId(), settings.port()));
 		}
 	}
 	
@@ -327,10 +325,12 @@ class TCPNode extends NodeImplementation {
 		TCPConnection conn = (TCPConnection)conn_;
 		try {
 			SocketChannel channel = SocketChannel.open();
+			InetSocketAddress localAddress = new InetSocketAddress(conn.host_id,0);
+			channel.socket().bind(localAddress);
 			channel.configureBlocking(false);
-			InetSocketAddress address = new InetSocketAddress(peer.host(),peer.port());
 			try {
-				if(channel.connect(address)) {
+				InetSocketAddress remoteAddress = new InetSocketAddress(peer.host(),peer.port());
+				if(channel.connect(remoteAddress)) {
 					//This only happens on Solaris when connecting locally
 					logger.log(Level.FINEST,"Connected!");
 					conn.state = Connection.State.connected_out;
@@ -344,7 +344,7 @@ class TCPNode extends NodeImplementation {
 				channel.close();
 				return false;
 			}
-			conn.state = Connection.State.connecting;
+ 			conn.state = Connection.State.connecting;
 			conn.channel = channel;
 			selector.wakeup();
 			channel.register(selector, SelectionKey.OP_CONNECT, conn);
