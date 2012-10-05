@@ -293,20 +293,7 @@ public class Node {
 			return map_key_conn.get(connkey)!=null;
 		}
 	}
-	/**
-	 * Returns the Peer on a connection.
-	 */
-	public Peer connectionKey2Peer(ConnectionKey connkey) {
-		if(map_key_conn==null)
-			return null;
-		synchronized(map_key_conn) {
-			Connection conn = map_key_conn.get(connkey);
-			if(conn!=null)
-				return conn.peer;
-			else
-				return null;
-		}
-	}
+
 	/**
 	 * Returns the IP-address of the remote end of a connection.
 	 * Note: for connections using the SCTP transport protocol the returned
@@ -314,30 +301,17 @@ public class Node {
 	 * unspecified which one. In this case it is better to use
 	 * connectionKey2Peer()
 	 */
-	public InetAddress connectionKey2InetAddress(ConnectionKey connkey) {
+	public Connection connectionKey2InetAddress(ConnectionKey connkey) {
 		if(map_key_conn==null)
 			return null;
 		synchronized(map_key_conn) {
 			Connection conn = map_key_conn.get(connkey);
 			if(conn!=null)
-				return conn.toInetAddress();
+				return conn;
 			else
 				return null;
 		}
 	}
-	/**
-	 * Returns the next hop-by-hop identifier for a connection
-	 */
-//	public int nextHopByHopIdentifier(ConnectionKey connkey) throws StaleConnectionException {
-//		if(map_key_conn==null)
-//			throw new StaleConnectionException();
-//		synchronized(map_key_conn) {
-//			Connection conn = map_key_conn.get(connkey);
-//			if(conn==null)
-//				throw new StaleConnectionException();
-//			return conn.nextHopByHopIdentifier();
-//		}
-//	}
     
 	/**
 	 * Send a message.
@@ -412,7 +386,9 @@ public class Node {
 			}
 			if(node_impl!=null) {
 				Connection conn = node_impl.newConnection(settings.watchdogInterval(),settings.idleTimeout());
-				conn.host_id = peer.host();
+				conn.host_id = settings.hostId();
+				// same for port but attribute does not exist in Connection class ?
+				// conn.port = settings.port();
 				conn.peer = peer;
 				if(node_impl.initiateConnection(conn,peer))
 					map_key_conn.put(conn.key,conn);

@@ -176,10 +176,6 @@ public class ListenpointDiameter extends Listenpoint
         // set peers list
         Peer peer = new Peer(remoteHost, remotePort, protocol);
         peer.capabilities = node_settings.capabilities();
-              
-        ConnectionKey connkey = diameterNode.getConnectionKey(peer); 
-        Channel channel = new ChannelDiameter(peer, connkey);
-        msg.setChannel(channel);
 
 		diameterNode.sendRequest((MsgDiameter) msg, peer);
         return true;

@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.diameter;
 
+import java.net.InetAddress;
+
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 
@@ -32,6 +34,7 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 
 
 import dk.i1.diameter.Message;
+import dk.i1.diameter.node.Connection;
 import dk.i1.diameter.node.ConnectionKey;
 import dk.i1.diameter.node.NodeManager;
 import dk.i1.diameter.node.NodeSettings;
@@ -79,11 +82,13 @@ public class DiameterNodeManager extends NodeManager {
      * @param    request The request to send
      * @return The answer to the request. Null if there is no answer (all peers down, or other error)
      */
-    public synchronized boolean sendRequest(MsgDiameter msg, Peer peer) throws Exception {        
-                
-        // send the DIAMETER request       	            	            	
+    public synchronized boolean sendRequest(MsgDiameter msg, Peer peer) throws Exception { 	
+        ConnectionKey connkey = getConnectionKey(peer); 
+   	 	Channel channel = new ChannelDiameter(connkey, peer);
+        msg.setChannel(channel);
+    	
+    	// send the DIAMETER request       	            	            	
         this.sendRequest(msg.getMessage(), new Peer[]{peer}, null);
-        
         return true;
     }
 
@@ -127,8 +132,8 @@ public class DiameterNodeManager extends NodeManager {
             GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, null, "peer = " + peer);
             if (peer != null)
             {
-            	Channel channel = new ChannelDiameter(peer, connkey);
-            	msg.setChannel(channel);
+           	 	Channel channel = new ChannelDiameter(connkey, peer);
+                msg.setChannel(channel);
             }
                                                       
             StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER).receiveMessage(msg);
