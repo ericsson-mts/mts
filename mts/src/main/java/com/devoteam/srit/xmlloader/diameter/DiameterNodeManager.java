@@ -23,8 +23,6 @@
 
 package com.devoteam.srit.xmlloader.diameter;
 
-import java.net.InetAddress;
-
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 
@@ -34,7 +32,6 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 
 
 import dk.i1.diameter.Message;
-import dk.i1.diameter.node.Connection;
 import dk.i1.diameter.node.ConnectionKey;
 import dk.i1.diameter.node.NodeManager;
 import dk.i1.diameter.node.NodeSettings;
