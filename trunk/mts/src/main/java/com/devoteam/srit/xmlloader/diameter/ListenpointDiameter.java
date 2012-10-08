@@ -206,6 +206,7 @@ public class ListenpointDiameter extends Listenpoint
         String nodeHostId = this.getHost();
         if (nodeHostId.equalsIgnoreCase("0.0.0.0"))
         {
+        	// The listenpoint host can be 0.0.0.0 due to the CER/CEA exchange mechanism
             nodeHostId = Utils.getLocalAddress().getHostAddress();
         }
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "nodeHostId : ", nodeHostId);
