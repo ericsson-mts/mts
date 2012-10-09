@@ -1,0 +1,1299 @@
+<project name="IMSLoader" default="default" basedir=".">
+
+    <property name="siploader.path"     value="./"/>
+    <property name="siploader.build"    value="./build"/>
+    <property name="siploader.release"  value="./build/release"/>
+    <property name="siploader.package"  value="./build/package"/>
+    <property name="siploader.classes"  value="./build/classes"/>
+    <property name="siploader.lib"      value="./lib"/>
+    <property name="siploader.tools"    value="./tools"/>
+    <property name="siploader.3pp"      value="./3pp"/>
+    
+    <!-- izpack path relative to the distrib directory ! ! ! -->
+    <property name="siploader.izpack"   value="./3pp/izpack"/>
+
+    <!--                  -->
+    <!-- Define classpath -->
+    <!--                  -->
+    <path id="siploader.classpath">
+        <fileset dir="${siploader.lib}">
+            <include name="*.jar" />
+        </fileset>
+        <pathelement path="${siploader.3pp}/gp-net-radius/gp-net-radius-latest.jar"/>
+        <pathelement path="${siploader.3pp}/gp-utils/gp-utils-latest.jar"/>
+        <pathelement path="${siploader.3pp}/Diameter-0.9.6.4/Diameter-0.9.6.4.jar"/>
+        <pathelement path="${siploader.3pp}/JavaSCTP-0-5-7/JavaSCTP-0-5-7.jar"/>
+        <pathelement path="${siploader.3pp}/jain-sip1.2/JainSipApi1.2.jar"/>
+        <pathelement path="${siploader.3pp}/jain-sip1.2/JainSipRi1.2.jar"/>
+        <pathelement path="${siploader.3pp}/jain-sip1.2/nist-sdp-1.0.jar"/>
+        <pathelement path="${siploader.3pp}/httpdcore-4.0/httpcore-4.0.jar"/>
+        <pathelement path="${siploader.3pp}/httpdcore-4.0/httpcore-nio-4.0.jar"/>
+        <pathelement path="${siploader.3pp}/opencsv/opencsv-1.8.jar"/>
+        <pathelement path="${siploader.3pp}/jfreechart-1.0.9/jcommon-1.0.12.jar"/>
+        <pathelement path="${siploader.3pp}/jfreechart-1.0.9/jfreechart-1.0.9.jar"/>
+        <pathelement path="${siploader.3pp}/javolution/javolution-5.2.6.jar"/>
+        <pathelement path="${siploader.3pp}/xmlspy/XMLSpyInterface.jar"/>
+        <pathelement path="${siploader.3pp}/jpcap/jpcap.jar"/>
+        <pathelement path="${siploader.3pp}/pcp/pcm.jar"/>
+        <pathelement path="${siploader.3pp}/pcp/pcmext.jar"/>        
+        <pathelement path="${siploader.3pp}/snmp4j/snmp4j-1.11.jar"/>
+        <pathelement path="${siploader.3pp}/mibble/mibble-parser-2.9.2.jar"/>
+        <pathelement path="${siploader.3pp}/BinaryNotes1.5.2/binarynotes.jar"/>
+        <pathelement path="${java.class.path}" />
+    </path>
+
+
+    <!--       -->
+    <!-- Clean -->
+    <!--       -->
+    <target name="clean" description="clean ">
+        <delete dir="${siploader.build}"/>
+    </target>
+	
+    <target name="clean_release" description="creation of directories ">
+     	<delete dir="${xmlloader.release}"/>   
+    </target> 
+		
+    <!--target name="version" description="change imsloader version">
+        <exec executable="cleartool" timeout="5000">
+            <arg value="checkout"/>
+            <arg value="-unreserved"/>
+            <arg value="-nc"/>
+            <arg value="${siploader.path}/src/com/devoteam/srit/xmlloader/core/licence/Version.java"/>
+        </exec>
+        
+       <replace file="${siploader.path}/src/com/devoteam/srit/xmlloader/core/licence/Version.java" propertyFile="build.properties">
+            <replacefilter token="$VERSION" property="siploader.release.version" />
+        </replace>
+    </target-->
+    
+    <!--                 -->
+    <!-- Compile classes -->
+    <!--                 -->
+    <!--   <target name="compile" description="build" depends="release" >-->
+    <target name="compile" description="build" depends="generate_xsd">
+        <mkdir dir="${siploader.classes}"/>
+        <mkdir dir="${siploader.release}/modules"/>         	
+
+        <javac srcdir="${siploader.path}/src" destdir="${siploader.classes}" debug="on" deprecation="false" source="1.6" optimize="on" target="1.6"
+               includes="com/devoteam/srit/xmlloader/core/utils/Config.java,com/devoteam/srit/xmlloader/diameter/IDProvider.java">
+            <classpath refid="siploader.classpath" />
+        </javac>
+        
+        <javac srcdir="${siploader.3pp}/Diameter-0.9.6.4/src" destdir="${siploader.classes}" debug="on" deprecation="false" source="1.6" optimize="on" target="1.6">       
+            <classpath refid="siploader.classpath" />
+        </javac>
+
+        <javac srcdir="${siploader.3pp}/jain-sip1.2/jain-sip/src" destdir="${siploader.classes}" debug="on" deprecation="false" source="1.6" optimize="on" target="1.6">
+            <classpath refid="siploader.classpath" />
+        </javac>
+
+         <javac srcdir="${siploader.3pp}/jain-sip1.2/jain-sip/src" destdir="${siploader.classes}" debug="on" deprecation="false" source="1.6" optimize="on" target="1.6">
+            <classpath refid="siploader.classpath" />
+        </javac>
+
+         <javac srcdir="${siploader.3pp}/JavaSCTP-0-5-7/src" destdir="${siploader.classes}" debug="on" deprecation="false" source="1.6" optimize="on" target="1.6">
+            <classpath refid="siploader.classpath" />
+        </javac>
+
+        <javac srcdir="${siploader.path}/src" destdir="${siploader.classes}" debug="on" deprecation="false" source="1.6" optimize="on" target="1.6">
+            <classpath refid="siploader.classpath" />
+        </javac>
+        
+        <copy todir="${siploader.classes}/icons">
+             <fileset dir="${siploader.path}/src/icons"/>
+        </copy>
+    
+        <!-- revert imsloader version file to default-->
+        <exec executable="cleartool" timeout="5000">
+            <arg value="uncheckout"/>
+            <arg value="-rm"/>
+            <arg value="${siploader.path}/src/com/devoteam/srit/xmlloader/core/licence/Version.java"/>
+        </exec>
+        
+    </target>
+    
+    <!--                 -->
+    <!-- Make jar file -->
+    <!--                 -->    
+    <target name="jar_core" description="Make jar file for core module">    
+    	<jar jarfile="${siploader.release}/modules/core.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/core/**,org/dom4j/**, icons/**"/>
+    </target>
+
+    <target name="jar_master" description="Make jar file for master module">    
+    	<jar jarfile="${siploader.release}/modules/master.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/master/**"/>
+    </target>
+
+    <target name="jar_gui" description="Make jar file for gui module" >
+        <jar jarfile="${siploader.release}/modules/gui.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/gui/**"/>
+    </target>
+    
+    <target name="jar_cmd" description="make jar file for cmd module" >
+        <jar jarfile="${siploader.release}/modules/cmd.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/cmd/**"/>
+    </target>
+        
+    <target name="jar_diameter" description="make jar file for diameter module" >
+        <jar jarfile="${siploader.release}/modules/diameter.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/diameter/**,dk/i1/diameter/**"/>
+    </target>
+
+    <target name="jar_http" description="make jar file for http module">
+        <jar jarfile="${siploader.release}/modules/http.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/http/**,org/apache/**"/>
+    </target>
+    
+    <target name="jar_rtp" description="make jar file for rtp module" >
+        <jar jarfile="${siploader.release}/modules/rtp.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/rtp/**,com/sun/**,javax/**"/>
+    </target>
+    
+    <target name="jar_tcp" description="make jar file for tcp module" >
+        <jar jarfile="${siploader.release}/modules/tcp.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/tcp/**"/>
+    </target>
+
+    <target name="jar_smtp" description="make jar file for smtp module" >
+        <jar jarfile="${siploader.release}/modules/smtp.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/smtp/**"/>
+    </target>
+
+    <target name="jar_rtsp" description="make jar file for rtsp module" depends="jar_tcp,jar_udp">
+        <jar jarfile="${siploader.release}/modules/rtsp.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/rtsp/**"/>
+    </target>
+
+    <target name="jar_udp" description="make jar file for udp module" >
+        <jar jarfile="${siploader.release}/modules/udp.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/udp/**"/>
+    </target>
+
+    <target name="jar_radius" description="make jar file for radius module" >
+        <jar jarfile="${siploader.release}/modules/radius.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/radius/**"/>
+    </target>
+
+    <target name="jar_sctp" description="make jar file for sctp module" >
+        <jar jarfile="${siploader.release}/modules/sctp.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/sctp/**,dk/i1/sctp/**"/>
+	</target>
+
+    <target name="jar_sip" description="make jar file for sip module" depends="jar_udp,jar_tcp,jar_sctp,jar_tls">
+        <jar jarfile="${siploader.release}/modules/sip.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/sip/**,gov/**"/>
+    </target>
+        
+    <target name="jar_imap" description="make jar file for imap module" depends="jar_tcp, jar_tls">
+        <jar jarfile="${siploader.release}/modules/imap.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/imap/**"/>
+    </target>
+
+    <target name="jar_pop" description="make jar file for pop module" depends="jar_tcp">
+        <jar jarfile="${siploader.release}/modules/pop.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/pop/**"/>
+    </target>
+
+    <target name="jar_smpp" description="make jar file for smpp module" depends="jar_tcp">
+        <jar jarfile="${siploader.release}/modules/smpp.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/smpp/**"/>
+    </target>
+    
+    <target name="jar_ucp" description="make jar file for ucp module" depends="jar_tcp">
+        <jar jarfile="${siploader.release}/modules/ucp.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/ucp/**"/>
+    </target>
+
+    <target name="jar_sigtran" description="make jar file for sigtran module" depends="jar_tcp, jar_sctp">
+        <jar jarfile="${siploader.release}/modules/sigtran.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/sigtran/**"/>
+    </target>
+    
+    <target name="jar_tls" description="make jar file for tls module">
+        <jar jarfile="${siploader.release}/modules/tls.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/tls/**"/>
+    </target>
+
+    <target name="jar_h248" description="make jar file for h248 module">
+        <jar jarfile="${siploader.release}/modules/h248.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/h248/**"/>
+    </target>
+        
+    <target name="jar_msrp" description="make jar file for msrp module">
+        <jar jarfile="${siploader.release}/modules/msrp.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/msrp/**"/>
+    </target>
+        
+    <target name="jar_snmp" description="make jar file for snmp module">
+        <jar jarfile="${siploader.release}/modules/snmp.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/snmp/**"/>
+    </target>
+
+    <target name="jar_stun" description="make jar file for stun module">
+        <jar jarfile="${siploader.release}/modules/stun.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/stun/**"/>
+    </target>
+
+    <target name="jar_mgcp" description="make jar file for mgcp module">
+        <jar jarfile="${siploader.release}/modules/mgcp.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/mgcp/**"/>
+    </target>
+
+    <target name="jar_genscript" description="make jar file for genscript module">
+        <jar jarfile="${siploader.release}/modules/genscript.jar" update="false" basedir="${siploader.classes}" includes="com/devoteam/srit/xmlloader/genscript/**"/>
+    </target>
+    
+    <!-- release -->
+    <target name="release_core" description="release core module" depends="jar_core, jar_gui" >
+        <copy file="${siploader.path}/bin/classpath_release"          tofile="${siploader.release}/bin/classpath_release"/>
+        <copy file="${siploader.path}/bin/classpath"                  tofile="${siploader.release}/bin/classpath"/>
+        <copy file="${siploader.path}/bin/java_home_release"          tofile="${siploader.release}/bin/java_home_release"/>
+        <copy file="${siploader.path}/bin/java_home"                  tofile="${siploader.release}/bin/java_home"/>
+        <copy file="${siploader.path}/bin/memory"                  tofile="${siploader.release}/bin/memory"/>
+        <copy file="${siploader.path}/bin/memory_release"                  tofile="${siploader.release}/bin/memory_release"/>
+        <copy file="${siploader.path}/bin/uninstall.bat"              tofile="${siploader.release}/bin/uninstall.bat"/>
+        <copy file="${siploader.path}/bin/uninstall.sh"               tofile="${siploader.release}/bin/uninstall.sh"/>
+        <copy file="${siploader.path}/bin/setEnv.bat"                 tofile="${siploader.release}/bin/setEnv.bat"/>
+        <copy file="${siploader.path}/bin/setEnvAppend.bat"           tofile="${siploader.release}/bin/setEnvAppend.bat"/>
+        <copy file="${siploader.path}/bin/setEnv.sh"                  tofile="${siploader.release}/bin/setEnv.sh"/>
+        <copy file="${siploader.path}/bin/postinstall.sh"                   tofile="${siploader.release}/bin/postinstall.sh"/>
+
+        <copy todir="${siploader.release}/bin/audio_comparison">
+            <fileset dir="${siploader.path}/bin/audio_comparison"/>
+        </copy>
+
+        <copy file="${siploader.path}/conf/tester.properties"         tofile="${siploader.release}/conf/tester.properties"/>
+        <mkdir dir="${siploader.release}/conf/licence"/>
+        
+        <copy todir="${siploader.release}/conf/stats">
+            <fileset dir="${siploader.path}/conf/stats"/>
+        </copy>
+    	
+        <!-- Copy the xsd files -->
+        <copy file="${siploader.path}/conf/schemas/test.xsd"                       tofile="${siploader.release}/conf/schemas/test.xsd"/>
+    	<copy file="${siploader.path}/conf/schemas/scenario_release.xsd"           tofile="${siploader.release}/conf/schemas/scenario.xsd"/>   
+        <copy file="${siploader.path}/conf/schemas/list_core_do.xsd"               tofile="${siploader.release}/conf/schemas/list_core_do.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_core.xsd"       tofile="${siploader.release}/conf/schemas/type_operations_core.xsd"/>
+        
+        <!-- Copy the libraries -->
+        <copy todir="${siploader.release}/lib">
+            <fileset dir="${siploader.path}/lib"/>
+        </copy>       
+
+        <copy file="${siploader.3pp}/jain-sip1.2/JainSipApi1.2.jar"                tofile="${siploader.release}/lib/JainSipApi1.2.jar"/>
+        <copy file="${siploader.3pp}/jain-sip1.2/JainSipRi1.2.jar"                 tofile="${siploader.release}/lib/JainSipRi1.2.jar"/>
+        <copy file="${siploader.3pp}/jain-sip1.2/nist-sdp-1.0.jar"            	   tofile="${siploader.release}/lib/nist-sdp-1.0.jar"/>
+        <copy file="${siploader.3pp}/jpcap/jpcap.jar"                          	   tofile="${siploader.release}/lib/jpcap.jar"/>
+        <copy file="${siploader.3pp}/opencsv/opencsv-1.8.jar"                      tofile="${siploader.release}/lib/opencsv-1.8.jar"/>
+		<copy file="${siploader.3pp}/jfreechart-1.0.9/jcommon-1.0.12.jar"          tofile="${siploader.release}/lib/jcommon-1.0.12.jar"/>
+		<copy file="${siploader.3pp}/jfreechart-1.0.9/jfreechart-1.0.9.jar"        tofile="${siploader.release}/lib/jfreechart-1.0.9.jar"/>
+		<copy file="${siploader.3pp}/javolution/javolution-5.2.6.jar"              tofile="${siploader.release}/lib/javolution-5.2.6.jar"/>
+        <copy file="${siploader.3pp}/jaxen/jaxen-1.1.1.jar"                        tofile="${siploader.release}/lib/jaxen-1.1.1.jar"/>
+        <copy file="${siploader.3pp}/gp-utils/gp-utils-latest.jar"                 tofile="${siploader.release}/lib/gp-utils-latest.jar"/>        
+        <copy file="${siploader.3pp}/mysql-connector-java/mysql-connector-java-5.1.7-bin.jar"                 tofile="${siploader.release}/lib/mysql-connector-java-5.1.7-bin.jar"/>        
+        
+        <!-- Copy the tutorial for the core -->
+        <copy todir="${siploader.release}/tutorial/core">
+            <fileset dir="${siploader.path}/tutorial/core"/>
+        </copy>
+
+        <!-- Copy the tutorial for the demos -->
+        <copy todir="${siploader.release}/tutorial/demos">
+            <fileset dir="${siploader.path}/tutorial/demos"/>
+        </copy>
+       
+        <!-- Copy the Licence and Readme html files -->
+    	<copy file="${siploader.path}/distrib/Readme.html"                      tofile="${siploader.release}/Readme.html"/>
+    	<copy file="${siploader.path}/distrib/Licence.html"                     tofile="${siploader.release}/Licence.html"/>
+        
+        <!-- Copy the documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader-Pres-demos.ppt"         	tofile="${siploader.release}/doc/IMSLoader-Pres-demos.ppt"/>        
+	    <copy file="${siploader.path}/doc/IMSLoader-Pres-technical.ppt"         tofile="${siploader.release}/doc/IMSLoader-Pres-technical.ppt"/>		
+		<copy file="${siploader.path}/doc/IMSLoader-ReleaseNotes.txt"         	tofile="${siploader.release}/doc/IMSLoader-ReleaseNotes.txt"/>
+		<copy file="${siploader.path}/doc/IMSLoader_benchmark.doc"         	    tofile="${siploader.release}/doc/IMSLoader_benchmark.doc"/>		
+	    <copy file="${siploader.path}/doc/IMSLoader_quick_start.doc"         	tofile="${siploader.release}/doc/IMSLoader_quick_start.doc"/>			
+	    <copy file="${siploader.path}/doc/IMSLoader_doc_index.doc"         	    tofile="${siploader.release}/doc/IMSLoader_doc_index.doc"/>			
+	    <copy file="${siploader.path}/doc/IMSLoader_user_manual_core.doc"       tofile="${siploader.release}/doc/IMSLoader_user_manual_core.doc"/>
+		<copy file="${siploader.path}/doc/IMSLoader_integration_QC.doc"         tofile="${siploader.release}/doc/IMSLoader_integration_QC.doc"/>
+        
+		<!-- Copy the doc schemas -->
+        <unzip src="${siploader.path}/doc/schemas.zip" dest="${siploader.release}/doc"/>
+        <replaceregexp file="${siploader.release}/doc/schemas/test.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+        <replaceregexp file="${siploader.release}/doc/schemas/scenario.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+        <replaceregexp file="${siploader.release}/doc/schemas/master.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+        <replaceregexp file="${siploader.release}/doc/schemas/parameter_operation.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>        
+        <replaceregexp file="${siploader.release}/doc/schemas/test_condition.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+        <replaceregexp file="${siploader.release}/doc/schemas/scenario_protocol.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+        <!-- Copy the tutorial for the references -->
+        <copy todir="${siploader.release}/doc/reference">
+            <fileset dir="${siploader.path}/doc/reference"/>
+        </copy>
+
+        <!-- Create the log directory -->
+        <mkdir dir="${siploader.release}/logs"/>
+    </target>
+
+
+    <target name="release_gui" description="release gui module" depends="jar_gui" >
+        <copy file="${siploader.path}/bin/startGui.bat"              tofile="${siploader.release}/bin/startGui.bat"/>
+        <copy file="${siploader.path}/bin/startGui.sh"               tofile="${siploader.release}/bin/startGui.sh"/>
+        
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_gui.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_gui.doc"/>
+
+    </target>
+
+    <target name="release_master" description="release master module" depends="jar_master" >
+        <copy file="${siploader.path}/bin/startMaster.bat"              tofile="${siploader.release}/bin/startMaster.bat"/>
+        <copy file="${siploader.path}/bin/startMaster.sh"               tofile="${siploader.release}/bin/startMaster.sh"/>
+        <copy file="${siploader.path}/bin/startSlave.bat"              tofile="${siploader.release}/bin/startSlave.bat"/>
+        <copy file="${siploader.path}/bin/startSlave.sh"               tofile="${siploader.release}/bin/startSlave.sh"/>
+    	
+        <copy file="${siploader.path}/conf/schemas/master.xsd"               tofile="${siploader.release}/conf/schemas/master.xsd"/>
+
+        <copy file="${siploader.path}/conf/master.properties"        tofile="${siploader.release}/conf/master.properties"/>
+
+        <copy todir="${siploader.release}/tutorial/master">
+            <fileset dir="${siploader.path}/tutorial/master"/>
+        </copy>
+        
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_master.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_master.doc"/>
+        
+    </target>
+
+    <target name="release_cmd" description="release cmd module" depends="jar_cmd" >
+        <copy file="${siploader.path}/bin/startCmd.bat"              tofile="${siploader.release}/bin/startCmd.bat"/>
+        <copy file="${siploader.path}/bin/startCmd.sh"               tofile="${siploader.release}/bin/startCmd.sh"/>
+        <copy file="${siploader.path}/bin/QCscript.vbs"              tofile="${siploader.release}/bin/QCscript.vbs"/>
+        <copy file="${siploader.path}/bin/QCparam.xls"              tofile="${siploader.release}/bin/QCparam.xls"/>
+        
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_cmd.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_cmd.doc"/>
+
+    </target>
+
+
+    <target name="release_diameter" description="release diameter module" depends="jar_diameter" >
+
+        <!-- Modify the scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd"   	   token="@entity1_list@" value="&lt;!ENTITY list_1 SYSTEM 'list_diameter.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd"         token="@entity1_operations@" value="&lt;!ENTITY type_operations_1 SYSTEM 'type_operations_diameter.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_diameter.xsd"               tofile="${siploader.release}/conf/schemas/list_diameter.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_diameter.xsd"    tofile="${siploader.release}/conf/schemas/type_operations_diameter.xsd"/>
+        
+        <!-- Copy the project libraries -->
+        <copy file="${siploader.3pp}/Diameter-0.9.6.4/Diameter-0.9.6.4.jar"    tofile="${siploader.release}/lib/Diameter-0.9.6.4.jar"/>
+        <copy file="${siploader.3pp}/JavaSCTP-0-5-7/JavaSCTP-0-5-7.jar"            tofile="${siploader.release}/lib/JavaSCTP-0-5-7.jar"/>
+        <copy file="${siploader.3pp}/JavaSCTP-0-5-7/libdk_i1_sctp.so"            tofile="${siploader.release}/lib/libdk_i1_sctp.so"/>
+
+        <!-- Copy the bin test directory -->
+        <copy todir="${siploader.release}/bin/test">
+            <fileset dir="${siploader.path}/bin/test"/>
+        </copy> 
+        
+	  <!-- Copy the project config files -->
+        <copy todir="${siploader.release}/conf/diameter">
+            <fileset dir="${siploader.path}/conf/diameter"/>
+        </copy>
+        <copy file="${siploader.path}/conf/schemas/diameter-dictionary.xsd"         tofile="${siploader.release}/conf/schemas/diameter-dictionary.xsd"/>
+        <copy file="${siploader.path}/conf/diameter.properties"                     tofile="${siploader.release}/conf/diameter.properties"/>
+
+        <!-- Copy the project tutorial directory -->
+        <copy todir="${siploader.release}/tutorial/diameter">
+            <fileset dir="${siploader.path}/tutorial/diameter"/>
+        </copy> 
+        
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_diameter.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_diameter.doc"/>
+        
+     </target>
+
+    <target name="release_radius" description="release radius module" depends="jar_radius" >
+
+        <!-- Modify the scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd"   	    token="@entity9_list@" value="&lt;!ENTITY list_9 SYSTEM 'list_radius.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd"          token="@entity9_operations@" value="&lt;!ENTITY type_operations_9 SYSTEM 'type_operations_radius.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_radius.xsd"             tofile="${siploader.release}/conf/schemas/list_radius.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_radius.xsd"  tofile="${siploader.release}/conf/schemas/type_operations_radius.xsd"/>
+        
+        <!-- Copy the project libraries -->
+        <copy file="${siploader.3pp}/gp-net-radius/gp-net-radius-latest.jar"       tofile="${siploader.release}/lib/gp-net-radius-latest.jar"/>
+
+        <!-- Copy the project config files -->
+        <copy todir="${siploader.release}/conf/radius">
+            <fileset dir="${siploader.path}/conf/radius"/>
+        </copy>
+        <copy file="${siploader.path}/conf/radius.properties"                   tofile="${siploader.release}/conf/radius.properties"/>
+
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/radius">
+            <fileset dir="${siploader.path}/tutorial/radius"/>
+        </copy>  
+        
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_radius.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_radius.doc"/>
+        
+    </target>
+
+    <target name="release_http" description="release http module" depends="jar_http" >
+        
+        <!-- Copy the project libraries -->
+        <copy file="${siploader.3pp}/httpdcore-4.0/httpcore-4.0.jar" tofile="${siploader.release}/lib/httpcore-4.0.jar"/>
+
+        <!-- Copy the project config files -->
+        <copy todir="${siploader.release}/conf/certificate">
+            <fileset dir="${siploader.path}/conf/certificate"/>
+        </copy> 
+        <copy file="${siploader.path}/conf/http.properties"         tofile="${siploader.release}/conf/http.properties"/>
+        
+        <!-- Copy the tutorial for http -->
+        <copy todir="${siploader.release}/tutorial/http">
+            <fileset dir="${siploader.path}/tutorial/http"/>
+        </copy>
+      	
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity2_list@" value="&lt;!ENTITY list_2 SYSTEM 'list_http.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity2_operations@" value="&lt;!ENTITY type_operations_2 SYSTEM 'type_operations_http.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_http.xsd"         		tofile="${siploader.release}/conf/schemas/list_http.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_http.xsd"    	tofile="${siploader.release}/conf/schemas/type_operations_http.xsd"/>
+        <copy file="${siploader.path}/bin/test/runHttpStack.bat"                	tofile="${siploader.release}/bin/test/runHttpStack.bat"/>        
+        
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_http.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_http.doc"/>
+        
+    </target>
+
+
+    <target name="release_rtp" description="release rtp module" depends="jar_rtp" >
+        
+        <!-- Copy the project config files -->
+        <copy file="${siploader.path}/conf/rtp.properties"         tofile="${siploader.release}/conf/rtp.properties"/>
+        <copy file="${siploader.path}/conf/rtpflow.properties"     tofile="${siploader.release}/conf/rtpflow.properties"/>
+
+        <!-- Copy the config file for rtpflow -->
+        <copy todir="${siploader.release}/conf/rtpflow">
+            <fileset dir="${siploader.path}/conf/rtpflow"/>
+        </copy>
+        
+          
+        <!-- Copy the tutorial for rtp -->
+        <copy todir="${siploader.release}/tutorial/rtp">
+            <fileset dir="${siploader.path}/tutorial/rtp"/>
+        </copy>
+        
+        <!-- Copy the tutorial for rtpflow -->
+        <copy todir="${siploader.release}/tutorial/rtpflow">
+            <fileset dir="${siploader.path}/tutorial/rtpflow"/>
+        </copy>
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity3_list@" value="&lt;!ENTITY list_3 SYSTEM 'list_rtp.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity3_operations@" value="&lt;!ENTITY type_operations_3 SYSTEM 'type_operations_rtp.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_rtp.xsd"         		tofile="${siploader.release}/conf/schemas/list_rtp.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_rtp.xsd"     tofile="${siploader.release}/conf/schemas/type_operations_rtp.xsd"/>    
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_rtp.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_rtp.doc"/>
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_rtpflow.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_rtpflow.doc"/>
+	</target>
+
+    <target name="release_tcp" description="release tcp module" depends="jar_tcp" >
+        <!-- Copy the project config files -->
+        <copy file="${siploader.path}/conf/tcp.properties"            tofile="${siploader.release}/conf/tcp.properties"/>
+        <copy file="${siploader.path}/bin/test/startMDPluginServer.bat"   tofile="${siploader.release}/bin/test/startMDPluginServer.bat"/>
+
+        <!-- Copy the tutorial for tcp -->
+        <copy todir="${siploader.release}/tutorial/tcp">
+            <fileset dir="${siploader.path}/tutorial/tcp"/>
+        </copy>
+
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity6_list@" value="&lt;!ENTITY list_6 SYSTEM 'list_tcp.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity6_operations@" value="&lt;!ENTITY type_operations_6 SYSTEM 'type_operations_tcp.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_tcp.xsd"         		tofile="${siploader.release}/conf/schemas/list_tcp.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_tcp.xsd"     tofile="${siploader.release}/conf/schemas/type_operations_tcp.xsd"/>
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_tcp.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_tcp.doc"/>
+        
+	</target>
+
+    <target name="release_smtp" description="release smtp module" depends="jar_smtp" >
+        <!-- Copy the project config files -->
+        <copy file="${siploader.path}/conf/smtp.properties"            tofile="${siploader.release}/conf/smtp.properties"/>
+
+        <!-- Copy the tutorial for smtp -->
+        <copy todir="${siploader.release}/tutorial/smtp">
+            <fileset dir="${siploader.path}/tutorial/smtp"/>
+        </copy> 	
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity10_list@" value="&lt;!ENTITY list_10 SYSTEM 'list_smtp.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity10_operations@" value="&lt;!ENTITY type_operations_10 SYSTEM 'type_operations_smtp.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_smtp.xsd"         		tofile="${siploader.release}/conf/schemas/list_smtp.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_smtp.xsd"     tofile="${siploader.release}/conf/schemas/type_operations_smtp.xsd"/>
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_smtp.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_smtp.doc"/>
+        
+	</target>
+
+    <target name="release_rtsp" description="release rtsp module" depends="jar_rtsp" >
+        <!-- Copy the project config files -->
+        <copy file="${siploader.path}/conf/rtsp.properties"            tofile="${siploader.release}/conf/rtsp.properties"/>
+
+        <!-- Copy the tutorial for smtp -->
+        <copy todir="${siploader.release}/tutorial/rtsp">
+            <fileset dir="${siploader.path}/tutorial/rtsp"/>
+        </copy> 	
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity11_list@" value="&lt;!ENTITY list_11 SYSTEM 'list_rtsp.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity11_operations@" value="&lt;!ENTITY type_operations_11 SYSTEM 'type_operations_rtsp.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_rtsp.xsd"         		tofile="${siploader.release}/conf/schemas/list_rtsp.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_rtsp.xsd"     tofile="${siploader.release}/conf/schemas/type_operations_rtsp.xsd"/>
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_rtsp.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_rtsp.doc"/>
+        
+	</target>
+
+	<target name="release_udp" description="release udp module" depends="jar_udp" >
+        <!-- Copy the project config files -->
+        <copy file="${siploader.path}/conf/udp.properties"            tofile="${siploader.release}/conf/udp.properties"/>
+        
+        <!-- Copy the tutorial for udp -->
+        <copy todir="${siploader.release}/tutorial/udp">
+            <fileset dir="${siploader.path}/tutorial/udp"/>
+        </copy>
+
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity7_list@" value="&lt;!ENTITY list_7 SYSTEM 'list_udp.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity7_operations@" value="&lt;!ENTITY type_operations_7 SYSTEM 'type_operations_udp.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_udp.xsd"         		tofile="${siploader.release}/conf/schemas/list_udp.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_udp.xsd"     tofile="${siploader.release}/conf/schemas/type_operations_udp.xsd"/>
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_udp.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_udp.doc"/>
+        
+	</target>
+
+    <target name="release_sctp" description="release sctp module" depends="jar_sctp" >
+	        <!-- Copy the project config files -->
+	        <copy file="${siploader.path}/conf/sctp.properties"            tofile="${siploader.release}/conf/sctp.properties"/>
+	        
+            <!-- Copy the project libraries -->
+            <copy file="${siploader.3pp}/JavaSCTP-0-5-7/JavaSCTP-0-5-7.jar"            tofile="${siploader.release}/lib/JavaSCTP-0-5-7.jar"/>
+            <copy file="${siploader.3pp}/JavaSCTP-0-5-7/libdk_i1_sctp.so"            tofile="${siploader.release}/lib/libdk_i1_sctp.so"/>
+	        
+	        <!-- Copy the tutorial for sctp -->
+	        <copy todir="${siploader.release}/tutorial/sctp">
+	            <fileset dir="${siploader.path}/tutorial/sctp"/>
+	        </copy>
+
+	        <!-- scenario.xsd file-->
+	        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity8_list@" value="&lt;!ENTITY list_8 SYSTEM 'list_sctp.xsd'&gt;"/>
+	        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity8_operations@" value="&lt;!ENTITY type_operations_8 SYSTEM 'type_operations_sctp.xsd'&gt;"/>
+	        <copy file="${siploader.path}/conf/schemas/list_sctp.xsd"         		tofile="${siploader.release}/conf/schemas/list_sctp.xsd"/>
+	        <copy file="${siploader.path}/conf/schemas/type_operations_sctp.xsd"     tofile="${siploader.release}/conf/schemas/type_operations_sctp.xsd"/>
+
+            <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_sctp.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_sctp.doc"/>
+        
+	</target>
+    
+    <target name="release_sip" description="release sip module" depends="jar_sip, release_udp, release_tcp, release_sctp, release_tls" >
+        
+        <!-- Copy the project config files -->
+        <copy file="${siploader.path}/conf/sip.properties"         tofile="${siploader.release}/conf/sip.properties"/>
+    
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/sip">
+            <fileset dir="${siploader.path}/tutorial/sip"/>
+        </copy>
+        <copy todir="${siploader.release}/tutorial/ims">
+            <fileset dir="${siploader.path}/tutorial/ims"/>
+        </copy> 
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity4_list@" value="&lt;!ENTITY list_4 SYSTEM 'list_sip.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity4_operations@" value="&lt;!ENTITY type_operations_4 SYSTEM 'type_operations_sip.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_sip.xsd"         		tofile="${siploader.release}/conf/schemas/list_sip.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_sip.xsd"     	tofile="${siploader.release}/conf/schemas/type_operations_sip.xsd"/>
+        <copy file="${siploader.path}/bin/test/runSipStack.bat"                		tofile="${siploader.release}/bin/test/runSipStack.bat"/>        
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_sip.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_sip.doc"/>
+        
+	</target>
+
+    <target name="release_imap" description="release imap module" depends="jar_imap" >
+
+        <copy file="${siploader.path}/conf/imap.properties"         tofile="${siploader.release}/conf/imap.properties"/> 
+    
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/imap">
+            <fileset dir="${siploader.path}/tutorial/imap"/>
+        </copy> 
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity12_list@" value="&lt;!ENTITY list_12 SYSTEM 'list_imap.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity12_operations@" value="&lt;!ENTITY type_operations_12 SYSTEM 'type_operations_imap.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_imap.xsd"         		tofile="${siploader.release}/conf/schemas/list_imap.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_imap.xsd"    tofile="${siploader.release}/conf/schemas/type_operations_imap.xsd"/>
+		
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_imap.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_imap.doc"/>
+        
+	</target>
+
+    <target name="release_pop" description="release pop module" depends="jar_pop" >
+
+        <copy file="${siploader.path}/conf/pop.properties"         tofile="${siploader.release}/conf/pop.properties"/> 
+    
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/pop">
+            <fileset dir="${siploader.path}/tutorial/pop"/>
+        </copy> 
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity13_list@" value="&lt;!ENTITY list_13 SYSTEM 'list_pop.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity13_operations@" value="&lt;!ENTITY type_operations_13 SYSTEM 'type_operations_pop.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_pop.xsd"         		tofile="${siploader.release}/conf/schemas/list_pop.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_pop.xsd"    tofile="${siploader.release}/conf/schemas/type_operations_pop.xsd"/>
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_pop.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_pop.doc"/>
+        
+	</target>    
+
+    <target name="release_smpp" description="release smpp module" depends="jar_smpp" >
+
+        <copy file="${siploader.path}/conf/smpp.properties"              tofile="${siploader.release}/conf/smpp.properties"/> 
+        <copy file="${siploader.path}/conf/smpp/dictionary_v3.4.xml"     tofile="${siploader.release}/conf/smpp/dictionary_v3.4.xml"/> 
+        <copy file="${siploader.path}/conf/smpp/dictionary_v5.0.xml"     tofile="${siploader.release}/conf/smpp/dictionary_v5.0.xml"/> 
+        
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/smpp">
+            <fileset dir="${siploader.path}/tutorial/smpp"/>
+        </copy> 
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity14_list@" value="&lt;!ENTITY list_14 SYSTEM 'list_smpp.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity14_operations@" value="&lt;!ENTITY type_operations_14 SYSTEM 'type_operations_smpp.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_smpp.xsd"         		tofile="${siploader.release}/conf/schemas/list_smpp.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_smpp.xsd"    tofile="${siploader.release}/conf/schemas/type_operations_smpp.xsd"/>
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_smpp.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_smpp.doc"/>
+        
+	</target>    
+    
+    <target name="release_ucp" description="release ucp module" depends="jar_ucp" >
+
+        <copy file="${siploader.path}/conf/ucp.properties"              tofile="${siploader.release}/conf/ucp.properties"/> 
+        <copy file="${siploader.path}/conf/ucp/dictionary.xml"          tofile="${siploader.release}/conf/ucp/dictionary.xml"/> 
+        
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/ucp">
+            <fileset dir="${siploader.path}/tutorial/ucp"/>
+        </copy> 
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity15_list@" value="&lt;!ENTITY list_15 SYSTEM 'list_ucp.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity15_operations@" value="&lt;!ENTITY type_operations_15 SYSTEM 'type_operations_ucp.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_ucp.xsd"         		tofile="${siploader.release}/conf/schemas/list_ucp.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_ucp.xsd"     tofile="${siploader.release}/conf/schemas/type_operations_ucp.xsd"/>
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_ucp.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_ucp.doc"/>
+        
+	</target>    
+
+    <target name="release_sigtran" description="release sigtran module" depends="jar_sigtran" >
+
+        <copy file="${siploader.path}/conf/sigtran.properties"              tofile="${siploader.release}/conf/sigtran.properties"/> 
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/conf/sigtran">
+            <fileset dir="${siploader.path}/conf/sigtran"/>
+        </copy> 
+    
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/sigtran">
+            <fileset dir="${siploader.path}/tutorial/sigtran"/>
+        </copy> 
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity16_list@" value="&lt;!ENTITY list_16 SYSTEM 'list_sigtran.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity16_operations@" value="&lt;!ENTITY type_operations_16 SYSTEM 'type_operations_sigtran.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_sigtran.xsd"         		tofile="${siploader.release}/conf/schemas/list_sigtran.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_sigtran.xsd"     tofile="${siploader.release}/conf/schemas/type_operations_sigtran.xsd"/>
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_sigtran.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_sigtran.doc"/>
+        
+	</target>    
+    
+    <target name="release_tls" description="release tls module" depends="jar_tls" >
+
+        <copy todir="${siploader.release}/conf/certificate">
+            <fileset dir="${siploader.path}/conf/certificate"/>
+        </copy> 
+        <copy file="${siploader.path}/conf/tls.properties"              tofile="${siploader.release}/conf/tls.properties"/> 
+    
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/tls">
+            <fileset dir="${siploader.path}/tutorial/tls"/>
+        </copy> 
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity17_list@" value="&lt;!ENTITY list_17 SYSTEM 'list_tls.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity17_operations@" value="&lt;!ENTITY type_operations_17 SYSTEM 'type_operations_tls.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_tls.xsd"         		tofile="${siploader.release}/conf/schemas/list_tls.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_tls.xsd"     tofile="${siploader.release}/conf/schemas/type_operations_tls.xsd"/>
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_tls.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_tls.doc"/>
+        
+	</target>
+
+    <target name="release_h248" description="release h248 module" depends="jar_h248" >
+
+        <copy todir="${siploader.release}/conf/h248">
+            <fileset dir="${siploader.path}/conf/h248"/>
+        </copy> 
+        <copy file="${siploader.path}/conf/h248.properties"              tofile="${siploader.release}/conf/h248.properties"/> 
+    
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/h248">
+            <fileset dir="${siploader.path}/tutorial/h248"/>
+        </copy> 
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity18_list@" value="&lt;!ENTITY list_18 SYSTEM 'list_h248.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity18_operations@" value="&lt;!ENTITY type_operations_18 SYSTEM 'type_operations_h248.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_h248.xsd"         		tofile="${siploader.release}/conf/schemas/list_h248.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_h248.xsd"     tofile="${siploader.release}/conf/schemas/type_operations_h248.xsd"/>
+	
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_h248.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_h248.doc"/>
+    
+    </target>
+    
+    <target name="release_msrp" description="release msrp module" depends="jar_msrp" >
+ 
+        <copy file="${siploader.path}/conf/msrp.properties"              tofile="${siploader.release}/conf/msrp.properties"/> 
+        
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/msrp">
+            <fileset dir="${siploader.path}/tutorial/msrp"/>
+        </copy> 
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity20_list@" value="&lt;!ENTITY list_20 SYSTEM 'list_msrp.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity20_operations@" value="&lt;!ENTITY type_operations_20 SYSTEM 'type_operations_msrp.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_msrp.xsd"         		tofile="${siploader.release}/conf/schemas/list_msrp.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_msrp.xsd"     tofile="${siploader.release}/conf/schemas/type_operations_msrp.xsd"/>
+		
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_msrp.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_msrp.doc"/>
+        
+    </target>
+        
+    <target name="release_snmp" description="release snmp module" depends="jar_snmp" >
+ 
+        <copy file="${siploader.path}/conf/snmp.properties"              tofile="${siploader.release}/conf/snmp.properties"/> 
+        
+        <!-- Copy the default mib files -->
+        <copy todir="${siploader.release}/conf/snmp">
+            <fileset dir="${siploader.path}/conf/snmp"/>
+        </copy>
+        
+        <!-- Copy the project libraries -->
+        <copy file="${siploader.3pp}/snmp4j/snmp4j-1.11.jar"            tofile="${siploader.release}/lib/snmp4j-1.11.jar"/>
+        <copy file="${siploader.3pp}/mibble/mibble-parser-2.9.2.jar"    tofile="${siploader.release}/lib/mibble-parser-2.9.2.jar"/>
+            
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/snmp">
+            <fileset dir="${siploader.path}/tutorial/snmp"/>
+        </copy> 
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity22_list@" value="&lt;!ENTITY list_22 SYSTEM 'list_snmp.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity22_operations@" value="&lt;!ENTITY type_operations_22 SYSTEM 'type_operations_snmp.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_snmp.xsd"         		tofile="${siploader.release}/conf/schemas/list_snmp.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_snmp.xsd"     tofile="${siploader.release}/conf/schemas/type_operations_snmp.xsd"/>
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_snmp.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_snmp.doc"/>
+        
+    </target>
+
+    <target name="release_pstn" description="release msrp module" depends="" >
+
+        <!-- Copy the config -->
+        <copy todir="${siploader.release}/conf/pstn">
+            <fileset dir="${siploader.path}/conf/pstn"/>
+        </copy>  
+        
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/pstn">
+            <fileset dir="${siploader.path}/tutorial/pstn"/>
+        </copy> 
+        
+        <!-- scenario.xsd file-->
+		
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_pstn.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_pstn.doc"/>
+        
+    </target>
+
+    <target name="release_mgcp" description="release mgcp module" depends="jar_mgcp" >
+ 
+        <copy file="${siploader.path}/conf/mgcp.properties"              tofile="${siploader.release}/conf/mgcp.properties"/> 
+                
+        <!-- Copy the project libraries -->
+            
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/mgcp">
+            <fileset dir="${siploader.path}/tutorial/mgcp"/>
+        </copy> 
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity23_list@" value="&lt;!ENTITY list_23 SYSTEM 'list_mgcp.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity23_operations@" value="&lt;!ENTITY type_operations_23 SYSTEM 'type_operations_mgcp.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_mgcp.xsd"         		tofile="${siploader.release}/conf/schemas/list_mgcp.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_mgcp.xsd"     tofile="${siploader.release}/conf/schemas/type_operations_mgcp.xsd"/>
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_mgcp.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_mgcp.doc"/>
+        
+    </target>
+
+    <target name="release_stun" description="release stun module" depends="jar_stun" >
+ 
+        <copy file="${siploader.path}/conf/stun.properties"              tofile="${siploader.release}/conf/stun.properties"/> 
+        
+        <!-- Copy the default mib files -->
+        <copy todir="${siploader.release}/conf/stun">
+            <fileset dir="${siploader.path}/conf/stun"/>
+        </copy>
+        
+        <!-- Copy the project libraries -->
+            
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/stun">
+            <fileset dir="${siploader.path}/tutorial/stun"/>
+        </copy> 
+        
+        <!-- scenario.xsd file-->
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity24_list@" value="&lt;!ENTITY list_24 SYSTEM 'list_stun.xsd'&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" 			token="@entity24_operations@" value="&lt;!ENTITY type_operations_24 SYSTEM 'type_operations_stun.xsd'&gt;"/>
+        <copy file="${siploader.path}/conf/schemas/list_stun.xsd"         		tofile="${siploader.release}/conf/schemas/list_stun.xsd"/>
+        <copy file="${siploader.path}/conf/schemas/type_operations_stun.xsd"     tofile="${siploader.release}/conf/schemas/type_operations_stun.xsd"/>
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_stun.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_stun.doc"/>
+        
+    </target>
+
+    <target name="release_genscript" description="release genscript module" depends="jar_genscript" >
+
+        <copy file="${siploader.path}/bin/genscript.bat"              tofile="${siploader.release}/bin/genscript.bat"/>
+        <copy file="${siploader.path}/bin/genscript.sh"               tofile="${siploader.release}/bin/genscript.sh"/>
+        
+        <!-- Copy the default files -->
+        <copy todir="${siploader.release}/conf/genscript">
+            <fileset dir="${siploader.path}/conf/genscript"/>
+        </copy>
+        
+        <!-- Copy the project libraries -->
+            
+        <!-- Copy the project tutorial -->
+        <copy todir="${siploader.release}/tutorial/genscript">
+            <fileset dir="${siploader.path}/tutorial/genscript"/>
+        </copy> 
+        
+        <!-- scenario.xsd file-->
+
+        <!-- Copy the Documentation -->
+        <copy file="${siploader.path}/doc/IMSLoader_user_manual_genscript.doc"   tofile="${siploader.release}/doc/IMSLoader_user_manual_genscript.doc"/>
+        
+    </target>
+
+    <target name="parsing" description="parsing non-used variables in scenario.xsd" depends="Glossary, Catalogue, ConvertDocHtml, ParsingXsd">
+    </target>
+    
+    <target name="ParsingXsd" description="parsing non-used variables in scenario.xsd" depends="Glossary, Catalogue, ConvertDocHtml">
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity1_list@" value="&lt;!ENTITY list_1 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity1_operations@" value="&lt;!ENTITY type_operations_1 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity2_list@" value="&lt;!ENTITY list_2 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity2_operations@" value="&lt;!ENTITY type_operations_2 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity3_list@" value="&lt;!ENTITY list_3 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity3_operations@" value="&lt;!ENTITY type_operations_3 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity4_list@" value="&lt;!ENTITY list_4 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity4_operations@" value="&lt;!ENTITY type_operations_4 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity5_list@" value="&lt;!ENTITY list_5 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity5_operations@" value="&lt;!ENTITY type_operations_5 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity6_list@" value="&lt;!ENTITY list_6 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity6_operations@" value="&lt;!ENTITY type_operations_6 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity7_list@" value="&lt;!ENTITY list_7 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity7_operations@" value="&lt;!ENTITY type_operations_7 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity8_list@" value="&lt;!ENTITY list_8 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity8_operations@" value="&lt;!ENTITY type_operations_8 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity9_list@" value="&lt;!ENTITY list_9 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity9_operations@" value="&lt;!ENTITY type_operations_9 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity10_list@" value="&lt;!ENTITY list_10 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity10_operations@" value="&lt;!ENTITY type_operations_10 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity11_list@" value="&lt;!ENTITY list_11 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity11_operations@" value="&lt;!ENTITY type_operations_11 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity12_list@" value="&lt;!ENTITY list_12 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity12_operations@" value="&lt;!ENTITY type_operations_12 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity13_list@" value="&lt;!ENTITY list_13 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity13_operations@" value="&lt;!ENTITY type_operations_13 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity14_list@" value="&lt;!ENTITY list_14 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity14_operations@" value="&lt;!ENTITY type_operations_14 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity15_list@" value="&lt;!ENTITY list_15 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity15_operations@" value="&lt;!ENTITY type_operations_15 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity16_list@" value="&lt;!ENTITY list_16 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity16_operations@" value="&lt;!ENTITY type_operations_16 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity17_list@" value="&lt;!ENTITY list_17 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity17_operations@" value="&lt;!ENTITY type_operations_17 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity18_list@" value="&lt;!ENTITY list_18 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity18_operations@" value="&lt;!ENTITY type_operations_18 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity19_list@" value="&lt;!ENTITY list_19 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity19_operations@" value="&lt;!ENTITY type_operations_19 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity20_list@" value="&lt;!ENTITY list_20 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity20_operations@" value="&lt;!ENTITY type_operations_20 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity21_list@" value="&lt;!ENTITY list_21 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity21_operations@" value="&lt;!ENTITY type_operations_21 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity22_list@" value="&lt;!ENTITY list_22 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity22_operations@" value="&lt;!ENTITY type_operations_22 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity23_list@" value="&lt;!ENTITY list_23 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity23_operations@" value="&lt;!ENTITY type_operations_23 ''&gt;"/>                
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity24_list@" value="&lt;!ENTITY list_24 ''&gt;"/>
+        <replace file="${siploader.release}/conf/schemas/scenario.xsd" token="@entity24_operations@" value="&lt;!ENTITY type_operations_24 ''&gt;"/>
+        		
+    </target>
+
+    <!--                                                                   -->
+    <!-- Produce glossary of IMSLoader parameters                          -->
+    <!--                                                                   -->
+
+    <!-- A working directory to copy source files is created.              -->
+    <!-- Sources files are .properties from conf directory.                -->
+    <!-- A source file is :                                                -->
+    <!-- - Comments lines leading by # or !.                               -->
+    <!-- - Empty lines.                                                    -->
+    <!-- - Couple (parameter, value) on one line (no escaping end of line).-->
+    <!-- - Delimiter is '=' (neither white space nor ':').                 -->
+    <!-- - Parameter name is before the first '=' character.               -->
+    <!-- - No escaped white space in the name of the parameter.            -->
+
+    <!-- On each source file :                                             -->
+    <!-- - Only parameter definition lines are kept.                       -->
+    <!-- - White spaces before and after the parameter name are trimmed.   -->
+    <!-- - First '=' and following are replace by separator and filename.  -->
+
+    <!-- The result files are concatenated in the doc directory.           -->
+    <!-- Working directory is deleted.                                     -->
+
+  <!-- Ant properties used for glossary of IMSLoader parameters -->
+  <property name="imsloader.tmpGlossary" value="${siploader.release}/conf/tmpGlossary"/>
+  <property name="GlossarySeparator"     value=";"/>
+  <property name="GlossaryExtension"     value=".csv"/>
+  <property name="GlossaryFile"          value="Glossary${GlossaryExtension}"/>
+
+  <!-- To use Foreach task of ant-contrib-1.0b3.jar added in 3pp/apache-ant-1.7.1/lib -->
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+
+  <target name="Glossary" description="Glossary of parameters">
+    <!-- Time stamp of the test -->
+<!--
+    <tstamp>
+      <format property="TheTime" pattern="dd/MM/yyyy HH:mm:ss"/>
+    </tstamp>
+    <echo message="${TheTime}"/>
+-->
+    <!-- To delete a previous temporary working directory -->
+    <delete dir="${imsloader.tmpGlossary}"/>
+    <!-- To copy files for the glossary in a temporary working directory -->
+    <copy todir="${imsloader.tmpGlossary}">
+      <mapper type="glob" from="*.properties" to="*.properties${GlossaryExtension}"/>
+      <fileset id="srcGlossaryFiles" dir="${siploader.release}/conf">
+        <patternset id="srcGlossaryFilesPattern" includes="*.properties"/>
+      </fileset>
+    </copy>
+
+    <!-- To treat each file of the fileset -->
+    <foreach param="oneGlossaryFile" target="GlossaryOneFileTreatment">
+      <fileset id="tmpGlossaryFiles" dir="${imsloader.tmpGlossary}"/>
+    </foreach>
+
+    <!-- To create the glossary -->
+    <concat destfile="${siploader.release}/doc/${GlossaryFile}">
+      <fileset refid="tmpGlossaryFiles"/>
+    </concat>
+
+    <!-- To delete the temporary working directory -->
+    <delete dir="${imsloader.tmpGlossary}"/>
+  </target>
+  <target name="GlossaryOneFileTreatment">
+    <!-- To treat one file -->
+    <property name="PropertiesFile" value="${oneGlossaryFile}"/>
+
+    <!-- To catch the name of the properties file -->
+    <basename property="PropertiesFilename" file="${PropertiesFile}" suffix="${GlossaryExtension}"/>
+    <!-- To empty the comment lines -->
+    <replaceregexp file="${PropertiesFile}" match="^[#!].*" replace="" byline="true"/>
+    <!-- To suppress leading blanks -->
+    <replaceregexp file="${PropertiesFile}" match="^ +" replace="" byline="true"/>
+    <!-- To trim white spaces around the parameter name and append the properties filename -->
+    <replaceregexp file="${PropertiesFile}" match=" *=.*" replace="${GlossarySeparator}${PropertiesFilename}" byline="true"/>
+
+    <!-- To suppress blank lines (except the first) -->
+    <replaceregexp file="${PropertiesFile}" match="[\r\n]++" replace="&#x0D;&#x0A;" byline="false" flags="g"/>
+    <!-- To suppress first blank lines -->
+    <replaceregexp file="${PropertiesFile}" match="[\r\n]++" replace="" byline="false"/>
+  </target>
+
+    <!--                                                                   -->
+    <!-- Produce a catalogue of ClearCase version IMSLoader documents      -->
+    <!--                                                                   -->
+
+  <!-- Ant properties used for catalogue of IMSLoader documents -->
+  <property name="imsloader.tmpCatalogue" value="./doc/tmpCatalogue"/>
+  <property name="CatalogueSeparator"     value=";"/>
+  <property name="CatalogueExtension"     value=".csv"/>
+  <property name="CatalogueFile"          value="Catalogue${CatalogueExtension}"/>
+  <property name="tmpCatalogueFile"       value="tmp${CatalogueFile}"/>
+  <property name="superCatalogueFile"     value="super${CatalogueFile}"/>
+
+  <!-- Documents of the catalogue -->
+  <patternset id="srcCatalogueFilesPattern">
+    <include name="IMSLoader*.doc"/>
+    <exclude name="IMS_Loader*.doc"/>
+  </patternset>
+
+  <!-- To use Foreach task of ant-contrib-1.0b3.jar added in 3pp/apache-ant-1.7.1/lib -->
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+
+  <target name="Catalogue" description="Catalogue of IMSLoader documents">
+    <!-- Time stamp of the test -->
+<!--
+    <tstamp>
+      <format property="TheTime" pattern="dd/MM/yyyy HH:mm:ss"/>
+    </tstamp>
+    <echo message="${TheTime}"/>
+-->
+
+    <!-- To delete a previous temporary working directory -->
+    <delete dir="${imsloader.tmpCatalogue}"/>
+
+    <!-- To copy files for the catalogue in a temporary working directory -->
+    <copy todir="${imsloader.tmpCatalogue}" preservelastmodified="yes">
+      <fileset id="srcCatalogueFiles" dir="${siploader.release}/doc">
+        <patternset refid="srcCatalogueFilesPattern"/>
+      </fileset>
+    </copy>
+
+    <!-- To catch ClearCase version of documents -->
+    <exec executable="cmd" output="${imsloader.tmpCatalogue}/${superCatalogueFile}">
+      <!-- /Q : without interaction. /C : without keeping the window openned. -->
+      <arg value="/Q /C"/>
+      <arg value="CleartoolLsShort.bat"/>
+    </exec>
+    
+    <!-- To replace @@ by the catalogue separator -->
+    <replaceregexp file="${imsloader.tmpCatalogue}/${superCatalogueFile}" match="@@" replace="${CatalogueSeparator}" byline="true"/>
+    <!-- To append enough blanks on each line to cover the token %VERSION% (9 characters) -->
+    <replaceregexp file="${imsloader.tmpCatalogue}/${superCatalogueFile}" match="$" replace="         " byline="true"/>
+
+    <!-- To treat each file of the fileset -->
+    <delete file="${siploader.release}/doc/${CatalogueFile}"/>
+	
+    <foreach param="oneCatalogueFile" target="CatalogueOneFileTreatment">
+      <fileset id="tmpCatalogueFiles" dir="${imsloader.tmpCatalogue}">
+        <patternset refid="srcCatalogueFilesPattern"/>
+      </fileset>
+    </foreach>
+
+    <!-- To delete the temporary working directory -->
+    <delete dir="${imsloader.tmpCatalogue}"/>
+    
+    </target>
+
+
+    <target name="ConvertDocHtmlFile" description="Convert UM documents to HTML">
+	<echo message="${Files}"/>
+
+	<!-- Convert in html the documentation -->		
+	<exec executable="winword.exe" > 
+        	<arg value="/mconverter"/>
+        	<arg value="${Files}"/>
+    	</exec>
+    </target>
+    
+    <target name="ConvertDocHtml" description="Convert UM documents to HTML">
+
+	<!-- Convert in html the documentation -->		
+	<foreach target="ConvertDocHtmlFile" param="Files">  
+		<path>  
+			<fileset dir="${siploader.release}/doc/" includes="*.doc" />
+		</path>
+	</foreach>
+	    
+    	<!-- delete all .doc -->
+    	<delete>
+       		<fileset dir="${siploader.release}/doc">
+          		<include name="*.doc"/>
+       		</fileset>
+    	</delete>
+</target>
+
+  <target name="CatalogueOneFileTreatment">
+    <!-- To get the filename without the directory -->
+    <basename property="theCatalogueFile" file="${oneCatalogueFile}"/>
+
+    <!-- To get the version in the super catalogue on exactly 9 characters (like %VERSION%) -->
+    <!-- To extract the line of the current file from the super catalogue -->
+    <copy file="${imsloader.tmpCatalogue}/${superCatalogueFile}" tofile="${imsloader.tmpCatalogue}/${tmpCatalogueFile}">
+      <filterchain>
+        <linecontains>
+          <contains value="${theCatalogueFile}"/>
+        </linecontains>
+      </filterchain>
+    </copy>
+    <!-- To keep only the version -->
+    <replaceregexp file="${imsloader.tmpCatalogue}/${tmpCatalogueFile}" match="${theCatalogueFile}${CatalogueSeparator}" replace="" byline="true"/>
+    <!-- To build a properties file with only one property "Version" with a value on exactly 9 characters (like %VERSION%) -->
+    
+    <replaceregexp file="${imsloader.tmpCatalogue}/${tmpCatalogueFile}" match="(^.........).*" replace="Version=\1" byline="true"/>
+    <!-- A properties file understands '\' as an escape character. Use '/' instead. -->
+    <replaceregexp file="${imsloader.tmpCatalogue}/${tmpCatalogueFile}" match="\\" replace="/" byline="true" flags="g"/>
+    <!-- Caution : loadfile task add &#x0D;&#x0A; at the end of the property. Use rather property task. -->
+    <property file="${imsloader.tmpCatalogue}/${tmpCatalogueFile}"/>
+    <!-- To delete the working temporary file -->
+    <delete file="${imsloader.tmpCatalogue}/${tmpCatalogueFile}"/>
+
+    <!-- To replace %VERSION% by the ClearCase version in the binary .doc file. Caution : do not forget the encoding. -->
+    <copy file="${imsloader.tmpCatalogue}/${theCatalogueFile}" toFile="${siploader.release}/doc/${theCatalogueFile}" encoding="ISO-8859-1" overwrite="yes" preservelastmodified="yes">
+      <filterset begintoken="%" endtoken="%">
+        <filter token="VERSION" value="${Version}"/>
+      </filterset>
+    </copy>
+
+    <!-- To add the current file in the final catalogue -->
+    <echo message="${theCatalogueFile}${CatalogueSeparator}${Version}&#x0D;&#x0A;" append="yes" file="${siploader.release}/doc/${CatalogueFile}"/>
+  </target>
+
+    <!--                                                                   -->
+    <!-- Produce installer                                                 -->
+    <!-- Warning : this should be called from the DISTRIB ant scripts only -->
+
+    <target name="prepare_izpack" description="prepare izpack">
+
+	<delete file="${siploader.build}/izpack"/>
+        <delete file="${siploader.release}/bin/classpath" />
+        <delete file="${siploader.release}/bin/java_home" />
+        <delete file="${siploader.release}/bin/memory" />
+        <move file="${siploader.release}/bin/classpath_release" tofile="${siploader.release}/bin/classpath" />
+        <move file="${siploader.release}/bin/java_home_release" tofile="${siploader.release}/bin/java_home" />
+        <move file="${siploader.release}/bin/memory_release" tofile="${siploader.release}/bin/memory" />
+        
+        <copy todir="${siploader.build}/izpack">
+            <fileset dir="${siploader.izpack}">
+                  <include name="*"/>
+            </fileset>
+        </copy>
+    </target>
+
+
+    <!--taskdef name="izpack" classpath="${siploader.izpack}/standalone-compiler.jar" classname="com.izforge.izpack.ant.IzPackTask"/-->
+    
+    <target name="izpack" description="create installer">
+        
+        <replace file="${siploader.build}/izpack/install.xml" propertyFile="build.properties">
+            <replacefilter token="@VERSION_ANT@" property="siploader.release.version" />
+            <replacefilter token="@RELEASE_PATH_ANT@" property="siploader.release.path" />
+        </replace>
+        
+    	<mkdir dir="./build/package"/>                
+        
+        <izpack input="../../build/izpack/install.xml" output="../../build/package/setup_xml_loader.jar" basedir="../../build/izpack"/>                
+        
+        <delete file="${siploader.build}/izpack"/>
+    </target>
+    
+    <target name="generate_xsd" description="generate scenario xsd for the application">
+        <copy file="${siploader.path}/conf/schemas/test.xsd"                  tofile="${siploader.path}/doc/schemas/test.xsd"/>         
+        <xslt basedir="." 
+            in="${siploader.path}/conf/schemas/scenario.xsd" 
+            out="./doc/schemas/scenario.xsd"
+            processor="trax" 
+            style="./conf/schemas/copy.xsl">
+        </xslt>
+        <xslt basedir="." 
+            in="${siploader.path}/conf/schemas/scenario_protocol.xsd" 
+            out="./doc/schemas/scenario_protocol.xsd"
+            processor="trax" 
+            style="./conf/schemas/copy.xsl">
+        </xslt>
+        <copy file="${siploader.path}/conf/schemas/parameter_operation.xsd"   tofile="${siploader.path}/doc/schemas/parameter_operation.xsd"/>         
+        <copy file="${siploader.path}/conf/schemas/test_condition.xsd"        tofile="${siploader.path}/doc/schemas/test_condition.xsd"/>         
+
+        <copy file="${siploader.path}/conf/schemas/master.xsd"         tofile="${siploader.path}/doc/schemas/master.xsd"/>         
+
+        <!--replaceregexp file="${siploader.path}/doc/schemas/test.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+        <replaceregexp file="${siploader.path}/doc/schemas/scenario.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+        <replaceregexp file="${siploader.path}/doc/schemas/master.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+        <replaceregexp file="${siploader.path}/doc/schemas/parameter_operation.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>        
+        <replaceregexp file="${siploader.path}/doc/schemas/test_condition.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/>
+        <replaceregexp file="${siploader.path}/doc/schemas/scenario_protocol.html" match="_Link[0-9a-zA-Z]{8}" replace="_Link" flags="g"/-->
+
+    </target>
+
+    <!--import file="nbproject/build-impl.xml"/-->
+    <!--import file="nbproject/profiler-build-impl.xml"/-->
+    <!--
+
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
+
+      -pre-init:                 called before initialization of project properties
+      -post-init:                called after initialization of project properties
+      -pre-compile:              called before javac compilation
+      -post-compile:             called after javac compilation
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-jar:                  called before JAR building
+      -post-jar:                 called after JAR building
+      -post-clean:               called after cleaning build products
+
+    (Targets beginning with '-' are not intended to be called on their own.)
+
+    Example of inserting an obfuscator after compilation could look like this:
+
+        <target name="-post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
+
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
+
+
+    Another way to customize the build is by overriding existing main targets.
+    The targets of interest are: 
+
+      -init-macrodef-javac:     defines macro for javac compilation
+      -init-macrodef-junit:     defines macro for junit execution
+      -init-macrodef-debug:     defines macro for class debugging
+      -init-macrodef-java:      defines macro for class execution
+      -do-jar-with-manifest:    JAR building (if you are using a manifest)
+      -do-jar-without-manifest: JAR building (if you are not using a manifest)
+      run:                      execution of project 
+      -javadoc-build:           Javadoc generation
+      test-report:              JUnit report generation
+
+    An example of overriding the target for project execution could look like this:
+
+        <target name="run" depends="IMSLoader-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
+
+    Notice that the overridden target depends on the jar target and not only on 
+    the compile target as the regular run target does. Again, for a list of available 
+    properties which you can use, check the target you are overriding in the
+    nbproject/build-impl.xml file. 
+
+    -->
+
+</project>
+
