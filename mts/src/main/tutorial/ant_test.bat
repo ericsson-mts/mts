@@ -41,6 +41,10 @@ REM ******************************************* genscript module
 cd ..\tutorial\genscript
 call genscripttest.bat
 
+REM ******************************************* importsipp module
+cd ..\tutorial\importsipp
+call startTest.bat
+
 REM ******************************************* gui module
 call startGui.bat
 

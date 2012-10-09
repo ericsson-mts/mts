@@ -43,6 +43,10 @@ echo ******************************************* genscript module
 cd ../tutorial/genscript
 REM call genscripttest.bat
 
+REM ******************************************* genscript module
+cd ../tutorial/importsipp
+REM call startTest.bat
+
 REM ******************************************* gui module
 sh ./startGui.sh
 
