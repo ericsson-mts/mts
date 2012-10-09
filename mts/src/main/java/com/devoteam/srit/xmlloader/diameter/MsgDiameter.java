@@ -718,10 +718,23 @@ public class MsgDiameter extends Msg
         return ret ;
     }
 
+    private String headerToXml() throws Exception 
+    {          
+        String ret = "<header command=\"" + message.hdr.command_code + "\"" +
+        " applicationId=\"" + message.hdr.application_id + "\"" +
+        " hopByHop=\"" + message.hdr.hop_by_hop_identifier + "\"" +
+        " endToEnd=\"" + message.hdr.end_to_end_identifier + "\"" +
+        " request=\"" + message.hdr.isRequest() + "\"" +
+        " proxiable=\"" + message.hdr.isProxiable() + "\"" +
+        " error=\"" + message.hdr.isError() + "\"" +
+        " retransmit=\"" + message.hdr.isRetransmit() + "\"" + "/>\n";
+        return ret;
+    }
+    
     /** Get the XML representation of the message; for the genscript module. */
     @Override
     public String toXml() throws Exception {
-        String xml = headerToString();
+        String xml = headerToXml();
         String applicationId = Integer.toString(message.hdr.application_id);
         Iterable<AVP> iterable = message.avps();
         Iterator<AVP> iterator = iterable.iterator();

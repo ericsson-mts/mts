@@ -1,5 +1,4 @@
-D:\ccviews\fhenry_imsloader_dev\srit_tools\ngn_tools\xmlSipLoader\tutorial>echo
-OFF
+D:\svnMTS\trunk\mts\target\mts\tutorial>echo OFF
 [param_1]=one
 [param_2]=two
 [param_3]=three
@@ -9,7 +8,8 @@ OFF
 
 Run -seq test "..\tutorial\core\test.xml
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-FAILING: CORE / 081_exit_failed
+FAILED: CORE / 081_exit_failed
+FAILED: CORE / 708_operator_system
 [Local-Host]=[Local-Host(0)]
 [Local-Port]=[Local-Port]
 [Remote-Host]=[Remote-Host(0)]
@@ -17,13 +17,13 @@ FAILING: CORE / 081_exit_failed
 
 Run -seq test "..\tutorial\diameter\test.xml
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-12 dÚc. 2011 16:35:34 dk.i1.diameter.node.Node start
+9 oct. 2012 16:01:00 dk.i1.diameter.node.Node start
 INFO: Starting Diameter node
-12 dÚc. 2011 16:35:34 dk.i1.diameter.node.Node loadTransportProtocol
+9 oct. 2012 16:01:00 dk.i1.diameter.node.Node loadTransportProtocol
 INFO: TCP support was loaded
-12 dÚc. 2011 16:35:34 dk.i1.diameter.node.Node loadTransportProtocol
+9 oct. 2012 16:01:00 dk.i1.diameter.node.Node loadTransportProtocol
 INFO: SCTP support was not loaded
-12 dÚc. 2011 16:35:34 dk.i1.diameter.node.Node start
+9 oct. 2012 16:01:00 dk.i1.diameter.node.Node start
 INFO: Diameter node started
 [Host-Tester]=[Host-Tester(0)]
 [Port-Tester]=[Port-Tester]
@@ -32,13 +32,25 @@ INFO: Diameter node started
 
 Run -seq test "..\tutorial\sip\test.xml
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-12 dÚc. 2011 16:37:04 dk.i1.diameter.node.Node start
+java.io.FileNotFoundException: ..\logs\117_bad_1\bob.log (L?opÚration demandÚe n?a pu s?accomplir sur un fichier ayant une section mappÚe ut
+ilisateur ouverte)
+        at java.io.FileOutputStream.open(Native Method)
+        at java.io.FileOutputStream.<init>(Unknown Source)
+        at java.io.FileWriter.<init>(Unknown Source)
+        at com.devoteam.srit.xmlloader.core.log.FileTextListener.printText(FileTextListener.java:76)
+        at com.devoteam.srit.xmlloader.core.log.GenericLogger.print(GenericLogger.java:125)
+        at com.devoteam.srit.xmlloader.core.log.GenericLogger.info(GenericLogger.java:70)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack.processLogsMsgSending(Stack.java:1181)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack.doReceiveMessage(Stack.java:948)
+        at com.devoteam.srit.xmlloader.sip.StackSip.doReceiveMessage(StackSip.java:218)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack$1.run(Stack.java:706)
+9 oct. 2012 16:02:25 dk.i1.diameter.node.Node start
 INFO: Starting Diameter node
-12 dÚc. 2011 16:37:04 dk.i1.diameter.node.Node loadTransportProtocol
+9 oct. 2012 16:02:25 dk.i1.diameter.node.Node loadTransportProtocol
 INFO: TCP support was loaded
-12 dÚc. 2011 16:37:04 dk.i1.diameter.node.Node loadTransportProtocol
+9 oct. 2012 16:02:25 dk.i1.diameter.node.Node loadTransportProtocol
 INFO: SCTP support was not loaded
-12 dÚc. 2011 16:37:04 dk.i1.diameter.node.Node start
+9 oct. 2012 16:02:25 dk.i1.diameter.node.Node start
 INFO: Diameter node started
 [domainName]=devoteam.com
 [localHostSIP]=[localHostSIP(0)]
@@ -48,6 +60,16 @@ INFO: Diameter node started
 
 Run -seq test "..\tutorial\rtp\test.xml
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+[localHostSIP]=[localHostSIP(0)]
+[remoteHostSIP]=[remoteHostSIP(0)]
+[localHostRTP]=[localHostRTP(0)]
+[localPortRTP]=10000
+[remoteHostRTP]=[remoteHostRTP(0)]
+[remotePortRTP]=11000
+
+Run -seq test "..\tutorial\rtpflow\test.xml
+Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [localHostSIP]=[localHostSIP(0)]
 [remoteHostSIP]=[remoteHostSIP(0)]
 [localHostRTP]=[localHostRTP(0)]
@@ -120,6 +142,17 @@ Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 
 Run -seq test "..\tutorial\imap\test.xml
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+java.io.FileNotFoundException: ..\logs\imap001_login_1\IMAP.log (L?opÚration demandÚe n?a pu s?accomplir sur un fichier ayant une section ma
+ppÚe utilisateur ouverte)
+        at java.io.FileOutputStream.open(Native Method)
+        at java.io.FileOutputStream.<init>(Unknown Source)
+        at java.io.FileWriter.<init>(Unknown Source)
+        at com.devoteam.srit.xmlloader.core.log.FileTextListener.printText(FileTextListener.java:76)
+        at com.devoteam.srit.xmlloader.core.log.GenericLogger.print(GenericLogger.java:125)
+        at com.devoteam.srit.xmlloader.core.log.GenericLogger.info(GenericLogger.java:70)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack.processLogsMsgSending(Stack.java:1181)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack.doReceiveMessage(Stack.java:948)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack$1.run(Stack.java:706)
 [listenIp]=0.0.0.0
 [serverRemoteIp]=[serverRemoteIp(0)]
 [serverPort]=[serverPort]
@@ -187,6 +220,985 @@ Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 [Host-Server]=[Host-Server(0)]
 [Port-Server]=[Port-Server]
 
+Run -seq test "..\tutorial\mgcp\test.xml
+Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+[Host-Tester]=[Host-Tester(0)]
+[Port-Tester]=[Port-Tester]
+[Host-Server]=[Host-Server(0)]
+[Port-Server]=[Port-Server]
+
 Run -seq test "..\tutorial\stun\test.xml
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+[listenIp]=0.0.0.0
+[serverRemoteIp]=[serverRemoteIp]
+[serverRemotePort]=[serverRemotePort]
+
+Run -seq test "..\tutorial\gtpp\test.xml
+Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+Appuyez sur une touche pour continuer...
+--------------------------------------------
+-- TEST SIP SUR UDP AVEC PORT PAR DEFAULT --
+--------------------------------------------
+-------- GENSCRIPT -------------------------------------------------------
+START => capture file: ../tutorial/genscript/trace_SIP_UDP.pcap
+CAPTURE filter: => SIP:172.16.21.194:7070
+UDP:172.16.21.194:7070->172.16.21.194:7070 => SIP > INVITE
+UDP:172.16.21.194:7070->172.16.21.194:7070 => SIP > INVITE>100
+UDP:172.16.21.194:7070->172.16.21.194:7070 => SIP > INVITE>180
+UDP:172.16.21.194:7070->172.16.21.194:7070 => SIP > INVITE>200
+UDP:172.16.21.194:7070->172.16.21.194:7070 => SIP > ACK
+UDP:172.16.21.194:7070->172.16.21.194:7070 => SIP > BYE
+UDP:172.16.21.194:7070->172.16.21.194:7070 => SIP > BYE>200
+Generate scenario file: trace_SIP_UDP/7070.xml
+Generate <sendMessagePPP> SIP > INVITE
+Generate <receiveMessagePPP> SIP > INVITE
+Generate <sendMessagePPP> SIP > INVITE>100
+Generate <receiveMessagePPP> SIP > INVITE>100
+Generate <sendMessagePPP> SIP > INVITE>180
+Generate <receiveMessagePPP> SIP > INVITE>180
+Generate <sendMessagePPP> SIP > INVITE>200
+Generate <receiveMessagePPP> SIP > INVITE>200
+Generate <sendMessagePPP> SIP > ACK
+Generate <receiveMessagePPP> SIP > ACK
+Generate <sendMessagePPP> SIP > BYE
+Generate <receiveMessagePPP> SIP > BYE
+Generate <sendMessagePPP> SIP > BYE>200
+Generate <receiveMessagePPP> SIP > BYE>200
+END => test file: ../tutorial/genscript/out/testout.xml(See application.log)
+-----------------------------------------
+-- TEST SIP SUR UDP AVEC UN AUTRE PORT --
+-----------------------------------------
+-------- GENSCRIPT -------------------------------------------------------
+START => capture file: ../tutorial/genscript/trace_SIP_UDP_port_non_default.pcap
+CAPTURE filter: => SIP:172.16.21.194:5070
+UDP:172.16.21.194:5070->172.16.21.194:5070 => SIP > INVITE
+UDP:172.16.21.194:5070->172.16.21.194:5070 => SIP > INVITE>100
+UDP:172.16.21.194:5070->172.16.21.194:5070 => SIP > INVITE>180
+UDP:172.16.21.194:5070->172.16.21.194:5070 => SIP > INVITE>200
+UDP:172.16.21.194:5070->172.16.21.194:5070 => SIP > ACK
+UDP:172.16.21.194:5070->172.16.21.194:5070 => SIP > BYE
+UDP:172.16.21.194:5070->172.16.21.194:5070 => SIP > BYE>200
+Generate scenario file: trace_SIP_UDP_port_non_default/5070.xml
+Generate <createListenpointPPP> SIP:172.16.21.194:5070
+Generate <sendMessagePPP> SIP > INVITE
+Generate <receiveMessagePPP> SIP > INVITE
+Generate <sendMessagePPP> SIP > INVITE>100
+Generate <receiveMessagePPP> SIP > INVITE>100
+Generate <sendMessagePPP> SIP > INVITE>180
+Generate <receiveMessagePPP> SIP > INVITE>180
+Generate <sendMessagePPP> SIP > INVITE>200
+Generate <receiveMessagePPP> SIP > INVITE>200
+Generate <sendMessagePPP> SIP > ACK
+Generate <receiveMessagePPP> SIP > ACK
+Generate <sendMessagePPP> SIP > BYE
+Generate <receiveMessagePPP> SIP > BYE
+Generate <sendMessagePPP> SIP > BYE>200
+Generate <receiveMessagePPP> SIP > BYE>200
+Generate <removeListenpointPPP>
+END => test file: ../tutorial/genscript/out/testout.xml(See application.log)
+------------------------------------------------
+-- TEST SIP SUR UDP AVEC DES PORTS DIFFERENTS --
+------------------------------------------------
+-------- GENSCRIPT -------------------------------------------------------
+START => capture file: ../tutorial/genscript/trace_SIP_UDP_ports_differents.pcap
+CAPTURE filter: => SIP:172.16.21.194:5070
+UDP:172.16.21.194:5070->172.16.21.194:5080 => SIP > INVITE
+UDP:172.16.21.194:5080->172.16.21.194:5070 => SIP > INVITE>100
+UDP:172.16.21.194:5080->172.16.21.194:5070 => SIP > INVITE>180
+UDP:172.16.21.194:5080->172.16.21.194:5070 => SIP > INVITE>200
+UDP:172.16.21.194:5070->172.16.21.194:5080 => SIP > ACK
+UDP:172.16.21.194:5070->172.16.21.194:5080 => SIP > BYE
+UDP:172.16.21.194:5080->172.16.21.194:5070 => SIP > BYE>200
+Generate scenario file: trace_SIP_UDP_ports_differents/5070.xml
+Generate <createListenpointPPP> SIP:172.16.21.194:5070
+Generate <sendMessagePPP> SIP > INVITE
+Generate <receiveMessagePPP> SIP > INVITE>100
+Generate <receiveMessagePPP> SIP > INVITE>180
+Generate <receiveMessagePPP> SIP > INVITE>200
+Generate <sendMessagePPP> SIP > ACK
+Generate <sendMessagePPP> SIP > BYE
+Generate <receiveMessagePPP> SIP > BYE>200
+Generate <removeListenpointPPP>
+END => test file: ../tutorial/genscript/out/testout.xml(See application.log)
+-------- GENSCRIPT -------------------------------------------------------
+START => capture file: ../tutorial/genscript/trace_SIP_UDP_ports_differents.pcap
+CAPTURE filter: => SIP:172.16.21.194:5080
+UDP:172.16.21.194:5070->172.16.21.194:5080 => SIP > INVITE
+UDP:172.16.21.194:5080->172.16.21.194:5070 => SIP > INVITE>100
+UDP:172.16.21.194:5080->172.16.21.194:5070 => SIP > INVITE>180
+UDP:172.16.21.194:5080->172.16.21.194:5070 => SIP > INVITE>200
+UDP:172.16.21.194:5070->172.16.21.194:5080 => SIP > ACK
+UDP:172.16.21.194:5070->172.16.21.194:5080 => SIP > BYE
+UDP:172.16.21.194:5080->172.16.21.194:5070 => SIP > BYE>200
+Generate scenario file: trace_SIP_UDP_ports_differents/5080.xml
+Generate <createListenpointPPP> SIP:172.16.21.194:5080
+Generate <receiveMessagePPP> SIP > INVITE
+Generate <sendMessagePPP> SIP > INVITE>100
+Generate <sendMessagePPP> SIP > INVITE>180
+Generate <sendMessagePPP> SIP > INVITE>200
+Generate <receiveMessagePPP> SIP > ACK
+Generate <receiveMessagePPP> SIP > BYE
+Generate <sendMessagePPP> SIP > BYE>200
+Generate <removeListenpointPPP>
+END => test file: ../tutorial/genscript/out/testout.xml(See application.log)
+--------------------------------------------
+-- TEST SIP SUR TCP AVEC PORT PAR DEFAULT --
+--------------------------------------------
+-----------------------------------------
+-- TEST SIP SUR TCP AVEC UN AUTRE PORT --
+-----------------------------------------
+------------------------------------------------
+-- TEST SIP SUR TCP AVEC DES PORTS DIFFERENTS --
+------------------------------------------------
+--------------
+-- TEST RTP --
+--------------
+-------- GENSCRIPT -------------------------------------------------------
+START => capture file: ../tutorial/genscript/trace_RTP.pcap
+CAPTURE filter: => RTP:172.16.21.194:10002
+UDP:172.16.21.194:10002->172.16.21.194:11000 => RTP > DVI4:17
+UDP:172.16.21.194:10002->172.16.21.194:11000 => RTP > DVI4:17
+UDP:172.16.21.194:10002->172.16.21.194:11000 => RTP > DVI4:17
+Generate scenario file: trace_RTP/10002.xml
+Generate <createListenpointPPP> RTP:172.16.21.194:10002
+Generate <sendMessagePPP> RTP > DVI4:17
+Generate <sendMessagePPP> RTP > DVI4:17
+Generate <sendMessagePPP> RTP > DVI4:17
+Generate <removeListenpointPPP>
+END => test file: ../tutorial/genscript/out/testout.xml(See application.log)
+-------- GENSCRIPT -------------------------------------------------------
+START => capture file: ../tutorial/genscript/trace_RTP.pcap
+CAPTURE filter: => RTP:172.16.21.194:11000
+UDP:172.16.21.194:10002->172.16.21.194:11000 => RTP > DVI4:17
+UDP:172.16.21.194:10002->172.16.21.194:11000 => RTP > DVI4:17
+UDP:172.16.21.194:10002->172.16.21.194:11000 => RTP > DVI4:17
+Generate scenario file: trace_RTP/11000.xml
+Generate <createListenpointPPP> RTP:172.16.21.194:11000
+Generate <receiveMessagePPP> RTP > DVI4:17
+Generate <receiveMessagePPP> RTP > DVI4:17
+Generate <receiveMessagePPP> RTP > DVI4:17
+Generate <removeListenpointPPP>
+END => test file: ../tutorial/genscript/out/testout.xml(See application.log)
+-------- GENSCRIPT -------------------------------------------------------
+START => capture file: ../tutorial/genscript/trace_RTP_event.pcap
+CAPTURE filter: => SIP:172.16.21.194:7070
+CAPTURE filter: => RTP:172.16.21.194:10000
+UDP:172.16.21.194:7070->172.16.21.194:7070 => SIP > INVITE
+UDP:172.16.21.194:7070->172.16.21.194:7070 => SIP > INVITE>100
+UDP:172.16.21.194:7070->172.16.21.194:7070 => SIP > INVITE>180
+UDP:172.16.21.194:7070->172.16.21.194:7070 => SIP > INVITE>200
+UDP:172.16.21.194:7070->172.16.21.194:7070 => SIP > ACK
+UDP:172.16.21.194:7070->172.16.21.194:7070 => SIP > BYE
+UDP:172.16.21.194:7070->172.16.21.194:7070 => SIP > BYE>200
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+Generate scenario file: trace_RTP_event/7070.xml
+Generate <createListenpointPPP> RTP:172.16.21.194:10000
+Generate <sendMessagePPP> SIP > INVITE
+Generate <receiveMessagePPP> SIP > INVITE
+Generate <sendMessagePPP> SIP > INVITE>100
+Generate <receiveMessagePPP> SIP > INVITE>100
+Generate <sendMessagePPP> SIP > INVITE>180
+Generate <receiveMessagePPP> SIP > INVITE>180
+Generate <sendMessagePPP> SIP > INVITE>200
+Generate <receiveMessagePPP> SIP > INVITE>200
+Generate <sendMessagePPP> SIP > ACK
+Generate <receiveMessagePPP> SIP > ACK
+Generate <sendMessagePPP> RTP > dynamic:106
+Generate <sendMessagePPP> RTP > dynamic:106
+Generate <sendMessagePPP> RTP > dynamic:106
+Generate <sendMessagePPP> RTP > dynamic:106
+Generate <sendMessagePPP> RTP > dynamic:106
+Generate <sendMessagePPP> RTP > dynamic:106
+Generate <sendMessagePPP> RTP > dynamic:106
+Generate <sendMessagePPP> RTP > dynamic:106
+Generate <sendMessagePPP> RTP > dynamic:106
+Generate <sendMessagePPP> RTP > dynamic:106
+Generate <sendMessagePPP> RTP > dynamic:106
+Generate <sendMessagePPP> RTP > dynamic:106
+Generate <sendMessagePPP> SIP > BYE
+Generate <receiveMessagePPP> SIP > BYE
+Generate <sendMessagePPP> SIP > BYE>200
+Generate <receiveMessagePPP> SIP > BYE>200
+Generate <removeListenpointPPP>
+END => test file: ../tutorial/genscript/out/testout.xml(See application.log)
+-------- GENSCRIPT -------------------------------------------------------
+START => capture file: ../tutorial/genscript/trace_RTP_event.pcap
+CAPTURE filter: => RTP:172.16.21.194:11000
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+UDP:172.16.21.194:10000->172.16.21.194:11000 => RTP > dynamic:106
+Generate scenario file: trace_RTP_event/11000.xml
+Generate <createListenpointPPP> RTP:172.16.21.194:11000
+Generate <receiveMessagePPP> RTP > dynamic:106
+Generate <receiveMessagePPP> RTP > dynamic:106
+Generate <receiveMessagePPP> RTP > dynamic:106
+Generate <receiveMessagePPP> RTP > dynamic:106
+Generate <receiveMessagePPP> RTP > dynamic:106
+Generate <receiveMessagePPP> RTP > dynamic:106
+Generate <receiveMessagePPP> RTP > dynamic:106
+Generate <receiveMessagePPP> RTP > dynamic:106
+Generate <receiveMessagePPP> RTP > dynamic:106
+Generate <receiveMessagePPP> RTP > dynamic:106
+Generate <receiveMessagePPP> RTP > dynamic:106
+Generate <receiveMessagePPP> RTP > dynamic:106
+Generate <removeListenpointPPP>
+END => test file: ../tutorial/genscript/out/testout.xml(See application.log)
+--------------------
+-- TEST DIAMETER  --
+--------------------
+-------- GENSCRIPT -------------------------------------------------------
+START => capture file: ../tutorial/genscript/trace_DIAMETER.pcap
+CAPTURE filter: => DIAMETER:172.16.21.194:3488
+9 oct. 2012 16:20:16 dk.i1.diameter.node.Node start
+INFO: Starting Diameter node
+9 oct. 2012 16:20:16 dk.i1.diameter.node.Node loadTransportProtocol
+INFO: TCP support was loaded
+9 oct. 2012 16:20:16 dk.i1.diameter.node.Node loadTransportProtocol
+INFO: SCTP support was not loaded
+9 oct. 2012 16:20:16 dk.i1.diameter.node.Node start
+INFO: Diameter node started
+TCP:172.16.21.194:3488->172.16.21.194:3871 => DIAMETER > Accounting:271
+TCP:172.16.21.194:3871->172.16.21.194:3488 => DIAMETER > Accounting:271>DIAMETER_SUCCESS:2001
+Generate scenario file: trace_DIAMETER/3488.xml
+Generate <sendMessagePPP> DIAMETER > Accounting:271
+Generate <receiveMessagePPP> DIAMETER > Accounting:271>DIAMETER_SUCCESS:2001
+END => test file: ../tutorial/genscript/out/testout.xml(See application.log)
+-------- GENSCRIPT -------------------------------------------------------
+START => capture file: ../tutorial/genscript/trace_DIAMETER.pcap
+CAPTURE filter: => DIAMETER:172.16.21.194:3871
+9 oct. 2012 16:20:28 dk.i1.diameter.node.Node start
+INFO: Starting Diameter node
+9 oct. 2012 16:20:28 dk.i1.diameter.node.Node loadTransportProtocol
+INFO: TCP support was loaded
+9 oct. 2012 16:20:28 dk.i1.diameter.node.Node loadTransportProtocol
+INFO: SCTP support was not loaded
+9 oct. 2012 16:20:28 dk.i1.diameter.node.Node start
+INFO: Diameter node started
+TCP:172.16.21.194:3488->172.16.21.194:3871 => DIAMETER > Accounting:271
+TCP:172.16.21.194:3871->172.16.21.194:3488 => DIAMETER > Accounting:271>DIAMETER_SUCCESS:2001
+Generate scenario file: trace_DIAMETER/3871.xml
+Generate <receiveMessagePPP> DIAMETER > Accounting:271
+Generate <sendMessagePPP> DIAMETER > Accounting:271>DIAMETER_SUCCESS:2001
+END => test file: ../tutorial/genscript/out/testout.xml(See application.log)
+-------------------------
+-- TEST DIAMETER REAL  --
+-------------------------
+------------------------------
+-- TEST DES SCRIPTS GENERES --
+------------------------------
+
+Run -seq test "../tutorial/genscript/out/testout.xml
+Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+FAILED: Genscript / trace_SIP_UDP
+FAILED: Genscript / trace_SIP_UDP_port_non_default
+FAILED: Genscript / trace_SIP_UDP_ports_differents
+FAILED: Genscript / trace_RTP
+FAILED: Genscript / trace_RTP_event
+FAILED: Genscript / trace_DIAMETER
+Appuyez sur une touche pour continuer...
+--------------------------------------
+SIPP file = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\uac.xml
+Testcase Name = test_ua
+Test Filename = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test.xml
+--------------------------------------
+Creating Test File....
+Done!
+--------------------------------------
+Creating resulting file: D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test_ua\uac_mts.xml
+Adding Global parameters:
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+DONE!
+--------------------------------------
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <ResponseTimeRepartition>
+Current SIPp node: <CallLengthRepartition>
+============================================
+ALL DONE!
+--------------------------------------
+SIPP file = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\uas.xml
+Testcase Name = test_ua
+Test Filename = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test.xml
+--------------------------------------
+Creating Test File....
+Done!
+--------------------------------------
+Creating resulting file: D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test_ua\uas_mts.xml
+Adding Global parameters:
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+DONE!
+--------------------------------------
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <ResponseTimeRepartition>
+Current SIPp node: <CallLengthRepartition>
+============================================
+ALL DONE!
+--------------------------------------
+SIPP file = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\branchc.xml
+Testcase Name = test_branch
+Test Filename = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test.xml
+--------------------------------------
+Creating Test File....
+Done!
+--------------------------------------
+Creating resulting file: D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test_branch\branchc_mts.xml
+Adding Global parameters:
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+DONE!
+--------------------------------------
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+------> Adding element : <test>
+------> Adding element : <goto>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <label>
+------> Adding element : <label>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+------> Adding element : <test>
+------> Adding element : <test>
+------> Adding element : <test>
+------> Adding element : <goto>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+------> Adding element : <if>
+------> Adding element : <test>
+------> Adding element : <goto>
+Current SIPp node: <pause>
+------> Adding element : <pause>
+Current SIPp node: <label>
+------> Adding element : <label>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <pause>
+------> Adding element : <pause>
+Current SIPp node: <ResponseTimeRepartition>
+Current SIPp node: <CallLengthRepartition>
+============================================
+ALL DONE!
+--------------------------------------
+SIPP file = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\branchs.xml
+Testcase Name = test_branch
+Test Filename = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test.xml
+--------------------------------------
+Creating Test File....
+Done!
+--------------------------------------
+Creating resulting file: D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test_branch\branchs_mts.xml
+Adding Global parameters:
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+DONE!
+--------------------------------------
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+------> Adding element : <if>
+------> Adding element : <test>
+------> Adding element : <goto>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+------> Adding element : <if>
+------> Adding element : <goto>
+Current SIPp node: <label>
+------> Adding element : <label>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+Current SIPp node: <label>
+------> Adding element : <label>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <timewait>
+------> Adding element : <pause>
+Current SIPp node: <ResponseTimeRepartition>
+Current SIPp node: <CallLengthRepartition>
+============================================
+ALL DONE!
+--------------------------------------
+SIPP file = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\3pcc-C-A.xml
+Testcase Name = test_3pcc
+Test Filename = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test.xml
+--------------------------------------
+Creating Test File....
+Done!
+--------------------------------------
+Creating resulting file: D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test_3pcc\3pcc-C-A_mts.xml
+Adding Global parameters:
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+DONE!
+--------------------------------------
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+Current SIPp node: <sendCmd>
+Current SIPp node: <recvCmd>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <pause>
+------> Adding element : <pause>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+------> Adding element : <test>
+============================================
+ALL DONE!
+--------------------------------------
+SIPP file = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\3pcc-A.xml
+Testcase Name = test_3pcc
+Test Filename = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test.xml
+--------------------------------------
+Creating Test File....
+Done!
+--------------------------------------
+Creating resulting file: D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test_3pcc\3pcc-A_mts.xml
+Adding Global parameters:
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+DONE!
+--------------------------------------
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <timewait>
+------> Adding element : <pause>
+============================================
+ALL DONE!
+--------------------------------------
+SIPP file = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\3pcc-C-B.xml
+Testcase Name = test_3pcc
+Test Filename = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test.xml
+--------------------------------------
+Creating Test File....
+Done!
+--------------------------------------
+Creating resulting file: D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test_3pcc\3pcc-C-B_mts.xml
+Adding Global parameters:
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+DONE!
+--------------------------------------
+Current SIPp node: <recvCmd>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <sendCmd>
+Current SIPp node: <pause>
+------> Adding element : <pause>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+------> Adding element : <test>
+============================================
+ALL DONE!
+--------------------------------------
+SIPP file = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\3pcc-B.xml
+Testcase Name = test_3pcc
+Test Filename = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test.xml
+--------------------------------------
+Creating Test File....
+Done!
+--------------------------------------
+Creating resulting file: D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test_3pcc\3pcc-B_mts.xml
+Adding Global parameters:
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+DONE!
+--------------------------------------
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <timewait>
+------> Adding element : <pause>
+============================================
+ALL DONE!
+--------------------------------------
+SIPP file = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\uac_pcap.xml
+Testcase Name = uapcap
+Test Filename = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test.xml
+--------------------------------------
+Creating Test File....
+Done!
+--------------------------------------
+Creating resulting file: D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\uapcap\uac_pcap_mts.xml
+Adding Global parameters:
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+DONE!
+--------------------------------------
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <nop>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageRTPFLOW>
+Current SIPp node: <pause>
+------> Adding element : <pause>
+Current SIPp node: <nop>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageRTPFLOW>
+Current SIPp node: <pause>
+------> Adding element : <pause>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <ResponseTimeRepartition>
+Current SIPp node: <CallLengthRepartition>
+============================================
+ALL DONE!
+--------------------------------------
+SIPP file = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\uas.xml
+Testcase Name = uapcap
+Test Filename = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test.xml
+--------------------------------------
+Creating Test File....
+Done!
+--------------------------------------
+Creating resulting file: D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\uapcap\uas_mts.xml
+Adding Global parameters:
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+DONE!
+--------------------------------------
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <ResponseTimeRepartition>
+Current SIPp node: <CallLengthRepartition>
+============================================
+ALL DONE!
+--------------------------------------
+SIPP file = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\regexp.xml
+Testcase Name = regexp
+Test Filename = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test.xml
+--------------------------------------
+Creating Test File....
+Done!
+--------------------------------------
+Creating resulting file: D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\regexp\regexp_mts.xml
+Adding Global parameters:
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+DONE!
+--------------------------------------
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <pause>
+------> Adding element : <pause>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <ResponseTimeRepartition>
+Current SIPp node: <CallLengthRepartition>
+============================================
+ALL DONE!
+--------------------------------------
+SIPP file = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\uas.xml
+Testcase Name = regexp
+Test Filename = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test.xml
+--------------------------------------
+Creating Test File....
+Done!
+--------------------------------------
+Creating resulting file: D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\regexp\uas_mts.xml
+Adding Global parameters:
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+DONE!
+--------------------------------------
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <ResponseTimeRepartition>
+Current SIPp node: <CallLengthRepartition>
+============================================
+ALL DONE!
+--------------------------------------
+SIPP file = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\uac.xml
+Testcase Name = ooc
+Test Filename = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test.xml
+--------------------------------------
+Creating Test File....
+Done!
+--------------------------------------
+Creating resulting file: D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\ooc\uac_mts.xml
+Adding Global parameters:
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+DONE!
+--------------------------------------
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <send>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <ResponseTimeRepartition>
+Current SIPp node: <CallLengthRepartition>
+============================================
+ALL DONE!
+--------------------------------------
+SIPP file = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\ooc_default.xml
+Testcase Name = ooc
+Test Filename = D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\test.xml
+--------------------------------------
+Creating Test File....
+Done!
+--------------------------------------
+Creating resulting file: D:\svnMTS\trunk\mts\target\mts\tutorial\importsipp\ooc\ooc_default_mts.xml
+Adding Global parameters:
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <test>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+DONE!
+--------------------------------------
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <recv>
+------> Adding element : <test>
+Current SIPp node: <send>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <parameter>
+------> Adding element : <sendMessageSIP>
+Current SIPp node: <timewait>
+------> Adding element : <pause>
+Current SIPp node: <ResponseTimeRepartition>
+Current SIPp node: <CallLengthRepartition>
+============================================
+ALL DONE!
+[local_ip]=[local_ip(0)]
+[localPort]=6060,7060,8060,9060,10060
+[remote_ip]=[remote_ip(0)]
+[remotePort]=7060,8060,9060,10060,6060
+[media_ip]=[media_ip(0)]
+[media_port]=10000
+[auto_media_port]=20000
+[transport]=UDP
+[_pauseDuration]=1000
+[service]=service
+[_fileName]=nomfichier.csv
+[startDelay]=0
+[endDelay]=0
+[frequency]=10
+[instances]=10
+[cseq]=1
+[recv_timeout]=30
+
+Run -seq test "..\tutorial\importsipp\test.xml
+Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 Appuyez sur une touche pour continuer...
