@@ -110,6 +110,10 @@ public abstract class Listenpoint
         {
             this.port = Integer.parseInt(portAttr);
         }
+        else
+        {
+            this.port = 0;
+        }
 
         String listenUDPAttr = root.attributeValue("listenUDP");
         if (listenUDPAttr != null)
