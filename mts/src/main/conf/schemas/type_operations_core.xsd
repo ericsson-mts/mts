@@ -149,15 +149,6 @@
         </xs:complexContent>
     </xs:complexType>
 
-<!--                                                                                    function -->
-    <!--xs:complexType name="functionType">
-        <xs:complexContent>
-            <xs:extension base="operationType">
-                <xs:attribute name="params"   type="xs:string" use="required" />
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType-->
-
 <!--                                                                                      system -->
     <xs:complexType name="systemType">
         <xs:complexContent>
@@ -746,9 +737,9 @@
 <!--                                                                                          function -->
 <xs:complexType name="functionType">
     <xs:sequence>
-        <xs:element name="input"       type="inputFunctionType" minOccurs="0" maxOccurs="unbounded" />
-        <xs:element name="do"          type="doType" minOccurs="0" maxOccurs="unbounded" />
-        <xs:element name="output"      type="outputFunctionType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="input"       type="inputFunctionType" minOccurs="0" maxOccurs="1" />
+        <xs:element name="do"          type="doType" minOccurs="0" maxOccurs="1" />
+        <xs:element name="output"      type="outputFunctionType" minOccurs="0" maxOccurs="1" />
     </xs:sequence>
     <xs:attribute name="file"     type="xs:string" >
         <xs:annotation>
@@ -779,8 +770,8 @@
 <!--                                                                                          function -->
 <xs:complexType name="callType">
     <xs:sequence>
-        <xs:element name="input"        type="inoutputCallType" minOccurs="0" maxOccurs="unbounded" />
-        <xs:element name="output"       type="inoutputCallType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="input"        type="inoutputCallType" minOccurs="0" maxOccurs="1" />
+        <xs:element name="output"       type="inoutputCallType" minOccurs="0" maxOccurs="1" />
     </xs:sequence>
     <xs:attribute name="name"     type="xs:string" >
         <xs:annotation>
