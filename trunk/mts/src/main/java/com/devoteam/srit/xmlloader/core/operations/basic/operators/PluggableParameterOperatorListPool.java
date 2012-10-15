@@ -89,7 +89,7 @@ public class PluggableParameterOperatorListPool extends AbstractPluggableParamet
         }
         else if(name.equals(NAME_CREATE) || name.equals(NAME_L_CREATE))
         {
-            return new Parameter();
+            return runner.getParameterPool().create(resultant);
         }
         else throw new RuntimeException("unsupported operation");
     }
