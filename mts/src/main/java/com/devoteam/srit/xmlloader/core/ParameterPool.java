@@ -83,7 +83,6 @@ public class ParameterPool
         testbrackets(name);
         
         Level level = getLevel(name);
-        ParameterPool parameterPool;
         Parameter parameter;
         if(null != level)
         {
@@ -116,12 +115,10 @@ public class ParameterPool
             parameterPool = this;
         }
 
-        traceDebug("Create empty Parameter ", name);
-
-        Parameter parameter = new Parameter(name);
+        Parameter parameter = new Parameter(name);       
+        parameterPool.set(name, parameter);
         
-        parameterPool.setLocal(name, parameter);
-        
+        traceInfo("CREATE", name, parameter);      
         return parameter ;
     }
     
@@ -205,21 +202,12 @@ public class ParameterPool
     // <editor-fold desc=" Parameters methods to access local pool ">
     private Parameter getLocal(String name) throws ParameterException
     {
-        Parameter parameter;
-                
+        Parameter parameter;               
         synchronized(parametersByName)
         {
-            parameter = parametersByName.get(removeLevel(name));
-
-            if(null == parameter)
-            {
-                return null;
-            }
-            
+            parameter = parametersByName.get(removeLevel(name));          
         }
-        
-        traceDebug("read ", name, ", ", parameter, "\n", "pool ", level);            
-        
+        traceDebug("GET", name, parameter);                 
         return parameter;
     }
     
@@ -229,8 +217,10 @@ public class ParameterPool
         {
             parametersByName.put(removeLevel(name), parameter);
         }
-
-        traceInfo("set ", name, "=", parameter, "\n", "pool ", level);
+        if (parameter.length() > 0)
+        {
+        	traceInfo("SET", name, parameter);
+        }
     }
     
     public boolean existsLocal(String name) throws ParameterException
@@ -244,10 +234,13 @@ public class ParameterPool
 
     private void deleteLocal(String name)
     {
-        traceDebug("delete ", name, "\n", "pool ", level);
-        synchronized(parametersByName){
+        Parameter parameter;       
+        synchronized(parametersByName)
+        {
+            parameter = parametersByName.get(removeLevel(name));            
             parametersByName.remove(name);
         }
+        traceInfo("REMOVE", name, parameter);
     }
     
     public Set<String> getParametersNameLocal()
@@ -417,39 +410,29 @@ public class ParameterPool
         }
     }
     
-    private void traceDebug(Object... objects)
+    private void traceDebug(String action, String name, Parameter param)
     {
+    	String nameWithoutBr = name.trim().substring(1, name.trim().length() -1);
         if(null != this.runner)
         {
-            GlobalLogger.instance().getSessionLogger().debug((ScenarioRunner)runner, TextEvent.Topic.PARAM, objects);    
+            GlobalLogger.instance().getSessionLogger().debug((ScenarioRunner)runner, TextEvent.Topic.PARAM, action, " [", this.level, ":", nameWithoutBr, "] <= ", param);    
         }
         else
         {
-            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PARAM, objects);
+            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PARAM, action, " [", this.level, ":", nameWithoutBr, "] <= ", param);
         }
     }
 
-    private void traceInfo(Object... objects)
+    private void traceInfo(String action, String name, Parameter param)
     {
+    	String nameWithoutBr = name.trim().substring(1, name.trim().length() -1);
         if(null != this.runner)
         {
-            GlobalLogger.instance().getSessionLogger().info((ScenarioRunner)runner, TextEvent.Topic.PARAM, objects);    
+            GlobalLogger.instance().getSessionLogger().info((ScenarioRunner)runner, TextEvent.Topic.PARAM, action, " [", this.level, ":", nameWithoutBr, "] => ", param);    
         }
         else
         {
-            GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PARAM, objects);
-        }
-    }
-    
-    private void traceWarn(Object... objects)
-    {
-        if(null != this.runner)
-        {
-            GlobalLogger.instance().getSessionLogger().warn((ScenarioRunner)runner, TextEvent.Topic.PARAM, objects);    
-        }
-        else
-        {
-            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PARAM, objects);
+            GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PARAM, action, " [", this.level, ":", nameWithoutBr, "] => ", param);
         }
     }
     

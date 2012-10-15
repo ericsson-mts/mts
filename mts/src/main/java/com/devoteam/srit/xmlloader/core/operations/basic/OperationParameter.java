@@ -231,7 +231,8 @@ public class OperationParameter extends Operation {
                     param = runner.getParameterPool().get(resultantName);
                 }
                 else {
-                    runner.getParameterPool().set(resultantName, param = new Parameter());
+                	param = new Parameter();
+                    runner.getParameterPool().set(resultantName, param);
                 }
 
                 param.set(resultantIndex, result.get(0));
