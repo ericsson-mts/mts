@@ -85,8 +85,11 @@ public class TextImplementation {
             if (arg.startsWith("-seq") && "-sequential".startsWith(arg)) {
                 runnerName = "-seq";
             }
-            else if (arg.startsWith("-load")) {
-                runnerName = "-load";
+            else if (arg.startsWith("-par") && "-parallel".startsWith(arg)) {
+                runnerName = "-par";
+            }
+            else if (arg.startsWith("-load")) {     // deprecated
+                runnerName = "-par";
             }
             else if (arg.startsWith("-testplan")) {
 
@@ -253,7 +256,7 @@ public class TextImplementation {
     static public void usage(String message) {
         System.out.println(message);
         System.out.println("Usage: startCmd <testFile>|<masterFile>\n"
-                + "    -seq[uential]|-load|<testcaseName>\n"
+                + "    -seq[uential]|-par[allel]|<testcaseName>\n"
                 + "    -testplan\n"
                 + "    [-param[eter]:<paramName>+<paramValue>]\n"
                 + "    [-config[uration]:<configName>+<configValue>]\n"
