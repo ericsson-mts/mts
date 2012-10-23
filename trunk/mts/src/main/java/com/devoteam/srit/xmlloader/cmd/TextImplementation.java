@@ -89,6 +89,7 @@ public class TextImplementation {
                 runnerName = "-par";
             }
             else if (arg.startsWith("-load")) {     // deprecated
+                GlobalLogger.instance().getApplicationLogger().warn(Topic.CORE, "DEPRECATED : please use -par[allel] option instead of -load");                
                 runnerName = "-par";
             }
             else if (arg.startsWith("-testplan")) {
