@@ -79,7 +79,7 @@ public class TextTester {
         if ("-seq".equals(runnerName)) {
             runner = new TestRunnerSequential(tester.getTest());
         }
-        else if ("-load".equals(runnerName)) {
+        else if ("-par".equals(runnerName)) {
             runner = new TestRunnerLoad(tester.getTest());
         }
         else if ("-testplan".equals(runnerName)) {
