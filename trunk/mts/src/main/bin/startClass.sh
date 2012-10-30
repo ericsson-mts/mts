@@ -3,6 +3,8 @@ CLASS=$1
 
 shift
 
+export LD_LIBRARY_PATH=../lib/native
+
 JAVA_HOME=`cat java_home`
 JAVA_ARGUMENTS=`cat java_arguments`
 JAVA_MEMORY=`cat java_memory`
