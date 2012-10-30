@@ -242,12 +242,12 @@ Content-Length: 0
   </or>
   
   <!-- section transport -->    
-  <parameter name="[Messages]" operation="system.statCounter" value="> transport > UDP" value2="Messages"/>
+  <parameter name="[Messages]" operation="system.statCounter" value="> transport" value2="Messages"/>
   <or>
   	<test parameter="[Messages.Count]" condition="number.equals" value="18"/>
   	<test parameter="[Messages.Count]" condition="number.equals" value="20"/>
   </or>
-  <parameter name="[BytesMb]" operation="system.statCounter" value="> transport > UDP" value2="Bytes (in Mb)"/>
+  <parameter name="[BytesMb]" operation="system.statCounter" value="> transport" value2="Bytes (in Mb)"/>
   <test parameter="[BytesMb.Count]" condition="number.greaterThan" value="0.01"/>
   <test parameter="[BytesMb.Count]" condition="number.lowerThan" value="0.02"/>
   
