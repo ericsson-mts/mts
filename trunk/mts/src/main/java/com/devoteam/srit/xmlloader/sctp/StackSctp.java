@@ -23,7 +23,6 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
-import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
 import org.dom4j.Element;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
@@ -38,7 +37,6 @@ import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
-import com.devoteam.srit.xmlloader.tcp.MsgTcp;
 
 import dk.i1.sctp.AssociationId;
 import dk.i1.sctp.SCTPData;
@@ -60,17 +58,6 @@ public class StackSctp extends Stack
 	{
 		super();
         		
-		String ostreams = getConfig().getString("server.NUM_OSTREAMS");
-		String instreams = getConfig().getString("server.MAX_INSTREAMS");
-		String attempts = getConfig().getString("server.MAX_ATTEMPS");
-		String timeo = getConfig().getString("server.MAX_INIT_TIMEO");
-
-		sctp_initmsg im = new sctp_initmsg();
-		if(ostreams != null) im.sinit_num_ostreams = (short) Integer.parseInt(ostreams);
-		if(instreams != null)im.sinit_max_instreams = (short) Integer.parseInt(instreams);
-		if(attempts != null)im.sinit_max_attempts = (short) Integer.parseInt(attempts);
-		if(timeo != null)im.sinit_max_init_timeo= (short) Integer.parseInt(timeo);
-
         // initiate a default listenpoint if port is not empty or null
         int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
         if (port > 0)
