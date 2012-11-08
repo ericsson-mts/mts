@@ -66,23 +66,34 @@
     <test parameter="[config]" condition="string.equals" value="false"/>
         
     <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_header.csv" value2="0" />
-    <test parameter="[csv]" condition="list.size"  value="4" />
+    <test parameter="[csv]" condition="list.size"  value="5" />
     <test parameter="[csv(0)]" condition="string.equals"  value="colA" />
     <test parameter="[csv(1)]" condition="string.equals"  value="valueA0" />
     <test parameter="[csv(2)]" condition="string.equals"  value="value;A1" />
     <test parameter="[csv(3)]" condition="string.equals"  value=";v;;A2;;;" />
+    <test parameter="[csv(4)]" condition="string.equals"  value="" />
     
     <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_header.csv" value2="colB" />
-    <test parameter="[csv]" condition="list.size"  value="3" />
+    <test parameter="[csv]" condition="list.size"  value="4" />
     <test parameter="[csv(0)]" condition="string.equals"  value="valueB0" />
     <test parameter="[csv(1)]" condition="string.equals"  value="value;B1" />
     <test parameter="[csv(2)]" condition="string.equals"  value=";v;;B2;;;" />
+    <test parameter="[csv(3)]" condition="string.equals"  value="" />
     
     <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_header.csv" value2="colC" />
-    <test parameter="[csv]" condition="list.size"  value="3" />
-    
-    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_header.csv" value2="6" />
     <test parameter="[csv]" condition="list.size"  value="4" />
+    
+    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_header.csv" value2="4" />
+    <test parameter="[csv]" condition="list.size"  value="5" />
+    <test parameter="[csv(0)]" condition="string.equals"  value="colE" />
+    <test parameter="[csv(1)]" condition="string.equals"  value="" />
+    <test parameter="[csv(2)]" condition="string.equals"  value="" />
+    <test parameter="[csv(3)]" condition="string.equals"  value="" />
+    <test parameter="[csv(4)]" condition="string.equals"  value="" />
+        
+    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_header.csv" value2="5" />
+    <test parameter="[csv]" condition="list.size"  value="5" />
+    <test parameter="[csv]" condition="string.equals"  value="" />
     
     <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_header.csv" value2="bidon" />
     <test parameter="[csv]" condition="list.size"  value="0" />
