@@ -325,14 +325,17 @@ public abstract class Stack
     	Listenpoint listenpoint = listenpoints.get(name);
         if (listenpoint == null)
         {
-            throw new ExecutionException("The listenpoint <name=" + name + "> does not exist");
+            // nothing to do : it is considered as a success
         }
 
         synchronized (listenpoints)
         {
-        	listenpoints.remove(name);
+        	if (listenpoint != null)
+        	{
+        		listenpoints.remove(name);
+        		listenpoint.remove();
+        	}
         }
-        listenpoint.remove();
 
         return true;
     }
