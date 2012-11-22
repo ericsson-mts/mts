@@ -204,7 +204,7 @@ public class ListenpointDiameter extends Listenpoint
     protected NodeSettings createNodeSettings(Capability capability, Message capabilityMessage, Element nodeSettingsElement) throws Exception {
         // set node settings
         String nodeHostId = this.getHost();
-        if (nodeHostId.equalsIgnoreCase("0.0.0.0"))
+        if (nodeHostId == null || nodeHostId.equalsIgnoreCase("0.0.0.0"))
         {
         	// The listenpoint host can not be 0.0.0.0 due to the CER/CEA exchange mechanism
             nodeHostId = Utils.getLocalAddress().getHostAddress();
@@ -218,7 +218,10 @@ public class ListenpointDiameter extends Listenpoint
         {
         	// AVP Origin-Realm = 296
         	AVP avp = capabilityMessage.find(296);
-        	nodeRealm = new String(new AVP_OctetString(avp).queryValue());
+        	if (avp != null)
+        	{
+        		nodeRealm = new String(new AVP_OctetString(avp).queryValue());
+        	}
         }
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "nodeRealm : ", nodeRealm);
         int nodeVendorId = stack.getConfig().getInteger("node.VENDOR_ID");
@@ -226,7 +229,10 @@ public class ListenpointDiameter extends Listenpoint
         {
         	// AVP Vendor-Id = 266
         	AVP avp = capabilityMessage.find(266);
-        	nodeVendorId = new AVP_Integer32(avp).queryValue();
+        	if (avp != null)
+        	{
+        		nodeVendorId = new AVP_Integer32(avp).queryValue();
+        	}
         }        
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "nodeVendorId : ", nodeVendorId);
         String nodeProductName = stack.getConfig().getString("node.PRODUCT_NAME");
@@ -234,7 +240,10 @@ public class ListenpointDiameter extends Listenpoint
         {
         	// AVP Product-Name = 269
         	AVP avp = capabilityMessage.find(269);
-        	nodeProductName = new String(new AVP_OctetString(avp).queryValue());
+        	if (avp != null)
+        	{
+        		nodeProductName = new String(new AVP_OctetString(avp).queryValue());
+        	}
         }
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "nodeProductName : ", nodeProductName);
         int nodeFirmwareRevision = stack.getConfig().getInteger("node.FIRMWARE_REVISION");
@@ -242,7 +251,10 @@ public class ListenpointDiameter extends Listenpoint
         {
         	// AVP Firmware-Revision = 267
         	AVP avp = capabilityMessage.find(267);
-        	nodeFirmwareRevision = new AVP_Integer32(avp).queryValue();
+        	if (avp != null)
+        	{
+        		nodeFirmwareRevision = new AVP_Integer32(avp).queryValue();
+        	}
         }                
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "nodeFirmwareRevision : ", nodeFirmwareRevision);
         
@@ -253,7 +265,8 @@ public class ListenpointDiameter extends Listenpoint
                 nodeVendorId,
                 capability,
                 nodePort,
-                nodeProductName, nodeFirmwareRevision);
+                nodeProductName, 
+                nodeFirmwareRevision);
         
         boolean isNodeUseSCTP = this.getListenSCTP();
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "isNodeUseSCTP : ", isNodeUseSCTP);
@@ -285,17 +298,31 @@ public class ListenpointDiameter extends Listenpoint
      * @throws Exception if any problem occurs.
      */
     private void addSupportedVendor(Capability capability, Message capabilityMessage) throws Exception {
-        int i = 0;
-        boolean error = false;
-        while (!error) {
-            try {
-                int value = stack.getConfig().getInteger("capability.SUPPORTED_VENDOR." + i);
-                capability.addSupportedVendor(value );
-                i = i + 1;
-            } catch (Exception e) {
-                error = true;
+    	if ((capabilityMessage != null) && (capabilityMessage.size() > 0))
+    	{
+    		// AVP Vendor-Id = 266
+    		Iterator<AVP> iter = capabilityMessage.iterator(266);
+            while(iter.hasNext())
+            {
+                AVP avp = iter.next();
+            	int value = new AVP_Integer32(avp).queryValue();
+                capability.addSupportedVendor(value);
             }
-        }
+    	}
+    	else
+    	{    	
+	        int i = 0;
+	        boolean error = false;
+	        while (!error) {
+	            try {
+	                int value = stack.getConfig().getInteger("capability.SUPPORTED_VENDOR." + i);
+	                capability.addSupportedVendor(value );
+	                i = i + 1;
+	            } catch (Exception e) {
+	                error = true;
+	            }
+	        }
+    	}
     }
     
     /**
@@ -303,7 +330,7 @@ public class ListenpointDiameter extends Listenpoint
      * @throws Exception if any problem occurs.
      */
     private void addAuthApp(Capability capability, Message capabilityMessage) throws Exception {
-    	if (capabilityMessage != null)
+    	if (capabilityMessage != null && capabilityMessage.size() > 0)
     	{
     		// AVP Auth-Application-Id = 258
     		Iterator<AVP> iter = capabilityMessage.iterator(258);
@@ -335,7 +362,7 @@ public class ListenpointDiameter extends Listenpoint
      * @throws Exception if any problem occurs.
      */
     private void addAcctApp(Capability capability, Message capabilityMessage) throws Exception {
-    	if (capabilityMessage != null)
+    	if (capabilityMessage != null && capabilityMessage.size() > 0)
     	{
     		// AVP Acct-Application-Id = 259
     		Iterator<AVP> iter = capabilityMessage.iterator(259);
@@ -367,7 +394,7 @@ public class ListenpointDiameter extends Listenpoint
      * @throws Exception if any problem occurs.
      */
     private void addVendorAuthApp(Capability capability, Message capabilityMessage) throws Exception {
-    	if (capabilityMessage != null)
+    	if (capabilityMessage != null && capabilityMessage.size() > 0)
     	{
     		// AVP Vendor-Specific-Application-Id = 260
     		Iterator<AVP> iter = capabilityMessage.iterator(260);
@@ -426,7 +453,7 @@ public class ListenpointDiameter extends Listenpoint
      * @throws Exception if any problem occurs.
      */
     private void addVendorAcctApp(Capability capability, Message capabilityMessage) throws Exception {
-    	if (capabilityMessage != null)
+    	if (capabilityMessage != null && capabilityMessage.size() > 0)
     	{
     		// AVP Vendor-Specific-Application-Id = 260
     		Iterator<AVP> iter = capabilityMessage.iterator(260);
