@@ -206,7 +206,7 @@ public class ListenpointDiameter extends Listenpoint
         String nodeHostId = this.getHost();
         if (nodeHostId.equalsIgnoreCase("0.0.0.0"))
         {
-        	// The listenpoint host can be 0.0.0.0 due to the CER/CEA exchange mechanism
+        	// The listenpoint host can not be 0.0.0.0 due to the CER/CEA exchange mechanism
             nodeHostId = Utils.getLocalAddress().getHostAddress();
         }
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "nodeHostId : ", nodeHostId);
@@ -253,7 +253,7 @@ public class ListenpointDiameter extends Listenpoint
                 nodeVendorId,
                 capability,
                 nodePort,
-                nodeProductName, 0x01000000);
+                nodeProductName, nodeFirmwareRevision);
         
         boolean isNodeUseSCTP = this.getListenSCTP();
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "isNodeUseSCTP : ", isNodeUseSCTP);
