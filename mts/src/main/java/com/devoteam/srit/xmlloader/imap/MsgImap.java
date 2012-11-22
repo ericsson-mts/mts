@@ -350,8 +350,8 @@ public class MsgImap extends Msg {
         {
             arguments = new Vector<String>();
             MsgParser.split(arguments,
-                            dataComplete./*trim().*/substring(dataComplete.indexOf(getType()) + getType().length() + 1),
-                            " ", "()", "\0\0");
+                            dataComplete.substring(dataComplete.indexOf(getType()) + getType().length() + 1),
+                            " ", true, "()", "\0\0");
         }
         return arguments;        
     }

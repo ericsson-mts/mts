@@ -186,7 +186,8 @@ public class MsgPop extends Msg
             arguments = new Vector<String>();
             MsgParser.split(arguments,
                             dataRaw.substring(dataRaw.indexOf(getType()) + getType().length()).trim(),
-                            " ");
+                            " ",
+                            true);
         }
         return arguments;
     }

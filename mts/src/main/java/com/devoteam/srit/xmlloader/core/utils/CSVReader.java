@@ -62,7 +62,7 @@ public class CSVReader
         this.quote = quote;
     }
    
-    private String[] parseCSVLine(String line) throws Exception 
+    private String[] parseCSVLine(String line, boolean checkDifferent) throws Exception 
     {
 		// blank line
 		line = line.trim();
@@ -77,13 +77,13 @@ public class CSVReader
 	    }
 	    
 	    Vector<String> parseLine = new Vector<String>();
-	    MsgParser.split(parseLine, line, separator, quote);
+	    MsgParser.split(parseLine, line, separator, checkDifferent, quote);
 
     	String[] data = new String[parseLine.size()];
 	    for (int i = 0; i < parseLine.size(); i++)
 	    {
 	    	String value = (String) parseLine.get(i).trim();
-	    	if (quote != null)
+	    	if ((value.length() > 0) && (quote != null))
 	    	{
 	    		if (value.charAt(0) == quote.charAt(0))
 	        	{
@@ -116,7 +116,7 @@ public class CSVReader
 	        	{
 	        		break;
 	        	}
-	        	String[] data = parseCSVLine(line);
+	        	String[] data = parseCSVLine(line, false);
 	        	if (data != null)
 	        	{
 		        	if (num != 0 || !ignoreFirst)
@@ -124,10 +124,6 @@ public class CSVReader
 			        	if (column < data.length)
 			        	{
 			        		result.add(data[column]);
-			        	}
-			        	else
-			        	{
-			        		result.add("");
 			        	}
 		        	}
 		        	num = num + 1;
@@ -160,7 +156,7 @@ public class CSVReader
 	        	{
 	        		break;
 	        	}
-	        	result = parseCSVLine(line);
+	        	result = parseCSVLine(line, false);
 	        }
 	        in.close();
         }
@@ -189,7 +185,7 @@ public class CSVReader
 	        	{
 	        		break;
 	        	}
-	        	String[] data = parseCSVLine(line);
+	        	String[] data = parseCSVLine(line, false);
 	        	if (data != null)
 	        	{
 	        		csvData.add(data);

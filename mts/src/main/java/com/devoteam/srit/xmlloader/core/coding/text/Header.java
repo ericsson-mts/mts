@@ -111,7 +111,7 @@ public class Header{
 		for (int i = 0; i < headers.size(); i++)
 		{
 	    	String str = getHeader(i);
-	    	MsgParser.split(list, str, delimitor, escapeSeq);
+	    	MsgParser.split(list, str, delimitor, true, escapeSeq);
 		}
 		headers = list;
 	}
