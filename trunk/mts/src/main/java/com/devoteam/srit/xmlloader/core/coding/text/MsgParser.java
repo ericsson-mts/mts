@@ -57,7 +57,7 @@ public class MsgParser {
     public void splitHeader(Header headerTable, String delimitor, String... escapeSeq) {
         for (int i = 0; i < headerTable.getSize(); i++) {
             String str = headerTable.getHeader(i);
-            split(str, delimitor, escapeSeq);
+            split(str, delimitor, true, escapeSeq);
         }
     }
 
@@ -84,7 +84,7 @@ public class MsgParser {
     // --- public methods --- //
     public void parse(String str, String delimitor, char separator, String... escapeSeq) {
         Vector<String> list = new Vector<String>();
-        MsgParser.split(list, str, delimitor, escapeSeq);
+        MsgParser.split(list, str, delimitor, true, escapeSeq);
 
         // process line 0
         if (list.size() > 0) {
@@ -111,9 +111,9 @@ public class MsgParser {
     }
 
     // --- public methods --- //
-    public void split(String str, String delimitor, String... escapeSeq) {
+    public void split(String str, String delimitor, boolean checkDifferent, String... escapeSeq) {
         Vector<String> list = new Vector<String>();
-        MsgParser.split(list, str, delimitor, escapeSeq);
+        MsgParser.split(list, str, delimitor, checkDifferent, escapeSeq);
 
         // process other lines
         for (int i = 0; i < list.size(); i++) {
@@ -122,7 +122,7 @@ public class MsgParser {
         }
     }
 
-    public static void split(Vector<String> list, String str, String delimitor, String... escapeSeq) {
+    public static void split(Vector<String> list, String str, String delimitor, boolean checkDifferent, String... escapeSeq) {
         str = str + delimitor;
         int i = 0;
         int begin = 0;
@@ -140,11 +140,17 @@ public class MsgParser {
                 list.add(splitLine.trim());
                 begin = i + 1;
             }
-            i = indexOfDifferent(str, delimit, i++);
-            if (i < 0) {
-                return;
+            if (checkDifferent)
+            {
+            	i = indexOfDifferent(str, delimit, i++);
+                if (i < 0) {
+                    return;
+                }            	
             }
-
+            else
+            { 
+            	i++;
+            }
         }
 
     }
