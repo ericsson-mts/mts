@@ -148,6 +148,7 @@ public class PJpcapThread implements PacketReceiver, Runnable {
     private synchronized static NetworkInterface searchNetworkInterface(String networkName) throws Exception {
         // try to find a jpcap device having the same name
         for (NetworkInterface networkInterface : JpcapCaptor.getDeviceList()) {
+        	GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "Get network interface : ", networkInterface.name);
             if (networkInterface.name.equalsIgnoreCase(networkName)) {
                 return networkInterface;
             }
@@ -167,6 +168,7 @@ public class PJpcapThread implements PacketReceiver, Runnable {
 	                for (NetworkInterfaceAddress networkInterfaceAddress : networkInterface.addresses) {
 	                    byte[] jpcapAddress = networkInterfaceAddress.address.getAddress();
 	                    byte[] javaAddress = inetAddress.getAddress();
+	                    GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "Get network address : ", networkInterfaceAddress.address);
 	                    if (new DefaultArray(javaAddress).equals(new DefaultArray(jpcapAddress))) {
 	                        return networkInterface;
 	                    }
@@ -188,6 +190,7 @@ public class PJpcapThread implements PacketReceiver, Runnable {
             // compare all of the adresses of the jpcap interface agains the address
             for (NetworkInterfaceAddress networkInterfaceAddress : networkInterface.addresses) {
                 byte[] jpcapAddress = networkInterfaceAddress.address.getAddress();
+                GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "Get network address : ", networkInterfaceAddress.address);                
                 if (new DefaultArray(jpcapAddress).equals(parsedIP)) {
                     return networkInterface;
                 }
