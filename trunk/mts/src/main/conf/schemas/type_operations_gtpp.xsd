@@ -115,6 +115,7 @@
                 <xs:sequence>
                     <xs:element name="headerPrime" type="headerGTPPrimeType" minOccurs="0" maxOccurs="1"/>
                     <xs:element name="headerV1"  	 type="headerGTPV1Type"    minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="headerV2"  	 type="headerGTPV2Type"    minOccurs="0" maxOccurs="1"/>
                     <xs:element name="tlv"         type="tlvGTPType"         minOccurs="0" maxOccurs="unbounded" />
                 </xs:sequence>
 				<xs:attribute name="channel" type="xs:string" use="optional">
@@ -240,8 +241,24 @@
         <xs:attribute name="sequenceNumber" type="xs:string" use="required" />
     </xs:complexType>
 
-<!-- 																			GTP Header -->    
+<!-- 																			                                    GTP V1 Header -->    
     <xs:complexType name="headerGTPV1Type">
+    	<xs:attribute name="name"            type="xs:string" />
+        <xs:attribute name="version"	type="xs:string" />
+        <xs:attribute name="protocolType"	type="xs:string" />
+        <xs:attribute name="extensionHeaderFlag"	type="xs:string" />
+        <xs:attribute name="sequenceNumberFlag" type="xs:string" />
+        <xs:attribute name="nPduNumberFlag" type="xs:string" />
+        <xs:attribute name="messageType" type="xs:string" />
+        <xs:attribute name="length" type="xs:string" />
+        <xs:attribute name="teid" type="xs:string" />
+        <xs:attribute name="sequenceNumber" type="xs:string" />
+        <xs:attribute name="nPduNumber" type="xs:string" />
+        <xs:attribute name="nextExtensionType" type="xs:string" />
+    </xs:complexType>
+
+<!-- 																			                                    GTP V1 Header -->    
+    <xs:complexType name="headerGTPV2Type">
     	<xs:attribute name="name"            type="xs:string" />
         <xs:attribute name="version"	type="xs:string" />
         <xs:attribute name="protocolType"	type="xs:string" />

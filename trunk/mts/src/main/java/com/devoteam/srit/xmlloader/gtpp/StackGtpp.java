@@ -121,24 +121,34 @@ public class StackGtpp extends Stack
         Header gtpHeader = null;
 
         // header parsing
-        Element xmlHeaderP = root.element("headerPrime");
-        Element xmlHeader = root.element("headerV1");
-        if(xmlHeaderP != null)
+        Element xmlHeaderPrime = root.element("headerPrime");
+        Element xmlHeaderV1 = root.element("headerV1");
+        Element xmlHeaderV2 = root.element("headerV2");
+        
+        Element xmlHeader = null;
+        if(xmlHeaderPrime != null)
         {
         	gtpHeader = new GtpHeaderPrime();
-        	gtpHeader.parseXml(xmlHeaderP, dictionary); 
-        	gtppMessage.setHeader(gtpHeader);
- 
+        	xmlHeader = xmlHeaderPrime; 
         }
-        else if(xmlHeader != null)
+        else if(xmlHeaderV1 != null)
         {
         	gtpHeader = new GtpHeader();
-        	gtpHeader.parseXml(xmlHeader, dictionary); 
-        	gtppMessage.setHeader(gtpHeader);
+        	xmlHeader = xmlHeaderV1;
         }
+        else if(xmlHeaderV2 != null)
+        {
+        	gtpHeader = new GtpHeader();
+        	xmlHeader = xmlHeaderV2;
+        }        
         else
+        {
         	 GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Not GTP message. <header> or <headeP> is missing.");
-    	
+        }
+        
+        gtpHeader.parseXml(xmlHeader, dictionary); 
+    	gtppMessage.setHeader(gtpHeader);
+
         // dictionary translation
         String msgName = gtpHeader.getName(); 
         if((gtpHeader.getMessageType() == 0) || (gtpHeader.getName().equalsIgnoreCase("Unknown message")))
