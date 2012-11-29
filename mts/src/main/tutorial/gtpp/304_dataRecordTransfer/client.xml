@@ -8,7 +8,7 @@
     <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
 
     <sendMessageGTP name="send data record transfer request" channel="[connection]">
-        <headerP type="240" sequenceNumber="1"/>
+        <headerPrime type="240" sequenceNumber="1"/>
         <tlv name="packetTransferCommand" value="16"/>
         <tlv name="dataRecordPacket">
             <attribute name="numberOfDataRecords" value="2"/>
@@ -27,7 +27,7 @@
     </receiveMessageGTP>
 
     <sendMessageGTP name="send data record transfer request" channel="[connection]">
-        <headerP type="240" sequenceNumber="1"/>
+        <headerPrime type="240" sequenceNumber="1"/>
         <tlv name="packetTransferCommand" value="10"/>
         <tlv name="sequenceNumberOfReleasedPackets">
             <attribute name="sequenceNumber" value="2"/>
@@ -40,7 +40,7 @@
     </receiveMessageGTP>
 
     <sendMessageGTP name="send data record transfer request" channel="[connection]">
-        <headerP type="240" sequenceNumber="1"/>
+        <headerPrime type="240" sequenceNumber="1"/>
         <tlv name="packetTransferCommand" value="16"/>
         <tlv name="sequenceNumberOfCancelledDataRecords">
             <attribute name="sequenceNumber" value="6"/>

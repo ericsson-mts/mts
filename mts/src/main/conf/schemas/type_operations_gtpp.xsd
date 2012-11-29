@@ -113,9 +113,9 @@
         <xs:complexContent>
             <xs:extension base="operationType" >
                 <xs:sequence>
-                    <xs:element name="headerP"  	  type="headerGTPPType"      minOccurs="0" maxOccurs="1"/>
-                    <xs:element name="header"  	  type="headerGTPType"      minOccurs="0" maxOccurs="1"/>
-                    <xs:element name="tlv"        type="tlvGTPType"         minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="headerPrime" type="headerGTPPrimeType" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="header"  	   type="headerGTPType"      minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="tlv"         type="tlvGTPType"         minOccurs="0" maxOccurs="unbounded" />
                 </xs:sequence>
 				<xs:attribute name="channel" type="xs:string" use="optional">
 					<xs:annotation>
@@ -233,7 +233,7 @@
     </xs:complexType>
 
 <!--                                                                          GTPP (PRIME) header -->
-    <xs:complexType name="headerGTPPType">
+    <xs:complexType name="headerGTPPrimeType">
         <xs:attribute name="name"            type="xs:string" />
         <xs:attribute name="type"            type="xs:string" />
         <xs:attribute name="length"          type="xs:string" />
