@@ -44,6 +44,11 @@ public class GtppMessage
 {	
 	private Header header; 
 	
+	private Vector<GtppTLV> tlvs;
+    private Array data = null;
+
+    private String logError = "";
+    
     public Header getHeader() {
 		return header;
 	}
@@ -51,11 +56,6 @@ public class GtppMessage
 	public void setHeader(Header header) {
 		this.header = header;
 	}
-
-	private Vector<GtppTLV> tlvs;
-    private Array data = null;
-
-    private String logError = "";
     
     public GtppMessage()
     {        
