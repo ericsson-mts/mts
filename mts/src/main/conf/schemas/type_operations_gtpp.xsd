@@ -114,7 +114,7 @@
             <xs:extension base="operationType" >
                 <xs:sequence>
                     <xs:element name="headerPrime" type="headerGTPPrimeType" minOccurs="0" maxOccurs="1"/>
-                    <xs:element name="header"  	   type="headerGTPType"      minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="headerV1"  	 type="headerGTPV1Type"    minOccurs="0" maxOccurs="1"/>
                     <xs:element name="tlv"         type="tlvGTPType"         minOccurs="0" maxOccurs="unbounded" />
                 </xs:sequence>
 				<xs:attribute name="channel" type="xs:string" use="optional">
@@ -241,7 +241,7 @@
     </xs:complexType>
 
 <!-- 																			GTP Header -->    
-    <xs:complexType name="headerGTPType">
+    <xs:complexType name="headerGTPV1Type">
     	<xs:attribute name="name"            type="xs:string" />
         <xs:attribute name="version"	type="xs:string" />
         <xs:attribute name="protocolType"	type="xs:string" />
