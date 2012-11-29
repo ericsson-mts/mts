@@ -122,7 +122,7 @@ public class StackGtpp extends Stack
 
         // header parsing
         Element xmlHeaderP = root.element("headerPrime");
-        Element xmlHeader = root.element("header");
+        Element xmlHeader = root.element("headerV1");
         if(xmlHeaderP != null)
         {
         	gtpHeader = new GtpHeaderPrime();
