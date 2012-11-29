@@ -8,39 +8,48 @@
     <parameter name="[serverRemotePort]" operation="file.readproperty" value="gtpp.properties" value2="listenpoint.LOCAL_PORT"/>
     <parameter name="[serverRemotePort]" operation="set" value="[serverRemotePort]" editable="true" />
 
-    <testcase name="gtpp/001_echo" state="true">
-        <scenario name="client">001_echo/client.xml</scenario>
-        <scenario name="GTPP">001_echo/server.xml</scenario>
+    <testcase name="GTP v2 201_echo" state="true">
+        <scenario name="client">201_echo/client.xml</scenario>
+        <scenario name="GTPP">201_echo/server.xml</scenario>
     </testcase>
-
-    <testcase name="gtpp/002_nodeAlive" state="true">
-        <scenario name="client">002_nodeAlive/client.xml</scenario>
-        <scenario name="GTPP">002_nodeAlive/server.xml</scenario>
+    
+    <testcase name="GTP v1 201_echo" state="true">
+        <scenario name="client">201_echo/client.xml</scenario>
+        <scenario name="GTPP">201_echo/server.xml</scenario>
     </testcase>
-
-    <testcase name="gtpp/003_redirection" state="true">
-        <scenario name="client">003_redirection/client.xml</scenario>
-        <scenario name="GTPP">003_redirection/server.xml</scenario>
-    </testcase>
-
-    <testcase name="gtpp/004_dataRecordTransfer" state="true">
-        <scenario name="client">004_dataRecordTransfer/client.xml</scenario>
-        <scenario name="GTPP">004_dataRecordTransfer/server.xml</scenario>
-    </testcase>
-	<testcase name="gtpp/101_echo" state="true">
-        <scenario name="client">101_echo/client.xml</scenario>
-        <scenario name="GTPP">101_echo/server.xml</scenario>
-    </testcase>
-	<testcase name="gtpp/102_errorIndication KO" state="true">
+    
+    <testcase name="GTP v1 202_errorIndication KO" state="true">
 	      <!-- fonctionne mais la capture wireshark n'est pas bien decode -->
 	      <!-- private extension fait une exception dans les TLSs -->
-        <scenario name="client">102_errorIndication/client.xml</scenario>
-        <scenario name="GTPP">102_errorIndication/server.xml</scenario>
+        <scenario name="client">202_errorIndication/client.xml</scenario>
+        <scenario name="GTPP">202_errorIndication/server.xml</scenario>
     </testcase>
-	<testcase name="gtpp/103_supportedExtensionHeadersNotification" state="false">
+    
+    <testcase name="GTP v1 203_supportedExtensionHeadersNotification" state="false">
 	      <!-- en cours de dev mais non teste --> 
-        <scenario name="client">103_supportedExtensionHeadersNotification/client.xml</scenario>
-        <scenario name="GTPP">103_supportedExtensionHeadersNotification/server.xml</scenario>
+        <scenario name="client">203_supportedExtensionHeadersNotification/client.xml</scenario>
+        <scenario name="GTPP">203_supportedExtensionHeadersNotification/server.xml</scenario>
     </testcase>
 
+    <testcase name="GTP prime 301_echo" state="true">
+        <scenario name="client">301_echo/client.xml</scenario>
+        <scenario name="GTPP">301_echo/server.xml</scenario>
+    </testcase>
+
+    <testcase name="GTP prime 302_nodeAlive" state="true">
+        <scenario name="client">302_nodeAlive/client.xml</scenario>
+        <scenario name="GTPP">302_nodeAlive/server.xml</scenario>
+    </testcase>
+
+    <testcase name="GTP prime 303_redirection" state="true">
+        <scenario name="client">303_redirection/client.xml</scenario>
+        <scenario name="GTPP">303_redirection/server.xml</scenario>
+    </testcase>
+
+    <testcase name="GTP prime 304_dataRecordTransfer" state="true">
+        <scenario name="client">304_dataRecordTransfer/client.xml</scenario>
+        <scenario name="GTPP">304_dataRecordTransfer/server.xml</scenario>
+    </testcase>
+    
 </test>
+ 

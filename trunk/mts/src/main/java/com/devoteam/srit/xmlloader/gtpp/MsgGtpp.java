@@ -53,11 +53,6 @@ public class MsgGtpp extends Msg
         this.message = message;
     }
 
-    protected GtppMessage getGtppMessage()
-    {
-        return this.message;
-    }
-
     /** Get a parameter from the message */
     @Override
     public Parameter getParameter(String path) throws Exception
@@ -171,18 +166,6 @@ public class MsgGtpp extends Msg
         }
         return type;
     }
-
-    /** Get the complete type (with dictionary conversion) of this message */
-//    @Override
-//    public String getTypeComplete()
-//    {
-//        if(typeComplete == null)
-//        {
-////            typeComplete = message.getName().replace("_resp", "") + ":";
-////            typeComplete += Integer.toHexString(message.getId() & 0x7FFFFFFF);
-//        }
-//        return typeComplete;
-//    }
 
     /** Get the result of this answer (null if request) */
     public String getResult()
