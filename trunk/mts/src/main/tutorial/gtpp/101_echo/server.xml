@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+    <createListenpointGTP name="listenpoint" localPort="3387"/>
+    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
+
+    <receiveMessageGTP name="echo request">
+        <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    </receiveMessageGTP>
+
+    <sendMessageGTP name="echo Response" channel="[channel]">
+        <header name="echoResponse" sequenceNumber="[seqNum]"  nPduNumber="2" nextExtensionType="0"/>
+        <tlv name="recovery" value="23"/>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="echo request">
+        <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    </receiveMessageGTP>
+
+    <sendMessageGTP name="versionNotSupported" channel="[channel]">
+        <header name="versionNotSupported" sequenceNumber="[seqNum]" nPduNumber="2" nextExtensionType="0"/>
+    </sendMessageGTP>
+
+    <finally>
+        <removeListenpointGTP name="listenpoint"/>
+    </finally>
+</scenario>
