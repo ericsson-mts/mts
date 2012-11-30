@@ -25,8 +25,9 @@ package com.devoteam.srit.xmlloader.gtpp.data;
 
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
-import com.devoteam.srit.xmlloader.gtpp.GtpHeader;
 import com.devoteam.srit.xmlloader.gtpp.GtpHeaderPrime;
+import com.devoteam.srit.xmlloader.gtpp.GtpHeaderV1;
+import com.devoteam.srit.xmlloader.gtpp.GtpHeaderV2;
 import com.devoteam.srit.xmlloader.gtpp.GtppDictionary;
 import com.devoteam.srit.xmlloader.gtpp.Header;
 import com.devoteam.srit.xmlloader.gtpp.StackGtpp;
@@ -121,14 +122,18 @@ public class GtppMessage
         int protocolType = headerByte[0] & 0x10;
         Array array = null; 
         
-        if(protocolType == 0)
+        if(version == 0)
         {
     		header = new GtpHeaderPrime();	
         }
-        else if(protocolType == 1)
+        else if(version == 1)
         {
-        	header = new GtpHeader(); 
+        	header = new GtpHeaderV1(); 
         }
+        else if(version == 2)
+        {
+        	header = new GtpHeaderV2(); 
+        }        
         header.parseArray(inputStream, dictionary);
         
         int headerSize = header.getSize();

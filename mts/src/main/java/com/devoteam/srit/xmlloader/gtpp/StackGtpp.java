@@ -133,12 +133,12 @@ public class StackGtpp extends Stack
         }
         else if(xmlHeaderV1 != null)
         {
-        	gtpHeader = new GtpHeader();
+        	gtpHeader = new GtpHeaderV1();
         	xmlHeader = xmlHeaderV1;
         }
         else if(xmlHeaderV2 != null)
         {
-        	gtpHeader = new GtpHeader();
+        	gtpHeader = new GtpHeaderV2();
         	xmlHeader = xmlHeaderV2;
         }        
         else
@@ -322,12 +322,21 @@ public class StackGtpp extends Stack
                 throw new Exception("Not enough char read");
             }
             DefaultArray flagArray = new DefaultArray(flag);
-            int protocolType = flagArray.getBits(3,1);
+            int protocolType = flagArray.getBits(3, 1);
+            int version = flagArray.getBits(0, 3);
             
-            if(protocolType == 1)
-            	gtpHeader = new GtpHeader(flagArray); 
-            else if(protocolType == 0)
+            if(version == 1)
+            {
+            	gtpHeader = new GtpHeaderV1(flagArray);
+            }
+            else if(version == 0)
+            {
             	gtpHeader = new GtpHeaderPrime(); 
+            }
+            else if(version == 2)
+            {
+            	gtpHeader = new GtpHeaderV2(); 
+            }
             
             gtpHeader.getSize(); 
             gtpHeader.parseArray(inputStream, dictionary); 

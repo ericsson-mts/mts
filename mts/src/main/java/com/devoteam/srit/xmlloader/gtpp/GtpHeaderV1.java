@@ -38,7 +38,7 @@ import gp.utils.arrays.SupArray;
 *
 * @author El Aly Mohamad Bilal 
 */
-public class GtpHeader extends Header {
+public class GtpHeaderV1 extends Header {
 	
 	//Header composers 
 	private String name;
@@ -54,7 +54,7 @@ public class GtpHeader extends Header {
     private int nPduNumber;
     private int nextExtensionType;
     
-    public GtpHeader(DefaultArray flagArray)
+    public GtpHeaderV1(DefaultArray flagArray)
     {	
         this.version = flagArray.getBits(0,3);
         this.protocolType = flagArray.getBits(3,1);
@@ -63,7 +63,7 @@ public class GtpHeader extends Header {
     	this.nPduNumberFlag = flagArray.getBits(7,1);
     	
     }
-    public GtpHeader()
+    public GtpHeaderV1()
     {
     	this.protocolType = 1;
     	this.version = 1;
@@ -225,9 +225,9 @@ public class GtpHeader extends Header {
     }
 	
 	@Override
-    public GtpHeader clone()
+    public GtpHeaderV1 clone()
     {
-    	GtpHeader clone = new GtpHeader();
+    	GtpHeaderV1 clone = new GtpHeaderV1();
 
         clone.setName(getName());
         clone.setVersion(version);
