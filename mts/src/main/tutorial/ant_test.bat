@@ -26,6 +26,7 @@ call startCmd.bat ..\tutorial\ucp\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\sigtran\m3ua\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\sigtran\iua\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\sigtran\v5ua\test.xml -sequential %OPTIONS%
+call startCmd.bat ..\tutorial\h323\h225CS\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\tls\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\h248\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\msrp\test.xml -sequential %OPTIONS%
