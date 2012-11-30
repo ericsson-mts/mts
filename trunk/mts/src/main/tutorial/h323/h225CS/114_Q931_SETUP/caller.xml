@@ -134,7 +134,7 @@ High layer compatibility 4.5 Both O (Note 13) 2-5
 	        <field name="Spare" lengthBit="1" type="integer" value="0"/>
 	        <field name="Location" lengthBit="4" type="enumeration" value="Private network serving the local user"/>
 	        <field name="ext2" lengthBit="1" type="boolean" value="1"/>
-	        <field name="Progress description" lengthBit="7" type="enumeration" value="In-band information"/>
+	        <field name="Progress description" lengthBit="7" type="enumeration" value="In-band information or an appropriate pattern is now available"/>
 	    </element>
             
             <!-- Network-specific facilities= b0100000 = h20 = d32 -->
@@ -327,12 +327,13 @@ High layer compatibility 4.5 Both O (Note 13) 2-5
 
 	    <!-- Repeat indicator = b11010010 = hD2 = d210-->
 	    <!--field Repeat indicator = Prioritized list for selecting one possibility -->
-            <!-- ONLY for Circuit message -->            	    	                	    
-    	    <element identifier="Repeat indicator = Prioritized"/>
+      <!-- ONLY for Circuit message -->            	    	                	    
+    	<element identifier="Repeat indicator = Prioritized"/>
 
 	    <!-- Low layer compatibility = b1111100 = h7C = d124--> 	
-            <!-- ONLY for Circuit, Bearer message -->            	    	                	    	    
-	    <element identifier="Low layer compatibility">
+      <!-- ONLY for Circuit, Bearer message -->
+      <!-- FH : REMOVE because dictionary is not correct -->                        	    	                	    	    
+	    <!-- element identifier="Low layer compatibility">
 	        <field name="ext1" lengthBit="1" type="boolean" value="1"/>
 	        <field name="Coding standard" lengthBit="2" type="enumeration" value="Standard defined for the network"/>
 	        <field name="Interpretation" lengthBit="3" type="enumeration" value="Standard defined for the network"/>
@@ -343,21 +344,21 @@ High layer compatibility 4.5 Both O (Note 13) 2-5
 	        <field name="Extended high layer characteristics identification" lengthBit="7" type="enumeration" value="Videoconferencing"/>
 	        <field name="ext4" lengthBit="1" type="boolean" value="1"/>
 	        <field name="Extended audiovisual characteristics identification" lengthBit="7" type="enumeration" value="Capability set of subsequent channel of H.221"/>
-	    </element>
+	    </element -->
 
-    	    <!-- High layer compatibility = b1111101 = h7D = d125-->
-            <!-- ONLY for Circuit message -->    	
+    	<!-- High layer compatibility = b1111101 = h7D = d125-->
+      <!-- ONLY for Circuit message -->    	
 	    <element identifier="High layer compatibility">
-		<field name="ext1" lengthBit="1" type="boolean" value="1"/>
-		<field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
-		<field name="Interpretation" lengthBit="3" type="enumeration" value="First high layer characteristics identification"/>
-		<field name="Presentation method of protocol profile" lengthBit="2" type=" enumeration" value="High layer protocol profile"/>
-		<field name="ext2" lengthBit="1" type="boolean" value="1"/>
-		<field name="High layer characteristics identification" lengthBit="7" type="enumeration" value="Telephony"/>
-                <field name="ext3" lengthBit="1" type="boolean" value="1"/>
-		<field name="Extended high layer characteristics identification" lengthBit="7" type="enumeration" value="Telephony"/>
-		<field name="ext4" lengthBit="1" type="boolean" value="1"/>
-		<field name="Extended videotelephony characteristics identification" lengthBit="7" type="enumeration" value="Capability set of initial channel of H.221"/>
+      		<field name="ext1" lengthBit="1" type="boolean" value="1"/>
+      		<field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+      		<field name="Interpretation" lengthBit="3" type="enumeration" value="First high layer characteristics identification"/>
+      		<field name="Presentation method of protocol profile" lengthBit="2" type=" enumeration" value="High layer protocol profile"/>
+      		<field name="ext2" lengthBit="1" type="boolean" value="1"/>
+      		<field name="High layer characteristics identification" lengthBit="7" type="enumeration" value="Telephony"/>
+          <field name="ext3" lengthBit="1" type="boolean" value="1"/>
+      		<field name="Extended high layer characteristics identification" lengthBit="7" type="enumeration" value="Telephony"/>
+      		<field name="ext4" lengthBit="1" type="boolean" value="1"/>
+      		<field name="Extended videotelephony characteristics identification" lengthBit="7" type="enumeration" value="Capability set of initial channel of H.221"/>
 	    </element>
 
 	    <!-- Redirecting number = b1110100 =h74 =d116-->
@@ -376,14 +377,14 @@ High layer compatibility 4.5 Both O (Note 13) 2-5
 	        <field name="Number digits" type="string" value="11111111" />            
 	    </element>
 
-            <!-- User-user= b1111110 = h7E = d126-->
-            <!-- ONLY for Packet message -->                        
-    	    <element identifier="User-User">
+      <!-- User-user= b1111110 = h7E = d126-->
+      <!-- ONLY for Packet message -->                        
+    	<element identifier="User-User">
         	<field name="Protocol discriminator" lengthBit="8" type="enumeration" value="X.208 and X.209 coded user information"/>
     		<field name="User information" type="binary" value="20a8060008914a0004014006006d002e006a0065006d0065006322c00900003d1443616c6c67656e33323320706f67616373616d00000a302e39616c706861340000000a01061206b800f8fdf93ecd9ed6119ab2000476222017005d0d8007000a01038f80231100c0fef93ecd9ed6119ab2000476222017010001000100010002800100"/>    
 	    </element>
 	    	           
-        </ISDN>
+      </ISDN>
      
     </sendMessageH225CS>
 
