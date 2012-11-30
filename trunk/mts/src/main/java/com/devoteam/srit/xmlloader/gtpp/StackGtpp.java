@@ -36,9 +36,13 @@ import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
+import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderPrime;
+import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderV1;
+import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderV2;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppAttribute;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppTLV;
+import com.devoteam.srit.xmlloader.gtpp.data.Header;
 
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;

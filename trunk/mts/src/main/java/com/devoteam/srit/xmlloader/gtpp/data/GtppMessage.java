@@ -25,11 +25,7 @@ package com.devoteam.srit.xmlloader.gtpp.data;
 
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
-import com.devoteam.srit.xmlloader.gtpp.GtpHeaderPrime;
-import com.devoteam.srit.xmlloader.gtpp.GtpHeaderV1;
-import com.devoteam.srit.xmlloader.gtpp.GtpHeaderV2;
 import com.devoteam.srit.xmlloader.gtpp.GtppDictionary;
-import com.devoteam.srit.xmlloader.gtpp.Header;
 import com.devoteam.srit.xmlloader.gtpp.StackGtpp;
 import gp.utils.arrays.*;
 

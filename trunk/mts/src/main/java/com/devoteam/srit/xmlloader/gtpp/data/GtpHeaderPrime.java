@@ -21,12 +21,13 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.gtpp;
+package com.devoteam.srit.xmlloader.gtpp.data;
 
 import java.io.InputStream;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.gtpp.GtppDictionary;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
 
 import gp.utils.arrays.Array;
