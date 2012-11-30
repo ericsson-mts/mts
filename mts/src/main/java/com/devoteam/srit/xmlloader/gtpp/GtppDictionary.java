@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.gtpp;
 
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
+import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderPrime;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppAttribute;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppTLV;
