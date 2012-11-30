@@ -82,7 +82,7 @@ Display 4.5 n u O (Note 2) (Note 3)
                 <field name="Channel number" lengthBit="7" type="integer" value="70"/>
             </element>
             
-	    <!-- Progress indicator= b0011110 = h1E = d30-->
+	          <!-- Progress indicator= b0011110 = h1E = d30-->
             <!-- ONLY for Circuit, Packet message -->    	    	    
             <element identifier="Progress indicator">
                 <field name="ext1" lengthBit="1" type="boolean" value="1"/>
@@ -90,7 +90,7 @@ Display 4.5 n u O (Note 2) (Note 3)
                 <field name="Spare" lengthBit="1" type="integer" value="0"/>
                 <field name="Location" lengthBit="4" type="enumeration" value="User"/>
                 <field name="ext2" lengthBit="1" type="boolean" value="1"/>
-                <field name="Progress description" lengthBit="7" type="enumeration" value="User"/>
+                <field name="Progress description" lengthBit="7" type="enumeration" value="Call has returned to the ISDN"/>
             </element>
             
             <!-- Display identification = b0101000 = h28 = d40-->
@@ -115,9 +115,10 @@ Display 4.5 n u O (Note 2) (Note 3)
                 <field name="Signal value" lengthBit="8" type="integer" value="125"/>
             </element>
             
-	    <!-- Low layer compatibility = b1111100 = h7C = d124--> 	
-            <!-- ONLY for Circuit message -->    	                	    
-            <element identifier="Low layer compatibility">
+	          <!-- Low layer compatibility = b1111100 = h7C = d124--> 	
+            <!-- ONLY for Circuit message -->
+            <!-- FH : REMOVE because dictionary is not correct -->    	                	    
+            <!--element identifier="Low layer compatibility">
                 <field name="ext1" lengthBit="1" type="boolean" value="1"/>
                 <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
                 <field name="Interpretation" lengthBit="3" type="enumeration" value="Standard defined for the network"/>
@@ -128,22 +129,22 @@ Display 4.5 n u O (Note 2) (Note 3)
                 <field name="Extended high layer characteristics identification" lengthBit="7" type="enumeration" value="Telephony"/>
                 <field name="ext4" lengthBit="1" type="boolean" value="1"/>
                 <field name="Extended audiovisual characteristics identification" lengthBit="7" type="enumeration" value="Capability set of initial channel of H.221"/>
-            </element>
+            </element-->
             
-    	    <!-- High layer compatibility = b1111101 = h7D = d125-->
+    	      <!-- High layer compatibility = b1111101 = h7D = d125-->
             <!-- ONLY for Circuit message -->    	
-	    <element identifier="High layer compatibility">
-		<field name="ext1" lengthBit="1" type="boolean" value="1"/>
-		<field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
-		<field name="Interpretation" lengthBit="3" type="enumeration" value="First high layer characteristics identification"/>
-		<field name="Presentation method of protocol profile" lengthBit="2" type=" enumeration" value="High layer protocol profile"/>
-		<field name="ext2" lengthBit="1" type="boolean" value="1"/>
-		<field name="High layer characteristics identification" lengthBit="7" type="enumeration" value="Telephony"/>
-                <field name="ext3" lengthBit="1" type="boolean" value="1"/>
-		<field name="Extended high layer characteristics identification" lengthBit="7" type="enumeration" value="Telephony"/>
-		<field name="ext4" lengthBit="1" type="boolean" value="1"/>
-		<field name="Extended videotelephony characteristics identification" lengthBit="7" type="enumeration" value="Capability set of initial channel of H.221"/>
-	    </element>
+      	    <element identifier="High layer compatibility">
+            		<field name="ext1" lengthBit="1" type="boolean" value="1"/>
+            		<field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+            		<field name="Interpretation" lengthBit="3" type="enumeration" value="First high layer characteristics identification"/>
+            		<field name="Presentation method of protocol profile" lengthBit="2" type=" enumeration" value="High layer protocol profile"/>
+            		<field name="ext2" lengthBit="1" type="boolean" value="1"/>
+            		<field name="High layer characteristics identification" lengthBit="7" type="enumeration" value="Telephony"/>
+                            <field name="ext3" lengthBit="1" type="boolean" value="1"/>
+            		<field name="Extended high layer characteristics identification" lengthBit="7" type="enumeration" value="Telephony"/>
+            		<field name="ext4" lengthBit="1" type="boolean" value="1"/>
+            		<field name="Extended videotelephony characteristics identification" lengthBit="7" type="enumeration" value="Capability set of initial channel of H.221"/>
+      	    </element>
 
         </ISDN>
      
