@@ -52,8 +52,11 @@ import gp.utils.arrays.SupArray;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
 import org.dom4j.Element;
 
 /**
@@ -62,9 +65,18 @@ import org.dom4j.Element;
  */
 public class StackGtpp extends Stack
 {
-    private GtppDictionary dictionary;
+    private Map<String, GtppDictionary> dictionaries;
 
-    public GtppDictionary getDictionary() {
+    public GtppDictionary getDictionary(String version) throws Exception
+    {
+    	GtppDictionary dictionary = dictionaries.get(version);
+    	if (dictionaries != null)
+    	{
+    		URI uri = new URI("../conf/gtpp/dictionary_" + version + ".xml");
+    		InputStream inputStream = SingletonFSInterface.instance().getInputStream(uri);
+    		dictionary = new GtppDictionary(inputStream);
+    		
+    	}
         return dictionary;
     }
 
@@ -72,8 +84,8 @@ public class StackGtpp extends Stack
     public StackGtpp() throws Exception
     {
         super();
-
-        dictionary = new GtppDictionary(SingletonFSInterface.instance().getInputStream(new URI("../conf/gtpp/dictionary.xml")));
+        
+        this.dictionaries = new HashMap<String, GtppDictionary> ();    
         
         // initiate a default listenpoint if port is not empty or null
         int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
@@ -150,6 +162,9 @@ public class StackGtpp extends Stack
         	 GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Not GTP message. <header> or <headeP> is missing.");
         }
         
+        // get the right dictionary in from of the version
+        GtppDictionary dictionary = getDictionary(gtpHeader.getVersionName());
+        
         gtpHeader.parseXml(xmlHeader, dictionary); 
     	gtppMessage.setHeader(gtpHeader);
 
@@ -159,12 +174,12 @@ public class StackGtpp extends Stack
             gtppMessage.setLogError("Message <" + msgName + "> is not present in the dictionary\r\n");
         
         // TLV parsing
-        parseTLVs(root, gtppMessage);
+        parseTLVs(root, gtppMessage, dictionary);
 
         return new MsgGtpp(gtppMessage);
     }
 
-    public void parseTLVs(Element root, GtppMessage msg) throws Exception
+    private void parseTLVs(Element root, GtppMessage msg, GtppDictionary dictionary) throws Exception
     {
         List<Element> tlvs = root.elements("tlv");
         List<Element> attributes = null;
@@ -342,6 +357,9 @@ public class StackGtpp extends Stack
             	gtpHeader = new GtpHeaderV2(flagArray); 
             }
             
+            // get the right dictionary in from of the version
+            GtppDictionary dictionary = getDictionary(gtpHeader.getVersionName());
+
             gtpHeader.getSize(); 
             gtpHeader.parseArray(inputStream, dictionary); 
             

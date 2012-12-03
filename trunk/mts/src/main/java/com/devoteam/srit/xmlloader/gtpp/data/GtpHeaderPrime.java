@@ -45,17 +45,20 @@ public class GtpHeaderPrime extends Header{
 	private String name;
     private int messageType;
     private int version;
+    private String versionName;
     private int protocolType;
     private int length = 0;
     private int sequenceNumber;
     
-    public GtpHeaderPrime() {
-		// TODO Auto-generated constructor stub
+    public GtpHeaderPrime() 
+    {
     	this.protocolType = 0; 
     	this.version = 0; 
+        this.versionName = "GTPPrime";
 	}
     public GtpHeaderPrime(DefaultArray flagArray) 
     {
+    	this();
         this.version = flagArray.getBits(0,3);
         this.protocolType = flagArray.getBits(3,1);
 	}
@@ -117,7 +120,13 @@ public class GtpHeaderPrime extends Header{
     public void setVersion(int version) {
         this.version = version;
     }
-    
+	public String getVersionName() {
+		return versionName;
+	}
+	public void setVersionName(String versionName) {
+		this.versionName = versionName;
+	}	
+	
     public Array getArray() throws Exception
     {
         //manage header data
@@ -163,6 +172,7 @@ public class GtpHeaderPrime extends Header{
 
         clone.setName(getName());
         clone.setVersion(version);
+        clone.setVersionName(versionName);
         clone.setProtocolType(protocolType);
         clone.setMessageType(messageType);
         clone.setLength(length);
