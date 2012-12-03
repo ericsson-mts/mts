@@ -185,12 +185,17 @@ public class GtpHeaderV1 extends Header {
         supArray.addLast(new Integer32Array(teid));
         
         if(sequenceNumberFlag != 0)
+        {
         	supArray.addLast(new Integer16Array(sequenceNumber));
+        }
     	if(nPduNumberFlag != 0)
+    	{
     		 supArray.addLast(new Integer08Array(nPduNumber));
+    	}
     	if(extensionHeaderFlag != 0)
+    	{
     		supArray.addLast(new Integer08Array(nextExtensionType)); 
-  
+    	}
         return supArray;
     }
 	
