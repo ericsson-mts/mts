@@ -39,7 +39,7 @@ public class GtppMessage
 {	
 	private Header header; 
 	
-	private Vector<GtppTLV> tlvs;
+	private Vector<Tag> tlvs;
     private Array data = null;
 
     private String logError = "";
@@ -54,7 +54,7 @@ public class GtppMessage
     
     public GtppMessage()
     {        
-        tlvs = new Vector<GtppTLV>();
+        tlvs = new Vector<Tag>();
     }
     
     public String getLogError()
@@ -67,16 +67,16 @@ public class GtppMessage
         this.logError += logError;
     }   
 
-    public void addTLV(GtppTLV tlv)
+    public void addTLV(Tag tlv)
     {
         if(tlvs.contains(tlv))//used to remove a TLV if it is override by a new one with the same name or tag
             tlvs.remove(tlv);
         tlvs.add(tlv);
     }
 
-    public GtppTLV getTLV(String name)
+    public Tag getTLV(String name)
     {
-        GtppTLV tlv;
+        Tag tlv;
         for(int i=0; i < tlvs.size(); i++)
         {
             tlv = tlvs.get(i);
@@ -88,9 +88,9 @@ public class GtppMessage
         return null;
     }
 
-    public GtppTLV getTLV(int tag)
+    public Tag getTLV(int tag)
     {
-        GtppTLV tlv;
+        Tag tlv;
         for(int i=0; i < tlvs.size(); i++)
         {
             tlv = tlvs.get(i);
@@ -132,7 +132,7 @@ public class GtppMessage
         
         int headerSize = header.getSize();
         data = new DefaultArray(array.subArray(headerSize, header.getLength()).getBytes());
-        GtppTLV tlv = null;
+        Tag tlv = null;
         int tag = 0;
         int index = 0; //reset index because lenght fiel don't count header
         
@@ -235,7 +235,7 @@ public class GtppMessage
     {
         SupArray array = new SupArray();
 
-        for(GtppTLV tlv:tlvs)
+        for(Tag tlv:tlvs)
         {
             if(tlv.getValueQuality())
             {

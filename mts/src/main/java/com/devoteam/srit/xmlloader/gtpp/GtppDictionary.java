@@ -27,7 +27,8 @@ import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
 import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderPrime;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppAttribute;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
-import com.devoteam.srit.xmlloader.gtpp.data.GtppTLV;
+import com.devoteam.srit.xmlloader.gtpp.data.Tag;
+
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,7 +48,7 @@ public class GtppDictionary
     private HashMap<String, Integer> messageNameToTypeList;
     private HashMap<Integer, String> messageTypeToNameList;
 
-    private HashMap<String, GtppTLV> tlvList;
+    private HashMap<String, Tag> tlvList;
     private HashMap<String, Integer> tlvNameToTagList;
     private HashMap<Integer, String> tlvTagToNameList;
 
@@ -57,7 +58,7 @@ public class GtppDictionary
         this.messageNameToTypeList = new HashMap<String, Integer>();
         this.messageTypeToNameList = new HashMap<Integer, String>();
 
-        this.tlvList = new HashMap<String, GtppTLV>();
+        this.tlvList = new HashMap<String, Tag>();
         this.tlvNameToTagList = new HashMap<String, Integer>();
         this.tlvTagToNameList = new HashMap<Integer, String>();
 
@@ -103,8 +104,8 @@ public class GtppDictionary
         return msg;
     }
 
-    public GtppTLV getTLVFromName(String name) {
-        GtppTLV tlv = tlvList.get(name);
+    public Tag getTLVFromName(String name) {
+        Tag tlv = tlvList.get(name);
         if(tlv != null)
         {
             tlv = tlv.clone();
@@ -112,7 +113,7 @@ public class GtppDictionary
         else
         {
             //create a default message for unknown name
-            tlv = new GtppTLV();
+            tlv = new Tag();
             tlv.setLength(6);
             tlv.setTag(0);
             tlv.setName(name);
@@ -120,9 +121,9 @@ public class GtppDictionary
         return tlv;
     }
 
-    public GtppTLV getTLVFromTag(int id) {
+    public Tag getTLVFromTag(int id) {
         String name = tlvTagToNameList.get(id);
-        GtppTLV tlv = null;
+        Tag tlv = null;
 
         if(name != null)
              tlv = tlvList.get(name);
@@ -134,7 +135,7 @@ public class GtppDictionary
         else
         {
             //create a default message for unknown id
-            tlv = new GtppTLV();
+            tlv = new Tag();
             tlv.setLength(6);
             tlv.setTag(0);
             tlv.setName("Unknown TLV");
@@ -153,9 +154,9 @@ public class GtppDictionary
 
     private void parseFile(InputStream stream) throws Exception
     {
-        Element  node  = null;
-        GtppMessage   msg = null;
-        GtppTLV       tlv = null;
+        Element node  = null;
+        GtppMessage msg = null;
+        Tag tlv = null;
         String length = null;
         String format = null;
         int    i  = 0;
@@ -180,7 +181,7 @@ public class GtppDictionary
 
                 if(name.equalsIgnoreCase("tlv"))
                 {
-                    tlv = new GtppTLV();
+                    tlv = new Tag();
                     tlv.setName(element.attributeValue("name"));
                     String value = element.attributeValue("mandatory");
                     if(value != null && !value.equalsIgnoreCase("cond"))
@@ -206,7 +207,7 @@ public class GtppDictionary
         {
             node = (Element)listTLV.get(i);
 
-            tlv = new GtppTLV();
+            tlv = new Tag();
             tlv.setName(node.attributeValue("name"));
             tlv.setTag(Integer.parseInt(node.attributeValue("tag")));
             length = node.attributeValue("length");

@@ -41,7 +41,7 @@ import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderV1;
 import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderV2;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppAttribute;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
-import com.devoteam.srit.xmlloader.gtpp.data.GtppTLV;
+import com.devoteam.srit.xmlloader.gtpp.data.Tag;
 import com.devoteam.srit.xmlloader.gtpp.data.Header;
 
 import gp.utils.arrays.DefaultArray;
@@ -183,7 +183,7 @@ public class StackGtpp extends Stack
     {
         List<Element> tlvs = root.elements("tlv");
         List<Element> attributes = null;
-        GtppTLV tlv = null;
+        Tag tlv = null;
         String value = null;
         String length = null;
 
@@ -239,7 +239,7 @@ public class StackGtpp extends Stack
             {
                 //add tlv to message even if unknown
                 value = element.attributeValue("value");
-                tlv = new GtppTLV();
+                tlv = new Tag();
                 tlv.setName(element.attributeValue("name"));
                 tlv.setLength(Integer.parseInt(element.attributeValue("length")));
                 tlv.setValue(value.getBytes());

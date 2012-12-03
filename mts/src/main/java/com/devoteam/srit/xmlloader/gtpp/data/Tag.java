@@ -24,27 +24,39 @@
 package com.devoteam.srit.xmlloader.gtpp.data;
 
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.TLV;
+import com.devoteam.srit.xmlloader.gtpp.GtppDictionary;
+
 import gp.utils.arrays.*;
+
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
+
+import org.dom4j.Element;
 
 /**
  *
  * @author Benjamin Bouvier
  */
-public class GtppTLV extends TLV
+public class Tag extends TLV
 {
     private GtppAttribute att = new GtppAttribute();
     private boolean fixedLength = false;
 
-    public GtppTLV()
+	// public Tag clone(){ return null; };
+	// public abstract Array getArray()throws Exception; 
+	// public abstract void parseArray(InputStream stream, GtppDictionary dictionary) throws Exception;
+	// public abstract void parseXml(Element header, GtppDictionary dictionary) throws Exception;
+	// public String toString() {return null;}; 
+    
+    public Tag()
     {}
 
     /*useful to override this method to override existing tlv with the same name or tag in a message*/
     @Override
     public boolean equals(Object tlv) {
-        if((getName().equals(((GtppTLV)tlv).getName())) || (getTag() == ((GtppTLV)tlv).getTag()))
+        if((getName().equals(((Tag)tlv).getName())) || (getTag() == ((Tag)tlv).getTag()))
             return true;
         else
             return false;
@@ -102,9 +114,9 @@ public class GtppTLV extends TLV
     }
 
     @Override
-    public GtppTLV clone()
+     public Tag clone()
     {
-        GtppTLV clone = new GtppTLV();
+        Tag clone = new Tag();
         clone.setAtt(new GtppAttribute());
 
         clone.setLength(getLength());
@@ -118,8 +130,8 @@ public class GtppTLV extends TLV
 
         if((getValue() != null) && (getValue() instanceof LinkedList))
         {
-            LinkedList/*<GtppAttribute>*/ list = (LinkedList)getValue();
-            LinkedList/*<GtppAttribute>*/ cloneList = new LinkedList();
+            LinkedList<GtppAttribute> list = (LinkedList)getValue();
+            LinkedList cloneList = new LinkedList();
             try {
                 //                for(int i = 0; i < list.size(); i++)
                 //                    cloneList.add(list.get(i).clone());
@@ -132,7 +144,7 @@ public class GtppTLV extends TLV
         }
         return clone;
     }
-
+  
     private void cloneLinkedList(LinkedList list, LinkedList newList) throws CloneNotSupportedException
     {
         for(int i = 0; i < list.size(); i++)
