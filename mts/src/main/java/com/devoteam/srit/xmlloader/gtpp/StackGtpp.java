@@ -182,9 +182,7 @@ public class StackGtpp extends Stack
 
     private void parseTLVs(Element root, GtppMessage msg, GtppDictionary dictionary) throws Exception
     {
-        List<Element> tlvs = root.elements("tlv");
-        if (tlvs == null)
-        	tlvs = root.elements("tliv");
+        List<Element> tlvs = root.elements();
         List<Element> attributes = null;
         Tag tlv = null;
         String value = null;
@@ -192,63 +190,67 @@ public class StackGtpp extends Stack
 
         for(Element element:tlvs)
         {
-            value = element.attributeValue("name");
-            if(value != null)
-                tlv = dictionary.getTLVFromName(value);
-            else
+        	String name = element.getName();
+            if(name.equalsIgnoreCase("tlv") || name.equalsIgnoreCase("tliv"))
             {
-                value = element.attributeValue("tag");
-                if(value != null)
-                    tlv = dictionary.getTLVFromTag(Integer.parseInt(value));
-            }
-
-            if(tlv != null)
-            {   
-                length = element.attributeValue("length");
-                if(length != null)
-                {
-                    if((tlv.getLength() > 0) && (tlv.getLength() != Integer.parseInt(length)))
-                    {
-                        GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "TLV length for " + tlv.toString() + "is not according to size given in dictionary");
-                    }
-                    
-                    if(value.equalsIgnoreCase("auto"))
-                        tlv.setLength(value.length());
-                    else
-                        tlv.setLength(Integer.parseInt(length));
-                }
-
-                value = element.attributeValue("value");
-                if(value != null)
-                {
-                    setAttributeValue((Attribute)tlv, value);
-                }
-                else
-                {
-                    //check if there is attribute inside the TLV
-                    attributes = element.elements("attribute");
-                    parseAtt((Attribute)tlv, attributes);
-                }
-
-                if(tlv.getLength() == -1)//if no size is given in the dictionary
-                {
-                    if(!(tlv.getValue() instanceof LinkedList))
-                        tlv.setLength(((byte[])tlv.getValue()).length);
-                    else
-                        tlv.setLength(tlv.getArray().length - 3);//- 3 to remove the tag and length bytes
-                }
-            }   
-            else
-            {
-                //add tlv to message even if unknown
-                value = element.attributeValue("value");
-                tlv = new Tag();
-                tlv.setName(element.attributeValue("name"));
-                tlv.setLength(Integer.parseInt(element.attributeValue("length")));
-                tlv.setValue(value.getBytes());
-            }
-            msg.addTLV(tlv);
-            tlv = null;
+	            value = element.attributeValue("name");
+	            if(value != null)
+	                tlv = dictionary.getTLVFromName(value);
+	            else
+	            {
+	                value = element.attributeValue("tag");
+	                if(value != null)
+	                    tlv = dictionary.getTLVFromTag(Integer.parseInt(value));
+	            }
+	
+	            if(tlv != null)
+	            {   
+	                length = element.attributeValue("length");
+	                if(length != null)
+	                {
+	                    if((tlv.getLength() > 0) && (tlv.getLength() != Integer.parseInt(length)))
+	                    {
+	                        GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "TLV length for " + tlv.toString() + "is not according to size given in dictionary");
+	                    }
+	                    
+	                    if(value.equalsIgnoreCase("auto"))
+	                        tlv.setLength(value.length());
+	                    else
+	                        tlv.setLength(Integer.parseInt(length));
+	                }
+	
+	                value = element.attributeValue("value");
+	                if(value != null)
+	                {
+	                    setAttributeValue((Attribute)tlv, value);
+	                }
+	                else
+	                {
+	                    //check if there is attribute inside the TLV
+	                    attributes = element.elements("attribute");
+	                    parseAtt((Attribute)tlv, attributes);
+	                }
+	
+	                if(tlv.getLength() == -1)//if no size is given in the dictionary
+	                {
+	                    if(!(tlv.getValue() instanceof LinkedList))
+	                        tlv.setLength(((byte[])tlv.getValue()).length);
+	                    else
+	                        tlv.setLength(tlv.getArray().length - 3);//- 3 to remove the tag and length bytes
+	                }
+	            }   
+	            else
+	            {
+	                //add tlv to message even if unknown
+	                value = element.attributeValue("value");
+	                tlv = new Tag();
+	                tlv.setName(element.attributeValue("name"));
+	                tlv.setLength(Integer.parseInt(element.attributeValue("length")));
+	                tlv.setValue(value.getBytes());
+	            }
+	            msg.addTLV(tlv);
+	            tlv = null;
+	        }
         }
     }
 
