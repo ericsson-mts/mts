@@ -183,6 +183,8 @@ public class StackGtpp extends Stack
     private void parseTLVs(Element root, GtppMessage msg, GtppDictionary dictionary) throws Exception
     {
         List<Element> tlvs = root.elements("tlv");
+        if (tlvs == null)
+        	tlvs = root.elements("tliv");
         List<Element> attributes = null;
         Tag tlv = null;
         String value = null;

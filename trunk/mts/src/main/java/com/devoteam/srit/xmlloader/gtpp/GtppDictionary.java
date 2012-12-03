@@ -179,7 +179,7 @@ public class GtppDictionary
                 Element element = (Element) it.next();
                 String name = element.getName();
 
-                if(name.equalsIgnoreCase("tlv"))
+                if(name.equalsIgnoreCase("tlv") || name.equalsIgnoreCase("tliv"))
                 {
                     tlv = new Tag();
                     tlv.setName(element.attributeValue("name"));
@@ -202,7 +202,7 @@ public class GtppDictionary
         }
 
         //parsing des TLV
-        List listTLV = document.selectNodes("/dictionary/tlv");
+        List listTLV = document.selectNodes("/dictionary/tlv | /dictionary/tliv");
         for(i = 0; i < listTLV.size(); i++)
         {
             node = (Element)listTLV.get(i);
@@ -232,14 +232,38 @@ public class GtppDictionary
             tlvNameToTagList.put(tlv.getName(), tlv.getTag());
         }
 
-//        //affichage des message
-//        Collection<GtppMessage> collecMsg = messagesList.values();
-//        System.out.println("\r\nnb de message dans la collection: " + collecMsg.size());
-//        for(Iterator<GtppMessage> iter = collecMsg.iterator(); iter.hasNext();)
-//        {
-//            GtppMessage msgEle = (GtppMessage)iter.next();
-//            System.out.println(msgEle.toString());
-//        }
+        /*
+        listTLV = document.selectNodes("/dictionary/tliv");
+        for(i = 0; i < listTLV.size(); i++)
+        {
+            node = (Element)listTLV.get(i);
+
+            tlv = new Tag();
+            tlv.setName(node.attributeValue("name"));
+            tlv.setTag(Integer.parseInt(node.attributeValue("tag")));
+            length = node.attributeValue("length");
+            if(length != null)
+            {
+                tlv.setLength(Integer.parseInt(length));
+                tlv.setFixedLength(true);
+            }
+            format = node.attributeValue("format");
+            if(format != null)
+            {
+                tlv.setFormat(format);
+                if(format.equals("list"))
+                {
+                    tlv.setValue(new LinkedList<GtppAttribute>());
+                    parseAtt((Attribute)tlv, node);
+                }
+            }
+            
+            tlvList.put(tlv.getName(), tlv);
+            tlvTagToNameList.put(tlv.getTag(), tlv.getName());
+            tlvNameToTagList.put(tlv.getName(), tlv.getTag());
+        }
+        */
+        
     }
 
     private void parseAtt(Attribute att, Element node) throws Exception
