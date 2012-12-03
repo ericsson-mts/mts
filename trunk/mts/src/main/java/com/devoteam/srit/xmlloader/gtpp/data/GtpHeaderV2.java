@@ -45,42 +45,31 @@ public class GtpHeaderV2 extends Header {
 	//Header composers 
 	private String name;
 	private int version;
-	private int protocolType;
-	private int extensionHeaderFlag;
-	private int sequenceNumberFlag;
-	private int nPduNumberFlag;
+	private int piggyFlag;
+	private int teidFlag;
 	private int messageType;
 	private int length;
-	private int teid;
+	private int tunnelEndpointId;
 	private int sequenceNumber;
-    private int nPduNumber;
-    private int nextExtensionType;
     
     public GtpHeaderV2(DefaultArray flagArray)
     {	
         this.version = flagArray.getBits(0,3);
-        this.protocolType = flagArray.getBits(3,1);
-    	this.extensionHeaderFlag = flagArray.getBits(5,1);
-    	this.sequenceNumberFlag = flagArray.getBits(6,1);
-    	this.nPduNumberFlag = flagArray.getBits(7,1);
-    	
+        this.piggyFlag = flagArray.getBits(3,1);
+        this.teidFlag = flagArray.getBits(4,1);
     }
     public GtpHeaderV2()
     {
-    	this.protocolType = 1;
     	this.version = 2;
     }
     //getSize
     public int getSize()
     {
-    	int k = 12; 
-    	if(extensionHeaderFlag == 0)
-    		k -= 1; 
-    	if(sequenceNumberFlag == 0)
-    		k -= 1; 
-    	if(nPduNumberFlag == 0)
-    		k -= 1; 
-    	
+    	int k = 0; 
+    	if(teidFlag == 0)
+    		k = 8; 
+    	if(teidFlag == 1)
+    		k =12; 
     	return k; 
     }
     //Getters and setters
@@ -96,29 +85,17 @@ public class GtpHeaderV2 extends Header {
 	public void setVersion(int version) {
 		this.version = version;
 	}
-	public int getProtocolType() {
-		return protocolType;
+	public int getPiggyFlag() {
+		return piggyFlag;
 	}
-	public void setProtocolType(int protocolType) {
-		this.protocolType = protocolType;
+	public void setPiggyFlag(int piggyFlag) {
+		this.piggyFlag = piggyFlag;
+	}	
+	public int getTeidFlag() {
+		return teidFlag;
 	}
-	public int getExtensionHeaderFlag() {
-		return extensionHeaderFlag;
-	}
-	public void setExtensionHeaderFlag(int extensionHeaderFlag) {
-		this.extensionHeaderFlag = extensionHeaderFlag;
-	}
-	public int getSequenceNumberFlag() {
-		return sequenceNumberFlag;
-	}
-	public void setSequenceNumberFlag(int sequenceNumberFlag) {
-		this.sequenceNumberFlag = sequenceNumberFlag;
-	}
-	public int getnPduNumberFlag() {
-		return nPduNumberFlag;
-	}
-	public void setnPduNumberFlag(int nPduNumberFlag) {
-		this.nPduNumberFlag = nPduNumberFlag;
+	public void setTeidFlag(int teidFlag) {
+		this.teidFlag = teidFlag;
 	}
 	public int getMessageType() {
 		return messageType;
@@ -132,29 +109,17 @@ public class GtpHeaderV2 extends Header {
 	public void setLength(int length) {
 		this.length = length;
 	}
-	public int getTeid() {
-		return teid;
+	public int getTunnelEndpointId() {
+		return tunnelEndpointId;
 	}
-	public void setTeid(int teid) {
-		this.teid = teid;
+	public void setTunnelEndpointId(int tunnelEndpointId) {
+		this.tunnelEndpointId = tunnelEndpointId;
 	}
 	public int getSequenceNumber() {
 		return sequenceNumber;
 	}
 	public void setSequenceNumber(int sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
-	}
-	public int getnPduNumber() {
-		return nPduNumber;
-	}
-	public void setnPduNumber(int nPduNumber) {
-		this.nPduNumber = nPduNumber;
-	}
-	public int getNextExtensionType() {
-		return nextExtensionType;
-	}
-	public void setNextExtensionType(int nextExtensionType) {
-		this.nextExtensionType = nextExtensionType;
 	}
 	
 	public Array getArray() throws Exception
@@ -164,24 +129,23 @@ public class GtpHeaderV2 extends Header {
 
         DefaultArray firstByte = new DefaultArray(1);//first byte data
         firstByte.setBits(0, 3, version);
-        firstByte.setBits(3, 1, protocolType);
-        firstByte.setBits(4, 1, 0);
-        firstByte.setBits(5, 1, extensionHeaderFlag);
-        firstByte.setBits(6, 1, sequenceNumberFlag);
-        firstByte.setBits(7, 1, nPduNumberFlag);
+        firstByte.setBits(3, 1, piggyFlag);
+        firstByte.setBits(4, 1, teidFlag);
+        firstByte.setBits(5, 1, 0);
+        firstByte.setBits(6, 1, 0);
+        firstByte.setBits(7, 1, 0);
         supArray.addFirst(firstByte);
 
         supArray.addLast(new Integer08Array(messageType));
         supArray.addLast(new Integer16Array(length));
-        supArray.addLast(new Integer32Array(teid));
+        if (teidFlag == 1)
+        	supArray.addLast(new Integer32Array(tunnelEndpointId));
         
-        if(sequenceNumberFlag != 0)
-        	supArray.addLast(new Integer16Array(sequenceNumber));
-    	if(nPduNumberFlag != 0)
-    		 supArray.addLast(new Integer08Array(nPduNumber));
-    	if(extensionHeaderFlag != 0)
-    		supArray.addLast(new Integer08Array(nextExtensionType)); 
-  
+        Array sequenceNumberArray= new Integer32Array(sequenceNumber);
+        supArray.addLast(sequenceNumberArray.subArray(1, 3));
+        
+        supArray.addLast(new Integer08Array(0));
+        
         return supArray;
     }
 	
@@ -198,32 +162,21 @@ public class GtpHeaderV2 extends Header {
         array = new DefaultArray(header); 
         length = (new Integer16Array(array).getValue());
         
-        header = new byte[4];
-        stream.read(header, 0, 4);
-        array = new DefaultArray(header); 
-        teid = (new Integer32Array(array).getValue());
-        
-    	// if(sequenceNumberFlag != 0)
-    	{	
-    		header = new byte[2];
-    		stream.read(header, 0, 2);
-    		array = new DefaultArray(header); 
-    		sequenceNumber = (new Integer16Array(array).getValue()); 
-    	}
-    	// if(extensionHeaderFlag != 0)
+        if(teidFlag != 0)
     	{
-    		header = new byte[1];
-    		stream.read(header, 0, 1);
-    		array = new DefaultArray(header);
-    		nPduNumber = (new Integer08Array(array).getValue());
+	        header = new byte[4];
+	        stream.read(header, 0, 4);
+	        array = new DefaultArray(header); 
+	        tunnelEndpointId = (new Integer32Array(array).getValue());
     	}
-    	// if(extensionHeaderFlag != 0)
-    	{	
-    		header = new byte[1];
-    		stream.read(header, 0, 1);
-    		array = new DefaultArray(header);
-    		nextExtensionType = (new Integer08Array(array).getValue());
-    	}
+        
+    	header = new byte[4];
+    	stream.read(header, 1, 3);
+    	array = new DefaultArray(header); 
+    	sequenceNumber = (new Integer32Array(array).getValue()); 
+
+    	header = new byte[1];
+    	stream.read(header, 0, 1);
     }
 	
 	@Override
@@ -233,30 +186,25 @@ public class GtpHeaderV2 extends Header {
 
         clone.setName(getName());
         clone.setVersion(version);
-        clone.setProtocolType(protocolType);
-        clone.setExtensionHeaderFlag(extensionHeaderFlag);
-        clone.setSequenceNumberFlag(sequenceNumberFlag); 
-        clone.setnPduNumberFlag(nPduNumberFlag); 
+        clone.setPiggyFlag(piggyFlag);
+        clone.setTeidFlag(teidFlag);
         clone.setMessageType(messageType);
         clone.setLength(length);
-        clone.setTeid(teid); 
-        if(sequenceNumberFlag != 0)
-        	clone.setSequenceNumber(sequenceNumber);
-        if(extensionHeaderFlag != 0)
-        	clone.setnPduNumber(nPduNumber); 
-        if(extensionHeaderFlag != 0)
-        	clone.setNextExtensionType(nextExtensionType);
-
+        clone.setTunnelEndpointId(tunnelEndpointId); 
+        clone.setSequenceNumber(sequenceNumber);
         return clone;
     }
 	
 	@Override
     public String toString()
     {
-        String str = name + ", length " + length + ", TEID "+ teid + ", N-PDU Number " + nPduNumber 
-        		+ ", Next Extension Header Type " + nextExtensionType + ", messageType=\"" + messageType 
-        		+ "\" version=\"" + version + "\" protocolType=\"" + protocolType + "\" seqNum " + sequenceNumber + "\r\n";
-        
+        String str = "<headerV2 ";
+        str += " piggyFlag=\"" + piggyFlag + "\""; 
+        str += " teidFlag=" + teidFlag +  "\"";
+        str += " messageType=\"" + name + ":" + messageType + "\"";
+        str += " tunnelEndpointId=\"" + tunnelEndpointId + "\"";
+        str += " sequenceNumber=\"" + sequenceNumber + "\"";
+        str += "/>";
         return str;
     }
 	
@@ -282,25 +230,29 @@ public class GtpHeaderV2 extends Header {
         	this.name = dictionary.getMessageNameFromType(this.messageType);
         }
         
+        String msgPiggyFlag = header.attributeValue("piggyFlag");
+        if(msgPiggyFlag != null)
+        {
+        	piggyFlag = Integer.parseInt(msgPiggyFlag);
+        }
+        
+        String msgTeidFlag = header.attributeValue("teidFlag");
+        if(msgTeidFlag != null)
+        {
+        	teidFlag = Integer.parseInt(msgTeidFlag);
+        }
+        
         String msgSeqNum = header.attributeValue("sequenceNumber");
         if(msgSeqNum != null)
         {
-        	this.sequenceNumberFlag = 1;
         	sequenceNumber = Integer.parseInt(msgSeqNum);
         }
-        String nPduNum = header.attributeValue("nPduNumber");
-        if(nPduNum != null)
-        {
-        	this.nPduNumberFlag = 1;
-        	nPduNumber = Integer.parseInt(nPduNum);
-        }
-        String extNum = header.attributeValue("nextExtensionType");
-        if(extNum != null)
-        {
-        	this.extensionHeaderFlag = 1;
-        	nextExtensionType = Integer.parseInt(extNum);
-        }
         
+        String msgTunnelEndpointId = header.attributeValue("tunnelEndpointId");
+        if(msgTunnelEndpointId != null)
+        {
+        	tunnelEndpointId = Integer.parseInt(msgTunnelEndpointId);
+        }
 
     }
 

@@ -335,11 +335,11 @@ public class StackGtpp extends Stack
             }
             else if(version == 0)
             {
-            	gtpHeader = new GtpHeaderPrime(); 
+            	gtpHeader = new GtpHeaderPrime(flagArray); 
             }
             else if(version == 2)
             {
-            	gtpHeader = new GtpHeaderV2(); 
+            	gtpHeader = new GtpHeaderV2(flagArray); 
             }
             
             gtpHeader.getSize(); 
