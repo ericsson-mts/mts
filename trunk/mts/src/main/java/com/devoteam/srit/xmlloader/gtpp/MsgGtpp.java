@@ -31,7 +31,7 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
-import com.devoteam.srit.xmlloader.gtpp.data.GtppTLV;
+import com.devoteam.srit.xmlloader.gtpp.data.Tag;
 import gp.utils.arrays.Array;
 
 /**
@@ -97,7 +97,7 @@ public class MsgGtpp extends Msg
             if(params.length >= 2)
             {
                 //get attribute given
-                GtppTLV tlv = message.getTLV(params[1]);
+                Tag tlv = message.getTLV(params[1]);
                 if(tlv != null)
                 {
                     var.add(formatAttribute(tlv));
