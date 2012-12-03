@@ -107,48 +107,26 @@ public class GtppMessage
         return data;
     }
 
-    
-    public void parseArray(InputStream inputStream, GtppDictionary dictionary) throws Exception
+    public void parseArray(Array array, GtppDictionary dictionary) throws Exception
     {
     	byte[] headerByte = new byte[6];
-    	inputStream.read(headerByte, 0, 1);
-        int version = headerByte[0] & 0xE0; 
-        int protocolType = headerByte[0] & 0x10;
-        Array array = null; 
-        
-        if(version == 0)
-        {
-    		header = new GtpHeaderPrime();	
-        }
-        else if(version == 1)
-        {
-        	header = new GtpHeaderV1(); 
-        }
-        else if(version == 2)
-        {
-        	header = new GtpHeaderV2(); 
-        }        
-        header.parseArray(inputStream, dictionary);
-        
-        int headerSize = header.getSize();
-        data = new DefaultArray(array.subArray(headerSize, header.getLength()).getBytes());
         Tag tlv = null;
         int tag = 0;
         int index = 0; //reset index because lenght fiel don't count header
         
         while(index < header.getLength())
         {
-            tag = new Integer08Array(array.subArray(index + headerSize, 1)).getValue();
+            tag = new Integer08Array(array.subArray(index, 1)).getValue();
             index++;
             //search in hashmap to see if its a TV or TLV
             tlv = dictionary.getTLVFromTag(tag);
 
             if(!tlv.isFixedLength()) {
-                tlv.setLength(new Integer16Array(array.subArray(index + headerSize, 2)).getValue());
+                tlv.setLength(new Integer16Array(array.subArray(index, 2)).getValue());
                 index += 2;
             }
             //then get value or length
-            Array value = array.subArray(index + headerSize, tlv.getLength());
+            Array value = array.subArray(index, tlv.getLength());
             index += tlv.getLength();
             if(tlv.getFormat().equals("int"))
             {
@@ -167,8 +145,8 @@ public class GtppMessage
             }
             addTLV(tlv);
         }
-        //display an error log if not all mandatory TLV are set
     }
+    
     private int parseLinkedList(Array valueToDecode, Attribute att, int index) throws Exception
     {
         LinkedList<Object> list = (LinkedList<Object>)att.getValue();
