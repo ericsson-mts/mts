@@ -45,6 +45,7 @@ public class GtpHeaderV2 extends Header {
 	//Header composers 
 	private String name;
 	private int version;
+    private String versionName;	
 	private int piggyFlag;
 	private int teidFlag;
 	private int messageType;
@@ -54,6 +55,7 @@ public class GtpHeaderV2 extends Header {
     
     public GtpHeaderV2(DefaultArray flagArray)
     {	
+    	this();
         this.version = flagArray.getBits(0,3);
         this.piggyFlag = flagArray.getBits(3,1);
         this.teidFlag = flagArray.getBits(4,1);
@@ -61,6 +63,7 @@ public class GtpHeaderV2 extends Header {
     public GtpHeaderV2()
     {
     	this.version = 2;
+    	this.versionName = "GTPV2";
     }
     //getSize
     public int getSize()
@@ -85,6 +88,12 @@ public class GtpHeaderV2 extends Header {
 	public void setVersion(int version) {
 		this.version = version;
 	}
+	public String getVersionName() {
+		return versionName;
+	}
+	public void setVersionName(String versionName) {
+		this.versionName = versionName;
+	}		
 	public int getPiggyFlag() {
 		return piggyFlag;
 	}
@@ -186,6 +195,7 @@ public class GtpHeaderV2 extends Header {
 
         clone.setName(getName());
         clone.setVersion(version);
+        clone.setVersionName(versionName);        
         clone.setPiggyFlag(piggyFlag);
         clone.setTeidFlag(teidFlag);
         clone.setMessageType(messageType);

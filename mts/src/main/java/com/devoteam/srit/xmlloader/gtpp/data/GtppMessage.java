@@ -23,10 +23,8 @@
 
 package com.devoteam.srit.xmlloader.gtpp.data;
 
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
 import com.devoteam.srit.xmlloader.gtpp.GtppDictionary;
-import com.devoteam.srit.xmlloader.gtpp.StackGtpp;
 import gp.utils.arrays.*;
 
 import java.io.InputStream;
@@ -143,7 +141,7 @@ public class GtppMessage
             tag = new Integer08Array(array.subArray(index + headerSize, 1)).getValue();
             index++;
             //search in hashmap to see if its a TV or TLV
-            tlv = ((StackGtpp)StackFactory.getStack(StackFactory.PROTOCOL_GTPP)).getDictionary().getTLVFromTag(tag);
+            tlv = dictionary.getTLVFromTag(tag);
 
             if(!tlv.isFixedLength()) {
                 tlv.setLength(new Integer16Array(array.subArray(index + headerSize, 2)).getValue());

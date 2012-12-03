@@ -45,6 +45,7 @@ public class GtpHeaderV1 extends Header {
 	//Header composers 
 	private String name;
 	private int version;
+    private String versionName;	
 	private int protocolType;
 	private int extensionHeaderFlag;
 	private int sequenceNumberFlag;
@@ -58,7 +59,8 @@ public class GtpHeaderV1 extends Header {
     
     public GtpHeaderV1(DefaultArray flagArray)
     {	
-        this.version = flagArray.getBits(0,3);
+    	this();
+        this.version = flagArray.getBits(0,3);        
         this.protocolType = flagArray.getBits(3,1);
     	this.extensionHeaderFlag = flagArray.getBits(5,1);
     	this.sequenceNumberFlag = flagArray.getBits(6,1);
@@ -69,6 +71,7 @@ public class GtpHeaderV1 extends Header {
     {
     	this.protocolType = 1;
     	this.version = 1;
+    	this.versionName = "GTPV1";    	
     }
     //getSize
     public int getSize()
@@ -96,6 +99,12 @@ public class GtpHeaderV1 extends Header {
 	public void setVersion(int version) {
 		this.version = version;
 	}
+	public String getVersionName() {
+		return versionName;
+	}
+	public void setVersionName(String versionName) {
+		this.versionName = versionName;
+	}	
 	public int getProtocolType() {
 		return protocolType;
 	}
@@ -233,6 +242,7 @@ public class GtpHeaderV1 extends Header {
 
         clone.setName(getName());
         clone.setVersion(version);
+        clone.setVersionName(versionName);               
         clone.setProtocolType(protocolType);
         clone.setExtensionHeaderFlag(extensionHeaderFlag);
         clone.setSequenceNumberFlag(sequenceNumberFlag); 

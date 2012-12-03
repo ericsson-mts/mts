@@ -51,6 +51,7 @@ public abstract class Header {
 	public abstract String getName();
 	public abstract void setLength(int length); 
 	public abstract int getSequenceNumber(); 
+	public abstract String getVersionName();
 	
 }
 
