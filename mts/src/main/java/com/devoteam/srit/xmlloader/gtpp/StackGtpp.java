@@ -44,6 +44,7 @@ import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
 import com.devoteam.srit.xmlloader.gtpp.data.Tag;
 import com.devoteam.srit.xmlloader.gtpp.data.Header;
 
+import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.Integer16Array;
@@ -322,66 +323,57 @@ public class StackGtpp extends Stack
     @Override
     public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
     {
-        
-        byte[] buf = null;
-        int nbCharRead = 0;
-        int msgLength = 0;
-        SupArray msgArray = new SupArray();
-        DefaultArray headerArray = null;
-        Header gtpHeader = null; 
-        synchronized (inputStream)
-        {
-            //read the header
-        	byte[] flag = new byte[1];
-        	nbCharRead= inputStream.read(flag, 0, 1);
-        	if(nbCharRead == -1){
-        		throw new Exception("End of stream detected");
-        	}
-        	else if (nbCharRead < 1) {
-                throw new Exception("Not enough char read");
-            }
-            DefaultArray flagArray = new DefaultArray(flag);
-            int protocolType = flagArray.getBits(3, 1);
-            int version = flagArray.getBits(0, 3);
-            
-            if(version == 1)
-            {
-            	gtpHeader = new GtpHeaderV1(flagArray);
-            }
-            else if(version == 0)
-            {
-            	gtpHeader = new GtpHeaderPrime(flagArray); 
-            }
-            else if(version == 2)
-            {
-            	gtpHeader = new GtpHeaderV2(flagArray); 
-            }
-            
-            // get the right dictionary in from of the version
-            GtppDictionary dictionary = getDictionary(gtpHeader.getVersionName());
-
-            gtpHeader.getSize(); 
-            gtpHeader.parseArray(inputStream, dictionary); 
-            
-            headerArray = new DefaultArray(flag);
-            msgLength = gtpHeader.getLength(); 
- 
-            if(msgLength != 0)
-            {
-                buf = new byte[msgLength];
-                //read the staying message's data
-                nbCharRead = inputStream.read(buf, 0, msgLength);
-                if(nbCharRead == -1)
-                    throw new Exception("End of stream detected");
-                else if(nbCharRead < msgLength)
-                    throw new Exception("Not enough char read");
-                msgArray.addLast(new DefaultArray(buf));
-            }
-            msgArray.addFirst(gtpHeader.getArray());
-        }
-        //get type from message to get message from dictionary
         GtppMessage msg = new GtppMessage();
-        msg.setHeader(gtpHeader); 
+        
+        byte[] flag = new byte[1];
+        //read the header
+    	int nbCharRead= inputStream.read(flag, 0, 1);
+    	if(nbCharRead == -1){
+    		throw new Exception("End of stream detected");
+    	}
+    	else if (nbCharRead < 1) {
+            throw new Exception("Not enough char read");
+        }
+        
+        DefaultArray flagArray = new DefaultArray(flag);
+        // int protocolType = flagArray.getBits(3, 1);
+        int version = flagArray.getBits(0, 3);
+        
+        Header gtpHeader = null;
+        if(version == 1)
+        {
+        	gtpHeader = new GtpHeaderV1(flagArray);
+        }
+        else if(version == 0)
+        {
+        	gtpHeader = new GtpHeaderPrime(flagArray); 
+        }
+        else if(version == 2)
+        {
+        	gtpHeader = new GtpHeaderV2(flagArray); 
+        }
+        
+        // get the right dictionary in from of the version
+        GtppDictionary dictionary = getDictionary(gtpHeader.getVersionName());
+
+        gtpHeader.getSize(); 
+        gtpHeader.parseArray(inputStream, dictionary); 
+        msg.setHeader(gtpHeader);
+        
+        int msgLength = gtpHeader.getLength(); 
+        // if(msgLength != 0)
+        {
+            byte[] buf = null;
+            buf = new byte[msgLength];
+            //read the staying message's data
+            nbCharRead = inputStream.read(buf, 0, msgLength);
+            if(nbCharRead == -1)
+                throw new Exception("End of stream detected");
+            else if(nbCharRead < msgLength)
+                throw new Exception("Not enough char read");
+			Array msgArrayTag = new DefaultArray(buf);
+			msg.parseArray(msgArrayTag, dictionary);
+        }
         
         return new MsgGtpp(msg);
     }
