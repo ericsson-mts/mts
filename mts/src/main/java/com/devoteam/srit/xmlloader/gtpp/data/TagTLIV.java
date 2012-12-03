@@ -40,44 +40,76 @@ import org.dom4j.Element;
  *
  * @author Benjamin Bouvier
  */
-public abstract class Tag extends TLV
-{
-    private GtppAttribute att = new GtppAttribute();
-    private boolean fixedLength = false;
-
-	// public Tag clone(){ return null; };
-	public abstract Array getArray() throws Exception; 
-    public abstract int parseArray(Array array, int index, GtppDictionary dictionary) throws Exception;
-    public abstract Tag clone();
-	// public abstract void parseXml(Element header, GtppDictionary dictionary) throws Exception;
-	// public String toString() {return null;}; 
-    
-    public Tag()
+public class TagTLIV extends Tag
+{    
+    public TagTLIV()
     {}
 
-    /*useful to override this method to override existing tlv with the same name or tag in a message*/
     @Override
-    public boolean equals(Object tlv) {
-        if((getName().equals(((Tag)tlv).getName())) || (getTag() == ((Tag)tlv).getTag()))
-            return true;
+    public Array getArray() throws Exception
+    {
+        SupArray array = new SupArray();
+        if(getValueQuality())
+        {
+            array.addFirst(new Integer08Array(getTag()));
+            if(!isFixedLength())
+                array.addLast(new Integer16Array(getLength()));
+
+            if(getFormat().equals("int"))
+            {
+                if(getLength() == 1)
+                    array.addLast(new Integer08Array((Integer)getValue()));
+                else if(getLength() == 2)
+                    array.addLast(new Integer16Array((Integer)getValue()));
+                else if(getLength() == 4)
+                    array.addLast(new Integer32Array((Integer)getValue()));
+                else if(getLength() == 8)
+                    array.addLast(new Integer64Array((Integer)getValue()));                
+            }
+            else if(getFormat().equals("list"))
+            {
+                if(((LinkedList)getValue()).size() > 0)//search in attribute list
+                {
+                    for(int i = 0; i < ((LinkedList)getValue()).size(); i++)
+                    {
+                        Array ar = ((GtppAttribute)((LinkedList)getValue()).get(i)).getArray();
+                        if(ar != null)
+                            array.addLast(ar);
+                    }
+                }
+            }
+            else//same for ip format
+                array.addLast(new DefaultArray((byte[])getValue()));
+        }
+        return array;
+    }
+
+    @Override
+    public int parseArray(Array array, int index, GtppDictionary dictionary) throws Exception
+    {
+        if(!isFixedLength()) {
+            setLength(new Integer16Array(array.subArray(index, 2)).getValue());
+            index += 2;
+        }
+        //then get value or length
+        Array value = array.subArray(index, getLength());
+        index += getLength();
+        if(getFormat().equals("int"))
+        {
+            if(getLength() == 1)
+                setValue(new Integer08Array(value).getValue());
+            else if (getLength() == 2)
+                setValue(new Integer16Array(value).getValue());
+        }
+        else if(getFormat().equals("list"))
+        {
+            parseLinkedList(value, this, 0);
+        }
         else
-            return false;
-    }
-
-    protected GtppAttribute getAtt() {
-        return att;
-    }
-
-    protected void setAtt(GtppAttribute att) {
-        this.att = att;
-    }
-
-    public boolean isFixedLength() {
-        return fixedLength;
-    }
-
-    public void setFixedLength(boolean fixedLength) {
-        this.fixedLength = fixedLength;
+        {
+            setValue(value.getBytes());
+        }
+        return index;
     }
     
     private int parseLinkedList(Array valueToDecode, Attribute att, int index) throws Exception
@@ -142,11 +174,10 @@ public abstract class Tag extends TLV
         return index;
     }
 
-    /*
     @Override
      public Tag clone()
     {
-        Tag clone = new Tag();
+        Tag clone = new TagTLIV();
         clone.setAtt(new GtppAttribute());
 
         clone.setLength(getLength());
@@ -174,7 +205,7 @@ public abstract class Tag extends TLV
         }
         return clone;
     }
-    
+  
     private void cloneLinkedList(LinkedList list, LinkedList newList) throws CloneNotSupportedException
     {
         for(int i = 0; i < list.size(); i++)
@@ -188,7 +219,6 @@ public abstract class Tag extends TLV
                 newList.add(((GtppAttribute)list.get(i)).clone());
         }
     }
-    */
 
     @Override
     public String toString()
@@ -222,106 +252,6 @@ public abstract class Tag extends TLV
             str += "\r\n";
         }
         return str;
-    }
-
-    @Override
-    public void setValue(Object value) throws Exception {
-        att.setValue(value);
-    }
-
-    @Override
-    public Object getValue() {
-        return att.getValue();
-    }
-
-    @Override
-    public boolean getValueQuality() {
-        return att.getValueQuality();
-    }
-
-    @Override
-    public void setValueQuality(boolean quality) {
-        att.setValueQuality(quality);
-    }
-
-    @Override
-    public String getFormat() {
-        return att.getFormat();
-    }
-
-    @Override
-    public void setFormat(String format) {
-        att.setFormat(format);
-    }
-
-    @Override
-    public String getName() {
-        return att.getName();
-    }
-
-    @Override
-    public void setName(String name) {
-        att.setName(name);
-    }
-
-    @Override
-    public int getLength() {
-        return att.getLength();
-    }
-
-    @Override
-    public void setLength(int length) {
-        att.setLength(length);
-    }
-
-    @Override
-    public int getSizeMin() {
-        return att.getSizeMin();
-    }
-
-    @Override
-    public void setSizeMin(int sizeMin) {
-        att.setSizeMin(sizeMin);
-    }
-
-    @Override
-    public int getSizeMax() {
-        return att.getSizeMax();
-    }
-
-    @Override
-    public void setSizeMax(int sizeMax) {
-        att.setSizeMax(sizeMax);
-    }
-
-    @Override
-    public String getOccurence() {
-        return att.getOccurence();
-    }
-
-    @Override
-    public void setOccurence(String occurence) {
-        att.setOccurence(occurence);
-    }
-
-    @Override
-    public String getOccurenceAttribute() {
-        return att.getOccurenceAttribute();
-    }
-
-    @Override
-    public void setOccurenceAttribute(String value) {
-        att.setOccurenceAttribute(value);
-    }
-
-    @Override
-    public boolean isMandatory() {
-        return att.isMandatory();
-    }
-
-    @Override
-    public void setMandatory(boolean mandatory) {
-        att.setMandatory(mandatory);
     }
 
 }
