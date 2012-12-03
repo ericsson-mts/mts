@@ -7,22 +7,22 @@
     <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
 
     <receiveMessageGTP name="echo request">
-        <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
 
     <sendMessageGTP name="echo Response" channel="[channel]">
-        <headerV2 name="echoResponse" sequenceNumber="[seqNum]"  nPduNumber="2" nextExtensionType="0"/>
+        <headerV2 name="echoResponse" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "111" sequenceNumber="[seqNum]"/>
         <tlv name="recovery" value="23"/>
     </sendMessageGTP>
 
     <receiveMessageGTP name="echo request">
-        <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
 
     <sendMessageGTP name="versionNotSupported" channel="[channel]">
-        <headerV2 name="versionNotSupported" sequenceNumber="[seqNum]" nPduNumber="2" nextExtensionType="0"/>
+        <headerV2 name="versionNotSupported" piggyFlag = "0" teidFlag = "0" sequenceNumber="[seqNum]"/>    
     </sendMessageGTP>
 
     <finally>
