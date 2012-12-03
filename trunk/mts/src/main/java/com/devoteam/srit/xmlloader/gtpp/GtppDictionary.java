@@ -28,6 +28,8 @@ import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderPrime;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppAttribute;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
 import com.devoteam.srit.xmlloader.gtpp.data.Tag;
+import com.devoteam.srit.xmlloader.gtpp.data.TagTLIV;
+import com.devoteam.srit.xmlloader.gtpp.data.TagTLV;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -113,7 +115,7 @@ public class GtppDictionary
         else
         {
             //create a default message for unknown name
-            tlv = new Tag();
+            tlv = new TagTLV();
             tlv.setLength(6);
             tlv.setTag(0);
             tlv.setName(name);
@@ -135,7 +137,7 @@ public class GtppDictionary
         else
         {
             //create a default message for unknown id
-            tlv = new Tag();
+            tlv = new TagTLV();
             tlv.setLength(6);
             tlv.setTag(0);
             tlv.setName("Unknown TLV");
@@ -177,11 +179,18 @@ public class GtppDictionary
 
             for (Iterator it = node.elementIterator(); it.hasNext();) {
                 Element element = (Element) it.next();
+                
                 String name = element.getName();
-
                 if(name.equalsIgnoreCase("tlv") || name.equalsIgnoreCase("tliv"))
                 {
-                    tlv = new Tag();
+                	if (name.equalsIgnoreCase("tlv"))
+                	{
+                		tlv = new TagTLV();
+                	}
+                	else if (name.equalsIgnoreCase("tliv"))
+                	{
+                		tlv = new TagTLIV();
+                	}
                     tlv.setName(element.attributeValue("name"));
                     String value = element.attributeValue("mandatory");
                     if(value != null && !value.equalsIgnoreCase("cond"))
@@ -206,8 +215,16 @@ public class GtppDictionary
         for(i = 0; i < listTLV.size(); i++)
         {
             node = (Element)listTLV.get(i);
-
-            tlv = new Tag();
+            
+            String name = node.getName();            
+            if (name.equalsIgnoreCase("tlv"))
+        	{
+        		tlv = new TagTLV();
+        	}
+        	else if (name.equalsIgnoreCase("tliv"))
+        	{
+        		tlv = new TagTLIV();
+        	}
             tlv.setName(node.attributeValue("name"));
             tlv.setTag(Integer.parseInt(node.attributeValue("tag")));
             length = node.attributeValue("length");
