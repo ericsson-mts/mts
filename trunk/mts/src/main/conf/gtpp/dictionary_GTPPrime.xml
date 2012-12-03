@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Document   : dictionnary.xml
+    Created on : 4 février 2010, 08:58
+    Author     : bbouvier
+    Description:
+-->
+
+<dictionary>
+
+    <message name="echoRequest" messageType="1">
+        <tlv name="privateExtension" mandatory="false"/>
+    </message>
+
+    <message name="echoResponse" messageType="2">
+        <tlv name="recovery" mandatory="true"/>
+        <tlv name="privateExtension" mandatory="false"/>
+    </message>
+
+    <message name="versionNotSupported" messageType="3">
+    </message>
+
+    <message name="nodeAliveRequest" messageType="4">
+        <tlv name="nodeAddress" mandatory="true"/>
+        <tlv name="privateExtension" mandatory="false"/>
+    </message>
+
+    <message name="nodeAliveResponse" messageType="5">
+        <tlv name="privateExtension" mandatory="false"/>
+    </message>
+
+    <message name="redirectionRequest" messageType="6">
+        <tlv name="cause" mandatory="true"/>
+        <tlv name="addressOfRecommandedNode" mandatory="false"/>
+        <tlv name="privateExtension" mandatory="false"/>
+    </message>
+
+    <message name="redirectionResponse" messageType="7">
+        <tlv name="cause" mandatory="true"/>
+        <tlv name="privateExtension" mandatory="false"/>
+    </message>
+	
+	<message name="errorIndication" messageType="26">
+        <tlv name="TunnelEndpointIdentifierData" mandatory="true"/>
+        <tlv name="GSNAddress" mandatory="true"/>
+        <tlv name="privateExtension" mandatory="false"/>
+    </message>
+	
+	<message name="supportedExtensionHeadersNotification" messageType="31">
+        <tlv name="extensionHeaderTypeList" mandatory="true"/>
+    </message>
+	
+    <message name="dataRecordTransferRequest" messageType="240">
+        <tlv name="packetTransferCommand" mandatory="true"/>
+        <tlv name="dataRecordPacket" mandatory="cond"/>
+        <tlv name="sequenceNumberOfReleasedPackets" mandatory="cond"/>
+        <tlv name="sequenceNumberOfCancelledDataRecords" mandatory="cond"/>
+        <tlv name="privateExtension" mandatory="false"/>
+    </message>
+
+    <message name="dataRecordTransferResponse" messageType="241">
+        <tlv name="cause" mandatory="true"/>
+        <tlv name="requestsResponded" mandatory="false"/>
+        <tlv name="privateExtension" mandatory="false"/>
+    </message>
+	
+    <tlv name="privateExtension" tag="255">
+		<attribute name="extensionIdentifier" length="2" format="int"/>
+        <attribute name="extensionValue" format="string"/>
+	</tlv>
+    <tlv name="recovery" tag="13" length="1" format="int"/><!-- when length is present this is a TV--><!-- 13 or 14 depending on spec-->
+    <tlv name="nodeAddress" tag="251" format="ip"/><!-- ip address-->
+    <tlv name="cause" tag="1" length="1" format="int"/>
+    <tlv name="addressOfRecommandedNode" tag="254" format="ip"/>
+    <tlv name="packetTransferCommand" tag="126" length="1" format="int"/><!-- 125 ou 126 => 126 dans la spec GTPP-->
+    <tlv name="dataRecordPacket" tag="252" format="list">
+        <attribute name="numberOfDataRecords" length="1" format="int"/>
+        <attribute name="dataRecordFormat" length="1" format="int"/>
+        <attribute name="dataRecordFormatVersion" length="2" format="int"/>
+        <attribute name="dataRecords" format="list">
+            <attribute name="lengthOfDataRecord" length="2" format="int"/>
+            <attribute name="dataRecord"/>
+        </attribute>
+    </tlv>
+    <tlv name="sequenceNumberOfReleasedPackets" tag="249" format="list">
+        <attribute name="sequenceNumber" length="2" format="int"/>
+    </tlv>
+    <tlv name="sequenceNumberOfCancelledDataRecords" tag="250" format="list">
+        <attribute name="sequenceNumber" length="2" format="int"/>
+    </tlv>
+    <tlv name="requestsResponded" tag="253" format="list">
+        <attribute name="sequenceNumber" length="2" format="int"/>
+    </tlv>
+    <tlv name="TunnelEndpointIdentifierData" tag="16" length="4" format="int"/>
+	<tlv name="GSNAddress" tag="133" format="string"/>
+	
+	<tlv name="extensionHeaderTypeList" tag="141" format="list"/>
+</dictionary>
