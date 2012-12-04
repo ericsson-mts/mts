@@ -6,10 +6,13 @@
     <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
 
     <receiveMessageGTP name="send tunnel endpoint identifier data">
-        <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
 
+    <test parameter="[binary]" condition="binary.equals" value="371a000c0000000000010200100000001085000441424344"/>
+    
     <finally>
         <removeListenpointGTP name="listenpoint"/>
     </finally>

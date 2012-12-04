@@ -4,10 +4,13 @@
 <scenario>
 
     <receiveMessageGTP name="receive data record transfer request">
-        <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
-
+    
+    <test parameter="[binary]" condition="binary.equals" value="0ff0002800017e10fc0023020100410010636563692065737420756e2074657374000b7365636f6e642074657374"/>
+    
     <sendMessageGTP name="send data record transfer response" channel="[channel]">
         <headerPrime type="241" sequenceNumber="[seqNum]"/>
         <tlv name="cause" value="1"/>
@@ -17,10 +20,13 @@
     </sendMessageGTP>
 
     <receiveMessageGTP name="receive data record transfer request">
-        <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
-
+    
+    <test parameter="[binary]" condition="binary.equals" value="0ff0000b00017e0af90006000200050009"/>
+    
     <sendMessageGTP name="send data record transfer response" channel="[channel]">
         <headerPrime type="241" sequenceNumber="[seqNum]"/>
         <tlv name="cause" value="2"/>
@@ -31,10 +37,13 @@
     </sendMessageGTP>
 
     <receiveMessageGTP name="receive data record transfer request">
-        <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
-
+    
+    <test parameter="[binary]" condition="binary.equals" value="0ff0000900017e10fa000400060001"/>
+    
     <sendMessageGTP name="send data record transfer response" channel="[channel]">
         <headerPrime type="241" sequenceNumber="[seqNum]"/>
         <tlv name="cause" value="3"/>
