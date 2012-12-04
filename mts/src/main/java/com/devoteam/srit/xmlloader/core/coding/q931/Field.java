@@ -39,10 +39,8 @@ public abstract class Field {
 	private String _name;
     private int _length;
     protected int _offset;
-    
-    // protected Dictionary dictionary; 
 
-    public Field(Element elemField, Dictionary dictionary) {
+    public Field(Element elemField) {
 
         _name = elemField.attributeValue("name");
         String lengthBit = elemField.attributeValue("lengthBit");
@@ -60,8 +58,6 @@ public abstract class Field {
         {
             _length=0;
         }
-
-        // this.dictionary = dictionary; 
     }
 
     public int getLength() {

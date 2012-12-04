@@ -44,7 +44,7 @@ public class Dictionary {
         
         List<Element> listElem=root.element("headerQ931").elements("field");
         for (Element element : listElem) {
-            mapHeader.put(element.attributeValue("name"), new EnumerationField(element, this));
+            mapHeader.put(element.attributeValue("name"), new EnumerationField(element));
         }
         List<Element> list=root.elements("element");
         for (Element elem : list) {
