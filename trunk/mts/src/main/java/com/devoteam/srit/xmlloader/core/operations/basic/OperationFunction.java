@@ -61,7 +61,7 @@ public class OperationFunction extends Operation {
                 // TODO : should be zero, throw some error if not
             }
 
-            importFile(file, URIRegistry.IMSLOADER_TEST_HOME);
+            importFile(file, URIRegistry.MTS_TEST_HOME);
         }
         else {
             throw new ParsingException("<function> operation should have exactly one of the two attributes: file or name");

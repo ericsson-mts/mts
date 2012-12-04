@@ -99,7 +99,7 @@ public class JFrameMasterCtrl {
                     jFileChooser.setCurrentDirectory(new File(_lastOpenedFile));
                 }
                 else {
-                    jFileChooser.setCurrentDirectory(new File(URIRegistry.IMSLOADER_BIN));
+                    jFileChooser.setCurrentDirectory(new File(URIRegistry.MTS_BIN_HOME));
                 }
                 int returnVal = jFileChooser.showOpenDialog(_view);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {

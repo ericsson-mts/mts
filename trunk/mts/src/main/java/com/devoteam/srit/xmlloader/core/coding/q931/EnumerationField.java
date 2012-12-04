@@ -41,8 +41,8 @@ public class EnumerationField extends IntegerField{
     protected LinkedHashMap<String, Integer> _hashMapEnumByName = new LinkedHashMap<String, Integer>();
 
 	
-    public EnumerationField(Element elemField, ElementInformationQ931 elem, Dictionary dictionary) {
-        super(elemField, elem, dictionary);
+    public EnumerationField(Element elemField, Dictionary dictionary) {
+        super(elemField, dictionary);
         
         List<Element> list = elemField.elements("enum");
         for (Element elemEnum : list) {

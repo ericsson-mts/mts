@@ -34,7 +34,7 @@ import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 /**
- * Generic session manipulated by IMSLoader's core.
+ * Generic session manipulated by MTS core.
  * @author fhenry
  */
 public class Sess extends GroupMsg<Msg>

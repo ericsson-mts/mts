@@ -103,7 +103,7 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
         
         if(path.length() > 0)
         {
-            URI filePathURI = URIRegistry.IMSLOADER_TEST_HOME.resolve(path.get(0).toString());
+            URI filePathURI = URIRegistry.MTS_TEST_HOME.resolve(path.get(0).toString());
 
             if(name.equals(NAME_B_WRITE) || name.equals(NAME_S_WRITE))
             {

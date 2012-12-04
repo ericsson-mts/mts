@@ -49,7 +49,7 @@ public class JListRenderer extends JLabel implements ListCellRenderer {
 
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         String val = (String) value;        
-        this.filePathInputConf = URIRegistry.IMSLOADER_TEST_HOME.resolve(val);
+        this.filePathInputConf = URIRegistry.MTS_TEST_HOME.resolve(val);
         try{
             //on verifie si le fichier est présent en local et si oui, on met la font en gras
             if (SingletonFSInterface.instance().exists(filePathInputConf)){

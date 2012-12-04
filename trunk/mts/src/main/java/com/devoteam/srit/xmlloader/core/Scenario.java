@@ -106,7 +106,7 @@ public class Scenario implements Serializable {
     private void parse(XMLDocument scenarioDocument) throws Exception {
         //String relativePath = getFilename();
 
-        //XMLDocument scenarioDocument = XMLDocumentCache.getXMLDocument(URIRegistry.IMSLOADER_TEST_HOME.resolve(relativePath), URIFactory.newURI("../conf/schemas/scenario.xsd"));
+        //XMLDocument scenarioDocument = XMLDocumentCache.getXMLDocument(URIRegistry.MTS_TEST_HOME.resolve(relativePath), URIFactory.newURI("../conf/schemas/scenario.xsd"));
 
         Element root = scenarioDocument.getDocument().getRootElement();
 

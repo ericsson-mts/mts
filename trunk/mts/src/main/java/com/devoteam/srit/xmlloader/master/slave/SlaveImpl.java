@@ -120,9 +120,9 @@ public class SlaveImpl extends UnicastRemoteObject implements SlaveIntf {
     }
 
     @Override
-    public Test openTest(URI path, URI IMSLOADER_BIN, String name, String home, HashMap<String, String> initialParametersValues, boolean force) throws RemoteException {
+    public Test openTest(URI path, URI MTS_BIN_HOME, String name, String home, HashMap<String, String> initialParametersValues, boolean force) throws RemoteException {
         try {
-            URIRegistry.IMSLOADER_BIN = IMSLOADER_BIN;
+            URIRegistry.MTS_BIN_HOME = MTS_BIN_HOME;
             _notificationMultiplexer.reset();
 
             if (null != _runner) {
@@ -154,9 +154,9 @@ public class SlaveImpl extends UnicastRemoteObject implements SlaveIntf {
 
                 test.setName(name);
 
-                // override "imsloader.resources.home"
+                // override "mts.resources.home"
                 if (null != home) {
-                    URIRegistry.IMSLOADER_RESOURCES_HOME = URIFactory.resolve(URIRegistry.IMSLOADER_TEST_HOME, home);
+                    URIRegistry.MTS_CONFIG_HOME = URIFactory.resolve(URIRegistry.MTS_TEST_HOME, home);
                 }
 
                 for (Testcase testcase : test.getChildren()) {

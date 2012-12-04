@@ -32,8 +32,8 @@ import org.dom4j.Element;
  */
 public class BooleanField extends Field {
 
-    public BooleanField(Element field, ElementInformationQ931 elem, Dictionary dictionary) {
-        super(field, elem, dictionary);
+    public BooleanField(Element field, Dictionary dictionary) {
+        super(field, dictionary);
     }
 
     @Override

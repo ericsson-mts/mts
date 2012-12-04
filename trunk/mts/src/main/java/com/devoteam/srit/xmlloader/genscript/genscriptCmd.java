@@ -54,7 +54,7 @@ public class genscriptCmd {
      */
     public static void main(String[] args) {    	
 
-        // Initialisation de IMSLoader core
+        // Initialisation de MTS core
         ExceptionHandlerSingleton.setInstance(new TextExceptionHandler());
         SingletonFSInterface.setInstance(new LocalFSInterface());
         TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());

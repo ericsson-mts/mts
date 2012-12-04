@@ -95,19 +95,19 @@ public class ElementInformationQ931 {
             {
             	String type = elemField.attributeValue("type");
 	            if (type.equalsIgnoreCase("integer")) {
-	                field = new IntegerField(elemField, this, dictionary);
+	                field = new IntegerField(elemField, dictionary);
 	
 	            } else if (type.equalsIgnoreCase("boolean")) {
 	
-	                field = new BooleanField(elemField, this, dictionary);
+	                field = new BooleanField(elemField, dictionary);
 	
 	            } else if (type.equalsIgnoreCase("enumeration")) {
-	                field = new EnumerationField(elemField, this, dictionary);
+	                field = new EnumerationField(elemField, dictionary);
 	
 	            } else if (type.equalsIgnoreCase("string")) {
-	                field = new StringField(elemField, this, dictionary);	
+	                field = new StringField(elemField, dictionary);	
 	            } else if (type.equalsIgnoreCase("binary")) {
-	                field = new BinaryField(elemField, this, dictionary);
+	                field = new BinaryField(elemField, dictionary);
 	
 	            }else
 	            {

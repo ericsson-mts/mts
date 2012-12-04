@@ -33,19 +33,19 @@ import java.net.URI;
 public class URIRegistry
 {
     /*
-     * URI that represents the current running dir. (.../IMSLoader/bin)
+     * URI that represents the current running dir. (.../MTS/bin)
      */
-    public static URI IMSLOADER_BIN = new File(System.getProperty("user.dir")).toURI();
+    public static URI MTS_BIN_HOME = new File(System.getProperty("user.dir")).toURI();
 
     /*
      * URI that represents the current opened test.
      */
-    public static URI IMSLOADER_TEST_HOME = null;
+    public static URI MTS_TEST_HOME = null;
 
     /*
      * URI that represents the current home for resources of the current test.
      * If the home is not specified in the test (home="...") then it should
-     * be equal to IMSLOADER_TST
+     * be equal to MTS_TST
      */
-    public static URI IMSLOADER_RESOURCES_HOME = IMSLOADER_BIN.resolve("../conf");
+    public static URI MTS_CONFIG_HOME = MTS_BIN_HOME.resolve("../conf");
 }

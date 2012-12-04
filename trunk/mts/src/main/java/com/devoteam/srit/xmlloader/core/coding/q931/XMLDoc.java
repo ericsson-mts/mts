@@ -81,7 +81,7 @@ public class XMLDoc implements Serializable {
      * @throws ParsingException
      */
     public void setXMLFile(URI path) throws Exception {
-        path = URIRegistry.IMSLOADER_BIN.resolve(path);
+        path = URIRegistry.MTS_BIN_HOME.resolve(path);
         if (SingletonFSInterface.instance().exists(path)) {
             this.xmlFile = path;
         } else {

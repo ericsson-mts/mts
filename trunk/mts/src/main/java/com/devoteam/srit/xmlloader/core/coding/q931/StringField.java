@@ -37,8 +37,8 @@ public class StringField extends Field {
 
     private Array array;
 
-    public StringField(Element field, ElementInformationQ931 elem, Dictionary dictionary) {
-        super(field, elem, dictionary);
+    public StringField(Element field, Dictionary dictionary) {
+        super(field, dictionary);
     }
 
     @Override
@@ -47,6 +47,7 @@ public class StringField extends Field {
 
         array = new DefaultArray(value.getBytes());
 
+        /*
         if (this.dictionary.getMapElementById().get(elemV.getId()) == null) {
 
 
@@ -54,7 +55,9 @@ public class StringField extends Field {
                 elemV.getFieldsArray().set(i + getOffset() / 8, array.get(i));
             }
         }
-        else {
+        else
+        */ 
+        {
             SupArray suparray = new SupArray();
             suparray.addLast(elemV.getFieldsArray());
             suparray.addLast(array);

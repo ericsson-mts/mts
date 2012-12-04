@@ -60,7 +60,7 @@ public class DataMaster {
     private LinkedList<DataTest> testDatas;
 
     public DataMaster(XMLDocument xmlDocument, URI path) throws Exception {
-        URIRegistry.IMSLOADER_TEST_HOME = path;
+        URIRegistry.MTS_TEST_HOME = path;
         this.xmlDocument = xmlDocument;
         this.root = xmlDocument.getDocument().getRootElement();
         this.name = root.attributeValue("name");

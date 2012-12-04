@@ -170,7 +170,7 @@ public class ControlerTest {
         try {
             _notificationSenderForDeploymentState.notifyAll(new DeploymentState(DeploymentState.STARTED));
             connect();
-            _test = _slaveReference.getSlaveIntf().openTest(_dataTest.getPath(), URIRegistry.IMSLOADER_BIN, _dataTest.getName(), _dataTest.getHome(), _dataTest.getInitialValues(), force);
+            _test = _slaveReference.getSlaveIntf().openTest(_dataTest.getPath(), URIRegistry.MTS_BIN_HOME, _dataTest.getName(), _dataTest.getHome(), _dataTest.getInitialValues(), force);
             _notificationSenderForDeploymentState.notifyAll(new DeploymentState(DeploymentState.SUCCEEDED));
             connectCache();
             resetCache();

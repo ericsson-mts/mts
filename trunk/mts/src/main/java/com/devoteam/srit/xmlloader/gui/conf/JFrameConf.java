@@ -195,7 +195,7 @@ public class JFrameConf extends javax.swing.JDialog {
             //le container n'est pas vide ie il y a des donnees, on sauvegarde
             Config.getConfigByName(currentFile).save(this.jPanelContainer, this.currentFile);
             if (this.jPanelContainer.restartNeeded()){
-                JOptionPane.showMessageDialog( this,"By changing a particular parameter," + "\n" + " you will need to restart IMSLoader in order to the parameter to be effective.", "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog( this,"By changing a particular parameter," + "\n" + " you will need to restart M.T.S. in order to the parameter to be effective.", "Warning", JOptionPane.WARNING_MESSAGE);
             }
         }
     }//GEN-LAST:event_jButtonApplyActionPerformed
@@ -316,7 +316,7 @@ public class JFrameConf extends javax.swing.JDialog {
             if (choix == JOptionPane.OK_OPTION){
                 Config.getConfigByName(currentFile).save(this.jPanelContainer, this.currentFile);
                 if (this.jPanelContainer.restartNeeded()){
-                    JOptionPane.showMessageDialog(this, "By changing a particular parameter," + "\n" + " you will need to restart IMSLoader in order to the parameter to be effective.", "Warning", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "By changing a particular parameter," + "\n" + " you will need to restart M.T.S. in order to the parameter to be effective.", "Warning", JOptionPane.WARNING_MESSAGE);
                 }
                 this.dispose();
             }
@@ -332,7 +332,7 @@ public class JFrameConf extends javax.swing.JDialog {
             if (choix == JOptionPane.OK_OPTION){
                 Config.getConfigByName(currentFile).save(this.jPanelContainer, this.currentFile);
                 if (this.jPanelContainer.restartNeeded()){
-                    JOptionPane.showMessageDialog(this, "By changing a particular parameter," + "\n" + " you will need to restart IMSLoader in order to the parameter to be effective.", "Warning", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "By changing a particular parameter," + "\n" + " you will need to restart M.T.S. in order to the parameter to be effective.", "Warning", JOptionPane.WARNING_MESSAGE);
                 }
             }
         }
@@ -358,7 +358,7 @@ public class JFrameConf extends javax.swing.JDialog {
 
     public void initJList() throws Exception{
         HashSet<String> merge = new HashSet();
-        URI filePathInputConf = URIRegistry.IMSLOADER_BIN.resolve("../conf/");
+        URI filePathInputConf = URIRegistry.MTS_BIN_HOME.resolve("../conf/");
         merge.addAll(addInJListFromDirectory(filePathInputConf));
         merge.addAll(addInJListFromConfig());
         String[] list = merge.toArray(new String[0]);

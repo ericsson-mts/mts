@@ -84,7 +84,7 @@ public class Tester
     public static String getRelease()
     {
         try{
-            return new String(SingletonFSInterface.instance().getBytes(URIRegistry.IMSLOADER_BIN.resolve("../conf/version.txt")));
+            return new String(SingletonFSInterface.instance().getBytes(URIRegistry.MTS_BIN_HOME.resolve("../conf/version.txt")));
         }
         catch(Exception e){
             return "unknown";
@@ -125,7 +125,7 @@ public class Tester
     
     public void open_openFile(URI path, EditableParameterProvider provider) throws Exception
     {
-        OperationFunction.importDir("../functions/", URIRegistry.IMSLOADER_BIN);
+        OperationFunction.importDir("../functions/", URIRegistry.MTS_BIN_HOME);
 
         this.test = new Test(Cache.getXMLDocument(path, URIFactory.newURI("../conf/schemas/test.xsd")), provider);
 
