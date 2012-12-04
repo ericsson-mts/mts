@@ -40,21 +40,21 @@ public abstract class Field {
     private int _length;
     protected int _offset;
 
-    public Field(Element elemField) {
+    public Field(Element rootXML) {
 
-        _name = elemField.attributeValue("name");
-        String lengthBit = elemField.attributeValue("lengthBit");
+        _name = rootXML.attributeValue("name");
+        String lengthBit = rootXML.attributeValue("lengthBit");
         if (lengthBit != null) {
             _length = Integer.parseInt(lengthBit);
         }
-        else if(lengthBit == null && elemField.attributeValue("value") != null){
-            _length = elemField.attributeValue("value").length() * 8;
+        else if(lengthBit == null && rootXML.attributeValue("value") != null){
+            _length = rootXML.attributeValue("value").length() * 8;
         }
-        else if((elemField.attributeValue("type")).equalsIgnoreCase("string"))
+        else if((rootXML.attributeValue("type")).equalsIgnoreCase("string"))
         {
             _length=0;
         }
-        else if((elemField.attributeValue("type")).equalsIgnoreCase("binary"))
+        else if((rootXML.attributeValue("type")).equalsIgnoreCase("binary"))
         {
             _length=0;
         }
