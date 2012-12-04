@@ -80,7 +80,7 @@ public abstract class Tag extends TLV
         this.fixedLength = fixedLength;
     }
     
-    private int parseLinkedList(Array valueToDecode, Attribute att, int index) throws Exception
+    protected int parseLinkedList(Array valueToDecode, Attribute att, int index) throws Exception
     {
         LinkedList<Object> list = (LinkedList<Object>)att.getValue();
         int lastSize = 0;
@@ -102,6 +102,10 @@ public abstract class Tag extends TLV
                             att2.setValue(new Integer08Array(valueToDecode.subArray(index, lg)).getValue());
                         else if(lg == 2)
                             att2.setValue(new Integer16Array(valueToDecode.subArray(index, lg)).getValue());
+                        else if(lg == 4)
+                            att2.setValue(new Integer32Array(valueToDecode.subArray(index, lg)).getValue());
+                        else if(lg == 8)
+                            att2.setValue(new Integer64Array(valueToDecode.subArray(index, lg)).getValue());                        
                         index += lg;
                     }
                     else if(att2.getValueQuality() || att2.getLength() == -1)//so based on the latest attribute
@@ -142,38 +146,32 @@ public abstract class Tag extends TLV
         return index;
     }
 
-    /*
-    @Override
-     public Tag clone()
-    {
-        Tag clone = new Tag();
-        clone.setAtt(new GtppAttribute());
+     protected void copyFrom(Tag from)
+     {
+        setAtt(new GtppAttribute());
 
-        clone.setLength(getLength());
-        clone.setName(getName());
-        clone.setTag(getTag());
-        clone.setFormat(getFormat());
-        clone.setSizeMin(getSizeMin());
-        clone.setSizeMax(getSizeMax());
-        clone.setMandatory(isMandatory());
-        clone.setFixedLength(isFixedLength());
+        setLength(from.getLength());
+        setName(from.getName());
+        setTag(from.getTag());
+        setFormat(from.getFormat());
+        setSizeMin(from.getSizeMin());
+        setSizeMax(from.getSizeMax());
+        setMandatory(from.isMandatory());
+        setFixedLength(from.isFixedLength());
 
-        if((getValue() != null) && (getValue() instanceof LinkedList))
+        if((from.getValue() != null) && (from.getValue() instanceof LinkedList))
         {
-            LinkedList<GtppAttribute> list = (LinkedList)getValue();
+            LinkedList<GtppAttribute> list = (LinkedList)from.getValue();
             LinkedList cloneList = new LinkedList();
             try {
-                //                for(int i = 0; i < list.size(); i++)
-                //                    cloneList.add(list.get(i).clone());
                 cloneLinkedList(list, cloneList);
-                clone.setValue(cloneList);
+                setValue(cloneList);
 
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-        return clone;
-    }
+     }
     
     private void cloneLinkedList(LinkedList list, LinkedList newList) throws CloneNotSupportedException
     {
@@ -188,8 +186,7 @@ public abstract class Tag extends TLV
                 newList.add(((GtppAttribute)list.get(i)).clone());
         }
     }
-    */
-
+    
     @Override
     public String toString()
     {
