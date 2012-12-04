@@ -133,9 +133,9 @@ public class Config
         {
             this.propertiesEnhanced.parse(SingletonFSInterface.instance().getInputStream(pathConf), true, false);
         }                
-        if(null != URIRegistry.IMSLOADER_RESOURCES_HOME)
+        if(null != URIRegistry.MTS_CONFIG_HOME)
         {
-            URI pathTest = URIRegistry.IMSLOADER_RESOURCES_HOME.resolve(name);
+            URI pathTest = URIRegistry.MTS_CONFIG_HOME.resolve(name);
 
             if(SingletonFSInterface.instance().exists(pathTest))
             {
@@ -150,8 +150,8 @@ public class Config
 
     public void build (String fileName, boolean global) throws Exception{
         String filepathConf = "../conf/" + fileName;
-        URI filePathInputConf = URIRegistry.IMSLOADER_BIN.resolve(filepathConf);        
-        URI filePathInputLoc = URIRegistry.IMSLOADER_RESOURCES_HOME.resolve(fileName);
+        URI filePathInputConf = URIRegistry.MTS_BIN_HOME.resolve(filepathConf);        
+        URI filePathInputLoc = URIRegistry.MTS_CONFIG_HOME.resolve(fileName);
         if(SingletonFSInterface.instance().exists(filePathInputConf)){
             if (!global && SingletonFSInterface.instance().exists(filePathInputLoc)){
                 this.propertiesEnhanced = this.propertiesEnhanced.parse(SingletonFSInterface.instance().getInputStream(filePathInputConf), SingletonFSInterface.instance().getInputStream(filePathInputLoc), false);
@@ -167,7 +167,7 @@ public class Config
     }
 
     public void save(JPanelContainer jPanelContainer, String fileName){
-        URI filePathLoc = URIRegistry.IMSLOADER_RESOURCES_HOME.resolve(fileName);
+        URI filePathLoc = URIRegistry.MTS_CONFIG_HOME.resolve(fileName);
         for(JPanelGeneric panel:jPanelContainer.getListOfGeneric()){
             if(panel.isModified()) panel.save();
         }
@@ -180,7 +180,7 @@ public class Config
 
     public void setParameter(String name, String value){
         String fileName = "tester.properties";
-        URI filePathLoc = URIRegistry.IMSLOADER_RESOURCES_HOME.resolve(fileName);
+        URI filePathLoc = URIRegistry.MTS_CONFIG_HOME.resolve(fileName);
         Config.getConfigByName(fileName).getPropertiesEnhanced().setLocaleValue(name, value);
         Config.getConfigByName(fileName).getPropertiesEnhanced().saveFile(filePathLoc);
     }      

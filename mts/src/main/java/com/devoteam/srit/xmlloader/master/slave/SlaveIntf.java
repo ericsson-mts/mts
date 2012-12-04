@@ -45,7 +45,7 @@ public interface SlaveIntf extends Remote {
     
     public void disconnect() throws RemoteException;
     
-    public Test openTest(URI path, URI IMSLOADER_BIN, String name, String home, HashMap<String, String> initialParametersValues, boolean force) throws RemoteException;
+    public Test openTest(URI path, URI MTS_BIN_HOME, String name, String home, HashMap<String, String> initialParametersValues, boolean force) throws RemoteException;
 
     public void startTest(Class runnerClass) throws RemoteException;
     

@@ -83,7 +83,7 @@ public class ScenarioReference implements Serializable {
     public void parse() throws Exception {
         //get scenario from cache
         _parsed = true;
-        XMLDocument document = Cache.getXMLDocument(URIRegistry.IMSLOADER_TEST_HOME.resolve(getFilename()), URIFactory.newURI("../conf/schemas/scenario.xsd"));
+        XMLDocument document = Cache.getXMLDocument(URIRegistry.MTS_TEST_HOME.resolve(getFilename()), URIFactory.newURI("../conf/schemas/scenario.xsd"));
         _scenario = Cache.getScenario(document);
         
         _scenarioRunner.getState().setFlag(RunnerState.F_OPENED, true);

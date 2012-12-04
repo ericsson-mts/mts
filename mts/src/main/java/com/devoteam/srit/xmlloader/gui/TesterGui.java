@@ -151,7 +151,7 @@ public class TesterGui {
                 jFileChooser.setSelectedFile(openFileDirectory);
             }
             else {
-                jFileChooser.setCurrentDirectory(new File(URIRegistry.IMSLOADER_BIN.resolve("..")));
+                jFileChooser.setCurrentDirectory(new File(URIRegistry.MTS_BIN_HOME.resolve("..")));
             }
 
             int ret = jFileChooser.showOpenDialog(null);
@@ -228,7 +228,7 @@ public class TesterGui {
 
     public void open_openGui() throws Exception {
         this.initialize(Tester.getInstance().getTest());
-        this.jFrame.setTitle("IMSLoader : " + tester.getTest().getXMLDocument().getXMLFile());
+        this.jFrame.setTitle("M.T.S. : " + tester.getTest().getXMLDocument().getXMLFile());
         guiMenuHelper.updateLogStorageFromConfig();
         guiMenuHelper.updateLogLevelFromConfig();
         guiMenuHelper.updateMenuStatesFile(true);
@@ -432,7 +432,7 @@ public class TesterGui {
             jFileChooser.setSelectedFile(openFileDirectory);
         }
         else {
-            jFileChooser.setCurrentDirectory(new File(URIRegistry.IMSLOADER_BIN.resolve("..")));
+            jFileChooser.setCurrentDirectory(new File(URIRegistry.MTS_BIN_HOME.resolve("..")));
         }
 
         int ret = jFileChooser.showOpenDialog(null);

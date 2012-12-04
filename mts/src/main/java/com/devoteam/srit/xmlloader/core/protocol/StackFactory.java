@@ -293,9 +293,9 @@ public class StackFactory
             stack = getStack(PROTOCOL_RTPFLOW);
             stack = getStack(PROTOCOL_TLS);
             stack = getStack(PROTOCOL_H248);
-            // stack = getStack(PROTOCOL_PCP); // experimental : not yet integrated to IMSloader
+            // stack = getStack(PROTOCOL_PCP); // experimental : not yet integrated to MTS
             stack = getStack(PROTOCOL_MSRP);
-            // stack = getStack(PROTOCOL_GTPP); // experimental : not yet integrated to IMSloader
+            // stack = getStack(PROTOCOL_GTPP); // experimental : not yet integrated to MTS
             stack = getStack(PROTOCOL_SNMP);
             stack = getStack(PROTOCOL_MGCP);
             stack = getStack(PROTOCOL_STUN);            

@@ -86,7 +86,7 @@ public class MosParameters {
         public ParamsConfig() throws Exception {
             params = new HashMap<String, String[]>();
             paramsPT = new HashMap<String, String[]>();
-            URI uri = URIRegistry.IMSLOADER_BIN.resolve("../conf/rtpflow/mos_parameters.csv");
+            URI uri = URIRegistry.MTS_BIN_HOME.resolve("../conf/rtpflow/mos_parameters.csv");
 
             csvFile = new CSVReader("#", ";", "''");
 

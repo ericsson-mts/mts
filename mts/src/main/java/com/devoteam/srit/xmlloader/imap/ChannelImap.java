@@ -147,7 +147,7 @@ public class ChannelImap extends Channel
         if(result && isServer())
         {
             //send welcome message
-            MsgImap msg = new MsgImap("* OK Welcome to IMSLoader", this);
+            MsgImap msg = new MsgImap("* OK Welcome to M.T.S. (Multiprotocol Test Suite)", this);
             this.sendMessage(msg);
         }
         return result;

@@ -146,7 +146,7 @@ public class HashMapFileSystem implements FSInterface
     {
         if(!uri.isAbsolute())
         {
-            uri = URIRegistry.IMSLOADER_BIN.resolve(uri);
+            uri = URIRegistry.MTS_BIN_HOME.resolve(uri);
         }
         return uri;
     }

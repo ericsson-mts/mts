@@ -82,7 +82,7 @@ public class XMLDocument implements Serializable
      */
     public void setXMLSchema(URI path) throws Exception
     {
-        path = URIRegistry.IMSLOADER_BIN.resolve(path);
+        path = URIRegistry.MTS_BIN_HOME.resolve(path);
         if(SingletonFSInterface.instance().exists(path))
         {
             this.schemaFile = path;
@@ -106,7 +106,7 @@ public class XMLDocument implements Serializable
      */
     public void setXMLFile(URI path) throws Exception
     {
-        path = URIRegistry.IMSLOADER_BIN.resolve(path);
+        path = URIRegistry.MTS_BIN_HOME.resolve(path);
         if(SingletonFSInterface.instance().exists(path))
         {
             this.xmlFile = path;

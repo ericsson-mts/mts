@@ -55,10 +55,10 @@ public class TestAPI {
 
 
         /*
-         * Set the IMSLoader BIN directory
+         * Set the MTS BIN directory
          */
         try {
-            // URIRegistry.IMSLOADER_BIN = new URI("file:/D:/ws_gpasquiers_imsloader/gpasquiers_view2/srit_tools/ngn_tools/xmlSipLoader/bin/");
+            // URIRegistry.MTS_BIN_HOME = new URI("file:/D:/ws_gpasquiers_mts/gpasquiers_view2/srit_tools/ngn_tools/xmlSipLoader/bin/");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -69,8 +69,8 @@ public class TestAPI {
          */
         try {
             HashMapFileSystem fs = new HashMapFileSystem();
-            fs.loadDirFromdisk(URIRegistry.IMSLOADER_BIN.resolve("../conf/"));
-            fs.loadDirFromdisk(URIRegistry.IMSLOADER_BIN.resolve("../tutorial/"));
+            fs.loadDirFromdisk(URIRegistry.MTS_BIN_HOME.resolve("../conf/"));
+            fs.loadDirFromdisk(URIRegistry.MTS_BIN_HOME.resolve("../tutorial/"));
             SingletonFSInterface.setInstance(fs);
         }
         catch (Exception e) {
@@ -104,7 +104,7 @@ public class TestAPI {
                     + "</scenario>";
             fs.addFile(new URI("scenario.xml"), scenarioFile);
 
-            fs.dumpToDisk(new File("d:/imsloader virtualdisk_dump/").toURI());
+            fs.dumpToDisk(new File("d:/mts virtualdisk_dump/").toURI());
         }
         catch (Exception e) {
             e.printStackTrace();

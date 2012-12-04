@@ -54,7 +54,7 @@ public class SlaveReference {
         }
 
         // get the slave interface
-        _slaveIntf = (SlaveIntf) LocateRegistry.getRegistry(host, port).lookup("imsloader/slave");
+        _slaveIntf = (SlaveIntf) LocateRegistry.getRegistry(host, port).lookup("mts/slave");
 
         // try to initialize it
         _fsInterfaceImpl = new FSInterfaceImpl();

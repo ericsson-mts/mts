@@ -269,7 +269,7 @@ public class JFrameRTStats extends javax.swing.JFrame {
         jPanelPath = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("IMSLoader : real-time statistics");
+        setTitle("M.T.S. : real-time statistics");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);

@@ -63,7 +63,7 @@ public class TextTester {
         // Instanciate and start the tester
         this.tester = Tester.buildInstance();
 
-        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Starting IMSLoader in text mode");
+        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Starting MTS in text mode");
 
         // Opens the test file
         tester.open_reset();

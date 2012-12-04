@@ -33,8 +33,8 @@ import org.dom4j.Element;
  * @author indiaye
  */
 public class IntegerField extends Field{
-    public IntegerField(Element field, ElementInformationQ931 elem, Dictionary dictionary) {
-        super(field, elem, dictionary);
+    public IntegerField(Element field, Dictionary dictionary) {
+        super(field, dictionary);
     }
 
     @Override

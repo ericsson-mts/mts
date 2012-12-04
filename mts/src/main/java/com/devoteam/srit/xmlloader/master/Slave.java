@@ -107,7 +107,7 @@ public class Slave {
 
             // bind the stub into the registry
             Registry registry = LocateRegistry.createRegistry(port);
-            registry.rebind("imsloader/slave", slave);
+            registry.rebind("mts/slave", slave);
             new Semaphore(0).acquireUninterruptibly();
         }
         catch (Exception e) {

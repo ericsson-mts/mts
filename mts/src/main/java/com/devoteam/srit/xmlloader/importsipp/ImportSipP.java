@@ -42,7 +42,7 @@ public class ImportSipP {
 	private static final Exception Exception = null;
 	public static void main(String... args) throws DocumentException, ParserConfigurationException, SAXException, IOException {
 		
-		// Initialization of IMSLoader core
+		// Initialization of MTS core
         ExceptionHandlerSingleton.setInstance(new TextExceptionHandler());
         SingletonFSInterface.setInstance(new LocalFSInterface());
         TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());

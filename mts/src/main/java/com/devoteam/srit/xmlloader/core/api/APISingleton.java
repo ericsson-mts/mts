@@ -61,7 +61,7 @@ public class APISingleton {
     }
 
     /**
-     * Generates an IMSLoader report.
+     * Generates an MTS report.
      * This report will be written to the directory stats.REPORT_DIRECTORY setted
      * in the tester.properties conf file.
      */
@@ -77,7 +77,7 @@ public class APISingleton {
     private TestRunner testRunner;
 
     /**
-     * Class constructor. Initializes all necessary variables for IMSLoader.
+     * Class constructor. Initializes all necessary variables for MTS.
      * The FSInterface HAS TO be initialized prior to this constructor.
      */
     private APISingleton() {

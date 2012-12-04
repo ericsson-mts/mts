@@ -82,7 +82,7 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
      *  4 - create testcase objects
      */
     public Test(XMLDocument xmlDocument, EditableParameterProvider editableParameterProvider) throws Exception {
-        URIRegistry.IMSLOADER_TEST_HOME = xmlDocument.getXMLFile();
+        URIRegistry.MTS_TEST_HOME = xmlDocument.getXMLFile();
 
         // init
         _editableParameterProvider = editableParameterProvider;
@@ -101,13 +101,13 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
 
         String home = this.attributeValue("home");
         if (null == home) {
-            URIRegistry.IMSLOADER_RESOURCES_HOME = URIRegistry.IMSLOADER_TEST_HOME;
+            URIRegistry.MTS_CONFIG_HOME = URIRegistry.MTS_TEST_HOME;
         }
         else {
             if (!home.endsWith("/")) {
                 home += "/";
             }
-            URIRegistry.IMSLOADER_RESOURCES_HOME = URIRegistry.IMSLOADER_TEST_HOME.resolve(home);
+            URIRegistry.MTS_CONFIG_HOME = URIRegistry.MTS_TEST_HOME.resolve(home);
         }
 
         // 2 - update the editable parameters values
