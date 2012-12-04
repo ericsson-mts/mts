@@ -40,10 +40,10 @@ import org.dom4j.Element;
  *
  * @author Benjamin Bouvier
  */
-public class TagTLV extends Tag
+public class TagTV extends Tag
 {
     
-    public TagTLV()
+    public TagTV()
     {}
 
     @Override
@@ -53,9 +53,7 @@ public class TagTLV extends Tag
         if(getValueQuality())
         {
             array.addFirst(new Integer08Array(getTag()));
-            if(!isFixedLength())
-                array.addLast(new Integer16Array(getLength()));
-
+            
             if(getFormat().equals("int"))
             {
                 if(getLength() == 1)
@@ -88,10 +86,6 @@ public class TagTLV extends Tag
     @Override
     public int parseArray(Array array, int index, GtppDictionary dictionary) throws Exception
     {
-        if(!isFixedLength()) {
-            setLength(new Integer16Array(array.subArray(index, 2)).getValue());
-            index += 2;
-        }
         //then get value or length
         Array value = array.subArray(index, getLength());
         index += getLength();

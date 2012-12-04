@@ -116,8 +116,9 @@
                     <xs:element name="headerPrime" type="headerGTPPrimeType" minOccurs="0" maxOccurs="1"/>
                     <xs:element name="headerV1"  	 type="headerGTPV1Type"    minOccurs="0" maxOccurs="1"/>
                     <xs:element name="headerV2"  	 type="headerGTPV2Type"    minOccurs="0" maxOccurs="1"/>
-                    <xs:element name="tlv"         type="tlvGTPType"         minOccurs="0" maxOccurs="unbounded" />
-                    <xs:element name="tliv"        type="tlvGTPType"         minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="tv"         type="tagGTPType"         minOccurs="0" maxOccurs="unbounded" />                    
+                    <xs:element name="tlv"         type="tagGTPType"         minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="tliv"        type="tagGTPType"         minOccurs="0" maxOccurs="unbounded" />
                 </xs:sequence>
 				<xs:attribute name="channel" type="xs:string" use="optional">
 					<xs:annotation>
@@ -270,7 +271,7 @@
     </xs:complexType>
 
 <!--                                                                                     tlv -->
-    <xs:complexType name="tlvGTPType">
+    <xs:complexType name="tagGTPType">
         <xs:sequence>
             <xs:element name="attribute"  	  type="attributeGTPType"  minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>

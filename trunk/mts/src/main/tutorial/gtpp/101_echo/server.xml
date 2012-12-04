@@ -12,11 +12,11 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
 
-    <!--test parameter="[binary]" condition="binary.equals" value="371a000c0000000000010200100000001085000441424344"/-->
+    <test parameter="[binary]" condition="binary.equals" value="480100000000006f00000100"/>
     
     <sendMessageGTP name="echo Response" channel="[channel]">
         <headerV2 name="echoResponse" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "111" sequenceNumber="[seqNum]"/>
-        <tliv name="recovery" value="23"/>
+        <tliv name="Recovery" value="23"/>
     </sendMessageGTP>
 
     <receiveMessageGTP name="echo request">
@@ -25,7 +25,7 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
 
-    <!--test parameter="[binary]" condition="binary.equals" value="371a000c0000000000010200100000001085000441424344"/-->
+    <test parameter="[binary]" condition="binary.equals" value="4001000000000200"/>
     
     <sendMessageGTP name="versionNotSupported" channel="[channel]">
         <headerV2 name="versionNotSupported" piggyFlag = "0" teidFlag = "0" sequenceNumber="[seqNum]"/>    

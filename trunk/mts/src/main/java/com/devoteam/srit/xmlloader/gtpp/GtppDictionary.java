@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
 import com.devoteam.srit.xmlloader.gtpp.data.Tag;
 import com.devoteam.srit.xmlloader.gtpp.data.TagTLIV;
 import com.devoteam.srit.xmlloader.gtpp.data.TagTLV;
+import com.devoteam.srit.xmlloader.gtpp.data.TagTV;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -181,16 +182,21 @@ public class GtppDictionary
                 Element element = (Element) it.next();
                 
                 String name = element.getName();
-                if(name.equalsIgnoreCase("tlv") || name.equalsIgnoreCase("tliv"))
+                if(name.equalsIgnoreCase("tv") || name.equalsIgnoreCase("tlv") || name.equalsIgnoreCase("tliv"))
                 {
-                	if (name.equalsIgnoreCase("tlv"))
+                	if (name.equalsIgnoreCase("tv"))
                 	{
-                		tlv = new TagTLV();
+                		tlv = new TagTV();
+                	}
+                	else if (name.equalsIgnoreCase("tlv"))
+                	{
+                		tlv = new TagTLIV();
                 	}
                 	else if (name.equalsIgnoreCase("tliv"))
                 	{
                 		tlv = new TagTLIV();
                 	}
+                	
                     tlv.setName(element.attributeValue("name"));
                     String value = element.attributeValue("mandatory");
                     if(value != null && !value.equalsIgnoreCase("cond"))
@@ -211,13 +217,17 @@ public class GtppDictionary
         }
 
         //parsing des TLV
-        List listTLV = document.selectNodes("/dictionary/tlv | /dictionary/tliv");
+        List listTLV = document.selectNodes("/dictionary/tv | /dictionary/tlv | /dictionary/tliv");
         for(i = 0; i < listTLV.size(); i++)
         {
             node = (Element)listTLV.get(i);
             
             String name = node.getName();            
-            if (name.equalsIgnoreCase("tlv"))
+        	if (name.equalsIgnoreCase("tv"))
+        	{
+        		tlv = new TagTV();
+        	}
+        	else if (name.equalsIgnoreCase("tlv"))
         	{
         		tlv = new TagTLV();
         	}
@@ -248,39 +258,6 @@ public class GtppDictionary
             tlvTagToNameList.put(tlv.getTag(), tlv.getName());
             tlvNameToTagList.put(tlv.getName(), tlv.getTag());
         }
-
-        /*
-        listTLV = document.selectNodes("/dictionary/tliv");
-        for(i = 0; i < listTLV.size(); i++)
-        {
-            node = (Element)listTLV.get(i);
-
-            tlv = new Tag();
-            tlv.setName(node.attributeValue("name"));
-            tlv.setTag(Integer.parseInt(node.attributeValue("tag")));
-            length = node.attributeValue("length");
-            if(length != null)
-            {
-                tlv.setLength(Integer.parseInt(length));
-                tlv.setFixedLength(true);
-            }
-            format = node.attributeValue("format");
-            if(format != null)
-            {
-                tlv.setFormat(format);
-                if(format.equals("list"))
-                {
-                    tlv.setValue(new LinkedList<GtppAttribute>());
-                    parseAtt((Attribute)tlv, node);
-                }
-            }
-            
-            tlvList.put(tlv.getName(), tlv);
-            tlvTagToNameList.put(tlv.getTag(), tlv.getName());
-            tlvNameToTagList.put(tlv.getName(), tlv.getTag());
-        }
-        */
-        
     }
 
     private void parseAtt(Attribute att, Element node) throws Exception
