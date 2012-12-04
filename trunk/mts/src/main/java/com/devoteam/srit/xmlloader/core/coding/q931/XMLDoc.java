@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
 import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Serializable;
@@ -39,6 +40,7 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.validation.SchemaFactory;
+
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 import org.dom4j.tree.DefaultDocument;
@@ -50,6 +52,8 @@ import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+
 /**
  *
  * @author indiaye

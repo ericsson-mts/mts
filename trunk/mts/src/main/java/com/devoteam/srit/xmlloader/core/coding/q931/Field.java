@@ -26,7 +26,9 @@ package com.devoteam.srit.xmlloader.core.coding.q931;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.maps.LinkedHashMap;
+
 import org.dom4j.Element;
+
 
 /**
  *
@@ -39,8 +41,6 @@ public abstract class Field {
     protected int _offset;
     
     protected Dictionary dictionary; 
-    
-    protected ElementInformationQ931 _elem;
 
     public Field(Element elemField, ElementInformationQ931 elem, Dictionary dictionary) {
 
@@ -61,7 +61,6 @@ public abstract class Field {
             _length=0;
         }
 
-        _elem = elem;
         this.dictionary = dictionary; 
     }
 
