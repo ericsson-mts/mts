@@ -4,9 +4,12 @@
 <scenario>
 
     <receiveMessageGTP name="receive redirection request">
-        <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
+    
+    <test parameter="[binary]" condition="binary.equals" value="0f06000900010109fe0004ac1015cf"/>
 
     <sendMessageGTP name="send redirection response" channel="[channel]">
         <headerPrime type="7" sequenceNumber="[seqNum]"/>

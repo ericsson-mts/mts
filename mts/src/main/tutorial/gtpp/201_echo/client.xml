@@ -13,6 +13,9 @@
     </sendMessageGTP>
 
     <receiveMessageGTP name="echoResponse">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
 
     <sendMessageGTP name="echo Request" channel="[connection]">
@@ -20,6 +23,9 @@
     </sendMessageGTP>
 
     <receiveMessageGTP name="version not supported">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
 
     <finally>

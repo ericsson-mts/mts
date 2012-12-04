@@ -6,9 +6,12 @@
     <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
 
     <receiveMessageGTP name="echo request">
-        <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
     </receiveMessageGTP>
+    
+    <test parameter="[binary]" condition="binary.equals" value="0f0100000001"/>
 
     <sendMessageGTP name="echo Response" channel="[channel]">
         <headerPrime name="echoResponse" sequenceNumber="[seqNum]"/>
@@ -16,10 +19,13 @@
     </sendMessageGTP>
 
     <receiveMessageGTP name="echo request">
-        <parameter name="channel" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
     </receiveMessageGTP>
 
+    <test parameter="[binary]" condition="binary.equals" value="0f0100000002"/>
+    
     <sendMessageGTP name="versionNotSupported" channel="[channel]">
         <headerPrime name="versionNotSupported" sequenceNumber="[seqNum]"/>
     </sendMessageGTP>
