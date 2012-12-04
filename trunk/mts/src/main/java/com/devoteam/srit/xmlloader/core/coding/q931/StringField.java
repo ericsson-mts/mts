@@ -37,8 +37,8 @@ public class StringField extends Field {
 
     private Array array;
 
-    public StringField(Element field, Dictionary dictionary) {
-        super(field, dictionary);
+    public StringField(Element field) {
+        super(field);
     }
 
     @Override

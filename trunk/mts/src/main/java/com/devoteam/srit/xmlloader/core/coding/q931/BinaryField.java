@@ -37,8 +37,8 @@ import org.dom4j.Element;
  */
 public class BinaryField extends Field {
 
-    public BinaryField(Element field, Dictionary dictionary) throws Exception {
-        super(field, dictionary);
+    public BinaryField(Element field) throws Exception {
+        super(field);
         if (getLength() % 8 != 0) {
             throw new ExecutionException("Wrong length for binary field : \"" + getName() + "\"");
         }
@@ -47,24 +47,11 @@ public class BinaryField extends Field {
     @Override
     public void setValue(String value, int offset, ElementInformationQ931V elemV) {
     	_offset = offset;    	
+        SupArray suparray = new SupArray();
+        suparray.addLast(elemV.getFieldsArray());
         Array array = Array.fromHexString(value);
-        
-        /*
-        if (this.dictionary.getMapElementById().get(elemV.getId()) == null) {
-
-
-            for (int i = 0; i < array.length; i++) {
-                elemV.getFieldsArray().set(i + getOffset() / 8, array.get(i));
-            }
-        }
-        else
-        */ 
-        {
-            SupArray suparray = new SupArray();
-            suparray.addLast(elemV.getFieldsArray());
-            suparray.addLast(array);
-            elemV.setFields(suparray);
-        }
+        suparray.addLast(array);
+        elemV.setFields(suparray);
     }
 
     @Override
