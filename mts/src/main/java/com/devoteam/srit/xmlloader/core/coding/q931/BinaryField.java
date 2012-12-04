@@ -37,8 +37,8 @@ import org.dom4j.Element;
  */
 public class BinaryField extends Field {
 
-    public BinaryField(Element field) throws Exception {
-        super(field);
+    public BinaryField(Element rootXML) throws Exception {
+        super(rootXML);
         if (getLength() % 8 != 0) {
             throw new ExecutionException("Wrong length for binary field : \"" + getName() + "\"");
         }

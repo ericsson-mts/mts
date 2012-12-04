@@ -33,8 +33,8 @@ import org.dom4j.Element;
  * @author indiaye
  */
 public class IntegerField extends Field{
-    public IntegerField(Element field) {
-        super(field);
+    public IntegerField(Element rootXML) {
+        super(rootXML);
     }
 
     @Override

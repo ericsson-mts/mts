@@ -32,8 +32,8 @@ import org.dom4j.Element;
  */
 public class BooleanField extends Field {
 
-    public BooleanField(Element field) {
-        super(field);
+    public BooleanField(Element rootXML) {
+        super(rootXML);
     }
 
     @Override
