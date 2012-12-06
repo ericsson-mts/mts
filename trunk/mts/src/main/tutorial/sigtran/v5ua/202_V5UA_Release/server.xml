@@ -4,10 +4,28 @@
 
 <scenario>
 
-	<receiveMessageSIGTRAN name="Wait DATA1"/>
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="01000e0800000020000100080000fa020081000800031fef000f000800000002" />
 
-	<receiveMessageSIGTRAN name="Wait DATA1"/>
+    <receiveMessageSIGTRAN name="Wait SIGTRAN"/>            
+    
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>    
 
-	<receiveMessageSIGTRAN name="Wait DATA1"/>
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="01000e0900000020000100080000fa020081000800031fef000f000800000001" />
+
+    <receiveMessageSIGTRAN name="Wait SIGTRAN"/>            
+    
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>    
+
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="01000e0a000000280003000d6162636465666768690000000081000800031fef000f000800000000" />
+
+    <receiveMessageSIGTRAN name="Wait SIGTRAN"/>            
+    
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>    
 	
 </scenario>

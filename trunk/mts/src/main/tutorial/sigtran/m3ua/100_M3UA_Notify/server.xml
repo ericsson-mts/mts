@@ -14,10 +14,6 @@
 	<!-- Message encoded value -->
 	<parameter name="[notify]" value="010000010000002c000d00080001000300110008000ce738000600080000028e0004000a4e6f746966790000" />
 
-
-
-
-
 	<receiveMessageSIGTRAN name="Wait Notify1">
 		<parameter name="[notify1]" operation="protocol.setFromMessage" value="message.binary"/>
 	</receiveMessageSIGTRAN>
@@ -41,8 +37,7 @@
 	
 		<if>
 		<condition>
-			<test parameter="[notify2]" condition="binary.contains" value="[notify]"/>
-			<test parameter="[notify]" condition="binary.contains" value="[notify2]"/>
+			<test parameter="[notify2]" condition="binary.equals" value="[notify]"/>
 		</condition>
 		<else>
 			<log level="ERROR">	Message received :	</log>
@@ -53,7 +48,4 @@
 		</else>
 	</if>
   
-
-
-
 </scenario>
