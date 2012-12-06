@@ -190,7 +190,7 @@ public class GtppDictionary
                 	}
                 	else if (name.equalsIgnoreCase("tlv"))
                 	{
-                		tlv = new TagTLIV();
+                		tlv = new TagTLV();
                 	}
                 	else if (name.equalsIgnoreCase("tliv"))
                 	{
@@ -241,7 +241,6 @@ public class GtppDictionary
             if(length != null)
             {
                 tlv.setLength(Integer.parseInt(length));
-                tlv.setFixedLength(true);
             }
             format = node.attributeValue("format");
             if(format != null)

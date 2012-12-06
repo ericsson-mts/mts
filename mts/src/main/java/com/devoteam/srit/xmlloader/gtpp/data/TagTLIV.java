@@ -54,7 +54,9 @@ public class TagTLIV extends Tag
 	}
 
 	public TagTLIV()
-    {}
+    {
+		this.format = "TLIV";
+    }
 
     @Override
     public Array getArray() throws Exception
@@ -133,40 +135,6 @@ public class TagTLIV extends Tag
         Tag clone = new TagTLIV();
         clone.copyFrom(this);
         return clone;
-    }
-
-    @Override
-    public String toString()
-    {
-        String str = new String();
-        if(isMandatory() || getValueQuality())
-        {
-            str += "TLV: " + getName() + ", tag " + getTag() + ", length " + getLength() + ", format " + getFormat();
-            
-            if(isMandatory())
-                str += ", mandatory";
-            
-            if(getFormat().equals("int"))
-                str += ", value " + (Integer)getValue();
-            else if(getFormat().equals("ip"))
-            {
-                try {
-                    str += ", value " + InetAddress.getByAddress((byte[]) getValue()).getHostAddress();
-                } catch (UnknownHostException ex) {
-                }
-            }
-            else if(getFormat().equals("list"))
-            {
-                str += ", value\r\n";
-                for(int i = 0; i < ((LinkedList<GtppAttribute>)getValue()).size(); i++)
-                    str += ((LinkedList<GtppAttribute>)getValue()).get(i).toString();
-            }
-            else
-                str += ", value " + new String((byte[])getValue());
-            
-            str += "\r\n";
-        }
-        return str;
     }
 
 }
