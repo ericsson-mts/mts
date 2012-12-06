@@ -20,8 +20,7 @@
 	
 	<if>
 		<condition>
-			<test parameter="[SCON1]" condition="binary.contains" value="[SCON]"/>
-			<test parameter="[SCON]" condition="binary.contains" value="[SCON1]"/>
+			<test parameter="[SCON1]" condition="binary.equals" value="[SCON]"/>
 		</condition>
 		<else>
 			<log level="ERROR">	Message received :	</log>
@@ -38,8 +37,7 @@
 	
 		<if>
 		<condition>
-			<test parameter="[SCON2]" condition="binary.contains" value="[SCON]"/>
-			<test parameter="[SCON]" condition="binary.contains" value="[SCON2]"/>
+			<test parameter="[SCON2]" condition="binary.equals" value="[SCON]"/>
 		</condition>
 		<else>
 			<log level="ERROR">	Message received :	</log>
@@ -49,8 +47,5 @@
 			<exit failed="true"/>
 		</else>
 	</if>
-	
-
-
 
 </scenario>

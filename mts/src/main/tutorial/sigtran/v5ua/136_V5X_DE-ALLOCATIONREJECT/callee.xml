@@ -3,6 +3,12 @@
 
 <scenario>
 
-    <receiveMessageSIGTRAN name="Wait SIGTRAN ALERTING"/>            
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="01000e010000002800010008ffffffff0081000800030000000e00104877f4254406866572726f72" />
+
+    <receiveMessageSIGTRAN name="Wait SIGTRAN"/>            
+    
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
       
 </scenario>

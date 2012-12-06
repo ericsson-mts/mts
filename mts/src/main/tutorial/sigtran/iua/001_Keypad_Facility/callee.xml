@@ -11,8 +11,8 @@
     	<parameter name="[lastInterfaceId]" operation="protocol.setFromMessage" value="ua.parameter.Integer_Interface_Identifier.field.Interface_Identifier.value"/>        	
     </receiveMessageSIGTRAN>    
     <test parameter="[lastCallReference]" condition="number.equals" value="[newCallReference]"/>
-    <test parameter="[lastInterfaceId]" condition="number.equals" value="[newInterfaceId]"/>    
-    
+    <test parameter="[lastInterfaceId]" condition="number.equals" value="[newInterfaceId]"/>
+        
     <sendMessageSIGTRAN name="Send SIGTRAN ALERTING" listenpoint="[listenpointCallee]" remoteHost="[Host-Caller]" remotePort="[Port-Caller]">       	
         <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">       
 	    <!-- ALERTING = b0000001 = h1 = d1-->

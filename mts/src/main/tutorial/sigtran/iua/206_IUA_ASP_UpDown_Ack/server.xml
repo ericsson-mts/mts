@@ -4,10 +4,22 @@
 
 <scenario>
 
-	<receiveMessageSIGTRAN name="Wait DATA1"/>	
+	<parameter name="[data]" value="01000304000000180004000e6162636465666768696a0000" />
+	<receiveMessageSIGTRAN name="Wait DATA1"/>
 	
-	<receiveMessageSIGTRAN name="Wait DATA1"/>	
+	<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+	<test parameter="[data1]" condition="binary.equals" value="[data]"/>
 	
-	<receiveMessageSIGTRAN name="Wait DATA1"/>	
+	<parameter name="[data]" value="01000302000000180004000e6162636465666768696a0000" />
+	<receiveMessageSIGTRAN name="Wait DATA1"/>
+	
+	<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+	<test parameter="[data1]" condition="binary.equals" value="[data]"/>
+
+	<parameter name="[data]" value="01000305000000180004000e6162636465666768696a0000" />
+	<receiveMessageSIGTRAN name="Wait DATA1"/>
+	
+	<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+	<test parameter="[data1]" condition="binary.equals" value="[data]"/>
 
 </scenario>

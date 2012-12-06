@@ -3,8 +3,11 @@
 
 <scenario>
 
-    <receiveMessageSIGTRAN name="Wait SIGTRAN ALERTING">
-      
-    </receiveMessageSIGTRAN>
+    <parameter name="[data]" value="010005010000004400010008000000020005000800030000000e002a080277f40104038090a51804c0c183c61e0280812807746578745a5a5a3401017d04918181810000" />
+
+    <receiveMessageSIGTRAN name="Wait SIGTRAN"/>            
+    
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
   
 </scenario>
