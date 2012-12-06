@@ -35,24 +35,22 @@ import org.dom4j.Element;
  */
 public class StringField extends Field {
 
-    private Array array;
-
     public StringField(Element rootXML) {
         super(rootXML);
     }
 
     @Override
-    public void setValue(String value, int offset, ElementInformationQ931V elemV) throws Exception {
+    public Array setValue(String value, int offset, Array array) throws Exception {
     	_offset = offset;
-        array = new DefaultArray(value.getBytes());
         SupArray suparray = new SupArray();
-        suparray.addLast(elemV.getFieldsArray());
         suparray.addLast(array);
-        elemV.setFields(suparray);
+        Array arrayValue = new DefaultArray(value.getBytes());
+        suparray.addLast(arrayValue);
+        return suparray;
     }
 
     @Override
-    public String getValue(ElementInformationQ931V elemV) throws Exception {
-        return new String(array.getBytes());
+    public String getValue(Array array) throws Exception {
+        return new String(array.subArray(getOffset() / 8).getBytes());
     }
 }
