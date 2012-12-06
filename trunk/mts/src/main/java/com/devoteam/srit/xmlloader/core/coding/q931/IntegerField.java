@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.core.coding.q931;
 
+import gp.utils.arrays.Array;
+
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 
 import org.dom4j.Element;
@@ -38,18 +40,22 @@ public class IntegerField extends Field{
     }
 
     @Override
-    public void setValue(String value, int offset, ElementInformationQ931V elemV) throws Exception {
+    public Array setValue(String value, int offset, Array array) throws Exception {
     	_offset = offset;
-        try{
-	    	elemV.getFieldsArray().setBits(offset, getLength(), Integer.parseInt(value));
-	    }catch(Exception e){
+        try
+        {
+	    	array.setBits(offset, getLength(), Integer.parseInt(value));
+	    }
+        catch(Exception e)
+        {
         	throw new ExecutionException("ISDN layer : The value \"" + value + "\" for the integer field : \"" + getName() + "\" is not valid.", e);            	            	
         }
+        return null;
     }
     
     @Override
-    public String getValue(ElementInformationQ931V elemV) throws Exception {       
-       return Integer.toString(elemV.getFieldsArray().getBits(getOffset(), getLength()));
+    public String getValue(Array array) throws Exception {       
+       return Integer.toString(array.getBits(getOffset(), getLength()));
     }
    
 }

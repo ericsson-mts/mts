@@ -45,18 +45,18 @@ public class BinaryField extends Field {
     }
 
     @Override
-    public void setValue(String value, int offset, ElementInformationQ931V elemV) {
+    public Array setValue(String value, int offset, Array array) {
     	_offset = offset;    	
         SupArray suparray = new SupArray();
-        suparray.addLast(elemV.getFieldsArray());
-        Array array = Array.fromHexString(value);
         suparray.addLast(array);
-        elemV.setFields(suparray);
+        Array valueArray = Array.fromHexString(value);
+        suparray.addLast(valueArray);
+        return suparray;
     }
 
     @Override
-    public String getValue(ElementInformationQ931V elemV) {
-        return Array.toHexString(elemV.getFieldsArray().subArray(getOffset() / 8, getLength() / 8));
+    public String getValue(Array array) {
+        return Array.toHexString(array.subArray(getOffset() / 8));
     }
     
 }

@@ -148,7 +148,7 @@ public class ElementInformationQ931V {
         elemString.append("\n");
         if (_elementInformation != null) {
             for (Entry<String, Field> e : _elementInformation.getHashMapFields().entrySet()) {
-                elemString.append(e.getValue().toString(this));
+                elemString.append(e.getValue().toString(this.getFieldsArray()));
             }
         }
         elemString.append("</element>");
@@ -169,7 +169,7 @@ public class ElementInformationQ931V {
         	Field field = getField(params[4]);
         	if (field != null)
         	{	
-        		var.add(field.getValue(this));
+        		var.add(field.getValue(this.getFieldsArray()));
         	}
         }
         else

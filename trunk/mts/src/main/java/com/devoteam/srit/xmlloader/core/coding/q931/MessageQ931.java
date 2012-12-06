@@ -87,14 +87,22 @@ public class MessageQ931 {
             }
             //boucle pour setter tous les field de elemV
             int offset = 0;
-            for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
+            for (Iterator<Element> it = listField.iterator(); it.hasNext();) 
+            {
                 Element element1 = it.next();
                 Field field = elem.getHashMapFields().get(element1.attributeValue("name"));
-                if (field != null) {
-                    field.setValue(element1.attributeValue("value"), offset, elemV);
+                if (field != null) 
+                {
+                    Array result = field.setValue(element1.attributeValue("value"), offset, elemV.getFieldsArray());
+                    if (result !=null)
+                    {
+                    	elemV.setFields(result);
+                    }
+                    	
                     offset += field.getLength(); 
                 }
-                else {
+                else 
+                {
                     throw new ExecutionException("The field " + element1.attributeValue("name") + " is not found in element : " + elemV.getElementInformation().getName() + ":" + elemV.getId());
                 }
             }

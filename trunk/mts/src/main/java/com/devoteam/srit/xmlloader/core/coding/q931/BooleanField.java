@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.core.coding.q931;
 
+import gp.utils.arrays.Array;
+
 import org.dom4j.Element;
 
 
@@ -37,13 +39,14 @@ public class BooleanField extends Field {
     }
 
     @Override
-    public void setValue(String value, int offset, ElementInformationQ931V elemV) throws Exception {
+    public Array setValue(String value, int offset, Array array) throws Exception {
     	_offset = offset; 
-        elemV.getFieldsArray().setBit(getOffset(), Integer.parseInt(value));
+        array.setBit(getOffset(), Integer.parseInt(value));
+        return null;
     }
 
     @Override
-    public String getValue(ElementInformationQ931V elemV) throws Exception {
-        return Integer.toString(elemV.getFieldsArray().getBits(getOffset(), getLength()));
+    public String getValue(Array array) throws Exception {
+        return Integer.toString(array.getBits(getOffset(), getLength()));
     }
 }

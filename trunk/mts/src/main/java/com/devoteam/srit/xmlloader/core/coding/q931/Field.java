@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.core.coding.q931;
 
+import gp.utils.arrays.Array;
+
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.maps.LinkedHashMap;
@@ -75,18 +77,18 @@ public abstract class Field {
         this._length = _length;
     }
 
-    public abstract String getValue(ElementInformationQ931V elemV)throws Exception;
+    public abstract String getValue(Array array)throws Exception;
 
-    public abstract void setValue(String value, int offset, ElementInformationQ931V elemV) throws Exception;
+    public abstract Array setValue(String value, int offset, Array array) throws Exception;
     
-    public String toString(ElementInformationQ931V elemV) {
+    public String toString(Array array) {
 
         StringBuilder elemString = new StringBuilder();
         elemString.append("    <field ");
         elemString.append("name=\"" + getName() + "\" ");
         try
         {
-        	elemString.append("value=\"" + this.getValue(elemV) + "\" ");
+        	elemString.append("value=\"" + this.getValue(array) + "\" ");
         }
         catch (Exception e)
         {

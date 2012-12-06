@@ -27,6 +27,8 @@ import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.maps.LinkedHashMap;
 
+import gp.utils.arrays.Array;
+
 import java.util.List;
 import org.dom4j.Element;
 
@@ -55,8 +57,8 @@ public class EnumerationField extends IntegerField{
     }
 
     @Override
-    public String getValue(ElementInformationQ931V elemV) throws Exception {
-        String value = super.getValue(elemV);
+    public String getValue(Array array) throws Exception {
+        String value = super.getValue(array);
     	String name = _hashMapEnumByValue.get(new Integer(value));
     	String ret = "";
     	if (name != null)
@@ -68,18 +70,22 @@ public class EnumerationField extends IntegerField{
     }
 
     @Override
-    public void setValue(String value, int offset, ElementInformationQ931V elemV) throws Exception {
+    public Array setValue(String value, int offset, Array array) throws Exception {
     	_offset = offset;
-	    try{
-	    	elemV.getFieldsArray().setBits(getOffset(), getLength(), Integer.parseInt(value));
-	    }catch(Exception e){
+	    try
+	    {
+	    	array.setBits(getOffset(), getLength(), Integer.parseInt(value));
+	    }
+	    catch(Exception e)
+	    {
 	        Integer integerValue = this.getHashMapEnumByName().get(value);
 	        if (integerValue == null)
 	        {
 	        	throw new ExecutionException("The value \"" + value + "\" for the ISDN enumeration field : \"" + getName() + "\" is not present in the dictionnary.");            	            	
 	        }
-	        elemV.getFieldsArray().setBits(getOffset(), getLength(),integerValue.byteValue() & 0xff);
+	        array.setBits(getOffset(), getLength(),integerValue.byteValue() & 0xff);
 	    }
+	    return null;
     }
     
     @Override
