@@ -22,7 +22,7 @@
     <test parameter="[messageType]" condition="number.equals" value="1"/>
 
     <parameter name="[messageLength]" operation="protocol.setFromMessage" value="ua.header.messageLength"/>
-    <test parameter="[messageLength]" condition="number.equals" value="80"/>
+    <test parameter="[messageLength]" condition="number.equals" value="76"/>
 
     <parameter name="[parameterIIIname]" operation="protocol.setFromMessage" value="ua.parameter.Integer_Interface_Identifier.name"/>
     <test parameter="[parameterIIIname]" condition="string.equals" value="Integer_Interface_Identifier"/>
@@ -171,14 +171,14 @@
     <parameter name="[MRFailureReason]" operation="protocol.setFromMessage" value="isdn.element.PSTN Metering-report.field.Failure Reason"/>        
     <!--test parameter="[MRFailureReason]" condition="string.equals" value="Port blocked (FE203/204)"/-->    
 
-    <parameter name="[A]" operation="protocol.setFromMessage" value="isdn.element.PSTN Attenuation"/>            
+    <!--parameter name="[A]" operation="protocol.setFromMessage" value="isdn.element.PSTN Attenuation"/>            
     <test parameter="[A]" condition="binary.equals" value="2401FF"/>                
     <parameter name="[AExt1]" operation="protocol.setFromMessage" value="isdn.element.PSTN Attenuation.field.ext1"/>        
     <test parameter="[AExt1]" condition="number.equals" value="1"/>
     <parameter name="[AAttenuationValue]" operation="protocol.setFromMessage" value="isdn.element.PSTN Attenuation.field.Attenuation value"/>        
-    <test parameter="[AAttenuationValue]" condition="number.equals" value="127"/>       
+    <test parameter="[AAttenuationValue]" condition="number.equals" value="127"/-->       
 
-    <parameter name="[data]" value="01000e010000005000010008ffffffff0081000800030000000e00374877f4020001fdc0b0a001018a0203f6d4be03018c0401df140a101112131415161718192205f480bfefb12303e4ca812401ff00" />    	
+    <parameter name="[data]" value="01000e010000004c00010008ffffffff0081000800030000000e00344877f4020001fdc0b0a001018a0203f6d4be03018c0401df140a101112131415161718192205f480bfefb12303e4ca81" />    	
     <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
     <test parameter="[data1]" condition="binary.equals" value="[data]"/>
       
