@@ -44,7 +44,9 @@ public class TagTV extends Tag
 {
     
     public TagTV()
-    {}
+    {
+    	this.format = "TV";
+    }
 
     @Override
     public Array getArray() throws Exception
@@ -114,7 +116,7 @@ public class TagTV extends Tag
     @Override
      public Tag clone()
     {
-        Tag clone = new TagTLV();
+        Tag clone = new TagTV();
         clone.copyFrom(this);        
         return clone;
     }

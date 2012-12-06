@@ -42,8 +42,9 @@ import org.dom4j.Element;
  */
 public abstract class Tag extends TLV
 {
+	protected String format;
+	
     private GtppAttribute att = new GtppAttribute();
-    private boolean fixedLength = false;
 
 	// public Tag clone(){ return null; };
 	public abstract Array getArray() throws Exception; 
@@ -70,14 +71,6 @@ public abstract class Tag extends TLV
 
     protected void setAtt(GtppAttribute att) {
         this.att = att;
-    }
-
-    public boolean isFixedLength() {
-        return fixedLength;
-    }
-
-    public void setFixedLength(boolean fixedLength) {
-        this.fixedLength = fixedLength;
     }
     
     protected int parseLinkedList(Array valueToDecode, Attribute att, int index) throws Exception
@@ -157,7 +150,6 @@ public abstract class Tag extends TLV
         setSizeMin(from.getSizeMin());
         setSizeMax(from.getSizeMax());
         setMandatory(from.isMandatory());
-        setFixedLength(from.isFixedLength());
 
         if((from.getValue() != null) && (from.getValue() instanceof LinkedList))
         {
@@ -193,7 +185,7 @@ public abstract class Tag extends TLV
         String str = new String();
         if(isMandatory() || getValueQuality())
         {
-            str += "TLV: " + getName() + ", tag " + getTag() + ", length " + getLength() + ", format " + getFormat();
+            str += "<tag" + format + " : " + getName() + ", tag " + getTag() + ", length " + getLength() + ", format " + getFormat();
             
             if(isMandatory())
                 str += ", mandatory";
@@ -216,7 +208,7 @@ public abstract class Tag extends TLV
             else
                 str += ", value " + new String((byte[])getValue());
             
-            str += "\r\n";
+            str += "\r\n</tag>";
         }
         return str;
     }

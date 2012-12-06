@@ -173,9 +173,13 @@ public class GtppMessage
         }
         
         str += header.toString(); 
+        str +="\r\n";
         
         for(int i = 0; i < tlvs.size(); i++)
+        {
             str += tlvs.get(i).toString();
+            str += "\r\n";
+        }
         if((tlvs.size() == 0) && (data != null))
             str += "data: " + data.toString();
         return str;
