@@ -42,18 +42,26 @@ import org.dom4j.Element;
  */
 public abstract class Header {
     
-    public Header()
+    protected Dictionary dictionary; 
+
+    protected int _length;
+
+    public Header(Dictionary dictionary)
     {
+    	this.dictionary = dictionary;
     }
     
     public abstract boolean isRequest();
     public abstract String getType();
-    public abstract int getLength();
+
+    public int getLength() {
+		return _length;
+	}
     
-    public abstract void parseFromXML(Element header, Dictionary dictionary) throws ExecutionException;
+    public abstract void parseFromXML(Element header)  throws Exception;
     public abstract String toXML();
     
-    public abstract void decodeFromArray(Array data, String syntax, Dictionary dictionary);
+    public abstract void decodeFromArray(Array data, String syntax);
     public abstract Array encodeToArray();
 
     public abstract void getParameter(Parameter var, String param);

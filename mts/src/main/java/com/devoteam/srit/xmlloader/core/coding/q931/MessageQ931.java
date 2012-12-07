@@ -62,8 +62,8 @@ public class MessageQ931 {
         this.syntax = root.attributeValue("syntax");
         initDictionary(syntax);       
         
-        this.headerQ931 = new HeaderQ931();
-        this.headerQ931.parseFromXML(root.element("header"), dictionary);
+        this.headerQ931 = new HeaderQ931(dictionary);
+        this.headerQ931.parseFromXML(root.element("header"));
         
         hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementInformationQ931V>();
         List<Element> elementsInf = root.elements("element");
@@ -117,8 +117,8 @@ public class MessageQ931 {
     	this.syntax = syntax;
         initDictionary(syntax);
         
-        this.headerQ931 = new HeaderQ931();
-        this.headerQ931.decodeFromArray(data, syntax, this.dictionary);
+        this.headerQ931 = new HeaderQ931(this.dictionary);
+        this.headerQ931.decodeFromArray(data, syntax);
         
         hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementInformationQ931V>();
         int offset = headerQ931.getLength();

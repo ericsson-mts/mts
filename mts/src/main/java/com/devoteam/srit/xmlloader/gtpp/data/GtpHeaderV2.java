@@ -27,6 +27,9 @@ import java.io.InputStream;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.core.coding.q931.Dictionary;
+import com.devoteam.srit.xmlloader.core.coding.q931.EnumerationField;
+import com.devoteam.srit.xmlloader.core.coding.q931.Header;
 import com.devoteam.srit.xmlloader.gtpp.GtppDictionary;
 
 import gp.utils.arrays.Array;
@@ -53,6 +56,11 @@ public class GtpHeaderV2 extends Header {
 	private int tunnelEndpointId;
 	private int sequenceNumber;
     
+    public GtpHeaderV2(Dictionary dictionary)
+	{
+    	super(dictionary);
+	}
+    
     public GtpHeaderV2(DefaultArray flagArray)
     {	
     	this();
@@ -65,16 +73,35 @@ public class GtpHeaderV2 extends Header {
     	this.version = 2;
     	this.versionName = "GTPV2";
     }
-    //getSize
-    public int getSize()
-    {
-    	int k = 0; 
-    	if(teidFlag == 0)
-    		k = 8; 
-    	if(teidFlag == 1)
-    		k =12; 
-    	return k; 
+
+    
+    @Override
+    public boolean isRequest() {
+        if (_callReferenceArray.length == 1) {
+
+            return (_callReferenceArray.getBit(7) == 0);
+        }
+        else if (_callReferenceArray.length == 2) {
+            return (_callReferenceArray.getBit(15) == 0);
+        }
+        else {
+            return (_callReferenceArray.getBit(23) == 0);
+        }
     }
+    
+    @Override
+    public String getType() 
+    {
+	    EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message type");
+	    String name = field._hashMapEnumByValue.get(_typeArray.getValue());        
+	    return name + ":" + _typeArray.getValue();
+    }
+    
+    @Override
+    public int getLength() {
+		return _length;
+	}
+    
     //Getters and setters
     public String getName() {
 		return name;
@@ -112,12 +139,6 @@ public class GtpHeaderV2 extends Header {
 	public void setMessageType(int messageType) {
 		this.messageType = messageType;
 	}
-	public int getLength() {
-		return length;
-	}
-	public void setLength(int length) {
-		this.length = length;
-	}
 	public int getTunnelEndpointId() {
 		return tunnelEndpointId;
 	}
@@ -131,7 +152,7 @@ public class GtpHeaderV2 extends Header {
 		this.sequenceNumber = sequenceNumber;
 	}
 	
-	public Array getArray() throws Exception
+	public Array encodeToArray()
     {
         //manage header data
         SupArray supArray = new SupArray();
@@ -158,7 +179,12 @@ public class GtpHeaderV2 extends Header {
         return supArray;
     }
 	
-	public void parseArray(InputStream stream, GtppDictionary dictionary) throws Exception
+	public void decodeFromArray(Array data, String syntax, Dictionary dictionary)
+	{
+		
+	}
+	
+	public void decodeFromStream(InputStream stream, GtppDictionary dictionary) throws Exception
     {
 		byte[] header = new byte[1];
         stream.read(header, 0, 1);
@@ -189,24 +215,7 @@ public class GtpHeaderV2 extends Header {
     }
 	
 	@Override
-    public GtpHeaderV2 clone()
-    {
-    	GtpHeaderV2 clone = new GtpHeaderV2();
-
-        clone.setName(getName());
-        clone.setVersion(version);
-        clone.setVersionName(versionName);        
-        clone.setPiggyFlag(piggyFlag);
-        clone.setTeidFlag(teidFlag);
-        clone.setMessageType(messageType);
-        clone.setLength(length);
-        clone.setTunnelEndpointId(tunnelEndpointId); 
-        clone.setSequenceNumber(sequenceNumber);
-        return clone;
-    }
-	
-	@Override
-    public String toString()
+    public String toXML()
     {
         String str = "<headerV2 ";
         str += " piggyFlag=\"" + piggyFlag + "\""; 
