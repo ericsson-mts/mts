@@ -524,15 +524,15 @@ public class Utils
                     // if no length specified, we choose the minimum length to represent to integer 
                     if (length == 0)                    	
                     {
-                    	if (Math.abs(val) < 128)
+                    	if (Math.abs(val) <= 255)
                     	{
                     		length = 1;
                     	}
-                    	else if (Math.abs(val) < 32768)
+                    	else if (Math.abs(val) <= 65535)
                     	{
                     		length = 2;
                     	}
-                    	else if (Math.abs(val) < 2147516416L)
+                    	else if (Math.abs(val) <= 4294967295L)
                     	{
                     		length = 4;
                     	}             

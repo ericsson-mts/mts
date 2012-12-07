@@ -116,7 +116,8 @@
                     <xs:element name="headerPrime" type="headerGTPPrimeType" minOccurs="0" maxOccurs="1"/>
                     <xs:element name="headerV1"  	 type="headerGTPV1Type"    minOccurs="0" maxOccurs="1"/>
                     <xs:element name="headerV2"  	 type="headerGTPV2Type"    minOccurs="0" maxOccurs="1"/>
-                    <xs:element name="ei"         type="tagGTPType"         minOccurs="0" maxOccurs="unbounded" />                    
+                    <xs:element name="header "   	 type="headerGTPType"    minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="ei"          type="tagGTPType"         minOccurs="0" maxOccurs="unbounded" />                    
                 </xs:sequence>
 				<xs:attribute name="channel" type="xs:string" use="optional">
 					<xs:annotation>
@@ -243,7 +244,7 @@
 
 <!-- 																			                                    GTP V1 Header -->    
     <xs:complexType name="headerGTPV1Type">
-    	<xs:attribute name="name"            type="xs:string" />
+    	  <xs:attribute name="name"            type="xs:string" />
         <xs:attribute name="version"	type="xs:string" />
         <xs:attribute name="protocolType"	type="xs:string" />
         <xs:attribute name="extensionHeaderFlag"	type="xs:string" />
@@ -259,7 +260,7 @@
 
 <!-- 																			                                    GTP V2 Header -->    
     <xs:complexType name="headerGTPV2Type">
-    	<xs:attribute name="name"            type="xs:string" />
+    	  <xs:attribute name="name"            type="xs:string" />
         <xs:attribute name="version"	type="xs:string" />
         <xs:attribute name="piggyFlag"	type="xs:string" />
         <xs:attribute name="teidFlag"	type="xs:string" />
@@ -268,6 +269,11 @@
         <xs:attribute name="sequenceNumber" type="xs:string" />
     </xs:complexType>
 
+<xs:complexType name="headerGTPType">
+        <xs:attribute name="discriminator" type="xs:string" />
+        <xs:attribute name="layer3Address" type="xs:string" />
+        <xs:attribute name="type" type="xs:string" />
+    </xs:complexType>
 <!--                                                                                     tlv -->
     <xs:complexType name="tagGTPType">
         <xs:sequence>

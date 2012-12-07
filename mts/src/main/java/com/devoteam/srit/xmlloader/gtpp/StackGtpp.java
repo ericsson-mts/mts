@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.gtpp;
 
 import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.coding.q931.MessageQ931;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
@@ -49,6 +50,7 @@ import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.Integer16Array;
+import gp.utils.arrays.Integer32Array;
 import gp.utils.arrays.SupArray;
 
 import java.io.InputStream;
@@ -135,6 +137,7 @@ public class StackGtpp extends Stack
     @Override
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
+    	/*
         GtppMessage gtppMessage = new GtppMessage();
         Header gtpHeader = null;
 
@@ -177,8 +180,10 @@ public class StackGtpp extends Stack
         
         // TLV parsing
         parseTLVs(root, gtppMessage, dictionary);
-
-        return new MsgGtpp(gtppMessage);
+		*/
+    	root.addAttribute("syntax", "../conf/gtpp/dictionary_GTPV2.xml");
+    	MessageQ931 message = new MessageQ931(root);
+        return new MsgGtpp(message);
     }
 
     private void parseTLVs(Element root, GtppMessage msg, GtppDictionary dictionary) throws Exception
@@ -328,6 +333,7 @@ public class StackGtpp extends Stack
     @Override
     public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
     {
+    	/*
         GtppMessage msg = new GtppMessage();
         
         byte[] flag = new byte[1];
@@ -381,6 +387,58 @@ public class StackGtpp extends Stack
         }
         
         return new MsgGtpp(msg);
+        */
+    	byte[] header = new byte[4];
+        byte[] lg = new byte[4];
+        byte[] buf = null;
+        int nbCharRead = 0;
+        int msgLength = 0;
+        Integer32Array headerArray = null;
+        Integer32Array lgArray = null;
+        SupArray msgArray = new SupArray();
+
+        synchronized (inputStream) {
+            //read the header
+            nbCharRead = inputStream.read(header, 0, 4);
+            if (nbCharRead == -1) {
+                throw new Exception("End of stream detected");
+            }
+            else if (nbCharRead < 4) {
+                throw new Exception("Not enough char read");
+            }
+            headerArray = new Integer32Array(new DefaultArray(header));
+
+            //read the length
+            nbCharRead = inputStream.read(lg, 0, 4);
+            if (nbCharRead == -1) {
+                throw new Exception("End of stream detected");
+            }
+            else if (nbCharRead < 4) {
+                throw new Exception("Not enough char read");
+            }
+
+            lgArray = new Integer32Array(new DefaultArray(lg));
+            msgLength = lgArray.getValue();
+            buf = new byte[msgLength - 8];
+            //read the staying message's data
+            nbCharRead = inputStream.read(buf, 0, msgLength - 8);
+        }
+
+        if (nbCharRead == -1) {
+            throw new Exception("End of stream detected");
+        }
+        else if (nbCharRead < (msgLength - 8)) {
+            throw new Exception("Not enough char read");
+        }
+
+        msgArray.addFirst(headerArray);
+        msgArray.addLast(lgArray);
+        msgArray.addLast(new DefaultArray(buf));
+        DefaultArray array = new DefaultArray(msgArray.getBytes());
+        
+        //create the message
+    	MsgGtpp msg = new MsgGtpp(array);
+    	return msg;
     }
 
     /** Returns the Config object to access the protocol config file*/
