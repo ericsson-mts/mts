@@ -53,7 +53,7 @@ public class MessageQ931 {
 	
     private Dictionary dictionary;
     	
-    private HeaderQ931 headerQ931;
+    private Header headerQ931;
     
     private LinkedHashMap<Integer, ElementInformationQ931V> hashElementInformationQ931Vs;
     
@@ -62,7 +62,9 @@ public class MessageQ931 {
         this.syntax = root.attributeValue("syntax");
         initDictionary(syntax);       
         
-        headerQ931 = new HeaderQ931(root.element("header"), dictionary);
+        this.headerQ931 = new HeaderQ931();
+        this.headerQ931.parseFromXML(root.element("header"), dictionary);
+        
         hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementInformationQ931V>();
         List<Element> elementsInf = root.elements("element");
         ElementInformationQ931 elem = null;
@@ -115,7 +117,8 @@ public class MessageQ931 {
     	this.syntax = syntax;
         initDictionary(syntax);
         
-        headerQ931 = new HeaderQ931(data, syntax, this.dictionary);
+        this.headerQ931 = new HeaderQ931();
+        this.headerQ931.decodeFromArray(data, syntax, this.dictionary);
         
         hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementInformationQ931V>();
         int offset = headerQ931.getLength();
@@ -187,7 +190,7 @@ public class MessageQ931 {
 
     public Array getValue() {
         SupArray array = new SupArray();
-        array.addLast(headerQ931.getValue());
+        array.addLast(headerQ931.encodeToArray());
         for (Entry<Integer, ElementInformationQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
             array.addLast(entry.getValue().getArray());
         }
@@ -213,7 +216,7 @@ public class MessageQ931 {
 
     }
 
-    public HeaderQ931 getHeaderQ931() {
+    public Header getHeaderQ931() {
         return headerQ931;
     }
 
@@ -225,7 +228,7 @@ public class MessageQ931 {
     public int getLength() {
 
         int msglength = 0;
-        msglength = headerQ931.getValue().length;
+        msglength = headerQ931.encodeToArray().length;
         for (Entry<Integer, ElementInformationQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
 
             msglength += entry.getValue().getArray().length;

@@ -66,26 +66,17 @@ public class MsgH225cs extends Msg {
 
     @Override
     public String getType() throws Exception {
-        return Integer.toString(msgQ931.getHeaderQ931().getTypeArray());
+        return msgQ931.getHeaderQ931().getType();
     }
 
     @Override
     public String getResult() throws Exception {
-        return Integer.toString(msgQ931.getHeaderQ931().getTypeArray());
+        return msgQ931.getHeaderQ931().getType();
     }
 
     @Override
     public boolean isRequest() throws Exception {
-        if (msgQ931.getHeaderQ931().getCallReferenceArray().length == 1) {
-
-            return (msgQ931.getHeaderQ931().getCallReferenceArray().getBit(7) == 0);
-        }
-        else if (msgQ931.getHeaderQ931().getCallReferenceArray().length == 2) {
-            return (msgQ931.getHeaderQ931().getCallReferenceArray().getBit(15) == 0);
-        }
-        else {
-            return (msgQ931.getHeaderQ931().getCallReferenceArray().getBit(23) == 0);
-        }
+    	return msgQ931.getHeaderQ931().isRequest();
     }
 
     @Override

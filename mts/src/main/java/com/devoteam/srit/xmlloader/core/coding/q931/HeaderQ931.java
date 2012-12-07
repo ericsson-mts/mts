@@ -40,7 +40,7 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class HeaderQ931 {
+public class HeaderQ931 extends Header {
 
     private Integer08Array _discrimArray;
     private Array _callReferenceArray;
@@ -51,7 +51,35 @@ public class HeaderQ931 {
 
     private int _length;
     
-    public HeaderQ931(Element header, Dictionary dictionary) throws ExecutionException {
+    public HeaderQ931()
+    {
+    }
+    
+    public boolean isRequest() {
+        if (getCallReferenceArray().length == 1) {
+
+            return (getCallReferenceArray().getBit(7) == 0);
+        }
+        else if (getCallReferenceArray().length == 2) {
+            return (getCallReferenceArray().getBit(15) == 0);
+        }
+        else {
+            return (getCallReferenceArray().getBit(23) == 0);
+        }
+    }
+    
+    public String getType() 
+    {
+	    EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message type");
+	    String name = field._hashMapEnumByValue.get(_typeArray.getValue());        
+	    return name + ":" + _typeArray.getValue();
+    }
+    
+    public int getLength() {
+		return _length;
+	}
+    
+    public void parseFromXML(Element header, Dictionary dictionary) throws ExecutionException {
         if (header.attributeValue("type").startsWith("b")) {
             _typeArray = new Integer08Array((Utils.parseBinaryString(header.attributeValue("type")))[0]);
         } else {
@@ -81,7 +109,7 @@ public class HeaderQ931 {
         this.dictionary = dictionary; 
     }
 
-    public HeaderQ931(Array data, String syntax, Dictionary dictionary) {
+    public void decodeFromArray(Array data, String syntax, Dictionary dictionary) {
     	this.dictionary = dictionary; 
         _discrimArray = new Integer08Array(data.subArray(0, 1));
         if (syntax.contains("q931"))
@@ -103,10 +131,6 @@ public class HeaderQ931 {
         return _typeArray.getValue();
     }
 
-    public int getLength() {
-		return _length;
-	}
-
 	public Array getCallReferenceArray() {
 		return _callReferenceArray;
 	}
@@ -125,7 +149,7 @@ public class HeaderQ931 {
 		return -1;
 	}
 
-    public Array getValue() {
+    public Array encodeToArray() {
         SupArray arrheader = new SupArray();
         arrheader.addLast(_discrimArray);
         if (_callReferenceArray != null)
@@ -140,15 +164,9 @@ public class HeaderQ931 {
         arrheader.addLast(_typeArray);
         return arrheader;
     }
-
-    public String getType() {
-	    EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message type");
-	    String name = field._hashMapEnumByValue.get(_typeArray.getValue());        
-	    return name + ":" + _typeArray.getValue();
-    }
     
     @Override
-    public String toString() {
+    public String toXML() {
         StringBuilder headerString = new StringBuilder();
         headerString.append("<header");
        	headerString.append(" discriminator=\"" + Array.toHexString(_discrimArray) + "\"");
