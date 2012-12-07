@@ -192,7 +192,7 @@ public class StackGtpp extends Stack
         for(Element element:tlvs)
         {
         	String name = element.getName();
-            if (name.equalsIgnoreCase("tv") || name.equalsIgnoreCase("tlv") || name.equalsIgnoreCase("tliv"))
+            if (name.equalsIgnoreCase("ei"))
             {
 	            value = element.attributeValue("name");
 	            if(value != null)

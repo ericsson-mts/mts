@@ -42,11 +42,10 @@ import org.dom4j.Element;
  */
 public abstract class Tag extends TLV
 {
-	protected String format;
+	protected String coding;
 	
     private GtppAttribute att = new GtppAttribute();
 
-	// public Tag clone(){ return null; };
 	public abstract Array getArray() throws Exception; 
     public abstract int parseArray(Array array, int index, GtppDictionary dictionary) throws Exception;
     public abstract Tag clone();
@@ -185,7 +184,7 @@ public abstract class Tag extends TLV
         String str = new String();
         if(isMandatory() || getValueQuality())
         {
-            str += "<tag" + format + " : " + getName() + ", tag " + getTag() + ", length " + getLength() + ", format " + getFormat();
+            str += "<ei coding = \"" + coding + "\" name = \"" + getName() + "\" tag = \"" + getTag() + "\" length = \"" + getLength() +"\" format = \"" + getFormat() + "\"";
             
             if(isMandatory())
                 str += ", mandatory";

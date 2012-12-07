@@ -45,7 +45,7 @@ public class TagTLV extends Tag
     
     public TagTLV()
     {
-    	this.format = "TLV";
+    	this.coding = "TLV";
     }
 
     @Override
