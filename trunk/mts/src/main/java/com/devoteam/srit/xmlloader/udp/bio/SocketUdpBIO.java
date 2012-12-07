@@ -73,9 +73,11 @@ public class SocketUdpBIO extends Thread {
         while (!closed) {
             try {
                 datagramSocket.receive(datagramPacket);
-
+                GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Receive UDP(BIO) packet : ", new String(datagramPacket.getData()));
+                
                 Msg msg = stack.readFromDatas(datagramPacket.getData(), datagramPacket.getLength());
-
+                GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Receive UDP(BIO) message : ", msg);
+                
                 String remoteHost = "";
                 if (datagramPacket.getAddress() != null) {
                 	remoteHost = datagramPacket.getAddress().getHostAddress();
@@ -104,7 +106,7 @@ public class SocketUdpBIO extends Thread {
             }
             catch (Exception e) {
                 if(!closed){
-                    GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e, "Exception in SocketUdp", channelUdp);
+                   GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e, "Exception in SocketUdp", channelUdp);
                 }
             }
         }

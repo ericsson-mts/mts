@@ -23,8 +23,10 @@
 
 package com.devoteam.srit.xmlloader.gtpp.data;
 
+import com.devoteam.srit.xmlloader.core.coding.q931.Field;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.TLV;
+import com.devoteam.srit.xmlloader.core.utils.maps.LinkedHashMap;
 import com.devoteam.srit.xmlloader.gtpp.GtppDictionary;
 
 import gp.utils.arrays.*;
@@ -32,7 +34,9 @@ import gp.utils.arrays.*;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.dom4j.Element;
 
@@ -40,38 +44,28 @@ import org.dom4j.Element;
  *
  * @author Benjamin Bouvier
  */
-public abstract class Tag extends TLV
+public abstract class Tag
 {
 	protected String coding;
 	
-    private GtppAttribute att = new GtppAttribute();
+	private String name;
+	
+	public String getName() {
+		return name;
+	}
+
+	private int tag;
+	
+    private Map<String, Field> _hashMapFields = new HashMap<String, Field>();
 
 	public abstract Array getArray() throws Exception; 
     public abstract int parseArray(Array array, int index, GtppDictionary dictionary) throws Exception;
     public abstract Tag clone();
 	// public abstract void parseXml(Element header, GtppDictionary dictionary) throws Exception;
-	// public String toString() {return null;}; 
     
     public Tag()
     {}
 
-    /*useful to override this method to override existing tlv with the same name or tag in a message*/
-    @Override
-    public boolean equals(Object tlv) {
-        if((getName().equals(((Tag)tlv).getName())) || (getTag() == ((Tag)tlv).getTag()))
-            return true;
-        else
-            return false;
-    }
-
-    protected GtppAttribute getAtt() {
-        return att;
-    }
-
-    protected void setAtt(GtppAttribute att) {
-        this.att = att;
-    }
-    
     protected int parseLinkedList(Array valueToDecode, Attribute att, int index) throws Exception
     {
         LinkedList<Object> list = (LinkedList<Object>)att.getValue();
@@ -137,32 +131,6 @@ public abstract class Tag extends TLV
         }
         return index;
     }
-
-     protected void copyFrom(Tag from)
-     {
-        setAtt(new GtppAttribute());
-
-        setLength(from.getLength());
-        setName(from.getName());
-        setTag(from.getTag());
-        setFormat(from.getFormat());
-        setSizeMin(from.getSizeMin());
-        setSizeMax(from.getSizeMax());
-        setMandatory(from.isMandatory());
-
-        if((from.getValue() != null) && (from.getValue() instanceof LinkedList))
-        {
-            LinkedList<GtppAttribute> list = (LinkedList)from.getValue();
-            LinkedList cloneList = new LinkedList();
-            try {
-                cloneLinkedList(list, cloneList);
-                setValue(cloneList);
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-     }
     
     private void cloneLinkedList(LinkedList list, LinkedList newList) throws CloneNotSupportedException
     {
@@ -181,135 +149,12 @@ public abstract class Tag extends TLV
     @Override
     public String toString()
     {
-        String str = new String();
-        if(isMandatory() || getValueQuality())
-        {
-            str += "<ei coding = \"" + coding + "\" name = \"" + getName() + "\" tag = \"" + getTag() + "\" length = \"" + getLength() +"\" format = \"" + getFormat() + "\"";
-            
-            if(isMandatory())
-                str += ", mandatory";
-            
-            if(getFormat().equals("int"))
-                str += ", value " + (Integer)getValue();
-            else if(getFormat().equals("ip"))
-            {
-                try {
-                    str += ", value " + InetAddress.getByAddress((byte[]) getValue()).getHostAddress();
-                } catch (UnknownHostException ex) {
-                }
-            }
-            else if(getFormat().equals("list"))
-            {
-                str += ", value\r\n";
-                for(int i = 0; i < ((LinkedList<GtppAttribute>)getValue()).size(); i++)
-                    str += ((LinkedList<GtppAttribute>)getValue()).get(i).toString();
-            }
-            else
-                str += ", value " + new String((byte[])getValue());
-            
-            str += "\r\n</tag>";
-        }
+        String str = "<ei ";
+        str += "coding = \"" + coding + "\" ";
+        str += "name = \"" + this.name + "\" ";
+        str += "tag = \"" + this.tag + "\"";
+        str += "</ei>";
         return str;
-    }
-
-    @Override
-    public void setValue(Object value) throws Exception {
-        att.setValue(value);
-    }
-
-    @Override
-    public Object getValue() {
-        return att.getValue();
-    }
-
-    @Override
-    public boolean getValueQuality() {
-        return att.getValueQuality();
-    }
-
-    @Override
-    public void setValueQuality(boolean quality) {
-        att.setValueQuality(quality);
-    }
-
-    @Override
-    public String getFormat() {
-        return att.getFormat();
-    }
-
-    @Override
-    public void setFormat(String format) {
-        att.setFormat(format);
-    }
-
-    @Override
-    public String getName() {
-        return att.getName();
-    }
-
-    @Override
-    public void setName(String name) {
-        att.setName(name);
-    }
-
-    @Override
-    public int getLength() {
-        return att.getLength();
-    }
-
-    @Override
-    public void setLength(int length) {
-        att.setLength(length);
-    }
-
-    @Override
-    public int getSizeMin() {
-        return att.getSizeMin();
-    }
-
-    @Override
-    public void setSizeMin(int sizeMin) {
-        att.setSizeMin(sizeMin);
-    }
-
-    @Override
-    public int getSizeMax() {
-        return att.getSizeMax();
-    }
-
-    @Override
-    public void setSizeMax(int sizeMax) {
-        att.setSizeMax(sizeMax);
-    }
-
-    @Override
-    public String getOccurence() {
-        return att.getOccurence();
-    }
-
-    @Override
-    public void setOccurence(String occurence) {
-        att.setOccurence(occurence);
-    }
-
-    @Override
-    public String getOccurenceAttribute() {
-        return att.getOccurenceAttribute();
-    }
-
-    @Override
-    public void setOccurenceAttribute(String value) {
-        att.setOccurenceAttribute(value);
-    }
-
-    @Override
-    public boolean isMandatory() {
-        return att.isMandatory();
-    }
-
-    @Override
-    public void setMandatory(boolean mandatory) {
-        att.setMandatory(mandatory);
     }
 
 }
