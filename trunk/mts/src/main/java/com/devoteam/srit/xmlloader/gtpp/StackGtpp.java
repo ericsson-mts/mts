@@ -43,7 +43,6 @@ import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderV2;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppAttribute;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
 import com.devoteam.srit.xmlloader.gtpp.data.Tag;
-import com.devoteam.srit.xmlloader.gtpp.data.Header;
 import com.devoteam.srit.xmlloader.gtpp.data.TagTLV;
 
 import gp.utils.arrays.Array;

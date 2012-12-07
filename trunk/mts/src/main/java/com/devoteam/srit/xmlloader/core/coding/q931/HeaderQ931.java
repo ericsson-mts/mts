@@ -47,27 +47,27 @@ public class HeaderQ931 extends Header {
 
 	private Array _layer3AddressArray;
     private Integer08Array _typeArray;
-    private Dictionary dictionary; 
-
-    private int _length;
     
-    public HeaderQ931()
+    public HeaderQ931(Dictionary dictionary)
     {
+    	super(dictionary);
     }
     
+    @Override
     public boolean isRequest() {
-        if (getCallReferenceArray().length == 1) {
+        if (_callReferenceArray.length == 1) {
 
-            return (getCallReferenceArray().getBit(7) == 0);
+            return (_callReferenceArray.getBit(7) == 0);
         }
-        else if (getCallReferenceArray().length == 2) {
-            return (getCallReferenceArray().getBit(15) == 0);
+        else if (_callReferenceArray.length == 2) {
+            return (_callReferenceArray.getBit(15) == 0);
         }
         else {
-            return (getCallReferenceArray().getBit(23) == 0);
+            return (_callReferenceArray.getBit(23) == 0);
         }
     }
     
+    @Override
     public String getType() 
     {
 	    EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message type");
@@ -75,11 +75,8 @@ public class HeaderQ931 extends Header {
 	    return name + ":" + _typeArray.getValue();
     }
     
-    public int getLength() {
-		return _length;
-	}
-    
-    public void parseFromXML(Element header, Dictionary dictionary) throws ExecutionException {
+    @Override
+    public void parseFromXML(Element header) throws Exception {
         if (header.attributeValue("type").startsWith("b")) {
             _typeArray = new Integer08Array((Utils.parseBinaryString(header.attributeValue("type")))[0]);
         } else {
@@ -109,62 +106,6 @@ public class HeaderQ931 extends Header {
         this.dictionary = dictionary; 
     }
 
-    public void decodeFromArray(Array data, String syntax, Dictionary dictionary) {
-    	this.dictionary = dictionary; 
-        _discrimArray = new Integer08Array(data.subArray(0, 1));
-        if (syntax.contains("q931"))
-        {
-	        Integer08Array length = new Integer08Array(data.subArray(1, 1));
-	        _callReferenceArray = data.subArray(2, length.getValue());
-	        _typeArray = new Integer08Array(data.subArray(2 + length.getValue(), 1));
-	        _length = 3 + length.getValue();
-        }
-        if (syntax.contains("v5x"))
-        {        
-        	_layer3AddressArray = data.subArray(1, 2);
-        	_typeArray = new Integer08Array(data.subArray(3, 1));
-	        _length = 4;
-        }
-    }
-
-    public int getTypeArray() {
-        return _typeArray.getValue();
-    }
-
-	public Array getCallReferenceArray() {
-		return _callReferenceArray;
-	}
-
-	public long getCallReference() {
-		if (_callReferenceArray.length == 1)
-		{
-			Integer08Array callRef = new Integer08Array(_callReferenceArray);
-			return callRef.getValue();
-		} 
-		else if (_callReferenceArray.length == 2)
-		{
-			Integer16Array callRef = new Integer16Array(_callReferenceArray);
-			return callRef.getValue();
-		}		
-		return -1;
-	}
-
-    public Array encodeToArray() {
-        SupArray arrheader = new SupArray();
-        arrheader.addLast(_discrimArray);
-        if (_callReferenceArray != null)
-        {
-        	arrheader.addLast(new Integer08Array(_callReferenceArray.length));        
-        	arrheader.addLast(_callReferenceArray);
-        }
-        if (_layer3AddressArray != null)
-        {
-        	arrheader.addLast(_layer3AddressArray);
-        }
-        arrheader.addLast(_typeArray);
-        return arrheader;
-    }
-    
     @Override
     public String toXML() {
         StringBuilder headerString = new StringBuilder();
@@ -183,6 +124,43 @@ public class HeaderQ931 extends Header {
         return headerString.toString();
     }
 
+    @Override
+    public void decodeFromArray(Array data, String syntax) {
+    	this.dictionary = dictionary; 
+        _discrimArray = new Integer08Array(data.subArray(0, 1));
+        if (syntax.contains("q931"))
+        {
+	        Integer08Array length = new Integer08Array(data.subArray(1, 1));
+	        _callReferenceArray = data.subArray(2, length.getValue());
+	        _typeArray = new Integer08Array(data.subArray(2 + length.getValue(), 1));
+	        _length = 3 + length.getValue();
+        }
+        if (syntax.contains("v5x"))
+        {        
+        	_layer3AddressArray = data.subArray(1, 2);
+        	_typeArray = new Integer08Array(data.subArray(3, 1));
+	        _length = 4;
+        }
+    }
+
+    @Override
+    public Array encodeToArray() {
+        SupArray arrheader = new SupArray();
+        arrheader.addLast(_discrimArray);
+        if (_callReferenceArray != null)
+        {
+        	arrheader.addLast(new Integer08Array(_callReferenceArray.length));        
+        	arrheader.addLast(_callReferenceArray);
+        }
+        if (_layer3AddressArray != null)
+        {
+        	arrheader.addLast(_layer3AddressArray);
+        }
+        arrheader.addLast(_typeArray);
+        return arrheader;
+    }
+
+    @Override
     public void getParameter(Parameter var, String param) {
         if (param.equalsIgnoreCase("type")) {
             var.add(_typeArray.getValue());
@@ -203,4 +181,19 @@ public class HeaderQ931 extends Header {
             var.add(_discrimArray.getValue());
         }
     }
+    
+	public long getCallReference() {
+		if (_callReferenceArray.length == 1)
+		{
+			Integer08Array callRef = new Integer08Array(_callReferenceArray);
+			return callRef.getValue();
+		} 
+		else if (_callReferenceArray.length == 2)
+		{
+			Integer16Array callRef = new Integer16Array(_callReferenceArray);
+			return callRef.getValue();
+		}		
+		return -1;
+	}
+    
 }
