@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.gtpp;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.coding.q931.MessageQ931;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -32,6 +33,10 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
 import com.devoteam.srit.xmlloader.gtpp.data.Tag;
+import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
+import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
+import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
+
 import gp.utils.arrays.Array;
 
 /**
@@ -40,19 +45,24 @@ import gp.utils.arrays.Array;
  */
 public class MsgGtpp extends Msg
 {
-    private GtppMessage message = null;
+    // based on Q931 encryption 
+    private MessageQ931 message;
+
     private String type = null;
-//    private String typeComplete = null;
+
     private String result = null;
     
     /**
      * Creates a new instance of MsgGtpp
      */
-    public MsgGtpp(GtppMessage message) throws Exception
+    public MsgGtpp(MessageQ931 message) throws Exception
     {
         this.message = message;
     }
 
+    public MsgGtpp(Array msgArray) throws Exception {
+	    this.message = new MessageQ931(msgArray, "../conf/gtpp/dictionary_GTPV2.xml");
+    }
     /** Get a parameter from the message */
     @Override
     public Parameter getParameter(String path) throws Exception
@@ -62,7 +72,9 @@ public class MsgGtpp extends Msg
         {
             return var;
         }
-
+        var = new Parameter();
+        var.add("BIDON");
+        /*
         var = new Parameter();
         String[] params = Utils.splitPath(path);
 
@@ -127,7 +139,7 @@ public class MsgGtpp extends Msg
         {
         	Parameter.throwBadPathKeywordException(path);
         }
-
+		*/
         return var;
     }
 
@@ -154,17 +166,21 @@ public class MsgGtpp extends Msg
     /** Return true if the message is a request else return false*/
     public boolean isRequest()
     {
-        return message.getHeader().getName().contains("Request") ? true : false;
+        //return message.getHeaderQ931().getName().contains("Request") ? true : false;
+    	return true;
     }
 
     /** Get the command code of this message */
     public String getType()
     {
+    	/*
         if(type == null)
         {
-            type = message.getHeader().getName();
+            type = message.getHeaderQ931().getName();
         }
         return type;
+        */
+    	return "type";
     }
 
     /** Get the result of this answer (null if request) */
@@ -182,7 +198,7 @@ public class MsgGtpp extends Msg
     public int getLength() {
         try 
         {
-        	return message.getArray().length;
+        	return message.getValue().length;
         }
         catch (Exception ex)
         {
@@ -204,7 +220,7 @@ public class MsgGtpp extends Msg
     public byte[] getBytesData(){
         try 
         {
-            return message.getArray().getBytes();
+            return message.getValue().getBytes();
         }
         catch (Exception ex)
         {
@@ -220,6 +236,7 @@ public class MsgGtpp extends Msg
     {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(super.toShortString());
+        /*
         if(message.getLogError().length() != 0)
         {
             stringBuilder.append("<MESSAGE MALFORMED name= \"" + message.getHeader().getName() + "\"");
@@ -233,6 +250,8 @@ public class MsgGtpp extends Msg
         stringBuilder.append(" type=\"" + Integer.toHexString(message.getHeader().getMessageType()) + "\"");
         stringBuilder.append(" sequenceNumber=\"" + message.getHeader().getSequenceNumber() + "\"/>");
         return stringBuilder.toString();
+        */
+        return null;
     }
 
     /** Get the XML representation of the message; for the genscript module. */

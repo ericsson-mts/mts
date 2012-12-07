@@ -9,36 +9,127 @@
 
 <dictionary>
 
-    <message name="echoRequest" messageType="1">
-        <ei name="privateExtension" mandatory="false"/>
+    <headerQ931>
+
+        <field name="Protocol discriminator" lengthBit="8" type="enumeration">
+            <enum value="b0001000" name="Recommendation Q.931/I.451" />
+            <enum value="b0001001" name="Recommendation Q.2931" />
+        </field>
+
+        <field name="Call reference flag" lengthBit="1" type="enumeration">
+            <enum value="b0" name="Sent from the side that originates the call reference" />
+            <enum value="b1" name="Sent to the side that originates the call reference" />
+        </field>
+
+        <field name="Message type" lengthBit="7" type="enumeration">
+            <enum value="1" name="echoRequest" />
+            <enum value="2" name="echoResponse" />
+            <enum value="b0000111" name="CONNECT" />
+            <enum value="b0001111" name="CONNECT ACKNOWLEDGE" />
+            <enum value="b0000011" name="PROGRESS" />
+            <enum value="b0000101" name="SETUP" />
+            <enum value="b0001101" name="SETUP ACKNOWLEDGE" />
+		<!-- 0 0 1  Call information phase message: -->
+            <enum value="b0100110 " name="RESUME" />
+            <enum value="b0101110" name="RESUME ACKNOWLEDGE" />
+            <enum value="b0100010" name="RESUME REJECT" />
+            <enum value="b0100101" name="SUSPEND" />
+            <enum value="b0101101" name="SUSPEND ACKNOWLEDGE" />
+            <enum value="b0100001" name="SUSPEND REJECT" />
+            <enum value="b0100000" name="USER INFORMATION" />
+		<!-- 0 1 0  Call clearing messages: -->
+            <enum value="b1000101" name="DISCONNECT" />
+            <enum value="b1001101" name="RELEASE" />
+            <enum value="b1011010" name="RELEASE COMPLETE" />
+            <enum value="b1000110" name="RESTART"/>
+            <enum value="b1001110" name="RESTART ACKNOWLEDGE" />
+		<!-- 0 1 1  Miscellaneous messages: -->
+            <enum value="b1111001" name="CONGESTION CONTROL" />
+            <enum value="b1111011" name="INFORMATION" />
+            <enum value="b1101110" name="NOTIFY" />
+            <enum value="b1111101" name="STATUS" />
+            <enum value="b01110101" name="STATUS ENQUIRY" />
+        </field>
+    </headerQ931>
+
+
+    <!--message name="echoRequest" messageType="1">
+        <element name="privateExtension"/>
     </message>
 
     <message name="echoResponse" messageType="2">
-        <ei name="Recovery" mandatory="true"/>
-        <ei name="privateExtension" mandatory="false"/>
+        <element name="Recovery"/>
+        <element name="privateExtension"/>
     </message>
 
     <message name="versionNotSupported" messageType="3">
     </message>
     
 	 <message name="createSessionRequest" messageType="32">
-        <ei name="extensionHeaderTypeiist" mandatory="true"/>
+        <element name="International Mobile Subscriber Identity (IMSI)" mandatory="true"/>
    </message>    
 
 	 <message name="createSessionResponse" messageType="33">
-        <ei name="extensionHeaderTypeiist" mandatory="true"/>
-   </message>    
+        <ei name="International Mobile Subscriber Identity (IMSI)" mandatory="true"/>
+   </message-->    
 	
-    <ei coding="TLIV" name="International Mobile Subscriber Identity (IMSI)" tag="1" length="1">
-        <field name="IMSI" length="1" format="int"/>
-    </ei>
+    <element identifier="1" name="International Mobile Subscriber Identity (IMSI)" coding="TLIV">
+    		<field name="extensionIdentifier" lengthBit="8" type="integer"/>
+    </element>
     
-    <ei coding="TLIV" name="Recovery" tag="3"/>
-        <field name="IMSI" length="1" format="int"/>
-    </ei>
-	  <ei coding="TLIV" name="privateExtension" tag="255">
-		    <field name="extensionIdentifier" length="2" format="int"/>
-        <field name="extensionValue" format="string"/>
-	  </ei>
-	
+    <element identifier="3" name="Recovery"  coding="TLIV">
+		    <field name="extensionIdentifier" lengthBit="8" type="integer"/>
+    </element>
+            	    
+	  <element identifier="255" name="privateExtension" coding="TLIV">
+		    <field name="extensionIdentifier" lengthBit="16" type="integer"/>
+        <attribute name="extensionValue" format="string"/>
+	  </element>
+
+
+    <!-- Bearer capability = b0000100 =h4 =d4-->
+    <element identifier="b0000100" name="Bearer capability">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Coding standard" lengthBit="2" type="enumeration">
+            <enum value="b00" name="ITU-T standardized coding" />
+            <enum value="b01" name="ISO/IEC Standard" />
+            <enum value="b10" name="National standard" />
+            <enum value="b11" name="Standard defined for the network" />
+        </field>
+        <field name="Information transfert capability" lengthBit="5" type="enumeration">
+            <enum value="b00000" name="Speech" />
+            <enum value="b01000" name="Unrestricted" />
+            <enum value="b01001" name="Restricted" />
+            <enum value="b10000" name="3.1 kHz audio" />
+            <enum value="b10001" name="Unrestricted with tones/announcements" />
+            <enum value="b11000" name="Video" />
+        </field>
+        <field name="ext2" lengthBit="1" type="boolean" />
+        <field name="Transfert mode" lengthBit="2" type="enumeration">
+            <enum value="b00" name="Circuit mode" />
+            <enum value="b10" name="Packet mode" />
+        </field>
+        <field name="Information transfert rate" lengthBit="5" type="enumeration">
+            <enum value="b00000" name="Packet mode call" />
+            <enum value="b10000" name="64 kbit/s -" />
+            <enum value="b10001" name="264 kbit/s -" />
+            <enum value="b10011" name="384 kbit/s -" />
+            <enum value="b10101" name="1536 kbit/s -" />
+            <enum value="b10111" name="1920 kbit/s -" />
+            <enum value="b11000" name="Multirate (64 kbit/s base rate)" />
+        </field>
+        <field name="ext3" lengthBit="1" type="boolean" />
+        <field name="Layer 1 ident" lengthBit="2" type="integer"/>
+        <field name="User information layer 1 protocol" lengthBit="5" type="enumeration">
+            <enum value="b00010" name="G.711 ?-law" />
+            <enum value="b00011" name="G.711 A-law" />
+            <enum value="b00100" name="G.721 and I.460" />
+            <enum value="b00101" name="H.221 and H.242" />
+            <enum value="b00110" name="H.223 and H.245" />
+            <enum value="b00111" name="Non-ITU-T" />
+            <enum value="b01000" name="ITU-T V.120" />
+            <enum value="b01001" name="ITU-T X.31 HDLC" />
+        </field>
+    </element>
+    	
 </dictionary>

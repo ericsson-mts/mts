@@ -51,11 +51,12 @@ public class ElementInformationQ931 {
     	try 
     	{
     		byte[] idBytes = Utils.parseBinaryString(idStr);
+    		_id = idBytes[0] & 0xff;
             if (idBytes.length > 1)
             {
             	throw new ExecutionException("ISDN layer : Reading the element Id from XML file : value is too long " + idStr);
             }                
-    		_id = idBytes[0] & 0xff;
+
     		if (dictionary != null)
     		{
     			elemDico = dictionary.getMapElementById().get(_id);
