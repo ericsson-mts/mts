@@ -55,7 +55,7 @@ public class TagTLIV extends Tag
 
 	public TagTLIV()
     {
-		this.format = "TLIV";
+		this.coding = "TLIV";
     }
 
     @Override

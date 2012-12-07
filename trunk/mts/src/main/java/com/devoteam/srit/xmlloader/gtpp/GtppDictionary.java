@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.gtpp;
 
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
 import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderPrime;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppAttribute;
@@ -107,7 +108,7 @@ public class GtppDictionary
         return msg;
     }
 
-    public Tag getTLVFromName(String name) {
+    public Tag getTLVFromName(String name) throws Exception{
         Tag tlv = tlvList.get(name);
         if(tlv != null)
         {
@@ -115,11 +116,7 @@ public class GtppDictionary
         }
         else
         {
-            //create a default message for unknown name
-            tlv = new TagTLV();
-            tlv.setLength(6);
-            tlv.setTag(0);
-            tlv.setName(name);
+            throw new ExecutionException("Element information \"" + name + "\" not found in dictionary;");
         }
         return tlv;
     }
@@ -160,12 +157,56 @@ public class GtppDictionary
         Element node  = null;
         GtppMessage msg = null;
         Tag tlv = null;
-        String length = null;
-        String format = null;
-        int    i  = 0;
+        int i  = 0;
 
         SAXReader reader = new SAXReader();
         Document document = reader.read(stream);
+
+        //parsing des TLV
+        List listTLV = document.selectNodes("/dictionary/ei");
+        for(i = 0; i < listTLV.size(); i++)
+        {
+            node = (Element)listTLV.get(i);
+            
+            String coding = node.attributeValue("coding");
+        	if (coding.equalsIgnoreCase("TV"))
+        	{
+        		tlv = new TagTV();
+        	}
+        	else if (coding.equalsIgnoreCase("TLV"))
+        	{
+        		tlv = new TagTLV();
+        	}
+        	else if (coding.equalsIgnoreCase("TLIV"))
+        	{
+        		tlv = new TagTLIV();
+        	}
+
+            String name = node.attributeValue("name");
+            tlv.setName(name);
+            int tag = Integer.parseInt(node.attributeValue("tag"));
+            tlv.setTag(tag);
+
+        	String length = node.attributeValue("length");
+            if(length != null)
+            {
+                tlv.setLength(Integer.parseInt(length));
+            }
+            String format = node.attributeValue("format");
+            if(format != null)
+            {
+                tlv.setFormat(format);
+                if(format.equals("list"))
+                {
+                    tlv.setValue(new LinkedList<GtppAttribute>());
+                    parseAtt((Attribute)tlv, node);
+                }
+            }
+            
+            tlvList.put(tlv.getName(), tlv);
+            tlvTagToNameList.put(tlv.getTag(), tlv.getName());
+            tlvNameToTagList.put(tlv.getName(), tlv.getTag());
+        }
 
         //parsing des messages
         List listMessages = document.selectNodes("/dictionary/message");
@@ -181,32 +222,12 @@ public class GtppDictionary
             for (Iterator it = node.elementIterator(); it.hasNext();) {
                 Element element = (Element) it.next();
                 
-                String name = element.getName();
-                if(name.equalsIgnoreCase("tv") || name.equalsIgnoreCase("tlv") || name.equalsIgnoreCase("tliv"))
+                String xmlTag = element.getName();
+                
+                if(xmlTag.equalsIgnoreCase("ei"))
                 {
-                	if (name.equalsIgnoreCase("tv"))
-                	{
-                		tlv = new TagTV();
-                	}
-                	else if (name.equalsIgnoreCase("tlv"))
-                	{
-                		tlv = new TagTLV();
-                	}
-                	else if (name.equalsIgnoreCase("tliv"))
-                	{
-                		tlv = new TagTLIV();
-                	}
-                	
-                    tlv.setName(element.attributeValue("name"));
-                    String value = element.attributeValue("mandatory");
-                    if(value != null && !value.equalsIgnoreCase("cond"))
-                    {
-                        tlv.setMandatory(Boolean.parseBoolean(value));
-                    }
-                    else//case of cond, considered as optional
-                    {
-                        tlv.setMandatory(false);
-                    }
+                	String name = element.attributeValue("name");
+                	tlv = tlvList.get(name);
                     msg.addTLV(tlv);
                 }
             }
@@ -216,47 +237,6 @@ public class GtppDictionary
             messageNameToTypeList.put(msg.getHeader().getName(), msg.getHeader().getMessageType());
         }
 
-        //parsing des TLV
-        List listTLV = document.selectNodes("/dictionary/tv | /dictionary/tlv | /dictionary/tliv");
-        for(i = 0; i < listTLV.size(); i++)
-        {
-            node = (Element)listTLV.get(i);
-            
-            String name = node.getName();            
-        	if (name.equalsIgnoreCase("tv"))
-        	{
-        		tlv = new TagTV();
-        	}
-        	else if (name.equalsIgnoreCase("tlv"))
-        	{
-        		tlv = new TagTLV();
-        	}
-        	else if (name.equalsIgnoreCase("tliv"))
-        	{
-        		tlv = new TagTLIV();
-        	}
-            tlv.setName(node.attributeValue("name"));
-            tlv.setTag(Integer.parseInt(node.attributeValue("tag")));
-            length = node.attributeValue("length");
-            if(length != null)
-            {
-                tlv.setLength(Integer.parseInt(length));
-            }
-            format = node.attributeValue("format");
-            if(format != null)
-            {
-                tlv.setFormat(format);
-                if(format.equals("list"))
-                {
-                    tlv.setValue(new LinkedList<GtppAttribute>());
-                    parseAtt((Attribute)tlv, node);
-                }
-            }
-            
-            tlvList.put(tlv.getName(), tlv);
-            tlvTagToNameList.put(tlv.getTag(), tlv.getName());
-            tlvNameToTagList.put(tlv.getName(), tlv.getTag());
-        }
     }
 
     private void parseAtt(Attribute att, Element node) throws Exception

@@ -116,9 +116,7 @@
                     <xs:element name="headerPrime" type="headerGTPPrimeType" minOccurs="0" maxOccurs="1"/>
                     <xs:element name="headerV1"  	 type="headerGTPV1Type"    minOccurs="0" maxOccurs="1"/>
                     <xs:element name="headerV2"  	 type="headerGTPV2Type"    minOccurs="0" maxOccurs="1"/>
-                    <xs:element name="tv"         type="tagGTPType"         minOccurs="0" maxOccurs="unbounded" />                    
-                    <xs:element name="tlv"         type="tagGTPType"         minOccurs="0" maxOccurs="unbounded" />
-                    <xs:element name="tliv"        type="tagGTPType"         minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="ei"         type="tagGTPType"         minOccurs="0" maxOccurs="unbounded" />                    
                 </xs:sequence>
 				<xs:attribute name="channel" type="xs:string" use="optional">
 					<xs:annotation>
@@ -276,7 +274,9 @@
             <xs:element name="attribute"  	  type="attributeGTPType"  minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="name"       type="xs:string" />
-        <xs:attribute name="tag"       type="xs:string"/>
+        <xs:attribute name="coding"     type="xs:string" />
+        <xs:attribute name="format"     type="xs:string" />
+        <xs:attribute name="tag"        type="xs:string"/>
         <xs:attribute name="length"     type="xs:string" />
         <xs:attribute name="value"      type="xs:string"/>
     </xs:complexType>

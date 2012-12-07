@@ -45,7 +45,7 @@ public class TagTV extends Tag
     
     public TagTV()
     {
-    	this.format = "TV";
+    	this.coding = "TV";
     }
 
     @Override
