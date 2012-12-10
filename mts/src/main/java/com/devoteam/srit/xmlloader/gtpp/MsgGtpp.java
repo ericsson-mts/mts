@@ -32,6 +32,7 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
 import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
+import com.devoteam.srit.xmlloader.gtpp.data.MessageGTP;
 import com.devoteam.srit.xmlloader.gtpp.data.Tag;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
@@ -45,8 +46,8 @@ import gp.utils.arrays.Array;
  */
 public class MsgGtpp extends Msg
 {
-    // based on Q931 encryption 
-    private MessageQ931 message;
+    // based on GTP encryption 
+    private MessageGTP message;
 
     private String type = null;
 
@@ -55,14 +56,11 @@ public class MsgGtpp extends Msg
     /**
      * Creates a new instance of MsgGtpp
      */
-    public MsgGtpp(MessageQ931 message) throws Exception
+    public MsgGtpp(MessageGTP message) throws Exception
     {
         this.message = message;
     }
 
-    public MsgGtpp(Array msgArray) throws Exception {
-	    this.message = new MessageQ931(msgArray, "../conf/gtpp/dictionary_GTPV2.xml");
-    }
     /** Get a parameter from the message */
     @Override
     public Parameter getParameter(String path) throws Exception
@@ -143,20 +141,6 @@ public class MsgGtpp extends Msg
         return var;
     }
 
-    private Object formatAttribute(Attribute att)
-    {
-        Object value = att.getValue();
-        if(value instanceof String)
-        {
-        	value = ((String)value).trim();
-        }
-        else if(value instanceof Array)
-        {
-            value = Array.toHexString((Array)value);
-        }
-        return value;
-    }
-
     /** Get the protocol of this message */
     public String getProtocol()
     {
@@ -166,31 +150,20 @@ public class MsgGtpp extends Msg
     /** Return true if the message is a request else return false*/
     public boolean isRequest()
     {
-        //return message.getHeaderQ931().getName().contains("Request") ? true : false;
-    	return true;
+        return message.getHeader().isRequest();
     }
 
     /** Get the command code of this message */
     public String getType()
     {
-    	/*
-        if(type == null)
-        {
-            type = message.getHeaderQ931().getName();
-        }
-        return type;
-        */
-    	return "type";
+    	return message.getHeader().getType();
     }
 
     /** Get the result of this answer (null if request) */
     public String getResult()
     {
-        if(result == null)
-        {
-//            result = Integer.toString(message.getStatus());
-        }
-        return result;
+    	return "result";
+        // return message.getHeader().getResult();
     }
     
     /** Return the length of the message*/

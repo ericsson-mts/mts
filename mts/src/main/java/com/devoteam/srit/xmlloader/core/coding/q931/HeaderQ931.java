@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.core.coding.q931;
 
+import java.io.InputStream;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -48,9 +50,8 @@ public class HeaderQ931 extends Header {
 	private Array _layer3AddressArray;
     private Integer08Array _typeArray;
     
-    public HeaderQ931(Dictionary dictionary)
+    public HeaderQ931()
     {
-    	super(dictionary);
     }
     
     @Override
@@ -76,7 +77,15 @@ public class HeaderQ931 extends Header {
     }
     
     @Override
-    public void parseFromXML(Element header) throws Exception {
+    public String getSyntax() 
+    {
+	    return "Q931";
+    }
+    
+    @Override
+    public void parseFromXML(Element header, Dictionary dictionary) throws Exception {
+        this.dictionary = dictionary; 
+        
         if (header.attributeValue("type").startsWith("b")) {
             _typeArray = new Integer08Array((Utils.parseBinaryString(header.attributeValue("type")))[0]);
         } else {
@@ -103,7 +112,6 @@ public class HeaderQ931 extends Header {
         {
         	_layer3AddressArray = new DefaultArray(Utils.parseBinaryString(layer3Address));
         }
-        this.dictionary = dictionary; 
     }
 
     @Override
@@ -125,8 +133,9 @@ public class HeaderQ931 extends Header {
     }
 
     @Override
-    public void decodeFromArray(Array data, String syntax) {
+    public void decodeFromArray(Array data, String syntax, Dictionary dictionary) {
     	this.dictionary = dictionary; 
+    	
         _discrimArray = new Integer08Array(data.subArray(0, 1));
         if (syntax.contains("q931"))
         {
@@ -143,6 +152,12 @@ public class HeaderQ931 extends Header {
         }
     }
 
+    @Override
+	public void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception
+    {
+		// nothing to do
+    }
+	
     @Override
     public Array encodeToArray() {
         SupArray arrheader = new SupArray();
@@ -161,23 +176,28 @@ public class HeaderQ931 extends Header {
     }
 
     @Override
-    public void getParameter(Parameter var, String param) {
-        if (param.equalsIgnoreCase("type")) {
+    public void getParameter(Parameter var, String param) 
+    {
+        if (param.equalsIgnoreCase("type")) 
+        {
             var.add(_typeArray.getValue());
         }
-        else if (param.equalsIgnoreCase("callReference")) {
+        else if (param.equalsIgnoreCase("callReference")) 
+        {
         	if (_callReferenceArray != null)
         	{
         		var.add(getCallReference());
         	}
         }
-        else if (param.equalsIgnoreCase("layer3Address")) {
+        else if (param.equalsIgnoreCase("layer3Address")) 
+        {
         	if (_layer3AddressArray != null)
         	{
         		var.add(Array.toHexString(_layer3AddressArray));
         	}
         }
-        else if (param.equalsIgnoreCase("discriminator")) {
+        else if (param.equalsIgnoreCase("discriminator")) 
+        {
             var.add(_discrimArray.getValue());
         }
     }

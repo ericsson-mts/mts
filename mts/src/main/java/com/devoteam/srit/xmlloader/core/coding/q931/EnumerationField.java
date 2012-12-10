@@ -39,8 +39,8 @@ import org.dom4j.Element;
  */
 public class EnumerationField extends IntegerField{
 	
-    protected LinkedHashMap<Integer, String> _hashMapEnumByValue = new LinkedHashMap<Integer, String>();
-    protected LinkedHashMap<String, Integer> _hashMapEnumByName = new LinkedHashMap<String, Integer>();
+    public LinkedHashMap<Integer, String> _hashMapEnumByValue = new LinkedHashMap<Integer, String>();
+    public LinkedHashMap<String, Integer> _hashMapEnumByName = new LinkedHashMap<String, Integer>();
 
 	
     public EnumerationField(Element rootXML) {

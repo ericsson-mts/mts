@@ -9,39 +9,62 @@
 
 <dictionary>
 
-    <message name="echoRequest" messageType="1">
-        <ei name="privateExtension" mandatory="false"/>
-    </message>
+    <headerQ931>
 
-    <message name="echoResponse" messageType="2">
-        <ei name="Recovery" mandatory="true"/>
-        <ei name="privateExtension" mandatory="false"/>
-    </message>
+        <field name="Version" lengthBit="3" type="enumeration">
+            <enum value="1" name="3GPP TS 29.060 : GTP" />
+        </field>
 
-    <message name="versionNotSupported" messageType="3">
-    </message>
+        <field name="Protocol Type" lengthBit="1" type="boolean"> </field>
+        
+        <field name="Spare1" lengthBit="1" type="integer"> </field>
+        
+        <field name="Extension Header Flag" lengthBit="1" type="boolean"> </field>
+        
+        <field name="Sequence Number Flag" lengthBit="1" type="boolean"> </field>
+        
+        <field name="NPDU Number Flag" lengthBit="1" type="boolean"> </field>
 
-	 <message name="errorIndication" messageType="26">
-        <ei name="TunnelEndpointIdentifierData" mandatory="true"/>
-        <ei name="GSNAddress" mandatory="true"/>
-        <ei name="privateExtension" mandatory="false"/>
-    </message>
-	
-	 <message name="supportedExtensionHeadersNotification" messageType="31">
-        <tlv name="extensionHeaderTypeList" mandatory="true"/>
-   </message>
+        <field name="Message Type" lengthBit="8" type="enumeration">
+            <enum value="1" name="echoRequest" />
+            <enum value="2" name="echoResponse" />
+            <enum value="3" name="versionNotSupported" />
+            <enum value="26" name="errorIndication" />            
+            <enum value="32" name="createSessionRequest" />
+            <enum value="33" name="createSessionResponse" />
+        </field>
         
-    <ei coding="TV" name="Recovery" tag="13" length="1" format="int"/>
+        <field name="Message Length" lengthBit="16" type="integer"> </field>
         
-    <ei coding="TV" name="TunnelEndpointIdentifierData" tag="16" length="4" format="int"/>
+        <field name="Tunnel Endpoint Identifier" lengthBit="32" type="integer"> </field>
         
-	  <ei coding="TLV" name="GSNAddress" tag="133" format="string"/>
-	
-	  <ei coding="TLV" name="extensionHeaderTypeList" tag="141" format="list"/>
+        <field name="Sequence Number" lengthBit="16" type="integer"> </field>
+        
+        <field name="NPDU Number" lengthBit="8" type="integer"> </field>
+        
+        <field name="Next Extension Header Type" lengthBit="8" type="integer"> </field>
+        
+    </headerQ931>
+
+    <element identifier="3" name="Recovery"  coding="TV">
+		    <field name="Recovery" lengthBit="8" type="integer"/>
+    </element>
     
-	  <ei coding="TLV" name="privateExtension" tag="255">
-		    <attribute name="extensionIdentifier" length="2" format="int"/>
-        <attribute name="extensionValue" format="string"/>
-	  </ei>
+    <element identifier="16" name="TunnelEndpointIdentifierData"  coding="TV">
+		    <field name="TunnelEndpointIdentifierData" lengthBit="32" type="integer"/>
+    </element>
+        
+    <element identifier="133" name="GSNAddress"  coding="TLV">
+		    <field name="GSNAddress" type="string"/>
+    </element>
+	
+	  <element identifier="141" name="extensionHeaderTypeList"  coding="TLV">
+		    <field name="extensionHeaderTypeList" type="string"/>
+    </element>
+    
+	  <element identifier="255" name="privateExtension" coding="TLV">
+		    <field name="extensionIdentifier" length="16" type="integer"/>
+        <field name="extensionValue" type="string"/>
+	  </element>
 	
 </dictionary>

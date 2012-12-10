@@ -36,8 +36,8 @@ import org.dom4j.Element;
  */
 public class Dictionary {
 	
-    private LinkedHashMap<String,ElementInformationQ931> mapElementByName=new LinkedHashMap<String, ElementInformationQ931>();
-    private LinkedHashMap<Integer,ElementInformationQ931> mapElementById=new LinkedHashMap<Integer, ElementInformationQ931>();
+    public LinkedHashMap<String,ElementInformationQ931> mapElementByName=new LinkedHashMap<String, ElementInformationQ931>();
+    public LinkedHashMap<Integer,ElementInformationQ931> mapElementById=new LinkedHashMap<Integer, ElementInformationQ931>();
     private LinkedHashMap<String,Field> mapHeader= new LinkedHashMap<String, Field>();
     
     public Dictionary(Element root) throws Exception {

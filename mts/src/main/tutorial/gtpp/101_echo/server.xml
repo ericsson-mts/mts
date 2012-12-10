@@ -12,11 +12,13 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
 
-    <test parameter="[binary]" condition="binary.equals" value="480100000000006f00000100"/>
+    <!--test parameter="[binary]" condition="binary.equals" value="480100000000006f00000100"/-->
     
     <sendMessageGTP name="echo Response" channel="[channel]">
-        <headerV2 name="echoResponse" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "111" sequenceNumber="[seqNum]"/>
-        <ei name="Recovery" value="23"/>
+        <headerV2 name="echoResponse" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "111" sequenceNumber="1"/>
+        <element identifier="Recovery">
+            <field name="Recovery" value="23"/>
+        </element>
     </sendMessageGTP>
 
     <receiveMessageGTP name="echo request">

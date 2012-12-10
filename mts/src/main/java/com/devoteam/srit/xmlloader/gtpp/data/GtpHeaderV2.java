@@ -27,10 +27,10 @@ import java.io.InputStream;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.q931.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.q931.EnumerationField;
 import com.devoteam.srit.xmlloader.core.coding.q931.Header;
-import com.devoteam.srit.xmlloader.gtpp.GtppDictionary;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -41,137 +41,159 @@ import gp.utils.arrays.SupArray;
 
 /**
 *
-* @author El Aly Mohamad Bilal 
+* @author Fabien Henry 
 */
-public class GtpHeaderV2 extends Header {
+public class GtpHeaderV2 extends Header 
+{
 	
 	//Header composers 
-	private String name;
 	private int version;
-    private String versionName;	
 	private int piggyFlag;
 	private int teidFlag;
 	private int messageType;
-	private int length;
+	private String name;
 	private int tunnelEndpointId;
 	private int sequenceNumber;
     
-    public GtpHeaderV2(Dictionary dictionary)
-	{
-    	super(dictionary);
-	}
-    
-    public GtpHeaderV2(DefaultArray flagArray)
-    {	
-    	this();
-        this.version = flagArray.getBits(0,3);
-        this.piggyFlag = flagArray.getBits(3,1);
-        this.teidFlag = flagArray.getBits(4,1);
-    }
     public GtpHeaderV2()
-    {
+	{
+    	this.syntax = "GTPV2";
     	this.version = 2;
-    	this.versionName = "GTPV2";
-    }
+	}
+	
+    public GtpHeaderV2(Array flagArray)
+	{
+    	this.syntax = "GTPV2";
+    	this.version = 2;
+    	this.piggyFlag = flagArray.getBits(3, 1);
+    	this.teidFlag = flagArray.getBits(4, 1);
+	}
 
-    
     @Override
     public boolean isRequest() {
-        if (_callReferenceArray.length == 1) {
-
-            return (_callReferenceArray.getBit(7) == 0);
-        }
-        else if (_callReferenceArray.length == 2) {
-            return (_callReferenceArray.getBit(15) == 0);
-        }
-        else {
-            return (_callReferenceArray.getBit(23) == 0);
-        }
+    	if ((name != null) && (!name.contains("Request")))
+    	{
+    		return false;   		
+    	}
+    	return true;
     }
     
     @Override
     public String getType() 
-    {
-	    EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message type");
-	    String name = field._hashMapEnumByValue.get(_typeArray.getValue());        
-	    return name + ":" + _typeArray.getValue();
+    {  
+	    return this.name + ":" + messageType;
     }
     
     @Override
-    public int getLength() {
-		return _length;
-	}
-    
-    //Getters and setters
-    public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public int getVersion() {
-		return version;
-	}
-	public void setVersion(int version) {
-		this.version = version;
-	}
-	public String getVersionName() {
-		return versionName;
-	}
-	public void setVersionName(String versionName) {
-		this.versionName = versionName;
-	}		
-	public int getPiggyFlag() {
-		return piggyFlag;
-	}
-	public void setPiggyFlag(int piggyFlag) {
-		this.piggyFlag = piggyFlag;
-	}	
-	public int getTeidFlag() {
-		return teidFlag;
-	}
-	public void setTeidFlag(int teidFlag) {
-		this.teidFlag = teidFlag;
-	}
-	public int getMessageType() {
-		return messageType;
-	}
-	public void setMessageType(int messageType) {
-		this.messageType = messageType;
-	}
-	public int getTunnelEndpointId() {
-		return tunnelEndpointId;
-	}
-	public void setTunnelEndpointId(int tunnelEndpointId) {
-		this.tunnelEndpointId = tunnelEndpointId;
-	}
-	public int getSequenceNumber() {
-		return sequenceNumber;
-	}
-	public void setSequenceNumber(int sequenceNumber) {
-		this.sequenceNumber = sequenceNumber;
-	}
-	
+	public String getSyntax() 
+    {
+		return this.syntax;
+    }
+
+	@Override
+	public void parseFromXML(Element header, Dictionary dictionary) throws Exception
+    {
+		this.dictionary = dictionary;
+		
+        String strName = header.attributeValue("name");
+        String strType = header.attributeValue("type");
+
+        if((strType != null) && (strName != null))
+            throw new Exception("Type and name of the message " + this.name + " must not be set both");
+
+        if ((strType == null) && (strName == null))
+            throw new Exception("One of the parameter type or name of the message header must be set");
+
+        if (strName != null)
+        {
+            this.name = strName;
+            EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+            this.messageType = field._hashMapEnumByName.get(this.name);
+        }
+        else if(strType != null)
+        {	
+        	this.messageType = Integer.parseInt(strType);
+        	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+    	    this.name = field._hashMapEnumByValue.get(this.messageType);
+        }
+        
+        String attribute;
+        String attrFlag;
+        
+        attribute = header.attributeValue("piggyFlag");
+        if (attribute != null)
+        {
+        	this.piggyFlag = Integer.parseInt(attribute);
+        }
+        
+        attrFlag = header.attributeValue("teidFlag");
+        if (attrFlag != null)
+        {
+        	this.teidFlag = Integer.parseInt(attrFlag);
+        }
+        attribute = header.attributeValue("tunnelEndpointId");
+        if (attribute != null)
+        {
+        	this.tunnelEndpointId = Integer.parseInt(attribute);
+        	if (attrFlag ==  null)
+        	{
+        		this.teidFlag = 1;
+        	}
+        }
+        else
+        {
+        	if (attrFlag ==  null)
+        	{
+        		this.teidFlag = 0;
+        	}
+        }
+
+        attribute = header.attributeValue("sequenceNumber");
+        if (attribute != null)
+        {
+        	this.sequenceNumber = Integer.parseInt(attribute);
+        }    
+    }
+
+	@Override
+    public String toXML()
+    {
+        String str = "<headerV2 ";
+        str += " messageType=\"" + this.name + ":" + messageType + "\"";
+        str += " tunnelEndpointId=\"" + this.tunnelEndpointId + "\"";
+        str += " sequenceNumber=\"" + this.sequenceNumber + "\"";
+        str += " length=\"" + this.length + "\""; 
+        str += " piggyFlag=\"" + this.piggyFlag + "\""; 
+        str += " teidFlag=" + this.teidFlag +  "\"";
+        str += "/>";
+        return str;
+    }
+
+	@Override
 	public Array encodeToArray()
     {
         //manage header data
         SupArray supArray = new SupArray();
 
         DefaultArray firstByte = new DefaultArray(1);//first byte data
-        firstByte.setBits(0, 3, version);
-        firstByte.setBits(3, 1, piggyFlag);
-        firstByte.setBits(4, 1, teidFlag);
+        firstByte.setBits(0, 3, this.version);
+        firstByte.setBits(3, 1, this.piggyFlag);
+        firstByte.setBits(4, 1, this.teidFlag);
         firstByte.setBits(5, 1, 0);
         firstByte.setBits(6, 1, 0);
         firstByte.setBits(7, 1, 0);
         supArray.addFirst(firstByte);
 
-        supArray.addLast(new Integer08Array(messageType));
-        supArray.addLast(new Integer16Array(length));
-        if (teidFlag == 1)
-        	supArray.addLast(new Integer32Array(tunnelEndpointId));
+        supArray.addLast(new Integer08Array(this.messageType));
         
-        Array sequenceNumberArray= new Integer32Array(sequenceNumber);
+        supArray.addLast(new Integer16Array(this.length));
+        
+        if (this.teidFlag != 0)
+        {
+        	supArray.addLast(new Integer32Array(this.tunnelEndpointId));
+        }
+        
+        Array sequenceNumberArray= new Integer32Array(this.sequenceNumber);
         supArray.addLast(sequenceNumberArray.subArray(1, 3));
         
         supArray.addLast(new Integer08Array(0));
@@ -179,101 +201,54 @@ public class GtpHeaderV2 extends Header {
         return supArray;
     }
 	
-	public void decodeFromArray(Array data, String syntax, Dictionary dictionary)
+	@Override
+	public void decodeFromArray(Array data, String syntax, Dictionary dictionary) throws Exception
 	{
-		
+		// throw new Exception("Method is not implemented !");
+		// Nothing to do
 	}
 	
-	public void decodeFromStream(InputStream stream, GtppDictionary dictionary) throws Exception
+	public void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception
     {
+		this.dictionary = dictionary;
+		
 		byte[] header = new byte[1];
         stream.read(header, 0, 1);
         Array array = new DefaultArray(header); 
-        messageType = (new Integer08Array(array).getValue());
-        name = dictionary.getMessageNameFromType(messageType);
+        this.messageType = (new Integer08Array(array).getValue());
+    	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+	    this.name = field._hashMapEnumByValue.get(messageType);
         
         header = new byte[2];
         stream.read(header, 0, 2);
         array = new DefaultArray(header); 
-        length = (new Integer16Array(array).getValue());
+        this.length = (new Integer16Array(array).getValue());
         
-        if(teidFlag != 0)
+        if (this.teidFlag != 0)
     	{
 	        header = new byte[4];
 	        stream.read(header, 0, 4);
 	        array = new DefaultArray(header); 
-	        tunnelEndpointId = (new Integer32Array(array).getValue());
+	        this.tunnelEndpointId = (new Integer32Array(array).getValue());
     	}
         
     	header = new byte[4];
     	stream.read(header, 1, 3);
     	array = new DefaultArray(header); 
-    	sequenceNumber = (new Integer32Array(array).getValue()); 
+    	this.sequenceNumber = (new Integer32Array(array).getValue()); 
 
     	header = new byte[1];
     	stream.read(header, 0, 1);
+    	// TODO champ spare2
+    	
     }
 	
-	@Override
-    public String toXML()
+    @Override
+    public void getParameter(Parameter var, String param) 
     {
-        String str = "<headerV2 ";
-        str += " piggyFlag=\"" + piggyFlag + "\""; 
-        str += " teidFlag=" + teidFlag +  "\"";
-        str += " messageType=\"" + name + ":" + messageType + "\"";
-        str += " tunnelEndpointId=\"" + tunnelEndpointId + "\"";
-        str += " sequenceNumber=\"" + sequenceNumber + "\"";
-        str += "/>";
-        return str;
+    	// TODO a compléter
     }
-	
-	public void parseXml(Element header, GtppDictionary dictionary) throws Exception
-    {
-        String msgName = header.attributeValue("name");
-        String msgType = header.attributeValue("type");
-
-        if((msgType != null) && (msgName != null))
-            throw new Exception("type and name of the message " + msgName + " must not be set both");
-
-        if((msgType == null) && (msgName == null))
-            throw new Exception("One of the parameter type or name of the message header must be set");
-
-        if(msgName != null)
-        {
-            this.name = msgName;
-            this.messageType = dictionary.getMessageTypeFromName(msgName);
-        }
-        else if(msgType != null)
-        {	
-        	this.messageType = Integer.parseInt(msgType); 
-        	this.name = dictionary.getMessageNameFromType(this.messageType);
-        }
-        
-        String msgPiggyFlag = header.attributeValue("piggyFlag");
-        if(msgPiggyFlag != null)
-        {
-        	piggyFlag = Integer.parseInt(msgPiggyFlag);
-        }
-        
-        String msgTeidFlag = header.attributeValue("teidFlag");
-        if(msgTeidFlag != null)
-        {
-        	teidFlag = Integer.parseInt(msgTeidFlag);
-        }
-        
-        String msgSeqNum = header.attributeValue("sequenceNumber");
-        if(msgSeqNum != null)
-        {
-        	sequenceNumber = Integer.parseInt(msgSeqNum);
-        }
-        
-        String msgTunnelEndpointId = header.attributeValue("tunnelEndpointId");
-        if(msgTunnelEndpointId != null)
-        {
-        	tunnelEndpointId = Integer.parseInt(msgTunnelEndpointId);
-        }
-
-    }
+    
 
 }
 

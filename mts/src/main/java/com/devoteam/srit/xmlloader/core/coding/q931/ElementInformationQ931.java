@@ -94,7 +94,7 @@ public class ElementInformationQ931 {
             }
             if (field == null)
             {
-            	String type = elemField.attributeValue("type");
+             	String type = elemField.attributeValue("type");
 	            if (type.equalsIgnoreCase("integer")) {
 	                field = new IntegerField(elemField);
 	

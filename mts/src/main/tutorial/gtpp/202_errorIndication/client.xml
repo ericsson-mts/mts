@@ -10,8 +10,12 @@
 	<sendMessageGTP name="send tunnel endpoint identifier data" channel="[connection]">
 		<headerV1 name="errorIndication" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
 		<!--headerV1 name="errorIndication" sequenceNumber="1" nPduNumber="2"/-->
-		<ei name="TunnelEndpointIdentifierData" value="16"/>
-		<ei name="GSNAddress" value="ABCD"/>
+		<element identifier="TunnelEndpointIdentifierData">
+		    <field name="TunnelEndpointIdentifierData" value="121212" lengthBit="32" type="integer"/>
+    </element>
+		<element identifier="GSNAddress">
+        <field name="GSNAddress" value="ABCD" type="string"/>
+    </element>
 	</sendMessageGTP>
 
 </scenario>

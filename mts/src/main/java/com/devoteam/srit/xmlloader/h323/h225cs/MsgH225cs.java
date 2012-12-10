@@ -66,17 +66,17 @@ public class MsgH225cs extends Msg {
 
     @Override
     public String getType() throws Exception {
-        return msgQ931.getHeaderQ931().getType();
+        return msgQ931.getHeader().getType();
     }
 
     @Override
     public String getResult() throws Exception {
-        return msgQ931.getHeaderQ931().getType();
+        return msgQ931.getHeader().getType();
     }
 
     @Override
     public boolean isRequest() throws Exception {
-    	return msgQ931.getHeaderQ931().isRequest();
+    	return msgQ931.getHeader().isRequest();
     }
 
     @Override
