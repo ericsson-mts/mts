@@ -12,8 +12,10 @@
     </receiveMessageGTP>
 
     <sendMessageGTP name="echo Response" channel="[channel]">
-        <headerV1 name="echoResponse" sequenceNumber="[seqNum]"  nPduNumber="2" nextExtensionType="0"/>
-        <ei name="Recovery" value="23"/>
+        <headerV1 name="echoResponse" sequenceNumber="1"  nPduNumber="2" nextExtensionType="0"/>
+        <element identifier="Recovery">
+            <field name="Recovery" value="23"/>
+        </element>
     </sendMessageGTP>
 
     <receiveMessageGTP name="echo request">
@@ -23,7 +25,7 @@
     </receiveMessageGTP>
 
     <sendMessageGTP name="versionNotSupported" channel="[channel]">
-        <headerV1 name="versionNotSupported" sequenceNumber="[seqNum]" nPduNumber="2" nextExtensionType="0"/>
+        <headerV1 name="versionNotSupported" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
     </sendMessageGTP>
 
     <finally>

@@ -21,11 +21,21 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.core.coding.q931;
+package com.devoteam.srit.xmlloader.gtpp.data;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.coding.q931.Dictionary;
+import com.devoteam.srit.xmlloader.core.coding.q931.ElementInformationQ931;
+import com.devoteam.srit.xmlloader.core.coding.q931.ElementInformationQ931V;
+import com.devoteam.srit.xmlloader.core.coding.q931.Field;
+import com.devoteam.srit.xmlloader.core.coding.q931.Header;
+import com.devoteam.srit.xmlloader.core.coding.q931.MessageQ931;
+import com.devoteam.srit.xmlloader.core.coding.q931.XMLDoc;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.protocol.Channel;
+import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.gtpp.MsgGtpp;
 import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderV2;
 
 import gp.utils.arrays.Array;
@@ -33,6 +43,7 @@ import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.SupArray;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,9 +55,9 @@ import org.dom4j.Element;
 
 /**
  *
- * @author indiaye
+ * @author Fabien Henry
  */
-public class MessageQ931 {
+public class MessageGTP {
    
     public static HashMap<String, Dictionary> dictionaries = new  HashMap<String, Dictionary>();
 	
@@ -58,13 +69,36 @@ public class MessageQ931 {
     
     private LinkedHashMap<Integer, ElementInformationQ931V> hashElementInformationQ931Vs;
     
+    public MessageGTP()
+    {
+    	
+    }
     
-     public MessageQ931(Element root) throws Exception {
-        this.syntax = root.attributeValue("syntax");
-        initDictionary(syntax);       
-        
-        this.header = new HeaderQ931();
-        this.header.parseFromXML(root.element("header"), dictionary);
+     public MessageGTP(Element root) throws Exception {              
+        Element elementHeader;
+        elementHeader = root.element("headerPrime");
+        if (elementHeader == null)
+        {
+	        // this.header = new GtpHeaderPrime();
+	        // initDictionary(header.getSyntax()); 
+            // this.header.parseFromXML(elementHeader, dictionary);
+        }
+        elementHeader = root.element("headerV1");
+        if (elementHeader!= null)
+        {
+	        this.header = new GtpHeaderV1();
+	        this.syntax = header.getSyntax();
+	        initDictionary(this.syntax); 
+	        this.header.parseFromXML(elementHeader, dictionary);
+        }
+        elementHeader = root.element("headerV2");
+        if (elementHeader!= null)
+        {
+	        this.header = new GtpHeaderV2();
+	        this.syntax = header.getSyntax();
+	        initDictionary(this.syntax); 
+	        this.header.parseFromXML(elementHeader, dictionary);
+        }        
         
         hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementInformationQ931V>();
         List<Element> elementsInf = root.elements("element");
@@ -114,22 +148,55 @@ public class MessageQ931 {
         }
     }
 
-    public MessageQ931(Array data, String syntax) throws Exception {
-    	this.syntax = syntax;
-        initDictionary(syntax);
-        
+     public void parseFromStream(InputStream inputStream) throws Exception
+     {
+         byte[] flag = new byte[1];
+         //read the header
+         int nbCharRead= inputStream.read(flag, 0, 1);
+     	if(nbCharRead == -1){
+     		throw new Exception("End of stream detected");
+     	}
+     	else if (nbCharRead < 1) {
+             throw new Exception("Not enough char read");
+         }
+         
+         DefaultArray flagArray = new DefaultArray(flag);
+         // int messageType = flagArray.getBits(3, 1);         
+         int version = flagArray.getBits(0, 3);
+         
+         if (version == 0)
+         {
+         	// header = new GtpHeaderPrime(flagArray);
+         }
+         else if (version == 1)
+         {
+        	 header = new GtpHeaderV1(flagArray);
+         }
+         else if (version == 2)
+         {
+        	 header = new GtpHeaderV2(flagArray); 
+         }
+         
+	     this.syntax = header.getSyntax();
+         initDictionary(syntax);
 
-        if (syntax.contains("q931") || (syntax.contains("v5x")))
-        {
-	        this.header = new HeaderQ931();
-        }
-        if (syntax.contains("GTP"))
-        {
-	        this.header = new GtpHeaderV2();
-        }
+         header.decodeFromStream(inputStream, dictionary);
+                
+         int msgLength = header.getLength(); 
 
-        this.header.decodeFromArray(data, syntax, dictionary);
-        
+         byte[] fieldBuffer = new byte[msgLength];
+         //read the staying message's data
+         nbCharRead = inputStream.read(fieldBuffer, 0, msgLength);
+         if(nbCharRead == -1)
+            throw new Exception("End of stream detected");
+         else if(nbCharRead < msgLength)
+            throw new Exception("Not enough char read");
+ 		Array fieldArrayTag = new DefaultArray(fieldBuffer);
+              	
+     	parseFieldFromArray(fieldArrayTag);
+     }
+
+    private void parseFieldFromArray(Array data) throws Exception {
         hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementInformationQ931V>();
         int offset = header.getLength();
         ElementInformationQ931V elem = null;
@@ -200,10 +267,11 @@ public class MessageQ931 {
 
     public Array getValue() {
         SupArray array = new SupArray();
-        array.addLast(header.encodeToArray());
         for (Entry<Integer, ElementInformationQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
             array.addLast(entry.getValue().getArray());
         }
+        header.setLength(array.length);
+        array.addFirst(header.encodeToArray());
         return array;
     }
 
@@ -214,14 +282,12 @@ public class MessageQ931 {
     @Override
     public String toString() {
         StringBuilder messageToString = new StringBuilder();
-        messageToString.append("<ISDN>");
         messageToString.append(header.toString());
 
         for (Entry<Integer, ElementInformationQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
 
             messageToString.append(entry.getValue().toString());
         }
-        messageToString.append("</ISDN>");
         return messageToString.toString();
 
     }
@@ -248,15 +314,16 @@ public class MessageQ931 {
     }
     
     public void initDictionary(String syntax) throws Exception {
-    	this.dictionary = MessageQ931.dictionaries.get(syntax);
+    	this.dictionary = MessageGTP.dictionaries.get(syntax);
     	if (this.dictionary == null)
     	{
 	        XMLDoc xml = new XMLDoc();
-	        xml.setXMLFile(new URI(syntax));
+	        String file = "../conf/gtpp/dictionary_" + header.getSyntax() + ".xml";
+	        xml.setXMLFile(new URI(file));
 	        xml.parse();
 	        Element rootDico = xml.getDocument().getRootElement();
 	        this.dictionary = new Dictionary(rootDico);
-	        MessageQ931.dictionaries.put(syntax, dictionary);
+	        MessageGTP.dictionaries.put(syntax, dictionary);
     	}
     }
 }

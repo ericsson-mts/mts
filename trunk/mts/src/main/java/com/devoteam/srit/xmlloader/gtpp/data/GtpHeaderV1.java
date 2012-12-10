@@ -27,7 +27,10 @@ import java.io.InputStream;
 
 import org.dom4j.Element;
 
-import com.devoteam.srit.xmlloader.gtpp.GtppDictionary;
+import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.coding.q931.Dictionary;
+import com.devoteam.srit.xmlloader.core.coding.q931.EnumerationField;
+import com.devoteam.srit.xmlloader.core.coding.q931.Header;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -38,287 +41,280 @@ import gp.utils.arrays.SupArray;
 
 /**
 *
-* @author El Aly Mohamad Bilal 
+* @author Fabien Henry 
 */
-public class GtpHeaderV1 extends Header {
-	
+public class GtpHeaderV1 extends Header 
+{
+    
 	//Header composers 
-	private String name;
 	private int version;
-    private String versionName;	
 	private int protocolType;
 	private int extensionHeaderFlag;
 	private int sequenceNumberFlag;
 	private int nPduNumberFlag;
 	private int messageType;
-	private int length;
-	private int teid;
+	private String name;
+	private int tunnelEndpointId;
 	private int sequenceNumber;
     private int nPduNumber;
     private int nextExtensionType;
     
-    public GtpHeaderV1(DefaultArray flagArray)
-    {	
-    	this();
-        this.version = flagArray.getBits(0,3);        
-        this.protocolType = flagArray.getBits(3,1);
-    	this.extensionHeaderFlag = flagArray.getBits(5,1);
-    	this.sequenceNumberFlag = flagArray.getBits(6,1);
-    	this.nPduNumberFlag = flagArray.getBits(7,1);
-    	
-    }
     public GtpHeaderV1()
-    {
-    	this.protocolType = 1;
+	{
+    	this.syntax = "GTPV1";
     	this.version = 1;
-    	this.versionName = "GTPV1";    	
-    }
-    //getSize
-    public int getSize()
-    {
-    	int k = 12; 
-    	if(extensionHeaderFlag == 0)
-    		k -= 1; 
-    	if(sequenceNumberFlag == 0)
-    		k -= 1; 
-    	if(nPduNumberFlag == 0)
-    		k -= 1; 
-    	
-    	return k; 
-    }
-    //Getters and setters
-    public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public int getVersion() {
-		return version;
-	}
-	public void setVersion(int version) {
-		this.version = version;
-	}
-	public String getVersionName() {
-		return versionName;
-	}
-	public void setVersionName(String versionName) {
-		this.versionName = versionName;
-	}	
-	public int getProtocolType() {
-		return protocolType;
-	}
-	public void setProtocolType(int protocolType) {
-		this.protocolType = protocolType;
-	}
-	public int getExtensionHeaderFlag() {
-		return extensionHeaderFlag;
-	}
-	public void setExtensionHeaderFlag(int extensionHeaderFlag) {
-		this.extensionHeaderFlag = extensionHeaderFlag;
-	}
-	public int getSequenceNumberFlag() {
-		return sequenceNumberFlag;
-	}
-	public void setSequenceNumberFlag(int sequenceNumberFlag) {
-		this.sequenceNumberFlag = sequenceNumberFlag;
-	}
-	public int getnPduNumberFlag() {
-		return nPduNumberFlag;
-	}
-	public void setnPduNumberFlag(int nPduNumberFlag) {
-		this.nPduNumberFlag = nPduNumberFlag;
-	}
-	public int getMessageType() {
-		return messageType;
-	}
-	public void setMessageType(int messageType) {
-		this.messageType = messageType;
-	}
-	public int getLength() {
-		return length;
-	}
-	public void setLength(int length) {
-		this.length = length;
-	}
-	public int getTeid() {
-		return teid;
-	}
-	public void setTeid(int teid) {
-		this.teid = teid;
-	}
-	public int getSequenceNumber() {
-		return sequenceNumber;
-	}
-	public void setSequenceNumber(int sequenceNumber) {
-		this.sequenceNumber = sequenceNumber;
-	}
-	public int getnPduNumber() {
-		return nPduNumber;
-	}
-	public void setnPduNumber(int nPduNumber) {
-		this.nPduNumber = nPduNumber;
-	}
-	public int getNextExtensionType() {
-		return nextExtensionType;
-	}
-	public void setNextExtensionType(int nextExtensionType) {
-		this.nextExtensionType = nextExtensionType;
+    	this.protocolType = 1;
 	}
 	
-	public Array getArray() throws Exception
+    public GtpHeaderV1(Array flagArray)
+	{
+    	this();
+    	this.protocolType = flagArray.getBits(3, 1);
+    	this.extensionHeaderFlag = flagArray.getBits(4, 1);
+    	this.sequenceNumberFlag = flagArray.getBits(5, 1);
+    	this.nPduNumberFlag = flagArray.getBits(6, 1);
+	}
+
+    @Override
+    public boolean isRequest() {
+    	if ((this.name != null) && (!this.name.contains("Request")))
+    	{
+    		return false;   		
+    	}
+    	return true;
+    }
+    
+    @Override
+    public String getType() 
+    {  
+	    return this.name + ":" + messageType;
+    }
+    
+    @Override
+	public String getSyntax() 
+    {
+		return this.syntax;
+    }
+    
+	@Override
+	public void parseFromXML(Element header, Dictionary dictionary) throws Exception
+    {
+		this.dictionary = dictionary;
+		
+        String strName = header.attributeValue("name");
+        String strType = header.attributeValue("type");
+
+        if ((strType != null) && (strName != null))
+            throw new Exception("Type and name of the message " + this.name + " must not be set both");
+
+        if ((strType == null) && (strName == null))
+            throw new Exception("One of the parameter type or name of the message header must be set");
+
+        if (strName != null)
+        {
+            this.name = strName;
+            EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+            this.messageType = field._hashMapEnumByName.get(this.name);
+        }
+        else if(strType != null)
+        {	
+        	this.messageType = Integer.parseInt(strType);
+        	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+    	    this.name = field._hashMapEnumByValue.get(this.messageType);
+        }
+        
+        String attribute;
+        String attrFlag;
+                
+        attribute = header.attributeValue("tunnelEndpointId");
+        if (attribute != null)
+        {
+        	this.tunnelEndpointId = Integer.parseInt(attribute);
+        }
+
+        attrFlag = header.attributeValue("sequenceNumberFlag");
+        if (attrFlag != null)
+        {
+        	this.sequenceNumberFlag = Integer.parseInt(attrFlag);
+        }
+        attribute = header.attributeValue("sequenceNumber");
+        if (attribute != null)
+        {
+        	this.sequenceNumber = Integer.parseInt(attribute);
+         	if (attrFlag ==  null)
+        	{
+        		this.sequenceNumberFlag = 1;
+        	}
+        }
+        else
+        {
+        	if (attrFlag ==  null)
+        	{
+        		this.sequenceNumberFlag = 0;
+        	}
+        }
+        
+        attrFlag = header.attributeValue("nPduNumberFlag");
+        if (attrFlag != null)
+        {
+        	this.nPduNumberFlag = Integer.parseInt(attrFlag);
+        }       
+        attribute = header.attributeValue("nPduNumber");
+        if (attribute != null)
+        {
+        	this.nPduNumber = Integer.parseInt(attribute);
+        	if (attrFlag ==  null)
+        	{
+        		this.nPduNumberFlag = 1;
+        	}
+        }
+        else
+        {
+        	if (attrFlag ==  null)
+        	{
+        		this.nPduNumberFlag = 0;
+        	}
+        }
+        
+        attrFlag = header.attributeValue("extensionHeaderFlag");
+        if (attrFlag != null)
+        {
+        	this.extensionHeaderFlag = Integer.parseInt(attrFlag);
+        }
+        attribute = header.attributeValue("nextExtensionType");
+        if (attribute != null)
+        {
+        	this.nextExtensionType = Integer.parseInt(attribute);
+        	if (attrFlag ==  null)
+        	{
+        		this.extensionHeaderFlag = 1;
+        	}
+        }
+        else
+        {
+        	if (attrFlag ==  null)
+        	{
+        		this.extensionHeaderFlag = 0;
+        	}
+        }
+
+    }
+
+	@Override
+    public String toXML()
+    {
+        String str = "<headerV1 ";
+        str += " messageType=\"" + this.name + ":" + this.messageType + "\""; 
+        str += " tunnelEndpointId=" + this.tunnelEndpointId +  "\"";
+        str += " sequenceNumber=\"" + this.sequenceNumber + "\"";
+        str += " nPduNumber=\"" + this.nPduNumber + "\"";
+        str += " nextExtensionType=\"" + this.nextExtensionType + "\"";
+        str += " length=\"" + this.length + "\"";
+        str += " protocolType=\"" + this.protocolType + "\"";
+        str += " extensionHeaderFlag=\"" + this.extensionHeaderFlag + "\"";
+        str += " sequenceNumberFlag=\"" + this.sequenceNumberFlag + "\"";
+        str += " nPduNumberFlag=\"" + this.nPduNumberFlag + "\"";
+        str += "/>";
+        return str;
+    }
+
+	@Override
+	public Array encodeToArray()
     {
         //manage header data
         SupArray supArray = new SupArray();
 
         DefaultArray firstByte = new DefaultArray(1);//first byte data
-        firstByte.setBits(0, 3, version);
-        firstByte.setBits(3, 1, protocolType);
+        firstByte.setBits(0, 3, this.version);
+        firstByte.setBits(3, 1, this.protocolType);
         firstByte.setBits(4, 1, 0);
-        firstByte.setBits(5, 1, extensionHeaderFlag);
-        firstByte.setBits(6, 1, sequenceNumberFlag);
-        firstByte.setBits(7, 1, nPduNumberFlag);
+        firstByte.setBits(5, 1, this.extensionHeaderFlag);
+        firstByte.setBits(6, 1, this.sequenceNumberFlag);
+        firstByte.setBits(7, 1, this.nPduNumberFlag);
         supArray.addFirst(firstByte);
 
-        supArray.addLast(new Integer08Array(messageType));
-        supArray.addLast(new Integer16Array(length));
-        supArray.addLast(new Integer32Array(teid));
+        supArray.addLast(new Integer08Array(this.messageType));
         
-        if(sequenceNumberFlag != 0)
+        supArray.addLast(new Integer16Array(this.length));
+        
+        supArray.addLast(new Integer32Array(this.tunnelEndpointId));
+        
+        if (this.sequenceNumberFlag != 0)
         {
-        	supArray.addLast(new Integer16Array(sequenceNumber));
+        	supArray.addLast(new Integer16Array(this.sequenceNumber));	
         }
-    	if(nPduNumberFlag != 0)
-    	{
-    		 supArray.addLast(new Integer08Array(nPduNumber));
-    	}
-    	if(extensionHeaderFlag != 0)
-    	{
-    		supArray.addLast(new Integer08Array(nextExtensionType)); 
-    	}
+
+        if (this.nPduNumberFlag != 0)
+        {
+        	supArray.addLast(new Integer08Array(this.nPduNumber));	
+        }
+        
+        if (this.extensionHeaderFlag != 0)
+        {
+        	supArray.addLast(new Integer08Array(this.nextExtensionType));	
+        }
+        
         return supArray;
     }
 	
-	public void parseArray(InputStream stream, GtppDictionary dictionary) throws Exception
+	@Override
+	public void decodeFromArray(Array data, String syntax, Dictionary dictionary) throws Exception
+	{
+		// throw new Exception("Method is not implemented !");
+		// Nothing to do
+	}
+	
+	public void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception
     {
+		this.dictionary = dictionary;
+		
 		byte[] header = new byte[1];
         stream.read(header, 0, 1);
         Array array = new DefaultArray(header); 
-        messageType = (new Integer08Array(array).getValue());
-        name = dictionary.getMessageNameFromType(messageType);
+        this.messageType = (new Integer08Array(array).getValue());
+    	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+	    this.name = field._hashMapEnumByValue.get(messageType);
         
         header = new byte[2];
         stream.read(header, 0, 2);
         array = new DefaultArray(header); 
-        length = (new Integer16Array(array).getValue());
+        this.length = (new Integer16Array(array).getValue());
         
-        header = new byte[4];
+    	header = new byte[4];
         stream.read(header, 0, 4);
         array = new DefaultArray(header); 
-        teid = (new Integer32Array(array).getValue());
+        this.tunnelEndpointId = (new Integer32Array(array).getValue());
         
-    	if(sequenceNumberFlag != 0)
-    	{	
-    		header = new byte[2];
-    		stream.read(header, 0, 2);
-    		array = new DefaultArray(header); 
-    		sequenceNumber = (new Integer16Array(array).getValue()); 
-    	}
-    	if(extensionHeaderFlag != 0)
-    	{
-    		header = new byte[1];
-    		stream.read(header, 0, 1);
-    		array = new DefaultArray(header);
-    		nPduNumber = (new Integer08Array(array).getValue());
-    	}
-    	if(extensionHeaderFlag != 0)
-    	{	
-    		header = new byte[1];
-    		stream.read(header, 0, 1);
-    		array = new DefaultArray(header);
-    		nextExtensionType = (new Integer08Array(array).getValue());
-    	}
+        if (this.sequenceNumberFlag != 0)
+        {
+	    	header = new byte[2];
+	    	stream.read(header, 0, 2);
+	    	array = new DefaultArray(header); 
+	    	this.sequenceNumber = (new Integer16Array(array).getValue()); 
+        }
+        
+        if (this.nPduNumberFlag != 0)
+        {
+	    	header = new byte[1];
+	    	stream.read(header, 0, 1);
+	    	array = new DefaultArray(header); 
+	    	this.nPduNumber = (new Integer08Array(array).getValue()); 
+        }
+        
+        if (this.extensionHeaderFlag != 0)
+        {
+	    	header = new byte[1];
+	    	stream.read(header, 0, 1);
+	    	array = new DefaultArray(header); 
+	    	this.nextExtensionType = (new Integer08Array(array).getValue()); 
+        }
+    	
     }
 	
-	@Override
-    public GtpHeaderV1 clone()
+    @Override
+    public void getParameter(Parameter var, String param) 
     {
-    	GtpHeaderV1 clone = new GtpHeaderV1();
-
-        clone.setName(getName());
-        clone.setVersion(version);
-        clone.setVersionName(versionName);               
-        clone.setProtocolType(protocolType);
-        clone.setExtensionHeaderFlag(extensionHeaderFlag);
-        clone.setSequenceNumberFlag(sequenceNumberFlag); 
-        clone.setnPduNumberFlag(nPduNumberFlag); 
-        clone.setMessageType(messageType);
-        clone.setLength(length);
-        clone.setTeid(teid); 
-        if(sequenceNumberFlag != 0)
-        	clone.setSequenceNumber(sequenceNumber);
-        if(extensionHeaderFlag != 0)
-        	clone.setnPduNumber(nPduNumber); 
-        if(extensionHeaderFlag != 0)
-        	clone.setNextExtensionType(nextExtensionType);
-
-        return clone;
+    	// TODO
     }
-	
-	@Override
-    public String toString()
-    {
-        String str = name + ", length " + length + ", TEID "+ teid + ", N-PDU Number " + nPduNumber 
-        		+ ", Next Extension Header Type " + nextExtensionType + ", messageType " + messageType 
-        		+ ", version " + version + ", seqNum " + sequenceNumber + "\r\n";
-        
-        return str;
-    }
-	
-	public void parseXml(Element header, GtppDictionary dictionary) throws Exception
-    {
-        String msgName = header.attributeValue("name");
-        String msgType = header.attributeValue("type");
-
-        if((msgType != null) && (msgName != null))
-            throw new Exception("type and name of the message " + msgName + " must not be set both");
-
-        if((msgType == null) && (msgName == null))
-            throw new Exception("One of the parameter type or name of the message header must be set");
-
-        if(msgName != null)
-        {
-            this.name = msgName;
-            this.messageType = dictionary.getMessageTypeFromName(msgName);
-        }
-        else if(msgType != null)
-        {	
-        	this.messageType = Integer.parseInt(msgType); 
-        	this.name = dictionary.getMessageNameFromType(this.messageType);
-        }
-        
-        String msgSeqNum = header.attributeValue("sequenceNumber");
-        if(msgSeqNum != null)
-        {
-        	this.sequenceNumberFlag = 1;
-        	sequenceNumber = Integer.parseInt(msgSeqNum);
-        }
-        String nPduNum = header.attributeValue("nPduNumber");
-        if(nPduNum != null)
-        {
-        	this.nPduNumberFlag = 1;
-        	nPduNumber = Integer.parseInt(nPduNum);
-        }
-        String extNum = header.attributeValue("nextExtensionType");
-        if(extNum != null)
-        {
-        	this.extensionHeaderFlag = 1;
-        	nextExtensionType = Integer.parseInt(extNum);
-        }
-        
-
-    }
-
+    	
 }
-
-

@@ -9,8 +9,8 @@
     <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="3387"/>
 
     <sendMessageGTP name="echo Request" channel="[connection]">
-        <header discriminator="Recommendation Q.931/I.451" layer3Address="h77f4"  type="echoRequest"/>
-        <!--headerV2 name="echoRequest" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "111" sequenceNumber="1"/-->
+        <!--header discriminator="Recommendation Q.931/I.451" layer3Address="h77f4"  type="echoRequest"/-->
+        <headerV2 name="echoRequest" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "111" sequenceNumber="1"/>
     </sendMessageGTP>
 
     <receiveMessageGTP name="echoResponse">

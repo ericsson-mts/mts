@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.core.coding.q931;
 
+import java.io.InputStream;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -44,26 +46,39 @@ public abstract class Header {
     
     protected Dictionary dictionary; 
 
-    protected int _length;
+    protected int length;
+    
+    protected String syntax;
 
-    public Header(Dictionary dictionary)
+    public Header()
     {
-    	this.dictionary = dictionary;
     }
     
     public abstract boolean isRequest();
     public abstract String getType();
-
-    public int getLength() {
-		return _length;
-	}
+    public abstract String getSyntax();
     
-    public abstract void parseFromXML(Element header)  throws Exception;
+    public abstract void parseFromXML(Element header, Dictionary dictionary) throws Exception;
     public abstract String toXML();
     
-    public abstract void decodeFromArray(Array data, String syntax);
+    public abstract void decodeFromArray(Array data, String syntax, Dictionary dictionary) throws Exception;
+	public abstract void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception;
     public abstract Array encodeToArray();
 
     public abstract void getParameter(Parameter var, String param);
     
+    public String toString()
+    {
+    	return toXML();
+    }
+
+    public int getLength() 
+    {
+		return this.length;
+	}
+    
+    public void setLength(int length)
+    {
+    	this.length = length;
+    }
 }

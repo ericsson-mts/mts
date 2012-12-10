@@ -11,79 +11,46 @@
 
     <headerQ931>
 
-        <field name="Protocol discriminator" lengthBit="8" type="enumeration">
-            <enum value="b0001000" name="Recommendation Q.931/I.451" />
-            <enum value="b0001001" name="Recommendation Q.2931" />
+        <field name="Version" lengthBit="3" type="enumeration">
+            <enum value="2" name="3GPP TS 29.274 : GTPv2-C" />
         </field>
 
-        <field name="Call reference flag" lengthBit="1" type="enumeration">
-            <enum value="b0" name="Sent from the side that originates the call reference" />
-            <enum value="b1" name="Sent to the side that originates the call reference" />
-        </field>
+        <field name="Piggy Flag" lengthBit="1" type="boolean"> </field>
+        
+        <field name="TEID Flag" lengthBit="1" type="boolean"> </field>
+        
+        <field name="Spare1" lengthBit="3" type="integer"> </field>
 
-        <field name="Message type" lengthBit="7" type="enumeration">
+        <field name="Message Type" lengthBit="8" type="enumeration">
             <enum value="1" name="echoRequest" />
             <enum value="2" name="echoResponse" />
-            <enum value="b0000111" name="CONNECT" />
-            <enum value="b0001111" name="CONNECT ACKNOWLEDGE" />
-            <enum value="b0000011" name="PROGRESS" />
-            <enum value="b0000101" name="SETUP" />
-            <enum value="b0001101" name="SETUP ACKNOWLEDGE" />
-		<!-- 0 0 1  Call information phase message: -->
-            <enum value="b0100110 " name="RESUME" />
-            <enum value="b0101110" name="RESUME ACKNOWLEDGE" />
-            <enum value="b0100010" name="RESUME REJECT" />
-            <enum value="b0100101" name="SUSPEND" />
-            <enum value="b0101101" name="SUSPEND ACKNOWLEDGE" />
-            <enum value="b0100001" name="SUSPEND REJECT" />
-            <enum value="b0100000" name="USER INFORMATION" />
-		<!-- 0 1 0  Call clearing messages: -->
-            <enum value="b1000101" name="DISCONNECT" />
-            <enum value="b1001101" name="RELEASE" />
-            <enum value="b1011010" name="RELEASE COMPLETE" />
-            <enum value="b1000110" name="RESTART"/>
-            <enum value="b1001110" name="RESTART ACKNOWLEDGE" />
-		<!-- 0 1 1  Miscellaneous messages: -->
-            <enum value="b1111001" name="CONGESTION CONTROL" />
-            <enum value="b1111011" name="INFORMATION" />
-            <enum value="b1101110" name="NOTIFY" />
-            <enum value="b1111101" name="STATUS" />
-            <enum value="b01110101" name="STATUS ENQUIRY" />
+            <enum value="3" name="versionNotSupported" />
+            
+            <enum value="32" name="createSessionRequest" />
+            <enum value="33" name="createSessionResponse" />
         </field>
+        
+        <field name="Message Length" lengthBit="16" type="integer"> </field>
+        
+        <field name="Tunnel Endpoint Identifier" lengthBit="32" type="integer"> </field>
+        
+        <field name="Sequence Number" lengthBit="24" type="integer"> </field>
+        
+        <field name="Spare2" lengthBit="8" type="integer"> </field>
+        
     </headerQ931>
-
-
-    <!--message name="echoRequest" messageType="1">
-        <element name="privateExtension"/>
-    </message>
-
-    <message name="echoResponse" messageType="2">
-        <element name="Recovery"/>
-        <element name="privateExtension"/>
-    </message>
-
-    <message name="versionNotSupported" messageType="3">
-    </message>
-    
-	 <message name="createSessionRequest" messageType="32">
-        <element name="International Mobile Subscriber Identity (IMSI)" mandatory="true"/>
-   </message>    
-
-	 <message name="createSessionResponse" messageType="33">
-        <ei name="International Mobile Subscriber Identity (IMSI)" mandatory="true"/>
-   </message-->    
 	
     <element identifier="1" name="International Mobile Subscriber Identity (IMSI)" coding="TLIV">
     		<field name="extensionIdentifier" lengthBit="8" type="integer"/>
     </element>
     
     <element identifier="3" name="Recovery"  coding="TLIV">
-		    <field name="extensionIdentifier" lengthBit="8" type="integer"/>
+		    <field name="Recovery" lengthBit="8" type="integer"/>
     </element>
             	    
 	  <element identifier="255" name="privateExtension" coding="TLIV">
 		    <field name="extensionIdentifier" lengthBit="16" type="integer"/>
-        <attribute name="extensionValue" format="string"/>
+        <field name="extensionValue" type="string"/>
 	  </element>
 
 
