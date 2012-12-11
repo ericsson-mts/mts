@@ -56,9 +56,8 @@ public class MessageQ931 {
     private HeaderAbstract header;
     
     private LinkedHashMap<Integer, ElementQ931> hashElementQ931Vs;
-    
-    
-     public MessageQ931(Element root) throws Exception 
+
+	public MessageQ931(Element root) throws Exception 
      {
         this.syntax = root.attributeValue("syntax");
         initDictionary(syntax);       
@@ -115,7 +114,8 @@ public class MessageQ931 {
         }
     }
 
-    public MessageQ931(Array data, String syntax) throws Exception {
+    public MessageQ931(Array data, String syntax) throws Exception 
+    {
     	this.syntax = syntax;
         initDictionary(syntax);
         
@@ -157,7 +157,8 @@ public class MessageQ931 {
     }
 
     /** Get a parameter from the message */
-    public void getParameter(Parameter var, String[] params, String path) throws Exception {
+    public void getParameter(Parameter var, String[] params, String path) throws Exception 
+    {
         if (params.length > 2 && params[1].equalsIgnoreCase("header")) 
         {
             this.header.getParameter(var, params[2]);
@@ -194,7 +195,8 @@ public class MessageQ931 {
         }
     }
 
-    public Array getValue() {
+    public Array getValue() 
+    {
         SupArray array = new SupArray();
         array.addLast(header.encodeToArray());
         for (Entry<Integer, ElementQ931> entry : hashElementQ931Vs.entrySet()) {
@@ -203,12 +205,14 @@ public class MessageQ931 {
         return array;
     }
 
-    public String getType() {
+    public String getType() 
+    {
 	    return header.getType();
     }
     
     @Override
-    public String toString() {
+    public String toString() 
+    {
         StringBuilder messageToString = new StringBuilder();
         messageToString.append("<ISDN>");
         messageToString.append(header.toString());
@@ -222,11 +226,13 @@ public class MessageQ931 {
 
     }
 
-    public HeaderAbstract getHeader() {
+    public HeaderAbstract getHeader() 
+    {
         return header;
     }
 
-    public int getLength() {
+    public int getLength() 
+    {
 
         int msglength = 0;
         msglength = header.encodeToArray().length;
@@ -237,8 +243,13 @@ public class MessageQ931 {
         }
         return msglength;
     }
-    
-    public void initDictionary(String syntax) throws Exception {
+
+    public ElementQ931 getElementQ931(int id) 
+    {
+		return hashElementQ931Vs.get(id);
+	}
+    public void initDictionary(String syntax) throws Exception 
+    {
     	this.dictionary = MessageQ931.dictionaries.get(syntax);
     	if (this.dictionary == null)
     	{
