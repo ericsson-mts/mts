@@ -21,9 +21,10 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.core.coding.q931;
+package com.devoteam.srit.xmlloader.gtpp.data;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.coding.q931.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.maps.LinkedHashMap;
@@ -43,68 +44,44 @@ import org.dom4j.Element;
  *
  * @author Fabien Henry
  */
-public class ElementQ931 extends ElementAbstract
+public class ElementTLIV extends ElementAbstract
 {
 
-    public ElementQ931()
+	// protected int spare;
+	protected int instances;
+	
+    public ElementTLIV()
     {
     	
     }
     
-    public void decodeFromArray(Array array, boolean bigLength, boolean fromdata) {
-        _bigLength = bigLength;
+    public void decodeFromArray(Array array, boolean bigLength, boolean fromdata) 
+    {
         if (fromdata) {
 	        this._idArray = new Integer08Array(array.subArray(0, 1));
-	        if (getHashMapFields().size() >= 1)
-            {
-		        if (bigLength == true) {
-		            int length = new Integer16Array(array.subArray(1, 2)).getValue();
-		            _value = array.subArray(0, length + 3);
-		            _fields = _value.subArray(3);
-		        }
-		        else {
-		            int length = new Integer08Array(array.subArray(1, 1)).getValue();
-		            _value = array.subArray(0, length + 2);
-		            _fields = _value.subArray(2);
-		        }	            	
-		    }
+	        int length = new Integer16Array(array.subArray(1, 2)).getValue();
+	        this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
+	        _value = array.subArray(0, length + 4);
+	        _fields = _value.subArray(4);
         }
-        else {
-	    	_idArray = new Integer08Array(array.subArray(0, 1));
-	        _idArray.setValue(getId());
-            if (getHashMapFields().size() >= 1)
-            {
-		        _value = array;
-		        if (bigLength) {
-		            _fields = _value.subArray(3);
-		        }
-		        else {
-		            Integer08Array length = new Integer08Array(array.subArray(1, 1));
-		            length.setValue(array.length - 2);
-		            _fields = _value.subArray(2);
-		        }
-            }
+        else 
+        {
+	    	this._idArray = new Integer08Array(array.subArray(0, 1));
+	        this._idArray.setValue(getId());
+	        this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
+	        _value = array;
+		    _fields = _value.subArray(4);
         }
     }
 
-    
     public Array encodeToArray() {
         SupArray sup = new SupArray();
         sup.addLast(_idArray);
-        if (_fields != null)
-        {
-		    Integer08Array length8 = new Integer08Array(_fields.length);
-		    if (length8.getValue() != 0)
-		    {
-		    	if (_bigLength) {
-		    		sup.addLast(new Integer16Array(_fields.length));
-		    	}
-		    	else {
-		    		sup.addLast(length8);
-		    	}        
-		    	sup.addLast(_fields);
-		    }
-        }
+	    Integer16Array lengthArray = new Integer16Array(_fields.length);
+	    sup.addLast(lengthArray);
+	    Integer08Array instancesArray = new Integer08Array(this.instances);
+	    sup.addLast(instancesArray);
+		sup.addLast(_fields);
         return sup;
     }
 
