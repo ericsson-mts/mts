@@ -39,7 +39,7 @@ import org.dom4j.Element;
  */
 public class ElementQ931 {
 
-    private int _id;
+    protected int _id;
     private String _name;
     
     private LinkedHashMap<String, Field> _hashMapFields = new LinkedHashMap<String, Field>();
