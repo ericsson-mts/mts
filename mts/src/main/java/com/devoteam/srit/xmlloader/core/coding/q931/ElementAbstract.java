@@ -51,7 +51,7 @@ public abstract class ElementAbstract
     
     protected LinkedHashMap<String, Field> _hashMapFields = new LinkedHashMap<String, Field>();
     
-    protected Array _value;
+	protected Array _value;
     protected Array _fields;
     
     protected boolean _bigLength;
@@ -218,6 +218,5 @@ public abstract class ElementAbstract
     public void setFields(Array _fields) {
         this._fields = _fields;
     }
-    
     
 }

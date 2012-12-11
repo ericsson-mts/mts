@@ -99,8 +99,8 @@ public class MsgH225cs extends Msg {
     @Override
     public byte[] getBytesData() {
        // get field and element for ASN1 and set value
-       if (msgQ931.getElementInformationQ931s(126) != null) {
-    	   ElementQ931 elemV_asn1 = msgQ931.getElementInformationQ931s(126);
+       if (msgQ931.getElementQ931(126) != null) {
+    	   ElementQ931 elemV_asn1 = msgQ931.getElementQ931(126);
         }
 
        SupArray arr = new SupArray();
