@@ -41,126 +41,15 @@ import org.dom4j.Element;
 
 /**
  *
- * @author indiaye
+ * @author Fabien Henry
  */
-public class ElementQ931 {
+public class ElementQ931 extends ElementAbstract
+{
 
-    protected int _id;
-    private String _name;
-    
-    private LinkedHashMap<String, Field> _hashMapFields = new LinkedHashMap<String, Field>();
-    
-    private Array _value;
-    private Array _fields;
-    boolean _bigLength;
-    private Integer08Array _idArray;
-
-    public ElementQ931(Element element, Dictionary dictionary) throws Exception {
-        //si elem ds dico on prend dico sinon on envoi ce qu'il y  ads le fichier xml
-        String idStr = element.attributeValue("identifier").trim();
-        ElementQ931 elemDico = null;
-    	try 
-    	{
-    		byte[] idBytes = Utils.parseBinaryString(idStr);
-    		_id = idBytes[0] & 0xff;
-            if (idBytes.length > 1)
-            {
-            	throw new ExecutionException("ISDN layer : Reading the element Id from XML file : value is too long " + idStr);
-            }                
-
-    		if (dictionary != null)
-    		{
-    			elemDico = dictionary.getMapElementById().get(_id);
-    		}
-    	}
-    	catch (Exception e) 
-    	{
-    		if (dictionary == null)
-    		{
-    			throw new ExecutionException("ISDN layer : The element identifier \"" + idStr + "\" is not valid : " + idStr);
-    		}
-    		elemDico = dictionary.getMapElementByName().get(idStr);    		
-    		if (elemDico == null)
-    		{
-            	throw new ExecutionException("ISDN layer : The element \"" + idStr + "\" for the ISDN layer is not present in the dictionnary.");            	            	
-            }        				
-    		_id = elemDico.getId();
-    	}        	    		
-        if (elemDico != null)
-        {
-        	_name = elemDico.getName();
-        }
-        else
-        {
-        	_name = element.attributeValue("name");
-        }
-        List<Element> listField = element.elements("field");
-        for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
-            Element elemField = it.next();
-            String name = elemField.attributeValue("name");
-            Field field = null;
-            if (elemDico != null)
-            {
-            	field = elemDico.getHashMapFields().get(name); 
-            }
-            if (field == null)
-            {
-             	String type = elemField.attributeValue("type");
-	            if (type.equalsIgnoreCase("integer")) {
-	                field = new IntegerField(elemField);
-	
-	            } else if (type.equalsIgnoreCase("boolean")) {
-	
-	                field = new BooleanField(elemField);
-	
-	            } else if (type.equalsIgnoreCase("enumeration")) {
-	                field = new EnumerationField(elemField);
-	
-	            } else if (type.equalsIgnoreCase("string")) {
-	                field = new StringField(elemField);	
-	            } else if (type.equalsIgnoreCase("binary")) {
-	                field = new BinaryField(elemField);
-	
-	            }else
-	            {
-	            	throw new ExecutionException("ISDN layer : The field type \"" + type + "\" is not supported : " + idStr);    
-	            }
-            }
-            else
-            {
-            	// int length = Integer.parseInt(elemField.attributeValue("lengthBit"));
-            	// field.setLength(length);
-            }
-            _hashMapFields.put(elemField.attributeValue("name"), field);
-        }
-       
+    public ElementQ931()
+    {
+    	
     }
-    
-    public String toString() {
-
-        StringBuilder elemString = new StringBuilder();
-        elemString.append("<element ");
-        elemString.append("identifier=\"");
-    	if (_name != null)
-    	{
-    		elemString.append(_name + ":");
-    	}
-    	elemString.append(_idArray.getValue());
-        if (_fields != null)
-        {
-            elemString.append(" value=\"" + Array.toHexString(_fields));
-        }
-        elemString.append("\">");
-        elemString.append("\n");
-        for (Entry<String, Field> e : getHashMapFields().entrySet()) {
-            elemString.append(e.getValue().toString(this.getFieldsArray()));
-        }
-
-        elemString.append("</element>");
-        elemString.append("\n");
-        return elemString.toString();
-    }
-
     
     public void decodeFromArray(Array array, boolean bigLength, boolean fromdata) {
         _bigLength = bigLength;
@@ -220,56 +109,6 @@ public class ElementQ931 {
         }
         return sup;
     }
-    
-    public void getParameter(Parameter var, String[] params, String path) throws Exception {
-        if (params.length ==3) 
-        {
-        	if (this._value != null)
-        	{
-        		var.add(Array.toHexString(this._value));
-        	}
-        }
-        else if (params.length > 4 && (params[3].equalsIgnoreCase("field"))) 
-        {
-        	Field field = getHashMapFields().get(params[4]);
-        	if (field != null)
-        	{	
-        		var.add(field.getValue(this.getFieldsArray()));
-        	}
-        }
-        else
-        {
-           	Parameter.throwBadPathKeywordException(path);
-        }
-    }
-    
-    public int getLengthElem() {
-        int length = 0;
-        for (Entry<String, Field> field : _hashMapFields.entrySet()) {
-            length += field.getValue().getLength();
-        }
-        return length;
-    }
-
-    public LinkedHashMap<String, Field> getHashMapFields() {
-        return _hashMapFields;
-    }
-
-    public int getId() {
-        return _id;
-    }
-
-	public String getName() {
-		return _name;
-	}
-	
-    public Array getFieldsArray() {
-        return _fields;
-    }
-
-    public void setFields(Array _fields) {
-        this._fields = _fields;
-    }
-    
+       
     
 }

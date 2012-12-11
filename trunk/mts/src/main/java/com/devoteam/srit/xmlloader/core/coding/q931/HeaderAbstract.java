@@ -40,7 +40,7 @@ import org.dom4j.Element;
 
 /**
  *
- * @author indiaye
+ * @author Fabien Henry
  */
 public abstract class HeaderAbstract {
     

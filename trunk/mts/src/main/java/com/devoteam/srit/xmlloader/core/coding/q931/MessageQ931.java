@@ -55,22 +55,23 @@ public class MessageQ931 {
     	
     private HeaderAbstract header;
     
-    private LinkedHashMap<Integer, ElementQ931> hashElementInformationQ931Vs;
+    private LinkedHashMap<Integer, ElementQ931> hashElementQ931Vs;
     
     
-     public MessageQ931(Element root) throws Exception {
+     public MessageQ931(Element root) throws Exception 
+     {
         this.syntax = root.attributeValue("syntax");
         initDictionary(syntax);       
         
         this.header = new HeaderQ931();
         this.header.parseFromXML(root.element("header"), dictionary);
         
-        hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementQ931>();
+        hashElementQ931Vs = new LinkedHashMap<Integer, ElementQ931>();
         List<Element> elementsInf = root.elements("element");
         ElementQ931 elem = null;
         for (Element element : elementsInf) {
-            List<Element> listField = element.elements("field");
-            elem = new ElementQ931(element, dictionaries.get(this.syntax));
+            elem = new ElementQ931();
+            elem.parseFromXML(element, dictionaries.get(this.syntax));
             // TODO améliorer pour prendre en compte la valeur en binaire, décimal, hexa...            
             /* FH remove because not well decoded with Wireshark  
             if (elem.getId() == 126) {
@@ -86,6 +87,8 @@ public class MessageQ931 {
                 elem.decodeFromArray(array, false, false);
 
             }
+            
+            List<Element> listField = element.elements("field");
             //boucle pour setter tous les field de elemV
             int offset = 0;
             for (Iterator<Element> it = listField.iterator(); it.hasNext();) 
@@ -107,7 +110,7 @@ public class MessageQ931 {
                     throw new ExecutionException("The field " + element1.attributeValue("name") + " is not found in element : " + elem.getName() + ":" + elem.getId());
                 }
             }
-            this.hashElementInformationQ931Vs.put(elem.getId(), elem);
+            this.hashElementQ931Vs.put(elem.getId(), elem);
 
         }
     }
@@ -124,7 +127,7 @@ public class MessageQ931 {
 
         this.header.decodeFromArray(data, syntax, dictionary);
         
-        hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementQ931>();
+        hashElementQ931Vs = new LinkedHashMap<Integer, ElementQ931>();
         int offset = header.getLength();
         while (offset < data.length) {
             int id = new Integer08Array(data.subArray(offset, 1)).getValue();
@@ -148,7 +151,7 @@ public class MessageQ931 {
             else {
                 offset += 1;
             }
-            hashElementInformationQ931Vs.put(id, elemInfo);
+            hashElementQ931Vs.put(id, elemInfo);
         }
 
     }
@@ -179,7 +182,7 @@ public class MessageQ931 {
         			id = elem.getId();
         		}
         	}        	
-        	ElementQ931 elem = hashElementInformationQ931Vs.get(id);
+        	ElementQ931 elem = hashElementQ931Vs.get(id);
         	if (elem != null)
         	{
         		elem.getParameter(var, params, path);
@@ -194,7 +197,7 @@ public class MessageQ931 {
     public Array getValue() {
         SupArray array = new SupArray();
         array.addLast(header.encodeToArray());
-        for (Entry<Integer, ElementQ931> entry : hashElementInformationQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementQ931> entry : hashElementQ931Vs.entrySet()) {
             array.addLast(entry.getValue().encodeToArray());
         }
         return array;
@@ -210,7 +213,7 @@ public class MessageQ931 {
         messageToString.append("<ISDN>");
         messageToString.append(header.toString());
 
-        for (Entry<Integer, ElementQ931> entry : hashElementInformationQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementQ931> entry : hashElementQ931Vs.entrySet()) {
 
             messageToString.append(entry.getValue().toString());
         }
@@ -223,16 +226,11 @@ public class MessageQ931 {
         return header;
     }
 
-    public ElementQ931 getElementInformationQ931s(int id) {
-        return hashElementInformationQ931Vs.get(id);
-
-    }
-
     public int getLength() {
 
         int msglength = 0;
         msglength = header.encodeToArray().length;
-        for (Entry<Integer, ElementQ931> entry : hashElementInformationQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementQ931> entry : hashElementQ931Vs.entrySet()) {
 
             msglength += entry.getValue().encodeToArray().length;
 
