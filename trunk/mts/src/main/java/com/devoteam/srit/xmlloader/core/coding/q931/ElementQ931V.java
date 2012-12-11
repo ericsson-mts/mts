@@ -40,16 +40,14 @@ public class ElementQ931V {
     private Array _value;
     private Array _fields;
     boolean _bigLength;
-    private Integer08Array _id;
-    boolean _fromdata;
+    private Integer08Array _idArray;
 
     public ElementQ931V(Array array, boolean bigLength, boolean fromdata, ElementQ931 elem) {
         _elementInformation = elem;
-        _fromdata = fromdata;
         _bigLength = bigLength;
         if (fromdata) {
-	        _id = new Integer08Array(array.subArray(0, 1));
-            if ((elem != null) && (elem.getHashMapFields().size() >= 1))
+	        this._idArray = new Integer08Array(array.subArray(0, 1));
+	        if ((elem != null) && (elem.getHashMapFields().size() >= 1))
             {
 		        if (bigLength == true) {
 		            int length = new Integer16Array(array.subArray(1, 2)).getValue();
@@ -64,7 +62,7 @@ public class ElementQ931V {
 		    }
         }
         else {
-	    	_id = new Integer08Array(array.subArray(0, 1));
+	    	_idArray = new Integer08Array(array.subArray(0, 1));
 	        setId();
             if ((elem != null) && (elem.getHashMapFields().size() >= 1))
             {
@@ -89,7 +87,7 @@ public class ElementQ931V {
 
     public Array getArray() {
         SupArray sup = new SupArray();
-        sup.addLast(_id);
+        sup.addLast(_idArray);
         if (_fields != null)
         {
 		    Integer08Array length8 = new Integer08Array(_fields.length);
@@ -108,7 +106,7 @@ public class ElementQ931V {
     }
 
     public int getId() {
-        return _id.getValue();
+        return _idArray.getValue();
     }
 
     public Array getFieldsArray() {
@@ -120,7 +118,7 @@ public class ElementQ931V {
     }
 
     private void setId() {
-        _id.setValue(_elementInformation.getId());
+        _idArray.setValue(_elementInformation.getId());
     }
 
     public void setElementInformation(ElementQ931 _elementInformation) {
@@ -139,7 +137,7 @@ public class ElementQ931V {
         	{
         		elemString.append(_elementInformation.getName() + ":");
         	}
-        	elemString.append(_id.getValue());
+        	elemString.append(_idArray.getValue());
         }
         if ((_elementInformation == null) && (_fields != null)){
             elemString.append(" value=\"" + Array.toHexString(_fields));
