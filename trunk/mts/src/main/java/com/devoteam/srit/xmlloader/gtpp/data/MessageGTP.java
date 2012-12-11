@@ -26,7 +26,6 @@ package com.devoteam.srit.xmlloader.gtpp.data;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.q931.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.q931.ElementAbstract;
-import com.devoteam.srit.xmlloader.core.coding.q931.ElementQ931;
 import com.devoteam.srit.xmlloader.core.coding.q931.Field;
 import com.devoteam.srit.xmlloader.core.coding.q931.HeaderAbstract;
 import com.devoteam.srit.xmlloader.core.coding.q931.XMLDoc;
@@ -97,10 +96,10 @@ public class MessageGTP {
         
         hashElements = new LinkedHashMap<Integer, ElementAbstract>();
         List<Element> elementsInf = root.elements("element");
-        ElementQ931 elem = null;
+        ElementAbstract elemInfo = null;
         for (Element element : elementsInf) {
-            elem = new ElementQ931();
-            elem.parseFromXML(element, dictionaries.get(this.syntax));
+            elemInfo = new ElementTLIV();
+            elemInfo.parseFromXML(element, dictionaries.get(this.syntax));
             // TODO améliorer pour prendre en compte la valeur en binaire, décimal, hexa...            
             /* FH remove because not well decoded with Wireshark  
             if (elem.getId() == 126) {
@@ -112,8 +111,8 @@ public class MessageGTP {
             else
             */ 
             {
-                Array array = new DefaultArray(elem.getLengthElem() / 8 + 2);
-                elem.decodeFromArray(array, false, false);
+                Array array = new DefaultArray(elemInfo.getLengthElem() / 8 + 4);
+                elemInfo.decodeFromArray(array, false, false);
 
             }
             
@@ -123,23 +122,23 @@ public class MessageGTP {
             for (Iterator<Element> it = listField.iterator(); it.hasNext();) 
             {
                 Element element1 = it.next();
-                Field field = elem.getHashMapFields().get(element1.attributeValue("name"));
+                Field field = elemInfo.getHashMapFields().get(element1.attributeValue("name"));
                 if (field != null) 
                 {
-                    Array result = field.setValue(element1.attributeValue("value"), offset, elem.getFieldsArray());
+                    Array result = field.setValue(element1.attributeValue("value"), offset, elemInfo.getFieldsArray());
                     if (result !=null)
                     {
-                    	elem.setFields(result);
+                    	elemInfo.setFields(result);
                     }
                     	
                     offset += field.getLength(); 
                 }
                 else 
                 {
-                    throw new ExecutionException("The field " + element1.attributeValue("name") + " is not found in element : " + elem.getName() + ":" + elem.getId());
+                    throw new ExecutionException("The field " + element1.attributeValue("name") + " is not found in element : " + elemInfo.getName() + ":" + elemInfo.getId());
                 }
             }
-            this.hashElements.put(elem.getId(), elem);
+            this.hashElements.put(elemInfo.getId(), elemInfo);
 
         }
     }
@@ -194,10 +193,10 @@ public class MessageGTP {
 
     private void parseFieldFromArray(Array data) throws Exception {
     	hashElements = new LinkedHashMap<Integer, ElementAbstract>();
-        int offset = header.getLength();
+        int offset = 0;
         while (offset < data.length) {
             int id = new Integer08Array(data.subArray(offset, 1)).getValue();
-            ElementQ931 elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
+            ElementAbstract elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
             boolean bigLength = false; 
             /* FH remove because not well decoded with Wireshark
             bigLength = id == 126;
@@ -242,13 +241,13 @@ public class MessageGTP {
         	}
         	catch (Exception e) 
         	{
-        		ElementQ931 elem = dictionaries.get(this.syntax).getMapElementByName().get(params[2]);
+        		ElementAbstract elem = dictionaries.get(this.syntax).getMapElementByName().get(params[2]);
         		if (elem != null)
         		{
         			id = elem.getId();
         		}
         	}        	
-        	ElementQ931 elemV = (ElementQ931) hashElements.get(id);
+        	ElementAbstract elemV = hashElements.get(id);
         	if (elemV != null)
         	{
         		elemV.getParameter(var, params, path);
@@ -312,7 +311,7 @@ public class MessageGTP {
 	        xml.setXMLFile(new URI(file));
 	        xml.parse();
 	        Element rootDico = xml.getDocument().getRootElement();
-	        this.dictionary = new Dictionary(rootDico);
+	        this.dictionary = new Dictionary(rootDico, "GTP");
 	        MessageGTP.dictionaries.put(syntax, dictionary);
     	}
     }

@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.coding.q931.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.q931.ElementQ931;
 import com.devoteam.srit.xmlloader.core.coding.q931.MessageQ931;
 import com.devoteam.srit.xmlloader.core.coding.tpkt.TPKTPacket;
@@ -100,7 +101,7 @@ public class MsgH225cs extends Msg {
     public byte[] getBytesData() {
        // get field and element for ASN1 and set value
        if (msgQ931.getElementQ931(126) != null) {
-    	   ElementQ931 elemV_asn1 = msgQ931.getElementQ931(126);
+    	   ElementAbstract elemV_asn1 = msgQ931.getElementQ931(126);
         }
 
        SupArray arr = new SupArray();

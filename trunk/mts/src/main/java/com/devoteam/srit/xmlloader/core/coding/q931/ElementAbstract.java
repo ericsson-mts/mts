@@ -61,7 +61,7 @@ public abstract class ElementAbstract
     {
         //si elem ds dico on prend dico sinon on envoi ce qu'il y  ads le fichier xml
         String idStr = element.attributeValue("identifier").trim();
-        ElementQ931 elemDico = null;
+        ElementAbstract elemDico = null;
     	try 
     	{
     		byte[] idBytes = Utils.parseBinaryString(idStr);

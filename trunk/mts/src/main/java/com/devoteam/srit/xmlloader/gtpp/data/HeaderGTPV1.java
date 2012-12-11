@@ -70,9 +70,9 @@ public class HeaderGTPV1 extends HeaderAbstract
 	{
     	this();
     	this.protocolType = flagArray.getBits(3, 1);
-    	this.extensionHeaderFlag = flagArray.getBits(4, 1);
-    	this.sequenceNumberFlag = flagArray.getBits(5, 1);
-    	this.nPduNumberFlag = flagArray.getBits(6, 1);
+    	this.extensionHeaderFlag = flagArray.getBits(5, 1);
+    	this.sequenceNumberFlag = flagArray.getBits(6, 1);
+    	this.nPduNumberFlag = flagArray.getBits(7, 1);
 	}
 
     @Override
