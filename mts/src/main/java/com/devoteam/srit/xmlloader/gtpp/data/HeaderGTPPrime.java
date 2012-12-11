@@ -27,9 +27,6 @@ import java.io.InputStream;
 
 import org.dom4j.Element;
 
-import com.devoteam.srit.xmlloader.gtpp.GtppDictionary;
-import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
-
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
@@ -40,7 +37,7 @@ import gp.utils.arrays.SupArray;
  *
  * @author El Aly Mohamad Bilal 
  */
-public class GtpHeaderPrime extends Header{
+public class HeaderGTPPrime extends HeaderAbstract{
 	
 	private String name;
     private int messageType;
@@ -50,13 +47,13 @@ public class GtpHeaderPrime extends Header{
     private int length = 0;
     private int sequenceNumber;
     
-    public GtpHeaderPrime() 
+    public HeaderGTPPrime() 
     {
     	this.protocolType = 0; 
     	this.version = 0; 
         this.versionName = "GTPPrime";
 	}
-    public GtpHeaderPrime(DefaultArray flagArray) 
+    public HeaderGTPPrime(DefaultArray flagArray) 
     {
     	this();
         this.version = flagArray.getBits(0,3);
@@ -166,9 +163,9 @@ public class GtpHeaderPrime extends Header{
     }
     
     @Override
-    public GtpHeaderPrime clone()
+    public HeaderGTPPrime clone()
     {
-    	GtpHeaderPrime clone = new GtpHeaderPrime();
+    	HeaderGTPPrime clone = new HeaderGTPPrime();
 
         clone.setName(getName());
         clone.setVersion(version);
@@ -182,7 +179,7 @@ public class GtpHeaderPrime extends Header{
     }
 
     @Override
-    public String toString()
+    public String toXML()
     {
         String str = name + ", length " + length + ", messageType " + messageType + ", version " + version + ", seqNum " + sequenceNumber + "\r\n";
         return str;

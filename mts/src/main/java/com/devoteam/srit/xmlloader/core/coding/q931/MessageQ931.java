@@ -26,7 +26,6 @@ package com.devoteam.srit.xmlloader.core.coding.q931;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderV2;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -54,9 +53,9 @@ public class MessageQ931 {
 	
     private Dictionary dictionary;
     	
-    private Header header;
+    private HeaderAbstract header;
     
-    private LinkedHashMap<Integer, ElementInformationQ931V> hashElementInformationQ931Vs;
+    private LinkedHashMap<Integer, ElementQ931V> hashElementInformationQ931Vs;
     
     
      public MessageQ931(Element root) throws Exception {
@@ -66,13 +65,13 @@ public class MessageQ931 {
         this.header = new HeaderQ931();
         this.header.parseFromXML(root.element("header"), dictionary);
         
-        hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementInformationQ931V>();
+        hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementQ931V>();
         List<Element> elementsInf = root.elements("element");
-        ElementInformationQ931 elem = null;
-        ElementInformationQ931V elemV = null;
+        ElementQ931 elem = null;
+        ElementQ931V elemV = null;
         for (Element element : elementsInf) {
             List<Element> listField = element.elements("field");
-            elem = new ElementInformationQ931(element, dictionaries.get(this.syntax));
+            elem = new ElementQ931(element, dictionaries.get(this.syntax));
             // TODO améliorer pour prendre en compte la valeur en binaire, décimal, hexa...            
             /* FH remove because not well decoded with Wireshark  
             if (elem.getId() == 126) {
@@ -85,7 +84,7 @@ public class MessageQ931 {
             */ 
             {
                 Array array = new DefaultArray(elem.getLengthElem() / 8 + 2);
-                elemV = new ElementInformationQ931V(array, false, false, elem);
+                elemV = new ElementQ931V(array, false, false, elem);
 
             }
             //boucle pour setter tous les field de elemV
@@ -123,19 +122,15 @@ public class MessageQ931 {
         {
 	        this.header = new HeaderQ931();
         }
-        if (syntax.contains("GTP"))
-        {
-	        this.header = new GtpHeaderV2();
-        }
 
         this.header.decodeFromArray(data, syntax, dictionary);
         
-        hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementInformationQ931V>();
+        hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementQ931V>();
         int offset = header.getLength();
-        ElementInformationQ931V elem = null;
+        ElementQ931V elem = null;
         while (offset < data.length) {
             int id = new Integer08Array(data.subArray(offset, 1)).getValue();
-            ElementInformationQ931 elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
+            ElementQ931 elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
             boolean bigLength = false; 
             /* FH remove because not well decoded with Wireshark
             bigLength = id == 126;
@@ -146,7 +141,7 @@ public class MessageQ931 {
             else
             */ 
             {
-                elem = new ElementInformationQ931V(data.subArray(offset), bigLength, true, elemInfo);
+                elem = new ElementQ931V(data.subArray(offset), bigLength, true, elemInfo);
             }
 
             if (elem.getArray().length > 0) {
@@ -180,13 +175,13 @@ public class MessageQ931 {
         	}
         	catch (Exception e) 
         	{
-        		ElementInformationQ931 elem = dictionaries.get(this.syntax).getMapElementByName().get(params[2]);
+        		ElementQ931 elem = dictionaries.get(this.syntax).getMapElementByName().get(params[2]);
         		if (elem != null)
         		{
         			id = elem.getId();
         		}
         	}        	
-        	ElementInformationQ931V elemV = hashElementInformationQ931Vs.get(id);
+        	ElementQ931V elemV = hashElementInformationQ931Vs.get(id);
         	if (elemV != null)
         	{
         		elemV.getParameter(var, params, path);
@@ -201,7 +196,7 @@ public class MessageQ931 {
     public Array getValue() {
         SupArray array = new SupArray();
         array.addLast(header.encodeToArray());
-        for (Entry<Integer, ElementInformationQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
             array.addLast(entry.getValue().getArray());
         }
         return array;
@@ -217,7 +212,7 @@ public class MessageQ931 {
         messageToString.append("<ISDN>");
         messageToString.append(header.toString());
 
-        for (Entry<Integer, ElementInformationQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
 
             messageToString.append(entry.getValue().toString());
         }
@@ -226,11 +221,11 @@ public class MessageQ931 {
 
     }
 
-    public Header getHeader() {
+    public HeaderAbstract getHeader() {
         return header;
     }
 
-    public ElementInformationQ931V getElementInformationQ931s(int id) {
+    public ElementQ931V getElementInformationQ931s(int id) {
         return hashElementInformationQ931Vs.get(id);
 
     }
@@ -239,7 +234,7 @@ public class MessageQ931 {
 
         int msglength = 0;
         msglength = header.encodeToArray().length;
-        for (Entry<Integer, ElementInformationQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
 
             msglength += entry.getValue().getArray().length;
 

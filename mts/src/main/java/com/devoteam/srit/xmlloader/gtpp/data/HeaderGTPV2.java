@@ -30,7 +30,7 @@ import org.dom4j.Element;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.q931.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.q931.EnumerationField;
-import com.devoteam.srit.xmlloader.core.coding.q931.Header;
+import com.devoteam.srit.xmlloader.core.coding.q931.HeaderAbstract;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -43,7 +43,7 @@ import gp.utils.arrays.SupArray;
 *
 * @author Fabien Henry 
 */
-public class GtpHeaderV2 extends Header 
+public class HeaderGTPV2 extends HeaderAbstract 
 {
 	
 	//Header composers 
@@ -55,13 +55,13 @@ public class GtpHeaderV2 extends Header
 	private int tunnelEndpointId;
 	private int sequenceNumber;
     
-    public GtpHeaderV2()
+    public HeaderGTPV2()
 	{
     	this.syntax = "GTPV2";
     	this.version = 2;
 	}
 	
-    public GtpHeaderV2(Array flagArray)
+    public HeaderGTPV2(Array flagArray)
 	{
     	this.syntax = "GTPV2";
     	this.version = 2;

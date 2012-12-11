@@ -42,17 +42,13 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public abstract class Header {
+public abstract class HeaderAbstract {
     
     protected Dictionary dictionary; 
 
     protected int length;
     
     protected String syntax;
-
-    public Header()
-    {
-    }
     
     public abstract boolean isRequest();
     public abstract String getType();

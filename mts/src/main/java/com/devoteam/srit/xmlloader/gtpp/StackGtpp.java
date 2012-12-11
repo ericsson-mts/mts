@@ -24,11 +24,6 @@
 package com.devoteam.srit.xmlloader.gtpp;
 
 import com.devoteam.srit.xmlloader.core.Runner;
-import com.devoteam.srit.xmlloader.core.coding.q931.Dictionary;
-import com.devoteam.srit.xmlloader.core.coding.q931.Header;
-import com.devoteam.srit.xmlloader.core.coding.q931.MessageQ931;
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -37,32 +32,10 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
-import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
-import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
-import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderPrime;
-import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderV1;
-import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderV2;
-import com.devoteam.srit.xmlloader.gtpp.data.GtppAttribute;
-import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
 import com.devoteam.srit.xmlloader.gtpp.data.MessageGTP;
-import com.devoteam.srit.xmlloader.gtpp.data.Tag;
-import com.devoteam.srit.xmlloader.gtpp.data.TagTLV;
-
-import gp.utils.arrays.Array;
-import gp.utils.arrays.DefaultArray;
-import gp.utils.arrays.Integer08Array;
-import gp.utils.arrays.Integer16Array;
-import gp.utils.arrays.Integer32Array;
-import gp.utils.arrays.SupArray;
 
 import java.io.InputStream;
 import java.net.InetAddress;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.dom4j.Element;
 
 /**

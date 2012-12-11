@@ -30,7 +30,7 @@ import org.dom4j.Element;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.q931.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.q931.EnumerationField;
-import com.devoteam.srit.xmlloader.core.coding.q931.Header;
+import com.devoteam.srit.xmlloader.core.coding.q931.HeaderAbstract;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -43,7 +43,7 @@ import gp.utils.arrays.SupArray;
 *
 * @author Fabien Henry 
 */
-public class GtpHeaderV1 extends Header 
+public class HeaderGTPV1 extends HeaderAbstract
 {
     
 	//Header composers 
@@ -59,14 +59,14 @@ public class GtpHeaderV1 extends Header
     private int nPduNumber;
     private int nextExtensionType;
     
-    public GtpHeaderV1()
+    public HeaderGTPV1()
 	{
     	this.syntax = "GTPV1";
     	this.version = 1;
     	this.protocolType = 1;
 	}
 	
-    public GtpHeaderV1(Array flagArray)
+    public HeaderGTPV1(Array flagArray)
 	{
     	this();
     	this.protocolType = flagArray.getBits(3, 1);

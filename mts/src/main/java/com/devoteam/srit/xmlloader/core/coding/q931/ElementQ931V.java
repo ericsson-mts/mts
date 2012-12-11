@@ -34,16 +34,16 @@ import java.util.Map.Entry;
  *
  * @author indiaye
  */
-public class ElementInformationQ931V {
+public class ElementQ931V {
 
-    private ElementInformationQ931 _elementInformation;
+    private ElementQ931 _elementInformation;
     private Array _value;
     private Array _fields;
     boolean _bigLength;
     private Integer08Array _id;
     boolean _fromdata;
 
-    public ElementInformationQ931V(Array array, boolean bigLength, boolean fromdata, ElementInformationQ931 elem) {
+    public ElementQ931V(Array array, boolean bigLength, boolean fromdata, ElementQ931 elem) {
         _elementInformation = elem;
         _fromdata = fromdata;
         _bigLength = bigLength;
@@ -83,7 +83,7 @@ public class ElementInformationQ931V {
         }
     }
 
-    public ElementInformationQ931 getElementInformation() {
+    public ElementQ931 getElementInformation() {
         return _elementInformation;
     }
 
@@ -123,7 +123,7 @@ public class ElementInformationQ931V {
         _id.setValue(_elementInformation.getId());
     }
 
-    public void setElementInformation(ElementInformationQ931 _elementInformation) {
+    public void setElementInformation(ElementQ931 _elementInformation) {
         this._elementInformation = _elementInformation;
     }
 

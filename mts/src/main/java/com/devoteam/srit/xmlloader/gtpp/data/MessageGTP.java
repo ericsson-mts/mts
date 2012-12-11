@@ -25,10 +25,10 @@ package com.devoteam.srit.xmlloader.gtpp.data;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.q931.Dictionary;
-import com.devoteam.srit.xmlloader.core.coding.q931.ElementInformationQ931;
-import com.devoteam.srit.xmlloader.core.coding.q931.ElementInformationQ931V;
+import com.devoteam.srit.xmlloader.core.coding.q931.ElementQ931;
+import com.devoteam.srit.xmlloader.core.coding.q931.ElementQ931V;
 import com.devoteam.srit.xmlloader.core.coding.q931.Field;
-import com.devoteam.srit.xmlloader.core.coding.q931.Header;
+import com.devoteam.srit.xmlloader.core.coding.q931.HeaderAbstract;
 import com.devoteam.srit.xmlloader.core.coding.q931.MessageQ931;
 import com.devoteam.srit.xmlloader.core.coding.q931.XMLDoc;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
@@ -36,7 +36,6 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.gtpp.MsgGtpp;
-import com.devoteam.srit.xmlloader.gtpp.data.GtpHeaderV2;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -65,9 +64,9 @@ public class MessageGTP {
 	
     private Dictionary dictionary;
     	
-    private Header header;
+    private HeaderAbstract header;
     
-    private LinkedHashMap<Integer, ElementInformationQ931V> hashElementInformationQ931Vs;
+    private LinkedHashMap<Integer, ElementQ931V> hashElementInformationQ931Vs;
     
     public MessageGTP()
     {
@@ -86,7 +85,7 @@ public class MessageGTP {
         elementHeader = root.element("headerV1");
         if (elementHeader!= null)
         {
-	        this.header = new GtpHeaderV1();
+	        this.header = new HeaderGTPV1();
 	        this.syntax = header.getSyntax();
 	        initDictionary(this.syntax); 
 	        this.header.parseFromXML(elementHeader, dictionary);
@@ -94,19 +93,19 @@ public class MessageGTP {
         elementHeader = root.element("headerV2");
         if (elementHeader!= null)
         {
-	        this.header = new GtpHeaderV2();
+	        this.header = new HeaderGTPV2();
 	        this.syntax = header.getSyntax();
 	        initDictionary(this.syntax); 
 	        this.header.parseFromXML(elementHeader, dictionary);
         }        
         
-        hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementInformationQ931V>();
+        hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementQ931V>();
         List<Element> elementsInf = root.elements("element");
-        ElementInformationQ931 elem = null;
-        ElementInformationQ931V elemV = null;
+        ElementQ931 elem = null;
+        ElementQ931V elemV = null;
         for (Element element : elementsInf) {
             List<Element> listField = element.elements("field");
-            elem = new ElementInformationQ931(element, dictionaries.get(this.syntax));
+            elem = new ElementQ931(element, dictionaries.get(this.syntax));
             // TODO améliorer pour prendre en compte la valeur en binaire, décimal, hexa...            
             /* FH remove because not well decoded with Wireshark  
             if (elem.getId() == 126) {
@@ -119,7 +118,7 @@ public class MessageGTP {
             */ 
             {
                 Array array = new DefaultArray(elem.getLengthElem() / 8 + 2);
-                elemV = new ElementInformationQ931V(array, false, false, elem);
+                elemV = new ElementQ931V(array, false, false, elem);
 
             }
             //boucle pour setter tous les field de elemV
@@ -170,11 +169,11 @@ public class MessageGTP {
          }
          else if (version == 1)
          {
-        	 header = new GtpHeaderV1(flagArray);
+        	 header = new HeaderGTPV1(flagArray);
          }
          else if (version == 2)
          {
-        	 header = new GtpHeaderV2(flagArray); 
+        	 header = new HeaderGTPV2(flagArray); 
          }
          
 	     this.syntax = header.getSyntax();
@@ -197,12 +196,12 @@ public class MessageGTP {
      }
 
     private void parseFieldFromArray(Array data) throws Exception {
-        hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementInformationQ931V>();
+        hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementQ931V>();
         int offset = header.getLength();
-        ElementInformationQ931V elem = null;
+        ElementQ931V elem = null;
         while (offset < data.length) {
             int id = new Integer08Array(data.subArray(offset, 1)).getValue();
-            ElementInformationQ931 elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
+            ElementQ931 elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
             boolean bigLength = false; 
             /* FH remove because not well decoded with Wireshark
             bigLength = id == 126;
@@ -213,7 +212,7 @@ public class MessageGTP {
             else
             */ 
             {
-                elem = new ElementInformationQ931V(data.subArray(offset), bigLength, true, elemInfo);
+                elem = new ElementQ931V(data.subArray(offset), bigLength, true, elemInfo);
             }
 
             if (elem.getArray().length > 0) {
@@ -247,13 +246,13 @@ public class MessageGTP {
         	}
         	catch (Exception e) 
         	{
-        		ElementInformationQ931 elem = dictionaries.get(this.syntax).getMapElementByName().get(params[2]);
+        		ElementQ931 elem = dictionaries.get(this.syntax).getMapElementByName().get(params[2]);
         		if (elem != null)
         		{
         			id = elem.getId();
         		}
         	}        	
-        	ElementInformationQ931V elemV = hashElementInformationQ931Vs.get(id);
+        	ElementQ931V elemV = hashElementInformationQ931Vs.get(id);
         	if (elemV != null)
         	{
         		elemV.getParameter(var, params, path);
@@ -267,7 +266,7 @@ public class MessageGTP {
 
     public Array getValue() {
         SupArray array = new SupArray();
-        for (Entry<Integer, ElementInformationQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
             array.addLast(entry.getValue().getArray());
         }
         header.setLength(array.length);
@@ -284,7 +283,7 @@ public class MessageGTP {
         StringBuilder messageToString = new StringBuilder();
         messageToString.append(header.toString());
 
-        for (Entry<Integer, ElementInformationQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
 
             messageToString.append(entry.getValue().toString());
         }
@@ -292,11 +291,11 @@ public class MessageGTP {
 
     }
 
-    public Header getHeader() {
+    public HeaderAbstract getHeader() {
         return header;
     }
 
-    public ElementInformationQ931V getElementInformationQ931s(int id) {
+    public ElementQ931V getElementInformationQ931s(int id) {
         return hashElementInformationQ931Vs.get(id);
 
     }
@@ -305,7 +304,7 @@ public class MessageGTP {
 
         int msglength = 0;
         msglength = header.encodeToArray().length;
-        for (Entry<Integer, ElementInformationQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
 
             msglength += entry.getValue().getArray().length;
 

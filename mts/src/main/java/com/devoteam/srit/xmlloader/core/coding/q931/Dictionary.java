@@ -36,8 +36,8 @@ import org.dom4j.Element;
  */
 public class Dictionary {
 	
-    public LinkedHashMap<String,ElementInformationQ931> mapElementByName=new LinkedHashMap<String, ElementInformationQ931>();
-    public LinkedHashMap<Integer,ElementInformationQ931> mapElementById=new LinkedHashMap<Integer, ElementInformationQ931>();
+    public LinkedHashMap<String,ElementQ931> mapElementByName=new LinkedHashMap<String, ElementQ931>();
+    public LinkedHashMap<Integer,ElementQ931> mapElementById=new LinkedHashMap<Integer, ElementQ931>();
     private LinkedHashMap<String,Field> mapHeader= new LinkedHashMap<String, Field>();
     
     public Dictionary(Element root) throws Exception {
@@ -48,17 +48,17 @@ public class Dictionary {
         }
         List<Element> list=root.elements("element");
         for (Element elem : list) {
-            ElementInformationQ931 elemInf = new ElementInformationQ931(elem, this);
+            ElementQ931 elemInf = new ElementQ931(elem, this);
             mapElementByName.put(elem.attributeValue("name"), elemInf);
             mapElementById.put((int)(Utils.parseBinaryString(elem.attributeValue("identifier"))[0] & 0xff), elemInf);
         }
 
     }
-    public LinkedHashMap<Integer, ElementInformationQ931> getMapElementById() {
+    public LinkedHashMap<Integer, ElementQ931> getMapElementById() {
         return mapElementById;
     }
 
-    public LinkedHashMap<String, ElementInformationQ931> getMapElementByName() {
+    public LinkedHashMap<String, ElementQ931> getMapElementByName() {
         return mapElementByName;
     }
 
