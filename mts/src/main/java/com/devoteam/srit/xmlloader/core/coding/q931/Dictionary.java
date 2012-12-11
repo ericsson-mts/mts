@@ -48,9 +48,10 @@ public class Dictionary {
         }
         List<Element> list=root.elements("element");
         for (Element elem : list) {
-            ElementQ931 elemInf = new ElementQ931(elem, this);
-            mapElementByName.put(elem.attributeValue("name"), elemInf);
-            mapElementById.put((int)(Utils.parseBinaryString(elem.attributeValue("identifier"))[0] & 0xff), elemInf);
+            ElementQ931 elemInfo = new ElementQ931();
+            elemInfo.parseFromXML(elem, this);
+            mapElementByName.put(elem.attributeValue("name"), elemInfo);
+            mapElementById.put((int)(Utils.parseBinaryString(elem.attributeValue("identifier"))[0] & 0xff), elemInfo);
         }
 
     }
