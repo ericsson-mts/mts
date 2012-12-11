@@ -24,15 +24,13 @@
 package com.devoteam.srit.xmlloader.h323.h225cs;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.core.coding.q931.ElementInformationQ931V;
+import com.devoteam.srit.xmlloader.core.coding.q931.ElementQ931V;
 import com.devoteam.srit.xmlloader.core.coding.q931.MessageQ931;
 import com.devoteam.srit.xmlloader.core.coding.tpkt.TPKTPacket;
+
 import gp.utils.arrays.Array;
 import gp.utils.arrays.SupArray;
 import org.dom4j.Element;
@@ -102,7 +100,7 @@ public class MsgH225cs extends Msg {
     public byte[] getBytesData() {
        // get field and element for ASN1 and set value
        if (msgQ931.getElementInformationQ931s(126) != null) {
-    	   ElementInformationQ931V elemV_asn1 = msgQ931.getElementInformationQ931s(126);
+    	   ElementQ931V elemV_asn1 = msgQ931.getElementInformationQ931s(126);
         }
 
        SupArray arr = new SupArray();

@@ -42,7 +42,7 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class HeaderQ931 extends Header {
+public class HeaderQ931 extends HeaderAbstract {
 
     private Integer08Array _discrimArray;
     private Array _callReferenceArray;
@@ -142,13 +142,13 @@ public class HeaderQ931 extends Header {
 	        Integer08Array length = new Integer08Array(data.subArray(1, 1));
 	        _callReferenceArray = data.subArray(2, length.getValue());
 	        _typeArray = new Integer08Array(data.subArray(2 + length.getValue(), 1));
-	        _length = 3 + length.getValue();
+	        this.length = 3 + length.getValue();
         }
         if (syntax.contains("v5x"))
         {        
         	_layer3AddressArray = data.subArray(1, 2);
         	_typeArray = new Integer08Array(data.subArray(3, 1));
-	        _length = 4;
+	        this.length = 4;
         }
     }
 

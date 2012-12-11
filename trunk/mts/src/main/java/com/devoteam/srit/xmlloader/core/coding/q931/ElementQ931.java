@@ -37,17 +37,17 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class ElementInformationQ931 {
+public class ElementQ931 {
 
     private int _id;
     private String _name;
     
     private LinkedHashMap<String, Field> _hashMapFields = new LinkedHashMap<String, Field>();
 
-    public ElementInformationQ931(Element element, Dictionary dictionary) throws Exception {
+    public ElementQ931(Element element, Dictionary dictionary) throws Exception {
         //si elem ds dico on prend dico sinon on envoi ce qu'il y  ads le fichier xml
         String idStr = element.attributeValue("identifier").trim();
-        ElementInformationQ931 elemDico = null;
+        ElementQ931 elemDico = null;
     	try 
     	{
     		byte[] idBytes = Utils.parseBinaryString(idStr);

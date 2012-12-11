@@ -31,7 +31,6 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
-import com.devoteam.srit.xmlloader.gtpp.data.GtppMessage;
 import com.devoteam.srit.xmlloader.gtpp.data.MessageGTP;
 import com.devoteam.srit.xmlloader.gtpp.data.Tag;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
