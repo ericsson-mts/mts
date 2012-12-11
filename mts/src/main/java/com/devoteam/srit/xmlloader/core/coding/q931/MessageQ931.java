@@ -55,7 +55,7 @@ public class MessageQ931 {
     	
     private HeaderAbstract header;
     
-    private LinkedHashMap<Integer, ElementQ931V> hashElementInformationQ931Vs;
+    private LinkedHashMap<Integer, ElementQ931> hashElementInformationQ931Vs;
     
     
      public MessageQ931(Element root) throws Exception {
@@ -65,10 +65,9 @@ public class MessageQ931 {
         this.header = new HeaderQ931();
         this.header.parseFromXML(root.element("header"), dictionary);
         
-        hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementQ931V>();
+        hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementQ931>();
         List<Element> elementsInf = root.elements("element");
         ElementQ931 elem = null;
-        ElementQ931V elemV = null;
         for (Element element : elementsInf) {
             List<Element> listField = element.elements("field");
             elem = new ElementQ931(element, dictionaries.get(this.syntax));
@@ -84,7 +83,7 @@ public class MessageQ931 {
             */ 
             {
                 Array array = new DefaultArray(elem.getLengthElem() / 8 + 2);
-                elemV = new ElementQ931V(array, false, false, elem);
+                elem.decodeFromArray(array, false, false);
 
             }
             //boucle pour setter tous les field de elemV
@@ -95,20 +94,20 @@ public class MessageQ931 {
                 Field field = elem.getHashMapFields().get(element1.attributeValue("name"));
                 if (field != null) 
                 {
-                    Array result = field.setValue(element1.attributeValue("value"), offset, elemV.getFieldsArray());
+                    Array result = field.setValue(element1.attributeValue("value"), offset, elem.getFieldsArray());
                     if (result !=null)
                     {
-                    	elemV.setFields(result);
+                    	elem.setFields(result);
                     }
                     	
                     offset += field.getLength(); 
                 }
                 else 
                 {
-                    throw new ExecutionException("The field " + element1.attributeValue("name") + " is not found in element : " + elemV.getElementInformation().getName() + ":" + elemV.getId());
+                    throw new ExecutionException("The field " + element1.attributeValue("name") + " is not found in element : " + elem.getName() + ":" + elem.getId());
                 }
             }
-            this.hashElementInformationQ931Vs.put(elemV.getId(), elemV);
+            this.hashElementInformationQ931Vs.put(elem.getId(), elem);
 
         }
     }
@@ -125,9 +124,8 @@ public class MessageQ931 {
 
         this.header.decodeFromArray(data, syntax, dictionary);
         
-        hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementQ931V>();
+        hashElementInformationQ931Vs = new LinkedHashMap<Integer, ElementQ931>();
         int offset = header.getLength();
-        ElementQ931V elem = null;
         while (offset < data.length) {
             int id = new Integer08Array(data.subArray(offset, 1)).getValue();
             ElementQ931 elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
@@ -141,16 +139,16 @@ public class MessageQ931 {
             else
             */ 
             {
-                elem = new ElementQ931V(data.subArray(offset), bigLength, true, elemInfo);
+                elemInfo.decodeFromArray(data.subArray(offset), bigLength, true);
             }
 
-            if (elem.getArray().length > 0) {
-                offset += elem.getArray().length;
+            if (elemInfo.encodeToArray().length > 0) {
+                offset += elemInfo.encodeToArray().length;
             }
             else {
                 offset += 1;
             }
-            hashElementInformationQ931Vs.put(id, elem);
+            hashElementInformationQ931Vs.put(id, elemInfo);
         }
 
     }
@@ -181,10 +179,10 @@ public class MessageQ931 {
         			id = elem.getId();
         		}
         	}        	
-        	ElementQ931V elemV = hashElementInformationQ931Vs.get(id);
-        	if (elemV != null)
+        	ElementQ931 elem = hashElementInformationQ931Vs.get(id);
+        	if (elem != null)
         	{
-        		elemV.getParameter(var, params, path);
+        		elem.getParameter(var, params, path);
         	}
         }
         else
@@ -196,8 +194,8 @@ public class MessageQ931 {
     public Array getValue() {
         SupArray array = new SupArray();
         array.addLast(header.encodeToArray());
-        for (Entry<Integer, ElementQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
-            array.addLast(entry.getValue().getArray());
+        for (Entry<Integer, ElementQ931> entry : hashElementInformationQ931Vs.entrySet()) {
+            array.addLast(entry.getValue().encodeToArray());
         }
         return array;
     }
@@ -212,7 +210,7 @@ public class MessageQ931 {
         messageToString.append("<ISDN>");
         messageToString.append(header.toString());
 
-        for (Entry<Integer, ElementQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementQ931> entry : hashElementInformationQ931Vs.entrySet()) {
 
             messageToString.append(entry.getValue().toString());
         }
@@ -225,7 +223,7 @@ public class MessageQ931 {
         return header;
     }
 
-    public ElementQ931V getElementInformationQ931s(int id) {
+    public ElementQ931 getElementInformationQ931s(int id) {
         return hashElementInformationQ931Vs.get(id);
 
     }
@@ -234,9 +232,9 @@ public class MessageQ931 {
 
         int msglength = 0;
         msglength = header.encodeToArray().length;
-        for (Entry<Integer, ElementQ931V> entry : hashElementInformationQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementQ931> entry : hashElementInformationQ931Vs.entrySet()) {
 
-            msglength += entry.getValue().getArray().length;
+            msglength += entry.getValue().encodeToArray().length;
 
         }
         return msglength;
