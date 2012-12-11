@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.core.coding.q931;
 
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.gtpp.data.ElementTLIV;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -36,11 +37,11 @@ import org.dom4j.Element;
  */
 public class Dictionary {
 	
-    public LinkedHashMap<String,ElementQ931> mapElementByName=new LinkedHashMap<String, ElementQ931>();
-    public LinkedHashMap<Integer,ElementQ931> mapElementById=new LinkedHashMap<Integer, ElementQ931>();
+    private LinkedHashMap<String,ElementAbstract> mapElementByName=new LinkedHashMap<String, ElementAbstract>();
+    private LinkedHashMap<Integer,ElementAbstract> mapElementById=new LinkedHashMap<Integer, ElementAbstract>();
     private LinkedHashMap<String,Field> mapHeader= new LinkedHashMap<String, Field>();
     
-    public Dictionary(Element root) throws Exception {
+    public Dictionary(Element root, String syntax) throws Exception {
         
         List<Element> listElem=root.element("headerQ931").elements("field");
         for (Element element : listElem) {
@@ -48,18 +49,27 @@ public class Dictionary {
         }
         List<Element> list=root.elements("element");
         for (Element elem : list) {
-            ElementQ931 elemInfo = new ElementQ931();
+            ElementAbstract elemInfo = null;
+            if ("Q931".equalsIgnoreCase(syntax))
+            {
+            	elemInfo = new ElementQ931();
+            }
+            else if ("GTP".equalsIgnoreCase(syntax))
+            {
+            	elemInfo = new ElementTLIV();
+            }
+            
             elemInfo.parseFromXML(elem, this);
             mapElementByName.put(elem.attributeValue("name"), elemInfo);
             mapElementById.put((int)(Utils.parseBinaryString(elem.attributeValue("identifier"))[0] & 0xff), elemInfo);
         }
 
     }
-    public LinkedHashMap<Integer, ElementQ931> getMapElementById() {
+    public LinkedHashMap<Integer, ElementAbstract> getMapElementById() {
         return mapElementById;
     }
 
-    public LinkedHashMap<String, ElementQ931> getMapElementByName() {
+    public LinkedHashMap<String, ElementAbstract> getMapElementByName() {
         return mapElementByName;
     }
 

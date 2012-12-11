@@ -60,7 +60,7 @@ public class StackH225cs extends Stack {
             xml.setXMLFile(new URI("../conf/sigtran/q931.xml"));
             xml.parse();
             Element root = xml.getDocument().getRootElement();
-            dictionary = new Dictionary(root);
+            dictionary = new Dictionary(root, "Q931");
         }
         catch (Exception e) {
             e.printStackTrace();

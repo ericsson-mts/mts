@@ -12,7 +12,7 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
 
-    <!--test parameter="[binary]" condition="binary.equals" value="480100000000006f00000100"/-->
+    <test parameter="[binary]" condition="binary.equals" value="480100000000006f00000100"/>
     
     <sendMessageGTP name="echo Response" channel="[channel]">
         <headerV2 name="echoResponse" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "111" sequenceNumber="1"/>
@@ -30,7 +30,7 @@
     <test parameter="[binary]" condition="binary.equals" value="4001000000000200"/>
     
     <sendMessageGTP name="versionNotSupported" channel="[channel]">
-        <headerV2 name="versionNotSupported" piggyFlag = "0" teidFlag = "0" sequenceNumber="[seqNum]"/>    
+        <headerV2 name="versionNotSupported" piggyFlag = "0" teidFlag = "0" sequenceNumber="2"/>    
     </sendMessageGTP>
 
     <finally>

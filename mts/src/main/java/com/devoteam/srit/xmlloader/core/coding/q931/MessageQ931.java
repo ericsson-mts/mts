@@ -55,7 +55,7 @@ public class MessageQ931 {
     	
     private HeaderAbstract header;
     
-    private LinkedHashMap<Integer, ElementQ931> hashElementQ931Vs;
+    private LinkedHashMap<Integer, ElementAbstract> hashElements;
 
 	public MessageQ931(Element root) throws Exception 
      {
@@ -65,7 +65,7 @@ public class MessageQ931 {
         this.header = new HeaderQ931();
         this.header.parseFromXML(root.element("header"), dictionary);
         
-        hashElementQ931Vs = new LinkedHashMap<Integer, ElementQ931>();
+        hashElements = new LinkedHashMap<Integer, ElementAbstract>();
         List<Element> elementsInf = root.elements("element");
         ElementQ931 elem = null;
         for (Element element : elementsInf) {
@@ -109,7 +109,7 @@ public class MessageQ931 {
                     throw new ExecutionException("The field " + element1.attributeValue("name") + " is not found in element : " + elem.getName() + ":" + elem.getId());
                 }
             }
-            this.hashElementQ931Vs.put(elem.getId(), elem);
+            this.hashElements.put(elem.getId(), elem);
 
         }
     }
@@ -127,11 +127,11 @@ public class MessageQ931 {
 
         this.header.decodeFromArray(data, syntax, dictionary);
         
-        hashElementQ931Vs = new LinkedHashMap<Integer, ElementQ931>();
+        hashElements = new LinkedHashMap<Integer, ElementAbstract>();
         int offset = header.getLength();
         while (offset < data.length) {
             int id = new Integer08Array(data.subArray(offset, 1)).getValue();
-            ElementQ931 elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
+            ElementAbstract elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
             boolean bigLength = false; 
             /* FH remove because not well decoded with Wireshark
             bigLength = id == 126;
@@ -151,7 +151,7 @@ public class MessageQ931 {
             else {
                 offset += 1;
             }
-            hashElementQ931Vs.put(id, elemInfo);
+            hashElements.put(id, elemInfo);
         }
 
     }
@@ -177,13 +177,13 @@ public class MessageQ931 {
         	}
         	catch (Exception e) 
         	{
-        		ElementQ931 elem = dictionaries.get(this.syntax).getMapElementByName().get(params[2]);
+        		ElementAbstract elem = dictionaries.get(this.syntax).getMapElementByName().get(params[2]);
         		if (elem != null)
         		{
         			id = elem.getId();
         		}
         	}        	
-        	ElementQ931 elem = hashElementQ931Vs.get(id);
+        	ElementAbstract elem = hashElements.get(id);
         	if (elem != null)
         	{
         		elem.getParameter(var, params, path);
@@ -199,7 +199,7 @@ public class MessageQ931 {
     {
         SupArray array = new SupArray();
         array.addLast(header.encodeToArray());
-        for (Entry<Integer, ElementQ931> entry : hashElementQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) {
             array.addLast(entry.getValue().encodeToArray());
         }
         return array;
@@ -217,7 +217,7 @@ public class MessageQ931 {
         messageToString.append("<ISDN>");
         messageToString.append(header.toString());
 
-        for (Entry<Integer, ElementQ931> entry : hashElementQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) {
 
             messageToString.append(entry.getValue().toString());
         }
@@ -236,7 +236,7 @@ public class MessageQ931 {
 
         int msglength = 0;
         msglength = header.encodeToArray().length;
-        for (Entry<Integer, ElementQ931> entry : hashElementQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) {
 
             msglength += entry.getValue().encodeToArray().length;
 
@@ -244,9 +244,9 @@ public class MessageQ931 {
         return msglength;
     }
 
-    public ElementQ931 getElementQ931(int id) 
+    public ElementAbstract getElementQ931(int id) 
     {
-		return hashElementQ931Vs.get(id);
+		return hashElements.get(id);
 	}
     public void initDictionary(String syntax) throws Exception 
     {
@@ -257,7 +257,7 @@ public class MessageQ931 {
 	        xml.setXMLFile(new URI(syntax));
 	        xml.parse();
 	        Element rootDico = xml.getDocument().getRootElement();
-	        this.dictionary = new Dictionary(rootDico);
+	        this.dictionary = new Dictionary(rootDico, "Q931");
 	        MessageQ931.dictionaries.put(syntax, dictionary);
     	}
     }
