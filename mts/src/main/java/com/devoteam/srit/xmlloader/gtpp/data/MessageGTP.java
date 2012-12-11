@@ -25,6 +25,7 @@ package com.devoteam.srit.xmlloader.gtpp.data;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.q931.Dictionary;
+import com.devoteam.srit.xmlloader.core.coding.q931.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.q931.ElementQ931;
 import com.devoteam.srit.xmlloader.core.coding.q931.Field;
 import com.devoteam.srit.xmlloader.core.coding.q931.HeaderAbstract;
@@ -61,7 +62,7 @@ public class MessageGTP {
     	
     private HeaderAbstract header;
     
-    private LinkedHashMap<Integer, ElementQ931> hashElementQ931Vs;
+    private LinkedHashMap<Integer, ElementAbstract> hashElements;
     
     public MessageGTP()
     {
@@ -94,7 +95,7 @@ public class MessageGTP {
 	        this.header.parseFromXML(elementHeader, dictionary);
         }        
         
-        hashElementQ931Vs = new LinkedHashMap<Integer, ElementQ931>();
+        hashElements = new LinkedHashMap<Integer, ElementAbstract>();
         List<Element> elementsInf = root.elements("element");
         ElementQ931 elem = null;
         for (Element element : elementsInf) {
@@ -138,7 +139,7 @@ public class MessageGTP {
                     throw new ExecutionException("The field " + element1.attributeValue("name") + " is not found in element : " + elem.getName() + ":" + elem.getId());
                 }
             }
-            this.hashElementQ931Vs.put(elem.getId(), elem);
+            this.hashElements.put(elem.getId(), elem);
 
         }
     }
@@ -192,7 +193,7 @@ public class MessageGTP {
      }
 
     private void parseFieldFromArray(Array data) throws Exception {
-        hashElementQ931Vs = new LinkedHashMap<Integer, ElementQ931>();
+    	hashElements = new LinkedHashMap<Integer, ElementAbstract>();
         int offset = header.getLength();
         while (offset < data.length) {
             int id = new Integer08Array(data.subArray(offset, 1)).getValue();
@@ -216,7 +217,7 @@ public class MessageGTP {
             else {
                 offset += 1;
             }
-            hashElementQ931Vs.put(id, elemInfo);
+            hashElements.put(id, elemInfo);
         }
 
     }
@@ -247,7 +248,7 @@ public class MessageGTP {
         			id = elem.getId();
         		}
         	}        	
-        	ElementQ931 elemV = hashElementQ931Vs.get(id);
+        	ElementQ931 elemV = (ElementQ931) hashElements.get(id);
         	if (elemV != null)
         	{
         		elemV.getParameter(var, params, path);
@@ -261,7 +262,7 @@ public class MessageGTP {
 
     public Array getValue() {
         SupArray array = new SupArray();
-        for (Entry<Integer, ElementQ931> entry : hashElementQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) {
             array.addLast(entry.getValue().encodeToArray());
         }
         header.setLength(array.length);
@@ -278,7 +279,7 @@ public class MessageGTP {
         StringBuilder messageToString = new StringBuilder();
         messageToString.append(header.toString());
 
-        for (Entry<Integer, ElementQ931> entry : hashElementQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) {
 
             messageToString.append(entry.getValue().toString());
         }
@@ -294,7 +295,7 @@ public class MessageGTP {
 
         int msglength = 0;
         msglength = header.encodeToArray().length;
-        for (Entry<Integer, ElementQ931> entry : hashElementQ931Vs.entrySet()) {
+        for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) {
 
             msglength += entry.getValue().encodeToArray().length;
 
