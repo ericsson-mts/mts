@@ -11,9 +11,11 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
 
+    <test parameter="[binary]" condition="binary.equals" value="37010000499602d200010200"/>
+    
     <sendMessageGTP name="echo Response" channel="[channel]">
         <headerV1 name="echoResponse" sequenceNumber="1"  nPduNumber="2" nextExtensionType="0"/>
-        <element identifier="Recovery">
+        <element identifier="Recovery" coding="TV">
             <field name="Recovery" value="23"/>
         </element>
     </sendMessageGTP>
@@ -24,6 +26,8 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
 
+    <test parameter="[binary]" condition="binary.equals" value="370100000000000000020200"/>
+    
     <sendMessageGTP name="versionNotSupported" channel="[channel]">
         <headerV1 name="versionNotSupported" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
     </sendMessageGTP>

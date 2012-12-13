@@ -54,9 +54,9 @@ public class Dictionary {
             {
             	elemInfo = new ElementQ931();
             }
-            else if ("GTP".equalsIgnoreCase(syntax))
+            else if (syntax.contains("GTP"))
             {
-            	elemInfo = new ElementTLIV();
+            	elemInfo = ElementAbstract.buildFactory(elem);
             }
             
             elemInfo.parseFromXML(elem, this);

@@ -68,7 +68,8 @@ public class MessageGTP {
     	
     }
     
-     public MessageGTP(Element root) throws Exception {              
+     public MessageGTP(Element root) throws Exception 
+     {              
         Element elementHeader;
         elementHeader = root.element("headerPrime");
         if (elementHeader == null)
@@ -97,27 +98,14 @@ public class MessageGTP {
         hashElements = new LinkedHashMap<Integer, ElementAbstract>();
         List<Element> elementsInf = root.elements("element");
         ElementAbstract elemInfo = null;
-        for (Element element : elementsInf) {
-            elemInfo = new ElementTLIV();
+        for (Element element : elementsInf) 
+        {
+            elemInfo = ElementAbstract.buildFactory(element);
             elemInfo.parseFromXML(element, dictionaries.get(this.syntax));
-            // TODO améliorer pour prendre en compte la valeur en binaire, décimal, hexa...            
-            /* FH remove because not well decoded with Wireshark  
-            if (elem.getId() == 126) {
-
-                Array array = new DefaultArray(elem.getLengthElem() / 8 + 3);
-                elemV = new ElementInformationQ931V(array, true, false, elem);
-
-            }
-            else
-            */ 
-            {
-                Array array = new DefaultArray(elemInfo.getLengthElem() / 8 + 4);
-                elemInfo.decodeFromArray(array, false, false);
-
-            }
+            elemInfo.decodeFromArray(null, false, false);
             
             List<Element> listField = element.elements("field");
-            //boucle pour setter tous les field de elemV
+            //boucle pour setter tous les fields des elemV
             int offset = 0;
             for (Iterator<Element> it = listField.iterator(); it.hasNext();) 
             {
@@ -261,7 +249,8 @@ public class MessageGTP {
 
     public Array getValue() {
         SupArray array = new SupArray();
-        for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) {
+        for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) 
+        {
             array.addLast(entry.getValue().encodeToArray());
         }
         header.setLength(array.length);
@@ -311,7 +300,7 @@ public class MessageGTP {
 	        xml.setXMLFile(new URI(file));
 	        xml.parse();
 	        Element rootDico = xml.getDocument().getRootElement();
-	        this.dictionary = new Dictionary(rootDico, "GTP");
+	        this.dictionary = new Dictionary(rootDico, header.getSyntax());
 	        MessageGTP.dictionaries.put(syntax, dictionary);
     	}
     }

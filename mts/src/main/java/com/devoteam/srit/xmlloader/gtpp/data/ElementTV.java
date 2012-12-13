@@ -36,13 +36,10 @@ import gp.utils.arrays.SupArray;
  *
  * @author Fabien Henry
  */
-public class ElementTLIV extends ElementAbstract
+public class ElementTV extends ElementAbstract
 {
 
-	// protected int spare;
-	protected int instances;
-	
-    public ElementTLIV()
+    public ElementTV()
     {
     	
     }
@@ -51,29 +48,23 @@ public class ElementTLIV extends ElementAbstract
     {
         if (fromdata) {
 	        this._idArray = new Integer08Array(array.subArray(0, 1));
-	        int length = new Integer16Array(array.subArray(1, 2)).getValue();
-	        this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
-	        _value = array.subArray(0, length + 4);
-	        _fields = _value.subArray(4);
+	        int length = getLengthElem() / 8;
+	        _value = array.subArray(0, length + 1);
+	        _fields = _value.subArray(1);
         }
         else 
         {
-        	array = new DefaultArray(getLengthElem() / 8 + 4);
+        	array = new DefaultArray(getLengthElem() / 8 + 1);
 	    	this._idArray = new Integer08Array(array.subArray(0, 1));
 	        this._idArray.setValue(getId());
-	        this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
 	        _value = array;
-		    _fields = _value.subArray(4);
+		    _fields = _value.subArray(1);
         }
     }
 
     public Array encodeToArray() {
         SupArray sup = new SupArray();
         sup.addLast(_idArray);
-	    Integer16Array lengthArray = new Integer16Array(_fields.length);
-	    sup.addLast(lengthArray);
-	    Integer08Array instancesArray = new Integer08Array(this.instances);
-	    sup.addLast(instancesArray);
 		sup.addLast(_fields);
         return sup;
     }
