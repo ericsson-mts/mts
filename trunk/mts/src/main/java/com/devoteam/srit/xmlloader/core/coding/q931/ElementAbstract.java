@@ -27,6 +27,9 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.maps.LinkedHashMap;
+import com.devoteam.srit.xmlloader.gtpp.data.ElementTLIV;
+import com.devoteam.srit.xmlloader.gtpp.data.ElementTLV;
+import com.devoteam.srit.xmlloader.gtpp.data.ElementTV;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.Integer08Array;
@@ -56,10 +59,28 @@ public abstract class ElementAbstract
     
     protected boolean _bigLength;
     protected Integer08Array _idArray;
+
+    public static ElementAbstract buildFactory(Element root)
+    {
+    	String coding = root.attributeValue("coding");
+		if ("TLIV".equals(coding))
+		{
+			return new ElementTLIV();
+		}
+		else if ("TLV".equals(coding))
+		{
+			return new ElementTLV();
+		}
+		else if ("TV".equals(coding))
+		{
+			return new ElementTV();
+		}		
+		return null;
+    }
     
     public void parseFromXML(Element element, Dictionary dictionary) throws Exception 
     {
-        //si elem ds dico on prend dico sinon on envoi ce qu'il y  ads le fichier xml
+        //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
         String idStr = element.attributeValue("identifier").trim();
         ElementAbstract elemDico = null;
     	try 
@@ -68,27 +89,27 @@ public abstract class ElementAbstract
     		_id = idBytes[0] & 0xff;
             if (idBytes.length > 1)
             {
-            	throw new ExecutionException("ISDN layer : Reading the element Id from XML file : value is too long " + idStr);
+            	throw new ExecutionException("ERROR : Reading the element Id from XML file : value is too long " + idStr);
             }                
-
-    		if (dictionary != null)
-    		{
-    			elemDico = dictionary.getMapElementById().get(_id);
-    		}
+            if (dictionary != null)
+            {
+            	elemDico = dictionary.getMapElementById().get(_id);
+            }
     	}
     	catch (Exception e) 
     	{
-    		if (dictionary == null)
+    		if (dictionary != null)
     		{
-    			throw new ExecutionException("ISDN layer : The element identifier \"" + idStr + "\" is not valid : " + idStr);
+    			elemDico = dictionary.getMapElementByName().get(idStr);
     		}
-    		elemDico = dictionary.getMapElementByName().get(idStr);    		
     		if (elemDico == null)
     		{
-            	throw new ExecutionException("ISDN layer : The element \"" + idStr + "\" for the ISDN layer is not present in the dictionnary.");            	            	
+            	throw new ExecutionException("ERROR : The element \"" + idStr + "\" for the ISDN layer is not present in the dictionnary.");            	            	
             }        				
     		_id = elemDico.getId();
-    	}        	    		
+    	}
+    	
+    	
         if (elemDico != null)
         {
         	_name = elemDico.getName();
@@ -109,24 +130,30 @@ public abstract class ElementAbstract
             if (field == null)
             {
              	String type = elemField.attributeValue("type");
-	            if (type.equalsIgnoreCase("integer")) {
+	            if (type.equalsIgnoreCase("integer")) 
+	            {
 	                field = new IntegerField(elemField);
-	
-	            } else if (type.equalsIgnoreCase("boolean")) {
-	
+	            } 
+	            else if (type.equalsIgnoreCase("boolean")) 
+	            {
 	                field = new BooleanField(elemField);
-	
-	            } else if (type.equalsIgnoreCase("enumeration")) {
+	            } 
+	            else if (type.equalsIgnoreCase("enumeration")) 
+	            {
 	                field = new EnumerationField(elemField);
-	
-	            } else if (type.equalsIgnoreCase("string")) {
+	            } 
+	            else if (type.equalsIgnoreCase("string")) 
+	            {
 	                field = new StringField(elemField);	
-	            } else if (type.equalsIgnoreCase("binary")) {
+	            } 
+	            else if (type.equalsIgnoreCase("binary")) 
+	            {
 	                field = new BinaryField(elemField);
 	
-	            }else
+	            }
+	            else
 	            {
-	            	throw new ExecutionException("ISDN layer : The field type \"" + type + "\" is not supported : " + idStr);    
+	            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported : " + idStr);    
 	            }
             }
             else
