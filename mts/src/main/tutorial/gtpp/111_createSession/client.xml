@@ -40,10 +40,10 @@
         <element identifier="RAT Type" coding="TLIV">
             <field name="RAT Type" value="EUTRAN"/>
         </element>
-        <element identifier="87" name="F-TEID" coding="TLIV">
+        <element identifier="F-TEID" coding="TLIV">
             <field name="V4" value="true"/>        
             <field name="V6" value="0"/>
-            <field name="Interface Type" value="S5/S8 PGW GTP-U"/>
+            <field name="Interface Type" value="S5/S8 SGW GTP-C"/>
             <field name="TEID / GRE Key" value="2509643778"/>
             <!-- TODO pb libaririe gputil -->
             <!--field name="TEID / GRE Key" value="2509643778"/-->
@@ -59,7 +59,7 @@
         </element>
         <element identifier="128" name="Selection Mode" coding="TLIV">    
             <field name="spare" value="0"/>
-            <field name="Selection Mode" value="MS provided APN, subscription not verified"/>
+            <field name="Selection Mode" value="MS or network provided APN, subscribed verified"/>
         </element>
         <element identifier="99" name="PDN Type" coding="TLIV">
             <field name="spare" value="0"/>
@@ -134,7 +134,7 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
 
-    <test parameter="[binary]" condition="binary.equals" value="480200050000006f000001000300010017"/>
+    <test parameter="[binary]" condition="binary.equals" value="4802000d0000000056b602000300010017"/>
 
     <finally>
         <closeChannelGTP name="[connection]"/>

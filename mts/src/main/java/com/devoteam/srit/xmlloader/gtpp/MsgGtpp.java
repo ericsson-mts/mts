@@ -170,7 +170,7 @@ public class MsgGtpp extends Msg
     public int getLength() {
         try 
         {
-        	return message.getValue().length;
+        	return message.encodeToArray().length;
         }
         catch (Exception ex)
         {
@@ -192,7 +192,7 @@ public class MsgGtpp extends Msg
     public byte[] getBytesData(){
         try 
         {
-            return message.getValue().getBytes();
+            return message.encodeToArray().getBytes();
         }
         catch (Exception ex)
         {

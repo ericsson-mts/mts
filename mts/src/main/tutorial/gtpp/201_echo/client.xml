@@ -18,7 +18,7 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
     
-    <test parameter="[binary]" condition="binary.equals" value="3702000200000000000102000e17"/>
+    <test parameter="[binary]" condition="binary.equals" value="3702000a00000000000102000e17"/>
 
     <sendMessageGTP name="echo Request" channel="[connection]">
         <headerV1 name="echoRequest" sequenceNumber="2" nPduNumber="2" nextExtensionType="0"/>
@@ -30,7 +30,7 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>    
     
-    <test parameter="[binary]" condition="binary.equals" value="370300000000000000010200"/>
+    <test parameter="[binary]" condition="binary.equals" value="370300080000000000010200"/>
     
     <finally>
         <closeChannelGTP name="[connection]"/>

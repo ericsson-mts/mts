@@ -202,6 +202,18 @@ public class HeaderGTPV2 extends HeaderAbstract
     }
 	
 	@Override
+	public int calculateHeaderSize()
+    {
+		int size = 0;
+        if (this.teidFlag != 0)
+        {
+        	size += 4;
+        }
+        size += 3;
+        size +=1;
+        return size;
+    }
+	@Override
 	public void decodeFromArray(Array data, String syntax, Dictionary dictionary) throws Exception
 	{
 		// throw new Exception("Method is not implemented !");
