@@ -49,8 +49,9 @@ import org.dom4j.Element;
 public abstract class ElementAbstract
 {
 
-    protected int _id;
-    protected String _name;
+    protected int id;
+    protected String name;
+    protected String type;
     
     protected LinkedHashMap<String, Field> _hashMapFields = new LinkedHashMap<String, Field>();
     
@@ -86,14 +87,14 @@ public abstract class ElementAbstract
     	try 
     	{
     		byte[] idBytes = Utils.parseBinaryString(idStr);
-    		_id = idBytes[0] & 0xff;
+    		this.id = idBytes[0] & 0xff;
             if (idBytes.length > 1)
             {
             	throw new ExecutionException("ERROR : Reading the element Id from XML file : value is too long " + idStr);
             }                
             if (dictionary != null)
             {
-            	elemDico = dictionary.getMapElementById().get(_id);
+            	elemDico = dictionary.getMapElementById().get(this.id);
             }
     	}
     	catch (Exception e) 
@@ -106,17 +107,17 @@ public abstract class ElementAbstract
     		{
             	throw new ExecutionException("ERROR : The element \"" + idStr + "\" for the ISDN layer is not present in the dictionnary.");            	            	
             }        				
-    		_id = elemDico.getId();
+    		this.id = elemDico.getId();
     	}
     	
     	
         if (elemDico != null)
         {
-        	_name = elemDico.getName();
+        	this.name = elemDico.getName();
         }
         else
         {
-        	_name = element.attributeValue("name");
+        	this.name = element.attributeValue("name");
         }
         List<Element> listField = element.elements("field");
         for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
@@ -171,9 +172,9 @@ public abstract class ElementAbstract
         StringBuilder elemString = new StringBuilder();
         elemString.append("<element ");
         elemString.append("identifier=\"");
-    	if (_name != null)
+    	if (this.name != null)
     	{
-    		elemString.append(_name + ":");
+    		elemString.append(this.name + ":");
     	}
     	elemString.append(_idArray.getValue());
         if (_fields != null)
@@ -231,11 +232,11 @@ public abstract class ElementAbstract
     }
 
     public int getId() {
-        return _id;
+        return this.id;
     }
 
 	public String getName() {
-		return _name;
+		return this.name;
 	}
 	
     public Array getFieldsArray() {
