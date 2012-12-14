@@ -256,7 +256,29 @@ public class HeaderGTPV1 extends HeaderAbstract
         
         return supArray;
     }
-	
+
+	@Override
+	public int calculateHeaderSize()
+    {
+		int size = 0;
+		size += 4;
+        if (this.sequenceNumberFlag != 0)
+        {
+    		size += 2;	
+        }
+
+        if (this.nPduNumberFlag != 0)
+        {
+    		size += 1;	
+        }
+        
+        if (this.extensionHeaderFlag != 0)
+        {
+    		size += 1;	
+        }
+		return size;
+    }
+
 	@Override
 	public void decodeFromArray(Array data, String syntax, Dictionary dictionary) throws Exception
 	{

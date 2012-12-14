@@ -104,7 +104,7 @@ public class StackGtpp extends Stack
     public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
     {
         MessageGTP message = new MessageGTP();
-        message.parseFromStream(inputStream);
+        message.decodeFromStream(inputStream);
         return new MsgGtpp(message);
     }
 

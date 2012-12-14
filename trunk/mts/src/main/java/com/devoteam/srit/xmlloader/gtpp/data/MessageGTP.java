@@ -131,7 +131,7 @@ public class MessageGTP {
         }
     }
 
-     public void parseFromStream(InputStream inputStream) throws Exception
+     public void decodeFromStream(InputStream inputStream) throws Exception
      {
          byte[] flag = new byte[1];
          //read the header
@@ -165,7 +165,7 @@ public class MessageGTP {
 
          header.decodeFromStream(inputStream, dictionary);
                 
-         int msgLength = header.getLength(); 
+         int msgLength = header.getLength() - header.calculateHeaderSize(); 
 
          byte[] fieldBuffer = new byte[msgLength];
          //read the staying message's data
@@ -176,27 +176,17 @@ public class MessageGTP {
             throw new Exception("Not enough char read");
  		Array fieldArrayTag = new DefaultArray(fieldBuffer);
               	
-     	parseFieldFromArray(fieldArrayTag);
+ 		decodeFieldsFromArray(fieldArrayTag);
      }
 
-    private void parseFieldFromArray(Array data) throws Exception {
+    private void decodeFieldsFromArray(Array data) throws Exception {
     	hashElements = new LinkedHashMap<Integer, ElementAbstract>();
         int offset = 0;
         while (offset < data.length) {
             int id = new Integer08Array(data.subArray(offset, 1)).getValue();
             ElementAbstract elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
             boolean bigLength = false; 
-            /* FH remove because not well decoded with Wireshark
-            bigLength = id == 126;
-            
-            if (elemInfo == null) { //gerer le cas ou l'element n'est pas connu du dictionnaire
-                elem = new ElementInformationQ931V(data.subArray(offset), bigLength, true, null);
-            }
-            else
-            */ 
-            {
-                elemInfo.decodeFromArray(data.subArray(offset), bigLength, true);
-            }
+            elemInfo.decodeFromArray(data.subArray(offset), bigLength, true);
 
             if (elemInfo.encodeToArray().length > 0) {
                 offset += elemInfo.encodeToArray().length;
@@ -247,13 +237,13 @@ public class MessageGTP {
         }
     }
 
-    public Array getValue() {
+    public Array encodeToArray() {
         SupArray array = new SupArray();
         for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) 
         {
             array.addLast(entry.getValue().encodeToArray());
         }
-        header.setLength(array.length);
+        header.setLength(array.length + header.calculateHeaderSize());
         array.addFirst(header.encodeToArray());
         return array;
     }
