@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
+    
+    <parameter name="[connection]" operation="set" value="connection" />
+    <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="3387"/>
+
+    <sendMessageGTP name="echo CreateSessionRequest" channel="[connection]">
+        <headerV2 name="createSessionRequest" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "0" sequenceNumber="5682690"/>
+        <element identifier="IMSI" coding="TLIV">
+            <field name="IMSI" value="02084124002076f0"/>
+        </element>
+        <element identifier="MSISDN" coding="TLIV">
+            <field name="MSISDN" value="3396992076f0"/>
+        </element>
+        <element identifier="MEI" coding="TLIV">
+            <field name="MEI" value="0044204291218110"/>
+        </element>        
+        <element identifier="ULI" coding="TLIV">
+            <field name="spare1" value="0"/>
+            <field name="LAI flag" value="0"/>
+            <field name="ECGI flag" value="1"/>
+            <field name="TAI flag" value="1"/>
+            <field name="RAI flag" value="0"/>
+            <field name="SAI flag" value="0"/>
+            <field name="CGI flag" value="0"/>
+            <!-- TODO conditional field-->
+            <field name="TAI.MMC1" value="194576"/>
+            <field name="TAI.Tracking Area Code" value="102"/>
+            <field name="ECGI.MMC2" value="194576"/>
+            <field name="ECGI.spare2" value="0"/>
+            <field name="ECGI.ECI" value="26500"/>
+        </element>        
+        <element identifier="Service Network" coding="TLIV">
+            <field name="MMC" value="194576"/>
+        </element>  
+        <element identifier="RAT Type" coding="TLIV">
+            <field name="RAT Type" value="EUTRAN"/>
+        </element>
+        <element identifier="87" name="F-TEID" coding="TLIV">
+            <field name="V4" value="true"/>        
+            <field name="V6" value="0"/>
+            <field name="Interface Type" value="S5/S8 PGW GTP-U"/>
+            <field name="TEID / GRE Key" value="2509643778"/>
+            <!-- TODO pb libaririe gputil -->
+            <!--field name="TEID / GRE Key" value="2509643778"/-->
+            <!-- TODO IPV4 adress -->
+            <field name="IPv4 address" value="2887009834"/>
+            <!-- TODO pb libaririe gputil -->
+            <!--field name="IPv4 address" value="2887009834"/-->
+            <!-- TODO condiditional -->
+            <!--field name="IPv6 address" value="0"/-->
+        </element>
+        <element identifier="APN" coding="TLIV">
+        		<field name="APN" value="096e697336636f657063066d6e63303031066d63633230380467707273"/>
+        </element>
+        <element identifier="128" name="Selection Mode" coding="TLIV">    
+            <field name="spare" value="0"/>
+            <field name="Selection Mode" value="MS provided APN, subscription not verified"/>
+        </element>
+        <element identifier="99" name="PDN Type" coding="TLIV">
+            <field name="spare" value="0"/>
+            <field name="PDN Type" value="IPv4"/>
+        </element>
+        <element identifier="79" name="PAA" coding="TLIV">
+            <field name="spare" value="0"/>
+            <field name="PDN Type" value="IPv4"/>
+            <field name="IPv4 address" value="0"/>
+            <!-- TODO condiditional -->
+            <!--field name="IPv6 address" value="0"/-->        
+        </element> 
+        <element identifier="77" name="Indication" coding="TLIV">
+            <field name="DAF" value="0"/>
+            <field name="DTF" value="0"/>
+            <field name="HI" value="0"/>
+            <field name="DFI" value="0"/>         
+            <field name="OI" value="0"/>
+            <field name="ISRSI" value="0"/>
+            <field name="ISRAI" value="0"/>                                                  
+            <field name="SGWCI" value="0"/>
+    
+            <field name="SQCI" value="0"/>  
+            <field name="UIMSI" value="0"/>
+            <field name="CFSI" value="0"/>
+            <field name="CRSI" value="1"/>
+            <!--field name="P" value="0"/-->
+            <field name="PT" value="1"/>
+            <field name="TDI" value="0"/>
+            <field name="SI" value="0"/>
+            <field name="MSV" value="0"/>
+    
+            <field name="RetLoc" value="0"/>
+            <field name="PBIC" value="0"/>
+            <field name="SRNI" value="0"/>
+            <field name="S6AF" value="0"/>
+            <field name="S4AF" value="0"/>
+            <field name="MBMDT" value="0"/>
+            <field name="SRAU" value="0"/>
+            <field name="CCRSI" value="0"/>
+            
+            <!--field name="Spare" value="0"/>
+            <field name="CLII" value="0"/>
+            <field name="CPSR" value="0"/-->        
+        </element>
+        <element identifier="127" name="APN Restriction" coding="TLIV">
+            <field name="Restriction Type value" value="No Existing Contexts or Restriction"/>
+        </element>                
+        <element identifier="AMBR" coding="TLIV">
+            <field name="APN-AMBR for uplink" value="50000"/>
+            <field name="APN-AMBR for downlink" value="100000"/>        
+        </element>        
+        <element identifier="PCO" coding="TLIV">
+        		<field name="PCO" value="8080211001000010810600000000830600000000000d00000a00"/>
+        </element>
+        <element identifier="Bearer Context" coding="TLIV">
+        		<field name="Bearer Context" value="4900010005570009028480002002ac14462a5000160004070000000000000000000000000000000000000000"/>
+        </element>
+        <element identifier="UE Time Zone" coding="TLIV">
+            <field name="Time Zone" value="64"/>   
+            <field name="spare" value="0"/>
+            <field name="Daylight Saving Time" value="No adjustment for Daylight Saving Time"/>
+        </element>
+       <element identifier="Charging Characteristics" coding="TLIV">
+            <field name="Charging Characteristics value" value="2048"/>   
+      </element>        
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="echoResponse">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
+    </receiveMessageGTP>
+
+    <test parameter="[binary]" condition="binary.equals" value="480200050000006f000001000300010017"/>
+
+    <finally>
+        <closeChannelGTP name="[connection]"/>
+    </finally>
+    
+</scenario>

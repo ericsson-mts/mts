@@ -83,7 +83,7 @@ public class EnumerationField extends IntegerField{
 	        {
 	        	throw new ExecutionException("The value \"" + value + "\" for the ISDN enumeration field : \"" + getName() + "\" is not present in the dictionnary.");            	            	
 	        }
-	        array.setBits(getOffset(), getLength(),integerValue.byteValue() & 0xff);
+	        array.setBits(getOffset(), getLength(), integerValue.byteValue() & 0xff);
 	    }
 	    return null;
     }

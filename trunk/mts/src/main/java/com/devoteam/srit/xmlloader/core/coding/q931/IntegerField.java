@@ -44,7 +44,7 @@ public class IntegerField extends Field{
     	_offset = offset;
         try
         {
-	    	array.setBits(offset, getLength(), Integer.parseInt(value));
+        	array.setBits(offset, getLength(), (long) Long.parseLong(value) & 0xffffffffl);
 	    }
         catch(Exception e)
         {

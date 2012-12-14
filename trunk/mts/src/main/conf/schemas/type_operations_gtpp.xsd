@@ -244,7 +244,7 @@
 
 <!-- 																			                                    GTP V1 Header -->    
     <xs:complexType name="headerGTPV1Type">
-    	  <xs:attribute name="name"            type="xs:string" />
+    	  <xs:attribute name="name" type="xs:string" />
         <xs:attribute name="version"	type="xs:string" />
         <xs:attribute name="protocolType"	type="xs:string" />
         <xs:attribute name="extensionHeaderFlag"	type="xs:string" />
@@ -260,7 +260,7 @@
 
 <!-- 																			                                    GTP V2 Header -->    
     <xs:complexType name="headerGTPV2Type">
-    	  <xs:attribute name="name"            type="xs:string" />
+    	  <xs:attribute name="name" type="xs:string" />
         <xs:attribute name="version"	type="xs:string" />
         <xs:attribute name="piggyFlag"	type="xs:string" />
         <xs:attribute name="teidFlag"	type="xs:string" />
@@ -280,8 +280,10 @@
         <xs:sequence>
             <xs:element name="field"  	  type="fieldGTPType"  minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="identifier" type="xs:string" />        
+        <xs:attribute name="identifier" type="xs:string" />
+        <xs:attribute name="name" type="xs:string" />                
         <xs:attribute name="coding"     type="xs:string" />
+    		<xs:attribute name="description"  type="xs:string" />        
     </xs:complexType>
 
 <!--                                                                                     field -->
@@ -293,5 +295,6 @@
     		<xs:attribute name="lengthBit" type="xs:string" />
     		<xs:attribute name="type"  type="xs:string" />
     		<xs:attribute name="value"  type="xs:string" />
+    		<xs:attribute name="description"  type="xs:string" />
 	 </xs:complexType>
 

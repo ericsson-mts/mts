@@ -40,63 +40,217 @@
         
     </headerQ931>
 	
-    <element identifier="1" name="International Mobile Subscriber Identity (IMSI)" coding="TLIV">
-    		<field name="extensionIdentifier" lengthBit="8" type="integer"/>
+    <element identifier="1" name="IMSI" coding="TLIV">
+    		<field name="IMSI" type="binary"/>
     </element>
-    
+
     <element identifier="3" name="Recovery"  coding="TLIV">
 		    <field name="Recovery" lengthBit="8" type="integer"/>
     </element>
-            	    
+    
+    <element identifier="71" name="APN" coding="TLIV">
+    		<field name="APN" type="binary"/>
+    </element>
+    
+    <element identifier="72" name="AMBR" coding="TLIV">
+        <field name="APN-AMBR for uplink" lengthBit="32" type="integer"/>
+        <field name="APN-AMBR for downlink" lengthBit="32" type="integer"/>        
+    </element>
+    
+    <element identifier="75" name="MEI" coding="TLIV">
+    		<field name="MEI" type="binary"/>
+    </element>
+    
+    <element identifier="76" name="MSISDN" coding="TLIV">
+    		<field name="MSISDN" type="binary"/>
+    </element>
+
+   <element identifier="77" name="Indication" coding="TLIV">
+        <field name="DAF" lengthBit="1" type="boolean" description="Dual Address Bearer Flag"/>
+        <field name="DTF" lengthBit="1" type="boolean" description="Direct Tunnel Flag"/>
+        <field name="HI" lengthBit="1" type="boolean" description="Handover Indication"/>
+        <field name="DFI" lengthBit="1" type="boolean" description="Direct Forwarding Indication"/>
+        <field name="OI" lengthBit="1" type="boolean" description="Operation Indication"/>
+        <field name="ISRSI" lengthBit="1" type="boolean" description="Idle mode Signalling Reduction Supported Indication"/>
+        <field name="ISRAI" lengthBit="1" type="boolean" description="Idle mode Signalling Reduction Activation Indication"/>           
+        <field name="SGWCI" lengthBit="1" type="boolean" description="SGW Change Indication"/>
+
+        <field name="SQCI" lengthBit="1" type="boolean" description="Subscribed QoS Change Indication"/>
+        <field name="UIMSI" lengthBit="1" type="boolean" description="Unauthenticated IMSI"/>
+        <field name="CFSI" lengthBit="1" type="boolean" description="Change F-TEID support indication"/>
+        <field name="CRSI" lengthBit="1" type="boolean" description="Change Reporting support indication"/>
+        <!-- incoherence entre spec et Wireshark -->
+        <!--field name="P" lengthBit="1" type="boolean" description="Piggybacking Supported"/-->
+        <field name="PT" lengthBit="1" type="boolean" description="Protocol Type"/>
+        <field name="TDI" lengthBit="1" type="boolean" description="Teardown Indication"/>
+        <field name="SI" lengthBit="1" type="boolean" description="Scope Indication"/>
+        <field name="MSV" lengthBit="1" type="boolean" description="MS Validated"/>
+
+        <field name="RetLoc" lengthBit="1" type="boolean" description="Retrieve Location Indication Flag"/>
+        <field name="PBIC" lengthBit="1" type="boolean" description="Propagate BBAI Information Change"/>
+        <field name="SRNI" lengthBit="1" type="boolean" description="SGW Restoration Needed Indication"/>
+        <field name="S6AF" lengthBit="1" type="boolean" description="Static IPv6 Address Flag"/>
+        <field name="S4AF" lengthBit="1" type="boolean" description="Static IPv4 Address Flag"/>
+        <field name="MBMDT" lengthBit="1" type="boolean" description="Management Based MDT allowed flag"/>
+        <field name="SRAU" lengthBit="1" type="boolean" description="ISR is activated for the UE"/>
+        <field name="CCRSI" lengthBit="1" type="boolean" description="CSG Change Reporting support indication"/>
+        <!-- incoherence entre spec et Wireshark -->
+        <!--field name="Spare" lengthBit="6" type="integer"/>
+        <field name="CLII" lengthBit="1" type="boolean" description="Change of Location Information Indication"/>
+        <field name="CPSR" lengthBit="1" type="boolean" description="CS to PS SRVCC indication"/-->
+    </element>
+    
+    <element identifier="78" name="PCO" coding="TLIV">
+    		<field name="PCO" type="binary"/>
+    </element>
+     
+   <element identifier="79" name="PAA" coding="TLIV">
+        <field name="spare" lengthBit="5" type="integer"/>
+        <field name="PDN Type" lengthBit="3" type="enumeration">
+            <enum value="b001" name="IPv4"/>
+            <enum value="b010" name="IPv6"/>
+            <enum value="b011" name="IPv4v6"/>
+        </field>
+        <field name="IPv4 address" lengthBit="32" type="integer"/>
+        <!-- TODO condiditional -->
+        <!--field name="IPv6 address" lengthBit="4" type="integer"/-->        
+    </element>
+    
+    <element identifier="82" name="RAT Type" coding="TLIV">    
+           <field name="RAT Type" lengthBit="8" type="enumeration">
+            <enum value="0" name="Reserved" />
+            <enum value="1" name="UTRAN" />
+            <enum value="2" name="GERAN" />
+            <enum value="3" name="WLAN" />
+            <enum value="4" name="GAN" />
+            <enum value="5" name="HSPA Evolution" />
+            <enum value="6" name="EUTRAN" />
+            <enum value="7" name="Virtual" />
+            <enum value="8" name="Spare" />
+        </field>
+    </element>
+    
+    <element identifier="83" name="Service Network" coding="TLIV">
+        <field name="MMC" lengthBit="24" type="integer"/>
+    </element>
+    
+    <element identifier="86" name="ULI" coding="TLIV">
+        <field name="spare1" lengthBit="2" type="integer"/>
+        <field name="LAI flag" lengthBit="1" type="boolean"/>        
+        <field name="ECGI flag" lengthBit="1" type="boolean"/>
+        <field name="TAI flag" lengthBit="1" type="boolean"/>
+        <field name="RAI flag" lengthBit="1" type="boolean"/>
+        <field name="SAI flag" lengthBit="1" type="boolean"/>
+        <field name="CGI flag" lengthBit="1" type="boolean"/>
+        <!-- TODO conditional field-->
+        <field name="TAI.MMC1" lengthBit="24" type="integer"/>
+        <field name="TAI.Tracking Area Code" lengthBit="16" type="integer"/>
+        <field name="ECGI.MMC2" lengthBit="24" type="integer"/>
+        <field name="ECGI.spare2" lengthBit="4" type="integer"/>
+        <field name="ECGI.ECI" lengthBit="28" type="integer"/>
+    </element>        
+
+    <element identifier="87" name="F-TEID" coding="TLIV">
+        <field name="V4" lengthBit="1" type="boolean"/>        
+        <field name="V6" lengthBit="1" type="boolean"/>
+        <field name="Interface Type" lengthBit="6" type="enumeration">
+            <enum value="0" name="S1-U eNodeB"/>
+            <enum value="1" name="S1-U SGW GTP-U"/>
+            <enum value="2" name="S12 RNC GTP-U"/>
+            <enum value="3" name="S12 SGW GTP-U"/>
+            <enum value="4" name="S5/S8 SGW GTP-U"/>
+            <enum value="5" name="S5/S8 PGW GTP-U"/>
+            <enum value="6" name="S5/S8 SGW GTP-C"/>
+            <enum value="7" name="S5/S8 PGW GTP-C"/>
+            <enum value="8" name="S5/S8 SGW PMIPv6" description="the 32 bit GRE key is encoded in 32 bit TEID field and since alternate CoA is not used the control plane and user plane addresses are the same for PMIPv6"/>
+            <enum value="9" name="S5/S8 PGW PMIPv6" description="the 32 bit GRE key is encoded in 32 bit TEID field and the control plane and user plane addresses are the same for PMIPv6"/>
+            <enum value="10" name="S11 MME GTP-C"/>
+            <enum value="11" name="S11/S4 SGW GTP-C"/>
+            <enum value="12" name="S10 MME GTP-C"/>
+            <enum value="13" name="S3 MME GTP-C"/>
+            <enum value="14" name="S3 SGSN GTP-C"/>
+            <enum value="15" name="S4 SGSN GTP-U"/>
+            <enum value="16" name="S4 SGW GTP-U"/>
+            <enum value="17" name="S4 SGSN GTP-C"/>
+            <enum value="18" name="S16 SGSN GTP-C"/>
+            <enum value="19" name="eNodeB GTP-U" description="for DL data forwarding"/>
+            <enum value="20" name="eNodeB GTP-U" description="for UL data forwarding"/>
+            <enum value="21" name="RNC GTP-U" description="for data forwarding"/>
+            <enum value="22" name="SGSN GTP-U" description="for data forwarding"/>
+            <enum value="23" name="SGW GTP-U" description="for DL data forwarding"/>
+            <enum value="24" name="Sm MBMS GW GTP-C"/>
+            <enum value="25" name="Sn MBMS GW GTP-C"/>
+            <enum value="26" name="Sm MME GTP-C"/>
+            <enum value="27" name="Sn SGSN GTP-C"/>
+            <enum value="28" name="SGW GTP-U" information="for UL data forwarding"/>
+            <enum value="29" name="Sn SGSN GTP-U"/> interface 
+            <enum value="30" name="S2b ePDG GTP-C"/> interface
+            <enum value="31" name="S2b-U ePDG GTP-U"/> interface
+            <enum value="32" name="S2b PGW GTP-C"/> interface
+            <enum value="33" name="S2b-U PGW GTP-U"/> interface
+            <enum value="34" name="S2a TWAN GTP-U"/>
+            <enum value="35" name="S2a TWAN GTP-C"/>
+            <enum value="36" name="S2a PGW GTP-C"/>
+            <enum value="37" name="S2a PGW GTP-U"/>
+        </field>
+        <field name="TEID / GRE Key" lengthBit="32" type="integer"/>
+        <field name="IPv4 address" lengthBit="32" type="integer"/>
+        <!-- TODO condiditional -->
+        <!--field name="IPv6 address" lengthBit="4" type="integer"/-->
+    </element>
+
+    <element identifier="93" name="Bearer Context" coding="TLIV">
+    		<field name="Bearer Context" type="binary"/>
+    </element>
+    
+     <element identifier="95" name="Charging Characteristics" coding="TLIV">
+        <field name="Charging Characteristics value" lengthBit="16" type="integer"/>   
+    </element>
+    
+    <element identifier="99" name="PDN Type" coding="TLIV">
+        <field name="spare" lengthBit="5" type="integer"/>
+        <field name="PDN Type" lengthBit="3" type="enumeration">
+            <enum value="b001" name="IPv4"/>
+            <enum value="b010" name="IPv6"/>
+            <enum value="b011" name="IPv4v6"/>
+        </field>
+    </element>
+
+   <element identifier="114" name="UE Time Zone" coding="TLIV">
+        <field name="Time Zone" lengthBit="8" type="integer"/>   
+        <field name="spare" lengthBit="6" type="integer"/>
+        <field name="Daylight Saving Time" lengthBit="2" type="enumeration">
+            <enum value="b00" name="No adjustment for Daylight Saving Time"/>
+            <enum value="b01" name="+1 hour adjustment for Daylight Saving Time"/>
+            <enum value="b10" name="+2 hours adjustment for Daylight Saving Time"/>
+            <enum value="b11" name="Spare"/>
+        </field>
+    </element>
+    
+    <element identifier="127" name="APN Restriction" coding="TLIV">
+        <field name="Restriction Type value" lengthBit="8" type="enumeration">
+            <enum value="0" name="No Existing Contexts or Restriction"/>
+            <enum value="1" name="Public-1 : MMS"/>
+            <enum value="2" name="Public-2 : Internet"/>
+            <enum value="3" name="Private-1	: Corporate (e.g. who use MMS)"/>
+            <enum value="4" name="Private-2	: Corporate (e.g. who do not use MMS)"/>                 
+        </field>
+    </element>
+        
+    <element identifier="128" name="Selection Mode" coding="TLIV">
+        <field name="spare" lengthBit="6" type="integer"/>
+        <field name="Selection Mode" lengthBit="2" type="enumeration">
+            <enum value="0" name="MS or network provided APN, subscribed verified" />
+            <enum value="1" name="MS provided APN, subscription not verified" />
+            <enum value="2" name="Network provided APN, subscription not verified" />
+            <enum value="3" name="For future use." description="Shall not be sent. If received, shall be interpreted as the value &quot;2&quot;.\" />
+        </field>
+    </element>
+                
 	  <element identifier="255" name="privateExtension" coding="TLIV">
 		    <field name="extensionIdentifier" lengthBit="16" type="integer"/>
         <field name="extensionValue" type="string"/>
 	  </element>
-
-
-    <!-- Bearer capability = b0000100 =h4 =d4-->
-    <element identifier="b0000100" name="Bearer capability" coding="TLIV">
-        <field name="ext1" lengthBit="1" type="boolean" />
-        <field name="Coding standard" lengthBit="2" type="enumeration">
-            <enum value="b00" name="ITU-T standardized coding" />
-            <enum value="b01" name="ISO/IEC Standard" />
-            <enum value="b10" name="National standard" />
-            <enum value="b11" name="Standard defined for the network" />
-        </field>
-        <field name="Information transfert capability" lengthBit="5" type="enumeration">
-            <enum value="b00000" name="Speech" />
-            <enum value="b01000" name="Unrestricted" />
-            <enum value="b01001" name="Restricted" />
-            <enum value="b10000" name="3.1 kHz audio" />
-            <enum value="b10001" name="Unrestricted with tones/announcements" />
-            <enum value="b11000" name="Video" />
-        </field>
-        <field name="ext2" lengthBit="1" type="boolean" />
-        <field name="Transfert mode" lengthBit="2" type="enumeration">
-            <enum value="b00" name="Circuit mode" />
-            <enum value="b10" name="Packet mode" />
-        </field>
-        <field name="Information transfert rate" lengthBit="5" type="enumeration">
-            <enum value="b00000" name="Packet mode call" />
-            <enum value="b10000" name="64 kbit/s -" />
-            <enum value="b10001" name="264 kbit/s -" />
-            <enum value="b10011" name="384 kbit/s -" />
-            <enum value="b10101" name="1536 kbit/s -" />
-            <enum value="b10111" name="1920 kbit/s -" />
-            <enum value="b11000" name="Multirate (64 kbit/s base rate)" />
-        </field>
-        <field name="ext3" lengthBit="1" type="boolean" />
-        <field name="Layer 1 ident" lengthBit="2" type="integer"/>
-        <field name="User information layer 1 protocol" lengthBit="5" type="enumeration">
-            <enum value="b00010" name="G.711 ?-law" />
-            <enum value="b00011" name="G.711 A-law" />
-            <enum value="b00100" name="G.721 and I.460" />
-            <enum value="b00101" name="H.221 and H.242" />
-            <enum value="b00110" name="H.223 and H.245" />
-            <enum value="b00111" name="Non-ITU-T" />
-            <enum value="b01000" name="ITU-T V.120" />
-            <enum value="b01001" name="ITU-T X.31 HDLC" />
-        </field>
-    </element>
+    	
     	
 </dictionary>

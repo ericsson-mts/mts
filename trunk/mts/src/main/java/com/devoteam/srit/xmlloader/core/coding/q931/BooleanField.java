@@ -40,9 +40,22 @@ public class BooleanField extends Field {
 
     @Override
     public Array setValue(String value, int offset, Array array) throws Exception {
-    	_offset = offset; 
-        array.setBit(getOffset(), Integer.parseInt(value));
-        return null;
+    	_offset = offset;
+    	int intValue;
+    	if ("true".equalsIgnoreCase(value))
+    	{
+    		intValue = 1;
+    	}
+    	else if ("false".equalsIgnoreCase(value))
+    	{
+    		intValue = 0;
+    	}
+    	else
+    	{
+    		intValue = Integer.parseInt(value);
+    	}
+   		array.setBit(getOffset(), intValue);
+   		return null;
     }
 
     @Override
