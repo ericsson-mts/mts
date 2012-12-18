@@ -176,6 +176,11 @@ public class HeaderQ931 extends HeaderAbstract {
     }
 
     @Override
+    public int calculateHeaderSize() {
+        return 0;
+    }
+    
+    @Override
     public void getParameter(Parameter var, String param) 
     {
         if (param.equalsIgnoreCase("type")) 

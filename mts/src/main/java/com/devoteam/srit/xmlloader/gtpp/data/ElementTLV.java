@@ -46,7 +46,8 @@ public class ElementTLV extends ElementAbstract
     
     public void decodeFromArray(Array array, boolean bigLength, boolean fromdata) 
     {
-        if (fromdata) {
+        if (fromdata) 
+        {
 	        this._idArray = new Integer08Array(array.subArray(0, 1));
 	        int length = new Integer16Array(array.subArray(1, 2)).getValue();
 	        _value = array.subArray(0, length + 3);

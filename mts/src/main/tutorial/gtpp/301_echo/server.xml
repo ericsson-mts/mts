@@ -11,11 +11,13 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
     </receiveMessageGTP>
     
-    <test parameter="[binary]" condition="binary.equals" value="0f0100000001"/>
+    <test parameter="[binary]" condition="binary.equals" value="0f0100020001"/>
 
     <sendMessageGTP name="echo Response" channel="[channel]">
-        <headerPrime name="echoResponse" sequenceNumber="[seqNum]"/>
-        <tv name="recovery" value="23"/>
+        <headerPrime name="echoResponse" sequenceNumber="1"/>
+        <element identifier="recovery" coding="TV">
+		        <field name="recovery" value="23"/>
+        </element>        
     </sendMessageGTP>
 
     <receiveMessageGTP name="echo request">
@@ -24,10 +26,10 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
     </receiveMessageGTP>
 
-    <test parameter="[binary]" condition="binary.equals" value="0f0100000002"/>
+    <test parameter="[binary]" condition="binary.equals" value="0f0100020002"/>
     
     <sendMessageGTP name="versionNotSupported" channel="[channel]">
-        <headerPrime name="versionNotSupported" sequenceNumber="[seqNum]"/>
+        <headerPrime name="versionNotSupported" sequenceNumber="2"/>
     </sendMessageGTP>
 
     <finally>

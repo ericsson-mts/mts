@@ -9,7 +9,9 @@
 
     <sendMessageGTP name="node alive request" channel="[connection]">
         <headerPrime name="nodeAliveRequest" sequenceNumber="1"/>
-        <tlv tag="251" value="172.16.21.207"/>
+        <element identifier="251" name="chargingGatewayAddress" coding="TLV">
+            <field name="IPV v4 Address" value="ac1015cf"/>
+        </element>
     </sendMessageGTP>
 
     <receiveMessageGTP name="node alive response">
@@ -18,7 +20,7 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>        
     </receiveMessageGTP>
     
-    <test parameter="[binary]" condition="binary.equals" value="0f0500000001"/>
+    <test parameter="[binary]" condition="binary.equals" value="0f0500020001"/>
 
     <finally>
         <closeChannelGTP name="[connection]"/>

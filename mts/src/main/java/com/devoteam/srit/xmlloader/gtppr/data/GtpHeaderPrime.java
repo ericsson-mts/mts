@@ -27,6 +27,7 @@ import java.io.InputStream;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.core.coding.q931.HeaderAbstract;
 import com.devoteam.srit.xmlloader.gtppr.GtppDictionary;
 
 import gp.utils.arrays.Array;
@@ -37,9 +38,9 @@ import gp.utils.arrays.SupArray;
 
 /**
  *
- * @author El Aly Mohamad Bilal 
+ * @author Fabien Henry
  */
-public class GtpHeaderPrime extends Header{
+public class GtpHeaderPrime extends Header {
 	
 	private String name;
     private int messageType;

@@ -43,15 +43,17 @@ public class EnumerationField extends IntegerField{
     public LinkedHashMap<String, Integer> _hashMapEnumByName = new LinkedHashMap<String, Integer>();
 
 	
-    public EnumerationField(Element rootXML) {
+    public EnumerationField(Element rootXML) 
+    {
         super(rootXML);
         
         List<Element> list = rootXML.elements("enum");
-        for (Element elemEnum : list) {
-            _hashMapEnumByName.put(elemEnum.attributeValue("name"), (int) (Utils.parseBinaryString(elemEnum.attributeValue("value")))[0]);
-
-            _hashMapEnumByValue.put((int) Utils.parseBinaryString(elemEnum.attributeValue("value"))[0], elemEnum.attributeValue("name"));
-
+        for (Element elemEnum : list) 
+        {
+        	byte[] valueBytes = Utils.parseBinaryString(elemEnum.attributeValue("value"));
+        	int value = (int) valueBytes[0] & 0xFF;        	
+            _hashMapEnumByName.put(elemEnum.attributeValue("name"), value);
+            _hashMapEnumByValue.put(value, elemEnum.attributeValue("name"));
         }
 
     }

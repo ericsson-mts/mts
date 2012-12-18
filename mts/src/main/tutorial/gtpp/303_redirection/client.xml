@@ -9,8 +9,12 @@
 
     <sendMessageGTP name="send redirection request" channel="[connection]">
         <headerPrime name="redirectionRequest" sequenceNumber="1"/>
-        <tv tag="1" value="9"/>
-        <tlv tag="254" value="172.16.21.207"/>
+        <element identifier="cause" coding="TV">
+            <field name="cause" value="9"/>
+        </element>
+        <element identifier="addressOfRecommandedNode" coding="TLV">
+            <field name="IP v4 Address" value="ac1015cf"/>
+        </element>
     </sendMessageGTP>
 
     <receiveMessageGTP name="receive redirection response">
@@ -19,7 +23,7 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
     
-    <test parameter="[binary]" condition="binary.equals" value="0f07000200010107"/>
+    <test parameter="[binary]" condition="binary.equals" value="0f07000400010107"/>
 
     <finally>
         <closeChannelGTP name="[connection]"/>

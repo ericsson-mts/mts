@@ -31,6 +31,7 @@ import com.devoteam.srit.xmlloader.core.coding.q931.HeaderAbstract;
 import com.devoteam.srit.xmlloader.core.coding.q931.XMLDoc;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.gtppr.data.GtpHeaderPrime;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -72,11 +73,12 @@ public class MessageGTP {
      {              
         Element elementHeader;
         elementHeader = root.element("headerPrime");
-        if (elementHeader == null)
+        if (elementHeader != null)
         {
-	        // this.header = new GtpHeaderPrime();
-	        // initDictionary(header.getSyntax()); 
-            // this.header.parseFromXML(elementHeader, dictionary);
+	        this.header = new HeaderGTPPrime();
+	        this.syntax = header.getSyntax();
+	        initDictionary(this.syntax); 
+	        this.header.parseFromXML(elementHeader, dictionary);
         }
         elementHeader = root.element("headerV1");
         if (elementHeader!= null)
@@ -149,7 +151,7 @@ public class MessageGTP {
          
          if (version == 0)
          {
-         	// header = new GtpHeaderPrime(flagArray);
+         	header = new HeaderGTPPrime(flagArray);
          }
          else if (version == 1)
          {
@@ -256,6 +258,7 @@ public class MessageGTP {
     public String toString() {
         StringBuilder messageToString = new StringBuilder();
         messageToString.append(header.toString());
+        messageToString.append("\n");
 
         for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) {
 

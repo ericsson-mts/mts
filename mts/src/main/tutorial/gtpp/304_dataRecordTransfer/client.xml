@@ -8,19 +8,20 @@
     <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
 
     <sendMessageGTP name="send data record transfer request" channel="[connection]">
-        <headerPrime type="240" sequenceNumber="1"/>
-        <tv name="packetTransferCommand" value="16"/>
-        <tlv name="dataRecordPacket">
-            <attribute name="numberOfDataRecords" value="2"/>
-            <attribute name="dataRecordFormat" value="1"/>
-            <attribute name="dataRecordFormatVersion" value="65"/>
-            <attribute name="dataRecords">
-                <attribute name="lengthOfDataRecord" value="16"/>
-                <attribute name="dataRecord" value="ceci est un test"/>
-                <attribute name="lengthOfDataRecord" value="11"/>
-                <attribute name="dataRecord" value="second test"/>
-            </attribute>
-        </tlv>
+        <headerPrime name="dataRecordTransferRequest" sequenceNumber="1"/>
+        <element identifier="packetTransferCommand" coding="TV">
+            <field name="packetTransferCommand" value="Send Data Record Packet"/>
+        </element>
+        <element identifier="dataRecordPacket" coding="TLV">
+            <field name="numberOfDataRecords" value="1"/>
+            <field name="dataRecordFormat" value="1"/>
+            <field name="dataRecordFormatVersion" value="65"/>
+            <field name="lengthOfDataRecord" value="16"/>
+            <field name="dataRecord" value="ceci est un test"/>
+            <!-- TODO gestion d'un type de donnees list_string-->
+            <!--field name="lengthOfDataRecord" value="11"/>
+            <field name="dataRecord" value="second test"/-->
+        </element>
     </sendMessageGTP>
 
     <receiveMessageGTP name="receive data record transfer response">
@@ -29,16 +30,18 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
     
-    <test parameter="[binary]" condition="binary.equals" value="0ff1000700010101fd0002000a"/>
+    <test parameter="[binary]" condition="binary.equals" value="0ff1000900010101fd0002000a"/>
     
     <sendMessageGTP name="send data record transfer request" channel="[connection]">
-        <headerPrime type="240" sequenceNumber="1"/>
-        <tv name="packetTransferCommand" value="10"/>
-        <tlv name="sequenceNumberOfReleasedPackets">
-            <attribute name="sequenceNumber" value="2"/>
-            <attribute name="sequenceNumber" value="5"/>
-            <attribute name="sequenceNumber" value="9"/>
-        </tlv>
+        <headerPrime name="dataRecordTransferRequest" sequenceNumber="2"/>
+        <element identifier="packetTransferCommand" coding="TV">
+            <field name="packetTransferCommand" value="Release Data Record Packet"/>
+        </element>
+        <element identifier="sequenceNumberOfReleasedPackets" coding="TLV">
+            <field name="sequenceNumber01" value="2"/>
+            <field name="sequenceNumber02" value="5"/>    
+            <field name="sequenceNumber03" value="9"/>                                    
+        </element>
     </sendMessageGTP>
 
     <receiveMessageGTP name="receive data record transfer response">
@@ -47,16 +50,18 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
     
-    <test parameter="[binary]" condition="binary.equals" value="0ff1000900010102fd00040012012e"/>
+    <test parameter="[binary]" condition="binary.equals" value="0ff1000b00020102fd00040012012e"/>
     
 
     <sendMessageGTP name="send data record transfer request" channel="[connection]">
-        <headerPrime type="240" sequenceNumber="1"/>
-        <tv name="packetTransferCommand" value="16"/>
-        <tlv name="sequenceNumberOfCancelledDataRecords">
-            <attribute name="sequenceNumber" value="6"/>
-            <attribute name="sequenceNumber" value="1"/>
-        </tlv>
+        <headerPrime name="dataRecordTransferRequest" sequenceNumber="3"/>
+        <element identifier="packetTransferCommand" coding="TV">
+            <field name="packetTransferCommand" value="Cancel Data Record Packet"/>
+        </element>
+        <element identifier="sequenceNumberOfCancelledDataRecords" coding="TLV">
+            <field name="sequenceNumber01" value="6"/>
+            <field name="sequenceNumber02" value="1"/>        
+        </element>
     </sendMessageGTP>
 
     <receiveMessageGTP name="receive data record transfer response">
@@ -65,7 +70,7 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
     
-    <test parameter="[binary]" condition="binary.equals" value="0ff1000700010103fd00020001"/>
+    <test parameter="[binary]" condition="binary.equals" value="0ff1000900030103fd00020001"/>
     
 
     <finally>

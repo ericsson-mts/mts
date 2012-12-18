@@ -9,11 +9,13 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
     
-    <test parameter="[binary]" condition="binary.equals" value="0f06000900010109fe0004ac1015cf"/>
+    <test parameter="[binary]" condition="binary.equals" value="0f06000b00010109fe0004ac1015cf"/>
 
     <sendMessageGTP name="send redirection response" channel="[channel]">
-        <headerPrime type="7" sequenceNumber="[seqNum]"/>
-        <tv tag="1" value="7"/>
+        <headerPrime name="redirectionResponse" sequenceNumber="1"/>
+        <element identifier="cause" coding="TV">
+            <field name="cause" value="7"/>
+        </element>
     </sendMessageGTP>
 
 </scenario>
