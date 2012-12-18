@@ -186,7 +186,7 @@ public class MessageQ931 {
         	ElementAbstract elem = hashElements.get(id);
         	if (elem != null)
         	{
-        		elem.getParameter(var, params, path);
+        		elem.getParameter(var, params, path, 1);
         	}
         }
         else

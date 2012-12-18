@@ -51,7 +51,6 @@ public abstract class ElementAbstract
 
     protected int id;
     protected String name;
-    protected String type;
     
     protected LinkedHashMap<String, Field> _hashMapFields = new LinkedHashMap<String, Field>();
     
@@ -59,7 +58,6 @@ public abstract class ElementAbstract
     protected Array _fields;
     
     protected boolean _bigLength;
-    protected Integer08Array _idArray;
 
     public static ElementAbstract buildFactory(Element root)
     {
@@ -119,6 +117,7 @@ public abstract class ElementAbstract
         {
         	this.name = element.attributeValue("name");
         }
+        
         List<Element> listField = element.elements("field");
         for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
             Element elemField = it.next();
@@ -162,7 +161,7 @@ public abstract class ElementAbstract
             	// int length = Integer.parseInt(elemField.attributeValue("lengthBit"));
             	// field.setLength(length);
             }
-            _hashMapFields.put(elemField.attributeValue("name"), field);
+            this._hashMapFields.put(elemField.attributeValue("name"), field);
         }
        
     }
@@ -176,14 +175,14 @@ public abstract class ElementAbstract
     	{
     		elemString.append(this.name + ":");
     	}
-    	elemString.append(_idArray.getValue());
+    	elemString.append(this.id);
         if (_fields != null)
         {
             elemString.append(" value=\"" + Array.toHexString(_fields));
         }
         elemString.append("\">");
         elemString.append("\n");
-        for (Entry<String, Field> e : getHashMapFields().entrySet()) {
+        for (Entry<String, Field> e : this._hashMapFields.entrySet()) {
             elemString.append(e.getValue().toString(this.getFieldsArray()));
         }
 
@@ -197,21 +196,21 @@ public abstract class ElementAbstract
     
     public abstract Array encodeToArray();
     
-    public void getParameter(Parameter var, String[] params, String path) throws Exception 
+    public void getParameter(Parameter var, String[] params, String path, int offset) throws Exception 
     {
-    	if (params.length == 2) 
+    	if (params.length == offset + 2) 
         {
         	if (this._value != null)
         	{
         		var.add(Array.toHexString(this._value));
         	}
         }
-        else if (params.length >= 4 && (params[2].equalsIgnoreCase("field"))) 
+        else if (params.length >= offset + 4 && (params[offset + 2].equalsIgnoreCase("field"))) 
         {
-        	Field field = getHashMapFields().get(params[3]);
+        	Field field = this._hashMapFields.get(params[offset + 3]);
         	if (field != null)
         	{	
-        		var.add(field.getValue(this.getFieldsArray()));
+        		var.add(field.getValue(this._fields));
         	}
         }
         else

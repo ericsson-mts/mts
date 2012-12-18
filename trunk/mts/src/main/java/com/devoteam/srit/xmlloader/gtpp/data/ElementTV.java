@@ -47,24 +47,23 @@ public class ElementTV extends ElementAbstract
     public void decodeFromArray(Array array, boolean bigLength, boolean fromdata) 
     {
         if (fromdata) {
-	        this._idArray = new Integer08Array(array.subArray(0, 1));
+	        this.id = new Integer08Array(array.subArray(0, 1)).getValue();
 	        int length = getLengthElem() / 8;
-	        _value = array.subArray(0, length + 1);
-	        _fields = _value.subArray(1);
+	        this._value = array.subArray(0, length + 1);
+	        this._fields = this._value.subArray(1);
         }
         else 
         {
         	array = new DefaultArray(getLengthElem() / 8 + 1);
-	    	this._idArray = new Integer08Array(array.subArray(0, 1));
-	        this._idArray.setValue(getId());
-	        _value = array;
-		    _fields = _value.subArray(1);
+	        this._value = array;
+		    this._fields = this._value.subArray(1);
         }
     }
 
     public Array encodeToArray() {
         SupArray sup = new SupArray();
-        sup.addLast(_idArray);
+        Integer08Array idArray = new Integer08Array(this.id);
+        sup.addLast(idArray);
 		sup.addLast(_fields);
         return sup;
     }
