@@ -54,8 +54,8 @@ public class ElementQ931 extends ElementAbstract
     public void decodeFromArray(Array array, boolean bigLength, boolean fromdata) {
         _bigLength = bigLength;
         if (fromdata) {
-	        this._idArray = new Integer08Array(array.subArray(0, 1));
-	        if (getHashMapFields().size() >= 1)
+	        this.id = new Integer08Array(array.subArray(0, 1)).getValue();
+	        if (this._hashMapFields.size() >= 1)
             {
 		        if (bigLength == true) {
 		            int length = new Integer16Array(array.subArray(1, 2)).getValue();
@@ -70,9 +70,7 @@ public class ElementQ931 extends ElementAbstract
 		    }
         }
         else {
-	    	_idArray = new Integer08Array(array.subArray(0, 1));
-	        _idArray.setValue(getId());
-            if (getHashMapFields().size() >= 1)
+            if (this._hashMapFields.size() >= 1)
             {
 		        _value = array;
 		        if (bigLength) {
@@ -90,7 +88,8 @@ public class ElementQ931 extends ElementAbstract
     
     public Array encodeToArray() {
         SupArray sup = new SupArray();
-        sup.addLast(_idArray);
+        Integer08Array idArray = new Integer08Array(this.id);
+        sup.addLast(idArray);
         if (_fields != null)
         {
 		    Integer08Array length8 = new Integer08Array(_fields.length);

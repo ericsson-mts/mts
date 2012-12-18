@@ -50,31 +50,30 @@ public class ElementTLIV extends ElementAbstract
     public void decodeFromArray(Array array, boolean bigLength, boolean fromdata) 
     {
         if (fromdata) {
-	        this._idArray = new Integer08Array(array.subArray(0, 1));
+	        this.id = new Integer08Array(array.subArray(0, 1)).getValue();
 	        int length = new Integer16Array(array.subArray(1, 2)).getValue();
 	        this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
-	        _value = array.subArray(0, length + 4);
-	        _fields = _value.subArray(4);
+	        this._value = array.subArray(0, length + 4);
+	        this._fields = this._value.subArray(4);
         }
         else 
         {
         	array = new DefaultArray(getLengthElem() / 8 + 4);
-	    	this._idArray = new Integer08Array(array.subArray(0, 1));
-	        this._idArray.setValue(getId());
 	        this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
-	        _value = array;
-		    _fields = _value.subArray(4);
+	        this._value = array;
+		    this._fields = this._value.subArray(4);
         }
     }
 
     public Array encodeToArray() {
         SupArray sup = new SupArray();
-        sup.addLast(_idArray);
-	    Integer16Array lengthArray = new Integer16Array(_fields.length);
+        Integer08Array idArray = new Integer08Array(this.id);
+        sup.addLast(idArray);
+	    Integer16Array lengthArray = new Integer16Array(this._fields.length);
 	    sup.addLast(lengthArray);
 	    Integer08Array instancesArray = new Integer08Array(this.instances);
 	    sup.addLast(instancesArray);
-		sup.addLast(_fields);
+		sup.addLast(this._fields);
         return sup;
     }
 

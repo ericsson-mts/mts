@@ -250,7 +250,7 @@ public class MessageGTP
 	    	ElementAbstract elemV = hashElements.get(id);
 	    	if (elemV != null)
 	    	{
-	    		elemV.getParameter(var, params, path);
+	    		elemV.getParameter(var, params, path, 0);
 	    	}
 	    }
 	    else
