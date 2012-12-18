@@ -61,7 +61,7 @@ public abstract class HeaderAbstract {
     public abstract Array encodeToArray();
     public abstract int calculateHeaderSize();
     
-    public abstract void getParameter(Parameter var, String param);
+    public abstract void getParameter(Parameter var, String param) throws Exception;
     
 	public String getSyntax() 
     {

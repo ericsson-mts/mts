@@ -24,10 +24,14 @@
 package com.devoteam.srit.xmlloader.gtpp;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.coding.q931.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.q931.HeaderAbstract;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.gtpp.data.HeaderGTPV2;
 import com.devoteam.srit.xmlloader.gtpp.data.MessageGTP;
 
 /**
@@ -57,73 +61,10 @@ public class MsgGtpp extends Msg
             return var;
         }
         var = new Parameter();
-        var.add("BIDON");
-        /*
-        var = new Parameter();
         String[] params = Utils.splitPath(path);
 
-        if (params[0].equalsIgnoreCase("header"))
-        {
-            if(params.length == 2)
-            {
-                if (params[1].equalsIgnoreCase("type"))
-                {
-                    var.add(message.getHeader().getMessageType());
-                }
-                else if (params[1].equalsIgnoreCase("name"))
-                {
-                    var.add(message.getHeader().getName());
-                }
-                else if (params[1].equalsIgnoreCase("length"))
-                {
-                    var.add(message.getHeader().getLength());
-                }
-                else if (params[1].equalsIgnoreCase("sequenceNumber"))
-                {
-                    var.add(message.getHeader().getSequenceNumber());
-                }
-                else
-                {
-                	Parameter.throwBadPathKeywordException(path);
-                }
-            }
-        }
-        else if (params[0].equalsIgnoreCase("tlv"))
-        {
-            if(params.length >= 2)
-            {
-                //get attribute given
-                Tag tlv = message.getTLV(params[1]);
-                if(tlv != null)
-                {
-                    var.add(formatAttribute(tlv));
-                }
-                else
-                {
-                    throw new Exception("The tlv <" + tlv.getName() + "> is unknown in message <" + message.getHeader().getName() + ">");
-                }
-            }
-        }
-        else if (params[0].equalsIgnoreCase("content"))
-        {
-            var.add(message.getData());
-        }
-        else if (params[0].equalsIgnoreCase("malformed"))
-        {
-            if(message.getLogError().length() == 0)
-            {
-                var.add(false);
-            }
-            else
-            {
-                var.add(true);
-            }
-        }
-        else
-        {
-        	Parameter.throwBadPathKeywordException(path);
-        }
-		*/
+        this.message.getParameter(var, params, path);
+        
         return var;
     }
 
@@ -136,13 +77,13 @@ public class MsgGtpp extends Msg
     /** Return true if the message is a request else return false*/
     public boolean isRequest()
     {
-        return message.getHeader().isRequest();
+        return message.isRequest();
     }
 
-    /** Get the command code of this message */
+    /** Get the type of this message */
     public String getType()
     {
-    	return message.getHeader().getType();
+    	return message.getType();
     }
 
     /** Get the result of this answer (null if request) */
