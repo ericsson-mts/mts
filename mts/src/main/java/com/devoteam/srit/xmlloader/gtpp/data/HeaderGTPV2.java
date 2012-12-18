@@ -252,9 +252,41 @@ public class HeaderGTPV2 extends HeaderAbstract
     }
 	
     @Override
-    public void getParameter(Parameter var, String param) 
+    public void getParameter(Parameter var, String param) throws Exception
     {
-    	// TODO a compléter
+    	if (param.equalsIgnoreCase("version"))
+        {
+            var.add(this.version);
+        }
+    	else if (param.equalsIgnoreCase("piggyFlag"))
+        {
+            var.add(this.piggyFlag);
+        }
+    	else if (param.equalsIgnoreCase("teidFlag"))
+        {
+            var.add(this.teidFlag);
+        }
+    	else if (param.equalsIgnoreCase("messageType"))
+        {
+            var.add(this.messageType);
+        }
+    	    	
+        else if (param.equalsIgnoreCase("name"))
+        {
+            var.add(this.name);
+        }
+        else if (param.equalsIgnoreCase("tunnelEndpointId"))
+        {
+            var.add(this.tunnelEndpointId);
+        }
+        else if (param.equalsIgnoreCase("sequenceNumber"))
+        {
+            var.add(this.sequenceNumber);
+        }      	
+        else
+        {
+        	Parameter.throwBadPathKeywordException("header." + param);
+        }
     }
     
 

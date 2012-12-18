@@ -197,17 +197,18 @@ public abstract class ElementAbstract
     
     public abstract Array encodeToArray();
     
-    public void getParameter(Parameter var, String[] params, String path) throws Exception {
-        if (params.length ==3) 
+    public void getParameter(Parameter var, String[] params, String path) throws Exception 
+    {
+    	if (params.length == 2) 
         {
         	if (this._value != null)
         	{
         		var.add(Array.toHexString(this._value));
         	}
         }
-        else if (params.length > 4 && (params[3].equalsIgnoreCase("field"))) 
+        else if (params.length >= 4 && (params[2].equalsIgnoreCase("field"))) 
         {
-        	Field field = getHashMapFields().get(params[4]);
+        	Field field = getHashMapFields().get(params[3]);
         	if (field != null)
         	{	
         		var.add(field.getValue(this.getFieldsArray()));

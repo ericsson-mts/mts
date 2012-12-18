@@ -54,8 +54,9 @@ public class IntegerField extends Field{
     }
     
     @Override
-    public String getValue(Array array) throws Exception {       
-       return Integer.toString(array.getBits(getOffset(), getLength()));
+    public String getValue(Array array) throws Exception {
+    	long valueLong = (long) array.getBits(getOffset(), getLength());
+    	return Long.toString(valueLong);
     }
    
 }

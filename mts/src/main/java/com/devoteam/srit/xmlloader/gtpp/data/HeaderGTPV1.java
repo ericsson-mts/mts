@@ -330,7 +330,7 @@ public class HeaderGTPV1 extends HeaderAbstract
     }
 	
     @Override
-    public void getParameter(Parameter var, String param) 
+    public void getParameter(Parameter var, String param) throws Exception
     {
     	// TODO
     }
