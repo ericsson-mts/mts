@@ -9,14 +9,16 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
     
-    <test parameter="[binary]" condition="binary.equals" value="0ff0002800017e10fc0023020100410010636563692065737420756e2074657374000b7365636f6e642074657374"/>
+    <test parameter="[binary]" condition="binary.equals" value="0ff0001d00017e01fc0016010100410010636563692065737420756e2074657374"/>
     
     <sendMessageGTP name="send data record transfer response" channel="[channel]">
-        <headerPrime type="241" sequenceNumber="[seqNum]"/>
-        <tv name="cause" value="1"/>
-        <tlv name="requestsResponded">
-            <attribute name="sequenceNumber" value="10"/>
-        </tlv>
+        <headerPrime name="dataRecordTransferResponse" sequenceNumber="1"/>
+        <element identifier="cause" coding="TV">
+            <field name="cause" value="1"/>
+        </element>
+        <element identifier="requestsResponded" coding="TLV">
+            <field name="sequenceNumber01" value="10"/>
+        </element>
     </sendMessageGTP>
 
     <receiveMessageGTP name="receive data record transfer request">
@@ -25,15 +27,17 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
     
-    <test parameter="[binary]" condition="binary.equals" value="0ff0000b00017e0af90006000200050009"/>
+    <test parameter="[binary]" condition="binary.equals" value="0ff0000d00027e04f90006000200050009"/>
     
     <sendMessageGTP name="send data record transfer response" channel="[channel]">
-        <headerPrime type="241" sequenceNumber="[seqNum]"/>
-        <tv name="cause" value="2"/>
-        <tlv name="requestsResponded">
-            <attribute name="sequenceNumber" value="18"/>
-            <attribute name="sequenceNumber" value="302"/>
-        </tlv>
+        <headerPrime name="dataRecordTransferResponse" sequenceNumber="2"/>
+        <element identifier="cause" coding="TV">
+            <field name="cause" value="2"/>
+        </element>        
+        <element identifier="requestsResponded" coding="TLV">
+            <field name="sequenceNumber01" value="18"/>
+            <field name="sequenceNumber02" value="302"/>
+        </element>
     </sendMessageGTP>
 
     <receiveMessageGTP name="receive data record transfer request">
@@ -42,14 +46,16 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
     
-    <test parameter="[binary]" condition="binary.equals" value="0ff0000900017e10fa000400060001"/>
+    <test parameter="[binary]" condition="binary.equals" value="0ff0000b00037e03fa000400060001"/>
     
     <sendMessageGTP name="send data record transfer response" channel="[channel]">
-        <headerPrime type="241" sequenceNumber="[seqNum]"/>
-        <tv name="cause" value="3"/>
-        <tlv name="requestsResponded">
-            <attribute name="sequenceNumber" value="1"/>
-        </tlv>
+        <headerPrime name="dataRecordTransferResponse" sequenceNumber="3"/>
+        <element identifier="cause" coding="TV">
+            <field name="cause" value="3"/>
+        </element>        
+        <element identifier="requestsResponded" coding="TLV">
+            <field name="sequenceNumber01" value="1"/>        
+        </element>
     </sendMessageGTP>
 
 </scenario>

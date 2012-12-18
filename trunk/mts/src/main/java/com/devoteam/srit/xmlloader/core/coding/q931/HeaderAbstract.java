@@ -52,7 +52,6 @@ public abstract class HeaderAbstract {
     
     public abstract boolean isRequest();
     public abstract String getType();
-    public abstract String getSyntax();
     
     public abstract void parseFromXML(Element header, Dictionary dictionary) throws Exception;
     public abstract String toXML();
@@ -64,9 +63,9 @@ public abstract class HeaderAbstract {
     
     public abstract void getParameter(Parameter var, String param);
     
-    public String toString()
+	public String getSyntax() 
     {
-    	return toXML();
+		return this.syntax;
     }
 
     public int getLength() 
@@ -78,4 +77,10 @@ public abstract class HeaderAbstract {
     {
     	this.length = length;
     }
+    
+    public String toString()
+    {
+    	return toXML();
+    }
+
 }

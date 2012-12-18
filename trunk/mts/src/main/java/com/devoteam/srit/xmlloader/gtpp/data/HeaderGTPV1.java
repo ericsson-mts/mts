@@ -76,7 +76,8 @@ public class HeaderGTPV1 extends HeaderAbstract
 	}
 
     @Override
-    public boolean isRequest() {
+    public boolean isRequest() 
+    {
     	if ((this.name != null) && (!this.name.contains("Request")))
     	{
     		return false;   		
@@ -88,12 +89,6 @@ public class HeaderGTPV1 extends HeaderAbstract
     public String getType() 
     {  
 	    return this.name + ":" + messageType;
-    }
-    
-    @Override
-	public String getSyntax() 
-    {
-		return this.syntax;
     }
     
 	@Override
@@ -286,6 +281,7 @@ public class HeaderGTPV1 extends HeaderAbstract
 		// Nothing to do
 	}
 	
+	@Override
 	public void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception
     {
 		this.dictionary = dictionary;

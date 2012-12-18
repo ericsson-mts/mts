@@ -18,7 +18,7 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>    
     </receiveMessageGTP>
 
-    <test parameter="[binary]" condition="binary.equals" value="0f02000200010d17"/>
+    <test parameter="[binary]" condition="binary.equals" value="0f02000400010e17"/>
     
     <sendMessageGTP name="echo Request" channel="[connection]">
         <headerPrime name="echoRequest" sequenceNumber="2"/>
@@ -30,7 +30,7 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>    
     </receiveMessageGTP>
 
-    <test parameter="[binary]" condition="binary.equals" value="0f0300000002"/>
+    <test parameter="[binary]" condition="binary.equals" value="0f0300020002"/>
     
     <finally>
         <closeChannelGTP name="[connection]"/>

@@ -41,12 +41,14 @@ public class Dictionary {
     private LinkedHashMap<Integer,ElementAbstract> mapElementById=new LinkedHashMap<Integer, ElementAbstract>();
     private LinkedHashMap<String,Field> mapHeader= new LinkedHashMap<String, Field>();
     
-    public Dictionary(Element root, String syntax) throws Exception {
-        
+    public Dictionary(Element root, String syntax) throws Exception 
+    {
+     
         List<Element> listElem=root.element("headerQ931").elements("field");
         for (Element element : listElem) {
             mapHeader.put(element.attributeValue("name"), new EnumerationField(element));
         }
+        
         List<Element> list=root.elements("element");
         for (Element elem : list) {
             ElementAbstract elemInfo = null;

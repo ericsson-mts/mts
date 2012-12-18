@@ -27,31 +27,35 @@ import java.io.InputStream;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.coding.q931.Dictionary;
+import com.devoteam.srit.xmlloader.core.coding.q931.EnumerationField;
+import com.devoteam.srit.xmlloader.core.coding.q931.HeaderAbstract;
+
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.Integer16Array;
+import gp.utils.arrays.Integer32Array;
 import gp.utils.arrays.SupArray;
 
 /**
  *
- * @author El Aly Mohamad Bilal 
+ * @author Fabien Henry
  */
-public class HeaderGTPPrime extends HeaderAbstract{
-	
-	private String name;
-    private int messageType;
+public class HeaderGTPPrime extends HeaderAbstract
+{
     private int version;
-    private String versionName;
-    private int protocolType;
-    private int length = 0;
+    private int protocolType;    
+    private int messageType;
+	private String name;
     private int sequenceNumber;
     
     public HeaderGTPPrime() 
     {
+    	this.syntax = "GTPPrime";
     	this.protocolType = 0; 
     	this.version = 0; 
-        this.versionName = "GTPPrime";
 	}
     public HeaderGTPPrime(DefaultArray flagArray) 
     {
@@ -59,72 +63,74 @@ public class HeaderGTPPrime extends HeaderAbstract{
         this.version = flagArray.getBits(0,3);
         this.protocolType = flagArray.getBits(3,1);
 	}
-    public int getSize()
-    {
-    	return 6; 
-    }
     
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setLength(int value)
+    @Override
+    public boolean isRequest() 
     {
-        this.length = value;
+    	if ((this.name != null) && (!this.name.contains("Request")))
+    	{
+    		return false;   		
+    	}
+    	return true;
     }
-
-    public int getLength()
-    {
-        return this.length;
-    }
-    
-    public void setMessageType(int value)
-    {
-        this.messageType = value;
-    }
-
-    public int getMessageType()
-    {
-        return this.messageType;
-    }
-
-    public void setSequenceNumber(int value)
-    {
-        this.sequenceNumber = value;
-    }
-
-    public int getSequenceNumber()
-    {
-        return this.sequenceNumber;
-    }
-
-    public int isProtocolType() {
-        return protocolType;
-    }
-
-    public void setProtocolType(int protocolType) {
-        this.protocolType = protocolType;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-	public String getVersionName() {
-		return versionName;
-	}
-	public void setVersionName(String versionName) {
-		this.versionName = versionName;
-	}	
 	
-    public Array getArray() throws Exception
+    @Override
+    public String getType() 
+    {  
+	    return this.name + ":" + messageType;
+    }
+
+    @Override
+    public void parseFromXML(Element header, Dictionary dictionary) throws Exception
+    {
+		this.dictionary = dictionary;
+		
+        String strName = header.attributeValue("name");
+        String strType = header.attributeValue("type");
+
+        if ((strType != null) && (strName != null))
+            throw new Exception("Type and name of the message " + this.name + " must not be set both");
+
+        if ((strType == null) && (strName == null))
+            throw new Exception("One of the parameter type or name of the message header must be set");
+
+        if (strName != null)
+        {
+            this.name = strName;
+            EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+            this.messageType = field._hashMapEnumByName.get(this.name);
+        }
+        else if(strType != null)
+        {	
+        	this.messageType = Integer.parseInt(strType);
+        	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+    	    this.name = field._hashMapEnumByValue.get(this.messageType);
+        }
+        
+        String attribute;
+        String attrFlag;
+                
+        attribute = header.attributeValue("sequenceNumber");
+        if (attribute != null)
+        {
+        	this.sequenceNumber = Integer.parseInt(attribute);
+        }
+    }
+
+	@Override
+    public String toXML()
+    {
+        String str = "<headerPrime ";
+        str += " messageType=\"" + this.name + ":" + this.messageType + "\""; 
+        str += " sequenceNumber=\"" + this.sequenceNumber + "\"";
+        str += " length=\"" + this.length + "\"";
+        str += " version=\"" + this.version + "\"";        
+        str += " protocolType=\"" + this.protocolType + "\"";
+        str += "/>";
+        return str;
+    }
+	
+    public Array encodeToArray()
     {
         //manage header data
         SupArray supArray = new SupArray();
@@ -141,73 +147,49 @@ public class HeaderGTPPrime extends HeaderAbstract{
 
         return supArray;
     }
-    
-    public void parseArray(InputStream stream, GtppDictionary dictionary) throws Exception
+
+	@Override
+	public int calculateHeaderSize()
+    {
+		int size = 0;
+		size += 2;
+		return size;
+    }
+	
+	@Override
+	public void decodeFromArray(Array data, String syntax, Dictionary dictionary) throws Exception
+	{
+		// throw new Exception("Method is not implemented !");
+		// Nothing to do
+	}
+	
+	@Override
+	public void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception
     {	
-    	byte[] header = new byte[1];
-    	
+		this.dictionary = dictionary;
+		
+		byte[] header = new byte[1];
         stream.read(header, 0, 1);
         Array array = new DefaultArray(header); 
-        messageType = (new Integer08Array(array).getValue());
-        name = dictionary.getMessageNameFromType(messageType);
+        this.messageType = (new Integer08Array(array).getValue());
+    	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+	    this.name = field._hashMapEnumByValue.get(messageType);
         
-        header = new byte[2];
-        
+	    header = new byte[2];
         stream.read(header, 0, 2);
         array = new DefaultArray(header); 
-        length = (new Integer16Array(array).getValue());
-        
-        stream.read(header, 0, 2);
-		array = new DefaultArray(header); 
-		sequenceNumber = (new Integer16Array(array).getValue()); 
+        this.length = (new Integer16Array(array).getValue());
+                
+    	header = new byte[2];
+    	stream.read(header, 0, 2);
+	    array = new DefaultArray(header); 
+	    this.sequenceNumber = (new Integer16Array(array).getValue()); 
+    }
+ 
+    @Override
+    public void getParameter(Parameter var, String param) 
+    {
+    	// TODO
     }
     
-    @Override
-    public HeaderGTPPrime clone()
-    {
-    	HeaderGTPPrime clone = new HeaderGTPPrime();
-
-        clone.setName(getName());
-        clone.setVersion(version);
-        clone.setVersionName(versionName);
-        clone.setProtocolType(protocolType);
-        clone.setMessageType(messageType);
-        clone.setLength(length);
-        clone.setSequenceNumber(sequenceNumber);
-
-        return clone;
-    }
-
-    @Override
-    public String toXML()
-    {
-        String str = name + ", length " + length + ", messageType " + messageType + ", version " + version + ", seqNum " + sequenceNumber + "\r\n";
-        return str;
-    }
-    
-    public void parseXml(Element header, GtppDictionary dictionary) throws Exception
-    {
-        String msgName = header.attributeValue("name");
-        String msgType = header.attributeValue("type");
-
-        if((msgType != null) && (msgName != null))
-            throw new Exception("type and name of the message " + msgName + " must not be set both");
-
-        if((msgType == null) && (msgName == null))
-            throw new Exception("One of the parameter type or name of the message header must be set");
-
-        if(msgName != null)
-        {
-            this.name = msgName;
-            this.messageType = dictionary.getMessageTypeFromName(msgName);
-        }
-        else if(msgType != null)
-        {	
-        	this.messageType = Integer.parseInt(msgType); 
-        	this.name = dictionary.getMessageNameFromType(this.messageType);
-        }
-        String msgSeqNum = header.attributeValue("sequenceNumber");
-        sequenceNumber = Integer.parseInt(msgSeqNum);
-
-    }
 }

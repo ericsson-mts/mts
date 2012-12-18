@@ -24,34 +24,21 @@
 package com.devoteam.srit.xmlloader.gtpp;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
-import com.devoteam.srit.xmlloader.core.coding.q931.MessageQ931;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
 import com.devoteam.srit.xmlloader.gtpp.data.MessageGTP;
-import com.devoteam.srit.xmlloader.gtpp.data.Tag;
-import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
-import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
-import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
-
-import gp.utils.arrays.Array;
 
 /**
  *
- * @author bbouvier
+ * @author Fabien Henry
  */
 public class MsgGtpp extends Msg
 {
     // based on GTP encryption 
     private MessageGTP message;
 
-    private String type = null;
-
-    private String result = null;
-    
     /**
      * Creates a new instance of MsgGtpp
      */
