@@ -44,7 +44,7 @@ public class IntegerField extends Field{
     	_offset = offset;
         try
         {
-        	array.setBits(offset, getLength(), (long) Long.parseLong(value) & 0xffffffffl);
+        	array.setBitsL(offset, getLength(), (long) Long.parseLong(value) & 0xffffffffl);
 	    }
         catch(Exception e)
         {
@@ -55,7 +55,7 @@ public class IntegerField extends Field{
     
     @Override
     public String getValue(Array array) throws Exception {
-    	long valueLong = (long) array.getBits(getOffset(), getLength());
+    	long valueLong = (long) array.getBitsL(getOffset(), getLength()) & 0xffffffffl;
     	return Long.toString(valueLong);
     }
    
