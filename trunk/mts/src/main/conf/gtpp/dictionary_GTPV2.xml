@@ -32,29 +32,29 @@
         
     </headerQ931>
 	
-    <element identifier="1" name="IMSI" coding="TLIV">
-    		<field name="IMSI" type="binary"/>
+    <element identifier="1" name="IMSI" coding="TLIV" description="International Mobile Subscriber Identity">
+    		<field name="IMSI" type="binary" description="International Mobile Subscriber Identity"/>
     </element>
 
     <element identifier="3" name="Recovery"  coding="TLIV">
 		    <field name="Recovery" lengthBit="8" type="integer"/>
     </element>
     
-    <element identifier="71" name="APN" coding="TLIV">
-    		<field name="APN" type="binary"/>
+    <element identifier="71" name="APN" coding="TLIV" description="Access Point Name">
+    		<field name="APN" type="binary" description="Access Point Name"/>
     </element>
     
-    <element identifier="72" name="AMBR" coding="TLIV">
+    <element identifier="72" name="AMBR" coding="TLIV" description="Aggregate Maximum Bit Rate">
         <field name="APN-AMBR for uplink" lengthBit="32" type="integer"/>
         <field name="APN-AMBR for downlink" lengthBit="32" type="integer"/>        
     </element>
     
-    <element identifier="75" name="MEI" coding="TLIV">
-    		<field name="MEI" type="binary"/>
+    <element identifier="75" name="MEI" coding="TLIV" description="Mobile Equipment Identity">
+    		<field name="MEI" type="binary" description="Mobile Equipment Identity"/>
     </element>
     
-    <element identifier="76" name="MSISDN" coding="TLIV">
-    		<field name="MSISDN" type="binary"/>
+    <element identifier="76" name="MSISDN" coding="TLIV" description="Mobile Subscriber ISDN Number">
+    		<field name="MSISDN" type="binary" description="Mobile Subscriber ISDN Number"/>
     </element>
 
    <element identifier="77" name="Indication" coding="TLIV">
@@ -92,11 +92,11 @@
         <field name="CPSR" lengthBit="1" type="boolean" description="CS to PS SRVCC indication"/-->
     </element>
     
-    <element identifier="78" name="PCO" coding="TLIV">
-    		<field name="PCO" type="binary"/>
+    <element identifier="78" name="PCO" coding="TLIV" description="Protocol Configuration Options">
+    		<field name="PCO" type="binary" description="Protocol Configuration Options"/>
     </element>
      
-   <element identifier="79" name="PAA" coding="TLIV">
+   <element identifier="79" name="PAA" coding="TLIV" description="PDN Address Allocation">
         <field name="spare" lengthBit="5" type="integer"/>
         <field name="PDN Type" lengthBit="3" type="enumeration">
             <enum value="b001" name="IPv4"/>
@@ -126,7 +126,7 @@
         <field name="MMC" lengthBit="24" type="integer"/>
     </element>
     
-    <element identifier="86" name="ULI" coding="TLIV">
+    <element identifier="86" name="ULI" coding="TLIV" description="User Location Information">
         <field name="spare1" lengthBit="2" type="integer"/>
         <field name="LAI" lengthBit="1" type="boolean"/>        
         <field name="ECGI" lengthBit="1" type="boolean"/>
@@ -142,7 +142,7 @@
         <field name="ECGI_ECI" lengthBit="28" type="integer"/>
     </element>        
 
-    <element identifier="87" name="F-TEID" coding="TLIV">
+    <element identifier="87" name="F-TEID" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
         <field name="V4" lengthBit="1" type="boolean"/>        
         <field name="V6" lengthBit="1" type="boolean"/>
         <field name="Interface Type" lengthBit="6" type="enumeration">
@@ -185,7 +185,7 @@
             <enum value="36" name="S2a PGW GTP-C"/>
             <enum value="37" name="S2a PGW GTP-U"/>
         </field>
-        <field name="TEID / GRE Key" lengthBit="32" type="integer"/>
+        <field name="TEID / GRE Key" lengthBit="32" type="integer" description="GRE key ?"/>
         <field name="IPv4 address" lengthBit="32" type="integer"/>
         <!-- TODO condiditional -->
         <!--field name="IPv6 address" lengthBit="4" type="integer"/-->
