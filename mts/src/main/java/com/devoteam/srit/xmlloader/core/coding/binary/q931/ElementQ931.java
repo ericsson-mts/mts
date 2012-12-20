@@ -21,7 +21,9 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.core.coding.binary;
+package com.devoteam.srit.xmlloader.core.coding.binary.q931;
+
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.Integer08Array;
