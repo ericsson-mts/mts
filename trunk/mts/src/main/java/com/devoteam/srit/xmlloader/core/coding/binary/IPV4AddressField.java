@@ -23,12 +23,11 @@
 
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
+import java.net.InetAddress;
+
 import gp.utils.arrays.Array;
-import gp.utils.arrays.DefaultArray;
-import gp.utils.arrays.SupArray;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import org.dom4j.Element;
 
@@ -37,56 +36,37 @@ import org.dom4j.Element;
  *
  * @author Fabien Henry
  */
-public class NumberITUField extends Field
+public class IPV4AddressField extends Field
 {
-    public NumberITUField(Element rootXML) 
+    public IPV4AddressField(Element rootXML) 
     {
         super(rootXML);
+        this._length = 4 * 8;
     }
 
     @Override
     public Array setValue(String value, int offset, Array array) throws Exception 
     {
-    	_offset = offset;   	
-    	if (value.length() % 2 != 0)
+    	this._offset = offset;
+    	InetAddress inetAddr = InetAddress.getByName(value);
+    	byte[] bytes = inetAddr.getAddress();
+    	for (int i = 0; i < 4; i++)
     	{
-    		value = value + "f";
+    		int pos = offset / 8 + i;
+    		array.set(pos, bytes[i] & 0xff);
     	}
-    	byte[] bytes = value.getBytes();
-    	permuteByte(bytes);
-    	String string = new String(bytes);
-    	Array valueArray = Array.fromHexString(string);
-    	SupArray suparray = new SupArray();
-        suparray.addLast(array);    	
-        suparray.addLast(valueArray);
-        return suparray;
+    	return null;
     }
     
     @Override
     public String getValue(Array array) throws Exception 
     {
-    	Array arrayValue = array.subArray(getOffset() / 8);
-    	String string = Array.toHexString(arrayValue);
-    	byte[] bytes = string.getBytes();     	
-    	permuteByte(bytes);
-    	String value = new String(bytes);
-    	if (value.endsWith("f"))
-    	{
-    		value = value.substring(0, value.length() - 1);
-    	}
-    	return value;
-    }
-
-    private void permuteByte(byte[] bytes) throws Exception 
-    {
-		int i = 0;
-		while (i < bytes.length - 1)
-		{
-			byte temp = bytes[i];
-			bytes[i] = bytes[i + 1];
-			bytes[i + 1] = temp;
-			i = i + 2;
-		}
+    	int pos = this._offset / 8;
+    	byte[] bytes = array.getBytes(pos, 4);
+    	InetAddress inetAddr = InetAddress.getByAddress(bytes);
+    	return inetAddr.getHostAddress();
     }
     
+    
+   
 }
