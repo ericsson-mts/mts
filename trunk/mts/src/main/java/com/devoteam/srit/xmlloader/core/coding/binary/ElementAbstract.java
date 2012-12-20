@@ -151,6 +151,10 @@ public abstract class ElementAbstract
 	                field = new BinaryField(elemField);
 	
 	            }
+	            else if (type.equalsIgnoreCase("number_itu")) 
+	            {
+	                field = new NumberITUField(elemField);
+	            } 	            
 	            else
 	            {
 	            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported : " + idStr);    

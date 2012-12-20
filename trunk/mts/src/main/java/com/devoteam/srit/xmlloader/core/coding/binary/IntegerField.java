@@ -40,11 +40,12 @@ public class IntegerField extends Field{
     }
 
     @Override
-    public Array setValue(String value, int offset, Array array) throws Exception {
+    public Array setValue(String value, int offset, Array array) throws Exception 
+    {
     	_offset = offset;
         try
         {
-        	array.setBitsL(offset, getLength(), (long) Long.parseLong(value) & 0xffffffffl);
+        	array.setBitsL(offset, getLength(), Long.parseLong(value));
 	    }
         catch(Exception e)
         {
@@ -54,8 +55,9 @@ public class IntegerField extends Field{
     }
     
     @Override
-    public String getValue(Array array) throws Exception {
-    	long valueLong = (long) array.getBitsL(getOffset(), getLength()) & 0xffffffffl;
+    public String getValue(Array array) throws Exception 
+    {
+    	long valueLong = array.getBitsL(getOffset(), getLength());
     	return Long.toString(valueLong);
     }
    
