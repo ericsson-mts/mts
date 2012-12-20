@@ -34,7 +34,7 @@ call startCmd.bat ..\tutorial\snmp\test.xml -sequential %OPTIONS%
 REM call startCmd.bat ..\tutorial\pstn\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\mgcp\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\stun\test.xml -sequential %OPTIONS%
-call startCmd.bat ..\tutorial\gtpp\test.xml -sequential %OPTIONS%
+call startCmd.bat ..\tutorial\gtp\test.xml -sequential %OPTIONS%
 
 pause
 
