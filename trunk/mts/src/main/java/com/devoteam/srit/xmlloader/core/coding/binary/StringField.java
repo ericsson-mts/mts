@@ -21,45 +21,36 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.core.coding.q931;
+package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
+import gp.utils.arrays.SupArray;
 
 import org.dom4j.Element;
-
 
 /**
  *
  * @author indiaye
  */
-public class BooleanField extends Field {
+public class StringField extends Field {
 
-    public BooleanField(Element rootXML) {
+    public StringField(Element rootXML) {
         super(rootXML);
     }
 
     @Override
     public Array setValue(String value, int offset, Array array) throws Exception {
     	_offset = offset;
-    	int intValue;
-    	if ("true".equalsIgnoreCase(value))
-    	{
-    		intValue = 1;
-    	}
-    	else if ("false".equalsIgnoreCase(value))
-    	{
-    		intValue = 0;
-    	}
-    	else
-    	{
-    		intValue = Integer.parseInt(value);
-    	}
-   		array.setBit(getOffset(), intValue);
-   		return null;
+        SupArray suparray = new SupArray();
+        suparray.addLast(array);
+        Array arrayValue = new DefaultArray(value.getBytes());
+        suparray.addLast(arrayValue);
+        return suparray;
     }
 
     @Override
     public String getValue(Array array) throws Exception {
-        return Integer.toString(array.getBits(getOffset(), getLength()));
+        return new String(array.subArray(getOffset() / 8).getBytes());
     }
 }

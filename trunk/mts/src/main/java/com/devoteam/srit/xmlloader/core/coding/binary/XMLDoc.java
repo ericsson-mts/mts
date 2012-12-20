@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.core.coding.q931;
+package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 

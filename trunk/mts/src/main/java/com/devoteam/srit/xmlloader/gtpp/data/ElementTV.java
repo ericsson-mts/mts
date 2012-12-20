@@ -23,12 +23,11 @@
 
 package com.devoteam.srit.xmlloader.gtpp.data;
 
-import com.devoteam.srit.xmlloader.core.coding.q931.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
-import gp.utils.arrays.Integer16Array;
 import gp.utils.arrays.SupArray;
 
 

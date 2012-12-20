@@ -27,9 +27,8 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.core.coding.q931.ElementAbstract;
-import com.devoteam.srit.xmlloader.core.coding.q931.ElementQ931;
-import com.devoteam.srit.xmlloader.core.coding.q931.MessageQ931;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.MessageQ931;
 import com.devoteam.srit.xmlloader.core.coding.tpkt.TPKTPacket;
 
 import gp.utils.arrays.Array;

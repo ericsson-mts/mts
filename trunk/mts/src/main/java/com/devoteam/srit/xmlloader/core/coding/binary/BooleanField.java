@@ -21,11 +21,9 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.core.coding.q931;
+package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import gp.utils.arrays.Array;
-
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 
 import org.dom4j.Element;
 
@@ -34,29 +32,34 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class IntegerField extends Field{
-    public IntegerField(Element rootXML) {
+public class BooleanField extends Field {
+
+    public BooleanField(Element rootXML) {
         super(rootXML);
     }
 
     @Override
     public Array setValue(String value, int offset, Array array) throws Exception {
     	_offset = offset;
-        try
-        {
-        	array.setBitsL(offset, getLength(), (long) Long.parseLong(value) & 0xffffffffl);
-	    }
-        catch(Exception e)
-        {
-        	throw new ExecutionException("ISDN layer : The value \"" + value + "\" for the integer field : \"" + getName() + "\" is not valid.", e);            	            	
-        }
-        return null;
+    	int intValue;
+    	if ("true".equalsIgnoreCase(value))
+    	{
+    		intValue = 1;
+    	}
+    	else if ("false".equalsIgnoreCase(value))
+    	{
+    		intValue = 0;
+    	}
+    	else
+    	{
+    		intValue = Integer.parseInt(value);
+    	}
+   		array.setBit(getOffset(), intValue);
+   		return null;
     }
-    
+
     @Override
     public String getValue(Array array) throws Exception {
-    	long valueLong = (long) array.getBitsL(getOffset(), getLength()) & 0xffffffffl;
-    	return Long.toString(valueLong);
+        return Integer.toString(array.getBits(getOffset(), getLength()));
     }
-   
 }

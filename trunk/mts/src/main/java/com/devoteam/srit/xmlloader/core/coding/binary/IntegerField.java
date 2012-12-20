@@ -21,12 +21,11 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.core.coding.q931;
-
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import gp.utils.arrays.Array;
-import gp.utils.arrays.SupArray;
+
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 
 import org.dom4j.Element;
 
@@ -35,28 +34,29 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class BinaryField extends Field {
-
-    public BinaryField(Element rootXML) throws Exception {
+public class IntegerField extends Field{
+    public IntegerField(Element rootXML) {
         super(rootXML);
-        if (getLength() % 8 != 0) {
-            throw new ExecutionException("Wrong length for binary field : \"" + getName() + "\"");
+    }
+
+    @Override
+    public Array setValue(String value, int offset, Array array) throws Exception {
+    	_offset = offset;
+        try
+        {
+        	array.setBitsL(offset, getLength(), (long) Long.parseLong(value) & 0xffffffffl);
+	    }
+        catch(Exception e)
+        {
+        	throw new ExecutionException("ISDN layer : The value \"" + value + "\" for the integer field : \"" + getName() + "\" is not valid.", e);            	            	
         }
-    }
-
-    @Override
-    public Array setValue(String value, int offset, Array array) {
-    	_offset = offset;    	
-        SupArray suparray = new SupArray();
-        suparray.addLast(array);
-        Array valueArray = Array.fromHexString(value);
-        suparray.addLast(valueArray);
-        return suparray;
-    }
-
-    @Override
-    public String getValue(Array array) {
-        return Array.toHexString(array.subArray(getOffset() / 8));
+        return null;
     }
     
+    @Override
+    public String getValue(Array array) throws Exception {
+    	long valueLong = (long) array.getBitsL(getOffset(), getLength()) & 0xffffffffl;
+    	return Long.toString(valueLong);
+    }
+   
 }

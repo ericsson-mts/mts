@@ -23,7 +23,6 @@
 
 package com.devoteam.srit.xmlloader.h323.h225cs;
 
-import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
@@ -35,8 +34,8 @@ import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
-import com.devoteam.srit.xmlloader.core.coding.q931.Dictionary;
-import com.devoteam.srit.xmlloader.core.coding.q931.XMLDoc;
+import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
+import com.devoteam.srit.xmlloader.core.coding.binary.XMLDoc;
 import com.devoteam.srit.xmlloader.core.coding.tpkt.TPKTPacket;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;

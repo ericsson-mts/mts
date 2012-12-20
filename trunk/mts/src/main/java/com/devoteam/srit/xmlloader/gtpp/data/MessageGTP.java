@@ -24,11 +24,11 @@
 package com.devoteam.srit.xmlloader.gtpp.data;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
-import com.devoteam.srit.xmlloader.core.coding.q931.Dictionary;
-import com.devoteam.srit.xmlloader.core.coding.q931.ElementAbstract;
-import com.devoteam.srit.xmlloader.core.coding.q931.Field;
-import com.devoteam.srit.xmlloader.core.coding.q931.HeaderAbstract;
-import com.devoteam.srit.xmlloader.core.coding.q931.XMLDoc;
+import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.Field;
+import com.devoteam.srit.xmlloader.core.coding.binary.HeaderAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.XMLDoc;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.gtppr.data.GtpHeaderPrime;
