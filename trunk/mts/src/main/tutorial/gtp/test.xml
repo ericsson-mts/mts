@@ -8,6 +8,8 @@
     <parameter name="[serverRemotePort]" operation="file.readproperty" value="gtpp.properties" value2="listenpoint.LOCAL_PORT"/>
     <parameter name="[serverRemotePort]" operation="set" value="[serverRemotePort]" editable="true" />
 
+    <testcase name="GTP v2 ------------------------------------------------------" state="false"/>
+    
     <testcase name="GTP v2 101_echo" state="true">
         <scenario name="client">101_echo/client.xml</scenario>
         <scenario name="GTPP">101_echo/server.xml</scenario>
@@ -18,6 +20,13 @@
         <scenario name="GTPP">111_createSession/server.xml</scenario>
     </testcase>
     
+    <testcase name="GTP v2 180_set_from_msg" state="true">
+        <scenario name="client">180_set_from_msg/client.xml</scenario>
+        <scenario name="GTPP">180_set_from_msg/server.xml</scenario>
+    </testcase>
+
+    <testcase name="GTP v1 ------------------------------------------------------" state="false"/>
+            
     <testcase name="GTP v1 201_echo" state="true">
         <scenario name="client">201_echo/client.xml</scenario>
         <scenario name="GTPP">201_echo/server.xml</scenario>
@@ -36,22 +45,24 @@
         <!--scenario name="GTPP">203_supportedExtensionHeadersNotification/server.xml</scenario-->
     </testcase>
 
-    <testcase name="GTP prime 301_echo" state="true">
+    <testcase name="GTP Prime ------------------------------------------------------" state="false"/>
+    
+    <testcase name="GTP Prime 301_echo" state="true">
         <scenario name="client">301_echo/client.xml</scenario>
         <scenario name="GTPP">301_echo/server.xml</scenario>
     </testcase>
 
-    <testcase name="GTP prime 302_nodeAlive" state="true">
+    <testcase name="GTP Prime 302_nodeAlive" state="true">
         <scenario name="client">302_nodeAlive/client.xml</scenario>
         <scenario name="GTPP">302_nodeAlive/server.xml</scenario>
     </testcase>
 
-    <testcase name="GTP prime 303_redirection" state="true">
+    <testcase name="GTP Prime 303_redirection" state="true">
         <scenario name="client">303_redirection/client.xml</scenario>
         <scenario name="GTPP">303_redirection/server.xml</scenario>
     </testcase>
 
-    <testcase name="GTP prime 304_dataRecordTransfer" state="true">
+    <testcase name="GTP Prime 304_dataRecordTransfer" state="true">
         <scenario name="client">304_dataRecordTransfer/client.xml</scenario>
         <scenario name="GTPP">304_dataRecordTransfer/server.xml</scenario>
     </testcase>
