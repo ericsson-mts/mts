@@ -130,7 +130,10 @@ public class PluggableParameterTestString extends AbstractPluggableParameterTest
                     throw new AssertException("Error in string test " + name + " between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " does not matches " + testValue.get(i));
                 }
             }
-            else throw new RuntimeException("unsupported string test " + name);
+            else 
+            {
+            	throw new RuntimeException("Unsupported <test> operation for condition = " + name);
+            }
 
         }
     }

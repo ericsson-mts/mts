@@ -156,6 +156,11 @@ public class PluggableParameterTestList extends AbstractPluggableParameterTest
                 }
             }                                
         }
+        else
+        {
+        	throw new RuntimeException("Unsupported <test> operation for condition = " + name);
+        }
+        
     }
 
     private boolean flowEquals(Object o1, Object o2) throws Exception

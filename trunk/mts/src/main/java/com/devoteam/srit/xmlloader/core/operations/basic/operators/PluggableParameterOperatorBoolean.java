@@ -27,6 +27,8 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 import java.util.Map;
 
 /**
@@ -89,8 +91,8 @@ public class PluggableParameterOperatorBoolean extends AbstractPluggableParamete
         {
             for(int i=0;i<size;i++)
             {
-                boolean bool1 = Boolean.parseBoolean(param_1.get(i).toString());
-                boolean bool2 = Boolean.parseBoolean(param_2.get(i).toString());
+                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString());
+                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString());
                 result.add(String.valueOf(bool1 & bool2));
             }
         }
@@ -98,8 +100,8 @@ public class PluggableParameterOperatorBoolean extends AbstractPluggableParamete
         {
             for(int i=0;i<size;i++)
             {
-                boolean bool1 = Boolean.parseBoolean(param_1.get(i).toString());
-                boolean bool2 = Boolean.parseBoolean(param_2.get(i).toString());
+                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString());
+                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString());
                 result.add(String.valueOf(bool1 | bool2));
             }
         }
@@ -107,8 +109,8 @@ public class PluggableParameterOperatorBoolean extends AbstractPluggableParamete
         {
             for(int i=0;i<size;i++)
             {
-                boolean bool1 = Boolean.parseBoolean(param_1.get(i).toString());
-                boolean bool2 = Boolean.parseBoolean(param_2.get(i).toString());
+                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString());
+                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString());
                 result.add(String.valueOf(!(bool1 & bool2)));
             }
         }
@@ -116,8 +118,8 @@ public class PluggableParameterOperatorBoolean extends AbstractPluggableParamete
         {
             for(int i=0;i<size;i++)
             {
-                boolean bool1 = Boolean.parseBoolean(param_1.get(i).toString());
-                boolean bool2 = Boolean.parseBoolean(param_2.get(i).toString());
+                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString());
+                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString());
                 result.add(String.valueOf(!(bool1 | bool2)));
             }
         }
@@ -125,8 +127,8 @@ public class PluggableParameterOperatorBoolean extends AbstractPluggableParamete
         {
             for(int i=0;i<size;i++)
             {
-                boolean bool1 = Boolean.parseBoolean(param_1.get(i).toString());
-                boolean bool2 = Boolean.parseBoolean(param_2.get(i).toString());
+                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString());
+                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString());
                 result.add(String.valueOf(bool1 ^ bool2));
             }
         }
@@ -134,7 +136,7 @@ public class PluggableParameterOperatorBoolean extends AbstractPluggableParamete
         {
             for(int i=0;i<size;i++)
             {
-                boolean bool1 = Boolean.parseBoolean(param_1.get(i).toString());
+                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString());
                 result.add(String.valueOf(!bool1));
             }
         }
@@ -142,8 +144,8 @@ public class PluggableParameterOperatorBoolean extends AbstractPluggableParamete
         {
             for(int i=0;i<size;i++)
             {
-                boolean bool1 = Boolean.parseBoolean(param_1.get(i).toString());
-                boolean bool2 = Boolean.parseBoolean(param_2.get(i).toString());
+                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString());
+                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString());
                 result.add(String.valueOf(bool1 == bool2));
             }
         }

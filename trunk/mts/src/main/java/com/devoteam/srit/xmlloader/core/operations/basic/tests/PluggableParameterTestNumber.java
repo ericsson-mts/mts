@@ -121,7 +121,7 @@ public class PluggableParameterTestNumber extends AbstractPluggableParameterTest
             }
             else
             {
-                throw new RuntimeException("unsupported math test " + name);
+            	throw new RuntimeException("Unsupported <test> operation for condition = " + name);
             }
         }
     }

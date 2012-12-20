@@ -371,6 +371,31 @@ public class Utils
     }
 
     /**
+     * Tests if the string is an integer.
+     */
+    public static boolean parseBoolean(String string)
+    { 
+    	string = string.trim();
+    	if ("true".equalsIgnoreCase(string))
+    	{
+    		return true;
+    	}
+    	if ("false".equalsIgnoreCase(string))
+    	{
+    		return false;
+    	}
+		int integer = Integer.parseInt(string);
+		if (integer == 1)
+		{
+			return true;
+		}
+		if (integer == 0)
+		{
+			return false;			
+		}
+		else throw new RuntimeException("Bad integer value for boolean : " + integer); 
+    }
+    /**
      * generates a string of nb*"    " (four spaces nb times), used for intentation in printAvp
      */
     public static String indent(int nb)
