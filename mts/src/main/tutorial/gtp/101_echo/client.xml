@@ -10,12 +10,11 @@
 
     <parameter name="[tunnelEndpointId]" operation="number.random" value="20000000000"/>
     <parameter name="[sequenceNumber]" operation="number.random" value="20000000000"/>
-    <sendMessageGTP name="echo Request" channel="[connection]">
-        <!--header discriminator="Recommendation Q.931/I.451" layer3Address="h77f4"  type="echoRequest"/-->
+    <sendMessageGTP name="send message" channel="[connection]">
         <headerV2 name="echoRequest" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
     </sendMessageGTP>
 
-    <receiveMessageGTP name="echoResponse">
+    <receiveMessageGTP name="receive message">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>              
@@ -25,11 +24,11 @@
     <test parameter="[binary]" condition="binary.equals" value="4802000d0000006f000001000300010017"/>
 
     <parameter name="[sequenceNumber]" operation="number.random" value="20000000000"/>
-    <sendMessageGTP name="echo Request" channel="[connection]">
+    <sendMessageGTP name="send message" channel="[connection]">
         <headerV2 name="echoRequest" piggyFlag = "0" teidFlag = "0" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
     </sendMessageGTP>
 
-    <receiveMessageGTP name="version not supported">
+    <receiveMessageGTP name="receive message">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>              
