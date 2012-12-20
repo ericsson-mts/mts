@@ -27,7 +27,6 @@ import java.io.InputStream;
 
 import org.dom4j.Element;
 
-import com.devoteam.srit.xmlloader.core.coding.q931.HeaderAbstract;
 import com.devoteam.srit.xmlloader.gtppr.GtppDictionary;
 
 import gp.utils.arrays.Array;

@@ -19,7 +19,7 @@ call startCmd.bat ..\tutorial\udp\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\radius\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\smtp\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\rtsp\test.xml -sequential %OPTIONS%
-call startCmd.bat ..\tutorial\imap\test.xml -sequential %OPTIONS%
+rem call startCmd.bat ..\tutorial\imap\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\pop\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\smpp\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\ucp\test.xml -sequential %OPTIONS%

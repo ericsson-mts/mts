@@ -21,36 +21,42 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.core.coding.q931;
+package com.devoteam.srit.xmlloader.core.coding.binary;
+
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 
 import gp.utils.arrays.Array;
-import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
 
 import org.dom4j.Element;
+
 
 /**
  *
  * @author indiaye
  */
-public class StringField extends Field {
+public class BinaryField extends Field {
 
-    public StringField(Element rootXML) {
+    public BinaryField(Element rootXML) throws Exception {
         super(rootXML);
+        if (getLength() % 8 != 0) {
+            throw new ExecutionException("Wrong length for binary field : \"" + getName() + "\"");
+        }
     }
 
     @Override
-    public Array setValue(String value, int offset, Array array) throws Exception {
-    	_offset = offset;
+    public Array setValue(String value, int offset, Array array) {
+    	_offset = offset;    	
         SupArray suparray = new SupArray();
         suparray.addLast(array);
-        Array arrayValue = new DefaultArray(value.getBytes());
-        suparray.addLast(arrayValue);
+        Array valueArray = Array.fromHexString(value);
+        suparray.addLast(valueArray);
         return suparray;
     }
 
     @Override
-    public String getValue(Array array) throws Exception {
-        return new String(array.subArray(getOffset() / 8).getBytes());
+    public String getValue(Array array) {
+        return Array.toHexString(array.subArray(getOffset() / 8));
     }
+    
 }

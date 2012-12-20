@@ -45,7 +45,7 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
-import com.devoteam.srit.xmlloader.core.coding.q931.MessageQ931;
+import com.devoteam.srit.xmlloader.core.coding.binary.MessageQ931;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoDictionary;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvDictionary;

@@ -28,9 +28,9 @@ import java.io.InputStream;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
-import com.devoteam.srit.xmlloader.core.coding.q931.Dictionary;
-import com.devoteam.srit.xmlloader.core.coding.q931.EnumerationField;
-import com.devoteam.srit.xmlloader.core.coding.q931.HeaderAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
+import com.devoteam.srit.xmlloader.core.coding.binary.EnumerationField;
+import com.devoteam.srit.xmlloader.core.coding.binary.HeaderAbstract;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;

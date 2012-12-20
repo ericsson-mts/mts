@@ -24,8 +24,8 @@
 package com.devoteam.srit.xmlloader.gtpp;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
-import com.devoteam.srit.xmlloader.core.coding.q931.ElementAbstract;
-import com.devoteam.srit.xmlloader.core.coding.q931.HeaderAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.HeaderAbstract;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
