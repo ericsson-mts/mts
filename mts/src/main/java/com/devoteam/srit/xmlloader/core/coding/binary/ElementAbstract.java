@@ -154,7 +154,15 @@ public abstract class ElementAbstract
 	            else if (type.equalsIgnoreCase("number_itu")) 
 	            {
 	                field = new NumberITUField(elemField);
-	            } 	            
+	            }
+	            else if (type.equalsIgnoreCase("ipv4_address")) 
+	            {
+	                field = new IPV4AddressField(elemField);
+	            }
+	            else if (type.equalsIgnoreCase("ipv6_address")) 
+	            {
+	                field = new IPV6AddressField(elemField);
+	            }	            	            
 	            else
 	            {
 	            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported : " + idStr);    

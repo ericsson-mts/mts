@@ -38,8 +38,8 @@ import org.dom4j.Element;
  */
 public abstract class Field {
 
-	private String _name;
-    private int _length;
+	protected String _name;
+    protected int _length;
     protected int _offset;
 
     public Field(Element rootXML) {
