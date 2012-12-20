@@ -45,7 +45,8 @@ public class BinaryField extends Field {
     }
 
     @Override
-    public Array setValue(String value, int offset, Array array) {
+    public Array setValue(String value, int offset, Array array) 
+    {
     	_offset = offset;    	
         SupArray suparray = new SupArray();
         suparray.addLast(array);
@@ -55,8 +56,10 @@ public class BinaryField extends Field {
     }
 
     @Override
-    public String getValue(Array array) {
-        return Array.toHexString(array.subArray(getOffset() / 8));
+    public String getValue(Array array) 
+    {
+    	Array arrayValue = array.subArray(getOffset() / 8);
+    	return Array.toHexString(arrayValue);
     }
     
 }
