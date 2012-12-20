@@ -29,6 +29,8 @@ import com.devoteam.srit.xmlloader.core.exception.AssertException;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.AbstractPluggableParameterOperator;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,19 +67,27 @@ public class PluggableParameterTestBoolean extends AbstractPluggableParameterTes
         
 
         int len = param.length();
-        if(0 == len) throw new AssertException("A test between empty parameters is a KO");
-        for(int i=0; i<len; i++)
+        if (0 == len)
         {
-            if(name.equalsIgnoreCase(NAME_EQUALS))
+        	throw new AssertException("A test between empty parameters is a KO");
+        }
+        
+        for (int i=0; i<len; i++)
+        {
+            if (name.equalsIgnoreCase(NAME_EQUALS))
             {
-                boolean bool1 = Boolean.parseBoolean(param.get(i).toString());
-                boolean bool2 = Boolean.parseBoolean(testValue.get(i).toString());
+            	boolean bool1 = Utils.parseBoolean(testValue.get(i).toString());             	
+            	boolean bool2 = Utils.parseBoolean(param.get(i).toString());
+
                 if(bool1 != bool2)
                 {
                     throw new AssertException("Error " + name + " test between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " is not equal to " + testValue.get(i));
                 }
             }
-            else throw new RuntimeException("unsupported test " + name);
+            else 
+            {
+            	throw new RuntimeException("Unsupported <test> operation for condition = " + name);
+            }
         }
     }
 }
