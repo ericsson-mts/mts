@@ -10,16 +10,16 @@
 
     <sendMessageGTP name="echo CreateSessionRequest" channel="[connection]">
         <headerV2 name="createSessionRequest" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "0" sequenceNumber="5682690"/>
-        <element identifier="IMSI" coding="TLIV">
-            <field name="IMSI" value="02084124002076f0"/>
+        <element identifier="IMSI" coding="TLIV" description="International Mobile Subscriber Identity">
+            <field name="IMSI" value="02084124002076f0" description="International Mobile Subscriber Identity"/>
         </element>
-        <element identifier="MSISDN" coding="TLIV">
-            <field name="MSISDN" value="3396992076f0"/>
+        <element identifier="MSISDN" coding="TLIV" description="Mobile Subscriber ISDN Number">
+            <field name="MSISDN" value="3396992076f0" description="Mobile Subscriber ISDN Number"/>
         </element>
-        <element identifier="MEI" coding="TLIV">
-            <field name="MEI" value="0044204291218110"/>
+        <element identifier="MEI" coding="TLIV" description="Mobile Equipment Identity">
+            <field name="MEI" value="0044204291218110" description="Mobile Equipment Identity"/>
         </element>        
-        <element identifier="ULI" coding="TLIV">
+        <element identifier="ULI" coding="TLIV" description="User Location Information">
             <field name="spare1" value="0"/>
             <field name="LAI" value="0"/>
             <field name="ECGI" value="1"/>
@@ -40,17 +40,17 @@
         <element identifier="RAT Type" coding="TLIV">
             <field name="RAT Type" value="EUTRAN"/>
         </element>
-        <element identifier="F-TEID" coding="TLIV">
+        <element identifier="F-TEID" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
             <field name="V4" value="true"/>        
             <field name="V6" value="0"/>
             <field name="Interface Type" value="S5/S8 SGW GTP-C"/>
-            <field name="TEID / GRE Key" value="2509643778"/>
+            <field name="TEID / GRE Key" value="2509643778" description="GRE?"/>
             <!-- TODO conditional IP V4 V6 -->
             <field name="IPv4 address" value="2887009834"/>
             <!--field name="IPv6 address" value="0"/-->
         </element>
-        <element identifier="APN" coding="TLIV">
-        		<field name="APN" value="096e697336636f657063066d6e63303031066d63633230380467707273"/>
+        <element identifier="APN" coding="TLIV" description="Access Point Name">
+        		<field name="APN" value="096e697336636f657063066d6e63303031066d63633230380467707273" description="Access Point Name"/>
         </element>
         <element identifier="Selection Mode" coding="TLIV">    
             <field name="spare" value="0"/>
@@ -60,7 +60,7 @@
             <field name="spare" value="0"/>
             <field name="PDN Type" value="IPv4"/>
         </element>
-        <element identifier="PAA" coding="TLIV">
+        <element identifier="PAA" coding="TLIV" description="PDN Address Allocation">
             <field name="spare" value="0"/>
             <field name="PDN Type" value="IPv4"/>
             <field name="IPv4 address" value="0"/>
@@ -103,12 +103,12 @@
         <element identifier="APN Restriction" coding="TLIV">
             <field name="Restriction Type value" value="No Existing Contexts or Restriction"/>
         </element>                
-        <element identifier="AMBR" coding="TLIV">
+        <element identifier="AMBR" coding="TLIV" description="Aggregate Maximum Bit Rate">
             <field name="APN-AMBR for uplink" value="50000"/>
             <field name="APN-AMBR for downlink" value="100000"/>        
         </element>        
-        <element identifier="PCO" coding="TLIV">
-        		<field name="PCO" value="8080211001000010810600000000830600000000000d00000a00"/>
+        <element identifier="PCO" coding="TLIV" description="Protocol Configuration Options">
+        		<field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
         </element>
         <element identifier="Bearer Context" coding="TLIV">
         		<field name="Bearer Context" value="4900010005570009028480002002ac14462a5000160004070000000000000000000000000000000000000000"/>
