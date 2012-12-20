@@ -10,7 +10,7 @@
 
     <parameter name="[tunnelEndpointId]" operation="number.random" value="20000000000"/>
     <parameter name="[sequenceNumber]" operation="number.random" value="20000000000"/>
-    <sendMessageGTP name="echo CreateSessionRequest" channel="[connection]">
+    <sendMessageGTP name="send message" channel="[connection]">
         <headerV2 name="createSessionRequest" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
         <element identifier="IMSI" coding="TLIV" description="International Mobile Subscriber Identity">
             <field name="IMSI" value="208014420002670" description="International Mobile Subscriber Identity"/>
