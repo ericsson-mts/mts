@@ -21,11 +21,14 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.core.coding.binary;
+package com.devoteam.srit.xmlloader.core.coding.binary.q931;
 
 import java.io.InputStream;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
+import com.devoteam.srit.xmlloader.core.coding.binary.EnumerationField;
+import com.devoteam.srit.xmlloader.core.coding.binary.HeaderAbstract;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
