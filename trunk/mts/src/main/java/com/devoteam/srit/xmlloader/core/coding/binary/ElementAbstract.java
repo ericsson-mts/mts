@@ -145,7 +145,11 @@ public abstract class ElementAbstract
 	            else if (type.equalsIgnoreCase("string")) 
 	            {
 	                field = new StringField(elemField);	
-	            } 
+	            }
+	            else if (type.equalsIgnoreCase("length_string")) 
+	            {
+	                field = new LengthStringField(elemField);	
+	            }	            
 	            else if (type.equalsIgnoreCase("binary")) 
 	            {
 	                field = new BinaryField(elemField);

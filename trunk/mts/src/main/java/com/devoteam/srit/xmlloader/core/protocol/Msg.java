@@ -739,7 +739,7 @@ public abstract class Msg extends MsgLight implements Removable
 			ret += "<PROBE " + probe + ">\n";
 		}
 		// cut if message is too long
-        if(ret.length() > MAX_STRING_LENGTH)
+        if (ret.length() > MAX_STRING_LENGTH)
         {
         	ret = "\n {" + MAX_STRING_LENGTH + " of " + ret.length() + "}" + ret.substring(0, MAX_STRING_LENGTH);
         }

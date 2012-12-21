@@ -125,10 +125,10 @@ public class Tester
     
     public void open_openFile(URI path, EditableParameterProvider provider) throws Exception
     {
-        OperationFunction.importDir("../functions/", URIRegistry.MTS_BIN_HOME);
-
         this.test = new Test(Cache.getXMLDocument(path, URIFactory.newURI("../conf/schemas/test.xsd")), provider);
-
+        
+        OperationFunction.importDir("../functions/", URIRegistry.MTS_BIN_HOME);
+        
         Config.reset();
     }
     
