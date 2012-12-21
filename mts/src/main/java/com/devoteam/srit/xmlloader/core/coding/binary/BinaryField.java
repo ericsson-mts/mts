@@ -35,9 +35,11 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class BinaryField extends Field {
+public class BinaryField extends Field 
+{
 
-    public BinaryField(Element rootXML) throws Exception {
+    public BinaryField(Element rootXML) throws Exception 
+    {
         super(rootXML);
         if (getLength() % 8 != 0) {
             throw new ExecutionException("Wrong length for binary field : \"" + getName() + "\"");
@@ -47,7 +49,7 @@ public class BinaryField extends Field {
     @Override
     public Array setValue(String value, int offset, Array array) 
     {
-    	_offset = offset;    	
+    	this._offset = offset;    	
         SupArray suparray = new SupArray();
         suparray.addLast(array);
         Array valueArray = Array.fromHexString(value);
@@ -58,7 +60,7 @@ public class BinaryField extends Field {
     @Override
     public String getValue(Array array) 
     {
-    	Array arrayValue = array.subArray(getOffset() / 8);
+    	Array arrayValue = array.subArray(this._offset / 8);
     	return Array.toHexString(arrayValue);
     }
     

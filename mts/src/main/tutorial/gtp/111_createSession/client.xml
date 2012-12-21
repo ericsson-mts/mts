@@ -8,8 +8,8 @@
     <parameter name="[connection]" operation="set" value="connection" />
     <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="3387"/>
 
-    <parameter name="[tunnelEndpointId]" operation="number.random" value="20000000000"/>
-    <parameter name="[sequenceNumber]" operation="number.random" value="20000000000"/>
+    <parameter name="[tunnelEndpointId]" operation="set" value="0"/>
+    <parameter name="[sequenceNumber]" operation="set" value="5682690"/>
     <sendMessageGTP name="send message" channel="[connection]">
         <headerV2 name="createSessionRequest" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
         <element identifier="IMSI" coding="TLIV" description="International Mobile Subscriber Identity">

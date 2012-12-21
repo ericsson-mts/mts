@@ -27,39 +27,40 @@ import gp.utils.arrays.Array;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 
 /**
  *
  * @author indiaye
  */
-public class BooleanField extends Field {
+public class BooleanField extends Field 
+{
 
-    public BooleanField(Element rootXML) {
+    public BooleanField(Element rootXML) 
+    {
         super(rootXML);
+        this._length = 1;
     }
 
     @Override
-    public Array setValue(String value, int offset, Array array) throws Exception {
-    	_offset = offset;
-    	int intValue;
-    	if ("true".equalsIgnoreCase(value))
+    public Array setValue(String value, int offset, Array array) throws Exception 
+    {
+    	this._offset = offset;
+    	boolean bool = Utils.parseBoolean(value);
+    	if (bool)
     	{
-    		intValue = 1;
-    	}
-    	else if ("false".equalsIgnoreCase(value))
-    	{
-    		intValue = 0;
+    		array.setBit(getOffset(), 1);
     	}
     	else
     	{
-    		intValue = Integer.parseInt(value);
+    		array.setBit(getOffset(), 0);
     	}
-   		array.setBit(getOffset(), intValue);
    		return null;
     }
 
     @Override
     public String getValue(Array array) throws Exception {
-        return Integer.toString(array.getBits(getOffset(), getLength()));
+        return Integer.toString(array.getBits(this._offset, this._length));
     }
 }

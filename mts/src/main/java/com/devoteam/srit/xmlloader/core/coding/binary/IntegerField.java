@@ -34,18 +34,21 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class IntegerField extends Field{
-    public IntegerField(Element rootXML) {
+public class IntegerField extends Field
+{
+	
+    public IntegerField(Element rootXML) 
+    {
         super(rootXML);
     }
 
     @Override
     public Array setValue(String value, int offset, Array array) throws Exception 
     {
-    	_offset = offset;
+    	this._offset = offset;
         try
         {
-        	array.setBitsL(offset, getLength(), Long.parseLong(value));
+        	array.setBitsL(offset, this._length, Long.parseLong(value));
 	    }
         catch(Exception e)
         {
@@ -57,7 +60,7 @@ public class IntegerField extends Field{
     @Override
     public String getValue(Array array) throws Exception 
     {
-    	long valueLong = array.getBitsL(getOffset(), getLength());
+    	long valueLong = array.getBitsL(this._offset, this._length);
     	return Long.toString(valueLong);
     }
    
