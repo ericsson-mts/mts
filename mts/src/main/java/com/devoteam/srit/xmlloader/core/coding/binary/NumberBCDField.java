@@ -37,10 +37,10 @@ import org.dom4j.Element;
  *
  * @author Fabien Henry
  */
-public class NumberITUField extends Field
+public class NumberBCDField extends Field
 {
 	
-    public NumberITUField(Element rootXML) 
+    public NumberBCDField(Element rootXML) 
     {
         super(rootXML);
     }
