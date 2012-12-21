@@ -160,6 +160,10 @@ public abstract class ElementAbstract
 	            {
 	                field = new NumberBCDField(elemField);
 	            }
+	            else if (type.equalsIgnoreCase("number_mmc")) 
+	            {
+	                field = new NumberMMCField(elemField);
+	            }	            
 	            else if (type.equalsIgnoreCase("ipv4_address")) 
 	            {
 	                field = new IPV4AddressField(elemField);
