@@ -151,9 +151,9 @@ public abstract class ElementAbstract
 	                field = new BinaryField(elemField);
 	
 	            }
-	            else if (type.equalsIgnoreCase("number_itu")) 
+	            else if (type.equalsIgnoreCase("number_bcd")) 
 	            {
-	                field = new NumberITUField(elemField);
+	                field = new NumberBCDField(elemField);
 	            }
 	            else if (type.equalsIgnoreCase("ipv4_address")) 
 	            {
