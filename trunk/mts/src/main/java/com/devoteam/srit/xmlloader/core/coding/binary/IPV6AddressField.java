@@ -38,6 +38,7 @@ import org.dom4j.Element;
  */
 public class IPV6AddressField extends Field
 {
+	
     public IPV6AddressField(Element rootXML) 
     {
         super(rootXML);

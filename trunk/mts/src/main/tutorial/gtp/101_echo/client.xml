@@ -8,8 +8,8 @@
     <parameter name="[connection]" operation="set" value="connection" />
     <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="3387"/>
 
-    <parameter name="[tunnelEndpointId]" operation="number.random" value="20000000000"/>
-    <parameter name="[sequenceNumber]" operation="number.random" value="20000000000"/>
+    <parameter name="[tunnelEndpointId]" operation="set" value="111"/>
+    <parameter name="[sequenceNumber]" operation="set" value="1"/>
     <sendMessageGTP name="send message" channel="[connection]">
         <headerV2 name="echoRequest" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
     </sendMessageGTP>
@@ -23,7 +23,7 @@
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     <test parameter="[binary]" condition="binary.equals" value="4802000d0000006f000001000300010017"/>
 
-    <parameter name="[sequenceNumber]" operation="number.random" value="20000000000"/>
+    <parameter name="[sequenceNumber]" operation="set" value="2"/>
     <sendMessageGTP name="send message" channel="[connection]">
         <headerV2 name="echoRequest" piggyFlag = "0" teidFlag = "0" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
     </sendMessageGTP>

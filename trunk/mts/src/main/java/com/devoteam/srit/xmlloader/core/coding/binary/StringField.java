@@ -33,15 +33,18 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class StringField extends Field {
+public class StringField extends Field 
+{
 
-    public StringField(Element rootXML) {
+    public StringField(Element rootXML) 
+    {
         super(rootXML);
     }
 
     @Override
-    public Array setValue(String value, int offset, Array array) throws Exception {
-    	_offset = offset;
+    public Array setValue(String value, int offset, Array array) throws Exception 
+    {
+    	this._offset = offset;
         SupArray suparray = new SupArray();
         suparray.addLast(array);
         Array arrayValue = new DefaultArray(value.getBytes());
@@ -50,7 +53,9 @@ public class StringField extends Field {
     }
 
     @Override
-    public String getValue(Array array) throws Exception {
-        return new String(array.subArray(getOffset() / 8).getBytes());
+    public String getValue(Array array) throws Exception 
+    {
+    	Array arrayValue = array.subArray(this._offset / 8);
+        return new String(arrayValue.getBytes());
     }
 }

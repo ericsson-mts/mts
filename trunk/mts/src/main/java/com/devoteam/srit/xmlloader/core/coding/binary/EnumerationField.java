@@ -37,7 +37,8 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class EnumerationField extends IntegerField{
+public class EnumerationField extends IntegerField
+{
 	
     public LinkedHashMap<Integer, String> _hashMapEnumByValue = new LinkedHashMap<Integer, String>();
     public LinkedHashMap<String, Integer> _hashMapEnumByName = new LinkedHashMap<String, Integer>();
@@ -52,28 +53,15 @@ public class EnumerationField extends IntegerField{
         {
         	byte[] valueBytes = Utils.parseBinaryString(elemEnum.attributeValue("value"));
         	int value = (int) valueBytes[0] & 0xFF;        	
-            _hashMapEnumByName.put(elemEnum.attributeValue("name"), value);
-            _hashMapEnumByValue.put(value, elemEnum.attributeValue("name"));
+            this._hashMapEnumByName.put(elemEnum.attributeValue("name"), value);
+            this._hashMapEnumByValue.put(value, elemEnum.attributeValue("name"));
         }
 
     }
 
     @Override
-    public String getValue(Array array) throws Exception {
-        String value = super.getValue(array);
-    	String name = _hashMapEnumByValue.get(new Integer(value));
-    	String ret = "";
-    	if (name != null)
-    	{
-    		ret = name + ":";
-    	}
-    	ret += value;
-    	return ret;
-    }
-
-    @Override
     public Array setValue(String value, int offset, Array array) throws Exception {
-    	_offset = offset;
+    	this._offset = offset;
 	    try
 	    {
 	    	array.setBits(getOffset(), getLength(), Integer.parseInt(value));
@@ -91,8 +79,21 @@ public class EnumerationField extends IntegerField{
     }
     
     @Override
+    public String getValue(Array array) throws Exception {
+        String value = super.getValue(array);
+    	String name = this._hashMapEnumByValue.get(new Integer(value));
+    	String ret = "";
+    	if (name != null)
+    	{
+    		ret = name + ":";
+    	}
+    	ret += value;
+    	return ret;
+    }
+    
+    @Override
     public LinkedHashMap<String, Integer> getHashMapEnumByName() {
-        return _hashMapEnumByName;
+        return this._hashMapEnumByName;
     }
     
 }

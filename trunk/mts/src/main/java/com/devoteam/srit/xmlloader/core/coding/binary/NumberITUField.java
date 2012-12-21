@@ -39,6 +39,7 @@ import org.dom4j.Element;
  */
 public class NumberITUField extends Field
 {
+	
     public NumberITUField(Element rootXML) 
     {
         super(rootXML);
@@ -47,7 +48,8 @@ public class NumberITUField extends Field
     @Override
     public Array setValue(String value, int offset, Array array) throws Exception 
     {
-    	_offset = offset;   	
+    	this._offset = offset;   	
+    	SupArray suparray = new SupArray();    	
     	if (value.length() % 2 != 0)
     	{
     		value = value + "f";
@@ -56,7 +58,6 @@ public class NumberITUField extends Field
     	permuteByte(bytes);
     	String string = new String(bytes);
     	Array valueArray = Array.fromHexString(string);
-    	SupArray suparray = new SupArray();
         suparray.addLast(array);    	
         suparray.addLast(valueArray);
         return suparray;
