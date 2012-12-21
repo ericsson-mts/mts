@@ -1,0 +1,120 @@
+/* 
+ * Copyright 2012 Devoteam http://www.devoteam.com
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * 
+ * 
+ * This file is part of Multi-Protocol Test Suite (MTS).
+ * 
+ * Multi-Protocol Test Suite (MTS) is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation, either version 3 of the
+ * License.
+ * 
+ * Multi-Protocol Test Suite (MTS) is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Multi-Protocol Test Suite (MTS).
+ * If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
+
+package com.devoteam.srit.xmlloader.core.coding.binary;
+
+import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
+import gp.utils.arrays.SupArray;
+
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+
+import org.dom4j.Element;
+
+
+/**
+ *
+ * @author Fabien Henry
+ */
+public class NumberMMCField extends Field
+{
+	
+    public NumberMMCField(Element rootXML) 
+    {
+        super(rootXML);
+        this._length = 3 * 8;
+    }
+
+    @Override
+    public Array setValue(String value, int offset, Array array) throws Exception 
+    {
+    	this._offset = offset;
+
+    	int pos = value.indexOf(",");
+    	if (pos < 0)
+    	{
+    		throw new ExecutionException("ISDN layer : The value \"" + value + "\" for the mumber MMC field : \"" + getName() + "\" is not valid : format = [MCC],[MNC]");
+    	}
+
+    	// process the MCC digits
+    	String mcc = value.substring(0, pos).trim();
+    	if (mcc.length() != 3)
+    	{
+    		throw new ExecutionException("ISDN layer : The value \"" + value + "\" for the mumber MMC field : \"" + getName() + "\" is not valid : [MCC] should have [3..3] characters");
+    	}    	
+    	// process the MNC digits
+    	String mnc = value.substring(pos + 1).trim();
+    	if (mnc.length() < 2 || mnc.length() > 3)
+    	{
+    		throw new ExecutionException("ISDN layer : The value \"" + value + "\" for the mumber MMC field : \"" + getName() + "\" is not valid : [MNC] should have [2..3] characters");
+    	}    		
+    	if (mnc.length() == 2)
+    	{
+    		mnc = "f" + mnc;
+    	}
+
+    	String mmc = mcc + mnc;
+    	byte[] bytes = mmc.getBytes();
+    	permuteByte(bytes);
+    	String mmcPermute = new String(bytes);
+    	Array mmcArray = Array.fromHexString(mmcPermute);
+    	byte[] mmcbytes = mmcArray.getBytes(); 
+    	for (int i = 0; i < 3; i++)
+    	{
+    		int off = offset / 8 + i;
+    		array.set(off, mmcbytes[i] & 0xff);
+    	}
+        return null;
+    }
+    
+    @Override
+    public String getValue(Array array) throws Exception 
+    {
+    	Array arrayValue = array.subArray(getOffset() / 8, 3);
+    	String string = Array.toHexString(arrayValue);
+    	byte[] bytes = string.getBytes();     	
+    	permuteByte(bytes);
+    	String value = new String(bytes);
+    	String mmc = value.substring(0, 3);
+    	String mnc = value.substring(3, 6);
+    	if (mnc.startsWith("f"))
+    	{
+    		mnc = mnc.substring(1, 3);
+    	}
+    	return mmc + ',' + mnc;
+    }
+
+    private void permuteByte(byte[] bytes) throws Exception 
+    {
+		int i = 0;
+		while (i < bytes.length - 1)
+		{
+			byte temp = bytes[i];
+			bytes[i] = bytes[i + 1];
+			bytes[i + 1] = temp;
+			i = i + 2;
+		}
+    }
+    
+}
