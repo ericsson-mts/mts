@@ -32,17 +32,17 @@ import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-public class ChannelGtpp extends Channel
+public class ChannelGtp extends Channel
 {
     private ChannelTcp channel = null;
 
     // --- constructeur --- //
-    public ChannelGtpp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception {
+    public ChannelGtp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception {
     	super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
         channel = new ChannelTcp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
     }
 
-    public ChannelGtpp(String name, Listenpoint listenpoint, Socket socket) throws Exception
+    public ChannelGtp(String name, Listenpoint listenpoint, Socket socket) throws Exception
     {
         super(
                 name,
@@ -70,7 +70,7 @@ public class ChannelGtpp extends Channel
         if (msg.getChannel() == null)
             msg.setChannel(this);
 
-        channel.sendMessage((MsgGtpp) msg);
+        channel.sendMessage(msg);
         return true;
     }
 

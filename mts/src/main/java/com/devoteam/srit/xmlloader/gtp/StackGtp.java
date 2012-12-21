@@ -42,11 +42,11 @@ import org.dom4j.Element;
  *
  * @author bbouvier
  */
-public class StackGtpp extends Stack
+public class StackGtp extends Stack
 {
 
     /** Constructor */
-    public StackGtpp() throws Exception
+    public StackGtp() throws Exception
     {
         super();
         
@@ -54,7 +54,7 @@ public class StackGtpp extends Stack
         int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
         if (port > 0)
         {
-        	Listenpoint listenpoint = new ListenpointGtpp(this);
+        	Listenpoint listenpoint = new ListenpointGtp(this);
             createListenpoint(listenpoint, StackFactory.PROTOCOL_GTPP);
         }
     }
@@ -63,7 +63,7 @@ public class StackGtpp extends Stack
     @Override
     public Listenpoint parseListenpointFromXml(Element root) throws Exception 
     { 
-        Listenpoint listenpoint = new ListenpointGtpp(this, root);
+        Listenpoint listenpoint = new ListenpointGtp(this, root);
         return listenpoint;        
     }
 
@@ -88,7 +88,7 @@ public class StackGtpp extends Stack
 
             if(null != remoteHost) remoteHost = InetAddress.getByName(remoteHost).getHostAddress();
 
-            return new ChannelGtpp(name, localHost, localPort, remoteHost, remotePort, protocol);
+            return new ChannelGtp(name, localHost, localPort, remoteHost, remotePort, protocol);
         }
     }
 
@@ -97,7 +97,7 @@ public class StackGtpp extends Stack
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
     	MessageGTP message = new MessageGTP(root);
-        return new MsgGtpp(message);
+        return new MsgGtp(message);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class StackGtpp extends Stack
     {
         MessageGTP message = new MessageGTP();
         message.decodeFromStream(inputStream);
-        return new MsgGtpp(message);
+        return new MsgGtp(message);
     }
 
     /** Returns the Config object to access the protocol config file*/
