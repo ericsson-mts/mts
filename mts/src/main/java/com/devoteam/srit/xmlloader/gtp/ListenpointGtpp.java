@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.gtpp;
+package com.devoteam.srit.xmlloader.gtp;
 
 import org.dom4j.Element;
 

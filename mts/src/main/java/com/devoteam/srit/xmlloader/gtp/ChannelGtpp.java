@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.gtpp;
+package com.devoteam.srit.xmlloader.gtp;
 
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;

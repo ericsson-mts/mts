@@ -27,14 +27,11 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.maps.LinkedHashMap;
-import com.devoteam.srit.xmlloader.gtpp.data.ElementTLIV;
-import com.devoteam.srit.xmlloader.gtpp.data.ElementTLV;
-import com.devoteam.srit.xmlloader.gtpp.data.ElementTV;
+import com.devoteam.srit.xmlloader.gtp.data.ElementTLIV;
+import com.devoteam.srit.xmlloader.gtp.data.ElementTLV;
+import com.devoteam.srit.xmlloader.gtp.data.ElementTV;
 
 import gp.utils.arrays.Array;
-import gp.utils.arrays.Integer08Array;
-import gp.utils.arrays.Integer16Array;
-import gp.utils.arrays.SupArray;
 
 import java.util.Iterator;
 import java.util.List;
@@ -149,6 +146,10 @@ public abstract class ElementAbstract
 	            else if (type.equalsIgnoreCase("length_string")) 
 	            {
 	                field = new LengthStringField(elemField);	
+	            }
+	            else if (type.equalsIgnoreCase("length2_string")) 
+	            {
+	                field = new Length2StringField(elemField);	
 	            }	            
 	            else if (type.equalsIgnoreCase("binary")) 
 	            {

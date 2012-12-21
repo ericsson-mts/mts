@@ -25,7 +25,6 @@ package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.ElementQ931;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.gtpp.data.ElementTLIV;
 
 import java.util.LinkedHashMap;
 import java.util.List;

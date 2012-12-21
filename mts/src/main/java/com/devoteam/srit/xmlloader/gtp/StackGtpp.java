@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.gtpp;
+package com.devoteam.srit.xmlloader.gtp;
 
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
@@ -32,7 +32,7 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
-import com.devoteam.srit.xmlloader.gtpp.data.MessageGTP;
+import com.devoteam.srit.xmlloader.gtp.data.MessageGTP;
 
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -111,7 +111,7 @@ public class StackGtpp extends Stack
     /** Returns the Config object to access the protocol config file*/
     public Config getConfig() throws Exception
     {
-        return Config.getConfigByName("gtpp.properties");
+        return Config.getConfigByName("gtp.properties");
     }
 
     /** Returns the replacer used to parse sendMsg Operations */

@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.gtpp.data;
+package com.devoteam.srit.xmlloader.gtp.data;
 
 import java.io.InputStream;
 
@@ -43,30 +43,36 @@ import gp.utils.arrays.SupArray;
 *
 * @author Fabien Henry 
 */
-public class HeaderGTPV2 extends HeaderAbstract 
+public class HeaderGTPV1 extends HeaderAbstract
 {
-	
+    
 	//Header composers 
 	private int version;
-	private int piggyFlag;
-	private int teidFlag;
+	private int protocolType;
+	private int extensionHeaderFlag;
+	private int sequenceNumberFlag;
+	private int nPduNumberFlag;
 	private int messageType;
 	private String name;
 	private int tunnelEndpointId;
 	private int sequenceNumber;
+    private int nPduNumber;
+    private int nextExtensionType;
     
-    public HeaderGTPV2()
+    public HeaderGTPV1()
 	{
-    	this.syntax = "GTPV2";
-    	this.version = 2;
+    	this.syntax = "GTPV1";
+    	this.version = 1;
+    	this.protocolType = 1;
 	}
 	
-    public HeaderGTPV2(Array flagArray)
+    public HeaderGTPV1(Array flagArray)
 	{
-    	this.syntax = "GTPV2";
-    	this.version = 2;
-    	this.piggyFlag = flagArray.getBits(3, 1);
-    	this.teidFlag = flagArray.getBits(4, 1);
+    	this();
+    	this.protocolType = flagArray.getBits(3, 1);
+    	this.extensionHeaderFlag = flagArray.getBits(5, 1);
+    	this.sequenceNumberFlag = flagArray.getBits(6, 1);
+    	this.nPduNumberFlag = flagArray.getBits(7, 1);
 	}
 
     @Override
@@ -84,7 +90,7 @@ public class HeaderGTPV2 extends HeaderAbstract
     {  
 	    return this.name + ":" + messageType;
     }
-
+    
 	@Override
 	public void parseFromXML(Element header, Dictionary dictionary) throws Exception
     {
@@ -93,7 +99,7 @@ public class HeaderGTPV2 extends HeaderAbstract
         String strName = header.attributeValue("name");
         String strType = header.attributeValue("type");
 
-        if((strType != null) && (strName != null))
+        if ((strType != null) && (strName != null))
             throw new Exception("Type and name of the message " + this.name + " must not be set both");
 
         if ((strType == null) && (strName == null))
@@ -114,52 +120,95 @@ public class HeaderGTPV2 extends HeaderAbstract
         
         String attribute;
         String attrFlag;
-        
-        attribute = header.attributeValue("piggyFlag");
-        if (attribute != null)
-        {
-        	this.piggyFlag = Integer.parseInt(attribute);
-        }
-        
-        attrFlag = header.attributeValue("teidFlag");
-        if (attrFlag != null)
-        {
-        	this.teidFlag = Integer.parseInt(attrFlag);
-        }
+                
         attribute = header.attributeValue("tunnelEndpointId");
         if (attribute != null)
         {
         	this.tunnelEndpointId = Integer.parseInt(attribute);
-        	if (attrFlag ==  null)
+        }
+
+        attrFlag = header.attributeValue("sequenceNumberFlag");
+        if (attrFlag != null)
+        {
+        	this.sequenceNumberFlag = Integer.parseInt(attrFlag);
+        }
+        attribute = header.attributeValue("sequenceNumber");
+        if (attribute != null)
+        {
+        	this.sequenceNumber = Integer.parseInt(attribute);
+         	if (attrFlag ==  null)
         	{
-        		this.teidFlag = 1;
+        		this.sequenceNumberFlag = 1;
         	}
         }
         else
         {
         	if (attrFlag ==  null)
         	{
-        		this.teidFlag = 0;
+        		this.sequenceNumberFlag = 0;
+        	}
+        }
+        
+        attrFlag = header.attributeValue("nPduNumberFlag");
+        if (attrFlag != null)
+        {
+        	this.nPduNumberFlag = Integer.parseInt(attrFlag);
+        }       
+        attribute = header.attributeValue("nPduNumber");
+        if (attribute != null)
+        {
+        	this.nPduNumber = Integer.parseInt(attribute);
+        	if (attrFlag ==  null)
+        	{
+        		this.nPduNumberFlag = 1;
+        	}
+        }
+        else
+        {
+        	if (attrFlag ==  null)
+        	{
+        		this.nPduNumberFlag = 0;
+        	}
+        }
+        
+        attrFlag = header.attributeValue("extensionHeaderFlag");
+        if (attrFlag != null)
+        {
+        	this.extensionHeaderFlag = Integer.parseInt(attrFlag);
+        }
+        attribute = header.attributeValue("nextExtensionType");
+        if (attribute != null)
+        {
+        	this.nextExtensionType = Integer.parseInt(attribute);
+        	if (attrFlag ==  null)
+        	{
+        		this.extensionHeaderFlag = 1;
+        	}
+        }
+        else
+        {
+        	if (attrFlag ==  null)
+        	{
+        		this.extensionHeaderFlag = 0;
         	}
         }
 
-        attribute = header.attributeValue("sequenceNumber");
-        if (attribute != null)
-        {
-        	this.sequenceNumber = Integer.parseInt(attribute);
-        }    
     }
 
 	@Override
     public String toXML()
     {
-        String str = "<headerV2 ";
-        str += " messageType=\"" + this.name + ":" + messageType + "\"";
-        str += " tunnelEndpointId=\"" + this.tunnelEndpointId + "\"";
+        String str = "<headerV1 ";
+        str += " messageType=\"" + this.name + ":" + this.messageType + "\""; 
+        str += " tunnelEndpointId=" + this.tunnelEndpointId +  "\"";
         str += " sequenceNumber=\"" + this.sequenceNumber + "\"";
-        str += " length=\"" + this.length + "\""; 
-        str += " piggyFlag=\"" + this.piggyFlag + "\""; 
-        str += " teidFlag=" + this.teidFlag +  "\"";
+        str += " nPduNumber=\"" + this.nPduNumber + "\"";
+        str += " nextExtensionType=\"" + this.nextExtensionType + "\"";
+        str += " length=\"" + this.length + "\"";
+        str += " protocolType=\"" + this.protocolType + "\"";
+        str += " extensionHeaderFlag=\"" + this.extensionHeaderFlag + "\"";
+        str += " sequenceNumberFlag=\"" + this.sequenceNumberFlag + "\"";
+        str += " nPduNumberFlag=\"" + this.nPduNumberFlag + "\"";
         str += "/>";
         return str;
     }
@@ -172,42 +221,59 @@ public class HeaderGTPV2 extends HeaderAbstract
 
         DefaultArray firstByte = new DefaultArray(1);//first byte data
         firstByte.setBits(0, 3, this.version);
-        firstByte.setBits(3, 1, this.piggyFlag);
-        firstByte.setBits(4, 1, this.teidFlag);
-        firstByte.setBits(5, 1, 0);
-        firstByte.setBits(6, 1, 0);
-        firstByte.setBits(7, 1, 0);
+        firstByte.setBits(3, 1, this.protocolType);
+        firstByte.setBits(4, 1, 0);
+        firstByte.setBits(5, 1, this.extensionHeaderFlag);
+        firstByte.setBits(6, 1, this.sequenceNumberFlag);
+        firstByte.setBits(7, 1, this.nPduNumberFlag);
         supArray.addFirst(firstByte);
 
         supArray.addLast(new Integer08Array(this.messageType));
         
         supArray.addLast(new Integer16Array(this.length));
         
-        if (this.teidFlag != 0)
+        supArray.addLast(new Integer32Array(this.tunnelEndpointId));
+        
+        if (this.sequenceNumberFlag != 0)
         {
-        	supArray.addLast(new Integer32Array(this.tunnelEndpointId));
+        	supArray.addLast(new Integer16Array(this.sequenceNumber));	
+        }
+
+        if (this.nPduNumberFlag != 0)
+        {
+        	supArray.addLast(new Integer08Array(this.nPduNumber));	
         }
         
-        Array sequenceNumberArray= new Integer32Array(this.sequenceNumber);
-        supArray.addLast(sequenceNumberArray.subArray(1, 3));
-        
-        supArray.addLast(new Integer08Array(0));
+        if (this.extensionHeaderFlag != 0)
+        {
+        	supArray.addLast(new Integer08Array(this.nextExtensionType));	
+        }
         
         return supArray;
     }
-	
+
 	@Override
 	public int calculateHeaderSize()
     {
 		int size = 0;
-        if (this.teidFlag != 0)
+		size += 4;
+        if (this.sequenceNumberFlag != 0)
         {
-        	size += 4;
+    		size += 2;	
         }
-        size += 3;
-        size +=1;
-        return size;
+
+        if (this.nPduNumberFlag != 0)
+        {
+    		size += 1;	
+        }
+        
+        if (this.extensionHeaderFlag != 0)
+        {
+    		size += 1;	
+        }
+		return size;
     }
+
 	@Override
 	public void decodeFromArray(Array data, String syntax, Dictionary dictionary) throws Exception
 	{
@@ -232,64 +298,41 @@ public class HeaderGTPV2 extends HeaderAbstract
         array = new DefaultArray(header); 
         this.length = (new Integer16Array(array).getValue());
         
-        if (this.teidFlag != 0)
-    	{
-	        header = new byte[4];
-	        stream.read(header, 0, 4);
-	        array = new DefaultArray(header); 
-	        this.tunnelEndpointId = (new Integer32Array(array).getValue());
-    	}
-        
     	header = new byte[4];
-    	stream.read(header, 1, 3);
-    	array = new DefaultArray(header); 
-    	this.sequenceNumber = (new Integer32Array(array).getValue()); 
-
-    	header = new byte[1];
-    	stream.read(header, 0, 1);
-    	// TODO champ spare2
+        stream.read(header, 0, 4);
+        array = new DefaultArray(header); 
+        this.tunnelEndpointId = (new Integer32Array(array).getValue());
+        
+        if (this.sequenceNumberFlag != 0)
+        {
+	    	header = new byte[2];
+	    	stream.read(header, 0, 2);
+	    	array = new DefaultArray(header); 
+	    	this.sequenceNumber = (new Integer16Array(array).getValue()); 
+        }
+        
+        if (this.nPduNumberFlag != 0)
+        {
+	    	header = new byte[1];
+	    	stream.read(header, 0, 1);
+	    	array = new DefaultArray(header); 
+	    	this.nPduNumber = (new Integer08Array(array).getValue()); 
+        }
+        
+        if (this.extensionHeaderFlag != 0)
+        {
+	    	header = new byte[1];
+	    	stream.read(header, 0, 1);
+	    	array = new DefaultArray(header); 
+	    	this.nextExtensionType = (new Integer08Array(array).getValue()); 
+        }
     	
     }
 	
     @Override
     public void getParameter(Parameter var, String param) throws Exception
     {
-    	if (param.equalsIgnoreCase("version"))
-        {
-            var.add(this.version);
-        }
-    	else if (param.equalsIgnoreCase("piggyFlag"))
-        {
-            var.add(this.piggyFlag);
-        }
-    	else if (param.equalsIgnoreCase("teidFlag"))
-        {
-            var.add(this.teidFlag);
-        }
-    	else if (param.equalsIgnoreCase("messageType"))
-        {
-            var.add(this.messageType);
-        }
-    	    	
-        else if (param.equalsIgnoreCase("name"))
-        {
-            var.add(this.name);
-        }
-        else if (param.equalsIgnoreCase("tunnelEndpointId"))
-        {
-            var.add(this.tunnelEndpointId);
-        }
-        else if (param.equalsIgnoreCase("sequenceNumber"))
-        {
-            var.add(this.sequenceNumber);
-        }      	
-        else
-        {
-        	Parameter.throwBadPathKeywordException("header." + param);
-        }
+    	// TODO
     }
-    
-
+    	
 }
-
-
