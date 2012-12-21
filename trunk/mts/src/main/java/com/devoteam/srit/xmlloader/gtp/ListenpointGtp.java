@@ -34,16 +34,16 @@ import com.devoteam.srit.xmlloader.core.protocol.Stack;
  *
  * @author bbouvier
  */
-public class ListenpointGtpp extends Listenpoint
+public class ListenpointGtp extends Listenpoint
 {    
     /** Creates a new instance of Listenpoint */
-    public ListenpointGtpp(Stack stack) throws Exception
+    public ListenpointGtp(Stack stack) throws Exception
     {
         super(stack);
     }
 
 	/** Creates a Listenpoint specific from XML tree*/
-	public ListenpointGtpp(Stack stack, Element root) throws Exception
+	public ListenpointGtp(Stack stack, Element root) throws Exception
 	{
 		super(stack, root);
 	}

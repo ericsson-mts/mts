@@ -35,7 +35,7 @@ import com.devoteam.srit.xmlloader.gtp.data.MessageGTP;
  *
  * @author Fabien Henry
  */
-public class MsgGtpp extends Msg
+public class MsgGtp extends Msg
 {
     // based on GTP encryption 
     private MessageGTP message;
@@ -43,7 +43,7 @@ public class MsgGtpp extends Msg
     /**
      * Creates a new instance of MsgGtpp
      */
-    public MsgGtpp(MessageGTP message) throws Exception
+    public MsgGtp(MessageGTP message) throws Exception
     {
         this.message = message;
     }
