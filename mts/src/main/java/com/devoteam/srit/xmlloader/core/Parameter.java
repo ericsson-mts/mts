@@ -219,7 +219,8 @@ public class Parameter {
         int i = 0;
 
         while (i < length) {
-            if (array.get(i).toString().length() > MAX_STRING_LENGTH) {
+            if (array.get(i).toString().length() > MAX_STRING_LENGTH) 
+            {
                 res += "{" + MAX_STRING_LENGTH + " of " + array.get(i).toString().length() + "}" + array.get(i).toString().substring(0, MAX_STRING_LENGTH) + ",";
             }
             else {

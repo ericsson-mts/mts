@@ -88,7 +88,8 @@ public abstract class Operation implements Serializable {
     @Override
     public String toString() {
         String string = _xmlTree.toString();
-        if (string.length() > MAX_STRING_LENGTH) {
+        if (string.length() > MAX_STRING_LENGTH) 
+        {
             string = "{" + MAX_STRING_LENGTH + " of " + string.length() + "} " + string.substring(0, MAX_STRING_LENGTH);
         }
         return string;

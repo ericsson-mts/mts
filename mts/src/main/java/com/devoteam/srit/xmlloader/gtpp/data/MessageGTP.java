@@ -120,9 +120,12 @@ public class MessageGTP
 	                if (result !=null)
 	                {
 	                	elemInfo.setFields(result);
+	                	offset = elemInfo.getFieldsArray().length * 8;
 	                }
-	                	
-	                offset += field.getLength(); 
+	                else
+	                {
+	                	offset += field.getLength();
+	                }
 	            }
 	            else 
 	            {

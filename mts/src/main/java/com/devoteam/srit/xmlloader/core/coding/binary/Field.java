@@ -36,7 +36,8 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public abstract class Field {
+public abstract class Field 
+{
 
 	protected String _name;
     protected int _length;
@@ -47,23 +48,23 @@ public abstract class Field {
         _name = rootXML.attributeValue("name");
         String lengthBit = rootXML.attributeValue("lengthBit");
         if (lengthBit != null) {
-            _length = Integer.parseInt(lengthBit);
+            this._length = Integer.parseInt(lengthBit);
         }
         else if(lengthBit == null && rootXML.attributeValue("value") != null){
-            _length = rootXML.attributeValue("value").length() * 8;
+            this._length = rootXML.attributeValue("value").length() * 8;
         }
         else if((rootXML.attributeValue("type")).equalsIgnoreCase("string"))
         {
-            _length=0;
+            this._length=0;
         }
         else if((rootXML.attributeValue("type")).equalsIgnoreCase("binary"))
         {
-            _length=0;
+            this._length=0;
         }
     }
 
     public int getLength() {
-        return _length;
+        return this._length;
     }
 
     public int getOffset() {
