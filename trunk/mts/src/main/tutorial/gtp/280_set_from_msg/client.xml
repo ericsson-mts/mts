@@ -14,12 +14,17 @@
 
     <receiveMessageGTP name="echoResponse">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/> 
     </receiveMessageGTP>
 
-    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
+    <parameter name="[Recovery]" operation="protocol.setFromMessage" value="element.Recovery.field.Recovery"/>
+    <test parameter="[Recovery]" condition="string.equals" value="23"/>   
+    <parameter name="[Recovery]" operation="protocol.setFromMessage" value="element.Recovery"/>
+    <test parameter="[Recovery]" condition="binary.equals" value="0e17"/>
+    
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     <test parameter="[binary]" condition="binary.equals" value="3702000a00000000000102000e17"/>
-
+    
     <sendMessageGTP name="echo Request" channel="[connection]">
         <headerV1 name="echoRequest" sequenceNumber="2" nPduNumber="2" nextExtensionType="0"/>
     </sendMessageGTP>
@@ -28,8 +33,8 @@
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>    
-    
-    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>     
     <test parameter="[binary]" condition="binary.equals" value="370300080000000000010200"/>
     
     <finally>

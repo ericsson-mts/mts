@@ -7,10 +7,10 @@
 
     <receiveMessageGTP name="echo request">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
-        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/> 
     </receiveMessageGTP>
 
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     <test parameter="[binary]" condition="binary.equals" value="37010008499602d200010200"/>
     
     <sendMessageGTP name="echo Response" channel="[channel]">
@@ -22,10 +22,10 @@
 
     <receiveMessageGTP name="echo request">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
-        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>  
     </receiveMessageGTP>
 
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     <test parameter="[binary]" condition="binary.equals" value="370100080000000000020200"/>
     
     <sendMessageGTP name="versionNotSupported" channel="[channel]">

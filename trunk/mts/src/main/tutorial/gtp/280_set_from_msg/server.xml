@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+    <createListenpointGTP name="listenpoint" localPort="3387"/>
+    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
+
+    <receiveMessageGTP name="echo request">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    </receiveMessageGTP>
+
+    <parameter name="[version]" operation="protocol.setFromMessage" value="header.version"/>
+    <test parameter="[version]" condition="number.equals" value="1"/>
+    <parameter name="[protocolType]" operation="protocol.setFromMessage" value="header.protocolType"/>
+    <test parameter="[protocolType]" condition="number.equals" value="1"/>
+    <parameter name="[extensionFlag]" operation="protocol.setFromMessage" value="header.extensionFlag"/>
+    <test parameter="[extensionFlag]" condition="boolean.equals" value="1"/>        
+    <parameter name="[seqNumFlag]" operation="protocol.setFromMessage" value="header.seqNumFlag"/>
+    <test parameter="[seqNumFlag]" condition="boolean.equals" value="1"/>    
+    <parameter name="[nPduFlag]" operation="protocol.setFromMessage" value="header.nPduFlag"/>
+    <test parameter="[nPduFlag]" condition="boolean.equals" value="1"/>
+    <parameter name="[messageType]" operation="protocol.setFromMessage" value="header.messageType"/>
+    <test parameter="[messageType]" condition="number.equals" value="1"/>
+    <parameter name="[name]" operation="protocol.setFromMessage" value="header.name"/>
+    <test parameter="[name]" condition="string.equals" value="echoRequest"/>
+    <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
+    <test parameter="[tunnelEndpointId]" condition="number.equals" value="1234567890"/>                    
+    <parameter name="[sequenceNumber]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    <test parameter="[sequenceNumber]" condition="number.equals" value="1"/>
+    <parameter name="[nPduNumber]" operation="protocol.setFromMessage" value="header.nPduNumber"/>
+    <test parameter="[nPduNumber]" condition="number.equals" value="2"/>
+    <parameter name="[nextExtensionType]" operation="protocol.setFromMessage" value="header.nextExtensionType"/>
+    <test parameter="[nextExtensionType]" condition="number.equals" value="0"/>
+    
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
+    <test parameter="[binary]" condition="binary.equals" value="37010008499602d200010200"/>
+    
+    <sendMessageGTP name="echo Response" channel="[channel]">
+        <headerV1 name="echoResponse" sequenceNumber="1"  nPduNumber="2" nextExtensionType="0"/>
+        <element identifier="Recovery" coding="TV">
+            <field name="Recovery" value="23"/>
+        </element>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="echo request">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    </receiveMessageGTP>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
+    <test parameter="[binary]" condition="binary.equals" value="370100080000000000020200"/>
+    
+    <sendMessageGTP name="versionNotSupported" channel="[channel]">
+        <headerV1 name="versionNotSupported" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
+    </sendMessageGTP>
+
+    <finally>
+        <removeListenpointGTP name="listenpoint"/>
+    </finally>
+</scenario>

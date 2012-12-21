@@ -4,10 +4,10 @@
 <scenario>
     <receiveMessageGTP name="node alive request">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
-        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>    
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>    
     </receiveMessageGTP>
 
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     <test parameter="[binary]" condition="binary.equals" value="0f0400090001fb0004ac1015cf"/>
     
     <sendMessageGTP name="node alive response" channel="[channel]">

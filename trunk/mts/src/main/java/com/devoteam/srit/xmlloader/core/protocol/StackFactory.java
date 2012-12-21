@@ -108,7 +108,7 @@ public class StackFactory
     public static String PROTOCOL_MSRP_STACK_CLASS = "com.devoteam.srit.xmlloader.msrp.StackMsrp";
 
     public static final String PROTOCOL_GTPP = "GTPP";
-    public static String PROTOCOL_GTPP_STACK_CLASS = "com.devoteam.srit.xmlloader.gtp.StackGtpp";
+    public static String PROTOCOL_GTPP_STACK_CLASS = "com.devoteam.srit.xmlloader.gtp.StackGtp";
 
     public static final String PROTOCOL_SNMP = "SNMP";
     public static String PROTOCOL_SNMP_STACK_CLASS = "com.devoteam.srit.xmlloader.snmp.StackSnmp";

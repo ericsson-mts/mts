@@ -49,9 +49,9 @@ public class HeaderGTPV1 extends HeaderAbstract
 	//Header composers 
 	private int version;
 	private int protocolType;
-	private int extensionHeaderFlag;
-	private int sequenceNumberFlag;
-	private int nPduNumberFlag;
+	private int extensionFlag;
+	private int seqNumFlag;
+	private int nPduFlag;
 	private int messageType;
 	private String name;
 	private int tunnelEndpointId;
@@ -70,9 +70,9 @@ public class HeaderGTPV1 extends HeaderAbstract
 	{
     	this();
     	this.protocolType = flagArray.getBits(3, 1);
-    	this.extensionHeaderFlag = flagArray.getBits(5, 1);
-    	this.sequenceNumberFlag = flagArray.getBits(6, 1);
-    	this.nPduNumberFlag = flagArray.getBits(7, 1);
+    	this.extensionFlag = flagArray.getBits(5, 1);
+    	this.seqNumFlag = flagArray.getBits(6, 1);
+    	this.nPduFlag = flagArray.getBits(7, 1);
 	}
 
     @Override
@@ -127,10 +127,10 @@ public class HeaderGTPV1 extends HeaderAbstract
         	this.tunnelEndpointId = Integer.parseInt(attribute);
         }
 
-        attrFlag = header.attributeValue("sequenceNumberFlag");
+        attrFlag = header.attributeValue("seqNumFlag");
         if (attrFlag != null)
         {
-        	this.sequenceNumberFlag = Integer.parseInt(attrFlag);
+        	this.seqNumFlag = Integer.parseInt(attrFlag);
         }
         attribute = header.attributeValue("sequenceNumber");
         if (attribute != null)
@@ -138,21 +138,21 @@ public class HeaderGTPV1 extends HeaderAbstract
         	this.sequenceNumber = Integer.parseInt(attribute);
          	if (attrFlag ==  null)
         	{
-        		this.sequenceNumberFlag = 1;
+        		this.seqNumFlag = 1;
         	}
         }
         else
         {
         	if (attrFlag ==  null)
         	{
-        		this.sequenceNumberFlag = 0;
+        		this.seqNumFlag = 0;
         	}
         }
         
-        attrFlag = header.attributeValue("nPduNumberFlag");
+        attrFlag = header.attributeValue("nPduFlag");
         if (attrFlag != null)
         {
-        	this.nPduNumberFlag = Integer.parseInt(attrFlag);
+        	this.nPduFlag = Integer.parseInt(attrFlag);
         }       
         attribute = header.attributeValue("nPduNumber");
         if (attribute != null)
@@ -160,21 +160,21 @@ public class HeaderGTPV1 extends HeaderAbstract
         	this.nPduNumber = Integer.parseInt(attribute);
         	if (attrFlag ==  null)
         	{
-        		this.nPduNumberFlag = 1;
+        		this.nPduFlag = 1;
         	}
         }
         else
         {
         	if (attrFlag ==  null)
         	{
-        		this.nPduNumberFlag = 0;
+        		this.nPduFlag = 0;
         	}
         }
         
-        attrFlag = header.attributeValue("extensionHeaderFlag");
+        attrFlag = header.attributeValue("extensionFlag");
         if (attrFlag != null)
         {
-        	this.extensionHeaderFlag = Integer.parseInt(attrFlag);
+        	this.extensionFlag = Integer.parseInt(attrFlag);
         }
         attribute = header.attributeValue("nextExtensionType");
         if (attribute != null)
@@ -182,14 +182,14 @@ public class HeaderGTPV1 extends HeaderAbstract
         	this.nextExtensionType = Integer.parseInt(attribute);
         	if (attrFlag ==  null)
         	{
-        		this.extensionHeaderFlag = 1;
+        		this.extensionFlag = 1;
         	}
         }
         else
         {
         	if (attrFlag ==  null)
         	{
-        		this.extensionHeaderFlag = 0;
+        		this.extensionFlag = 0;
         	}
         }
 
@@ -205,10 +205,11 @@ public class HeaderGTPV1 extends HeaderAbstract
         str += " nPduNumber=\"" + this.nPduNumber + "\"";
         str += " nextExtensionType=\"" + this.nextExtensionType + "\"";
         str += " length=\"" + this.length + "\"";
+        str += " version=\"" + this.version + "\"";        
         str += " protocolType=\"" + this.protocolType + "\"";
-        str += " extensionHeaderFlag=\"" + this.extensionHeaderFlag + "\"";
-        str += " sequenceNumberFlag=\"" + this.sequenceNumberFlag + "\"";
-        str += " nPduNumberFlag=\"" + this.nPduNumberFlag + "\"";
+        str += " extensionFlag=\"" + this.extensionFlag + "\"";
+        str += " seqNumFlag=\"" + this.seqNumFlag + "\"";
+        str += " nPduFlag=\"" + this.nPduFlag + "\"";
         str += "/>";
         return str;
     }
@@ -223,9 +224,9 @@ public class HeaderGTPV1 extends HeaderAbstract
         firstByte.setBits(0, 3, this.version);
         firstByte.setBits(3, 1, this.protocolType);
         firstByte.setBits(4, 1, 0);
-        firstByte.setBits(5, 1, this.extensionHeaderFlag);
-        firstByte.setBits(6, 1, this.sequenceNumberFlag);
-        firstByte.setBits(7, 1, this.nPduNumberFlag);
+        firstByte.setBits(5, 1, this.extensionFlag);
+        firstByte.setBits(6, 1, this.seqNumFlag);
+        firstByte.setBits(7, 1, this.nPduFlag);
         supArray.addFirst(firstByte);
 
         supArray.addLast(new Integer08Array(this.messageType));
@@ -234,17 +235,17 @@ public class HeaderGTPV1 extends HeaderAbstract
         
         supArray.addLast(new Integer32Array(this.tunnelEndpointId));
         
-        if (this.sequenceNumberFlag != 0)
+        if (this.seqNumFlag != 0)
         {
         	supArray.addLast(new Integer16Array(this.sequenceNumber));	
         }
 
-        if (this.nPduNumberFlag != 0)
+        if (this.nPduFlag != 0)
         {
         	supArray.addLast(new Integer08Array(this.nPduNumber));	
         }
         
-        if (this.extensionHeaderFlag != 0)
+        if (this.extensionFlag != 0)
         {
         	supArray.addLast(new Integer08Array(this.nextExtensionType));	
         }
@@ -257,17 +258,17 @@ public class HeaderGTPV1 extends HeaderAbstract
     {
 		int size = 0;
 		size += 4;
-        if (this.sequenceNumberFlag != 0)
+        if (this.seqNumFlag != 0)
         {
     		size += 2;	
         }
 
-        if (this.nPduNumberFlag != 0)
+        if (this.nPduFlag != 0)
         {
     		size += 1;	
         }
         
-        if (this.extensionHeaderFlag != 0)
+        if (this.extensionFlag != 0)
         {
     		size += 1;	
         }
@@ -303,7 +304,7 @@ public class HeaderGTPV1 extends HeaderAbstract
         array = new DefaultArray(header); 
         this.tunnelEndpointId = (new Integer32Array(array).getValue());
         
-        if (this.sequenceNumberFlag != 0)
+        if (this.seqNumFlag != 0)
         {
 	    	header = new byte[2];
 	    	stream.read(header, 0, 2);
@@ -311,7 +312,7 @@ public class HeaderGTPV1 extends HeaderAbstract
 	    	this.sequenceNumber = (new Integer16Array(array).getValue()); 
         }
         
-        if (this.nPduNumberFlag != 0)
+        if (this.nPduFlag != 0)
         {
 	    	header = new byte[1];
 	    	stream.read(header, 0, 1);
@@ -319,7 +320,7 @@ public class HeaderGTPV1 extends HeaderAbstract
 	    	this.nPduNumber = (new Integer08Array(array).getValue()); 
         }
         
-        if (this.extensionHeaderFlag != 0)
+        if (this.extensionFlag != 0)
         {
 	    	header = new byte[1];
 	    	stream.read(header, 0, 1);
@@ -332,7 +333,54 @@ public class HeaderGTPV1 extends HeaderAbstract
     @Override
     public void getParameter(Parameter var, String param) throws Exception
     {
-    	// TODO
-    }
-    	
+    	if (param.equalsIgnoreCase("version"))
+        {
+            var.add(this.version);
+        }
+    	else if (param.equalsIgnoreCase("protocolType"))
+        {
+            var.add(this.protocolType);
+        }
+    	else if (param.equalsIgnoreCase("extensionFlag"))
+        {
+            var.add(this.extensionFlag);
+        }
+    	else if (param.equalsIgnoreCase("seqNumFlag"))
+        {
+            var.add(this.seqNumFlag);
+        }      	
+    	else if (param.equalsIgnoreCase("nPduFlag"))
+        {
+            var.add(this.nPduFlag);
+        }    	
+    	else if (param.equalsIgnoreCase("messageType"))
+        {
+            var.add(this.messageType);
+        }
+    	    	
+        else if (param.equalsIgnoreCase("name"))
+        {
+            var.add(this.name);
+        }
+        else if (param.equalsIgnoreCase("tunnelEndpointId"))
+        {
+            var.add(this.tunnelEndpointId);
+        }
+        else if (param.equalsIgnoreCase("sequenceNumber"))
+        {
+            var.add(this.sequenceNumber);
+        }
+        else if (param.equalsIgnoreCase("nPduNumber"))
+        {
+            var.add(this.nPduNumber);
+        }     
+        else if (param.equalsIgnoreCase("nextExtensionType"))
+        {
+            var.add(this.nextExtensionType);
+        }         	
+        else
+        {
+        	Parameter.throwBadPathKeywordException("header." + param);
+        }    
+    }   	
 }
