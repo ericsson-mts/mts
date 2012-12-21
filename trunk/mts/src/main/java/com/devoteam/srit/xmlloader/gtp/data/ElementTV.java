@@ -21,46 +21,51 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.core.coding.binary;
+package com.devoteam.srit.xmlloader.gtp.data;
+
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.SupArray;
 
-import org.dom4j.Element;
-
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 /**
  *
  * @author Fabien Henry
  */
-public class LengthStringField extends Field 
+public class ElementTV extends ElementAbstract
 {
 
-    public LengthStringField(Element rootXML) 
+    public ElementTV()
     {
-        super(rootXML);      
+    	
+    }
+    
+    public void decodeFromArray(Array array, boolean bigLength, boolean fromdata) 
+    {
+        if (fromdata) {
+	        this.id = new Integer08Array(array.subArray(0, 1)).getValue();
+	        int length = getLengthElem() / 8;
+	        this._value = array.subArray(0, length + 1);
+	        this._fields = this._value.subArray(1);
+        }
+        else 
+        {
+        	array = new DefaultArray(getLengthElem() / 8 + 1);
+	        this._value = array;
+		    this._fields = this._value.subArray(1);
+        }
     }
 
-    @Override
-    public Array setValue(String value, int offset, Array array) throws Exception 
-    {
-    	this._offset = offset;
-        SupArray suparray = new SupArray();		
-        suparray.addLast(array);
-        suparray.addLast(new Integer08Array(value.length()));
-        Array arrayValue = new DefaultArray(value.getBytes());
-        suparray.addLast(arrayValue);
-        return suparray;
+    public Array encodeToArray() {
+        SupArray sup = new SupArray();
+        Integer08Array idArray = new Integer08Array(this.id);
+        sup.addLast(idArray);
+		sup.addLast(_fields);
+        return sup;
     }
 
-    @Override
-    public String getValue(Array array) throws Exception 
-    {
-    	int length = array.getBits(this._offset, 8);
-    	Array arrayValue = array.subArray(this._offset / 8 + 1, length);
-        return new String(arrayValue.getBytes());
-    }
+    
 }

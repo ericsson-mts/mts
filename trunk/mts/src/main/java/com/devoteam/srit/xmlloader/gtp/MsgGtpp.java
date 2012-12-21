@@ -21,18 +21,15 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.gtpp;
+package com.devoteam.srit.xmlloader.gtp;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
-import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
-import com.devoteam.srit.xmlloader.core.coding.binary.HeaderAbstract;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.gtpp.data.HeaderGTPV2;
-import com.devoteam.srit.xmlloader.gtpp.data.MessageGTP;
+import com.devoteam.srit.xmlloader.gtp.data.MessageGTP;
 
 /**
  *

@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.gtpp.data;
+package com.devoteam.srit.xmlloader.gtp.data;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;

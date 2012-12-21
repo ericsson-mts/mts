@@ -21,13 +21,14 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.gtpp.data;
+package com.devoteam.srit.xmlloader.gtp.data;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
+import gp.utils.arrays.Integer16Array;
 import gp.utils.arrays.SupArray;
 
 
@@ -35,27 +36,28 @@ import gp.utils.arrays.SupArray;
  *
  * @author Fabien Henry
  */
-public class ElementTV extends ElementAbstract
+public class ElementTLV extends ElementAbstract
 {
 
-    public ElementTV()
+    public ElementTLV()
     {
     	
     }
     
     public void decodeFromArray(Array array, boolean bigLength, boolean fromdata) 
     {
-        if (fromdata) {
-	        this.id = new Integer08Array(array.subArray(0, 1)).getValue();
-	        int length = getLengthElem() / 8;
-	        this._value = array.subArray(0, length + 1);
-	        this._fields = this._value.subArray(1);
+        if (fromdata) 
+        {
+        	this.id = new Integer08Array(array.subArray(0, 1)).getValue();
+	        int length = new Integer16Array(array.subArray(1, 2)).getValue();
+	        this._value = array.subArray(0, length + 3);
+	        this._fields = this._value.subArray(3);
         }
         else 
         {
-        	array = new DefaultArray(getLengthElem() / 8 + 1);
+        	array = new DefaultArray(getLengthElem() / 8 + 3);
 	        this._value = array;
-		    this._fields = this._value.subArray(1);
+		    this._fields = this._value.subArray(3);
         }
     }
 
@@ -63,7 +65,9 @@ public class ElementTV extends ElementAbstract
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);
         sup.addLast(idArray);
-		sup.addLast(_fields);
+	    Integer16Array lengthArray = new Integer16Array(this._fields.length);
+	    sup.addLast(lengthArray);
+		sup.addLast(this._fields);
         return sup;
     }
 

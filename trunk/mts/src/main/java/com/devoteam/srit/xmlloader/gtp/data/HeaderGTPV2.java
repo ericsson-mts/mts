@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.gtpp.data;
+package com.devoteam.srit.xmlloader.gtp.data;
 
 import java.io.InputStream;
 
@@ -40,30 +40,35 @@ import gp.utils.arrays.Integer32Array;
 import gp.utils.arrays.SupArray;
 
 /**
- *
- * @author Fabien Henry
- */
-public class HeaderGTPPrime extends HeaderAbstract
+*
+* @author Fabien Henry 
+*/
+public class HeaderGTPV2 extends HeaderAbstract 
 {
-    private int version;
-    private int protocolType;    
-    private int messageType;
+	
+	//Header composers 
+	private int version;
+	private int piggyFlag;
+	private int teidFlag;
+	private int messageType;
 	private String name;
-    private int sequenceNumber;
+	private int tunnelEndpointId;
+	private int sequenceNumber;
     
-    public HeaderGTPPrime() 
-    {
-    	this.syntax = "GTPPrime";
-    	this.protocolType = 0; 
-    	this.version = 0; 
+    public HeaderGTPV2()
+	{
+    	this.syntax = "GTPV2";
+    	this.version = 2;
 	}
-    public HeaderGTPPrime(DefaultArray flagArray) 
-    {
-    	this();
-        this.version = flagArray.getBits(0,3);
-        this.protocolType = flagArray.getBits(3,1);
+	
+    public HeaderGTPV2(Array flagArray)
+	{
+    	this.syntax = "GTPV2";
+    	this.version = 2;
+    	this.piggyFlag = flagArray.getBits(3, 1);
+    	this.teidFlag = flagArray.getBits(4, 1);
 	}
-    
+
     @Override
     public boolean isRequest() 
     {
@@ -73,22 +78,22 @@ public class HeaderGTPPrime extends HeaderAbstract
     	}
     	return true;
     }
-	
+    
     @Override
     public String getType() 
     {  
 	    return this.name + ":" + messageType;
     }
 
-    @Override
-    public void parseFromXML(Element header, Dictionary dictionary) throws Exception
+	@Override
+	public void parseFromXML(Element header, Dictionary dictionary) throws Exception
     {
 		this.dictionary = dictionary;
 		
         String strName = header.attributeValue("name");
         String strType = header.attributeValue("type");
 
-        if ((strType != null) && (strName != null))
+        if((strType != null) && (strName != null))
             throw new Exception("Type and name of the message " + this.name + " must not be set both");
 
         if ((strType == null) && (strName == null))
@@ -109,53 +114,100 @@ public class HeaderGTPPrime extends HeaderAbstract
         
         String attribute;
         String attrFlag;
-                
+        
+        attribute = header.attributeValue("piggyFlag");
+        if (attribute != null)
+        {
+        	this.piggyFlag = Integer.parseInt(attribute);
+        }
+        
+        attrFlag = header.attributeValue("teidFlag");
+        if (attrFlag != null)
+        {
+        	this.teidFlag = Integer.parseInt(attrFlag);
+        }
+        attribute = header.attributeValue("tunnelEndpointId");
+        if (attribute != null)
+        {
+        	this.tunnelEndpointId = Integer.parseInt(attribute);
+        	if (attrFlag ==  null)
+        	{
+        		this.teidFlag = 1;
+        	}
+        }
+        else
+        {
+        	if (attrFlag ==  null)
+        	{
+        		this.teidFlag = 0;
+        	}
+        }
+
         attribute = header.attributeValue("sequenceNumber");
         if (attribute != null)
         {
         	this.sequenceNumber = Integer.parseInt(attribute);
-        }
+        }    
     }
 
 	@Override
     public String toXML()
     {
-        String str = "<headerPrime ";
-        str += " messageType=\"" + this.name + ":" + this.messageType + "\""; 
+        String str = "<headerV2 ";
+        str += " messageType=\"" + this.name + ":" + messageType + "\"";
+        str += " tunnelEndpointId=\"" + this.tunnelEndpointId + "\"";
         str += " sequenceNumber=\"" + this.sequenceNumber + "\"";
-        str += " length=\"" + this.length + "\"";
-        str += " version=\"" + this.version + "\"";        
-        str += " protocolType=\"" + this.protocolType + "\"";
+        str += " length=\"" + this.length + "\""; 
+        str += " piggyFlag=\"" + this.piggyFlag + "\""; 
+        str += " teidFlag=" + this.teidFlag +  "\"";
         str += "/>";
         return str;
     }
-	
-    public Array encodeToArray()
+
+	@Override
+	public Array encodeToArray()
     {
         //manage header data
         SupArray supArray = new SupArray();
 
         DefaultArray firstByte = new DefaultArray(1);//first byte data
-        firstByte.setBits(0, 3, version);
-        firstByte.setBits(3, 1, protocolType);
-        firstByte.setBits(4, 4, 15);//=> 1111 in bits
+        firstByte.setBits(0, 3, this.version);
+        firstByte.setBits(3, 1, this.piggyFlag);
+        firstByte.setBits(4, 1, this.teidFlag);
+        firstByte.setBits(5, 1, 0);
+        firstByte.setBits(6, 1, 0);
+        firstByte.setBits(7, 1, 0);
         supArray.addFirst(firstByte);
 
-        supArray.addLast(new Integer08Array(messageType));
-        supArray.addLast(new Integer16Array(length));
-        supArray.addLast(new Integer16Array(sequenceNumber));
-
+        supArray.addLast(new Integer08Array(this.messageType));
+        
+        supArray.addLast(new Integer16Array(this.length));
+        
+        if (this.teidFlag != 0)
+        {
+        	supArray.addLast(new Integer32Array(this.tunnelEndpointId));
+        }
+        
+        Array sequenceNumberArray= new Integer32Array(this.sequenceNumber);
+        supArray.addLast(sequenceNumberArray.subArray(1, 3));
+        
+        supArray.addLast(new Integer08Array(0));
+        
         return supArray;
     }
-
+	
 	@Override
 	public int calculateHeaderSize()
     {
 		int size = 0;
-		size += 2;
-		return size;
+        if (this.teidFlag != 0)
+        {
+        	size += 4;
+        }
+        size += 3;
+        size +=1;
+        return size;
     }
-	
 	@Override
 	public void decodeFromArray(Array data, String syntax, Dictionary dictionary) throws Exception
 	{
@@ -165,7 +217,7 @@ public class HeaderGTPPrime extends HeaderAbstract
 	
 	@Override
 	public void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception
-    {	
+    {
 		this.dictionary = dictionary;
 		
 		byte[] header = new byte[1];
@@ -175,21 +227,69 @@ public class HeaderGTPPrime extends HeaderAbstract
     	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
 	    this.name = field._hashMapEnumByValue.get(messageType);
         
-	    header = new byte[2];
+        header = new byte[2];
         stream.read(header, 0, 2);
         array = new DefaultArray(header); 
         this.length = (new Integer16Array(array).getValue());
-                
-    	header = new byte[2];
-    	stream.read(header, 0, 2);
-	    array = new DefaultArray(header); 
-	    this.sequenceNumber = (new Integer16Array(array).getValue()); 
+        
+        if (this.teidFlag != 0)
+    	{
+	        header = new byte[4];
+	        stream.read(header, 0, 4);
+	        array = new DefaultArray(header); 
+	        this.tunnelEndpointId = (new Integer32Array(array).getValue());
+    	}
+        
+    	header = new byte[4];
+    	stream.read(header, 1, 3);
+    	array = new DefaultArray(header); 
+    	this.sequenceNumber = (new Integer32Array(array).getValue()); 
+
+    	header = new byte[1];
+    	stream.read(header, 0, 1);
+    	// TODO champ spare2
+    	
     }
- 
+	
     @Override
     public void getParameter(Parameter var, String param) throws Exception
     {
-    	// TODO
+    	if (param.equalsIgnoreCase("version"))
+        {
+            var.add(this.version);
+        }
+    	else if (param.equalsIgnoreCase("piggyFlag"))
+        {
+            var.add(this.piggyFlag);
+        }
+    	else if (param.equalsIgnoreCase("teidFlag"))
+        {
+            var.add(this.teidFlag);
+        }
+    	else if (param.equalsIgnoreCase("messageType"))
+        {
+            var.add(this.messageType);
+        }
+    	    	
+        else if (param.equalsIgnoreCase("name"))
+        {
+            var.add(this.name);
+        }
+        else if (param.equalsIgnoreCase("tunnelEndpointId"))
+        {
+            var.add(this.tunnelEndpointId);
+        }
+        else if (param.equalsIgnoreCase("sequenceNumber"))
+        {
+            var.add(this.sequenceNumber);
+        }      	
+        else
+        {
+        	Parameter.throwBadPathKeywordException("header." + param);
+        }
     }
     
+
 }
+
+
