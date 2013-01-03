@@ -39,7 +39,7 @@ public class Dictionary {
 	
     private LinkedHashMap<String,ElementAbstract> mapElementByName=new LinkedHashMap<String, ElementAbstract>();
     private LinkedHashMap<Integer,ElementAbstract> mapElementById=new LinkedHashMap<Integer, ElementAbstract>();
-    private LinkedHashMap<String,Field> mapHeader= new LinkedHashMap<String, Field>();
+    private LinkedHashMap<String,FieldAbstract> mapHeader= new LinkedHashMap<String, FieldAbstract>();
     
     public Dictionary(Element root, String syntax) throws Exception 
     {
@@ -75,7 +75,7 @@ public class Dictionary {
         return mapElementByName;
     }
 
-    public LinkedHashMap<String, Field> getMapHeader() {
+    public LinkedHashMap<String, FieldAbstract> getMapHeader() {
         return mapHeader;
     }
 

@@ -36,7 +36,7 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
  *
  * @author Fabien Henry
  */
-public class LengthStringField extends Field 
+public class LengthStringField extends FieldAbstract
 {
 
     public LengthStringField(Element rootXML) 
@@ -45,13 +45,12 @@ public class LengthStringField extends Field
     }
 
     @Override
-    public Array setValue(String value, int offset, SupArray array) throws Exception 
+    public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this._offset = offset;	
         array.addLast(new Integer08Array(value.length()));
         Array valueArray = new DefaultArray(value.getBytes());
         array.addLast(valueArray);
-        return array;
     }
 
     @Override

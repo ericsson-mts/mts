@@ -35,7 +35,7 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
  *
  * @author indiaye
  */
-public class BooleanField extends Field 
+public class BooleanField extends FieldAbstract
 {
 
     public BooleanField(Element rootXML) 
@@ -45,7 +45,7 @@ public class BooleanField extends Field
     }
 
     @Override
-    public Array setValue(String value, int offset, SupArray array) throws Exception 
+    public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this._offset = offset;
     	boolean bool = Utils.parseBoolean(value);
@@ -57,7 +57,6 @@ public class BooleanField extends Field
     	{
     		array.setBit(getOffset(), 0);
     	}
-   		return null;
     }
 
     @Override

@@ -37,7 +37,7 @@ import org.dom4j.Element;
  *
  * @author Fabien Henry
  */
-public class IPV4AddressField extends Field
+public class IPV4AddressField extends FieldAbstract
 {
 	
     public IPV4AddressField(Element rootXML) 
@@ -47,7 +47,7 @@ public class IPV4AddressField extends Field
     }
 
     @Override
-    public Array setValue(String value, int offset, SupArray array) throws Exception 
+    public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this._offset = offset;
     	InetAddress inetAddr = InetAddress.getByName(value);
@@ -57,7 +57,6 @@ public class IPV4AddressField extends Field
     		int pos = offset / 8 + i;
     		array.set(pos, bytes[i] & 0xff);
     	}
-    	return null;
     }
     
     @Override

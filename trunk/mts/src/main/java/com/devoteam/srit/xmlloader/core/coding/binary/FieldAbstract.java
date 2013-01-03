@@ -37,14 +37,14 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public abstract class Field 
+public abstract class FieldAbstract 
 {
 
 	protected String _name;
     protected int _length;
     protected int _offset;
 
-    public Field(Element rootXML) 
+    public FieldAbstract(Element rootXML) 
     {
         _name = rootXML.attributeValue("name");
         this._length = 0;
@@ -69,7 +69,7 @@ public abstract class Field
 
     public abstract String getValue(Array array)throws Exception;
 
-    public abstract Array setValue(String value, int offset, SupArray array) throws Exception;
+    public abstract void setValue(String value, int offset, SupArray array) throws Exception;
     
     public String toString(Array array) {
 

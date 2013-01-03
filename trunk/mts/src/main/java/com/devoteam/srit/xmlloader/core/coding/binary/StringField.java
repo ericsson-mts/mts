@@ -33,7 +33,7 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class StringField extends Field 
+public class StringField extends FieldAbstract 
 {
 
     public StringField(Element rootXML) 
@@ -42,12 +42,11 @@ public class StringField extends Field
     }
 
     @Override
-    public Array setValue(String value, int offset, SupArray array) throws Exception 
+    public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this._offset = offset;
         Array valueArray = new DefaultArray(value.getBytes());
         array.addLast(valueArray);
-        return array;
     }
 
     @Override

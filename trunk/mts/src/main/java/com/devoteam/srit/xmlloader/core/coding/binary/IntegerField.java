@@ -35,7 +35,7 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class IntegerField extends Field
+public class IntegerField extends FieldAbstract
 {
 	
     public IntegerField(Element rootXML) 
@@ -44,7 +44,7 @@ public class IntegerField extends Field
     }
 
     @Override
-    public Array setValue(String value, int offset, SupArray array) throws Exception 
+    public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this._offset = offset;
         try
@@ -55,7 +55,6 @@ public class IntegerField extends Field
         {
         	throw new ExecutionException("ISDN layer : The value \"" + value + "\" for the integer field : \"" + getName() + "\" is not valid.", e);            	            	
         }
-        return null;
     }
     
     @Override
