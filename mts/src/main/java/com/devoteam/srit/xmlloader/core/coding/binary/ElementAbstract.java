@@ -188,7 +188,11 @@ public abstract class ElementAbstract
         
         // initiate the Array containing the fields
         this._fields = new SupArray();
-        this._fields.addFirst(new DefaultArray(getLengthElem() / 8));
+        Array emptyArray = new DefaultArray(getLengthElem() / 8);
+        if (emptyArray.length > 0)
+        {
+        	this._fields.addFirst(emptyArray);
+        }
         
         // set the value for each fields
         listField = element.elements("field");
@@ -204,15 +208,14 @@ public abstract class ElementAbstract
             	if (value != null)
             	{
 			        Array result = field.setValue(element1.attributeValue("value"), offset, this._fields);
-			        if (result !=null)
+			        int length = field.getLength();
+			        if (length != 0)
 			        {
-			        	this._fields = new SupArray();
-			        	this._fields.addFirst(result);
-			        	offset = result.length * 8;                    	
+				        offset += length;
 			        }
 			        else
 			        {
-			        	offset += field.getLength();
+				        offset = this._fields.length * 8;
 			        }
             	}
             }

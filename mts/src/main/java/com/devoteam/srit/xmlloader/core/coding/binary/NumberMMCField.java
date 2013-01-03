@@ -47,7 +47,7 @@ public class NumberMMCField extends Field
     }
 
     @Override
-    public Array setValue(String value, int offset, Array array) throws Exception 
+    public Array setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this._offset = offset;
 

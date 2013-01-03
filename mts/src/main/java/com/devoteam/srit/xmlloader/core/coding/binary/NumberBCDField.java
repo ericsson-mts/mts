@@ -46,10 +46,9 @@ public class NumberBCDField extends Field
     }
 
     @Override
-    public Array setValue(String value, int offset, Array array) throws Exception 
+    public Array setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this._offset = offset;   	
-    	SupArray suparray = new SupArray();    	
     	if (value.length() % 2 != 0)
     	{
     		value = value + "f";
@@ -57,10 +56,9 @@ public class NumberBCDField extends Field
     	byte[] bytes = value.getBytes();
     	permuteByte(bytes);
     	String string = new String(bytes);
-    	Array valueArray = Array.fromHexString(string);
-        suparray.addLast(array);    	
-        suparray.addLast(valueArray);
-        return suparray;
+    	Array valueArray = Array.fromHexString(string);   	
+        array.addLast(valueArray);
+        return array;
     }
     
     @Override

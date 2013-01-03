@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import gp.utils.arrays.Array;
+import gp.utils.arrays.SupArray;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -43,23 +44,14 @@ public abstract class Field
     protected int _length;
     protected int _offset;
 
-    public Field(Element rootXML) {
-
+    public Field(Element rootXML) 
+    {
         _name = rootXML.attributeValue("name");
+        this._length = 0;
         String lengthBit = rootXML.attributeValue("lengthBit");
-        if (lengthBit != null) {
+        if (lengthBit != null) 
+        {
             this._length = Integer.parseInt(lengthBit);
-        }
-        else if(lengthBit == null && rootXML.attributeValue("value") != null){
-            this._length = rootXML.attributeValue("value").length() * 8;
-        }
-        else if((rootXML.attributeValue("type")).equalsIgnoreCase("string"))
-        {
-            this._length=0;
-        }
-        else if((rootXML.attributeValue("type")).equalsIgnoreCase("binary"))
-        {
-            this._length=0;
         }
     }
 
@@ -74,13 +66,10 @@ public abstract class Field
     public String getName() {
         return _name;
     }
-     public void setLength(int _length) {
-        this._length = _length;
-    }
 
     public abstract String getValue(Array array)throws Exception;
 
-    public abstract Array setValue(String value, int offset, Array array) throws Exception;
+    public abstract Array setValue(String value, int offset, SupArray array) throws Exception;
     
     public String toString(Array array) {
 

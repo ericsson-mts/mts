@@ -42,19 +42,17 @@ public class Length2StringField extends Field
 
     public Length2StringField(Element rootXML) 
     {
-        super(rootXML);      
+        super(rootXML);   
     }
 
     @Override
-    public Array setValue(String value, int offset, Array array) throws Exception 
+    public Array setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this._offset = offset;
-        SupArray suparray = new SupArray();		
-        suparray.addLast(array);
-        suparray.addLast(new Integer16Array(value.length()));
-        Array arrayValue = new DefaultArray(value.getBytes());
-        suparray.addLast(arrayValue);
-        return suparray;
+        array.addLast(new Integer16Array(value.length()));
+        Array valueArray = new DefaultArray(value.getBytes());
+        array.addLast(valueArray);
+        return array;
     }
 
     @Override

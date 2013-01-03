@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.maps.LinkedHashMap;
 
 import gp.utils.arrays.Array;
+import gp.utils.arrays.SupArray;
 
 import java.util.List;
 import org.dom4j.Element;
@@ -60,7 +61,7 @@ public class EnumerationField extends IntegerField
     }
 
     @Override
-    public Array setValue(String value, int offset, Array array) throws Exception {
+    public Array setValue(String value, int offset, SupArray array) throws Exception {
     	this._offset = offset;
 	    try
 	    {

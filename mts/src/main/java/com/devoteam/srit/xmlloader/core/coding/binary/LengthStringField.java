@@ -45,15 +45,13 @@ public class LengthStringField extends Field
     }
 
     @Override
-    public Array setValue(String value, int offset, Array array) throws Exception 
+    public Array setValue(String value, int offset, SupArray array) throws Exception 
     {
-    	this._offset = offset;
-        SupArray suparray = new SupArray();		
-        suparray.addLast(array);
-        suparray.addLast(new Integer08Array(value.length()));
-        Array arrayValue = new DefaultArray(value.getBytes());
-        suparray.addLast(arrayValue);
-        return suparray;
+    	this._offset = offset;	
+        array.addLast(new Integer08Array(value.length()));
+        Array valueArray = new DefaultArray(value.getBytes());
+        array.addLast(valueArray);
+        return array;
     }
 
     @Override

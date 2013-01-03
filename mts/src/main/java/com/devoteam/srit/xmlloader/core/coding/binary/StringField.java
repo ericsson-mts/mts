@@ -42,14 +42,12 @@ public class StringField extends Field
     }
 
     @Override
-    public Array setValue(String value, int offset, Array array) throws Exception 
+    public Array setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this._offset = offset;
-        SupArray suparray = new SupArray();
-        suparray.addLast(array);
-        Array arrayValue = new DefaultArray(value.getBytes());
-        suparray.addLast(arrayValue);
-        return suparray;
+        Array valueArray = new DefaultArray(value.getBytes());
+        array.addLast(valueArray);
+        return array;
     }
 
     @Override
