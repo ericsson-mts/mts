@@ -106,31 +106,6 @@ public class MessageGTP
 	        elemInfo = ElementAbstract.buildFactory(element);
 	        elemInfo.parseFromXML(element, dictionaries.get(this.syntax));
 	        
-	        List<Element> listField = element.elements("field");
-	        //boucle pour setter tous les fields des elemV
-	        int offset = 0;
-	        for (Iterator<Element> it = listField.iterator(); it.hasNext();) 
-	        {
-	            Element element1 = it.next();
-	            Field field = elemInfo.getHashMapFields().get(element1.attributeValue("name"));
-	            if (field != null) 
-	            {
-	                Array result = field.setValue(element1.attributeValue("value"), offset, elemInfo.getFieldsArray());
-	                if (result !=null)
-	                {
-	                	elemInfo.setFields(result);
-	                	offset = result.length * 8;
-	                }
-	                else
-	                {
-	                	offset += field.getLength();
-	                }
-	            }
-	            else 
-	            {
-	                throw new ExecutionException("The field " + element1.attributeValue("name") + " is not found in element : " + elemInfo.getName() + ":" + elemInfo.getId());
-	            }
-	        }
 	        this.hashElements.put(elemInfo.getId(), elemInfo);
 	
 	    }

@@ -70,15 +70,19 @@ public class MessageQ931 {
         this.header = new HeaderQ931();
         this.header.parseFromXML(root.element("header"), dictionary);
         
-        hashElements = new LinkedHashMap<Integer, ElementAbstract>();
+        this.hashElements = new LinkedHashMap<Integer, ElementAbstract>();
+        
         List<Element> elementsInf = root.elements("element");
-        ElementQ931 elem = null;
-        for (Element element : elementsInf) {
-            elem = new ElementQ931();
-            elem.parseFromXML(element, dictionaries.get(this.syntax));
+        ElementQ931 elemInfo = null;
+        for (Element element : elementsInf) 
+        {
+            elemInfo = new ElementQ931();
+            elemInfo.parseFromXML(element, dictionaries.get(this.syntax));
+            
             // TODO améliorer pour prendre en compte la valeur en binaire, décimal, hexa...            
             /* FH remove because not well decoded with Wireshark  
-            if (elem.getId() == 126) {
+            if (elem.getId() == 126) 
+            {
 
                 Array array = new DefaultArray(elem.getLengthElem() / 8 + 3);
                 elemV = new ElementInformationQ931V(array, true, false, elem);
@@ -87,33 +91,7 @@ public class MessageQ931 {
             else
             */ 
             
-            List<Element> listField = element.elements("field");
-            //boucle pour setter tous les field de elemV
-            int offset = 0;
-            for (Iterator<Element> it = listField.iterator(); it.hasNext();) 
-            {
-                Element element1 = it.next();
-                Field field = elem.getHashMapFields().get(element1.attributeValue("name"));
-                if (field != null) 
-                {
-                    Array result = field.setValue(element1.attributeValue("value"), offset, elem.getFieldsArray());
-                    if (result !=null)
-                    {
-                    	elem.setFields(result);
-	                	offset = result.length * 8;                    	
-                    }
-                    else
-                    {
-                    	offset += field.getLength();
-                    }
-                }
-                else 
-                {
-                    throw new ExecutionException("The field " + element1.attributeValue("name") + " is not found in element : " + elem.getName() + ":" + elem.getId());
-                }
-            }
-            this.hashElements.put(elem.getId(), elem);
-
+            this.hashElements.put(elemInfo.getId(), elemInfo);
         }
     }
 
