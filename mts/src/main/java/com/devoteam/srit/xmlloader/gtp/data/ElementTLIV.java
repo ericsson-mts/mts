@@ -53,7 +53,8 @@ public class ElementTLIV extends ElementAbstract
         this.id = new Integer08Array(array.subArray(0, 1)).getValue();
         int length = new Integer16Array(array.subArray(1, 2)).getValue();
         this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
-        this._fields = array.subArray(0, length + 4).subArray(4);
+        this._fields = new SupArray();
+        this._fields.addFirst(array.subArray(0, length + 4).subArray(4));
     }
 
 	@Override

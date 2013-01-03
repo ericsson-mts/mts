@@ -48,7 +48,8 @@ public class ElementTV extends ElementAbstract
     {
         this.id = new Integer08Array(array.subArray(0, 1)).getValue();
         int length = getLengthElem() / 8;
-        this._fields = array.subArray(0, length + 1).subArray(1);
+        this._fields = new SupArray();
+        this._fields.addFirst(array.subArray(0, length + 1).subArray(1));
     }
 
 	@Override
