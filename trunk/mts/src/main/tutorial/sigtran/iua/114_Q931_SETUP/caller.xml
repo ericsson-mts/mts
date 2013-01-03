@@ -138,12 +138,13 @@ High layer compatibility 4.5 Both O (Note 13) 2-5
             <!-- Network-specific facilities= b0100000 = h20 = d32 -->
             <!-- ONLY for Circuit, Bearer message -->            	                            
 	    <element identifier="Network-specific facilities">
-	        <field name="Length of network identification" lengthBit="8" type="integer" value="199"/>
+	        <field name="Length of network identification" lengthBit="8" type="integer" value="22"/>
 	        <field name="ext" lengthBit="1" type="boolean" value="1"/>
 	        <field name="Type of network identification" lengthBit="3" type="enumeration" value="International network identification"/>
 	        <field name="Network identification plan" lengthBit="4" type="enumeration" value="Carrier Identification Code"/>        
 	        <field name="Network identification" type="string" value="network identification"/>
-	        <field name="Network-specific facilities" lengthBit="32" type="integer" value="1999999999"/>
+	        <!-- TODO this does not work because dynamic field just before => to be improved-->
+	        <field name="Network-specific facilities" type="string" value="Network-specific facilities"/>
 	    </element>
             
             <!-- Display identification = b0101000 = h28 = d40-->
