@@ -52,7 +52,7 @@ public class HeaderGTPV2 extends HeaderAbstract
 	private int teidFlag;
 	private int messageType;
 	private String name;
-	private int tunnelEndpointId;
+	private long tunnelEndpointId;
 	private int sequenceNumber;
     
     public HeaderGTPV2()
@@ -129,7 +129,7 @@ public class HeaderGTPV2 extends HeaderAbstract
         attribute = header.attributeValue("tunnelEndpointId");
         if (attribute != null)
         {
-        	this.tunnelEndpointId = Integer.parseInt(attribute);
+        	this.tunnelEndpointId = Long.parseLong(attribute);
         	if (attrFlag ==  null)
         	{
         		this.teidFlag = 1;
@@ -185,7 +185,7 @@ public class HeaderGTPV2 extends HeaderAbstract
         
         if (this.teidFlag != 0)
         {
-        	supArray.addLast(new Integer32Array(this.tunnelEndpointId));
+        	supArray.addLast(new Integer32Array((int) (this.tunnelEndpointId & 0xffffffffl)));
         }
         
         Array sequenceNumberArray= new Integer32Array(this.sequenceNumber);
@@ -237,7 +237,7 @@ public class HeaderGTPV2 extends HeaderAbstract
 	        header = new byte[4];
 	        stream.read(header, 0, 4);
 	        array = new DefaultArray(header); 
-	        this.tunnelEndpointId = (new Integer32Array(array).getValue());
+	        this.tunnelEndpointId = new Integer32Array(array).getValue() & 0xffffffffl;
     	}
         
     	header = new byte[4];

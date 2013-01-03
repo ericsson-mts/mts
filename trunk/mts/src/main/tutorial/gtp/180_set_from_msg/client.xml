@@ -8,21 +8,21 @@
     <parameter name="[connection]" operation="set" value="connection" />
     <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="3387"/>
 
-    <parameter name="[tunnelEndpointId]" operation="set" value="0"/>
-    <parameter name="[sequenceNumber]" operation="set" value="5682690"/>
+    <parameter name="[tunnelEndpointId]" operation="set" value="4294967295"/>
+    <parameter name="[sequenceNumber]" operation="set" value="16777215"/>
     <sendMessageGTP name="send message" channel="[connection]">
-        <headerV2 name="createSessionRequest" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+        <headerV2 name="createSessionRequest" piggyFlag="1" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
         <element identifier="IMSI" coding="TLIV" description="International Mobile Subscriber Identity">
-            <field name="IMSI" value="208014420002670" description="International Mobile Subscriber Identity"/>
+            <field name="IMSI" value="123456789012345" description="International Mobile Subscriber Identity"/>
         </element>
         <element identifier="MSISDN" coding="TLIV" description="Mobile Subscriber ISDN Number">
-            <field name="MSISDN" value="33699902670" description="Mobile Subscriber ISDN Number"/>
+            <field name="MSISDN" value="331234567890123456" description="Mobile Subscriber ISDN Number"/>
         </element>
         <element identifier="MEI" coding="TLIV" description="Mobile Equipment Identity">
-            <field name="MEI" value="0044204291218110" description="Mobile Equipment Identity"/>
+            <field name="MEI" value="0033123456789012" description="Mobile Equipment Identity"/>
         </element>        
         <element identifier="ULI" coding="TLIV" description="User Location Information">
-            <field name="spare1" value="0"/>
+            <field name="spare1" value="3"/>
             <field name="LAI" value="0"/>
             <field name="ECGI" value="1"/>
             <field name="TAI" value="1"/>
@@ -30,47 +30,48 @@
             <field name="SAI" value="0"/>
             <field name="CGI" value="0"/>
             <!-- TODO conditional field-->
-            <field name="TAI_MMC1" value="208,01"/>
-            <field name="TAI_Tracking Area Code" value="102"/>
-            <field name="ECGI_MMC2" value="208,01"/>
-            <field name="ECGI_spare2" value="0"/>
-            <field name="ECGI_ECI" value="26500"/>
+            <field name="TAI_MMC1" value="123,987"/>
+            <field name="TAI_Tracking Area Code" value="255"/>
+            <field name="ECGI_MMC2" value="321,89"/>
+            <field name="ECGI_spare2" value="15"/>
+            <field name="ECGI_ECI" value="268435455"/>
         </element>        
         <element identifier="Serving Network" coding="TLIV">
-            <field name="MMC" value="208,01"/>
+            <field name="MMC" value="456,78"/>
         </element>  
         <element identifier="RAT Type" coding="TLIV">
             <field name="RAT Type" value="EUTRAN"/>
         </element>
         <element identifier="F-TEID" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
             <field name="V4" value="true"/>        
-            <field name="V6" value="0"/>
+            <field name="V6" value="1"/>
             <field name="Interface Type" value="S5/S8 SGW GTP-C"/>
-            <field name="TEID / GRE Key" value="2509643778" description="GRE?"/>
+            <field name="TEID / GRE Key" value="4294967295" description="GRE?"/>
             <!-- TODO conditional IP V4 V6 -->
-            <field name="IPv4 address" value="172.20.70.42"/>
-            <!--field name="IPv6 address" value="0"/-->
+            <field name="IPv4 address" value="123.45.67.89"/>
+            <field name="IPv6 address" value="1234:5678:90ab:cdef:fedc:ba09:8765:4321"/>
         </element>
         <element identifier="APN" coding="TLIV" description="Access Point Name">
-        		<field name="APN01" value="nis6coepc" description="Access Point Name"/>
-            <field name="APN02" value="mnc001" description="Access Point Name"/>
-            <field name="APN03" value="mcc208" description="Access Point Name"/>                    		
-            <field name="APN04" value="gprs" description="Access Point Name"/>            
+        		<field name="APN01" value="stringstring01" description="Access Point Name"/>
+            <field name="APN02" value="string02" description="Access Point Name"/>
+            <field name="APN03" value="str03" description="Access Point Name"/>                    		
+            <field name="APN04" value="04" description="Access Point Name"/>            
         </element>
         <element identifier="Selection Mode" coding="TLIV">    
-            <field name="spare" value="0"/>
+            <field name="spare" value="63"/>
             <field name="Selection Mode" value="MS or network provided APN, subscribed verified"/>
         </element>
         <element identifier="PDN Type" coding="TLIV">
-            <field name="spare" value="0"/>
+            <field name="spare" value="31"/>
             <field name="PDN Type" value="IPv4"/>
         </element>
         <element identifier="PAA" coding="TLIV" description="PDN Address Allocation">
-            <field name="spare" value="0"/>
-            <field name="PDN Type" value="IPv4"/>
-            <field name="IPv4 address" value="0"/>
+            <field name="spare" value="31"/>
+            <field name="PDN Type" value="IPv4v6"/>
             <!-- TODO condiditional -->
-            <!--field name="IPv6 address" value="0"/-->        
+            <field name="IPv6 prefix length" value="255"/>
+            <field name="IPv6 address" value="fedc:ba09:8765:4321:1234:5678:90ab:cdef"/>            
+            <field name="IPv4 address" value="87.65.43.210"/>
         </element> 
         <element identifier="Indication" coding="TLIV">
             <field name="DAF" value="0"/>
@@ -109,8 +110,8 @@
             <field name="Restriction Type value" value="No Existing Contexts or Restriction"/>
         </element>                
         <element identifier="AMBR" coding="TLIV" description="Aggregate Maximum Bit Rate">
-            <field name="APN-AMBR for uplink" value="50000"/>
-            <field name="APN-AMBR for downlink" value="100000"/>        
+            <field name="APN-AMBR for uplink" value="4294967295"/>
+            <field name="APN-AMBR for downlink" value="4294967295"/>        
         </element>        
         <element identifier="PCO" coding="TLIV" description="Protocol Configuration Options">
         		<field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
@@ -119,8 +120,8 @@
         		<field name="Bearer Context" value="4900010005570009028480002002ac14462a5000160004070000000000000000000000000000000000000000"/>
         </element>
         <element identifier="UE Time Zone" coding="TLIV">
-            <field name="Time Zone" value="64"/>   
-            <field name="spare" value="0"/>
+            <field name="Time Zone" value="255"/>   
+            <field name="spare" value="63"/>
             <field name="Daylight Saving Time" value="No adjustment for Daylight Saving Time"/>
         </element>
        <element identifier="Charging Characteristics" coding="TLIV">
@@ -134,7 +135,7 @@
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
 
-    <test parameter="[binary]" condition="binary.equals" value="4802000d0000000056b602000300010017"/>
+    <!--test parameter="[binary]" condition="binary.equals" value="4802000d0000000056b602000300010017"/-->
 
     <finally>
         <closeChannelGTP name="[connection]"/>

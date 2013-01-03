@@ -69,17 +69,24 @@ public class NumberMMCField extends Field
     	{
     		throw new ExecutionException("ISDN layer : The value \"" + value + "\" for the mumber MMC field : \"" + getName() + "\" is not valid : [MNC] should have [2..3] characters");
     	}    		
+    	
+    	String mmc = mcc; 
     	if (mnc.length() == 2)
     	{
-    		mnc = "f" + mnc;
+    		mmc = mcc + "f" + mnc.charAt(0) + mnc.charAt(1);
+    	}
+    	else
+    	{
+    		mmc = mcc + mnc.charAt(2) + mnc.charAt(0) + mnc.charAt(1); 
     	}
 
-    	String mmc = mcc + mnc;
+    	// permute the octet 2 a 2
     	byte[] bytes = mmc.getBytes();
     	permuteByte(bytes);
     	String mmcPermute = new String(bytes);
     	Array mmcArray = Array.fromHexString(mmcPermute);
-    	byte[] mmcbytes = mmcArray.getBytes(); 
+    	byte[] mmcbytes = mmcArray.getBytes();
+    	// set the bits
     	for (int i = 0; i < 3; i++)
     	{
     		int off = offset / 8 + i;
@@ -91,16 +98,26 @@ public class NumberMMCField extends Field
     @Override
     public String getValue(Array array) throws Exception 
     {
+    	// get the bits
     	Array arrayValue = array.subArray(getOffset() / 8, 3);
     	String string = Array.toHexString(arrayValue);
+    	
+    	// permute the octet 2 a 2
     	byte[] bytes = string.getBytes();     	
     	permuteByte(bytes);
     	String value = new String(bytes);
+    	
     	String mmc = value.substring(0, 3);
-    	String mnc = value.substring(3, 6);
-    	if (mnc.startsWith("f"))
+    	String mnc;
+    	String temp = value.substring(3, 6);
+    	
+    	if (temp.charAt(0) == 'f')
     	{
-    		mnc = mnc.substring(1, 3);
+    		mnc = ""+ temp.charAt(1) + temp.charAt(2);
+    	}
+    	else
+    	{
+    		mnc = ""+ temp.charAt(1) + temp.charAt(2) + temp.charAt(0);
     	}
     	return mmc + ',' + mnc;
     }
