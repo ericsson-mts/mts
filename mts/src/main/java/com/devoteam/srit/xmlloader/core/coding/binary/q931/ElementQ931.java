@@ -43,38 +43,24 @@ public class ElementQ931 extends ElementAbstract
     	
     }
     
-    public void decodeFromArray(Array array, boolean bigLength, boolean fromdata) {
+	@Override
+    public void decodeFromArray(Array array, boolean bigLength) {
         _bigLength = bigLength;
-        if (fromdata) {
-	        this.id = new Integer08Array(array.subArray(0, 1)).getValue();
-	        if (this._hashMapFields.size() >= 1)
-            {
-		        if (bigLength == true) {
-		            int length = new Integer16Array(array.subArray(1, 2)).getValue();
-		            _fields = array.subArray(0, length + 3).subArray(3);
-		        }
-		        else {
-		            int length = new Integer08Array(array.subArray(1, 1)).getValue();
-		            _fields = array.subArray(0, length + 2).subArray(2);
-		        }	            	
-		    }
-        }
-        else {
-            if (this._hashMapFields.size() >= 1)
-            {
-		        if (bigLength) {
-		            _fields = array.subArray(3);
-		        }
-		        else {
-		            Integer08Array length = new Integer08Array(array.subArray(1, 1));
-		            length.setValue(array.length - 2);
-		            _fields = array.subArray(2);
-		        }
-            }
-        }
+        this.id = new Integer08Array(array.subArray(0, 1)).getValue();
+        if (this._hashMapFields.size() >= 1)
+        {
+	        if (bigLength == true) {
+	            int length = new Integer16Array(array.subArray(1, 2)).getValue();
+	            _fields = array.subArray(0, length + 3).subArray(3);
+	        }
+	        else {
+	            int length = new Integer08Array(array.subArray(1, 1)).getValue();
+	            _fields = array.subArray(0, length + 2).subArray(2);
+	        }	            	
+	    }
     }
 
-    
+	@Override    
     public Array encodeToArray() {
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);

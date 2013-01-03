@@ -32,6 +32,7 @@ import com.devoteam.srit.xmlloader.gtp.data.ElementTLV;
 import com.devoteam.srit.xmlloader.gtp.data.ElementTV;
 
 import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
 
 import java.util.Iterator;
 import java.util.List;
@@ -183,7 +184,7 @@ public abstract class ElementAbstract
             }
             this._hashMapFields.put(elemField.attributeValue("name"), field);
         }
-       
+        this._fields = new DefaultArray(getLengthElem() / 8);       
     }
     
     public String toString() {
@@ -212,7 +213,7 @@ public abstract class ElementAbstract
     }
 
     
-    public abstract void decodeFromArray(Array array, boolean bigLength, boolean fromdata);
+    public abstract void decodeFromArray(Array array, boolean bigLength);
     
     public abstract Array encodeToArray();
     

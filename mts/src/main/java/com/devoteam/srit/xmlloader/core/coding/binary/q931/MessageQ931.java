@@ -86,11 +86,6 @@ public class MessageQ931 {
             }
             else
             */ 
-            {
-                Array array = new DefaultArray(elem.getLengthElem() / 8 + 2);
-                elem.decodeFromArray(array, false, false);
-
-            }
             
             List<Element> listField = element.elements("field");
             //boucle pour setter tous les field de elemV
@@ -147,7 +142,7 @@ public class MessageQ931 {
             else
             */ 
             {
-                elemInfo.decodeFromArray(data.subArray(offset), bigLength, true);
+                elemInfo.decodeFromArray(data.subArray(offset), bigLength);
             }
 
             if (elemInfo.encodeToArray().length > 0) {

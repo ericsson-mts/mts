@@ -47,22 +47,16 @@ public class ElementTLIV extends ElementAbstract
     	
     }
     
-    public void decodeFromArray(Array array, boolean bigLength, boolean fromdata) 
+	@Override
+    public void decodeFromArray(Array array, boolean bigLength) 
     {
-        if (fromdata) {
-	        this.id = new Integer08Array(array.subArray(0, 1)).getValue();
-	        int length = new Integer16Array(array.subArray(1, 2)).getValue();
-	        this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
-	        this._fields = array.subArray(0, length + 4).subArray(4);
-        }
-        else 
-        {
-        	array = new DefaultArray(getLengthElem() / 8 + 4);
-	        this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
-		    this._fields = array.subArray(4);
-        }
+        this.id = new Integer08Array(array.subArray(0, 1)).getValue();
+        int length = new Integer16Array(array.subArray(1, 2)).getValue();
+        this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
+        this._fields = array.subArray(0, length + 4).subArray(4);
     }
 
+	@Override
     public Array encodeToArray() {
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);
