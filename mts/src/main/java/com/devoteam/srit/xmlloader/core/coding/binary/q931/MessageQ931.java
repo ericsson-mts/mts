@@ -26,20 +26,17 @@ package com.devoteam.srit.xmlloader.core.coding.binary.q931;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
-import com.devoteam.srit.xmlloader.core.coding.binary.Field;
 import com.devoteam.srit.xmlloader.core.coding.binary.HeaderAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.XMLDoc;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import gp.utils.arrays.Array;
-import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.SupArray;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -50,7 +47,8 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class MessageQ931 {
+public class MessageQ931 
+{
    
     public static HashMap<String, Dictionary> dictionaries = new  HashMap<String, Dictionary>();
 	

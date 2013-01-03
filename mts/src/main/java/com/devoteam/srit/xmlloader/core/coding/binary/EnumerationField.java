@@ -61,7 +61,7 @@ public class EnumerationField extends IntegerField
     }
 
     @Override
-    public Array setValue(String value, int offset, SupArray array) throws Exception {
+    public void setValue(String value, int offset, SupArray array) throws Exception {
     	this._offset = offset;
 	    try
 	    {
@@ -76,7 +76,6 @@ public class EnumerationField extends IntegerField
 	        }
 	        array.setBits(getOffset(), getLength(), integerValue.byteValue() & 0xff);
 	    }
-	    return null;
     }
     
     @Override

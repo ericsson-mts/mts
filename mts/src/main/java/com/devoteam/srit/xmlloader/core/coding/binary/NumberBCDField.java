@@ -37,7 +37,7 @@ import org.dom4j.Element;
  *
  * @author Fabien Henry
  */
-public class NumberBCDField extends Field
+public class NumberBCDField extends FieldAbstract
 {
 	
     public NumberBCDField(Element rootXML) 
@@ -46,7 +46,7 @@ public class NumberBCDField extends Field
     }
 
     @Override
-    public Array setValue(String value, int offset, SupArray array) throws Exception 
+    public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this._offset = offset;   	
     	if (value.length() % 2 != 0)
@@ -58,7 +58,6 @@ public class NumberBCDField extends Field
     	String string = new String(bytes);
     	Array valueArray = Array.fromHexString(string);   	
         array.addLast(valueArray);
-        return array;
     }
     
     @Override

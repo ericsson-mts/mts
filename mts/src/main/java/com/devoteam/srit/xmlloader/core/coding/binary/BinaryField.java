@@ -35,7 +35,7 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class BinaryField extends Field 
+public class BinaryField extends FieldAbstract
 {
 
     public BinaryField(Element rootXML) throws Exception 
@@ -47,12 +47,11 @@ public class BinaryField extends Field
     }
 
     @Override
-    public Array setValue(String value, int offset, SupArray array) 
+    public void setValue(String value, int offset, SupArray array) 
     {
     	this._offset = offset;    	
         Array valueArray = Array.fromHexString(value);
         array.addLast(valueArray);
-        return array;
     }
 
     @Override

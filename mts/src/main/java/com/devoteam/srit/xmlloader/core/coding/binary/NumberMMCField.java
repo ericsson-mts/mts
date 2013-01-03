@@ -37,7 +37,7 @@ import org.dom4j.Element;
  *
  * @author Fabien Henry
  */
-public class NumberMMCField extends Field
+public class NumberMMCField extends FieldAbstract
 {
 	
     public NumberMMCField(Element rootXML) 
@@ -47,7 +47,7 @@ public class NumberMMCField extends Field
     }
 
     @Override
-    public Array setValue(String value, int offset, SupArray array) throws Exception 
+    public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this._offset = offset;
 
@@ -92,7 +92,6 @@ public class NumberMMCField extends Field
     		int off = offset / 8 + i;
     		array.set(off, mmcbytes[i] & 0xff);
     	}
-        return null;
     }
     
     @Override

@@ -51,7 +51,7 @@ public abstract class ElementAbstract
     protected int id;
     protected String name;
     
-    protected LinkedHashMap<String, Field> _hashMapFields = new LinkedHashMap<String, Field>();
+    protected LinkedHashMap<String, FieldAbstract> _hashMapFields = new LinkedHashMap<String, FieldAbstract>();
     
     protected SupArray _fields;
     
@@ -120,7 +120,7 @@ public abstract class ElementAbstract
         for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
             Element elemField = it.next();
             String name = elemField.attributeValue("name");
-            Field field = null;
+            FieldAbstract field = null;
             if (elemDico != null)
             {
             	field = elemDico.getHashMapFields().get(name); 
@@ -201,13 +201,13 @@ public abstract class ElementAbstract
         for (Iterator<Element> it = listField.iterator(); it.hasNext();) 
         {
             Element element1 = it.next();
-            Field field = this._hashMapFields.get(element1.attributeValue("name"));
+            FieldAbstract field = this._hashMapFields.get(element1.attributeValue("name"));
             if (field != null) 
             {
             	String value = element1.attributeValue("value");
             	if (value != null)
             	{
-			        Array result = field.setValue(element1.attributeValue("value"), offset, this._fields);
+			        field.setValue(element1.attributeValue("value"), offset, this._fields);
 			        int length = field.getLength();
 			        if (length != 0)
 			        {
@@ -242,7 +242,7 @@ public abstract class ElementAbstract
         }
         elemString.append("\">");
         elemString.append("\n");
-        for (Entry<String, Field> e : this._hashMapFields.entrySet()) {
+        for (Entry<String, FieldAbstract> e : this._hashMapFields.entrySet()) {
             elemString.append(e.getValue().toString(this._fields));
         }
 
@@ -267,7 +267,7 @@ public abstract class ElementAbstract
         }
         else if (params.length >= offset + 4 && (params[offset + 2].equalsIgnoreCase("field"))) 
         {
-        	Field field = this._hashMapFields.get(params[offset + 3]);
+        	FieldAbstract field = this._hashMapFields.get(params[offset + 3]);
         	if (field != null)
         	{	
         		var.add(field.getValue(this._fields));
@@ -281,13 +281,13 @@ public abstract class ElementAbstract
     
     public int getLengthElem() {
         int length = 0;
-        for (Entry<String, Field> field : _hashMapFields.entrySet()) {
+        for (Entry<String, FieldAbstract> field : _hashMapFields.entrySet()) {
             length += field.getValue().getLength();
         }
         return length;
     }
 
-    public LinkedHashMap<String, Field> getHashMapFields() {
+    public LinkedHashMap<String, FieldAbstract> getHashMapFields() {
         return _hashMapFields;
     }
 
