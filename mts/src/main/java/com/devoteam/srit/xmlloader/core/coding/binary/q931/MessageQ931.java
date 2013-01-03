@@ -100,9 +100,12 @@ public class MessageQ931 {
                     if (result !=null)
                     {
                     	elem.setFields(result);
+	                	offset = result.length * 8;                    	
                     }
-                    	
-                    offset += field.getLength(); 
+                    else
+                    {
+                    	offset += field.getLength();
+                    }
                 }
                 else 
                 {
@@ -129,9 +132,11 @@ public class MessageQ931 {
         
         hashElements = new LinkedHashMap<Integer, ElementAbstract>();
         int offset = header.getLength();
-        while (offset < data.length) {
+        while (offset < data.length) 
+        {
             int id = new Integer08Array(data.subArray(offset, 1)).getValue();
             ElementAbstract elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
+        
             boolean bigLength = false; 
             /* FH remove because not well decoded with Wireshark
             bigLength = id == 126;
@@ -144,13 +149,8 @@ public class MessageQ931 {
             {
                 elemInfo.decodeFromArray(data.subArray(offset), bigLength);
             }
-
-            if (elemInfo.encodeToArray().length > 0) {
-                offset += elemInfo.encodeToArray().length;
-            }
-            else {
-                offset += 1;
-            }
+            offset += elemInfo.encodeToArray().length;
+            
             hashElements.put(id, elemInfo);
         }
 

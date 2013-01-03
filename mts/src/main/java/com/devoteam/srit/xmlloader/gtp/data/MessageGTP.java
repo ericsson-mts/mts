@@ -119,7 +119,7 @@ public class MessageGTP
 	                if (result !=null)
 	                {
 	                	elemInfo.setFields(result);
-	                	offset = elemInfo.getFieldsArray().length * 8;
+	                	offset = result.length * 8;
 	                }
 	                else
 	                {
@@ -202,21 +202,19 @@ public class MessageGTP
 		decodeFieldsFromArray(fieldArrayTag);
 	 }
 	
-	private void decodeFieldsFromArray(Array data) throws Exception {
+	private void decodeFieldsFromArray(Array data) throws Exception 
+	{
 		hashElements = new LinkedHashMap<Integer, ElementAbstract>();
 	    int offset = 0;
-	    while (offset < data.length) {
+	    while (offset < data.length) 
+	    {
 	        int id = new Integer08Array(data.subArray(offset, 1)).getValue();
 	        ElementAbstract elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
+
 	        boolean bigLength = false; 
 	        elemInfo.decodeFromArray(data.subArray(offset), bigLength);
-	
-	        if (elemInfo.encodeToArray().length > 0) {
-	            offset += elemInfo.encodeToArray().length;
-	        }
-	        else {
-	            offset += 1;
-	        }
+	        offset += elemInfo.encodeToArray().length;
+
 	        hashElements.put(id, elemInfo);
 	    }
 	
