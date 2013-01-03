@@ -184,7 +184,38 @@ public abstract class ElementAbstract
             }
             this._hashMapFields.put(elemField.attributeValue("name"), field);
         }
-        this._fields = new DefaultArray(getLengthElem() / 8);       
+        
+        this._fields = new DefaultArray(getLengthElem() / 8);
+        
+        listField = element.elements("field");
+        //boucle pour setter tous les field de elemV
+        int offset = 0;
+        for (Iterator<Element> it = listField.iterator(); it.hasNext();) 
+        {
+            Element element1 = it.next();
+            Field field = this._hashMapFields.get(element1.attributeValue("name"));
+            if (field != null) 
+            {
+            	String value = element1.attributeValue("value");
+            	if (value != null)
+            	{
+			        Array result = field.setValue(element1.attributeValue("value"), offset, this._fields);
+			        if (result !=null)
+			        {
+			        	this._fields = result;
+			        	offset = result.length * 8;                    	
+			        }
+			        else
+			        {
+			        	offset += field.getLength();
+			        }
+            	}
+            }
+            else 
+            {
+                throw new ExecutionException("The field " + element1.attributeValue("name") + " is not found in element : " + this.name + ":" + this.id);
+            }
+        }               
     }
     
     public String toString() {
