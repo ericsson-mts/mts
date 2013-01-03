@@ -49,7 +49,8 @@ public class ElementTLV extends ElementAbstract
     {
     	this.id = new Integer08Array(array.subArray(0, 1)).getValue();
         int length = new Integer16Array(array.subArray(1, 2)).getValue();
-        this._fields = array.subArray(0, length + 3).subArray(3);
+        this._fields = new SupArray();
+        this._fields.addFirst(array.subArray(0, length + 3).subArray(3));
     }
 
 	@Override

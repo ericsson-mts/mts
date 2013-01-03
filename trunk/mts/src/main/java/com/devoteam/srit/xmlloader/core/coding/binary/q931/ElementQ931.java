@@ -51,11 +51,13 @@ public class ElementQ931 extends ElementAbstract
         {
 	        if (bigLength == true) {
 	            int length = new Integer16Array(array.subArray(1, 2)).getValue();
-	            _fields = array.subArray(0, length + 3).subArray(3);
+	            this._fields = new SupArray();
+	            this._fields.addFirst(array.subArray(0, length + 3).subArray(3));
 	        }
 	        else {
 	            int length = new Integer08Array(array.subArray(1, 1)).getValue();
-	            _fields = array.subArray(0, length + 2).subArray(2);
+	            this._fields = new SupArray();
+	            this._fields.addFirst(array.subArray(0, length + 2).subArray(2));
 	        }	            	
 	    }
     }

@@ -33,6 +33,7 @@ import com.devoteam.srit.xmlloader.gtp.data.ElementTV;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
+import gp.utils.arrays.SupArray;
 
 import java.util.Iterator;
 import java.util.List;
@@ -52,7 +53,7 @@ public abstract class ElementAbstract
     
     protected LinkedHashMap<String, Field> _hashMapFields = new LinkedHashMap<String, Field>();
     
-    protected Array _fields;
+    protected SupArray _fields;
     
     protected boolean _bigLength;
 
@@ -185,8 +186,11 @@ public abstract class ElementAbstract
             this._hashMapFields.put(elemField.attributeValue("name"), field);
         }
         
-        this._fields = new DefaultArray(getLengthElem() / 8);
+        // initiate the Array containing the fields
+        this._fields = new SupArray();
+        this._fields.addFirst(new DefaultArray(getLengthElem() / 8));
         
+        // set the value for each fields
         listField = element.elements("field");
         //boucle pour setter tous les field de elemV
         int offset = 0;
@@ -202,7 +206,8 @@ public abstract class ElementAbstract
 			        Array result = field.setValue(element1.attributeValue("value"), offset, this._fields);
 			        if (result !=null)
 			        {
-			        	this._fields = result;
+			        	this._fields = new SupArray();
+			        	this._fields.addFirst(result);
 			        	offset = result.length * 8;                    	
 			        }
 			        else
@@ -235,7 +240,7 @@ public abstract class ElementAbstract
         elemString.append("\">");
         elemString.append("\n");
         for (Entry<String, Field> e : this._hashMapFields.entrySet()) {
-            elemString.append(e.getValue().toString(this.getFieldsArray()));
+            elemString.append(e.getValue().toString(this._fields));
         }
 
         elemString.append("</element>");
@@ -290,13 +295,5 @@ public abstract class ElementAbstract
 	public String getName() {
 		return this.name;
 	}
-	
-    public Array getFieldsArray() {
-        return _fields;
-    }
-
-    public void setFields(Array _fields) {
-        this._fields = _fields;
-    }
     
 }
