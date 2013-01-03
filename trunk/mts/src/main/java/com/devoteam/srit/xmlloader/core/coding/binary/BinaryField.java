@@ -47,14 +47,12 @@ public class BinaryField extends Field
     }
 
     @Override
-    public Array setValue(String value, int offset, Array array) 
+    public Array setValue(String value, int offset, SupArray array) 
     {
     	this._offset = offset;    	
-        SupArray suparray = new SupArray();
-        suparray.addLast(array);
         Array valueArray = Array.fromHexString(value);
-        suparray.addLast(valueArray);
-        return suparray;
+        array.addLast(valueArray);
+        return array;
     }
 
     @Override
