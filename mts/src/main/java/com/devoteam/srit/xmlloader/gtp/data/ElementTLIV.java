@@ -53,15 +53,13 @@ public class ElementTLIV extends ElementAbstract
 	        this.id = new Integer08Array(array.subArray(0, 1)).getValue();
 	        int length = new Integer16Array(array.subArray(1, 2)).getValue();
 	        this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
-	        this._value = array.subArray(0, length + 4);
-	        this._fields = this._value.subArray(4);
+	        this._fields = array.subArray(0, length + 4).subArray(4);
         }
         else 
         {
         	array = new DefaultArray(getLengthElem() / 8 + 4);
 	        this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
-	        this._value = array;
-		    this._fields = this._value.subArray(4);
+		    this._fields = array.subArray(4);
         }
     }
 

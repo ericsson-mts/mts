@@ -51,27 +51,24 @@ public class ElementQ931 extends ElementAbstract
             {
 		        if (bigLength == true) {
 		            int length = new Integer16Array(array.subArray(1, 2)).getValue();
-		            _value = array.subArray(0, length + 3);
-		            _fields = _value.subArray(3);
+		            _fields = array.subArray(0, length + 3).subArray(3);
 		        }
 		        else {
 		            int length = new Integer08Array(array.subArray(1, 1)).getValue();
-		            _value = array.subArray(0, length + 2);
-		            _fields = _value.subArray(2);
+		            _fields = array.subArray(0, length + 2).subArray(2);
 		        }	            	
 		    }
         }
         else {
             if (this._hashMapFields.size() >= 1)
             {
-		        _value = array;
 		        if (bigLength) {
-		            _fields = _value.subArray(3);
+		            _fields = array.subArray(3);
 		        }
 		        else {
 		            Integer08Array length = new Integer08Array(array.subArray(1, 1));
 		            length.setValue(array.length - 2);
-		            _fields = _value.subArray(2);
+		            _fields = array.subArray(2);
 		        }
             }
         }

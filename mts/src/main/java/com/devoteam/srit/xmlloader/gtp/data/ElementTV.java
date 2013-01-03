@@ -48,14 +48,12 @@ public class ElementTV extends ElementAbstract
         if (fromdata) {
 	        this.id = new Integer08Array(array.subArray(0, 1)).getValue();
 	        int length = getLengthElem() / 8;
-	        this._value = array.subArray(0, length + 1);
-	        this._fields = this._value.subArray(1);
+	        this._fields = array.subArray(0, length + 1).subArray(1);
         }
         else 
         {
         	array = new DefaultArray(getLengthElem() / 8 + 1);
-	        this._value = array;
-		    this._fields = this._value.subArray(1);
+		    this._fields = array.subArray(1);
         }
     }
 
