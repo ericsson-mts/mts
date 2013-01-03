@@ -129,53 +129,53 @@ public class MessageGTP
         // return message.getHeader().getResult();
     }
 	    
-	 public void decodeFromStream(InputStream inputStream) throws Exception
-	 {
-	     byte[] flag = new byte[1];
-	     //read the header
-	     int nbCharRead= inputStream.read(flag, 0, 1);
-	 	if(nbCharRead == -1){
-	 		throw new Exception("End of stream detected");
-	 	}
-	 	else if (nbCharRead < 1) {
-	         throw new Exception("Not enough char read");
-	     }
-	     
-	     DefaultArray flagArray = new DefaultArray(flag);
-	     // int messageType = flagArray.getBits(3, 1);         
-	     int version = flagArray.getBits(0, 3);
-	     
-	     if (version == 0)
-	     {
-	     	header = new HeaderGTPPrime(flagArray);
-	     }
-	     else if (version == 1)
-	     {
-	    	 header = new HeaderGTPV1(flagArray);
-	     }
-	     else if (version == 2)
-	     {
-	    	 header = new HeaderGTPV2(flagArray); 
-	     }
-	     
-	     this.syntax = header.getSyntax();
-	     initDictionary(syntax);
+	public void decodeFromStream(InputStream inputStream) throws Exception
+	{
+	byte[] flag = new byte[1];
+	//read the header
+	int nbCharRead= inputStream.read(flag, 0, 1);
+	if(nbCharRead == -1){
+		throw new Exception("End of stream detected");
+	}
+	else if (nbCharRead < 1) {
+		throw new Exception("Not enough char read");
+	}
+	 
+	DefaultArray flagArray = new DefaultArray(flag);
+	// int messageType = flagArray.getBits(3, 1);         
+	int version = flagArray.getBits(0, 3);
+	 
+	if (version == 0)
+	{
+		 header = new HeaderGTPPrime(flagArray);
+	}
+	else if (version == 1)
+	{
+		 header = new HeaderGTPV1(flagArray);
+	}
+	else if (version == 2)
+	{
+		 header = new HeaderGTPV2(flagArray);
+	}
+	 
+	this.syntax = header.getSyntax();
+	initDictionary(syntax);
 	
-	     header.decodeFromStream(inputStream, dictionary);
-	            
-	     int msgLength = header.getLength() - header.calculateHeaderSize(); 
+	header.decodeFromStream(inputStream, dictionary);
+	        
+	int msgLength = header.getLength() - header.calculateHeaderSize(); 
 	
-	     byte[] fieldBuffer = new byte[msgLength];
-	     //read the staying message's data
-	     nbCharRead = inputStream.read(fieldBuffer, 0, msgLength);
-	     if(nbCharRead == -1)
-	        throw new Exception("End of stream detected");
-	     else if(nbCharRead < msgLength)
-	        throw new Exception("Not enough char read");
+	byte[] fieldBuffer = new byte[msgLength];
+	//read the staying message's data
+	nbCharRead = inputStream.read(fieldBuffer, 0, msgLength);
+	if(nbCharRead == -1)
+		 throw new Exception("End of stream detected");
+	else if(nbCharRead < msgLength)
+	    throw new Exception("Not enough char read");
 		Array fieldArrayTag = new DefaultArray(fieldBuffer);
 	          	
 		decodeFieldsFromArray(fieldArrayTag);
-	 }
+	}
 	
 	private void decodeFieldsFromArray(Array data) throws Exception 
 	{
@@ -185,11 +185,11 @@ public class MessageGTP
 	    {
 	        int id = new Integer08Array(data.subArray(offset, 1)).getValue();
 	        ElementAbstract elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
-
+	
 	        boolean bigLength = false; 
 	        elemInfo.decodeFromArray(data.subArray(offset), bigLength);
 	        offset += elemInfo.encodeToArray().length;
-
+	
 	        hashElements.put(id, elemInfo);
 	    }
 	

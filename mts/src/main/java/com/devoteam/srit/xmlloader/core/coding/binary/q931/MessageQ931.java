@@ -63,7 +63,7 @@ public class MessageQ931 {
     private LinkedHashMap<Integer, ElementAbstract> hashElements;
 
 	public MessageQ931(Element root) throws Exception 
-     {
+    {
         this.syntax = root.attributeValue("syntax");
         initDictionary(syntax);       
         
@@ -77,19 +77,8 @@ public class MessageQ931 {
         for (Element element : elementsInf) 
         {
             elemInfo = new ElementQ931();
+            // FH Manage a new Element like ElementQ931big for id = User-User:126
             elemInfo.parseFromXML(element, dictionaries.get(this.syntax));
-            
-            // TODO améliorer pour prendre en compte la valeur en binaire, décimal, hexa...            
-            /* FH remove because not well decoded with Wireshark  
-            if (elem.getId() == 126) 
-            {
-
-                Array array = new DefaultArray(elem.getLengthElem() / 8 + 3);
-                elemV = new ElementInformationQ931V(array, true, false, elem);
-
-            }
-            else
-            */ 
             
             this.hashElements.put(elemInfo.getId(), elemInfo);
         }
@@ -113,20 +102,11 @@ public class MessageQ931 {
         while (offset < data.length) 
         {
             int id = new Integer08Array(data.subArray(offset, 1)).getValue();
+         // FH Manage a new Element like ElementQ931big for id = User-User:126            
             ElementAbstract elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
         
             boolean bigLength = false; 
-            /* FH remove because not well decoded with Wireshark
-            bigLength = id == 126;
-            
-            if (elemInfo == null) { //gerer le cas ou l'element n'est pas connu du dictionnaire
-                elem = new ElementInformationQ931V(data.subArray(offset), bigLength, true, null);
-            }
-            else
-            */ 
-            {
-                elemInfo.decodeFromArray(data.subArray(offset), bigLength);
-            }
+            elemInfo.decodeFromArray(data.subArray(offset), false);
             offset += elemInfo.encodeToArray().length;
             
             hashElements.put(id, elemInfo);
