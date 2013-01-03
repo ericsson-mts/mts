@@ -105,7 +105,6 @@ public class MessageGTP
 	    {
 	        elemInfo = ElementAbstract.buildFactory(element);
 	        elemInfo.parseFromXML(element, dictionaries.get(this.syntax));
-	        elemInfo.decodeFromArray(null, false, false);
 	        
 	        List<Element> listField = element.elements("field");
 	        //boucle pour setter tous les fields des elemV
@@ -210,7 +209,7 @@ public class MessageGTP
 	        int id = new Integer08Array(data.subArray(offset, 1)).getValue();
 	        ElementAbstract elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
 	        boolean bigLength = false; 
-	        elemInfo.decodeFromArray(data.subArray(offset), bigLength, true);
+	        elemInfo.decodeFromArray(data.subArray(offset), bigLength);
 	
 	        if (elemInfo.encodeToArray().length > 0) {
 	            offset += elemInfo.encodeToArray().length;

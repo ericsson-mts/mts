@@ -43,20 +43,15 @@ public class ElementTV extends ElementAbstract
     	
     }
     
-    public void decodeFromArray(Array array, boolean bigLength, boolean fromdata) 
+	@Override
+    public void decodeFromArray(Array array, boolean bigLength) 
     {
-        if (fromdata) {
-	        this.id = new Integer08Array(array.subArray(0, 1)).getValue();
-	        int length = getLengthElem() / 8;
-	        this._fields = array.subArray(0, length + 1).subArray(1);
-        }
-        else 
-        {
-        	array = new DefaultArray(getLengthElem() / 8 + 1);
-		    this._fields = array.subArray(1);
-        }
+        this.id = new Integer08Array(array.subArray(0, 1)).getValue();
+        int length = getLengthElem() / 8;
+        this._fields = array.subArray(0, length + 1).subArray(1);
     }
 
+	@Override
     public Array encodeToArray() {
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);

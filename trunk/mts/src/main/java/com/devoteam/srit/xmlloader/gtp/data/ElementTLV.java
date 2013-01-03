@@ -44,21 +44,15 @@ public class ElementTLV extends ElementAbstract
     	
     }
     
-    public void decodeFromArray(Array array, boolean bigLength, boolean fromdata) 
+	@Override
+    public void decodeFromArray(Array array, boolean bigLength) 
     {
-        if (fromdata) 
-        {
-        	this.id = new Integer08Array(array.subArray(0, 1)).getValue();
-	        int length = new Integer16Array(array.subArray(1, 2)).getValue();
-	        this._fields = array.subArray(0, length + 3).subArray(3);
-        }
-        else 
-        {
-        	array = new DefaultArray(getLengthElem() / 8 + 3);
-		    this._fields = array.subArray(3);
-        }
+    	this.id = new Integer08Array(array.subArray(0, 1)).getValue();
+        int length = new Integer16Array(array.subArray(1, 2)).getValue();
+        this._fields = array.subArray(0, length + 3).subArray(3);
     }
 
+	@Override
     public Array encodeToArray() {
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);
