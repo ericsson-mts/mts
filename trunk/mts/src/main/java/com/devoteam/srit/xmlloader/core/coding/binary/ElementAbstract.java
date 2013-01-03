@@ -51,7 +51,6 @@ public abstract class ElementAbstract
     
     protected LinkedHashMap<String, Field> _hashMapFields = new LinkedHashMap<String, Field>();
     
-	protected Array _value;
     protected Array _fields;
     
     protected boolean _bigLength;
@@ -221,9 +220,9 @@ public abstract class ElementAbstract
     {
     	if (params.length == offset + 2) 
         {
-        	if (this._value != null)
+        	if (this._fields != null)
         	{
-        		var.add(Array.toHexString(this._value));
+        		var.add(Array.toHexString(this._fields));
         	}
         }
         else if (params.length >= offset + 4 && (params[offset + 2].equalsIgnoreCase("field"))) 

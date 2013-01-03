@@ -50,14 +50,12 @@ public class ElementTLV extends ElementAbstract
         {
         	this.id = new Integer08Array(array.subArray(0, 1)).getValue();
 	        int length = new Integer16Array(array.subArray(1, 2)).getValue();
-	        this._value = array.subArray(0, length + 3);
-	        this._fields = this._value.subArray(3);
+	        this._fields = array.subArray(0, length + 3).subArray(3);
         }
         else 
         {
         	array = new DefaultArray(getLengthElem() / 8 + 3);
-	        this._value = array;
-		    this._fields = this._value.subArray(3);
+		    this._fields = array.subArray(3);
         }
     }
 
