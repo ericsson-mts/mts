@@ -117,7 +117,31 @@
         		<field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
         </element>
         <element identifier="Bearer Context" coding="TLIV">
-        		<field name="Bearer Context" type="binary" value="4900010005570009028480002002ac14462a5000160004070000000000000000000000000000000000000000"/>
+            <element identifier="EBI" coding="TLIV" description="EPS Bearer ID">
+                <field name="spare" value="15"/>              
+            		<field name="EBI" value="15"/>
+            </element>
+            <element identifier="Bearer QoS" coding="TLIV" description="Bearer Quality of Service">
+                <field name="spare1" value="1"/>
+                <field name="PCI" value="false" description="Pre-emption Capability"/>        
+                <field name="PL" value="15" description="Priority Level"/>
+                <field name="spare2" value="true" type="boolean"/>        
+                <field name="PVI" value="0" description="Pre-emption Vulnerability"/>
+                <field name="Label QCI" value="255"/>                
+                <field name="Maximum bit rate for uplink" value="1099511627775"/>
+                <field name="Maximum bit rate for downlink" value="1099511627775"/>
+                <field name="Guaranteed bit rate for uplink" value="1099511627775"/>
+                <field name="Guaranteed bit rate for downlink" value="1099511627775"/>                        
+            </element>            
+            <element identifier="F-TEID" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+                <field name="V4" value="1"/>        
+                <field name="V6" value="true"/>
+                <field name="Interface Type" value="S5/S8 SGW GTP-U"/>
+                <field name="TEID / GRE Key" value="4294967295" description="GRE key ?"/>
+                <!-- TODO conditional IP V4 V6 -->      
+                <field name="IPv4 address" value="12.13.14.15"/>
+                <field name="IPv6 address" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/>
+            </element>
         </element>
         <element identifier="UE Time Zone" coding="TLIV">
             <field name="Time Zone" value="255"/>   
@@ -125,7 +149,7 @@
             <field name="Daylight Saving Time" value="No adjustment for Daylight Saving Time"/>
         </element>
        <element identifier="Charging Characteristics" coding="TLIV">
-            <field name="Charging Characteristics value" value="2048"/>   
+            <field name="Charging Characteristics value" value="65535"/>   
       </element>        
     </sendMessageGTP>
 

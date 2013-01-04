@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.gtp.data;
 
+import java.util.Iterator;
+
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 
 import gp.utils.arrays.Array;
@@ -55,10 +57,19 @@ public class ElementTLIV extends ElementAbstract
         this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
         this._fields = new SupArray();
         this._fields.addFirst(array.subArray(4, length));
+        
+        if (this._hashMapFields.size() == 0)
+        {
+        	
+        }
     }
 
 	@Override
-    public Array encodeToArray() {
+    public Array encodeToArray() 
+	{
+		// encode the sub-element
+		super.encodeToArray();
+
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);
         sup.addLast(idArray);
@@ -67,6 +78,7 @@ public class ElementTLIV extends ElementAbstract
 	    Integer08Array instancesArray = new Integer08Array(this.instances);
 	    sup.addLast(instancesArray);
 		sup.addLast(this._fields);
+				
         return sup;
     }
 

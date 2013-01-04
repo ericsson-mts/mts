@@ -53,7 +53,7 @@ public abstract class ElementAbstract
     
     protected LinkedHashMap<String, FieldAbstract> _hashMapFields = new LinkedHashMap<String, FieldAbstract>();
     
-    private LinkedHashMap<Integer, ElementAbstract> hashElements;
+    protected LinkedHashMap<Integer, ElementAbstract> hashElements = new LinkedHashMap<Integer, ElementAbstract>();
     
     protected SupArray _fields;
     
@@ -118,85 +118,82 @@ public abstract class ElementAbstract
         }
         
         List<Element> listField = element.elements("field");
-        if (listField != null)
-        {
-	        for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
-	            Element elemField = it.next();
-	            String name = elemField.attributeValue("name");
-	            FieldAbstract field = null;
-	            if (elemDico != null)
+        for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
+            Element elemField = it.next();
+            String name = elemField.attributeValue("name");
+            FieldAbstract field = null;
+            if (elemDico != null)
+            {
+            	field = elemDico.getHashMapFields().get(name); 
+            }
+            if (field == null)
+            {
+             	String type = elemField.attributeValue("type");
+	            if (type.equalsIgnoreCase("integer")) 
 	            {
-	            	field = elemDico.getHashMapFields().get(name); 
-	            }
-	            if (field == null)
+	                field = new IntegerField(elemField);
+	            } 
+	            else if (type.equalsIgnoreCase("boolean")) 
 	            {
-	             	String type = elemField.attributeValue("type");
-		            if (type.equalsIgnoreCase("integer")) 
-		            {
-		                field = new IntegerField(elemField);
-		            } 
-		            else if (type.equalsIgnoreCase("boolean")) 
-		            {
-		                field = new BooleanField(elemField);
-		            } 
-		            else if (type.equalsIgnoreCase("enumeration")) 
-		            {
-		                field = new EnumerationField(elemField);
-		            } 
-		            else if (type.equalsIgnoreCase("string")) 
-		            {	
-		                field = new StringField(elemField);	
-		            }
-		            else if (type.equalsIgnoreCase("length_string")) 
-		            {
-		                field = new LengthStringField(elemField);	
-		            }
-		            else if (type.equalsIgnoreCase("length2_string")) 
-		            {
-		                field = new Length2StringField(elemField);	
-		            }	            
-		            else if (type.equalsIgnoreCase("binary")) 
-		            {
-		                field = new BinaryField(elemField);
-		
-		            }
-		            else if (type.equalsIgnoreCase("number_bcd")) 
-		            {
-		                field = new NumberBCDField(elemField);
-		            }
-		            else if (type.equalsIgnoreCase("number_mmc")) 
-		            {
-		                field = new NumberMMCField(elemField);
-		            }	            
-		            else if (type.equalsIgnoreCase("ipv4_address")) 
-		            {
-		                field = new IPV4AddressField(elemField);
-		            }
-		            else if (type.equalsIgnoreCase("ipv6_address")) 
-		            {
-		                field = new IPV6AddressField(elemField);
-		            }	            	            
-		            else
-		            {
-		            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported : " + idStr);    
-		            }
+	                field = new BooleanField(elemField);
+	            } 
+	            else if (type.equalsIgnoreCase("enumeration")) 
+	            {
+	                field = new EnumerationField(elemField);
+	            } 
+	            else if (type.equalsIgnoreCase("string")) 
+	            {	
+	                field = new StringField(elemField);	
 	            }
+	            else if (type.equalsIgnoreCase("length_string")) 
+	            {
+	                field = new LengthStringField(elemField);	
+	            }
+	            else if (type.equalsIgnoreCase("length2_string")) 
+	            {
+	                field = new Length2StringField(elemField);	
+	            }	            
+	            else if (type.equalsIgnoreCase("binary")) 
+	            {
+	                field = new BinaryField(elemField);
+	
+	            }
+	            else if (type.equalsIgnoreCase("number_bcd")) 
+	            {
+	                field = new NumberBCDField(elemField);
+	            }
+	            else if (type.equalsIgnoreCase("number_mmc")) 
+	            {
+	                field = new NumberMMCField(elemField);
+	            }	            
+	            else if (type.equalsIgnoreCase("ipv4_address")) 
+	            {
+	                field = new IPV4AddressField(elemField);
+	            }
+	            else if (type.equalsIgnoreCase("ipv6_address")) 
+	            {
+	                field = new IPV6AddressField(elemField);
+	            }	            	            
 	            else
 	            {
-	            	// int length = Integer.parseInt(elemField.attributeValue("lengthBit"));
-	            	// field.setLength(length);
+	            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported : " + idStr);    
 	            }
-	            this._hashMapFields.put(elemField.attributeValue("name"), field);
-	        }
+            }
+
+            String length = elemField.attributeValue("lengthBit");
+            if (length != null)
+            {
+            	// BUG dans Sigtran 105_Q931_DISCONNECT et autres : incohrence entre le dictionnaire et le script
+            	// field.setLength(Integer.parseInt(length));
+            }
+
+            this._hashMapFields.put(elemField.attributeValue("name"), field);
         }
         
         // initiate the Array containing the fields
         this._fields = new SupArray();
         Array emptyArray = new DefaultArray(getLengthElem() / 8);
-        if (emptyArray.length > 0)
-        {
-        	this._fields.addFirst(emptyArray);
-        }
+       	this._fields.addFirst(emptyArray);
         
         // set the value for each fields
         listField = element.elements("field");
@@ -227,7 +224,19 @@ public abstract class ElementAbstract
             {
                 throw new ExecutionException("The field " + element1.attributeValue("name") + " is not found in element : " + this.name + ":" + this.id);
             }
-        }               
+        }
+        
+        List<Element> listElement = element.elements("element");
+        ElementAbstract elemInfo = null;
+        for (Iterator<Element> it = listElement.iterator(); it.hasNext();) 
+        {
+            Element elemElement = it.next();
+            elemInfo = ElementAbstract.buildFactory(elemElement);
+	        elemInfo.parseFromXML(elemElement, dictionary);
+	        
+	        this.hashElements.put(elemInfo.getId(), elemInfo);    
+        }
+        
     }
     
     public String toString() {
@@ -254,11 +263,22 @@ public abstract class ElementAbstract
         elemString.append("\n");
         return elemString.toString();
     }
-
     
     public abstract void decodeFromArray(Array array);
     
-    public abstract Array encodeToArray();
+    public Array encodeToArray()
+    {
+		// encode the sub-element
+		Iterator<ElementAbstract> iter = this.hashElements.values().iterator();
+		while (iter.hasNext())
+		{
+			ElementAbstract elemInfo = (ElementAbstract) iter.next();
+			Array array = elemInfo.encodeToArray();
+			this._fields.addLast(array);
+		}
+		return this._fields;
+
+    }
     
     public void getParameter(Parameter var, String[] params, String path, int offset) throws Exception 
     {
