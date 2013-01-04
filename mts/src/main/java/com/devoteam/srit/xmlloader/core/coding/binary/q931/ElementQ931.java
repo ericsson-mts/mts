@@ -44,42 +44,31 @@ public class ElementQ931 extends ElementAbstract
     }
     
 	@Override
-    public void decodeFromArray(Array array, boolean bigLength) {
-        _bigLength = bigLength;
+    public void decodeFromArray(Array array) 
+	{
         this.id = new Integer08Array(array.subArray(0, 1)).getValue();
         if (this._hashMapFields.size() >= 1)
         {
-	        if (bigLength == true) {
-	            int length = new Integer16Array(array.subArray(1, 2)).getValue();
-	            this._fields = new SupArray();
-	            this._fields.addFirst(array.subArray(0, length + 3).subArray(3));
-	        }
-	        else {
-	            int length = new Integer08Array(array.subArray(1, 1)).getValue();
-	            this._fields = new SupArray();
-	            this._fields.addFirst(array.subArray(0, length + 2).subArray(2));
-	        }	            	
+            int length = new Integer08Array(array.subArray(1, 1)).getValue();
+            this._fields = new SupArray();
+            this._fields.addFirst(array.subArray(2, length));	            	
 	    }
     }
 
 	@Override    
-    public Array encodeToArray() {
+    public Array encodeToArray() 
+	{
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);
         sup.addLast(idArray);
-        if (_fields != null)
+        if (this._fields != null)
         {
-		    Integer08Array length8 = new Integer08Array(_fields.length);
+		    Integer08Array length8 = new Integer08Array(this._fields.length);
 		    if (length8.getValue() != 0)
 		    {
-		    	if (_bigLength) {
-		    		sup.addLast(new Integer16Array(_fields.length));
-		    	}
-		    	else {
-		    		sup.addLast(length8);
-		    	}        
-		    	sup.addLast(_fields);
-		    }
+		    	sup.addLast(length8);
+		    }        
+		    sup.addLast(this._fields);
         }
         return sup;
     }

@@ -55,7 +55,6 @@ public abstract class ElementAbstract
     
     protected SupArray _fields;
     
-    protected boolean _bigLength;
 
     public static ElementAbstract buildFactory(Element root)
     {
@@ -252,7 +251,7 @@ public abstract class ElementAbstract
     }
 
     
-    public abstract void decodeFromArray(Array array, boolean bigLength);
+    public abstract void decodeFromArray(Array array);
     
     public abstract Array encodeToArray();
     

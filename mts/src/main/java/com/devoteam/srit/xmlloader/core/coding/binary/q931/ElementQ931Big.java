@@ -21,12 +21,11 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.gtp.data;
+package com.devoteam.srit.xmlloader.core.coding.binary.q931;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 
 import gp.utils.arrays.Array;
-import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.Integer16Array;
 import gp.utils.arrays.SupArray;
@@ -36,37 +35,40 @@ import gp.utils.arrays.SupArray;
  *
  * @author Fabien Henry
  */
-public class ElementTLIV extends ElementAbstract
+public class ElementQ931Big extends ElementAbstract
 {
 
-	// protected int spare;
-	protected int instances;
-	
-    public ElementTLIV()
+    public ElementQ931Big()
     {
     	
     }
     
 	@Override
     public void decodeFromArray(Array array) 
-    {
+	{
         this.id = new Integer08Array(array.subArray(0, 1)).getValue();
-        int length = new Integer16Array(array.subArray(1, 2)).getValue();
-        this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
-        this._fields = new SupArray();
-        this._fields.addFirst(array.subArray(4, length));
+        if (this._hashMapFields.size() >= 1)
+        {
+        	int length = new Integer16Array(array.subArray(1, 2)).getValue();
+            this._fields = new SupArray();
+            this._fields.addFirst(array.subArray(3, length));
+        }
     }
 
-	@Override
+	@Override    
     public Array encodeToArray() {
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);
         sup.addLast(idArray);
-	    Integer16Array lengthArray = new Integer16Array(this._fields.length);
-	    sup.addLast(lengthArray);
-	    Integer08Array instancesArray = new Integer08Array(this.instances);
-	    sup.addLast(instancesArray);
-		sup.addLast(this._fields);
+        if (this._fields != null)
+        {
+		    Integer16Array length16 = new Integer16Array(this._fields.length);
+		    if (length16.getValue() != 0)
+		    {
+		    	sup.addLast(length16);
+		    }
+		    sup.addLast(this._fields);
+        }
         return sup;
     }
 
