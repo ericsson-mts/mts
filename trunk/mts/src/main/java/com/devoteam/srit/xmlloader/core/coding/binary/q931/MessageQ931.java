@@ -99,12 +99,10 @@ public class MessageQ931
         int offset = header.getLength();
         while (offset < data.length) 
         {
-            int id = new Integer08Array(data.subArray(offset, 1)).getValue();
-         // FH Manage a new Element like ElementQ931big for id = User-User:126            
+            int id = new Integer08Array(data.subArray(offset, 1)).getValue();         
             ElementAbstract elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
         
-            boolean bigLength = false; 
-            elemInfo.decodeFromArray(data.subArray(offset), false);
+            elemInfo.decodeFromArray(data.subArray(offset));
             offset += elemInfo.encodeToArray().length;
             
             hashElements.put(id, elemInfo);

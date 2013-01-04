@@ -183,8 +183,7 @@ public class MessageGTP
 	        int id = new Integer08Array(data.subArray(offset, 1)).getValue();
 	        ElementAbstract elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
 	
-	        boolean bigLength = false; 
-	        elemInfo.decodeFromArray(data.subArray(offset), bigLength);
+	        elemInfo.decodeFromArray(data.subArray(offset));
 	        offset += elemInfo.encodeToArray().length;
 	
 	        hashElements.put(id, elemInfo);

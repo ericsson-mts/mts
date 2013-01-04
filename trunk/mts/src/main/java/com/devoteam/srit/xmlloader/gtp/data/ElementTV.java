@@ -44,12 +44,12 @@ public class ElementTV extends ElementAbstract
     }
     
 	@Override
-    public void decodeFromArray(Array array, boolean bigLength) 
+    public void decodeFromArray(Array array) 
     {
         this.id = new Integer08Array(array.subArray(0, 1)).getValue();
         int length = getLengthElem() / 8;
         this._fields = new SupArray();
-        this._fields.addFirst(array.subArray(0, length + 1).subArray(1));
+        this._fields.addFirst(array.subArray(1, length));
     }
 
 	@Override
