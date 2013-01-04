@@ -42,7 +42,8 @@ public abstract class FieldAbstract
 
 	protected String _name;
     protected int _length;
-    protected int _offset;
+
+	protected int _offset;
 
     public FieldAbstract(Element rootXML) 
     {
@@ -58,6 +59,11 @@ public abstract class FieldAbstract
     public int getLength() {
         return this._length;
     }
+    
+    public void setLength(int length) {
+		this._length = length;
+	}
+
 
     public int getOffset() {
         return _offset;

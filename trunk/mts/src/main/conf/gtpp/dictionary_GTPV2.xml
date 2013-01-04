@@ -59,6 +59,7 @@
     </element>
 
     <element identifier="73" name="EBI" coding="TLIV" description="EPS Bearer ID">
+        <field name="spare" lengthBit="4" type="integer"/>    
     		<field name="EBI" lengthBit="4" type="integer" description="EPS Bearer ID"/>
     </element>
     
@@ -130,10 +131,10 @@
         <field name="spare2" lengthBit="1" type="boolean"/>        
         <field name="PVI" lengthBit="1" type="boolean" description="Pre-emption Vulnerability"/>
         <field name="Label QCI" lengthBit="8" type="integer"/>                
-        <field name="Maximum bit rate for uplink" lengthBit="32" type="integer"/>
-        <field name="Maximum bit rate for downlink" lengthBit="32" type="integer"/>
-        <field name="Guaranteed bit rate for uplink" lengthBit="32" type="integer"/>
-        <field name="Guaranteed bit rate for downlink" lengthBit="32" type="integer"/>                        
+        <field name="Maximum bit rate for uplink" lengthBit="40" type="integer"/>
+        <field name="Maximum bit rate for downlink" lengthBit="40" type="integer"/>
+        <field name="Guaranteed bit rate for uplink" lengthBit="40" type="integer"/>
+        <field name="Guaranteed bit rate for downlink" lengthBit="40" type="integer"/>                        
     </element>
     
     <element identifier="82" name="RAT Type" coding="TLIV">    
@@ -220,9 +221,9 @@
     </element>
 
     <element identifier="93" name="Bearer Context" coding="TLIV">
-        <element name="EBI"/>    
-        <element name="Bearer QoS"/>
-        <element name="F-TEID"/>
+        <element identifier="EBI" coding="TLIV"/>    
+        <element identifier="Bearer QoS" coding="TLIV"/>
+        <element identifier="F-TEID" coding="TLIV"/>
     </element>
     
      <element identifier="95" name="Charging Characteristics" coding="TLIV">
@@ -238,7 +239,7 @@
         </field>
     </element>
 
-   <element identifier="114" name="UE Time Zone" coding="TLIV">
+   <element identifier="114" name="UE Time Zone" coding="TLIV">   
         <field name="Time Zone" lengthBit="8" type="integer"/>   
         <field name="spare" lengthBit="6" type="integer"/>
         <field name="Daylight Saving Time" lengthBit="2" type="enumeration">
