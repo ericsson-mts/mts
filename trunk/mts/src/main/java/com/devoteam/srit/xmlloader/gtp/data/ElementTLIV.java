@@ -23,13 +23,11 @@
 
 package com.devoteam.srit.xmlloader.gtp.data;
 
-import java.util.Iterator;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 
 import gp.utils.arrays.Array;
-import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.Integer16Array;
 import gp.utils.arrays.SupArray;
@@ -62,7 +60,7 @@ public class ElementTLIV extends ElementAbstract
         // cas when there are no field
         if (this._hashMapFields.size() == 0)
         {
-        	this.hashElements = MessageGTP.decodeFieldsFromArray(this._fields, dictionary);
+        	this.hashElements = ElementAbstract.decodeElementsFromArray(this._fields, dictionary);
         }
         
         return length + 4;
@@ -72,17 +70,20 @@ public class ElementTLIV extends ElementAbstract
     public Array encodeToArray() 
 	{
 		// encode the sub-element
-		super.encodeToArray();
+		Array elements = super.encodeToArray();
 
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);
         sup.addLast(idArray);
-	    Integer16Array lengthArray = new Integer16Array(this._fields.length);
+        Integer16Array lengthArray = new Integer16Array(this._fields.length + elements.length);
 	    sup.addLast(lengthArray);
 	    Integer08Array instancesArray = new Integer08Array(this.instances);
 	    sup.addLast(instancesArray);
-		sup.addLast(this._fields);
-				
+	    
+	    sup.addLast(this._fields);
+
+		sup.addLast(elements);
+		
         return sup;
     }
 

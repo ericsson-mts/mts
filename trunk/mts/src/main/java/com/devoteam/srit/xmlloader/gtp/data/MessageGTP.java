@@ -169,27 +169,9 @@ public class MessageGTP
 		 throw new Exception("End of stream detected");
 	else if(nbCharRead < msgLength)
 	    throw new Exception("Not enough char read");
-		Array fieldArrayTag = new DefaultArray(fieldBuffer);
+	Array fieldArrayTag = new DefaultArray(fieldBuffer);
 	          	
-		this.hashElements = decodeFieldsFromArray(fieldArrayTag, this.dictionary);
-	}
-	
-	public static LinkedHashMap<Integer, ElementAbstract> decodeFieldsFromArray(Array data, Dictionary dictionary) throws Exception 
-	{
-		LinkedHashMap<Integer, ElementAbstract> hashElements = new LinkedHashMap<Integer, ElementAbstract>();
-	    int offset = 0;
-	    while (offset < data.length) 
-	    {
-	        int id = new Integer08Array(data.subArray(offset, 1)).getValue();
-	        ElementAbstract elemInfo = dictionary.getMapElementById().get(id);
-	
-	        int length = elemInfo.decodeFromArray(data.subArray(offset), dictionary);
-	        offset += length;
-	
-	        hashElements.put(id, elemInfo);
-	    }
-	    return hashElements;
-	
+	this.hashElements = ElementAbstract.decodeElementsFromArray(fieldArrayTag, this.dictionary);
 	}
 	
 	/** Get a parameter from the message */
@@ -231,7 +213,8 @@ public class MessageGTP
 	    }
 	}
 	
-	public Array encodeToArray() {
+	public Array encodeToArray() 
+	{
 	    SupArray array = new SupArray();
 	    for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) 
 	    {
@@ -243,7 +226,8 @@ public class MessageGTP
 	}
 	
 	@Override
-	public String toString() {
+	public String toString() 
+	{
 	    StringBuilder messageToString = new StringBuilder();
 	    messageToString.append(header.toString());
 	    messageToString.append("\n");

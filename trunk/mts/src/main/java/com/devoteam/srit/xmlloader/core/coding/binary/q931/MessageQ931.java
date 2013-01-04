@@ -96,8 +96,9 @@ public class MessageQ931
         this.header.decodeFromArray(data, syntax, dictionary);
 
         // does not work like with GTP why ?
-        // this.hashElements = decodeFieldsFromArray(fieldArrayTag, this.dictionary);
+        this.hashElements = ElementAbstract.decodeElementsFromArray(data.subArray(header.getLength()), this.dictionary);
         
+        /*
         hashElements = new LinkedHashMap<Integer, ElementAbstract>();
         int offset = header.getLength();
         while (offset < data.length) 
@@ -110,6 +111,7 @@ public class MessageQ931
             
             hashElements.put(id, elemInfo);
         }
+        */
 
     }
 

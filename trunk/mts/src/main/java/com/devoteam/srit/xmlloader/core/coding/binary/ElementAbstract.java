@@ -32,6 +32,7 @@ import com.devoteam.srit.xmlloader.gtp.data.ElementTV;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
+import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.SupArray;
 
 import java.util.Iterator;
@@ -249,34 +250,68 @@ public abstract class ElementAbstract
     		elemString.append(this.name + ":");
     	}
     	elemString.append(this.id);
+    	elemString.append("\"");
         if (_fields != null)
         {
             elemString.append(" value=\"" + Array.toHexString(_fields));
         }
         elemString.append("\">");
+        
         elemString.append("\n");
-        for (Entry<String, FieldAbstract> e : this._hashMapFields.entrySet()) {
-            elemString.append(e.getValue().toString(this._fields));
+        
+        
+        Iterator<FieldAbstract> iterField = this._hashMapFields.values().iterator();
+		while (iterField.hasNext())
+		{
+			FieldAbstract field = (FieldAbstract) iterField.next();
+            elemString.append(field.toString(this._fields));
         }
-
+        
+        Iterator<ElementAbstract> iterElem = this.hashElements.values().iterator();
+		while (iterElem.hasNext())
+		{
+			ElementAbstract elemInfo = (ElementAbstract) iterElem.next();
+            elemString.append("    ");
+            elemString.append(elemInfo.toString());
+        }
+        
         elemString.append("</element>");
         elemString.append("\n");
         return elemString.toString();
     }
     
+	public static LinkedHashMap<Integer, ElementAbstract> decodeElementsFromArray(Array data, Dictionary dictionary) throws Exception 
+	{
+		LinkedHashMap<Integer, ElementAbstract> hashElements = new LinkedHashMap<Integer, ElementAbstract>();
+	    int offset = 0;
+	    while (offset < data.length) 
+	    {
+	        int id = new Integer08Array(data.subArray(offset, 1)).getValue();
+	        ElementAbstract elemInfo = dictionary.getMapElementById().get(id);
+	
+	        int length = elemInfo.decodeFromArray(data.subArray(offset), dictionary);
+	        offset += length;
+	
+	        hashElements.put(id, elemInfo);
+	    }
+	    return hashElements;
+	
+	}
+    
     public abstract int decodeFromArray(Array array, Dictionary dictionary) throws Exception;
     
     public Array encodeToArray()
     {
+    	SupArray sup = new SupArray();
 		// encode the sub-element
 		Iterator<ElementAbstract> iter = this.hashElements.values().iterator();
 		while (iter.hasNext())
 		{
 			ElementAbstract elemInfo = (ElementAbstract) iter.next();
 			Array array = elemInfo.encodeToArray();
-			this._fields.addLast(array);
+			sup.addLast(array);
 		}
-		return this._fields;
+		return sup;
 
     }
     

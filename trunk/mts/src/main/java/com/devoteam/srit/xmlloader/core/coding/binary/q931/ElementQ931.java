@@ -63,9 +63,6 @@ public class ElementQ931 extends ElementAbstract
 	@Override    
     public Array encodeToArray() 
 	{
-		// encode the sub-element
-		super.encodeToArray();
-
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);
         sup.addLast(idArray);
@@ -75,9 +72,11 @@ public class ElementQ931 extends ElementAbstract
 		    if (length8.getValue() != 0)
 		    {
 		    	sup.addLast(length8);
-		    }        
+		    }
+		    
 		    sup.addLast(this._fields);
         }
+        
         return sup;
     }
 
