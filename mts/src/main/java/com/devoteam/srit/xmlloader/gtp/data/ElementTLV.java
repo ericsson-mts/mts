@@ -58,15 +58,14 @@ public class ElementTLV extends ElementAbstract
 	@Override
     public Array encodeToArray() 
 	{
-		// encode the sub-element
-		super.encodeToArray();
-
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);
         sup.addLast(idArray);
-	    Integer16Array lengthArray = new Integer16Array(this._fields.length);
+        Integer16Array lengthArray = new Integer16Array(this._fields.length);
 	    sup.addLast(lengthArray);
-		sup.addLast(this._fields);
+		
+	    sup.addLast(this._fields);
+	    
         return sup;
     }
 

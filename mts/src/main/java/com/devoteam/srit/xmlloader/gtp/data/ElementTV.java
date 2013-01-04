@@ -57,13 +57,12 @@ public class ElementTV extends ElementAbstract
 	@Override
     public Array encodeToArray() 
 	{
-		// encode the sub-element
-		super.encodeToArray();
-
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);
         sup.addLast(idArray);
+        
 		sup.addLast(_fields);
+		
         return sup;
     }
 
