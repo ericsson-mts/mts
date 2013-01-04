@@ -171,23 +171,24 @@ public class MessageGTP
 	    throw new Exception("Not enough char read");
 		Array fieldArrayTag = new DefaultArray(fieldBuffer);
 	          	
-		decodeFieldsFromArray(fieldArrayTag);
+		this.hashElements = decodeFieldsFromArray(fieldArrayTag, this.dictionary);
 	}
 	
-	private void decodeFieldsFromArray(Array data) throws Exception 
+	public static LinkedHashMap<Integer, ElementAbstract> decodeFieldsFromArray(Array data, Dictionary dictionary) throws Exception 
 	{
-		hashElements = new LinkedHashMap<Integer, ElementAbstract>();
+		LinkedHashMap<Integer, ElementAbstract> hashElements = new LinkedHashMap<Integer, ElementAbstract>();
 	    int offset = 0;
 	    while (offset < data.length) 
 	    {
 	        int id = new Integer08Array(data.subArray(offset, 1)).getValue();
-	        ElementAbstract elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
+	        ElementAbstract elemInfo = dictionary.getMapElementById().get(id);
 	
-	        elemInfo.decodeFromArray(data.subArray(offset));
-	        offset += elemInfo.encodeToArray().length;
+	        int length = elemInfo.decodeFromArray(data.subArray(offset), dictionary);
+	        offset += length;
 	
 	        hashElements.put(id, elemInfo);
 	    }
+	    return hashElements;
 	
 	}
 	

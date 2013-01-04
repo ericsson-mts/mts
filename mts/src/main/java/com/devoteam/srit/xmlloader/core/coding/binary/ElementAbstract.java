@@ -26,7 +26,6 @@ package com.devoteam.srit.xmlloader.core.coding.binary;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.core.utils.maps.LinkedHashMap;
 import com.devoteam.srit.xmlloader.gtp.data.ElementTLIV;
 import com.devoteam.srit.xmlloader.gtp.data.ElementTLV;
 import com.devoteam.srit.xmlloader.gtp.data.ElementTV;
@@ -36,6 +35,7 @@ import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import org.dom4j.Element;
@@ -264,7 +264,7 @@ public abstract class ElementAbstract
         return elemString.toString();
     }
     
-    public abstract void decodeFromArray(Array array);
+    public abstract int decodeFromArray(Array array, Dictionary dictionary) throws Exception;
     
     public Array encodeToArray()
     {

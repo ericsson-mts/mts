@@ -25,6 +25,7 @@ package com.devoteam.srit.xmlloader.gtp.data;
 
 import java.util.Iterator;
 
+import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 
 import gp.utils.arrays.Array;
@@ -50,7 +51,7 @@ public class ElementTLIV extends ElementAbstract
     }
     
 	@Override
-    public void decodeFromArray(Array array) 
+    public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
     {
         this.id = new Integer08Array(array.subArray(0, 1)).getValue();
         int length = new Integer16Array(array.subArray(1, 2)).getValue();
@@ -58,10 +59,13 @@ public class ElementTLIV extends ElementAbstract
         this._fields = new SupArray();
         this._fields.addFirst(array.subArray(4, length));
         
+        // cas when there are no field
         if (this._hashMapFields.size() == 0)
         {
-        	
+        	this.hashElements = MessageGTP.decodeFieldsFromArray(this._fields, dictionary);
         }
+        
+        return length + 4;
     }
 
 	@Override

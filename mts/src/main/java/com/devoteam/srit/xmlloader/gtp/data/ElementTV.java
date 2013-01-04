@@ -23,10 +23,10 @@
 
 package com.devoteam.srit.xmlloader.gtp.data;
 
+import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 
 import gp.utils.arrays.Array;
-import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.SupArray;
 
@@ -44,12 +44,14 @@ public class ElementTV extends ElementAbstract
     }
     
 	@Override
-    public void decodeFromArray(Array array) 
+    public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
     {
         this.id = new Integer08Array(array.subArray(0, 1)).getValue();
         int length = getLengthElem() / 8;
         this._fields = new SupArray();
         this._fields.addFirst(array.subArray(1, length));
+        
+        return length + 1;
     }
 
 	@Override

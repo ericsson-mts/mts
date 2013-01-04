@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.core.coding.binary.q931;
 
+import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 
 import gp.utils.arrays.Array;
@@ -44,7 +45,7 @@ public class ElementQ931Big extends ElementAbstract
     }
     
 	@Override
-    public void decodeFromArray(Array array) 
+    public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
 	{
         this.id = new Integer08Array(array.subArray(0, 1)).getValue();
         if (this._hashMapFields.size() >= 1)
@@ -52,7 +53,10 @@ public class ElementQ931Big extends ElementAbstract
         	int length = new Integer16Array(array.subArray(1, 2)).getValue();
             this._fields = new SupArray();
             this._fields.addFirst(array.subArray(3, length));
+            return length + 3;
         }
+        
+        return 1;
     }
 
 	@Override    

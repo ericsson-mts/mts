@@ -24,9 +24,9 @@
 package com.devoteam.srit.xmlloader.gtp.data;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 
 import gp.utils.arrays.Array;
-import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.Integer16Array;
 import gp.utils.arrays.SupArray;
@@ -45,12 +45,14 @@ public class ElementTLV extends ElementAbstract
     }
     
 	@Override
-    public void decodeFromArray(Array array) 
+    public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
     {
     	this.id = new Integer08Array(array.subArray(0, 1)).getValue();
         int length = new Integer16Array(array.subArray(1, 2)).getValue();
         this._fields = new SupArray();
         this._fields.addFirst(array.subArray(3, length));
+        
+        return length + 3;
     }
 
 	@Override
