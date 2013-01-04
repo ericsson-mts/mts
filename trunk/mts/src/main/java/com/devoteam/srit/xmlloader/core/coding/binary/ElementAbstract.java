@@ -53,6 +53,8 @@ public abstract class ElementAbstract
     
     protected LinkedHashMap<String, FieldAbstract> _hashMapFields = new LinkedHashMap<String, FieldAbstract>();
     
+    private LinkedHashMap<Integer, ElementAbstract> hashElements;
+    
     protected SupArray _fields;
     
 
@@ -116,73 +118,76 @@ public abstract class ElementAbstract
         }
         
         List<Element> listField = element.elements("field");
-        for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
-            Element elemField = it.next();
-            String name = elemField.attributeValue("name");
-            FieldAbstract field = null;
-            if (elemDico != null)
-            {
-            	field = elemDico.getHashMapFields().get(name); 
-            }
-            if (field == null)
-            {
-             	String type = elemField.attributeValue("type");
-	            if (type.equalsIgnoreCase("integer")) 
+        if (listField != null)
+        {
+	        for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
+	            Element elemField = it.next();
+	            String name = elemField.attributeValue("name");
+	            FieldAbstract field = null;
+	            if (elemDico != null)
 	            {
-	                field = new IntegerField(elemField);
-	            } 
-	            else if (type.equalsIgnoreCase("boolean")) 
-	            {
-	                field = new BooleanField(elemField);
-	            } 
-	            else if (type.equalsIgnoreCase("enumeration")) 
-	            {
-	                field = new EnumerationField(elemField);
-	            } 
-	            else if (type.equalsIgnoreCase("string")) 
-	            {
-	                field = new StringField(elemField);	
+	            	field = elemDico.getHashMapFields().get(name); 
 	            }
-	            else if (type.equalsIgnoreCase("length_string")) 
+	            if (field == null)
 	            {
-	                field = new LengthStringField(elemField);	
+	             	String type = elemField.attributeValue("type");
+		            if (type.equalsIgnoreCase("integer")) 
+		            {
+		                field = new IntegerField(elemField);
+		            } 
+		            else if (type.equalsIgnoreCase("boolean")) 
+		            {
+		                field = new BooleanField(elemField);
+		            } 
+		            else if (type.equalsIgnoreCase("enumeration")) 
+		            {
+		                field = new EnumerationField(elemField);
+		            } 
+		            else if (type.equalsIgnoreCase("string")) 
+		            {	
+		                field = new StringField(elemField);	
+		            }
+		            else if (type.equalsIgnoreCase("length_string")) 
+		            {
+		                field = new LengthStringField(elemField);	
+		            }
+		            else if (type.equalsIgnoreCase("length2_string")) 
+		            {
+		                field = new Length2StringField(elemField);	
+		            }	            
+		            else if (type.equalsIgnoreCase("binary")) 
+		            {
+		                field = new BinaryField(elemField);
+		
+		            }
+		            else if (type.equalsIgnoreCase("number_bcd")) 
+		            {
+		                field = new NumberBCDField(elemField);
+		            }
+		            else if (type.equalsIgnoreCase("number_mmc")) 
+		            {
+		                field = new NumberMMCField(elemField);
+		            }	            
+		            else if (type.equalsIgnoreCase("ipv4_address")) 
+		            {
+		                field = new IPV4AddressField(elemField);
+		            }
+		            else if (type.equalsIgnoreCase("ipv6_address")) 
+		            {
+		                field = new IPV6AddressField(elemField);
+		            }	            	            
+		            else
+		            {
+		            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported : " + idStr);    
+		            }
 	            }
-	            else if (type.equalsIgnoreCase("length2_string")) 
-	            {
-	                field = new Length2StringField(elemField);	
-	            }	            
-	            else if (type.equalsIgnoreCase("binary")) 
-	            {
-	                field = new BinaryField(elemField);
-	
-	            }
-	            else if (type.equalsIgnoreCase("number_bcd")) 
-	            {
-	                field = new NumberBCDField(elemField);
-	            }
-	            else if (type.equalsIgnoreCase("number_mmc")) 
-	            {
-	                field = new NumberMMCField(elemField);
-	            }	            
-	            else if (type.equalsIgnoreCase("ipv4_address")) 
-	            {
-	                field = new IPV4AddressField(elemField);
-	            }
-	            else if (type.equalsIgnoreCase("ipv6_address")) 
-	            {
-	                field = new IPV6AddressField(elemField);
-	            }	            	            
 	            else
 	            {
-	            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported : " + idStr);    
+	            	// int length = Integer.parseInt(elemField.attributeValue("lengthBit"));
+	            	// field.setLength(length);
 	            }
-            }
-            else
-            {
-            	// int length = Integer.parseInt(elemField.attributeValue("lengthBit"));
-            	// field.setLength(length);
-            }
-            this._hashMapFields.put(elemField.attributeValue("name"), field);
+	            this._hashMapFields.put(elemField.attributeValue("name"), field);
+	        }
         }
         
         // initiate the Array containing the fields
