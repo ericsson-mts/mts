@@ -35,7 +35,11 @@ import org.dom4j.Element;
  */
 public class StringField extends FieldAbstract 
 {
-
+	
+	public StringField() throws Exception 
+    {
+    }
+	
     public StringField(Element rootXML) 
     {
         super(rootXML);
@@ -54,5 +58,13 @@ public class StringField extends FieldAbstract
     {
     	Array arrayValue = array.subArray(this._offset / 8);
         return new String(arrayValue.getBytes());
+    }
+    
+    @Override
+    public FieldAbstract clone(FieldAbstract field) throws Exception
+    {
+    	StringField newField = new StringField(); 
+    	super.copy(newField, field);
+    	return newField;
     }
 }

@@ -39,9 +39,6 @@ import gp.utils.arrays.SupArray;
  */
 public class ElementTLIV extends ElementAbstract
 {
-
-	// protected int spare;
-	protected int instances;
 	
     public ElementTLIV()
     {
@@ -55,36 +52,42 @@ public class ElementTLIV extends ElementAbstract
         int length = new Integer16Array(array.subArray(1, 2)).getValue();
         this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
         this._fields = new SupArray();
-        this._fields.addFirst(array.subArray(4, length));
-        
+        this._elements = new SupArray();
         // cas when there are no field
-        if (this._hashMapFields.size() == 0)
+        if (this._hashMapFields.size() != 0)
         {
-        	this.hashElements = ElementAbstract.decodeElementsFromArray(this._fields, dictionary);
+            this._fields.addFirst(array.subArray(4, length));
         }
-        
+        else
+        {
+        	this._elements.addFirst(array.subArray(4, length));
+        	this.hashElements = ElementAbstract.decodeElementsFromArray(this._elements, dictionary);
+        }
+        this._array = new SupArray();
+		this._array.addFirst(array.subArray(0, length + 4));
         return length + 4;
     }
 
 	@Override
-    public Array encodeToArray() 
+    public SupArray encodeToArray() 
 	{
+		if (this._array == null)
+		{
 		// encode the sub-element
-		Array elements = super.encodeToArray();
+		this._elements = super.encodeToArray();
 
-        SupArray sup = new SupArray();
+        this._array = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);
-        sup.addLast(idArray);
-        Integer16Array lengthArray = new Integer16Array(this._fields.length + elements.length);
-	    sup.addLast(lengthArray);
+        this._array.addLast(idArray);
+        Integer16Array lengthArray = new Integer16Array(this._fields.length + this._elements.length);
+        this._array.addLast(lengthArray);
 	    Integer08Array instancesArray = new Integer08Array(this.instances);
-	    sup.addLast(instancesArray);
+	    this._array.addLast(instancesArray);
 	    
-	    sup.addLast(this._fields);
-
-		sup.addLast(elements);
-		
-        return sup;
+	    this._array.addLast(this._fields);
+	    this._array.addLast(this._elements);
+		}
+        return this._array;
     }
 
     

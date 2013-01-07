@@ -40,7 +40,11 @@ import org.dom4j.Element;
 public class IPV6AddressField extends FieldAbstract
 {
 	
-    public IPV6AddressField(Element rootXML) 
+	public IPV6AddressField() throws Exception 
+    {
+    }
+	
+	public IPV6AddressField(Element rootXML) 
     {
         super(rootXML);
         this._length = 16 * 8;
@@ -68,6 +72,11 @@ public class IPV6AddressField extends FieldAbstract
     	return inetAddr.getHostAddress();
     }
     
-    
-   
+    @Override
+    public FieldAbstract clone(FieldAbstract field) throws Exception
+    {
+    	IPV6AddressField newField = new IPV6AddressField(); 
+    	super.copy(newField, field);
+    	return newField;
+    }
 }

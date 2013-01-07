@@ -51,13 +51,17 @@ public abstract class ElementAbstract
 
     protected int id;
     protected String name;
-    
+
+	// protected int spare;
+	protected int instances;
+
     protected LinkedHashMap<String, FieldAbstract> _hashMapFields = new LinkedHashMap<String, FieldAbstract>();
     
     protected LinkedHashMap<Integer, ElementAbstract> hashElements = new LinkedHashMap<Integer, ElementAbstract>();
     
     protected SupArray _fields;
-    
+    protected SupArray _elements;
+    protected SupArray _array;
 
     public static ElementAbstract buildFactory(Element root)
     {
@@ -118,6 +122,12 @@ public abstract class ElementAbstract
         	this.name = element.attributeValue("name");
         }
         
+        String instances = element.attributeValue("instances");
+        if (instances != null)
+        {
+        	((ElementTLIV) this).instances = Integer.parseInt(instances);
+        }
+
         List<Element> listField = element.elements("field");
         for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
             Element elemField = it.next();
@@ -195,7 +205,8 @@ public abstract class ElementAbstract
         this._fields = new SupArray();
         Array emptyArray = new DefaultArray(getLengthElem() / 8);
        	this._fields.addFirst(emptyArray);
-        
+       	this._elements = new SupArray();
+       	
         // set the value for each fields
         listField = element.elements("field");
         //boucle pour setter tous les field de elemV
@@ -251,6 +262,9 @@ public abstract class ElementAbstract
     	}
     	elemString.append(this.id);
     	elemString.append("\"");
+    	elemString.append(" instances=\"");
+   		elemString.append(this.instances);
+    	elemString.append("\"");   	
         if (_fields != null)
         {
             elemString.append(" value=\"" + Array.toHexString(_fields));
@@ -300,7 +314,7 @@ public abstract class ElementAbstract
     
     public abstract int decodeFromArray(Array array, Dictionary dictionary) throws Exception;
     
-    public Array encodeToArray()
+    public SupArray encodeToArray()
     {
     	SupArray sup = new SupArray();
 		// encode the sub-element
@@ -315,14 +329,42 @@ public abstract class ElementAbstract
 
     }
     
+    public ElementAbstract clone(ElementAbstract element) throws Exception
+    {
+    	this.id = element.id;
+    	this.name = element.name;
+    	this._fields = null;
+		// encode the sub-element
+		Iterator<ElementAbstract> iter = this.hashElements.values().iterator();
+		while (iter.hasNext())
+		{
+			ElementAbstract elemOld = (ElementAbstract) iter.next();
+			ElementAbstract elemNew = this.clone(elemOld);
+			this.hashElements.put(element.id, elemNew);
+		}
+        Iterator<FieldAbstract> iterField = this._hashMapFields.values().iterator();
+		while (iterField.hasNext())
+		{
+			FieldAbstract fieldOld = (FieldAbstract) iterField.next();
+			// TODO FieldAbstract elemNew = field.clone(fieldOld);
+		}
+		return this;
+    }
+    
     public void getParameter(Parameter var, String[] params, String path, int offset) throws Exception 
     {
     	if (params.length == offset + 2) 
         {
+    		String value = "";
         	if (this._fields != null)
         	{
-        		var.add(Array.toHexString(this._fields));
+        		value = Array.toHexString(this._fields);
         	}
+        	if (this._elements != null)
+        	{
+        		value += Array.toHexString(this._elements);
+        	}
+    		var.add(value);
         }
         else if (params.length >= offset + 4 && (params[offset + 2].equalsIgnoreCase("field"))) 
         {

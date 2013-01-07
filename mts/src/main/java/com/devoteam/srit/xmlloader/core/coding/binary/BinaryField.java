@@ -37,7 +37,11 @@ import org.dom4j.Element;
  */
 public class BinaryField extends FieldAbstract
 {
-
+	
+	public BinaryField() throws Exception 
+    {
+    }
+	
     public BinaryField(Element rootXML) throws Exception 
     {
         super(rootXML);
@@ -61,4 +65,11 @@ public class BinaryField extends FieldAbstract
     	return Array.toHexString(arrayValue);
     }
     
+    @Override
+    public FieldAbstract clone(FieldAbstract field) throws Exception
+    {
+    	BinaryField newField = new BinaryField(); 
+    	super.copy(newField, field);
+    	return newField;
+    }
 }

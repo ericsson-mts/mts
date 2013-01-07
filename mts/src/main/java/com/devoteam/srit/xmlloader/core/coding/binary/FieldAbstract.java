@@ -45,6 +45,13 @@ public abstract class FieldAbstract
 
 	protected int _offset;
 
+    public FieldAbstract() 
+    {
+    	this._name = "";
+    	this._length = 0;
+    	this._offset = 0;
+	}
+
     public FieldAbstract(Element rootXML) 
     {
         _name = rootXML.attributeValue("name");
@@ -55,8 +62,8 @@ public abstract class FieldAbstract
             this._length = Integer.parseInt(lengthBit);
         }
     }
-
-    public int getLength() {
+    
+	public int getLength() {
         return this._length;
     }
     
@@ -76,6 +83,15 @@ public abstract class FieldAbstract
     public abstract String getValue(Array array)throws Exception;
 
     public abstract void setValue(String value, int offset, SupArray array) throws Exception;
+    
+    public abstract FieldAbstract clone(FieldAbstract field) throws Exception;
+    
+    protected void copy(FieldAbstract destination, FieldAbstract source) 
+    {
+    	destination._name = source._name;
+    	destination._length = source._length;
+    	destination._offset = source._offset;
+    }
     
     public String toString(Array array) {
 

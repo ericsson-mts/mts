@@ -38,6 +38,10 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 public class BooleanField extends FieldAbstract
 {
 
+	public BooleanField() throws Exception 
+    {
+    }
+	
     public BooleanField(Element rootXML) 
     {
         super(rootXML);
@@ -60,7 +64,16 @@ public class BooleanField extends FieldAbstract
     }
 
     @Override
-    public String getValue(Array array) throws Exception {
+    public String getValue(Array array) throws Exception 
+    {
         return Integer.toString(array.getBits(this._offset, this._length));
+    }
+    
+    @Override
+    public FieldAbstract clone(FieldAbstract field) throws Exception
+    {
+    	BooleanField newField = new BooleanField(); 
+    	super.copy(newField, field);
+    	return newField;
     }
 }
