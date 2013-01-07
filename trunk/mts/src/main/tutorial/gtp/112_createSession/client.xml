@@ -150,14 +150,68 @@
       </element-->        
     </sendMessageGTP>
 
-    <receiveMessageGTP name="echoResponse">
+    <receiveMessageGTP name="receive message">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>             
     </receiveMessageGTP>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
-    <test parameter="[binary]" condition="binary.equals" value="4802000d0000000056b602000300010017"/>
+    <test parameter="[binary]" condition="binary.equals" value="48210052000045670000c7000200020010005700090187a7d42066ac14462b4f00050001141401027f000100005d002000490001000502000200100057000902859e974066ac14462b5e00040021bd56390300010048"/>
+
+    <pause name="call duration" seconds="1"/>
+    
+    <parameter name="[tunnelEndpointId]" operation="set" value="0"/>
+    <parameter name="[sequenceNumber]" operation="set" value="199"/>
+    <sendMessageGTP name="send message" channel="[connection]">
+        <headerV2 name="deleteSessionRequest" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+        <element identifier="EBI" coding="TLIV" description="EPS Bearer ID">
+            <field name="spare" value="0"/>              
+        		<field name="EBI" value="5"/>
+        </element>              
+        <element identifier="Indication" coding="TLIV">
+            <field name="DAF" value="0"/>
+            <field name="DTF" value="0"/>
+            <field name="HI" value="0"/>
+            <field name="DFI" value="0"/>         
+            <field name="OI" value="0"/>
+            <field name="ISRSI" value="0"/>
+            <field name="ISRAI" value="0"/>                                                  
+            <field name="SGWCI" value="0"/>
+    
+            <field name="SQCI" value="0"/>  
+            <field name="UIMSI" value="0"/>
+            <field name="CFSI" value="0"/>
+            <field name="CRSI" value="1"/>
+            <!--field name="P" value="0"/-->
+            <field name="PT" value="1"/>
+            <field name="TDI" value="0"/>
+            <field name="SI" value="0"/>
+            <field name="MSV" value="0"/>
+    
+            <field name="RetLoc" value="0"/>
+            <field name="PBIC" value="0"/>
+            <field name="SRNI" value="0"/>
+            <field name="S6AF" value="0"/>
+            <field name="S4AF" value="0"/>
+            <field name="MBMDT" value="0"/>
+            <field name="SRAU" value="0"/>
+            <field name="CCRSI" value="0"/>
+            
+            <!--field name="Spare" value="0"/>
+            <field name="CLII" value="0"/>
+            <field name="CPSR" value="0"/-->        
+        </element>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="receive message">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>             
+    </receiveMessageGTP>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
+    <!--test parameter="[binary]" condition="binary.equals" value="48210052000045670000c7000200020010005700090187a7d42066ac14462b4f00050001141401027f000100005d002000490001000502000200100057000902859e974066ac14462b5e00040021bd56390300010048"/-->
 
     <finally>
         <closeChannelGTP name="[connection]"/>

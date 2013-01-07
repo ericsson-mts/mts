@@ -24,6 +24,10 @@
             
             <enum value="32" name="createSessionRequest" />
             <enum value="33" name="createSessionResponse" />
+            
+            <enum value="72" name="deleteSessionRequest" />
+            <enum value="73" name="deleteSessionResponse" />
+            
         </field>
         <field name="Message Length" lengthBit="16" type="integer"> </field>
         <field name="Tunnel Endpoint Identifier" lengthBit="32" type="integer"> </field>
@@ -36,7 +40,95 @@
     		<field name="IMSI" type="number_bcd" description="International Mobile Subscriber Identity"/>
     </element>
 
-    <element identifier="3" name="Recovery"  coding="TLIV">
+    <element identifier="2" name="Cause" coding="TLIV">
+    		<field name="Cause value" lengthBit="8" type="enumeration">
+            <enum value="0" name="Reserved. Shall not be sent and if received the Cause shall be treated as an invalid IE"/>
+            <enum value="1" name="Reserved"/>
+            <enum value="2" name="Local Detach"/>
+            <enum value="3" name="Complete Detach"/>
+            <enum value="4" name="RAT changed from 3GPP to Non-3GPP"/>
+            <enum value="5" name="ISR deactivation"/>
+            <enum value="6" name="Error Indication received from RNC/eNodeB/S4-SGSN"/>
+            <enum value="7" name="IMSI Detach Only"/>
+            <enum value="8" name="Reactivation Requested"/>
+            <enum value="9" name="PDN reconnection to this APN disallowed"/>
+            <enum value="10" name="Access changed from Non-3GPP to 3GPP"/>
+            <enum value="11" name="PDN connection inactivity timer expires"/>
+            <enum value="12" name="PGW not responding"/>
+            <enum value="13" name="Network Failure"/>
+            <enum value="14" name="QoS parameter mismatch"/>
+            <enum value="15" name="Spare. This value range shall be used by Cause values in an initial/request message. See NOTE 5."/>
+            <enum value="16" name="Request accepted"/>
+            <enum value="17" name="Request accepted partially"/>
+            <enum value="18" name="New PDN type due to network preference."/>
+            <enum value="19" name="New PDN type due to single address bearer only."/>
+            <enum value="20" name="Spare. This value range shall be used by Cause values in an acceptance response/triggered message"/>
+            <enum value="64" name="Context Not Found"/>
+            <enum value="65" name="Invalid Message Format"/>
+            <enum value="66" name="Version not supported by next peer"/>
+            <enum value="67" name="Invalid length"/>
+            <enum value="68" name="Service not supported"/>
+            <enum value="69" name="Mandatory IE incorrect"/>
+            <enum value="70" name="Mandatory IE missing"/>
+            <enum value="71" name="Shall not be used. See NOTE 2 and NOTE 3."/>
+            <enum value="72" name="System failure"/>
+            <enum value="73" name="No resources available"/>
+            <enum value="74" name="Semantic error in the TFT operation"/>
+            <enum value="75" name="Syntactic error in the TFT operation"/>
+            <enum value="76" name="Semantic errors in packet filter(s)"/>
+            <enum value="77" name="Syntactic errors in packet filter(s)"/>
+            <enum value="78" name="Missing or unknown APN"/>
+            <enum value="79" name="Shall not be used. See NOTE 2 and NOTE 3."/>
+            <enum value="80" name="GRE key not found"/>
+            <enum value="81" name="Relocation failure"/>
+            <enum value="82" name="Denied in RAT"/>
+            <enum value="83" name="Preferred PDN type not supporte"/>
+            <enum value="84" name="All dynamic addresses are occupied"/>
+            <enum value="85" name="UE context without TFT already activated. See NOTE 6."/>
+            <enum value="86" name="Protocol type not supported"/>
+            <enum value="87" name="UE not responding. See NOTE 7."/>
+            <enum value="88" name="UE refuses"/>
+            <enum value="89" name="Service denied. See NOTE 7."/>
+            <enum value="90" name="Unable to page UE"/>
+            <enum value="91" name="No memory available"/>
+            <enum value="92" name="User authentication failed"/>
+            <enum value="93" name="APN access denied – no subscription"/>
+            <enum value="94" name="Request rejected (reason not specified)"/>
+            <enum value="95" name="P-TMSI Signature mismatch"/>
+            <enum value="96" name="IMSI/IMEI not known"/>
+            <enum value="97" name="Semantic error in the TAD operation"/>
+            <enum value="98" name="Syntactic error in the TAD operation"/>
+            <enum value="99" name="Shall not be used. See NOTE 2 and NOTE 3."/>
+            <enum value="100" name="Remote peer not responding"/>
+            <enum value="101" name="Collision with network initiated request"/>
+            <enum value="102" name="Unable to page UE due to Suspension"/>
+            <enum value="103" name="Conditional IE missing"/>
+            <enum value="104" name="APN Restriction type Incompatible with currently active PDN connection"/>
+            <enum value="105" name="Invalid overall length of the triggered response message and a piggybacked initial message"/>
+            <enum value="106" name="Data forwarding not supported"/>
+            <enum value="107" name="Invalid reply from remote peer"/>
+            <enum value="108" name="Fallback to GTPv1"/>
+            <enum value="109" name="Invalid peer"/>
+            <enum value="110" name="Temporarily rejected due to handover procedure in progress"/>
+            <enum value="111" name="Modifications not limited to S1-U bearers"/>
+            <enum value="112" name="Request rejected for a PMIPv6 reason (see 3GPP TS 29.275 [26])."/>
+            <enum value="113" name="APN Congestion"/>
+            <enum value="114" name="Bearer handling not supported"/>
+            <enum value="115" name="UE already re-attached. See NOTE 7."/>
+            <enum value="116" name="Multiple PDN connections for a given APN not allowed"/>
+            <enum value="117" name="Spare. For future use in a triggered/response message See NOTE 4."/>
+            <enum value="240" name="Spare. For future use in an initial/request message. See NOTE 5."/>
+        </field>
+        <field name="spare" lengthBit="5" type="integer"/>        
+        <field name="PCE" lengthBit="1" type="boolean" description="PDN Connection IE Error"/>
+        <field name="BCE" lengthBit="1" type="boolean" description="Bearer Context IE Error"/> 
+        <field name="CS" lengthBit="1" type="enumeration" description="Cause Source">
+            <enum value="1" name="Originated by the remote node"/>
+            <enum value="0" name="Originated by the node sending the message"/>            
+        </field>        
+    </element>
+
+    <element identifier="3" name="Recovery" coding="TLIV">
 		    <field name="Recovery" lengthBit="8" type="integer"/>
     </element>
     
@@ -224,6 +316,10 @@
         <element identifier="EBI" coding="TLIV"/>    
         <element identifier="Bearer QoS" coding="TLIV"/>
         <element identifier="F-TEID" coding="TLIV"/>
+    </element>
+    
+     <element identifier="94" name="Charging ID" coding="TLIV">
+        <field name="Charging ID value" lengthBit="32" type="integer"/>   
     </element>
     
      <element identifier="95" name="Charging Characteristics" coding="TLIV">
