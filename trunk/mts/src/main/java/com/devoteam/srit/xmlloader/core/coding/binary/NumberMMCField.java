@@ -39,7 +39,7 @@ import org.dom4j.Element;
  */
 public class NumberMMCField extends FieldAbstract
 {
-	public NumberMMCField() throws Exception 
+	public NumberMMCField() 
     {
     }
 	
@@ -137,10 +137,10 @@ public class NumberMMCField extends FieldAbstract
     }
     
     @Override
-    public FieldAbstract clone(FieldAbstract field) throws Exception
+    public FieldAbstract clone()
     {
     	NumberMMCField newField = new NumberMMCField(); 
-    	super.copy(newField, field);
+    	newField.copyToClone(this);
     	return newField;
     }
 }

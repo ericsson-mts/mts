@@ -84,13 +84,13 @@ public abstract class FieldAbstract
 
     public abstract void setValue(String value, int offset, SupArray array) throws Exception;
     
-    public abstract FieldAbstract clone(FieldAbstract field) throws Exception;
+    public abstract FieldAbstract clone();
     
-    protected void copy(FieldAbstract destination, FieldAbstract source) 
+    protected void copyToClone(FieldAbstract source) 
     {
-    	destination._name = source._name;
-    	destination._length = source._length;
-    	destination._offset = source._offset;
+    	this._name = source._name;
+    	this._length = source._length;
+    	this._offset = source._offset;
     }
     
     public String toString(Array array) {
@@ -107,9 +107,7 @@ public abstract class FieldAbstract
         	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Exception in toString() method for field " + this._name);
         }
         elemString.append("type=\"" + this.getClass().getSimpleName().split("Field")[0] + "\" ");
-        if (!this.getClass().getName().equalsIgnoreCase("String")) {
-            elemString.append("lengthBit=\"" + getLength() + "\" ");
-        }
+        elemString.append("lengthBit=\"" + getLength() + "\" ");
         elemString.append("/>\n");
         return elemString.toString();
 
