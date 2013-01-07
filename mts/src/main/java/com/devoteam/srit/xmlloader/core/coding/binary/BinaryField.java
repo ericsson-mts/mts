@@ -38,7 +38,7 @@ import org.dom4j.Element;
 public class BinaryField extends FieldAbstract
 {
 	
-	public BinaryField() throws Exception 
+	public BinaryField()
     {
     }
 	
@@ -66,10 +66,10 @@ public class BinaryField extends FieldAbstract
     }
     
     @Override
-    public FieldAbstract clone(FieldAbstract field) throws Exception
+    public FieldAbstract clone()
     {
     	BinaryField newField = new BinaryField(); 
-    	super.copy(newField, field);
+    	newField.copyToClone(this);
     	return newField;
     }
 }

@@ -36,7 +36,7 @@ import org.dom4j.Element;
 public class StringField extends FieldAbstract 
 {
 	
-	public StringField() throws Exception 
+	public StringField()
     {
     }
 	
@@ -61,10 +61,10 @@ public class StringField extends FieldAbstract
     }
     
     @Override
-    public FieldAbstract clone(FieldAbstract field) throws Exception
+    public FieldAbstract clone()
     {
     	StringField newField = new StringField(); 
-    	super.copy(newField, field);
+    	newField.copyToClone(this);
     	return newField;
     }
 }

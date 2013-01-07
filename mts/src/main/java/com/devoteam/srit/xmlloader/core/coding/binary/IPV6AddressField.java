@@ -40,7 +40,7 @@ import org.dom4j.Element;
 public class IPV6AddressField extends FieldAbstract
 {
 	
-	public IPV6AddressField() throws Exception 
+	public IPV6AddressField() 
     {
     }
 	
@@ -73,10 +73,10 @@ public class IPV6AddressField extends FieldAbstract
     }
     
     @Override
-    public FieldAbstract clone(FieldAbstract field) throws Exception
+    public FieldAbstract clone()
     {
     	IPV6AddressField newField = new IPV6AddressField(); 
-    	super.copy(newField, field);
+    	newField.copyToClone(this);
     	return newField;
     }
 }

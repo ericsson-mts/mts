@@ -39,7 +39,7 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 public class LengthStringField extends FieldAbstract
 {
 
-	public LengthStringField() throws Exception 
+	public LengthStringField() 
     {
     }
 	
@@ -66,10 +66,10 @@ public class LengthStringField extends FieldAbstract
     }
     
     @Override
-    public FieldAbstract clone(FieldAbstract field) throws Exception
+    public FieldAbstract clone()
     {
     	LengthStringField newField = new LengthStringField(); 
-    	super.copy(newField, field);
+    	newField.copyToClone(this);
     	return newField;
     }
 }

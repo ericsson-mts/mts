@@ -46,7 +46,7 @@ import org.dom4j.Element;
  *
  * @author Fabien Henry
  */
-public abstract class ElementAbstract
+public abstract class ElementAbstract implements Cloneable
 {
 
     protected int id;
@@ -125,7 +125,7 @@ public abstract class ElementAbstract
         String instances = element.attributeValue("instances");
         if (instances != null)
         {
-        	((ElementTLIV) this).instances = Integer.parseInt(instances);
+        	this.instances = Integer.parseInt(instances);
         }
 
         List<Element> listField = element.elements("field");
@@ -301,12 +301,14 @@ public abstract class ElementAbstract
 	    while (offset < data.length) 
 	    {
 	        int id = new Integer08Array(data.subArray(offset, 1)).getValue();
-	        ElementAbstract elemInfo = dictionary.getMapElementById().get(id);
+	        ElementAbstract elemDico = dictionary.getMapElementById().get(id);
+	        
+	        ElementAbstract elemNew = (ElementAbstract) elemDico.clone();
 	
-	        int length = elemInfo.decodeFromArray(data.subArray(offset), dictionary);
+	        int length = elemNew.decodeFromArray(data.subArray(offset), dictionary);
 	        offset += length;
 	
-	        hashElements.put(id, elemInfo);
+	        hashElements.put(id, elemNew);
 	    }
 	    return hashElements;
 	
@@ -329,26 +331,26 @@ public abstract class ElementAbstract
 
     }
     
-    public ElementAbstract clone(ElementAbstract element) throws Exception
+    protected void copyToCLone(ElementAbstract source) throws Exception
     {
-    	this.id = element.id;
-    	this.name = element.name;
+    	this.id = source.id;
+    	this.name = source.name;
     	this._fields = null;
 		// encode the sub-element
-		Iterator<ElementAbstract> iter = this.hashElements.values().iterator();
+		Iterator<ElementAbstract> iter = source.hashElements.values().iterator();
 		while (iter.hasNext())
 		{
 			ElementAbstract elemOld = (ElementAbstract) iter.next();
-			ElementAbstract elemNew = this.clone(elemOld);
-			this.hashElements.put(element.id, elemNew);
+			ElementAbstract elemNew = (ElementAbstract) elemOld.clone();
+			this.hashElements.put(elemNew.id, elemNew);
 		}
-        Iterator<FieldAbstract> iterField = this._hashMapFields.values().iterator();
+        Iterator<FieldAbstract> iterField = source._hashMapFields.values().iterator();
 		while (iterField.hasNext())
 		{
 			FieldAbstract fieldOld = (FieldAbstract) iterField.next();
-			// TODO FieldAbstract elemNew = field.clone(fieldOld);
+			FieldAbstract fieldNew = fieldOld.clone();
+			this._hashMapFields.put(fieldNew._name, fieldNew);
 		}
-		return this;
     }
     
     public void getParameter(Parameter var, String[] params, String path, int offset) throws Exception 

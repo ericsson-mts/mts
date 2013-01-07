@@ -38,7 +38,7 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 public class BooleanField extends FieldAbstract
 {
 
-	public BooleanField() throws Exception 
+	public BooleanField()
     {
     }
 	
@@ -70,10 +70,10 @@ public class BooleanField extends FieldAbstract
     }
     
     @Override
-    public FieldAbstract clone(FieldAbstract field) throws Exception
+    public FieldAbstract clone()
     {
     	BooleanField newField = new BooleanField(); 
-    	super.copy(newField, field);
+    	newField.copyToClone(this);
     	return newField;
     }
 }

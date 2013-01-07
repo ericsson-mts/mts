@@ -41,7 +41,7 @@ public class Length2StringField extends FieldAbstract
 {
 
     
-	public Length2StringField() throws Exception 
+	public Length2StringField() 
     {
     }
 	
@@ -67,10 +67,10 @@ public class Length2StringField extends FieldAbstract
         return new String(arrayValue.getBytes());
     }
     @Override
-    public FieldAbstract clone(FieldAbstract field) throws Exception
+    public FieldAbstract clone()
     {
     	Length2StringField newField = new Length2StringField(); 
-    	super.copy(newField, field);
+    	newField.copyToClone(this);
     	return newField;
     }
 }
