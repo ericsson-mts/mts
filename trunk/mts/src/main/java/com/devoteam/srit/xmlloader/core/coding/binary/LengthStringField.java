@@ -39,7 +39,11 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 public class LengthStringField extends FieldAbstract
 {
 
-    public LengthStringField(Element rootXML) 
+	public LengthStringField() throws Exception 
+    {
+    }
+	
+	public LengthStringField(Element rootXML) 
     {
         super(rootXML);      
     }
@@ -59,5 +63,13 @@ public class LengthStringField extends FieldAbstract
     	int length = array.getBits(this._offset, 8);
     	Array arrayValue = array.subArray(this._offset / 8 + 1, length);
         return new String(arrayValue.getBytes());
+    }
+    
+    @Override
+    public FieldAbstract clone(FieldAbstract field) throws Exception
+    {
+    	LengthStringField newField = new LengthStringField(); 
+    	super.copy(newField, field);
+    	return newField;
     }
 }

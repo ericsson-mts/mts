@@ -39,6 +39,9 @@ import org.dom4j.Element;
  */
 public class NumberMMCField extends FieldAbstract
 {
+	public NumberMMCField() throws Exception 
+    {
+    }
 	
     public NumberMMCField(Element rootXML) 
     {
@@ -133,4 +136,11 @@ public class NumberMMCField extends FieldAbstract
 		}
     }
     
+    @Override
+    public FieldAbstract clone(FieldAbstract field) throws Exception
+    {
+    	NumberMMCField newField = new NumberMMCField(); 
+    	super.copy(newField, field);
+    	return newField;
+    }
 }

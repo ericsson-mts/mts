@@ -40,7 +40,11 @@ import org.dom4j.Element;
 public class NumberBCDField extends FieldAbstract
 {
 	
-    public NumberBCDField(Element rootXML) 
+	public NumberBCDField() throws Exception 
+    {
+    }
+	
+	public NumberBCDField(Element rootXML) 
     {
         super(rootXML);
     }
@@ -87,4 +91,11 @@ public class NumberBCDField extends FieldAbstract
 		}
     }
     
+    @Override
+    public FieldAbstract clone(FieldAbstract field) throws Exception
+    {
+    	NumberBCDField newField = new NumberBCDField(); 
+    	super.copy(newField, field);
+    	return newField;
+    }
 }

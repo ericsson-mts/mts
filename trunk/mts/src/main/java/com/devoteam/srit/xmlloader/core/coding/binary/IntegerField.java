@@ -38,6 +38,10 @@ import org.dom4j.Element;
 public class IntegerField extends FieldAbstract
 {
 	
+	public IntegerField() throws Exception 
+    {
+    }
+	
     public IntegerField(Element rootXML) 
     {
         super(rootXML);
@@ -63,5 +67,12 @@ public class IntegerField extends FieldAbstract
     	long valueLong = array.getBitsL(this._offset, this._length);
     	return Long.toString(valueLong);
     }
-   
+    
+    @Override
+    public FieldAbstract clone(FieldAbstract field) throws Exception
+    {
+    	IntegerField newField = new IntegerField(); 
+    	super.copy(newField, field);
+    	return newField;
+    }
 }

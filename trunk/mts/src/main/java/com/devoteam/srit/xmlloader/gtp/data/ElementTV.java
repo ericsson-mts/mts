@@ -55,7 +55,7 @@ public class ElementTV extends ElementAbstract
     }
 
 	@Override
-    public Array encodeToArray() 
+    public SupArray encodeToArray() 
 	{
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);

@@ -60,7 +60,7 @@ public class ElementQ931Big extends ElementAbstract
     }
 
 	@Override    
-    public Array encodeToArray() 
+    public SupArray encodeToArray() 
 	{
 
         SupArray sup = new SupArray();
