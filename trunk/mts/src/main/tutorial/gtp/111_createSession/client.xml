@@ -11,7 +11,7 @@
     <parameter name="[tunnelEndpointId]" operation="set" value="0"/>
     <parameter name="[sequenceNumber]" operation="set" value="5682690"/>
     <sendMessageGTP name="send message" channel="[connection]">
-        <headerV2 name="createSessionRequest" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+        <headerV2 name="createSessionRequest" piggyFlag="0" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
         <element identifier="IMSI" coding="TLIV" description="International Mobile Subscriber Identity">
             <field name="IMSI" value="208014420002670" description="International Mobile Subscriber Identity"/>
         </element>
@@ -86,9 +86,8 @@
             <field name="UIMSI" value="0"/>
             <field name="CFSI" value="0"/>
             <field name="CRSI" value="1"/>
-            <!--field name="P" value="0"/-->
+            <field name="P" value="0"/>
             <field name="PT" value="1"/>
-            <field name="TDI" value="0"/>
             <field name="SI" value="0"/>
             <field name="MSV" value="0"/>
     
@@ -98,12 +97,12 @@
             <field name="S6AF" value="0"/>
             <field name="S4AF" value="0"/>
             <field name="MBMDT" value="0"/>
-            <field name="SRAU" value="0"/>
+            <field name="ISRAU" value="0"/>
             <field name="CCRSI" value="0"/>
             
-            <!--field name="Spare" value="0"/>
+            <field name="Spare" value="0"/>
             <field name="CLII" value="0"/>
-            <field name="CPSR" value="0"/-->        
+            <field name="CPSR" value="0"/>        
         </element>
         <element identifier="APN Restriction" coding="TLIV">
             <field name="Restriction Type value" value="No Existing Contexts or Restriction"/>
@@ -116,7 +115,31 @@
         		<field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
         </element>
         <element identifier="Bearer Context" coding="TLIV">
-        		<field name="Bearer Context" type="binary" value="4900010005570009028480002002ac14462a5000160004070000000000000000000000000000000000000000"/>
+            <element identifier="EBI" coding="TLIV" description="EPS Bearer ID">
+                <field name="spare" value="0"/>              
+            		<field name="EBI" value="5"/>
+            </element>
+            <element identifier="F-TEID" instances="2" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+                <field name="V4" value="1"/>        
+                <field name="V6" value="false"/>
+                <field name="Interface Type" value="S5/S8 SGW GTP-U"/>
+                <field name="TEID / GRE Key" value="2147491842" description="GRE key ?"/>
+                <!-- TODO conditional IP V4 V6 -->      
+                <field name="IPv4 address" value="172.20.70.42"/>
+                <!--field name="IPv6 address" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/-->
+            </element>            
+            <element identifier="Bearer QoS" coding="TLIV" description="Bearer Quality of Service">
+                <field name="spare1" value="0"/>
+                <field name="PCI" value="false" description="Pre-emption Capability"/>        
+                <field name="PL" value="1" description="Priority Level"/>
+                <field name="spare2" value="false" type="boolean"/>        
+                <field name="PVI" value="0" description="Pre-emption Vulnerability"/>
+                <field name="Label QCI" value="7"/>                
+                <field name="Maximum bit rate for uplink" value="0"/>
+                <field name="Maximum bit rate for downlink" value="0"/>
+                <field name="Guaranteed bit rate for uplink" value="0"/>
+                <field name="Guaranteed bit rate for downlink" value="0"/>                        
+            </element>            
         </element>
         <element identifier="UE Time Zone" coding="TLIV">
             <field name="Time Zone" value="64"/>   

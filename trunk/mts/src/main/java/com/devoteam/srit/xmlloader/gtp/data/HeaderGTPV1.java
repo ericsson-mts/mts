@@ -78,6 +78,11 @@ public class HeaderGTPV1 extends HeaderAbstract
     @Override
     public boolean isRequest() 
     {
+    	// particular case 
+    	if (this.name.equalsIgnoreCase("errorIndication"))
+    	{
+    		return true;
+    	}    	
     	if ((this.name != null) && (!this.name.contains("Request")))
     	{
     		return false;   		

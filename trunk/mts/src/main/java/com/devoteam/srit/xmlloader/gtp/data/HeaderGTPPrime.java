@@ -57,7 +57,7 @@ public class HeaderGTPPrime extends HeaderAbstract
     	this.protocolType = 0; 
     	this.version = 0; 
 	}
-    public HeaderGTPPrime(DefaultArray flagArray) 
+    public HeaderGTPPrime(Array flagArray) 
     {
     	this();
         this.version = flagArray.getBits(0,3);
