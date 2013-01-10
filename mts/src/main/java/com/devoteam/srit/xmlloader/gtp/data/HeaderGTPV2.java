@@ -251,7 +251,34 @@ public class HeaderGTPV2 extends HeaderAbstract
     	
     }
 	
-    @Override
+
+	public void decodeFromBytes(Array array, Dictionary dictionary) throws Exception
+    {
+		this.dictionary = dictionary;
+
+        Array typeArray = array.subArray(1, 1); 
+        this.messageType = (new Integer08Array(typeArray).getValue());
+    	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+	    this.name = field._hashMapEnumByValue.get(messageType);
+
+	    Array lengthArray = array.subArray(2, 2);
+        this.length = (new Integer16Array(lengthArray).getValue());
+        
+        if (this.teidFlag != 0)
+    	{
+    	    Array teidArray = array.subArray(4, 4); 
+	        this.tunnelEndpointId = new Integer32Array(teidArray).getValue() & 0xffffffffl;
+    	}
+        
+    	Array seqnumArray = array.subArray(8, 3); 	
+		Array zeroArray = new DefaultArray(new byte[]{0});
+    	SupArray seqnumSup = new SupArray();		
+    	seqnumSup.addFirst(zeroArray);
+    	seqnumSup.addLast(seqnumArray);
+    	this.sequenceNumber = (new Integer32Array(seqnumSup).getValue()); 
+    }
+
+	@Override
     public void getParameter(Parameter var, String param) throws Exception
     {
     	if (param.equalsIgnoreCase("version"))

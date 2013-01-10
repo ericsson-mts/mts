@@ -25,8 +25,8 @@
             <enum value="32" name="createSessionRequest" />
             <enum value="33" name="createSessionResponse" />
             
-            <enum value="72" name="deleteSessionRequest" />
-            <enum value="73" name="deleteSessionResponse" />
+            <enum value="36" name="deleteSessionRequest" />
+            <enum value="37" name="deleteSessionResponse" />
             
         </field>
         <field name="Message Length" lengthBit="16" type="integer"> </field>
@@ -178,10 +178,8 @@
         <field name="UIMSI" lengthBit="1" type="boolean" description="Unauthenticated IMSI"/>
         <field name="CFSI" lengthBit="1" type="boolean" description="Change F-TEID support indication"/>
         <field name="CRSI" lengthBit="1" type="boolean" description="Change Reporting support indication"/>
-        <!-- incoherence entre spec et Wireshark -->
-        <!--field name="P" lengthBit="1" type="boolean" description="Piggybacking Supported"/-->
+        <field name="P" lengthBit="1" type="boolean" description="Piggybacking Supported"/>
         <field name="PT" lengthBit="1" type="boolean" description="Protocol Type"/>
-        <field name="TDI" lengthBit="1" type="boolean" description="Teardown Indication"/>
         <field name="SI" lengthBit="1" type="boolean" description="Scope Indication"/>
         <field name="MSV" lengthBit="1" type="boolean" description="MS Validated"/>
 
@@ -191,12 +189,11 @@
         <field name="S6AF" lengthBit="1" type="boolean" description="Static IPv6 Address Flag"/>
         <field name="S4AF" lengthBit="1" type="boolean" description="Static IPv4 Address Flag"/>
         <field name="MBMDT" lengthBit="1" type="boolean" description="Management Based MDT allowed flag"/>
-        <field name="SRAU" lengthBit="1" type="boolean" description="ISR is activated for the UE"/>
+        <field name="ISRAU" lengthBit="1" type="boolean" description="ISR is activated for the UE"/>
         <field name="CCRSI" lengthBit="1" type="boolean" description="CSG Change Reporting support indication"/>
-        <!-- incoherence entre spec et Wireshark -->
-        <!--field name="Spare" lengthBit="6" type="integer"/>
+        <field name="Spare" lengthBit="6" type="integer"/>
         <field name="CLII" lengthBit="1" type="boolean" description="Change of Location Information Indication"/>
-        <field name="CPSR" lengthBit="1" type="boolean" description="CS to PS SRVCC indication"/-->
+        <field name="CPSR" lengthBit="1" type="boolean" description="CS to PS SRVCC indication"/>
     </element>
     
     <element identifier="78" name="PCO" coding="TLIV" description="Protocol Configuration Options">

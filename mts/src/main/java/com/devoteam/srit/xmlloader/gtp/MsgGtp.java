@@ -102,14 +102,6 @@ public class MsgGtp extends Msg
                 GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Error while trying to get length of GTPP message : " + ex);
         }
         return 0;
-
-    }
-    
-    /** Return the transport of the message*/
-    @Override
-    public String getTransport()
-    {
-        return StackFactory.PROTOCOL_TCP;
     }
     
     /** Get the data (as binary) of this message */

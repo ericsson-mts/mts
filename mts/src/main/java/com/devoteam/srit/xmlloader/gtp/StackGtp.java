@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.gtp;
 
 import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -108,6 +109,18 @@ public class StackGtp extends Stack
         return new MsgGtp(message);
     }
 
+    /** 
+     * Creates a Msg specific to each Stack
+     * Use for UDP like protocol : to build incoming message
+     * should become ABSTRACT later  
+     */
+    public Msg readFromDatas(byte[] datas, int length) throws Exception
+    {
+        MessageGTP message = new MessageGTP();
+        message.decodeFromBytes(datas);
+        return new MsgGtp(message);
+    }
+    
     /** Returns the Config object to access the protocol config file*/
     public Config getConfig() throws Exception
     {

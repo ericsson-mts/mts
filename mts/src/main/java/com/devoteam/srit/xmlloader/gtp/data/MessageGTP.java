@@ -128,52 +128,85 @@ public class MessageGTP
 	    
 	public void decodeFromStream(InputStream inputStream) throws Exception
 	{
-	byte[] flag = new byte[1];
-	//read the header
-	int nbCharRead= inputStream.read(flag, 0, 1);
-	if(nbCharRead == -1){
-		throw new Exception("End of stream detected");
+		byte[] flag = new byte[1];
+		//read the header
+		int nbCharRead= inputStream.read(flag, 0, 1);
+		if(nbCharRead == -1){
+			throw new Exception("End of stream detected");
+		}
+		else if (nbCharRead < 1) {
+			throw new Exception("Not enough char read");
+		}
+		 
+		DefaultArray flagArray = new DefaultArray(flag);
+		// int messageType = flagArray.getBits(3, 1);         
+		int version = flagArray.getBits(0, 3);
+		 
+		if (version == 0)
+		{
+			 header = new HeaderGTPPrime(flagArray);
+		}
+		else if (version == 1)
+		{
+			 header = new HeaderGTPV1(flagArray);
+		}
+		else if (version == 2)
+		{
+			 header = new HeaderGTPV2(flagArray);
+		}
+		 
+		this.syntax = header.getSyntax();
+		initDictionary(syntax);
+		
+		header.decodeFromStream(inputStream, dictionary);
+		        
+		int msgLength = header.getLength() - header.calculateHeaderSize(); 
+		
+		byte[] fieldBuffer = new byte[msgLength];
+		//read the staying message's data
+		nbCharRead = inputStream.read(fieldBuffer, 0, msgLength);
+		if(nbCharRead == -1)
+			 throw new Exception("End of stream detected");
+		else if(nbCharRead < msgLength)
+		    throw new Exception("Not enough char read");
+		Array fieldArrayTag = new DefaultArray(fieldBuffer);
+		          	
+		this.hashElements = ElementAbstract.decodeElementsFromArray(fieldArrayTag, this.dictionary);
 	}
-	else if (nbCharRead < 1) {
-		throw new Exception("Not enough char read");
-	}
-	 
-	DefaultArray flagArray = new DefaultArray(flag);
-	// int messageType = flagArray.getBits(3, 1);         
-	int version = flagArray.getBits(0, 3);
-	 
-	if (version == 0)
+
+	public void decodeFromBytes(byte[] data) throws Exception
 	{
-		 header = new HeaderGTPPrime(flagArray);
+		Array array = new DefaultArray(data);
+		
+		Array flagArray = array.subArray(0, 1); 
+		// int messageType = flagArray.getBits(3, 1);         
+		int version = flagArray.getBits(0, 3);
+		 
+		if (version == 0)
+		{
+			 header = new HeaderGTPPrime(flagArray);
+		}
+		else if (version == 1)
+		{
+			 header = new HeaderGTPV1(flagArray);
+		}
+		else if (version == 2)
+		{
+			 header = new HeaderGTPV2(flagArray);
+		}
+		 
+		this.syntax = header.getSyntax();
+		initDictionary(syntax);
+		
+		((HeaderGTPV2) header).decodeFromBytes(array, dictionary);
+		
+		int msgOffset = header.calculateHeaderSize() + 4;
+		int msgLength = header.getLength() - header.calculateHeaderSize(); 
+		
+		Array fieldArrayTag = array.subArray(msgOffset, msgLength);
+		this.hashElements = ElementAbstract.decodeElementsFromArray(fieldArrayTag, this.dictionary);
 	}
-	else if (version == 1)
-	{
-		 header = new HeaderGTPV1(flagArray);
-	}
-	else if (version == 2)
-	{
-		 header = new HeaderGTPV2(flagArray);
-	}
-	 
-	this.syntax = header.getSyntax();
-	initDictionary(syntax);
-	
-	header.decodeFromStream(inputStream, dictionary);
-	        
-	int msgLength = header.getLength() - header.calculateHeaderSize(); 
-	
-	byte[] fieldBuffer = new byte[msgLength];
-	//read the staying message's data
-	nbCharRead = inputStream.read(fieldBuffer, 0, msgLength);
-	if(nbCharRead == -1)
-		 throw new Exception("End of stream detected");
-	else if(nbCharRead < msgLength)
-	    throw new Exception("Not enough char read");
-	Array fieldArrayTag = new DefaultArray(fieldBuffer);
-	          	
-	this.hashElements = ElementAbstract.decodeElementsFromArray(fieldArrayTag, this.dictionary);
-	}
-	
+
 	/** Get a parameter from the message */
 	public void getParameter(Parameter var, String[] params, String path) throws Exception 
 	{

@@ -140,7 +140,7 @@ public abstract class ElementAbstract implements Cloneable
             if (field == null)
             {
              	String type = elemField.attributeValue("type");
-	            if (type.equalsIgnoreCase("integer")) 
+             	if (type.equalsIgnoreCase("integer")) 
 	            {
 	                field = new IntegerField(elemField);
 	            } 
