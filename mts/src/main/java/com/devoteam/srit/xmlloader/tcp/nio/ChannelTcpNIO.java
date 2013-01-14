@@ -120,11 +120,13 @@ public class ChannelTcpNIO extends Channel
             
             socketTcp = new SocketTcpNIO();
             HybridSocket hybridSocket = new HybridSocket(socketTcp);
-    		// read all properties for the TCP socket 
-    		Config.getConfigForTCPSocket(hybridSocket, false);
+            socketTcp.init(hybridSocket);
 
             socketTcp.setChannelTcp(this);
             IOReactor.instance().openTCP(local, remote, hybridSocket);
+
+    		// read all properties for the TCP socket 
+    		Config.getConfigForTCPSocket(hybridSocket, false);
 
             this.setLocalPort(hybridSocket.getLocalPort());
             this.setLocalHost(hybridSocket.getLocalAddress().getHostAddress());
