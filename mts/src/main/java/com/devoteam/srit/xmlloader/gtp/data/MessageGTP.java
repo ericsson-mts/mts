@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.gtp.data;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.EnumerationField;
 import com.devoteam.srit.xmlloader.core.coding.binary.HeaderAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.XMLDoc;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
@@ -128,9 +129,9 @@ public class MessageGTP
 	    
 	public void decodeFromStream(InputStream inputStream) throws Exception
 	{
-		byte[] flag = new byte[1];
+		byte[] begin = new byte[4];
 		//read the header
-		int nbCharRead= inputStream.read(flag, 0, 1);
+		int nbCharRead= inputStream.read(begin, 0, 4);
 		if(nbCharRead == -1){
 			throw new Exception("End of stream detected");
 		}
@@ -138,73 +139,75 @@ public class MessageGTP
 			throw new Exception("Not enough char read");
 		}
 		 
-		DefaultArray flagArray = new DefaultArray(flag);
-		// int messageType = flagArray.getBits(3, 1);         
-		int version = flagArray.getBits(0, 3);
-		 
+		SupArray array = new SupArray();
+		array.addFirst(new DefaultArray(begin));
+		
+		int version = array.getBits(0, 3);
+		// int messageType = beginArray.getBits(8, 8);
 		if (version == 0)
 		{
-			 header = new HeaderGTPPrime(flagArray);
+			 this.header = new HeaderGTPPrime(array);
 		}
 		else if (version == 1)
 		{
-			 header = new HeaderGTPV1(flagArray);
+			 this.header = new HeaderGTPV1(array);
 		}
 		else if (version == 2)
 		{
-			 header = new HeaderGTPV2(flagArray);
+			 this.header = new HeaderGTPV2(array);
 		}
 		 
-		this.syntax = header.getSyntax();
-		initDictionary(syntax);
+		this.syntax = this.header.getSyntax();
+		initDictionary(this.syntax);
 		
-		header.decodeFromStream(inputStream, dictionary);
-		        
-		int msgLength = header.getLength() - header.calculateHeaderSize(); 
-		
-		byte[] fieldBuffer = new byte[msgLength];
+		byte[] fieldBuffer = new byte[this.header.getLength()];
+		int nbCharToRead = this.header.getLength();
 		//read the staying message's data
-		nbCharRead = inputStream.read(fieldBuffer, 0, msgLength);
+		nbCharRead = inputStream.read(fieldBuffer, 0, nbCharToRead);
 		if(nbCharRead == -1)
 			 throw new Exception("End of stream detected");
-		else if(nbCharRead < msgLength)
+		else if(nbCharRead < nbCharToRead)
 		    throw new Exception("Not enough char read");
-		Array fieldArrayTag = new DefaultArray(fieldBuffer);
-		          	
-		this.hashElements = ElementAbstract.decodeElementsFromArray(fieldArrayTag, this.dictionary);
+		
+		array.addLast(new DefaultArray(fieldBuffer));
+		int offset = ((HeaderGTPV2) this.header).decodeFromBytes((Array) array, dictionary);
+		int fieldLength = this.header.getLength() - offset + 4;
+		
+		Array fieldArray = new DefaultArray(0);
+		if (fieldLength > 0)
+		{
+			fieldArray = array.subArray(offset, fieldLength);
+		}
+		this.hashElements = ElementAbstract.decodeElementsFromArray(fieldArray, this.dictionary);
 	}
 
 	public void decodeFromBytes(byte[] data) throws Exception
 	{
 		Array array = new DefaultArray(data);
-		
-		Array flagArray = array.subArray(0, 1); 
-		// int messageType = flagArray.getBits(3, 1);         
-		int version = flagArray.getBits(0, 3);
+		 
+		int version = array.getBits(0, 3);
+		// int messageType = array.getBits(8, 8);		
 		 
 		if (version == 0)
 		{
-			 header = new HeaderGTPPrime(flagArray);
+			 this.header = new HeaderGTPPrime(array);
 		}
 		else if (version == 1)
 		{
-			 header = new HeaderGTPV1(flagArray);
+			 this.header = new HeaderGTPV1(array);
 		}
 		else if (version == 2)
 		{
-			 header = new HeaderGTPV2(flagArray);
+			 this.header = new HeaderGTPV2(array);
 		}
 		 
-		this.syntax = header.getSyntax();
-		initDictionary(syntax);
+		this.syntax = this.header.getSyntax();
+		initDictionary(this.syntax);
 		
-		((HeaderGTPV2) header).decodeFromBytes(array, dictionary);
-		
-		int msgOffset = header.calculateHeaderSize() + 4;
-		int msgLength = header.getLength() - header.calculateHeaderSize(); 
-		
-		Array fieldArrayTag = array.subArray(msgOffset, msgLength);
-		this.hashElements = ElementAbstract.decodeElementsFromArray(fieldArrayTag, this.dictionary);
+		int offset = ((HeaderGTPV2) this.header).decodeFromBytes(array, dictionary);
+		int fieldLength = this.header.getLength() - offset + 4; 		
+		Array fieldArray = array.subArray(offset, fieldLength);
+		this.hashElements = ElementAbstract.decodeElementsFromArray(fieldArray, this.dictionary);
 	}
 
 	/** Get a parameter from the message */

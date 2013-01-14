@@ -61,12 +61,18 @@ public class HeaderGTPV2 extends HeaderAbstract
     	this.version = 2;
 	}
 	
-    public HeaderGTPV2(Array flagArray)
+    public HeaderGTPV2(Array beginArray)
 	{
     	this.syntax = "GTPV2";
     	this.version = 2;
-    	this.piggyFlag = flagArray.getBits(3, 1);
-    	this.teidFlag = flagArray.getBits(4, 1);
+    	this.piggyFlag = beginArray.getBits(3, 1);
+    	this.teidFlag = beginArray.getBits(4, 1);
+    	
+    	Array typeArray = beginArray.subArray(1, 1);
+    	this.messageType= (new Integer08Array(typeArray).getValue());
+    	
+    	Array lengthArray = beginArray.subArray(2, 2);
+    	this.length = (new Integer16Array(lengthArray).getValue());
 	}
 
     @Override
@@ -252,30 +258,31 @@ public class HeaderGTPV2 extends HeaderAbstract
     }
 	
 
-	public void decodeFromBytes(Array array, Dictionary dictionary) throws Exception
+	public int decodeFromBytes(Array array, Dictionary dictionary) throws Exception
     {
 		this.dictionary = dictionary;
-
-        Array typeArray = array.subArray(1, 1); 
-        this.messageType = (new Integer08Array(typeArray).getValue());
+		int offset = 4;
+		
     	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-	    this.name = field._hashMapEnumByValue.get(messageType);
-
-	    Array lengthArray = array.subArray(2, 2);
-        this.length = (new Integer16Array(lengthArray).getValue());
+	    this.name = field._hashMapEnumByValue.get(this.messageType);    	
         
         if (this.teidFlag != 0)
     	{
-    	    Array teidArray = array.subArray(4, 4); 
+    	    Array teidArray = array.subArray(offset, 4); 
 	        this.tunnelEndpointId = new Integer32Array(teidArray).getValue() & 0xffffffffl;
+        	offset = offset + 4;	        
     	}
         
-    	Array seqnumArray = array.subArray(8, 3); 	
+    	Array seqnumArray = array.subArray(offset, 3); 	
 		Array zeroArray = new DefaultArray(new byte[]{0});
     	SupArray seqnumSup = new SupArray();		
     	seqnumSup.addFirst(zeroArray);
     	seqnumSup.addLast(seqnumArray);
-    	this.sequenceNumber = (new Integer32Array(seqnumSup).getValue()); 
+    	this.sequenceNumber = (new Integer32Array(seqnumSup).getValue());
+        offset = offset + 3;
+        
+    	offset = offset + 1;
+    	return offset;
     }
 
 	@Override
