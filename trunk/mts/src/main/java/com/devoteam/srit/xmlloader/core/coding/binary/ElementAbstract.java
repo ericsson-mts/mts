@@ -303,7 +303,16 @@ public abstract class ElementAbstract implements Cloneable
 	        int id = new Integer08Array(data.subArray(offset, 1)).getValue();
 	        ElementAbstract elemDico = dictionary.getMapElementById().get(id);
 	        
-	        ElementAbstract elemNew = (ElementAbstract) elemDico.clone();
+	        ElementAbstract elemNew = null;
+	        if (elemDico != null)
+	        {
+	        	elemNew = (ElementAbstract) elemDico.clone();
+	        }
+	        else
+	        {
+	        	elemNew =  new ElementTLIV();
+	        }
+	        
 	
 	        int length = elemNew.decodeFromArray(data.subArray(offset), dictionary);
 	        offset += length;
