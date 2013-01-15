@@ -9,14 +9,14 @@ echo ******************************************* protocol modules
 sh ./startCmd.sh ../tutorial/core/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/diameter/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/sip/test.xml -sequential $OPTIONS
+sh ./startCmd.sh ../tutorial/sip/test.xml -sequential -config:USE_NIO+true $OPTIONS
 sh ./startCmd.sh ../tutorial/rtp/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/rtpflow/test.xml -sequential $OPTIONS
+sh ./startCmd.sh ../tutorial/rtpflow/test.xml -sequential -config:message.KEEP_SENT_MESSAGES+true $OPTIONS
 sh ./startCmd.sh ../tutorial/http/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/http/test.xml -sequential -config:USE_NIO+true %OPTIONS%
 sh ./startCmd.sh ../tutorial/tcp/test.xml -sequential $OPTIONS
-sh ./startCmd.sh ../tutorial/tcp/test.xml -sequential -config:USE_NIO+true %OPTIONS%
 sh ./startCmd.sh ../tutorial/udp/test.xml -sequential $OPTIONS
-sh ./startCmd.sh ../tutorial/udp/test.xml -sequential -config:USE_NIO+true %OPTIONS%
 sh ./startCmd.sh ../tutorial/sctp/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/radius/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/smtp/test.xml -sequentia $OPTIONS
