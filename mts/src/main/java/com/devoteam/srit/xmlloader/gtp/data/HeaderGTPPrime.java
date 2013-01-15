@@ -57,11 +57,17 @@ public class HeaderGTPPrime extends HeaderAbstract
     	this.protocolType = 0; 
     	this.version = 0; 
 	}
-    public HeaderGTPPrime(Array flagArray) 
+    public HeaderGTPPrime(Array beginArray) 
     {
     	this();
-        this.version = flagArray.getBits(0,3);
-        this.protocolType = flagArray.getBits(3,1);
+        this.version = beginArray.getBits(0,3);
+        this.protocolType = beginArray.getBits(3,1);
+        
+    	Array typeArray = beginArray.subArray(1, 1);
+    	this.messageType= (new Integer08Array(typeArray).getValue());
+    	
+    	Array lengthArray = beginArray.subArray(2, 2);
+    	this.length = (new Integer16Array(lengthArray).getValue());
 	}
     
     @Override
@@ -157,13 +163,22 @@ public class HeaderGTPPrime extends HeaderAbstract
     }
 	
 	@Override
-	public void decodeFromArray(Array data, String syntax, Dictionary dictionary) throws Exception
+	public int decodeFromArray(Array array, String syntax, Dictionary dictionary) throws Exception
 	{
-		// throw new Exception("Method is not implemented !");
-		// Nothing to do
+		this.dictionary = dictionary;
+		int offset = 4;
+		
+    	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+    	this.name = field._hashMapEnumByValue.get(messageType);
+    	
+    	Array seqnumArray = array.subArray(offset, 2); 	
+    	this.sequenceNumber = (new Integer16Array(seqnumArray).getValue());
+        offset = offset + 2;
+        
+		return offset;
 	}
 	
-	@Override
+	/*
 	public void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception
     {	
 		this.dictionary = dictionary;
@@ -185,7 +200,8 @@ public class HeaderGTPPrime extends HeaderAbstract
 	    array = new DefaultArray(header); 
 	    this.sequenceNumber = (new Integer16Array(array).getValue()); 
     }
- 
+ 	*/
+	
     @Override
     public void getParameter(Parameter var, String param) throws Exception
     {

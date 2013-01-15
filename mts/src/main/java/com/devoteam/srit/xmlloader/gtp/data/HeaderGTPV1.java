@@ -54,7 +54,7 @@ public class HeaderGTPV1 extends HeaderAbstract
 	private int nPduFlag;
 	private int messageType;
 	private String name;
-	private int tunnelEndpointId;
+	private long tunnelEndpointId;
 	private int sequenceNumber;
     private int nPduNumber;
     private int nextExtensionType;
@@ -66,13 +66,19 @@ public class HeaderGTPV1 extends HeaderAbstract
     	this.protocolType = 1;
 	}
 	
-    public HeaderGTPV1(Array flagArray)
+    public HeaderGTPV1(Array beginArray)
 	{
     	this();
-    	this.protocolType = flagArray.getBits(3, 1);
-    	this.extensionFlag = flagArray.getBits(5, 1);
-    	this.seqNumFlag = flagArray.getBits(6, 1);
-    	this.nPduFlag = flagArray.getBits(7, 1);
+    	this.protocolType = beginArray.getBits(3, 1);
+    	this.extensionFlag = beginArray.getBits(5, 1);
+    	this.seqNumFlag = beginArray.getBits(6, 1);
+    	this.nPduFlag = beginArray.getBits(7, 1);
+    	
+    	Array typeArray = beginArray.subArray(1, 1);
+    	this.messageType= (new Integer08Array(typeArray).getValue());
+    	
+    	Array lengthArray = beginArray.subArray(2, 2);
+    	this.length = (new Integer16Array(lengthArray).getValue());
 	}
 
     @Override
@@ -238,7 +244,7 @@ public class HeaderGTPV1 extends HeaderAbstract
         
         supArray.addLast(new Integer16Array(this.length));
         
-        supArray.addLast(new Integer32Array(this.tunnelEndpointId));
+        supArray.addLast(new Integer32Array((int) (this.tunnelEndpointId & 0xffffffffl)));
         
         if (this.seqNumFlag != 0)
         {
@@ -281,12 +287,40 @@ public class HeaderGTPV1 extends HeaderAbstract
     }
 
 	@Override
-	public void decodeFromArray(Array data, String syntax, Dictionary dictionary) throws Exception
+	public int decodeFromArray(Array array, String syntax, Dictionary dictionary) throws Exception
 	{
-		// throw new Exception("Method is not implemented !");
-		// Nothing to do
+		this.dictionary = dictionary;
+		int offset = 4;
+		
+    	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+	    this.name = field._hashMapEnumByValue.get(this.messageType);    	
+
+	    Array teidArray = array.subArray(offset, 4); 
+        this.tunnelEndpointId = (int) (new Integer32Array(teidArray).getValue() & 0xffffffffl);
+    	offset = offset + 4;	
+    	
+        if (this.seqNumFlag != 0)
+        {
+        	Array seqnumArray = array.subArray(offset, 2); 	
+        	this.sequenceNumber = (new Integer16Array(seqnumArray).getValue());
+            offset = offset + 2;
+        }
+        if (this.nPduFlag != 0)
+        {
+        	Array nPduNumberArray = array.subArray(offset, 1); 	
+	    	this.nPduNumber = (new Integer08Array(nPduNumberArray).getValue()); 
+            offset = offset + 1;
+        }
+        if (this.extensionFlag != 0)
+        {
+        	Array nextExtensionTypeArray = array.subArray(offset, 1); 	
+	    	this.nextExtensionType = (new Integer08Array(nextExtensionTypeArray).getValue()); 
+            offset = offset + 1;
+        }
+
+        return offset;
 	}
-	
+	/*
 	@Override
 	public void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception
     {
@@ -334,6 +368,7 @@ public class HeaderGTPV1 extends HeaderAbstract
         }
     	
     }
+    */
 	
     @Override
     public void getParameter(Parameter var, String param) throws Exception
