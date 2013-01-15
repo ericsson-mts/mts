@@ -2,11 +2,13 @@
 
 <!-- scenario client-->
 <scenario>
-
+    
+    <parameter name="[testcase:listenpointCreated]" operation="system.semaphorewait" />
+    
     <parameter name="[tunnelEndpointId]" operation="set" value="111"/>
     <parameter name="[sequenceNumber]" operation="set" value="1"/>
     <sendMessageGTP name="send message"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+                    remoteHost="[listenHost]" remotePort="[listenPort]" transport="UDP">
         <headerV2 name="echoRequest" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
     </sendMessageGTP>
 
@@ -16,12 +18,9 @@
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>              
     </receiveMessageGTP>
 
-    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
-    <test parameter="[binary]" condition="binary.equals" value="4802000d0000006f000001000300010017"/>
-
     <parameter name="[sequenceNumber]" operation="set" value="2"/>
     <sendMessageGTP name="send message"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+                    remoteHost="[listenHost]" remotePort="[listenPort]" transport="UDP">    
         <headerV2 name="echoRequest" piggyFlag = "0" teidFlag = "0" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
     </sendMessageGTP>
 
@@ -30,12 +29,5 @@
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>              
     </receiveMessageGTP>
-
-    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
-    <test parameter="[binary]" condition="binary.equals" value="4003000400000200"/>
-
-    <finally>
-        <closeChannelGTP name="[connection]"/>
-    </finally>
     
 </scenario>

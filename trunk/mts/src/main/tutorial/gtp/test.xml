@@ -33,6 +33,18 @@
         <scenario name="GTPP">180_set_from_msg/server.xml</scenario>
     </testcase>
 
+    <testcase name="GTP v2 181_listenpoint" state="true">
+        <parameter name="[listenHost]" operation="system.ipaddress" />
+        <!--parameter name="[listenHost]" operation="set" value="172.20.70.43"/-->    
+        <parameter name="[listenHost]" operation="set" value="[listenHost(0)]" editable="true" />
+        <!--parameter name="[listenHost]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/-->
+        <parameter name="[listenPort]" operation="set" value="2123"/>    
+        <parameter name="[listenPort]" operation="set" value="[listenPort]" editable="true" />
+
+        <scenario name="client">181_listenpoint/client.xml</scenario>
+        <scenario name="GTPP">181_listenpoint/server.xml</scenario>
+    </testcase>
+    
     <testcase name="GTP v1 ------------------------------------------------------" state="false"/>
             
     <testcase name="GTP v1 201_echo" state="true">

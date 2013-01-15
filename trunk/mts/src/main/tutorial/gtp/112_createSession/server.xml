@@ -3,11 +3,7 @@
 <!-- scenario server-->
 <scenario>
 
-    <createListenpointGTP name="listenpoint" localPort="3387"/>
-    
-    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
-
-    <receiveMessageGTP name="echo request">
+    <receiveMessageGTP name="receive message">
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>        
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
@@ -18,7 +14,7 @@
     <test parameter="[binary]" condition="binary.equals" value="482000c6000000000000c7000100080002084124002020f94c0006003346452320f94b000800999900000000101156000d001812f430000312f43000000101480008000000c350000186a05300030012f430520001000657000900860000456714150001800001000163000100014f000500010000000047001a00066f7461726965066d6e63303033066d636332313404677072737f000100005d002c004900010005500016004809000000000000000000000000000000000000000057000902840000456f14150001"/>
     
     <parameter name="[tunnelEndpointId]" operation="set" value="17767"/>    
-    <sendMessageGTP name="send message" listenpoint="listenpoint" 
+    <sendMessageGTP name="send message"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
         <headerV2 name="createSessionResponse" piggyFlag="0" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
         <element identifier="Cause" coding="TLIV">
@@ -75,8 +71,9 @@
         </element>
     </sendMessageGTP>
 
-    <receiveMessageGTP name="echo request">
-        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+    <receiveMessageGTP name="receive message">
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/> 
     </receiveMessageGTP>
@@ -85,7 +82,7 @@
     <test parameter="[binary]" condition="binary.equals" value="48240015a7d420660000c80049000100054d00040008000000"/>
   
     <parameter name="[tunnelEndpointId]" operation="set" value="17767"/>    
-    <sendMessageGTP name="send message" listenpoint="listenpoint" 
+    <sendMessageGTP name="send message"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
         <headerV2 name="deleteSessionResponse" piggyFlag="0" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
         <element identifier="Cause" coding="TLIV">
@@ -97,9 +94,4 @@
         </element>
     </sendMessageGTP>
     
-    <finally>
-    
-        <!--removeListenpointGTP name="listenpoint"/-->
-        
-    </finally>
 </scenario>
