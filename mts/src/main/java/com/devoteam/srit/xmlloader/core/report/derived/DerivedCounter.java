@@ -218,7 +218,6 @@ public abstract class DerivedCounter
         else{
             offset = 0;
         }
-        System.out.println("offset = " + offset);
         for (int i = 0; i < graphTable.length; i++)
         {
             long timestamp = offset + i * this.counter.graphDataset.graphParameters.graphPeriod;

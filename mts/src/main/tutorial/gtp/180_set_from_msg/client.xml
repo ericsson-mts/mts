@@ -3,14 +3,10 @@
 <!-- scenario client-->
 <scenario>
     
-    <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
-    
-    <parameter name="[connection]" operation="set" value="connection" />
-    <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="3387"/>
-
     <parameter name="[tunnelEndpointId]" operation="set" value="4294967295"/>
     <parameter name="[sequenceNumber]" operation="set" value="16777215"/>
-    <sendMessageGTP name="send message" channel="[connection]">
+    <sendMessageGTP name="send message"
+                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
         <headerV2 name="createSessionRequest" piggyFlag="1" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
         <element identifier="IMSI" coding="TLIV" description="International Mobile Subscriber Identity">
             <field name="IMSI" value="123456789012345" description="International Mobile Subscriber Identity"/>
@@ -153,15 +149,10 @@
     </sendMessageGTP>
 
     <receiveMessageGTP name="receive message">
-        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     </receiveMessageGTP>
 
     <!--test parameter="[binary]" condition="binary.equals" value="4802000d0000000056b602000300010017"/-->
 
-    <finally>
-        <closeChannelGTP name="[connection]"/>
-    </finally>
-    
 </scenario>
