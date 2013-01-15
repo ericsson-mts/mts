@@ -9,9 +9,10 @@ REM ******************************************* protocol modules
 call startCmd.bat ..\tutorial\core\test.xml -sequential %OPTIONS% -param:param_1+one -param:[param_2]+two -param:[param_3]+three
 call startCmd.bat ..\tutorial\diameter\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\sip\test.xml -sequential %OPTIONS%
+call startCmd.bat ..\tutorial\sip\test.xml -sequential -config:USE_NIO+true %OPTIONS%
 call startCmd.bat ..\tutorial\rtp\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\rtpflow\test.xml -sequential %OPTIONS%
-rem call startCmd.bat ..\tutorial\rtpflow\test.xml -sequential -config:message.KEEP_SENT_MESSAGES+true %OPTIONS%
+call startCmd.bat ..\tutorial\rtpflow\test.xml -sequential -config:message.KEEP_SENT_MESSAGES+true %OPTIONS%
 call startCmd.bat ..\tutorial\http\test.xml -sequential %OPTIONS% 
 call startCmd.bat ..\tutorial\http\test.xml -sequential -config:USE_NIO+true %OPTIONS%
 call startCmd.bat ..\tutorial\tcp\test.xml -sequential %OPTIONS%
@@ -19,7 +20,7 @@ call startCmd.bat ..\tutorial\udp\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\radius\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\smtp\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\rtsp\test.xml -sequential %OPTIONS%
-rem call startCmd.bat ..\tutorial\imap\test.xml -sequential %OPTIONS%
+call startCmd.bat ..\tutorial\imap\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\pop\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\smpp\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\ucp\test.xml -sequential %OPTIONS%
