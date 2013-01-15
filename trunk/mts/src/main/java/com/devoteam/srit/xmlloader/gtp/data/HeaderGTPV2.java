@@ -214,51 +214,8 @@ public class HeaderGTPV2 extends HeaderAbstract
         size +=1;
         return size;
     }
-	@Override
-	public void decodeFromArray(Array data, String syntax, Dictionary dictionary) throws Exception
-	{
-		// throw new Exception("Method is not implemented !");
-		// Nothing to do
-	}
 	
-	@Override
-	public void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception
-    {
-		this.dictionary = dictionary;
-		
-		byte[] header = new byte[1];
-        stream.read(header, 0, 1);
-        Array array = new DefaultArray(header); 
-        this.messageType = (new Integer08Array(array).getValue());
-    	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-	    this.name = field._hashMapEnumByValue.get(messageType);
-        
-        header = new byte[2];
-        stream.read(header, 0, 2);
-        array = new DefaultArray(header); 
-        this.length = (new Integer16Array(array).getValue());
-        
-        if (this.teidFlag != 0)
-    	{
-	        header = new byte[4];
-	        stream.read(header, 0, 4);
-	        array = new DefaultArray(header); 
-	        this.tunnelEndpointId = new Integer32Array(array).getValue() & 0xffffffffl;
-    	}
-        
-    	header = new byte[4];
-    	stream.read(header, 1, 3);
-    	array = new DefaultArray(header); 
-    	this.sequenceNumber = (new Integer32Array(array).getValue()); 
-
-    	header = new byte[1];
-    	stream.read(header, 0, 1);
-    	// TODO champ spare2
-    	
-    }
-	
-
-	public int decodeFromBytes(Array array, Dictionary dictionary) throws Exception
+	public int decodeFromArray(Array array, String syntax, Dictionary dictionary) throws Exception
     {
 		this.dictionary = dictionary;
 		int offset = 4;

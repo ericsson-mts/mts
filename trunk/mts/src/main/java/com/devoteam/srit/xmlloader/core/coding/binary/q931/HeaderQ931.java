@@ -136,7 +136,7 @@ public class HeaderQ931 extends HeaderAbstract {
     }
 
     @Override
-    public void decodeFromArray(Array data, String syntax, Dictionary dictionary) {
+    public int decodeFromArray(Array data, String syntax, Dictionary dictionary) {
     	this.dictionary = dictionary; 
     	
         _discrimArray = new Integer08Array(data.subArray(0, 1));
@@ -153,12 +153,7 @@ public class HeaderQ931 extends HeaderAbstract {
         	_typeArray = new Integer08Array(data.subArray(3, 1));
 	        this.length = 4;
         }
-    }
-
-    @Override
-	public void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception
-    {
-		// nothing to do
+        return 0;
     }
 	
     @Override

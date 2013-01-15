@@ -56,8 +56,8 @@ public abstract class HeaderAbstract {
     public abstract void parseFromXML(Element header, Dictionary dictionary) throws Exception;
     public abstract String toXML();
     
-    public abstract void decodeFromArray(Array data, String syntax, Dictionary dictionary) throws Exception;
-	public abstract void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception;
+    public abstract int decodeFromArray(Array data, String syntax, Dictionary dictionary) throws Exception;
+	// public abstract void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception;
     public abstract Array encodeToArray();
     public abstract int calculateHeaderSize();
     

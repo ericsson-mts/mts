@@ -170,7 +170,7 @@ public class MessageGTP
 		    throw new Exception("Not enough char read");
 		
 		array.addLast(new DefaultArray(fieldBuffer));
-		int offset = ((HeaderGTPV2) this.header).decodeFromBytes((Array) array, dictionary);
+		int offset = this.header.decodeFromArray((Array) array, "", dictionary);
 		int fieldLength = this.header.getLength() - offset + 4;
 		
 		Array fieldArray = new DefaultArray(0);
@@ -204,9 +204,14 @@ public class MessageGTP
 		this.syntax = this.header.getSyntax();
 		initDictionary(this.syntax);
 		
-		int offset = ((HeaderGTPV2) this.header).decodeFromBytes(array, dictionary);
+		int offset = this.header.decodeFromArray(array, "", dictionary);
 		int fieldLength = this.header.getLength() - offset + 4; 		
-		Array fieldArray = array.subArray(offset, fieldLength);
+		
+		Array fieldArray = new DefaultArray(0);
+		if (fieldLength > 0)
+		{
+			fieldArray = array.subArray(offset, fieldLength);
+		}
 		this.hashElements = ElementAbstract.decodeElementsFromArray(fieldArray, this.dictionary);
 	}
 
