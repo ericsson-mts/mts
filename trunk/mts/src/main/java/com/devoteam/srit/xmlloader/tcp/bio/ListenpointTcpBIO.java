@@ -77,7 +77,7 @@ public class ListenpointTcpBIO extends Listenpoint {
     @Override
     public synchronized Channel prepareChannel(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
     {
-		ChannelTcpBIO channel;
+		Channel channel;
 
 		String keySocket = remoteHost + ":" + remotePort;
 
@@ -88,7 +88,7 @@ public class ListenpointTcpBIO extends Listenpoint {
 		}
 		else
 		{
-			channel = (ChannelTcpBIO) this.getChannel(keySocket);
+			channel = this.getChannel(keySocket);
 		}
         
 		return channel;

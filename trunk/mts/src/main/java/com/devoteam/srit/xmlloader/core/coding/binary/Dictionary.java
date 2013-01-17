@@ -44,7 +44,7 @@ public class Dictionary {
     public Dictionary(Element root, String syntax) throws Exception 
     {
      
-        List<Element> listElem=root.element("headerQ931").elements("field");
+        List<Element> listElem=root.element("header").elements("field");
         for (Element element : listElem) {
             mapHeader.put(element.attributeValue("name"), new EnumerationField(element));
         }
