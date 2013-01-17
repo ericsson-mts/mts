@@ -2,18 +2,16 @@
 
 <test name="GTPP" description="GTPP regression tests">
 
-    <parameter name="[listenPort]" operation="set" value="0.0.0.0" editable="true" />
-    
-    <parameter name="[serverRemoteIp]" operation="system.ipaddress" />
-    <!--parameter name="[serverRemoteIp]" operation="set" value="172.20.70.43"/-->    
-    <parameter name="[serverRemoteIp]" operation="set" value="[serverRemoteIp]" editable="true" />
-    <parameter name="[serverRemotePort]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/>
-    <!--parameter name="[serverRemotePort]" operation="set" value="2123"/-->    
-    <parameter name="[serverRemotePort]" operation="set" value="[serverRemotePort]" editable="true" />
+    <parameter name="[remoteHost]" operation="system.ipaddress" />
+    <!--parameter name="[remoteHost]" operation="set" value="172.20.70.43"/-->
+    <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]" editable="true" />
+    <parameter name="[remotePort]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[remotePort]" operation="set" value="2123"/-->    
+    <parameter name="[remotePort]" operation="set" value="[remotePort]" editable="true" />
 
     <parameter name="[transportGTP]" operation="set" value="UDP"/>
     <parameter name="[transportGTPPrime]" operation="set" value="TCP"/>
-    
+
     <testcase name="GTP v2 ------------------------------------------------------" state="false"/>
     
     <testcase name="GTP v2 101_echo" state="true">

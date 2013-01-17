@@ -4,7 +4,7 @@
 <scenario>
     
     <sendMessageGTP name="echo Request"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerV1 name="echoRequest" tunnelEndpointId="1234567890" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
     </sendMessageGTP>
 
@@ -22,7 +22,7 @@
     <test parameter="[binary]" condition="binary.equals" value="3702000a00000000000102000e17"/>
     
     <sendMessageGTP name="echo Request"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerV1 name="echoRequest" sequenceNumber="2" nPduNumber="2" nextExtensionType="0"/>
     </sendMessageGTP>
 

@@ -6,7 +6,7 @@
     <parameter name="[tunnelEndpointId]" operation="set" value="111"/>
     <parameter name="[sequenceNumber]" operation="set" value="1"/>
     <sendMessageGTP name="send message"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="[transport]">
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerV2 name="echoRequest" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
     </sendMessageGTP>
 
@@ -21,7 +21,7 @@
 
     <parameter name="[sequenceNumber]" operation="set" value="2"/>
     <sendMessageGTP name="send message"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="[transport]">
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerV2 name="echoRequest" piggyFlag = "0" teidFlag = "0" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
     </sendMessageGTP>
 
