@@ -39,7 +39,9 @@ import gp.utils.arrays.SupArray;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -61,7 +63,7 @@ public class MessageGTP
 		
 	private HeaderAbstract header;
 	
-	private LinkedHashMap<Integer, ElementAbstract> hashElements;
+	private List<ElementAbstract> elements;
 	
 	public MessageGTP()
 	{
@@ -96,7 +98,7 @@ public class MessageGTP
 	        this.header.parseFromXML(elementHeader, dictionary);
 	    }        
 	    
-	    hashElements = new LinkedHashMap<Integer, ElementAbstract>();
+	    this.elements = new ArrayList<ElementAbstract>();
 	    List<Element> elementsInf = root.elements("element");
 	    ElementAbstract elemInfo = null;
 	    for (Element element : elementsInf) 
@@ -104,7 +106,7 @@ public class MessageGTP
 	        elemInfo = ElementAbstract.buildFactory(element);
 	        elemInfo.parseFromXML(element, dictionaries.get(this.syntax));
 	        
-	        this.hashElements.put(elemInfo.getId(), elemInfo);
+	        this.elements.add(elemInfo);
 	
 	    }
 	}
@@ -178,7 +180,7 @@ public class MessageGTP
 		{
 			fieldArray = array.subArray(offset, fieldLength);
 		}
-		this.hashElements = ElementAbstract.decodeElementsFromArray(fieldArray, this.dictionary);
+		this.elements = ElementAbstract.decodeElementsFromArray(fieldArray, this.dictionary);
 	}
 
 	public void decodeFromBytes(byte[] data) throws Exception
@@ -212,7 +214,7 @@ public class MessageGTP
 		{
 			fieldArray = array.subArray(offset, fieldLength);
 		}
-		this.hashElements = ElementAbstract.decodeElementsFromArray(fieldArray, this.dictionary);
+		this.elements = ElementAbstract.decodeElementsFromArray(fieldArray, this.dictionary);
 	}
 
 	/** Get a parameter from the message */
@@ -242,10 +244,12 @@ public class MessageGTP
 	    			id = elem.getId();
 	    		}
 	    	}        	
-	    	ElementAbstract elemV = hashElements.get(id);
-	    	if (elemV != null)
-	    	{
-	    		elemV.getParameter(var, params, path, 0);
+	    	List<ElementAbstract> list = this.getElement(id);
+		    Iterator<ElementAbstract> iter = list.iterator();
+		    while (iter.hasNext())
+		    {
+		    	ElementAbstract elem = (ElementAbstract) iter.next();
+	    		elem.getParameter(var, params, path, 0);
 	    	}
 	    }
 	    else
@@ -257,9 +261,11 @@ public class MessageGTP
 	public Array encodeToArray() 
 	{
 	    SupArray array = new SupArray();
-	    for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) 
+	    Iterator<ElementAbstract> iter = this.elements.iterator();
+	    while (iter.hasNext())
 	    {
-	        array.addLast(entry.getValue().encodeToArray());
+	    	ElementAbstract elem = (ElementAbstract) iter.next();
+	        array.addLast(elem.encodeToArray());	    	
 	    }
 	    header.setLength(array.length + header.calculateHeaderSize());
 	    array.addFirst(header.encodeToArray());
@@ -273,9 +279,11 @@ public class MessageGTP
 	    messageToString.append(header.toString());
 	    messageToString.append("\n");
 	
-	    for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) {
-	
-	        messageToString.append(entry.getValue().toString());
+	    Iterator<ElementAbstract> iter = this.elements.iterator();
+	    while (iter.hasNext())
+	    {
+	    	ElementAbstract elem = (ElementAbstract) iter.next();
+	    	messageToString.append(elem.toString());
 	    }
 	    return messageToString.toString();
 	
@@ -285,15 +293,18 @@ public class MessageGTP
 	
 	    int msglength = 0;
 	    msglength = header.encodeToArray().length;
-	    for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) {
-	
-	        msglength += entry.getValue().encodeToArray().length;
+	    Iterator<ElementAbstract> iter = this.elements.iterator();
+	    while (iter.hasNext())
+	    {
+	    	ElementAbstract elem = (ElementAbstract) iter.next();
+	        msglength += elem.encodeToArray().length;
 	
 	    }
 	    return msglength;
 	}
 	
-	public void initDictionary(String syntax) throws Exception {
+	public void initDictionary(String syntax) throws Exception 
+	{
 		this.dictionary = MessageGTP.dictionaries.get(syntax);
 		if (this.dictionary == null)
 		{
@@ -306,4 +317,21 @@ public class MessageGTP
 	        MessageGTP.dictionaries.put(syntax, dictionary);
 		}
 	}
+	
+	public List<ElementAbstract> getElement(int id) throws Exception 
+	{
+		List<ElementAbstract> list = new ArrayList<ElementAbstract>();
+		
+	    Iterator<ElementAbstract> iter = this.elements.iterator();
+	    while (iter.hasNext())
+	    {
+	    	ElementAbstract elem = (ElementAbstract) iter.next();
+	        if (id == elem.getId())
+	        {
+	        	list.add(elem);
+	        }
+	    }
+	    return list;
+	}
+
 }
