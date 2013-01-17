@@ -61,7 +61,6 @@ public abstract class ElementAbstract implements Cloneable
     
     protected SupArray _fields;
     protected SupArray _elements;
-    protected SupArray _array;
 
     public static ElementAbstract buildFactory(Element root)
     {
@@ -85,9 +84,17 @@ public abstract class ElementAbstract implements Cloneable
     {
         //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
         String tagId = element.attributeValue("identifier");
+        if (tagId != null)
+        {
+        	tagId = tagId.trim();
+        }
         if (tagId == null)
         {
         	tagId = element.attributeValue("tag");
+            if (tagId != null)
+            {
+            	tagId = tagId.trim();
+            }
         }
 
         ElementAbstract elemDico = null;
