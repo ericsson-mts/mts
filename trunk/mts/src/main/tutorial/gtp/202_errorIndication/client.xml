@@ -3,18 +3,15 @@
 <!-- scenario client-->
 <scenario>
 
-	<parameter name="[connection]" operation="set" value="connection" />
-	
-	<openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
-	
-	<sendMessageGTP name="send tunnel endpoint identifier data" channel="[connection]">
-		<headerV1 name="errorIndication" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
-		<element identifier="TunnelEndpointIdentifierData" coding="TV">
-		    <field name="TunnelEndpointIdentifierData" value="121212" lengthBit="32" type="integer"/>
-    </element>
-		<element identifier="GSNAddress" coding="TLV">
-        <field name="GSNAddress" value="ABCD" type="string"/>
-    </element>
-	</sendMessageGTP>
+    <sendMessageGTP name="send tunnel endpoint identifier data"
+                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+        <headerV1 name="errorIndication" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
+        <element identifier="TunnelEndpointIdentifierData" coding="TV">
+            <field name="TunnelEndpointIdentifierData" value="121212" lengthBit="32" type="integer"/>
+        </element>
+        <element identifier="GSNAddress" coding="TLV">
+            <field name="GSNAddress" value="ABCD" type="string"/>
+        </element>
+        </sendMessageGTP>
 
 </scenario>

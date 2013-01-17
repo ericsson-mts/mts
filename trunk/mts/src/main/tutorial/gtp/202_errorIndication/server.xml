@@ -2,18 +2,15 @@
 
 <!-- scenario server-->
 <scenario>
-    <createListenpointGTP name="listenpoint" localPort="3387"/>
-    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
 
     <receiveMessageGTP name="send tunnel endpoint identifier data">
-        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
     </receiveMessageGTP>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     <test parameter="[binary]" condition="binary.equals" value="371a00140000000000010200100001d97c85000441424344"/>
     
-    <finally>
-        <removeListenpointGTP name="listenpoint"/>
-    </finally>
 </scenario>

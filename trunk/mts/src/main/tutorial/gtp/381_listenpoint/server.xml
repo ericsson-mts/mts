@@ -3,9 +3,10 @@
 <!-- scenario server-->
 <scenario>
 
-    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
+    <createListenpointGTP name="listenpoint" localPort="[listenPort]"/> 
+    <parameter name="[testcase:listenpointCreated]" operation="system.semaphorenotify" />
 
-    <receiveMessageGTP name="echo request">
+    <receiveMessageGTP name="echo request" listenpoint="listenpoint">
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
@@ -14,7 +15,7 @@
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
     <test parameter="[binary]" condition="binary.equals" value="0f0100020001"/>
 
-    <sendMessageGTP name="echo Response"
+    <sendMessageGTP name="echo Response" listenpoint="listenpoint"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
         <headerPrime name="echoResponse" sequenceNumber="1"/>
         <element identifier="recovery" coding="TV">
@@ -31,7 +32,7 @@
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     <test parameter="[binary]" condition="binary.equals" value="0f0100020002"/>
     
-    <sendMessageGTP name="versionNotSupported"
+    <sendMessageGTP name="versionNotSupported" listenpoint="listenpoint"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
         <headerPrime name="versionNotSupported" sequenceNumber="2"/>
     </sendMessageGTP>

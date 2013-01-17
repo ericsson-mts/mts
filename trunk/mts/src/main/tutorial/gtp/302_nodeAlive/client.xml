@@ -2,12 +2,9 @@
 
 <!-- scenario client-->
 <scenario>
-    
-    <parameter name="[connection]" operation="set" value="connection" />
 
-    <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
-
-    <sendMessageGTP name="node alive request" channel="[connection]">
+    <sendMessageGTP name="node alive request"
+                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
         <headerPrime name="nodeAliveRequest" sequenceNumber="1"/>
         <element identifier="251" name="chargingGatewayAddress" coding="TLV">
             <field name="IPV v4 Address" value="ac1015cf"/>
@@ -22,8 +19,4 @@
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
     <test parameter="[binary]" condition="binary.equals" value="0f0500020001"/>
 
-    <finally>
-        <closeChannelGTP name="[connection]"/>
-    </finally>
-    
 </scenario>

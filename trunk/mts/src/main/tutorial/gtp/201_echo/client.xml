@@ -3,12 +3,8 @@
 <!-- scenario client-->
 <scenario>
     
-    <parameter name="[connection]" operation="set" value="connection" />
-    
-    <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
-    <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="3387"/>
-
-    <sendMessageGTP name="echo Request" channel="[connection]">
+    <sendMessageGTP name="echo Request"
+                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
         <headerV1 name="echoRequest" tunnelEndpointId="1234567890" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
     </sendMessageGTP>
 
@@ -20,7 +16,8 @@
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
     <test parameter="[binary]" condition="binary.equals" value="3702000a00000000000102000e17"/>
 
-    <sendMessageGTP name="echo Request" channel="[connection]">
+    <sendMessageGTP name="echo Request"
+                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
         <headerV1 name="echoRequest" sequenceNumber="2" nPduNumber="2" nextExtensionType="0"/>
     </sendMessageGTP>
 
@@ -31,9 +28,5 @@
     
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
     <test parameter="[binary]" condition="binary.equals" value="370300080000000000010200"/>
-    
-    <finally>
-        <closeChannelGTP name="[connection]"/>
-    </finally>
-    
+
 </scenario>

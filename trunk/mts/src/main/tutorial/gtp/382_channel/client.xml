@@ -3,8 +3,9 @@
 <!-- scenario client-->
 <scenario>
 
-    <sendMessageGTP name="echo Request"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+    <openChannelGTP name="channel" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
+
+    <sendMessageGTP name="echo Request" channel="channel">
         <headerPrime name="echoRequest" sequenceNumber="1"/>
     </sendMessageGTP>
 
@@ -16,8 +17,7 @@
 
     <test parameter="[binary]" condition="binary.equals" value="0f02000400010e17"/>
     
-    <sendMessageGTP name="echo Request"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+    <sendMessageGTP name="echo Request" channel="channel">
         <headerPrime name="echoRequest" sequenceNumber="2"/>
     </sendMessageGTP>
 
@@ -28,5 +28,9 @@
     </receiveMessageGTP>
 
     <test parameter="[binary]" condition="binary.equals" value="0f0300020002"/>
+
+    <finally>
+        <closeChannelGTP name="channel"/>
+    </finally>
     
 </scenario>

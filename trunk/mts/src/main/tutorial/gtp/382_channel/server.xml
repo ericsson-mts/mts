@@ -6,16 +6,14 @@
     <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
 
     <receiveMessageGTP name="echo request">
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
     
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
     <test parameter="[binary]" condition="binary.equals" value="0f0100020001"/>
 
-    <sendMessageGTP name="echo Response"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
+    <sendMessageGTP name="echo Response" channel="[channel]">
         <headerPrime name="echoResponse" sequenceNumber="1"/>
         <element identifier="recovery" coding="TV">
 		        <field name="recovery" value="23"/>
@@ -23,16 +21,14 @@
     </sendMessageGTP>
 
     <receiveMessageGTP name="echo request">
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     <test parameter="[binary]" condition="binary.equals" value="0f0100020002"/>
     
-    <sendMessageGTP name="versionNotSupported"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
+    <sendMessageGTP name="versionNotSupported" channel="[channel]">
         <headerPrime name="versionNotSupported" sequenceNumber="2"/>
     </sendMessageGTP>
 
