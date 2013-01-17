@@ -5,7 +5,8 @@
     
     <receiveMessageGTP name="echo request">
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/> 
     </receiveMessageGTP>
@@ -14,7 +15,7 @@
     <test parameter="[binary]" condition="binary.equals" value="482000fb0000000056b602000100080002084124002076f04c0006003396992076f04b000800004420429121811056000d001802f810006602f810000067845300030002f8105200010006570009008695962002ac14462a47001d00096e697336636f657063066d6e63303031066d63633230380467707273800001000063000100014f00050001000000004d000400001400007f00010000480008000000c350000186a04e001a008080211001000010810600000000830600000000000d00000a005d002c004900010005570009028480002002ac14462a50001600040700000000000000000000000000000000000000007200020040005f0002000800"/>
     
     <sendMessageGTP name="send message"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">    
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerV2 name="echoResponse" piggyFlag="0" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
         <element identifier="Recovery" coding="TLIV">
             <field name="Recovery" value="23"/>

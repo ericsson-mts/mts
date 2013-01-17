@@ -4,7 +4,7 @@
 <scenario>
 
     <sendMessageGTP name="echo Request"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="[transport]">
         <headerPrime name="echoRequest" sequenceNumber="1"/>
     </sendMessageGTP>
 
@@ -17,7 +17,7 @@
     <test parameter="[binary]" condition="binary.equals" value="0f02000400010e17"/>
     
     <sendMessageGTP name="echo Request"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="[transport]">
         <headerPrime name="echoRequest" sequenceNumber="2"/>
     </sendMessageGTP>
 
