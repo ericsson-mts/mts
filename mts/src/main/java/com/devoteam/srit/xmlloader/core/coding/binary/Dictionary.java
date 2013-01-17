@@ -63,7 +63,12 @@ public class Dictionary {
             
             elemInfo.parseFromXML(elem, this);
             mapElementByName.put(elem.attributeValue("name"), elemInfo);
-            mapElementById.put((int)(Utils.parseBinaryString(elem.attributeValue("identifier"))[0] & 0xff), elemInfo);
+            String tagId = elem.attributeValue("identifier");
+            if (tagId == null)
+            {
+            	tagId = elem.attributeValue("tag");
+            }
+            mapElementById.put((int)(Utils.parseBinaryString(tagId)[0] & 0xff), elemInfo);
         }
 
     }

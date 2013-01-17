@@ -36,11 +36,11 @@
         
     </header>
 	
-    <element identifier="1" name="IMSI" coding="TLIV" description="International Mobile Subscriber Identity">
+    <element tag="1" name="IMSI" coding="TLIV" description="International Mobile Subscriber Identity">
     		<field name="IMSI" type="number_bcd" description="International Mobile Subscriber Identity"/>
     </element>
 
-    <element identifier="2" name="Cause" coding="TLIV">
+    <element tag="2" name="Cause" coding="TLIV">
     		<field name="Cause value" lengthBit="8" type="enumeration">
             <enum value="0" name="Reserved. Shall not be sent and if received the Cause shall be treated as an invalid IE"/>
             <enum value="1" name="Reserved"/>
@@ -128,11 +128,11 @@
         </field>        
     </element>
 
-    <element identifier="3" name="Recovery" coding="TLIV">
+    <element tag="3" name="Recovery" coding="TLIV">
 		    <field name="Recovery" lengthBit="8" type="integer"/>
     </element>
     
-    <element identifier="71" name="APN" coding="TLIV" description="Access Point Name">
+    <element tag="71" name="APN" coding="TLIV" description="Access Point Name">
     		<field name="APN01" type="length_string" description="Access Point Name"/>
     		<field name="APN02" type="length_string" description="Access Point Name"/>
     		<field name="APN03" type="length_string" description="Access Point Name"/>
@@ -145,26 +145,26 @@
     		<!--field name="APN10" type="length_string" description="Access Point Name"/-->                            		
     </element>
     
-    <element identifier="72" name="AMBR" coding="TLIV" description="Aggregate Maximum Bit Rate">
+    <element tag="72" name="AMBR" coding="TLIV" description="Aggregate Maximum Bit Rate">
         <field name="APN-AMBR for uplink" lengthBit="32" type="integer"/>
         <field name="APN-AMBR for downlink" lengthBit="32" type="integer"/>        
     </element>
 
-    <element identifier="73" name="EBI" coding="TLIV" description="EPS Bearer ID">
+    <element tag="73" name="EBI" coding="TLIV" description="EPS Bearer ID">
         <field name="spare" lengthBit="4" type="integer"/>    
     		<field name="EBI" lengthBit="4" type="integer" description="EPS Bearer ID"/>
     </element>
     
-    <element identifier="75" name="MEI" coding="TLIV" description="Mobile Equipment Identity">
+    <element tag="75" name="MEI" coding="TLIV" description="Mobile Equipment Identity">
         <!-- ou alors de type "number_bcd" A VERIFIER -->    
     		<field name="MEI" type="binary" description="Mobile Equipment Identity"/>
     </element>
     
-    <element identifier="76" name="MSISDN" coding="TLIV" description="Mobile Subscriber ISDN Number">
+    <element tag="76" name="MSISDN" coding="TLIV" description="Mobile Subscriber ISDN Number">
     		<field name="MSISDN" type="number_bcd" description="Mobile Subscriber ISDN Number"/>
     </element>
 
-   <element identifier="77" name="Indication" coding="TLIV">
+   <element tag="77" name="Indication" coding="TLIV">
         <field name="DAF" lengthBit="1" type="boolean" description="Dual Address Bearer Flag"/>
         <field name="DTF" lengthBit="1" type="boolean" description="Direct Tunnel Flag"/>
         <field name="HI" lengthBit="1" type="boolean" description="Handover Indication"/>
@@ -196,11 +196,11 @@
         <field name="CPSR" lengthBit="1" type="boolean" description="CS to PS SRVCC indication"/>
     </element>
     
-    <element identifier="78" name="PCO" coding="TLIV" description="Protocol Configuration Options">
+    <element tag="78" name="PCO" coding="TLIV" description="Protocol Configuration Options">
     		<field name="PCO" type="binary" description="Protocol Configuration Options"/>
     </element>
      
-   <element identifier="79" name="PAA" coding="TLIV" description="PDN Address Allocation">
+   <element tag="79" name="PAA" coding="TLIV" description="PDN Address Allocation">
         <field name="spare" lengthBit="5" type="integer"/>
         <field name="PDN Type" lengthBit="3" type="enumeration">
             <enum value="b001" name="IPv4"/>
@@ -213,7 +213,7 @@
         <field name="IPv4 address" lengthBit="32" type="ipv4_address"/>      
     </element>
     
-    <element identifier="80" name="Bearer QoS" coding="TLIV" description="Bearer Quality of Service">
+    <element tag="80" name="Bearer QoS" coding="TLIV" description="Bearer Quality of Service">
         <field name="spare1" lengthBit="1" type="boolean"/>
         <field name="PCI" lengthBit="1" type="boolean" description="Pre-emption Capability"/>        
         <field name="PL" lengthBit="4" type="integer" description="Priority Level"/>
@@ -226,7 +226,7 @@
         <field name="Guaranteed bit rate for downlink" lengthBit="40" type="integer"/>                        
     </element>
     
-    <element identifier="82" name="RAT Type" coding="TLIV">    
+    <element tag="82" name="RAT Type" coding="TLIV">    
            <field name="RAT Type" lengthBit="8" type="enumeration">
             <enum value="0" name="Reserved" />
             <enum value="1" name="UTRAN" />
@@ -240,11 +240,11 @@
         </field>
     </element>
     
-    <element identifier="83" name="Serving Network" coding="TLIV">
+    <element tag="83" name="Serving Network" coding="TLIV">
         <field name="MMC" type="number_mmc"/>
     </element>
     
-    <element identifier="86" name="ULI" coding="TLIV" description="User Location Information">
+    <element tag="86" name="ULI" coding="TLIV" description="User Location Information">
         <field name="spare1" lengthBit="2" type="integer"/>
         <field name="LAI" lengthBit="1" type="boolean"/>        
         <field name="ECGI" lengthBit="1" type="boolean"/>
@@ -260,7 +260,7 @@
         <field name="ECGI_ECI" lengthBit="28" type="integer"/>
     </element>        
 
-    <element identifier="87" name="F-TEID" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+    <element tag="87" name="F-TEID" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
         <field name="V4" lengthBit="1" type="boolean"/>        
         <field name="V6" lengthBit="1" type="boolean"/>
         <field name="Interface Type" lengthBit="6" type="enumeration">
@@ -309,21 +309,21 @@
         <field name="IPv6 address" type="ipv6_address"/>
     </element>
 
-    <element identifier="93" name="Bearer Context" coding="TLIV">
-        <element identifier="EBI" coding="TLIV"/>    
-        <element identifier="Bearer QoS" coding="TLIV"/>
-        <element identifier="F-TEID" coding="TLIV"/>
+    <element tag="93" name="Bearer Context" coding="TLIV">
+        <element tag="EBI" coding="TLIV"/>    
+        <element tag="Bearer QoS" coding="TLIV"/>
+        <element tag="F-TEID" coding="TLIV"/>
     </element>
     
-     <element identifier="94" name="Charging ID" coding="TLIV">
+     <element tag="94" name="Charging ID" coding="TLIV">
         <field name="Charging ID value" lengthBit="32" type="integer"/>   
     </element>
     
-     <element identifier="95" name="Charging Characteristics" coding="TLIV">
+     <element tag="95" name="Charging Characteristics" coding="TLIV">
         <field name="Charging Characteristics value" lengthBit="16" type="integer"/>   
     </element>
     
-    <element identifier="99" name="PDN Type" coding="TLIV">
+    <element tag="99" name="PDN Type" coding="TLIV">
         <field name="spare" lengthBit="5" type="integer"/>
         <field name="PDN Type" lengthBit="3" type="enumeration">
             <enum value="b001" name="IPv4"/>
@@ -332,7 +332,7 @@
         </field>
     </element>
 
-   <element identifier="114" name="UE Time Zone" coding="TLIV">   
+   <element tag="114" name="UE Time Zone" coding="TLIV">   
         <field name="Time Zone" lengthBit="8" type="integer"/>   
         <field name="spare" lengthBit="6" type="integer"/>
         <field name="Daylight Saving Time" lengthBit="2" type="enumeration">
@@ -343,7 +343,7 @@
         </field>
     </element>
     
-    <element identifier="127" name="APN Restriction" coding="TLIV">
+    <element tag="127" name="APN Restriction" coding="TLIV">
         <field name="Restriction Type value" lengthBit="8" type="enumeration">
             <enum value="0" name="No Existing Contexts or Restriction"/>
             <enum value="1" name="Public-1 : MMS"/>
@@ -353,7 +353,7 @@
         </field>
     </element>
         
-    <element identifier="128" name="Selection Mode" coding="TLIV">
+    <element tag="128" name="Selection Mode" coding="TLIV">
         <field name="spare" lengthBit="6" type="integer"/>
         <field name="Selection Mode" lengthBit="2" type="enumeration">
             <enum value="0" name="MS or network provided APN, subscribed verified" />
@@ -363,7 +363,7 @@
         </field>
     </element>
                 
-	  <element identifier="255" name="privateExtension" coding="TLIV">
+	  <element tag="255" name="privateExtension" coding="TLIV">
 		    <field name="extensionIdentifier" lengthBit="16" type="integer"/>
         <field name="extensionValue" type="string"/>
 	  </element>
