@@ -63,31 +63,27 @@ public class ElementTLIV extends ElementAbstract
         	this._elements.addFirst(array.subArray(4, length));
         	this.hashElements = ElementAbstract.decodeElementsFromArray(this._elements, dictionary);
         }
-        this._array = new SupArray();
-		this._array.addFirst(array.subArray(0, length + 4));
         return length + 4;
     }
 
 	@Override
     public SupArray encodeToArray() 
 	{
-		if (this._array == null)
-		{
 		// encode the sub-element
 		this._elements = super.encodeToArray();
 
-        this._array = new SupArray();
+        SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.id);
-        this._array.addLast(idArray);
+        sup.addLast(idArray);
         Integer16Array lengthArray = new Integer16Array(this._fields.length + this._elements.length);
-        this._array.addLast(lengthArray);
+        sup.addLast(lengthArray);
 	    Integer08Array instancesArray = new Integer08Array(this.instances);
-	    this._array.addLast(instancesArray);
+	    sup.addLast(instancesArray);
 	    
-	    this._array.addLast(this._fields);
-	    this._array.addLast(this._elements);
-		}
-        return this._array;
+	    sup.addLast(this._fields);
+	    sup.addLast(this._elements);
+	    
+        return sup;
     }
 
     
