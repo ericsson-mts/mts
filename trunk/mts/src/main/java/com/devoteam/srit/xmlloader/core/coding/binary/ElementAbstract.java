@@ -35,6 +35,7 @@ import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.SupArray;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -57,7 +58,7 @@ public abstract class ElementAbstract implements Cloneable
 
     protected LinkedHashMap<String, FieldAbstract> _hashMapFields = new LinkedHashMap<String, FieldAbstract>();
     
-    protected LinkedHashMap<Integer, ElementAbstract> hashElements = new LinkedHashMap<Integer, ElementAbstract>();
+    protected List<ElementAbstract> elements = new ArrayList<ElementAbstract>();
     
     protected SupArray _fields;
     protected SupArray _elements;
@@ -258,7 +259,7 @@ public abstract class ElementAbstract implements Cloneable
             elemInfo = ElementAbstract.buildFactory(elemElement);
 	        elemInfo.parseFromXML(elemElement, dictionary);
 	        
-	        this.hashElements.put(elemInfo.getId(), elemInfo);    
+	        this.elements.add(elemInfo);
         }
         
     }
@@ -293,7 +294,7 @@ public abstract class ElementAbstract implements Cloneable
             elemString.append(field.toString(this._fields));
         }
         
-        Iterator<ElementAbstract> iterElem = this.hashElements.values().iterator();
+        Iterator<ElementAbstract> iterElem = this.elements.iterator();
 		while (iterElem.hasNext())
 		{
 			ElementAbstract elemInfo = (ElementAbstract) iterElem.next();
@@ -306,9 +307,9 @@ public abstract class ElementAbstract implements Cloneable
         return elemString.toString();
     }
     
-	public static LinkedHashMap<Integer, ElementAbstract> decodeElementsFromArray(Array data, Dictionary dictionary) throws Exception 
+	public static List<ElementAbstract> decodeElementsFromArray(Array data, Dictionary dictionary) throws Exception 
 	{
-		LinkedHashMap<Integer, ElementAbstract> hashElements = new LinkedHashMap<Integer, ElementAbstract>();
+		List<ElementAbstract> elements = new ArrayList<ElementAbstract>();
 	    int offset = 0;
 	    while (offset < data.length) 
 	    {
@@ -329,9 +330,9 @@ public abstract class ElementAbstract implements Cloneable
 	        int length = elemNew.decodeFromArray(data.subArray(offset), dictionary);
 	        offset += length;
 	
-	        hashElements.put(id, elemNew);
+	        elements.add(elemNew);
 	    }
-	    return hashElements;
+	    return elements;
 	
 	}
     
@@ -341,7 +342,7 @@ public abstract class ElementAbstract implements Cloneable
     {
     	SupArray sup = new SupArray();
 		// encode the sub-element
-		Iterator<ElementAbstract> iter = this.hashElements.values().iterator();
+		Iterator<ElementAbstract> iter = this.elements.iterator();
 		while (iter.hasNext())
 		{
 			ElementAbstract elemInfo = (ElementAbstract) iter.next();
@@ -358,12 +359,12 @@ public abstract class ElementAbstract implements Cloneable
     	this.name = source.name;
     	this._fields = null;
 		// encode the sub-element
-		Iterator<ElementAbstract> iter = source.hashElements.values().iterator();
+		Iterator<ElementAbstract> iter = source.elements.iterator();
 		while (iter.hasNext())
 		{
 			ElementAbstract elemOld = (ElementAbstract) iter.next();
 			ElementAbstract elemNew = (ElementAbstract) elemOld.clone();
-			this.hashElements.put(elemNew.id, elemNew);
+			this.elements.add(elemNew);
 		}
         Iterator<FieldAbstract> iterField = source._hashMapFields.values().iterator();
 		while (iterField.hasNext())

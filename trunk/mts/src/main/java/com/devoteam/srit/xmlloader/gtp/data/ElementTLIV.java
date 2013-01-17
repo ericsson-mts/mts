@@ -61,7 +61,7 @@ public class ElementTLIV extends ElementAbstract
         else
         {
         	this._elements.addFirst(array.subArray(4, length));
-        	this.hashElements = ElementAbstract.decodeElementsFromArray(this._elements, dictionary);
+        	elements = ElementAbstract.decodeElementsFromArray(this._elements, dictionary);
         }
         return length + 4;
     }

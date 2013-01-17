@@ -32,9 +32,12 @@
     <test parameter="[IMSI]" condition="binary.equals" value="21436587092143f5"/>
     
     <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN.field.MSISDN"/>
-    <test parameter="[MSISDN]" condition="string.equals" value="331234567890123456"/>
+    <test parameter="[MSISDN]" condition="list.size" value="2"/>
+    <test parameter="[MSISDN(0)]" condition="string.equals" value="331234567890123456"/>
+    <test parameter="[MSISDN(1)]" condition="string.equals" value="339876543210987654"/>
     <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN"/>
-    <test parameter="[MSISDN]" condition="binary.equals" value="332143658709214365"/>
+    <test parameter="[MSISDN(0)]" condition="binary.equals" value="332143658709214365"/>
+    <test parameter="[MSISDN(1)]" condition="binary.equals" value="338967452301896745"/>
     
     <parameter name="[MEI]" operation="protocol.setFromMessage" value="element.MEI.field.MEI"/>
     <test parameter="[MEI]" condition="number.equals" value="0033123456789012"/>
@@ -79,19 +82,32 @@
     <test parameter="[RAT Type]" condition="binary.equals" value="06"/>
     
     <parameter name="[F-TEID.V4]" operation="protocol.setFromMessage" value="element.F-TEID.field.V4"/>
+    <test parameter="[F-TEID.V4]" condition="list.size" value="2"/>
     <test parameter="[F-TEID.V4]" condition="boolean.equals" value="1"/>
     <parameter name="[F-TEID.V6]" operation="protocol.setFromMessage" value="element.F-TEID.field.V6"/>
-    <test parameter="[F-TEID.V6]" condition="boolean.equals" value="true"/>
+    <test parameter="[F-TEID.V6]" condition="list.size" value="2"/>
+    <test parameter="[F-TEID.V6(0)]" condition="boolean.equals" value="true"/>    
+    <test parameter="[F-TEID.V6(1)]" condition="boolean.equals" value="true"/>
     <parameter name="[F-TEID.Interface Type]" operation="protocol.setFromMessage" value="element.F-TEID.field.Interface Type"/>
-    <test parameter="[F-TEID.Interface Type]" condition="string.equals" value="S5/S8 SGW GTP-C:6"/>
+    <test parameter="[F-TEID.Interface Type]" condition="list.size" value="2"/>
+    <test parameter="[F-TEID.Interface Type(0)]" condition="string.equals" value="S5/S8 SGW GTP-C:6"/>
+    <test parameter="[F-TEID.Interface Type(1)]" condition="string.equals" value="S5/S8 PGW GTP-U:5"/>
     <parameter name="[TEID / GRE Key]" operation="protocol.setFromMessage" value="element.F-TEID.field.TEID / GRE Key"/>
-    <test parameter="[TEID / GRE Key]" condition="string.equals" value="4294967295"/>
-    <parameter name="[IPv4 address]" operation="protocol.setFromMessage" value="element.F-TEID.field.IPv4 address"/>  
-    <test parameter="[IPv4 address]" condition="string.equals" value="123.45.67.89"/>
-    <parameter name="[IPv6 address]" operation="protocol.setFromMessage" value="element.F-TEID.field.IPv6 address"/>  
-    <test parameter="[IPv6 address]" condition="string.equals" value="1234:5678:90ab:cdef:fedc:ba09:8765:4321"/>    
+    <test parameter="[TEID / GRE Key]" condition="list.size" value="2"/>
+    <test parameter="[TEID / GRE Key(0)]" condition="string.equals" value="4294967295"/>
+    <test parameter="[TEID / GRE Key(1)]" condition="string.equals" value="0"/>
+    <parameter name="[IPv4 address]" operation="protocol.setFromMessage" value="element.F-TEID.field.IPv4 address"/>
+    <test parameter="[IPv4 address]" condition="list.size" value="2"/>
+    <test parameter="[IPv4 address(0)]" condition="string.equals" value="123.45.67.89"/>
+    <test parameter="[IPv4 address(1)]" condition="string.equals" value="98.76.54.32"/>
+    <parameter name="[IPv6 address]" operation="protocol.setFromMessage" value="element.F-TEID.field.IPv6 address"/>
+    <test parameter="[IPv6 address]" condition="list.size" value="2"/>
+    <test parameter="[IPv6 address(0)]" condition="string.equals" value="1234:5678:90ab:cdef:fedc:ba09:8765:4321"/>
+    <test parameter="[IPv6 address(1)]" condition="string.equals" value="fedc:ba98:7654:3210:123:4567:89ab:cdef"/>
     <parameter name="[F-TEID]" operation="protocol.setFromMessage" value="element.F-TEID"/>
-    <test parameter="[F-TEID]" condition="binary.equals" value="c6ffffffff7b2d43591234567890abcdeffedcba0987654321"/>
+    <test parameter="[F-TEID]" condition="list.size" value="2"/>
+    <test parameter="[F-TEID(0)]" condition="binary.equals" value="c6ffffffff7b2d43591234567890abcdeffedcba0987654321"/>
+    <test parameter="[F-TEID(1)]" condition="binary.equals" value="c500000000624c3620fedcba98765432100123456789abcdef"/>
     
     <parameter name="[APN01]" operation="protocol.setFromMessage" value="element.APN.field.APN01"/>
     <test parameter="[APN01]" condition="string.equals" value="stringstring01"/>
