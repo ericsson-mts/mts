@@ -6,7 +6,7 @@
     <parameter name="[tunnelEndpointId]" operation="set" value="4294967295"/>
     <parameter name="[sequenceNumber]" operation="set" value="16777215"/>
     <sendMessageGTP name="send message"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="[transport]">
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerV2 name="createSessionRequest" piggyFlag="1" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
         <element identifier="IMSI" coding="TLIV" description="International Mobile Subscriber Identity">
             <field name="IMSI" value="123456789012345" description="International Mobile Subscriber Identity"/>
@@ -66,17 +66,17 @@
             <field name="PDN Type" value="IPv4v6"/>
             <!-- TODO condiditional -->
             <field name="IPv6 prefix length" value="255"/>
-            <field name="IPv6 address" value="fedc:ba09:8765:4321:1234:5678:90ab:cdef"/>            
+            <field name="IPv6 address" value="fedc:ba09:8765:4321:1234:5678:90ab:cdef"/>
             <field name="IPv4 address" value="87.65.43.210"/>
         </element> 
         <element identifier="Indication" coding="TLIV">
             <field name="DAF" value="0"/>
             <field name="DTF" value="0"/>
             <field name="HI" value="0"/>
-            <field name="DFI" value="0"/>         
+            <field name="DFI" value="0"/>
             <field name="OI" value="0"/>
             <field name="ISRSI" value="0"/>
-            <field name="ISRAI" value="0"/>                                                  
+            <field name="ISRAI" value="0"/>
             <field name="SGWCI" value="0"/>
     
             <field name="SQCI" value="0"/>  

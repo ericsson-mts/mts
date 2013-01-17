@@ -4,7 +4,7 @@
 <scenario>
 
     <sendMessageGTP name="echo Request"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="[transport]">
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerPrime name="echoRequest" sequenceNumber="1"/>
     </sendMessageGTP>
 
@@ -17,16 +17,16 @@
     <test parameter="[binary]" condition="binary.equals" value="0f02000400010e17"/>
     
     <sendMessageGTP name="echo Request"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="[transport]">
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerPrime name="echoRequest" sequenceNumber="2"/>
     </sendMessageGTP>
 
     <receiveMessageGTP name="version not supported">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
-        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>    
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>    
     </receiveMessageGTP>
 
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
     <test parameter="[binary]" condition="binary.equals" value="0f0300020002"/>
     
 </scenario>
