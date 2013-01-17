@@ -6,10 +6,10 @@
     <sendMessageGTP name="send data record transfer request"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerPrime name="dataRecordTransferRequest" sequenceNumber="1"/>
-        <element identifier="packetTransferCommand" coding="TV">
+        <element tag="packetTransferCommand" coding="TV">
             <field name="packetTransferCommand" value="Send Data Record Packet"/>
         </element>
-        <element identifier="dataRecordPacket" coding="TLV">
+        <element tag="dataRecordPacket" coding="TLV">
             <field name="numberOfDataRecords" value="1"/>
             <field name="dataRecordFormat" value="1"/>
             <field name="dataRecordFormatVersion" value="65"/>
@@ -29,10 +29,10 @@
     <sendMessageGTP name="send data record transfer request"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerPrime name="dataRecordTransferRequest" sequenceNumber="2"/>
-        <element identifier="packetTransferCommand" coding="TV">
+        <element tag="packetTransferCommand" coding="TV">
             <field name="packetTransferCommand" value="Release Data Record Packet"/>
         </element>
-        <element identifier="sequenceNumberOfReleasedPackets" coding="TLV">
+        <element tag="sequenceNumberOfReleasedPackets" coding="TLV">
             <field name="sequenceNumber01" value="2"/>
             <field name="sequenceNumber02" value="5"/>    
             <field name="sequenceNumber03" value="9"/>                                    
@@ -50,10 +50,10 @@
     <sendMessageGTP name="send data record transfer request"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerPrime name="dataRecordTransferRequest" sequenceNumber="3"/>
-        <element identifier="packetTransferCommand" coding="TV">
+        <element tag="packetTransferCommand" coding="TV">
             <field name="packetTransferCommand" value="Cancel Data Record Packet"/>
         </element>
-        <element identifier="sequenceNumberOfCancelledDataRecords" coding="TLV">
+        <element tag="sequenceNumberOfCancelledDataRecords" coding="TLV">
             <field name="sequenceNumber01" value="6"/>
             <field name="sequenceNumber02" value="1"/>        
         </element>

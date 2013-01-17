@@ -84,15 +84,20 @@ public abstract class ElementAbstract implements Cloneable
     public void parseFromXML(Element element, Dictionary dictionary) throws Exception 
     {
         //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
-        String idStr = element.attributeValue("identifier").trim();
+        String tagId = element.attributeValue("identifier");
+        if (tagId == null)
+        {
+        	tagId = element.attributeValue("tag");
+        }
+
         ElementAbstract elemDico = null;
     	try 
     	{
-    		byte[] idBytes = Utils.parseBinaryString(idStr);
+    		byte[] idBytes = Utils.parseBinaryString(tagId);
     		this.id = idBytes[0] & 0xff;
             if (idBytes.length > 1)
             {
-            	throw new ExecutionException("ERROR : Reading the element Id from XML file : value is too long " + idStr);
+            	throw new ExecutionException("ERROR : Reading the element Id from XML file : value is too long " + tagId);
             }                
             if (dictionary != null)
             {
@@ -103,11 +108,11 @@ public abstract class ElementAbstract implements Cloneable
     	{
     		if (dictionary != null)
     		{
-    			elemDico = dictionary.getMapElementByName().get(idStr);
+    			elemDico = dictionary.getMapElementByName().get(tagId);
     		}
     		if (elemDico == null)
     		{
-            	throw new ExecutionException("ERROR : The element \"" + idStr + "\" for the ISDN layer is not present in the dictionnary.");            	            	
+            	throw new ExecutionException("ERROR : The element \"" + tagId + "\" for the ISDN layer is not present in the dictionnary.");            	            	
             }        				
     		this.id = elemDico.getId();
     	}
@@ -187,7 +192,7 @@ public abstract class ElementAbstract implements Cloneable
 	            }	            	            
 	            else
 	            {
-	            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported : " + idStr);    
+	            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported : " + tagId);    
 	            }
             }
 
