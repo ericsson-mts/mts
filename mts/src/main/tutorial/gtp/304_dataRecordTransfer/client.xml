@@ -4,7 +4,7 @@
 <scenario>
 
     <sendMessageGTP name="send data record transfer request"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="[transport]">
         <headerPrime name="dataRecordTransferRequest" sequenceNumber="1"/>
         <element identifier="packetTransferCommand" coding="TV">
             <field name="packetTransferCommand" value="Send Data Record Packet"/>
@@ -23,11 +23,11 @@
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
     
-    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
     <test parameter="[binary]" condition="binary.equals" value="0ff1000900010101fd0002000a"/>
     
     <sendMessageGTP name="send data record transfer request"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="[transport]">
         <headerPrime name="dataRecordTransferRequest" sequenceNumber="2"/>
         <element identifier="packetTransferCommand" coding="TV">
             <field name="packetTransferCommand" value="Release Data Record Packet"/>
@@ -48,7 +48,7 @@
     <test parameter="[binary]" condition="binary.equals" value="0ff1000b00020102fd00040012012e"/>
     
     <sendMessageGTP name="send data record transfer request"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="[transport]">
         <headerPrime name="dataRecordTransferRequest" sequenceNumber="3"/>
         <element identifier="packetTransferCommand" coding="TV">
             <field name="packetTransferCommand" value="Cancel Data Record Packet"/>

@@ -6,14 +6,15 @@
     <receiveMessageGTP name="receive redirection request">
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
     
-    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
     <test parameter="[binary]" condition="binary.equals" value="0f06000b00010109fe0004ac1015cf"/>
 
     <sendMessageGTP name="send redirection response"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerPrime name="redirectionResponse" sequenceNumber="1"/>
         <element identifier="cause" coding="TV">
             <field name="cause" value="7"/>

@@ -10,7 +10,7 @@
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
     
-    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
     <test parameter="[binary]" condition="binary.equals" value="0f0100020001"/>
 
     <sendMessageGTP name="echo Response" channel="[channel]">
@@ -21,14 +21,17 @@
     </sendMessageGTP>
 
     <receiveMessageGTP name="echo request">
-        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     <test parameter="[binary]" condition="binary.equals" value="0f0100020002"/>
     
-    <sendMessageGTP name="versionNotSupported" channel="[channel]">
+    <sendMessageGTP name="versionNotSupported"
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerPrime name="versionNotSupported" sequenceNumber="2"/>
     </sendMessageGTP>
 

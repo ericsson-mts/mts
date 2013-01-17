@@ -9,14 +9,15 @@
     <receiveMessageGTP name="echo request" listenpoint="listenpoint">
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
     
-    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
     <test parameter="[binary]" condition="binary.equals" value="0f0100020001"/>
 
     <sendMessageGTP name="echo Response" listenpoint="listenpoint"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerPrime name="echoResponse" sequenceNumber="1"/>
         <element identifier="recovery" coding="TV">
 		        <field name="recovery" value="23"/>
@@ -26,6 +27,7 @@
     <receiveMessageGTP name="echo request">
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
 
@@ -33,8 +35,12 @@
     <test parameter="[binary]" condition="binary.equals" value="0f0100020002"/>
     
     <sendMessageGTP name="versionNotSupported" listenpoint="listenpoint"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerPrime name="versionNotSupported" sequenceNumber="2"/>
     </sendMessageGTP>
+
+    <finally>
+        <removeListenpointGTP name="listenpoint"/>
+    </finally>
 
 </scenario>

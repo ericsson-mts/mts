@@ -5,7 +5,8 @@
 
     <receiveMessageGTP name="receive message">
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
     </receiveMessageGTP>
@@ -14,7 +15,7 @@
     <test parameter="[binary]" condition="binary.equals" value="480100080000006f00000100"/>
     
     <sendMessageGTP name="send message"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerV2 name="echoResponse" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
         <element identifier="Recovery" coding="TLIV">
             <field name="Recovery" value="23"/>
@@ -23,7 +24,8 @@
 
     <receiveMessageGTP name="receive message">
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>        
     </receiveMessageGTP>
@@ -32,7 +34,7 @@
     <test parameter="[binary]" condition="binary.equals" value="4001000400000200"/>
     
     <sendMessageGTP name="send message"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">    
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerV2 name="versionNotSupported" piggyFlag = "0" teidFlag = "[tunnelEndpointId]" sequenceNumber="[seqNum]"/>    
     </sendMessageGTP>
 
