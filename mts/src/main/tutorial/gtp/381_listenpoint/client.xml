@@ -3,8 +3,10 @@
 <!-- scenario client-->
 <scenario>
 
+    <parameter name="[testcase:listenpointCreated]" operation="system.semaphorewait" />
+
     <sendMessageGTP name="echo Request"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+                    remoteHost="[listenHost]" remotePort="[listenPort]" transport="UDP">
         <headerPrime name="echoRequest" sequenceNumber="1"/>
     </sendMessageGTP>
 
@@ -17,7 +19,7 @@
     <test parameter="[binary]" condition="binary.equals" value="0f02000400010e17"/>
     
     <sendMessageGTP name="echo Request"
-                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+                    remoteHost="[listenHost]" remotePort="[listenPort]" transport="UDP">
         <headerPrime name="echoRequest" sequenceNumber="2"/>
     </sendMessageGTP>
 
@@ -28,5 +30,5 @@
     </receiveMessageGTP>
 
     <test parameter="[binary]" condition="binary.equals" value="0f0300020002"/>
-    
+
 </scenario>

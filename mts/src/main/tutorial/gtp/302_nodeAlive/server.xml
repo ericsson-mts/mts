@@ -3,14 +3,16 @@
 <!-- scenario server-->
 <scenario>
     <receiveMessageGTP name="node alive request">
-        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>    
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     <test parameter="[binary]" condition="binary.equals" value="0f0400090001fb0004ac1015cf"/>
     
-    <sendMessageGTP name="node alive response" channel="[channel]">
+    <sendMessageGTP name="node alive response"
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
         <headerPrime type="5" sequenceNumber="1"/>
     </sendMessageGTP>
 

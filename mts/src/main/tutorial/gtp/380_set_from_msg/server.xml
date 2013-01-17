@@ -9,6 +9,17 @@
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
 
+    <parameter name="[version]" operation="protocol.setFromMessage" value="header.version"/>
+    <test parameter="[version]" condition="number.equals" value="0"/>
+    <parameter name="[protocolType]" operation="protocol.setFromMessage" value="header.protocolType"/>
+    <test parameter="[protocolType]" condition="boolean.equals" value="0"/>
+    <parameter name="[messageType]" operation="protocol.setFromMessage" value="header.messageType"/>
+    <test parameter="[messageType]" condition="number.equals" value="240"/>
+    <parameter name="[name]" operation="protocol.setFromMessage" value="header.name"/>
+    <test parameter="[name]" condition="string.equals" value="dataRecordTransferRequest"/>                  
+    <parameter name="[sequenceNumber]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    <test parameter="[sequenceNumber]" condition="number.equals" value="1"/>
+
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
     <test parameter="[binary]" condition="binary.equals" value="0ff0002a00017e01fc0023010100410010636563692065737420756e2074657374000b7365636f6e642074657374"/>
     
@@ -28,8 +39,8 @@
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
- 
-    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
+  
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>    
     <test parameter="[binary]" condition="binary.equals" value="0ff0000d00027e04f90006000200050009"/>
     
     <sendMessageGTP name="send data record transfer response"
@@ -47,10 +58,10 @@
     <receiveMessageGTP name="receive data record transfer request">
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
-        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>  
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
- 
-    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>     
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
     <test parameter="[binary]" condition="binary.equals" value="0ff0000b00037e03fa000400060001"/>
     
     <sendMessageGTP name="send data record transfer response"

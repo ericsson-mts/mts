@@ -2,12 +2,9 @@
 
 <!-- scenario client-->
 <scenario>
-    
-    <parameter name="[connection]" operation="set" value="connection" />
 
-    <openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
-
-    <sendMessageGTP name="send redirection request" channel="[connection]">
+    <sendMessageGTP name="send redirection request"
+                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
         <headerPrime name="redirectionRequest" sequenceNumber="1"/>
         <element identifier="cause" coding="TV">
             <field name="cause" value="9"/>
@@ -25,8 +22,4 @@
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
     <test parameter="[binary]" condition="binary.equals" value="0f07000400010107"/>
 
-    <finally>
-        <closeChannelGTP name="[connection]"/>
-    </finally>
-    
 </scenario>

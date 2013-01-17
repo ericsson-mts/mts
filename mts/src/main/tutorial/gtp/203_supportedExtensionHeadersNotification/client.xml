@@ -3,13 +3,12 @@
 <!-- scenario client-->
 <scenario>
 
-	<parameter name="[connection]" operation="set" value="connection" />
-	
-	<openChannelGTP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]"/>
-	
-	<sendMessageGTP name="send supported Extension Headers Notification" channel="[connection]">
-		<headerV1 name="31" sequenceNumber="1"/>
-		<ei name="extensionHeaderTypeList" value="16"/>
-	</sendMessageGTP>
+    <sendMessageGTP name="send supported Extension Headers Notification"
+                    remoteHost="[serverRemoteIp(0)]" remotePort="[serverRemotePort]" transport="UDP">
+        <headerV1 name="supportedExtensionHeadersNotification" sequenceNumber="1" nPduNumber="1" nextExtensionType="0"/>
+        <element identifier="extensionHeaderTypeList" coding="TLV">
+            <field name="extensionHeaderTypeList" value="16"/>
+        </element>
+    </sendMessageGTP>
 
 </scenario>

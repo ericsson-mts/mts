@@ -3,12 +3,12 @@
 <!-- scenario server-->
 <scenario>
 
-    <createListenpointGTP name="listenpoint" localPort="[listenPort]"/>  
+    <createListenpointGTP name="listenpoint" localPort="[listenPort]"/> 
     <parameter name="[testcase:listenpointCreated]" operation="system.semaphorenotify" />
 
     <receiveMessageGTP name="receive message" listenpoint="listenpoint">
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>        
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>        
     </receiveMessageGTP>
