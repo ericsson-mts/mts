@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
+import java.util.Map;
+
 import gp.utils.arrays.Array;
 import gp.utils.arrays.SupArray;
 
@@ -114,7 +116,4 @@ public abstract class FieldAbstract
 
     }
 
-    public LinkedHashMap<String, Integer> getHashMapEnumByName() {
-        return null;
-    }
 }
