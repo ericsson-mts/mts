@@ -14,7 +14,7 @@
     <parameter name="[version]" operation="protocol.setFromMessage" value="header.version"/>
     <test parameter="[version]" condition="number.equals" value="2"/>
     <parameter name="[piggyFlag]" operation="protocol.setFromMessage" value="header.piggyFlag"/>
-    <test parameter="[piggyFlag]" condition="boolean.equals" value="1"/>    
+    <test parameter="[piggyFlag]" condition="boolean.equals" value="1"/>
     <parameter name="[teidFlag]" operation="protocol.setFromMessage" value="header.teidFlag"/>
     <test parameter="[teidFlag]" condition="boolean.equals" value="1"/>
     <parameter name="[type]" operation="protocol.setFromMessage" value="header.type"/>
@@ -27,9 +27,11 @@
     <test parameter="[tunnelEndpointId]" condition="number.equals" value="4294967295"/>
     <parameter name="[sequenceNumber]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     <test parameter="[sequenceNumber]" condition="number.equals" value="16777215"/>
+    <parameter name="[spare]" operation="protocol.setFromMessage" value="header.spare"/>
+    <test parameter="[spare]" condition="number.equals" value="255"/>
     
     <parameter name="[IMSI]" operation="protocol.setFromMessage" value="element.IMSI.field.IMSI"/>
-    <test parameter="[IMSI]" condition="string.equals" value="123456789012345"/>   
+    <test parameter="[IMSI]" condition="string.equals" value="123456789012345"/>
     <parameter name="[IMSI]" operation="protocol.setFromMessage" value="element.IMSI"/>
     <test parameter="[IMSI]" condition="binary.equals" value="21436587092143f5"/>
     
@@ -88,7 +90,7 @@
     <test parameter="[F-TEID.V4]" condition="boolean.equals" value="1"/>
     <parameter name="[F-TEID.V6]" operation="protocol.setFromMessage" value="element.F-TEID.field.V6"/>
     <test parameter="[F-TEID.V6]" condition="list.size" value="2"/>
-    <test parameter="[F-TEID.V6(0)]" condition="boolean.equals" value="true"/>    
+    <test parameter="[F-TEID.V6(0)]" condition="boolean.equals" value="true"/>
     <test parameter="[F-TEID.V6(1)]" condition="boolean.equals" value="true"/>
     <parameter name="[F-TEID.Interface Type]" operation="protocol.setFromMessage" value="element.F-TEID.field.Interface Type"/>
     <test parameter="[F-TEID.Interface Type]" condition="list.size" value="2"/>
@@ -127,7 +129,7 @@
     <parameter name="[Selection Mode]" operation="protocol.setFromMessage" value="element.Selection Mode.field.Selection Mode"/>
     <test parameter="[Selection Mode]" condition="string.equals" value="MS or network provided APN, subscribed verified:0"/>
     <parameter name="[Selection Mode]" operation="protocol.setFromMessage" value="element.Selection Mode"/>
-    <test parameter="[Selection Mode]" condition="binary.equals" value="fc"/>    
+    <test parameter="[Selection Mode]" condition="binary.equals" value="fc"/>
 
     <parameter name="[PDN Type.spare]" operation="protocol.setFromMessage" value="element.PDN Type.field.spare"/>
     <test parameter="[PDN Type.spare]" condition="number.equals" value="31"/>
@@ -167,11 +169,11 @@
     <test parameter="[Indication.SGWCI]" condition="boolean.equals" value="false"/>
     
     <parameter name="[Indication.SQCI]" operation="protocol.setFromMessage" value="element.Indication.field.SQCI"/>
-    <test parameter="[Indication.SQCI]" condition="boolean.equals" value="false"/>    
+    <test parameter="[Indication.SQCI]" condition="boolean.equals" value="false"/>
     <parameter name="[Indication.UIMSI]" operation="protocol.setFromMessage" value="element.Indication.field.UIMSI"/>
     <test parameter="[Indication.UIMSI]" condition="boolean.equals" value="false"/>    
     <parameter name="[Indication.CFSI]" operation="protocol.setFromMessage" value="element.Indication.field.CFSI"/>
-    <test parameter="[Indication.CFSI]" condition="boolean.equals" value="false"/>    
+    <test parameter="[Indication.CFSI]" condition="boolean.equals" value="false"/>
     <parameter name="[Indication.PT]" operation="protocol.setFromMessage" value="element.Indication.field.PT"/>
     <test parameter="[Indication.PT]" condition="boolean.equals" value="True"/>    
     <parameter name="[Indication.SI]" operation="protocol.setFromMessage" value="element.Indication.field.SI"/>
@@ -180,7 +182,7 @@
     <test parameter="[Indication.MSV]" condition="boolean.equals" value="false"/>
         
     <parameter name="[Indication.RetLoc]" operation="protocol.setFromMessage" value="element.Indication.field.RetLoc"/>
-    <test parameter="[Indication.RetLoc]" condition="boolean.equals" value="false"/>    
+    <test parameter="[Indication.RetLoc]" condition="boolean.equals" value="false"/>
     <parameter name="[Indication.PBIC]" operation="protocol.setFromMessage" value="element.Indication.field.PBIC"/>
     <test parameter="[Indication.PBIC]" condition="boolean.equals" value="false"/>    
     <parameter name="[Indication.SRNI]" operation="protocol.setFromMessage" value="element.Indication.field.SRNI"/>
@@ -192,9 +194,9 @@
     <parameter name="[Indication.MBMDT]" operation="protocol.setFromMessage" value="element.Indication.field.MBMDT"/>
     <test parameter="[Indication.MBMDT]" condition="boolean.equals" value="false"/>
     <parameter name="[Indication.ISRAU]" operation="protocol.setFromMessage" value="element.Indication.field.ISRAU"/>
-    <test parameter="[Indication.ISRAU]" condition="boolean.equals" value="false"/>            
+    <test parameter="[Indication.ISRAU]" condition="boolean.equals" value="false"/>
     <parameter name="[Indication.CCRSI]" operation="protocol.setFromMessage" value="element.Indication.field.CCRSI"/>
-    <test parameter="[Indication.CCRSI]" condition="boolean.equals" value="false"/>            
+    <test parameter="[Indication.CCRSI]" condition="boolean.equals" value="false"/>
     <parameter name="[Indication]" operation="protocol.setFromMessage" value="element.Indication"/>
     <test parameter="[Indication]" condition="binary.equals" value="00140000"/>  
                                             
@@ -266,12 +268,12 @@
         <element tag="Bearer Context" coding="TLIV">
             <element tag="EBI" coding="TLIV" description="EPS Bearer ID">
                 <field name="spare" value="0"/> 
-            		<field name="EBI" value="5"/>
+                <field name="EBI" value="5"/>
             </element>
             <element tag="Cause" coding="TLIV">
                 <field name="Cause value" value="Request accepted"/>
-                <field name="spare" value="0"/>            
-                <field name="PCE" value="0"/>            
+                <field name="spare" value="0"/>
+                <field name="PCE" value="0"/>
                 <field name="BCE" value="0"/>
                 <field name="CS" value="Originated by the node sending the message"/>
             </element>            

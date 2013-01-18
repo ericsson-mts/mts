@@ -16,7 +16,7 @@
     
     <sendMessageGTP name="send message"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 type="echoResponse:2" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
+        <headerV2 type="echoResponse:2" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
         <element tag="Recovery" coding="TLIV">
             <field name="Recovery" value="23"/>
         </element>
@@ -27,7 +27,7 @@
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
-        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>        
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
     </receiveMessageGTP>
     
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
@@ -35,7 +35,7 @@
     
     <sendMessageGTP name="send message"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 type="versionNotSupported:3" piggyFlag = "0" teidFlag = "[tunnelEndpointId]" sequenceNumber="[seqNum]"/>    
+        <headerV2 type="versionNotSupported:3" sequenceNumber="[seqNum]"/> 
     </sendMessageGTP>
 
 </scenario>
