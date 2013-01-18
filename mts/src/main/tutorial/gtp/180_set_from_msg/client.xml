@@ -7,7 +7,7 @@
     <parameter name="[sequenceNumber]" operation="set" value="16777215"/>
     <sendMessageGTP name="send message"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 type="32" piggyFlag="1" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+        <headerV2 type="32" piggyFlag="1" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]" spare="255"/>
         <element tag="IMSI" coding="TLIV" description="International Mobile Subscriber Identity">
             <field name="IMSI" value="123456789012345" description="International Mobile Subscriber Identity"/>
         </element>
@@ -156,7 +156,7 @@
             <field name="Daylight Saving Time" value="No adjustment for Daylight Saving Time"/>
         </element>
        <element tag="Charging Characteristics" coding="TLIV">
-            <field name="Charging Characteristics value" value="65535"/>   
+            <field name="Charging Characteristics value" value="65535"/>
       </element>        
     </sendMessageGTP>
 

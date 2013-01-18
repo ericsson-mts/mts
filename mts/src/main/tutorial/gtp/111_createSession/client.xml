@@ -7,7 +7,7 @@
     <parameter name="[sequenceNumber]" operation="set" value="5682690"/>
     <sendMessageGTP name="send message"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 type="createSessionRequest:32" piggyFlag="0" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+        <headerV2 type="createSessionRequest:32" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
         <element tag="IMSI" coding="TLIV" description="International Mobile Subscriber Identity">
             <field name="IMSI" value="208014420002670" description="International Mobile Subscriber Identity"/>
         </element>
@@ -98,21 +98,21 @@
             
             <field name="Spare" value="0"/>
             <field name="CLII" value="0"/>
-            <field name="CPSR" value="0"/>        
+            <field name="CPSR" value="0"/>
         </element>
         <element tag="APN Restriction" coding="TLIV">
             <field name="Restriction Type value" value="No Existing Contexts or Restriction:0"/>
         </element>                
         <element tag="AMBR" coding="TLIV" description="Aggregate Maximum Bit Rate">
             <field name="APN-AMBR for uplink" value="50000"/>
-            <field name="APN-AMBR for downlink" value="100000"/>        
+            <field name="APN-AMBR for downlink" value="100000"/>
         </element>        
         <element tag="PCO" coding="TLIV" description="Protocol Configuration Options">
             <field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
         </element>
         <element tag="Bearer Context" coding="TLIV">
             <element tag="EBI" coding="TLIV" description="EPS Bearer ID">
-                <field name="spare" value="0"/>              
+                <field name="spare" value="0"/>
                 <field name="EBI" value="5"/>
             </element>
             <element tag="F-TEID" instances="2" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
@@ -126,7 +126,7 @@
             </element>            
             <element tag="Bearer QoS" coding="TLIV" description="Bearer Quality of Service">
                 <field name="spare1" value="0"/>
-                <field name="PCI" value="false" description="Pre-emption Capability"/>        
+                <field name="PCI" value="false" description="Pre-emption Capability"/>
                 <field name="PL" value="1" description="Priority Level"/>
                 <field name="spare2" value="false"/>        
                 <field name="PVI" value="0" description="Pre-emption Vulnerability"/>

@@ -6,8 +6,11 @@
     <receiveMessageGTP name="echo request">
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
+        <parameter name="[teId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
-        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>        
+        <parameter name="[nPduNum]" operation="protocol.setFromMessage" value="header.nPduNumber"/>
+        <parameter name="[nExtType]" operation="protocol.setFromMessage" value="header.nextExtensionType"/>
+        
     </receiveMessageGTP>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
@@ -15,7 +18,7 @@
     
     <sendMessageGTP name="echo Response"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
-        <headerV1 type="echoResponse:2" sequenceNumber="1"  nPduNumber="2" nextExtensionType="0"/>
+        <headerV1 type="echoResponse:2" tunnelEndpointId="[teId]" sequenceNumber="[seqNum]" nPduNumber="[nPduNum]" nextExtensionType="[nExtType]"/>
         <element tag="Recovery" coding="TV">
             <field name="Recovery" value="23"/>
         </element>
@@ -23,17 +26,16 @@
 
     <receiveMessageGTP name="echo request">
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
-        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
-        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[teId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
     </receiveMessageGTP>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
-    <test parameter="[binary]" condition="binary.equals" value="370100080000000000020200"/>
+    <test parameter="[binary]" condition="binary.equals" value="30010004499602d2"/>
     
     <sendMessageGTP name="versionNotSupported"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">    
-        <headerV1 type="versionNotSupported:3" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
+        <headerV1 type="versionNotSupported:3" tunnelEndpointId="[teId]" />
     </sendMessageGTP>
 
 </scenario>

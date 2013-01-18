@@ -54,7 +54,8 @@ public class HeaderGTPV2 extends HeaderAbstract
 	private String label;
 	private long tunnelEndpointId;
 	private int sequenceNumber;
-    
+	private int spare;
+	
     public HeaderGTPV2()
 	{
     	this.syntax = "GTPV2";
@@ -140,19 +141,27 @@ public class HeaderGTPV2 extends HeaderAbstract
         if (attribute != null)
         {
         	this.sequenceNumber = Integer.parseInt(attribute);
-        }    
+        }
+        
+        attribute = header.attributeValue("spare");
+        if (attribute != null)
+        {
+        	this.spare = Integer.parseInt(attribute);
+        }
     }
 
 	@Override
     public String toXML()
     {
         String str = "<headerV2 ";
-        str += " messageType=\"" + this.label + ":" + this.type + "\"";
+        str += " type=\"" + this.label + ":" + this.type + "\"";
         str += " tunnelEndpointId=\"" + this.tunnelEndpointId + "\"";
         str += " sequenceNumber=\"" + this.sequenceNumber + "\"";
+        str += " spare=\"" + this.spare + "\"";
         str += " length=\"" + this.length + "\""; 
         str += " piggyFlag=\"" + this.piggyFlag + "\""; 
-        str += " teidFlag=" + this.teidFlag +  "\"";
+        str += " teidFlag=\"" + this.teidFlag + "\"";
+        str += " version=\"" + this.version + "\"";
         str += "/>";
         return str;
     }
@@ -184,7 +193,7 @@ public class HeaderGTPV2 extends HeaderAbstract
         Array sequenceNumberArray= new Integer32Array(this.sequenceNumber);
         supArray.addLast(sequenceNumberArray.subArray(1, 3));
         
-        supArray.addLast(new Integer08Array(0));
+        supArray.addLast(new Integer08Array(this.spare));
         
         return supArray;
     }
@@ -225,6 +234,8 @@ public class HeaderGTPV2 extends HeaderAbstract
     	this.sequenceNumber = (new Integer32Array(seqnumSup).getValue());
         offset = offset + 3;
         
+        Array spareArray = array.subArray(offset, 1); 
+        this.spare = new Integer08Array(spareArray).getValue();
     	offset = offset + 1;
     	return offset;
     }
@@ -263,6 +274,10 @@ public class HeaderGTPV2 extends HeaderAbstract
         else if (param.equalsIgnoreCase("sequenceNumber"))
         {
             var.add(this.sequenceNumber);
+        }
+        else if (param.equalsIgnoreCase("spare"))
+        {
+            var.add(this.spare);
         }      	
         else
         {

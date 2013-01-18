@@ -7,7 +7,7 @@
     <parameter name="[sequenceNumber]" operation="set" value="199"/>
     <sendMessageGTP name="send message" 
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 type="createSessionRequest:32" piggyFlag="0" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+        <headerV2 type="createSessionRequest:32" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
         <element tag="IMSI" coding="TLIV" description="International Mobile Subscriber Identity">
             <field name="IMSI" value="208014420002029" description="International Mobile Subscriber Identity"/>
         </element>
@@ -116,7 +116,7 @@
     <parameter name="[sequenceNumber]" operation="number.add" value="[sequenceNumber]" value2="1"/>
     <sendMessageGTP name="send message" 
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 type="deleteSessionRequest:36" piggyFlag="0" teidFlag="1" tunnelEndpointId="[TEID / GRE Key]" sequenceNumber="[sequenceNumber]"/>
+        <headerV2 type="deleteSessionRequest:36" tunnelEndpointId="[TEID / GRE Key]" sequenceNumber="[sequenceNumber]"/>
         <element tag="EBI" coding="TLIV" description="EPS Bearer ID">
             <field name="spare" value="0"/>
         		<field name="EBI" value="5"/>

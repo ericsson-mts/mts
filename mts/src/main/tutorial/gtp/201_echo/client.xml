@@ -14,11 +14,11 @@
     </receiveMessageGTP>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
-    <test parameter="[binary]" condition="binary.equals" value="3702000a00000000000102000e17"/>
+    <test parameter="[binary]" condition="binary.equals" value="3702000a499602d2000102000e17"/>
 
     <sendMessageGTP name="echo Request"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV1 type="echoRequest:1" sequenceNumber="2" nPduNumber="2" nextExtensionType="0"/>
+        <headerV1 type="echoRequest:1" tunnelEndpointId="1234567890" />
     </sendMessageGTP>
 
     <receiveMessageGTP name="version not supported">
@@ -26,7 +26,7 @@
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>    
     
-    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
-    <test parameter="[binary]" condition="binary.equals" value="370300080000000000010200"/>
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[binary]" condition="binary.equals" value="30030004499602d2"/>
 
 </scenario>
