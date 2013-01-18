@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.h323.h225cs;
 
+import java.util.List;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
@@ -99,10 +101,16 @@ public class MsgH225cs extends Msg {
     @Override
     public byte[] getBytesData() {
        // get field and element for ASN1 and set value
-       if (msgQ931.getElementQ931(126) != null) {
-    	   ElementAbstract elemV_asn1 = msgQ931.getElementQ931(126);
-        }
-
+       try
+       {
+	       if (msgQ931.getElements(126) != null) {
+	    	   List<ElementAbstract> elements_asn1 = msgQ931.getElements(126);
+	        }
+       }
+       catch (Exception e)
+       {
+    	   
+       }
        SupArray arr = new SupArray();
         TPKTPacket tpkt = new TPKTPacket(msgQ931.getLength() + 4);
         arr.addLast(tpkt.getValue());

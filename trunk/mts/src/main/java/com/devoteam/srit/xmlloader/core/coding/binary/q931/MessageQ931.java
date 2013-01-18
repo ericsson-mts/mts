@@ -36,7 +36,9 @@ import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.SupArray;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -58,7 +60,7 @@ public class MessageQ931
     	
     private HeaderAbstract header;
     
-    private LinkedHashMap<Integer, ElementAbstract> hashElements;
+    private List<ElementAbstract> elements;
 
 	public MessageQ931(Element root) throws Exception 
     {
@@ -68,7 +70,7 @@ public class MessageQ931
         this.header = new HeaderQ931();
         this.header.parseFromXML(root.element("header"), dictionary);
         
-        this.hashElements = new LinkedHashMap<Integer, ElementAbstract>();
+        this.elements = new ArrayList<ElementAbstract>();
         
         List<Element> elementsInf = root.elements("element");
         ElementQ931 elemInfo = null;
@@ -78,7 +80,7 @@ public class MessageQ931
             // FH Manage a new Element like ElementQ931big for id = User-User:126
             elemInfo.parseFromXML(element, dictionaries.get(this.syntax));
             
-            this.hashElements.put(elemInfo.getId(), elemInfo);
+            this.elements.add(elemInfo);
         }
     }
 
@@ -96,23 +98,7 @@ public class MessageQ931
         this.header.decodeFromArray(data, syntax, dictionary);
 
         // does not work like with GTP why ?
-        this.hashElements = ElementAbstract.decodeElementsFromArray(data.subArray(header.getLength()), this.dictionary);
-        
-        /*
-        hashElements = new LinkedHashMap<Integer, ElementAbstract>();
-        int offset = header.getLength();
-        while (offset < data.length) 
-        {
-            int id = new Integer08Array(data.subArray(offset, 1)).getValue();         
-            ElementAbstract elemInfo = dictionaries.get(syntax).getMapElementById().get(id);
-        
-            elemInfo.decodeFromArray(data.subArray(offset), dictionaries.get(syntax));
-            offset += elemInfo.encodeToArray().length;
-            
-            hashElements.put(id, elemInfo);
-        }
-        */
-
+        this.elements = ElementAbstract.decodeElementsFromArray(data.subArray(header.getLength()), this.dictionary);
     }
 
     /** Get a parameter from the message */
@@ -142,11 +128,13 @@ public class MessageQ931
         			id = elem.getId();
         		}
         	}        	
-        	ElementAbstract elem = hashElements.get(id);
-        	if (elem != null)
-        	{
-        		elem.getParameter(var, params, path, 1);
-        	}
+	    	List<ElementAbstract> list = this.getElements(id);
+		    Iterator<ElementAbstract> iter = list.iterator();
+		    while (iter.hasNext())
+		    {
+		    	ElementAbstract elem = (ElementAbstract) iter.next();
+	    		elem.getParameter(var, params, path, 1);
+	    	}
         }
         else
         {
@@ -158,8 +146,11 @@ public class MessageQ931
     {
         SupArray array = new SupArray();
         array.addLast(header.encodeToArray());
-        for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) {
-            array.addLast(entry.getValue().encodeToArray());
+	    Iterator<ElementAbstract> iter = this.elements.iterator();
+	    while (iter.hasNext())
+	    {
+	    	ElementAbstract elem = (ElementAbstract) iter.next();
+            array.addLast(elem.encodeToArray());
         }
         return array;
     }
@@ -176,9 +167,11 @@ public class MessageQ931
         messageToString.append("<ISDN>");
         messageToString.append(header.toString());
 
-        for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) {
-
-            messageToString.append(entry.getValue().toString());
+	    Iterator<ElementAbstract> iter = this.elements.iterator();
+	    while (iter.hasNext())
+	    {
+	    	ElementAbstract elem = (ElementAbstract) iter.next();
+            messageToString.append(elem.toString());
         }
         messageToString.append("</ISDN>");
         return messageToString.toString();
@@ -195,18 +188,16 @@ public class MessageQ931
 
         int msglength = 0;
         msglength = header.encodeToArray().length;
-        for (Entry<Integer, ElementAbstract> entry : hashElements.entrySet()) {
-
-            msglength += entry.getValue().encodeToArray().length;
+	    Iterator<ElementAbstract> iter = this.elements.iterator();
+	    while (iter.hasNext())
+	    {
+	    	ElementAbstract elem = (ElementAbstract) iter.next();
+            msglength += elem.encodeToArray().length;
 
         }
         return msglength;
     }
 
-    public ElementAbstract getElementQ931(int id) 
-    {
-		return hashElements.get(id);
-	}
     public void initDictionary(String syntax) throws Exception 
     {
     	this.dictionary = MessageQ931.dictionaries.get(syntax);
@@ -220,4 +211,21 @@ public class MessageQ931
 	        MessageQ931.dictionaries.put(syntax, dictionary);
     	}
     }
+    
+	public List<ElementAbstract> getElements(int id) throws Exception 
+	{
+		List<ElementAbstract> list = new ArrayList<ElementAbstract>();
+		
+	    Iterator<ElementAbstract> iter = this.elements.iterator();
+	    while (iter.hasNext())
+	    {
+	    	ElementAbstract elem = (ElementAbstract) iter.next();
+	        if (id == elem.getId())
+	        {
+	        	list.add(elem);
+	        }
+	    }
+	    return list;
+	}
+
 }
