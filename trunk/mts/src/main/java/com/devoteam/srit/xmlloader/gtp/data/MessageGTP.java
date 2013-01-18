@@ -309,7 +309,7 @@ public class MessageGTP
 		if (this.dictionary == null)
 		{
 	        XMLDoc xml = new XMLDoc();
-	        String file = "../conf/gtpp/dictionary_" + header.getSyntax() + ".xml";
+	        String file = "../conf/gtp/dictionary_" + header.getSyntax() + ".xml";
 	        xml.setXMLFile(new URI(file));
 	        xml.parse();
 	        Element rootDico = xml.getDocument().getRootElement();
