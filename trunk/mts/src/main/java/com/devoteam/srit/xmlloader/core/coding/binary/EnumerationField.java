@@ -30,6 +30,8 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.maps.LinkedHashMap;
 
 import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
+import gp.utils.arrays.Integer32Array;
 import gp.utils.arrays.SupArray;
 
 import java.util.HashMap;
@@ -112,8 +114,8 @@ public class EnumerationField extends IntegerField
     	}
     	try
     	{
-			int val = Integer.parseInt(value);
-			return (Integer) val;
+    		int val = Integer.parseInt(value);
+    		return (Integer) val;
     	}
     	catch (NumberFormatException e)
     	{

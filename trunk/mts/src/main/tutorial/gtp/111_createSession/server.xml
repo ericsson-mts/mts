@@ -16,9 +16,58 @@
     
     <sendMessageGTP name="send message"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 type="echoResponse:2" piggyFlag="0" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
+        <headerV2 type="createSessionResponse:33" piggyFlag="0" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
+        <element tag="Cause" coding="TLIV">
+            <field name="Cause value" value="Request accepted"/>
+            <field name="spare" value="0"/>
+            <field name="PCE" value="0"/>
+            <field name="BCE" value="0"/>
+            <field name="CS" value="Originated by the node sending the message"/>
+        </element>
+        <element tag="F-TEID" instances="1" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+            <field name="V4" value="true"/> 
+            <field name="V6" value="0"/>
+            <field name="Interface Type" value="S5/S8 PGW GTP-C"/>
+            <field name="TEID / GRE Key" value="2815696998" description="GRE?"/>
+            <!-- TODO conditional IP V4 V6 -->
+            <field name="IPv4 address" value="172.20.70.43"/>
+            <!--field name="IPv6 address" value="1234:5678:90ab:cdef:fedc:ba09:8765:4321"/-->
+        </element>
+        <element tag="PAA" coding="TLIV" description="PDN Address Allocation">
+            <field name="spare" value="0"/>
+            <field name="PDN Type" value="IPv4"/>
+            <field name="IPv4 address" value="20.20.1.2"/>
+        </element>                   
+        <element tag="APN Restriction" coding="TLIV">
+            <field name="Restriction Type value" value="No Existing Contexts or Restriction"/>
+        </element>                      
+        <element tag="Bearer Context" coding="TLIV">
+            <element tag="EBI" coding="TLIV" description="EPS Bearer ID">
+                <field name="spare" value="0"/> 
+            		<field name="EBI" value="5"/>
+            </element>
+            <element tag="Cause" coding="TLIV">
+                <field name="Cause value" value="Request accepted"/>
+                <field name="spare" value="0"/>            
+                <field name="PCE" value="0"/>            
+                <field name="BCE" value="0"/>
+                <field name="CS" value="Originated by the node sending the message"/>
+            </element>            
+            <element tag="F-TEID" instances="2" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+                <field name="V4" value="1"/> 
+                <field name="V6" value="false"/>
+                <field name="Interface Type" value="S5/S8 PGW GTP-U"/>
+                <field name="TEID / GRE Key" value="2660712550" description="GRE key ?"/>
+                <!-- TODO conditional IP V4 V6 -->      
+                <field name="IPv4 address" value="172.20.70.43"/>
+                <!--field name="IPv6 address" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/-->
+            </element>
+            <element tag="Charging ID" coding="TLIV">
+                <field name="Charging ID value" value="566056505"/>
+            </element>            
+        </element>              
         <element tag="Recovery" coding="TLIV">
-            <field name="Recovery" value="23"/>
+            <field name="Recovery" value="72"/>
         </element>
     </sendMessageGTP>
 

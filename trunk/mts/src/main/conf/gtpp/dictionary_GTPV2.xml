@@ -119,12 +119,12 @@
             <enum value="117" name="Spare. For future use in a triggered/response message See NOTE 4."/>
             <enum value="240" name="Spare. For future use in an initial/request message. See NOTE 5."/>
         </field>
-        <field name="spare" lengthBit="5" type="integer"/>        
+        <field name="spare" lengthBit="5" type="integer"/>
         <field name="PCE" lengthBit="1" type="boolean" description="PDN Connection IE Error"/>
         <field name="BCE" lengthBit="1" type="boolean" description="Bearer Context IE Error"/> 
         <field name="CS" lengthBit="1" type="enumeration" description="Cause Source">
             <enum value="1" name="Originated by the remote node"/>
-            <enum value="0" name="Originated by the node sending the message"/>            
+            <enum value="0" name="Originated by the node sending the message"/>
         </field>        
     </element>
 
@@ -203,27 +203,27 @@
    <element tag="79" name="PAA" coding="TLIV" description="PDN Address Allocation">
         <field name="spare" lengthBit="5" type="integer"/>
         <field name="PDN Type" lengthBit="3" type="enumeration">
-            <enum value="b001" name="IPv4"/>
-            <enum value="b010" name="IPv6"/>
-            <enum value="b011" name="IPv4v6"/>
+            <enum value="1" name="IPv4"/>
+            <enum value="2" name="IPv6"/>
+            <enum value="3" name="IPv4v6"/>
         </field>
         <!-- TODO condiditional -->
-        <field name="IPv6 prefix length" lengthBit="8" type="integer"/>        
-        <field name="IPv6 address" lengthBit="128" type="ipv6_address"/>          
-        <field name="IPv4 address" lengthBit="32" type="ipv4_address"/>      
+        <field name="IPv6 prefix length" lengthBit="8" type="integer"/>
+        <field name="IPv6 address" lengthBit="128" type="ipv6_address"/>
+        <field name="IPv4 address" lengthBit="32" type="ipv4_address"/>
     </element>
     
     <element tag="80" name="Bearer QoS" coding="TLIV" description="Bearer Quality of Service">
         <field name="spare1" lengthBit="1" type="boolean"/>
-        <field name="PCI" lengthBit="1" type="boolean" description="Pre-emption Capability"/>        
+        <field name="PCI" lengthBit="1" type="boolean" description="Pre-emption Capability"/> 
         <field name="PL" lengthBit="4" type="integer" description="Priority Level"/>
         <field name="spare2" lengthBit="1" type="boolean"/>        
         <field name="PVI" lengthBit="1" type="boolean" description="Pre-emption Vulnerability"/>
-        <field name="Label QCI" lengthBit="8" type="integer"/>                
+        <field name="Label QCI" lengthBit="8" type="integer"/>
         <field name="Maximum bit rate for uplink" lengthBit="40" type="integer"/>
         <field name="Maximum bit rate for downlink" lengthBit="40" type="integer"/>
         <field name="Guaranteed bit rate for uplink" lengthBit="40" type="integer"/>
-        <field name="Guaranteed bit rate for downlink" lengthBit="40" type="integer"/>                        
+        <field name="Guaranteed bit rate for downlink" lengthBit="40" type="integer"/> 
     </element>
     
     <element tag="82" name="RAT Type" coding="TLIV">    
@@ -326,9 +326,9 @@
     <element tag="99" name="PDN Type" coding="TLIV">
         <field name="spare" lengthBit="5" type="integer"/>
         <field name="PDN Type" lengthBit="3" type="enumeration">
-            <enum value="b001" name="IPv4"/>
-            <enum value="b010" name="IPv6"/>
-            <enum value="b011" name="IPv4v6"/>
+            <enum value="1" name="IPv4"/>
+            <enum value="2" name="IPv6"/>
+            <enum value="3" name="IPv4v6"/>
         </field>
     </element>
 
@@ -336,10 +336,10 @@
         <field name="Time Zone" lengthBit="8" type="integer"/>   
         <field name="spare" lengthBit="6" type="integer"/>
         <field name="Daylight Saving Time" lengthBit="2" type="enumeration">
-            <enum value="b00" name="No adjustment for Daylight Saving Time"/>
-            <enum value="b01" name="+1 hour adjustment for Daylight Saving Time"/>
-            <enum value="b10" name="+2 hours adjustment for Daylight Saving Time"/>
-            <enum value="b11" name="Spare"/>
+            <enum value="0" name="No adjustment for Daylight Saving Time"/>
+            <enum value="1" name="+1 hour adjustment for Daylight Saving Time"/>
+            <enum value="2" name="+2 hours adjustment for Daylight Saving Time"/>
+            <enum value="3" name="Spare"/>
         </field>
     </element>
     
