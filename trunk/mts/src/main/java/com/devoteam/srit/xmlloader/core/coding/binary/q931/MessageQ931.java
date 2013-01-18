@@ -128,7 +128,7 @@ public class MessageQ931
         			id = elem.getId();
         		}
         	}        	
-	    	List<ElementAbstract> list = this.getElements(id);
+	    	List<ElementAbstract> list = ElementAbstract.getElements(this.elements, id);
 		    Iterator<ElementAbstract> iter = list.iterator();
 		    while (iter.hasNext())
 		    {
@@ -198,6 +198,11 @@ public class MessageQ931
         return msglength;
     }
 
+	public List<ElementAbstract> getElements(int id) throws Exception 
+	{
+	    return ElementAbstract.getElements(this.elements, id);
+	}
+	
     public void initDictionary(String syntax) throws Exception 
     {
     	this.dictionary = MessageQ931.dictionaries.get(syntax);
@@ -211,21 +216,5 @@ public class MessageQ931
 	        MessageQ931.dictionaries.put(syntax, dictionary);
     	}
     }
-    
-	public List<ElementAbstract> getElements(int id) throws Exception 
-	{
-		List<ElementAbstract> list = new ArrayList<ElementAbstract>();
-		
-	    Iterator<ElementAbstract> iter = this.elements.iterator();
-	    while (iter.hasNext())
-	    {
-	    	ElementAbstract elem = (ElementAbstract) iter.next();
-	        if (id == elem.getId())
-	        {
-	        	list.add(elem);
-	        }
-	    }
-	    return list;
-	}
 
 }
