@@ -104,13 +104,13 @@ public class HeaderGTPPrime extends HeaderAbstract
         {
             this.name = strName;
             EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-            this.messageType = field._hashMapEnumByName.get(this.name);
+            this.messageType = field.getValuesMapByName(this.name);
         }
         else if(strType != null)
         {	
         	this.messageType = Integer.parseInt(strType);
         	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-    	    this.name = field._hashMapEnumByValue.get(this.messageType);
+    	    this.name = field.getNamesMapByValue(this.messageType);
         }
         
         String attribute;
@@ -169,39 +169,15 @@ public class HeaderGTPPrime extends HeaderAbstract
 		int offset = 4;
 		
     	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-    	this.name = field._hashMapEnumByValue.get(messageType);
+    	this.name = field.getNamesMapByValue(messageType);
     	
     	Array seqnumArray = array.subArray(offset, 2); 	
     	this.sequenceNumber = (new Integer16Array(seqnumArray).getValue());
         offset = offset + 2;
         
-		return offset;
-	}
-	
-	/*
-	public void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception
-    {	
-		this.dictionary = dictionary;
-		
-		byte[] header = new byte[1];
-        stream.read(header, 0, 1);
-        Array array = new DefaultArray(header); 
-        this.messageType = (new Integer08Array(array).getValue());
-    	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-	    this.name = field._hashMapEnumByValue.get(messageType);
-        
-	    header = new byte[2];
-        stream.read(header, 0, 2);
-        array = new DefaultArray(header); 
-        this.length = (new Integer16Array(array).getValue());
-                
-    	header = new byte[2];
-    	stream.read(header, 0, 2);
-	    array = new DefaultArray(header); 
-	    this.sequenceNumber = (new Integer16Array(array).getValue()); 
+        return offset;
     }
- 	*/
-	
+    
     @Override
     public void getParameter(Parameter var, String param) throws Exception
     {
@@ -213,11 +189,11 @@ public class HeaderGTPPrime extends HeaderAbstract
         {
             var.add(this.protocolType);
         }    	
-    	else if (param.equalsIgnoreCase("messageType"))
+       	else if (param.equalsIgnoreCase("messageType"))
         {
             var.add(this.messageType);
         }
-    	    	
+
         else if (param.equalsIgnoreCase("name"))
         {
             var.add(this.name);

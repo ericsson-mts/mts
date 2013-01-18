@@ -109,13 +109,13 @@ public class HeaderGTPV2 extends HeaderAbstract
         {
             this.name = strName;
             EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-            this.messageType = field._hashMapEnumByName.get(this.name);
+            this.messageType = field.getValuesMapByName(this.name);
         }
         else if(strType != null)
         {	
         	this.messageType = Integer.parseInt(strType);
         	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-    	    this.name = field._hashMapEnumByValue.get(this.messageType);
+    	    this.name = field.getNamesMapByValue(this.messageType);
         }
         
         String attribute;
@@ -221,7 +221,7 @@ public class HeaderGTPV2 extends HeaderAbstract
 		int offset = 4;
 		
     	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-	    this.name = field._hashMapEnumByValue.get(this.messageType);    	
+	    this.name = field.getNamesMapByValue(this.messageType);    	
         
         if (this.teidFlag != 0)
     	{

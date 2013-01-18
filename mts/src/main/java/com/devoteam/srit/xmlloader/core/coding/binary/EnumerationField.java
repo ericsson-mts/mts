@@ -30,7 +30,10 @@ import com.devoteam.srit.xmlloader.core.utils.maps.LinkedHashMap;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.SupArray;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.dom4j.Element;
 
 
@@ -41,8 +44,8 @@ import org.dom4j.Element;
 public class EnumerationField extends IntegerField
 {
 	
-    public LinkedHashMap<Integer, String> _hashMapEnumByValue = new LinkedHashMap<Integer, String>();
-    public LinkedHashMap<String, Integer> _hashMapEnumByName = new LinkedHashMap<String, Integer>();
+    private Map<Integer, String> namesMapByValue = new HashMap<Integer, String>();
+    private Map<String, Integer> valuesMapByName = new HashMap<String, Integer>();
 
 	
     public EnumerationField(Element rootXML) 
@@ -54,8 +57,8 @@ public class EnumerationField extends IntegerField
         {
         	byte[] valueBytes = Utils.parseBinaryString(elemEnum.attributeValue("value"));
         	int value = (int) valueBytes[0] & 0xFF;        	
-            this._hashMapEnumByName.put(elemEnum.attributeValue("name"), value);
-            this._hashMapEnumByValue.put(value, elemEnum.attributeValue("name"));
+            this.valuesMapByName.put(elemEnum.attributeValue("name"), value);
+            this.namesMapByValue.put(value, elemEnum.attributeValue("name"));
         }
 
     }
@@ -69,7 +72,7 @@ public class EnumerationField extends IntegerField
 	    }
 	    catch(Exception e)
 	    {
-	        Integer integerValue = this.getHashMapEnumByName().get(value);
+	        Integer integerValue = this.valuesMapByName.get(value);
 	        if (integerValue == null)
 	        {
 	        	throw new ExecutionException("The value \"" + value + "\" for the ISDN enumeration field : \"" + getName() + "\" is not present in the dictionnary.");            	            	
@@ -81,7 +84,7 @@ public class EnumerationField extends IntegerField
     @Override
     public String getValue(Array array) throws Exception {
         String value = super.getValue(array);
-    	String name = this._hashMapEnumByValue.get(new Integer(value));
+    	String name = this.namesMapByValue.get(new Integer(value));
     	String ret = "";
     	if (name != null)
     	{
@@ -91,9 +94,11 @@ public class EnumerationField extends IntegerField
     	return ret;
     }
     
-    @Override
-    public LinkedHashMap<String, Integer> getHashMapEnumByName() {
-        return this._hashMapEnumByName;
+    public Integer getValuesMapByName(String name) {
+        return this.valuesMapByName.get(name);
     }
-    
+
+    public String getNamesMapByValue(Integer value) {
+        return this.namesMapByValue.get(value);
+    }
 }
