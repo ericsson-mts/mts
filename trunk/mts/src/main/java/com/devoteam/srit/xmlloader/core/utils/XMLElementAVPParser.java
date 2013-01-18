@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -41,7 +42,8 @@ import org.dom4j.Element;
  *
  * @author gpasquiers
  */
-public class XMLElementAVPParser implements XMLElementReplacer {
+public class XMLElementAVPParser implements XMLElementReplacer, Serializable 
+{
 
     static private XMLElementReplacer instance = null;
 
