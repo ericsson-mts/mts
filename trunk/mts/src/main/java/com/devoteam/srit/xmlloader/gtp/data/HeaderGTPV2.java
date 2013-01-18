@@ -50,8 +50,8 @@ public class HeaderGTPV2 extends HeaderAbstract
 	private int version;
 	private int piggyFlag;
 	private int teidFlag;
-	private int messageType;
-	private String name;
+	private int type;
+	private String label;
 	private long tunnelEndpointId;
 	private int sequenceNumber;
     
@@ -69,7 +69,7 @@ public class HeaderGTPV2 extends HeaderAbstract
     	this.teidFlag = beginArray.getBits(4, 1);
     	
     	Array typeArray = beginArray.subArray(1, 1);
-    	this.messageType= (new Integer08Array(typeArray).getValue());
+    	this.type= (new Integer08Array(typeArray).getValue());
     	
     	Array lengthArray = beginArray.subArray(2, 2);
     	this.length = (new Integer16Array(lengthArray).getValue());
@@ -78,7 +78,7 @@ public class HeaderGTPV2 extends HeaderAbstract
     @Override
     public boolean isRequest() 
     {
-    	if ((this.name != null) && (!this.name.contains("Request")))
+    	if ((this.label != null) && (!this.label.contains("Request")))
     	{
     		return false;   		
     	}
@@ -88,7 +88,7 @@ public class HeaderGTPV2 extends HeaderAbstract
     @Override
     public String getType() 
     {  
-	    return this.name + ":" + messageType;
+	    return this.label + ":" + this.type;
     }
 
 	@Override
@@ -100,10 +100,10 @@ public class HeaderGTPV2 extends HeaderAbstract
         if (strType != null)
         {
             EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-            this.messageType = field.getEnumValue(strType);
+            this.type = field.getEnumValue(strType);
         }
         EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-        this.name = field.getNamesMapByValue(this.messageType);
+        this.label = field.getNamesMapByValue(this.type);
 
         String attribute;
         String attrFlag;
@@ -147,7 +147,7 @@ public class HeaderGTPV2 extends HeaderAbstract
     public String toXML()
     {
         String str = "<headerV2 ";
-        str += " messageType=\"" + this.name + ":" + messageType + "\"";
+        str += " messageType=\"" + this.label + ":" + this.type + "\"";
         str += " tunnelEndpointId=\"" + this.tunnelEndpointId + "\"";
         str += " sequenceNumber=\"" + this.sequenceNumber + "\"";
         str += " length=\"" + this.length + "\""; 
@@ -172,7 +172,7 @@ public class HeaderGTPV2 extends HeaderAbstract
         firstByte.setBits(7, 1, 0);
         supArray.addFirst(firstByte);
 
-        supArray.addLast(new Integer08Array(this.messageType));
+        supArray.addLast(new Integer08Array(this.type));
         
         supArray.addLast(new Integer16Array(this.length));
         
@@ -208,7 +208,7 @@ public class HeaderGTPV2 extends HeaderAbstract
 		int offset = 4;
 		
     	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-	    this.name = field.getNamesMapByValue(this.messageType);    	
+	    this.label = field.getNamesMapByValue(this.type);    	
         
         if (this.teidFlag != 0)
     	{
@@ -244,14 +244,17 @@ public class HeaderGTPV2 extends HeaderAbstract
         {
             var.add(this.teidFlag);
         }
-    	else if (param.equalsIgnoreCase("messageType"))
+    	else if (param.equalsIgnoreCase("type"))
         {
-            var.add(this.messageType);
+            var.add(this.type);
         }
-    	    	
-        else if (param.equalsIgnoreCase("name"))
+    	else if (param.equalsIgnoreCase("label"))
         {
-            var.add(this.name);
+            var.add(this.label);
+        }
+    	else if (param.equalsIgnoreCase("name"))
+        {
+            var.add(this.label + ":" + this.type);
         }
         else if (param.equalsIgnoreCase("tunnelEndpointId"))
         {

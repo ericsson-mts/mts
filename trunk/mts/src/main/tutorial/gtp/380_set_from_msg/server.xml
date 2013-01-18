@@ -14,10 +14,12 @@
     <test parameter="[version]" condition="number.equals" value="0"/>
     <parameter name="[protocolType]" operation="protocol.setFromMessage" value="header.protocolType"/>
     <test parameter="[protocolType]" condition="boolean.equals" value="0"/>
-    <parameter name="[messageType]" operation="protocol.setFromMessage" value="header.messageType"/>
-    <test parameter="[messageType]" condition="number.equals" value="240"/>
+    <parameter name="[type]" operation="protocol.setFromMessage" value="header.type"/>
+    <test parameter="[type]" condition="number.equals" value="240"/>
+    <parameter name="[label]" operation="protocol.setFromMessage" value="header.label"/>
+    <test parameter="[label]" condition="string.equals" value="dataRecordTransferRequest"/>
     <parameter name="[name]" operation="protocol.setFromMessage" value="header.name"/>
-    <test parameter="[name]" condition="string.equals" value="dataRecordTransferRequest"/>                  
+    <test parameter="[name]" condition="string.equals" value="dataRecordTransferRequest:240"/>
     <parameter name="[sequenceNumber]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     <test parameter="[sequenceNumber]" condition="number.equals" value="1"/>
 

@@ -20,12 +20,14 @@
     <test parameter="[seqNumFlag]" condition="boolean.equals" value="1"/>    
     <parameter name="[nPduFlag]" operation="protocol.setFromMessage" value="header.nPduFlag"/>
     <test parameter="[nPduFlag]" condition="boolean.equals" value="1"/>
-    <parameter name="[messageType]" operation="protocol.setFromMessage" value="header.messageType"/>
-    <test parameter="[messageType]" condition="number.equals" value="1"/>
+    <parameter name="[type]" operation="protocol.setFromMessage" value="header.type"/>
+    <test parameter="[type]" condition="number.equals" value="1"/>
+    <parameter name="[label]" operation="protocol.setFromMessage" value="header.label"/>
+    <test parameter="[label]" condition="string.equals" value="echoRequest"/>
     <parameter name="[name]" operation="protocol.setFromMessage" value="header.name"/>
-    <test parameter="[name]" condition="string.equals" value="echoRequest"/>
+    <test parameter="[name]" condition="string.equals" value="echoRequest:1"/>
     <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
-    <test parameter="[tunnelEndpointId]" condition="number.equals" value="1234567890"/>                    
+    <test parameter="[tunnelEndpointId]" condition="number.equals" value="1234567890"/>
     <parameter name="[sequenceNumber]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     <test parameter="[sequenceNumber]" condition="number.equals" value="1"/>
     <parameter name="[nPduNumber]" operation="protocol.setFromMessage" value="header.nPduNumber"/>

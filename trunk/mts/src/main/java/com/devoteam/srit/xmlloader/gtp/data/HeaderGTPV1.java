@@ -52,8 +52,8 @@ public class HeaderGTPV1 extends HeaderAbstract
 	private int extensionFlag;
 	private int seqNumFlag;
 	private int nPduFlag;
-	private int messageType;
-	private String name;
+	private int type;
+	private String label;
 	private long tunnelEndpointId;
 	private int sequenceNumber;
     private int nPduNumber;
@@ -75,7 +75,7 @@ public class HeaderGTPV1 extends HeaderAbstract
     	this.nPduFlag = beginArray.getBits(7, 1);
     	
     	Array typeArray = beginArray.subArray(1, 1);
-    	this.messageType= (new Integer08Array(typeArray).getValue());
+    	this.type= (new Integer08Array(typeArray).getValue());
     	
     	Array lengthArray = beginArray.subArray(2, 2);
     	this.length = (new Integer16Array(lengthArray).getValue());
@@ -85,11 +85,11 @@ public class HeaderGTPV1 extends HeaderAbstract
     public boolean isRequest() 
     {
     	// particular case 
-    	if (this.name.equalsIgnoreCase("errorIndication"))
+    	if (this.label.equalsIgnoreCase("errorIndication"))
     	{
     		return true;
     	}    	
-    	if ((this.name != null) && (!this.name.contains("Request")))
+    	if ((this.label != null) && (!this.label.contains("Request")))
     	{
     		return false;   		
     	}
@@ -99,7 +99,7 @@ public class HeaderGTPV1 extends HeaderAbstract
     @Override
     public String getType() 
     {  
-	    return this.name + ":" + messageType;
+	    return this.label + ":" + this.type;
     }
     
 	@Override
@@ -111,10 +111,10 @@ public class HeaderGTPV1 extends HeaderAbstract
         if (strType != null)
         {
             EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-            this.messageType = field.getEnumValue(strType);
+            this.type = field.getEnumValue(strType);
         }
         EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-        this.name = field.getNamesMapByValue(this.messageType);
+        this.label = field.getNamesMapByValue(this.type);
         
         String attribute;
         String attrFlag;
@@ -197,7 +197,7 @@ public class HeaderGTPV1 extends HeaderAbstract
     public String toXML()
     {
         String str = "<headerV1 ";
-        str += " messageType=\"" + this.name + ":" + this.messageType + "\""; 
+        str += " type=\"" + this.label + ":" + this.type + "\""; 
         str += " tunnelEndpointId=" + this.tunnelEndpointId +  "\"";
         str += " sequenceNumber=\"" + this.sequenceNumber + "\"";
         str += " nPduNumber=\"" + this.nPduNumber + "\"";
@@ -227,7 +227,7 @@ public class HeaderGTPV1 extends HeaderAbstract
         firstByte.setBits(7, 1, this.nPduFlag);
         supArray.addFirst(firstByte);
 
-        supArray.addLast(new Integer08Array(this.messageType));
+        supArray.addLast(new Integer08Array(this.type));
         
         supArray.addLast(new Integer16Array(this.length));
         
@@ -280,7 +280,7 @@ public class HeaderGTPV1 extends HeaderAbstract
 		int offset = 4;
 		
     	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-	    this.name = field.getNamesMapByValue(this.messageType);    	
+	    this.label = field.getNamesMapByValue(this.type);    	
 
 	    Array teidArray = array.subArray(offset, 4); 
         this.tunnelEndpointId = (int) (new Integer32Array(teidArray).getValue() & 0xffffffffl);
@@ -307,55 +307,6 @@ public class HeaderGTPV1 extends HeaderAbstract
 
         return offset;
 	}
-	/*
-	@Override
-	public void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception
-    {
-		this.dictionary = dictionary;
-		
-		byte[] header = new byte[1];
-        stream.read(header, 0, 1);
-        Array array = new DefaultArray(header); 
-        this.messageType = (new Integer08Array(array).getValue());
-    	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-	    this.name = field._hashMapEnumByValue.get(messageType);
-        
-        header = new byte[2];
-        stream.read(header, 0, 2);
-        array = new DefaultArray(header); 
-        this.length = (new Integer16Array(array).getValue());
-        
-    	header = new byte[4];
-        stream.read(header, 0, 4);
-        array = new DefaultArray(header); 
-        this.tunnelEndpointId = (new Integer32Array(array).getValue());
-        
-        if (this.seqNumFlag != 0)
-        {
-	    	header = new byte[2];
-	    	stream.read(header, 0, 2);
-	    	array = new DefaultArray(header); 
-	    	this.sequenceNumber = (new Integer16Array(array).getValue()); 
-        }
-        
-        if (this.nPduFlag != 0)
-        {
-	    	header = new byte[1];
-	    	stream.read(header, 0, 1);
-	    	array = new DefaultArray(header); 
-	    	this.nPduNumber = (new Integer08Array(array).getValue()); 
-        }
-        
-        if (this.extensionFlag != 0)
-        {
-	    	header = new byte[1];
-	    	stream.read(header, 0, 1);
-	    	array = new DefaultArray(header); 
-	    	this.nextExtensionType = (new Integer08Array(array).getValue()); 
-        }
-    	
-    }
-    */
 	
     @Override
     public void getParameter(Parameter var, String param) throws Exception
@@ -380,14 +331,17 @@ public class HeaderGTPV1 extends HeaderAbstract
         {
             var.add(this.nPduFlag);
         }    	
-    	else if (param.equalsIgnoreCase("messageType"))
+    	else if (param.equalsIgnoreCase("type"))
         {
-            var.add(this.messageType);
+            var.add(this.type);
         }
-    	    	
-        else if (param.equalsIgnoreCase("name"))
+    	else if (param.equalsIgnoreCase("label"))
         {
-            var.add(this.name);
+            var.add(this.label);
+        }
+    	else if (param.equalsIgnoreCase("name"))
+        {
+            var.add(this.label + ":" + this.type);
         }
         else if (param.equalsIgnoreCase("tunnelEndpointId"))
         {

@@ -44,8 +44,8 @@ public class HeaderGTPPrime extends HeaderAbstract
 {
     private int version;
     private int protocolType;    
-    private int messageType;
-	private String name;
+    private int type;
+	private String label;
     private int sequenceNumber;
     
     public HeaderGTPPrime() 
@@ -61,7 +61,7 @@ public class HeaderGTPPrime extends HeaderAbstract
         this.protocolType = beginArray.getBits(3,1);
         
     	Array typeArray = beginArray.subArray(1, 1);
-    	this.messageType= (new Integer08Array(typeArray).getValue());
+    	this.type= (new Integer08Array(typeArray).getValue());
     	
     	Array lengthArray = beginArray.subArray(2, 2);
     	this.length = (new Integer16Array(lengthArray).getValue());
@@ -70,7 +70,7 @@ public class HeaderGTPPrime extends HeaderAbstract
     @Override
     public boolean isRequest() 
     {
-    	if ((this.name != null) && (!this.name.contains("Request")))
+    	if ((this.label != null) && (!this.label.contains("Request")))
     	{
     		return false;   		
     	}
@@ -80,7 +80,7 @@ public class HeaderGTPPrime extends HeaderAbstract
     @Override
     public String getType() 
     {  
-	    return this.name + ":" + messageType;
+	    return this.label + ":" + this.type;
     }
 
     @Override
@@ -92,10 +92,10 @@ public class HeaderGTPPrime extends HeaderAbstract
         if (strType != null)
         {
             EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-            this.messageType = field.getEnumValue(strType);
+            this.type = field.getEnumValue(strType);
         }
         EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-        this.name = field.getNamesMapByValue(this.messageType);
+        this.label = field.getNamesMapByValue(this.type);
         
         String attribute;
         String attrFlag;
@@ -111,7 +111,7 @@ public class HeaderGTPPrime extends HeaderAbstract
     public String toXML()
     {
         String str = "<headerPrime ";
-        str += " messageType=\"" + this.name + ":" + this.messageType + "\""; 
+        str += " type=\"" + this.label + ":" + this.type + "\""; 
         str += " sequenceNumber=\"" + this.sequenceNumber + "\"";
         str += " length=\"" + this.length + "\"";
         str += " version=\"" + this.version + "\"";        
@@ -131,7 +131,7 @@ public class HeaderGTPPrime extends HeaderAbstract
         firstByte.setBits(4, 4, 15);//=> 1111 in bits
         supArray.addFirst(firstByte);
 
-        supArray.addLast(new Integer08Array(messageType));
+        supArray.addLast(new Integer08Array(type));
         supArray.addLast(new Integer16Array(length));
         supArray.addLast(new Integer16Array(sequenceNumber));
 
@@ -153,7 +153,7 @@ public class HeaderGTPPrime extends HeaderAbstract
 		int offset = 4;
 		
     	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-    	this.name = field.getNamesMapByValue(messageType);
+    	this.label = field.getNamesMapByValue(this.type);
     	
     	Array seqnumArray = array.subArray(offset, 2); 	
     	this.sequenceNumber = (new Integer16Array(seqnumArray).getValue());
@@ -173,14 +173,17 @@ public class HeaderGTPPrime extends HeaderAbstract
         {
             var.add(this.protocolType);
         }    	
-       	else if (param.equalsIgnoreCase("messageType"))
+    	else if (param.equalsIgnoreCase("type"))
         {
-            var.add(this.messageType);
+            var.add(this.type);
         }
-
-        else if (param.equalsIgnoreCase("name"))
+    	else if (param.equalsIgnoreCase("label"))
         {
-            var.add(this.name);
+            var.add(this.label);
+        }
+    	else if (param.equalsIgnoreCase("name"))
+        {
+            var.add(this.label + ":" + this.type);
         }
         else if (param.equalsIgnoreCase("sequenceNumber"))
         {

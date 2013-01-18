@@ -17,12 +17,14 @@
     <test parameter="[piggyFlag]" condition="boolean.equals" value="1"/>    
     <parameter name="[teidFlag]" operation="protocol.setFromMessage" value="header.teidFlag"/>
     <test parameter="[teidFlag]" condition="boolean.equals" value="1"/>
-    <parameter name="[messageType]" operation="protocol.setFromMessage" value="header.messageType"/>
-    <test parameter="[messageType]" condition="number.equals" value="32"/>
+    <parameter name="[type]" operation="protocol.setFromMessage" value="header.type"/>
+    <test parameter="[type]" condition="number.equals" value="32"/>
+    <parameter name="[label]" operation="protocol.setFromMessage" value="header.label"/>
+    <test parameter="[label]" condition="string.equals" value="createSessionRequest"/>
     <parameter name="[name]" operation="protocol.setFromMessage" value="header.name"/>
-    <test parameter="[name]" condition="string.equals" value="createSessionRequest"/>
+    <test parameter="[name]" condition="string.equals" value="createSessionRequest:32"/>
     <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
-    <test parameter="[tunnelEndpointId]" condition="number.equals" value="4294967295"/>                    
+    <test parameter="[tunnelEndpointId]" condition="number.equals" value="4294967295"/>
     <parameter name="[sequenceNumber]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     <test parameter="[sequenceNumber]" condition="number.equals" value="16777215"/>
     
