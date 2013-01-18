@@ -6,8 +6,12 @@
 # to not check class at run (useful for the sctp stack)
 # -noverify
 
-# less freezes due to garbage collector but lower performances (~20%) but it can be used without problems if we have CPU time to spare
-# -XX:+UseConcMarkSweepGC
+# Recommanded values by Oracle : less freezes due to garbage collector but lower performances (~20%) 
+# but it can be used without problems if we have CPU time to spare
+-XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode \
+
+# Activate the logging on the garbage collection working
+-XX:+PrintGCDetails -XX:+PrintGCTimeStamps
 
 # to use a large number of IP addresses (around 10000 ipaddresses)
 # -Djava.net.preferIPv4Stack=true
