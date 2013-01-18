@@ -36,12 +36,12 @@
             <field name="MMC" value="208,01"/>
         </element>  
         <element tag="RAT Type" coding="TLIV">
-            <field name="RAT Type" value="EUTRAN"/>
+            <field name="RAT Type" value="EUTRAN:6"/>
         </element>
         <element tag="F-TEID" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
             <field name="V4" value="true"/>
             <field name="V6" value="0"/>
-            <field name="Interface Type" value="S5/S8 SGW GTP-C"/>
+            <field name="Interface Type" value="S5/S8 SGW GTP-C:6"/>
             <field name="TEID / GRE Key" value="2509643778" description="GRE?"/>
             <!-- TODO conditional IP V4 V6 -->
             <field name="IPv4 address" value="172.20.70.42"/>
@@ -55,15 +55,15 @@
         </element>
         <element tag="Selection Mode" coding="TLIV">    
             <field name="spare" value="0"/>
-            <field name="Selection Mode" value="MS or network provided APN, subscribed verified"/>
+            <field name="Selection Mode" value="MS or network provided APN, subscribed verified:0"/>
         </element>
         <element tag="PDN Type" coding="TLIV">
             <field name="spare" value="0"/>
-            <field name="PDN Type" value="IPv4"/>
+            <field name="PDN Type" value="IPv4:1"/>
         </element>
         <element tag="PAA" coding="TLIV" description="PDN Address Allocation">
             <field name="spare" value="0"/>
-            <field name="PDN Type" value="IPv4"/>
+            <field name="PDN Type" value="IPv4:1"/>
             <field name="IPv4 address" value="0"/>
             <!-- TODO condiditional -->
             <!--field name="IPv6 address" value="0"/--> 
@@ -101,24 +101,24 @@
             <field name="CPSR" value="0"/>        
         </element>
         <element tag="APN Restriction" coding="TLIV">
-            <field name="Restriction Type value" value="No Existing Contexts or Restriction"/>
+            <field name="Restriction Type value" value="No Existing Contexts or Restriction:0"/>
         </element>                
         <element tag="AMBR" coding="TLIV" description="Aggregate Maximum Bit Rate">
             <field name="APN-AMBR for uplink" value="50000"/>
             <field name="APN-AMBR for downlink" value="100000"/>        
         </element>        
         <element tag="PCO" coding="TLIV" description="Protocol Configuration Options">
-        		<field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
+            <field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
         </element>
         <element tag="Bearer Context" coding="TLIV">
             <element tag="EBI" coding="TLIV" description="EPS Bearer ID">
                 <field name="spare" value="0"/>              
-            		<field name="EBI" value="5"/>
+                <field name="EBI" value="5"/>
             </element>
             <element tag="F-TEID" instances="2" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
-                <field name="V4" value="1"/>        
+                <field name="V4" value="1"/>
                 <field name="V6" value="false"/>
-                <field name="Interface Type" value="S5/S8 SGW GTP-U"/>
+                <field name="Interface Type" value="S5/S8 SGW GTP-U:4"/>
                 <field name="TEID / GRE Key" value="2147491842" description="GRE key ?"/>
                 <!-- TODO conditional IP V4 V6 -->      
                 <field name="IPv4 address" value="172.20.70.42"/>
@@ -128,19 +128,19 @@
                 <field name="spare1" value="0"/>
                 <field name="PCI" value="false" description="Pre-emption Capability"/>        
                 <field name="PL" value="1" description="Priority Level"/>
-                <field name="spare2" value="false" type="boolean"/>        
+                <field name="spare2" value="false"/>        
                 <field name="PVI" value="0" description="Pre-emption Vulnerability"/>
-                <field name="Label QCI" value="7"/>                
+                <field name="Label QCI" value="7"/> 
                 <field name="Maximum bit rate for uplink" value="0"/>
                 <field name="Maximum bit rate for downlink" value="0"/>
                 <field name="Guaranteed bit rate for uplink" value="0"/>
-                <field name="Guaranteed bit rate for downlink" value="0"/>                        
-            </element>            
+                <field name="Guaranteed bit rate for downlink" value="0"/>
+            </element>
         </element>
         <element tag="UE Time Zone" coding="TLIV">
             <field name="Time Zone" value="64"/>   
             <field name="spare" value="0"/>
-            <field name="Daylight Saving Time" value="No adjustment for Daylight Saving Time"/>
+            <field name="Daylight Saving Time" value="No adjustment for Daylight Saving Time:0"/>
         </element>
        <element tag="Charging Characteristics" coding="TLIV">
             <field name="Charging Characteristics value" value="2048"/>   
@@ -154,6 +154,6 @@
     </receiveMessageGTP>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
-    <test parameter="[binary]" condition="binary.equals" value="4802000d0000000056b602000300010017"/>
+    <test parameter="[binary]" condition="binary.equals" value="482100520000000056b602000200020010005700090187a7d42066ac14462b4f00050001141401027f000100005d002000490001000502000200100057000902859e974066ac14462b5e00040021bd56390300010048"/>
 
 </scenario>
