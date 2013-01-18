@@ -8,7 +8,7 @@
     <openChannelGTP name="channel" remoteHost="[listenHost]" remotePort="[listenPort]" transport="[transport]"/>
 
     <sendMessageGTP name="echo Request" channel="channel">
-        <headerPrime name="echoRequest" sequenceNumber="1"/>
+        <headerPrime type="echoRequest:1" sequenceNumber="1"/>
     </sendMessageGTP>
 
     <receiveMessageGTP name="echoResponse">
@@ -20,7 +20,7 @@
     <test parameter="[binary]" condition="binary.equals" value="0f02000400010e17"/>
     
     <sendMessageGTP name="echo Request" channel="[channel]">
-        <headerPrime name="echoRequest" sequenceNumber="2"/>
+        <headerPrime type="echoRequest:1" sequenceNumber="2"/>
     </sendMessageGTP>
 
     <receiveMessageGTP name="version not supported">

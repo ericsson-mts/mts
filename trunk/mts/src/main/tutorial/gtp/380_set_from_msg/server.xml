@@ -26,7 +26,7 @@
     
     <sendMessageGTP name="send data record transfer response"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerPrime name="dataRecordTransferResponse" sequenceNumber="1"/>
+        <headerPrime type="241" sequenceNumber="1"/>
         <element tag="cause" coding="TV">
             <field name="cause" value="1"/>
         </element>
@@ -47,7 +47,7 @@
     
     <sendMessageGTP name="send data record transfer response"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerPrime name="dataRecordTransferResponse" sequenceNumber="2"/>
+        <headerPrime type="dataRecordTransferResponse" sequenceNumber="2"/>
         <element tag="cause" coding="TV">
             <field name="cause" value="2"/>
         </element>        
@@ -64,17 +64,17 @@
         <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
     </receiveMessageGTP>
 
-    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
     <test parameter="[binary]" condition="binary.equals" value="0ff0000b00037e03fa000400060001"/>
     
     <sendMessageGTP name="send data record transfer response"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerPrime name="dataRecordTransferResponse" sequenceNumber="3"/>
+        <headerPrime type="dataRecordTransferResponse:241" sequenceNumber="3"/>
         <element tag="cause" coding="TV">
             <field name="cause" value="3"/>
         </element>        
         <element tag="requestsResponded" coding="TLV">
-            <field name="sequenceNumber01" value="1"/>        
+            <field name="sequenceNumber01" value="1"/> 
         </element>
     </sendMessageGTP>
 

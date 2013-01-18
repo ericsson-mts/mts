@@ -5,7 +5,7 @@
 
     <sendMessageGTP name="send data record transfer request"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerPrime name="dataRecordTransferRequest" sequenceNumber="1"/>
+        <headerPrime type="240" sequenceNumber="1"/>
         <element tag="packetTransferCommand" coding="TV">
             <field name="packetTransferCommand" value="Send Data Record Packet"/>
         </element>
@@ -28,7 +28,7 @@
     
     <sendMessageGTP name="send data record transfer request"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerPrime name="dataRecordTransferRequest" sequenceNumber="2"/>
+        <headerPrime type="dataRecordTransferRequest" sequenceNumber="2"/>
         <element tag="packetTransferCommand" coding="TV">
             <field name="packetTransferCommand" value="Release Data Record Packet"/>
         </element>
@@ -49,7 +49,7 @@
 
     <sendMessageGTP name="send data record transfer request"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerPrime name="dataRecordTransferRequest" sequenceNumber="3"/>
+        <headerPrime type="dataRecordTransferRequest:240" sequenceNumber="3"/>
         <element tag="packetTransferCommand" coding="TV">
             <field name="packetTransferCommand" value="Cancel Data Record Packet"/>
         </element>
