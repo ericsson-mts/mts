@@ -244,7 +244,7 @@ public class MessageGTP
 	    			id = elem.getId();
 	    		}
 	    	}        	
-	    	List<ElementAbstract> list = this.getElement(id);
+	    	List<ElementAbstract> list = this.getElements(id);
 		    Iterator<ElementAbstract> iter = list.iterator();
 		    while (iter.hasNext())
 		    {
@@ -318,7 +318,7 @@ public class MessageGTP
 		}
 	}
 	
-	public List<ElementAbstract> getElement(int id) throws Exception 
+	private List<ElementAbstract> getElements(int id) throws Exception 
 	{
 		List<ElementAbstract> list = new ArrayList<ElementAbstract>();
 		
