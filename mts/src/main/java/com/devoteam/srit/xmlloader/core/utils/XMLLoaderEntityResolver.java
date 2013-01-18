@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URI;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -36,7 +37,7 @@ import org.xml.sax.InputSource;
  * This class is used to set a correct path to the dtd in the xml files.
  * @author gpasquiers
  */
-public class XMLLoaderEntityResolver implements EntityResolver
+public class XMLLoaderEntityResolver implements EntityResolver, Serializable
 {
 
     private static String keyword_home = "[XML_LOADER_HOME]";

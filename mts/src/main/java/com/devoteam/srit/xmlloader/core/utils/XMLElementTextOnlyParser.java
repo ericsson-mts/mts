@@ -26,6 +26,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -42,7 +43,8 @@ import org.dom4j.tree.DefaultText;
  *
  * @author gpasquiers
  */
-public class XMLElementTextOnlyParser implements XMLElementReplacer {
+public class XMLElementTextOnlyParser implements XMLElementReplacer, Serializable 
+{
 
     static private XMLElementReplacer instance = null;
 

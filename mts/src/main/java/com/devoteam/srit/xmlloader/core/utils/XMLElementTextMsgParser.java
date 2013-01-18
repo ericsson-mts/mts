@@ -23,6 +23,8 @@
 package com.devoteam.srit.xmlloader.core.utils;
 
 import com.devoteam.srit.xmlloader.core.ParameterPool;
+
+import java.io.Serializable;
 import java.util.List;
 import org.dom4j.Element;
 
@@ -31,7 +33,8 @@ import org.dom4j.Element;
  *
  * @author gpasquiers
  */
-public class XMLElementTextMsgParser implements XMLElementReplacer {
+public class XMLElementTextMsgParser implements XMLElementReplacer, Serializable
+{
     static private XMLElementReplacer instance = null;
 
     static public XMLElementReplacer instance() {

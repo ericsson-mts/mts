@@ -24,6 +24,8 @@ package com.devoteam.srit.xmlloader.core.utils;
 
 import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import org.dom4j.Element;
@@ -34,7 +36,8 @@ import org.dom4j.Attribute;
  *
  * @author gpasquiers
  */
-public class XMLElementRTPFLOWParser implements XMLElementReplacer {
+public class XMLElementRTPFLOWParser implements XMLElementReplacer, Serializable 
+{
 
     static private XMLElementReplacer instance = null;
 
