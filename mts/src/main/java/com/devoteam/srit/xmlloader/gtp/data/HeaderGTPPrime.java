@@ -23,8 +23,6 @@
 
 package com.devoteam.srit.xmlloader.gtp.data;
 
-import java.io.InputStream;
-
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
@@ -36,7 +34,6 @@ import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.Integer16Array;
-import gp.utils.arrays.Integer32Array;
 import gp.utils.arrays.SupArray;
 
 /**
@@ -91,27 +88,14 @@ public class HeaderGTPPrime extends HeaderAbstract
     {
 		this.dictionary = dictionary;
 		
-        String strName = header.attributeValue("name");
         String strType = header.attributeValue("type");
-
-        if ((strType != null) && (strName != null))
-            throw new Exception("Type and name of the message " + this.name + " must not be set both");
-
-        if ((strType == null) && (strName == null))
-            throw new Exception("One of the parameter type or name of the message header must be set");
-
-        if (strName != null)
+        if (strType != null)
         {
-            this.name = strName;
             EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-            this.messageType = field.getValuesMapByName(this.name);
+            this.messageType = field.getEnumValue(strType);
         }
-        else if(strType != null)
-        {	
-        	this.messageType = Integer.parseInt(strType);
-        	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-    	    this.name = field.getNamesMapByValue(this.messageType);
-        }
+        EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+        this.name = field.getNamesMapByValue(this.messageType);
         
         String attribute;
         String attrFlag;

@@ -13,20 +13,19 @@
                                     
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
     <test parameter="[binary]" condition="binary.equals" value="482000c6000000000000c7000100080002084124002020f94c0006003346452320f94b000800999900000000101156000d001812f430000312f43000000101480008000000c350000186a05300030012f430520001000657000900860000456714150001800001000163000100014f000500010000000047001a00066f7461726965066d6e63303033066d636332313404677072737f000100005d002c004900010005500016004809000000000000000000000000000000000000000057000902840000456f14150001"/>
-    
     <parameter name="[tunnelEndpointId]" operation="set" value="17767"/>
     <sendMessageGTP name="send message"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 name="createSessionResponse" piggyFlag="0" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
+        <headerV2 type="createSessionResponse:33" piggyFlag="0" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
         <element tag="Cause" coding="TLIV">
             <field name="Cause value" value="Request accepted"/>
-            <field name="spare" value="0"/>            
-            <field name="PCE" value="0"/>            
+            <field name="spare" value="0"/>
+            <field name="PCE" value="0"/>
             <field name="BCE" value="0"/>
-            <field name="CS" value="Originated by the node sending the message"/>                        
+            <field name="CS" value="Originated by the node sending the message"/>
         </element>
         <element tag="F-TEID" instances="1" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
-            <field name="V4" value="true"/>        
+            <field name="V4" value="true"/> 
             <field name="V6" value="0"/>
             <field name="Interface Type" value="S5/S8 PGW GTP-C"/>
             <field name="TEID / GRE Key" value="2815696998" description="GRE?"/>
@@ -44,7 +43,7 @@
         </element>                      
         <element tag="Bearer Context" coding="TLIV">
             <element tag="EBI" coding="TLIV" description="EPS Bearer ID">
-                <field name="spare" value="0"/>              
+                <field name="spare" value="0"/> 
             		<field name="EBI" value="5"/>
             </element>
             <element tag="Cause" coding="TLIV">
@@ -52,10 +51,10 @@
                 <field name="spare" value="0"/>            
                 <field name="PCE" value="0"/>            
                 <field name="BCE" value="0"/>
-                <field name="CS" value="Originated by the node sending the message"/>                        
+                <field name="CS" value="Originated by the node sending the message"/>
             </element>            
             <element tag="F-TEID" instances="2" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
-                <field name="V4" value="1"/>        
+                <field name="V4" value="1"/> 
                 <field name="V6" value="false"/>
                 <field name="Interface Type" value="S5/S8 PGW GTP-U"/>
                 <field name="TEID / GRE Key" value="2660712550" description="GRE key ?"/>
@@ -64,7 +63,7 @@
                 <!--field name="IPv6 address" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/-->
             </element>
             <element tag="Charging ID" coding="TLIV">
-                <field name="Charging ID value" value="566056505"/>   
+                <field name="Charging ID value" value="566056505"/>
             </element>            
         </element>              
         <element tag="Recovery" coding="TLIV">
@@ -86,13 +85,13 @@
     <parameter name="[tunnelEndpointId]" operation="set" value="17767"/>    
     <sendMessageGTP name="send message"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 name="deleteSessionResponse" piggyFlag="0" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
+        <headerV2 type="deleteSessionResponse:37" piggyFlag="0" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
         <element tag="Cause" coding="TLIV">
             <field name="Cause value" value="Request accepted"/>
             <field name="spare" value="0"/>            
             <field name="PCE" value="0"/>            
             <field name="BCE" value="0"/>
-            <field name="CS" value="Originated by the node sending the message"/>                        
+            <field name="CS" value="Originated by the node sending the message"/> 
         </element>
     </sendMessageGTP>
     

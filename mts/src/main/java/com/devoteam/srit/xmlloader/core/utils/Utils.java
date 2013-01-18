@@ -374,7 +374,11 @@ public class Utils
      * Tests if the string is an integer.
      */
     public static boolean parseBoolean(String string)
-    { 
+    {
+    	if (string.indexOf(":") >=0)
+    	{
+    		
+    	}
     	string = string.trim();
     	if ("true".equalsIgnoreCase(string))
     	{

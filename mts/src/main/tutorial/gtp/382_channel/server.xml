@@ -14,7 +14,7 @@
     <test parameter="[binary]" condition="binary.equals" value="0f0100020001"/>
 
     <sendMessageGTP name="echo Response" channel="[channel]">
-        <headerPrime name="echoResponse" sequenceNumber="1"/>
+        <headerPrime type="echoResponse:2" sequenceNumber="1"/>
         <element tag="recovery" coding="TV">
 		        <field name="recovery" value="23"/>
         </element>        
@@ -32,7 +32,7 @@
     
     <sendMessageGTP name="versionNotSupported"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerPrime name="versionNotSupported" sequenceNumber="2"/>
+        <headerPrime type="versionNotSupported:3" sequenceNumber="2"/>
     </sendMessageGTP>
 
 </scenario>

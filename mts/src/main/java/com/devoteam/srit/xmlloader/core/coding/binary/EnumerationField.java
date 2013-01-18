@@ -24,6 +24,8 @@
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.maps.LinkedHashMap;
 
@@ -44,8 +46,8 @@ import org.dom4j.Element;
 public class EnumerationField extends IntegerField
 {
 	
-    private Map<Integer, String> namesMapByValue = new HashMap<Integer, String>();
-    private Map<String, Integer> valuesMapByName = new HashMap<String, Integer>();
+    private Map<Integer, String> labelsMapByValue = new HashMap<Integer, String>();
+    private Map<String, Integer> valuesMapByLabel = new HashMap<String, Integer>();
 
 	
     public EnumerationField(Element rootXML) 
@@ -57,34 +59,25 @@ public class EnumerationField extends IntegerField
         {
         	byte[] valueBytes = Utils.parseBinaryString(elemEnum.attributeValue("value"));
         	int value = (int) valueBytes[0] & 0xFF;        	
-            this.valuesMapByName.put(elemEnum.attributeValue("name"), value);
-            this.namesMapByValue.put(value, elemEnum.attributeValue("name"));
+            this.valuesMapByLabel.put(elemEnum.attributeValue("name"), value);
+            this.labelsMapByValue.put(value, elemEnum.attributeValue("name"));
         }
 
     }
 
     @Override
-    public void setValue(String value, int offset, SupArray array) throws Exception {
+    public void setValue(String value, int offset, SupArray array) throws Exception 
+    {
     	this._offset = offset;
-	    try
-	    {
-	    	array.setBits(getOffset(), getLength(), Integer.parseInt(value));
-	    }
-	    catch(Exception e)
-	    {
-	        Integer integerValue = this.valuesMapByName.get(value);
-	        if (integerValue == null)
-	        {
-	        	throw new ExecutionException("The value \"" + value + "\" for the ISDN enumeration field : \"" + getName() + "\" is not present in the dictionnary.");            	            	
-	        }
-	        array.setBits(getOffset(), getLength(), integerValue.byteValue() & 0xff);
-	    }
+        Integer integerValue = this.getEnumValue(value);
+        array.setBits(getOffset(), getLength(), integerValue.byteValue() & 0xff);
     }
     
     @Override
-    public String getValue(Array array) throws Exception {
+    public String getValue(Array array) throws Exception 
+    {
         String value = super.getValue(array);
-    	String name = this.namesMapByValue.get(new Integer(value));
+    	String name = this.labelsMapByValue.get(new Integer(value));
     	String ret = "";
     	if (name != null)
     	{
@@ -94,11 +87,43 @@ public class EnumerationField extends IntegerField
     	return ret;
     }
     
-    public Integer getValuesMapByName(String name) {
-        return this.valuesMapByName.get(name);
+    public Integer getValuesMapByName(String name) 
+    {
+        return this.valuesMapByLabel.get(name);
     }
 
-    public String getNamesMapByValue(Integer value) {
-        return this.namesMapByValue.get(value);
+    public String getNamesMapByValue(Integer value) 
+    {
+        return this.labelsMapByValue.get(value);
+    }
+    
+    public Integer getEnumValue(String text) throws Exception
+    {
+    	int iPos = text.indexOf(":");
+    	String value= text;
+    	if (iPos >= 0)
+    	{
+    		String label = text.substring(0, iPos);
+    		value = text.substring(iPos + 1);
+   			if (!label.equalsIgnoreCase(this.labelsMapByValue.get(value)))
+   			{
+   				GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "For the enumeration field \"" + getName() + "\", the value \"" + value + "\"  does not match the label \"" + label + "\"");
+   			}
+    	}
+    	try
+    	{
+			int val = Integer.parseInt(value);
+			return (Integer) val;
+    	}
+    	catch (NumberFormatException e)
+    	{
+    		Integer val = this.valuesMapByLabel.get(value);
+	        if (val == null)
+	        {
+	        	throw new ExecutionException("For the enumeration field \"" + getName() + "\", the value \"" + value + "\" is not numeric or valid according to the dictionary.");
+	        }
+
+    		return val;
+    	}
     }
 }

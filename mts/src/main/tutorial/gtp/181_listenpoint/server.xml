@@ -16,7 +16,7 @@
     
     <sendMessageGTP name="send message" listenpoint="listenpoint"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 name="echoResponse" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
+        <headerV2 type="echoResponse:2" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
         <element tag="Recovery" coding="TLIV">
             <field name="Recovery" value="23"/>
         </element>
@@ -32,7 +32,7 @@
         
     <sendMessageGTP name="send message" listenpoint="listenpoint"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 name="versionNotSupported" piggyFlag = "0" teidFlag = "[tunnelEndpointId]" sequenceNumber="[seqNum]"/>    
+        <headerV2 type="versionNotSupported:3" piggyFlag = "0" teidFlag = "[tunnelEndpointId]" sequenceNumber="[seqNum]"/>    
     </sendMessageGTP>
 
     <finally>
