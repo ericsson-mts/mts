@@ -51,6 +51,7 @@ public abstract class ElementAbstract implements Cloneable
 {
 
     protected int id;
+
     protected String name;
 
 	// protected int spare;
@@ -124,7 +125,6 @@ public abstract class ElementAbstract implements Cloneable
             }        				
     		this.id = elemDico.getId();
     	}
-    	
     	
         if (elemDico != null)
         {
@@ -398,11 +398,33 @@ public abstract class ElementAbstract implements Cloneable
         		var.add(field.getValue(this._fields));
         	}
         }
-        else
+        else 
         {
-           	Parameter.throwBadPathKeywordException(path);
-        }
+        	List<ElementAbstract> list = ElementAbstract.getElements(this.elements, Integer.parseInt(params[offset + 2]));
+        	 Iterator<ElementAbstract> iter = list.iterator();
+ 		    while (iter.hasNext())
+ 		    {
+ 		    	ElementAbstract elem = (ElementAbstract) iter.next();
+ 		    	elem.getParameter(var, params, params[offset + 2], offset + 1);
+ 		    }
+        }    	
     }
+    
+	public static List<ElementAbstract> getElements(List<ElementAbstract> elements, int id) throws Exception 
+	{
+		List<ElementAbstract> list = new ArrayList<ElementAbstract>();
+		
+	    Iterator<ElementAbstract> iter = elements.iterator();
+	    while (iter.hasNext())
+	    {
+	    	ElementAbstract elem = (ElementAbstract) iter.next();
+	        if (id == elem.getId())
+	        {
+	        	list.add(elem);
+	        }
+	    }
+	    return list;
+	}
     
     public int getLengthElem() {
         int length = 0;

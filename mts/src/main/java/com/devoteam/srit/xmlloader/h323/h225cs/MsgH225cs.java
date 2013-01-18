@@ -103,13 +103,11 @@ public class MsgH225cs extends Msg {
        // get field and element for ASN1 and set value
        try
        {
-	       if (msgQ931.getElements(126) != null) {
-	    	   List<ElementAbstract> elements_asn1 = msgQ931.getElements(126);
-	        }
+           List<ElementAbstract> elements_asn1 = msgQ931.getElements(126);
        }
        catch (Exception e)
        {
-    	   
+
        }
        SupArray arr = new SupArray();
         TPKTPacket tpkt = new TPKTPacket(msgQ931.getLength() + 4);
