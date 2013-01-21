@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
 
 <installation version="1.0">
+
     <info>
         <appname>${project.name}-${project.version}</appname>
         <appversion>${project.version}</appversion>
         <url>https://sites.google.com/site/multiprotocoltestsuite/</url>
     </info>
+    
+    <variables>
+        <variable name="InstallerFrame.logfilePath" value="$INSTALL_PATH/logs/MTS-install.log"/>
+    </variables>
     
     <guiprefs width="760" height="480" resizable="no">
         <modifier key="useButtonIcons" value="yes"/>
@@ -57,16 +62,19 @@
             <singlefile src="${target.mts.dir}/bin/java_arguments.release"  target="$INSTALL_PATH/bin/java_arguments"/>
             
             <!-- copy everything but files that have a .release version (ignore linux_postinstall.sh that is special) -->
-            <!--fileset dir="${target.mts.dir}/bin" targetdir="$INSTALL_PATH/bin">
+            <fileset dir="${target.mts.dir}/bin" targetdir="$INSTALL_PATH/bin">
                 <include name="java_arguments.txt"/>
-                <include name="start*"/>
+                <include name="*.bat"/>
+                <include name="*.sh*"/>
                 <include name="icon*"/>
-                <include name="genscript*"/>
-                <include name="*"/>
-                <include name="uninstall*"/>
-            </fileset-->
+                <include name="java_arguments.txt"/>
+                <include name="QCparam.xls"/>
+                <include name="QCscript.xls"/>
+                <include name="sipp.dtd"/>
+                <exclude name="linux_postinstall.sh"/>
+            </fileset>
             
-            <file src="${target.mts.dir}/bin"          targetdir="$INSTALL_PATH" />
+            <file src="${target.mts.dir}/bin/test"          targetdir="$INSTALL_PATH" />
             <file src="${target.mts.dir}/conf"         targetdir="$INSTALL_PATH" />
             <file src="${target.mts.dir}/doc"          targetdir="$INSTALL_PATH" />
             <file src="${target.mts.dir}/functions"    targetdir="$INSTALL_PATH" />
