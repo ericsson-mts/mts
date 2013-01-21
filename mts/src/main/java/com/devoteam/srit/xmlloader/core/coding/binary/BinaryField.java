@@ -45,8 +45,8 @@ public class BinaryField extends FieldAbstract
     public BinaryField(Element rootXML) throws Exception 
     {
         super(rootXML);
-        if (getLength() % 8 != 0) {
-            throw new ExecutionException("Wrong length for binary field : \"" + getName() + "\"");
+        if (this._length % 8 != 0) {
+            throw new ExecutionException("Wrong length for binary field : \"" + this._name + "\"");
         }
     }
 

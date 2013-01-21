@@ -55,11 +55,11 @@ public class BooleanField extends FieldAbstract
     	boolean bool = Utils.parseBoolean(value);
     	if (bool)
     	{
-    		array.setBit(getOffset(), 1);
+    		array.setBit(offset, 1);
     	}
     	else
     	{
-    		array.setBit(getOffset(), 0);
+    		array.setBit(offset, 0);
     	}
     }
 
