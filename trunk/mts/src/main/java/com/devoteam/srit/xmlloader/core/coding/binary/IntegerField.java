@@ -57,7 +57,7 @@ public class IntegerField extends FieldAbstract
 	    }
         catch(Exception e)
         {
-        	throw new ExecutionException("ISDN layer : The value \"" + value + "\" for the integer field : \"" + getName() + "\" is not valid.", e);            	            	
+        	throw new ExecutionException("The value \"" + value + "\" for the integer field : \"" + this._name + "\" is not valid.", e);            	            	
         }
     }
     

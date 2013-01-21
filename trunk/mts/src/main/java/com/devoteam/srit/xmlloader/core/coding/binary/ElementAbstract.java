@@ -234,7 +234,7 @@ public abstract class ElementAbstract implements Cloneable
             	if (value != null)
             	{
 			        field.setValue(element1.attributeValue("value"), offset, this._fields);
-			        int length = field.getLength();
+			        int length = field._length;
 			        if (length != 0)
 			        {
 				        offset += length;
@@ -429,7 +429,7 @@ public abstract class ElementAbstract implements Cloneable
     public int getLengthElem() {
         int length = 0;
         for (Entry<String, FieldAbstract> field : _hashMapFields.entrySet()) {
-            length += field.getValue().getLength();
+            length += field.getValue()._length;
         }
         return length;
     }

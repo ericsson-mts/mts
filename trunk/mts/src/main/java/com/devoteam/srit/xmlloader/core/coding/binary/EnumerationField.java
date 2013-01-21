@@ -72,7 +72,7 @@ public class EnumerationField extends IntegerField
     {
     	this._offset = offset;
         Integer integerValue = this.getEnumValue(value);
-        array.setBits(getOffset(), getLength(), integerValue.byteValue() & 0xff);
+        array.setBits(offset, this._length, integerValue.byteValue() & 0xff);
     }
     
     @Override
@@ -109,7 +109,7 @@ public class EnumerationField extends IntegerField
     		value = text.substring(iPos + 1);
    			if (!label.equalsIgnoreCase(this.labelsMapByValue.get(value)))
    			{
-   				GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "For the enumeration field \"" + getName() + "\", the value \"" + value + "\"  does not match the label \"" + label + "\"");
+   				GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "For the enumeration field \"" + this._name + "\", the value \"" + value + "\"  does not match the label \"" + label + "\"");
    			}
     	}
     	try
@@ -122,7 +122,7 @@ public class EnumerationField extends IntegerField
     		Integer val = this.valuesMapByLabel.get(value);
 	        if (val == null)
 	        {
-	        	throw new ExecutionException("For the enumeration field \"" + getName() + "\", the value \"" + value + "\" is not numeric or valid according to the dictionary.");
+	        	throw new ExecutionException("For the enumeration field \"" + this._name + "\", the value \"" + value + "\" is not numeric or valid according to the dictionary.");
 	        }
 
     		return val;

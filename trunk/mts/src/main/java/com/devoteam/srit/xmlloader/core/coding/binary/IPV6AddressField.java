@@ -67,7 +67,8 @@ public class IPV6AddressField extends FieldAbstract
     public String getValue(Array array) throws Exception 
     {
     	int pos = this._offset / 8;
-    	byte[] bytes = array.getBytes(pos, 16);
+    	byte[] bytes = new byte[16];
+    	array.getBytes(pos, bytes, 0, 16);
     	InetAddress inetAddr = InetAddress.getByAddress(bytes);
     	return inetAddr.getHostAddress();
     }

@@ -66,10 +66,11 @@ public class IPV4AddressField extends FieldAbstract
     @Override
     public String getValue(Array array) throws Exception 
     {
-    	int pos = this._offset / 8;
-    	byte[] bytes = array.getBytes(pos, 4);
-    	InetAddress inetAddr = InetAddress.getByAddress(bytes);
-    	return inetAddr.getHostAddress();
+        int pos = this._offset / 8;
+        byte[] bytes = new byte[4];
+        array.getBytes(pos, bytes, 0, 4);
+        InetAddress inetAddr = InetAddress.getByAddress(bytes);
+        return inetAddr.getHostAddress();
     }
     
     @Override

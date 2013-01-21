@@ -65,23 +65,6 @@ public abstract class FieldAbstract
         }
     }
     
-	public int getLength() {
-        return this._length;
-    }
-    
-    public void setLength(int length) {
-		this._length = length;
-	}
-
-
-    public int getOffset() {
-        return _offset;
-    }
-
-    public String getName() {
-        return _name;
-    }
-
     public abstract String getValue(Array array)throws Exception;
 
     public abstract void setValue(String value, int offset, SupArray array) throws Exception;
@@ -99,7 +82,7 @@ public abstract class FieldAbstract
 
         StringBuilder elemString = new StringBuilder();
         elemString.append("    <field ");
-        elemString.append("name=\"" + getName() + "\" ");
+        elemString.append("name=\"" + this._name + "\" ");
         try
         {
         	elemString.append("value=\"" + this.getValue(array) + "\" ");
@@ -109,7 +92,7 @@ public abstract class FieldAbstract
         	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Exception in toString() method for field " + this._name);
         }
         elemString.append("type=\"" + this.getClass().getSimpleName().split("Field")[0] + "\" ");
-        elemString.append("lengthBit=\"" + getLength() + "\" ");
+        elemString.append("lengthBit=\"" + this._length + "\" ");
         elemString.append("/>\n");
         return elemString.toString();
 
