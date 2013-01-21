@@ -132,7 +132,7 @@ public class MsgParser {
                 delimit = delimitor.charAt(1);
             }
             i = indexOfEquals(str, delimit, i, escapeSeq);
-            if (i <= 0) {
+            if (i < 0) {
                 return;
             }
             if (str.charAt(i) == delimit) {
