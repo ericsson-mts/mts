@@ -91,8 +91,8 @@ public class PluggableParameterOperatorBoolean extends AbstractPluggableParamete
         {
             for(int i=0;i<size;i++)
             {
-                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString());
-                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString());
+                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString(), name);
+                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString(), name);
                 result.add(String.valueOf(bool1 & bool2));
             }
         }
@@ -100,8 +100,8 @@ public class PluggableParameterOperatorBoolean extends AbstractPluggableParamete
         {
             for(int i=0;i<size;i++)
             {
-                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString());
-                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString());
+                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString(), name);
+                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString(), name);
                 result.add(String.valueOf(bool1 | bool2));
             }
         }
@@ -109,8 +109,8 @@ public class PluggableParameterOperatorBoolean extends AbstractPluggableParamete
         {
             for(int i=0;i<size;i++)
             {
-                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString());
-                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString());
+                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString(), name);
+                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString(), name);
                 result.add(String.valueOf(!(bool1 & bool2)));
             }
         }
@@ -118,8 +118,8 @@ public class PluggableParameterOperatorBoolean extends AbstractPluggableParamete
         {
             for(int i=0;i<size;i++)
             {
-                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString());
-                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString());
+                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString(), name);
+                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString(), name);
                 result.add(String.valueOf(!(bool1 | bool2)));
             }
         }
@@ -127,8 +127,8 @@ public class PluggableParameterOperatorBoolean extends AbstractPluggableParamete
         {
             for(int i=0;i<size;i++)
             {
-                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString());
-                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString());
+                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString(), name);
+                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString(), name);
                 result.add(String.valueOf(bool1 ^ bool2));
             }
         }
@@ -136,7 +136,7 @@ public class PluggableParameterOperatorBoolean extends AbstractPluggableParamete
         {
             for(int i=0;i<size;i++)
             {
-                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString());
+                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString(), name);
                 result.add(String.valueOf(!bool1));
             }
         }
@@ -144,8 +144,8 @@ public class PluggableParameterOperatorBoolean extends AbstractPluggableParamete
         {
             for(int i=0;i<size;i++)
             {
-                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString());
-                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString());
+                boolean bool1 = Utils.parseBoolean(param_1.get(i).toString(), name);
+                boolean bool2 = Utils.parseBoolean(param_2.get(i).toString(), name);
                 result.add(String.valueOf(bool1 == bool2));
             }
         }

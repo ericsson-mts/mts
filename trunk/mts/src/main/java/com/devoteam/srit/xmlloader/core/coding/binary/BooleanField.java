@@ -52,7 +52,7 @@ public class BooleanField extends FieldAbstract
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this._offset = offset;
-    	boolean bool = Utils.parseBoolean(value);
+    	boolean bool = Utils.parseBoolean(value, this._name);
     	if (bool)
     	{
     		array.setBit(offset, 1);

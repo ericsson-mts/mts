@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.exception.ParsingInputStreamException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.ExceptionHandlerSingleton;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import gp.utils.arrays.DefaultArray;
@@ -373,32 +374,61 @@ public class Utils
     /**
      * Tests if the string is an integer.
      */
-    public static boolean parseBoolean(String string)
+    public static boolean parseBoolean(String text, String data)
     {
-    	if (string.indexOf(":") >=0)
+    	int iPos = text.indexOf(":");
+    	String label = text;
+    	String value = text;
+    	if (iPos >= 0)
     	{
-    		
+    		label = text.substring(0, iPos);
+    		value = text.substring(iPos + 1);
     	}
-    	string = string.trim();
-    	if ("true".equalsIgnoreCase(string))
+    	label = label.trim();
+    	value= value.trim();
+    	
+    	try
     	{
-    		return true;
+    		int i = Integer.parseInt(value);
+			if (i == 1)
+			{
+				if (!label.equalsIgnoreCase("true"))
+				{
+					GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The boolean value \"" + text + "\"  is not valid for the boolean data \"" + data + "\".");
+				}
+				return true;
+			}
+			else if (i == 0)
+			{
+				if (!label.equalsIgnoreCase("false"))
+				{
+					GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The boolean value \"" + text + "\"  is not valid for the boolean data \"" + data + "\".");
+				}
+				return false;
+			}
+			else
+			{
+				throw new RuntimeException("The boolean value \"" + text + "\"  is not valid for the boolean data \"" + data + "\"."); 
+		    }
+
     	}
-    	if ("false".equalsIgnoreCase(string))
+    	catch (NumberFormatException e)
     	{
-    		return false;
+	    	if ("true".equalsIgnoreCase(label))
+	    	{
+	    		return true;
+	    	}
+	    	else if ("false".equalsIgnoreCase(label))
+	    	{
+	    		return false;
+	    	}
+	    	else
+	    	{
+	    		throw new RuntimeException("Bad value value for the boolean data : \"" + text + "\""); 
+	    	}
     	}
-		int integer = Integer.parseInt(string);
-		if (integer == 1)
-		{
-			return true;
-		}
-		if (integer == 0)
-		{
-			return false;			
-		}
-		else throw new RuntimeException("Bad integer value for boolean : " + integer); 
-    }
+	}
+    
     /**
      * generates a string of nb*"    " (four spaces nb times), used for intentation in printAvp
      */

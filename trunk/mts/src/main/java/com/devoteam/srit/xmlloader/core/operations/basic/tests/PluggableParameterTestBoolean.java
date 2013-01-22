@@ -76,8 +76,8 @@ public class PluggableParameterTestBoolean extends AbstractPluggableParameterTes
         {
             if (name.equalsIgnoreCase(NAME_EQUALS))
             {
-            	boolean bool1 = Utils.parseBoolean(testValue.get(i).toString());             	
-            	boolean bool2 = Utils.parseBoolean(param.get(i).toString());
+            	boolean bool1 = Utils.parseBoolean(testValue.get(i).toString(), name);
+            	boolean bool2 = Utils.parseBoolean(param.get(i).toString(), name);
 
                 if(bool1 != bool2)
                 {
