@@ -19,12 +19,12 @@
         </element>        
         <element tag="ULI" coding="TLIV" description="User Location Information">
             <field name="spare1" value="0"/>
-            <field name="LAI" value="0"/>
-            <field name="ECGI" value="1"/>
-            <field name="TAI" value="1"/>
-            <field name="RAI" value="0"/>
-            <field name="SAI" value="0"/>
-            <field name="CGI" value="0"/>
+            <field name="LAI" value="false:0"/>
+            <field name="ECGI" value="true:1"/>
+            <field name="TAI" value="false:1"/>
+            <field name="RAI" value="false:0"/>
+            <field name="SAI" value="false:0"/>
+            <field name="CGI" value="false:0"/>
             <!-- TODO conditional field-->
             <field name="TAI_MMC1" value="208,01"/>
             <field name="TAI_Tracking Area Code" value="102"/>
@@ -39,13 +39,13 @@
             <field name="RAT Type" value="EUTRAN:6"/>
         </element>
         <element tag="F-TEID" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
-            <field name="V4" value="true"/>
-            <field name="V6" value="0"/>
+            <field name="V4" value="true:1"/>
+            <field name="V6" value="false:0"/>
             <field name="Interface Type" value="S5/S8 SGW GTP-C:6"/>
             <field name="TEID / GRE Key" value="2509643778" description="GRE?"/>
             <!-- TODO conditional IP V4 V6 -->
             <field name="IPv4 address" value="172.20.70.42"/>
-            <!--field name="IPv6 address" value="0"/-->
+            <!--field name="IPv6 address" value=""/-->
         </element>
         <element tag="APN" coding="TLIV" description="Access Point Name">
         		<field name="APN01" value="nis6coepc" description="Access Point Name"/>
@@ -69,36 +69,36 @@
             <!--field name="IPv6 address" value="0"/--> 
         </element> 
         <element tag="Indication" coding="TLIV">
-            <field name="DAF" value="0"/>
-            <field name="DTF" value="0"/>
-            <field name="HI" value="0"/>
-            <field name="DFI" value="0"/>
-            <field name="OI" value="0"/>
-            <field name="ISRSI" value="0"/>
-            <field name="ISRAI" value="0"/>
-            <field name="SGWCI" value="0"/>
+            <field name="DAF" value="false:0"/>
+            <field name="DTF" value="false:0"/>
+            <field name="HI" value="false:0"/>
+            <field name="DFI" value="false:0"/>
+            <field name="OI" value="false:0"/>
+            <field name="ISRSI" value="false:0"/>
+            <field name="ISRAI" value="false:0"/>
+            <field name="SGWCI" value="false:0"/>
     
-            <field name="SQCI" value="0"/>  
-            <field name="UIMSI" value="0"/>
-            <field name="CFSI" value="0"/>
-            <field name="CRSI" value="1"/>
-            <field name="P" value="0"/>
-            <field name="PT" value="1"/>
-            <field name="SI" value="0"/>
-            <field name="MSV" value="0"/>
+            <field name="SQCI" value="false:0"/>  
+            <field name="UIMSI" value="false:0"/>
+            <field name="CFSI" value="false:0"/>
+            <field name="CRSI" value="true:1"/>
+            <field name="P" value="false:0"/>
+            <field name="PT" value="true:1"/>
+            <field name="SI" value="false:0"/>
+            <field name="MSV" value="false:0"/>
     
-            <field name="RetLoc" value="0"/>
-            <field name="PBIC" value="0"/>
-            <field name="SRNI" value="0"/>
-            <field name="S6AF" value="0"/>
-            <field name="S4AF" value="0"/>
-            <field name="MBMDT" value="0"/>
-            <field name="ISRAU" value="0"/>
-            <field name="CCRSI" value="0"/>
+            <field name="RetLoc" value="false:0"/>
+            <field name="PBIC" value="false:0"/>
+            <field name="SRNI" value="false:0"/>
+            <field name="S6AF" value="false:0"/>
+            <field name="S4AF" value="false:0"/>
+            <field name="MBMDT" value="false:0"/>
+            <field name="ISRAU" value="false:0"/>
+            <field name="CCRSI" value="false:0"/>
             
             <field name="Spare" value="0"/>
-            <field name="CLII" value="0"/>
-            <field name="CPSR" value="0"/>
+            <field name="CLII" value="false:0"/>
+            <field name="CPSR" value="false:0"/>
         </element>
         <element tag="APN Restriction" coding="TLIV">
             <field name="Restriction Type value" value="No Existing Contexts or Restriction:0"/>
@@ -116,8 +116,8 @@
                 <field name="EBI" value="5"/>
             </element>
             <element tag="F-TEID" instances="2" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
-                <field name="V4" value="1"/>
-                <field name="V6" value="false"/>
+                <field name="V4" value="true:1"/>
+                <field name="V6" value="false:0"/>
                 <field name="Interface Type" value="S5/S8 SGW GTP-U:4"/>
                 <field name="TEID / GRE Key" value="2147491842" description="GRE key ?"/>
                 <!-- TODO conditional IP V4 V6 -->      
@@ -126,10 +126,10 @@
             </element>            
             <element tag="Bearer QoS" coding="TLIV" description="Bearer Quality of Service">
                 <field name="spare1" value="0"/>
-                <field name="PCI" value="false" description="Pre-emption Capability"/>
+                <field name="PCI" value="false:0" description="Pre-emption Capability"/>
                 <field name="PL" value="1" description="Priority Level"/>
-                <field name="spare2" value="false"/>        
-                <field name="PVI" value="0" description="Pre-emption Vulnerability"/>
+                <field name="spare2" value="false:0"/>
+                <field name="PVI" value="false:0" description="Pre-emption Vulnerability"/>
                 <field name="Label QCI" value="7"/> 
                 <field name="Maximum bit rate for uplink" value="0"/>
                 <field name="Maximum bit rate for downlink" value="0"/>
