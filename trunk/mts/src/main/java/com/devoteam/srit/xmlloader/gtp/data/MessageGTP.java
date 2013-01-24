@@ -226,28 +226,12 @@ public class MessageGTP
 	    }
 	    else if ((params[0].equalsIgnoreCase("element") && params.length >= 2)) 
 	    {
-	    	
-	    	Integer id = ElementAbstract.getTagValueFromBinary(params[1]);
-	    	if (id == null)
-	    	{
-	        	int iPos = params[1].indexOf(":");
-	        	String label = params[1];
-	        	if (iPos >= 0)
-	        	{
-	        		label = params[1].substring(0, iPos);
-	        	}
-	    		ElementAbstract elemByName = dictionary.getMapElementByName().get(label);
-	    		if (elemByName != null)
-	    		{
-	    			id = elemByName.getId();
-	    		}
-	    	}
-	    	List<ElementAbstract> list = ElementAbstract.getElements(this.elements, id);
+	        List<ElementAbstract> list = ElementAbstract.getElements(this.elements, params[1], dictionary);
 		    Iterator<ElementAbstract> iter = list.iterator();
 		    while (iter.hasNext())
 		    {
 		    	ElementAbstract elem = (ElementAbstract) iter.next();
-	    		elem.getParameter(var, params, path, 0);
+	    		elem.getParameter(var, params, path, 0, dictionary);
 	    	}
 	    }
 	    else

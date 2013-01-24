@@ -60,9 +60,12 @@ public class MsgGtp extends Msg
         var = new Parameter();
         
         // to avoid a conflit with the obsolete grammar for the path keyword (: separator)
-        path = path.replace(':','_');
+        path = path.replace(':','\\');
         String[] params = Utils.splitPath(path);
-        params[1] = params[1].replace('_', ':');
+        for (int i = 0; i < params.length; i++)
+        {
+        	params[i] = params[i].replace('\\', ':');
+        }
         
         this.message.getParameter(var, params, path);
         

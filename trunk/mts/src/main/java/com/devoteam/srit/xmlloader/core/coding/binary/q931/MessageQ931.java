@@ -122,18 +122,18 @@ public class MessageQ931
         	}
         	catch (Exception e) 
         	{
-        		ElementAbstract elem = dictionaries.get(this.syntax).getMapElementByName().get(params[2]);
+        		ElementAbstract elem = dictionaries.get(this.syntax).getMapElementByName().get(params[2]), dictionary;
         		if (elem != null)
         		{
         			id = elem.getId();
         		}
         	}        	
-	    	List<ElementAbstract> list = ElementAbstract.getElements(this.elements, id);
+	    	List<ElementAbstract> list = ElementAbstract.getElements(this.elements, params[2], dictionary);
 		    Iterator<ElementAbstract> iter = list.iterator();
 		    while (iter.hasNext())
 		    {
 		    	ElementAbstract elem = (ElementAbstract) iter.next();
-	    		elem.getParameter(var, params, path, 1);
+	    		elem.getParameter(var, params, path, 1, dictionary);
 	    	}
         }
         else
@@ -198,9 +198,9 @@ public class MessageQ931
         return msglength;
     }
 
-	public List<ElementAbstract> getElements(int id) throws Exception 
+	public List<ElementAbstract> getElements(String id) throws Exception 
 	{
-	    return ElementAbstract.getElements(this.elements, id);
+	    return ElementAbstract.getElements(this.elements, id, this.dictionary);
 	}
 	
     public void initDictionary(String syntax) throws Exception 
