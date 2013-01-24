@@ -22,220 +22,228 @@
     <parameter name="[label]" operation="protocol.setFromMessage" value="header.label"/>
     <test parameter="[label]" condition="string.equals" value="createSessionRequest"/>
     <parameter name="[name]" operation="protocol.setFromMessage" value="header.name"/>
-    <test parameter="[name]" condition="string.equals" value="createSessionRequest:32"/>
+      <test parameter="[name]" condition="string.equals" value="createSessionRequest:32"/>
     <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
     <test parameter="[tunnelEndpointId]" condition="number.equals" value="4294967295"/>
     <parameter name="[sequenceNumber]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     <test parameter="[sequenceNumber]" condition="number.equals" value="16777215"/>
     <parameter name="[spare]" operation="protocol.setFromMessage" value="header.spare"/>
     <test parameter="[spare]" condition="number.equals" value="255"/>
-    
+
+    <parameter name="[IMSI]" operation="protocol.setFromMessage" value="element.IMSI:1.field.IMSI"/>
+    <test parameter="[IMSI]" condition="string.equals" value="123456789012345"/>
     <parameter name="[IMSI]" operation="protocol.setFromMessage" value="element.IMSI.field.IMSI"/>
     <test parameter="[IMSI]" condition="string.equals" value="123456789012345"/>
+    <parameter name="[IMSI]" operation="protocol.setFromMessage" value="element.1.field.IMSI"/>
+    <test parameter="[IMSI]" condition="string.equals" value="123456789012345"/>
+    <parameter name="[IMSI]" operation="protocol.setFromMessage" value="element.IMSI:1"/>
+    <test parameter="[IMSI]" condition="binary.equals" value="21436587092143f5"/>
     <parameter name="[IMSI]" operation="protocol.setFromMessage" value="element.IMSI"/>
     <test parameter="[IMSI]" condition="binary.equals" value="21436587092143f5"/>
-    
-    <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN.field.MSISDN"/>
+    <parameter name="[IMSI]" operation="protocol.setFromMessage" value="element.1"/>
+    <test parameter="[IMSI]" condition="binary.equals" value="21436587092143f5"/>
+
+    <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN:76.field.MSISDN"/>
     <test parameter="[MSISDN]" condition="list.size" value="2"/>
     <test parameter="[MSISDN(0)]" condition="string.equals" value="331234567890123456"/>
     <test parameter="[MSISDN(1)]" condition="string.equals" value="339876543210987654"/>
-    <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN"/>
+    <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN:76"/>
     <test parameter="[MSISDN(0)]" condition="binary.equals" value="332143658709214365"/>
     <test parameter="[MSISDN(1)]" condition="binary.equals" value="338967452301896745"/>
     
-    <parameter name="[MEI]" operation="protocol.setFromMessage" value="element.MEI.field.MEI"/>
+    <parameter name="[MEI]" operation="protocol.setFromMessage" value="element.MEI:75.field.MEI"/>
     <test parameter="[MEI]" condition="number.equals" value="0033123456789012"/>
-    <parameter name="[MEI]" operation="protocol.setFromMessage" value="element.MEI"/>
+    <parameter name="[MEI]" operation="protocol.setFromMessage" value="element.MEI:75"/>
     <test parameter="[MEI]" condition="binary.equals" value="0033123456789012"/>
     
-    <parameter name="[ULI.spare1]" operation="protocol.setFromMessage" value="element.ULI.field.spare1"/>
+    <parameter name="[ULI.spare1]" operation="protocol.setFromMessage" value="element.ULI:86.field.spare1"/>
     <test parameter="[ULI.spare1]" condition="number.equals" value="3"/>
-    <parameter name="[ULI.LAI]" operation="protocol.setFromMessage" value="element.ULI.field.LAI"/>
+    <parameter name="[ULI.LAI]" operation="protocol.setFromMessage" value="element.ULI:86.field.LAI"/>
     <test parameter="[ULI.LAI]" condition="boolean.equals" value="0"/>
-    <parameter name="[ULI.ECGI]" operation="protocol.setFromMessage" value="element.ULI.field.ECGI"/>
+    <parameter name="[ULI.ECGI]" operation="protocol.setFromMessage" value="element.ULI:86.field.ECGI"/>
     <test parameter="[ULI.ECGI]" condition="boolean.equals" value="1"/>
-    <parameter name="[ULI.TAI]" operation="protocol.setFromMessage" value="element.ULI.field.TAI"/>
+    <parameter name="[ULI.TAI]" operation="protocol.setFromMessage" value="element.ULI:86.field.TAI"/>
     <test parameter="[ULI.TAI]" condition="boolean.equals" value="1"/>
-    <parameter name="[ULI.RAI]" operation="protocol.setFromMessage" value="element.ULI.field.RAI"/>
+    <parameter name="[ULI.RAI]" operation="protocol.setFromMessage" value="element.ULI:86.field.RAI"/>
     <test parameter="[ULI.RAI]" condition="boolean.equals" value="0"/>
-    <parameter name="[ULI.SAI]" operation="protocol.setFromMessage" value="element.ULI.field.SAI"/>
+    <parameter name="[ULI.SAI]" operation="protocol.setFromMessage" value="element.ULI:86.field.SAI"/>
     <test parameter="[ULI.SAI]" condition="boolean.equals" value="0"/>
-    <parameter name="[ULI.CGI]" operation="protocol.setFromMessage" value="element.ULI.field.CGI"/>
+    <parameter name="[ULI.CGI]" operation="protocol.setFromMessage" value="element.ULI:86.field.CGI"/>
     <test parameter="[ULI.CGI]" condition="boolean.equals" value="0"/>
-    <parameter name="[ULI.TAI_MMC1]" operation="protocol.setFromMessage" value="element.ULI.field.TAI_MMC1"/>
+    <parameter name="[ULI.TAI_MMC1]" operation="protocol.setFromMessage" value="element.ULI:86.field.TAI_MMC1"/>
     <test parameter="[ULI.TAI_MMC1]" condition="string.equals" value="123,987"/>
-    <parameter name="[ULI.TAI_Tracking Area Code]" operation="protocol.setFromMessage" value="element.ULI.field.TAI_Tracking Area Code"/>
+    <parameter name="[ULI.TAI_Tracking Area Code]" operation="protocol.setFromMessage" value="element.ULI:86.field.TAI_Tracking Area Code"/>
     <test parameter="[ULI.TAI_Tracking Area Code]" condition="number.equals" value="255"/>
-    <parameter name="[ULI.ECGI_MMC2]" operation="protocol.setFromMessage" value="element.ULI.field.ECGI_MMC2"/>
+    <parameter name="[ULI.ECGI_MMC2]" operation="protocol.setFromMessage" value="element.ULI:86.field.ECGI_MMC2"/>
     <test parameter="[ULI.ECGI_MMC2]" condition="string.equals" value="321,89"/>
-    <parameter name="[ULI.ECGI_spare2]" operation="protocol.setFromMessage" value="element.ULI.field.ECGI_spare2"/>
+    <parameter name="[ULI.ECGI_spare2]" operation="protocol.setFromMessage" value="element.ULI:86.field.ECGI_spare2"/>
     <test parameter="[ULI.ECGI_spare2]" condition="number.equals" value="15"/>
-    <parameter name="[ULI.ECGI_ECI]" operation="protocol.setFromMessage" value="element.ULI.field.ECGI_ECI"/>
+    <parameter name="[ULI.ECGI_ECI]" operation="protocol.setFromMessage" value="element.ULI:86.field.ECGI_ECI"/>
     <test parameter="[ULI.ECGI_ECI]" condition="number.equals" value="268435455"/>
-    <parameter name="[ULI]" operation="protocol.setFromMessage" value="element.ULI"/>
+    <parameter name="[ULI]" operation="protocol.setFromMessage" value="element.ULI:86"/>
     <test parameter="[ULI]" condition="binary.equals" value="d821738900ff23f198ffffffff"/>
     
-    <parameter name="[Serving Network.MMC]" operation="protocol.setFromMessage" value="element.Serving Network.field.MMC"/>
+    <parameter name="[Serving Network.MMC]" operation="protocol.setFromMessage" value="element.Serving Network:83.field.MMC"/>
     <test parameter="[Serving Network.MMC]" condition="string.equals" value="456,78"/>
-    <parameter name="[Serving Network]" operation="protocol.setFromMessage" value="element.Serving Network"/>
+    <parameter name="[Serving Network]" operation="protocol.setFromMessage" value="element.Serving Network:83"/>
     <test parameter="[Serving Network]" condition="binary.equals" value="54f687"/>
 
-    <parameter name="[RAT Type]" operation="protocol.setFromMessage" value="element.RAT Type.field.RAT Type"/>
+    <parameter name="[RAT Type]" operation="protocol.setFromMessage" value="element.RAT Type:82.field.RAT Type"/>
     <test parameter="[RAT Type]" condition="string.equals" value="EUTRAN:6"/>
-    <parameter name="[RAT Type]" operation="protocol.setFromMessage" value="element.RAT Type"/>
+    <parameter name="[RAT Type]" operation="protocol.setFromMessage" value="element.RAT Type:82"/>
     <test parameter="[RAT Type]" condition="binary.equals" value="06"/>
     
-    <parameter name="[F-TEID.V4]" operation="protocol.setFromMessage" value="element.F-TEID.field.V4"/>
+    <parameter name="[F-TEID.V4]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.V4"/>
     <test parameter="[F-TEID.V4]" condition="list.size" value="2"/>
     <test parameter="[F-TEID.V4]" condition="boolean.equals" value="1"/>
-    <parameter name="[F-TEID.V6]" operation="protocol.setFromMessage" value="element.F-TEID.field.V6"/>
+    <parameter name="[F-TEID.V6]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.V6"/>
     <test parameter="[F-TEID.V6]" condition="list.size" value="2"/>
     <test parameter="[F-TEID.V6(0)]" condition="boolean.equals" value="true"/>
     <test parameter="[F-TEID.V6(1)]" condition="boolean.equals" value="true"/>
-    <parameter name="[F-TEID.Interface Type]" operation="protocol.setFromMessage" value="element.F-TEID.field.Interface Type"/>
+    <parameter name="[F-TEID.Interface Type]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.Interface Type"/>
     <test parameter="[F-TEID.Interface Type]" condition="list.size" value="2"/>
     <test parameter="[F-TEID.Interface Type(0)]" condition="string.equals" value="S5/S8 SGW GTP-C:6"/>
     <test parameter="[F-TEID.Interface Type(1)]" condition="string.equals" value="S5/S8 PGW GTP-U:5"/>
-    <parameter name="[TEID / GRE Key]" operation="protocol.setFromMessage" value="element.F-TEID.field.TEID / GRE Key"/>
+    <parameter name="[TEID / GRE Key]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.TEID / GRE Key"/>
     <test parameter="[TEID / GRE Key]" condition="list.size" value="2"/>
     <test parameter="[TEID / GRE Key(0)]" condition="string.equals" value="4294967295"/>
     <test parameter="[TEID / GRE Key(1)]" condition="string.equals" value="0"/>
-    <parameter name="[IPv4 address]" operation="protocol.setFromMessage" value="element.F-TEID.field.IPv4 address"/>
+    <parameter name="[IPv4 address]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.IPv4 address"/>
     <test parameter="[IPv4 address]" condition="list.size" value="2"/>
     <test parameter="[IPv4 address(0)]" condition="string.equals" value="123.45.67.89"/>
     <test parameter="[IPv4 address(1)]" condition="string.equals" value="98.76.54.32"/>
-    <parameter name="[IPv6 address]" operation="protocol.setFromMessage" value="element.F-TEID.field.IPv6 address"/>
+    <parameter name="[IPv6 address]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.IPv6 address"/>
     <test parameter="[IPv6 address]" condition="list.size" value="2"/>
     <test parameter="[IPv6 address(0)]" condition="string.equals" value="1234:5678:90ab:cdef:fedc:ba09:8765:4321"/>
     <test parameter="[IPv6 address(1)]" condition="string.equals" value="fedc:ba98:7654:3210:123:4567:89ab:cdef"/>
-    <parameter name="[F-TEID]" operation="protocol.setFromMessage" value="element.F-TEID"/>
+    <parameter name="[F-TEID]" operation="protocol.setFromMessage" value="element.F-TEID:87"/>
     <test parameter="[F-TEID]" condition="list.size" value="2"/>
     <test parameter="[F-TEID(0)]" condition="binary.equals" value="c6ffffffff7b2d43591234567890abcdeffedcba0987654321"/>
     <test parameter="[F-TEID(1)]" condition="binary.equals" value="c500000000624c3620fedcba98765432100123456789abcdef"/>
     
-    <parameter name="[APN01]" operation="protocol.setFromMessage" value="element.APN.field.APN01"/>
+    <parameter name="[APN01]" operation="protocol.setFromMessage" value="element.APN:127.field.APN01"/>
     <test parameter="[APN01]" condition="string.equals" value="stringstring01"/>
-    <parameter name="[APN02]" operation="protocol.setFromMessage" value="element.APN.field.APN02"/>
+    <parameter name="[APN02]" operation="protocol.setFromMessage" value="element.APN:127.field.APN02"/>
     <test parameter="[APN02]" condition="string.equals" value="string02"/>
-    <parameter name="[APN03]" operation="protocol.setFromMessage" value="element.APN.field.APN03"/>
+    <parameter name="[APN03]" operation="protocol.setFromMessage" value="element.APN:127.field.APN03"/>
     <test parameter="[APN03]" condition="string.equals" value="str03"/>
-    <parameter name="[APN04]" operation="protocol.setFromMessage" value="element.APN.field.APN04"/>
+    <parameter name="[APN04]" operation="protocol.setFromMessage" value="element.APN:127.field.APN04"/>
     <test parameter="[APN04]" condition="string.equals" value="04"/>    
-    <parameter name="[APN]" operation="protocol.setFromMessage" value="element.APN"/>
+    <parameter name="[APN]" operation="protocol.setFromMessage" value="element.APN:127"/>
     <test parameter="[APN]" condition="binary.equals" value="0e737472696e67737472696e67303108737472696e673032057374723033023034"/>
     
-    <parameter name="[Selection Mode.spare]" operation="protocol.setFromMessage" value="element.Selection Mode.field.spare"/>
+    <parameter name="[Selection Mode.spare]" operation="protocol.setFromMessage" value="element.Selection Mode:128.field.spare"/>
     <test parameter="[Selection Mode.spare]" condition="number.equals" value="63"/>
-    <parameter name="[Selection Mode]" operation="protocol.setFromMessage" value="element.Selection Mode.field.Selection Mode"/>
+    <parameter name="[Selection Mode]" operation="protocol.setFromMessage" value="element.Selection Mode:128.field.Selection Mode"/>
     <test parameter="[Selection Mode]" condition="string.equals" value="MS or network provided APN, subscribed verified:0"/>
-    <parameter name="[Selection Mode]" operation="protocol.setFromMessage" value="element.Selection Mode"/>
+    <parameter name="[Selection Mode]" operation="protocol.setFromMessage" value="element.Selection Mode:128"/>
     <test parameter="[Selection Mode]" condition="binary.equals" value="fc"/>
 
-    <parameter name="[PDN Type.spare]" operation="protocol.setFromMessage" value="element.PDN Type.field.spare"/>
+    <parameter name="[PDN Type.spare]" operation="protocol.setFromMessage" value="element.PDN Type:99.field.spare"/>
     <test parameter="[PDN Type.spare]" condition="number.equals" value="31"/>
-    <parameter name="[PDN Type]" operation="protocol.setFromMessage" value="element.PDN Type.field.PDN Type"/>
+    <parameter name="[PDN Type]" operation="protocol.setFromMessage" value="element.PDN Type:99.field.PDN Type"/>
     <test parameter="[PDN Type]" condition="string.equals" value="IPv4:1"/>
-    <parameter name="[PDN Type]" operation="protocol.setFromMessage" value="element.PDN Type"/>
+    <parameter name="[PDN Type]" operation="protocol.setFromMessage" value="element.PDN Type:99"/>
     <test parameter="[PDN Type]" condition="binary.equals" value="f9"/>    
     
-    <parameter name="[PAA.spare]" operation="protocol.setFromMessage" value="element.PAA.field.spare"/>
+    <parameter name="[PAA.spare]" operation="protocol.setFromMessage" value="element.PAA:79.field.spare"/>
     <test parameter="[PAA.spare]" condition="number.equals" value="31"/>
-    <parameter name="[PAA.PDN Type]" operation="protocol.setFromMessage" value="element.PAA.field.PDN Type"/>
+    <parameter name="[PAA.PDN Type]" operation="protocol.setFromMessage" value="element.PAA:79.field.PDN Type"/>
     <test parameter="[PAA.PDN Type]" condition="string.equals" value="IPv4v6:3"/>
-    <parameter name="[PAA.IPv6 prefix length]" operation="protocol.setFromMessage" value="element.PAA.field.IPv6 prefix length"/>
+    <parameter name="[PAA.IPv6 prefix length]" operation="protocol.setFromMessage" value="element.PAA:79.field.IPv6 prefix length"/>
     <test parameter="[PAA.IPv6 prefix length]" condition="number.equals" value="255"/>            
-    <parameter name="[PAA.IPv6 address]" operation="protocol.setFromMessage" value="element.PAA.field.IPv6 address"/>
+    <parameter name="[PAA.IPv6 address]" operation="protocol.setFromMessage" value="element.PAA:79.field.IPv6 address"/>
     <test parameter="[PAA.IPv6 address]" condition="string.equals" value="fedc:ba09:8765:4321:1234:5678:90ab:cdef"/>            
-    <parameter name="[PAA.IPv4 address]" operation="protocol.setFromMessage" value="element.PAA.field.IPv4 address"/>
+    <parameter name="[PAA.IPv4 address]" operation="protocol.setFromMessage" value="element.PAA:79.field.IPv4 address"/>
     <test parameter="[PAA.IPv4 address]" condition="string.equals" value="87.65.43.210"/>
-    <parameter name="[PAA]" operation="protocol.setFromMessage" value="element.PAA"/>
+    <parameter name="[PAA]" operation="protocol.setFromMessage" value="element.PAA:79"/>
     <test parameter="[PAA]" condition="binary.equals" value="fbfffedcba09876543211234567890abcdef57412bd2"/>    
 
-    <parameter name="[Indication.DAF]" operation="protocol.setFromMessage" value="element.Indication.field.DAF"/>
+    <parameter name="[Indication.DAF]" operation="protocol.setFromMessage" value="element.Indication:77.field.DAF"/>
     <test parameter="[Indication.DAF]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication.DTF]" operation="protocol.setFromMessage" value="element.Indication.field.DTF"/>
+    <parameter name="[Indication.DTF]" operation="protocol.setFromMessage" value="element.Indication:77.field.DTF"/>
     <test parameter="[Indication.DTF]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication.HI]" operation="protocol.setFromMessage" value="element.Indication.field.HI"/>
+    <parameter name="[Indication.HI]" operation="protocol.setFromMessage" value="element.Indication:77.field.HI"/>
     <test parameter="[Indication.HI]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication.DFI]" operation="protocol.setFromMessage" value="element.Indication.field.DFI"/>
+    <parameter name="[Indication.DFI]" operation="protocol.setFromMessage" value="element.Indication:77.field.DFI"/>
     <test parameter="[Indication.DFI]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication.OI]" operation="protocol.setFromMessage" value="element.Indication.field.OI"/>
+    <parameter name="[Indication.OI]" operation="protocol.setFromMessage" value="element.Indication:77.field.OI"/>
     <test parameter="[Indication.OI]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication.ISRSI]" operation="protocol.setFromMessage" value="element.Indication.field.ISRSI"/>
+    <parameter name="[Indication.ISRSI]" operation="protocol.setFromMessage" value="element.Indication:77.field.ISRSI"/>
     <test parameter="[Indication.ISRSI]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication.ISRAI]" operation="protocol.setFromMessage" value="element.Indication.field.ISRAI"/>
+    <parameter name="[Indication.ISRAI]" operation="protocol.setFromMessage" value="element.Indication:77.field.ISRAI"/>
     <test parameter="[Indication.ISRAI]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication.SGWCI]" operation="protocol.setFromMessage" value="element.Indication.field.SGWCI"/>
+    <parameter name="[Indication.SGWCI]" operation="protocol.setFromMessage" value="element.Indication:77.field.SGWCI"/>
     <test parameter="[Indication.SGWCI]" condition="boolean.equals" value="false"/>
     
-    <parameter name="[Indication.SQCI]" operation="protocol.setFromMessage" value="element.Indication.field.SQCI"/>
+    <parameter name="[Indication.SQCI]" operation="protocol.setFromMessage" value="element.Indication:77.field.SQCI"/>
     <test parameter="[Indication.SQCI]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication.UIMSI]" operation="protocol.setFromMessage" value="element.Indication.field.UIMSI"/>
+    <parameter name="[Indication.UIMSI]" operation="protocol.setFromMessage" value="element.Indication:77.field.UIMSI"/>
     <test parameter="[Indication.UIMSI]" condition="boolean.equals" value="false"/>    
-    <parameter name="[Indication.CFSI]" operation="protocol.setFromMessage" value="element.Indication.field.CFSI"/>
+    <parameter name="[Indication.CFSI]" operation="protocol.setFromMessage" value="element.Indication:77.field.CFSI"/>
     <test parameter="[Indication.CFSI]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication.PT]" operation="protocol.setFromMessage" value="element.Indication.field.PT"/>
+    <parameter name="[Indication.PT]" operation="protocol.setFromMessage" value="element.Indication:77.field.PT"/>
     <test parameter="[Indication.PT]" condition="boolean.equals" value="True"/>    
-    <parameter name="[Indication.SI]" operation="protocol.setFromMessage" value="element.Indication.field.SI"/>
+    <parameter name="[Indication.SI]" operation="protocol.setFromMessage" value="element.Indication:77.field.SI"/>
     <test parameter="[Indication.SI]" condition="boolean.equals" value="false"/>    
-    <parameter name="[Indication.MSV]" operation="protocol.setFromMessage" value="element.Indication.field.MSV"/>
+    <parameter name="[Indication.MSV]" operation="protocol.setFromMessage" value="element.Indication:77.field.MSV"/>
     <test parameter="[Indication.MSV]" condition="boolean.equals" value="false"/>
         
-    <parameter name="[Indication.RetLoc]" operation="protocol.setFromMessage" value="element.Indication.field.RetLoc"/>
+    <parameter name="[Indication.RetLoc]" operation="protocol.setFromMessage" value="element.Indication:77.field.RetLoc"/>
     <test parameter="[Indication.RetLoc]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication.PBIC]" operation="protocol.setFromMessage" value="element.Indication.field.PBIC"/>
+    <parameter name="[Indication.PBIC]" operation="protocol.setFromMessage" value="element.Indication:77.field.PBIC"/>
     <test parameter="[Indication.PBIC]" condition="boolean.equals" value="false"/>    
-    <parameter name="[Indication.SRNI]" operation="protocol.setFromMessage" value="element.Indication.field.SRNI"/>
+    <parameter name="[Indication.SRNI]" operation="protocol.setFromMessage" value="element.Indication:77.field.SRNI"/>
     <test parameter="[Indication.SRNI]" condition="boolean.equals" value="false"/>    
-    <parameter name="[Indication.S6AF]" operation="protocol.setFromMessage" value="element.Indication.field.S6AF"/>
+    <parameter name="[Indication.S6AF]" operation="protocol.setFromMessage" value="element.Indication:77.field.S6AF"/>
     <test parameter="[Indication.S6AF]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication.S4AF]" operation="protocol.setFromMessage" value="element.Indication.field.S4AF"/>
+    <parameter name="[Indication.S4AF]" operation="protocol.setFromMessage" value="element.Indication:77.field.S4AF"/>
     <test parameter="[Indication.S4AF]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication.MBMDT]" operation="protocol.setFromMessage" value="element.Indication.field.MBMDT"/>
+    <parameter name="[Indication.MBMDT]" operation="protocol.setFromMessage" value="element.Indication:77.field.MBMDT"/>
     <test parameter="[Indication.MBMDT]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication.ISRAU]" operation="protocol.setFromMessage" value="element.Indication.field.ISRAU"/>
+    <parameter name="[Indication.ISRAU]" operation="protocol.setFromMessage" value="element.Indication:77.field.ISRAU"/>
     <test parameter="[Indication.ISRAU]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication.CCRSI]" operation="protocol.setFromMessage" value="element.Indication.field.CCRSI"/>
+    <parameter name="[Indication.CCRSI]" operation="protocol.setFromMessage" value="element.Indication:77.field.CCRSI"/>
     <test parameter="[Indication.CCRSI]" condition="boolean.equals" value="false"/>
-    <parameter name="[Indication]" operation="protocol.setFromMessage" value="element.Indication"/>
+    <parameter name="[Indication]" operation="protocol.setFromMessage" value="element.Indication:77"/>
     <test parameter="[Indication]" condition="binary.equals" value="00140000"/>  
                                             
-    <parameter name="[APN Restriction.Restriction Type value]" operation="protocol.setFromMessage" value="element.APN Restriction.field.Restriction Type value"/>
+    <parameter name="[APN Restriction.Restriction Type value]" operation="protocol.setFromMessage" value="element.APN Restriction:127.field.Restriction Type value"/>
     <test parameter="[APN Restriction.Restriction Type value]" condition="string.equals" value="No Existing Contexts or Restriction:0"/>
-    <parameter name="[APN Restriction]" operation="protocol.setFromMessage" value="element.APN Restriction"/>
+    <parameter name="[APN Restriction]" operation="protocol.setFromMessage" value="element.APN Restriction:127"/>
     <test parameter="[APN Restriction]" condition="binary.equals" value="00"/>
                     
-    <parameter name="[AMBR.APN-AMBR for uplink]" operation="protocol.setFromMessage" value="element.AMBR.field.APN-AMBR for uplink"/>
+    <parameter name="[AMBR.APN-AMBR for uplink]" operation="protocol.setFromMessage" value="element.AMBR:72.field.APN-AMBR for uplink"/>
     <test parameter="[AMBR.APN-AMBR for uplink]" condition="number.equals" value="4294967295"/>
-    <parameter name="[AMBR.APN-AMBR for downlink]" operation="protocol.setFromMessage" value="element.AMBR.field.APN-AMBR for downlink"/>
+    <parameter name="[AMBR.APN-AMBR for downlink]" operation="protocol.setFromMessage" value="element.AMBR:72.field.APN-AMBR for downlink"/>
     <test parameter="[AMBR.APN-AMBR for downlink]" condition="number.equals" value="4294967295"/>
-    <parameter name="[AMBR]" operation="protocol.setFromMessage" value="element.AMBR"/>
+    <parameter name="[AMBR]" operation="protocol.setFromMessage" value="element.AMBR:72"/>
     <test parameter="[AMBR]" condition="binary.equals" value="ffffffffffffffff"/>
 
-    <parameter name="[PCO]" operation="protocol.setFromMessage" value="element.PCO.field.PCO"/>
+    <parameter name="[PCO]" operation="protocol.setFromMessage" value="element.PCO:78.field.PCO"/>
     <test parameter="[PCO]" condition="binary.equals" value="8080211001000010810600000000830600000000000d00000a00"/>
-    <parameter name="[PCO]" operation="protocol.setFromMessage" value="element.PCO"/>
+    <parameter name="[PCO]" operation="protocol.setFromMessage" value="element.PCO:78"/>
     <test parameter="[PCO]" condition="binary.equals" value="8080211001000010810600000000830600000000000d00000a00"/>
 
-    <parameter name="[Bearer Context.EBI]" operation="protocol.setFromMessage" value="element.Bearer Context.73"/>
+    <parameter name="[Bearer Context.EBI]" operation="protocol.setFromMessage" value="element.Bearer Context:93.73"/>
     <test parameter="[Bearer Context.EBI]" condition="binary.equals" value="ff"/>
-    <parameter name="[Bearer Context]" operation="protocol.setFromMessage" value="element.Bearer Context.field.Bearer Context"/>
+    <parameter name="[Bearer Context]" operation="protocol.setFromMessage" value="element.Bearer Context:93.field.Bearer Context"/>
     <!--test parameter="[Bearer Context]" condition="binary.equals" value="4900010005570009028480002002ac14462a5000160004070000000000000000000000000000000000000000"/-->
-    <parameter name="[Bearer Context]" operation="protocol.setFromMessage" value="element.Bearer Context"/>
+    <parameter name="[Bearer Context]" operation="protocol.setFromMessage" value="element.Bearer Context:93"/>
     <test parameter="[Bearer Context]" condition="binary.equals" value="49000100ff50001600beffffffffffffffffffffffffffffffffffffffffff57001900c4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
 
-    <parameter name="[UE Time Zone.Time Zone]" operation="protocol.setFromMessage" value="element.UE Time Zone.field.Time Zone"/>
+    <parameter name="[UE Time Zone.Time Zone]" operation="protocol.setFromMessage" value="element.UE Time Zone:114.field.Time Zone"/>
     <test parameter="[UE Time Zone.Time Zone]" condition="number.equals" value="255"/>
-    <parameter name="[UE Time Zone.spare]" operation="protocol.setFromMessage" value="element.UE Time Zone.field.spare"/>
+    <parameter name="[UE Time Zone.spare]" operation="protocol.setFromMessage" value="element.UE Time Zone:114.field.spare"/>
     <test parameter="[UE Time Zone.spare]" condition="number.equals" value="63"/>
-    <parameter name="[UE Time Zone.Daylight Saving Time]" operation="protocol.setFromMessage" value="element.UE Time Zone.field.Daylight Saving Time"/>
+    <parameter name="[UE Time Zone.Daylight Saving Time]" operation="protocol.setFromMessage" value="element.UE Time Zone:114.field.Daylight Saving Time"/>
     <test parameter="[UE Time Zone.Daylight Saving Time]" condition="string.equals" value="No adjustment for Daylight Saving Time:0"/>
-    <parameter name="[UE Time Zone]" operation="protocol.setFromMessage" value="element.UE Time Zone"/>
+    <parameter name="[UE Time Zone]" operation="protocol.setFromMessage" value="element.UE Time Zone:114"/>
     <test parameter="[UE Time Zone]" condition="binary.equals" value="fffc"/>
 
-    <parameter name="[Charging Characteristics]" operation="protocol.setFromMessage" value="element.Charging Characteristics.field.Charging Characteristics value"/>
+    <parameter name="[Charging Characteristics]" operation="protocol.setFromMessage" value="element.Charging Characteristics:95.field.Charging Characteristics value"/>
     <test parameter="[Charging Characteristics]" condition="number.equals" value="65535"/>
-    <parameter name="[Charging Characteristics]" operation="protocol.setFromMessage" value="element.Charging Characteristics"/>
+    <parameter name="[Charging Characteristics]" operation="protocol.setFromMessage" value="element.Charging Characteristics:95"/>
     <test parameter="[Charging Characteristics]" condition="binary.equals" value="ffff"/>
 
     <sendMessageGTP name="send message"

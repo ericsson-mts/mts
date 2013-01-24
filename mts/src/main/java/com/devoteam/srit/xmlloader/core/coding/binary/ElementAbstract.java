@@ -437,7 +437,7 @@ public abstract class ElementAbstract implements Cloneable
     	return null;
     }
 
-    private static Integer getTagValueFromBinary(String tag) throws Exception
+    public static Integer getTagValueFromBinary(String tag) throws Exception
     {
     	if (tag.length() > 0)
     	{
