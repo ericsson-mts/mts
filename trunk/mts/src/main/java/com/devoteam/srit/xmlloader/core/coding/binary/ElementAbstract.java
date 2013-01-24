@@ -102,19 +102,9 @@ public abstract class ElementAbstract implements Cloneable
         }
 
         String  normalizeTag = ElementAbstract.getNormalizeFromTag(tag);
-        ElementAbstract elemDico = ElementAbstract.getElementByTag(normalizeTag, dictionary);
-        if (elemDico != null)
-        {
-        	this.id = elemDico.getId();
-        	this.name = elemDico.getName();
-        }
+        String nameTag = element.attributeValue("name");
+        ElementAbstract elemDico = this.setTag(normalizeTag, nameTag, dictionary);
         
-        else
-        {
-        	this.id = Integer.parseInt(normalizeTag.substring(1));
-        	this.name = element.attributeValue("name");
-        }
-
         String instances = element.attributeValue("instances");
         if (instances != null)
         {
@@ -406,15 +396,15 @@ public abstract class ElementAbstract implements Cloneable
 	    return list;
 	}
 
-    private static ElementAbstract getElementByTag(String text, Dictionary dictionary) throws Exception
+    private ElementAbstract setTag(String tag, String name, Dictionary dictionary) throws Exception
     {
-    	int iPos = text.indexOf(":");
-    	String label = text;
-    	String value = text;
+    	int iPos = tag.indexOf(":");
+    	String label = tag;
+    	String value = tag;
     	if (iPos >= 0)
     	{
-    		label = text.substring(0, iPos);
-    		value = text.substring(iPos + 1);
+    		label = tag.substring(0, iPos);
+    		value = tag.substring(iPos + 1);
     	}
     	ElementAbstract elemById = null; 
     	if (value.length() > 0)
@@ -431,7 +421,18 @@ public abstract class ElementAbstract implements Cloneable
     	{
     		elem = elemById;
     	}
-    	return elem;
+    	if (elem != null)
+    	{
+    		this.id = elem.id;
+    		this.name = elem.name;
+    		return elem;
+    	}
+    	else
+    	{
+    		this.id = Integer.parseInt(value);
+    		this.name = name;
+    		return elemById;
+    	}
     }
 
     private static String getNormalizeFromTag(String text) throws Exception
