@@ -101,9 +101,9 @@ public abstract class ElementAbstract implements Cloneable
             }
         }
 
-        String  normalizeTag = ElementAbstract.getNormalizeFromTag(tag);
+        // String  normalizeTag = ElementAbstract.getNormalizeFromTag(tag);
         String nameTag = element.attributeValue("name");
-        ElementAbstract elemDico = this.setTag(normalizeTag, nameTag, dictionary);
+        ElementAbstract elemDico = this.setTag(tag, nameTag, dictionary);
         
         String instances = element.attributeValue("instances");
         if (instances != null)
@@ -406,65 +406,58 @@ public abstract class ElementAbstract implements Cloneable
     		label = tag.substring(0, iPos);
     		value = tag.substring(iPos + 1);
     	}
-    	ElementAbstract elemById = null; 
-    	if (value.length() > 0)
-    	{
-			Integer valueInt = Integer.parseInt(value);
-			elemById = dictionary.getMapElementById().get(valueInt);
-    	}
+    	// case if the tag is set by the value as a binary vale (with 'b' 's' 'd' prefix)
+    	Integer valueInt = getNormalizeFromTag(value);
+    	// check the consistency between value and label
+    	ElementAbstract elemById = dictionary.getMapElementById().get(valueInt);
 		if (elemById != null && !label.equalsIgnoreCase(elemById.getName()))
 		{
 			GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The element label \"" + label + "\" does not match the tag/id \"" + value + "\" in the dictionary.");
 		}
-		ElementAbstract elem = dictionary.getMapElementByName().get(label);
-    	if (elem == null)
+		// return first by the tag name
+		ElementAbstract elemByName = dictionary.getMapElementByName().get(label);
+    	if (elemByName != null)
     	{
-    		elem = elemById;
+    		this.id = elemByName.id;
+    		this.name = label;
+    		return elemByName;
     	}
-    	if (elem != null)
+    	// return first by the tag value
+    	this.id = valueInt;
+    	if (elemById != null)
     	{
-    		this.id = elem.id;
-    		this.name = elem.name;
-    		return elem;
-    	}
-    	else
-    	{
-    		this.id = Integer.parseInt(value);
-    		this.name = name;
+    		this.name = elemById.name;
     		return elemById;
     	}
+    	this.name = name;
+    	return null;
     }
 
-    private static String getNormalizeFromTag(String text) throws Exception
+    private static Integer getNormalizeFromTag(String tag) throws Exception
     {
-    	int iPos = text.indexOf(":");
-    	String label = "";
-    	String value = text;
-    	if (iPos >= 0)
+    	Integer valueInt = null; 
+    	if (tag.length() > 0)
     	{
-    		label = text.substring(0, iPos);
-    		value = text.substring(iPos + 1);
+	    	if (tag.charAt(0) == 's')
+	        {
+				return null;
+	        }
+			byte[] idBytes = new byte[]{};
+	    	try
+	    	{
+	    		idBytes = Utils.parseBinaryString(tag);
+	    	}
+	    	catch (Exception e)
+	    	{
+	    		return null;
+	    	}
+	    	if (idBytes.length != 1)
+	        {
+	    		return null;
+	        }
+	    	return idBytes[0] & 0xff;
     	}
-		if (value.charAt(0) == 's')
-        {
-			return value + ":";
-        }
-		byte[] idBytes;
-    	try
-    	{
-    		idBytes = Utils.parseBinaryString(value);
-    	}
-    	catch (Exception e)
-    	{
-    		return value + ":";
-    	}
-    	if (idBytes.length != 1)
-        {
-    		return value + ":";
-        }                
-		
-    	int valueInt = idBytes[0] & 0xff;
-    	return label + ":" + valueInt;
+    	return null;
     }
 
     public int getLengthElem() {
