@@ -101,9 +101,12 @@ public abstract class ElementAbstract implements Cloneable
             }
         }
 
-        // String  normalizeTag = ElementAbstract.getNormalizeFromTag(tag);
+        ElementAbstract elemDico = this.parseTagFromDictionary(tag, dictionary);
         String nameTag = element.attributeValue("name");
-        ElementAbstract elemDico = this.setTag(tag, nameTag, dictionary);
+        if (this.name == null)
+        {
+        	this.name = nameTag;
+        }
         
         String instances = element.attributeValue("instances");
         if (instances != null)
@@ -396,7 +399,7 @@ public abstract class ElementAbstract implements Cloneable
 	    return list;
 	}
 
-    private ElementAbstract setTag(String tag, String name, Dictionary dictionary) throws Exception
+    private ElementAbstract parseTagFromDictionary(String tag, Dictionary dictionary) throws Exception
     {
     	int iPos = tag.indexOf(":");
     	String label = tag;
@@ -407,7 +410,7 @@ public abstract class ElementAbstract implements Cloneable
     		value = tag.substring(iPos + 1);
     	}
     	// case if the tag is set by the value as a binary vale (with 'b' 's' 'd' prefix)
-    	Integer valueInt = getNormalizeFromTag(value);
+    	Integer valueInt = getTagValueFromBinary(value);
     	// check the consistency between value and label
     	ElementAbstract elemById = dictionary.getMapElementById().get(valueInt);
 		if (elemById != null && !label.equalsIgnoreCase(elemById.getName()))
@@ -429,13 +432,11 @@ public abstract class ElementAbstract implements Cloneable
     		this.name = elemById.name;
     		return elemById;
     	}
-    	this.name = name;
     	return null;
     }
 
-    private static Integer getNormalizeFromTag(String tag) throws Exception
+    private static Integer getTagValueFromBinary(String tag) throws Exception
     {
-    	Integer valueInt = null; 
     	if (tag.length() > 0)
     	{
 	    	if (tag.charAt(0) == 's')
