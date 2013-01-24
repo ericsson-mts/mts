@@ -25,6 +25,8 @@ package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.gtp.data.ElementTLIV;
 import com.devoteam.srit.xmlloader.gtp.data.ElementTLV;
@@ -85,56 +87,34 @@ public abstract class ElementAbstract implements Cloneable
     public void parseFromXML(Element element, Dictionary dictionary) throws Exception 
     {
         //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
-        String tagId = element.attributeValue("identifier");
-        if (tagId != null)
+        String tag = element.attributeValue("identifier");
+        if (tag != null)
         {
-        	tagId = tagId.trim();
+        	tag = tag.trim();
         }
-        if (tagId == null)
+        if (tag == null)
         {
-        	tagId = element.attributeValue("tag");
-            if (tagId != null)
+        	tag = element.attributeValue("tag");
+            if (tag != null)
             {
-            	tagId = tagId.trim();
+            	tag = tag.trim();
             }
         }
 
-        ElementAbstract elemDico = null;
-    	try 
-    	{
-    		byte[] idBytes = Utils.parseBinaryString(tagId);
-    		this.id = idBytes[0] & 0xff;
-            if (idBytes.length > 1)
-            {
-            	throw new ExecutionException("ERROR : Reading the element Id from XML file : value is too long " + tagId);
-            }                
-            if (dictionary != null)
-            {
-            	elemDico = dictionary.getMapElementById().get(this.id);
-            }
-    	}
-    	catch (Exception e) 
-    	{
-    		if (dictionary != null)
-    		{
-    			elemDico = dictionary.getMapElementByName().get(tagId);
-    		}
-    		if (elemDico == null)
-    		{
-            	throw new ExecutionException("ERROR : The element \"" + tagId + "\" for the ISDN layer is not present in the dictionnary.");            	            	
-            }        				
-    		this.id = elemDico.getId();
-    	}
-    	
+        String  normalizeTag = ElementAbstract.getNormalizeFromTag(tag);
+        ElementAbstract elemDico = ElementAbstract.getElementByTag(normalizeTag, dictionary);
         if (elemDico != null)
         {
+        	this.id = elemDico.getId();
         	this.name = elemDico.getName();
         }
+        
         else
         {
+        	this.id = Integer.parseInt(normalizeTag.substring(1));
         	this.name = element.attributeValue("name");
         }
-        
+
         String instances = element.attributeValue("instances");
         if (instances != null)
         {
@@ -200,7 +180,7 @@ public abstract class ElementAbstract implements Cloneable
 	            }	            	            
 	            else
 	            {
-	            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported : " + tagId);    
+	            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported : " + tag);    
 	            }
             }
 
@@ -425,7 +405,67 @@ public abstract class ElementAbstract implements Cloneable
 	    }
 	    return list;
 	}
-    
+
+    private static ElementAbstract getElementByTag(String text, Dictionary dictionary) throws Exception
+    {
+    	int iPos = text.indexOf(":");
+    	String label = text;
+    	String value = text;
+    	if (iPos >= 0)
+    	{
+    		label = text.substring(0, iPos);
+    		value = text.substring(iPos + 1);
+    	}
+    	ElementAbstract elemById = null; 
+    	if (value.length() > 0)
+    	{
+			Integer valueInt = Integer.parseInt(value);
+			elemById = dictionary.getMapElementById().get(valueInt);
+    	}
+		if (elemById != null && !label.equalsIgnoreCase(elemById.getName()))
+		{
+			GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The element label \"" + label + "\" does not match the tag/id \"" + value + "\" in the dictionary.");
+		}
+		ElementAbstract elem = dictionary.getMapElementByName().get(label);
+    	if (elem == null)
+    	{
+    		elem = elemById;
+    	}
+    	return elem;
+    }
+
+    private static String getNormalizeFromTag(String text) throws Exception
+    {
+    	int iPos = text.indexOf(":");
+    	String label = "";
+    	String value = text;
+    	if (iPos >= 0)
+    	{
+    		label = text.substring(0, iPos);
+    		value = text.substring(iPos + 1);
+    	}
+		if (value.charAt(0) == 's')
+        {
+			return value + ":";
+        }
+		byte[] idBytes;
+    	try
+    	{
+    		idBytes = Utils.parseBinaryString(value);
+    	}
+    	catch (Exception e)
+    	{
+    		return value + ":";
+    	}
+    	if (idBytes.length != 1)
+        {
+    		return value + ":";
+        }                
+		
+    	int valueInt = idBytes[0] & 0xff;
+    	return label + ":" + valueInt;
+    }
+
     public int getLengthElem() {
         int length = 0;
         for (Entry<String, FieldAbstract> field : _hashMapFields.entrySet()) {
