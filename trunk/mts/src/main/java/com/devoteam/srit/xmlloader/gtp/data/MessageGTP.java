@@ -226,24 +226,22 @@ public class MessageGTP
 	    }
 	    else if ((params[0].equalsIgnoreCase("element") && params.length >= 2)) 
 	    {
-	    	int id = 0;
-	    	try 
+	    	
+	    	Integer id = ElementAbstract.getTagValueFromBinary(params[1]);
+	    	if (id == null)
 	    	{
-	            byte[] idBytes = Utils.parseBinaryString(params[1]);
-	            if (idBytes.length > 1)
-	            {
-	            	throw new ExecutionException("Reading the element Id for path keyword : value is too long " + params[1]);
-	            }                
-	            id = idBytes[0] & 0xff;
-	    	}
-	    	catch (Exception e) 
-	    	{
-	    		ElementAbstract elem = dictionaries.get(this.syntax).getMapElementByName().get(params[1]);
-	    		if (elem != null)
+	        	int iPos = params[1].indexOf(":");
+	        	String label = params[1];
+	        	if (iPos >= 0)
+	        	{
+	        		label = params[1].substring(0, iPos);
+	        	}
+	    		ElementAbstract elemByName = dictionary.getMapElementByName().get(label);
+	    		if (elemByName != null)
 	    		{
-	    			id = elem.getId();
+	    			id = elemByName.getId();
 	    		}
-	    	}        	
+	    	}
 	    	List<ElementAbstract> list = ElementAbstract.getElements(this.elements, id);
 		    Iterator<ElementAbstract> iter = list.iterator();
 		    while (iter.hasNext())
