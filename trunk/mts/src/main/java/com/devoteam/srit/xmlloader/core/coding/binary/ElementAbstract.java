@@ -103,7 +103,7 @@ public abstract class ElementAbstract implements Cloneable
 
         ElementAbstract elemDico = this.parseTagFromDictionary(tag, dictionary);
         String nameTag = element.attributeValue("name");
-        if (this.name == null)
+        if (nameTag != null)
         {
         	this.name = nameTag;
         }
@@ -426,12 +426,14 @@ public abstract class ElementAbstract implements Cloneable
     		return elemByName;
     	}
     	// return first by the tag value
-    	this.id = valueInt;
     	if (elemById != null)
     	{
+        	this.id = valueInt;
     		this.name = elemById.name;
     		return elemById;
     	}
+    	this.id = valueInt;
+    	this.name = label;
     	return null;
     }
 
