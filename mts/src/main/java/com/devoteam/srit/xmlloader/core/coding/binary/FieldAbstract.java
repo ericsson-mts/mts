@@ -23,14 +23,12 @@
 
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
-import java.util.Map;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.SupArray;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.utils.maps.LinkedHashMap;
 
 import org.dom4j.Element;
 
