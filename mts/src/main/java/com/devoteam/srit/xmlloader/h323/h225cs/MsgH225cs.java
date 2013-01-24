@@ -103,7 +103,7 @@ public class MsgH225cs extends Msg {
        // get field and element for ASN1 and set value
        try
        {
-           List<ElementAbstract> elements_asn1 = msgQ931.getElements(126);
+           List<ElementAbstract> elements_asn1 = msgQ931.getElements("126");
        }
        catch (Exception e)
        {

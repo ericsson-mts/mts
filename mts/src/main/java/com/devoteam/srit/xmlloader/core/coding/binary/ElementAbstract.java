@@ -348,7 +348,7 @@ public abstract class ElementAbstract implements Cloneable
 		}
     }
     
-    public void getParameter(Parameter var, String[] params, String path, int offset) throws Exception 
+    public void getParameter(Parameter var, String[] params, String path, int offset, Dictionary dictionary) throws Exception 
     {
     	if (params.length == offset + 2) 
         {
@@ -373,30 +373,52 @@ public abstract class ElementAbstract implements Cloneable
         }
         else 
         {
-        	List<ElementAbstract> list = ElementAbstract.getElements(this.elements, Integer.parseInt(params[offset + 2]));
+        	List<ElementAbstract> list = ElementAbstract.getElements(this.elements, params[offset + 2], dictionary);
         	 Iterator<ElementAbstract> iter = list.iterator();
  		    while (iter.hasNext())
  		    {
  		    	ElementAbstract elem = (ElementAbstract) iter.next();
- 		    	elem.getParameter(var, params, params[offset + 2], offset + 1);
+ 		    	elem.getParameter(var, params, params[offset + 2], offset + 1, dictionary);
  		    }
         }    	
     }
     
-	public static List<ElementAbstract> getElements(List<ElementAbstract> elements, int id) throws Exception 
+	public static List<ElementAbstract> getElements(List<ElementAbstract> elements, String tag, Dictionary dictionary) throws Exception 
 	{
+		Integer value = ElementAbstract.getTagValue(tag, dictionary);
+		
 		List<ElementAbstract> list = new ArrayList<ElementAbstract>();
 		
 	    Iterator<ElementAbstract> iter = elements.iterator();
 	    while (iter.hasNext())
 	    {
 	    	ElementAbstract elem = (ElementAbstract) iter.next();
-	        if (id == elem.getId())
+	        if (value == elem.getId())
 	        {
 	        	list.add(elem);
 	        }
 	    }
 	    return list;
+	}
+
+	public static Integer getTagValue(String tag, Dictionary dictionary) throws Exception
+	{
+		Integer id = ElementAbstract.getTagValueFromBinary(tag);
+		if (id == null)
+		{
+	    	int iPos = tag.indexOf(":");
+	    	String label = tag;
+	    	if (iPos >= 0)
+	    	{
+	    		label = tag.substring(0, iPos);
+	    	}
+			ElementAbstract elemByName = dictionary.getMapElementByName().get(label);
+			if (elemByName != null)
+			{
+				return elemByName.getId();
+			}
+		}
+		return id;
 	}
 
     private ElementAbstract parseTagFromDictionary(String tag, Dictionary dictionary) throws Exception

@@ -10,7 +10,7 @@
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
     </receiveMessageGTP>
-    
+
     <parameter name="[version]" operation="protocol.setFromMessage" value="header.version"/>
     <test parameter="[version]" condition="number.equals" value="2"/>
     <parameter name="[piggyFlag]" operation="protocol.setFromMessage" value="header.piggyFlag"/>
@@ -104,18 +104,18 @@
     <test parameter="[F-TEID.Interface Type]" condition="list.size" value="2"/>
     <test parameter="[F-TEID.Interface Type(0)]" condition="string.equals" value="S5/S8 SGW GTP-C:6"/>
     <test parameter="[F-TEID.Interface Type(1)]" condition="string.equals" value="S5/S8 PGW GTP-U:5"/>
-    <parameter name="[TEID / GRE Key]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.TEID / GRE Key"/>
-    <test parameter="[TEID / GRE Key]" condition="list.size" value="2"/>
-    <test parameter="[TEID / GRE Key(0)]" condition="string.equals" value="4294967295"/>
-    <test parameter="[TEID / GRE Key(1)]" condition="string.equals" value="0"/>
-    <parameter name="[IPv4 address]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.IPv4 address"/>
-    <test parameter="[IPv4 address]" condition="list.size" value="2"/>
-    <test parameter="[IPv4 address(0)]" condition="string.equals" value="123.45.67.89"/>
-    <test parameter="[IPv4 address(1)]" condition="string.equals" value="98.76.54.32"/>
-    <parameter name="[IPv6 address]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.IPv6 address"/>
-    <test parameter="[IPv6 address]" condition="list.size" value="2"/>
-    <test parameter="[IPv6 address(0)]" condition="string.equals" value="1234:5678:90ab:cdef:fedc:ba09:8765:4321"/>
-    <test parameter="[IPv6 address(1)]" condition="string.equals" value="fedc:ba98:7654:3210:123:4567:89ab:cdef"/>
+    <parameter name="[F-TEID.TEID / GRE Key]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.TEID / GRE Key"/>
+    <test parameter="[F-TEID.TEID / GRE Key]" condition="list.size" value="2"/>
+    <test parameter="[F-TEID.TEID / GRE Key(0)]" condition="string.equals" value="4294967295"/>
+    <test parameter="[F-TEID.TEID / GRE Key(1)]" condition="string.equals" value="0"/>
+    <parameter name="[F-TEID.IPv4 address]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.IPv4 address"/>
+    <test parameter="[F-TEID.IPv4 address]" condition="list.size" value="2"/>
+    <test parameter="[F-TEID.IPv4 address(0)]" condition="string.equals" value="123.45.67.89"/>
+    <test parameter="[F-TEID.IPv4 address(1)]" condition="string.equals" value="98.76.54.32"/>
+    <parameter name="[F-TEID.IPv6 address]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.IPv6 address"/>
+    <test parameter="[F-TEID.IPv6 address]" condition="list.size" value="2"/>
+    <test parameter="[F-TEID.IPv6 address(0)]" condition="string.equals" value="1234:5678:90ab:cdef:fedc:ba09:8765:4321"/>
+    <test parameter="[F-TEID.IPv6 address(1)]" condition="string.equals" value="fedc:ba98:7654:3210:123:4567:89ab:cdef"/>
     <parameter name="[F-TEID]" operation="protocol.setFromMessage" value="element.F-TEID:87"/>
     <test parameter="[F-TEID]" condition="list.size" value="2"/>
     <test parameter="[F-TEID(0)]" condition="binary.equals" value="c6ffffffff7b2d43591234567890abcdeffedcba0987654321"/>
@@ -225,13 +225,62 @@
     <parameter name="[PCO]" operation="protocol.setFromMessage" value="element.PCO:78"/>
     <test parameter="[PCO]" condition="binary.equals" value="8080211001000010810600000000830600000000000d00000a00"/>
 
+    <parameter name="[Bearer Context.EBI.spare]" operation="protocol.setFromMessage" value="element.Bearer Context:93.EBI:73.field.spare"/>
+    <test parameter="[Bearer Context.EBI.spare]" condition="number.equals" value="15"/>
+    <parameter name="[Bearer Context.EBI.EBI]" operation="protocol.setFromMessage" value="element.Bearer Context:93.EBI:73.field.EBI"/>
+    <test parameter="[Bearer Context.EBI.EBI]" condition="number.equals" value="15"/>
+    <parameter name="[Bearer Context.EBI.EBI]" operation="protocol.setFromMessage" value="element.93.EBI.field.EBI"/>
+    <test parameter="[Bearer Context.EBI.EBI]" condition="number.equals" value="15"/>
+    <parameter name="[Bearer Context.EBI.EBI]" operation="protocol.setFromMessage" value="element.Bearer Context.73.field.EBI"/>
+    <test parameter="[Bearer Context.EBI.EBI]" condition="number.equals" value="15"/>
+    <parameter name="[Bearer Context.EBI]" operation="protocol.setFromMessage" value="element.Bearer Context:93.EBI:73"/>
+    <test parameter="[Bearer Context.EBI]" condition="binary.equals" value="ff"/>
+    <parameter name="[Bearer Context.EBI]" operation="protocol.setFromMessage" value="element.Bearer Context:93.EBI"/>
+    <test parameter="[Bearer Context.EBI]" condition="binary.equals" value="ff"/>
     <parameter name="[Bearer Context.EBI]" operation="protocol.setFromMessage" value="element.Bearer Context:93.73"/>
     <test parameter="[Bearer Context.EBI]" condition="binary.equals" value="ff"/>
-    <parameter name="[Bearer Context]" operation="protocol.setFromMessage" value="element.Bearer Context:93.field.Bearer Context"/>
-    <!--test parameter="[Bearer Context]" condition="binary.equals" value="4900010005570009028480002002ac14462a5000160004070000000000000000000000000000000000000000"/-->
+
+    <parameter name="[Bearer Context.Bearer QOS.spare1]" operation="protocol.setFromMessage" value="element.Bearer Context:93.Bearer QoS:80.field.spare1"/>
+    <test parameter="[Bearer Context.Bearer QOS.spare1]" condition="number.equals" value="1"/>
+    <parameter name="[Bearer Context.Bearer QOS.PCI]" operation="protocol.setFromMessage" value="element.Bearer Context:93.Bearer QoS:80.field.PCI"/>
+    <test parameter="[Bearer Context.Bearer QOS.PCI]" condition="number.equals" value="0"/>
+    <parameter name="[Bearer Context.Bearer QOS.PL]" operation="protocol.setFromMessage" value="element.Bearer Context:93.Bearer QoS:80.field.PL"/>
+    <test parameter="[Bearer Context.Bearer QOS.PL]" condition="number.equals" value="15"/>
+    <parameter name="[Bearer Context.Bearer QOS.spare2]" operation="protocol.setFromMessage" value="element.Bearer Context:93.Bearer QoS:80.field.spare2"/>
+    <test parameter="[Bearer Context.Bearer QOS.spare2]" condition="number.equals" value="1"/>
+    <parameter name="[Bearer Context.Bearer QOS.PVI]" operation="protocol.setFromMessage" value="element.Bearer Context:93.Bearer QoS:80.field.PVI"/>
+    <test parameter="[Bearer Context.Bearer QOS.PVI]" condition="number.equals" value="0"/>
+    <parameter name="[Bearer Context.Bearer QOS.Label QCI]" operation="protocol.setFromMessage" value="element.Bearer Context:93.Bearer QoS:80.field.Label QCI"/>
+    <test parameter="[Bearer Context.Bearer QOS.Label QCI]" condition="number.equals" value="255"/>
+    <parameter name="[Bearer Context.Bearer QOS.Maximum bit rate for uplink]" operation="protocol.setFromMessage" value="element.Bearer Context:93.Bearer QoS:80.field.Maximum bit rate for uplink"/>
+    <test parameter="[Bearer Context.Bearer QOS.Maximum bit rate for uplink]" condition="number.equals" value="1099511627775"/>
+    <parameter name="[Bearer Context.Bearer QOS.Maximum bit rate for downlink]" operation="protocol.setFromMessage" value="element.Bearer Context:93.Bearer QoS:80.field.Maximum bit rate for downlink"/>
+    <test parameter="[Bearer Context.Bearer QOS.Maximum bit rate for downlink]" condition="number.equals" value="1099511627775"/>
+    <parameter name="[Bearer Context.Bearer QOS.Guaranteed bit rate for uplink]" operation="protocol.setFromMessage" value="element.Bearer Context:93.Bearer QoS:80.field.Guaranteed bit rate for uplink"/>
+    <test parameter="[Bearer Context.Bearer QOS.Guaranteed bit rate for uplink]" condition="number.equals" value="1099511627775"/>
+    <parameter name="[Bearer Context.Bearer QOS.Guaranteed bit rate for downlink]" operation="protocol.setFromMessage" value="element.Bearer Context:93.Bearer QoS:80.field.Guaranteed bit rate for downlink"/>
+    <test parameter="[Bearer Context.Bearer QOS.Guaranteed bit rate for downlink]" condition="number.equals" value="1099511627775"/>
+    <parameter name="[Bearer Context.Bearer QOS]" operation="protocol.setFromMessage" value="element.Bearer Context:93.Bearer QoS:80"/>
+    <test parameter="[Bearer Context.Bearer QOS]" condition="binary.equals" value="beffffffffffffffffffffffffffffffffffffffffff"/>
+
+    <parameter name="[Bearer Context.FTEID.V4]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.V4"/>
+    <test parameter="[Bearer Context.FTEID.V4]" condition="boolean.equals" value="true:1"/>
+    <parameter name="[Bearer Context.FTEID.V6]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.V6"/>
+    <test parameter="[Bearer Context.FTEID.V6]" condition="boolean.equals" value="true:1"/>
+    <parameter name="[Bearer Context.FTEID.Interface Type]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.Interface Type"/>
+    <test parameter="[Bearer Context.FTEID.Interface Type]" condition="string.equals" value="S5/S8 SGW GTP-U:4"/>
+    <parameter name="[Bearer Context.FTEID.TEID / GRE Key]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.TEID / GRE Key"/>
+    <test parameter="[Bearer Context.FTEID.TEID / GRE Key]" condition="number.equals" value="4294967295"/>
+    <parameter name="[Bearer Context.FTEID.IPv4 address]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.IPv4 address"/>
+    <test parameter="[Bearer Context.FTEID.IPv4 address]" condition="string.equals" value="12.13.14.15"/>
+    <parameter name="[Bearer Context.FTEID.IPv6 address]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.IPv6 address"/>
+    <test parameter="[Bearer Context.FTEID.IPv6 address]" condition="string.equals" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/>
+    <parameter name="[Bearer Context.FTEID]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87"/>
+    <test parameter="[Bearer Context.FTEID]" condition="binary.equals" value="c4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
+
     <parameter name="[Bearer Context]" operation="protocol.setFromMessage" value="element.Bearer Context:93"/>
     <test parameter="[Bearer Context]" condition="binary.equals" value="49000100ff50001600beffffffffffffffffffffffffffffffffffffffffff57001900c4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
-
+    
     <parameter name="[UE Time Zone.Time Zone]" operation="protocol.setFromMessage" value="element.UE Time Zone:114.field.Time Zone"/>
     <test parameter="[UE Time Zone.Time Zone]" condition="number.equals" value="255"/>
     <parameter name="[UE Time Zone.spare]" operation="protocol.setFromMessage" value="element.UE Time Zone:114.field.spare"/>
