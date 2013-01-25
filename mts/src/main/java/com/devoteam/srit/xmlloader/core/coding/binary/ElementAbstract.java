@@ -267,13 +267,21 @@ public abstract class ElementAbstract implements Cloneable
     	// case if the tag is set by the value as a binary vale (with 'b' 's' 'd' prefix)
     	Integer valueInt = getTagValueFromBinary(value);
     	// check the consistency between value and label
-    	ElementAbstract elemById = dictionary.getElementByTag(valueInt);
+    	ElementAbstract elemById = null;
+    	if (dictionary != null)
+    	{
+    		elemById = dictionary.getElementByTag(valueInt);
+    	}
 		if (elemById != null && !label.equalsIgnoreCase(elemById.getLabel()) && !label.equals(tag))
 		{
 			GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The element label \"" + label + "\" does not match the tag/id \"" + value + "\" in the dictionary.");
 		}
 		// return first by the tag name
-		ElementAbstract elemByName = dictionary.getElementByLabel(label);
+		ElementAbstract elemByName = null;
+    	if (dictionary != null)
+    	{
+    		elemByName = dictionary.getElementByLabel(label);
+    	}
     	if (elemByName != null)
     	{
     		return elemByName;
