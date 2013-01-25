@@ -58,7 +58,8 @@ public class Dictionary {
             }
             else if (syntax.contains("GTP"))
             {
-            	elemInfo = ElementAbstract.buildFactory(elem);
+            	String coding = elem.attributeValue("coding");
+            	elemInfo = ElementAbstract.buildFactory(coding);
             }
             
             elemInfo.parseFromXML(elem, this);

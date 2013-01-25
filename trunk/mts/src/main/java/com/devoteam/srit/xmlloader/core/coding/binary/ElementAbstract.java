@@ -66,9 +66,8 @@ public abstract class ElementAbstract implements Cloneable
     protected SupArray _fields;
     protected SupArray _elements;
 
-    public static ElementAbstract buildFactory(Element root)
+    public static ElementAbstract buildFactory(String coding)
     {
-    	String coding = root.attributeValue("coding");
 		if ("TLIV".equals(coding))
 		{
 			return new ElementTLIV();
@@ -101,7 +100,10 @@ public abstract class ElementAbstract implements Cloneable
             }
         }
 
-        ElementAbstract elemDico = this.parseTagFromDictionary(tag, dictionary);
+        ElementAbstract elemDico = ElementAbstract.getElementFromDictionary(tag, dictionary);
+        this.id = elemDico.id;
+        this.name = elemDico.name;
+        
         String nameTag = element.attributeValue("name");
         if (nameTag != null)
         {
@@ -229,7 +231,8 @@ public abstract class ElementAbstract implements Cloneable
         for (Iterator<Element> it = listElement.iterator(); it.hasNext();) 
         {
             Element elemElement = it.next();
-            elemInfo = ElementAbstract.buildFactory(elemElement);
+            String coding = elemElement.attributeValue("coding");
+            elemInfo = ElementAbstract.buildFactory(coding);
 	        elemInfo.parseFromXML(elemElement, dictionary);
 	        
 	        this.elements.add(elemInfo);
@@ -385,7 +388,7 @@ public abstract class ElementAbstract implements Cloneable
     
 	public static List<ElementAbstract> getElements(List<ElementAbstract> elements, String tag, Dictionary dictionary) throws Exception 
 	{
-		Integer value = ElementAbstract.getTagValue(tag, dictionary);
+		Integer value = ElementAbstract.getElementFromDictionary(tag, dictionary).getId();
 		
 		List<ElementAbstract> list = new ArrayList<ElementAbstract>();
 		
@@ -401,6 +404,12 @@ public abstract class ElementAbstract implements Cloneable
 	    return list;
 	}
 
+	public static Integer getTagValue(String tag, Dictionary dictionary) throws Exception
+	{
+		ElementAbstract elem = getElementFromDictionary(tag, dictionary);
+		return elem.getId();
+	}
+	/*
 	public static Integer getTagValue(String tag, Dictionary dictionary) throws Exception
 	{
 		Integer id = ElementAbstract.getTagValueFromBinary(tag);
@@ -420,8 +429,8 @@ public abstract class ElementAbstract implements Cloneable
 		}
 		return id;
 	}
-
-    private ElementAbstract parseTagFromDictionary(String tag, Dictionary dictionary) throws Exception
+	*/
+    private static ElementAbstract getElementFromDictionary(String tag, Dictionary dictionary) throws Exception
     {
     	int iPos = tag.indexOf(":");
     	String label = tag;
@@ -443,20 +452,18 @@ public abstract class ElementAbstract implements Cloneable
 		ElementAbstract elemByName = dictionary.getMapElementByName().get(label);
     	if (elemByName != null)
     	{
-    		this.id = elemByName.id;
-    		this.name = label;
     		return elemByName;
     	}
     	// return first by the tag value
     	if (elemById != null)
     	{
-        	this.id = valueInt;
-    		this.name = elemById.name;
     		return elemById;
     	}
-    	this.id = valueInt;
-    	this.name = label;
-    	return null;
+    	
+    	ElementAbstract elemEmpty = buildFactory("TLIV");
+    	elemEmpty.id = valueInt;
+    	elemEmpty.name = label;
+    	return elemEmpty;
     }
 
     public static Integer getTagValueFromBinary(String tag) throws Exception

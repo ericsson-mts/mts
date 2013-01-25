@@ -103,7 +103,8 @@ public class MessageGTP
 	    ElementAbstract elemInfo = null;
 	    for (Element element : elementsInf) 
 	    {
-	        elemInfo = ElementAbstract.buildFactory(element);
+	    	String coding = element.attributeValue("coding");
+	        elemInfo = ElementAbstract.buildFactory(coding);
 	        elemInfo.parseFromXML(element, dictionaries.get(this.syntax));
 	        
 	        this.elements.add(elemInfo);
