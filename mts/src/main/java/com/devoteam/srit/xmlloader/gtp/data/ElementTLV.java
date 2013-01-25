@@ -47,7 +47,7 @@ public class ElementTLV extends ElementAbstract
 	@Override
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
     {
-    	this.id = new Integer08Array(array.subArray(0, 1)).getValue();
+    	this.tag = new Integer08Array(array.subArray(0, 1)).getValue();
         int length = new Integer16Array(array.subArray(1, 2)).getValue();
         this._fields = new SupArray();
         this._fields.addFirst(array.subArray(3, length));
@@ -59,7 +59,7 @@ public class ElementTLV extends ElementAbstract
     public SupArray encodeToArray() 
 	{
         SupArray sup = new SupArray();
-        Integer08Array idArray = new Integer08Array(this.id);
+        Integer08Array idArray = new Integer08Array(this.tag);
         sup.addLast(idArray);
         Integer16Array lengthArray = new Integer16Array(this._fields.length);
 	    sup.addLast(lengthArray);
