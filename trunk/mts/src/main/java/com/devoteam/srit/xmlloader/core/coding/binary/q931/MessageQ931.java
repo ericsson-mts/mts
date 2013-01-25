@@ -125,7 +125,7 @@ public class MessageQ931
         		ElementAbstract elem = dictionaries.get(this.syntax).getMapElementByName().get(params[2]), dictionary;
         		if (elem != null)
         		{
-        			id = elem.getId();
+        			id = elem.getTag();
         		}
         	}        	
 	    	List<ElementAbstract> list = ElementAbstract.getElementsFromTag(this.elements, params[2], dictionary);

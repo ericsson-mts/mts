@@ -64,8 +64,8 @@ public class Dictionary {
             
             elemInfo.parseFromXML(elem, this);
             
-            mapElementByName.put(elemInfo.getName(), elemInfo);
-            mapElementById.put(elemInfo.getId(), elemInfo);
+            mapElementByName.put(elemInfo.getLabel(), elemInfo);
+            mapElementById.put(elemInfo.getTag(), elemInfo);
         }
 
     }

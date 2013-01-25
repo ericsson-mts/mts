@@ -52,9 +52,9 @@ import org.dom4j.Element;
 public abstract class ElementAbstract implements Cloneable
 {
 
-    protected int id;
+    protected int tag;
 
-    protected String name;
+    protected String label;
 
 	// protected int spare;
 	protected int instances;
@@ -94,13 +94,13 @@ public abstract class ElementAbstract implements Cloneable
         tag = tag.trim();
         
         ElementAbstract elemDico = ElementAbstract.getElementFromDictionary(tag, dictionary);
-        this.id = elemDico.id;
-        this.name = elemDico.name;
+        this.tag = elemDico.tag;
+        this.label = elemDico.label;
         
-        String nameTag = element.attributeValue("name");
-        if (nameTag != null)
+        String labelTag = element.attributeValue("name");
+        if (labelTag != null)
         {
-        	this.name = nameTag;
+        	this.label = labelTag;
         }
         
         String instances = element.attributeValue("instances");
@@ -168,7 +168,7 @@ public abstract class ElementAbstract implements Cloneable
 	            }	            	            
 	            else
 	            {
-	            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported : " + tag);    
+	            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported in the element tag : \"" + tag + "\"");
 	            }
             }
 
@@ -195,7 +195,8 @@ public abstract class ElementAbstract implements Cloneable
         for (Iterator<Element> it = listField.iterator(); it.hasNext();) 
         {
             Element element1 = it.next();
-            FieldAbstract field = this._hashMapFields.get(element1.attributeValue("name"));
+            String fieldName = element1.attributeValue("name");
+            FieldAbstract field = this._hashMapFields.get(fieldName);
             if (field != null) 
             {
             	String value = element1.attributeValue("value");
@@ -215,7 +216,7 @@ public abstract class ElementAbstract implements Cloneable
             }
             else 
             {
-                throw new ExecutionException("The field " + element1.attributeValue("name") + " is not found in element : " + this.name + ":" + this.id);
+                throw new ExecutionException("The field \"" + fieldName + "\" is not found in the element : \"" + this.tag + "\"");
             }
         }
         
@@ -237,12 +238,12 @@ public abstract class ElementAbstract implements Cloneable
 
         StringBuilder elemString = new StringBuilder();
         elemString.append("<element ");
-        elemString.append("identifier=\"");
-    	if (this.name != null)
+        elemString.append("tag=\"");
+    	if (this.label != null)
     	{
-    		elemString.append(this.name + ":");
+    		elemString.append(this.label + ":");
     	}
-    	elemString.append(this.id);
+    	elemString.append(this.tag);
     	elemString.append("\"");
     	elemString.append(" instances=\"");
    		elemString.append(this.instances);
@@ -324,8 +325,8 @@ public abstract class ElementAbstract implements Cloneable
     
     protected void copyToCLone(ElementAbstract source) throws Exception
     {
-    	this.id = source.id;
-    	this.name = source.name;
+    	this.tag = source.tag;
+    	this.label = source.label;
     	this._fields = null;
 		// encode the sub-element
 		Iterator<ElementAbstract> iter = source.elements.iterator();
@@ -381,7 +382,7 @@ public abstract class ElementAbstract implements Cloneable
     
 	public static List<ElementAbstract> getElementsFromTag(List<ElementAbstract> elements, String tag, Dictionary dictionary) throws Exception 
 	{
-		Integer value = ElementAbstract.getElementFromDictionary(tag, dictionary).getId();
+		Integer value = ElementAbstract.getElementFromDictionary(tag, dictionary).getTag();
 		
 		List<ElementAbstract> list = new ArrayList<ElementAbstract>();
 		
@@ -389,7 +390,7 @@ public abstract class ElementAbstract implements Cloneable
 	    while (iter.hasNext())
 	    {
 	    	ElementAbstract elem = (ElementAbstract) iter.next();
-	        if (value == elem.getId())
+	        if (value == elem.getTag())
 	        {
 	        	list.add(elem);
 	        }
@@ -400,7 +401,7 @@ public abstract class ElementAbstract implements Cloneable
 	public static Integer getTagValue(String tag, Dictionary dictionary) throws Exception
 	{
 		ElementAbstract elem = getElementFromDictionary(tag, dictionary);
-		return elem.getId();
+		return elem.getTag();
 	}
 
 	private static ElementAbstract getElementFromDictionary(String tag, Dictionary dictionary) throws Exception
@@ -417,7 +418,7 @@ public abstract class ElementAbstract implements Cloneable
     	Integer valueInt = getTagValueFromBinary(value);
     	// check the consistency between value and label
     	ElementAbstract elemById = dictionary.getMapElementById().get(valueInt);
-		if (elemById != null && !label.equalsIgnoreCase(elemById.getName()))
+		if (elemById != null && !label.equalsIgnoreCase(elemById.getLabel()))
 		{
 			GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The element label \"" + label + "\" does not match the tag/id \"" + value + "\" in the dictionary.");
 		}
@@ -434,8 +435,8 @@ public abstract class ElementAbstract implements Cloneable
     	}
     	
     	ElementAbstract elemEmpty = buildFactory("TLIV");
-    	elemEmpty.id = valueInt;
-    	elemEmpty.name = label;
+    	elemEmpty.tag = valueInt;
+    	elemEmpty.label = label;
     	return elemEmpty;
     }
 
@@ -477,12 +478,12 @@ public abstract class ElementAbstract implements Cloneable
         return _hashMapFields;
     }
 
-    public int getId() {
-        return this.id;
+    public int getTag() {
+        return this.tag;
     }
 
-	public String getName() {
-		return this.name;
+	public String getLabel() {
+		return this.label;
 	}
     
 }
