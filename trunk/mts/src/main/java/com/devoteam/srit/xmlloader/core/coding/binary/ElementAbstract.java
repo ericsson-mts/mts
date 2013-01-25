@@ -437,7 +437,18 @@ public abstract class ElementAbstract implements Cloneable
      */
 	public static List<ElementAbstract> getElementsFromTag(List<ElementAbstract> elements, String tag, Dictionary dictionary) throws Exception 
 	{
-		Integer value = ElementAbstract.getElementFromDictionary(tag, dictionary).getTag();
+		// case when the instances is specified
+    	int iPos = tag.indexOf(',');
+    	String tagStr = tag;
+    	Integer instances = null;
+    	if (iPos >= 0)
+    	{
+    		tagStr = tag.substring(0, iPos);
+    		String instancesStr = tag.substring(iPos + 1);
+    		instances = Integer.parseInt(instancesStr);
+    	}		
+		
+		Integer tagInt = ElementAbstract.getElementFromDictionary(tagStr, dictionary).getTag();
 		
 		List<ElementAbstract> list = new ArrayList<ElementAbstract>();
 		
@@ -445,7 +456,7 @@ public abstract class ElementAbstract implements Cloneable
 	    while (iter.hasNext())
 	    {
 	    	ElementAbstract elem = (ElementAbstract) iter.next();
-	        if (value == elem.getTag())
+	        if ((tagInt == elem.getTag()) && ((instances == null) || (instances.equals(elem.instances))))
 	        {
 	        	list.add(elem);
 	        }

@@ -48,9 +48,22 @@
     <test parameter="[MSISDN(0)]" condition="string.equals" value="331234567890123456"/>
     <test parameter="[MSISDN(1)]" condition="string.equals" value="339876543210987654"/>
     <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN:76"/>
+    <test parameter="[MSISDN]" condition="list.size" value="2"/>
     <test parameter="[MSISDN(0)]" condition="binary.equals" value="332143658709214365"/>
     <test parameter="[MSISDN(1)]" condition="binary.equals" value="338967452301896745"/>
-    
+
+    <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN:76,6.field.MSISDN"/>
+    <test parameter="[MSISDN]" condition="list.size" value="1"/>
+    <test parameter="[MSISDN]" condition="string.equals" value="339876543210987654"/>
+    <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN:76,6"/>
+    <test parameter="[MSISDN]" condition="list.size" value="1"/>
+    <test parameter="[MSISDN]" condition="binary.equals" value="338967452301896745"/>
+
+    <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN:76,1.field.MSISDN"/>
+    <test parameter="[MSISDN]" condition="list.size" value="0"/>
+    <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN:76,1"/>
+    <test parameter="[MSISDN]" condition="list.size" value="0"/>
+
     <parameter name="[MEI]" operation="protocol.setFromMessage" value="element.MEI:75.field.MEI"/>
     <test parameter="[MEI]" condition="number.equals" value="0033123456789012"/>
     <parameter name="[MEI]" operation="protocol.setFromMessage" value="element.MEI:75"/>
@@ -92,7 +105,7 @@
     <test parameter="[RAT Type]" condition="string.equals" value="EUTRAN:6"/>
     <parameter name="[RAT Type]" operation="protocol.setFromMessage" value="element.RAT Type:82"/>
     <test parameter="[RAT Type]" condition="binary.equals" value="06"/>
-    
+
     <parameter name="[F-TEID.V4]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.V4"/>
     <test parameter="[F-TEID.V4]" condition="list.size" value="2"/>
     <test parameter="[F-TEID.V4]" condition="boolean.equals" value="1"/>
@@ -120,6 +133,28 @@
     <test parameter="[F-TEID]" condition="list.size" value="2"/>
     <test parameter="[F-TEID(0)]" condition="binary.equals" value="c6ffffffff7b2d43591234567890abcdeffedcba0987654321"/>
     <test parameter="[F-TEID(1)]" condition="binary.equals" value="c500000000624c3620fedcba98765432100123456789abcdef"/>
+    
+    <parameter name="[F-TEID.V4]" operation="protocol.setFromMessage" value="element.F-TEID:87,1.field.V4"/>
+    <test parameter="[F-TEID.V4]" condition="list.size" value="1"/>
+    <test parameter="[F-TEID.V4]" condition="boolean.equals" value="1"/>
+    <parameter name="[F-TEID.V6]" operation="protocol.setFromMessage" value="element.F-TEID:87,1.field.V6"/>
+    <test parameter="[F-TEID.V6]" condition="list.size" value="1"/>
+    <test parameter="[F-TEID.V6]" condition="boolean.equals" value="true"/>
+    <parameter name="[F-TEID.Interface Type]" operation="protocol.setFromMessage" value="element.F-TEID:87,1.field.Interface Type"/>
+    <test parameter="[F-TEID.Interface Type]" condition="list.size" value="1"/>
+    <test parameter="[F-TEID.Interface Type]" condition="string.equals" value="S5/S8 PGW GTP-U:5"/>
+    <parameter name="[F-TEID.TEID / GRE Key]" operation="protocol.setFromMessage" value="element.F-TEID:87,1.field.TEID / GRE Key"/>
+    <test parameter="[F-TEID.TEID / GRE Key]" condition="list.size" value="1"/>
+    <test parameter="[F-TEID.TEID / GRE Key]" condition="string.equals" value="0"/>
+    <parameter name="[F-TEID.IPv4 address]" operation="protocol.setFromMessage" value="element.F-TEID:87,1.field.IPv4 address"/>
+    <test parameter="[F-TEID.IPv4 address]" condition="list.size" value="1"/>
+    <test parameter="[F-TEID.IPv4 address]" condition="string.equals" value="98.76.54.32"/>
+    <parameter name="[F-TEID.IPv6 address]" operation="protocol.setFromMessage" value="element.F-TEID:87,1.field.IPv6 address"/>
+    <test parameter="[F-TEID.IPv6 address]" condition="list.size" value="1"/>
+    <test parameter="[F-TEID.IPv6 address]" condition="string.equals" value="fedc:ba98:7654:3210:123:4567:89ab:cdef"/>
+    <parameter name="[F-TEID]" operation="protocol.setFromMessage" value="element.F-TEID:87,1"/>
+    <test parameter="[F-TEID]" condition="list.size" value="1"/>
+    <test parameter="[F-TEID]" condition="binary.equals" value="c500000000624c3620fedcba98765432100123456789abcdef"/>
     
     <parameter name="[APN01]" operation="protocol.setFromMessage" value="element.APN:71.field.APN01"/>
     <test parameter="[APN01]" condition="string.equals" value="stringstring01"/>
@@ -264,22 +299,51 @@
     <test parameter="[Bearer Context.Bearer QOS]" condition="binary.equals" value="beffffffffffffffffffffffffffffffffffffffffff"/>
 
     <parameter name="[Bearer Context.FTEID.V4]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.V4"/>
+    <test parameter="[Bearer Context.FTEID.V4]" condition="list.size" value="2"/>
     <test parameter="[Bearer Context.FTEID.V4]" condition="boolean.equals" value="true:1"/>
     <parameter name="[Bearer Context.FTEID.V6]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.V6"/>
+    <test parameter="[Bearer Context.FTEID.V6]" condition="list.size" value="2"/>
     <test parameter="[Bearer Context.FTEID.V6]" condition="boolean.equals" value="true:1"/>
-    <parameter name="[Bearer Context.FTEID.Interface Type]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.Interface Type"/>
+    <parameter name="[Bearer Context.FTEID.Interface Type]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID.field.Interface Type"/>
+    <test parameter="[Bearer Context.FTEID.Interface Type]" condition="list.size" value="2"/>
     <test parameter="[Bearer Context.FTEID.Interface Type]" condition="string.equals" value="S5/S8 SGW GTP-U:4"/>
     <parameter name="[Bearer Context.FTEID.TEID / GRE Key]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.TEID / GRE Key"/>
+    <test parameter="[Bearer Context.FTEID.TEID / GRE Key]" condition="list.size" value="2"/>
     <test parameter="[Bearer Context.FTEID.TEID / GRE Key]" condition="number.equals" value="4294967295"/>
     <parameter name="[Bearer Context.FTEID.IPv4 address]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.IPv4 address"/>
+    <test parameter="[Bearer Context.FTEID.IPv4 address]" condition="list.size" value="2"/>
     <test parameter="[Bearer Context.FTEID.IPv4 address]" condition="string.equals" value="12.13.14.15"/>
     <parameter name="[Bearer Context.FTEID.IPv6 address]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.IPv6 address"/>
+    <test parameter="[Bearer Context.FTEID.IPv6 address]" condition="list.size" value="2"/>
     <test parameter="[Bearer Context.FTEID.IPv6 address]" condition="string.equals" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/>
     <parameter name="[Bearer Context.FTEID]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87"/>
+    <test parameter="[Bearer Context.FTEID]" condition="list.size" value="2"/>
+    <test parameter="[Bearer Context.FTEID]" condition="binary.equals" value="c4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
+
+    <parameter name="[Bearer Context.FTEID.V4]" operation="protocol.setFromMessage" value="element.Bearer Context:93,0.F-TEID:87,15.field.V4"/>
+    <test parameter="[Bearer Context.FTEID.V4]" condition="list.size" value="1"/>
+    <test parameter="[Bearer Context.FTEID.V4]" condition="boolean.equals" value="true:1"/>
+    <parameter name="[Bearer Context.FTEID.V6]" operation="protocol.setFromMessage" value="element.Bearer Context:93,0.F-TEID:87,15.field.V6"/>
+    <test parameter="[Bearer Context.FTEID.V6]" condition="list.size" value="1"/>
+    <test parameter="[Bearer Context.FTEID.V6]" condition="boolean.equals" value="true:1"/>
+    <parameter name="[Bearer Context.FTEID.Interface Type]" operation="protocol.setFromMessage" value="element.Bearer Context:93,0.F-TEID:87,15.field.Interface Type"/>
+    <test parameter="[Bearer Context.FTEID.Interface Type]" condition="list.size" value="1"/>
+    <test parameter="[Bearer Context.FTEID.Interface Type]" condition="string.equals" value="S5/S8 SGW GTP-U:4"/>
+    <parameter name="[Bearer Context.FTEID.TEID / GRE Key]" operation="protocol.setFromMessage" value="element.Bearer Context:93,0.F-TEID:87,15.field.TEID / GRE Key"/>
+    <test parameter="[Bearer Context.FTEID.TEID / GRE Key]" condition="list.size" value="1"/>
+    <test parameter="[Bearer Context.FTEID.TEID / GRE Key]" condition="number.equals" value="4294967295"/>
+    <parameter name="[Bearer Context.FTEID.IPv4 address]" operation="protocol.setFromMessage" value="element.Bearer Context:93,0.F-TEID:87,15.field.IPv4 address"/>
+    <test parameter="[Bearer Context.FTEID.IPv4 address]" condition="list.size" value="1"/>
+    <test parameter="[Bearer Context.FTEID.IPv4 address]" condition="string.equals" value="12.13.14.15"/>
+    <parameter name="[Bearer Context.FTEID.IPv6 address]" operation="protocol.setFromMessage" value="element.Bearer Context:93,0.F-TEID:87,15.field.IPv6 address"/>
+    <test parameter="[Bearer Context.FTEID.IPv6 address]" condition="list.size" value="1"/>
+    <test parameter="[Bearer Context.FTEID.IPv6 address]" condition="string.equals" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/>
+    <parameter name="[Bearer Context.FTEID]" operation="protocol.setFromMessage" value="element.Bearer Context:93,0.F-TEID:87,15"/>
+    <test parameter="[Bearer Context.FTEID]" condition="list.size" value="1"/>
     <test parameter="[Bearer Context.FTEID]" condition="binary.equals" value="c4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
 
     <parameter name="[Bearer Context]" operation="protocol.setFromMessage" value="element.Bearer Context:93"/>
-    <test parameter="[Bearer Context]" condition="binary.equals" value="49000100ff50001600beffffffffffffffffffffffffffffffffffffffffff57001900c4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
+    <test parameter="[Bearer Context]" condition="binary.equals" value="49000100ff50001600beffffffffffffffffffffffffffffffffffffffffff5700190ec4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef5700190fc4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
     
     <parameter name="[UE Time Zone.Time Zone]" operation="protocol.setFromMessage" value="element.UE Time Zone:114.field.Time Zone"/>
     <test parameter="[UE Time Zone.Time Zone]" condition="number.equals" value="255"/>

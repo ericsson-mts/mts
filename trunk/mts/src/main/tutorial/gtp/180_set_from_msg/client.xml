@@ -11,10 +11,10 @@
         <element tag="1" coding="TLIV" description="International Mobile Subscriber Identity">
             <field name="IMSI" value="123456789012345" description="International Mobile Subscriber Identity"/>
         </element>
-        <element tag="76" coding="TLIV" description="Mobile Subscriber ISDN Number">
+        <element tag="76" instances="5" coding="TLIV" description="Mobile Subscriber ISDN Number">
             <field name="MSISDN" value="331234567890123456" description="Mobile Subscriber ISDN Number"/>
         </element>
-        <element tag="76" coding="TLIV" description="Mobile Subscriber ISDN Number">
+        <element tag="76" instances="6" coding="TLIV" description="Mobile Subscriber ISDN Number">
             <field name="MSISDN" value="339876543210987654" description="Mobile Subscriber ISDN Number"/>
         </element>
         <element tag="75" coding="TLIV" description="Mobile Equipment Identity">
@@ -41,7 +41,7 @@
         <element tag="bidon:82" coding="TLIV">
             <field name="RAT Type" value="EUTRAN"/>
         </element>
-        <element tag="87" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+        <element tag="87" instances="0" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
             <field name="V4" value="bidon:1"/>
             <field name="V6" value="1"/>
             <field name="Interface Type" value="bidon:6"/>
@@ -50,7 +50,7 @@
             <field name="IPv4 address" value="123.45.67.89"/>
             <field name="IPv6 address" value="1234:5678:90ab:cdef:fedc:ba09:8765:4321"/>
         </element>
-        <element tag="87" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+        <element tag="87" instances="1" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
             <field name="V4" value="1"/>
             <field name="V6" value="1"/>
             <field name="Interface Type" value="S5/S8 PGW GTP-U"/>
@@ -140,7 +140,16 @@
                 <field name="Guaranteed bit rate for uplink" value="1099511627775"/>
                 <field name="Guaranteed bit rate for downlink" value="1099511627775"/>
             </element>            
-            <element tag="87" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+            <element tag="87" instances="14" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+                <field name="V4" value="1"/>
+                <field name="V6" value="1"/>
+                <field name="Interface Type" value="S5/S8 SGW GTP-U"/>
+                <field name="TEID / GRE Key" value="4294967295" description="GRE key ?"/>
+                <!-- TODO conditional IP V4 V6 -->
+                <field name="IPv4 address" value="12.13.14.15"/>
+                <field name="IPv6 address" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/>
+            </element>
+            <element tag="87" instances="15" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
                 <field name="V4" value="1"/>
                 <field name="V6" value="1"/>
                 <field name="Interface Type" value="S5/S8 SGW GTP-U"/>
