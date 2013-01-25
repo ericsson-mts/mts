@@ -26,8 +26,11 @@ package com.devoteam.srit.xmlloader.core.coding.binary;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.ElementQ931;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.dom4j.Element;
 
 
@@ -37,16 +40,16 @@ import org.dom4j.Element;
  */
 public class Dictionary {
 	
-    private LinkedHashMap<String,ElementAbstract> mapElementByName=new LinkedHashMap<String, ElementAbstract>();
-    private LinkedHashMap<Integer,ElementAbstract> mapElementById=new LinkedHashMap<Integer, ElementAbstract>();
-    private LinkedHashMap<String,FieldAbstract> mapHeader= new LinkedHashMap<String, FieldAbstract>();
+    private Map<String,ElementAbstract> elementsMapByLabel = new HashMap<String, ElementAbstract>();
+    private Map<Integer,ElementAbstract> elementsMapByTag = new HashMap<Integer, ElementAbstract>();
+    private Map<String,FieldAbstract> fieldsMapHeader = new HashMap<String, FieldAbstract>();
     
     public Dictionary(Element root, String syntax) throws Exception 
     {
      
         List<Element> listElem=root.element("header").elements("field");
         for (Element element : listElem) {
-            mapHeader.put(element.attributeValue("name"), new EnumerationField(element));
+        	fieldsMapHeader.put(element.attributeValue("name"), new EnumerationField(element));
         }
         
         List<Element> list=root.elements("element");
@@ -64,21 +67,24 @@ public class Dictionary {
             
             elemInfo.parseFromXML(elem, this);
             
-            mapElementByName.put(elemInfo.getLabel(), elemInfo);
-            mapElementById.put(elemInfo.getTag(), elemInfo);
+            elementsMapByLabel.put(elemInfo.getLabel(), elemInfo);
+            elementsMapByTag.put(elemInfo.getTag(), elemInfo);
         }
 
     }
-    public LinkedHashMap<Integer, ElementAbstract> getMapElementById() {
-        return mapElementById;
+    public ElementAbstract getElementByTag(Integer tag) 
+    {
+        return elementsMapByTag.get(tag);
     }
 
-    public LinkedHashMap<String, ElementAbstract> getMapElementByName() {
-        return mapElementByName;
+    public ElementAbstract getElementByLabel(String label) 
+    {
+        return elementsMapByLabel.get(label);
     }
 
-    public LinkedHashMap<String, FieldAbstract> getMapHeader() {
-        return mapHeader;
+    public FieldAbstract getHeaderFieldByName(String name) 
+    {
+        return fieldsMapHeader.get(name);
     }
 
 }

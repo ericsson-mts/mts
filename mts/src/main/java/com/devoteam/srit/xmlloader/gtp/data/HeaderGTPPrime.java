@@ -91,11 +91,11 @@ public class HeaderGTPPrime extends HeaderAbstract
         String strType = header.attributeValue("type");
         if (strType != null)
         {
-            EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+            EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
             this.type = field.getEnumValue(strType);
         }
-        EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-        this.label = field.getNamesMapByValue(this.type);
+        EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
+        this.label = field.getEnumNameByValue(this.type);
         
         String attribute;
         String attrFlag;
@@ -152,8 +152,8 @@ public class HeaderGTPPrime extends HeaderAbstract
 		this.dictionary = dictionary;
 		int offset = 4;
 		
-    	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-    	this.label = field.getNamesMapByValue(this.type);
+    	EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
+    	this.label = field.getEnumNameByValue(this.type);
     	
     	Array seqnumArray = array.subArray(offset, 2); 	
     	this.sequenceNumber = (new Integer16Array(seqnumArray).getValue());
