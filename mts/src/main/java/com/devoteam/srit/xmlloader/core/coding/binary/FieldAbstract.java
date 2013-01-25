@@ -87,7 +87,8 @@ public abstract class FieldAbstract
         }
         catch (Exception e)
         {
-        	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Exception in toString() method for field " + this._name);
+        	// GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Exception in toString() method for field " + this._name);
+        	// nothing to do 
         }
         elemString.append("type=\"" + this.getClass().getSimpleName().split("Field")[0] + "\" ");
         elemString.append("lengthBit=\"" + this._length + "\" ");

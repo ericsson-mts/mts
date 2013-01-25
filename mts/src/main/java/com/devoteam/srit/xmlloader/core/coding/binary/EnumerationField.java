@@ -98,20 +98,23 @@ public class EnumerationField extends IntegerField
     
     public Integer getEnumValue(String text) throws Exception
     {
+    	text = text.trim();
     	int iPos = text.indexOf(":");
+    	String label = text;
     	String value= text;
+    	
     	if (iPos >= 0)
     	{
-    		String label = text.substring(0, iPos);
+    		label = text.substring(0, iPos);
     		value = text.substring(iPos + 1);
-   			if (!label.equalsIgnoreCase(this.labelsByValue.get(value)))
-   			{
-   				GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "For the enumeration field \"" + this._name + "\", the value \"" + value + "\"  does not match the label \"" + label + "\"");
-   			}
     	}
     	try
     	{
     		int val = Integer.parseInt(value);
+   			if (!label.equalsIgnoreCase(this.labelsByValue.get(val)) && !label.equals(text))
+   			{
+   				GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "For the enumeration field \"" + this._name + "\", the value \"" + value + "\"  does not match the label \"" + label + "\"");
+   			}    		
     		return (Integer) val;
     	}
     	catch (NumberFormatException e)

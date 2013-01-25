@@ -376,6 +376,7 @@ public class Utils
      */
     public static boolean parseBoolean(String text, String data)
     {
+    	text = text.trim();
     	int iPos = text.indexOf(":");
     	String label = text;
     	String value = text;
@@ -392,7 +393,7 @@ public class Utils
     		int i = Integer.parseInt(value);
 			if (i == 1)
 			{
-				if (!label.equalsIgnoreCase("true"))
+				if (!label.equalsIgnoreCase("true") && !label.equals(text))
 				{
 					GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The boolean value \"" + text + "\"  is not valid for the boolean data \"" + data + "\".");
 				}
@@ -400,7 +401,7 @@ public class Utils
 			}
 			else if (i == 0)
 			{
-				if (!label.equalsIgnoreCase("false"))
+				if (!label.equalsIgnoreCase("false") && !label.equals(text))
 				{
 					GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The boolean value \"" + text + "\"  is not valid for the boolean data \"" + data + "\".");
 				}
