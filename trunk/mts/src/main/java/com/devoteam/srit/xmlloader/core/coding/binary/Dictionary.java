@@ -68,7 +68,7 @@ public class Dictionary
             	elemInfo = ElementAbstract.buildFactory(coding);
             }
             
-            elemInfo.parseFromXML(elem, this);
+            elemInfo.parseFromXML(elem, null);
             
             elementsMapByLabel.put(elemInfo.getLabel(), elemInfo);
             elementsMapByTag.put(elemInfo.getTag(), elemInfo);
