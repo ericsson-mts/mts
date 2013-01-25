@@ -227,7 +227,7 @@ public class MessageGTP
 	    }
 	    else if ((params[0].equalsIgnoreCase("element") && params.length >= 2)) 
 	    {
-	        List<ElementAbstract> list = ElementAbstract.getElements(this.elements, params[1], dictionary);
+	        List<ElementAbstract> list = ElementAbstract.getElementsFromTag(this.elements, params[1], dictionary);
 		    Iterator<ElementAbstract> iter = list.iterator();
 		    while (iter.hasNext())
 		    {

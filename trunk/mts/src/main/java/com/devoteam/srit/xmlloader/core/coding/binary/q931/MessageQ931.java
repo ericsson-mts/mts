@@ -128,7 +128,7 @@ public class MessageQ931
         			id = elem.getId();
         		}
         	}        	
-	    	List<ElementAbstract> list = ElementAbstract.getElements(this.elements, params[2], dictionary);
+	    	List<ElementAbstract> list = ElementAbstract.getElementsFromTag(this.elements, params[2], dictionary);
 		    Iterator<ElementAbstract> iter = list.iterator();
 		    while (iter.hasNext())
 		    {
@@ -198,9 +198,9 @@ public class MessageQ931
         return msglength;
     }
 
-	public List<ElementAbstract> getElements(String id) throws Exception 
+	public List<ElementAbstract> getElementsFromTag(String tag) throws Exception 
 	{
-	    return ElementAbstract.getElements(this.elements, id, this.dictionary);
+	    return ElementAbstract.getElementsFromTag(this.elements, tag, this.dictionary);
 	}
 	
     public void initDictionary(String syntax) throws Exception 
