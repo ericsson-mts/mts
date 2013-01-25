@@ -87,19 +87,12 @@ public abstract class ElementAbstract implements Cloneable
     {
         //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
         String tag = element.attributeValue("identifier");
-        if (tag != null)
-        {
-        	tag = tag.trim();
-        }
         if (tag == null)
         {
         	tag = element.attributeValue("tag");
-            if (tag != null)
-            {
-            	tag = tag.trim();
-            }
         }
-
+        tag = tag.trim();
+        
         ElementAbstract elemDico = ElementAbstract.getElementFromDictionary(tag, dictionary);
         this.id = elemDico.id;
         this.name = elemDico.name;
@@ -376,7 +369,7 @@ public abstract class ElementAbstract implements Cloneable
         }
         else 
         {
-        	List<ElementAbstract> list = ElementAbstract.getElements(this.elements, params[offset + 2], dictionary);
+        	List<ElementAbstract> list = ElementAbstract.getElementsFromTag(this.elements, params[offset + 2], dictionary);
         	 Iterator<ElementAbstract> iter = list.iterator();
  		    while (iter.hasNext())
  		    {
@@ -386,7 +379,7 @@ public abstract class ElementAbstract implements Cloneable
         }    	
     }
     
-	public static List<ElementAbstract> getElements(List<ElementAbstract> elements, String tag, Dictionary dictionary) throws Exception 
+	public static List<ElementAbstract> getElementsFromTag(List<ElementAbstract> elements, String tag, Dictionary dictionary) throws Exception 
 	{
 		Integer value = ElementAbstract.getElementFromDictionary(tag, dictionary).getId();
 		
@@ -409,28 +402,8 @@ public abstract class ElementAbstract implements Cloneable
 		ElementAbstract elem = getElementFromDictionary(tag, dictionary);
 		return elem.getId();
 	}
-	/*
-	public static Integer getTagValue(String tag, Dictionary dictionary) throws Exception
-	{
-		Integer id = ElementAbstract.getTagValueFromBinary(tag);
-		if (id == null)
-		{
-	    	int iPos = tag.indexOf(":");
-	    	String label = tag;
-	    	if (iPos >= 0)
-	    	{
-	    		label = tag.substring(0, iPos);
-	    	}
-			ElementAbstract elemByName = dictionary.getMapElementByName().get(label);
-			if (elemByName != null)
-			{
-				return elemByName.getId();
-			}
-		}
-		return id;
-	}
-	*/
-    private static ElementAbstract getElementFromDictionary(String tag, Dictionary dictionary) throws Exception
+
+	private static ElementAbstract getElementFromDictionary(String tag, Dictionary dictionary) throws Exception
     {
     	int iPos = tag.indexOf(":");
     	String label = tag;
