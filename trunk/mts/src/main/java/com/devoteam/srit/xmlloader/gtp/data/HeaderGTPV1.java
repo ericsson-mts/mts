@@ -110,11 +110,11 @@ public class HeaderGTPV1 extends HeaderAbstract
         String strType = header.attributeValue("type");
         if (strType != null)
         {
-            EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
+            EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
             this.type = field.getEnumValue(strType);
         }
-        EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-        this.label = field.getNamesMapByValue(this.type);
+        EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
+        this.label = field.getEnumNameByValue(this.type);
         
         String attribute;
         String attrFlag;
@@ -279,8 +279,8 @@ public class HeaderGTPV1 extends HeaderAbstract
 		this.dictionary = dictionary;
 		int offset = 4;
 		
-    	EnumerationField field = (EnumerationField) dictionary.getMapHeader().get("Message Type");
-	    this.label = field.getNamesMapByValue(this.type);    	
+    	EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
+	    this.label = field.getEnumNameByValue(this.type);    	
 
 	    Array teidArray = array.subArray(offset, 4); 
         this.tunnelEndpointId = (int) (new Integer32Array(teidArray).getValue() & 0xffffffffl);

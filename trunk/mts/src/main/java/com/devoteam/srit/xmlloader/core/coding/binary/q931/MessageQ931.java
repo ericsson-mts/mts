@@ -122,7 +122,7 @@ public class MessageQ931
         	}
         	catch (Exception e) 
         	{
-        		ElementAbstract elem = dictionaries.get(this.syntax).getMapElementByName().get(params[2]), dictionary;
+        		ElementAbstract elem = dictionaries.get(this.syntax).getElementByLabel(params[2]), dictionary;
         		if (elem != null)
         		{
         			id = elem.getTag();

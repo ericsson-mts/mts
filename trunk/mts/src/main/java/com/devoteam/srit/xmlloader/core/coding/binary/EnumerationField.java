@@ -27,11 +27,8 @@ import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.core.utils.maps.LinkedHashMap;
 
 import gp.utils.arrays.Array;
-import gp.utils.arrays.DefaultArray;
-import gp.utils.arrays.Integer32Array;
 import gp.utils.arrays.SupArray;
 
 import java.util.HashMap;
@@ -48,8 +45,8 @@ import org.dom4j.Element;
 public class EnumerationField extends IntegerField
 {
 	
-    private Map<Integer, String> labelsMapByValue = new HashMap<Integer, String>();
-    private Map<String, Integer> valuesMapByLabel = new HashMap<String, Integer>();
+    private Map<Integer, String> labelsByValue = new HashMap<Integer, String>();
+    private Map<String, Integer> valuesByLabel = new HashMap<String, Integer>();
 
 	
     public EnumerationField(Element rootXML) 
@@ -61,8 +58,8 @@ public class EnumerationField extends IntegerField
         {
         	byte[] valueBytes = Utils.parseBinaryString(elemEnum.attributeValue("value"));
         	int value = (int) valueBytes[0] & 0xFF;        	
-            this.valuesMapByLabel.put(elemEnum.attributeValue("name"), value);
-            this.labelsMapByValue.put(value, elemEnum.attributeValue("name"));
+            this.valuesByLabel.put(elemEnum.attributeValue("name"), value);
+            this.labelsByValue.put(value, elemEnum.attributeValue("name"));
         }
 
     }
@@ -79,7 +76,7 @@ public class EnumerationField extends IntegerField
     public String getValue(Array array) throws Exception 
     {
         String value = super.getValue(array);
-    	String name = this.labelsMapByValue.get(new Integer(value));
+    	String name = this.labelsByValue.get(new Integer(value));
     	String ret = "";
     	if (name != null)
     	{
@@ -89,14 +86,14 @@ public class EnumerationField extends IntegerField
     	return ret;
     }
     
-    public Integer getValuesMapByName(String name) 
+    public Integer getEnumValueByName(String name) 
     {
-        return this.valuesMapByLabel.get(name);
+        return this.valuesByLabel.get(name);
     }
 
-    public String getNamesMapByValue(Integer value) 
+    public String getEnumNameByValue(Integer value) 
     {
-        return this.labelsMapByValue.get(value);
+        return this.labelsByValue.get(value);
     }
     
     public Integer getEnumValue(String text) throws Exception
@@ -107,7 +104,7 @@ public class EnumerationField extends IntegerField
     	{
     		String label = text.substring(0, iPos);
     		value = text.substring(iPos + 1);
-   			if (!label.equalsIgnoreCase(this.labelsMapByValue.get(value)))
+   			if (!label.equalsIgnoreCase(this.labelsByValue.get(value)))
    			{
    				GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "For the enumeration field \"" + this._name + "\", the value \"" + value + "\"  does not match the label \"" + label + "\"");
    			}
@@ -119,7 +116,7 @@ public class EnumerationField extends IntegerField
     	}
     	catch (NumberFormatException e)
     	{
-    		Integer val = this.valuesMapByLabel.get(value);
+    		Integer val = this.valuesByLabel.get(value);
 	        if (val == null)
 	        {
 	        	throw new ExecutionException("For the enumeration field \"" + this._name + "\", the value \"" + value + "\" is not numeric or valid according to the dictionary.");
