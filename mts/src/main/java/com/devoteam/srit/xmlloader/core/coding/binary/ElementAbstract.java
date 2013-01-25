@@ -233,50 +233,96 @@ public abstract class ElementAbstract implements Cloneable
         }
         
     }
-    
-    public String toString() {
 
-        StringBuilder elemString = new StringBuilder();
-        elemString.append("<element ");
-        elemString.append("tag=\"");
-    	if (this.label != null)
-    	{
-    		elemString.append(this.label + ":");
-    	}
-    	elemString.append(this.tag);
-    	elemString.append("\"");
-    	elemString.append(" instances=\"");
-   		elemString.append(this.instances);
-    	elemString.append("\"");   	
-        if (_fields != null)
+    public int getLengthElem() 
+    {
+        int length = 0;
+        for (Entry<String, FieldAbstract> field : _hashMapFields.entrySet()) 
         {
-            elemString.append(" value=\"" + Array.toHexString(_fields));
+            length += field.getValue()._length;
         }
-        elemString.append("\">");
-        
-        elemString.append("\n");
-        
-        
-        Iterator<FieldAbstract> iterField = this._hashMapFields.values().iterator();
-		while (iterField.hasNext())
-		{
-			FieldAbstract field = (FieldAbstract) iterField.next();
-            elemString.append(field.toString(this._fields));
-        }
-        
-        Iterator<ElementAbstract> iterElem = this.elements.iterator();
-		while (iterElem.hasNext())
-		{
-			ElementAbstract elemInfo = (ElementAbstract) iterElem.next();
-            elemString.append("    ");
-            elemString.append(elemInfo.toString());
-        }
-        
-        elemString.append("</element>");
-        elemString.append("\n");
-        return elemString.toString();
+        return length;
     }
-    
+
+	/**
+	 * get an element from the dictionary from a given tag 
+	 * with the form of "LABEL:VALUE"
+	 * if not found return an empty GTPV2 element containing the tag and label 
+	 * @param tag
+	 * @param dictionary
+	 * @return
+	 * @throws Exception
+	 */
+	private static ElementAbstract getElementFromDictionary(String tag, Dictionary dictionary) throws Exception
+    {
+    	int iPos = tag.indexOf(":");
+    	String label = tag;
+    	String value = tag;
+    	if (iPos >= 0)
+    	{
+    		label = tag.substring(0, iPos);
+    		value = tag.substring(iPos + 1);
+    	}
+    	// case if the tag is set by the value as a binary vale (with 'b' 's' 'd' prefix)
+    	Integer valueInt = getTagValueFromBinary(value);
+    	// check the consistency between value and label
+    	ElementAbstract elemById = dictionary.getMapElementById().get(valueInt);
+		if (elemById != null && !label.equalsIgnoreCase(elemById.getLabel()))
+		{
+			GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The element label \"" + label + "\" does not match the tag/id \"" + value + "\" in the dictionary.");
+		}
+		// return first by the tag name
+		ElementAbstract elemByName = dictionary.getMapElementByName().get(label);
+    	if (elemByName != null)
+    	{
+    		return elemByName;
+    	}
+    	// return first by the tag value
+    	if (elemById != null)
+    	{
+    		return elemById;
+    	}
+    	
+    	ElementAbstract elemEmpty = buildFactory("TLIV");
+    	elemEmpty.tag = valueInt;
+    	elemEmpty.label = label;
+    	return elemEmpty;
+    }
+
+	/**
+	 * Return an integer value for the tag from a binary string 
+	 * using 'b' 'd' 'h' character to specify the value in respectively 
+	 * boolean décimal (default) or hexadecimal 
+	 * @param tag
+	 * @return
+	 * @throws Exception
+	 */
+    public static Integer getTagValueFromBinary(String tag) throws Exception
+    {
+    	if (tag.length() > 0)
+    	{
+	    	if (tag.charAt(0) == 's')
+	        {
+				return null;
+	        }
+			byte[] idBytes = new byte[]{};
+	    	try
+	    	{
+	    		idBytes = Utils.parseBinaryString(tag);
+	    	}
+	    	catch (Exception e)
+	    	{
+	    		return null;
+	    	}
+	    	if (idBytes.length != 1)
+	        {
+	    		return null;
+	        }
+	    	return idBytes[0] & 0xff;
+    	}
+    	return null;
+    }
+
 	public static List<ElementAbstract> decodeElementsFromArray(Array data, Dictionary dictionary) throws Exception 
 	{
 		List<ElementAbstract> elements = new ArrayList<ElementAbstract>();
@@ -379,7 +425,15 @@ public abstract class ElementAbstract implements Cloneable
  		    }
         }    	
     }
-    
+
+    /** Get all the element from a given list which match a 
+     * given tag according to the dictionary
+     * @param elements
+     * @param tag
+     * @param dictionary
+     * @return
+     * @throws Exception
+     */
 	public static List<ElementAbstract> getElementsFromTag(List<ElementAbstract> elements, String tag, Dictionary dictionary) throws Exception 
 	{
 		Integer value = ElementAbstract.getElementFromDictionary(tag, dictionary).getTag();
@@ -398,80 +452,47 @@ public abstract class ElementAbstract implements Cloneable
 	    return list;
 	}
 
-	public static Integer getTagValue(String tag, Dictionary dictionary) throws Exception
-	{
-		ElementAbstract elem = getElementFromDictionary(tag, dictionary);
-		return elem.getTag();
-	}
-
-	private static ElementAbstract getElementFromDictionary(String tag, Dictionary dictionary) throws Exception
+    public String toString() 
     {
-    	int iPos = tag.indexOf(":");
-    	String label = tag;
-    	String value = tag;
-    	if (iPos >= 0)
+        StringBuilder elemString = new StringBuilder();
+        elemString.append("<element ");
+        elemString.append("tag=\"");
+    	if (this.label != null)
     	{
-    		label = tag.substring(0, iPos);
-    		value = tag.substring(iPos + 1);
+    		elemString.append(this.label + ":");
     	}
-    	// case if the tag is set by the value as a binary vale (with 'b' 's' 'd' prefix)
-    	Integer valueInt = getTagValueFromBinary(value);
-    	// check the consistency between value and label
-    	ElementAbstract elemById = dictionary.getMapElementById().get(valueInt);
-		if (elemById != null && !label.equalsIgnoreCase(elemById.getLabel()))
-		{
-			GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The element label \"" + label + "\" does not match the tag/id \"" + value + "\" in the dictionary.");
-		}
-		// return first by the tag name
-		ElementAbstract elemByName = dictionary.getMapElementByName().get(label);
-    	if (elemByName != null)
-    	{
-    		return elemByName;
-    	}
-    	// return first by the tag value
-    	if (elemById != null)
-    	{
-    		return elemById;
-    	}
-    	
-    	ElementAbstract elemEmpty = buildFactory("TLIV");
-    	elemEmpty.tag = valueInt;
-    	elemEmpty.label = label;
-    	return elemEmpty;
-    }
-
-    public static Integer getTagValueFromBinary(String tag) throws Exception
-    {
-    	if (tag.length() > 0)
-    	{
-	    	if (tag.charAt(0) == 's')
-	        {
-				return null;
-	        }
-			byte[] idBytes = new byte[]{};
-	    	try
-	    	{
-	    		idBytes = Utils.parseBinaryString(tag);
-	    	}
-	    	catch (Exception e)
-	    	{
-	    		return null;
-	    	}
-	    	if (idBytes.length != 1)
-	        {
-	    		return null;
-	        }
-	    	return idBytes[0] & 0xff;
-    	}
-    	return null;
-    }
-
-    public int getLengthElem() {
-        int length = 0;
-        for (Entry<String, FieldAbstract> field : _hashMapFields.entrySet()) {
-            length += field.getValue()._length;
+    	elemString.append(this.tag);
+    	elemString.append("\"");
+    	elemString.append(" instances=\"");
+   		elemString.append(this.instances);
+    	elemString.append("\"");   	
+        if (_fields != null)
+        {
+            elemString.append(" value=\"" + Array.toHexString(_fields));
         }
-        return length;
+        elemString.append("\">");
+        
+        elemString.append("\n");
+        
+        
+        Iterator<FieldAbstract> iterField = this._hashMapFields.values().iterator();
+		while (iterField.hasNext())
+		{
+			FieldAbstract field = (FieldAbstract) iterField.next();
+            elemString.append(field.toString(this._fields));
+        }
+        
+        Iterator<ElementAbstract> iterElem = this.elements.iterator();
+		while (iterElem.hasNext())
+		{
+			ElementAbstract elemInfo = (ElementAbstract) iterElem.next();
+            elemString.append("    ");
+            elemString.append(elemInfo.toString());
+        }
+        
+        elemString.append("</element>");
+        elemString.append("\n");
+        return elemString.toString();
     }
 
     public LinkedHashMap<String, FieldAbstract> getHashMapFields() {
@@ -485,5 +506,5 @@ public abstract class ElementAbstract implements Cloneable
 	public String getLabel() {
 		return this.label;
 	}
-    
+
 }
