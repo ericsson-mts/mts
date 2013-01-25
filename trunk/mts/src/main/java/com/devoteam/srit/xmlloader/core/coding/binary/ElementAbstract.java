@@ -255,6 +255,7 @@ public abstract class ElementAbstract implements Cloneable
 	 */
 	private static ElementAbstract getElementFromDictionary(String tag, Dictionary dictionary) throws Exception
     {
+		tag = tag.trim();
     	int iPos = tag.indexOf(":");
     	String label = tag;
     	String value = tag;
@@ -267,7 +268,7 @@ public abstract class ElementAbstract implements Cloneable
     	Integer valueInt = getTagValueFromBinary(value);
     	// check the consistency between value and label
     	ElementAbstract elemById = dictionary.getElementByTag(valueInt);
-		if (elemById != null && !label.equalsIgnoreCase(elemById.getLabel()))
+		if (elemById != null && !label.equalsIgnoreCase(elemById.getLabel()) && !label.equals(tag))
 		{
 			GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The element label \"" + label + "\" does not match the tag/id \"" + value + "\" in the dictionary.");
 		}

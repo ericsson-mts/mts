@@ -38,7 +38,8 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class Dictionary {
+public class Dictionary 
+{
 	
     private Map<String,ElementAbstract> elementsMapByLabel = new HashMap<String, ElementAbstract>();
     private Map<Integer,ElementAbstract> elementsMapByTag = new HashMap<Integer, ElementAbstract>();
@@ -48,12 +49,14 @@ public class Dictionary {
     {
      
         List<Element> listElem=root.element("header").elements("field");
-        for (Element element : listElem) {
+        for (Element element : listElem) 
+        {
         	fieldsMapHeader.put(element.attributeValue("name"), new EnumerationField(element));
         }
         
         List<Element> list=root.elements("element");
-        for (Element elem : list) {
+        for (Element elem : list) 
+        {
             ElementAbstract elemInfo = null;
             if ("Q931".equalsIgnoreCase(syntax))
             {

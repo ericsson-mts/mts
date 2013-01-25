@@ -267,16 +267,12 @@ public abstract class Stack
     {
         synchronized (channels)
         {
-        	Channel channel = channels.remove(name);;
-            if (channel == null)
-            {
-                GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "The channel <", name,  "> not closed because not present in list.");
-                return false;
-            }
-            else
+        	Channel channel = channels.get(name);
+            if (channel != null)
             {
             	channel.close();
             }
+            channels.remove(name);
         }
         return true;
     }

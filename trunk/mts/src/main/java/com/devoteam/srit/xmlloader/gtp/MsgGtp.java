@@ -52,7 +52,8 @@ public class MsgGtp extends Msg
     @Override
     public Parameter getParameter(String path) throws Exception
     {
-        Parameter var = super.getParameter(path);
+    	String replacePath = Utils.replaceNoRegex(path, ":", "//"); 
+        Parameter var = super.getParameter(replacePath);
         if (null != var)
         {
             return var;

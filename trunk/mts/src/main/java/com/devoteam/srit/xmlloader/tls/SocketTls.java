@@ -133,7 +133,7 @@ public class SocketTls extends Thread
             {
                 if (null != socket)
                 {
-                    StackFactory.getStack(channel.getProtocol()).closeChannel(channel.getName());
+                    // StackFactory.getStack(channel.getProtocol()).closeChannel(channel.getName());
                 }
             }
         }

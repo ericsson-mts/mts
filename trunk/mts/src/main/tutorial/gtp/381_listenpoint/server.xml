@@ -24,7 +24,7 @@
         </element>        
     </sendMessageGTP>
 
-    <receiveMessageGTP name="echo request">
+    <receiveMessageGTP name="echo request" listenpoint="listenpoint">
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
@@ -39,6 +39,8 @@
         <headerPrime type="versionNotSupported:3" sequenceNumber="2"/>
     </sendMessageGTP>
 
+    <parameter name="[testcase:channelClosed]" operation="system.semaphorewait" />
+    
     <finally>
         <removeListenpointGTP name="listenpoint"/>
     </finally>
