@@ -121,6 +121,10 @@ public abstract class ElementAbstract implements Cloneable
             if (field == null)
             {
              	String type = elemField.attributeValue("type");
+             	if (type ==  null) 
+             	{
+             		throw new ExecutionException("ERROR : The type name \"" + name + "\" is mandatroy because the element tag \"" + tag + "\" is not present in the dictionary.");
+             	}
              	if (type.equalsIgnoreCase("integer")) 
 	            {
 	                field = new IntegerField(elemField);
@@ -148,7 +152,6 @@ public abstract class ElementAbstract implements Cloneable
 	            else if (type.equalsIgnoreCase("binary")) 
 	            {
 	                field = new BinaryField(elemField);
-	
 	            }
 	            else if (type.equalsIgnoreCase("number_bcd")) 
 	            {
@@ -171,14 +174,6 @@ public abstract class ElementAbstract implements Cloneable
 	            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported in the element tag : \"" + tag + "\"");
 	            }
             }
-
-            String length = elemField.attributeValue("lengthBit");
-            if (length != null)
-            {
-            	// BUG dans Sigtran 105_Q931_DISCONNECT et autres : incohrence entre le dictionnaire et le script
-            	// field.setLength(Integer.parseInt(length));
-            }
-
             this._hashMapFields.put(elemField.attributeValue("name"), field);
         }
         
@@ -338,19 +333,18 @@ public abstract class ElementAbstract implements Cloneable
 	    int offset = 0;
 	    while (offset < data.length) 
 	    {
-	        int id = new Integer08Array(data.subArray(offset, 1)).getValue();
-	        ElementAbstract elemDico = dictionary.getElementByTag(id);
-	        
+	        int tag = new Integer08Array(data.subArray(offset, 1)).getValue();
+	        ElementAbstract elemDico = dictionary.getElementByTag(tag);
+	        if (elemDico == null)
+	        {
+				throw new ExecutionException("The element tag \"" + tag + "\" can not be decoded because it is not present in the dictionary.");
+	        }
+
 	        ElementAbstract elemNew = null;
 	        if (elemDico != null)
 	        {
 	        	elemNew = (ElementAbstract) elemDico.clone();
-	        }
-	        else
-	        {
-	        	elemNew =  new ElementTLIV();
-	        }
-	        
+	        }	        
 	
 	        int length = elemNew.decodeFromArray(data.subArray(offset), dictionary);
 	        offset += length;
