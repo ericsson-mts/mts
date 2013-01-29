@@ -100,15 +100,15 @@ public class MessageGTP
 	    
 	    this.elements = new ArrayList<ElementAbstract>();
 	    List<Element> elementsInf = root.elements("element");
-	    ElementAbstract elemInfo = null;
-	    ElementAbstract elem = null;
-	    for (Element element : elementsInf) 
+	    ElementAbstract elemDico = null;
+	    ElementAbstract newElement = null;
+	    for (Element elementRoot : elementsInf) 
 	    {
-	        elemInfo = this.dictionary.getElementFromXML(element);
-	        elem = (ElementAbstract) elemInfo.cloneAttribute();
-	        elem.parseFromXML(element, this.dictionary, elemInfo);
+	        elemDico = this.dictionary.getElementFromXML(elementRoot);
+	        newElement = (ElementAbstract) elemDico.cloneAttribute();
+	        newElement.parseFromXML(elementRoot, this.dictionary, elemDico);
 	        
-	        this.elements.add(elem);
+	        this.elements.add(newElement);
 	
 	    }
 	}
