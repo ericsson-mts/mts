@@ -123,12 +123,6 @@ public class OperationSendMessage extends Operation {
         finally {
             unlockAndRestore();
         }
-
-
-
-
-
-
         if ((null != listenpointName) && (null != channelName)) {
             throw new Exception("There must be just a listenpoint or a channel to send message, not both");
         }

@@ -13,6 +13,12 @@
     <parameter name="[transportGTPPrime]" operation="set" value="TCP"/>
 
     <testcase name="GTP v2 ------------------------------------------------------" state="false"/>
+
+    <testcase name="GTP v2 101_call_setup" state="true">
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario name="client">101_call_setup/client.xml</scenario>
+        <scenario name="GTPP">101_call_setup/server.xml</scenario>
+    </testcase>
     
     <testcase name="GTP v2 101_echo" state="true">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
@@ -26,10 +32,10 @@
         <scenario name="GTPP">111_createSession/server.xml</scenario>
     </testcase>
     
-    <testcase name="GTP v2 112_createSession" state="true">
+    <testcase name="GTP v2 112_deleteSession" state="true">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario name="client">112_createSession/client.xml</scenario>
-        <scenario name="GTPP">112_createSession/server.xml</scenario>
+        <scenario name="client">112_deleteSession/client.xml</scenario>
+        <scenario name="GTPP">112_deleteSession/server.xml</scenario>
     </testcase>
     
     <testcase name="GTP v2 180_set_from_msg" state="true">

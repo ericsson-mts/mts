@@ -73,14 +73,18 @@ public class MessageQ931
         this.elements = new ArrayList<ElementAbstract>();
         
         List<Element> elementsInf = root.elements("element");
-        ElementQ931 elemInfo = null;
+        ElementAbstract elemInfo = null;
+        ElementAbstract elem = null;
         for (Element element : elementsInf) 
         {
-            elemInfo = new ElementQ931();
+        	element.addAttribute("coding", "Q931");
+            elemInfo = ElementAbstract.buildFactory(element, dictionaries.get(this.syntax));
+	        elem = (ElementQ931) elemInfo.cloneAttribute();
+
             // FH Manage a new Element like ElementQ931big for id = User-User:126
-            elemInfo.parseFromXML(element, dictionaries.get(this.syntax));
+            elem.parseFromXML(element, dictionaries.get(this.syntax), elemInfo);
             
-            this.elements.add(elemInfo);
+            this.elements.add(elem);
         }
     }
 

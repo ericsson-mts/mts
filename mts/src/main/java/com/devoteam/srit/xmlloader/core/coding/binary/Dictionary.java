@@ -60,7 +60,7 @@ public class Dictionary
             ElementAbstract elemInfo = null;
             if ("Q931".equalsIgnoreCase(syntax))
             {
-            	elemInfo = new ElementQ931();
+            	elemInfo = ElementAbstract.buildFactory("Q931");
             }
             else if (syntax.contains("GTP"))
             {
@@ -68,7 +68,7 @@ public class Dictionary
             	elemInfo = ElementAbstract.buildFactory(coding);
             }
             
-            elemInfo.parseFromXML(elem, null);
+            elemInfo.parseFromXML(elem, null, null);
             
             elementsMapByLabel.put(elemInfo.getLabel(), elemInfo);
             elementsMapByTag.put(elemInfo.getTag(), elemInfo);
