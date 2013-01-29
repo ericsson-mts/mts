@@ -97,9 +97,9 @@ public abstract class ElementAbstract implements Cloneable
     
     public void parseFromXML(Element elementRoot, Dictionary dictionary, ElementAbstract elemDico) throws Exception 
     {
+        //si non present dans le dico on parse le fichier xml
     	if (elemDico == null)
     	{
-            //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
             String tag = elementRoot.attributeValue("identifier");
             if (tag == null)
             {
