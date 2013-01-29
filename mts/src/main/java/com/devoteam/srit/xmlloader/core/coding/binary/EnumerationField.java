@@ -31,6 +31,7 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.SupArray;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,7 @@ public class EnumerationField extends IntegerField
     private Map<Integer, String> labelsByValue = new HashMap<Integer, String>();
     private Map<String, Integer> valuesByLabel = new HashMap<String, Integer>();
 
+    private List<EnumRange> ranges = new ArrayList<EnumRange>();
 	
     public EnumerationField(Element rootXML) 
     {
@@ -56,10 +58,22 @@ public class EnumerationField extends IntegerField
         List<Element> list = rootXML.elements("enum");
         for (Element elemEnum : list) 
         {
-        	byte[] valueBytes = Utils.parseBinaryString(elemEnum.attributeValue("value"));
-        	int value = (int) valueBytes[0] & 0xFF;        	
-            this.valuesByLabel.put(elemEnum.attributeValue("name"), value);
-            this.labelsByValue.put(value, elemEnum.attributeValue("name"));
+        	String valueStr = elemEnum.attributeValue("value");
+        	int iPos = valueStr.indexOf('-');
+        	if (iPos >= 0)
+        	{
+        		String beginStr = valueStr.substring(0, iPos);
+        		String endStr = valueStr.substring(iPos + 1);
+        		EnumRange enumRange = new EnumRange(beginStr, endStr);
+        		ranges.add(enumRange);
+        	}
+        	else
+        	{
+	        	byte[] valueBytes = Utils.parseBinaryString(valueStr);
+	        	int value = (int) valueBytes[0] & 0xFF;
+	            this.valuesByLabel.put(elemEnum.attributeValue("name"), value);
+	            this.labelsByValue.put(value, elemEnum.attributeValue("name"));
+        	}
         }
 
     }
@@ -86,12 +100,12 @@ public class EnumerationField extends IntegerField
     	return ret;
     }
     
-    public Integer getEnumValueByName(String name) 
+    public Integer getEnumValueByLabel(String name) 
     {
         return this.valuesByLabel.get(name);
     }
 
-    public String getEnumNameByValue(Integer value) 
+    public String getEnumLabelByValue(Integer value) 
     {
         return this.labelsByValue.get(value);
     }

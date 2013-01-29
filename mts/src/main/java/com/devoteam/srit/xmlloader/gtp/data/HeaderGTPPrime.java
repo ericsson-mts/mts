@@ -95,7 +95,7 @@ public class HeaderGTPPrime extends HeaderAbstract
             this.type = field.getEnumValue(strType);
         }
         EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
-        this.label = field.getEnumNameByValue(this.type);
+        this.label = field.getEnumLabelByValue(this.type);
         
         String attribute;
         String attrFlag;
@@ -111,7 +111,12 @@ public class HeaderGTPPrime extends HeaderAbstract
     public String toXML()
     {
         String str = "<headerPrime ";
-        str += " type=\"" + this.label + ":" + this.type + "\""; 
+        str += " type=\"";
+        if (this.label != null)
+        {
+        	str += this.label + ":";
+        }
+        str += this.type + "\""; 
         str += " sequenceNumber=\"" + this.sequenceNumber + "\"";
         str += " length=\"" + this.length + "\"";
         str += " version=\"" + this.version + "\"";        
@@ -153,7 +158,7 @@ public class HeaderGTPPrime extends HeaderAbstract
 		int offset = 4;
 		
     	EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
-    	this.label = field.getEnumNameByValue(this.type);
+    	this.label = field.getEnumLabelByValue(this.type);
     	
     	Array seqnumArray = array.subArray(offset, 2); 	
     	this.sequenceNumber = (new Integer16Array(seqnumArray).getValue());

@@ -114,7 +114,7 @@ public class HeaderGTPV1 extends HeaderAbstract
             this.type = field.getEnumValue(strType);
         }
         EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
-        this.label = field.getEnumNameByValue(this.type);
+        this.label = field.getEnumLabelByValue(this.type);
         
         String attribute;
         String attrFlag;
@@ -197,7 +197,12 @@ public class HeaderGTPV1 extends HeaderAbstract
     public String toXML()
     {
         String str = "<headerV1 ";
-        str += " type=\"" + this.label + ":" + this.type + "\""; 
+        str += " type=\"";
+        if (this.label != null)
+        {
+        	str += this.label + ":";
+        }
+        str += this.type + "\""; 
         str += " tunnelEndpointId=" + this.tunnelEndpointId +  "\"";
         str += " sequenceNumber=\"" + this.sequenceNumber + "\"";
         str += " nPduNumber=\"" + this.nPduNumber + "\"";
@@ -280,7 +285,7 @@ public class HeaderGTPV1 extends HeaderAbstract
 		int offset = 4;
 		
     	EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
-	    this.label = field.getEnumNameByValue(this.type);    	
+	    this.label = field.getEnumLabelByValue(this.type);    	
 
 	    Array teidArray = array.subArray(offset, 4); 
         this.tunnelEndpointId = (int) (new Integer32Array(teidArray).getValue() & 0xffffffffl);
