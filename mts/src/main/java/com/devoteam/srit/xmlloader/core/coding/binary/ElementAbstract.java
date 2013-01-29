@@ -95,46 +95,32 @@ public abstract class ElementAbstract implements Cloneable
 		return newElement;
     }
     
-    public static ElementAbstract buildFactory(Element element, Dictionary dictionary) throws Exception
-    {
-        //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
-        String tag = element.attributeValue("identifier");
-        if (tag == null)
-        {
-        	tag = element.attributeValue("tag");
-        }
-        tag = tag.trim();
-        
-        String coding = element.attributeValue("coding");
-        ElementAbstract elemDico = ElementAbstract.getElementFromDictionary(tag, coding, dictionary);
-        return elemDico;
-    }
-    
     public void parseFromXML(Element element, Dictionary dictionary, ElementAbstract elemDico) throws Exception 
     {
-        //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
-        String tag = element.attributeValue("identifier");
-        if (tag == null)
-        {
-        	tag = element.attributeValue("tag");
-        }
-		tag = tag.trim();
-    	int iPos = tag.indexOf(":");
-    	String label = tag;
-    	String value = tag;
-    	if (iPos >= 0)
-    	{
-    		label = tag.substring(0, iPos);
-    		value = tag.substring(iPos + 1);
-    	}
-
     	if (elemDico == null)
     	{
+            //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
+            String tag = element.attributeValue("identifier");
+            if (tag == null)
+            {
+            	tag = element.attributeValue("tag");
+            }
+    		tag = tag.trim();
+        	int iPos = tag.indexOf(":");
+        	String label = tag;
+        	String value = tag;
+        	if (iPos >= 0)
+        	{
+        		label = tag.substring(0, iPos);
+        		value = tag.substring(iPos + 1);
+        	}
+    		
         	int tagInt = getTagValueFromBinary(value);
         	this.tag = tagInt;
         	this.label = label;	
     	}
     	
+    	// for Q931 protocols
         String labelTag = element.attributeValue("name");
         if (labelTag != null)
         {
@@ -147,7 +133,6 @@ public abstract class ElementAbstract implements Cloneable
         	this.instances = Integer.parseInt(instances);
         }
 
-        _hashMapFields.clear();
         List<Element> listField = element.elements("field");
         for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
             Element elemField = it.next();
@@ -233,7 +218,7 @@ public abstract class ElementAbstract implements Cloneable
             FieldAbstract field = this._hashMapFields.get(fieldName);
             if (field != null) 
             {
-            	value = element1.attributeValue("value");
+            	String value = element1.attributeValue("value");
             	if (value != null)
             	{
 			        field.setValue(element1.attributeValue("value"), offset, this._fields);
@@ -254,18 +239,20 @@ public abstract class ElementAbstract implements Cloneable
             }
         }
         
+        //parse the sub-elements
         List<Element> listElement = element.elements("element");
-        ElementAbstract elemInfo = null;
+        ElementAbstract subElemDico = null;
         ElementAbstract elem = null;
         for (Iterator<Element> it = listElement.iterator(); it.hasNext();) 
         {
             Element elemElement = it.next();
-	        elemInfo = ElementAbstract.buildFactory(elemElement, dictionary);
-	        elem = (ElementAbstract) elemInfo.cloneAttribute();
-
-	        elem.parseFromXML(elemElement, dictionary, elemInfo);
-	        
-	        this.elements.add(elem);
+            if (dictionary  != null)
+            {
+            	subElemDico = dictionary.getElementFromXML(elemElement);
+            	elem = (ElementAbstract) subElemDico.cloneAttribute();
+            	elem.parseFromXML(elemElement, dictionary, subElemDico);
+            	this.elements.add(elem);
+            }
         }
         
     }
@@ -278,60 +265,6 @@ public abstract class ElementAbstract implements Cloneable
             length += field.getValue()._length;
         }
         return length;
-    }
-
-	/**
-	 * get an element from the dictionary from a given tag 
-	 * with the form of "LABEL:VALUE"
-	 * if not found return an empty GTPV2 element containing the tag and label 
-	 * @param tag
-	 * @param dictionary
-	 * @return
-	 * @throws Exception
-	 */
-	private static ElementAbstract getElementFromDictionary(String tag, String coding, Dictionary dictionary) throws Exception
-    {
-		tag = tag.trim();
-    	int iPos = tag.indexOf(":");
-    	String label = tag;
-    	String value = tag;
-    	if (iPos >= 0)
-    	{
-    		label = tag.substring(0, iPos);
-    		value = tag.substring(iPos + 1);
-    	}
-    	// case if the tag is set by the value as a binary vale (with 'b' 's' 'd' prefix)
-    	Integer valueInt = getTagValueFromBinary(value);
-    	// check the consistency between value and label
-    	ElementAbstract elemById = null;
-    	if (dictionary != null)
-    	{
-    		elemById = dictionary.getElementByTag(valueInt);
-    	}
-		if (elemById != null && !label.equalsIgnoreCase(elemById.getLabel()) && !label.equals(tag))
-		{
-			GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The element label \"" + label + "\" does not match the tag/id \"" + value + "\" in the dictionary.");
-		}
-		// return first by the tag name
-		ElementAbstract elemByName = null;
-    	if (dictionary != null)
-    	{
-    		elemByName = dictionary.getElementByLabel(label);
-    	}
-    	if (elemByName != null)
-    	{
-    		return elemByName;
-    	}
-    	// return first by the tag value
-    	if (elemById != null)
-    	{
-    		return elemById;
-    	}
-    	
-    	ElementAbstract elemEmpty = buildFactory(coding);
-    	elemEmpty.tag = valueInt;
-    	elemEmpty.label = label;
-    	return elemEmpty;
     }
 
 	/**
@@ -503,7 +436,7 @@ public abstract class ElementAbstract implements Cloneable
     		instances = Integer.parseInt(instancesStr);
     	}		
 		
-		Integer tagInt = ElementAbstract.getElementFromDictionary(tagStr, null, dictionary).getTag();
+		Integer tagInt = dictionary.getElementFromTag(tagStr, null).getTag();
 		
 		List<ElementAbstract> list = new ArrayList<ElementAbstract>();
 		

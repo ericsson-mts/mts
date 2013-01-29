@@ -96,7 +96,7 @@ public class MessageGTP
 	        this.syntax = header.getSyntax();
 	        initDictionary(this.syntax); 
 	        this.header.parseFromXML(elementHeader, dictionary);
-	    }        
+	    }
 	    
 	    this.elements = new ArrayList<ElementAbstract>();
 	    List<Element> elementsInf = root.elements("element");
@@ -104,10 +104,9 @@ public class MessageGTP
 	    ElementAbstract elem = null;
 	    for (Element element : elementsInf) 
 	    {
-	        elemInfo = ElementAbstract.buildFactory(element, dictionaries.get(this.syntax));
+	        elemInfo = this.dictionary.getElementFromXML(element);
 	        elem = (ElementAbstract) elemInfo.cloneAttribute();
-	        
-	        elem.parseFromXML(element, dictionaries.get(this.syntax), elemInfo);
+	        elem.parseFromXML(element, this.dictionary, elemInfo);
 	        
 	        this.elements.add(elem);
 	
@@ -294,11 +293,11 @@ public class MessageGTP
 		if (this.dictionary == null)
 		{
 	        XMLDoc xml = new XMLDoc();
-	        String file = "../conf/gtp/dictionary_" + header.getSyntax() + ".xml";
+	        String file = "../conf/gtp/dictionary_" + syntax + ".xml";
 	        xml.setXMLFile(new URI(file));
 	        xml.parse();
 	        Element rootDico = xml.getDocument().getRootElement();
-	        this.dictionary = new Dictionary(rootDico, header.getSyntax());
+	        this.dictionary = new Dictionary(rootDico, syntax);
 	        MessageGTP.dictionaries.put(syntax, dictionary);
 		}
 	}
