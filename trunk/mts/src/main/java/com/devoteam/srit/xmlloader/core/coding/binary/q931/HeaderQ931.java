@@ -75,7 +75,7 @@ public class HeaderQ931 extends HeaderAbstract {
     public String getType() 
     {
 	    EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message type");
-	    String name = field.getEnumNameByValue(_typeArray.getValue());
+	    String name = field.getEnumLabelByValue(_typeArray.getValue());
 	    return name + ":" + _typeArray.getValue();
     }
     
@@ -95,7 +95,7 @@ public class HeaderQ931 extends HeaderAbstract {
         } else 
         {
         	EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message type");
-            _typeArray = new Integer08Array(field.getEnumValueByName(header.attributeValue("type")));
+            _typeArray = new Integer08Array(field.getEnumValueByLabel(header.attributeValue("type")));
         }
 
     	String discriminator = header.attributeValue("discriminator");
@@ -105,7 +105,7 @@ public class HeaderQ931 extends HeaderAbstract {
         } catch (Exception e) 
         {
         	EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Protocol discriminator");
-            _discrimArray = new Integer08Array(field.getEnumValueByName(discriminator));
+            _discrimArray = new Integer08Array(field.getEnumValueByLabel(discriminator));
         }
         String callReference = header.attributeValue("callReference");
         if (callReference != null)

@@ -107,7 +107,7 @@ public abstract class ElementAbstract implements Cloneable
             }
     		tagStr = tagStr.trim();
         	int iPos = tagStr.indexOf(":");
-        	String label = tagStr;
+        	String label = null;
         	String value = tagStr;
         	if (iPos >= 0)
         	{
