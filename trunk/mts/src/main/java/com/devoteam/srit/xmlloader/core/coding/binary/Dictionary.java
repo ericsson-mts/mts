@@ -23,15 +23,14 @@
 
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
-import com.devoteam.srit.xmlloader.core.coding.binary.q931.ElementQ931;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
-
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.dom4j.Element;
+
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 
 
 /**
@@ -75,6 +74,7 @@ public class Dictionary
         }
 
     }
+    
     public ElementAbstract getElementByTag(Integer tag) 
     {
         return elementsMapByTag.get(tag);
@@ -88,6 +88,67 @@ public class Dictionary
     public FieldAbstract getHeaderFieldByName(String name) 
     {
         return fieldsMapHeader.get(name);
+    }
+
+    public ElementAbstract getElementFromXML(Element element) throws Exception
+    {
+        //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
+        String tag = element.attributeValue("identifier");
+        if (tag == null)
+        {
+        	tag = element.attributeValue("tag");
+        }
+        tag = tag.trim();
+        
+        String coding = element.attributeValue("coding");
+        ElementAbstract elemDico = getElementFromTag(tag, coding);
+        return elemDico;
+    }
+    
+	/**
+	 * get an element from the dictionary from a given tag 
+	 * with the form of "LABEL:VALUE"
+	 * if not found return an empty GTPV2 element containing the tag and label 
+	 * @param tag
+	 * @param dictionary
+	 * @return
+	 * @throws Exception
+	 */
+	public ElementAbstract getElementFromTag(String tag, String coding) throws Exception
+    {
+		tag = tag.trim();
+    	int iPos = tag.indexOf(":");
+    	String label = tag;
+    	String value = tag;
+    	if (iPos >= 0)
+    	{
+    		label = tag.substring(0, iPos);
+    		value = tag.substring(iPos + 1);
+    	}
+    	// case if the tag is set by the value as a binary vale (with 'b' 's' 'd' prefix)
+    	Integer valueInt = ElementAbstract.getTagValueFromBinary(value);
+    	// check the consistency between value and label
+    	ElementAbstract elemById = getElementByTag(valueInt);
+		if (elemById != null && !label.equalsIgnoreCase(elemById.getLabel()) && !label.equals(tag))
+		{
+			GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The element label \"" + label + "\" does not match the tag/id \"" + value + "\" in the dictionary.");
+		}
+		// return first by the tag name
+		ElementAbstract elemByName = getElementByLabel(label);
+    	if (elemByName != null)
+    	{
+    		return elemByName;
+    	}
+    	// return first by the tag value
+    	if (elemById != null)
+    	{
+    		return elemById;
+    	}
+    	
+    	ElementAbstract elemEmpty = ElementAbstract.buildFactory(coding);
+    	elemEmpty.tag = valueInt;
+    	elemEmpty.label = label;
+    	return elemEmpty;
     }
 
 }
