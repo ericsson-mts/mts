@@ -95,15 +95,15 @@ public abstract class ElementAbstract implements Cloneable
 		return newElement;
     }
     
-    public void parseFromXML(Element element, Dictionary dictionary, ElementAbstract elemDico) throws Exception 
+    public void parseFromXML(Element elementRoot, Dictionary dictionary, ElementAbstract elemDico) throws Exception 
     {
     	if (elemDico == null)
     	{
             //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
-            String tag = element.attributeValue("identifier");
+            String tag = elementRoot.attributeValue("identifier");
             if (tag == null)
             {
-            	tag = element.attributeValue("tag");
+            	tag = elementRoot.attributeValue("tag");
             }
     		tag = tag.trim();
         	int iPos = tag.indexOf(":");
@@ -121,19 +121,19 @@ public abstract class ElementAbstract implements Cloneable
     	}
     	
     	// for Q931 protocols
-        String labelTag = element.attributeValue("name");
+        String labelTag = elementRoot.attributeValue("name");
         if (labelTag != null)
         {
         	this.label = labelTag;
         }
         
-        String instances = element.attributeValue("instances");
+        String instances = elementRoot.attributeValue("instances");
         if (instances != null)
         {
         	this.instances = Integer.parseInt(instances);
         }
 
-        List<Element> listField = element.elements("field");
+        List<Element> listField = elementRoot.elements("field");
         for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
             Element elemField = it.next();
             String name = elemField.attributeValue("name");
@@ -208,7 +208,7 @@ public abstract class ElementAbstract implements Cloneable
        	this._elements = new SupArray();
        	
         // set the value for each fields
-        listField = element.elements("field");
+        listField = elementRoot.elements("field");
         //boucle pour setter tous les field de elemV
         int offset = 0;
         for (Iterator<Element> it = listField.iterator(); it.hasNext();) 
@@ -240,7 +240,7 @@ public abstract class ElementAbstract implements Cloneable
         }
         
         //parse the sub-elements
-        List<Element> listElement = element.elements("element");
+        List<Element> listElement = elementRoot.elements("element");
         ElementAbstract subElemDico = null;
         ElementAbstract elem = null;
         for (Iterator<Element> it = listElement.iterator(); it.hasNext();) 
@@ -436,7 +436,7 @@ public abstract class ElementAbstract implements Cloneable
     		instances = Integer.parseInt(instancesStr);
     	}		
 		
-		Integer tagInt = dictionary.getElementFromTag(tagStr, null).getTag();
+		Integer tagInt = dictionary.getElementFromTag(tagStr).getTag();
 		
 		List<ElementAbstract> list = new ArrayList<ElementAbstract>();
 		

@@ -90,18 +90,23 @@ public class Dictionary
         return fieldsMapHeader.get(name);
     }
 
-    public ElementAbstract getElementFromXML(Element element) throws Exception
+    public ElementAbstract getElementFromXML(Element elementRoot) throws Exception
     {
         //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
-        String tag = element.attributeValue("identifier");
+        String tag = elementRoot.attributeValue("identifier");
         if (tag == null)
         {
-        	tag = element.attributeValue("tag");
+        	tag = elementRoot.attributeValue("tag");
         }
         tag = tag.trim();
         
-        String coding = element.attributeValue("coding");
-        ElementAbstract elemDico = getElementFromTag(tag, coding);
+        ElementAbstract elemDico = getElementFromTag(tag);
+        // the element is not present in the dictionary
+        if (elemDico == null)
+        {
+            String coding = elementRoot.attributeValue("coding");
+        	elemDico = ElementAbstract.buildFactory(coding);
+        }
         return elemDico;
     }
     
@@ -114,7 +119,7 @@ public class Dictionary
 	 * @return
 	 * @throws Exception
 	 */
-	public ElementAbstract getElementFromTag(String tag, String coding) throws Exception
+	public ElementAbstract getElementFromTag(String tag) throws Exception
     {
 		tag = tag.trim();
     	int iPos = tag.indexOf(":");
@@ -144,11 +149,7 @@ public class Dictionary
     	{
     		return elemById;
     	}
-    	
-    	ElementAbstract elemEmpty = ElementAbstract.buildFactory(coding);
-    	elemEmpty.tag = valueInt;
-    	elemEmpty.label = label;
-    	return elemEmpty;
+    	return null;
     }
 
 }
