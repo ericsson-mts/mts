@@ -101,13 +101,15 @@ public class Dictionary
         tag = tag.trim();
         
         ElementAbstract elemDico = getElementFromTag(tag);
-        // the element is not present in the dictionary
-        if (elemDico == null)
+        // the element is present in the dictionary
+        if (elemDico != null)
         {
-            String coding = elementRoot.attributeValue("coding");
-        	elemDico = ElementAbstract.buildFactory(coding);
+        	return elemDico;
         }
-        return elemDico;
+        // the element is not present in the dictionary
+        String coding = elementRoot.attributeValue("coding");
+        ElementAbstract newElement = ElementAbstract.buildFactory(coding);
+        return newElement;
     }
     
 	/**

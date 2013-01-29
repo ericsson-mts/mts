@@ -100,19 +100,19 @@ public abstract class ElementAbstract implements Cloneable
         //si non present dans le dico on parse le fichier xml
     	if (elemDico == null)
     	{
-            String tag = elementRoot.attributeValue("identifier");
-            if (tag == null)
+            String tagStr = elementRoot.attributeValue("identifier");
+            if (tagStr == null)
             {
-            	tag = elementRoot.attributeValue("tag");
+            	tagStr = elementRoot.attributeValue("tag");
             }
-    		tag = tag.trim();
-        	int iPos = tag.indexOf(":");
-        	String label = tag;
-        	String value = tag;
+    		tagStr = tagStr.trim();
+        	int iPos = tagStr.indexOf(":");
+        	String label = tagStr;
+        	String value = tagStr;
         	if (iPos >= 0)
         	{
-        		label = tag.substring(0, iPos);
-        		value = tag.substring(iPos + 1);
+        		label = tagStr.substring(0, iPos);
+        		value = tagStr.substring(iPos + 1);
         	}
     		
         	int tagInt = getTagValueFromBinary(value);
@@ -135,70 +135,19 @@ public abstract class ElementAbstract implements Cloneable
 
         List<Element> listField = elementRoot.elements("field");
         for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
-            Element elemField = it.next();
-            String name = elemField.attributeValue("name");
+            Element fieldRoot = it.next();
+            String name = fieldRoot.attributeValue("name");
             FieldAbstract field = null;
+            // Case if field is present in the dico
             if (elemDico != null)
             {
             	field = elemDico.getHashMapFields().get(name); 
             }
             if (field == null)
             {
-             	String type = elemField.attributeValue("type");
-             	if (type ==  null) 
-             	{
-             		throw new ExecutionException("ERROR : The type attribute for the field \"" + name + "\" is mandatory because the element tag \"" + tag + "\" is not present in the dictionary.");
-             	}
-             	if (type.equalsIgnoreCase("integer")) 
-	            {
-	                field = new IntegerField(elemField);
-	            } 
-	            else if (type.equalsIgnoreCase("boolean")) 
-	            {
-	                field = new BooleanField(elemField);
-	            } 
-	            else if (type.equalsIgnoreCase("enumeration")) 
-	            {
-	                field = new EnumerationField(elemField);
-	            } 
-	            else if (type.equalsIgnoreCase("string")) 
-	            {	
-	                field = new StringField(elemField);	
-	            }
-	            else if (type.equalsIgnoreCase("length_string")) 
-	            {
-	                field = new LengthStringField(elemField);	
-	            }
-	            else if (type.equalsIgnoreCase("length2_string")) 
-	            {
-	                field = new Length2StringField(elemField);	
-	            }	            
-	            else if (type.equalsIgnoreCase("binary")) 
-	            {
-	                field = new BinaryField(elemField);
-	            }
-	            else if (type.equalsIgnoreCase("number_bcd")) 
-	            {
-	                field = new NumberBCDField(elemField);
-	            }
-	            else if (type.equalsIgnoreCase("number_mmc")) 
-	            {
-	                field = new NumberMMCField(elemField);
-	            }	            
-	            else if (type.equalsIgnoreCase("ipv4_address")) 
-	            {
-	                field = new IPV4AddressField(elemField);
-	            }
-	            else if (type.equalsIgnoreCase("ipv6_address")) 
-	            {
-	                field = new IPV6AddressField(elemField);
-	            }	            	            
-	            else
-	            {
-	            	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported in the element tag : \"" + tag + "\"");
-	            }
+            	field = FieldAbstract.parseFromXML(fieldRoot);
             }
-            this._hashMapFields.put(elemField.attributeValue("name"), field);
+            this._hashMapFields.put(name, field);
         }
         
         // initiate the Array containing the fields

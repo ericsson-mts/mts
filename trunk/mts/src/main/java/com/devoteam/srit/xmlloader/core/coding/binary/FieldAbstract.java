@@ -27,6 +27,7 @@ package com.devoteam.srit.xmlloader.core.coding.binary;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.SupArray;
 
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 
@@ -62,7 +63,67 @@ public abstract class FieldAbstract
             this._length = Integer.parseInt(lengthBit);
         }
     }
-    
+
+    public static FieldAbstract parseFromXML(Element fieldRoot) throws Exception
+    {
+     	String type = fieldRoot.attributeValue("type");
+     	String name = fieldRoot.attributeValue("name");
+     	FieldAbstract newField = null;
+    	if (type ==  null) 
+     	{
+     		throw new ExecutionException("ERROR : The type attribute for the field \"" + name + "\" is mandatory because the element he belongs to is not present in the dictionary.");
+     	}
+     	if (type.equalsIgnoreCase("integer")) 
+        {
+            newField = new IntegerField(fieldRoot);
+        } 
+        else if (type.equalsIgnoreCase("boolean")) 
+        {
+        	newField = new BooleanField(fieldRoot);
+        } 
+        else if (type.equalsIgnoreCase("enumeration")) 
+        {
+        	newField = new EnumerationField(fieldRoot);
+        } 
+        else if (type.equalsIgnoreCase("string")) 
+        {	
+        	newField = new StringField(fieldRoot);	
+        }
+        else if (type.equalsIgnoreCase("length_string")) 
+        {
+        	newField = new LengthStringField(fieldRoot);	
+        }
+        else if (type.equalsIgnoreCase("length2_string")) 
+        {
+        	newField = new Length2StringField(fieldRoot);	
+        }	            
+        else if (type.equalsIgnoreCase("binary")) 
+        {
+        	newField = new BinaryField(fieldRoot);
+        }
+        else if (type.equalsIgnoreCase("number_bcd")) 
+        {
+        	newField = new NumberBCDField(fieldRoot);
+        }
+        else if (type.equalsIgnoreCase("number_mmc")) 
+        {
+        	newField = new NumberMMCField(fieldRoot);
+        }	            
+        else if (type.equalsIgnoreCase("ipv4_address")) 
+        {
+        	newField = new IPV4AddressField(fieldRoot);
+        }
+        else if (type.equalsIgnoreCase("ipv6_address")) 
+        {
+        	newField = new IPV6AddressField(fieldRoot);
+        }	            	            
+        else
+        {
+        	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported in the field \"" + name + "\"");
+        }
+    return newField;
+    }
+
     public abstract String getValue(Array array)throws Exception;
 
     public abstract void setValue(String value, int offset, SupArray array) throws Exception;
