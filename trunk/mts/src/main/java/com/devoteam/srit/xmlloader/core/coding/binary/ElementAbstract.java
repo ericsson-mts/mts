@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.coding.binary.q931.ElementQ931;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
@@ -51,7 +52,8 @@ import org.dom4j.Element;
  */
 public abstract class ElementAbstract implements Cloneable
 {
-
+    protected String coding;
+	
     protected int tag;
 
     protected String label;
@@ -66,24 +68,34 @@ public abstract class ElementAbstract implements Cloneable
     protected SupArray _fields;
     protected SupArray _elements;
 
-    public static ElementAbstract buildFactory(String coding)
+    public static ElementAbstract buildFactory(String coding) throws Exception
     {
+    	ElementAbstract newElement = null;
 		if ("TLIV".equals(coding))
 		{
-			return new ElementTLIV();
+			newElement = new ElementTLIV();
 		}
 		else if ("TLV".equals(coding))
 		{
-			return new ElementTLV();
+			newElement = new ElementTLV();
 		}
 		else if ("TV".equals(coding))
 		{
-			return new ElementTV();
-		}		
-		return null;
+			newElement = new ElementTV();
+		} 
+		else if ("Q931".equals(coding))
+		{
+			newElement = new ElementQ931();
+		}
+		else
+		{
+     		throw new ExecutionException("ERROR : The coding attribute for the element is mandatory because the element is not present in the dictionary.");
+		}
+		newElement.coding = coding;
+		return newElement;
     }
     
-    public void parseFromXML(Element element, Dictionary dictionary) throws Exception 
+    public static ElementAbstract buildFactory(Element element, Dictionary dictionary) throws Exception
     {
         //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
         String tag = element.attributeValue("identifier");
@@ -93,10 +105,36 @@ public abstract class ElementAbstract implements Cloneable
         }
         tag = tag.trim();
         
-        ElementAbstract elemDico = ElementAbstract.getElementFromDictionary(tag, dictionary);
-        this.tag = elemDico.tag;
-        this.label = elemDico.label;
-        
+        String coding = element.attributeValue("coding");
+        ElementAbstract elemDico = ElementAbstract.getElementFromDictionary(tag, coding, dictionary);
+        return elemDico;
+    }
+    
+    public void parseFromXML(Element element, Dictionary dictionary, ElementAbstract elemDico) throws Exception 
+    {
+        //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
+        String tag = element.attributeValue("identifier");
+        if (tag == null)
+        {
+        	tag = element.attributeValue("tag");
+        }
+		tag = tag.trim();
+    	int iPos = tag.indexOf(":");
+    	String label = tag;
+    	String value = tag;
+    	if (iPos >= 0)
+    	{
+    		label = tag.substring(0, iPos);
+    		value = tag.substring(iPos + 1);
+    	}
+
+    	if (elemDico == null)
+    	{
+        	int tagInt = getTagValueFromBinary(value);
+        	this.tag = tagInt;
+        	this.label = label;	
+    	}
+    	
         String labelTag = element.attributeValue("name");
         if (labelTag != null)
         {
@@ -109,6 +147,7 @@ public abstract class ElementAbstract implements Cloneable
         	this.instances = Integer.parseInt(instances);
         }
 
+        _hashMapFields.clear();
         List<Element> listField = element.elements("field");
         for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
             Element elemField = it.next();
@@ -123,7 +162,7 @@ public abstract class ElementAbstract implements Cloneable
              	String type = elemField.attributeValue("type");
              	if (type ==  null) 
              	{
-             		throw new ExecutionException("ERROR : The type name \"" + name + "\" is mandatroy because the element tag \"" + tag + "\" is not present in the dictionary.");
+             		throw new ExecutionException("ERROR : The type attribute for the field \"" + name + "\" is mandatory because the element tag \"" + tag + "\" is not present in the dictionary.");
              	}
              	if (type.equalsIgnoreCase("integer")) 
 	            {
@@ -194,7 +233,7 @@ public abstract class ElementAbstract implements Cloneable
             FieldAbstract field = this._hashMapFields.get(fieldName);
             if (field != null) 
             {
-            	String value = element1.attributeValue("value");
+            	value = element1.attributeValue("value");
             	if (value != null)
             	{
 			        field.setValue(element1.attributeValue("value"), offset, this._fields);
@@ -217,14 +256,16 @@ public abstract class ElementAbstract implements Cloneable
         
         List<Element> listElement = element.elements("element");
         ElementAbstract elemInfo = null;
+        ElementAbstract elem = null;
         for (Iterator<Element> it = listElement.iterator(); it.hasNext();) 
         {
             Element elemElement = it.next();
-            String coding = elemElement.attributeValue("coding");
-            elemInfo = ElementAbstract.buildFactory(coding);
-	        elemInfo.parseFromXML(elemElement, dictionary);
+	        elemInfo = ElementAbstract.buildFactory(elemElement, dictionary);
+	        elem = (ElementAbstract) elemInfo.cloneAttribute();
+
+	        elem.parseFromXML(elemElement, dictionary, elemInfo);
 	        
-	        this.elements.add(elemInfo);
+	        this.elements.add(elem);
         }
         
     }
@@ -248,7 +289,7 @@ public abstract class ElementAbstract implements Cloneable
 	 * @return
 	 * @throws Exception
 	 */
-	private static ElementAbstract getElementFromDictionary(String tag, Dictionary dictionary) throws Exception
+	private static ElementAbstract getElementFromDictionary(String tag, String coding, Dictionary dictionary) throws Exception
     {
 		tag = tag.trim();
     	int iPos = tag.indexOf(":");
@@ -287,7 +328,7 @@ public abstract class ElementAbstract implements Cloneable
     		return elemById;
     	}
     	
-    	ElementAbstract elemEmpty = buildFactory("TLIV");
+    	ElementAbstract elemEmpty = buildFactory(coding);
     	elemEmpty.tag = valueInt;
     	elemEmpty.label = label;
     	return elemEmpty;
@@ -372,6 +413,18 @@ public abstract class ElementAbstract implements Cloneable
 
     }
     
+    public ElementAbstract cloneAttribute() throws Exception
+    {
+		ElementAbstract newElement = buildFactory(this.coding);
+		
+		newElement.coding = this.coding;
+		newElement.tag = this.tag;
+		newElement.label = this.label;
+		newElement.instances = this.instances;
+		
+    	return newElement;
+    }
+    
     protected void copyToCLone(ElementAbstract source) throws Exception
     {
     	this.tag = source.tag;
@@ -450,7 +503,7 @@ public abstract class ElementAbstract implements Cloneable
     		instances = Integer.parseInt(instancesStr);
     	}		
 		
-		Integer tagInt = ElementAbstract.getElementFromDictionary(tagStr, dictionary).getTag();
+		Integer tagInt = ElementAbstract.getElementFromDictionary(tagStr, null, dictionary).getTag();
 		
 		List<ElementAbstract> list = new ArrayList<ElementAbstract>();
 		
@@ -479,8 +532,11 @@ public abstract class ElementAbstract implements Cloneable
     	elemString.append("\"");
     	elemString.append(" instances=\"");
    		elemString.append(this.instances);
-    	elemString.append("\"");   	
-        if (_fields != null)
+    	elemString.append("\"");
+    	elemString.append(" coding=\"");
+   		elemString.append(this.coding);
+    	elemString.append("\"");
+    	if (_fields != null)
         {
             elemString.append(" value=\"" + Array.toHexString(_fields));
         }

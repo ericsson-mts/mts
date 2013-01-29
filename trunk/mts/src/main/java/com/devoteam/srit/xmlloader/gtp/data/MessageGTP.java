@@ -101,13 +101,15 @@ public class MessageGTP
 	    this.elements = new ArrayList<ElementAbstract>();
 	    List<Element> elementsInf = root.elements("element");
 	    ElementAbstract elemInfo = null;
+	    ElementAbstract elem = null;
 	    for (Element element : elementsInf) 
 	    {
-	    	String coding = element.attributeValue("coding");
-	        elemInfo = ElementAbstract.buildFactory(coding);
-	        elemInfo.parseFromXML(element, dictionaries.get(this.syntax));
+	        elemInfo = ElementAbstract.buildFactory(element, dictionaries.get(this.syntax));
+	        elem = (ElementAbstract) elemInfo.cloneAttribute();
 	        
-	        this.elements.add(elemInfo);
+	        elem.parseFromXML(element, dictionaries.get(this.syntax), elemInfo);
+	        
+	        this.elements.add(elem);
 	
 	    }
 	}

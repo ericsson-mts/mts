@@ -6,10 +6,10 @@
     <sendMessageGTP name="send data record transfer request"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerPrime type="240" sequenceNumber="1"/>
-        <element tag="126" coding="TV">
+        <element tag="126" >
             <field name="packetTransferCommand" value="Send Data Record Packet"/>
         </element>
-        <element tag="252" coding="TLV">
+        <element tag="252" >
             <field name="numberOfDataRecords" value="1"/>
             <field name="dataRecordFormat" value="1"/>
             <field name="dataRecordFormatVersion" value="65"/>
@@ -29,10 +29,10 @@
     <sendMessageGTP name="send data record transfer request"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerPrime type="dataRecordTransferRequest" sequenceNumber="2"/>
-        <element tag="126" coding="TV">
+        <element tag="126" >
             <field name="packetTransferCommand" value="Release Data Record Packet"/>
         </element>
-        <element tag="249" coding="TLV">
+        <element tag="249" >
             <field name="sequenceNumber01" value="2"/>
             <field name="sequenceNumber02" value="5"/>
             <field name="sequenceNumber03" value="9"/>
@@ -50,12 +50,12 @@
     <sendMessageGTP name="send data record transfer request"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerPrime type="dataRecordTransferRequest:240" sequenceNumber="3"/>
-        <element tag="126" coding="TV">
+        <element tag="126" >
             <field name="packetTransferCommand" value="Cancel Data Record Packet"/>
         </element>
-        <element tag="250" coding="TLV">
+        <element tag="250" >
             <field name="sequenceNumber01" value="6"/>
-            <field name="sequenceNumber02" value="1"/>        
+            <field name="sequenceNumber02" value="1"/>
         </element>
     </sendMessageGTP>
 

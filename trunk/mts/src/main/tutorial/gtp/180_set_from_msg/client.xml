@@ -8,19 +8,19 @@
     <sendMessageGTP name="send message"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerV2 type="32" piggyFlag="1" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]" spare="255"/>
-        <element tag="1" coding="TLIV" description="International Mobile Subscriber Identity">
+        <element tag="1" description="International Mobile Subscriber Identity">
             <field name="IMSI" value="123456789012345" description="International Mobile Subscriber Identity"/>
         </element>
-        <element tag="76" instances="5" coding="TLIV" description="Mobile Subscriber ISDN Number">
+        <element tag="76" instances="5" description="Mobile Subscriber ISDN Number">
             <field name="MSISDN" value="331234567890123456" description="Mobile Subscriber ISDN Number"/>
         </element>
-        <element tag="76" instances="6" coding="TLIV" description="Mobile Subscriber ISDN Number">
+        <element tag="76" instances="6" description="Mobile Subscriber ISDN Number">
             <field name="MSISDN" value="339876543210987654" description="Mobile Subscriber ISDN Number"/>
         </element>
-        <element tag="75" coding="TLIV" description="Mobile Equipment Identity">
+        <element tag="75" description="Mobile Equipment Identity">
             <field name="MEI" value="0033123456789012" description="Mobile Equipment Identity"/>
         </element>        
-        <element tag="86" coding="TLIV" description="User Location Information">
+        <element tag="86" description="User Location Information">
             <field name="spare1" value="3"/>
             <field name="LAI" value="0"/>
             <field name="ECGI" value="1"/>
@@ -35,13 +35,13 @@
             <field name="ECGI_spare2" value="15"/>
             <field name="ECGI_ECI" value="268435455"/>
         </element>        
-        <element tag="83" coding="TLIV">
+        <element tag="83" >
             <field name="MMC" value="456,78"/>
         </element>  
-        <element tag="bidon:82" coding="TLIV">
+        <element tag="bidon:82" >
             <field name="RAT Type" value="EUTRAN"/>
         </element>
-        <element tag="87" instances="0" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+        <element tag="87" instances="0" description="Fully Qualified Tunnel Endpoint Identifier">
             <field name="V4" value="bidon:1"/>
             <field name="V6" value="1"/>
             <field name="Interface Type" value="bidon:6"/>
@@ -50,7 +50,7 @@
             <field name="IPv4 address" value="123.45.67.89"/>
             <field name="IPv6 address" value="1234:5678:90ab:cdef:fedc:ba09:8765:4321"/>
         </element>
-        <element tag="87" instances="1" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+        <element tag="87" instances="1" description="Fully Qualified Tunnel Endpoint Identifier">
             <field name="V4" value="1"/>
             <field name="V6" value="1"/>
             <field name="Interface Type" value="S5/S8 PGW GTP-U"/>
@@ -59,21 +59,21 @@
             <field name="IPv4 address" value="98.76.54.32"/>
             <field name="IPv6 address" value="fedc:ba98:7654:3210:0123:4567:89ab:cdef"/>
         </element>
-        <element tag="71" coding="TLIV" description="Access Point Name">
+        <element tag="71" description="Access Point Name">
         		<field name="APN01" value="stringstring01" description="Access Point Name"/>
             <field name="APN02" value="string02" description="Access Point Name"/>
             <field name="APN03" value="str03" description="Access Point Name"/>                    		
             <field name="APN04" value="04" description="Access Point Name"/>            
         </element>
-        <element tag="128" coding="TLIV">    
+        <element tag="128" >
             <field name="spare" value="63"/>
             <field name="Selection Mode" value="MS or network provided APN, subscribed verified"/>
         </element>
-        <element tag="99" coding="TLIV">
+        <element tag="99" >
             <field name="spare" value="31"/>
             <field name="PDN Type" value="IPv4"/>
         </element>
-        <element tag="79" coding="TLIV" description="PDN Address Allocation">
+        <element tag="79" description="PDN Address Allocation">
             <field name="spare" value="31"/>
             <field name="PDN Type" value="IPv4v6"/>
             <!-- TODO condiditional -->
@@ -81,7 +81,7 @@
             <field name="IPv6 address" value="fedc:ba09:8765:4321:1234:5678:90ab:cdef"/>
             <field name="IPv4 address" value="87.65.43.210"/>
         </element> 
-        <element tag="77" coding="TLIV">
+        <element tag="77" >
             <field name="DAF" value="0"/>
             <field name="DTF" value="0"/>
             <field name="HI" value="0"/>
@@ -113,22 +113,22 @@
             <field name="CLII" value="0"/>
             <field name="CPSR" value="0"/>
         </element>
-        <element tag="127" coding="TLIV">
+        <element tag="127" >
             <field name="Restriction Type value" value="No Existing Contexts or Restriction"/>
         </element>
-        <element tag="72" coding="TLIV" description="Aggregate Maximum Bit Rate">
+        <element tag="72" description="Aggregate Maximum Bit Rate">
             <field name="APN-AMBR for uplink" value="4294967295"/>
             <field name="APN-AMBR for downlink" value="4294967295"/>        
         </element>        
-        <element tag="78" coding="TLIV" description="Protocol Configuration Options">
+        <element tag="78" description="Protocol Configuration Options">
         		<field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
         </element>
-        <element tag="93" coding="TLIV">
-            <element tag="73" coding="TLIV" description="EPS Bearer ID">
+        <element tag="93" >
+            <element tag="73" description="EPS Bearer ID">
                 <field name="spare" value="15"/>
             		<field name="EBI" value="15"/>
             </element>
-            <element tag="80" coding="TLIV" description="Bearer Quality of Service">
+            <element tag="80" description="Bearer Quality of Service">
                 <field name="spare1" value="1"/>
                 <field name="PCI" value="0" description="Pre-emption Capability"/>
                 <field name="PL" value="15" description="Priority Level"/>
@@ -140,7 +140,7 @@
                 <field name="Guaranteed bit rate for uplink" value="1099511627775"/>
                 <field name="Guaranteed bit rate for downlink" value="1099511627775"/>
             </element>            
-            <element tag="87" instances="14" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+            <element tag="87" instances="14" description="Fully Qualified Tunnel Endpoint Identifier">
                 <field name="V4" value="1"/>
                 <field name="V6" value="1"/>
                 <field name="Interface Type" value="S5/S8 SGW GTP-U"/>
@@ -149,7 +149,7 @@
                 <field name="IPv4 address" value="12.13.14.15"/>
                 <field name="IPv6 address" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/>
             </element>
-            <element tag="87" instances="15" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+            <element tag="87" instances="15" description="Fully Qualified Tunnel Endpoint Identifier">
                 <field name="V4" value="1"/>
                 <field name="V6" value="1"/>
                 <field name="Interface Type" value="S5/S8 SGW GTP-U"/>
@@ -159,12 +159,12 @@
                 <field name="IPv6 address" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/>
             </element>
         </element>
-        <element tag="UE Time Zone:114" coding="TLIV">
+        <element tag="UE Time Zone:114" >
             <field name="Time Zone" value="255"/>   
             <field name="spare" value="63"/>
             <field name="Daylight Saving Time" value="No adjustment for Daylight Saving Time"/>
         </element>
-       <element tag="Charging Characteristics:95" coding="TLIV">
+       <element tag="Charging Characteristics:95" >
             <field name="Charging Characteristics value" value="65535"/>
       </element>        
     </sendMessageGTP>

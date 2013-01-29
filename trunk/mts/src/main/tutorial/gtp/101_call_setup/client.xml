@@ -8,16 +8,16 @@
     <sendMessageGTP name="send message" 
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerV2 type="createSessionRequest:32" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
-        <element tag="IMSI:1" coding="TLIV" description="International Mobile Subscriber Identity">
+        <element tag="IMSI:1" description="International Mobile Subscriber Identity">
             <field name="IMSI" value="208014420002029" description="International Mobile Subscriber Identity"/>
         </element>
-        <element tag="MSISDN:76" coding="TLIV" description="Mobile Subscriber ISDN Number">
+        <element tag="MSISDN:76" description="Mobile Subscriber ISDN Number">
             <field name="MSISDN" value="33645432029" description="Mobile Subscriber ISDN Number"/>
         </element>
-        <element tag="MEI:75" coding="TLIV" description="Mobile Equipment Identity">
+        <element tag="MEI:75" description="Mobile Equipment Identity">
             <field name="MEI" value="9999000000001011" description="Mobile Equipment Identity"/>
         </element>        
-        <element tag="ULI:86" coding="TLIV" description="User Location Information">
+        <element tag="ULI:86" description="User Location Information">
             <field name="spare1" value="0"/>
             <field name="LAI" value="false:0"/>
             <field name="ECGI" value="true:1"/>
@@ -32,17 +32,17 @@
             <field name="ECGI_spare2" value="0"/>
             <field name="ECGI_ECI" value="257"/>
         </element>
-        <element tag="AMBR:72" coding="TLIV" description="Aggregate Maximum Bit Rate">
+        <element tag="AMBR:72" description="Aggregate Maximum Bit Rate">
             <field name="APN-AMBR for uplink" value="50000"/>
             <field name="APN-AMBR for downlink" value="100000"/>
         </element>              
-        <element tag="Serving Network:83" coding="TLIV">
+        <element tag="Serving Network:83">
             <field name="MMC" value="214,03"/>
         </element>  
-        <element tag="RAT Type:82" coding="TLIV">
+        <element tag="RAT Type:82">
             <field name="RAT Type" value="EUTRAN:6"/>
         </element>
-        <element tag="F-TEID:87" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+        <element tag="F-TEID:87" description="Fully Qualified Tunnel Endpoint Identifier">
             <field name="V4" value="true"/>
             <field name="V6" value="false"/>
             <field name="Interface Type" value="S5/S8 SGW GTP-C:6"/>
@@ -51,34 +51,34 @@
             <field name="IPv4 address" value="20.21.0.1"/>
             <!--field name="IPv6 address" value="1234:5678:90ab:cdef:fedc:ba09:8765:4321"/-->
         </element>
-        <element tag="Selection Mode:128" coding="TLIV">
+        <element tag="Selection Mode:128">
             <field name="spare" value="0"/>
             <field name="Selection Mode" value="MS provided APN, subscription not verified:1"/>
         </element>
-        <element tag="PDN Type:99" coding="TLIV">
+        <element tag="PDN Type:99">
             <field name="spare" value="0"/>
             <field name="PDN Type" value="IPv4:1"/>
         </element>
-        <element tag="PAA:79" coding="TLIV" description="PDN Address Allocation">
+        <element tag="PAA:79" description="PDN Address Allocation">
             <field name="spare" value="0"/>
             <field name="PDN Type" value="IPv4:1"/>
             <field name="IPv4 address" value="0.0.0.0"/>
-        </element>                   
-        <element tag="APN:71" coding="TLIV" description="Access Point Name">
+        </element>
+        <element tag="APN:71" description="Access Point Name">
             <field name="APN01" value="otarie" description="Access Point Name"/>
             <field name="APN02" value="mnc003" description="Access Point Name"/>
             <field name="APN03" value="mcc214" description="Access Point Name"/>
             <field name="APN04" value="gprs" description="Access Point Name"/>
         </element>
-        <element tag="APN Restriction:127" coding="TLIV">
+        <element tag="APN Restriction:127" >
             <field name="Restriction Type value" value="No Existing Contexts or Restriction:0"/>
         </element>
-        <element tag="Bearer Context:93" coding="TLIV">
-            <element tag="EBI:73" coding="TLIV" description="EPS Bearer ID">
+        <element tag="Bearer Context:93" >
+            <element tag="EBI:73" description="EPS Bearer ID">
                 <field name="spare" value="0"/>
             		<field name="EBI" value="5"/>
             </element>
-            <element tag="Bearer QoS:80" coding="TLIV" description="Bearer Quality of Service">
+            <element tag="Bearer QoS:80" description="Bearer Quality of Service">
                 <field name="spare1" value="0"/>
                 <field name="PCI" value="true:1" description="Pre-emption Capability"/>
                 <field name="PL" value="2" description="Priority Level"/>
@@ -90,7 +90,7 @@
                 <field name="Guaranteed bit rate for uplink" value="0"/>
                 <field name="Guaranteed bit rate for downlink" value="0"/>
             </element>            
-            <element tag="F-TEID:87" instances="2" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+            <element tag="F-TEID:87" instances="2" description="Fully Qualified Tunnel Endpoint Identifier">
                 <field name="V4" value="true:1"/>
                 <field name="V6" value="false:0"/>
                 <field name="Interface Type" value="S5/S8 SGW GTP-U:4"/>
@@ -117,11 +117,11 @@
     <sendMessageGTP name="send message" 
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
         <headerV2 type="deleteSessionRequest:36" tunnelEndpointId="[TEID / GRE Key]" sequenceNumber="[sequenceNumber]"/>
-        <element tag="EBI:73" coding="TLIV" description="EPS Bearer ID">
+        <element tag="EBI:73" description="EPS Bearer ID">
             <field name="spare" value="0"/>
         		<field name="EBI" value="5"/>
         </element>              
-        <element tag="Indication:77" coding="TLIV">
+        <element tag="Indication:77">
             <field name="DAF" value="false:0"/>
             <field name="DTF" value="false:0"/>
             <field name="HI" value="false:0"/>
