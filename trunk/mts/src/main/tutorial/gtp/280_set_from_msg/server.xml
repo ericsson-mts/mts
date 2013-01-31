@@ -25,9 +25,9 @@
     <parameter name="[type]" operation="protocol.setFromMessage" value="header.type"/>
     <test parameter="[type]" condition="number.equals" value="1"/>
     <parameter name="[label]" operation="protocol.setFromMessage" value="header.label"/>
-    <test parameter="[label]" condition="string.equals" value="echoRequest"/>
+    <test parameter="[label]" condition="string.equals" value="Echo Request"/>
     <parameter name="[name]" operation="protocol.setFromMessage" value="header.name"/>
-    <test parameter="[name]" condition="string.equals" value="echoRequest:1"/>
+    <test parameter="[name]" condition="string.equals" value="Echo Request:1"/>
     <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
     <test parameter="[tunnelEndpointId]" condition="number.equals" value="1234567890"/>
     <parameter name="[sequenceNumber]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
@@ -42,7 +42,7 @@
     
     <sendMessageGTP name="echo Response"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
-        <headerV1 type="echoResponse" tunnelEndpointId="[teId]" sequenceNumber="[seqNum]" nPduNumber="[nPduNum]" nextExtensionType="[nExtType]"/>
+        <headerV1 type="Echo Response" tunnelEndpointId="[teId]" sequenceNumber="[seqNum]" nPduNumber="[nPduNum]" nextExtensionType="[nExtType]"/>
         <element tag="Recovery" >
             <field name="Recovery" value="23"/>
         </element>

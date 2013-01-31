@@ -85,7 +85,7 @@ public class HeaderGTPV1 extends HeaderAbstract
     public boolean isRequest() 
     {
     	// particular case 
-    	if (this.label.equalsIgnoreCase("errorIndication"))
+    	if (this.type == 26)
     	{
     		return true;
     	}    	

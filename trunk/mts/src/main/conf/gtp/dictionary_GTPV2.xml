@@ -28,6 +28,9 @@
             <enum value="36" name="deleteSessionRequest" />
             <enum value="37" name="deleteSessionResponse" />
             
+            <enum value="237-239" name="For future use" />
+            <enum value="240-247" name="Others" />
+            <enum value="248-255" name="For future use" />
         </field>
         <field name="Message Length" lengthBit="16" type="integer"> </field>
         <field name="Tunnel Endpoint Identifier" lengthBit="32" type="integer"> </field>
@@ -62,7 +65,7 @@
             <enum value="17" name="Request accepted partially"/>
             <enum value="18" name="New PDN type due to network preference."/>
             <enum value="19" name="New PDN type due to single address bearer only."/>
-            <enum value="20-63" name="Spare. This value range shall be used by Cause values in an acceptance response/triggered message"/>
+            <enum value="20-63" name="Spare"/>
             <enum value="64" name="Context Not Found"/>
             <enum value="65" name="Invalid Message Format"/>
             <enum value="66" name="Version not supported by next peer"/>
@@ -116,8 +119,8 @@
             <enum value="114" name="Bearer handling not supported"/>
             <enum value="115" name="UE already re-attached. See NOTE 7."/>
             <enum value="116" name="Multiple PDN connections for a given APN not allowed"/>
-            <enum value="117-239" name="Spare. For future use in a triggered/response message See NOTE 4."/>
-            <enum value="240-255" name="Spare. For future use in an initial/request message. See NOTE 5."/>
+            <enum value="117-239" name="Spare"/>
+            <enum value="240-255" name="Spare"/>
           </field>
         <field name="spare" lengthBit="5" type="integer"/>
         <field name="PCE" lengthBit="1" type="boolean" description="PDN Connection IE Error"/>
@@ -206,6 +209,7 @@
             <enum value="1" name="IPv4"/>
             <enum value="2" name="IPv6"/>
             <enum value="3" name="IPv4v6"/>
+            <enum value="0" name="reserved"/>
         </field>
         <!-- TODO condiditional -->
         <field name="IPv6 prefix length" lengthBit="8" type="integer"/>
@@ -228,7 +232,7 @@
     
     <element tag="RAT Type:82" coding="TLIV">
            <field name="RAT Type" lengthBit="8" type="enumeration">
-            <enum value="0" name="Reserved" />
+            <enum value="0" name="reserved" />
             <enum value="1" name="UTRAN" />
             <enum value="2" name="GERAN" />
             <enum value="3" name="WLAN" />
@@ -236,7 +240,7 @@
             <enum value="5" name="HSPA Evolution" />
             <enum value="6" name="EUTRAN" />
             <enum value="7" name="Virtual" />
-            <enum value="8" name="Spare" />
+            <enum value="8-255" name="spare" />
         </field>
     </element>
     
@@ -293,15 +297,16 @@
             <enum value="26" name="Sm MME GTP-C"/>
             <enum value="27" name="Sn SGSN GTP-C"/>
             <enum value="28" name="SGW GTP-U" information="for UL data forwarding"/>
-            <enum value="29" name="Sn SGSN GTP-U"/> interface 
-            <enum value="30" name="S2b ePDG GTP-C"/> interface
-            <enum value="31" name="S2b-U ePDG GTP-U"/> interface
-            <enum value="32" name="S2b PGW GTP-C"/> interface
-            <enum value="33" name="S2b-U PGW GTP-U"/> interface
+            <enum value="29" name="Sn SGSN GTP-U"/> 
+            <enum value="30" name="S2b ePDG GTP-C"/> 
+            <enum value="31" name="S2b-U ePDG GTP-U"/> 
+            <enum value="32" name="S2b PGW GTP-C"/> 
+            <enum value="33" name="S2b-U PGW GTP-U"/> 
             <enum value="34" name="S2a TWAN GTP-U"/>
             <enum value="35" name="S2a TWAN GTP-C"/>
             <enum value="36" name="S2a PGW GTP-C"/>
             <enum value="37" name="S2a PGW GTP-U"/>
+            <enum value="38-63" name="spare and reserved for future use"/>
         </field>
         <field name="TEID / GRE Key" lengthBit="32" type="integer" description="GRE key ?"/>
         <!-- TODO conditional IP V4 V6 -->      
@@ -331,11 +336,12 @@
             <enum value="1" name="IPv4"/>
             <enum value="2" name="IPv6"/>
             <enum value="3" name="IPv4v6"/>
+            <enum value="0" name="reserved"/>
         </field>
     </element>
 
    <element tag="UE Time Zone:114" coding="TLIV">   
-        <field name="Time Zone" lengthBit="8" type="integer"/>   
+        <field name="Time Zone" lengthBit="8" type="integer"/>
         <field name="spare" lengthBit="6" type="integer"/>
         <field name="Daylight Saving Time" lengthBit="2" type="enumeration">
             <enum value="0" name="No adjustment for Daylight Saving Time"/>
@@ -350,8 +356,9 @@
             <enum value="0" name="No Existing Contexts or Restriction"/>
             <enum value="1" name="Public-1 : MMS"/>
             <enum value="2" name="Public-2 : Internet"/>
-            <enum value="3" name="Private-1	: Corporate (e.g. who use MMS)"/>
-            <enum value="4" name="Private-2	: Corporate (e.g. who do not use MMS)"/>                 
+            <enum value="3" name="Private-1 : Corporate (e.g. who use MMS)"/>
+            <enum value="4" name="Private-2 : Corporate (e.g. who do not use MMS)"/>
+            <enum value="5-255" name="Not used"/>
         </field>
     </element>
         
@@ -369,6 +376,6 @@
 		    <field name="extensionIdentifier" lengthBit="16" type="integer"/>
         <field name="extensionValue" type="string"/>
 	  </element>
-    	
-    	
+    
+    
 </dictionary>

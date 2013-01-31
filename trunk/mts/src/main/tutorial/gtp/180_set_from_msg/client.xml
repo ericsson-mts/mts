@@ -53,7 +53,7 @@
         <element tag="87" instances="1" description="Fully Qualified Tunnel Endpoint Identifier">
             <field name="V4" value="1"/>
             <field name="V6" value="1"/>
-            <field name="Interface Type" value="S5/S8 PGW GTP-U"/>
+            <field name="Interface Type" value="spare and reserved for future use:39"/>
             <field name="TEID / GRE Key" value="0" description="GRE?"/>
             <!-- TODO conditional IP V4 V6 -->
             <field name="IPv4 address" value="98.76.54.32"/>
@@ -62,8 +62,8 @@
         <element tag="71" description="Access Point Name">
         		<field name="APN01" value="stringstring01" description="Access Point Name"/>
             <field name="APN02" value="string02" description="Access Point Name"/>
-            <field name="APN03" value="str03" description="Access Point Name"/>                    		
-            <field name="APN04" value="04" description="Access Point Name"/>            
+            <field name="APN03" value="str03" description="Access Point Name"/>
+            <field name="APN04" value="04" description="Access Point Name"/>
         </element>
         <element tag="128" >
             <field name="spare" value="63"/>
@@ -118,7 +118,7 @@
         </element>
         <element tag="72" description="Aggregate Maximum Bit Rate">
             <field name="APN-AMBR for uplink" value="4294967295"/>
-            <field name="APN-AMBR for downlink" value="4294967295"/>        
+            <field name="APN-AMBR for downlink" value="4294967295"/>
         </element>        
         <element tag="78" description="Protocol Configuration Options">
         		<field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
@@ -176,5 +176,16 @@
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
     </receiveMessageGTP>
+
+    <parameter name="[Cause.Cause value]" operation="protocol.setFromMessage" value="element.Cause:2.field.Cause value"/>
+    <test parameter="[Cause.Cause value]" condition="string.equals" value="Spare:240"/>
+    <parameter name="[Cause.spare]" operation="protocol.setFromMessage" value="element.Cause:2.field.spare"/>
+    <test parameter="[Cause.spare]" condition="number.equals" value="31"/>
+    <parameter name="[Cause.PCE]" operation="protocol.setFromMessage" value="element.Cause:2.field.PCE"/>
+    <test parameter="[Cause.PCE]" condition="boolean.equals" value="false:0"/>
+    <parameter name="[Cause.BCE]" operation="protocol.setFromMessage" value="element.Cause:2.field.BCE"/>
+    <test parameter="[Cause.BCE]" condition="boolean.equals" value="true:1"/>
+    <parameter name="[Cause.CS]" operation="protocol.setFromMessage" value="element.Cause:2.field.CS"/>
+    <test parameter="[Cause.CS]" condition="boolean.equals" value="Originated by the node sending the message:0"/>
 
 </scenario>

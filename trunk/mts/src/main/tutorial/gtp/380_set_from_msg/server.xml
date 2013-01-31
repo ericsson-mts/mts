@@ -17,9 +17,9 @@
     <parameter name="[type]" operation="protocol.setFromMessage" value="header.type"/>
     <test parameter="[type]" condition="number.equals" value="240"/>
     <parameter name="[label]" operation="protocol.setFromMessage" value="header.label"/>
-    <test parameter="[label]" condition="string.equals" value="dataRecordTransferRequest"/>
+    <test parameter="[label]" condition="string.equals" value="Data Record Transfer Request"/>
     <parameter name="[name]" operation="protocol.setFromMessage" value="header.name"/>
-    <test parameter="[name]" condition="string.equals" value="dataRecordTransferRequest:240"/>
+    <test parameter="[name]" condition="string.equals" value="Data Record Transfer Request:240"/>
     <parameter name="[sequenceNumber]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     <test parameter="[sequenceNumber]" condition="number.equals" value="1"/>
 
@@ -49,7 +49,7 @@
     
     <sendMessageGTP name="send data record transfer response"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerPrime type="dataRecordTransferResponse" sequenceNumber="2"/>
+        <headerPrime type="Data Record Transfer Response" sequenceNumber="2"/>
         <element tag="cause" >
             <field name="cause" value="2"/>
         </element>        
@@ -71,7 +71,7 @@
     
     <sendMessageGTP name="send data record transfer response"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerPrime type="dataRecordTransferResponse:241" sequenceNumber="3"/>
+        <headerPrime type="Data Record Transfer Response:241" sequenceNumber="3"/>
         <element tag="cause" >
             <field name="cause" value="3"/>
         </element>        
