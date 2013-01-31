@@ -18,19 +18,129 @@
         <field name="TEID Flag" lengthBit="1" type="boolean"> </field>
         <field name="Spare1" lengthBit="3" type="integer"> </field>
         <field name="Message Type" lengthBit="8" type="enumeration">
-            <enum value="1" name="echoRequest" />
-            <enum value="2" name="echoResponse" />
-            <enum value="3" name="versionNotSupported" />
-            
-            <enum value="32" name="createSessionRequest" />
-            <enum value="33" name="createSessionResponse" />
-            
-            <enum value="36" name="deleteSessionRequest" />
-            <enum value="37" name="deleteSessionResponse" />
-            
-            <enum value="237-239" name="For future use" />
-            <enum value="240-247" name="Others" />
-            <enum value="248-255" name="For future use" />
+            <enum value="0" name="Reserved" />
+            <enum value="1" name="Echo Request" />
+            <enum value="2" name="Echo Response" />
+            <enum value="3" name="Version Not Supported Indication" />
+            <enum value="4 - 24" name="Reserved for S101 interface" />
+            <enum value="25 - 31" name="Reserved for Sv interface" />
+            <!--SGSN/MME/ TWAN/ePDG to PGW (S4/S11, S5/S8, S2a, S2b)-->
+            <enum value="32" name="Create Session Request" />
+            <enum value="33" name="Create Session Response" />
+            <enum value="36" name="Delete Session Request" />
+            <enum value="37" name="Delete Session Response" />
+            <!-- SGSN/MME/ePDG to PGW (S4/S11, S5/S8, S2b)-->
+            <enum value="34" name="Modify Bearer Request" />
+            <enum value="35" name="Modify Bearer Response" />
+            <!--SGSN/MME to PGW (S4/S11, S5/S8)-->
+            <enum value="38" name="Change Notification Request" />
+            <enum value="39" name="Change Notification Response" />
+            <enum value="40 - 63" name="For future use" />
+            <enum value="164" name="Resume Notification" />
+            <enum value="165" name="Resume Acknowledge" />
+            <!--Messages without explicit response" -->
+            <enum value="64" name="Modify Bearer Command" />
+            <!--(MME/SGSN/ TWAN/ePDG to PGW – S11/S4, S5/S8, S2a, S2b)-->
+            <enum value="65" name="Modify Bearer Failure Indication" />
+            <!--(PGW to MME/SGSN/ TWAN/ePDG – S5/S8, S11/S4, S2a, S2b)-->
+            <enum value="66" name="Delete Bearer Command" />
+            <!--(MME/SGSN to PGW – S11/S4, S5/S8)-->
+            <enum value="67" name="Delete Bearer Failure Indication" />
+            <!--(PGW to MME/SGSN – S5/S8, S11/S4))-->
+            <enum value="68" name="Bearer Resource Command" /> 
+            <!-- (MME/SGSN to PGW – S11/S4, S5/S8)-->
+            <enum value="69" name="Bearer Resource Failure Indication" /> 
+            <!--  (PGW to MME/SGSN – S5/S8, S11/S4) -->
+            <enum value="70" name="Downlink Data Notification Failure Indication" />
+            <!-- (SGSN/MME to SGW – S4/S11)-->
+            <enum value="71" name="Trace Session Activation" />
+            <!--(MME/SGSN/ TWAN/ePDG to PGW – S11/S4, S5/S8, S2a, S2b)-->
+            <enum value="72" name="Trace Session Deactivation" />
+            <!--(MME/SGSN/ TWAN/ePDG to PGW – S11/S4, S5/S8, S2a, S2b)-->
+            <enum value="73" name="Stop Paging Indication" />
+            <!--(SGW to MME/SGSN – S11/S4)-->
+            <enum value="74 - 94" name="For future use" />
+            <!--PGW to SGSN/MME/ TWAN/ePDG (S5/S8, S4/S11, S2a, S2b)-->
+            <enum value="95" name="Create Bearer Request" />
+            <enum value="96" name="Create Bearer Response" />
+            <enum value="97" name="Update Bearer Request" />
+            <enum value="98" name="Update Bearer Response" />
+            <enum value="99" name="Delete Bearer Request" />
+            <enum value="100" name="Delete Bearer Response" />
+            <!--PGW to MME, MME to PGW, SGW to PGW, SGW to MME, PGW to TWAN/ePDG, TWAN/ePDG to PGW (S5/S8, S11, S2a, S2b)-->
+            <enum value="101" name="Delete PDN Connection Set Request" />
+            <enum value="102" name="Delete PDN Connection Set Response" />
+            <!--  PGW to SGSN/MME(S5, S4/S11)-->
+            <enum value="103" name="PGW Downlink Triggering Notification" />
+            <enum value="104" name="PGW Downlink Triggering Acknowledge" />
+            <enum value="105 - 127" name="For future use" />
+            <!--MME to MME, SGSN to MME, MME to SGSN, SGSN to SGSN (S3/S10/S16)-->
+            <enum value="128" name="Identification Request" />
+            <enum value="129" name="Identification Response" />
+            <enum value="130" name="Context Request" />
+            <enum value="131" name="Context Response" />
+            <enum value="132" name="Context Acknowledge" />
+            <enum value="133" name="Forward Relocation Request" />
+            <enum value="134" name="Forward Relocation Response" />
+            <enum value="135" name="Forward Relocation Complete Notification" />
+            <enum value="136" name="Forward Relocation Complete Acknowledge" />
+            <enum value="137" name="Forward Access Context Notification" />
+            <enum value="138" name="Forward Access Context Acknowledge" />
+            <enum value="139" name="Relocation Cancel Request" />
+            <enum value="140" name="Relocation Cancel Response" />
+            <enum value="141" name="Configuration Transfer Tunnel" />
+            <enum value="142 - 148" name="For future use" />
+            <enum value="152" name="RAN Information Relay" />
+            <!--SGSN to MME, MME to SGSN (S3)-->
+            <enum value="149" name="Detach Notification" />
+            <enum value="150" name="Detach Acknowledge" />
+            <enum value="151" name="CS Paging Indication" />
+            <enum value="153" name="Alert MME Notification" />
+            <enum value="154" name="Alert MME Acknowledge" />
+            <enum value="155" name="UE Activity Notification" />
+            <enum value="156" name="UE Activity Acknowledge" />
+            <enum value="157" name="ISR Status Indication" />
+            <enum value="158 - 159" name="For future use" />
+            <!--SGSN/MME to SGW, SGSN to MME (S4/S11/S3) SGSN to SGSN (S16), SGW to PGW (S5/S8)-->
+            <enum value="162" name="Suspend Notification" />
+            <enum value="163" name="Suspend Acknowledge" />
+            <!--SGSN/MME to SGW (S4/S11)-->
+            <enum value="160" name="Create Forwarding Tunnel Request" />
+            <enum value="161" name="Create Forwarding Tunnel Response" />
+            <enum value="166" name="Create Indirect Data Forwarding Tunnel Request" />
+            <enum value="167" name="Create Indirect Data Forwarding Tunnel Response" />
+            <enum value="168" name="Delete Indirect Data Forwarding Tunnel Request" />
+            <enum value="169" name="Delete Indirect Data Forwarding Tunnel Response" />
+            <enum value="170" name="Release Access Bearers Request" />
+            <enum value="171" name="Release Access Bearers Response" />
+            <enum value="172 - 175" name="For future use" />
+            <!--SGW to SGSN/MME (S4/S11)-->
+            <enum value="176" name="Downlink Data Notification" />
+            <enum value="177" name="Downlink Data Notification Acknowledge" />
+            <enum value="179" name="PGW Restart Notification" />
+            <enum value="180" name="PGW Restart Notification Acknowledge" />
+            <!--SGW to SGSN (S4)-->
+            <enum value="178" name="Reserved. Allocated in earlier version of the specification." />
+            <enum value="181 - 199" name="For future use" />
+            <!--SGW to PGW, PGW to SGW (S5/S8)-->
+            <enum value="200" name="Update PDN Connection Set Request" />
+            <enum value="201" name="Update PDN Connection Set Response" />
+            <enum value="202 - 210" name="For future use" />
+            <!--MME to SGW (S11)-->
+            <enum value="211" name="Modify Access Bearers Request" />
+            <enum value="212" name="Modify Access Bearers Response" />
+            <enum value="213 - 230" name="For future use" />
+            <!-- MBMS GW to MME/SGSN (Sm/Sn) -->
+            <enum value="231" name="MBMS Session Start Request" />
+            <enum value="232" name="MBMS Session Start Response" />
+            <enum value="233" name="MBMS Session Update Request" />
+            <enum value="234" name="MBMS Session Update Response" />
+            <enum value="235" name="MBMS Session Stop Request" />
+            <enum value="236" name="MBMS Session Stop Response" />
+            <enum value="237 - 239" name="For future use" />
+            <enum value="240 - 247" name="Reserved for Sv interface" />
+            <!-- Other -->
+            <enum value="248 - 255" name="For future use" />
         </field>
         <field name="Message Length" lengthBit="16" type="integer"> </field>
         <field name="Tunnel Endpoint Identifier" lengthBit="32" type="integer"> </field>
