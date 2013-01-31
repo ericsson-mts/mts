@@ -33,6 +33,7 @@ import gp.utils.arrays.SupArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -59,20 +60,22 @@ public class EnumerationField extends IntegerField
         for (Element elemEnum : list) 
         {
         	String valueStr = elemEnum.attributeValue("value");
+        	String nameStr = elemEnum.attributeValue("name");
         	int iPos = valueStr.indexOf('-');
         	if (iPos >= 0)
         	{
         		String beginStr = valueStr.substring(0, iPos);
         		String endStr = valueStr.substring(iPos + 1);
-        		EnumRange enumRange = new EnumRange(beginStr, endStr);
-        		ranges.add(enumRange);
+        		EnumRange range = new EnumRange(beginStr, endStr, nameStr);
+        		ranges.add(range);
+	            this.valuesByLabel.put(nameStr, range.getBegin());
         	}
         	else
         	{
 	        	byte[] valueBytes = Utils.parseBinaryString(valueStr);
 	        	int value = (int) valueBytes[0] & 0xFF;
-	            this.valuesByLabel.put(elemEnum.attributeValue("name"), value);
-	            this.labelsByValue.put(value, elemEnum.attributeValue("name"));
+	            this.valuesByLabel.put(nameStr, value);
+	            this.labelsByValue.put(value, nameStr);
         	}
         }
 
@@ -90,7 +93,7 @@ public class EnumerationField extends IntegerField
     public String getValue(Array array) throws Exception 
     {
         String value = super.getValue(array);
-    	String name = this.labelsByValue.get(new Integer(value));
+    	String name = getEnumLabelByValue(new Integer(value));
     	String ret = "";
     	if (name != null)
     	{
@@ -107,7 +110,21 @@ public class EnumerationField extends IntegerField
 
     public String getEnumLabelByValue(Integer value) 
     {
-        return this.labelsByValue.get(value);
+    	String found = this.labelsByValue.get(value);
+    	if (found != null)
+    	{
+    		return found;
+    	}
+		Iterator<EnumRange> iter = ranges.iterator();
+	    while (iter.hasNext())
+	    {
+	    	EnumRange range = (EnumRange) iter.next();
+	    	if (range.isEnclosedInto(value))
+	    	{
+	    		return range.getName();
+	    	}
+	    }
+        return null;
     }
     
     public Integer getEnumValue(String text) throws Exception
@@ -125,7 +142,7 @@ public class EnumerationField extends IntegerField
     	try
     	{
     		int val = Integer.parseInt(value);
-   			if (!label.equalsIgnoreCase(this.labelsByValue.get(val)) && !label.equals(text))
+   			if (!label.equalsIgnoreCase(getEnumLabelByValue(val)) && !label.equals(text))
    			{
    				GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "For the enumeration field \"" + this._name + "\", the value \"" + value + "\"  does not match the label \"" + label + "\"");
    			}    		
