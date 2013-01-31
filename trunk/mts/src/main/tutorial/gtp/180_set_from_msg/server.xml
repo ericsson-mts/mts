@@ -20,9 +20,9 @@
     <parameter name="[type]" operation="protocol.setFromMessage" value="header.type"/>
     <test parameter="[type]" condition="number.equals" value="32"/>
     <parameter name="[label]" operation="protocol.setFromMessage" value="header.label"/>
-    <test parameter="[label]" condition="string.equals" value="createSessionRequest"/>
+    <test parameter="[label]" condition="string.equals" value="Create Session Request"/>
     <parameter name="[name]" operation="protocol.setFromMessage" value="header.name"/>
-      <test parameter="[name]" condition="string.equals" value="createSessionRequest:32"/>
+      <test parameter="[name]" condition="string.equals" value="Create Session Request:32"/>
     <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
     <test parameter="[tunnelEndpointId]" condition="number.equals" value="4294967295"/>
     <parameter name="[sequenceNumber]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
@@ -361,7 +361,7 @@
 
     <sendMessageGTP name="send message"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 type="createSessionResponse:33" piggyFlag="0" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
+        <headerV2 type="Create Session Response" piggyFlag="0" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
         <element tag="Cause" >
             <field name="Cause value" value="Spare"/>
             <field name="spare" value="31"/>
