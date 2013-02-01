@@ -45,14 +45,14 @@ public class BooleanField extends FieldAbstract
     public BooleanField(Element rootXML) 
     {
         super(rootXML);
-        this._length = 1;
+        this.length = 1;
     }
 
     @Override
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
-    	this._offset = offset;
-    	boolean bool = Utils.parseBoolean(value, this._name);
+    	this.offset = offset;
+    	boolean bool = Utils.parseBoolean(value, this.name);
     	if (bool)
     	{
     		array.setBit(offset, 1);
@@ -66,7 +66,7 @@ public class BooleanField extends FieldAbstract
     @Override
     public String getValue(Array array) throws Exception 
     {
-        return Integer.toString(array.getBits(this._offset, this._length));
+        return Integer.toString(array.getBits(this.offset, this.length));
     }
     
     @Override

@@ -53,7 +53,7 @@ public class Length2StringField extends FieldAbstract
     @Override
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
-    	this._offset = offset;
+    	this.offset = offset;
         array.addLast(new Integer16Array(value.length()));
         Array valueArray = new DefaultArray(value.getBytes());
         array.addLast(valueArray);
@@ -62,8 +62,8 @@ public class Length2StringField extends FieldAbstract
     @Override
     public String getValue(Array array) throws Exception 
     {
-    	int length = array.getBits(this._offset, 16);
-    	Array arrayValue = array.subArray(this._offset / 8 + 2, length);
+    	int length = array.getBits(this.offset, 16);
+    	Array arrayValue = array.subArray(this.offset / 8 + 2, length);
         return new String(arrayValue.getBytes());
     }
     @Override

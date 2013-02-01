@@ -45,15 +45,15 @@ public class BinaryField extends FieldAbstract
     public BinaryField(Element rootXML) throws Exception 
     {
         super(rootXML);
-        if (this._length % 8 != 0) {
-            throw new ExecutionException("Wrong length for binary field : \"" + this._name + "\"");
+        if (this.length % 8 != 0) {
+            throw new ExecutionException("Wrong length for binary field : \"" + this.name + "\"");
         }
     }
 
     @Override
     public void setValue(String value, int offset, SupArray array) 
     {
-    	this._offset = offset;    	
+    	this.offset = offset;    	
         Array valueArray = Array.fromHexString(value);
         array.addLast(valueArray);
     }
@@ -61,7 +61,7 @@ public class BinaryField extends FieldAbstract
     @Override
     public String getValue(Array array) 
     {
-    	Array arrayValue = array.subArray(this._offset / 8);
+    	Array arrayValue = array.subArray(this.offset / 8);
     	return Array.toHexString(arrayValue);
     }
     

@@ -47,13 +47,13 @@ public class IPV6AddressField extends FieldAbstract
 	public IPV6AddressField(Element rootXML) 
     {
         super(rootXML);
-        this._length = 16 * 8;
+        this.length = 16 * 8;
     }
 
     @Override
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
-    	this._offset = offset;
+    	this.offset = offset;
     	InetAddress inetAddr = InetAddress.getByName(value);
     	byte[] bytes = inetAddr.getAddress();
     	for (int i = 0; i < 16; i++)
@@ -66,7 +66,7 @@ public class IPV6AddressField extends FieldAbstract
     @Override
     public String getValue(Array array) throws Exception 
     {
-    	int pos = this._offset / 8;
+    	int pos = this.offset / 8;
     	byte[] bytes = new byte[16];
     	array.getBytes(pos, bytes, 0, 16);
     	InetAddress inetAddr = InetAddress.getByAddress(bytes);
