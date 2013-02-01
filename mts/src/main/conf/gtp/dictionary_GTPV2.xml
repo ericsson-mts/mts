@@ -246,16 +246,16 @@
     </element>
     
     <element tag="APN:71" coding="TLIV" description="Access Point Name">
-    		<field name="APN01" type="length_string" description="Access Point Name"/>
-    		<field name="APN02" type="length_string" description="Access Point Name"/>
-    		<field name="APN03" type="length_string" description="Access Point Name"/>
-    		<field name="APN04" type="length_string" description="Access Point Name"/>
-    		<!--field name="APN05" type="length_string" description="Access Point Name"/-->
-    		<!--field name="APN06" type="length_string" description="Access Point Name"/-->
+        <field name="APN01" type="length_string" description="Access Point Name"/>
+        <field name="APN02" type="length_string" description="Access Point Name"/>
+        <field name="APN03" type="length_string" description="Access Point Name"/>
+        <field name="APN04" type="length_string" description="Access Point Name"/>
+        <!--field name="APN05" type="length_string" description="Access Point Name"/-->
+        <!--field name="APN06" type="length_string" description="Access Point Name"/-->
         <!--field name="APN07" type="length_string" description="Access Point Name"/-->
-    		<!--field name="APN08" type="length_string" description="Access Point Name"/-->
-    		<!--field name="APN09" type="length_string" description="Access Point Name"/-->
-    		<!--field name="APN10" type="length_string" description="Access Point Name"/-->
+        <!--field name="APN08" type="length_string" description="Access Point Name"/-->
+        <!--field name="APN09" type="length_string" description="Access Point Name"/-->
+        <!--field name="APN10" type="length_string" description="Access Point Name"/-->
     </element>
     
     <element tag="AMBR:72" coding="TLIV" description="Aggregate Maximum Bit Rate">
@@ -266,6 +266,11 @@
     <element tag="EBI:73" coding="TLIV" description="EPS Bearer ID">
         <field name="spare" lengthBit="4" type="integer"/>
         <field name="EBI" lengthBit="4" type="integer" description="EPS Bearer ID"/>
+    </element>
+    
+    <element tag="IP Address:74" coding="TLIV">
+        <field name="IPv6 address" lengthBit="128" type="ipv6_address"/>  <!-- if length == 20 -->
+        <field name="IPv4 address" lengthBit="32" type="ipv4_address"/>   <!-- if length == 8 -->
     </element>
     
     <element tag="MEI:75" coding="TLIV" description="Mobile Equipment Identity">
@@ -309,8 +314,9 @@
         <field name="CPSR" lengthBit="1" type="boolean" description="CS to PS SRVCC indication"/>
     </element>
     
+    <!-- TODO complex element see TS 24008 -->
     <element tag="PCO:78" coding="TLIV" description="Protocol Configuration Options">
-    		<field name="PCO" type="binary" description="Protocol Configuration Options"/>
+        <field name="PCO" type="binary" description="Protocol Configuration Options"/>
     </element>
      
     <!-- conditional fields -->
@@ -367,7 +373,7 @@
         <field name="RAI" lengthBit="1" type="boolean"/>
         <field name="SAI" lengthBit="1" type="boolean"/>
         <field name="CGI" lengthBit="1" type="boolean"/>
-        <!-- Add other conditional fields -->
+        <!-- TODO Add other conditional fields -->
         <field name="TAI_MMC1" type="number_mmc"/>                            <!--if TAI == true-->
         <field name="TAI_Tracking Area Code" lengthBit="16" type="integer"/>  <!--if TAI == true-->
         <field name="ECGI_MMC2" type="number_mmc"/>                 <!--if ECGI == true-->
@@ -441,7 +447,7 @@
         <field name="Charging Characteristics value" lengthBit="16" type="integer"/>   
     </element>
     
-    <!-- TODO complex element see TS32422 -->
+    <!-- TODO complex element see TS 32422 -->
     <!--element tag="Trace Information:96">
         <field name="" ../>
     </element-->
@@ -465,6 +471,10 @@
             <enum value="2" name="+2 hours adjustment for Daylight Saving Time"/>
             <enum value="3" name="Spare"/>
         </field>
+    </element>
+    
+    <element tag="Port Number:126" coding="TLIV">
+        <field name="Port Number" lengthBit="16" type="integer"/>
     </element>
     
     <element tag="APN Restriction:127" coding="TLIV">
@@ -525,9 +535,33 @@
         </field>
     </element>
     
-    <element tag="privateExtension:255" coding="TLIV">
-        <field name="extensionIdentifier" lengthBit="16" type="integer"/>
-        <field name="extensionValue" type="string"/>
+    <element tag="LDN:151" coding="TLIV" description="MME/S4-SGSN LDN">
+        <field name="LDN" type="string" description="Local Distinguished Name"/>
+    </element>
+    
+    <element tag="Signalling Priority Indication:157" coding="TLIV">
+        <field name="spare1" lengthBit="7" type="integer"/>
+        <field name="LAPI" type="boolean" description="Low Access Priority Indication"/>
+    </element>
+    
+    <!-- TODO complex element see TS 29275 -->
+    <element tag="APCO:163" coding="TLIV" description="Additional Protocol Configuration Options ">
+        <field name="APCO" type="binary" description="Additional Protocol Configuration Options "/>
+    </element>
+    
+    <!-- conditional fields -->
+    <element tag="TWAN Identifier:169" coding="TLIV" >
+        <field name="spare1" lengthBit="6" type="integer"/>
+        <field name="BSSIDI" lengthBit="1" type="boolean" description="BSSID Indicator"/>
+        <field name="SSIDI" lengthBit="1" type="boolean" description="SSID Indicator"/>
+        <field name="BSSID" lengthBit="40" type="binary"/>        <!-- if BSSIDI == true -->
+        <field name="SSID Length" lengthBit="8" type="integer"/>  <!-- if SSIDI == true -->
+        <field name="SSID" type="binary"/>                        <!-- if SSIDI == true -->
+    </element>
+    
+    <element tag="Private Extension:255" coding="TLIV">
+        <field name="Enterprise ID" lengthBit="16" type="integer"/>
+        <field name="Proprietary value" type="string"/>
     </element>
     
     
