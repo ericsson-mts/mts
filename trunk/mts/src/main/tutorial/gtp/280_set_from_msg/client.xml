@@ -8,7 +8,7 @@
         <headerV1 type="1" tunnelEndpointId="1234567890" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
     </sendMessageGTP>
 
-    <receiveMessageGTP name="echoResponse">
+    <receiveMessageGTP name="echoResponse" request="false" type="1" result="2">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/> 
     </receiveMessageGTP>
@@ -34,7 +34,7 @@
         <headerV1 type="Echo Request" tunnelEndpointId="1234567890" sequenceNumber="2" nPduNumber="2" nextExtensionType="0"/>
     </sendMessageGTP>
 
-    <receiveMessageGTP name="version not supported">
+    <receiveMessageGTP name="version not supported"  request="false" type="Echo Request" result="Version Not Supported">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>    

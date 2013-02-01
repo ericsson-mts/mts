@@ -162,31 +162,6 @@ public class MsgGtp extends Msg
         return null;
     }
 
-    /** Returns a short description of the message. Used for logging as INFO level */
-    /** This methods HAS TO be quick to execute for performance reason */
-    @Override
-    public String toShortString() throws Exception 
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(super.toShortString());
-        /*
-        if(message.getLogError().length() != 0)
-        {
-            stringBuilder.append("<MESSAGE MALFORMED name= \"" + message.getHeader().getName() + "\"");
-        }
-        else
-        {
-            stringBuilder.append("<MESSAGE name= \"" + message.getHeader().getName() + "\"");
-        }
-
-        stringBuilder.append(" length=\"" + message.getHeader().getLength() + "\"");
-        stringBuilder.append(" type=\"" + Integer.toHexString(message.getHeader().getMessageType()) + "\"");
-        stringBuilder.append(" sequenceNumber=\"" + message.getHeader().getSequenceNumber() + "\"/>");
-        return stringBuilder.toString();
-        */
-        return null;
-    }
-
     /** Get the XML representation of the message; for the genscript module. */
     @Override
     public String toXml() throws Exception {

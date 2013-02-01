@@ -3,7 +3,7 @@
 <!-- scenario server-->
 <scenario>
 
-    <receiveMessageGTP name="receive message">
+    <receiveMessageGTP name="receive message" request="true" type="Echo Request:1" >
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
@@ -22,7 +22,7 @@
         </element>
     </sendMessageGTP>
 
-    <receiveMessageGTP name="receive message">
+    <receiveMessageGTP name="receive message" request="true" type="Echo Request:1" >
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
@@ -35,7 +35,7 @@
     
     <sendMessageGTP name="send message"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 type="Version Not Supported:3" sequenceNumber="[seqNum]"/> 
+        <headerV2 type="Version Not Supported Indication:3" sequenceNumber="[seqNum]"/> 
     </sendMessageGTP>
 
 </scenario>

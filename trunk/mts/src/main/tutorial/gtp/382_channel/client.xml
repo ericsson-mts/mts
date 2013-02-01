@@ -9,7 +9,7 @@
         <headerPrime type="echoRequest:1" sequenceNumber="1"/>
     </sendMessageGTP>
 
-    <receiveMessageGTP name="echoResponse">
+    <receiveMessageGTP name="echoResponse" request="false" type="Echo Request:1" result="Echo Response:2">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>    
@@ -21,7 +21,7 @@
         <headerPrime type="echoRequest:1" sequenceNumber="2"/>
     </sendMessageGTP>
 
-    <receiveMessageGTP name="version not supported">
+    <receiveMessageGTP name="version not supported" channel="channel" type="Echo Request:1" result="Version Not Supported:3">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>

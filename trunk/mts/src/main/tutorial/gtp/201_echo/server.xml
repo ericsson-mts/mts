@@ -3,7 +3,7 @@
 <!-- scenario server-->
 <scenario>
 
-    <receiveMessageGTP name="echo request">
+    <receiveMessageGTP name="echo request" request="true" type="Echo Request:1" >
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
         <parameter name="[teId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
@@ -24,7 +24,7 @@
         </element>
     </sendMessageGTP>
 
-    <receiveMessageGTP name="echo request">
+    <receiveMessageGTP name="echo request" request="true" type="Echo Request:1" >
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[teId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
