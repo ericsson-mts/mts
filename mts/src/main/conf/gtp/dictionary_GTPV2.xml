@@ -242,7 +242,7 @@
     </element>
 
     <element tag="Recovery:3" coding="TLIV">
-		    <field name="Recovery" lengthBit="8" type="integer"/>
+        <field name="Recovery" lengthBit="8" type="integer"/>
     </element>
     
     <element tag="APN:71" coding="TLIV" description="Access Point Name">
@@ -252,15 +252,15 @@
     		<field name="APN04" type="length_string" description="Access Point Name"/>
     		<!--field name="APN05" type="length_string" description="Access Point Name"/-->
     		<!--field name="APN06" type="length_string" description="Access Point Name"/-->
-        <!--field name="APN07" type="length_string" description="Access Point Name"/-->    		
+        <!--field name="APN07" type="length_string" description="Access Point Name"/-->
     		<!--field name="APN08" type="length_string" description="Access Point Name"/-->
     		<!--field name="APN09" type="length_string" description="Access Point Name"/-->
-    		<!--field name="APN10" type="length_string" description="Access Point Name"/-->                            		
+    		<!--field name="APN10" type="length_string" description="Access Point Name"/-->
     </element>
     
     <element tag="AMBR:72" coding="TLIV" description="Aggregate Maximum Bit Rate">
         <field name="APN-AMBR for uplink" lengthBit="32" type="integer"/>
-        <field name="APN-AMBR for downlink" lengthBit="32" type="integer"/>        
+        <field name="APN-AMBR for downlink" lengthBit="32" type="integer"/>
     </element>
 
     <element tag="EBI:73" coding="TLIV" description="EPS Bearer ID">
@@ -313,7 +313,8 @@
     		<field name="PCO" type="binary" description="Protocol Configuration Options"/>
     </element>
      
-   <element tag="PAA:79" coding="TLIV" description="PDN Address Allocation">
+    <!-- conditional fields -->
+    <element tag="PAA:79" coding="TLIV" description="PDN Address Allocation">
         <field name="spare" lengthBit="5" type="integer"/>
         <field name="PDN Type" lengthBit="3" type="enumeration">
             <enum value="1" name="IPv4"/>
@@ -321,10 +322,9 @@
             <enum value="3" name="IPv4v6"/>
             <enum value="0" name="reserved"/>
         </field>
-        <!-- TODO condiditional -->
-        <field name="IPv6 prefix length" lengthBit="8" type="integer"/>
-        <field name="IPv6 address" lengthBit="128" type="ipv6_address"/>
-        <field name="IPv4 address" lengthBit="32" type="ipv4_address"/>
+        <field name="IPv6 prefix length" lengthBit="8" type="integer"/>   <!-- if PDN Type == 2 or 3 -->
+        <field name="IPv6 address" lengthBit="128" type="ipv6_address"/>  <!-- if PDN Type == 2 or 3 -->
+        <field name="IPv4 address" lengthBit="32" type="ipv4_address"/>   <!-- if PDN Type == 1 -->
     </element>
     
     <element tag="Bearer QoS:80" coding="TLIV" description="Bearer Quality of Service">
@@ -358,6 +358,7 @@
         <field name="MMC" type="number_mmc"/>
     </element>
     
+    <!-- conditional fields -->
     <element tag="ULI:86" coding="TLIV" description="User Location Information">
         <field name="spare1" lengthBit="2" type="integer"/>
         <field name="LAI" lengthBit="1" type="boolean"/>        
@@ -366,16 +367,17 @@
         <field name="RAI" lengthBit="1" type="boolean"/>
         <field name="SAI" lengthBit="1" type="boolean"/>
         <field name="CGI" lengthBit="1" type="boolean"/>
-        <!-- TODO conditional field-->
-        <field name="TAI_MMC1" type="number_mmc"/>
-        <field name="TAI_Tracking Area Code" lengthBit="16" type="integer"/>
-        <field name="ECGI_MMC2" type="number_mmc"/>
-        <field name="ECGI_spare2" lengthBit="4" type="integer"/>
-        <field name="ECGI_ECI" lengthBit="28" type="integer"/>
+        <!-- Add other conditional fields -->
+        <field name="TAI_MMC1" type="number_mmc"/>                            <!--if TAI == true-->
+        <field name="TAI_Tracking Area Code" lengthBit="16" type="integer"/>  <!--if TAI == true-->
+        <field name="ECGI_MMC2" type="number_mmc"/>                 <!--if ECGI == true-->
+        <field name="ECGI_spare2" lengthBit="4" type="integer"/>    <!--if ECGI == true-->
+        <field name="ECGI_ECI" lengthBit="28" type="integer"/>      <!--if ECGI == true-->
     </element>        
 
+    <!-- conditional fields -->
     <element tag="F-TEID:87" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
-        <field name="V4" lengthBit="1" type="boolean"/>        
+        <field name="V4" lengthBit="1" type="boolean"/>
         <field name="V6" lengthBit="1" type="boolean"/>
         <field name="Interface Type" lengthBit="6" type="enumeration">
             <enum value="0" name="S1-U eNodeB"/>
@@ -419,9 +421,8 @@
             <enum value="38-63" name="spare and reserved for future use"/>
         </field>
         <field name="TEID / GRE Key" lengthBit="32" type="integer" description="GRE key ?"/>
-        <!-- TODO conditional IP V4 V6 -->      
-        <field name="IPv4 address" type="ipv4_address"/>
-        <field name="IPv6 address" type="ipv6_address"/>
+        <field name="IPv4 address" type="ipv4_address"/>  <!-- if V4 == true -->
+        <field name="IPv6 address" type="ipv6_address"/>  <!-- if V6 == true -->
     </element>
 
     <element tag="Bearer Context:93" coding="TLIV">
@@ -440,6 +441,11 @@
         <field name="Charging Characteristics value" lengthBit="16" type="integer"/>   
     </element>
     
+    <!-- TODO complex element see TS32422 -->
+    <!--element tag="Trace Information:96">
+        <field name="" ../>
+    </element-->
+
     <element tag="PDN Type:99" coding="TLIV">
         <field name="spare" lengthBit="5" type="integer"/>
         <field name="PDN Type" lengthBit="3" type="enumeration">
@@ -481,11 +487,48 @@
             <enum value="3" name="For future use." description="Shall not be sent. If received, shall be interpreted as the value &quot;2&quot;.\" />
         </field>
     </element>
-                
-	  <element tag="privateExtension:255" coding="TLIV">
-		    <field name="extensionIdentifier" lengthBit="16" type="integer"/>
+    
+    <!-- conditional fields -->
+    <element tag="FQ-CSID:132" coding="TLIV" description="Fully qualified PDN Connection Set Identifier ">
+        <field name="Node-ID Type" lengthBit="4" type="enumeration">
+            <enum value="0" name="Global unicast IPv4"/>
+            <enum value="1" name="Global unicast IPv6"/>
+            <enum value="2" name="MCC/MNC operator"/>
+            <enum value="3-15" name="reserved"/>
+        </field>
+        <field name="Number of CSIDs" lengthBit="4" type="integer"/>
+        <field name="Node-ID ipv4" type="ipv4_address"/>     <!-- if Node-ID == 0 -->
+        <field name="Node-ID ipv6" type="ipv6_address"/>     <!-- if Node-ID == 1 -->
+        <field name="Node-ID MCC/MNC" lengthBit="20" type="integer"/>  <!-- if Node-ID == 2 -->
+        <field name="Node-ID operator" lengthBit="20" type="integer"/>  <!-- if Node-ID == 2 -->
+        <field name="ICSID01" lengthBit="16" type="integer" description="PDN Connection Set Identifier "/>
+        <field name="ICSID02" lengthBit="16" type="integer" description="PDN Connection Set Identifier "/>
+        <field name="ICSID03" lengthBit="16" type="integer" description="PDN Connection Set Identifier "/>*
+        <field name="ICSID04" lengthBit="16" type="integer" description="PDN Connection Set Identifier "/>
+        <field name="ICSID05" lengthBit="16" type="integer" description="PDN Connection Set Identifier "/>
+    </element>
+    
+    <element tag="UCI:145" coding="TLIV" description="User CSG Information">
+        <field name="MMC" type="number_mmc"/>
+        <field name="spare1" lengthBit="5" type="integer"/>
+        <field name="CSG ID" lengthBit="27" type="integer"/>
+        <field name="Access mode" lengthBit="2" type="enumeration">
+            <enum value="0" name="Closed Mode"/>
+            <enum value="1" name="Hybrid Mode"/>
+            <enum value="2-3" name="Reserved"/>
+        </field>
+        <field name="spare2" lengthBit="4" type="integer"/>
+        <field name="LCSG" lengthBit="1" type="boolean" description="UE leaves CSG cell/Hybrid cell"/>
+        <field name="CMI" lengthBit="1" type="enumeration">
+            <enum value="0" name="Non CSG membership"/>
+            <enum value="1" name="CSG membership"/>
+        </field>
+    </element>
+    
+    <element tag="privateExtension:255" coding="TLIV">
+        <field name="extensionIdentifier" lengthBit="16" type="integer"/>
         <field name="extensionValue" type="string"/>
-	  </element>
+    </element>
     
     
 </dictionary>
