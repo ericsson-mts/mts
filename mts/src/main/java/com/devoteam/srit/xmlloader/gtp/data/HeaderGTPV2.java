@@ -58,14 +58,15 @@ public class HeaderGTPV2 extends HeaderAbstract
 	
     public HeaderGTPV2()
 	{
-    	this.syntax = "GTPV2";
+    	this.syntax = "V2";
     	this.version = 2;
 	}
 	
     public HeaderGTPV2(Array beginArray)
 	{
-    	this.syntax = "GTPV2";
-    	this.version = 2;
+    	this();
+        this.version = beginArray.getBits(0,3);
+        
     	this.piggyFlag = beginArray.getBits(3, 1);
     	this.teidFlag = beginArray.getBits(4, 1);
     	

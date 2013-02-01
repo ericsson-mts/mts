@@ -61,7 +61,7 @@ public class Dictionary
             {
             	elemInfo = ElementAbstract.buildFactory("Q931");
             }
-            else if (syntax.contains("GTP"))
+            else
             {
             	String coding = elem.attributeValue("coding");
             	elemInfo = ElementAbstract.buildFactory(coding);
