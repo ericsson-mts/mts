@@ -102,7 +102,7 @@
         </element>
     </sendMessageGTP>
 
-    <receiveMessageGTP name="receive message">
+    <receiveMessageGTP name="receive message" request="false" type="Create Session Request:32" result="Request accepted:16">
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
         <parameter name="[TEID / GRE Key]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.TEID / GRE Key"/>                   
@@ -155,7 +155,7 @@
         </element>
     </sendMessageGTP>
 
-    <receiveMessageGTP name="receive message">
+    <receiveMessageGTP name="receive message" request="false" type="Delete Session Request:36" result="Request accepted:16">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>             

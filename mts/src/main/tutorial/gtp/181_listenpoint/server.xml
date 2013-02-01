@@ -6,7 +6,7 @@
     <createListenpointGTP name="listenpoint" localPort="[listenPort]"/> 
     <parameter name="[testcase:listenpointCreated]" operation="system.semaphorenotify" />
 
-    <receiveMessageGTP name="receive message" listenpoint="listenpoint">
+    <receiveMessageGTP name="receive message" listenpoint="listenpoint" request="true" type="Echo Request:1" >
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
@@ -22,7 +22,7 @@
         </element>
     </sendMessageGTP>
 
-    <receiveMessageGTP name="receive message" listenpoint="listenpoint">
+    <receiveMessageGTP name="receive message" listenpoint="listenpoint" request="true" type="Echo Request:1" >
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
