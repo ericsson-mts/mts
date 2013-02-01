@@ -48,11 +48,11 @@ public class ElementQ931Big extends ElementAbstract
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
 	{
         this.tag = new Integer08Array(array.subArray(0, 1)).getValue();
-        if (this._hashMapFields.size() >= 1)
+        if (this.fieldsByName.size() >= 1)
         {
         	int length = new Integer16Array(array.subArray(1, 2)).getValue();
-            this._fields = new SupArray();
-            this._fields.addFirst(array.subArray(3, length));
+            this.fieldsArray = new SupArray();
+            this.fieldsArray.addFirst(array.subArray(3, length));
             return length + 3;
         }
         
@@ -66,15 +66,15 @@ public class ElementQ931Big extends ElementAbstract
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.tag);
         sup.addLast(idArray);
-        if (this._fields != null)
+        if (this.fieldsArray != null)
         {
-		    Integer16Array length16 = new Integer16Array(this._fields.length);
+		    Integer16Array length16 = new Integer16Array(this.fieldsArray.length);
 		    if (length16.getValue() != 0)
 		    {
 		    	sup.addLast(length16);
 		    }
 		    
-		    sup.addLast(this._fields);
+		    sup.addLast(this.fieldsArray);
         }
         
         return sup;

@@ -50,21 +50,21 @@ public class IntegerField extends FieldAbstract
     @Override
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
-    	this._offset = offset;
+    	this.offset = offset;
         try
         {
-        	array.setBitsL(offset, this._length, Long.parseLong(value));
+        	array.setBitsL(offset, this.length, Long.parseLong(value));
 	    }
         catch(Exception e)
         {
-        	throw new ExecutionException("The value \"" + value + "\" for the integer field : \"" + this._name + "\" is not valid.", e);            	            	
+        	throw new ExecutionException("The value \"" + value + "\" for the integer field : \"" + this.name + "\" is not valid.", e);            	            	
         }
     }
     
     @Override
     public String getValue(Array array) throws Exception 
     {
-    	long valueLong = array.getBitsL(this._offset, this._length);
+    	long valueLong = array.getBitsL(this.offset, this.length);
     	return Long.toString(valueLong);
     }
     

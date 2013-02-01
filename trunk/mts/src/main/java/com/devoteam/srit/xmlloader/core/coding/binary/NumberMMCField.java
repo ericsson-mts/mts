@@ -46,31 +46,31 @@ public class NumberMMCField extends FieldAbstract
     public NumberMMCField(Element rootXML) 
     {
         super(rootXML);
-        this._length = 3 * 8;
+        this.length = 3 * 8;
     }
 
     @Override
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
-    	this._offset = offset;
+    	this.offset = offset;
 
     	int pos = value.indexOf(",");
     	if (pos < 0)
     	{
-    		throw new ExecutionException("The value \"" + value + "\" for the mumber MMC field : \"" + this._name + "\" is not valid : format = [MCC],[MNC]");
+    		throw new ExecutionException("The value \"" + value + "\" for the mumber MMC field : \"" + this.name + "\" is not valid : format = [MCC],[MNC]");
     	}
 
     	// process the MCC digits
     	String mcc = value.substring(0, pos).trim();
     	if (mcc.length() != 3)
     	{
-    		throw new ExecutionException("The value \"" + value + "\" for the mumber MMC field : \"" + this._name + "\" is not valid : [MCC] should have [3..3] characters");
+    		throw new ExecutionException("The value \"" + value + "\" for the mumber MMC field : \"" + this.name + "\" is not valid : [MCC] should have [3..3] characters");
     	}    	
     	// process the MNC digits
     	String mnc = value.substring(pos + 1).trim();
     	if (mnc.length() < 2 || mnc.length() > 3)
     	{
-    		throw new ExecutionException("The value \"" + value + "\" for the mumber MMC field : \"" +this._name + "\" is not valid : [MNC] should have [2..3] characters");
+    		throw new ExecutionException("The value \"" + value + "\" for the mumber MMC field : \"" +this.name + "\" is not valid : [MNC] should have [2..3] characters");
     	}    		
     	
     	String mmc; 
@@ -101,7 +101,7 @@ public class NumberMMCField extends FieldAbstract
     public String getValue(Array array) throws Exception 
     {
     	// get the bits
-    	Array arrayValue = array.subArray(this._offset / 8, 3);
+    	Array arrayValue = array.subArray(this.offset / 8, 3);
     	String string = Array.toHexString(arrayValue);
     	
     	// permute the octet 2 a 2

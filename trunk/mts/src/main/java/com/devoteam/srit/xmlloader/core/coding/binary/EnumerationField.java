@@ -84,9 +84,9 @@ public class EnumerationField extends IntegerField
     @Override
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
-    	this._offset = offset;
+    	this.offset = offset;
         Integer integerValue = this.getEnumValue(value);
-        array.setBits(offset, this._length, integerValue.byteValue() & 0xff);
+        array.setBits(offset, this.length, integerValue.byteValue() & 0xff);
     }
     
     @Override
@@ -144,7 +144,7 @@ public class EnumerationField extends IntegerField
     		int val = Integer.parseInt(value);
    			if (!label.equalsIgnoreCase(getEnumLabelByValue(val)) && !label.equals(text))
    			{
-   				GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "For the enumeration field \"" + this._name + "\", the value \"" + value + "\"  does not match the label \"" + label + "\"");
+   				GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "For the enumeration field \"" + this.name + "\", the value \"" + value + "\"  does not match the label \"" + label + "\"");
    			}    		
     		return (Integer) val;
     	}
@@ -153,7 +153,7 @@ public class EnumerationField extends IntegerField
     		Integer val = this.valuesByLabel.get(value);
 	        if (val == null)
 	        {
-	        	throw new ExecutionException("For the enumeration field \"" + this._name + "\", the value \"" + value + "\" is not numeric or valid according to the dictionary.");
+	        	throw new ExecutionException("For the enumeration field \"" + this.name + "\", the value \"" + value + "\" is not numeric or valid according to the dictionary.");
 	        }
 
     		return val;

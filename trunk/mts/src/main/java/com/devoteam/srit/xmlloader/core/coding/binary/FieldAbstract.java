@@ -28,8 +28,6 @@ import gp.utils.arrays.Array;
 import gp.utils.arrays.SupArray;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent;
 
 import org.dom4j.Element;
 
@@ -41,26 +39,26 @@ import org.dom4j.Element;
 public abstract class FieldAbstract 
 {
 
-	protected String _name;
-    protected int _length;
+	protected String name;
+    protected int length;
 
-	protected int _offset;
+	protected int offset;
 
     public FieldAbstract() 
     {
-    	this._name = "";
-    	this._length = 0;
-    	this._offset = 0;
+    	this.name = "";
+    	this.length = 0;
+    	this.offset = 0;
 	}
 
     public FieldAbstract(Element rootXML) 
     {
-        _name = rootXML.attributeValue("name");
-        this._length = 0;
+        name = rootXML.attributeValue("name");
+        this.length = 0;
         String lengthBit = rootXML.attributeValue("lengthBit");
         if (lengthBit != null) 
         {
-            this._length = Integer.parseInt(lengthBit);
+            this.length = Integer.parseInt(lengthBit);
         }
     }
 
@@ -132,16 +130,16 @@ public abstract class FieldAbstract
     
     protected void copyToClone(FieldAbstract source) 
     {
-    	this._name = source._name;
-    	this._length = source._length;
-    	this._offset = source._offset;
+    	this.name = source.name;
+    	this.length = source.length;
+    	this.offset = source.offset;
     }
     
     public String toString(Array array) {
 
         StringBuilder elemString = new StringBuilder();
         elemString.append("    <field ");
-        elemString.append("name=\"" + this._name + "\" ");
+        elemString.append("name=\"" + this.name + "\" ");
         try
         {
         	elemString.append("value=\"" + this.getValue(array) + "\" ");
@@ -152,7 +150,7 @@ public abstract class FieldAbstract
         	// nothing to do 
         }
         elemString.append("type=\"" + this.getClass().getSimpleName().split("Field")[0] + "\" ");
-        elemString.append("lengthBit=\"" + this._length + "\" ");
+        elemString.append("lengthBit=\"" + this.length + "\" ");
         elemString.append("/>\n");
         return elemString.toString();
 

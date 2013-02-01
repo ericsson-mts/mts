@@ -26,8 +26,6 @@ package com.devoteam.srit.xmlloader.core.coding.binary;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.ElementQ931;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.gtp.data.ElementTLIV;
 import com.devoteam.srit.xmlloader.gtp.data.ElementTLV;
@@ -42,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import org.dom4j.Element;
 
 
@@ -61,12 +58,13 @@ public abstract class ElementAbstract implements Cloneable
 	// protected int spare;
 	protected int instances;
 
-    protected LinkedHashMap<String, FieldAbstract> _hashMapFields = new LinkedHashMap<String, FieldAbstract>();
+    protected LinkedHashMap<String, FieldAbstract> fieldsByName = new LinkedHashMap<String, FieldAbstract>();
+    protected List<FieldAbstract> fields = new ArrayList<FieldAbstract>();
     
     protected List<ElementAbstract> elements = new ArrayList<ElementAbstract>();
     
-    protected SupArray _fields;
-    protected SupArray _elements;
+    protected SupArray fieldsArray;
+    protected SupArray subelementsArray;
 
     public static ElementAbstract buildFactory(String coding) throws Exception
     {
@@ -141,20 +139,21 @@ public abstract class ElementAbstract implements Cloneable
             // Case if field is present in the dico
             if (elemDico != null)
             {
-            	field = elemDico.getHashMapFields().get(name); 
+            	field = elemDico.getFieldsByName(name); 
             }
             if (field == null)
             {
             	field = FieldAbstract.parseFromXML(fieldRoot);
             }
-            this._hashMapFields.put(name, field);
+            this.fieldsByName.put(name, field);
+            this.fields.add(field);
         }
         
         // initiate the Array containing the fields
-        this._fields = new SupArray();
+        this.fieldsArray = new SupArray();
         Array emptyArray = new DefaultArray(getLengthElem() / 8);
-       	this._fields.addFirst(emptyArray);
-       	this._elements = new SupArray();
+       	this.fieldsArray.addFirst(emptyArray);
+       	this.subelementsArray = new SupArray();
        	
         // set the value for each fields
         listField = elementRoot.elements("field");
@@ -164,21 +163,21 @@ public abstract class ElementAbstract implements Cloneable
         {
             Element element1 = it.next();
             String fieldName = element1.attributeValue("name");
-            FieldAbstract field = this._hashMapFields.get(fieldName);
+            FieldAbstract field = this.fieldsByName.get(fieldName);
             if (field != null) 
             {
             	String value = element1.attributeValue("value");
             	if (value != null)
             	{
-			        field.setValue(element1.attributeValue("value"), offset, this._fields);
-			        int length = field._length;
+			        field.setValue(element1.attributeValue("value"), offset, this.fieldsArray);
+			        int length = field.length;
 			        if (length != 0)
 			        {
 				        offset += length;
 			        }
 			        else
 			        {
-				        offset = this._fields.length * 8;
+				        offset = this.fieldsArray.length * 8;
 			        }
             	}
             }
@@ -209,9 +208,11 @@ public abstract class ElementAbstract implements Cloneable
     public int getLengthElem() 
     {
         int length = 0;
-        for (Entry<String, FieldAbstract> field : _hashMapFields.entrySet()) 
-        {
-            length += field.getValue()._length;
+		Iterator<FieldAbstract> iter = this.fields.iterator();
+		while (iter.hasNext())
+		{
+			FieldAbstract field = (FieldAbstract) iter.next();
+            length += field.length;
         }
         return length;
     }
@@ -311,7 +312,7 @@ public abstract class ElementAbstract implements Cloneable
     {
     	this.tag = source.tag;
     	this.label = source.label;
-    	this._fields = null;
+    	this.fieldsArray = null;
 		// encode the sub-element
 		Iterator<ElementAbstract> iter = source.elements.iterator();
 		while (iter.hasNext())
@@ -320,12 +321,13 @@ public abstract class ElementAbstract implements Cloneable
 			ElementAbstract elemNew = (ElementAbstract) elemOld.clone();
 			this.elements.add(elemNew);
 		}
-        Iterator<FieldAbstract> iterField = source._hashMapFields.values().iterator();
-		while (iterField.hasNext())
+		Iterator<FieldAbstract> iterField = source.fields.iterator();
+		while (iter.hasNext())
 		{
 			FieldAbstract fieldOld = (FieldAbstract) iterField.next();
 			FieldAbstract fieldNew = fieldOld.clone();
-			this._hashMapFields.put(fieldNew._name, fieldNew);
+			this.fieldsByName.put(fieldNew.name, fieldNew);
+			this.fields.add(fieldNew);
 		}
     }
     
@@ -334,22 +336,22 @@ public abstract class ElementAbstract implements Cloneable
     	if (params.length == offset + 2) 
         {
     		String value = "";
-        	if (this._fields != null)
+        	if (this.fieldsArray != null)
         	{
-        		value = Array.toHexString(this._fields);
+        		value = Array.toHexString(this.fieldsArray);
         	}
-        	if (this._elements != null)
+        	if (this.subelementsArray != null)
         	{
-        		value += Array.toHexString(this._elements);
+        		value += Array.toHexString(this.subelementsArray);
         	}
     		var.add(value);
         }
         else if (params.length >= offset + 4 && (params[offset + 2].equalsIgnoreCase("field"))) 
         {
-        	FieldAbstract field = this._hashMapFields.get(params[offset + 3]);
+        	FieldAbstract field = this.fieldsByName.get(params[offset + 3]);
         	if (field != null)
         	{	
-        		var.add(field.getValue(this._fields));
+        		var.add(field.getValue(this.fieldsArray));
         	}
         }
         else 
@@ -418,20 +420,19 @@ public abstract class ElementAbstract implements Cloneable
     	elemString.append(" coding=\"");
    		elemString.append(this.coding);
     	elemString.append("\"");
-    	if (_fields != null)
+    	if (fieldsArray != null)
         {
-            elemString.append(" value=\"" + Array.toHexString(_fields));
+            elemString.append(" value=\"" + Array.toHexString(fieldsArray));
         }
         elemString.append("\">");
         
         elemString.append("\n");
         
-        
-        Iterator<FieldAbstract> iterField = this._hashMapFields.values().iterator();
+		Iterator<FieldAbstract> iterField = this.fields.iterator();
 		while (iterField.hasNext())
 		{
 			FieldAbstract field = (FieldAbstract) iterField.next();
-            elemString.append(field.toString(this._fields));
+            elemString.append(field.toString(this.fieldsArray));
         }
         
         Iterator<ElementAbstract> iterElem = this.elements.iterator();
@@ -447,11 +448,13 @@ public abstract class ElementAbstract implements Cloneable
         return elemString.toString();
     }
 
-    public LinkedHashMap<String, FieldAbstract> getHashMapFields() {
-        return _hashMapFields;
+    public FieldAbstract getFieldsByName(String name) 
+    {
+        return fieldsByName.get(name);
     }
 
-    public int getTag() {
+    public int getTag() 
+    {
         return this.tag;
     }
 

@@ -51,17 +51,17 @@ public class ElementTLIV extends ElementAbstract
         this.tag = new Integer08Array(array.subArray(0, 1)).getValue();
         int length = new Integer16Array(array.subArray(1, 2)).getValue();
         this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
-        this._fields = new SupArray();
-        this._elements = new SupArray();
+        this.fieldsArray = new SupArray();
+        this.subelementsArray = new SupArray();
         // cas when there are no field
-        if (this._hashMapFields.size() != 0)
+        if (this.fieldsByName.size() != 0)
         {
-            this._fields.addFirst(array.subArray(4, length));
+            this.fieldsArray.addFirst(array.subArray(4, length));
         }
         else
         {
-        	this._elements.addFirst(array.subArray(4, length));
-        	elements = ElementAbstract.decodeElementsFromArray(this._elements, dictionary);
+        	this.subelementsArray.addFirst(array.subArray(4, length));
+        	elements = ElementAbstract.decodeElementsFromArray(this.subelementsArray, dictionary);
         }
         return length + 4;
     }
@@ -70,18 +70,18 @@ public class ElementTLIV extends ElementAbstract
     public SupArray encodeToArray() 
 	{
 		// encode the sub-element
-		this._elements = super.encodeToArray();
+		this.subelementsArray = super.encodeToArray();
 
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.tag);
         sup.addLast(idArray);
-        Integer16Array lengthArray = new Integer16Array(this._fields.length + this._elements.length);
+        Integer16Array lengthArray = new Integer16Array(this.fieldsArray.length + this.subelementsArray.length);
         sup.addLast(lengthArray);
 	    Integer08Array instancesArray = new Integer08Array(this.instances);
 	    sup.addLast(instancesArray);
 	    
-	    sup.addLast(this._fields);
-	    sup.addLast(this._elements);
+	    sup.addLast(this.fieldsArray);
+	    sup.addLast(this.subelementsArray);
 	    
         return sup;
     }
