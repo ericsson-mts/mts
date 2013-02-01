@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.gtp.data.MessageGTP;
 
@@ -70,26 +71,68 @@ public class MsgGtp extends Msg
     /** Get the protocol of this message */
     public String getProtocol()
     {
-        return StackFactory.PROTOCOL_GTPP;
+    	return StackFactory.PROTOCOL_GTPP;
+        // return this.message.getSubProtocol();
     }
 
     /** Return true if the message is a request else return false*/
-    public boolean isRequest()
+    @Override
+    public boolean isRequest() throws Exception
     {
-        return message.isRequest();
+        return this.message.isRequest();
     }
 
     /** Get the type of this message */
-    public String getType()
+    @Override
+    public String getType() throws Exception
     {
-    	return message.getType();
+    	if (isRequest())
+    	{
+    		return this.message.getType();
+    	}
+    	else
+    	{
+    		Trans trans = getTransaction(); 
+        	if (trans == null)
+        	{
+        		return "null";
+        	}
+	    	Msg request = trans.getBeginMsg();
+	    	if (request == null)
+	    	{
+	    		return "null";
+	    	}
+	    	return request.getType();
+    	}
     }
 
     /** Get the result of this answer (null if request) */
-    public String getResult()
+    @Override
+    public String getResult() throws Exception
     {
-    	return "result";
-        // return message.getHeader().getResult();
+    	Parameter causeParam = null;
+    	if (this.message.getSyntax().equals("GTPV2"))
+    	{
+    		causeParam = this.getParameter("element.Cause:2.field.Cause value");
+    	}
+    	if (this.message.getSyntax().equals("GTPV1"))
+    	{
+    		causeParam = this.getParameter("element.Cause:2.field.Cause value");
+    	}
+    	if (this.message.getSyntax().equals("GTPPrime"))
+    	{
+    		causeParam = this.getParameter("element.Cause:1.field.cause");
+    	}
+    	
+		if (causeParam.length() > 0 && causeParam.length() > 0)
+        {
+            return causeParam.get(0).toString();
+        }
+		// case of "Version Not Supported" message type
+		else
+		{
+			return message.getType();
+		}
     }
     
     /** Return the length of the message*/

@@ -29,12 +29,9 @@ import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumerationField;
 import com.devoteam.srit.xmlloader.core.coding.binary.HeaderAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.XMLDoc;
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
-import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.SupArray;
 
 import java.io.InputStream;
@@ -42,9 +39,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import org.dom4j.Element;
 
 
@@ -123,14 +118,13 @@ public class MessageGTP
 	public String getType() {
 	    return header.getType();
 	}
-
-    /** Get the result of this answer (null if request) */
-    public String getResult()
+	
+    /** Get the protocol of this message */
+    public String getSubProtocol()
     {
-    	return "result";
-        // return message.getHeader().getResult();
+        return this.header.getSyntax();
     }
-	    
+	
 	public void decodeFromStream(InputStream inputStream) throws Exception
 	{
 		byte[] begin = new byte[4];
@@ -287,6 +281,14 @@ public class MessageGTP
 	    return msglength;
 	}
 	
+	public String getSyntax() {
+		return syntax;
+	}
+
+	public void setSyntax(String syntax) {
+		this.syntax = syntax;
+	}
+
 	public void initDictionary(String syntax) throws Exception 
 	{
 		this.dictionary = MessageGTP.dictionaries.get(syntax);

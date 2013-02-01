@@ -84,12 +84,11 @@ public class HeaderGTPV1 extends HeaderAbstract
     @Override
     public boolean isRequest() 
     {
-    	// particular case 
-    	if (this.type == 26)
+    	if (this.type ==3)
     	{
-    		return true;
-    	}    	
-    	if ((this.label != null) && (!this.label.contains("Request")))
+    		return false;   		
+    	}
+    	if ((this.label != null) && (this.label.contains("Response")))
     	{
     		return false;   		
     	}
