@@ -165,7 +165,7 @@ public class MsgGtp extends Msg
     /** Get the XML representation of the message; for the genscript module. */
     @Override
     public String toXml() throws Exception {
-        return message.toString();
+        return message.toXml();
     }
 
 }

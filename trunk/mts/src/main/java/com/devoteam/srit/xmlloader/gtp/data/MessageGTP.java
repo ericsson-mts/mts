@@ -250,23 +250,28 @@ public class MessageGTP
 	    return array;
 	}
 	
-	@Override
-	public String toString() 
+	public String toXml() 
 	{
 	    StringBuilder messageToString = new StringBuilder();
-	    messageToString.append(header.toString());
+	    messageToString.append(header.toXml());
 	    messageToString.append("\n");
 	
 	    Iterator<ElementAbstract> iter = this.elements.iterator();
 	    while (iter.hasNext())
 	    {
 	    	ElementAbstract elem = (ElementAbstract) iter.next();
-	    	messageToString.append(elem.toString());
+	    	messageToString.append(elem.toXml());
 	    }
 	    return messageToString.toString();
 	
 	}
 	
+	@Override
+	public String toString() 
+	{
+		return toXml();
+	}
+
 	public int getLength() {
 	
 	    int msglength = 0;
