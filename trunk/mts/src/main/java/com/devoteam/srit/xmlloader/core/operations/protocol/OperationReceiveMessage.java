@@ -89,7 +89,7 @@ public class OperationReceiveMessage extends Operation {
          * != commandDef) { type = Integer.toString(commandDef.get_code()); } }
          */
         if (null != protocol) {
-            addParameterTestTag(rootNode, "string.equals", "message.protocol", protocol);
+            addParameterTestTag(rootNode, "string.startsWith", "message.protocol", protocol);
         }
         if (null != request) {
             addParameterTestTag(rootNode, "string.equals", "message.request", new Boolean(request).toString());

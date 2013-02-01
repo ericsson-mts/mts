@@ -23,7 +23,6 @@
 
 package com.devoteam.srit.xmlloader.gtp.data;
 
-import java.io.InputStream;
 
 import org.dom4j.Element;
 
@@ -61,7 +60,7 @@ public class HeaderGTPV1 extends HeaderAbstract
     
     public HeaderGTPV1()
 	{
-    	this.syntax = "GTPV1";
+    	this.syntax = "V1";
     	this.version = 1;
     	this.protocolType = 1;
 	}
@@ -69,7 +68,9 @@ public class HeaderGTPV1 extends HeaderAbstract
     public HeaderGTPV1(Array beginArray)
 	{
     	this();
-    	this.protocolType = beginArray.getBits(3, 1);
+        this.version = beginArray.getBits(0,3);
+        this.protocolType = beginArray.getBits(3,1);	
+       
     	this.extensionFlag = beginArray.getBits(5, 1);
     	this.seqNumFlag = beginArray.getBits(6, 1);
     	this.nPduFlag = beginArray.getBits(7, 1);

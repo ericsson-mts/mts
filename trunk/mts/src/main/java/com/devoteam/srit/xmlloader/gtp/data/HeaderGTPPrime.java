@@ -50,7 +50,7 @@ public class HeaderGTPPrime extends HeaderAbstract
     
     public HeaderGTPPrime() 
     {
-    	this.syntax = "GTPPrime";
+    	this.syntax = "Prime";
     	this.protocolType = 0; 
     	this.version = 0; 
 	}

@@ -149,7 +149,7 @@ public class MsgGtpp extends Msg
     /** Get the protocol of this message */
     public String getProtocol()
     {
-        return StackFactory.PROTOCOL_GTPP;
+        return StackFactory.PROTOCOL_GTP;
     }
 
     /** Return true if the message is a request else return false*/

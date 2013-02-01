@@ -205,12 +205,12 @@ public class MessageGTP
 		int offset = this.header.decodeFromArray(array, "", dictionary);
 		int fieldLength = this.header.getLength() - offset + 4; 		
 		
-		Array fieldArray = new DefaultArray(0);
+		Array elementArray = new DefaultArray(0);
 		if (fieldLength > 0)
 		{
-			fieldArray = array.subArray(offset, fieldLength);
+			elementArray = array.subArray(offset, fieldLength);
 		}
-		this.elements = ElementAbstract.decodeElementsFromArray(fieldArray, this.dictionary);
+		this.elements = ElementAbstract.decodeElementsFromArray(elementArray, this.dictionary);
 	}
 
 	/** Get a parameter from the message */
@@ -295,7 +295,7 @@ public class MessageGTP
 		if (this.dictionary == null)
 		{
 	        XMLDoc xml = new XMLDoc();
-	        String file = "../conf/gtp/dictionary_" + syntax + ".xml";
+	        String file = "../conf/gtp/dictionary_GTP" + syntax + ".xml";
 	        xml.setXMLFile(new URI(file));
 	        xml.parse();
 	        Element rootDico = xml.getDocument().getRootElement();

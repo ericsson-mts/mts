@@ -56,7 +56,7 @@ public class StackGtp extends Stack
         if (port > 0)
         {
         	Listenpoint listenpoint = new ListenpointGtp(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_GTPP);
+            createListenpoint(listenpoint, StackFactory.PROTOCOL_GTP);
         }
     }
 

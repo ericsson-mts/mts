@@ -107,7 +107,7 @@ public class StackFactory
     public static final String PROTOCOL_MSRP = "MSRP";
     public static String PROTOCOL_MSRP_STACK_CLASS = "com.devoteam.srit.xmlloader.msrp.StackMsrp";
 
-    public static final String PROTOCOL_GTPP = "GTPP";
+    public static final String PROTOCOL_GTP = "GTP";
     public static String PROTOCOL_GTPP_STACK_CLASS = "com.devoteam.srit.xmlloader.gtp.StackGtp";
 
     public static final String PROTOCOL_SNMP = "SNMP";
@@ -138,6 +138,12 @@ public class StackFactory
     /** Creates or returns the instance of this stack */
     public synchronized static Stack getStack(String protocol) throws ExecutionException
     {
+    	// remove the subprotocol
+    	int iPos = protocol.indexOf('.');
+    	if (iPos >= 0)
+    	{
+    		protocol = protocol.substring(0, iPos);
+    	}
         Stack stack = listStack.get(protocol);
 
         if (null != stack)
@@ -227,7 +233,7 @@ public class StackFactory
         {
             stackToLoad = PROTOCOL_MSRP_STACK_CLASS;
         }
-        else if (PROTOCOL_GTPP.equalsIgnoreCase(protocol))
+        else if (PROTOCOL_GTP.equalsIgnoreCase(protocol))
         {
             stackToLoad = PROTOCOL_GTPP_STACK_CLASS;
         }

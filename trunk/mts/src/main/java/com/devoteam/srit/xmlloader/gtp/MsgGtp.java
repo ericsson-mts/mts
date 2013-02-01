@@ -71,8 +71,7 @@ public class MsgGtp extends Msg
     /** Get the protocol of this message */
     public String getProtocol()
     {
-    	return StackFactory.PROTOCOL_GTPP;
-        // return this.message.getSubProtocol();
+    	return StackFactory.PROTOCOL_GTP + "." + this.message.getSubProtocol();
     }
 
     /** Return true if the message is a request else return false*/
@@ -111,15 +110,15 @@ public class MsgGtp extends Msg
     public String getResult() throws Exception
     {
     	Parameter causeParam = null;
-    	if (this.message.getSyntax().equals("GTPV2"))
+    	if (this.message.getSyntax().equals("V2"))
     	{
     		causeParam = this.getParameter("element.Cause:2.field.Cause value");
     	}
-    	if (this.message.getSyntax().equals("GTPV1"))
+    	if (this.message.getSyntax().equals("V1"))
     	{
     		causeParam = this.getParameter("element.Cause:2.field.Cause value");
     	}
-    	if (this.message.getSyntax().equals("GTPPrime"))
+    	if (this.message.getSyntax().equals("Prime"))
     	{
     		causeParam = this.getParameter("element.Cause:1.field.cause");
     	}
