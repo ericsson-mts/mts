@@ -156,7 +156,7 @@ public class HeaderGTPV2 extends HeaderAbstract
     }
 
 	@Override
-    public String toXML()
+    public String toXml()
     {
         String str = "<headerV2 ";
         str += " type=\"";

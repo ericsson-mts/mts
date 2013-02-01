@@ -108,7 +108,7 @@ public class HeaderGTPPrime extends HeaderAbstract
     }
 
 	@Override
-    public String toXML()
+    public String toXml()
     {
         String str = "<headerPrime ";
         str += " type=\"";

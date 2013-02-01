@@ -25,6 +25,7 @@ package com.devoteam.srit.xmlloader.core.coding.binary;
 
 
 import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
@@ -135,7 +136,7 @@ public abstract class FieldAbstract
     	this.offset = source.offset;
     }
     
-    public String toString(Array array) {
+    public String toXml(Array array) {
 
         StringBuilder elemString = new StringBuilder();
         elemString.append("    <field ");
@@ -153,8 +154,12 @@ public abstract class FieldAbstract
         elemString.append("lengthBit=\"" + this.length + "\" ");
         elemString.append("/>\n");
         return elemString.toString();
-
-
+    }
+    
+    public String toString() 
+    {
+    	Array array = new DefaultArray(0);
+    	return toXml(array);
     }
 
 }

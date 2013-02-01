@@ -124,7 +124,7 @@ public class HeaderQ931 extends HeaderAbstract {
     }
 
     @Override
-    public String toXML() {
+    public String toXml() {
         StringBuilder headerString = new StringBuilder();
         headerString.append("<header");
        	headerString.append(" discriminator=\"" + Array.toHexString(_discrimArray) + "\"");

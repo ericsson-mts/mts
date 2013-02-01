@@ -23,17 +23,10 @@
 
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
-import java.io.InputStream;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import gp.utils.arrays.Array;
-import gp.utils.arrays.DefaultArray;
-import gp.utils.arrays.Integer08Array;
-import gp.utils.arrays.Integer16Array;
-import gp.utils.arrays.SupArray;
 
 import org.dom4j.Element;
 
@@ -54,7 +47,7 @@ public abstract class HeaderAbstract {
     public abstract String getType();
     
     public abstract void parseFromXML(Element header, Dictionary dictionary) throws Exception;
-    public abstract String toXML();
+    public abstract String toXml();
     
     public abstract int decodeFromArray(Array data, String syntax, Dictionary dictionary) throws Exception;
 	// public abstract void decodeFromStream(InputStream stream, Dictionary dictionary) throws Exception;
@@ -80,7 +73,7 @@ public abstract class HeaderAbstract {
     
     public String toString()
     {
-    	return toXML();
+    	return toXml();
     }
 
 }

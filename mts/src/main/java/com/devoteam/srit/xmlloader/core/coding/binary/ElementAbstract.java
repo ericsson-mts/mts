@@ -169,7 +169,7 @@ public abstract class ElementAbstract implements Cloneable
             	String value = element1.attributeValue("value");
             	if (value != null)
             	{
-			        field.setValue(element1.attributeValue("value"), offset, this.fieldsArray);
+			        field.setValue(value, offset, this.fieldsArray);
 			        int length = field.length;
 			        if (length != 0)
 			        {
@@ -403,7 +403,7 @@ public abstract class ElementAbstract implements Cloneable
 	    return list;
 	}
 
-    public String toString() 
+    public String toXml() 
     {
         StringBuilder elemString = new StringBuilder();
         elemString.append("<element ");
@@ -432,7 +432,7 @@ public abstract class ElementAbstract implements Cloneable
 		while (iterField.hasNext())
 		{
 			FieldAbstract field = (FieldAbstract) iterField.next();
-            elemString.append(field.toString(this.fieldsArray));
+            elemString.append(field.toXml(this.fieldsArray));
         }
         
         Iterator<ElementAbstract> iterElem = this.elements.iterator();
@@ -448,6 +448,10 @@ public abstract class ElementAbstract implements Cloneable
         return elemString.toString();
     }
 
+    public String toString() 
+    {
+    	return toXml();
+    }
     public FieldAbstract getFieldsByName(String name) 
     {
         return fieldsByName.get(name);

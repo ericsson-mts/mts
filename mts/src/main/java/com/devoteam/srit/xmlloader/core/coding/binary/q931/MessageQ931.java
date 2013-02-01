@@ -168,13 +168,13 @@ public class MessageQ931
     {
         StringBuilder messageToString = new StringBuilder();
         messageToString.append("<ISDN>");
-        messageToString.append(header.toString());
+        messageToString.append(header.toXml());
 
 	    Iterator<ElementAbstract> iter = this.elements.iterator();
 	    while (iter.hasNext())
 	    {
 	    	ElementAbstract elem = (ElementAbstract) iter.next();
-            messageToString.append(elem.toString());
+            messageToString.append(elem.toXml());
         }
         messageToString.append("</ISDN>");
         return messageToString.toString();
