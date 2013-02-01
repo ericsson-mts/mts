@@ -79,7 +79,11 @@ public class HeaderGTPV2 extends HeaderAbstract
     @Override
     public boolean isRequest() 
     {
-    	if ((this.label != null) && (!this.label.contains("Request")))
+    	if (this.type ==3)
+    	{
+    		return false;   		
+    	}
+    	if ((this.label != null) && (this.label.contains("Response")))
     	{
     		return false;   		
     	}
