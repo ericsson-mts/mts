@@ -5,7 +5,8 @@
     
     <parameter name="[esme]" operation="set" value="listenpointSMPP-ESME" />
     <createListenpointSMPP name="[esme]" localHost="[test:serverRemoteIp]" localPort="12775"/>
-
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+    
     <receiveMessageSMPP request="true" listenpoint="[esme]" type="outbind:b">
         <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
