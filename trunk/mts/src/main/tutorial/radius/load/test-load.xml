@@ -4,18 +4,19 @@
 <test name="Load tests">
 
 	<parameter name="[speedTrans]" operation="set" value="10000" description="number of transaction per second"   		editable="true"/>	
-    	<parameter name="[TestDurationSec]" operation="set" value="360000" description="Duration (in sec.) of the test"   	    editable="true"/>
+  <parameter name="[TestDurationSec]" operation="set" value="360000" description="Duration (in sec.) of the test"   	    editable="true"/>
 	<parameter name="[NumberTestcase]" operation="set" value="10" description="number of testcase"   			        editable="true"/>
 	
-   <!-- Parameters for proxy testcases -->
-    <parameter name="[localHost]" operation="system.ipaddress"/>
-    <parameter name="[localHost]" operation="set" value="[localHost(0)]" editable="true"/>
-    <parameter name="[localPort]" operation="set" value="10000" editable="true"/>
+  <!-- Parameters for proxy testcases -->
+  <parameter name="[localHost]" operation="system.ipaddress"/>
+  <parameter name="[localHost]" operation="set" value="[localHost(0)]" editable="true"/>
+  <parameter name="[localPort]" operation="set" value="10000" editable="true"/>
     
-    <parameter name="[remoteHost]" operation="system.ipaddress"/>     
-    <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]" editable="true"/>
-    <parameter name="[remotePort]" operation="set" value="11000" editable="true"/>
-   	<parameter name="[speedTestcase]" operation="divide" value="[speedTrans]" value2="[NumberTestcase]"/>	
+  <parameter name="[remoteHost]" operation="system.ipaddress"/>     
+  <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]" editable="true"/>
+  <parameter name="[remotePort]" operation="set" value="11000" editable="true"/>
+  
+  <parameter name="[speedTestcase]" operation="divide" value="[speedTrans]" value2="[NumberTestcase]"/>	
 
 	<!--                       -->
     	<!-- RUNPROFILE PARAMETERS -->

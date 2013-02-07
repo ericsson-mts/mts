@@ -3,21 +3,29 @@
 
 <test name="Load tests">
 
-	<parameter name="[speedTrans]" operation="set" value="10000" description="number of transaction per second"   		editable="true"/>	
-    	<parameter name="[TestDurationSec]" operation="set" value="360000" description="Duration (in sec.) of the test"   	    editable="true"/>
-	<parameter name="[NumberTestcase]" operation="set" value="10" description="number of testcase"   			        editable="true"/>
+	<parameter name="[speedTrans]" operation="set" value="10000" description="number of transaction per second" editable="true"/>	
+  <parameter name="[TestDurationSec]" operation="set" value="360000" description="Duration (in sec.) of the test" editable="true"/>
+	<parameter name="[NumberTestcase]" operation="set" value="10" description="number of testcase" editable="true"/>
 	
 	<parameter name="[Local-Host]" operation="system.ipaddress"/>
+	<parameter name="[Local-Host]" operation="set" value="[Local-Host(0)]"/>
+	<!--parameter name="[Local-Host]" operation="set" value="17.16.21.32"/-->
 	<parameter name="[Local-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
 	<parameter name="[Local-Address]" operation="set" value="[Local-Host(0)]:[Local-Port]"/>	
 	<parameter name="[Local-Realm]" operation="set" value="sip.pfdev.fr"/>
 
 	<parameter name="[Remote-Host]" operation="system.ipaddress"/>
+	<parameter name="[Remote-Host]" operation="set" value="[Remote-Host(0)]" editable="true"/>
+	<!--parameter name="[Remote-Host]" operation="set" value="17.16.21.32" editable="true"/-->
 	<parameter name="[Remote-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter name="[Remote-Port]" operation="set" value="[Remote-Port(0)]" editable="true"/>
+	<!--parameter name="[Remote-Port]" operation="set" value="3868" editable="true"/-->
 	<parameter name="[Remote-Address]" operation="set" value="[Remote-Host(0)]:[Remote-Port]"/>
 	<parameter name="[Remote-Realm]" operation="set" value="sip.pfdev.fr"/>
 
-   	<parameter name="[speedTestcase]" operation="divide" value="[speedTrans]" value2="[NumberTestcase]"/>	
+  <parameter name="[vendorID]" operation="set" value="10415" description="vendor ID" editable="true"/>
+  
+  <parameter name="[speedTestcase]" operation="divide" value="[speedTrans]" value2="[NumberTestcase]"/>	
 
 	<!--                       -->
     	<!-- RUNPROFILE PARAMETERS -->
