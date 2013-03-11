@@ -501,7 +501,9 @@ public class MsgDiameter extends Msg
         }
         catch(Exception e)
         {
-            throw new Exception("Error while trying to decode AVP named " + name + " of code " + avp.code, e);
+        	// case when there is a decoding problem : 
+        	// usually the dictionary is not wrong according to the received data
+        	value = Utils.toBinaryString(new AVP_OctetString(avp).queryValue(), false);
         }
 
         try
