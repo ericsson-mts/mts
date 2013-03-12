@@ -36,6 +36,8 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementDefaultParser;
 import com.devoteam.srit.xmlloader.core.utils.XMLTree;
+import com.devoteam.srit.xmlloader.ethernet.StackEthernet;
+
 import java.util.LinkedList;
 import java.util.List;
 import org.dom4j.Element;
@@ -55,6 +57,7 @@ public class OperationReceiveMessage extends Operation {
     private String protocol;
     private boolean failedOnTimeout;
     private boolean failedOnReceive;
+    private String ethFilter = null;
     /**
      * List of filters
      */
@@ -81,7 +84,12 @@ public class OperationReceiveMessage extends Operation {
         String channel = rootNode.attributeValue("channel");
         String type = rootNode.attributeValue("type");
         String result = rootNode.attributeValue("result");
-
+        
+        //for ETHERNET Protocol only
+        String captureFilter = rootNode.attributeValue("filter");
+        if (captureFilter != null)
+        	this.ethFilter = captureFilter;
+        
         //for DIAMETER Protocol
         /*
          * if ((protocol == StackFactory.PROTOCOL_DIAMETER) && (type != null) && (!Utils.isInteger(type))) { // use ApplicationID "base" but will search in all Applications anyway
@@ -117,8 +125,22 @@ public class OperationReceiveMessage extends Operation {
     /**
      * Executes the operation (retrieve and check message)
      */
-    public Operation execute(Runner aRunner) throws Exception {
-        ScenarioRunner runner = (ScenarioRunner) aRunner;
+    public Operation execute(Runner aRunner) throws Exception {    	
+        //for ETHERNET Protocol -- Start listening to wire right now
+    	//                         getting only one ethernet frame according to capture filter
+    	//                         set by user in xml scenario file
+        
+    	if (protocol == StackFactory.PROTOCOL_ETHERNET)
+        {
+        	StackEthernet st = (StackEthernet) StackFactory.getStack(StackFactory.PROTOCOL_ETHERNET);
+        	if (!st.isEthernetProbeCreated())
+        	{
+        		st.setCaptureFilter(ethFilter);
+        		st.startSocket();
+        	}
+        }
+        
+    	ScenarioRunner runner = (ScenarioRunner) aRunner;
 
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.PROTOCOL, this);
 
@@ -197,7 +219,6 @@ public class OperationReceiveMessage extends Operation {
         try {
             while (null != (msg = runner.getBufferMsg().readMessageFromStack(timeout - (System.currentTimeMillis() - timestamp)))) {
                 GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.PROTOCOL, "Testing message\n", msg);
-
                 // set the implicit message into the runner (for setFromMessage operation)
                 runner.setCurrentMsg(msg);
 

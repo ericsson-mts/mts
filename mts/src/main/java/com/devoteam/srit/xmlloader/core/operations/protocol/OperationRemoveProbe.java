@@ -30,6 +30,8 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.operations.Operation;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementDefaultParser;
+import com.devoteam.srit.xmlloader.ethernet.StackEthernet;
+
 import org.dom4j.Element;
 
 /**
@@ -68,7 +70,9 @@ public class OperationRemoveProbe extends Operation
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " capture probe <name= \"", probeName, "\">");       
         
         // close the probe
-        StackFactory.getStack(protocol).removeProbe(probeName);       
+        StackFactory.getStack(protocol).removeProbe(probeName);
+        if (protocol == StackFactory.PROTOCOL_ETHERNET)
+        	((StackEthernet) StackFactory.getStack(protocol)).setEthernetProbeCreated(false);
         
         return null;
     }

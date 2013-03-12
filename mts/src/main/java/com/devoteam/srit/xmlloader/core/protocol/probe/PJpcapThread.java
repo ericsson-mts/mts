@@ -25,14 +25,9 @@ package com.devoteam.srit.xmlloader.core.protocol.probe;
 
 import java.net.InetAddress;
 import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import jpcap.JpcapCaptor;
 import jpcap.NetworkInterface;
 import jpcap.PacketReceiver;
-import jpcap.packet.EthernetPacket;
-import jpcap.packet.IPPacket;
 import jpcap.packet.Packet;
 
 

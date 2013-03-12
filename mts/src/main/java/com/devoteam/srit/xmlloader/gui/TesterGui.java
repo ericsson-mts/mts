@@ -90,7 +90,6 @@ public class TesterGui {
         jFrame.setIconImage(java.awt.Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icon.png")));
         testerGuiHelper = new TesterGuiHelper(this);
         guiMenuHelper = new GUIMenuHelper(testerGuiHelper);
-
     }
 
     /**

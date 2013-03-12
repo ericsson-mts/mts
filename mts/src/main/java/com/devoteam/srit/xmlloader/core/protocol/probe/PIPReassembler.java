@@ -33,6 +33,7 @@ import com.devoteam.srit.xmlloader.core.ThreadPool;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Probe;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.expireshashmap.ExpireHashMap;
 import com.devoteam.srit.xmlloader.core.utils.expireshashmap.Removable;
 
@@ -139,53 +140,58 @@ public class PIPReassembler
                     
                     long timestamp = packet.sec*1000000 + packet.usec;
                     pipPacket.getHeader().setTimestamp(timestamp);
-                                      
-                    if (pipPacket.getHeader().isMore_flag() || pipPacket.getHeader().getOffset_fragment() != 0){
-                        // fragmented packet
 
-                        // Construct IP V4 packet identification
-                        StringBuilder builder = new StringBuilder(36);
-
-                        builder.append(Array.toHexString(new DefaultArray(((EthernetPacket) packet.datalink).src_mac)));
-                        builder.append(Array.toHexString(new DefaultArray(((EthernetPacket) packet.datalink).dst_mac)));
-                        builder.append(Array.toHexString(new Integer16Array(pipPacket.getHeader().getProtocol())));
-                        builder.append(Array.toHexString(new Integer32Array(pipPacket.getHeader().getIdent())));
-
-                        String packetId = builder.toString();
-
-                        PacketReassembler reassembler = reassemblers.get(packetId);
-
-                        if(null == reassembler){
-                            reassembler = new PacketReassembler();
-                            reassemblers.put(packetId, reassembler);
-                        }
-
-                        reassembler.addPacket(pipPacket);
-
-                        if(reassembler.isComplete()){
-                            reassemblers.remove(packetId);
-                            PIPHeader header = reassembler.getFirstPacket().getHeader();
-                            header.setTimestamp(timestamp);
-
-                            if(reassembler.getFirstPacket().getHeader().getProtocol() == IPPacket.IPPROTO_UDP){
-                                PUDPPacket udpPacket = new PUDPPacket(header, reassembler.getData());
-                                callback.probe.capturedUDPPacket(udpPacket);
-                            }
-                            else if(reassembler.getFirstPacket().getHeader().getProtocol() == IPPacket.IPPROTO_TCP){
-                                PTCPPacket tcpPacket = new PTCPPacket(header, reassembler.getData());
-                                callback.probe.capturedTCPPacket(tcpPacket);
-                            }
-                        }
-                    }
-                    else{
-                        if(pipPacket.getHeader().getProtocol() == IPPacket.IPPROTO_UDP){
-                            PUDPPacket udpPacket = new PUDPPacket(pipPacket.getHeader(), pipPacket.getData());
-                            callback.probe.capturedUDPPacket(udpPacket);
-                        }
-                        else if(pipPacket.getHeader().getProtocol() == IPPacket.IPPROTO_TCP){
-                            PTCPPacket tcpPacket = new PTCPPacket(pipPacket.getHeader(), pipPacket.getData());
-                            callback.probe.capturedTCPPacket(tcpPacket);
-                        }
+                    if (callback.probe.getProtocol() == StackFactory.PROTOCOL_ETHERNET)
+                    	callback.probe.capturedETHPacket(packet);
+                    else
+                    {
+	                    if (pipPacket.getHeader().isMore_flag() || pipPacket.getHeader().getOffset_fragment() != 0){
+	                        // fragmented packet
+	
+	                        // Construct IP V4 packet identification
+	                        StringBuilder builder = new StringBuilder(36);
+	
+	                        builder.append(Array.toHexString(new DefaultArray(((EthernetPacket) packet.datalink).src_mac)));
+	                        builder.append(Array.toHexString(new DefaultArray(((EthernetPacket) packet.datalink).dst_mac)));
+	                        builder.append(Array.toHexString(new Integer16Array(pipPacket.getHeader().getProtocol())));
+	                        builder.append(Array.toHexString(new Integer32Array(pipPacket.getHeader().getIdent())));
+	
+	                        String packetId = builder.toString();
+	
+	                        PacketReassembler reassembler = reassemblers.get(packetId);
+	
+	                        if(null == reassembler){
+	                            reassembler = new PacketReassembler();
+	                            reassemblers.put(packetId, reassembler);
+	                        }
+	
+	                        reassembler.addPacket(pipPacket);
+	
+	                        if(reassembler.isComplete()){
+	                            reassemblers.remove(packetId);
+	                            PIPHeader header = reassembler.getFirstPacket().getHeader();
+	                            header.setTimestamp(timestamp);
+	
+	                            if(reassembler.getFirstPacket().getHeader().getProtocol() == IPPacket.IPPROTO_UDP){
+	                                PUDPPacket udpPacket = new PUDPPacket(header, reassembler.getData());
+	                                callback.probe.capturedUDPPacket(udpPacket);
+	                            }
+	                            else if(reassembler.getFirstPacket().getHeader().getProtocol() == IPPacket.IPPROTO_TCP){
+	                                PTCPPacket tcpPacket = new PTCPPacket(header, reassembler.getData());
+	                                callback.probe.capturedTCPPacket(tcpPacket);
+	                            }
+	                        }
+	                    }
+	                    else{
+	                        if(pipPacket.getHeader().getProtocol() == IPPacket.IPPROTO_UDP){
+	                            PUDPPacket udpPacket = new PUDPPacket(pipPacket.getHeader(), pipPacket.getData());
+	                            callback.probe.capturedUDPPacket(udpPacket);
+	                        }
+	                        else if(pipPacket.getHeader().getProtocol() == IPPacket.IPPROTO_TCP){
+	                            PTCPPacket tcpPacket = new PTCPPacket(pipPacket.getHeader(), pipPacket.getData());
+	                            callback.probe.capturedTCPPacket(tcpPacket);
+	                        }
+	                    }
                     }
                 }
                 catch (Exception e){

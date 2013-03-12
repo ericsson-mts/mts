@@ -24,8 +24,10 @@
 package com.devoteam.srit.xmlloader.gtp;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.operations.Operation;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
@@ -153,7 +155,19 @@ public class MsgGtp extends Msg
     public byte[] getBytesData(){
         try 
         {
-            return message.encodeToArray().getBytes();
+        	if (message.getTpdu() == null)
+        		return message.encodeToArray().getBytes();
+        	byte[] msg = message.encodeToArray().getBytes();
+        	byte[] rawDatas = message.getTpdu();
+        	byte[] res = new byte[msg.length + rawDatas.length];
+        	
+        	int j = 0;
+        	for (int i = 0; i < msg.length; i++)
+        		res[j++] = msg[i];
+        	for (int i = 0; i < rawDatas.length; i++)
+        		res[j++] = rawDatas[i];
+        	return res;
+            
         }
         catch (Exception ex)
         {

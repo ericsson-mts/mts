@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.ethernet.ListenpointEthernet;
 import com.devoteam.srit.xmlloader.sctp.ListenpointSctp;
 import com.devoteam.srit.xmlloader.tcp.ListenpointTcp;
 import com.devoteam.srit.xmlloader.tls.ListenpointTls;
@@ -52,6 +53,7 @@ public abstract class Listenpoint
     private boolean listenTCP = false;
     private boolean listenSCTP = false;
     private boolean listenTLS = false;
+    private boolean listenIP = false;
     
     private int portTLS = 0;
     protected String transport = null;
@@ -64,6 +66,7 @@ public abstract class Listenpoint
     protected ListenpointTcp listenpointTcp = null;
     protected ListenpointSctp listenpointSctp = null;
     protected ListenpointTls listenpointTls = null;
+    protected ListenpointEthernet listenpointIp = null;
     
     private Object attachment;
     private HashMap<String, Channel> channels;
@@ -79,12 +82,14 @@ public abstract class Listenpoint
         {
             this.host = "0.0.0.0";
         }
+
         this.UID = Utils.newUID();
         this.port = stack.getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
         this.listenUDP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_UDP", false);
         this.listenTCP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_TCP", false);
         this.listenSCTP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_SCTP", false);
         this.listenTLS = this.stack.getConfig().getBoolean("listenpoint.LISTEN_TLS", false);
+        this.listenIP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_IP", false);
         this.portTLS = this.stack.getConfig().getInteger("listenpoint.LOCAL_PORT_TLS", 0);
         this.transport = stack.getConfig().getString("listenpoint.TRANSPORT", StackFactory.PROTOCOL_UDP);
     }
@@ -279,7 +284,7 @@ public abstract class Listenpoint
 
     /** create a listenpoint  */
     public boolean create(String protocol) throws Exception
-    {
+    {	
         this.channels = new HashMap<String, Channel>();
         this.protocol = protocol;
         
@@ -318,6 +323,11 @@ public abstract class Listenpoint
             listenpointTls = new ListenpointTls(this.stack, this.name, this.host, this.portTLS);
             listenpointTls.create(protocol);
         }
+        
+        if (this.listenIP)
+        {
+        	listenpointIp = new ListenpointEthernet(this.stack, this.name, this.host, this.port);
+        }
 
         return true;
     }
@@ -354,6 +364,11 @@ public abstract class Listenpoint
         {
             listenpointTls.remove();
             listenpointTls = null;
+        }
+        if (listenpointIp != null)
+        {
+            listenpointIp.remove();
+            listenpointIp = null;
         }
 
         return true;
@@ -466,11 +481,17 @@ public abstract class Listenpoint
             transport = this.transport;
         }
         
+        if (msg.getProtocol().equalsIgnoreCase(StackFactory.PROTOCOL_ETHERNET))
+        {
+            return listenpointIp.sendMessage(msg, remoteHost);
+        }
+        
         msg.setRemoteHost(remoteHost);
         msg.setRemotePort(remotePort);
         msg.setTransport(transport);
         
         transport = transport.toUpperCase();
+        
         if (transport.equals(StackFactory.PROTOCOL_UDP) && listenpointUdp != null)
         {
             res = listenpointUdp.sendMessage(msg, remoteHost, remotePort, transport);

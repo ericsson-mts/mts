@@ -75,7 +75,6 @@ public class SocketUdpBIO extends Thread {
                 datagramSocket.receive(datagramPacket);
 
                 Msg msg = stack.readFromDatas(datagramPacket.getData(), datagramPacket.getLength());
-
                 String remoteHost = "";
                 if (datagramPacket.getAddress() != null) {
                 	remoteHost = datagramPacket.getAddress().getHostAddress();
@@ -120,7 +119,7 @@ public class SocketUdpBIO extends Thread {
     }
 
     public synchronized void send(Msg msg, InetSocketAddress remoteDatagramSocketAddress) throws Exception {
-        try {
+    	try {
             byte[] data = msg.getBytesData();
             if (dp == null) {
                 dp = new DatagramPacket(data, data.length);

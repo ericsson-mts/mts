@@ -62,8 +62,9 @@ public class OperationSendMessage extends Operation {
      * Executes the operation
      */
     public Operation execute(Runner aRunner) throws Exception {
-        Stack stack = StackFactory.getStack(protocol);
-        setReplacer(stack.getElementReplacer());
+    	Stack stack = StackFactory.getStack(protocol);
+
+    	setReplacer(stack.getElementReplacer());
 
         ScenarioRunner runner = (ScenarioRunner) aRunner;
 
@@ -115,7 +116,7 @@ public class OperationSendMessage extends Operation {
             	String applicationId = root.element("header").attributeValue("applicationId");
             	MsgDiameterParser.getInstance().doDictionnary(this.getRootElement(), applicationId, true);
             }
-            
+
             // instanciates the msg
             msg = stack.parseMsgFromXml(req, root, runner);
             msg.setSend(true);

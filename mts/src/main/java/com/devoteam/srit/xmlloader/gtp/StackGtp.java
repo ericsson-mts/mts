@@ -50,7 +50,6 @@ public class StackGtp extends Stack
     public StackGtp() throws Exception
     {
         super();
-        
         // initiate a default listenpoint if port is not empty or null
         int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
         if (port > 0)
@@ -115,7 +114,7 @@ public class StackGtp extends Stack
      * should become ABSTRACT later  
      */
     public Msg readFromDatas(byte[] datas, int length) throws Exception
-    {
+    {    	
         MessageGTP message = new MessageGTP();
         message.decodeFromBytes(datas);
         return new MsgGtp(message);
