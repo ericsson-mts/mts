@@ -89,14 +89,14 @@ a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0]]>
   <test parameter="[channelTransport]" condition="string.equals" value="TLS"/>
 
   <receiveMessageSIP name="Wait BYE" request="true" type="BYE">
-    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>         
-    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
-    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>          
-    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>       
-    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>                 
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
     <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
     <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
-    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>          
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>
   </receiveMessageSIP>
 
   <test parameter="[channelTransport]" condition="string.equals" value="TLS"/>

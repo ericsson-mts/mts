@@ -76,37 +76,44 @@ Content-Disposition: recipient-list
   </sendMessageSIP>
                 
   <receiveMessageSIP name="Wait 100 Trying" request="false" type="INVITE" result="100">
+    <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>
   </receiveMessageSIP>
+
+  <test parameter="[channelTransport]" condition="string.equals" value="TLS"/>
 
   <receiveMessageSIP name="Wait 180 Ringing" request="false" type="INVITE" result="180">
+    <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>
   </receiveMessageSIP>
 
-    <parameter name="[newBranchId]" operation="string.random" value="10"/>                              
-    
+  <test parameter="[channelTransport]" condition="string.equals" value="TLS"/>
+  
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>
   <receiveMessageSIP name="Wait 200 OK" request="false" type="INVITE" result="200">
-    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>                     
-    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>                         
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
     <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/> 
     <parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>   
     <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
     <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
-    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>          
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>
   </receiveMessageSIP>
 
   <test parameter="[channelTransport]" condition="string.equals" value="TLS"/>
 
   <parameter name="[newBranchId]" operation="string.random" value="10"/>
-      	
-  <sendMessageSIP name="Send ACK" destScenario="bob">
+
+  <sendMessageSIP name="Send ACK" destScenario="bob" transport="tls">
 <![CDATA[ACK [Request-URI] SIP/2.0
 To: [To]
 From: [From]
 Call-ID: [CallId]
 CSeq: [lastCseqNumber] ACK
-Via: SIP/2.0/TLS [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]
 Contact: <sip:[clientName]@[Adresse-Tester]>
-Route: <sips:[clientName]@[Adresse-Server];lr;mode=originating;transport=tls>
-Route: <sips:[clientName]@[Adresse-Tester];lr;mode=originating;transport=tls>
+Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating;transport=tls>
+Route: <sip:[clientName]@[Adresse-Tester];lr;mode=originating;transport=tls>
 Max-Forwards: 70
 User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
 Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
@@ -115,17 +122,17 @@ Content-Length: 0
 ]]>
   </sendMessageSIP>
 
-      	<parameter name="[newBranchId]" operation="string.random" value="10"/>
-  	<parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
-    
-  <sendMessageSIP name="Send BYE" destScenario="bob">
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+    <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
+
+  <sendMessageSIP name="Send BYE" transport="tls" destScenario="bob">
 <![CDATA[BYE [Request-URI] SIP/2.0
 To: [To]
 From: [From]
 Call-ID: [CallId]
 CSeq: [newCseqNumber] BYE
-Route: <sips:[clientName]@[Adresse-Server];lr;mode=originating>
-Route: <sips:[clientName]@[Adresse-Tester];lr;mode=originating>
+Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating>
+Route: <sip:[clientName]@[Adresse-Tester];lr;mode=originating>
 Contact: <sip:[clientName]@[Adresse-Tester]>
 Via: SIP/2.0/TLS [Adresse-Tester];branch=z9hG4bK[newBranchId]
 Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
@@ -136,6 +143,10 @@ Content-Length: 0
   </sendMessageSIP>
                 
   <receiveMessageSIP name="Wait 200 OK" request="false" type="BYE" result="200">
+    <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>
   </receiveMessageSIP>
-        
+
+  <test parameter="[channelTransport]" condition="string.equals" value="TLS"/>
+
 </scenario>
