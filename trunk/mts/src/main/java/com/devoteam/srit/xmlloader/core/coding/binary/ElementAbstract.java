@@ -272,7 +272,6 @@ public abstract class ElementAbstract implements Cloneable
 	
 	        int length = elemNew.decodeFromArray(data.subArray(offset), dictionary);
 	        offset += length;
-	
 	        elements.add(elemNew);
 	    }
 	    return elements;

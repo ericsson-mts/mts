@@ -151,7 +151,6 @@ public class PInputStream extends InputStream
         int done = 0;
         int todo = length;
 
-
         try
         {
             b[off] = currentArray(true).get(currentIndex++);

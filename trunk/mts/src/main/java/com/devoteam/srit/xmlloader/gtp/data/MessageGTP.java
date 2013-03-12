@@ -29,6 +29,8 @@ import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumerationField;
 import com.devoteam.srit.xmlloader.core.coding.binary.HeaderAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.XMLDoc;
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -39,6 +41,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import org.dom4j.Element;
 
@@ -60,6 +63,12 @@ public class MessageGTP
 	
 	private List<ElementAbstract> elements;
 	
+	private byte[] tpdu = null;
+		
+	public byte[] getTpdu() {
+		return tpdu;
+	}
+
 	public MessageGTP()
 	{
 		
@@ -95,6 +104,7 @@ public class MessageGTP
 	    
 	    this.elements = new ArrayList<ElementAbstract>();
 	    List<Element> elementsInf = root.elements("element");
+	    List<Element> data = root.elements("data");
 	    ElementAbstract elemDico = null;
 	    ElementAbstract newElement = null;
 	    for (Element elementRoot : elementsInf) 
@@ -105,6 +115,54 @@ public class MessageGTP
 	        
 	        this.elements.add(newElement);
 	
+	    }
+	    // Header GTPv1 plus data field -> get raw datas to be sent as T-PDU
+	    if (this.header instanceof HeaderGTPV1)
+	    {
+	    	List<byte[]> datas = new LinkedList<byte[]>();        
+	        try
+	        {
+	            for (Element element : data)
+	            {
+	                if (element.attributeValue("format").equalsIgnoreCase("text"))
+	                {
+	                    String text = element.getText();
+	                    // change the \n caractère to \r\n caracteres because the dom librairy return only \n.
+	                    // this could make some trouble when the length is calculated in the scenario
+	                    text = Utils.replaceNoRegex(text, "\r\n","\n");                    
+	                    text = Utils.replaceNoRegex(text, "\n","\r\n");                    
+	                    datas.add(text.getBytes("UTF8"));
+	                }
+	                else if (element.attributeValue("format").equalsIgnoreCase("binary"))
+	                {
+	                    String text = element.getTextTrim();
+	                    datas.add(Utils.parseBinaryString(text));
+	                }
+	            }
+	        }
+	        catch (Exception e)
+	        {
+	            throw new ExecutionException("StackGTPv1: Error while parsing data", e);
+	        }
+	        
+	        int dataLength = 0;
+	        for (byte[] data2 : datas)
+	        {
+	            dataLength += data2.length;
+	        }
+
+	        byte[] data2 = new byte[dataLength];
+	        int i = 0;
+	        for (byte[] aData : datas)
+	        {
+	            for (int j = 0; j < aData.length; j++)
+	            {
+	                data2[i] = aData[j];
+	                i++;
+	            }
+	        }
+	        
+	        this.tpdu = data2;
 	    }
 	}
 
@@ -184,7 +242,7 @@ public class MessageGTP
 		Array array = new DefaultArray(data);
 		 
 		int version = array.getBits(0, 3);
-		// int messageType = array.getBits(8, 8);		
+		int messageType = array.getBits(8, 8);		
 		 
 		if (version == 0)
 		{
@@ -210,7 +268,15 @@ public class MessageGTP
 		{
 			elementArray = array.subArray(offset, fieldLength);
 		}
-		this.elements = ElementAbstract.decodeElementsFromArray(elementArray, this.dictionary);
+		if (messageType == 255)
+		{
+			ElementPDU e = new ElementPDU();
+			this.elements = new ArrayList<ElementAbstract>();
+			e.decodeFromArray(elementArray, dictionary);
+			this.elements.add(e);
+		}
+		else
+			this.elements = ElementAbstract.decodeElementsFromArray(elementArray, this.dictionary);
 	}
 
 	/** Get a parameter from the message */
@@ -229,6 +295,11 @@ public class MessageGTP
 		    	ElementAbstract elem = (ElementAbstract) iter.next();
 	    		elem.getParameter(var, params, path, 0, dictionary);
 	    	}
+	    }
+	    else if (this.header instanceof HeaderGTPV1 && path.equalsIgnoreCase("data.binary") && this.elements.get(0) instanceof ElementPDU)
+	    {
+	    	ElementPDU e = (ElementPDU) this.elements.get(0);
+	    	e.getParameter(var, params, path, 0, dictionary);
 	    }
 	    else
 	    {

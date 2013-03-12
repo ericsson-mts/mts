@@ -691,6 +691,25 @@ public class Scenario implements Serializable {
         else if (rootName.equals("removeListenpointGTP")) {
             ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_GTP, root);
         }
+        else if (rootName.equals("createProbeGTP")) {
+            ope = new OperationCreateProbe(StackFactory.PROTOCOL_GTP, root);
+        }
+        else if (rootName.equals("removeProbeGTP")) {
+            ope = new OperationRemoveProbe(StackFactory.PROTOCOL_GTP, root);
+        }
+        //--------------------------------------------------------------------------------- ETHERNET  -
+        else if (rootName.equals("sendMessageETHERNET")) {
+        	ope = new OperationSendMessage(StackFactory.PROTOCOL_ETHERNET, root);
+        }
+        else if (rootName.equals("receiveMessageETHERNET")) {
+        	ope = new OperationReceiveMessage(StackFactory.PROTOCOL_ETHERNET, root, this);
+        }
+        else if (rootName.equals("createProbeETHERNET")) {
+            ope = new OperationCreateProbe(StackFactory.PROTOCOL_ETHERNET, root);
+        }
+        else if (rootName.equals("removeProbeETHERNET")) {
+            ope = new OperationRemoveProbe(StackFactory.PROTOCOL_ETHERNET, root);
+        }
         //--------------------------------------------------------------------------------- SNMP -
         else if (rootName.equals("sendMessageSNMP")) {
             ope = new OperationSendMessage(StackFactory.PROTOCOL_SNMP, root);

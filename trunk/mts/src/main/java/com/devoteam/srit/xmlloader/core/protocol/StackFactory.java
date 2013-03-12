@@ -44,7 +44,7 @@ public class StackFactory
     public final static String PREFIX_OUTGOING = "_out";
     // public final static String PREFIX_CAPTURING = "&lt;&lt;&gt;&gt;out";
     public final static String PREFIX_CAPTURING = "_cap";
-
+    
     public final static String PROTOCOL_IP = "IP";
     
     public final static String PROTOCOL_DIAMETER = "DIAMETER";
@@ -121,6 +121,9 @@ public class StackFactory
 
     public static final String PROTOCOL_H225CS = "H225CS";
     public static String PROTOCOL_H225CS_STACK_CLASS = "com.devoteam.srit.xmlloader.h323.h225cs.StackH225cs";
+    
+    public final static String PROTOCOL_ETHERNET = "ETHERNET";
+    public static String PROTOCOL_ETHERNET_STACK_CLASS = "com.devoteam.srit.xmlloader.ethernet.StackEthernet";
 
     private static HashMap<String, Stack> listStack = new HashMap<String, Stack>();
 
@@ -253,11 +256,15 @@ public class StackFactory
         {
             stackToLoad = PROTOCOL_H225CS_STACK_CLASS;
         }
+        else if (PROTOCOL_ETHERNET.equalsIgnoreCase(protocol))
+        {
+            stackToLoad = PROTOCOL_ETHERNET_STACK_CLASS;
+        }
         else
         {
             throw new ExecutionException("Unknown stack" + protocol);
         }
-
+        
         try
         {
             Class aClass = ClassLoader.getSystemClassLoader().loadClass(stackToLoad);
@@ -269,7 +276,7 @@ public class StackFactory
         {
             throw new ExecutionException("Can't load class " + stackToLoad, e);
         }
-
+        
         listStack.put(protocol, stack);
 
         return stack;
@@ -306,6 +313,7 @@ public class StackFactory
             stack = getStack(PROTOCOL_MGCP);
             stack = getStack(PROTOCOL_STUN);            
             stack = getStack(PROTOCOL_H225CS);
+            // stack = getStack(PROTOCOL_ETHERNET); // experimental : not yet integrated to MTS
         }
         catch (Exception e)
         {

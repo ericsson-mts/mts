@@ -105,7 +105,6 @@ public class OperationSendMsg extends Operation {
             else if (StackFactory.PROTOCOL_RADIUS.equalsIgnoreCase(protocol)) {
                 GlobalLogger.instance().logDeprecatedMessage(root.getName() + " request=\"xxx\" .../", "sendMessage" + protocol + " .../");
             }
-
             // instanciates the msg
             msg = stack.parseMsgFromXml(request, root, runner);
             msg.setSend(true);

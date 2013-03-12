@@ -357,7 +357,6 @@ public abstract class Stack
     public boolean createProbe(Probe probe, String protocol) throws Exception
     {
         boolean created = probe.create(protocol);
-
         if (created)
         {
             synchronized (probes)
@@ -530,7 +529,6 @@ public abstract class Stack
     
     public synchronized boolean sendMessageException(Msg msg, ScenarioRunner srcRunner, ScenarioRunner destRunner, ScenarioRunner answerHandler) throws Exception {
         boolean isRetransmission = false;        	
-
         // we are sending a request
         if (msg.isRequest()) {
             // retransmissionid supported

@@ -37,10 +37,16 @@ import com.devoteam.srit.xmlloader.core.protocol.probe.PTCPSocket;
 import com.devoteam.srit.xmlloader.core.protocol.probe.PUDPPacket;
 import com.devoteam.srit.xmlloader.core.utils.expireshashmap.ExpireHashMap;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.ethernet.MsgEthernet;
+import com.devoteam.srit.xmlloader.ethernet.StackEthernet;
 import com.devoteam.srit.xmlloader.genscript.ScriptGenerator;
 
 import gp.utils.arrays.Array;
 import java.util.Map;
+
+import jpcap.packet.EthernetPacket;
+import jpcap.packet.Packet;
+
 import org.dom4j.Element;
 
 /**
@@ -55,7 +61,7 @@ public class Probe
     private String name;
     // name of the network interface to capture on
     private String networkInterface;
-    // capture filter (the same syntax as tcpdump ou Wireshark tool)
+    // capture filter (the same syntax as tcpdump or Wireshark tool)
     private String captureFilter;
     // filename to capture
     private String filename;
@@ -101,6 +107,12 @@ public class Probe
         this.promiscuousMode = root.attributeValue("promiscuousMode");
         this.probeJpcapThread = new PJpcapThread(this);
         PIPReassembler.start();
+        
+        // ETHERNET protocol only
+        // To avoid using two jpcap capture at the same time
+        // enable isEthernetProbeCreated in EthernetStack
+        if (stack instanceof StackEthernet)
+        	((StackEthernet) stack).setEthernetProbeCreated(true);
     }
 
     public Map<String, PTCPSocket> getPTCPSockets(){
@@ -306,8 +318,35 @@ public class Probe
             return result;
     }
 	
-    synchronized public void capturedUDPPacket(PUDPPacket packet) throws Exception {
+    synchronized public void capturedETHPacket(Packet packet) throws Exception {
+    	int length = packet.header.length + packet.data.length;
+    	EthernetPacket eth = (EthernetPacket) packet.datalink;
+    	int type = eth.frametype;
+    	byte[] data = new byte[length];
+    	MsgEthernet msg = null;
+    	int j = 0;
     	
+		for (int i = 14; i < packet.header.length; i++) {
+			data[j++] = packet.header[i];
+		}
+		for (int i = 0; i < packet.data.length; i++) {
+			data[j++] = packet.data[i];
+		}
+		
+		try {
+			StackEthernet st = (StackEthernet) stack;
+			msg = (MsgEthernet) stack.readFromDatas(data, length);
+			msg.setProbe(this);
+			msg.setListenpoint(st.getSock().getListenpointEthernet());
+			msg.setType(type);
+			stack.captureMessage(msg);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    synchronized public void capturedUDPPacket(PUDPPacket packet) throws Exception {
         byte[] data = packet.getData().getBytes();
         
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, Stack.CAPTURE, "the UDP message :\n", packet, "\n", new String(data));
