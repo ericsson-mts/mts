@@ -118,7 +118,7 @@
                     <xs:element name="headerV2"  	 type="headerGTPV2Type"    minOccurs="0" maxOccurs="1"/>
                     <xs:element name="header "   	 type="headerGTPType"      minOccurs="0" maxOccurs="1"/>  
                     <xs:element name="element"     type="elementGTPType"     minOccurs="0" maxOccurs="unbounded" />
-                    <xs:element name="data"     type="dataGTPType"     minOccurs="0" maxOccurs="unbounded" />                  
+                    <xs:element name="pdu"     type="pduGTPType"     minOccurs="0" maxOccurs="unbounded" />                  
                 </xs:sequence>
 				<xs:attribute name="channel" type="xs:string" use="optional">
 					<xs:annotation>
@@ -345,14 +345,14 @@
     		<xs:attribute name="description"  type="xs:string" />
 	 </xs:complexType>
 	 
-	 <xs:complexType name="dataGTPType">
+	 <xs:complexType name="pduGTPType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="format"       type="dataGTPFormatType" />
+                <xs:attribute name="format"       type="pduGTPFormatType" />
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
-	<xs:simpleType name="dataGTPFormatType">
+	<xs:simpleType name="pduGTPFormatType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="text" />
             <xs:enumeration value="binary" />

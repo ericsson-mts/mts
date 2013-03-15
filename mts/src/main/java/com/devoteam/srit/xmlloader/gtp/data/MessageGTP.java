@@ -63,9 +63,9 @@ public class MessageGTP
 	
 	private List<ElementAbstract> elements;
 	
-	private byte[] tpdu = null;
+	private DataPDU tpdu = null;
 		
-	public byte[] getTpdu() {
+	public DataPDU getTpdu() {
 		return tpdu;
 	}
 
@@ -104,7 +104,6 @@ public class MessageGTP
 	    
 	    this.elements = new ArrayList<ElementAbstract>();
 	    List<Element> elementsInf = root.elements("element");
-	    List<Element> data = root.elements("data");
 	    ElementAbstract elemDico = null;
 	    ElementAbstract newElement = null;
 	    for (Element elementRoot : elementsInf) 
@@ -117,53 +116,8 @@ public class MessageGTP
 	
 	    }
 	    // Header GTPv1 plus data field -> get raw datas to be sent as T-PDU
-	    if (this.header instanceof HeaderGTPV1)
-	    {
-	    	List<byte[]> datas = new LinkedList<byte[]>();        
-	        try
-	        {
-	            for (Element element : data)
-	            {
-	                if (element.attributeValue("format").equalsIgnoreCase("text"))
-	                {
-	                    String text = element.getText();
-	                    // change the \n caractère to \r\n caracteres because the dom librairy return only \n.
-	                    // this could make some trouble when the length is calculated in the scenario
-	                    text = Utils.replaceNoRegex(text, "\r\n","\n");                    
-	                    text = Utils.replaceNoRegex(text, "\n","\r\n");                    
-	                    datas.add(text.getBytes("UTF8"));
-	                }
-	                else if (element.attributeValue("format").equalsIgnoreCase("binary"))
-	                {
-	                    String text = element.getTextTrim();
-	                    datas.add(Utils.parseBinaryString(text));
-	                }
-	            }
-	        }
-	        catch (Exception e)
-	        {
-	            throw new ExecutionException("StackGTPv1: Error while parsing data", e);
-	        }
-	        
-	        int dataLength = 0;
-	        for (byte[] data2 : datas)
-	        {
-	            dataLength += data2.length;
-	        }
-
-	        byte[] data2 = new byte[dataLength];
-	        int i = 0;
-	        for (byte[] aData : datas)
-	        {
-	            for (int j = 0; j < aData.length; j++)
-	            {
-	                data2[i] = aData[j];
-	                i++;
-	            }
-	        }
-	        
-	        this.tpdu = data2;
-	    }
+        this.tpdu = new DataPDU();
+        this.tpdu.parseFromXML(root, dictionary, elemDico);
 	}
 
     /** Return true if the message is a request else return false*/
@@ -270,10 +224,9 @@ public class MessageGTP
 		}
 		if (messageType == 255)
 		{
-			ElementPDU e = new ElementPDU();
-			this.elements = new ArrayList<ElementAbstract>();
-			e.decodeFromArray(elementArray, dictionary);
-			this.elements.add(e);
+			if (this.tpdu == null)
+				this.tpdu = new DataPDU();
+			this.tpdu.decodeFromArray(elementArray, dictionary);
 		}
 		else
 			this.elements = ElementAbstract.decodeElementsFromArray(elementArray, this.dictionary);
@@ -296,10 +249,9 @@ public class MessageGTP
 	    		elem.getParameter(var, params, path, 0, dictionary);
 	    	}
 	    }
-	    else if (this.header instanceof HeaderGTPV1 && path.equalsIgnoreCase("data.binary") && this.elements.get(0) instanceof ElementPDU)
+	    else if (path.equalsIgnoreCase("data.binary"))
 	    {
-	    	ElementPDU e = (ElementPDU) this.elements.get(0);
-	    	e.getParameter(var, params, path, 0, dictionary);
+	    	this.tpdu.getParameter(var, params, path, 0, dictionary);
 	    }
 	    else
 	    {
@@ -316,6 +268,8 @@ public class MessageGTP
 	    	ElementAbstract elem = (ElementAbstract) iter.next();
 	        array.addLast(elem.encodeToArray());	    	
 	    }
+	    if (this.tpdu != null)
+	    	array.addLast(this.tpdu.encodeToArray());
 	    header.setLength(array.length + header.calculateHeaderSize());
 	    array.addFirst(header.encodeToArray());
 	    return array;
@@ -333,6 +287,7 @@ public class MessageGTP
 	    	ElementAbstract elem = (ElementAbstract) iter.next();
 	    	messageToString.append(elem.toXml());
 	    }
+	    messageToString.append(this.tpdu.toXml());
 	    return messageToString.toString();
 	
 	}

@@ -153,27 +153,7 @@ public class MsgGtp extends Msg
     /** Get the data (as binary) of this message */
     @Override    
     public byte[] getBytesData(){
-        try 
-        {
-        	if (message.getTpdu() == null)
-        		return message.encodeToArray().getBytes();
-        	byte[] msg = message.encodeToArray().getBytes();
-        	byte[] rawDatas = message.getTpdu();
-        	byte[] res = new byte[msg.length + rawDatas.length];
-        	
-        	int j = 0;
-        	for (int i = 0; i < msg.length; i++)
-        		res[j++] = msg[i];
-        	for (int i = 0; i < rawDatas.length; i++)
-        		res[j++] = rawDatas[i];
-        	return res;
-            
-        }
-        catch (Exception ex)
-        {
-            GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Error while trying to write message GTPP on socket: " + ex);
-        }
-        return null;
+    	return message.encodeToArray().getBytes();
     }
 
     /** Get the XML representation of the message; for the genscript module. */
