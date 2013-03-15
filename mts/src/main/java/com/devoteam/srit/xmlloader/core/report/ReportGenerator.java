@@ -296,14 +296,12 @@ public class ReportGenerator implements NotificationSender<Notification<String, 
         {
             // Mantis 0000112
             String browser = Config.getConfigByName("tester.properties").getString("stats.BROWSER_PATH");
-
-            if (browser == null)
-            {
-                throw new Exception("null browser path");
-            }
-
-            GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Opening web browser with command :\n", browser, " ", reportFileName);
-            Runtime.getRuntime().exec(browser + " " + reportFileName);
+            browser = Utils.normalizePath(browser);
+            if (browser != null)
+        	{
+	            GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Opening web browser with command :\n", browser, " ", reportFileName);
+	            Runtime.getRuntime().exec(browser + " " + reportFileName);
+        	}
         }
         catch (Exception e)
         {

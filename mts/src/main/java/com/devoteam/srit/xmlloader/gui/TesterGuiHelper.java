@@ -311,58 +311,32 @@ class TesterGuiHelper implements ActionListener {
         else if (actionCommand.equals(GUIMenuHelper.HELP_DOCUMENTATION)) {
             try {
                 String browser = Config.getConfigByName("tester.properties").getString("stats.BROWSER_PATH");
-                if (browser == null) {
-                    throw new Exception("null browser path");
-                }
-                String urlName = "../doc/MTS_doc_index.htm";
-                File index = new File(urlName);
-                try {
-                    GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Opening web browser with command :\n", browser, " ", index.toURI());
-                    Runtime.getRuntime().exec(browser + " " + index.toURI());
-                }
-                catch (FileNotFoundException fnfe) {
-                    String info = browser + "(fnfe) non trouvé !!!";
-                    javax.swing.JOptionPane.showMessageDialog(null, info);
-                }
-                catch (IOException ioe) {
-                    String info = browser + "\n" + ioe;
-                    javax.swing.JOptionPane.showMessageDialog(null, info);
-                }
-                catch (Exception ex) {
-                    String info = "catch(Exception ex) " + ex + urlName;
-                    javax.swing.JOptionPane.showMessageDialog(null, info);
-                }
+                browser = Utils.normalizePath(browser);
+                if (browser != null)
+            	{
+	                String urlName = "../doc/MTS_doc_index.htm";
+	                URI absURI = new File(urlName).toURI();
+                    GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Opening web browser with command :\n", browser, " ", absURI);
+                    Runtime.getRuntime().exec(browser + " " + absURI);
+            	}
             }
             catch (Exception ex) {
-                GlobalLogger.instance().getApplicationLogger().error(Topic.CORE, e, "Error occured while opening latest report");
+                GlobalLogger.instance().getApplicationLogger().error(Topic.CORE, ex, "Error occured while opening latest report");
                 ex.printStackTrace();
             }
         }
         else if (actionCommand.equals(GUIMenuHelper.HELP_WEBSITE)) {
             try {
                 String browser = Config.getConfigByName("tester.properties").getString("stats.BROWSER_PATH");
-                if (browser == null) {
-                    throw new Exception("null browser path");
-                }
-                String urlName = "https://sites.google.com/site/multiprotocoltestsuite/";
-                try {
-                    Runtime.getRuntime().exec(browser + " " + urlName); // le lien est dans urlName
-                }
-                catch (FileNotFoundException fnfe) {
-                    String info = browser + "(fnfe) non trouvé !!!";
-                    javax.swing.JOptionPane.showMessageDialog(null, info);
-                }
-                catch (IOException ioe) {
-                    String info = browser + "\n" + ioe;
-                    javax.swing.JOptionPane.showMessageDialog(null, info);
-                }
-                catch (Exception ex) {
-                    String info = "catch(Exception ex) " + ex + urlName;
-                    javax.swing.JOptionPane.showMessageDialog(null, info);
-                }
+                browser = Utils.normalizePath(browser);
+                if (browser != null)
+            	{
+	                String urlName = "http://code.google.com/p/mts-project/";
+	                Runtime.getRuntime().exec(browser + " " + urlName); // le lien est dans urlName
+            	}
             }
             catch (Exception ex) {
-                GlobalLogger.instance().getApplicationLogger().error(Topic.CORE, e, "Error occured while opening latest report");
+                GlobalLogger.instance().getApplicationLogger().error(Topic.CORE, ex, "Error occured while opening latest report");
                 ex.printStackTrace();
             }
         }

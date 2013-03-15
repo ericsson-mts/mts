@@ -1294,7 +1294,40 @@ public class Utils
             }
         }
     }
+    
+    public static String normalizePath(String path)
+    {
+		if (path != null)
+		{
+		    //, windows case
+		    if (System.getProperty("os.name").toLowerCase().indexOf("windows") != -1)
+		    {
+		        if (!path.startsWith("\""))
+		        {
+		        	path = "\"" + path;
+		        }
+		        if (!path.endsWith("\""))
+		        {
+		        	path = path + "\"";
+		        }
+		    }
+		    // linux case
+		    else
+		    {
+		        if (path.startsWith("\""))
+		        {
+		        	path = path.substring(1);
+		        }
+		        if (path.endsWith("\""))
+		        {
+		        	path = path.substring(0, path.length() - 1);
+		        }
+		    }
+        }
+        return path;
+    }
 
+    
     public static void openEditor(final URI file)
     {
         ThreadPool.reserve().start(new Runnable()
@@ -1305,19 +1338,17 @@ public class Utils
                 {
                     // Mantis 0000112
                     String editor = Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH");
-
-                    if (editor == null)
+                    editor = Utils.normalizePath(editor);
+                    if (editor != null)
                     {
-                        throw new Exception("null editor path");
+	                    String fileAbsPath = new File(file).getAbsolutePath();
+	                    GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Opening editor with command :\n", editor, " ", fileAbsPath);
+	                    Runtime.getRuntime().exec(editor + " " + fileAbsPath);
                     }
-                    
-                    String fileAbsPath = new File(file).getAbsolutePath();
-                    GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Opening editor with command :\n", editor, " ", fileAbsPath);
-                    Runtime.getRuntime().exec(editor + " " + fileAbsPath);
                 }
                 catch (Exception e)
                 {
-                    ExceptionHandlerSingleton.instance().display(new Exception("Unable to start editor", e), null);                   
+                	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Unable to start editor");
                 }
             }
         });
