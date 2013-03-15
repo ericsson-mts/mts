@@ -69,46 +69,7 @@ public class SocketServerTlsListener extends Thread
         {
             port = listenpoint.getPort();
             localInetAddr = InetAddress.getByName(listenpoint.getHost());
-
-            /*SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
-            SSLServerSocket plop = (SSLServerSocket) factory.createServerSocket(port, 0, localInetAddr);*/
-//
-//            String certificatePath       = Config.getConfigByName("tls.properties").getString("cert.DIRECTORY");
-//            String certificateAlgorithm  = Config.getConfigByName("tls.properties").getString("cert.ALGORITHM");
-//            String certificatePassword   = Config.getConfigByName("tls.properties").getString("cert.PASSWORD");
-//            String certificateSSLVersion = Config.getConfigByName("tls.properties").getString("cert.SSL_VERSION");
-//
-//            char[] certificatePasswordArray ;
-//
-//            //
-//            // If password is an empty string (allowed) or not defined (allowed), do not use a password
-//            //
-//            if(null == certificatePassword || certificatePassword.length() == 0)
-//            {
-//                certificatePasswordArray = null;
-//            }
-//            else
-//            {
-//                certificatePasswordArray = certificatePassword.toCharArray();
-//            }
-//
-//            KeyStore keyStore = KeyStore.getInstance("JKS");
-//            keyStore.load(new FileInputStream(certificatePath), certificatePasswordArray);
-//
-//            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(certificateAlgorithm);
-//            keyManagerFactory.init(keyStore, certificatePasswordArray);
-//
-//            KeyManager[] keyManagers = keyManagerFactory.getKeyManagers();
-//
-//            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(certificateAlgorithm);
-//            trustManagerFactory.init(keyStore);
-//
-//            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-//
-//            SSLContext sslContext = SSLContext.getInstance(certificateSSLVersion);
-//            sslContext.init(keyManagers, trustManagers, null);
-//
-
+            
             // Create a trust manager that validates all certificates
             TrustManager[] trustAllCerts = new TrustManager[]
             {
@@ -167,8 +128,7 @@ public class SocketServerTlsListener extends Thread
             sslContext.init(keyManagers, trustAllCerts, null);
 
             this.serverSocket = sslContext.getServerSocketFactory().createServerSocket(port, 0, localInetAddr);
-            
-            /*this.serverSocket = plop;*/
+
             this.listenpoint = listenpoint;
         }
         catch (Exception e)
