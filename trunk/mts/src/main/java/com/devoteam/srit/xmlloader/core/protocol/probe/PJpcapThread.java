@@ -26,8 +26,10 @@ package com.devoteam.srit.xmlloader.core.protocol.probe;
 import java.net.InetAddress;
 import java.util.Enumeration;
 import jpcap.JpcapCaptor;
+import jpcap.JpcapSender;
 import jpcap.NetworkInterface;
 import jpcap.PacketReceiver;
+import jpcap.packet.EthernetPacket;
 import jpcap.packet.Packet;
 
 
@@ -35,8 +37,10 @@ import com.devoteam.srit.xmlloader.core.ThreadPool;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Probe;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.ethernet.MsgEthernet;
 
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.IPv4Array;
@@ -54,8 +58,10 @@ public class PJpcapThread implements PacketReceiver, Runnable {
     private static int DEFAULT_SNAPLENGHT = 15000;
     private Probe probe;
     private JpcapCaptor captor;
+    private JpcapSender sendor;
     private Semaphore stopSemaphore;
     private Semaphore startSemaphore;
+    private NetworkInterface networkInterface;
     private boolean stopped;
     private boolean stopPossible = false;
 
@@ -66,8 +72,9 @@ public class PJpcapThread implements PacketReceiver, Runnable {
         stopped = false;
 
         if (probe.getNetworkInterface() != null) {
-            NetworkInterface networkInterface = searchNetworkInterface(probe.getNetworkInterface());
+            networkInterface = searchNetworkInterface(probe.getNetworkInterface());
             captor = JpcapCaptor.openDevice(networkInterface, DEFAULT_SNAPLENGHT, probe.getPromiscuousMode(), 10);
+            sendor = JpcapSender.openDevice(networkInterface);
             captor.setFilter(probe.getCaptureFilter(), true);
         }
         else if (probe.getFilename() != null) {
@@ -79,6 +86,35 @@ public class PJpcapThread implements PacketReceiver, Runnable {
 
         captor.setPacketReadTimeout(500);
 
+    }
+    
+    public boolean sendETHMessage(Msg msg) throws ExecutionException
+    {		
+		Packet p = new Packet(); // Raw packet to be embedded into Ethernet frame
+		EthernetPacket etherPckt = new EthernetPacket(); //create Ethernet packet
+		MsgEthernet msgEth = (MsgEthernet) msg; // casting abstract Msg class into MsgEthernet as this is the only  message sent here
+		
+		etherPckt.frametype = (short) msgEth.getETHType(); // type of packet embedded in Ethernet frame (0800 = IPv4)
+	    etherPckt.src_mac = networkInterface.mac_address; //local MAC address
+	    
+        if (msgEth.getMac().length != 6)
+        {
+        	throw new ExecutionException("Mac address is malformed, expected format is 	AA:BB:CC:DD:EE:FF");
+        }
+        else
+        {
+        	// Mac address are 6*8 bits long
+        	byte[] mac = new byte[48];
+        	for (int j = 0; j < 6; j++)
+        		mac[j] = (byte)Integer.parseInt(msgEth.getMac()[j], 16); // Hex digit to be converted in one single byte
+        	etherPckt.dst_mac = mac;
+        }
+		
+        p.data = msgEth.getData(); // filling raw packet with Hex datas provided in xml scenario
+        p.datalink = etherPckt; // setting datalink of raw packet as Ethernet
+	    
+		sendor.sendPacket(p); // send raw packet
+		return true;
     }
 
     public void create() {
@@ -129,7 +165,9 @@ public class PJpcapThread implements PacketReceiver, Runnable {
             stopped = true;
             captor.breakLoop();
             captor.close();
+            sendor.close();
             captor = null;
+            sendor = null;
 
             try {
                 stopSemaphore.acquire();

@@ -9,8 +9,10 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Probe;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
@@ -21,8 +23,6 @@ import com.devoteam.srit.xmlloader.udp.MsgUdp;
 
 public class StackEthernet extends Stack
 {
-	
-	private SocketEthernet sock = null;
 	private String captureFilter = null;
 	private boolean isEthernetProbeCreated = false;
 
@@ -42,18 +42,8 @@ public class StackEthernet extends Stack
 		this.captureFilter = captureFilter;
 	}
 
-	public SocketEthernet getSock() {
-		return sock;
-	}
-
 	public StackEthernet() throws Exception {
 		super();
-        Listenpoint listenpoint = new ListenpointEthernet(this);
-        createListenpoint(listenpoint, StackFactory.PROTOCOL_ETHERNET);
-        sock = new SocketEthernet();
-        sock.setListenpointEthernet((ListenpointEthernet) listenpoint);
-        sock.setDaemon(true);
-        captureFilter = "";
 	}
 
 	@Override
@@ -133,8 +123,6 @@ public class StackEthernet extends Stack
         MsgEthernet msgIp = new MsgEthernet(data, dataLength);
         msgIp.setMac(header.attributeValue("remoteMac").split(":"));
         msgIp.setETHType(Integer.parseInt(header.attributeValue("type"), 16));
-        if (root.attributeValue("nic") != null)
-        	msgIp.setNic(Integer.parseInt(root.attributeValue("nic")));
 		return msgIp;
 	}
 
@@ -145,9 +133,22 @@ public class StackEthernet extends Stack
     	return msg;
     }
 	
-	public void startSocket()
-	{
-		this.sock.run();
-	}
-	
+	@Override
+	public synchronized boolean sendMessage(Msg msg) throws Exception
+    {
+		boolean ret;
+		Probe p = msg.getProbe();
+        if (p != null)
+        {
+            ret = p.sendETHMessage(msg);
+        }
+        else
+        {
+            throw new ExecutionException("No Probe to transport the message : \r\n" + msg.toString());
+        }
+
+        // increment counters in the transport section
+        incrStatTransport(msg, StackFactory.PREFIX_OUTGOING, StackFactory.PREFIX_INCOMING);
+        return ret;
+    }
 }

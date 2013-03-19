@@ -57,7 +57,6 @@ public class OperationReceiveMessage extends Operation {
     private String protocol;
     private boolean failedOnTimeout;
     private boolean failedOnReceive;
-    private String ethFilter = null;
     /**
      * List of filters
      */
@@ -84,11 +83,8 @@ public class OperationReceiveMessage extends Operation {
         String channel = rootNode.attributeValue("channel");
         String type = rootNode.attributeValue("type");
         String result = rootNode.attributeValue("result");
+        String probe = rootNode.attributeValue("probe");
         
-        //for ETHERNET Protocol only
-        String captureFilter = rootNode.attributeValue("filter");
-        if (captureFilter != null)
-        	this.ethFilter = captureFilter;
         
         //for DIAMETER Protocol
         /*
@@ -118,7 +114,11 @@ public class OperationReceiveMessage extends Operation {
         if (null != result) {
             addParameterTestTag(rootNode, "string.contains", "message.resultComparison", result);
         }
-
+        
+        if (null != probe) {
+        	addParameterTestTag(rootNode, "string.equals", "probe.name", probe);
+        }
+        
         parse(rootNode);
     }
 
@@ -128,18 +128,7 @@ public class OperationReceiveMessage extends Operation {
     public Operation execute(Runner aRunner) throws Exception {    	
         //for ETHERNET Protocol -- Start listening to wire right now
     	//                         getting only one ethernet frame according to capture filter
-    	//                         set by user in xml scenario file
-        
-    	if (protocol == StackFactory.PROTOCOL_ETHERNET)
-        {
-        	StackEthernet st = (StackEthernet) StackFactory.getStack(StackFactory.PROTOCOL_ETHERNET);
-        	if (!st.isEthernetProbeCreated())
-        	{
-        		st.setCaptureFilter(ethFilter);
-        		st.startSocket();
-        	}
-        }
-        
+    	//                         set by user in xml scenario file        
     	ScenarioRunner runner = (ScenarioRunner) aRunner;
 
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.PROTOCOL, this);

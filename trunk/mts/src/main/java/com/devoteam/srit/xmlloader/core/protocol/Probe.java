@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.core.protocol;
 
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
@@ -44,6 +45,9 @@ import com.devoteam.srit.xmlloader.genscript.ScriptGenerator;
 import gp.utils.arrays.Array;
 import java.util.Map;
 
+import jpcap.JpcapCaptor;
+import jpcap.JpcapSender;
+import jpcap.NetworkInterface;
 import jpcap.packet.EthernetPacket;
 import jpcap.packet.Packet;
 
@@ -167,6 +171,11 @@ public class Probe
     		
         this.probeJpcapThread.stop();
         return true;
+    }
+    
+    public boolean sendETHMessage(Msg msg) throws ExecutionException
+    {
+    	return this.probeJpcapThread.sendETHMessage(msg);
     }
     
     /** display method */
@@ -322,6 +331,8 @@ public class Probe
     	int length = packet.header.length + packet.data.length;
     	EthernetPacket eth = (EthernetPacket) packet.datalink;
     	int type = eth.frametype;
+    	byte[] srcMac = eth.src_mac;
+    	byte[] dstMac = eth.dst_mac;
     	byte[] data = new byte[length];
     	MsgEthernet msg = null;
     	int j = 0;
@@ -334,17 +345,19 @@ public class Probe
 		}
 		
 		try {
-			StackEthernet st = (StackEthernet) stack;
 			msg = (MsgEthernet) stack.readFromDatas(data, length);
 			msg.setProbe(this);
-			msg.setListenpoint(st.getSock().getListenpointEthernet());
 			msg.setType(type);
+			msg.setdstMac(dstMac);
+			msg.setSrcMac(srcMac);
 			stack.captureMessage(msg);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
+    
+   
     
     synchronized public void capturedUDPPacket(PUDPPacket packet) throws Exception {
         byte[] data = packet.getData().getBytes();

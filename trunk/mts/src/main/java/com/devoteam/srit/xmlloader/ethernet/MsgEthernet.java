@@ -12,22 +12,22 @@ public class MsgEthernet extends Msg
 {
 
 	private byte[] data;
-	private String[] mac;
+	private String[] mac; //dest MAC
+	private String[] srcMac; //src MAC
 	private int type;
+	
 	public void setType(int type) {
 		this.type = type;
 	}
-
-	private int nic;
 	
 	public MsgEthernet (byte[] datas, int length) throws Exception
 	{
 		data = new byte [length];
     	for (int i=0; i<length; i++)
     		data[i]= datas[i];
-    	setMac(null);
+    	setMac(new String[6]);
+    	srcMac = new String[6];
     	setETHType(0);
-    	setNic(0);
 	}
 	
 	@Override
@@ -89,20 +89,6 @@ public class MsgEthernet extends Msg
 	{
 		return type;
 	}
-
-	/**
-	 * @return the nic
-	 */
-	public int getNic() {
-		return nic;
-	}
-
-	/**
-	 * @param nic the nic to set
-	 */
-	public void setNic(int nic) {
-		this.nic = nic;
-	}
 	
 	/** Get a parameter from the message */
     @Override
@@ -132,10 +118,19 @@ public class MsgEthernet extends Msg
             	Parameter.throwBadPathKeywordException(path);
             }
         }
-        else 
+        else if (params[0].equalsIgnoreCase("ethernet"))
         {
-        	Parameter.throwBadPathKeywordException(path);
-        }                
+        	if (params[1].equalsIgnoreCase("type"))
+        		var.add(String.format("%04X", this.type));
+        	else if (params[1].equalsIgnoreCase("dstMac"))
+        		var.add(this.macToString(this.mac));
+        	else if (params[1].equalsIgnoreCase("srcMac"))
+        		var.add(this.macToString(this.srcMac));
+        	else
+        		Parameter.throwBadPathKeywordException(path);
+        }
+        else
+        	Parameter.throwBadPathKeywordException(path);             
 
         return var;
     }
@@ -145,4 +140,24 @@ public class MsgEthernet extends Msg
     public String toXml() throws Exception {
     	return Utils.byteTabToString(data);
     }
+
+	public void setdstMac(byte[] dstMac) {
+		// TODO Auto-generated method stub
+		for (int i = 0; i < dstMac.length; i++)
+			this.mac[i] = String.format("%02X%s", dstMac[i], (i < dstMac.length - 1) ? ":" : "");
+	}
+	
+	public void setSrcMac(byte[] tmpMac)
+	{
+		for (int i = 0; i < tmpMac.length; i++)
+			this.srcMac[i] = String.format("%02X%s", tmpMac[i], (i < tmpMac.length - 1) ? ":" : "");
+	}
+	
+	private String macToString(String[] mac)
+	{
+		String ret = "";
+		for (int i = 0; i < mac.length; i++)
+			ret += mac[i];
+		return ret;
+	}
 }

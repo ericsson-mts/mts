@@ -5,7 +5,7 @@
                     <xs:element name="ethernet" type="headerETHERNETType" minOccurs="1" maxOccurs="1"/>
                     <xs:element name="data" type="dataIPType" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
-                <xs:attribute name="nic" type="xs:string" use="optional">
+                <xs:attribute name="probe" type="xs:string" use="required">
 					<xs:annotation>
 						<xs:appinfo>String (scenario name)</xs:appinfo>
 						<xs:documentation>name of the network card interface to bind on</xs:documentation>
@@ -61,7 +61,7 @@
 						<xs:documentation>True means that we are waiting a message i.e. if we won't receive any message , then the operation status is set to FAILED. The default value is true.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="filter" type="xs:string" use="optional">
+				<xs:attribute name="probe" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>String</xs:appinfo>
 						<xs:documentation>Wireshark capture filter</xs:documentation>

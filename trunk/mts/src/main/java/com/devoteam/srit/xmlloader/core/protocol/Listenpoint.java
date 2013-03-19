@@ -29,7 +29,6 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.ethernet.ListenpointEthernet;
 import com.devoteam.srit.xmlloader.sctp.ListenpointSctp;
 import com.devoteam.srit.xmlloader.tcp.ListenpointTcp;
 import com.devoteam.srit.xmlloader.tls.ListenpointTls;
@@ -66,7 +65,6 @@ public abstract class Listenpoint
     protected ListenpointTcp listenpointTcp = null;
     protected ListenpointSctp listenpointSctp = null;
     protected ListenpointTls listenpointTls = null;
-    protected ListenpointEthernet listenpointIp = null;
     
     private Object attachment;
     private HashMap<String, Channel> channels;
@@ -323,12 +321,6 @@ public abstract class Listenpoint
             listenpointTls = new ListenpointTls(this.stack, this.name, this.host, this.portTLS);
             listenpointTls.create(protocol);
         }
-        
-        if (this.listenIP)
-        {
-        	listenpointIp = new ListenpointEthernet(this.stack, this.name, this.host, this.port);
-        }
-
         return true;
     }
 
@@ -364,11 +356,6 @@ public abstract class Listenpoint
         {
             listenpointTls.remove();
             listenpointTls = null;
-        }
-        if (listenpointIp != null)
-        {
-            listenpointIp.remove();
-            listenpointIp = null;
         }
 
         return true;
@@ -479,11 +466,6 @@ public abstract class Listenpoint
         if (transport == null)
         {
             transport = this.transport;
-        }
-        
-        if (msg.getProtocol().equalsIgnoreCase(StackFactory.PROTOCOL_ETHERNET))
-        {
-            return listenpointIp.sendMessage(msg, remoteHost);
         }
         
         msg.setRemoteHost(remoteHost);
