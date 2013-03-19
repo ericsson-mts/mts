@@ -49,44 +49,81 @@ public class OperationFor extends Operation {
     }
 
     @Override
-    public Operation execute(Runner runner) throws Exception {
+    public Operation execute(Runner runner) throws Exception 
+    {
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, this);
 
         String index;
-        int from;
-        int to;
-        int step;
+        double from;
+        double to;
+        double step;
         String strStep;
 
-        try {
+        try 
+        {
             lockAndReplace(runner);
             GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "Operation after pre-parsing \n", this);
 
             index = getAttribute("index");
-            from = Integer.decode(getAttribute("from"));
-            to = Integer.decode(getAttribute("to"));
+            
+            String strFrom = getAttribute("from");
+            from = Double.parseDouble(strFrom);
+            String strTo = getAttribute("to");
+            to = Double.parseDouble(strTo);
             step = 1;
             strStep = getAttribute("step");
+            if (strStep != null) 
+            {
+                step = Double.parseDouble(strStep);
+            }
         }
-        finally {
+        finally 
+        {
             unlockAndRestore();
-        }
-
-        // Replace elements in XMLTree
-
-        // retrieve the xml attribute
-        if (strStep != null) {
-            step = Integer.decode(strStep);
         }
 
         Parameter parameterIndex = new Parameter();
 
-        for (int i = from; i <= to; i += step) {
-            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "New iteration of " + index + "\nExecute XML\n", this);
-            parameterIndex.add(i);
-            runner.getParameterPool().set(index, parameterIndex);
-            operationsSequence.execute(runner);
-            parameterIndex.remove(0);
+        if (step > 0)
+        {
+	        for (double i = from; i <= to; i += step) 
+	        {
+	            // case when the index is an integer
+	            String strI = ((Double) i).toString();
+	            if (strI.endsWith(".0"))
+	            {
+	            	strI = strI.substring(0, strI.length() - 2);
+	            }
+	            parameterIndex.add(strI);
+	            runner.getParameterPool().set(index, parameterIndex);
+	            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "New iteration of " + index + "\nExecute XML\n", this);
+	            
+	            operationsSequence.execute(runner);
+
+	            parameterIndex.remove(0);
+	            runner.getParameterPool().delete(index);
+	        }
+        }
+        
+        if (step < 0)
+        {
+	        for (double i = from; i >= to; i += step) 
+	        {
+	        	// case when the index is an integer
+	            String strI = ((Double) i).toString();
+	            if (strI.endsWith(".0"))
+	            {
+	            	strI = strI.substring(0, strI.length() - 2);
+	            }
+	            parameterIndex.add(strI);
+	            runner.getParameterPool().set(index, parameterIndex);
+	            GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "New iteration of " + index + "\nExecute XML\n", this);
+	            
+	            operationsSequence.execute(runner);
+	            
+	            parameterIndex.remove(0);
+	            runner.getParameterPool().delete(index);
+	        }
         }
 
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "</for>");
