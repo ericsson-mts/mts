@@ -32,6 +32,7 @@ import com.devoteam.srit.xmlloader.core.operations.Operation;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Probe;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 
 
@@ -81,6 +82,7 @@ public class OperationSendMessage extends Operation {
         String destScenarioAttribute;
         String strDelay;
         String answerHandlerAttribute;
+        String probe;
         Msg msg;
         Boolean req = null;
 
@@ -101,6 +103,7 @@ public class OperationSendMessage extends Operation {
             destScenarioAttribute = getAttribute("destScenario");
             strDelay = getAttribute("delay");
             answerHandlerAttribute = getAttribute("answerHandler");
+            probe = getAttribute("probe");
             
             if (null != request) {
                 if (StackFactory.PROTOCOL_DIAMETER.equalsIgnoreCase(protocol)) {
@@ -139,7 +142,11 @@ public class OperationSendMessage extends Operation {
             }
             msg.setChannel(channel);
         }
-
+        Probe p = stack.getProbe(probe);
+        if (probe != null && p == null)
+        	throw new ExecutionException("The probe <name=" + listenpointName + "> does not exist");
+        msg.setProbe(p);
+        
         Listenpoint listenpoint = stack.getListenpoint(listenpointName);
         if (listenpointName != null && listenpoint == null) {
             throw new ExecutionException("The listenpoint <name=" + listenpointName + "> does not exist");
