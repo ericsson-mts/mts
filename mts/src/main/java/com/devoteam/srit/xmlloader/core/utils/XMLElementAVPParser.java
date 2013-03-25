@@ -141,8 +141,8 @@ public class XMLElementAVPParser implements XMLElementReplacer, Serializable
                         list.addAll(xmlElementTextOnlyParser.replace(e, parameterPool));
                     }
                 }
-                catch (ParsingException e) {
-                    throw new ExecutionException("Error while checking parsed variables against dictionary");
+                catch (Exception e) {
+                    throw new ExecutionException("Error while checking parsed variables against dictionary", e);
                 }
 
 
