@@ -63,7 +63,7 @@ public class MessageGTP
 	
 	private List<ElementAbstract> elements;
 	
-	private DataPDU tpdu = null;
+	private DataPDU tpdu;
 		
 	public DataPDU getTpdu() {
 		return tpdu;
@@ -215,17 +215,21 @@ public class MessageGTP
 		initDictionary(this.syntax);
 		
 		int offset = this.header.decodeFromArray(array, "", dictionary);
-		int fieldLength = this.header.getLength() - offset + 4; 		
+		int fieldLength = this.header.getLength() - offset; // MODIF HERE 
 		
 		Array elementArray = new DefaultArray(0);
 		if (fieldLength > 0)
 		{
 			elementArray = array.subArray(offset, fieldLength);
+			
 		}
 		if (messageType == 255)
 		{
-			if (this.tpdu == null)
-				this.tpdu = new DataPDU();
+		 	System.out.println("MESSAGEGTP --> flags = " + String.format("%02x ", elementArray.get(6), 16) + String.format("%02x ", elementArray.get(7), 16) + "; length = " + elementArray.length);
+		 	for (int i = 0; i < 10; i++)
+		 		System.out.print(String.format("%02x ", elementArray.get(i), 16));
+		 	System.out.println("");
+			this.tpdu = new DataPDU();
 			this.tpdu.decodeFromArray(elementArray, dictionary);
 		}
 		else
@@ -281,11 +285,14 @@ public class MessageGTP
 	    messageToString.append(header.toXml());
 	    messageToString.append("\n");
 	
-	    Iterator<ElementAbstract> iter = this.elements.iterator();
-	    while (iter.hasNext())
+	    if (this.elements != null)
 	    {
-	    	ElementAbstract elem = (ElementAbstract) iter.next();
-	    	messageToString.append(elem.toXml());
+	    	Iterator<ElementAbstract> iter = this.elements.iterator();
+	    	while (iter.hasNext())
+	    	{
+	    		ElementAbstract elem = (ElementAbstract) iter.next();
+	    		messageToString.append(elem.toXml());
+	    	}
 	    }
 	    if (this.tpdu != null)
 	    {

@@ -328,7 +328,8 @@ public class Probe
     }
 	
     synchronized public void capturedETHPacket(Packet packet) throws Exception {
-    	int length = packet.header.length + packet.data.length;
+    	
+    	int length = packet.header.length + packet.data.length - 14; // 14 is the ethernet headder length we have to substract in order to get good length of ethernet frame payload
     	EthernetPacket eth = (EthernetPacket) packet.datalink;
     	int type = eth.frametype;
     	byte[] srcMac = eth.src_mac;

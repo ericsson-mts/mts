@@ -24,12 +24,17 @@
 package com.devoteam.srit.xmlloader.core.protocol.probe;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+
 import jpcap.JpcapCaptor;
 import jpcap.JpcapSender;
 import jpcap.NetworkInterface;
 import jpcap.PacketReceiver;
 import jpcap.packet.EthernetPacket;
+import jpcap.packet.IPPacket;
 import jpcap.packet.Packet;
 
 
@@ -45,6 +50,7 @@ import com.devoteam.srit.xmlloader.ethernet.MsgEthernet;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.IPv4Array;
 import java.util.concurrent.Semaphore;
+
 import jpcap.NetworkInterfaceAddress;
 
 /**
@@ -90,13 +96,15 @@ public class PJpcapThread implements PacketReceiver, Runnable {
     
     public boolean sendETHMessage(Msg msg) throws ExecutionException
     {		
-		Packet p = new Packet(); // Raw packet to be embedded into Ethernet frame
 		EthernetPacket etherPckt = new EthernetPacket(); //create Ethernet packet
 		MsgEthernet msgEth = (MsgEthernet) msg; // casting abstract Msg class into MsgEthernet as this is the only  message sent here
-		
+
+		Packet p = new Packet();
 		etherPckt.frametype = (short) msgEth.getETHType(); // type of packet embedded in Ethernet frame (0800 = IPv4)
+
+
 	    etherPckt.src_mac = networkInterface.mac_address; //local MAC address
-	    
+	    	    
         if (msgEth.getMac().length != 6)
         {
         	throw new ExecutionException("Mac address is malformed, expected format is 	AA:BB:CC:DD:EE:FF");
@@ -109,12 +117,56 @@ public class PJpcapThread implements PacketReceiver, Runnable {
         		mac[j] = (byte)Integer.parseInt(msgEth.getMac()[j], 16); // Hex digit to be converted in one single byte
         	etherPckt.dst_mac = mac;
         }
+        System.out.println("SEND");
+        System.out.print("-->" + String.format("%02x", msgEth.getData()[6], 16));
+        System.out.println(String.format("%02x", msgEth.getData()[7], 16));
+        
+		p.data = msgEth.getData(); // filling raw packet with Hex datas provided in xml scenario
+		p.datalink = etherPckt; // setting datalink of raw packet as Ethernet
+
+		System.out.println("-->p.data.length = " + p.data.length);
 		
-        p.data = msgEth.getData(); // filling raw packet with Hex datas provided in xml scenario
-        p.datalink = etherPckt; // setting datalink of raw packet as Ethernet
-	    
 		sendor.sendPacket(p); // send raw packet
+		System.out.println("END");
 		return true;
+    }
+    
+    private List<IPPacket> fragmentData(byte[] data, EthernetPacket eth)
+    {
+    	List<IPPacket> ret = new ArrayList<IPPacket>();
+    	
+    	short proto = (short) (data[9]&0xff);
+    	byte[] IPSRC = new byte[] {data[12], data[13], data[14], data[15]};
+    	byte[] IPDST = new byte[] {data[16], data[17], data[18], data[19]};
+    	    	
+    	IPPacket p = new IPPacket();
+    	IPPacket p2 = new IPPacket();
+    	try {
+    		p.setIPv4Parameter(0, false, false, false, 0, false, false, true, 0, 777, 128, proto, InetAddress.getByAddress(IPSRC), InetAddress.getByAddress(IPDST));
+    		p2.setIPv4Parameter(0, false, false, false, 0, false, false, false, 0, 777, 128, proto, InetAddress.getByAddress(IPSRC), InetAddress.getByAddress(IPDST));
+       	} catch (Exception e) {}
+    	
+    	p.ident = 777;
+    	p2.ident = 777;
+    	p2.offset = (short) 0xb900;
+    	p.offset = 0;
+    	p.datalink = eth;
+    	p2.datalink = eth;
+    	byte[] tmp = new byte[1480];
+    	int j = 0;
+    	for (int i = 20; i < 1500; i++)
+    		tmp[j++] = data[i];
+    	p.data = tmp;
+    	tmp = null;
+    	tmp = new byte[data.length - 1500];
+    	j = 0;
+    	for (int i = 1500; i < data.length; i++)
+    		tmp[j++] = data[i];
+    	p2.data = tmp;
+    	
+    	ret.add(p);
+    	ret.add(p2);
+    	return ret;
     }
 
     public void create() {
