@@ -287,7 +287,10 @@ public class MessageGTP
 	    	ElementAbstract elem = (ElementAbstract) iter.next();
 	    	messageToString.append(elem.toXml());
 	    }
-	    messageToString.append(this.tpdu.toXml());
+	    if (this.tpdu != null)
+	    {
+	    	messageToString.append(this.tpdu.toXml());
+	    }
 	    return messageToString.toString();
 	
 	}
