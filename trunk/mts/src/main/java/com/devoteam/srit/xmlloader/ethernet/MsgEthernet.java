@@ -111,7 +111,7 @@ public class MsgEthernet extends Msg
             }
             else if(params[1].equalsIgnoreCase("binary")) 
             {
-            	var.add(Array.toHexString(new DefaultArray(getBytesData())));
+            	var.add(Array.toHexString(new DefaultArray(getBytesData()))); 	
             }
             else 
             {
