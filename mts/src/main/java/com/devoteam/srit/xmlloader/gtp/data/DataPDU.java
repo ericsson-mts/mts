@@ -1,5 +1,6 @@
 package com.devoteam.srit.xmlloader.gtp.data;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,22 +19,15 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 public class DataPDU {
 
 	private Array binaryData = null;
-	private byte[] data = null;
 
 	
 	public DataPDU() {
 		super();
-		//this.binaryData = new SupArray();
 	}	
 
 	public int decodeFromArray(Array array, Dictionary dictionary)
 			throws Exception {
-		//this.binaryData = new SupArray();
-		System.out.println("DECODE FROM ARRAY --> flags = " + String.format("%02x ", array.get(6), 16) + String.format("%02x ", array.get(7), 16) + "; length = " + array.length);
-		this.data = new byte[array.length];
-		for (int i = 0; i < array.length; i++)
-	 		data[i] = array.get(i);
-        this.binaryData = array;
+        this.binaryData = array.clone();
 		return 0;
 	}
 	
@@ -57,10 +51,7 @@ public class DataPDU {
 
 	 public void getParameter(Parameter var, String[] params, String path, int offset, Dictionary dictionary) throws Exception 
 	    {
-		 	System.out.println("DATAPDU --> flags = " + String.format("%02x ", binaryData.get(6), 16) + String.format("%02x ", binaryData.get(7), 16) + "; length = " + binaryData.length);
-		 	
 			var.add(Array.toHexString(binaryData));
-		 	//var.add(this.toHexString());
 	    }
 	
 
@@ -112,21 +103,11 @@ public class DataPDU {
 	            }
 	        }
 	        this.binaryData = new DefaultArray(data2);
-	        this.data = data2;
 	    }
     }
 
 	public Array encodeToArray()
     {
     	return this.binaryData;
-    }
-	
-	private String toHexString()
-	{
-		String ret = "";
-		for (int i = 0; i < data.length; i++)
-			ret += String.format("%02x", data[i], 16);
-		return ret;
-	}
-	
+    }	
 }

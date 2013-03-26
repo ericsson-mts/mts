@@ -225,10 +225,6 @@ public class MessageGTP
 		}
 		if (messageType == 255)
 		{
-		 	System.out.println("MESSAGEGTP --> flags = " + String.format("%02x ", elementArray.get(6), 16) + String.format("%02x ", elementArray.get(7), 16) + "; length = " + elementArray.length);
-		 	for (int i = 0; i < 10; i++)
-		 		System.out.print(String.format("%02x ", elementArray.get(i), 16));
-		 	System.out.println("");
 			this.tpdu = new DataPDU();
 			this.tpdu.decodeFromArray(elementArray, dictionary);
 		}
