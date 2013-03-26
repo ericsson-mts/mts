@@ -26,7 +26,6 @@ package com.devoteam.srit.xmlloader.core.protocol.probe;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 
 import jpcap.JpcapCaptor;
@@ -117,17 +116,11 @@ public class PJpcapThread implements PacketReceiver, Runnable {
         		mac[j] = (byte)Integer.parseInt(msgEth.getMac()[j], 16); // Hex digit to be converted in one single byte
         	etherPckt.dst_mac = mac;
         }
-        System.out.println("SEND");
-        System.out.print("-->" + String.format("%02x", msgEth.getData()[6], 16));
-        System.out.println(String.format("%02x", msgEth.getData()[7], 16));
         
 		p.data = msgEth.getData(); // filling raw packet with Hex datas provided in xml scenario
 		p.datalink = etherPckt; // setting datalink of raw packet as Ethernet
 
-		System.out.println("-->p.data.length = " + p.data.length);
-		
 		sendor.sendPacket(p); // send raw packet
-		System.out.println("END");
 		return true;
     }
     
