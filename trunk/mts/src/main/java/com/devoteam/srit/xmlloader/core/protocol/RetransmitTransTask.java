@@ -72,7 +72,7 @@ public class RetransmitTransTask extends TimerTask
         		{
 	    			float retransmitTime = ((float) (System.currentTimeMillis()- msg.getTimestamp())) /1000;
 	    			
-	                // logs in scenario and main logs as CALLFLOW topic
+	                // logs in scenario and application logs as CALLFLOW topic
 	            	stack.processLogsMsgSending(msg, scRunner, Stack.SEND);                			    		
 	            	String logMsg = "Send an auto retransmission (index=" + msg.getRetransNumber() + ",time=" + retransmitTime + "s) for the message : "; 
                 	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PROTOCOL, logMsg, msg.toShortString());

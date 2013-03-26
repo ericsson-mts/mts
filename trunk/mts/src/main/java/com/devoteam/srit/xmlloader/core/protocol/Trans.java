@@ -145,7 +145,7 @@ public class Trans extends GroupMsg<Msg>
                     int retransNumber = msg.getRetransNumber() + 1;
                     msg.setRetransNumber(retransNumber);
 
-                    // logs in scenario and main logs as CALLFLOW topic
+                    // logs in scenario and application logs as CALLFLOW topic
                     stack.processLogsMsgSending(msg, scRunner, Stack.SEND);
 
                     // log a info message and update statistic counter
