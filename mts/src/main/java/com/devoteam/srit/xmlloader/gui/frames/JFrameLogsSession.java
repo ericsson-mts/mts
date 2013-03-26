@@ -86,7 +86,7 @@ public class JFrameLogsSession extends javax.swing.JFrame {
         jRadioButtonMenuItemINFO = new javax.swing.JRadioButtonMenuItem();
         jRadioButtonMenuItemDEBUG = new javax.swing.JRadioButtonMenuItem();
 
-        setTitle("Session logs");
+        setTitle("Scenarios logs");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setIconImage(java.awt.Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/internet-group-chat.png")));
         setLocationByPlatform(true);
@@ -448,7 +448,7 @@ public class JFrameLogsSession extends javax.swing.JFrame {
             ((CardLayout) this.jPanel3.getLayout()).show(jPanel3, "card2");
         }
         else {
-            this.setTitle("Main logs");
+            this.setTitle("Application logs");
             this.logTables = new LinkedHashMap();
             this.jComboBoxRuns.setVisible(false);
             this.jMainTableLogs = new JTableLogs("application logs", null, null);

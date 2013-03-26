@@ -684,7 +684,7 @@ public abstract class Stack
         msg.setTimestamp(System.currentTimeMillis());
         sendMessage(msg);
         
-        // logs in scenario and main logs as CALLFLOW topic
+        // logs in scenario and application logs as CALLFLOW topic
         processLogsMsgSending(msg, srcRunner, Stack.SEND);
 
         return true;
@@ -941,7 +941,7 @@ public abstract class Stack
 	        
 	        if (destScenario != null)
 	        {                	
-	            // logs in scenario and main logs as CALLFLOW topic
+	            // logs in scenario and application logs as CALLFLOW topic
 	            processLogsMsgSending(msg, destScenario, Stack.RECEIVE);
 	            destScenario.dispatchMessage(msg);
 	        }
@@ -1046,7 +1046,7 @@ public abstract class Stack
             {
                 if (null != destScenario)
                 {
-                    // logs in scenario and main logs as CALLFLOW topic
+                    // logs in scenario and application logs as CALLFLOW topic
                     processLogsMsgSending(msg, destScenario, Stack.CAPTURE);
                     destScenario.dispatchMessage(msg);
                 }
@@ -1152,7 +1152,7 @@ public abstract class Stack
                 
                 if (null != destScenario)
                 {                	
-                    // logs in scenario and main logs as CALLFLOW topic                	
+                    // logs in scenario and application logs as CALLFLOW topic                	
                     processLogsMsgSending(msg, destScenario, Stack.CAPTURE);
                     destScenario.dispatchMessage(msg);
                 }
