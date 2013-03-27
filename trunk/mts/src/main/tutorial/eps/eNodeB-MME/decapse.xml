@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+	<label name="begin"/>
+
+	<receiveMessageGTP name="inc message">
+		<parameter name="[rawData]" operation="protocol.setFromMessage" value="data.binary" />
+	</receiveMessageGTP>
+	<sendMessageETHERNET name="send packet" probe="capture"> 
+		<ethernet remoteMac="08:00:27:8B:BB:0A" type="0800" /> <!-- type="0800" is for IP payload -->
+		<data format="binary">h[rawData]</data> <!-- IP packet -->
+  	</sendMessageETHERNET>
+	
+	<goto name="goto begin" label="begin"/>
+
+</scenario>

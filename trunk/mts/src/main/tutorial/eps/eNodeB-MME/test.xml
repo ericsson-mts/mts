@@ -1,0 +1,19 @@
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+<test name="echo client GTPv2-C">
+
+<!-- ##################################################################### -->
+<!-- ## parameter to set up GTP tunnel between localhost and EPS core #### -->
+<!-- ##################################################################### -->
+	<parameter name="[test]" operation="binary.toNumber" value="1b69b4bacd05f15" />
+	<parameter name="[sgwS11IP]" operation="set" value="192.168.90.123"/>
+	<parameter name="[gtpcPort]" operation="set" value="2123"/>
+	<parameter name="[gtpcTransportProto]" operation="set" value="udp"/>
+	<parameter name="[gtpuTransportProto]" operation="set" value="udp"/>
+	<parameter name="[gtpuPort]" operation="set" value="2152" />
+	<parameter name="[sgwS1UIP]" operation="set" value="192.168.90.122" />
+<!-- ##################################################################### -->
+        <testcase name="MME/eNodeB" description="create_session" state="false">
+                <scenario name="ETHERNET">111_create_session.xml</scenario>
+				<scenario name="GTP.V1">decapse.xml</scenario>
+        </testcase>
+</test>
