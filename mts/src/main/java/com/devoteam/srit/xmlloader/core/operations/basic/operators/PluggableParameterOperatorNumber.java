@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.core.operations.basic.operators;
 
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -65,6 +66,7 @@ public class PluggableParameterOperatorNumber extends AbstractPluggableParameter
     final private String NAME_N_RANDOMGAUSSIAN = "number.randomGaussian";
     final private String NAME_N_PARSEDATE = "number.parseDate";
     final private String NAME_N_TODATE = "number.toDate";
+    final private String NAME_N_TOBINARY = "number.toBinary";
     
 
     private DecimalFormat decimalFormat;
@@ -97,6 +99,7 @@ public class PluggableParameterOperatorNumber extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_N_RANDOMGAUSSIAN));
         this.addPluggableName(new PluggableName(NAME_N_PARSEDATE));
         this.addPluggableName(new PluggableName(NAME_N_TODATE));
+        this.addPluggableName(new PluggableName(NAME_N_TOBINARY));
     }
     
     @Override
@@ -205,7 +208,11 @@ public class PluggableParameterOperatorNumber extends AbstractPluggableParameter
                     	result.add((new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(date)));
                 	}
                 }
-                
+                else if (name.equalsIgnoreCase(NAME_N_TOBINARY))
+                {
+                	BigInteger n = new BigInteger(param1.get(i).toString());
+                	result.add(n.toString(16));
+                }
                 else throw new RuntimeException("unsupported operation " + name);
             }
         }

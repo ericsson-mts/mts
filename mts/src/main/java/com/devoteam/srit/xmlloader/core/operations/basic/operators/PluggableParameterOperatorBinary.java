@@ -35,8 +35,12 @@ import gp.utils.arrays.DigestArray;
 import gp.utils.arrays.MacArray;
 import gp.utils.arrays.RandomArray;
 
+import java.math.BigInteger;
 import java.util.Map;
+import java.util.StringTokenizer;
+
 import javax.crypto.Cipher;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  *
@@ -65,6 +69,9 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     final private String NAME_BIN_STATVARIANCE = "binary.statVariance";
     final private String NAME_BIN_STATPOPULAR = "binary.statPopular";
     final private String NAME_BIN_STATMAXFREQ = "binary.statMaxFreq";
+    final private String NAME_BIN_FROMIP	= "binary.fromIp";
+    final private String NAME_BIN_TOIP		= "binary.toIp";
+    final private String NAME_BIN_TONUMBER	= "binary.toNumber";
 
     
     
@@ -90,6 +97,9 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_BIN_STATVARIANCE));
         this.addPluggableName(new PluggableName(NAME_BIN_STATPOPULAR));
         this.addPluggableName(new PluggableName(NAME_BIN_STATMAXFREQ));
+        this.addPluggableName(new PluggableName(NAME_BIN_FROMIP));
+        this.addPluggableName(new PluggableName(NAME_BIN_TOIP));
+        this.addPluggableName(new PluggableName(NAME_BIN_TONUMBER));
     }
 
     @Override
@@ -266,6 +276,32 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     Array array = Array.fromHexString(param_1.get(i).toString());
                     byte[] data = array.getBytes();
                     result.add(formatDouble(((double) calculePopular(data, true)) / data.length));
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_FROMIP))
+                {
+                	StringTokenizer ip = new StringTokenizer(param_1.get(i).toString(), "."); 
+                	String ret = "";
+                	if (ip.countTokens() != 4)
+                		throw new ParameterException("Error in operation, " + param_1.get(i) + " isn't a valid IP address");
+                	while (ip.hasMoreTokens())
+                		ret += Integer.toHexString(Integer.parseInt(ip.nextToken()));
+                	result.add(ret);
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_TOIP))
+                {
+                	byte[] ip = DatatypeConverter.parseHexBinary(param_1.get(i).toString());
+                	String ret = "";
+                	if (ip.length != 4)
+                		throw new Exception();
+                	for (int j = 0; j < ip.length - 1; j++)
+                		ret += (ip[j]&0xff) + ".";
+                	ret += (ip[ip.length - 1]&0xff);
+                	result.add(ret);
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_TONUMBER))
+                {
+                	BigInteger n = new BigInteger(param_1.get(i).toString(), 16);
+                	result.add(n.toString());
                 }
                 /* experimental                
                 else if (name.equalsIgnoreCase(NAME_BIN_STATHISTOVALUE))
