@@ -25,11 +25,14 @@ package com.devoteam.srit.xmlloader.core.hybridnio;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.SocketAddress;
+//import java.net.SocketOption;
 // import java.net.SocketAddress;
 // import java.net.SocketOption;
 import java.nio.channels.Channel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.Set;
 // import java.util.Set;
 
 import javax.net.ssl.SSLContext;
@@ -51,8 +54,7 @@ import javax.net.ssl.SSLEngine;
  * 
  * @author Ilkka Priha
  */
-public class SSLServerSocketChannel extends ServerSocketChannel implements
-    AdaptableChannel
+public class SSLServerSocketChannel extends ServerSocketChannel implements AdaptableChannel
 {
     /**
      * The unsecure server socket channel.

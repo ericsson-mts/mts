@@ -28,6 +28,7 @@
     <test parameter="[result5]" condition="binary.equals"     value="3233"/>
 
     <parameter name="[result]"  operation="binary.random" value="8"/>
+	<parameter name="[result6]" operation="set" value="09d81fa8" />
 
 
 
@@ -67,5 +68,7 @@
     <test parameter="[statPopular]" condition="binary.equals"     value="f9"/>
     <parameter name="[statPopular]" operation="binary.statMaxFreq" value="[binary]"/>
     <test parameter="[statPopular]" condition="number.equals"     value="0.181818"/>
+	<parameter name="[binarytonumber]" operation="binary.toNumber" value="[result6]" />
+	<test parameter="[binarytonumber]" condition="number.equals"	value="165158824" />
     
 </scenario>
