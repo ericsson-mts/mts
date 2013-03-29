@@ -192,7 +192,7 @@ public class MessageGTP
 	}
 
 	public void decodeFromBytes(byte[] data) throws Exception
-	{
+	{		
 		Array array = new DefaultArray(data);
 		 
 		int version = array.getBits(0, 3);
@@ -214,14 +214,15 @@ public class MessageGTP
 		this.syntax = this.header.getSyntax();
 		initDictionary(this.syntax);
 		
-		int offset = this.header.decodeFromArray(array, "", dictionary);
-		int fieldLength = this.header.getLength() - offset; // MODIF HERE 
-		
+		int offset = this.header.decodeFromArray(array, "", dictionary);		
+		int fieldLength = this.header.getLength() - offset + 4;
+		if (fieldLength > 1500)
+			fieldLength -= (fieldLength - 1500); // MODIF HERE
+
 		Array elementArray = new DefaultArray(0);
 		if (fieldLength > 0)
 		{
-			elementArray = array.subArray(offset, fieldLength);
-			
+			elementArray = array.subArray(offset, fieldLength);			
 		}
 		if (messageType == 255)
 		{
@@ -262,14 +263,17 @@ public class MessageGTP
 	public Array encodeToArray() 
 	{
 	    SupArray array = new SupArray();
-	    Iterator<ElementAbstract> iter = this.elements.iterator();
-	    while (iter.hasNext())
+	    if (this.elements != null)
 	    {
-	    	ElementAbstract elem = (ElementAbstract) iter.next();
-	        array.addLast(elem.encodeToArray());	    	
+	    	Iterator<ElementAbstract> iter = this.elements.iterator();
+	    	while (iter.hasNext())
+	    	{
+	    		ElementAbstract elem = (ElementAbstract) iter.next();
+	    		array.addLast(elem.encodeToArray());	    	
+	    	}
 	    }
 	    if (this.tpdu != null)
-	    	array.addLast(this.tpdu.encodeToArray());
+	    	array.addLast(this.tpdu.encodeToArray().clone());
 	    header.setLength(array.length + header.calculateHeaderSize());
 	    array.addFirst(header.encodeToArray());
 	    return array;
