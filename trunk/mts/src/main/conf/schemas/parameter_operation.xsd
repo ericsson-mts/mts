@@ -470,6 +470,57 @@
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>
+			</xs:element>
+			<xs:element name="binary.fromIp">
+				<xs:annotation>
+					<xs:documentation>Return the hex representation of an IP address </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The result value as a binary value.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The IP address in dotted deceimal representation.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="binary.toIp">
+				<xs:annotation>
+					<xs:documentation>Return the dotted decimal representation of an IP address represented in hex string </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The result value as a binary value.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The IP address in hex string representation.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="binary.toNumber">
+				<xs:annotation>
+					<xs:documentation>Return the number represented by a hex string </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The result value as a binary value.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The number to convert in hex string representation.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
 			</xs:element>																												
 		</xs:sequence>
 		
@@ -1771,6 +1822,24 @@
 					<xs:attribute name="value2" type="xs:string" use="optional">
 						<xs:annotation>
 							<xs:documentation>[Optional] The date format under a non-static format (default is  dd/MM/yyyy HH:mm:ss).</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="number.toBinary">
+				<xs:annotation>
+					<xs:documentation>Return a hex string representing number in hex format.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The resulting value.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The number to convert to hex string.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 
