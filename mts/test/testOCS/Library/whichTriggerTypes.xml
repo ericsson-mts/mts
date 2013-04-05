@@ -1,0 +1,56 @@
+<!--
+Abstract :
+Build the [Trigger-Type] variable for sending in the CCA the list of
+the trigger type, one by Trigger-Type AVP nested in the grouped Trigger AVP.
+
+Input parameters :
+- [triggerTypesOfSubscriber] : subscribers' list of the trigger types from the data file.
+- [serviceIndex] : subscriber's service index in the data file.
+
+Output parameters :
+- [Trigger-Type] : list of the activated trigger types.
+
+Another used include : none.
+-->
+
+<!--
+3GPP TS 32.299 : The Trigger-Type AVP indicates a single re-authorisation event type.
+Possible enumerated values :
+
+A mask is built : the enumarated value of the trigger is the number the bit :
+bit 0 not used yet, bit 1 for CHANGE_IN_SGSN_IP_ADDRESS , ..., bit 3 for CHANGE_IN_LOCATION, ... 
+[triggerTypesOfSubscriber] is the decimal value of the mask.
+-->
+<parameter name="[MSCCwithTrigger]" operation="set" value="false"/>
+<parameter name="[Trigger-Type]" operation="list.create"/><!-- Don't keep the previous value. -->
+<parameter name="[currentTriggerTypesList]" operation="set" value="[triggerTypesOfSubscriber([serviceIndex])]"/>
+<if>
+  <condition>
+    <not><test parameter="[currentTriggerTypesList]" condition="string.equals" value=""/></not>
+  </condition>
+  <then>
+    <parameter name="[i]" operation="set" value="0"/>
+    <while>
+      <condition>
+        <not><test parameter="[currentTriggerTypesList]" condition="string.equals" value="0"/></not>
+      </condition>
+      <do>
+        <!-- Is trigger type value [i] activated ? -->
+        <parameter name="[currentTriggerTypeActivated]" operation="number.modulo" value="[currentTriggerTypesList]" value2="2"/>
+        <if>
+          <condition>
+            <test parameter="[currentTriggerTypeActivated]" condition="string.equals" value="1"/>
+          </condition>
+          <then>
+            <!-- Trigger type value [i] is activated. -->
+            <parameter name="[MSCCwithTrigger]" operation="set" value="true"/>
+            <parameter name="[Trigger-Type]" operation="list.addLast" value="[Trigger-Type]" value2="[i]"/>
+            <parameter name="[currentTriggerTypesList]" operation="number.substract" value="[currentTriggerTypesList]" value2="1"/>
+          </then>
+        </if>
+        <parameter name="[currentTriggerTypesList]" operation="number.divide" value="[currentTriggerTypesList]" value2="2"/>
+        <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+      </do>
+    </while>
+  </then>
+</if>

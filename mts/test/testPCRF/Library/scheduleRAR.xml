@@ -1,0 +1,78 @@
+<!--
+Abstract :
+Sends the RAR.
+
+Input parameters :
+- [RARsessionId] : list of Session-Id AVP values for RAR to send.
+- [RARdelay] : list of delays for RAR to send.
+
+Output parameters :
+- [lastRARindex] : last index of RAR to send.
+- [scheduledRARindexes] : list of indexes of the RAR to send ordered by RAR delay.
+
+Another used include : none.
+-->
+
+<parameter name="[lastRARindex]" operation="list.size" value="[RARsessionId]"/>
+<parameter name="[lastRARindex]" operation="number.substract" value="[lastRARindex]" value2="1"/>
+<parameter name="[scheduledRARindexes]" operation="list.create"/>
+<parameter name="[scheduledRARindexes]" operation="list.addFirst" value="[scheduledRARindexes]" value2="0"/>
+<parameter name="[i]" operation="set" value="1"/>
+<while>
+  <condition>
+    <test parameter="[i]" condition="number.lowerEqualThan" value="[lastRARindex]"/>
+  </condition>
+  <do>
+    <parameter name="[scheduledRARindexes2]" operation="list.create"/>
+    <parameter name="[k]" operation="set" value="[scheduledRARindexes(0)]"/>
+    <if>
+      <condition>
+        <test parameter="[RARdelay([i])]" condition="number.greaterEqualThan" value="[RARdelay([k])]"/>
+      </condition>
+      <then>
+        <parameter name="[addAfter]" operation="set" value="true"/>
+      </then>
+      <else>
+        <parameter name="[addAfter]" operation="set" value="false"/>
+      </else>
+    </if>
+    <while>
+      <condition>
+        <test parameter="[addAfter]" condition="boolean.equals" value="true"/>
+      </condition>
+      <do>
+        <parameter name="[RARindex]" operation="list.getfirst" value="[scheduledRARindexes]"/>
+        <parameter name="[scheduledRARindexes]" operation="list.removefirst" value="[scheduledRARindexes]"/>
+        <parameter name="[scheduledRARindexes2]" operation="list.addLast" value="[scheduledRARindexes2]" value2="[RARindex]"/>
+    
+        <if>
+          <condition>
+            <test parameter="[scheduledRARindexes]" condition="list.isEmpty"/>
+          </condition>
+          <then>
+            <parameter name="[addAfter]" operation="set" value="false"/>
+          </then>
+          <else>
+            <parameter name="[k]" operation="set" value="[scheduledRARindexes(0)]"/>
+            <if>
+              <condition>
+                <test parameter="[RARdelay([i])]" condition="number.greaterEqualThan" value="[RARdelay([k])]"/>
+              </condition>
+              <then>
+                <parameter name="[addAfter]" operation="set" value="true"/>
+              </then>
+              <else>
+                <parameter name="[addAfter]" operation="set" value="false"/>
+              </else>
+            </if>
+          </else>
+        </if>
+      </do>
+    </while>
+    <parameter name="[scheduledRARindexes2]" operation="list.addLast" value="[scheduledRARindexes2]" value2="[i]"/>
+    <parameter name="[scheduledRARindexes2]" operation="list.addLast" value="[scheduledRARindexes2]" value2="[scheduledRARindexes]"/>
+    <parameter name="[scheduledRARindexes]" operation="list.set" value="[scheduledRARindexes2]"/>
+    <parameter name="[scheduledRARindexes2]" operation="list.remove"/>
+    <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+  </do>
+</while>

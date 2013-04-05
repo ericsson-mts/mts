@@ -1,0 +1,85 @@
+<!--
+Abstract :
+
+Input parameters :
+
+Output parameters :
+
+Another used include :
+-->
+
+<!--
+From 3GPP TS 29.212 V11.6.0 (2012-09) :
+<Re-Auth-Request> ::= < Diameter Header: 258, REQ, PXY >
+                        < Session-Id >
+                        { Auth-Application-Id }
+                        { Origin-Host }
+                        { Origin-Realm }
+                        { Destination-Realm }
+                        { Destination-Host }
+                        { Re-Auth-Request-Type }
+               Not used [ User-Name ]
+                        [ Session-Release-Cause ]
+                        [ Origin-State-Id ]
+                       *[ Event-Trigger ]
+                        [ Event-Report-Indication ]
+                       *[ Charging-Rule-Remove ]
+                       *[ Charging-Rule-Install ]
+                       *[ ADC-Rule-Remove ]
+                       *[ ADC-Rule-Install ]
+                        [ Default-EPS-Bearer-QoS ]
+                       *[ QoS-Information ]
+                        [ Revalidation-Time ]
+                        [ ADC-Revalidation-Time ]
+                       *[ Usage-Monitoring-Information ]
+                       *[ Proxy-Info ]
+                       *[ Route-Record ]
+                       *[ AVP]
+                  
+-->
+<!--sendMessageDIAMETER name="Send Request RAR" remoteURL="diameter://[PCEF-Address]"-->
+<sendMessageDIAMETER name="Send Request RAR" remoteHost="[PCEF-Host]" remotePort="[PCEF-Port]">
+    <header request="true" command="Re-Auth" applicationId="16777238" proxiable="true" error="false" retransmit="false"/>
+      <!-- The Session-Id AVP is used to identify a specific session. -->
+      <avp code="Session-Id" mandatory="true" type="UTF8String" value="[Session-Id]"/>
+    
+      <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
+      <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[GxApplicationId]"/>
+
+      <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
+      <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[PCRF-Host]"/>
+      <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
+      <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[PCRF-Realm]"/>
+      <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
+      <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[PCEF-Realm]"/>            
+      <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[PCEF-Host]"/>
+    
+      <!-- RFC 3588 : The Re-Auth-Request-Type AVP is included in application-specific auth answers to inform the client of the action expected upon expiration of the Authorization-Lifetime. -->
+      <!-- Possible enumerated values : AUTHORIZE_ONLY(0) / AUTHORIZE_AUTHENTICATE(1). -->
+      <!-- RFC 4006 : The Diameter credit-control application supports server-initiated re-authorization.  The credit-control server MAY optionally initiate the credit re-authorization by issuing a Re-Auth-Request (RAR) as defined in the Diameter base protocol [DIAMBASE].  The Auth-Application-Id in the RAR message is set to 4 to indicate Diameter Credit Control, and the Re-Auth-Request-Type is set to AUTHORIZE_ONLY. -->
+      <avp code="Re-Auth-Request-Type" mandatory="true" type="Enumerated" value="AUTHORIZE_ONLY"/>
+
+      <!-- Not used by 3GPP, the User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
+      <!-- Not used avp code="User-Name" mandatory="false" type="UTF8String" value="ToBeCompleted"/-->
+
+      <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
+      <!--avp code="Origin-State-Id" mandatory="false" type="Unsigned32" value="0"/-->
+
+      <!-- The Proxy-Host AVP contains the identity of the host that added the Proxy-Info AVP. -->
+      <!-- The Proxy-State AVP contains state local information. -->
+      <!--
+      <avp code="Proxy-Info">
+        <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+        <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+      </avp>
+      <avp code="Proxy-Info">
+        <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+        <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+      </avp>
+      -->
+      <!-- The identity added in the Route-Record AVP MUST be the same as the one received in the Origin-Host of the Capabilities Exchange message. -->
+      <!-->
+      <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+      <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+      -->
+</sendMessageDIAMETER>

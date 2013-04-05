@@ -1,0 +1,168 @@
+<!--
+Abstract :
+Receive the CCA-I.
+Extract the granted time and volume quota value to reuse as used unit.
+Send CCR-U with Used-Service-Unit AVP.
+Receive the CCA-U.
+Extract the granted time and volume quota value to reuse as used unit.
+Send CCR-T with Used-Service-Unit AVP.
+Receive the CCA-T.
+
+Input parameters :
+- [endUserSIP_URI] : 
+- [Service-Identifier] : 
+- [Rating-Group] : 
+- [Session-Id] : 
+
+Output parameters :
+- [grantedCC-Time] : value of the CC-Time AVP.
+- [grantedCC-Total-Octets] : value of the CC-Total-Octets AVP.
+- [CC-Request-Type] : value of the CC-Request-Type AVP (3 for TERMINATION_REQUEST at the end of this piece of script).
+- [CC-Time] : value to set in the CC-Time AVP of the Used-Service-Unit AVP.
+- [CC-Total-Octets] : value to set in the CC-Total-Octets AVP of the Used-Service-Unit AVP.
+
+Another used include :
+- sendCCRwithUSU
+-->
+
+<receiveMessageDIAMETER name="Receive Answer 3GPP/Gy/CCA">
+<parameter name="[Service-Identifier]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Service-Identifier.value"/>
+<parameter name="[Rating-Group]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Rating-Group.value"/>
+<parameter name="[grantedCC-Time]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Granted-Service-Unit.CC-Time.value"/>
+<parameter name="[grantedCC-Total-Octets]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Granted-Service-Unit.CC-Total-Octets.value"/>
+<parameter name="[grantedCC-Input-Octets]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Granted-Service-Unit.CC-Input-Octets.value"/>
+<parameter name="[grantedCC-Output-Octets]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Granted-Service-Unit.CC-Output-Octets.value"/>
+</receiveMessageDIAMETER>
+<if>
+  <condition>
+    <or>
+      <not><test parameter="[Service-Identifier]" condition="list.isEmpty" not="[SIDpresent]"/></not>
+      <not><test parameter="[Rating-Group]" condition="list.isEmpty" not="[RGpresent]"/></not>
+    </or>
+  </condition>
+  <then>
+    <exit failed="true" description="(Un)Expected Service-Identifier and/or Rating-Group AVP."/>
+  </then>
+</if>
+<if>
+  <condition>
+    <test parameter="[grantedCC-Time]" condition="list.isEmpty"/>
+  </condition>
+  <then>
+    <parameter name="[grantedCC-Time]" operation="set" value="0"/>
+  </then>
+</if>
+<if>
+  <condition>
+    <test parameter="[grantedCC-Total-Octets]" condition="list.isEmpty"/>
+  </condition>
+  <then>
+    <parameter name="[grantedCC-Total-Octets]" operation="set" value="0"/>
+  </then>
+</if>
+<if>
+  <condition>
+    <test parameter="[grantedCC-Input-Octets]" condition="list.isEmpty"/>
+  </condition>
+  <then>
+    <parameter name="[grantedCC-Input-Octets]" operation="set" value="0"/>
+  </then>
+</if>
+<if>
+  <condition>
+    <test parameter="[grantedCC-Output-Octets]" condition="list.isEmpty"/>
+  </condition>
+  <then>
+    <parameter name="[grantedCC-Output-Octets]" operation="set" value="0"/>
+  </then>
+</if>
+
+<pause seconds="2"/>
+<!-- RFC 3588 : The request contains a Session-Id AVP, which is used in subsequent messages relating to the user's session. -->
+
+<!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+<!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+<parameter name="[CC-Request-Type]" operation="set" value="2"/>
+
+<!-- The Subscription-Id is used to identify the end user. -->
+
+<!-- The CC-Time AVP indicates the length of the requested, granted, or used time in seconds. -->
+<parameter name="[CC-Time]" operation="set" value="[grantedCC-Time]"/>
+<!-- The CC-Total-Octets contains the total number of requested, granted, or used octets regardless of the direction (sent or received). -->
+<parameter name="[CC-Total-Octets]" operation="set" value="[grantedCC-Total-Octets]"/>
+<!-- The CC-Input-Octets AVP contains the number of requested, granted, or used octets that can be/have been received from the end user. -->
+<parameter name="[CC-Input-Octets]" operation="set" value="[grantedCC-Input-Octets]"/>
+<!-- The CC-Output-Octets AVP contains the number of requested, granted, or used octets that can be/have been sent to the end user. -->
+<parameter name="[CC-Output-Octets]" operation="set" value="[grantedCC-Output-Octets]"/>
+
+<!-- The Service-Identifier AVP ([Service-Identifier]) contains the identifier of the service. The specific service the request relates to is uniquely identified by the combination of Service-Context-Id and Service-Identifier AVPs. -->
+<!-- The Rating-Group AVP contains the identifier of a rating group. -->
+
+<!-- Sending CCR UPDATE_REQUEST. -->
+&sendCCRwithUSU;
+
+<receiveMessageDIAMETER name="Receive Answer 3GPP/Gy/CCA">
+<parameter name="[grantedCC-Time]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Granted-Service-Unit.CC-Time.value"/>
+<parameter name="[grantedCC-Total-Octets]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Granted-Service-Unit.CC-Total-Octets.value"/>
+<parameter name="[grantedCC-Input-Octets]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Granted-Service-Unit.CC-Input-Octets.value"/>
+<parameter name="[grantedCC-Output-Octets]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Granted-Service-Unit.CC-Output-Octets.value"/>
+</receiveMessageDIAMETER>
+<if>
+  <condition>
+    <test parameter="[grantedCC-Time]" condition="list.isEmpty"/>
+  </condition>
+  <then>
+    <parameter name="[grantedCC-Time]" operation="set" value="0"/>
+  </then>
+</if>
+<if>
+  <condition>
+    <test parameter="[grantedCC-Total-Octets]" condition="list.isEmpty"/>
+  </condition>
+  <then>
+    <parameter name="[grantedCC-Total-Octets]" operation="set" value="0"/>
+  </then>
+</if>
+<if>
+  <condition>
+    <test parameter="[grantedCC-Input-Octets]" condition="list.isEmpty"/>
+  </condition>
+  <then>
+    <parameter name="[grantedCC-Input-Octets]" operation="set" value="0"/>
+  </then>
+</if>
+<if>
+  <condition>
+    <test parameter="[grantedCC-Output-Octets]" condition="list.isEmpty"/>
+  </condition>
+  <then>
+    <parameter name="[grantedCC-Output-Octets]" operation="set" value="0"/>
+  </then>
+</if>
+
+<pause seconds="2"/>
+<!-- RFC 3588 : The request contains a Session-Id AVP, which is used in subsequent messages relating to the user's session. -->
+
+<!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+<!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+<parameter name="[CC-Request-Type]" operation="set" value="3"/>
+
+<!-- The Subscription-Id is used to identify the end user. -->
+
+<!-- The CC-Time AVP indicates the length of the requested, granted, or used time in seconds. -->
+<parameter name="[CC-Time]" operation="set" value="[grantedCC-Time]"/>
+<!-- The CC-Total-Octets contains the total number of requested, granted, or used octets regardless of the direction (sent or received). -->
+<parameter name="[CC-Total-Octets]" operation="set" value="[grantedCC-Total-Octets]"/>
+<!-- The CC-Input-Octets AVP contains the number of requested, granted, or used octets that can be/have been received from the end user. -->
+<parameter name="[CC-Input-Octets]" operation="set" value="[grantedCC-Input-Octets]"/>
+<!-- The CC-Output-Octets AVP contains the number of requested, granted, or used octets that can be/have been sent to the end user. -->
+<parameter name="[CC-Output-Octets]" operation="set" value="[grantedCC-Output-Octets]"/>
+
+<!-- The Service-Identifier AVP ([Service-Identifier]) contains the identifier of the service. The specific service the request relates to is uniquely identified by the combination of Service-Context-Id and Service-Identifier AVPs. -->
+<!-- The Rating-Group AVP contains the identifier of a rating group. -->
+
+<!-- Sending CCR TERMINATION_REQUEST. -->
+&sendCCRwithUSU;
+
+<receiveMessageDIAMETER name="Receive Answer 3GPP/Gy/CCA">
+</receiveMessageDIAMETER>

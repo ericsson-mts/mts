@@ -1,0 +1,59 @@
+<!--
+Abstract :
+Build the [Event-Trigger] variable for sending in the CCA the list of the event triggers, one by Event-Trigger AVP.
+
+Input parameters :
+- [eventTriggersOfSubscriber] : subscribers' list of the event triggers from the data file.
+- [subscriberIndex] : subscriber's index in the data file.
+
+Output parameters :
+- [CCAwithEventTrigger] : boolean, true if the CCA is sent with Event-Trigger AVP.
+- [Event-Trigger] : list of the activated event triggers.
+
+Another used include : none.
+-->
+
+<!--
+3GPP TS 29.212 : The Event-Trigger AVP (AVP code 1006) is of type Enumerated.
+When sent from the PCRF to the PCEF the Event-Trigger AVP indicates an event that shall cause a re-request of PCC rules.
+When sent from the PCEF to the PCRF the Event-Trigger AVP indicates that the corresponding event has occurred at the gateway.
+Possible enumerated values : SGSN_CHANGE (0), QOS_CHANGE (1), RAT_CHANGE (2), TFT_CHANGE (3), PLMN_CHANGE (4), LOSS_OF_BEARER (5), RECOVERY_OF_BEARER (6), IP-CAN_CHANGE (7), QOS_CHANGE_EXCEEDING_AUTHORIZATION (11), RAI_CHANGE (12), USER_LOCATION_CHANGE (13), NO_EVENT_TRIGGERS (14), OUT_OF_CREDIT (15), REALLOCATION_OF_CREDIT (16), REVALIDATION_TIMEOUT (17), UE_IP_ADDRESS_ALLOCATE (18), UE_IP_ADDRESS_RELEASE (19), DEFAULT_EPS_BEARER_QOS_CHANGE (20), AN_GW_CHANGE (21), SUCCESSFUL_RESOURCE_ALLOCATION (22), RESOURCE_MODIFICATION_REQUEST (23), PGW_TRACE_CONTROL (24), UE_TIME_ZONE_CHANGE (25), TAI_CHANGE (26), ECGI_CHANGE (27), CHARGING_CORRELATION_EXCHANGE (28), APN-AMBR_MODIFICATION_FAILURE (29), USER_CSG_INFORMATION_CHANGE (30), USAGE_REPORT (33), DEFAULT-EPS-BEARER-QOS_MODIFICATION_FAILURE (34), USER_CSG_HYBRID_SUBSCRIBED_INFORMATION_CHANGE (35), USER_CSG_ HYBRID_UNSUBSCRIBED_INFORMATION_CHANGE (36), ROUTING_RULE_CHANGE (37), APPLICATION_START (39), APPLICATION_STOP (40), ADC_REVALIDATION_TIMEOUT (41), CS_TO_PS_HANDOVER (42), UE_LOCAL_IP_ADDRESS_CHANGE (43), H(E),NB_LOCAL_IP_ADDRESS_CHANGE (44), ACCESS_NETWORK_INFO_REPORT (45).
+
+
+A mask is built : the enumarated value of the trigger is the number the bit :
+bit 0 not used yet, bit 1 for SGSN_CHANGE , ..., bit 3 for RAT_CHANGE, ... 
+[eventTriggersOfSubscriber] is the decimal value of the mask.
+-->
+<parameter name="[CCAwithEventTrigger]" operation="set" value="false"/>
+<parameter name="[Event-Trigger]" operation="list.create"/><!-- Don't keep the previous value. -->
+<parameter name="[currentEventTriggersList]" operation="set" value="[eventTriggersOfSubscriber([subscriberIndex])]"/>
+<if>
+  <condition>
+    <not><test parameter="[currentEventTriggersList]" condition="string.equals" value=""/></not>
+  </condition>
+  <then>
+    <parameter name="[i]" operation="set" value="0"/>
+    <while>
+      <condition>
+        <not><test parameter="[currentEventTriggersList]" condition="string.equals" value="0"/></not>
+      </condition>
+      <do>
+        <!-- Is event trigger value [i] activated ? -->
+        <parameter name="[currentEventTriggerActivated]" operation="number.modulo" value="[currentEventTriggersList]" value2="2"/>
+        <if>
+          <condition>
+            <test parameter="[currentEventTriggerActivated]" condition="string.equals" value="1"/>
+          </condition>
+          <then>
+            <!-- Trigger type value [i] is activated. -->
+            <parameter name="[CCAwithEventTrigger]" operation="set" value="true"/>
+            <parameter name="[Event-Trigger]" operation="list.addLast" value="[Event-Trigger]" value2="[i]"/>
+            <parameter name="[currentEventTriggersList]" operation="number.substract" value="[currentEventTriggersList]" value2="1"/>
+          </then>
+        </if>
+        <parameter name="[currentEventTriggersList]" operation="number.divide" value="[currentEventTriggersList]" value2="2"/>
+        <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+      </do>
+    </while>
+  </then>
+</if>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Ro Credit-Control request (CCR)"-->
+
+<!DOCTYPE Library [
+  <!ENTITY sendCCR SYSTEM "./Library/sendCCR.xml">
+  <!ENTITY sendCCR2 SYSTEM "./Library/sendCCR2.xml">
+]>		
+
+<scenario>
+  <!-- The Subscription-Id-Type AVP is used to determine which type of identifier is carried by the Subscription-Id AVP. -->
+  <!-- Possible enumerated values : END_USER_E164(0) / END_USER_IMSI(1) / END_USER_SIP_URI(2) / END_USER_NAI(3) / END_USER_PRIVATE(4). -->
+  <parameter name="[Subscription-Id-Type]" operation="set" value="END_USER_IMSI"/>
+  <!-- The Subscription-Id-Data AVP is used to identify the end user. -->
+  <parameter name="[Subscription-Id-Data]" operation="set" value="208010000000062"/>
+
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="INITIAL_REQUEST"/>
+  <parameter name="[CC-Request-Number]" operation="set" value="0"/>
+  <!-- The Session-Id AVP is used to identify a specific session. -->
+  <parameter name="[Session-Id]" operation="set" value="pcef2pcrf.mts.devoteam.com;147038400;262933;PCC_IN_Test_5.2.2.a"/>
+
+  <!-- Sending CCR. -->
+  &sendCCR2;
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gx/CCA">
+    <parameter name="[Result-Code]" operation="protocol.setFromMessage" value="avp.Result-Code.value"/>
+  </receiveMessageDIAMETER>
+  <if>
+    <condition>
+      <!-- RFC 3588 : DIAMETER_SUCCESS (2001) : The Request was successfully completed. -->
+      <test parameter="[Result-Code]" condition="string.equals" not="true" value="2001"/>
+    </condition>
+    <then>
+      <exit failed="true" description="Expected DIAMETER_SUCCESS (2001) result code."/>
+    </then>
+  </if>
+
+  <pause seconds="2"/>
+  <!-- RFC 3588 : The request contains a Session-Id AVP, which is used in subsequent messages relating to the user's session. -->
+
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="TERMINATION_REQUEST"/>
+  <parameter name="[CC-Request-Number]" operation="number.add" value="[CC-Request-Number]" value2="1"/>
+
+  <!-- Sending CCR TERMINATION_REQUEST. -->
+  &sendCCR2;
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gx/CCA">
+  </receiveMessageDIAMETER>
+</scenario>

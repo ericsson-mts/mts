@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Ro Credit-Control answer (CCA)"-->
+
+<!DOCTYPE Library [
+  <!ENTITY loadSubscribersFromFile SYSTEM "./Library/loadSubscribersFromFile.xml">
+  <!ENTITY CCAmandatoryAVP SYSTEM "./Library/CCAmandatoryAVP.xml">
+  <!ENTITY findSubscriberOr5030 SYSTEM "./Library/findSubscriberOr5030.xml">
+  <!ENTITY findServiceOr5031 SYSTEM "./Library/findServiceOr5031.xml">
+  <!ENTITY controlServiceOr4011 SYSTEM "./Library/controlServiceOr4011.xml">
+  <!ENTITY creditLimitNotReachedOr4012 SYSTEM "./Library/creditLimitNotReachedOr4012.xml">
+  <!ENTITY sendCCA SYSTEM "./Library/sendCCA.xml">
+  <!ENTITY initiateSessionOr5004 SYSTEM "./Library/initiateSessionOr5004.xml">
+  <!ENTITY findSessionOr5002 SYSTEM "./Library/findSessionOr5002.xml">
+  <!ENTITY terminateSessionOr5002 SYSTEM "./Library/terminateSessionOr5002.xml">
+  <!ENTITY whichGrantedQuotaLevel SYSTEM "./Library/whichGrantedQuotaLevel.xml">
+  <!ENTITY updateCredit SYSTEM "./Library/updateCredit.xml">
+  <!ENTITY whichUnitTypes SYSTEM "./Library/whichUnitTypes.xml">
+  <!ENTITY findServiceOr2001 SYSTEM "./Library/findServiceOr2001.xml">
+  <!ENTITY addSIDinSession SYSTEM "./Library/addSIDinSession.xml">
+  <!ENTITY withOrWithoutTTC SYSTEM "./Library/withOrWithoutTTC.xml">
+  <!ENTITY withOrWithoutFUI SYSTEM "./Library/withOrWithoutFUI.xml">
+  <!ENTITY withOrWithoutTQT_VQT_UQT_QHT_QCT SYSTEM "./Library/withOrWithoutTQT_VQT_UQT_QHT_QCT.xml">
+  <!ENTITY whichTriggerTypes SYSTEM "./Library/whichTriggerTypes.xml">
+]>		
+
+<scenario>
+
+  <!-- Loading subscribers datas. -->
+  &loadSubscribersFromFile;
+
+  <!-- Processing Credit-Control Requests. -->
+	<label name="Begin"/>
+    <!-- Receiving CCR. -->
+    <receiveMessageDIAMETER name="Receive Request 3GPP/Gy/CCR" request="true" type="Credit-Control" timeout="0">
+      <parameter name="[test:PCEF-Host]" operation="protocol.setFromMessage" value="avp.Origin-Host.value"/>
+      <parameter name="[test:PCEF-Port]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+
+      <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+      <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+      <parameter name="[Pbit]" operation="protocol.setFromMessage" value="header.proxiable"/>
+  		<parameter name="[Session-Id]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+  		<parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type.value"/>
+  		<parameter name="[CC-Request-Number]" operation="protocol.setFromMessage" value="avp.CC-Request-Number.value"/>
+  		<parameter name="[Subscription-Id-Type]" operation="protocol.setFromMessage" value="avp.Subscription-Id.Subscription-Id-Type.value"/>
+  		<parameter name="[Subscription-Id-Data]" operation="protocol.setFromMessage" value="avp.Subscription-Id.Subscription-Id-Data.value"/>
+  		<parameter name="[Service-Identifier]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Service-Identifier.value"/>
+  		<parameter name="[Rating-Group]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Rating-Group.value"/>
+  		<parameter name="[usedCC-Time]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Used-Service-Unit.CC-Time.value"/>
+  		<parameter name="[usedCC-Money]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Used-Service-Unit.CC-Money.value"/>
+  		<parameter name="[usedCC-Total-Octets]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Used-Service-Unit.CC-Total-Octets.value"/>
+  		<parameter name="[usedCC-Input-Octets]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Used-Service-Unit.CC-Input-Octets.value"/>
+  		<parameter name="[usedCC-Output-Octets]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Used-Service-Unit.CC-Output-Octets.value"/>
+  		<parameter name="[usedCC-Service-Specific-Units]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Used-Service-Unit.CC-Service-Specific-Units.value"/>
+  		<parameter name="[Proxy-Host]" operation="protocol.setFromMessage" value="avp.Proxy-Info.Proxy-Host.value"/>
+  		<parameter name="[Proxy-State]" operation="protocol.setFromMessage" value="avp.Proxy-Info.Proxy-State.value"/>
+    </receiveMessageDIAMETER>
+
+    <!-- Finding subscriber. -->
+    &findSubscriberOr5030;
+    <!-- Known subscriber. -->
+
+    <switch parameter="[CC-Request-Type]">
+    <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+      <case equals="1">
+<!-- INITIAL_REQUEST -->
+        <!-- Initiating the session. -->
+        &initiateSessionOr5004;
+
+        <!-- Finding service. -->
+        &findServiceOr2001;
+        <!-- Found service. -->
+
+        <!-- Is the service controlled ? -->
+        &controlServiceOr4011;
+        <!-- Credit Control applicable service. -->
+
+        <!-- Adding the service in the session. Setting the Validity-Time AVP. -->
+        &addSIDinSession;
+
+        <!-- Which unit types concerne the service ? -->
+        &whichUnitTypes;
+
+        <!-- Granted Service Unit processing. -->
+        <!-- Is credit limit of service reached ? -->
+        &creditLimitNotReachedOr4012;
+        <!-- Credit limit is not reached. -->
+
+        <!-- Sending CCA. -->
+        <parameter name="[Result-Code]" operation="set" value="DIAMETER_SUCCESS" />
+        <parameter name="[msccResult-Code]" operation="list.create"/>
+        &sendCCA;
+        <goto  name="loop" label="Begin" state="true"/>
+      </case>
+
+      <case equals="2">
+<!-- UPDATE_REQUEST -->
+        <!-- Known subscriber. -->
+        <!-- Finding service. -->
+        &findServiceOr5031;
+        <!-- Found service. -->
+
+        <!-- Is the service controlled ? -->
+        &controlServiceOr4011;
+        <!-- Credit Control applicable service. -->
+
+        <!-- Controlling the session. -->
+        &findSessionOr5002;
+
+        <!-- Adding the service in the session. Setting the Validity-Time AVP. -->
+        &addSIDinSession;
+
+        <!-- Which unit types concerne the service ? -->
+        &whichUnitTypes;
+
+        <!-- Used Service Unit processing. -->
+        <!-- Update credit before sending the CCA. -->
+        &updateCredit;
+
+        <!-- Granted Service Unit processing. -->
+        <!-- Is credit limit of service reached ? -->
+        &creditLimitNotReachedOr4012;
+        <!-- Not reached credit limit. -->
+
+        <!-- Sending CCA. -->
+        <parameter name="[Result-Code]" operation="set" value="DIAMETER_SUCCESS" />
+        <parameter name="[msccResult-Code]" operation="list.create"/>
+        &sendCCA;
+        <goto  name="loop" label="Begin" state="true"/>
+      </case>
+
+      <case equals="3">
+<!-- TERMINATION_REQUEST -->
+        <!-- Terminating the session. -->
+        &terminateSessionOr5002;
+
+        <!-- Known subscriber. -->
+        <!-- Finding service. -->
+        &findServiceOr2001;
+        <!-- Found service. -->
+
+        <!-- Is the service controlled ? -->
+        &controlServiceOr4011;
+
+        <!-- Credit Control applicable service. -->
+        <!-- Which unit types concerne the service ? -->
+        &whichUnitTypes;
+
+        <!-- Used Service Unit processing. -->
+        <!-- Update credit before sending the CCA. -->
+        &updateCredit;
+
+        <!-- Sending CCA. -->
+        <parameter name="[Result-Code]" operation="set" value="DIAMETER_SUCCESS" />
+        <parameter name="[msccResult-Code]" operation="list.create"/>
+        <sendMessageDIAMETER name="Send Answer 3GPP/Gy/CCA">
+          &CCAmandatoryAVP;
+        </sendMessageDIAMETER>
+        <goto  name="loop" label="Begin" state="true"/>
+      </case>
+
+      <default>
+        <!-- Nothing done, success. -->
+        <goto  name="loop" label="Begin" state="true"/>
+      </default>
+    </switch>
+
+</scenario>

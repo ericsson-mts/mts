@@ -1,0 +1,31 @@
+<!--
+Abstract :
+Empty the [Service-Identifier] variable for not sending in the CCA when the level is rating group.
+Warn and grant the quota at service level when :
+- Level is RG in the data file but Rating-Group AVP is not present in the request.
+Warn and grant the quota at the rating group level when :
+- Level is RG in the data file but Rating-Group AVP value is different of the one in the data file.
+Exit with failure if rating group is empty in the data file while the level is RG.
+
+Input parameters :
+- [Rating-Group] : from the request.
+- [ratingGroupOfSubscriber] : subscribers' rating group of the service from the data file.
+- [grantedQuotaLevelOfSubscriber] : subscribers' level (SID or RG) of granted quota in the data file.
+- [serviceIndex] : subscriber's service index in the data file.
+
+Output parameters :
+- [Service-Identifier] : emptied if level is rating group.
+
+Another used include : none.
+-->
+
+<if>
+  <condition>
+    <not><test parameter="[grantedQuotaLevelOfSubscriber([serviceIndex])]" condition="string.equals" value="1"/></not>
+    <not><test parameter="[Rating-Group]" condition="list.isEmpty"/></not>
+  </condition>
+  <then>
+    <!-- Quota granted for the rating group : no Service-Idetifier AVP. -->
+    <parameter name="[Service-Identifier]" operation="list.create"/>
+  </then>
+</if>

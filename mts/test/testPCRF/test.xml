@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<!DOCTYPE Library [
+  <!ENTITY testcasesPCEF SYSTEM "./PCEF/testcasesPCEF.xml">
+]>		
+
+<test name="DIAMETER" description="DIAMETER regression tests">
+
+	<parameter name="[PCEF-Host]" operation="system.ipaddress"/>
+  <parameter name="[PCEF-Host]" operation="set" value="[PCEF-Host(0)]"/>
+	<parameter name="[PCEF-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter name="[PCEF-Address]" operation="set" value="[PCEF-Host]:[PCEF-Port]"/>	
+	<parameter name="[PCEF-Realm]" operation="set" value="imsloader.com"/>
+
+	<parameter name="[PCRF-Host]" operation="system.ipaddress"/>
+  <parameter name="[PCRF-Host]" operation="set" value="[PCRF-Host(0)]"/>
+	<!--parameter name="[PCRF-Host]" description="PCRF IP Address" operation="set" value="172.25.11.82" editable="true"/-->
+	<!--parameter name="[PCRF-Host]" description="PCRF IP Address" operation="set" value="PCRF.imsloader.com" editable="true"/-->
+	<parameter name="[PCRF-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter name="[PCRF-Address]" operation="set" value="[PCRF-Host]:[PCRF-Port]"/>
+	<parameter name="[PCRF-Realm]" operation="set" value="otip.com"/>
+
+	<parameter name="[GxApplicationId]" description="3GPP TS 29.212 Gx application identifier" operation="set" value="16777238" editable="true"/>
+	<parameter name="[sessionsHandled]" description="To handle Session-Id" operation="set" value="true" editable="true"/>
+	<parameter name="[sessionsId]" operation="list.create"/>
+	<parameter name="[sessionsSubscriberIndex]" operation="list.create"/>
+
+  <parameter name="[isLoadedSubscribersFromfile]" operation="set" value="false" />
+  <parameter name="[isLoadedRulesFromfile]" operation="set" value="false" />
+  <testcase name="PCRF_Server" description="PCRF Gx Server." state="false">
+    <scenario name="DIAMETER">PCRF.xml</scenario>
+  </testcase>
+  <testcase name="PCRF_sends_RAR" description="PCRF sends Gx RAR" state="false">
+    <scenario name="PCRF">RAR.xml</scenario>
+  </testcase>
+  <testcase name="PCRF_sends_ASR" description="PCRF sends Gx ASR" state="false">
+    <scenario name="PCRF">ASR.xml</scenario>
+  </testcase>
+
+  <!-- PCEF -->
+  &testcasesPCEF;
+</test>

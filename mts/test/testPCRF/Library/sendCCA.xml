@@ -1,0 +1,145 @@
+<!--
+Abstract :
+Sends the CCA.
+
+Input parameters :
+- [Event-Trigger] : list of the activated event triggers.
+- [CCAwithEventTrigger] : boolean, true if the CCA is sent with Event-Trigger AVP.
+- [CCAwithPCCRuleRemove] : boolean, true if the CCA is sent with Charging-Rule-Remove AVP.
+- [removeRuleNames] : list of the PCC not grouped rules to remove with the CCA.
+- [removeBaseNames] : list of the groups of PCC rules to remove with the CCA.
+- [CCAwithChI] : boolean, true if the CCA is sent with Charging-Information AVP.
+- [Primary-Event-Charging-Function-Name] : value of the Primary-Event-Charging-Function-Name AVP.
+- [Secondary-Event-Charging-Function-Name] : value of the Secondary-Event-Charging-Function-Name AVP.
+- [Primary-Charging-Collection-Function-Name] : value of the Primary-Charging-Collection-Function-Name AVP.
+- [Secondary-Charging-Collection-Function-Name] : value of the Secondary-Charging-Collection-Function-Name AVP.
+- [Revalidation-Time] : value of the Revalidation-Time AVP.
+- [CCAwithRevalidationTime] : boolean, true if the CCA is sent with Revalidation-Time AVP.
+- [CCAwithUMI] : boolean, true if the CCA is sent with Usage-Monitoring-Information AVP.
+- [Monitoring-Key] : value of the Monitoring-Key AVP.
+- [CC-Total-Octets] : value of the CC-Total-Octets AVP.
+- [GSUwithCCTotalOctets] : boolean, true if the CCA is sent with CC-Total-Octets AVP.
+- [CC-Input-Octets] : value of the CC-Input-Octets AVP.
+- [GSUwithCCInputOctets] : boolean, true if the CCA is sent with CC-Input-Octets AVP.
+- [CC-Output-Octets] : value of the CC-Output-Octets AVP.
+- [GSUwithCCOutputOctets] : boolean, true if the CCA is sent with CC-Output-Octets AVP.
+- [Usage-Monitoring-Level] : value of the Usage-Monitoring-Level AVP.
+- [UMIwithLevel] : boolean, true if the CCA is sent with Usage-Monitoring-Level AVP.
+
+Output parameters : none.
+
+Another used include :
+- withOrWithoutChargingRuleRemove
+- withOrWithoutChargingRuleInstall
+- withOrWithoutChargingInformation
+- withOrWithoutRevalidationTime
+- withOrWithoutUMI
+- CCAmandatoryAVP
+- ChargingRuleInstall01
+- ChargingRuleInstall02
+- ChargingRuleInstall03
+- ChargingRuleInstall04
+- ChargingRuleInstall05
+-->
+
+<!-- With or without Charging-Rule-Remove AVP ? -->
+&withOrWithoutChargingRuleRemove;
+
+<!-- With or without Charging-Rule-Install AVP ? -->
+<parameter name="[maxChargingRuleInstall]" operation="set" value="5"/>
+<parameter name="[maxChargingRuleDefinition]" operation="set" value="5"/>
+&withOrWithoutChargingRuleInstall;
+
+<!-- With or without Charging-Information AVP ? -->
+&withOrWithoutChargingInformation;
+
+<!-- With or without Revalidation-Time AVP ? -->
+&withOrWithoutRevalidationTime;
+
+<!-- With or without Usage-Monitoring-Information AVP ? -->
+&withOrWithoutUMI;
+
+<!-- Sending CCA. -->
+<sendMessageDIAMETER name="Send Answer 3GPP/Gx/CCA">
+  &CCAmandatoryAVP;
+
+  <!--avp code="Supported-Features"/-->
+  <!--avp code="Bearer-Control-Mode"/-->
+
+  <!-- 3GPP TS 29.212 : The Event-Trigger AVP (AVP code 1006) is of type Enumerated. When sent from the PCRF to the PCEF the Event-Trigger AVP indicates an event that shall cause a re-request of PCC rules. -->
+  <!-- Possible V11.6.0 enumerated values : SGSN_CHANGE (0) / QOS_CHANGE (1) / RAT_CHANGE (2) / TFT_CHANGE (3) / PLMN_CHANGE (4) / LOSS_OF_BEARER (5) / RECOVERY_OF_BEARER (6) / IP-CAN_CHANGE (7) / QOS_CHANGE_EXCEEDING_AUTHORIZATION (11) / RAI_CHANGE (12) / USER_LOCATION_CHANGE (13) / NO_EVENT_TRIGGERS (14) / OUT_OF_CREDIT (15) / REALLOCATION_OF_CREDIT (16) / REVALIDATION_TIMEOUT (17) / UE_IP_ADDRESS_ALLOCATE (18) / UE_IP_ADDRESS_RELEASE (19) / DEFAULT_EPS_BEARER_QOS_CHANGE (20) / AN_GW_CHANGE (21) / SUCCESSFUL_RESOURCE_ALLOCATION (22) / RESOURCE_MODIFICATION_REQUEST (23) / PGW_TRACE_CONTROL (24) / UE_TIME_ZONE_CHANGE (25) / TAI_CHANGE (26) / ECGI_CHANGE (27) / CHARGING_CORRELATION_EXCHANGE (28) / APN-AMBR_MODIFICATION_FAILURE (29) / USER_CSG_INFORMATION_CHANGE (30) / USAGE_REPORT (33) / DEFAULT-EPS-BEARER-QOS_MODIFICATION_FAILURE (34) / USER_CSG_HYBRID_SUBSCRIBED_INFORMATION_CHANGE (35) / USER_CSG_ HYBRID_UNSUBSCRIBED_INFORMATION_CHANGE (36) / ROUTING_RULE_CHANGE (37) / APPLICATION_START (39) / APPLICATION_STOP (40) / ADC_REVALIDATION_TIMEOUT (41) / CS_TO_PS_HANDOVER (42) / UE_LOCAL_IP_ADDRESS_CHANGE (43) / H(E)NB_LOCAL_IP_ADDRESS_CHANGE (44) / ACCESS_NETWORK_INFO_REPORT (45). -->
+  <avp code="Event-Trigger" vendorId="TGPP" mandatory="true" type="Enumerated" value="[Event-Trigger]" state="[CCAwithEventTrigger]"/>
+
+  <!--avp code="Origin-State-Id"/-->
+  <!--avp code="Redirect-Host"/-->
+  <!--avp code="Redirect-Host-Usage"/-->
+  <!--avp code="Redirect-Max-Cache-Time"/-->
+
+  <!-- 3GPP TS 29.212 : The Charging-Rule-Remove AVP (AVP code 1002) is of type Grouped, and it is used to deactivate or remove PCC rules from an IP CAN session. -->
+  <avp code="Charging-Rule-Remove" state="[CCAwithPCCRuleRemove]">
+    <!-- 3GPP TS 29.212 : The Charging-Rule-Name AVP (AVP code 1005) is of type OctetString, and it defines a name for PCC rule. For PCC rules provided by the PCRF it uniquely identifies a PCC rule within one IP CAN session. For PCC rules pre-defined at the PCEF it uniquely identifies a PCC rule within the PCEF. -->
+    <avp code="Charging-Rule-Name" vendorId="TGPP" mandatory="true" type="OctetString" value="[removeRuleNames]"/>
+    <!-- 3GPP TS 29.212 : The Charging-Rule-Base-Name AVP (AVP code 1004) is of type UTF8String, and it indicates the name of a pre defined group of PCC rules residing at the PCEF. -->
+    <avp code="Charging-Rule-Base-Name" vendorId="TGPP" mandatory="true" type="UTF8String" value="[removeBaseNames]"/>
+  </avp>
+
+  <!-- 3GPP TS 29.212 : The Charging-Rule-Install AVP (AVP code 1001) is of type Grouped, and it is used to activate, install or modify PCC rules as instructed from the PCRF to the PCEF. -->
+  &ChargingRuleInstall01;
+  &ChargingRuleInstall02;
+  &ChargingRuleInstall03;
+  &ChargingRuleInstall04;
+  &ChargingRuleInstall05;
+
+  <!--avp code="ADC-Rule-Remove"/-->
+  <!--avp code="ADC-Rule-Install"/-->
+
+  <!-- 3GPP TS 29.229 : The Charging-Information AVP contains the addresses of the charging functions. -->
+  <avp code="Charging-Information" state="[CCAwithChI]">
+    <!-- The Primary-Event-Charging-Function-Name AVP contains the address of the Primary Online Charging Function. -->
+    <avp code="Primary-Event-Charging-Function-Name" mandatory="true" type="DiameterURI" value="[Primary-Event-Charging-Function-Name]"/>
+    <!-- The Secondary-Event-Charging-Function-Name AVP contains the address of the Secondary Online Charging Function. -->
+    <avp code="Secondary-Event-Charging-Function-Name" mandatory="true" type="DiameterURI" value="[Secondary-Event-Charging-Function-Name]"/>
+    <!-- The Primary-Charging-Collection-Function-Name AVP contains the address of the Primary Charging Data Function. -->
+    <avp code="Primary-Charging-Collection-Function-Name" mandatory="true" type="DiameterURI" value="[Primary-Charging-Collection-Function-Name]"/>
+    <!-- The Secondary-Charging-Collection-Function-Name AVP contains the address of the Secondary Charging Data Function. -->
+    <avp code="Secondary-Charging-Collection-Function-Name" mandatory="true" type="DiameterURI" value="[Secondary-Charging-Collection-Function-Name]"/>
+  </avp>
+
+  <!--avp code="Online"/-->
+  <!--avp code="Offline"/-->
+  <!--avp code="QoS-Information"/-->
+
+  <!-- 3GPP TS 29.212 : The Revalidation-Time AVP (AVP code 1042) is of type Time (RFC 3588 : number of seconds since 0h on 1 January 1900 UTC). This value indicates the NTP time before which the PCEF will have to re-request PCC rules. -->
+  <avp code="Revalidation-Time" vendorId="TGPP" mandatory="true" type="Time" value="[Revalidation-Time]" state="[CCAwithRevalidationTime]"/>
+
+  <!--avp code="ADC-Revalidation-Time"/-->
+  <!--avp code="Default-EPS-Bearer-QoS"/-->
+  <!--avp code="Bearer-Usage"/-->
+  <!--avp code="3GPP-User-Location-Info"/-->
+
+  <!-- 3GPP TS 29.212 : The Usage-Monitoring-Information AVP (AVP code 1067) is of type Grouped, and it contains the usage monitoring control information. -->
+  <avp code="Usage-Monitoring-Information" state="[CCAwithUMI]">
+    <!-- The Monitoring-Key AVP (AVP code 1066) is of type OctetString and is used for usage monitoring control purposes as an identifier to a usage monitoring control instance. -->
+    <avp code="Monitoring-Key" mandatory="true" type="OctetString" value="[Monitoring-Key]"/>
+    <!-- The Granted-Service-Unit AVP contains the amount of units that the Diameter credit-control client can provide to the end user until the service must be released or the new Credit-Control-Request must be sent. -->
+    <avp code="Granted-Service-Unit">
+      <!-- The CC-Total-Octets contains the total number of granted octets regardless of the direction (sent or received). -->
+      <avp code="CC-Total-Octets" mandatory="true" type="Unsigned64" value="[CC-Total-Octets]" state="[GSUwithCCTotalOctets]"/>
+      <!-- The CC-Input-Octets contains the total number of granted octets that can be received from the end user. -->
+      <avp code="CC-Input-Octets" mandatory="true" type="Unsigned64" value="[CC-Input-Octets]" state="[GSUwithCCInputOctets]"/>
+      <!-- The CC-Output-Octets contains the total number of granted octets that can be sent to the end user. -->
+      <avp code="CC-Output-Octets" mandatory="true" type="Unsigned64" value="[CC-Output-Octets]" state="[GSUwithCCOutputOctets]"/>
+    </avp>
+    <avp code="Usage-Monitoring-Level" vendorId="TGPP" mandatory="true" type="Enumerated" value="[Usage-Monitoring-Level]" state="[UMIwithLevel]"/>
+  </avp>
+
+  <!--avp code="CSG-Information-Reporting"/-->
+  <!--avp code="User-CSG-Information"/-->
+  <!--avp code="Error-Message"/-->
+  <!--avp code="Error-Reporting-Host"/-->
+  <!--avp code="Failed-AVP"/-->
+  <!-- RFC 3588 : Any Proxy-Info AVPs in the request MUST be added to the answer message, in the same order they were present in the request. -->
+  <!--avp code="Proxy-Info"/-->
+  <!--avp code="Route-Record"/-->
+</sendMessageDIAMETER>
+<goto  name="loop" label="Begin" state="true"/>

@@ -1,0 +1,149 @@
+<!--
+Abstract :
+Determines wich types of unit are concerned by the subscriber's service. 
+
+Input parameters :
+- [unitTypesOfSubscriber] : subscribers' list of the service unit types from the data file.
+- [serviceIndex] : subscriber's service index in the data file.
+
+Output parameters :
+- [withUnit_Time] : boolean, true if TIME unit type concernes the subscriber's service.
+- [withUnit_Money] : boolean, true if MONEY unit type concernes the subscriber's service.
+- [withUnit_TotalOctets] : boolean, true if TOTAL_OCTETS unit type concernes the subscriber's service.
+- [withUnit_InputOctets] : boolean, true if INPUT_OCTETS unit type concernes the subscriber's service.
+- [withUnit_OutputOctets] : boolean, true if OUTPUT_OCTETS unit type concernes the subscriber's service.
+- [withUnit_ServiceSpecificUnits] : boolean, true if SERVICE_SPECIFIC_UNITS unit type concernes the subscriber's service.
+
+Another used include : none.
+-->
+
+<!--
+RFC 4006 : The CC-Unit-Type AVP specifies the type of units.
+Possible enumerated values : TIME (0) / MONEY (1) / TOTAL_OCTETS (2) / INPUT_OCTETS (3) / OUTPUT_OCTETS (4) / SERVICE_SPECIFIC_UNITS(5).
+A mask is built : the enumarated value of the unit type is the number the bit : bit 0 for TIME, ..., bit 5 for SERVICE_SPECIFIC_UNITS. 
+[unitTypesOfSubscriber] is the decimal value of the mask.
+-->
+<parameter name="[currentUnitTypesList]" operation="set" value="[unitTypesOfSubscriber([serviceIndex])]"/>
+<if>
+  <condition>
+    <test parameter="[currentUnitTypesList]" condition="string.equals" value=""/>
+  </condition>
+  <then>
+    <!-- No unit types. -->
+    <parameter name="[withUnit_Time]" operation="set" value="false"/>
+    <parameter name="[withUnit_Money]" operation="set" value="false"/>
+    <parameter name="[withUnit_TotalOctets]" operation="set" value="false"/>
+    <parameter name="[withUnit_InputOctets]" operation="set" value="false"/>
+    <parameter name="[withUnit_OutputOctets]" operation="set" value="false"/>
+    <parameter name="[withUnit_ServiceSpecificUnits]" operation="set" value="false"/>
+  </then>
+  <else>
+    <!-- Is TIME an unit type of the service ? -->
+    <parameter name="[currentUnitType]" operation="number.modulo" value="[currentUnitTypesList]" value2="2"/>
+    <if>
+      <condition>
+        <test parameter="[currentUnitType]" condition="string.equals" value="1"/>
+      </condition>
+      <then>
+        <!-- TIME is an unit type of the service. -->
+        <parameter name="[withUnit_Time]" operation="set" value="true"/>
+        <parameter name="[currentUnitTypesList]" operation="number.substract" value="[currentUnitTypesList]" value2="1"/>
+      </then>
+      <else>
+        <!-- TIME is not an unit type of the service. -->
+        <parameter name="[withUnit_Time]" operation="set" value="false"/>
+      </else>
+    </if>
+    <parameter name="[currentUnitTypesList]" operation="number.divide" value="[currentUnitTypesList]" value2="2"/>
+
+    <!-- Is MONEY an unit type of the service ? -->
+    <parameter name="[currentUnitType]" operation="number.modulo" value="[currentUnitTypesList]" value2="2"/>
+    <if>
+      <condition>
+        <test parameter="[currentUnitType]" condition="string.equals" value="1"/>
+      </condition>
+      <then>
+        <!-- MONEY is an unit type of the service. -->
+        <parameter name="[withUnit_Money]" operation="set" value="true"/>
+        <parameter name="[currentUnitTypesList]" operation="number.substract" value="[currentUnitTypesList]" value2="1"/>
+      </then>
+      <else>
+        <!-- MONEY is not an unit type of the service. -->
+        <parameter name="[withUnit_Money]" operation="set" value="false"/>
+      </else>
+    </if>
+    <parameter name="[currentUnitTypesList]" operation="number.divide" value="[currentUnitTypesList]" value2="2"/>
+
+    <!-- Is TOTAL_OCTETS an unit type of the service ? -->
+    <parameter name="[currentUnitType]" operation="number.modulo" value="[currentUnitTypesList]" value2="2"/>
+    <if>
+      <condition>
+        <test parameter="[currentUnitType]" condition="string.equals" value="1"/>
+      </condition>
+      <then>
+        <!-- TOTAL_OCTETS is an unit type of the service. -->
+        <parameter name="[withUnit_TotalOctets]" operation="set" value="true"/>
+        <parameter name="[currentUnitTypesList]" operation="number.substract" value="[currentUnitTypesList]" value2="1"/>
+      </then>
+      <else>
+        <!-- TOTAL_OCTETS is not an unit type of the service. -->
+        <parameter name="[withUnit_TotalOctets]" operation="set" value="false"/>
+      </else>
+    </if>
+    <parameter name="[currentUnitTypesList]" operation="number.divide" value="[currentUnitTypesList]" value2="2"/>
+
+    <!-- Is INPUT_OCTETS an unit type of the service ? -->
+    <parameter name="[currentUnitType]" operation="number.modulo" value="[currentUnitTypesList]" value2="2"/>
+    <if>
+      <condition>
+        <test parameter="[currentUnitType]" condition="string.equals" value="1"/>
+      </condition>
+      <then>
+        <!-- INPUT_OCTETS is an unit type of the service. -->
+        <parameter name="[withUnit_InputOctets]" operation="set" value="true"/>
+        <parameter name="[currentUnitTypesList]" operation="number.substract" value="[currentUnitTypesList]" value2="1"/>
+      </then>
+      <else>
+        <!-- INPUT_OCTETS is not an unit type of the service. -->
+        <parameter name="[withUnit_InputOctets]" operation="set" value="false"/>
+      </else>
+    </if>
+    <parameter name="[currentUnitTypesList]" operation="number.divide" value="[currentUnitTypesList]" value2="2"/>
+
+    <!-- Is OUTPUT_OCTETS an unit type of the service ? -->
+    <parameter name="[currentUnitType]" operation="number.modulo" value="[currentUnitTypesList]" value2="2"/>
+    <if>
+      <condition>
+        <test parameter="[currentUnitType]" condition="string.equals" value="1"/>
+      </condition>
+      <then>
+        <!-- OUTPUT_OCTETS is an unit type of the service. -->
+        <parameter name="[withUnit_OutputOctets]" operation="set" value="true"/>
+        <parameter name="[currentUnitTypesList]" operation="number.substract" value="[currentUnitTypesList]" value2="1"/>
+      </then>
+      <else>
+        <!-- OUTPUT_OCTETS is not an unit type of the service. -->
+        <parameter name="[withUnit_OutputOctets]" operation="set" value="false"/>
+      </else>
+    </if>
+    <parameter name="[currentUnitTypesList]" operation="number.divide" value="[currentUnitTypesList]" value2="2"/>
+
+    <!-- Is SERVICE_SPECIFIC_UNITS an unit type of the service ? -->
+    <parameter name="[currentUnitType]" operation="number.modulo" value="[currentUnitTypesList]" value2="2"/>
+    <if>
+      <condition>
+        <test parameter="[currentUnitType]" condition="string.equals" value="1"/>
+      </condition>
+      <then>
+        <!-- SERVICE_SPECIFIC_UNITS is an unit type of the service. -->
+        <parameter name="[withUnit_ServiceSpecificUnits]" operation="set" value="true"/>
+        <parameter name="[currentUnitTypesList]" operation="number.substract" value="[currentUnitTypesList]" value2="1"/>
+      </then>
+      <else>
+        <!-- SERVICE_SPECIFIC_UNITS is not an unit type of the service. -->
+        <parameter name="[withUnit_ServiceSpecificUnits]" operation="set" value="false"/>
+      </else>
+    </if>
+    <parameter name="[currentUnitTypesList]" operation="number.divide" value="[currentUnitTypesList]" value2="2"/>
+  </else>
+</if>

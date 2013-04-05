@@ -1,0 +1,55 @@
+<!--
+Abstract :
+Load data from file to MTS variables.
+
+Input parameters :
+- [isLoadedSubscribersFromfile] : boolean, true if data are already loaded from file.
+
+Output parameters :
+- [isLoadedSubscribersFromfile] : boolean, true if data are already loaded from file.
+- [xxxOfSubscriber] : subscribers' data xxx from data file.
+
+Another used include : none.
+-->
+
+<if>
+  <condition>
+    <test parameter="[isLoadedSubscribersFromfile]" condition="boolean.equals" value="false"/>
+  </condition>
+  <then>
+    <parameter name="[test:csvPathSubscribers]" operation="set" value="Subscribers.csv"/>
+
+    <parameter name="[test:userIdE164OfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="userIdE164"/>
+    <parameter name="[test:userIdIMSIOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="userIdIMSI"/>
+    <parameter name="[test:userIdSIPOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="userIdSIP"/>
+    <parameter name="[test:userIdNAIOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="userIdNAI"/>
+    <parameter name="[test:userIdPrivateOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="userIdPrivate"/>
+
+    <parameter name="[test:RARdelayOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="RARdelay"/>
+    <parameter name="[test:ASRdelayOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="ASRdelay"/>
+
+    <parameter name="[test:eventTriggersOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="eventTriggers"/>
+
+    <parameter name="[test:CCAIremoveRuleKeysOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="CCAIremoveRuleKeys"/>
+    <parameter name="[test:CCAIinstallRuleKeysOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="CCAIinstallRuleKeys"/>
+    <parameter name="[test:CCAUremoveRuleKeysOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="CCAUremoveRuleKeys"/>
+    <parameter name="[test:CCAUinstallRuleKeysOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="CCAUinstallRuleKeys"/>
+    <parameter name="[test:RARremoveRuleKeysOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="RARremoveRuleKeys"/>
+    <parameter name="[test:RARinstallRuleKeysOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="RARinstallRuleKeys"/>
+
+    <parameter name="[test:primaryEventChargingFunctionNameOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="primaryEventChargingFunctionName"/>
+    <parameter name="[test:secondaryEventChargingFunctionNameOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="secondaryEventChargingFunctionName"/>
+    <parameter name="[test:primaryChargingCollectionFunctionNameOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="primaryChargingCollectionFunctionName"/>
+    <parameter name="[test:secondaryChargingCollectionFunctionNameOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="secondaryChargingCollectionFunctionName"/>
+
+    <parameter name="[test:revalidationTimeOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="revalidationTime"/>
+
+    <parameter name="[test:monitoringKeyOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="monitoringKey"/>
+    <parameter name="[test:usageMonitoringLevelOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="usageMonitoringLevel"/>
+    <parameter name="[test:grantedTotalOctetsOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="grantedSlideTotalOctets"/>
+    <parameter name="[test:grantedInputOctetsOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="grantedSlideInputOctets"/>
+    <parameter name="[test:grantedOutputOctetsOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="grantedSlideOutputOctets"/>
+
+    <parameter name="[test:isLoadedSubscribersFromfile]" operation="set" value="true"/>
+  </then>
+</if>

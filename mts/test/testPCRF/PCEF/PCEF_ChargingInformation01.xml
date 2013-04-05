@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Ro Credit-Control request (CCR)"-->
+
+<!DOCTYPE Library [
+  <!ENTITY sendCCR SYSTEM "./Library/sendCCR.xml">
+]>		
+
+<scenario>
+  <!-- The Subscription-Id-Data AVP is used to identify the end user. -->
+  <parameter name="[endUserSIP_URI]" operation="set" value="sip:+33923773201@sip.mobistar.com"/>
+
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="1"/>
+  <!-- The Session-Id AVP is used to identify a specific session. -->
+  <parameter name="[Session-Id]" operation="set" value="pcef2pcrf.mts.devoteam.com;147038400;1601;ChargingInformation01"/>
+
+  <!-- Sending CCR. -->
+  &sendCCR;
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gx/CCA">
+    <parameter name="[Result-Code]" operation="protocol.setFromMessage" value="avp.Result-Code.value"/>
+    <parameter name="[OCSdiameterURI1]" operation="protocol.setFromMessage" value="avp.Charging-Information.Primary-Event-Charging-Function-Name.value"/>
+    <parameter name="[OCSdiameterURI2]" operation="protocol.setFromMessage" value="avp.Charging-Information.Secondary-Event-Charging-Function-Name.value"/>
+    <parameter name="[OFCSdiameterURI1]" operation="protocol.setFromMessage" value="avp.Charging-Information.Primary-Charging-Collection-Function-Name.value"/>
+    <parameter name="[OFCSdiameterURI2]" operation="protocol.setFromMessage" value="avp.Charging-Information.Secondary-Charging-Collection-Function-Name.value"/>
+  </receiveMessageDIAMETER>
+  <if>
+    <condition>
+      <!-- RFC 3588 : DIAMETER_SUCCESS (2001) : The Request was successfully completed. -->
+      <test parameter="[Result-Code]" condition="string.equals" not="true" value="2001"/>
+    </condition>
+    <then>
+      <exit failed="true" description="Expected DIAMETER_SUCCESS (2001) result code."/>
+    </then>
+  </if>
+  <if>
+    <condition>
+      <test parameter="[OCSdiameterURI1]" condition="list.isEmpty"/>
+    </condition>
+    <then>
+      <exit failed="true" description="Expected Primary-Event-Charging-Function-Name AVP."/>
+    </then>
+  </if>
+  <if>
+    <condition>
+      <test parameter="[OCSdiameterURI2]" condition="list.isEmpty" not="true"/>
+    </condition>
+    <then>
+      <exit failed="true" description="Not expected Secondary-Event-Charging-Function-Name AVP."/>
+    </then>
+  </if>
+  <if>
+    <condition>
+      <test parameter="[OFCSdiameterURI1]" condition="list.isEmpty" not="true"/>
+    </condition>
+    <then>
+      <exit failed="true" description="Not expected Primary-Charging-Collection-Function-Name AVP."/>
+    </then>
+  </if>
+  <if>
+    <condition>
+      <test parameter="[OFCSdiameterURI2]" condition="list.isEmpty" not="true"/>
+    </condition>
+    <then>
+      <exit failed="true" description="Not expected Secondary-Charging-Collection-Function-Name AVP."/>
+    </then>
+  </if>
+
+  <pause seconds="2"/>
+  <!-- RFC 3588 : The request contains a Session-Id AVP, which is used in subsequent messages relating to the user's session. -->
+
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="3"/>
+
+  <!-- The Subscription-Id-Data AVP ([endUserSIP_URI]) is used to identify the end user. -->
+
+  <!-- Sending CCR TERMINATION_REQUEST. -->
+  &sendCCR;
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gx/CCA">
+  </receiveMessageDIAMETER>
+</scenario>

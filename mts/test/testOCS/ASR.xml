@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE Library [
+  <!ENTITY loadSubscribersFromFile SYSTEM "./Library/loadSubscribersFromFile.xml">
+  <!ENTITY scheduleASR SYSTEM "./Library/scheduleASR.xml">
+  <!ENTITY sendASR SYSTEM "./Library/sendASR.xml">
+]>		
+        
+<scenario>
+  <!-- ASR are sent for openned session of a service which ASRdelay parameter is not null. -->
+  <if>
+    <condition>
+      <test parameter="[test:sessionsId]" condition="list.isEmpty"/>
+    </condition>
+    <then>
+      <!-- Nothing done, success. -->
+      <exit description="No initiated session. No ASR to send." failed="false"/>
+    </then>
+    <else>
+      <!-- Building the list of ASR to send. -->
+      <parameter name="[ASRsessionId]" operation="list.create"/>
+      <parameter name="[ASRsessionPCEFhost]" operation="list.create"/>
+      <parameter name="[ASRsessionPCEFport]" operation="list.create"/>
+      <parameter name="[ASRdelay]" operation="list.create"/>
+      <parameter name="[lastSessionIndex]" operation="list.size" value="[test:sessionsId]"/>
+      <parameter name="[lastSessionIndex]" operation="number.substract" value="[lastSessionIndex]" value2="1"/>
+      <parameter name="[i]" operation="set" value="0"/>
+      <while>
+        <condition>
+          <test parameter="[i]" condition="number.lowerEqualThan" value="[lastSessionIndex]"/>
+        </condition>
+        <do>
+          <!-- Finding the not null minimum delay among services delay of the same session. -->
+          <parameter name="[lastServiceIndex]" operation="list.size" value="[test:session[i]ServiceIndexes]"/>
+          <parameter name="[lastServiceIndex]" operation="number.substract" value="[lastServiceIndex]" value2="1"/>
+          <parameter name="[j]" operation="set" value="0"/>
+          <parameter name="[newASRadded]" operation="set" value="false"/>
+          <parameter name="[currentASRdelay]" operation="list.create"/>
+          <while>
+            <condition>
+              <test parameter="[j]" condition="number.lowerEqualThan" value="[lastServiceIndex]"/>
+            </condition>
+            <do>
+              <parameter name="[serviceIndex]" operation="set" value="[session[i]ServiceIndexes([j])]"/>
+              <if>
+                <condition>
+                  <test parameter="[test:ASRdelayOfSubscriber([serviceIndex])]" not="true" condition="number.equals" value="0"/>
+                </condition>
+                <then>
+                  <parameter name="[newASRadded]" operation="set" value="true"/>
+                  <if>
+                    <condition>
+                      <test parameter="[currentASRdelay]" condition="list.isEmpty"/>
+                    </condition>
+                    <then>
+                      <parameter name="[currentASRdelay]" operation="set" value="[test:ASRdelayOfSubscriber([serviceIndex])]"/>
+                    </then>
+                    <else>
+                      <if>
+                        <condition>
+                          <test parameter="[test:ASRdelayOfSubscriber([serviceIndex])]" condition="number.lowerThan" value="[currentASRdelay]"/>
+                        </condition>
+                        <then>
+                          <parameter name="[currentASRdelay]" operation="set" value="[test:ASRdelayOfSubscriber([serviceIndex])]"/>
+                        </then>
+                      </if>
+                    </else>
+                  </if>
+                </then>
+              </if>
+              <parameter name="[j]" operation="number.add" value="[j]" value2="1"/>
+            </do>
+          </while>
+          <if>
+            <condition>
+              <test parameter="[newASRadded]" condition="boolean.equals" value="true"/>
+            </condition>
+            <then>
+              <!-- Adding a new ASR to send. -->
+              <parameter name="[ASRsessionId]" operation="list.addLast" value="[ASRsessionId]" value2="[test:sessionsId([i])]"/>
+              <parameter name="[ASRsessionPCEFhost]" operation="list.addLast" value="[ASRsessionPCEFhost]" value2="[test:session[i]PCEF-Host]"/>
+              <parameter name="[ASRsessionPCEFport]" operation="list.addLast" value="[ASRsessionPCEFport]" value2="[test:session[i]PCEF-Port]"/>
+              <parameter name="[ASRdelay]" operation="list.addLast" value="[ASRdelay]" value2="[currentASRdelay]"/>
+            </then>
+          </if>
+          <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+        </do>
+      </while>
+    </else>
+  </if>
+
+  <!-- ASR are sent in the order of ASRdelay parameter. -->
+  <if>
+    <condition>
+      <test parameter="[ASRsessionId]" condition="list.isEmpty"/>
+    </condition>
+    <then>
+      <!-- Nothing done, success. -->
+      <exit description="No ASR to send." failed="false"/>
+    </then>
+    <else>
+      <!-- Schedule the ASR to send according to their delay. -->
+      &scheduleASR;
+ 
+      <!-- Sending the ASR. -->
+      <parameter name="[prevDelay]" operation="set" value="0"/>
+      <parameter name="[pause]" operation="set" value="0"/>
+      <parameter name="[i]" operation="set" value="0"/>
+      <while>
+        <condition>
+          <test parameter="[i]" condition="number.lowerEqualThan" value="[lastASRindex]"/>
+        </condition>
+        <do>
+          <parameter name="[ASRindex]" operation="set" value="[scheduledASRindexes([i])]"/>
+          
+          <parameter name="[Session-Id]" operation="set" value="[ASRsessionId([ASRindex])]"/>
+          <parameter name="[PCEF-Host]" operation="set" value="[ASRsessionPCEFhost([ASRindex])]"/>
+          <parameter name="[PCEF-Port]" operation="set" value="[ASRsessionPCEFport([ASRindex])]"/>
+          
+          <parameter name="[delayASR]" operation="set" value="[ASRdelay([ASRindex])]"/>
+          <parameter name="[pauseASR]" operation="number.substract" value="[delayASR]" value2="[prevDelay]"/>
+          <pause seconds="[pauseASR]"/>
+          &sendASR;
+          
+          <parameter name="[prevDelay]" operation="set" value="[delayASR]"/>
+          <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+        </do>
+      </while>
+    </else>
+  </if>
+</scenario>

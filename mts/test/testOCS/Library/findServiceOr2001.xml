@@ -1,0 +1,62 @@
+<!--
+Abstract :
+With Service-Identifier AVP find the subscriber's service in the data file.
+Return DIAMETER_SUCCESS (2001) if not found.
+Stop the script with failure if sevevral occurences of the same subscriber's service.
+
+Input parameters :
+- [Service-Identifier] : from the request.
+- [subscriberIndexes] : list of the indexes where the subscriber is defined in the data file.
+- [serviceIdOfSubscriber] : service identifiers defined in the data file.
+
+Output parameters :
+- [serviceIndex] : subscriber's service index in the data file.
+- [Result-Code] : value of the Result-Code AVP.
+
+Another used include :
+- CCAmandatoryAVP
+-->
+
+<!-- Finding the index of the subscriber's service. -->
+<parameter name="[nbSubscriberIndexes]" operation="list.size" value="[subscriberIndexes]"/>
+<parameter name="[i]" operation="set" value="0"/>
+<parameter name="[Found]" operation="set" value="false"/>
+<while>
+  <condition>
+    <test parameter="[i]" condition="number.lowerThan" value="[nbSubscriberIndexes]"/>
+  </condition>
+  <do>
+  <parameter name="[subscriberIndex]" operation="set" value="[subscriberIndexes([i])]"/>
+  <if>
+    <condition>
+      <test parameter="[serviceIdOfSubscriber([subscriberIndex])]" condition="string.equals" value="[Service-Identifier]"/>
+    </condition>
+    <then>
+      <parameter name="[serviceIndex]" operation="set" value="[subscriberIndex]"/>
+      <if>
+        <condition>
+          <test parameter="[Found]" condition="boolean.equals" value="true"/>
+        </condition>
+        <then>
+          <exit failed="true" description="Sevevral occurences of the same service for the subscriber."/>
+        </then>
+      </if>
+      <parameter name="[Found]" operation="set" value="true"/>
+    </then>
+  </if>
+  <parameter name="[i]" operation="number.add" value="[i]" value2="1" />
+  </do>
+</while>
+<if>
+  <condition>
+    <test parameter="[Found]" condition="boolean.equals" value="false"/>
+  </condition>
+  <then>
+    <!-- Not found service : DIAMETER_SUCCESS result code. -->
+    <parameter name="[Result-Code]" operation="set" value="DIAMETER_SUCCESS" />
+    <sendMessageDIAMETER name="Send Answer 3GPP/Gy/CCA">
+      &CCAmandatoryAVP;
+    </sendMessageDIAMETER>
+    <goto  name="loop" label="Begin" state="true"/>
+  </then>
+</if>

@@ -1,0 +1,118 @@
+<!--
+Abstract :
+Build the Charging-Rule-Name, Charging-Rule-Base-Name or Charging-Rule-Definition AVP of the Charging-Rule-Install AVP.
+
+Input parameters :
+- [definitionNumber] : 
+- [ruleIndex] : 
+- [baseNameOfRule] : 
+- [installNumber] : 
+- [ruleTypeOfRule] : 
+- [ruleNameOfRule] : 
+- [serviceIdOfRule] : 
+- [ratingGroupOfRule] : 
+- [monitoringKeyOfRule] : 
+
+Output parameters :
+- [nextDefinitionNumber] : 
+- [install[installNumber]BaseNames] : 
+- [install[installNumber]RuleNames] : 
+- [CRI[installNumber]withCRD[definitionNumber]] : 
+- [install[installNumber]Defintion[definitionNumber]RuleName] : 
+- [install[installNumber]Defintion[definitionNumber]ServiceIdentifier] : 
+- [install[installNumber]Defintion[definitionNumber]RatingGroup] : 
+- [install[installNumber]Defintion[definitionNumber]MonitoringKey] : 
+
+Another used include : none.
+-->
+
+<!-- A Charging-Rule-Definition AVP in the Charging-Rule-Install AVP is built only for dynamic rules. -->
+<parameter name="[nextDefinitionNumber]" operation="set" value="[definitionNumber]"/>
+
+<!-- Is the rule in a group ? -->
+<parameter name="[baseName]" operation="set" value="[baseNameOfRule([ruleIndex])]"/>
+<if>
+  <condition>
+    <not><test parameter="[baseName]" condition="string.equals" value=""/></not>
+  </condition>
+  <then><!-- The rule is in a group. -->
+    <!-- Is the group already in the list ? -->
+    <parameter name="[groupIndexes]" operation="list.find" value="[install[installNumber]BaseNames]" value2="[baseName]"/>
+    <parameter name="[groupIndexesSize]" operation="list.size" value="[groupIndexes]"/>
+    <if>
+      <condition>
+        <test parameter="[groupIndexesSize]" condition="number.equals" value="0"/>
+      </condition>
+      <then><!-- The group is not yet in the list. -->
+        <!-- Adding the group name in a Charging-Rule-Base-Name AVP of the Charging-Rule-Install AVP. -->
+        <parameter name="[install[installNumber]BaseNames]" operation="list.addLast" value="[install[installNumber]BaseNames]" value2="[baseName]"/>
+      </then>
+    </if>
+  </then>
+  <else><!-- The rule is not in a group. -->
+    <!-- Is it a predefined rule ? -->
+    <parameter name="[ruleType]" operation="set" value="[ruleTypeOfRule([ruleIndex])]"/>
+    <if>
+      <condition>
+        <test parameter="[ruleType]" condition="number.equals" value="1"/>
+      </condition>
+      <then><!-- The rule is predefined. -->
+        <!-- Adding the rule name in a Charging-Rule-Name AVP of the Charging-Rule-Install AVP. -->
+        <parameter name="[ruleName]" operation="set" value="[ruleNameOfRule([ruleIndex])]"/>
+        <parameter name="[install[installNumber]RuleNames]" operation="list.addLast" value="[install[installNumber]RuleNames]" value2="[ruleName]"/>
+      </then>
+      <else><!-- The rule is dynamic. -->
+        <!-- Is it possible to add a Charging-Rule-Definition AVP in the Charging-Rule-Install AVP ? -->
+        <if>
+          <condition>
+            <test parameter="[definitionNumber]" condition="number.lowerEqualThan" value="[maxChargingRuleDefinition]"/>
+          </condition>
+          <then>
+            <!-- Adding a Charging-Rule-Definition AVP in the Charging-Rule-Install AVP. -->
+            <parameter name="[CRI[installNumber]withCRD[definitionNumber]]" operation="set" value="true"/>
+            <!-- Changing-Rule-Name AVP is required in the Charging-Rule-Definition AVP. -->
+            <parameter name="[install[installNumber]Defintion[definitionNumber]RuleName]" operation="set" value="[ruleNameOfRule([ruleIndex])]"/>
+            <!-- Service-Identifier AVP is optional in the Charging-Rule-Definition AVP. -->
+            <if>
+              <condition>
+                <test parameter="[serviceIdOfRule([ruleIndex])]" condition="string.equals" value=""/>
+              </condition>
+              <then><!-- No Service-Identifier AVP. -->
+                <parameter name="[install[installNumber]Defintion[definitionNumber]ServiceIdentifier]" operation="list.create"/>
+              </then>
+              <else><!-- There is a Service-Identifier AVP in Charging-Rule-Definition AVP. -->
+                <parameter name="[install[installNumber]Defintion[definitionNumber]ServiceIdentifier]" operation="set" value="[serviceIdOfRule([ruleIndex])]"/>
+              </else>
+            </if>
+            <!-- Rating-Group AVP is optional in the Charging-Rule-Definition AVP. -->
+            <if>
+              <condition>
+                <test parameter="[ratingGroupOfRule([ruleIndex])]" condition="string.equals" value=""/>
+              </condition>
+              <then><!-- No Rating-Group AVP. -->
+                <parameter name="[install[installNumber]Defintion[definitionNumber]RatingGroup]" operation="list.create"/>
+              </then>
+              <else><!-- There is a Rating-Group AVP in Charging-Rule-Definition AVP. -->
+                <parameter name="[install[installNumber]Defintion[definitionNumber]RatingGroup]" operation="set" value="[ratingGroupOfRule([ruleIndex])]"/>
+              </else>
+            </if>
+            <!-- Monitoring-Key AVP is optional in the Charging-Rule-Definition AVP. -->
+            <if>
+              <condition>
+                <test parameter="[monitoringKeyOfRule([ruleIndex])]" condition="string.equals" value=""/>
+              </condition>
+              <then><!-- No Monitoring-Key AVP. -->
+                <parameter name="[install[installNumber]Defintion[definitionNumber]MonitoringKey]" operation="list.create"/>
+              </then>
+              <else><!-- There is a Monitoring-Key AVP in Charging-Rule-Definition AVP. -->
+                <parameter name="[install[installNumber]Defintion[definitionNumber]MonitoringKey]" operation="set" value="[monitoringKeyOfRule([ruleIndex])]"/>
+              </else>
+            </if>
+
+            <parameter name="[nextDefinitionNumber]" operation="number.add" value="[definitionNumber]" value2="1"/>
+          </then>
+        </if>
+      </else>
+    </if>
+  </else>
+</if>

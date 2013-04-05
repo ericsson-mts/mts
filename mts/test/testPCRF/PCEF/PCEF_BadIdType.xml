@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Ro Credit-Control request (CCR)"-->
+
+<scenario>
+  <!-- The Subscription-Id-Data AVP is used to identify the end user. -->
+  <parameter name="[endUserSIP_URI]" operation="set" value="sip:+33923771701@sip.mobistar.com"/>
+
+  <!-- The Service-Identifier AVP contains the identifier of the service. The specific service the request relates to is uniquely identified by the combination of Service-Context-Id and Service-Identifier AVPs. -->
+  <parameter name="[Service-Identifier]" operation="set" value="1"/>
+  <!-- The Rating-Group AVP contains the identifier of a rating group. -->
+  <parameter name="[Rating-Group]" operation="set" value="1"/>
+ 
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="1"/>
+  <!-- The Session-Id AVP is used to identify a specific session. -->
+  <parameter name="[Session-Id]" operation="set" value="pcef2pcrf.mts.devoteam.com;147038400;11;BadIdType"/>
+
+  <!-- Sending CCR. -->
+  <sendMessageDIAMETER name="Send Request 3GPP/Gx/CCR" remoteURL="diameter://[PCRF-Address]">
+    <header request="true" command="Credit-Control" applicationId="16777238" proxiable="true" error="false" retransmit="false"/>
+    <avp code="Session-Id" mandatory="true" type="UTF8String" value="[Session-Id]"/>
+    
+    <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[PCEF-Host]"/>
+    <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[PCEF-Realm]"/>
+    <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[PCRF-Realm]"/>            
+    
+    <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
+    <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[GxApplicationId]"/>
+    
+    <!-- The Service-Context-Id AVP contains a unique identifier of the Diameter Credit Control service specific document that applies to the request. -->
+    <avp code="Service-Context-Id" mandatory="true" type="UTF8String" value="extensions.mnc.mcc.release.32251@3gpp.org"/>
+    
+    <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+    <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+    <avp code="CC-Request-Type" mandatory="true" type="Enumerated" value="[CC-Request-Type]"/>
+    
+    <!-- The CC-Request-Number AVP contains the sequence number of the transferred messages. -->
+    <avp code="CC-Request-Number" mandatory="true" type="Unsigned32" value="0"/>
+    
+    <avp code="Destination-Host" mandatory="false" type="DiameterIdentity" value="[PCRF-Host]"/>            
+    
+    <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
+    <avp code="User-Name" mandatory="false" type="UTF8String" value="ToBeCompleted" vendorId="10415"/>
+    
+    <!-- Not used avp code="CC-Sub-Session-Id" mandatory="false" type="Unsigned64" value="0"/-->
+    <!-- Not used avp code="Acct-Multi-Session-Id" mandatory="false" type="UTF8String" value="ToBeCompleted"/-->
+    
+    <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
+    <avp code="Origin-State-Id" mandatory="false" type="Unsigned32" value="0"/>
+    
+    <!-- The Event-Timestamp MAY be included in an Accounting-Request and Accounting-Answer messages to record the time that the reported event occurred, in seconds sinceJanuary 1, 1900 00:00 UTC. -->
+    <avp code="Event-Timestamp" mandatory="false" type="Time" value="0"/>
+    
+    <!-- The Subscription-Id AVP is used to identify the end user's subscription. -->
+    <avp code="Subscription-Id">
+      <!-- The Subscription-Id-Type AVP is used to determine which type of identifier is carried by the Subscription-Id AVP. -->
+      <!-- Possible enumerated values : END_USER_E164(0) / END_USER_IMSI(1) / END_USER_SIP_URI(2) / END_USER_NAI(3) / END_USER_PRIVATE(4). -->
+      <avp code="Subscription-Id-Type" mandatory="true" private="false" type="Enumerated" value="5"/>
+      <!-- The Subscription-Id-Data AVP is used to identify the end user. -->
+      <avp code="Subscription-Id-Data" mandatory="true"  private="false" type="UTF8String" value="[endUserSIP_URI]"/>
+    </avp>
+    
+    <!-- Not used avp code="Service-Identifier" mandatory="false" type="Unsigned32" value="0"/-->
+    <!-- avp code="Termination-Cause" mandatory="false" type="Enumerated" value="0"/-->
+    <!-- Not used avp code="Requested-Service-Unit" mandatory="false"/-->
+    <!-- avp code="Requested-Action" mandatory="false" type="Enumerated" value="0"/-->
+    <!-- Not used avp code="Used-Service-Unit" mandatory="false"/-->
+    <!-- avp code="Requested-Action" mandatory="false" type="Enumerated" value="0"/-->
+    
+    <!-- Not used avp code="Service-Parameter-Info" mandatory="false"/-->
+    <!-- avp code="CC-Correlation-Id" mandatory="false" type="OctetString" value="ToBeCompleted"/-->
+    <!-- avp code="User-Equipment-Info" mandatory="false"/-->
+    
+    <!--avp code="Proxy-Info">
+       <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted1"/>
+       <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted1"/>
+    </avp>
+    <avp code="Proxy-Info">
+       <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted2"/>
+       <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted2"/>
+    </avp>
+    <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+    <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/-->
+    
+    <!-- The Service-Information AVP allows the transmission of additional 3GPP service specific information elements. -->
+    <!-- avp code="Service-Information" mandatory="false"/-->
+  </sendMessageDIAMETER>
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gx/CCA">
+    <parameter name="[Result-Code]" operation="protocol.setFromMessage" value="avp.Result-Code.value"/>
+  </receiveMessageDIAMETER>
+  <if>
+    <condition>
+      <!-- RFC 4006 : DIAMETER_USER_UNKNOWN (5030) : The specified end user is unknown in the credit-control server. -->
+      <test parameter="[Result-Code]" condition="string.equals" not="true" value="5030"/>
+    </condition>
+    <then>
+      <exit failed="true" description="Expected DIAMETER_USER_UNKNOWN (5030) error."/>
+    </then>
+  </if>
+</scenario>

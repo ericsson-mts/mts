@@ -1,0 +1,70 @@
+<!--
+Abstract :
+With serviceControl indicator in the data file,
+return DIAMETER_CREDIT_CONTROL_NOT_APPLICABLE (4011) if no further credit-control is needed for the service.
+CCA is sent with Multiple-Services-Credit-Control AVP containing Rating-Group AVP or Service-Identifier (not both of them).
+Do not handle Proxy-Info AVP.
+
+Input parameters :
+- [serviceControlOfSubscriber] : indicators weather the credit control is applicable for the service.
+- [serviceIndex] : subscriber's service index in the data file.
+- [Pbit] : from the request.
+- [hopByHop] : from the request.
+- [endToEnd] : from the request.
+- [Session-Id] : from the request.
+- [OCS-Host]
+- [OCS-Realm]
+- [CC-Request-Type] : from the request.
+- [CC-Request-Number] : from the request.
+- [Service-Identifier] : from the request.
+- [Rating-Group] : from the request.
+
+Output parameters :
+- [Result-Code] : value of the Result-Code AVP.
+- [Service-Identifier] : emptied if CCA is sent for whole rating-group.
+
+Another used include : none.
+-->
+
+
+<!-- Is the service controlled ? -->
+<if>
+  <condition>
+    <test parameter="[serviceControlOfSubscriber([serviceIndex])]" condition="string.equals" value="0"/>
+  </condition>
+  <then>
+    <!-- Not controlled service. -->
+    <!-- RFC 4006 : DIAMETER_CREDIT_CONTROL_NOT_APPLICABLE (4011) : The credit-control server determines that the service can be granted to the end user but that no further credit-control is needed for the service (e.g., service is free of charge). -->
+    <parameter name="[Result-Code]" operation="set" value="DIAMETER_SUCCESS" />
+    <parameter name="[msccResult-Code]" operation="set" value="DIAMETER_CREDIT_CONTROL_NOT_APPLICABLE" />
+    <if>
+      <condition>
+        <!--test parameter="[Rating-Group]" condition="string.matches" not="true" value="[0-9][0-9]*"/-->
+        <not><test parameter="[Rating-Group]" condition="list.isEmpty"/></not>
+      </condition>
+      <then>
+        <!-- The service belongs to a rating group. Rating-Group AVP and no Service-Identifier AVP. -->
+        <parameter name="[Service-Identifier]" operation="list.create"/>
+      </then>
+    </if>
+    <!-- Sending CCA with Multiple-Services-Credit-Control AVP containing Rating-Group AVP or Service-Identifier. -->
+    <sendMessageDIAMETER name="Send Answer 3GPP/Gy/CCA">
+      &CCAmandatoryAVP;
+      
+      <!-- The Multiple-Services-Credit-Control AVP contains additional 3GPP specific charging parameters. -->
+      <avp code="Multiple-Services-Credit-Control">
+        <!-- The Service-Identifier AVP contains the identifier of the service. -->
+        <avp code="Service-Identifier" type="Unsigned32" value="[Service-Identifier]"/>
+        <!-- The Rating-Group AVP contains the identifier of a rating group. -->
+        <avp code="Rating-Group" type="Unsigned32" value="[Rating-Group]"/>
+        <!-- RFC 4006 : the Result-Code AVP MAY be present both on the command level and within the Multiple-Services-Credit-Control AVP. -->
+        <avp code="Result-Code" mandatory="true" type="Unsigned32" value="[msccResult-Code]"/>
+      </avp>
+
+      <!-- RFC 3588 : Any Proxy-Info AVPs in the request MUST be added to the answer message, in the same order they were present in the request. -->
+    </sendMessageDIAMETER>
+    <goto  name="loop" label="Begin" state="true"/>
+  </then>
+</if>
+
+

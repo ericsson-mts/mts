@@ -1,0 +1,157 @@
+<!--
+Abstract :
+Sends the CCA.
+
+Input parameters :
+- [Tariff-Time-Change] : value of the Tariff-Time-Change AVP.
+- [GSUwithTTC] : boolean, true if the CCA is sent with Tariff-Time-Change AVP.
+- [CC-Time] : value of the CC-Time-Change AVP.
+- [GSUwithCCTime] : boolean, true if the CCA is sent with CC-Time AVP.
+- [CC-Total-Octets] : value of the CC-Total-Octets AVP.
+- [GSUwithCCTotalOctets] : boolean, true if the CCA is sent with CC-Total-Octets AVP.
+- [CC-Input-Octets] : value of the CC-Input-Octets AVP.
+- [GSUwithCCInputOctets] : boolean, true if the CCA is sent with CC-Input-Octets AVP.
+- [CC-Output-Octets] : value of the CC-Output-Octets AVP.
+- [GSUwithCCOutputOctets] : boolean, true if the CCA is sent with CC-Output-Octets AVP.
+- [CC-Service-Specific-Units] : value of the CC-Service-Specific-Units AVP.
+- [GSUwithCCServiceSpecificUnits] : boolean, true if the CCA is sent with CC-Service-Specific-Units AVP.
+- [Service-Identifier] : value of the Service-Identifier AVP.
+- [Rating-Group] : value of the Rating-Group AVP.
+- [Validity-Time] : value of the Validity-Time AVP.
+- [msccResult-Code] : value of the Result-Code AVP of the MSCC AVP.
+- [serviceIndex] : subscriber's service index in the data file.
+- [finalUnitActionOfSubscriber] : subscribers' services final unit action in the data file.
+- [FUIwithRS] : boolean, true if the CCA is sent with Redirect-Server AVP.
+- [redirectAddressTypeOfSubscriber] : redirect server type address in the data file.
+- [redirectServerAddressOfSubscriber] : redirect server address in the data file.
+- [Time-Quota-Threshold] : value of the Time-Quota-Threshold AVP.
+- [MSCCwithTQT] : boolean, true if the CCA is sent with Time-Quota-Threshold AVP.
+- [Volume-Quota-Threshold] : value of the Volume-Quota-Threshold AVP.
+- [MSCCwithVQT] : boolean, true if the CCA is sent with Volume-Quota-Threshold AVP.
+- [Unit-Quota-Threshold] : value of the Unit-Quota-Threshold AVP.
+- [MSCCwithUQT] : boolean, true if the CCA is sent with Unit-Quota-Threshold AVP.
+- [Quota-Holding-Time] : value of the Quota-Holding-Time AVP.
+- [MSCCwithQHT] : boolean, true if the CCA is sent with Quota-Holding-Time AVP.
+- [Quota-Consumption-Time] : value of the Quota-Consumption-Time AVP.
+- [MSCCwithQCT] : boolean, true if the CCA is sent with Quota-Consumption-Time AVP.
+- [MSCCwithTrigger] : boolean, true if the CCA is sent with Trigger-Type AVP.
+- [Trigger-Type] : value of the Trigger-Type AVP.
+
+
+Output parameters : none.
+
+
+Another used include :
+- whichGrantedQuotaLevel
+- withOrWithoutTTC
+- withOrWithoutFUI
+- withOrWithoutTQT_VQT_UQT_QHT_QCT
+- whichTriggerTypes
+- CCAmandatoryAVP
+-->
+
+<!-- Wich level to grant the quota ? -->
+&whichGrantedQuotaLevel;
+
+<!-- With or without Tariff-Time-Change AVP ? -->
+&withOrWithoutTTC;
+
+<!-- With or without Final-Unit-Indication AVP ? -->
+&withOrWithoutFUI;
+
+<!-- With or without Time-Quota-Threshold, Volume-Quota-Threshold, Unit-Quota-Threshold, Quota-Holding-Time, Quota-Consumption-Time AVP ? -->
+&withOrWithoutTQT_VQT_UQT_QHT_QCT;
+
+<!-- With or without Trigger AVP ? -->
+&whichTriggerTypes;
+
+<!-- Sending CCA. -->
+<sendMessageDIAMETER name="Send Answer 3GPP/Gy/CCA">
+  &CCAmandatoryAVP;
+
+  <!-- The Multiple-Services-Credit-Control AVP contains additional 3GPP specific charging parameters. -->
+  <avp code="Multiple-Services-Credit-Control">
+    <!-- The Granted-Service-Unit AVP contains the amount of units that the Diameter credit-control client can provide to the end user until the service must be released or the new Credit-Control-Request must be sent. -->
+    <avp code="Granted-Service-Unit">
+      <!-- The Tariff-Time-Change AVP includes the time in seconds since January 1, 1900, 00:00 UTC, when the tariff of the service will be changed. -->
+      <avp code="Tariff-Time-Change" vendorId="0" mandatory="true" type="Time" value="[Tariff-Time-Change]" state="[GSUwithTTC]"/>
+      <!-- The CC-Time AVP indicates the length of the granted time in seconds. -->
+      <avp code="CC-Time" mandatory="true" type="Unsigned32" value="[CC-Time]" state="[GSUwithCCTime]"/>
+      <!-- The CC-Money AVP is not used in 3GPP. -->
+      <!-- The CC-Total-Octets contains the total number of granted octets regardless of the direction (sent or received). -->
+      <avp code="CC-Total-Octets" mandatory="true" type="Unsigned64" value="[CC-Total-Octets]" state="[GSUwithCCTotalOctets]"/>
+      <!-- The CC-Input-Octets contains the total number of granted octets that can be received from the end user. -->
+      <avp code="CC-Input-Octets" mandatory="true" type="Unsigned64" value="[CC-Input-Octets]" state="[GSUwithCCInputOctets]"/>
+      <!-- The CC-Output-Octets contains the total number of granted octets that can be sent to the end user. -->
+      <avp code="CC-Output-Octets" mandatory="true" type="Unsigned64" value="[CC-Output-Octets]" state="[GSUwithCCOutputOctets]"/>
+      <!-- The CC-Service-Specific-Units specifies the number of service-specific units (e.g., number of events, points) given in a selected service. -->
+      <avp code="CC-Service-Specific-Units" mandatory="true" type="Unsigned64" value="[CC-Service-Specific-Units]" state="[GSUwithCCServiceSpecificUnits]"/>
+    </avp>
+
+    <!-- The Requested-Service-Unit AVP for CCR. -->
+    <!--avp code="Requested-Service-Unit" state="false"-->
+    <!-- The Used-Service-Unit AVP for CCR. -->
+    <!--avp code="Used-Service-Unit" state="false"-->
+    <!-- The Used-Service-Unit AVP for CCR. -->
+    <!--avp code="Used-Service-Unit" state="false"-->
+    <!-- The Tariff-Time-Change AVP not used by 3GPP at this level. -->
+    <!--avp code="Tariff-Time-Change" vendorId="0" mandatory="true" type="Time" value="[Tariff-Time-Change]" state="false"/-->
+
+    <!-- The Service-Identifier AVP contains the identifier of the service. -->
+    <avp code="Service-Identifier" type="Unsigned32" value="[Service-Identifier]"/>
+    <!-- The Rating-Group AVP contains the identifier of a rating group. -->
+    <avp code="Rating-Group" type="Unsigned32" value="[Rating-Group]"/>
+
+    <!-- Not yet supported, the G-S-U-Pool-Reference AVP associates the Granted-Service-Unit AVP within which it appears with a credit pool within the session. -->
+    <!--avp code="G-S-U-Pool-Reference state="false"-->
+
+    <!-- The Validity-Time AVP contains the validity time of the granted service units. -->
+    <avp code="Validity-Time" mandatory="true" type="Unsigned32" value="[Validity-Time]"/>
+
+    <!-- RFC 4006 : the Result-Code AVP MAY be present both on the command level and within the Multiple-Services-Credit-Control AVP. -->
+    <avp code="Result-Code" mandatory="true" type="Unsigned32" value="[msccResult-Code]"/>
+
+    <!-- The Final-Unit-Indication AVP indicates that the Granted-Service-Unit AVP in the Credit-Control-Answer, or in the AA answer, contains the final units for the service. -->
+    <avp code="Final-Unit-Indication" state="[MSCCwithFUI]">
+      <!-- The Final-Unit-Action AVP indicates to the credit-control client the action to be taken when the user's account cannot cover the service cost. -->
+      <!-- Possible enumerated values : TERMINATE(0) / REDIRECT(1) / RESTRICT_ACCESS(2). -->
+      <avp code="Final-Unit-Action" mandatory="true" type="Enumerated" value="[finalUnitActionOfSubscriber([serviceIndex])]"/>
+
+      <!-- The Redirect-Server AVP contains the address information of the redirect server with which the end user is to be connected when the account cannot cover the service cost. -->
+      <!-- RFC 4006 : It MUST be present when the Final-Unit-Action AVP is set to REDIRECT. -->
+      <avp code="Redirect-Server" state="[FUIwithRS]">
+        <!-- The Redirect-Address-Type AVP defines the address type of the address given in the Redirect-Server-Address AVP. -->
+        <!-- Possible enumerated values : IPv4 Address (0) / IPv6 Address (1) / URL (2) / SIP URI (3). -->
+        <avp code="Redirect-Address-Type" value="[redirectAddressTypeOfSubscriber([serviceIndex])]"/>
+
+        <!-- The Redirect-Server-Address AVP defines the address of the redirect server. -->
+        <avp code="Redirect-Server-Address" value="[redirectServerAddressOfSubscriber([serviceIndex])]"/>
+      </avp>
+    </avp>
+
+    <!-- 3GPP TS 32.299 V10.1.0 (2011-03) AVP. -->
+    <!-- The Time-Quota-Threshold AVP contains a threshold value in seconds. -->
+    <avp code="Time-Quota-Threshold" vendorId="TGPP" mandatory="false" type="Unsigned32" value="[Time-Quota-Threshold]" state="[MSCCwithTQT]"/>
+
+    <!-- The Volume-Quota-Threshold AVP contains a threshold value in octets. -->
+    <avp code="Volume-Quota-Threshold" vendorId="TGPP" mandatory="false" type="Unsigned32" value="[Volume-Quota-Threshold]" state="[MSCCwithVQT]"/>
+
+    <!-- The Unit-Quota-Threshold AVP contains a threshold value in service specific units. -->
+    <avp code="Unit-Quota-Threshold" vendorId="TGPP" mandatory="false" type="Unsigned32" value="[Unit-Quota-Threshold]" state="[MSCCwithUQT]"/>
+
+    <!-- The Quota-Holding-Time AVP contains the quota holding time in seconds. -->
+    <avp code="Quota-Holding-Time" vendorId="TGPP" mandatory="false" type="Unsigned32" value="[Quota-Holding-Time]" state="[MSCCwithQHT]"/>
+
+    <!-- The Quota-Consumption-Time AVP contains an idle traffic threshold time in seconds. -->
+    <avp code="Quota-Consumption-Time" vendorId="TGPP" mandatory="false" type="Unsigned32" value="[Quota-Consumption-Time]" state="[MSCCwithQCT]"/>
+
+    <!-- The Trigger AVP holds the trigger types. -->
+    <avp code="Trigger" state="[MSCCwithTrigger]">
+      <!-- The Trigger-Type AVP indicates a single re-authorisation event type. -->
+      <!-- If value is a list, one AVP per value is sent. Nothing is sent if value is empty. -->
+      <avp code="Trigger-Type" vendorId="TGPP" mandatory="false" type="Enumerated" value="[Trigger-Type]"/>
+    </avp>
+  </avp>
+
+  <!-- RFC 3588 : Any Proxy-Info AVPs in the request MUST be added to the answer message, in the same order they were present in the request. -->
+</sendMessageDIAMETER>

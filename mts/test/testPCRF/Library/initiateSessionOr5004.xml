@@ -1,0 +1,55 @@
+<!--
+Abstract :
+Control if the session is already known. Return DIAMETER_INVALID_AVP_VALUE (5004) if found. 
+Create a session adding the following information :
+- Session-Id
+- subscriberIndex
+
+Input parameters :
+- [test:sessionsId] : current sessions' list.
+- [Session-Id] : session identifier from the message.
+
+Output parameters :
+- [Result-Code] (if session already known)
+- [sessionIndex] : index of the new session in the sessions list.
+- [session[sessionIndex]ServiceIndexes] : empty list of the services of the session.
+
+Another used include :
+- CCAmandatoryAVP
+-->
+
+<if>
+  <condition>
+    <test parameter="[sessionsHandled]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <!-- Finding the session indexes. -->
+    <parameter name="[sessionIndexes]" operation="list.find" value="[test:sessionsId]" value2="[Session-Id]"/>
+    <if><condition><test parameter="[sessionIndexes]" condition="list.isEmpty" not="true"/></condition>
+      <then>
+        <!-- Already known session : DIAMETER_INVALID_AVP_VALUE result code. -->
+        <!-- RFC 3588 : DIAMETER_INVALID_AVP_VALUE (5004) : The request contained an AVP with an invalid value in its data portion. -->
+        <parameter name="[Result-Code]" operation="set" value="DIAMETER_INVALID_AVP_VALUE" />
+        <sendMessageDIAMETER name="Send Answer 3GPP/Gx/CCA">
+          &CCAmandatoryAVP;
+
+          <!-- RFC 3588 : A Diameter message indicating this error MUST include the offending AVPs within a Failed-AVP AVP. -->
+          <!-- The Failed-AVP AVP provides debugging information in cases where a request is rejected or not fully processed due to erroneous information in a specific AVP. -->
+          <avp code="Failed-AVP">
+            <!-- The Session-Id AVP is used to identify a specific session. -->
+            <avp code="Session-Id" mandatory="true" type="UTF8String" value="[Session-Id]"/>
+          </avp>
+        </sendMessageDIAMETER>
+        <goto  name="loop" label="Begin" state="true"/>
+      </then>
+      <else>
+        <!-- Creating a new session. -->
+        <parameter name="[sessionIndex]" operation="list.size" value="[test:sessionsId]"/>
+        <parameter name="[test:sessionsId]" operation="list.addLast" value="[test:sessionsId]" value2="[Session-Id]"/>
+      	<parameter name="[test:session[sessionIndex]PCEF-Host]" operation="set" value="[PCEF-Host]"/>
+      	<parameter name="[test:session[sessionIndex]PCEF-Port]" operation="set" value="[PCEF-Port]"/>
+        <parameter name="[test:sessionsSubscriberIndex]" operation="list.addLast" value="[test:sessionsSubscriberIndex]" value2="[subscriberIndex]"/>
+      </else>
+    </if>
+  </then>
+</if>

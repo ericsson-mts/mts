@@ -1,0 +1,63 @@
+<!--
+Abstract :
+From the list of data file keys, build the list of indexes in the variables.
+
+Input parameters :
+- [initialKeysList] : initial list of keys.
+
+Output parameters : none.
+- [finalIndexesList] : final list of indexes.
+
+Another used include : none.
+-->
+
+<!-- From keys to indexes. -->
+<parameter name="[finalIndexesList]" operation="list.create"/><!-- Don't keep the previous value. -->
+<parameter name="[currentKeysList]" operation="set" value="[initialKeysList]"/>
+<if>
+  <condition>
+    <not><test parameter="[currentKeysList]" condition="number.equals" value="0"/></not>
+  </condition>
+  <then>
+    <parameter name="[i]" operation="set" value="0"/>
+    <while>
+      <condition>
+        <not><test parameter="[currentKeysList]" condition="number.equals" value="0"/></not>
+      </condition>
+      <do>
+        <!-- Is the key [i] in the list ? -->
+        <parameter name="[currentKey]" operation="number.modulo" value="[currentKeysList]" value2="2"/>
+        <if>
+          <condition>
+            <test parameter="[currentKey]" condition="number.equals" value="1"/>
+          </condition>
+          <then>
+            <!-- Key [i] is in the list. -->
+            <parameter name="[ruleIndexes]" operation="list.find" value="[ruleKeyOfRule]" value2="[i]"/>
+            <parameter name="[ruleIndexesSize]" operation="list.size" value="[ruleIndexes]"/>
+            <switch parameter="[ruleIndexesSize]">
+              <case equals="0">
+                <!-- Unknown rule : Script failed if so. -->
+                <exit description="No occurrence of the rule in [test:csvPathRules]." failed="true"/>
+              </case>
+        
+              <case equals="1">
+                <!-- Adding the index in the list. -->
+                <parameter name="[ruleIndex]" operation="set" value="[ruleIndexes(0)]"/>
+                <parameter name="[finalIndexesList]" operation="list.addLast" value="[finalIndexesList]" value2="[ruleIndex]"/>
+              </case>
+        
+              <default>
+                <!-- Impossible. Script failed if so. -->
+                <exit description="Several occurrences of the rule in [test:csvPathRules]." failed="true"/>
+              </default>
+            </switch>
+            <parameter name="[currentKeysList]" operation="number.substract" value="[currentKeysList]" value2="1"/>
+          </then>
+        </if>
+        <parameter name="[currentKeysList]" operation="number.divide" value="[currentKeysList]" value2="2"/>
+        <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+      </do>
+    </while>
+  </then>
+</if>

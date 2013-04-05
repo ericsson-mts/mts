@@ -1,0 +1,37 @@
+<!--
+Abstract :
+If the value of Revalidation-Time is not empty in the data file,
+CCA is sent with Revalidation-Time AVP.
+
+Input parameters :
+- [revalidationTimeOfSubscriber] : subscribers' values of Revalidation-Time AVP from the data file.
+- [subscriberIndex] : subscriber's index in the data file.
+
+Output parameters :
+- [CCAwithRevalidationTime] : boolean, true if the CCA is sent with Revalidation-Time AVP.
+- [Revalidation-Time] : value of the Revalidation-Time AVP.
+
+Another used include : none.
+-->
+
+<!-- 3GPP TS 29.212 : The Revalidation-Time AVP (AVP code 1042) is of type Time (RFC 3588 : number of seconds since 0h on 1 January 1900 UTC). This value indicates the NTP time before which the PCEF will have to re-request PCC rules. -->
+<parameter name="[Revalidation-Time]" operation="string.length" value="[revalidationTimeOfSubscriber([subscriberIndex])]"/>
+<if>
+  <condition>
+    <!--test parameter="[revalidationTimeOfSubscriber([subscriberIndex])]" condition="list.isEmpty" not="true"/-->
+    <test parameter="[Revalidation-Time]" condition="number.equals" not="true" value="0"/>
+  </condition>
+  <then>
+    <parameter name="[CCAwithRevalidationTime]" operation="set" value="true"/>
+    <parameter name="[Revalidation-Time]" operation="number.parseDate" value="[revalidationTimeOfSubscriber([subscriberIndex])]"/><!-- Milliseconds from 01/01/1970 and the date. -->
+    <parameter name="[refRFC3588Time]" operation="number.parseDate" value="01/01/1900 00:00:00:000"/>
+    <parameter name="[refRFC3588Time]" operation="number.divide" value="[refRFC3588Time]" value2="1000"/>
+    <parameter name="[Revalidation-Time]" operation="number.divide" value="[Revalidation-Time]" value2="1000"/>
+    <parameter name="[Revalidation-Time]" operation="number.substract" value="[Revalidation-Time]" value2="[refRFC3588Time]"/>
+  </then>
+  <else>
+    <!-- No Revalidation-Time AVP. -->
+    <parameter name="[CCAwithRevalidationTime]" operation="set" value="false"/>
+    <!--parameter name="[Revalidation-Time]" operation="list.create"/-->
+  </else>
+</if>

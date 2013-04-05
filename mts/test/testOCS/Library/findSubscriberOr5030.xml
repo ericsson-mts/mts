@@ -1,0 +1,84 @@
+<!--
+Abstract :
+With Subscription-Id AVP find subscriber in the data file.
+If several subscriptions are given, return the first match.
+Return DIAMETER_USER_UNKNOWN (5030) if not found.
+
+Input parameters :
+- [Subscription-Id-Type] : from the request.
+- [Subscription-Id-Data] : from the request.
+- [userIdE164OfSubscriber] : from the data file.
+- [userIdIMSIOfSubscriber] : from the data file.
+- [userIdSIPOfSubscriber] : from the data file.
+- [userIdNAIOfSubscriber] : from the data file.
+- [userIdPrivateOfSubscriber] : from the data file.
+
+Output parameters :
+- [subscriberIndexes] : list of the indexes where the subscriber is defined in the data file.
+- [Result-Code] : value of the Result-Code AVP.
+
+Another used include :
+- CCAmandatoryAVP
+-->
+
+<!-- Finding the subscriber's indexes. -->
+<parameter name="[subscriberIndexes]" operation="list.create"/>
+<parameter name="[foundSubscriber]" operation="set" value="false"/>
+<parameter name="[lastSubscriptionIndex]" operation="list.size" value="[Subscription-Id-Type]"/>
+<parameter name="[lastSubscriptionIndex]" operation="number.substract" value="[lastSubscriptionIndex]" value2="1"/>
+<parameter name="[i]" operation="set" value="0"/>
+<while>
+  <condition>
+    <test parameter="[i]" condition="number.lowerEqualThan" value="[lastSubscriptionIndex]"/>
+    <test parameter="[foundSubscriber]" condition="boolean.equals" value="false"/>
+  </condition>
+  <do>
+    <switch parameter="[Subscription-Id-Type([i])]">
+    <!-- Possible enumerated values : END_USER_E164(0) / END_USER_IMSI(1) / END_USER_SIP_URI(2) / END_USER_NAI(3) / END_USER_PRIVATE(4). -->
+        <case equals="0"><!-- END_USER_E164 -->
+          <parameter name="[subscriberIndexes]" operation="list.find" value="[userIdE164OfSubscriber]" value2="[Subscription-Id-Data([i])]"/>
+        </case>
+
+        <case equals="1"><!-- END_USER_IMSI -->
+          <parameter name="[subscriberIndexes]" operation="list.find" value="[userIdIMSIOfSubscriber]" value2="[Subscription-Id-Data([i])]"/>
+        </case>
+
+        <case equals="2"><!-- END_USER_SIP_URI -->
+          <parameter name="[subscriberIndexes]" operation="list.find" value="[userIdSIPOfSubscriber]" value2="[Subscription-Id-Data([i])]"/>
+        </case>
+
+        <case equals="3"><!-- END_USER_NAI -->
+          <parameter name="[subscriberIndexes]" operation="list.find" value="[userIdNAIOfSubscriber]" value2="[Subscription-Id-Data([i])]"/>
+        </case>
+
+        <case equals="4"><!-- END_USER_PRIVATE -->
+          <parameter name="[subscriberIndexes]" operation="list.find" value="[userIdPrivateOfSubscriber]" value2="[Subscription-Id-Data([i])]"/>
+        </case>
+
+        <default>
+          <!-- Subscription-Id-Type value not supported, no search. -->
+        </default>
+    </switch>
+    <if>
+      <condition>
+        <test parameter="[subscriberIndexes]" condition="list.isEmpty" not="true"/>
+      </condition>
+      <then>
+        <parameter name="[foundSubscriber]" operation="set" value="true"/>
+      </then>
+    </if>
+    <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+  </do>
+</while>
+
+<if><condition><test parameter="[subscriberIndexes]" condition="list.isEmpty"/></condition>
+  <then>
+    <!-- Unknown subscriber : DIAMETER_USER_UNKNOWN result code. -->
+    <!-- RFC 4006 : DIAMETER_USER_UNKNOWN (5030) : The specified end user is unknown in the credit-control server. -->
+    <parameter name="[Result-Code]" operation="set" value="DIAMETER_USER_UNKNOWN" />
+    <sendMessageDIAMETER name="Send Answer 3GPP/Gy/CCA">
+      &CCAmandatoryAVP;
+    </sendMessageDIAMETER>
+    <goto  name="loop" label="Begin" state="true"/>
+  </then>
+</if>

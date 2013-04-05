@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Ro Credit-Control answer (CCA)"-->
+
+<!DOCTYPE Library [
+  <!ENTITY loadSubscribersFromFile SYSTEM "./Library/loadSubscribersFromFile.xml">
+  <!ENTITY loadRulesFromFile SYSTEM "./Library/loadRulesFromFile.xml">
+  <!ENTITY CCAmandatoryAVP SYSTEM "./Library/CCAmandatoryAVP.xml">
+  <!ENTITY findSubscriberOr5030 SYSTEM "./Library/findSubscriberOr5030.xml">
+  <!ENTITY initiateSessionOr5004 SYSTEM "./Library/initiateSessionOr5004.xml">
+  <!ENTITY findSessionOr5002 SYSTEM "./Library/findSessionOr5002.xml">
+  <!ENTITY terminateSessionOr5002 SYSTEM "./Library/terminateSessionOr5002.xml">
+  <!ENTITY whichEventTriggers SYSTEM "./Library/whichEventTriggers.xml">
+  <!ENTITY withOrWithoutChargingRuleRemove SYSTEM "./Library/withOrWithoutChargingRuleRemove.xml">
+  <!ENTITY keys2Indexes SYSTEM "./Library/keys2Indexes.xml">
+  <!ENTITY date2RFC3588Time SYSTEM "./Library/date2RFC3588Time.xml">
+  <!ENTITY addCRDinCRI SYSTEM "./Library/addCRDinCRI.xml">
+  <!ENTITY withOrWithoutChargingRuleInstall SYSTEM "./Library/withOrWithoutChargingRuleInstall.xml">
+  <!ENTITY withOrWithoutChargingInformation SYSTEM "./Library/withOrWithoutChargingInformation.xml">
+  <!ENTITY withOrWithoutRevalidationTime SYSTEM "./Library/withOrWithoutRevalidationTime.xml">
+  <!ENTITY withOrWithoutUMI SYSTEM "./Library/withOrWithoutUMI.xml">
+  <!ENTITY install01ChargingRuleDefinition01 SYSTEM "./Library/install01ChargingRuleDefinition01.xml">
+  <!ENTITY install01ChargingRuleDefinition02 SYSTEM "./Library/install01ChargingRuleDefinition02.xml">
+  <!ENTITY install01ChargingRuleDefinition03 SYSTEM "./Library/install01ChargingRuleDefinition03.xml">
+  <!ENTITY install01ChargingRuleDefinition04 SYSTEM "./Library/install01ChargingRuleDefinition04.xml">
+  <!ENTITY install01ChargingRuleDefinition05 SYSTEM "./Library/install01ChargingRuleDefinition05.xml">
+  <!ENTITY ChargingRuleInstall01 SYSTEM "./Library/ChargingRuleInstall01.xml">
+  <!ENTITY install02ChargingRuleDefinition01 SYSTEM "./Library/install02ChargingRuleDefinition01.xml">
+  <!ENTITY install02ChargingRuleDefinition02 SYSTEM "./Library/install02ChargingRuleDefinition02.xml">
+  <!ENTITY install02ChargingRuleDefinition03 SYSTEM "./Library/install02ChargingRuleDefinition03.xml">
+  <!ENTITY install02ChargingRuleDefinition04 SYSTEM "./Library/install02ChargingRuleDefinition04.xml">
+  <!ENTITY install02ChargingRuleDefinition05 SYSTEM "./Library/install02ChargingRuleDefinition05.xml">
+  <!ENTITY ChargingRuleInstall02 SYSTEM "./Library/ChargingRuleInstall02.xml">
+  <!ENTITY install03ChargingRuleDefinition01 SYSTEM "./Library/install03ChargingRuleDefinition01.xml">
+  <!ENTITY install03ChargingRuleDefinition02 SYSTEM "./Library/install03ChargingRuleDefinition02.xml">
+  <!ENTITY install03ChargingRuleDefinition03 SYSTEM "./Library/install03ChargingRuleDefinition03.xml">
+  <!ENTITY install03ChargingRuleDefinition04 SYSTEM "./Library/install03ChargingRuleDefinition04.xml">
+  <!ENTITY install03ChargingRuleDefinition05 SYSTEM "./Library/install03ChargingRuleDefinition05.xml">
+  <!ENTITY ChargingRuleInstall03 SYSTEM "./Library/ChargingRuleInstall03.xml">
+  <!ENTITY install04ChargingRuleDefinition01 SYSTEM "./Library/install04ChargingRuleDefinition01.xml">
+  <!ENTITY install04ChargingRuleDefinition02 SYSTEM "./Library/install04ChargingRuleDefinition02.xml">
+  <!ENTITY install04ChargingRuleDefinition03 SYSTEM "./Library/install04ChargingRuleDefinition03.xml">
+  <!ENTITY install04ChargingRuleDefinition04 SYSTEM "./Library/install04ChargingRuleDefinition04.xml">
+  <!ENTITY install04ChargingRuleDefinition05 SYSTEM "./Library/install04ChargingRuleDefinition05.xml">
+  <!ENTITY ChargingRuleInstall04 SYSTEM "./Library/ChargingRuleInstall04.xml">
+  <!ENTITY install05ChargingRuleDefinition01 SYSTEM "./Library/install05ChargingRuleDefinition01.xml">
+  <!ENTITY install05ChargingRuleDefinition02 SYSTEM "./Library/install05ChargingRuleDefinition02.xml">
+  <!ENTITY install05ChargingRuleDefinition03 SYSTEM "./Library/install05ChargingRuleDefinition03.xml">
+  <!ENTITY install05ChargingRuleDefinition04 SYSTEM "./Library/install05ChargingRuleDefinition04.xml">
+  <!ENTITY install05ChargingRuleDefinition05 SYSTEM "./Library/install05ChargingRuleDefinition05.xml">
+  <!ENTITY ChargingRuleInstall05 SYSTEM "./Library/ChargingRuleInstall05.xml">
+  <!ENTITY sendCCA SYSTEM "./Library/sendCCA.xml">
+]>		
+
+<scenario>
+
+  <!-- Loading subscribers datas. -->
+  &loadSubscribersFromFile;
+  <!-- Loading rules datas. -->
+  &loadRulesFromFile;
+
+  <!-- Processing Credit-Control Requests. -->
+	<label name="Begin"/>
+    <!-- Receiving CCR. -->
+    <receiveMessageDIAMETER name="Receive Request 3GPP/Gx/CCR" request="true" type="Credit-Control" timeout="0">
+      <parameter name="[test:PCEF-Host]" operation="protocol.setFromMessage" value="avp.258.value"/>
+      <parameter name="[test:PCEF-Port]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+
+      <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+      <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+      <parameter name="[Pbit]" operation="protocol.setFromMessage" value="header.proxiable"/>
+  		<parameter name="[Session-Id]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+  		<parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type.value"/>
+  		<parameter name="[CC-Request-Number]" operation="protocol.setFromMessage" value="avp.CC-Request-Number.value"/>
+  		<parameter name="[Subscription-Id-Type]" operation="protocol.setFromMessage" value="avp.Subscription-Id.Subscription-Id-Type.value"/>
+  		<parameter name="[Subscription-Id-Data]" operation="protocol.setFromMessage" value="avp.Subscription-Id.Subscription-Id-Data.value"/>
+
+  		<parameter name="[Proxy-Host]" operation="protocol.setFromMessage" value="avp.Proxy-Info.Proxy-Host.value"/>
+  		<parameter name="[Proxy-State]" operation="protocol.setFromMessage" value="avp.Proxy-Info.Proxy-State.value"/>
+    </receiveMessageDIAMETER>
+
+    <switch parameter="[CC-Request-Type]">
+    <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+        <case equals="1">
+<!-- INITIAL_REQUEST -->
+          <!-- Finding subscriber. -->
+          &findSubscriberOr5030;
+
+          <!-- Known subscriber. -->
+          <!-- Initiating the session. -->
+          &initiateSessionOr5004;
+
+          <!-- Which event triggers ? -->
+          &whichEventTriggers;
+
+          <!-- Sending CCA. -->
+          <parameter name="[Result-Code]" operation="set" value="DIAMETER_SUCCESS" />
+          <parameter name="[CCAremoveRuleKeys]" operation="set" value="[CCAIremoveRuleKeysOfSubscriber([subscriberIndex])]" />
+          <parameter name="[CCAinstallRuleKeys]" operation="set" value="[CCAIinstallRuleKeysOfSubscriber([subscriberIndex])]" />
+          &sendCCA;
+        </case>
+
+        <case equals="2">
+<!-- UPDATE_REQUEST -->
+          <!-- Finding subscriber. -->
+          &findSubscriberOr5030;
+
+          <!-- Known subscriber. -->
+          <!-- Controlling the session. -->
+          &findSessionOr5002;
+
+          <!-- No event trigger. -->
+          <parameter name="[Event-Trigger]" operation="list.create"/>
+
+          <!-- Sending CCA. -->
+          <parameter name="[Result-Code]" operation="set" value="DIAMETER_SUCCESS" />
+          <parameter name="[CCAremoveRuleKeys]" operation="set" value="[CCAUremoveRuleKeysOfSubscriber([subscriberIndex])]" />
+          <parameter name="[CCAinstallRuleKeys]" operation="set" value="[CCAUinstallRuleKeysOfSubscriber([subscriberIndex])]" />
+          &sendCCA;
+        </case>
+
+        <case equals="3">
+<!-- TERMINATION_REQUEST -->
+          <!-- Terminating the session. -->
+          &terminateSessionOr5002;
+
+          <!-- Sending CCA. -->
+          <parameter name="[Result-Code]" operation="set" value="DIAMETER_SUCCESS" />
+          <sendMessageDIAMETER name="Send Answer 3GPP/Gx/CCA">
+            &CCAmandatoryAVP;
+          </sendMessageDIAMETER>
+          <goto  name="loop" label="Begin" state="true"/>
+        </case>
+
+        <default>
+          <!-- Nothing done, success. -->
+          <goto  name="loop" label="Begin" state="true"/>
+        </default>
+    </switch>
+
+</scenario>

@@ -1,0 +1,47 @@
+<!--
+Abstract :
+Fill the 7 mandatory AVP.
+Do not handle Proxy-Info AVP.
+
+Input parameters :
+- [Pbit] : from the request.
+- [hopByHop] : from the request.
+- [endToEnd] : from the request.
+- [Session-Id] : from the request.
+- [Result-Code]
+- [OCS-Host]
+- [OCS-Realm]
+- [CC-Request-Type] : from the request.
+- [CC-Request-Number] : from the request.
+
+Output parameters : none.
+
+Another used include : none.
+-->
+
+<!-- RFC 3588 : The 'P' bit is set to the same value as the one in the request. -->
+<!-- RFC 3588 : The same Hop-by-Hop identifier in the request is used in the answer. -->
+<!-- RFC 3588 : The same End-to-End identifier in the request is used in the answer. -->
+<header request="false" command="Credit-Control" applicationId="4" proxiable="[Pbit]" error="false" retransmit="false" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+
+<!-- RFC 3588 : If the Session-Id is present in the request, it MUST be included in the answer. -->
+<avp code="Session-Id" mandatory="true" type="UTF8String" value="[Session-Id]"/>
+
+<!-- RFC 3588 : The Result-Code AVP is added with its value indicating success or failure. -->
+<avp code="Result-Code" mandatory="true" type="Unsigned32" value="[Result-Code]"/>              
+
+<!-- RFC 3588 : The local host's identity is encoded in the Origin-Host AVP. -->
+<avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[OCS-Host]"/>
+<avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[OCS-Realm]"/>
+<!-- RFC 3588 : The Destination-Host and Destination-Realm AVPs MUST NOT be present in the answer message. -->
+
+<!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
+<avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="4"/>
+
+<!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+<!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+<avp code="CC-Request-Type" mandatory="true" type="Enumerated" value="[CC-Request-Type]"/>
+
+<!-- The CC-Request-Number AVP contains the sequence number of the transferred messages. -->
+<avp code="CC-Request-Number" mandatory="true" type="Unsigned32" value="[CC-Request-Number]"/>
+

@@ -1,0 +1,194 @@
+<!--
+Abstract :
+Determine how many Charging-Rule-Install AVP will be sent in the CCA.
+Rules are grouped in the same Charging-Rule-Install according to the value of the tuple
+(Rule-Activation-Time, Rule-Deactivation-Time, ...).
+
+Input parameters :
+- [maxChargingRuleInstall] : max number of Charging-Rule-Install AVP. [j] is between 1 and [maxChargingRuleInstall].
+- [maxChargingRuleDefinition] : max number of Charging-Rule-Definition AVP in a Charging-Rule-Install AVP. [k] is between 1 and [maxChargingRuleDefinition].
+- [CCAinstallRuleKeys] : subscribers' list of keys, from the data file, of rules to install.
+- [ruleKeyOfRule] : rule key of Gx rules from data file.
+- [baseNameOfRule] : group name of Gx grouped rules from data file.
+- [activationTimeOfRule] : activation time of Gx rules from data file.
+- [deactivationTimeOfRule] : deactivation time of Gx rules from data file.
+- [ruleNameOfRule] : rule name of Gx rules from data file.
+- [serviceIdOfRule] : service identifier of Gx rules from data file.
+- [ratingGroupOfRule] : rating group of the service of Gx rules from data file.
+- [monitoringKeyOfRule] : monitoring key of Gx rules from data file.
+
+Output parameters :
+- [CCAwithCRI[j]] : boolean, true if CCA is sent with Charging-Rule-Install AVP.
+- [CRI[j]withCRD(k)] : boolean, true if Charging-Rule-Definition AVP is nested in the grouped Charging-Rule-Install AVP.
+- [install[j]RuleName(k)] : value of Charging-Rule-Name AVP.
+- [install[j]ServiceIdentifier(k)] : value of Service-Identifier AVP.
+- [install[j]RatingGroup(k)] : value of Rating-Group AVP.
+- [install[j]MonitoringKey(k)] : value of Monitoring-Key AVP.
+- [install[j]RuleNames] : list of PCC rules pre-defined at the PCEF.
+- [install[j]BaseNames] : list of of a pre defined groups of PCC rules residing at the PCEF.
+- [install[j]ActivationTime] : value of Rule-Activation-Time AVP.
+- [install[j]DeactivationTime] : value of Rule-Deactivation-Time AVP.
+
+
+- [CCAwithPCCRuleInstall] : boolean, true if the CCA is sent with Charging-Rule-Install AVP.
+- [Charging-Rule-Name] : value of the Charging-Rule-Name AVP.
+
+Another used include :
+- keys2Indexes
+- date2RFC3588Time
+- addCRDinCRI
+-->
+
+<!-- Don't keep the previous values. -->
+<!--for index="[j]" from="1" to="[maxChargingRuleInstall]"-->
+<parameter name="[j]" operation="set" value="1"/>
+<while>
+  <condition>
+    <test parameter="[j]" condition="number.lowerEqualThan" value="[maxChargingRuleInstall]"/>
+  </condition>
+  <do>
+    <parameter name="[CCAwithCRI[j]]" operation="set" value="false"/>
+
+    <!--for index="[k]" from="1" to="[maxChargingRuleDefinition]"-->
+    <parameter name="[k]" operation="set" value="1"/>
+    <while>
+      <condition>
+        <test parameter="[k]" condition="number.lowerEqualThan" value="[maxChargingRuleDefinition]"/>
+      </condition>
+      <do>
+        <parameter name="[CRI[j]withCRD[k]]" operation="set" value="false"/>
+        <parameter name="[install[j]Defintion[k]RuleName]" operation="list.create"/>
+        <parameter name="[install[j]Defintion[k]ServiceIdentifier]" operation="list.create"/>
+        <parameter name="[install[j]Defintion[k]RatingGroup]" operation="list.create"/>
+        <parameter name="[install[j]Defintion[k]MonitoringKey]" operation="list.create"/>
+  
+        <parameter name="[k]" operation="number.add" value="[k]" value2="1"/>
+      </do>
+    </while>
+    <parameter name="[install[j]RuleNames]" operation="list.create"/>
+    <parameter name="[install[j]BaseNames]" operation="list.create"/>
+    <parameter name="[install[j]ActivationTime]" operation="list.create"/>
+    <parameter name="[install[j]DeactivationTime]" operation="list.create"/>
+
+    <parameter name="[j]" operation="number.add" value="[j]" value2="1"/>
+  </do>
+</while>
+
+<!-- Building the several Charging-Rule-Install AVP of the CCA. -->
+<if>
+  <condition>
+    <not><test parameter="[CCAinstallRuleKeys]" condition="string.equals" value=""/></not>
+  </condition>
+  <then>
+    <!-- At least one Charging-Rule-Install AVP to build. -->
+    <!-- From keys to indexes. -->
+    <parameter name="[CCAinstallRuleIndexes]" operation="list.create"/><!-- Don't keep the previous value. -->
+    <parameter name="[initialKeysList]" operation="set" value="[CCAinstallRuleKeys]"/>
+    &keys2Indexes;
+    <parameter name="[CCAinstallRuleIndexes]" operation="set" value="[finalIndexesList]"/>
+
+    <!-- How many Charging-Rule-Install AVP ? -->
+    <parameter name="[CCAinstallRuleIndexesLastIndex]" operation="list.size" value="[CCAinstallRuleIndexes]"/>
+    <parameter name="[CCAinstallRuleIndexesLastIndex]" operation="number.substract" value="[CCAinstallRuleIndexesLastIndex]" value2="1"/>
+    <parameter name="[iRuleIndexes]" operation="set" value="0"/><!-- Index of the list of rule indexes to install. -->
+    <parameter name="[j]" operation="set" value="0"/><!-- Number of the Charging-Rule-Install AVP to build, first one will be 1. -->
+    <!-- Rules are grouped in the same Charging-Rule-Install according to the value of the tuple (Rule-Activation-Time, Rule-Deactivation-Time). -->
+    <parameter name="[installActivationTimes]" operation="list.create"/>
+    <parameter name="[installDeactivationTimes]" operation="list.create"/>
+    <!-- Add here the other elements of the tuple : Bearer-Identifier, Resource-Allocation-Notification, Charging-Correlation-Indicator. -->
+    <while>
+      <condition>
+        <test parameter="[iRuleIndexes]" condition="number.lowerEqualThan" value="[CCAinstallRuleIndexesLastIndex]"/>
+      </condition>
+      <do>
+        <parameter name="[ruleIndex]" operation="set" value="[CCAinstallRuleIndexes([iRuleIndexes])]"/>
+
+        <!-- Finding the first element of the tuple. -->
+        <parameter name="[installIndexes]" operation="list.find" value="[installActivationTimes]" value2="[activationTimeOfRule([ruleIndex])]"/>
+
+        <parameter name="[addNewAVP]" operation="set" value="true"/>
+        <if>
+          <condition>
+            <not><test parameter="[installIndexes]" condition="list.isEmpty"/></not>
+          </condition>
+          <then>
+            <!-- First element of the tuple is founded. Is it an already known tuple ? -->
+            <parameter name="[installIndexesLastIndex]" operation="list.size" value="[installIndexes]"/>
+            <parameter name="[installIndexesLastIndex]" operation="number.substract" value="[installIndexesLastIndex]" value2="1"/>
+            <parameter name="[iInstallIndexes]" operation="set" value="0"/><!-- Index of the list of install indexes. -->
+            <while>
+              <condition>
+                <test parameter="[iInstallIndexes]" condition="number.lowerEqualThan" value="[installIndexesLastIndex]"/>
+                <test parameter="[addNewAVP]" condition="boolean.equals" value="true"/><!-- If tuple is already founded, no new Charging-Rule-Install AVP added. -->
+              </condition>
+              <do>
+                <parameter name="[installIndex]" operation="set" value="[installIndexes([iInstallIndexes])]"/>
+
+                <!-- Is the complete tuple already known ? -->
+                <if>
+                  <condition>
+                    <test parameter="[installDeactivationTimes([installIndex])]" condition="string.equals" value="[deactivationTimeOfRule([ruleIndex])]"/>
+                    <!-- Add here the other elements of the tuple : Bearer-Identifier, Resource-Allocation-Notification, Charging-Correlation-Indicator. -->
+                  </condition>
+                  <then>
+                    <!-- The complete tuple is already known. No new Charging-Rule-Install AVP to build. -->
+                    <parameter name="[addNewAVP]" operation="set" value="false"/>
+                  </then>
+                </if>
+                <parameter name="[iInstallIndexes]" operation="number.add" value="[iInstallIndexes]" value2="1"/>
+              </do>
+            </while>
+          </then>
+        </if>
+        <if>
+          <condition>
+            <test parameter="[addNewAVP]" condition="boolean.equals" value="true"/>
+          </condition>
+          <then><!-- New Charging-Rule-Install AVP to build. -->
+            <!-- Number of the Charging-Rule-Install AVP to build. -->
+            <parameter name="[j]" operation="number.add" value="[j]" value2="1"/>
+            <if>
+              <condition>
+                <test parameter="[j]" condition="number.lowerEqualThan" value="[maxChargingRuleInstall]"/>
+              </condition>
+              <then><!-- Adding a Charging-Rule-Install AVP in the CCA. -->
+                <!-- Add the tuple in the list. -->
+                <parameter name="[installActivationTimes]" operation="list.addLast" value="[installActivationTimes]" value2="[activationTimeOfRule([ruleIndex])]"/>
+                <parameter name="[installDeactivationTimes]" operation="list.addLast" value="[installDeactivationTimes]" value2="[deactivationTimeOfRule([ruleIndex])]"/>
+                <!-- Add here the other elements of the tuple : Bearer-Identifier, Resource-Allocation-Notification, Charging-Correlation-Indicator. -->
+
+                <!-- Presence of the new Charging-Rule-Install AVP. -->
+                <parameter name="[CCAwithCRI[j]]" operation="set" value="true"/>
+
+                <!-- Building the Charging-Rule-Name, Charging-Rule-Base-Name or Charging-Rule-Definition AVP of the new Charging-Rule-Install AVP. -->
+                <parameter name="[installNumber]" operation="set" value="[j]"/>
+                <parameter name="[definitionNumber]" operation="set" value="1"/>
+                &addCRDinCRI;
+                <parameter name="[install[j]NextDefinitionNumber]" operation="set" value="[nextDefinitionNumber]"/>
+
+                <!-- Building the tuple of the new Charging-Rule-Install AVP. -->
+                <parameter name="[initialDate]" operation="set" value="[activationTimeOfRule([ruleIndex])]"/>
+                &date2RFC3588Time;
+                <parameter name="[Rule-Activation-Time]" operation="set" value="[finalTime]"/>
+                <parameter name="[install[j]ActivationTime]" operation="set" value="[Rule-Activation-Time]"/>
+                <parameter name="[initialDate]" operation="set" value="[deactivationTimeOfRule([ruleIndex])]"/>
+                &date2RFC3588Time;
+                <parameter name="[Rule-Deactivation-Time]" operation="set" value="[finalTime]"/>
+                <parameter name="[install[j]DeactivationTime]" operation="set" value="[Rule-Deactivation-Time]"/>
+                <!-- Add here the other elements of the tuple : Bearer-Identifier, Resource-Allocation-Notification, Charging-Correlation-Indicator. -->
+              </then>
+            </if>
+          </then>
+          <else><!-- No new Charging-Rule-Install AVP to build. -->
+            <!-- Adding the Charging-Rule-Name, Charging-Rule-Base-Name or Charging-Rule-Definition AVP of the already built Charging-Rule-Install AVP. -->
+            <parameter name="[installNumber]" operation="number.add" value="[installIndex]" value2="1"/>
+            <parameter name="[definitionNumber]" operation="set" value="[install[installNumber]NextDefinitionNumber]"/>
+            &addCRDinCRI;
+            <parameter name="[install[installNumber]NextDefinitionNumber]" operation="set" value="[nextDefinitionNumber]"/>
+          </else>
+        </if>
+        <parameter name="[iRuleIndexes]" operation="number.add" value="[iRuleIndexes]" value2="1"/>
+      </do>
+    </while>
+  </then>
+</if>

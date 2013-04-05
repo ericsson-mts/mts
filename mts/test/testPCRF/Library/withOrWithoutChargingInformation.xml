@@ -1,0 +1,76 @@
+<!--
+Abstract :
+If one of the values :
+- Primary-Event-Charging-Function-Name,
+- Secondary-Event-Charging-Function-Name,
+- Primary-Charging-Collection-Function-Name,
+- Secondary-Charging-Collection-Function-Name,
+is not empty in the data file, CCA is sent with Charging-Information AVP.
+
+Input parameters :
+- [primaryEventChargingFunctionNameOfSubscriber] : subscribers' values of Primary-Event-Charging-Function-Name AVP from the data file.
+- [secondaryEventChargingFunctionNameOfSubscriber] : subscribers' values of Secondary-Event-Charging-Function-Name AVP from the data file.
+- [primaryChargingCollectionFunctionNameOfSubscriber] : subscribers' values of Primary-Charging-Collection-Function-Name AVP from the data file.
+- [secondaryChargingCollectionFunctionNameOfSubscriber] : subscribers' values of Secondary-Charging-Collection-Function-Name AVP from the data file.
+- [subscriberIndex] : subscriber's index in the data file.
+
+Output parameters :
+- [CCAwithChI] : boolean, true if the CCA is sent with Charging-Information AVP.
+- [Primary-Event-Charging-Function-Name] : value of the Primary-Event-Charging-Function-Name AVP.
+- [Secondary-Event-Charging-Function-Name] : value of the Secondary-Event-Charging-Function-Name AVP.
+- [Primary-Charging-Collection-Function-Name] : value of the Primary-Charging-Collection-Function-Name AVP.
+- [Secondary-Charging-Collection-Function-Name] : value of the Secondary-Charging-Collection-Function-Name AVP.
+
+Another used include : none.
+-->
+
+<!-- With or without Charging-Information AVP ? -->
+<parameter name="[CCAwithChI]" operation="set" value="false"/>
+<parameter name="[Primary-Event-Charging-Function-Name]" operation="set" value="[primaryEventChargingFunctionNameOfSubscriber([subscriberIndex])]"/>
+<if>
+  <condition>
+    <test parameter="[Primary-Event-Charging-Function-Name]" condition="string.equals" value="" not="true"/>
+  </condition>
+  <then>
+    <parameter name="[CCAwithChI]" operation="set" value="true"/>
+  </then>
+  <else>
+    <parameter name="[Primary-Event-Charging-Function-Name]" operation="list.create"/>
+  </else>
+</if>
+<parameter name="[Secondary-Event-Charging-Function-Name]" operation="set" value="[secondaryEventChargingFunctionNameOfSubscriber([subscriberIndex])]"/>
+<if>
+  <condition>
+    <test parameter="[Secondary-Event-Charging-Function-Name]" condition="string.equals" value="" not="true"/>
+  </condition>
+  <then>
+    <parameter name="[CCAwithChI]" operation="set" value="true"/>
+  </then>
+  <else>
+    <parameter name="[Secondary-Event-Charging-Function-Name]" operation="list.create"/>
+  </else>
+</if>
+<parameter name="[Primary-Charging-Collection-Function-Name]" operation="set" value="[primaryChargingCollectionFunctionNameOfSubscriber([subscriberIndex])]"/>
+<if>
+  <condition>
+    <test parameter="[Primary-Charging-Collection-Function-Name]" condition="string.equals" value="" not="true"/>
+  </condition>
+  <then>
+    <parameter name="[CCAwithChI]" operation="set" value="true"/>
+  </then>
+  <else>
+    <parameter name="[Primary-Charging-Collection-Function-Name]" operation="list.create"/>
+  </else>
+</if>
+<parameter name="[Secondary-Charging-Collection-Function-Name]" operation="set" value="[secondaryChargingCollectionFunctionNameOfSubscriber([subscriberIndex])]"/>
+<if>
+  <condition>
+    <test parameter="[Secondary-Charging-Collection-Function-Name]" condition="string.equals" value="" not="true"/>
+  </condition>
+  <then>
+    <parameter name="[CCAwithChI]" operation="set" value="true"/>
+  </then>
+  <else>
+    <parameter name="[Secondary-Charging-Collection-Function-Name]" operation="list.create"/>
+  </else>
+</if>

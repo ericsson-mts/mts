@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Ro Credit-Control request (CCR)"-->
+
+<!DOCTYPE Library [
+  <!ENTITY sendCCRwithoutUSU SYSTEM "./Library/sendCCRwithoutUSU.xml">
+  <!ENTITY sendCCRwithUSU SYSTEM "./Library/sendCCRwithUSU.xml">
+]>		
+
+<scenario>
+  <!-- The Subscription-Id-Type AVP is used to determine which type of identifier is carried by the Subscription-Id AVP. -->
+  <!-- Possible enumerated values : END_USER_E164(0) / END_USER_IMSI(1) / END_USER_SIP_URI(2) / END_USER_NAI(3) / END_USER_PRIVATE(4). -->
+  <parameter name="[Subscription-Id-Type]" operation="set" value="2"/>
+  <!-- The Subscription-Id-Data AVP is used to identify the end user. -->
+  <parameter name="[Subscription-Id-Data]" operation="set" value="sip:+33923774012@sip.mobistar.com"/>
+
+  <!-- The Service-Identifier AVP contains the identifier of the service. The specific service the request relates to is uniquely identified by the combination of Service-Context-Id and Service-Identifier AVPs. -->
+  <parameter name="[Service-Identifier]" operation="set" value="1"/>
+  <!-- The Rating-Group AVP contains the identifier of a rating group. -->
+  <parameter name="[Rating-Group]" operation="list.create"/>
+ 
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="1"/>
+  <!-- The Session-Id AVP is used to identify a specific session. -->
+  <parameter name="[Session-Id]" operation="set" value="pcef.mts.devoteam.com;147038400;40121;CreditLimitReached4012I"/>
+
+  <!-- Sending CCR INITIAL_REQUEST. -->
+  &sendCCRwithoutUSU;
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gy/CCA">
+    <parameter name="[msccResult-Code]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Result-Code.value"/>
+  </receiveMessageDIAMETER>
+  <if>
+    <condition>
+      <!-- RFC 4006 : DIAMETER_CREDIT_LIMIT_REACHED (4012) : The credit-control server denies the service request because the end user's account could not cover the requested service.  If the CCR contained used-service-units they are deducted, if possible. -->
+      <test parameter="[msccResult-Code]" condition="string.equals" not="true" value="4012"/>
+    </condition>
+    <then>
+      <exit failed="true" description="Expected DIAMETER_CREDIT_LIMIT_REACHED (4012) error."/>
+    </then>
+  </if>
+
+  <pause seconds="2"/>
+  <!-- RFC 3588 : The request contains a Session-Id AVP, which is used in subsequent messages relating to the user's session. -->
+
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="3"/>
+
+  <!-- The Subscription-Id-Data AVP ([endUserSIP_URI]) is used to identify the end user. -->
+
+  <!-- The CC-Time AVP indicates the length of the requested, granted, or used time in seconds. -->
+  <parameter name="[CC-Time]" operation="set" value="0"/>
+  <!-- The CC-Total-Octets contains the total number of requested, granted, or used octets regardless of the direction (sent or received). -->
+  <parameter name="[CC-Total-Octets]" operation="set" value="0"/>
+  <!-- The CC-Input-Octets AVP contains the number of requested, granted, or used octets that can be/have been received from the end user. -->
+  <parameter name="[CC-Input-Octets]" operation="set" value="0"/>
+  <!-- The CC-Output-Octets AVP contains the number of requested, granted, or used octets that can be/have been sent to the end user. -->
+  <parameter name="[CC-Output-Octets]" operation="set" value="0"/>
+
+  <!-- The Service-Identifier AVP ([Service-Identifier]) contains the identifier of the service. The specific service the request relates to is uniquely identified by the combination of Service-Context-Id and Service-Identifier AVPs. -->
+  <!-- The Rating-Group AVP contains the identifier of a rating group. -->
+ 
+  <!-- Sending CCR TERMINATION_REQUEST. -->
+  &sendCCRwithUSU;
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gy/CCA">
+  </receiveMessageDIAMETER>
+</scenario>

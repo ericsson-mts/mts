@@ -1,0 +1,129 @@
+<!--
+Abstract :
+Empty the [eventTrigger...] variable for not sending in the CCA when the trigger is not activated.
+
+Input parameters :
+- [eventTriggersOfSubscriber] : subscribers' list of the event triggers from the data file.
+- [subscriberIndex] : subscriber's index in the data file.
+
+Output parameters :
+- [eventTriggerSGSN] : emptied if the trigger is not activated.
+- [eventTriggerQoS] : emptied if the trigger is not activated.
+- [eventTriggerRAT] : emptied if the trigger is not activated.
+- [eventTriggerTFT] : emptied if the trigger is not activated.
+- [eventTriggerPLMN] : emptied if the trigger is not activated.
+
+Another used include : none.
+-->
+
+<!--
+3GPP TS 29.210 : The Event-Trigger AVP indicates an event that shall cause a re-request of charging rules.
+Possible enumerated values : SGSN_CHANGE (0) / QOS_CHANGE (1) / RAT_CHANGE (2) / TFT_CHANGE (3) / PLMN_CHANGE (4).
+A mask is built : the enumarated value of the trigger is the number the bit : bit 0 for SGSN_CHANGE, ..., bit 4 for PLMN_CHANGE. 
+[eventTriggersOfSubscriber] is the decimal value of the mask.
+-->
+<parameter name="[currentEventTriggersList]" operation="set" value="[eventTriggersOfSubscriber([subscriberIndex])]"/>
+<if>
+  <condition>
+    <test parameter="[currentEventTriggersList]" condition="string.equals" value=""/>
+  </condition>
+  <then>
+    <!-- No event triggers. -->
+    <parameter name="[eventTriggerSGSN]" operation="list.create"/>
+    <parameter name="[eventTriggerQoS]" operation="list.create"/>
+    <parameter name="[eventTriggerRAT]" operation="list.create"/>
+    <parameter name="[eventTriggerTFT]" operation="list.create"/>
+    <parameter name="[eventTriggerPLMN]" operation="list.create"/>
+  </then>
+  <else>
+    <!-- Is SGSN_CHANGE event trigger activated ? -->
+    <parameter name="[currentEventTriggerActivated]" operation="number.modulo" value="[currentEventTriggersList]" value2="2"/>
+    <if>
+      <condition>
+        <test parameter="[currentEventTriggerActivated]" condition="string.equals" value="1"/>
+      </condition>
+      <then>
+        <!-- SGSN_CHANGE event trigger is activated. -->
+        <parameter name="[eventTriggerSGSN]" operation="set" value="0"/>
+        <parameter name="[currentEventTriggersList]" operation="number.substract" value="[currentEventTriggersList]" value2="1"/>
+      </then>
+      <else>
+        <!-- SGSN_CHANGE event trigger is not activated. -->
+        <parameter name="[eventTriggerSGSN]" operation="list.create"/>
+      </else>
+    </if>
+    <parameter name="[currentEventTriggersList]" operation="number.divide" value="[currentEventTriggersList]" value2="2"/>
+
+    <!-- Is QOS_CHANGE event trigger activated ? -->
+    <parameter name="[currentEventTriggerActivated]" operation="number.modulo" value="[currentEventTriggersList]" value2="2"/>
+    <if>
+      <condition>
+        <test parameter="[currentEventTriggerActivated]" condition="string.equals" value="1"/>
+      </condition>
+      <then>
+        <!-- QOS_CHANGE event trigger is activated. -->
+        <parameter name="[eventTriggerQoS]" operation="set" value="1"/>
+        <parameter name="[currentEventTriggersList]" operation="number.substract" value="[currentEventTriggersList]" value2="1"/>
+      </then>
+      <else>
+        <!-- QOS_CHANGE event trigger is not activated. -->
+        <parameter name="[eventTriggerQoS]" operation="list.create"/>
+      </else>
+    </if>
+    <parameter name="[currentEventTriggersList]" operation="number.divide" value="[currentEventTriggersList]" value2="2"/>
+
+    <!-- Is RAT_CHANGE event trigger activated ? -->
+    <parameter name="[currentEventTriggerActivated]" operation="number.modulo" value="[currentEventTriggersList]" value2="2"/>
+    <if>
+      <condition>
+        <test parameter="[currentEventTriggerActivated]" condition="string.equals" value="1"/>
+      </condition>
+      <then>
+        <!-- RAT_CHANGE event trigger is activated. -->
+        <parameter name="[eventTriggerRAT]" operation="set" value="2"/>
+        <parameter name="[currentEventTriggersList]" operation="number.substract" value="[currentEventTriggersList]" value2="1"/>
+      </then>
+      <else>
+        <!-- RAT_CHANGE event trigger is not activated. -->
+        <parameter name="[eventTriggerRAT]" operation="list.create"/>
+      </else>
+    </if>
+    <parameter name="[currentEventTriggersList]" operation="number.divide" value="[currentEventTriggersList]" value2="2"/>
+
+    <!-- Is TFT_CHANGE event trigger activated ? -->
+    <parameter name="[currentEventTriggerActivated]" operation="number.modulo" value="[currentEventTriggersList]" value2="2"/>
+    <if>
+      <condition>
+        <test parameter="[currentEventTriggerActivated]" condition="string.equals" value="1"/>
+      </condition>
+      <then>
+        <!-- TFT_CHANGE event trigger is activated. -->
+        <parameter name="[eventTriggerTFT]" operation="set" value="3"/>
+        <parameter name="[currentEventTriggersList]" operation="number.substract" value="[currentEventTriggersList]" value2="1"/>
+      </then>
+      <else>
+        <!-- TFT_CHANGE event trigger is not activated. -->
+        <parameter name="[eventTriggerTFT]" operation="list.create"/>
+      </else>
+    </if>
+    <parameter name="[currentEventTriggersList]" operation="number.divide" value="[currentEventTriggersList]" value2="2"/>
+
+    <!-- Is PLMN_CHANGE event trigger activated ? -->
+    <parameter name="[currentEventTriggerActivated]" operation="number.modulo" value="[currentEventTriggersList]" value2="2"/>
+    <if>
+      <condition>
+        <test parameter="[currentEventTriggerActivated]" condition="string.equals" value="1"/>
+      </condition>
+      <then>
+        <!-- PLMN_CHANGE event trigger is activated. -->
+        <parameter name="[eventTriggerPLMN]" operation="set" value="4"/>
+        <parameter name="[currentEventTriggersList]" operation="number.substract" value="[currentEventTriggersList]" value2="1"/>
+      </then>
+      <else>
+        <!-- PLMN_CHANGE event trigger is not activated. -->
+        <parameter name="[eventTriggerPLMN]" operation="list.create"/>
+      </else>
+    </if>
+    <parameter name="[currentEventTriggersList]" operation="number.divide" value="[currentEventTriggersList]" value2="2"/>
+  </else>
+</if>

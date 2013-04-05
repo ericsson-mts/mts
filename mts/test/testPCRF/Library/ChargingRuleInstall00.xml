@@ -1,0 +1,43 @@
+<!--
+Abstract :
+Build the Charging-Rule-Install AVP.
+Rules are grouped in the same Charging-Rule-Install according to the value of the tuple
+(Rule-Activation-Time, Rule-Deactivation-Time, ...).
+
+Input parameters :
+- [CCAwithCRI[j]] : boolean, true if CCA is sent with Charging-Rule-Install AVP.
+- [install[j]RuleNames] : list of PCC rules pre-defined at the PCEF
+- [install[j]BaseNames] : list of of a pre defined groups of PCC rules residing at the PCEF.
+- [install[j]ActivationTime] : value of Rule-Activation-Time AVP.
+- [install[j]DeactivationTime] : value of Rule-Deactivation-Time AVP.
+
+Output parameters : none.
+
+Another used include :
+- install[j]ChargingRuleDefinition[k] (with k=01..05).
+-->
+
+  <!-- 3GPP TS 29.212 : The Charging-Rule-Install AVP (AVP code 1001) is of type Grouped, and it is used to activate, install or modify PCC rules as instructed from the PCRF to the PCEF. -->
+  <avp code="Charging-Rule-Install" state="[CCAwithCRI[j]]">
+    <!-- 3GPP TS 29.212 : The Charging-Rule-Definition AVP (AVP code 1003) is of type Grouped, and it defines the PCC rule for a service data flow sent by the PCRF to the PCEF.   -->
+    &install[j]ChargingRuleDefinition01;
+    &install[j]ChargingRuleDefinition02;
+    &install[j]ChargingRuleDefinition03;
+    &install[j]ChargingRuleDefinition04;
+    &install[j]ChargingRuleDefinition05;
+
+    <!-- 3GPP TS 29.212 : The Charging-Rule-Name AVP (AVP code 1005) is of type OctetString, and it defines a name for PCC rule. For PCC rules pre-defined at the PCEF it uniquely identifies a PCC rule within the PCEF. -->
+    <avp code="Charging-Rule-Name" vendorId="TGPP" mandatory="true" type="OctetString" value="[install[j]RuleNames]"/>
+    <!-- 3GPP TS 29.212 : The Charging-Rule-Base-Name AVP (AVP code 1004) is of type UTF8String, and it indicates the name of a pre defined group of PCC rules residing at the PCEF. -->
+    <avp code="Charging-Rule-Base-Name" vendorId="TGPP" mandatory="true" type="UTF8String" value="[install[j]BaseNames]"/>
+
+    <!--avp code="Bearer-Identifier"/-->
+
+    <!-- 3GPP TS 29.212 : The Rule-Activation-Time AVP (AVP code 1043) is of type Time. This value indicates the NTP time at which the PCC rule has to be enforced. The AVP is included in Charging-Rule-Install AVP and is applicable for all the PCC rules included within the Charging-Rule-Install AVP. -->
+    <avp code="Rule-Activation-Time" vendorId="TGPP" mandatory="true" type="Time" value="[install[j]ActivationTime]"/>
+    <!-- 3GPP TS 29.212 : The Rule-Deactivation-Time AVP (AVP code 1044) is of type Time. This value indicates the NTP time at which the PCEF has to stop enforcing the PCC rule. The AVP is included in Charging-Rule-Install AVP and is applicable for all the PCC rules included within the Charging-Rule-Install AVP. -->
+    <avp code="Rule-Deactivation-Time" vendorId="TGPP" mandatory="true" type="Time" value="[install[j]DeactivationTime]"/>
+
+    <!--avp code="Resource-Allocation-Notification"/-->
+    <!--avp code="Charging-Correlation-Indicator"/-->
+  </avp>
