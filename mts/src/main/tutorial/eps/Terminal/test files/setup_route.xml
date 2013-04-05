@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+	<if>
+		<condition>
+			<test parameter="[OsProperty]" condition="string.contains" value="Windows" />
+		</condition>
+		<then>
+			<log level="INFO">[OsProperty] -- Windaub</log>
+		</then>
+		<else>
+			<log level="INFO">[OsProperty] -- Linux</log>
+			<parameter name="[addRoute]" operation="system.command" value="route add -host [Host-Server] gw [eNodeBIP]" />
+		</else>
+	</if>
+</scenario>
