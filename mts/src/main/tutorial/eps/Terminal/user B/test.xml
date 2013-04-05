@@ -1,6 +1,7 @@
 <!-- Related XMLSchema file: conf/schemas/test.xsd -->
 <test name="echo client GTPv2-C">
 	<parameter name="[100_DOMAIN_ADDR]" 	operation="set" value="imslab.fr.am" 	editable="true" 	description="domaine name"/>
+	<parameter name="[test:eNodeBIP]"		operation="set"	value="172.16.21.112"	editable="true"		description="eNodeB IP" />
 	<parameter name="[Host-Server]" 	operation="set" value="192.168.90.218" 	editable="true" 	description="P-CSCF IP"/> <!-- PCSCF IP -->
 	<parameter name="[Port-Server]" 	operation="set" value="5060" 		editable="true"		description="P-CSCF Port"/> <!-- PCSCF PORT -->
 
@@ -18,17 +19,27 @@
       	<parameter name="[remoteHostRTP]" 	operation="set" value="192.168.90.225"/> 
   	<parameter name="[remoteHostRTP]" 	operation="set" value="[remoteHostRTP(0)]" editable="true" /> 
     	<parameter name="[remotePortRTP]" 	operation="set" value="11000" editable="true" /> 
-  	<parameter name="fileWave" 		operation="file.readwave" value="../testFiles/rtpflow.wav" value2="20" />
+  	<parameter name="fileWave" 		operation="file.readwave" value="rtpflow.wav" value2="20" />
 
+	<parameter name="[OsProperty]"		operation="system.readproperty"	value="os.name" />
 
+	<testcase name="Setup Network Route" state="true">
+		<scenario name="setup">../testFiles/setup_route.xml</scenario>
+	</testcase>
         <testcase name="SIP REGISTER Bob" state="true">
         	<scenario name="bob">../testFiles/eps_ims_register_bob.xml</scenario>
         </testcase>
         <testcase name="SIP INVITE BOB FROM ALICE" state="true">
         	<scenario name="bob">../testFiles/eps_ims_invite_bob.xml</scenario>
         </testcase>
+        <testcase name="WAIT FOR HANDOVER" state="true">
+        	<scenario name="UDP">../testFiles/eps_ims_wait_for_handover.xml</scenario>
+        </testcase>
         <testcase name="SIP INVITE PRACK BOB FROM ALICE" state="false">
                 <scenario name="bob">../testFiles/eps_ims_invite_prack_bob.xml</scenario>
+        </testcase>
+        <testcase name="SIP SUBSCRIBE ALICE" state="true">
+        	<scenario name="alice">../testFiles/eps_ims_subscribe_alice.xml</scenario>
         </testcase>
         <testcase name="SIP MESSAGE ALICE TO BOB" state="true">
         	<scenario name="bob">../testFiles/eps_ims_message_bob.xml</scenario>
@@ -41,5 +52,8 @@
         </testcase>
         <testcase name="HTTP REQUEST" state="true">
         	<scenario name="http">../testFiles/eps_ims_http_request.xml</scenario>
+        </testcase>
+        <testcase name="Remove Network Route" state="true">
+        	<scenario name="setup">../testFiles/remove_route.xml</scenario>
         </testcase>
 </test>
