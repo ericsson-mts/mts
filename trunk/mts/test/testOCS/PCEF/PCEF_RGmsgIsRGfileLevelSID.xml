@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Ro Credit-Control request (CCR)"-->
+
+<!DOCTYPE Library [
+  <!ENTITY sendCCRwithoutUSU SYSTEM "./Library/sendCCRwithoutUSU.xml">
+  <!ENTITY sendCCRwithUSU SYSTEM "./Library/sendCCRwithUSU.xml">
+  <!ENTITY sendCCR1UandT SYSTEM "./Library/sendCCR1UandT.xml">
+]>		
+
+<scenario>
+<!-- Not empty RG from the request is the same RG in the data file. Granted quota level is SID in the data file. -->
+  <!-- Quota is granted at SID level. -->
+  <parameter name="[SIDpresent]" operation="set" value="true"/>
+  <parameter name="[RGpresent]" operation="set" value="true"/>
+
+  <!-- The Subscription-Id-Type AVP is used to determine which type of identifier is carried by the Subscription-Id AVP. -->
+  <!-- Possible enumerated values : END_USER_E164(0) / END_USER_IMSI(1) / END_USER_SIP_URI(2) / END_USER_NAI(3) / END_USER_PRIVATE(4). -->
+  <parameter name="[Subscription-Id-Type]" operation="set" value="2"/>
+  <!-- The Subscription-Id-Data AVP is used to identify the end user. -->
+  <parameter name="[Subscription-Id-Data]" operation="set" value="sip:+33923770016@sip.mobistar.com"/>
+
+  <!-- The Service-Identifier AVP contains the identifier of the service. The specific service the request relates to is uniquely identified by the combination of Service-Context-Id and Service-Identifier AVPs. -->
+  <parameter name="[Service-Identifier]" operation="set" value="16"/>
+  <!-- The Rating-Group AVP contains the identifier of a rating group. -->
+  <parameter name="[Rating-Group]" operation="set" value="26"/>
+ 
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="1"/>
+  <!-- The Session-Id AVP is used to identify a specific session. -->
+  <parameter name="[Session-Id]" operation="set" value="pcef.mts.devoteam.com;147038400;0016;RGmsgIsRGfileLevelSID"/>
+
+  <!-- Sending CCR INITIAL_REQUEST. -->
+  &sendCCRwithoutUSU;
+  <!-- Sending CCR UPDATE_REQUEST. -->
+  <!-- Sending CCR TERMINATION_REQUEST. -->
+  &sendCCR1UandT;
+</scenario>

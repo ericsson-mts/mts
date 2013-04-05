@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+
+<!DOCTYPE Library [
+  <!ENTITY testcasesPCEF SYSTEM "./PCEF/testcasesPCEF.xml">
+]>		
+
+<test name="DIAMETER" description="DIAMETER regression tests">
+
+	<parameter name="[PCEF-Host]" description="PCEF IP Address" operation="system.ipaddress"/>
+  <parameter name="[PCEF-Host]" description="PCEF IP Address" operation="set" value="[PCEF-Host(0)]"/>
+	<parameter name="[PCEF-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter name="[PCEF-Address]" operation="set" value="[PCEF-Host]:[PCEF-Port]"/>	
+	<parameter name="[PCEF-Realm]" operation="set" value="pcef.imsloader.com" editable="true"/>
+
+	<parameter name="[OCS-Host]" operation="system.ipaddress"/>
+  <parameter name="[OCS-Host]" operation="set" value="[OCS-Host(0)]"/>
+	<!--parameter name="[OCS-Host]" description="OCS IP Address" operation="set" value="172.25.11.82" editable="true"/-->
+	<!--parameter name="[OCS-Host]" description="OCS IP Address" operation="set" value="ocs.imsloader.com" editable="true"/-->
+	<parameter name="[OCS-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter name="[OCS-Address]" operation="set" value="[OCS-Host]:[OCS-Port]"/>
+	<parameter name="[OCS-Realm]" operation="set" value="ocs.imsloader.com" editable="true"/>
+
+	<parameter name="[sessionsHandled]" description="To handle Session-Id" operation="set" value="true" editable="true"/>
+	<parameter name="[sessionsId]" operation="list.create"/>
+	<!--parameter name="[sessionsServiceIndex]" operation="list.create"/-->
+
+  <!-- 3GPP TS 32.299 V10.1.0 (2011-03) AVP. -->
+	<parameter name="[TQTbyOCS]" description="Time-Quota-Threshold AVP sent by OCS." operation="set" value="true" editable="true"/>
+	<parameter name="[VQTbyOCS]" description="Volume-Quota-Threshold AVP sent by OCS." operation="set" value="true" editable="true"/>
+	<parameter name="[UQTbyOCS]" description="Unit-Quota-Threshold AVP sent by OCS." operation="set" value="true" editable="true"/>
+	<parameter name="[QHTbyOCS]" description="Quota-Holding-Time AVP sent by OCS." operation="set" value="true" editable="true"/>
+	<parameter name="[QCTbyOCS]" description="Quota-Consumption-Time AVP sent by OCS." operation="set" value="true" editable="true"/>
+	<parameter name="[TriggerByOCS]" description="Trigger AVP sent by OCS." operation="set" value="true" editable="true"/>
+
+  <parameter name="[isLoadedSubscribersFromfile]" operation="set" value="false" />
+  <testcase name="OCS_Server" description="OCS Gy Server." state="false">
+    <scenario name="DIAMETER">OCS.xml</scenario>
+  </testcase>
+  <testcase name="OCS_sends_RAR" description="OCS sends Gy RAR" state="false">
+    <scenario name="OCS">RAR.xml</scenario>
+  </testcase>
+  <testcase name="OCS_sends_ASR" description="OCS sends Gy ASR" state="false">
+    <scenario name="OCS">ASR.xml</scenario>
+  </testcase>
+
+  <!-- PCEF -->
+  &testcasesPCEF;
+</test>

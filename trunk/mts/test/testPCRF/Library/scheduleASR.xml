@@ -1,0 +1,78 @@
+<!--
+Abstract :
+Sends the ASR.
+
+Input parameters :
+- [ASRsessionId] : list of Session-Id AVP values for ASR to send.
+- [ASRdelay] : list of delays for ASR to send.
+
+Output parameters :
+- [lastASRindex] : last index of ASR to send.
+- [scheduledASRindexes] : list of indexes of the ASR to send ordered by ASR delay.
+
+Another used include : none.
+-->
+
+<parameter name="[lastASRindex]" operation="list.size" value="[ASRsessionId]"/>
+<parameter name="[lastASRindex]" operation="number.substract" value="[lastASRindex]" value2="1"/>
+<parameter name="[scheduledASRindexes]" operation="list.create"/>
+<parameter name="[scheduledASRindexes]" operation="list.addFirst" value="[scheduledASRindexes]" value2="0"/>
+<parameter name="[i]" operation="set" value="1"/>
+<while>
+  <condition>
+    <test parameter="[i]" condition="number.lowerEqualThan" value="[lastASRindex]"/>
+  </condition>
+  <do>
+    <parameter name="[scheduledASRindexes2]" operation="list.create"/>
+    <parameter name="[k]" operation="set" value="[scheduledASRindexes(0)]"/>
+    <if>
+      <condition>
+        <test parameter="[ASRdelay([i])]" condition="number.greaterEqualThan" value="[ASRdelay([k])]"/>
+      </condition>
+      <then>
+        <parameter name="[addAfter]" operation="set" value="true"/>
+      </then>
+      <else>
+        <parameter name="[addAfter]" operation="set" value="false"/>
+      </else>
+    </if>
+    <while>
+      <condition>
+        <test parameter="[addAfter]" condition="boolean.equals" value="true"/>
+      </condition>
+      <do>
+        <parameter name="[ASRindex]" operation="list.getfirst" value="[scheduledASRindexes]"/>
+        <parameter name="[scheduledASRindexes]" operation="list.removefirst" value="[scheduledASRindexes]"/>
+        <parameter name="[scheduledASRindexes2]" operation="list.addLast" value="[scheduledASRindexes2]" value2="[ASRindex]"/>
+    
+        <if>
+          <condition>
+            <test parameter="[scheduledASRindexes]" condition="list.isEmpty"/>
+          </condition>
+          <then>
+            <parameter name="[addAfter]" operation="set" value="false"/>
+          </then>
+          <else>
+            <parameter name="[k]" operation="set" value="[scheduledASRindexes(0)]"/>
+            <if>
+              <condition>
+                <test parameter="[ASRdelay([i])]" condition="number.greaterEqualThan" value="[ASRdelay([k])]"/>
+              </condition>
+              <then>
+                <parameter name="[addAfter]" operation="set" value="true"/>
+              </then>
+              <else>
+                <parameter name="[addAfter]" operation="set" value="false"/>
+              </else>
+            </if>
+          </else>
+        </if>
+      </do>
+    </while>
+    <parameter name="[scheduledASRindexes2]" operation="list.addLast" value="[scheduledASRindexes2]" value2="[i]"/>
+    <parameter name="[scheduledASRindexes2]" operation="list.addLast" value="[scheduledASRindexes2]" value2="[scheduledASRindexes]"/>
+    <parameter name="[scheduledASRindexes]" operation="list.set" value="[scheduledASRindexes2]"/>
+    <parameter name="[scheduledASRindexes2]" operation="list.remove"/>
+    <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+  </do>
+</while>

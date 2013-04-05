@@ -1,0 +1,107 @@
+<!--
+Abstract :
+Build the [removeRuleNames], [removeBaseNames] variables
+for sending in the Charging-Rule-Remove AVP of the CCA the list of the predefined (grouped) rules,
+one by Charging-Rule-Name or Charging-Rule-Base-Name AVP.
+
+Input parameters :
+- [CCAremoveRuleKeys] : subscribers' list of keys, from the data file, of rules to remove.
+- [ruleKeyOfRule] : 
+- [baseNameOfRule] : 
+
+Output parameters :
+- [CCAwithPCCRuleRemove] : boolean, true if the CCA is sent with Charging-Rule-Remove AVP.
+- [removeRuleNames] : list of the predefined, not grouped rules.
+- [removeBaseNames] : list of the predefined groupes.
+
+Another used include : none.
+-->
+
+<!--
+3GPP TS 29.212 : The Charging-Rule-Remove AVP (AVP code 1002) is of type Grouped, and it is used to deactivate or remove PCC rules from an IP CAN session.
+Charging-Rule-Name AVP is a reference for a specific PCC rule at the PCEF to be removed or for a specific PCC rule predefined at the PCEF to be deactivated.
+The Charging-Rule-Base-Name AVP is a reference for a group of PCC rules predefined at the PCEF to be deactivated.
+-->
+<parameter name="[CCAwithPCCRuleRemove]" operation="set" value="false"/>
+<parameter name="[removeRuleNames]" operation="list.create"/><!-- Don't keep the previous value. -->
+<parameter name="[removeBaseNames]" operation="list.create"/><!-- Don't keep the previous value. -->
+
+<!-- From keys to indexes. -->
+<parameter name="[currentKeysList]" operation="set" value="[CCAremoveRuleKeys]"/>
+<if>
+  <condition>
+    <!--not><test parameter="[currentKeysList]" condition="number.equals" value="0"/></not-->
+    <not><test parameter="[currentKeysList]" condition="string.equals" value=""/></not>
+  </condition>
+  <then>
+    <parameter name="[i]" operation="set" value="0"/>
+    <while>
+      <condition>
+        <not><test parameter="[currentKeysList]" condition="number.equals" value="0"/></not>
+      </condition>
+      <do>
+        <!-- Is the key [i] in the list ? -->
+        <parameter name="[currentKey]" operation="number.modulo" value="[currentKeysList]" value2="2"/>
+        <if>
+          <condition>
+            <test parameter="[currentKey]" condition="number.equals" value="1"/>
+          </condition>
+          <then>
+            <!-- Key [i] is in the list. -->
+            <parameter name="[CCAwithPCCRuleRemove]" operation="set" value="true"/>
+
+            <parameter name="[ruleIndexes]" operation="list.find" value="[ruleKeyOfRule]" value2="[i]"/>
+            <parameter name="[ruleIndexesSize]" operation="list.size" value="[ruleIndexes]"/>
+            <switch parameter="[ruleIndexesSize]">
+              <case equals="0">
+                <!-- Unknown rule : Script failed if so. -->
+                <exit description="No occurrence of the rule in [test:csvPathRules]." failed="true"/>
+              </case>
+        
+              <case equals="1">
+                <!-- Add the rule in the Charging-Rule-Remove AVP. -->
+                <parameter name="[ruleIndex]" operation="set" value="[ruleIndexes(0)]"/>
+ 
+                <!-- Is the rule in a group ? -->
+                <parameter name="[baseName]" operation="set" value="[baseNameOfRule([ruleIndex])]"/>
+                <if>
+                  <condition>
+                    <not><test parameter="[baseName]" condition="string.equals" value=""/></not>
+                  </condition>
+                  <then>
+                    <!-- The rule is in a group. Is the group already in the list ? -->
+                    <parameter name="[groupIndexes]" operation="list.find" value="[removeBaseNames]" value2="[baseName]"/>
+                    <parameter name="[groupIndexesSize]" operation="list.size" value="[groupIndexes]"/>
+                    <if>
+                      <condition>
+                        <test parameter="[groupIndexesSize]" condition="number.equals" value="0"/>
+                      </condition>
+                      <then>
+                        <!-- The group is not yet in the list. Adding the group name in a Charging-Rule-Base-Name AVP of the Charging-Rule-Remove AVP. -->
+                        <parameter name="[removeBaseNames]" operation="list.addLast" value="[removeBaseNames]" value2="[baseName]"/>
+                      </then>
+                    </if>
+                  </then>
+                  <else>
+                    <!-- Add the rule name in a Charging-Rule-Name AVP of the Charging-Rule-Remove AVP. -->
+                    <parameter name="[ruleName]" operation="set" value="[ruleNameOfRule([ruleIndex])]"/>
+                    <parameter name="[removeRuleNames]" operation="list.addLast" value="[removeRuleNames]" value2="[ruleName]"/>
+                  </else>
+                </if>
+              </case>
+        
+              <default>
+                <!-- Impossible. Script failed if so. -->
+                <exit description="Several occurrences of the rule in [test:csvPathRules]." failed="true"/>
+              </default>
+            </switch>
+
+            <parameter name="[currentKeysList]" operation="number.substract" value="[currentKeysList]" value2="1"/>
+          </then>
+        </if>
+        <parameter name="[currentKeysList]" operation="number.divide" value="[currentKeysList]" value2="2"/>
+        <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+      </do>
+    </while>
+  </then>
+</if>

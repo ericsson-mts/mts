@@ -1,0 +1,142 @@
+<!--
+Abstract :
+Sends the CCA.
+
+Input parameters :
+- [serviceIndex] : subscriber's service index in the data file.
+- [timeQuotaThresholdOfSubscriber] : subscribers' services time quota threshold in the data file.
+- [test:TQTbyOCS] : boolean, true if Time-Quota-Threshold AVP is returned by OCS.
+- [withUnit_Time] : boolean, true if TIME unit type concernes the subscriber's service.
+- [volumeQuotaThresholdOfSubscriber] : subscribers' services volume quota threshold in the data file.
+- [test:VQTbyOCS] : boolean, true if Volume-Quota-Threshold AVP is returned by OCS.
+- [withUnit_TotalOctets] : boolean, true if TOTAL_OCTETS unit type concernes the subscriber's service.
+- [withUnit_InputOctets] : boolean, true if INPUT_OCTETS unit type concernes the subscriber's service.
+- [withUnit_OutputOctets] : boolean, true if OUTPUT_OCTETS unit type concernes the subscriber's service.
+- [unitQuotaThresholdOfSubscriber] : subscribers' services specific units quota threshold in the data file.
+- [test:UQTbyOCS] : boolean, true if Unit-Quota-Threshold AVP is returned by OCS.
+- [withUnit_ServiceSpecificUnits] : boolean, true if SERVICE_SPECIFIC_UNITS unit type concernes the subscriber's service.
+- [quotaHoldingTimeOfSubscriber] : subscribers' services quota holding time in the data file.
+- [test:QHTbyOCS] : boolean, true if Quota-Consumption-Time AVP is returned by OCS.
+- [quotaConsumptionTimeOfSubscriber] : subscribers' services quota consumption time in the data file.
+- [test:QCTbyOCS] : boolean, true if Quota-Consumption-Time AVP is returned by OCS.
+
+
+Output parameters :
+- [Time-Quota-Threshold] : subscriber's service time quota threshold.
+- [MSCCwithTQT] : boolean, true if Time-Quota-Threshold AVP is nested in Multiple-Services-Credit-Control AVP.
+- [Volume-Quota-Threshold] : subscriber's service volume quota threshold.
+- [MSCCwithVQT] : boolean, true if Volume-Quota-Threshold AVP is nested in Multiple-Services-Credit-Control AVP.
+- [Unit-Quota-Threshold] : subscriber's service specific units quota threshold.
+- [MSCCwithUQT] : boolean, true if Unit-Quota-Threshold AVP is nested in Multiple-Services-Credit-Control AVP.
+- [Quota-Holding-Time] : subscriber's service quota holding time.
+- [MSCCwithQHT] : boolean, true if Quota-Holding-Time AVP is nested in Multiple-Services-Credit-Control AVP.
+- [Quota-Consumption-Time] : subscriber's service quota consumption time.
+- [MSCCwithQCT] : boolean, true if Quota-Consumption-Time AVP is nested in Multiple-Services-Credit-Control AVP.
+
+
+Another used include : none.
+-->
+
+<!-- Time-Quota-Threshold. -->
+<parameter name="[Time-Quota-Threshold]" operation="set" value="[test:timeQuotaThresholdOfSubscriber([serviceIndex])]"/>
+<if>
+  <condition>
+    <and>
+      <test parameter="[test:TQTbyOCS]" condition="boolean.equals" value="true"/>
+      <test parameter="[withUnit_Time]" condition="boolean.equals" value="true"/>
+      <test parameter="[Time-Quota-Threshold]" condition="string.matches" value="[0-9]+"/>
+    </and>
+  </condition>
+  <then>
+    <parameter name="[MSCCwithTQT]" operation="set" value="true"/>
+  </then>
+  <else>
+    <!--parameter name="[Time-Quota-Threshold]" operation="list.create"/-->
+    <parameter name="[MSCCwithTQT]" operation="set" value="false"/>
+  </else>
+</if>
+
+<!-- Volume-Quota-Threshold. -->
+<parameter name="[Volume-Quota-Threshold]" operation="set" value="[volumeQuotaThresholdOfSubscriber([serviceIndex])]"/>
+<if>
+  <condition>
+    <and>
+      <test parameter="[test:VQTbyOCS]" condition="boolean.equals" value="true"/>
+      <or>
+        <test parameter="[withUnit_TotalOctets]" condition="boolean.equals" value="true"/>
+        <test parameter="[withUnit_InputOctets]" condition="boolean.equals" value="true"/>
+        <test parameter="[withUnit_OutputOctets]" condition="boolean.equals" value="true"/>
+      </or>
+      <test parameter="[Volume-Quota-Threshold]" condition="string.matches" value="[0-9]+"/>
+    </and>
+  </condition>
+  <then>
+    <parameter name="[MSCCwithVQT]" operation="set" value="true"/>
+  </then>
+  <else>
+    <!--parameter name="[Volume-Quota-Threshold]" operation="list.create"/-->
+    <parameter name="[MSCCwithVQT]" operation="set" value="false"/>
+  </else>
+</if>
+
+<!-- Unit-Quota-Threshold. -->
+<parameter name="[Unit-Quota-Threshold]" operation="set" value="[unitQuotaThresholdOfSubscriber([serviceIndex])]"/>
+<if>
+  <condition>
+    <and>
+      <test parameter="[test:UQTbyOCS]" condition="boolean.equals" value="true"/>
+      <test parameter="[withUnit_ServiceSpecificUnits]" condition="boolean.equals" value="true"/>
+      <test parameter="[Unit-Quota-Threshold]" condition="string.matches" value="[0-9]+"/>
+    </and>
+  </condition>
+  <then>
+    <parameter name="[MSCCwithUQT]" operation="set" value="true"/>
+  </then>
+  <else>
+    <!--parameter name="[Unit-Quota-Threshold]" operation="list.create"/-->
+    <parameter name="[MSCCwithUQT]" operation="set" value="false"/>
+  </else>
+</if>
+
+<!-- Quota-Holding-Time. -->
+<parameter name="[Quota-Holding-Time]" operation="set" value="[quotaHoldingTimeOfSubscriber([serviceIndex])]"/>
+<if>
+  <condition>
+    <and>
+      <test parameter="[test:QHTbyOCS]" condition="boolean.equals" value="true"/>
+      <or>
+        <test parameter="[withUnit_Time]" condition="boolean.equals" value="true"/>
+        <test parameter="[withUnit_TotalOctets]" condition="boolean.equals" value="true"/>
+        <test parameter="[withUnit_InputOctets]" condition="boolean.equals" value="true"/>
+        <test parameter="[withUnit_OutputOctets]" condition="boolean.equals" value="true"/>
+      </or>
+      <test parameter="[Quota-Holding-Time]" condition="string.matches" value="[0-9]+"/>
+    </and>
+  </condition>
+  <then>
+    <parameter name="[MSCCwithQHT]" operation="set" value="true"/>
+  </then>
+  <else>
+    <!--parameter name="[Quota-Holding-Time]" operation="list.create"/-->
+    <parameter name="[MSCCwithQHT]" operation="set" value="false"/>
+  </else>
+</if>
+
+<!-- Quota-Consumption-Time. -->
+<parameter name="[Quota-Consumption-Time]" operation="set" value="[quotaConsumptionTimeOfSubscriber([serviceIndex])]"/>
+<if>
+  <condition>
+    <and>
+      <test parameter="[test:QCTbyOCS]" condition="boolean.equals" value="true"/>
+      <test parameter="[withUnit_Time]" condition="boolean.equals" value="true"/>
+      <test parameter="[Quota-Consumption-Time]" condition="string.matches" value="[0-9]+"/>
+    </and>
+  </condition>
+  <then>
+    <parameter name="[MSCCwithQCT]" operation="set" value="true"/>
+  </then>
+  <else>
+    <!--parameter name="[Quota-Consumption-Time]" operation="list.create"/-->
+    <parameter name="[MSCCwithQCT]" operation="set" value="false"/>
+  </else>
+</if>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Ro Credit-Control request (CCR)"-->
+
+<!DOCTYPE Library [
+  <!ENTITY sendCCRwithoutUSU SYSTEM "./Library/sendCCRwithoutUSU.xml">
+]>		
+
+<scenario>
+  <!-- The Session-Id AVP is used to identify a specific session. -->
+  <parameter name="[Session-Id]" operation="set" value="pcef.mts.devoteam.com;147038400;0;CreditControlNotApplicable4011I"/>
+
+  <!-- The Subscription-Id-Type AVP is used to determine which type of identifier is carried by the Subscription-Id AVP. -->
+  <!-- Possible enumerated values : END_USER_E164(0) / END_USER_IMSI(1) / END_USER_SIP_URI(2) / END_USER_NAI(3) / END_USER_PRIVATE(4). -->
+  <parameter name="[Subscription-Id-Type]" operation="set" value="2"/>
+  <!-- The Subscription-Id-Data AVP is used to identify the end user. -->
+  <parameter name="[Subscription-Id-Data]" operation="set" value="sip:+33923770100@sip.mobistar.com"/>
+
+  <!-- The Service-Identifier AVP contains the identifier of the service. The specific service the request relates to is uniquely identified by the combination of Service-Context-Id and Service-Identifier AVPs. -->
+  <parameter name="[Service-Identifier]" operation="set" value="1"/>
+  <!-- The Rating-Group AVP contains the identifier of a rating group. -->
+  <parameter name="[Rating-Group]" operation="set" value="1"/>
+ 
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="1"/>
+
+  <!-- Sending CCR. -->
+  &sendCCRwithoutUSU;
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gy/CCA">
+    <parameter name="[msccResult-Code]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Result-Code.value"/>
+  </receiveMessageDIAMETER>
+  <if>
+    <condition>
+      <!-- RFC 4006 : DIAMETER_CREDIT_CONTROL_NOT_APPLICABLE (4011) : The credit-control server determines that the service can be granted to the end user but that no further credit-control is needed for the service (e.g., service is free of charge). -->
+      <test parameter="[msccResult-Code]" condition="string.equals" not="true" value="4011"/>
+    </condition>
+    <then>
+      <exit failed="true" description="Expected DIAMETER_CREDIT_CONTROL_NOT_APPLICABLE (4011) error."/>
+    </then>
+  </if>
+
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="3"/>
+
+  <!-- Sending CCR. -->
+  &sendCCRwithoutUSU;
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gy/CCA">
+    <parameter name="[msccResult-Code]" operation="protocol.setFromMessage" value="avp.Multiple-Services-Credit-Control.Result-Code.value"/>
+  </receiveMessageDIAMETER>
+  <if>
+    <condition>
+      <!-- RFC 4006 : DIAMETER_CREDIT_CONTROL_NOT_APPLICABLE (4011) : The credit-control server determines that the service can be granted to the end user but that no further credit-control is needed for the service (e.g., service is free of charge). -->
+      <test parameter="[msccResult-Code]" condition="string.equals" not="true" value="4011"/>
+    </condition>
+    <then>
+      <exit failed="true" description="Expected DIAMETER_CREDIT_CONTROL_NOT_APPLICABLE (4011) error."/>
+    </then>
+  </if>
+</scenario>

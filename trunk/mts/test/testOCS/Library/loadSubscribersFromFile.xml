@@ -1,0 +1,65 @@
+<!--
+Abstract :
+
+Input parameters :
+
+Output parameters :
+
+Another used include :
+-->
+
+<if>
+  <condition>
+    <test parameter="[isLoadedSubscribersFromfile]" condition="boolean.equals" value="false"/>
+  </condition>
+  <then>
+    <parameter name="[test:csvPathSubscribers]" operation="set" value="Subscribers.csv" />
+
+    <parameter name="[test:userIdE164OfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="userIdE164" />
+    <parameter name="[test:userIdIMSIOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="userIdIMSI" />
+    <parameter name="[test:userIdSIPOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="userIdSIP" />
+    <parameter name="[test:userIdNAIOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="userIdNAI" />
+    <parameter name="[test:userIdPrivateOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="userIdPrivate" />
+
+    <parameter name="[test:serviceIdOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="serviceId" />
+    <parameter name="[test:ratingGroupOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="ratingGroup" />
+    <parameter name="[test:serviceControlOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="serviceControl" />
+    <parameter name="[test:grantedQuotaLevelOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="grantedQuotaLevel" />
+    <parameter name="[test:unitTypesOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="unitTypes" />
+
+    <parameter name="[test:creditTimeOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="initialCreditTime" />
+    <parameter name="[test:grantedTimeOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="grantedSlideTime" />
+    <parameter name="[test:creditMoneyOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="initialCreditMoney" />
+    <parameter name="[test:grantedMoneyOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="grantedSlideMoney" />
+    <parameter name="[test:creditTotalOctetsOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="initialCreditTotalOctets" />
+    <parameter name="[test:grantedTotalOctetsOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="grantedSlideTotalOctets" />
+    <parameter name="[test:creditInputOctetsOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="initialCreditInputOctets" />
+    <parameter name="[test:grantedInputOctetsOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="grantedSlideInputOctets" />
+    <parameter name="[test:creditOutputOctetsOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="initialCreditOutputOctets" />
+    <parameter name="[test:grantedOutputOctetsOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="grantedSlideOutputOctets" />
+    <parameter name="[test:creditServiceSpecificUnitsOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="initialCreditServiceSpecificUnits" />
+    <parameter name="[test:grantedServiceSpecificUnitsOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="grantedSlideServiceSpecificUnits" />
+
+    <parameter name="[test:validityTimeOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="validityTime" />
+
+    <parameter name="[test:finalUnitActionOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="finalUnitAction" />
+    <parameter name="[test:redirectAddressTypeOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="redirectAddressType" />
+    <parameter name="[test:redirectServerAddressOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="redirectServerAddress" />
+
+    <parameter name="[test:timeQuotaThresholdOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="timeQuotaThreshold" />
+    <parameter name="[test:volumeQuotaThresholdOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="volumeQuotaThreshold" />
+    <parameter name="[test:unitQuotaThresholdOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="unitQuotaThreshold" />
+    <parameter name="[test:quotaHoldingTimeOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="quotaHoldingTime" />
+    <parameter name="[test:quotaConsumptionTimeOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="quotaConsumptionTime" />
+    <parameter name="[test:triggerTypesOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="triggerTypes" />
+
+    <parameter name="[test:RARdelayOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="RARdelay" />
+    <parameter name="[test:refillCreditOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="refillCredit" />
+    <parameter name="[test:ASRdelayOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="ASRdelay" />
+
+    <parameter name="[test:tariffTimeChangeOfSubscriber]" operation="file.readCsv" value="[csvPathSubscribers]" value2="tariffTimeChange" />
+
+
+    <parameter name="[test:isLoadedSubscribersFromfile]" operation="set" value="true" />
+  </then>
+</if>

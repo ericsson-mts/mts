@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Ro Credit-Control request (CCR)"-->
+
+<!DOCTYPE Library [
+  <!ENTITY sendCCR SYSTEM "./Library/sendCCR.xml">
+]>		
+
+<scenario>
+  <!-- The Subscription-Id-Data AVP is used to identify the end user. -->
+  <parameter name="[endUserSIP_URI]" operation="set" value="sip:+33923770000@sip.mobistar.com"/>
+
+  <!-- The Service-Identifier AVP contains the identifier of the service. The specific service the request relates to is uniquely identified by the combination of Service-Context-Id and Service-Identifier AVPs. -->
+  <parameter name="[Service-Identifier]" operation="set" value="1"/>
+  <!-- The Rating-Group AVP contains the identifier of a rating group. -->
+  <parameter name="[Rating-Group]" operation="set" value="1"/>
+ 
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="1"/>
+  <!-- The Session-Id AVP is used to identify a specific session. -->
+  <parameter name="[Session-Id]" operation="set" value="pcef2pcrf.mts.devoteam.com;147038400;0;UnknownSubscriber5030"/>
+
+  <!-- Sending CCR. -->
+  &sendCCR;
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gx/CCA">
+    <parameter name="[Result-Code]" operation="protocol.setFromMessage" value="avp.Result-Code.value"/>
+  </receiveMessageDIAMETER>
+  <if>
+    <condition>
+      <!-- RFC 4006 : DIAMETER_USER_UNKNOWN (5030) : The specified end user is unknown in the credit-control server. -->
+      <test parameter="[Result-Code]" condition="string.equals" not="true" value="5030"/>
+    </condition>
+    <then>
+      <exit failed="true" description="Expected DIAMETER_USER_UNKNOWN (5030) error."/>
+    </then>
+  </if>
+</scenario>

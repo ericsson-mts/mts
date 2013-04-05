@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Ro Credit-Control request (CCR)"-->
+
+<!DOCTYPE Library [
+  <!ENTITY sendCCRwithoutUSU SYSTEM "./Library/sendCCRwithoutUSU.xml">
+]>		
+
+<scenario>
+  <!-- The Session-Id AVP is used to identify a specific session. -->
+  <parameter name="[Session-Id]" operation="set" value="pcef.mts.devoteam.com;147038400;0;UnknownService5031"/>
+
+  <!-- The Subscription-Id-Type AVP is used to determine which type of identifier is carried by the Subscription-Id AVP. -->
+  <!-- Possible enumerated values : END_USER_E164(0) / END_USER_IMSI(1) / END_USER_SIP_URI(2) / END_USER_NAI(3) / END_USER_PRIVATE(4). -->
+  <parameter name="[Subscription-Id-Type]" operation="set" value="2"/>
+  <!-- The Subscription-Id-Data AVP is used to identify the end user. -->
+  <parameter name="[Subscription-Id-Data]" operation="set" value="sip:+33923770100@sip.mobistar.com"/>
+
+  <!-- The Service-Identifier AVP contains the identifier of the service. The specific service the request relates to is uniquely identified by the combination of Service-Context-Id and Service-Identifier AVPs. -->
+  <parameter name="[Service-Identifier]" operation="set" value="0"/>
+  <!-- The Rating-Group AVP contains the identifier of a rating group. -->
+  <parameter name="[Rating-Group]" operation="set" value="0"/>
+ 
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="2"/>
+
+  <!-- Sending CCR. -->
+  &sendCCRwithoutUSU;
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gy/CCA">
+    <parameter name="[Result-Code]" operation="protocol.setFromMessage" value="avp.Result-Code.value"/>
+  </receiveMessageDIAMETER>
+  <if>
+    <condition>
+      <!-- RFC 4006 : DIAMETER_RATING_FAILED (5031) : This error code is used to inform the credit-control client that the credit-control server cannot rate the service request due to insufficient rating input, an incorrect AVP combination, or an AVP or an AVP value that is not recognized or supported in the rating. -->
+      <test parameter="[Result-Code]" condition="string.equals" not="true" value="5031"/>
+    </condition>
+    <then>
+      <exit failed="true" description="Expected DIAMETER_RATING_FAILED (5031) error."/>
+    </then>
+  </if>
+</scenario>

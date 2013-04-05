@@ -1,0 +1,164 @@
+<!--
+Abstract :
+With the list of used unit contained in the request, update the subscriber's credits.
+Credit is only updated for present unit types in [unitTypesOfSubscriber]. 
+
+Input parameters :
+- [withUnit_Time] : boolean, true if TIME unit type concernes the subscriber's service.
+- [withUnit_Money] : boolean, true if MONEY unit type concernes the subscriber's service.
+- [withUnit_TotalOctets] : boolean, true if TOTAL_OCTETS unit type concernes the subscriber's service.
+- [withUnit_InputOctets] : boolean, true if INPUT_OCTETS unit type concernes the subscriber's service.
+- [withUnit_OutputOctets] : boolean, true if OUTPUT_OCTETS unit type concernes the subscriber's service.
+- [withUnit_ServiceSpecificUnits] : boolean, true if SERVICE_SPECIFIC_UNITS unit type concernes the subscriber's service.
+- [serviceIndex] : subscriber's service index in the data file.
+- [creditTimeOfSubscriber] : subscribers' services credit of time in the data file.
+- [creditMoneyOfSubscriber] : subscribers' services credit of money in the data file.
+- [creditTotalOctetsOfSubscriber] : subscribers' services credit of CC-Total-Octets in the data file.
+- [creditInputOctetsOfSubscriber] : subscribers' services credit of CC-Input-Octets in the data file.
+- [creditOutputOctetsOfSubscriber] : subscribers' services credit of CC-Output-Octets in the data file.
+- [creditServiceSpecificUnitsOfSubscriber] : subscribers' services credit of CC-Service-Specific-Units in the data file.
+- [usedCC-Time] : list of CC-Time AVP values from the request.
+- [usedCC-Money] : list of CC-Money AVP values from the request.
+- [usedCC-Total-Octets] : list of CC-Total-Octets AVP values from the request.
+- [usedCC-Input-Octets] : list of CC-Input-Octets AVP values from the request.
+- [usedCC-Output-Octets] : list of CC-Output-Octets AVP values from the request.
+- [usedCC-Service-Specific-Units] : list of CC-Service-Specific-Units AVP values from the request.
+
+Output parameters :
+- [creditTimeOfSubscriber] : subscribers' services credit of time.
+- [creditMoneyOfSubscriber] : subscribers' services credit of money.
+- [creditTotalOctetsOfSubscriber] : subscribers' services credit of CC-Total-Octets.
+- [creditInputOctetsOfSubscriber] : subscribers' services credit of CC-Input-Octets.
+- [creditOutputOctetsOfSubscriber] : subscribers' services credit of CC-Output-Octets.
+- [creditServiceSpecificUnitsOfSubscriber] : subscribers' services credit of CC-Service-Specific-Units.
+
+Another used include : none.
+-->
+
+<!-- Update credit before sending the CCA. -->
+
+<!-- CC-Time -->
+<if>
+  <condition>
+    <test parameter="[withUnit_Time]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[lastUnitIndex]" operation="list.size" value="[usedCC-Time]"/>
+    <parameter name="[lastUnitIndex]" operation="number.substract" value="[lastUnitIndex]" value2="1"/>
+    <parameter name="[i]" operation="set" value="0"/>
+    <while>
+      <condition>
+        <test parameter="[i]" condition="number.lowerEqualThan" value="[lastUnitIndex]"/>
+      </condition>
+      <do>
+        <parameter name="[creditTimeOfSubscriber([serviceIndex])]" operation="number.substract" value="[creditTimeOfSubscriber([serviceIndex])]" value2="[usedCC-Time([i])]"/>
+        <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+      </do>
+    </while>
+  </then>
+</if>
+
+<!-- CC-Money -->
+<if>
+  <condition>
+    <test parameter="[withUnit_Money]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[lastUnitIndex]" operation="list.size" value="[usedCC-Money]"/>
+    <parameter name="[lastUnitIndex]" operation="number.substract" value="[lastUnitIndex]" value2="1"/>
+    <parameter name="[i]" operation="set" value="0"/>
+    <while>
+      <condition>
+        <test parameter="[i]" condition="number.lowerEqualThan" value="[lastUnitIndex]"/>
+      </condition>
+      <do>
+        <parameter name="[creditMoneyOfSubscriber([serviceIndex])]" operation="number.substract" value="[creditMoneyOfSubscriber([serviceIndex])]" value2="[usedCC-Money([i])]"/>
+        <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+      </do>
+    </while>
+  </then>
+</if>
+
+<!-- CC-Total-Octets -->
+<if>
+  <condition>
+    <test parameter="[withUnit_TotalOctets]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[lastUnitIndex]" operation="list.size" value="[usedCC-Total-Octets]"/>
+    <parameter name="[lastUnitIndex]" operation="number.substract" value="[lastUnitIndex]" value2="1"/>
+    <parameter name="[i]" operation="set" value="0"/>
+    <while>
+      <condition>
+        <test parameter="[i]" condition="number.lowerEqualThan" value="[lastUnitIndex]"/>
+      </condition>
+      <do>
+        <parameter name="[creditTotalOctetsOfSubscriber([serviceIndex])]" operation="number.substract" value="[creditTotalOctetsOfSubscriber([serviceIndex])]" value2="[usedCC-Total-Octets([i])]"/>
+        <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+      </do>
+    </while>
+  </then>
+</if>
+
+<!-- CC-Input-Octets -->
+<if>
+  <condition>
+    <test parameter="[withUnit_InputOctets]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[lastUnitIndex]" operation="list.size" value="[usedCC-Input-Octets]"/>
+    <parameter name="[lastUnitIndex]" operation="number.substract" value="[lastUnitIndex]" value2="1"/>
+    <parameter name="[i]" operation="set" value="0"/>
+    <while>
+      <condition>
+        <test parameter="[i]" condition="number.lowerEqualThan" value="[lastUnitIndex]"/>
+      </condition>
+      <do>
+        <parameter name="[creditInputOctetsOfSubscriber([serviceIndex])]" operation="number.substract" value="[creditInputOctetsOfSubscriber([serviceIndex])]" value2="[usedCC-Input-Octets([i])]"/>
+        <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+      </do>
+    </while>
+  </then>
+</if>
+
+<!-- CC-Output-Octets -->
+<if>
+  <condition>
+    <test parameter="[withUnit_OutputOctets]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[lastUnitIndex]" operation="list.size" value="[usedCC-Output-Octets]"/>
+    <parameter name="[lastUnitIndex]" operation="number.substract" value="[lastUnitIndex]" value2="1"/>
+    <parameter name="[i]" operation="set" value="0"/>
+    <while>
+      <condition>
+        <test parameter="[i]" condition="number.lowerEqualThan" value="[lastUnitIndex]"/>
+      </condition>
+      <do>
+        <parameter name="[creditOutputOctetsOfSubscriber([serviceIndex])]" operation="number.substract" value="[creditOutputOctetsOfSubscriber([serviceIndex])]" value2="[usedCC-Output-Octets([i])]"/>
+        <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+      </do>
+    </while>
+  </then>
+</if>
+
+<!-- CC-Service-Specific-Units -->
+<if>
+  <condition>
+    <test parameter="[withUnit_ServiceSpecificUnits]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[lastUnitIndex]" operation="list.size" value="[usedCC-Service-Specific-Units]"/>
+    <parameter name="[lastUnitIndex]" operation="number.substract" value="[lastUnitIndex]" value2="1"/>
+    <parameter name="[i]" operation="set" value="0"/>
+    <while>
+      <condition>
+        <test parameter="[i]" condition="number.lowerEqualThan" value="[lastUnitIndex]"/>
+      </condition>
+      <do>
+        <parameter name="[creditServiceSpecificUnitsOfSubscriber([serviceIndex])]" operation="number.substract" value="[creditServiceSpecificUnitsOfSubscriber([serviceIndex])]" value2="[usedCC-Service-Specific-Units([i])]"/>
+        <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+      </do>
+    </while>
+  </then>
+</if>

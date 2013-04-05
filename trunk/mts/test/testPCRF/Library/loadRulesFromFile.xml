@@ -1,0 +1,34 @@
+<!--
+Abstract :
+Load data from file to MTS variables.
+
+Input parameters :
+- [isLoadedRulesFromfile] : boolean, true if data are already loaded from file.
+
+Output parameters :
+- [isLoadedRulesFromfile] : boolean, true if data are already loaded from file.
+- [xxxOfRule] : data xxx of Gx rules from data file.
+
+Another used include : none.
+-->
+
+<if>
+  <condition>
+    <test parameter="[isLoadedRulesFromfile]" condition="boolean.equals" value="false"/>
+  </condition>
+  <then>
+    <parameter name="[test:csvPathRules]" operation="set" value="GxRules.csv"/>
+
+    <parameter name="[test:ruleKeyOfRule]" operation="file.readCsv" value="[csvPathRules]" value2="ruleKey"/>
+    <parameter name="[test:ruleTypeOfRule]" operation="file.readCsv" value="[csvPathRules]" value2="ruleType"/>
+    <parameter name="[test:activationTimeOfRule]" operation="file.readCsv" value="[csvPathRules]" value2="activationTime"/>
+    <parameter name="[test:deactivationTimeOfRule]" operation="file.readCsv" value="[csvPathRules]" value2="deactivationTime"/>
+    <parameter name="[test:baseNameOfRule]" operation="file.readCsv" value="[csvPathRules]" value2="baseName"/>
+    <parameter name="[test:ruleNameOfRule]" operation="file.readCsv" value="[csvPathRules]" value2="ruleName"/>
+    <parameter name="[test:serviceIdOfRule]" operation="file.readCsv" value="[csvPathRules]" value2="serviceId"/>
+    <parameter name="[test:ratingGroupOfRule]" operation="file.readCsv" value="[csvPathRules]" value2="ratingGroup"/>
+    <parameter name="[test:monitoringKeyOfRule]" operation="file.readCsv" value="[csvPathRules]" value2="monitoringKey"/>
+
+    <parameter name="[test:isLoadedRulesFromfile]" operation="set" value="true"/>
+  </then>
+</if>

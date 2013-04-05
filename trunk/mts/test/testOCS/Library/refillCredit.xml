@@ -1,0 +1,99 @@
+<!--
+Abstract :
+Current credit for all unit type X is refilled with refillCredit and grantedSlideX of the data file.
+Credit is only updated for present unit types in [unitTypesOfSubscriber]. 
+
+Input parameters :
+- [withUnit_Time] : boolean, true if TIME unit type concernes the subscriber's service.
+- [withUnit_Money] : boolean, true if MONEY unit type concernes the subscriber's service.
+- [withUnit_TotalOctets] : boolean, true if TOTAL_OCTETS unit type concernes the subscriber's service.
+- [withUnit_InputOctets] : boolean, true if INPUT_OCTETS unit type concernes the subscriber's service.
+- [withUnit_OutputOctets] : boolean, true if OUTPUT_OCTETS unit type concernes the subscriber's service.
+- [withUnit_ServiceSpecificUnits] : boolean, true if SERVICE_SPECIFIC_UNITS unit type concernes the subscriber's service.
+- [serviceIndex] : subscriber's service index in the data file.
+- [refillCreditOfSubscriber] : subscribers' multiplier in the data file.
+- [creditTimeOfSubscriber] : subscribers' services credit of time in the data file.
+- [creditMoneyOfSubscriber] : subscribers' services credit of money in the data file.
+- [creditTotalOctetsOfSubscriber] : subscribers' services credit of CC-Total-Octets in the data file.
+- [creditInputOctetsOfSubscriber] : subscribers' services credit of CC-Input-Octets in the data file.
+- [creditOutputOctetsOfSubscriber] : subscribers' services credit of CC-Output-Octets in the data file.
+- [creditServiceSpecificUnitsOfSubscriber] : subscribers' services credit of CC-Service-Specific-Units in the data file.
+
+Output parameters :
+- [creditTimeOfSubscriber] : subscribers' services credit of time.
+- [creditMoneyOfSubscriber] : subscribers' services credit of money.
+- [creditTotalOctetsOfSubscriber] : subscribers' services credit of CC-Total-Octets.
+- [creditInputOctetsOfSubscriber] : subscribers' services credit of CC-Input-Octets.
+- [creditOutputOctetsOfSubscriber] : subscribers' services credit of CC-Output-Octets.
+- [creditServiceSpecificUnitsOfSubscriber] : subscribers' services credit of CC-Service-Specific-Units.
+
+Another used include : none.
+-->
+
+<!-- Update credit before sending the RAR. -->
+
+<!-- CC-Time -->
+<if>
+  <condition>
+    <test parameter="[withUnit_Time]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[refillCredit]" operation="number.multiply" value="[test:grantedTimeOfSubscriber([serviceIndex])]" value2="[test:refillCreditOfSubscriber([serviceIndex])]"/>
+    <parameter name="[creditTimeOfSubscriber([serviceIndex])]" operation="number.add" value="[creditTimeOfSubscriber([serviceIndex])]" value2="[refillCredit]"/>
+   </then>
+</if>
+
+<!-- CC-Money -->
+<if>
+  <condition>
+    <test parameter="[withUnit_Money]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[refillCredit]" operation="number.multiply" value="[test:grantedMoneyOfSubscriber([serviceIndex])]" value2="[test:refillCreditOfSubscriber([serviceIndex])]"/>
+    <parameter name="[creditMoneyOfSubscriber([serviceIndex])]" operation="number.add" value="[creditMoneyOfSubscriber([serviceIndex])]" value2="[refillCredit]"/>
+  </then>
+</if>
+
+<!-- CC-Total-Octets -->
+<if>
+  <condition>
+    <test parameter="[withUnit_TotalOctets]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[refillCredit]" operation="number.multiply" value="[test:grantedTotalOctetsOfSubscriber([serviceIndex])]" value2="[test:refillCreditOfSubscriber([serviceIndex])]"/>
+    <parameter name="[creditTotalOctetsOfSubscriber([serviceIndex])]" operation="number.add" value="[creditTotalOctetsOfSubscriber([serviceIndex])]" value2="[refillCredit]"/>
+  </then>
+</if>
+
+<!-- CC-Input-Octets -->
+<if>
+  <condition>
+    <test parameter="[withUnit_InputOctets]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[refillCredit]" operation="number.multiply" value="[test:grantedInputOctetsOfSubscriber([serviceIndex])]" value2="[test:refillCreditOfSubscriber([serviceIndex])]"/>
+    <parameter name="[creditInputOctetsOfSubscriber([serviceIndex])]" operation="number.add" value="[creditInputOctetsOfSubscriber([serviceIndex])]" value2="[refillCredit]"/>
+  </then>
+</if>
+
+<!-- CC-Output-Octets -->
+<if>
+  <condition>
+    <test parameter="[withUnit_OutputOctets]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[refillCredit]" operation="number.multiply" value="[test:grantedOutputOctetsOfSubscriber([serviceIndex])]" value2="[test:refillCreditOfSubscriber([serviceIndex])]"/>
+    <parameter name="[creditOutputOctetsOfSubscriber([serviceIndex])]" operation="number.add" value="[creditOutputOctetsOfSubscriber([serviceIndex])]" value2="[refillCredit]"/>
+  </then>
+</if>
+
+<!-- CC-Service-Specific-Units -->
+<if>
+  <condition>
+    <test parameter="[withUnit_ServiceSpecificUnits]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[refillCredit]" operation="number.multiply" value="[test:grantedServiceSpecificUnitsOfSubscriber([serviceIndex])]" value2="[test:refillCreditOfSubscriber([serviceIndex])]"/>
+    <parameter name="[creditServiceSpecificUnitsOfSubscriber([serviceIndex])]" operation="number.add" value="[creditServiceSpecificUnitsOfSubscriber([serviceIndex])]" value2="[refillCredit]"/>
+  </then>
+</if>

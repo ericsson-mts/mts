@@ -1,0 +1,50 @@
+<!--
+Abstract :
+With Session-Id AVP find session in the session list.
+Return DIAMETER_UNKNOWN_SESSION_ID (5002) if not found.
+Suppress session from the list.
+
+Input parameters :
+- [Session-Id] : from the request.
+
+Output parameters :
+- [Result-Code] : value of the Result-Code AVP.
+
+Another used include :
+- CCAmandatoryAVP
+-->
+
+<if>
+  <condition>
+    <test parameter="[sessionsHandled]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <!-- Finding the session indexes. -->
+    <parameter name="[sessionIndexes]" operation="list.find" value="[test:sessionsId]" value2="[Session-Id]"/>
+    <parameter name="[sessionIndexesSize]" operation="list.size" value="[sessionIndexes]"/>
+    <switch parameter="[sessionIndexesSize]">
+      <case equals="0">
+        <!-- Unknown session : DIAMETER_UNKNOWN_SESSION_ID result code. -->
+        <!-- RFC 3588 : DIAMETER_UNKNOWN_SESSION_ID (5002) : The request contained an unknown Session-Id. -->
+        <parameter name="[Result-Code]" operation="set" value="DIAMETER_UNKNOWN_SESSION_ID" />
+        <sendMessageDIAMETER name="Send Answer 3GPP/Gy/CCA">
+          &CCAmandatoryAVP;
+        </sendMessageDIAMETER>
+        <goto  name="loop" label="Begin" state="true"/>
+      </case>
+
+      <case equals="1">
+        <!-- Terminate the session suppressing it from the list. -->
+        <parameter name="[test:sessionsId]" operation="list.removeAt" value="[test:sessionsId]" value2="[sessionIndexes]"/>
+      	<parameter name="[test:session[sessionIndexes]PCEF-Host]" operation="list.remove"/>
+      	<parameter name="[test:session[sessionIndexes]PCEF-Port]" operation="list.remove"/>
+        <parameter name="[test:session[sessionIndexes]ServiceIndexes]" operation="list.remove"/>
+      </case>
+
+      <default>
+        <!-- Impossible. Script failed if so. -->
+        <exit description="Several occurrences of the same session. Problem when initiate the session." failed="true"/>
+      </default>
+    </switch>
+  </then>
+</if>

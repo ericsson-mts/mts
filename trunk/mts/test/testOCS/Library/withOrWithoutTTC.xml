@@ -1,0 +1,53 @@
+<!--
+Abstract :
+If there is a tariff change scheduled in the future,
+CCA is sent with Tariff-Time-Change AVP.
+
+
+Input parameters :
+- [serviceIndex] : subscriber's service index in the data file.
+- [tariffTimeChangeOfSubscriber] : tariff time change in the data file.
+
+
+Output parameters :
+- [Tariff-Time-Change] : value of the Tariff-Time-Change AVP.
+
+
+Another used include : none.
+-->
+
+<!-- The Tariff-Time-Change AVP includes the time in seconds since January 1, 1900, 00:00 UTC, when the tariff of the service will be changed. -->
+<parameter name="[Tariff-Time-Change]" operation="string.length" value="[tariffTimeChangeOfSubscriber([serviceIndex])]"/>
+<if>
+  <condition>
+    <!--test parameter="[tariffTimeChangeOfSubscriber([serviceIndex])]" condition="list.isEmpty" not="true"/-->
+    <test parameter="[Tariff-Time-Change]" condition="number.equals" not="true" value="0"/>
+  </condition>
+  <then>
+    <parameter name="[GSUwithTTC]" operation="set" value="true"/>
+    <parameter name="[Now]" operation="system.timestamp"/><!-- Milliseconds from 01/01/1970 and now. -->
+    <parameter name="[Tariff-Time-Change]" operation="number.parseDate" value="[tariffTimeChangeOfSubscriber([serviceIndex])]"/><!-- Milliseconds from 01/01/1970 and the date. -->
+    <if>
+      <condition>
+        <test parameter="[Tariff-Time-Change]" condition="number.greaterThan" value="[Now]"/>
+      </condition>
+      <then>
+        <!-- The tariff change is in the future. -->
+        <parameter name="[refTariffTimeChange]" operation="number.parseDate" value="01/01/1900 00:00:00:000"/>
+        <parameter name="[refTariffTimeChange]" operation="number.divide" value="[refTariffTimeChange]" value2="1000"/>
+        <parameter name="[Tariff-Time-Change]" operation="number.divide" value="[Tariff-Time-Change]" value2="1000"/>
+        <parameter name="[Tariff-Time-Change]" operation="number.substract" value="[Tariff-Time-Change]" value2="[refTariffTimeChange]"/>
+      </then>
+      <else>
+        <!-- The tariff change is in the past. -->
+        <parameter name="[GSUwithTTC]" operation="set" value="false"/>
+        <!--parameter name="[Tariff-Time-Change]" operation="list.create"/-->
+      </else>
+    </if>
+  </then>
+  <else>
+    <!-- No tariff change. -->
+    <parameter name="[GSUwithTTC]" operation="set" value="false"/>
+    <!--parameter name="[Tariff-Time-Change]" operation="list.create"/-->
+  </else>
+</if>

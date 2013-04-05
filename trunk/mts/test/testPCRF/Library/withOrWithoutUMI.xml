@@ -1,0 +1,87 @@
+<!--
+Abstract :
+If the value of Monitoring-Key is not empty in the data file,
+CCA is sent with Usage-Monitoring-Information AVP.
+
+Input parameters :
+- [subscriberIndex] : subscriber's index in the data file.
+- [monitoringKeyOfSubscriber] : subscribers' values of Monitoring-Key AVP from the data file.
+- [grantedTotalOctetsOfSubscriber] : subscribers' values of threshold of CC-Total-Octets from the data file.
+- [grantedInputOctetsOfSubscriber] : subscribers' values of threshold of CC-Input-Octets from the data file.
+- [grantedOutputOctetsOfSubscriber] : subscribers' values of threshold of CC-Output-Octets from the data file.
+- [usageMonitoringLevelOfSubscriber] : subscribers' values of Usage-Monitoring-Level AVP from the data file.
+
+Output parameters :
+- [CCAwithUMI] : boolean, true if the CCA is sent with Usage-Monitoring-Information AVP.
+- [Monitoring-Key] : value of the Charging-Rule-Name AVP.
+- [CC-Total-Octets] : value of the CC-Total-Octets AVP.
+- [GSUwithCCTotalOctets] : boolean, true if the CCA is sent with CC-Total-Octets AVP.
+- [CC-Input-Octets] : value of the CC-Input-Octets AVP.
+- [GSUwithCCInputOctets] : boolean, true if the CCA is sent with CC-Input-Octets AVP.
+- [CC-Output-Octets] : value of the CC-Output-Octets AVP.
+- [GSUwithCCOutputOctets] : boolean, true if the CCA is sent with CC-Output-Octets AVP.
+- [Usage-Monitoring-Level] : value of the Usage-Monitoring-Level AVP.
+- [UMIwithLevel] : boolean, true if the CCA is sent with Usage-Monitoring-Level AVP.
+
+Another used include : none.
+-->
+
+<!-- With or without Usage-Monitoring-Information AVP ? -->
+<parameter name="[CCAwithUMI]" operation="set" value="false"/>
+<parameter name="[Monitoring-Key]" operation="set" value="[monitoringKeyOfSubscriber([subscriberIndex])]"/>
+<if>
+  <condition>
+    <test parameter="[Monitoring-Key]" condition="string.equals" value="" not="true"/>
+  </condition>
+  <then>
+    <parameter name="[CCAwithUMI]" operation="set" value="true"/>
+    <parameter name="[CC-Total-Octets]" operation="set" value="[grantedTotalOctetsOfSubscriber([subscriberIndex])]"/>
+    <if>
+      <condition>
+        <test parameter="[CC-Total-Octets]" condition="string.equals" value="" not="true"/>
+      </condition>
+      <then>
+        <parameter name="[GSUwithCCTotalOctets]" operation="set" value="true"/>
+      </then>
+      <else>
+        <parameter name="[GSUwithCCTotalOctets]" operation="set" value="false"/>
+      </else>
+    </if>
+    <parameter name="[CC-Input-Octets]" operation="set" value="[grantedInputOctetsOfSubscriber([subscriberIndex])]"/>
+    <if>
+      <condition>
+        <test parameter="[CC-Input-Octets]" condition="string.equals" value="" not="true"/>
+      </condition>
+      <then>
+        <parameter name="[GSUwithCCInputOctets]" operation="set" value="true"/>
+      </then>
+      <else>
+        <parameter name="[GSUwithCCInputOctets]" operation="set" value="false"/>
+      </else>
+    </if>
+    <parameter name="[CC-Output-Octets]" operation="set" value="[grantedOutputOctetsOfSubscriber([subscriberIndex])]"/>
+    <if>
+      <condition>
+        <test parameter="[CC-Output-Octets]" condition="string.equals" value="" not="true"/>
+      </condition>
+      <then>
+        <parameter name="[GSUwithCCOutputOctets]" operation="set" value="true"/>
+      </then>
+      <else>
+        <parameter name="[GSUwithCCOutputOctets]" operation="set" value="false"/>
+      </else>
+    </if>
+    <parameter name="[Usage-Monitoring-Level]" operation="set" value="[usageMonitoringLevelOfSubscriber([subscriberIndex])]"/>
+    <if>
+      <condition>
+        <test parameter="[Usage-Monitoring-Level]" condition="string.equals" value="" not="true"/>
+      </condition>
+      <then>
+        <parameter name="[UMIwithLevel]" operation="set" value="true"/>
+      </then>
+      <else>
+        <parameter name="[UMIwithLevel]" operation="set" value="false"/>
+      </else>
+    </if>
+  </then>
+</if>

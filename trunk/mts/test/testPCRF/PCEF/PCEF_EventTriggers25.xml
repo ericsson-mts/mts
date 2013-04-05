@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Ro Credit-Control request (CCR)"-->
+
+<!DOCTYPE Library [
+  <!ENTITY sendCCR SYSTEM "./Library/sendCCR.xml">
+]>		
+
+<scenario>
+  <!-- The Subscription-Id-Data AVP is used to identify the end user. -->
+  <parameter name="[endUserSIP_URI]" operation="set" value="sip:+33923773225@sip.mobistar.com"/>
+
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="1"/>
+  <!-- The Session-Id AVP is used to identify a specific session. -->
+  <parameter name="[Session-Id]" operation="set" value="pcef2pcrf.mts.devoteam.com;147038400;3225;EventTriggers25"/>
+
+  <!-- Sending CCR. -->
+  &sendCCR;
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gx/CCA">
+    <parameter name="[Result-Code]" operation="protocol.setFromMessage" value="avp.Result-Code.value"/>
+    <parameter name="[eventTriggers]" operation="protocol.setFromMessage" value="avp.Event-Trigger.value"/>
+  </receiveMessageDIAMETER>
+  <if>
+    <condition>
+      <!-- RFC 3588 : DIAMETER_SUCCESS (2001) : The Request was successfully completed. -->
+      <test parameter="[Result-Code]" condition="string.equals" not="true" value="2001"/>
+    </condition>
+    <then>
+      <exit failed="true" description="Expected DIAMETER_SUCCESS (2001) result code."/>
+    </then>
+  </if>
+  <parameter name="[nbEventTriggers]" operation="list.size" value="[eventTriggers]"/>
+  <if>
+    <condition>
+      <!-- RFC 3588 : DIAMETER_SUCCESS (2001) : The Request was successfully completed. -->
+      <test parameter="[nbEventTriggers]" condition="number.equals" not="true" value="3"/>
+    </condition>
+    <then>
+      <exit failed="true" description="[nbEventTriggers] event triggers found. Expected 3 : SGSN_CHANGE, TFT_CHANGE, PLMN_CHANGE."/>
+    </then>
+    <else>
+      <parameter name="[eventTriggers]" operation="list.sortNumber" value="[eventTriggers]"/>
+      <if>
+        <condition>
+          <or>
+            <test parameter="[eventTriggers(0)]" condition="number.equals" not="true" value="0"/><!-- SGSN_CHANGE -->
+            <test parameter="[eventTriggers(1)]" condition="number.equals" not="true" value="3"/><!-- TFT_CHANGE -->
+            <test parameter="[eventTriggers(2)]" condition="number.equals" not="true" value="4"/><!-- PLMN_CHANGE -->
+          </or>
+        </condition>
+        <then>
+          <exit failed="true" description="Expected SGSN_CHANGE, TFT_CHANGE, PLMN_CHANGE event triggers."/>
+        </then>
+      </if>
+    </else>
+  </if>
+
+  <pause seconds="2"/>
+  <!-- RFC 3588 : The request contains a Session-Id AVP, which is used in subsequent messages relating to the user's session. -->
+
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="3"/>
+
+  <!-- The Subscription-Id-Data AVP ([endUserSIP_URI]) is used to identify the end user. -->
+
+  <!-- Sending CCR TERMINATION_REQUEST. -->
+  &sendCCR;
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gx/CCA">
+  </receiveMessageDIAMETER>
+</scenario>

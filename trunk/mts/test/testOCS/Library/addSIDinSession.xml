@@ -1,0 +1,40 @@
+<!--
+Abstract :
+Control if the service is already known for the session.
+Add the index of the service in the list if not.
+
+Input parameters :
+- [serviceIndex] : subscriber's service index in the data file.
+- [sessionIndex] : index of the current session in the sessions list.
+- [session[sessionIndex]ServiceIndexes] : list of the services of the session.
+
+Output parameters :
+- [session[sessionIndex]ServiceIndexes] : removed list of the services of the session.
+
+Another used include : none.
+-->
+
+<if>
+  <condition>
+    <test parameter="[sessionsHandled]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <!-- Finding the service indexes. -->
+    <parameter name="[serviceIndexes]" operation="list.find" value="[test:session[sessionIndex]ServiceIndexes]" value2="[serviceIndex]"/>
+    <if><condition><test parameter="[serviceIndexes]" condition="list.isEmpty"/></condition>
+      <then>
+        <parameter name="[test:session[sessionIndex]ServiceIndexes]" operation="list.addLast" value="[test:session[sessionIndex]ServiceIndexes]" value2="[serviceIndex]"/>
+        <!-- The Validity-Time AVP contains the validity time of the granted service units. -->
+        <parameter name="[Validity-Time]" operation="set" value="[validityTimeOfSubscriber([serviceIndex])]"/>
+      </then>
+      <else>
+        <!-- No Validity-Time AVP : already given for this service. -->
+        <parameter name="[Validity-Time]" operation="list.create"/>
+      </else>
+    </if>
+  </then>
+  <else>
+    <!-- The Validity-Time AVP contains the validity time of the granted service units. -->
+    <parameter name="[Validity-Time]" operation="set" value="[validityTimeOfSubscriber([serviceIndex])]"/>
+  </else>
+</if>

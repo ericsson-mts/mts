@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Ro Credit-Control request (CCR)"-->
+
+<!DOCTYPE Library [
+  <!ENTITY sendCCR SYSTEM "./Library/sendCCR.xml">
+  <!ENTITY sendCCR2 SYSTEM "./Library/sendCCR2.xml">
+]>		
+
+<scenario>
+  <!-- The Monitoring-Key AVP (AVP code 1066) is of type OctetString and is used for usage monitoring control purposes as an identifier to a usage monitoring control instance. -->
+  <parameter name="[Monitoring-Key]" operation="set" value="MK_Session"/>
+
+  <!-- The Subscription-Id-Type AVP is used to determine which type of identifier is carried by the Subscription-Id AVP. -->
+  <!-- Possible enumerated values : END_USER_E164(0) / END_USER_IMSI(1) / END_USER_SIP_URI(2) / END_USER_NAI(3) / END_USER_PRIVATE(4). -->
+  <parameter name="[Subscription-Id-Type]" operation="set" value="END_USER_E164"/>
+  <!-- The Subscription-Id-Data AVP is used to identify the end user. -->
+  <parameter name="[Subscription-Id-Data]" operation="set" value="33600000051"/>
+
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="INITIAL_REQUEST"/>
+  <parameter name="[CC-Request-Number]" operation="set" value="0"/>
+  <!-- The Session-Id AVP is used to identify a specific session. -->
+  <parameter name="[Session-Id]" operation="set" value="pcef2pcrf.mts.devoteam.com;147038400;262933;PCC_IN_Test_5.1.1.1"/>
+
+  <!-- Sending CCR. -->
+  &sendCCR2;
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gx/CCA">
+    <parameter name="[Result-Code]" operation="protocol.setFromMessage" value="avp.Result-Code.value"/>
+    <parameter name="[Event-Trigger]" operation="protocol.setFromMessage" value="avp.Event-Trigger.value"/>
+  </receiveMessageDIAMETER>
+  <if>
+    <condition>
+      <!-- RFC 3588 : DIAMETER_SUCCESS (2001) : The Request was successfully completed. -->
+      <test parameter="[Result-Code]" condition="string.equals" not="true" value="2001"/>
+    </condition>
+    <then>
+      <exit failed="true" description="Expected DIAMETER_SUCCESS (2001) result code."/>
+    </then>
+  </if>
+  <if>
+    <condition>
+      <not>
+        <or>
+          <test parameter="[Event-Trigger]" condition="number.equals" value="26"/><!-- USAGE_REPORT TS 3GPP 29.212 V9.1.0 -->
+          <test parameter="[Event-Trigger]" condition="number.equals" value="29"/><!-- USAGE_REPORT TS 3GPP 29.212 V9.6.0 -->
+          <test parameter="[Event-Trigger]" condition="number.equals" value="33"/><!-- USAGE_REPORT TS 3GPP 29.212 V9.6.1 -->
+        </or>
+      </not>
+    </condition>
+    <then>
+      <exit failed="true" description="Expected USAGE_REPORT (26, 29 or 33) event triggers."/>
+    </then>
+  </if>
+
+  <pause seconds="2"/>
+  <!-- RFC 3588 : The request contains a Session-Id AVP, which is used in subsequent messages relating to the user's session. -->
+
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="UPDATE_REQUEST"/>
+  <parameter name="[CC-Request-Number]" operation="number.add" value="[CC-Request-Number]" value2="1"/>
+
+  <!-- Sending CCR UPDATE_REQUEST. -->
+  <sendMessageDIAMETER name="Send Request 3GPP/Gx/CCR" remoteURL="diameter://[PCRF-Address]">
+    <header request="true" command="Credit-Control" applicationId="[GxApplicationId]" proxiable="true" error="false" retransmit="false"/>
+    <avp code="Session-Id" mandatory="true" type="UTF8String" value="[Session-Id]"/>
+
+    <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
+    <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[GxApplicationId]"/>
+
+    <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[PCEF-Host]"/>
+    <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[PCEF-Realm]"/>
+    <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[PCRF-Realm]"/>            
+
+    <!-- The Service-Context-Id AVP contains a unique identifier of the Diameter Credit Control service specific document that applies to the request. -->
+    <!-- Not used avp code="Service-Context-Id" mandatory="true" type="UTF8String" value="extensions.mnc.mcc.release.32251@3gpp.org"/-->
+
+    <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+    <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+    <avp code="CC-Request-Type" mandatory="true" type="Enumerated" value="[CC-Request-Type]"/>
+
+    <!-- The CC-Request-Number AVP contains the sequence number of the transferred messages. -->
+    <avp code="CC-Request-Number" mandatory="true" type="Unsigned32" value="[CC-Request-Number]"/>
+
+    <avp code="Destination-Host" mandatory="false" type="DiameterIdentity" value="[PCRF-Host]"/>            
+
+    <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
+    <!--avp code="Origin-State-Id" mandatory="false" type="Unsigned32" value="0"/-->
+
+    <!-- The Subscription-Id AVP is used to identify the end user's subscription. -->
+    <avp code="Subscription-Id">
+      <!-- The Subscription-Id-Type AVP is used to determine which type of identifier is carried by the Subscription-Id AVP. -->
+      <!-- Possible enumerated values : END_USER_E164(0) / END_USER_IMSI(1) / END_USER_SIP_URI(2) / END_USER_NAI(3) / END_USER_PRIVATE(4). -->
+      <avp code="Subscription-Id-Type" mandatory="true" private="false" type="Enumerated" value="[Subscription-Id-Type]"/>
+      <!-- The Subscription-Id-Data AVP is used to identify the end user. -->
+      <avp code="Subscription-Id-Data" mandatory="true"  private="false" type="UTF8String" value="[Subscription-Id-Data]"/>
+    </avp>
+
+    <!-- 3GPP TS 29.212 : The Event-Trigger AVP (AVP code 1006) is of type Enumerated. When sent from the PCRF to the PCEF the Event-Trigger AVP indicates an event that shall cause a re-request of PCC rules. -->
+    <!-- Possible V11.6.0 enumerated values : SGSN_CHANGE (0) / QOS_CHANGE (1) / RAT_CHANGE (2) / TFT_CHANGE (3) / PLMN_CHANGE (4) / LOSS_OF_BEARER (5) / RECOVERY_OF_BEARER (6) / IP-CAN_CHANGE (7) / QOS_CHANGE_EXCEEDING_AUTHORIZATION (11) / RAI_CHANGE (12) / USER_LOCATION_CHANGE (13) / NO_EVENT_TRIGGERS (14) / OUT_OF_CREDIT (15) / REALLOCATION_OF_CREDIT (16) / REVALIDATION_TIMEOUT (17) / UE_IP_ADDRESS_ALLOCATE (18) / UE_IP_ADDRESS_RELEASE (19) / DEFAULT_EPS_BEARER_QOS_CHANGE (20) / AN_GW_CHANGE (21) / SUCCESSFUL_RESOURCE_ALLOCATION (22) / RESOURCE_MODIFICATION_REQUEST (23) / PGW_TRACE_CONTROL (24) / UE_TIME_ZONE_CHANGE (25) / TAI_CHANGE (26) / ECGI_CHANGE (27) / CHARGING_CORRELATION_EXCHANGE (28) / APN-AMBR_MODIFICATION_FAILURE (29) / USER_CSG_INFORMATION_CHANGE (30) / USAGE_REPORT (33) / DEFAULT-EPS-BEARER-QOS_MODIFICATION_FAILURE (34) / USER_CSG_HYBRID_SUBSCRIBED_INFORMATION_CHANGE (35) / USER_CSG_ HYBRID_UNSUBSCRIBED_INFORMATION_CHANGE (36) / ROUTING_RULE_CHANGE (37) / APPLICATION_START (39) / APPLICATION_STOP (40) / ADC_REVALIDATION_TIMEOUT (41) / CS_TO_PS_HANDOVER (42) / UE_LOCAL_IP_ADDRESS_CHANGE (43) / H(E)NB_LOCAL_IP_ADDRESS_CHANGE (44) / ACCESS_NETWORK_INFO_REPORT (45). -->
+    <avp code="Event-Trigger" vendorId="TGPP" mandatory="true" type="Enumerated" value="USAGE_REPORT"/>
+
+    <!-- 3GPP TS 29.212 : The Usage-Monitoring-Information AVP (AVP code 1067) is of type Grouped, and it contains the usage monitoring control information. -->
+    <avp code="Usage-Monitoring-Information">
+      <!-- The Monitoring-Key AVP (AVP code 1066) is of type OctetString and is used for usage monitoring control purposes as an identifier to a usage monitoring control instance. -->
+      <avp code="Monitoring-Key" mandatory="true" type="OctetString" value="[Monitoring-Key]"/>
+      <!-- 3GPP TS 29.212 : The Used-Service-Unit AVP shall be used by the PCEF to provide the measured usage to the PCRF. -->
+      <avp code="Used-Service-Unit">
+        <!-- The CC-Total-Octets contains the total number of granted octets regardless of the direction (sent or received). -->
+        <avp code="CC-Total-Octets" mandatory="true" type="Unsigned64" value="2097500"/>
+        <!-- The CC-Input-Octets contains the total number of granted octets that can be received from the end user. -->
+        <avp code="CC-Input-Octets" mandatory="true" type="Unsigned64" value="1054500"/>
+        <!-- The CC-Output-Octets contains the total number of granted octets that can be sent to the end user. -->
+        <avp code="CC-Output-Octets" mandatory="true" type="Unsigned64" value="1043000"/>
+    </avp>
+  </avp>
+
+</sendMessageDIAMETER>
+
+
+  <pause seconds="2"/>
+  <!-- RFC 3588 : The request contains a Session-Id AVP, which is used in subsequent messages relating to the user's session. -->
+
+  <!-- The CC-Request-Type AVP defines the transfer type: event for event based charging and initial, update, terminate for session based charging. -->
+  <!-- Possible enumerated values : INITIAL_REQUEST(1) / UPDATE_REQUEST(2) / TERMINATION_REQUEST(3) / EVENT_REQUEST(4). -->
+  <parameter name="[CC-Request-Type]" operation="set" value="TERMINATION_REQUEST"/>
+  <parameter name="[CC-Request-Number]" operation="number.add" value="[CC-Request-Number]" value2="1"/>
+
+  <!-- Sending CCR TERMINATION_REQUEST. -->
+  &sendCCR2;
+
+  <receiveMessageDIAMETER name="Receive Answer 3GPP/Gx/CCA">
+  </receiveMessageDIAMETER>
+</scenario>

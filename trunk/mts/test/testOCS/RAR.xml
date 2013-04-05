@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE Library [
+  <!ENTITY whichUnitTypes SYSTEM "./Library/whichUnitTypes.xml">
+  <!ENTITY refillCredit SYSTEM "./Library/refillCredit.xml">
+  <!ENTITY scheduleRAR SYSTEM "./Library/scheduleRAR.xml">
+  <!ENTITY sendRAR SYSTEM "./Library/sendRAR.xml">
+]>		
+        
+<scenario>
+  <!-- RAR are sent for openned session of a service which RARdelay parameter is not null. -->
+  <if>
+    <condition>
+      <test parameter="[test:sessionsId]" condition="list.isEmpty"/>
+    </condition>
+    <then>
+      <!-- Nothing done, success. -->
+      <exit description="No initiated session. No RAR to send." failed="false"/>
+    </then>
+    <else>
+      <!-- Building the list of RAR to send. -->
+      <parameter name="[RARsessionId]" operation="list.create"/>
+      <parameter name="[RARsessionPCEFhost]" operation="list.create"/>
+      <parameter name="[RARsessionPCEFport]" operation="list.create"/>
+      <parameter name="[RARserviceIdentifier]" operation="list.create"/>
+      <parameter name="[RARratingGroup]" operation="list.create"/>
+      <parameter name="[RARdelay]" operation="list.create"/>
+      <parameter name="[lastSessionIndex]" operation="list.size" value="[test:sessionsId]"/>
+      <parameter name="[lastSessionIndex]" operation="number.substract" value="[lastSessionIndex]" value2="1"/>
+      <parameter name="[i]" operation="set" value="0"/>
+      <while>
+        <condition>
+          <test parameter="[i]" condition="number.lowerEqualThan" value="[lastSessionIndex]"/>
+        </condition>
+        <do>
+          <parameter name="[lastServiceIndex]" operation="list.size" value="[test:session[i]ServiceIndexes]"/>
+          <parameter name="[lastServiceIndex]" operation="number.substract" value="[lastServiceIndex]" value2="1"/>
+          <parameter name="[j]" operation="set" value="0"/>
+          <while>
+            <condition>
+              <test parameter="[j]" condition="number.lowerEqualThan" value="[lastServiceIndex]"/>
+            </condition>
+            <do>
+              <parameter name="[serviceIndex]" operation="set" value="[session[i]ServiceIndexes([j])]"/>
+              <if>
+                <condition>
+                  <test parameter="[test:RARdelayOfSubscriber([serviceIndex])]" not="true" condition="number.equals" value="0"/>
+                </condition>
+                <then>
+                  <!-- Adding a new RAR to send. -->
+                  <parameter name="[RARsessionId]" operation="list.addLast" value="[RARsessionId]" value2="[test:sessionsId([i])]"/>
+                  <parameter name="[RARsessionPCEFhost]" operation="list.addLast" value="[RARsessionPCEFhost]" value2="[test:session[i]PCEF-Host]"/>
+                  <parameter name="[RARsessionPCEFport]" operation="list.addLast" value="[RARsessionPCEFport]" value2="[test:session[i]PCEF-Port]"/>
+                  <parameter name="[RARserviceIdentifier]" operation="list.addLast" value="[RARserviceIdentifier]" value2="[test:serviceIdOfSubscriber([serviceIndex])]"/>
+                  <parameter name="[RARratingGroup]" operation="list.addLast" value="[RARratingGroup]" value2="[test:ratingGroupOfSubscriber([serviceIndex])]"/>
+
+                  <parameter name="[RARdelay]" operation="list.addLast" value="[RARdelay]" value2="[test:RARdelayOfSubscriber([serviceIndex])]"/>
+
+                  <!-- Which unit types concerne the service ? -->
+                  &whichUnitTypes;
+                  <!-- Refill credit before sending the RAR. -->
+                  &refillCredit;
+                </then>
+              </if>
+              <parameter name="[j]" operation="number.add" value="[j]" value2="1"/>
+            </do>
+          </while>
+          <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+        </do>
+      </while>
+    </else>
+  </if>
+
+  <!-- RAR are sent in the order of RARdelay parameter. -->
+  <if>
+    <condition>
+      <test parameter="[RARsessionId]" condition="list.isEmpty"/>
+    </condition>
+    <then>
+      <!-- Nothing done, success. -->
+      <exit description="No RAR to send." failed="false"/>
+    </then>
+    <else>
+      <!-- Schedule the RAR to send according to their delay. -->
+      &scheduleRAR;
+ 
+      <!-- Sending the RAR. -->
+      <parameter name="[prevDelay]" operation="set" value="0"/>
+      <parameter name="[pause]" operation="set" value="0"/>
+      <parameter name="[i]" operation="set" value="0"/>
+      <while>
+        <condition>
+          <test parameter="[i]" condition="number.lowerEqualThan" value="[lastRARindex]"/>
+        </condition>
+        <do>
+          <parameter name="[RARindex]" operation="set" value="[scheduledRARindexes([i])]"/>
+          
+          <parameter name="[Session-Id]" operation="set" value="[RARsessionId([RARindex])]"/>
+          <parameter name="[PCEF-Host]" operation="set" value="[RARsessionPCEFhost([RARindex])]"/>
+          <parameter name="[PCEF-Port]" operation="set" value="[RARsessionPCEFport([RARindex])]"/>
+          <parameter name="[Service-Identifier]" operation="set" value="[RARserviceIdentifier([RARindex])]"/>
+          <if>
+            <condition>
+              <test parameter="[RARratingGroup([RARindex])]" condition="string.matches" value="[0-9]+"/>
+            </condition>
+            <then>
+              <parameter name="[Rating-Group]" operation="set" value="[RARratingGroup([RARindex])]"/>
+            </then>
+            <else>
+              <parameter name="[Rating-Group]" operation="list.create"/>
+            </else>
+          </if>
+          
+          <parameter name="[delayRAR]" operation="set" value="[RARdelay([RARindex])]"/>
+          <parameter name="[pauseRAR]" operation="number.substract" value="[delayRAR]" value2="[prevDelay]"/>
+          <pause seconds="[pauseRAR]"/>
+          &sendRAR;
+          
+          <parameter name="[prevDelay]" operation="set" value="[delayRAR]"/>
+          <parameter name="[i]" operation="number.add" value="[i]" value2="1"/>
+        </do>
+      </while>
+    </else>
+  </if>
+</scenario>

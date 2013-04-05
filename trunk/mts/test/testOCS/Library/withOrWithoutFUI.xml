@@ -1,0 +1,249 @@
+<!--
+Abstract :
+If subscriber's credit is lower than quota to grant,
+CCA is sent with Final-Unit-Indication AVP and Granted-Service-Unit is
+the rest of the subscriber's credit.
+Else, CCA is sent without Final-Unit-Indication AVP and Granted-Service-Unit is
+the granted quota.
+If the final unit action is REDIRECT, handles the Redirect-Server AVP.
+Does not handle RESTRICT_ACCESS action (Restriction-Filter-Rule and Filter-Id AVP).
+
+
+Input parameters :
+- [serviceIndex] : subscriber's service index in the data file.
+- [creditTimeOfSubscriber] : subscribers' services credit of time in the data file.
+- [grantedTimeOfSubscriber] : subscribers' services granted quota of time in the data file.
+- [creditMoneyOfSubscriber] : subscribers' services credit of money in the data file.
+- [grantedMoneyOfSubscriber] : subscribers' services granted quota of money in the data file.
+- [creditTotalOctetsOfSubscriber] : subscribers' services credit of CC-Total-Octets in the data file.
+- [grantedTotalOctetsOfSubscriber] : subscribers' services granted quota of CC-Total-Octets in the data file.
+- [creditInputOctetsOfSubscriber] : subscribers' services credit of CC-Input-Octets in the data file.
+- [grantedInputOctetsOfSubscriber] : subscribers' services granted quota of CC-Input-Octets in the data file.
+- [creditOutputOctetsOfSubscriber] : subscribers' services credit of CC-Output-Octets in the data file.
+- [grantedOutputOctetsOfSubscriber] : subscribers' services granted quota of CC-Output-Octets in the data file.
+- [creditServiceSpecificUnitsOfSubscriber] : subscribers' services credit of CC-Service-Specific-Units in the data file.
+- [grantedServiceSpecificUnitsOfSubscriber] : subscribers' services granted quota of CC-Service-Specific-Units in the data file.
+- [finalUnitActionOfSubscriber] : subscribers' services final unit action in the data file.
+- [redirectAddressTypeOfSubscriber] : redirect server type address in the data file.
+- [redirectServerAddressOfSubscriber] : redirect server address in the data file.
+
+
+Output parameters :
+
+
+Another used include : none.
+-->
+
+<!-- Is it the final granted units ? -->
+<parameter name="[MSCCwithFUI]" operation="set" value="false"/>
+<!-- CC-Time -->
+<if>
+  <condition>
+    <test parameter="[withUnit_Time]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[GSUwithCCTime]" operation="set" value="true"/>
+    <if>
+      <condition>
+        <test parameter="[creditTimeOfSubscriber([serviceIndex])]" condition="number.lowerEqualThan" value="[grantedTimeOfSubscriber([serviceIndex])]"/>
+      </condition>
+      <then>
+        <!-- MSCC with Final-Unit-Indication AVP.-->
+        <parameter name="[MSCCwithFUI]" operation="set" value="true"/>
+        <!-- Final granted units is the subscriber's credit left. -->
+        <parameter name="[CC-Time]" operation="set" value="[creditTimeOfSubscriber([serviceIndex])]"/>
+        <!-- Patch to not send 2 FUI. Not "RFC 4006 5.6.2 Redirect Action" compliant. -->
+        <!--parameter name="[creditTimeOfSubscriber([serviceIndex])]" operation="set" value="0"/-->
+      </then>
+      <else>
+        <!-- No Final-Unit-Indication AVP because of CC-Time unit type, but maybe for another type.-->
+        <parameter name="[CC-Time]" operation="set" value="[grantedTimeOfSubscriber([serviceIndex])]"/>
+      </else>
+    </if>
+  </then>
+  <else>
+    <!-- No CC-Time AVP in the Granted-Service-Unit AVP. -->
+    <!--parameter name="[CC-Time]" operation="list.create"/-->
+    <parameter name="[GSUwithCCTime]" operation="set" value="false"/>
+  </else>
+</if>
+<!-- CC-Money -->
+<if>
+  <condition>
+    <test parameter="[withUnit_Money]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[GSUwithCCMoney]" operation="set" value="true"/>
+    <if>
+      <condition>
+        <test parameter="[creditMoneyOfSubscriber([serviceIndex])]" condition="number.lowerEqualThan" value="[grantedMoneyOfSubscriber([serviceIndex])]"/>
+      </condition>
+      <then>
+        <!-- MSCC with Final-Unit-Indication AVP.-->
+        <parameter name="[MSCCwithFUI]" operation="set" value="true"/>
+        <!-- Final granted units is the subscriber's credit left. -->
+        <parameter name="[CC-Money]" operation="set" value="[creditMoneyOfSubscriber([serviceIndex])]"/>
+        <!-- Patch to not send 2 FUI. Not "RFC 4006 5.6.2 Redirect Action" compliant. -->
+        <!--parameter name="[creditMoneyOfSubscriber([serviceIndex])]" operation="set" value="0"/-->
+      </then>
+      <else>
+        <!-- Patch to not send 2 FUI. Not "RFC 4006 5.6.2 Redirect Action" compliant. -->
+        <parameter name="[CC-Money]" operation="set" value="[grantedMoneyOfSubscriber([serviceIndex])]"/>
+      </else>
+    </if>
+  </then>
+  <else>
+    <!-- No CC-Money AVP in the Granted-Service-Unit AVP. -->
+    <!--parameter name="[CC-Money]" operation="list.create"/-->
+    <parameter name="[GSUwithCCMoney]" operation="set" value="false"/>
+  </else>
+</if>
+<!-- CC-Total-Octets -->
+<if>
+  <condition>
+    <test parameter="[withUnit_TotalOctets]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[GSUwithCCTotalOctets]" operation="set" value="true"/>
+    <if>
+      <condition>
+        <test parameter="[creditTotalOctetsOfSubscriber([serviceIndex])]" condition="number.lowerEqualThan" value="[grantedTotalOctetsOfSubscriber([serviceIndex])]"/>
+      </condition>
+      <then>
+        <!-- MSCC with Final-Unit-Indication AVP.-->
+        <parameter name="[MSCCwithFUI]" operation="set" value="true"/>
+        <!-- Final granted units is the subscriber's credit left. -->
+        <parameter name="[CC-Total-Octets]" operation="set" value="[creditTotalOctetsOfSubscriber([serviceIndex])]"/>
+        <!-- Patch to not send 2 FUI. Not "RFC 4006 5.6.2 Redirect Action" compliant. -->
+        <!--parameter name="[creditTotalOctetsOfSubscriber([serviceIndex])]" operation="set" value="0"/-->
+      </then>
+      <else>
+        <!-- No Final-Unit-Indication AVP because of CC-Total-Octets unit type, but maybe for another type.-->
+        <parameter name="[CC-Total-Octets]" operation="set" value="[grantedTotalOctetsOfSubscriber([serviceIndex])]"/>
+      </else>
+    </if>
+  </then>
+  <else>
+    <!-- No CC-Total-Octets AVP in the Granted-Service-Unit AVP. -->
+    <!--parameter name="[CC-Total-Octets]" operation="list.create"/-->
+    <parameter name="[GSUwithCCTotalOctets]" operation="set" value="false"/>
+  </else>
+</if>
+<!-- CC-Input-Octets -->
+<if>
+  <condition>
+    <test parameter="[withUnit_InputOctets]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[GSUwithCCInputOctets]" operation="set" value="true"/>
+    <if>
+      <condition>
+        <test parameter="[creditInputOctetsOfSubscriber([serviceIndex])]" condition="number.lowerEqualThan" value="[grantedInputOctetsOfSubscriber([serviceIndex])]"/>
+      </condition>
+      <then>
+        <!-- MSCC with Final-Unit-Indication AVP.-->
+        <parameter name="[MSCCwithFUI]" operation="set" value="true"/>
+        <!-- Final granted units is the subscriber's credit left. -->
+        <parameter name="[CC-Input-Octets]" operation="set" value="[creditInputOctetsOfSubscriber([serviceIndex])]"/>
+        <!-- Patch to not send 2 FUI. Not "RFC 4006 5.6.2 Redirect Action" compliant. -->
+        <!--parameter name="[creditInputOctetsOfSubscriber([serviceIndex])]" operation="set" value="0"/-->
+      </then>
+      <else>
+        <!-- No Final-Unit-Indication AVP because of CC-Input-Octets unit type, but maybe for another type.-->
+        <parameter name="[CC-Input-Octets]" operation="set" value="[grantedInputOctetsOfSubscriber([serviceIndex])]"/>
+      </else>
+    </if>
+  </then>
+  <else>
+    <!-- No CC-Input-Octets AVP in the Granted-Service-Unit AVP. -->
+    <!--parameter name="[CC-Input-Octets]" operation="list.create"/-->
+    <parameter name="[GSUwithCCInputOctets]" operation="set" value="false"/>
+  </else>
+</if>
+<!-- CC-Output-Octets -->
+<if>
+  <condition>
+    <test parameter="[withUnit_OutputOctets]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[GSUwithCCOutputOctets]" operation="set" value="true"/>
+    <if>
+      <condition>
+        <test parameter="[creditOutputOctetsOfSubscriber([serviceIndex])]" condition="number.lowerEqualThan" value="[grantedOutputOctetsOfSubscriber([serviceIndex])]"/>
+      </condition>
+      <then>
+        <!-- MSCC with Final-Unit-Indication AVP.-->
+        <parameter name="[MSCCwithFUI]" operation="set" value="true"/>
+        <!-- Final granted units is the subscriber's credit left. -->
+        <parameter name="[CC-Output-Octets]" operation="set" value="[creditOutputOctetsOfSubscriber([serviceIndex])]"/>
+        <!-- Patch to not send 2 FUI. Not "RFC 4006 5.6.2 Redirect Action" compliant. -->
+        <!--parameter name="[creditOutputOctetsOfSubscriber([serviceIndex])]" operation="set" value="0"/-->
+      </then>
+      <else>
+        <!-- No Final-Unit-Indication AVP because of CC-Output-Octets unit type, but maybe for another type.-->
+        <parameter name="[CC-Output-Octets]" operation="set" value="[grantedOutputOctetsOfSubscriber([serviceIndex])]"/>
+      </else>
+    </if>
+  </then>
+  <else>
+    <!-- No CC-Output-Octets AVP in the Granted-Service-Unit AVP. -->
+    <!--parameter name="[CC-Output-Octets]" operation="list.create"/-->
+    <parameter name="[GSUwithCCOutputOctets]" operation="set" value="false"/>
+  </else>
+</if>
+<!-- CC-Service-Specific-Units -->
+<if>
+  <condition>
+    <test parameter="[withUnit_ServiceSpecificUnits]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <parameter name="[GSUwithCCServiceSpecificUnits]" operation="set" value="true"/>
+    <if>
+      <condition>
+        <test parameter="[creditServiceSpecificUnitsOfSubscriber([serviceIndex])]" condition="number.lowerEqualThan" value="[grantedServiceSpecificUnitsOfSubscriber([serviceIndex])]"/>
+      </condition>
+      <then>
+        <!-- MSCC with Final-Unit-Indication AVP.-->
+        <parameter name="[MSCCwithFUI]" operation="set" value="true"/>
+        <!-- Final granted units is the subscriber's credit left. -->
+        <parameter name="[CC-Service-Specific-Units]" operation="set" value="[creditServiceSpecificUnitsOfSubscriber([serviceIndex])]"/>
+        <!-- Patch to not send 2 FUI. Not "RFC 4006 5.6.2 Redirect Action" compliant. -->
+        <!--parameter name="[creditServiceSpecificUnitsOfSubscriber([serviceIndex])]" operation="set" value="0"/-->
+      </then>
+      <else>
+        <!-- No Final-Unit-Indication AVP because of CC-Service-Specific-Units unit type, but maybe for another type.-->
+        <parameter name="[CC-Service-Specific-Units]" operation="set" value="[grantedServiceSpecificUnitsOfSubscriber([serviceIndex])]"/>
+      </else>
+    </if>
+  </then>
+  <else>
+    <!-- No CC-Service-Specific-Units AVP in the Granted-Service-Unit AVP. -->
+    <!--parameter name="[CC-Service-Specific-Units]" operation="list.create"/-->
+    <parameter name="[GSUwithCCServiceSpecificUnits]" operation="set" value="false"/>
+  </else>
+</if>
+
+<!-- Must the service element redirect the user ? -->
+<if>
+  <condition>
+    <test parameter="[MSCCwithFUI]" condition="boolean.equals" value="true"/>
+  </condition>
+  <then>
+    <!-- Sending CCA with Final-Unit-Indication AVP. -->
+
+    <!-- No handle of Restriction-Filter-Rule and Filter-Id AVP. -->
+    <!-- Redirect-Server AVP. -->
+    <parameter name="[FUIwithRS]" operation="set" value="false"/>
+    <if>
+      <condition>
+        <!-- The Final-Unit-Action AVP possible enumerated values : TERMINATE (0) / REDIRECT (1) / RESTRICT_ACCESS (2). -->
+        <test parameter="[finalUnitActionOfSubscriber([serviceIndex])]" condition="string.equals" value="1"/>
+      </condition>
+      <then>
+        <!-- REDIRECT : The service element MUST redirect the user to the address specified in the Redirect-Server-Address AVP. -->
+        <!-- Sending CCA with Redirect-Server AVP. -->
+        <parameter name="[FUIwithRS]" operation="set" value="true"/>
+      </then>
+    </if>
+  </then>
+</if>
