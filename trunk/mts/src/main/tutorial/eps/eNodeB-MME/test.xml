@@ -11,9 +11,22 @@
 	<parameter name="[gtpuTransportProto]" operation="set" value="udp"/>
 	<parameter name="[gtpuPort]" operation="set" value="2152" />
 	<parameter name="[sgwS1UIP]" operation="set" value="192.168.90.122" />
+	<parameter name="[eNodeBIP]" operation="set" value="172.16.21.112" />
+	<parameter name="[MMEIP]" operation="set" value="172.16.21.112" />
+	<parameter name="[sgwS5/S8IP]" operation="set" value="192.168.90.127" />
+	<parameter name="[test:stopeNodeB1]" operation="set" value="false" />
 <!-- ##################################################################### -->
-        <testcase name="MME/eNodeB" description="create_session" state="false">
-                <scenario name="ETHERNET">111_create_session.xml</scenario>
-				<scenario name="GTP.V1">decapse.xml</scenario>
+        <testcase name="MME create tunnel" description="create_session" state="true">
+            <scenario name="ETHERNET">111_create_session.xml</scenario>
         </testcase>
+		<testcase name="eNodeB" description="eNodeB encapse/decapse" state="true">
+			<scenario name="GTP.V1">decapse.xml</scenario>
+			<scenario name="ETHERNET">encapse.xml</scenario>
+		</testcase>
+		<testcase name="do handover" description="handover intra lte" state="false">
+			<scenario name="UDP">handover_intra_mme.xml</scenario>
+		</testcase>
+		<testcase name="delete session" description="delete current session" state="true">
+			<scenario name="GTP.V2">delete_session.xml</scenario>
+		</testcase>
 </test>
