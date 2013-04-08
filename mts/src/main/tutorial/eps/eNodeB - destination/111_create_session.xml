@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario> 
+    <parameter name="[tunnelEndpointId]" operation="set" value="0"/>
+    <parameter name="[test:sequenceNumber]" operation="set" value="0"/>
+
+    <sendMessageGTP name="send message"
+                    remoteHost="[sgwS11IP]" remotePort="[gtpcPort]" transport="[gtpcTransportProto]">
+        <headerV2 type="Create Session Request:32" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+        <element tag="IMSI:1" description="International Mobile Subscriber Identity">
+            <field name="IMSI" value="208014420002670" description="International Mobile Subscriber Identity"/>
+        </element>
+        <element tag="MSISDN:76" description="Mobile Subscriber ISDN Number">
+            <field name="MSISDN" value="33699902670" description="Mobile Subscriber ISDN Number"/>
+        </element>
+        <element tag="MEI:75" description="Mobile Equipment Identity">
+            <field name="MEI" value="0044204291218110" description="Mobile Equipment Identity"/>
+        </element>        
+        <element tag="Serving Network:83" >
+            <field name="MMC" value="208,01"/>
+        </element>  
+        <element tag="RAT Type:82" >
+            <field name="RAT Type" value="EUTRAN:6"/>
+        </element>
+        <element tag="F-TEID:87" description="Fully Qualified Tunnel Endpoint Identifier">
+            <field name="V4" value="true:1"/>
+            <field name="V6" value="false:0"/>
+            <field name="Interface Type" value="S11 MME GTP-C:10"/>
+            <field name="TEID / GRE Key" value="145021136" description="GRE?"/>
+            <field name="IPv4 address" value="[MMEIP]"/>
+	</element>
+        <element tag="F-TEID:87" instances="1" description="Fully Qualified Tunnel Endpoint Identifier">
+            <field name="V4" value="true:1"/>
+            <field name="V6" value="false:0"/>
+            <field name="Interface Type" value="S5/S8 SGW GTP-C:6"/>
+            <field name="TEID / GRE Key" value="0" description="GRE?"/>
+            <!-- TODO conditional IP V4 V6 -->
+            <field name="IPv4 address" value="192.168.90.127"/>
+            <!--field name="IPv6 address" value=""/-->
+        </element>
+        <element tag="APN:71" description="Access Point Name">
+        	<field name="APN01" value="nis6coepc" description="Access Point Name"/>
+            <field name="APN02" value="mnc001" description="Access Point Name"/>
+            <field name="APN03" value="mcc208" description="Access Point Name"/> 
+            <field name="APN04" value="gprs" description="Access Point Name"/> 
+        </element>
+        <element tag="Selection Mode:128" >
+            <field name="spare" value="0"/>
+            <field name="Selection Mode" value="MS or network provided APN, subscribed verified:0"/>
+        </element>
+        <element tag="PDN Type:99" >
+            <field name="spare" value="0"/>
+            <field name="PDN Type" value="IPv4:1"/>
+        </element>
+        <element tag="PAA:79" description="PDN Address Allocation">
+            <field name="spare" value="0"/>
+            <field name="PDN Type" value="IPv4:1"/>
+            <field name="IPv4 address" value="0"/>
+            <!-- TODO condiditional -->
+            <!--field name="IPv6 address" value="0"/--> 
+        </element> 
+        <element tag="APN Restriction:127" >
+            <field name="Restriction Type value" value="No Existing Contexts or Restriction:0"/>
+        </element>                
+        <element tag="Bearer Context:93" >
+            <element tag="EBI:73" description="EPS Bearer ID">
+                <field name="spare" value="0"/>
+                <field name="EBI" value="5"/>
+            </element>
+            <element tag="Bearer QoS:80" description="Bearer Quality of Service">
+                <field name="spare1" value="0"/>
+                <field name="PCI" value="false:0" description="Pre-emption Capability"/>
+                <field name="PL" value="1" description="Priority Level"/>
+                <field name="spare2" value="false:0"/>
+                <field name="PVI" value="false:0" description="Pre-emption Vulnerability"/>
+                <field name="Label QCI" value="7"/> 
+                <field name="Maximum bit rate for uplink" value="0"/>
+                <field name="Maximum bit rate for downlink" value="0"/>
+                <field name="Guaranteed bit rate for uplink" value="0"/>
+                <field name="Guaranteed bit rate for downlink" value="0"/>
+            </element>
+        </element>
+    </sendMessageGTP>
+    <receiveMessageGTP name="echoResponse" request="false" type="Create Session Request:32" result="Request accepted:16">
+  	<parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name" /> 
+  	<parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber" /> 
+  	<parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId" />
+    <parameter name="[test:F-TEID.TEID / GRE Key]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.TEID / GRE Key" /> 
+    </receiveMessageGTP>
+
+    <parameter name="[test:sequenceNumber]" operation="number.add" value="[sequenceNumber]" value2="1" />
+	
+    <sendMessageGTP name="send message"
+                    remoteHost="[sgwS11IP]" remotePort="[gtpcPort]" transport="[gtpcTransportProto]">
+        <headerV2 type="Modify Bearer Request:34" tunnelEndpointId="[F-TEID.TEID / GRE Key(0)]" sequenceNumber="[sequenceNumber]"/>
+        <element tag="Bearer Context:93" description="Bearer context" >
+            <element tag="EBI:73" description="EPS Bearer ID">
+                <field name="spare" value="0"/>
+                <field name="EBI" value="5"/>
+            </element>
+            <element tag="F-TEID:87" description="Fully Qualified Tunnel Endpoint Identifier">
+                <field name="V4" value="true:1"/>
+                <field name="V6" value="false:0"/>
+                <field name="Interface Type" value="S1 eNodeB GTP-U:0"/>
+                <field name="TEID / GRE Key" value="145021136" description="GRE?"/>
+                <field name="IPv4 address" value="[eNodeBIP]"/>
+            </element>
+        </element>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="modifyBearerResponse" request="false" type="Modify Bearer Request:34" result="Request accepted:16">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name" />
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber" />
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId" />
+        <parameter name="[test:teidsgw]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.TEID / GRE Key" />
+    </receiveMessageGTP>
+</scenario>
