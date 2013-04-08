@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <parameter name="[listenpoint]" operation="set" value="[scenarioName]_client" />
+    <createListenpointRADIUS name="[listenpoint]" localPort="[remotePort]" secret="my_secret"/>
+
+    <label name="begin"/>
+
+    <receiveMessageRADIUS listenpoint="[listenpoint]">
+        <parameter name="[type]" operation="protocol.setFromMessage" value="message.type" />
+        <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort" />
+        <parameter name="[password]" operation="protocol.setFromMessage" value="user-password.text" />
+    </receiveMessageRADIUS>
+
+    <if>
+        <condition>
+            <test parameter="[type]" condition="string.equals" value="Access"/>
+        </condition>
+        <then>
+            <parameter name="[typeResponse]" operation="set" value="Access-Accept"/>
+        </then>
+    </if>
+    
+    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[remoteHost]" remotePort="[remotePort]">
+        <header code="[typeResponse]" identifier="[identifier]" />
+    </sendMessageRADIUS>
+
+    <goto name="goto label" label="begin"/>
+
+    <finally>
+    
+        <removeListenpointRADIUS name="[listenpoint]" />
+    
+    </finally>
+    
+</scenario>
