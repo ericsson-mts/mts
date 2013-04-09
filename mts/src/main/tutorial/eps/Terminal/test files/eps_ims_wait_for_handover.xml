@@ -22,13 +22,13 @@
 		</condition>
 		<then>
 			<log level="INFO">Windows</log>
-			<parameter name="[cr]" operation="system.command" value="route delete [Host-Server] mask 255.255.255.255 [eNodeBIP] metric 1" />
-			<parameter name="[changeRoute]" operation="system.command" value="route add [Host-Server] mask 255.255.255.255 [targeteNodeBIP] metric 1" />
 		</then>
 		<else>
 			<log level="INFO">Linux</log>
 			<parameter name="[cr]" operation="system.command" value="route del -host [Host-Server] gw [eNodeBIP]" />
+			<parameter name="[cr]" operation="system.command" value="route del -host [RTP-Server] gw [eNodeBIP]" />
 			<parameter name="[changeRoute]" operation="system.command" value="route add -host [Host-Server] gw [targeteNodeBIP]" />
+			<parameter name="[changeRoute2]" operation="system.command" value="route add -host [RTP-Server] gw [targeteNodeBIP]" />
 		</else>
 	</if>
 	
@@ -38,6 +38,6 @@
 	<sendDataUDP socketName="socket">
 	        <data format="text">handover OK</data>
 	</sendDataUDP>
-    <closeSocketUDP socketName="socket" />
+       	<closeSocketUDP socketName="socket" />
 
 </scenario>

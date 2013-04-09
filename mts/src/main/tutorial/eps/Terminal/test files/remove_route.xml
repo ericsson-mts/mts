@@ -5,12 +5,12 @@
 			<test parameter="[OsProperty]" condition="string.contains" value="Windows" />
 		</condition>
 		<then>
-			<log level="INFO">[OsProperty] -- Windows</log>
-			<parameter name="[addRoute]" operation="system.command" value="<parameter name="[cr]" operation="system.command" value="route delete [Host-Server] mask 255.255.255.255 [targeteNodeBIP] metric 1" />" />
+			<log level="INFO">[OsProperty] -- Windaub</log>
 		</then>
 		<else>
 			<log level="INFO">[OsProperty] -- Linux</log>
 			<parameter name="[addRoute]" operation="system.command" value="route del -host [Host-Server] gw [eNodeBIP]" />
+			<parameter name="[addRoute]" operation="system.command" value="route del -host [RTP-Server] gw [eNodeBIP]" />
 		</else>
 	</if>
 </scenario>
