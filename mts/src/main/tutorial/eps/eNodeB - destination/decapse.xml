@@ -3,7 +3,7 @@
 <!-- scenario client-->
 <scenario>
 
-<createProbeETHERNET name="capture" networkInterface="eth0" captureFilter="src host 172.16.21.132 and (dst host 192.168.90.218 or dst host 192.168.90.201 or dst host 192.168.90.225 or dst host 172.16.21.115)" />
+<createProbeETHERNET name="capture" networkInterface="eth0" captureFilter="src host [UE] and (dst host [PDN-Server] or dst host [PDN-Server2])" />
 
 	<label name="begin"/>
 
@@ -11,7 +11,7 @@
 		<parameter name="[rawData]" operation="protocol.setFromMessage" value="data.binary" />
 	</receiveMessageGTP>
 	<sendMessageETHERNET name="send packet" probe="capture"> 
-		<ethernet remoteMac="08:00:27:8B:BB:0A" type="0800" /> <!-- type="0800" is for IP payload -->
+		<ethernet remoteMac="[UE-MAC]" type="0800" /> <!-- type="0800" is for IP payload -->
 		<data format="binary">h[rawData]</data> <!-- IP packet -->
   	</sendMessageETHERNET>
 	
