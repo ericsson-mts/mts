@@ -22,17 +22,23 @@
 		</condition>
 		<then>
 			<log level="INFO">Windows</log>
+			<parameter name="[cr]" operation="system.command" value="route delete [Host-Server] mask 255.255.255.255 [eNodeBIP] metric 1" />
+			<parameter name="[cr2]" operation="system.command" value="route delete [RTP-Server] mask 255.255.255.255 [eNodeBIP] metric 1" />
+			<parameter name="[changeRoute]" operation="system.command" value="route add [Host-Server] mask 255.255.255.255 [targeteNodeBIP] metric 1" />
+			<parameter name="[changeRoute2]" operation="system.command" value="route add [RTP-Server] mask 255.255.255.255 [targeteNodeBIP] metric 1" />
 		</then>
 		<else>
 			<log level="INFO">Linux</log>
 			<parameter name="[cr]" operation="system.command" value="route del -host [Host-Server] gw [eNodeBIP]" />
-			<parameter name="[cr]" operation="system.command" value="route del -host [RTP-Server] gw [eNodeBIP]" />
+			<parameter name="[cr2]" operation="system.command" value="route del -host [RTP-Server] gw [eNodeBIP]" />
 			<parameter name="[changeRoute]" operation="system.command" value="route add -host [Host-Server] gw [targeteNodeBIP]" />
 			<parameter name="[changeRoute2]" operation="system.command" value="route add -host [RTP-Server] gw [targeteNodeBIP]" />
+			
+			<test parameter="[changeRoute.returnCode]" condition="number.equals" value="0" />
+			<test parameter="[changeRoute2.returnCode]" condition="number.equals" value="0" />
 		</else>
 	</if>
 	
-	<test parameter="[changeRoute.returnCode]" condition="number.equals" value="0" />
 	<parameter name="[test:eNodeBIP]" operation="set" value="[targeteNodeBIP]" />
 	<openSocketUDP socketName="socket" localPort="42000" remoteHost="[targeteNodeBIP]" remotePort="41000" />
 	<sendDataUDP socketName="socket">

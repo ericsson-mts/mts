@@ -2,27 +2,27 @@
 <test name="echo client GTPv2-C">
 	<parameter name="[100_DOMAIN_ADDR]" 	operation="set" value="imslab.fr.am" 	editable="true" 	description="domaine name"/>
 	<parameter name="[test:eNodeBIP]"		operation="set"	value="172.16.21.112"	editable="true"		description="eNodeB IP" />
-	<parameter name="[Host-Server]" 	operation="set" value="192.168.90.218" 	editable="true" 	description="P-CSCF IP"/> <!-- PCSCF IP -->
-	<parameter name="[Port-Server]" 	operation="set" value="5060" 		editable="true"		description="P-CSCF Port"/> <!-- PCSCF PORT -->
+	<parameter name="[Host-Server]" 		operation="set" value="192.168.90.218" 	editable="true" 	description="P-CSCF IP"/> <!-- PCSCF IP -->
+	<parameter name="[Port-Server]" 		operation="set" value="5060" 			editable="true"		description="P-CSCF Port"/> <!-- PCSCF PORT -->
 
-	<parameter name="[Port-User1]" 		operation="set" value="7072" 		editable="true"		description="User 1 port"/>
-	<parameter name="[Port-User2]" 		operation="set" value="7074" 		editable="true"		description="User 2 port"/>
-	<parameter name="[User1]" 		operation="set" value="alice" 		editable="true"		description="User 1 name"/>
-	<parameter name="[User2]" 		operation="set" value="bob" 		editable="true" 	description="User 2 name"/>
+	<parameter name="[Port-User1]" 			operation="set" value="7072" 			editable="true"		description="User 1 port"/>
+	<parameter name="[Port-User2]" 			operation="set" value="7074" 			editable="true"		description="User 2 port"/>
+	<parameter name="[User1]" 				operation="set" value="alice" 			editable="true"		description="User 1 name"/>
+	<parameter name="[User2]" 				operation="set" value="bob" 			editable="true" 	description="User 2 name"/>
         
-        <parameter name="[SCSCF]" 		operation="set" value="192.168.90.220" 	editable="true"		description="S-CSCF IP"/> 
-	<parameter name="[UserAgent]" 		operation="set" value="Fraunhofer FOKUS/NGNI Java IMS UserEndpoint FoJIE 0.1 (jdk1.3)" editable="true" description="User Agent"/> 
+    <parameter name="[SCSCF]" 				operation="set" value="192.168.90.220" 	editable="true"		description="S-CSCF IP"/> 
+	<parameter name="[UserAgent]" 			operation="set" value="Fraunhofer FOKUS/NGNI Java IMS UserEndpoint FoJIE 0.1 (jdk1.3)" editable="true" description="User Agent"/> 
 
-	<parameter name="[localHostRTP]" 	operation="system.ipaddress" /> 
-  	<parameter name="[localHostRTP]" 	operation="set" value="[localHostRTP(0)]" editable="true" /> 
-    	<parameter name="[localPortRTP]" 	operation="set" value="10000" editable="true" /> 
-      	<parameter name="[remoteHostRTP]" 	operation="set" value="192.168.90.225"/> 
-  	<parameter name="[remoteHostRTP]" 	operation="set" value="[remoteHostRTP(0)]" editable="true" /> 
-    	<parameter name="[remotePortRTP]" 	operation="set" value="11000" editable="true" /> 
-	<parameter name="[RTP-Server]"		operation="set" value="192.168.90.225" />
-  	<parameter name="fileWave" 		operation="file.readwave" value="rtpflow.wav" value2="20" />
+	<parameter name="[localHostRTP]" 		operation="system.ipaddress" /> 
+  	<parameter name="[localHostRTP]" 		operation="set" value="[localHostRTP(0)]" 	editable="true" /> 
+    <parameter name="[localPortRTP]" 		operation="set" value="10000" 				editable="true" /> 
+    <parameter name="[remoteHostRTP]" 		operation="set" value="192.168.90.225"/> 
+  	<parameter name="[remoteHostRTP]" 		operation="set" value="[remoteHostRTP(0)]" 	editable="true" /> 
+    <parameter name="[remotePortRTP]" 		operation="set" value="11000" 				editable="true" /> 
+	<parameter name="[RTP-Server]"			operation="set" value="192.168.90.225" />
+  	<parameter name="fileWave" 				operation="file.readwave" value="rtpflow.wav" value2="20" />
 
-	<parameter name="[OsProperty]"		operation="system.readproperty"	value="os.name" />
+	<parameter name="[OsProperty]"			operation="system.readproperty"	value="os.name" />
 
 	<testcase name="Setup Network Route" state="true">
 		<scenario name="setup">setup_route.xml</scenario>
