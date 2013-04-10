@@ -29,6 +29,8 @@
 
     <parameter name="[result]"  operation="binary.random" value="8"/>
 	<parameter name="[result6]" operation="set" value="09d81fa8" />
+	<parameter name="[IP-dec]" operation="set" value="172.16.21.112" />
+	<parameter name="[IP-hex]" operation="set" value="ac101570" />
 
 
 
@@ -70,5 +72,9 @@
     <test parameter="[statPopular]" condition="number.equals"     value="0.181818"/>
 	<parameter name="[binarytonumber]" operation="binary.toNumber" value="[result6]" />
 	<test parameter="[binarytonumber]" condition="number.equals"	value="165158824" />
+	<parameter name="[binaryfromip]" operation="binary.fromIp" value="[IP-dec]" />
+	<test parameter="[binaryfromip]" condition="string.equals"	value="ac101570" />
+	<parameter name="[binarytoip]" operation="binary.toIp" value="[IP-hex]" />
+	<test parameter="[binarytoip]" condition="string.equals"	value="172.16.21.112" />
     
 </scenario>
