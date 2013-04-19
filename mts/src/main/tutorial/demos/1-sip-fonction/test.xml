@@ -3,12 +3,13 @@
 
 <test name="Functional tests SIP">
     
-    <parameter name="[Host-Tester]" operation="system.ipaddress"/>
+	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
+    <parameter name="[Host-Tester]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]"/>
     <parameter name="[Port-Tester]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
     <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]"/>	
    
-    <parameter name="[Host-Server]" operation="system.ipaddress"/>
+    <parameter name="[Host-Server]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]"/>
     <!--parameter name="[Host-Server]" operation="set" value="192.168.0.1"/-->
     <parameter name="[Port-Server]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>

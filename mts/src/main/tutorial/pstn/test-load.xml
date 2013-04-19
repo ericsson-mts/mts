@@ -3,6 +3,7 @@
 
 <test name="Charge_AGW" description="Charge tests with Asterisk">
 
+	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
 	<parameter name="[CallsNumber]" operation="set" value="3" description="number of simultaneous calls" editable="true"/>
 	<parameter name="[CallsNumber_to]" operation="number.multiply" value="[CallsNumber]" value2="2"/>
 	<!-- <parameter name="[CallsNumber_to]" operation="number.substract" value="[CallsNumber_to]" value2="1"/> --> 
@@ -39,7 +40,7 @@
 	<parameter name="[domainName]" operation="set" value="asterisk.com"/>	    	
 	    
     	<!--local info SIP/RTP -->	    	    
-	<parameter name="[localHost]" operation="system.ipaddress"/>	
+	<parameter name="[localHost]" operation="system.ipaddress" value2="[IPVersion]"/>	
     	<parameter name="[localHost]" operation="set" value="[localHost(0)]"/> 
 		<!-- <parameter name="[localHost]" operation="set" value="[localHost(0)]"/> si une adresse IP sur la machine-->
     	

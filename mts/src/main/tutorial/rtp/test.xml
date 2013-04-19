@@ -3,17 +3,18 @@
 
 <test name="RTP" description="RTP regression tests">
 
+	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
     <parameter name="[domainName]" operation="set" value="devoteam.com" editable="true"/>
     <parameter name="[inviter]" operation="set" value="bob"/>
     <parameter name="[invitee]" operation="set" value="alice"/>	
     	
-    <parameter name="[localHostSIP]" operation="system.ipaddress"/>
+    <parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
 	<!--parameter name="[localHostSIP]" operation="set" value="172.16.21.48"/-->
     <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" editable="true"/>
     <parameter name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
     <parameter name="[localPortSIP]" operation="set" value="[localPortSIP]" editable="true" />
     <parameter name="[localSIP]" operation="set" value="[localHostSIP]:[localPortSIP]"/>
-    <parameter name="[remoteHostSIP]" operation="system.ipaddress"/>
+    <parameter name="[remoteHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]" editable="true"/>
 	<!--parameter name="[remoteHostSIP]" operation="set" value="172.16.21.48"/-->
     <parameter name="[remotePortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>    	    
@@ -21,11 +22,11 @@
     <!--parameter name="[remotePortSIP]" operation="set" value="5060"/-->    	    
     <parameter name="[remoteSIP]" operation="set" value="[remoteHostSIP]:[remotePortSIP]"/>
     
-    <parameter name="[localHostRTP]" operation="system.ipaddress"/>
+    <parameter name="[localHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
 	<!--parameter name="[localHostRTP]" operation="set" value="172.16.21.48"/-->
     <parameter name="[localHostRTP]" operation="set" value="[localHostRTP(0)]"/>
     <parameter name="[localPortRTP]" operation="set" value="10000"/>
-    <parameter name="[remoteHostRTP]" operation="system.ipaddress"/>
+    <parameter name="[remoteHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[remoteHostRTP]" operation="set" value="172.16.21.48"/-->
     <!--parameter name="[remoteHostRTP]" operation="set" value="172.16.21.253" /-->    
     <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]"/>
@@ -38,10 +39,10 @@
     <parameter name="[remotePortRTP_proxy]" operation="set" value="[localPortRTP(0)]" />
 
     <!-- Parameters for proxy testcases -->
-    <parameter name="[localHostRTP_client]" operation="system.ipaddress"/>
+    <parameter name="[localHostRTP_client]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[localHostRTP_client]" operation="set" value="172.16.21.48"/-->
     <parameter name="[localPortRTP_client]" operation="set" value="12000"/>
-    <parameter name="[remoteHostRTP_client]" operation="system.ipaddress"/>  
+    <parameter name="[remoteHostRTP_client]" operation="system.ipaddress" value2="[IPVersion]"/>  
     <!--parameter name="[remoteHostRTP_client]" operation="set" value="172.16.21.48"/-->
     <parameter name="[remotePortRTP_client]" operation="set" value="13000"/>
     	

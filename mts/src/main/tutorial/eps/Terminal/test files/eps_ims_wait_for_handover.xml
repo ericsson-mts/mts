@@ -29,8 +29,8 @@
 		</then>
 		<else>
 			<log level="INFO">Linux</log>
-			<parameter name="[cr]" operation="system.command" value="route del -host [Host-Server] gw [eNodeBIP]" />
-			<parameter name="[cr2]" operation="system.command" value="route del -host [RTP-Server] gw [eNodeBIP]" />
+			<parameter name="[cr]" operation="system.command" value="route del -host [Host-Server]" />
+			<parameter name="[cr2]" operation="system.command" value="route del -host [RTP-Server]" />
 			<parameter name="[changeRoute]" operation="system.command" value="route add -host [Host-Server] gw [targeteNodeBIP]" />
 			<parameter name="[changeRoute2]" operation="system.command" value="route add -host [RTP-Server] gw [targeteNodeBIP]" />
 			
@@ -39,7 +39,6 @@
 		</else>
 	</if>
 	
-	<parameter name="[test:eNodeBIP]" operation="set" value="[targeteNodeBIP]" />
 	<openSocketUDP socketName="socket" localPort="42000" remoteHost="[targeteNodeBIP]" remotePort="41000" />
 	<sendDataUDP socketName="socket">
 	        <data format="text">handover OK</data>

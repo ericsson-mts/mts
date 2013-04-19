@@ -2,7 +2,8 @@
 
 <test name="GTP" description="GTP (V1 V2 Prime) regression tests">
 
-    <parameter name="[remoteHost]" operation="system.ipaddress" />
+	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
+    <parameter name="[remoteHost]" operation="system.ipaddress" value2="[IPVersion]" />
     <!--parameter name="[remoteHost]" operation="set" value="172.20.70.43"/-->
     <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]" editable="true" />
     <parameter name="[remotePort]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/>
@@ -50,7 +51,7 @@
     </testcase>
 
     <testcase name="GTP v2 181_listenpoint" state="true">
-        <parameter name="[listenHost]" operation="system.ipaddress" />
+        <parameter name="[listenHost]" operation="system.ipaddress" value2="[IPVersion]" />
         <!--parameter name="[listenHost]" operation="set" value="172.20.70.43"/-->    
         <parameter name="[listenHost]" operation="set" value="[listenHost(0)]" editable="true" />
         <!--parameter name="[listenHost]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/-->
@@ -133,7 +134,7 @@
     </testcase>
     
     <testcase name="GTP Pr 381_listenpoint" state="true">
-        <parameter name="[listenHost]" operation="system.ipaddress" />
+        <parameter name="[listenHost]" operation="system.ipaddress" value2="[IPVersion]" />
         <!--parameter name="[listenHost]" operation="set" value="172.20.70.43"/-->    
         <parameter name="[listenHost]" operation="set" value="[listenHost(0)]" editable="true" />
         <!--parameter name="[listenHost]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/-->

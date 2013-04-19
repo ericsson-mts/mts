@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <test name="POP">    
+	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
     <parameter name="[listenIp]" operation="set" value="0.0.0.0" editable="true"/>
 
-    <parameter name="[serverRemoteIp]" operation="system.ipaddress"/>
+    <parameter name="[serverRemoteIp]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[serverRemoteIp]" operation="set" value="[serverRemoteIp(0)]" editable="true"/>
     <parameter name="[serverPort]" operation="file.readproperty" value="pop.properties" value2="listenpoint.LOCAL_PORT" />
     <parameter name="[serverPort]" operation="set" value="[serverPort]" editable="true" />

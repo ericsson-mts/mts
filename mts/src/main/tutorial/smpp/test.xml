@@ -2,9 +2,10 @@
 
 <test name="SMPP">
 
+	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
     <parameter name="[listenIp]" operation="set" value="0.0.0.0" editable="true"/>
 
-    <parameter name="[serverRemoteIp]" operation="system.ipaddress"/>
+    <parameter name="[serverRemoteIp]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[serverRemoteIp]" operation="set" value="[serverRemoteIp(0)]" editable="true"/>
     <parameter name="[serverPort]" operation="file.readproperty" value="smpp.properties" value2="listenpoint.LOCAL_PORT" />
     <parameter name="[serverPort]" operation="set" value="[serverPort]" editable="true" />

@@ -4,14 +4,16 @@
 <!-- ##################################################################### -->
 <!-- ## parameter to set up GTP tunnel between localhost and EPS core #### -->
 <!-- ##################################################################### -->
+	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
+	<parameter name="[systemIp]" 			operation="system.ipaddress" value2="[IPVersion]"/>
 	<parameter name="[sgwS11IP]" 			operation="set" value="192.168.90.123"/> <!-- SGW S11 Interface @IP -->
 	<parameter name="[gtpcPort]" 			operation="set" value="2123"/> <!-- UDP port of GTPv2 -->
 	<parameter name="[gtpcTransportProto]" 	operation="set" value="udp"/> <!-- GTPv2 Transport protocol -->
 	<parameter name="[gtpuTransportProto]" 	operation="set" value="udp"/> <!-- GTPv1 Transport protocol -->
 	<parameter name="[gtpuPort]" 			operation="set" value="2152" /> <!-- UDP port of GTPv1 -->
 	<parameter name="[sgwS1UIP]" 			operation="set" value="192.168.90.122" /> <!-- SGW S1-U interface @IP -->
-	<parameter name="[eNodeBIP]" 			operation="set" value="system.ipaddress(0)" /> <!-- eNodeB @IP -->
-	<parameter name="[MMEIP]" 				operation="set" value="system.ipaddress(0)" /> <!-- MME @IP -->
+	<parameter name="[eNodeBIP]" 			operation="set" value="[systemIp(0)]" /> <!-- eNodeB @IP -->
+	<parameter name="[MMEIP]" 				operation="set" value="[systemIp(0)]" /> <!-- MME @IP -->
 	<parameter name="[sgwS5/S8IP]" 			operation="set" value="192.168.90.127" /> <!-- SGW S5/S8 interface @IP -->
 	<parameter name="[targeteNodeB]" 		operation="set" value="172.16.21.119" /> <!-- for handover -> eNode DST @IP -->
 	<parameter name="[UE]" 					operation="set" value="172.16.21.132" /> <!-- for handover -> @IP UE -->
@@ -31,7 +33,7 @@
 		<testcase name="do handover" description="handover intra lte" state="false">
 			<scenario name="UDP">handover_intra_mme.xml</scenario>
 		</testcase>
-		<testcase name="delete session" description="delete current session" state="true">
+		<testcase name="delete session" description="delete current session" state="false">
 			<scenario name="GTP.V2">delete_session.xml</scenario>
 		</testcase>
 </test>
