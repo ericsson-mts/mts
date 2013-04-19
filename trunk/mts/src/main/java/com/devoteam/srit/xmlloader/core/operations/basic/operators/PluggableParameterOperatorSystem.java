@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.core.operations.basic.operators;
 
 import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.sql.Connection;
@@ -86,6 +87,7 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         resultant = ParameterPool.unbracket(resultant);
         
         Parameter param_1;
+        Parameter param_2;
 
         if (name.equalsIgnoreCase(S_TIMESTAMP) || name.equalsIgnoreCase(S_IPADDRESS))
         {
@@ -134,14 +136,24 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         	if (null != param_1 && param_1.length() != 1) {
         		throw new ParameterException("value attribute should have a size of 1 for operation system.ipaddress");
         	}
+            Parameter v = assertAndGetParameter(operands, "value2");
+            String version = v.get(0).toString();
         	try {
         		InetAddress address = null;
+        		int i = 0;
+        		ArrayList<String> array = new ArrayList<String>();
         		for (Enumeration e = NetworkInterface.getNetworkInterfaces(); e.hasMoreElements();) {
         			NetworkInterface eth = (NetworkInterface) e.nextElement();
         			if (null == param_1 || param_1.get(0).toString().equals(eth.getName())) {
         				for (Enumeration addr = eth.getInetAddresses(); addr.hasMoreElements();) {
         					address = (InetAddress) addr.nextElement();
-                            if (address instanceof Inet4Address)
+        					if (version.equalsIgnoreCase("6") && address instanceof Inet6Address && !address.isLoopbackAddress())
+        					{
+        						Inet6Address a = (Inet6Address) address;
+        						if (!a.getScopedInterface().getName().equalsIgnoreCase("lo"))
+        							result.add(a.getHostAddress().split("%")[0]);
+        					}
+        					if (version.equalsIgnoreCase("4") && address instanceof Inet4Address)
                             {
                             	// remove loopback address
 	                            if (!address.isLoopbackAddress())
@@ -150,11 +162,14 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
 	                            }
                             }
         				}
-        			} 
+        			}
         		}
         		// add loopback address
         		if ((null == param_1) || (param_1.get(0).toString().equals("lo"))) {
-    				result.add("127.0.0.1");
+        			if (version.equalsIgnoreCase("4"))
+        				result.add("127.0.0.1");
+        			if (version.equalsIgnoreCase("6"))
+        				result.add("::1");
     			}
         	}
         	catch (Exception e) {

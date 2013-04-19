@@ -3,13 +3,14 @@
 
 <test name="SIP" description="SIP regression tests">
     
-    <parameter name="[Host-Tester]" operation="system.ipaddress"/>
+	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
+    <parameter name="[Host-Tester]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]" editable="true"/>
     <parameter name="[Port-Tester]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
     <parameter name="[Port-Tester]" operation="set" value="[Port-Tester]" editable="true"/>
     <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]"/>	
    
-    <parameter name="[Host-Server]" operation="system.ipaddress"/>
+    <parameter name="[Host-Server]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]" editable="true"/>
     <!-- ASTERISK parameter name="[Host-Server]" operation="set" value="192.168.90.247"/-->
     <!-- VOXPILOT parameter name="[Host-Server]" operation="set" value="172.16.21.32"/-->

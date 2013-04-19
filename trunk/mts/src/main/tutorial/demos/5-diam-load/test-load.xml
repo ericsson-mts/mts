@@ -2,16 +2,16 @@
 <!-- Related XMLSchema file: conf/schemas/test.xsd -->
 
 <test name="Load tests AAA">
-
-  <parameter name="[TestDurationSec]" operation="set" value="360000" description="Duration (in sec.) of the test" editable="true"/>
+	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
+	<parameter name="[TestDurationSec]" operation="set" value="360000" description="Duration (in sec.) of the test" editable="true"/>
 	<parameter name="[NumberTestcase]" operation="set" value="10" description="number of testcase" editable="true"/>
 
-	<parameter name="[Local-Host]" operation="system.ipaddress"/>
+	<parameter name="[Local-Host]" operation="system.ipaddress" value2="[IPVersion]"/>
 	<parameter name="[Local-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
 	<parameter name="[Local-Address]" operation="set" value="[Local-Host(0)]:[Local-Port]"/>	
 	<parameter name="[Local-Realm]" operation="set" value="sip.pfdev.fr"/>
 
-	<parameter name="[Remote-Host]" operation="system.ipaddress"/>
+	<parameter name="[Remote-Host]" operation="system.ipaddress" value2="[IPVersion]"/>
 	<!--parameter name="[Remote-Host]" operation="set" value="192.168.0.1"/-->
 	<parameter name="[Remote-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
 	<!--parameter name="[Remote-Port]" operation="set" value="3869"/-->

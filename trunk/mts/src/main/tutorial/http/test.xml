@@ -2,7 +2,8 @@
 
 <test name="HTTP" description="HTTP regression tests">
 
-	<parameter name="[Local-Host]" operation="system.ipaddress"/>
+	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
+	<parameter name="[Local-Host]" operation="system.ipaddress" value2="[IPVersion]"/>
 	<!--parameter name="[Local-Host]" operation="set" value="127.0.0.1"/-->
 	<parameter name="[Local-Host]" operation="set" value="[Local-Host(0)]" editable="true"/>	
 	<!--parameter name="[Local-Port]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	
@@ -10,7 +11,7 @@
 	<parameter name="[Local-Port]" operation="set" value="[Local-Port(0)]" editable="true"/>
 	<parameter name="[Local-Address]" operation="set" value="[Local-Host]:[Local-Port]"/>	
 
-	<parameter name="[Remote-Host]" operation="system.ipaddress"/>
+	<parameter name="[Remote-Host]" operation="system.ipaddress" value2="[IPVersion]"/>
 	<!--parameter name="[Remote-Host]" operation="set" value="172.16.86.100"/-->
 	<parameter name="[Remote-Host]" operation="set" value="[Remote-Host(0)]" editable="true"/>
 	<!--parameter name="[Remote-Port]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	
@@ -24,7 +25,7 @@
 	<parameter name="[Remote-Port-Secure]" operation="set" value="[Remote-Port-Secure(0)]" editable="true"/>
 	<parameter name="[Remote-Address-Secure]" operation="set" value="[Remote-Host]:[Remote-Port-Secure]"/>
 	
-	<parameter name="[Proxy-Host]" operation="system.ipaddress"/>
+	<parameter name="[Proxy-Host]" operation="system.ipaddress" value2="[IPVersion]"/>
 	<!--parameter name="[Proxy-Host]" operation="set" value="172.16.86.100"/-->	
 	<parameter name="[Proxy-Host]" operation="set" value="[Proxy-Host(0)]" editable="true"/>
 	<!--parameter name="[Proxy-Port]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	

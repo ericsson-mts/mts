@@ -3,11 +3,12 @@
 
 <test name="PSTN" description="PSTN regression tests with Asterisk">
 
+	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
 	<!--parameter name="[domainName]" operation="set" value="devoteam.com"/-->	
 	<parameter name="[domainName]" operation="set" value="172.16.21.32" />
 	    
     	<!--local info SIP/RTP -->	    	    
-	<parameter name="[localHost]" operation="system.ipaddress"/>	
+	<parameter name="[localHost]" operation="system.ipaddress" value2="[IPVersion]"/>	
     	<parameter name="[localHost]" operation="set" value="[localHost(0)]" editable="true"/>
     	
     	<parameter name="[UAClocalPortSIP]" operation="set" value="1005" editable="true" />

@@ -67,14 +67,14 @@
     <parameter name="[result]" operation="system.readproperty" value="user.dir"/>
     <test parameter="[result]" condition="string.endswith" value="bin"/>
 
-    <parameter name="[ipaddr]" operation="system.ipaddress" value="eth1"/>
+    <parameter name="[ipaddr]" operation="system.ipaddress" value="eth1" value2="4"/>
     <or>
     	<test parameter="[ipaddr]" condition="list.size" value="0"/>
     	<test parameter="[ipaddr]" condition="list.size" value="1"/>
     </or>
-    <parameter name="[ipaddr]" operation="system.ipaddress" value="lo"/>
+    <parameter name="[ipaddr]" operation="system.ipaddress" value="lo" value2="4"/>
     <test parameter="[ipaddr]" condition="list.size" value="1"/>
-    <parameter name="[ipaddr]" operation="system.ipaddress"/>
+    <parameter name="[ipaddr]" operation="system.ipaddress" value2="4"/>
     <or>
 		  <test parameter="[ipaddr]" condition="list.size" value="2"/>
 		  <test parameter="[ipaddr]" condition="list.size" value="3"/>

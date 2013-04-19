@@ -3,14 +3,15 @@
 
 <test name="DIAMETER" description="DIAMETER regression tests">
 
-	<parameter name="[Local-Host]" operation="system.ipaddress"/>
+	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
+	<parameter name="[Local-Host]" operation="system.ipaddress" value2="[IPVersion]"/>
 	<parameter name="[Local-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
   <parameter name="[Local-Host]" operation="set" value="[Local-Host(0)]" editable="true"/>
 	<parameter name="[Local-Port]" operation="set" value="[Local-Port]" editable="true" />
 	<parameter name="[Local-Address]" operation="set" value="[Local-Host]:[Local-Port]"/>	
 	<parameter name="[Local-Realm]" operation="set" value="imsloader.com"/>
 
-	<parameter name="[Remote-Host]" operation="system.ipaddress"/>
+	<parameter name="[Remote-Host]" operation="system.ipaddress" value2="[IPVersion]"/>
 	<!--parameter name="[Remote-Host]" operation="set" value="172.16.21.253"/-->
   <parameter name="[Remote-Host]" operation="set" value="[Remote-Host(0)]" editable="true" />
 	<parameter name="[Remote-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
