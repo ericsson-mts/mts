@@ -16,21 +16,21 @@
 	
 		<message typeCode="1" typeName="Connection_request">
 			<parameter	name="Source_local_reference"		type="F"	length="3"	/>
-			<parameter	name="Protocol_class"			type="F"	length="1"	/>
-			<parameter	name="Called_party_address"		type="V"	length="3"	/>
+			<parameter	name="Protocol_Class"			type="F"	length="1"	/>
+			<parameter	name="Called_Party_Address"		type="V"	length="3"	/>
 			<parameter	name="Credit"				type="O"	length="3"	/>
-			<parameter	name="Calling_party_address"		type="O"	length="4"	/>
-			<parameter	name="Data"				type="O"	length="3"	/>
-			<parameter	name="Hop_counter"			type="O"	length="3"	/>
+			<parameter	name="Calling_Party_Address"		type="O"	length="4"	/>
+			<parameter	name="Data"				type="O"	length="5"	/>
+			<parameter	name="Hop_Counter"			type="O"	length="3"	/>
 			<parameter	name="Importance"			type="O"	length="3"	/>
 			<parameter	name="End_of_optional_parameters"	type="O"	length="1"	/>
 		</message>
 		<message typeCode="2" typeName="Connection_confirm">
 			<parameter	name="Destination_local_reference"	type="F"	length="3"	/>
 			<parameter	name="Source_local_reference"		type="F"	length="3"	/>
-			<parameter	name="Protocol_class"			type="F"	length="1"	/>
+			<parameter	name="Protocol_Class"			type="F"	length="1"	/>
 			<parameter	name="Credit"				type="O"	length="3"	/>
-			<parameter	name="Called_party_address"		type="O"	length="3"	/>
+			<parameter	name="Called_Party_Address"		type="O"	length="3"	/>
 			<parameter	name="Data"				type="O"	length="3"	/>
 			<parameter	name="Importance"			type="O"	length="3"	/>
 			<parameter	name="End_of_optional_parameters"	type="O"	length="1"	/>
@@ -38,7 +38,7 @@
 		<message typeCode="3" typeName="Connection_refused">
 			<parameter	name="Destination_local_reference"	type="F"	length="3"	/>
 			<parameter	name="Refusal_cause"			type="F"	length="1" 	/>
-			<parameter	name="Called_party_address"		type="O"	length="1"	/>
+			<parameter	name="Called_Party_Address"		type="O"	length="1"	/>
 			<parameter	name="Data"				type="O"	length="3"	/>
 			<parameter	name="Importance"			type="O"	length="3"	/>
 			<parameter	name="End_of_optional_parameters"	type="O"	length="1"	/>
@@ -72,14 +72,14 @@
 		</message>
 		<message typeCode="9" typeName="UnitData">
 			<parameter	name="Protocol_class"			type="F"	length="1"	/>
-			<parameter	name="Called_party_address"		type="V"	length="3"	/>
-			<parameter	name="Calling_party_address"		type="V"	length="3"	/>
+			<parameter	name="Called_Party_Address"		type="V"	length="3"	/>
+			<parameter	name="Calling_Party_Address"		type="V"	length="3"	/>
 			<parameter	name="Data"				type="V"	length="2"	/>
 		</message>
 		<message typeCode="10" typeName="UnitData_Service">
 			<parameter	name="Return_cause"			type="F"	length="1"	/>
-			<parameter	name="Called_party_address"		type="V"	length="3"	/>
-			<parameter	name="Calling_party_address"		type="V"	length="3"	/>
+			<parameter	name="Called_Party_Address"		type="V"	length="3"	/>
+			<parameter	name="Calling_Party_Address"		type="V"	length="3"	/>
 			<parameter	name="Data"				type="V"	length="2"	/>
 		</message>
 		<message typeCode="11" typeName="Expedited_Data">
@@ -105,15 +105,15 @@
 		<message typeCode="16" typeName="Inactivity_Test">
 			<parameter	name="Destination_local_reference"	type="F"	length="3"	/>
 			<parameter	name="Source_local_reference"		type="F"	length="3"	/>
-			<parameter	name="Protocol_class"			type="F"	length="1"	/>
+			<parameter	name="Protocol_Class"			type="F"	length="1"	/>
 			<parameter	name="Sequencing/Segmenting"		type="F"	length="2"	/>
 			<parameter	name="Credit"				type="F"	length="1"	/>
 		</message>
 		<message typeCode="17" typeName="Extended_UnitData">
-			<parameter	name="Protocol_class"			type="F"	length="1"	/>
-			<parameter	name="Hop_counter"			type="F"	length="1"	/>
-			<parameter	name="Called_party_address"		type="V"	length="3"	/>
-			<parameter	name="Calling_party_address"		type="V"	length="3"	/>
+			<parameter	name="Protocol_Class"			type="F"	length="1"	/>
+			<parameter	name="Hop_Counter"			type="F"	length="1"	/>
+			<parameter	name="Called_Party_Address"		type="V"	length="3"	/>
+			<parameter	name="Calling_Party_Address"		type="V"	length="3"	/>
 			<parameter	name="Data"				type="V"	length="3"	/>
 			<parameter	name="Segmentation"			type="O"	length="4"	/>
 			<parameter	name="Importance"			type="O"	length="3"	/>
@@ -121,9 +121,9 @@
 		</message>
 		<message typeCode="18" typeName="Extended_UnitData_Service">
 			<parameter	name="Return_cause"			type="F"	length="1"	/>
-			<parameter	name="Hop_counter"			type="F"	length="1"	/>
-			<parameter	name="Called_party_address"		type="V"	length="3"	/>
-			<parameter	name="Calling_party_address"		type="V"	length="3"	/>
+			<parameter	name="Hop_Counter"			type="F"	length="1"	/>
+			<parameter	name="Called_Party_Address"		type="V"	length="3"	/>
+			<parameter	name="Calling_Party_Address"		type="V"	length="3"	/>
 			<parameter	name="Data"				type="V"	length="3"	/>
 			<parameter	name="Segmentation"			type="O"	length="4"	/>
 			<parameter	name="Importance"			type="O"	length="3"	/>
@@ -163,30 +163,37 @@
 		<parameter id="2"	name="Source_local_reference" 		littleEndian="true">
 			<field		name="Source_local_reference"		length="3"/>
 		</parameter>
-		<parameter id="3"	name="Calling/Called_party_address" 	littleEndian="true">
+		<parameter id="3"	name="Called_Party_Address"	littleEndian="true">
+			<field 		name="Address_Indicator"		length="1" />
+			<field 		name="Signalling_Point_Code"		length="2" />
+			<field		name="Subsystem_Number"			length="1" />
+<!-- Do not forget to set length according to needs as GT has a variable length depending on Address_Indicator value. Please refer to ITU-T document Q.713 section 3.4.2.3 -->
+			<!-- <field		name="Global_Title"			length="2" /> -->
+		</parameter>
+		<parameter id="4"	name="Calling_Party_Address" 	littleEndian="true">
 			<field		name="Address_Indicator"		length="1" />
 			<field		name="Signalling_Point_Code"		length="2" />
 			<field		name="Subsystem_Number"			length="1" />
 <!-- Do not forget to set length according to needs as GT has a variable length depending on Address_Indicator value. Please refer to ITU-T document Q.713 section 3.4.2.3 -->
-			<field		name="Global_Title"			length="2" /> 
+			<!-- <field		name="Global_Title"			length="2" /> -->
 		</parameter>
 		<parameter id="5"	name="Protocol_Class">
 			<field 		name="Protocol_Class"			lengthBit="4"/>
 			<field 		name="Special_Option"			lengthBit="4"/>
 		</parameter>
 		<parameter id="6"	name="Segmenting/reassembling">
-			<field 		name="spare"				lengthBit="7"/>
 			<field 		name="M"				lengthBit="1"/>
+			<field 		name="spare"				lengthBit="7"/>
 		</parameter>
 		<parameter id="7"	name="Receive_Sequence_Number">
-			<field		name="P(R)"				lengthBit="7"/>
 			<field 		name="spare"				lengthBit="1"/>
+			<field		name="P(R)"				lengthBit="7"/>
 		</parameter>
 		<parameter id="8"	name="Sequencing/Segmenting">
+			<field		name="spare"				lengthBit="1"/>			
 			<field		name="P(S)"				lengthBit="7"/>
-			<field		name="spare"				lengthBit="1"/>
-			<field		name="P(R)"				lengthBit="7"/>
 			<field		name="M"				lengthBit="1"/>
+			<field		name="P(R)"				lengthBit="7"/>
 		</parameter>
 		<parameter id="9"	name="Credit" >
 			<field		name="Credit"				length="1" /> 
@@ -210,18 +217,18 @@
 			<field		name="Data"				length="3" /> <!-- length can be up to 255 -->
 		</parameter>
 		<parameter id="16"	name="Segmentation" >
-			<field		name="F"				lengthBit="1" />
-			<field		name="C"				lengthBit="1" />
-			<field		name="spare"				lengthBit="2" />
 			<field		name="Remaining_Segment"		lengthBit="4" />
+			<field		name="spare"				lengthBit="2" />
+			<field		name="C"				lengthBit="1" />
+			<field		name="F"				lengthBit="1" />
 			<field		name="Segmentation_Local_Reference"	length="3" />
 		</parameter>
 		<parameter id="17"	name="Hop_Counter" >
 			<field		name="Hop_Counter"			length="1" /> <!-- value must be between 1 and 15, looks like TTL in IP -->
 		</parameter>
-		<parameter id="18"	name="Importance">
-			<field 		name="Spare"				lengthBit="5" />
-			<field		name="Importance"			lengthBit="3" /> <!-- value between 0 and 7, 7 is most important and 0 is least -->
+		<parameter id="18"	name="Importance"	littleEndian="false">
+			<field 		name="Importance"				lengthBit="3" /> <!-- value between 0 and 7, 7 is most important and 0 is least -->
+			<field		name="Spare"					lengthBit="5" /> 
 		</parameter>
 		<parameter id="19"	name="Long_Data" 			littleEndian="false" longParameter="true">
 			<field		name="Data_Length"			length="2" />
