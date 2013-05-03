@@ -57,15 +57,18 @@
 		<header>
         	        <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
          	</header>
-		<parameter name="Protocol_class" type="F" littleEndian="false">
-			<field value="0" length="1" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
+		<parameter name="Protocol_Class" type="F" littleEndian="false">
+			<field value="0" lengthBit="4" />
+			<field value="0" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
 		</parameter>
-		<parameter name="Called_party_address" type="V" littleEndian="false">
-			<field value="1" length="3" /> <!-- Some stuff to clarify here -->
+		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
+			<field name="Address_Indicator" value="67" length="1" />
+			<field name="Signalling_Point_Code" value="257" length="2" />
+			<field name="Subsystem_Number" value="7" length="1" />	
 		</parameter>
-		<parameter id="3" type="V" name="Calling_party_address" littleEndian="false">
-			<field name="Address_Indicator" value="5" length="1" />
-			<field name="Signalling_Point_Code" value="6" length="2" />
+		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
+			<field name="Address_Indicator" value="67" length="1" />
+			<field name="Signalling_Point_Code" value="258" length="2" />
 			<field name="Subsystem_Number" value="7" length="1" />
 		</parameter>
 		<parameter id="15" name="Data" type="V" littleEndian="true">
