@@ -151,7 +151,7 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         					{
         						Inet6Address a = (Inet6Address) address;
         						if (!a.getScopedInterface().getName().equalsIgnoreCase("lo"))
-        							result.add(a.getHostAddress().split("%")[0]);
+        							result.add(new String("[" + a.getHostAddress().split("%")[0] + "]"));
         					}
         					if (version.equalsIgnoreCase("4") && address instanceof Inet4Address)
                             {
@@ -169,7 +169,7 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         			if (version.equalsIgnoreCase("4"))
         				result.add("127.0.0.1");
         			if (version.equalsIgnoreCase("6"))
-        				result.add("::1");
+        				result.add("[::1]");
     			}
         	}
         	catch (Exception e) {
