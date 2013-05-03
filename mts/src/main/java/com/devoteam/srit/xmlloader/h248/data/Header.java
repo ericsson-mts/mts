@@ -98,6 +98,14 @@ public class Header
 		return indexTo;
 	}
 
+	private int isMIDIPv6(String mid)
+	{
+		if (mid.startsWith("[[") && mid.contains("]]"))
+			return 1;
+		else
+			return 0;
+	}
+	
 	private int parseMID(String mid, int from) throws Exception
 	{			
 		int indexFrom = from;
@@ -112,6 +120,7 @@ public class Header
 				// Warning : no GT character in the mid part
 				return indexTo; 
 			}
+			indexTo += isMIDIPv6(this.mid);
 			this.midDomainAddress = this.mid.substring(indexFrom, indexTo);
 			indexFrom = indexTo + 1;
 			indexTo = ABNFParser.indexOfKeyword(this.mid, ABNFParser.COLON, indexFrom);

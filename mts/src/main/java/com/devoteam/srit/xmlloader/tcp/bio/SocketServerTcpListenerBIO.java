@@ -32,6 +32,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.tcp.StackTcp;
 
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -68,7 +69,6 @@ public class SocketServerTcpListenerBIO extends Thread
             {
                 localInetAddr = InetAddress.getByName("0.0.0.0");
             }
-
             this.serverSocket = new ServerSocket(port, 0, localInetAddr);
             this.listenpoint = listenpoint;
         }

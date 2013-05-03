@@ -67,6 +67,20 @@
     <parameter name="[result]" operation="system.readproperty" value="user.dir"/>
     <test parameter="[result]" condition="string.endswith" value="bin"/>
 
+	<parameter name="[ipaddr]" operation="system.ipaddress" value="lo" value2="6"/>
+    <test parameter="[ipaddr]" condition="list.size" value="1"/>
+	<parameter name="[ipaddr]" operation="system.ipaddress" value2="6"/>
+    <or>
+		  <test parameter="[ipaddr]" condition="list.size" value="2"/>
+		  <test parameter="[ipaddr]" condition="list.size" value="3"/>
+		  <test parameter="[ipaddr]" condition="list.size" value="4"/>
+		  <test parameter="[ipaddr]" condition="list.size" value="5"/>
+		  <test parameter="[ipaddr]" condition="list.size" value="6"/>
+		  <test parameter="[ipaddr]" condition="list.size" value="7"/>
+		  <test parameter="[ipaddr]" condition="list.size" value="8"/>
+		  <test parameter="[ipaddr]" condition="list.size" value="9"/>
+	</or>
+	
     <parameter name="[ipaddr]" operation="system.ipaddress" value="eth1" value2="4"/>
     <or>
     	<test parameter="[ipaddr]" condition="list.size" value="0"/>
@@ -84,8 +98,8 @@
 		  <test parameter="[ipaddr]" condition="list.size" value="7"/>
 		  <test parameter="[ipaddr]" condition="list.size" value="8"/>
 		  <test parameter="[ipaddr]" condition="list.size" value="9"/>
-	   </or>	
-	   <parameter name="[ipaddr.index]" operation="list.find" value="[ipaddr]" value2="127.0.0.1" />
+	</or>
+	  <parameter name="[ipaddr.index]" operation="list.find" value="[ipaddr]" value2="127.0.0.1" />
       <test parameter="[ipaddr.index]" condition="number.greaterequalthan" value="1"/>
    	  <parameter name="[os]" operation="system.readproperty" value="os.name"/>
       <!--if>
