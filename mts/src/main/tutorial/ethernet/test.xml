@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <test name="SIP" description="SIP regression tests">
+
+	<parameter name="[IPVersion]" operation="set" value="4" editable="true" />
+	<parameter name="[sysip]" operation="system.ipaddress" value2="[IPVersion]" />
+	<parameter name="[Host-Address]" operation="set" value="[sysip(0)]" editable="true"/>
+	<parameter name="BinaryIP" operation="binary.fromIp" value="[Host-Address]" />
+
 	<testcase name="sendMessageETHERNET" state="true">
 		<scenario name="ETHERNET">sendMessageETHERNET.xml</scenario>
 	</testcase>
-	<testcase name="createProbeETHERNET" state="true">
+	<testcase name="encapse-decapse GTP" state="true">
+		<scenario name="ETHERNET">encapse-descapse-sendGTP.xml</scenario>
+		<scenario name="GTP.V1">encapse-descapse-recvGTP.xml</scenario>
+	</testcase>
+	<testcase name="createProbeETHERNET" state="false">
 		<scenario name="ETHERNET">createProbeETHERNET.xml</scenario>
 	</testcase>
 </test>
