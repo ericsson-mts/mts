@@ -136,8 +136,12 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         	if (null != param_1 && param_1.length() != 1) {
         		throw new ParameterException("value attribute should have a size of 1 for operation system.ipaddress");
         	}
-            Parameter v = assertAndGetParameter(operands, "value2");
-            String version = v.get(0).toString();
+        	String version = "4";
+        	if (operands.get("value2") != null)
+        	{
+        		Parameter v = assertAndGetParameter(operands, "value2");
+        		version = v.get(0).toString();
+        	}
         	try {
         		InetAddress address = null;
         		int i = 0;
