@@ -25,6 +25,7 @@ call startCmd.bat ..\tutorial\pop\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\smpp\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\ucp\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\sigtran\m3ua\test.xml -sequential %OPTIONS%
+call startCmd.bat ..\tutorial\sigtran\m3ua\SCCP\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\sigtran\iua\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\sigtran\v5ua\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\h323\h225CS\test.xml -sequential %OPTIONS%
@@ -36,6 +37,7 @@ REM call startCmd.bat ..\tutorial\pstn\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\mgcp\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\stun\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\gtp\test.xml -sequential %OPTIONS%
+call startCmd.bat ..\tutorial\ethernet\test.xml -sequential %OPTIONS%
 
 pause
 

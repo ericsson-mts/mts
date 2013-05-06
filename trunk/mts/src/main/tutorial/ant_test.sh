@@ -26,6 +26,7 @@ sh ./startCmd.sh ../tutorial/pop/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/smpp/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/ucp/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/sigtran/m3ua/test.xml -sequential $OPTIONS
+sh ./startCmd.sh ../tutorial/sigtran/m3ua/SCCP/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/sigtran/iua/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/sigtran/v5ua/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/h323/h225CS/test.xml -sequential $OPTIONS
@@ -37,6 +38,7 @@ sh ./startCmd.sh ../tutorial/snmp/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/mgcp/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/stun/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/gtp/test.xml -sequential $OPTIONS
+sh ./startCmd.sh ../tutorial/ethernet/test.xml -sequential $OPTIONS
 
 read
 
