@@ -429,6 +429,12 @@ public class MsgDiameter extends Msg
             }
         }
 
+		// cut if message is too long
+        if (ret.length() > MAX_STRING_LENGTH)
+        {
+        	ret = " {" + MAX_STRING_LENGTH + " of " + ret.length() + "}" + ret.substring(0, MAX_STRING_LENGTH);
+        }
+
         ret += "\n\n";
         // display transport info
 		if (channel != null)

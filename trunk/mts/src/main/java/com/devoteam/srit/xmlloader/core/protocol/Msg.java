@@ -46,7 +46,7 @@ import java.util.LinkedList;
 public abstract class Msg extends MsgLight implements Removable
 {
 	/** Maximum number of characters to write into the log */
-    private static int MAX_STRING_LENGTH = Config.getConfigByName("tester.properties").getInteger("logs.MAX_STRING_LENGTH", 1000);
+    protected static int MAX_STRING_LENGTH = Config.getConfigByName("tester.properties").getInteger("logs.MAX_STRING_LENGTH", 1000);
 
     protected TransactionId transactionId;
     protected boolean isTransactionIdSet;
@@ -714,7 +714,7 @@ public abstract class Msg extends MsgLight implements Removable
     /** Returns the string description of the message. Used for logging as DEBUG level */
     public String toString()
     {
-    	String ret = "";
+    	String ret = " ";
 		// display the xml representation
 		try
     	{
@@ -724,6 +724,13 @@ public abstract class Msg extends MsgLight implements Removable
         {
             GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Error while performing toString on Msg : ");
         }
+
+		// cut if message is too long
+        if (ret.length() > MAX_STRING_LENGTH)
+        {
+        	ret = " {" + MAX_STRING_LENGTH + " of " + ret.length() + "}" + ret.substring(0, MAX_STRING_LENGTH);
+        }
+
         ret += "\n\n";
         // display transport info
 		if (channel != null)
@@ -738,12 +745,7 @@ public abstract class Msg extends MsgLight implements Removable
 		{
 			ret += "<PROBE " + probe + ">\n";
 		}
-		// cut if message is too long
-        if (ret.length() > MAX_STRING_LENGTH)
-        {
-        	ret = "\n {" + MAX_STRING_LENGTH + " of " + ret.length() + "}" + ret.substring(0, MAX_STRING_LENGTH);
-        }
-        
+		
         return " " + ret.trim();
     }
 
