@@ -130,6 +130,7 @@ class TesterGuiHelper implements ActionListener {
             ThreadPool.reserve().start(new Runnable() {
 
                 public void run() {
+                    StatPool.getInstance().reset();
                     TesterGui.instance().startTestcasesLoad();
                 }
             });
