@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<scenario>
+
+	<createListenpointRTPFLOW name="inviter" localHost="[localHostRTP(0)]" localPort="[localPortRTP]" /> 
+  	
+    	<parameter name="[testcase:payloadList]" operation="set" value="[[fileWave(0)]]" /> 
+      	<parameter name="[payloadType]" operation="set" value="[[fileWave(1)]]" /> 
+        <parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]" /> 
+        <parameter name="[nbPacket]" operation="list.size" value="[payloadList]" /> 
+        <parameter name="[nbPacket]" operation="number.divide" value="[nbPacket]" value2="2" /> 
+        <parameter name="[ssrc]" operation="number.random" value="10000000" /> 
+        
+	<sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+        	<flow packetNumber="[nbPacket]" bitRate="[bitRate]" synchronous="true" packetLost="0">
+                	<header ssrc="[ssrc]" payloadType="[payloadType]" seqnum="0" timestamp="0" /> 
+                  	<payload format="binary">[payloadList]</payload> 
+                </flow>
+    	</sendMessageRTPFLOW>
+</scenario>
