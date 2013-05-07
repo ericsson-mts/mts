@@ -56,7 +56,7 @@ public abstract class Listenpoint
     
     private int portTLS = 0;
     protected String transport = null;
-    private String protocol;
+    protected String protocol;
     
     /**
      * Listenpoint
