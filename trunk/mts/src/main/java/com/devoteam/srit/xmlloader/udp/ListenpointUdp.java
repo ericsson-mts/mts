@@ -39,9 +39,7 @@ import org.dom4j.Element;
 public class ListenpointUdp extends Listenpoint
 {
     private boolean nio = Config.getConfigByName("udp.properties").getBoolean("USE_NIO", false);
-
     private Listenpoint  listenpoint;
-
     private long startTimestamp = 0;
     
     /** Creates a new instance of Listenpoint */

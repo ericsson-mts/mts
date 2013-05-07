@@ -35,7 +35,8 @@ import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.tcp.bio.ListenpointTcpBIO;
 import com.devoteam.srit.xmlloader.tcp.nio.ListenpointTcpNIO;
 
-public class ListenpointTcp extends Listenpoint {
+public class ListenpointTcp extends Listenpoint 
+{
 
     private boolean nio = Config.getConfigByName("tcp.properties").getBoolean("USE_NIO", false);
     private Listenpoint listenpoint;
