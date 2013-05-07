@@ -31,6 +31,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -56,7 +57,8 @@ import dk.i1.diameter.node.Peer.TransportProtocol;
  */
 public class ListenpointDiameter extends Listenpoint
 {
-	
+    private long startTimestamp = 0;
+    
 	private NodeSettings node_settings;
 	
     private DiameterNodeManager diameterNode = null;
@@ -89,6 +91,16 @@ public class ListenpointDiameter extends Listenpoint
     @Override
     public boolean create(String protocol) throws Exception    
     {
+    	if (this.getListenTCP())
+    	{
+    		StatPool.beginStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_TCP, protocol);
+    	}
+    	else if (this.getListenSCTP())
+    	{
+    		StatPool.beginStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_SCTP, protocol);
+    	}
+    	this.protocol = protocol;
+    	this.startTimestamp = System.currentTimeMillis();
     	this.diameterNode = new DiameterNodeManager(node_settings, this);
     	return true;
     }
@@ -97,6 +109,15 @@ public class ListenpointDiameter extends Listenpoint
     @Override
     public boolean remove()
     {
+    	if (this.getListenTCP())
+    	{
+    		StatPool.endStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_TCP, getProtocol(), startTimestamp);
+    	}
+    	else if (this.getListenSCTP())
+    	{
+    		StatPool.endStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol(), startTimestamp);
+    	}
+    	
     	try 
     	{
     		if(null != diameterNode) 
