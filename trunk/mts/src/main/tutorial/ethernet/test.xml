@@ -4,7 +4,8 @@
 	<parameter name="[IPVersion]" operation="set" value="4" editable="true" />
 	<parameter name="[sysip]" operation="system.ipaddress" value2="[IPVersion]" />
 	<parameter name="[Host-Address]" operation="set" value="[sysip(0)]" editable="true"/>
-	<parameter name="BinaryIP" operation="binary.fromIp" value="[Host-Address]" />
+	<parameter name="[BinaryIP]" operation="binary.fromIp" value="[Host-Address]" />
+	<parameter name="[ARP_TARGETIP]" operation="set" value="172.16.21.254" editable="true" />
 
 	<testcase name="sendMessageETHERNET" state="true">
 		<scenario name="ETHERNET">sendMessageETHERNET.xml</scenario>

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <scenario>
 	<!-- send IP/UDP/SIP REGISTER message -->
-	<createProbeETHERNET name="capture" networkInterface="[Host-Address]" captureFilter="" />
-	<parameter name="BinaryIP" operation="binary.fromIp" value="[Host-Address]" />
+	<parameter name="[MacAddress]" operation="system.macaddress" />
+	<parameter name="[MacAddressHex]" operation="string.regexreplaces" value="[MacAddress]" value2=":" value3="" />
+
+	<createProbeETHERNET name="capture" networkInterface="[Host-Address]" captureFilter="ether dst [MacAddress]" />
+	<parameter name="TargetIP" operation="binary.fromIp" value="[ARP_TARGETIP]" />
 	
 	<sendMessageETHERNET name="send packet" probe="capture"> <!-- nic="0" is eth0 -->
 		<ethernet remoteMac="ff:ff:ff:ff:ff:ff" type="0806" /> <!-- type="0806" is for ARP payload -->
@@ -11,11 +14,18 @@
 		<data format="binary">h06</data> 	<!-- Hardware Size 06 for ETHERNET (6 bytes) -->
 		<data format="binary">h04</data> 	<!-- Protocol Size 04 for IPv4 (4 byte) -->
   		<data format="binary">h0001</data> <!-- OP code 0001 for request-->
-		<data format="binary">h0022192313d9</data> <!-- @MAC src -->
+		<data format="binary">h[MacAddressHex]</data> <!-- @MAC src -->
 		<data format="binary">h[BinaryIP]</data> <!-- @IP src -->
 		<data format="binary">h000000000000</data> <!-- @MAC dest (the one we want to find) -->
-		<data format="binary">h[BinaryIP]</data> <!-- @IP dest -->
+		<data format="binary">h[TargetIP]</data> <!-- @IP dest -->
   	</sendMessageETHERNET>
+	
+	<receiveMessageETHERNET>
+		<parameter name="[data1]" operation="protocol.setFromMessage" value="data.binary" />
+	</receiveMessageETHERNET>
+	
+	<!-- The requested MAC address given by ARP REPLY -->
+	<parameter name="[TargetMac]" operation="binary.subbinary" value="[data1]" value2="8" value3="6" />
 	
 	<finally>
 		<removeProbeETHERNET name="capture" />
