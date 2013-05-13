@@ -3,8 +3,16 @@
 	<parameter name="[MacAddress]" operation="system.macaddress" />
 	<parameter name="[MacAddressHex]" operation="string.regexreplaces" value="[MacAddress]" value2=":" value3="" />
 
-	<createProbeETHERNET name="capture" networkInterface="[Host-Address]" captureFilter="ether dst [MacAddress]" />
+	<createProbeETHERNET name="capture" networkInterface="[Host-Address]" captureFilter="ether dst ff:ff:ff:ff:ff:ff and arp" />
 	<parameter name="TargetIP" operation="binary.fromIp" value="[ARP_TARGETIP]" />
+	
+	<receiveMessageETHERNET>
+		<parameter name="[data1]" operation="protocol.setFromMessage" value="data.binary" />
+	</receiveMessageETHERNET>
+	
+	<parameter name="[MacSrc]" operation="binary.subbinary" value="[data1]" value2="8" value3="6" />
+	<parameter name="[IPSrc]"	operation="binary.subbinary" value="[data1]" value2="14" value3="4" />
+	<parameter name="[IPQuery]"	operation="binary.subbinary" value="[data1]" value2="26" value3="4" />
 	
 	<sendMessageETHERNET name="send packet" probe="capture">
 		<ethernet remoteMac="ff:ff:ff:ff:ff:ff" type="0806" /> <!-- type="0806" is for ARP payload; Send to broadcast mac address ff:ff:ff:ff:ff:ff -->
@@ -12,20 +20,12 @@
 		<data format="binary">h0800</data> 		<!-- Protocol type 0800 for IP -->
 		<data format="binary">h06</data> 	<!-- Hardware Size 06 for ETHERNET (6 bytes) -->
 		<data format="binary">h04</data> 	<!-- Protocol Size 04 for IPv4 (4 byte); it would be 10 for IPv6 (10 hex equals to 16 (dec) bytes) -->
-  		<data format="binary">h0001</data> <!-- OP code 0001 for request; 0002 for reply -->
+  		<data format="binary">h0002</data> <!-- OP code 0001 for request; 0002 for reply -->
 		<data format="binary">h[MacAddressHex]</data> <!-- @MAC src without ":" -->
 		<data format="binary">h[BinaryIP]</data> <!-- @IP src; actually your local IP -->
-		<data format="binary">h000000000000</data> <!-- @MAC dest (the one we want to find) set to 0 -->
-		<data format="binary">h[TargetIP]</data> <!-- @IP dest that holds the mac address we are looking for -->
+		<data format="binary">h[MacSrc]</data> <!-- @MAC Src of Request -->
+		<data format="binary">h[IPSrc]</data> <!-- @IP SRC of Request -->
   	</sendMessageETHERNET>
-	
-	<receiveMessageETHERNET>
-		<parameter name="[data1]" operation="protocol.setFromMessage" value="data.binary" />
-	</receiveMessageETHERNET>
-	
-	<!-- The requested MAC address given by ARP REPLY extracted from data1 byte field -->
-	<!-- to extract others fields, please refer to ARP message format -->
-	<parameter name="[TargetMac]" operation="binary.subbinary" value="[data1]" value2="8" value3="6" />
 	
 	<finally>
 		<removeProbeETHERNET name="capture" />
