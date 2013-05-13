@@ -133,16 +133,22 @@ public class PIPReassembler
 
                     	pipPacket = new PIPPacket(data.subArray(22));
                     }
+                    else if (((ethPacket.frametype & 0xffff) == 0x0806))
+                    {
+                    	// ARP, Do nothing, just pass it to ethernet stack
+                    	callback.probe.capturedETHPacket(packet);
+                    	continue;
+                    }
                     else{
                         // not IP
                        	continue;
                     }
-                    
                     long timestamp = packet.sec*1000000 + packet.usec;
                     pipPacket.getHeader().setTimestamp(timestamp);
 
-                    if (callback.probe.getProtocol() == StackFactory.PROTOCOL_ETHERNET)
+                    if (callback.probe.getProtocol() == StackFactory.PROTOCOL_ETHERNET) {
                     	callback.probe.capturedETHPacket(packet);
+                    }
                     else
                     {
 	                    if (pipPacket.getHeader().isMore_flag() || pipPacket.getHeader().getOffset_fragment() != 0){
