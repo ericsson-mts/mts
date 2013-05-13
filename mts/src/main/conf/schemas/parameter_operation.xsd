@@ -2316,6 +2316,11 @@
 							<xs:documentation>[optional] Selected interface like eth0/eth1 ... (default is any).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
+					<xs:attribute name="value2" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>version of IP (4 or 6)</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="system.semaphorenotify">
@@ -2466,6 +2471,23 @@
 					<xs:attribute name="value2" type="xs:string" use="required">
 						<xs:annotation>
 							<xs:documentation>The list (or just one value) of subnet masks (255.255.255.0).</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="system.macaddress">
+				<xs:annotation>
+					<xs:documentation>Get mac addresses of an interface.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>Selected mac addresses.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="optional">
+						<xs:annotation>
+							<xs:documentation>[optional] Selected interface like eth0/eth1 ... (default is any).</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>

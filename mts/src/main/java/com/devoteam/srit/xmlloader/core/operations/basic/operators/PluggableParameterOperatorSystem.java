@@ -65,6 +65,7 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
     final private String S_READPROPERTY = "system.readproperty";
     final private String S_TIMESTAMP = "system.timestamp";
     final private String S_IPADDRESS = "system.ipaddress";
+    final private String S_MACADDRESS = "system.macaddress";
     final private String S_QUERYSQL = "system.querySQL";
     final private String S_COMMAND = "system.command";
     final private String S_STATCOUNTER = "system.statCounter";
@@ -75,6 +76,7 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(S_READPROPERTY));
         this.addPluggableName(new PluggableName(S_TIMESTAMP));
         this.addPluggableName(new PluggableName(S_IPADDRESS));
+        this.addPluggableName(new PluggableName(S_MACADDRESS));
         this.addPluggableName(new PluggableName(S_QUERYSQL));
         this.addPluggableName(new PluggableName(S_COMMAND));
         this.addPluggableName(new PluggableName(S_STATCOUNTER));
@@ -89,7 +91,7 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         Parameter param_1;
         Parameter param_2;
 
-        if (name.equalsIgnoreCase(S_TIMESTAMP) || name.equalsIgnoreCase(S_IPADDRESS))
+        if (name.equalsIgnoreCase(S_TIMESTAMP) || name.equalsIgnoreCase(S_IPADDRESS) || name.equalsIgnoreCase(S_MACADDRESS))
         {
             param_1 = operands.get("value");
         }
@@ -130,6 +132,42 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         		Long timeMillis1900 = cal.getTimeInMillis(); // obtain the time in milliseconds
         		result.add(String.valueOf((System.currentTimeMillis()) - timeMillis1900));
         		return result;
+        	}
+        }
+        else if (name.equalsIgnoreCase(S_MACADDRESS)) {
+        	if (null != param_1 && param_1.length() != 1) {
+        		throw new ParameterException("value attribute should have a size of 1 for operation system.ipaddress");
+        	}
+        	try {
+        		// add loopback address
+        		if ((null == param_1) || (param_1.get(0).toString().equals("lo"))) {
+        			InetAddress ip = InetAddress.getLocalHost();
+        			NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+        			byte[] mac = network.getHardwareAddress();
+        			String res = "";
+        			for (int j = 0; j < mac.length; j++)
+    					res += String.format("%02x%s", mac[j], (j < mac.length - 1) ? ":" : "");
+    				result.add(res);
+    			}
+        		else
+        		{
+	        		InetAddress address = null;
+	        		int i = 0;
+	        		ArrayList<String> array = new ArrayList<String>();
+	        		for (Enumeration e = NetworkInterface.getNetworkInterfaces(); e.hasMoreElements();) {
+	        			NetworkInterface eth = (NetworkInterface) e.nextElement();
+	        			if (null == param_1 || param_1.get(0).toString().equals(eth.getName())) {
+	        				byte[] mac = eth.getHardwareAddress();
+	        				String res = "";
+	        				for (int j = 0; j < mac.length; j++)
+	        					res += String.format("%02x%s", mac[j], (j < mac.length - 1) ? ":" : "");
+	        				result.add(res);
+	        			}
+	        		}
+        		}
+        	}
+        	catch (Exception e) {
+        		throw new ParameterException("error in " + name, e);
         	}
         }
         else if (name.equalsIgnoreCase(S_IPADDRESS)) {
