@@ -2,20 +2,76 @@
 
 <test name="GTP" description="GTP (V1 V2 Prime) regression tests">
 
-	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
-    <parameter name="[remoteHost]" operation="system.ipaddress" value2="[IPVersion]" />
-    <!--parameter name="[remoteHost]" operation="set" value="172.20.70.43"/-->
+    <parameter name="[remoteHost]" operation="system.ipaddress" />
+    <!--parameter name="[remoteHost]" operation="set" value="192.168.140.232"/-->
     <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]" editable="true" />
     <parameter name="[remotePort]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/>
-    <!--parameter name="[remotePort]" operation="set" value="2123"/-->    
+    <!--parameter name="[remotePort]" operation="set" value="2123"/-->
     <parameter name="[remotePort]" operation="set" value="[remotePort]" editable="true" />
 
     <parameter name="[transportGTP]" operation="set" value="UDP"/>
     <parameter name="[transportGTPPrime]" operation="set" value="TCP"/>
 
     <testcase name="GTP v2 ------------------------------------------------------" state="false"/>
+    
+	 <testcase name="GTP V2 95_Create_Bearer_Request" state="true">
+       <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario name="client">95_Create_Bearer_Request/client.xml</scenario>
+		<scenario name="GTP.V2">95_Create_Bearer_Request/server.xml</scenario>
+     </testcase>
 
-    <testcase name="GTP v2 101_call_setup" state="true">
+	  <testcase name="GTP V2 96_Create_Bearer_Response" state="true">
+       <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario name="client">96_Create_Bearer_Response/client.xml</scenario>
+     </testcase>
+	 
+	  <testcase name="GTP V2 97_Update_Bearer_Request" state="true">
+       <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario name="client">97_Update_Bearer_Request/client.xml</scenario>
+		<scenario name="GTP.V2">97_Update_Bearer_Request/server.xml</scenario>
+     </testcase>
+	 <testcase name="GTP V2 98_Update_Bearer_Response" state="true">
+       <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario name="client">98_Update_Bearer_Response/client.xml</scenario>
+     </testcase>
+	 <testcase name="GTP V2 64_Modify_Bearer_Command" state="true">
+       <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario name="client">64_Modify_Bearer_Command/client.xml</scenario>
+     </testcase>
+	 <testcase name="GTP V2 65_Modify_Bearer_Failure_Indication" state="true">
+       <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario name="client">65_Modify_Bearer_Failure_Indication/client.xml</scenario>
+     </testcase>
+	 
+	<testcase name="GTP v2 32_create_session_request" state="true">
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario name="client">32_create_session_request/client.xml</scenario>
+        <scenario name="GTP.V2">32_create_session_request/server.xml</scenario>
+    </testcase>
+		
+	<testcase name="GTP v2 33_create_session_response" state="true">
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario name="client">33_create_session_response/client.xml</scenario>
+        <!--<scenario name="GTP.V2">33_create_session_response/server.xml</scenario>  -->
+    </testcase>
+	  <testcase name="GTP v2 36_delete_session_request" state="true">
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario name="client">36_delete_session_request/client.xml</scenario>
+        <scenario name="GTP.V2">36_delete_session_request/server.xml</scenario>
+    </testcase>
+	
+   <testcase name="GTP V2 99_Delete_Bearer_Request" state="true">
+       <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario name="client">99_Delete_Bearer_Request/client.xml</scenario>
+        <scenario name="GTP.V2">99_Delete_Bearer_Request/server.xml</scenario>
+     </testcase>
+   <testcase name="GTP v2 34_modify_bearer_request" state="true">
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario name="client">34_modify_bearer_request/client.xml</scenario>
+        <scenario name="GTP.V2">34_modify_bearer_request/server.xml</scenario>
+    </testcase>
+
+    <testcase name="GTP v2 101_call_setup" state="false">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
         <scenario name="client">101_call_setup/client.xml</scenario>
         <scenario name="GTP.V2">101_call_setup/server.xml</scenario>
@@ -27,13 +83,15 @@
         <scenario name="GTP.V2">101_echo/server.xml</scenario>
     </testcase>
     
-    <testcase name="GTP v2 111_createSession" state="true">
-        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario name="client">111_createSession/client.xml</scenario>
-        <scenario name="GTP.V2">111_createSession/server.xml</scenario>
-    </testcase>
+   
     
-    <testcase name="GTP v2 111_createSession_all" state="true">
+	<testcase name="GTP v2 111_create_session_request" state="false">
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario name="client">111_create_session_request/client.xml</scenario>
+        <scenario name="GTP.V2">111_create_session_request/server.xml</scenario>
+    </testcase>
+	
+    <testcase name="GTP v2 111_createSession_all" state="false">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
         <scenario name="client">111_createSession_all/client.xml</scenario>
         <scenario name="GTP.V2">111_createSession_all/server.xml</scenario>
@@ -44,14 +102,14 @@
         <scenario name="GTP.V2">112_deleteSession/server.xml</scenario>
     </testcase>
     
-    <testcase name="GTP v2 180_set_from_msg" state="true">
+    <testcase name="GTP v2 180_set_from_msg" state="false">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
         <scenario name="client">180_set_from_msg/client.xml</scenario>
         <scenario name="GTP.V2">180_set_from_msg/server.xml</scenario>
     </testcase>
 
     <testcase name="GTP v2 181_listenpoint" state="true">
-        <parameter name="[listenHost]" operation="system.ipaddress" value2="[IPVersion]" />
+        <parameter name="[listenHost]" operation="system.ipaddress" />
         <!--parameter name="[listenHost]" operation="set" value="172.20.70.43"/-->    
         <parameter name="[listenHost]" operation="set" value="[listenHost(0)]" editable="true" />
         <!--parameter name="[listenHost]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/-->
@@ -70,12 +128,8 @@
     </testcase>
     
     <testcase name="GTP v1 ------------------------------------------------------" state="false"/>
-    
-    <testcase name="GTP v1 200_T-PDU" state="true">
-        <scenario name="GTP.V1">200_T-PDU/client.xml</scenario>
-    </testcase>
             
-    <testcase name="GTP v1 201_echo" state="true">
+    <testcase name="GTP v1 201_echo" state="false">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
         <scenario name="client">201_echo/client.xml</scenario>
         <scenario name="GTP.V1">201_echo/server.xml</scenario>
@@ -95,7 +149,7 @@
         <scenario name="GTP.V1">203_supportedExtensionHeadersNotification/server.xml</scenario>
     </testcase>
 
-    <testcase name="GTP v1 280_set_from_msg" state="true">
+    <testcase name="GTP v1 280_set_from_msg" state="false">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
         <scenario name="client">280_set_from_msg/client.xml</scenario>
         <scenario name="GTP.V1">280_set_from_msg/server.xml</scenario>
@@ -134,7 +188,7 @@
     </testcase>
     
     <testcase name="GTP Pr 381_listenpoint" state="true">
-        <parameter name="[listenHost]" operation="system.ipaddress" value2="[IPVersion]" />
+        <parameter name="[listenHost]" operation="system.ipaddress" />
         <!--parameter name="[listenHost]" operation="set" value="172.20.70.43"/-->    
         <parameter name="[listenHost]" operation="set" value="[listenHost(0)]" editable="true" />
         <!--parameter name="[listenHost]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/-->
