@@ -106,16 +106,27 @@ public class PJpcapThread implements PacketReceiver, Runnable {
 	    	    
         if (msgEth.getMac().length != 6)
         {
-        	throw new ExecutionException("Mac address is malformed, expected format is 	AA:BB:CC:DD:EE:FF");
+        	if (msgEth.getMac().length == 1 && msgEth.getMac()[0].length() == 12)
+        	{
+        		//MAC address is not in form AA:BB:CC:DD:EE:FF but in form AABBCCDDEEFF
+        		String[] m = new String[6];
+        		String src = msgEth.getMac()[0];
+        		int a = 0;
+        		for (int b = 0; b < src.length(); b++)
+        		{
+        			m[a] = "" + src.charAt(b) + src.charAt(++b);
+        			a++;
+        		}
+        		msgEth.setMac(m);
+        	}
+        	else
+        		throw new ExecutionException("Mac address is malformed, expected format is 	AA:BB:CC:DD:EE:FF");
         }
-        else
-        {
-        	// Mac address are 6*8 bits long
-        	byte[] mac = new byte[48];
-        	for (int j = 0; j < 6; j++)
-        		mac[j] = (byte)Integer.parseInt(msgEth.getMac()[j], 16); // Hex digit to be converted in one single byte
-        	etherPckt.dst_mac = mac;
-        }
+       	// Mac address are 6*8 bits long
+       	byte[] mac = new byte[48];
+       	for (int j = 0; j < 6; j++)
+       		mac[j] = (byte)Integer.parseInt(msgEth.getMac()[j], 16); // Hex digit to be converted in one single byte
+       	etherPckt.dst_mac = mac;
         
 		p.data = msgEth.getData(); // filling raw packet with Hex datas provided in xml scenario
 		p.datalink = etherPckt; // setting datalink of raw packet as Ethernet
