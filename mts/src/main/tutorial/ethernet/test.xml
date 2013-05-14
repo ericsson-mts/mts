@@ -5,7 +5,7 @@
 	<parameter name="[sysip]" operation="system.ipaddress" value2="[IPVersion]" />
 	<parameter name="[Host-Address]" operation="set" value="[sysip(0)]" editable="true"/>
 	<parameter name="[BinaryIP]" operation="binary.fromIp" value="[Host-Address]" />
-	<parameter name="[ARP_TARGETIP]" operation="set" value="172.16.21.254" editable="true" />
+	<parameter name="[ARP_TARGETIP]" operation="set" value="[Host-Address]" editable="true" />
 
 	<testcase name="sendMessageETHERNET" state="true">
 		<scenario name="ETHERNET">sendMessageETHERNET.xml</scenario>
@@ -20,9 +20,6 @@
 	</testcase>
 	<testcase name="ARP Request" state="true">
 		<scenario name="ETHERNET">arp_request.xml</scenario>
-	</testcase>
-	<testcase name="ARP Reply" state="false">
-		<scenario name="ETHERNET">arp_reply.xml</scenario>
 	</testcase>
 	<testcase name="createProbeETHERNET" state="false">
 		<scenario name="ETHERNET">createProbeETHERNET.xml</scenario>
