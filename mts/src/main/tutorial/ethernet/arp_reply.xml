@@ -6,16 +6,16 @@
 	<createProbeETHERNET name="capture" networkInterface="[Host-Address]" captureFilter="ether dst ff:ff:ff:ff:ff:ff and arp" />
 	<parameter name="TargetIP" operation="binary.fromIp" value="[ARP_TARGETIP]" />
 	
-	<receiveMessageETHERNET>
+	<receiveMessageETHERNET type="0x0806">
 		<parameter name="[data1]" operation="protocol.setFromMessage" value="data.binary" />
 	</receiveMessageETHERNET>
 	
 	<parameter name="[MacSrc]" operation="binary.subbinary" value="[data1]" value2="8" value3="6" />
 	<parameter name="[IPSrc]"	operation="binary.subbinary" value="[data1]" value2="14" value3="4" />
-	<parameter name="[IPQuery]"	operation="binary.subbinary" value="[data1]" value2="26" value3="4" />
+	<parameter name="[IPQuery]"	operation="binary.subbinary" value="[data1]" value2="24" value3="4" />
 	
 	<sendMessageETHERNET name="send packet" probe="capture">
-		<ethernet remoteMac="ff:ff:ff:ff:ff:ff" type="0806" /> <!-- type="0806" is for ARP payload; Send to broadcast mac address ff:ff:ff:ff:ff:ff -->
+		<ethernet remoteMac="[MacSrc]" type="0806" /> <!-- type="0806" is for ARP payload; Send to broadcast mac address ff:ff:ff:ff:ff:ff -->
 		<data format="binary">h0001</data> <!-- Hardware Type 0001 for ETH -->
 		<data format="binary">h0800</data> 		<!-- Protocol type 0800 for IP -->
 		<data format="binary">h06</data> 	<!-- Hardware Size 06 for ETHERNET (6 bytes) -->
