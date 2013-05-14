@@ -208,9 +208,12 @@ public class PJpcapThread implements PacketReceiver, Runnable {
         GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PROTOCOL, null, "CaptureProbeThread.stop() : ", probe.getName());
         if (null != captor) {
             stopped = true;
-            captor.breakLoop();
-            captor.close();
-            sendor.close();
+            if (captor != null) {
+            	captor.breakLoop();
+            	captor.close();
+            }
+            if (sendor != null)
+            	sendor.close();
             captor = null;
             sendor = null;
 
