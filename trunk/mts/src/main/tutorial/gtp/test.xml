@@ -71,7 +71,7 @@
         <scenario name="GTP.V2">34_modify_bearer_request/server.xml</scenario>
     </testcase>
 
-    <testcase name="GTP v2 101_call_setup" state="false">
+    <testcase name="GTP v2 101_call_setup" state="true">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
         <scenario name="client">101_call_setup/client.xml</scenario>
         <scenario name="GTP.V2">101_call_setup/server.xml</scenario>
@@ -85,13 +85,13 @@
     
    
     
-	<testcase name="GTP v2 111_create_session_request" state="false">
+	<testcase name="GTP v2 111_create_session_request" state="true">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
         <scenario name="client">111_create_session_request/client.xml</scenario>
         <scenario name="GTP.V2">111_create_session_request/server.xml</scenario>
     </testcase>
 	
-    <testcase name="GTP v2 111_createSession_all" state="false">
+    <testcase name="GTP v2 111_createSession_all" state="true">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
         <scenario name="client">111_createSession_all/client.xml</scenario>
         <scenario name="GTP.V2">111_createSession_all/server.xml</scenario>
@@ -102,7 +102,7 @@
         <scenario name="GTP.V2">112_deleteSession/server.xml</scenario>
     </testcase>
     
-    <testcase name="GTP v2 180_set_from_msg" state="false">
+    <testcase name="GTP v2 180_set_from_msg" state="true">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
         <scenario name="client">180_set_from_msg/client.xml</scenario>
         <scenario name="GTP.V2">180_set_from_msg/server.xml</scenario>
@@ -129,7 +129,7 @@
     
     <testcase name="GTP v1 ------------------------------------------------------" state="false"/>
             
-    <testcase name="GTP v1 201_echo" state="false">
+    <testcase name="GTP v1 201_echo" state="true">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
         <scenario name="client">201_echo/client.xml</scenario>
         <scenario name="GTP.V1">201_echo/server.xml</scenario>
@@ -149,7 +149,7 @@
         <scenario name="GTP.V1">203_supportedExtensionHeadersNotification/server.xml</scenario>
     </testcase>
 
-    <testcase name="GTP v1 280_set_from_msg" state="false">
+    <testcase name="GTP v1 280_set_from_msg" state="true">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
         <scenario name="client">280_set_from_msg/client.xml</scenario>
         <scenario name="GTP.V1">280_set_from_msg/server.xml</scenario>
@@ -210,12 +210,13 @@
     
     <testcase name="GTP 901_server" state="false">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario name="GTP.V2">111_createSession/server.xml</scenario>
+        <scenario name="GTP.V2">901_server/server.xml</scenario>
+        <scenario name="client">902_client/client.xml</scenario>
     </testcase>
 
     <testcase name="GTP 902_client" state="false">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario name="client">111_createSession/client.xml</scenario>
+        <scenario name="client">902_client/client.xml</scenario>
     </testcase>
 
 </test>
