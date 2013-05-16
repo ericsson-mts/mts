@@ -56,7 +56,7 @@ public class Length2StringField extends FieldAbstract
     	this.offset = offset;
         array.addLast(new Integer16Array(value.length()));
         Array valueArray = new DefaultArray(value.getBytes());
-        array.addLast(valueArray);
+        super.setValueFromArray( valueArray, offset, array);
     }
 
     @Override

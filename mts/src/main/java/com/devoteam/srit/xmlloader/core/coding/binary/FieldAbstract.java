@@ -156,6 +156,54 @@ public abstract class FieldAbstract
         return elemString.toString();
     }
     
+    protected void permuteByte(byte[] bytes) throws Exception 
+    {
+		int i = 0;
+		while (i < bytes.length - 1)
+		{
+			byte temp = bytes[i];
+			bytes[i] = bytes[i + 1];
+			bytes[i + 1] = temp;
+			i = i + 2;
+		}
+    }
+
+    protected void setValueFromArray(Array valueArray, int offset, SupArray array)
+    {
+		if (length == 0)
+		{
+			array.addLast(valueArray);
+		}
+		else
+		{
+			byte[] bytes = valueArray.getBytes();
+	    	// for (int i = 0 ; i < this.length; i++)
+		    for (int i = bytes.length - 1; i >= 0; i--)
+	    	{
+	    		int pos = (offset + length) / 8 - bytes.length + i;
+	    		array.set(pos, bytes[i] & 0xff);
+	    	}	
+		}
+    }
+    
+    protected void setValueFromBytes(byte[] values, int offset, SupArray array)
+    {
+		if (length == 0)
+		{
+			Array valueArray = new DefaultArray(values);
+			array.addLast(valueArray);
+		}
+		else
+		{
+	    	// for (int i = 0 ; i < this.length; i++)
+		    for (int i = values.length - 1; i >= 0; i--)
+	    	{
+	    		int pos = (offset + length) / 8 - values.length + i;
+	    		array.set(pos, values[i] & 0xff);
+	    	}	
+		}
+    }
+
     public String toString() 
     {
     	Array array = new DefaultArray(0);

@@ -87,14 +87,8 @@ public class NumberMMCField extends FieldAbstract
     	byte[] bytes = mmc.getBytes();
     	permuteByte(bytes);
     	String mmcPermute = new String(bytes);
-    	Array mmcArray = Array.fromHexString(mmcPermute);
-    	byte[] mmcbytes = mmcArray.getBytes();
-    	// set the bits
-    	for (int i = 0; i < 3; i++)
-    	{
-    		int off = offset / 8 + i;
-    		array.set(off, mmcbytes[i] & 0xff);
-    	}
+    	Array valueArray = Array.fromHexString(mmcPermute);
+    	super.setValueFromArray( valueArray, offset, array);
     }
     
     @Override
@@ -122,18 +116,6 @@ public class NumberMMCField extends FieldAbstract
     		mnc = ""+ temp.charAt(1) + temp.charAt(2) + temp.charAt(0);
     	}
     	return mmc + ',' + mnc;
-    }
-
-    private void permuteByte(byte[] bytes) throws Exception 
-    {
-		int i = 0;
-		while (i < bytes.length - 1)
-		{
-			byte temp = bytes[i];
-			bytes[i] = bytes[i + 1];
-			bytes[i + 1] = temp;
-			i = i + 2;
-		}
     }
     
     @Override

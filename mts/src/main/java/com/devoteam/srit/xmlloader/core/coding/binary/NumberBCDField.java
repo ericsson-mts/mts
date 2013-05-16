@@ -60,8 +60,8 @@ public class NumberBCDField extends FieldAbstract
     	byte[] bytes = value.getBytes();
     	permuteByte(bytes);
     	String string = new String(bytes);
-    	Array valueArray = Array.fromHexString(string);   	
-        array.addLast(valueArray);
+    	Array valueArray = Array.fromHexString(string);
+    	super.setValueFromArray( valueArray, offset, array);
     }
     
     @Override
@@ -77,18 +77,6 @@ public class NumberBCDField extends FieldAbstract
     		value = value.substring(0, value.length() - 1);
     	}
     	return value;
-    }
-
-    private void permuteByte(byte[] bytes) throws Exception 
-    {
-		int i = 0;
-		while (i < bytes.length - 1)
-		{
-			byte temp = bytes[i];
-			bytes[i] = bytes[i + 1];
-			bytes[i + 1] = temp;
-			i = i + 2;
-		}
     }
     
     @Override

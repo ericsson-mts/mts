@@ -169,7 +169,7 @@
     </element>
 
     <element tag="IMSI:2" coding="TV" description="International Mobile Subscriber Identity">
-    		<field name="IMSI" lengthBit="64" type="number_bcd"/>
+    		<field name="IMSI" lengthBit="64" type="number_bcd" description="International Mobile Subscriber Identity"/>
     </element>
 
     <element tag="Recovery:14" coding="TV">
@@ -192,13 +192,17 @@
         
     <element tag="NSAPI:20" coding="TV" description="Network Service Access Point Identifier">
         <field name="Spare" lengthBit="4" type="integer"/>
-		<field name="NSAPI" lengthBit="4" type="integer"/>
+        <field name="NSAPI" lengthBit="4" type="integer"/>
     </element>
     
     <element tag="GSNAddress:133" coding="TLV">
 		    <field name="GSNAddress" type="string"/>
     </element>
-	
+
+    <element tag="MSISDN:134" coding="TLV" description="MS International PSTN/ISDN Number">
+    		<field name="MSISDN" type="number_bcd" description="MS International PSTN/ISDN Number"/>
+    </element>
+
 	  <element tag="extensionHeaderTypeList:141" coding="TLV">
 		    <field name="extensionHeaderTypeList" type="string"/>
     </element>
