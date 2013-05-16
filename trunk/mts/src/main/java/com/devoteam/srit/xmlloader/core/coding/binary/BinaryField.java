@@ -54,8 +54,8 @@ public class BinaryField extends FieldAbstract
     public void setValue(String value, int offset, SupArray array) 
     {
     	this.offset = offset;    	
-        Array valueArray = Array.fromHexString(value);
-        array.addLast(valueArray);
+        Array valueArray = Array.fromHexString(value);	
+        super.setValueFromArray( valueArray, offset, array);
     }
 
     @Override

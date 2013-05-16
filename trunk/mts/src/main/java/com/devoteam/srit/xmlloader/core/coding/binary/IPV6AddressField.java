@@ -56,11 +56,7 @@ public class IPV6AddressField extends FieldAbstract
     	this.offset = offset;
     	InetAddress inetAddr = InetAddress.getByName(value);
     	byte[] bytes = inetAddr.getAddress();
-    	for (int i = 0; i < 16; i++)
-    	{
-    		int pos = offset / 8 + i;
-    		array.set(pos, bytes[i] & 0xff);
-    	}
+    	super.setValueFromBytes( bytes, offset, array);
     }
     
     @Override

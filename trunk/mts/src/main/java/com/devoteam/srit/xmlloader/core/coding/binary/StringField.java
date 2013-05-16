@@ -50,7 +50,7 @@ public class StringField extends FieldAbstract
     {
     	this.offset = offset;
         Array valueArray = new DefaultArray(value.getBytes());
-        array.addLast(valueArray);
+        super.setValueFromArray( valueArray, offset, array);
     }
 
     @Override
