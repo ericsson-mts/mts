@@ -122,7 +122,7 @@ public class HeaderGTPV1 extends HeaderAbstract
         attribute = header.attributeValue("tunnelEndpointId");
         if (attribute != null)
         {
-        	this.tunnelEndpointId = Integer.parseInt(attribute);
+        	this.tunnelEndpointId = Long.parseLong(attribute);
         }
 
         attrFlag = header.attributeValue("seqNumFlag");
@@ -288,7 +288,7 @@ public class HeaderGTPV1 extends HeaderAbstract
 	    this.label = field.getEnumLabelByValue(this.type);    	
 
 	    Array teidArray = array.subArray(offset, 4); 
-        this.tunnelEndpointId = (int) (new Integer32Array(teidArray).getValue() & 0xffffffffl);
+        this.tunnelEndpointId = new Integer32Array(teidArray).getValue() & 0xffffffffl;
     	offset = offset + 4;	
     	
         if (this.seqNumFlag != 0)
