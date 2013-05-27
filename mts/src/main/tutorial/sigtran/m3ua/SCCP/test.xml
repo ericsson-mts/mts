@@ -3,12 +3,13 @@
 
 <test name="SIGTRAN SCCP" description="SIGTRAN SCCP tests">
     
-    <parameter name="[Host-Tester]" operation="system.ipaddress" value2="4"/>
+    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[Host-Tester]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]" />
     <parameter name="[Port-Tester]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
     <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]"/>	
    
-    <parameter name="[Host-Server]" operation="system.ipaddress" value2="4"/>
+    <parameter name="[Host-Server]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[Host-Server]" operation="set" value="172.16.21.112" />
     <parameter name="[Port-Server]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
     <!--parameter name="[Port-Server]" operation="set" value="7070"/-->

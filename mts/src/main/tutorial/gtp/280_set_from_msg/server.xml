@@ -29,7 +29,7 @@
     <parameter name="[name]" operation="protocol.setFromMessage" value="header.name"/>
     <test parameter="[name]" condition="string.equals" value="Echo Request:1"/>
     <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
-    <test parameter="[tunnelEndpointId]" condition="number.equals" value="1234567890"/>
+    <test parameter="[tunnelEndpointId]" condition="number.equals" value="4294967295"/>
     <parameter name="[sequenceNumber]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     <test parameter="[sequenceNumber]" condition="number.equals" value="1"/>
     <parameter name="[nPduNumber]" operation="protocol.setFromMessage" value="header.nPduNumber"/>
@@ -52,7 +52,7 @@
     <test parameter="[MSISDNMSISDN(1)]" condition="number.equals" value="9876543210"/>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
-    <test parameter="[binary]" condition="binary.equals" value="3701002d499602d2000102000221436587092143650200000021436587f986000845230189674523018600058967452301"/>
+    <test parameter="[binary]" condition="binary.equals" value="3701002dffffffff000102000221436587092143650200000021436587f986000845230189674523018600058967452301"/>
     
     <sendMessageGTP name="echo Response"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
