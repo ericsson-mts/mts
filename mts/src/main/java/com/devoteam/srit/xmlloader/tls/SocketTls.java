@@ -35,6 +35,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.rtp.MsgRtp;
 import com.devoteam.srit.xmlloader.tcp.StackTcp;
 
 import javax.net.ssl.SSLException;
@@ -153,7 +154,10 @@ public class SocketTls extends Thread
         try
         {
             {
-                outputStream.write(msg.getBytesData());
+            	byte[] data = msg.getBytesData();
+            	if (msg instanceof MsgRtp && ((MsgRtp) msg).isCipheredMessage())
+                	data = ((MsgRtp) msg).getCipheredMessage();
+                outputStream.write(data);
                 // outputStream.flush();
             }
         }

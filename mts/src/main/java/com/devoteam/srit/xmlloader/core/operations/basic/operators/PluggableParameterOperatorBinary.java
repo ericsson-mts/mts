@@ -29,17 +29,25 @@ import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import gp.utils.arrays.Array;
+import gp.utils.arrays.Base64Coder;
 import gp.utils.arrays.CipherArray;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.DigestArray;
 import gp.utils.arrays.MacArray;
 import gp.utils.arrays.RandomArray;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.crypto.Cipher;
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
 /**
@@ -72,6 +80,10 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     final private String NAME_BIN_FROMIP	= "binary.fromIp";
     final private String NAME_BIN_TOIP		= "binary.toIp";
     final private String NAME_BIN_TONUMBER	= "binary.toNumber";
+    final private String NAME_BIN_CIPHERRTP	= "binary.cipherRTP";
+    final private String NAME_BIN_UNCIPHERRTP	= "binary.uncipherRTP";
+    final private String NAME_BIN_AUTHRTP	= "binary.authRTP";
+    final private String NAME_BIN_RTPKEYDERIVATION = "binary.RTPKeyDerivation";
 
     
     
@@ -100,6 +112,10 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_BIN_FROMIP));
         this.addPluggableName(new PluggableName(NAME_BIN_TOIP));
         this.addPluggableName(new PluggableName(NAME_BIN_TONUMBER));
+        this.addPluggableName(new PluggableName(NAME_BIN_CIPHERRTP));
+        this.addPluggableName(new PluggableName(NAME_BIN_UNCIPHERRTP));
+        this.addPluggableName(new PluggableName(NAME_BIN_AUTHRTP));
+        this.addPluggableName(new PluggableName(NAME_BIN_RTPKEYDERIVATION));
     }
 
     @Override
@@ -303,6 +319,97 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 	BigInteger n = new BigInteger(param_1.get(i).toString(), 16);
                 	result.add(n.toString());
                 }
+                else if (name.equalsIgnoreCase(NAME_BIN_RTPKEYDERIVATION))
+                {
+                	Parameter param_2 = assertAndGetParameter(operands, "value2");
+                	Parameter param_3 = assertAndGetParameter(operands, "value3");
+                	String lifetime = ""; String mki = "";
+                	
+                	if (!param_1.get(0).toString().contains("AES_CM_128_HMAC_SHA1"))
+                		throw new ParameterException("Algorithm " + param_1.get(0).toString().split(" ")[1] + " is not supported, only AES_CM_128_HMAC_SHA1 is supported");
+                	
+                	String inline = param_1.get(0).toString().split(" ")[2].substring(7);
+                	String[] inlineSplitted = inline.replace('|', ' ').split(" ");
+                	String keyAndSalt = inlineSplitted[0];
+                	if (inlineSplitted.length == 2)
+                	{
+                		if (inlineSplitted[1].replace(':', ' ').split(" ").length == 2)
+                			mki = inlineSplitted[1];
+                		else
+                			lifetime = inlineSplitted[1];
+                	}
+                	if (inlineSplitted.length == 3)
+                	{
+                		lifetime = inlineSplitted[1];
+                		mki = inlineSplitted[2];
+                	}
+                	String algo = param_1.get(0).toString().split(" ")[1];
+                	String[] decodedInline = decodeInline(keyAndSalt);
+                	long calculatedLifeTime = parseSRTPLifeTime(lifetime);
+                	
+                	Cipher AESCipher = Cipher.getInstance("AES/ECB/NOPADDING");
+                	byte[][] derivatedKeys = deriveSRTPKeys(AESCipher, 0, calculatedLifeTime, decodedInline[1].getBytes(), decodedInline[0].getBytes());
+                	String[] ret = new String[3]; ret[0] = ""; ret[1] = ""; ret[2] = "";
+                	int a;
+                	for (a = 0; a < derivatedKeys[0].length; a++)
+                		ret[0] += String.format("%02x", derivatedKeys[0][a], 16);
+                	for (a = 0; a < derivatedKeys[1].length; a++)
+                		ret[1] += String.format("%02x", derivatedKeys[1][a], 16);
+                	for (a = 0; a < derivatedKeys[2].length; a++)
+                		ret[2] += String.format("%02x", derivatedKeys[2][a], 16);
+                	for (a = 0; a < ret.length; a++)
+                		result.add(ret[a]);
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_AUTHRTP))
+                {
+                	// param_1 = tab holding encrypted RTP packets to authenticate 
+                	Parameter param_2 = assertAndGetParameter(operands, "value2"); // AUTH KEY
+                	Parameter param_3 = assertAndGetParameter(operands, "value3"); // ROC
+                	Parameter param_4 = assertAndGetParameter(operands, "value4"); // INLINE BLOCK
+                	
+                	String[] algo = param_4.get(0).toString().split(" ")[1].split("_");
+                	int authTagLength = Integer.parseInt(algo[algo.length - 1]) / 8;
+                	String data = param_1.get(0).toString();
+                	byte[] authKey = DatatypeConverter.parseHexBinary(param_2.get(0).toString());
+                	int ROC = Integer.parseInt(param_3.get(0).toString());
+                	
+
+                	Mac hmacSha1 = Mac.getInstance("HmacSHA1");
+                	SecretKey key = new SecretKeySpec(authKey, "HMAC");
+                	try 
+                    {
+                        hmacSha1.init(key);
+                    } 
+                    catch (InvalidKeyException e) 
+                    {
+                        e.printStackTrace();
+                    }
+                	
+                	hmacSha1.update(data.getBytes(), 0, data.getBytes().length);
+                	byte[] rb = new byte[4];
+                    rb[0] = (byte) (ROC >> 24);
+                    rb[1] = (byte) (ROC >> 16);
+                    rb[2] = (byte) (ROC >> 8);
+                    rb[3] = (byte) ROC;
+                    hmacSha1.update(rb);
+                    	
+                    byte[] authTag = hmacSha1.doFinal();
+                    String ret = "";
+                    for (int a = 0; a < authTagLength; a++)
+                    	ret += String.format("%02x", authTag[a], 16);
+                    result.add(ret);
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_CIPHERRTP))
+                {
+                	// param_1 = tab holding RTP payloads to authenticate 
+                	Parameter param_2 = assertAndGetParameter(operands, "value2"); // tab holding RTP seq num
+                	Parameter param_3 = assertAndGetParameter(operands, "value3"); // encryption key
+                	Parameter param_4 = assertAndGetParameter(operands, "value4"); // ROC
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_UNCIPHERRTP))
+                {
+                	
+                }
                 /* experimental                
                 else if (name.equalsIgnoreCase(NAME_BIN_STATHISTOVALUE))
                 {
@@ -406,5 +513,133 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
 	    return freq;
     }
 
+    private static String[] decodeInline(String inline) throws ParameterException, UnsupportedEncodingException
+    {
+    	String[] ret = new String[2];
+    	
+    	byte[] decodeInlineByteTab = Array.fromBase64String(inline).getBytes();
+    	
+    	if (decodeInlineByteTab.length != 30)
+    		throw new ParameterException("concatened master key and master salt length is not equal to 30 bytes : " + new String(decodeInlineByteTab, "UTF-8"));
+    	
+    	byte[] masterKey = new byte[16];
+    	byte[] masterSalt = new byte[14];
+    	
+    	for (int i = 0; i < 16; i++)
+    		masterKey[i] = decodeInlineByteTab[i];
+    	for (int i = 0; i < 14; i++)
+    		masterSalt[i] = decodeInlineByteTab[i + 16];
+    	ret[0] = new String(masterKey, "UTF-8");
+    	ret[1] = new String(masterSalt, "UTF-8");
+    	
+    	return ret;
+    }
+    
+    private static long parseSRTPLifeTime(String lifetime) throws ParameterException
+    {
+    	String[] str = lifetime.replace('^', ' ').split(" ");
+    	if (str.length != 2)
+    		throw new ParameterException("lifetime is malformed : expected x^y, got " + lifetime);
+    	return (long) Math.pow(Integer.parseInt(str[0]), Integer.parseInt(str[1]));
+    }
+    
+    private static void computeIv(byte[] iv, long label, long index, long kdv, byte[] masterSalt)
+    {
+    	long key_id;
+
+        if (kdv == 0)
+        {
+            key_id = label << 48;
+        }
+        else
+        {
+            key_id = ((label << 48) | (index / kdv));
+        }
+
+        for (int i = 0; i < 7; i++)
+        {
+            iv[i] = masterSalt[i];
+        }
+
+        for (int i = 7; i < 14; i++)
+        {
+            iv[i] = (byte)
+                   ((byte)(0xFF & (key_id >> (8 * (13 - i)))) ^ masterSalt[i]);
+        }
+
+        iv[14] = iv[15] = 0;
+    }
+    
+    private static byte[][] deriveSRTPKeys(Cipher AEScipher, long index, long keyDerivationRate, byte[] masterSalt, byte[] masterKey) throws UnsupportedEncodingException
+    {
+    	byte[] iv = new byte[16];
+    	byte[] encKey = new byte[16];
+    	byte[] authKey = new byte[20];
+    	byte[] saltKey = new byte[14];
+    	byte[][] ret = new byte[3][];
+    	long label = 0;
+
+        // compute the session encryption key
+        computeIv(iv, label, index, keyDerivationRate, masterSalt);
+        SecretKey encryptionKey = new SecretKeySpec(masterKey, 0, 16, "AES");
+        
+        try 
+        {
+            AEScipher.init(Cipher.ENCRYPT_MODE, encryptionKey);
+        } 
+        catch (InvalidKeyException e1) 
+        {
+            e1.printStackTrace();
+        }
+        
+        getCipherStream(AEScipher, encKey, 16, iv);
+        
+        label = 0x01;
+        computeIv(iv, label, index, keyDerivationRate, masterSalt);
+        getCipherStream(AEScipher, authKey, 20, iv);
+
+        label = 0x02;
+        computeIv(iv, label, index, keyDerivationRate, masterSalt);
+        getCipherStream(AEScipher, saltKey, 14, iv);       
+        ret[0] = encKey;
+        ret[1] = authKey;
+        ret[2] = saltKey;
+        return ret;
+    }
+    
+    private static void getCipherStream(Cipher aesCipher, byte[] out, int length, byte[] iv)
+    {
+    	final int BLKLEN = 16;
+        
+        byte[] in  = new byte[BLKLEN];
+        byte[] tmp = new byte[BLKLEN];
+
+        System.arraycopy(iv, 0, in, 0, 14);
+
+        try 
+        {
+            
+            int ctr;
+            for (ctr = 0; ctr < length / BLKLEN; ctr++)
+            {
+                // compute the cipher stream
+                in[14] = (byte) ((ctr & 0xFF00) >> 8);
+                in[15] = (byte) ((ctr & 0x00FF));
+
+                aesCipher.update(in, 0, BLKLEN, out, ctr * BLKLEN);
+            }
+
+            // Treat the last bytes:
+            in[14] = (byte) ((ctr & 0xFF00) >> 8);
+            in[15] = (byte) ((ctr & 0x00FF));
+
+            aesCipher.doFinal(in, 0, BLKLEN, tmp, 0);
+            System.arraycopy(tmp, 0, out, ctr * BLKLEN, length % BLKLEN);
+        }
+        catch (GeneralSecurityException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }
 

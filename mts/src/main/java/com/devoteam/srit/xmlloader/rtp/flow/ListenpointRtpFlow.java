@@ -23,15 +23,24 @@
 
 package com.devoteam.srit.xmlloader.rtp.flow;
 
+import gp.utils.arrays.Array;
+
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.newstats.StatKey;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
+import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.rtp.MsgRtp;
+import com.devoteam.srit.xmlloader.rtp.StackRtp;
+import com.devoteam.srit.xmlloader.srtp.RawPacket;
+import com.devoteam.srit.xmlloader.srtp.SRTPCryptoContext;
+import com.devoteam.srit.xmlloader.srtp.SRTPPolicy;
+import com.devoteam.srit.xmlloader.srtp.SRTPTransformEngine;
+import com.devoteam.srit.xmlloader.srtp.SRTPTransformer;
 
 
 /**
@@ -45,6 +54,14 @@ public class ListenpointRtpFlow extends Listenpoint {
     protected float endTimerPeriodic;
     protected boolean qosMeasurment;
     protected boolean ignoreReceivedMessages;
+    
+    private boolean isSecured = false;
+    public boolean isSecured() {
+		return isSecured;
+	}
+
+	private SRTPTransformer cipherSender = null;
+    private SRTPTransformer cipherReceiver = null;
 
     private RtpFlowEndTask _endOfFlowTask = null;
 
@@ -55,6 +72,10 @@ public class ListenpointRtpFlow extends Listenpoint {
         super(stack, root);
 
         Element header = root.element("flow");
+        if (root.element("srtpSender") != null)
+        	this.parseSrtp(root, 0);
+        if (root.element("srtpReceiver") != null)
+        	this.parseSrtp(root, 1);
 
         this.endTimerNoPacket = ((StackRtpFlow) stack).endTimerNoPacket; // set the default value from config file
         if (header != null) {
@@ -99,7 +120,57 @@ public class ListenpointRtpFlow extends Listenpoint {
         }
     }
     
-    /** Creates a new instance of Listenpoint */
+    private void parseSrtp(Element root, int SR) throws Exception
+    {
+    	String algorithm = root.element(SR == 0 ? "srtpSender" : "srtpReceiver").attributeValue("algorithm");
+		String[] algoExplode = algorithm.replace('_', ' ').split(" ");
+		String masterKeyAndSalt = root.element(SR == 0 ? "srtpSender" : "srtpReceiver").attributeValue("masterKeyAndSalt");
+		String keyDerivationRate = root.element(SR == 0 ? "srtpSender" : "srtpReceiver").attributeValue("keyDerivationRate");
+		String mki = root.element(SR == 0 ? "srtpSender" : "srtpReceiver").attributeValue("mki");
+
+		if (algoExplode.length != 6)
+			throw new Exception("wrong cipher format : expected CIPHER_MODE_KEYLENGTH_AUTH_AUTHALGO_AUTHTAGLENGTH, got " + algorithm);
+		
+		byte[] masterKey = new byte[16];
+		byte[] masterSalt = new byte[14];
+		byte[] masterKeyAndSaltFromB64 = Array.fromBase64String(masterKeyAndSalt).getBytes();
+		
+		int KDR = 0;
+		try {
+			KDR = (int) (keyDerivationRate != null ? Math.pow(Integer.parseInt(keyDerivationRate.replace('^', ' ').split(" ")[0]), Integer.parseInt(keyDerivationRate.replace('^', ' ').split(" ")[1])) : 0);
+		}
+		catch (Exception e)
+		{
+			try {KDR = Integer.parseInt(keyDerivationRate);}
+			catch (Exception e1) {}
+		}
+		
+		if (masterKeyAndSaltFromB64.length != 30)
+			throw new Exception("masterKeyAndSalt from Base64 has length not equals to 30 bytes : " + new String(masterKeyAndSaltFromB64, "UTF-8"));
+		
+		for (int i = 0; i < 16; i++)
+    		masterKey[i] = masterKeyAndSaltFromB64[i];
+    	for (int i = 0; i < 14; i++)
+    		masterSalt[i] = masterKeyAndSaltFromB64[i + 16];
+		
+    	SRTPPolicy srtpPolicy = new SRTPPolicy(algoExplode);
+		
+		this.setSecured(true);
+		
+		SRTPTransformEngine engine = new SRTPTransformEngine(masterKey, masterSalt, srtpPolicy, srtpPolicy, null);
+		
+		if (SR == 0)
+			this.cipherSender = new SRTPTransformer(engine);
+		if (SR == 1)
+			this.cipherReceiver = new SRTPTransformer(engine);
+    }
+    
+    private void setSecured(boolean b) {
+		// TODO Auto-generated method stub
+		this.isSecured = b;
+	}
+
+	/** Creates a new instance of Listenpoint */
     public ListenpointRtpFlow(Stack stack, String name, String host, int port) throws Exception
     {
     	super(stack, name, host, port);
@@ -123,6 +194,9 @@ public class ListenpointRtpFlow extends Listenpoint {
     @Override
     public boolean remove() {
         _removed = true;
+        this.cipherReceiver = null;
+    	this.cipherSender = null;
+    	this.isSecured = false;
         return super.remove();
     }
 
@@ -188,4 +262,44 @@ public class ListenpointRtpFlow extends Listenpoint {
             StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_TRANSPORT, _currentMessage.getTransport(), StackFactory.PROTOCOL_RTP, message.getTypeComplete() + StackFactory.PREFIX_INCOMING, "_transportBytes"), (float) message.getLength() / 1024 / 1024);
         }
     }
+    
+    /** Send a Msg to Listenpoint */
+    @Override
+    public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
+    {
+    	if (this.isSecured && this.cipherSender != null)
+    	{
+    		byte[] msgData = msg.getBytesData();
+			
+			RawPacket rp = new RawPacket(msgData, 0, msgData.length);
+			rp = this.cipherSender.transform(rp);
+			
+			byte[] cipheredMsgData = rp.getBuffer();
+			
+			MsgRtp tmpMsg = (MsgRtp) msg;
+			tmpMsg.cipherThisMessage(cipheredMsgData);
+			
+			msg = tmpMsg;
+    	}
+    	return super.sendMessage(msg, remoteHost, remotePort, transport);
+    }
+
+	public RawPacket reverseTransformCipheredMessage(RawPacket rp) {
+		// TODO Auto-generated method stub
+		return this.cipherReceiver.reverseTransform(rp);
+	}
+
+	public int getCipheredAuthTagLength(int SR) {
+		// TODO Auto-generated method stub
+		if (SR == 0)
+    		return this.cipherSender.getEngine().getSRTPPolicy().getAuthTagLength();
+    	return this.cipherReceiver.getEngine().getSRTPPolicy().getAuthTagLength();
+	}
+	
+	public SRTPTransformer getSRTPTransformer(int SR)
+	{
+		if (SR == 0)
+			return this.cipherSender;
+		return this.cipherReceiver;
+	}
 }

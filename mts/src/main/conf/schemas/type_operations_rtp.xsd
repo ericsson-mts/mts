@@ -5,6 +5,10 @@
 	<xs:complexType name="createListenpointRTPType">
 		<xs:complexContent>
 			<xs:extension base="operationType">
+				<xs:sequence>
+					<xs:element name="srtpSender" 	type="srtpType"	minOccurs="0" maxOccurs="1" />
+					<xs:element name="srtpReceiver" type="srtpType"	minOccurs="0" maxOccurs="1" />
+                </xs:sequence>
 				<xs:attribute name="localHost" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>String</xs:appinfo>
@@ -114,8 +118,8 @@
 			<xs:extension base="operationType">
                 		<xs:sequence>
                     			<xs:element name="packet" type="packetType" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="header" type="headerType" minOccurs="0" maxOccurs="1"/>
-	    				<xs:element name="payload" type="payloadType" minOccurs="0" maxOccurs="unbounded"/>                    			
+								<xs:element name="header" type="headerType" minOccurs="0" maxOccurs="1"/>
+	    						<xs:element name="payload" type="payloadType" minOccurs="0" maxOccurs="unbounded"/>                   			
                 		</xs:sequence>
 				<xs:attribute name="listenpoint" type="xs:string" use="optional">
 					<xs:annotation>
@@ -230,7 +234,9 @@
 	<xs:complexType name="createListenpointRTPFLOWType">
 		<xs:complexContent>
 			<xs:extension base="operationType">
-				<xs:sequence>
+						<xs:sequence>
+								<xs:element name="srtpSender" 	type="srtpType"	minOccurs="0" maxOccurs="1" />
+								<xs:element name="srtpReceiver" type="srtpType"	minOccurs="0" maxOccurs="1" />
                     			<xs:element name="flow" type="listenpointFlowType" minOccurs="0" maxOccurs="1"/>
                 		</xs:sequence>
 				<xs:attribute name="localHost" type="xs:string" use="optional">
@@ -599,7 +605,13 @@ flow.payload.xxx
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
-
+<!--																					srtp -->
+	<xs:complexType name="srtpType">
+		<xs:attribute name="algorithm"			type="xs:string" use="required" />
+		<xs:attribute name="masterKeyAndSalt"	type="xs:string" use="required" />
+		<xs:attribute name="keyDerivationRate"	type="xs:string" />
+		<xs:attribute name="mki"				type="xs:string" />
+	</xs:complexType>
 
 <!--************************************************************************************************-->
 <!--**************************************** OBSOLETE **********************************************-->
