@@ -5,7 +5,7 @@
     
     <sendMessageGTP name="echo Request"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV1 type="1" tunnelEndpointId="1234567890" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
+        <headerV1 type="1" tunnelEndpointId="4294967295" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
         <element tag="IMSI" >
             <field name="IMSI" value="1234567890123456"/>
         </element>
@@ -39,7 +39,7 @@
     <test parameter="[Recovery]" condition="binary.equals" value="17"/>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
-    <test parameter="[binary]" condition="binary.equals" value="3702000a499602d2000102000e17"/>
+    <test parameter="[binary]" condition="binary.equals" value="3702000affffffff000102000e17"/>
     
     <sendMessageGTP name="echo Request"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
