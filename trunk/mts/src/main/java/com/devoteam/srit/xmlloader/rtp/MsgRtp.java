@@ -63,6 +63,8 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
     Integer16Array seqnumArray = null;
     Array markArray = null;
     private boolean _isSilence = false;
+    
+    private byte[] cipheredMessage = null;
 
     public MsgRtp() throws Exception {
         super();
@@ -493,5 +495,20 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
     	String xml = toStringRTPFlow();
         return xml;
     }
+    
+    public boolean isCipheredMessage()
+    {
+    	return this.cipheredMessage != null;
+    }
+    
+    public void cipherThisMessage(byte[] cipheredMessage)
+    {
+    	this.cipheredMessage = new byte[cipheredMessage.length];
+    	System.arraycopy(cipheredMessage, 0, this.cipheredMessage, 0, cipheredMessage.length);
+    }
 
+    public byte[] getCipheredMessage()
+    {
+    	return this.cipheredMessage;
+    }
 }

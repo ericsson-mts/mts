@@ -31,6 +31,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.rtp.MsgRtp;
 import com.devoteam.srit.xmlloader.tcp.StackTcp;
 
 import java.io.BufferedInputStream;
@@ -151,7 +152,10 @@ public class SocketTcpBIO extends Thread
         try
         {        
         	{
-	            outputStream.write(msg.getBytesData());
+        		byte[] data = msg.getBytesData();
+        		if (msg instanceof MsgRtp && ((MsgRtp) msg).isCipheredMessage())
+                	data = ((MsgRtp) msg).getCipheredMessage();
+	            outputStream.write(data);
 	            boolean flushSocket = Config.getConfigByName("tcp.properties").getBoolean("FLUSH_AFTER_SENDING", false);
 	            if (flushSocket)
 	            {

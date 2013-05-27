@@ -33,8 +33,11 @@ import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.rtp.MsgRtp;
+import com.devoteam.srit.xmlloader.srtp.RawPacket;
+import com.devoteam.srit.xmlloader.srtp.SRTPTransformer;
 
 import gp.utils.arrays.Array;
+import gp.utils.arrays.ReadOnlyDefaultArray;
 import gp.utils.arrays.SupArray;
 
 import java.util.ArrayList;
@@ -695,5 +698,26 @@ public class MsgRtpFlow extends Msg {
         	xml += msgRtp.toStringRTPFlow();
         }
         return xml;
+    }
+    
+    public void uncipherPayloadList(SRTPTransformer transformer, int authTagLength) throws Exception
+    {
+    	Collections.sort(packetsList);
+    	for (int i = 0; i < packetsList.size(); i++)
+    	{
+    		byte[] data = packetsList.get(i).getBytesData();
+    		
+    		RawPacket rp = new RawPacket(data, 0, data.length);
+    		rp = transformer.reverseTransform(rp);
+    		
+    		byte[] uncipheredData = new byte[data.length - authTagLength];
+        	System.arraycopy(rp.getBuffer(), 0, uncipheredData, 0, data.length - authTagLength);
+        	
+        	Array uncipheredArray = new ReadOnlyDefaultArray(uncipheredData);
+        	
+        	MsgRtp msg = new MsgRtp(uncipheredArray);
+        	packetsList.set(i, msg);        	
+    		data = null;
+    	}
     }
 }

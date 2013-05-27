@@ -42,9 +42,12 @@ import org.dom4j.Element;
 
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.Timer;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
@@ -1289,6 +1292,20 @@ public abstract class Stack
     	this.capTransactions.cleanEldestEntries();
     	this.outinSessions.cleanEldestEntries();
     	this.capSessions.cleanEldestEntries();
+    }
+    
+    public ArrayList<Listenpoint> getAllListenpoint()
+    {
+    	ArrayList<Listenpoint> ret = new ArrayList<Listenpoint>();
+    	
+    	Set<String> cles = this.listenpoints.keySet();
+    	Iterator<String> it = cles.iterator();
+    	while (it.hasNext()){
+    	   Object cle = it.next();
+    	   ret.add(this.listenpoints.get(cle));
+    	}
+    	
+    	return ret;
     }
 
 }

@@ -36,6 +36,7 @@ import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementRTPFLOWParser;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
+import com.devoteam.srit.xmlloader.rtp.ListenpointRtp;
 import com.devoteam.srit.xmlloader.rtp.MsgRtp;
 import com.devoteam.srit.xmlloader.rtp.StackRtp;
 import gp.utils.arrays.Array;
@@ -61,12 +62,14 @@ public class StackRtpFlow extends StackRtp {
     protected String silentPattern;
     protected float silentFrequencyThreshold;
     boolean silentFiltering;
+    private HashMap <String, ListenpointRtpFlow> ssrcAndListenpointName;
 
     // for capture reassembling RTP packet mechanism
     Map<String, ListenpointRtpFlow> capture_point = null;
     
     public StackRtpFlow() throws Exception {
         super();
+        this.ssrcAndListenpointName = new HashMap<String, ListenpointRtpFlow>();
         int nbThreads = getConfig().getInteger("SCHEDULER_THREAD_NUMBER", 2);
         scheduler = new Scheduler(nbThreads);
 
@@ -100,6 +103,11 @@ public class StackRtpFlow extends StackRtp {
         
     }
 
+    public void addSSRCAndListenpointName(String key, ListenpointRtpFlow value)
+    {
+    	this.ssrcAndListenpointName.put(key, value);
+    }
+    
     /** Creates a Listenpoint specific to each Stack */
     @Override
     public synchronized Listenpoint parseListenpointFromXml(Element root) throws Exception {
