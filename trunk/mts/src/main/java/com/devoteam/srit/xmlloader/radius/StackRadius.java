@@ -35,10 +35,12 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
+import com.devoteam.srit.xmlloader.sip.ListenpointSip;
 
 import gp.net.radius.data.AVPBytes;
 import gp.net.radius.data.AVPInteger;
@@ -70,6 +72,16 @@ public class StackRadius extends Stack
     {
         super();
         this.radiusDictionary = new RadiusDictionary(new File("../conf/radius/dictionary"));
+        
+        // initiate a default listenpoint if port is not empty or null
+        /*
+        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
+        if (port > 0)
+        {
+        	Listenpoint listenpoint = new ListenpointRadius(this);
+            createListenpoint(listenpoint, StackFactory.PROTOCOL_RADIUS);
+        }
+        */
     }
 
 	/** Creates a Listenpoint specific to each Stack */
