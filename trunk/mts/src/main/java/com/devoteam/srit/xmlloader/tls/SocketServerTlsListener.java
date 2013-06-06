@@ -43,6 +43,8 @@ import java.security.KeyStore;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
@@ -93,42 +95,47 @@ public class SocketServerTlsListener extends Thread
                 }
             };
 
-            String certificatePath = Config.getConfigByName("tls.properties").getString("cert.DIRECTORY");
             String certificateAlgorithm = Config.getConfigByName("tls.properties").getString("cert.ALGORITHM");
-            String certificatePassword = Config.getConfigByName("tls.properties").getString("cert.PASSWORD");
             String certificateSSLVersion = Config.getConfigByName("tls.properties").getString("cert.SSL_VERSION");
-
-            char[] certificatePasswordArray;
-
-            //
-            // If password is an empty string (allowed) or not defined (allowed), do not use a password
-            //
-            if (null == certificatePassword || certificatePassword.length() == 0)
-            {
-                certificatePasswordArray = null;
-            }
+            String certificateServerPath = Config.getConfigByName("tls.properties").getString("cert.SERVER.DIRECTORY");
+            String certificateServerKeystorePassword = Config.getConfigByName("tls.properties").getString("cert.SERVER.KEYSTORE_PASSWORD");
+            String certificateServerKeyPassword = Config.getConfigByName("tls.properties").getString("cert.SERVER.KEY_PASSWORD");
+            String certificateTwoWay = Config.getConfigByName("tls.properties").getString("cert.TWO_WAY");
+            
+            char[] certificateKeystorePasswordArray;
+            char[] certificateKeyPasswordArray;
+            
+            if (null == certificateServerKeyPassword || certificateServerKeyPassword.length() == 0)
+            	certificateKeyPasswordArray = null;
             else
-            {
-                certificatePasswordArray = certificatePassword.toCharArray();
-            }
+            	certificateKeyPasswordArray = certificateServerKeyPassword.toCharArray();
+            
+            if (null == certificateServerKeystorePassword || certificateServerKeystorePassword.length() == 0)
+            	certificateKeystorePasswordArray = null;
+            else
+            	certificateKeystorePasswordArray = certificateServerKeystorePassword.toCharArray();
 
             KeyStore keyStore = KeyStore.getInstance(certificateAlgorithm);
-            keyStore.load(new FileInputStream(certificatePath), certificatePasswordArray);
-
+            keyStore.load(new FileInputStream(certificateServerPath), certificateKeystorePasswordArray);
+            
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
-            keyManagerFactory.init(keyStore, certificatePasswordArray);
-
+            keyManagerFactory.init(keyStore, certificateKeyPasswordArray);
+            
             KeyManager[] keyManagers = keyManagerFactory.getKeyManagers();
-
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance("SunX509");
-            trustManagerFactory.init(keyStore);
-
-
-            SSLContext sslContext = SSLContext.getInstance(certificateSSLVersion);
-            sslContext.init(keyManagers, trustAllCerts, null);
-
-            this.serverSocket = sslContext.getServerSocketFactory().createServerSocket(port, 0, localInetAddr);
-
+            
+            System.setProperty("javax.net.ssl.trustStore", certificateServerPath);
+    	    System.setProperty("javax.net.ssl.trustStorePassword", certificateServerKeystorePassword);
+    	    
+    	    SSLContext sslContext = SSLContext.getInstance(certificateSSLVersion);
+    	    sslContext.init(keyManagers, null, null);
+    	    
+    	    SSLServerSocketFactory serverSocketFactory = sslContext.getServerSocketFactory();
+    	    SSLServerSocket socket = (SSLServerSocket) serverSocketFactory.createServerSocket(port, 0, localInetAddr);
+    	    
+    	    socket.setNeedClientAuth(certificateTwoWay.equalsIgnoreCase("true"));
+            
+            
+            this.serverSocket = socket;
             this.listenpoint = listenpoint;
         }
         catch (Exception e)
