@@ -35,15 +35,20 @@ import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.tls.ListenpointTls;
 import com.devoteam.srit.xmlloader.tls.SocketTls;
 
+import java.io.FileInputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.security.KeyStore;
 
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.HandshakeCompletedListener;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 /**
@@ -136,14 +141,47 @@ public class ChannelTls extends Channel {
 						}
 					}
 			};
-
-			SSLContext sslContext = SSLContext.getInstance("SSL");
-			sslContext.init(null, trustAllCerts, null);
-
-			SSLSocket socket = (SSLSocket) sslContext.getSocketFactory().createSocket(getRemoteHost(), getRemotePort(), localAddr, getLocalPort());
-    		// read all properties for the TCP socket 
-    		Config.getConfigForTCPSocket(socket, true);
-
+			
+			//-------------------------------------------------------------------------//
+            String certificateAlgorithm = Config.getConfigByName("tls.properties").getString("cert.ALGORITHM");
+            String certificateClientPath = Config.getConfigByName("tls.properties").getString("cert.CLIENT.DIRECTORY");
+            String certificateClientKeystorePassword = Config.getConfigByName("tls.properties").getString("cert.CLIENT.KEYSTORE_PASSWORD");
+            String certificateClientKeyPassword = Config.getConfigByName("tls.properties").getString("cert.CLIENT.KEY_PASSWORD");
+            String certificateSSLVersion = Config.getConfigByName("tls.properties").getString("cert.SSL_VERSION");
+            //-------------------------------------------------------------------------//
+            
+            char[] certificateKeystorePasswordArray;
+            char[] certificateKeyPasswordArray;
+            
+            if (null == certificateClientKeyPassword || certificateClientKeyPassword.length() == 0)
+            	certificateKeyPasswordArray = null;
+            else
+            	certificateKeyPasswordArray = certificateClientKeyPassword.toCharArray();
+            
+            if (null == certificateClientKeystorePassword || certificateClientKeystorePassword.length() == 0)
+            	certificateKeystorePasswordArray = null;
+            else
+            	certificateKeystorePasswordArray = certificateClientKeystorePassword.toCharArray();
+            
+            KeyStore keyStore = KeyStore.getInstance(certificateAlgorithm);
+            keyStore.load(new FileInputStream(certificateClientPath), certificateKeystorePasswordArray);
+            
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
+            keyManagerFactory.init(keyStore, certificateKeyPasswordArray);
+            
+            KeyManager[] keyManagers = keyManagerFactory.getKeyManagers();
+            
+            System.setProperty("javax.net.ssl.trustStore", certificateClientPath);
+  	      	System.setProperty("javax.net.ssl.trustStorePassword", certificateClientKeystorePassword);
+            
+  	      	SSLContext sslContext = SSLContext.getInstance(certificateSSLVersion);
+  	      	sslContext.init(keyManagers, null, null);
+  	      	
+  	      	SSLSocket socket = (SSLSocket) sslContext.getSocketFactory().createSocket(getRemoteHost(), getRemotePort(), localAddr, getLocalPort());
+  	      	
+  	      	Config.getConfigForTCPSocket(socket, true);
+  	      	
+            
 			this.setLocalPort(socket.getLocalPort());
 			this.setLocalHost(socket.getLocalAddress().getHostAddress());
 			socketTls = new SocketTls(socket);
