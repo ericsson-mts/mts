@@ -1,0 +1,39 @@
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+<test name="echo client GTPv2-C">
+
+<!-- ##################################################################### -->
+<!-- ## parameter to set up GTP tunnel between localhost and EPS core #### -->
+<!-- ##################################################################### -->
+	<parameter name="[test]" operation="binary.toNumber" value="1b69b4bacd05f15" />
+	<parameter name="[sgwS11IP]" operation="set" value="192.168.90.123"/>
+	<parameter name="[gtpcPort]" operation="set" value="2123"/>
+	<parameter name="[gtpcTransportProto]" operation="set" value="udp"/>
+	<parameter name="[gtpuTransportProto]" operation="set" value="udp"/>
+	<parameter name="[gtpuPort]" operation="set" value="2152" />
+	<parameter name="[sgwS1UIP]" operation="set" value="192.168.90.122" />
+	<parameter name="[eNodeBIP]" operation="set" value="172.16.21.112" />
+	<parameter name="[MMEIP]" operation="set" value="172.16.21.112" />
+	<parameter name="[sgwS5/S8IP]" operation="set" value="192.168.90.127" />
+	<parameter name="[test:stopeNodeB1]" operation="set" value="false" />
+	<parameter name="[speedTrans]" operation="set" value="10000" description="number of transaction per second" editable="true"/>	
+  <parameter name="[TestDurationSec]" operation="set" value="360000" description="Duration (in sec.) of the test" editable="true"/>
+	<parameter name="[NumberTestcase]" operation="set" value="10" description="number of testcase" editable="true"/>
+  <parameter name="[speedTestcase]" operation="divide" value="[speedTrans]" value2="[NumberTestcase]"/>	
+  
+<!-- ##################################################################### -->
+
+    	<runProfile>
+        	<step time="0" frequency="[speedTestcase]"/>
+        	<end delay="[TestDurationSec]"/>
+    	</runProfile>
+
+
+
+	<for index="[index]" from="001" to="[NumberTestcase]" step="1"> 
+
+		<testcase name="UNIT-[index]" description="load [index]"  number="1" state="true">
+			<scenario name="ETHERNET">encapse.xml</scenario>
+		</testcase>
+
+	</for>
+</test>

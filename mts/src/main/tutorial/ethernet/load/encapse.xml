@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+	<createProbeETHERNET name="capture" networkInterface="eth0" captureFilter="port 12000" />
+	<createListenpointTCP name="tutu" />
+<label name="toto" />
+	<receiveMessageETHERNET name="receive message">
+		<parameter name="[rawData]" operation="protocol.setFromMessage" value="data.binary" />
+	</receiveMessageETHERNET>
+	<sendMessageGTP name="send gtp-u message" remoteHost="192.168.140.123" remotePort="2123" transport="UDP">
+		<headerV1 type="G-PDU:255" tunnelEndpointId="0123456"/>
+		<pdu format="binary">h[rawData]</pdu>
+	</sendMessageGTP>
+<goto label="toto" />
+</scenario>
