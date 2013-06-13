@@ -43,7 +43,7 @@ Accounting-Request ::= < Diameter Header: 271, REQ, PXY >
                      * [ AVP ]
 -->     
     
-    <parameter name="[timestamp]" operation="system.timestamp"/>
+    <parameter name="[timestamp]" operation="system.timestamp" value="1900"/>
     <parameter name="[timestamp]" operation="number.divide" value="[timestamp]" value2="1000"/>
     <parameter name="[timestamp]" operation="number.round" value="[timestamp]"/>
     <sendMessageDIAMETER name="Send Request ACR" remoteURL="diameter://[Remote-Address]" destScenario="server">
