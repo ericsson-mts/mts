@@ -198,7 +198,7 @@ public class OperationParameter extends Operation {
             /*
              * If there is no "value" operand, try to get it from the tag "text()"
              */
-            if (null == operands.get("value") && text.length() > 0) {
+            if (null == operands.get("value")) {
                 Parameter parameter = new Parameter();
                 parameter.add(text);
                 operands.put("value", parameter);
