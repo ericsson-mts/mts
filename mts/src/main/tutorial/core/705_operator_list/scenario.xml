@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-
+      
       <!-- trip for importSIPP module -->
       <parameter name="[sipplist]" operation="list.create"/>    
       <parameter name="[sipplist(0)]" operation="set" value="tutu"/>    
@@ -232,6 +232,9 @@
       <test parameter="[list]" condition="string.equals" value="toto" />
       <test parameter="[list]" condition="list.size"     value="4" />
       
+      <parameter name="[empty]"    operation="list.set" ></parameter>
+      <test parameter="[empty]" condition="list.size" value="1" />
+      <test parameter="[empty(0)]" condition="string.equals" value="" />
       
       <parameter name="[text]"    operation="list.set" >
 This is some text to put in the 'text' parameter;
