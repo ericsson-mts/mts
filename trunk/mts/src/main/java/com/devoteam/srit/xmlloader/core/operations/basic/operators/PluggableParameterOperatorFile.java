@@ -42,6 +42,7 @@ import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -316,6 +317,11 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
                 AudioFileFormat format = null;
                 try {
 	                in = SingletonFSInterface.instance().getInputStream(filePathURI);
+	                if (in == null)
+	                {
+	                	Exception e = new FileNotFoundException(filePathURI.toString() + " file is not found.");
+	                	throw e;
+	                }
 	                waveFileReader = new WAVReader();
 	                format = waveFileReader.getAudioFileFormat(in);
 	                in.close();
