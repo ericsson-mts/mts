@@ -88,13 +88,14 @@ public class StackHttp extends Stack
             }
         };
 
-        String certificatePath = Config.getConfigByName("tls.properties").getString("cert.DIRECTORY");
+        String certificatePath = Config.getConfigByName("tls.properties").getString("cert.SERVER.DIRECTORY");
         String certificateAlgorithm = Config.getConfigByName("tls.properties").getString("cert.ALGORITHM");
-        String certificatePassword = Config.getConfigByName("tls.properties").getString("cert.PASSWORD");
+        String certificatePassword = Config.getConfigByName("tls.properties").getString("cert.SERVER.KEY_PASSWORD");
+        String keystorePassword = Config.getConfigByName("tls.properties").getString("cert.SERVER.KEYSTORE_PASSWORD");
         String certificateSSLVersion = Config.getConfigByName("tls.properties").getString("cert.SSL_VERSION");
 
         char[] certificatePasswordArray;
-
+        char[] keystorePasswordArray;
         //
         // If password is an empty string (allowed) or not defined (allowed), do not use a password
         //
@@ -106,9 +107,17 @@ public class StackHttp extends Stack
         {
             certificatePasswordArray = certificatePassword.toCharArray();
         }
+        if (null == keystorePassword || keystorePassword.length() == 0)
+        {
+            keystorePasswordArray = null;
+        }
+        else
+        {
+            keystorePasswordArray = keystorePassword.toCharArray();
+        }
 
         KeyStore keyStore = KeyStore.getInstance(certificateAlgorithm);
-        keyStore.load(new FileInputStream(certificatePath), certificatePasswordArray);
+        keyStore.load(new FileInputStream(certificatePath), keystorePasswordArray);
 
         KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
         keyManagerFactory.init(keyStore, certificatePasswordArray);
