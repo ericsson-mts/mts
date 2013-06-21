@@ -60,27 +60,28 @@ public class PluggableParameterOperatorListPool extends AbstractPluggableParamet
         if(name.equals(NAME_SET) || name.equals(NAME_L_SET))
         {
             PluggableParameterOperatorList.normalizeParameters(operands);
-            Parameter value = PluggableParameterOperatorList.assertAndGetParameter(operands, "value");
+            Parameter value = operands.get("value");
             Parameter number = operands.get("value2");
+            if (value == null)
+            {
+            	return new Parameter();
+            }
             if (null == number)
             {
                 return value;
             }
-            else
+            Parameter result = new Parameter();
+            for(int i=0; i<value.length(); i++)
             {
-                Parameter result = new Parameter();
-                for(int i=0; i<value.length(); i++)
+                int iNumber = Integer.valueOf(number.get(i).toString());
+                String sValue = "";
+                for(int j=0; j<iNumber; j++)
                 {
-                    int iNumber = Integer.valueOf(number.get(i).toString());
-                    String sValue = "";
-                    for(int j=0; j<iNumber; j++)
-                    {
-                        sValue += value.get(i).toString();
-                    }
-                    result.add(sValue);
+                    sValue += value.get(i).toString();
                 }
-                return result;
+                result.add(sValue);
             }
+            return result;
         }
         else if(name.equals(NAME_UNSET) || name.equals(NAME_L_DELETE))
         {
