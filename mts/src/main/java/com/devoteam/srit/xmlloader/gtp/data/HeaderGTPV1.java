@@ -221,7 +221,7 @@ public class HeaderGTPV1 extends HeaderAbstract
     {
         //manage header data
         SupArray supArray = new SupArray();
-
+        
         DefaultArray firstByte = new DefaultArray(1);//first byte data
         firstByte.setBits(0, 3, this.version);
         firstByte.setBits(3, 1, this.protocolType);
@@ -237,18 +237,10 @@ public class HeaderGTPV1 extends HeaderAbstract
         
         supArray.addLast(new Integer32Array((int) (this.tunnelEndpointId & 0xffffffffl)));
         
-        if (this.seqNumFlag != 0)
+        if (this.seqNumFlag != 0 || this.nPduFlag != 0 || this.extensionFlag != 0)
         {
         	supArray.addLast(new Integer16Array(this.sequenceNumber));	
-        }
-
-        if (this.nPduFlag != 0)
-        {
         	supArray.addLast(new Integer08Array(this.nPduNumber));	
-        }
-        
-        if (this.extensionFlag != 0)
-        {
         	supArray.addLast(new Integer08Array(this.nextExtensionType));	
         }
         
@@ -282,7 +274,7 @@ public class HeaderGTPV1 extends HeaderAbstract
 	{
 		this.dictionary = dictionary;
 		int offset = 4;
-		
+			
     	EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
 	    this.label = field.getEnumLabelByValue(this.type);    	
 
@@ -290,20 +282,16 @@ public class HeaderGTPV1 extends HeaderAbstract
         this.tunnelEndpointId = new Integer32Array(teidArray).getValue() & 0xffffffffl;
     	offset = offset + 4;	
     	
-        if (this.seqNumFlag != 0)
+        if (this.seqNumFlag != 0 || this.nPduFlag != 0 || this.extensionFlag != 0)
         {
         	Array seqnumArray = array.subArray(offset, 2); 	
         	this.sequenceNumber = (new Integer16Array(seqnumArray).getValue());
             offset = offset + 2;
-        }
-        if (this.nPduFlag != 0)
-        {
+
         	Array nPduNumberArray = array.subArray(offset, 1); 	
 	    	this.nPduNumber = (new Integer08Array(nPduNumberArray).getValue()); 
             offset = offset + 1;
-        }
-        if (this.extensionFlag != 0)
-        {
+
         	Array nextExtensionTypeArray = array.subArray(offset, 1); 	
 	    	this.nextExtensionType = (new Integer08Array(nextExtensionTypeArray).getValue()); 
             offset = offset + 1;
