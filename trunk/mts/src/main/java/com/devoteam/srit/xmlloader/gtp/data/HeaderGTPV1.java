@@ -125,7 +125,7 @@ public class HeaderGTPV1 extends HeaderAbstract
         	this.tunnelEndpointId = Long.parseLong(attribute);
         }
 
-        attrFlag = header.attributeValue("seqNumFlag");
+        attrFlag = header.attributeValue("sequenceNumberFlag");
         if (attrFlag != null)
         {
         	this.seqNumFlag = Integer.parseInt(attrFlag);
@@ -147,7 +147,7 @@ public class HeaderGTPV1 extends HeaderAbstract
         	}
         }
         
-        attrFlag = header.attributeValue("nPduFlag");
+        attrFlag = header.attributeValue("nPduNumberFlag"); 
         if (attrFlag != null)
         {
         	this.nPduFlag = Integer.parseInt(attrFlag);
@@ -169,7 +169,7 @@ public class HeaderGTPV1 extends HeaderAbstract
         	}
         }
         
-        attrFlag = header.attributeValue("extensionFlag");
+        attrFlag = header.attributeValue("extensionHeaderFlag");
         if (attrFlag != null)
         {
         	this.extensionFlag = Integer.parseInt(attrFlag);
@@ -190,7 +190,6 @@ public class HeaderGTPV1 extends HeaderAbstract
         		this.extensionFlag = 0;
         	}
         }
-
     }
 
 	@Override
