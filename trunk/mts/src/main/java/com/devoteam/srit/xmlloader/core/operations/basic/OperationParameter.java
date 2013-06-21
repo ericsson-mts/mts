@@ -200,8 +200,11 @@ public class OperationParameter extends Operation {
              */
             if (null == operands.get("value")) {
                 Parameter parameter = new Parameter();
-                parameter.add(text);
-                operands.put("value", parameter);
+                if (text.length() > 0)
+                {
+                	parameter.add(text);
+                	operands.put("value", parameter);
+                }
             }
 
             /*
