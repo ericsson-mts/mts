@@ -263,18 +263,22 @@ public class MessageGTP
 	public Array encodeToArray() 
 	{
 	    SupArray array = new SupArray();
+	    int imsiV1 = 0;
 	    if (this.elements != null)
 	    {
 	    	Iterator<ElementAbstract> iter = this.elements.iterator();
 	    	while (iter.hasNext())
 	    	{
 	    		ElementAbstract elem = (ElementAbstract) iter.next();
-	    		array.addLast(elem.encodeToArray());	    	
+	    		array.addLast(elem.encodeToArray());
+	    		if (header.getSyntax().equalsIgnoreCase("V1") && elem.getTag() == 2) // IMSI, should remove 1 byte on payload length for GTPv1
+	    			imsiV1 = -1;
 	    	}
 	    }
 	    if (this.tpdu != null)
 	    	array.addLast(this.tpdu.encodeToArray().clone());
-	    header.setLength(array.length + header.calculateHeaderSize());
+	    
+	    header.setLength(array.length + header.calculateHeaderSize() + imsiV1);
 	    array.addFirst(header.encodeToArray());
 	    return array;
 	}
@@ -307,7 +311,7 @@ public class MessageGTP
 	{
 		return toXml();
 	}
-
+	
 	public int getLength() {
 	
 	    int msglength = 0;
