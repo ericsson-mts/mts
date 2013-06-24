@@ -80,6 +80,11 @@ public class HeaderGTPV1 extends HeaderAbstract
     	
     	Array lengthArray = beginArray.subArray(2, 2);
     	this.length = (new Integer16Array(lengthArray).getValue());
+    	
+    	// those three lines are here to restore length value wanted by parsing object
+    	if (this.seqNumFlag != 0 || this.nPduFlag != 0 || this.extensionFlag != 0)
+    		this.length -= 4;
+    	this.length += this.calculateHeaderSize();
 	}
 
     @Override
@@ -219,6 +224,9 @@ public class HeaderGTPV1 extends HeaderAbstract
 	@Override
 	public Array encodeToArray()
     {
+		// Header length MUST NOT be add to length field. As Header length is passed to this.length by MsgGTP, we reset it to its legitimate value
+        this.length -= this.calculateHeaderSize();
+		
         //manage header data
         SupArray supArray = new SupArray();
         
@@ -233,12 +241,16 @@ public class HeaderGTPV1 extends HeaderAbstract
 
         supArray.addLast(new Integer08Array(this.type));
         
+        if (this.seqNumFlag != 0 || this.nPduFlag != 0 || this.extensionFlag != 0)
+        	this.length += 4; // fields SeqNum, nPDU and extension Header are part of the payload according to 3GPP TS 29.060 spec
+        
         supArray.addLast(new Integer16Array(this.length));
         
         supArray.addLast(new Integer32Array((int) (this.tunnelEndpointId & 0xffffffffl)));
         
         if (this.seqNumFlag != 0 || this.nPduFlag != 0 || this.extensionFlag != 0)
         {
+        	// if one of these flags is set, then all fields must be present, fill with 0 if not defined
         	supArray.addLast(new Integer16Array(this.sequenceNumber));	
         	supArray.addLast(new Integer08Array(this.nPduNumber));	
         	supArray.addLast(new Integer08Array(this.nextExtensionType));	
