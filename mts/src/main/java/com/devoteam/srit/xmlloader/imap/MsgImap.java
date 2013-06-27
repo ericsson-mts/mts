@@ -492,4 +492,24 @@ public class MsgImap extends Msg {
         String xml = dataComplete.replace("\0", "");        
         return xml;
     }
+    
+    public boolean isSTARTTLS_request()
+    {
+    	for (String s : this.messages)
+    	{
+    		if (!s.startsWith("*") && s.toLowerCase().contains("STARTTLS".toLowerCase()))
+    			return true;    	
+    	}
+    	return false;
+    }
+    
+    public boolean isSTARTTLS_answer()
+    {
+    	for (String s : this.messages)
+    	{
+    		if (!s.startsWith("*") && s.toLowerCase().contains("OK Begin TLS negotiation now".toLowerCase()))
+    			return true;    	
+    	}
+    	return false;
+    }
 }
