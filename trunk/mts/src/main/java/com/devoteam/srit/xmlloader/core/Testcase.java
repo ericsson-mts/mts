@@ -69,8 +69,17 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
         _parameters = new ParameterPool(null, ParameterPool.Level.testcase, test.getParameterPool());
         _interruptible = Boolean.valueOf(_root.attributeValue("interruptible", "true"));
         _name = _root.attributeValue("name");
+        String strNumber= _root.attributeValue("number");
         _number = 1;
-        _state = Boolean.parseBoolean(_root.attributeValue("state"));
+        if (strNumber != null)
+        {
+        	_number = Integer.parseInt(strNumber);
+    	}
+        String strState = _root.attributeValue("state");
+        if (strState != null)
+        {
+        	_state = Boolean.parseBoolean(strState);
+        }
         _name = Utils.replaceFileName(this._name);
 
         // assert the name is not empty (can cause problems with log files and stats)
