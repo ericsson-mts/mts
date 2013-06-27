@@ -23,8 +23,6 @@
 
 package com.devoteam.srit.xmlloader.gtp.data;
 
-import java.io.InputStream;
-
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
