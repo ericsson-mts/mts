@@ -753,4 +753,24 @@ public abstract class Msg extends MsgLight implements Removable
     public abstract String toXml() throws Exception;
 
 
+    /** check wether message is a command to initiate TLS handshake over TCP socket or not **/
+    public boolean isSTARTTLS_request()
+    {
+    	return false;
+    }
+    
+    public boolean isSTARTTLS_answer()
+    {
+    	return false;
+    }
+    
+    public boolean isSTOPTLS_answer()
+    {
+    	return false;
+    }
+    
+    public boolean isSTOPTLS_request()
+    {
+    	return false;
+    }
 }

@@ -32,13 +32,29 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.rtp.MsgRtp;
+import com.devoteam.srit.xmlloader.tcp.HandshakeTlsComplete;
 import com.devoteam.srit.xmlloader.tcp.StackTcp;
 
 import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  *
@@ -47,6 +63,7 @@ import java.net.SocketException;
 public class SocketTcpBIO extends Thread
 {
     private Socket socket;
+    private SSLSocket sslSocket;
     
     private InputStream  inputStream;
 
@@ -54,11 +71,14 @@ public class SocketTcpBIO extends Thread
     
     private ChannelTcpBIO channel;
     
+    private boolean startTlsReceived = false;
+    private boolean startTlsAnswerReceived = false;
+    
     /** Creates a new instance of SocketClientReceiver */
     public SocketTcpBIO(Socket socket) throws Exception
     {
         this.socket = socket;
-
+        this.sslSocket = null;
         this.inputStream = new BufferedInputStream(socket.getInputStream());
         this.outputStream = socket.getOutputStream();
     }    
@@ -82,19 +102,40 @@ public class SocketTcpBIO extends Thread
         {
             try
             {
-		    	Msg msg = stack.readFromStream(inputStream, stack.getChannel(channel.getName()));
-		    	if (msg != null) 
-		    	{
-                    if(msg.getChannel() == null)
-                    {
-                        msg.setChannel(channel);
-                    }
-                    if(msg.getListenpoint() == null)
-                    {
-                        msg.setListenpoint(channel.getListenpointTcp());
-                    }
-		    		stack.getChannel(channel.getName()).receiveMessage(msg);
-		    	}
+            	if (!startTlsReceived && !startTlsAnswerReceived)
+            	{
+			    	Msg msg = stack.readFromStream(inputStream, stack.getChannel(channel.getName()));
+			    	if (msg != null) 
+			    	{
+	                    if(msg.getChannel() == null)
+	                    {
+	                        msg.setChannel(channel);
+	                    }
+	                    if(msg.getListenpoint() == null)
+	                    {
+	                        msg.setListenpoint(channel.getListenpointTcp());
+	                    }
+	                    if (msg.isSTARTTLS_request())
+	                    	startTlsReceived = true;
+	                    if (msg.isSTARTTLS_answer())
+	                    	startTlsAnswerReceived = true;
+			    		stack.getChannel(channel.getName()).receiveMessage(msg);
+			    	}
+            	}
+            	else
+            	{
+            		/**
+            		 * STARTTLS management --> CLIENT MODE
+            		 */
+            		if (startTlsAnswerReceived)
+            		{
+            			setupSSLSocket(true);
+	            		this.sslSocket.startHandshake();
+	            		this.inputStream = new BufferedInputStream(sslSocket.getInputStream());
+	            		this.outputStream = this.sslSocket.getOutputStream();
+	            		startTlsAnswerReceived = false;
+            		}
+            	}
     		}
 	        catch(SocketException e)
 	        {
@@ -152,6 +193,10 @@ public class SocketTcpBIO extends Thread
         try
         {        
         	{
+        		while (startTlsAnswerReceived)
+        		{
+        			//wait until handshake is done!
+        		}
         		byte[] data = msg.getBytesData();
         		if (msg instanceof MsgRtp && ((MsgRtp) msg).isCipheredMessage())
                 	data = ((MsgRtp) msg).getCipheredMessage();
@@ -166,6 +211,21 @@ public class SocketTcpBIO extends Thread
 	            if (delay != 0)
 	            {
 	            	Utils.pauseMilliseconds(pause);
+	            }
+	            /**
+	             * STARTTLS management --> SERVEUR MODE
+	             */
+	            if (msg.getTransaction() != null)
+	            {
+	            	Msg begin = msg.getTransaction().getBeginMsg();
+	            	if (begin != null && begin.isSTARTTLS_request() && msg.isSTARTTLS_answer())
+	            	{
+	            		setupSSLSocket(false);
+	            		this.sslSocket.startHandshake();
+	            		this.inputStream = new BufferedInputStream(sslSocket.getInputStream());
+	            		this.outputStream = this.sslSocket.getOutputStream();
+	            		startTlsReceived = false;
+	            	}
 	            }
         	}
         }
@@ -194,5 +254,46 @@ public class SocketTcpBIO extends Thread
     public Socket getSocket() {
         return socket;
     }
+    
+    private void setupSSLSocket(boolean clientMode) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException, IOException, UnrecoverableKeyException, KeyManagementException
+    {
+    	String certificateAlgorithm = "JKS";
+        String certificateServerPath = "C:/server.jks";
+        String certificateServerKeystorePassword = "ServerJKS";
+        String certificateServerKeyPassword = "ServerKey";        
+        char[] certificateKeystorePasswordArray;
+        char[] certificateKeyPasswordArray;
+        
+        if (null == certificateServerKeyPassword || certificateServerKeyPassword.length() == 0)
+        	certificateKeyPasswordArray = null;
+        else
+        	certificateKeyPasswordArray = certificateServerKeyPassword.toCharArray();
+        
+        if (null == certificateServerKeystorePassword || certificateServerKeystorePassword.length() == 0)
+        	certificateKeystorePasswordArray = null;
+        else
+        	certificateKeystorePasswordArray = certificateServerKeystorePassword.toCharArray();
 
+        KeyStore keyStore = KeyStore.getInstance(certificateAlgorithm);
+        keyStore.load(new FileInputStream(certificateServerPath), certificateKeystorePasswordArray);
+        
+        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
+        keyManagerFactory.init(keyStore, certificateKeyPasswordArray);
+        
+        KeyManager[] keyManagers = keyManagerFactory.getKeyManagers();
+        
+        System.setProperty("javax.net.ssl.trustStore", certificateServerPath);
+	    System.setProperty("javax.net.ssl.trustStorePassword", certificateServerKeystorePassword);
+	    
+	    SSLContext sslc = SSLContext.getInstance("SSLv3");
+   	 	sslc.init(keyManagers, null, null);
+   	 	
+   	 	SSLSocketFactory sslSocketFactory = (SSLSocketFactory)sslc.getSocketFactory();
+   	 	this.sslSocket = (SSLSocket)sslSocketFactory.createSocket(this.socket,
+                        										  this.socket.getInetAddress().getHostAddress(),
+                        										  this.socket.getPort(),
+                        										  false);
+   	 	this.sslSocket.setUseClientMode(clientMode);
+   	 	this.sslSocket.addHandshakeCompletedListener(new HandshakeTlsComplete((clientMode ? "C-" : "S-")));
+    }
 }
