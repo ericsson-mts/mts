@@ -242,7 +242,7 @@ public class HeaderGTPV1 extends HeaderAbstract
         supArray.addLast(new Integer08Array(this.type));
         
         if (this.seqNumFlag != 0 || this.nPduFlag != 0 || this.extensionFlag != 0)
-        	this.length += 4; // fields SeqNum, nPDU and extension Header are part of the payload according to 3GPP TS 29.060 spec
+        	this.length += 4; // fields SeqNum, nPDU and extension Header fields are part of the payload according to 3GPP TS 29.060 spec
         
         supArray.addLast(new Integer16Array(this.length));
         

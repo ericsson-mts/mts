@@ -271,8 +271,9 @@ public class MessageGTP
 	    	{
 	    		ElementAbstract elem = (ElementAbstract) iter.next();
 	    		array.addLast(elem.encodeToArray());
-	    		if (header.getSyntax().equalsIgnoreCase("V1") && elem.getTag() == 2) // IMSI, should remove 1 byte on payload length for GTPv1
-	    			imsiV1 = -1;
+	    		// IMSI, should remove 1 byte on payload length for GTPv1 as first byte is used to indicate IMSI type and not to define IMSI itself
+	    		//if (header.getSyntax().equalsIgnoreCase("V1") && elem.getTag() == 2) 
+	    		//	imsiV1 = -1;
 	    	}
 	    }
 	    if (this.tpdu != null)
