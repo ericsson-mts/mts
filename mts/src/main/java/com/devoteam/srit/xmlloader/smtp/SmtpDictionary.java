@@ -60,6 +60,7 @@ public class SmtpDictionary
         commands.add (COMMAND_HELP);
         commands.add (COMMAND_NOOP);
         commands.add (DEFINI_CNTT);
+        commands.add(COMMAND_STARTTLS);
 
         results = new HashSet<String>();
         results.add (REP_DATA_220);
@@ -93,6 +94,7 @@ public class SmtpDictionary
     public static final String COMMAND_HELP = "HELP";
     public static final String COMMAND_NOOP = "NOOP";
     public static final String DEFINI_CNTT = "CNTT";
+    public static final String COMMAND_STARTTLS = "STARTTLS";
     // reply code & reply data
     public static final String REP_DATA_220 = "220";// "Simple Mail Transfer Service Ready";
     public static final String REP_DATA_550 = "550";// "No such user here";
