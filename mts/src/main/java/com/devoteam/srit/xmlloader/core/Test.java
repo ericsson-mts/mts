@@ -346,8 +346,10 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
 
         // parse each testcase
         List testcases = _root.selectNodes("./testcase");
+        int index = 0;
         for (Element element : (List<Element>) testcases) {
-            Testcase testcase = new Testcase(this, element);
+            Testcase testcase = new Testcase(this, element, index);
+            index++;
             this.addChild(testcase);
         }
 

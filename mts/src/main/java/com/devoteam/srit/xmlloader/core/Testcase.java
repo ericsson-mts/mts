@@ -47,6 +47,7 @@ import org.dom4j.Element;
 public class Testcase implements HierarchyMember<Test, ScenarioReference>, Serializable {
 
     private String _name;
+    private int _index;
     private boolean _state;
     private int _number;
     private LinkedHashMap<String, ScenarioReference> scenarioByName;
@@ -62,13 +63,14 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
      *  2 - init the runprofile: execute a replacer on the <runprofile>
      *  3 - init the scenario: execut a replace on <scenario>
      */
-    public Testcase(Test test, Element root) throws Exception {
+    public Testcase(Test test, Element root, int index) throws Exception {
         defaultHierarchyMember = new DefaultHierarchyMember<Test, ScenarioReference>();
         defaultHierarchyMember.setParent(test);
         _root = root;
         _parameters = new ParameterPool(null, ParameterPool.Level.testcase, test.getParameterPool());
         _interruptible = Boolean.valueOf(_root.attributeValue("interruptible", "true"));
         _name = _root.attributeValue("name");
+        _index = index;
         String strNumber= _root.attributeValue("number");
         _number = 1;
         if (strNumber != null)
@@ -108,6 +110,7 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
         // set the hardcoded parameters [testName] and [testId]
         runner.getParameterPool().createSimple("[testcaseName]", this._name);
         runner.getParameterPool().createSimple("[testcaseId]", this.getId());
+        runner.getParameterPool().createSimple("[testcaseIndex]", this._index);
 
         // create and execute parameter operation to init testcase pool
         List<Element> elementsParameter = (List<Element>) _root.selectNodes("./parameter");
