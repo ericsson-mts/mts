@@ -234,4 +234,18 @@ public class MsgPop extends Msg
     public String toXml() throws Exception {
         return dataRaw;
     }
+    
+    public boolean isSTARTTLS_request()
+    {
+   		if (dataRaw.toLowerCase().contains("STLS".toLowerCase()))
+   			return true;    	
+    	return false;
+    }
+    
+    public boolean isSTARTTLS_answer()
+    {
+   		if (dataRaw.toLowerCase().contains("+OK Begin TLS negotiation".toLowerCase()))
+   			return true;    	
+    	return false;
+    }
 }

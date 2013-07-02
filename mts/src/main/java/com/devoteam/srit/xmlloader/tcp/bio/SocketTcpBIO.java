@@ -131,6 +131,7 @@ public class SocketTcpBIO extends Thread
             		{
             			setupSSLSocket(true);
 	            		this.sslSocket.startHandshake();
+	            		GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PROTOCOL, "TLS: Client handshake successfull for channel: ", channel);
 	            		this.inputStream = new BufferedInputStream(sslSocket.getInputStream());
 	            		this.outputStream = this.sslSocket.getOutputStream();
 	            		startTlsAnswerReceived = false;
@@ -222,6 +223,7 @@ public class SocketTcpBIO extends Thread
 	            	{
 	            		setupSSLSocket(false);
 	            		this.sslSocket.startHandshake();
+	            		GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PROTOCOL, "TLS: Server handshake successfull for channel: ", channel);
 	            		this.inputStream = new BufferedInputStream(sslSocket.getInputStream());
 	            		this.outputStream = this.sslSocket.getOutputStream();
 	            		startTlsReceived = false;
