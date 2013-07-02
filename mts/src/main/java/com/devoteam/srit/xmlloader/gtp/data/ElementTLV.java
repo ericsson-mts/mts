@@ -48,11 +48,24 @@ public class ElementTLV extends ElementAbstract
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
     {
     	this.tag = new Integer08Array(array.subArray(0, 1)).getValue();
-        int length = new Integer16Array(array.subArray(1, 2)).getValue();
-        this.fieldsArray = new SupArray();
-        this.fieldsArray.addFirst(array.subArray(3, length));
-        
-        return length + 3;
+    	int length;
+    	/**
+         * SPECIAL CASE FOR GTPv1 I.E 141 ExtensionHeaderTypeList => length of length field is 1 byte and not 2.
+         */
+    	if (this.tag == 141)
+    	{
+    		length = new Integer08Array(array.subArray(1, 1)).getValue();
+    		this.fieldsArray = new SupArray();
+            this.fieldsArray.addFirst(array.subArray(2, length));
+            return length + 2;
+    	}
+    	else
+    	{
+    		length = new Integer16Array(array.subArray(1, 2)).getValue();
+    		this.fieldsArray = new SupArray();
+            this.fieldsArray.addFirst(array.subArray(3, length));
+            return length + 3;
+    	}
     }
 
 	@Override
@@ -61,8 +74,19 @@ public class ElementTLV extends ElementAbstract
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.tag);
         sup.addLast(idArray);
-        Integer16Array lengthArray = new Integer16Array(this.fieldsArray.length);
-	    sup.addLast(lengthArray);
+        /**
+         * SPECIAL CASE FOR GTPv1 I.E 141 ExtensionHeaderTypeList => length of length field is 1 byte and not 2.
+         */
+        if (this.tag == 141)
+        {
+        	Integer08Array lengthArray = new Integer08Array(this.fieldsArray.length);
+        	sup.addLast(lengthArray);
+        }
+        else
+        {
+        	Integer16Array lengthArray = new Integer16Array(this.fieldsArray.length);
+        	sup.addLast(lengthArray);
+        }
 		
 	    sup.addLast(this.fieldsArray);
 	    
