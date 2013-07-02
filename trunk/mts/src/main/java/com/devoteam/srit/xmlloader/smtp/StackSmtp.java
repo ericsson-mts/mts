@@ -156,7 +156,7 @@ public class StackSmtp extends Stack
                 message.append(line);
 
                 // is it a request ?
-                if (canBeRequest && (line.length() >= 4) && SmtpDictionary.instance().containsCommand(line.substring(0, 4)))
+                if (canBeRequest && (line.length() >= 4) && (SmtpDictionary.instance().containsCommand(line.substring(0, 4)) || (line.length() >= 8 && SmtpDictionary.instance().containsCommand(line.substring(0, 8)))))
                 {
                     isLastLine = true;
                 }
@@ -180,7 +180,7 @@ public class StackSmtp extends Stack
                 {
                     isLastLine = true;
                 }
-
+                
                 if (isLastLine)
                 {
                     msg = new MsgSmtp(message.toString());

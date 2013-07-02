@@ -298,4 +298,18 @@ public class MsgSmtp extends Msg {
     public String toXml() throws Exception {
     	return data;
     }
+    
+    public boolean isSTARTTLS_request()
+    {
+   		if (data.toLowerCase().contains("STARTTLS".toLowerCase()))
+   			return true;    	
+    	return false;
+    }
+    
+    public boolean isSTARTTLS_answer()
+    {
+   		if (data.toLowerCase().contains("220 Go ahead".toLowerCase()))
+   			return true;    	
+    	return false;
+    }
 }
