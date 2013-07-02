@@ -32,7 +32,6 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.rtp.MsgRtp;
-import com.devoteam.srit.xmlloader.tcp.HandshakeTlsComplete;
 import com.devoteam.srit.xmlloader.tcp.StackTcp;
 
 import java.io.BufferedInputStream;
@@ -296,6 +295,5 @@ public class SocketTcpBIO extends Thread
                         										  this.socket.getPort(),
                         										  false);
    	 	this.sslSocket.setUseClientMode(clientMode);
-   	 	this.sslSocket.addHandshakeCompletedListener(new HandshakeTlsComplete((clientMode ? "C-" : "S-")));
     }
 }
