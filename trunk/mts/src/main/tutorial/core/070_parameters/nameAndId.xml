@@ -1,33 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <scenario>
- 
- <!-- test substract -->
-	<if>
-        <condition>
-			<or>
-				<test parameter="[testName]"     condition="string.equals" value="test_core"/>
-				<test parameter="[testName]"     condition="string.equals" value="CORE"/>
-			</or>
-			<or>	
-				<test parameter="[testId]"       condition="string.equals" value="test_core"/>
-				<test parameter="[testId]"       condition="string.equals" value="CORE"/>
-			</or>
-			<test parameter="[testcaseName]" condition="string.equals" value="070_parameters"/>
-			<or>
-				<test parameter="[testcaseId]"   condition="string.equals" value="test_core070_parameters"/>
-				<test parameter="[testcaseId]"   condition="string.equals" value="CORE070_parameters"/>
-			</or>
-			<test parameter="[scenarioName]" condition="string.equals" value="nameAndId"/>
-			<or>
-				<test parameter="[scenarioId]"   condition="string.equals" value="test_core070_parametersnameAndId"/>
-				<test parameter="[scenarioId]"   condition="string.equals" value="CORE070_parametersnameAndId"/>
-			</or>
-		</condition>
-		<then>
-		</then>
-		<else>
-			<exit name="failed exit" failed="true"/>
-		</else>
-	</if>
+    
+    <or>
+        <test parameter="[testName]"     condition="string.equals" value="test_core"/>
+        <test parameter="[testName]"     condition="string.equals" value="CORE"/>
+    </or>
+    <or>
+        <test parameter="[testId]"       condition="string.equals" value="test_core"/>
+        <test parameter="[testId]"       condition="string.equals" value="CORE"/>
+    </or>
+    
+    <test parameter="[testcaseName]" condition="string.equals" value="070_parameters"/>
+    <or>
+        <test parameter="[testcaseId]"   condition="string.equals" value="test_core070_parameters"/>
+        <test parameter="[testcaseId]"   condition="string.equals" value="CORE070_parameters"/>
+    </or>
+    <test parameter="[testcaseIndex]" condition="number.equals" value="10"/>
+    
+    <test parameter="[scenarioName]" condition="string.equals" value="nameAndId"/>
+    
+    <or>
+        <test parameter="[scenarioId]"   condition="string.equals" value="test_core070_parametersnameAndId"/>
+        <test parameter="[scenarioId]"   condition="string.equals" value="CORE070_parametersnameAndId"/>
+    </or>
+    
 </scenario>
