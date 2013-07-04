@@ -4,7 +4,26 @@
     Document   : dictionnary.xml
     Created on : 1 decembre 2012, 08:58
     Author     : fhenry
-    Description:
+    Description: GTPv2 header and information elements decoding
+                 according to 3GPP TS 29.274 V12.1.0.
+
+    Warning    : after modifications, please think to modify tutorial
+                 GTP scripts in the same way.
+
+    Warning 1  : When an IE contains a variable number of fields (e.g. Bearer TFT:84),
+                 there is a difference depending on MTS send or receive.
+                 MTS can send how many fields as needed (you just have to
+                 precise "lengthBit" and "type" attributes).
+                 When MTS receive a GTP message, dictionary is used to decode
+                 the fields. Number of fields in the dictionary is static.
+                 So if needed, dictionary will have to be updated to add missing
+                 fields.
+
+    Warning 2  : When an IE could be defined in a several ways (e.g. PAA:79
+                 or grouped Bearer Context:93 IE which definition depends of
+                 the command and the instance of the IE),
+                 all these definitions are merged.
+
 -->
 
 <dictionary>
@@ -149,10 +168,14 @@
         
     </header>
 
+    <!-- 0 : Reserved. -->
+
+    <!-- 1 : International Mobile Subscriber Identity (IMSI). -->
     <element tag="IMSI:1" coding="TLIV" description="International Mobile Subscriber Identity">
-        <field name="IMSI" type="number_bcd" description="International Mobile Subscriber Identity"/>
+    		<field name="IMSI" type="number_bcd" description="International Mobile Subscriber Identity"/>
     </element>
 
+    <!-- 2 : Cause. -->
     <element tag="Cause:2" coding="TLIV">
         <field name="Cause value" lengthBit="8" type="enumeration">
             <enum value="0" name="Reserved. Shall not be sent and if received the Cause shall be treated as an invalid IE"/>
@@ -241,10 +264,16 @@
         </field>
     </element>
 
+    <!-- 3 : Recovery (Restart Counter). -->
     <element tag="Recovery:3" coding="TLIV">
         <field name="Recovery" lengthBit="8" type="integer"/>
     </element>
     
+    <!-- 4 to 50 : Reserved for S101 interface. -->
+    <!-- 51 : STN-SR. -->
+    <!-- 52 to 70 : Reserved for Sv interface. -->
+
+    <!-- 71 : Access Point Name (APN). -->
     <element tag="APN:71" coding="TLIV" description="Access Point Name">
         <field name="APN01" type="length_string" description="Access Point Name"/>
         <field name="APN02" type="length_string" description="Access Point Name"/>
@@ -258,31 +287,37 @@
         <!--field name="APN10" type="length_string" description="Access Point Name"/-->
     </element>
     
+    <!-- 72 : Aggregate Maximum Bit Rate (AMBR). -->
     <element tag="AMBR:72" coding="TLIV" description="Aggregate Maximum Bit Rate">
         <field name="APN-AMBR for uplink" lengthBit="32" type="integer"/>
         <field name="APN-AMBR for downlink" lengthBit="32" type="integer"/>
     </element>
 
+    <!-- 73 : EPS Bearer ID (EBI). -->
     <element tag="EBI:73" coding="TLIV" description="EPS Bearer ID">
         <field name="spare" lengthBit="4" type="integer"/>
         <field name="EBI" lengthBit="4" type="integer" description="EPS Bearer ID"/>
     </element>
     
+    <!-- 74 : IP Address. -->
     <element tag="IP Address:74" coding="TLIV">
         <field name="IPv6 address" lengthBit="128" type="ipv6_address"/>  <!-- if length == 20 -->
         <field name="IPv4 address" lengthBit="32" type="ipv4_address"/>   <!-- if length == 8 -->
     </element>
     
+    <!-- 75 : Mobile Equipment Identity (MEI). -->
     <element tag="MEI:75" coding="TLIV" description="Mobile Equipment Identity">
         <!-- ou alors de type "number_bcd" A VERIFIER -->    
         <field name="MEI" type="binary" description="Mobile Equipment Identity"/>
     </element>
     
+    <!-- 76 : MSISDN. -->
     <element tag="MSISDN:76" coding="TLIV" description="Mobile Subscriber ISDN Number">
     		<field name="MSISDN" type="number_bcd" description="Mobile Subscriber ISDN Number"/>
     </element>
 
-   <element tag="Indication:77" coding="TLIV">
+    <!-- 77 : Indication. -->
+    <element tag="Indication:77" coding="TLIV">
         <field name="DAF" lengthBit="1" type="boolean" description="Dual Address Bearer Flag"/>
         <field name="DTF" lengthBit="1" type="boolean" description="Direct Tunnel Flag"/>
         <field name="HI" lengthBit="1" type="boolean" description="Handover Indication"/>
@@ -309,14 +344,18 @@
         <field name="MBMDT" lengthBit="1" type="boolean" description="Management Based MDT allowed flag"/>
         <field name="ISRAU" lengthBit="1" type="boolean" description="ISR is activated for the UE"/>
         <field name="CCRSI" lengthBit="1" type="boolean" description="CSG Change Reporting support indication"/>
-        
-		<field name="Spare" lengthBit="6" type="integer"/>
+        <field name="Spare" lengthBit="6" type="integer"/>
         <field name="CLII" lengthBit="1" type="boolean" description="Change of Location Information Indication"/>
         <field name="CPSR" lengthBit="1" type="boolean" description="CS to PS SRVCC indication"/>
     </element>
     
-   
+    <!-- 78 : Protocol Configuration Options (PCO). -->
+    <!-- TODO complex element see TS 24008 -->
+    <element tag="PCO:78" coding="TLIV" description="Protocol Configuration Options">
+        <field name="PCO" type="binary" description="Protocol Configuration Options"/>
+    </element>
      
+    <!-- 79 : PDN Address Allocation (PAA). -->
     <!-- conditional fields -->
     <element tag="PAA:79" coding="TLIV" description="PDN Address Allocation">
         <field name="spare" lengthBit="5" type="integer"/>
@@ -331,6 +370,7 @@
         <field name="IPv4 address" lengthBit="32" type="ipv4_address"/>   <!-- if PDN Type == 1 -->
     </element>
     
+    <!-- 80 : Bearer Level Quality of Service (Bearer QoS). -->
     <element tag="Bearer QoS:80" coding="TLIV" description="Bearer Quality of Service">
         <field name="spare1" lengthBit="1" type="boolean"/>
         <field name="PCI" lengthBit="1" type="boolean" description="Pre-emption Capability"/> 
@@ -344,6 +384,9 @@
         <field name="Guaranteed bit rate for downlink" lengthBit="40" type="integer"/> 
     </element>
     
+    <!-- 81 : Flow Quality of Service (Flow QoS). -->
+
+    <!-- 82 : RAT Type. -->
     <element tag="RAT Type:82" coding="TLIV">
            <field name="RAT Type" lengthBit="8" type="enumeration">
             <enum value="0" name="reserved" />
@@ -358,19 +401,44 @@
         </field>
     </element>
     
+    <!-- 83 : Serving Network. -->
     <element tag="Serving Network:83" coding="TLIV">
         <field name="MMC" type="number_mmc"/>
     </element>
     
+    <!-- 84 : EPS Bearer Level Traffic Flow Template (Bearer TFT). -->
+	<element tag="Bearer TFT:84" coding="TLIV" description="EPS Bearer Level Traffic Flow Template">
+		<field name="TFT operation code" lengthBit="3" type="integer" /> 
+		<field name="E bit" lengthBit="1" type="boolean" />
+		<field name="Number of packet filters" lengthBit="4" type="integer" />
+		<field name="Spare" lengthBit="2" type="integer" />
+		<field name="Packet Filter Direction" lengthBit="2" type="integer" />
+		<field name="Packet Filter Identifier" lengthBit="4" type="integer" />
+		<field name="Packet Filter Evaluation Precedence" lengthBit="8" type="integer" />
+		<field name="Length of Packet Filter contents " lengthBit="8" type="integer"  description="NOMBRE TOTAL en decimal d'Octets"/>
+		<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" />
+		<field name="my ipv4 address" type="ipv4_address"  description="IPv4 address" />
+		<field name="my ipv4 address mask" type="ipv4_address"  description="IPv4 address mask"/>					
+		<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" />
+		<field name="Protocol identifier/Next header type" lengthBit="8" type="integer" />  
+		<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" />
+		<field name="Single local port type" lengthBit="16" type="integer" />
+		<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" />
+		<field name="Single remote port type" lengthBit="16" type="integer" />
+	</element>
+	
+    <!-- 85 : Traffic Aggregation Description (TAD). -->
+
+    <!-- 86 : User Location Information (ULI). -->
     <!-- conditional fields -->
-	<element tag="ULI:86" coding="TLIV" description="User Location Information">
-		<field name="spare1" lengthBit="2" type="integer"/>
-		<field name="LAI" lengthBit="1" type="boolean"/>        
-		<field name="ECGI" lengthBit="1" type="boolean"/>
-		<field name="TAI" lengthBit="1" type="boolean"/>
-		<field name="RAI" lengthBit="1" type="boolean"/>
-		<field name="SAI" lengthBit="1" type="boolean"/>
-		<field name="CGI" lengthBit="1" type="boolean"/>
+    <element tag="ULI:86" coding="TLIV" description="User Location Information">
+        <field name="spare1" lengthBit="2" type="integer"/>
+        <field name="LAI" lengthBit="1" type="boolean"/>        
+        <field name="ECGI" lengthBit="1" type="boolean"/>
+        <field name="TAI" lengthBit="1" type="boolean"/>
+        <field name="RAI" lengthBit="1" type="boolean"/>
+        <field name="SAI" lengthBit="1" type="boolean"/>
+        <field name="CGI" lengthBit="1" type="boolean"/>
 		<!-- CGI Field -->
 		<field name="CGI_MCC_MNC" type="number_mmc" description="Mobile Country Code,Mobile Network Code"/>
 		<!-- <field name="CGI_MNC" lengthBit="8" type="integer" description="Mobile Network Code"/> -->
@@ -395,8 +463,9 @@
 		<!-- LAI Field -->
 		<field name="LAI_MCC_MNC" type="number_mmc" description="Mobile Country Code,Mobile Network Code"/> 
 		<field name="LAI_LAC" lengthBit="16" type="integer" description="Location Area Code"/>
-	</element>    
+    </element>        
 
+    <!-- 87 : Fully Qualified Tunnel Endpoint Identifier (F-TEID). -->
     <!-- conditional fields -->
     <element tag="F-TEID:87" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
         <field name="V4" lengthBit="1" type="boolean"/>
@@ -447,18 +516,42 @@
         <field name="IPv6 address" type="ipv6_address"/>  <!-- if V6 == true -->
     </element>
 
+    <!-- 88 : TMSI. -->
+    <!-- 89 : Global CN-Id. -->
+    <!-- 90 : S103 PDN Data Forwarding Info (S103PDF). -->
+    <!-- 91 : S1-U Data Forwarding Info (S1UDF). -->
+
+    <!-- 92 : Delay Value. -->
+	<element tag="Delay value:92" coding="TLIV" description="Delay Value in integer multiples of 50 millisecs, or zero">
+            <field name="Delay value" lengthBit="8" type="integer"/>  
+    </element>
+
+    <!-- 93 : Bearer Context . -->
     <element tag="Bearer Context:93" coding="TLIV">
+        <element tag="Cause:2" coding="TLIV"/>
         <element tag="EBI:73" coding="TLIV"/>
-		<element tag="Bearer TFT:84" coding="TLIV"/>
+        <element tag="Bearer QoS:80" coding="TLIV"/>
         <element tag="F-TEID:87" coding="TLIV"/>
-		<element tag="Bearer QoS:80" coding="TLIV"/>
         <element tag="Charging ID:94" coding="TLIV"/>
-		<element tag="Bearer Flags:97" coding="TLIV"/>
-		<element tag="PCO:78" coding="TLIV"/>
-		
-		<element tag="Cause:2" coding="TLIV"/> <!-- champs supplémentaire disponible dans le Create Bearer Response -->
     </element>
     
+    <!-- 94 : Charging ID. -->
+     <element tag="Charging ID:94" coding="TLIV">
+        <field name="Charging ID value" lengthBit="32" type="integer"/>   
+    </element>
+    
+    <!-- 95 : Charging Characteristics. -->
+     <element tag="Charging Characteristics:95" name="Charging Characteristics" coding="TLIV">
+        <field name="Charging Characteristics value" lengthBit="16" type="integer"/>   
+    </element>
+    
+    <!-- 96 : Trace Information. -->
+    <!-- TODO complex element see TS 32422 -->
+    <!--element tag="Trace Information:96">
+        <field name="" ../>
+    </element-->
+
+    <!-- 97 : Bearer Flags. -->
 	<element tag="Bearer Flags:97" coding="TLIV" description="Bearer Flags">
 		<field name="spare" lengthBit="4" type="integer" />
 		<field name="flag ASI" lengthBit="1" type="boolean" description="Activity Status Indicator"/>  <!-- Activity Status Indicator : if 1, bearer context is preserved in CN without RAB established-->
@@ -467,20 +560,8 @@
 		<field name="flag PCC" lengthBit="1" type="boolean" description="Prohibit Payload Compression Indicator"/>  <!-- Prohibit Payload Compression  -->
 	</element>
      
-	 
-	 <element tag="Charging ID:94" coding="TLIV">
-        <field name="Charging ID value" lengthBit="32" type="integer"/>   
-    </element>
-    
-     <element tag="Charging Characteristics:95" name="Charging Characteristics" coding="TLIV">
-        <field name="Charging Characteristics value" lengthBit="16" type="integer"/>   
-    </element>
-    
-    <!-- TODO complex element see TS 32422 -->
-    <!--element tag="Trace Information:96">
-        <field name="" ../>
-    </element-->
-
+    <!-- 98 : Reserved. -->
+    <!-- 99 : PDN Type. -->
     <element tag="PDN Type:99" coding="TLIV">
         <field name="spare" lengthBit="5" type="integer"/>
         <field name="PDN Type" lengthBit="3" type="enumeration">
@@ -491,21 +572,62 @@
         </field>
     </element>
 
-	<element tag="UE Time Zone:114" coding="TLIV">   
-				<field name="Time Zone" lengthBit="8" type="integer"/>
-				<field name="spare" lengthBit="6" type="integer"/>
-				<field name="Daylight Saving Time" lengthBit="2" type="enumeration">
-					<enum value="0" name="No adjustment for Daylight Saving Time"/>
-					<enum value="1" name="+1 hour adjustment for Daylight Saving Time"/>
-					<enum value="2" name="+2 hours adjustment for Daylight Saving Time"/>
-					<enum value="3" name="Spare"/>
-				</field>
-	</element>
+    <!-- 100 : Procedure Transaction ID. -->
+	<element tag="PTI:100" coding="TLIV" description="Procedure Transaction Id">
+		<field name="Procedure Transaction ID" lengthBit="8" type="integer"/>
+		<!-- 	Bits							-->
+		<!-- 	8	7	6	5	4	3	2	1		-->
+		<!-- 	0	0	0	0	0	0	0	0		No procedure transaction identity assigned	-->
+		<!-- 	0	0	0	0	0	0	0	1		\		-->
+		<!-- 	to		} Procedure transaction identity value		-->
+		<!-- 	1	1	1	1	1	1	1	0		/		-->
+		<!-- 	1	1	1	1	1	1	1	1		Reserved		-->
+	</element>			
+	
+    <!-- 101 : Reserved. -->
+    <!-- 102 : Reserved. -->
+    <!-- 103 : MM Context (GSM Key and Triplets). -->
+    <!-- 104 : MM Context (UMTS Key, Used Cipher and Quintuplets). -->
+    <!-- 105 : MM Context (GSM Key, Used Cipher and Quintuplets). -->
+    <!-- 106 : MM Context (UMTS Key and Quintuplets). -->
+    <!-- 107 : MM Context (EPS Security Context, Quadruplets and Quintuplets). -->
+    <!-- 108 : MM Context (UMTS Key, Quadruplets and Quintuplets). -->
+    <!-- 109 : PDN Connection. -->
+    <!-- 110 : PDU Numbers. -->
+    <!-- 111 : P-TMSI. -->
+    <!-- 112 : P-TMSI Signature. -->
+    <!-- 113 : Hop Counter. -->
+
+    <!-- 114 : UE Time Zone. -->
+   <element tag="UE Time Zone:114" coding="TLIV">   
+        <field name="Time Zone" lengthBit="8" type="integer"/>
+        <field name="spare" lengthBit="6" type="integer"/>
+        <field name="Daylight Saving Time" lengthBit="2" type="enumeration">
+            <enum value="0" name="No adjustment for Daylight Saving Time"/>
+            <enum value="1" name="+1 hour adjustment for Daylight Saving Time"/>
+            <enum value="2" name="+2 hours adjustment for Daylight Saving Time"/>
+            <enum value="3" name="Spare"/>
+        </field>
+    </element>
     
+    <!-- 115 : Trace Reference. -->
+    <!-- 116 : Complete Request Message. -->
+    <!-- 117 : GUTI. -->
+    <!-- 118 : F-Container. -->
+    <!-- 119 : F-Cause. -->
+    <!-- 120 : PLMN ID. -->
+    <!-- 121 : Target Identification. -->
+    <!-- 122 : Reserved . -->
+    <!-- 123 : Packet Flow ID . -->
+    <!-- 124 : RAB Context . -->
+    <!-- 125 : Source RNC PDCP Context Info. -->
+
+    <!-- 126 : UDP Source Port Number. -->
     <element tag="Port Number:126" coding="TLIV">
         <field name="Port Number" lengthBit="16" type="integer"/>
     </element>
     
+    <!-- 127 : APN Restriction. -->
     <element tag="APN Restriction:127" coding="TLIV">
         <field name="Restriction Type value" lengthBit="8" type="enumeration">
             <enum value="0" name="No Existing Contexts or Restriction"/>
@@ -517,6 +639,7 @@
         </field>
     </element>
         
+    <!-- 128 : Selection Mode. -->
     <element tag="Selection Mode:128" coding="TLIV">
         <field name="spare" lengthBit="6" type="integer"/>
         <field name="Selection Mode" lengthBit="2" type="enumeration">
@@ -527,6 +650,15 @@
         </field>
     </element>
     
+    <!-- 129 : Source Identification. -->
+    <!-- 130 : Reserved. -->
+
+    <!-- 131 : Change Reporting Action. -->
+	<element tag="Change Reporting Action:131" coding="TLIV" description="Action">
+		<field name="Action" lengthBit="8" type="integer"/>
+	</element>		
+
+    <!-- 132 : Fully Qualified PDN Connection Set Identifier (FQ-CSID). -->
     <!-- conditional fields -->
     <element tag="FQ-CSID:132" coding="TLIV" description="Fully qualified PDN Connection Set Identifier ">
         <field name="Node-ID Type" lengthBit="4" type="enumeration">
@@ -547,7 +679,25 @@
         <field name="ICSID05" lengthBit="16" type="integer" description="PDN Connection Set Identifier "/>
     </element>
     
-	<!-- parameter UCI wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->   
+    <!-- 133 : Channel needed. -->
+    <!-- 134 : eMLPP Priority. -->
+
+    <!-- 135 : Node Type. -->
+	 <element tag="Node Type:135" coding="TLIV" description="Originating Node Type">
+            <field name="Node Type" lengthBit="8" type="integer" description=" O for MME/1 for SGSN"/>
+    </element>
+	
+    <!-- 136 : Fully Qualified Domain Name (FQDN). -->
+    <!-- 137 : Transaction Identifier (TI). -->
+    <!-- 138 : MBMS Session Duration. -->
+    <!-- 139 : MBMS Service Area. -->
+    <!-- 140 : MBMS Session Identifier. -->
+    <!-- 141 : MBMS Flow Identifier. -->
+    <!-- 142 : MBMS IP Multicast Distribution. -->
+    <!-- 143 : MBMS Distribution Acknowledge. -->
+    <!-- 144 : RFSP Index. -->
+
+    <!-- 145 : User CSG Information (UCI). -->
     <element tag="UCI:145" coding="TLIV" description="User CSG Information">
         <field name="MMC" type="number_mmc"/>
         <field name="spare1" lengthBit="5" type="integer"/>
@@ -565,25 +715,75 @@
         </field>
     </element>
     
-	<!-- parameter UCI wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->    
+    <!-- 146 : CSG Information Reporting Action. -->
+	<element tag="CSG IRA:146" coding="TLIV" description="CSG Information Reporting Action">
+		<field name="spare1" lengthBit="5" type="integer" />
+		<field name="UCIUHC" lengthBit="1" type="boolean" description="shall indicate to start reporting User CSG Info when the UE enters/leaves/access through the CSG Cell."/>
+		<field name="UCISHC" lengthBit="1" type="boolean" description="shall indicate to start reporting User CSG Info when the UE enters/leaves/access through Subscribed Hybrid Cell."/>
+		<field name="UCICSG" lengthBit="1" type="boolean" description="shall indicate to start Reporting User CSG Info when the UE enters/leaves/access through Unsubscribed Hybrid Cell."/>
+	</element>
+	
+    <!-- 147 : CSG ID. -->
+    <!-- 148 : CSG Membership Indication (CMI). -->
+    <!-- 149 : Service indicator. -->
+    <!-- 150 : Detach Type. -->
+
+    <!-- 151 : Local Distiguished Name (LDN). -->
     <element tag="LDN:151" coding="TLIV" description="MME/S4-SGSN LDN">
         <field name="LDN" type="string" description="Local Distinguished Name"/>
     </element>
     
-	<!-- parameter UCI wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->   
+    <!-- 152 : Node Features. -->
+    <!-- 153 : MBMS Time to Data Transfer. -->
+    <!-- 154 : Throttling. -->
+    <!-- 155 : Allocation/Retention Priority (ARP). -->
+
+    <!-- 156 : EPC Timer. -->
+	<!-- parameter wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->	
+	<element tag="EPC Timer:156" coding="TLIV" description="EPC Timer information">
+		<field name="Timer unit" lengthBit="3" type="integer" />
+		<field name="Timer value" lengthBit="5" type="integer"/>
+	</element>
+
+    <!-- 157 : Signalling Priority Indication. -->
     <element tag="Signalling Priority Indication:157" coding="TLIV">
         <field name="spare1" lengthBit="7" type="integer"/>
         <field name="LAPI" type="boolean" description="Low Access Priority Indication"/>
     </element>
     
+    <!-- 158 : Temporary Mobile Group Identity (TMGI). -->
+    <!-- 159 : Additional MM context for SRVCC. -->
+    <!-- 160 : Additional flags for SRVCC. -->
+    <!-- 161 : Reserved. -->
+    <!-- 162 : MDT Configuration. -->
+
+    <!-- 163 : Additional Protocol Configuration Options (APCO). -->
     <!-- TODO complex element see TS 29275 -->
-    <!-- parameter UCI wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->   
-	<element tag="APCO:163" coding="TLIV" description="Additional Protocol Configuration Options ">
+    <element tag="APCO:163" coding="TLIV" description="Additional Protocol Configuration Options ">
         <field name="APCO" type="binary" description="Additional Protocol Configuration Options "/>
     </element>
     
+    <!-- 164 : Absolute Time of MBMS Data Transfer. -->
+
+    <!-- 165 : H(e)NB Information Reporting . -->
+	<element tag="H(e)NB:165" coding="TLIV" description="H(e)NB Information Reporting">
+		<field name="spare1" lengthBit="7" type="integer" />
+		<field name="FTI" lengthBit="1" type="boolean" description="shall indicate to start reporting H(e)NB local IP address and UDP port number information change"/>
+	</element>
+
+    <!-- 166 : IPv4 Configuration Parameters (IP4CP). -->
+	<!-- parameter wrongly decoded by wireshark: IE Type: Unknown (166) -->	
+	<element tag="IP4CP:166" coding="TLIV" description="IPv4 Configuration Parameters ">
+			<field name="Subnet Prefix Length" lengthBit="8" type="integer" />
+			<!--field name="IPv6 address" lengthBit="128" type="ipv6_address"/-->  <!-- if length == 20 -->
+			<field name="IPv4 address" lengthBit="32" type="ipv4_address" description="IPv4 Default Router Address"/>   <!-- if length == 8 -->
+		</element>
+	
+    <!-- 167 : Change to Report Flags . -->
+    <!-- 168 : Action Indication. -->
+
+    <!-- 169 : TWAN Identifier. -->
     <!-- conditional fields -->
-	<!-- parameter wrongly decoded by wireshark: IE Type: Unknown (169) + Expert Info (Note/Protocol): IE data not dissected yet -->	
     <element tag="TWAN Identifier:169" coding="TLIV" >
         <field name="spare1" lengthBit="6" type="integer"/>
         <field name="BSSIDI" lengthBit="1" type="boolean" description="BSSID Indicator"/>
@@ -593,81 +793,12 @@
         <field name="SSID" type="binary"/>                        <!-- if SSIDI == true -->
     </element>
     
+    <!-- 170 : ULI Timestamp. -->
+    <!-- 171 to 254 : Spare. For future use. -->
+
+    <!-- 255 : Private Extension. -->
     <element tag="Private Extension:255" coding="TLIV">
         <field name="Enterprise ID" lengthBit="16" type="integer"/>
         <field name="Proprietary value" type="string"/>
-    </element>
-
-	<element tag="Bearer TFT:84" coding="TLIV" description="EPS Bearer Level Traffic Flow Template">
-		<field name="TFT operation code" lengthBit="3" type="integer" /> 
-		<field name="E bit" lengthBit="1" type="boolean" />
-		<field name="Number of packet filters" lengthBit="4" type="integer" />
-		<field name="Spare" lengthBit="2" type="integer" />
-		<field name="Packet Filter Direction" lengthBit="2" type="integer" />
-		<field name="Packet Filter Identifier" lengthBit="4" type="integer" />
-		<field name="Packet Filter Evaluation Precedence" lengthBit="8" type="integer" />
-		<field name="Length of Packet Filter contents " lengthBit="8" type="integer"  description="NOMBRE TOTAL en decimal d'Octets"/>
-		<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" />
-		<field name="my ipv4 address" type="ipv4_address"  description="IPv4 address" />
-		<field name="my ipv4 address mask" type="ipv4_address"  description="IPv4 address mask"/>					
-		<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" />
-		<field name="Protocol identifier/Next header type" lengthBit="8" type="integer" />  
-		<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" />
-		<field name="Single local port type" lengthBit="16" type="integer" />
-		<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" />
-		<field name="Single remote port type" lengthBit="16" type="integer" />
-	</element>
-	
-	<!-- TODO complex element see TS 24008 -->
-	<element tag="PCO:78" coding="TLIV" description="Protocol Configuration Options">  
-		<field name="PCO" type="binary" description="Protocol Configuration Options"/>  
-	</element>  
-	
-	<element tag="PTI:100" coding="TLIV" description="Procedure Transaction Id">
-		<field name="Procedure Transaction ID" lengthBit="8" type="integer"/>
-		<!-- 	Bits							-->
-		<!-- 	8	7	6	5	4	3	2	1		-->
-		<!-- 	0	0	0	0	0	0	0	0		No procedure transaction identity assigned	-->
-		<!-- 	0	0	0	0	0	0	0	1		\		-->
-		<!-- 	to		} Procedure transaction identity value		-->
-		<!-- 	1	1	1	1	1	1	1	0		/		-->
-		<!-- 	1	1	1	1	1	1	1	1		Reserved		-->
-	</element>			
-	
-	<!-- à inclure Change Reporting Action -->
-	<element tag="Change Reporting Action:131" coding="TLIV" description="Action">
-		<field name="Action" lengthBit="8" type="integer"/>
-	</element>		
-	
-	<element tag="CSG IRA:146" coding="TLIV" description="CSG Information Reporting Action">
-		<field name="spare1" lengthBit="5" type="integer" />
-		<field name="UCIUHC" lengthBit="1" type="boolean" description="shall indicate to start reporting User CSG Info when the UE enters/leaves/access through the CSG Cell."/>
-		<field name="UCISHC" lengthBit="1" type="boolean" description="shall indicate to start reporting User CSG Info when the UE enters/leaves/access through Subscribed Hybrid Cell."/>
-		<field name="UCICSG" lengthBit="1" type="boolean" description="shall indicate to start Reporting User CSG Info when the UE enters/leaves/access through Unsubscribed Hybrid Cell."/>
-	</element>
-	
-	<element tag="H(e)NB:165" coding="TLIV" description="H(e)NB Information Reporting">
-		<field name="spare1" lengthBit="7" type="integer" />
-		<field name="FTI" lengthBit="1" type="boolean" description="shall indicate to start reporting H(e)NB local IP address and UDP port number information change"/>
-	</element>
-	<!-- parameter wrongly decoded by wireshark: IE Type: Unknown (166) -->	
-	<element tag="IP4CP:166" coding="TLIV" description="IPv4 Configuration Parameters ">
-			<field name="Subnet Prefix Length" lengthBit="8" type="integer" />
-			<!--field name="IPv6 address" lengthBit="128" type="ipv6_address"/-->  <!-- if length == 20 -->
-			<field name="IPv4 address" lengthBit="32" type="ipv4_address" description="IPv4 Default Router Address"/>   <!-- if length == 8 -->
-		</element>
-	
-	<!-- EPC Timer -->
-	<!-- parameter wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->	
-	<element tag="EPC Timer:156" coding="TLIV" description="EPC Timer information">
-		<field name="Timer unit" lengthBit="3" type="integer" />
-		<field name="Timer value" lengthBit="5" type="integer"/>
-	</element>
-	 <element tag="Node Type:135" coding="TLIV" description="Originating Node Type">
-            <field name="Node Type" lengthBit="8" type="integer" description=" O for MME/1 for SGSN"/>
-    </element>
-	
-	<element tag="Delay value:92" coding="TLIV" description="Delay Value in integer multiples of 50 millisecs, or zero">
-            <field name="Delay value" lengthBit="8" type="integer"/>  
     </element>
 </dictionary>

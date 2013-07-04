@@ -4,7 +4,24 @@
     Document   : dictionnary.xml
     Created on : 4 février 2010, 08:58
     Author     : bbouvier
-    Description:
+    Description: GTPv1 header and information elements decoding
+                 according to 3GPP TS 29.060 V12.1.0.
+
+    Warning 0  : after modifications, please think to modify tutorial
+                 GTP scripts in the same way.
+
+    Warning 1  : When an IE contains a variable number of fields (e.g. PCO:132),
+                 there is a difference depending on MTS send or receive.
+                 MTS can send how many fields as needed (you just have to
+                 precise "lengthBit" and "type" attributes).
+                 When MTS receive a GTP message, dictionary is used to decode
+                 the fields. Number of fields in the dictionary is static.
+                 So if needed, dictionary will have to be updated to add missing
+                 fields.
+
+    Warning 2  : When an IE could be defined in a several ways (e.g. GSN Address:133),
+                 all these definitions are merged.
+
 -->
 
 <dictionary>
@@ -15,7 +32,7 @@
             <enum value="1" name="3GPP TS 29.060 : GTP" />
         </field>
         <field name="Protocol Type" lengthBit="1" type="boolean"> </field>
-        <field name="Spare1" lengthBit="1" type="integer"> </field>
+        <field name="spare1" lengthBit="1" type="integer"> </field>
         <field name="Extension Header Flag" lengthBit="1" type="boolean"> </field>
         <field name="Sequence Number Flag" lengthBit="1" type="boolean"> </field>
         <field name="NPDU Number Flag" lengthBit="1" type="boolean"> </field>
@@ -106,6 +123,9 @@
         
     </header>
 
+    <!-- 0 : Reserved.. -->
+
+    <!-- 1 : Cause. -->
     <element tag="Cause:1" coding="TV">
         <field name="Cause value" lengthBit="8" type="enumeration">
             <enum value="0" name="Request IMSI" />
@@ -168,48 +188,283 @@
         </field>
     </element>
 
+    <!-- 2 : International Mobile Subscriber Identity (IMSI). -->
     <element tag="IMSI:2" coding="TV" description="International Mobile Subscriber Identity">
-    		<field name="IMSI" lengthBit="64" type="number_bcd" description="International Mobile Subscriber Identity"/>
+    		<field name="IMSI" lengthBit="64" type="number_bcd"/>
     </element>
 
+    <!-- 3 : Routeing Area Identity (RAI). -->
+    <!-- 4 : Temporary Logical Link Identity (TLLI). -->
+    <!-- 5 : Packet TMSI (P-TMSI). -->
+    <!-- 6-7 : Spare. -->
+    <!-- 8 : Reordering Required. -->
+    <!-- 9 : Authentication Triplet. -->
+    <!-- 10 : Spare. -->
+    <!-- 11 : MAP Cause. -->
+    <!-- 12 : P-TMSI Signature. -->
+    <!-- 13 : MS Validated. -->
+
+    <!-- 14 : Recovery. -->
     <element tag="Recovery:14" coding="TV">
 		    <field name="Recovery" lengthBit="8" type="integer"/>
     </element>
     
-
-    <element tag="SelectionMode:15" coding="TV" description="Selection Mode">
-			<field name="Spare" lengthBit="6" type="integer" />
-		    <field name="SelectionModeValue" lengthBit="2" type="integer"/>
+    <!-- 15 : Selection Mode. -->
+    <element tag="Selection Mode:15" coding="TV" description="Selection Mode">
+        <field name="spare" lengthBit="6" type="integer"/>
+        <field name="Selection Mode" lengthBit="2" type="enumeration">
+            <enum value="0" name="MS or network provided APN, subscribed verified" />
+            <enum value="1" name="MS provided APN, subscription not verified" />
+            <enum value="2" name="Network provided APN, subscription not verified" />
+            <enum value="3" name="For future use." description="Shall not be sent. If received, shall be interpreted as the value &quot;2&quot;.\" />
+        </field>
     </element>
-
-    <element tag="TunnelEndpointIdentifierDataI:16" coding="TV" description="Tunnel Endpoint Identifier Data I">
-		    <field name="TunnelEndpointIdentifierDataI" lengthBit="32" type="integer"/>
+    
+    <!-- 16 : Tunnel Endpoint Identifier Data I. -->
+    <element tag="Tunnel Endpoint Identifier Data I:16" coding="TV" description="Tunnel Endpoint Identifier Data I">
+		    <field name="Tunnel Endpoint Identifier Data I" lengthBit="32" type="integer"/>
     </element>
         
-    <element tag="TunnelEndpointIdentifierControlPlane:17" coding="TV" description="Tunnel Endpoint Identifier Control Plane">
-		    <field name="TunnelEndpointIdentifierControlPlane" lengthBit="32" type="integer"/>
+    <!-- 17 : Tunnel Endpoint Identifier Control Plane. -->
+    <element tag="Tunnel Endpoint Identifier Control Plane:17" coding="TV" description="Tunnel Endpoint Identifier Control Plane">
+		    <field name="Tunnel Endpoint Identifier Control Plane" lengthBit="32" type="integer"/>
     </element>
         
+    <!-- 18 : Tunnel Endpoint Identifier Data II. -->
+    <element tag="Tunnel Endpoint Identifier Data II:18" coding="TV" description="Tunnel Endpoint Identifier Data II">
+		    <field name="Tunnel Endpoint Identifier Data II" lengthBit="32" type="integer"/>
+    </element>
+        
+    <!-- 19 : Teardown Ind. -->
+    <element tag="Teardown Ind:19" coding="TV">
+        <field name="spare" lengthBit="7" type="integer"/>
+		    <field name="Teardown Ind" lengthBit="1" type="enumeration">
+            <enum value="0" name="No" />
+            <enum value="1" name="Yes" />
+        </field>
+    </element>
+    
+    <!-- 20 : NSAPI. -->
     <element tag="NSAPI:20" coding="TV" description="Network Service Access Point Identifier">
-        <field name="Spare" lengthBit="4" type="integer"/>
-        <field name="NSAPI" lengthBit="4" type="integer"/>
+        <field name="spare" lengthBit="4" type="integer"/>
+		    <field name="NSAPI" lengthBit="4" type="integer"/>
     </element>
     
-    <element tag="GSNAddress:133" coding="TLV">
-		    <field name="GSNAddress" type="string"/>
-    </element>
+    <!-- 21 : RANAP Cause. -->
+    <!-- 22 : RAB Context. -->
+    <!-- 23 : Radio Priority SMS. -->
+    <!-- 24 : Radio Priority. -->
+    <!-- 25 : Packet Flow Id. -->
 
-    <element tag="MSISDN:134" coding="TLV" description="MS International PSTN/ISDN Number">
-    		<field name="MSISDN" type="number_bcd" description="MS International PSTN/ISDN Number"/>
-    </element>
-
-	  <element tag="extensionHeaderTypeList:141" coding="TLV">
-		    <field name="extensionHeaderTypeList" type="string"/>
+    <!-- 26 : Charging Characteristics. -->
+    <element tag="Charging Characteristics:26" coding="TV" description="Charging Characteristics">
+		    <field name="Charging Characteristics" lengthBit="16" type="integer"/>
     </element>
     
+    <!-- 27 : Trace Reference. -->
+    <!-- 28 : Trace Type. -->
+    <!-- 29 : MS Not Reachable Reason. -->
+    <!-- 30-116 : Reserved. (No TV types can now be allocated). -->
+    <!-- 117-126 : Reserved for the GPRS charging protocol (see GTP' in 3GPP TS 32.295 [33]). -->
+    <!-- 127 : Charging ID. -->
+
+    <!-- 128 : End User Address. -->
+    <element tag="End User Address:128" coding="TLV" description="End User Address">
+        <field name="spare" lengthBit="4" type="integer"/>
+        <field name="PDP Type Organization" lengthBit="4" type="enumeration">
+            <enum value="0" name="ETSI" />
+            <enum value="1" name="IETF" />
+        </field>
+        <field name="PDP Type Number" lengthBit="8" type="enumeration">
+            <enum value="1" name="PPP" /><!-- ETSI PDP type number 1. -->
+            <enum value="33" name="IPv4" /><!-- IETF PDP type number Ox21. -->
+            <enum value="87" name="IPv6" /><!-- IETF PDP type number Ox57. -->
+            <enum value="141" name="IPv4v6" /><!-- IETF PDP type number Ox8D. -->
+        </field>
+        <field name="PDP address" lengthBit="32" type="integer"/>
+    </element>
+	
+    <!-- 129 : MM Context. -->
+    <!-- 130 : PDP Context. -->
+
+    <!-- 131 : Access Point Name. -->
+    <element tag="APN:131" coding="TLV" description="Access Point Name">
+        <field name="APN01" type="length_string"/>
+        <field name="APN02" type="length_string"/>
+        <field name="APN03" type="length_string"/>
+        <field name="APN04" type="length_string"/>
+    </element>
+
+    <!-- 132 : Protocol Configuration Options. -->
+    <!-- TODO complex element see TS 24008 -->
+    <element tag="PCO:132" coding="TLV" description="Protocol Configuration Options">
+        <field name="ext" lengthBit="1" type="integer"/>
+        <field name="spare" lengthBit="4" type="integer"/>
+        <field name="Configuration protocol" lengthBit="3" type="integer"/>
+        <field name="Protocol ID1" lengthBit="16" type="integer"/>
+        <field name="Length of protocol ID1 contents" lengthBit="8" type="integer"/>
+        <field name="Protocol ID1 contents" type="binary"/>
+        <field name="Protocol ID2" lengthBit="16" type="integer"/>
+        <field name="Length of protocol ID2 contents" lengthBit="8" type="integer"/>
+        <field name="Protocol ID2 contents" type="binary"/>
+        <field name="Container ID1" lengthBit="16" type="integer"/>
+        <field name="Length of container ID1 contents" lengthBit="8" type="integer"/>
+        <field name="Container ID1 contents" type="binary"/>
+        <field name="Container ID2" lengthBit="16" type="integer"/>
+        <field name="Length of container ID1 contents" lengthBit="8" type="integer"/>
+        <field name="Container ID2  contents" type="binary"/>
+    </element>
+     
+    <!-- 133 : GSN Address. -->
+    <element tag="GSN Address:133" coding="TLV">
+        <field name="IPv6 address" lengthBit="128" type="ipv6_address"/>  <!-- if length == 16 -->
+        <field name="IPv4 address" lengthBit="32" type="ipv4_address"/>   <!-- if length == 4 -->
+    </element>
+	
+    <!-- 134 : MS International PSTN/ISDN Number (MSISDN). -->
+    <element tag="MSISDN:134" coding="TLV" description="Mobile Subscriber ISDN Number">
+    		<field name="MSISDN" type="number_bcd"/>
+    </element>
+
+    <!-- 135 : Quality of Service Profile. -->
+    <element tag="QoS Profile:135" coding="TLV" description="Quality of Service (QoS) Profile">
+    		<field name="Allocation/Retention Priority" lengthBit="8" type="integer"/>
+    		<field name="QoS Profile Data" type="binary"/>
+    </element>
+
+    <!-- 136 : Authentication Quintuplet. -->
+    <!-- 137 : Traffic Flow Template. -->
+    <!-- 138 : Target Identification. -->
+    <!-- 139 : UTRAN Transparent Container. -->
+    <!-- 140 : RAB Setup Information. -->
+
+    <!-- 141 : Extension Header Type List. -->
+	  <element tag="Extension Header Type List:141" coding="TL1V">
+		    <field name="Extension types list" type="binary"/>
+    </element>
+    
+    <!-- 142 : Trigger Id. -->
+    <!-- 143 : OMC Identity. -->
+    <!-- 144 : RAN Transparent Container. -->
+    <!-- 145 : PDP Context Prioritization. -->
+    <!-- 146 : Additional RAB Setup Information. -->
+    <!-- 147 : SGSN Number. -->
+    <!-- 148 : Common Flags. -->
+    <!-- 149 : APN Restriction. -->
+    <!-- 150 : Radio Priority LCS. -->
+
+    <!-- 151 : RAT Type. -->
+    <element tag="RAT Type:151" coding="TLV">
+        <field name="RAT Type value" lengthBit="8" type="enumeration">
+            <enum value="0" name="reserved" />
+            <enum value="1" name="UTRAN" />
+            <enum value="2" name="GERAN" />
+            <enum value="3" name="WLAN" />
+            <enum value="4" name="GAN" />
+            <enum value="5" name="HSPA Evolution" />
+            <enum value="6-255" name="spare" />
+        </field>
+    </element>
+	
+    <!-- 152 : User Location Information. -->
+    <element tag="ULI:152" coding="TLV" description="User Location Information">
+    		<field name="Geographic Location Type" lengthBit="8" type="enumeration">
+            <enum value="0" name="CGI" />
+            <enum value="1" name="SAI" />
+            <enum value="2" name="RAI" />
+        </field>
+        <field name="PLMN" type="number_mmc" description="MCC,MNC"/>
+    		<field name="LAC" lengthBit="16" type="integer" description="Location Area Code"/>
+    		<field name="CI" lengthBit="16" type="integer" description="Cell Identity"/>
+    		<field name="SAC" lengthBit="16" type="integer" description="Service Area Code"/>
+    		<field name="RAC" lengthBit="16" type="integer" description="Routing Area Code"/>
+    </element>
+
+    <!-- 153 : MS Time Zone. -->
+   <element tag="MS Time Zone:153" coding="TLV">   
+        <field name="Time Zone" lengthBit="8" type="integer"/>
+        <field name="spare" lengthBit="6" type="integer"/>
+        <field name="Daylight Saving Time" lengthBit="2" type="enumeration">
+            <enum value="0" name="No adjustment for Daylight Saving Time"/>
+            <enum value="1" name="+1 hour adjustment for Daylight Saving Time"/>
+            <enum value="2" name="+2 hours adjustment for Daylight Saving Time"/>
+            <enum value="3" name="Spare"/>
+        </field>
+    </element>
+    
+    <!-- 154 : IMEI(SV). -->
+    <element tag="IMEI(SV):154" coding="TLV" description="International Mobile Equipment Identity (and Software Version)">
+        <field name="IMEI(SV)" lengthBit="64" type="number_bcd"/>
+    </element>
+    
+    <!-- 155 : CAMEL Charging Information Container. -->
+    <!-- 156 : MBMS UE Context. -->
+    <!-- 157 : Temporary Mobile Group Identity (TMGI). -->
+    <!-- 158 : RIM Routing Address. -->
+    <!-- 159 : MBMS Protocol Configuration Options. -->
+    <!-- 160 : MBMS Service Area. -->
+    <!-- 161 : Source RNC PDCP context info. -->
+    <!-- 162 : Additional Trace Info. -->
+    <!-- 163 : Hop Counter. -->
+    <!-- 164 : Selected PLMN ID. -->
+    <!-- 165 : MBMS Session Identifier. -->
+    <!-- 166 : MBMS 2G/3G Indicator. -->
+    <!-- 167 : Enhanced NSAPI. -->
+    <!-- 168 : MBMS Session Duration. -->
+    <!-- 169 : Additional MBMS Trace Info. -->
+    <!-- 170 : MBMS Session Repetition Number. -->
+    <!-- 171 : MBMS Time To Data Transfer. -->
+    <!-- 172 : Reserved (NOTE 1). -->
+    <!-- 173 : BSS Container. -->
+    <!-- 174 : Cell Identification. -->
+    <!-- 175 : PDU Numbers. -->
+    <!-- 176 : BSSGP Cause. -->
+    <!-- 177 : Required MBMS bearer capabilities. -->
+    <!-- 178 : RIM Routing Address Discriminator. -->
+    <!-- 179 : List of set-up PFCs. -->
+    <!-- 180 : PS Handover XID Parameters. -->
+    <!-- 181 : MS Info Change Reporting Action. -->
+    <!-- 182 : Direct Tunnel Flags. -->
+    <!-- 183 : Correlation-ID. -->
+    <!-- 184 : Bearer Control Mode. -->
+    <!-- 185 : MBMS Flow Identifier. -->
+    <!-- 186 : MBMS IP Multicast Distribution. -->
+    <!-- 187 : MBMS Distribution Acknowledgement. -->
+    <!-- 188 : Reliable INTER RAT HANDOVER INFO . -->
+    <!-- 189 : RFSP Index. -->
+    <!-- 190 : Fully Qualified Domain Name (FQDN). -->
+    <!-- 191 : Evolved Allocation/Retention Priority I. -->
+    <!-- 192 : Evolved Allocation/Retention Priority II. -->
+    <!-- 193 : Extended Common Flags. -->
+    <!-- 194 : User CSG Information (UCI). -->
+    <!-- 195 : CSG Information Reporting Action. -->
+    <!-- 196 : CSG ID. -->
+    <!-- 197 : CSG Membership Indication (CMI). -->
+    <!-- 198 : Aggregate Maximum Bit Rate (AMBR). -->
+    <!-- 199 : UE Network Capability. -->
+    <!-- 200 : UE-AMBR. -->
+    <!-- 201 : APN-AMBR with NSAPI. -->
+    <!-- 202 : GGSN Back-Off Time. -->
+    <!-- 203 : Signalling Priority Indication. -->
+    <!-- 204 : Signalling Priority Indication with NSAPI. -->
+    <!-- 205 : Higher bitrates than 16 Mbps flag. -->
+    <!-- 206 : Reserved (NOTE1). -->
+    <!-- 207 : Additional MM context for SRVCC. -->
+    <!-- 208 : Additional flags for SRVCC. -->
+    <!-- 209 : STN-SR. -->
+    <!-- 210 : C-MSISDN. -->
+    <!-- 211 : Extended RANAP Cause. -->
+    <!-- 212 : eNodeB ID. -->
+    <!-- 213 : Selection Mode with NSAPI. -->
+    <!-- 214 : ULI Timestamp. -->
+    <!-- 215-238 : Spare. For future use.. -->
+    <!-- 239-250 : Reserved for the GPRS charging protocol (see GTP' in 3GPP TS 32.295 [33]). -->
+    <!-- 251 : Charging Gateway Address. -->
+    <!-- 252-254 : Reserved for the GPRS charging protocol (see GTP' in 3GPP TS 32.295 [33]). -->
+
+    <!-- 255 : Private Extension. -->
 	  <element tag="privateExtension:255" coding="TLV">
 		    <field name="extensionIdentifier" length="16" type="integer"/>
         <field name="extensionValue" type="string"/>
 	  </element>
-	
 </dictionary>
