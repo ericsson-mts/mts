@@ -256,12 +256,13 @@ public class SocketTcpBIO extends Thread
         return socket;
     }
     
-    private void setupSSLSocket(boolean clientMode) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, FileNotFoundException, IOException, UnrecoverableKeyException, KeyManagementException
+    private void setupSSLSocket(boolean clientMode) throws Exception
     {
-    	String certificateAlgorithm = "JKS";
-        String certificateServerPath = "C:/server.jks";
-        String certificateServerKeystorePassword = "ServerJKS";
-        String certificateServerKeyPassword = "ServerKey";        
+    	String certificateAlgorithm = Config.getConfigByName("tls.properties").getString("cert.ALGORITHM");
+        String certificateSSLVersion = Config.getConfigByName("tls.properties").getString("cert.SSL_VERSION");
+        String certificateServerPath = Config.getConfigByName("tls.properties").getString("cert.SERVER.DIRECTORY");
+        String certificateServerKeystorePassword = Config.getConfigByName("tls.properties").getString("cert.SERVER.KEYSTORE_PASSWORD");
+        String certificateServerKeyPassword = Config.getConfigByName("tls.properties").getString("cert.SERVER.KEY_PASSWORD");      
         char[] certificateKeystorePasswordArray;
         char[] certificateKeyPasswordArray;
         
@@ -286,7 +287,7 @@ public class SocketTcpBIO extends Thread
         System.setProperty("javax.net.ssl.trustStore", certificateServerPath);
 	    System.setProperty("javax.net.ssl.trustStorePassword", certificateServerKeystorePassword);
 	    
-	    SSLContext sslc = SSLContext.getInstance("SSLv3");
+	    SSLContext sslc = SSLContext.getInstance(certificateSSLVersion);
    	 	sslc.init(keyManagers, null, null);
    	 	
    	 	SSLSocketFactory sslSocketFactory = (SSLSocketFactory)sslc.getSocketFactory();
