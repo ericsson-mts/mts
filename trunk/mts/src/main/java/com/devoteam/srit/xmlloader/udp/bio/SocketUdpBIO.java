@@ -83,9 +83,10 @@ public class SocketUdpBIO extends Thread {
                 int remotePort = datagramPacket.getPort();
                 
                 if (channelUdp != null) {
-                    channelUdp.setRemoteHost(remoteHost);                    
+                    channelUdp.setRemoteHost(remoteHost);
                     channelUdp.setRemotePort(remotePort);
                     msg.setChannel(channelUdp);
+                    // GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "RECEIVE UDP msg : ", msg);
                     channelUdp.receiveMessage(msg);
                 }
                 else if (listenpointUdp != null) {
@@ -99,6 +100,7 @@ public class SocketUdpBIO extends Thread {
             		}
                     msg.setChannel(channel);
                     msg.setListenpoint(listenpointUdp);
+                    // GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "RECEIVE UDP msg : ", msg);
                     stack.receiveMessage(msg);
                 }
             }
