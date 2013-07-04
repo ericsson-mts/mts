@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.ElementQ931;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.gtp.data.ElementTL1V;
 import com.devoteam.srit.xmlloader.gtp.data.ElementTLIV;
 import com.devoteam.srit.xmlloader.gtp.data.ElementTLV;
 import com.devoteam.srit.xmlloader.gtp.data.ElementTV;
@@ -76,6 +77,10 @@ public abstract class ElementAbstract implements Cloneable
 		else if ("TLV".equals(coding))
 		{
 			newElement = new ElementTLV();
+		}
+		else if ("TL1V".equals(coding))
+		{
+			newElement = new ElementTL1V();
 		}
 		else if ("TV".equals(coding))
 		{

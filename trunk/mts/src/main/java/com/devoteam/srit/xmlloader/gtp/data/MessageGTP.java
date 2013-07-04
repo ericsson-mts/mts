@@ -193,6 +193,7 @@ public class MessageGTP
 
 	public void decodeFromBytes(byte[] data) throws Exception
 	{		
+		
 		Array array = new DefaultArray(data);
 		 
 		int version = array.getBits(0, 3);
@@ -217,7 +218,7 @@ public class MessageGTP
 		int offset = this.header.decodeFromArray(array, "", dictionary);		
 		int fieldLength = this.header.getLength() - offset + 4;
 		if (fieldLength > 1500)
-			fieldLength -= (fieldLength - 1500); // MODIF HERE
+			fieldLength -= (fieldLength - 1500);
 
 		Array elementArray = new DefaultArray(0);
 		if (fieldLength > 0)

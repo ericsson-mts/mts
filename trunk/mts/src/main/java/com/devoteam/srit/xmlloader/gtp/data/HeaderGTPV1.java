@@ -264,20 +264,11 @@ public class HeaderGTPV1 extends HeaderAbstract
     {
 		int size = 0;
 		size += 4;
-        if (this.seqNumFlag != 0)
-        {
-    		size += 2;	
-        }
-
-        if (this.nPduFlag != 0)
-        {
-    		size += 1;	
-        }
-        
-        if (this.extensionFlag != 0)
-        {
-    		size += 1;	
-        }
+		/**
+		 * According to 3GPP TS 29.060 spec, if one of those flags is set to 1, then all related fields are present after the header.
+		 */
+        if (this.seqNumFlag != 0 || this.nPduFlag != 0 || this.extensionFlag != 0)
+    		size += 4;	
 		return size;
     }
 
