@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client -->
+<scenario>
+  <parameter name="[tunnelEndpointId]" operation="set" value="0"/>
+  <parameter name="[sequenceNumber]" operation="set" value="43981"/>
+  <sendMessageGTP name="send message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+    <headerV1 extensionHeaderFlag="0" nPduNumberFlag="0"
+              type="Create PDP Context Request:16"
+              tunnelEndpointId="[tunnelEndpointId]"
+              sequenceNumber="[sequenceNumber]"/>
+
+    <!-- 3GPP TS 29.060 : The information elements shall be sorted, with the Type fields in ascending order, in the signalling messages. -->
+
+    <!-- IMSI - Conditional -->
+    <element tag="IMSI:2" description="International Mobile Subscriber Identity">
+      <field name="IMSI" value="208014420002670"/>
+    </element>
+
+    <!-- Routeing Area Identity (RAI) - Optional -->
+
+    <!-- Recovery - Optional -->
+    <element tag="Recovery:14" description="The Recovery information element indicates if the peer GSN has restarted.">
+      <field name="Recovery" value="36"/>
+    </element>
+
+    <!-- Selection mode - Conditional -->
+    <element tag="Selection Mode:15" description="The Selection mode information element indicates the origin of the APN in the message.">
+      <field name="spare" value="63"/><!-- Because b11111 value in dictionary is not yet taking into account. -->
+      <field name="Selection Mode" value="MS provided APN, subscription not verified"/>
+    </element>
+
+    <!-- Tunnel Endpoint Identifier Data I - Mandatory -->
+    <element tag="Tunnel Endpoint Identifier Data I:16" description="The Tunnel Endpoint Identifier for data transmission requested by the receiver of the flow.">
+      <field name="Tunnel Endpoint Identifier Data I" value="55834"/>
+    </element>
+
+    <!-- Tunnel Endpoint Identifier Control Plane - Conditional -->
+    <element tag="Tunnel Endpoint Identifier Control Plane:17" description="The Tunnel Endpoint Identifier for the control plane.">
+      <field name="Tunnel Endpoint Identifier Control Plane" value="1"/>
+    </element>
+
+    <!-- NSAPI - Mandatory -->
+    <element tag="NSAPI:20" description="The NSAPI information element contains an NSAPI identifying a PDP Context in a mobility management context specified by the Tunnel Endpoint Identifier Control Plane.">
+      <field name="spare" value="0"/>
+      <field name="NSAPI" value="5"/>
+    </element>
+
+    <!-- Linked NSAPI - Conditional -->
+
+    <!-- Charging Characteristics - Conditional -->
+    <element tag="Charging Characteristics:26" description="The charging characteristics information element is a way of informing both the SGSN and GGSN of the rules for producing charging information based on operator configured triggers.">
+      <field name="Charging Characteristics" value="2048"/>
+    </element>
+
+    <!-- Trace Reference - Optional -->
+    <!-- Trace Type - Optional -->
+    <!-- End User Address - Conditional -->
+    <element tag="End User Address:128" description="Specific information of the external packet data network accessed by the GPRS subscriber.">
+      <field name="spare" value="15"/>
+      <field name="PDP Type Organization" value="IETF"/>
+      <field name="PDP Type Number" value="IPv4"/>
+    </element>
+
+    <!-- Access Point Name - Conditional -->
+    <element tag="APN:131" description="Access Point Name">
+      <field name="APN01" value="otarie"/>
+      <field name="APN02" value="mnc001"/>
+      <field name="APN03" value="mcc208"/> 
+      <field name="APN04" value="gprs"/> 
+    </element>
+
+    <!-- Protocol Configuration Options - Optional -->
+    <element tag="PCO:132" description="The Protocol Configuration Options contains external network protocol options that may be necessary to transfer between the GGSN and the MS.">
+      <field name="ext" value="1"/>
+      <field name="spare" value="0"/>
+      <field name="Configuration protocol" value="0"/>
+      <field name="Protocol ID1" value="49187"/>
+      <field name="Length of protocol ID1 contents" value="17"/>
+      <field name="Protocol ID1 contents" value="01010011036d69670868656d6d656c6967"/> 
+    </element>
+
+    <!-- SGSN Address for signalling - Mandatory -->
+    <element tag="GSN Address:133">
+      <field name="IPv4 address" value="20.21.0.1"/>
+    </element>
+
+    <!-- SGSN Address for user traffic - Mandatory -->
+    <element tag="GSN Address:133">
+      <field name="IPv4 address" value="20.21.0.1"/>
+    </element>
+
+    <!-- MSISDN - Conditional -->
+    <element tag="MSISDN:134">
+      <field name="MSISDN" value="33645432029"/>
+    </element>
+
+    <!-- Quality of Service Profile - Mandatory -->
+    <element tag="QoS Profile:135" description="The Quality of Service (QoS) Profile shall include the values of the defined QoS parameters.">
+      <field name="Allocation/Retention Priority" value="0"/>
+      <field name="QoS Profile Data" value="0b921f"/>
+    </element>
+
+    <!-- TFT - Conditional -->
+    <!-- Trigger Id - Optional -->
+    <!-- OMC Identity - Optional -->
+    <!-- Common Flags - Optional -->
+    <!-- APN Restriction - Optional -->
+
+    <!-- RAT Type - Optional -->
+    <element tag="RAT Type:151">
+      <field name="RAT Type value" value="UTRAN"/>
+    </element>
+
+    <!-- User Location Information - Optional -->
+    <element tag="ULI:152" description="The User Location Information IE is used to indicate CGI/SAI/RAI of where the MS is currently located.">
+    	<field name="Geographic Location Type" value="CGI"/>
+      <field name="PLMN" value="208,01"/>
+      <field name="LAC" value="32227" description="Location Area Code"/>
+      <field name="CI" value="32557" description="Cell Identity"/>
+    </element>
+
+    <!-- MS Time Zone - Optional -->
+
+    <!-- IMEI(SV) - Conditional -->
+    <element tag="IMEI(SV):154">
+      <field name="IMEI(SV)" value="3579880243944501"/>
+    </element>
+
+    <!-- CAMEL Charging Information Container - Optional -->
+    <!-- Additional Trace Info - Optional -->
+    <!-- Correlation-ID - Optional -->
+    <!-- Evolved Allocation/Retention Priority I - Optional -->
+    <!-- Extended Common Flags - Optional -->
+    <!-- User CSG Information - Optional -->
+    <!-- APN-AMBR - Optional -->
+    <!-- Signalling Priority Indication - Optional -->
+    <!-- Private Extension - Optional -->
+
+
+  </sendMessageGTP>
+
+  <receiveMessageGTP name="receive message" request="false" type="Create PDP Context Request:16" result="Request accepted:128">
+    <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+    <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>             
+  </receiveMessageGTP>
+
+</scenario>
