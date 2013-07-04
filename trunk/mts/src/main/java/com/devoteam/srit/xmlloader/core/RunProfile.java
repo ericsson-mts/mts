@@ -56,15 +56,6 @@ public class RunProfile implements Cloneable, Serializable
 
     private boolean nothingToDo = false;
 
-
-    /**
-     * Constructor used for cloning.
-     */
-    private RunProfile(RunProfile profile)
-    {
-        this.parse(profile);
-    }
-
     /**
      * Parsing from an XML root.
      *   each "set" element must contain:
@@ -83,16 +74,6 @@ public class RunProfile implements Cloneable, Serializable
         return this.root;
     }
     
-    public void parse(RunProfile profile)
-    {
-        this.points = (ArrayList<Point>) profile.points.clone();
-        this.profilePeriod = profile.profilePeriod;
-        this.profileSize = profile.profileSize;
-        this.executions = profile.executions;
-        this.startTime = profile.startTime;
-        this.endTime = profile.endTime;
-    }
-
     public synchronized void parse(Element root) throws Exception
     {
         long now = System.currentTimeMillis();
@@ -376,12 +357,6 @@ public class RunProfile implements Cloneable, Serializable
     public long getExecutions()
     {
         return this.executions;
-    }
-
-    @Override
-    public RunProfile clone()
-    {
-        return new RunProfile(this);
     }
 
     /**
