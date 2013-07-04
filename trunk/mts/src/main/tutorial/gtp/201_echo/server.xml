@@ -14,11 +14,11 @@
     </receiveMessageGTP>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
-    <test parameter="[binary]" condition="binary.equals" value="37010004499602d200010200"/>
+    <test parameter="[binary]" condition="binary.equals" value="370100040000000000010200"/>
     
     <sendMessageGTP name="echo Response"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
-        <headerV1 type="Echo Response:2" tunnelEndpointId="[teId]" sequenceNumber="[seqNum]" nPduNumber="[nPduNum]" nextExtensionType="[nExtType]"/>
+        <headerV1 type="Echo Response:2" tunnelEndpointId="0" sequenceNumber="[seqNum]" nPduNumber="[nPduNum]" nextExtensionType="[nExtType]"/>
         <element tag="Recovery:14" >
             <field name="Recovery" value="23"/>
         </element>
@@ -31,11 +31,11 @@
     </receiveMessageGTP>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
-    <test parameter="[binary]" condition="binary.equals" value="30010000499602d2"/>
+    <test parameter="[binary]" condition="binary.equals" value="3001000000000000"/>
     
     <sendMessageGTP name="versionNotSupported"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
-        <headerV1 type="Version Not Supported:3" tunnelEndpointId="[teId]" />
+        <headerV1 type="Version Not Supported:3" tunnelEndpointId="0" />
     </sendMessageGTP>
 
 </scenario>
