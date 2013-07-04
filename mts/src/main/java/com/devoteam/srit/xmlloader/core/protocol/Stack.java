@@ -475,7 +475,7 @@ public abstract class Stack
     		com.devoteam.srit.xmlloader.tcp.ChannelTcp channelTcp = new com.devoteam.srit.xmlloader.tcp.ChannelTcp("Channel #" + Stack.nextTransactionId(), listenpoint, socket);
 	        return channelTcp;
     	}
-    	else if (socket.getClass().getName().equals("com.sun.net.ssl.internal.ssl.SSLSocketImpl")) {
+    	else if (socket.getClass().getName().equals("com.sun.net.ssl.internal.ssl.SSLSocketImpl") || socket.getClass().getName().equals("sun.security.ssl.SSLSocketImpl")) {
     		com.devoteam.srit.xmlloader.tls.ChannelTls channelTls = new com.devoteam.srit.xmlloader.tls.ChannelTls("Channel #" + Stack.nextTransactionId(), listenpoint, socket);
 	        return channelTls;
     	}
