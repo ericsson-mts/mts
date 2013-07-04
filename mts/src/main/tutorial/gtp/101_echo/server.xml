@@ -12,11 +12,11 @@
     </receiveMessageGTP>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
-    <test parameter="[binary]" condition="binary.equals" value="480100080000006f00000100"/>
+    <test parameter="[binary]" condition="binary.equals" value="4001000400000100"/>
     
     <sendMessageGTP name="send message"
                     remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 type="Echo Response:2" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
+        <headerV2 type="Echo Response:2" sequenceNumber="[seqNum]"/>
         <element tag="Recovery:3">
             <field name="Recovery" value="23"/>
         </element>
