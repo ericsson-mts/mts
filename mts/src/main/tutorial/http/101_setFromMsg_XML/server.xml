@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    
+    <receiveRequestHTTP name="Wait POST" method="POST">
+        <parameter name="[transaction_id]" operation="protocol.setFromMessage" value="message.transactionId"/>
+    </receiveRequestHTTP>
+
+    
+    <parameter name="[ContentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>
+    <test parameter="[ContentLength]" condition="string.equals" value="271"/>
+    <parameter name="[ContentType]" operation="protocol.setFromMessage" value="header.Content-Type"/>
+    <test parameter="[ContentType]" condition="string.equals" value="application/srgs+xml"/>
+
+    <parameter name="[eltGrammarRef]" operation="set">
+<![CDATA[<grammar xmlns:voxpilot="http://www.w3.org/2001/06/grammar" mode="voice" root="cities" xml:lang="en-GB" version="1.0">
+  <rule id="cities">
+    <one-of>
+      <item>chicago</item>
+      <item>san francisco</item>
+    </one-of>
+  </rule>
+</grammar>]]></parameter>
+    <!-- Selects all nodes with the name "nodename" -->
+    <parameter name="[eltGrammar]" operation="protocol.setFromMessage" value="content.xpath.grammar"/>
+    <test parameter="[eltGrammar]" condition="list.isEmpty"/>
+    <!-- Selects from the root node -->
+    <parameter name="[eltGrammar]" operation="protocol.setFromMessage" value="content.xpath./grammar"/>
+    <test parameter="[eltGrammar]" condition="string.equals" value="[eltGrammarRef]"/>
+    <!-- Selects nodes in the document from the current node that match the selection no matter where they are --> 
+    <parameter name="[eltGrammar]" operation="protocol.setFromMessage" value="content.xpath.//grammar"/>
+    <test parameter="[eltGrammar]" condition="string.equals" value="[eltGrammarRef]"/>
+    <!-- Selects the current node -->
+    <parameter name="[eltGrammar]" operation="protocol.setFromMessage" value="content.xpath../grammar"/>
+    <test parameter="[eltGrammar]" condition="list.isEmpty"/>
+    <!-- Selects the parent of the current node -->
+    <parameter name="[eltGrammar]" operation="protocol.setFromMessage" value="content.xpath.../grammar"/>
+    <test parameter="[eltGrammar]" condition="string.equals" value="[eltGrammarRef]"/>
+    <!-- Selects attributes -->
+    <parameter name="[eltGrammarAttrMode]" operation="protocol.setFromMessage" value="content.xpath.//grammar/@mode"/>
+    <test parameter="[eltGrammarAttrMode]" condition="string.equals" value="mode=&quot;voice&quot;"/>
+    <parameter name="[eltGrammarAttrRoot]" operation="protocol.setFromMessage" value="content.xpath.//grammar/@root"/>
+    <test parameter="[eltGrammarAttrRoot]" condition="string.equals" value="root=&quot;cities&quot;"/>
+    <!-- parameter name="[eltGrammarAttrXml:lang]" operation="protocol.setFromMessage" value="content.xpath.//grammar/@xml:lang"/>
+    <test parameter="[eltGrammarAttrXml:lang]" condition="string.equals" value="xml:lang=&quot;en-GB&quot;"/-->
+    <!-- parameter name="[eltGrammarAttrXmlns:voxpilot]" operation="protocol.setFromMessage" value="content.xpath.//grammar/@xmlns:voxpilot"/>
+    <test parameter="[eltGrammarAttrxmlns:voxpilot]" condition="string.equals" value="xmlns:voxpilot=&quot;http://www.w3.org/2001/06/grammar&quot;"/-->
+    <parameter name="[eltGrammarAttrVersion]" operation="protocol.setFromMessage" value="content.xpath.//grammar/@version"/>
+    <test parameter="[eltGrammarAttrVersion]" condition="string.equals" value="version=&quot;1.0&quot;"/>
+    <parameter name="[eltGrammarAttrBidon]" operation="protocol.setFromMessage" value="content.xpath.//grammar/@bidon"/>
+    <test parameter="[eltGrammarAttrBidon]" condition="list.isEmpty"/>
+    <!-- Selects content as text -->
+    <parameter name="[eltGrammarText]" operation="protocol.setFromMessage" value="content.xpath.//grammar/text()"/>
+    <parameter name="[eltGrammarText]" operation="string.trim" value="[eltGrammarText]"/>
+    <test parameter="[eltGrammarText]" condition="string.equals" value=""/>
+    
+    <parameter name="[eltRuleRef]" operation="set">
+<![CDATA[<rule id="cities">
+    <one-of>
+      <item>chicago</item>
+      <item>san francisco</item>
+    </one-of>
+  </rule>]]></parameter>
+    <!-- Selects all nodes with the name "nodename" -->
+    <parameter name="[eltRule]" operation="protocol.setFromMessage" value="content.xpath.rule"/>
+    <test parameter="[eltRule]" condition="string.equals" value="[eltRuleRef]"/>
+    <!-- Selects from the root node -->
+    <parameter name="[eltRule]" operation="protocol.setFromMessage" value="content.xpath./rule"/>
+    <test parameter="[eltRule]" condition="list.isEmpty"/>
+    <parameter name="[eltRule]" operation="protocol.setFromMessage" value="content.xpath./grammar/rule"/>
+    <test parameter="[eltRule]" condition="string.equals" value="[eltRuleRef]"/>
+    <!-- Selects nodes in the document from the current node that match the selection no matter where they are --> 
+    <parameter name="[eltRule]" operation="protocol.setFromMessage" value="content.xpath.//rule"/>
+    <test parameter="[eltRule]" condition="string.equals" value="[eltRuleRef]"/>
+    <parameter name="[eltRule]" operation="protocol.setFromMessage" value="content.xpath./grammar//rule"/>
+    <test parameter="[eltRule]" condition="string.equals" value="[eltRuleRef]"/>
+    <!-- Selects the current node -->
+    <parameter name="[eltRule]" operation="protocol.setFromMessage" value="content.xpath../rule"/>
+    <test parameter="[eltRule]" condition="string.equals" value="[eltRuleRef]"/>
+    <!-- Selects the parent of the current node -->
+    <parameter name="[eltRule]" operation="protocol.setFromMessage" value="content.xpath.../rule"/>
+    <test parameter="[eltRule]" condition="list.isEmpty"/>
+    <!-- Selects attributes -->
+    <parameter name="[eltRuleAttrId]" operation="protocol.setFromMessage" value="content.xpath.//rule/@id"/>
+    <test parameter="[eltRuleAttrId]" condition="string.equals" value="id=&quot;cities&quot;"/>
+    <parameter name="[eltRuleAttrBidon]" operation="protocol.setFromMessage" value="content.xpath.//rule/@bidon"/>
+    <test parameter="[eltRuleAttrBidon]" condition="list.isEmpty"/>
+    <!-- Selects content as text -->
+    <parameter name="[eltRuleText]" operation="protocol.setFromMessage" value="content.xpath.//rule/text()"/>
+    <parameter name="[eltRuleText]" operation="string.trim" value="[eltRuleText]"/>
+    <test parameter="[eltRuleText]" condition="string.equals" value=""/>
+    
+      <parameter name="[eltItemRef0]" operation="set">
+<![CDATA[<item>chicago</item>]]></parameter>
+      <parameter name="[eltItemRef1]" operation="set">
+<![CDATA[<item>san francisco</item>]]></parameter>
+    <!-- Selects all nodes with the name "nodename" -->
+    <parameter name="[eltItem]" operation="protocol.setFromMessage" value="content.xpath.item"/>
+    <!-- SURPRISING -->
+    <!--test parameter="[eltItem]" condition="string.equals" value="[eltItemRef]"/-->
+    <!-- Selects from the root node -->
+    <parameter name="[eltItem]" operation="protocol.setFromMessage" value="content.xpath./item"/>
+    <test parameter="[eltItem]" condition="list.isEmpty"/>
+    <parameter name="[eltItem]" operation="protocol.setFromMessage" value="content.xpath./grammar/rule/one-of/item"/>
+    <test parameter="[eltItem(0)]" condition="string.equals" value="[eltItemRef0]"/>
+    <test parameter="[eltItem(1)]" condition="string.equals" value="[eltItemRef1]"/>
+    <!-- Selects nodes in the document from the current node that match the selection no matter where they are --> 
+    <parameter name="[eltItem]" operation="protocol.setFromMessage" value="content.xpath.//item"/>
+    <test parameter="[eltItem(0)]" condition="string.equals" value="[eltItemRef0]"/>
+    <test parameter="[eltItem(1)]" condition="string.equals" value="[eltItemRef1]"/>
+    <parameter name="[eltItem]" operation="protocol.setFromMessage" value="content.xpath./grammar//item"/>
+    <test parameter="[eltItem(0)]" condition="string.equals" value="[eltItemRef0]"/>
+    <test parameter="[eltItem(1)]" condition="string.equals" value="[eltItemRef1]"/>
+    <!-- Selects the current node -->
+    <parameter name="[eltItem]" operation="protocol.setFromMessage" value="content.xpath../item"/>
+    <test parameter="[eltItem]" condition="list.isEmpty"/>
+    <!-- Selects the parent of the current node -->
+    <parameter name="[eltItem]" operation="protocol.setFromMessage" value="content.xpath.../item"/>
+    <test parameter="[eltItem]" condition="list.isEmpty"/>
+    <!-- Selects attributes -->
+    <parameter name="[eltItemAttrBidon]" operation="protocol.setFromMessage" value="content.xpath.//item/@bidon"/>
+    <test parameter="[eltItemAttrBidon]" condition="list.isEmpty"/>  
+    <!-- Selects content as text -->
+    <parameter name="[eltItemText]" operation="protocol.setFromMessage" value="content.xpath./grammar//item/text()"/>
+    <parameter name="[eltItemText]" operation="string.trim" value="[eltItemText]"/>
+    <test parameter="[eltItemText(0)]" condition="string.equals" value="chicago"/>
+    <test parameter="[eltItemText(1)]" condition="string.equals" value="san francisco"/>
+
+    <sendResponseHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+<![CDATA[
+HTTP/1.1 200 OK
+Connection: close
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader
+Content-Length:14
+Connection: close
+
+host message
+]]>
+    </sendResponseHTTP>
+    
+</scenario>

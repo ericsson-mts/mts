@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <sendRequestHTTP name="Send POST" server="http://[Remote-Address]">
+<![CDATA[
+POST / HTTP/1.1
+User-Agent: MTS : Mutilprotocol Test Suite
+Host: [Remote-Address]
+Accept: */*
+Cache-Control: max-stale=0
+Content-Length: auto
+Content-Type: application/srgs+xml
+
+<?xml version="1.0"?>
+<grammar mode="voice" root="cities" xml:lang="en-GB" xmlns:voxpilot="http://www.w3.org/2001/06/grammar" version="1.0">
+  <rule id="cities">
+    <one-of>
+      <item>chicago</item>
+      <item>san francisco</item>
+    </one-of>
+  </rule>
+</grammar>]]>
+    </sendRequestHTTP>
+    
+    <receiveResponseHTTP name="Send 200 OK" result="200"/>
+    
+    <!-- perform test -->
+    <parameter name="[Firstline]" operation="protocol.setFromMessage" value="firstline"/>
+    <test parameter="[Firstline]" condition="string.equals" value="HTTP/1.1 200 OK"/>
+    <parameter name="[Version]" operation="protocol.setFromMessage" value="firstline.version"/>
+    <test parameter="[Version]" condition="string.equals" value="HTTP/1.1"/>
+    <parameter name="[Uri]" operation="protocol.setFromMessage" value="firstline.uri"/>
+    <test parameter="[Uri]" condition="list.isEmpty"/>
+    <parameter name="[Method]" operation="protocol.setFromMessage" value="firstline.method"/>
+    <test parameter="[Method]" condition="list.isEmpty"/>
+    <parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.statuscode"/>
+    <test parameter="[StatusCode]" condition="string.equals" value="200"/>
+    <parameter name="[ReasonPhrase]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>
+    <test parameter="[ReasonPhrase]" condition="string.equals" value="OK"/>
+    <parameter name="[ContentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>
+    <test parameter="[ContentLength]" condition="string.equals" value="14"/>
+    <parameter name="[Content]" operation="protocol.setFromMessage" value="content"/>
+    <test parameter="[Content]" condition="string.contains" value="host message"/>
+    
+</scenario> 
