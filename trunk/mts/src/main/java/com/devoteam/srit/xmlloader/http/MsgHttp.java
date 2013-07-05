@@ -34,9 +34,15 @@ import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
+
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
+
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.List;
+
 import org.apache.http.Header;
 import org.apache.http.HttpMessage;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
@@ -47,6 +53,10 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpVersion;
 import org.apache.http.entity.ByteArrayEntity;
+import org.dom4j.Document;
+import org.dom4j.Node;
+import org.dom4j.XPath;
+import org.dom4j.io.SAXReader;
 
 /**
  *
@@ -413,59 +423,95 @@ public class MsgHttp extends Msg
             	Parameter.throwBadPathKeywordException(path);
             }
         }
-        else if (params.length == 1 && params[0].equalsIgnoreCase("content"))
+        else if (params.length >= 1 && params[0].equalsIgnoreCase("content"))
         {
-          	var.add(getMessageContent());
-        }
-        else if (path.equalsIgnoreCase("content:xml:operation"))
-        {
-            //
-            // Read name of method
-            //
-            String content = messageContent;
+        	if (params.length == 1)
+        	{
+        		var.add(getMessageContent());
+        	}
+        	else if ((params.length >= 3) && (params[1].equalsIgnoreCase("xpath")))
+          	{
+          		InputStream input = new ByteArrayInputStream(getMessageContent().getBytes());
+                SAXReader reader = new SAXReader(false);
+                reader.setEntityResolver(new XMLLoaderEntityResolver());
+                Document document = reader.read(input);
+                
+                String strXpath = params[2];
+                for (int i = 3; i < params.length; i++)
+                {
+                	strXpath += "." + params[i];
+                }
+                XPath xpath = document.createXPath(strXpath);
+                Object obj = xpath.evaluate(document.getRootElement());
 
-            //
-            // Read and delete the 3 first tags
-            //
-            for (int i = 0; i < 3; i++)
-            {
-                content = content.substring(content.indexOf(">") + 1);
-            }
-
-            //
-            // Read the first tag of the remaining content
-            //
-            String tag = content.substring(content.indexOf("<"), content.indexOf(">"));
-
-            //
-            // Read tag name
-            //
-            String name = tag.substring(1);
-            name.trim();
-            int endOfName;
-            name = name.replace("\r", "");
-            endOfName = name.indexOf(" ");
-            if (endOfName == -1 || name.indexOf("\n") != -1 && name.indexOf("\n") < endOfName)
-            {
-                endOfName = name.indexOf("\n");
-            }
-
-            if (endOfName == -1)
-            {
-                endOfName = name.length();
-            }
-
-            name = name.substring(0, endOfName);
-
-            //
-            // Remove namespace
-            //
-            if (name.indexOf(":") != -1)
-            {
-                name = name.substring(name.indexOf(":") + 1);
-            }
-
-            var.add(name);
+                if (obj instanceof List)
+                {
+                    List<Node> list = (List<Node>) obj;
+                    for (Node node : list)
+                    {
+                        var.add(node.asXML());
+                    }
+                }
+                else if (obj instanceof Node)
+                {
+                    Node node = (Node) obj;
+                    var.add(node.asXML());
+                }
+                else
+                {
+                    var.add(obj.toString());
+                }
+          	}
+	        else if (path.equalsIgnoreCase("content:xml:operation"))
+	        {
+	            //
+	            // Read name of method
+	            //
+	            String content = messageContent;
+	
+	            //
+	            // Read and delete the 3 first tags
+	            //
+	            for (int i = 0; i < 3; i++)
+	            {
+	                content = content.substring(content.indexOf(">") + 1);
+	            }
+	
+	            //
+	            // Read the first tag of the remaining content
+	            //
+	            String tag = content.substring(content.indexOf("<"), content.indexOf(">"));
+	
+	            //
+	            // Read tag name
+	            //
+	            String name = tag.substring(1);
+	            name.trim();
+	            int endOfName;
+	            name = name.replace("\r", "");
+	            endOfName = name.indexOf(" ");
+	            if (endOfName == -1 || name.indexOf("\n") != -1 && name.indexOf("\n") < endOfName)
+	            {
+	                endOfName = name.indexOf("\n");
+	            }
+	
+	            if (endOfName == -1)
+	            {
+	                endOfName = name.length();
+	            }
+	
+	            name = name.substring(0, endOfName);
+	
+	            //
+	            // Remove namespace
+	            //
+	            if (name.indexOf(":") != -1)
+	            {
+	                name = name.substring(name.indexOf(":") + 1);
+	            }
+	
+	            var.add(name);
+	        }
         }
         else
         {
@@ -500,7 +546,6 @@ public class MsgHttp extends Msg
         super.setTransactionId(transactionId);
         
         if(isRequest() && null != getType()) return;
-        
         
         try
         {
