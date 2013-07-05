@@ -70,6 +70,7 @@ public class PluggableParameterOperatorString extends AbstractPluggableParameter
     final private String NAME_S_RANDOM = "string.random";
     final private String NAME_S_DIGEST = "string.digest";
     final private String NAME_S_HMAC = "string.hmac";
+    final private String NAME_TRIM  = "string.trim";
 
     public PluggableParameterOperatorString()
     {
@@ -96,6 +97,7 @@ public class PluggableParameterOperatorString extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_S_RANDOM));
         this.addPluggableName(new PluggableName(NAME_S_DIGEST));
         this.addPluggableName(new PluggableName(NAME_S_HMAC));
+        this.addPluggableName(new PluggableName(NAME_TRIM));
     }
 
     @Override
@@ -223,7 +225,11 @@ public class PluggableParameterOperatorString extends AbstractPluggableParameter
                 DefaultArray data = new DefaultArray(param1.get(i).toString().getBytes());
                 MacArray array = new MacArray(data, algo.get(i).toString(), secret);
                 result.add(Array.toHexString(array));
-            }else
+            }
+            else if (name.equalsIgnoreCase(NAME_TRIM))
+            {
+                result.add(String.valueOf(param1.get(i).toString().trim()));
+            } else
             {
                 throw new RuntimeException("unsupported operator " + name);
             }
