@@ -77,7 +77,7 @@ public class TextMessage {
 
     public void parse(String msg) throws Exception {
         // case a header is contining at the next line
-        msg = msg.trim();
+        // msg = msg.trim();
         msg = Utils.replaceNoRegex(msg, "\r\n", "\n");
         msg = Utils.replaceNoRegex(msg, "\n", "\r\n");
 
@@ -88,10 +88,15 @@ public class TextMessage {
 
         // get of the content of the message
         int iPosContent = msg.indexOf("\r\n\r\n");
-        if (iPosContent < 0) {
-            iPosContent = msg.length();
+        String content;
+        if (iPosContent > 0) {
+        	content = msg.substring(iPosContent + 4);
         }
-        String content = msg.substring(iPosContent).trim();
+        else
+        {
+        	content = "";
+        	iPosContent = msg.length();
+        }
         if (addCRLFContent > 0 && content.length() > 0) {
             for (int i = 0; i < addCRLFContent; i++) {
                 content += "\r\n";
@@ -115,7 +120,7 @@ public class TextMessage {
         // parsing of the content of the message
         Header contentType = parser.getHeader("Content-Type");
         Header boundary = contentType.parseParameter("boundary", ";", '=', "<>", "\"\"");
-        contentParser = new ContentParser(protocol,content, boundary.getHeader(0));
+        contentParser = new ContentParser(protocol, content.trim(), boundary.getHeader(0));
 
         // calculate the complete message
         StringBuilder buff = new StringBuilder(this.headers);
