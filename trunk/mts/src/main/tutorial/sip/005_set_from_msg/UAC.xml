@@ -92,13 +92,6 @@ Content-Disposition: recipient-list
 <parameter name="[msgInitial]" operation="protocol.setFromMessage" value="message"/>
 
 <parameter name="[testcase:sentMessageLength]" operation="protocol.setFromMessage" value="message.length"/>
-<!-- If the property nsn.ADD_CRLF_CONTENT is set to "True", then the IMSLoader SIP stack automatically adds a CRLF (2 characters) at the end of the Content block if present only. -->
-<parameter name="[propertyADD_CRLF_CONTENT]" operation="file.readproperty" value="sip.properties" value2="nsn.ADD_CRLF_CONTENT"/>
-<if><condition><test parameter="[propertyADD_CRLF_CONTENT]" condition="boolean.equals" value="True"/></condition>
-<then>
-<parameter name="[testcase:sentMessageLength]" operation="number.substract" value="[testcase:sentMessageLength]" value2="2"/>
-</then   >
-</if>
 
 <parameter name="[timestamp2]" operation="protocol.setFromMessage" value="message.timestamp"/>  
 <parameter name="[diffTimestamp]" operation="number.substract" value="[timestamp2]" value2="[timestamp1]"/>
