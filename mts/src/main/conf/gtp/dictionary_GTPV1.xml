@@ -197,7 +197,16 @@
     <!-- 4 : Temporary Logical Link Identity (TLLI). -->
     <!-- 5 : Packet TMSI (P-TMSI). -->
     <!-- 6-7 : Spare. -->
+
     <!-- 8 : Reordering Required. -->
+    <element tag="Reordering Required:8" coding="TV" description="Reordering Required">
+        <field name="spare" lengthBit="7" type="integer"/>
+        <field name="Reordering Required" lengthBit="1" type="enumeration">
+            <enum value="0" name="No"/>
+            <enum value="1" name="Yes"/>
+       </field>
+    </element>
+
     <!-- 9 : Authentication Triplet. -->
     <!-- 10 : Spare. -->
     <!-- 11 : MAP Cause. -->
@@ -266,7 +275,11 @@
     <!-- 29 : MS Not Reachable Reason. -->
     <!-- 30-116 : Reserved. (No TV types can now be allocated). -->
     <!-- 117-126 : Reserved for the GPRS charging protocol (see GTP' in 3GPP TS 32.295 [33]). -->
+
     <!-- 127 : Charging ID. -->
+    <element tag="Charging ID:127" coding="TV">
+		    <field name="Charging ID" lengthBit="32" type="integer"/>
+    </element>
 
     <!-- 128 : End User Address. -->
     <element tag="End User Address:128" coding="TLV" description="End User Address">
@@ -339,7 +352,7 @@
     <!-- 140 : RAB Setup Information. -->
 
     <!-- 141 : Extension Header Type List. -->
-	  <element tag="Extension Header Type List:141" coding="TL1V">
+	  <element tag="Extension Header Type List:141" coding="TLV">
 		    <field name="Extension types list" type="binary"/>
     </element>
     
@@ -426,7 +439,15 @@
     <!-- 181 : MS Info Change Reporting Action. -->
     <!-- 182 : Direct Tunnel Flags. -->
     <!-- 183 : Correlation-ID. -->
+
     <!-- 184 : Bearer Control Mode. -->
+    <element tag="Bearer Control Mode:184" coding="TV" description="Bearer Control Mode">
+        <field name="Bearer Control Mode" lengthBit="8" type="enumeration">
+            <enum value="0" name="MS_only"/>
+            <enum value="1" name="MS/NW"/>
+       </field>
+    </element>
+
     <!-- 185 : MBMS Flow Identifier. -->
     <!-- 186 : MBMS IP Multicast Distribution. -->
     <!-- 187 : MBMS Distribution Acknowledgement. -->
