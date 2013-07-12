@@ -71,44 +71,7 @@ public class PluggableParameterOperatorXPath extends AbstractPluggableParameterO
             {
                 String var1 = param1.get(i).toString();
                 String var2 = param2.get(i).toString();
-                if (!var1.startsWith("<?"))
-                {
-                    var1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + var1;
-                }
-
-                InputStream input = new ByteArrayInputStream(var1.getBytes());
-                SAXReader reader = new SAXReader(false);
-                reader.setEntityResolver(new XMLLoaderEntityResolver());
-                Document document = reader.read(input);
-                
-                XPath xpath = document.createXPath(var2);
-                // DefaultXPath xpath = new DefaultXPath(var2);
-                /* NOT USEFUL
-                Map uris = new HashMap();
-                uris.put("SOAP-ENV", "http://schemas.xmlsoap.org/soap/envelope/");
-                uris.put("m", "urn:xmethodsBabelFish");
-                xpath.setNamespaceURIs(uris);
-                */
-                
-                Object obj = xpath.evaluate(document.getRootElement());
-
-                if (obj instanceof List)
-                {
-                    List<Node> list = (List<Node>) obj;
-                    for (Node node : list)
-                    {
-                        result.add(node.asXML());
-                    }
-                }
-                else if (obj instanceof Node)
-                {
-                    Node node = (Node) obj;
-                    result.add(node.asXML());
-                }
-                else
-                {
-                    result.add(obj.toString());
-                }
+	    		result.applyXPath(var1, var2, false);
             }
         }
         catch (Exception e)

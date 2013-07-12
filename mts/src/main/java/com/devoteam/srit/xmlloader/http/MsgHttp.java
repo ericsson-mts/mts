@@ -25,7 +25,6 @@ package com.devoteam.srit.xmlloader.http;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -57,6 +56,9 @@ import org.dom4j.Document;
 import org.dom4j.Node;
 import org.dom4j.XPath;
 import org.dom4j.io.SAXReader;
+import org.dom4j.tree.DefaultAttribute;
+import org.dom4j.tree.DefaultElement;
+import org.dom4j.tree.DefaultText;
 
 /**
  *
@@ -429,39 +431,23 @@ public class MsgHttp extends Msg
         	{
         		var.add(getMessageContent());
         	}
-        	else if ((params.length >= 3) && (params[1].equalsIgnoreCase("xpath")))
+        	else if ((params.length > 1) && (params[1].equalsIgnoreCase("xml")))
           	{
-          		InputStream input = new ByteArrayInputStream(getMessageContent().getBytes());
-                SAXReader reader = new SAXReader(false);
-                reader.setEntityResolver(new XMLLoaderEntityResolver());
-                Document document = reader.read(input);
-                
-                String strXpath = params[2];
-                for (int i = 3; i < params.length; i++)
-                {
-                	strXpath += "." + params[i];
-                }
-                XPath xpath = document.createXPath(strXpath);
-                Object obj = xpath.evaluate(document.getRootElement());
-
-                if (obj instanceof List)
-                {
-                    List<Node> list = (List<Node>) obj;
-                    for (Node node : list)
-                    {
-                        var.add(node.asXML());
-                    }
-                }
-                else if (obj instanceof Node)
-                {
-                    Node node = (Node) obj;
-                    var.add(node.asXML());
-                }
+        		if ((params.length > 3) && (params[2].equalsIgnoreCase("xpath")))
+        		{
+		            String strXpath = params[3];
+		            for (int i = 4; i < params.length; i++)
+		            {
+		            	strXpath += "." + params[i];
+		            }
+		    		var.applyXPath(getMessageContent(), strXpath, true);
+        		}
                 else
                 {
-                    var.add(obj.toString());
+                	Parameter.throwBadPathKeywordException(path);
                 }
           	}
+        	// not documented features
 	        else if (path.equalsIgnoreCase("content:xml:operation"))
 	        {
 	            //
@@ -511,6 +497,10 @@ public class MsgHttp extends Msg
 	            }
 	
 	            var.add(name);
+	        }
+	        else
+	        {
+	        	Parameter.throwBadPathKeywordException(path);
 	        }
         }
         else

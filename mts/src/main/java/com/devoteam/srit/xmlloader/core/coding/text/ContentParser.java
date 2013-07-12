@@ -41,104 +41,161 @@ public class ContentParser {
     }
 
     public void addContentParameter(Parameter var, String[] params, String path) throws Exception {
-        if (params.length == 1 && params[0].toLowerCase().startsWith("content")) {
-            try {
+        if (params.length == 1 && params[0].toLowerCase().startsWith("content")) 
+        {
+            try 
+            {
                 // case no content
-                if (content == null || content.length() == 0) {
+                if (content == null || content.length() == 0) 
+                {
                     return;
                 }
 
                 // case no index in the path => the entire content
                 int posBegin = params[0].indexOf("(");
                 int posEnd = params[0].indexOf(")");
-                if ((posBegin < 0) || (posEnd < 0)) {
+                if ((posBegin < 0) || (posEnd < 0)) 
+                {
                     var.add(content);
                     return;
                 }
                 int part = Integer.valueOf(params[0].substring(posBegin + 1, posEnd));
                 var.add(multipartArray[part]);
-            } catch (Exception e) {
+            } 
+            catch (Exception e) 
+            {
                 throw new ExecutionException("Error in content content: " + e.getMessage());
             }
-        } else if (params.length == 2 && params[0].toLowerCase().startsWith("content")) {
-            if (multipartArray != null) {
+        } 
+        else if (params.length == 2 && params[0].toLowerCase().startsWith("content")) 
+        {
+            if (multipartArray != null) 
+            {
                 // case an index in the path => the specific content
                 int posBegin = params[0].indexOf("(");
                 int posEnd = params[0].indexOf(")");
-                if ((posBegin >= 0) && (posEnd >= 0)) {
+                if ((posBegin >= 0) && (posEnd >= 0)) 
+                {
                     int part = Integer.valueOf(params[0].substring(posBegin + 1, posEnd));
                     content = multipartArray[part].trim();
                 }
             }
             //---------------------------------------------------------------------- content(X):Type -
-            if (params[1].equalsIgnoreCase("Type")) {
-                try {
-                    if ((content != null) && multipartArray != null && multipartArray.length > 1) {
+            if (params[1].equalsIgnoreCase("Type")) 
+            {
+                try 
+                {
+                    if ((content != null) && multipartArray != null && multipartArray.length > 1) 
+                    {
                         var.add(content.substring(0, content.indexOf("\r\n")));
                     }
-                } catch (Exception e) {
+                } 
+                catch (Exception e) 
+                {
                     throw new ExecutionException("Error in content content:Type : " + e.getMessage());
                 }
             } //---------------------------------------------------------------------- content(X):Sdp -
-            else if (params[1].equalsIgnoreCase("Sdp")) {
-                try {
-                    if (content != null) {
+            else if (params[1].equalsIgnoreCase("Sdp")) 
+            {
+                try 
+                {
+                    if (content != null) 
+                    {
                         var.add(content.substring(content.indexOf("\r\n\r\n") + 1, content.length()));
-                    } else {
+                    } 
+                    else 
+                    {
                         String sdpContent = content;
                         sdpContent = content.substring(content.indexOf("\r\n\r\n") + 1, content.length());
                         var.add(sdpContent);
                     }
-                } catch (Exception e) {
+                } 
+                catch (Exception e) 
+                {
                     throw new ExecutionException("Error in content:Sdp : " + e.getMessage());
                 }
             }
-        } else if (params.length > 2 && params[1].equalsIgnoreCase("Sdp")) {
+        } 
+        else if (params.length > 2 && params[1].equalsIgnoreCase("Sdp")) 
+        {
             String sdpContent = content;
             // case an index in the path => the specific content
             int posBegin = params[0].indexOf("(");
             int posEnd = params[0].indexOf(")");
-            if ((posBegin >= 0) && (posEnd >= 0)) {
+            if ((posBegin >= 0) && (posEnd >= 0)) 
+            {
                 int part = Integer.valueOf(params[0].substring(posBegin + 1, posEnd));
                 if (multipartArray != null) {
-                    try {
+                    try 
+                    {
                         sdpContent = multipartArray[part].trim();
-                    } catch (Exception e) {
+                    } catch (Exception e) 
+                    {
                         e.printStackTrace();
                         throw new ExecutionException("Error in content:Sdp : " + e.getMessage());
                     }
-                } else {
+                } 
+                else 
+                {
                     sdpContent = content;
                 }
             }
             sdpContent = sdpContent.substring(sdpContent.indexOf("\r\n\r\n") + 1, sdpContent.length()).trim();
-            if (sdpContent == null || sdpContent.length() <= 0) {
+            if (sdpContent == null || sdpContent.length() <= 0) 
+            {
                 return;
             }
             PluggableParameterOperatorSetFromSDP.addSDPParameter(var, params, sdpContent, 2, path);
-
         }
-    }
-
-    /** Get the parts content of this message */
-    private static String[] contentSDPPart2(String content, String contentBoundary) throws Exception {
-        String[] multipartArray = null;
-        String[] multipartFinalArray;
-        if (contentBoundary != null) {
-            multipartArray = Utils.splitNoRegex(content, contentBoundary);
-            multipartFinalArray = new String[multipartArray.length];
-            int j = 0;
-            for (int i = 0; i < multipartArray.length; i++) {
-                if (multipartArray[i].length() > 0) {
-                    multipartFinalArray[j] = multipartArray[i];
-                    j++;
+    	else if ((params.length > 1) && (params[1].equalsIgnoreCase("xml")))
+      	{
+            String xmlContent = content;
+            // case an index in the path => the specific content
+            int posBegin = params[0].indexOf("(");
+            int posEnd = params[0].indexOf(")");
+            if ((posBegin >= 0) && (posEnd >= 0)) 
+            {
+                int part = Integer.valueOf(params[0].substring(posBegin + 1, posEnd));
+                if (multipartArray != null) {
+                    try 
+                    {
+                        xmlContent = multipartArray[part].trim();
+                    } catch (Exception e) 
+                    {
+                        e.printStackTrace();
+                        throw new ExecutionException("Error in content:Sdp : " + e.getMessage());
+                    }
+                } 
+                else 
+                {
+                    xmlContent = content;
                 }
             }
-            return multipartFinalArray;
-        }
-        multipartFinalArray = new String[1];
-        multipartFinalArray[0] = content;
-        return multipartFinalArray;
+            xmlContent = xmlContent.substring(xmlContent.indexOf("\r\n\r\n") + 1, xmlContent.length()).trim();
+            if (xmlContent == null || xmlContent.length() <= 0) 
+            {
+                return;
+            }
+
+    		if ((params.length > 3) && (params[2].equalsIgnoreCase("xpath")))
+    		{
+	            String strXpath = params[3];
+	            for (int i = 4; i < params.length; i++)
+	            {
+	            	strXpath += "." + params[i];
+	            }
+	            var.applyXPath(xmlContent, strXpath, false);
+    		}
+            else
+            {
+            	Parameter.throwBadPathKeywordException(path);
+            }
+      	}
+        else
+        {
+        	Parameter.throwBadPathKeywordException(path);
+        } 
+
     }
 
     public String[] contentSDPPart(String protocol, String content, String contentBoundary) throws Exception {
