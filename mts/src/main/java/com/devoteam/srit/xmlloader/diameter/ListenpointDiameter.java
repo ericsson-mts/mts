@@ -336,7 +336,7 @@ public class ListenpointDiameter extends Listenpoint
 	        boolean error = false;
 	        while (!error) {
 	            try {
-	                int value = stack.getConfig().getInteger("capability.SUPPORTED_VENDOR." + i);
+	                int value = stack.getConfig().getInteger("capability.SUPPORTED_VENDORID." + i);
 	                capability.addSupportedVendor(value );
 	                i = i + 1;
 	            } catch (Exception e) {
