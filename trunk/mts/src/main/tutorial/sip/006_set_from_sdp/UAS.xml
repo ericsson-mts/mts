@@ -169,7 +169,17 @@
     <!--parameter name="[SDPRepeatTimeDuration]" operation="protocol.setFromMessage" value="content(0).Sdp.RepeatTime.Duration"/-->
     <!--parameter name="[SDPRepeatTimeInterval]" operation="protocol.setFromMessage" value="content(0).Sdp.RepeatTime.Duration.Interval"/-->
     <!--parameter name="[SDPRepeatTimeOffset]" operation="protocol.setFromMessage" value="content(0).Sdp.RepeatTime.Duration.Offset"/-->
-       
+
+    <!-- test content(N):xml:xpath:xxx -->
+    <parameter name="[XMLlistRef]" operation="set">
+<![CDATA[<list>
+<entry uri="bob"/>
+</list>]]></parameter>
+    <parameter name="[XMLList]" operation="protocol.setFromMessage" value="content(1).XML.xpath./resource-lists/list"/>
+    <test parameter="[XMLList]" condition="string.equals" value="[XMLlistRef]"/>
+    <parameter name="[XMLEntryURI]" operation="protocol.setFromMessage" value="content(1).xml.XPATH.//list/entry/@uri"/>
+    <test parameter="[XMLEntryURI]" condition="string.equals" value="bob"/>
+
    <sendMessageSIP name="Send 100 Trying">
 <![CDATA[SIP/2.0 100 Trying
 To: [To];tag=[localTag]

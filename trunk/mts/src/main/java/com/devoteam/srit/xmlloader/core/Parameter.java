@@ -25,13 +25,25 @@ package com.devoteam.srit.xmlloader.core;
 
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 import com.devoteam.srit.xmlloader.core.coding.text.Header;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.dom4j.Document;
+import org.dom4j.Node;
+import org.dom4j.XPath;
+import org.dom4j.io.SAXReader;
+import org.dom4j.tree.DefaultAttribute;
+import org.dom4j.tree.DefaultElement;
+import org.dom4j.tree.DefaultText;
 
 /**
  *
@@ -164,6 +176,71 @@ public class Parameter {
         }
     }
 
+    public void applyXPath(String xml, String xpath, boolean deleteNS) throws Exception
+    {
+		// remove beginning to '<' character
+		int iPosBegin = xml.indexOf('<');
+		if (iPosBegin > 0)
+		{
+			xml = xml.substring(iPosBegin);
+		}
+		// remove from '>' character to the end
+		int iPosEnd = xml.lastIndexOf('>');
+		if ((iPosEnd > 0) && (iPosEnd < xml.length() - 1))
+		{
+			xml = xml.substring(0, iPosEnd + 1);
+		}
+		
+		int iPosXMLLine = xml.indexOf("<?xml");
+		if (iPosXMLLine < 0)
+		{
+			xml = "<?xml version='1.0'?>" + xml;
+		}
+		
+		// remove the namespace because the parser does not support them if there are not declare in the root node
+		if (deleteNS)
+		{
+			xml = xml.replaceAll("<[a-zA-Z\\.0-9_]+:", "<");
+			xml = xml.replaceAll("</[a-zA-Z\\.0-9_]+:", "</");
+		}
+		
+		InputStream input = new ByteArrayInputStream(xml.getBytes());
+	    SAXReader reader = new SAXReader(false);
+	    reader.setEntityResolver(new XMLLoaderEntityResolver());
+	    Document document = reader.read(input);
+	    
+	    XPath xpathObject = document.createXPath(xpath);
+	    Object obj = xpathObject.evaluate(document.getRootElement());
+	
+	    if (obj instanceof List)
+	    {
+	        List<Node> list = (List<Node>) obj;
+	        for (Node node : list)
+	        {
+	            add(node.asXML());
+	        }
+	    }
+	    else if (obj instanceof DefaultElement)
+	    {
+	        Node node = (Node) obj;
+	        add(node.asXML());
+	    }
+	    else if (obj instanceof DefaultAttribute)
+	    {
+	    	Node node = (Node) obj;
+	        add(node.getStringValue());
+	    }
+	    else if (obj instanceof DefaultText)
+	    {
+	    	Node node = (Node) obj;
+	        add(node.getText());
+	    }
+	    else
+	    {
+	        add(obj.toString());
+	    }
+    }
+    
     public void addAll(Collection collection) {
         for(Object object:collection){
             if(null != object){
