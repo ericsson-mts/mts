@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageGTP name="receive message" request="true" type="Delete Session Request:36">
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/> 
+    </receiveMessageGTP>
+                                    
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[binary]" condition="binary.equals" value="48240082a7d420660000c8000200020010004900010005560027003f62f210014d014d62f270014d00de02f810014dfaff02f802022b02f8700002083402f801029a4d000400080000004e001a008080211001000010810600000000830600000000000d00000a008700010000570009018695962002ac14462b720002004000ff0002000010"/>
+  
+    <parameter name="[tunnelEndpointId]" operation="set" value="17767"/>
+    <sendMessageGTP name="send message"
+                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+        <headerV2 type="Delete Session Response:37" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
+        <element tag="Cause:2" >
+            <field name="Cause value" value="Request accepted:16"/>
+            <field name="spare" value="0"/>
+            <field name="PCE" value="0"/>
+            <field name="BCE" value="0"/>
+            <field name="CS" value="Originated by the node sending the message:0"/> 
+        </element>
+		 <element tag="Recovery:3" >
+            <field name="Recovery" value="123"/>
+        </element>
+		<!-- TODO complex element see TS 24008 -->
+        <element tag="PCO:78" description="Protocol Configuration Options (PCO)">
+            <field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
+        </element>
+		<element tag="Private Extension:255" >
+			<field name="Enterprise ID" value="16"/>
+			<field name="Proprietary value" type="properties"/>
+		</element>
+    </sendMessageGTP>
+    
+</scenario>
