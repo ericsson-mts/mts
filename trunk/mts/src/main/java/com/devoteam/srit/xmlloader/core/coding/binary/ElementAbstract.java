@@ -175,16 +175,20 @@ public abstract class ElementAbstract implements Cloneable
             	if (value != null)
             	{
 			        field.setValue(value, offset, this.fieldsArray);
-			        int length = field.length;
-			        if (length != 0)
-			        {
-				        offset += length;
-			        }
-			        else
-			        {
-				        offset = this.fieldsArray.length * 8;
-			        }
             	}
+            	else
+            	{
+            		field.setOffset(offset);
+            	}
+		        int length = field.length;
+		        if (length != 0)
+		        {
+			        offset += length;
+		        }
+		        else
+		        {
+			        offset = this.fieldsArray.length * 8;
+		        }
             }
             else 
             {
