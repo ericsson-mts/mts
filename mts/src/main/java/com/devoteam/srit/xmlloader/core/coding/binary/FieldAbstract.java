@@ -40,6 +40,10 @@ import org.dom4j.Element;
 public abstract class FieldAbstract 
 {
 
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
 	protected String name;
     protected int length;
 
