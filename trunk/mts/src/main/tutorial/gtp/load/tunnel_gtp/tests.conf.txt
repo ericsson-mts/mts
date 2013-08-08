@@ -1,0 +1,225 @@
+#############################################
+# Common configuration for GTPv1 and GTPv2. #
+# Followed by specific GTPv1 configuration, #
+# and then by specific GTPv2 configuration. #
+#############################################
+
+# Tunnel Endpoint Identifier
+TEID = 2147606573
+
+# Recovery
+Recovery = 36
+
+# Selection Mode
+# Possible enumerated value :
+# 0 : MS or network provided APN, subscribed verified
+# 1 : MS provided APN, subscription not verified
+# 2 : Network provided APN, subscription not verified
+# 3 : For future use. If received, shall be interpreted as the value 2.
+selectionMode = 1
+
+########################
+# GTPv1 3GPP TS 29.060 #
+########################
+
+# Sequence number
+# Value in [0,65535].
+v1SequenceNumber = 65535
+
+# Quality of Service (QoS) Profile - Type = 135 (Decimal)
+# The allocation/retention priority octet that is defined in 3GPP TS 23.107 : it specifies the relative importance compared to other UMTS bearers for allocation and retention of the UMTS bearer.
+CreatePDPcontextRequestAllocationRetentionPriority = 1
+UpdatePDPcontextRequestAllocationRetentionPriority = 1
+# The QoS Profile Data field is coded according to 3GPP TS 24.008 [5] Quality of Service IE, octets 3-m.
+# Give the binary value
+CreatePDPcontextRequestQoSprofileData = 0b921f
+UpdatePDPcontextRequestQoSprofileData1 = 13931f71967464644a0101
+UpdatePDPcontextRequestQoSprofileData2 = 13931f71967060644a0202
+
+# International Mobile Subscriber Identity (IMSI) - Type = 2 (Decimal)
+v1IMSI = 208014420002671
+
+# MSISDN
+v1MSISDN = 1933623777771
+
+# Access Point Name (APN)
+v1APN01 = otarie
+v1APN02 = mnc001
+v1APN03 = mcc208
+v1APN04 = gprs
+
+# Mobile Equipment Identity (MEI)
+# contains either the IMEI (15 digits) or the IMEISV (16 digits)
+v1MEI = 3579880243944501
+
+# RAT Type
+# Possible enumerated value : <reserved> (0), UTRAN (1), GERAN (2), WLAN (3), GAN (4), HSPA Evolution (5), <spare> (6-255)
+v1RATtype = UTRAN
+
+# Tunnel Endpoint Identifier Data I - Type = 16 (Decimal)
+# The Tunnel Endpoint Identifier Data I information element contains the Tunnel Endpoint Identifier for data transmission requested by the receiver of the flow.
+TEIDdataI = 1
+
+# Tunnel Endpoint Identifier Control Plane - Type = 17 (Decimal)
+# The Tunnel Endpoint Identifier Control Plane information element contains the Tunnel Endpoint Identifier for the control plane; it is assigned by the receiver of the flow.
+TEIDcontrolPlane = 1
+
+# Tunnel Endpoint Identifier Data II - Type = 18 (Decimal)
+# The Tunnel Endpoint Identifier Data II information element contains the Tunnel Endpoint Identifier for data transmission between old and new SGSN for a particular PDP context and is requested by the new SGSN.
+TEIDdataII = 2
+
+
+# Teardown Ind - Type = 19 (Decimal)
+# If the Teardown Ind information element value is set to "1", then all PDP contexts that share the same PDN connection with the PDP context identified by the NSAPI included  in the Delete PDP Context Request Message shall be torn down.
+# Possible enumerated value :
+# 0 : No
+# 1 : Yes
+TeardownInd = 1
+
+# NSAPI - Type = 20 (Decimal)
+# integer value in the range [0; 15], identifying a certain PDP Context. It identifies a PDP context belonging to a specific MM Context ID
+NSAPI = 5
+
+# End User Address - Type = 128 (Decimal)
+# The purpose of the End User Address information element shall be to supply protocol specific information of the external packet data network accessed by the GPRS subscriber.
+# PDP Type Organization
+# Possible enumerated value :
+# 0 : ETSI
+# 1 : IETF
+PDPtypeOrganization = 1
+# PDP Type Number
+# Possible enumerated value :
+#   1 : ETSI PDP type number 1 (PPP)
+#  33 : IETF PDP type number Ox21 (IPv4)
+#  87 : IETF PDP type number Ox57 (IPv6)
+# 141 : IETF PDP type number Ox8D (IPv4v6)
+PDPtypeNumber = 33
+PDPaddress = 
+
+# SGSN Address for signalling
+SGSNaddressControlPlane = 172.20.19.222
+# SGSN Address for user traffic
+SGSNaddressUserTraffic = 172.20.19.222
+
+
+########################
+# GTPv2 3GPP TS 29.274 #
+########################
+
+# Sequence number
+# Value in [0,16777215].
+v2SequenceNumber = 16777215
+
+# International Mobile Subscriber Identity (IMSI)
+v2IMSI = 208014420002672
+
+# MSISDN
+v2MSISDN = 33623777772
+
+# Mobile Equipment Identity (MEI)
+# contains either the IMEI (15 digits) or the IMEISV (16 digits)
+v2MEI = 0044204291218110
+
+# Access Point Name (APN)
+v2APN01 = otarie
+v2APN02 = mnc001
+v2APN03 = mcc208
+v2APN04 = gprs
+
+# RAT Type
+# Possible enumerated value : <reserved> (0), UTRAN (1), GERAN (2), WLAN (3), GAN (4), HSPA Evolution (5), EUTRAN (6), Virtual (7), <spare> (8-255)
+v2RATtype = EUTRAN
+
+# User Location Information (ULI)
+ULI_CGIflag = false
+ULI_SAIflag = false
+ULI_RAIflag = false
+ULI_TAIflag = true
+ULI_ECGIflag = true
+ULI_LAIflag = false
+ULI_MCC = 208
+ULI_MNC = 01
+ULI_LAC = 32227
+ULI_CI = 32557
+ULI_SAC = 
+ULI_ECI = 26500
+ULI_TAC = 102
+
+# Serving Network
+servingNetworkMCC = 208
+servingNetworkMNC = 01
+
+# Fully Qualified TEID (F-TEID)
+###############################
+# F-TEID interface type
+# Possible enumerated value :
+#  0 : S1-U eNodeB
+#  1 : S1-U SGW GTP-U
+#  2 : S12 RNC GTP-U
+#  3 : S12 SGW GTP-U
+#  4 : S5/S8 SGW GTP-U
+#  5 : S5/S8 PGW GTP-U
+#  6 : S5/S8 SGW GTP-C
+#  7 : S5/S8 PGW GTP-C
+#  8 : S5/S8 SGW PMIPv6
+#  9 : S5/S8 PGW PMIPv6
+# 10 : S11 MME GTP-C
+# 11 : S11/S4 SGW GTP-C
+# 12 : S10 MME GTP-C
+# 13 : S3 MME GTP-C
+# 14 : S3 SGSN GTP-C
+# 15 : S4 SGSN GTP-U
+# 16 : S4 SGW GTP-U
+# 17 : S4 SGSN GTP-C
+# 18 : S16 SGSN GTP-C
+# 19 : eNodeB GTP-U
+# 20 : eNodeB GTP-U
+# 21 : RNC GTP-U
+# 22 : SGSN GTP-U
+# 23 : SGW GTP-U
+# 24 : Sm MBMS GW GTP-C
+# 25 : Sn MBMS GW GTP-C
+# 26 : Sm MME GTP-C
+# 27 : Sn SGSN GTP-C
+# 28 : SGW GTP-U
+# 29 : Sn SGSN GTP-U 
+# 30 : S2b ePDG GTP-C 
+# 31 : S2b-U ePDG GTP-U 
+# 32 : S2b PGW GTP-C 
+# 33 : S2b-U PGW GTP-U 
+# 34 : S2a TWAN GTP-U
+# 35 : S2a TWAN GTP-C
+# 36 : S2a PGW GTP-C
+# 37 : S2a PGW GTP-U
+# 38-63 : spare and reserved for future use
+FTEID_InterfaceType = 6
+FTEID_TEID = 2509643778
+FTEID_IPv4Address = 172.20.19.222
+
+# PDN Address Allocation (PAA)
+# IPv4 only for the moment.
+PAA_IPv4Address = 0.0.0.0
+
+# AMBR
+createSessionRequestAMBRuplink = 50000
+createSessionRequestAMBRdownlink = 100000
+modifyBearerRequestAMBRuplink = 25000
+modifyBearerRequestAMBRdownlink = 50000
+
+# EBI
+EBI = 5
+
+# Bearer Context
+#
+bearerContextEBI = 5
+bearerContextFTEID_InterfaceType = 4
+bearerContextFTEID_TEID = 2147491842
+bearerContextFTEID_IPv4Address = 172.20.19.222
+bearerContextQoS_PCI = false
+bearerContextQoS_PL = 1
+bearerContextQoS_PVI = false
+bearerContextQoS_QCI = 7
+bearerContextMBRuplink = 5000
+bearerContextMBRdownlink = 10000
+bearerContextGBRuplink = 1000
+bearerContextGBRdownlink = 5000

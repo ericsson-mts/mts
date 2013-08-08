@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+  <parameter name="[UsersParameters]" operation="list.create"/>
+  <!--parameter name="[UsersParameters]" operation="list.addfirst" value="[UsersParameters]" value2="@IP_user[CSV_Separator]TEID[CSV_Separator]RAT-TYPE[CSV_Separator]@IP_Dest_GTP_U[CSV_Separator]Port_UDP_Dest_GTP_U"/-->
+  <label name="Begin"/>
+    <receiveMessageGTP name="Create Session Response" result="Request accepted:16" timeout="0">
+        <parameter name="[message]" operation="protocol.setFromMessage" value="message"/>
+    </receiveMessageGTP>
+    
+    <parameter name="[endpointIP]" operation="protocol.setFromMessage" value="element.PAA.field.IPv4 address" value2="[message]"/>
+    <parameter name="[TEID]" operation="protocol.setFromMessage" value="element.F-TEID.field.TEID / GRE Key" value2="[message]"/>
+    <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost" value2="[message]"/>
+    <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort" value2="[message]"/>
+
+    <parameter name="[RATtype]" operation="set" value="6"/><!-- 4G RAT type 6=EUTRAN. -->
+    <parameter name="[UsersParameters]" operation="list.addlast" value="[UsersParameters]" value2="[endpointIP][CSV_Separator][TEID][CSV_Separator][RATtype][CSV_Separator][remoteHost][CSV_Separator][remotePort]"/>
+    
+	<parameter name="[Lsize]" operation="list.size" value="[UsersParameters]"/>
+	<!--if>
+     <condition>
+       <test parameter="[Lsize]" condition="number.greaterThan" value="1501"/>
+     </condition>
+    <then>
+      <parameter name="UsersParameters" operation="file.writeCsvCol" value="[UserFileNameCsv]" value2="[UsersParameters]"/>
+	  <parameter name="[UsersParameters]" operation="list.remove"/>
+    </then>
+  </if-->
+  <goto  name="loop" label="Begin" state="true"/>
+
+  <finally>
+    <!-- Write file. -->
+    <parameter name="UsersParameters" operation="file.writeCsvCol" value="[UserFileNameCsv]" value2="[UsersParameters]"/>
+  </finally>
+</scenario>
+<!--type="Create Session Response:33" result="Request accepted:16"-->
