@@ -115,8 +115,9 @@ public class StackGtp extends Stack
      */
     public Msg readFromDatas(byte[] datas, int length) throws Exception
     {   
+    	byte[] newDatas = datas.clone();
         MessageGTP message = new MessageGTP();
-        message.decodeFromBytes(datas);
+        message.decodeFromBytes(newDatas);
         return new MsgGtp(message);
     }
     
