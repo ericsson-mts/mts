@@ -100,7 +100,7 @@ public class SocketUdpBIO extends Thread {
             		}
                     msg.setChannel(channel);
                     msg.setListenpoint(listenpointUdp);
-                    GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "RECEIVE UDP msg : ", msg);
+                    // GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "RECEIVE UDP msg : ", msg);
                     stack.receiveMessage(msg);
                 }
             }
