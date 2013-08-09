@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+  <parameter name="[tunnelEndpointId]" operation="set" value="0"/>
+
+  <parameter name="[sequenceNumber]" operation="set" value="1"/>
+
+  <sendMessageGTP name="send message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+    <headerV2 type="Create Session Request:32" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+    <element tag="IMSI:1" description="International Mobile Subscriber Identity">
+      <field name="IMSI" value="208014420002672"/>
+    </element>
+    <element tag="MSISDN:76" description="Mobile Subscriber ISDN Number">
+      <field name="MSISDN" value="33623777772"/>
+    </element>
+    <element tag="MEI:75" description="Mobile Equipment Identity">
+      <field name="MEI" value="0044204291218110" description="Mobile Equipment Identity"/>
+    </element>        
+    <element tag="ULI:86" description="User Location Information">
+      <field name="spare1" value="0"/>
+      <field name="LAI" value="false"/>
+      <field name="ECGI" value="true"/>
+      <field name="TAI" value="true"/>
+      <field name="RAI" value="false"/>
+      <field name="SAI" value="false"/>
+      <field name="CGI" value="false"/>
+      <field name="TAI_MCC_MNC" value="208,01"/>
+      <field name="TAI_TAC" value="102"/>
+      <field name="ECGI_MCC_MNC" value="208,01"/>
+      <field name="ECGI_spare" value="0"/>
+      <field name="ECGI_ECI" value="26500"/>
+    </element>        
+    <element tag="Serving Network:83" >
+      <field name="MMC" value="208,01"/>
+    </element>  
+    <element tag="RAT Type:82" >
+      <field name="RAT Type" value="EUTRAN"/>
+    </element>
+    <element tag="Indication:77">
+      <field name="DAF" value="false:0"/>
+      <field name="DTF" value="false:0"/>
+      <field name="HI" value="false:0"/>
+      <field name="DFI" value="false:0"/>
+      <field name="OI" value="false:0"/>
+      <field name="ISRSI" value="false:0"/>
+      <field name="ISRAI" value="false:0"/>
+      <field name="SGWCI" value="false:0"/>
+    
+      <field name="SQCI" value="false:0"/>  
+      <field name="UIMSI" value="false:0"/>
+      <field name="CFSI" value="false:0"/>
+      <field name="CRSI" value="true:1"/>
+      <field name="P" value="false:0"/>
+      <field name="PT" value="true:1"/>
+      <field name="SI" value="false:0"/>
+      <field name="MSV" value="false:0"/>
+    
+      <field name="RetLoc" value="false:0"/>
+      <field name="PBIC" value="false:0"/>
+      <field name="SRNI" value="false:0"/>
+      <field name="S6AF" value="false:0"/>
+      <field name="S4AF" value="false:0"/>
+      <field name="MBMDT" value="false:0"/>
+      <field name="ISRAU" value="false:0"/>
+      <field name="CCRSI" value="false:0"/>
+        
+      <field name="Spare" value="0"/>
+      <field name="CLII" value="false:0"/>
+      <field name="CPSR" value="false:0"/>
+    </element>
+    <element tag="F-TEID:87" description="Fully Qualified Tunnel Endpoint Identifier">
+      <field name="V4" value="true:1"/>
+      <field name="V6" value="false:0"/>
+      <field name="Interface Type" value="6"/>
+      <field name="TEID / GRE Key" value="2509643778" description="GRE?"/>
+      <field name="IPv4 address" value="1.2.3.4"/>
+    </element>
+    <element tag="APN:71" description="Access Point Name">
+      <field name="APN01" value="apn"/>
+      <field name="APN02" value="mcc"/>
+      <field name="APN03" value="mnc"/> 
+      <field name="APN04" value="tld"/> 
+    </element>
+    <element tag="Selection Mode:128" >
+      <field name="spare" value="0"/>
+      <field name="Selection Mode" value="1"/>
+    </element>
+    <element tag="PDN Type:99" >
+      <field name="spare" value="0"/>
+      <field name="PDN Type" value="IPv4:1"/>
+    </element>
+    <element tag="PAA:79" description="PDN Address Allocation">
+      <field name="spare" value="0"/>
+      <field name="PDN Type" value="IPv4:1"/>
+      <field name="IPv4 address" value="0.0.0.0"/>
+    </element> 
+    <element tag="APN Restriction:127" >
+      <field name="Restriction Type value" value="No Existing Contexts or Restriction:0"/>
+    </element>                
+    <element tag="AMBR:72" description="Aggregate Maximum Bit Rate">
+      <field name="APN-AMBR for uplink" value="50000"/>
+      <field name="APN-AMBR for downlink" value="100000"/>
+    </element>        
+    <element tag="Bearer Context:93" >
+      <element tag="EBI:73" description="EPS Bearer ID">
+        <field name="spare" value="0"/>
+        <field name="EBI" value="5"/>
+      </element>
+      <element tag="F-TEID:87" instances="2" description="Fully Qualified Tunnel Endpoint Identifier">
+        <field name="V4" value="true:1"/>
+        <field name="V6" value="false:0"/>
+        <field name="Interface Type" value="4"/>
+        <field name="TEID / GRE Key" value="2147491842" description="GRE key ?"/>
+        <field name="IPv4 address" value="1.2.3.4"/>
+      </element>            
+      <element tag="Bearer QoS:80" description="Bearer Quality of Service">
+        <field name="spare1" value="0"/>
+        <field name="PCI" value="false" description="Pre-emption Capability"/>
+        <field name="PL" value="1" description="Priority Level"/>
+        <field name="spare2" value="false:0"/>
+        <field name="PVI" value="false" description="Pre-emption Vulnerability"/>
+        <field name="Label QCI" value="7"/> 
+        <field name="Maximum bit rate for uplink" value="5000"/>
+        <field name="Maximum bit rate for downlink" value="10000"/>
+        <field name="Guaranteed bit rate for uplink" value="1000"/>
+        <field name="Guaranteed bit rate for downlink" value="5000"/>
+      </element>
+    </element>
+  </sendMessageGTP>
+
+  <receiveMessageGTP name="receive Create Session Response" request="false" type="Create Session Request:32" result="Request accepted:16">
+    <parameter name="[test:localTEID]" operation="protocol.setFromMessage" value="element.F-TEID.field.TEID / GRE Key"/>             
+      <parameter name="[endpointIPv4]" operation="protocol.setFromMessage" value="element.PAA.field.IPv4 address"/>
+      <parameter name="[TEID]" operation="protocol.setFromMessage" value="element.F-TEID.field.TEID / GRE Key"/>
+      <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+      <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+  </receiveMessageGTP>
+  
+  <sendMessageGTP name="send message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+    <headerV2 type="Modify Bearer Request:34" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+    <element tag="MEI:75" description="Mobile Equipment Identity">
+      <field name="MEI" value="0044204291218110" description="Mobile Equipment Identity"/>
+    </element>        
+    <element tag="ULI:86" description="User Location Information">
+      <field name="spare1" value="0"/>
+      <field name="LAI" value="false"/>
+      <field name="ECGI" value="true"/>
+      <field name="TAI" value="true"/>
+      <field name="RAI" value="false"/>
+      <field name="SAI" value="false"/>
+      <field name="CGI" value="false"/>
+      <field name="TAI_MCC_MNC" value="208,01"/>
+      <field name="TAI_TAC" value="102"/>
+      <field name="ECGI_MCC_MNC" value="208,01"/>
+      <field name="ECGI_spare" value="0"/>
+      <field name="ECGI_ECI" value="26500"/>
+    </element>        
+    <element tag="Serving Network:83" >
+      <field name="MMC" value="208,01"/>
+    </element>  
+    <element tag="RAT Type:82" >
+      <field name="RAT Type" value="EUTRAN"/>
+    </element>
+    <element tag="Indication:77">
+      <field name="DAF" value="false:0"/>
+      <field name="DTF" value="false:0"/>
+      <field name="HI" value="false:0"/>
+      <field name="DFI" value="false:0"/>
+      <field name="OI" value="false:0"/>
+      <field name="ISRSI" value="false:0"/>
+      <field name="ISRAI" value="false:0"/>
+      <field name="SGWCI" value="false:0"/>
+    
+      <field name="SQCI" value="false:0"/>  
+      <field name="UIMSI" value="false:0"/>
+      <field name="CFSI" value="false:0"/>
+      <field name="CRSI" value="true:1"/>
+      <field name="P" value="false:0"/>
+      <field name="PT" value="true:1"/>
+      <field name="SI" value="false:0"/>
+      <field name="MSV" value="false:0"/>
+    
+      <field name="RetLoc" value="false:0"/>
+      <field name="PBIC" value="false:0"/>
+      <field name="SRNI" value="false:0"/>
+      <field name="S6AF" value="false:0"/>
+      <field name="S4AF" value="false:0"/>
+      <field name="MBMDT" value="false:0"/>
+      <field name="ISRAU" value="false:0"/>
+      <field name="CCRSI" value="false:0"/>
+        
+      <field name="Spare" value="0"/>
+      <field name="CLII" value="false:0"/>
+      <field name="CPSR" value="false:0"/>
+    </element>
+    <element tag="F-TEID:87" description="Fully Qualified Tunnel Endpoint Identifier">
+      <field name="V4" value="true:1"/>
+      <field name="V6" value="false:0"/>
+      <field name="Interface Type" value="6"/>
+      <field name="TEID / GRE Key" value="2509643778" description="GRE?"/>
+      <field name="IPv4 address" value="1.2.3.4"/>
+    </element>
+    <element tag="AMBR:72" description="Aggregate Maximum Bit Rate">
+      <field name="APN-AMBR for uplink" value="25000"/>
+      <field name="APN-AMBR for downlink" value="50000"/>
+    </element>        
+    <element tag="Bearer Context:93" >
+      <element tag="EBI:73" description="EPS Bearer ID">
+        <field name="spare" value="0"/>
+        <field name="EBI" value="5"/>
+      </element>
+      <element tag="F-TEID:87" instances="2" description="Fully Qualified Tunnel Endpoint Identifier">
+        <field name="V4" value="true:1"/>
+        <field name="V6" value="false:0"/>
+        <field name="Interface Type" value="4"/>
+        <field name="TEID / GRE Key" value="2147491842" description="GRE key ?"/>
+        <field name="IPv4 address" value="1.2.3.4"/>
+      </element>            
+      <element tag="Bearer QoS:80" description="Bearer Quality of Service">
+        <field name="spare1" value="0"/>
+        <field name="PCI" value="false" description="Pre-emption Capability"/>
+        <field name="PL" value="1" description="Priority Level"/>
+        <field name="spare2" value="false:0"/>
+        <field name="PVI" value="false" description="Pre-emption Vulnerability"/>
+        <field name="Label QCI" value="7"/> 
+        <field name="Maximum bit rate for uplink" value="5000"/>
+        <field name="Maximum bit rate for downlink" value="10000"/>
+        <field name="Guaranteed bit rate for uplink" value="1000"/>
+        <field name="Guaranteed bit rate for downlink" value="5000"/>
+      </element>
+    </element>
+  </sendMessageGTP>
+  
+  <receiveMessageGTP name="receive Modify Bearer Response" request="false" type="Modify Bearer Request:34" result="Request accepted:16">
+  </receiveMessageGTP>
+  
+  <!-- GTP PDU -->
+	<sendMessageGTP name="send gtp-u message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]" destScenario="GTP.V2">
+		<headerV1 type="G-PDU:255" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+		<!-- IP HEADER -->
+		<pdu format="binary">h45</pdu> <!-- Version, Internet Header Length -->
+		<pdu format="binary">h00</pdu> <!-- Differentiated Services Code Point -->
+		<pdu format="binary">h005a</pdu> <!-- Total Length -->
+		<pdu format="binary">h0001</pdu> <!-- Identification -->
+		<pdu format="binary">h0000</pdu> <!-- Fragment Offset (with flags) -->
+		<pdu format="binary">h80</pdu> <!-- Time To Live -->
+		<pdu format="binary">h11</pdu> <!-- Protocol -->
+		<pdu format="binary">h3089</pdu> <!-- Header Checksum -->
+		<pdu format="binary">h01020304</pdu> <!-- @IP Source -->
+		<pdu format="binary">h04030201</pdu> <!-- @IP Destination -->
+		<!-- UDP HEADER -->
+		<pdu format="binary">h0001</pdu> <!-- Source Port -->
+		<pdu format="binary">h0002</pdu> <!-- Destination Port -->
+		<pdu format="binary">h0046</pdu> <!-- Length -->
+		<pdu format="binary">h0001</pdu> <!-- Checksum -->
+		<!-- UDP DATAs -->
+		<pdu format="text">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</pdu>
+	</sendMessageGTP>
+	<sendMessageGTP name="send gtp-u message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]" destScenario="GTP.V2">
+		<headerV1 type="G-PDU:255" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+		<!-- IP HEADER -->
+		<pdu format="binary">h45</pdu> <!-- Version, Internet Header Length -->
+		<pdu format="binary">h00</pdu> <!-- Differentiated Services Code Point -->
+		<pdu format="binary">h005a</pdu> <!-- Total Length -->
+		<pdu format="binary">h0001</pdu> <!-- Identification -->
+		<pdu format="binary">h0000</pdu> <!-- Fragment Offset (with flags) -->
+		<pdu format="binary">h80</pdu> <!-- Time To Live -->
+		<pdu format="binary">h11</pdu> <!-- Protocol -->
+		<pdu format="binary">h3089</pdu> <!-- Header Checksum -->
+		<pdu format="binary">h01020304</pdu> <!-- @IP Source -->
+		<pdu format="binary">h04030201</pdu> <!-- @IP Destination -->
+		<!-- UDP HEADER -->
+		<pdu format="binary">h0001</pdu> <!-- Source Port -->
+		<pdu format="binary">h0002</pdu> <!-- Destination Port -->
+		<pdu format="binary">h0046</pdu> <!-- Length -->
+		<pdu format="binary">h0001</pdu> <!-- Checksum -->
+		<!-- UDP DATAs -->
+		<pdu format="text">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</pdu>
+	</sendMessageGTP>
+	<sendMessageGTP name="send gtp-u message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]" destScenario="GTP.V2">
+		<headerV1 type="G-PDU:255" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+		<!-- IP HEADER -->
+		<pdu format="binary">h45</pdu> <!-- Version, Internet Header Length -->
+		<pdu format="binary">h00</pdu> <!-- Differentiated Services Code Point -->
+		<pdu format="binary">h005a</pdu> <!-- Total Length -->
+		<pdu format="binary">h0001</pdu> <!-- Identification -->
+		<pdu format="binary">h0000</pdu> <!-- Fragment Offset (with flags) -->
+		<pdu format="binary">h80</pdu> <!-- Time To Live -->
+		<pdu format="binary">h11</pdu> <!-- Protocol -->
+		<pdu format="binary">h3089</pdu> <!-- Header Checksum -->
+		<pdu format="binary">h01020304</pdu> <!-- @IP Source -->
+		<pdu format="binary">h04030201</pdu> <!-- @IP Destination -->
+		<!-- UDP HEADER -->
+		<pdu format="binary">h0001</pdu> <!-- Source Port -->
+		<pdu format="binary">h0002</pdu> <!-- Destination Port -->
+		<pdu format="binary">h0046</pdu> <!-- Length -->
+		<pdu format="binary">h0001</pdu> <!-- Checksum -->
+		<!-- UDP DATAs -->
+		<pdu format="text">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</pdu>
+	</sendMessageGTP>
+	<sendMessageGTP name="send gtp-u message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]" destScenario="GTP.V2">
+		<headerV1 type="G-PDU:255" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+		<!-- IP HEADER -->
+		<pdu format="binary">h45</pdu> <!-- Version, Internet Header Length -->
+		<pdu format="binary">h00</pdu> <!-- Differentiated Services Code Point -->
+		<pdu format="binary">h005a</pdu> <!-- Total Length -->
+		<pdu format="binary">h0001</pdu> <!-- Identification -->
+		<pdu format="binary">h0000</pdu> <!-- Fragment Offset (with flags) -->
+		<pdu format="binary">h80</pdu> <!-- Time To Live -->
+		<pdu format="binary">h11</pdu> <!-- Protocol -->
+		<pdu format="binary">h3089</pdu> <!-- Header Checksum -->
+		<pdu format="binary">h01020304</pdu> <!-- @IP Source -->
+		<pdu format="binary">h04030201</pdu> <!-- @IP Destination -->
+		<!-- UDP HEADER -->
+		<pdu format="binary">h0001</pdu> <!-- Source Port -->
+		<pdu format="binary">h0002</pdu> <!-- Destination Port -->
+		<pdu format="binary">h0046</pdu> <!-- Length -->
+		<pdu format="binary">h0001</pdu> <!-- Checksum -->
+		<!-- UDP DATAs -->
+		<pdu format="text">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</pdu>
+	</sendMessageGTP>
+	<sendMessageGTP name="send gtp-u message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]" destScenario="GTP.V2">
+		<headerV1 type="G-PDU:255" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+		<!-- IP HEADER -->
+		<pdu format="binary">h45</pdu> <!-- Version, Internet Header Length -->
+		<pdu format="binary">h00</pdu> <!-- Differentiated Services Code Point -->
+		<pdu format="binary">h005a</pdu> <!-- Total Length -->
+		<pdu format="binary">h0001</pdu> <!-- Identification -->
+		<pdu format="binary">h0000</pdu> <!-- Fragment Offset (with flags) -->
+		<pdu format="binary">h80</pdu> <!-- Time To Live -->
+		<pdu format="binary">h11</pdu> <!-- Protocol -->
+		<pdu format="binary">h3089</pdu> <!-- Header Checksum -->
+		<pdu format="binary">h01020304</pdu> <!-- @IP Source -->
+		<pdu format="binary">h04030201</pdu> <!-- @IP Destination -->
+		<!-- UDP HEADER -->
+		<pdu format="binary">h0001</pdu> <!-- Source Port -->
+		<pdu format="binary">h0002</pdu> <!-- Destination Port -->
+		<pdu format="binary">h0046</pdu> <!-- Length -->
+		<pdu format="binary">h0001</pdu> <!-- Checksum -->
+		<!-- UDP DATAs -->
+		<pdu format="text">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</pdu>
+	</sendMessageGTP>
+	
+	<sendMessageGTP name="send message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+    <headerV2 type="Delete Session Request:36" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+    <element tag="EBI:73" description="EPS Bearer ID">
+      <field name="spare" value="0"/>
+    	<field name="EBI" value="5"/>
+    </element>
+    <element tag="Indication:77" >
+      <field name="DAF" value="false:0"/>
+      <field name="DTF" value="false:0"/>
+      <field name="HI" value="false:0"/>
+      <field name="DFI" value="false:0"/>
+      <field name="OI" value="true:1"/>
+      <field name="ISRSI" value="false:0"/>
+      <field name="ISRAI" value="false:0"/>
+      <field name="SGWCI" value="false:0"/>
+
+      <field name="SQCI" value="false:0"/>  
+      <field name="UIMSI" value="false:0"/>
+      <field name="CFSI" value="false:0"/>
+      <field name="CRSI" value="false:0"/>
+      <field name="P" value="false:0"/>
+      <field name="PT" value="false:0"/>
+      <field name="SI" value="false:0"/>
+      <field name="MSV" value="false:"/>
+
+      <field name="RetLoc" value="false:"/>
+      <field name="PBIC" value="false:"/>
+      <field name="SRNI" value="false:"/>
+      <field name="S6AF" value="false:"/>
+      <field name="S4AF" value="false:"/>
+      <field name="MBMDT" value="false:"/>
+      <field name="ISRAU" value="false:"/>
+      <field name="CCRSI" value="false:"/>
+
+      <field name="Spare" value="0"/>
+      <field name="CLII" value="false:0"/>
+      <field name="CPSR" value="false:0"/>
+    </element>
+  </sendMessageGTP>
+
+  <receiveMessageGTP name="receive Delete Session Response" request="false" type="Delete Session Request:36" result="Request accepted:16">
+  </receiveMessageGTP>
+  
+</scenario>
