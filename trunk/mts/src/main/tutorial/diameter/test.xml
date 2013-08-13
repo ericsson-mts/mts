@@ -11,12 +11,12 @@
 	<parameter name="[Local-Address]" operation="set" value="[Local-Host]:[Local-Port]"/>	
 	<parameter name="[Local-Realm]" operation="set" value="imsloader.com"/>
 
-	<parameter name="[Remote-Host]" operation="system.ipaddress" value2="[IPVersion]"/>
-	<!--parameter name="[Remote-Host]" operation="set" value="172.16.21.253"/-->
-  <parameter name="[Remote-Host]" operation="set" value="[Remote-Host(0)]" editable="true" />
+	<parameter name="[remoteHost]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<!--parameter name="[remoteHost]" operation="set" value="172.16.21.253"/-->
+  <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]" editable="true" />
 	<parameter name="[Remote-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
 	<parameter name="[Remote-Port]" operation="set" value="[Remote-Port]" editable="true" />
-	<parameter name="[Remote-Address]" operation="set" value="[Remote-Host]:[Remote-Port]"/>
+	<parameter name="[Remote-Address]" operation="set" value="[remoteHost]:[Remote-Port]"/>
 	<parameter name="[Remote-Realm]" operation="set" value="client.fr"/>
 
   <parameter name="[vendorID]" operation="set" value="10415"/>
@@ -77,7 +77,7 @@
     <testcase name="011_listenpoint" description="diameter" state="true">
        	<parameter name="[Listen-Client-Host]" operation="set" value="[Local-Host]"/>
         <parameter name="[Listen-Client-Port]" operation="set" value="3880"/>
-       	<parameter name="[Listen-Server-Host]" operation="set" value="[Remote-Host]"/>
+       	<parameter name="[Listen-Server-Host]" operation="set" value="[remoteHost]"/>
         <parameter name="[Listen-Server-Port]" operation="set" value="3882"/>
     
         <scenario name="client">011_listenpoint/client.xml</scenario>
@@ -309,7 +309,7 @@
         <parameter name="[applicationID]" operation="set" value="16777216"/>
         <parameter name="[Listen-Proxy-Host]" operation="set" value="[Local-Host]"/>
         <parameter name="[Listen-Proxy-Port]" operation="set" value="3880"/>
-        <parameter name="[Remote-Proxy-Host]" operation="set" value="[Remote-Host]"/>
+        <parameter name="[Remote-Proxy-Host]" operation="set" value="[remoteHost]"/>
         <parameter name="[Remote-Proxy-Port]" operation="set" value="[Remote-Port]"/>        
         <scenario name="proxy">996_proxy/proxy.xml</scenario>
         <scenario name="client">996_proxy/client.xml</scenario>
