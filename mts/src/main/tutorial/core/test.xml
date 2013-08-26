@@ -115,15 +115,18 @@
     </testcase>
            
     <testcase name="070_parameters" description="test variables" state="[testcase_state]">
-        <scenario name="nameAndId">070_parameters/nameAndId.xml</scenario>
-		<scenario name="xpath">070_parameters/xpath.xml</scenario>
+        <parameter name="[number]" operation="set" value="100"/>
+        <parameter name="[number]" operation="number.add" value="[number]" value2="20"/>
+        <parameter name="[param]" operation="set" value="nameAndId [number]"/>
+        <scenario name="[param]">070_parameters/nameAndId.xml</scenario>
+        <scenario name="xpath">070_parameters/xpath.xml</scenario>
     </testcase>
     
     <testcase name="071_parameters_level" description="test variables" state="[testcase_state]">
         <parameter name="[leveltestcase]" operation="set" value="toto testcase" />
-	<parameter name="[tabTcTc(0)]" operation="set" value="value 0" />
-	<parameter name="[tabTcTc(1)]" operation="set" value="value 1" />
-	<parameter name="[tabTcTc(2)]" operation="set" value="value 2" />
+        <parameter name="[tabTcTc(0)]" operation="set" value="value 0" />
+        <parameter name="[tabTcTc(1)]" operation="set" value="value 1" />
+        <parameter name="[tabTcTc(2)]" operation="set" value="value 2" />
 
         <scenario name="init">071_parameters_level/scenario.xml</scenario>
         <scenario name="scenario_1">071_parameters_level/scenario_1.xml</scenario>
@@ -221,10 +224,17 @@
     <testcase name="708_operator_system" description="" state="[testcase_state]">
         <scenario name="708_operator_system">708_operator_system/scenario.xml</scenario>
     </testcase>
-	
-	<testcase name="801_audio_comparison" description="" state="false">
-		<scenario name="801_audio_comparison">801_audio_comparison/scenario.xml</scenario>
+    
+    <testcase name="801_audio_comparison" description="" state="false">
+        <scenario name="801_audio_comparison">801_audio_comparison/scenario.xml</scenario>
     </testcase>
+
+    <for index="[i]" from="008" to="14" step="-1">
+        <testcase name="[for_testcase_name]_NOTHING[i]" description="diameter" state="[testcase_state]">
+            <parameter name="[index]" operation="set" value="[i]" />
+            <scenario name="[for_scenario_name][i]">090_for_test/scenario.xml</scenario>
+        </testcase>
+    </for>
 
     <for index="[i]" from="008" to="4" step="-2">
         <testcase name="[for_testcase_name][i]" description="diameter" state="[testcase_state]">
@@ -233,13 +243,19 @@
         </testcase>
     </for>
 
-    <for index="[i]" from="004" to="0" step="-2">
-        <testcase name="[for_testcase_name][i]" description="diameter" state="[testcase_state]">
+    <for index="[i]" from="1" to="-010" step="3">
+        <testcase name="[for_testcase_name]_NOTHING[i]" description="diameter" state="[testcase_state]">
             <parameter name="[index]" operation="set" value="[i]" />
             <scenario name="[for_scenario_name][i]">090_for_test/scenario.xml</scenario>
         </testcase>
     </for>
 
+    <for index="[i]" from="1" to="005">
+        <testcase name="[for_testcase_name][i]" description="diameter" state="[testcase_state]">
+            <parameter name="[index]" operation="set" value="[i]" />
+            <scenario name="[for_scenario_name][i]">090_for_test/scenario.xml</scenario>
+        </testcase>
+    </for>
 
     <testcase name="runprofile.period" description="Run profile with period steps" state="[testcase_state]">
         <runProfile>
