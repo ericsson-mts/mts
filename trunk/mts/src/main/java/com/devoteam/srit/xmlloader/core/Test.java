@@ -269,7 +269,9 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
         int stepInt = Integer.parseInt(step);
 
         // now really unfold the loop, do replacement in <testcase>
-        while ((indexInt <= fromInt && indexInt >= toInt) || (indexInt >= fromInt && indexInt <= toInt)) {
+        while (((stepInt > 0) && (indexInt >= fromInt) && (indexInt <= toInt)) ||
+        	  ((stepInt < 0) && (indexInt <= fromInt) && (indexInt >= toInt)))
+        {
             String indexStr = String.valueOf(indexInt);
             indexStr = Utils.padInteger(indexStr, indexLength);
 
