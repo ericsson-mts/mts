@@ -16,8 +16,8 @@
 
     <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="lp_server">
       	<header request="false" command="[commandCode]" applicationId="[applicationID]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-      	<avp code="Origin-Host" value="[remoteHost]"/>
-      	<avp code="Origin-Realm" value="[Remote-Realm]"/>
+      	<avp code="Origin-Host" value="[remoteHostDIA]"/>
+      	<avp code="Origin-Realm" value="[remoteRealmDIA]"/>
       	<avp code="Vendor-Specific-Application-Id">
       		<avp code="Vendor-Id" value="[vendorID]"/>
       		<avp code="Auth-Application-Id" value="[applicationID]"/>
@@ -40,9 +40,9 @@
     <!-- create a listenpoint with all parameters -->
     <createListenpointDIAMETER name="lp_server" localPort="[Listen-Server-Port]">
     	<nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
-	<avp code="Origin-Host" value="[Local-Host]" type="DiameterIdentity" mandatory="true"/>
-	<avp code="Origin-Realm" value="[Local-Realm]" type="DiameterIdentity" mandatory="true"/>
-	<avp code="Host-IP-Address" value="[Local-Host]" type="IPAddress" mandatory="true"/>
+	<avp code="Origin-Host" value="[localHostDIA]" type="DiameterIdentity" mandatory="true"/>
+	<avp code="Origin-Realm" value="[localRealmDIA]" type="DiameterIdentity" mandatory="true"/>
+	<avp code="Host-IP-Address" value="[localHostDIA]" type="IPAddress" mandatory="true"/>
 	<avp code="Vendor-Id" value="TGPP" type="VendorId" mandatory="true"/>
 	<avp code="Product-Name" value="IMSLoader - MTS" type="UTF8String" mandatory="true"/>
 	<avp code="Origin-State-Id" value="123456789" type="Unsigned32" mandatory="true"/>
@@ -61,10 +61,10 @@
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
     </receiveMessageDIAMETER>
 
-    <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="lp_server" remoteURL="diameter://[Local-Address]" >
+    <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="lp_server" remoteURL="diameter://[localDIA]" >
 	<header request="false" command="[commandCode]" applicationId="Ericsson IMT 30 - Cx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-	<avp code="Origin-Host" value="[remoteHost]"/>
-	<avp code="Origin-Realm" value="[Remote-Realm]"/>
+	<avp code="Origin-Host" value="[remoteHostDIA]"/>
+	<avp code="Origin-Realm" value="[remoteRealmDIA]"/>
 	<avp code="Vendor-Specific-Application-Id">
 		<avp code="Vendor-Id" value="TGPP"/>
 		<avp code="Auth-Application-Id" value="Ericsson IMT 30 - Cx"/>

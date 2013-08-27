@@ -18,18 +18,18 @@ Abort-Session-Request ::= < Diameter Header: 274, REQ, PXY >
                           * [ AVP ]
 -->     
         
-    <sendMessageDIAMETER name="Send Request ASR" remoteURL="diameter://[Remote-Address]" destScenario="client">
+    <sendMessageDIAMETER name="Send Request ASR" remoteURL="diameter://[remoteDIA]" destScenario="client">
         <header request="true" command="Abort-Session" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
           <!-- The Session-Id AVP is used to identify a specific session. -->
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
         
           <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIA]"/>
           <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIA]"/>
           <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHost]"/>
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIA]"/>            
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIA]"/>
         
           <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
           <!--avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="0"/-->

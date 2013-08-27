@@ -39,7 +39,7 @@ User-Authorization-Request ::= < Diameter Header: 300, REQ, PXY, 16777216 >
 -->
 
     <parameter name="[commandCode]" operation="set" value="User-Authorization"/>
-    <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/UAR" remoteURL="diameter://[Remote-Address]" destScenario="server">
+    <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/UAR" remoteURL="diameter://[remoteDIA]" destScenario="server">
         <header request="true" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
           <avp code="Vendor-Specific-Application-Id">
@@ -52,10 +52,10 @@ User-Authorization-Request ::= < Diameter Header: 300, REQ, PXY, 16777216 >
           <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
           <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
 
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHost]"/> 
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIA]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIA]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIA]"/> 
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIA]"/>            
 
           <avp code="User-Name" vendorId="[vendorID]" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
 

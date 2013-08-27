@@ -39,7 +39,7 @@ Push-Notification-Request ::= < Diameter Header:  309, REQ, PXY, 16777217 >
 
 -->
 
-    <sendMessageDIAMETER name="Send Request 3GPP/SH/PNR" remoteURL="diameter://[Remote-Address]" destScenario="client">
+    <sendMessageDIAMETER name="Send Request 3GPP/SH/PNR" remoteURL="diameter://[remoteDIA]" destScenario="client">
         <header request="true" command="Push-Notification" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
           <avp code="Vendor-Specific-Application-Id">
@@ -52,10 +52,10 @@ Push-Notification-Request ::= < Diameter Header:  309, REQ, PXY, 16777217 >
           <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
           <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
 
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHost]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/> 
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>            
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIA]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIA]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIA]"/> 
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIA]"/>            
 
           <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports. -->
           <avp code="Supported-Features" vendorId="[vendorID]">

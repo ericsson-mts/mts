@@ -7,21 +7,21 @@
   <parameter name="[TestDurationSec]" operation="set" value="360000" description="Duration (in sec.) of the test" editable="true"/>
 	<parameter name="[NumberTestcase]" operation="set" value="10" description="number of testcase" editable="true"/>
 	
-	<parameter name="[Local-Host]" operation="system.ipaddress"/>
-	<parameter name="[Local-Host]" operation="set" value="[Local-Host(0)]"/>
-	<!--parameter name="[Local-Host]" operation="set" value="17.16.21.32"/-->
-	<parameter name="[Local-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
-	<parameter name="[Local-Address]" operation="set" value="[Local-Host(0)]:[Local-Port]"/>	
-	<parameter name="[Local-Realm]" operation="set" value="sip.pfdev.fr"/>
+	<parameter name="[localHostDIA]" operation="system.ipaddress"/>
+	<parameter name="[localHostDIA]" operation="set" value="[Local-Host(0)]"/>
+	<!--parameter name="[localHostDIA]" operation="set" value="17.16.21.32"/-->
+	<parameter name="[localPortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter name="[localDIA]" operation="set" value="[Local-Host(0)]:[localPortDIA]"/>	
+	<parameter name="[localRealmDIA]" operation="set" value="sip.pfdev.fr"/>
 
-	<parameter name="[remoteHost]" operation="system.ipaddress"/>
-	<parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]" editable="true"/>
-	<!--parameter name="[remoteHost]" operation="set" value="17.16.21.32" editable="true"/-->
-	<parameter name="[Remote-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
-	<parameter name="[Remote-Port]" operation="set" value="[Remote-Port(0)]" editable="true"/>
-	<!--parameter name="[Remote-Port]" operation="set" value="3868" editable="true"/-->
-	<parameter name="[Remote-Address]" operation="set" value="[remoteHost(0)]:[Remote-Port]"/>
-	<parameter name="[Remote-Realm]" operation="set" value="sip.pfdev.fr"/>
+	<parameter name="[remoteHostDIA]" operation="system.ipaddress"/>
+	<parameter name="[remoteHostDIA]" operation="set" value="[remoteHost(0)]" editable="true"/>
+	<!--parameter name="[remoteHostDIA]" operation="set" value="17.16.21.32" editable="true"/-->
+	<parameter name="[remotePortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter name="[remotePortDIA]" operation="set" value="[Remote-Port(0)]" editable="true"/>
+	<!--parameter name="[remotePortDIA]" operation="set" value="3868" editable="true"/-->
+	<parameter name="[remoteDIA]" operation="set" value="[remoteHost(0)]:[remotePortDIA]"/>
+	<parameter name="[remoteRealmDIA]" operation="set" value="sip.pfdev.fr"/>
 
   <parameter name="[vendorID]" operation="set" value="10415" description="vendor ID" editable="true"/>
   

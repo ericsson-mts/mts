@@ -36,7 +36,7 @@ User-Data-Request ::= < Diameter Header: 306, REQ, PXY, 16777231 >
 
 -->
 
-    <sendMessageDIAMETER name="Send Request ETSI/e4/UDR" remoteURL="diameter://[Remote-Address]" destScenario="server">
+    <sendMessageDIAMETER name="Send Request ETSI/e4/UDR" remoteURL="diameter://[remoteDIA]" destScenario="server">
         <header request="true" command="User-Data" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
           <avp code="Vendor-Specific-Application-Id">
@@ -49,10 +49,10 @@ User-Data-Request ::= < Diameter Header: 306, REQ, PXY, 16777231 >
           <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (ETSI ES 283 034 V1.2.0 (2007-03)). -->
           <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
 
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHost]"/>
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIA]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIA]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIA]"/>
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIA]"/>            
 
           <avp code="Globally-Unique-Address" mandatory="true"  vendorId="13019">
             <avp code="Framed-IP-Address" type="OctetString" value="ToBeCompleted"/>
