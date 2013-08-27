@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <test name="SIP" description="SIP regression tests">
 
-	<parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-	<parameter name="[sysip]" operation="system.ipaddress" value2="[IPVersion]" />
-	<parameter name="[Host-Address]" operation="set" value="[sysip(0)]" editable="true"/>
-	<parameter name="[BinaryIP]" operation="binary.fromIp" value="[Host-Address]" />
-	<parameter name="[ARP_TARGETIP]" operation="set" value="[Host-Address]" editable="true" />
-
-	<testcase name="sendMessageETHERNET" state="true">
-		<scenario name="ETHERNET">sendMessageETHERNET.xml</scenario>
-	</testcase>
-	<testcase name="encapse GTP" state="true">
-		<scenario name="ETHERNET">encapse-sendGTP.xml</scenario>
-		<scenario name="GTP.V1">encapse-recvGTP.xml</scenario>
-	</testcase>
-	<testcase name="decapse GTP" state="true">
-		<scenario name="GTP.V1">decapse-recvGTP.xml</scenario>
-		<scenario name="ETHERNET">decapse-recvETH.xml</scenario>
-	</testcase>
-	<testcase name="ARP Request" state="true">
-		<scenario name="ETHERNET">arp_request.xml</scenario>
-	</testcase>
-	<testcase name="createProbeETHERNET" state="false">
-		<scenario name="ETHERNET">createProbeETHERNET.xml</scenario>
-	</testcase>
+    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[localHostETH]" operation="system.ipaddress" value2="[IPVersion]" />
+    <parameter name="[localHostETH]" operation="set" value="[localHostETH(0)]" editable="true"/>
+    <parameter name="[BinaryIP]" operation="binary.fromIp" value="[localHostETH]" />
+    <parameter name="[ARP_TARGETIP]" operation="set" value="[localHostETH]" editable="true" />
+    
+    <testcase name="sendMessageETHERNET" state="true">
+        <scenario name="ETHERNET">sendMessageETHERNET.xml</scenario>
+    </testcase>
+    <testcase name="encapse GTP" state="true">
+        <scenario name="ETHERNET">encapse-sendGTP.xml</scenario>
+        <scenario name="GTP.V1">encapse-recvGTP.xml</scenario>
+    </testcase>
+    <testcase name="decapse GTP" state="true">
+        <scenario name="GTP.V1">decapse-recvGTP.xml</scenario>
+        <scenario name="ETHERNET">decapse-recvETH.xml</scenario>
+    </testcase>
+    <testcase name="ARP Request" state="true">
+        <scenario name="ETHERNET">arp_request.xml</scenario>
+    </testcase>
+    <testcase name="createProbeETHERNET" state="false">
+        <scenario name="ETHERNET">createProbeETHERNET.xml</scenario>
+    </testcase>
+    
 </test>

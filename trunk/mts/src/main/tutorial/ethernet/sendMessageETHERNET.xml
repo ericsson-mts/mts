@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <scenario>
 	<!-- send IP/UDP/SIP REGISTER message -->
-	<createProbeETHERNET name="capture" networkInterface="[Host-Address]" captureFilter="src host [Host-Address] and dst host [Host-Address]" />
+	<createProbeETHERNET name="capture" networkInterface="[localHostETH]" captureFilter="src host [localHostETH] and dst host [localHostETH]" />
 	
 	<sendMessageETHERNET name="send packet" probe="capture"> <!-- nic="0" is eth0 -->
 		<ethernet remoteMac="00:13:60:60:08:41" type="0800" /> <!-- type="0800" is for IP payload -->

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <scenario>
 	<!-- send IP/UDP/SIP REGISTER message -->
-	<createProbeETHERNET name="capture" networkInterface="[Host-Address]" captureFilter="src host [Host-Address] and dst host [Host-Address]" />
-	<parameter name="BinaryIP" operation="binary.fromIp" value="[Host-Address]" />
+	<createProbeETHERNET name="capture" networkInterface="[localHostETH]" captureFilter="src host [localHostETH] and dst host [localHostETH]" />
+	<parameter name="BinaryIP" operation="binary.fromIp" value="[localHostETH]" />
 	
 	<sendMessageETHERNET name="send packet" probe="capture"> <!-- nic="0" is eth0 -->
 		<ethernet remoteMac="00:13:60:60:08:41" type="0800" /> <!-- type="0800" is for IP payload -->
@@ -18,7 +18,7 @@
 		<parameter name="[data1]" operation="protocol.setFromMessage" value="data.binary" />
 	</receiveMessageETHERNET>
 	
-	<sendMessageGTP name="send gtp-u message" remoteHost="[Host-Address]" remotePort="3386" transport="UDP">
+	<sendMessageGTP name="send gtp-u message" remoteHost="[localHostETH]" remotePort="3386" transport="UDP">
 			<headerV1 type="G-PDU:255" tunnelEndpointId="1234567890"/>
 			<pdu format="binary">h[data1]</pdu>
 	</sendMessageGTP>
