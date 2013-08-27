@@ -3,13 +3,13 @@
 
 <scenario>
 
-    <openChannelHTTP name="myConnection" remoteURL="http://[Remote-Address]"/>
+    <openChannelHTTP name="myConnection" remoteURL="http://[remoteHTTP]"/>
     
     <!-- send message by channel -->
 	<sendMessageHTTP name="Send channel" channel="myConnection">
 <![CDATA[
-GET https://[Remote-Address] HTTP/1.1
-Host: [Remote-Address]
+GET https://[remoteHTTP] HTTP/1.1
+Host: [remoteHTTP]
 Accept-charset: text/html
 Content-Type: text/html
 Content-Encoding: utf-8;iso-8859
@@ -21,10 +21,10 @@ User-Agent: XMLLoader
 	<receiveMessageHTTP result="200"/>
 
     <!-- send message by remoteXXX -->
-	<sendMessageHTTP name="Send remoteXXX" remoteURL="http://[Remote-Address]">
+	<sendMessageHTTP name="Send remoteXXX" remoteURL="http://[remoteHTTP]">
 <![CDATA[
-GET https://[Remote-Address] HTTP/1.1
-Host: [Remote-Address]
+GET https://[remoteHTTP] HTTP/1.1
+Host: [remoteHTTP]
 Accept-charset: text/html
 Content-Type: text/html
 Content-Encoding: utf-8;iso-8859
