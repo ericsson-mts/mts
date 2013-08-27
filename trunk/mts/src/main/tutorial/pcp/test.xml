@@ -2,16 +2,25 @@
 
 <test name="PCP" description="PCP regression tests">
 
-    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-    <parameter name="[ipAddress]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[ipAddress]" operation="set" value="[ipAddress(0)]" editable="true"/>
+    <!--parameter name="[ipAddress]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[ipAddress]" operation="set" value="[ipAddress(0)]" editable="true"/-->
 
-    <testcase name="pcp/000_simpleTest" description="simple test" state="true">
+    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[localHostPCP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostPCP]" operation="set" value="[localHostPCP(0)]" editable="true"/>
+    <parameter name="[localPortPCP]" operation="file.readProperty" value="pcp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localPortPCP]" operation="set" value="10000" editable="true"/>
+    <parameter name="[remoteHostPCP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostPCP]" operation="set" value="[remoteHostPCP(0)]" editable="true"/>
+    <parameter name="[remotePortPCP]" operation="file.readProperty" value="pcp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[remotePortPCP]" operation="set" value="[remotePortPCP]" editable="true"/>
+
+    <testcase name="pcp/000_simpleTest" description="simple test" state="false">
         <scenario name="channelPCP">000_simpleTest/UAC.xml</scenario>
         <scenario name="UAS">000_simpleTest/UAS.xml</scenario>
     </testcase>
     <testcase name="pcp/001_wiresharkReplay" description="simple test" state="true">
-        <scenario name="channel">001_wiresharkReplay/UAC.xml</scenario>
+        <scenario name="TCP">001_wiresharkReplay/UAC.xml</scenario>
         <scenario name="UAS">001_wiresharkReplay/UAS.xml</scenario>
     </testcase>
 
