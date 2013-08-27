@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
 
-    <parameter name="[remoteHost]" operation="set" value="[ipAddress]" />
-    <parameter name="[remotePort]" operation="set" value="6202" />
-
     <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
 
     <parameter name="[channel]" operation="set" value="channelPCP" />
-    <openChannelPCP name="[channel]" remoteHost="[remoteHost]" remotePort="[remotePort]" />
+    <openChannelPCP name="[channel]" localHost="[localHostPCP]" localPort="[localPortPCP]"
+                                     remoteHost="[remoteHostPCP]" remotePort="[remotePortPCP]" />
 
     <sendMessagePCP name="Send Flist" channel="[channel]">
         <flist>
