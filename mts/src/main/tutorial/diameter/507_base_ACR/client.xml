@@ -46,18 +46,18 @@ Accounting-Request ::= < Diameter Header: 271, REQ, PXY >
     <parameter name="[timestamp]" operation="system.timestamp" value="1900"/>
     <parameter name="[timestamp]" operation="number.divide" value="[timestamp]" value2="1000"/>
     <parameter name="[timestamp]" operation="number.round" value="[timestamp]"/>
-    <sendMessageDIAMETER name="Send Request ACR" remoteURL="diameter://[Remote-Address]" destScenario="server">
+    <sendMessageDIAMETER name="Send Request ACR" remoteURL="diameter://[remoteDIA]" destScenario="server">
         <header request="true" command="Accounting" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
         <!-- The Session-Id AVP is used to identify a specific session. -->
         <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
 
         <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
-        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
+        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIA]"/>
         <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
-        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>
+        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIA]"/>
 
         <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
-        <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
+        <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIA]"/>            
 
         <!-- The Accounting-Record-Type AVP contains the type of accounting record being sent. -->
         <!-- Possible enumerated values : EVENT_RECORD(1) / START_RECORD(2) / INTERIM_RECORD(3) / STOP_RECORD(4). -->

@@ -36,7 +36,7 @@ Location-Info-Request ::= < Diameter Header: 302, REQ, PXY, 16777216 >
 
 -->
 
-    <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/LIR" remoteURL="diameter://[Remote-Address]" destScenario="server">
+    <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/LIR" remoteURL="diameter://[remoteDIA]" destScenario="server">
         <header request="true" command="Location-Info" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
           <avp code="Vendor-Specific-Application-Id">
@@ -49,10 +49,10 @@ Location-Info-Request ::= < Diameter Header: 302, REQ, PXY, 16777216 >
           <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
           <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
 
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHost]"/> 
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIA]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIA]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIA]"/> 
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIA]"/>            
 
           <!-- The Originating-Request AVP indicates to the HSS that the request is related to an AS originating SIP request in the Location-Information-Request operation. -->
           <!-- Possible enumerated values : ORIGINATING (0). -->

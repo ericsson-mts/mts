@@ -7,15 +7,15 @@
     <parameter name="[TestDurationSec]" operation="set" value="600" description="Duration (in sec.) of the test"   	editable="true"/>
 	<parameter name="[NumberTestcase]" operation="set" value="100" description="number of testcase"   			editable="true"/>
 
-    <parameter name="[Local-Host]" operation="system.ipaddress"/>
-	<parameter name="[Local-Port]" operation="file.readproperty" value="diameter.properties" value2="node.LISTENING_PORT"/>
-	<parameter name="[Local-Address]" operation="set" value="[Local-Host(0)]:[Local-Port]"/>	
-	<parameter name="[Local-Realm]" operation="set" value="sip.pfdev.fr"/>
+    <parameter name="[localHostDIA]" operation="system.ipaddress"/>
+	<parameter name="[localPortDIA]" operation="file.readproperty" value="diameter.properties" value2="node.LISTENING_PORT"/>
+	<parameter name="[localDIA]" operation="set" value="[Local-Host(0)]:[localPortDIA]"/>	
+	<parameter name="[localRealmDIA]" operation="set" value="sip.pfdev.fr"/>
 
-	<parameter name="[remoteHost]" operation="system.ipaddress"/>
-	<parameter name="[Remote-Port]" operation="file.readproperty" value="diameter.properties" value2="node.LISTENING_PORT"/>
-	<parameter name="[Remote-Address]" operation="set" value="[remoteHost(0)]:[Remote-Port]"/>
-	<parameter name="[Remote-Realm]" operation="set" value="sip.pfdev.fr"/>
+	<parameter name="[remoteHostDIA]" operation="system.ipaddress"/>
+	<parameter name="[remotePortDIA]" operation="file.readproperty" value="diameter.properties" value2="node.LISTENING_PORT"/>
+	<parameter name="[remoteDIA]" operation="set" value="[remoteHost(0)]:[remotePortDIA]"/>
+	<parameter name="[remoteRealmDIA]" operation="set" value="sip.pfdev.fr"/>
 
 	<parameter name="[delayTestcase]" operation="divide" value="1" value2="[speedTrans]"/>	
     <parameter name="[delayTestcase]" operation="multiply" value="[delayTestcase]" value2="[NumberTestcase]"/>

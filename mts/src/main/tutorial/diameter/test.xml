@@ -4,20 +4,20 @@
 <test name="DIAMETER" description="DIAMETER regression tests">
 
 	<parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-	<parameter name="[Local-Host]" operation="system.ipaddress" value2="[IPVersion]"/>
-	<parameter name="[Local-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
-  <parameter name="[Local-Host]" operation="set" value="[Local-Host(0)]" editable="true"/>
-	<parameter name="[Local-Port]" operation="set" value="[Local-Port]" editable="true" />
-	<parameter name="[Local-Address]" operation="set" value="[Local-Host]:[Local-Port]"/>	
-	<parameter name="[Local-Realm]" operation="set" value="imsloader.com"/>
+	<parameter name="[localHostDIA]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<parameter name="[localPortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+  <parameter name="[localHostDIA]" operation="set" value="[localHostDIA(0)]" editable="true"/>
+	<parameter name="[localPortDIA]" operation="set" value="[localPortDIA]" editable="true" />
+	<parameter name="[localDIA]" operation="set" value="[localHostDIA]:[localPortDIA]"/>	
+	<parameter name="[localRealmDIA]" operation="set" value="imsloader.com"/>
 
-	<parameter name="[remoteHost]" operation="system.ipaddress" value2="[IPVersion]"/>
-	<!--parameter name="[remoteHost]" operation="set" value="172.16.21.253"/-->
-  <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]" editable="true" />
-	<parameter name="[Remote-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
-	<parameter name="[Remote-Port]" operation="set" value="[Remote-Port]" editable="true" />
-	<parameter name="[Remote-Address]" operation="set" value="[remoteHost]:[Remote-Port]"/>
-	<parameter name="[Remote-Realm]" operation="set" value="client.fr"/>
+	<parameter name="[remoteHostDIA]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<!--parameter name="[remoteHostDIA]" operation="set" value="172.16.21.253"/-->
+  <parameter name="[remoteHostDIA]" operation="set" value="[remoteHostDIA(0)]" editable="true" />
+	<parameter name="[remotePortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter name="[remotePortDIA]" operation="set" value="[remotePortDIA]" editable="true" />
+	<parameter name="[remoteDIA]" operation="set" value="[remoteHostDIA]:[remotePortDIA]"/>
+	<parameter name="[remoteRealmDIA]" operation="set" value="client.fr"/>
 
   <parameter name="[vendorID]" operation="set" value="10415"/>
   <!--parameter name="[vendorID]" operation="set" value="TGPP"/-->
@@ -75,9 +75,9 @@
     </testcase>
 
     <testcase name="011_listenpoint" description="diameter" state="true">
-       	<parameter name="[Listen-Client-Host]" operation="set" value="[Local-Host]"/>
+       	<parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIA]"/>
         <parameter name="[Listen-Client-Port]" operation="set" value="3880"/>
-       	<parameter name="[Listen-Server-Host]" operation="set" value="[remoteHost]"/>
+       	<parameter name="[Listen-Server-Host]" operation="set" value="[remoteHostDIA]"/>
         <parameter name="[Listen-Server-Port]" operation="set" value="3882"/>
     
         <scenario name="client">011_listenpoint/client.xml</scenario>
@@ -85,9 +85,9 @@
     </testcase>
 
     <testcase name="012_routing" description="diameter" state="true">
-       	<parameter name="[Listen-Client-Host]" operation="set" value="[Local-Host]"/>
+       	<parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIA]"/>
         <parameter name="[Listen-Client-Port]" operation="set" value="3870"/>
-       	<parameter name="[Listen-Server-Host]" operation="set" value="[Local-Host]"/>
+       	<parameter name="[Listen-Server-Host]" operation="set" value="[localHostDIA]"/>
         <parameter name="[Listen-Server-Port]" operation="set" value="3868"/>
     
         <scenario name="client">012_routing/client.xml</scenario>
@@ -307,10 +307,10 @@
 
     <testcase name="996_proxy" description="diameter" state="false">
         <parameter name="[applicationID]" operation="set" value="16777216"/>
-        <parameter name="[Listen-Proxy-Host]" operation="set" value="[Local-Host]"/>
+        <parameter name="[Listen-Proxy-Host]" operation="set" value="[localHostDIA]"/>
         <parameter name="[Listen-Proxy-Port]" operation="set" value="3880"/>
-        <parameter name="[Remote-Proxy-Host]" operation="set" value="[remoteHost]"/>
-        <parameter name="[Remote-Proxy-Port]" operation="set" value="[Remote-Port]"/>        
+        <parameter name="[Remote-Proxy-Host]" operation="set" value="[remoteHostDIA]"/>
+        <parameter name="[Remote-Proxy-Port]" operation="set" value="[remotePortDIA]"/>        
         <scenario name="proxy">996_proxy/proxy.xml</scenario>
         <scenario name="client">996_proxy/client.xml</scenario>
         <scenario name="DIAMETER">996_proxy/server.xml</scenario>             

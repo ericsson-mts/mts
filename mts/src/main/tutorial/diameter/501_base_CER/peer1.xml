@@ -25,17 +25,17 @@ Capabilities-Exchange-Request ::= < Diameter Header: 257, REQ >
           
 -->
 
-    <sendMessageDIAMETER name="Send Request RFC3588 CER" remoteURL="diameter://[Remote-Address]" destScenario="peer2">
+    <sendMessageDIAMETER name="Send Request RFC3588 CER" remoteURL="diameter://[remoteDIA]" destScenario="peer2">
         <header request="true" command="Capabilities-Exchange" applicationId="0" proxiable="false" error="false" retransmit="false"/>
 
         <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
-        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
+        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIA]"/>
         <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
-        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>
+        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIA]"/>
 
         <!-- One Host-IP-Address AVP for each potential IP address that MAY be locally used when transmitting Diameter messages. -->
-        <avp code="Host-IP-Address" mandatory="true" type="IPAddress" value="[Local-Host]"/>
-        <avp code="Host-IP-Address" mandatory="true" type="IPAddress" value="[Local-Host]"/>
+        <avp code="Host-IP-Address" mandatory="true" type="IPAddress" value="[localHostDIA]"/>
+        <avp code="Host-IP-Address" mandatory="true" type="IPAddress" value="[localHostDIA]"/>
 
         <!-- The Vendor-Id AVP contains the IANA "SMI Network Management Private Enterprise Codes" value assigned to the vendor of the Diameter application. -->
         <!-- A Vendor-Id value of zero in the CER or CEA messages is reserved and indicates that this field is ignored. -->

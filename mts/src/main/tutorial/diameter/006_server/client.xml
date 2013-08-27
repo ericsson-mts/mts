@@ -4,12 +4,12 @@
 
 <scenario>
     
-    <sendMessageDIAMETER name="SendRequestMAR" remoteURL="aaa://[Remote-Address]">
+    <sendMessageDIAMETER name="SendRequestMAR" remoteURL="aaa://[remoteDIA]">
 	<header request="true" command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx"/>
-	<avp code="Origin-Host" value="[Local-Host]"/>
-	<avp code="Origin-Realm" value="[Local-Realm]"/>
-	<avp code="Destination-Host" value="[remoteHost]"/>	
-	<avp code="Destination-Realm" value="[Remote-Realm]"/>		
+	<avp code="Origin-Host" value="[localHostDIA]"/>
+	<avp code="Origin-Realm" value="[localRealmDIA]"/>
+	<avp code="Destination-Host" value="[remoteHostDIA]"/>	
+	<avp code="Destination-Realm" value="[remoteRealmDIA]"/>		
 	<avp code="Vendor-Specific-Application-Id">
 	        <avp code="Vendor-Id" value="TGPP"/>
 	        <avp code="Auth-Application-Id" value="IMS_Cx_Dx"/>
@@ -29,12 +29,12 @@
     <receiveMessageDIAMETER name="Receive Answer (MAA)" request="false" type="Multimedia-Authentitcation:506" result="DIAMETER_SUCCESS:2001">
     </receiveMessageDIAMETER>
         
-    <sendMessageDIAMETER name="Send Request 3GPP/SH/UDR" remoteURL="aaa://[Remote-Address]">
+    <sendMessageDIAMETER name="Send Request 3GPP/SH/UDR" remoteURL="aaa://[remoteDIA]">
 		<header request="true" command="User-Data" applicationId="3GPP Sh"/>
-		<avp code="Origin-Host" value="[Local-Host]"/>
-		<avp code="Origin-Realm" value="[Local-Realm]"/>
-		<avp code="Destination-Host" value="[remoteHost]"/>	
-		<avp code="Destination-Realm" value="[Remote-Realm]"/>		
+		<avp code="Origin-Host" value="[localHostDIA]"/>
+		<avp code="Origin-Realm" value="[localRealmDIA]"/>
+		<avp code="Destination-Host" value="[remoteHostDIA]"/>	
+		<avp code="Destination-Realm" value="[remoteRealmDIA]"/>		
 		<avp code="Vendor-Specific-Application-Id">
 	        <avp code="Vendor-Id" value="TGPP"/>
 	        <avp code="Auth-Application-Id" value="3GPP Sh"/>
@@ -85,12 +85,12 @@
     <receiveMessageDIAMETER name="Receive Answer 3GPP/SH/UDA" request="false" type="User-Data:306" result="DIAMETER_SUCCESS:2001">
     </receiveMessageDIAMETER>
 
-    <sendMessageDIAMETER name="SendRequestMAR" remoteURL="aaa://[Remote-Address]">
+    <sendMessageDIAMETER name="SendRequestMAR" remoteURL="aaa://[remoteDIA]">
 		<header request="true" command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx" proxiable="true"/>
-		<avp code="Origin-Host" value="[Local-Host]"/>
-		<avp code="Origin-Realm" value="[Local-Realm]"/>
-		<avp code="Destination-Host" value="[remoteHost]"/>	
-		<avp code="Destination-Realm" value="[Remote-Realm]"/>		
+		<avp code="Origin-Host" value="[localHostDIA]"/>
+		<avp code="Origin-Realm" value="[localRealmDIA]"/>
+		<avp code="Destination-Host" value="[remoteHostDIA]"/>	
+		<avp code="Destination-Realm" value="[remoteRealmDIA]"/>		
 		<avp code="Vendor-Specific-Application-Id">
 	        <avp code="Vendor-Id" value="TGPP"/>
 	        <avp code="Auth-Application-Id" value="IMS_Cx_Dx"/>

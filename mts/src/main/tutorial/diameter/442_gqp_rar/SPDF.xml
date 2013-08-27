@@ -31,14 +31,14 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
 
 -->
 
-    <sendMessageDIAMETER name="Send Request ETSI/Gq'/RAR" remoteURL="diameter://[Remote-Address]" destScenario="AF">
+    <sendMessageDIAMETER name="Send Request ETSI/Gq'/RAR" remoteURL="diameter://[remoteDIA]" destScenario="AF">
         <header request="true" command="Re-Auth" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
 
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[Local-Host]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[Local-Realm]"/>
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[Remote-Realm]"/>            
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHost]"/>
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIA]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIA]"/>
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIA]"/>            
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIA]"/>
 
           <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
 
