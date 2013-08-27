@@ -4,15 +4,15 @@
 <test name="MGCP" description="MGCP regression tests">
 
 
-	<parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-    <parameter name="[Host-Tester]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]" editable="true"/>
-	<parameter name="[Port-Tester]" operation="file.readProperty" value="mgcp.properties" value2="listenpoint.LOCAL_PORT"/>
-	<parameter name="[Port-Tester]" operation="set" value="[Port-Tester]" editable="true"/>
-    <parameter name="[Host-Server]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]" editable="true"/>
-    <parameter name="[Port-Server]" operation="file.readProperty" value="mgcp.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[Port-Server]" operation="set" value="[Port-Server]" editable="true"/>
+    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[localHostMGCP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostMGCP]" operation="set" value="[localHostMGCP(0)]" editable="true"/>
+    <parameter name="[localPortMGCP]" operation="file.readProperty" value="mgcp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localPortMGCP]" operation="set" value="[localPortMGCP]" editable="true"/>
+    <parameter name="[remoteHostMGCP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostMGCP]" operation="set" value="[remoteHostMGCP(0)]" editable="true"/>
+    <parameter name="[remotePortMGCP]" operation="file.readProperty" value="mgcp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[remotePortMGCP]" operation="set" value="[remotePortMGCP]" editable="true"/>
     
     <testcase name="mgcp/000_createConnection" description="test createConnection" state="true">
         <scenario name="Call_Agent">000_createConnection/Call_Agent.xml</scenario>
