@@ -3,41 +3,41 @@
 <test name="HTTP regression tests">
 
 	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
-	<parameter name="[Local-Host]" operation="system.ipaddress" value2="[IPVersion]"/>
-	<!--parameter name="[Local-Host]" operation="set" value="127.0.0.1"/-->
-	<parameter name="[Local-Host]" operation="set" value="[Local-Host(0)]" editable="true"/>	
-	<!--parameter name="[Local-Port]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	
-	<parameter name="[Local-Port]" operation="set" value="8080"/>	
-	<parameter name="[Local-Port]" operation="set" value="[Local-Port(0)]" editable="true"/>
-	<parameter name="[Local-Address]" operation="set" value="[Local-Host]:[Local-Port]"/>	
+	<parameter name="[localHostHTTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<!--parameter name="[localHostHTTP]" operation="set" value="127.0.0.1"/-->
+	<parameter name="[localHostHTTP]" operation="set" value="[localHostHTTP(0)]" editable="true"/>	
+	<!--parameter name="[localPortHTTP]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	
+	<parameter name="[localPortHTTP]" operation="set" value="8080"/>	
+	<parameter name="[localPortHTTP]" operation="set" value="[localPortHTTP(0)]" editable="true"/>
+	<parameter name="[localHTTP]" operation="set" value="[localHostHTTP]:[localPortHTTP]"/>	
 
-	<parameter name="[Remote-Host]" operation="system.ipaddress" value2="[IPVersion]"/>
-	<!--parameter name="[Remote-Host]" operation="set" value="www.imsloader.com"/-->
-	<parameter name="[Remote-Host]" operation="set" value="[Remote-Host(0)]" editable="true"/>
-	<!--parameter name="[Remote-Port]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	
-	<parameter name="[Remote-Port]" operation="set" value="8080"/>		
-	<!--parameter name="[Remote-Port]" operation="set" value="80"/-->		
-	<parameter name="[Remote-Port]" operation="set" value="[Remote-Port(0)]" editable="true"/>
-	<parameter name="[Remote-Address]" operation="set" value="[Remote-Host]:[Remote-Port]"/>
+	<parameter name="[remoteHostHTTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<!--parameter name="[remoteHostHTTP]" operation="set" value="www.imsloader.com"/-->
+	<parameter name="[remoteHostHTTP]" operation="set" value="[remoteHostHTTP(0)]" editable="true"/>
+	<!--parameter name="[remotePortHTTP]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	
+	<parameter name="[remotePortHTTP]" operation="set" value="8080"/>		
+	<!--parameter name="[remotePortHTTP]" operation="set" value="80"/-->		
+	<parameter name="[remotePortHTTP]" operation="set" value="[remotePortHTTP(0)]" editable="true"/>
+	<parameter name="[remoteHTTP]" operation="set" value="[remoteHostHTTP]:[remotePortHTTP]"/>
 	
-	<!--parameter name="[Remote-Port-Secure]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT_TLS"/-->
-	<parameter name="[Remote-Port-Secure]" operation="set" value="4430"/>			
-	<parameter name="[Remote-Port-Secure]" operation="set" value="[Remote-Port-Secure(0)]" editable="true"/>
-	<parameter name="[Remote-Address-Secure]" operation="set" value="[Remote-Host]:[Remote-Port-Secure]"/>
+	<!--parameter name="[remotePortSecHTTP]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT_TLS"/-->
+	<parameter name="[remotePortSecHTTP]" operation="set" value="4430"/>			
+	<parameter name="[remotePortSecHTTP]" operation="set" value="[remotePortSecHTTP(0)]" editable="true"/>
+	<parameter name="[remoteSecHTTP]" operation="set" value="[remoteHostHTTP]:[remotePortSecHTTP]"/>
 
-	<parameter name="[Proxy-Host]" operation="system.ipaddress" value2="[IPVersion]"/>
-	<!--parameter name="[Proxy-Host]" operation="set" value="172.16.86.100"/-->	
-	<parameter name="[Proxy-Host]" operation="set" value="[Proxy-Host(0)]" editable="true"/>
-	<!--parameter name="[Proxy-Port]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	
-	<parameter name="[Proxy-Port]" operation="set" value="8080"/>			
-	<parameter name="[Proxy-Port]" operation="set" value="[Proxy-Port(0)]" editable="true"/>
-	<parameter name="[Proxy-Address]" operation="set" value="[Proxy-Host]:[Proxy-Port]"/>
+	<parameter name="[proxyHostHTTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<!--parameter name="[proxyHostHTTP]" operation="set" value="172.16.86.100"/-->	
+	<parameter name="[proxyHostHTTP]" operation="set" value="[proxyHostHTTP(0)]" editable="true"/>
+	<!--parameter name="[proxyPortHTTP]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	
+	<parameter name="[proxyPortHTTP]" operation="set" value="8080"/>			
+	<parameter name="[proxyPortHTTP]" operation="set" value="[proxyPortHTTP(0)]" editable="true"/>
+	<parameter name="[proxyHTTP]" operation="set" value="[proxyHostHTTP]:[proxyPortHTTP]"/>
 		
-	<parameter name="[client_target_host]" value="127.0.0.1"/>
-	<parameter name="[client_target_port]" value="8081"/>
+	<parameter name="[clientTarHostHTTP]" value="127.0.0.1"/>
+	<parameter name="[clientTarPortHTTP]" value="8081"/>
 
-	<parameter name="[proxy_target_host]" value="192.168.90.50"/>
-	<parameter name="[proxy_target_port]" value="80"/>
+	<parameter name="[proxyTarHostHTTP]" value="192.168.90.50"/>
+	<parameter name="[proxyTarPortHTTP]" value="80"/>
 
 	<!--parameter name="[data]" operation="file.readbinary" value="250.txt"/-->
     

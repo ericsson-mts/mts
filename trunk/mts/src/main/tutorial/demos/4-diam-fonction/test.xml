@@ -4,17 +4,17 @@
 <test name="Functional tests AAA">
 
 	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
-	<parameter name="[Local-Host]" operation="system.ipaddress" value2="[IPVersion]"/>
-	<parameter name="[Local-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
-	<parameter name="[Local-Address]" operation="set" value="[Local-Host(0)]:[Local-Port]"/>	
-	<parameter name="[Local-Realm]" operation="set" value="sip.pfdev.fr"/>
+	<parameter name="[localHostDIA]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<parameter name="[localPortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter name="[localDIA]" operation="set" value="[localHostDIA(0)]:[localPortDIA]"/>	
+	<parameter name="[localRealmDIA]" operation="set" value="sip.pfdev.fr"/>
 
-	<parameter name="[Remote-Host]" operation="system.ipaddress" value2="[IPVersion]"/>
-	<!--parameter name="[Remote-Host]" operation="set" value="192.168.0.1"/-->
-	<parameter name="[Remote-Port]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
-	<!--parameter name="[Remote-Port]" operation="set" value="3869"/-->
-	<parameter name="[Remote-Address]" operation="set" value="[Remote-Host(0)]:[Remote-Port]"/>
-	<parameter name="[Remote-Realm]" operation="set" value="sip.pfdev.fr"/>
+	<parameter name="[remoteHostDIA]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<!--parameter name="[remoteHostDIA]" operation="set" value="192.168.0.1"/-->
+	<parameter name="[remotePortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+	<!--parameter name="[remotePortDIA]" operation="set" value="3869"/-->
+	<parameter name="[remoteDIA]" operation="set" value="[remoteHostDIA(0)]:[remotePortDIA]"/>
+	<parameter name="[remoteRealmDIA]" operation="set" value="sip.pfdev.fr"/>
 
   <parameter name="[vendorID]" operation="set" value="10415"/>
   <!--parameter name="[vendorID]" operation="set" value="TGPP"/-->

@@ -3,26 +3,22 @@
 
 <test name="RTP regression tests">
 
-	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
-    <parameter name="[domainName]" operation="set" value="devoteam.com"/>
-    <parameter name="[inviter]" operation="set" value="bob"/>
-    <parameter name="[invitee]" operation="set" value="alice"/>	
-    	
-    <parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>        
-    <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]"/>        
-    <parameter name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>    	    
-    <parameter name="[remoteHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>    
-    <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]"/>        
-    <parameter name="[remotePortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>    	    
-    
+    <parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
     <parameter name="[localHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostRTP]" operation="set" value="[localHostRTP(0)]"/>        
+    <parameter name="[localHostRTP]" operation="set" value="[localHostRTP(0)]"/>
     <parameter name="[localPortRTP]" operation="set" value="10000"/>
-    <parameter name="[remoteHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>    
-    <!--parameter name="[remoteHostRTP]" operation="set" value="172.16.21.253" /-->    
-    <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]"/>        
+    <parameter name="[remoteHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHostRTP]" operation="set" value="172.16.21.253" /-->
+    <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]"/>
     <parameter name="[remotePortRTP]" operation="set" value="11000"/>
 
+    <parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]"/>
+    <parameter name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>    	    
+    <parameter name="[remoteHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]"/>
+    <parameter name="[remotePortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>    	    
+    
     <parameter name="[localHostRTP_proxy]"  operation="set" value="[localHostRTP(0)]" />
     <parameter name="[localPortRTP_proxy]"  operation="set" value="1111" />
     
@@ -33,7 +29,7 @@
     <!-- Parameters for proxy testcases -->
     <parameter name="[localHostRTP_client]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[localPortRTP_client]" operation="set" value="10000"/>
-    <parameter name="[remoteHostRTP_client]" operation="system.ipaddress" value2="[IPVersion]"/>     
+    <parameter name="[remoteHostRTP_client]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[remotePortRTP_client]" operation="set" value="11000"/>
     	
     <parameter name="[localHostRTP_proxy_receiver]"  operation="set" value="[localHostRTP_client(0)]" />
@@ -52,17 +48,17 @@
 
     <testcase name="001_jmf_noreg" description="RTP protocol" state="false">
         <scenario name="session1">../../rtp/001_jmf_noreg/session1.xml</scenario>
-	<scenario name="session2">../../rtp/001_jmf_noreg/session2.xml</scenario>
+    <scenario name="session2">../../rtp/001_jmf_noreg/session2.xml</scenario>
     </testcase>
 
     <testcase name="002_control" description="RTCP protocol" state="false">
         <scenario name="inviter">../../rtp/002_control/session1.xml</scenario>
-	<scenario name="invitee">../../rtp/002_control/session2.xml</scenario>
+    <scenario name="invitee">../../rtp/002_control/session2.xml</scenario>
     </testcase>
 
     <testcase name="005_set_from_msg" description="setFromMessage" state="true">
         <scenario name="inviter">../../rtp/005_set_from_msg/session1.xml</scenario>
-    	<scenario name="invitee">../../rtp/005_set_from_msg/session2.xml</scenario>
+    <scenario name="invitee">../../rtp/005_set_from_msg/session2.xml</scenario>
     </testcase>
 
     <testcase name="006_success_on_timeout" description="setFromMessage" state="true">

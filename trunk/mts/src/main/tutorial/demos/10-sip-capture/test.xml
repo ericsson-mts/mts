@@ -4,17 +4,17 @@
 <test name="Functional tests SIP">
     
 	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
-    <parameter name="[Host-Tester]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]"/>
-    <parameter name="[Port-Tester]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]"/>	
+    <parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]"/>
+    <parameter name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localSIP]" operation="set" value="[localHostSIP(0)]:[localPortSIP]"/>	
    
-    <parameter name="[Host-Server]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]"/>
-    <!--parameter name="[Host-Server]" operation="set" value="192.168.0.1"/-->
-    <parameter name="[Port-Server]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
-    <!--parameter name="[Port-Server]" operation="set" value="7070"/-->
-    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server(0)]:[Port-Server]"/>	
+    <parameter name="[remoteHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]"/>
+    <!--parameter name="[remoteHostSIP]" operation="set" value="192.168.0.1"/-->
+    <parameter name="[remotePortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[remotePortSIP]" operation="set" value="7070"/-->
+    <parameter name="[Adresse-Server]" operation="set" value="[remoteHostSIP(0)]:[remotePortSIP]"/>	
 
 	
     <!-- transport parameters-->
