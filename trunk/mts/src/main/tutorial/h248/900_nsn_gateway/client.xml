@@ -8,9 +8,9 @@
 <!-- "AuditValue #1" message -->
     <parameter name="[newTransID]" operation="number.random" value="10000000"/>
     <sendMessageH248 name="Send request" destScenario="H248"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Tester]]:[Port-Tester] T = [newTransID]{ C = - { AV =ROOT{ AT { }  } } }
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = - { AV =ROOT{ AT { }  } } }
 ]]>
     </sendMessageH248>
     
@@ -20,18 +20,18 @@
     </receiveMessageH248>
 
     <sendMessageH248 name="Send acknowledge" destScenario="H248"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Server]]:[Port-Server] K {[newTransID]}
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
 ]]>
     </sendMessageH248>
 
 <!-- "AuditValue #2" message -->
     <parameter name="[newTransID]" operation="number.add" value="[newTransID]" value2="1"/>
     <sendMessageH248 name="Send request" destScenario="H248" 
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Tester]]:[Port-Tester] T = [newTransID]{ C = - { AV =ROOT{ AT { }  } } }
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = - { AV =ROOT{ AT { }  } } }
 ]]>
     </sendMessageH248>
     
@@ -41,18 +41,18 @@
     </receiveMessageH248>
 
     <sendMessageH248 name="Send acknowledge" destScenario="H248"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Server]]:[Port-Server] K {[newTransID]}
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
 ]]>
     </sendMessageH248>
 
 <!-- "Add #1" message -->
     <parameter name="[newTransID]" operation="number.random" value="10000000"/>
     <sendMessageH248 name="Send request" destScenario="H248"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Tester]]:[Port-Tester] T = [newTransID]{ C = $ { PR = 0, A =ip/90/Realm_ext_media01/${ M { ST  = 1 { L { v=0
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = $ { PR = 0, A =ip/90/Realm_ext_media01/${ M { ST  = 1 { L { v=0
 c=IN IP4 $
 m=audio $ RTP/AVP 0
  } , R { v=0
@@ -72,9 +72,9 @@ m=audio $ RTP/AVP 0
     </receiveMessageH248>
 
     <sendMessageH248 name="Send acknowledge" destScenario="H248"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Server]]:[Port-Server] K {[newTransID]}
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
 ]]>
     </sendMessageH248>
 
@@ -82,9 +82,9 @@ m=audio $ RTP/AVP 0
 <!-- "Substract #1" message -->
     <parameter name="[newTransID]" operation="number.add" value="[newTransID]" value2="1"/>
     <sendMessageH248 name="Send request" destScenario="H248"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Tester]]:[Port-Tester] T = [newTransID]{ C = [contextID] { S =* } }
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = [contextID] { S =* } }
 ]]>
     </sendMessageH248>
     
@@ -94,18 +94,18 @@ m=audio $ RTP/AVP 0
     </receiveMessageH248>
 
     <sendMessageH248 name="Send acknowledge" destScenario="H248"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Server]]:[Port-Server] K {[newTransID]}
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
 ]]>
     </sendMessageH248>
 
 <!-- "Add #2" message -->
     <parameter name="[newTransID]" operation="number.add" value="[newTransID]" value2="1"/>
     <sendMessageH248 name="Send request" destScenario="H248"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Tester]]:[Port-Tester] T = [newTransID]{ C = $ { PR = 0, A =ip/91/Realm_ext_media01/${ M { ST  = 1 { L { v=0
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = $ { PR = 0, A =ip/91/Realm_ext_media01/${ M { ST  = 1 { L { v=0
 c=IN IP4 $
 m=audio $ RTP/AVP 0
  } , R { v=0
@@ -125,17 +125,17 @@ m=audio $ RTP/AVP 0
     </receiveMessageH248>
 
     <sendMessageH248 name="Send acknowledge" destScenario="H248"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Server]]:[Port-Server] K {[newTransID]}
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
 ]]>
     </sendMessageH248>
 
 <!-- "Modify #1" message -->
     <parameter name="[newTransID]" operation="number.add" value="[newTransID]" value2="1"/>
-    <sendMessageH248 name="Send request"  remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+    <sendMessageH248 name="Send request"  remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Tester]]:[Port-Tester] T = [newTransID]{ C = [contextID] { PR = 0, MF =ip/91/Realm_ext_media01/32930{ M { ST  = 1 { L { v=0
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = [contextID] { PR = 0, MF =ip/91/Realm_ext_media01/32930{ M { ST  = 1 { L { v=0
 c=IN IP4 172.20.214.36
 m=audio 57662 RTP/AVP 18 8 101
 a=rtpmap:18 G729/8000/1
@@ -169,18 +169,18 @@ a=fmtp:101 0-15
     </receiveMessageH248>
 
     <sendMessageH248 name="Send acknowledge" destScenario="H248"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Server]]:[Port-Server] K {[newTransID]}
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
 ]]>
     </sendMessageH248>
 
 <!-- "Modify #2" message -->
     <parameter name="[newTransID]" operation="number.add" value="[newTransID]" value2="1"/>
     <sendMessageH248 name="Send request" destScenario="H248"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Tester]]:[Port-Tester] T = [newTransID]{ C = [contextID] { PR = 0, MF =ip/91/Realm_ext_media01/32930{ M { ST  = 1 { L { v=0
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = [contextID] { PR = 0, MF =ip/91/Realm_ext_media01/32930{ M { ST  = 1 { L { v=0
 c=IN IP4 172.20.214.36
 m=audio 57662 RTP/AVP 18 8 101
 a=rtpmap:18 G729/8000/1
@@ -214,18 +214,18 @@ a=fmtp:101 0-15
     </receiveMessageH248>
 
     <sendMessageH248 name="Send acknowledge" destScenario="H248"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Server]]:[Port-Server] K {[newTransID]}
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
 ]]>
     </sendMessageH248>
 
 <!-- "Substract #2" message -->
     <parameter name="[newTransID]" operation="number.add" value="[newTransID]" value2="1"/>
     <sendMessageH248 name="Send request" destScenario="H248"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Tester]]:[Port-Tester] T = [newTransID]{ C = [contextID] { S =* } }
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = [contextID] { S =* } }
 ]]>
     </sendMessageH248>
     
@@ -235,9 +235,9 @@ a=fmtp:101 0-15
     </receiveMessageH248>
 
     <sendMessageH248 name="Send acknowledge" destScenario="H248"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/2 [[Host-Server]]:[Port-Server] K {[newTransID]}
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
 ]]>
     </sendMessageH248>
 

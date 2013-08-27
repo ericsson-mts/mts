@@ -15,9 +15,9 @@
     <!-- send ServiceChange response -->
     <parameter name="[rtpPort1]" operation="number.random" value="65535"/>
     <parameter name="[rtpPort2]" operation="number.random" value="65535"/>
-    <sendMessageH248 name="Send response" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportResponse]">
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
 <![CDATA[
-MEGACO/3 [[Host-Server]]:[Port-Server]
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
 Reply = [transaction] {
  ImmAckRequired,
  Context=[contextID]{
@@ -26,8 +26,8 @@ Reply = [transaction] {
   },
   ServiceChange=ip/1/access/[termID1]{
    Services {
-    ServiceChangeAddress=[Port-Server], 
-    MgcIdToTry=[[Host-Server]:[Port-Server]], 
+    ServiceChangeAddress=[remotePortH248], 
+    MgcIdToTry=[[remoteHostH248]:[remotePortH248]], 
     Profile=ETSI_BGF/3, 
     Version=11, 
     20080721T14013777, 

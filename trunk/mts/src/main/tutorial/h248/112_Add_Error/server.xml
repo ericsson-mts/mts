@@ -11,16 +11,16 @@
     <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
 
     <!-- send Add pending -->
-    <sendMessageH248 name="Send pending" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportResponse]">
+    <sendMessageH248 name="Send pending" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
 <![CDATA[
-MEGACO/3 [[Host-Server]]:[Port-Server] Pending=[transaction]{}
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] Pending=[transaction]{}
 ]]>
     </sendMessageH248>
 
     <!-- send Add error -->
-    <sendMessageH248 name="Send error 422" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportResponse]">
+    <sendMessageH248 name="Send error 422" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
 <![CDATA[
-MEGACO/3 [[Host-Server]]:[Port-Server] Reply=[transaction] {Error=422 {Syntax error in the command}}
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] Reply=[transaction] {Error=422 {Syntax error in the command}}
 ]]>
     </sendMessageH248>
 
@@ -44,9 +44,9 @@ MEGACO/3 [[Host-Server]]:[Port-Server] Reply=[transaction] {Error=422 {Syntax er
     <parameter name="[contextID]" operation="number.random" value="10000000"/>
     <parameter name="[termID1]" operation="number.random" value="10000000"/>
     <parameter name="[termID2]" operation="number.random" value="10000000"/>
-    <sendMessageH248 name="Send response" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportResponse]">
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
 <![CDATA[
-MEGACO/3 [[Host-Server]]:[Port-Server]
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
 Reply = [transaction]/1/$ {
  ImmAckRequired,
  Context=[contextID]{

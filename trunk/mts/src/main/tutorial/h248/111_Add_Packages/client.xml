@@ -5,9 +5,9 @@
     <!-- send Add request-->
     <parameter name="[transID]" operation="number.random" value="10000000"/>
     <sendMessageH248 name="Send request" destScenario="server"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-MEGACO/3 [[Host-Server]]:[Port-Server]
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
 Transaction=[transID]{
  Context=${
   Priority = 1,                     
@@ -28,9 +28,9 @@ Transaction=[transID]{
 
     <!-- send Add acknowledge -->
     <sendMessageH248 name="Send acknowledge" destScenario="server"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-MEGACO/3 [[Host-Server]]:[Port-Server] K {[transID]}
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]}
 ]]>
     </sendMessageH248>
 

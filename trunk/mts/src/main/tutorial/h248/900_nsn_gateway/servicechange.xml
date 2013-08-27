@@ -7,9 +7,9 @@
     
 <!-- "AuditValue" message -->
     <parameter name="[newTransID]" operation="number.random" value="10000000"/>
-    <sendMessageH248 name="Send request"  remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+    <sendMessageH248 name="Send request"  remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-MEGACO/1 [[Host-Tester]]:[Port-Tester] 
+MEGACO/1 [[localHostH248]]:[localPortH248] 
  Transaction=1
  {
   Context=-
@@ -27,9 +27,9 @@ MEGACO/1 [[Host-Tester]]:[Port-Tester]
    
     <!--test parameter="[transID]" condition="string.equals" value="[newTransID]" /-->
 
-    <sendMessageH248 name="Send acknowledge"  remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+    <sendMessageH248 name="Send acknowledge"  remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-!/1 [[Host-Tester]]:[Port-Tester] K {1}
+!/1 [[localHostH248]]:[localPortH248] K {1}
 ]]>
     </sendMessageH248>
 

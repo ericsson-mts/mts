@@ -100,9 +100,9 @@
 	    </else>
 	</if>
 
-    	<sendMessageH248 name="Send response" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportResponse]">
+    	<sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
 <![CDATA[
-MEGACO/2 [[Host-Tester]]:[Port-Tester]
+MEGACO/2 [[localHostH248]]:[localPortH248]
 Reply=[transID]{
 Context=-{
 AuditValue=ROOT{
@@ -118,9 +118,9 @@ Packages{[packageList]}
 	<!-- "ModifyROOT" message -->
 	<label name="ModifyROOT"/>        
 
-	<sendMessageH248 name="Send response" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportResponse]">
+	<sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
 <![CDATA[
-MEGACO/2 [[Host-Tester]]:[Port-Tester]
+MEGACO/2 [[localHostH248]]:[localPortH248]
 Reply=[transID]{
 Context=-{
 Modify=ROOT
@@ -142,16 +142,16 @@ Modify=ROOT
 	<parameter name="[addTermValue(1)]" operation="string.regexreplaces" value="[addTermValue(1)]" value2="[$]" value3="[newTermID2]"/>
 	<parameter name="[termID_[newContextID]]" operation="set" value="[addTermValue]"/>
 
-	<sendMessageH248 name="Send response" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportResponse]">
+	<sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
 <![CDATA[
-MEGACO/2 [[Host-Tester]]:[Port-Tester]
+MEGACO/2 [[localHostH248]]:[localPortH248]
 Reply=[transID]{
  Context=[newContextID]{
   Add=[termID_[newContextID](0)]{
    Media{
 Stream=1{Local{
 v=0
-c=IN IP4 [Host-Tester]
+c=IN IP4 [localHostH248]
 m=audio 57662 RTP/AVP 0
 }}
    }
@@ -160,7 +160,7 @@ m=audio 57662 RTP/AVP 0
    Media{
 Stream=1{Local{
 v=0
-c=IN IP4 [Host-Tester]
+c=IN IP4 [localHostH248]
 m=audio 57662 RTP/AVP 0
 }}
    }
@@ -175,16 +175,16 @@ m=audio 57662 RTP/AVP 0
 	<!-- "Modify" message -->
 	<label name="Modify"/>        
 
-	<sendMessageH248 name="Send response" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportResponse]">
+	<sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
 <![CDATA[
-MEGACO/2 [[Host-Tester]]:[Port-Tester]
+MEGACO/2 [[localHostH248]]:[localPortH248]
 Reply=[transID]{
 Context=[contextID]{
 Modify=[termID_[contextID](0)]{
 Media{
 Stream=1{Local{
 v=0
-c=IN IP4 [Host-Tester]
+c=IN IP4 [localHostH248]
 m=audio 57662 RTP/AVP 18 8 101
 a=fmtp:101 0-15
 a=rtpmap:18 G729/8000/1
@@ -196,7 +196,7 @@ Modify=[termID_[contextID](1)]{
 Media{
 Stream=1{Local{
 v=0
-c=IN IP4 [Host-Tester]
+c=IN IP4 [localHostH248]
 m=audio 57662 RTP/AVP 18 8 101
 a=fmtp:101 0-15
 a=rtpmap:18 G729/8000/1
@@ -214,9 +214,9 @@ a=rtpmap:8 PCMU/8000/1
 	<!-- "Substract" message -->
 	<label name="Substract"/>
 
-    	<sendMessageH248 name="Send response" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportResponse]">
+    	<sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
 <![CDATA[
-MEGACO/2 [[Host-Tester]]:[Port-Tester]
+MEGACO/2 [[localHostH248]]:[localPortH248]
 Reply=[transID]{
  Context=[contextID]{
   Subtract=[termID_[contextID](0)]{
@@ -235,9 +235,9 @@ Reply=[transID]{
 	<!-- "ServiceChange" message -->
 	<label name="ServiceChange"/>
 
-    	<sendMessageH248 name="Send response" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportResponse]">
+    	<sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
 <![CDATA[
-MEGACO/1 [[Host-Tester]]:[Port-Tester] 
+MEGACO/1 [[localHostH248]]:[localPortH248] 
  Reply=1
  {
   Context=[contextID]

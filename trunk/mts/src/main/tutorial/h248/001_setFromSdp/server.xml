@@ -22,9 +22,9 @@
 
     <!-- test Origin:xxx -->
     <parameter name="[SDPOrigin0]" operation="protocol.setFromSdp" value="[local]" value2="Origin"/>
-    <test parameter="[SDPOrigin0]" condition="string.contains" value="mhandley 2890844526 2890842807 IN IP4 [Host-Tester]"/>
+    <test parameter="[SDPOrigin0]" condition="string.contains" value="mhandley 2890844526 2890842807 IN IP4 [localHostH248]"/>
     <parameter name="[SDPOriginAddress]" operation="protocol.setFromSdp" value="[local]" value2="Origin:Address"/>
-    <test parameter="[SDPOriginAddress]" condition="string.equals" value="[Host-Tester]"/>
+    <test parameter="[SDPOriginAddress]" condition="string.equals" value="[localHostH248]"/>
     <parameter name="[SDPOriginAddressType]" operation="protocol.setFromSdp" value="[local]" value2="Origin:AddressType"/>
     <test parameter="[SDPOriginAddressType]" condition="string.equals" value="IP4"/>
     <parameter name="[SDPOriginSessionVersion0]" operation="protocol.setFromSdp" value="[local]" value2="Origin:SessionVersion"/>
@@ -34,7 +34,7 @@
     <parameter name="[SDPOriginNetworkType]" operation="protocol.setFromSdp" value="[local]" value2="Origin:NetworkType"/>
     <test parameter="[SDPOriginNetworkType]" condition="string.equals" value="IN"/>
     <parameter name="[SDPOriginAddress]" operation="protocol.setFromSdp" value="[local]" value2="Origin:Address"/>
-    <test parameter="[SDPOriginAddress]" condition="string.equals" value="[Host-Tester]"/>
+    <test parameter="[SDPOriginAddress]" condition="string.equals" value="[localHostH248]"/>
     <parameter name="[SDPOriginUserName0]" operation="protocol.setFromSdp" value="[local]" value2="Origin:UserName"/>
     <test parameter="[SDPOriginUserName0]" condition="string.equals" value="mhandley"/>
 
@@ -44,9 +44,9 @@
 
     <!-- test Connection:xxx -->
     <parameter name="[SDPConnection0]" operation="protocol.setFromSdp" value="[local]" value2="Connection"/>
-    <test parameter="[SDPConnection0]" condition="string.contains" value="IN IP4 [Host-Tester]/127"/>
+    <test parameter="[SDPConnection0]" condition="string.contains" value="IN IP4 [localHostH248]/127"/>
     <parameter name="[SDPConnectionAddress0]" operation="protocol.setFromSdp" value="[local]" value2="Connection:Address"/>
-    <test parameter="[SDPConnectionAddress0]" condition="string.equals" value="[Host-Tester]"/>
+    <test parameter="[SDPConnectionAddress0]" condition="string.equals" value="[localHostH248]"/>
     <parameter name="[SDPConnectionAddressType0]" operation="protocol.setFromSdp" value="[local]" value2="Connection:AddressType"/>
     <test parameter="[SDPConnectionAddressType0]" condition="string.equals" value="IP4"/>
     <parameter name="[SDPConnectionNetworkType0]" operation="protocol.setFromSdp" value="[local]" value2="Connection:NetworkType"/>
@@ -173,9 +173,9 @@
     <test parameter="[remote]" condition="list.size" value="1" />
 
     <!-- send response -->
-    <sendMessageH248 name="Send response" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportResponse]">
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
 <![CDATA[
-MEGACO/2 [[Host-Server]]:[Port-Server] Reply=[transID]{Context=817{Add=ip/1/access1/14296{Media{Local{v=0
+MEGACO/2 [[remoteHostH248]]:[remotePortH248] Reply=[transID]{Context=817{Add=ip/1/access1/14296{Media{Local{v=0
 c=IN IP4 172.20.168.100
 b=AS:6
 m=audio 22322 RTP/AVP -

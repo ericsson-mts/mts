@@ -14,11 +14,13 @@
     <parameter name="[version]" operation="protocol.setFromMessage" value="header.version" />
     <test parameter="[version]" condition="string.equals" value="2" />
     <parameter name="[mid]" operation="protocol.setFromMessage" value="header.mid" />
-    <test parameter="[mid]" condition="string.equals" value="[[Host-Tester]]:[Port-Tester]" />
+    <test parameter="[mid]" condition="string.equals" value="[[localHostH248]]:[localPortH248]" />
     <parameter name="[midDomainAddress]" operation="protocol.setFromMessage" value="header.midDomainAddress" />
-    <test parameter="[midDomainAddress]" condition="string.equals" value="[Host-Tester]" />
+	<log level="INFO">[localHostH248]</log>
+	<log level="INFO">[midDomainAddress]</log>
+    <test parameter="[midDomainAddress]" condition="string.equals" value="[localHostH248]" />
     <parameter name="[midPortNumber]" operation="protocol.setFromMessage" value="header.midPortNumber" />
-    <test parameter="[midPortNumber]" condition="string.equals" value="[Port-Tester]" />
+    <test parameter="[midPortNumber]" condition="string.equals" value="[localPortH248]" />
 
     <!-- test authHeader:XXXXXXX -->        
     <parameter name="[authHeader]" operation="protocol.setFromMessage" value="authHeader" />
@@ -211,10 +213,10 @@
     <test parameter="[dscp(1)]" condition="string.startsWith" value="=" />
 
     <!-- send response #1-->
-    <sendMessageH248 name="Send response #1" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportResponse]">
+    <sendMessageH248 name="Send response #1" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
 <![CDATA[ 
 Authentication = 0x12345678 : 0x12345678 : 0x1234567890123456789012345678901234567890123456789012345678901234 
-MEGACO/2 <devoteam.com>:[Port-Server] Reply=[transID]/1 {Error = 799 {"Error in Reply descriptor"},Context=817{Error = 899 {"Error in Context descriptor"},Add="ip/1/access1/14296"{Error = 999 {"Error in Add descriptor"},Media{Local{
+MEGACO/2 <devoteam.com>:[remotePortH248] Reply=[transID]/1 {Error = 799 {"Error in Reply descriptor"},Context=817{Error = 899 {"Error in Context descriptor"},Add="ip/1/access1/14296"{Error = 999 {"Error in Add descriptor"},Media{Local{
 v=0
 c=IN IP4 172.20.168.100
 b=AS:6
@@ -249,10 +251,10 @@ m=audio 29378 RTP/AVP -
     <test parameter="[segComp]" condition="list.size" value="0" />
 
     <!-- send response #2-->
-    <sendMessageH248 name="Send response #2" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportResponse]">
+    <sendMessageH248 name="Send response #2" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
 <![CDATA[ 
 Authentication = 0x12345678 : 0x12345678 : 0x1234567890123456789012345678901234567890123456789012345678901234 
-MEGACO/2 [[Host-Server]]:[Port-Server] Reply=[transID]/2/& {Error = 799 {"Error in Reply descriptor"},Context=817{Error = 899 {"Error in Context descriptor"},Add="ip/1/access2/14297"{Error = 999 {"Error in Add descriptor"},Media{Local{
+MEGACO/2 [[remoteHostH248]]:[remotePortH248] Reply=[transID]/2/& {Error = 799 {"Error in Reply descriptor"},Context=817{Error = 899 {"Error in Context descriptor"},Add="ip/1/access2/14297"{Error = 999 {"Error in Add descriptor"},Media{Local{
 v=0
 c=IN IP4 172.20.168.100
 b=AS:6

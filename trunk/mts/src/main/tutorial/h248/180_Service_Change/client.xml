@@ -8,9 +8,9 @@
     <parameter name="[termID1]" operation="number.random" value="10000000"/>
     <parameter name="[termID2]" operation="number.random" value="10000000"/>
     <sendMessageH248 name="Send request" destScenario="server"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-MEGACO/3 [[Host-Server]]:[Port-Server]
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
 Transaction=[transID]{
  Context=[contextID]{
   Priority = 1,                 
@@ -30,8 +30,8 @@ Transaction=[transID]{
   },
   ServiceChange=ip/1/access/[termID1]{
    Services {
-    Method=Failover, Reason="901 Cold reboot", Delay=10, ServiceChangeAddress=[Port-Server], 
-    Profile=ETSI_BGF/3, 20080721T14013777, MgcIdToTry=[[Host-Server]:[Port-Server]], 
+    Method=Failover, Reason="901 Cold reboot", Delay=10, ServiceChangeAddress=[remotePortH248], 
+    Profile=ETSI_BGF/3, 20080721T14013777, MgcIdToTry=[[remoteHostH248]:[remotePortH248]], 
     Version=11, ServiceChangeInc,
     X+abcdef={a,b,c,d,e,f},
     X-123456=[1,2,3,4,5,6]
@@ -54,9 +54,9 @@ Transaction=[transID]{
     <!-- send ServiceChange acknowledge -->
     <parameter name="[transID1]" operation="number.add" value="[transID]" value2="1"/>
     <sendMessageH248 name="Send acknowledge" destScenario="server"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-MEGACO/3 [[Host-Server]]:[Port-Server] K {[transID]-[transID1]}
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]-[transID1]}
 ]]>
     </sendMessageH248>
 
