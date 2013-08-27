@@ -11,15 +11,15 @@
 <test name="H225CS" description="H225CS regression tests">
 
 	<parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-    <parameter name="[Host-Tester]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]" editable="true"/>
-    <parameter name="[Port-Tester]" operation="file.readProperty" value="h225cs.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[Port-Tester]" operation="set" value="[Port-Tester]" editable="true"/>
+    <parameter name="[LocalHostH323]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[LocalHostH323]" operation="set" value="[LocalHostH323(0)]" editable="true"/>
+    <parameter name="[LocalPortH323]" operation="file.readProperty" value="h225cs.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[LocalPortH323]" operation="set" value="[LocalPortH323]" editable="true"/>
 
-    <parameter name="[Host-Server]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[Host-Server]" operation="set" value="[Host-Tester(0)]" editable="true"/>
-    <parameter name="[Port-Server]" operation="file.readProperty" value="h225cs.properties" value2="listenpoint.LOCAL_PORT" />
-    <parameter name="[Port-Server]" operation="set" value="[Port-Server]" editable="true" />
+    <parameter name="[remoteHostH323]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostH323]" operation="set" value="[LocalHostH323(0)]" editable="true"/>
+    <parameter name="[remotePortH323]" operation="file.readProperty" value="h225cs.properties" value2="listenpoint.LOCAL_PORT" />
+    <parameter name="[remotePortH323]" operation="set" value="[remotePortH323]" editable="true" />
 
     <testcase name="001_call_setup_asn1" description="test a setup request with asn1" state="false">
         <scenario name="caller">001_call_setup_asn1/caller.xml</scenario>
