@@ -4,7 +4,7 @@
 <scenario>
 
     <sendMessageGTP name="send data record transfer request"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
         <headerPrime type="Data Record Transfer Request:240" sequenceNumber="1"/>
         <element tag="packetTransferCommand:126" >
             <field name="packetTransferCommand" value="Send Data Record Packet"/>
@@ -27,7 +27,7 @@
     <test parameter="[binary]" condition="binary.equals" value="0ff1000900010101fd0002000a"/>
     
     <sendMessageGTP name="send data record transfer request"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
         <headerPrime type="Data Record Transfer Request:240" sequenceNumber="2"/>
         <element tag="packetTransferCommand:126" >
             <field name="packetTransferCommand" value="Release Data Record Packet"/>
@@ -48,7 +48,7 @@
     <test parameter="[binary]" condition="binary.equals" value="0ff1000b00020102fd00040012012e"/>
     
     <sendMessageGTP name="send data record transfer request"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
         <headerPrime type="Data Record Transfer Request:240" sequenceNumber="3"/>
         <element tag="packetTransferCommand:126" >
             <field name="packetTransferCommand" value="Cancel Data Record Packet"/>

@@ -3,12 +3,12 @@
 <test name="GTP" description="GTP (V1 V2 Prime) regression tests">
 
     <parameter name="[IPVersion]" operation="set" value="4" editable="true" />
-    <parameter name="[remoteHost]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <!--parameter name="[remoteHost]" operation="set" value="192.168.140.232"/-->
-    <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]" editable="true" />
-    <parameter name="[remotePort]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/>
-    <!--parameter name="[remotePort]" operation="set" value="2123"/-->
-    <parameter name="[remotePort]" operation="set" value="[remotePort]" editable="true" />
+    <parameter name="[remoteHostGTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHostGTP]" operation="set" value="192.168.140.232"/-->
+    <parameter name="[remoteHostGTP]" operation="set" value="[remoteHostGTP(0)]" editable="true" />
+    <parameter name="[remotePortGTP]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[remotePortGTP]" operation="set" value="2123"/-->
+    <parameter name="[remotePortGTP]" operation="set" value="[remotePortGTP]" editable="true" />
 
     <parameter name="[transportGTP]" operation="set" value="UDP"/>
     <parameter name="[transportGTPPrime]" operation="set" value="TCP"/>
@@ -147,17 +147,6 @@
         <scenario name="GTP.V1">203_supportedExtensionHeadersNotification/server.xml</scenario>
     </testcase>
 
-    <testcase name="GTP v1 211_createPDPcontextRequest" state="true">
-        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario name="client">211_createPDPcontext/client.xml</scenario>
-        <scenario name="GTP.V1">211_createPDPcontext/server.xml</scenario>
-    </testcase>
-    <testcase name="GTP v1 212_deletePDPcontextRequest" state="true">
-        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario name="client">212_deletePDPcontext/client.xml</scenario>
-        <scenario name="GTP.V1">212_deletePDPcontext/server.xml</scenario>
-    </testcase>
-
     <testcase name="GTP v1 211_packet_data_unit" state="true">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
         <scenario name="GTP.V1">211_packet_data_unit/client.xml</scenario>
@@ -222,7 +211,7 @@
     
     <testcase name="GTP server ------------------------------------------------------" state="false"/>
     
-    <testcase name="GTP 901_server" state="true">
+    <testcase name="GTP 901_server" state="false">
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
         <scenario name="GTP.V2">901_server/server.xml</scenario>
         <scenario name="client">902_client/client.xml</scenario>
@@ -233,11 +222,5 @@
         <scenario name="client">902_client/client.xml</scenario>
     </testcase>
 
-	<testcase name="GTP Functionnal Test --------------------------------------------" state="false"/>
-	<testcase name="Functionnal test" state="true">
-        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario name="GTP.V2">1001_functionnal/server.xml</scenario>
-        <scenario name="client">1001_functionnal/client.xml</scenario>
-    </testcase>
 </test>
  

@@ -16,7 +16,7 @@
     <parameter name="[tunnelEndpointId]" operation="set" value="0"/>
     <parameter name="[sequenceNumber]" operation="set" value="200"/>
     <sendMessageGTP name="send message"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
         <headerV2 type="Create Session Request:32" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
         
         <element tag="IMSI:1" description="International Mobile Subscriber Identity">
@@ -446,7 +446,7 @@
 		
 
 		<sendMessageGTP name="send message"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
    
         <headerV2 type="Modify Bearer Request:34" tunnelEndpointId="[F-TEID.TEID / GRE Key(0)]" sequenceNumber="[sequenceNumber]"/>
         <element tag="MEI:75" description="ME Identity (MEI)">
@@ -672,7 +672,7 @@
     <parameter name="[sequenceNumber]" operation="number.add" value="[sequenceNumber]" value2="1" />	
 	
     <sendMessageGTP name="send message" 
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
         <headerV2 type="Delete Session Request:36" tunnelEndpointId="2550161430" sequenceNumber="[sequenceNumber]"/>
 		<element tag="EBI:73" description="EPS Bearer ID">
             <field name="spare" value="0"/>

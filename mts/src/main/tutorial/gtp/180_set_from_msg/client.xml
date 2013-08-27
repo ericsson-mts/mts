@@ -6,7 +6,7 @@
     <parameter name="[tunnelEndpointId]" operation="set" value="4294967295"/>
     <parameter name="[sequenceNumber]" operation="set" value="16777215"/>
     <sendMessageGTP name="send message"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
         <headerV2 type="32" piggyFlag="1" teidFlag="1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]" spare="255"/>
         <element tag="1" description="International Mobile Subscriber Identity">
             <field name="IMSI" value="123456789012345" description="International Mobile Subscriber Identity"/>
@@ -170,8 +170,8 @@
     </sendMessageGTP>
 
     <receiveMessageGTP name="receive message"  request="false" type="32" result="240">
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>

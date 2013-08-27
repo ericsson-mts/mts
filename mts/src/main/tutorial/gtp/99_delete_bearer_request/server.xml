@@ -4,8 +4,8 @@
 <scenario>
     
     <receiveMessageGTP name="receive message" request="true" type="Delete Bearer Request:99">
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/> 
@@ -16,7 +16,7 @@
 						
 	
 	 <sendMessageGTP name="send message"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
         <headerV2 type="Delete Bearer Response:100" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
 			
 			<element tag="Cause:2" coding="TLIV">

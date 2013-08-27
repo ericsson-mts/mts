@@ -4,8 +4,8 @@
 <scenario>
 
     <receiveMessageGTP name="receive message" request="true" type="Create Session Request:32">
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/> 
@@ -15,7 +15,7 @@
     <test parameter="[binary]" condition="binary.equals" value="482000c6000000000000c7000100080002084124002020f94c0006003346452320f94b000800999900000000101156000d001812f430000312f43000000101480008000000c350000186a05300030012f430520001000657000900860000456714150001800001000163000100014f000500010000000047001a00066f7461726965066d6e63303033066d636332313404677072737f000100005d002c004900010005500016004809000000000000000000000000000000000000000057000902840000456f14150001"/>
     <parameter name="[tunnelEndpointId]" operation="set" value="17767"/>
     <sendMessageGTP name="send message"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
         <headerV2 type="Create Session Response:33" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
         <element tag="Cause:2">
             <field name="Cause value" value="Request accepted:16"/>
@@ -72,8 +72,8 @@
     </sendMessageGTP>
 
     <receiveMessageGTP name="receive message" request="true" type="Delete Session Request:36">
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/> 
@@ -84,7 +84,7 @@
   
     <parameter name="[tunnelEndpointId]" operation="set" value="17767"/>    
     <sendMessageGTP name="send message"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
         <headerV2 type="Delete Session Response:37" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
         <element tag="Cause:2" >
             <field name="Cause value" value="Request accepted:16"/>
