@@ -7,8 +7,8 @@
     <parameter name="[testcase:listenpointCreated]" operation="system.semaphorenotify" />
 
     <receiveMessageGTP name="echo request" listenpoint="listenpoint" request="true" type="Echo Request:1">
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
@@ -17,7 +17,7 @@
     <test parameter="[binary]" condition="binary.equals" value="0f0100020001"/>
 
     <sendMessageGTP name="echo Response" listenpoint="listenpoint"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
         <headerPrime type="echoResponse:2" sequenceNumber="1"/>
         <element tag="recovery:14" >
 		        <field name="recovery" value="23"/>
@@ -25,8 +25,8 @@
     </sendMessageGTP>
 
     <receiveMessageGTP name="echo request" listenpoint="listenpoint" request="true" type="Echo Request:1">
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
     </receiveMessageGTP>
@@ -35,7 +35,7 @@
     <test parameter="[binary]" condition="binary.equals" value="0f0100020002"/>
     
     <sendMessageGTP name="versionNotSupported" listenpoint="listenpoint"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
         <headerPrime type="versionNotSupported:3" sequenceNumber="2"/>
     </sendMessageGTP>
 

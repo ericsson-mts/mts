@@ -6,8 +6,8 @@
     <parameter name="[tunnelEndpointId]" operation="set" value="111"/>
     <parameter name="[sequenceNumber]" operation="set" value="1"/>
     <sendMessageGTP name="send message"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
-        <headerV2 type="Echo Request:1" sequenceNumber="[sequenceNumber]"/>
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Echo Request:1" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
     </sendMessageGTP>
 
     <receiveMessageGTP name="receive message" request="false" type="Echo Request:1" result="Echo Response:2" >
@@ -17,11 +17,11 @@
     </receiveMessageGTP>
 
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
-    <test parameter="[binary]" condition="binary.equals" value="40020009000001000300010017"/>
+    <test parameter="[binary]" condition="binary.equals" value="4802000d0000006f000001000300010017"/>
 
     <parameter name="[sequenceNumber]" operation="set" value="2"/>
     <sendMessageGTP name="send message"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
         <headerV2 type="Echo Request:1" sequenceNumber="[sequenceNumber]"/>
     </sendMessageGTP>
 

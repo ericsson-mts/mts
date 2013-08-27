@@ -4,8 +4,8 @@
 <scenario>
 
     <receiveMessageGTP name="echo request" request="true" type="Echo Request">
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[teId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
         <parameter name="[nPduNum]" operation="protocol.setFromMessage" value="header.nPduNumber"/>
@@ -55,7 +55,7 @@
     <test parameter="[binary]" condition="binary.equals" value="37010029ffffffff000102000221436587092143650200000021436587f986000845230189674523018600058967452301"/>
     
     <sendMessageGTP name="echo Response"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="UDP">
         <headerV1 type="Echo Response" tunnelEndpointId="[teId]" sequenceNumber="[seqNum]" nPduNumber="[nPduNum]" nextExtensionType="[nExtType]"/>
         <element tag="Recovery" >
             <field name="Recovery" value="23"/>
@@ -63,8 +63,8 @@
     </sendMessageGTP>
 
     <receiveMessageGTP name="echo request" request="true" type="1">
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
         <parameter name="[teId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
         <parameter name="[nPduNum]" operation="protocol.setFromMessage" value="header.nPduNumber"/>
@@ -75,7 +75,7 @@
     <test parameter="[binary]" condition="binary.equals" value="37010004499602d200020200"/>
     
     <sendMessageGTP name="versionNotSupported"
-                    remoteHost="[remoteHost]" remotePort="[remotePort]" transport="UDP">
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="UDP">
         <headerV1 type="3"  tunnelEndpointId="[teId]" sequenceNumber="[seqNum]" nPduNumber="[nPduNum]" nextExtensionType="[nExtType]"/>
     </sendMessageGTP>
 
