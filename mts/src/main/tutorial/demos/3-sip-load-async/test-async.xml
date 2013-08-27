@@ -18,22 +18,22 @@
 	<!-- INTERNAL PARAMETERS -->
 	<!--                     -->	
 	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
-	<parameter name="[Host-Tester]" operation="system.ipaddress" value2="[IPVersion]" description="Host du IMSloader"/>
-	<parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]" />
-	<!--parameter name="[Host-Tester]" operation="set" value="172.20.113.3" description="Host du IMSloader"	editable="true"/-->
-	<!--parameter name="[Host-Tester]" operation="set" value="172.16.21.129" description="Host du IMSloader"	editable="true"/-->
-	<!--parameter name="[Port-Tester]" operation="setFromConfig" value="sip.properties" value2="listenpoint.LOCAL_PORT" description="Port du IMSloader"/-->
-	<parameter name="[Port-Tester]" operation="set" value="7070" description="Port du IMSloader"		editable="true"/>
-	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]" description="Addresse du IMSloader"/>
+	<parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]" description="Host du IMSloader"/>
+	<parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" />
+	<!--parameter name="[localHostSIP]" operation="set" value="172.20.113.3" description="Host du IMSloader"	editable="true"/-->
+	<!--parameter name="[localHostSIP]" operation="set" value="172.16.21.129" description="Host du IMSloader"	editable="true"/-->
+	<!--parameter name="[localPortSIP]" operation="setFromConfig" value="sip.properties" value2="listenpoint.LOCAL_PORT" description="Port du IMSloader"/-->
+	<parameter name="[localPortSIP]" operation="set" value="7070" description="Port du IMSloader"		editable="true"/>
+	<parameter name="[localSIP]" operation="set" value="[localHostSIP]:[localPortSIP]" description="Addresse du IMSloader"/>
 
-    	<parameter name="[Host-Server]" operation="system.ipaddress" value2="[IPVersion]" description="Addresse de l'AS" />
-    	<parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]" />
-    	<!--parameter name="[Host-Server]" operation="set" value="172.20.113.2" description="Addresse de l'AS" 		editable="true"/-->	
-    	<!--parameter name="[Host-Server]" operation="set" value="172.16.21.129" description="Addresse de l'AS" 		editable="true"/-->	        
-	<!--parameter name="[Port-Server]" operation="setFromConfig" value="sip.properties" value2="listenpoint.LOCAL_PORT" description="Port de l'AS"/-->
-    	<!--parameter name="[Port-Server]" operation="set" value="5060" description="Port de l'AS"				editable="true"/-->
-	<parameter name="[Port-Server]" operation="set" value="7070" description="Port de l'AS"				editable="true"/>    	    
-	<parameter name="[Adresse-Server]" operation="set" value="[Host-Server]:[Port-Server]"/>
+    	<parameter name="[remoteHostSIP]" operation="system.ipaddress" value2="[IPVersion]" description="Addresse de l'AS" />
+    	<parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]" />
+    	<!--parameter name="[remoteHostSIP]" operation="set" value="172.20.113.2" description="Addresse de l'AS" 		editable="true"/-->	
+    	<!--parameter name="[remoteHostSIP]" operation="set" value="172.16.21.129" description="Addresse de l'AS" 		editable="true"/-->	        
+	<!--parameter name="[remotePortSIP]" operation="setFromConfig" value="sip.properties" value2="listenpoint.LOCAL_PORT" description="Port de l'AS"/-->
+    	<!--parameter name="[remotePortSIP]" operation="set" value="5060" description="Port de l'AS"				editable="true"/-->
+	<parameter name="[remotePortSIP]" operation="set" value="7070" description="Port de l'AS"				editable="true"/>    	    
+	<parameter name="[remoteSIP]" operation="set" value="[remoteHostSIP]:[remotePortSIP]"/>
 
     	<parameter name="[RangeNumberUser]" operation="set" value="5000"/>
 
@@ -87,7 +87,7 @@
                 <end delay="[TestDurationSec]" />
             </runProfile>
 
-		    <scenario name="[Port-Tester]">scenario/responder.xml</scenario>
+		    <scenario name="[localPortSIP]">scenario/responder.xml</scenario>
 
 	   </testcase>
 
