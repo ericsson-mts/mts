@@ -5,10 +5,10 @@
     <parameter name="[listenIp]" operation="set" value="0.0.0.0" editable="true"/>
 
     <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-    <parameter name="[serverRemoteIp]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[serverRemoteIp]" operation="set" value="[serverRemoteIp(0)]" editable="true"/>
-    <parameter name="[serverPort]" operation="file.readproperty" value="pop.properties" value2="listenpoint.LOCAL_PORT" />
-    <parameter name="[serverPort]" operation="set" value="[serverPort]" editable="true" />
+    <parameter name="[localHostPOP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostPOP]" operation="set" value="[localHostPOP(0)]" editable="true"/>
+    <parameter name="[localPortPOP]" operation="file.readproperty" value="pop.properties" value2="listenpoint.LOCAL_PORT" />
+    <parameter name="[localPortPOP]" operation="set" value="[localPortPOP]" editable="true" />
 
     <testcase name="pop/000_classicSequence" state="true">
         <scenario name="client">000_classicSequence/client.xml</scenario>
@@ -21,10 +21,6 @@
     <testcase name="pop/002_testAllParameters" state="true">
         <scenario name="client">002_testAllParameters/client.xml</scenario>
         <scenario name="POP">002_testAllParameters/server.xml</scenario>
-    </testcase>
-	<testcase name="pop/003_starttls" state="true">
-        <scenario name="client">003_starttls/client.xml</scenario>
-        <scenario name="POP">003_starttls/server.xml</scenario>
     </testcase>
     <testcase name="pop/client" state="false">
         <scenario name="POP">client/client.xml</scenario>
