@@ -6,13 +6,13 @@
     <parameter name="[listenIp]" operation="set" value="0.0.0.0" editable="true" />
 
     <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-    <parameter name="[serverRemoteIp]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[serverRemoteIp]" operation="set" value="[serverRemoteIp(0)]" editable="true"/>
-    <parameter name="[serverPort]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT" />
-    <parameter name="[serverPort]" operation="set" value="[serverPort]" editable="true" />
+    <parameter name="[localHostMSRP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostMSRP]" operation="set" value="[localHostMSRP(0)]" editable="true"/>
+    <parameter name="[remotePortMSRP]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT" />
+    <parameter name="[remotePortMSRP]" operation="set" value="[remotePortMSRP]" editable="true" />
     <parameter name="[serverTlsPort]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT_TLS" />
     <parameter name="[serverTlsPort]" operation="set" value="[serverTlsPort]" editable="true" />
-    <parameter name="[Adresse-Server]" operation="set" value="[serverRemoteIp]:[serverPort]"/>
+    <parameter name="[remoteHostMSRP]" operation="set" value="[localHostMSRP]:[remotePortMSRP]"/>
 
     <testcase name="msrp/000_classicSequence_TCP" state="true">
         <parameter name="[transport]" operation="set" value="TCP" />
@@ -32,7 +32,7 @@
     </testcase>
         
     <testcase name="msrp/003_Chunk" state="true">
-    <parameter name="[serverPort]" operation="set" value="7855"/>    
+    <parameter name="[remotePortMSRP]" operation="set" value="7855"/>    
         <scenario name="Alice">003_chunk/client1.xml</scenario>
         <scenario name="MSRP">003_chunk/client2.xml</scenario>
     </testcase>    
