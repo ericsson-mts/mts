@@ -5,9 +5,9 @@
     <!-- send Add request-->
     <parameter name="[transID]" operation="number.random" value="10000000"/>
     <sendMessageH248 name="Send request" destScenario="server"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-MEGACO/3 [[Host-Server]]:[Port-Server]
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
 Transaction=[transID]{
  Context=${
   Priority = 1,                 
@@ -27,7 +27,7 @@ m=audio $ RTP/AVP 96
 },
      Remote{
 v=0
-c=IN IP4 [Host-Tester]/127
+c=IN IP4 [localHostH248]/127
 m=video 49232/2 RTP/AVP 98
 m=audio 49230/3 RTP/AVP 96
 }
@@ -81,18 +81,18 @@ m=audio $ RTP/AVP 96
     <!-- send Add acknowledge -->
     <parameter name="[transID1]" operation="number.add" value="[transID]" value2="1"/>
     <sendMessageH248  name="Send acknowledge" destScenario="server"
-                      remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                      remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-MEGACO/3 [[Host-Server]]:[Port-Server] K {[transID]-[transID1]}
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]-[transID1]}
 ]]>
     </sendMessageH248>
 
     <!-- send Add request-->
     <parameter name="[transID]" operation="number.random" value="10000000"/>
     <sendMessageH248 name="Send request" destScenario="server"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-MEGACO/3 [[Host-Server]]:[Port-Server]
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
 Transaction=[transID]{
  Context=${
   Priority = 1,                 
@@ -112,7 +112,7 @@ m=audio $ RTP/AVP -
 },
      Remote{
 v=0
-c=IN IP4 [Host-Tester]/127
+c=IN IP4 [localHostH248]/127
 m=video 49232/2 RTP/AVP -
 m=audio 49230/3 RTP/AVP -
 }
@@ -158,18 +158,18 @@ m=audio $ RTP/AVP -
 
     <!-- send Add segment -->
     <sendMessageH248 name="Send segment" destScenario="server" 
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-MEGACO/3 [[Host-Server]]:[Port-Server] Segment=[transaction]/[segNum]/[segComp]
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] Segment=[transaction]/[segNum]/[segComp]
 ]]>
     </sendMessageH248>
  
     <!-- send Add acknowledge -->
     <parameter name="[transID1]" operation="number.add" value="[transID]" value2="1"/>
     <sendMessageH248 name="Send acknowledge" destScenario="server"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
-MEGACO/3 [[Host-Server]]:[Port-Server] K {[transID]-[transID1]}
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]-[transID1]}
 ]]>
     </sendMessageH248>
    

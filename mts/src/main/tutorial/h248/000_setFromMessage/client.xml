@@ -6,12 +6,12 @@
     <parameter name="[transID1]" operation="number.random" value="10000000"/>
     <parameter name="[transID2]" operation="number.random" value="10000000"/>
     <sendMessageH248 name="Send request" destScenario="server"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
 ;authHeader
 AU=0x12345678:0x12345678:0x1234567890123456789012345678901234567890123456789012345678901234
 ;header
-!/2 [[Host-Server]]:[Port-Server]
+!/2 [[remoteHostH248]]:[remotePortH248]
 ;descriptors
 T="[transID1]"{                                  ;transaction
  C=${                                           ;context
@@ -96,11 +96,11 @@ Transaction=[transID2]{
     <parameter name="[version]" operation="protocol.setFromMessage" value="header.version" />
     <test parameter="[version]" condition="string.equals" value="2" />
     <parameter name="[mid]" operation="protocol.setFromMessage" value="header.mid" />
-    <test parameter="[mid]" condition="string.equals" value="&lt;devoteam.com&gt;:[Port-Tester]" />
+    <test parameter="[mid]" condition="string.equals" value="&lt;devoteam.com&gt;:[localPortH248]" />
     <parameter name="[midDomainName]" operation="protocol.setFromMessage" value="header.midDomainName" />
     <test parameter="[midDomainName]" condition="string.equals" value="devoteam.com" />
     <parameter name="[midPortNumber]" operation="protocol.setFromMessage" value="header.midPortNumber" />
-    <test parameter="[midPortNumber]" condition="string.equals" value="[Port-Tester]" />
+    <test parameter="[midPortNumber]" condition="string.equals" value="[localPortH248]" />
 
     <!-- test authHeader:XXXXXXX -->        
     <parameter name="[authHeader]" operation="protocol.setFromMessage" value="authHeader" />
@@ -182,12 +182,12 @@ Transaction=[transID2]{
 
     <!-- send segment #1-->
     <sendMessageH248 name="Send segment #1" destScenario="server" 
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
 AU =0x12345678:
 0x12345678: 
 0x1234567890123456789012345678901234567890123456789012345678901234
-!/2 [[Host-Server]]:[Port-Server] Segment=[transID1]/1
+!/2 [[remoteHostH248]]:[remotePortH248] Segment=[transID1]/1
 ]]>
     </sendMessageH248>
 
@@ -211,18 +211,18 @@ AU =0x12345678:
 
     <!-- send segment #2-->
     <sendMessageH248 name="Send segment #2" destScenario="server"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
 AU =0x12345678:
 0x12345678: 
 0x1234567890123456789012345678901234567890123456789012345678901234
-!/2 [[Host-Server]]:[Port-Server] Segment=[transID1]/2/&}
+!/2 [[remoteHostH248]]:[remotePortH248] Segment=[transID1]/2/&}
 ]]>
     </sendMessageH248>
 
     <!-- send acknowledge -->
     <sendMessageH248 name="Send acknowledge" destScenario="server"
-                     remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transportRequest]">
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
 <![CDATA[
 AU = 0x12345678 : 
      0x12345678 : 
