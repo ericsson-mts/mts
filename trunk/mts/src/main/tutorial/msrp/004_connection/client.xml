@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
 
-    <createListenpointMSRP name="lp_0" localHost="[serverRemoteIp]" localPort="7855" listenTLS="false"/>
-    <createListenpointMSRP name="lp_1" localHost="[serverRemoteIp]" localPort="8855" listenTLS="false"/>
+    <createListenpointMSRP name="lp_0" localHost="[localHostMSRP]" localPort="7855" listenTLS="false"/>
+    <createListenpointMSRP name="lp_1" localHost="[localHostMSRP]" localPort="8855" listenTLS="false"/>
 
     <parameter name="[localTransactionID]" operation="string.random" value="10"/>
     <parameter name="[localMessageID]" operation="string.random" value="10"/>
     
-    <sendMessageMSRP listenpoint="lp_0" remoteHost="[serverRemoteIp]" remotePort="8855">
+    <sendMessageMSRP listenpoint="lp_0" remoteHost="[localHostMSRP]" remotePort="8855">
 <![CDATA[
 MSRP [localTransactionID] SEND
 To-Path: msrp://bob.exemple.com:8888/74986;tcp
@@ -24,7 +24,7 @@ Hi, I'm Alice!
     <parameter name="[localTransactionID]" operation="string.random" value="10"/>
     <parameter name="[localMessageID]" operation="string.random" value="10"/>
     
-    <sendMessageMSRP listenpoint="lp_1" remoteHost="[serverRemoteIp]" remotePort="7855">
+    <sendMessageMSRP listenpoint="lp_1" remoteHost="[localHostMSRP]" remotePort="7855">
 <![CDATA[
 MSRP [localTransactionID] SEND
 To-Path: msrp://alice.exemple.com:7777/564;tcp

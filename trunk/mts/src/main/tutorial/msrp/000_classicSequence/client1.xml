@@ -7,10 +7,10 @@
      	    <test parameter="[transport]" condition="string.equalsIgnoreCase" value="TCP"/>
      	</condition>
      	<then>     
-            <openChannelMSRP name="channelMSRP" remoteHost="[serverRemoteIp]" remotePort="[serverPort]" transport="TCP"/>             
+            <openChannelMSRP name="channelMSRP" remoteHost="[localHostMSRP]" remotePort="[remotePortMSRP]" transport="TCP"/>             
      	</then>
      	<else>     
-       	    <openChannelMSRP name="channelMSRP" remoteHost="[serverRemoteIp]" remotePort="[serverTlsPort]" transport="TLS"/>     
+       	    <openChannelMSRP name="channelMSRP" remoteHost="[localHostMSRP]" remotePort="[serverTlsPort]" transport="TLS"/>     
      	</else>
     </if>
 
