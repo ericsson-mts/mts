@@ -3,7 +3,7 @@
 	<parameter name="[MacAddress]" operation="system.macaddress" />
 	<parameter name="[MacAddressHex]" operation="string.regexreplaces" value="[MacAddress]" value2=":" value3="" />
 
-	<createProbeETHERNET name="capture" networkInterface="[Host-Address]" captureFilter="(ether dst [MacAddress] and arp) or (ether src [MacAddress] and arp)" />
+	<createProbeETHERNET name="capture" networkInterface="[localHostETH]" captureFilter="(ether dst [MacAddress] and arp) or (ether src [MacAddress] and arp)" />
 	<parameter name="[TargetIP]" operation="binary.fromIp" value="[ARP_TARGETIP]" />
 	
 	<sendMessageETHERNET name="send packet" probe="capture">
