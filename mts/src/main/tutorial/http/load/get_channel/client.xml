@@ -4,13 +4,13 @@
 <scenario>
 
     <parameter name="[uid]" operation="number.uid"/>
-    <!--openChannelHTTP name="ChannelHTTP_[Local-Port]" localHost="[Local-Host]" localPort="[Local-Port]" remoteURL="[Remote-URL]"/-->
+    <!--openChannelHTTP name="ChannelHTTP_[Local-Port]" localHost="[localHostHTTP]" localPort="[localPortHTTP]" remoteURL="[Remote-URL]"/-->
     <openChannelHTTP name="ChannelHTTP_[uid]" remoteURL="[Remote-URL]"/>
 
 	<sendMessageHTTP channel="ChannelHTTP_[uid]" destScenario="[destScenario]">
 <![CDATA[
 GET [Remote-URL] HTTP/1.1
-Host: [Remote-Host]:[Remote-Port]
+Host: [remoteHostHTTP]:[remotePortHTTP]
 DestScenario:[destScenario]
 Accept-charset: text/html
 Content-Type: text/html

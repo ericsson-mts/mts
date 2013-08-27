@@ -3,12 +3,12 @@
 
 <scenario>
 
-    <openChannelHTTP name="myConnection" remoteURL="http://[Remote-Address]"/>
+    <openChannelHTTP name="myConnection" remoteURL="http://[remoteHTTP]"/>
     
 	<sendMessageHTTP name="Send POST" channel="myConnection">
 <![CDATA[
-GET https://[Remote-Address] HTTP/1.1
-Host: [Remote-Address]
+GET https://[remoteHTTP] HTTP/1.1
+Host: [remoteHTTP]
 Accept-charset: text/html
 Content-Type: text/html
 Content-Encoding: utf-8;iso-8859
@@ -21,8 +21,8 @@ User-Agent: XMLLoader
 
 	<sendMessageHTTP name="Send POST" channel="myConnection">
 <![CDATA[
-GET https://[Remote-Address]/test HTTP/1.1
-Host: [Remote-Address]
+GET https://[remoteHTTP]/test HTTP/1.1
+Host: [remoteHTTP]
 Accept-charset: text/html
 Content-Type: text/html
 Content-Encoding: utf-8;iso-8859
