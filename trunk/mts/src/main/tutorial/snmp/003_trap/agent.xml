@@ -7,7 +7,7 @@
 
     <parameter name="[requestId]" operation="number.random" value="1000000" />
     <!-- snmpv2 trap-->
-    <sendMessageSNMP remoteHost="[serverRemoteIp]" remotePort="162">
+    <sendMessageSNMP remoteHost="[remoteHostSNMP]" remotePort="162">
         <header version="2" community="public"/>
         <pdu name="trap" requestId="[requestId]">
             <variableBinding name="sysUpTIme" value="25678"/>
@@ -18,7 +18,7 @@
 
     <parameter name="[requestId]" operation="number.random" value="1000000" />
     <!-- snmpv2 trap-->
-    <sendMessageSNMP remoteHost="[serverRemoteIp]" remotePort="162">
+    <sendMessageSNMP remoteHost="[remoteHostSNMP]" remotePort="162">
         <header version="2" community="public"/>
         <pdu name="trap" requestId="[requestId]">
             <variableBinding name="sysUpTIme" value="25678"/>
@@ -32,10 +32,10 @@
 
     <parameter name="[requestId]" operation="number.random" value="1000000" />
     <!-- snmpv1 trap-->
-    <sendMessageSNMP remoteHost="[serverRemoteIp]" remotePort="162">
+    <sendMessageSNMP remoteHost="[remoteHostSNMP]" remotePort="162">
         <header version="1" community="public"/>
         <pdu name="trap" requestId="[requestId]" enterprise="1.2.1.4.6.3" 
-        agentAddress="[serverRemoteIp]" genericTrap="coldStart" specificTrap="0"
+        agentAddress="[remoteHostSNMP]" genericTrap="coldStart" specificTrap="0"
         timestamp="123456789">
             <variableBinding name="ifIndex" type="integer32" value="7"/>
             <variableBinding name="ifAdminStatus" type="integer32" value="1"/>

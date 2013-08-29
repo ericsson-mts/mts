@@ -3,12 +3,11 @@
 <test name="SNMP">
 
     <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-    <parameter name="[listenIp]" operation="set" value="0.0.0.0" editable="true"/>
-
-    <parameter name="[serverRemoteIp]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[serverRemoteIp]" operation="set" value="[serverRemoteIp(0)]" editable="true"/>
-    <parameter name="[serverPort]" operation="file.readproperty" value="snmp.properties" value2="listenpoint.LOCAL_PORT" />
-    <parameter name="[serverPort]" operation="set" value="[serverPort]" editable="true" />
+    <parameter name="[remoteHostSNMP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostSNMP]" operation="set" value="[remoteHostSNMP(0)]" editable="true"/>
+    
+    <parameter name="[remotePortSNMP]" operation="file.readproperty" value="snmp.properties" value2="listenpoint.LOCAL_PORT" />
+    <parameter name="[remotePortSNMP]" operation="set" value="[remotePortSNMP]" editable="true" />
 
     <testcase name="snmp/000_get" state="true">
         <scenario name="manager">000_get/manager.xml</scenario>

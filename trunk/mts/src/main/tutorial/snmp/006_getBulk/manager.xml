@@ -7,7 +7,7 @@
     <createListenpointSNMP name="[listenpoint]" localPort="162"/>
 
     <parameter name="[requestId]" operation="set" value="20000000" />
-    <sendMessageSNMP listenpoint="[listenpoint]" remoteHost="[serverRemoteIp]" remotePort="163">
+    <sendMessageSNMP listenpoint="[listenpoint]" remoteHost="[remoteHostSNMP]" remotePort="163">
         <header version="2" community="public"/>
         <pdu name="getBulk" requestId="[requestId]" nonRepeaters="2" maxRepetitions="3">
             <variableBinding name="system"/>
