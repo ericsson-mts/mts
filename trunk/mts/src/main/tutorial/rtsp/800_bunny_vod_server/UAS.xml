@@ -85,7 +85,7 @@ CSeq: [cseq]
 Content-Length: x
 
 v=0
-o=- 2931716000 3IN IP4 [serverIpAddress]
+o=- 2931716000 3IN IP4 [remoteHostRTSP]
 t=0 0
 c=IN IP4 0.0.0.0
 a=tool:IMSLoader
@@ -93,11 +93,11 @@ a=range:npt=0-33.023
 m=audio 0 RTP/AVP 96
 a=rtpmap:96 mpeg4-generic/44100
 a=fmtp:96 streamtype=5; profile-level-id=15; mode=AAC-hbr; config=1210; SizeLength=13;IndexLength=3; IndexDeltaLength=3; Profile=1;
-a=control:rtsp://[serverIpAddress]:[serverPort]/[vodName]/TrackID=0
+a=control:rtsp://[remoteHostRTSP]:[serverPort]/[vodName]/TrackID=0
 m=video 0 RTP/AVP 97
 a=rtpmap:97 H264/90000
 a=fmtp:97 packetization-mode=1;profile-level-id=42e015;sprop-parameter-sets=J01AHqkYGwe83gDUBAQG2wrXvfAQ,KN4JyA==;
-a=control:rtsp://[serverIpAddress]:[serverPort]/[vodName]/TrackID=1
+a=control:rtsp://[remoteHostRTSP]:[serverPort]/[vodName]/TrackID=1
 ]]>
 		</sendMessageRTSP>
 		<parameter name="[inDiction]" operation="set" value="true"/>
@@ -153,7 +153,7 @@ Session: [session]
 <!--************************************* BEGIN RTP ******************************************************-->
 	<parameter name="[portList(2)]" operation="add" value="[portList(0)]" value2="10"/>
 	<parameter name="[listenpointName]" 	operation="set" 	value="monServer"/>
-	<createListenpointRTPFLOW name="[listenpointName]" localHost="[serverIpAddress]" localPort="[portList(2)]"/>
+	<createListenpointRTPFLOW name="[listenpointName]" localHost="[remoteHostRTSP]" localPort="[portList(2)]"/>
 	<parameter name="videopayloadList" operation="set" value="[[videoFile(0)]]"/>
     <parameter name="videotimestampList" operation="set" value="[[videoFile(1)]]"/>
     <parameter name="videoseqList" operation="set" value="[[videoFile(2)]]"/>

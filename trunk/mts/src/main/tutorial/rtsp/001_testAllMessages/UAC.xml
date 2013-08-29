@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
 
-    <parameter name="[remoteHost]" operation="set" value="[ipAddress]" />
-    <parameter name="[remotePort]" operation="set" value="5554" />
-    <parameter name="[remoteMsgHost]" operation="set" value="[ipAddress]" />
-    <parameter name="[remoteMsgPort]" operation="set" value="[remotePort]" />
-    <parameter name="[localHost]" operation="set" value="[ipAddress]" />
-    <parameter name="[localPort]" operation="set" value="8554" />
-
     <parameter name="[session]" operation="set" value="sessionClient" />
-    <createListenpointRTSP name="[session]" localHost="[localHost]" localPort="[localPort]"/>
+    <createListenpointRTSP name="[session]" localHost="[localHostRTSP]" localPort="[localPortRTSP]"/>
 
     <sendMessageRTSP name="Send Options" listenpoint="[session]">
-<![CDATA[OPTIONS rtsp://[remoteMsgHost]:[remoteMsgPort]/demo/548/sound RTSP/1.0
+<![CDATA[OPTIONS rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 Require: implicit-play
 CSeq: 1
 Proxy-Require: gzipped-messages
@@ -22,7 +15,7 @@ Proxy-Require: gzipped-messages
     <receiveMessageRTSP name="Wait 200 OK" type="OPTIONS" result="200">
     </receiveMessageRTSP>
 
-    <sendMessageRTSP name="Send Describe" listenpoint="[session]" remoteHost="[remoteHost]" remotePort="[remotePort]">
+    <sendMessageRTSP name="Send Describe" listenpoint="[session]" remoteHost="[remoteHostRTSP]" remotePort="[remotePortRTSP]">
 <![CDATA[DESCRIBE rtsp://localHost:1234/demo/548/sound RTSP/1.0
 Content-Length: 0
 CSeq: 2
@@ -34,7 +27,7 @@ Accept: application/sdp, application/rtsl, application/mheg
     </receiveMessageRTSP>
 
     <sendMessageRTSP name="Send Announce" listenpoint="[session]">
-<![CDATA[ANNOUNCE rtsp://[remoteMsgHost]:[remoteMsgPort]/demo/548/sound RTSP/1.0
+<![CDATA[ANNOUNCE rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 Date: 23 Jan 1997 15:35:06 GMT
 Session: 47112344
 Content-Length: 319
@@ -59,7 +52,7 @@ m=video 2232 RTP/AVP 31
     </receiveMessageRTSP>
 
     <sendMessageRTSP name="Send Setup" listenpoint="[session]">
-<![CDATA[SETUP rtsp://[remoteMsgHost]:[remoteMsgPort]/demo/548/sound RTSP/1.0
+<![CDATA[SETUP rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 4
 Transport:RTP/AVP;multicast;destination=225.219.201.15;port=7000-7001;ttl=127
 Conference:199702170042.SAA08642@obiwan.arl.wustl.edu%20Starr
@@ -71,7 +64,7 @@ Content-Length: 0
     </receiveMessageRTSP>
 
     <sendMessageRTSP name="Send Play" listenpoint="[session]">
-<![CDATA[PLAY rtsp://[remoteMsgHost]:[remoteMsgPort]/demo/548/sound RTSP/1.0
+<![CDATA[PLAY rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 5
 Session: 91389234234
 Range: smpte=0:10:20-;time=19970123T153600Z
@@ -82,7 +75,7 @@ Range: smpte=0:10:20-;time=19970123T153600Z
     </receiveMessageRTSP>
 
     <sendMessageRTSP name="Send Pause" listenpoint="[session]">
-<![CDATA[PAUSE rtsp://[remoteMsgHost]:[remoteMsgPort]/demo/548/sound RTSP/1.0
+<![CDATA[PAUSE rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 6
 Session: 91389234234
 ]]>
@@ -92,7 +85,7 @@ Session: 91389234234
     </receiveMessageRTSP>
 
     <sendMessageRTSP name="Send Teardown" listenpoint="[session]">
-<![CDATA[TEARDOWN rtsp://[remoteMsgHost]:[remoteMsgPort]/demo/548/sound RTSP/1.0
+<![CDATA[TEARDOWN rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 7
 Session: 91389234234
 ]]>
@@ -102,7 +95,7 @@ Session: 91389234234
     </receiveMessageRTSP>
 
     <sendMessageRTSP name="Send Get_Parameter" listenpoint="[session]">
-<![CDATA[GET_PARAMETER rtsp://[remoteMsgHost]:[remoteMsgPort]/demo/548/sound RTSP/1.0
+<![CDATA[GET_PARAMETER rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 8
 Content-Type: text/parameters
 Session: 91389234234
@@ -117,7 +110,7 @@ jitter
     </receiveMessageRTSP>
 
     <sendMessageRTSP name="Send Set_Parameter" listenpoint="[session]">
-<![CDATA[SET_PARAMETER rtsp://[remoteMsgHost]:[remoteMsgPort]/demo/548/sound RTSP/1.0
+<![CDATA[SET_PARAMETER rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 9
 Content-Type: text/parameters
 Content-Length: 22
@@ -133,7 +126,7 @@ barparam: barstuff
     </receiveMessageRTSP>
 
     <sendMessageRTSP name="Send Record" listenpoint="[session]">
-<![CDATA[RECORD rtsp://[remoteMsgHost]:[remoteMsgPort]/demo/548/sound RTSP/1.0
+<![CDATA[RECORD rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 11
 Session: 91389234234
 Conference: 128.16.64.19/32492374

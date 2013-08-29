@@ -4,8 +4,8 @@
 <receiveMessageRTSP name="Wait DESCRIBE" type="DESCRIBE" request="true">
 	<parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
     <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name"/>
-	<parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-	<parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+	<parameter name="[remoteHostRTSP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+	<parameter name="[remotePortRTSP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
 	<parameter name="[firstline]" operation="protocol.setFromMessage" value="firstline"/>
 	<parameter name="[method]" operation="protocol.setFromMessage" value="firstline.method"/>
 	<parameter name="[version]" operation="protocol.setFromMessage" value="firstline.version"/>
@@ -24,11 +24,11 @@
 
 </receiveMessageRTSP>
 
-<test parameter="[remoteHost]" condition="string.equals" value="[serverIpAddress]"/>
-<test parameter="[firstline]" condition="string.equals" value="DESCRIBE rtsp://[serverIpAddress]:6666/demo/548/sound RTSP/1.0"/>
+<test parameter="[remoteHostRTSP]" condition="string.equals" value="[remoteHostRTSP]"/>
+<test parameter="[firstline]" condition="string.equals" value="DESCRIBE rtsp://[remoteHostRTSP]:6666/demo/548/sound RTSP/1.0"/>
 <test parameter="[method]" condition="string.equals" value="DESCRIBE"/>
 <test parameter="[version]" condition="string.equals" value="RTSP/1.0"/>
-<test parameter="[uri]" condition="string.equals" value="rtsp://[serverIpAddress]:6666/demo/548/sound"/>
+<test parameter="[uri]" condition="string.equals" value="rtsp://[remoteHostRTSP]:6666/demo/548/sound"/>
 <test parameter="[statuscode]" condition="list.isEmpty"/>
 <test parameter="[reason]" condition="list.isEmpty"/>
 <test parameter="[header]" condition="string.contains" value="CSeq: 1"/>
@@ -90,8 +90,8 @@ Content-Disposition: recipient-list
 <receiveMessageRTSP name="Wait SETUP" type="SETUP" request="true">
 	<parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
     <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name"/>
-	<parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-	<parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+	<parameter name="[remoteHostRTSP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+	<parameter name="[remotePortRTSP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
 	<parameter name="[firstline]" operation="protocol.setFromMessage" value="firstline"/>
 	<parameter name="[method]" operation="protocol.setFromMessage" value="firstline.method"/>
 	<parameter name="[version]" operation="protocol.setFromMessage" value="firstline.version"/>
@@ -110,11 +110,11 @@ Content-Disposition: recipient-list
 	<parameter name="[ctype]" operation="protocol.setFromMessage" value="content.content-type"/>
 </receiveMessageRTSP>
 
-<test parameter="[remoteHost]" condition="string.equals" value="[serverIpAddress]"/>
-<test parameter="[firstline]" condition="string.equals" value="SETUP rtsp://[serverIpAddress]:6666/demo/548/sound RTSP/1.0"/>
+<test parameter="[remoteHostRTSP]" condition="string.equals" value="[remoteHostRTSP]"/>
+<test parameter="[firstline]" condition="string.equals" value="SETUP rtsp://[remoteHostRTSP]:6666/demo/548/sound RTSP/1.0"/>
 <test parameter="[method]" condition="string.equals" value="SETUP"/>
 <test parameter="[version]" condition="string.equals" value="RTSP/1.0"/>
-<test parameter="[uri]" condition="string.equals" value="rtsp://[serverIpAddress]:6666/demo/548/sound"/>
+<test parameter="[uri]" condition="string.equals" value="rtsp://[remoteHostRTSP]:6666/demo/548/sound"/>
 <test parameter="[statuscode]" condition="list.isEmpty"/>
 <test parameter="[reason]" condition="list.isEmpty"/>
 <test parameter="[header]" condition="string.contains" value="CSeq: 2"/>

@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
 
-    <parameter name="[remoteHost]" operation="set" value="[ipAddress]" />
-    <parameter name="[remotePort]" operation="set" value="9554" />
-    <parameter name="[localHost]" operation="set" value="[ipAddress]" />
-    <parameter name="[localPort]" operation="set" value="8554" />
-
     <parameter name="[session]" operation="set" value="sessionClient" />
-    <createListenpointRTSP name="[session]" localHost="0.0.0.0" localPort="[localPort]" />
+    <createListenpointRTSP name="[session]" localHost="0.0.0.0" localPort="[localPortRTSP]" />
 
     <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
 
     <sendMessageRTSP name="Send Describe" listenpoint="[session]">
-<![CDATA[DESCRIBE rtspu://[remoteHost]:[remotePort]/demo/548/sound RTSP/1.0
+<![CDATA[DESCRIBE rtspu://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 1
 Accept: application/sdp
 ]]>
@@ -22,7 +17,7 @@ Accept: application/sdp
     </receiveMessageRTSP>
 
     <sendMessageRTSP name="Send Setup" listenpoint="[session]">
-<![CDATA[SETUP rtspu://[remoteHost]:[remotePort]/demo/548/sound RTSP/1.0
+<![CDATA[SETUP rtspu://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 2
 Transport:RTP/AVP;multicast;destination=225.219.201.15;port=7000-7001;ttl=127
 Conference:199702170042.SAA08642@obiwan.arl.wustl.edu%20Starr
@@ -33,7 +28,7 @@ Conference:199702170042.SAA08642@obiwan.arl.wustl.edu%20Starr
     </receiveMessageRTSP>
 
     <sendMessageRTSP name="Send Play" listenpoint="[session]">
-<![CDATA[PLAY rtspu://[remoteHost]:[remotePort]/demo/548/sound RTSP/1.0
+<![CDATA[PLAY rtspu://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 3
 Session: 91389234234
 ]]>
@@ -42,7 +37,7 @@ Session: 91389234234
     </receiveMessageRTSP>
 
     <sendMessageRTSP name="Send Pause" listenpoint="[session]">
-<![CDATA[PAUSE rtspu://[remoteHost]:[remotePort]/demo/548/sound RTSP/1.0
+<![CDATA[PAUSE rtspu://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 4
 Session: 91389234234
 ]]>
@@ -51,7 +46,7 @@ Session: 91389234234
     </receiveMessageRTSP>
 
     <sendMessageRTSP name="Send Teardown" listenpoint="[session]">
-<![CDATA[TEARDOWN rtspu://[remoteHost]:[remotePort]/demo/548/sound RTSP/1.0
+<![CDATA[TEARDOWN rtspu://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 5
 Session: 91389234234
 ]]>
