@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
 
-    <parameter name="[remoteHost]" operation="set" value="[ipAddress]" />
-    <parameter name="[remotePort]" operation="set" value="9554" />
-
     <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
 
     <parameter name="[channel]" operation="set" value="channelRTSP" />
-    <openChannelRTSP name="[channel]" remoteHost="[remoteHost]" remotePort="[remotePort]" />
+    <openChannelRTSP name="[channel]" remoteHost="[remoteHostRTSP]" remotePort="[remotePortRTSP]" />
 
     <sendMessageRTSP name="Send Describe" channel="[channel]">
-<![CDATA[DESCRIBE rtsp://[remoteHost]:[remotePort]/demo/548/sound RTSP/1.0
+<![CDATA[DESCRIBE rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 1
 Accept: application/sdp
 ]]>
@@ -20,7 +17,7 @@ Accept: application/sdp
     </receiveMessageRTSP>
 
     <sendMessageRTSP name="Send Setup" channel="[channel]">
-<![CDATA[SETUP rtsp://[remoteHost]:[remotePort]/demo/548/sound RTSP/1.0
+<![CDATA[SETUP rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 2
 Transport:RTP/AVP;multicast;destination=225.219.201.15;port=7000-7001;ttl=127
 Conference:199702170042.SAA08642@obiwan.arl.wustl.edu%20Starr
@@ -40,10 +37,11 @@ Session: 91389234234
     </receiveMessageRTSP>
 
     <closeChannelRTSP name="[channel]"/>
-    <createListenpointRTSP name="[listenpointClient]" localHost="0.0.0.0" localPort="8554"/>
+    <parameter name="[localPortRTSP]" operation="number.add" value="[localPortRTSP]" value2="10000"/>
+    <createListenpointRTSP name="[listenpointClient]" localHost="0.0.0.0" localPort="[localPortRTSP]"/>
 
     <sendMessageRTSP name="Send Pause" listenpoint="[listenpointClient]">
-<![CDATA[PAUSE rtsp://[remoteHost]:[remotePort]/demo/548/sound RTSP/1.0
+<![CDATA[PAUSE rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
 CSeq: 4
 Session: 91389234234
 ]]>
@@ -52,12 +50,12 @@ Session: 91389234234
     </receiveMessageRTSP>
 
     <finally>
-        <removeListenpointRTSP name="[listenpointClient]"/>    
-    
-        <createListenpointRTSP name="[listenpointClient]" localHost="0.0.0.0" localPort="7554"/>
+        <removeListenpointRTSP name="[listenpointClient]"/>
+        <parameter name="[localPortRTSP]" operation="number.add" value="[localPortRTSP]" value2="10000"/>
+        <createListenpointRTSP name="[listenpointClient]" localHost="0.0.0.0" localPort="[localPortRTSP]"/>
     
         <sendMessageRTSP name="Send Teardown" listenpoint="[listenpointClient]">
-    <![CDATA[TEARDOWN rtsp://[remoteHost]:[remotePort]/demo/548/sound RTSP/1.0
+    <![CDATA[TEARDOWN rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
     CSeq: 5
     Session: 91389234234
     ]]>

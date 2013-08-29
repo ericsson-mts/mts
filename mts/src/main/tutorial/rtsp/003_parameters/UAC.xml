@@ -4,7 +4,7 @@
     <createListenpointRTSP name="session6" localHost="0.0.0.0" localPort="6666"/>
 
     <sendMessageRTSP name="Send Describe" listenpoint="session6">
-<![CDATA[DESCRIBE rtsp://[serverIpAddress]:6666/demo/548/sound RTSP/1.0
+<![CDATA[DESCRIBE rtsp://[remoteHostRTSP]:6666/demo/548/sound RTSP/1.0
 CSeq: 1 
 Accept: application/sdp, application/rtsl, application/mheg
 
@@ -12,8 +12,8 @@ Accept: application/sdp, application/rtsl, application/mheg
     </sendMessageRTSP>
 
     <receiveMessageRTSP name="Wait 200 OK" type="DESCRIBE" result="200">
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[remoteHostRTSP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortRTSP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[firstline]" operation="protocol.setFromMessage" value="firstline"/>
         <parameter name="[method]" operation="protocol.setFromMessage" value="firstline.method"/>
         <parameter name="[version]" operation="protocol.setFromMessage" value="firstline.version"/>
@@ -79,7 +79,7 @@ Accept: application/sdp, application/rtsl, application/mheg
 
     </receiveMessageRTSP>
 
-    <test parameter="[remoteHost]" condition="string.equals" value="[serverIpAddress]"/>
+    <test parameter="[remoteHostRTSP]" condition="string.equals" value="[remoteHostRTSP]"/>
     <test parameter="[firstline]" condition="string.equals" value="RTSP/1.0 200 OK"/>
     <test parameter="[method]" condition="list.isEmpty"/>
     <test parameter="[version]" condition="string.equals" value="RTSP/1.0"/>
@@ -151,7 +151,7 @@ Accept: application/sdp, application/rtsl, application/mheg
     <test parameter="[SDPMediaAttributeFMTPValue0(0)]" condition="string.contains" value="97 mode-set=1;octet-align=1;crc=0"/>
 
     <sendMessageRTSP name="Send Setup" listenpoint="session6">
-<![CDATA[SETUP rtsp://[serverIpAddress]:6666/demo/548/sound RTSP/1.0
+<![CDATA[SETUP rtsp://[remoteHostRTSP]:6666/demo/548/sound RTSP/1.0
 CSeq: 2
 Transport:RTP/AVP;multicast;destination=225.219.201.15;port=7000-7001;ttl=127
 Conference:199702170042.SAA08642@obiwan.arl.wustl.edu%20Starr
@@ -161,8 +161,8 @@ Conference:199702170042.SAA08642@obiwan.arl.wustl.edu%20Starr
 
     <receiveMessageRTSP name="Wait 200 OK" type="SETUP" result="200">
         <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[remoteHostRTSP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortRTSP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[firstline]" operation="protocol.setFromMessage" value="firstline"/>
         <parameter name="[method]" operation="protocol.setFromMessage" value="firstline.method"/>
         <parameter name="[version]" operation="protocol.setFromMessage" value="firstline.version"/>

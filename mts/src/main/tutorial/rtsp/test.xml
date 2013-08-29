@@ -4,8 +4,12 @@
 <test name="RTSP" description="RTSP regression tests">
 
     <parameter name="[IPVersion]" operation="set" value="4" editable="true" />
-    <parameter name="[ipAddress]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[ipAddress]" operation="set" value="[ipAddress(0)]" editable="true"/>
+    <parameter name="[localHostRTSP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostRTSP]" operation="set" value="[localHostRTSP(0)]" editable="true"/>
+    <parameter name="[localPortRTSP]" operation="set" value="8554" editable="true"/>
+    <parameter name="[remoteHostRTSP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostRTSP]" operation="set" value="[remoteHostRTSP(0)]" editable="true"/>
+    <parameter name="[remotePortRTSP]" operation="set" value="9554" editable="true"/>
 
     <!-- timers for the retransmissions-->
     <parameter name="[retransmitNumber]" operation="set" value="4"/>
@@ -22,10 +26,7 @@
     <parameter name="[retransmitTimers(9)]" operation="set" value="4000"/>
     <parameter name="[retransmitTimers(10)]" operation="set" value="4000"/>
 
-    <parameter name="[serverIpAddress]" operation="set" value="[ipAddress]" />
-    <parameter name="[serverIpAddress]" operation="set" value="[serverIpAddress(0)]" editable="true"/>
-
-    <parameter name="[myIpAddress]" operation="set" value="[ipAddress]" />
+    <parameter name="[myIpAddress]" operation="set" value="[localHostRTSP]" />
     <parameter name="[rtpVideoFile]" 	operation="set" 	value="bigbuckvideo.pdml" />
     <parameter name="[rtpAudioFile]" 	operation="set" 	value="bigbuckaudio.pdml" />
     <parameter name="[rtpAudioFileWav]" operation="set" 	value="rtpflow.wav" />
