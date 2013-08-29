@@ -4,10 +4,10 @@
 <scenario>
 
     <parameter name="[mc]" operation="set" value="listenpointSMPP-MC" />
-    <createListenpointSMPP name="[mc]" localHost="[test:serverRemoteIp]" localPort="12776"/>
+    <createListenpointSMPP name="[mc]" localHost="[test:remoteHostSMPP]" localPort="12776"/>
     <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
     
-    <sendMessageSMPP listenpoint="[mc]" remoteHost="[test:serverRemoteIp]" remotePort="12775">
+    <sendMessageSMPP listenpoint="[mc]" remoteHost="[test:remoteHostSMPP]" remotePort="12775">
         <header name="outbind" sequence_number="1"/>
         <attribute name="system_id" value="test"/>
         <attribute name="password" value="loader"/>

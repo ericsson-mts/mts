@@ -4,7 +4,7 @@
 <scenario>
     
     <parameter name="[esme]" operation="set" value="listenpointSMPP-ESME" />
-    <createListenpointSMPP name="[esme]" localHost="[test:serverRemoteIp]" localPort="12775"/>
+    <createListenpointSMPP name="[esme]" localHost="[test:remoteHostSMPP]" localPort="12775"/>
     <parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
     
     <receiveMessageSMPP request="true" listenpoint="[esme]" type="outbind:b">
