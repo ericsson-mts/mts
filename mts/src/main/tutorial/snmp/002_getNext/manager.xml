@@ -7,7 +7,7 @@
     <createListenpointSNMP name="[listenpoint]" localPort="162"/>
 
     <parameter name="[requestId]" operation="number.random" value="1000000" />
-    <sendMessageSNMP listenpoint="[listenpoint]" remoteHost="[serverRemoteIp]" remotePort="[serverPort]">
+    <sendMessageSNMP listenpoint="[listenpoint]" remoteHost="[remoteHostSNMP]" remotePort="[remotePortSNMP]">
         <header version="2" community="public"/>
         <pdu name="getnext" requestId="[requestId]">
             <variableBinding name="ianaLangJavaByteCode"/>
@@ -20,7 +20,7 @@
     </receiveMessageSNMP>
 
     <parameter name="[requestId]" operation="number.random" value="1000000" />
-    <sendMessageSNMP listenpoint="[listenpoint]" remoteHost="[serverRemoteIp]" remotePort="[serverPort]">
+    <sendMessageSNMP listenpoint="[listenpoint]" remoteHost="[remoteHostSNMP]" remotePort="[remotePortSNMP]">
         <header version="2" community="public"/>
         <pdu name="getnext" requestId="[requestId]">
             <variableBinding name="[oids]"/>

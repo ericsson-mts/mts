@@ -7,7 +7,7 @@
     <createListenpointSNMP name="[listenpoint]" localPort="162"/>
 
     <parameter name="[testcase:requestId]" operation="number.random" value="1000000" />
-    <sendMessageSNMP listenpoint="[listenpoint]" remoteHost="[serverRemoteIp]" remotePort="[serverPort]">
+    <sendMessageSNMP listenpoint="[listenpoint]" remoteHost="[remoteHostSNMP]" remotePort="[remotePortSNMP]">
         <header version="1" community="public"/>
         <pdu name="set" requestId="[requestId]">
             <variableBinding name="sysApplInstallPkgIndex" value="10"/>
