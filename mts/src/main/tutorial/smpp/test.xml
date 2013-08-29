@@ -5,10 +5,10 @@
     <parameter name="[listenIp]" operation="set" value="0.0.0.0" editable="true"/>
 
     <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-    <parameter name="[serverRemoteIp]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[serverRemoteIp]" operation="set" value="[serverRemoteIp(0)]" editable="true"/>
-    <parameter name="[serverPort]" operation="file.readproperty" value="smpp.properties" value2="listenpoint.LOCAL_PORT" />
-    <parameter name="[serverPort]" operation="set" value="[serverPort]" editable="true" />
+    <parameter name="[remoteHostSMPP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostSMPP]" operation="set" value="[remoteHostSMPP(0)]" editable="true"/>
+    <parameter name="[remotePortSMPP]" operation="file.readproperty" value="smpp.properties" value2="listenpoint.LOCAL_PORT" />
+    <parameter name="[remotePortSMPP]" operation="set" value="[remotePortSMPP]" editable="true" />
 
     <testcase name="smpp/000_classicSequence" state="true">
         <scenario name="client">000_classicSequence/client.xml</scenario>
