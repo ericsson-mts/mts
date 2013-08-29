@@ -10,7 +10,7 @@
     l on fait une capture par Wireshark avec un filtre de capture portant sur le port. Nous avons trouve 
     le moyen de contournement suivant : ajouter dans le filtre de capture un filtre portant sur le champ 
     "Fragment offset" (octet 5:2) de la couche IP -->
-    <parameter name="[filter]" operation="set"><![CDATA[(port [Port-Tester] or not (ip[6:2] & 0x1FFF = 0)) and ip]]></parameter>
+    <parameter name="[filter]" operation="set"><![CDATA[(port [localPortSIP] or not (ip[6:2] & 0x1FFF = 0)) and ip]]></parameter>
 
     <createProbeSIP name="supervision" networkInterface="[network]" captureFilter="[filter]"/>
 

@@ -18,10 +18,10 @@ To: sip:[inviteeName1]@[100_DOMAIN_ADDR]
 Call-ID: [CallId]
 CSeq: [CSeqNumber] INVITE
 Max-Forwards: 70
-Route: <sip:alice@[Adresse-Server];transport=[transportRequest];lr>
-Route: <sip:alice@[Adresse-Tester];transport=[transportRequest];lr>
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
-Contact: <sip:bob@[Adresse-Tester]>
+Route: <sip:alice@[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:alice@[localSIP];transport=[transportRequest];lr>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
+Contact: <sip:bob@[localSIP]>
 User-Agent: XmlLoader
 Content-Type: multipart/mixed;boundary="----=_Part_0"
 NotDefined: bla[param]bla,[param(2)]
@@ -85,10 +85,10 @@ To: [To]
 From: [From]
 Call-ID: [CallId]
 CSeq: [CSeqNumber] ACK
-Route: <sip:alice@[Adresse-Server];transport=[transportRequest];lr>
-Route: <sip:alice@[Adresse-Tester];transport=[transportRequest];lr>
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
-Contact: <sip:bob@[Adresse-Tester]>
+Route: <sip:alice@[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:alice@[localSIP];transport=[transportRequest];lr>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
+Contact: <sip:bob@[localSIP]>
 Max-Forwards: 70
 User-Agent: XmlLoader
 Simple: bla[param]bla,[param(0)]
@@ -112,10 +112,10 @@ From: [From]
 Call-ID: [CallId]
 CSeq: [CSeqNumber] BYE
 Max-Forwards: 70
-Route: <sip:alice@[Adresse-Server];transport=[transportRequest];lr>
-Route: <sip:alice@[Adresse-Tester];transport=[transportRequest];lr>
-Contact: <sip:bob@[Adresse-Tester]>
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Route: <sip:alice@[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:alice@[localSIP];transport=[transportRequest];lr>
+Contact: <sip:bob@[localSIP]>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
 User-Agent: XmlLoader
 Multiple: bla[param]bla, [param]
 Multiple: bla[param]bla, [param(0)], [unKnown]

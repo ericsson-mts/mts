@@ -15,24 +15,24 @@
 <![CDATA[INVITE sip:[inviteeName1]@[107_DOMAIN_ADDR] SIP/2.0
 To: "[inviteeName1]" <sip:[inviteeName1]@[107_DOMAIN_ADDR]>
 From: "[clientName]"<sip:[clientName]@[107_DOMAIN_ADDR]>;tag=[localTag]
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId];id=[clientName]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
 Call-ID: [newCallId]
 CSeq: [newCSeqNumber] INVITE
 Max-Forwards: 70
 Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
-Contact: <sip:[clientName]@[Adresse-Tester]>
+Contact: <sip:[clientName]@[localSIP]>
 Supported: 100rel
 User-Agent: IMSLoader
 Session-Expires: 3600
-Route: <sip:[Adresse-Server];lr;call=orig>
-Route: <sip:ptt@[Adresse-Tester];lr>
+Route: <sip:[remoteSIP];lr;call=orig>
+Route: <sip:ptt@[localSIP];lr>
 Content-Length: x
 Content-Type: application/sdp
 
 v=0
-o=[clientName] 999 999 IN IP4 [Host-Tester]
+o=[clientName] 999 999 IN IP4 [localHostSIP]
 s=-
-c=IN IP4 [Host-Tester]
+c=IN IP4 [localHostSIP]
 t=0 0
 m=audio 10000 RTP/AVP 97
 a=rtpmap:97 amr/8000/1
@@ -69,11 +69,11 @@ a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0
 <![CDATA[PRACK [Contact] SIP/2.0
 To: [To]
 From: [From]
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId];id=[clientName]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
 Call-ID: [CallId]
 CSeq: [CSeqNumber] PRACK
 RAck: [RSeq] [CSeq]
-Contact: <sip:[clientName]@[Adresse-Tester]>
+Contact: <sip:[clientName]@[localSIP]>
 Max-Forwards: 70
 P-hint: rr-enforced
 User-Agent: IMSLoader
@@ -97,18 +97,18 @@ To: [To]
 From: [From]
 Call-ID: [CallId]
 CSeq: [CSeqNumber] UPDATE
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=[newBranchId]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=[newBranchId]
 Max-Forwards: 70
 Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
-Contact: <sip:[clientName]@[Adresse-Tester]>
+Contact: <sip:[clientName]@[localSIP]>
 User-Agent: IMSLoader
 Content-Length: x
 Content-Type: application/sdp
 
 v=0
-o=[clientName] 999 999 IN IP4 [Host-Tester]
+o=[clientName] 999 999 IN IP4 [localHostSIP]
 s=-
-c=IN IP4 [Host-Tester]
+c=IN IP4 [localHostSIP]
 t=0 0
 m=audio 10002 RTP/AVP 97
 a=rtpmap:97 amr/8000/1
@@ -148,11 +148,11 @@ a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0
 <![CDATA[PRACK [Contact] SIP/2.0
 To: [To]
 From: [From]
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId];id=[clientName]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
 Call-ID: [CallId]
 CSeq: [CSeqNumber] PRACK
 RAck: [RSeq] [CSeq]
-Contact: <sip:[clientName]@[Adresse-Tester]>
+Contact: <sip:[clientName]@[localSIP]>
 Max-Forwards: 70
 P-hint: rr-enforced
 User-Agent: IMSLoader
@@ -181,8 +181,8 @@ To: [To]
 From: [From]
 Call-ID: [CallId]
 CSeq: [CSeq] ACK
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=[newBranchId]
-Contact: <sip:[clientName]@[Adresse-Tester]>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=[newBranchId]
+Contact: <sip:[clientName]@[localSIP]>
 Max-Forwards: 70
 User-Agent: IMSLoader
 Allow: INVITE, ACK, CANCEL, BYE, NOTIFY
@@ -200,8 +200,8 @@ To: [To]
 From: [From]
 Call-ID: [CallId]
 CSeq: [CSeqNumber] BYE
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=[newBranchId]
-Contact: <sip:[clientName]@[Adresse-Tester]>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=[newBranchId]
+Contact: <sip:[clientName]@[localSIP]>
 Max-Forwards: 70
 User-Agent: IMSLoader
 Allow: INVITE, ACK, CANCEL, BYE, NOTIFY

@@ -18,16 +18,16 @@
 <![CDATA[MESSAGE sip:0033660648607@[domainName] SIP/2.0
 To: sip:0033660648607@[domainName]
 From: "[clientName]"<sip:[clientName]@[domainName]>;tag=[localTag]
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId];id=[clientName]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
 Call-ID: [newCallId]
 CSeq: [newCseq] MESSAGE
-Contact: <sip:bob@[Adresse-Tester]>;+g.poc.talkburst
+Contact: <sip:bob@[localSIP]>;+g.poc.talkburst
 Max-Forwards: 70
 User-Agent: PoC-client/OMA1.0 Siemens/v2.0
 Accept-Contact: +g.poc.groupad;require;explicit
 Server: PoC-client/OMA1.0 Siemens/v2.0
-Route: <sip:[Adresse-Server];transport=[transportRequest];lr>
-Route: <sip:[Adresse-Tester];lr;id=[inviteeName1]>
+Route: <sip:[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:[localSIP];lr;id=[inviteeName1]>
 Expires: 0
 Content-Type: text/plain
 Content-Length: x
@@ -68,16 +68,16 @@ Hello ]]>
 <![CDATA[[Method] [URI] SIP/2.0
 To: sip:0033660648607@[domainName]
 From: "[clientName]"<sip:[clientName]@[domainName]>;tag=[localTag]
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId];id=[clientName]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
 Call-ID: [newCallId]
 CSeq: [newCseq] MESSAGE
-Contact: <sip:bob@[Adresse-Tester]>;+g.poc.talkburst
+Contact: <sip:bob@[localSIP]>;+g.poc.talkburst
 Max-Forwards: 70
 User-Agent: PoC-client/OMA1.0 Siemens/v2.0
 Accept-Contact: +g.poc.groupad;require;explicit
 Server: PoC-client/OMA1.0 Siemens/v2.0
-Route: <sip:[Adresse-Server];transport=[transportRequest];lr>
-Route: <sip:[Adresse-Tester];lr;id=[inviteeName1]>
+Route: <sip:[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:[localSIP];lr;id=[inviteeName1]>
 Authorization: Digest username="[UserName]", realm="[WWWAuthRealm]", nonce="[WWWAuthNonce]", opaque="", response="[AuthResponse]", cnonce="[CNonce]", qop="[WWWAuthQop]", nc=[NonceCount]
 Expires: 0
 Content-Type: text/plain

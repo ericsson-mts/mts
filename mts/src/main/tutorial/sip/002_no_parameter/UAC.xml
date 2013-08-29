@@ -2,7 +2,7 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
 <scenario>
-<log level="INFO">[Host-Tester]</log>
+<log level="INFO">[localHostSIP]</log>
 
   <sendRequestSIP name="Send INVITE" destScenario="bob">
 <![CDATA[
@@ -12,10 +12,10 @@ From: "bob" <sip:bob@devoteam.com>;tag=bob
 Call-ID: 1
 CSeq: 1 INVITE
 Max-Forwards: 70
-Route: <sip:alice@[Adresse-Server];transport=[transportRequest];lr>
-Route: <sip:alice@[Adresse-Tester];transport=[transportRequest];lr>
-Contact: <sip:bob@[Adresse-Tester]>
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=bob
+Route: <sip:alice@[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:alice@[localSIP];transport=[transportRequest];lr>
+Contact: <sip:bob@[localSIP]>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=bob
 User-Agent: XmlLoader
 Content-Type: multipart/mixed;boundary="----=_Part_0"
 Content-Length: x
@@ -65,10 +65,10 @@ From: "bob" <sip:bob@devoteam.com>;tag=bob
 Call-ID: 1
 CSeq: 1 ACK
 Max-Forwards: 70
-Route: <sip:alice@[Adresse-Server];transport=[transportRequest];lr>
-Route: <sip:alice@[Adresse-Tester];transport=[transportRequest];lr>
-Contact: <sip:bob@[Adresse-Tester]>
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=bob
+Route: <sip:alice@[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:alice@[localSIP];transport=[transportRequest];lr>
+Contact: <sip:bob@[localSIP]>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=bob
 User-Agent: XmlLoader
 Content-Length: 0
 ]]>
@@ -82,10 +82,10 @@ From: "bob" <sip:bob@devoteam.com>;tag=bob
 Call-ID: 1
 CSeq: 2 BYE
 Max-Forwards: 70
-Route: <sip:alice@[Adresse-Server];transport=[transportRequest];lr>
-Route: <sip:alice@[Adresse-Tester];transport=[transportRequest];lr>
-Contact: <sip:bob@[Adresse-Tester]>
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=bob
+Route: <sip:alice@[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:alice@[localSIP];transport=[transportRequest];lr>
+Contact: <sip:bob@[localSIP]>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=bob
 User-Agent: XmlLoader
 Content-Length: 0
 ]]>

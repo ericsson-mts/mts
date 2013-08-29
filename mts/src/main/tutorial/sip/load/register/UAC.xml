@@ -11,16 +11,16 @@
   	<parameter name="[MaxForwards]" operation="set" value="70"/>
   	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
 
-	<sendMessageSIP name="Send REGISTER" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+	<sendMessageSIP name="Send REGISTER" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]">
 <![CDATA[
-REGISTER sip:[userName]@[Adresse-Server];transport=[transport] SIP/2.0
+REGISTER sip:[userName]@[remoteSIP];transport=[transport] SIP/2.0
 To: "[userName]" <sip:[userName]@[domainName]>
 From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
 Call-ID:[newCallId]
 CSeq: [newCseq] REGISTER
-Via: SIP/2.0/[transport] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/[transport] [localSIP];branch=z9hG4bK[newBranchId]
 Max-Forwards: [MaxForwards]
-Contact: <sip:[userName]@[Adresse-Tester]>
+Contact: <sip:[userName]@[localSIP]>
 Content-Length: 0
 ]]>
         </sendMessageSIP>

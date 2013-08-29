@@ -16,13 +16,13 @@
 <![CDATA[INVITE sip:[inviteeName1]@[100_DOMAIN_ADDR] SIP/2.0
 To: sip:[inviteeName1]@[100_DOMAIN_ADDR]
 From: "[clientName]" <sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
 Call-ID: [newCallId]
 CSeq: [newCseq] INVITE
 Max-Forwards: 70
 Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
 Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
-Contact: <sip:[clientName]@[Adresse-Tester]>;+g.poc.talkburst
+Contact: <sip:[clientName]@[localSIP]>;+g.poc.talkburst
 Supported: timer
 User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
 Session-Expires: 3600;refresher=uac
@@ -35,7 +35,7 @@ P-com.Siemens.IMSI-ID: 81164951574
 P-com.Siemens.SGSN-ID: 139.10.69.237
 P-Charging-Function-Addresses: ccf=139.10.99.99;ccf_sec=139.10.99.99
 Content-Type: multipart/mixed;boundary="----=_Part_0"
-Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating>
+Route: <sip:[clientName]@[remoteSIP];lr;mode=originating>
 Content-Length: x
 
 ------=_Part_0
@@ -83,9 +83,9 @@ To: [To]
 From: [From]
 Call-ID: [CallId]
 CSeq: [newCseq] ACK
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
-Contact: <sip:[clientName]@[Adresse-Tester]>
-Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
+Contact: <sip:[clientName]@[localSIP]>
+Route: <sip:[clientName]@[remoteSIP];lr;mode=originating>
 Max-Forwards: 70
 User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
 Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
@@ -104,9 +104,9 @@ To: [To]
 From: [From]
 Call-ID: [CallId]
 CSeq: [newCseq] BYE
-Route: <sip:[clientName]@[Adresse-Server];lr;mode=originating>
-Contact: <sip:[clientName]@[Adresse-Tester]>
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Route: <sip:[clientName]@[remoteSIP];lr;mode=originating>
+Contact: <sip:[clientName]@[localSIP]>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
 Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
 User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
 Max-Forwards: 70
@@ -128,10 +128,10 @@ To: sip:[inviteeName1]@[100_DOMAIN_ADDR]
 From: "[clientName]" <sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
 Call-ID:[newCallId]
 CSeq: [newCseq] REGISTER
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId];ttl=3000
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];ttl=3000
 Max-Forwards: 70
-Contact: <sip:alice@[Adresse-Tester]>
-Route: <sip:alice@[Adresse-Server];transport=[transportRequest];lr>
+Contact: <sip:alice@[localSIP]>
+Route: <sip:alice@[remoteSIP];transport=[transportRequest];lr>
 Expires: 0
 Max-Forwards: 70
 Content-Length: 0]]>

@@ -11,23 +11,23 @@
  <parameter name="[localTag]" operation="string.random" value="10"/>
  <parameter name="[newBranchId]" operation="string.random" value="10"/>
 
-		<sendMessageSIP name="Send INVITE" destScenario="[Port-Tester]">
+		<sendMessageSIP name="Send INVITE" destScenario="[localPortSIP]">
 <!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[INVITE sip:[inviteeName1]@[102_DOMAIN_ADDR] SIP/2.0
 To: sip:[inviteeName1]@[102_DOMAIN_ADDR]
 From: "[clientName]" <sip:[clientName]@[102_DOMAIN_ADDR]>;tag=[localTag]
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
 Call-ID: [newCallId]
 CSeq: [newCseqNumber] INVITE
 Max-Forwards: 70
 Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
 Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
-Contact: <sip:[clientName]@[Adresse-Tester]>;+g.poc.talkburst
+Contact: <sip:[clientName]@[localSIP]>;+g.poc.talkburst
 Supported: timer
 User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
 Session-Expires: 3600;refresher=uac
 Accept-Contact: +g.poc.talkburst;require;explicit
-Route: <sip:ptt@[Adresse-Server];lr;mode=originating>
+Route: <sip:ptt@[remoteSIP];lr;mode=originating>
 Content-Type: multipart/mixed;boundary="----=_Part_0"
 Content-Length: x
 
@@ -66,22 +66,22 @@ Content-Disposition: recipient-list
 		</receiveMessageSIP>
 
         <parameter name="[newBranchId]" operation="string.random" value="10"/>
-		<sendMessageSIP name="Send ACK" destScenario="[Port-Tester]">
+		<sendMessageSIP name="Send ACK" destScenario="[localPortSIP]">
 <![CDATA[ACK sip:[inviteeName1]@[102_DOMAIN_ADDR] SIP/2.0
 To: [To]
 From: [From]
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
 Call-ID: [newCallId]
 CSeq: [newCseqNumber] ACK
 Max-Forwards: 70
 Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
 Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
-Contact: <sip:[clientName]@[Adresse-Tester]>;+g.poc.talkburst
+Contact: <sip:[clientName]@[localSIP]>;+g.poc.talkburst
 Supported: timer
 User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
 Session-Expires: 3600;refresher=uac
 Accept-Contact: +g.poc.talkburst;require;explicit
-Route: <sip:ptt@[Adresse-Server];lr;mode=originating>
+Route: <sip:ptt@[remoteSIP];lr;mode=originating>
 Content-Length: 0]]>
 		</sendMessageSIP>
 
@@ -89,22 +89,22 @@ Content-Length: 0]]>
  <parameter name="[localTag]" operation="string.random" value="10"/>
  <parameter name="[newBranchId]" operation="string.random" value="10"/>
 
-		<sendMessageSIP name="Send BYE" destScenario="[Port-Tester]">
+		<sendMessageSIP name="Send BYE" destScenario="[localPortSIP]">
 <![CDATA[BYE sip:[inviteeName1]@[102_DOMAIN_ADDR] SIP/2.0
 To: [To]
 From: [From]
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
 Call-ID: [newCallId]
 CSeq: [newCseqNumber] BYE
 Max-Forwards: 70
 Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
 Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
-Contact: <sip:[clientName]@[Adresse-Tester]>;+g.poc.talkburst
+Contact: <sip:[clientName]@[localSIP]>;+g.poc.talkburst
 Supported: timer
 User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
 Session-Expires: 3600;refresher=uac
 Accept-Contact: +g.poc.talkburst;require;explicit
-Route: <sip:ptt@[Adresse-Server];lr;mode=originating>
+Route: <sip:ptt@[remoteSIP];lr;mode=originating>
 Content-Length: 0]]>
 		</sendMessageSIP>
 		<receiveMessageSIP name="Wait 200 OK" result="200" type="BYE">

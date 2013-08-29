@@ -13,14 +13,14 @@
 
 	<sendMessageSIP name="Send REGISTER"  destScenario="bob">
 <!--******************* BEGIN MESSAGE ********************-->
-<![CDATA[REGISTER sip:[userName]@[Adresse-Server] SIP/2.0
+<![CDATA[REGISTER sip:[userName]@[remoteSIP] SIP/2.0
 To: "[userName]" <sip:[userName]@[domainName]>
 From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
 Call-ID:[newCallId]
 CSeq: [newCseq] REGISTER
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
 Max-Forwards: [MaxForwards]
-Contact: <sip:[userName]@[Adresse-Tester]>
+Contact: <sip:[userName]@[localSIP]>
 Expires: 3600
 Content-Length: 0]]>
 <!--******************** END MESSAGE *********************-->
@@ -56,14 +56,14 @@ Content-Length: 0]]>
 			
 		<sendMessageSIP name="Send REGISTER"  destScenario="bob">
 <!--******************* BEGIN MESSAGE ********************-->
-<![CDATA[REGISTER sip:[userName]@[Adresse-Server] SIP/2.0
+<![CDATA[REGISTER sip:[userName]@[remoteSIP] SIP/2.0
 To: "[userName]" <sip:[userName]@[domainName]>
 From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
 Call-ID:[newCallId]
 CSeq: [newCseq] REGISTER
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
 Max-Forwards: [MaxForwards]
-Contact: <sip:[userName]@[Adresse-Tester]>
+Contact: <sip:[userName]@[localSIP]>
 Authorization: Digest username="[UserName]", realm="[WWWAuthRealm]", nonce="[WWWAuthNonce]", opaque="", response="[AuthResponse]", cnonce="[CNonce]", qop="[WWWAuthQop]", nc=[NonceCount]
 Expires: 3600
 Content-Length: 0]]>
@@ -79,16 +79,16 @@ Content-Length: 0]]>
 
       	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
       	<parameter name="[newCseq]" operation="number.add" value="[newCseq]" value2="1"/>  
-    	<sendMessageSIP name="Send REGISTER" remoteHost="[Host-Server]" remotePort="[Port-Server]" destScenario="bob">
+    	<sendMessageSIP name="Send REGISTER" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" destScenario="bob">
 <![CDATA[
-REGISTER sip:[userName]@[Adresse-Server] SIP/2.0
+REGISTER sip:[userName]@[remoteSIP] SIP/2.0
 To: [To]
 From: [From]
 Call-ID:[CallId]
 CSeq: [newCseq] REGISTER
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
 Max-Forwards: [MaxForwards]
-Contact: <sip:[userName]@[Adresse-Tester]>
+Contact: <sip:[userName]@[localSIP]>
 Expires: 0
 Content-Length: 0
 ]]>
