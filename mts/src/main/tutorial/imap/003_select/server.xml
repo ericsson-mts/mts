@@ -4,8 +4,8 @@
 <scenario>
 
     <parameter name="[listenpoint]" operation="set" value="listenpointIMAP" />
-
-    <createListenpointIMAP name="[listenpoint]" localHost="[listenIp]" listenTLS="false" localPort="9143"/>
+    <parameter name="[localPortIMAP]" operation="number.add" value="[localPortIMAP]" value2="10000"/>
+    <createListenpointIMAP name="[listenpoint]" localHost="[localHostIMAP]" localPort="[localPortIMAP]" listenTLS="false" />
     <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
 
     <!-- attend message capability-->

@@ -2,13 +2,17 @@
 
 <test name="IMAP" description="IMAP regression tests">    
 
-    <parameter name="[listenIp]" operation="set" value="0.0.0.0" editable="true"/>
+    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[localHostIMAP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostIMAP]" operation="set" value="[localHostIMAP(0)]" editable="true"/>
+    <parameter name="[localPortIMAP]" operation="file.readproperty" value="imap.properties" value2="listenpoint.LOCAL_PORT" />
+    <parameter name="[localPortIMAP]" operation="set" value="[localPortIMAP]" editable="true" />
 
-	<parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
     <parameter name="[remoteHostIMAP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[remoteHostIMAP]" operation="set" value="[remoteHostIMAP(0)]" editable="true"/>
     <parameter name="[remotePortIMAP]" operation="file.readproperty" value="imap.properties" value2="listenpoint.LOCAL_PORT" />
     <parameter name="[remotePortIMAP]" operation="set" value="[remotePortIMAP]" editable="true" />
+
     <parameter name="[serverPortTLS]" operation="file.readproperty" value="imap.properties" value2="listenpoint.LOCAL_PORT_TLS" />
     <parameter name="[serverPortTLS]" operation="set" value="[serverPortTLS]" editable="true" />
 

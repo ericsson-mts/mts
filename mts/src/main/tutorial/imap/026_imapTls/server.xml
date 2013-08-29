@@ -3,7 +3,9 @@
 <!-- scenario server-->
 <scenario>
 
-    <createListenpointIMAP name="[listenpoint]" localHost="[listenIp]" listenTCP="false" listenTLS="true" localPortTLS="9143" transport="tls"/>
+    <parameter name="[listenpoint]" operation="set" value="listenpointIMAP" />
+    <parameter name="[localPortIMAP]" operation="number.add" value="[localPortIMAP]" value2="10000"/>
+    <createListenpointIMAP name="[listenpoint]" localHost="[localHostIMAP]" localPortTLS="[localPortIMAP]" listenTCP="false" listenTLS="true" transport="tls"/>
     <parameter name="[testcase:sem1]" operation="system.semaphoreNotify"/>
     
     <!-- attend message capability-->

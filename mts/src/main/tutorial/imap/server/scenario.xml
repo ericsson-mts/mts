@@ -5,7 +5,8 @@
 
     <parameter name="[listenpoint]" operation="set" value="listenpointIMAP" />
 
-    <createListenpointIMAP name="[listenpoint]" localHost="0.0.0.0" />
+    <parameter name="[remotePortIMAP]" operation="number.add" value="[remotePortIMAP]" value2="10000"/>
+    <createListenpointIMAP name="[listenpoint]" localHost="0.0.0.0" localPort="[remotePortIMAP]" listenTLS="false"/>
     
     <!-- attend message capability-->
      <receiveMessageIMAP listenpoint="[listenpoint]" timeout="0" request="true">
