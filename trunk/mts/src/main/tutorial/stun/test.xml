@@ -3,17 +3,17 @@
 
 <test name="STUN" description="STUN regression tests">
 
-
     <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-    <parameter name="[Host-Tester]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]" editable="true"/>
-    <parameter name="[Port-Tester]" operation="file.readProperty" value="stun.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[Port-Tester]" operation="set" value="[Port-Tester]" editable="true"/>
-    <parameter name="[Host-Server]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]" editable="true"/>
-    <parameter name="[Port-Server]" operation="file.readProperty" value="stun.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[Port-Server]" operation="set" value="[Port-Server]" editable="true"/>
-    <!--parameter name="[Host-Server]" operation="set" value="192.168.90.206"/-->
+    <parameter name="[localHostSTUN]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostSTUN]" operation="set" value="[localHostSTUN(0)]" editable="true"/>
+    <parameter name="[localPortSTUN]" operation="file.readProperty" value="stun.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localPortSTUN]" operation="set" value="[localPortSTUN]" editable="true"/>
+    
+    <parameter name="[remoteHostSTUN]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostSTUN]" operation="set" value="[remoteHostSTUN(0)]" editable="true"/>
+    <parameter name="[remotePortSTUN]" operation="file.readProperty" value="stun.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[remotePortSTUN]" operation="set" value="[remotePortSTUN]" editable="true"/>
+    <!--parameter name="[remoteHostSTUN]" operation="set" value="192.168.90.206"/-->
     
     <testcase name="000_bindingRequest" description="test a binding request" state="true">
         <scenario name="Stun_client">000_bindingRequest/Stun_client.xml</scenario>
@@ -25,8 +25,5 @@
         <scenario name="Stun_client">001_setFromMessage/Stun_client.xml</scenario>
         <scenario name="STUN">001_setFromMessage/Stun_server.xml</scenario>
     </testcase>
-
-
-   
     
 </test>

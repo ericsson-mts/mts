@@ -10,29 +10,21 @@
 
 <scenario>
 
-    <sendMessageSTUN  name="Create Connection" remoteHost="[Host-Server]" remotePort="[Port-Server]">
-
-        <header type="1" transactionID="0000064c44881e2b7cc59456"/>
-
+    <parameter name="[testcase:transID]" operation="binary.random" value="12"/>
+    <sendMessageSTUN  name="Create Connection" remoteHost="[remoteHostSTUN]" remotePort="[remotePortSTUN]">
+        <header type="1" transactionID="[transID]"/>
         <attribute type="SOFTWARE">
             <text value="pjnath-1.8.5"/>
         </attribute>
-		
         <attribute type="CHANGE-REQUEST">
-    
             <changeRequest  changeIP="0" changePort="0"/>
-			
         </attribute>
-
         <attribute type="REALM">
-     
             <text value="pjsip.org" />
         </attribute>
-
         <attribute type="NONCE">
             <text value="pjnath"/>
         </attribute>
-
         <!--attribute type="MESSAGE-INTEGRITY">
             <messageIntegrity value="034ff510a55db414912af5094f95cb6cd502a6" secret="toto"/>
         </attribute-->
@@ -41,21 +33,22 @@
    
     <receiveMessageSTUN request="false">
         <parameter name="[transactionID]" operation="protocol.setFromMessage" value="header.transactionID"/>
-		<test parameter="[transactionID]" condition="binary.equals" value="0000064c44881e2b7cc59456"/>
-        <parameter name="[addressIP]" operation="protocol.setFromMessage" value="attribute.MAPPED-ADDRESS.addressIP"/>
-		<test parameter="[addressIP]" condition="string.equals" value="[Host-Server]"/>
-        <parameter name="[port]" operation="protocol.setFromMessage" value="attribute.MAPPED-ADDRESS.port"/>
-		<test parameter="[port]" condition="string.equals" value="[Port-Server]"/>
-        <parameter name="[family]" operation="protocol.setFromMessage" value="attribute.MAPPED-ADDRESS.family"/>
-		<test parameter="[family]" condition="number.equals" value="1"/>
-        <parameter name="[soft]" operation="protocol.setFromMessage" value="attribute.SOFTWARE.text"/>
-		<test parameter="[soft]" condition="string.equals" value="Volvida.org 0.96"/>
-        <parameter name="[addressIPSource]" operation="protocol.setFromMessage" value="attribute.MAPPED-ADDRESS.addressIP"/>
-		<test parameter="[addressIPSource]" condition="string.equals" value="[Host-Server]"/>
-        <parameter name="[portSource]" operation="protocol.setFromMessage" value="attribute.MAPPED-ADDRESS.port"/>
-		<test parameter="[portSource]" condition="string.equals" value="[Port-Server]"/>
-        <parameter name="[familySource]" operation="protocol.setFromMessage" value="attribute.MAPPED-ADDRESS.family"/>
-		<test parameter="[familySource]" condition="number.equals" value="1"/>
+        <test parameter="[transactionID]" condition="binary.equals" value="[testcase:transID]"/>
     </receiveMessageSTUN>
-	
+
+    <parameter name="[addressIP]" operation="protocol.setFromMessage" value="attribute.MAPPED-ADDRESS.addressIP"/>
+    <test parameter="[addressIP]" condition="string.equals" value="[remoteHostSTUN]"/>
+    <parameter name="[port]" operation="protocol.setFromMessage" value="attribute.MAPPED-ADDRESS.port"/>
+    <test parameter="[port]" condition="string.equals" value="[remotePortSTUN]"/>
+    <parameter name="[family]" operation="protocol.setFromMessage" value="attribute.MAPPED-ADDRESS.family"/>
+    <test parameter="[family]" condition="number.equals" value="1"/>
+    <parameter name="[soft]" operation="protocol.setFromMessage" value="attribute.SOFTWARE.text"/>
+    <test parameter="[soft]" condition="string.equals" value="Volvida.org 0.96"/>
+    <parameter name="[addressIPSource]" operation="protocol.setFromMessage" value="attribute.MAPPED-ADDRESS.addressIP"/>
+    <test parameter="[addressIPSource]" condition="string.equals" value="[remoteHostSTUN]"/>
+    <parameter name="[portSource]" operation="protocol.setFromMessage" value="attribute.MAPPED-ADDRESS.port"/>
+    <test parameter="[portSource]" condition="string.equals" value="[remotePortSTUN]"/>
+    <parameter name="[familySource]" operation="protocol.setFromMessage" value="attribute.MAPPED-ADDRESS.family"/>
+    <test parameter="[familySource]" condition="number.equals" value="1"/>
+
 </scenario>
