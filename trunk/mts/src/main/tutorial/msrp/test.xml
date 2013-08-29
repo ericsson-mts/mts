@@ -2,14 +2,13 @@
 
 <test name="MSRP">
 
-    <parameter name="[listenIp]" operation="set" value="0.0.0.0" />
-    <parameter name="[listenIp]" operation="set" value="0.0.0.0" editable="true" />
-
     <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
     <parameter name="[localHostMSRP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[localHostMSRP]" operation="set" value="[localHostMSRP(0)]" editable="true"/>
+    
     <parameter name="[remotePortMSRP]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT" />
     <parameter name="[remotePortMSRP]" operation="set" value="[remotePortMSRP]" editable="true" />
+    
     <parameter name="[serverTlsPort]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT_TLS" />
     <parameter name="[serverTlsPort]" operation="set" value="[serverTlsPort]" editable="true" />
     <parameter name="[remoteHostMSRP]" operation="set" value="[localHostMSRP]:[remotePortMSRP]"/>
