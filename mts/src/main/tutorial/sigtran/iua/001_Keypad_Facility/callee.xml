@@ -13,7 +13,7 @@
     <test parameter="[lastCallReference]" condition="number.equals" value="[newCallReference]"/>
     <test parameter="[lastInterfaceId]" condition="number.equals" value="[newInterfaceId]"/>
         
-    <sendMessageSIGTRAN name="Send SIGTRAN ALERTING" listenpoint="[listenpointCallee]" remoteHost="[Host-Caller]" remotePort="[Port-Caller]">       	
+    <sendMessageSIGTRAN name="Send SIGTRAN ALERTING" listenpoint="[listenpointCallee]" remoteHost="[hostCallerIUA]" remotePort="[portCallerIUA]">       	
         <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">       
 	    <!-- ALERTING = b0000001 = h1 = d1-->
             <header discriminator="Recommendation Q.931/I.451" callReference="[lastCallReference]"  type="ALERTING"/>            	    
@@ -38,7 +38,7 @@
         
     </sendMessageSIGTRAN>
 
-    <sendMessageSIGTRAN name="Send SIGTRAN CONNECT" listenpoint="[listenpointCallee]" remoteHost="[Host-Caller]" remotePort="[Port-Caller]">       	    
+    <sendMessageSIGTRAN name="Send SIGTRAN CONNECT" listenpoint="[listenpointCallee]" remoteHost="[hostCallerIUA]" remotePort="[portCallerIUA]">       	    
         <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">        
 	    <!-- CONNECT = b0000111 =h7 =d7-->
             <header discriminator="Recommendation Q.931/I.451" callReference="[lastCallReference]"  type="CONNECT"/>        
@@ -71,7 +71,7 @@
     <test parameter="[lastCallReference]" condition="number.equals" value="[newCallReference]"/>
     <test parameter="[lastInterfaceId]" condition="number.equals" value="[newInterfaceId]"/>    
 
-    <sendMessageSIGTRAN name="Send SIGTRAN DISCONNECT" listenpoint="[listenpointCallee]" remoteHost="[Host-Caller]" remotePort="[Port-Caller]">                	
+    <sendMessageSIGTRAN name="Send SIGTRAN DISCONNECT" listenpoint="[listenpointCallee]" remoteHost="[hostCallerIUA]" remotePort="[portCallerIUA]">                	
         <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">        
 	    <!-- DISCONNECT = b1000101 = h45 =d69-->
             <header discriminator="Recommendation Q.931/I.451" callReference="[lastCallReference]"  type="DISCONNECT"/>           
@@ -113,7 +113,7 @@
     <test parameter="[lastCallReference]" condition="number.equals" value="[newCallReference]"/>
     <test parameter="[lastInterfaceId]" condition="number.equals" value="[newInterfaceId]"/>    
 
-    <sendMessageSIGTRAN name="Send SIGTRAN RELEASE COMPLETE" listenpoint="[listenpointCallee]" remoteHost="[Host-Caller]" remotePort="[Port-Caller]">                	   
+    <sendMessageSIGTRAN name="Send SIGTRAN RELEASE COMPLETE" listenpoint="[listenpointCallee]" remoteHost="[hostCallerIUA]" remotePort="[portCallerIUA]">                	   
         <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">        
 		<!-- RELEASE COMPLETE= b1011010 = h5A =d90-->
 	       	<header discriminator="Recommendation Q.931/I.451" callReference="[lastCallReference]"  type="RELEASE COMPLETE"/>	        	

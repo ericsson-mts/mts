@@ -4,18 +4,18 @@
 <test name="SIGTRAN" description="SIGTRAN regression tests">
     
     <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-    <parameter name="[Host-Tester]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]" editable="true"/>
-    <parameter name="[Port-Tester]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[Port-Tester]" operation="set" value="[Port-Tester(0)]" editable="true"/>    
-    <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]"/>	
+    <parameter name="[localHostV5UA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostV5UA]" operation="set" value="[localHostV5UA(0)]" editable="true"/>
+    <parameter name="[localPortV5UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localPortV5UA]" operation="set" value="[localPortV5UA(0)]" editable="true"/>    
+    <parameter name="[localV5UA]" operation="set" value="[localHostV5UA]:[localPortV5UA]"/>	
    
-    <parameter name="[Host-Server]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <!--parameter name="[Host-Server]" operation="set" value="172.16.21.61"/-->
-    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]" editable="true"/>
-    <parameter name="[Port-Server]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[Port-Server]" operation="set" value="[Port-Server(0)]" editable="true"/>    
-    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server]:[Port-Server]"/>	
+    <parameter name="[remoteHostV5UA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHostV5UA]" operation="set" value="172.16.21.61"/-->
+    <parameter name="[remoteHostV5UA]" operation="set" value="[remoteHostV5UA(0)]" editable="true"/>
+    <parameter name="[remotePortV5UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[remotePortV5UA]" operation="set" value="[remotePortV5UA(0)]" editable="true"/>    
+    <parameter name="[remoteV5UA]" operation="set" value="[remoteHostV5UA]:[remotePortV5UA]"/>	
 	  
     <testcase name="101_V5X_ESTABLISH" description="test a request" state="true">
         <scenario name="caller">101_V5X_ESTABLISH/caller.xml</scenario>

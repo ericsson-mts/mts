@@ -4,16 +4,16 @@
 <test name="SIGTRAN SCCP" description="SIGTRAN SCCP tests">
     
     <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-    <parameter name="[Host-Tester]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]" />
-    <parameter name="[Port-Tester]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]"/>	
+    <parameter name="[localHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]" />
+    <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>	
    
-    <parameter name="[Host-Server]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[Host-Server]" operation="set" value="172.16.21.112" />
-    <parameter name="[Port-Server]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <!--parameter name="[Port-Server]" operation="set" value="7070"/-->
-    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server]:[Port-Server]"/>	
+    <parameter name="[remoteHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]" />
+    <parameter name="[remotePortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[remotePortM3UA]" operation="set" value="7070"/-->
+    <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>	
 
     
     <testcase name="01_Connection_Request (CR)" description="test sigtran SCCP" state="true">
