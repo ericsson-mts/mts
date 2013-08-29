@@ -10,21 +10,18 @@
 
 <scenario>
 
-
-    <sendMessageSTUN  name="Create Connection" remoteHost="[Host-Server]" remotePort="[Port-Server]">
-
-        <header type="1" transactionID="0000064c44881e2b7cc59455"/>
-
+    <parameter name="[transID]" operation="binary.random" value="12"/>
+    <sendMessageSTUN  name="Create Connection" remoteHost="[remoteHostSTUN]" remotePort="[remotePortSTUN]">
+        <header type="1" transactionID="[transID]"/>
         <attribute type="SOFTWARE">
             <text value="pjnath-1.8.5"/>
         </attribute>
-		
-		 <attribute type="CHANGE-REQUEST">
+        <attribute type="CHANGE-REQUEST">
             <changeRequest  changeIP="0" changePort="0"/>
         </attribute>
     </sendMessageSTUN>
-	
+
     <receiveMessageSTUN request="false">
     </receiveMessageSTUN>
-	
+
 </scenario>
