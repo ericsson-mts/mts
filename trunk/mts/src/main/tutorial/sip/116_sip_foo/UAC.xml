@@ -17,7 +17,7 @@
 <![CDATA[FOO sip:[inviteeName1]@[108_DOMAIN_ADDR] SIP/2.0
 To: sip:[inviteeName1]@[108_DOMAIN_ADDR]
 From: "[clientName]" <sip:[clientName]@[108_DOMAIN_ADDR]>;tag=[localTag]
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId];id=[clientName]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
 Call-ID: [newCallId]
 CSeq: [newCseqNumber] FOO
 Max-Forwards: 70
@@ -25,8 +25,8 @@ Expires: 3600
 Event: poc-settings
 User-Agent: PoC-client/OMA1.0 Siemens/v2.0
 Accept-Contact: *;+g.poc.talkburst;require;explicit
-Route: <sip:ptt@[Adresse-Server];lr;mode=originating>
-Route: <sip:ptt@[Adresse-Tester];lr;mode=originating>
+Route: <sip:ptt@[remoteSIP];lr;mode=originating>
+Route: <sip:ptt@[localSIP];lr;mode=originating>
 Content-Type: application/dtmf-relay
 Content-Length: 24
 

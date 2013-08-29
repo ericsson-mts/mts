@@ -19,18 +19,18 @@
 <![CDATA[SUBSCRIBE sip:[inviteeName1]@[104_DOMAIN_ADDR] SIP/2.0
 To: sip:[inviteeName1]@[104_DOMAIN_ADDR]
 From: "[clientName]"<sip:[clientName]@[104_DOMAIN_ADDR]>;tag=[localTag]
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId];id=[clientName]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
 Call-ID: [newCallId]
 CSeq: [newCseqNumber] SUBSCRIBE
 Max-Forwards: 70
 Accept: application/conference-info+xml
-Contact: <sip:[clientName]@[Adresse-Tester]>;+g.poc.talkburstst
+Contact: <sip:[clientName]@[localSIP]>;+g.poc.talkburstst
 Event: conference
 User-Agent: PoC-client/OMA1.0 Siemens/v2.0
 Accept-Contact: *;+g.poc.talkburst;require;explicit
 Server: PoC-client/OMA1.0 Siemens/v2.0
-Route: <sip:[Adresse-Server];lr;mode=originating>
-Route: <sip:[Adresse-Tester];lr;mode=originating>
+Route: <sip:[remoteSIP];lr;mode=originating>
+Route: <sip:[localSIP];lr;mode=originating>
 Expires: 3600
 Content-Length: 0
 ]]>
@@ -73,18 +73,18 @@ Content-Length: 0
 <![CDATA[SUBSCRIBE sip:[inviteeName1]@[104_DOMAIN_ADDR] SIP/2.0
 To: [To]
 From: [From]
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchIdSUBSCRIBE];id=[clientName]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchIdSUBSCRIBE];id=[clientName]
 Call-ID: [newCallId]
 CSeq: [newCseqNumber] SUBSCRIBE
 Max-Forwards: 70
 Accept: application/conference-info+xml
-Contact: <sip:[clientName]@[Adresse-Tester]>;+g.poc.talkburstst
+Contact: <sip:[clientName]@[localSIP]>;+g.poc.talkburstst
 Event: conference
 User-Agent: PoC-client/OMA1.0 Siemens/v2.0
 Accept-Contact: *;+g.poc.talkburst;require;explicit
 Server: PoC-client/OMA1.0 Siemens/v2.0
-Route: <sip:[Adresse-Server];lr;mode=originating>
-Route: <sip:[Adresse-Tester];lr;mode=originating>
+Route: <sip:[remoteSIP];lr;mode=originating>
+Route: <sip:[localSIP];lr;mode=originating>
 Expires: 0
 Content-Length: 0
 ]]>

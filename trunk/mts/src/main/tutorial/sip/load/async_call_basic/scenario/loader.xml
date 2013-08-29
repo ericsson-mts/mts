@@ -12,7 +12,7 @@
 		<counter name="BYExxxin" summary="BYExxx_in" complete="Receive an incoming BYE/XXX OK"/>			
 	</stats>
 
-  	<createListenpointSIP name="listenpoint" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="UDP"/>
+  	<createListenpointSIP name="listenpoint" localHost="[localHostSIP]" localPort="[localPortSIP]" transport="UDP"/>
 
 	<stats>
 		<counter name="ActiveSession"><increase>1</increase></counter>  	
@@ -44,20 +44,20 @@
 	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
 
 	<sendMessageSIP name="Send INVITE" listenpoint="listenpoint" 
-					remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+					remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]">
 <![CDATA[		
 INVITE sip:0[inviteeName]@sip.pfdev.fr SIP/2.0
 To: <sip:0[inviteeName]@sip.pfdev.fr:5060>
 From: "+33[inviterName]" <sip:+33[inviterName]@sip.pfdev.fr:5060>;tag=[newFromTag]
-Call-ID: [newCallId]-[inviterName]@[Adresse-Tester]
+Call-ID: [newCallId]-[inviterName]@[localSIP]
 CSeq: [newCseqNumber] INVITE
 Max-Forwards: 70
-Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]
-Route: <sip:+33[inviteeName]@[Adresse-Server];lr;call=orig>
-Route: <sip:+33[inviteeName]@[Adresse-Tester];lr>
-Route: <sip:+33[inviteeName]@[Adresse-Tester];lr>
-Record-Route: <sip:+33[inviteeName]@[Adresse-Tester];maddr=[Host-Tester];lr>
-Contact: <sip:+33[inviterName]@[Adresse-Tester];transport=udp>
+Via: SIP/2.0/UDP [localSIP];branch=z9hG4bK[newBranchId]
+Route: <sip:+33[inviteeName]@[remoteSIP];lr;call=orig>
+Route: <sip:+33[inviteeName]@[localSIP];lr>
+Route: <sip:+33[inviteeName]@[localSIP];lr>
+Record-Route: <sip:+33[inviteeName]@[localSIP];maddr=[localHostSIP];lr>
+Contact: <sip:+33[inviterName]@[localSIP];transport=udp>
 Allow: ACK, BYE, CANCEL, INVITE, NOTIFY, REFER, DO, UPDATE, OPTIONS, SUBSCRIBE, INFO
 Supported: timer, replaces
 P-Asserted-Identity: "+33[inviterName]" <sip:+33[inviterName]@sip.pfdev.fr>
@@ -71,9 +71,9 @@ User-Agent: XMLLoader
 Content-Length: x
 
 v=0
-o=+33[inviterName] 2211961014 2211961014 IN IP4 [Host-Tester]
+o=+33[inviterName] 2211961014 2211961014 IN IP4 [localHostSIP]
 s=VOIP P160SLD 02.11.08
-c=IN IP4 [Host-Tester]
+c=IN IP4 [localHostSIP]
 t=0 0
 m=audio [portRTP] RTP/AVP 0 18 4
 a=rtpmap:0 PCMU/8000/1

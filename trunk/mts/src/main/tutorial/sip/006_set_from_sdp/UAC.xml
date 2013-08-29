@@ -40,12 +40,12 @@ Authorization: Digest username="Alice",
  cnonce="0a4f113b",
  response="7587245234b3434cc3412213e5f113a5432",
  opaque="5ccc069c403ebaf9f0171e9517f40e41"
-Route: <sip:[inviteeName1]@[Adresse-Server];transport=[transportRequest];lr>;id=toto
-Route: <sip:[inviteeName1]@[Adresse-Tester];transport=[transportRequest];lr>;id=toto
+Route: <sip:[inviteeName1]@[remoteSIP];transport=[transportRequest];lr>;id=toto
+Route: <sip:[inviteeName1]@[localSIP];transport=[transportRequest];lr>;id=toto
 Route: <sip:[inviteeName1]@172.16.21.32:5060;transport=[transportRequest];lr>;id=tata
-Contact: <sip:bob@[Adresse-Tester]>;expires=3600,<sip:bob@172.16.21.32:[Port-Server]>;expires=3300
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId];ttl=3000;received=[Host-Tester]
-Via: SIP/2.0/[transportResponse] 172.16.21.32:[Port-Server];received=172.16.21.30;branch=z9hG4bK[newBranchId]
+Contact: <sip:bob@[localSIP]>;expires=3600,<sip:bob@172.16.21.32:[remotePortSIP]>;expires=3300
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];ttl=3000;received=[localHostSIP]
+Via: SIP/2.0/[transportResponse] 172.16.21.32:[remotePortSIP];received=172.16.21.30;branch=z9hG4bK[newBranchId]
 Ttl: 3000
 User-Agent: XmlLoader
 XmlLoaderId: XmlLoaderId
@@ -83,7 +83,7 @@ Content-Type: application/resource-lists+xml
 Content-Disposition: recipient-list
 
 <?xml version="1.0" encoding="UTF-8"?>
-<resource-lists xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<resource-lists xmlns="urn:ietf:params:xml:ns:resource-lists" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <list>
 <entry uri="[inviteeName1]"/>
 </list>
@@ -239,10 +239,10 @@ From: [From]
 Call-ID: [CallId]
 CSeq: [CSeqNumber] ACK
 Max-Forwards: 70
-Route: <sip:[inviteeName1]@[Adresse-Server];transport=[transportRequest];lr>;id=toto
-Route: <sip:[inviteeName1]@[Adresse-Tester];transport=[transportRequest];lr>;id=toto
-Contact: <sip:bob@[Adresse-Tester]>
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId];ttl=3000
+Route: <sip:[inviteeName1]@[remoteSIP];transport=[transportRequest];lr>;id=toto
+Route: <sip:[inviteeName1]@[localSIP];transport=[transportRequest];lr>;id=toto
+Contact: <sip:bob@[localSIP]>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];ttl=3000
 User-Agent: XmlLoader
 Content-Length: 0]]>
 <!--******************** END MESSAGE *********************-->
@@ -259,10 +259,10 @@ From: [From]
 Call-ID: [CallId]
 CSeq: [CSeqNumber] BYE
 Max-Forwards: 70
-Route: <sip:[inviteeName1]@[Adresse-Server];transport=[transportRequest];lr>;id=toto
-Route: <sip:[inviteeName1]@[Adresse-Tester];transport=[transportRequest];lr>;id=toto
-Contact: <sip:bob@[Adresse-Tester]>
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId];ttl=3000
+Route: <sip:[inviteeName1]@[remoteSIP];transport=[transportRequest];lr>;id=toto
+Route: <sip:[inviteeName1]@[localSIP];transport=[transportRequest];lr>;id=toto
+Contact: <sip:bob@[localSIP]>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];ttl=3000
 User-Agent: XmlLoader
 Content-Length: 0
 

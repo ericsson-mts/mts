@@ -23,12 +23,12 @@ To: "[userName]" <sip:[userName]@[domainName]>
 From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
 Call-ID:[newCallId]
 CSeq: [newCseq] REGISTER
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=[newBranchId]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=[newBranchId]
 Max-Forwards: [MaxForwards]
-Contact: <sip:[userName]@[Adresse-Tester]>
+Contact: <sip:[userName]@[localSIP]>
 Allow: [msg]
-Route: <sip:[userName]@[Adresse-Server];transport=[transportRequest];lr>
-Route: <sip:[Adresse-Tester];transport=[transportRequest];lr>
+Route: <sip:[userName]@[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:[localSIP];transport=[transportRequest];lr>
 Content-Length: 0
 ]]>
 		<!--******************** END MESSAGE *********************-->
@@ -69,12 +69,12 @@ To: "[userName]" <sip:[userName]@[domainName]>
 From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
 Call-ID:[newCallId]
 CSeq: [newCseq] REGISTER 
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=[newBranchId]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=[newBranchId]
 Max-Forwards: [MaxForwards]
-Contact: <sip:[userName]@[Adresse-Tester]>
+Contact: <sip:[userName]@[localSIP]>
 Allow: [msg]
-Route: <sip:[userName]@[Adresse-Server];transport=[transportRequest];lr>
-Route: <sip:[Adresse-Tester];transport=[transportRequest];lr>
+Route: <sip:[userName]@[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:[localSIP];transport=[transportRequest];lr>
 Authorization: Digest username="[UserName]", realm="[WWWAuthRealm]", nonce="[WWWAuthNonce]", response="[AuthResponse]", uri="[URI]"
 Content-Length: 0
 ]]>
@@ -103,14 +103,14 @@ To: "[userName]" <sip:[userName]@[domainName]>
 From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
 Call-ID:[newCallId]
 CSeq: [newCseq] PUBLISH
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=[newBranchId]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=[newBranchId]
 Max-Forwards: [MaxForwards]
 Allow: [msg]
 Supported: path
 Expires: 600
 Event: presence
-Route: <sip:[userName]@[Adresse-Server];transport=[transportRequest];lr>
-Route: <sip:[Adresse-Tester];transport=[transportRequest];lr>
+Route: <sip:[userName]@[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:[localSIP];transport=[transportRequest];lr>
 Content-Type: application/pidf+xml
 Content-Length: auto
 
@@ -173,14 +173,14 @@ To: "[userName]" <sip:[userName]@[domainName]>
 From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
 Call-ID:[newCallId]
 CSeq: [newCseq] PUBLISH
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=[newBranchId]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=[newBranchId]
 Max-Forwards: [MaxForwards]
 Allow: [msg]
 Supported: path
 Expires: 600
 Event: presence
-Route: <sip:[userName]@[Adresse-Server];transport=[transportRequest];lr>
-Route: <sip:[Adresse-Tester];transport=[transportRequest];lr>
+Route: <sip:[userName]@[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:[localSIP];transport=[transportRequest];lr>
 Content-Type: application/pidf+xml
 Content-Length: auto
 Authorization: Digest username="[UserName]", realm="[WWWAuthRealm]", nonce="[WWWAuthNonce]", response="[AuthResponse]", uri="[URI]", opaque="[WWWAuthOpaque]"

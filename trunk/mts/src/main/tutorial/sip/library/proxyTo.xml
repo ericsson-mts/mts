@@ -11,10 +11,10 @@
 ~~~~~~~~~~~~~~~~~~~
 -
 -->
-    <parameter name="[Host-Server]" operation="system.ipaddress"/>
-    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]" />
-    <parameter name="[Port-Server]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[proxyURI]" 	operation="set" value="[Host-Server(0)]:[Port-Server]"/>
+    <parameter name="[remoteHostSIP]" operation="system.ipaddress"/>
+    <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]" />
+    <parameter name="[remotePortSIP]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[proxyURI]" 	operation="set" value="[remoteHostSIP(0)]:[remotePortSIP]"/>
 	
 	<if>
 	    <condition>
@@ -156,7 +156,7 @@ Max-Forwards: [lastMax-Forwards]
 [lastContent]
 ]]>
 	</sendMessageSIP><!--
-Via: SIP/2.0/UDP [Adresse-Server];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/UDP [remoteSIP];branch=z9hG4bK[newBranchId]
 [lastHeaderOthers]
 -->
 <goto label="fin" />

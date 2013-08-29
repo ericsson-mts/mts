@@ -23,8 +23,8 @@
 	    </then>
 	</if>
 
-	<parameter name="[Port-Tester]" operation="number.substract" value="65535" value2="[test:indexUnReg]"/>
-	<parameter name="[listenpoint]" operation="set" value="listenpoint_[Port-Tester]"/>
+	<parameter name="[localPortSIP]" operation="number.substract" value="65535" value2="[test:indexUnReg]"/>
+	<parameter name="[listenpoint]" operation="set" value="listenpoint_[localPortSIP]"/>
 
     <parameter name="[userName]" operation="set" value="[userTab([test:indexUnReg])]"/>    	
 
@@ -33,15 +33,15 @@
 	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
   	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
 
-	<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+	<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]">
 <![CDATA[
-REGISTER sip:[userName]@[Adresse-Server];transport=[transport] SIP/2.0
+REGISTER sip:[userName]@[remoteSIP];transport=[transport] SIP/2.0
 To: "[userName]" <sip:[userName]@[domainName]>
 From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
 Call-ID:[newCallId]
 CSeq: [newCseq] REGISTER
-Via: SIP/2.0/[transport] [Host-Tester]:[Port-Tester];branch=z9hG4bK[newBranchId]
-Contact: <sip:[userName]@[Host-Tester]:[Port-Tester]>
+Via: SIP/2.0/[transport] [localHostSIP]:[localPortSIP];branch=z9hG4bK[newBranchId]
+Contact: <sip:[userName]@[localHostSIP]:[localPortSIP]>
 Expires: 0
 Max-Forwards: 70
 Content-Length: 0

@@ -13,16 +13,16 @@
 <![CDATA[MESSAGE sip:[inviteeName]@[domainName] SIP/2.0
 To: sip:[inviteeName]@[domainName]
 From: "[inviterName]"<sip:[inviterName]@[domainName]>;tag=[localTag]
-Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/UDP [localSIP];branch=z9hG4bK[newBranchId]
 Call-ID: [newCallId]
 CSeq: [newCseqNumber] MESSAGE
-Contact: <sip:[inviterName]@[Adresse-Tester]>;+g.poc.talkburst
+Contact: <sip:[inviterName]@[localSIP]>;+g.poc.talkburst
 Max-Forwards: 70
 User-Agent: PoC-client/OMA1.0 Siemens/v2.0
 Accept-Contact: +g.poc.groupad;require;explicit
 Server: PoC-client/OMA1.0 Siemens/v2.0
-Route: <sip:[Adresse-Server];transport=UDP;lr>
-Route: <sip:[Adresse-Tester];transport=UDP;lr>
+Route: <sip:[remoteSIP];transport=UDP;lr>
+Route: <sip:[localSIP];transport=UDP;lr>
 Expires: 0
 Content-Type: application/vnd.poc.group-advertisement+xml
 Content-Length: x

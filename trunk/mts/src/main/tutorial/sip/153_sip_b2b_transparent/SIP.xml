@@ -121,7 +121,7 @@ Content-Length: 0]]>
 		  	<parameter name="[test:lastCSeq_[newTransactionId]]" operation="set" value="[lastCSeq]"/>
 			<parameter name="[test:lastVia_[newTransactionId]]" operation="set" value="[lastVia]"/>	  		  		  				        		
 			<parameter name="[test:lastRecord-Route_[newTransactionId]]" operation="set" value="[lastRecord-Route]"/>
-			<parameter name="[test:lastRecord-Route_[newTransactionId]]" operation="list.addFirst" value="[test:lastRecord-Route_[newTransactionId]]" value2="&lt;sip:[Adresse-Tester];transport=[transportRequest];lr&gt;"/>
+			<parameter name="[test:lastRecord-Route_[newTransactionId]]" operation="list.addFirst" value="[test:lastRecord-Route_[newTransactionId]]" value2="&lt;sip:[localSIP];transport=[transportRequest];lr&gt;"/>
 	            </else>    
 		</if>   
 		<if><condition><test parameter="[lastSIPMethod]" condition="string.equals" value="INVITE"/></condition>
@@ -157,10 +157,10 @@ To: [ToTag]
 From: [lastFromAddress];tag=[test:FromTag_[lastCallId]]
 Call-ID: [test:CallID_[lastCallId]]
 CSeq: [test:CSeqNumber_[lastCallId]] [lastMethod]
-Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
 Via: [lastVia]
 Route: [lastRoute]
-Record-Route: <sip:[Adresse-Tester];transport=[transportRequest];lr>
+Record-Route: <sip:[localSIP];transport=[transportRequest];lr>
 Record-Route: [lastRecord-Route]
 Contact: [lastContact]
 Max-Forwards: [lastMax-Forwards]

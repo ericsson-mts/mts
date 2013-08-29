@@ -18,7 +18,7 @@
 		<counter name="BYElost" summary="BYE_lost" complete="BYE send but not received"/>
 	</stats>
 
-  	<createListenpointSIP name="listenpoint" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="UDP"/>
+  	<createListenpointSIP name="listenpoint" localHost="[localHostSIP]" localPort="[localPortSIP]" transport="UDP"/>
 
 	<parameter name="[indexUser]" operation="set" value="0"/>
 
@@ -151,29 +151,29 @@
   	<parameter name="[newToTag]" operation="string.random" value="10"/>
 
  	<sendMessageSIP name="Send 100 Trying" delay="0" listenpoint="listenpoint" 
-					remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+					remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]">
 <![CDATA[
 SIP/2.0 100 Trying
 To: [lastTo]
 From: [lastFrom]
 Call-ID: [lastCallId]
 CSeq: [lastCSeq]
-Via: SIP/2.0/UDP no;branch=[lastViaBranch];Received=[Host-Server];RPort=[Port-Server]
+Via: SIP/2.0/UDP no;branch=[lastViaBranch];Received=[remoteHostSIP];RPort=[remotePortSIP]
 Content-Length: 0
 
 ]]>			
   	</sendMessageSIP>
   
     <sendMessageSIP name="Send 180 Ringing" delay="[TryingDuration]" listenpoint="listenpoint" 
-                    remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+                    remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]">
 <![CDATA[
 SIP/2.0 180 Ringing
 To: [lastTo];tag=[newToTag]
 From: [lastFrom]
 Call-ID: [lastCallId]
-Contact: <sip:[lastRouteUser(0)]@[Adresse-Tester];transport=udp>
+Contact: <sip:[lastRouteUser(0)]@[localSIP];transport=udp>
 CSeq: [lastCSeq]
-Via: SIP/2.0/UDP no;branch=[lastViaBranch];Received=[Host-Server];RPort=[Port-Server]
+Via: SIP/2.0/UDP no;branch=[lastViaBranch];Received=[remoteHostSIP];RPort=[remotePortSIP]
 Record-Route: [lastRecordRoute]
 Allow: ACK, BYE, CANCEL, INFO, INVITE, OPTIONS, PRACK, REFER, NOTIFY
 P-Charging-Vector: icid-value=ffdd90da03ec4107ba5c96d362dfd
@@ -197,17 +197,17 @@ Content-Length: 0
 	<parameter name="[portRTP]" operation="number.add" value="[RangePortRTP-UAS]" value2="[tempPortRTP]"/>
 
 	<sendMessageSIP name="Send 200 OK" delay="[RingingDuration]" listenpoint="listenpoint" 
-					remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+					remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]">
 <![CDATA[
 SIP/2.0 200 OK
 From: [lastFrom]
 To: [lastTo];tag=[newToTag]
 Call-ID: [lastCallId]
 CSeq: [lastCSeq]
-Via: SIP/2.0/UDP no;branch=[lastViaBranch];Received=[Host-Server];RPort=[Port-Server]
+Via: SIP/2.0/UDP no;branch=[lastViaBranch];Received=[remoteHostSIP];RPort=[remotePortSIP]
 Allow: ACK, BYE, CANCEL, INFO, INVITE, OPTIONS, PRACK, REFER, NOTIFY
 Accept:multipart/mixed,application/media_control+xml,application/sdp
-Contact: <sip:[lastRouteUser(0)]@[Adresse-Tester];transport=udp>
+Contact: <sip:[lastRouteUser(0)]@[localSIP];transport=udp>
 Record-Route: [lastRecordRoute]
 P-Charging-Vector: icid-value=ffdd90da03ec4107ba5c96d362dfd;orig-ioi=sip.pfdev.fr;term-ioi=sip.pfdev.fr
 P-Charging-Function-Addresses: ccf="aaa://devitimmm1.sip.pfdev.fr:3868;transport=tcp";ccf="aaa://devitimmm1.sip.pfdev.fr:3868;transport=tcp"
@@ -215,9 +215,9 @@ Content-Type: application/sdp
 Content-Length: x
 
 v=0
-o=[lastRouteUser(0)] 2211961014 2211961014 IN IP4 [Host-Tester]
+o=[lastRouteUser(0)] 2211961014 2211961014 IN IP4 [localHostSIP]
 s=VOIP P160SLD 02.11.08
-c=IN IP4 [Host-Tester]
+c=IN IP4 [localHostSIP]
 t=0 0
 m=audio [portRTP] RTP/AVP 0 18 4
 a=rtpmap:0 PCMU/8000/1
@@ -258,19 +258,19 @@ message : [lastMessage]
 	<parameter name="[newBranchId]" operation="string.random" value="10"/>
 
 	<sendMessageSIP name="Send ACK" delay="0" listenpoint="listenpoint" 
-					remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+					remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]">
 <![CDATA[
-ACK sip:[Host-Server] SIP/2.0
+ACK sip:[remoteHostSIP] SIP/2.0
 To: [lastTo]
 From: [lastFrom]
 Call-ID: [lastCallId]
 CSeq: [lastCSeqNumber] ACK
 Max-Forwards: 70
-Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]
-Route: <sip:[lastToUser]@[Adresse-Server];lr;call=orig>
-Route: <sip:[lastToUser]@[Adresse-Tester];lr>
-Route: <sip:[lastToUser]@[Adresse-Tester];lr>
-Contact: <sip:[lastFromUser(0)]@[Adresse-Tester];transport=udp>
+Via: SIP/2.0/UDP [localSIP];branch=z9hG4bK[newBranchId]
+Route: <sip:[lastToUser]@[remoteSIP];lr;call=orig>
+Route: <sip:[lastToUser]@[localSIP];lr>
+Route: <sip:[lastToUser]@[localSIP];lr>
+Contact: <sip:[lastFromUser(0)]@[localSIP];transport=udp>
 User-Agent: XMLLoader
 Content-Length: 0
 
@@ -299,19 +299,19 @@ Content-Length: 0
 	<parameter name="[newCseqNumber]" operation="number.uid" value="10"/>
 
 	<sendMessageSIP name="Send BYE" delay="[CallDurationSec]" listenpoint="listenpoint" 
-					remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+					remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]">
 <![CDATA[
-BYE sip:[Host-Server] SIP/2.0
+BYE sip:[remoteHostSIP] SIP/2.0
 To: [lastTo]
 From: [lastFrom]
 Call-ID: [lastCallId]
 CSeq: [newCseqNumber] BYE
 Max-Forwards: 70
-Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]
-Route: <sip:[lastToUser]@[Adresse-Server];lr;call=orig>
-Route: <sip:[lastToUser]@[Adresse-Tester];lr>
-Route: <sip:[lastToUser]@[Adresse-Tester];lr>
-Contact: <sip:[lastFromUser(0)]@[Adresse-Tester];transport=udp>
+Via: SIP/2.0/UDP [localSIP];branch=z9hG4bK[newBranchId]
+Route: <sip:[lastToUser]@[remoteSIP];lr;call=orig>
+Route: <sip:[lastToUser]@[localSIP];lr>
+Route: <sip:[lastToUser]@[localSIP];lr>
+Contact: <sip:[lastFromUser(0)]@[localSIP];transport=udp>
 Content-Length: 0
 
 ]]>
@@ -338,14 +338,14 @@ Content-Length: 0
 	<parameter name="[newToTag]" operation="string.random" value="10"/>
 
 	<sendMessageSIP name="Send 200 OK" delay="0" listenpoint="listenpoint" 
-					remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+					remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]">
 <![CDATA[
 SIP/2.0 200 OK
 To: [lastTo]
 From: [lastFrom]
 Call-ID: [lastCallId]
 CSeq: [lastCSeq]
-Via: SIP/2.0/UDP no;branch=[lastViaBranch];Received=[Host-Server];RPort=[Port-Server]
+Via: SIP/2.0/UDP no;branch=[lastViaBranch];Received=[remoteHostSIP];RPort=[remotePortSIP]
 Content-Length: 0
 
 ]]>
