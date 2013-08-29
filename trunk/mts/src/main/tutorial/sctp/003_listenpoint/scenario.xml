@@ -3,7 +3,7 @@
 <scenario>
     <createListenpointSCTP name="listenpoint" localPort="5665"/>
 
-    <openChannelSCTP name="channelSCTP" remoteHost="[remoteHost]" remotePort="5665"  ostreams="7" instreams="6" />
+    <openChannelSCTP name="channelSCTP" remoteHost="[remoteHostSCTP]" remotePort="5665"  ostreams="7" instreams="6" />
     
     <receiveMessageSCTP type="INIT-ACK"/>
 
@@ -30,8 +30,8 @@
     <!--test parameter="[tsn]" condition="number.equals" value="1234567890" /-->
     <test parameter="[aid]" condition="number.equals" value="33554432" />
 
-    <test parameter="[sourceHost]" condition="string.equals" value="[localHost]" />
-    <!--test parameter="[sourcePort]" condition="string.equals" value="[localPort]" /-->
+    <test parameter="[sourceHost]" condition="string.equals" value="[localHostSCTP]" />
+    <!--test parameter="[sourcePort]" condition="string.equals" value="[localPortSCTP]" /-->
     <test parameter="[contents]" condition="string.equals" value="test value" />
 
     <finally>

@@ -2,11 +2,11 @@
 
 <scenario>
 
-    <openChannelSCTP name="SCTPConn1" remoteHost="[remoteHost]" remotePort="[remotePort]"/>
+    <openChannelSCTP name="SCTPConn1" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"/>
 
     <receiveMessageSCTP type="INIT-ACK"/>
 
-    <openChannelSCTP name="SCTPConn2" remoteHost="[remoteHost]" remotePort="[remotePort]"/>
+    <openChannelSCTP name="SCTPConn2" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"/>
 
     <receiveMessageSCTP type="INIT-ACK"/>
     
@@ -37,8 +37,8 @@
     <!--test parameter="[tsn]" condition="number.equals" value="1234567890" /-->
     <test parameter="[aid]" condition="number.equals" value="33554432" />
 
-    <test parameter="[sourceHost]" condition="string.equals" value="[localHost]" />
-    <!--test parameter="[sourcePort]" condition="string.equals" value="[localPort]" /-->
+    <test parameter="[sourceHost]" condition="string.equals" value="[localHostSCTP]" />
+    <!--test parameter="[sourcePort]" condition="string.equals" value="[localPortSCTP]" /-->
     <test parameter="[contents]" condition="string.equals" value="AAAAA" />
 
     <receiveMessageSCTP type="DATA">

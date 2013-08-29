@@ -3,7 +3,7 @@
 
 <scenario>
 
-	<openChannelSCTP name="proxy_client" remoteHost="[remoteHost]" remotePort="[remotePort]"  ostreams="7" instreams="6" />
+	<openChannelSCTP name="proxy_client" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"  ostreams="7" instreams="6" />
    
 	<sendMessageSCTP channel="proxy_client">
 		<data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
@@ -21,8 +21,8 @@
     </receiveMessageSCTP>
         
     <!--test parameter="[aid]" condition="string.equals" value="1" /-->
-    <test parameter="[sourceHost]" condition="string.equals" value="[localHost]" />
-    <!--test parameter="[sourcePort]" condition="string.equals" value="[localPort]" /-->
+    <test parameter="[sourceHost]" condition="string.equals" value="[localHostSCTP]" />
+    <!--test parameter="[sourcePort]" condition="string.equals" value="[localPortSCTP]" /-->
     <test parameter="[contents]" condition="string.equals" value="AAAAA" />
 
     <finally>
