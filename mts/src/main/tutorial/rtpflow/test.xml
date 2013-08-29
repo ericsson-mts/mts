@@ -4,6 +4,15 @@
 <test name="RTPFLOW" description="RTPFLOW regression tests">
 
     <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[localHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--<parameter name="[localHostRTP]" operation="set" value="127.0.0.1"/>-->
+    <parameter name="[localHostRTP]" operation="set" value="[localHostRTP(0)]" editable="true"/>
+    <parameter name="[localPortRTP]" operation="set" value="10000" editable="true" />
+    <parameter name="[remoteHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--<parameter name="[remoteHostRTP]" operation="set" value="127.0.0.1"/>-->
+    <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]"  editable="true"/>
+    <parameter name="[remotePortRTP]" operation="set" value="11000" editable="true" />
+
     <parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
      <!--parameter name="[localHostSIP]" operation="set" value="172.16.21.32"/-->
     <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" editable="true" />
@@ -16,15 +25,6 @@
     <!--parameter name="[remotePortSIP]" operation="set" value="5060"/-->    	    
     <parameter name="[remoteSIP]" operation="set" value="[remoteHostSIP]:[remotePortSIP]"/>
     
-    <parameter name="[localHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <!--<parameter name="[localHostRTP]" operation="set" value="127.0.0.1"/>-->
-    <parameter name="[localHostRTP]" operation="set" value="[localHostRTP(0)]" editable="true"/>
-    <parameter name="[localPortRTP]" operation="set" value="10000" editable="true" />
-    <parameter name="[remoteHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <!--<parameter name="[remoteHostRTP]" operation="set" value="127.0.0.1"/>-->
-    <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]"  editable="true"/>
-    <parameter name="[remotePortRTP]" operation="set" value="11000" editable="true" />
-
     <!-- value2 = deltaTime (millisecondes)-->
     <parameter name="fileWave" operation="file.readwave" value="rtpflow.wav" value2="20"/>
 
