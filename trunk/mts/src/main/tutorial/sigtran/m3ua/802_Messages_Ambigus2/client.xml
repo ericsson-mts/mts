@@ -3,7 +3,7 @@
 
 <scenario>
 				
-	<sendMessageSIGTRAN name="Send INVITE11" destScenario="SIGTRAN" remoteHost="[Host-Server]" remotePort="2905">
+	<sendMessageSIGTRAN name="Send INVITE11" destScenario="SIGTRAN" remoteHost="[remoteHostM3UA]" remotePort="2905">
         <SS7 name="sccp" file="sccp.xml">
             <header>
                 <field name="Message_Type" length="1" value="9" />
@@ -48,7 +48,7 @@
 	<parameter name="[message11]" operation="protocol.setFromMessage" value="message.binary"/> 
 	<test parameter="[message11]" condition="binary.contains" value="010001010000003002000008000000020210001e00000d7a0000100203030004090003050902428e04437a0d8e000000"/>
 
-	<sendMessageSIGTRAN name="Send INVITE12" destScenario="SIGTRAN" remoteHost="[Host-Server]" remotePort="2905">
+	<sendMessageSIGTRAN name="Send INVITE12" destScenario="SIGTRAN" remoteHost="[remoteHostM3UA]" remotePort="2905">
         <SS7 name="sccp" file="sccp.xml">
             <header>
                 <field name="Message_Type" length="1" value="9" />

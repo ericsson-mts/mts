@@ -4,27 +4,27 @@
 <test name="SIGTRAN" description="SIGTRAN regression tests">
     
     <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-    <parameter name="[Host-Tester]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]" editable="true"/>
-    <parameter name="[Port-Tester]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[Port-Tester]" operation="set" value="[Port-Tester(0)]" editable="true"/>    
-    <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]"/>	
+    <parameter name="[localHostIUA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostIUA]" operation="set" value="[localHostIUA(0)]" editable="true"/>
+    <parameter name="[localPortIUA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localPortIUA]" operation="set" value="[localPortIUA(0)]" editable="true"/>    
+    <parameter name="[localIUA]" operation="set" value="[localHostIUA]:[localPortIUA]"/>	
    
-    <parameter name="[Host-Server]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]" editable="true"/>
-    <parameter name="[Port-Server]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[Port-Server]" operation="set" value="[Port-Server(0)]" editable="true"/>    
-    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server]:[Port-Server]"/>	
+    <parameter name="[remoteHostIUA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostIUA]" operation="set" value="[remoteHostIUA(0)]" editable="true"/>
+    <parameter name="[remotePortIUA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[remotePortIUA]" operation="set" value="[remotePortIUA(0)]" editable="true"/>    
+    <parameter name="[remoteIUA]" operation="set" value="[remoteHostIUA]:[remotePortIUA]"/>	
 
     <testcase name="001_Keypad_Facility" description="test a alerting request" state="true">
-    	<parameter name="[Host-Caller]" operation="set" value="[Host-Server(0)]"/>
-    	<parameter name="[Port-Caller]" operation="number.add" value="[Port-Server]" value2="2"/>    
+    	<parameter name="[hostCallerIUA]" operation="set" value="[remoteHostIUA(0)]"/>
+    	<parameter name="[portCallerIUA]" operation="number.add" value="[remotePortIUA]" value2="2"/>    
     	<parameter name="[listenpointCaller]" operation="set" value="listenpointCaller"/>
-    	<parameter name="[Host-Callee]" operation="set" value="[Host-Server(0)]"/>
-        <parameter name="[Port-Callee]" operation="number.add" value="[Port-Server]" value2="4"/>
+    	<parameter name="[Host-Callee]" operation="set" value="[remoteHostIUA(0)]"/>
+        <parameter name="[Port-Callee]" operation="number.add" value="[remotePortIUA]" value2="4"/>
         <parameter name="[listenpointCallee]" operation="set" value="listenpointCallee"/>
     
-        <scenario name="[Port-Caller]">001_Keypad_Facility/caller.xml</scenario>
+        <scenario name="[portCallerIUA]">001_Keypad_Facility/caller.xml</scenario>
         <scenario name="[Port-Callee]">001_Keypad_Facility/callee.xml</scenario>
     </testcase>
 
