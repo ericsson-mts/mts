@@ -4,18 +4,18 @@
 
     <!-- Parameters for proxy testcases -->
     <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true"/>
-    <parameter name="[localHost]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHost]" operation="set" value="[localHost(0)]" editable="true"/>
-    <!--parameter name="[localHost]" operation="set" value="127.0.0.1"/-->
-    <!--parameter name="[localHost]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[localHostTCP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostTCP]" operation="set" value="[localHostTCP(0)]" editable="true"/>
+    <!--parameter name="[localHostTCP]" operation="set" value="127.0.0.1"/-->
+    <!--parameter name="[localHostTCP]" operation="set" value="172.16.21.32"/-->
     <parameter name="[localPort]" operation="set" value="12345" editable="true"/>
     
-    <parameter name="[remoteHost]" operation="system.ipaddress" value2="[IPVersion]"/>    
-    <!--parameter name="[remoteHost]" operation="set" value="127.0.0.1"/-->
-    <!--parameter name="[remoteHost]" operation="set" value="172.16.21.194"/-->
-    <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]" editable="true"/>
-    <parameter name="[remotePort]" operation="file.readProperty" value="tcp.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[remotePort]" operation="set" value="[remotePort]" editable="true"/>
+    <parameter name="[remoteHostTCP]" operation="system.ipaddress" value2="[IPVersion]"/>    
+    <!--parameter name="[remoteHostTCP]" operation="set" value="127.0.0.1"/-->
+    <!--parameter name="[remoteHostTCP]" operation="set" value="172.16.21.194"/-->
+    <parameter name="[remoteHostTCP]" operation="set" value="[remoteHostTCP(0)]" editable="true"/>
+    <parameter name="[remotePortTCP]" operation="file.readProperty" value="tcp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[remotePortTCP]" operation="set" value="[remotePortTCP]" editable="true"/>
 
     <testcase name="tcp/001_binary" state="true">
         <scenario name="TCP">001_binary/scenario.xml</scenario>
