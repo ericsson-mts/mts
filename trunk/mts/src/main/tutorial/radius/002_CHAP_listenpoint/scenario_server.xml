@@ -3,15 +3,15 @@
 <scenario>
     <parameter name="[listenpoint]" operation="set" value="[scenarioName]" />
 
-    <createListenpointRADIUS name="[listenpoint]" secret="my_secret" localPort="[remotePort]"/>
+    <createListenpointRADIUS name="[listenpoint]" secret="my_secret" localPort="[remotePortRAD]"/>
 
     <parameter name="[testcase:sem2]" operation="system.semaphorenotify" />
     <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
 
     <receiveMessageRADIUS listenpoint="[listenpoint]" type="Access-Request:1">
         <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost" />
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort" />
+        <parameter name="[remoteHostRAD]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePortRAD]" operation="protocol.setFromMessage" value="channel.remotePort" />
         
         <parameter name="[chap-password]"  operation="protocol.setFromMessage" value="chap-password.octet" />
         <parameter name="[chap-challenge]" operation="protocol.setFromMessage" value="chap-challenge.octet" />
@@ -22,7 +22,7 @@
       - operators in IMSLoader for now.
       -->
 
-    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[remoteHost]" remotePort="[remotePort]">
+    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
         <header code="Access-Accept" identifier="[identifier]" />
     </sendMessageRADIUS>
 

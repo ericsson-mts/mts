@@ -3,9 +3,9 @@
 <scenario>
     <parameter name="[listenpoint]" operation="set" value="000_dev_socket" />
 
-    <createListenpointRADIUS name="[listenpoint]" secret="my_secret" localPort="[localPort]"/>
+    <createListenpointRADIUS name="[listenpoint]" secret="my_secret" localPort="[localPortRAD]"/>
 
-    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[localHost]" remotePort="[localPort]">
+    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[localHostRAD]" remotePort="[localPortRAD]">
         <header code="1" />
         <avp code="user-name" value="login" />
         <avp code="user-password" value="password" />
@@ -32,11 +32,11 @@
 
     <receiveMessageRADIUS listenpoint="[listenpoint]">
         <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost" />
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort" />
+        <parameter name="[remoteHostRAD]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePortRAD]" operation="protocol.setFromMessage" value="channel.remotePort" />
     </receiveMessageRADIUS>
 
-    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[remoteHost]" remotePort="[remotePort]">
+    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
         <header code="2" identifier="[identifier]" />
         <avp code="user-name" value="login" />
         <avp code="vendor-specific" value="Unisphere">
@@ -49,8 +49,8 @@
 
     <receiveMessageRADIUS listenpoint="[listenpoint]">
         <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost" />
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort" />
+        <parameter name="[remoteHostRAD]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePortRAD]" operation="protocol.setFromMessage" value="channel.remotePort" />
     </receiveMessageRADIUS>
 
     <removeListenpointRADIUS name="[listenpoint]" />

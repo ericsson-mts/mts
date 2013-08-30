@@ -13,11 +13,11 @@
     <receiveMessageRADIUS listenpoint="[listenpoint]"/>
     <receiveMessageRADIUS listenpoint="[listenpoint]">
         <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost" />
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort" />
+        <parameter name="[remoteHostRAD]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePortRAD]" operation="protocol.setFromMessage" value="channel.remotePort" />
     </receiveMessageRADIUS>
 
-    <sendMessageRADIUS listenpoint="[listenpoint]" remotePort="[remotePort]" remoteHost="[remoteHost]">
+    <sendMessageRADIUS listenpoint="[listenpoint]" remotePort="[remotePortRAD]" remoteHost="[remoteHostRAD]">
         <header code="2" identifier="[identifier]" />
     </sendMessageRADIUS>
     
