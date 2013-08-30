@@ -5,19 +5,19 @@
     <parameter name="[remotePort2]" operation="number.add" value="[remotePort]" value2="1"/>
 
 	<!-- All param -->
-    <createListenpointUDP name="socket" localHost="[localHost]" localPort="[localPort]" />
-    <createListenpointUDP name="socket1" localHost="[remoteHost]" localPort="[remotePort1]" />
-    <createListenpointUDP name="socket2" localHost="[remoteHost]" localPort="[remotePort2]" />
+    <createListenpointUDP name="socket" localHost="[localHostUDP]" localPort="[localPortUDP]" />
+    <createListenpointUDP name="socket1" localHost="[remoteHostUDP]" localPort="[remotePort1]" />
+    <createListenpointUDP name="socket2" localHost="[remoteHostUDP]" localPort="[remotePort2]" />
     
-    <sendMessageUDP listenpoint="socket" remoteHost="[remoteHost]" remotePort="[remotePort1]">
+    <sendMessageUDP listenpoint="socket" remoteHost="[remoteHostUDP]" remotePort="[remotePort1]">
         <data format="text">packet #1</data>
     </sendMessageUDP>
 
-    <sendMessageUDP listenpoint="socket" remoteHost="[remoteHost]" remotePort="[remotePort2]">
+    <sendMessageUDP listenpoint="socket" remoteHost="[remoteHostUDP]" remotePort="[remotePort2]">
         <data format="text">packet #2</data>
     </sendMessageUDP>
 
-    <sendMessageUDP listenpoint="socket" remoteHost="[remoteHost]" remotePort="[remotePort1]">
+    <sendMessageUDP listenpoint="socket" remoteHost="[remoteHostUDP]" remotePort="[remotePort1]">
         <data format="text">packet #3</data>
     </sendMessageUDP>
 	
