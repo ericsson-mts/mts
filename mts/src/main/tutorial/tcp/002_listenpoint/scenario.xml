@@ -2,9 +2,9 @@
 
 <scenario>
 
-	<createListenpointTCP name="listenpoint" localHost="[remoteHost]" localPort="2003"/>
+	<createListenpointTCP name="listenpoint" localHost="[remoteHostTCP]" localPort="2003"/>
 	
-    <openChannelTCP name="channel" remoteHost="[remoteHost]" remotePort="2003" />
+    <openChannelTCP name="channel" remoteHost="[remoteHostTCP]" remotePort="2003" />
 
     <receiveMessageTCP type="SYN-ACK" timeout="1">
         <parameter name="[connectionName]" operation="protocol.setFromMessage" value="channel.name" />    
