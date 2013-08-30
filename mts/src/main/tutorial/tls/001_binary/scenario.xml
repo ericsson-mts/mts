@@ -2,14 +2,16 @@
 
 <scenario>
 
-    <openChannelTLS name="channelTLS" remoteHost="[remoteHostTLS]" remotePort="[remotePortTLS]"/>    
+    <parameter name="[timeout]" operation="set" value="10"/>
 
-    <receiveMessageTLS timeout="1" type="SYN-ACK">
-        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>    
+    <openChannelTLS name="channelTLS" remoteHost="[remoteHostTLS]" remotePort="[remotePortTLS]"/>
+    
+    <receiveMessageTLS type="SYN-ACK" timeout="[timeout]" >
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-        <test parameter="[contents]" condition="string.equals" value="" />
+        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
     </receiveMessageTLS>
+    <test parameter="[text]" condition="string.equals" value="" />
 
     <sendMessageTLS channel="channelTLS">
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
@@ -19,65 +21,60 @@
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
     </sendMessageTLS>
 
-    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="1">
+    <parameter name="[contents]" operation="set" value="" />
+    
+    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="[timeout]">
         <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-        <test parameter="[contents]" condition="string.equals" value="AAAAA" />
+        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
     </receiveMessageTLS>
+    <parameter name="[contents]" operation="set" value="[contents][text]"/>
 
-    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="1">
+    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="[timeout]">
         <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-        <test parameter="[contents]" condition="string.equals" value="AAAAA" />
+        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
     </receiveMessageTLS>
+    <parameter name="[contents]" operation="set" value="[contents][text]"/>
+    
+    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="[timeout]">
+        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
+        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
+    </receiveMessageTLS>
+    <parameter name="[contents]" operation="set" value="[contents][text]"/>
 
-    <parameter name="[data]" operation="set" value="0123456789" value2="1000"/>    
+    <test parameter="[contents]" condition="string.equals" value="AAAAAAAAAA" />
+    
+    <parameter name="[data]" operation="set" value="0123456789" value2="100"/>
+    <parameter name="[number]" operation="string.length" value="[data]"/>
     <sendMessageTLS channel="channelTLS">
         <data format="text">[data]</data>
     </sendMessageTLS>
 
-    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="1">
+    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="[timeout]">
         <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-        <test parameter="[contents]" condition="string.contains" value="0123456789" />
+        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
+        <parameter name="[textNumber]" operation="string.length" value="[text]"/>
     </receiveMessageTLS>
-
-    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="1">
-        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-        <test parameter="[contents]" condition="string.contains" value="0123456789" />
-    </receiveMessageTLS>
-
-    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="1">
-        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-        <test parameter="[contents]" condition="string.contains" value="0123456789" />
-    </receiveMessageTLS>
-
-    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="1">
-        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-        <test parameter="[contents]" condition="string.contains" value="0123456789" />
-    </receiveMessageTLS>
-
-    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="1">
-        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-        <test parameter="[contents]" condition="string.contains" value="0123456789" />
-    </receiveMessageTLS>
-
-    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="1">
-        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-        <test parameter="[contents]" condition="string.contains" value="0123456789" />
-    </receiveMessageTLS>
-
-    <closeChannelTLS name="channelTLS" />
+    <parameter name="[number]" operation="number.substract" value="[number]" value2="[textNumber]"/>
     
-    <receiveMessageTLS channel="channelTLS" type="FIN-ACK" timeout="1">
+    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="[timeout]">
         <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-        <test parameter="[contents]" condition="string.equals" value="" />
+        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
+        <parameter name="[textNumber]" operation="string.length" value="[text]"/>
     </receiveMessageTLS>
-    
+    <parameter name="[number]" operation="number.substract" value="[number]" value2="[textNumber]"/>
+
+    <test parameter="[number]" condition="string.equals" value="0" />
+
+    <finally>
+
+        <closeChannelTLS name="channelTLS" />
+
+        <receiveMessageTLS channel="channelTLS" type="FIN-ACK" timeout="[timeout]">
+            <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
+            <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
+        </receiveMessageTLS>
+        <test parameter="[text]" condition="string.equals" value="" />
+
+    </finally>
+
 </scenario>
