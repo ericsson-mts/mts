@@ -4,11 +4,11 @@
 
     <parameter name="[listenpoint]" operation="set" value="[scenarioName]_client" />
 
-    <createListenpointRADIUS name="[listenpoint]" localPort="[localPort]" secret="my_secret"/>
+    <createListenpointRADIUS name="[listenpoint]" localPort="[localPortRAD]" secret="my_secret"/>
     <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
     <parameter name="[testcase:sem2]" operation="system.semaphorewait" />
 
-    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[localHost]" remotePort="[localPort]">
+    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[localHostRAD]" remotePort="[localPortRAD]">
         <header code="Access-Request" />
         <avp code="user-name" value="login" />
         <avp code="user-password" value="password" />
