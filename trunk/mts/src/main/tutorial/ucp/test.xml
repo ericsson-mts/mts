@@ -3,12 +3,10 @@
 <test name="UCP">
 
     <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-    <parameter name="[listenIp]" operation="set" value="0.0.0.0" editable="true" />
-
-    <parameter name="[serverRemoteIp]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[serverRemoteIp]" operation="set" value="[serverRemoteIp(0)]" editable="true"/>
-    <parameter name="[serverPort]" operation="file.readproperty" value="ucp.properties" value2="listenpoint.LOCAL_PORT" />
-    <parameter name="[serverPort]" operation="set" value="[serverPort]" editable="true" />
+    <parameter name="[remoteHostUCP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostUCP]" operation="set" value="[remoteHostUCP(0)]" editable="true"/>
+    <parameter name="[remotePortUCP]" operation="file.readproperty" value="ucp.properties" value2="listenpoint.LOCAL_PORT" />
+    <parameter name="[remotePortUCP]" operation="set" value="[remotePortUCP]" editable="true" />
 
     <testcase name="ucp/000_enquiryOperation" state="true">
         <scenario name="client">000_enquiryOperation/client.xml</scenario>

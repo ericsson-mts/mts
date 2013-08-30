@@ -4,10 +4,10 @@
 <scenario>
     
     <parameter name="[connection]" operation="set" value="channelUCP" />
-    <createListenpointUCP name="listenpointUCP1" localHost="[test:serverRemoteIp]" localPort="12776"/>
+    <createListenpointUCP name="listenpointUCP1" localHost="[test:remoteHostUCP]" localPort="12776"/>
 
     <parameter name="[seqNum]" operation="set" value="1" />
-    <sendMessageUCP listenpoint="listenpointUCP1" remoteHost="[test:serverRemoteIp]" remotePort="12777">
+    <sendMessageUCP listenpoint="listenpointUCP1" remoteHost="[test:remoteHostUCP]" remotePort="12777">
         <header name="DeliveryShortMessage" TRN="[seqNum]" MT="O"/>
         <attribute name="AdC" value="012345"/>
         <attribute name="OAdC" value="09876"/>
