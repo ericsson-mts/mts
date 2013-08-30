@@ -69,16 +69,17 @@
 
     <testcase name="010_probe_capture" description="diameter" state="true">
         <parameter name="[waitSemaphore]" operation="set" value="true"/>
-        <scenario name="client">507_base_ACR/client.xml</scenario>
-        <scenario name="server">507_base_ACR/server.xml</scenario>
+        <scenario name="client">001_no_synchro/client.xml</scenario>
+        <scenario name="server">001_no_synchro/server.xml</scenario>
         <scenario name="default">010_probe_capture/probe.xml</scenario>
     </testcase>
 
     <testcase name="011_listenpoint" description="diameter" state="true">
-       	<parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIA]"/>
+        <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIA]"/>
         <parameter name="[Listen-Client-Port]" operation="set" value="3880"/>
         <parameter name="[Listen-Server-Host]" operation="set" value="[remoteHostDIA]"/>
         <parameter name="[Listen-Server-Port]" operation="set" value="3882"/>
+    
         <scenario name="client">011_listenpoint/client.xml</scenario>
         <scenario name="server">011_listenpoint/server.xml</scenario>
     </testcase>
@@ -88,6 +89,7 @@
         <parameter name="[Listen-Client-Port]" operation="set" value="3870"/>
         <parameter name="[Listen-Server-Host]" operation="set" value="[localHostDIA]"/>
         <parameter name="[Listen-Server-Port]" operation="set" value="3868"/>
+    
         <scenario name="client">012_routing/client.xml</scenario>
         <scenario name="server">012_routing/server.xml</scenario>
     </testcase>
@@ -164,6 +166,13 @@
         <scenario name="CTF">302_ro_ccr/CTF.xml</scenario>
         <scenario name="OCF">302_ro_ccr/OCF.xml</scenario>
     </testcase>
+    
+    <testcase name="316_s6-ulr" description="diameter" state="false">
+        <parameter name="[applicationID]" operation="set" value="16777251"/>
+        <scenario name="client">316_s6-ulr/client.xml</scenario>
+        <scenario name="server">316_s6-ulr/client.xml</scenario>
+    </testcase>
+    
 
     <testcase name="411_e4_udr" description="diameter" state="true">
         <parameter name="[applicationID]" operation="set" value="16777216"/>
@@ -190,13 +199,13 @@
     </testcase>
 
     <testcase name="432_rq_rar" description="diameter" state="true">
-        <parameter name="[applicationID]" operation="set" value="16777222"/>
+        <parameter name="[applicationID]" operation="set" value="16777222"/>   
         <scenario name="A-RACF">432_rq_rar/A-RACF.xml</scenario>
         <scenario name="SPDF">432_rq_rar/SPDF.xml</scenario>
     </testcase>
 
     <testcase name="433_rq_str" description="diameter" state="true">
-        <parameter name="[applicationID]" operation="set" value="16777222"/>
+        <parameter name="[applicationID]" operation="set" value="16777222"/>   
         <scenario name="SPDF">433_rq_str/SPDF.xml</scenario>
         <scenario name="A-RACF">433_rq_str/A-RACF.xml</scenario>
     </testcase>
@@ -226,13 +235,13 @@
     </testcase>
 
     <testcase name="444_gqp_asr" description="diameter" state="true">
-        <parameter name="[applicationID]" operation="set" value="16777222"/>   
+        <parameter name="[applicationID]" operation="set" value="16777222"/>
         <scenario name="SPDF">444_gqp_asr/SPDF.xml</scenario>
         <scenario name="AF">444_gqp_asr/AF.xml</scenario>
     </testcase>
 
     <testcase name="501_base_CER (not runnable)" description="diameter" state="false">
-        <parameter name="[applicationID]" operation="set" value="0"/>   
+        <parameter name="[applicationID]" operation="set" value="0"/>
         <scenario name="peer1">501_base_CER/peer1.xml</scenario>
         <scenario name="peer2">501_base_CER/peer2.xml</scenario>
     </testcase>
