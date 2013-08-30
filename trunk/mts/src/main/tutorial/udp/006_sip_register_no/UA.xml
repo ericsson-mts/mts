@@ -13,7 +13,7 @@
   	<parameter name="[MaxForwards]" operation="set" value="70"/>
   	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
 
-    <sendMessageUDP listenpoint="toto" remoteHost="[remoteHost]" remotePort="[remotePort]">
+    <sendMessageUDP listenpoint="toto" remoteHost="[remoteHostUDP]" remotePort="[remotePort]">
         <data format="text">
 <![CDATA[
 REGISTER sip:alice@[Adresse-Server] SIP/2.0
@@ -33,7 +33,7 @@ Content-Length: 0
         <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
     </receiveMessageUDP>
     
-    <sendMessageUDP listenpoint="toto" remoteHost="[remoteHost]" remotePort="[remotePort]">
+    <sendMessageUDP listenpoint="toto" remoteHost="[remoteHostUDP]" remotePort="[remotePort]">
         <data format="text">
 <![CDATA[SIP/2.0 200 OK
 Via: SIP/2.0/UDP 172.16.21.32;branch=z9hG4bKabcdefghij
