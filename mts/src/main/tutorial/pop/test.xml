@@ -2,16 +2,19 @@
 
 <test name="POP">
 
-    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    
     <parameter name="[localHostPOP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostPOP]" operation="set" value="[localHostPOP(0)]" editable="true"/>
+    <parameter name="[localHostPOP]" operation="set" value="[localHostPOP(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortPOP]" operation="file.readproperty" value="pop.properties" value2="listenpoint.LOCAL_PORT" />
-    <parameter name="[localPortPOP]" operation="set" value="[localPortPOP]" editable="true" />
+    <parameter name="[localPortPOP]" operation="set" value="[localPortPOP]" description="local port of the MTS host" editable="true" />
 
     <parameter name="[remoteHostPOP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[remoteHostPOP]" operation="set" value="[remoteHostPOP(0)]" editable="true"/>
+    <!--parameter name="[remoteHostPOP]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remoteHostPOP]" operation="set" value="[remoteHostPOP(0)]" description="remote address of the SUT host" editable="true"/>
     <parameter name="[remotePortPOP]" operation="file.readproperty" value="pop.properties" value2="listenpoint.LOCAL_PORT" />
-    <parameter name="[remotePortPOP]" operation="set" value="[remotePortPOP]" editable="true" />
+    <!--parameter name="[remotePortPOP]" operation="set" value="1234"/-->
+    <parameter name="[remotePortPOP]" operation="set" value="[remotePortPOP]" description="remote port of the SUT host" editable="true" />
     
     <testcase name="pop/000_classicSequence" state="true">
         <scenario name="client">000_classicSequence/client.xml</scenario>

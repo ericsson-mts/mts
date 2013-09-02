@@ -3,22 +3,25 @@
 
 <test name="DIAMETER" description="DIAMETER regression tests">
 
-	<parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-	<parameter name="[localHostDIA]" operation="system.ipaddress" value2="[IPVersion]"/>
-	<parameter name="[localPortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
-  <parameter name="[localHostDIA]" operation="set" value="[localHostDIA(0)]" editable="true"/>
-	<parameter name="[localPortDIA]" operation="set" value="[localPortDIA]" editable="true" />
-	<parameter name="[localDIA]" operation="set" value="[localHostDIA]:[localPortDIA]"/>	
-	<parameter name="[localRealmDIA]" operation="set" value="imsloader.com"/>
+  <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
 
-	<parameter name="[remoteHostDIA]" operation="system.ipaddress" value2="[IPVersion]"/>
-	<!--parameter name="[remoteHostDIA]" operation="set" value="172.16.21.253"/-->
-  <parameter name="[remoteHostDIA]" operation="set" value="[remoteHostDIA(0)]" editable="true" />
-	<parameter name="[remotePortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
-	<parameter name="[remotePortDIA]" operation="set" value="[remotePortDIA]" editable="true" />
-	<parameter name="[remoteDIA]" operation="set" value="[remoteHostDIA]:[remotePortDIA]"/>
-	<parameter name="[remoteRealmDIA]" operation="set" value="client.fr"/>
-
+  <parameter name="[localHostDIA]" operation="system.ipaddress" value2="[IPVersion]"/>
+  <parameter name="[localHostDIA]" operation="set" value="[localHostDIA(0)]" description="local address of the MTS host" editable="true" />
+  <parameter name="[localPortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+  <parameter name="[localPortDIA]" operation="set" value="[localPortDIA]" description="local port of the MTS host" editable="true" />
+  <parameter name="[localDIA]" operation="set" value="[localHostDIA]:[localPortDIA]"/>
+  
+  <parameter name="[remoteHostDIA]" operation="system.ipaddress" value2="[IPVersion]"/>
+  <!--parameter name="[remoteHostDIA]" operation="set" value="172.16.21.32"/-->
+  <parameter name="[remoteHostDIA]" operation="set" value="[remoteHostDIA(0)]" description="remote address of the SUT host" editable="true" />
+  <parameter name="[remotePortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+  <!--parameter name="[remotePortDIA]" operation="set" value="3868"/-->
+  <parameter name="[remotePortDIA]" operation="set" value="[remotePortDIA]" description="remote port of the SUT host" editable="true" />
+  <parameter name="[remoteDIA]" operation="set" value="[remoteHostDIA]:[remotePortDIA]"/>
+  
+  <parameter name="[localRealmDIA]" operation="set" value="client.fr"/>
+  <parameter name="[remoteRealmDIA]" operation="set" value="client.fr"/>
+  
   <parameter name="[vendorID]" operation="set" value="10415"/>
   <!--parameter name="[vendorID]" operation="set" value="TGPP"/-->
   

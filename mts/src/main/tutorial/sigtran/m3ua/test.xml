@@ -3,19 +3,21 @@
 
 <test name="SIGTRAN" description="SIGTRAN regression tests">
     
-    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    
     <parameter name="[localHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]" />
+    <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>	
+    <parameter name="[localPortM3UA]" operation="set" value="[localPortM3UA]" description="local port of the MTS host" editable="true"/>
+    <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>
    
     <parameter name="[remoteHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <!--parameter name="[remoteHostM3UA]" operation="set" value="[Host-Server(0)]" /-->
-    <!--parameter name="[remoteHostM3UA]" operation="set" value="172.16.21.61"/-->
-    <parameter name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]" />
+    <!--parameter name="[remoteHostM3UA]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]" description="remote address of the MTS host" editable="true"/>
     <parameter name="[remotePortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <!--parameter name="[remotePortM3UA]" operation="set" value="7070"/-->
-    <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>	
+    <!--parameter name="[remotePortM3UA]" operation="set" value="1234"/-->
+    <parameter name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]" description="remote port of the MTS host" editable="true"/>
+    <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>
 
     
     <testcase name="100_M3UA_Notify" description="test sigtran" state="true">

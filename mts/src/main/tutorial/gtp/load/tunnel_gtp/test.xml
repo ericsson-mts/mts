@@ -6,15 +6,15 @@
 
 <test name="GTP" description="GGSN">
   <!-- Local node. -->
-  <parameter name="[localHost]" operation="system.ipaddress" />
-  <parameter name="[localHost]" operation="set" value="[localHost(0)]" editable="true"/>
+  <parameter name="[localHost]" operation="system.ipaddress" description="version of the IP protocol" editable="true"/>
+  <parameter name="[localHost]" operation="set" value="[localHost(0)]" description="local address of the MTS host" editable="true"/>
   <!--parameter name="[localHost]" operation="set" value="172.20.19.222" editable="true"/-->
   <parameter name="[localPort]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/>
-  <parameter name="[localPort]" operation="set" value="[localPort]" editable="true"/>    
+  <parameter name="[localPort]" operation="set" value="[localPort]" description="local port of the MTS host" editable="true"/>
   <!-- Remote node. -->
-  <parameter name="[remoteHost]" operation="set" value="[localHost]" editable="true"/>
+  <parameter name="[remoteHost]" operation="set" value="[localHost]" description="remote address of the SUT host" editable="true"/>
   <!--parameter name="[remoteHost]" operation="set" value="172.20.70.43" editable="true"/-->
-  <parameter name="[remotePort]" operation="set" value="[localPort]" editable="true"/>
+  <parameter name="[remotePort]" operation="set" value="[localPort]" description="remote address of the SUT host" editable="true"/>
   <!--parameter name="[remotePort]" operation="set" value="2123" editable="true"/-->
 
   <parameter name="[transportGTP]" operation="set" value="UDP"/>

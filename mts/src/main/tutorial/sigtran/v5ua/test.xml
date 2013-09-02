@@ -3,19 +3,21 @@
 
 <test name="SIGTRAN" description="SIGTRAN regression tests">
     
-    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    
     <parameter name="[localHostV5UA]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostV5UA]" operation="set" value="[localHostV5UA(0)]" editable="true"/>
+    <parameter name="[localHostV5UA]" operation="set" value="[localHostV5UA(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortV5UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortV5UA]" operation="set" value="[localPortV5UA(0)]" editable="true"/>    
-    <parameter name="[localV5UA]" operation="set" value="[localHostV5UA]:[localPortV5UA]"/>	
+    <parameter name="[localPortV5UA]" operation="set" value="[localPortV5UA(0)]" description="local port of the MTS host" editable="true"/>
+    <parameter name="[localV5UA]" operation="set" value="[localHostV5UA]:[localPortV5UA]"/>
    
     <parameter name="[remoteHostV5UA]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <!--parameter name="[remoteHostV5UA]" operation="set" value="172.16.21.61"/-->
-    <parameter name="[remoteHostV5UA]" operation="set" value="[remoteHostV5UA(0)]" editable="true"/>
+    <!--parameter name="[remoteHostV5UA]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remoteHostV5UA]" operation="set" value="[remoteHostV5UA(0)]" description="remote address of the SUT host" editable="true"/>
     <parameter name="[remotePortV5UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[remotePortV5UA]" operation="set" value="[remotePortV5UA(0)]" editable="true"/>    
-    <parameter name="[remoteV5UA]" operation="set" value="[remoteHostV5UA]:[remotePortV5UA]"/>	
+    <!--parameter name="[remotePortV5UA]" operation="set" value="1234"/-->
+    <parameter name="[remotePortV5UA]" operation="set" value="[remotePortV5UA(0)]" description="remote port of the SUT host" editable="true"/>
+    <parameter name="[remoteV5UA]" operation="set" value="[remoteHostV5UA]:[remotePortV5UA]"/>
 	  
     <testcase name="101_V5X_ESTABLISH" description="test a request" state="true">
         <scenario name="caller">101_V5X_ESTABLISH/caller.xml</scenario>

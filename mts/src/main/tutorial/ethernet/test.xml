@@ -2,10 +2,14 @@
 <test name="SIP" description="SIP regression tests">
 
     <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    
     <parameter name="[localHostETH]" operation="system.ipaddress" value2="[IPVersion]" />
-    <parameter name="[localHostETH]" operation="set" value="[localHostETH(0)]" editable="true"/>
-    <parameter name="[BinaryIP]" operation="binary.fromIp" value="[localHostETH]" />
-    <parameter name="[ARP_TARGETIP]" operation="set" value="[localHostETH]" editable="true" />
+    <parameter name="[localHostETH]" operation="set" value="[localHostETH(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter name="[localBinaryIP]" operation="binary.fromIp" value="[localHostETH]" />
+    
+    <parameter name="[remoteHostETH]" operation="system.ipaddress" value2="[IPVersion]" />
+    <!--parameter name="[remoteHostETH]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remoteHostETH]" operation="set" value="[remoteHostETH(0)]" description="remote address of the SUT host" editable="true"/>
     
     <testcase name="sendMessageETHERNET" state="true">
         <scenario name="ETHERNET">sendMessageETHERNET.xml</scenario>

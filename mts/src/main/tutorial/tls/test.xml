@@ -2,20 +2,18 @@
 
 <test name="TLS" description="TLS regression tests">
 
-    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
     <!-- Parameters for proxy testcases -->
     <parameter name="[localHostTLS]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <!--parameter name="[localHostTLS]" operation="set" value="127.0.0.1"/-->
-    <!--parameter name="[localHostTLS]" operation="set" value="172.16.21.32"/-->
-    <parameter name="[localHostTLS]" operation="set" value="[localHostTLS(0)]" editable="true"/>
-    <parameter name="[localPortTLS]" operation="set" value="12345" editable="true"/>
+    <parameter name="[localHostTLS]" operation="set" value="[localHostTLS(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter name="[localPortTLS]" operation="set" value="12345" description="local port of the MTS host" editable="true"/>
     
     <parameter name="[remoteHostTLS]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <!--parameter name="[remoteHostTLS]" operation="set" value="127.0.0.1"/-->
-    <!--parameter name="[remoteHostTLS]" operation="set" value="172.16.21.194"/-->
-    <parameter name="[remoteHostTLS]" operation="set" value="[remoteHostTLS(0)]" editable="true"/>
+    <!--parameter name="[remoteHostTLS]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remoteHostTLS]" operation="set" value="[remoteHostTLS(0)]" description="remote address of the SUT host" editable="true"/>
     <parameter name="[remotePortTLS]" operation="file.readProperty" value="tls.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[remotePortTLS]" operation="set" value="[remotePortTLS]" editable="true"/>
+    <!--parameter name="[remotePortTLS]" operation="set" value="1234"/-->
+    <parameter name="[remotePortTLS]" operation="set" value="[remotePortTLS]" description="remote port of the SUT host" editable="true"/>
 
        
     <testcase name="tls/001_binary" state="true">
