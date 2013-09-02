@@ -105,8 +105,6 @@ a=rtpmap:97 amr/8000/1
 	value5="8000"
 	value6="1"
 	/>  
-	
-	<removeListenpointRTPFLOW name="[invitee]"/>
 
   	<parameter name="[newCseqNumber]" operation="number.add" value="[lastCseqNumber]" value2="1"/>
   	<parameter name="[newBranchId]" operation="string.random" value="10"/>
@@ -129,5 +127,9 @@ Content-Length: 0
                 
   	<receiveMessageSIP name="Wait 200 OK" listenpoint="listenSIP_UAS" request="false" type="BYE" result="200">
   	</receiveMessageSIP>
-				
+    
+    <finally>
+        <removeListenpointRTPFLOW name="[invitee]"/>
+    </finally>
+    
 </scenario>

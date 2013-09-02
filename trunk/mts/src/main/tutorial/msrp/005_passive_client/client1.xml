@@ -2,12 +2,12 @@
 
 <scenario>
         
-    <openChannelMSRP name="channelMSRP" remoteHost="[test:localHostMSRP]" remotePort="[test:remotePortMSRP]" transport="[transport]"/>             
+    <openChannelMSRP name="channelMSRP" remoteHost="[remoteHostMSRP]" remotePort="[remotePortMSRP]" transport="[transport]"/>             
 
     <receiveMessageMSRP name="Wait SEND" channel="channelMSRP" request="true" type="SEND">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
-        <parameter name="[transactionID]" operation="protocol.setFromMessage" value="firstline.Transaction-ID"/>        
-   	<parameter name="[recRequest]" operation="protocol.setFromMessage" value="message.text"/>                   
+        <parameter name="[transactionID]" operation="protocol.setFromMessage" value="firstline.Transaction-ID"/>
+   	<parameter name="[recRequest]" operation="protocol.setFromMessage" value="message.text"/>
     </receiveMessageMSRP>
     
     <test parameter="[recRequest]" condition="string.equals" value="[testcase:sendRequest]"/>
@@ -21,7 +21,7 @@ From-Path: msrp://bob.exemple.com:8888/74986;tls
 ]]>
    </sendMessageMSRP>   
    
-   <parameter name="[testcase:sendResponse]" operation="protocol.setFromMessage" value="message.text"/>           
+   <parameter name="[testcase:sendResponse]" operation="protocol.setFromMessage" value="message.text"/>
 
     <finally>
         <closeChannelMSRP name="channelMSRP"/>

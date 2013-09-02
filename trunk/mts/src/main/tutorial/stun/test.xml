@@ -3,17 +3,19 @@
 
 <test name="STUN" description="STUN regression tests">
 
-    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    
     <parameter name="[localHostSTUN]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostSTUN]" operation="set" value="[localHostSTUN(0)]" editable="true"/>
+    <parameter name="[localHostSTUN]" operation="set" value="[localHostSTUN(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortSTUN]" operation="file.readProperty" value="stun.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortSTUN]" operation="set" value="[localPortSTUN]" editable="true"/>
+    <parameter name="[localPortSTUN]" operation="set" value="[localPortSTUN]" description="local port of the MTS host" editable="true"/>
     
     <parameter name="[remoteHostSTUN]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[remoteHostSTUN]" operation="set" value="[remoteHostSTUN(0)]" editable="true"/>
+    <!--parameter name="[remoteHostSTUN]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remoteHostSTUN]" operation="set" value="[remoteHostSTUN(0)]" description="remote address of the SUT host" editable="true"/>
     <parameter name="[remotePortSTUN]" operation="file.readProperty" value="stun.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[remotePortSTUN]" operation="set" value="[remotePortSTUN]" editable="true"/>
-    <!--parameter name="[remoteHostSTUN]" operation="set" value="192.168.90.206"/-->
+    <!--parameter name="[remotePortSTUN]" operation="set" value="1234"/-->
+    <parameter name="[remotePortSTUN]" operation="set" value="[remotePortSTUN]" description="remote port of the SUT host" editable="true"/>
     
     <testcase name="000_bindingRequest" description="test a binding request" state="true">
         <scenario name="Stun_client">000_bindingRequest/Stun_client.xml</scenario>

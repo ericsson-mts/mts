@@ -3,17 +3,20 @@
 
 <test name="SIGTRAN" description="SIGTRAN regression tests">
     
-    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    
     <parameter name="[localHostIUA]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostIUA]" operation="set" value="[localHostIUA(0)]" editable="true"/>
+    <parameter name="[localHostIUA]" operation="set" value="[localHostIUA(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortIUA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortIUA]" operation="set" value="[localPortIUA(0)]" editable="true"/>    
+    <parameter name="[localPortIUA]" operation="set" value="[localPortIUA(0)]" description="local port of the MTS host" editable="true"/>
     <parameter name="[localIUA]" operation="set" value="[localHostIUA]:[localPortIUA]"/>	
    
     <parameter name="[remoteHostIUA]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[remoteHostIUA]" operation="set" value="[remoteHostIUA(0)]" editable="true"/>
+    <!--parameter name="[remoteHostIUA]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remoteHostIUA]" operation="set" value="[remoteHostIUA(0)]" description="remote address of the SUT host" editable="true"/>
     <parameter name="[remotePortIUA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[remotePortIUA]" operation="set" value="[remotePortIUA(0)]" editable="true"/>    
+    <!--parameter name="[remotePortIUA]" operation="set" value="1234"/-->
+    <parameter name="[remotePortIUA]" operation="set" value="[remotePortIUA(0)]" description="remote port of the SUT host" editable="true"/>
     <parameter name="[remoteIUA]" operation="set" value="[remoteHostIUA]:[remotePortIUA]"/>	
 
     <testcase name="001_Keypad_Facility" description="test a alerting request" state="true">

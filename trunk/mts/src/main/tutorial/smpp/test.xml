@@ -2,11 +2,14 @@
 
 <test name="SMPP">
 
-    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    
     <parameter name="[remoteHostSMPP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[remoteHostSMPP]" operation="set" value="[remoteHostSMPP(0)]" editable="true"/>
+    <parameter name="[remoteHostSMPP]" operation="set" value="[remoteHostSMPP(0)]" description="remote address of the SUT host" editable="true"/>
+    <!--parameter name="[remoteHostSMPP]" operation="set" value="172.16.21.32"/-->
     <parameter name="[remotePortSMPP]" operation="file.readproperty" value="smpp.properties" value2="listenpoint.LOCAL_PORT" />
-    <parameter name="[remotePortSMPP]" operation="set" value="[remotePortSMPP]" editable="true" />
+    <!--parameter name="[remotePortSMPP]" operation="set" value="1234"/-->
+    <parameter name="[remotePortSMPP]" operation="set" value="[remotePortSMPP]" description="remote port of the SUT host" editable="true" />
 
     <testcase name="smpp/000_classicSequence" state="true">
         <scenario name="client">000_classicSequence/client.xml</scenario>

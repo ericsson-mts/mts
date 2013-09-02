@@ -3,26 +3,27 @@
 
 <test name="RTPFLOW" description="RTPFLOW regression tests">
 
-    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    
     <parameter name="[localHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <!--<parameter name="[localHostRTP]" operation="set" value="127.0.0.1"/>-->
-    <parameter name="[localHostRTP]" operation="set" value="[localHostRTP(0)]" editable="true"/>
-    <parameter name="[localPortRTP]" operation="set" value="10000" editable="true" />
+    <parameter name="[localHostRTP]" operation="set" value="[localHostRTP(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter name="[localPortRTP]" operation="set" value="10000" description="local port of the MTS host" editable="true" />
+    
     <parameter name="[remoteHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <!--<parameter name="[remoteHostRTP]" operation="set" value="127.0.0.1"/>-->
-    <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]"  editable="true"/>
-    <parameter name="[remotePortRTP]" operation="set" value="11000" editable="true" />
+    <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]" description="remote address of the SUT host" editable="true"/>
+    <parameter name="[remotePortRTP]" operation="set" value="11000" description="remote port of the SUT host" editable="true" />
 
     <parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
      <!--parameter name="[localHostSIP]" operation="set" value="172.16.21.32"/-->
     <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" editable="true" />
-    <!--parameter name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/-->    	    
+    <parameter name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localPortSIP]" operation="set" value="[localPortSIP]" editable="true" />
     <parameter name="[localSIP]" operation="set" value="[localHostSIP]:[localPortSIP]"/>
     <parameter name="[remoteHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHostSIP]" operation="set" value="172.16.21.32"/-->
     <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]" editable="true"/>
-	<!--parameter name="[remoteHostSIP]" operation="set" value="172.16.21.48"/-->
-    <!--parameter name="[remotePortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/-->    	    
-    <!--parameter name="[remotePortSIP]" operation="set" value="5060"/-->    	    
+    <parameter name="[remotePortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[remotePortSIP]" operation="set" value="[remotePortSIP]" editable="true"/>
     <parameter name="[remoteSIP]" operation="set" value="[remoteHostSIP]:[remotePortSIP]"/>
     
     <!-- value2 = deltaTime (millisecondes)-->
@@ -117,27 +118,29 @@
     </testcase>
 
     <testcase name="100_call_sip_rtp" state="true">
-        <parameter name="[CallDurationSec]" operation="set" value="1" description="Duration (in sec.) of the call"/>    	       	       
-    	<parameter name="[dialingDelay]" operation="set" value="0.5" description="Dialing delay (in seconds) : time between INVITE and 180 response"/>    	       	       
-	<parameter name="[timeSpacing]" operation="set" value="0.005" description="Time spacing (in seconds) : time between real and theorical timestamp"/>    	       	       
-	<parameter name="[packetLost]" operation="set" value="0.1" description="Packets lost (in percent)"/>    	       	       
+        <parameter name="[CallDurationSec]" operation="set" value="1" description="Duration (in sec.) of the call"/>
+        <parameter name="[dialingDelay]" operation="set" value="0.5" description="Dialing delay (in seconds) : time between INVITE and 180 response"/>    	       	       
+        <parameter name="[timeSpacing]" operation="set" value="0.005" description="Time spacing (in seconds) : time between real and theorical timestamp"/>    	       	       
+        <parameter name="[packetLost]" operation="set" value="0.1" description="Packets lost (in percent)"/>
 
-        <parameter name="[localPortSIP]" operation="set" value="5070"/>    	    
-        <parameter name="[remotePortSIP]" operation="set" value="5080"/>    	    
+        <parameter name="[localPortSIP]" operation="set" value="5070"/>
+        <parameter name="[localPortSIP1]" operation="set" value="[localPortSIP]"/>
+        <parameter name="[remotePortSIP]" operation="set" value="5080"/>
+        <parameter name="[remotePortSIP1]" operation="set" value="[remotePortSIP]"/>
         
         <parameter name="[domainName]" operation="set" value="devoteam.com" editable="true" description="Domain name for inviter and invitee identities"/>
-	<parameter name="[inviter]" operation="set" value="bob" editable="true" description="Inviter user name"/>
-    	<parameter name="[invitee]" operation="set" value="alice" editable="true" description="Invitee user name"/>	
+        <parameter name="[inviter]" operation="set" value="bob" editable="true" description="Inviter user name"/>
+        <parameter name="[invitee]" operation="set" value="alice" editable="true" description="Invitee user name"/>	
 
-	<parameter name="[filename]" operation="set" value="rtpflow.wav" editable="true"/>
-    	<parameter name="fileWave" operation="file.readwave" value="[filename]" value2="20"/>
-    	<parameter name="[payloadList]" operation="set" value="[[fileWave(0)]]"/>
-    	<parameter name="[payloadType]" operation="set" value="[[fileWave(1)]]"/>
-    	<parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>
-    	<parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/>
+        <parameter name="[filename]" operation="set" value="rtpflow.wav" editable="true"/>
+        <parameter name="fileWave" operation="file.readwave" value="[filename]" value2="20"/>
+        <parameter name="[payloadList]" operation="set" value="[[fileWave(0)]]"/>
+        <parameter name="[payloadType]" operation="set" value="[[fileWave(1)]]"/>
+        <parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>
+        <parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/>
 
-        <scenario name="[localPortSIP],[localPortRTP]">100_call_sip_rtp/UAC.xml</scenario>
-        <scenario name="[remotePortSIP],[remotePortRTP]">100_call_sip_rtp/UAS.xml</scenario>
+        <scenario name="[localPortSIP1],[localPortRTP]">100_call_sip_rtp/UAC.xml</scenario>
+        <scenario name="[remotePortSIP1],[remotePortRTP]">100_call_sip_rtp/UAS.xml</scenario>
     </testcase>
 	
 	<testcase name="200_srtp_sendFileWave" state="true">

@@ -2,17 +2,19 @@
 
 <test name="SCTP" description="SCTP regression tests">
 
-    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-    <parameter name="[localHostSCTP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostSCTP]" operation="set" value="[localHostSCTP(0)]" editable="true"/>
-    <parameter name="[localPortSCTP]" operation="set" value="4011" editable="true"/>
-
-    <parameter name="[remoteHostSCTP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[remoteHostSCTP]" operation="set" value="[remoteHostSCTP(0)]" editable="true"/>
-    <parameter name="[remotePortSCTP]" operation="file.readProperty" value="sctp.properties" value2="listenpoint.LOCAL_PORT"/>
-    <!--parameter name="[remotePortSCTP]" operation="set" value="10000" editable="true"/-->
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
     
-
+    <parameter name="[localHostSCTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostSCTP]" operation="set" value="[localHostSCTP(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter name="[localPortSCTP]" operation="set" value="4011" description="local port of the MTS host" editable="true"/>
+    
+    <parameter name="[remoteHostSCTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--<parameter name="[remoteHostSCTP]" operation="set" value="172.16.21.32"/>-->
+    <parameter name="[remoteHostSCTP]" operation="set" value="[remoteHostSCTP(0)]" description="remote address of the SUT host" editable="true"/>
+    <parameter name="[remotePortSCTP]" operation="file.readProperty" value="sctp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[remotePortSCTP]" operation="set" value="10000" /-->
+    <parameter name="[remotePortSCTP]" operation="set" value="[remotePortSCTP]" description="remote port of the SUT host" editable="true"/>
+    
     <testcase name="001_binary" state="true">
         <scenario name="SCTP">001_binary/scenario.xml</scenario>
     </testcase>

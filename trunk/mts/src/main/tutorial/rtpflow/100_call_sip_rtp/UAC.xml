@@ -89,7 +89,7 @@ Content-Length: 0
 	    </flow>
 	</sendMessageRTPFLOW>
 	
-    	<parameter name="[timeout]" operation="number.add" value="[CallDurationSec]" value2="35"/>
+  <parameter name="[timeout]" operation="number.add" value="[CallDurationSec]" value2="35"/>
 
   	<receiveMessageSIP name="Wait BYE" listenpoint="listenSIP_UAC" request="true" type="BYE" timeout="[timeout]">
 	        <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
@@ -116,7 +116,9 @@ Max-Forwards: 70
 Content-Length: 0
 ]]>
   	</sendMessageSIP>
-		
-    <removeListenpointRTPFLOW name="[inviter]"/>
+
+    <finally>
+        <removeListenpointRTPFLOW name="[inviter]"/>
+    </finally>
 
 </scenario>

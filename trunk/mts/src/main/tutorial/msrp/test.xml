@@ -2,16 +2,22 @@
 
 <test name="MSRP">
 
-    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
-    <parameter name="[localHostMSRP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostMSRP]" operation="set" value="[localHostMSRP(0)]" editable="true"/>
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
     
+    <parameter name="[localHostMSRP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostMSRP]" operation="set" value="[localHostMSRP(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter name="[localPortMSRP]" operation="file.readProperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localPortMSRP]" operation="set" value="[localPortMSRP]" description="local port of the MTS host" editable="true"/>
+
+    <parameter name="[remoteHostMSRP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHostMSRP]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remoteHostMSRP]" operation="set" value="[remoteHostMSRP(0)]" description="remote address of the SUT host" editable="true"/>
     <parameter name="[remotePortMSRP]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT" />
-    <parameter name="[remotePortMSRP]" operation="set" value="[remotePortMSRP]" editable="true" />
+    <!--parameter name="[remotePortMSRP]" operation="set" value="1234"/-->
+    <parameter name="[remotePortMSRP]" operation="set" value="[remotePortMSRP]" description="remote port of the SUT host" editable="true" />
     
     <parameter name="[serverTlsPort]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT_TLS" />
     <parameter name="[serverTlsPort]" operation="set" value="[serverTlsPort]" editable="true" />
-    <parameter name="[remoteHostMSRP]" operation="set" value="[localHostMSRP]:[remotePortMSRP]"/>
 
     <testcase name="msrp/000_classicSequence_TCP" state="true">
         <parameter name="[transport]" operation="set" value="TCP" />

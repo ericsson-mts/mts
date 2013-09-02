@@ -4,15 +4,19 @@
 <test name="MGCP" description="MGCP regression tests">
 
 
-    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    
     <parameter name="[localHostMGCP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostMGCP]" operation="set" value="[localHostMGCP(0)]" editable="true"/>
+    <parameter name="[localHostMGCP]" operation="set" value="[localHostMGCP(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortMGCP]" operation="file.readProperty" value="mgcp.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortMGCP]" operation="set" value="[localPortMGCP]" editable="true"/>
+    <parameter name="[localPortMGCP]" operation="set" value="[localPortMGCP]" description="local port of the MTS host" editable="true"/>
+    
     <parameter name="[remoteHostMGCP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[remoteHostMGCP]" operation="set" value="[remoteHostMGCP(0)]" editable="true"/>
+    <!--parameter name="[remoteHostMGCP]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remoteHostMGCP]" operation="set" value="[remoteHostMGCP(0)]" description="remote address of the SUT host" editable="true"/>
     <parameter name="[remotePortMGCP]" operation="file.readProperty" value="mgcp.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[remotePortMGCP]" operation="set" value="[remotePortMGCP]" editable="true"/>
+    <!--parameter name="[remotePortMGCP]" operation="set" value="1234"/-->
+    <parameter name="[remotePortMGCP]" operation="set" value="[remotePortMGCP]" description="remote port of the SUT host" editable="true"/>
     
     <testcase name="mgcp/000_createConnection" description="test createConnection" state="true">
         <scenario name="Call_Agent">000_createConnection/Call_Agent.xml</scenario>

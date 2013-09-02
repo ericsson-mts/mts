@@ -3,15 +3,15 @@
 <scenario>
 
     <if>
-	<condition>
-     	    <test parameter="[transport]" condition="string.equalsIgnoreCase" value="TCP"/>
-     	</condition>
-     	<then>     
-            <openChannelMSRP name="channelMSRP" remoteHost="[localHostMSRP]" remotePort="[remotePortMSRP]" transport="TCP"/>             
-     	</then>
-     	<else>     
-       	    <openChannelMSRP name="channelMSRP" remoteHost="[localHostMSRP]" remotePort="[serverTlsPort]" transport="TLS"/>     
-     	</else>
+      <condition>
+        <test parameter="[transport]" condition="string.equalsIgnoreCase" value="TCP"/>
+      </condition>
+      <then>
+        <openChannelMSRP name="channelMSRP" remoteHost="[remoteHostMSRP]" remotePort="[remotePortMSRP]" transport="TCP"/>
+      </then>
+      <else>     
+        <openChannelMSRP name="channelMSRP" remoteHost="[remoteHostMSRP]" remotePort="[serverTlsPort]" transport="TLS"/>
+      </else>
     </if>
 
     <parameter name="[localTransactionID]" operation="string.random" value="10"/>
@@ -31,10 +31,10 @@ Hi, i'm alice!
 ]]>
    </sendMessageMSRP>
    
-   <parameter name="[testcase:sendRequest]" operation="protocol.setFromMessage" value="message.text"/>               
+   <parameter name="[testcase:sendRequest]" operation="protocol.setFromMessage" value="message.text"/>
     
     <receiveMessageMSRP name="Wait SEND" channel="channelMSRP" request="false" type="SEND" result="200">
-   	<parameter name="[testcase:recResponse]" operation="protocol.setFromMessage" value="message.text"/>                   
+   	<parameter name="[testcase:recResponse]" operation="protocol.setFromMessage" value="message.text"/>
     </receiveMessageMSRP>
 
     <test parameter="[testcase:recResponse]" condition="string.equals" value="[testcase:sendResponse]"/>

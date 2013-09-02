@@ -3,20 +3,20 @@
 
 <test name="SIP" description="SIP regression tests">
     
-    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+	
     <parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" editable="true"/>
+    <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortSIP]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortSIP]" operation="set" value="[localPortSIP]" editable="true"/>
+    <parameter name="[localPortSIP]" operation="set" value="[localPortSIP]" description="local port of the MTS host" editable="true"/>
     <parameter name="[localSIP]" operation="set" value="[localHostSIP]:[localPortSIP]"/>	
    
     <parameter name="[remoteHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]" editable="true"/>
-    <!-- ASTERISK parameter name="[remoteHostSIP]" operation="set" value="192.168.90.247"/-->
-    <!-- VOXPILOT parameter name="[remoteHostSIP]" operation="set" value="172.16.21.32"/-->
+    <!--parameter name="[remoteHostSIP]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]" description="remote address of the SUT host" editable="true"/>
     <parameter name="[remotePortSIP]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[remotePortSIP]" operation="set" value="[remotePortSIP]" editable="true"/>
-    <!-- ASTERISK VOXPILOT parameter name="[remotePortSIP]" operation="set" value="5060"/-->
+    <!--parameter name="[remotePortSIP]" operation="set" value="5060"/-->
+    <parameter name="[remotePortSIP]" operation="set" value="[remotePortSIP]" description="remote port of the SUT host" editable="true"/>
     <parameter name="[remoteSIP]" operation="set" value="[remoteHostSIP]:[remotePortSIP]"/>	
 	
     <!-- transport parameters-->

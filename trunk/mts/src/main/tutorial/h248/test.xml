@@ -2,21 +2,20 @@
 
 <test name="H248"> 
 
-	<parameter name="[IPVersion]" operation="set"	value="ipv4" editable="true" />
+	  <parameter name="[IPVersion]" operation="set"	value="ipv4" description="version of the IP protocol" editable="true" />
+	
     <parameter name="[localHostH248]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <!--parameter name="[localHostH248]" operation="set" value="172.20.75.126"/-->
-    <parameter name="[localHostH248]" operation="set" value="[localHostH248(0)]" editable="true"/>
+    <parameter name="[localHostH248]" operation="set" value="[localHostH248(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortH248]" operation="file.readProperty" value="h248.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortH248]" operation="set" value="[localPortH248]" editable="true" />
+    <parameter name="[localPortH248]" operation="set" value="[localPortH248]" description="local port of the MTS host" editable="true" />
     <parameter name="[localH248]" operation="set" value="[localHostH248]:[localPortH248]"/>	
    
     <parameter name="[remoteHostH248]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[remoteHostH248]" operation="set" value="[remoteHostH248(0)]" editable="true"/>
-    <!--parameter name="[remoteHostH248]" operation="set" value="172.20.196.24"/-->
-    <!--parameter name="[remoteHostH248]" operation="set" value="172.20.75.126"/-->
+    <!--parameter name="[remoteHostH248]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remoteHostH248]" operation="set" value="[remoteHostH248(0)]" description="remote address of the SUT host" editable="true"/>
     <parameter name="[remotePortH248]" operation="file.readProperty" value="h248.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[remotePortH248]" operation="set" value="[remotePortH248]" editable="true" />
     <!--parameter name="[remotePortH248]" operation="set" value="2949"/-->
+    <parameter name="[remotePortH248]" operation="set" value="[remotePortH248]" description="remote port of the SUT host" editable="true" />
     <parameter name="[remoteH248]" operation="set" value="[remoteHostH248]:[remotePortH248]"/>	
 	
     <!-- transport parameters-->

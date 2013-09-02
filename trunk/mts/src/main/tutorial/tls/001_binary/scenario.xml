@@ -34,12 +34,6 @@
         <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
     </receiveMessageTLS>
     <parameter name="[contents]" operation="set" value="[contents][text]"/>
-    
-    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="[timeout]">
-        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
-    </receiveMessageTLS>
-    <parameter name="[contents]" operation="set" value="[contents][text]"/>
 
     <test parameter="[contents]" condition="string.equals" value="AAAAAAAAAA" />
     
@@ -56,13 +50,6 @@
     </receiveMessageTLS>
     <parameter name="[number]" operation="number.substract" value="[number]" value2="[textNumber]"/>
     
-    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="[timeout]">
-        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
-        <parameter name="[textNumber]" operation="string.length" value="[text]"/>
-    </receiveMessageTLS>
-    <parameter name="[number]" operation="number.substract" value="[number]" value2="[textNumber]"/>
-
     <test parameter="[number]" condition="string.equals" value="0" />
 
     <finally>

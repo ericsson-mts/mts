@@ -2,24 +2,22 @@
 
 <test name="UDP" description="UDP regression tests">
   
-    <parameter name="[IPVersion]" operation="set" value="ipv4" editable="true" />
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
     <!-- Parameters for proxy testcases -->
     <parameter name="[localHostUDP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <!--parameter name="[localHostUDP]" operation="set" value="127.0.0.1"/-->
-    <!--parameter name="[localHostUDP]" operation="set" value="172.16.21.32"/-->
-    <parameter name="[localHostUDP]" operation="set" value="[localHostUDP(0)]" editable="true"/>
-    <parameter name="[localPortUDP]" operation="set" value="10000" editable="true"/>
+    <parameter name="[localHostUDP]" operation="set" value="[localHostUDP(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter name="[localPortUDP]" operation="set" value="10000" description="local port of the MTS host" editable="true"/>
 
-    <parameter name="[remoteHostUDP]" operation="system.ipaddress" value2="[IPVersion]"/>    
-    <!--parameter name="[remoteHostUDP]" operation="set" value="127.0.0.1"/-->
+    <parameter name="[remoteHostUDP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[remoteHostUDP]" operation="set" value="172.16.21.32"/-->
-    <parameter name="[remoteHostUDP]" operation="set" value="[remoteHostUDP(0)]" editable="true"/>
-    <parameter name="[remotePort]" operation="set" value="12000" editable="true"/>
+    <parameter name="[remoteHostUDP]" operation="set" value="[remoteHostUDP(0)]" description="remote address of the SUT host" editable="true"/>
+    <!--parameter name="[remoteHostUDP]" operation="set" value="1234"/-->
+    <parameter name="[remotePort]" operation="set" value="12000" description="remote port of the SUT host" editable="true"/>
     	
-    <parameter name="[localHostUDP_proxy]"  operation="set" value="[localHostUDP(0)]" editable="true"/>
-    <parameter name="[localPortUDP_proxy]"  operation="set" value="11000" editable="true"/>
-    <parameter name="[remoteHostUDP_proxy]" operation="set" value="[remoteHostUDP(0)]" editable="true"/>
-    <parameter name="[remotePortUDP_proxy]" operation="set" value="10000" editable="true"/>
+    <parameter name="[localHostUDP_proxy]"  operation="set" value="[localHostUDP(0)]" />
+    <parameter name="[localPortUDP_proxy]"  operation="set" value="11000" />
+    <parameter name="[remoteHostUDP_proxy]" operation="set" value="[remoteHostUDP(0)]" />
+    <parameter name="[remotePortUDP_proxy]" operation="set" value="10000" />
 
     <testcase name="udp/001_binary" state="true">
         <scenario name="toto">001_binary/scenario.xml</scenario>
