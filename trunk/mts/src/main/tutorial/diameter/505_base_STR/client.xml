@@ -24,18 +24,18 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
                               * [ AVP ]
 -->     
         
-    <sendMessageDIAMETER name="Send Request STR" remoteURL="diameter://[remoteDIA]" destScenario="server">
+    <sendMessageDIAMETER name="Send Request STR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
         <header request="true" command="Session-Termination" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
           <!-- The Session-Id AVP is used to identify a specific session. -->
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
         
           <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIA]"/>
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
           <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIA]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
 
           <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIA]"/>            
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
 
           <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
           <!--avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="0"/-->
@@ -49,7 +49,7 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
           <avp code="User-Name" mandatory="false" type="UTF8String" value="ToBeCompleted"/>
 
           <!-- The Origin-Host AVP contains the Host of the originator of any Diameter message. -->
-          <avp code="Destination-Host" mandatory="false" type="DiameterIdentity" value="[remoteHostDIA]"/>
+          <avp code="Destination-Host" mandatory="false" type="DiameterIdentity" value="[remoteHostDIAM]"/>
         
           <!-- The Class AVP is used to by Diameter servers to return state information to the access device. -->
           <avp code="Class" mandatory="false"  type="OctetString" value="ToBeCompleted"/>

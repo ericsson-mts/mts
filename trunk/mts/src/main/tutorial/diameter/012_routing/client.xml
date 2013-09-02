@@ -6,9 +6,9 @@
 
     <createListenpointDIAMETER name="lp_client" localHost="[Listen-Client-Host]" localPort="[Listen-Client-Port]">
     	<nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
-	<avp code="Origin-Host" value="[localHostDIA]" type="DiameterIdentity" mandatory="true"/>
-	<avp code="Origin-Realm" value="[localRealmDIA]" type="DiameterIdentity" mandatory="true"/>
-	<avp code="Host-IP-Address" value="[localHostDIA]" type="IPAddress" mandatory="true"/>
+	<avp code="Origin-Host" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
+	<avp code="Origin-Realm" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
+	<avp code="Host-IP-Address" value="[localHostDIAM]" type="IPAddress" mandatory="true"/>
 	<avp code="Vendor-Id" value="TGPP" type="VendorId" mandatory="true"/>
 	<avp code="Product-Name" value="IMSLoader - MTS" type="UTF8String" mandatory="true"/>
 	<avp code="Origin-State-Id" value="123456789" type="Unsigned32" mandatory="true"/>
@@ -24,10 +24,10 @@
     <sendMessageDIAMETER name="SendRequestMAR" listenpoint="lp_client" destScenario="server" 
     			 remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]">
 	<header request="true" command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx"/>
-	<avp code="Origin-Host" value="[localHostDIA]"/>
-	<avp code="Origin-Realm" value="[localRealmDIA]"/>
-	<avp code="Destination-Host" value="[remoteHostDIA]"/>	
-	<avp code="Destination-Realm" value="[remoteRealmDIA]"/>		
+	<avp code="Origin-Host" value="[localHostDIAM]"/>
+	<avp code="Origin-Realm" value="[localRealmDIAM]"/>
+	<avp code="Destination-Host" value="[remoteHostDIAM]"/>	
+	<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>		
 	<avp code="Vendor-Specific-Application-Id">
 	        <avp code="Vendor-Id" value="TGPP"/>
 	        <avp code="Auth-Application-Id" value="IMS_Cx_Dx"/>
@@ -54,8 +54,8 @@
 
     <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="lp_client" >
 	<header request="false" command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-	<avp code="Origin-Host" value="[remoteHostDIA]"/>
-	<avp code="Origin-Realm" value="[remoteRealmDIA]"/>
+	<avp code="Origin-Host" value="[remoteHostDIAM]"/>
+	<avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
 	<avp code="Vendor-Specific-Application-Id">
 		<avp code="Vendor-Id" value="TGPP"/>
 		<avp code="Auth-Application-Id" value="IMS_Cx_Dx"/>

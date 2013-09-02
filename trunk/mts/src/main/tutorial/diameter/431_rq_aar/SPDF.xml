@@ -57,14 +57,14 @@ AA-Request ::= < Diameter Header: 265, REQ, PXY >
 
 -->
 
-    <sendMessageDIAMETER name="Send Request ETSI/Rq/AAR" remoteURL="diameter://[remoteDIA]" destScenario="A-RACF">
+    <sendMessageDIAMETER name="Send Request ETSI/Rq/AAR" remoteURL="diameter://[remoteDIAM]" destScenario="A-RACF">
         <header request="true" command="AA" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
           <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
 
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIA]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIA]"/>
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIA]"/>            
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
 
           <avp code="AF-Charging-Identifier" mandatory="true"  type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
 

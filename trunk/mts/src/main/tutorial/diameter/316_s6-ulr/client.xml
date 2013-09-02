@@ -74,7 +74,7 @@ From 3GPP TS 29.272 V12.1.0
   -->
   
    <parameter name="[commandCode]" operation="set" value="Update-Location"/>
-    <sendMessageDIAMETER name="Send Request 3GPP/S6a/ULR" remoteURL="diameter://[remoteDIA]" destScenario="server">
+    <sendMessageDIAMETER name="Send Request 3GPP/S6a/ULR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
         <header request="true" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
           <avp code="Vendor-Specific-Application-Id">
@@ -87,10 +87,10 @@ From 3GPP TS 29.272 V12.1.0
           <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
           <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
 
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIA]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIA]"/>
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIA]"/> 
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIA]"/>            
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/> 
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
 
           <avp code="User-Name" vendorId="[vendorID]" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
 
@@ -130,8 +130,8 @@ From 3GPP TS 29.272 V12.1.0
              <avp code="MIP6-Agent-Info" vendorId="[vendorID]">
                     <avp code="MIP-Home-Agent-Address" mandatory="true" type="Address" value="ToBeCompleted" vendorId="[vendorID]"/>
                     <avp code="MIP-Home-Agent-Host" vendorId="[vendorID]"/>
-                        <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIA]"/> 
-                        <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIA]"/> 
+                        <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/> 
+                        <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/> 
                     </avp>  
                     <!--avp code="MIP6-Home-Link-Prefix" mandatory="true" type="Address" value="ToBeCompleted" vendorId="[vendorID]"/-->  
              </avp>
@@ -142,8 +142,8 @@ From 3GPP TS 29.272 V12.1.0
                 <avp code="MIP6-Agent-Info" vendorId="[vendorID]">
                     <avp code="MIP-Home-Agent-Address" mandatory="true" type="Address" value="ToBeCompleted" vendorId="[vendorID]"/>
                     <avp code="MIP-Home-Agent-Host" vendorId="[vendorID]"/>
-                        <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIA]"/> 
-                        <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIA]"/> 
+                        <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/> 
+                        <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/> 
                     </avp> 
                     <!--avp code="MIP6-Home-Link-Prefix" mandatory="true" type="Address" value="ToBeCompleted" vendorId="[vendorID]"/-->  
                 </avp>

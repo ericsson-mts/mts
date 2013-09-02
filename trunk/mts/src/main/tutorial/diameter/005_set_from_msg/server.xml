@@ -18,7 +18,7 @@
     <parameter name="[listenpointHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>        
     <test parameter="[listenpointHost]" condition="string.equals" value="0.0.0.0"/>
     <parameter name="[listenpointPort]" operation="protocol.setFromMessage" value="listenpoint.localPort"/>    
-    <test parameter="[listenpointPort]" condition="string.equals" value="[localPortDIA]"/>
+    <test parameter="[listenpointPort]" condition="string.equals" value="[localPortDIAM]"/>
     
     <parameter name="[request2]" operation="protocol.setFromMessage" value="message.request"/>    
     <test parameter="[request2]" condition="string.equals" value="true"/>
@@ -61,7 +61,7 @@
     <parameter name="[avp3code]" operation="protocol.setFromMessage" value="avp.283.code"/>        
     <test parameter="[avp3code]" condition="string.equals" value="283"/>
     <parameter name="[avp3value]" operation="protocol.setFromMessage" value="avp.283.value"/>        
-    <test parameter="[avp3value]" condition="string.equals" value="[remoteRealmDIA]"/>
+    <test parameter="[avp3value]" condition="string.equals" value="[remoteRealmDIAM]"/>
     <parameter name="[avp3binary]" operation="protocol.setFromMessage" value="avp.283.binary"/>    
     <test parameter="[avp3binary]" condition="string.equals" value="636c69656e742e6672"/>      
     <parameter name="[avp3vendor]" operation="protocol.setFromMessage" value="avp.283.vendorId"/>    
@@ -87,8 +87,8 @@
     
     <sendMessageDIAMETER name="SendAnswerMAA">
 	<header request="false" command="[commandCode]" applicationId="4321" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-	<avp code="Origin-Host" value="[remoteHostDIA]"/>
-	<avp code="Origin-Realm" value="[remoteRealmDIA]"/>
+	<avp code="Origin-Host" value="[remoteHostDIAM]"/>
+	<avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
 	<avp code="Vendor-Specific-Application-Id">
 		<avp code="Vendor-Id" value="[vendorID]"/>
 		<avp code="Auth-Application-Id" value="[applicationID]"/>

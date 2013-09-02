@@ -6,9 +6,9 @@
 
     <createListenpointDIAMETER name="server" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]">
     	<nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
-	<avp code="Origin-Host" value="[localHostDIA]" type="DiameterIdentity" mandatory="true"/>
-	<avp code="Origin-Realm" value="[localRealmDIA]" type="DiameterIdentity" mandatory="true"/>
-	<avp code="Host-IP-Address" value="[localHostDIA]" type="IPAddress" mandatory="true"/>
+	<avp code="Origin-Host" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
+	<avp code="Origin-Realm" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
+	<avp code="Host-IP-Address" value="[localHostDIAM]" type="IPAddress" mandatory="true"/>
 	<avp code="Vendor-Id" value="TGPP" type="VendorId" mandatory="true"/>
 	<avp code="Product-Name" value="IMSLoader - MTS" type="UTF8String" mandatory="true"/>
 	<avp code="Origin-State-Id" value="123456789" type="Unsigned32" mandatory="true"/>
@@ -25,16 +25,16 @@
       <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
     	<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
     	<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
-    	<parameter name="[remoteHostDIA]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>
+    	<parameter name="[remoteHostDIAM]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>
     	<parameter name="[remotePort]" operation="protocol.setFromMessage" value="listenpoint.localPort"/>	
   </receiveMessageDIAMETER>
 
     <!-- not possible because of the Diameter stack -->
-    <!--sendMessageDIAMETER name="SendAnswerMAA" listenpoint="server" remoteHost="[remoteHostDIA]" remotePort="[remotePort]"-->
+    <!--sendMessageDIAMETER name="SendAnswerMAA" listenpoint="server" remoteHost="[remoteHostDIAM]" remotePort="[remotePort]"-->
     <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="server">
 	<header request="false" command="[commandCode]" applicationId="IMS_Cx_Dx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-	<avp code="Origin-Host" value="[remoteHostDIA]"/>
-	<avp code="Origin-Realm" value="[remoteRealmDIA]"/>
+	<avp code="Origin-Host" value="[remoteHostDIAM]"/>
+	<avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
 	<avp code="Vendor-Specific-Application-Id">
 		<avp code="Vendor-Id" value="TGPP"/>
 		<avp code="Auth-Application-Id" value="IMS_Cx_Dx"/>
@@ -54,9 +54,9 @@
 
     <sendMessageDIAMETER name="SendRequestMAR" listenpoint="server" remoteURL="diameter://[Listen-Client-Host]:[Listen-Client-Port]" destScenario="client">
 	<header request="true" command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx" proxiable="true"/>
-	<avp code="Origin-Host" value="[localHostDIA]"/>
-	<avp code="Origin-Realm" value="[localRealmDIA]"/>
-	<avp code="Destination-Realm" value="[remoteRealmDIA]"/>		
+	<avp code="Origin-Host" value="[localHostDIAM]"/>
+	<avp code="Origin-Realm" value="[localRealmDIAM]"/>
+	<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>		
 	<avp code="Vendor-Specific-Application-Id">
 	        <avp code="Vendor-Id" value="TGPP"/>
 	        <avp code="Auth-Application-Id" value="IMS_Cx_Dx"/>

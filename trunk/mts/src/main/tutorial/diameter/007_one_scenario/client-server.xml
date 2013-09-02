@@ -3,12 +3,12 @@
 <!--  name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)"-->
 <scenario>
     
-    <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIA]" destScenario="client-server">
+    <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIAM]" destScenario="client-server">
 		<header request="true" command="Multimedia-Authentitcation" applicationId="IMS_Cx_Dx"/>
-		<avp code="Origin-Host" value="[localHostDIA]"/>
-		<avp code="Origin-Realm" value="[localRealmDIA]"/>
-		<avp code="Destination-Host" value="[remoteHostDIA]"/>	
-		<avp code="Destination-Realm" value="[remoteRealmDIA]"/>		
+		<avp code="Origin-Host" value="[localHostDIAM]"/>
+		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
+		<avp code="Destination-Host" value="[remoteHostDIAM]"/>	
+		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>		
 		<avp code="Vendor-Specific-Application-Id">
 	        <avp code="Vendor-Id" value="TGPP"/>
 	        <avp code="Auth-Application-Id" value="IMS_Cx_Dx"/>
@@ -33,8 +33,8 @@
 
     <sendMessageDIAMETER name="SendAnswerMAA">
 	<header request="false" command="[commandCode]" applicationId="IMS_Cx_Dx" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-	<avp code="Origin-Host" value="[remoteHostDIA]"/>
-	<avp code="Origin-Realm" value="[remoteRealmDIA]"/>
+	<avp code="Origin-Host" value="[remoteHostDIAM]"/>
+	<avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
 	<avp code="Vendor-Specific-Application-Id">
 		<avp code="Vendor-Id" value="TGPP"/>
 		<avp code="Auth-Application-Id" value="IMS_Cx_Dx"/>

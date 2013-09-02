@@ -10,13 +10,13 @@ Disconnect-Peer-Request ::= < Diameter Header: 282, REQ >
                             { Disconnect-Cause }      
 -->
 
-    <sendMessageDIAMETER name="Send Request RFC3588 DPR" remoteURL="diameter://[remoteDIA]" destScenario="peer2">
+    <sendMessageDIAMETER name="Send Request RFC3588 DPR" remoteURL="diameter://[remoteDIAM]" destScenario="peer2">
         <header request="true" command="Disconnect-Peer" applicationId="0" proxiable="false" error="false" retransmit="false"/>
 
         <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
-        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIA]"/>
+        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
         <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
-        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIA]"/>
+        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
 
         <!-- A Diameter node MUST include the Disconnect-Cause AVP in the Disconnect-Peer-Request message to inform the peer of the reason for its intention to shutdown the transport connection. -->
         <!-- Possible enumerated values : REBOOTING(0) / BUSY(1) / DO_NOT_WANT_TO_TALK_TO_YOU(2) -->

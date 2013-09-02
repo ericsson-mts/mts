@@ -5,9 +5,9 @@
 
     <createListenpointDIAMETER name="proxy" localHost="[Listen-Proxy-Host]" localPort="[Listen-Proxy-Port]">
     	<nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
-      	<avp code="Origin-Host" value="[localHostDIA]" type="DiameterIdentity" mandatory="true"/>
-      	<avp code="Origin-Realm" value="[localRealmDIA]" type="DiameterIdentity" mandatory="true"/>
-      	<avp code="Host-IP-Address" value="[localHostDIA]" type="IPAddress" mandatory="true"/>
+      	<avp code="Origin-Host" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
+      	<avp code="Origin-Realm" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
+      	<avp code="Host-IP-Address" value="[localHostDIAM]" type="IPAddress" mandatory="true"/>
       	<avp code="Vendor-Id" value="TGPP" type="VendorId" mandatory="true"/>
       	<avp code="Product-Name" value="IMSLoader - MTS" type="UTF8String" mandatory="true"/>
       	<avp code="Origin-State-Id" value="123456789" type="Unsigned32" mandatory="true"/>
@@ -39,7 +39,7 @@
             <test parameter="[request]" condition="boolean.equals" value="true"/>
         </condition>
         <then>
-            <sendMessageDIAMETER name="SendRequest" listenpoint="proxy" remoteURL="diameter://[remoteDIA]">
+            <sendMessageDIAMETER name="SendRequest" listenpoint="proxy" remoteURL="diameter://[remoteDIAM]">
                 <header request="[request]" command="[commandCode]" applicationId="[applicationID]" endToEnd="[endToEnd]"/>
                 <avp code="Vendor-Specific-Application-Id">
                     <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
@@ -47,10 +47,10 @@
                     <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
                  </avp>
         
-                <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIA]"/>
-                <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIA]"/>
-                <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIA]"/> 
-                <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIA]"/>
+                <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+                <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+                <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/> 
+                <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
                  
                 <avp code="Route-Record" mandatory="true" value="[avpCode]"/>    
             </sendMessageDIAMETER>
@@ -67,10 +67,10 @@
                     <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/-->
                  </avp>
         
-                <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIA]"/>
-                <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIA]"/>
-                <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIA]"/> 
-                <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIA]"/>
+                <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+                <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+                <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/> 
+                <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
                  
                 <avp code="Result-Code" mandatory="true" type="Unsigned32" value="[avpResultCode]"/>              
                 <avp code="Route-Record" mandatory="true" value="[avpCode]"/>    
