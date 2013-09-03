@@ -2,7 +2,7 @@
 
 <scenario>
 
-    <parameter name="[timeout]" operation="set" value="10"/>
+    <parameter name="[timeout]" operation="set" value="2"/>
 
     <openChannelTLS name="channelTLS" remoteHost="[remoteHostTLS]" remotePort="[remotePortTLS]"/>
     
@@ -12,33 +12,8 @@
         <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
     </receiveMessageTLS>
     <test parameter="[text]" condition="string.equals" value="" />
-
-    <sendMessageTLS channel="channelTLS">
-        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
-    </sendMessageTLS>
-
-    <sendMessageTLS channel="channelTLS">
-        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
-    </sendMessageTLS>
-
-    <parameter name="[contents]" operation="set" value="" />
-    
-    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="[timeout]">
-        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
-    </receiveMessageTLS>
-    <parameter name="[contents]" operation="set" value="[contents][text]"/>
-
-    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="[timeout]">
-        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
-    </receiveMessageTLS>
-    <parameter name="[contents]" operation="set" value="[contents][text]"/>
-
-    <test parameter="[contents]" condition="string.equals" value="AAAAAAAAAA" />
     
     <parameter name="[data]" operation="set" value="0123456789" value2="100"/>
-    <parameter name="[number]" operation="string.length" value="[data]"/>
     <sendMessageTLS channel="channelTLS">
         <data format="text">[data]</data>
     </sendMessageTLS>
@@ -46,11 +21,9 @@
     <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="[timeout]">
         <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
         <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
-        <parameter name="[textNumber]" operation="string.length" value="[text]"/>
     </receiveMessageTLS>
-    <parameter name="[number]" operation="number.substract" value="[number]" value2="[textNumber]"/>
     
-    <test parameter="[number]" condition="string.equals" value="0" />
+    <test parameter="[text]" condition="string.equals" value="[data]" />
 
     <finally>
 
