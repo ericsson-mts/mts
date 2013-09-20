@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : server.xml
+    Created on : 17/09/2013
+    Author     : fhenry
+    Description: use dynamic listenpoint 
+-->
+
+<scenario>
+
+    <parameter name="[testcase:localPortServer]" operation="number.add" value="[localPortM3UA]" value2="20000"/>
+    <createListenpointSIGTRAN name="lp_server" localHost="[localHostM3UA]" localPort="[testcase:localPortServer]"/>
+    
+    <!-- Message encoded value -->
+    <parameter name="[notify]" value="010000010000002c000d00080001000300110008000ce738000600080000028e0004000a4e6f746966790000" />
+    
+    <receiveMessageSIGTRAN name="Wait Notify1" listenpoint="lp_server">
+        <parameter name="[notify1]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+    
+    <if>
+      <condition>
+        <test parameter="[notify1]" condition="binary.equals" value="[notify]"/>
+      </condition>
+      <else>
+        <log level="ERROR"> Message received :</log>
+        <log level="ERROR"> "[notify1]" </log>
+        <log level="ERROR"> Message expected :	</log>
+        <log level="ERROR"> "[notify]" </log>
+        <exit failed="true"/>
+        </else>
+    </if>
+    
+    <finally>
+    
+        <removeListenpointSIGTRAN name="lp_server" />
+    
+    </finally>
+    
+</scenario>
