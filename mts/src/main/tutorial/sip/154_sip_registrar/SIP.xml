@@ -16,58 +16,58 @@
 
 <scenario>
 	
-	
-	<parameter name="[test:ServiceTrigger]" operation="list.create"/>
-	<parameter name="[test:lastServiceTrigger]" operation="list.create"/>
-	
-	
-	<label name="Begin"/>
 
-	<receiveMessageSIP name="wait_SIP_request" timeout="0">	
-		<parameter name="[test:lastIsRequest]" operation="protocol.setFromMessage" value="message.request"/>  		
-		<parameter name="[test:lastResult]" operation="protocol.setFromMessage" value="message.result"/>  				
-		
-		<parameter name="[test:lastFirstline]" operation="protocol.setFromMessage" value="firstline"/>  	
-		<parameter name="[test:lastFirstLineVersion]" operation="protocol.setFromMessage" value="firstline.Version"/>  	
-		<parameter name="[test:lastFirstLineMethod]" operation="protocol.setFromMessage" value="firstline.Method"/>  	
-		<parameter name="[test:lastFirstLineURI]" operation="protocol.setFromMessage" value="firstline.URI"/>
-				
-		<parameter name="[test:lastTo]" operation="protocol.setFromMessage" value="header.To"/>  
-		<parameter name="[test:lastToAddress]" operation="protocol.setFromMessage" value="header.To.Address"/>  
-		<parameter name="[test:lastToURI]" operation="setFromAddress" value="[test:lastToAddress]" value2="URI"/>  
-	  	<parameter name="[test:lastFrom]" operation="protocol.setFromMessage" value="header.From"/>  	
-	  	<parameter name="[test:lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>		  		  	
-	  	<parameter name="[test:lastCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
-	  	<parameter name="[test:lastCSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
-	  	<parameter name="[test:lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
-	  	<parameter name="[test:lastRoute]" operation="protocol.setFromMessage" value="header.Route"/>		  		  	
-	  	<parameter name="[test:lastRecord-Route]" operation="protocol.setFromMessage" value="header.Record-Route"/>		  	
-	  	<parameter name="[test:lastContact]" operation="protocol.setFromMessage" value="header.Contact"/>		  		  	
-	  	
-		<parameter name="[test:lastContactAddress]" operation="protocol.setFromMessage" value="header.Contact.Address"/>		  		  		
-		<parameter name="[test:lastContactExpires]" operation="protocol.setFromMessage" value="header.Contact.Parameter.Expires"/>
-		
-	  	<parameter name="[test:lastMax-Forwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>		  		  	
-		<parameter name="[test:lastHeaderOthers]" operation="protocol.setFromMessage" value="header.Others"/>		  		  		  	
-	  	<parameter name="[test:lastContent]" operation="protocol.setFromMessage" value="content"/>		  		  	
-	  	<parameter name="[test:lastExpires]" operation="protocol.setFromMessage" value="header.Expires"/>		  		  	
-		<parameter name="[test:lastSIPMethod]" operation="protocol.setFromMessage" value="firstline.Method"/>		  		  	
-		
-	</receiveMessageSIP>
-	
-		<!-- Remove the "max-forwards" line in lastHeaderOthers -->			
-		<parameter name="[indexes]" operation="list.findmatches" value="[test:lastHeaderOthers]" value2="Max-Forwards:.*"/>
-		<parameter name="[test:lastHeaderOthers]" operation="list.removeat" value="[test:lastHeaderOthers]" value2="[indexes]"/>
-				
-		<log level="DEBUG">headerOthers</log>
-		<log level="DEBUG">[test:lastHeaderOthers]</log>
-			
-	    	<!-- if firstline is empty (bug with XLite which send an empty message -->
-    	<if><condition><test parameter="[test:lastFirstline(0)]" condition="string.equals" value=""/></condition>
-    	<then>
-    	    <goto  name="loop" label="Begin" state="true"/>	
-    	</then>
-		</if>
+    <parameter name="[test:ServiceTrigger]" operation="list.create"/>
+    <parameter name="[test:lastServiceTrigger]" operation="list.create"/>
+
+    <label name="Begin"/>
+
+    <receiveMessageSIP name="wait_SIP_request" timeout="0">	
+        <parameter name="[test:lastIsRequest]" operation="protocol.setFromMessage" value="message.request"/>
+        <parameter name="[test:lastResult]" operation="protocol.setFromMessage" value="message.result"/>
+        
+        <parameter name="[test:lastFirstline]" operation="protocol.setFromMessage" value="firstline"/>
+        <parameter name="[test:lastFirstLineVersion]" operation="protocol.setFromMessage" value="firstline.Version"/>  	
+        <parameter name="[test:lastFirstLineMethod]" operation="protocol.setFromMessage" value="firstline.Method"/>  	
+        <parameter name="[test:lastFirstLineURI]" operation="protocol.setFromMessage" value="firstline.URI"/>
+        	
+        <parameter name="[test:lastTo]" operation="protocol.setFromMessage" value="header.To"/>  
+        <parameter name="[test:lastToAddress]" operation="protocol.setFromMessage" value="header.To.Address"/>
+        <parameter name="[test:lastToURI]" operation="setFromAddress" value="[test:lastToAddress]" value2="URI"/>
+        <parameter name="[test:lastFrom]" operation="protocol.setFromMessage" value="header.From"/>  	
+        <parameter name="[test:lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+        <parameter name="[test:lastCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+        <parameter name="[test:lastCSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+        <parameter name="[test:lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+        <parameter name="[test:lastRoute]" operation="protocol.setFromMessage" value="header.Route"/>
+        <parameter name="[test:lastRecord-Route]" operation="protocol.setFromMessage" value="header.Record-Route"/>
+        <parameter name="[test:lastContact]" operation="protocol.setFromMessage" value="header.Contact"/>
+        
+        <parameter name="[test:lastContactAddress]" operation="protocol.setFromMessage" value="header.Contact.Address"/>
+        <parameter name="[test:lastContactExpires]" operation="protocol.setFromMessage" value="header.Contact.Parameter.Expires"/>
+        <parameter name="[test:lastPAssertedIdentity]" operation="protocol.setFromMessage" value="header.P-Asserted-Identity"/>
+        
+        <parameter name="[test:lastMax-Forwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>
+        <parameter name="[test:lastHeaderOthers]" operation="protocol.setFromMessage" value="header.Others"/>
+        <parameter name="[test:lastContent]" operation="protocol.setFromMessage" value="content"/>
+        <parameter name="[test:lastExpires]" operation="protocol.setFromMessage" value="header.Expires"/>
+        <parameter name="[test:lastSIPMethod]" operation="protocol.setFromMessage" value="firstline.Method"/>
+        
+    </receiveMessageSIP>
+    
+    <!-- Remove the "max-forwards" line in lastHeaderOthers -->			
+    <parameter name="[indexes]" operation="list.findmatches" value="[test:lastHeaderOthers]" value2="Max-Forwards:.*"/>
+    <parameter name="[test:lastHeaderOthers]" operation="list.removeat" value="[test:lastHeaderOthers]" value2="[indexes]"/>
+    		
+    <log level="DEBUG">headerOthers</log>
+    <log level="DEBUG">[test:lastHeaderOthers]</log>
+
+    <!-- if firstline is empty (bug with XLite which send an empty message -->
+    <if><condition><test parameter="[test:lastFirstline(0)]" condition="string.equals" value=""/></condition>
+    <then>
+        <goto  name="loop" label="Begin" state="true"/>	
+    </then>
+    </if>
 
 
 		<!-- The IF won't be necessary after the bug is fixed -->
@@ -739,6 +739,8 @@ Content-Length: 0]]>
 Via: [test:lastVia]
 From: [test:lastFrom]
 To: [test:lastTo];tag=[test:localTag]
+P-Asserted-Identity: [lastPAssertedIdentity]
+P-Associated-Uri: [lastPAssertedIdentity]
 Call-ID: [test:lastCallId]
 CSeq: [test:lastCSeq]
 Contact: [test:lastContact]
