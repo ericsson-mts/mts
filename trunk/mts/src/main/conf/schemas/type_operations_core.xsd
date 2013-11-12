@@ -95,7 +95,14 @@
                 <xs:attribute name="failed"  type="xs:string" >
         			<xs:annotation>
         				<xs:appinfo>Boolean</xs:appinfo>
-        				<xs:documentation>Failed status: if true, the test will end as a failure, il false, as a success</xs:documentation>
+        				<xs:documentation>Failed status: if true, the test will end as a failure (logged at ERROR level), 
+                else false, as a success (logged at WARNING level)</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="exception"  type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Description of the exception; this is automacally logged</xs:documentation>
         			</xs:annotation>
                 </xs:attribute>
             </xs:extension>

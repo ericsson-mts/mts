@@ -37,36 +37,57 @@ import org.dom4j.Element;
  */
 public class OperationExit extends Operation {
 
+	String name = null;
     /**
      * Creates a new instance of OperationExit
      */
     public OperationExit(Element root) {
         super(root, XMLElementDefaultParser.instance());
+        this.name = getAttribute("name");
+        this._key[1] = this.name;
     }
 
     @Override
     public Operation execute(Runner runner) throws Exception {
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, this);
 
-
         boolean failed;
-
+        String exception;
         try {
             lockAndReplace(runner);
             GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "Operation after pre-parsing \n", this);
+            this.name = getAttribute("name");
+            this._key[1] = this.name;
             failed = Boolean.parseBoolean(getAttribute("failed"));
+            exception = getAttribute("exception");
+            
         }
         finally {
             unlockAndRestore();
         }
 
+        String loggMsg = "<exit ";
+        
         // Replace elements in XMLTree
         if (failed) {
-            GlobalLogger.instance().getSessionLogger().error(runner, TextEvent.Topic.CORE, "Exit failed = ", failed);
+        	loggMsg += "FAILED ";
+        }
+        if (this.name != null) {
+        	loggMsg += " name=\"" + this.name + "\"";
+        }
+        if (exception != null) {
+        	loggMsg += " exception=\"" + exception + "\"";
+        }
+        loggMsg += "\\>";
+        
+        if (failed) {
+        	GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, loggMsg);
+            GlobalLogger.instance().getSessionLogger().error(runner, TextEvent.Topic.CORE, loggMsg);
         }
         else {
-            GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Exit failed = ", failed);
+        	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, loggMsg);
+            GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, loggMsg);
         }
-        throw new ExitExecutionException(failed, "Exit Failed Exception");
+        throw new ExitExecutionException(failed, "Exit Exception");	
     }
 }
