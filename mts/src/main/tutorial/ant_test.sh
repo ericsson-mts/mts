@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set OPTIONS= "-level:DEBUG -stor:file -gen:false -show:false"
+OPTIONS= "-level:DEBUG -stor:file -gen:false -show:false"
 
 echo "Run the unit tests"
 cd ../bin

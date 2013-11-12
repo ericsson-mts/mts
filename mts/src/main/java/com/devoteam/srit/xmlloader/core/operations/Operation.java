@@ -155,6 +155,13 @@ public abstract class Operation implements Serializable {
     private void addStatKO1() throws Exception {
         StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_OPERATION, this._key[0], this._key[1], "_failedNumber"), 1);
     }
+    
+    /**
+     * Add the increments of statistic Start counter
+     */
+    private void addStatStart() throws Exception {
+    	StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_OPERATION, this._key[0], this._key[1], "_startNumber"), 1);
+    }
 
     /**
      * Execute operation
@@ -165,9 +172,6 @@ public abstract class Operation implements Serializable {
      */
     public Operation executeAndStat(Runner runner) throws Exception {
         long startTimestamp = System.currentTimeMillis();
-        StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_OPERATION, this._key[0], this._key[1], "_startNumber"), 1);
-        addStatCurrent1(1);
-
         Operation nextOperation = null;
         try {
             // restore the XMLTree before executing the operation.
@@ -189,10 +193,14 @@ public abstract class Operation implements Serializable {
             throw e;
         }
         catch (Exception e) {
+            addStatStart();
+            addStatCurrent1(1);
             addStatKO1();
             throw e;
         }
         finally {
+            addStatStart();
+            addStatCurrent1(1);
             addStatEnd1(startTimestamp);
         }
         return nextOperation;
