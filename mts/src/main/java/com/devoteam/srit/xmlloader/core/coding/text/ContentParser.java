@@ -32,21 +32,22 @@ import java.util.HashMap;
 public class ContentParser {
 
     private String[] multipartArray = null;
-    private String content = null;
+    private String content2 = null;
 
     // --- construct --- //
     public ContentParser(String protocol, String content, String contentBoundary) throws Exception {
-        this.content = content;
+        this.content2 = content;
         multipartArray = contentSDPPart(protocol, content, contentBoundary);
     }
 
     public void addContentParameter(Parameter var, String[] params, String path) throws Exception {
+    	String content1 = content2;
         if (params.length == 1 && params[0].toLowerCase().startsWith("content")) 
         {
             try 
             {
                 // case no content
-                if (content == null || content.length() == 0) 
+                if (content2 == null || content2.length() == 0) 
                 {
                     return;
                 }
@@ -56,7 +57,7 @@ public class ContentParser {
                 int posEnd = params[0].indexOf(")");
                 if ((posBegin < 0) || (posEnd < 0)) 
                 {
-                    var.add(content);
+                    var.add(content2);
                     return;
                 }
                 int part = Integer.valueOf(params[0].substring(posBegin + 1, posEnd));
@@ -74,20 +75,21 @@ public class ContentParser {
                 // case an index in the path => the specific content
                 int posBegin = params[0].indexOf("(");
                 int posEnd = params[0].indexOf(")");
+                int part = 0;
                 if ((posBegin >= 0) && (posEnd >= 0)) 
                 {
-                    int part = Integer.valueOf(params[0].substring(posBegin + 1, posEnd));
-                    content = multipartArray[part].trim();
+                    part = Integer.valueOf(params[0].substring(posBegin + 1, posEnd));
                 }
+                content1 = multipartArray[part].trim();
             }
             //---------------------------------------------------------------------- content(X):Type -
             if (params[1].equalsIgnoreCase("Type")) 
             {
                 try 
                 {
-                    if ((content != null) && multipartArray != null && multipartArray.length > 1) 
+                    if ((content1 != null) && multipartArray != null && multipartArray.length > 1) 
                     {
-                        var.add(content.substring(0, content.indexOf("\r\n")));
+                        var.add(content1.substring(0, content1.indexOf("\r\n")));
                     }
                 } 
                 catch (Exception e) 
@@ -99,14 +101,14 @@ public class ContentParser {
             {
                 try 
                 {
-                    if (content != null) 
+                    if (content1 != null) 
                     {
-                        var.add(content.substring(content.indexOf("\r\n\r\n") + 1, content.length()));
+                        var.add(content1.substring(content1.indexOf("\r\n\r\n") + 1, content1.length()));
                     } 
                     else 
                     {
-                        String sdpContent = content;
-                        sdpContent = content.substring(content.indexOf("\r\n\r\n") + 1, content.length());
+                        String sdpContent = content1;
+                        sdpContent = content1.substring(content1.indexOf("\r\n\r\n") + 1, content1.length());
                         var.add(sdpContent);
                     }
                 } 
@@ -118,7 +120,7 @@ public class ContentParser {
         } 
         else if (params.length > 2 && params[1].equalsIgnoreCase("Sdp")) 
         {
-            String sdpContent = content;
+            String sdpContent = content1;
             // case an index in the path => the specific content
             int posBegin = params[0].indexOf("(");
             int posEnd = params[0].indexOf(")");
@@ -137,7 +139,7 @@ public class ContentParser {
                 } 
                 else 
                 {
-                    sdpContent = content;
+                    sdpContent = content1;
                 }
             }
             sdpContent = sdpContent.substring(sdpContent.indexOf("\r\n\r\n") + 1, sdpContent.length()).trim();
@@ -149,7 +151,7 @@ public class ContentParser {
         }
     	else if ((params.length > 1) && (params[1].equalsIgnoreCase("xml")))
       	{
-            String xmlContent = content;
+            String xmlContent = content1;
             // case an index in the path => the specific content
             int posBegin = params[0].indexOf("(");
             int posEnd = params[0].indexOf(")");
@@ -168,7 +170,7 @@ public class ContentParser {
                 } 
                 else 
                 {
-                    xmlContent = content;
+                    xmlContent = content1;
                 }
             }
             xmlContent = xmlContent.substring(xmlContent.indexOf("\r\n\r\n") + 1, xmlContent.length()).trim();
