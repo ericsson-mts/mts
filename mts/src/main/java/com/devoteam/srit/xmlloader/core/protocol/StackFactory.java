@@ -127,17 +127,7 @@ public class StackFactory
 
     private static HashMap<String, Stack> listStack = new HashMap<String, Stack>();
 
-    static 
-    {
-    	PROTOCOL_SIP_STACK_CLASS = Config.getConfigByName("tester.properties").getString("protocol.STACK_CLASS_NAME_SIP", PROTOCOL_SIP_STACK_CLASS);
-    }
 
-    static
-    {
-    	PROTOCOL_RTP_STACK_CLASS = Config.getConfigByName("tester.properties").getString("protocol.STACK_CLASS_NAME_RTP", PROTOCOL_RTP_STACK_CLASS);
-    }
-
-    
     /** Creates or returns the instance of this stack */
     public synchronized static Stack getStack(String protocol) throws ExecutionException
     {
@@ -162,7 +152,7 @@ public class StackFactory
         }
         else if (PROTOCOL_SIP.equalsIgnoreCase(protocol))
         {
-            stackToLoad = PROTOCOL_SIP_STACK_CLASS;
+        	stackToLoad = Config.getConfigByName("tester.properties").getString("protocol.STACK_CLASS_NAME_SIP", PROTOCOL_SIP_STACK_CLASS);
         }
         else if (PROTOCOL_HTTP.equalsIgnoreCase(protocol))
         {
@@ -170,7 +160,7 @@ public class StackFactory
         }
         else if (PROTOCOL_RTP.equalsIgnoreCase(protocol))
         {
-            stackToLoad = PROTOCOL_RTP_STACK_CLASS;
+            stackToLoad = Config.getConfigByName("tester.properties").getString("protocol.STACK_CLASS_NAME_RTP", PROTOCOL_RTP_STACK_CLASS);
         }
         else if (PROTOCOL_TCP.equalsIgnoreCase(protocol))
         {
