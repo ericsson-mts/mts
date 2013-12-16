@@ -71,16 +71,15 @@ public class OperationCreateProbe extends Operation
         //
         synchronized  (StackFactory.getStack(protocol)) {
         	
-        	Probe oldProbe = StackFactory.getStack(protocol).getProbe(probe.getName());        
+        	Probe oldProbe = StackFactory.getStack(protocol).getProbe(probe.getName());
 	        if ((oldProbe != null) && (!probe.equals(oldProbe))) {	        	
 	            throw new ExecutionException("A probe <name=" + probe.getName() + "> already exists with other attributes.");
 	        }
 
 	        if (oldProbe == null) {
-	        	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " probe <", probe, ">");	        		        	
-	            GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " probe <", probe, ">");
-	            
 	            StackFactory.getStack(protocol).createProbe(probe,protocol);
+	        	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " probe <", probe, ">");
+	            GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " probe <", probe, ">");
 	        }
         }        
         

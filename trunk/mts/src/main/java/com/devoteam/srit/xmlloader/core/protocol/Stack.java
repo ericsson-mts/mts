@@ -240,10 +240,10 @@ public abstract class Stack
         synchronized (channels)
         {
         	channels.put(channel.getName(), channel);
-        }        
-        if (channels.size() % 1000 == 999)
-        {
-            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Stack : List of channels : size = ", channels.size());
+	        if (channels.size() % 1000 == 999)
+	        {
+	            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Stack : List of channels : size = ", channels.size());
+	        }
         }
         GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: put in channels list : size = ", channels.size(), " the channel \n", channel);
 
@@ -274,8 +274,8 @@ public abstract class Stack
             if (channel != null)
             {
             	channel.close();
+            	channels.remove(name);
             }
-            channels.remove(name);
         }
         return true;
     }
@@ -321,18 +321,13 @@ public abstract class Stack
     /** Remove a listenpoint */
     public boolean removeListenpoint(String name) throws Exception
     {
-    	Listenpoint listenpoint = listenpoints.get(name);
-        if (listenpoint == null)
-        {
-            // nothing to do : it is considered as a success
-        }
-
         synchronized (listenpoints)
         {
+        	Listenpoint listenpoint = listenpoints.get(name);
         	if (listenpoint != null)
         	{
-        		listenpoints.remove(name);
         		listenpoint.remove();
+        		listenpoints.remove(name);
         	}
         }
 
@@ -379,17 +374,15 @@ public abstract class Stack
     /** Remove a probe */
     public boolean removeProbe(String name) throws Exception
     {
-    	Probe probe = probes.get(name);
-        if (probe == null)
-        {
-            throw new ExecutionException("The probe <name=" + name + "> does not exist");
-        }
-
         synchronized (probes)
         {
-        	probes.remove(name);
+        	Probe probe = probes.get(name);
+            if (probe != null)
+            {
+	            probe.remove();
+	        	probes.remove(name);
+            }
         }
-        probe.remove();
 
         return true;
     }

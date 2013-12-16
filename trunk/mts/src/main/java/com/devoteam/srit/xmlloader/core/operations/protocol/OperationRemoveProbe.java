@@ -65,12 +65,11 @@ public class OperationRemoveProbe extends Operation
         finally {
             unlockAndRestore();
         }
-        
-    	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " capture probe <name= \"", probeName, "\">");	        	
-        GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " capture probe <name= \"", probeName, "\">");       
-        
+                
         // close the probe
         StackFactory.getStack(protocol).removeProbe(probeName);
+    	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " capture probe <name= \"", probeName, "\">");	        	
+        GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " capture probe <name= \"", probeName, "\">");       
         if (protocol == StackFactory.PROTOCOL_ETHERNET)
         	((StackEthernet) StackFactory.getStack(protocol)).setEthernetProbeCreated(false);
         

@@ -81,17 +81,9 @@ public class OperationCloseChannel extends Operation {
             unlockAndRestore();
         }
 
-        // close the channel
-        if (StackFactory.getStack(protocol).existsChannel(name))
-        {
-        	StackFactory.getStack(protocol).closeChannel(name);
-            GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>CLOSE ", protocol, " channel <name = \"", name, "\">");
-            GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CLOSE ", protocol, " channel <name = \"", name, "\">");
-        }
-        else
-        {
-            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "The channel <", name,  "> not closed because not present in list.");
-        }
+    	StackFactory.getStack(protocol).closeChannel(name);
+        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>CLOSE ", protocol, " channel <name = \"", name, "\">");
+        GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CLOSE ", protocol, " channel <name = \"", name, "\">");
 
         return null;
     }
