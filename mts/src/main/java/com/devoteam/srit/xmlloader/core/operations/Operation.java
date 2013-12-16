@@ -172,6 +172,9 @@ public abstract class Operation implements Serializable {
      */
     public Operation executeAndStat(Runner runner) throws Exception {
         long startTimestamp = System.currentTimeMillis();
+        addStatStart();
+        addStatCurrent1(1);
+
         Operation nextOperation = null;
         try {
             // restore the XMLTree before executing the operation.
@@ -193,14 +196,10 @@ public abstract class Operation implements Serializable {
             throw e;
         }
         catch (Exception e) {
-            addStatStart();
-            addStatCurrent1(1);
             addStatKO1();
             throw e;
         }
         finally {
-            addStatStart();
-            addStatCurrent1(1);
             addStatEnd1(startTimestamp);
         }
         return nextOperation;

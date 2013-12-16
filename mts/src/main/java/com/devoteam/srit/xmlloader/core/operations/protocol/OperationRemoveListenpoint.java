@@ -84,11 +84,10 @@ public class OperationRemoveListenpoint extends Operation {
             unlockAndRestore();
         }
 
-        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " listenpoint <name= \"", listenpointName, "\">");
-        GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " listenpoint <name= \"", listenpointName, "\">");
-
         // close the listenpoint
         StackFactory.getStack(protocol).removeListenpoint(listenpointName);
+        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " listenpoint <name= \"", listenpointName, "\">");
+        GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " listenpoint <name= \"", listenpointName, "\">");
 
         return null;
     }
