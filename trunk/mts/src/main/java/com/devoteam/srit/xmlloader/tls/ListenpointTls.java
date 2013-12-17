@@ -107,12 +107,12 @@ public class ListenpointTls  extends Listenpoint {
 		
 	public boolean remove()
     {	
+		StatPool.endStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_TLS, getProtocol(), startTimestamp);
+		
 		super.remove();
 	
     	if(this.socketListenerTls!=null)
-    	{
-    		StatPool.endStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_TLS, getProtocol(), startTimestamp);
-    		
+    	{	
     		this.socketListenerTls.close();
     		this.socketListenerTls = null;
     	}

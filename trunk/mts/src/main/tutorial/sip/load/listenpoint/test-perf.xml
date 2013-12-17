@@ -6,9 +6,11 @@
 	     <!--                     -->
     	 <!-- INTERNAL PARAMETERS -->
     	 <!--                     -->
-    	<parameter name="[localHostSIP]" operation="system.ipaddress" description="Addresse du XMLloader" />
-    	<parameter name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT" description="Port du XMLloader"/>
-    	<parameter name="[localSIP]" operation="set" value="[localHostSIP(0)]:[localPortSIP]" />
+    	<parameter name="[Host-Tester]" operation="system.ipaddress" description="Addresse du XMLloader" />
+    	<parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]" description="Addresse du XMLloader" />
+    	<parameter name="[Port-Tester]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT" description="Port du XMLloader"/>
+    	<parameter name="[Port-Tester]" operation="set" value="47080" description="Addresse du XMLloader" />
+    	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]" />
 
 	    <parameter name="[transport]" operation="set" value="udp"/>
 	
@@ -16,11 +18,15 @@
     	<!-- RUNPROFILE PARAMETERS -->
     	<!--                   -->	
     	<runProfile>
-            <step time="0" frequency="1000"/>
-            <end iteration="60000"/>
+            <step time="0" frequency="10000"/>
+            <end iteration="5000"/>
     	</runProfile>
 
-  		<testcase name="UA" description="load [number]" state="true" number="1">    			
+  		<testcase name="UA" description="load [number]" state="true" number="1">
+			     <scenario name="UA">UA.xml</scenario>
+		  </testcase>
+		  
+		  <testcase name="UA" description="load [number]" state="true" number="1">
 			     <scenario name="UA">UA.xml</scenario>
 		  </testcase>
 	
