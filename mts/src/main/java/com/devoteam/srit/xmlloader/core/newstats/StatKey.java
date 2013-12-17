@@ -45,7 +45,10 @@ public final class StatKey implements Comparable<StatKey>, Serializable
         this.attributes = attributes;
         for (int i = 0; i < this.attributes.length; i++)
         {
-        	this.attributes[i] = this.attributes[i].trim(); 
+        	if (this.attributes[i] != null)
+        	{
+        		this.attributes[i] = this.attributes[i].trim();
+        	}
         }
     }
 

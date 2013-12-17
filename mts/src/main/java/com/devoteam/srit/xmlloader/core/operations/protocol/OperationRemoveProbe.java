@@ -67,11 +67,14 @@ public class OperationRemoveProbe extends Operation
         }
                 
         // close the probe
-        StackFactory.getStack(protocol).removeProbe(probeName);
-    	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " capture probe <name= \"", probeName, "\">");	        	
-        GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " capture probe <name= \"", probeName, "\">");       
-        if (protocol == StackFactory.PROTOCOL_ETHERNET)
-        	((StackEthernet) StackFactory.getStack(protocol)).setEthernetProbeCreated(false);
+        boolean result = StackFactory.getStack(protocol).removeProbe(probeName);
+        if (result)
+        {
+        	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " capture probe <name= \"", probeName, "\">");	        	
+        	GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " capture probe <name= \"", probeName, "\">");
+            if (protocol == StackFactory.PROTOCOL_ETHERNET)
+            	((StackEthernet) StackFactory.getStack(protocol)).setEthernetProbeCreated(false);
+        }
         
         return null;
     }

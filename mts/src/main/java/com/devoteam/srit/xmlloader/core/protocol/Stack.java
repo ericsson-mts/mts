@@ -303,7 +303,7 @@ public abstract class Stack
     	boolean result = true;
         synchronized (listenpoints)
         {
-        	Listenpoint oldListenpoint = getListenpoint(listenpoint.getName());
+        	Listenpoint oldListenpoint = listenpoints.get(listenpoint.getName());
 	        if ((oldListenpoint != null) && (!listenpoint.equals(oldListenpoint))) {
 	            throw new ExecutionException("A listenpoint <name=" + listenpoint.getName() + "> already exists with other attributes.");
 	        }
@@ -352,32 +352,31 @@ public abstract class Stack
         }
     }
 
-    public boolean existsListenpoint(String name) throws Exception
-    {
-        synchronized (listenpoints)
-        {
-            return listenpoints.containsKey(name);
-        }
-    }
-
     /** Create the probe */
     public boolean createProbe(Probe probe, String protocol) throws Exception
     {
-        boolean created = probe.create(protocol);
-        if (created)
+    	boolean result = true;
+        synchronized (probes)
         {
-            synchronized (probes)
-            {
-            	probes.put(probe.getName(), probe);
-                if (probes.size() % 1000 == 999)
-                {
-                    GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Stack : List of probes : size = ", probes.size());
-                }
-                GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: put in probes list : size = ", probes.size(), " the probe \n", probe);
-            }
-        }
+        	Probe oldProbe = probes.get(probe.getName());
+	        if ((oldProbe != null) && (!probe.equals(oldProbe))) {	        	
+	            throw new ExecutionException("A probe <name=" + probe.getName() + "> already exists with other attributes.");
+	        }
 
-        return created;
+	        if (oldProbe != null) {
+	        	return false;
+	        }
+	        probes.put(probe.getName(), probe);
+            if (probes.size() % 1000 == 999)
+            {
+                GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Stack : List of probes : size = ", probes.size());
+            }
+            GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: put in probes list : size = ", probes.size(), " the probe \n", probe);
+        }
+        
+        result = probe.create(protocol);
+        
+        return result;
     }
 
     /** Remove a probe */
@@ -386,13 +385,15 @@ public abstract class Stack
         synchronized (probes)
         {
         	Probe probe = probes.get(name);
-            if (probe != null)
+            if (probe == null)
             {
-	            probe.remove();
-	        	probes.remove(name);
+	            return false;
             }
+            probe.remove();
         }
 
+        probes.remove(name);
+        
         return true;
     }
 
@@ -402,14 +403,6 @@ public abstract class Stack
         synchronized (probes)
         {
             return probes.get(name);
-        }
-    }
-
-    public boolean existsProbe(String name) throws Exception
-    {
-        synchronized (probes)
-        {
-            return probes.containsKey(name);
         }
     }
 
