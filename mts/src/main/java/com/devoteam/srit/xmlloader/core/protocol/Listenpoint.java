@@ -339,22 +339,46 @@ public abstract class Listenpoint
 
         if (listenpointUdp != null)
         {
-            listenpointUdp.remove();
-            listenpointUdp = null;
+        	try
+        	{
+        		listenpointUdp.remove();
+        	}
+        	catch (Exception e)
+        	{
+        	}
+    		listenpointUdp = null;
         }
         if (listenpointTcp != null)
         {
-            listenpointTcp.remove();
+        	try
+        	{
+        		listenpointTcp.remove();
+	    	}
+	    	catch (Exception e)
+	    	{
+	    	}
             listenpointTcp = null;
         }
         if (listenpointSctp != null)
         {
-            listenpointSctp.remove();
+        	try
+        	{
+        		listenpointSctp.remove();
+	    	}
+	    	catch (Exception e)
+	    	{
+	    	}
             listenpointSctp = null;
         }
         if (listenpointTls != null)
         {
-            listenpointTls.remove();
+        	try
+        	{
+            	listenpointTls.remove();
+	    	}
+	    	catch (Exception e)
+	    	{
+	    	}
             listenpointTls = null;
         }
 

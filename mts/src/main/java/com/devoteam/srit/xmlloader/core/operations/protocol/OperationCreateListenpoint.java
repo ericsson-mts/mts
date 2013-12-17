@@ -72,23 +72,12 @@ public class OperationCreateListenpoint extends Operation {
             unlockAndRestore();
         }
 
-        //
-        // Get if she does not already exists and compare to the existing one
-        //
-        synchronized (StackFactory.getStack(protocol)) {
-
-            Listenpoint oldListenpoint = StackFactory.getStack(protocol).getListenpoint(listenpoint.getName());
-            if ((oldListenpoint != null) && (!listenpoint.equals(oldListenpoint))) {
-                throw new ExecutionException("A listenpoint <name=" + listenpoint.getName() + "> already exists with other attributes.");
-            }
-
-            if (oldListenpoint == null) {
-                StackFactory.getStack(protocol).createListenpoint(listenpoint, protocol);
-                GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " listenpoint <", listenpoint, ">");
-                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " listenpoint <", listenpoint, ">");
-            }
+        boolean result = StackFactory.getStack(protocol).createListenpoint(listenpoint, protocol);
+        if (result)
+        {
+	        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " listenpoint <", listenpoint, ">");
+	        GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " listenpoint <", listenpoint, ">");
         }
-
         return null;
     }
 }

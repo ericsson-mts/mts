@@ -3,10 +3,16 @@
 
 <scenario>
  
-  <parameter name="[test:localPortSIP]" operation="number.add" value="[test:localPortSIP]" value2="1"/>
+  <parameter name="[test:Port-Tester]" operation="number.add" value="[test:Port-Tester]" value2="2"/>
+  <createListenpointSIP name="lp[test:Port-Tester]" localHost="[Host-Tester]" localPort="[test:Port-Tester]" transport="[transport]"/>
+  <createListenpointSIP name="lp[test:Port-Tester]" localHost="[Host-Tester]" localPort="[test:Port-Tester]" transport="[transport]"/>
   
-  <createListenpointSIP name="providerUAC[test:localPortSIP]" localHost="[localHostSIP]" localPort="[test:localPortSIP]" transport="[transport]"/>
-
-  <!--removeListenpointSIP name="providerUAC"/-->        
+  <finally>
+  
+    <removeListenpointSIP name="lp[test:Port-Tester]"/>
+    <removeListenpointSIP name="lp[test:Port-Tester]"/>
+    <pause name="between createlistenpoint" seconds="0.000"/>
+    
+  </finally>
   
 </scenario>

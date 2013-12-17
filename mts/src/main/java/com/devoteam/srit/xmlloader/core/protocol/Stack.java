@@ -300,38 +300,47 @@ public abstract class Stack
     /** Create the listenpoint */
     public boolean createListenpoint(Listenpoint listenpoint, String protocol) throws Exception
     {
-        boolean created = listenpoint.create(protocol);
-
-        if (created)
+    	boolean result = true;
+        synchronized (listenpoints)
         {
-            synchronized (listenpoints)
+        	Listenpoint oldListenpoint = getListenpoint(listenpoint.getName());
+	        if ((oldListenpoint != null) && (!listenpoint.equals(oldListenpoint))) {
+	            throw new ExecutionException("A listenpoint <name=" + listenpoint.getName() + "> already exists with other attributes.");
+	        }
+	        if (oldListenpoint != null)
+	        {
+	        	return false;
+	        }
+        	listenpoints.put(listenpoint.getName(), listenpoint);
+            if (listenpoints.size() % 1000 == 999)
             {
-            	listenpoints.put(listenpoint.getName(), listenpoint);
-                if (channels.size() % 1000 == 999)
-                {
-                    GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Stack : List of listenpoints : size = ", listenpoints.size());
-                }
-                GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: put in listenpoints list : size = ", listenpoints.size(), " the listenpoint \n", listenpoint);
+                GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Stack : List of listenpoints : size = ", listenpoints.size());
             }
+            GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: put in listenpoints list : size = ", listenpoints.size(), " the listenpoint \n", listenpoint);
         }
-
-        return created;
+        
+        result = listenpoint.create(protocol);
+        
+        return result;
     }
 
     /** Remove a listenpoint */
     public boolean removeListenpoint(String name) throws Exception
     {
+    	Listenpoint listenpoint = null;
         synchronized (listenpoints)
         {
-        	Listenpoint listenpoint = listenpoints.get(name);
-        	if (listenpoint != null)
+        	listenpoint = listenpoints.get(name);
+        	if (listenpoint == null)
         	{
-        		listenpoint.remove();
-        		listenpoints.remove(name);
+        		return false;
         	}
+    		listenpoints.remove(name);
         }
-
-        return true;
+        
+		listenpoint.remove();
+		
+		return true;
     }
 
     /** Get a listenpoint from it's name */
@@ -360,7 +369,7 @@ public abstract class Stack
             synchronized (probes)
             {
             	probes.put(probe.getName(), probe);
-                if (channels.size() % 1000 == 999)
+                if (probes.size() % 1000 == 999)
                 {
                     GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Stack : List of probes : size = ", probes.size());
                 }
