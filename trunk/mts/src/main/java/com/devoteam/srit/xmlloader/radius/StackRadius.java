@@ -89,8 +89,9 @@ public class StackRadius extends Stack
 	public synchronized Listenpoint parseListenpointFromXml(Element root) throws Exception 
 	{
         String name = root.attributeValue("name");
-        if (existsListenpoint(name))
-            return getListenpoint(name);
+        Listenpoint listenpoint = getListenpoint(name);
+        if (listenpoint != null)
+            return listenpoint;
         else
             return new ListenpointRadius(this, root);
 	}
