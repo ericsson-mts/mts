@@ -10,30 +10,30 @@
     		<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
     </receiveMessageDIAMETER>
     
-    <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.1018.1024.code"/>    
+    <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.1018.1024.code"/>
     <test parameter="[avp1code]" condition="string.equals" value="1024"/>
 
     <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
     <test parameter="[listenpointName]" condition="list.isEmpty"/>
-    <parameter name="[listenpointHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>        
+    <parameter name="[listenpointHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>
     <test parameter="[listenpointHost]" condition="string.equals" value="0.0.0.0"/>
-    <parameter name="[listenpointPort]" operation="protocol.setFromMessage" value="listenpoint.localPort"/>    
+    <parameter name="[listenpointPort]" operation="protocol.setFromMessage" value="listenpoint.localPort"/>
     <test parameter="[listenpointPort]" condition="string.equals" value="[localPortDIAM]"/>
     
-    <parameter name="[request2]" operation="protocol.setFromMessage" value="message.request"/>    
+    <parameter name="[request2]" operation="protocol.setFromMessage" value="message.request"/>
     <test parameter="[request2]" condition="string.equals" value="true"/>
     <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>    
     <test parameter="[type]" condition="string.equals" value="Multimedia-Authentitcation:506"/>
     
-    <parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/>    
+    <parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/>
     <test parameter="[protocol]" condition="string.equals" value="DIAMETER"/>
-    <parameter name="[request1]" operation="protocol.setFromMessage" value="header.request"/>        
-    <test parameter="[request1]" condition="string.equals" value="true"/>    
-    <parameter name="[code]" operation="protocol.setFromMessage" value="header.command"/>    
-    <test parameter="[code]" condition="string.equals" value="506"/>    
-    <parameter name="[error]" operation="protocol.setFromMessage" value="header.error"/>    
-    <test parameter="[error]" condition="string.equals" value="false"/>        
-    <parameter name="[appId]" operation="protocol.setFromMessage" value="header.applicationId"/>    
+    <parameter name="[request1]" operation="protocol.setFromMessage" value="header.request"/>
+    <test parameter="[request1]" condition="string.equals" value="true"/>
+    <parameter name="[code]" operation="protocol.setFromMessage" value="header.command"/>
+    <test parameter="[code]" condition="string.equals" value="506"/>
+    <parameter name="[error]" operation="protocol.setFromMessage" value="header.error"/>
+    <test parameter="[error]" condition="string.equals" value="false"/>
+    <parameter name="[appId]" operation="protocol.setFromMessage" value="header.applicationId"/>
     <test parameter="[appId]" condition="string.equals" value="[applicationID]"/>    
     <parameter name="[proxiable]" operation="protocol.setFromMessage" value="header.proxiable"/>    
     <test parameter="[proxiable]" condition="string.equals" value="false"/>
@@ -86,7 +86,7 @@
     <test parameter="[avp9code]" condition="list.isEmpty"/>
     
     <sendMessageDIAMETER name="SendAnswerMAA">
-	<header request="false" command="[commandCode]" applicationId="4321" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+	<header request="false" command="[commandCode]" applicationId="[applicationID]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
 	<avp code="Origin-Host" value="[remoteHostDIAM]"/>
 	<avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
 	<avp code="Vendor-Specific-Application-Id">

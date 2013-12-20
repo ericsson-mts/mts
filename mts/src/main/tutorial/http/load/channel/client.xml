@@ -3,11 +3,16 @@
 
 <scenario>
 
-      <parameter name="[test:Local-Port]" operation="number.add" value="[test:Local-Port]" value2="1"/>
+      <!--parameter name="[test:localPortHTTP]" operation="number.add" value="[test:localPortHTTP]" value2="1"/-->
 
-      <!--openChannelHTTP name="ChannelHTTP_[Local-Port]" localHost="[localHostHTTP]" localPort="[localPortHTTP]" remoteURL="[Remote-URL]"/-->
-      <openChannelHTTP name="ChannelHTTP_[test:Local-Port]" remoteURL="[Remote-URL]"/>
-
-      <closeConnectionHTTP connectionName="ChannelHTTP_[Local-Port]"/> 
-
+      <openChannelHTTP name="Channel[test:localPortHTTP]" localHost="[test:localHostHTTP]" localPort="[test:localPortHTTP]" remoteURL="[Remote-URL]"/>
+      <openChannelHTTP name="Channel[test:localPortHTTP]" remoteURL="[Remote-URL]"/>
+      
+      <finally>
+      
+          <closeConnectionHTTP connectionName="Channel[test:localPortHTTP]"/>
+          <closeConnectionHTTP connectionName="Channel[test:localPortHTTP]"/>
+          
+      </finally>
+      
 </scenario> 

@@ -59,24 +59,20 @@ public class Application
     /** Creates a new instance of Application */
     public Application(String name, int id) throws ParsingException
     {
-        _name = name ;
-        _id = id ;
+        this._name = name ;
+        this._id = id ;
+        this.commandDefByName= new HashMap<String, CommandDef>();
+        this.commandDefByCode= new HashMap<String, CommandDef>();
+        this.typeDefByName   = new HashMap<String, TypeDef>();
+        this.vendorDefByName = new HashMap<String, VendorDef>();
+        this.vendorDefByCode = new HashMap<String, VendorDef>();
+        this.avpDefByName    = new HashMap<String, AvpDef>();
+        this.avpDefByCode    = new HashMap<String, AvpDef>();
     }
     
     
     public void parseApplication(Element root) throws ParsingException
     {
-        vendorDefByName = new HashMap();
-        vendorDefByCode = new HashMap();
-        typeDefByName   = new HashMap();
-        commandDefByName= new HashMap();
-        commandDefByCode= new HashMap();
-        avpDefByName    = new HashMap();
-        avpDefByCode    = new HashMap();
-        vendorDefByCode = new HashMap();
-        
-        
-        
         List<Element> elements;
         
         elements = root.elements("vendor");

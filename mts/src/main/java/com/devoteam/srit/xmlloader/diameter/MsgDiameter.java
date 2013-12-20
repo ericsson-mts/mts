@@ -272,14 +272,22 @@ public class MsgDiameter extends Msg
         String name = "unknown ";
         if(null != avpDef) name = avpDef.get_name();
         
-        if(type.equalsIgnoreCase("grouped"))          return "grouped" ;
-        else if(type.equalsIgnoreCase("Integer32"))   return Long.toString((new AVP_Integer32(avp)).queryValue());
-        else if(type.equalsIgnoreCase("Integer64"))   return Long.toString((new AVP_Integer64(avp)).queryValue());
-        else if(type.equalsIgnoreCase("Unsigned32"))  return Long.toString((new AVP_Unsigned32(avp)).queryValue());
-        else if(type.equalsIgnoreCase("Unsigned64"))  return Long.toString((new AVP_Unsigned64(avp)).queryValue());
-        else if(type.equalsIgnoreCase("OctetString")) return Utils.toBinaryString(new AVP_OctetString(avp).queryValue(), false);
-        else if(type.equalsIgnoreCase("IPAddress"))   return InetAddress.getByAddress((new AVP_OctetString(avp)).queryValue()).getHostAddress();
-        else if(type.equalsIgnoreCase("UTF8String"))  return new String((new AVP_OctetString(avp)).queryValue());
+        if(type.equalsIgnoreCase("grouped"))          
+        	return "grouped" ;
+        else if(type.equalsIgnoreCase("Integer32"))   
+        	return Long.toString((new AVP_Integer32(avp)).queryValue());
+        else if(type.equalsIgnoreCase("Integer64"))
+        	return Long.toString((new AVP_Integer64(avp)).queryValue());
+        else if(type.equalsIgnoreCase("Unsigned32"))  
+        	return Long.toString((new AVP_Unsigned32(avp)).queryValue());
+        else if(type.equalsIgnoreCase("Unsigned64"))  
+        	return Long.toString((new AVP_Unsigned64(avp)).queryValue());
+        else if(type.equalsIgnoreCase("OctetString")) 
+        	return Utils.toBinaryString(new AVP_OctetString(avp).queryValue(), false);
+        else if(type.equalsIgnoreCase("IPAddress")) 
+        	return InetAddress.getByAddress((new AVP_OctetString(avp)).queryValue()).getHostAddress();
+        else if(type.equalsIgnoreCase("UTF8String"))  
+        	return new String((new AVP_OctetString(avp)).queryValue());
         else return null ;
     }
             
