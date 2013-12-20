@@ -55,7 +55,11 @@ public class ScenarioReference implements Serializable {
     public ScenarioReference(Element elements, Testcase testcase) {
         _name = elements.attributeValue("name");
         _description = elements.attributeValue("description");
-        _filename = elements.getStringValue().trim();
+        _filename = elements.attributeValue("file");
+        if(null == _filename){
+            _filename = elements.getStringValue();
+        }
+        _filename = _filename.trim();
         _testcase = testcase;
     }
 
