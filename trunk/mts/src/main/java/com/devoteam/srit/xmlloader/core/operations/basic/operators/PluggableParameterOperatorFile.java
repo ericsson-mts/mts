@@ -27,12 +27,9 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
 import com.devoteam.srit.xmlloader.core.utils.CSVReader;
 import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.URIFactory;
 import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
@@ -57,6 +54,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import com.devoteam.srit.xmlloader.rtp.flow.CodecDictionary;
 import com.devoteam.srit.xmlloader.rtp.flow.CodecDictionary.Protocol;
+import java.util.Vector;
 
 /**
  *
@@ -69,6 +67,7 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
     final private String NAME_S_WRITE       = "file.writestring";
     final private String NAME_S_READ        = "file.readstring";
     final private String NAME_READPROPERTY  = "file.readproperty";
+    final private String NAME_LISTPROPERTYKEYS = "file.listpropertykeys";
     final private String NAME_READCSV       = "file.readcsv";
     final private String NAME_REMOVE        = "file.remove";
     final private String NAME_EXISTS        = "file.exists";
@@ -87,6 +86,7 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
         this.addPluggableName(new PluggableName(NAME_EXISTS));
         this.addPluggableName(new PluggableName(NAME_CREATE));
         this.addPluggableName(new PluggableName(NAME_READPROPERTY));
+        this.addPluggableName(new PluggableName(NAME_LISTPROPERTYKEYS));
         this.addPluggableName(new PluggableName(NAME_READCSV));
         this.addPluggableName(new PluggableName(NAME_READMEDIA));
         this.addPluggableName(new PluggableName(NAME_READWAVE));
@@ -177,6 +177,19 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
                 propertyName = property.get(0).toString();
                 result.add(Config.getConfigByName(configName).getString(propertyName));
             }
+            else if(name.equals(NAME_LISTPROPERTYKEYS))
+            {
+                normalizeParameters(operands);
+                Parameter config = path;
+
+                String configName = "";
+                configName = config.get(0).toString();
+                
+                Vector<String> names = Config.getConfigByName(configName).getPropertiesEnhanced().getNameOfAllParameters();
+                for(String key:names){
+                    result.add(key);
+                }
+            }            
             else if(name.equals(NAME_READCSV))
             {
                 Parameter csvCol = PluggableParameterOperatorList.assertAndGetParameter(operands, "value2");

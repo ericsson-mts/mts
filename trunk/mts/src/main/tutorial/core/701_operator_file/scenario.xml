@@ -62,6 +62,12 @@
     <parameter name="[config]" operation="file.readproperty" value="701_operator_file/testProperties.properties" value2="someProperty"/>
     <test parameter="[config]" condition="string.equals" value="toto"/>
     
+    <parameter name="[keys]" operation="file.listpropertykeys" value="701_operator_file/testProperties.properties" />
+    <parameter name="[keys_idx1]" operation="list.find" value="[keys]" value2="someProperty"/>
+    <parameter name="[keys_idx2]" operation="list.find" value="[keys]" value2="someProperty2"/>
+    <test parameter="[keys_idx1]" condition="string.equals" value="0"/>
+    <test parameter="[keys_idx2]" condition="list.isEmpty" />
+    
     <parameter name="[config]" operation="file.readproperty" value="tester.properties" value2="stats.AUTOMATIC_GENERATE"/>
     <test parameter="[config]" condition="string.equals" value="false"/>
     
