@@ -839,7 +839,7 @@ public class Scenario implements Serializable {
         // go read the value of the command in dictionnary
         if ((type != null) && (!Utils.isInteger(type))) {
             // use ApplicationID "base" but will search in all Applications anyway
-            CommandDef commandDef = Dictionary.getInstance().getCommandDefByName(type, "base");
+            CommandDef commandDef = Dictionary.getInstance().getCommandDefByName(type, "0");
             if (null != commandDef) {
                 type = Integer.toString(commandDef.get_code());
             }

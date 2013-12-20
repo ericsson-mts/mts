@@ -11,32 +11,32 @@
     <parameter name="[privateIdentity]" operation="list.addLast" value="[privateIdentity]" value2="bla3[publicIdentity]3, [unKnown(2)]"/>
     <parameter name="[privateIdentity]" operation="list.addLast" value="[privateIdentity]" value2="bla4[publicIdentity]4, [unKnown(3)]"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
-		<header request="true" command="Multimedia-Authentitcation" applicationId="Ericsson IMT 30 - Cx"/>
-		<avp code="Origin-Host" value="[localHostDIAM]"/>
-		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
-		<avp code="Destination-Host" value="[remoteHostDIAM]"/>
-		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
-		<avp code="Vendor-Specific-Application-Id">
-	        	<avp code="Vendor-Id" value="TGPP"/>
-	        	<avp code="Auth-Application-Id" value="IMS_Cx_Dx"/>
-		</avp>
-		<avp code="Session-Id" value="CXCSCFCX.sip.pfdev.fr;45e45ee4;046725;5cd579ef"/>
-		<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-		<avp code="[codePublicIdentity]" value="bla[publicIdentity(0)]bla, [unKnown], [unKnown(1000)]"/>
-		<avp code="[codePublicIdentity]" value="[publicIdentity]"/>
-		<avp code="[codePublicIdentity]" value="bla[unKnown]bla, [unKnown(0)], [unknown(-1)], [unknown(index)], [unknown()]"/>
-		<avp code="[codePublicIdentity]" value="[unKnown]"/>
-		<!--<avp code="[codePrivateIdentity]" value="bla[privateIdentity(0)]bla"/>-->
-		<avp code="[codePrivateIdentity(0)]" value="[privateIdentity]"/>
-	    	<avp code="Number-Authentication-Items" value="1"/>
-	    	<avp code="Auth-Data-Item">
-	        	<avp code="Item-Number" value="0"/>
-	        	<avp code="Authentication-Scheme" value="DIGEST"/>
-	        	<avp code="Authentication-Scheme" value="666"/>
-	        	<avp code="Authentication-Scheme" value="999"/>
-	        	<avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
-	    </avp>
-	    <avp code="2" value="bla[param]bla"/>	    
+        <header request="true" command="Multimedia-Authentitcation" applicationId="[applicationID]"/>
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Vendor-Specific-Application-Id">
+              	<avp code="Vendor-Id" value="TGPP"/>
+              	<avp code="Auth-Application-Id" value="[applicationID]"/>
+        </avp>
+        <avp code="Session-Id" value="CXCSCFCX.sip.pfdev.fr;45e45ee4;046725;5cd579ef"/>
+        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="[codePublicIdentity]" value="bla[publicIdentity(0)]bla, [unKnown], [unKnown(1000)]"/>
+        <avp code="[codePublicIdentity]" value="[publicIdentity]"/>
+        <avp code="[codePublicIdentity]" value="bla[unKnown]bla, [unKnown(0)], [unknown(-1)], [unknown(index)], [unknown()]"/>
+        <avp code="[codePublicIdentity]" value="[unKnown]"/>
+        <!--<avp code="[codePrivateIdentity]" value="bla[privateIdentity(0)]bla"/>-->
+        <avp code="[codePrivateIdentity(0)]" value="[privateIdentity]"/>
+        <avp code="Number-Authentication-Items" value="1"/>
+        <avp code="Auth-Data-Item">
+            <avp code="Item-Number" value="0"/>
+            <avp code="Authentication-Scheme" value="DIGEST"/>
+            <avp code="Authentication-Scheme" value="666"/>
+            <avp code="Authentication-Scheme" value="999"/>
+            <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+        </avp>
+        <avp code="2" value="bla[param]bla"/>
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="Receive Answer (MAA)" request="false" type="Multimedia-Authentitcation:506" result="DIAMETER_SUCCESS:2001">
@@ -45,15 +45,19 @@
     		<parameter name="lastPrivateIdentity" operation="protocol.setFromMessage" value="avp.3.value"/>
     </receiveMessageDIAMETER>
 
-    <!--test parameter="[lastPublicIdentity(1)]" condition="string.equals" value="blasip:+330000@sip.pfdev.frbla, [unKnown], [unKnown(1000)]"/>
+    <test parameter="[lastPublicIdentity]" condition="list.size" value="5"/>
+    <test parameter="[lastPublicIdentity(0)]" condition="string.equals" value="[PublicIdentity]1"/>
+    <test parameter="[lastPublicIdentity(1)]" condition="string.equals" value="blasip:+330000@sip.pfdev.frbla, [unKnown], [unKnown(1000)]"/>
     <test parameter="[lastPublicIdentity(2)]" condition="string.equals" value="sip:+330000@sip.pfdev.fr"/>
     <test parameter="[lastPublicIdentity(3)]" condition="string.equals" value="bla[unKnown]bla, [unKnown(0)], [unknown(-1)], [unknown(index)], [unknown()]"/>        		
-    <test parameter="[lastPublicIdentity(4)]" condition="string.equals" value="[unKnown]"/>        		
-    <test parameter="[lastPrivateIdentity]" condition="string.equals" value="[privateIdentity]"/-->        		
+    <test parameter="[lastPublicIdentity(4)]" condition="string.equals" value="[unKnown]"/>
+    <parameter name="[lastPrivateIdentityBinary]" operation="binary.parse" value="[lastPrivateIdentity]"/>
+    <parameter name="[lastPrivateIdentityBinary]" operation="binary.toString" value="[lastPrivateIdentityBinary]"/>
+    <test parameter="[lastPrivateIdentityBinary]" condition="string.equals" value="[privateIdentity]"/>
     <test parameter="[lastParam(0)]" condition="string.equals" value="12346665"/>
     <test parameter="[lastParam(1)]" condition="string.equals" value="1666346665"/>
-    <test parameter="[lastParam(2)]" condition="string.equals" value="1999346665"/>        	    
-    <test parameter="[lastParam(3)]" condition="string.equals" value="12346665"/>        	            	    
+    <test parameter="[lastParam(2)]" condition="string.equals" value="1999346665"/>
+    <test parameter="[lastParam(3)]" condition="string.equals" value="12346665"/>
     <test parameter="[lastParam(4)]" condition="string.equals" value="1666346665"/>
     <test parameter="[lastParam(5)]" condition="string.equals" value="1999346665"/>
 

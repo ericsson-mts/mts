@@ -22,6 +22,9 @@
 	<!ENTITY gqpolicy		SYSTEM "gqpolicy.xml">
 	<!ENTITY etsie2e4		SYSTEM "etsie2e4.xml">
 	<!ENTITY Ericsson		SYSTEM "Ericsson.xml">
+	<!ENTITY ericssonIMT30Charging SYSTEM "ericssonIMT30Charging.xml">
+	<!ENTITY ericssonIMT30Cx SYSTEM "ericssonIMT30Cx.xml">
+	<!ENTITY imscxdx SYSTEM "imscxdx.xml">
 	<!ENTITY Tango			SYSTEM "Tango.xml">
 	<!ENTITY mobileipv6		SYSTEM "mobileipv6.xml">
 	<!ENTITY Cisco			SYSTEM "Cisco.xml">
@@ -196,7 +199,7 @@
 			of this type that do not align on a 32-bit boundary MUST have
 			the necessary padding.
 		-->
-		<typedefn type-name="UTF8String" type-parent="OctetString"/>
+		<typedefn type-name="UTF8String"/>
 		<!--
 			The UTF8String format is derived from the OctetString AVP Base
 			Format. This is a human readable string represented using the
@@ -235,7 +238,7 @@
 			The UTF8String MUST not contain any octets with a value of
 			zero.
 		-->
-		<typedefn type-name="IPAddress" type-parent="OctetString"/>
+		<typedefn type-name="IPAddress" type-parent="UTF8String"/>
 		<!--
 			The IPAddress format is derived from the OctetString AVP Base
 			Format. It represents 32 bit (IPv4) [17] or 128 bit (IPv6) [16]
@@ -246,7 +249,7 @@
 			field MUST be set to 24 (28 if the 'V' bit is enabled) for IPv6
 			addresses.
 		-->
-		<typedefn type-name="DiameterIdentity" type-parent="OctetString"/>
+		<typedefn type-name="DiameterIdentity" type-parent="UTF8String"/>
 		<!--
 			The DiameterIdentity format is derived from the OctetString AVP
 			Base Format.  It uses the UTF-8 encoding and has the same
@@ -306,7 +309,7 @@
 			For example, diameter-host.abc.com would be expanded to
 			aaa://diameter/diameter-host.abc.com:TBD;protocol=sctp.
 		-->
-		<typedefn type-name="IPFilterRule" type-parent="OctetString"/>
+		<typedefn type-name="IPFilterRule" type-parent="UTF8String"/>
 		<!--
 			The IPFilterRule format is derived from the OctetString AVP
 			Base Format.  It uses the UTF-8 encoding and has the same
@@ -460,7 +463,7 @@
 			and the ipfw.c code may provide a useful base for
 			implementations.
 		-->
-		<typedefn type-name="QOSFilterRule" type-parent="OctetString"/>
+		<typedefn type-name="QOSFilterRule" type-parent="UTF8String"/>
 		<!--
 			The QosFilterRule format is derived from the OctetString AVP
 			Base Format.  It uses the UTF-8 encoding and has the same
@@ -563,13 +566,13 @@
 			and the ipfw.c code may provide a useful base for
 			implementations.
 		-->
-		<typedefn type-name="MIPRegistrationRequest" type-parent="OctetString"/>
+		<typedefn type-name="MIPRegistrationRequest" type-parent="UTF8String"/>
 		<typedefn type-name="Integer32"/>
 		<!--
 			32 bit signed value, in network byte order. The AVP Length
 			field MUST be set to 12 (16 if the 'V' bit is enabled).
 		-->
-		<typedefn type-name="VendorId" type-parent="Unsigned32"/>
+		<typedefn type-name="VendorId" type-parent="Integer32"/>
 		<typedefn type-name="AppId" type-parent="Integer32"/>
 		<typedefn type-name="Integer64"/>
 		<!--
@@ -584,7 +587,7 @@
 			most significant octets returned from NTP [18], in network byte
 			order.
 		-->
-		<typedefn type-name="Time"/>
+		<typedefn type-name="Time" type-parent="Unsigned32"/>
 		<!--
 			The Time format is derived from the Unsigned32 AVP Base Format.
 			This is 32 bit unsigned value containing the four most
@@ -6331,6 +6334,9 @@
 	&gqpolicy;
 	&etsie2e4;
 	&Ericsson;
+	&ericssonIMT30Charging;
+	&ericssonIMT30Cx;
+	&imscxdx;
 	&mobileipv6;
 	&Cisco;
 	&Vodafone;

@@ -136,7 +136,7 @@ public class XMLElementAVPParser implements XMLElementReplacer, Serializable
                 List<Element> tempList = xmlElementDefaultParser.replace(newElement, parameterPool);
                 try {
                     for (Element e : tempList) {
-                        MsgDiameterParser.getInstance().doDictionnary(e, "base", false);
+                        // MsgDiameterParser.getInstance().doDictionnary(e, "0", false);
 
                         list.addAll(xmlElementTextOnlyParser.replace(e, parameterPool));
                     }

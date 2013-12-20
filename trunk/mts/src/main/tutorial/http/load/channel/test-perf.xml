@@ -3,31 +3,32 @@
 
 <test name="Load tests">
 
-        <!--
-           - local host and port for HTTP client
-         -->
-        <parameter name="[localHostHTTP]" operation="system.ipaddress"/>
-        <parameter name="[localHostHTTP]" operation="set" value="[Local-Host(0)]"/>
-        <parameter name="[localPortHTTP]" operation="set" value="10000"/>
+    <!--
+       - local host and port for HTTP client
+     -->
+    <parameter name="[localHostHTTP]" operation="system.ipaddress"/>
+    <parameter name="[localHostHTTP]" operation="set" value="[localHostHTTP(0)]"/>
+    <parameter name="[localPortHTTP]" operation="set" value="50000"/>
+    
+    <!--
+       - URL of the HTTP server.
+     -->
+    <parameter name="[remoteHostHTTP]" operation="system.ipaddress"/>
+    <parameter name="[remoteHostHTTP]" operation="set" value="[remoteHostHTTP(0)]"/>
+    <parameter name="[remotePortHTTP]" operation="set" value="8080"/>
+    <parameter name="[Remote-URL]" operation="set" value="http://[remoteHostHTTP]:[remotePortHTTP]" />
 
-        <!--
-           - URL of the HTTP server.
-         -->
-        <parameter name="[remoteHostHTTP]" operation="system.ipaddress"/>
-        <parameter name="[remoteHostHTTP]" operation="set" value="[Remote-Host(0)]"/>
-        <parameter name="[remotePortHTTP]" operation="set" value="8080"/>
-        <parameter name="[Remote-URL]" operation="set" value="http://[remoteHostHTTP]:[remotePortHTTP]" />
+    <runProfile>
+        <step time="0" frequency="10000"/>
+        <end iteration="3000"/>
+    </runProfile>
 
-	    <!--                   -->
-    	<!-- RUNPROFILE PARAMETERS -->
-    	<!--                   -->
-    	<runProfile>
-            <step time="0" frequency="1000"/>
-            <end delay="300"/>
-    	</runProfile>
+    <testcase name="client HTTP 1" description="load client" state="true" number="1">
+        <scenario name="client HTTP">client.xml</scenario>
+    </testcase>
+    
+    <testcase name="client HTTP 2" description="load client" state="true" number="1">
+        <scenario name="client HTTP">client.xml</scenario>
+    </testcase>
 
-  		<testcase name="client HTTP" description="load [number]" state="true" number="1">    			
-			 <scenario name="client HTTP">client.xml</scenario>
-		</testcase>
-	
 </test>

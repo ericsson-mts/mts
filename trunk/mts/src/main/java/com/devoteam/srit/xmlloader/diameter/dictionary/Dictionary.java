@@ -158,21 +158,20 @@ public class Dictionary
         
         if(isBase)
         {
-            name = "base" ;
-            id = -1 ;
+            name = "0" ;
+            id = 0;
         }
         
         traceDebug("parsing application " + name);
         
-        
-        Application application = new Application(name, id);
-        
-        if(null != getApplicationByName(name)) traceWarning("Application of name " + name + " already exists, overwriting");
-        if(null != getApplicationById(id)) traceWarning("Application of id " + id + " already exists, overwriting");
-        
-        applicationByName.put(name, application);
-        applicationById.put(Integer.toString(id), application);
-        
+        Application application = getApplicationById(id); 
+        if (application == null)
+        {
+        	application = new Application(name, id);
+        }
+    	applicationByName.put(name, application);
+    	applicationById.put(Integer.toString(id), application);
+
         application.parseApplication(root);
         application.fillGroupedAvpsReferences();
     }
@@ -207,7 +206,7 @@ public class Dictionary
         if(null != result) return result ;
         
         // try with base application
-        Application applicationBase = getApplication("base");
+        Application applicationBase = getApplication("0");
         if(null != application) result = applicationBase.getVendorDefByName(name);
         if(null != application) return result ;
         
@@ -240,7 +239,7 @@ public class Dictionary
         if(null != result) return result ;
         
         // try with base application
-        Application applicationBase = getApplication("base");
+        Application applicationBase = getApplication("0");
         if(null != applicationBase) result = applicationBase.getVendorDefByCode(code);
         if(null != applicationBase) return result ;
         
@@ -272,7 +271,7 @@ public class Dictionary
         if(null != result) return result ;
         
         // try with base application
-        Application applicationBase = getApplication("base");
+        Application applicationBase = getApplication("0");
         if(null != applicationBase) result = applicationBase.getTypeDefByName(name);
         if(null != result) return result ;
         
@@ -304,7 +303,7 @@ public class Dictionary
         if(null != result) return result ;
         
         // try with base application
-        Application applicationBase = getApplication("base");
+        Application applicationBase = getApplication("0");
         if(null != applicationBase) result = applicationBase.getCommandDefByName(name);
         if(null != result) return result ;
         
@@ -336,7 +335,7 @@ public class Dictionary
         if(null != result) return result ;
         
         // try with base application
-        Application applicationBase = getApplication("base");
+        Application applicationBase = getApplication("0");
         if(null != applicationBase) result = applicationBase.getCommandDefByCode(code);
         if(null != result) return result ;
         
@@ -368,7 +367,7 @@ public class Dictionary
         if(null != result) return result ;
         
         // try with base application
-        Application applicationBase = getApplication("base");
+        Application applicationBase = getApplication("0");
         if(null != applicationBase) result = applicationBase.getAvpDefByCode(code);
         if(null != result) return result ;
         
@@ -400,7 +399,7 @@ public class Dictionary
         if(null != result) return result ;
         
         // try with base application
-        Application applicationBase = getApplication("base");
+        Application applicationBase = getApplication("0");
         if(null != applicationBase) result = applicationBase.getAvpDefByName(name);
         if(null != result) return result ;
         

@@ -358,7 +358,7 @@ public class MsgDiameterParser
             }
             else if(type.equalsIgnoreCase("Unsigned32"))
             {
-                UnsignedInt32 unsignedInt32 = new UnsignedInt32(value);
+            	UnsignedInt32 unsignedInt32 = new UnsignedInt32(value);
                 avp = new AVP_Unsigned32(code,unsignedInt32.intValue());
             }
             else if(type.equalsIgnoreCase("Unsigned64"))
@@ -385,7 +385,7 @@ public class MsgDiameterParser
         
         if(null == application)
         {
-           throw new ParsingException("Unknown applicationId " + applicationId) ;
+           throw new ParsingException("Unknown \"applicationId\" attribute in header: " + applicationId) ;
         }
         
         Element unmodifiedRoot = root.createCopy();
@@ -410,7 +410,10 @@ public class MsgDiameterParser
             if(!Utils.isInteger(attributeValue))
             {
                 CommandDef commandDef = Dictionary.getInstance().getCommandDefByName(attributeValue, applicationId);
-                
+                if (commandDef == null)
+                {
+                	throw (new ParsingException("Unknown \"command\" attribute in header: " + attributeValue + "skipp it"));
+                }
                 root.attribute("command").setValue(Integer.toString(commandDef.get_code()));
             }
             

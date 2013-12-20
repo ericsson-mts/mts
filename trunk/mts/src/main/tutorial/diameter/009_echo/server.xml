@@ -7,23 +7,23 @@
     <receiveMessageDIAMETER name="ReceiveRequestMAR" request="true" type="Multimedia-Authentitcation:506">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
     		<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-    		<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>		
+    		<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
     		<parameter name="[param]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.value"/>
-        <parameter name="[publicIdentity]" operation="protocol.setFromMessage" value="avp.Public-Identity.value"/>				
-        <parameter name="[privateIdentity]" operation="protocol.setFromMessage" value="avp.3.value"/>				
+        <parameter name="[publicIdentity]" operation="protocol.setFromMessage" value="avp.Public-Identity.value"/>
+        <parameter name="[privateIdentity]" operation="protocol.setFromMessage" value="avp.3.value"/>
     </receiveMessageDIAMETER>
     
     <parameter name="code" operation="set" value="Auth-Data-Item"/>
     <parameter name="code" operation="list.addLast" value="[code]" value2="Auth-Data-Item"/>
 
     <sendMessageDIAMETER name="SendAnswerMAA">
-	<header request="false" command="[commandCode]" applicationId="Ericsson IMT 30 - Cx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+	<header request="false" command="[commandCode]" applicationId="[applicationID]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
 	<avp code="Public-Identity" value="[PublicIdentity]1" />
 	<avp code="Origin-Host" value="[remoteHostDIAM]"/>
 	<avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
 	<avp code="Vendor-Specific-Application-Id">
 		<avp code="Vendor-Id" value="TGPP"/>
-		<avp code="Auth-Application-Id" value="IMS_Cx_Dx"/>
+		<avp code="Auth-Application-Id" value="[applicationID]"/>
 	</avp>
 	<avp code="Session-Id" value="CXCSCFCX.sip.pfdev.fr;45e45ee4;046725;5cd579ef"/>
 	<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
