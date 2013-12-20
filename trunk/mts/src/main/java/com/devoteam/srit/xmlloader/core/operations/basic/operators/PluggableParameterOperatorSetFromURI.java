@@ -245,7 +245,12 @@ public class PluggableParameterOperatorSetFromURI extends AbstractPluggableParam
                 }
                 else if (var2.equalsIgnoreCase("user"))
                 {
-                    varResult = ((TelURL) uriGeneric).getPhoneNumber(); // obtain the user : same as phone number
+                    String prefix = "";
+                    if(((TelURL) uriGeneric).isGlobal())
+                    {
+                    	prefix = "+";
+                    }
+                    varResult = prefix + ((TelURL) uriGeneric).getPhoneNumber(); // obtain the user : same as phone number
                 }
                 else if (var2.equalsIgnoreCase("postDial"))
                 {
