@@ -37,6 +37,7 @@ import com.devoteam.srit.xmlloader.core.utils.hierarchy.DefaultHierarchyMember;
 import com.devoteam.srit.xmlloader.core.utils.hierarchy.HierarchyMember;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import org.dom4j.Element;
@@ -51,6 +52,7 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
     private boolean _state;
     private int _number;
     private LinkedHashMap<String, ScenarioReference> scenarioByName;
+    private LinkedHashMap<String, List<OperationParameter>> parametersByScenarioName;
     private Element _root;
     private int _runId = 0;
     private boolean _interruptible;
@@ -64,6 +66,7 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
      *  3 - init the scenario: execut a replace on <scenario>
      */
     public Testcase(Test test, Element root, int index) throws Exception {
+        parametersByScenarioName = new LinkedHashMap<String, List<OperationParameter>>();
         defaultHierarchyMember = new DefaultHierarchyMember<Test, ScenarioReference>();
         defaultHierarchyMember.setParent(test);
         _root = root;
@@ -138,14 +141,19 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
 
         // apply replacer on <scenario> (recursive) and parse runprofile
         for (Element scenario : (List<Element>) _root.selectNodes("./scenario")) {
-            XMLTree xmlTree = new XMLTree(scenario, false, Parameter.EXPRESSION, true); // do not duplicate, use the same root
-
-            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Scenario before parsing\n", xmlTree);
-
-            xmlTree.replace(XMLElementTextMsgParser.instance(), runner.getParameterPool());
-
-            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Scenario RunProfile after parsing\n", xmlTree);
-            scenario = xmlTree.getTreeRoot();
+            // apply replacer everything on everything or just the scenario element depending on presence of @file or not
+            if(scenario.selectNodes("./@file").isEmpty()){
+                XMLTree xmlTree = new XMLTree(scenario, false, Parameter.EXPRESSION, true); // do not duplicate, use the same root
+                GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Scenario before parsing\n", xmlTree);
+                xmlTree.replace(XMLElementTextMsgParser.instance(), runner.getParameterPool());
+                GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Scenario after parsing\n", xmlTree);
+            }
+            else{
+                XMLTree xmlTree = new XMLTree(scenario, false, Parameter.EXPRESSION, false); // do not duplicate, use the same root
+                GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Scenario before parsing\n", xmlTree);
+                xmlTree.replace(XMLElementDefaultParser.instance(), runner.getParameterPool());
+                GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Scenario after parsing\n", xmlTree);
+            }
         }
 
         // fill a map with "scenario name" => "scenario object"
@@ -161,6 +169,20 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
             addChild(scenario);
 
             scenarioByName.put(name, scenario);
+            
+            // fill the list of parameter operation per scenario
+            List<OperationParameter> parameters;
+            if(!parametersByScenarioName.containsKey(name)){
+                parameters = new LinkedList<OperationParameter>();
+                parametersByScenarioName.put(name, parameters);
+            }
+            else{
+                parameters = parametersByScenarioName.get(name);
+            }
+            
+            for (Element parameterElement : (List<Element>) element.selectNodes("./parameter")) {
+                parameters.add(new OperationParameter(parameterElement));
+            }
         }
     }
 
@@ -243,6 +265,10 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
 
     public RunProfile getProfile() throws Exception {
         return this._runProfile;
+    }
+    
+    public List<OperationParameter> getParametersByScenarioName(String scenarioName){
+        return this.parametersByScenarioName.get(scenarioName);
     }
     
     // <editor-fold defaultstate="collapsed" desc="Hierarchy implementation">

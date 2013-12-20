@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.log.TextListenerKey;
 import com.devoteam.srit.xmlloader.core.log.TextListenerProviderRegistry;
 import com.devoteam.srit.xmlloader.core.newstats.StatKey;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
+import com.devoteam.srit.xmlloader.core.operations.basic.OperationParameter;
 import com.devoteam.srit.xmlloader.core.protocol.BufferMsg;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.utils.hierarchy.DefaultHierarchyMember;
@@ -163,6 +164,13 @@ public class ScenarioRunner extends Runner
             parameter.add(getScenarioReference().getId());
             getParameterPool().set("[scenarioId]", parameter);
 
+            List<OperationParameter> parameters = this.getScenarioReference().getTestcase().getParametersByScenarioName(this.getName());
+            if(null != parameters){
+                for(OperationParameter operation:parameters){
+                    operation.executeAndStat(this);
+                }
+            }
+            
             doNotifyAll();
             _thread = ThreadPool.reserve().start(this);
         }
