@@ -2,7 +2,9 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
 <scenario>
-    	
+    
+    <createListenpointRTPFLOW name="[invitee]" localHost="[remoteHostRTP]" localPort="[remotePortRTP]" />
+
   	<receiveMessageSIP name="Wait INVITE" type="INVITE" request="true">
 	        <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>
 	        <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
@@ -18,7 +20,6 @@
   	</receiveMessageSIP>
 
     	<pause name="pause dialing delay" seconds="[dialingDelay]"/>
-
   	<sendMessageSIP name="Send 180 Ringing"
   	  	  	remoteHost="[localHostSIP]" remotePort="[localPortSIP]">
 <![CDATA[SIP/2.0 180 Ringing
@@ -65,8 +66,21 @@ a=rtpmap:0 pcmu/8000
 	        <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
   	</receiveMessageSIP>
 
-    	<pause name="call duration" seconds="[CallDurationSec]"/>
-
+    	<!--pause name="call duration" seconds="[CallDurationSec]" failedOnTimeout="false" failedOnReceive="false"/-->
+ 	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+   	
+    <receiveMessageRTPFLOW listenpoint="[invitee]" type="PCMA:8" timeout="40" >
+        <parameter name="[packetLost]" operation="protocol.setFromMessage" value="qos.packetLost"/>
+        <parameter name="[packetDuplicated]" operation="protocol.setFromMessage" value="qos.packetDuplicated"/>
+        <parameter name="[packetMissSequence]" operation="protocol.setFromMessage" value="qos.packetMissSequence"/>
+        <parameter name="[packetSpacingMean]" operation="protocol.setFromMessage" value="qos.packetSpacingMean"/>
+        <parameter name="[packetSpacing]" operation="protocol.setFromMessage" value="qos.packetSpacing"/>
+        <parameter name="[deltaTimeMean]" operation="protocol.setFromMessage" value="qos.deltaTimeMean"/>
+        <parameter name="[deltaTime]" operation="protocol.setFromMessage" value="qos.deltaTime"/>
+        <parameter name="[jitterDelayMean]" operation="protocol.setFromMessage" value="qos.jitterDelayMean"/>
+        <parameter name="[jitterDelay]" operation="protocol.setFromMessage" value="qos.jitterDelay"/>
+    </receiveMessageRTPFLOW>
+    
   	<parameter name="[newCseqNumber]" operation="number.add" value="[lastCseqNumber]" value2="1"/>
   	<parameter name="[newBranchId]" operation="string.random" value="10"/>
   	<sendMessageSIP name="Send BYE" destScenario="[inviter]"
@@ -89,4 +103,8 @@ Content-Length: 0
   	<receiveMessageSIP name="Wait 200 OK" request="false" type="BYE" result="200">
   	</receiveMessageSIP>	
 
+	<finally>
+		<removeListenpointRTPFLOW name="invitee" />
+	</finally>
+    
 </scenario>
