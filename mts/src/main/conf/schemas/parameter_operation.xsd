@@ -792,6 +792,23 @@
 					</xs:attribute>
 				</xs:complexType>
 			</xs:element>
+			<xs:element name="file.listpropertykeys">
+				<xs:annotation>
+					<xs:documentation>Reads all properties names from a java properties file.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>Will contain the list of keys.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>File path (The property file will be first searched relatively to the current test then from IMSLoader's conf directory).</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>                        
 			<xs:element name="file.readcsv">
 				<xs:annotation>
 					<xs:documentation>Reads a column from a csv file file.</xs:documentation>
