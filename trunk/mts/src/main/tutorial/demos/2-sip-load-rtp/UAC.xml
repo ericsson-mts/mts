@@ -62,6 +62,8 @@ Content-Length: 0
 ]]>
   	</sendMessageSIP>
 
+	<parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
   	<parameter name="[newSsrc]" operation="number.random" value="1000000" description="random Ssrc for the RTP flow"/>
 	<parameter name="[seqnum]" operation="set" value="0"/>	
 	<parameter name="[timestamp]" operation="set" value="0"/>	
@@ -69,7 +71,7 @@ Content-Length: 0
 	<parameter name="[temp]" operation="number.divide" value="[deltaTimestamp]" value2="[byteRateRTP]"/>
 	<parameter name="[deltaTime]" operation="number.multiply" value="[temp]" value2="1000"/>
 	<sendMessageRTPFLOW listenpoint="[inviter]" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0(0)]" destScenario="[invitee]">
-	        <flow duration="[CallDurationSec]" deltaTime="[deltaTime]" deltaTimestamp="[deltaTimestamp]" synchronous="true">
+	        <flow duration="[CallDurationSec]" deltaTime="[deltaTime]" deltaTimestamp="[deltaTimestamp]" jitterDelay="[jitterDelay]" packetLost="[packetLost]" synchronous="true">
 	            <header ssrc="[newSsrc]" payloadType="[payloadTypeRTP]" seqnum="[seqnum]" timestamp="[timestamp]"/>
 	            <payload format="binary">e7e4e2e7e2dfe0dedddfe1e0dee0dfdedcdde0dfdedfe0e5e6dfdfe3eae4dededfdddde0dfdfdde2e0dddee0e6e3dfe2e5e3dfdddddfdddedee0e0dfdfdcdcdedfdfdcdbdbdfdcdcdde4e2dddbdddfdcdcdededcdcdededcdadbdfdddadcdfdddcdde1e0dddcdddad8dadddcdbd9d8dbd9d9dadedbd8dbdfdbd9dbdcdad9dddfdcdededbd8dcdedad8dbded9d7dbdfddd9dde4dedbdededad7dadedcd9dadddd</payload>
 	        </flow>
