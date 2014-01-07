@@ -144,6 +144,7 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
             // apply replacer everything on everything or just the scenario element depending on presence of @file or not
             if(scenario.selectNodes("./@file").isEmpty()){
                 XMLTree xmlTree = new XMLTree(scenario, false, Parameter.EXPRESSION, true); // do not duplicate, use the same root
+                GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, "Putting the path as text is deprecated, please use attribute \"file\"");
                 GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Scenario before parsing\n", xmlTree);
                 xmlTree.replace(XMLElementTextMsgParser.instance(), runner.getParameterPool());
                 GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CORE, "Scenario after parsing\n", xmlTree);
