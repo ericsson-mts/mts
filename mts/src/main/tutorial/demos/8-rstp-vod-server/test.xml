@@ -1,9 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="RTSP regression tests" name="RTSP">
 
-<test name="RTSP" description="RTSP regression tests">
-
-	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
+	<parameter editable="true" name="[IPVersion]" operation="set" value="4"/>
     <parameter name="[ipAddress]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[ipAddress]" operation="set" value="[ipAddress(0)]"/>
 
@@ -22,49 +20,49 @@
     <parameter name="[retransmitTimers(9)]" operation="set" value="4000"/>
     <parameter name="[retransmitTimers(10)]" operation="set" value="4000"/>
 
-	<parameter name="[remoteHostRTSP]" operation="set" value="[ipAddress]" />
-    <parameter name="[myIpAddress]" operation="set" value="[ipAddress]" />
-    <parameter name="[rtpVideoFile]" 	operation="set" 	value="../../rtsp/bigbuckvideo.pdml" 	editable="true" />
-	<parameter name="[rtpAudioFile]" 	operation="set" 	value="../../rtsp/bigbuckaudio.pdml" 	editable="true" />
+	<parameter name="[remoteHostRTSP]" operation="set" value="[ipAddress]"/>
+    <parameter name="[myIpAddress]" operation="set" value="[ipAddress]"/>
+    <parameter editable="true" name="[rtpVideoFile]" operation="set" value="../../rtsp/bigbuckvideo.pdml"/>
+	<parameter editable="true" name="[rtpAudioFile]" operation="set" value="../../rtsp/bigbuckaudio.pdml"/>
 	
-    <testcase name="rtsp/000_classicSequence" description="simple" state="true">
-        <scenario name="UAC">../../rtsp/000_classicSequence/UAC.xml</scenario>
-        <scenario name="sessionServer">../../rtsp/000_classicSequence/UAS.xml</scenario>
+    <testcase description="simple" name="rtsp/000_classicSequence" state="true">
+        <scenario file="../../rtsp/000_classicSequence/UAC.xml" name="UAC"/>
+        <scenario file="../../rtsp/000_classicSequence/UAS.xml" name="sessionServer"/>
     </testcase>
-    <testcase name="rtsp/001_testAllMessages" description="simple" state="true">
-        <scenario name="sessionClient">../../rtsp/001_testAllMessages/UAC.xml</scenario>
-        <scenario name="session2">../../rtsp/001_testAllMessages/UAS.xml</scenario>
+    <testcase description="simple" name="rtsp/001_testAllMessages" state="true">
+        <scenario file="../../rtsp/001_testAllMessages/UAC.xml" name="sessionClient"/>
+        <scenario file="../../rtsp/001_testAllMessages/UAS.xml" name="session2"/>
     </testcase>
-    <testcase name="rtsp/002_classicSequenceUdp" description="simple" state="true">
-        <scenario name="UAC">../../rtsp/002_classicSequenceUdp/UAC.xml</scenario>
-        <scenario name="sessionServer">../../rtsp/002_classicSequenceUdp/UAS.xml</scenario>
+    <testcase description="simple" name="rtsp/002_classicSequenceUdp" state="true">
+        <scenario file="../../rtsp/002_classicSequenceUdp/UAC.xml" name="UAC"/>
+        <scenario file="../../rtsp/002_classicSequenceUdp/UAS.xml" name="sessionServer"/>
     </testcase>
-	<testcase name="rtsp/002_multipleSession" description="2sessions" state="true">
-        <scenario name="UAC">../../rtsp/002_multipleSession/UAC.xml</scenario>
-        <scenario name="session5_0">../../rtsp/002_multipleSession/UAS.xml</scenario>
+	<testcase description="2sessions" name="rtsp/002_multipleSession" state="true">
+        <scenario file="../../rtsp/002_multipleSession/UAC.xml" name="UAC"/>
+        <scenario file="../../rtsp/002_multipleSession/UAS.xml" name="session5_0"/>
     </testcase>
-    <testcase name="rtsp/003_parameters" description="Test all parameters" state="true">
-        <scenario name="UAC">../../rtsp/003_parameters/UAC.xml</scenario>
-        <scenario name="session6">../../rtsp/003_parameters/UAS.xml</scenario>
+    <testcase description="Test all parameters" name="rtsp/003_parameters" state="true">
+        <scenario file="../../rtsp/003_parameters/UAC.xml" name="UAC"/>
+        <scenario file="../../rtsp/003_parameters/UAS.xml" name="session6"/>
     </testcase>
-    <testcase name="rtsp/004_retransmission" description="Test retransmission messages" state="true">
-        <scenario name="UAC">../../rtsp/004_retransmission/UAC.xml</scenario>
-        <scenario name="listenpoint2">../../rtsp/004_retransmission/UAS.xml</scenario>
+    <testcase description="Test retransmission messages" name="rtsp/004_retransmission" state="true">
+        <scenario file="../../rtsp/004_retransmission/UAC.xml" name="UAC"/>
+        <scenario file="../../rtsp/004_retransmission/UAS.xml" name="listenpoint2"/>
     </testcase>
-    <testcase name="rtsp/005_multipleConnection" description="Test sequence with multiple connections" state="true">
-        <scenario name="UAC">../../rtsp/005_multipleConnection/UAC.xml</scenario>
-        <scenario name="listenpointServer">../../rtsp/005_multipleConnection/UAS.xml</scenario>
-    </testcase>
-
-    <testcase name="rtsp/800_bunny_vod_server" description="one client" state="false">
-        <scenario name="sessionVOD">../../rtsp/800_bunny_vod_server/UAS.xml</scenario>
+    <testcase description="Test sequence with multiple connections" name="rtsp/005_multipleConnection" state="true">
+        <scenario file="../../rtsp/005_multipleConnection/UAC.xml" name="UAC"/>
+        <scenario file="../../rtsp/005_multipleConnection/UAS.xml" name="listenpointServer"/>
     </testcase>
 
-    <testcase name="rtsp/998_server_vlc" description="Server fot test with VLC" state="false">
-        <scenario name="sessionVLC">../../rtsp/998_server_vlc/UAS.xml</scenario>
+    <testcase description="one client" name="rtsp/800_bunny_vod_server" state="false">
+        <scenario file="../../rtsp/800_bunny_vod_server/UAS.xml" name="sessionVOD"/>
     </testcase>
-    <testcase name="rtsp/999_client_vlc" description="one client" state="false">
-        <scenario name="socketRTP">../../rtsp/999_client_vlc/UAC.xml</scenario>
+
+    <testcase description="Server fot test with VLC" name="rtsp/998_server_vlc" state="false">
+        <scenario file="../../rtsp/998_server_vlc/UAS.xml" name="sessionVLC"/>
+    </testcase>
+    <testcase description="one client" name="rtsp/999_client_vlc" state="false">
+        <scenario file="../../rtsp/999_client_vlc/UAC.xml" name="socketRTP"/>
     </testcase>
 
 </test>

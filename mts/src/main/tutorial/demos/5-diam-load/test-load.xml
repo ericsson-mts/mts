@@ -1,10 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="Load tests AAA">
-	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
-	<parameter name="[TestDurationSec]" operation="set" value="3600000" description="Duration (in sec.) of the test" editable="true"/>
-	<parameter name="[NumberTestcase]" operation="set" value="60" description="number of testcase" editable="true"/>
+	<parameter editable="true" name="[IPVersion]" operation="set" value="4"/>
+	<parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="3600000"/>
+	<parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="60"/>
 
 	<parameter name="[localHostDIA]" operation="system.ipaddress" value2="[IPVersion]"/>
 	<parameter name="[localPortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
@@ -22,15 +20,14 @@
     	<!-- RUNPROFILE PARAMETERS -->
     	<!--                       -->    
     	<runProfile>
-        	<step time="0" period="0"/>
+        	<step period="0" time="0"/>
         	<end delay="[TestDurationSec]"/>
     	</runProfile>
 	
-  	<for index="[index]" from="000" to="[NumberTestcase]" step="1"> 
-		<testcase name="UNIT-[index]" description="load [index]" state="true" number="1">
-			<scenario name="client">client.xml</scenario>
-			<scenario name="server">server.xml</scenario>	
+  	<for from="000" index="[index]" step="1" to="[NumberTestcase]"> 
+		<testcase description="load [index]" name="UNIT-[index]" number="1" state="true">
+			<scenario file="client.xml" name="client"/>
+			<scenario file="server.xml" name="server"/>	
 		</testcase>
 	</for>
 </test>
-

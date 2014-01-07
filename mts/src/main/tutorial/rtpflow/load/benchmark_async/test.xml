@@ -1,45 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="Load tests">
 
-    <parameter name="[TryingDuration]" operation="set" value="0" description="Duration (in sec.) between 100 and 180"  	editable="true"/>
-    <parameter name="[RingingDuration]" operation="set" value="0" description="Duration (in sec.) between 180 and 200"     	editable="true"/>
-    <parameter name="[CallDuration]" operation="set" value="15" description="Duration (in sec.) of the call"           	    editable="true"/>
-    <parameter name="[CAPS]" operation="set" value="200" description="Call Attempting per Second"                           	editable="true"/>
+    <parameter description="Duration (in sec.) between 100 and 180" editable="true" name="[TryingDuration]" operation="set" value="0"/>
+    <parameter description="Duration (in sec.) between 180 and 200" editable="true" name="[RingingDuration]" operation="set" value="0"/>
+    <parameter description="Duration (in sec.) of the call" editable="true" name="[CallDuration]" operation="set" value="15"/>
+    <parameter description="Call Attempting per Second" editable="true" name="[CAPS]" operation="set" value="200"/>
 
-    <parameter name="[DelayDurationSec]" operation="set" value="0" description="Delay (in second) before the test starts"   editable="true"/>
-    <parameter name="[TestDurationDay]" operation="set" value="10" description="Duration (in day) of the test "        		editable="true"/>
-    <parameter name="[TestDurationHour]" operation="set" value="0" description="Duration (in hour) of the test "        	editable="true"/>
-    <parameter name="[TestDurationMin]" operation="set" value="0" description="Duration (in min.) of the test "         	editable="true"/>    	
-    <parameter name="[TestDurationSec]" operation="set" value="0" description="Duration (in sec.) of the test "         	editable="true"/>
+    <parameter description="Delay (in second) before the test starts" editable="true" name="[DelayDurationSec]" operation="set" value="0"/>
+    <parameter description="Duration (in day) of the test " editable="true" name="[TestDurationDay]" operation="set" value="10"/>
+    <parameter description="Duration (in hour) of the test " editable="true" name="[TestDurationHour]" operation="set" value="0"/>
+    <parameter description="Duration (in min.) of the test " editable="true" name="[TestDurationMin]" operation="set" value="0"/>    	
+    <parameter description="Duration (in sec.) of the test " editable="true" name="[TestDurationSec]" operation="set" value="0"/>
 
-    <parameter name="[SendByeUAC]" operation="set" value="true" description="Flag to send the BYE on UAC side"              editable="true"/>
-    <parameter name="[SendByeUAS]" operation="set" value="false" description="Flag to send the BYE on UAC side"             editable="true"/>
+    <parameter description="Flag to send the BYE on UAC side" editable="true" name="[SendByeUAC]" operation="set" value="true"/>
+    <parameter description="Flag to send the BYE on UAC side" editable="true" name="[SendByeUAS]" operation="set" value="false"/>
 
-    <parameter name="[userDomain]" operation="set" value="load.sip.fr:5060" description="domain operator"  editable="true"/>
+    <parameter description="domain operator" editable="true" name="[userDomain]" operation="set" value="load.sip.fr:5060"/>
     
     <!-- SIP -->
-	 <parameter name="[Host-Tester]" value="192.168.90.233" />
-	 <parameter name="[Port-Tester]" operation="set" value="5060" />
-	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]" />
+	 <parameter name="[Host-Tester]" value="192.168.90.233"/>
+	 <parameter name="[Port-Tester]" operation="set" value="5060"/>
+	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]"/>
     
-    <parameter name="[Host-Server]" value="192.168.90.233" />
-    <parameter name="[Port-Server]" operation="set" value="5060" />
+    <parameter name="[Host-Server]" value="192.168.90.233"/>
+    <parameter name="[Port-Server]" operation="set" value="5060"/>
     <parameter name="[Adresse-Server]" operation="set" value="[Host-Server(0)]:[Port-Server]"/>
     
 	<!-- RTP -->
-	<parameter name="[payloadTypeRTP]" operation="set" value="17" editable="true" description="Payload type for the media flow"/>
-	<parameter name="[byteRateRTP]" operation="set" value="8000" editable="true" description="Bytes rate (in byte/sec) for the media flow"/>
+	<parameter description="Payload type for the media flow" editable="true" name="[payloadTypeRTP]" operation="set" value="17"/>
+	<parameter description="Bytes rate (in byte/sec) for the media flow" editable="true" name="[byteRateRTP]" operation="set" value="8000"/>
 	<parameter name="[rtp_payload]" operation="file.readwave" value="rtpflow.wav" value2="20"/>
-    <parameter name="[test:rtp_ports_list]" operation="file.readcsv" value="users.csv" value2="0" />
-    <parameter name="[test:rtp_ports_mutex]" operation="system.semaphorenotify" />
+    <parameter name="[test:rtp_ports_list]" operation="file.readcsv" value="users.csv" value2="0"/>
+    <parameter name="[test:rtp_ports_mutex]" operation="system.semaphorenotify"/>
 
 	<!-- internal -->
-    <parameter name="[test:users_list]" operation="file.readcsv" value="users.csv" value2="0" />
-    <parameter name="[test:users_list_mutex]" operation="system.semaphorenotify" />
-    <parameter name="[test:users_concurrent_calls_max]" operation="set" value="900" editable="true" />
-    <parameter name="[test:users_concurrent_calls_sem]" operation="system.semaphorenotify" value="[users_concurrent_calls_max]" />
+    <parameter name="[test:users_list]" operation="file.readcsv" value="users.csv" value2="0"/>
+    <parameter name="[test:users_list_mutex]" operation="system.semaphorenotify"/>
+    <parameter editable="true" name="[test:users_concurrent_calls_max]" operation="set" value="900"/>
+    <parameter name="[test:users_concurrent_calls_sem]" operation="system.semaphorenotify" value="[users_concurrent_calls_max]"/>
 
 
 	<!-- profile -->
@@ -52,29 +50,29 @@
 
 
 	
-	<testcase name="loader_sip" description="initiate calls" state="true" interruptible="false">
+	<testcase description="initiate calls" interruptible="false" name="loader_sip" state="true">
         <runProfile>
             <start delay="[DelayDurationSec]"/>
-            <step time="0" frequency="[CAPS]"/>
+            <step frequency="[CAPS]" time="0"/>
             <!--end delay="[TestDurationSec]"/-->
             <!--end iteration="10"/-->
         </runProfile>
-		<scenario name="loader_sip">scenario_loader.xml</scenario>
+		<scenario file="scenario_loader.xml" name="loader_sip"/>
 	</testcase>
 		
-   <testcase name="receiver_sip" description="passive testcase for reponse and subsequent management" interruptible="false" state="true">
+   <testcase description="passive testcase for reponse and subsequent management" interruptible="false" name="receiver_sip" state="true">
         <runProfile>
-            <start delay="[DelayDurationSec]" />
-            <end iteration="1" />
+            <start delay="[DelayDurationSec]"/>
+            <end iteration="1"/>
         </runProfile>
-        <scenario name="SIP">scenario_responder_sip.xml</scenario>
+        <scenario file="scenario_responder_sip.xml" name="SIP"/>
    </testcase>
 
-   <testcase name="receiver_rtp" description="passive testcase for reponse and subsequent management" interruptible="false" state="true">
+   <testcase description="passive testcase for reponse and subsequent management" interruptible="false" name="receiver_rtp" state="true">
         <runProfile>
-            <start delay="[DelayDurationSec]" />
-            <end iteration="1" />
+            <start delay="[DelayDurationSec]"/>
+            <end iteration="1"/>
         </runProfile>
-        <scenario name="RTPFLOW">scenario_responder_rtp.xml</scenario>
+        <scenario file="scenario_responder_rtp.xml" name="RTPFLOW"/>
    </testcase>
 </test>

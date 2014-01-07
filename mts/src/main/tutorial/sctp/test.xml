@@ -1,37 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="SCTP regression tests" name="SCTP">
 
-<test name="SCTP" description="SCTP regression tests">
-
-    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
     
     <parameter name="[localHostSCTP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostSCTP]" operation="set" value="[localHostSCTP(0)]" description="local address of the MTS host" editable="true"/>
-    <parameter name="[localPortSCTP]" operation="set" value="4011" description="local port of the MTS host" editable="true"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostSCTP]" operation="set" value="[localHostSCTP(0)]"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortSCTP]" operation="set" value="4011"/>
     
     <parameter name="[remoteHostSCTP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--<parameter name="[remoteHostSCTP]" operation="set" value="172.16.21.32"/>-->
-    <parameter name="[remoteHostSCTP]" operation="set" value="[remoteHostSCTP(0)]" description="remote address of the SUT host" editable="true"/>
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostSCTP]" operation="set" value="[remoteHostSCTP(0)]"/>
     <parameter name="[remotePortSCTP]" operation="file.readProperty" value="sctp.properties" value2="listenpoint.LOCAL_PORT"/>
     <!--parameter name="[remotePortSCTP]" operation="set" value="10000" /-->
-    <parameter name="[remotePortSCTP]" operation="set" value="[remotePortSCTP]" description="remote port of the SUT host" editable="true"/>
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortSCTP]" operation="set" value="[remotePortSCTP]"/>
     
     <testcase name="001_binary" state="true">
-        <scenario name="SCTP">001_binary/scenario.xml</scenario>
+        <scenario file="001_binary/scenario.xml" name="SCTP"/>
     </testcase>
     <testcase name="002_binary" state="true">
-        <scenario name="SCTP">002_binary/scenario.xml</scenario>
+        <scenario file="002_binary/scenario.xml" name="SCTP"/>
     </testcase>
     <testcase name="003_listenpoint" state="true">
-        <scenario name="SCTP">003_listenpoint/scenario.xml</scenario>
+        <scenario file="003_listenpoint/scenario.xml" name="SCTP"/>
     </testcase>
     <testcase name="004_passive_client" state="true">
-        <scenario name="SCTP">004_passive_client/scenario.xml</scenario>
+        <scenario file="004_passive_client/scenario.xml" name="SCTP"/>
     </testcase>
     <testcase name="client" state="false">
-        <scenario name="SCTP">901_client/scenario.xml</scenario>
+        <scenario file="901_client/scenario.xml" name="SCTP"/>
     </testcase>
     <testcase name="server" state="false">
-        <scenario name="SCTP">901_server/scenario.xml</scenario>
+        <scenario file="901_server/scenario.xml" name="SCTP"/>
     </testcase>
     
 </test>

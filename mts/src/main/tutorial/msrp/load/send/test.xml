@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="MSRP regression tests">
 
-    <parameter name="[speedTrans]" operation="set" value="10000" description="number of transaction per second"   		editable="true"/>	
-    <parameter name="[TestDurationSec]" operation="set" value="360000" description="Duration (in sec.) of the test"   	    	editable="true"/>
-    <parameter name="[NumberTestcase]" operation="set" value="10" description="number of testcase"   			        editable="true"/>
-    <parameter name="[ContentSize]" operation="set" value="1000" description="size of the HTTP message"   			editable="true"/>
+    <parameter description="number of transaction per second" editable="true" name="[speedTrans]" operation="set" value="10000"/>	
+    <parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="360000"/>
+    <parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="10"/>
+    <parameter description="size of the HTTP message" editable="true" name="[ContentSize]" operation="set" value="1000"/>
     
     <!--
        - URL of the HTTP server.
@@ -13,8 +12,8 @@
     <parameter name="[remoteHost]" operation="system.ipaddress"/>
     <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]"/>
     <parameter name="[remotePort]" operation="file.readProperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[remoteURL]" operation="set" value="http://[remoteHost]:[remotePort]" />
-    <parameter name="[transport]" operation="set" value="TCP" />
+    <parameter name="[remoteURL]" operation="set" value="http://[remoteHost]:[remotePort]"/>
+    <parameter name="[transport]" operation="set" value="TCP"/>
     
     <parameter name="[speedTestcase]" operation="number.divide" value="[speedTrans]" value2="[NumberTestcase]"/>	    
 
@@ -26,33 +25,33 @@
        - This server will always answer 200 OK.
        - It never ends since it is in a <while> operation.
        -->
-    <testcase name="server" description="test post" state="false">
+    <testcase description="test post" name="server" state="false">
 
         <!--                       -->
         <!-- RUNPROFILE PARAMETERS -->
         <!--                       -->    
         <runProfile>
-            <step time="0" period="0"/>
+            <step period="0" time="0"/>
             <end delay="[TestDurationSec]"/>
         </runProfile>
 
-        <scenario name="server">server.xml</scenario>
+        <scenario file="server.xml" name="server"/>
     </testcase>
 
-    <for index="[i]" from="0" to="[NumberTestcase]">
-        <testcase name="client_[i]" description="test post" state="true">
-            <parameter name="[destScenario]" operation="set" value="server_[i]" />
+    <for from="0" index="[i]" to="[NumberTestcase]">
+        <testcase description="test post" name="client_[i]" state="true">
+            <parameter name="[destScenario]" operation="set" value="server_[i]"/>
 
             <!--                       -->
             <!-- RUNPROFILE PARAMETERS -->
             <!--                       -->    
             <runProfile>
-                <step time="0" frequency="[speedTestcase]"/>
+                <step frequency="[speedTestcase]" time="0"/>
                 <end delay="[TestDurationSec]"/>
             </runProfile>
 
-            <scenario name="server_[i]">server.xml</scenario>
-            <scenario name="client_[i]">client.xml</scenario>
+            <scenario file="server.xml" name="server_[i]"/>
+            <scenario file="client.xml" name="client_[i]"/>
         </testcase>
     </for>
 

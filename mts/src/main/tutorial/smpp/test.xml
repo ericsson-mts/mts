@@ -1,56 +1,55 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="SMPP">
 
-    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
     
     <parameter name="[remoteHostSMPP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[remoteHostSMPP]" operation="set" value="[remoteHostSMPP(0)]" description="remote address of the SUT host" editable="true"/>
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostSMPP]" operation="set" value="[remoteHostSMPP(0)]"/>
     <!--parameter name="[remoteHostSMPP]" operation="set" value="172.16.21.32"/-->
-    <parameter name="[remotePortSMPP]" operation="file.readproperty" value="smpp.properties" value2="listenpoint.LOCAL_PORT" />
+    <parameter name="[remotePortSMPP]" operation="file.readproperty" value="smpp.properties" value2="listenpoint.LOCAL_PORT"/>
     <!--parameter name="[remotePortSMPP]" operation="set" value="1234"/-->
-    <parameter name="[remotePortSMPP]" operation="set" value="[remotePortSMPP]" description="remote port of the SUT host" editable="true" />
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortSMPP]" operation="set" value="[remotePortSMPP]"/>
 
     <testcase name="smpp/000_classicSequence" state="true">
-        <scenario name="client">000_classicSequence/client.xml</scenario>
-        <scenario name="SMPP">000_classicSequence/server.xml</scenario>
+        <scenario file="000_classicSequence/client.xml" name="client"/>
+        <scenario file="000_classicSequence/server.xml" name="SMPP"/>
     </testcase>
     <testcase name="smpp/001_transmitter" state="true">
-        <scenario name="client">001_transmitter/client.xml</scenario>
-        <scenario name="SMPP">001_transmitter/server.xml</scenario>
+        <scenario file="001_transmitter/client.xml" name="client"/>
+        <scenario file="001_transmitter/server.xml" name="SMPP"/>
     </testcase>
     <testcase name="smpp/002_receiver" state="true">
-        <scenario name="channelSMPP">002_receiver/client.xml</scenario>
-        <scenario name="SMPP">002_receiver/server.xml</scenario>
+        <scenario file="002_receiver/client.xml" name="channelSMPP"/>
+        <scenario file="002_receiver/server.xml" name="SMPP"/>
     </testcase>
     <testcase name="smpp/003_transceiver" state="true">
-        <scenario name="channelSMPP">003_transceiver/client.xml</scenario>
-        <scenario name="SMPP">003_transceiver/server.xml</scenario>
+        <scenario file="003_transceiver/client.xml" name="channelSMPP"/>
+        <scenario file="003_transceiver/server.xml" name="SMPP"/>
     </testcase>
     <testcase name="smpp/004_outbind" state="true">
-        <scenario name="listenpointSMPP-ESME">004_outbind/ESME.xml</scenario>
-        <scenario name="listenpointSMPP-MC">004_outbind/MC.xml</scenario>
+        <scenario file="004_outbind/ESME.xml" name="listenpointSMPP-ESME"/>
+        <scenario file="004_outbind/MC.xml" name="listenpointSMPP-MC"/>
     </testcase>
     <testcase name="smpp/005_asynchronousSession" state="true">
-        <scenario name="client">005_asynchronousSession/client.xml</scenario>
-        <scenario name="SMPP">005_asynchronousSession/server.xml</scenario>
+        <scenario file="005_asynchronousSession/client.xml" name="client"/>
+        <scenario file="005_asynchronousSession/server.xml" name="SMPP"/>
     </testcase>
     <testcase name="smpp/006_sendUnknownMessage" state="true">
-        <scenario name="client">006_sendUnknownMessage/client.xml</scenario>
-        <scenario name="SMPP">006_sendUnknownMessage/server.xml</scenario>
+        <scenario file="006_sendUnknownMessage/client.xml" name="client"/>
+        <scenario file="006_sendUnknownMessage/server.xml" name="SMPP"/>
     </testcase>
     <testcase name="smpp/007_testAllParameters" state="true">
-        <scenario name="client">007_testAllParameters/client.xml</scenario>
-        <scenario name="SMPP">007_testAllParameters/server.xml</scenario>
+        <scenario file="007_testAllParameters/client.xml" name="client"/>
+        <scenario file="007_testAllParameters/server.xml" name="SMPP"/>
     </testcase>
     <testcase name="smpp/008_exampleMessageId" state="true">
-        <scenario name="client">008_exampleMessageId/client.xml</scenario>
-        <scenario name="server">008_exampleMessageId/server.xml</scenario>
+        <scenario file="008_exampleMessageId/client.xml" name="client"/>
+        <scenario file="008_exampleMessageId/server.xml" name="server"/>
     </testcase>
     <testcase name="smpp/client" state="false">
-        <scenario name="client">client/client.xml</scenario>
+        <scenario file="client/client.xml" name="client"/>
     </testcase>
     <testcase name="smpp/server" state="false">
-        <scenario name="SMPP">server/server.xml</scenario>
+        <scenario file="server/server.xml" name="SMPP"/>
     </testcase>
 </test>

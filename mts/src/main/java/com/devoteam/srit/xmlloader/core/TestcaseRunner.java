@@ -407,7 +407,7 @@ public class TestcaseRunner extends Runner implements Task,
      */
     private void onScenariosEnd() {
         // Unregister all ScenarioRunners from the Stack
-        for (Runner runner : getChildren()) {
+        for (ScenarioRunner runner : getChildren()) {
             DispatcherMsg.unregisterScenario(runner);
         }
 

@@ -1,54 +1,53 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="SNMP">
 
-    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
     
     <parameter name="[remoteHostSNMP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[remoteHostSNMP]" operation="set" value="[remoteHostSNMP(0)]" description="remote address of the SUT host" editable="true"/>
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostSNMP]" operation="set" value="[remoteHostSNMP(0)]"/>
     
-    <parameter name="[remotePortSNMP]" operation="file.readproperty" value="snmp.properties" value2="listenpoint.LOCAL_PORT" />
+    <parameter name="[remotePortSNMP]" operation="file.readproperty" value="snmp.properties" value2="listenpoint.LOCAL_PORT"/>
     <!--parameter name="[remotePortSNMP]" operation="set" value="172.16.21.32"/-->
-    <parameter name="[remotePortSNMP]" operation="set" value="[remotePortSNMP]" description="remote address of the SUT host" editable="true" />
+    <parameter description="remote address of the SUT host" editable="true" name="[remotePortSNMP]" operation="set" value="[remotePortSNMP]"/>
 
     <testcase name="snmp/000_get" state="true">
-        <scenario name="manager">000_get/manager.xml</scenario>
-        <scenario name="SNMP">000_get/agent.xml</scenario>
+        <scenario file="000_get/manager.xml" name="manager"/>
+        <scenario file="000_get/agent.xml" name="SNMP"/>
     </testcase>
 
     <testcase name="snmp/001_set" state="true">
-        <scenario name="manager">001_set/manager.xml</scenario>
-        <scenario name="SNMP">001_set/agent.xml</scenario>
+        <scenario file="001_set/manager.xml" name="manager"/>
+        <scenario file="001_set/agent.xml" name="SNMP"/>
     </testcase>
 
     <testcase name="snmp/002_getNext" state="true">
-        <scenario name="manager">002_getNext/manager.xml</scenario>
-        <scenario name="SNMP">002_getNext/agent.xml</scenario>
+        <scenario file="002_getNext/manager.xml" name="manager"/>
+        <scenario file="002_getNext/agent.xml" name="SNMP"/>
     </testcase>
 
     <testcase name="snmp/003_trap" state="true">
-        <scenario name="manager">003_trap/manager.xml</scenario>
-        <scenario name="agent">003_trap/agent.xml</scenario>
+        <scenario file="003_trap/manager.xml" name="manager"/>
+        <scenario file="003_trap/agent.xml" name="agent"/>
     </testcase>
 
     <testcase name="snmp/004_inform" state="true">
-        <scenario name="manager1">004_inform/manager1.xml</scenario>
-        <scenario name="manager2">004_inform/manager2.xml</scenario>
+        <scenario file="004_inform/manager1.xml" name="manager1"/>
+        <scenario file="004_inform/manager2.xml" name="manager2"/>
     </testcase>
 
     <testcase name="snmp/005_testAllParameters" state="true">
-        <scenario name="manager">005_testAllParameters/manager.xml</scenario>
-        <scenario name="SNMP">005_testAllParameters/agent.xml</scenario>
+        <scenario file="005_testAllParameters/manager.xml" name="manager"/>
+        <scenario file="005_testAllParameters/agent.xml" name="SNMP"/>
     </testcase>
 
     <testcase name="snmp/006_getBulk" state="true">
-        <scenario name="manager">006_getBulk/manager.xml</scenario>
-        <scenario name="SNMP">006_getBulk/agent.xml</scenario>
+        <scenario file="006_getBulk/manager.xml" name="manager"/>
+        <scenario file="006_getBulk/agent.xml" name="SNMP"/>
     </testcase>
 
     <testcase name="snmp/007_report" state="false">
-        <scenario name="manager">007_report/manager.xml</scenario>
-        <scenario name="SNMP">007_report/agent.xml</scenario>
+        <scenario file="007_report/manager.xml" name="manager"/>
+        <scenario file="007_report/agent.xml" name="SNMP"/>
     </testcase>
 
 </test>

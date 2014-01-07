@@ -40,6 +40,7 @@ public class ScenarioReference implements Serializable {
 
     /** Name of the scenario */
     private String _name;
+    private String _routingName;
     private String _description;
     private String _filename;
     private Scenario _scenario;
@@ -54,6 +55,7 @@ public class ScenarioReference implements Serializable {
 
     public ScenarioReference(Element elements, Testcase testcase) {
         _name = elements.attributeValue("name");
+        _routingName = elements.attributeValue("routingName");
         _description = elements.attributeValue("description");
         _filename = elements.attributeValue("file");
         if(null == _filename){
@@ -96,6 +98,15 @@ public class ScenarioReference implements Serializable {
 
     public String getName() {
         return _name;
+    }
+    
+    public String getRoutingName() {
+        if(null != _routingName){
+            return _routingName;
+        }
+        else{
+            return getName();
+        }
     }
 
     public String getDescription() {

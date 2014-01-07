@@ -1,55 +1,54 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="MSRP">
 
-    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
     
     <parameter name="[localHostMSRP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostMSRP]" operation="set" value="[localHostMSRP(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostMSRP]" operation="set" value="[localHostMSRP(0)]"/>
     <parameter name="[localPortMSRP]" operation="file.readProperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortMSRP]" operation="set" value="[localPortMSRP]" description="local port of the MTS host" editable="true"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortMSRP]" operation="set" value="[localPortMSRP]"/>
 
     <parameter name="[remoteHostMSRP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[remoteHostMSRP]" operation="set" value="172.16.21.32"/-->
-    <parameter name="[remoteHostMSRP]" operation="set" value="[remoteHostMSRP(0)]" description="remote address of the SUT host" editable="true"/>
-    <parameter name="[remotePortMSRP]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT" />
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostMSRP]" operation="set" value="[remoteHostMSRP(0)]"/>
+    <parameter name="[remotePortMSRP]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT"/>
     <!--parameter name="[remotePortMSRP]" operation="set" value="1234"/-->
-    <parameter name="[remotePortMSRP]" operation="set" value="[remotePortMSRP]" description="remote port of the SUT host" editable="true" />
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortMSRP]" operation="set" value="[remotePortMSRP]"/>
     
-    <parameter name="[serverTlsPort]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT_TLS" />
-    <parameter name="[serverTlsPort]" operation="set" value="[serverTlsPort]" editable="true" />
+    <parameter name="[serverTlsPort]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT_TLS"/>
+    <parameter editable="true" name="[serverTlsPort]" operation="set" value="[serverTlsPort]"/>
 
     <testcase name="msrp/000_classicSequence_TCP" state="true">
-        <parameter name="[transport]" operation="set" value="TCP" />
-        <scenario name="Toto">000_classicSequence/client1.xml</scenario>
-        <scenario name="MSRP">000_classicSequence/client2.xml</scenario>
+        <parameter name="[transport]" operation="set" value="TCP"/>
+        <scenario file="000_classicSequence/client1.xml" name="Toto"/>
+        <scenario file="000_classicSequence/client2.xml" name="MSRP"/>
     </testcase>
 
     <testcase name="msrp/001_classicSequence_TLS" state="true">
-        <parameter name="[transport]" operation="set" value="TLS" />
-        <scenario name="Toto">000_classicSequence/client1.xml</scenario>
-        <scenario name="MSRP">000_classicSequence/client2.xml</scenario>
+        <parameter name="[transport]" operation="set" value="TLS"/>
+        <scenario file="000_classicSequence/client1.xml" name="Toto"/>
+        <scenario file="000_classicSequence/client2.xml" name="MSRP"/>
     </testcase>
     
     <testcase name="msrp/002_messagesAndparameters" state="true">
-        <scenario name="Alice">002_parameters/client1.xml</scenario>
-        <scenario name="Bob">002_parameters/client2.xml</scenario>
+        <scenario file="002_parameters/client1.xml" name="Alice"/>
+        <scenario file="002_parameters/client2.xml" name="Bob"/>
     </testcase>
         
     <testcase name="msrp/003_Chunk" state="true">
     <parameter name="[remotePortMSRP]" operation="set" value="7855"/>    
-        <scenario name="Alice">003_chunk/client1.xml</scenario>
-        <scenario name="MSRP">003_chunk/client2.xml</scenario>
+        <scenario file="003_chunk/client1.xml" name="Alice"/>
+        <scenario file="003_chunk/client2.xml" name="MSRP"/>
     </testcase>    
 
     <testcase name="msrp/004_connection" state="true">
-        <scenario name="true">004_connection/client.xml</scenario>
+        <scenario file="004_connection/client.xml" name="true"/>
     </testcase>
 
     <testcase name="msrp/005_passive_client" state="true">
-        <parameter name="[transport]" operation="set" value="TCP" />
-        <scenario name="MSRP">005_passive_client/client1.xml</scenario>
-        <scenario name="TCP">005_passive_client/client2.xml</scenario>
+        <parameter name="[transport]" operation="set" value="TCP"/>
+        <scenario file="005_passive_client/client1.xml" name="MSRP"/>
+        <scenario file="005_passive_client/client2.xml" name="TCP"/>
 
     </testcase>
         

@@ -1,162 +1,151 @@
-<?xml version="1.0" encoding="windows-1252"?>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<test description="H225CS regression tests" name="H225CS">
 
-<!--
-    Document   : test.xml
-    Created on : 31 mai 2011, 16:23
-    Author     : indiaye
-    Description:
-        Purpose of the document follows.
--->
-
-<test name="H225CS" description="H225CS regression tests">
-
-    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
     
     <parameter name="[localHostH323]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostH323]" operation="set" value="[localHostH323(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostH323]" operation="set" value="[localHostH323(0)]"/>
     <parameter name="[localPortH323]" operation="file.readProperty" value="h225cs.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortH323]" operation="set" value="[localPortH323]" description="local port of the MTS host" editable="true"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortH323]" operation="set" value="[localPortH323]"/>
 
     <parameter name="[remoteHostH323]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[remoteHostH323]" operation="set" value="[remoteHostH323(0)]" description="remote address of the SUT host" editable="true"/>
-    <parameter name="[remotePortH323]" operation="file.readProperty" value="h225cs.properties" value2="listenpoint.LOCAL_PORT" />
-    <parameter name="[remotePortH323]" operation="set" value="[remotePortH323]" description="remote port of the SUT host" editable="true" />
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostH323]" operation="set" value="[remoteHostH323(0)]"/>
+    <parameter name="[remotePortH323]" operation="file.readProperty" value="h225cs.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortH323]" operation="set" value="[remotePortH323]"/>
 
-    <testcase name="001_call_setup_asn1" description="test a setup request with asn1" state="false">
-        <scenario name="caller">001_call_setup_asn1/caller.xml</scenario>
-        <scenario name="H225CS">001_call_setup_asn1/callee.xml</scenario>
+    <testcase description="test a setup request with asn1" name="001_call_setup_asn1" state="false">
+        <scenario file="001_call_setup_asn1/caller.xml" name="caller"/>
+        <scenario file="001_call_setup_asn1/callee.xml" name="H225CS"/>
     </testcase>
     
-    <testcase name="101_Q931_ALERTING" description="test a alerting request" state="true">
-        <scenario name="caller">101_Q931_ALERTING/caller.xml</scenario>
-        <scenario name="H225CS">101_Q931_ALERTING/callee.xml</scenario>
+    <testcase description="test a alerting request" name="101_Q931_ALERTING" state="true">
+        <scenario file="101_Q931_ALERTING/caller.xml" name="caller"/>
+        <scenario file="101_Q931_ALERTING/callee.xml" name="H225CS"/>
     </testcase>
     
-    <testcase name="102_Q931_CALL_PROCEEDING" description="test a call proceeding request" state="true">
-        <scenario name="caller">102_Q931_CALL_PROCEEDING/caller.xml</scenario>
-        <scenario name="H225CS">102_Q931_CALL_PROCEEDING/callee.xml</scenario>
+    <testcase description="test a call proceeding request" name="102_Q931_CALL_PROCEEDING" state="true">
+        <scenario file="102_Q931_CALL_PROCEEDING/caller.xml" name="caller"/>
+        <scenario file="102_Q931_CALL_PROCEEDING/callee.xml" name="H225CS"/>
     </testcase>
     
-    <testcase name="103_Q931_CONNECT" description="test a call connect request" state="true">
-        <scenario name="caller">103_Q931_CONNECT/caller.xml</scenario>
-        <scenario name="H225CS">103_Q931_CONNECT/callee.xml</scenario>
+    <testcase description="test a call connect request" name="103_Q931_CONNECT" state="true">
+        <scenario file="103_Q931_CONNECT/caller.xml" name="caller"/>
+        <scenario file="103_Q931_CONNECT/callee.xml" name="H225CS"/>
     </testcase>
     
-    <testcase name="104_Q931_CONNECT_ACK" description="test a call connect ack request" state="true">
-        <scenario name="caller">104_Q931_CONNECT_ACK/caller.xml</scenario>
-        <scenario name="H225CS">104_Q931_CONNECT_ACK/callee.xml</scenario>
+    <testcase description="test a call connect ack request" name="104_Q931_CONNECT_ACK" state="true">
+        <scenario file="104_Q931_CONNECT_ACK/caller.xml" name="caller"/>
+        <scenario file="104_Q931_CONNECT_ACK/callee.xml" name="H225CS"/>
     </testcase>
     
-    <testcase name="105_Q931_DISCONNECT" description="test a call disconnect request" state="true">
-        <scenario name="caller">105_Q931_DISCONNECT/caller.xml</scenario>
-        <scenario name="H225CS">105_Q931_DISCONNECT/callee.xml</scenario>
-    </testcase>
-
-    <testcase name="106_Q931_INFORMATION" description="test a call information request" state="true">
-        <scenario name="caller">106_Q931_INFORMATION/caller.xml</scenario>
-        <scenario name="H225CS">106_Q931_INFORMATION/callee.xml</scenario>
+    <testcase description="test a call disconnect request" name="105_Q931_DISCONNECT" state="true">
+        <scenario file="105_Q931_DISCONNECT/caller.xml" name="caller"/>
+        <scenario file="105_Q931_DISCONNECT/callee.xml" name="H225CS"/>
     </testcase>
 
-    <testcase name="107_Q931_NOTIFY" description="test a call notify request" state="true">
-        <scenario name="caller">107_Q931_NOTIFY/caller.xml</scenario>
-        <scenario name="H225CS">107_Q931_NOTIFY/callee.xml</scenario>
+    <testcase description="test a call information request" name="106_Q931_INFORMATION" state="true">
+        <scenario file="106_Q931_INFORMATION/caller.xml" name="caller"/>
+        <scenario file="106_Q931_INFORMATION/callee.xml" name="H225CS"/>
+    </testcase>
+
+    <testcase description="test a call notify request" name="107_Q931_NOTIFY" state="true">
+        <scenario file="107_Q931_NOTIFY/caller.xml" name="caller"/>
+        <scenario file="107_Q931_NOTIFY/callee.xml" name="H225CS"/>
     </testcase>
     
-    <testcase name="108_Q931_PROGRESS" description="test a call progress request" state="true">
-        <scenario name="caller">108_Q931_PROGRESS/caller.xml</scenario>
-        <scenario name="H225CS">108_Q931_PROGRESS/callee.xml</scenario>
+    <testcase description="test a call progress request" name="108_Q931_PROGRESS" state="true">
+        <scenario file="108_Q931_PROGRESS/caller.xml" name="caller"/>
+        <scenario file="108_Q931_PROGRESS/callee.xml" name="H225CS"/>
     </testcase>
     
-    <testcase name="109_Q931_RELEASE" description="test a call release request" state="true">
-        <scenario name="caller">109_Q931_RELEASE/caller.xml</scenario>
-        <scenario name="H225CS">109_Q931_RELEASE/callee.xml</scenario>
+    <testcase description="test a call release request" name="109_Q931_RELEASE" state="true">
+        <scenario file="109_Q931_RELEASE/caller.xml" name="caller"/>
+        <scenario file="109_Q931_RELEASE/callee.xml" name="H225CS"/>
     </testcase>
 
-    <testcase name="110_Q931_RELEASE_COMPLETE" description="test a call release complete request" state="true">
-        <scenario name="caller">110_Q931_RELEASE_COMPLETE/caller.xml</scenario>
-        <scenario name="H225CS">110_Q931_RELEASE_COMPLETE/callee.xml</scenario>
+    <testcase description="test a call release complete request" name="110_Q931_RELEASE_COMPLETE" state="true">
+        <scenario file="110_Q931_RELEASE_COMPLETE/caller.xml" name="caller"/>
+        <scenario file="110_Q931_RELEASE_COMPLETE/callee.xml" name="H225CS"/>
     </testcase>
 
-    <testcase name="111_Q931_RESUME" description="test a call resume request" state="true">
-        <scenario name="caller">111_Q931_RESUME/caller.xml</scenario>
-        <scenario name="H225CS">111_Q931_RESUME/callee.xml</scenario>
+    <testcase description="test a call resume request" name="111_Q931_RESUME" state="true">
+        <scenario file="111_Q931_RESUME/caller.xml" name="caller"/>
+        <scenario file="111_Q931_RESUME/callee.xml" name="H225CS"/>
     </testcase>
 
-    <testcase name="112_Q931_RESUME_ACK" description="test a call resume ack request" state="true">
-        <scenario name="caller">112_Q931_RESUME_ACK/caller.xml</scenario>
-        <scenario name="H225CS">112_Q931_RESUME_ACK/callee.xml</scenario>
+    <testcase description="test a call resume ack request" name="112_Q931_RESUME_ACK" state="true">
+        <scenario file="112_Q931_RESUME_ACK/caller.xml" name="caller"/>
+        <scenario file="112_Q931_RESUME_ACK/callee.xml" name="H225CS"/>
     </testcase>
             
-    <testcase name="113_Q931_RESUME_REJECT" description="test a call resume reject request" state="true">
-        <scenario name="caller">113_Q931_RESUME_REJECT/caller.xml</scenario>
-        <scenario name="H225CS">113_Q931_RESUME_REJECT/callee.xml</scenario>
+    <testcase description="test a call resume reject request" name="113_Q931_RESUME_REJECT" state="true">
+        <scenario file="113_Q931_RESUME_REJECT/caller.xml" name="caller"/>
+        <scenario file="113_Q931_RESUME_REJECT/callee.xml" name="H225CS"/>
     </testcase>
 
-    <testcase name="114_Q931_SETUP" description="test a setup request" state="true">
-        <scenario name="caller">114_Q931_SETUP/caller.xml</scenario>
-        <scenario name="H225CS">114_Q931_SETUP/callee.xml</scenario>
+    <testcase description="test a setup request" name="114_Q931_SETUP" state="true">
+        <scenario file="114_Q931_SETUP/caller.xml" name="caller"/>
+        <scenario file="114_Q931_SETUP/callee.xml" name="H225CS"/>
     </testcase>
     
-    <testcase name="115_Q931_SETUP_ACK" description="test a call setup ack request" state="true">
-        <scenario name="caller">115_Q931_SETUP_ACK/caller.xml</scenario>
-        <scenario name="H225CS">115_Q931_SETUP_ACK/callee.xml</scenario>
+    <testcase description="test a call setup ack request" name="115_Q931_SETUP_ACK" state="true">
+        <scenario file="115_Q931_SETUP_ACK/caller.xml" name="caller"/>
+        <scenario file="115_Q931_SETUP_ACK/callee.xml" name="H225CS"/>
     </testcase>
     
-    <testcase name="116_Q931_STATUS" description="test a call status request" state="true">
-        <scenario name="caller">116_Q931_STATUS/caller.xml</scenario>
-        <scenario name="H225CS">116_Q931_STATUS/callee.xml</scenario>
+    <testcase description="test a call status request" name="116_Q931_STATUS" state="true">
+        <scenario file="116_Q931_STATUS/caller.xml" name="caller"/>
+        <scenario file="116_Q931_STATUS/callee.xml" name="H225CS"/>
     </testcase>
 
-    <testcase name="117_Q931_STATUS_INQUIRY" description="test a call statusenquiry request" state="true">
-        <scenario name="caller">117_Q931_STATUS_INQUIRY/caller.xml</scenario>
-        <scenario name="H225CS">117_Q931_STATUS_INQUIRY/callee.xml</scenario>
+    <testcase description="test a call statusenquiry request" name="117_Q931_STATUS_INQUIRY" state="true">
+        <scenario file="117_Q931_STATUS_INQUIRY/caller.xml" name="caller"/>
+        <scenario file="117_Q931_STATUS_INQUIRY/callee.xml" name="H225CS"/>
     </testcase>
 
-    <testcase name="118_Q931_SUSPEND" description="test a call suspend request" state="true">
-        <scenario name="caller">118_Q931_SUSPEND/caller.xml</scenario>
-        <scenario name="H225CS">118_Q931_SUSPEND/callee.xml</scenario>
+    <testcase description="test a call suspend request" name="118_Q931_SUSPEND" state="true">
+        <scenario file="118_Q931_SUSPEND/caller.xml" name="caller"/>
+        <scenario file="118_Q931_SUSPEND/callee.xml" name="H225CS"/>
     </testcase>
     
-    <testcase name="119_Q931_SUSPEND_ACK" description="test a call suspend ack request" state="true">
-        <scenario name="caller">119_Q931_SUSPEND_ACK/caller.xml</scenario>
-        <scenario name="H225CS">119_Q931_SUSPEND_ACK/callee.xml</scenario>
+    <testcase description="test a call suspend ack request" name="119_Q931_SUSPEND_ACK" state="true">
+        <scenario file="119_Q931_SUSPEND_ACK/caller.xml" name="caller"/>
+        <scenario file="119_Q931_SUSPEND_ACK/callee.xml" name="H225CS"/>
     </testcase>
     
-    <testcase name="120_Q931_SUSPEND_REJECT" description="test a call suspend reject request" state="true">
-        <scenario name="caller">120_Q931_SUSPEND_REJECT/caller.xml</scenario>
-        <scenario name="H225CS">120_Q931_SUSPEND_REJECT/callee.xml</scenario>
+    <testcase description="test a call suspend reject request" name="120_Q931_SUSPEND_REJECT" state="true">
+        <scenario file="120_Q931_SUSPEND_REJECT/caller.xml" name="caller"/>
+        <scenario file="120_Q931_SUSPEND_REJECT/callee.xml" name="H225CS"/>
     </testcase>
 
-    <testcase name="121_Q931_CONGESTION_CONTROL" description="test a call congestioncontrol request" state="true">
-        <scenario name="caller">121_Q931_CONGESTION_CONTROL/caller.xml</scenario>
-        <scenario name="H225CS">121_Q931_CONGESTION_CONTROL/callee.xml</scenario>
+    <testcase description="test a call congestioncontrol request" name="121_Q931_CONGESTION_CONTROL" state="true">
+        <scenario file="121_Q931_CONGESTION_CONTROL/caller.xml" name="caller"/>
+        <scenario file="121_Q931_CONGESTION_CONTROL/callee.xml" name="H225CS"/>
     </testcase>
     
-    <testcase name="122_Q931_USER_INFORMATION" description="test a call user information request" state="true">
-        <scenario name="caller">122_Q931_USER_INFORMATION/caller.xml</scenario>
-        <scenario name="H225CS">122_Q931_USER_INFORMATION/callee.xml</scenario>
+    <testcase description="test a call user information request" name="122_Q931_USER_INFORMATION" state="true">
+        <scenario file="122_Q931_USER_INFORMATION/caller.xml" name="caller"/>
+        <scenario file="122_Q931_USER_INFORMATION/callee.xml" name="H225CS"/>
     </testcase>
             
-    <testcase name="123_Q931_RESTART" description="test a call restart request" state="true">
-        <scenario name="caller">123_Q931_RESTART/caller.xml</scenario>
-        <scenario name="H225CS">123_Q931_RESTART/callee.xml</scenario>
+    <testcase description="test a call restart request" name="123_Q931_RESTART" state="true">
+        <scenario file="123_Q931_RESTART/caller.xml" name="caller"/>
+        <scenario file="123_Q931_RESTART/callee.xml" name="H225CS"/>
     </testcase>
     
-    <testcase name="124_Q931_RESTART_ACK" description="test a call restart ack request" state="true">
-        <scenario name="caller">124_Q931_RESTART_ACK/caller.xml</scenario>
-        <scenario name="H225CS">124_Q931_RESTART_ACK/callee.xml</scenario>
+    <testcase description="test a call restart ack request" name="124_Q931_RESTART_ACK" state="true">
+        <scenario file="124_Q931_RESTART_ACK/caller.xml" name="caller"/>
+        <scenario file="124_Q931_RESTART_ACK/callee.xml" name="H225CS"/>
     </testcase>
                
-    <testcase name="801_setfrommessage" description="test a set from message" state="true">
-        <scenario name="caller">801_setfrommessage/caller.xml</scenario>
-        <scenario name="H225CS">801_setfrommessage/callee.xml</scenario>
+    <testcase description="test a set from message" name="801_setfrommessage" state="true">
+        <scenario file="801_setfrommessage/caller.xml" name="caller"/>
+        <scenario file="801_setfrommessage/callee.xml" name="H225CS"/>
     </testcase>
 
-    <testcase name="802_other_element" description="test a set from message" state="false">
-        <scenario name="caller">802_other_element/caller.xml</scenario>
-        <scenario name="H225CS">802_other_element/callee.xml</scenario>
+    <testcase description="test a set from message" name="802_other_element" state="false">
+        <scenario file="802_other_element/caller.xml" name="caller"/>
+        <scenario file="802_other_element/callee.xml" name="H225CS"/>
     </testcase>
 
 </test>
-
-

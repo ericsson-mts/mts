@@ -1,11 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="Load tests">
 
-	<parameter name="[speedTrans]" operation="set" value="100" description="number of transaction per second"   		editable="true"/>	
-    <parameter name="[TestDurationSec]" operation="set" value="600" description="Duration (in sec.) of the test"   	editable="true"/>
-	<parameter name="[NumberTestcase]" operation="set" value="100" description="number of testcase"   			editable="true"/>
+	<parameter description="number of transaction per second" editable="true" name="[speedTrans]" operation="set" value="100"/>	
+    <parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="600"/>
+	<parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="100"/>
 
     <parameter name="[localHostDIAM]" operation="system.ipaddress"/>
 	<parameter name="[localPortDIAM]" operation="file.readproperty" value="diameter.properties" value2="node.LISTENING_PORT"/>
@@ -24,14 +22,14 @@
 	<!-- RUNPROFILE PARAMETERS -->
 	<!--                   -->	
 	<runProfile>
-        <step time="0" period="0"/>
+        <step period="0" time="0"/>
         <end delay="0"/>
 	</runProfile>
 	
-  	<for index="[index]" from="001" to="[NumberTestcase]" step="1"> 
+  	<for from="001" index="[index]" step="1" to="[NumberTestcase]"> 
   	
-		<testcase name="UNIT-[index]" description="load [index]"  number="1">
-			<scenario name="client">client2.xml</scenario>
+		<testcase description="load [index]" name="UNIT-[index]" number="1">
+			<scenario file="client2.xml" name="client"/>
 		</testcase>
 		
 	</for>
