@@ -10,6 +10,7 @@ sh ./startCmd.sh ../tutorial/core/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/diameter/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/sip/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/sip/test.xml -sequential -config:USE_NIO+true $OPTIONS
+sh ./startCmd.sh ../tutorial/sip/test.xml -sequential -config:protocol.STACK_CLASS_NAME_SIP+com.devoteam.srit.xmlloader.sip.light.StackJainSip %OPTIONS%
 sh ./startCmd.sh ../tutorial/rtp/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/rtpflow/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/rtpflow/test.xml -sequential -config:message.KEEP_SENT_MESSAGES+true $OPTIONS
