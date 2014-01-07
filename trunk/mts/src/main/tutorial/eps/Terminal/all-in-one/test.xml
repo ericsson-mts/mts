@@ -1,78 +1,78 @@
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="echo client GTPv2-C">
-	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
-	<parameter name="[100_DOMAIN_ADDR]" 	operation="set" value="imslab.fr.am" 	editable="true" 	description="domaine name"/>
-	<parameter name="[test:eNodeBIP]"		operation="set"	value="172.16.21.112"	editable="true"		description="eNodeB IP" />
-	<parameter name="[Host-Server]" 		operation="set" value="192.168.90.218" 	editable="true" 	description="P-CSCF IP"/> <!-- PCSCF IP -->
-	<parameter name="[Port-Server]" 		operation="set" value="5060" 		editable="true"		description="P-CSCF Port"/> <!-- PCSCF PORT -->
+	<parameter editable="true" name="[IPVersion]" operation="set" value="4"/>
+	<parameter description="domaine name" editable="true" name="[100_DOMAIN_ADDR]" operation="set" value="imslab.fr.am"/>
+	<parameter description="eNodeB IP" editable="true" name="[test:eNodeBIP]" operation="set" value="172.16.21.112"/>
+	<parameter description="P-CSCF IP" editable="true" name="[Host-Server]" operation="set" value="192.168.90.218"/> <!-- PCSCF IP -->
+	<parameter description="P-CSCF Port" editable="true" name="[Port-Server]" operation="set" value="5060"/> <!-- PCSCF PORT -->
 
-	<parameter name="[Port-User1]" 			operation="set" value="7072" 		editable="true"		description="User 1 port"/>
-	<parameter name="[Port-User2]" 			operation="set" value="7074" 		editable="true"		description="User 2 port"/>
-	<parameter name="[User1]" 				operation="set" value="alice" 		editable="true"		description="User 1 name"/>
-	<parameter name="[User2]" 				operation="set" value="bob" 		editable="true" 	description="User 2 name"/>
+	<parameter description="User 1 port" editable="true" name="[Port-User1]" operation="set" value="7072"/>
+	<parameter description="User 2 port" editable="true" name="[Port-User2]" operation="set" value="7074"/>
+	<parameter description="User 1 name" editable="true" name="[User1]" operation="set" value="alice"/>
+	<parameter description="User 2 name" editable="true" name="[User2]" operation="set" value="bob"/>
         
-    <parameter name="[SCSCF]" 				operation="set" value="192.168.90.220" 	editable="true"		description="S-CSCF IP"/> 
-	<parameter name="[UserAgent]" 			operation="set" value="Fraunhofer FOKUS/NGNI Java IMS UserEndpoint FoJIE 0.1 (jdk1.3)" editable="true" description="User Agent"/> 
+    <parameter description="S-CSCF IP" editable="true" name="[SCSCF]" operation="set" value="192.168.90.220"/> 
+	<parameter description="User Agent" editable="true" name="[UserAgent]" operation="set" value="Fraunhofer FOKUS/NGNI Java IMS UserEndpoint FoJIE 0.1 (jdk1.3)"/> 
 
-	<parameter name="[localHostRTP]" 		operation="system.ipaddress" value2="[IPVersion]" /> 
-  	<parameter name="[localHostRTP]" 		operation="set" value="[localHostRTP(0)]" editable="true" /> 
-    <parameter name="[localPortRTP]" 		operation="set" value="10000" editable="true" /> 
-    <parameter name="[remoteHostRTP]" 		operation="set" value="192.168.90.225"/> 
-  	<parameter name="[remoteHostRTP]" 		operation="set" value="[remoteHostRTP(0)]" editable="true" /> 
-    <parameter name="[remotePortRTP]" 		operation="set" value="11000" editable="true" /> 
-	<parameter name="[RTP-Server]"			operation="set" value="192.168.90.225" />
-  	<parameter name="fileWave" 				operation="file.readwave" value="rtpflow.wav" value2="20" />
-	<parameter name="[sendRTP]"				operation="set"	value="false" editable="true" />
+	<parameter name="[localHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/> 
+  	<parameter editable="true" name="[localHostRTP]" operation="set" value="[localHostRTP(0)]"/> 
+    <parameter editable="true" name="[localPortRTP]" operation="set" value="10000"/> 
+    <parameter name="[remoteHostRTP]" operation="set" value="192.168.90.225"/> 
+  	<parameter editable="true" name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]"/> 
+    <parameter editable="true" name="[remotePortRTP]" operation="set" value="11000"/> 
+	<parameter name="[RTP-Server]" operation="set" value="192.168.90.225"/>
+  	<parameter name="fileWave" operation="file.readwave" value="rtpflow.wav" value2="20"/>
+	<parameter editable="true" name="[sendRTP]" operation="set" value="false"/>
 
-	<parameter name="[test:payloadList]" 	operation="set" value="[[fileWave(0)]]" /> 
-    <parameter name="[payloadType]" 		operation="set" value="[[fileWave(1)]]" /> 
-    <parameter name="[bitRate]" 			operation="set" value="[[fileWave(2)]]" /> 
-    <parameter name="[nbPacket]" 			operation="list.size" value="[payloadList]" /> 
-    <parameter name="[nbPacket]" 			operation="number.divide" value="[nbPacket]" value2="1" /> 
-    <parameter name="[ssrc]" 				operation="number.random" value="10000000" />
+	<parameter name="[test:payloadList]" operation="set" value="[[fileWave(0)]]"/> 
+    <parameter name="[payloadType]" operation="set" value="[[fileWave(1)]]"/> 
+    <parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/> 
+    <parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/> 
+    <parameter name="[nbPacket]" operation="number.divide" value="[nbPacket]" value2="1"/> 
+    <parameter name="[ssrc]" operation="number.random" value="10000000"/>
 
-	<parameter name="[OsProperty]"		operation="system.readproperty"	value="os.name" />
+	<parameter name="[OsProperty]" operation="system.readproperty" value="os.name"/>
 
 	<testcase name="Setup Network Route" state="true">
-		<scenario name="setup">setup_route.xml</scenario>
+		<scenario file="setup_route.xml" name="setup"/>
 	</testcase>
         <testcase name="SIP REGISTER Alice" state="true">
-        	<scenario name="alice">eps_ims_register_alice.xml</scenario>
+        	<scenario file="eps_ims_register_alice.xml" name="alice"/>
         </testcase>
         <testcase name="SIP REGISTER Bob" state="true">
-        	<scenario name="bob">eps_ims_register_bob.xml</scenario>
+        	<scenario file="eps_ims_register_bob.xml" name="bob"/>
         </testcase>
         <testcase name="SIP INVITE BOB FROM ALICE" state="true">
-        	<scenario name="RTPFLOW">eps_ims_invite_alice.xml</scenario>
-        	<scenario name="bob">eps_ims_invite_bob.xml</scenario>
+        	<scenario file="eps_ims_invite_alice.xml" name="RTPFLOW"/>
+        	<scenario file="eps_ims_invite_bob.xml" name="bob"/>
         </testcase>
         <testcase name="WAIT FOR HANDOVER" state="false">
-        	<scenario name="UDP">eps_ims_wait_for_handover.xml</scenario>
+        	<scenario file="eps_ims_wait_for_handover.xml" name="UDP"/>
         </testcase>
         <testcase name="SIP INVITE PRACK BOB FROM ALICE" state="true">
-	       	<scenario name="alice">eps_ims_invite_prack_alice.xml</scenario> 
-                <scenario name="bob">eps_ims_invite_prack_bob.xml</scenario>
+	       	<scenario file="eps_ims_invite_prack_alice.xml" name="alice"/> 
+                <scenario file="eps_ims_invite_prack_bob.xml" name="bob"/>
         </testcase>
         <testcase name="SIP SUBSCRIBE ALICE" state="true">
-        	<scenario name="alice">eps_ims_subscribe_alice.xml</scenario>
+        	<scenario file="eps_ims_subscribe_alice.xml" name="alice"/>
         </testcase>
         <testcase name="SIP MESSAGE ALICE TO BOB" state="true">
-        	<scenario name="alice">eps_ims_message_alice.xml</scenario>
-        	<scenario name="bob">eps_ims_message_bob.xml</scenario>
+        	<scenario file="eps_ims_message_alice.xml" name="alice"/>
+        	<scenario file="eps_ims_message_bob.xml" name="bob"/>
         </testcase>
         <testcase name="RTP FLOW" state="true">
-        	<scenario name="RTP">eps_ims_rtpflow.xml</scenario>
+        	<scenario file="eps_ims_rtpflow.xml" name="RTP"/>
         </testcase>
         <testcase name="SIP UNREGISTER ALICE" state="true">
-        	<scenario name="alice">eps_ims_unregister_alice.xml</scenario>
+        	<scenario file="eps_ims_unregister_alice.xml" name="alice"/>
         </testcase>
         <testcase name="SIP UNREGISTER BOB" state="true">
-        	<scenario name="bob">eps_ims_unregister_bob.xml</scenario>
+        	<scenario file="eps_ims_unregister_bob.xml" name="bob"/>
         </testcase>
         <testcase name="HTTP REQUEST" state="true">
-        	<scenario name="http">eps_ims_http_request.xml</scenario>
+        	<scenario file="eps_ims_http_request.xml" name="http"/>
         </testcase>
         <testcase name="Remove Network Route" state="true">
-        	<scenario name="setup">remove_route.xml</scenario>
+        	<scenario file="remove_route.xml" name="setup"/>
         </testcase>
 </test>

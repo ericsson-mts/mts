@@ -1,13 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="Samples">
 
 	<parameter name="[Host-AS]" operation="setFromSystem" value="IPAddress" value2="eth0"/>	
 	<!--parameter name="[Host-AS]" operation="set" value="192.168.150.52" description="Addresse de l'AS"/-->
   	<parameter name="[Port-AS]" operation="setFromConfig" value="sip.properties" value2="LOCAL_PORT"/>	
   	<!--parameter name="[Port-AS]" operation="set" value="5060"/-->	  	
-	<parameter name="[Adresse-AS]" operation="set" value="[Host-AS(0)]:[Port-AS]" description="Addresse de l'AS"/>	
+	<parameter description="Addresse de l'AS" name="[Adresse-AS]" operation="set" value="[Host-AS(0)]:[Port-AS]"/>	
   	
 	<parameter name="[Host-XML-Loader]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
   	<parameter name="[Port-XML-Loader]" operation="setFromConfig" value="sip.properties" value2="LOCAL_PORT"/>
@@ -17,14 +15,14 @@
   	<parameter name="[UserName1]" operation="set" value="homer.simpson"/>	
   	<parameter name="[UserName2]" operation="set" value="barth.simpson"/>	
   	
-	<testcase name="REGISTER_Bob" description="SIP registration for Bob user" state="true">
-		<scenario name="register_bob\UE_register">register_bob\UE_register.xml</scenario>
+	<testcase description="SIP registration for Bob user" name="REGISTER_Bob" state="true">
+		<scenario file="register_bob\UE_register.xml" name="register_bob\UE_register"/>
 	</testcase>
-	<testcase name="REGISTER_Alice" description="SIP registration for Alice user" state="true">
-		<scenario name="register_alice\UE_register">register_alice\UE_register.xml</scenario>
+	<testcase description="SIP registration for Alice user" name="REGISTER_Alice" state="true">
+		<scenario file="register_alice\UE_register.xml" name="register_alice\UE_register"/>
 	</testcase>	
-	<testcase name="INVITE" description="INVITE callflow" state="true">
-		<scenario name="invite\UE_inviter.xml">invite\UE_inviter.xml</scenario>
-		<scenario name="invite\UE_invitee.xml">invite\UE_invitee.xml</scenario>
+	<testcase description="INVITE callflow" name="INVITE" state="true">
+		<scenario file="invite\UE_inviter.xml" name="invite\UE_inviter.xml"/>
+		<scenario file="invite\UE_invitee.xml" name="invite\UE_invitee.xml"/>
 	</testcase>
 </test>

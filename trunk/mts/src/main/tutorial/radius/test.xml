@@ -1,51 +1,50 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="RADIUS regression tests" name="RADIUS">    
 
-<test name="RADIUS" description="RADIUS regression tests">    
-
-    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
     
     <parameter name="[localHostRAD]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostRAD]" operation="set" value="[localHostRAD(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostRAD]" operation="set" value="[localHostRAD(0)]"/>
     <!--parameter name="[localHostRAD]" operation="file.readProperty" value="radius.properties" value2="listenpoint.LOCAL_PORT"/-->
-    <parameter name="[localPortRAD]" operation="set" value="10000" description="local port of the MTS host" editable="true"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortRAD]" operation="set" value="10000"/>
     
     <parameter name="[remoteHostRAD]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[remoteHostRAD]" operation="set" value="172.16.21.32" /-->
-    <parameter name="[remoteHostRAD]" operation="set" value="[remoteHostRAD(0)]" description="remote address of the SUT host" editable="true"/>
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostRAD]" operation="set" value="[remoteHostRAD(0)]"/>
     <!--parameter name="[remotePortRAD]" operation="file.readProperty" value="radius.properties" value2="listenpoint.LOCAL_PORT"/-->
-    <parameter name="[remotePortRAD]" operation="set" value="65535" description="remote port of the SUT host" editable="true"/>
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortRAD]" operation="set" value="65535"/>
   
     <testcase name="radius/000_dev" state="true">
-        <scenario name="000_dev_socket">000_dev/scenario.xml</scenario>
+        <scenario file="000_dev/scenario.xml" name="000_dev_socket"/>
     </testcase>
 
     <testcase name="radius/001_PAP" state="true">
-        <scenario name="001_PAP_client">001_PAP/scenario_client.xml</scenario>
-        <scenario name="001_PAP_server">001_PAP/scenario_server.xml</scenario>
+        <scenario file="001_PAP/scenario_client.xml" name="001_PAP_client"/>
+        <scenario file="001_PAP/scenario_server.xml" name="001_PAP_server"/>
     </testcase>
 
     <testcase name="radius/002_CHAP" state="true">
-        <scenario name="002_CHAP_client">002_CHAP/scenario_client.xml</scenario>
-        <scenario name="002_CHAP_server">002_CHAP/scenario_server.xml</scenario>
+        <scenario file="002_CHAP/scenario_client.xml" name="002_CHAP_client"/>
+        <scenario file="002_CHAP/scenario_server.xml" name="002_CHAP_server"/>
     </testcase>
 
     <testcase name="radius/002_CHAP_listenpoint" state="true">
-        <scenario name="002_CHAP_client">002_CHAP_listenpoint/scenario_client.xml</scenario>
-        <scenario name="002_CHAP_server">002_CHAP/scenario_server.xml</scenario>
+        <scenario file="002_CHAP_listenpoint/scenario_client.xml" name="002_CHAP_client"/>
+        <scenario file="002_CHAP/scenario_server.xml" name="002_CHAP_server"/>
     </testcase>
 
     <testcase name="radius/020_acct_session" state="true">
-        <scenario name="002_CHAP_client">020_acct_session/scenario_client.xml</scenario>
-        <scenario name="RADIUS">020_acct_session/scenario_server.xml</scenario>
+        <scenario file="020_acct_session/scenario_client.xml" name="002_CHAP_client"/>
+        <scenario file="020_acct_session/scenario_server.xml" name="RADIUS"/>
     </testcase>
     
     <testcase name="radius/010_retransmissions" state="true">
-        <scenario name="010_retransmission_client">010_retransmissions/client.xml</scenario>
-        <scenario name="010_retransmission_server">010_retransmissions/server.xml</scenario>
+        <scenario file="010_retransmissions/client.xml" name="010_retransmission_client"/>
+        <scenario file="010_retransmissions/server.xml" name="010_retransmission_server"/>
     </testcase>
 
     <testcase name="radius/800_dev_clearbox" state="false">
-        <scenario name="800_dev_clearbox">800_dev_clearbox/scenario.xml</scenario>
+        <scenario file="800_dev_clearbox/scenario.xml" name="800_dev_clearbox"/>
     </testcase>
 
     <!-- TODO -->

@@ -1,142 +1,141 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="IMAP regression tests" name="IMAP">    
 
-<test name="IMAP" description="IMAP regression tests">    
-
-    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
     
     <parameter name="[localHostIMAP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostIMAP]" operation="set" value="[localHostIMAP(0)]" description="local address of the MTS host" editable="true"/>
-    <parameter name="[localPortIMAP]" operation="file.readproperty" value="imap.properties" value2="listenpoint.LOCAL_PORT" />
-    <parameter name="[localPortIMAP]" operation="set" value="[localPortIMAP]" description="local port of the MTS host" editable="true" />
+    <parameter description="local address of the MTS host" editable="true" name="[localHostIMAP]" operation="set" value="[localHostIMAP(0)]"/>
+    <parameter name="[localPortIMAP]" operation="file.readproperty" value="imap.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortIMAP]" operation="set" value="[localPortIMAP]"/>
 
     <parameter name="[remoteHostIMAP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[remoteHostIMAP]" operation="set" value="172.16.21.32"/-->
-    <parameter name="[remoteHostIMAP]" operation="set" value="[remoteHostIMAP(0)]" description="remote address of the SUT host" editable="true"/>
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostIMAP]" operation="set" value="[remoteHostIMAP(0)]"/>
     <!--parameter name="[remotePortIMAP]" operation="set" value="1234"/-->
-    <parameter name="[remotePortIMAP]" operation="file.readproperty" value="imap.properties" value2="listenpoint.LOCAL_PORT" />
-    <parameter name="[remotePortIMAP]" operation="set" value="[remotePortIMAP]" description="remote port of the SUT host" editable="true" />
+    <parameter name="[remotePortIMAP]" operation="file.readproperty" value="imap.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortIMAP]" operation="set" value="[remotePortIMAP]"/>
 
-    <parameter name="[serverPortTLS]" operation="file.readproperty" value="imap.properties" value2="listenpoint.LOCAL_PORT_TLS" />
-    <parameter name="[serverPortTLS]" operation="set" value="[serverPortTLS]" editable="true" />
+    <parameter name="[serverPortTLS]" operation="file.readproperty" value="imap.properties" value2="listenpoint.LOCAL_PORT_TLS"/>
+    <parameter editable="true" name="[serverPortTLS]" operation="set" value="[serverPortTLS]"/>
 
     <testcase name="imap/001_login" state="true">
-        <scenario name="IMAP">001_login/server.xml</scenario>
-        <scenario name="client">001_login/client.xml</scenario>
+        <scenario file="001_login/server.xml" name="IMAP"/>
+        <scenario file="001_login/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/002_bad_login" state="true">
-        <scenario name="IMAP">002_bad_login/server.xml</scenario>
-        <scenario name="client">002_bad_login/client.xml</scenario>
+        <scenario file="002_bad_login/server.xml" name="IMAP"/>
+        <scenario file="002_bad_login/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/003_select" state="true">
-        <scenario name="IMAP">003_select/server.xml</scenario>
-        <scenario name="client">003_select/client.xml</scenario>
+        <scenario file="003_select/server.xml" name="IMAP"/>
+        <scenario file="003_select/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/004_examine" state="true">
-        <scenario name="IMAP">004_examine/server.xml</scenario>
-        <scenario name="client">004_examine/client.xml</scenario>
+        <scenario file="004_examine/server.xml" name="IMAP"/>
+        <scenario file="004_examine/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/005_create" state="true">
-        <scenario name="IMAP">005_create/server.xml</scenario>
-        <scenario name="client">005_create/client.xml</scenario>
+        <scenario file="005_create/server.xml" name="IMAP"/>
+        <scenario file="005_create/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/006_delete" state="true">
-        <scenario name="IMAP">006_delete/server.xml</scenario>
-        <scenario name="client">006_delete/client.xml</scenario>
+        <scenario file="006_delete/server.xml" name="IMAP"/>
+        <scenario file="006_delete/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/007_rename" state="true">
-        <scenario name="IMAP">007_rename/server.xml</scenario>
-        <scenario name="client">007_rename/client.xml</scenario>
+        <scenario file="007_rename/server.xml" name="IMAP"/>
+        <scenario file="007_rename/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/008_list" state="true">
-        <scenario name="IMAP">008_list/server.xml</scenario>
-        <scenario name="client">008_list/client.xml</scenario>
+        <scenario file="008_list/server.xml" name="IMAP"/>
+        <scenario file="008_list/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/009_subscribe" state="true">
-        <scenario name="IMAP">009_subscribe/server.xml</scenario>
-        <scenario name="client">009_subscribe/client.xml</scenario>
+        <scenario file="009_subscribe/server.xml" name="IMAP"/>
+        <scenario file="009_subscribe/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/010_unsubscribe" state="true">
-        <scenario name="IMAP">010_unsubscribe/server.xml</scenario>
-        <scenario name="client">010_unsubscribe/client.xml</scenario>
+        <scenario file="010_unsubscribe/server.xml" name="IMAP"/>
+        <scenario file="010_unsubscribe/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/011_lsub" state="true">
-        <scenario name="IMAP">011_lsub/server.xml</scenario>
-        <scenario name="client">011_lsub/client.xml</scenario>
+        <scenario file="011_lsub/server.xml" name="IMAP"/>
+        <scenario file="011_lsub/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/012_status" state="true">
-        <scenario name="IMAP">012_status/server.xml</scenario>
-        <scenario name="client">012_status/client.xml</scenario>
+        <scenario file="012_status/server.xml" name="IMAP"/>
+        <scenario file="012_status/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/013_append" state="true">
-        <scenario name="IMAP">013_append/server.xml</scenario>
-        <scenario name="client">013_append/client.xml</scenario>
+        <scenario file="013_append/server.xml" name="IMAP"/>
+        <scenario file="013_append/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/014_check" state="true">
-        <scenario name="IMAP">014_check/server.xml</scenario>
-        <scenario name="client">014_check/client.xml</scenario>
+        <scenario file="014_check/server.xml" name="IMAP"/>
+        <scenario file="014_check/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/015_close" state="true">
-        <scenario name="IMAP">015_close/server.xml</scenario>
-        <scenario name="client">015_close/client.xml</scenario>
+        <scenario file="015_close/server.xml" name="IMAP"/>
+        <scenario file="015_close/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/016_expunge" state="true">
-        <scenario name="IMAP">016_expunge/server.xml</scenario>
-        <scenario name="client">016_expunge/client.xml</scenario>
+        <scenario file="016_expunge/server.xml" name="IMAP"/>
+        <scenario file="016_expunge/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/017_search" state="true">
-        <scenario name="IMAP">017_search/server.xml</scenario>
-        <scenario name="client">017_search/client.xml</scenario>
+        <scenario file="017_search/server.xml" name="IMAP"/>
+        <scenario file="017_search/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/018_fetch" state="true">
-        <scenario name="IMAP">018_fetch/server.xml</scenario>
-        <scenario name="client">018_fetch/client.xml</scenario>
+        <scenario file="018_fetch/server.xml" name="IMAP"/>
+        <scenario file="018_fetch/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/019_store" state="true">
-        <scenario name="IMAP">019_store/server.xml</scenario>
-        <scenario name="client">019_store/client.xml</scenario>
+        <scenario file="019_store/server.xml" name="IMAP"/>
+        <scenario file="019_store/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/020_copy" state="true">
-        <scenario name="IMAP">020_copy/server.xml</scenario>
-        <scenario name="client">020_copy/client.xml</scenario>
+        <scenario file="020_copy/server.xml" name="IMAP"/>
+        <scenario file="020_copy/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/021_uid" state="true">
-        <scenario name="IMAP">021_uid/server.xml</scenario>
-        <scenario name="client">021_uid/client.xml</scenario>
+        <scenario file="021_uid/server.xml" name="IMAP"/>
+        <scenario file="021_uid/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/022_authenticate" state="true">
-        <scenario name="IMAP">022_authenticate/server.xml</scenario>
-        <scenario name="client">022_authenticate/client.xml</scenario>
+        <scenario file="022_authenticate/server.xml" name="IMAP"/>
+        <scenario file="022_authenticate/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/023_starttls" state="true">
-        <scenario name="IMAP">023_starttls/server.xml</scenario>
-        <scenario name="client">023_starttls/client.xml</scenario>
+        <scenario file="023_starttls/server.xml" name="IMAP"/>
+        <scenario file="023_starttls/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/024_quota" state="true">
-        <scenario name="IMAP">024_quota/server.xml</scenario>
-        <scenario name="client">024_quota/client.xml</scenario>
+        <scenario file="024_quota/server.xml" name="IMAP"/>
+        <scenario file="024_quota/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/025_testAllParameters" state="true">
-        <scenario name="IMAP">025_testAllParameters/server.xml</scenario>
-        <scenario name="client">025_testAllParameters/client.xml</scenario>
+        <scenario file="025_testAllParameters/server.xml" name="IMAP"/>
+        <scenario file="025_testAllParameters/client.xml" name="client"/>
     </testcase>
     <testcase name="imap/026_imapTls" state="true">
-        <scenario name="IMAP">026_imapTls/server.xml</scenario>
-        <scenario name="client">026_imapTls/client.xml</scenario>
+        <scenario file="026_imapTls/server.xml" name="IMAP"/>
+        <scenario file="026_imapTls/client.xml" name="client"/>
     </testcase>
-    <testcase name="imap/server" state="false" description="server with real client">
-        <scenario name="IMAP">server/scenario.xml</scenario>
+    <testcase description="server with real client" name="imap/server" state="false">
+        <scenario file="server/scenario.xml" name="IMAP"/>
     </testcase>
-    <testcase name="imap/server2" state="false" description="server imsloader example" >
-        <scenario name="IMAP">server2/server_imap.xml</scenario>
+    <testcase description="server imsloader example" name="imap/server2" state="false">
+        <scenario file="server2/server_imap.xml" name="IMAP"/>
     </testcase>
-    <testcase name="imap/client" state="false" description="client with real server">
-        <scenario name="client">client/scenario.xml</scenario>
+    <testcase description="client with real server" name="imap/client" state="false">
+        <scenario file="client/scenario.xml" name="client"/>
     </testcase>
-    <testcase name="imap/client2" state="false" description="client2 with real server">
-        <scenario name="client2">client2/scenario.xml</scenario>
+    <testcase description="client2 with real server" name="imap/client2" state="false">
+        <scenario file="client2/scenario.xml" name="client2"/>
     </testcase>
-    <testcase name="imap/client3" state="false" description="client3 with real server">
-        <scenario name="client3">client3/scenario.xml</scenario>
+    <testcase description="client3 with real server" name="imap/client3" state="false">
+        <scenario file="client3/scenario.xml" name="client3"/>
     </testcase>
 
 </test>

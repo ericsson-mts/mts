@@ -1,102 +1,100 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
-
-<test name="SIGTRAN" description="SIGTRAN regression tests">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="SIGTRAN regression tests" name="SIGTRAN">
     
-    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
     
     <parameter name="[localHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]"/>
     <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortM3UA]" operation="set" value="[localPortM3UA]" description="local port of the MTS host" editable="true"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortM3UA]" operation="set" value="[localPortM3UA]"/>
     <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>
    
     <parameter name="[remoteHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[remoteHostM3UA]" operation="set" value="172.16.21.32"/-->
-    <parameter name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]" description="remote address of the MTS host" editable="true"/>
+    <parameter description="remote address of the MTS host" editable="true" name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]"/>
     <parameter name="[remotePortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
     <!--parameter name="[remotePortM3UA]" operation="set" value="1234"/-->
-    <parameter name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]" description="remote port of the MTS host" editable="true"/>
+    <parameter description="remote port of the MTS host" editable="true" name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]"/>
     <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>
 
-    <testcase name="010_listenpoint" description="test sigtran" state="true">
-        <scenario name="client">010_listenpoint/client.xml</scenario>
-        <scenario name="SIGTRAN">010_listenpoint/server.xml</scenario>
+    <testcase description="test sigtran" name="010_listenpoint" state="true">
+        <scenario file="010_listenpoint/client.xml" name="client"/>
+        <scenario file="010_listenpoint/server.xml" name="SIGTRAN"/>
     </testcase>
     
-    <testcase name="100_M3UA_Notify" description="test sigtran" state="true">
-        <scenario name="client">100_M3UA_Notify/client.xml</scenario>
-        <scenario name="SIGTRAN">100_M3UA_Notify/server.xml</scenario>
+    <testcase description="test sigtran" name="100_M3UA_Notify" state="true">
+        <scenario file="100_M3UA_Notify/client.xml" name="client"/>
+        <scenario file="100_M3UA_Notify/server.xml" name="SIGTRAN"/>
     </testcase>
     
-    <testcase name="101_M3UA_SCON" description="test sigtran" state="true">
-        <scenario name="client">101_M3UA_SCON/client.xml</scenario>
-        <scenario name="SIGTRAN">101_M3UA_SCON/server.xml</scenario>
+    <testcase description="test sigtran" name="101_M3UA_SCON" state="true">
+        <scenario file="101_M3UA_SCON/client.xml" name="client"/>
+        <scenario file="101_M3UA_SCON/server.xml" name="SIGTRAN"/>
     </testcase>
     
-    <testcase name="102_M3UA_Data" description="test sigtran" state="true">
-        <scenario name="client">102_M3UA_Data/client.xml</scenario>
-        <scenario name="SIGTRAN">102_M3UA_Data/server.xml</scenario>
+    <testcase description="test sigtran" name="102_M3UA_Data" state="true">
+        <scenario file="102_M3UA_Data/client.xml" name="client"/>
+        <scenario file="102_M3UA_Data/server.xml" name="SIGTRAN"/>
     </testcase>
     
-    <testcase name="103_M3UA_ASP_UP" description="test sigtran" state="true">
-        <scenario name="client">103_M3UA_ASP_UP/client.xml</scenario>
-        <scenario name="SIGTRAN">103_M3UA_ASP_UP/server.xml</scenario>
+    <testcase description="test sigtran" name="103_M3UA_ASP_UP" state="true">
+        <scenario file="103_M3UA_ASP_UP/client.xml" name="client"/>
+        <scenario file="103_M3UA_ASP_UP/server.xml" name="SIGTRAN"/>
     </testcase>
     
-   <testcase name="104_M3UA_ASP_Active" description="test sigtran" state="true">
-        <scenario name="client">104_M3UA_ASP_Active/client.xml</scenario>
-        <scenario name="SIGTRAN">104_M3UA_ASP_Active/server.xml</scenario>
+   <testcase description="test sigtran" name="104_M3UA_ASP_Active" state="true">
+        <scenario file="104_M3UA_ASP_Active/client.xml" name="client"/>
+        <scenario file="104_M3UA_ASP_Active/server.xml" name="SIGTRAN"/>
     </testcase>
     
-    <testcase name="105_M3UA_Registration_Request" description="test sigtran" state="true">
-        <scenario name="client">105_M3UA_Registration_Request/client.xml</scenario>
-        <scenario name="SIGTRAN">105_M3UA_Registration_Request/server.xml</scenario>
+    <testcase description="test sigtran" name="105_M3UA_Registration_Request" state="true">
+        <scenario file="105_M3UA_Registration_Request/client.xml" name="client"/>
+        <scenario file="105_M3UA_Registration_Request/server.xml" name="SIGTRAN"/>
     </testcase>
     
-    <testcase name="200_BICC_IAM" description="test sigtran" state="true">
-        <scenario name="client">200_BICC_IAM/client.xml</scenario>
-        <scenario name="SIGTRAN">200_BICC_IAM/server.xml</scenario>
+    <testcase description="test sigtran" name="200_BICC_IAM" state="true">
+        <scenario file="200_BICC_IAM/client.xml" name="client"/>
+        <scenario file="200_BICC_IAM/server.xml" name="SIGTRAN"/>
     </testcase>
     
-    <testcase name="202_BICC_ACM" description="test sigtran" state="true">
-        <scenario name="client">202_BICC_ACM/client.xml</scenario>
-        <scenario name="SIGTRAN">202_BICC_ACM/server.xml</scenario>
+    <testcase description="test sigtran" name="202_BICC_ACM" state="true">
+        <scenario file="202_BICC_ACM/client.xml" name="client"/>
+        <scenario file="202_BICC_ACM/server.xml" name="SIGTRAN"/>
     </testcase>
         
-    <testcase name="203_BICC_ANM" description="test sigtran" state="true">
-        <scenario name="client">203_BICC_ANM/client.xml</scenario>
-        <scenario name="SIGTRAN">203_BICC_ANM/server.xml</scenario>
+    <testcase description="test sigtran" name="203_BICC_ANM" state="true">
+        <scenario file="203_BICC_ANM/client.xml" name="client"/>
+        <scenario file="203_BICC_ANM/server.xml" name="SIGTRAN"/>
     </testcase>
     
-    <testcase name="204_BICC_REL" description="test sigtran" state="true">
-        <scenario name="client">204_BICC_REL/client.xml</scenario>
-        <scenario name="SIGTRAN">204_BICC_REL/server.xml</scenario>
+    <testcase description="test sigtran" name="204_BICC_REL" state="true">
+        <scenario file="204_BICC_REL/client.xml" name="client"/>
+        <scenario file="204_BICC_REL/server.xml" name="SIGTRAN"/>
     </testcase>
         
-    <testcase name="205_BICC_RLC" description="test sigtran" state="true">
-        <scenario name="client">205_BICC_RLC/client.xml</scenario>
-        <scenario name="SIGTRAN">205_BICC_RLC/server.xml</scenario>
+    <testcase description="test sigtran" name="205_BICC_RLC" state="true">
+        <scenario file="205_BICC_RLC/client.xml" name="client"/>
+        <scenario file="205_BICC_RLC/server.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="206_BICC_APM" description="test sigtran" state="false">
-        <scenario name="client">206_BICC_APM/client.xml</scenario>
-        <scenario name="SIGTRAN">206_BICC_APM/server.xml</scenario>
+    <testcase description="test sigtran" name="206_BICC_APM" state="false">
+        <scenario file="206_BICC_APM/client.xml" name="client"/>
+        <scenario file="206_BICC_APM/server.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="301_SCCP_Reset_request" description="test sigtran" state="true">
-        <scenario name="client">301_SCCP_Reset_request/client.xml</scenario>
-        <scenario name="SIGTRAN">301_SCCP_Reset_request/server.xml</scenario>
+    <testcase description="test sigtran" name="301_SCCP_Reset_request" state="true">
+        <scenario file="301_SCCP_Reset_request/client.xml" name="client"/>
+        <scenario file="301_SCCP_Reset_request/server.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="801_Messages_Ambigus1" description="test sigtran" state="false">
-        <scenario name="client">801_Messages_Ambigus1/client.xml</scenario>
-        <scenario name="SIGTRAN">801_Messages_Ambigus1/server.xml</scenario>
+    <testcase description="test sigtran" name="801_Messages_Ambigus1" state="false">
+        <scenario file="801_Messages_Ambigus1/client.xml" name="client"/>
+        <scenario file="801_Messages_Ambigus1/server.xml" name="SIGTRAN"/>
     </testcase>
     
-    <testcase name="802_Messages_Ambigus2" description="test sigtran" state="false">
-        <scenario name="client">802_Messages_Ambigus2/client.xml</scenario>
-        <scenario name="SIGTRAN">802_Messages_Ambigus2/server.xml</scenario>
+    <testcase description="test sigtran" name="802_Messages_Ambigus2" state="false">
+        <scenario file="802_Messages_Ambigus2/client.xml" name="client"/>
+        <scenario file="802_Messages_Ambigus2/server.xml" name="SIGTRAN"/>
     </testcase>
         
 </test>

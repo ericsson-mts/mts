@@ -1,23 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="Load tests">
 
-	<parameter name="[speedTestcase]" operation="set" value="50" description="number of testcase per second"   		editable="true"/>	
-    <parameter name="[TestDurationSec]" operation="set" value="360000" description="Duration (in sec.) of the test"   	    editable="true"/>
-    <parameter name="[NumberTestcase]" operation="set" value="10" description="number of testcase"   			        editable="true"/>
+	<parameter description="number of testcase per second" editable="true" name="[speedTestcase]" operation="set" value="50"/>	
+    <parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="360000"/>
+    <parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="10"/>
 
-	<parameter name="[localHostH248]" operation="system.ipaddress" description="Addresse du XMLloader" />
-    <parameter name="[localHostH248]" operation="set" value="[Host-Tester(0)]" />
-	<parameter name="[localPortH248]" operation="file.readproperty" value="h248.properties" value2="listenpoint.LOCAL_PORT" description="Port du XMLloader"/>
-	<parameter name="[localH248]" operation="set" value="[Host-Tester(0)]:[localPortH248]" />
+	<parameter description="Addresse du XMLloader" name="[localHostH248]" operation="system.ipaddress"/>
+    <parameter name="[localHostH248]" operation="set" value="[Host-Tester(0)]"/>
+	<parameter description="Port du XMLloader" name="[localPortH248]" operation="file.readproperty" value="h248.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter name="[localH248]" operation="set" value="[Host-Tester(0)]:[localPortH248]"/>
 
-    <parameter name="[remoteHostH248]" operation="system.ipaddress" description="Addresse de l'AS" />
-    <parameter name="[remoteHostH248]" operation="set" value="[Host-Server(0)]" />
+    <parameter description="Addresse de l'AS" name="[remoteHostH248]" operation="system.ipaddress"/>
+    <parameter name="[remoteHostH248]" operation="set" value="[Host-Server(0)]"/>
     <!--parameter name="[remoteHostH248]" operation="set" value="172.16.21.31" description="Addresse de l'AS" /-->   	   	
-	<parameter name="[remotePortH248]" operation="file.readproperty" value="h248.properties" value2="listenpoint.LOCAL_PORT" description="Port du XMLloader"/>
+	<parameter description="Port du XMLloader" name="[remotePortH248]" operation="file.readproperty" value="h248.properties" value2="listenpoint.LOCAL_PORT"/>
 	<!--parameter name="[remotePortH248]" operation="set" value="5060"/-->    	
-	<parameter name="[remoteH248]" operation="set" value="[Host-Server(0)]:[remotePortH248]" />
+	<parameter name="[remoteH248]" operation="set" value="[Host-Server(0)]:[remotePortH248]"/>
 
     <parameter name="[domainName]" operation="set" value="devoteam.com"/>
 	<parameter name="[inviteeName]" operation="set" value="bob"/>
@@ -33,17 +31,17 @@
     <!-- RUNPROFILE PARAMETERS -->
     <!--                       -->    
     <runProfile>
-        <step time="0" frequency="[speedTestcase]"/>
+        <step frequency="[speedTestcase]" time="0"/>
         <end delay="[TestDurationSec]"/>
     </runProfile>
 
-    <for index="[index]" from="001" to="[NumberTestcase]" step="1">   
-	    <testcase name="Testcase[index]" description="load [index]" state="true" number="1">
+    <for from="001" index="[index]" step="1" to="[NumberTestcase]">   
+	    <testcase description="load [index]" name="Testcase[index]" number="1" state="true">
 			<parameter name="[inviterName]" operation="set" value="client[index]"/>
 		    <parameter name="[inviteeName]" operation="set" value="server[index]"/>
 			
-		    <scenario name="client[index]">client.xml</scenario>
-		    <scenario name="server[index]">server.xml</scenario>
+		    <scenario file="client.xml" name="client[index]"/>
+		    <scenario file="server.xml" name="server[index]"/>
 	    </testcase>
     </for>
 

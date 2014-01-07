@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
-<test name="MGCP" description="MGCP regression tests">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="MGCP regression tests" name="MGCP">
 
-	<parameter name="[transactionId]" operation="number.uid" value="[transactionId]" />
+	<parameter name="[transactionId]" operation="number.uid" value="[transactionId]"/>
     
     <parameter name="[localHostMGCP]" operation="system.ipaddress"/>
     <parameter name="[localHostMGCP]" operation="set" value="[Host-Tester(0)]"/>
@@ -11,11 +10,11 @@
     <parameter name="[remoteHostMGCP]" operation="set" value="[Host-Server(0)]"/>
 	<parameter name="[remotePortMGCP]" operation="file.readProperty" value="mgcp.properties" value2="listenpoint.LOCAL_PORT"/>
 	
-	<for index="[index]" from="1" to="10" step="1">
+	<for from="1" index="[index]" step="1" to="10">
 	
-		<testcase name="mgcp/createConnection" description="test createConnection" state="true">
-			<scenario name="Call-Agent">Call_Agent.xml</scenario>
-			<scenario name="Call-Server">Gateway.xml</scenario>
+		<testcase description="test createConnection" name="mgcp/createConnection" state="true">
+			<scenario file="Call_Agent.xml" name="Call-Agent"/>
+			<scenario file="Gateway.xml" name="Call-Server"/>
 		</testcase>
 	 </for>
 	 

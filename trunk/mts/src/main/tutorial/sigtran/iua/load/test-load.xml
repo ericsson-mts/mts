@@ -1,30 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="Load tests">
 
-	<parameter name="[speedTrans]" operation="set" value="10000" description="number of transaction per second"   		editable="true"/>	
-    	<parameter name="[TestDurationSec]" operation="set" value="360000" description="Duration (in sec.) of the test"   	    editable="true"/>
-	<parameter name="[NumberTestcase]" operation="set" value="20" description="number of testcase"   			        editable="true"/>
+	<parameter description="number of transaction per second" editable="true" name="[speedTrans]" operation="set" value="10000"/>	
+    	<parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="360000"/>
+	<parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="20"/>
 
         <parameter name="[localHostIUA]" operation="system.ipaddress"/>
-	<parameter name="[localHostIUA]" operation="set" value="[Host-Tester(0)]" editable="true"/>
+	<parameter editable="true" name="[localHostIUA]" operation="set" value="[Host-Tester(0)]"/>
 	<parameter name="[localPortIUA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-	<parameter name="[localPortIUA]" operation="set" value="[Port-Tester(0)]" editable="true"/>    
+	<parameter editable="true" name="[localPortIUA]" operation="set" value="[Port-Tester(0)]"/>    
 	<parameter name="[localIUA]" operation="set" value="[localHostIUA]:[localPortIUA]"/>	
 	   
 	<parameter name="[remoteHostIUA]" operation="system.ipaddress"/>
-	<parameter name="[remoteHostIUA]" operation="set" value="[Host-Server(0)]" editable="true"/>
+	<parameter editable="true" name="[remoteHostIUA]" operation="set" value="[Host-Server(0)]"/>
 	<parameter name="[remotePortIUA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-	<parameter name="[remotePortIUA]" operation="set" value="[Port-Server(0)]" editable="true"/>    
+	<parameter editable="true" name="[remotePortIUA]" operation="set" value="[Port-Server(0)]"/>    
 	<parameter name="[remoteIUA]" operation="set" value="[remoteHostIUA]:[remotePortIUA]"/>	
 
 	
    	<parameter name="[speedTestcase]" operation="divide" value="[speedTrans]" value2="[NumberTestcase]"/>	
 
-  	<for index="[index]" from="001" to="[NumberTestcase]" step="1"> 
+  	<for from="001" index="[index]" step="1" to="[NumberTestcase]"> 
 
-		<testcase name="UNIT-[index]" description="load [index]"  number="1" state="true">
+		<testcase description="load [index]" name="UNIT-[index]" number="1" state="true">
 
 		    	<parameter name="[indexX2]" operation="number.multiply" value="[index]" value2="4"/> 
 		    	<parameter name="[hostCallerIUA]" operation="set" value="[Host-Server(0)]"/>
@@ -39,15 +37,14 @@
 		    	<!-- RUNPROFILE PARAMETERS -->
 		    	<!--                       -->    
 		    	<runProfile>
-		        	<step time="0" frequency="[speedTestcase]"/>
+		        	<step frequency="[speedTestcase]" time="0"/>
 		        	<end delay="[TestDurationSec]"/>
 		    	</runProfile>
 
-		        <scenario name="[portCallerIUA]">../001_Keypad_Facility/caller.xml</scenario>
-        		<scenario name="[Port-Callee]">../001_Keypad_Facility/callee.xml</scenario>
+		        <scenario file="../001_Keypad_Facility/caller.xml" name="[portCallerIUA]"/>
+        		<scenario file="../001_Keypad_Facility/callee.xml" name="[Port-Callee]"/>
 
 		</testcase>
 
 	</for>
 </test>
-

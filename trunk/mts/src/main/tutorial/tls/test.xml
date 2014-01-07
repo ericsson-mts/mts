@@ -1,27 +1,26 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="TLS regression tests" name="TLS">
 
-<test name="TLS" description="TLS regression tests">
-
-    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
     <!-- Parameters for proxy testcases -->
     <parameter name="[localHostTLS]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostTLS]" operation="set" value="[localHostTLS(0)]" description="local address of the MTS host" editable="true"/>
-    <parameter name="[localPortTLS]" operation="set" value="12345" description="local port of the MTS host" editable="true"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostTLS]" operation="set" value="[localHostTLS(0)]"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortTLS]" operation="set" value="12345"/>
     
     <parameter name="[remoteHostTLS]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[remoteHostTLS]" operation="set" value="172.16.21.32"/-->
-    <parameter name="[remoteHostTLS]" operation="set" value="[remoteHostTLS(0)]" description="remote address of the SUT host" editable="true"/>
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostTLS]" operation="set" value="[remoteHostTLS(0)]"/>
     <parameter name="[remotePortTLS]" operation="file.readProperty" value="tls.properties" value2="listenpoint.LOCAL_PORT"/>
     <!--parameter name="[remotePortTLS]" operation="set" value="1234"/-->
-    <parameter name="[remotePortTLS]" operation="set" value="[remotePortTLS]" description="remote port of the SUT host" editable="true"/>
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortTLS]" operation="set" value="[remotePortTLS]"/>
 
        
     <testcase name="tls/001_binary" state="true">
-        <scenario name="TLS">001_binary/scenario.xml</scenario>
+        <scenario file="001_binary/scenario.xml" name="TLS"/>
     </testcase>
     
     <testcase name="tls/002_listenpoint" state="true">
-        <scenario name="TLS">002_listenpoint/scenario.xml</scenario>
+        <scenario file="002_listenpoint/scenario.xml" name="TLS"/>
     </testcase>
     
 </test>

@@ -1,227 +1,225 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
-
-<test name="SIGTRAN" description="SIGTRAN regression tests">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="SIGTRAN regression tests" name="SIGTRAN">
     
-    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
     
     <parameter name="[localHostV5UA]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostV5UA]" operation="set" value="[localHostV5UA(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostV5UA]" operation="set" value="[localHostV5UA(0)]"/>
     <parameter name="[localPortV5UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortV5UA]" operation="set" value="[localPortV5UA(0)]" description="local port of the MTS host" editable="true"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortV5UA]" operation="set" value="[localPortV5UA(0)]"/>
     <parameter name="[localV5UA]" operation="set" value="[localHostV5UA]:[localPortV5UA]"/>
    
     <parameter name="[remoteHostV5UA]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[remoteHostV5UA]" operation="set" value="172.16.21.32"/-->
-    <parameter name="[remoteHostV5UA]" operation="set" value="[remoteHostV5UA(0)]" description="remote address of the SUT host" editable="true"/>
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostV5UA]" operation="set" value="[remoteHostV5UA(0)]"/>
     <parameter name="[remotePortV5UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
     <!--parameter name="[remotePortV5UA]" operation="set" value="1234"/-->
-    <parameter name="[remotePortV5UA]" operation="set" value="[remotePortV5UA(0)]" description="remote port of the SUT host" editable="true"/>
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortV5UA]" operation="set" value="[remotePortV5UA(0)]"/>
     <parameter name="[remoteV5UA]" operation="set" value="[remoteHostV5UA]:[remotePortV5UA]"/>
 	  
-    <testcase name="101_V5X_ESTABLISH" description="test a request" state="true">
-        <scenario name="caller">101_V5X_ESTABLISH/caller.xml</scenario>
-        <scenario name="SIGTRAN">101_V5X_ESTABLISH/callee.xml</scenario>
+    <testcase description="test a request" name="101_V5X_ESTABLISH" state="true">
+        <scenario file="101_V5X_ESTABLISH/caller.xml" name="caller"/>
+        <scenario file="101_V5X_ESTABLISH/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="102_V5X_ESTABLISH_ACK" description="test a request" state="true">
-        <scenario name="caller">102_V5X_ESTABLISH_ACK/caller.xml</scenario>
-        <scenario name="SIGTRAN">102_V5X_ESTABLISH_ACK/callee.xml</scenario>
+    <testcase description="test a request" name="102_V5X_ESTABLISH_ACK" state="true">
+        <scenario file="102_V5X_ESTABLISH_ACK/caller.xml" name="caller"/>
+        <scenario file="102_V5X_ESTABLISH_ACK/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="103_V5X_SIGNAL" description="test a request" state="true">
-        <scenario name="caller">103_V5X_SIGNAL/caller.xml</scenario>
-        <scenario name="SIGTRAN">103_V5X_SIGNAL/callee.xml</scenario>
+    <testcase description="test a request" name="103_V5X_SIGNAL" state="true">
+        <scenario file="103_V5X_SIGNAL/caller.xml" name="caller"/>
+        <scenario file="103_V5X_SIGNAL/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="104_V5X_SIGNAL_ACK" description="test a request" state="true">
-        <scenario name="caller">104_V5X_SIGNAL_ACK/caller.xml</scenario>
-        <scenario name="SIGTRAN">104_V5X_SIGNAL_ACK/callee.xml</scenario>
+    <testcase description="test a request" name="104_V5X_SIGNAL_ACK" state="true">
+        <scenario file="104_V5X_SIGNAL_ACK/caller.xml" name="caller"/>
+        <scenario file="104_V5X_SIGNAL_ACK/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="105_V5X_DISCONNECT" description="test a request" state="true">
-        <scenario name="caller">105_V5X_DISCONNECT/caller.xml</scenario>
-        <scenario name="SIGTRAN">105_V5X_DISCONNECT/callee.xml</scenario>
+    <testcase description="test a request" name="105_V5X_DISCONNECT" state="true">
+        <scenario file="105_V5X_DISCONNECT/caller.xml" name="caller"/>
+        <scenario file="105_V5X_DISCONNECT/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="106_V5X_DISCONNECTCOMPLETE" description="test a request" state="true">
-        <scenario name="caller">106_V5X_DISCONNECTCOMPLETE/caller.xml</scenario>
-        <scenario name="SIGTRAN">106_V5X_DISCONNECTCOMPLETE/callee.xml</scenario>
+    <testcase description="test a request" name="106_V5X_DISCONNECTCOMPLETE" state="true">
+        <scenario file="106_V5X_DISCONNECTCOMPLETE/caller.xml" name="caller"/>
+        <scenario file="106_V5X_DISCONNECTCOMPLETE/callee.xml" name="SIGTRAN"/>
     </testcase>
     
-    <testcase name="107_V5X_STATUSENQUIRY" description="test a request" state="true">
-        <scenario name="caller">107_V5X_STATUSENQUIRY/caller.xml</scenario>
-        <scenario name="SIGTRAN">107_V5X_STATUSENQUIRY/callee.xml</scenario>
+    <testcase description="test a request" name="107_V5X_STATUSENQUIRY" state="true">
+        <scenario file="107_V5X_STATUSENQUIRY/caller.xml" name="caller"/>
+        <scenario file="107_V5X_STATUSENQUIRY/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="108_V5X_STATUS" description="test a request" state="true">
-        <scenario name="caller">108_V5X_STATUS/caller.xml</scenario>
-        <scenario name="SIGTRAN">108_V5X_STATUS/callee.xml</scenario>
+    <testcase description="test a request" name="108_V5X_STATUS" state="true">
+        <scenario file="108_V5X_STATUS/caller.xml" name="caller"/>
+        <scenario file="108_V5X_STATUS/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="111_V5X_PORTCONTROL" description="test a request" state="true">
-        <scenario name="caller">111_V5X_PORTCONTROL/caller.xml</scenario>
-        <scenario name="SIGTRAN">111_V5X_PORTCONTROL/callee.xml</scenario>
+    <testcase description="test a request" name="111_V5X_PORTCONTROL" state="true">
+        <scenario file="111_V5X_PORTCONTROL/caller.xml" name="caller"/>
+        <scenario file="111_V5X_PORTCONTROL/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="112_V5X_PORTCONTROL_ACK" description="test a request" state="true">
-        <scenario name="caller">112_V5X_PORTCONTROL_ACK/caller.xml</scenario>
-        <scenario name="SIGTRAN">112_V5X_PORTCONTROL_ACK/callee.xml</scenario>
+    <testcase description="test a request" name="112_V5X_PORTCONTROL_ACK" state="true">
+        <scenario file="112_V5X_PORTCONTROL_ACK/caller.xml" name="caller"/>
+        <scenario file="112_V5X_PORTCONTROL_ACK/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="113_V5X_COMMONCONTROL" description="test a request" state="true">
-        <scenario name="caller">113_V5X_COMMONCONTROL/caller.xml</scenario>
-        <scenario name="SIGTRAN">113_V5X_COMMONCONTROL/callee.xml</scenario>
+    <testcase description="test a request" name="113_V5X_COMMONCONTROL" state="true">
+        <scenario file="113_V5X_COMMONCONTROL/caller.xml" name="caller"/>
+        <scenario file="113_V5X_COMMONCONTROL/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="114_V5X_COMMONCONTROL_ACK" description="test a request" state="true">
-        <scenario name="caller">114_V5X_COMMONCONTROL_ACK/caller.xml</scenario>
-        <scenario name="SIGTRAN">114_V5X_COMMONCONTROL_ACK/callee.xml</scenario>
+    <testcase description="test a request" name="114_V5X_COMMONCONTROL_ACK" state="true">
+        <scenario file="114_V5X_COMMONCONTROL_ACK/caller.xml" name="caller"/>
+        <scenario file="114_V5X_COMMONCONTROL_ACK/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="121_V5X_SWITCH-OVERREQ" description="test a request" state="true">
-        <scenario name="caller">121_V5X_SWITCH-OVERREQ/caller.xml</scenario>
-        <scenario name="SIGTRAN">121_V5X_SWITCH-OVERREQ/callee.xml</scenario>
+    <testcase description="test a request" name="121_V5X_SWITCH-OVERREQ" state="true">
+        <scenario file="121_V5X_SWITCH-OVERREQ/caller.xml" name="caller"/>
+        <scenario file="121_V5X_SWITCH-OVERREQ/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="122_V5X_SWITCH-OVERCOM" description="test a request" state="true">
-        <scenario name="caller">122_V5X_SWITCH-OVERCOM/caller.xml</scenario>
-        <scenario name="SIGTRAN">122_V5X_SWITCH-OVERCOM/callee.xml</scenario>
+    <testcase description="test a request" name="122_V5X_SWITCH-OVERCOM" state="true">
+        <scenario file="122_V5X_SWITCH-OVERCOM/caller.xml" name="caller"/>
+        <scenario file="122_V5X_SWITCH-OVERCOM/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="123_V5X_OS-SWITCH-OVERCOM" description="test a request" state="true">
-        <scenario name="caller">123_V5X_OS-SWITCH-OVERCOM/caller.xml</scenario>
-        <scenario name="SIGTRAN">123_V5X_OS-SWITCH-OVERCOM/callee.xml</scenario>
+    <testcase description="test a request" name="123_V5X_OS-SWITCH-OVERCOM" state="true">
+        <scenario file="123_V5X_OS-SWITCH-OVERCOM/caller.xml" name="caller"/>
+        <scenario file="123_V5X_OS-SWITCH-OVERCOM/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="124_V5X_SWITCH-OVERACKNOWLEDGE" description="test a request" state="true">
-        <scenario name="caller">124_V5X_SWITCH-OVERACKNOWLEDGE/caller.xml</scenario>
-        <scenario name="SIGTRAN">124_V5X_SWITCH-OVERACKNOWLEDGE/callee.xml</scenario>
+    <testcase description="test a request" name="124_V5X_SWITCH-OVERACKNOWLEDGE" state="true">
+        <scenario file="124_V5X_SWITCH-OVERACKNOWLEDGE/caller.xml" name="caller"/>
+        <scenario file="124_V5X_SWITCH-OVERACKNOWLEDGE/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="125_V5X_SWITCH-OVERREJECT" description="test a request" state="true">
-        <scenario name="caller">125_V5X_SWITCH-OVERREJECT/caller.xml</scenario>
-        <scenario name="SIGTRAN">125_V5X_SWITCH-OVERREJECT/callee.xml</scenario>
+    <testcase description="test a request" name="125_V5X_SWITCH-OVERREJECT" state="true">
+        <scenario file="125_V5X_SWITCH-OVERREJECT/caller.xml" name="caller"/>
+        <scenario file="125_V5X_SWITCH-OVERREJECT/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="126_V5X_PROTOCOLERROR" description="test a request" state="true">
-        <scenario name="caller">126_V5X_PROTOCOLERROR/caller.xml</scenario>
-        <scenario name="SIGTRAN">126_V5X_PROTOCOLERROR/callee.xml</scenario>
+    <testcase description="test a request" name="126_V5X_PROTOCOLERROR" state="true">
+        <scenario file="126_V5X_PROTOCOLERROR/caller.xml" name="caller"/>
+        <scenario file="126_V5X_PROTOCOLERROR/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="127_V5X_RESETSNCOMMAND" description="test a request" state="true">
-        <scenario name="caller">127_V5X_RESETSNCOMMAND/caller.xml</scenario>
-        <scenario name="SIGTRAN">127_V5X_RESETSNCOMMAND/callee.xml</scenario>
+    <testcase description="test a request" name="127_V5X_RESETSNCOMMAND" state="true">
+        <scenario file="127_V5X_RESETSNCOMMAND/caller.xml" name="caller"/>
+        <scenario file="127_V5X_RESETSNCOMMAND/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="128_V5X_RESETSNACKNOWLEDGE" description="test a request" state="true">
-        <scenario name="caller">128_V5X_RESETSNACKNOWLEDGE/caller.xml</scenario>
-        <scenario name="SIGTRAN">128_V5X_RESETSNACKNOWLEDGE/callee.xml</scenario>
+    <testcase description="test a request" name="128_V5X_RESETSNACKNOWLEDGE" state="true">
+        <scenario file="128_V5X_RESETSNACKNOWLEDGE/caller.xml" name="caller"/>
+        <scenario file="128_V5X_RESETSNACKNOWLEDGE/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="131_V5X_ALLOCATION" description="test a request" state="true">
-        <scenario name="caller">131_V5X_ALLOCATION/caller.xml</scenario>
-        <scenario name="SIGTRAN">131_V5X_ALLOCATION/callee.xml</scenario>
+    <testcase description="test a request" name="131_V5X_ALLOCATION" state="true">
+        <scenario file="131_V5X_ALLOCATION/caller.xml" name="caller"/>
+        <scenario file="131_V5X_ALLOCATION/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="132_V5X_ALLOCATIONCOMPLETE" description="test a request" state="true">
-        <scenario name="caller">132_V5X_ALLOCATIONCOMPLETE/caller.xml</scenario>
-        <scenario name="SIGTRAN">132_V5X_ALLOCATIONCOMPLETE/callee.xml</scenario>
+    <testcase description="test a request" name="132_V5X_ALLOCATIONCOMPLETE" state="true">
+        <scenario file="132_V5X_ALLOCATIONCOMPLETE/caller.xml" name="caller"/>
+        <scenario file="132_V5X_ALLOCATIONCOMPLETE/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="133_V5X_ALLOCATIONREJECT" description="test a request" state="true">
-        <scenario name="caller">133_V5X_ALLOCATIONREJECT/caller.xml</scenario>
-        <scenario name="SIGTRAN">133_V5X_ALLOCATIONREJECT/callee.xml</scenario>
+    <testcase description="test a request" name="133_V5X_ALLOCATIONREJECT" state="true">
+        <scenario file="133_V5X_ALLOCATIONREJECT/caller.xml" name="caller"/>
+        <scenario file="133_V5X_ALLOCATIONREJECT/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="134_V5X_DE-ALLOCATION" description="test a request" state="true">
-        <scenario name="caller">134_V5X_DE-ALLOCATION/caller.xml</scenario>
-        <scenario name="SIGTRAN">134_V5X_DE-ALLOCATION/callee.xml</scenario>
+    <testcase description="test a request" name="134_V5X_DE-ALLOCATION" state="true">
+        <scenario file="134_V5X_DE-ALLOCATION/caller.xml" name="caller"/>
+        <scenario file="134_V5X_DE-ALLOCATION/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="135_V5X_DE-ALLOCATIONCOMPLETE" description="test a request" state="true">
-        <scenario name="caller">135_V5X_DE-ALLOCATIONCOMPLETE/caller.xml</scenario>
-        <scenario name="SIGTRAN">135_V5X_DE-ALLOCATIONCOMPLETE/callee.xml</scenario>
+    <testcase description="test a request" name="135_V5X_DE-ALLOCATIONCOMPLETE" state="true">
+        <scenario file="135_V5X_DE-ALLOCATIONCOMPLETE/caller.xml" name="caller"/>
+        <scenario file="135_V5X_DE-ALLOCATIONCOMPLETE/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="136_V5X_DE-ALLOCATIONREJECT" description="test a request" state="true">
-        <scenario name="caller">136_V5X_DE-ALLOCATIONREJECT/caller.xml</scenario>
-        <scenario name="SIGTRAN">136_V5X_DE-ALLOCATIONREJECT/callee.xml</scenario>
+    <testcase description="test a request" name="136_V5X_DE-ALLOCATIONREJECT" state="true">
+        <scenario file="136_V5X_DE-ALLOCATIONREJECT/caller.xml" name="caller"/>
+        <scenario file="136_V5X_DE-ALLOCATIONREJECT/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="137_V5X_AUDIT" description="test a request" state="true">
-        <scenario name="caller">137_V5X_AUDIT/caller.xml</scenario>
-        <scenario name="SIGTRAN">137_V5X_AUDIT/callee.xml</scenario>
+    <testcase description="test a request" name="137_V5X_AUDIT" state="true">
+        <scenario file="137_V5X_AUDIT/caller.xml" name="caller"/>
+        <scenario file="137_V5X_AUDIT/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="138_V5X_AUDITCOMPLETE" description="test a request" state="true">
-        <scenario name="caller">138_V5X_AUDITCOMPLETE/caller.xml</scenario>
-        <scenario name="SIGTRAN">138_V5X_AUDITCOMPLETE/callee.xml</scenario>
+    <testcase description="test a request" name="138_V5X_AUDITCOMPLETE" state="true">
+        <scenario file="138_V5X_AUDITCOMPLETE/caller.xml" name="caller"/>
+        <scenario file="138_V5X_AUDITCOMPLETE/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="139_V5X_ANFAULT" description="test a request" state="true">
-        <scenario name="caller">139_V5X_ANFAULT/caller.xml</scenario>
-        <scenario name="SIGTRAN">139_V5X_ANFAULT/callee.xml</scenario>
+    <testcase description="test a request" name="139_V5X_ANFAULT" state="true">
+        <scenario file="139_V5X_ANFAULT/caller.xml" name="caller"/>
+        <scenario file="139_V5X_ANFAULT/callee.xml" name="SIGTRAN"/>
     </testcase>
         
-    <testcase name="140_V5X_ANFAULTACKNOWLEDGE" description="test a request" state="true">
-        <scenario name="caller">140_V5X_ANFAULTACKNOWLEDGE/caller.xml</scenario>
-        <scenario name="SIGTRAN">140_V5X_ANFAULTACKNOWLEDGE/callee.xml</scenario>
+    <testcase description="test a request" name="140_V5X_ANFAULTACKNOWLEDGE" state="true">
+        <scenario file="140_V5X_ANFAULTACKNOWLEDGE/caller.xml" name="caller"/>
+        <scenario file="140_V5X_ANFAULTACKNOWLEDGE/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="141_V5X_PROTOCOLERROR" description="test a request" state="true">
-        <scenario name="caller">141_V5X_PROTOCOLERROR/caller.xml</scenario>
-        <scenario name="SIGTRAN">141_V5X_PROTOCOLERROR/callee.xml</scenario>
+    <testcase description="test a request" name="141_V5X_PROTOCOLERROR" state="true">
+        <scenario file="141_V5X_PROTOCOLERROR/caller.xml" name="caller"/>
+        <scenario file="141_V5X_PROTOCOLERROR/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="151_V5X_LINKCONTROL" description="test a request" state="true">
-        <scenario name="caller">151_V5X_LINKCONTROL/caller.xml</scenario>
-        <scenario name="SIGTRAN">151_V5X_LINKCONTROL/callee.xml</scenario>
+    <testcase description="test a request" name="151_V5X_LINKCONTROL" state="true">
+        <scenario file="151_V5X_LINKCONTROL/caller.xml" name="caller"/>
+        <scenario file="151_V5X_LINKCONTROL/callee.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="152_V5X_LINKCONTROL_ACK" description="test a request" state="true">
-        <scenario name="caller">152_V5X_LINKCONTROL_ACK/caller.xml</scenario>
-        <scenario name="SIGTRAN">152_V5X_LINKCONTROL_ACK/callee.xml</scenario>
+    <testcase description="test a request" name="152_V5X_LINKCONTROL_ACK" state="true">
+        <scenario file="152_V5X_LINKCONTROL_ACK/caller.xml" name="caller"/>
+        <scenario file="152_V5X_LINKCONTROL_ACK/callee.xml" name="SIGTRAN"/>
     </testcase>
   
-    <testcase name="201_V5UA_Establish" description="test sigtran" state="true">
-        <scenario name="client">201_V5UA_Establish/client.xml</scenario>
-        <scenario name="SIGTRAN">201_V5UA_Establish/server.xml</scenario>
+    <testcase description="test sigtran" name="201_V5UA_Establish" state="true">
+        <scenario file="201_V5UA_Establish/client.xml" name="client"/>
+        <scenario file="201_V5UA_Establish/server.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="202_V5UA_Release" description="test sigtran" state="true">
-        <scenario name="client">202_V5UA_Release/client.xml</scenario>
-        <scenario name="SIGTRAN">202_V5UA_Release/server.xml</scenario>
+    <testcase description="test sigtran" name="202_V5UA_Release" state="true">
+        <scenario file="202_V5UA_Release/client.xml" name="client"/>
+        <scenario file="202_V5UA_Release/server.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="203_V5UA_Data" description="test sigtran" state="true">
-        <scenario name="client">203_V5UA_Data/client.xml</scenario>
-        <scenario name="SIGTRAN">203_V5UA_Data/server.xml</scenario>
+    <testcase description="test sigtran" name="203_V5UA_Data" state="true">
+        <scenario file="203_V5UA_Data/client.xml" name="client"/>
+        <scenario file="203_V5UA_Data/server.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="204_V5UA_Unit_Data" description="test sigtran" state="true">
-        <scenario name="client">204_V5UA_Unit_Data/client.xml</scenario>
-        <scenario name="SIGTRAN">204_V5UA_Unit_Data/server.xml</scenario>
+    <testcase description="test sigtran" name="204_V5UA_Unit_Data" state="true">
+        <scenario file="204_V5UA_Unit_Data/client.xml" name="client"/>
+        <scenario file="204_V5UA_Unit_Data/server.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="205_V5UA_Link_Status" description="test sigtran" state="true">
-        <scenario name="client">205_V5UA_Link_Status/client.xml</scenario>
-        <scenario name="SIGTRAN">205_V5UA_Link_Status/server.xml</scenario>
+    <testcase description="test sigtran" name="205_V5UA_Link_Status" state="true">
+        <scenario file="205_V5UA_Link_Status/client.xml" name="client"/>
+        <scenario file="205_V5UA_Link_Status/server.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="206_V5UA_Sa_Bit" description="test sigtran" state="true">
-        <scenario name="client">206_V5UA_Sa_Bit/client.xml</scenario>
-        <scenario name="SIGTRAN">206_V5UA_Sa_Bit/server.xml</scenario>
+    <testcase description="test sigtran" name="206_V5UA_Sa_Bit" state="true">
+        <scenario file="206_V5UA_Sa_Bit/client.xml" name="client"/>
+        <scenario file="206_V5UA_Sa_Bit/server.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="207_V5UA_Error" description="test sigtran" state="true">
-        <scenario name="client">207_V5UA_Error/client.xml</scenario>
-        <scenario name="SIGTRAN">207_V5UA_Error/server.xml</scenario>
+    <testcase description="test sigtran" name="207_V5UA_Error" state="true">
+        <scenario file="207_V5UA_Error/client.xml" name="client"/>
+        <scenario file="207_V5UA_Error/server.xml" name="SIGTRAN"/>
     </testcase>
 
-    <testcase name="801_setfrommessage" description="test sigtran" state="true">
-        <scenario name="client">801_setfrommessage/caller.xml</scenario>
-        <scenario name="SIGTRAN">801_setfrommessage/callee.xml</scenario>
+    <testcase description="test sigtran" name="801_setfrommessage" state="true">
+        <scenario file="801_setfrommessage/caller.xml" name="client"/>
+        <scenario file="801_setfrommessage/callee.xml" name="SIGTRAN"/>
     </testcase>
         
 </test>

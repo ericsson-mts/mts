@@ -1,48 +1,46 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="Load tests SIP">
 
-	<parameter name="[TryingDuration]" operation="set" value="0.1" description="Duration (in sec.) between 100 and 180"  		editable="true"/>
-	<parameter name="[RingingDuration]" operation="set" value="3" description="Duration (in sec.) between 180 and 200"     		editable="true"/>
-	<parameter name="[CallDurationSec]" operation="set" value="300" description="Duration (in sec.) of the call"           		editable="true"/>    	
-	<parameter name="[CAPS]" operation="set" value="50" description="Call Attempting per Second"                  	editable="true"/>
-	<parameter name="[TestDurationDay]" operation="set" value="10" description="Duration (in day) of the test "        		    editable="true"/>
-	<parameter name="[TestDurationHour]" operation="set" value="0" description="Duration (in hour) of the test "        		editable="true"/>
-	<parameter name="[TestDurationMin]" operation="set" value="5" description="Duration (in min.) of the test "         		editable="true"/>    	
-	<parameter name="[TestDurationSec]" operation="set" value="0" description="Duration (in sec.) of the test "         		editable="true"/>    	
-	<parameter name="[RangeIndexUser]" operation="set" value="0" description="Index of the range of the user phone number"  	editable="true"/>
-	<parameter name="[NumberScenario]" operation="set" value="10" description="Index of the range of the user phone number"  	editable="true"/>
-	<parameter name="[LevelSupervision]" operation="set" value="ERROR" description="level to log the supervision message"       editable="true"/>	
-	<parameter name="[PeriodSupervision]" operation="set" value="10" description="Period for the supervision polling"   	    editable="true"/>	
+	<parameter description="Duration (in sec.) between 100 and 180" editable="true" name="[TryingDuration]" operation="set" value="0.1"/>
+	<parameter description="Duration (in sec.) between 180 and 200" editable="true" name="[RingingDuration]" operation="set" value="3"/>
+	<parameter description="Duration (in sec.) of the call" editable="true" name="[CallDurationSec]" operation="set" value="300"/>    	
+	<parameter description="Call Attempting per Second" editable="true" name="[CAPS]" operation="set" value="50"/>
+	<parameter description="Duration (in day) of the test " editable="true" name="[TestDurationDay]" operation="set" value="10"/>
+	<parameter description="Duration (in hour) of the test " editable="true" name="[TestDurationHour]" operation="set" value="0"/>
+	<parameter description="Duration (in min.) of the test " editable="true" name="[TestDurationMin]" operation="set" value="5"/>    	
+	<parameter description="Duration (in sec.) of the test " editable="true" name="[TestDurationSec]" operation="set" value="0"/>    	
+	<parameter description="Index of the range of the user phone number" editable="true" name="[RangeIndexUser]" operation="set" value="0"/>
+	<parameter description="Index of the range of the user phone number" editable="true" name="[NumberScenario]" operation="set" value="10"/>
+	<parameter description="level to log the supervision message" editable="true" name="[LevelSupervision]" operation="set" value="ERROR"/>	
+	<parameter description="Period for the supervision polling" editable="true" name="[PeriodSupervision]" operation="set" value="10"/>	
 
-	<parameter name="[Threshold_trans_flow]" operation="set" value="10" description="Threshold for the transaction flow"		editable="true"/>	
-	<parameter name="[Threshold_trans_failed]" operation="set" value="1" description="Threshold for the transaction failed percent" editable="true"/>	
-	<parameter name="[Threshold_response_time]" operation="set" value="0.1" description="Threshold for the response time (in sec)" editable="true"/>	
-	<parameter name="[Threshold_retransmit]" operation="set" value="1" description="Threshold for the retransmission percent"	editable="true"/>	
+	<parameter description="Threshold for the transaction flow" editable="true" name="[Threshold_trans_flow]" operation="set" value="10"/>	
+	<parameter description="Threshold for the transaction failed percent" editable="true" name="[Threshold_trans_failed]" operation="set" value="1"/>	
+	<parameter description="Threshold for the response time (in sec)" editable="true" name="[Threshold_response_time]" operation="set" value="0.1"/>	
+	<parameter description="Threshold for the retransmission percent" editable="true" name="[Threshold_retransmit]" operation="set" value="1"/>	
 
 	<!--					 -->
 	<!-- INTERNAL PARAMETERS -->
 	<!--					 -->	
-	<parameter name="[localHostSIP]" operation="system.ipaddress" description="Host du IMSloader"/>
-	<parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" />
+	<parameter description="Host du IMSloader" name="[localHostSIP]" operation="system.ipaddress"/>
+	<parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]"/>
 	<!--parameter name="[localHostSIP]" operation="set" value="172.20.113.3" description="Host du IMSloader"	editable="true"/-->
 	<!--parameter name="[localHostSIP]" operation="set" value="172.16.21.129" description="Host du IMSloader"	editable="true"/-->
 	<!--parameter name="[localPortSIP]" operation="setFromConfig" value="sip.properties" value2="listenpoint.LOCAL_PORT" description="Port du IMSloader"/-->
-	<parameter name="[localPortSIP]" operation="set" value="7070" description="Port du IMSloader"		editable="true"/>
-	<parameter name="[localSIP]" operation="set" value="[localHostSIP]:[localPortSIP]" description="Addresse du IMSloader"/>
+	<parameter description="Port du IMSloader" editable="true" name="[localPortSIP]" operation="set" value="7070"/>
+	<parameter description="Addresse du IMSloader" name="[localSIP]" operation="set" value="[localHostSIP]:[localPortSIP]"/>
 
 	<parameter name="[remoteHostSIP]" operation="system.ipaddress"/>
-	<parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]" description="Addresse de l'AS" editable="true"/>
+	<parameter description="Addresse de l'AS" editable="true" name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]"/>
 	<!--parameter name="[remoteHostSIP]" operation="set" value="172.20.113.2" description="Addresse de l'AS" 	editable="true"/-->	
 	<!--parameter name="[remoteHostSIP]" operation="set" value="172.16.21.129" description="Addresse de l'AS" editable="true"/-->	        
 	<!--parameter name="[remotePortSIP]" operation="setFromConfig" value="sip.properties" value2="listenpoint.LOCAL_PORT" description="Port de l'AS"/-->
 	<!--parameter name="[remotePortSIP]" operation="set" value="5060" description="Port de l'AS"				editable="true"/-->
-	<parameter name="[remotePortSIP]" operation="set" value="7070" description="Port de l'AS"			        editable="true"/>    	    
+	<parameter description="Port de l'AS" editable="true" name="[remotePortSIP]" operation="set" value="7070"/>    	    
 	<parameter name="[remoteSIP]" operation="set" value="[remoteHostSIP]:[remotePortSIP]"/>
 
 	<!-- transport parameters-->
-	<parameter name="[transport]" operation="set" value="UDP" description="transport protocole : UDP | TCP | TLS |SCTP" editable="true"/>    	    
+	<parameter description="transport protocole : UDP | TCP | TLS |SCTP" editable="true" name="[transport]" operation="set" value="UDP"/>    	    
 
 	<parameter name="[RangeNumberUser]" operation="set" value="5000"/>
 
@@ -60,55 +58,55 @@
 	<!--				-->
 	<!-- CSV PARAMETERS -->
 	<!--				-->
-	<parameter name="[inviterTab]" operation="file.readCsv" value="./testAS_uac.csv" value2="inviter" />
-	<parameter name="[inviteeTab]" operation="file.readCsv" value="./testAS_uas.csv" value2="invitee" />    	
+	<parameter name="[inviterTab]" operation="file.readCsv" value="./testAS_uac.csv" value2="inviter"/>
+	<parameter name="[inviteeTab]" operation="file.readCsv" value="./testAS_uas.csv" value2="invitee"/>    	
 
 	<parameter name="[test:indexUser]" operation="set" value="0"/>
 
-	<testcase name="loader" description="passive testcase for invite sending" state="true">
+	<testcase description="passive testcase for invite sending" name="loader" state="true">
 
 		<!--					   -->
 		<!-- RUNPROFILE PARAMETERS -->
 		<!--					   -->    
-		<parameter name="[CAPSlow]" operation="number.divide" value="[CAPS]" value2="2" />    	
+		<parameter name="[CAPSlow]" operation="number.divide" value="[CAPS]" value2="2"/>    	
 		<runProfile>
-			<start delay="1" />
-			<step time="0" frequency="[CAPS]"/>
+			<start delay="1"/>
+			<step frequency="[CAPS]" time="0"/>
 			<end delay="[TestDurationSec]"/>
 		</runProfile>
 
-		<scenario name="inviter">scenario/loader.xml</scenario>
+		<scenario file="scenario/loader.xml" name="inviter"/>
 
 	</testcase>
 
-	<for index="[index]" from="1" to="[NumberScenario]" step="1">
+	<for from="1" index="[index]" step="1" to="[NumberScenario]">
 
-		<testcase name="responder[index]" interruptible="false" description="passive testcase for reponse and subsequent management" state="true">   			
+		<testcase description="passive testcase for reponse and subsequent management" interruptible="false" name="responder[index]" state="true">   			
 
 			<!--					   -->
 			<!-- RUNPROFILE PARAMETERS -->
 			<!--					   -->
 			<runProfile>
-				<step time="0" period="0"/>
-				<end delay="[TestDurationSec]" />
+				<step period="0" time="0"/>
+				<end delay="[TestDurationSec]"/>
 			</runProfile>
 
-			<scenario name="[localPortSIP]">scenario/responder.xml</scenario>
+			<scenario file="scenario/responder.xml" name="[localPortSIP]"/>
 		</testcase>
 	</for>
 
-	<testcase name="sip_supervision" interruptible="false" description="test sip" state="false">
+	<testcase description="test sip" interruptible="false" name="sip_supervision" state="false">
 
 		<!--					   -->
 		<!-- RUNPROFILE PARAMETERS -->
 		<!--					   -->    
         	<runProfile>
-			<step time="0" period="0"/>
-			<end delay="[TestDurationSec]" />
+			<step period="0" time="0"/>
+			<end delay="[TestDurationSec]"/>
 		</runProfile>
 
-		<scenario name="probe">../../156_sip_supervision/probe.xml</scenario>
-		<scenario name="supervision">../../156_sip_supervision/supervision.xml</scenario>
+		<scenario file="../../156_sip_supervision/probe.xml" name="probe"/>
+		<scenario file="../../156_sip_supervision/supervision.xml" name="supervision"/>
 	</testcase>    
 
 </test>

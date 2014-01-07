@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="Load tests">
 
     <!--
@@ -16,19 +14,19 @@
     <parameter name="[remoteHostHTTP]" operation="system.ipaddress"/>
     <parameter name="[remoteHostHTTP]" operation="set" value="[remoteHostHTTP(0)]"/>
     <parameter name="[remotePortHTTP]" operation="set" value="8080"/>
-    <parameter name="[Remote-URL]" operation="set" value="http://[remoteHostHTTP]:[remotePortHTTP]" />
+    <parameter name="[Remote-URL]" operation="set" value="http://[remoteHostHTTP]:[remotePortHTTP]"/>
 
     <runProfile>
-        <step time="0" frequency="10000"/>
+        <step frequency="10000" time="0"/>
         <end iteration="3000"/>
     </runProfile>
 
-    <testcase name="client HTTP 1" description="load client" state="true" number="1">
-        <scenario name="client HTTP">client.xml</scenario>
+    <testcase description="load client" name="client HTTP 1" number="1" state="true">
+        <scenario file="client.xml" name="client HTTP"/>
     </testcase>
     
-    <testcase name="client HTTP 2" description="load client" state="true" number="1">
-        <scenario name="client HTTP">client.xml</scenario>
+    <testcase description="load client" name="client HTTP 2" number="1" state="true">
+        <scenario file="client.xml" name="client HTTP"/>
     </testcase>
 
 </test>

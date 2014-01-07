@@ -1,103 +1,101 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
-
-<test name="SIGTRAN SCCP" description="SIGTRAN SCCP tests">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="SIGTRAN SCCP tests" name="SIGTRAN SCCP">
     
-    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
     
     <parameter name="[localHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]" description="local address of the MTS host" editable="true" />
+    <parameter description="local address of the MTS host" editable="true" name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]"/>
     <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortM3UA]" operation="set" value="[localPortM3UA]" description="local port of the MTS host" editable="true"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortM3UA]" operation="set" value="[localPortM3UA]"/>
     <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>	
    
     <parameter name="[remoteHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[remoteHostM3UA]" operation="set" value="172.16.21.32"/-->
-    <parameter name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]" description="remote address of the SUT host" editable="true" />
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]"/>
     <parameter name="[remotePortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
     <!--parameter name="[remotePortM3UA]" operation="set" value="1234"/-->
-    <parameter name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]" description="remote port of the SUT host" editable="true"/>
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]"/>
     <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>	
 
     
-    <testcase name="01_Connection_Request (CR)" description="test sigtran SCCP" state="true">
-        <scenario name="client">01_Connection_Request/client.xml</scenario>
-	<scenario name="SIGTRAN">01_Connection_Request/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="01_Connection_Request (CR)" state="true">
+        <scenario file="01_Connection_Request/client.xml" name="client"/>
+	<scenario file="01_Connection_Request/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="02_Connection_Confirm (CC)" description="test sigtran SCCP" state="true">
-        <scenario name="client">02_Connection_Confirm/client.xml</scenario>
-	<scenario name="SIGTRAN">02_Connection_Confirm/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="02_Connection_Confirm (CC)" state="true">
+        <scenario file="02_Connection_Confirm/client.xml" name="client"/>
+	<scenario file="02_Connection_Confirm/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="03_Connection_Refused (CREF)" description="test sigtran SCCP" state="true">
-        <scenario name="client">03_Connection_Refused/client.xml</scenario>
-	<scenario name="SIGTRAN">03_Connection_Refused/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="03_Connection_Refused (CREF)" state="true">
+        <scenario file="03_Connection_Refused/client.xml" name="client"/>
+	<scenario file="03_Connection_Refused/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="04_Released (RLSD)" description="test sigtran SCCP" state="true">
-        <scenario name="client">04_Released/client.xml</scenario>
-	<scenario name="SIGTRAN">04_Released/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="04_Released (RLSD)" state="true">
+        <scenario file="04_Released/client.xml" name="client"/>
+	<scenario file="04_Released/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="05_Release_Complete (RLC)" description="test sigtran SCCP" state="true">
-        <scenario name="client">05_Release_Complete/client.xml</scenario>
-	<scenario name="SIGTRAN">05_Release_Complete/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="05_Release_Complete (RLC)" state="true">
+        <scenario file="05_Release_Complete/client.xml" name="client"/>
+	<scenario file="05_Release_Complete/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="06_Data_Form_1 (DT1)" description="test sigtran SCCP" state="true">
-        <scenario name="client">06_Data_Form_1/client.xml</scenario>
-	<scenario name="SIGTRAN">06_Data_Form_1/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="06_Data_Form_1 (DT1)" state="true">
+        <scenario file="06_Data_Form_1/client.xml" name="client"/>
+	<scenario file="06_Data_Form_1/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="07_Data_Form_2 (DT2)" description="test sigtran SCCP" state="true">
-        <scenario name="client">07_Data_Form_2/client.xml</scenario>
-	<scenario name="SIGTRAN">07_Data_Form_2/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="07_Data_Form_2 (DT2)" state="true">
+        <scenario file="07_Data_Form_2/client.xml" name="client"/>
+	<scenario file="07_Data_Form_2/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="08_Data_Acknowledgement (AK)" description="test sigtran SCCP" state="true">
-        <scenario name="client">08_Data_Acknowledgement/client.xml</scenario>
-	<scenario name="SIGTRAN">08_Data_Acknowledgement/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="08_Data_Acknowledgement (AK)" state="true">
+        <scenario file="08_Data_Acknowledgement/client.xml" name="client"/>
+	<scenario file="08_Data_Acknowledgement/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="09_UnitData (UDT)" description="test sigtran SCCP" state="true">
-        <scenario name="client">09_UnitData/client.xml</scenario>
-	<scenario name="SIGTRAN">09_UnitData/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="09_UnitData (UDT)" state="true">
+        <scenario file="09_UnitData/client.xml" name="client"/>
+	<scenario file="09_UnitData/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="10_UnitData_Service (UDTS)" description="test sigtran SCCP" state="true">
-        <scenario name="client">10_UnitData_Service/client.xml</scenario>
-	<scenario name="SIGTRAN">10_UnitData_Service/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="10_UnitData_Service (UDTS)" state="true">
+        <scenario file="10_UnitData_Service/client.xml" name="client"/>
+	<scenario file="10_UnitData_Service/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="11_Expedited_Data (ED)" description="test sigtran SCCP" state="true">
-        <scenario name="client">11_Expedited_Data/client.xml</scenario>
-	<scenario name="SIGTRAN">11_Expedited_Data/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="11_Expedited_Data (ED)" state="true">
+        <scenario file="11_Expedited_Data/client.xml" name="client"/>
+	<scenario file="11_Expedited_Data/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="12_Expedited_Data_Acknowledgement (EA)" description="test sigtran SCCP" state="true">
-        <scenario name="client">12_Expedited_Data_Acknowledgement/client.xml</scenario>
-	<scenario name="SIGTRAN">12_Expedited_Data_Acknowledgement/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="12_Expedited_Data_Acknowledgement (EA)" state="true">
+        <scenario file="12_Expedited_Data_Acknowledgement/client.xml" name="client"/>
+	<scenario file="12_Expedited_Data_Acknowledgement/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="13_Reset_Request (RSR)" description="test sigtran SCCP" state="true">
-        <scenario name="client">13_Reset_Request/client.xml</scenario>
-	<scenario name="SIGTRAN">13_Reset_Request/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="13_Reset_Request (RSR)" state="true">
+        <scenario file="13_Reset_Request/client.xml" name="client"/>
+	<scenario file="13_Reset_Request/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="14_Reset_Confirmation (RSC)" description="test sigtran SCCP" state="true">
-        <scenario name="client">14_Reset_Confirmation/client.xml</scenario>
-	<scenario name="SIGTRAN">14_Reset_Confirmation/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="14_Reset_Confirmation (RSC)" state="true">
+        <scenario file="14_Reset_Confirmation/client.xml" name="client"/>
+	<scenario file="14_Reset_Confirmation/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="15_Protocol_Data_Unit_Error (ERR)" description="test sigtran SCCP" state="true">
-        <scenario name="client">15_Protocol_Data_Unit_Error/client.xml</scenario>
-	<scenario name="SIGTRAN">15_Protocol_Data_Unit_Error/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="15_Protocol_Data_Unit_Error (ERR)" state="true">
+        <scenario file="15_Protocol_Data_Unit_Error/client.xml" name="client"/>
+	<scenario file="15_Protocol_Data_Unit_Error/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="16_Inactivity_Test (IT)" description="test sigtran SCCP" state="true">
-        <scenario name="client">16_Inactivity_Test/client.xml</scenario>
-	<scenario name="SIGTRAN">16_Inactivity_Test/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="16_Inactivity_Test (IT)" state="true">
+        <scenario file="16_Inactivity_Test/client.xml" name="client"/>
+	<scenario file="16_Inactivity_Test/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="17_Extended_UnitData (XUDT)" description="test sigtran SCCP" state="true">
-        <scenario name="client">17_Extended_UnitData/client.xml</scenario>
-	<scenario name="SIGTRAN">17_Extended_UnitData/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="17_Extended_UnitData (XUDT)" state="true">
+        <scenario file="17_Extended_UnitData/client.xml" name="client"/>
+	<scenario file="17_Extended_UnitData/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="18_Extended_UnitData_Service (XUDTS)" description="test sigtran SCCP" state="true">
-        <scenario name="client">18_Extended_UnitData_Service/client.xml</scenario>
-	<scenario name="SIGTRAN">18_Extended_UnitData_Service/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="18_Extended_UnitData_Service (XUDTS)" state="true">
+        <scenario file="18_Extended_UnitData_Service/client.xml" name="client"/>
+	<scenario file="18_Extended_UnitData_Service/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="19_Long_UnitData (LUDT)" description="test sigtran SCCP" state="false">
-        <scenario name="client">19_Long_UnitData/client.xml</scenario>
-	<scenario name="SIGTRAN">19_Long_UnitData/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="19_Long_UnitData (LUDT)" state="false">
+        <scenario file="19_Long_UnitData/client.xml" name="client"/>
+	<scenario file="19_Long_UnitData/server.xml" name="SIGTRAN"/>
     </testcase>
-    <testcase name="20_Long_UnitData_Service (LUDTS)" description="test sigtran SCCP" state="false">
-        <scenario name="client">20_Long_UnitData_Service/client.xml</scenario>
-	<scenario name="SIGTRAN">20_Long_UnitData_Service/server.xml</scenario>
+    <testcase description="test sigtran SCCP" name="20_Long_UnitData_Service (LUDTS)" state="false">
+        <scenario file="20_Long_UnitData_Service/client.xml" name="client"/>
+	<scenario file="20_Long_UnitData_Service/server.xml" name="SIGTRAN"/>
     </testcase>
 </test>

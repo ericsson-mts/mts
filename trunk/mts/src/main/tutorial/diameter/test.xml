@@ -1,22 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="DIAMETER regression tests" name="DIAMETER">
 
-<test name="DIAMETER" description="DIAMETER regression tests">
-
-  <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+  <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
 
   <parameter name="[localHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
-  <parameter name="[localHostDIAM]" operation="set" value="[localHostDIAM(0)]" description="local address of the MTS host" editable="true" />
+  <parameter description="local address of the MTS host" editable="true" name="[localHostDIAM]" operation="set" value="[localHostDIAM(0)]"/>
   <parameter name="[localPortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
-  <parameter name="[localPortDIAM]" operation="set" value="[localPortDIAM]" description="local port of the MTS host" editable="true" />
+  <parameter description="local port of the MTS host" editable="true" name="[localPortDIAM]" operation="set" value="[localPortDIAM]"/>
   <parameter name="[localDIAM]" operation="set" value="[localHostDIAM]:[localPortDIAM]"/>
   
   <parameter name="[remoteHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
   <!--parameter name="[remoteHostDIAM]" operation="set" value="172.16.21.32"/-->
-  <parameter name="[remoteHostDIAM]" operation="set" value="[remoteHostDIAM(0)]" description="remote address of the SUT host" editable="true" />
+  <parameter description="remote address of the SUT host" editable="true" name="[remoteHostDIAM]" operation="set" value="[remoteHostDIAM(0)]"/>
   <parameter name="[remotePortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
   <!--parameter name="[remotePortDIAM]" operation="set" value="3868"/-->
-  <parameter name="[remotePortDIAM]" operation="set" value="[remotePortDIAM]" description="remote port of the SUT host" editable="true" />
+  <parameter description="remote port of the SUT host" editable="true" name="[remotePortDIAM]" operation="set" value="[remotePortDIAM]"/>
   <parameter name="[remoteDIAM]" operation="set" value="[remoteHostDIAM]:[remotePortDIAM]"/>
   
   <parameter name="[localRealmDIAM]" operation="set" value="client.fr"/>
@@ -25,325 +23,325 @@
   <parameter name="[vendorID]" operation="set" value="10415"/>
   <!--parameter name="[vendorID]" operation="set" value="TGPP"/-->
   
-    <testcase name="001_no_synchro" description="diameter" state="true">
-        <scenario name="client">001_no_synchro/client.xml</scenario>
-        <scenario name="server">001_no_synchro/server.xml</scenario>
+    <testcase description="diameter" name="001_no_synchro" state="true">
+        <scenario file="001_no_synchro/client.xml" name="client"/>
+        <scenario file="001_no_synchro/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="002_code" description="diameter" state="true">
-        <scenario name="client">002_code/client.xml</scenario>
-        <scenario name="server">002_code/server.xml</scenario>
+    <testcase description="diameter" name="002_code" state="true">
+        <scenario file="002_code/client.xml" name="client"/>
+        <scenario file="002_code/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="003_no_dico" description="diameter" state="true">
-        <scenario name="client">003_no_dico/client.xml</scenario>
-        <scenario name="server">003_no_dico/server.xml</scenario>
+    <testcase description="diameter" name="003_no_dico" state="true">
+        <scenario file="003_no_dico/client.xml" name="client"/>
+        <scenario file="003_no_dico/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="004_balise_test" description="diameter" state="true">
-        <scenario name="client">004_balise_test/client.xml</scenario>
-        <scenario name="server">004_balise_test/server.xml</scenario>
+    <testcase description="diameter" name="004_balise_test" state="true">
+        <scenario file="004_balise_test/client.xml" name="client"/>
+        <scenario file="004_balise_test/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="005_set_from_msg" description="diameter" state="true">
+    <testcase description="diameter" name="005_set_from_msg" state="true">
         <parameter name="[applicationID]" operation="set" value="4321"/>
-        <scenario name="client">005_set_from_msg/client.xml</scenario>
-        <scenario name="server">005_set_from_msg/server.xml</scenario>
+        <scenario file="005_set_from_msg/client.xml" name="client"/>
+        <scenario file="005_set_from_msg/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="006_server" description="diameter" state="true">
-        <scenario name="506">006_server/server-cx-ma.xml</scenario>
-        <scenario name="306">006_server/server-sh-ud.xml</scenario>
-        <scenario name="client">006_server/client.xml</scenario>
+    <testcase description="diameter" name="006_server" state="true">
+        <scenario file="006_server/server-cx-ma.xml" name="506"/>
+        <scenario file="006_server/server-sh-ud.xml" name="306"/>
+        <scenario file="006_server/client.xml" name="client"/>
     </testcase>
 
-     <testcase name="007_one_scenario" description="diameter" state="true">
-        <scenario name="client-server">007_one_scenario/client-server.xml</scenario>
+     <testcase description="diameter" name="007_one_scenario" state="true">
+        <scenario file="007_one_scenario/client-server.xml" name="client-server"/>
     </testcase>
 
-     <testcase name="008_one_scenario_receiveMessage" description="diameter" state="true">
-        <scenario name="client-server">008_one_scenario_receiveMessage/client-server.xml</scenario>
+     <testcase description="diameter" name="008_one_scenario_receiveMessage" state="true">
+        <scenario file="008_one_scenario_receiveMessage/client-server.xml" name="client-server"/>
     </testcase>
 
-     <testcase name="009_echo" description="diameter" state="true">
+     <testcase description="diameter" name="009_echo" state="true">
         <parameter name="[applicationID]" operation="set" value="16777216"/>
-        <scenario name="client">009_echo/client.xml</scenario>
-        <scenario name="server">009_echo/server.xml</scenario>
+        <scenario file="009_echo/client.xml" name="client"/>
+        <scenario file="009_echo/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="010_probe_capture" description="diameter" state="true">
+    <testcase description="diameter" name="010_probe_capture" state="true">
         <parameter name="[waitSemaphore]" operation="set" value="true"/>
-        <scenario name="client">507_base_ACR/client.xml</scenario>
-        <scenario name="server">507_base_ACR/server.xml</scenario>
-        <scenario name="default">010_probe_capture/probe.xml</scenario>
+        <scenario file="507_base_ACR/client.xml" name="client"/>
+        <scenario file="507_base_ACR/server.xml" name="server"/>
+        <scenario file="010_probe_capture/probe.xml" name="default"/>
     </testcase>
 
-    <testcase name="011_listenpoint" description="diameter" state="true">
+    <testcase description="diameter" name="011_listenpoint" state="true">
         <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
         <parameter name="[Listen-Client-Port]" operation="set" value="3880"/>
         <parameter name="[Listen-Server-Host]" operation="set" value="[remoteHostDIAM]"/>
         <parameter name="[Listen-Server-Port]" operation="set" value="3882"/>
     
-        <scenario name="client">011_listenpoint/client.xml</scenario>
-        <scenario name="server">011_listenpoint/server.xml</scenario>
+        <scenario file="011_listenpoint/client.xml" name="client"/>
+        <scenario file="011_listenpoint/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="012_routing" description="diameter" state="true">
+    <testcase description="diameter" name="012_routing" state="true">
         <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
         <parameter name="[Listen-Client-Port]" operation="set" value="3870"/>
         <parameter name="[Listen-Server-Host]" operation="set" value="[localHostDIAM]"/>
         <parameter name="[Listen-Server-Port]" operation="set" value="3868"/>
     
-        <scenario name="client">012_routing/client.xml</scenario>
-        <scenario name="server">012_routing/server.xml</scenario>
+        <scenario file="012_routing/client.xml" name="client"/>
+        <scenario file="012_routing/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="101_cx_uar" description="diameter" state="true">
+    <testcase description="diameter" name="101_cx_uar" state="true">
         <parameter name="[applicationID]" operation="set" value="16777216"/>
         <!--parameter name="[applicationID]" operation="set" value="IMS_Cx_Dx"/-->
-        <scenario name="client">101_cx_uar/client.xml</scenario>
-        <scenario name="server">101_cx_uar/server.xml</scenario>
+        <scenario file="101_cx_uar/client.xml" name="client"/>
+        <scenario file="101_cx_uar/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="103_cx_sar" description="diameter" state="true">
+    <testcase description="diameter" name="103_cx_sar" state="true">
         <parameter name="[applicationID]" operation="set" value="16777216"/>
-        <scenario name="client">103_cx_sar/client.xml</scenario>
-        <scenario name="server">103_cx_sar/server.xml</scenario>
+        <scenario file="103_cx_sar/client.xml" name="client"/>
+        <scenario file="103_cx_sar/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="105_cx_lir" description="diameter" state="true">
+    <testcase description="diameter" name="105_cx_lir" state="true">
         <parameter name="[applicationID]" operation="set" value="16777216"/>
-        <scenario name="client">105_cx_lir/client.xml</scenario>
-        <scenario name="server">105_cx_lir/server.xml</scenario>
+        <scenario file="105_cx_lir/client.xml" name="client"/>
+        <scenario file="105_cx_lir/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="107_cx_mar" description="diameter" state="true">
+    <testcase description="diameter" name="107_cx_mar" state="true">
         <parameter name="[applicationID]" operation="set" value="16777216"/>
-        <scenario name="client">107_cx_mar/client.xml</scenario>
-        <scenario name="server">107_cx_mar/server.xml</scenario>
+        <scenario file="107_cx_mar/client.xml" name="client"/>
+        <scenario file="107_cx_mar/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="109_cx_rtr" description="diameter" state="true">
+    <testcase description="diameter" name="109_cx_rtr" state="true">
         <parameter name="[applicationID]" operation="set" value="16777216"/>
-        <scenario name="server">109_cx_rtr/server.xml</scenario>
-        <scenario name="client">109_cx_rtr/client.xml</scenario>
+        <scenario file="109_cx_rtr/server.xml" name="server"/>
+        <scenario file="109_cx_rtr/client.xml" name="client"/>
     </testcase>
 
-    <testcase name="111_cx_ppr" description="diameter" state="true">
+    <testcase description="diameter" name="111_cx_ppr" state="true">
         <parameter name="[applicationID]" operation="set" value="16777216"/>
-        <scenario name="server">111_cx_ppr/server.xml</scenario>
-        <scenario name="client">111_cx_ppr/client.xml</scenario>
+        <scenario file="111_cx_ppr/server.xml" name="server"/>
+        <scenario file="111_cx_ppr/client.xml" name="client"/>
     </testcase>
 
-    <testcase name="201_sh_udr" description="diameter" state="true">
+    <testcase description="diameter" name="201_sh_udr" state="true">
         <parameter name="[applicationID]" operation="set" value="16777217"/>
-        <scenario name="client">201_sh_udr/client.xml</scenario>
-        <scenario name="server">201_sh_udr/server.xml</scenario>
+        <scenario file="201_sh_udr/client.xml" name="client"/>
+        <scenario file="201_sh_udr/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="203_sh_pur" description="diameter" state="true">
+    <testcase description="diameter" name="203_sh_pur" state="true">
         <parameter name="[applicationID]" operation="set" value="16777217"/>
-        <scenario name="client">203_sh_pur/client.xml</scenario>
-        <scenario name="server">203_sh_pur/server.xml</scenario>
+        <scenario file="203_sh_pur/client.xml" name="client"/>
+        <scenario file="203_sh_pur/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="205_sh_snr" description="diameter" state="true">
+    <testcase description="diameter" name="205_sh_snr" state="true">
         <parameter name="[applicationID]" operation="set" value="16777217"/>
-        <scenario name="client">205_sh_snr/client.xml</scenario>
-        <scenario name="server">205_sh_snr/server.xml</scenario>
+        <scenario file="205_sh_snr/client.xml" name="client"/>
+        <scenario file="205_sh_snr/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="207_sh_pnr" description="diameter" state="true">
+    <testcase description="diameter" name="207_sh_pnr" state="true">
         <parameter name="[applicationID]" operation="set" value="16777217"/>
-        <scenario name="server">207_sh_pnr/server.xml</scenario>
-        <scenario name="client">207_sh_pnr/client.xml</scenario>
+        <scenario file="207_sh_pnr/server.xml" name="server"/>
+        <scenario file="207_sh_pnr/client.xml" name="client"/>
     </testcase>
 
-    <testcase name="301_rf_acr" description="diameter" state="true">
+    <testcase description="diameter" name="301_rf_acr" state="true">
         <parameter name="[applicationID]" operation="set" value="0"/>
-        <scenario name="CTF">301_rf_acr/CTF.xml</scenario>
-        <scenario name="CDF">301_rf_acr/CDF.xml</scenario>
+        <scenario file="301_rf_acr/CTF.xml" name="CTF"/>
+        <scenario file="301_rf_acr/CDF.xml" name="CDF"/>
     </testcase>
 
-    <testcase name="302_ro_ccr" description="diameter" state="true">
+    <testcase description="diameter" name="302_ro_ccr" state="true">
         <parameter name="[applicationID]" operation="set" value="4"/>
-        <scenario name="CTF">302_ro_ccr/CTF.xml</scenario>
-        <scenario name="OCF">302_ro_ccr/OCF.xml</scenario>
+        <scenario file="302_ro_ccr/CTF.xml" name="CTF"/>
+        <scenario file="302_ro_ccr/OCF.xml" name="OCF"/>
     </testcase>
     
-    <testcase name="316_s6-ulr" description="diameter" state="false">
+    <testcase description="diameter" name="316_s6-ulr" state="false">
         <parameter name="[applicationID]" operation="set" value="16777251"/>
-        <scenario name="client">316_s6-ulr/client.xml</scenario>
-        <scenario name="server">316_s6-ulr/client.xml</scenario>
+        <scenario file="316_s6-ulr/client.xml" name="client"/>
+        <scenario file="316_s6-ulr/client.xml" name="server"/>
     </testcase>
     
 
-    <testcase name="411_e4_udr" description="diameter" state="true">
+    <testcase description="diameter" name="411_e4_udr" state="true">
         <parameter name="[applicationID]" operation="set" value="16777231"/>
-        <scenario name="client">411_e4_udr/client.xml</scenario>
-        <scenario name="server">411_e4_udr/server.xml</scenario>
+        <scenario file="411_e4_udr/client.xml" name="client"/>
+        <scenario file="411_e4_udr/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="412_e4_pnr" description="diameter" state="true">
+    <testcase description="diameter" name="412_e4_pnr" state="true">
         <parameter name="[applicationID]" operation="set" value="16777231"/>
-        <scenario name="server">412_e4_pnr/server.xml</scenario>
-        <scenario name="client">412_e4_pnr/client.xml</scenario>
+        <scenario file="412_e4_pnr/server.xml" name="server"/>
+        <scenario file="412_e4_pnr/client.xml" name="client"/>
     </testcase>
 
-    <testcase name="421_e2_udr" description="diameter" state="true">
+    <testcase description="diameter" name="421_e2_udr" state="true">
         <parameter name="[applicationID]" operation="set" value="16777231"/>
-        <scenario name="client">421_e2_udr/client.xml</scenario>
-        <scenario name="server">421_e2_udr/server.xml</scenario>
+        <scenario file="421_e2_udr/client.xml" name="client"/>
+        <scenario file="421_e2_udr/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="431_rq_aar" description="diameter" state="true">
+    <testcase description="diameter" name="431_rq_aar" state="true">
         <parameter name="[applicationID]" operation="set" value="16777222"/>
-        <scenario name="SPDF">431_rq_aar/SPDF.xml</scenario>
-        <scenario name="A-RACF">431_rq_aar/A-RACF.xml</scenario>
+        <scenario file="431_rq_aar/SPDF.xml" name="SPDF"/>
+        <scenario file="431_rq_aar/A-RACF.xml" name="A-RACF"/>
     </testcase>
 
-    <testcase name="432_rq_rar" description="diameter" state="true">
+    <testcase description="diameter" name="432_rq_rar" state="true">
         <parameter name="[applicationID]" operation="set" value="16777222"/>
-        <scenario name="A-RACF">432_rq_rar/A-RACF.xml</scenario>
-        <scenario name="SPDF">432_rq_rar/SPDF.xml</scenario>
+        <scenario file="432_rq_rar/A-RACF.xml" name="A-RACF"/>
+        <scenario file="432_rq_rar/SPDF.xml" name="SPDF"/>
     </testcase>
 
-    <testcase name="433_rq_str" description="diameter" state="true">
+    <testcase description="diameter" name="433_rq_str" state="true">
         <parameter name="[applicationID]" operation="set" value="16777222"/>
-        <scenario name="SPDF">433_rq_str/SPDF.xml</scenario>
-        <scenario name="A-RACF">433_rq_str/A-RACF.xml</scenario>
+        <scenario file="433_rq_str/SPDF.xml" name="SPDF"/>
+        <scenario file="433_rq_str/A-RACF.xml" name="A-RACF"/>
     </testcase>
 
-    <testcase name="434_rq_asr" description="diameter" state="true">
+    <testcase description="diameter" name="434_rq_asr" state="true">
         <parameter name="[applicationID]" operation="set" value="16777222"/>
-        <scenario name="A-RACF">434_rq_asr/A-RACF.xml</scenario>
-        <scenario name="SPDF">434_rq_asr/SPDF.xml</scenario>
+        <scenario file="434_rq_asr/A-RACF.xml" name="A-RACF"/>
+        <scenario file="434_rq_asr/SPDF.xml" name="SPDF"/>
     </testcase>
 
-    <testcase name="441_gqp_aar" description="diameter" state="true">
+    <testcase description="diameter" name="441_gqp_aar" state="true">
         <parameter name="[applicationID]" operation="set" value="16777222"/>
-        <scenario name="AF">441_gqp_aar/AF.xml</scenario>
-        <scenario name="SPDF">441_gqp_aar/SPDF.xml</scenario>
+        <scenario file="441_gqp_aar/AF.xml" name="AF"/>
+        <scenario file="441_gqp_aar/SPDF.xml" name="SPDF"/>
     </testcase>
 
-    <testcase name="442_gqp_rar" description="diameter" state="true">
+    <testcase description="diameter" name="442_gqp_rar" state="true">
         <parameter name="[applicationID]" operation="set" value="16777222"/>
-        <scenario name="SPDF">442_gqp_rar/SPDF.xml</scenario>
-        <scenario name="AF">442_gqp_rar/AF.xml</scenario>
+        <scenario file="442_gqp_rar/SPDF.xml" name="SPDF"/>
+        <scenario file="442_gqp_rar/AF.xml" name="AF"/>
     </testcase>
 
-    <testcase name="443_gqp_str" description="diameter" state="true">
+    <testcase description="diameter" name="443_gqp_str" state="true">
         <parameter name="[applicationID]" operation="set" value="16777222"/>
-        <scenario name="AF">443_gqp_str/AF.xml</scenario>
-        <scenario name="SPDF">443_gqp_str/SPDF.xml</scenario>
+        <scenario file="443_gqp_str/AF.xml" name="AF"/>
+        <scenario file="443_gqp_str/SPDF.xml" name="SPDF"/>
     </testcase>
 
-    <testcase name="444_gqp_asr" description="diameter" state="true">
+    <testcase description="diameter" name="444_gqp_asr" state="true">
         <parameter name="[applicationID]" operation="set" value="16777222"/>
-        <scenario name="SPDF">444_gqp_asr/SPDF.xml</scenario>
-        <scenario name="AF">444_gqp_asr/AF.xml</scenario>
+        <scenario file="444_gqp_asr/SPDF.xml" name="SPDF"/>
+        <scenario file="444_gqp_asr/AF.xml" name="AF"/>
     </testcase>
 
-    <testcase name="501_base_CER (not runnable)" description="diameter" state="false">
+    <testcase description="diameter" name="501_base_CER (not runnable)" state="false">
         <parameter name="[applicationID]" operation="set" value="0"/>
-        <scenario name="peer1">501_base_CER/peer1.xml</scenario>
-        <scenario name="peer2">501_base_CER/peer2.xml</scenario>
+        <scenario file="501_base_CER/peer1.xml" name="peer1"/>
+        <scenario file="501_base_CER/peer2.xml" name="peer2"/>
     </testcase>
 
-    <testcase name="502_base_DPR (not runnable)" description="diameter" state="false">
+    <testcase description="diameter" name="502_base_DPR (not runnable)" state="false">
         <parameter name="[applicationID]" operation="set" value="0"/>
-        <scenario name="peer1">502_base_DPR/peer1.xml</scenario>
-        <scenario name="peer2">502_base_DPR/peer2.xml</scenario>
+        <scenario file="502_base_DPR/peer1.xml" name="peer1"/>
+        <scenario file="502_base_DPR/peer2.xml" name="peer2"/>
     </testcase>
 
-    <testcase name="503_base_DWR (not runnable)" description="diameter" state="false">
+    <testcase description="diameter" name="503_base_DWR (not runnable)" state="false">
         <parameter name="[applicationID]" operation="set" value="0"/>
-        <scenario name="peer1">503_base_DWR/peer1.xml</scenario>
-        <scenario name="peer2">503_base_DWR/peer2.xml</scenario>
+        <scenario file="503_base_DWR/peer1.xml" name="peer1"/>
+        <scenario file="503_base_DWR/peer2.xml" name="peer2"/>
     </testcase>
 
-    <testcase name="504_base_RAR" description="diameter" state="true">
+    <testcase description="diameter" name="504_base_RAR" state="true">
         <parameter name="[applicationID]" operation="set" value="0"/>
-        <scenario name="server">504_base_RAR/server.xml</scenario>
-        <scenario name="client">504_base_RAR/client.xml</scenario>
+        <scenario file="504_base_RAR/server.xml" name="server"/>
+        <scenario file="504_base_RAR/client.xml" name="client"/>
     </testcase>
 
-    <testcase name="505_base_STR" description="diameter" state="true">
+    <testcase description="diameter" name="505_base_STR" state="true">
         <parameter name="[applicationID]" operation="set" value="0"/>
-        <scenario name="client">505_base_STR/client.xml</scenario>
-        <scenario name="server">505_base_STR/server.xml</scenario>
+        <scenario file="505_base_STR/client.xml" name="client"/>
+        <scenario file="505_base_STR/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="506_base_ASR" description="diameter" state="true">
+    <testcase description="diameter" name="506_base_ASR" state="true">
         <parameter name="[applicationID]" operation="set" value="0"/>
-        <scenario name="server">506_base_ASR/server.xml</scenario>
-        <scenario name="client">506_base_ASR/client.xml</scenario>
+        <scenario file="506_base_ASR/server.xml" name="server"/>
+        <scenario file="506_base_ASR/client.xml" name="client"/>
     </testcase>
 
-    <testcase name="507_base_ACR" description="diameter" state="true">
+    <testcase description="diameter" name="507_base_ACR" state="true">
         <parameter name="[waitSemaphore]" operation="set" value="false"/>
         <parameter name="[applicationID]" operation="set" value="0"/>
-        <scenario name="client">507_base_ACR/client.xml</scenario>
-        <scenario name="server">507_base_ACR/server.xml</scenario>
+        <scenario file="507_base_ACR/client.xml" name="client"/>
+        <scenario file="507_base_ACR/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="800_QS_test_server" description="diameter" state="false">
-        <scenario name="server">800_QS_test_server/server.xml</scenario>
+    <testcase description="diameter" name="800_QS_test_server" state="false">
+        <scenario file="800_QS_test_server/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="941_e4" description="diameter" state="false">
+    <testcase description="diameter" name="941_e4" state="false">
         <parameter name="[applicationID]" operation="set" value="16777231"/>
-        <scenario name="306">941_e4/CLF-e4-UDA.xml</scenario>
-        <scenario name="309">941_e4/RACF-e4-PNA.xml</scenario>
+        <scenario file="941_e4/CLF-e4-UDA.xml" name="306"/>
+        <scenario file="941_e4/RACF-e4-PNA.xml" name="309"/>
     </testcase>
     
-    <testcase name="942_e2" description="diameter" state="false">
+    <testcase description="diameter" name="942_e2" state="false">
         <parameter name="[applicationID]" operation="set" value="16777231"/>
-        <scenario name="306">942_e2/CLF-e2-UDA.xml</scenario>
+        <scenario file="942_e2/CLF-e2-UDA.xml" name="306"/>
     </testcase>
 
-    <testcase name="943_rq" description="diameter" state="false">
+    <testcase description="diameter" name="943_rq" state="false">
         <parameter name="[applicationID]" operation="set" value="16777222"/>
-        <scenario name="265">943_rq/RACF-Rq-AAA.xml</scenario>
-        <scenario name="258">943_rq/SPDF-Rq-RAA.xml</scenario>
-        <scenario name="275">943_rq/RACF-Rq-STA.xml</scenario>
-        <scenario name="274">943_rq/SPDF-Rq-ASA.xml</scenario>
+        <scenario file="943_rq/RACF-Rq-AAA.xml" name="265"/>
+        <scenario file="943_rq/SPDF-Rq-RAA.xml" name="258"/>
+        <scenario file="943_rq/RACF-Rq-STA.xml" name="275"/>
+        <scenario file="943_rq/SPDF-Rq-ASA.xml" name="274"/>
     </testcase>
 
-    <testcase name="944_gqp" description="diameter" state="false">
+    <testcase description="diameter" name="944_gqp" state="false">
         <parameter name="[applicationID]" operation="set" value="16777222"/>
-        <scenario name="265">944_gqp/SPDF-Gqp-AAA.xml</scenario>
-        <scenario name="258">944_gqp/AF-Gqp-RAA.xml</scenario>
-        <scenario name="275">944_gqp/SPDF-Gqp-STA.xml</scenario>
-        <scenario name="274">944_gqp/AF-Gqp-ASA.xml</scenario>
+        <scenario file="944_gqp/SPDF-Gqp-AAA.xml" name="265"/>
+        <scenario file="944_gqp/AF-Gqp-RAA.xml" name="258"/>
+        <scenario file="944_gqp/SPDF-Gqp-STA.xml" name="275"/>
+        <scenario file="944_gqp/AF-Gqp-ASA.xml" name="274"/>
     </testcase>
 
-    <testcase name="996_proxy" description="diameter" state="false">
+    <testcase description="diameter" name="996_proxy" state="false">
         <parameter name="[applicationID]" operation="set" value="16777216"/>
         <parameter name="[Listen-Proxy-Host]" operation="set" value="[localHostDIAM]"/>
         <parameter name="[Listen-Proxy-Port]" operation="set" value="3880"/>
         <parameter name="[Remote-Proxy-Host]" operation="set" value="[remoteHostDIAM]"/>
         <parameter name="[Remote-Proxy-Port]" operation="set" value="[remotePortDIAM]"/>
-        <scenario name="proxy">996_proxy/proxy.xml</scenario>
-        <scenario name="client">996_proxy/client.xml</scenario>
-        <scenario name="DIAMETER">996_proxy/server.xml</scenario>
+        <scenario file="996_proxy/proxy.xml" name="proxy"/>
+        <scenario file="996_proxy/client.xml" name="client"/>
+        <scenario file="996_proxy/server.xml" name="DIAMETER"/>
     </testcase>
 
-    <testcase name="997_boucle" description="diameter" state="false">
+    <testcase description="diameter" name="997_boucle" state="false">
         <parameter name="[applicationID]" operation="set" value="16777216"/>
-        <scenario name="client">997_boucle/client.xml</scenario>
-        <scenario name="server">997_boucle/server.xml</scenario>
+        <scenario file="997_boucle/client.xml" name="client"/>
+        <scenario file="997_boucle/server.xml" name="server"/>
     </testcase>
 
-    <testcase name="998_client" description="diameter" state="false">
+    <testcase description="diameter" name="998_client" state="false">
         <parameter name="[applicationID]" operation="set" value="16777216"/>
-        <scenario name="client-sh-udr">998_client/client-sh-udr.xml</scenario>
-        <scenario name="client-cx-mar">998_client/client-cx-mar.xml</scenario>
+        <scenario file="998_client/client-sh-udr.xml" name="client-sh-udr"/>
+        <scenario file="998_client/client-cx-mar.xml" name="client-cx-mar"/>
     </testcase>
 
-    <testcase name="999_server" description="diameter" state="false">
-        <scenario name="506">999_server/server-cx-maa.xml</scenario>
-        <scenario name="306">999_server/server-sh-uda.xml</scenario>
+    <testcase description="diameter" name="999_server" state="false">
+        <scenario file="999_server/server-cx-maa.xml" name="506"/>
+        <scenario file="999_server/server-sh-uda.xml" name="306"/>
     </testcase>
 
 </test>
