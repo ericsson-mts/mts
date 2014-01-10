@@ -21,7 +21,7 @@
 	    <parameter name="[NumberScenario]" operation="set" value="10"/>	
 
 		<testcase description="Regristrar SIP agent [index]" name="Registrar[index]" number="1" state="true">	  
-			<scenario file="Registrar/SIP.xml" name="[localPortSIP]"/>
+			<scenario file="Registrar/SIP.xml" name="[localPortSIP]" routingName="[localPortSIP]"/>
 		</testcase>
 	
       	<for from="000" index="[index]" step="1" to="[NumberScenario]">   
@@ -29,7 +29,7 @@
 	        	<parameter name="[inviteeName]" operation="set" value="[inviteeName][index]"/>
    			    <parameter name="[inviterName]" operation="set" value="[inviterName][index]"/>
 		
-			    <scenario file="UAC.xml" name="UAC"/>
+			    <scenario file="UAC.xml" name="UAC" routingName="UAC"/>
 		    </testcase>
 	    </for>
 	

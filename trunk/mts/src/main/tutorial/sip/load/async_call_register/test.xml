@@ -60,7 +60,7 @@
 	<parameter name="[userTab]" operation="file.readCsv" value="./user.csv" value2="inviter"/>
 
 	<testcase description="Registrar SIP agent [index]" name="Registrar[0]" number="1" state="false">
-		<scenario file="registrar/SIP.xml" name="[remotePortSIP]"/>
+		<scenario file="registrar/SIP.xml" name="[remotePortSIP]" routingName="[remotePortSIP]"/>
 	</testcase>
 
 	
@@ -71,7 +71,7 @@
 			<step frequency="[RAPS]" time="0"/>
 			<end delay="[TestDurationSec]"/>
 		</runProfile>
-		<scenario file="scenario/register.xml" name="false|REGISTER"/>
+		<scenario file="scenario/register.xml" name="false|REGISTER" routingName="false|REGISTER"/>
 	</testcase>
 
 	<for from="1" index="[index]" step="1" to="[NumberScenario]">
@@ -82,7 +82,7 @@
 				<step period="0" time="0"/>
 				<end delay="[TestDurationSec]"/>
 			</runProfile>
-			<scenario file="scenario/responder.xml" name="default"/>
+			<scenario file="scenario/responder.xml" name="default" routingName="default"/>
 		</testcase>
 	</for>
 
@@ -94,7 +94,7 @@
 			  <end delay="[TestDurationSec]"/>
 		</runProfile>
 
-		<scenario file="scenario/loader.xml" name="inviter"/>
+		<scenario file="scenario/loader.xml" name="inviter" routingName="inviter"/>
 
 	</testcase>
 
@@ -104,7 +104,7 @@
 			<step frequency="[RAPS]" time="0"/>
 			<end iteration="[RangeNumberUser]"/>
 		</runProfile>
-		<scenario file="scenario/unregister.xml" name="UAC"/>
+		<scenario file="scenario/unregister.xml" name="UAC" routingName="UAC"/>
 	</testcase>
 
 </test>

@@ -24,16 +24,16 @@
 	<parameter name="[test:stopeNodeB1]" operation="set" value="false"/>
 <!-- ##################################################################### -->
         <testcase description="create_session" name="MME create tunnel" state="true">
-            <scenario file="111_create_session.xml" name="ETHERNET"/>
+            <scenario file="111_create_session.xml" name="ETHERNET" routingName="ETHERNET"/>
         </testcase>
 		<testcase description="eNodeB encapse/decapse" name="eNodeB" state="true">
-			<scenario file="decapse.xml" name="GTP.V1"/>
-			<scenario file="encapse.xml" name="ETHERNET"/>
+			<scenario file="decapse.xml" name="GTP.V1" routingName="GTP.V1"/>
+			<scenario file="encapse.xml" name="ETHERNET" routingName="ETHERNET"/>
 		</testcase>
 		<testcase description="handover intra lte" name="do handover" state="false">
-			<scenario file="handover_intra_mme.xml" name="UDP"/>
+			<scenario file="handover_intra_mme.xml" name="UDP" routingName="UDP"/>
 		</testcase>
 		<testcase description="delete current session" name="delete session" state="false">
-			<scenario file="delete_session.xml" name="GTP.V2"/>
+			<scenario file="delete_session.xml" name="GTP.V2" routingName="GTP.V2"/>
 		</testcase>
 </test>

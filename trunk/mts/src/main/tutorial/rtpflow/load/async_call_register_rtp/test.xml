@@ -70,7 +70,7 @@
 	<parameter name="[userTabNP]" operation="file.readCsv" value="./user.csv" value2="NumberPhone"/>
 	
 	<testcase description="Registrar SIP agent [index]" name="Registrar[index]" number="1" state="false">
-		<scenario file="Registrar/SIP.xml" name="true|REGISTER"/>
+		<scenario file="Registrar/SIP.xml" name="true|REGISTER" routingName="true|REGISTER"/>
 	</testcase>
 	
 	<testcase description="Register agent" name="Register" number="1" state="true">
@@ -78,7 +78,7 @@
 			<step frequency="[RAPS]" time="0"/>
 			<end delay="[TestDurationSec]"/>
 		</runProfile>
-		<scenario file="scenario/register.xml" name="false|REGISTER"/>
+		<scenario file="scenario/register.xml" name="false|REGISTER" routingName="false|REGISTER"/>
 	</testcase>
 	
 	<for from="1" index="[index]" step="1" to="[NumberScenario]">
@@ -91,7 +91,7 @@
 				<step period="0" time="0"/>
 				<end delay="[TestDurationSec]"/>
 			</runProfile>
-			<scenario file="scenario/responder.xml" name="default"/>
+			<scenario file="scenario/responder.xml" name="default" routingName="default"/>
 		</testcase>
 	</for>
 
@@ -107,7 +107,7 @@
 			<end delay="[TestDurationSec]"/>
 		</runProfile>
 
-		<scenario file="scenario/loader.xml" name="inviter"/>
+		<scenario file="scenario/loader.xml" name="inviter" routingName="inviter"/>
 
 	</testcase>
 
@@ -116,7 +116,7 @@
 			<step frequency="[RAPS]" time="0"/>
 			<end iteration="[RangeNumberUser]"/>
 		</runProfile>
-		<scenario file="scenario/unregister.xml" name="false|REGISTER"/>
+		<scenario file="scenario/unregister.xml" name="false|REGISTER" routingName="false|REGISTER"/>
 	</testcase>
 
 	<testcase description="Receive RTP flow " name="ReceiveRTPflow" number="1" state="true">
@@ -124,7 +124,7 @@
 			<step period="0" time="0"/>
 			<end delay="[TestDurationSec]"/>
 		</runProfile>
-		<scenario file="scenario/receiveRTPflow.xml" name="RTPFLOW"/>
+		<scenario file="scenario/receiveRTPflow.xml" name="RTPFLOW" routingName="RTPFLOW"/>
 	</testcase>
 
 

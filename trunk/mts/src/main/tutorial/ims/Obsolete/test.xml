@@ -16,13 +16,13 @@
   	<parameter name="[UserName2]" operation="set" value="barth.simpson"/>	
   	
 	<testcase description="SIP registration for Bob user" name="REGISTER_Bob" state="true">
-		<scenario file="register_bob\UE_register.xml" name="register_bob\UE_register"/>
+		<scenario file="register_bob\UE_register.xml" name="register_bob\UE_register" routingName="register_bob\UE_register"/>
 	</testcase>
 	<testcase description="SIP registration for Alice user" name="REGISTER_Alice" state="true">
-		<scenario file="register_alice\UE_register.xml" name="register_alice\UE_register"/>
+		<scenario file="register_alice\UE_register.xml" name="register_alice\UE_register" routingName="register_alice\UE_register"/>
 	</testcase>	
 	<testcase description="INVITE callflow" name="INVITE" state="true">
-		<scenario file="invite\UE_inviter.xml" name="invite\UE_inviter.xml"/>
-		<scenario file="invite\UE_invitee.xml" name="invite\UE_invitee.xml"/>
+		<scenario file="invite\UE_inviter.xml" name="invite\UE_inviter.xml" routingName="invite\UE_inviter.xml"/>
+		<scenario file="invite\UE_invitee.xml" name="invite\UE_invitee.xml" routingName="invite\UE_invitee.xml"/>
 	</testcase>
 </test>

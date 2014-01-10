@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="Load tests">
 
-    <parameter name="[speedTestcase]" operation="set" value="1000" description="number of testcase per second" editable="true" />
-    <parameter name="[TestDurationSec]" operation="set" value="1800000" description="Duration (in sec.) of the test" editable="true" />
-    <parameter name="[NumberTestcase]" operation="set" value="10" description="number of testcase" editable="true" />
-    <parameter name="[LevelSupervision]" operation="set" value="ERROR" description="level to log the supervision message" editable="true" />
-    <parameter name="[PeriodSupervision]" operation="set" value="10" description="Period for the supervision polling" editable="true" />
+    <parameter description="number of testcase per second" editable="true" name="[speedTestcase]" operation="set" value="1000"/>
+    <parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="1800000"/>
+    <parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="10"/>
+    <parameter description="level to log the supervision message" editable="true" name="[LevelSupervision]" operation="set" value="ERROR"/>
+    <parameter description="Period for the supervision polling" editable="true" name="[PeriodSupervision]" operation="set" value="10"/>
 
-    <parameter name="[localHostSIP]" operation="system.ipaddress" description="Addresse du XMLloader" />
+    <parameter description="Addresse du XMLloader" name="[localHostSIP]" operation="system.ipaddress"/>
     <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]"/>
-    <parameter name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT" description="Port du XMLloader" />
+    <parameter description="Port du XMLloader" name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
     <parameter name="[localPortSIP]" operation="set" value="7070"/>
     <parameter name="[localSIP]" operation="set" value="[localHostSIP(0)]:[localPortSIP]"/>
 
@@ -33,8 +33,8 @@
     <parameter name="[waiting]" operation="set" value="[NumberTestcase]"/>
 
     <testcase description="test sip" name="sip/156_sip_supervision" state="false">
-        <scenario file="../../156_sip_supervision/probe.xml" name="probe"/>
-        <scenario file="../../156_sip_supervision/supervision.xml" name="supervision"/>
+        <scenario file="../../156_sip_supervision/probe.xml" name="probe" routingName="probe"/>
+        <scenario file="../../156_sip_supervision/supervision.xml" name="supervision" routingName="supervision"/>
     </testcase>    
 
     
@@ -51,8 +51,8 @@
                     <end delay="[TestDurationSec]"/>
             	</runProfile>
 
-		<scenario file="UAC.xml" name="alice[index]"/>
-		<scenario file="UAS.xml" name="bob[index]"/>
+		<scenario file="UAC.xml" name="alice[index]" routingName="alice[index]"/>
+		<scenario file="UAS.xml" name="bob[index]" routingName="bob[index]"/>
 	    </testcase>
     </for>
     

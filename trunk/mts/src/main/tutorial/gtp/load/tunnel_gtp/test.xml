@@ -214,57 +214,57 @@
   <testcase name="GTP Echo Request &amp; Response -------------------------" state="false"/>
   <testcase name="GTP_EchoResponse" state="false">
     <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-    <scenario file="GTPv1_EchoResponse.xml" name="GTP.V1"/>
-    <scenario file="GTPv2_EchoResponse.xml" name="GTP.V2"/>
+    <scenario file="GTPv1_EchoResponse.xml" name="GTP.V1" routingName="GTP.V1"/>
+    <scenario file="GTPv2_EchoResponse.xml" name="GTP.V2" routingName="GTP.V2"/>
   </testcase>
   <testcase name="GTPv1_EchoRequest" state="false">
     <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-    <scenario file="GTPv1_EchoRequest.xml" name="client"/>
+    <scenario file="GTPv1_EchoRequest.xml" name="client" routingName="client"/>
   </testcase>
   <testcase name="GTPv2_EchoRequest" state="false">
     <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-    <scenario file="GTPv2_EchoRequest.xml" name="client"/>
+    <scenario file="GTPv2_EchoRequest.xml" name="client" routingName="client"/>
   </testcase>
 
   <!-- GTPv1. -->
   <testcase name="3G -----------------------------------------------------------" state="false"/>
   <testcase name="GTPv1_CreatePDPcontextRequest" state="false">
     <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-    <scenario file="GTPv1_CreatePDPcontextRequest.xml" name="client"/>
+    <scenario file="GTPv1_CreatePDPcontextRequest.xml" name="client" routingName="client"/>
   </testcase>
   <testcase name="GTPv1_UpdatePDPcontextRequest1" state="false">
     <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-    <scenario file="GTPv1_UpdatePDPcontextRequest1.xml" name="client"/>
+    <scenario file="GTPv1_UpdatePDPcontextRequest1.xml" name="client" routingName="client"/>
   </testcase>
   <testcase name="GTPv1_UpdatePDPcontextRequest2" state="false">
     <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-    <scenario file="GTPv1_UpdatePDPcontextRequest2.xml" name="client"/>
+    <scenario file="GTPv1_UpdatePDPcontextRequest2.xml" name="client" routingName="client"/>
   </testcase>
   <testcase name="GTPv1_DeletePDPcontextRequest" state="false">
     <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-    <scenario file="GTPv1_DeletePDPcontextRequest.xml" name="client"/>
+    <scenario file="GTPv1_DeletePDPcontextRequest.xml" name="client" routingName="client"/>
   </testcase>
 
   <!-- GTPv2. -->
   <testcase name="4G -----------------------------------------------------------" state="false"/>
   <testcase name="GTPv2_CreateSessionRequest" state="false">
     <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-    <scenario file="GTPv2_CreateSessionRequest.xml" name="client"/>
+    <scenario file="GTPv2_CreateSessionRequest.xml" name="client" routingName="client"/>
   </testcase>
   <testcase name="GTPv2_ModifyBearerRequest" state="false">
     <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-    <scenario file="GTPv2_ModifyBearerRequest.xml" name="client"/>
+    <scenario file="GTPv2_ModifyBearerRequest.xml" name="client" routingName="client"/>
   </testcase>
   <testcase name="GTPv2_DeleteSessionRequest" state="false">
     <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-    <scenario file="GTPv2_DeleteSessionRequest.xml" name="client"/>
+    <scenario file="GTPv2_DeleteSessionRequest.xml" name="client" routingName="client"/>
   </testcase>
 
   <!-- Load testcases. -->
   <testcase name="Load testcases ---------------------------------------------------" state="false"/>
   <testcase name="GTPv2_CreateSessionResponses2CSV" state="true">
     <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-    <scenario file="GTPv2_CreateSessionResponses2CSV.xml" name="false"/>
+    <scenario file="GTPv2_CreateSessionResponses2CSV.xml" name="false" routingName="false"/>
   </testcase>
   <testcase name="GTPv2_CreateSessionRequest_LoadTest" state="true">
     <parameter name="[transport]" operation="set" value="[transportGTP]"/>
@@ -277,13 +277,13 @@
       <step frequency="100" time="30"/>
       <end delay="50000"/>
     </runProfile>
-    <scenario file="GTPv2_CreateSessionRequestLoadTest.xml" name="client"/>
+    <scenario file="GTPv2_CreateSessionRequestLoadTest.xml" name="client" routingName="client"/>
   </testcase>
 
   <!-- Server testcases. -->
   <testcase name="Server testcases ---------------------------------------------------" state="false"/>
   <testcase name="GTPv2_CreateSessionResponses" state="true">
-    <scenario file="server/createSession.xml" name="true"/>
+    <scenario file="server/createSession.xml" name="true" routingName="true"/>
   </testcase>
   <!--testcase name="GTPv2_DeleteSessionResponses" state="false">
     <scenario name="true">server/deleteSession.xml</scenario>

@@ -12,21 +12,21 @@
     <parameter description="remote address of the SUT host" editable="true" name="[remoteHostETH]" operation="set" value="[remoteHostETH(0)]"/>
     
     <testcase name="sendMessageETHERNET" state="true">
-        <scenario file="sendMessageETHERNET.xml" name="ETHERNET"/>
+        <scenario file="sendMessageETHERNET.xml" name="ETHERNET" routingName="ETHERNET"/>
     </testcase>
     <testcase name="encapse GTP" state="true">
-        <scenario file="encapse-sendGTP.xml" name="ETHERNET"/>
-        <scenario file="encapse-recvGTP.xml" name="GTP.V1"/>
+        <scenario file="encapse-sendGTP.xml" name="ETHERNET" routingName="ETHERNET"/>
+        <scenario file="encapse-recvGTP.xml" name="GTP.V1" routingName="GTP.V1"/>
     </testcase>
     <testcase name="decapse GTP" state="true">
-        <scenario file="decapse-recvGTP.xml" name="GTP.V1"/>
-        <scenario file="decapse-recvETH.xml" name="ETHERNET"/>
+        <scenario file="decapse-recvGTP.xml" name="GTP.V1" routingName="GTP.V1"/>
+        <scenario file="decapse-recvETH.xml" name="ETHERNET" routingName="ETHERNET"/>
     </testcase>
     <testcase name="ARP Request" state="true">
-        <scenario file="arp_request.xml" name="ETHERNET"/>
+        <scenario file="arp_request.xml" name="ETHERNET" routingName="ETHERNET"/>
     </testcase>
     <testcase name="createProbeETHERNET" state="false">
-        <scenario file="createProbeETHERNET.xml" name="ETHERNET"/>
+        <scenario file="createProbeETHERNET.xml" name="ETHERNET" routingName="ETHERNET"/>
     </testcase>
     
 </test>
