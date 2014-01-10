@@ -32,7 +32,7 @@
        - It never ends since it is in a <while> operation.
        -->
     <testcase description="test post" name="server" state="false">
-        <scenario file="server.xml" name="server"/>
+        <scenario file="server.xml" name="server" routingName="server"/>
     </testcase>
     
 
@@ -48,8 +48,8 @@
                 <end delay="[TestDurationSec]"/>
             </runProfile>
 
-            <scenario file="server.xml" name="server_[i]"/>
-            <scenario file="client.xml" name="client_[i]"/>
+            <scenario file="server.xml" name="server_[i]" routingName="server_[i]"/>
+            <scenario file="client.xml" name="client_[i]" routingName="client_[i]"/>
         </testcase>
     </for>
 

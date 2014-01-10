@@ -57,7 +57,7 @@
             <!--end delay="[TestDurationSec]"/-->
             <!--end iteration="10"/-->
         </runProfile>
-		<scenario file="scenario_loader.xml" name="loader_sip"/>
+		<scenario file="scenario_loader.xml" name="loader_sip" routingName="loader_sip"/>
 	</testcase>
 		
    <testcase description="passive testcase for reponse and subsequent management" interruptible="false" name="receiver_sip" state="true">
@@ -65,7 +65,7 @@
             <start delay="[DelayDurationSec]"/>
             <end iteration="1"/>
         </runProfile>
-        <scenario file="scenario_responder_sip.xml" name="SIP"/>
+        <scenario file="scenario_responder_sip.xml" name="SIP" routingName="SIP"/>
    </testcase>
 
    <testcase description="passive testcase for reponse and subsequent management" interruptible="false" name="receiver_rtp" state="true">
@@ -73,6 +73,6 @@
             <start delay="[DelayDurationSec]"/>
             <end iteration="1"/>
         </runProfile>
-        <scenario file="scenario_responder_rtp.xml" name="RTPFLOW"/>
+        <scenario file="scenario_responder_rtp.xml" name="RTPFLOW" routingName="RTPFLOW"/>
    </testcase>
 </test>

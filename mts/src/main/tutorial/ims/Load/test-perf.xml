@@ -69,42 +69,42 @@
     	</runner>
 
 	<testcase description="Registering users" name="Client Registration" number="1" state="true">
-		<scenario file="register.xml" name="Register"/>
+		<scenario file="register.xml" name="Register" routingName="Register"/>
 	</testcase>
 
 	<testcase description="Unregistering users" name="Client Unregistration" number="1" state="true">
-		<scenario file="unregister.xml" name="Unregister"/>
+		<scenario file="unregister.xml" name="Unregister" routingName="Unregister"/>
 	</testcase>
 	
 	<!-- Temporary due to bug with 2 <for> tag in the test file -->
   	<!--for index="[index1]" from="001" to="[NumberScenario]" step="1"-->   
 		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">   			
-			<scenario file="UAS.xml" name="[Port-Tester]"/>
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
 		</testcase>
 		<!--parameter name="[index1]" operation="set" value="001"/-->	  	
 		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">
-			<scenario file="UAS.xml" name="[Port-Tester]"/>
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
 		</testcase>
 		<!--parameter name="[index1]" operation="set" value="001"/-->	  	
 		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">
-			<scenario file="UAS.xml" name="[Port-Tester]"/>
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
 		</testcase>
 		<!--parameter name="[index1]" operation="set" value="001"/-->	  	
 		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">
-			<scenario file="UAS.xml" name="[Port-Tester]"/>
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
 		</testcase>
 		<!--parameter name="[index1]" operation="set" value="001"/-->	  	
 		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">
-			<scenario file="UAS.xml" name="[Port-Tester]"/>
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
 		</testcase>		
 
 	<testcase description="SAR" name="SAR - forced unregistration" state="false">    			
-		<scenario file="SAR.xml" name="SAR"/>
+		<scenario file="SAR.xml" name="SAR" routingName="SAR"/>
 	</testcase>
 		
   	<for from="001" index="[number]" step="1" to="[NumberScenario]">   
   		<testcase description="load [number]" name="[inviterName][number]" number="1" state="true">    			
-			<scenario file="UAC.xml" name="UAC"/>
+			<scenario file="UAC.xml" name="UAC" routingName="UAC"/>
 		</testcase>
 	</for>
 		

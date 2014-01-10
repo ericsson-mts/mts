@@ -35,7 +35,7 @@
             <end delay="[TestDurationSec]"/>
         </runProfile>
 
-        <scenario file="server.xml" name="server"/>
+        <scenario file="server.xml" name="server" routingName="server"/>
     </testcase>
 
     <for from="0" index="[i]" to="[NumberTestcase]">
@@ -50,8 +50,8 @@
                 <end delay="[TestDurationSec]"/>
             </runProfile>
 
-            <scenario file="server.xml" name="server_[i]"/>
-            <scenario file="client.xml" name="client_[i]"/>
+            <scenario file="server.xml" name="server_[i]" routingName="server_[i]"/>
+            <scenario file="client.xml" name="client_[i]" routingName="client_[i]"/>
         </testcase>
     </for>
 
