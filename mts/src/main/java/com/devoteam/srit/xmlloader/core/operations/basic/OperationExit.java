@@ -88,6 +88,6 @@ public class OperationExit extends Operation {
         	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, loggMsg);
             GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, loggMsg);
         }
-        // throw new ExitExecutionException(failed, "Exit Exception");	
+        throw new ExitExecutionException(failed, "Exit Exception");	
     }
 }
