@@ -77,7 +77,7 @@ public class TextMessage {
 
     public void parse(String msg) throws Exception {
         // case a header is contining at the next line
-        // msg = msg.trim();
+        msg = Utils.trimLeft(msg);
         msg = Utils.replaceNoRegex(msg, "\r\n", "\n");
         msg = Utils.replaceNoRegex(msg, "\n", "\r\n");
 

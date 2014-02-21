@@ -1383,4 +1383,14 @@ public class Utils
     {
     	return((little&0xff)<<24)+((little&0xff00)<<8)+((little&0xff0000)>>8)+((little>>24)&0xff);
     }
+
+    public static String trimLeft(String str) throws Exception{
+    	int i = 0;
+    	while ((i < str.length()) && (Character.isWhitespace(str.charAt(i))))
+    	{
+    		i++;
+    	}
+    	return str.substring(i);
+    }
+
 }

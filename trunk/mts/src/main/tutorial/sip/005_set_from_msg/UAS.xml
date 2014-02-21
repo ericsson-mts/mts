@@ -215,7 +215,7 @@
 <parameter name="[ViaProtocol]" operation="protocol.setFromMessage" value="header.Via.Protocol"/>
 <test parameter="[ViaProtocol]" condition="string.equals" value="SIP/2.0"/>
 
-<parameter name="[ViaTransport]" operation="protocol.setFromMessage" value="header.Via.Transport"/>        
+<parameter name="[ViaTransport]" operation="protocol.setFromMessage" value="header.Via.Transport"/>
 <test parameter="[ViaTransport]" condition="string.equals" value="[transportResponse]"/>
 
 <parameter name="[ViaHost]" operation="protocol.setFromMessage" value="header.Via.Host"/>
@@ -235,7 +235,7 @@
 <parameter name="[ViaTTL]" operation="protocol.setFromMessage" value="header.Via.Parameter.ttl"/>
 <parameter name="[ViaTTLSize]" operation="list.size" value="[ViaTTL]"/>
 <test parameter="[ViaTTLSize]" condition="string.equals" value="1"/>
-<test parameter="[ViaTTL(0)]" condition="string.equals" value="3000"/>           
+<test parameter="[ViaTTL(0)]" condition="string.equals" value="3000"/>
 
 <parameter name="[ViaRPort]" operation="protocol.setFromMessage" value="header.Via.Parameter.RPort"/>
 <parameter name="[ViaRPortSize]" operation="list.size" value="[ViaRPort]"/>
@@ -252,15 +252,15 @@
 <parameter name="[MaxForward]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>
 <test parameter="[MaxForward]" condition="string.equals" value="70"/>
 
-<parameter name="[ParamVal]" operation="protocol.setFromMessage" value="header.Param.Parameter"/>   
-<parameter name="[Param1]" operation="protocol.setFromMessage" value="header.Param.Parameter.param1"/>   
+<parameter name="[ParamVal]" operation="protocol.setFromMessage" value="header.Param.Parameter"/>
+<parameter name="[Param1]" operation="protocol.setFromMessage" value="header.Param.Parameter.param1"/>
 <parameter name="[Param2]" operation="protocol.setFromMessage" value="header.Param.Parameter.param2"/>
-<parameter name="[AttrVal]" operation="protocol.setFromMessage" value="header.Attr.Attribute"/>      
-<parameter name="[Attr1]" operation="protocol.setFromMessage" value="header.Attr.Attribute.attr1"/>   
-<parameter name="[Attr2]" operation="protocol.setFromMessage" value="header.Attr.Attribute.attr2"/>   
-<parameter name="[Argument0]" operation="protocol.setFromMessage" value="header.Arg.Argument.0"/>   
-<parameter name="[Argument1]" operation="protocol.setFromMessage" value="header.Arg.Argument.1"/>   
-<parameter name="[Argument2]" operation="protocol.setFromMessage" value="header.Arg.Argument.2"/>   
+<parameter name="[AttrVal]" operation="protocol.setFromMessage" value="header.Attr.Attribute"/>
+<parameter name="[Attr1]" operation="protocol.setFromMessage" value="header.Attr.Attribute.attr1"/>
+<parameter name="[Attr2]" operation="protocol.setFromMessage" value="header.Attr.Attribute.attr2"/>
+<parameter name="[Argument0]" operation="protocol.setFromMessage" value="header.Arg.Argument.0"/>
+<parameter name="[Argument1]" operation="protocol.setFromMessage" value="header.Arg.Argument.1"/>
+<parameter name="[Argument2]" operation="protocol.setFromMessage" value="header.Arg.Argument.2"/>
 
 </receiveMessageSIP>
 
@@ -278,7 +278,7 @@
 <!--test parameter="[ContentLength]" condition="string.contains" value="710"/-->   <!-- Light SIP stack -->
 
 <parameter name="[Expires]" operation="protocol.setFromMessage" value="header.Expires"/> 
-<test parameter="[Expires]" condition="string.equals" value="3600"/>                
+<test parameter="[Expires]" condition="string.equals" value="3600"/>
 
 <parameter name="[Authorization]" operation="protocol.setFromMessage" value="header.Authorization"/> 
 <test parameter="[Authorization]" condition="string.contains" value="username="/>
@@ -288,16 +288,16 @@
 <parameter name="[AuthorizationSIPP]" operation="protocol.setFromMessage" value="header.Authorization: "/> 
 <test parameter="[AuthorizationSIPP]" condition="string.contains" value="username="/>
 
-<parameter name="[AuthorizationScheme]" operation="protocol.setFromMessage" value="header.Authorization.Scheme"/> 
+<parameter name="[AuthorizationScheme]" operation="protocol.setFromMessage" value="header.Authorization.Scheme"/>
 <test parameter="[AuthorizationScheme]" condition="string.equals" value="Digest"/>
 
-<parameter name="[AuthorizationURI]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.uri"/> 
+<parameter name="[AuthorizationURI]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.uri"/>
 <test parameter="[AuthorizationURI]" condition="string.equals" value="sip:alice@atlanta.com"/>
 
-<parameter name="[AuthorizationURIDeprecated]" operation="protocol.setFromMessage" value="header.Authorization.Parameter.uri"/> 
+<parameter name="[AuthorizationURIDeprecated]" operation="protocol.setFromMessage" value="header.Authorization.Parameter.uri"/>
 <test parameter="[AuthorizationURIDeprecated]" condition="string.equals" value="[AuthorizationURI]"/>
 
-<parameter name="[AuthorizationNonce]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.nonce"/> 
+<parameter name="[AuthorizationNonce]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.nonce"/>
 <test parameter="[AuthorizationNonce]" condition="string.equals" value="84a4cc6f3082121f32b42a2187831a9e"/>
 
 <parameter name="[AuthorizationResponse]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.response"/>
@@ -331,46 +331,48 @@
 <parameter name="[Supported]" operation="protocol.setFromMessage" value="header.Supported"/>
 <test parameter="[Supported]" condition="string.equals" value="timer"/>
 
-<parameter name="[ToAddressDisplayName]" operation="protocol.setFromMessage" value="header.To.Address.DisplayName"/>                                   
+<parameter name="[ToAddressDisplayName]" operation="protocol.setFromMessage" value="header.To.Address.DisplayName"/>
 <test parameter="[ToAddressDisplayName]" condition="string.equals" value="&lt;1234 =,;DUPOND&gt;=,;"/>
 
-<parameter name="[ToAddressURI]" operation="protocol.setFromMessage" value="header.To.Address.URI"/>                               
+<parameter name="[ToAddressURI]" operation="protocol.setFromMessage" value="header.To.Address.URI"/>
 <test parameter="[ToAddressURI]" condition="string.equals" value="tel:1234"/>
 
-<parameter name="[FromAddressURIHost]" operation="protocol.setFromMessage" value="header.From.Address.URI.Host"/>                                          
+<parameter name="[FromAddressURIHost]" operation="protocol.setFromMessage" value="header.From.Address.URI.Host"/>
 <test parameter="[FromAddressURIHost]" condition="string.equals" value="devoteam.com"/>
 
-<parameter name="[FromAddressURIPort]" operation="protocol.setFromMessage" value="header.From.Address.URI.Port"/>    
+<parameter name="[FromAddressURIPort]" operation="protocol.setFromMessage" value="header.From.Address.URI.Port"/>
 <test parameter="[FromAddressURIPort]" condition="list.isEmpty"/>
 
-<parameter name="[FromAddressURIUser]" operation="protocol.setFromMessage" value="header.From.Address.URI.User"/>                                          
+<parameter name="[FromAddressURIUser]" operation="protocol.setFromMessage" value="header.From.Address.URI.User"/>
 <test parameter="[FromAddressURIUser]" condition="string.equals" value="alice"/>
 
-<parameter name="[FromAddressURIPhoneNumber]" operation="protocol.setFromMessage" value="header.From.Address.URI.PhoneNumber"/>                                          
+<parameter name="[FromAddressURIPhoneNumber]" operation="protocol.setFromMessage" value="header.From.Address.URI.PhoneNumber"/>
 <test parameter="[FromAddressURIPhoneNumber]" condition="string.equals" value="alice"/>
 
-<parameter name="[FromAddressURITesterId]" operation="protocol.setFromMessage" value="header.From.Address.URI.Parameter.TesterId"/>                                        
+<parameter name="[FromAddressURITesterId]" operation="protocol.setFromMessage" value="header.From.Address.URI.Parameter.TesterId"/>
 <test parameter="[FromAddressURITesterId]" condition="string.equals" value="6789"/>
 
-<parameter name="[firstlineURIHost]" operation="protocol.setFromMessage" value="firstline.URI.Host"/>                                          
+<parameter name="[firstlineURIHost]" operation="protocol.setFromMessage" value="firstline.URI.Host"/>
 <test parameter="[firstlineURIHost]" condition="list.isEmpty"/>
 
 <parameter name="[firstlineURIPort]" operation="protocol.setFromMessage" value="firstline.URI.Port"/>
 <test parameter="[firstlineURIPort]" condition="list.isEmpty"/>
 
-<parameter name="[firstlineURIUser]" operation="protocol.setFromMessage" value="firstline.URI.User"/>                                          
+<parameter name="[firstlineURIUser]" operation="protocol.setFromMessage" value="firstline.URI.User"/>
 <test parameter="[firstlineURIUser]" condition="string.equals" value="1234"/>
 
-<parameter name="[firstlineURIPhoneNumber]" operation="protocol.setFromMessage" value="firstline.URI.PhoneNumber"/>                                          
+<parameter name="[firstlineURIPhoneNumber]" operation="protocol.setFromMessage" value="firstline.URI.PhoneNumber"/>
 <test parameter="[firstlineURIPhoneNumber]" condition="string.equals" value="1234"/>
 
-<parameter name="[firstlineURITesterId]" operation="protocol.setFromMessage" value="firstline.URI.Parameter.TesterId"/>                                            
+<parameter name="[firstlineURITesterId]" operation="protocol.setFromMessage" value="firstline.URI.Parameter.TesterId"/>
 <test parameter="[firstlineURITesterId]" condition="list.isEmpty"/>
 
-<parameter name="[remoteTag]" operation="string.random" value="10"/>     
+<parameter name="[remoteTag]" operation="string.random" value="10"/>
 
 <sendMessageSIP name="Send 100 Trying">
-<![CDATA[SIP/2.0 100 Trying
+<![CDATA[
+
+SIP/2.0 100 Trying
 To: [To]
 From: [From]
 Call-ID: [CallId]
@@ -383,7 +385,9 @@ Content-Length: 0
 </sendMessageSIP>  
 
 <sendMessageSIP name="Send 180 Ringing">
-<![CDATA[SIP/2.0 180 Ringing
+<![CDATA[
+
+SIP/2.0 180 Ringing
 To: [To];tag=[remoteTag]
 From: [From]
 Call-ID: [CallId]
@@ -395,7 +399,9 @@ Content-Length: 0]]>
 </sendMessageSIP>  
 
 <sendMessageSIP name="Send 200 OK">
-<![CDATA[SIP/2.0 200 OK
+<![CDATA[
+
+SIP/2.0 200 OK
 To: [To];tag=[remoteTag]
 From: [From]
 Call-ID: [CallId]
@@ -403,7 +409,23 @@ CSeq: [CSeq]
 Contact: [To]
 Via: [Via]
 User-Agent: XmlLoader
-Content-Length: 0
+Content-Length: x
+
+v=0
+o=serverName 999 999 IN IP4 [serverHostRTP]
+s=-
+c=IN IP4 [serverHostRTP]
+t=0 0
+m=audio [serverPortRTP] RTP/AVP 97
+a=rtpmap:97 amr/8000/1
+a=fmtp:97 mode-set=1;octet-align=1;crc=0
+a=+g.poc.talkburst
+a=maxptime:200
+a=ptime:200
+m=application [serverPortRTCP] udp TBCP
+a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0
+
+
 ]]>
 </sendMessageSIP>
 
