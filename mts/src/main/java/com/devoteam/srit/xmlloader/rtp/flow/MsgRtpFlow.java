@@ -282,10 +282,14 @@ public class MsgRtpFlow extends Msg {
 
         if (params.length >= 1 && params[0].equalsIgnoreCase("header")) {
             if (params[1].equalsIgnoreCase("ssrc")) {
-                var.add(getSsrc());
+                for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
+                    var.add(it.next().getSsrc());
+                }
             }
             else if (params[1].equalsIgnoreCase("payloadType")) {
-                var.add(getPayloadType().toString());
+                for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
+                    var.add(it.next().getPayloadType());
+                }
             }
             else if (params[1].equalsIgnoreCase("seqnum")) {
                 for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {

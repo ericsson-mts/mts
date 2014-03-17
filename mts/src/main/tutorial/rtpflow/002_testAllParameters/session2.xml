@@ -3,86 +3,60 @@
 
 <scenario>
 
-	<createListenpointRTPFLOW name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]" />
+    <createListenpointRTPFLOW name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]" />
 
-	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
-			  
-    <receiveMessageRTPFLOW listenpoint="invitee" type="DVI4:17" timeout="10">
-        <parameter name="[ssrc]" operation="protocol.setFromMessage" value="header.ssrc"/>
-        <parameter name="[payloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>
-        <parameter name="[seqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>
-        <parameter name="[timestamp]" operation="protocol.setFromMessage" value="header.timestamp"/>
-        <parameter name="[mark]" operation="protocol.setFromMessage" value="header.mark"/>
-        <parameter name="[payloadText]" operation="protocol.setFromMessage" value="flow.payload.text"/>
-        <parameter name="[payloadBinary]" operation="protocol.setFromMessage" value="flow.payload.binary"/>
-        <parameter name="[payloadPlayer]" operation="protocol.setFromMessage" value="flow.payload.player"/>
-        <parameter name="[payloadLength]" operation="string.length" value="[payloadText]"/>
-        <parameter name="[packetNumber]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
-        <parameter name="[packetTimestamp]" operation="protocol.setFromMessage" value="flow.packetTimestamp"/>
-        <parameter name="[packetTimestampLength]" operation="list.size" value="[packetTimestamp]"/>
-        <parameter name="[packetLost]" operation="protocol.setFromMessage" value="qos.packetLost"/>
-        <parameter name="[packetDuplicated]" operation="protocol.setFromMessage" value="qos.packetDuplicated"/>
-        <parameter name="[packetMissSequence]" operation="protocol.setFromMessage" value="qos.packetMissSequence"/>
-        <parameter name="[packetSpacingMean]" operation="protocol.setFromMessage" value="qos.packetSpacingMean"/>
-        <parameter name="[packetSpacing]" operation="protocol.setFromMessage" value="qos.packetSpacing"/>
-        <parameter name="[packetSpacingLength]" operation="list.size" value="[packetSpacing]"/>
-        <parameter name="[deltaTimeMean]" operation="protocol.setFromMessage" value="qos.deltaTimeMean"/>
-        <parameter name="[deltaTime]" operation="protocol.setFromMessage" value="qos.deltaTime"/>
-        <parameter name="[deltaTimeLength]" operation="list.size" value="[deltaTime]"/>
-        <parameter name="[jitterDelayMean]" operation="protocol.setFromMessage" value="qos.jitterDelayMean"/>
-        <parameter name="[jitterDelay]" operation="protocol.setFromMessage" value="qos.jitterDelay"/>
-        <parameter name="[jitterDelayLength]" operation="list.size" value="[jitterDelay]"/>
-        <parameter name="[bitrate]" operation="protocol.setFromMessage" value="qos.bitRate"/>
-		<!--
-            TODO : This code has to be changed using a sliding window of 1 second for exemple
-            DO NOT ERASE IT
-        -->
-        <!--<parameter name="[mosMean]" operation="protocol.setFromMessage" value="qos.mosMean"/>-->
-        <parameter name="[mos]" operation="protocol.setFromMessage" value="qos.mos"/>        
-    </receiveMessageRTPFLOW>
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
 
-    <test parameter="[ssrc]" condition="number.equals" value="1961276416"/>
-    <test parameter="[payloadType]" condition="number.equals" value="17"/>
+    <receiveMessageRTPFLOW listenpoint="invitee" type="DVI4:17" timeout="10"/>
+
+    <parameter name="[ssrc]" operation="protocol.setFromMessage" value="header.ssrc"/>
+    <test parameter="[ssrc]" condition="list.size" value="5"/>
+    <test parameter="[ssrc(0)]" condition="number.equals" value="1961276416"/>
+    <test parameter="[ssrc(1)]" condition="number.equals" value="1961276416"/>
+    <test parameter="[ssrc(2)]" condition="number.equals" value="1961276416"/>
+    <test parameter="[ssrc(3)]" condition="number.equals" value="1111111416"/>
+    <test parameter="[ssrc(4)]" condition="number.equals" value="1111111416"/>
+    <parameter name="[payloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>
+    <test parameter="[payloadType]" condition="list.size" value="5"/>
+    <test parameter="[payloadType(0)]" condition="number.equals" value="17"/>
+    <test parameter="[payloadType(1)]" condition="number.equals" value="17"/>
+    <test parameter="[payloadType(2)]" condition="number.equals" value="17"/>
+    <test parameter="[payloadType(3)]" condition="number.equals" value="18"/>
+    <test parameter="[payloadType(4)]" condition="number.equals" value="18"/>
+    <parameter name="[seqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>
     <test parameter="[seqnum(0)]" condition="number.equals" value="65534"/>
     <test parameter="[seqnum(1)]" condition="number.equals" value="65535"/>
     <test parameter="[seqnum(2)]" condition="number.equals" value="0"/>
     <test parameter="[seqnum(3)]" condition="number.equals" value="1"/>
     <test parameter="[seqnum(4)]" condition="number.equals" value="2"/>
+    <parameter name="[timestamp]" operation="protocol.setFromMessage" value="header.timestamp"/>
     <test parameter="[timestamp(0)]" condition="number.equals" value="456"/>
     <test parameter="[timestamp(1)]" condition="number.equals" value="556"/>
     <test parameter="[timestamp(2)]" condition="number.equals" value="656"/>
     <test parameter="[timestamp(3)]" condition="number.equals" value="756"/>
     <test parameter="[timestamp(4)]" condition="number.equals" value="856"/>
+    <parameter name="[mark]" operation="protocol.setFromMessage" value="header.mark"/>
     <test parameter="[mark(0)]" condition="number.equals" value="1"/>
     <test parameter="[mark(1)]" condition="number.equals" value="0"/>
     <test parameter="[mark(2)]" condition="number.equals" value="0"/>
-    <test parameter="[mark(3)]" condition="number.equals" value="0"/>
+    <test parameter="[mark(3)]" condition="number.equals" value="1"/>
     <test parameter="[mark(4)]" condition="number.equals" value="0"/>
+    <parameter name="[packetNumber]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
     <test parameter="[packetNumber]" condition="number.equals" value="5"/>
-    <test parameter="[packetTimestampLength]" condition="number.equals" value="5"/>
-    <test parameter="[packetLost]" condition="number.equals" value="0"/>
-    <test parameter="[packetDuplicated]" condition="number.equals" value="0"/>
-    <test parameter="[packetMissSequence]" condition="number.equals" value="0"/>
-    <test parameter="[packetSpacingMean]" condition="number.greaterThan" value="10"/>
-    <test parameter="[packetSpacingMean]" condition="number.lowerThan" value="20"/>
-    <test parameter="[packetSpacingLength]" condition="number.equals" value="5"/>
-    <test parameter="[deltaTimeMean]" condition="number.greaterThan" value="10"/>
-    <test parameter="[deltaTimeMean]" condition="number.lowerThan" value="20"/>
-    <test parameter="[deltaTimeLength]" condition="number.equals" value="5"/>
-    <!--
-        TODO : This code has to be changed using a sliding window of 1 second for exemple
-        DO NOT ERASE IT
-    -->
-	<!--
-    <test parameter="[mosMean]" condition="number.greaterThan" value="0"/>
-	<test parameter="[mosMean]" condition="number.lowerThan" value="5"/>
-    <parameter name="[mosMean2]" operation="list.statAverage" value="[mos]"/>
-    <test parameter="[mosMean2]" condition="number.equals" value="[mosMean]"/>
-    -->
-    <test parameter="[jitterDelayMean]" condition="number.greaterThan" value="0"/>
-    <test parameter="[jitterDelayMean]" condition="number.lowerThan" value="3"/>
-    <test parameter="[jitterDelayLength]" condition="number.equals" value="5"/>
+    <parameter name="[packetTimestamp]" operation="protocol.setFromMessage" value="flow.packetTimestamp"/>
+    <test parameter="[packetTimestamp(0)]" condition="number.equals" value="1"/>
+    <test parameter="[packetTimestamp(1)]" condition="number.equals" value="0"/>
+    <test parameter="[packetTimestamp(2)]" condition="number.equals" value="0"/>
+    <test parameter="[packetTimestamp(3)]" condition="number.equals" value="1"/>
+    <test parameter="[packetTimestamp(4)]" condition="number.equals" value="0"/>
+    
+    <parameter name="[payloadText]" operation="protocol.setFromMessage" value="flow.payload.text"/>
+    <parameter name="[payloadLength]" operation="string.length" value="[payloadText]"/>
     <test parameter="[payloadLength]" condition="number.equals" value="100"/>
+    <parameter name="[payloadBinary]" operation="protocol.setFromMessage" value="flow.payload.binary"/>
+    <parameter name="[payloadLength]" operation="string.length" value="[payloadBinary]"/>
+    <test parameter="[payloadLength]" condition="number.equals" value="100"/>
+    <parameter name="[payloadPlayer]" operation="protocol.setFromMessage" value="flow.payload.player"/>
     <parameter name="[msgRTP]" operation="set" value="Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP"/>
     <parameter name="[msgRTP]" operation="list.addlast" value="[msgRTP]" value2="Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP"/>
     <parameter name="[msgRTP]" operation="list.addlast" value="[msgRTP]" value2="Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP"/>
@@ -90,6 +64,46 @@
     <parameter name="[msgRTP]" operation="list.addlast" value="[msgRTP]" value2="Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP"/>
     <parameter name="[msgRTP]" operation="string.toBinary" value="[msgRTP]"/>
     <test parameter="[payloadPlayer]" condition="string.equals" value="[msgRTP]"/>
+
+    <parameter name="[packetLost]" operation="protocol.setFromMessage" value="qos.packetLost"/>
+    <test parameter="[packetLost]" condition="number.equals" value="0"/>
+    <parameter name="[packetDuplicated]" operation="protocol.setFromMessage" value="qos.packetDuplicated"/>
+    <test parameter="[packetDuplicated]" condition="number.equals" value="0"/>
+    <parameter name="[packetMissSequence]" operation="protocol.setFromMessage" value="qos.packetMissSequence"/>
+    <test parameter="[packetMissSequence]" condition="number.equals" value="0"/>
+    <parameter name="[packetSpacingMean]" operation="protocol.setFromMessage" value="qos.packetSpacingMean"/>
+    <test parameter="[packetSpacingMean]" condition="number.greaterThan" value="10"/>
+    <test parameter="[packetSpacingMean]" condition="number.lowerThan" value="20"/>
+    <parameter name="[packetSpacing]" operation="protocol.setFromMessage" value="qos.packetSpacing"/>
+    <test parameter="[packetSpacingLength]" condition="list.size" value="5"/>
+    <parameter name="[deltaTimeMean]" operation="protocol.setFromMessage" value="qos.deltaTimeMean"/>
+    <test parameter="[deltaTimeMean]" condition="number.greaterThan" value="10"/>
+    <test parameter="[deltaTimeMean]" condition="number.lowerThan" value="20"/>
+    <test parameter="[deltaTimeLength]" condition="number.equals" value="5"/>
+    <parameter name="[deltaTime]" operation="protocol.setFromMessage" value="qos.deltaTime"/>
+    <parameter name="[deltaTimeLength]" operation="list.size" value="[deltaTime]"/>
+
+    <parameter name="[jitterDelayMean]" operation="protocol.setFromMessage" value="qos.jitterDelayMean"/>
+    <parameter name="[jitterDelay]" operation="protocol.setFromMessage" value="qos.jitterDelay"/>
+    <parameter name="[jitterDelayLength]" operation="list.size" value="[jitterDelay]"/>
+    <test parameter="[jitterDelayMean]" condition="number.greaterThan" value="0"/>
+    <test parameter="[jitterDelayMean]" condition="number.lowerThan" value="3"/>
+    <test parameter="[jitterDelayLength]" condition="number.equals" value="5"/>
+    <parameter name="[bitrate]" operation="protocol.setFromMessage" value="qos.bitRate"/>
+    
+    <!--
+        TODO : This code has to be changed using a sliding window of 1 second for exemple
+        DO NOT ERASE IT
+    -->
+    <!--
+    <parameter name="[mosMean]" operation="protocol.setFromMessage" value="qos.mosMean"/>
+    <parameter name="[mos]" operation="protocol.setFromMessage" value="qos.mos"/>        
+
+    <test parameter="[mosMean]" condition="number.greaterThan" value="0"/>
+    <test parameter="[mosMean]" condition="number.lowerThan" value="5"/>
+    <parameter name="[mosMean2]" operation="list.statAverage" value="[mos]"/>
+    <test parameter="[mosMean2]" condition="number.equals" value="[mosMean]"/>
+    -->
 
     <finally>
 		<removeListenpointRTPFLOW name="invitee" />
