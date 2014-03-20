@@ -326,7 +326,37 @@ class TesterGuiHelper implements ActionListener {
                 ex.printStackTrace();
             }
         }
+        else if (actionCommand.equals(GUIMenuHelper.XML_GRAMMAR)) {
+            try {
+                String browser = Config.getConfigByName("tester.properties").getString("stats.BROWSER_PATH");
+                browser = Utils.normalizePath(browser);
+                if (browser != null)
+            	{
+                	URI absURI = new File("../doc/schemas/scenario.html").toURI();
+	                Runtime.getRuntime().exec(browser + " " + absURI); // le lien est dans urlName
+            	}
+            }
+            catch (Exception ex) {
+                GlobalLogger.instance().getApplicationLogger().error(Topic.CORE, ex, "Error occured while opening latest report");
+                ex.printStackTrace();
+            }
+        }
         else if (actionCommand.equals(GUIMenuHelper.HELP_WEBSITE)) {
+            try {
+                String browser = Config.getConfigByName("tester.properties").getString("stats.BROWSER_PATH");
+                browser = Utils.normalizePath(browser);
+                if (browser != null)
+            	{
+	                String urlName = "http://mts.arm-tool.com/";
+	                Runtime.getRuntime().exec(browser + " " + urlName); // le lien est dans urlName
+            	}
+            }
+            catch (Exception ex) {
+                GlobalLogger.instance().getApplicationLogger().error(Topic.CORE, ex, "Error occured while opening latest report");
+                ex.printStackTrace();
+            }
+        }
+        else if (actionCommand.equals(GUIMenuHelper.GOOGLE_CODE)) {
             try {
                 String browser = Config.getConfigByName("tester.properties").getString("stats.BROWSER_PATH");
                 browser = Utils.normalizePath(browser);
