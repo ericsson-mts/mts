@@ -97,10 +97,13 @@ public class GUIMenuHelper {
     //-----------------------------------------
     public static final String RESET_STATS = "RESET_STATS";
     // Help jMenu action commands
-    public static final String HELP_ABOUT = "HELP_ABOUT";
     //-----------------------------------------
     public static final String HELP_DOCUMENTATION = "HELP_DOCUMENTATION";
+    public static final String XML_GRAMMAR = "HELP_GRAMMAR";
     public static final String HELP_WEBSITE = "HELP_WEBSITE";
+    public static final String GOOGLE_CODE = "GOOGLE_CODE";
+    public static final String HELP_ABOUT = "HELP_ABOUT";
+    
     private JMenuBar jMenuBar;
     private JMenu jMenuFile;
     private JMenuItem jMenuItemOpen;
@@ -482,9 +485,14 @@ public class GUIMenuHelper {
 
     private JMenu createJMenuHelp(ActionListener actionListener) {
         JMenu jMenu = new JMenu("Help");
-        jMenu.add(createJMenuItem(actionListener, "About", HELP_ABOUT));
         jMenu.add(createJMenuItem(actionListener, "Documentation", HELP_DOCUMENTATION));
-        jMenu.add(createJMenuItem(actionListener, "WebSite", HELP_WEBSITE));
+        jMenu.add(createJMenuItem(actionListener, "XML Grammar", XML_GRAMMAR));
+        jMenu.add(new javax.swing.JSeparator());
+        jMenu.add(createJMenuItem(actionListener, "Web Site", HELP_WEBSITE));
+        jMenu.add(createJMenuItem(actionListener, "Google Code", GOOGLE_CODE));
+        jMenu.add(new javax.swing.JSeparator());
+        jMenu.add(createJMenuItem(actionListener, "About", HELP_ABOUT));
+        
         return jMenu;
     }
 
