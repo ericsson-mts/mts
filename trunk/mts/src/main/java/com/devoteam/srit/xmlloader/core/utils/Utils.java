@@ -1334,21 +1334,23 @@ public class Utils
         {
             public void run()
             {
+                String editor = "";
+                String command = "";
                 try
                 {
-                    // Mantis 0000112
-                    String editor = Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH");
+                    editor = Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH");
                     editor = Utils.normalizePath(editor);
                     if (editor != null)
                     {
-	                    String fileAbsPath = new File(file).getAbsolutePath();
-	                    GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Opening editor with command :\n", editor, " ", fileAbsPath);
-	                    Runtime.getRuntime().exec(editor + " " + fileAbsPath);
+	                    String fileAbsPath = new File(file).toURI().toString();
+	                    command = editor + " \"" + fileAbsPath + "\"";
+	                    GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Opening editor with the command :", command);
+	                    Runtime.getRuntime().exec(command);
                     }
                 }
                 catch (Exception e)
                 {
-                	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Unable to start editor");
+                	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Unable to start editor with the command : ", command);
                 }
             }
         });
