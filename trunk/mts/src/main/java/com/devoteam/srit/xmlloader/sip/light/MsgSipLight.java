@@ -62,22 +62,25 @@ public class MsgSipLight extends MsgSip
 		// User-Agent,WWW-Authenticate, <generic>
 		multiHeader.add("accept");multiHeader.add("accept-encoding");multiHeader.add("accept-language");
 		multiHeader.add("alert-Info");multiHeader.add("allow");multiHeader.add("authentication-info");
-		multiHeader.add("call-info");multiHeader.add("contact");multiHeader.add("content-encoding");
-		multiHeader.add("content-language");multiHeader.add("error-info");multiHeader.add("in-reply-to");
+		multiHeader.add("call-info");multiHeader.add("contact");multiHeader.add("m");multiHeader.add("content-encoding");
+		multiHeader.add("e");multiHeader.add("content-language");multiHeader.add("error-info");multiHeader.add("in-reply-to");
 		multiHeader.add("proxy-require");multiHeader.add("record-route");multiHeader.add("require");
-		multiHeader.add("route");multiHeader.add("supported");multiHeader.add("Unsupported");
-		multiHeader.add("via");multiHeader.add("warning");
+		multiHeader.add("route");multiHeader.add("supported");multiHeader.add("k");multiHeader.add("Unsupported");
+		multiHeader.add("via");multiHeader.add("v");multiHeader.add("warning");
 		
-		compressedHeader.put("i", "call-id");
-		compressedHeader.put("m", "contact");
-		compressedHeader.put("e", "content-encoding");
-		compressedHeader.put("l", "content-length");
-		compressedHeader.put("c", "content-type");
-		compressedHeader.put("f", "from");
-		compressedHeader.put("s", "subject");
-		compressedHeader.put("t", "to");
-		compressedHeader.put("v", "via");
-		compressedHeader.put("r", "route");
+		compressedHeader.put("a", "accept-contact");		// rfc 3841
+		compressedHeader.put("c", "content-type");			// rfc 3261
+		compressedHeader.put("e", "content-encoding");		// rfc 3261
+		compressedHeader.put("f", "from");					// rfc 3261
+		compressedHeader.put("i", "call-id");				// rfc 3261
+		compressedHeader.put("j", "reject-contact");		// rfc 3841
+		compressedHeader.put("k", "supported");				// rfc 3261
+		compressedHeader.put("l", "content-length");		// rfc 3261
+		compressedHeader.put("m", "contact");				// rfc 3261
+		compressedHeader.put("r", "refer-to");				// rfc 3515
+		compressedHeader.put("s", "subject");				// rfc 3261
+		compressedHeader.put("t", "To");					// rfc 3261
+		compressedHeader.put("v", "via");					// rfc 3261
 	}
 
     /** Creates a new instance of MsgSip */

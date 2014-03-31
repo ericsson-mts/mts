@@ -254,15 +254,20 @@ public class MsgParser {
         while (iter.hasNext()) {
             Header header = (Header) iter.next();
             String name = (String) header.getName();
-            if (!("to".equalsIgnoreCase(name))
-                    && !("from".equalsIgnoreCase(name))
-                    && !("contact".equalsIgnoreCase(name))
-                    && !("call-id".equalsIgnoreCase(name))
-                    && !("cseq".equalsIgnoreCase(name))
-                    && !("route".equalsIgnoreCase(name))
-                    && !("record-route".equalsIgnoreCase(name))
-                    && !("via".equalsIgnoreCase(name))) {
-                header.addHeaderIntoParameter(var, header.getName());
+            if   (!("to".equalsIgnoreCase(name))
+               && !("t".equalsIgnoreCase(name))
+               && !("from".equalsIgnoreCase(name))
+               && !("f".equalsIgnoreCase(name))
+               && !("contact".equalsIgnoreCase(name))
+               && !("m".equalsIgnoreCase(name))
+               && !("call-id".equalsIgnoreCase(name))
+               && !("d".equalsIgnoreCase(name))
+               && !("cseq".equalsIgnoreCase(name))
+               && !("route".equalsIgnoreCase(name))
+               && !("record-route".equalsIgnoreCase(name))
+               && !("via".equalsIgnoreCase(name))
+               && !("v".equalsIgnoreCase(name))) {
+               header.addHeaderIntoParameter(var, header.getName());
             }
         }
     }
