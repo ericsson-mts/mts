@@ -2,7 +2,7 @@
 
 <scenario>
 	<openSocketUDP socketName="socket" localPort="42000" remoteHost="[eNodeBIP]" remotePort="42000" />
-    	<receiveDataUDP socketName="socket" >
+    	<receiveDataUDP socketName="socket" timeout="0">
         	<parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
         </receiveDataUDP>
         <parameter name="[test:teidsgw]" operation="binary.toNumber" value="[temp]" />
@@ -12,7 +12,7 @@
         <closeSocketUDP socketName="socket" />
         
 	<openSocketUDP socketName="socket" localPort="41000" remoteHost="[UE]" remotePort="42000" />
-        <receiveDataUDP socketName="socket" >
+        <receiveDataUDP socketName="socket" timeout="0">
         	<parameter name="[temp]" operation="protocol.setFromMessage" value="data.text" />
         </receiveDataUDP>
         <closeSocketUDP socketName="socket" />

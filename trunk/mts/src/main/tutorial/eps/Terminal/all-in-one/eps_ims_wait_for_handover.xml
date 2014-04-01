@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-	<openSocketUDP socketName="socket" localPort="40000" remoteHost="[eNodeBIP]" remotePort="40000" />
+	<openSocketUDP socketName="socket" localPort="40001" remoteHost="[eNodeBIP]" remotePort="40000" />
 	<sendDataUDP socketName="socket">
 		<data format="text">RRC: Measurement Report</data>
 	</sendDataUDP>
 	<closeSocketUDP socketName="socket" />
 	
 	<openSocketUDP socketName="socket" localPort="41000" remoteHost="[eNodeBIP]" remotePort="41000" />
-	<receiveDataUDP socketName="socket" >
+	<receiveDataUDP socketName="socket" timeout="0" >
 	        <parameter name="[ret]" operation="protocol.setFromMessage" value="data.binary" />
 	</receiveDataUDP>
 	<closeSocketUDP socketName="socket" />
@@ -22,8 +22,8 @@
 		</condition>
 		<then>
 			<log level="INFO">Windows</log>
-			<parameter name="[cr]" operation="system.command" value="route delete [Host-Server] mask 255.255.255.255 [eNodeBIP] metric 1" />
-			<parameter name="[cr2]" operation="system.command" value="route delete [RTP-Server] mask 255.255.255.255 [eNodeBIP] metric 1" />
+			<parameter name="[cr]" operation="system.command" value="route delete [Host-Server] mask 255.255.255.255 [eNodeBIPsortie] metric 1" />
+			<parameter name="[cr2]" operation="system.command" value="route delete [RTP-Server] mask 255.255.255.255 [eNodeBIPsortie] metric 1" />
 			<parameter name="[changeRoute]" operation="system.command" value="route add [Host-Server] mask 255.255.255.255 [targeteNodeBIP] metric 1" />
 			<parameter name="[changeRoute2]" operation="system.command" value="route add [RTP-Server] mask 255.255.255.255 [targeteNodeBIP] metric 1" />
 		</then>

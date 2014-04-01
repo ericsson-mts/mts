@@ -3,7 +3,7 @@
 <!-- scenario client-->
 <scenario>
 
-<createProbeETHERNET name="capture" networkInterface="eth0" captureFilter="src host [UE] and (dst host [PDN-Server] or dst host [PDN-Server2])" />
+<createProbeETHERNET name="capture" networkInterface="[systemIp(0)]" captureFilter="src host [UE] and (dst host [PDN-Server] or dst host [PDN-Server2])" />
 	<while>
 		<condition>
 			<test parameter="[test:stopeNodeB1]" condition="string.equals" value="false" />
