@@ -198,20 +198,51 @@ Content-Length: 0
     <!-- wait for the server to receive the expected PRACK retransmissions -->
     <parameter name="[testcase:WaitPRACK180]" operation="system.semaphorewait" />
 
+  	<parameter name="[testcase:waitPRACK]" operation="system.semaphorewait"/>
+  	
 <!-- **********************************************************************  -->
 <!-- * RECEIVE 200 PRACK                                                  *  -->
 <!-- **********************************************************************  -->
   	<receiveMessageSIP name="Wait 200 OK" request="false" type="PRACK" result="200" timeout="[RetransTimeout]">
         <parameter name="[CSeq]"        operation="protocol.setFromMessage" value="header.CSeq"/>
-        <parameter name="[To]"          operation="protocol.setFromMessage" value="header.To"/>                     
-        <parameter name="[From]"        operation="protocol.setFromMessage" value="header.From"/>                         
+        <parameter name="[To]"          operation="protocol.setFromMessage" value="header.To"/>
+        <parameter name="[From]"        operation="protocol.setFromMessage" value="header.From"/>
         <parameter name="[CallId]"      operation="protocol.setFromMessage" value="header.Call-ID"/> 
         <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
   	</receiveMessageSIP>
 
-
     <parameter name="[testcase:WaitNoMorePRACK]" operation="system.semaphorewait"/>
 
+    <sendMessageSIP destScenario="bob">
+<![CDATA[PRACK sip:[inviteeName1]@[100_DOMAIN_ADDR] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [PRACKCSeqNumber] PRACK
+RAck: [RSeq] [newCseqNumber] INVITE
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
+Contact: <sip:[clientName]@[localSIP]>
+Route: <sip:[clientName]@[remoteSIP];transport=[transportRequest];lr;mode=originating>
+Route: <sip:[clientName]@[localSIP];lr;mode=originating>
+Max-Forwards: 70
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Content-Length: 0
+]]>
+  </sendMessageSIP>
+
+<!-- **********************************************************************  -->
+<!-- * RECEIVE 200 PRACK                                                  *  -->
+<!-- **********************************************************************  -->
+  	<receiveMessageSIP name="Wait 200 OK" request="false" type="PRACK" result="200" timeout="[RetransTimeout]">
+        <parameter name="[CSeq]"        operation="protocol.setFromMessage" value="header.CSeq"/>
+        <parameter name="[To]"          operation="protocol.setFromMessage" value="header.To"/>
+        <parameter name="[From]"        operation="protocol.setFromMessage" value="header.From"/>
+        <parameter name="[CallId]"      operation="protocol.setFromMessage" value="header.Call-ID"/> 
+        <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+  	</receiveMessageSIP>
+
+    <parameter name="[testcase:Wait200PRACK]" operation="system.semaphorenotify"/>
+    
 <!-- **********************************************************************  -->
 <!-- * RECEIVE 200 INVITE AND IT'S RETRANSMISSIONS                        *  -->
 <!-- **********************************************************************  -->
@@ -260,11 +291,13 @@ Content-Length: 0
 
   	<pause milliseconds="[retransmitTimers([index])]"/>	
   	<receiveMessageSIP name="Wait INVITE" request="false" type="INVITE" result="200" timeout="[RetransTimeout]" failedOnTimeout="false" failedOnReceive="true"/>	
-
+    
 <!-- **********************************************************************  -->
 <!-- * WAIT FOR THE SERVER TO RECEIVE THE ACK RETRANSMISSIONS             *  -->
 <!-- **********************************************************************  -->
     <parameter name="[testcase:WaitACK]" operation="system.semaphorenotify"/>
+    	
+    <parameter name="[testcase:Wait200INVITE]" operation="system.semaphorewait"/>
     	
     <parameter name="[newBranchId]"   operation="string.random" value="10"/>
     <parameter name="[newCseqNumber]" operation="number.add" value="[newCseqNumber]" value2="1"/>        

@@ -91,6 +91,32 @@ Content-Length: 0
     <parameter name="[testcase:WaitPRACK180]" operation="system.semaphorenotify"/>
 
 <!-- **********************************************************************  -->
+<!-- * SEND 180 RINGING WITH RSeq                                         *  -->
+<!-- **********************************************************************  -->
+  	<parameter name="[newRSeqNumber]"    operation="number.random" value="10000000"/>
+    <sendMessageSIP name="Send 180 Ringing">
+<![CDATA[SIP/2.0 180 Ringing
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+RSeq: [newRSeqNumber]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Content-Length: 0
+]]>
+  	</sendMessageSIP>
+  	
+  	<!-- BUG there is no retransmission of the PRACK when there is a 
+      retransmission of corresponding INVITE/180 -->
+  	<!--receiveMessageSIP request="true" type="PRACK" timeout="[RetransTimeout]">
+        <parameter name="[Cseq]"        operation="protocol.setFromMessage" value="header.CSeq"/>       
+  	</receiveMessageSIP-->
+  	
+  	<parameter name="[testcase:waitPRACK]" operation="system.semaphorenotify"/>
+  	
+<!-- **********************************************************************  -->
 <!-- * SEND 200 OK FOR PRACK                                              *  -->
 <!-- **********************************************************************  -->
   	<sendMessageSIP name="Send 200 OK">
@@ -113,6 +139,8 @@ Contact: [lastTo]
        
     <parameter name="[testcase:WaitNoMorePRACK]" operation="system.semaphorenotify"/>
        
+    <parameter name="[testcase:Wait200PRACK]" operation="system.semaphorewait"/>
+        
 <!-- **********************************************************************  -->
 <!-- * SEND 200 OK FOR INVITE                                             *  -->
 <!-- **********************************************************************  -->
@@ -161,8 +189,6 @@ a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0]]>
     <!-- wait that the client checked he is not receiving 200 OK retransmissions anymore--> 
     <parameter name="[testcase:WaitACK]" operation="system.semaphorewait"/>
     
-    
-    
 <!-- **********************************************************************  -->
 <!-- * CHECK THAT WE WILL RECEIVE AN AUTOMATIC ACK RETR ON 200OK RETR     *  -->
 <!-- **********************************************************************  -->
@@ -201,6 +227,8 @@ a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0]]>
   	</sendMessageSIP>
 
     <receiveMessageSIP name="Wait ACK" request="true" type="ACK" />
+
+    <parameter name="[testcase:Wait200INVITE]" operation="system.semaphorenotify"/>
 
 <!-- **********************************************************************  -->
 <!-- * RECEIVE BYE REQUEST AND IT'S RETRANSMISSIONS                       *  -->
