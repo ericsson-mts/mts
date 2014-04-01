@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <scenario>
-        <parameter name="[LocalHost]" operation="system.ipaddress" value="eth0" /> 
+        <parameter name="[LocalHost]" operation="system.ipaddress" /> 
         <parameter name="[LocalPort]" operation="set" value="[Port-User2]" /> 
-        <parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort(0)]" /> 
+        <parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort]" /> 
         <parameter name="[LocalTransport]" operation="set" value="udp" /> 
         
-	<createListenpointSIP name="[scenarioName]" localHost="[LocalHost]" localPort="[LocalPort]" transport="[LocalTransport]" /> 
+	<createListenpointSIP name="[scenarioName]" localHost="[LocalHost(0)]" localPort="[LocalPort]" transport="[LocalTransport]" /> 
         <parameter name="[provider]" operation="set" value="[scenarioName]" /> 
 
   	<parameter name="[newCseq]" operation="number.random" value="10" /> 

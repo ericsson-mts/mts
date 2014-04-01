@@ -11,7 +11,7 @@
         <parameter name="[clientName]"          operation="set"                 value="[User2]" />
         <parameter name="[provider]"            operation="set"                 value="[scenarioName]" />
         <parameter name="[Adresse-Server]"      operation="set"                 value="[Host-Server]:[Port-Server]"/>
-        <parameter name="[LocalHost]"           operation="system.ipaddress"    value="eth0"/>
+        <parameter name="[LocalHost]"           operation="system.ipaddress"    />
         <parameter name="[LocalPort]"           operation="set"                 value="[Port-User2]"/>
         <parameter name="[LocalAddress]"        operation="set"                 value="[LocalHost(0)]:[LocalPort(0)]"/>
         <parameter name="[LocalTransport]"      operation="set"                 value="udp"/>
@@ -29,8 +29,8 @@
     	<parameter name="[remotePortRTP]" operation="set" value="11000"/>
 
 	<receiveMessageSIP name="Wait INVITE"  type="INVITE" request="true">
-		<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>       
-	  	<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>   
+			<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>       
+			<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>   
 	        <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>
 	        <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
 	        <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
