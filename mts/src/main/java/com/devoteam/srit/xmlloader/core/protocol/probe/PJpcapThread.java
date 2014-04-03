@@ -77,7 +77,7 @@ public class PJpcapThread implements PacketReceiver, Runnable {
         stopped = false;
 
         if (probe.getNetworkInterface() != null) {
-            networkInterface = searchNetworkInterface(probe.getNetworkInterface());
+        	networkInterface = searchNetworkInterface(probe.getNetworkInterface());
             captor = JpcapCaptor.openDevice(networkInterface, DEFAULT_SNAPLENGHT, probe.getPromiscuousMode(), 10);
             sendor = JpcapSender.openDevice(networkInterface);
             captor.setFilter(probe.getCaptureFilter(), true);
@@ -269,21 +269,33 @@ public class PJpcapThread implements PacketReceiver, Runnable {
             }
         }
 
-        IPv4Array parsedIP = null;
+        // IPv4Array parsedIP = null;
         try {
             // try to parse the networkname as an IPv4 address        
-            parsedIP = new IPv4Array(networkName);
+            // parsedIP = new IPv4Array(networkName);
         }
         catch (Exception e) {
             throw new ExecutionException("Could not find any network interface matching the name \"" + networkName + "\" : ", e);
         }
-
+        
+        // for IPV6 address remove [] characters
+        if (networkName.charAt(0) == '[')
+        {
+        	networkName = networkName.substring(1);
+        }
+        int len = networkName.length() - 1;
+        if (networkName.charAt(len) == ']')
+        {
+        	networkName = networkName.substring(0, len);
+        }
+        
+        networkName = "/" + networkName; 
         for (NetworkInterface networkInterface : JpcapCaptor.getDeviceList()) {
             // compare all of the adresses of the jpcap interface agains the address
             for (NetworkInterfaceAddress networkInterfaceAddress : networkInterface.addresses) {
-                byte[] jpcapAddress = networkInterfaceAddress.address.getAddress();
-                GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "Get network address : ", networkInterfaceAddress.address);                
-                if (new DefaultArray(jpcapAddress).equals(parsedIP)) {
+            	String addr = networkInterfaceAddress.address.toString();
+                GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "Get network address : ", addr);
+                if (addr.equals(networkName)) {
                     return networkInterface;
                 }
             }

@@ -529,9 +529,18 @@ public class MsgSipLight extends MsgSip
         {
     		MsgParser parser1 = new MsgParser(); 
     		parser1.splitHeader(via, " ");
-    		MsgParser parser2 = new MsgParser(); 
-    		parser2.splitHeader(parser1.getHeader(1), ":");
-            var.addHeader(parser2.getHeader(0));
+    		Header hdr = parser1.getHeader(1);
+            for (int i = 0; i < hdr.getSize(); i++) 
+            {
+            	String strVia = hdr.getHeader(i);
+				int pos = strVia.lastIndexOf(':');
+				String hostVia = strVia; 
+				if (pos >= 0)
+				{
+					hostVia = strVia.substring(0, pos);
+				}
+		        var.add(hostVia);
+            }
     		return true;
         }
         //---------------------------------------------------------------------- header:TopMostVia:Port or header:Via:Port-
@@ -539,9 +548,18 @@ public class MsgSipLight extends MsgSip
         {
     		MsgParser parser1 = new MsgParser(); 
     		parser1.splitHeader(via, " ");
-    		MsgParser parser2 = new MsgParser(); 
-    		parser2.splitHeader(parser1.getHeader(1), ":");
-            var.addHeader(parser2.getHeader(1));    		
+    		Header hdr = parser1.getHeader(1);
+            for (int i = 0; i < hdr.getSize(); i++) 
+            {
+	    		String strVia = hdr.getHeader(i);
+	    		int pos = strVia.lastIndexOf(':');
+	    		String hostVia = ""; 
+	    		if (pos >= 0)
+	    		{
+	    			hostVia = strVia.substring(pos + 1);
+	    		}
+	            var.add(hostVia);
+            }
     		return true;
         }
         //---------------------------------------------------------------------- header:TopmostVia:Parameter:Xxxx or header:Via:Parameter:Xxxx-

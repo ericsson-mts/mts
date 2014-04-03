@@ -84,7 +84,7 @@ Content-Length: 0
     </do></while>
   
   	<receiveMessageSIP request="true" type="PRACK" timeout="[RetransTimeout]">
-        <parameter name="[Cseq]"        operation="protocol.setFromMessage" value="header.CSeq"/>       
+        <parameter name="[Cseq]"        operation="protocol.setFromMessage" value="header.CSeq"/>
   	</receiveMessageSIP>
 
     <!-- notify we received the expected PRACK retransmissions -->
@@ -108,10 +108,10 @@ Content-Length: 0
 ]]>
   	</sendMessageSIP>
   	
-  	<!-- BUG there is no retransmission of the PRACK when there is a 
+  	<!-- BUG POTENTIEL there is no retransmission of the PRACK when there is a 
       retransmission of corresponding INVITE/180 -->
   	<!--receiveMessageSIP request="true" type="PRACK" timeout="[RetransTimeout]">
-        <parameter name="[Cseq]"        operation="protocol.setFromMessage" value="header.CSeq"/>       
+        <parameter name="[Cseq]"        operation="protocol.setFromMessage" value="header.CSeq"/>
   	</receiveMessageSIP-->
   	
   	<parameter name="[testcase:waitPRACK]" operation="system.semaphorenotify"/>
@@ -243,11 +243,11 @@ a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0]]>
     </do></while>
   
   	<receiveMessageSIP name="Wait BYE" request="true" type="BYE" timeout="[RetransTimeout]">
-    		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>         
-    		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
-    		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>          
-    		<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>       
-    		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>                 
+    		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+    		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    		<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
     		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
   	</receiveMessageSIP>
     
@@ -271,5 +271,8 @@ Content-Length: 0
 <!-- **********************************************************************  -->
 <!-- * CHECK THAT WE DON'T RECEIVE BYE RETRANSMISSIONS ANYMORE            *  -->
 <!-- **********************************************************************  -->
-  	<receiveMessageSIP request="true" type="BYE" timeout="[RetransTimeout]" failedOnTimeout="false" failedOnReceive="true"/>	
+  	<receiveMessageSIP request="true" type="BYE" timeout="[RetransTimeout]" failedOnTimeout="false" failedOnReceive="true"/>
+  	
+  	<parameter name="[testcase:200BYE]" operation="system.semaphorenotify"/>
+  	
 </scenario>
