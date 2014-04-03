@@ -22,18 +22,37 @@
     </sendMessageUDP>
 	
     <receiveMessageUDP listenpoint="socket1">
+        <parameter name="[localName]" operation="protocol.setFromMessage" value="listenpoint.name" />
+        <test parameter="[localName]" condition="string.equals" value="socket1" />
+        <parameter name="[localHost]" operation="protocol.setFromMessage" value="listenpoint.host" />
+        <test parameter="[localHost]" condition="string.equals" value="[remoteHostUDP]" />
+        <parameter name="[localPort]" operation="protocol.setFromMessage" value="listenpoint.port" />
+        <test parameter="[localPort]" condition="string.equals" value="[remotePort1]" />
         <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
         <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
         <test parameter="[contents]" condition="string.equals" value="packet #1" />
     </receiveMessageUDP>
 
     <receiveMessageUDP listenpoint="socket2">
+        <parameter name="[localName]" operation="protocol.setFromMessage" value="listenpoint.name" />
+        <test parameter="[localName]" condition="string.equals" value="socket2" />
+        <parameter name="[localHost]" operation="protocol.setFromMessage" value="listenpoint.host" />
+        <test parameter="[localHost]" condition="string.equals" value="[remoteHostUDP]" />
+        <parameter name="[localPort]" operation="protocol.setFromMessage" value="listenpoint.port" />
+        <test parameter="[localPort]" condition="string.equals" value="[remotePort2]" />
+
         <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
         <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
         <test parameter="[contents]" condition="string.equals" value="packet #2" />
     </receiveMessageUDP>
 
     <receiveMessageUDP listenpoint="socket1">
+        <parameter name="[localName]" operation="protocol.setFromMessage" value="listenpoint.name" />
+        <test parameter="[localName]" condition="string.equals" value="socket1" />
+        <parameter name="[localHost]" operation="protocol.setFromMessage" value="listenpoint.host" />
+        <test parameter="[localHost]" condition="string.equals" value="[remoteHostUDP]" />
+        <parameter name="[localPort]" operation="protocol.setFromMessage" value="listenpoint.port" />
+        <test parameter="[localPort]" condition="string.equals" value="[remotePort1]" />
         <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
         <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
         <test parameter="[contents]" condition="string.equals" value="packet #3" />

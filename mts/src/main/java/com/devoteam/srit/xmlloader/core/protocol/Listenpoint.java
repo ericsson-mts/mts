@@ -103,7 +103,7 @@ public abstract class Listenpoint
         {
         	this.name = root.attributeValue("name");
         }
-        this.host = root.attributeValue("localHost");
+        this.host = Utils.formatIPAddress(root.attributeValue("localHost"));
         if (null == this.host || this.host.length() <= 0)
         {
             this.host = "0.0.0.0";
@@ -170,7 +170,7 @@ public abstract class Listenpoint
     {
         this(stack);
         this.name = name;
-        this.host = host;
+        this.host = Utils.formatIPAddress(host);
         if (null == this.host || this.host.length() <= 0)
         {
             this.host = "0.0.0.0";
@@ -208,7 +208,7 @@ public abstract class Listenpoint
      */
     public void setHost(String host)
     {
-        this.host = host;
+        this.host = Utils.formatIPAddress(host);
     }
 
     public int getPort()

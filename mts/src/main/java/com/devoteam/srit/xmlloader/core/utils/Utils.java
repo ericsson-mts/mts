@@ -864,7 +864,33 @@ public class Utils
         }
         return iAddresses;
     }
-
+    
+    /*
+     * Format the IP address : for IPV6 only add brackets characters; for IPV4 do nothing
+     */
+    public static String formatIPAddress(String addr)
+    {
+    	// for IPV6 address then add '[' and ']' character around;
+    	if (addr == null)
+    	{
+    		return addr;
+    	}
+    	// test IPV6 address
+    	if (addr.indexOf(":") >= 0)
+    	{
+    		if (addr.charAt(0) != '[')
+    		{
+    			addr = "[" + addr;
+    		}
+    		int len = addr.length() - 1;
+    		if (addr.charAt(len) != ']')
+    		{
+    			addr = addr + "]";
+    		}
+    	}
+    	return addr;
+    }
+    
     static public String formatdouble(double number)
     {
         if (Math.abs(number) > 1e-4 || number == 0)

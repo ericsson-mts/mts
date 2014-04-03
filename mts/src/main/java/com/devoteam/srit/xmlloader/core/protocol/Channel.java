@@ -45,7 +45,7 @@ public abstract class Channel
     private String remoteHost;
     private int remotePort = 0;
 
-	private String protocol;    
+	private String protocol;
         
     /** Creates a new instance of Channel*/
     public Channel(String name)
@@ -67,7 +67,7 @@ public abstract class Channel
         {
             throw new ExecutionException("Can't create URI from : " + remoteUrl, e);
         }
-        this.remoteHost = uri.getHost();
+        this.remoteHost = Utils.formatIPAddress(uri.getHost());
         this.remotePort = uri.getPort();
         this.protocol = aProtocol;
     }
@@ -85,7 +85,7 @@ public abstract class Channel
         {
             throw new ExecutionException("Can't create URI from : " + localUrl, e);
         }
-        this.localHost = uri.getHost();
+        this.localHost = Utils.formatIPAddress(uri.getHost());
         this.localPort = uri.getPort();
     }
 
@@ -93,10 +93,10 @@ public abstract class Channel
     public Channel(String localHost, int localPort, String remoteHost, int remotePort, String aProtocol)
     {
         this("Channel #" + Stack.nextTransactionId());
-        this.localHost = localHost;
+        this.localHost = Utils.formatIPAddress(localHost);
         this.localPort = localPort;
 
-        this.remoteHost = remoteHost;
+        this.remoteHost = Utils.formatIPAddress(remoteHost);
         this.remotePort = remotePort;
         
         this.protocol = aProtocol;
@@ -108,11 +108,11 @@ public abstract class Channel
         this(name);
         if (localHost != null)
         {
-        	this.localHost = localHost;
+        	this.localHost = Utils.formatIPAddress(localHost);
         }
         else
         {
-        	this.localHost = Utils.getLocalAddress().getHostAddress();
+        	this.localHost = Utils.formatIPAddress(Utils.getLocalAddress().getHostAddress());
         }
         
         if (localPort != null)
@@ -120,7 +120,7 @@ public abstract class Channel
             this.localPort = Integer.parseInt(localPort);
         }
 
-        this.remoteHost = remoteHost;
+        this.remoteHost = Utils.formatIPAddress(remoteHost);
         
         if (remotePort != null)
         {
@@ -171,7 +171,7 @@ public abstract class Channel
      */
     public void setLocalHost(String host)
     {
-        this.localHost = host;
+        this.localHost = Utils.formatIPAddress(host);
     }
 
     public String getRemoteHost()
@@ -203,7 +203,7 @@ public abstract class Channel
      */
     public void setRemoteHost(String host)
     {
-        this.remoteHost = host;
+        this.remoteHost = Utils.formatIPAddress(host);
     }
 
     public String getProtocol() {
