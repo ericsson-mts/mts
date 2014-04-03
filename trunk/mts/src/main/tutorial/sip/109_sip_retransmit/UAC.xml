@@ -326,4 +326,32 @@ Content-Length: 0
 <!-- * RECEIVE 200 OK                                                     *  -->
 <!-- **********************************************************************  -->
   	<receiveMessageSIP name="Wait 200 OK" request="false" type="BYE" result="200"/>
+  	
+  	<parameter name="[testcase:200BYE]" operation="system.semaphorewait"/>
+  	
+<!-- **********************************************************************  -->
+<!-- * SEND BYE REQUEST                                                   *  -->
+<!-- **********************************************************************  -->
+  	<sendMessageSIP name="Send BYE" destScenario="bob">
+<![CDATA[BYE [Request-URI] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [newCseqNumber] BYE
+Route: <sip:[clientName]@[remoteSIP];transport=[transportRequest];lr;mode=originating>
+Route: <sip:[clientName]@[localSIP];lr;mode=originating>
+Contact: <sip:[clientName]@[localSIP]>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Max-Forwards: 70
+Content-Length: 0
+]]>
+  	</sendMessageSIP>
+                
+<!-- **********************************************************************  -->
+<!-- * RECEIVE 200 OK                                                     *  -->
+<!-- **********************************************************************  -->
+  	<receiveMessageSIP name="Wait 200 OK" request="false" type="BYE" result="200"/>
+   	
 </scenario>

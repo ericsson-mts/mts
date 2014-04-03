@@ -170,15 +170,18 @@
 <test parameter="[CallInfo]" condition="string.contains" value="http://www.example.com/alice/"/>
 
 <parameter name="[Route]" operation="protocol.setFromMessage" value="header.Route"/> 
-<test parameter="[Route(0)]" condition="string.matches" value="&lt;sip:1234@[remoteSIP];lr;transport=[transportRequest]&gt;;id=toto|&lt;sip:1234@[remoteSIP];transport=[transportRequest];lr&gt;;id=toto"/>
-<test parameter="[Route(2)]" condition="string.matches" value="&lt;sip:1234@172.16.21.32:5060;lr;transport=[transportRequest]&gt;;id=tata|&lt;sip:1234@172.16.21.32:5060;transport=[transportRequest];lr&gt;;id=tata"/>
+<test parameter="[Route(0)]" condition="string.equals" value="&lt;sip:1234@[remoteSIP];transport=[transportRequest];lr&gt;;id=titi"/>
+<test parameter="[Route(1)]" condition="string.equals" value="&lt;sip:1234@[remoteSIP];transport=[transportRequest];lr&gt;;id=toto"/>
+<test parameter="[Route(2)]" condition="string.equals" value="&lt;sip:1234@[localSIP];transport=[transportRequest];lr&gt;;id=tata"/>
 
 <parameter name="[RouteAddress]" operation="protocol.setFromMessage" value="header.Route.Address"/>
-<test parameter="[RouteAddress(0)]" condition="string.matches" value="&lt;sip:1234@[remoteSIP];lr;transport=[transportRequest]&gt;|&lt;sip:1234@[remoteSIP];transport=[transportRequest];lr&gt;"/>
-<test parameter="[RouteAddress(2)]" condition="string.matches" value="&lt;sip:1234@172.16.21.32:5060;lr;transport=[transportRequest]&gt;|&lt;sip:1234@172.16.21.32:5060;transport=[transportRequest];lr&gt;"/>
+<test parameter="[RouteAddress(0)]" condition="string.equals" value="&lt;sip:1234@[remoteSIP];transport=[transportRequest];lr&gt;"/>
+<test parameter="[RouteAddress(1)]" condition="string.equals" value="&lt;sip:1234@[remoteSIP];transport=[transportRequest];lr&gt;"/>
+<test parameter="[RouteAddress(2)]" condition="string.equals" value="&lt;sip:1234@[localSIP];transport=[transportRequest];lr&gt;"/>
 
 <parameter name="[RouteID]" operation="protocol.setFromMessage" value="header.Route.Parameter.id"/>
-<test parameter="[RouteID(0)]" condition="string.equals" value="toto"/>
+<test parameter="[RouteID(0)]" condition="string.equals" value="titi"/>
+<test parameter="[RouteID(1)]" condition="string.equals" value="toto"/>
 <test parameter="[RouteID(2)]" condition="string.equals" value="tata"/>   
 
 <parameter name="[RouteLR]" operation="protocol.setFromMessage" value="header.Route.Address.URI.Parameter.lr"/>

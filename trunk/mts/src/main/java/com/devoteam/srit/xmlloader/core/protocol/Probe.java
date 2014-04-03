@@ -98,7 +98,13 @@ public class Probe
         this.stack = stack;
         this.name = root.attributeValue("name");
         this.networkInterface = root.attributeValue("networkInterface");
-        this.captureFilter = root.attributeValue("captureFilter");
+        String capFilter = root.attributeValue("captureFilter");
+        if (capFilter != null)
+        {
+	        capFilter = Utils.replaceNoRegex(capFilter, "[", "");
+	        capFilter = Utils.replaceNoRegex(capFilter, "]", "");
+        }
+        this.captureFilter = capFilter;
         this.filename = root.attributeValue("filename");
         this.regexFilter = root.attributeValue("regexFilter");        
         this.sockets = new ExpireHashMap<String, PTCPSocket>("captured TCP streams", 600000);

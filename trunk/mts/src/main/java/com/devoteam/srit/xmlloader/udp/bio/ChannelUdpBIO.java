@@ -62,7 +62,7 @@ public class ChannelUdpBIO extends Channel
 
     public ChannelUdpBIO(SocketUdpBIO socketUdp, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
     {
-        super(aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+         super(aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
         this.socketUdp = socketUdp;
 		this.remoteDatagramSocketAddress = new InetSocketAddress(aRemoteHost, aRemotePort);				
 
