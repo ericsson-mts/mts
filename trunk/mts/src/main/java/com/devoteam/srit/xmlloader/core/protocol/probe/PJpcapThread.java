@@ -268,15 +268,6 @@ public class PJpcapThread implements PacketReceiver, Runnable {
 	            }
             }
         }
-
-        // IPv4Array parsedIP = null;
-        try {
-            // try to parse the networkname as an IPv4 address        
-            // parsedIP = new IPv4Array(networkName);
-        }
-        catch (Exception e) {
-            throw new ExecutionException("Could not find any network interface matching the name \"" + networkName + "\" : ", e);
-        }
         
         // for IPV6 address remove [] characters
         if (networkName.charAt(0) == '[')
