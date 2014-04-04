@@ -10,7 +10,7 @@ call startCmd.bat ..\tutorial\core\test.xml -sequential %OPTIONS% -param:param_1
 call startCmd.bat ..\tutorial\diameter\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\sip\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\sip\test.xml -sequential -config:USE_NIO+true %OPTIONS%
-call startCmd.bat ..\tutorial\sip\test.xml -sequential -config:protocol.STACK_CLASS_NAME_SIP+com.devoteam.srit.xmlloader.sip.jain.StackSipJain %OPTIONS%
+call startCmd.bat ..\tutorial\sip\test_jain.xml -sequential -config:protocol.STACK_CLASS_NAME_SIP+com.devoteam.srit.xmlloader.sip.jain.StackSipJain %OPTIONS%
 call startCmd.bat ..\tutorial\rtp\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\rtpflow\test.xml -sequential %OPTIONS%
 call startCmd.bat ..\tutorial\rtpflow\test.xml -sequential -config:message.KEEP_SENT_MESSAGES+true %OPTIONS%
