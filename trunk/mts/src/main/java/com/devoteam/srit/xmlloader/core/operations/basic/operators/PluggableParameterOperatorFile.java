@@ -349,8 +349,9 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
 
                     //recuperation du nombre de paquets par ech a partir du fichier xml
                     Parameter paraDeltaTimeMilliSec = PluggableParameterOperatorList.assertAndGetParameter(operands, "value2");
-                    String deltaTimeMilliSec = paraDeltaTimeMilliSec.get(0).toString();
-                    int nbEchPerPacket = (int) (Integer.parseInt(deltaTimeMilliSec)  * waveFileReader.getBitRate() / 8);
+                    String strDeltaTimeMilliSec = paraDeltaTimeMilliSec.get(0).toString();
+                    int deltaTimeMilliSec = Integer.parseInt(strDeltaTimeMilliSec);
+                    int nbEchPerPacket = deltaTimeMilliSec  * waveFileReader.getBitRate() / 8;
 
                     //recuperation du nombre totale de paquets
                     int nbPacket = payload.length / nbEchPerPacket;
@@ -421,7 +422,8 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
 
                 CodecDictionary dico = new CodecDictionary();
                 Parameter paraPayloadType = PluggableParameterOperatorList.assertAndGetParameter(operands, "value2");
-                int payloadType = Integer.parseInt((String)paraPayloadType.get(0));
+                String strPayloadType = paraPayloadType.get(0).toString();
+                int payloadType = Integer.parseInt(strPayloadType);
                 if (payloadType != 0 && payloadType != 8) {
                     throw new Exception("Payload Type not supported yet");
                 }
@@ -442,8 +444,9 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
 
                 Parameter paraNbChannel = PluggableParameterOperatorList.getParameter(operands, "value6");
                 int nbChannels;
-                if (paraNbChannel != null) {
-                    nbChannels = Integer.parseInt((String)paraNbChannel.get(0));
+                if (paraNbChannel != null && paraNbChannel.length() > 0) {
+                	String strNbChannel = paraNbChannel.get(0).toString();
+                    nbChannels = Integer.parseInt(strNbChannel);
                 }
                 else{
                    if (protocol == null) {
@@ -461,8 +464,9 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
 
                 Parameter paraSampleRate = PluggableParameterOperatorList.getParameter(operands, "value5");
                 int rateSample;
-                if (paraSampleRate != null) {
-                    rateSample = Integer.parseInt((String)paraSampleRate.get(0));
+                if (paraSampleRate != null && paraSampleRate.length() > 0) {
+                	String strSampleRate = paraSampleRate.get(0).toString();
+                    rateSample = Integer.parseInt(strSampleRate);
                 }
                 else {
                     if(protocol == null) {
@@ -480,20 +484,21 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
 
                 Parameter paraBitsPerSample = PluggableParameterOperatorList.getParameter(operands, "value4");
                 int bitsSample;
-                if (paraBitsPerSample != null) {
-                    bitsSample = Integer.parseInt((String) paraBitsPerSample.get(0));
+                if (paraBitsPerSample != null && paraBitsPerSample.length() > 0) {
+                	String strBitsPerSample = paraBitsPerSample.get(0).toString();
+                    bitsSample = Integer.parseInt(strBitsPerSample);
                 }
                 else{
                     bitsSample = 8;//8 par defaut
                 }
                 bitsPerSample = Utils.convertFromIntegerToByte(bitsSample, 2);
                 bitsPerSample = Utils.convertToLittleEndian(bitsPerSample);
-
-                int alignBlock = Integer.parseInt((String)paraBitsPerSample.get(0)) * nbChannels / 8;
+                
+                int alignBlock = bitsSample * nbChannels / 8;
                 blockAlign = Utils.convertFromIntegerToByte(alignBlock, 2);
                 blockAlign = Utils.convertToLittleEndian(blockAlign);
 
-                int rateByte = Integer.parseInt((String)paraBitsPerSample.get(0)) * nbChannels * rateSample / 8;
+                int rateByte = bitsSample * nbChannels * rateSample / 8;
                 byteRate = Utils.convertFromIntegerToByte(rateByte, 4);
                 byteRate = Utils.convertToLittleEndian(byteRate);
 
