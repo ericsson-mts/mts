@@ -112,7 +112,7 @@ public abstract class Channel
         }
         else
         {
-        	this.localHost = Utils.formatIPAddress(Utils.getLocalAddress().getHostAddress());
+        	//this.localHost = Utils.formatIPAddress(Utils.getLocalAddress().getHostAddress());
         }
         
         if (localPort != null)

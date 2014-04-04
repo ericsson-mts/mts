@@ -45,6 +45,7 @@ import com.devoteam.srit.xmlloader.http.bio.BIOSocketServerListener;
 import com.devoteam.srit.xmlloader.http.nio.NIOChannelHttp;
 import com.devoteam.srit.xmlloader.http.nio.NIOSocketServerListener;
 import java.io.FileInputStream;
+import java.net.URI;
 import java.security.KeyStore;
 import java.util.LinkedList;
 import javax.net.ssl.KeyManager;
@@ -212,32 +213,27 @@ public class StackHttp extends Stack
         String localHost = root.attributeValue("localHost");
         String localPort = root.attributeValue("localPort");
         String remoteUrl = root.attributeValue("remoteURL");
-
-        String authority;
-        String authorityHost;
-        String authorityPort;
-        boolean secure;
-
-        String scheme;
-
-        int index;
-
-        //
-        // Separate the authority and the scheme
-        //
-        index = remoteUrl.indexOf("://");
-
-        if (index != -1)
+        String remoteHost = null;
+        String remotePort = null;
+        
+        URI uri = null;
+        try
         {
-            authority = remoteUrl.substring(index + 3);
-            scheme = remoteUrl.substring(0, index);
+            uri = new URI(remoteUrl);
+            remotePort = String.valueOf(uri.getPort());
         }
-        else
+        catch (Exception e)
         {
-            authority = remoteUrl;
-            scheme = getConfig().getString("client.DEFAULT_PROTOCOL");
+            throw new ExecutionException("Can't create URI from : " + remoteUrl, e);
         }
 
+        boolean secure = false;
+        String scheme = uri.getScheme();
+        if (scheme == null)
+        {
+        	scheme = getConfig().getString("client.DEFAULT_PROTOCOL");
+        }
+        
         if (scheme.equalsIgnoreCase("https"))
         {
             secure = true;
@@ -246,35 +242,23 @@ public class StackHttp extends Stack
         {
             secure = false;
         }
-
-        //
-        // Read the authority host and port
-        //
-        index = authority.indexOf(":");
-        if (index != -1)
+        
+        remoteHost = Utils.formatIPAddress(uri.getHost());
+        
+        if (uri.getPort() > 0)
         {
-            authorityHost = authority.substring(0, index);
-            authorityPort = authority.substring(index + 1);
+        	remotePort = String.valueOf(uri.getPort());
         }
         else
         {
-            authorityHost = authority;
-
-            if (scheme.equalsIgnoreCase("http"))
-            {
-                authorityPort = getConfig().getString("client.DEFAULT_HTTP_PORT", "80");
-            }
-            else
-            {
-                if (scheme.equalsIgnoreCase("https"))
-                {
-                    authorityPort = getConfig().getString("client.DEFAULT_HTTPS_PORT", "443");
-                }
-                else
-                {
-                    throw new ExecutionException("Invalid scheme: " + scheme + "\n Only http: and https: are supported");
-                }
-            }
+        	if (secure)
+        	{
+        		remotePort = getConfig().getString("client.DEFAULT_HTTPS_PORT", "443");
+        	}
+        	else
+        	{
+        		remotePort = getConfig().getString("client.DEFAULT_HTTP_PORT", "80");
+        	}
         }
 
         if (existsChannel(channelName))
@@ -284,10 +268,10 @@ public class StackHttp extends Stack
         else
         {
             if(getConfig().getBoolean("USE_NIO")){
-                return new NIOChannelHttp(channelName, localHost, localPort, authorityHost, authorityPort, protocol, secure);
+                return new NIOChannelHttp(channelName, localHost, localPort, remoteHost, remotePort, protocol, secure);
             }
             else{
-                return new BIOChannelHttp(channelName, localHost, localPort, authorityHost, authorityPort, protocol, secure);
+                return new BIOChannelHttp(channelName, localHost, localPort, remoteHost, remotePort, protocol, secure);
             }
         }
     }
