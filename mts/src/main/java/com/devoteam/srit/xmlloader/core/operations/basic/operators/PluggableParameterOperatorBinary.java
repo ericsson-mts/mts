@@ -63,6 +63,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     final private String NAME_BIN_FROMBASE64 = "binary.frombase64";
     final private String NAME_BIN_TOBASE64   = "binary.tobase64";
     final private String NAME_BIN_CONTAINS   = "binary.contains";
+    final private String NAME_BIN_LENGTH     = "binary.length";
     final private String NAME_BIN_INDEXOF    = "binary.indexof";
     final private String NAME_BIN_SUBBINARY  = "binary.subbinary";
     final private String NAME_BIN_RANDOM     = "binary.random";
@@ -92,6 +93,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_BIN_EQUALS));
         this.addPluggableName(new PluggableName(NAME_BIN_PARSE));
         this.addPluggableName(new PluggableName(NAME_BIN_CONTAINS));
+        this.addPluggableName(new PluggableName(NAME_BIN_LENGTH));
         this.addPluggableName(new PluggableName(NAME_BIN_TOSTRING));
         this.addPluggableName(new PluggableName(NAME_BIN_INDEXOF));
         this.addPluggableName(new PluggableName(NAME_BIN_FROMBASE64));
@@ -157,6 +159,10 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     Array array1 = Array.fromHexString(param_1.get(i).toString());
                     Array array2 = Array.fromHexString(param_2.get(i).toString());
                     result.add(String.valueOf(array1.indexOf(array2) != -1));
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_LENGTH))
+                {
+                    result.add(String.valueOf(param_1.get(i).toString().length() / 2));
                 }
                 else if (name.equals(NAME_BIN_INDEXOF))
                 {
