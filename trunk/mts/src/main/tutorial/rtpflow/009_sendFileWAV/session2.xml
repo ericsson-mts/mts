@@ -12,7 +12,7 @@
 	<parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>	
 
 	<receiveMessageRTPFLOW listenpoint="invitee" type="[payloadType]" timeout="60">
-	        <parameter name="[payloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>		
+	        <parameter name="[payloadTypeList]" operation="protocol.setFromMessage" value="header.payloadType"/>		
 	        <parameter name="[flowPayloadPlayer]" operation="protocol.setFromMessage" value="flow.payload.player"/>
 	        <parameter name="[packetNumber]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
 	        <parameter name="[flowPayloadText]" operation="protocol.setFromMessage" value="flow.payload.text"/>
@@ -31,7 +31,7 @@
 	<!-- value5 = sampleRate (optional) (8000 Hz for PCMA or PCMU) -->
 	<!-- value6 = number of channel (optional) (1 for mono, 2 for stereo) -->
 	<parameter name="file" operation="file.writewave" value="009_sendFileWAV/rtpflowReceived.wav" 
-	value2="[payloadType]"	
+	value2="[payloadType]"
 	value3="[flowPayloadPlayer]"
 	value4="8"
 	value5="8000"
@@ -43,7 +43,7 @@
  	<parameter name="[testcase:SEM2]" operation="system.semaphorenotify"/>	
 	
 	<receiveMessageRTPFLOW listenpoint="invitee" type="[payloadType]" timeout="60">
-	        <parameter name="[payloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>		
+	        <parameter name="[payloadTypeList]" operation="protocol.setFromMessage" value="header.payloadType"/>		
 	        <parameter name="[flowPayloadPlayer]" operation="protocol.setFromMessage" value="flow.payload.player"/>
 	        <parameter name="[packetNumber]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
 	        <parameter name="[flowPayloadText]" operation="protocol.setFromMessage" value="flow.payload.text"/>

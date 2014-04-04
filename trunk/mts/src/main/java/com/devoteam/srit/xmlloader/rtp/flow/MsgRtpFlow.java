@@ -288,7 +288,7 @@ public class MsgRtpFlow extends Msg {
             }
             else if (params[1].equalsIgnoreCase("payloadType")) {
                 for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
-                    var.add(it.next().getPayloadType());
+                    var.add(it.next().getPayloadType().toString());
                 }
             }
             else if (params[1].equalsIgnoreCase("seqnum")) {

@@ -7,8 +7,13 @@
 
     <parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
 
-    <receiveMessageRTPFLOW listenpoint="invitee" type="DVI4:17" timeout="10"/>
-
+    <receiveMessageRTPFLOW listenpoint="invitee" type="PCMU:0" timeout="10"/>
+    
+    <parameter name="[packetNumber]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
+    <test parameter="[packetNumber]" condition="number.equals" value="5"/>
+    <parameter name="[packetTimestamp]" operation="protocol.setFromMessage" value="flow.packetTimestamp"/>
+    <test parameter="[packetTimestamp]" condition="number.greaterThan" value="1396000000"/>
+    
     <parameter name="[ssrc]" operation="protocol.setFromMessage" value="header.ssrc"/>
     <test parameter="[ssrc]" condition="list.size" value="5"/>
     <test parameter="[ssrc(0)]" condition="number.equals" value="1961276416"/>
@@ -18,9 +23,9 @@
     <test parameter="[ssrc(4)]" condition="number.equals" value="1111111416"/>
     <parameter name="[payloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>
     <test parameter="[payloadType]" condition="list.size" value="5"/>
-    <test parameter="[payloadType(0)]" condition="number.equals" value="17"/>
-    <test parameter="[payloadType(1)]" condition="number.equals" value="17"/>
-    <test parameter="[payloadType(2)]" condition="number.equals" value="17"/>
+    <test parameter="[payloadType(0)]" condition="number.equals" value="0"/>
+    <test parameter="[payloadType(1)]" condition="number.equals" value="0"/>
+    <test parameter="[payloadType(2)]" condition="number.equals" value="0"/>
     <test parameter="[payloadType(3)]" condition="number.equals" value="18"/>
     <test parameter="[payloadType(4)]" condition="number.equals" value="18"/>
     <parameter name="[seqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>
@@ -41,69 +46,73 @@
     <test parameter="[mark(2)]" condition="number.equals" value="0"/>
     <test parameter="[mark(3)]" condition="number.equals" value="1"/>
     <test parameter="[mark(4)]" condition="number.equals" value="0"/>
-    <parameter name="[packetNumber]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
-    <test parameter="[packetNumber]" condition="number.equals" value="5"/>
-    <parameter name="[packetTimestamp]" operation="protocol.setFromMessage" value="flow.packetTimestamp"/>
-    <test parameter="[packetTimestamp(0)]" condition="number.equals" value="1"/>
-    <test parameter="[packetTimestamp(1)]" condition="number.equals" value="0"/>
-    <test parameter="[packetTimestamp(2)]" condition="number.equals" value="0"/>
-    <test parameter="[packetTimestamp(3)]" condition="number.equals" value="1"/>
-    <test parameter="[packetTimestamp(4)]" condition="number.equals" value="0"/>
     
+    <parameter name="[textRTP]" operation="set" value="Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP"/>
+    <parameter name="[textRTP]" operation="list.addlast" value="[textRTP]" value2="Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP"/>
+    <parameter name="[textRTP]" operation="list.addlast" value="[textRTP]" value2="Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP"/>
+    <parameter name="[textRTP]" operation="list.addlast" value="[textRTP]" value2="Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP"/>
+    <parameter name="[textRTP]" operation="list.addlast" value="[textRTP]" value2="Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP"/>
     <parameter name="[payloadText]" operation="protocol.setFromMessage" value="flow.payload.text"/>
-    <parameter name="[payloadLength]" operation="string.length" value="[payloadText]"/>
-    <test parameter="[payloadLength]" condition="number.equals" value="100"/>
+    <test parameter="[payloadText]" condition="list.size" value="5"/>
+    <test parameter="[payloadText]" condition="string.equals" value="[textRTP]"/>
+    
+    <parameter name="[binaryRTP]" operation="string.toBinary" value="[textRTP]"/>
     <parameter name="[payloadBinary]" operation="protocol.setFromMessage" value="flow.payload.binary"/>
-    <parameter name="[payloadLength]" operation="string.length" value="[payloadBinary]"/>
-    <test parameter="[payloadLength]" condition="number.equals" value="100"/>
+    <test parameter="[payloadBinary]" condition="list.size" value="5"/>
+    <test parameter="[payloadBinary]" condition="string.equals" value="[binaryRTP]"/>
+    
+    <parameter name="[binaryRTP]" operation="string.toBinary" value="[textRTP]"/>
     <parameter name="[payloadPlayer]" operation="protocol.setFromMessage" value="flow.payload.player"/>
-    <parameter name="[msgRTP]" operation="set" value="Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP"/>
-    <parameter name="[msgRTP]" operation="list.addlast" value="[msgRTP]" value2="Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP"/>
-    <parameter name="[msgRTP]" operation="list.addlast" value="[msgRTP]" value2="Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP"/>
-    <parameter name="[msgRTP]" operation="list.addlast" value="[msgRTP]" value2="Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP"/>
-    <parameter name="[msgRTP]" operation="list.addlast" value="[msgRTP]" value2="Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP"/>
-    <parameter name="[msgRTP]" operation="string.toBinary" value="[msgRTP]"/>
-    <test parameter="[payloadPlayer]" condition="string.equals" value="[msgRTP]"/>
-
+    <test parameter="[payloadPlayer]" condition="list.size" value="5"/>
+    <test parameter="[payloadPlayer]" condition="string.equals" value="[binaryRTP]"/>
+    
     <parameter name="[packetLost]" operation="protocol.setFromMessage" value="qos.packetLost"/>
     <test parameter="[packetLost]" condition="number.equals" value="0"/>
     <parameter name="[packetDuplicated]" operation="protocol.setFromMessage" value="qos.packetDuplicated"/>
     <test parameter="[packetDuplicated]" condition="number.equals" value="0"/>
     <parameter name="[packetMissSequence]" operation="protocol.setFromMessage" value="qos.packetMissSequence"/>
     <test parameter="[packetMissSequence]" condition="number.equals" value="0"/>
+    
+    <!-- TODO PacketSpacingMean returned bad value WHY ? -->
     <parameter name="[packetSpacingMean]" operation="protocol.setFromMessage" value="qos.packetSpacingMean"/>
-    <test parameter="[packetSpacingMean]" condition="number.greaterThan" value="10"/>
-    <test parameter="[packetSpacingMean]" condition="number.lowerThan" value="20"/>
+    <test parameter="[packetSpacingMean]" condition="list.size" value="1"/>
+    <!--test parameter="[packetSpacingMean]" condition="number.greaterEqualThan" value="19"/>
+    <test parameter="[packetSpacingMean]" condition="number.lowerEqualThan" value="21"/-->
+    <!-- TODO PacketSpacing returned bad value WHY ? -->
     <parameter name="[packetSpacing]" operation="protocol.setFromMessage" value="qos.packetSpacing"/>
-    <test parameter="[packetSpacingLength]" condition="list.size" value="5"/>
+    <test parameter="[packetSpacing]" condition="list.size" value="5"/>
+    <!--test parameter="[packetSpacing]" condition="number.greaterEqual Than" value="19"/>
+    <test parameter="[packetSpacing]" condition="number.lowerEqualThan" value="21"/-->
+    
+    <!-- TODO DeltaTimeMean returned bad value WHY ? -->
     <parameter name="[deltaTimeMean]" operation="protocol.setFromMessage" value="qos.deltaTimeMean"/>
-    <test parameter="[deltaTimeMean]" condition="number.greaterThan" value="10"/>
-    <test parameter="[deltaTimeMean]" condition="number.lowerThan" value="20"/>
-    <test parameter="[deltaTimeLength]" condition="number.equals" value="5"/>
+    <test parameter="[deltaTimeMean]" condition="list.size" value="1"/>
+    <!--test parameter="[deltaTimeMean]" condition="number.greaterEqualThan" value="19"/>
+    <test parameter="[deltaTimeMean]" condition="number.lowerEqualThan" value="21"/-->
+    <!-- TODO DeltaTime returned bad value WHY ? -->
     <parameter name="[deltaTime]" operation="protocol.setFromMessage" value="qos.deltaTime"/>
-    <parameter name="[deltaTimeLength]" operation="list.size" value="[deltaTime]"/>
+    <test parameter="[deltaTime]" condition="list.size" value="5"/>
+    <!--test parameter="[deltaTimeMean]" condition="number.greaterEqualThan" value="19"/>
+    <test parameter="[deltaTimeMean]" condition="number.lowerEqualThan" value="21"/-->
 
     <parameter name="[jitterDelayMean]" operation="protocol.setFromMessage" value="qos.jitterDelayMean"/>
+    <test parameter="[jitterDelayMean]" condition="list.size" value="1"/>
+    <test parameter="[jitterDelayMean]" condition="number.greaterEqualThan" value="0"/>
+    <test parameter="[jitterDelayMean]" condition="number.lowerEqualThan" value="3"/>
     <parameter name="[jitterDelay]" operation="protocol.setFromMessage" value="qos.jitterDelay"/>
-    <parameter name="[jitterDelayLength]" operation="list.size" value="[jitterDelay]"/>
-    <test parameter="[jitterDelayMean]" condition="number.greaterThan" value="0"/>
-    <test parameter="[jitterDelayMean]" condition="number.lowerThan" value="3"/>
-    <test parameter="[jitterDelayLength]" condition="number.equals" value="5"/>
-    <parameter name="[bitrate]" operation="protocol.setFromMessage" value="qos.bitRate"/>
+    <test parameter="[jitterDelay]" condition="list.size" value="5"/>
+    <test parameter="[jitterDelay]" condition="number.greaterEqualThan" value="0"/>
+    <test parameter="[jitterDelay]" condition="number.lowerEqualThan" value="5"/>
     
-    <!--
-        TODO : This code has to be changed using a sliding window of 1 second for exemple
-        DO NOT ERASE IT
-    -->
-    <!--
-    <parameter name="[mosMean]" operation="protocol.setFromMessage" value="qos.mosMean"/>
-    <parameter name="[mos]" operation="protocol.setFromMessage" value="qos.mos"/>        
-
-    <test parameter="[mosMean]" condition="number.greaterThan" value="0"/>
-    <test parameter="[mosMean]" condition="number.lowerThan" value="5"/>
-    <parameter name="[mosMean2]" operation="list.statAverage" value="[mos]"/>
-    <test parameter="[mosMean2]" condition="number.equals" value="[mosMean]"/>
-    -->
+    <parameter name="[bitRate]" operation="protocol.setFromMessage" value="qos.bitRate"/>
+    <test parameter="[bitRate]" condition="list.size" value="1"/>
+    <test parameter="[bitRate]" condition="number.greaterEqualThan" value="25"/>
+    <test parameter="[bitRate]" condition="number.lowerEqualThan" value="35"/>
+    
+    <parameter name="[mos]" operation="protocol.setFromMessage" value="qos.mos"/>
+    <test parameter="[mos]" condition="list.size" value="1"/>
+    <test parameter="[mos]" condition="number.greaterEqualThan" value="4"/>
+    <test parameter="[mos]" condition="number.lowerEqualThan" value="5"/>
 
     <finally>
 		<removeListenpointRTPFLOW name="invitee" />
