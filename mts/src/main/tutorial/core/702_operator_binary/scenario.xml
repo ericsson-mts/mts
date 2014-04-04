@@ -3,22 +3,27 @@
 <scenario>
     <!-- test exists / create / delete -->
 
-	<parameter name="[result1]" operation="string.tobinary"   value="123" />
-	<parameter name="[result2]" operation="binary.parse"      value="h31 h32 h33" />
+    <parameter name="[result1]" operation="string.tobinary"   value="123" />
+    <parameter name="[result2]" operation="binary.parse"      value="h31 h32 h33" />
     <test parameter="[result1]" condition="binary.equals"     value="[result2]"/>
-
-	<parameter name="[result2]" operation="binary.tostring"   value="[result1]" />
+    
+    <parameter name="[result2]" operation="binary.tostring"   value="[result1]" />
     <test parameter="[result2]" condition="string.equals"     value="123"/>
-
-	<parameter name="[result2]" operation="binary.parse"      value="h32" />
+    
+    <parameter name="[result2]" operation="binary.parse"      value="h32" />
     <test parameter="[result1]" condition="binary.contains"   value="[result2]"/>
-
-	<parameter name="[result3]" operation="binary.indexof"    value="[result1]" value2="[result2]"/>
+    
+    <parameter name="[length1]" operation="binary.length"      value="[result1]" />
+    <test parameter="[length1]" condition="number.equals"   value="3"/>
+    <parameter name="[length2]" operation="binary.length"      value="[result2]" />
+    <test parameter="[length1]" condition="number.equals"   value="3"/>
+    
+    <parameter name="[result3]" operation="binary.indexof"    value="[result1]" value2="[result2]"/>
     <test parameter="[result3]" condition="string.equals"            value="1"/>
-
-	<parameter name="[result4]" operation="binary.tobase64"   value="31323334" />
-	<parameter name="[result5]" operation="binary.frombase64" value="[result4]" />
-
+    
+    <parameter name="[result4]" operation="binary.tobase64"   value="31323334" />
+    <parameter name="[result5]" operation="binary.frombase64" value="[result4]" />
+    
     <test parameter="[result5]" condition="binary.equals"     value="31323334"/>
 
     <parameter name="[result5]" operation="binary.indexof"    value="3132333431323334" value2="3233" value3="3"/>
