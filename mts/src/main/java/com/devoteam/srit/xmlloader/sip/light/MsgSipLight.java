@@ -530,7 +530,7 @@ public class MsgSipLight extends MsgSip
     		MsgParser parser1 = new MsgParser(); 
     		parser1.splitHeader(via, " ");
     		Header hdr = parser1.getHeader(1);
-            for (int i = 0; i < hdr.getSize(); i++) 
+            for (int 	i = 0; i < hdr.getSize(); i++) 
             {
             	String strVia = hdr.getHeader(i);
 				int pos = strVia.lastIndexOf(':');
@@ -553,12 +553,12 @@ public class MsgSipLight extends MsgSip
             {
 	    		String strVia = hdr.getHeader(i);
 	    		int pos = strVia.lastIndexOf(':');
-	    		String hostVia = ""; 
+	    		String portVia = "5060"; 
 	    		if (pos >= 0)
 	    		{
-	    			hostVia = strVia.substring(pos + 1);
+	    			portVia = portVia.substring(pos + 1);
 	    		}
-	            var.add(hostVia);
+	            var.add(portVia);
             }
     		return true;
         }
