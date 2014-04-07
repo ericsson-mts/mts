@@ -103,8 +103,16 @@ public class ChannelTcpBIO extends Channel
     		StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_TCP, getProtocol());
     		this.startTimestamp = System.currentTimeMillis();
         	
-    		InetAddress localAddr = InetAddress.getByName(getLocalHost());
-    		Socket socket = new Socket(getRemoteHost(), getRemotePort(), localAddr, getLocalPort());
+    		Socket socket = null;
+    		if (getLocalHost() == null)
+    		{
+    			socket = new Socket(getRemoteHost(), getRemotePort());
+    		}
+    		else
+    		{
+	    		InetAddress localAddr = InetAddress.getByName(getLocalHost());
+	    		socket = new Socket(getRemoteHost(), getRemotePort(), localAddr, getLocalPort());
+    		}
     		// read all properties for the TCP socket 
     		Config.getConfigForTCPSocket(socket, false);
     		
