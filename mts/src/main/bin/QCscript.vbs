@@ -9,8 +9,8 @@
  ' recuperation de parametres dans Excel
 Dim objExcel, xlsFile, xlsSheet
 
-xlsFilePath = "C:\scripts_QC_Auto\"
-xlsFileName = "parametres_QC_pour_IMS_Loader.xls"
+xlsFilePath = ".\"
+xlsFileName = "QCparam.xls"
 xlsSheetIndex = 1
 
 ' Create an excel object
