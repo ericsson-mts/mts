@@ -209,15 +209,17 @@ public class MsgSctp extends Msg{
     /** Get the XML representation of the message; for the genscript module. */
     @Override
     public String toXml() throws Exception {
-		String xml = "";
+		String xml = getTypeComplete();
+		xml += "\n";
 		if (sctpData.sndrcvinfo!=null){
 			xml += "<header stream=\"" + sctpData.sndrcvinfo.sinfo_stream + "\", ";
 			xml += "ssn=\"" + sctpData.sndrcvinfo.sinfo_ssn + "\", ";
 			xml += "ppid=\"" + sctpData.sndrcvinfo.sinfo_ppid + "\", ";
 			xml += "tsn=\"" + sctpData.sndrcvinfo.sinfo_tsn + "\", ";
 			xml += "aid=\"" + sctpData.sndrcvinfo.sinfo_assoc_id + "\"/>\n";
+			xml += "\n";
 		}
-		xml += Utils.byteTabToString(sctpData.getData());    
+		xml += Utils.byteTabToString(sctpData.getData());
         return xml;
 
     }

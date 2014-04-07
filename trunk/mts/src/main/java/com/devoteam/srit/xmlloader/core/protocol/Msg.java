@@ -706,19 +706,20 @@ public abstract class Msg extends MsgLight implements Removable
         String ret = getProtocol() + " > " + getTypeComplete();
         if (!isRequest())
         {
-        	ret += ">" + getResultComplete();
+        	ret += " > " + getResultComplete();
         }
-        return ret + "\n";
+        ret += "\n";
+        return ret;
     }
     
     /** Returns the string description of the message. Used for logging as DEBUG level */
     public String toString()
     {
-    	String ret = " ";
+    	String ret = getProtocol() + " > ";
 		// display the xml representation
 		try
     	{
-			ret += toXml().trim();
+			ret += toXml();
         }
         catch (Exception e)
         {
@@ -728,10 +729,10 @@ public abstract class Msg extends MsgLight implements Removable
 		// cut if message is too long
         if (ret.length() > MAX_STRING_LENGTH)
         {
-        	ret = " {" + MAX_STRING_LENGTH + " of " + ret.length() + "}" + ret.substring(0, MAX_STRING_LENGTH);
+        	ret = " {" + MAX_STRING_LENGTH + " of " + ret.length() + "} " + ret.substring(0, MAX_STRING_LENGTH);
         }
 
-        ret += "\n\n";
+        ret += "\n";
         // display transport info
 		if (channel != null)
 		{
@@ -746,7 +747,7 @@ public abstract class Msg extends MsgLight implements Removable
 			ret += "<PROBE " + probe + ">\n";
 		}
 		
-        return " " + ret.trim();
+        return ret.trim();
     }
 
     /** Get the XML representation of the message for the genscript module. */
