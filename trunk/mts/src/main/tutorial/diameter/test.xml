@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test description="DIAMETER regression tests" name="DIAMETER">
 
-  <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv6"/>
+  <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
 
   <parameter name="[localHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
   <parameter description="local address of the MTS host" editable="true" name="[localHostDIAM]" operation="set" value="[localHostDIAM(0)]"/>
@@ -10,7 +10,7 @@
   <parameter name="[localDIAM]" operation="set" value="[localHostDIAM]:[localPortDIAM]"/>
   
   <parameter name="[remoteHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
-  <parameter name="[remoteHostDIAM]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/>
+  <!--parameter name="[remoteHostDIAM]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/-->
   <!--parameter name="[remoteHostDIAM]" operation="set" value="172.16.21.32"/-->
   <parameter description="remote address of the SUT host" editable="true" name="[remoteHostDIAM]" operation="set" value="[remoteHostDIAM(0)]"/>
   <parameter name="[remotePortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
