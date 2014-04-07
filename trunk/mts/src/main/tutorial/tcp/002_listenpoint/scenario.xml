@@ -24,15 +24,16 @@
     </receiveMessageTCP>
 
     <finally>
-	<closeChannelTCP name="channel" />
-    	
- 	<receiveMessageTCP channel="[connectionName]" type="FIN-ACK" timeout="1">
-            <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-            <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-            <test parameter="[contents]" condition="string.equals" value="" />
-    	</receiveMessageTCP>
+    
+      <closeChannelTCP name="channel" />
+      
+      <receiveMessageTCP channel="[connectionName]" type="FIN-ACK" timeout="1">
+          <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
+          <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
+          <test parameter="[contents]" condition="string.equals" value="" />
+      </receiveMessageTCP>
 
-    	<removeListenpointTCP name="listenpoint"/>
+      <removeListenpointTCP name="listenpoint"/>
 
     </finally>
         

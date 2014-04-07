@@ -11,32 +11,24 @@
 
     <sendDataTCP connectionName="socket">
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
-    </sendDataTCP>
-
-    <sendDataTCP connectionName="socket">
-        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
-    </sendDataTCP>
-
-    <sendDataTCP connectionName="socket">
-        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
-    </sendDataTCP>
-
-    <sendDataTCP connectionName="socket">
-        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
-    </sendDataTCP>
-
-    <sendDataTCP connectionName="socket">
-        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+        <data format="text">AAAA</data>
     </sendDataTCP>
 
     <receiveDataTCP connectionName="socket" timeout="1">
         <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
         <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-        <test parameter="[contents]" condition="string.equals" value="AAAAAAAAAAAAAAAAAAAA" />
+        <test parameter="[contents]" condition="string.equals" value="AAAAAAAAA" />
     </receiveDataTCP>
 
     <finally>
-    	<closeConnectionTCP connectionName="socket" />
-    </finally>    	
+        <closeConnectionTCP connectionName="socket" />
+    
+        <receiveDataTCP connectionName="socket" timeout="1">
+            <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
+            <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
+            <test parameter="[contents]" condition="string.equals" value=""/>
+        </receiveDataTCP>
+    
+    </finally>
     
 </scenario>
