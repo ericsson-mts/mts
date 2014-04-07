@@ -678,21 +678,24 @@ public class Utils
 
     public static String byteTabToString(byte[] data)
     {
-        String ret = "<data format=\"text\">\n";
-        try
+        String ret = "";
+        if (data.length > 0)
         {
-            ret += new String(data, "UTF8") + "\n";
+		    ret += "<data format=\"text\">\n";
+		    try
+		    {
+		        ret += new String(data, "UTF8") + "\n";
+		    }
+		    catch (Exception e)
+		    {
+		        GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "An error occured while logging the message : ", ret);
+		        e.printStackTrace();
+		    }
+		    ret += "</data>\n";
+		    ret += "<data format=\"binary\">\n";
+		    ret += Utils.toBinaryString(data, 0, data.length, 0) + "\n";
+		    ret += "</data>";
         }
-        catch (Exception e)
-        {
-            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "An error occured while logging the message : ", ret);
-            e.printStackTrace();
-        }
-        ret += "</data>\n";
-        ret += "<data format=\"binary\">\n";
-        ret += Utils.toBinaryString(data, 0, data.length, 0) + "\n";
-        ret += "</data>\n";
-
         return ret;
     }
 

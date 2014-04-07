@@ -1178,7 +1178,7 @@ public abstract class Stack
             if (GlobalLogger.instance().getLogLevel() <= GlobalLogger.LOG_LEVEL_CONFIG_DEBUG)
             {
                 GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CALLFLOW, action, msg);
-                GlobalLogger.instance().getSessionLogger().debug(srcRunner, TextEvent.Topic.CALLFLOW, action, msg.getProtocol(), msg);
+                GlobalLogger.instance().getSessionLogger().debug(srcRunner, TextEvent.Topic.CALLFLOW, action, msg);
             }
         }
     }    

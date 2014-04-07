@@ -152,7 +152,9 @@ public class MsgTls extends Msg
     /** Get the XML representation of the message; for the genscript module. */
     @Override
     public String toXml() throws Exception {
-    	return Utils.byteTabToString(data);
+    	String ret = getTypeComplete();
+    	ret += "\n" + Utils.byteTabToString(data);
+    	return ret;
     }
     
 }
