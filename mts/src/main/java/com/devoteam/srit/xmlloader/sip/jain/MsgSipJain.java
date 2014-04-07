@@ -753,7 +753,7 @@ public class MsgSipJain extends MsgSip
     	String ret = super.toShortString();
 		String firstline = sipMessage.getFirstLine();
 		firstline = firstline.substring(0, firstline.length() - 2);
-		ret += "<" + firstline + ">";
+		ret += firstline;
         String transId = getTransactionId().toString();
         ret += "<transactionId=\"" + transId + "\">"; 
         String dialogId = getDialogId();

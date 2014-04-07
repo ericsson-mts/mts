@@ -533,12 +533,23 @@ public class MsgSipLight extends MsgSip
             for (int 	i = 0; i < hdr.getSize(); i++) 
             {
             	String strVia = hdr.getHeader(i);
-				int pos = strVia.lastIndexOf(':');
-				String hostVia = strVia; 
-				if (pos >= 0)
-				{
-					hostVia = strVia.substring(0, pos);
-				}
+            	String hostVia;
+           		int pos = strVia.indexOf(']');
+           		// case IPV4
+           		if (pos < 0)
+            	{
+					int pos1 = strVia.lastIndexOf(':');
+					hostVia = strVia; 
+					if (pos1 >= 0)
+					{
+						hostVia = strVia.substring(0, pos1);
+					}
+            	}
+           		// case IPV6
+           		else
+           		{
+					hostVia = strVia.substring(0, pos + 1);
+           		}
 		        var.add(hostVia);
             }
     		return true;
@@ -551,14 +562,36 @@ public class MsgSipLight extends MsgSip
     		Header hdr = parser1.getHeader(1);
             for (int i = 0; i < hdr.getSize(); i++) 
             {
-	    		String strVia = hdr.getHeader(i);
-	    		int pos = strVia.lastIndexOf(':');
-	    		String portVia = "5060"; 
-	    		if (pos >= 0)
-	    		{
-	    			portVia = portVia.substring(pos + 1);
-	    		}
-	            var.add(portVia);
+            	String strVia = hdr.getHeader(i);
+            	String portVia;
+           		int pos = strVia.indexOf(']');
+           		// case IPV4
+           		if (pos < 0)
+            	{
+					int pos1 = strVia.lastIndexOf(':');
+					portVia = strVia; 
+					if (pos1 >= 0)
+					{
+						portVia = strVia.substring(pos1 + 1);
+					}
+					else
+					{
+						portVia = "5060";
+					}
+            	}
+           		// case IPV6
+           		else
+           		{
+           			if (pos < strVia.length() - 1)
+           			{
+           				portVia = strVia.substring(pos + 2);
+           			}
+           			else
+           			{
+           				portVia = "5060";
+           			}
+           		}
+		        var.add(portVia);
             }
     		return true;
         }
@@ -706,8 +739,8 @@ public class MsgSipLight extends MsgSip
     public String toShortString() throws Exception 
     {
     	String ret = super.toShortString();
-    	String firstline =((FirstLine)(message.getGenericfirstline())).getLine().trim();
-    	ret += "<" + firstline + ">";
+    	String firstline = ((FirstLine)(message.getGenericfirstline())).getLine().trim();
+    	ret += firstline;
 	    String transId = getTransactionId().toString();
 	    ret += "<transactionId=\"" + transId + "\">"; 
 	    String dialogId = getDialogId();
