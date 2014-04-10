@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<installation version="1.0">
+    <variables>
+        <variable name="NGN_JAVA_HOME" value=""/>
+        <variable name="MEMORY" value=""/>
+        <variable name="VERSION" value="@VERSION_ANT@"/>
+    </variables>
+
+    <info>
+        <appname>IMSLoader</appname>
+        <appversion>@VERSION_ANT@</appversion>
+        <javaversion>1.5</javaversion>
+        <url>http://www.imsloader.com</url>
+    </info>
+    
+    <guiprefs resizable="yes" width="640" height="400">
+        <modifier key="useButtonIcons" value="yes"/>
+        <modifier key="useLabelIcons" value="yes"/>
+        <modifier key="allXGap" value="2"/>
+        <modifier key="allYGap" value="2"/>
+        <modifier key="layoutAnchor" value="NORTHWEST"/>
+        <modifier key="useHeadingPanel" value="yes"/>
+        <modifier key="headingLineCount" value="1"/>
+        <modifier key="headingFontSize" value="1.5"/>
+        <modifier key="headingBackgroundColor" value="0x00ffffff"/>
+        <modifier key="headingPanelCounter" value="text"/>
+        <modifier key="headingPanelCounterPos" value="inHeading"/>
+        <laf name="kunststoff">
+            <os family="unix" />
+            <os family="windows" />
+        </laf>
+    </guiprefs>
+    
+    <locale>
+        <langpack iso3="eng"/>
+        <langpack iso3="fra"/>
+    </locale>
+    
+    <resources>
+        <res id="HTMLLicencePanel.licence"  src="@RELEASE_PATH_ANT@/Licence.html"/>
+        <res id="HTMLInfoPanel.info"        src="@RELEASE_PATH_ANT@/Readme.html"/>
+        <res id="userInputSpec.xml"         src="install_userInput.xml"/>
+        <res src="shortcut_win.xml"         id="shortcutSpec.xml"/>
+        <!--res src="shortcut_unix.xml" id="Unix_shortcutSpec.xml"/-->
+    </resources>
+
+    <panels>
+        <panel classname="HelloPanel"/>
+        <panel classname="HTMLInfoPanel"/>
+        <panel classname="HTMLLicencePanel"/>
+        <panel classname="TargetPanel"/> 
+        <panel classname="UserInputPanel"/>
+        <panel classname="SummaryPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="ShortcutPanel"/>
+        <!--panel classname="SimpleFinishPanel"/-->
+        <panel classname="FinishPanel"/>
+    </panels>
+
+    <native type="izpack" name="ShellLink.dll"/>
+
+    <packs>
+        <pack name="base" required="yes">
+            <description>The base files</description>
+            <file src="@RELEASE_PATH_ANT@/Licence.html"                       targetdir="$INSTALL_PATH"/>
+            <file src="@RELEASE_PATH_ANT@/Readme.html"                        targetdir="$INSTALL_PATH"/>
+            <file src="@RELEASE_PATH_ANT@/bin"                                targetdir="$INSTALL_PATH"/>
+            <file src="@RELEASE_PATH_ANT@/conf"                               targetdir="$INSTALL_PATH"/>
+            <file src="@RELEASE_PATH_ANT@/lib"                                targetdir="$INSTALL_PATH"/>
+            <file src="@RELEASE_PATH_ANT@/logs"                               targetdir="$INSTALL_PATH"/>
+            <file src="@RELEASE_PATH_ANT@/tutorial"                           targetdir="$INSTALL_PATH"/>
+            <file src="@RELEASE_PATH_ANT@/doc"                                targetdir="$INSTALL_PATH"/>
+            <file src="@RELEASE_PATH_ANT@/modules"                            targetdir="$INSTALL_PATH"/>
+            
+            <parsable targetfile="$INSTALL_PATH/bin/java_home"/>
+            <parsable targetfile="$INSTALL_PATH/bin/memory"/>
+            <parsable targetfile="$INSTALL_PATH/conf/tester.properties" type="javaprop"/>
+            <parsable targetfile="$INSTALL_PATH/bin/postinstall.sh"/>
+
+            <executable stage="postinstall" targetfile="$INSTALL_PATH/bin/postinstall.sh" os="unix"/>
+		</pack>
+    </packs>
+</installation>
