@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP S6 Insert Subscriber Data (IDR/IDA)" -->
+<scenario>
+
+<!--
+From 3GPP TS 29.272 V9.1.0 : IDR from HSS to MME/SGSN for updating and/or requesting certain user data in the MME or SGSN
+Insert-Subscriber-Data-Request ::= < Diameter Header: 319, REQ, PXY, 16777251 >
+                                  < Session-Id >
+                                  { Vendor-Specific-Application-Id }
+                                    Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                         1* [ Vendor-Id ]
+                                                                         0*1{ Auth-Application-Id }
+                                                                         0*1{ Acct-Application-Id }
+                                  { Auth-Session-State }
+                                  { Origin-Host }
+                                  { Origin-Realm }
+                                  [ Destination-Host ]
+                                  { Destination-Realm }
+                                  { User-Name }
+                                 *[ Supported-Features ]
+                                    Supported-Features ::= < AVP Header: 628 10415 >
+													           { Vendor-Id }
+                                                               { Feature-List-ID }
+                                                               { Feature-List }
+                                                             * [ AVP ]
+                                  { Subscription-Data } 
+                                    Subscription-Data ::= <AVP header: 1400 10415> 
+                                                             [ Subscriber-Status ] 
+                                                             [ MSISDN ] 
+                                                             [ STN-SR ] 
+                                                             [ ICS-Indicator ] 
+                                                             [ Network-Access-Mode ] 
+                                                             [ Operator-Determined-Barring ] 
+                                                             [ HPLMN-ODB ] 
+                                                          *10[ Regional-Subscription-Zone-Code] 
+                                                             [ Access-Restriction-Data ] 
+                                                             [ APN-OI-Replacement ] 
+                                                             [ LCS-Info ] 
+                                                               LCS-Info ::= <AVP header: 1473 10415> 
+                                                                              *[ GMLC-Address] 
+                                                                              *[ LCS-PrivacyException ] 
+																			     LCS-PrivacyException ::= <AVP header: 1475 10415> 
+                                                                                                             { SS-Code } 
+                                                                                                             { SS-Status } 
+                                                                                                             [ Notification-To-UE-User ] 
+                                                                                                            *[ External-Client ] 
+                                                                                                            *[ PLMN-Client ] 
+                                                                                                            *[ Service-Type ] 
+                                                                                                            *[AVP]
+                                                                              *[ MO-LR ] 
+																			     MO-LR ::= <AVP header: 1485 10415> 
+                                                                                              { SS-Code } 
+                                                                                              { SS-Status } 
+                                                                                             *[ AVP ]
+                                                                              *[AVP]
+                                                             [ Teleservice-List ] 
+															   Teleservice-List ::= <AVP header: 1486 10415> 
+                                                                                     1*{ TS-Code }
+                                                                                      *[ AVP ]
+                                                             [ Call-Barring-Infor-List ]
+                                                               Call-Barring-Infor-List ::= <AVP header: 1488 10415> 
+                                                                                            1*{ SS-Code } 
+                                                                                             *[ AVP ]															 
+                                                             [ 3GPP-Charging-Characteristics ] 
+                                                             [ AMBR ] 
+															   AMBR ::= <AVP header: 1435 10415> 
+                                                                           { Max-Requested-Bandwidth-UL } 
+                                                                           { Max-Requested-Bandwidth-DL } 
+                                                                          *[ AVP ]
+                                                             [ APN-Configuration-Profile ] 
+															   APN-Configuration-Profile ::= <AVP header: 1429 10415> 
+                                                                                                { Context-Identifier } 
+                                                                                                { All-APN-Configurations-Included-Indicator } 
+                                                                                              1*{ APN-Configuration }
+                                                                                                  APN-Configuration ::= <AVP header: 1430 10415> 
+                                                                                                                           { Context-Identifier } 
+                                                                                                                         *2[ Served-Party-IP-Address ] 
+                                                                                                                           { PDN-Type } 
+                                                                                                                           { Service-Selection}
+                                                                                                                           [ EPS-Subscribed-QoS Profile ] 
+                                                                                                                             EPS-Subscribed-QoS-Profile ::= <AVP header: 1431 10415> 
+                                                                                                                                                               { QoS-Class-Identifier } 
+                                                                                                                                                               { Allocation-Retention-Priority } 
+																																							     Allocation-Retention-Priority ::= <AVP header: 1034 10415> 
+                                                                                                                                                                                                      { Priority-Level } 
+                                                                                                                                                                                                      [ Pre-emption-Capability ] 
+                                                                                                                                                                                                      [ Pre-emption-Vulnerability ] 
+                                                                                                                                                              *[ AVP ]
+                                                                                                                           [ VPLMN-Dynamic-Address-Allowed ] 
+                                                                                                                           [ MIP6-Agent-Info ] 
+																														     MIP6-Agent-Info ::= < AVP Header: 486 > 
+                                                                                                                                                   *2[ MIP-Home-Agent-Address ] 
+                                                                                                                                                     [ MIP-Home-Agent-Host ] 
+                                                                                                                                                     [ MIP6-Home-Link-Prefix ] 
+                                                                                                                                                    *[ AVP ] 
+                                                                                                                           [ Visited-Network-Identifier ] 
+                                                                                                                           [ PDN-GW-Allocation-Type ] 
+                                                                                                                           [ 3GPP-Charging-Characteristics ] 
+                                                                                                                           [ AMBR ] 
+																														     AMBR ::= <AVP header: 1435 10415> 
+                                                                                                                                         { Max-Requested-Bandwidth-UL } 
+                                                                                                                                         { Max-Requested-Bandwidth-DL } 
+                                                                                                                                        *[ AVP ]
+                                                                                                                          *[ Specific-APN-Info ] 
+																														     Specific-APN-Info ::= <AVP header: 1472 10415> 
+                                                                                                                                                      { Service-Selection } 
+                                                                                                                                                      { MIP6-Agent-Info } 
+																																					    MIP6-Agent-Info ::= < AVP Header: 486 > 
+                                                                                                                                                                              *2[ MIP-Home-Agent-Address ] 
+                                                                                                                                                                                [ MIP-Home-Agent-Host ] 
+                                                                                                                                                                                [ MIP6-Home-Link-Prefix ] 
+                                                                                                                                                                               *[ AVP ]
+                                                                                                                                                      [ Visited-Network-Identifier ] 
+                                                                                                                                                     *[ AVP ]
+                                                                                                                           [ APN-OI-Replacement ] 
+                                                                                                                          *[ AVP ]																							  
+                                                                                               *[ AVP ]
+                                                             [ RAT-Frequency-Selection-Priority-ID ] 
+                                                             [ Trace-Data] 
+															   Trace-Data ::= <AVP header: 1458 10415> 
+                                                                                 {Trace-Reference} 
+                                                                                 {Trace-Depth} 
+                                                                                 {Trace-NE-Type-List} 
+                                                                                 [Trace-Interface-List] 
+                                                                                 {Trace-Event-List} 
+                                                                                 [OMC-Id] 
+                                                                                 {Trace-Collection-Entity} 
+                                                                                *[AVP]
+                                                             [ GPRS-Subscription-Data ] 
+															   GPRS-Subscription-Data ::= <AVP header: 1467 10415> 
+                                                                                             { Complete-Data-List-Included-Indicator } 
+                                                                                         1*50{ PDP-Context } 
+                                                                                            *[ AVP ] 
+                                                            *[ CSG-Subscription-Data ] 
+															   CSG-Subscription-Data ::= <AVP header: 1436 10415> 
+                                                                                            { CSG-Id } 
+                                                                                            [ Expiration-Date ] 
+                                                                                           *[ AVP ] 
+                                                             [ Roaming-Restricted-Due-To-Unsupported-Feature ] 
+															*[ AVP ]                                  
+								  [ IDR-Flags ] 							 
+                                 *[ AVP ]
+                                 *[ Proxy-Info ]
+                                    Proxy-Info ::= < AVP Header: 284 >
+                                                       { Proxy-Host }
+                                                       { Proxy-State }
+                                                     * [ AVP ]
+                                 *[ Route-Record ]
+
+-->
+
+    <parameter name="[Imsi]" operation="set" value="208011045322746"/>
+	
+	<!-- Access-Restriction-Data :  e.g. bit 2 reset to allow GAN/UMA - 3GPP TS 29.272 -->
+    <parameter name="[Access-Restriction-Data]" operation="set" value="0"/>
+
+	<!-- 
+		IDR-Flags : bitmask used by HSS to request information from MME/SGSN - 3GPP TS 29.272
+			- UE Reachability Request (bit 0): HSS is awaiting a Notification of UE Reachability
+			- T-ADS Data Request (bit 1): HSS requests the support status of "IMS Voice over PS Sessions", 
+				and the RAT Type and timestamp of the last radio contact with the UE
+			- EPS User State Request (bit 2): HSS requests the MME or the SGSN for the current user state
+			- EPS Location Information Request (bit 3): e HSS requests the MME or SGSN for location information
+			- Current Location Request (bit 4): HSS requests the MME or SGSN to provide the most current 
+				location information by paging the UE if the UE is in idle mode. 
+				This bit is used only in combination with the "EPS Location Information Request" bit
+		e.g. "30" for bits 1,2,3&4 set
+	-->
+    <parameter name="[IDR-Flags]" operation="set" value="30"/>
+
+    <sendMessageDIAMETER name="SendRequestIDR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+		<header request="true" command="3GPP-Insert-Subscriber-Data" applicationId="3GPP S6a/S6d"/>
+		<avp code="Session-Id" value="My-Session-Id-s6a"/>
+		<avp code="Vendor-Specific-Application-Id">
+	        	<avp code="Vendor-Id" value="TGPP"/>
+	        	<avp code="Auth-Application-Id" value="3GPP S6a"/>
+		</avp>
+		<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+		<avp code="Origin-Host" value="[localHostDIAM]"/>
+		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
+		<avp code="Destination-Host" value="[remoteHostDIAM]"/>
+		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+		<avp code="User-Name" value="[Imsi]"/>
+		<avp code="Subscription-Data">
+			<avp code="Access-Restriction-Data" value="[Access-Restriction-Data]"/>
+		</avp>
+		<avp code="IDR-Flags" value="[IDR-Flags]"/>
+		</sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerIDA" request="false" type="3GPP-Insert-Subscriber-Data" result="DIAMETER_SUCCESS">
+    </receiveMessageDIAMETER>
+
+
+</scenario>

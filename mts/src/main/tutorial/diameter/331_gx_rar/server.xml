@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP Gx Re-Auth (RAR/RAA)" -->
+<scenario>
+
+<!--
+From 3GPP TS 29.212 V9.3.0 : RAR is sent by the PCCR to the PCEF used to provision unsollicited QoS rules, 
+	event triggers and event report indications for the session
+<RA-Answer> ::= < Diameter Header: 258, PXY, 16777238> 
+		< Session-Id > 
+		{ Origin-Host } 
+		{ Origin-Realm } 
+		[ Result-Code ] 
+		[ Experimental-Result ] 
+		[ Origin-State-Id ] 
+		[ IP-CAN-Type ] 
+		[ RAT-Type ] 
+	0*2 [ AN-GW-Address ] 
+		[ 3GPP-SGSN-MCC-MNC ] 
+		[ 3GPP-SGSN-Address ] 
+		[ 3GPP-SGSN-IPv6-Address ] 
+		[ RAI ] 
+		[ 3GPP-User-Location-Info ] 
+		[ 3GPP-MS-TimeZone ]
+	  * [ Charging-Rule-Report] 
+		[ Error-Message ] 
+		[ Error-Reporting-Host ] 
+	  * [ Failed-AVP ] 
+	  * [ Proxy-Info ] 
+	  * [ AVP ] 
+-->
+
+
+    <receiveMessageDIAMETER name="ReceiveRequestRAR" request="true" type="Re-Auth">
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+    	<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+    	<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>		
+    	<parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>		
+    	<parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>		
+    	<parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>		
+    </receiveMessageDIAMETER>
+
+	<!-- Origin-State-Id - RFC 3588: value that is incremented whenever a Diameter entity restarts with loss of 
+		previous state, for example upon reboot
+	-->
+    <parameter name="[Origin-State-Id]" operation="set" value="0"/>
+
+	<!-- Provide parameters that match event-triggers in RAR: in the example only RAT-Type is provided
+	-->
+    <parameter name="[RAT-Type]" operation="set" value="EUTRAN"/>
+
+	
+    <sendMessageDIAMETER name="SendAnswerRAA">
+		<header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+		<avp code="Session-Id" value="[sessionId]"/>
+		<avp code="Origin-Host" value="[destinationHost]"/>
+		<avp code="Origin-Realm" value="[destinationRealm]"/>
+		<avp code="Result-Code" value="DIAMETER_SUCCESS"/>
+		<avp code="Origin-State-Id" value="[Origin-State-Id]"/>
+		<avp code="RAT-Type" value="[RAT-Type]"/>
+   </sendMessageDIAMETER>
+
+</scenario>

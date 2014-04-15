@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP S6 Update Location (ULR/ULA)" -->
+<scenario>
+
+<!--
+From 3GPP TS 29.272 V9.1.0 : ULR sent from MME/SGSN to the HSS to update location information
+Update-Location-Request ::= < Diameter Header: 316, REQ, PXY, 16777251 >
+                                  < Session-Id >
+                                  { Vendor-Specific-Application-Id }
+                                    Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                         1* [ Vendor-Id ]
+                                                                         0*1{ Auth-Application-Id }
+                                                                         0*1{ Acct-Application-Id }
+                                  { Auth-Session-State }
+                                  { Origin-Host }
+                                  { Origin-Realm }
+                                  [ Destination-Host ]
+                                  { Destination-Realm }
+                                  { User-Name }
+                                 *[ Supported-Features ]
+                                    Supported-Features ::= < AVP Header: 628 10415 >
+													           { Vendor-Id }
+                                                               { Feature-List-ID }
+                                                               { Feature-List }
+                                                             * [ AVP ]
+                                  [ Terminal-Information ] 
+                                    Terminal-Information ::= < AVP Header: 1401 10415>
+                                                                 [ IMEI ]
+                                                                 [ TGPP2-MEID ]
+                                                                 [ Software-Version ]
+																*[AVP]
+                                  { RAT-Type } 
+                                  { ULR-Flags } 
+								  { Visited-PLMN-Id }
+[ SGSN-Number ] 
+[ Homogeneous-Support-of-IMS-Voice-Over-PS-Sessions ] 
+[ GMLC-Address ] 
+*[ Active-APN ] 
+                                 *[ AVP ]
+                                 *[ Proxy-Info ]
+                                    Proxy-Info ::= < AVP Header: 284 >
+                                                       { Proxy-Host }
+                                                       { Proxy-State }
+                                                     * [ AVP ]
+                                 *[ Route-Record ]
+
+-->
+
+	<!-- IMSI : 15 didits at most - 3GPP TS 23.003 /-->
+    <parameter name="[Imsi]" operation="set" value="208011045322764"/>
+	<!-- RAT-Type : enum - 3GPP TS 29.212 /-->
+	<!-- IMEI : 15 didits - 3GPP ETSI TS 129.272 /-->
+    <parameter name="[IMEI]" operation="set" value="358001045322746"/>
+	<!-- SVN of IMEISV : 2 last digits -  3GPP TS 23.003 /-->
+    <parameter name="[Software-Version]" operation="set" value="46"/>
+    <parameter name="[RAT-Type]" operation="set" value="EUTRAN"/>
+	<!-- 
+		ULR-Flags : bitmask - 3GPP TS 29.272
+		MME: bit 0 cleared no SGSN - bit 1 set for S6a - bit 2 cleared to get all subscription data
+			bit 3 always cleared for MME - bit 4 cleared to indicate MME only - bit 5 set to indicate 
+			initial attach - bit 6 cleared to indicate UE supports positioning methods 
+			e.g. "34" for S6a and initial attach
+	-->
+    <parameter name="[ULR-Flags]" operation="set" value="34"/>
+	<!-- PLMN-ID :  3 bytes - 3GPP TS 29.272 /-->
+    <parameter name="[Visited-PLMN-Id]" operation="set" value="20801"/>
+
+    <sendMessageDIAMETER name="SendRequestULR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+		<header request="true" command="3GPP-Update-Location" applicationId="3GPP S6a/S6d"/>
+		<avp code="Session-Id" value="My-Session-Id-s6a"/>
+		<avp code="Vendor-Specific-Application-Id">
+	        	<avp code="Vendor-Id" value="TGPP"/>
+	        	<avp code="Auth-Application-Id" value="3GPP S6a"/>
+		</avp>
+		<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+		<avp code="Origin-Host" value="[localHostDIAM]"/>
+		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
+		<avp code="Destination-Host" value="[remoteHostDIAM]"/>
+		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+		<avp code="User-Name" value="[Imsi]"/>
+		<avp code="Terminal-Information">
+	        	<avp code="IMEI" value="[IMEI]"/>
+	        	<avp code="Software-Version" value="[Software-Version]"/>
+		</avp>
+		<avp code="RAT-Type" value="[RAT-Type]"/>
+		<avp code="ULR-Flags" value="[ULR-Flags]"/>
+		<avp code="Visited-PLMN-Id" value="[Visited-PLMN-Id]"/>
+		</sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerULA" request="false" type="3GPP-Update-Location" result="DIAMETER_SUCCESS">
+    </receiveMessageDIAMETER>
+
+
+</scenario>

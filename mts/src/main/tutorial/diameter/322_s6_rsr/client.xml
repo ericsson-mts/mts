@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP S6 Reset (RSR/RSA)" -->
+<scenario>
+
+<!--
+From 3GPP TS 29.272 V9.1.0 : RSR from HSS to MME/SGSN after a restart to indicate to the MME/SGSN that a failure 
+has occurred
+Reset-Request ::= < Diameter Header: 322, REQ, PXY, 16777251 >
+                                  < Session-Id >
+                                  { Vendor-Specific-Application-Id }
+                                    Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                         1* [ Vendor-Id ]
+                                                                         0*1{ Auth-Application-Id }
+                                                                         0*1{ Acct-Application-Id }
+                                  { Auth-Session-State }
+                                  { Origin-Host }
+                                  { Origin-Realm }
+                                  [ Destination-Host ]
+                                  { Destination-Realm }
+                                 *[ Supported-Features ]
+                                    Supported-Features ::= < AVP Header: 628 10415 >
+													           { Vendor-Id }
+                                                               { Feature-List-ID }
+                                                               { Feature-List }
+                                                             * [ AVP ]
+                                 *[ User-Id ] 
+                                 *[ AVP ]
+                                 *[ Proxy-Info ]
+                                    Proxy-Info ::= < AVP Header: 284 >
+                                                       { Proxy-Host }
+                                                       { Proxy-State }
+                                                     * [ AVP ]
+                                 *[ Route-Record ]
+
+-->
+
+	<!-- User-Id - UTF8String - TS 23.003
+		Identifies a set of subscribers, each with identical leading IMSI digits: MCC + MNC + leading MSIN digits
+		The HSS may use this field to indicate list of users that have been impacted by the restart
+		e.g MCC 208, MNC 01, leading digits 0296 for Orange France West Côtes d'Armor
+	-->
+    <parameter name="[User-Id]" operation="set" value="208011045"/>
+
+    <sendMessageDIAMETER name="SendRequestRSR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+		<header request="true" command="3GPP-Reset" applicationId="3GPP S6a/S6d"/>
+		<avp code="Session-Id" value="My-Session-Id-s6a"/>
+		<avp code="Vendor-Specific-Application-Id">
+	        	<avp code="Vendor-Id" value="TGPP"/>
+	        	<avp code="Auth-Application-Id" value="3GPP S6a"/>
+		</avp>
+		<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+		<avp code="Origin-Host" value="[localHostDIAM]"/>
+		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
+		<avp code="Destination-Host" value="[remoteHostDIAM]"/>
+		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+		<avp code="User-Id" value="[User-Id]"/>
+		</sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerRSA" request="false" type="3GPP-Reset" result="DIAMETER_SUCCESS">
+    </receiveMessageDIAMETER>
+
+
+</scenario>
