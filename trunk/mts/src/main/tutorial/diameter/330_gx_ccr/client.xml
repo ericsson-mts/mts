@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP Gx Credit Control (CCR/CCA)" -->
+<scenario>
+
+<!--
+From 3GPP TS 29.212 V9.3.0 : CCR is sent by the PCEF to the PCRF:
+	- to request PCC rules for a bearer
+	- to indicate bearer or PCC rule related events
+	- the termination of the IP CAN bearer and/or session
+CC-Request ::= < Diameter Header: 272, REQ, PXY > 
+					< Session-Id > 
+					{ Auth-Application-Id } 
+					{ Origin-Host } 
+					{ Origin-Realm } 
+					{ Destination-Realm } 
+					{ CC-Request-Type } 
+					{ CC-Request-Number } 
+					[ Destination-Host ] 
+					[ Origin-State-Id ] 
+				   *[ Subscription-Id ] 
+					  Subscription-Id ::= < AVP Header: 443 >
+											  { Subscription-Id-Type }
+											  { Subscription-Id-Data }
+				   *[ Supported-Features ] 
+					[ Network-Request-Support ] 
+				   *[ Packet-Filter-Information ] 
+					  Packet-Filter-Information ::= < AVP Header: 1061 > 
+														[ Packet-Filter-Identifier ] 
+														[ Precedence ] 
+														[ Packet-Filter-Content ] 
+														[ ToS-Traffic-Class ] 
+														[ Security-Parameter-Index ] 
+														[ Flow-Label ] 
+														[ Flow-Direction ] 
+													   *[ AVP ]				   
+					[ Packet-Filter-Operation ] 
+					[ Bearer-Identifier ] 
+					[ Bearer-Operation ] 
+					[ Framed-IP-Address ] 
+					[ Framed-IPv6-Prefix ] 
+					[ IP-CAN-Type ] 
+					[ 3GPP-RAT-Type ] 
+					[ RAT-Type ] 
+					[ Termination-Cause ] 
+					[ User-Equipment-Info ]
+					  User-Equipment-Info ::= < AVP Header: 458 >
+												  { User-Equipment-Info-Type }
+												  { User-Equipment-Info-Value }					
+					[ QoS-Information ] 
+   					  QoS-Information ::= < AVP Header: 1016 > 
+											  [ QoS-Class-Identifier ] 
+											  [ Max-Requested-Bandwidth-UL ] 
+											  [ Max-Requested-Bandwidth-DL ] 
+											  [ Guaranteed-Bitrate-UL ] 
+											  [ Guaranteed-Bitrate-DL ] 
+											  [ Bearer-Identifier ] 
+											  [ Allocation-Retention-Priority] 
+												Allocation-Retention-Priority ::= < AVP Header: 1034 > 
+																					  { Priority-Level } 
+																					  [ Pre-emption-Capability ] 
+																					  [ Pre-emption-Vulnerability ] 
+										      [ APN-Aggregate-Max-Bitrate-UL] 
+											  [ APN-Aggregate-Max-Bitrate-DL] 
+											 *[ AVP ]													  
+					[ QoS-Negotiation ] 
+					[ QoS-Upgrade ] 
+					[ Default-EPS-Bearer-QoS ] 
+					  Default-EPS-Bearer-QoS::= < AVP Header: 1049 > 
+													[ QoS-Class-Identifier ] 
+													[ Allocation-Retention-Priority] 
+												   *[ AVP ]				
+				 0*2[ AN-GW-Address ] 
+					[ 3GPP-SGSN-MCC-MNC ] 
+					[ 3GPP-SGSN-Address ] 
+					[ 3GPP-SGSN-IPv6-Address ] 
+					[ RAI ] 
+					[ 3GPP-User-Location-Info] 
+					[ 3GPP-MS-TimeZone ] 
+					[ Called-Station-Id ] 
+					[ PDN-Connection-ID ] 
+					[ Bearer-Usage ] 
+					[ Online ] 
+					[ Offline ] 
+				   *[ TFT-Packet-Filter-Information ] 
+					  TFT-Packet-Filter-Information ::= < AVP Header: 1013 > 
+															[ Precedence ] 
+															[ TFT-Filter ] 
+															[ ToS-Traffic-Class ] 
+															[ Security-Parameter-Index ] 
+															[ Flow-Label ] 
+															[ Flow-Direction ] 
+														   *[ AVP ] 
+				   *[ Charging-Rule-Report] 
+					  Charging-Rule-Report ::= < AVP Header: 1018 > 
+												  *[ Charging-Rule-Name ] 
+												  *[ Charging-Rule-Base-Name ] 
+												   [ Bearer-Identifier ] 
+												   [ PCC-Rule-Status ] 
+												   [ Rule-Failure-Code ] 
+												   [ Final-Unit-Indication ] 
+												  *[ AVP ]
+				   *[ Event-Trigger] 
+					[ Event-Report-Indication] 
+					  Event-Report-Indication ::= < AVP Header: 1033 > 
+													 *[ Event-Trigger ] 
+													  [ User-CSG-Information ] 
+													  [ RAT-Type ] 
+													  [ QoS-Information ] 
+														QoS-Information ::= < AVP Header: 1016 > 
+																				[ QoS-Class-Identifier ] 
+																				[ Max-Requested-Bandwidth-UL ] 
+																				[ Max-Requested-Bandwidth-DL ] 
+																				[ Guaranteed-Bitrate-UL ] 
+																				[ Guaranteed-Bitrate-DL ] 
+																				[ Bearer-Identifier ] 
+																				[ Allocation-Retention-Priority] 
+																				  Allocation-Retention-Priority ::= < AVP Header: 1034 > 
+																														{ Priority-Level } 
+																														[ Pre-emption-Capability ] 
+																														[ Pre-emption-Vulnerability ] 
+																				[ APN-Aggregate-Max-Bitrate-UL] 
+																				[ APN-Aggregate-Max-Bitrate-DL] 
+																			   *[ AVP ]													  
+													  [ RAI ] 
+													  [ 3GPP-User-Location-Info ] 
+													  [ Trace-Data ] 
+													  [ Trace-Reference ] 
+													  [ 3GPP2-BSID ] 
+													  [ 3GPP-MS-TimeZone ] 
+													  [ 3GPP-SGSN-Address ] 
+													  [ 3GPP-SGSN-IPv6-Address ] 
+													 *[ AVP ] 					
+					[ Access-Network-Charging-Address ] 
+				   *[ Access-Network-Charging-Identifier-Gx ] 
+					  Access-Network-Charging-Identifier-Gx ::= < AVP Header: 1022 > 
+																	{ Access-Network-Charging-Identifier-Value} 
+																   *[ Charging-Rule-Base-Name ] 
+																   *[ Charging-Rule-Name ] 				   
+				   *[ CoA-Information ] 
+					  CoA-Information ::= < AVP Header: 1039> 
+											  { Tunnel-Information } 
+											  { CoA-IP-Address } 
+											 *[ AVP ]				   
+				   *[ Usage-Monitoring-Information ] 
+					  Usage-Monitoring-Information::= < AVP Header: 1067 > 
+														  [ Monitoring-Key ] 
+														  [ Granted-Service-Unit ] 
+														  [ Used-Service-Unit ] 
+														  [ Usage-Monitoring-Level ] 
+														  [ Usage-Monitoring-Report ] 
+														  [ Usage-Monitoring-Support ] 
+														 *[ AVP ]				   
+				   *[ Proxy-Info ] 
+				   *[ Route-Record ] 
+				   *[ AVP ] 
+					
+-->
+
+	<!-- CC-Request-Type - RFC 4006: contains the reason for sending the credit-control request message
+			- INITIAL_REQUEST:		initiate a credit-control session
+			- UPDATE_REQUEST:		sent every time a credit-control re-authorization is needed at the expiry of the allocated 
+										quota or validity time
+			- TERMINATION_REQUEST:	terminate a credit-control session
+			- EVENT_REQUEST:		used when there is no need to maintain any credit-control session state in the 
+										credit-control server
+	-->
+    <parameter name="[CC-Request-Type]" operation="set" value="INITIAL_REQUEST"/>
+
+	<!-- CC-Request-Number - RFC 4006: identifies the request within one session identified by Session-Id -->
+    <parameter name="[CC-Request-Number]" operation="set" value="0"/>
+
+	<!-- Origin-State-Id - RFC 3588: value that is incremented whenever a Diameter entity restarts with loss of 
+		previous state, for example upon reboot
+	-->
+    <parameter name="[Origin-State-Id]" operation="set" value="0"/>
+
+	<!-- Subscription-Id - RFC 4006: identifies the end user's subscription 
+			- Subscription-Id-Type: END_USER_E164|END_USER_IMSI|END_USER_SIP_UTI|END_USER_NAI|END_USER_PRIVATE
+			- Subscription-Id-Data: MSISDN for END_USER_E164
+	-->
+    <parameter name="[Subscription-Id-Type]" operation="set" value="End User MSISDN"/>
+    <parameter name="[Subscription-Id-Data]" operation="set" value="33624242424"/>
+	
+	<!-- Network-Request-Support: indicate whether the UE and the access network support the network initiated bearer 
+		establishment request procedure
+	-->
+    <parameter name="[Network-Request-Support]" operation="set" value="NETWORK_REQUEST SUPPORTED"/>
+	
+	<!-- Framed-IP-Address - octetString - RFC 4005: contains an IPv4 address configured for the user
+		e.g. 10.16.24.11 -> "0a10180b" as octetString
+	-->
+	<parameter name="[Framed-IP-Address]" operation="set" value="0a10180b"/>
+
+	<!-- IP-CAN-Type: indicates the type of Connectivity Access Network that the user is connected to.
+		Values: 3GPP_GPRS|DOCSIS|xDSL|WiMAX|3GPP2|3GPP-EPS|Non-3GPP-EPS
+	-->
+    <parameter name="[IP-CAN-Type]" operation="set" value="3GPP-EPS"/>
+	
+	<!-- RAT-Type: enum used to identify the radio access technology that is serving the UE -->
+    <parameter name="[RAT-Type]" operation="set" value="EUTRAN"/>
+	
+	<!-- User-Equipment-Info - RFC 4006: allows the credit-control client to indicate the identity and
+		capability of the UE  
+			- User-Equipment-Info-Type: IMEISV|MAC|EUI64|MODIFIED_EUI64
+			- User-Equipment-Info-Value - OctetString: for IMEISV type the value shall be a UTF-8 encoded decimal :
+				IMEI (15 digits) + SV (2digits)
+	-->
+    <parameter name="[User-Equipment-Info-Type]" operation="set" value="IMEISV"/>
+    <parameter name="[User-Equipment-Info-Value]" operation="set" value="35800104532274603"/>
+	
+	<!-- QoS-Information: requested QoS information associated with resources requested by the UE, an IP CAN bearer 
+		or the subscribed QoS information at APN level
+					
+		- APN-Aggregate-Max-Bitrate-UL/DL: total bandwidth usage for the uplink/downlink direction of non-GBR QCIs at 
+			the APN
+
+		Example: we consider MME received subscription information for IMS APN from HSS
+	-->
+	<parameter name="[APN-Aggregate-Max-Bitrate-UL]" operation="set" value="100000"/>
+	<parameter name="[APN-Aggregate-Max-Bitrate-DL]" operation="set" value="100000"/>
+
+	<!-- Default-EPS-Bearer-QoS: subscribed QoS information
+			- QoS-Class-Identifier
+			- Allocation-Retention-Priority :
+				- Priority-Level
+				- Pre-emption-Capability
+				- Pre-emption-Vulnerability
+			
+		Example: we consider MME received subscription information for IMS APN from HSS
+	-->
+	<parameter name="[QoS-Class-Identifier]" operation="set" value="QCI_5"/>
+	<parameter name="[Priority-Level]" operation="set" value="1"/>
+	<parameter name="[Pre-emption-Capability]" operation="set" value="PRE-EMPTION_CAPABILITY_ENABLED"/>
+	<parameter name="[Pre-emption-Vulnerability]" operation="set" value="PRE-EMPTION_VULNERABILITY_DISABLED"/>
+
+	<!-- Called-Station-ID: the address the user is connected to (for GPRS the APN, e.g. emergency APN) -->
+    <parameter name="[Called-Station-Id]" operation="set" value="ims.orange.fr"/>
+	
+	<!-- Bearer-Usage: indicates whether the bearer is requested to be used for IMS signalling
+		Values: GENERAL|IMS_SIGNALLING
+	-->
+    <parameter name="[Bearer-Usage]" operation="set" value="IMS_SIGNALLING"/>
+	
+    <sendMessageDIAMETER name="SendRequestCCR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+		<header request="true" command="Credit-Control" applicationId="3GPP Gx"/>
+		<avp code="Session-Id" value="My-Session-Id"/>
+       	<avp code="Auth-Application-Id" value="3GPP Gx"/>
+		<avp code="Origin-Host" value="[localHostDIAM]"/>
+		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
+		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+		<avp code="CC-Request-Type" value="[CC-Request-Type]"/>
+		<avp code="CC-Request-Number" value="[CC-Request-Number]"/>
+		<avp code="Destination-Host" value="[remoteHostDIAM]"/>
+		<avp code="Origin-State-Id" value="[Origin-State-Id]"/>
+		<avp code="Subscription-Id">
+        	<avp code="Subscription-Id-Type" value="[Subscription-Id-Type]"/>
+        	<avp code="Subscription-Id-Data" value="[Subscription-Id-Data]"/>
+		</avp>
+		<avp code="Network-Request-Support" value="[Network-Request-Support]"/>
+		<avp code="Framed-IP-Address" value="[Framed-IP-Address]"/>
+		<avp code="IP-CAN-Type" value="[IP-CAN-Type]"/>
+		<avp code="RAT-Type" value="[RAT-Type]"/>
+		<avp code="User-Equipment-Info">
+        	<avp code="User-Equipment-Info-Type" value="[User-Equipment-Info-Type]"/>
+        	<avp code="User-Equipment-Info-Value" value="[User-Equipment-Info-Value]"/>
+		</avp>
+		<avp code="QoS-Information">
+        	<avp code="APN-Aggregate-Max-Bitrate-UL" value="[APN-Aggregate-Max-Bitrate-UL]"/>
+        	<avp code="APN-Aggregate-Max-Bitrate-DL" value="[APN-Aggregate-Max-Bitrate-UL]"/>
+		</avp>
+		<avp code="Default-EPS-Bearer-QoS">
+        	<avp code="QoS-Class-Identifier" value="[QoS-Class-Identifier]"/>
+        	<avp code="Allocation-Retention-Priority">
+				<avp code="Priority-Level" value="[Priority-Level]"/>
+				<avp code="Pre-emption-Capability" value="[Pre-emption-Capability]"/>
+				<avp code="Pre-emption-Vulnerability" value="[Pre-emption-Vulnerability]"/>
+			</avp>
+		</avp>
+		<avp code="Called-Station-Id" value="[Called-Station-Id]"/>
+		<avp code="Bearer-Usage" value="[Bearer-Usage]"/>
+	</sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerCCA" request="false" type="Credit-Control" result="DIAMETER_SUCCESS:2001">
+    		<parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
+    </receiveMessageDIAMETER>
+
+
+</scenario>

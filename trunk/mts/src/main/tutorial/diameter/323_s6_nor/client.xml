@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP S6 Notification (NOR/NOA)" -->
+<scenario>
+
+<!--
+From 3GPP TS 29.272 V9.1.0 : RSR from MME/SGSN to HSS to notify events:
+	- an update of terminal information
+	- an assignment/change of a dynamically allocated PDN GW for an APN
+	- the need to send a Cancel Location to the current SGSN
+	- the UE is present or the UE has memory capacity available to receive one or more short messages
+	- the UE has become reachable again
+
+Notify-Request ::= < Diameter Header: 322, REQ, PXY, 16777251 >
+                                  < Session-Id >
+                                  { Vendor-Specific-Application-Id }
+                                    Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                         1* [ Vendor-Id ]
+                                                                         0*1{ Auth-Application-Id }
+                                                                         0*1{ Acct-Application-Id }
+                                  { Auth-Session-State }
+                                  { Origin-Host }
+                                  { Origin-Realm }
+                                  [ Destination-Host ]
+                                  { Destination-Realm }
+                                  { User-Name }
+                                 *[ Supported-Features ]
+                                    Supported-Features ::= < AVP Header: 628 10415 >
+													           { Vendor-Id }
+                                                               { Feature-List-ID }
+                                                               { Feature-List }
+                                                             * [ AVP ]
+                                  [ MIP6-Agent-Info ] 
+						            MIP6-Agent-Info ::= < AVP Header: 486 > 
+                                                          *2[ MIP-Home-Agent-Address ] 
+                                                            [ MIP-Home-Agent-Host ] 
+                                                            [ MIP6-Home-Link-Prefix ] 
+                                                           *[ AVP ] 
+                                  [ Visited-Network-Identifier ] 
+                                  [ Context-Identifier ] 
+                                  [ Service-Selection ]
+                                  [ Alert-Reason ] 
+                                  [ NOR-Flags ] 								  
+                                 *[ AVP ]
+                                 *[ Proxy-Info ]
+                                    Proxy-Info ::= < AVP Header: 284 >
+                                                       { Proxy-Host }
+                                                       { Proxy-State }
+                                                     * [ AVP ]
+                                 *[ Route-Record ]
+
+-->
+
+	<!-- IMSI : 15 didits at most - 3GPP TS 23.003 /-->
+    <parameter name="[Imsi]" operation="set" value="208011045322764"/>
+	
+	<!-- MIP6-Agent-Info: PDN-GW identity as IP@s (MIP-Home-Agent-Address. There may be one IPv4 and one IPv6) 
+			or FQDN (MIP-Home-Agent-Host)
+		Note: MIP6-Home-Link-Prefix is not used !
+		In the example a new PGW IP@ is notified
+	-->
+	<parameter name="[MIP-Home-Agent-Address]" operation="set" value="192.168.25.47"/>
+
+	<!--  Visited-Network-Identifier using format "mnc<MNC>.mcc<MCC>.3gppnetwork.org"
+			e.g. MCC (Mobile Country Code) 244 for Finland, MNC (Mobile Network Code) 91 for TeliaSonera
+	-->
+	<parameter name="[Visited-Network-Identifier]" operation="set" value="mnc091.mcc244.3gppnetwork.org"/>
+
+	<!-- Context-Identifier - identify the APN Configuration with which the selected PDN GW shall be correlated -->
+    <parameter name="[Context-Identifier]" operation="set" value="0"/>
+
+	<!--  Service-Selection - UTF8String: contains either the APN Network Identifier (i.e. an APN without the Operator Identifier
+			that may be coded as a FQDN Fully Qualified Domain Name - TS 23.003 ) or the wild card APN "*"
+	-->
+    <parameter name="[Service-Selection]" operation="set" value="Internet-v4"/>
+	
+	<!-- Alert-Reason - enum - notifies the HSS about the presence of the UE or the UE has memory capacity available
+	to receive one or more short messages
+		- UE_PRESENT
+		- UE_MEMORY_AVAILABLE
+	-->
+    <parameter name="[Alert-Reason]" operation="set" value="UE_PRESENT"/>
+
+	<!-- NOR-Flags - bitmask - notifies the HSS about the presence of the UE or the UE has memory capacity available
+	to receive one or more short messages.
+	When notifying the HSS that the UE has become reachable again, the 	MME shall set the "UE Reachable" flag (bit 3)
+	in the NOR-Flags (value 8 for bit 3)
+	-->
+    <parameter name="[NOR-Flags]" operation="set" value="8"/>
+
+    <sendMessageDIAMETER name="SendRequestNOR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+		<header request="true" command="3GPP-Notify" applicationId="3GPP S6a/S6d"/>
+		<avp code="Session-Id" value="My-Session-Id-s6a"/>
+		<avp code="Vendor-Specific-Application-Id">
+	        	<avp code="Vendor-Id" value="TGPP"/>
+	        	<avp code="Auth-Application-Id" value="3GPP S6a"/>
+		</avp>
+		<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+		<avp code="Origin-Host" value="[localHostDIAM]"/>
+		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
+		<avp code="Destination-Host" value="[remoteHostDIAM]"/>
+		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+		<avp code="User-Name" value="[Imsi]"/>
+		<avp code="MIP6-Agent-Info">
+			<avp code="MIP-Home-Agent-Address" value="[MIP-Home-Agent-Address]"/>
+		</avp>
+		<avp code="Visited-Network-Identifier" value="[Visited-Network-Identifier]"/>
+		<avp code="Context-Identifier" value="[Context-Identifier]"/>
+		<avp code="Service-Selection" value="[Service-Selection]"/>
+		<avp code="Alert-Reason" value="[Alert-Reason]"/>
+		<avp code="NOR-Flags" value="[NOR-Flags]"/>
+		</sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerNOA" request="false" type="3GPP-Notify" result="DIAMETER_SUCCESS">
+    </receiveMessageDIAMETER>
+
+
+</scenario>

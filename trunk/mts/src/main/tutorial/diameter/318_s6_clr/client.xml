@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP S6 Cancel Location (CLR/CLA)" -->
+<scenario>
+
+<!--
+From 3GPP TS 29.272 V9.1.0 : CLR from HSS to MME/GGSN to 
+Cancel-Location-Request ::= < Diameter Header: 317, REQ, PXY, 16777251 >
+                                  < Session-Id >
+                                  { Vendor-Specific-Application-Id }
+                                    Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                         1* [ Vendor-Id ]
+                                                                         0*1{ Auth-Application-Id }
+                                                                         0*1{ Acct-Application-Id }
+                                  { Auth-Session-State }
+                                  { Origin-Host }
+                                  { Origin-Realm }
+                                  [ Destination-Host ]
+                                  { Destination-Realm }
+                                  { User-Name }
+                                 *[ Supported-Features ]
+                                    Supported-Features ::= < AVP Header: 628 10415 >
+													           { Vendor-Id }
+                                                               { Feature-List-ID }
+                                                               { Feature-List }
+                                                             * [ AVP ]
+								  [ Cancellation-Type ] 
+                                 *[ AVP ]
+                                 *[ Proxy-Info ]
+                                    Proxy-Info ::= < AVP Header: 284 >
+                                                       { Proxy-Host }
+                                                       { Proxy-State }
+                                                     * [ AVP ]
+                                 *[ Route-Record ]
+
+-->
+
+    <parameter name="[Imsi]" operation="set" value="208011045322746"/>
+	<!-- Cancellation-Type:
+			- MME_UPDATE_PROCEDURE:		sent to old MME when ULR from new MME
+			- SGSN_UPDATE_PROCEDURE:	sent to old SGSN when ULR from new SGSN
+			- SUBSCRIPTION_WITHDRAWAL:	sent to the current MME or SGSN due to withdrawal of the user's subscription 
+										by the HSS operator
+			- UPDATE_PROCEDURE_IWF:		used by an IWF when interworking with a pre-Rel-8 HSS
+			- INITIAL_ATTACH_PROCEDURE:	used when the Cancel Location is sent to the MME or SGSN due to a received 
+										ULR message during initial attach procedure from an SGSN or MME respectively 
+	/-->
+    <parameter name="[Cancellation-Type]" operation="set" value="MME_UPDATE_PROCEDURE"/>
+	
+    <sendMessageDIAMETER name="SendRequestCLR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+		<header request="true" command="3GPP-Cancel-Location" applicationId="3GPP S6a/S6d"/>
+		<avp code="Session-Id" value="My-Session-Id-s6a"/>
+		<avp code="Vendor-Specific-Application-Id">
+	        	<avp code="Vendor-Id" value="TGPP"/>
+	        	<avp code="Auth-Application-Id" value="3GPP S6a"/>
+		</avp>
+		<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+		<avp code="Origin-Host" value="[localHostDIAM]"/>
+		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
+		<avp code="Destination-Host" value="[remoteHostDIAM]"/>
+		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+		<avp code="User-Name" value="[Imsi]"/>
+		<avp code="Cancellation-Type" value="[Cancellation-Type]"/>
+		</sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerCLA" request="false" type="3GPP-Cancel-Location" result="DIAMETER_SUCCESS">
+    </receiveMessageDIAMETER>
+
+
+</scenario>

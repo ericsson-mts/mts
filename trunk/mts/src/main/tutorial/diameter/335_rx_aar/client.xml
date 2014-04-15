@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP Rx AA (AAR/AAA)" -->
+<scenario>
+
+<!--
+From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to provide it with the Session Information
+<AA-Request> ::= < Diameter Header: 265, REQ, PXY, 16777236 > 
+		< Session-Id > 
+		{ Auth-Application-Id } 
+		{ Origin-Host } 
+		{ Origin-Realm } 
+		{ Destination-Realm } 
+		[ Destination-Host ] 
+		[ AF-Application-Identifier ] 
+	   *[ Media-Component-Description ] 
+		  Media-Component-Description ::= < AVP Header: 517 > 
+											{ Media-Component-Number } ; Ordinal number of the media comp. 
+										   *[ Media-Sub-Component ] ; Set of flows for one flow identifier 
+											  Media-Sub-Component ::= < AVP Header: 519 > 
+																		{ Flow-Number } ; Ordinal number of the IP flow 
+																	 0*2[ Flow-Description ] ; UL and/or DL 
+																		[ Flow-Status ] 
+																		[ Flow-Usage ] 	
+																		[ Max-Requested-Bandwidth-UL ] 
+																		[ Max-Requested-Bandwidth-DL ] 
+																		[ AF-Signalling-Protocol ] 
+																	   *[ AVP ] 
+											[ AF-Application-Identifier ] 
+											[ Media-Type ] 
+											[ Max-Requested-Bandwidth-UL ] 
+											[ Max-Requested-Bandwidth-DL ] 
+											[ Flow-Status ] 
+											[ Reservation-priority ] 
+											[ RS-Bandwidth ] 
+											[ RR-Bandwidth ] 
+										   *[ Codec-Data ]	   
+		[ Service-Info-Status ] 
+		[ AF-Charging-Identifier ] 
+		[ SIP-Forking-Indication ] 
+	   *[ Specific-Action ] 
+	   *[ Subscription-Id ] 
+	      Subscription-Id ::= < AVP Header: 443 >
+								{ Subscription-Id-Type }
+								{ Subscription-Id-Data }
+	   *[ Supported-Features ] 
+		[ Reservation-Priority ] 
+		[ Framed-IP-Address ] 
+		[ Framed-IPv6-Prefix ] 
+		[ Called-Station-Id ] 
+		[ Service-URN ] 
+		[ Sponsored-Connectivity-Data ] 
+		[ MPS-Identifier ] 
+		[ Origin-State-Id ] 
+	   *[ Proxy-Info ] 
+	   *[ Route-Record ] 
+	   *[ AVP ]
+-->
+
+	<!-- Media-Component-Description -->
+	<parameter name="[Media-Component-Number]" operation="set" value="1"/>
+
+	<!-- Flow RTP -->
+	<parameter name="[Flow-Number-Rtp]" operation="set" value="1"/>
+	<parameter name="[Flow-Description-Rtp-in]" operation="set" value="permit in 17 from 218.45.37.28 49234 to 192.168.32.24/32 41212"/>
+	<parameter name="[Flow-Description-Rtp-out]" operation="set" value="permit out 17 from 192.168.32.24/32 41212 to 218.45.37.28 49234"/>
+	<parameter name="[Max-Requested-Bandwidth-UL-Rtp]" operation="set" value="28000"/>
+	<parameter name="[Max-Requested-Bandwidth-DL-Rtp]" operation="set" value="28000"/>
+
+	<!-- Flow RTCP -->
+	<parameter name="[Flow-Number-Rtcp]" operation="set" value="2"/>
+	<parameter name="[Flow-Description-Rtcp-in]" operation="set" value="permit in 17 from 218.45.37.28 49235 to 192.168.32.24/32 41213"/>
+	<parameter name="[Flow-Description-Rtcp-out]" operation="set" value="permit out 17 from 192.168.32.24/32 41213 to 218.45.37.28 49235"/>
+	<parameter name="[Flow-Usage-Rtcp]" operation="set" value="RTCP"/>
+	<parameter name="[Max-Requested-Bandwidth-UL-Rtcp]" operation="set" value="2000"/>
+	<parameter name="[Max-Requested-Bandwidth-DL-Rtcp]" operation="set" value="2000"/>
+	
+	 <!-- Media-Type: AUDIO|VIDEO|DATA|APPLICATION|CONTROL|TEXT|MESSAGE|OTHER -->
+    <parameter name="[Media-Type]" operation="set" value="AUDIO"/>
+
+	<parameter name="[Flow-Status]" operation="set" value="ENABLED"/>
+
+	<parameter name="[AF-Charging-Identifier]" operation="set" value="19845FGjip"/>
+	
+	<!-- Specific-Action: the P-CSCF shall also subscribe within the same AAR command operation to notifications for 
+			changes of the IP-CAN type used by the UE. The P-CSCF shall include a Specific-Action AVP in the AAR that 
+			is set to the value of IPCAN_CHANGE
+	-->
+	<parameter name="[Specific-Action]" operation="set" value="IP-CAN_CHANGE"/>
+
+	<!-- Subscription-Id - RFC 4006
+			- Subscription-Id-Type: END_USER_E164|END_USER_IMSI|END_USER_SIP_URI|END_USER_NAI|END_USER_PRIVATE
+	-->
+    <!-- <parameter name="[Subscription-Id-Type]" operation="set" value="END_USER_SIP_URI"/> -->
+    <parameter name="[Subscription-Id-Type]" operation="set" value="2"/>
+    <parameter name="[Subscription-Id-Data]" operation="set" value="sip:+33672225555@orange.fr"/>
+
+    <sendMessageDIAMETER name="SendRequestAAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+		<header request="true" command="AA" applicationId="3GPP Rx"/>
+		<avp code="Session-Id" value="My-Session-Id"/>
+       	<avp code="Auth-Application-Id" value="3GPP Rx"/>
+		<avp code="Origin-Host" value="[localHostDIAM]"/>
+		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
+		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+		<avp code="Destination-Host" value="[remoteHostDIAM]"/>
+		<avp code="Media-Component-Description">
+			<avp code="Media-Component-Number" value="[Media-Component-Number]"/>
+			<avp code="Media-Sub-Component">
+				<avp code="Flow-Number" value="[Flow-Number-Rtp]"/>
+				<avp code="Flow-Description" value="[Flow-Description-Rtp-in]"/>
+				<avp code="Flow-Description" value="[Flow-Description-Rtp-out]"/>
+				<avp code="Max-Requested-Bandwidth-UL" value="[Max-Requested-Bandwidth-UL-Rtp]"/>
+				<avp code="Max-Requested-Bandwidth-DL" value="[Max-Requested-Bandwidth-DL-Rtp]"/>
+			</avp>
+			<avp code="Media-Sub-Component">
+				<avp code="Flow-Number" value="[Flow-Number-Rtcp]"/>
+				<avp code="Flow-Description" value="[Flow-Description-Rtcp-in]"/>
+				<avp code="Flow-Description" value="[Flow-Description-Rtcp-out]"/>
+				<avp code="Flow-Usage" value="[Flow-Usage-Rtcp]"/>
+				<avp code="Max-Requested-Bandwidth-UL" value="[Max-Requested-Bandwidth-UL-Rtcp]"/>
+				<avp code="Max-Requested-Bandwidth-DL" value="[Max-Requested-Bandwidth-DL-Rtcp]"/>
+			</avp>
+			<avp code="Media-Type" value="[Media-Type]"/>
+			<avp code="Flow-Status" value="[Flow-Status]"/>
+		</avp>
+		<avp code="AF-Charging-Identifier" value="[AF-Charging-Identifier]"/>
+		<avp code="Specific-Action" value="[Specific-Action]"/>
+		<avp code="Subscription-Id">
+			<avp code="Subscription-Id-Type" value="[Subscription-Id-Type]"/>
+			<avp code="Subscription-Id-Data" value="[Subscription-Id-Data]"/>
+		</avp>
+		
+	</sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerAAA" request="false" type="AA" result="DIAMETER_SUCCESS">
+    		<parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
+    </receiveMessageDIAMETER>
+
+
+</scenario>

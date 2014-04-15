@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP S6 Authentication (AIR/AIA)" -->
+<scenario>
+
+<!--
+From 3GPP TS 29.272 V9.1.0 : AIR from MME/SGSN to HSS to request Authentication Information
+Authentication-Information-Request ::= < Diameter Header: 318, REQ, PXY, 16777251 >
+                                  < Session-Id >
+                                  { Vendor-Specific-Application-Id }
+                                    Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                         1* [ Vendor-Id ]
+                                                                         0*1{ Auth-Application-Id }
+                                                                         0*1{ Acct-Application-Id }
+                                  { Auth-Session-State }
+                                  { Origin-Host }
+                                  { Origin-Realm }
+                                  [ Destination-Host ]
+                                  { Destination-Realm }
+                                  { User-Name }
+                                 *[ Supported-Features ]
+                                    Supported-Features ::= < AVP Header: 628 10415 >
+													           { Vendor-Id }
+                                                               { Feature-List-ID }
+                                                               { Feature-List }
+                                                             * [ AVP ]
+								  [ Requested-EUTRAN-Authentication-Info ] 
+                                    Requested-EUTRAN-Authentication-Info ::= < AVP Header: 1408 10415 >
+													                             [ Number-Of-Requested-Vectors]
+                                                                                 [ Immediate-Response-Preferred ]
+                                                                                 [ Re-synchronization-Info ]
+                                                                               * [ AVP ]
+								  [ Requested-UTRAN-GERAN-Authentication-Info ]
+                                    Requested-UTRAN-GERAN-Authentication-Info ::= <AVP header: 1409 10415>
+													                             [ Number-Of-Requested-Vectors]
+                                                                                 [ Immediate-Response-Preferred ]
+                                                                                 [ Re-synchronization-Info ]
+                                                                               * [ AVP ]
+								  { Visited-PLMN-Id }
+                                 *[ AVP ]
+                                 *[ Proxy-Info ]
+                                    Proxy-Info ::= < AVP Header: 284 >
+                                                       { Proxy-Host }
+                                                       { Proxy-State }
+                                                     * [ AVP ]
+                                 *[ Route-Record ]
+
+-->
+
+	<!-- IMSI : 15 didits at most - 3GPP TS 23.003 /-->
+    <parameter name="[Imsi]" operation="set" value="358001045322746"/>
+	<!-- Visited-PLMN-Id :  3 bytes - 3GPP TS 29.272 /-->
+    <parameter name="[Visited-PLMN-Id]" operation="set" value="20801"/>
+
+    <sendMessageDIAMETER name="SendRequestAIR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+		<header request="true" command="3GPP-Authentication-Information" applicationId="3GPP S6a/S6d"/>
+		<avp code="Session-Id" value="My-Session-Id-s6a"/>
+		<avp code="Vendor-Specific-Application-Id">
+	        	<avp code="Vendor-Id" value="TGPP"/>
+	        	<avp code="Auth-Application-Id" value="3GPP S6a"/>
+		</avp>
+		<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+		<avp code="Origin-Host" value="[localHostDIAM]"/>
+		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
+		<avp code="Destination-Host" value="[remoteHostDIAM]"/>
+		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+		<avp code="User-Name" value="[Imsi]"/>
+		<avp code="Requested-EUTRAN-Authentication-Info">
+	        	<avp code="Number-Of-Requested-Vectors" value="1"/>
+				<!-- Value of Immediate-Response-Preferred does not matter : only AVP presence is checked by HSS /-->
+	        	<avp code="Immediate-Response-Preferred" value="0"/>
+		</avp>
+		<avp code="Visited-PLMN-Id" value="[Visited-PLMN-Id]"/>
+		</sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerAIA" request="false" type="3GPP-Authentication-Information" result="DIAMETER_SUCCESS">
+    </receiveMessageDIAMETER>
+
+
+</scenario>

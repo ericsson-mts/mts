@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP S6 Authentication (AIR/AIA)" -->
+<scenario>
+
+<!--
+From 3GPP TS 29.272 V9.1.0 : AIR from MME/SGSN to HSS to request Authentication Information
+Authentication-Information-Answer ::= < Diameter Header: 318, REQ, PXY, 16777251 >
+                                  < Session-Id >
+                                  { Vendor-Specific-Application-Id }
+                                    Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                         1* [ Vendor-Id ]
+                                                                         0*1{ Auth-Application-Id }
+                                                                         0*1{ Acct-Application-Id }
+                                  [ Result-Code ]
+                                  [ Experimental-Result ]
+                                    Experimental-Result ::= < AVP Header: 297 >
+                                                              { Vendor-Id }
+                                                              { Experimental-Result-Code }
+                                  [ Error-Diagnostic ]
+                                  { Auth-Session-State }
+                                  { Origin-Host }
+                                  { Origin-Realm }
+                                 *[ Supported-Features ]
+                                    Supported-Features ::= < AVP Header: 628 10415 >
+													           { Vendor-Id }
+                                                               { Feature-List-ID }
+                                                               { Feature-List }
+                                                             * [ AVP ]
+								  [ Authentication-Info ] 
+								    Authentication-Info ::= <AVP header: 1413 10415> 
+                                                             * [ E-UTRAN-Vector ] 
+															     E-UTRAN-Vector ::= <AVP header: 1414 10415> 
+                                                                                       [ Item-Number ] 
+                                                                                       { RAND } 
+                                                                                       { XRES } 
+                                                                                       { AUTN } 
+                                                                                       { KASME } 
+                                                                                     * [ AVP ]
+                                                             * [ UTRAN-Vector ] 
+                                                                 UTRAN-Vector ::= <AVP header: 1415 10415> 
+                                                                                     [ Item-Number ] 
+                                                                                     { RAND } 
+                                                                                     { XRES } 
+                                                                                     { AUTN } 
+                                                                                     { Confidentiality-Key } 
+                                                                                     { Integrity-Key } 
+                                                                                   * [ AVP ] 															 
+                                                             * [ GERAN-Vector ] 
+                                                                 GERAN-Vector ::= <AVP header: 1416 10415> 
+                                                                                     [ Item-Number ] 
+                                                                                     { RAND } 
+                                                                                     { SRES } 
+                                                                                     { Kc } 
+                                                                                   * [ AVP ]
+                                 *[ AVP ]
+                                 *[ Failed-AVP ]
+                                 *[ Proxy-Info ]
+                                    Proxy-Info ::= < AVP Header: 284 >
+                                                       { Proxy-Host }
+                                                       { Proxy-State }
+                                                     * [ AVP ]
+                                 *[ Route-Record ]
+
+-->
+
+    <receiveMessageDIAMETER name="ReceiveRequestAIR" request="true" type="3GPP-Authentication-Information">
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+    	<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+    	<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>		
+    	<parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>		
+    	<parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>		
+    	<parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>		
+    	<parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>		
+    	<parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>		
+    	<parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>		
+    </receiveMessageDIAMETER>
+    
+	<!-- Authentication-Info/E-UTRAN-Vector: authentication vector information - TS 33.401 and TS 29.002
+		EPS AKA (Authentication and Key Agreement) is the authentication and key agreement procedure used over E-UTRAN.
+		EPS AKA shall produce keying material forming a basis for user plane (UP), RRC, and NAS ciphering keys as well as
+		RRC and NAS integrity protection keys.
+			- Item-Number: authentication vector number (when more than one vector)
+			- RAND (random number) - OctetString : 16 bytes
+			- XRES (expected response) - OctetString : 4..16 bytes
+			- AUTN (authentication token) - OctetString : 16 bytes
+			- KASME (Key Access Security Management Entity) - OctetString : 32 bytes
+			
+	-->
+	<parameter name="[Item-Number]" operation="set" value="0"/>
+	<parameter name="[RAND]" operation="set" value="a2b32512a2b32512a2b32512a2b32512"/>
+	<parameter name="[XRES]" operation="set" value="d2e32513d2e32513d2e32513d2e32513"/>
+	<parameter name="[AUTN]" operation="set" value="b2e32528b2e32528b2e32528b2e32528"/>
+	<parameter name="[KASME]" operation="set" value="a2b32512a2b32512a2b32512a2b32512a2b32512a2b32512a2b32512a2b32512"/>
+
+    <sendMessageDIAMETER name="SendAnswerAIA">
+	<header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+	<avp code="Session-Id" value="[sessionId]"/>
+	<avp code="Vendor-Specific-Application-Id">
+		<avp code="Vendor-Id" value="[vendorId]"/>
+		<avp code="Auth-Application-Id" value="[authApplicationId]"/>
+	</avp>
+	<avp code="Result-Code" value="DIAMETER_SUCCESS"/>
+	<avp code="Auth-Session-State" value="[authSessionState]"/>
+	<avp code="Origin-Host" value="[destinationHost]"/>
+	<avp code="Origin-Realm" value="[destinationRealm]"/>
+	<avp code="Authentication-Info">
+		<avp code="E-UTRAN-Vector">
+			<avp code="Item-Number" value="[Item-Number]"/>
+			<avp code="RAND" value="[RAND]"/>
+			<avp code="XRES" value="[XRES]"/>
+			<avp code="AUTN" value="[AUTN]"/>
+			<avp code="KASME" value="[KASME]"/>
+		</avp>
+	</avp>
+    </sendMessageDIAMETER>
+
+</scenario>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP S13 ME Identity Check (ECR/ECA)" -->
+<scenario>
+
+<!--
+From 3GPP TS 29.272 V9.1.0 :
+ME-Identity-Check-Request ::= < Diameter Header: 324, REQ, PXY, 16777252 >
+                                  < Session-Id >
+                                  { Vendor-Specific-Application-Id }
+                                    Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                         1* [ Vendor-Id ]
+                                                                         0*1{ Auth-Application-Id }
+                                                                         0*1{ Acct-Application-Id }
+                                  { Auth-Session-State }
+                                  { Origin-Host }
+                                  { Origin-Realm }
+                                  [ Destination-Host ]
+                                  { Destination-Realm }
+                                  { Terminal-Information }
+                                    Terminal-Information ::= < AVP Header: 1401 10415>
+                                                                 [ IMEI ]
+                                                                 [ TGPP2-MEID ]
+                                                                 [ Software-Version ]
+																*[AVP]
+                                  [ User-Name ]
+                                 *[ AVP ]
+                                 *[ Proxy-Info ]
+                                    Proxy-Info ::= < AVP Header: 284 >
+                                                       { Proxy-Host }
+                                                       { Proxy-State }
+                                                     * [ AVP ]
+                                 *[ Route-Record ]
+
+-->
+
+
+	<!-- IMEI : 15 didits - 3GPP ETSI TS 129.272 /-->
+    <parameter name="[IMEI]" operation="set" value="358001045322746"/>
+	<!-- SVN of IMEISV : 2 last digits -  3GPP TS 23.003 /-->
+    <parameter name="[Software-Version]" operation="set" value="46"/>
+    <sendMessageDIAMETER name="SendRequestECR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+		<header request="true" command="3GPP-ME-Identity-Check" applicationId="3GPP S13/S13'"/>
+		<avp code="Session-Id" value="My-Session-Id"/>
+		<avp code="Vendor-Specific-Application-Id">
+	        	<avp code="Vendor-Id" value="TGPP"/>
+	        	<avp code="Auth-Application-Id" value="3GPP S13"/>
+		</avp>
+		<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+		<avp code="Origin-Host" value="[localHostDIAM]"/>
+		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
+		<avp code="Destination-Host" value="[remoteHostDIAM]"/>
+		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+		<avp code="Terminal-Information">
+	        	<avp code="IMEI" value="[IMEI]"/>
+	        	<avp code="Software-Version" value="[Software-Version]"/>
+		</avp>
+		</sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerECA" request="false" type="3GPP-ME-Identity-Check" result="DIAMETER_SUCCESS:2001">
+    		<parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
+    </receiveMessageDIAMETER>
+
+
+</scenario>

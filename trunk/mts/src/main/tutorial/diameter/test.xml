@@ -10,7 +10,6 @@
   <parameter name="[localDIAM]" operation="set" value="[localHostDIAM]:[localPortDIAM]"/>
   
   <parameter name="[remoteHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
-  <!--parameter name="[remoteHostDIAM]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/-->
   <!--parameter name="[remoteHostDIAM]" operation="set" value="172.16.21.32"/-->
   <parameter description="remote address of the SUT host" editable="true" name="[remoteHostDIAM]" operation="set" value="[remoteHostDIAM(0)]"/>
   <parameter name="[remotePortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
@@ -170,13 +169,96 @@
         <scenario file="302_ro_ccr/OCF.xml" name="OCF" routingName="OCF"/>
     </testcase>
     
-    <testcase description="diameter" name="316_s6-ulr" state="false">
+    <testcase description="diameter" name="316_s6_ulr" state="true">
         <parameter name="[applicationID]" operation="set" value="16777251"/>
-        <scenario file="316_s6-ulr/client.xml" name="client" routingName="client"/>
-        <scenario file="316_s6-ulr/client.xml" name="server" routingName="server"/>
+        <scenario file="316_s6_ulr/client.xml" name="client" routingName="client"/>
+        <scenario file="316_s6_ulr/server.xml" name="server" routingName="server"/>
     </testcase>
-    
-
+ 
+    <testcase description="diameter" name="317_s6_air" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777251"/>
+        <scenario file="317_s6_air/client.xml" name="client" routingName="client"/>
+        <scenario file="317_s6_air/server.xml" name="server" routingName="server"/>
+    </testcase>
+ 
+    <testcase description="diameter" name="318_s6_clr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777251"/>
+        <scenario file="318_s6_clr/client.xml" name="client" routingName="client"/>
+        <scenario file="318_s6_clr/server.xml" name="server" routingName="server"/>
+    </testcase>
+ 
+    <testcase description="diameter" name="319_s6_idr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777251"/>
+        <scenario file="319_s6_idr/client.xml" name="client" routingName="client"/>
+        <scenario file="319_s6_idr/server.xml" name="server" routingName="server"/>
+    </testcase>
+ 
+    <testcase description="diameter" name="320_s6_dsr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777251"/>
+        <scenario file="320_s6_dsr/client.xml" name="client" routingName="client"/>
+        <scenario file="320_s6_dsr/server.xml" name="server" routingName="server"/>
+    </testcase>
+ 
+    <testcase description="diameter" name="321_s6_pur" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777251"/>
+        <scenario file="321_s6_pur/client.xml" name="client" routingName="client"/>
+        <scenario file="321_s6_pur/server.xml" name="server" routingName="server"/>
+    </testcase>
+ 
+    <testcase description="diameter" name="322_s6_rsr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777251"/>
+        <scenario file="322_s6_rsr/client.xml" name="client" routingName="client"/>
+        <scenario file="322_s6_rsr/server.xml" name="server" routingName="server"/>
+    </testcase>
+ 
+    <testcase description="diameter" name="323_s6_nor" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777251"/>
+        <scenario file="323_s6_nor/client.xml" name="client" routingName="client"/>
+        <scenario file="323_s6_nor/server.xml" name="server" routingName="server"/>
+    </testcase>
+ 
+    <testcase description="diameter" name="327_s13_ecr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777252"/>
+        <scenario file="327_s13_ecr/client.xml" name="client" routingName="client"/>
+        <scenario file="327_s13_ecr/server.xml" name="server" routingName="server"/>
+    </testcase>
+ 
+    <testcase description="diameter" name="330_gx_ccr" state="false">
+        <parameter name="[applicationID]" operation="set" value="16777238"/>
+        <scenario file="330_gx_ccr/client.xml" name="client" routingName="client"/>
+        <scenario file="330_gx_ccr/server.xml" name="server" routingName="server"/>
+    </testcase>
+ 
+    <testcase description="diameter" name="331_gx_rar" state="false">
+        <parameter name="[applicationID]" operation="set" value="16777238"/>
+        <scenario file="331_gx_rar/client.xml" name="client" routingName="client"/>
+        <scenario file="331_gx_rar/server.xml" name="server" routingName="server"/>
+    </testcase>
+ 
+    <testcase description="diameter" name="335_rx_aar" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777236"/>
+        <scenario file="335_rx_aar/client.xml" name="client" routingName="client"/>
+        <scenario file="335_rx_aar/server.xml" name="server" routingName="server"/>
+    </testcase>
+ 
+    <testcase description="diameter" name="336_rx_rar" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777236"/>
+        <scenario file="336_rx_rar/client.xml" name="client" routingName="client"/>
+        <scenario file="336_rx_rar/server.xml" name="server" routingName="server"/>
+    </testcase>
+ 
+    <testcase description="diameter" name="337_rx_str" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777236"/>
+        <scenario file="337_rx_str/client.xml" name="client" routingName="client"/>
+        <scenario file="337_rx_str/server.xml" name="server" routingName="server"/>
+    </testcase>
+ 
+    <testcase description="diameter" name="338_rx_asr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777236"/>
+        <scenario file="338_rx_asr/client.xml" name="client" routingName="client"/>
+        <scenario file="338_rx_asr/server.xml" name="server" routingName="server"/>
+    </testcase>
+ 
     <testcase description="diameter" name="411_e4_udr" state="true">
         <parameter name="[applicationID]" operation="set" value="16777231"/>
         <scenario file="411_e4_udr/client.xml" name="client" routingName="client"/>
