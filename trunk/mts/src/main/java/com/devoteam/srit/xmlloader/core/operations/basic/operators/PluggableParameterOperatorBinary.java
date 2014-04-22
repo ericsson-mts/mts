@@ -301,12 +301,20 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_FROMIP))
                 {
-                	StringTokenizer ip = new StringTokenizer(param_1.get(i).toString(), "."); 
+                	String[] ip = param_1.get(i).toString().split("\\."); 
                 	String ret = "";
-                	if (ip.countTokens() != 4)
+                	if (ip.length != 4)
                 		throw new ParameterException("Error in operation, " + param_1.get(i) + " isn't a valid IP address");
-                	while (ip.hasMoreTokens())
-                		ret += Integer.toHexString(Integer.parseInt(ip.nextToken()));
+                	for (int k = 0; k < 4; k++)
+                	{
+                		int val = Integer.parseInt(ip[k]);
+                		String strVal = Integer.toHexString(val);
+                		if (strVal.length() == 1)
+                		{
+                			strVal = "0" + strVal;
+                		}
+                		ret += strVal; 
+                	}
                 	result.add(ret);
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_TOIP))
@@ -316,8 +324,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 	if (ip.length != 4)
                 		throw new Exception();
                 	for (int j = 0; j < ip.length - 1; j++)
-                		ret += (ip[j]&0xff) + ".";
-                	ret += (ip[ip.length - 1]&0xff);
+                		ret += (ip[j] & 0xff) + ".";
+                	ret += (ip[ip.length - 1] & 0xff);
                 	result.add(ret);
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_TONUMBER))
