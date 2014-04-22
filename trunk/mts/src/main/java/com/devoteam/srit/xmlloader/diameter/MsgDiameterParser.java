@@ -36,6 +36,7 @@ import com.devoteam.srit.xmlloader.core.utils.UnsignedInt64;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import dk.i1.diameter.AVP;
+import dk.i1.diameter.AVP_Address;
 import dk.i1.diameter.AVP_Grouped;
 import dk.i1.diameter.AVP_Integer32;
 import dk.i1.diameter.AVP_Integer64;
@@ -235,7 +236,7 @@ public class MsgDiameterParser
         String type          = element.attributeValue("type");
         String vendor_id_str = element.attributeValue("vendorId");
         String mandatory_str = element.attributeValue("mandatory");
-        String private_str   = element.attributeValue("private");        
+        String private_str   = element.attributeValue("private");
         String state         = element.attributeValue("state");
         
         boolean bState = true;
