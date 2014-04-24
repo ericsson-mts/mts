@@ -1,100 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
-<!-- name="3GPP Gx Re-Auth (RAR/RAA)" -->
+<!-- name="3GPP Rx AA (AAR/AAA)" -->
 <scenario>
 
-<!--
-From 3GPP TS 29.212 V9.3.0 : RAR is sent by the PCCR to the PCEF used to provision unsollicited QoS rules, 
-	event triggers and event report indications for the session
-<RA-Request> ::= < Diameter Header: 258, REQ, PXY, 16777238 > 
-		< Session-Id > 
-		{ Auth-Application-Id } 
-		{ Origin-Host } 
-		{ Origin-Realm } 
-		{ Destination-Realm } 
-		{ Destination-Host } 
-		{ Re-Auth-Request-Type } 
-		[ Session-Release-Cause ] 
-		[ Origin-State-Id ] 
-	   *[ Event-Trigger ] 
-		[ Event-Report-Indication ] 
-	   *[ Charging-Rule-Remove ] 
-		  Charging-Rule-Remove ::= < AVP Header: 1002 > 
-									  *[ Charging-Rule-Name ] 
-									  *[ Charging-Rule-Base-Name ] 
-									  *[ AVP ] 
-	   *[ Charging-Rule-Install ] 
-		  Charging-Rule-Install ::= < AVP Header: 1001 > 
-									   *[ Charging-Rule-Definition ] 
-										  Charging-Rule-Definition ::= < AVP Header: 1003 > 
-																		   { Charging-Rule-Name } 
-																		   [ Service-Identifier ] 
-																		   [ Rating-Group ] 
-																		  *[ Flow-Information ] 
-																		     Flow-Information ::= < AVP Header: 1058 > 
-																									  [ Flow-Description ] 
-																									  [ Packet-Filter-Identifier ] 
-																									  [ Packet-Filter-Usage ] 
-																									  [ ToS-Traffic-Class ] 
-																									  [ Security-Parameter-Index ] 
-																									  [ Flow-Label ] 
-																									  [ Flow-Direction ] 
-																									 *[ AVP ]
-																		   [ Flow-Status ] 
-																		   [ QoS-Information ] 
-																			 QoS-Information ::= < AVP Header: 1016 > 
-																									 [ QoS-Class-Identifier ] 
-																									 [ Max-Requested-Bandwidth-UL ] 
-																									 [ Max-Requested-Bandwidth-DL ] 
-																									 [ Guaranteed-Bitrate-UL ] 
-																									 [ Guaranteed-Bitrate-DL ] 
-																									 [ Bearer-Identifier ] 
-																									 [ Allocation-Retention-Priority] 
-																									 [ APN-Aggregate-Max-Bitrate-UL] 
-																									 [ APN-Aggregate-Max-Bitrate-DL] 
-																									*[ AVP ] 
-																		   
-																		   [ Reporting-Level ]
-																		   [ Online ] 
-																		   [ Offline ] 
-																		   [ Metering-Method ]
-																		   [ Precedence ]
-																		   [ AF-Charging-Identifier ]
-																		  *[ Flows ]
-																			 Flows::= < AVP Header: 510 > 
-																						  { Media-Component-Number } 
-																						 *[Flow-Number] 
-																						  [Final-Unit-Action]
-																		   [ Monitoring-Key]
-																		   [ AF-Signalling-Protocol ]
-																		  *[ AVP ]																					   
-									   *[ Charging-Rule-Name ] 
-									   *[ Charging-Rule-Base-Name ] 
-										[ Bearer-Identifier ] 
-										[ Rule-Activation-Time ] 
-										[ Rule-Deactivation-Time ] 
-										[ Resource-Allocation-Notification ] 
-										[ Charging-Correlation-Indicator ] 
-									   *[ AVP ] 
-		[ Default-EPS-Bearer-QoS ] 
-	   *[ QoS-Information ] 
-		  QoS-Information ::= < AVP Header: 1016 > 
-								  [ QoS-Class-Identifier ] 
-								  [ Max-Requested-Bandwidth-UL ] 
-								  [ Max-Requested-Bandwidth-DL ] 
-								  [ Guaranteed-Bitrate-UL ] 
-								  [ Guaranteed-Bitrate-DL ] 
-								  [ Bearer-Identifier ] 
-								  [ Allocation-Retention-Priority] 
-								  [ APN-Aggregate-Max-Bitrate-UL] 
-								  [ APN-Aggregate-Max-Bitrate-DL] 
-								 *[ AVP ] 
-		[ Revalidation-Time ] 
-	   *[ Usage-Monitoring-Information ] 
-	   *[ Proxy-Info ] 
-	   *[ Route-Record ] 
-	   *[ AVP] 
- -->
+    <receiveMessageDIAMETER name="ReceiveRequestAAR" request="true" type="AA">
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[auth-ApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+    </receiveMessageDIAMETER>
+
+    <!-- IP-CAN-Type: 3GPP-GPRS|DOCSIS|xDSL|WiMAX|3GPP2|3GPP-EPS|Non-3GPP-EPS -->
+    <parameter name="[IP-CAN-Type]" operation="set" value="3GPP-EPS"/>
+
+    <!-- RAT-Type: WLAN|VIRTUAL|UTRAN|GERAN|GAN|HSPA_EVOLUTION|EUTRAN|CDMA2000_1X|HRPD|UMB|EHRPD -->
+    <parameter name="[RAT-Type]" operation="set" value="EUTRAN"/>
+
+    <sendMessageDIAMETER name="SendAnswerAAA">
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Auth-Application-Id" value="[auth-ApplicationId]"/>
+        <avp code="Origin-Host" value="[destinationHost]"/>
+        <avp code="Origin-Realm" value="[destinationRealm]"/>
+        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
+        <avp code="IP-CAN-Type" value="[IP-CAN-Type]"/>
+        <avp code="RAT-Type" value="[RAT-Type]"/>
+   </sendMessageDIAMETER>
+
 
     <!-- Re-Auth-Request-Type - RFC 4006 -->
     <parameter name="[Re-Auth-Request-Type]" operation="set" value="AUTHORIZE_ONLY"/>
@@ -158,8 +95,7 @@ From 3GPP TS 29.212 V9.3.0 : RAR is sent by the PCCR to the PCEF used to provisi
     <parameter name="[Pre-emption-Capability]" operation="set" value="PRE-EMPTION_CAPABILITY_ENABLED"/>
     <parameter name="[Pre-emption-Vulnerability]" operation="set" value="PRE-EMPTION_VULNERABILITY_DISABLED"/>
 
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestRAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+    <sendMessageDIAMETER name="SendRequestRAR" remoteURL="diameter://[remoteDIAM]" destScenario="client">
         <header request="true" command="Re-Auth" applicationId="3GPP Gx"/>
         <avp code="Session-Id" value="[sessionId]"/>
         <avp code="Auth-Application-Id" value="3GPP Gx"/>
@@ -235,4 +171,23 @@ From 3GPP TS 29.212 V9.3.0 : RAR is sent by the PCCR to the PCEF used to provisi
     </receiveMessageDIAMETER>
 
 
+    <receiveMessageDIAMETER name="ReceiveRequestSTR" request="true" type="Session-Termination">
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+    </receiveMessageDIAMETER>
+
+    <sendMessageDIAMETER name="SendAnswerSTA">
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Origin-Host" value="[destinationHost]"/>
+        <avp code="Origin-Realm" value="[destinationRealm]"/>
+        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
+   </sendMessageDIAMETER>
+   
 </scenario>
