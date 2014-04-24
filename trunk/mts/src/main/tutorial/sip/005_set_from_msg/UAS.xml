@@ -7,9 +7,10 @@
 
 <parameter name="[message]" operation="protocol.setFromMessage" value="message"/>  
 
-<parameter name="[receivedMessageLength]" operation="protocol.setFromMessage" value="message.length"/>  
+<parameter name="[receivedMessageLength]" operation="protocol.setFromMessage" value="message.length"/>
+
 <!--test parameter="[receivedMessageLength]" condition="string.equals" value="2155"/--> <!-- Jain SIP stack -->
-<!--test parameter="[receivedMessageLength]" condition="string.equals" value="2206"/--> <!-- Light SIP stack -->
+<test parameter="[receivedMessageLength]" condition="string.equals" value="2321"/> <!-- Light SIP stack -->
 <test parameter="[receivedMessageLength]" condition="string.equals" value="[testcase:sentMessageLength]"/>
 
 <parameter name="[timestamp1]" operation="system.timestamp" value="1970"/>
@@ -46,13 +47,13 @@
 <parameter name="[headersIndex]" operation="findMatches" value="[headers]" value2="^From.*"/>
 <test parameter="[headersIndex]" condition="number.equals" value="9"/>
 <parameter name="[headersSize]" operation="list.size" value="[headers]"/>
-<test parameter="[headersSize]" condition="string.equals" value="27"/>
+<test parameter="[headersSize]" condition="string.equals" value="28"/>
 <test parameter="[headers(0)]" condition="string.contains" value="To:"/>
 
 <parameter name="[others]" operation="protocol.setFromMessage" value="header.Others"/>
 <parameter name="[othersIndex]" operation="findMatches" value="[others]" value2="^Content-Length.*"/>
 <parameter name="[othersSize]" operation="list.size" value="[others]"/>
-<test parameter="[othersSize]" condition="string.equals" value="18"/>
+<test parameter="[othersSize]" condition="string.equals" value="19"/>
 <test parameter="[others(0)]" condition="string.contains" value="Content-Type:"/>
 
 <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
@@ -329,6 +330,28 @@
 
 <parameter name="[AuthorizationOpaque]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.opaque"/>
 <test parameter="[AuthorizationOpaque]" condition="string.equals" value="5ccc069c403ebaf9f0171e9517f40e41"/>
+
+<parameter name="[AuthInfo]" operation="protocol.setFromMessage" value="header.Authentication-Info"/> 
+<test parameter="[AuthInfo]" condition="string.startsWith" value="nextnonce=&quot;84a4cc6f3082121f32b42a2187831a9e&quot;"/>
+<test parameter="[AuthInfo]" condition="string.equals" value="nextnonce=&quot;84a4cc6f3082121f32b42a2187831a9e&quot;, qop=auth, rspauth=&quot;7587245234b3434cc3412213e5f113a5432&quot;, cnonce=&quot;0a4f113b&quot;, nc=00000001"/>
+
+<parameter name="[AuthinfoScheme]" operation="protocol.setFromMessage" value="header.Authentication-Info.Scheme"/>
+<test parameter="[AuthinfoScheme]" condition="string.equals" value="Digest"/>
+
+<parameter name="[AuthinfoNextnonce]" operation="protocol.setFromMessage" value="header.Authentication-Info.Attribute.nextnonce"/>
+<test parameter="[AuthinfoNextnonce]" condition="string.equals" value="84a4cc6f3082121f32b42a2187831a9e"/>
+
+<parameter name="[AuthinfoRspauth]" operation="protocol.setFromMessage" value="header.Authentication-Info.Attribute.rspauth"/>
+<test parameter="[AuthinfoRspauth]" condition="string.equals" value="7587245234b3434cc3412213e5f113a5432"/>
+
+<parameter name="[AuthinfoQop]" operation="protocol.setFromMessage" value="header.Authentication-Info.Attribute.qop"/>
+<test parameter="[AuthinfoQop]" condition="string.equals" value="auth"/>
+
+<parameter name="[AuthinfoCnonce]" operation="protocol.setFromMessage" value="header.Authentication-Info.Attribute.cnonce"/>
+<test parameter="[AuthinfoCnonce]" condition="string.equals" value="0a4f113b"/>
+
+<parameter name="[AuthinfoNC]" operation="protocol.setFromMessage" value="header.Authentication-Info.Attribute.nc"/>
+<test parameter="[AuthinfoNC]" condition="string.equals" value="00000001"/>
 
 <parameter name="[Allow]" operation="protocol.setFromMessage" value="header.Allow"/>
 <test parameter="[Allow(0)]" condition="string.equals" value="INVITE"/>

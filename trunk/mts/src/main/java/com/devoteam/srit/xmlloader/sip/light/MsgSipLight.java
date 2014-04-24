@@ -59,14 +59,14 @@ public class MsgSipLight extends MsgSip
 		// all headers except : Authorization,Call-ID,Content-Encoding,Content-Length,Content-Type,
 		// CSeq,Date,expires,From,Max-Forwards,MIME-Version,Min-Expires,Organization,Priority,
 		// Proxy-Authenticate,Proxy-Authorization,Reply-To,Retry-After,Server,Subject,Timestamp,To,
-		// User-Agent,WWW-Authenticate, <generic>
+		// User-Agent,WWW-Authenticate, Authentication-Info <generic>
 		multiHeader.add("accept");multiHeader.add("accept-encoding");multiHeader.add("accept-language");
-		multiHeader.add("alert-Info");multiHeader.add("allow");multiHeader.add("authentication-info");
-		multiHeader.add("call-info");multiHeader.add("contact");multiHeader.add("m");multiHeader.add("content-encoding");
-		multiHeader.add("e");multiHeader.add("content-language");multiHeader.add("error-info");multiHeader.add("in-reply-to");
-		multiHeader.add("proxy-require");multiHeader.add("record-route");multiHeader.add("require");
-		multiHeader.add("route");multiHeader.add("supported");multiHeader.add("k");multiHeader.add("Unsupported");
-		multiHeader.add("via");multiHeader.add("v");multiHeader.add("warning");
+		multiHeader.add("alert-Info");multiHeader.add("allow");multiHeader.add("call-info");
+		multiHeader.add("contact");multiHeader.add("m");multiHeader.add("content-encoding");
+		multiHeader.add("e");multiHeader.add("content-language");multiHeader.add("error-info");
+		multiHeader.add("in-reply-to");multiHeader.add("proxy-require");multiHeader.add("record-route");
+		multiHeader.add("require");multiHeader.add("route");multiHeader.add("supported");multiHeader.add("k");
+		multiHeader.add("Unsupported");multiHeader.add("via");multiHeader.add("v");multiHeader.add("warning");
 		
 		compressedHeader.put("a", "accept-contact");		// rfc 3841
 		compressedHeader.put("c", "content-type");			// rfc 3261
@@ -181,7 +181,8 @@ public class MsgSipLight extends MsgSip
                (params[1].equalsIgnoreCase("Authorization") ||
             	params[1].equalsIgnoreCase("WWW-Authenticate") ||
             	params[1].equalsIgnoreCase("Proxy-Authorization") ||
-            	params[1].equalsIgnoreCase("Proxy-Authenticate")))                                
+            	params[1].equalsIgnoreCase("Proxy-Authenticate") ||
+            	params[1].equalsIgnoreCase("Authentication-Info")))
             {
             	if (addSIPHeaderAuthentication(var, params, message.getHeader(params[1])))
             	{
@@ -468,18 +469,28 @@ public class MsgSipLight extends MsgSip
         if (params.length == 3 && params[2].equalsIgnoreCase("Scheme"))
         {
         	String value = header.getHeader(0);
+        	// case Authentication-Info pas de Scheme Digest devant (authentication HTTP)
+        	if ("Authentication-Info".equalsIgnoreCase(params[1]))
+        	{
+        		value = "Digest " + value;
+        	}
     		MsgParser parser = new MsgParser(); 
     		parser.parse(value, " ,", '=', "\"\"");
-   			var.addHeader(parser.getHeader(null));        	
+   			var.addHeader(parser.getHeader(null));
             return true;
         }
         //---------------------------------------------------------------------- header:Yyyyy:Attribute:Zzzzz -
         if (params.length == 4 && params[2].equalsIgnoreCase("Attribute"))
         {
         	String value = header.getHeader(0);
-    		MsgParser parser = new MsgParser(); 
+        	// case Authentication-Info pas de Scheme Digest devant (authentication HTTP)
+        	if ("Authentication-Info".equalsIgnoreCase(params[1]))
+        	{
+        		value = "Digest " + value;
+        	}
+        	MsgParser parser = new MsgParser(); 
     		parser.parse(value, " ,", '=', "\"\"");
-   			var.addHeader(parser.getHeader(params[3]));   			
+   			var.addHeader(parser.getHeader(params[3]));
             return true;
         }
         return false;
@@ -663,7 +674,7 @@ public class MsgSipLight extends MsgSip
         	{
 	        	Header token = header.parseParameter(null, ";", '=', "<>", "\"\"");
 	            var.addHeader(token);
-	       		return true;        		
+	       		return true;
         	} 
         	else
         	{	
