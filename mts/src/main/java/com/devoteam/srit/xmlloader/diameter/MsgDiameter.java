@@ -372,15 +372,22 @@ public class MsgDiameter extends Msg
     @Override
     public boolean beginSession() throws Exception
     {
-    	if (isRequest())
+    	String status = getResult();
+    	if (status != null && (!status.equals("")))
     	{
-	        // get Session-Id:263
-	        Parameter var = getParameter("avp.263.value");
-	        if ((var != null) && (var.length() > 0)) 
-	        {
-	            return true;
-	        }
+    		int statusCode = new Integer(status).intValue();
+            if (statusCode < 2000 && statusCode >= 3000)
+            {
+            	return false;
+            } 
     	}
+    	
+        // get Session-Id:263
+        Parameter var = getParameter("avp.263.value");
+        if ((var != null) && (var.length() > 0)) 
+        {
+            return true;
+        }
         return false;
     }
 
@@ -392,11 +399,11 @@ public class MsgDiameter extends Msg
     public boolean endSession() throws Exception
     {
         String type = getType();
-        if (type.equalsIgnoreCase("Session-Termination:275"))
+        if ("Session-Termination:275".equalsIgnoreCase(type))
         {
             return true;
         }
-        if (type.equalsIgnoreCase("Accounting:271"))
+        if ("Accounting:271".equalsIgnoreCase(type))
         {
             // get Accounting-Record-Type:480 AVP
             Parameter var = getParameter("avp.480.value");
@@ -411,7 +418,7 @@ public class MsgDiameter extends Msg
                 }
             }
         }
-        if (type.equalsIgnoreCase("Credit-Control:272"))
+        if ("Credit-Control:272".equalsIgnoreCase(type))
         {
             // get CC-Request-Type:416 AVP
             Parameter var = getParameter("avp.416.value");

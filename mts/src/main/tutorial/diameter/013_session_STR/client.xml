@@ -3,60 +3,6 @@
 <!-- name="3GPP Rx AA (AAR/AAA)" -->
 <scenario>
 
-<!--
-From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to provide it with the Session Information
-<AA-Request> ::= < Diameter Header: 265, REQ, PXY, 16777236 > 
-		< Session-Id > 
-		{ Auth-Application-Id } 
-		{ Origin-Host } 
-		{ Origin-Realm } 
-		{ Destination-Realm } 
-		[ Destination-Host ] 
-		[ AF-Application-Identifier ] 
-	   *[ Media-Component-Description ] 
-		  Media-Component-Description ::= < AVP Header: 517 > 
-											{ Media-Component-Number } ; Ordinal number of the media comp. 
-										   *[ Media-Sub-Component ] ; Set of flows for one flow identifier 
-											  Media-Sub-Component ::= < AVP Header: 519 > 
-																		{ Flow-Number } ; Ordinal number of the IP flow 
-																	 0*2[ Flow-Description ] ; UL and/or DL 
-																		[ Flow-Status ] 
-																		[ Flow-Usage ] 	
-																		[ Max-Requested-Bandwidth-UL ] 
-																		[ Max-Requested-Bandwidth-DL ] 
-																		[ AF-Signalling-Protocol ] 
-																	   *[ AVP ] 
-											[ AF-Application-Identifier ] 
-											[ Media-Type ] 
-											[ Max-Requested-Bandwidth-UL ] 
-											[ Max-Requested-Bandwidth-DL ] 
-											[ Flow-Status ] 
-											[ Reservation-priority ] 
-											[ RS-Bandwidth ] 
-											[ RR-Bandwidth ] 
-										   *[ Codec-Data ]	   
-		[ Service-Info-Status ] 
-		[ AF-Charging-Identifier ] 
-		[ SIP-Forking-Indication ] 
-	   *[ Specific-Action ] 
-	   *[ Subscription-Id ] 
-	      Subscription-Id ::= < AVP Header: 443 >
-								{ Subscription-Id-Type }
-								{ Subscription-Id-Data }
-	   *[ Supported-Features ] 
-		[ Reservation-Priority ] 
-		[ Framed-IP-Address ] 
-		[ Framed-IPv6-Prefix ] 
-		[ Called-Station-Id ] 
-		[ Service-URN ] 
-		[ Sponsored-Connectivity-Data ] 
-		[ MPS-Identifier ] 
-		[ Origin-State-Id ] 
-	   *[ Proxy-Info ] 
-	   *[ Route-Record ] 
-	   *[ AVP ]
--->
-
     <!-- Media-Component-Description -->
     <parameter name="[Media-Component-Number]" operation="set" value="1"/>
 
@@ -74,7 +20,7 @@ From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to prov
     <parameter name="[Flow-Usage-Rtcp]" operation="set" value="RTCP"/>
     <parameter name="[Max-Requested-Bandwidth-UL-Rtcp]" operation="set" value="2000"/>
     <parameter name="[Max-Requested-Bandwidth-DL-Rtcp]" operation="set" value="2000"/>
-	
+
     <!-- Media-Type: AUDIO|VIDEO|DATA|APPLICATION|CONTROL|TEXT|MESSAGE|OTHER -->
     <parameter name="[Media-Type]" operation="set" value="AUDIO"/>
 
@@ -136,5 +82,54 @@ From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to prov
         <parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
     </receiveMessageDIAMETER>
 
+    <receiveMessageDIAMETER name="ReceiveRequestRAR" request="true" type="Re-Auth">
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+    </receiveMessageDIAMETER>
+
+
+    <!-- Origin-State-Id - RFC 3588: value that is incremented whenever a Diameter entity restarts with loss of 
+      previous state, for example upon reboot
+    -->
+    <parameter name="[Origin-State-Id]" operation="set" value="0"/>
+
+    <!-- Provide parameters that match event-triggers in RAR: in the example only RAT-Type is provided
+    -->
+    <parameter name="[RAT-Type]" operation="set" value="EUTRAN"/>
+
+    <sendMessageDIAMETER name="SendAnswerRAA">
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Origin-Host" value="[destinationHost]"/>
+        <avp code="Origin-Realm" value="[destinationRealm]"/>
+        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
+        <avp code="Origin-State-Id" value="[Origin-State-Id]"/>
+        <avp code="RAT-Type" value="[RAT-Type]"/>
+   </sendMessageDIAMETER>
+
+
+    <!-- Termination-Cause - enum - cf RFC 3588 for list of values -->
+    <parameter name="[Termination-Cause]" operation="set" value="DIAMETER_SESSION_TIMEOUT"/>
+
+    <sendMessageDIAMETER name="SendRequestSTR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+        <header request="true" command="Session-Termination" applicationId="3GPP Rx"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Auth-Application-Id" value="3GPP Rx"/>
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="Termination-Cause" value="[Termination-Cause]"/>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerSTA" request="false" type="Session-Termination" result="DIAMETER_SUCCESS">
+        <parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
+    </receiveMessageDIAMETER>
 
 </scenario>
