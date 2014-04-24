@@ -30,40 +30,40 @@ Delete-Subscriber-Data-Answer ::= < Diameter Header: 320, PXY, 16777251 >
                                                        { Proxy-State }
                                                      * [ AVP ]
                                  *[ Route-Record ]
-
 -->
 
     <receiveMessageDIAMETER name="ReceiveRequestDSR" request="true" type="3GPP-Delete-Subscriber-Data">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
-    	<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-    	<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>		
-    	<parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>		
-    	<parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>		
-    	<parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>		
-    	<parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>		
-    	<parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>		
-    	<parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>		
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>
+        <parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
    
-	<!-- 
-		DSA-Flags: bitmask - 3GPP TS 29.272
-			Only bit 0 defined but related to SGSN not MME -> not used
-	-->
+    <!-- 
+    	DSA-Flags: bitmask - 3GPP TS 29.272
+    		Only bit 0 defined but related to SGSN not MME -> not used
+    -->
     <parameter name="[DSA-Flags]" operation="set" value="0"/>
-	
+
     <sendMessageDIAMETER name="SendAnswerDSA">
-	<header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-	<avp code="Session-Id" value="[sessionId]"/>
-	<avp code="Vendor-Specific-Application-Id">
-		<avp code="Vendor-Id" value="[vendorId]"/>
-		<avp code="Auth-Application-Id" value="[authApplicationId]"/>
-	</avp>
-	<avp code="Result-Code" value="DIAMETER_SUCCESS"/>
-	<avp code="Auth-Session-State" value="[authSessionState]"/>
-	<avp code="Origin-Host" value="[destinationHost]"/>
-	<avp code="Origin-Realm" value="[destinationRealm]"/>
-	<avp code="DSA-Flags" value="[DSA-Flags]"/>
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" value="[vendorId]"/>
+            <avp code="Auth-Application-Id" value="[authApplicationId]"/>
+        </avp>
+        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
+        <avp code="Auth-Session-State" value="[authSessionState]"/>
+        <avp code="Origin-Host" value="[destinationHost]"/>
+        <avp code="Origin-Realm" value="[destinationRealm]"/>
+        <avp code="DSA-Flags" value="[DSA-Flags]"/>
     </sendMessageDIAMETER>
 
 </scenario>

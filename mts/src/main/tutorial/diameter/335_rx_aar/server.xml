@@ -33,30 +33,30 @@ From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to prov
     <receiveMessageDIAMETER name="ReceiveRequestAAR" request="true" type="AA">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
-    	<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-    	<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>		
-    	<parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>		
-    	<parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>		
-    	<parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>		
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
         <parameter name="[auth-ApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
 
-	 <!-- IP-CAN-Type: 3GPP-GPRS|DOCSIS|xDSL|WiMAX|3GPP2|3GPP-EPS|Non-3GPP-EPS -->
+    <!-- IP-CAN-Type: 3GPP-GPRS|DOCSIS|xDSL|WiMAX|3GPP2|3GPP-EPS|Non-3GPP-EPS -->
     <parameter name="[IP-CAN-Type]" operation="set" value="3GPP-EPS"/>
 
-	<!-- RAT-Type: WLAN|VIRTUAL|UTRAN|GERAN|GAN|HSPA_EVOLUTION|EUTRAN|CDMA2000_1X|HRPD|UMB|EHRPD -->
+    <!-- RAT-Type: WLAN|VIRTUAL|UTRAN|GERAN|GAN|HSPA_EVOLUTION|EUTRAN|CDMA2000_1X|HRPD|UMB|EHRPD -->
     <parameter name="[RAT-Type]" operation="set" value="EUTRAN"/>
 
-	
     <sendMessageDIAMETER name="SendAnswerAAA">
-		<header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-		<avp code="Session-Id" value="[sessionId]"/>
-		<avp code="Auth-Application-Id" value="[auth-ApplicationId]"/>
-		<avp code="Origin-Host" value="[destinationHost]"/>
-		<avp code="Origin-Realm" value="[destinationRealm]"/>
-		<avp code="Result-Code" value="DIAMETER_SUCCESS"/>
-		<avp code="IP-CAN-Type" value="[IP-CAN-Type]"/>
-		<avp code="RAT-Type" value="[RAT-Type]"/>
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Auth-Application-Id" value="[auth-ApplicationId]"/>
+        <avp code="Origin-Host" value="[destinationHost]"/>
+        <avp code="Origin-Realm" value="[destinationRealm]"/>
+        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
+        <avp code="IP-CAN-Type" value="[IP-CAN-Type]"/>
+        <avp code="RAT-Type" value="[RAT-Type]"/>
    </sendMessageDIAMETER>
 
 </scenario>

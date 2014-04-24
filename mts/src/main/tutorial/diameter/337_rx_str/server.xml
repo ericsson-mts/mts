@@ -26,20 +26,20 @@ From 3GPP TS 29.214 V10.3.0 : STR is sent by the AF to inform the PCRF that an e
     <receiveMessageDIAMETER name="ReceiveRequestSTR" request="true" type="Session-Termination">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
-    	<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-    	<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>		
-    	<parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>		
-    	<parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>		
-    	<parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>		
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
 
-	
     <sendMessageDIAMETER name="SendAnswerSTA">
-		<header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-		<avp code="Session-Id" value="[sessionId]"/>
-		<avp code="Origin-Host" value="[destinationHost]"/>
-		<avp code="Origin-Realm" value="[destinationRealm]"/>
-		<avp code="Result-Code" value="DIAMETER_SUCCESS"/>
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Origin-Host" value="[destinationHost]"/>
+        <avp code="Origin-Realm" value="[destinationRealm]"/>
+        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
    </sendMessageDIAMETER>
 
 </scenario>

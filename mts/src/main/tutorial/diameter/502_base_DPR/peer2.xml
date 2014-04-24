@@ -17,13 +17,13 @@ Disconnect-Peer-Answer ::= < Diameter Header: 282 >
                            [ Error-Message ]
                          * [ Failed-AVP ]
                              Failed-AVP ::= < AVP Header: 279 >
-                                         1* {AVP}
+                        1* {AVP}
 -->
 
     <sendMessageDIAMETER name="Send Answer RFC3588 DPA">
         <header request="false" command="[commandcode]" applicationId="0" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="false" error="false" retransmit="false"/>
         <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
-        <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>              
+        <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
 
         <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
         <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>

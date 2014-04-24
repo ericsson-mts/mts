@@ -38,36 +38,37 @@ Purge-UE-Answer ::= < Diameter Header: 321, PXY, 16777251 >
     <receiveMessageDIAMETER name="ReceiveRequestPUR" request="true" type="3GPP-Purge-UE">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
-    	<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-    	<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>		
-    	<parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>		
-    	<parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>		
-    	<parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>		
-    	<parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>		
-    	<parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>		
-    	<parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>		
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>
+        <parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
     
 
-	<!-- 
-		PUA-Flags : bitmask - 3GPP TS 29.272
-			Freeze M-TMSI (bit 0): indicates to MME that M-TMSI shall not be immediately re-used
-			Freeze P-TMSI (bit 1): indicates to SGSN that P-TMSI shall not be immediately re-used
-	-->
+    <!-- 
+    	PUA-Flags : bitmask - 3GPP TS 29.272
+    		Freeze M-TMSI (bit 0): indicates to MME that M-TMSI shall not be immediately re-used
+    		Freeze P-TMSI (bit 1): indicates to SGSN that P-TMSI shall not be immediately re-used
+    -->
     <parameter name="[PUA-Flags]" operation="set" value="1"/>
 
     <sendMessageDIAMETER name="SendAnswerPUA">
-	<header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-	<avp code="Session-Id" value="[sessionId]"/>
-	<avp code="Vendor-Specific-Application-Id">
-		<avp code="Vendor-Id" value="[vendorId]"/>
-		<avp code="Auth-Application-Id" value="[authApplicationId]"/>
-	</avp>
-	<avp code="Result-Code" value="DIAMETER_SUCCESS"/>
-	<avp code="Auth-Session-State" value="[authSessionState]"/>
-	<avp code="Origin-Host" value="[destinationHost]"/>
-	<avp code="Origin-Realm" value="[destinationRealm]"/>
-	<avp code="PUA-Flags" value="[PUA-Flags]"/>
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" value="[vendorId]"/>
+            <avp code="Auth-Application-Id" value="[authApplicationId]"/>
+        </avp>
+        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
+        <avp code="Auth-Session-State" value="[authSessionState]"/>
+        <avp code="Origin-Host" value="[destinationHost]"/>
+        <avp code="Origin-Realm" value="[destinationRealm]"/>
+        <avp code="PUA-Flags" value="[PUA-Flags]"/>
     </sendMessageDIAMETER>
 
 </scenario>

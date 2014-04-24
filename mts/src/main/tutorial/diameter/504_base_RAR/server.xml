@@ -21,12 +21,13 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
                                    * [ AVP ]
                   * [ Route-Record ]
                   * [ AVP ]
--->     
-        
+-->
+
+    <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request RAR" remoteURL="diameter://[remoteDIAM]" destScenario="client">
         <header request="true" command="Re-Auth" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
           <!-- The Session-Id AVP is used to identify a specific session. -->
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
         
           <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>

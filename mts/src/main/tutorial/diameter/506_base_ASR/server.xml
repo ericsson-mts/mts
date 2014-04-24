@@ -16,13 +16,14 @@ Abort-Session-Request ::= < Diameter Header: 274, REQ, PXY >
                           * [ Proxy-Info ]
                           * [ Route-Record ]
                           * [ AVP ]
--->     
-        
+-->
+
+    <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request ASR" remoteURL="diameter://[remoteDIAM]" destScenario="client">
         <header request="true" command="Abort-Session" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
           <!-- The Session-Id AVP is used to identify a specific session. -->
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
-        
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
+
           <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
           <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
@@ -30,7 +31,7 @@ Abort-Session-Request ::= < Diameter Header: 274, REQ, PXY >
           <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
           <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
-        
+
           <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
           <!--avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="0"/-->
           <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777222"/>

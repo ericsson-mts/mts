@@ -107,111 +107,110 @@ CC-Answer ::= < Diameter Header: 272, PXY >
     <receiveMessageDIAMETER name="ReceiveRequestCCR" request="true" type="Credit-Control">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
-    	<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-    	<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>		
-    	<parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>		
-    	<parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id.value"/>		
-    	<parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>		
-    	<parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>		
-    	<parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type.value"/>		
-    	<parameter name="[CC-Request-Number]" operation="protocol.setFromMessage" value="avp.CC-Request-Number.value"/>		
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type.value"/>
+        <parameter name="[CC-Request-Number]" operation="protocol.setFromMessage" value="avp.CC-Request-Number.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
 
-	<!-- Origin-State-Id - RFC 3588: value that is incremented whenever a Diameter entity restarts with loss of 
-		previous state, for example upon reboot
-	-->
+    <!-- Origin-State-Id - RFC 3588: value that is incremented whenever a Diameter entity restarts with loss of 
+      previous state, for example upon reboot
+    -->
     <parameter name="[Origin-State-Id]" operation="set" value="0"/>
 
 
-	<!-- Bearer-Control-Mode: sent from PCRF to PCEF and indicates the PCRF selected bearer control mode
-			- UE_ONLY:	the UE only shall request any resource establishment, modification or termination
-			- RESERVED:	not used
-			- UE_NW:	both the UE and PCEF may request any resource establishment, modification or termination by 
-						adding, modifying or removing traffic flow information
-	-->
+    <!-- Bearer-Control-Mode: sent from PCRF to PCEF and indicates the PCRF selected bearer control mode
+    		- UE_ONLY:	the UE only shall request any resource establishment, modification or termination
+    		- RESERVED:	not used
+    		- UE_NW:	both the UE and PCEF may request any resource establishment, modification or termination by 
+    					adding, modifying or removing traffic flow information
+    -->
     <parameter name="[Bearer-Control-Mode]" operation="set" value="UE_NW"/>
-	
-	<!-- Event-Trigger: when sent from the PCRF to the PCEF the EventTrigger AVP indicates an event that shall cause
-			a re-request of PCC rules
-			ECGI	: Eutran Cell Global ID
-			ANGW	: Access Network Gateway (DSL, WiMAX, FTTx ...)
-	-->
+
+    <!-- Event-Trigger: when sent from the PCRF to the PCEF the EventTrigger AVP indicates an event that shall cause
+    		a re-request of PCC rules
+    		ECGI	: Eutran Cell Global ID
+    		ANGW	: Access Network Gateway (DSL, WiMAX, FTTx ...)
+    -->
     <parameter name="[Event-Trigger]" operation="set" value="RAI_CHANGE"/>
     <parameter name="[Event-Trigger]" operation="set" value="TAI_CHANGE"/>
     <parameter name="[Event-Trigger]" operation="set" value="PLMN_CHANGE"/>
     <parameter name="[Event-Trigger]" operation="set" value="USER_LOCATION_CHANGE"/>
     <parameter name="[Event-Trigger]" operation="set" value="AN_GW_CHANGE"/>
     <parameter name="[Event-Trigger]" operation="set" value="IP_CAN_CHANGE"/>
-	
-	<!-- Charging-Rule-Install: used to activate, install or modify PCC rules as instructed from the PCRF to the PCEF
-			- Charging-Rule-Definition
-				- Charging-Rule-Name
-				- Flow-Information
-					- Flow-Description - TS 29.214 : IPFilterRule "action dir proto from src to dst [options]"
-						src and dst : <address/mask> [ports]
-						
-			Example: all SIP traffic towards P-CSCF (192.168.32.24) is allowed
-	-->
-	<parameter name="[Charging-Rule-Name]" operation="set" value="VoIP_CP"/>
-	<parameter name="[Flow-Description-in]" operation="set" value="permit in 17 from any to 192.168.32.24/32 5060,5061"/>
-	<parameter name="[Flow-Description-out]" operation="set" value="permit out 17 from 192.168.32.24/32 5060,5061 to any"/>
 
-	<!-- QoS-Information: requested QoS information associated with resources requested by the UE, an IP CAN bearer 
-		or the subscribed QoS information at APN level
-					
-		- APN-Aggregate-Max-Bitrate-UL/DL: total bandwidth usage for the uplink/downlink direction of non-GBR QCIs at 
-			the APN
+    <!-- Charging-Rule-Install: used to activate, install or modify PCC rules as instructed from the PCRF to the PCEF
+    		- Charging-Rule-Definition
+    			- Charging-Rule-Name
+    			- Flow-Information
+    				- Flow-Description - TS 29.214 : IPFilterRule "action dir proto from src to dst [options]"
+    					src and dst : <address/mask> [ports]
+    					
+    		Example: all SIP traffic towards P-CSCF (192.168.32.24) is allowed
+    -->
+    <parameter name="[Charging-Rule-Name]" operation="set" value="VoIP_CP"/>
+    <parameter name="[Flow-Description-in]" operation="set" value="permit in 17 from any to 192.168.32.24/32 5060,5061"/>
+    <parameter name="[Flow-Description-out]" operation="set" value="permit out 17 from 192.168.32.24/32 5060,5061 to any"/>
 
-		Example: we consider MME received subscription information for IMS APN from HSS
-	-->
-	<parameter name="[APN-Aggregate-Max-Bitrate_UL]" operation="set" value="100000"/>
-	<parameter name="[APN-Aggregate-Max-Bitrate_DL]" operation="set" value="100000"/>
+    <!-- QoS-Information: requested QoS information associated with resources requested by the UE, an IP CAN bearer 
+    	or the subscribed QoS information at APN level
+    				
+    	- APN-Aggregate-Max-Bitrate-UL/DL: total bandwidth usage for the uplink/downlink direction of non-GBR QCIs at 
+    		the APN
+    	Example: we consider MME received subscription information for IMS APN from HSS
+    -->
+    <parameter name="[APN-Aggregate-Max-Bitrate_UL]" operation="set" value="100000"/>
+    <parameter name="[APN-Aggregate-Max-Bitrate_DL]" operation="set" value="100000"/>
 
-	<!-- Default-EPS-Bearer-QoS: subscribed QoS information
-			- QoS-Class-Identifier
-			- Allocation-Retention-Priority :
-				- Priority-Level
-				- Pre-emption-Capability
-				- Pre-emption-Vulnerability
-			
-		Example: we consider MME received subscription information for IMS APN from HSS
-	-->
-	<parameter name="[QoS-Class-Identifier]" operation="set" value="QCI_5"/>
-	<parameter name="[Priority-Level]" operation="set" value="1"/>
-	<parameter name="[Pre-emption-Capability]" operation="set" value="PRE-EMPTION_CAPABILITY_ENABLED"/>
-	<parameter name="[Pre-emption-Vulnerability]" operation="set" value="PRE-EMPTION_VULNERABILITY_DISABLED"/>
+    <!-- Default-EPS-Bearer-QoS: subscribed QoS information
+    		- QoS-Class-Identifier
+    		- Allocation-Retention-Priority :
+    			- Priority-Level
+    			- Pre-emption-Capability
+    			- Pre-emption-Vulnerability
+    		
+    	Example: we consider MME received subscription information for IMS APN from HSS
+    -->
+    <parameter name="[QoS-Class-Identifier]" operation="set" value="QCI_5"/>
+    <parameter name="[Priority-Level]" operation="set" value="1"/>
+    <parameter name="[Pre-emption-Capability]" operation="set" value="PRE-EMPTION_CAPABILITY_ENABLED"/>
+    <parameter name="[Pre-emption-Vulnerability]" operation="set" value="PRE-EMPTION_VULNERABILITY_DISABLED"/>
 
-	
     <sendMessageDIAMETER name="SendAnswerCCA">
-		<header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-		<avp code="Session-Id" value="[sessionId]"/>
-		<avp code="Auth-Application-Id" value="[authApplicationId]"/>
-		<avp code="Origin-Host" value="[destinationHost]"/>
-		<avp code="Origin-Realm" value="[destinationRealm]"/>
-		<avp code="Result-Code" value="DIAMETER_SUCCESS"/>
-		<avp code="CC-Request-Type" value="[CC-Request-Type]"/>
-		<avp code="CC-Request-Number" value="[CC-Request-Number]"/>
-		<avp code="Charging-Rule-Install">
-			<avp code="Charging-Rule-Definition">
-				<avp code="Charging-Rule-Name" value="[Charging-Rule-Name]"/>
-				<avp code="Flow-Information">
-					<avp code="Flow-Description" value="[Flow-Description-in]"/>
-					<avp code="Flow-Description" value="[Flow-Description-out]"/>
-				</avp>
-			</avp>
-		</avp>
-		<avp code="QoS-Information">
-        	<avp code="APN-Aggregate-Max-Bitrate_UL" value="[APN-Aggregate-Max-Bitrate_UL]"/>
-        	<avp code="APN-Aggregate-Max-Bitrate_DL" value="[APN-Aggregate-Max-Bitrate_UL]"/>
-		</avp>
- 		<avp code="Default-EPS-Bearer-QoS">
-        	<avp code="QoS-Class-Identifier" value="[QoS-Class-Identifier]"/>
-        	<avp code="Allocation-Retention-Priority">
-				<avp code="Priority-Level" value="[Priority-Level]"/>
-				<avp code="Pre-emption-Capability" value="[Pre-emption-Capability]"/>
-				<avp code="Pre-emption-Vulnerability" value="[Pre-emption-Vulnerability]"/>
-			</avp>
-		</avp>
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Auth-Application-Id" value="[authApplicationId]"/>
+        <avp code="Origin-Host" value="[destinationHost]"/>
+        <avp code="Origin-Realm" value="[destinationRealm]"/>
+        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
+        <avp code="CC-Request-Type" value="[CC-Request-Type]"/>
+        <avp code="CC-Request-Number" value="[CC-Request-Number]"/>
+        <avp code="Charging-Rule-Install">
+            <avp code="Charging-Rule-Definition">
+                <avp code="Charging-Rule-Name" value="[Charging-Rule-Name]"/>
+                <avp code="Flow-Information">
+                    <avp code="Flow-Description" value="[Flow-Description-in]"/>
+                    <avp code="Flow-Description" value="[Flow-Description-out]"/>
+                </avp>
+            </avp>
+        </avp>
+        <avp code="QoS-Information">
+            <avp code="APN-Aggregate-Max-Bitrate_UL" value="[APN-Aggregate-Max-Bitrate_UL]"/>
+            <avp code="APN-Aggregate-Max-Bitrate_DL" value="[APN-Aggregate-Max-Bitrate_UL]"/>
+        </avp>
+        <avp code="Default-EPS-Bearer-QoS">
+            <avp code="QoS-Class-Identifier" value="[QoS-Class-Identifier]"/>
+            <avp code="Allocation-Retention-Priority">
+                <avp code="Priority-Level" value="[Priority-Level]"/>
+                <avp code="Pre-emption-Capability" value="[Pre-emption-Capability]"/>
+                <avp code="Pre-emption-Vulnerability" value="[Pre-emption-Vulnerability]"/>
+            </avp>
+        </avp>
    </sendMessageDIAMETER>
 
 </scenario>

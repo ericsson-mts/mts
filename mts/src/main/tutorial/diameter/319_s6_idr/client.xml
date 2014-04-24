@@ -147,46 +147,46 @@ Insert-Subscriber-Data-Request ::= < Diameter Header: 319, REQ, PXY, 16777251 >
                                                        { Proxy-State }
                                                      * [ AVP ]
                                  *[ Route-Record ]
-
 -->
 
     <parameter name="[Imsi]" operation="set" value="208011045322746"/>
-	
-	<!-- Access-Restriction-Data :  e.g. bit 2 reset to allow GAN/UMA - 3GPP TS 29.272 -->
+
+    <!-- Access-Restriction-Data :  e.g. bit 2 reset to allow GAN/UMA - 3GPP TS 29.272 -->
     <parameter name="[Access-Restriction-Data]" operation="set" value="0"/>
 
-	<!-- 
-		IDR-Flags : bitmask used by HSS to request information from MME/SGSN - 3GPP TS 29.272
-			- UE Reachability Request (bit 0): HSS is awaiting a Notification of UE Reachability
-			- T-ADS Data Request (bit 1): HSS requests the support status of "IMS Voice over PS Sessions", 
-				and the RAT Type and timestamp of the last radio contact with the UE
-			- EPS User State Request (bit 2): HSS requests the MME or the SGSN for the current user state
-			- EPS Location Information Request (bit 3): e HSS requests the MME or SGSN for location information
-			- Current Location Request (bit 4): HSS requests the MME or SGSN to provide the most current 
-				location information by paging the UE if the UE is in idle mode. 
-				This bit is used only in combination with the "EPS Location Information Request" bit
-		e.g. "30" for bits 1,2,3&4 set
-	-->
+    <!-- 
+    	IDR-Flags : bitmask used by HSS to request information from MME/SGSN - 3GPP TS 29.272
+    		- UE Reachability Request (bit 0): HSS is awaiting a Notification of UE Reachability
+    		- T-ADS Data Request (bit 1): HSS requests the support status of "IMS Voice over PS Sessions", 
+    			and the RAT Type and timestamp of the last radio contact with the UE
+    		- EPS User State Request (bit 2): HSS requests the MME or the SGSN for the current user state
+    		- EPS Location Information Request (bit 3): e HSS requests the MME or SGSN for location information
+    		- Current Location Request (bit 4): HSS requests the MME or SGSN to provide the most current 
+    			location information by paging the UE if the UE is in idle mode. 
+    			This bit is used only in combination with the "EPS Location Information Request" bit
+    	e.g. "30" for bits 1,2,3&4 set
+    -->
     <parameter name="[IDR-Flags]" operation="set" value="30"/>
 
+    <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestIDR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
-		<header request="true" command="3GPP-Insert-Subscriber-Data" applicationId="3GPP S6a/S6d"/>
-		<avp code="Session-Id" value="My-Session-Id-s6a"/>
-		<avp code="Vendor-Specific-Application-Id">
-	        	<avp code="Vendor-Id" value="TGPP"/>
-	        	<avp code="Auth-Application-Id" value="3GPP S6a"/>
-		</avp>
-		<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-		<avp code="Origin-Host" value="[localHostDIAM]"/>
-		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
-		<avp code="Destination-Host" value="[remoteHostDIAM]"/>
-		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
-		<avp code="User-Name" value="[Imsi]"/>
-		<avp code="Subscription-Data">
-			<avp code="Access-Restriction-Data" value="[Access-Restriction-Data]"/>
-		</avp>
-		<avp code="IDR-Flags" value="[IDR-Flags]"/>
-		</sendMessageDIAMETER>
+        <header request="true" command="3GPP-Insert-Subscriber-Data" applicationId="3GPP S6a/S6d"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" value="TGPP"/>
+            <avp code="Auth-Application-Id" value="3GPP S6a"/>
+        </avp>
+        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="User-Name" value="[Imsi]"/>
+        <avp code="Subscription-Data">
+            <avp code="Access-Restriction-Data" value="[Access-Restriction-Data]"/>
+        </avp>
+        <avp code="IDR-Flags" value="[IDR-Flags]"/>
+    </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="ReceiveAnswerIDA" request="false" type="3GPP-Insert-Subscriber-Data" result="DIAMETER_SUCCESS">
     </receiveMessageDIAMETER>
