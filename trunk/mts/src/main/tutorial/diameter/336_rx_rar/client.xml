@@ -28,26 +28,27 @@ From 3GPP TS 29.214 V10.3.0 : RAR is sent by the PCRF to the AF in order to indi
 	   *[ AVP ] 
  -->
 
-	 <!-- IP-CAN-Type change indication: 3GPP-GPRS|DOCSIS|xDSL|WiMAX|3GPP2|3GPP-EPS|Non-3GPP-EPS -->
+    <!-- IP-CAN-Type change indication: 3GPP-GPRS|DOCSIS|xDSL|WiMAX|3GPP2|3GPP-EPS|Non-3GPP-EPS -->
     <parameter name="[IP-CAN-Type]" operation="set" value="3GPP-GPRS"/>
 
-	<!-- RAT-Type change indication: WLAN|VIRTUAL|UTRAN|GERAN|GAN|HSPA_EVOLUTION|EUTRAN|CDMA2000_1X|HRPD|UMB|EHRPD -->
+    <!-- RAT-Type change indication: WLAN|VIRTUAL|UTRAN|GERAN|GAN|HSPA_EVOLUTION|EUTRAN|CDMA2000_1X|HRPD|UMB|EHRPD -->
     <parameter name="[RAT-Type]" operation="set" value="UTRAN"/>
 
+    <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestRAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
-		<header request="true" command="Re-Auth" applicationId="3GPP Rx"/>
-		<avp code="Session-Id" value="My-Session-Id"/>
-       	<avp code="Auth-Application-Id" value="3GPP Rx"/>
-		<avp code="Origin-Host" value="[localHostDIAM]"/>
-		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
-		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
-		<avp code="Destination-Host" value="[remoteHostDIAM]"/>
-		<avp code="IP-CAN-Type" value="[IP-CAN-Type]"/>
-		<avp code="RAT-Type" value="[RAT-Type]"/>
-	</sendMessageDIAMETER>
+        <header request="true" command="Re-Auth" applicationId="3GPP Rx"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Auth-Application-Id" value="3GPP Rx"/>
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="IP-CAN-Type" value="[IP-CAN-Type]"/>
+        <avp code="RAT-Type" value="[RAT-Type]"/>
+    </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="ReceiveAnswerRAA" request="false" type="Re-Auth" result="DIAMETER_SUCCESS">
-    		<parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
+        <parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
     </receiveMessageDIAMETER>
 
 

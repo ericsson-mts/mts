@@ -6,19 +6,20 @@
     
     <receiveRequestAAA name="ReceiveRequestMAR" command="Multimedia-Authentitcation:506">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
-    		<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-    		<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveRequestAAA>
 
     <sendAnswerAAA name="SendAnswerMAA">
         <header command="Multimedia-Authentitcation" applicationId="3GPP Cx" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id" value="[sessionId]"/>
         <avp code="Origin-Host" value="[remoteHostDIAM]"/>
         <avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
         <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" value="TGPP"/>
             <avp code="Auth-Application-Id" value="3GPP Cx"/>
         </avp>
-        <avp code="Session-Id" value="CXCSCFCX.sip.pfdev.fr;45e45ee4;046725;5cd579ef"/>
         <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
         <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
         <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr"/>

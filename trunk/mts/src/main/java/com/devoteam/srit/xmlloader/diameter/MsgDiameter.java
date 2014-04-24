@@ -364,7 +364,70 @@ public class MsgDiameter extends Msg
         
         return null ;
     }
+    
+    /**
+     *  Tell whether the message shall begin a new session 
+     * (= false by default) 
+     */
+    @Override
+    public boolean beginSession() throws Exception
+    {
+    	if (isRequest())
+    	{
+	        // get Session-Id:263
+	        Parameter var = getParameter("avp.263.value");
+	        if ((var != null) && (var.length() > 0)) 
+	        {
+	            return true;
+	        }
+    	}
+        return false;
+    }
 
+    /**
+     *  Tell whether the message shall end a session 
+     * (= false by default) 
+     */
+    @Override
+    public boolean endSession() throws Exception
+    {
+        String type = getType();
+        if (type.equalsIgnoreCase("Session-Termination:275"))
+        {
+            return true;
+        }
+        if (type.equalsIgnoreCase("Accounting:271"))
+        {
+            // get Accounting-Record-Type:480 AVP
+            Parameter var = getParameter("avp.480.value");
+            if ((var != null) && (var.length() > 0)) 
+            {
+                String strvalue = (String) var.get(0);
+                int intVal = new Integer(strvalue).intValue();
+                // value STOP_RECORD:4
+                if (intVal == 4)
+                {
+                    return true;
+                }
+            }
+        }
+        if (type.equalsIgnoreCase("Credit-Control:272"))
+        {
+            // get CC-Request-Type:416 AVP
+            Parameter var = getParameter("avp.416.value");
+            if ((var != null) && (var.length() > 0)) 
+            {
+                String strvalue = (String) var.get(0);
+                int intVal = new Integer(strvalue).intValue();
+                // value TERMINATION_REQUEST:3
+                if (intVal == 3)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     
     /** Return the length of the message*/
     @Override

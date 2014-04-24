@@ -32,7 +32,6 @@ Reset-Request ::= < Diameter Header: 322, REQ, PXY, 16777251 >
                                                        { Proxy-State }
                                                      * [ AVP ]
                                  *[ Route-Record ]
-
 -->
 
 	<!-- User-Id - UTF8String - TS 23.003
@@ -42,20 +41,21 @@ Reset-Request ::= < Diameter Header: 322, REQ, PXY, 16777251 >
 	-->
     <parameter name="[User-Id]" operation="set" value="208011045"/>
 
+    <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestRSR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
-		<header request="true" command="3GPP-Reset" applicationId="3GPP S6a/S6d"/>
-		<avp code="Session-Id" value="My-Session-Id-s6a"/>
-		<avp code="Vendor-Specific-Application-Id">
-	        	<avp code="Vendor-Id" value="TGPP"/>
-	        	<avp code="Auth-Application-Id" value="3GPP S6a"/>
-		</avp>
-		<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-		<avp code="Origin-Host" value="[localHostDIAM]"/>
-		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
-		<avp code="Destination-Host" value="[remoteHostDIAM]"/>
-		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
-		<avp code="User-Id" value="[User-Id]"/>
-		</sendMessageDIAMETER>
+        <header request="true" command="3GPP-Reset" applicationId="3GPP S6a/S6d"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" value="TGPP"/>
+            <avp code="Auth-Application-Id" value="3GPP S6a"/>
+        </avp>
+        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="User-Id" value="[User-Id]"/>
+    </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="ReceiveAnswerRSA" request="false" type="3GPP-Reset" result="DIAMETER_SUCCESS">
     </receiveMessageDIAMETER>

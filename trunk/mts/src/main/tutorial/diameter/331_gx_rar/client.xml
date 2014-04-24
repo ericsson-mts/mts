@@ -96,138 +96,139 @@ From 3GPP TS 29.212 V9.3.0 : RAR is sent by the PCCR to the PCEF used to provisi
 	   *[ AVP] 
  -->
 
- 	<!-- Re-Auth-Request-Type - RFC 4006 -->
+    <!-- Re-Auth-Request-Type - RFC 4006 -->
     <parameter name="[Re-Auth-Request-Type]" operation="set" value="AUTHORIZE_ONLY"/>
 
-	<!-- Origin-State-Id - RFC 3588: value that is incremented whenever a Diameter entity restarts with loss of 
-		previous state, for example upon reboot
-	-->
+    <!-- Origin-State-Id - RFC 3588: value that is incremented whenever a Diameter entity restarts with loss of 
+      previous state, for example upon reboot
+    -->
     <parameter name="[Origin-State-Id]" operation="set" value="0"/>
 
-	<!-- Event-Trigger: when sent from the PCRF to the PCEF the EventTrigger AVP indicates an event that shall cause
-			a re-request of PCC rules
-	-->
+    <!-- Event-Trigger: when sent from the PCRF to the PCEF the EventTrigger AVP indicates an event that shall cause
+      a re-request of PCC rules
+    -->
     <parameter name="[Event-Trigger]" operation="set" value="QOS_CHANGE"/>
     <parameter name="[Event-Trigger]" operation="set" value="RAT_CHANGE"/>
     <parameter name="[Event-Trigger]" operation="set" value="USER_LOCATION_CHANGE"/>
     <parameter name="[Event-Trigger]" operation="set" value="AN_GW_CHANGE"/>
-	
-	<!-- Charging-Rule-Install: used to activate, install or modify PCC rules as instructed from the PCRF to the PCEF
-			- Charging-Rule-Definition
-				- Charging-Rule-Name
-				- Flow-Information
-					- Flow-Description - TS 29.214 : IPFilterRule "action dir proto from src to dst [options]"
-						src and dst : <address/mask> [ports]
-				- Flows - TS 29214 : flow number in the media component
-						
-	-->
-	<parameter name="[Charging-Rule-Name-Rtp]" operation="set" value="RN_RTP_1"/>
-	<parameter name="[Flow-Description-Rtp-in]" operation="set" value="permit in 17 from 218.45.37.28 49234 to 192.168.32.24/32 41212"/>
-	<parameter name="[Flow-Description-Rtp-out]" operation="set" value="permit out 17 from 192.168.32.24/32 41212 to 218.45.37.28 49234"/>
-	<parameter name="[Flow-Status-Rtp]" operation="set" value="ENABLED"/>
-	<parameter name="[Max-Requested-Bandwidth-UL-Rtp]" operation="set" value="28000"/>
-	<parameter name="[Max-Requested-Bandwidth-DL-Rtp]" operation="set" value="28000"/>
-	<parameter name="[Reporting-Level-Rtp]" operation="set" value="0"/>	
-	<parameter name="[Online-Rtp]" operation="set" value="DISABLE_ONLINE"/>
-	<parameter name="[Offline-Rtp]" operation="set" value="ENABLE_OFFLINE"/>
-	<parameter name="[Metering-Method-Rtp]" operation="set" value="VOLUME"/>
-	<parameter name="[AF-Charging-Identifier-Rtp]" operation="set" value="12345FGYop"/>
-	<parameter name="[Media-Component-Number-Rtp]" operation="set" value="1"/>
-	<parameter name="[Flow-Number-Rtp]" operation="set" value="1"/>
 
-	<parameter name="[Charging-Rule-Name-Rtcp]" operation="set" value="RN_RTCP_1"/>
-	<parameter name="[Flow-Description-Rtcp-in]" operation="set" value="permit in 17 from 218.45.37.28 49235 to 192.168.32.24/32 41213"/>
-	<parameter name="[Flow-Description-Rtcp-out]" operation="set" value="permit out 17 from 192.168.32.24/32 41213 to 218.45.37.28 49235"/>
-	<parameter name="[Flow-Status-Rtcp]" operation="set" value="ENABLED"/>
-	<parameter name="[Max-Requested-Bandwidth-UL-Rtcp]" operation="set" value="2000"/>
-	<parameter name="[Max-Requested-Bandwidth-DL-Rtcp]" operation="set" value="2000"/>
-	<parameter name="[Reporting-Level-Rtcp]" operation="set" value="0"/>	
-	<parameter name="[Online-Rtcp]" operation="set" value="DISABLE_ONLINE"/>
-	<parameter name="[Offline-Rtcp]" operation="set" value="ENABLE_OFFLINE"/>
-	<parameter name="[Metering-Method-Rtcp]" operation="set" value="VOLUME"/>
-	<parameter name="[AF-Charging-Identifier-Rtcp]" operation="set" value="19845FGjip"/>
-	<parameter name="[Media-Component-Number-Rtcp]" operation="set" value="1"/>
-	<parameter name="[Flow-Number-Rtcp]" operation="set" value="2"/>
+    <!-- Charging-Rule-Install: used to activate, install or modify PCC rules as instructed from the PCRF to the PCEF
+    		- Charging-Rule-Definition
+    			- Charging-Rule-Name
+    			- Flow-Information
+    				- Flow-Description - TS 29.214 : IPFilterRule "action dir proto from src to dst [options]"
+    					src and dst : <address/mask> [ports]
+    			- Flows - TS 29214 : flow number in the media component
+    					
+    -->
+    <parameter name="[Charging-Rule-Name-Rtp]" operation="set" value="RN_RTP_1"/>
+    <parameter name="[Flow-Description-Rtp-in]" operation="set" value="permit in 17 from 218.45.37.28 49234 to 192.168.32.24/32 41212"/>
+    <parameter name="[Flow-Description-Rtp-out]" operation="set" value="permit out 17 from 192.168.32.24/32 41212 to 218.45.37.28 49234"/>
+    <parameter name="[Flow-Status-Rtp]" operation="set" value="ENABLED"/>
+    <parameter name="[Max-Requested-Bandwidth-UL-Rtp]" operation="set" value="28000"/>
+    <parameter name="[Max-Requested-Bandwidth-DL-Rtp]" operation="set" value="28000"/>
+    <parameter name="[Reporting-Level-Rtp]" operation="set" value="0"/>	
+    <parameter name="[Online-Rtp]" operation="set" value="DISABLE_ONLINE"/>
+    <parameter name="[Offline-Rtp]" operation="set" value="ENABLE_OFFLINE"/>
+    <parameter name="[Metering-Method-Rtp]" operation="set" value="VOLUME"/>
+    <parameter name="[AF-Charging-Identifier-Rtp]" operation="set" value="12345FGYop"/>
+    <parameter name="[Media-Component-Number-Rtp]" operation="set" value="1"/>
+    <parameter name="[Flow-Number-Rtp]" operation="set" value="1"/>
 
-	<parameter name="[QoS-Class-Identifier]" operation="set" value="1"/>
-	<parameter name="[Max-Requested-Bandwidth-UL]" operation="set" value="30000"/>
-	<parameter name="[Max-Requested-Bandwidth-DL]" operation="set" value="30000"/>
-	<parameter name="[Guaranteed-Bitrate-UL]" operation="set" value="30000"/>
-	<parameter name="[Guaranteed-Bitrate-DL]" operation="set" value="30000"/>
-	<parameter name="[Priority-Level]" operation="set" value="2"/>
-	<parameter name="[Pre-emption-Capability]" operation="set" value="PRE-EMPTION_CAPABILITY_ENABLED"/>
-	<parameter name="[Pre-emption-Vulnerability]" operation="set" value="PRE-EMPTION_VULNERABILITY_DISABLED"/>
-	
+    <parameter name="[Charging-Rule-Name-Rtcp]" operation="set" value="RN_RTCP_1"/>
+    <parameter name="[Flow-Description-Rtcp-in]" operation="set" value="permit in 17 from 218.45.37.28 49235 to 192.168.32.24/32 41213"/>
+    <parameter name="[Flow-Description-Rtcp-out]" operation="set" value="permit out 17 from 192.168.32.24/32 41213 to 218.45.37.28 49235"/>
+    <parameter name="[Flow-Status-Rtcp]" operation="set" value="ENABLED"/>
+    <parameter name="[Max-Requested-Bandwidth-UL-Rtcp]" operation="set" value="2000"/>
+    <parameter name="[Max-Requested-Bandwidth-DL-Rtcp]" operation="set" value="2000"/>
+    <parameter name="[Reporting-Level-Rtcp]" operation="set" value="0"/>	
+    <parameter name="[Online-Rtcp]" operation="set" value="DISABLE_ONLINE"/>
+    <parameter name="[Offline-Rtcp]" operation="set" value="ENABLE_OFFLINE"/>
+    <parameter name="[Metering-Method-Rtcp]" operation="set" value="VOLUME"/>
+    <parameter name="[AF-Charging-Identifier-Rtcp]" operation="set" value="19845FGjip"/>
+    <parameter name="[Media-Component-Number-Rtcp]" operation="set" value="1"/>
+    <parameter name="[Flow-Number-Rtcp]" operation="set" value="2"/>
+
+    <parameter name="[QoS-Class-Identifier]" operation="set" value="1"/>
+    <parameter name="[Max-Requested-Bandwidth-UL]" operation="set" value="30000"/>
+    <parameter name="[Max-Requested-Bandwidth-DL]" operation="set" value="30000"/>
+    <parameter name="[Guaranteed-Bitrate-UL]" operation="set" value="30000"/>
+    <parameter name="[Guaranteed-Bitrate-DL]" operation="set" value="30000"/>
+    <parameter name="[Priority-Level]" operation="set" value="2"/>
+    <parameter name="[Pre-emption-Capability]" operation="set" value="PRE-EMPTION_CAPABILITY_ENABLED"/>
+    <parameter name="[Pre-emption-Vulnerability]" operation="set" value="PRE-EMPTION_VULNERABILITY_DISABLED"/>
+
+    <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestRAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
-		<header request="true" command="Re-Auth" applicationId="3GPP Gx"/>
-		<avp code="Session-Id" value="My-Session-Id"/>
-       	<avp code="Auth-Application-Id" value="3GPP Gx"/>
-		<avp code="Origin-Host" value="[localHostDIAM]"/>
-		<avp code="Origin-Realm" value="[localRealmDIAM]"/>
-		<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
-		<avp code="Destination-Host" value="[remoteHostDIAM]"/>
-		<avp code="Origin-State-Id" value="[Origin-State-Id]"/>
-		<avp code="Charging-Rule-Install">
-			<avp code="Charging-Rule-Definition">
-				<avp code="Charging-Rule-Name" value="[Charging-Rule-Name-Rtp]"/>
-				<avp code="Flow-Information">
-					<avp code="Flow-Description" value="[Flow-Description-Rtp-in]"/>
-				</avp>
-				<avp code="Flow-Information">
-					<avp code="Flow-Description" value="[Flow-Description-Rtp-out]"/>
-				</avp>
-				<avp code="Flow-Status" value="[Flow-Status-Rtp]"/>
-				<avp code="QoS-Information">
-					<avp code="Max-Requested-Bandwidth-UL" value="[Max-Requested-Bandwidth-UL-Rtp]"/>
-					<avp code="Max-Requested-Bandwidth-DL" value="[Max-Requested-Bandwidth-DL-Rtp]"/>
-				</avp>
-				<avp code="Reporting-Level" value="[Reporting-Level-Rtp]"/>
-				<avp code="Online" value="[Online-Rtp]"/>
-				<avp code="Offline" value="[Offline-Rtp]"/>
-				<avp code="Metering-Method" value="[Metering-Method-Rtp]"/>
-				<avp code="AF-Charging-Identifier" value="[AF-Charging-Identifier-Rtp]"/>
-				<avp code="Flows">
-					<avp code="Media-Component-Number" value="[Media-Component-Number-Rtp]"/>
-					<avp code="Flow-Number" value="[Flow-Number-Rtp]"/>
-				</avp>
-			</avp>
-			<avp code="Charging-Rule-Definition">
-				<avp code="Charging-Rule-Name" value="[Charging-Rule-Name-Rtcp]"/>
-				<avp code="Flow-Information">
-					<avp code="Flow-Description" value="[Flow-Description-Rtcp-in]"/>
-				</avp>
-				<avp code="Flow-Information">
-					<avp code="Flow-Description" value="[Flow-Description-Rtcp-out]"/>
-				</avp>
-				<avp code="Flow-Status" value="[Flow-Status-Rtcp]"/>
-				<avp code="QoS-Information">
-					<avp code="Max-Requested-Bandwidth-UL" value="[Max-Requested-Bandwidth-UL-Rtcp]"/>
-					<avp code="Max-Requested-Bandwidth-DL" value="[Max-Requested-Bandwidth-DL-Rtcp]"/>
-				</avp>
-				<avp code="Reporting-Level" value="[Reporting-Level-Rtcp]"/>
-				<avp code="Online" value="[Online-Rtcp]"/>
-				<avp code="Offline" value="[Offline-Rtcp]"/>
-				<avp code="Metering-Method" value="[Metering-Method-Rtcp]"/>
-				<avp code="AF-Charging-Identifier" value="[AF-Charging-Identifier-Rtcp]"/>
-				<avp code="Flows">
-					<avp code="Media-Component-Number" value="[Media-Component-Number-Rtcp]"/>
-					<avp code="Flow-Number" value="[Flow-Number-Rtcp]"/>
-				</avp>
-			</avp>
-		</avp>
-		<avp code="QoS-Information">
-        	<avp code="QoS-Class-Identifier" value="[QoS-Class-Identifier]"/>
-        	<avp code="Guaranteed-Bitrate-UL" value="[Guaranteed-Bitrate-UL]"/>
-        	<avp code="Guaranteed-Bitrate-DL" value="[Guaranteed-Bitrate-DL]"/>
-        	<avp code="Max-Requested-Bandwidth-UL" value="[Max-Requested-Bandwidth-UL]"/>
-        	<avp code="Max-Requested-Bandwidth-DL" value="[Max-Requested-Bandwidth-DL]"/>
-        	<avp code="Allocation-Retention-Priority">
-				<avp code="Priority-Level" value="[Priority-Level]"/>
-				<avp code="Pre-emption-Capability" value="[Pre-emption-Capability]"/>
-				<avp code="Pre-emption-Vulnerability" value="[Pre-emption-Vulnerability]"/>
-			</avp>
-		</avp>
-	</sendMessageDIAMETER>
+        <header request="true" command="Re-Auth" applicationId="3GPP Gx"/>
+        <avp code="Session-Id" value="[Session-Id]"/>
+        <avp code="Auth-Application-Id" value="3GPP Gx"/>
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="Origin-State-Id" value="[Origin-State-Id]"/>
+        <avp code="Charging-Rule-Install">
+            <avp code="Charging-Rule-Definition">
+            <avp code="Charging-Rule-Name" value="[Charging-Rule-Name-Rtp]"/>
+            <avp code="Flow-Information">
+                <avp code="Flow-Description" value="[Flow-Description-Rtp-in]"/>
+            </avp>
+            <avp code="Flow-Information">
+                <avp code="Flow-Description" value="[Flow-Description-Rtp-out]"/>
+            </avp>
+            <avp code="Flow-Status" value="[Flow-Status-Rtp]"/>
+            <avp code="QoS-Information">
+                <avp code="Max-Requested-Bandwidth-UL" value="[Max-Requested-Bandwidth-UL-Rtp]"/>
+                <avp code="Max-Requested-Bandwidth-DL" value="[Max-Requested-Bandwidth-DL-Rtp]"/>
+            </avp>
+            <avp code="Reporting-Level" value="[Reporting-Level-Rtp]"/>
+                <avp code="Online" value="[Online-Rtp]"/>
+                <avp code="Offline" value="[Offline-Rtp]"/>
+                <avp code="Metering-Method" value="[Metering-Method-Rtp]"/>
+                <avp code="AF-Charging-Identifier" value="[AF-Charging-Identifier-Rtp]"/>
+                <avp code="Flows">
+                    <avp code="Media-Component-Number" value="[Media-Component-Number-Rtp]"/>
+                    <avp code="Flow-Number" value="[Flow-Number-Rtp]"/>
+                </avp>
+            </avp>
+            <avp code="Charging-Rule-Definition">
+                <avp code="Charging-Rule-Name" value="[Charging-Rule-Name-Rtcp]"/>
+                <avp code="Flow-Information">
+                    <avp code="Flow-Description" value="[Flow-Description-Rtcp-in]"/>
+                </avp>
+                <avp code="Flow-Information">
+                    <avp code="Flow-Description" value="[Flow-Description-Rtcp-out]"/>
+                </avp>
+                <avp code="Flow-Status" value="[Flow-Status-Rtcp]"/>
+                <avp code="QoS-Information">
+                    <avp code="Max-Requested-Bandwidth-UL" value="[Max-Requested-Bandwidth-UL-Rtcp]"/>
+                    <avp code="Max-Requested-Bandwidth-DL" value="[Max-Requested-Bandwidth-DL-Rtcp]"/>
+                </avp>
+                <avp code="Reporting-Level" value="[Reporting-Level-Rtcp]"/>
+                <avp code="Online" value="[Online-Rtcp]"/>
+                <avp code="Offline" value="[Offline-Rtcp]"/>
+                <avp code="Metering-Method" value="[Metering-Method-Rtcp]"/>
+                <avp code="AF-Charging-Identifier" value="[AF-Charging-Identifier-Rtcp]"/>
+                <avp code="Flows">
+                    <avp code="Media-Component-Number" value="[Media-Component-Number-Rtcp]"/>
+                    <avp code="Flow-Number" value="[Flow-Number-Rtcp]"/>
+                </avp>
+            </avp>
+        </avp>
+        <avp code="QoS-Information">
+            <avp code="QoS-Class-Identifier" value="[QoS-Class-Identifier]"/>
+            <avp code="Guaranteed-Bitrate-UL" value="[Guaranteed-Bitrate-UL]"/>
+            <avp code="Guaranteed-Bitrate-DL" value="[Guaranteed-Bitrate-DL]"/>
+            <avp code="Max-Requested-Bandwidth-UL" value="[Max-Requested-Bandwidth-UL]"/>
+            <avp code="Max-Requested-Bandwidth-DL" value="[Max-Requested-Bandwidth-DL]"/>
+            <avp code="Allocation-Retention-Priority">
+                <avp code="Priority-Level" value="[Priority-Level]"/>
+                <avp code="Pre-emption-Capability" value="[Pre-emption-Capability]"/>
+                <avp code="Pre-emption-Vulnerability" value="[Pre-emption-Vulnerability]"/>
+            </avp>
+        </avp>
+    </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="ReceiveAnswerRAA" request="false" type="Re-Auth" result="DIAMETER_SUCCESS">
     		<parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>

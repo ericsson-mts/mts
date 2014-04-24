@@ -6,37 +6,38 @@
 
     <receiveMessageDIAMETER name="ReceiveRequestMAR" request="true" type="Multimedia-Authentitcation:506">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
-    		<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-    		<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
-    		<parameter name="[param]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.value"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[param]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.value"/>
         <parameter name="[publicIdentity]" operation="protocol.setFromMessage" value="avp.Public-Identity.value"/>
         <parameter name="[privateIdentity]" operation="protocol.setFromMessage" value="avp.3.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
     
     <parameter name="code" operation="set" value="Auth-Data-Item"/>
     <parameter name="code" operation="list.addLast" value="[code]" value2="Auth-Data-Item"/>
 
     <sendMessageDIAMETER name="SendAnswerMAA">
-	<header request="false" command="[commandCode]" applicationId="[applicationID]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-	<avp code="Public-Identity" value="[PublicIdentity]1" />
-	<avp code="Origin-Host" value="[remoteHostDIAM]"/>
-	<avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
-	<avp code="Vendor-Specific-Application-Id">
-		<avp code="Vendor-Id" value="TGPP"/>
-		<avp code="Auth-Application-Id" value="[applicationID]"/>
-	</avp>
-	<avp code="Session-Id" value="CXCSCFCX.sip.pfdev.fr;45e45ee4;046725;5cd579ef"/>
-	<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-	<avp code="Result-Code" value="DIAMETER_SUCCESS"/>
-	<avp code="Public-Identity" value="[publicIdentity]"/>
-	<avp code="3" value="[privateIdentity]"/>
-	<avp code="Number-Authentication-Items" value="1"/>
-	<avp code="[code]">
-	        <avp code="Item-Number" value="0"/>
-	        <avp code="Authentication-Scheme" value="1[param]34[param(1)]5"/>
-	        <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
-	        <avp code="Authentication-Context" value="INVITE"/>
-	</avp>
+        <header request="false" command="[commandCode]" applicationId="[applicationID]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Public-Identity" value="[PublicIdentity]1" />
+        <avp code="Origin-Host" value="[remoteHostDIAM]"/>
+        <avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" value="TGPP"/>
+            <avp code="Auth-Application-Id" value="[applicationID]"/>
+        </avp>
+        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
+        <avp code="Public-Identity" value="[publicIdentity]"/>
+        <avp code="3" value="[privateIdentity]"/>
+        <avp code="Number-Authentication-Items" value="1"/>
+        <avp code="[code]">
+            <avp code="Item-Number" value="0"/>
+            <avp code="Authentication-Scheme" value="1[param]34[param(1)]5"/>
+            <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+            <avp code="Authentication-Context" value="INVITE"/>
+        </avp>
     </sendMessageDIAMETER>
 
 </scenario>

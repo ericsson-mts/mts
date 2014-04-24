@@ -7,81 +7,84 @@
     <!-- create a listenpoint with no parameter -->
     <createListenpointDIAMETER name="lp_client" localHost="[Listen-Client-Host]" localPort="[Listen-Client-Port]"/>
     
+    <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestMAR"  listenpoint="lp_client" remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]"
-       	destScenario="server">
-      	<header request="true" command="506" applicationId="Ericsson IMT 30 - Cx"/>
-      	<avp code="Origin-Host" value="[localHostDIAM]"/>
-      	<avp code="Origin-Realm" value="[localRealmDIAM]"/>
-      	<avp code="Destination-Host" value="[remoteHostDIAM]"/>	
-      	<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>		
-      	<avp code="Vendor-Specific-Application-Id">
-      	    <avp code="Vendor-Id" value="TGPP"/>
-      	    <avp code="Auth-Application-Id" value="3GPP Cx"/>
-      	</avp>
-      	<avp code="Session-Id" value="CXCSCFCX.sip.pfdev.fr;45e45ee4;046725;5cd579ef"/>
-      	<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-      	<avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
+        destScenario="server">
+        <header request="true" command="506" applicationId="Ericsson IMT 30 - Cx"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>		
+        <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" value="TGPP"/>
+            <avp code="Auth-Application-Id" value="3GPP Cx"/>
+        </avp>
+        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
         <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
         <avp code="Auth-Data-Item" vendorId="TGPP" state="true">
-      	    <avp code="Item-Number" value="0" vendorId="TGPP"/>
-      	    <avp code="Authentication-Scheme" value="DIGEST" vendorId="TGPP"/>
-      	    <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5' vendorId="TGPP"/>
-      	    <avp code="Authentication-Context" value="INVITE" vendorId="TGPP"/>
+            <avp code="Item-Number" value="0" vendorId="TGPP"/>
+            <avp code="Authentication-Scheme" value="DIGEST" vendorId="TGPP"/>
+            <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5' vendorId="TGPP"/>
+            <avp code="Authentication-Context" value="INVITE" vendorId="TGPP"/>
         </avp>
         <avp code="10000" value="badValue" vendorId="TGPP" state="false"/>
-      	<avp code="IMS-Information" vendorId="TGPP" state="true">
-      	    <avp code="Event-Type" value="badValue1" vendorId="TGPP" state="false"/>
-      	    <avp code="Role-Of-Node" value="[emptyList]" vendorId="TGPP" state="false"/>
-      	    <avp code="Node-Functionality" value="1212121" vendorId="TGPP" state="[stateValue]"/>
-      	    <avp code="User-Session-ID" value="[emptyList]" vendorId="TGPP" state="[stateValue]"/>
-      	    <avp code="Calling-Party-Address" value="badValue5" vendorId="TGPP"/>
-      	    <avp code="Called-Party-Address" value="[emptyList]" vendorId="TGPP"/>
-        </avp>    </sendMessageDIAMETER>
+        <avp code="IMS-Information" vendorId="TGPP" state="true">
+            <avp code="Event-Type" value="badValue1" vendorId="TGPP" state="false"/>
+            <avp code="Role-Of-Node" value="[emptyList]" vendorId="TGPP" state="false"/>
+            <avp code="Node-Functionality" value="1212121" vendorId="TGPP" state="[stateValue]"/>
+            <avp code="User-Session-ID" value="[emptyList]" vendorId="TGPP" state="[stateValue]"/>
+            <avp code="Calling-Party-Address" value="badValue5" vendorId="TGPP"/>
+            <avp code="Called-Party-Address" value="[emptyList]" vendorId="TGPP"/>
+        </avp>
+    </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="lp_client" request="false" type="506" result="2001" >
     </receiveMessageDIAMETER>
     
-    <removeListenpointDIAMETER name="lp_client"/>    
+    <removeListenpointDIAMETER name="lp_client"/>
 
-    <!-- create a listenpoint with all parameters -->           
+    <!-- create a listenpoint with all parameters -->
     <createListenpointDIAMETER name="lp_client" localHost="[Listen-Client-Host]" localPort="[Listen-Client-Port]">
-    	<nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
-	<avp code="Origin-Host" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
-	<avp code="Origin-Realm" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
-	<avp code="Host-IP-Address" value="[localHostDIAM]" type="IPAddress" mandatory="true"/>
-	<avp code="Vendor-Id" value="TGPP" type="VendorId" mandatory="true"/>
-	<avp code="Product-Name" value="IMSLoader - MTS" type="UTF8String" mandatory="true"/>
-	<avp code="Origin-State-Id" value="123456789" type="Unsigned32" mandatory="true"/>
-	<avp code="Firmware-Revision" value="987654321" type="Unsigned32" mandatory="true"/>   
-	<avp code="Vendor-Specific-Application-Id" type="Grouped" mandatory="true">		
-		<avp code="Vendor-Id" value="TGPP" type="VendorId" mandatory="true"/>
-		<avp code="Auth-Application-Id" value="3GPP Cx" type="AppId" mandatory="true"/>
-	</avp>	
+        <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
+        <avp code="Origin-Host" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
+        <avp code="Host-IP-Address" value="[localHostDIAM]" type="IPAddress" mandatory="true"/>
+        <avp code="Vendor-Id" value="TGPP" type="VendorId" mandatory="true"/>
+        <avp code="Product-Name" value="IMSLoader - MTS" type="UTF8String" mandatory="true"/>
+        <avp code="Origin-State-Id" value="123456789" type="Unsigned32" mandatory="true"/>
+        <avp code="Firmware-Revision" value="987654321" type="Unsigned32" mandatory="true"/>
+        <avp code="Vendor-Specific-Application-Id" type="Grouped" mandatory="true">
+            <avp code="Vendor-Id" value="TGPP" type="VendorId" mandatory="true"/>
+            <avp code="Auth-Application-Id" value="3GPP Cx" type="AppId" mandatory="true"/>
+        </avp>
     </createListenpointDIAMETER>
 
     <parameter name="[testcase:createListenpoint]" operation="system.semaphorewait"/> 
 
+    <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestMAR" listenpoint="lp_client" destScenario="server" 
-    			 remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]">
-	<header request="true" command="Multimedia-Authentitcation" applicationId="3GPP Cx"/>
-	<avp code="Origin-Host" value="[localHostDIAM]"/>
-	<avp code="Origin-Realm" value="[localRealmDIAM]"/>
-	<avp code="Destination-Host" value="[remoteHostDIAM]"/>	
-	<avp code="Destination-Realm" value="[remoteRealmDIAM]"/>		
-	<avp code="Vendor-Specific-Application-Id">
-	        <avp code="Vendor-Id" value="TGPP"/>
-	        <avp code="Auth-Application-Id" value="3GPP Cx"/>
-	</avp>
-	<avp code="Session-Id" value="CXCSCFCX.sip.pfdev.fr;45e45ee4;046725;5cd579ef"/>
-	<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-	<avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
-    	<avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
-    	<avp code="Auth-Data-Item" vendorId="TGPP">
-	        <avp code="Item-Number" value="0" vendorId="TGPP"/>
-	        <avp code="Authentication-Scheme" value="DIGEST" vendorId="TGPP"/>
-	        <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5' vendorId="TGPP"/>
-	        <avp code="Authentication-Context" value="INVITE" vendorId="TGPP"/>
-    	</avp>
+        remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]">
+        <header request="true" command="Multimedia-Authentitcation" applicationId="3GPP Cx"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>		
+        <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" value="TGPP"/>
+            <avp code="Auth-Application-Id" value="3GPP Cx"/>
+        </avp>
+        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
+        <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
+        <avp code="Auth-Data-Item" vendorId="TGPP">
+            <avp code="Item-Number" value="0" vendorId="TGPP"/>
+            <avp code="Authentication-Scheme" value="DIGEST" vendorId="TGPP"/>
+            <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5' vendorId="TGPP"/>
+            <avp code="Authentication-Context" value="INVITE" vendorId="TGPP"/>
+        </avp>
     </sendMessageDIAMETER>
 
     <removeListenpointDIAMETER name="lp_client"/>

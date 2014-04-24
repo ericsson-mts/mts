@@ -24,12 +24,12 @@ Abort-Session-Request ::= < Diameter Header: 258, REQ, PXY >
                                          * [ AVP ]
                      *[ Route-Record ]
                      *[ AVP ]
-
 -->
 
+    <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request ETSI/Rq/ASR" remoteURL="diameter://[remoteDIAM]" destScenario="SPDF">
         <header request="true" command="Abort-Session" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
 
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
           <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>

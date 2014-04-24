@@ -9,6 +9,7 @@
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>    
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
 
 <!--
@@ -66,12 +67,12 @@ Re-Auth-Answer  ::= < Diameter Header: 258, PXY >
 
     <sendMessageDIAMETER name="Send Answer ETSI/Gq'/RAA">
         <header request="false" command="[commandCode]" applicationId="[applicationID]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
 
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
           <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
 
-          <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>              
+          <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
           <avp code="Experimental-Result">
             <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
             <avp code="Experimental-Result-Code" mandatory="true" type="Unsigned32" value="2001" vendorId="[vendorID]"/>

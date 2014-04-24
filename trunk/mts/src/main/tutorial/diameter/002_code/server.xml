@@ -5,33 +5,34 @@
 <scenario>
 
     <receiveMessageDIAMETER name="ReceiveRequestMAR" request="true" type="506" >
-    		<parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
 
     <sendMessageDIAMETER name="SendAnswerMAA" >
-	<header request="false" command="506" applicationId="Ericsson IMT 30 - Cx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-	<avp code="263" value="CXCSCFCX.sip.pfdev.fr;45e45ee4;046725;5cd579ef" type="OctetString" mandatory="true"/>	
-	<avp code="264" value="[remoteHostDIAM]" type="OctetString" mandatory="true"/>
-	<avp code="296" value="[remoteRealmDIAM]" type="OctetString" mandatory="true"/>
-	<avp code="293" value="[localHostDIAM]" type="OctetString" mandatory="true"/>
-	<avp code="283" value="[localRealmDIAM]" type="OctetString" mandatory="true"/>
-	
-	<avp code="260">
-		<avp code="266" value="10415"/>
-		<avp code="258" value="16777216"/>
-	</avp>
-	<avp code="277" value="1"/>
-	<avp code="268" value="2001"/>		
-	<avp code="2" value="sip:+33875631975@sip.pfdev.fr"/>
-	<avp code="1026" value="1"/>
-	<avp code="1018">
-	        <avp code="1021" value="0"/>
-	        <avp code="1020" value="DIGEST"/>
-	        <avp code="1022" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
-	        <avp code="1024" value="INVITE"/>
-	</avp>
+        <header request="false" command="506" applicationId="Ericsson IMT 30 - Cx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="263" value="[sessionId]"/>
+        <avp code="264" value="[remoteHostDIAM]" type="OctetString" mandatory="true"/>
+        <avp code="296" value="[remoteRealmDIAM]" type="OctetString" mandatory="true"/>
+        <avp code="293" value="[localHostDIAM]" type="OctetString" mandatory="true"/>
+        <avp code="283" value="[localRealmDIAM]" type="OctetString" mandatory="true"/>
+        
+        <avp code="260">
+            <avp code="266" value="10415"/>
+            <avp code="258" value="16777216"/>
+        </avp>
+        <avp code="277" value="1"/>
+        <avp code="268" value="2001"/>		
+        <avp code="2" value="sip:+33875631975@sip.pfdev.fr"/>
+        <avp code="1026" value="1"/>
+        <avp code="1018">
+                <avp code="1021" value="0"/>
+                <avp code="1020" value="DIGEST"/>
+                <avp code="1022" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+                <avp code="1024" value="INVITE"/>
+        </avp>
     </sendMessageDIAMETER>
     
 </scenario>

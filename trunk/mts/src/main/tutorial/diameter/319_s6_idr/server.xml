@@ -73,96 +73,98 @@ Insert-Subscriber-Data-Answer ::= < Diameter Header: 319, PXY, 16777251 >
     <receiveMessageDIAMETER name="ReceiveRequestIDR" request="true" type="3GPP-Insert-Subscriber-Data">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
-    	<parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-    	<parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>		
-    	<parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>		
-    	<parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>		
-    	<parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>		
-    	<parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>		
-    	<parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>		
-    	<parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>		
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>
+        <parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
    
-	<!-- 
-		IMS-Voice-Over-PSSessions-Supported - enum: whether "IMS Voice over PS Sessions" is  supported by the UE's most 
-		recently used TA or RA in the MME/SGSN
-		- NOT_SUPPORTED
-		- SUPPORTED
-		
-	-->
+    <!-- 
+    	IMS-Voice-Over-PSSessions-Supported - enum: whether "IMS Voice over PS Sessions" is  supported by the UE's most 
+    	recently used TA or RA in the MME/SGSN
+    	- NOT_SUPPORTED
+    	- SUPPORTED
+    	
+    -->
     <parameter name="[IMS-Voice-Over-PSSessions-Supported]" operation="set" value="SUPPORTED"/>
-	
-	<!-- 
-		Last-UE-Activity-Time: contains the point of time of the last radio contact of the MME/SGSN with the UE.
-		Coded as the number of seconds since 0h on 1 January 1900 UTC
-	-->
+
+    <!-- 
+    	Last-UE-Activity-Time: contains the point of time of the last radio contact of the MME/SGSN with the UE.
+    	Coded as the number of seconds since 0h on 1 January 1900 UTC
+    -->
     <parameter name="[Last-UE-Activity-Time]" operation="set" value="123456789"/>
-	
-	<!-- 
-		RAT-Type: enum - 3GPP TS 29.212
-			e.g. EUTRAN (1004)
-	-->
+
+    <!-- 
+    	RAT-Type: enum - 3GPP TS 29.212
+    		e.g. EUTRAN (1004)
+    -->
     <parameter name="[RAT-Type]" operation="set" value="EUTRAN"/>
-	
-	<!-- 
-		IDA-Flags: bitmask - 3GPP TS 29.272
-			Only bit 0 defined but related to SGSN not MME -> not used
-	-->
-	
-	<!-- 
-		User-State: enum - 3GPP TS 29.272
-		- DETACHED
-		- ATTACHED_NOT_REACHABLE_FOR_PAGING
-		- ATTACHED_REACHABLE_FOR_PAGING
-		- CONNECTED_NOT_REACHABLE_FOR_PAGING
-		- CONNECTED_REACHABLE_FOR_PAGING
-		- NETWORK_DETERMINED_NOT_REACHABLE
-	-->
+
+    <!-- 
+    	IDA-Flags: bitmask - 3GPP TS 29.272
+    		Only bit 0 defined but related to SGSN not MME -> not used
+    -->
+    
+
+    <!-- 
+    	User-State: enum - 3GPP TS 29.272
+    	- DETACHED
+    	- ATTACHED_NOT_REACHABLE_FOR_PAGING
+    	- ATTACHED_REACHABLE_FOR_PAGING
+    	- CONNECTED_NOT_REACHABLE_FOR_PAGING
+    	- CONNECTED_REACHABLE_FOR_PAGING
+    	- NETWORK_DETERMINED_NOT_REACHABLE
+    -->
     <parameter name="[User-State]" operation="set" value="CONNECTED_REACHABLE_FOR_PAGING"/>
-	
-	<!-- 
-		EPS-Location-Information: MME-Location-Information:
-			- E-UTRAN-Cell-Global-Identity - TS 23.003: E-UTRAN CCI of the user which identifies the cell the UE is registered
-				Concatenation of LAI (Location Area ID: MCC + MNC + LAC) and CI (Cell ID)
-			- Tracking-Area-Identity (MCC + MNC + TAC): identifies the tracking area where the user is located
-			- Geographical-Information - TS 29.002: contain the geographical Information of the user
-			- Geodetic-Information - TS 29.002: contain the geodetic Information of the user
-			- Current-Location-Retrieved: ACTIVE-LOCATION-RETRIEVAL (only value defined) when location information 
-				obtained after a successful paging procedure for Active Location Retrieval
-			- Age-Of-Location-Information: contain the elapsed time in minutes since the last network contact of 
-				the UE
-			e.g. LAC 0xeeee, CI 0xcccc, TAC 0xdddd
-	-->
+
+    <!-- 
+    	EPS-Location-Information: MME-Location-Information:
+    		- E-UTRAN-Cell-Global-Identity - TS 23.003: E-UTRAN CCI of the user which identifies the cell the UE is registered
+    			Concatenation of LAI (Location Area ID: MCC + MNC + LAC) and CI (Cell ID)
+    		- Tracking-Area-Identity (MCC + MNC + TAC): identifies the tracking area where the user is located
+    		- Geographical-Information - TS 29.002: contain the geographical Information of the user
+    		- Geodetic-Information - TS 29.002: contain the geodetic Information of the user
+    		- Current-Location-Retrieved: ACTIVE-LOCATION-RETRIEVAL (only value defined) when location information 
+    			obtained after a successful paging procedure for Active Location Retrieval
+    		- Age-Of-Location-Information: contain the elapsed time in minutes since the last network contact of 
+    			the UE
+    		e.g. LAC 0xeeee, CI 0xcccc, TAC 0xdddd
+    -->
     <parameter name="[E-UTRAN-Cell-Global-Identity]" operation="set" value="0002080001eeeecccc"/>
     <parameter name="[Tracking-Area-Identity]" operation="set" value="0002080001dddd"/>
     <parameter name="[Current-Location-Retrieved]" operation="set" value="ACTIVE-LOCATION-RETRIEVAL"/>
     <parameter name="[Age-Of-Location-Information]" operation="set" value="20"/>
 
     <sendMessageDIAMETER name="SendAnswerIDA">
-	<header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-	<avp code="Session-Id" value="[sessionId]"/>
-	<avp code="Vendor-Specific-Application-Id">
-		<avp code="Vendor-Id" value="[vendorId]"/>
-		<avp code="Auth-Application-Id" value="[authApplicationId]"/>
-	</avp>
-	<avp code="Result-Code" value="DIAMETER_SUCCESS"/>
-	<avp code="Auth-Session-State" value="[authSessionState]"/>
-	<avp code="Origin-Host" value="[destinationHost]"/>
-	<avp code="Origin-Realm" value="[destinationRealm]"/>
-	<avp code="IMS-Voice-Over-PSSessions-Supported" value="[IMS-Voice-Over-PSSessions-Supported]"/>
-	<avp code="Last-UE-Activity-Time" value="[Last-UE-Activity-Time]"/>
-	<avp code="RAT-Type" value="[RAT-Type]"/>
-	<avp code="EPS-User-State">
-		<avp code="User-State" value="[User-State]"/>
-	</avp>
-	<avp code="EPS-Location-Information">
-		<avp code="MME-Location-Information">
-			<avp code="E-UTRAN-Cell-Global-Identity" value="[E-UTRAN-Cell-Global-Identity]"/>
-			<avp code="Tracking-Area-Identity" value="[Tracking-Area-Identity]"/>
-			<avp code="Current-Location-Retrieved" value="[Current-Location-Retrieved]"/>
-			<avp code="Age-Of-Location-Information" value="[Age-Of-Location-Information]"/>
-		</avp>
-	</avp>
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" value="[vendorId]"/>
+            <avp code="Auth-Application-Id" value="[authApplicationId]"/>
+        </avp>
+        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
+        <avp code="Auth-Session-State" value="[authSessionState]"/>
+        <avp code="Origin-Host" value="[destinationHost]"/>
+        <avp code="Origin-Realm" value="[destinationRealm]"/>
+        <avp code="IMS-Voice-Over-PSSessions-Supported" value="[IMS-Voice-Over-PSSessions-Supported]"/>
+        <avp code="Last-UE-Activity-Time" value="[Last-UE-Activity-Time]"/>
+        <avp code="RAT-Type" value="[RAT-Type]"/>
+        <avp code="EPS-User-State">
+            <avp code="User-State" value="[User-State]"/>
+        </avp>
+        <avp code="EPS-Location-Information">
+            <avp code="MME-Location-Information">
+                <avp code="E-UTRAN-Cell-Global-Identity" value="[E-UTRAN-Cell-Global-Identity]"/>
+                <avp code="Tracking-Area-Identity" value="[Tracking-Area-Identity]"/>
+                <avp code="Current-Location-Retrieved" value="[Current-Location-Retrieved]"/>
+                <avp code="Age-Of-Location-Information" value="[Age-Of-Location-Information]"/>
+            </avp>
+        </avp>
     </sendMessageDIAMETER>
 
 </scenario>

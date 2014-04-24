@@ -43,12 +43,12 @@ User-Data-Request ::= < Diameter Header: 306, REQ, PXY, 16777217 >
                                               { Proxy-State }
                                             * [ AVP ]
                         *[ Route-Record ]
-
 -->
 
+    <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request 3GPP/SH/UDR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
         <header request="true" command="User-Data" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="hss.sip.france.fr;45e45ee4;046725;5cd579ef"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
           <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
             <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>

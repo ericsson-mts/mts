@@ -663,9 +663,8 @@ public abstract class Stack
 	                    float sessionTime = Stack.getTimeDuration(msg, sess.getBeginMsg().getTimestamp());
 			            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Finish a outgoing session (time = ", sessionTime, " s) : ", msg.toShortString());
 			            
-			    		// sess.onRemove();
-			    		// outSessions.remove(msg.getSessionId());
-			    		// inSessions.remove(msg.getSessionId());
+			    		sess.onRemove();
+			    		outinSessions.remove(msg.getSessionId());
 	            	}
             	}
             }
