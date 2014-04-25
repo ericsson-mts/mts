@@ -263,14 +263,44 @@
 <test parameter="[MaxForward]" condition="string.equals" value="70"/>
 
 <parameter name="[ParamVal]" operation="protocol.setFromMessage" value="header.Param.Parameter"/>
+<test parameter="[ParamVal]" condition="list.size" value="1"/>
+<test parameter="[ParamVal]" condition="string.equals" value="val"/>
+
 <parameter name="[Param1]" operation="protocol.setFromMessage" value="header.Param.Parameter.param1"/>
+<test parameter="[Param1]" condition="list.size" value="2"/>
+<test parameter="[Param1(0)]" condition="string.equals" value="abcde"/>
+<test parameter="[Param1(1)]" condition="string.equals" value="01234"/>
+
 <parameter name="[Param2]" operation="protocol.setFromMessage" value="header.Param.Parameter.param2"/>
+<test parameter="[Param2]" condition="list.size" value="1"/>
+<test parameter="[Param2]" condition="string.equals" value="01234"/>
+
 <parameter name="[AttrVal]" operation="protocol.setFromMessage" value="header.Attr.Attribute"/>
+<test parameter="[AttrVal]" condition="list.size" value="3"/>
+<test parameter="[AttrVal(0)]" condition="string.equals" value="val1"/>
+<test parameter="[AttrVal(1)]" condition="string.equals" value="val2"/>
+<test parameter="[AttrVal(2)]" condition="string.equals" value="val3"/>
+
 <parameter name="[Attr1]" operation="protocol.setFromMessage" value="header.Attr.Attribute.attr1"/>
+<test parameter="[Attr1]" condition="list.size" value="1"/>
+<test parameter="[Attr1]" condition="string.equals" value="abcde"/>
+
 <parameter name="[Attr2]" operation="protocol.setFromMessage" value="header.Attr.Attribute.attr2"/>
-<parameter name="[Argument0]" operation="protocol.setFromMessage" value="header.Arg.Argument.0"/>
-<parameter name="[Argument1]" operation="protocol.setFromMessage" value="header.Arg.Argument.1"/>
-<parameter name="[Argument2]" operation="protocol.setFromMessage" value="header.Arg.Argument.2"/>
+<test parameter="[Attr2]" condition="list.size" value="2"/>
+<test parameter="[Attr2(0)]" condition="string.equals" value="01234"/>
+<test parameter="[Attr2(1)]" condition="string.equals" value="abcde"/>
+
+<parameter name="[Arg0]" operation="protocol.setFromMessage" value="header.Arg.Argument.0"/>
+<test parameter="[Arg0]" condition="list.size" value="1"/>
+<test parameter="[Arg0]" condition="string.equals" value="arg0"/>
+
+<parameter name="[Arg1]" operation="protocol.setFromMessage" value="header.Arg.Argument.1"/>
+<test parameter="[Arg1]" condition="list.size" value="1"/>
+<test parameter="[Arg1]" condition="string.equals" value="arg1"/>
+
+<parameter name="[Arg2]" operation="protocol.setFromMessage" value="header.Arg.Argument.2"/>
+<test parameter="[Arg2]" condition="list.size" value="1"/>
+<test parameter="[Arg2]" condition="string.equals" value="arg2"/>
 
 </receiveMessageSIP>
 
@@ -336,10 +366,11 @@
 <test parameter="[AuthInfo]" condition="string.equals" value="nextnonce=&quot;84a4cc6f3082121f32b42a2187831a9e&quot;, qop=auth, rspauth=&quot;7587245234b3434cc3412213e5f113a5432&quot;, cnonce=&quot;0a4f113b&quot;, nc=00000001"/>
 
 <parameter name="[AuthinfoScheme]" operation="protocol.setFromMessage" value="header.Authentication-Info.Scheme"/>
-<test parameter="[AuthinfoScheme]" condition="string.equals" value="Digest"/>
+<test parameter="[AuthinfoScheme]" condition="list.size" value="1"/>
+<test parameter="[AuthinfoScheme]" condition="string.equals" value=""/>
 
-<parameter name="[AuthinfoNextnonce]" operation="protocol.setFromMessage" value="header.Authentication-Info.Attribute.nextnonce"/>
-<test parameter="[AuthinfoNextnonce]" condition="string.equals" value="84a4cc6f3082121f32b42a2187831a9e"/>
+<!--parameter name="[AuthinfoNextnonce]" operation="protocol.setFromMessage" value="header.Authentication-Info.Attribute.nextnonce"/>
+<test parameter="[AuthinfoNextnonce]" condition="string.equals" value="84a4cc6f3082121f32b42a2187831a9e"/-->
 
 <parameter name="[AuthinfoRspauth]" operation="protocol.setFromMessage" value="header.Authentication-Info.Attribute.rspauth"/>
 <test parameter="[AuthinfoRspauth]" condition="string.equals" value="7587245234b3434cc3412213e5f113a5432"/>
