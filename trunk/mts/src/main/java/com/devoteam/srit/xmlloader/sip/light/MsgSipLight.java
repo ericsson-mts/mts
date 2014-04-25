@@ -472,7 +472,7 @@ public class MsgSipLight extends MsgSip
         	// case Authentication-Info pas de Scheme Digest devant (authentication HTTP)
         	if ("Authentication-Info".equalsIgnoreCase(params[1]))
         	{
-        		value = "Digest " + value;
+        		value = " ," + value;
         	}
     		MsgParser parser = new MsgParser(); 
     		parser.parse(value, " ,", '=', "\"\"");
@@ -486,7 +486,7 @@ public class MsgSipLight extends MsgSip
         	// case Authentication-Info pas de Scheme Digest devant (authentication HTTP)
         	if ("Authentication-Info".equalsIgnoreCase(params[1]))
         	{
-        		value = "Digest " + value;
+        		value = " ," + value;
         	}
         	MsgParser parser = new MsgParser(); 
     		parser.parse(value, " ,", '=', "\"\"");
