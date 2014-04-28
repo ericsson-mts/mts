@@ -150,14 +150,9 @@ public class Function {
                 }
             }
             else {
-                if (!(o instanceof String)) {
-                    throw new ExecutionException("parameter content is not a " + type + "\r\n" + parameter);
-                }
-
-                String s = (String) o;
                 if ("number".equalsIgnoreCase(type)) {
                     try {
-                        Double.parseDouble(s);
+                        Double.parseDouble((String) o);
                     }
                     catch (Exception e) {
                         throw new ExecutionException("parameter content is not a number\r\n" + parameter, e);
@@ -165,7 +160,7 @@ public class Function {
                 }
                 else if ("boolean".equalsIgnoreCase(type)) {
                     try {
-                        Boolean.parseBoolean(s);
+                        Boolean.parseBoolean((String) o);
                     }
                     catch (Exception e) {
                         throw new ExecutionException("parameter content is not a boolean\r\n" + parameter, e);
@@ -174,11 +169,14 @@ public class Function {
                 else if ("binary".equalsIgnoreCase(type)) {
                     try {
                         // TODO: improve; it's simple but expensive as it is
-                        Array.fromHexString(s);
+                        Array.fromHexString((String) o);
                     }
                     catch (Exception e) {
                         throw new ExecutionException("parameter content is not a binary\r\n" + parameter, e);
                     }
+                }
+                else{
+                    // do nothing, don't check the type
                 }
             }
         }
