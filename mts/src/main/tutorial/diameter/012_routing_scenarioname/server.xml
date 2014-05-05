@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP CX Multimedia Authentication answer (MAR/MAA)" -->
+
+<scenario>
+
+    <createListenpointDIAMETER name="server" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]">
+        <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
+        <avp code="Origin-Host" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
+        <avp code="Host-IP-Address" value="[localHostDIAM]" type="IPAddress" mandatory="true"/>
+        <avp code="Vendor-Id" value="TGPP" type="VendorId" mandatory="true"/>
+        <avp code="Product-Name" value="MTS : Multiprotocol Test Suite" type="UTF8String" mandatory="true"/>
+        <avp code="Origin-State-Id" value="123456789" type="Unsigned32" mandatory="true"/>
+        <avp code="Firmware-Revision" value="987654321" type="Unsigned32" mandatory="true"/>
+        <avp code="Vendor-Specific-Application-Id" type="Grouped" mandatory="true">
+        <avp code="Vendor-Id" value="TGPP" type="VendorId" mandatory="true"/>
+        <avp code="Auth-Application-Id" value="3GPP Cx" type="AppId" mandatory="true"/>
+        </avp>	
+    </createListenpointDIAMETER>
+
+    <parameter name="[testcase:createListenpoint]" operation="system.semaphorenotify"/>
+
+  <receiveMessageDIAMETER name="ReceiveRequestMAR" listenpoint="server" request="true" type="Multimedia-Authentitcation:506" >
+      <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+      <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+      <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+      <parameter name="[remoteHostDIAM]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>
+      <parameter name="[remotePort]" operation="protocol.setFromMessage" value="listenpoint.localPort"/>
+      <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>	
+  </receiveMessageDIAMETER>
+
+    <!-- not possible because of the Diameter stack -->
+    <!--sendMessageDIAMETER name="SendAnswerMAA" listenpoint="server" remoteHost="[remoteHostDIAM]" remotePort="[remotePort]"-->
+    <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="server">
+        <header request="false" command="[commandCode]" applicationId="3GPP Cx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Origin-Host" value="[remoteHostDIAM]"/>
+        <avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" value="TGPP"/>
+            <avp code="Auth-Application-Id" value="3GPP Cx"/>
+        </avp>
+        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>		
+        <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr"/>
+        <avp code="Number-Authentication-Items" value="1"/>
+        <avp code="Auth-Data-Item">
+            <avp code="Item-Number" value="0"/>
+            <avp code="Authentication-Scheme" value="DIGEST"/>
+            <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+            <avp code="Authentication-Context" value="INVITE"/>
+        </avp>    
+    </sendMessageDIAMETER>
+    
+    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="SendRequestMAR" listenpoint="server" remoteURL="diameter://[Listen-Client-Host]:[Listen-Client-Port]">
+        <header request="true" command="Multimedia-Authentitcation" applicationId="3GPP Cx" proxiable="true"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" value="TGPP"/>
+            <avp code="Auth-Application-Id" value="3GPP Cx"/>
+        </avp>
+        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
+        <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
+        <avp code="Auth-Data-Item" vendorId="TGPP">
+            <avp code="Item-Number" value="0" vendorId="TGPP"/>
+            <avp code="Authentication-Scheme" value="DIGEST" vendorId="TGPP"/>
+            <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5' vendorId="TGPP"/>
+            <avp code="Authentication-Context" value="INVITE" vendorId="TGPP"/>
+        </avp>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="server" request="false" type="Multimedia-Authentitcation:506" result="DIAMETER_SUCCESS:2001" >
+    </receiveMessageDIAMETER>
+
+    <removeListenpointDIAMETER name="server"/>
+    
+</scenario>

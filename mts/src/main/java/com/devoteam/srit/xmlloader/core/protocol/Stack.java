@@ -101,29 +101,12 @@ public abstract class Stack
      * Config parameter
      */
     public long msgLifeTime = 30*1000;
-    /**
-     * Config parameter
-     */
     public long sessLifeTime = 600*1000;
-    /**
-     * Config parameter
-     */
     public long receiveTimeout = 30;
-    /**
-     * Config parameter
-     */
     public boolean retransmitManagement = false;
-    /**
-     * Config parameter
-     */
     public boolean retransmitFiltering = false;
-    /**
-     * Config parameter
-     */    
     public boolean routeDefaultResponse = true;
-    /**
-     * Config parameter
-     */
+    public boolean routeDefaultSubsequent = true;
     public float[] retransmitTimes = null;
     
     /** Timer to schedule the retransaction */
@@ -149,6 +132,8 @@ public abstract class Stack
         retransmitFiltering = config.getBoolean("retransmit.FILTERING", retransmitFiltering);
 
         routeDefaultResponse = config.getBoolean("route.DEFAULT_RESPONSE", routeDefaultResponse);
+        
+        routeDefaultSubsequent = config.getBoolean("route.DEFAULT_SUBSEQUENT", routeDefaultSubsequent);
         
         String retransmitTimersParam = config.getString("retransmit.TIMERS");
         if (retransmitTimersParam != null && retransmitTimersParam.trim().length() > 0)
@@ -672,6 +657,7 @@ public abstract class Stack
 	            // if necessary, then create a new session
 	        	if (msg.beginSession()) {
 		            sess = new Sess(this, msg);
+		            sess.setScenarioRunner(srcRunner);
 		            outinSessions.put(msg.getSessionId(), sess);
 		            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Create a new outgoing session : ", msg.toShortString());
 	        	}
@@ -911,6 +897,15 @@ public abstract class Stack
 			    		// sess.onRemove();
 			    		// outinSessions.remove(msg.getSessionId());
 	            	}
+	            	
+	                if (routeDefaultSubsequent && sess != null)
+	                {
+	                    destScenario = sess.getScenarioRunner();
+	                    if (destScenario != null)
+	                    {
+	                        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: routing the received response by TransactionId to ", destScenario.getName(), " transId=", msg.getTransactionId());
+	                    }
+	                }
             	}
             }
             else
@@ -919,6 +914,7 @@ public abstract class Stack
 	        	if (msg.beginSession())
 	        	{
 		            sess = new Sess(this, msg);
+		            sess.setScenarioRunner(destScenario);
 		            outinSessions.put(msg.getSessionId(), sess);
 		            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Create a new incoming session : ", msg.toShortString());
 	        	}
