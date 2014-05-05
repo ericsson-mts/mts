@@ -90,20 +90,34 @@
         <scenario file="011_listenpoint/server.xml" name="server" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="012_routing" state="true">
+    <testcase description="diameter" name="012_routing_scenarioname" state="true">
         <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
         <parameter name="[Listen-Client-Port]" operation="set" value="3870"/>
         <parameter name="[Listen-Server-Host]" operation="set" value="[localHostDIAM]"/>
         <parameter name="[Listen-Server-Port]" operation="set" value="3868"/>
     
-        <scenario file="012_routing/client.xml" name="client" routingName="client"/>
-        <scenario file="012_routing/server.xml" name="server" routingName="server"/>
+        <!--routing using SCENARIO_NAME=header.command -->
+        <scenario file="012_routing_scenarioname/client.xml" name="Scenario Client" routingName="506"/>
+        <!--routing using SCENARIO_NAME=listenpoint.name -->
+        <scenario file="012_routing_scenarioname/server.xml" name="Scenario Server" routingName="server"/>
+    </testcase>
+
+    <testcase description="diameter" name="012_routing_destscenario" state="true">
+        <!--routing using MESSAGE_ID (destScenario) -->
+        <scenario file="012_routing_destscenario/client.xml" name="Scenario client" routingName="nothing"/>
+        <scenario file="012_routing_destscenario/server.xml" name="Scenario server" routingName="nothing"/>
     </testcase>
 
     <testcase description="diameter" name="013_session_STR" state="true">
+        <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
+        <parameter name="[Listen-Client-Port]" operation="set" value="3880"/>
+        <parameter name="[Listen-Server-Host]" operation="set" value="[remoteHostDIAM]"/>
+        <parameter name="[Listen-Server-Port]" operation="set" value="3882"/>
         <parameter name="[applicationID]" operation="set" value="16777236"/>
-        <scenario file="013_session_STR/client.xml" name="client" routingName="client"/>
-        <scenario file="013_session_STR/server.xml" name="server" routingName="server"/>
+        
+        <!--routing using SESSION_ID -->
+        <scenario file="013_session_STR/client.xml" name="Scenario client" routingName="nothing"/>
+        <scenario file="013_session_STR/server.xml" name="Scenario server" routingName="nothing"/>
     </testcase>
 
     <testcase description="diameter" name="101_cx_uar" state="true">
