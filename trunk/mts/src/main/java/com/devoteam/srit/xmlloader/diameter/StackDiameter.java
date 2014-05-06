@@ -23,8 +23,6 @@
 
 package com.devoteam.srit.xmlloader.diameter;
 
-
-import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -39,8 +37,7 @@ import com.devoteam.srit.xmlloader.core.utils.XMLElementAVPParser;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 
 import dk.i1.diameter.Message;
-import dk.i1.diameter.node.Capability;
-import dk.i1.diameter.node.NodeSettings;
+import dk.i1.diameter.node.Node;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
@@ -48,6 +45,7 @@ import gp.utils.arrays.SupArray;
 import java.io.InputStream;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.dom4j.Element;
 
@@ -73,15 +71,16 @@ public class StackDiameter extends Stack {
         	Listenpoint listenpoint = new ListenpointDiameter(this);
             createListenpoint(listenpoint, StackFactory.PROTOCOL_DIAMETER);
         }
-
         
         // configure stack trace parameters
         FileHandler fh = new FileHandler("../logs/diameterStack.log");
-        java.util.logging.Logger.getLogger("dk").addHandler(fh);
+        // logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+        Node.logger.addHandler(fh);
         String stringLevel = getConfig().getString("TRACE_LEVEL");
         Level traceLevel = Level.parse(stringLevel);
+        Node.logger.setLevel(traceLevel);
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "traceLevel : ", traceLevel);
-        java.util.logging.Logger.getLogger("dk").setLevel(traceLevel);            
+        Node.logger.warning("traceLevel = " + traceLevel);
     }
     
     /** Creates a Listenpoint specific to each Stack */
