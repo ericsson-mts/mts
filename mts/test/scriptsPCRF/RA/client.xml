@@ -2,9 +2,6 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <scenario>
 
-    <!-- create a listenpoint with no parameter -->
-    <createListenpointDIAMETER name="lp_server" localHost="[remoteHostDIAM]" localPort="[remotePortDIAM]"/>
-
 <!--
 From RFC 3588 September 2003 :
 Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
@@ -27,7 +24,7 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
 -->     
         
     <sendMessageDIAMETER name="Send Request RAR" listenpoint="lp_server" 
-        remoteURL="diameter://[pcscfDIAM]">
+        remoteURL="diameter://[localDIAM]">
         <header request="true" command="Re-Auth" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
           <!-- The Session-Id AVP is used to identify a specific session. -->
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[test:lastSessionId_[framedIPAddress]]"/>
@@ -87,11 +84,7 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="Receive Answer RAA" listenpoint="lp_server" 
-	request="false" type="Re-Auth:258" result="DIAMETER_SUCCESS:2001">
+        request="false" type="Re-Auth:258" result="DIAMETER_SUCCESS:2001">
     </receiveMessageDIAMETER>
-
-    <finally>
-          <removeListenpointDIAMETER name="lp_server"/>
-    </finally>
 
 </scenario>

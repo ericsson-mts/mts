@@ -19,17 +19,7 @@
     <parameter name="[remotePortDIAM]" operation="set" value="3868"/>
     <parameter description="remote port of the SUT host" editable="true" name="[remotePortDIAM]" operation="set" value="[remotePortDIAM]"/>
     <parameter name="[remoteDIAM]" operation="set" value="[remoteHostDIAM]:[remotePortDIAM]"/>
- 
-    <parameter name="[pcscfHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter description="remote address of the SUT host" editable="true" name="[pcscfHostDIAM]" operation="set" value="[pcscfHostDIAM(0)]"/>
-    <!--parameter name="[pcscfHostDIAM]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/-->
-    <!--parameter name="[pcscfHostDIAM]" operation="set" value="172.20.214.133"/-->
-    <!--parameter name="[pcscfHostDIAM]" operation="set" value="imspcf401-imscore.sip.imsnsn.fr"/-->
-    <parameter name="[pcscfPortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[pcscfPortDIAM]" operation="set" value="3868"/>
-    <parameter description="remote port of the SUT host" editable="true" name="[pcscfPortDIAM]" operation="set" value="[pcscfPortDIAM]"/>
-    <parameter name="[pcscfDIAM]" operation="set" value="[pcscfHostDIAM]:[pcscfPortDIAM]"/>
-  
+   
     <parameter name="[originIPAddress]" operation="set" value="172.18.128.19" editable="true"/>
     <parameter name="[termIPAddress]" operation="set" value="172.18.128.20" editable="true"/>
     
@@ -46,19 +36,19 @@
     <testcase name="RecAAR SendAAA + RecSTR SendSTA" description="Receive/send the AA(265) messages and receive/send the ST(275) messages" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
       <scenario name="client">AA-ST/client.xml</scenario>
-      <scenario name="[originIPAddress],DIAMETER">AA-ST/server.xml</scenario>
+      <scenario name="[originIPAddress]">AA-ST/server.xml</scenario>
     </testcase>
     
     <testcase name="SendASR RecASA" description="Send the ASRequest(274) and recieved the ASAnswer(274)" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
       <scenario name="client">AS/client.xml</scenario>
-      <scenario name="[originIPAddress]">AS/server.xml</scenario>
+      <scenario name="[originIPAddress],274">AS/server.xml</scenario>
     </testcase>
     
     <testcase name="SendRAR RecRAA" description="Send the RARequest(268) and receive the RAAnswer(268)" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
       <scenario name="client">RA/client.xml</scenario>
-      <scenario name="[originIPAddress]">RA/server.xml</scenario>
+      <scenario name="[originIPAddress],258">RA/server.xml</scenario>
     </testcase>
     
     <testcase name="----- TERMINATING -----" description="Testcase on TERMINATING side" state="false"/>
@@ -66,19 +56,19 @@
     <testcase name="RecAAR SendAAA + RecSTR SendSTA" description="Receive/send the AA(265) messages and receive/send the ST(275) messages" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[termIPAddress]"/>
       <scenario name="client">AA-ST/client.xml</scenario>
-      <scenario name="[termIPAddress],DIAMETER">AA-ST/server.xml</scenario>
+      <scenario name="[termIPAddress]">AA-ST/server.xml</scenario>
     </testcase>
     
     <testcase name="SendASR RecASA" description="Send the ASRequest(274) and recieved the ASAnswer(274)" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[termIPAddress]"/>
       <scenario name="client">AS/client.xml</scenario>
-      <scenario name="[termIPAddress]">AS/server.xml</scenario>
+      <scenario name="[termIPAddress],274">AS/server.xml</scenario>
     </testcase>
     
     <testcase name="SendRAR RecRAA" description="Send the RARequest(268) and receive the RAAnswer(268)" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[termIPAddress]"/>
       <scenario name="client">RA/client.xml</scenario>
-      <scenario name="[termIPAddress]">RA/server.xml</scenario>
+      <scenario name="[termIPAddress],258">RA/server.xml</scenario>
     </testcase>
   
 </test>

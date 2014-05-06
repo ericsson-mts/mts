@@ -12,9 +12,6 @@
       </then>
     </if>
 
-    <!-- create a listenpoint with no parameter -->
-    <createListenpointDIAMETER name="lp_client" localHost="[localHostDIAM]" localPort="[localPortDIAM]"/>
-
     <receiveMessageDIAMETER name="Receive Request ASR" listenpoint="lp_client" 
         request="true" type="Abort-Session:274">
         <parameter name="[lastCommandCode]" operation="protocol.setFromMessage" value="header.command"/>
@@ -103,10 +100,5 @@ Abort-Session-Answer ::= < Diameter Header: 274, PXY >
              <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
           </avp>
     </sendMessageDIAMETER>
-    
-    <finally>
-          <removeListenpointDIAMETER name="lp_client"/>
-    </finally>
 
-    
 </scenario>

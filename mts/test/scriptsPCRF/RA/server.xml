@@ -12,9 +12,6 @@
       </then>
     </if>
 
-    <!-- create a listenpoint with no parameter -->
-    <createListenpointDIAMETER name="lp_client" localHost="[localHostDIAM]" localPort="[localPortDIAM]"/>
-
     <receiveMessageDIAMETER name="Receive Request RAR" listenpoint="lp_client" 
 	request="true" type="Re-Auth:258">
         <parameter name="[lastCommandCode]" operation="protocol.setFromMessage" value="header.command"/>
@@ -109,9 +106,5 @@ Re-Auth-Answer ::= < Diameter Header: 258, PXY >
              <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
           </avp>
     </sendMessageDIAMETER>
-
-    <finally>
-          <removeListenpointDIAMETER name="lp_client"/>
-    </finally>
 
 </scenario>
