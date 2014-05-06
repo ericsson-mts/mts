@@ -37,6 +37,8 @@ From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to prov
     <!-- Attente d'une requete AARequest -->
     <receiveMessageDIAMETER name="ReceiveRequestAAR" listenpoint="lp_server"
                             request="true" type="AA" timeout="0">
+        <parameter name="[test:lastRemoteHost_[framedIPAddress]]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[test:lastRemotePort_[framedIPAddress]]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[lastCommandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[lastApplicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
         <parameter name="[lastHopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
