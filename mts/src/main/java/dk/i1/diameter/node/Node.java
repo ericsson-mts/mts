@@ -44,7 +44,7 @@ public class Node {
 	private long shutdown_deadline;
 	private Map<ConnectionKey,Connection> map_key_conn;
 	private Set<Peer> persistent_peers;
-	private Logger logger;
+	public static Logger logger = Logger.getLogger("dk.i1.diameter.node");
 	private Object obj_conn_wait;
 	private NodeImplementation tcp_node;
 	private NodeImplementation sctp_node;
@@ -87,7 +87,6 @@ public class Node {
 		this.settings = settings;
 		this.node_validator = (node_validator==null) ? new DefaultNodeValidator() : node_validator;
 		this.node_state = new NodeState();
-		this.logger = Logger.getLogger("dk.i1.diameter.node");
 		this.obj_conn_wait = new Object();
 		this.tcp_node = null;
 		this.sctp_node = null;
