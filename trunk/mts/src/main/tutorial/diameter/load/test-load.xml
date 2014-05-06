@@ -1,46 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="Load tests">
 
-	<parameter description="number of transaction per second" editable="true" name="[speedTrans]" operation="set" value="10000"/>	
-  <parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="36000000"/>
-	<parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="10"/>
-	
-	<parameter name="[localHostDIAM]" operation="system.ipaddress"/>
-	<parameter name="[localHostDIAM]" operation="set" value="[localHostDIAM(0)]"/>
-	<!--parameter name="[localHostDIAM]" operation="set" value="17.16.21.32"/-->
-	<parameter name="[localPortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
-	<parameter name="[localDIAM]" operation="set" value="[localHostDIAM(0)]:[localPortDIAM]"/>	
-	<parameter name="[localRealmDIAM]" operation="set" value="sip.pfdev.fr"/>
-
-	<parameter name="[remoteHostDIAM]" operation="system.ipaddress"/>
-	<parameter editable="true" name="[remoteHostDIAM]" operation="set" value="[remoteHostDIAM(0)]"/>
-	<!--parameter name="[remoteHostDIAM]" operation="set" value="17.16.21.32" editable="true"/-->
-	<parameter name="[remotePortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
-	<parameter editable="true" name="[remotePortDIAM]" operation="set" value="[remotePortDIAM]"/>
-	<!--parameter name="[remotePortDIAM]" operation="set" value="3868" editable="true"/-->
-	<parameter name="[remoteDIAM]" operation="set" value="[remoteHostDIAM(0)]:[remotePortDIAM]"/>
-	<parameter name="[remoteRealmDIAM]" operation="set" value="sip.pfdev.fr"/>
-
-  <parameter description="vendor ID" editable="true" name="[vendorID]" operation="set" value="10415"/>
-  
-  <parameter name="[speedTestcase]" operation="divide" value="[speedTrans]" value2="[NumberTestcase]"/>	
-
-	<!--                       -->
-    	<!-- RUNPROFILE PARAMETERS -->
-    	<!--                       -->    
-    	<runProfile>
-        	<step frequency="[speedTestcase]" time="0"/>
-        	<end delay="[TestDurationSec]"/>
-    	</runProfile>
-
-  	<for from="001" index="[index]" step="1" to="[NumberTestcase]"> 
-
-		<testcase description="load [index]" name="UNIT-[index]" number="1" state="true">
-      <parameter name="[applicationID]" operation="set" value="16777216"/>
-			<scenario file="client.xml" name="aaa-client" routingName="aaa-client"/>
-			<scenario file="server.xml" name="aaa-server" routingName="aaa-server"/>	
-
-		</testcase>
-
-	</for>
+    <parameter description="number of transaction per second" editable="true" name="[speedTrans]" operation="set" value="10000"/>	
+    <parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="36000000"/>
+    <parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="10"/>
+    
+    <parameter name="[localHostDIAM]" operation="system.ipaddress"/>
+    <parameter name="[localHostDIAM]" operation="set" value="[localHostDIAM(0)]"/>
+    <!--parameter name="[localHostDIAM]" operation="set" value="17.16.21.32"/-->
+    <parameter name="[localPortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localDIAM]" operation="set" value="[localHostDIAM(0)]:[localPortDIAM]"/>	
+    <parameter name="[localRealmDIAM]" operation="set" value="sip.pfdev.fr"/>
+    
+    <parameter name="[remoteHostDIAM]" operation="system.ipaddress"/>
+    <parameter editable="true" name="[remoteHostDIAM]" operation="set" value="[remoteHostDIAM(0)]"/>
+    <!--parameter name="[remoteHostDIAM]" operation="set" value="17.16.21.32" editable="true"/-->
+    <parameter name="[remotePortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter editable="true" name="[remotePortDIAM]" operation="set" value="[remotePortDIAM]"/>
+    <!--parameter name="[remotePortDIAM]" operation="set" value="3868" editable="true"/-->
+    <parameter name="[remoteDIAM]" operation="set" value="[remoteHostDIAM(0)]:[remotePortDIAM]"/>
+    <parameter name="[remoteRealmDIAM]" operation="set" value="sip.pfdev.fr"/>
+    
+    <parameter description="vendor ID" editable="true" name="[vendorID]" operation="set" value="10415"/>
+    
+    <parameter name="[speedTestcase]" operation="divide" value="[speedTrans]" value2="[NumberTestcase]"/>	
+    
+    <!--                       -->
+    <!-- RUNPROFILE PARAMETERS -->
+    <!--                       -->    
+    <runProfile>
+      	<step frequency="[speedTestcase]" time="0"/>
+      	<end delay="[TestDurationSec]"/>
+    </runProfile>
+    
+    <for from="001" index="[index]" step="1" to="[NumberTestcase]"> 
+    
+        <testcase description="load [index]" name="UNIT-[index]" number="1" state="true">
+    
+            <parameter name="[applicationID]" operation="set" value="16777216"/>
+            <scenario file="client.xml" name="aaa-client" routingName="aaa-client"/>
+            <scenario file="server.xml" name="aaa-server" routingName="aaa-server"/>	
+    
+        </testcase>
+    
+    </for>
+    
 </test>
