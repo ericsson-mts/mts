@@ -5,7 +5,7 @@
 <scenario>
     
     <receiveMessageDIAMETER name="ReceiveRequestMAR" request="true" type="Multimedia-Authentitcation:506">
-        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value=" header.command "/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
         <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
@@ -14,7 +14,7 @@
     <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.1018.1024.code"/>
     <test parameter="[avp1code]" condition="string.equals" value="1024"/>
 
-    <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+    <parameter name="[listenpointName]" operation="protocol.setFromMessage" value=" listenpoint.name  "/>
     <test parameter="[listenpointName]" condition="list.isEmpty"/>
     <parameter name="[listenpointHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>
     <test parameter="[listenpointHost]" condition="string.equals" value="0.0.0.0"/>

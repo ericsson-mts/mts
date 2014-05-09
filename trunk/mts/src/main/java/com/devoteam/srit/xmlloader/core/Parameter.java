@@ -326,7 +326,7 @@ public class Parameter {
     }
 
     public static void throwBadPathKeywordException(String operation, String path) throws ParameterException {
-        throw new ParameterException("Bad path keyword for \"protocol." + operation + "\" operation: " + path);
+        throw new ParameterException("Bad path keyword for \"protocol." + operation + "\" operation: \"" + path + "\"");
     }
 
     public static void throwBadPathKeywordException(String path) throws ParameterException {

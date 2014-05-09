@@ -87,7 +87,9 @@ public class MsgH225cs extends Msg {
         }
         
         var = new Parameter();
+        path = path.trim();
         String[] params = Utils.splitPath(path);
+        
         if (params[0].equalsIgnoreCase("isdn")) {
         	this.msgQ931.getParameter(var, params, path);
         }

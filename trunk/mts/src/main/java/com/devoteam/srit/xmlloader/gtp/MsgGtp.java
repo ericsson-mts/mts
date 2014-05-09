@@ -62,7 +62,7 @@ public class MsgGtp extends Msg
             return var;
         }
         var = new Parameter();
-        
+        path = path.trim();
         String[] params = Utils.splitNoRegex(path, ".");
         
         this.message.getParameter(var, params, path);

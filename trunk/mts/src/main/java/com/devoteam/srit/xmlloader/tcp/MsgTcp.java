@@ -64,6 +64,7 @@ public class MsgTcp extends Msg
         }
 
     	var = new Parameter();
+        path = path.trim();
         String[] params = Utils.splitPath(path);
         
         if(params[0].equalsIgnoreCase("data")) 

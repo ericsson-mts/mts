@@ -140,7 +140,8 @@ public class MsgSnmp extends Msg
 			return var;
 		}
 
-    	var = new Parameter();               
+    	var = new Parameter();
+        path = path.trim();
         String[] params = Utils.splitPath(path);
 
         if(params.length == 0)
