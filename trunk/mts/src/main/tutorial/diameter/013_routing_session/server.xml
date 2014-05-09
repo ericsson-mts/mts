@@ -8,6 +8,8 @@
     
     <receiveMessageDIAMETER name="ReceiveRequestAAR" listenpoint="lp_server" 
         request="true" type="AA">
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
@@ -100,7 +102,7 @@
     <parameter name="[Pre-emption-Vulnerability]" operation="set" value="PRE-EMPTION_VULNERABILITY_DISABLED"/>
 
     <sendMessageDIAMETER name="SendRequestRAR" listenpoint="lp_server" 
-        remoteHost="[Listen-Client-Host]" remotePort="[Listen-Client-Port]">
+        remoteHost="[remoteHost]" remotePort="[remotePort]">
         <header request="true" command="Re-Auth" applicationId="3GPP Gx"/>
         <avp code="Session-Id" value="[sessionId]"/>
         <avp code="Auth-Application-Id" value="3GPP Gx"/>
