@@ -82,6 +82,7 @@ public abstract class Msg extends MsgLight implements Removable
     /** Get a parameter from the message */
     public Parameter getParameter(String path) throws Exception
     {
+    	path = path.trim();
         String[] params = Utils.splitPath(path);
         if (params.length < 1)
         {

@@ -237,7 +237,10 @@ public class MsgStun extends Msg {
         if ((null != var) && (var.length() > 0)) {
             return var;
         }
+        
+        path = path.trim();
         String[] params = Utils.splitPath(path);
+        
         if (params[0].equalsIgnoreCase("header")) {
             if (!params[1].equalsIgnoreCase("")) {
                 var = this.header.getParameterHeader(params[1]);

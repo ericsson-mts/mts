@@ -84,6 +84,7 @@ public class MsgPcp extends Msg
 		}
 
 		var = new Parameter();
+        path = path.trim();
         String[] params = Utils.splitPath(path);
 
         //---------------------------------------------------------------------- data -

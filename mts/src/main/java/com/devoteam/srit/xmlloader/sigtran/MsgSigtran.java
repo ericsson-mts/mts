@@ -96,6 +96,7 @@ public class MsgSigtran extends Msg {
         }
 
         var = new Parameter();
+        path = path.trim();
         String[] params = Utils.splitPath(path);
                 
         if (params.length > 0 && params[0].equalsIgnoreCase("isdn")) {

@@ -126,6 +126,7 @@ public class MsgSipJain extends MsgSip
         }
         	
         var = new Parameter();
+        path = path.trim();
         String[] params = Utils.splitPath(path);
 
         try

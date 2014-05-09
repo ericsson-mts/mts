@@ -197,6 +197,7 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
         }
 
         var = new Parameter();
+        path = path.trim();
         String[] params = Utils.splitPath(path);
 
         if (params.length > 1 && params[0].equalsIgnoreCase("header")) {

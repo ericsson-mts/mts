@@ -99,8 +99,9 @@ public class MsgEthernet extends Msg
         {
             return var;
         }
-
+        
     	var = new Parameter();
+        path = path.trim();
         String[] params = Utils.splitPath(path);
         
         if(params[0].equalsIgnoreCase("data")) 
