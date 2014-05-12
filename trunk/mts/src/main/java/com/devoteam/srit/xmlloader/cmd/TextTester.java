@@ -72,9 +72,6 @@ public class TextTester {
         // Apply editable parameters on the command-line
         checkCmdParameter(parameterEditable);
 
-        displayEditableParameters(tester.getTest().getEditableParameters());
-
-        //
         // Create the runner
         if ("-seq".equals(runnerName)) {
             runner = new TestRunnerSequential(tester.getTest());
@@ -103,6 +100,9 @@ public class TextTester {
         for (TestcaseRunner testcaseRunner : runner.getChildren()) {
             testcaseRunner.init();
         }
+
+        // Display editable parameters on the standard console
+        displayEditableParameters(tester.getTest().getEditableParameters());
 
     }
 
