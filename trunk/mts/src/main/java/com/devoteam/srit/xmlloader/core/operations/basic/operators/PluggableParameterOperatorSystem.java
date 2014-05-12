@@ -189,11 +189,14 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         			if (null == param_1 || param_1.get(0).toString().equals(eth.getName())) {
         				for (Enumeration addr = eth.getInetAddresses(); addr.hasMoreElements();) {
         					address = (InetAddress) addr.nextElement();
-        					if (version.contains("6") && address instanceof Inet6Address && !address.isLoopbackAddress())
+        					if (version.contains("6") && address instanceof Inet6Address)
         					{
-        						Inet6Address a = (Inet6Address) address;
-        						if (!a.getScopedInterface().getName().equalsIgnoreCase("lo"))
-        							result.add(new String("[" + a.getHostAddress().split("%")[0] + "]"));
+        						// remove loopback address
+	                            if (!address.isLoopbackAddress())
+	                            {
+	        						Inet6Address a = (Inet6Address) address;
+	        						result.add(new String("[" + a.getHostAddress().split("%")[0] + "]"));
+	                            }
         					}
         					if (version.contains("4") && address instanceof Inet4Address)
                             {
