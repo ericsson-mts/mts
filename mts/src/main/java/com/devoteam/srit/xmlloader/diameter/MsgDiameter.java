@@ -627,7 +627,18 @@ public class MsgDiameter extends Msg
         if(type.equalsIgnoreCase("grouped"))
         {
             ret += ">\n";
-            AVP_Grouped gavp = new AVP_Grouped(avp);
+            
+            AVP_Grouped gavp = null;
+            
+            try
+            {
+            	gavp = new AVP_Grouped(avp);
+            }
+            catch (Exception e)
+           
+            {
+            	throw e;
+            }
             AVP[] tavp = gavp.queryAVPs();
             for(int i=0; i<tavp.length; i++)
             {
