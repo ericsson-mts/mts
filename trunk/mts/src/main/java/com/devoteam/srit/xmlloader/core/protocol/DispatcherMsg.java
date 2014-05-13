@@ -63,7 +63,6 @@ public class DispatcherMsg {
             runnerList = scenariosByRoutingName.get("default");
         }
         if (runnerList != null) {
-            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Routing: routing message by scenario routingName (", scenarioName, ")");
             ScenarioRunner runner;
             synchronized (runnerList) {
                 if (runnerList.isEmpty()) {
@@ -72,6 +71,7 @@ public class DispatcherMsg {
                 runner = runnerList.removeFirst();
                 runnerList.addLast(runner);
             }
+            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Routing: route the message by SCENARIO_ROUTING ", scenarioName, " to scenario : \"", runner.getName(), "\" (SCENARIO_ROUTING=", runner.getScenarioReference().getRoutingName(), ").");
             return (ScenarioRunner) runner;
         }
         else {
@@ -85,7 +85,7 @@ public class DispatcherMsg {
      */
     public static void registerScenario(ScenarioRunner runner) {
         String scenarioRoutingName = runner.getScenarioReference().getRoutingName();
-        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: register scenarioName with routingName=", scenarioRoutingName);
+        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: register scenario with routing=", scenarioRoutingName);
         synchronized (scenariosByRoutingName) {
             String[] names = scenarioRoutingName.split(",");
             for (int i = 0; i < names.length; i++) {
@@ -104,7 +104,7 @@ public class DispatcherMsg {
      */
     public static void unregisterScenario(ScenarioRunner runner) {
         String scenarioRoutingName = runner.getScenarioReference().getRoutingName();
-        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: unregister scenarioName with routingName=", scenarioRoutingName);
+        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: unregister scenario with routing=", scenarioRoutingName);
         synchronized (scenariosByRoutingName) {
             String[] names = scenarioRoutingName.split(",");
             for (int i = 0; i < names.length; i++) {
