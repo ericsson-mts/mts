@@ -138,7 +138,9 @@
     <parameter name="[SDPTime]" operation="protocol.setFromMessage" value="content(0).Sdp.Time"/>
     <test parameter="[SDPTime]" condition="string.contains" value="t=3034423619 3042462419"/>
     <parameter name="[SDPTimeStart]" operation="protocol.setFromMessage" value="content(0).Sdp.Time.Start"/>
-    <!--test parameter="[SDPTimeStart]" condition="string.equals" value="2873397496"/-->
+    <!--parameter name="[numberSDPTimeStart]" operation="number.parseDate" value="[SDPTimeStart]" value2="EEE MMM dd"/>
+    <parameter name="[stringSDPTimeStart]" operation="number.toDate" value="3034423619" value2="yyyy"/>
+    <test parameter="[SDPTimeStart]" condition="string.equals" value="[stringSDPTimeStart]"/-->
     <parameter name="[SDPTimeStop]" operation="protocol.setFromMessage" value="content(0).Sdp.Time.Stop"/>
     <!--test parameter="[SDPTimeStop]" condition="string.equals" value="2873404696"/-->
 
