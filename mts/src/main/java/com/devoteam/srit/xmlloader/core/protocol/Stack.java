@@ -106,7 +106,7 @@ public abstract class Stack
     public boolean retransmitManagement = false;
     public boolean retransmitFiltering = false;
     public boolean routeDefaultResponse = true;
-    public boolean routeDefaultSubsequent = true;
+    public boolean routeDefaultSubsequent = false;
     public float[] retransmitTimes = null;
     
     /** Timer to schedule the retransaction */
@@ -557,7 +557,7 @@ public abstract class Stack
                             GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: create a new transaction (TRANSACTION_ID=", msg.getTransactionId(), ") for scenario ", srcRunner.getName());
                         }
                         else {
-                            GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: create a new transaction (TRANSACTION_ID=", msg.getTransactionId(), ") for no scenario ");
+                            GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: create a new transaction (TRANSACTION_ID=", msg.getTransactionId(), ") for no scenario");
                         }
 
                         if (msg.getRetransmissionId() != null && retransmitManagement) {
@@ -614,13 +614,13 @@ public abstract class Stack
                     GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: add the message to an existing transaction (TRANSACTION_ID=", msg.getTransactionId(), ")");
                 }
                 else {
-                    GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Stack: Could not find transaction for sent response with TRANSACTION_ID=", msg.getTransactionId());
+                    GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Stack: Could not find transaction for sent response (TRANSACTION_ID=", msg.getTransactionId(),")");
                 }
             }
         
             // message id supported
             if (msg.getMessageId() != null && !isRetransmission) {
-                GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: add entry to expected responses (MESSAGE_ID=", msg.getMessageId(), ")");                
+                GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: add entry to expected responses (MESSAGE_ID=", msg.getMessageId(), ")");
                 msg.setDestScenario(destRunner);
                 outMessageResponses.put(msg.getMessageId(), msg);
             }
@@ -633,6 +633,9 @@ public abstract class Stack
         }
         
         
+        msg.setTimestamp(System.currentTimeMillis());
+        sendMessage(msg);
+        
         // stuff about sessions (see later)
         if (msg.getSessionId() != null && !isRetransmission) {
         	// check whether the message belongs to an existing session 
@@ -642,11 +645,11 @@ public abstract class Stack
 		            sess.addEndMessage(msg);
                     // beginMsg.setRetransNumber(beginMsg.getRetransNumber() + 1);
 	                float messageTime = Stack.getTimeDuration(msg, sess.getBeginMsg().getTimestamp());
-	               	GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Add a message (time = ", messageTime, " s) to an existing session : ", msg.toShortString());
+	               	GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Add a message (time = ", messageTime, " s) to an existing session : ", sess.getSummary(), " (SESSION_ID=", msg.getSessionId(), ")");
 	                // if necessary, then remove an existing session
 	            	if (msg.endSession()) {
 	                    float sessionTime = Stack.getTimeDuration(msg, sess.getBeginMsg().getTimestamp());
-			            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Finish a outgoing session (time = ", sessionTime, " s) : ", msg.toShortString());
+			            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Finish a outgoing session (time = ", sessionTime, " s) : ", " (SESSION_ID=", msg.getSessionId(), ")");
 			            
 			    		// sess.onRemove();
 			    		// outinSessions.remove(msg.getSessionId());
@@ -659,14 +662,11 @@ public abstract class Stack
 		            sess = new Sess(this, msg);
 		            sess.setScenarioRunner(srcRunner);
 		            outinSessions.put(msg.getSessionId(), sess);
-		            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Create a new outgoing session : ", msg.toShortString());
+		            GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Create a new outgoing session : ", sess.getSummary(), " (SESSION_ID=", msg.getSessionId(), ")");
 	        	}
             }
         }
-                
-        msg.setTimestamp(System.currentTimeMillis());
-        sendMessage(msg);
-        
+                        
         // logs in scenario and application logs as CALLFLOW topic
         processLogsMsgSending(msg, srcRunner, Stack.SEND);
 
@@ -746,19 +746,11 @@ public abstract class Stack
             {
             	if (msg.beginTransaction())
             	{
-	                GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: create new transaction ", msg.getTransactionId(), " for received request ", msg.getMessageId());
 	                trans = new Trans(this, msg);
 	                trans.setScenarioRunner(destScenario);
-	                msg.setTransaction(trans);                
+	                msg.setTransaction(trans);
 	                inTransactions.put(msg.getTransactionId(), trans);
-	                if (destScenario != null)
-	                {
-	                	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: create a new transaction (TRANSACTION_ID=", msg.getTransactionId(), ") for scenario ", destScenario.getName());
-	                }
-	                else
-	                {
-	                	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: create a new transaction (TRANSACTION_ID=", msg.getTransactionId(), ") for no scenario ");
-	                }
+                   	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: create a new transaction (TRANSACTION_ID=", msg.getTransactionId(), ")");
             	}
             }
             
@@ -780,13 +772,13 @@ public abstract class Stack
                             float procTime = Stack.getTimeDuration(msg, message.getTimestamp());
                             StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_REQUEST, msg.getProtocol(), msg.getTypeComplete() + StackFactory.PREFIX_INCOMING, "_procTime"), procTime);
                             StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_REQUEST, msg.getProtocol(), msg.getTypeComplete() + StackFactory.PREFIX_INCOMING, "_msgNumber"), 1);		            	
-                            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Stack: receive a request with processing time=", procTime, "s : ", msg.toShortString());
+                            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Stack: receive a request (processing time=", procTime, "s ) : ", msg.toShortString());
                         }
 
                         destScenario = message.getDestScenario();
                         if (destScenario != null)
                         {
-                        	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: routing the received request by MessageId to ", destScenario.getName());
+                        	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: route the received request by MESSAGE_ID to \"", destScenario.getName(), "\" because of destScenario attribute (MESSAGE_ID=", msg.getMessageId(), ").");
                         }
                     }
                 }
@@ -822,11 +814,11 @@ public abstract class Stack
                 {
                     trans.addEndMessage(msg);
                     msg.setTransaction(trans);
-                    GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: add the message to an existing transaction (TRANSACTION_ID=", msg.getTransactionId(), ")");                    				               
+                    GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: add the message to an existing transaction (TRANSACTION_ID=", msg.getTransactionId(), ")");
                 }
                 else
                 {
-                	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Stack: Could not find transaction for received response with TRANSACTION_ID=", msg.getTransactionId());
+                	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Stack: Could not find transaction for received response (TRANSACTION_ID=", msg.getTransactionId(),")");
                 }
             }
 
@@ -841,7 +833,7 @@ public abstract class Stack
                 destScenario = trans.getScenarioRunner();
                 if (destScenario != null)
                 {
-                    GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: routing the received response by TransactionId to ", destScenario.getName(), " transId=", msg.getTransactionId());
+                    GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: route the received response by TRANSACTION_ID to \"", destScenario.getName(), "\" (TRANSACTION_ID=", msg.getTransactionId(),").");
                 }
             }
                         
@@ -859,7 +851,7 @@ public abstract class Stack
                             StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_REQUEST, msg.getProtocol(), msg.getTypeComplete() + StackFactory.PREFIX_OUTGOING, msg.getResultComplete() + StackFactory.PREFIX_INCOMING, "_msgNumber"), 1);
                             StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_RESPONSE, msg.getProtocol(), msg.getResultComplete() + StackFactory.PREFIX_INCOMING, msg.getTypeComplete() + StackFactory.PREFIX_OUTGOING, "_procTime"), procTime);
                             StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_RESPONSE, msg.getProtocol(), msg.getResultComplete() + StackFactory.PREFIX_INCOMING, msg.getTypeComplete() + StackFactory.PREFIX_OUTGOING, "_msgNumber"), 1);                                                   
-                            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Stack: receive a response with processing time=", procTime, "s : ", msg.toShortString());
+                            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Stack: receive a response (processing time=", procTime, "s) : ", msg.toShortString());
                         }
                         
                         if (destScenario ==  null)
@@ -867,7 +859,7 @@ public abstract class Stack
 	                        destScenario = message.getDestScenario();
 	                        if (destScenario != null)
 	                        {
-	                        	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: routing the received response by MessageId to ", destScenario.getName());
+	                        	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: route the received response by MESSAGE_ID to \"", destScenario.getName(),"\" because of destScenario attribute (MESSAGE_ID=", msg.getMessageId(), ").");
 	                        }
                         }
                     }
@@ -887,12 +879,12 @@ public abstract class Stack
 		            sess.addEndMessage(msg);
                     // beginMsg.setRetransNumber(beginMsg.getRetransNumber() + 1);
 	                float messageTime = Stack.getTimeDuration(msg, sess.getBeginMsg().getTimestamp());
-	               	GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Add a message (time = ", messageTime, " s) to an existing session : ", msg.toShortString());
+	               	GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Add a message (time = ", messageTime, " s) to an existing session : ", sess.getSummary(), " (SESSION_ID=", msg.getSessionId(), ")");
 	                // if necessary, then remove an existing session
 	            	if (msg.endSession())
 	            	{
 	                    float sessionTime = Stack.getTimeDuration(msg, sess.getBeginMsg().getTimestamp());
-			            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Finish a outgoing session (time = ", sessionTime, " s) : ", msg.toShortString());
+			            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Finish a outgoing session (time = ", sessionTime, " s) : ", sess.getSummary(), " (SESSION_ID=", msg.getSessionId(), ")");
 			            
 			    		// sess.onRemove();
 			    		// outinSessions.remove(msg.getSessionId());
@@ -903,7 +895,7 @@ public abstract class Stack
 	                    destScenario = sess.getScenarioRunner();
 	                    if (destScenario != null)
 	                    {
-	                        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: routing the received response by TransactionId to ", destScenario.getName(), " transId=", msg.getTransactionId());
+	                        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: route the message by SESSION_ID to \"", destScenario.getName(), "\" (SESSION_ID=", msg.getSessionId(), ").");
 	                    }
 	                }
             	}
@@ -916,7 +908,7 @@ public abstract class Stack
 		            sess = new Sess(this, msg);
 		            sess.setScenarioRunner(destScenario);
 		            outinSessions.put(msg.getSessionId(), sess);
-		            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Create a new incoming session : ", msg.toShortString());
+		            GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Create a new incoming session : ", sess.getSummary(), " sessionsId=", msg.getSessionId());
 	        	}
             }
         }
@@ -927,8 +919,7 @@ public abstract class Stack
         	
 	        if (destScenario == null)
 	        {
-	            GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: routing the request by ScenarioName ...");
-	            destScenario = DispatcherMsg.dispatchMsg(msg);                    
+	            destScenario = DispatcherMsg.dispatchMsg(msg);
 	        }
 	        
 	        if (destScenario != null)
@@ -1002,14 +993,13 @@ public abstract class Stack
                         }
 
                         destScenario = message.getDestScenario();
-                        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: routing the captured request by MessageId to ", destScenario.getName());
+                        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: route the captured request by MESSAGE_ID to \"", destScenario.getName(), "\" because of destScenario attribute (MESSAGE_ID=", msg.getMessageId(), ").");
                     }
                 }
 
                 if (null == destScenario)
                 {
-	                GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: routing the captured request by ScenarioName ...");
-	                destScenario = DispatcherMsg.dispatchMsg(msg);                    
+	                destScenario = DispatcherMsg.dispatchMsg(msg);
                 }
             }
             
@@ -1022,7 +1012,7 @@ public abstract class Stack
 	                transaction = new Trans(this, msg);
 	                transaction.setScenarioRunner(destScenario);
 	                msg.setTransaction(transaction);	                
-	                capTransactions.put(msg.getTransactionId(), transaction);                
+	                capTransactions.put(msg.getTransactionId(), transaction);
 	                if (destScenario != null)
 	                {
 	                	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: create a new transaction (TRANSACTION_ID=", msg.getTransactionId(), ") for scenario ", destScenario.getName());
@@ -1080,10 +1070,6 @@ public abstract class Stack
                 {
                     trans.addEndMessage(msg);
                     msg.setTransaction(trans);
-                    if (null == trans)
-                    {
-                        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: could not get transaction for transactionId", msg.getTransactionId());
-                    }
                 }
             }
 
@@ -1112,7 +1098,7 @@ public abstract class Stack
                         }
                         
                         destScenario = message.getDestScenario();
-                        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: routing the captured response by MessageId to ", destScenario.getName());
+                        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: route the captured response by MessageId to \"", destScenario.getName(), "\" because of destScenario attribute.");
                     }
                 }
                 if (null != destScenario)
@@ -1122,15 +1108,13 @@ public abstract class Stack
 
                 if (null == destScenario && routeDefaultResponse && isTransactionIdSupported && null != trans)
                 {
-                    GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: TRY routing the captured response by TransactionId...");
-
                     if(null != trans)
                     {
                         destScenario = trans.getScenarioRunner();
 
                         if (null != destScenario)
                         {
-                            GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: routing the captured response by TransactionId to ", destScenario.getName() ,"+", destScenario.hashCode(), "trans=", trans.hashCode(), " transId=", msg.getTransactionId());
+                            GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: route the captured response by TRANSACTION_ID to \"", destScenario.getName(), "\" (TRANSACTION_ID=", msg.getTransactionId(), ") (MESSAGE_ID=", msg.getMessageId(), ").");
                         }
                     }
 
@@ -1138,13 +1122,12 @@ public abstract class Stack
 
                 if (null == destScenario)
                 {
-	                GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: routing the captured request by ScenarioName ...");
-	                destScenario = DispatcherMsg.dispatchMsg(msg);                    
+	                destScenario = DispatcherMsg.dispatchMsg(msg);
                 }
                 
                 if (null != destScenario)
                 {                	
-                    // logs in scenario and application logs as CALLFLOW topic                	
+                    // logs in scenario and application logs as CALLFLOW topic
                     processLogsMsgSending(msg, destScenario, Stack.CAPTURE);
                     destScenario.dispatchMessage(msg);
                 }
@@ -1215,23 +1198,23 @@ public abstract class Stack
     private void incrStatisticTransRequest(Msg msg, String actionRequest) throws Exception
     {
 
-        StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_REQUEST, msg.getProtocol(), msg.getTypeComplete() + actionRequest, "_transRequestNumber"), 1);        
+        StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_REQUEST, msg.getProtocol(), msg.getTypeComplete() + actionRequest, "_transRequestNumber"), 1);
     }
 
     private void incrStatisticTransResponse(Trans trans, Msg msg, String actionRequest, String actionResponse) throws Exception
     {
-        StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_REQUEST, msg.getProtocol(), msg.getTypeComplete() + actionRequest, msg.getResultComplete() + actionResponse, "_transResponseNumber"), 1);        
-        StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_RESPONSE, msg.getProtocol(), msg.getResultComplete() + actionResponse, msg.getTypeComplete() + actionRequest, "_transResponseNumber"), 1);        
+        StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_REQUEST, msg.getProtocol(), msg.getTypeComplete() + actionRequest, msg.getResultComplete() + actionResponse, "_transResponseNumber"), 1);
+        StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_RESPONSE, msg.getProtocol(), msg.getResultComplete() + actionResponse, msg.getTypeComplete() + actionRequest, "_transResponseNumber"), 1);
         if (trans != null)
         {
 	        float responseTime = Stack.getTimeDuration(msg, trans.getBeginMsg().getTimestamp());
 	        if (StackFactory.PREFIX_OUTGOING.equals(actionResponse)) {
-	        	GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Send a response (time = ", responseTime, " s) for the transaction : ", msg.toShortString());
+	        	GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Send a response (response time = ", responseTime, " s) for the transaction : ", trans.getSummary(true), " (TRANSACTION_ID=", msg.getTransactionId(), ")");
 	        } else {
-	        	GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Receive a response (time = ", responseTime, " s) for the transaction : ", msg.toShortString());        	
+	        	GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Receive a response (response time = ", responseTime, " s) for the transaction : ", trans.getSummary(false), " (TRANSACTION_ID=", msg.getTransactionId(), ")");
 	        }
 	        StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_REQUEST, msg.getProtocol(), msg.getTypeComplete() + actionRequest, msg.getResultComplete() + actionResponse, "_responseTime"), responseTime);
-	        StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_RESPONSE, msg.getProtocol(), msg.getResultComplete() + actionResponse, msg.getTypeComplete() + actionRequest, "_responseTime"), responseTime);	        
+	        StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_RESPONSE, msg.getProtocol(), msg.getResultComplete() + actionResponse, msg.getTypeComplete() + actionRequest, "_responseTime"), responseTime);
         }
     }
 
