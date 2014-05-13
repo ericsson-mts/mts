@@ -1372,7 +1372,8 @@ public class Utils
                     if (editor != null)
                     {
 	                    String fileAbsPath = new File(file).getAbsolutePath();
-	                    command = editor + " \"" + fileAbsPath + "\"";
+	                    // command = editor + " \"" + fileAbsPath + "\"";
+	                    command = editor + " " + fileAbsPath;
 	                    GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Opening editor with the command :", command);
 	                    Runtime.getRuntime().exec(command);
                     }
