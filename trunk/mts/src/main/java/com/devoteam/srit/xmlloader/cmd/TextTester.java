@@ -140,10 +140,10 @@ public class TextTester {
     private void displayEditableParameters(List<Element> elements) {
         String ret = "";
         for (Element element : elements) {
+            ret += "\r\n";
             ret += element.attributeValue("name");
             ret += "=";
             ret += element.attribute("value").getValue();
-            ret += "\r\n";
         }
         System.out.println(ret);
     }
