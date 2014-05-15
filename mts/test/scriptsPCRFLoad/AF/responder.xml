@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+    <if>
+      <condition>
+        <test parameter="[stateClient]" condition="boolean.equals" value="false"/>
+      </condition>
+      <then>
+          <!-- Sortie du client -->
+          <exit name="pas de server"/>
+      </then>
+    </if>
+
+    <label name="begin"/>
+
+    <parameter name="[received]" operation="set" value="false"/>
+    <receiveMessageDIAMETER name="Receive message" listenpoint="lp_client" timeout="30" failedOnTimeout="false">
+        <parameter name="[received]" operation="set" value="true"/>
+        <parameter name="[lastCommandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[lastApplicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[lastHopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[lastEndToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[lastSessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[lastDestHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[lastDestRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[lastAuthAppliId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id.value"/>
+    </receiveMessageDIAMETER>
+
+    <if>
+      <condition>
+        <test parameter="[received]" condition="boolean.equals" value="true" not="true"/>
+      </condition>
+      <then>
+          <!-- Sortie du scenario  -->
+          <exit failed="false" description="Success : end of test"/>
+      </then>
+    </if>
+
+    <if>
+      <condition>
+        <test parameter="[lastCommandCode]" condition="number.equals" value="265"/>
+      </condition>
+      <then>
+          <!-- Sortie du client -->
+          <goto name="rec AAR => send AAA" label="recAAA"/>
+      </then>
+    </if>
+    
+    <goto name="goto begin" label="begin"/>
+
+    <label name="recAAA"/>
+
+<!--
+From RFC 3588 September 2003 :
+Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
+                                < Session-Id >
+                                { Origin-Host }
+                                { Origin-Realm }
+                                { Destination-Realm }
+                                { Auth-Application-Id }
+                                { Termination-Cause }
+                                [ User-Name ]
+                                [ Destination-Host ]
+                              * [ Class ]
+                                [ Origin-State-Id ]
+                              * [ Proxy-Info ]
+                                  Proxy-Info ::= < AVP Header: 284 >
+                                                 { Proxy-Host }
+                                                 { Proxy-State }
+                                               * [ AVP ]
+                              * [ Route-Record ]
+                              * [ AVP ]
+-->     
+    <parameter name="[newEndToEnd]" operation="number.random" value="1000000" />
+    <parameter name="[newHopByHop]" operation="number.random" value="1000000" />
+
+    <!-- Envoi d'une requete STRequest -->
+    <sendMessageDIAMETER name="Send Request STR" listenpoint="lp_client" 
+        remoteURL="diameter://[remoteDIAM]" delay="[sessionTime]">
+        <header request="true" command="Session-Termination" applicationId="Diameter Common Messages" 
+            hopByHop="[newHopByHop]" endToEnd="[newEndToEnd]" 
+            proxiable="true" error="false" retransmit="false"/>
+          <!-- The Session-Id AVP is used to identify a specific session. -->
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[lastSessionId]"/>
+        
+          <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+          <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+
+          <!-- The Origin-Host AVP contains the Host of the originator of any Diameter message. -->
+          <avp code="Destination-Host" mandatory="false" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+          <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+
+          <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
+          <!--avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="0"/-->
+          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777222"/>
+
+          <!-- The Termination-Cause AVP is used to indicate the reason why a session was terminated on the access device. -->
+          <!-- Possible enumerated values : DIAMETER_LOGOUT(1) / DIAMETER_SERVICE_NOT_PROVIDED(2) / DIAMETER_BAD_ANSWER(3) / DIAMETER_ADMINISTRATIVE(4) / DIAMETER_LINK_BROKEN(5) / DIAMETER_AUTH_EXPIRED(6) / DIAMETER_USER_MOVED(7) / DIAMETER_SESSION_TIMEOUT(8). -->
+          <avp code="Termination-Cause" mandatory="true" type="Enumerated" value="DIAMETER_LOGOUT"/>
+
+          <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
+          <avp code="User-Name" mandatory="false" type="UTF8String" value="ToBeCompleted"/>
+
+          <avp code="Framed-IP-Address" value="[framedIPAddress]"/>
+
+          <!-- The Class AVP is used to by Diameter servers to return state information to the access device. -->
+          <avp code="Class" mandatory="false"  type="OctetString" value="ToBeCompleted"/>
+          <avp code="Class" mandatory="false"  type="OctetString" value="ToBeCompleted"/>
+
+          <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
+          <avp code="Origin-State-Id" mandatory="false" type="Unsigned32" value="0"/>
+
+          <!-- The Proxy-Host AVP contains the identity of the host that added the Proxy-Info AVP. -->
+          <!-- The Proxy-State AVP contains state local information. -->
+          <avp code="Proxy-Info">
+            <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+            <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Proxy-Info">
+            <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+            <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <!-- The identity added in the Route-Record AVP MUST be the same as the one received in the Origin-Host of the Capabilities Exchange message. -->
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+    </sendMessageDIAMETER>
+
+    <goto name="goto begin" label="begin"/>
+    
+</scenario>

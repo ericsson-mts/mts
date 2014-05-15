@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+	<application id="4321" name="Ericsson IMT 30 - Cx" uri="">
+
+		<!-- HSS Cx -->
+		<command name="Registration-Authorization" code="500" vendor-id="Ericsson"/>
+		<command name="Location-Update" code="501" vendor-id="Ericsson"/>	
+		<command name="User-Data" code="502" vendor-id="Ericsson"/>	
+		<command name="Location-Info" code="503" vendor-id="Ericsson"/>	
+		<command name="Multimedia-Authentitcation" code="506" vendor-id="Ericsson"/>	
+		<command name="Registration-Termination" code="304" vendor-id="Ericsson"/>	
+		<command name="Push-Profile" code="305" vendor-id="Ericsson"/>	
+	
+		<!-- ************************** HSS Cx AVPS ********************* -->
+		<avp name="Barring-Indication" code="259" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="Enumerated"/>
+				<enum name="FALSE" code="0"/>
+                     		<enum name="TRUE" code="1"/>
+		</avp>
+		<avp name="Public-Identification " code="260" mandatory="may" vendor-bit="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="Public-Identity"/>
+				<gavp name="Barring-Indication"/>
+			</grouped>	
+		</avp>
+		<avp name="Public-Identity" code="2" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="Charging-Information" code="19" mandatory="may" vendor-bit="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="Primary-Event-Charging-Function"/>
+				<gavp name="Secondary-Event-Charging-Function"/>
+				<gavp name="Primary-Charging-Collection-Function-Name"/>
+				<gavp name="Secondary-Charging-Collection-Function-Name"/>
+			</grouped>
+		</avp>
+		<avp name="Primary-Charging-Collection-Function-Name" code="22" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="Primary-Event-Charging-Function-Name" code="20" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="Secondary-Charging-Collection-Function-Name" code="23" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="Secondary-Event-Charging-Function-Name" code="21" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="DeRegistration Reason" code="16" mandatory="may" vendor-bit="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="Reason-Code"/>
+			</grouped>
+		</avp>
+		<avp name="Reason-Code" code="17" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="Enumerated"/>
+				<enum name="PERMANENT_TERMINATION" code="0"/>
+				<enum name="NEW_SERVER_ASSIGNED" code="1"/>
+				<enum name="SERVER_CHANGE" code="2"/>
+				<enum name="REMOVE_S-CSCF" code="3"/>
+		</avp>
+		<avp name="Application-Server-Name" code="1001" mandatory="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="Authenticate" code="1019" mandatory="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="Authentication-Context" code="1024" mandatory="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="Auth-Data-Item" code="1018" mandatory="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="Item-Number"/>
+				<gavp name="Authentication-Scheme"/>
+				<gavp name="Authenticate"/>
+				<gavp name="Authorization"/>
+				<gavp name="Authentication-Info"/>
+				<gavp name="Authentication-Context"/>
+			</grouped>
+		</avp>
+		<avp name="Authentication-Info" code="1023" mandatory="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="Authentication-Scheme" code="1020" mandatory="may" may-encrypt="yes">
+				<type type-name="Unsigned32"/>
+				<enum name="OTHER" code="0"/>
+				<enum name="BASIC" code="1"/>
+				<enum name="DIGEST" code="2"/>
+		</avp>
+		<avp name="Authorization" code="1022" mandatory="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="Condition-Negated" code="1033" mandatory="may" may-encrypt="yes">
+				<type type-name="Enumerated"/>
+				<enum name="FALSE" code="0"/>
+                     		<enum name="TRUE" code="1"/>
+		</avp>
+		<avp name="Condition-Type-Cnf" code="1038" mandatory="may" may-encrypt="yes">
+				<type type-name="Enumerated"/>
+				<enum name="FALSE" code="0"/>
+                     		<enum name="TRUE" code="1"/>
+		</avp>
+		<avp name="Indication" code="1002" mandatory="may" may-encrypt="yes">
+				<type type-name="Unsigned32"/>
+				<enum name="SET_S-CSCF_NAME" code="1"/>
+				<enum name="CLEAR_S-CSCF_NAME" code="2"/>
+				<enum name="USER_PROFILE_CHANGED" code="3"/>
+				<enum name="USER_PROFILE_NOT_CHANGED" code="4"/>
+				<enum name="UNREGISTERED_USER" code="5"/>
+		</avp>
+		<avp name="Item-Number" code="1021" mandatory="may" may-encrypt="yes">
+				<type type-name="Unsigned32"/>
+		</avp>
+		<avp name="Max-No-Call-Legs-Per-Sessions" code="1003" mandatory="may" may-encrypt="yes">
+				<type type-name="Unsigned32"/>
+		</avp>
+		<avp name="Max-No-Simultaneous-Sessions-Allowed" code="1004" mandatory="may" may-encrypt="yes">
+				<type type-name="Unsigned32"/>
+		</avp>
+		<avp name="Method" code="1037" mandatory="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="Number-Authentication-Items" code="1026" mandatory="may" may-encrypt="yes">
+				<type type-name="Unsigned32"/>
+		</avp>
+		<avp name="P-CSCF-Name" code="1005" mandatory="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="Public-User-ID" code="1006" mandatory="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="Private-User-ID" code="1007" mandatory="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="Phone-Context" code="1032" mandatory="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="Request-Uri" code="1030" mandatory="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="ConditionNegated"/>
+				<gavp name="Request-Uri-SPT"/>
+			</grouped>
+		</avp>
+		<avp name="Request-Uri-SPT" code="1039" mandatory="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="S-CSCF-Name-Originating" code="1008" mandatory="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="S-CSCF-Name-Terminating" code="1009" mandatory="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="Server-Capability" code="1010" mandatory="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="Session-Case" code="1034" mandatory="may" may-encrypt="yes">
+				<type type-name="Unsigned32"/>
+				<enum name="ORIGINATING" code="1"/>
+				<enum name="TERMINATING_REGISTERED" code="2"/>
+				<enum name="TERMINATING_UNREGISTERED" code="3"/>
+		</avp>
+		<avp name="SIP-Header" code="1027" mandatory="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="Condition-Negated"/>
+				<gavp name="SIP-Header-Name"/>
+				<gavp name="SIP-Header-Content"/>
+			</grouped>
+		</avp>
+		<avp name="SIP-Header-Content" code="1029" mandatory="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="SIP-Header-Name" code="1028" mandatory="may" may-encrypt="yes">
+				<type type-name="OctetString"/>
+		</avp>
+		<avp name="SIP-Server-Capabilities" code="1011" mandatory="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="Server-Capability"/>
+				<gavp name="SIP-Server-Operator-Preference"/>
+			</grouped>
+		</avp>
+		<avp name="SIP-Server-Name" code="1012" mandatory="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="S-CSCF-Name-Originating"/>
+				<gavp name="S-CSCF-Name-Terminating"/>
+			</grouped>
+		</avp>
+		<avp name="SIP-Server-Operator-Preference" code="1013" mandatory="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="SIP-Server-Name"/>
+			</grouped>
+		</avp>
+		<avp name="Trigger" code="1016" mandatory="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="Type-Of-Trigger"/>
+				<gavp name="Trigger-Detection-Point"/>
+				<gavp name="Application-Server-Name"/>
+				<gavp name="Condition-Type-CNF"/>
+				<gavp name="SIP-Header"/>
+				<gavp name="Request-Uri"/>
+				<gavp name="Trigger-Priority"/>				
+			</grouped>
+		</avp>
+		<avp name="Trigger-Detection-Point" code="1014" mandatory="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="Condition-Negated"/>
+				<gavp name="Method"/>
+			</grouped>
+		</avp>
+		<avp name="Trigger-Priority" code="1031" mandatory="may" may-encrypt="yes">
+				<type type-name="Unsigned32"/>
+		</avp>
+		<avp name="Type-Of-Trigger" code="1015" mandatory="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="Condition-Negated"/>
+				<gavp name="Session-Case"/>
+			</grouped>
+		</avp>
+		<avp name="User-Data" code="1017" mandatory="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="Public- Identification"/>
+				<gavp name="Max-No-Simultaneous-Sessions-Allowed"/>
+				<gavp name="Max-No-Call-Legs-Per-Sessions"/>
+				<gavp name="Phone-Context"/>
+				<gavp name="Trigger"/>
+			</grouped>
+		</avp>
+	</application>

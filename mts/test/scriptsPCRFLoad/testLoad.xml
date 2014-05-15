@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test name="Genscript" description="Script converted from capture">
+
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    
+    <parameter name="[localHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostDIAM]" operation="set" value="[localHostDIAM(1)]"/>
+    <!--parameter name="[localHostDIAM]" operation="set" value="imspcf401-imscore.sip.imsnsn.fr"/-->
+    <parameter name="[localPortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localPortDIAM]" operation="set" value="13868"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortDIAM]" operation="set" value="[localPortDIAM]"/>
+    <parameter name="[localDIAM]" operation="set" value="[localHostDIAM]:[localPortDIAM]"/>
+    
+    <parameter name="[remoteHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostDIAM]" operation="set" value="[remoteHostDIAM(1)]"/>
+    <!--parameter name="[remoteHostDIAM]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/-->
+    <!--parameter name="[remoteHostDIAM]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remotePortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[remotePortDIAM]" operation="set" value="3868"/>
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortDIAM]" operation="set" value="[remotePortDIAM]"/>
+    <parameter name="[remoteDIAM]" operation="set" value="[remoteHostDIAM]:[remotePortDIAM]"/>
+    
+    <parameter name="[speedTestcase]" operation="set" value="500" description="number of session to initiate per seconds" editable="true" />
+    <parameter name="[TestDurationSec]" operation="set" value="3600" description="Duration (in seconde) of the load testing" editable="true" />
+        
+    <parameter name="[originIPAddress]" operation="set" value="172.18.128.19" editable="true"/>
+    <parameter name="[termIPAddress]" operation="set" value="172.18.128.20" editable="true"/>
+    
+    <parameter name="[localRealmDIAM]" operation="set" value="sip.imsnsn.fr" editable="true"/>
+    <parameter name="[remoteRealmDIAM]" operation="set" value="sip.imsnsn.fr" editable="true"/>
+    
+    <parameter name="[responseTime]" operation="set" value="0.1" editable="true"/>
+    <parameter name="[sessionTime]" operation="set" value="10" editable="true"/>
+    <parameter name="[stateClient]" operation="set" value="true" editable="true"/>
+    
+    <parameter name="[vendorID]" operation="set" value="10415"/>
+    
+    <testcase name="----- AF -----" description="Testcase on AF side" state="false"/>
+    
+    <testcase name="Loader SendAAR(265)" description="Send the AAR(265) requests" state="true">
+      <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
+      <runProfile>
+          <step time="0" frequency="[speedTestcase]"/>
+          <end delay="[TestDurationSec]"/>
+      </runProfile>
+      <scenario name="client">AF/loader.xml</scenario>
+    </testcase>
+    
+    <testcase name="Responder RecAAA(265)) RecSTA(275)" description="Send the STRequest(275)" state="true">
+      <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
+      <parameter name="[TestDurationSec1]" operation="number.add" value="[TestDurationSec]" value2="30"/>
+      <runProfile>
+          <step time="0" period="0"/>
+          <end delay="[TestDurationSec1]"/>
+      </runProfile>
+      <scenario name="responder" routingName="false">AF/responder.xml</scenario>
+    </testcase>
+    
+    <testcase name="----- PRCF -----" description="Testcase on PCRF side" state="false"/>
+    
+    <testcase name="Responder RecAAR(265) + RecSTR (275)" description="Receive the AA(265) requests and receive/send the ST(275) request" state="true">
+      <parameter name="[framedIPAddress]" operation="set" value="[termIPAddress]"/>
+      <parameter name="[TestDurationSec1]" operation="number.add" value="[TestDurationSec]" value2="30"/>
+      <runProfile>
+          <step time="0" period="0"/>
+          <end delay="[TestDurationSec1]"/>
+      </runProfile>
+      <scenario name="responder" routingName="true">PCRF/responder.xml</scenario>
+    </testcase>
+    
+</test>
