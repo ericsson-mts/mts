@@ -161,7 +161,6 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
         scenarioByName = new LinkedHashMap<String, ScenarioReference>();
         for (Element element : (List<Element>) _root.selectNodes("./scenario")) {
             ScenarioReference scenario = new ScenarioReference(element, this);
-
             String name = scenario.getName();
             if (null != name && scenarioByName.containsKey(name)) {
                 throw new ParsingException("Duplicate scenario identifier (name) : " + name + "; the scenario identifier must be unique because it is used for message routing between scenarios.");

@@ -91,7 +91,10 @@ public class ScenarioRunner extends Runner
     }
 
     public void doNotifyAll() {
-        this.defaultNotificationSender.notifyAll(new Notification<String, RunnerState>(this.getName(), getState().clone()));
+    	if (_scenario.getState())
+    	{
+    		this.defaultNotificationSender.notifyAll(new Notification<String, RunnerState>(this.getName(), getState().clone()));
+    	}
     }
     // </editor-fold>
     private ScenarioReference _scenario;
@@ -149,30 +152,34 @@ public class ScenarioRunner extends Runner
      */
     synchronized public void start() {
         try {
-            assertIsNotInterrupting();
-            GlobalLogger.instance().getSessionLogger().debug(this, TextEvent.Topic.CORE, "ScenarioRunner started");
-            getState().setFlag(RunnerState.F_STARTED, true);
-            getState()._executionsCurrent = 0;
-            getState()._progression = 0;
-            getParameterPool().clear();
-
-            Parameter parameter = new Parameter();
-            parameter.add(getScenarioReference().getName());
-            getParameterPool().set("[scenarioName]", parameter);
-
-            parameter = new Parameter();
-            parameter.add(getScenarioReference().getId());
-            getParameterPool().set("[scenarioId]", parameter);
-
-            List<OperationParameter> parameters = this.getScenarioReference().getTestcase().getParametersByScenarioName(this.getName());
-            if(null != parameters){
-                for(OperationParameter operation:parameters){
-                    operation.executeAndStat(this);
-                }
-            }
-            
-            doNotifyAll();
-            _thread = ThreadPool.reserve().start(this);
+        	
+        	if (_scenario.getState())
+        	{
+	            assertIsNotInterrupting();
+	            GlobalLogger.instance().getSessionLogger().debug(this, TextEvent.Topic.CORE, "ScenarioRunner started");
+	            getState().setFlag(RunnerState.F_STARTED, true);
+	            getState()._executionsCurrent = 0;
+	            getState()._progression = 0;
+	            getParameterPool().clear();
+	
+	            Parameter parameter = new Parameter();
+	            parameter.add(getScenarioReference().getName());
+	            getParameterPool().set("[scenarioName]", parameter);
+	
+	            parameter = new Parameter();
+	            parameter.add(getScenarioReference().getId());
+	            getParameterPool().set("[scenarioId]", parameter);
+	
+	            List<OperationParameter> parameters = this.getScenarioReference().getTestcase().getParametersByScenarioName(this.getName());
+	            if(null != parameters){
+	                for(OperationParameter operation:parameters){
+	                    operation.executeAndStat(this);
+	                }
+	            }
+	            
+	            doNotifyAll();
+	            _thread = ThreadPool.reserve().start(this);
+        	}
         }
         catch (InterruptedExecutionException e) {
             GlobalLogger.instance().getSessionLogger().error(this, TextEvent.Topic.CORE, e, "ScenarioRunner exception");
@@ -337,7 +344,11 @@ public class ScenarioRunner extends Runner
     public ScenarioReference getScenarioReference() {
         return _scenario;
     }
-
+    
+    public boolean getScenarioState() {
+        return _scenario.getState();
+    }
+    
     /** adds a message to the stack and notify the Thread waiting for it */
     public void dispatchMessage(Msg msg) {
         _bufferMsg.dispatchMessage(msg);

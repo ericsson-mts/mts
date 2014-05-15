@@ -84,19 +84,22 @@ public class DispatcherMsg {
      * Add a scenario to the list of scenario we have to dispatch messages to
      */
     public static void registerScenario(ScenarioRunner runner) {
-        String scenarioRoutingName = runner.getScenarioReference().getRoutingName();
-        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: register scenario with routing=", scenarioRoutingName);
-        synchronized (scenariosByRoutingName) {
-            String[] names = scenarioRoutingName.split(",");
-            for (int i = 0; i < names.length; i++) {
-                LinkedList<ScenarioRunner> runnerList = scenariosByRoutingName.get(names[i]);
-                if (runnerList == null) {
-                    runnerList = new LinkedList<ScenarioRunner>();
-                    scenariosByRoutingName.put(names[i], runnerList);
-                }
-                runnerList.addLast(runner);
-            }
-        }
+    	if (runner.getScenarioState())
+    	{
+	        String scenarioRoutingName = runner.getScenarioReference().getRoutingName();
+	        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: register scenario with routing=", scenarioRoutingName);
+	        synchronized (scenariosByRoutingName) {
+	            String[] names = scenarioRoutingName.split(",");
+	            for (int i = 0; i < names.length; i++) {
+	                LinkedList<ScenarioRunner> runnerList = scenariosByRoutingName.get(names[i]);
+	                if (runnerList == null) {
+	                    runnerList = new LinkedList<ScenarioRunner>();
+	                    scenariosByRoutingName.put(names[i], runnerList);
+	                }
+	                runnerList.addLast(runner);
+	            }
+	        }
+    	}
     }
 
     /**
