@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.core.protocol;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.ScenarioReference;
 import com.devoteam.srit.xmlloader.core.ScenarioRunner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
@@ -665,7 +666,10 @@ public abstract class Msg extends MsgLight implements Removable
 	}
 
 	public void setDestScenario(ScenarioRunner destScenario) {
-		this.destScenario = destScenario;
+		if (destScenario != null && destScenario.getScenarioState())
+		{
+			this.destScenario = destScenario;
+		}
 	}
 
     public void setTimestampCaptureFile(long time){

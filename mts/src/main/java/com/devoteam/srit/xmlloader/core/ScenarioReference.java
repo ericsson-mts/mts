@@ -42,6 +42,7 @@ public class ScenarioReference implements Serializable {
     private String _name;
     private String _routingName;
     private String _description;
+    private boolean _state = true;
     private String _filename;
     private Scenario _scenario;
     private Testcase _testcase;
@@ -57,8 +58,14 @@ public class ScenarioReference implements Serializable {
         _name = elements.attributeValue("name");
         _routingName = elements.attributeValue("routingName");
         _description = elements.attributeValue("description");
+        String strState = elements.attributeValue("state");
+        if (strState != null)
+        {
+        	_state = Boolean.parseBoolean(strState);
+        }
         _filename = elements.attributeValue("file");
-        if(null == _filename){
+        if(null == _filename)
+        {
             _filename = elements.getStringValue();
         }
         _filename = _filename.trim();
@@ -113,6 +120,10 @@ public class ScenarioReference implements Serializable {
         return _description;
     }
 
+    public boolean getState() {
+        return _state;
+    }
+    
     public String getFilename() {
         return _filename;
     }

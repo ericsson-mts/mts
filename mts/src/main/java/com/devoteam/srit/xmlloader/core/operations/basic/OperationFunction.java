@@ -53,7 +53,7 @@ public class OperationFunction extends Operation {
         String name = root.attributeValue("name");
 
         if (file == null && name != null) {
-            FunctionsRegistry.instance().register(root.attributeValue("name"), root);
+            FunctionsRegistry.instance().register(name, root);
         }
         else if (file != null && name == null) {
 

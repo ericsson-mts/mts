@@ -74,9 +74,12 @@ public class LoggingSet {
          * Initialize each scenario logtable
          */
         for (ScenarioReference scenario : testcase.getChildren()) {
-            JTableLogs jTableLogs = new JTableLogs(scenario.getName(), null, testCaseName);
-            this.jTableMap.put(scenario.getName(), jTableLogs);
-            jTableLogs.setTestcaseTableLogs(this.jTableMap.get(null));
+        	if (scenario.getState())
+        	{
+	            JTableLogs jTableLogs = new JTableLogs(scenario.getName(), null, testCaseName);
+	            this.jTableMap.put(scenario.getName(), jTableLogs);
+	            jTableLogs.setTestcaseTableLogs(this.jTableMap.get(null));
+        	}
         }
     }
 
