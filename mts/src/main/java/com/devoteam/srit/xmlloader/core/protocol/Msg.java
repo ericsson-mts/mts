@@ -228,8 +228,14 @@ public abstract class Msg extends MsgLight implements Removable
        		return var;
        	}
         else if (params[0].equalsIgnoreCase("session"))
-        {       
-        	if (transaction != null)
+        {
+			SessionId sessId = getSessionId();
+			Sess sess = StackFactory.getStack(getProtocol()).getSession(sessId);
+			if (sess != null)
+			{
+				var = sess.getParameter(path);
+			}
+			else if (this.transaction != null)
         	{
         		Sess session = this.transaction.getSession();
         		if (session != null)
@@ -241,11 +247,11 @@ public abstract class Msg extends MsgLight implements Removable
 	        		Msg msg = this.transaction.getBeginMsg();
 	        		if (msg != null)
 	        		{
-	        			SessionId sessId = msg.getSessionId();
-	        			Sess sess = StackFactory.getStack(getProtocol()).getSession(sessId);
-	        			if (sess != null)
+	        			SessionId sessTransId = msg.getSessionId();
+	        			Sess sessTrans = StackFactory.getStack(getProtocol()).getSession(sessTransId);
+	        			if (sessTrans != null)
 	        			{
-	        				var = sess.getParameter(path);
+	        				var = sessTrans.getParameter(path);
 	        			}
 	        		}
         		}
