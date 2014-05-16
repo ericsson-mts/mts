@@ -492,8 +492,88 @@ a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0
 ]]>
 </sendMessageSIP>
 
-<receiveMessageSIP name="Wait ACK" request="true" type="ACK">  
+<parameter name="[sessID]" operation="protocol.setFromMessage" value="session.id"/>
+<parameter name="[msgSessionInit]" operation="protocol.setFromMessage" value="message"/>
+
+<receiveMessageSIP name="Wait ACK" request="true" type="ACK">
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+    <parameter name="[CSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+    <parameter name="[Call-ID]" operation="protocol.setFromMessage" value="header.Call-ID"/>
 </receiveMessageSIP>
+
+<parameter name="[msgSessionSubsequent0]" operation="protocol.setFromMessage" value="message"/>
+
+<parameter name="[session]" operation="protocol.setFromMessage" value="session"/>
+<log>[session]</log>
+<parameter name="[sessionID]" operation="protocol.setFromMessage" value="session.id"/>
+<test parameter="[sessionID]" condition="string.equals" value="[sessID]"/>
+
+<parameter name="[sessionName]" operation="protocol.setFromMessage" value="session.name"/>
+<test parameter="[sessionName]" condition="string.equals" value="200_out&lt;BR&gt;ACK_in"/>
+
+<parameter name="[msgInit]" operation="protocol.setFromMessage" value="session.initial"/>
+<test parameter="[msgInit]" condition="string.equals" value="[msgSessionInit]"/>
+<parameter name="[msgInitType]" operation="protocol.setFromMessage" value="message.type" value2="[msgInit]"/>           
+<test parameter="[msgInitType]" condition="string.equals" value="INVITE"/>
+<parameter name="[msgInitResult]" operation="protocol.setFromMessage" value="message.result" value2="[msgInit]"/>           
+<test parameter="[msgInitResult]" condition="string.equals" value="200"/>
+
+<parameter name="[msgSubsequents]" operation="protocol.setFromMessage" value="session.subsequents"/>
+<test parameter="[msgSubsequents]" condition="list.size" value="1"/>
+<test parameter="[msgSubsequents]" condition="string.equals" value="[msgSessionSubsequent0]"/>
+
+	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+	<parameter name="[newCseqNumber]" operation="number.add" value="[CSeqNumber]" value2="1"/>
+		<sendMessageSIP name="Send INFO">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[
+INFO [ContactURI] SIP/2.0
+To: [From]
+From: [To]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
+Call-ID: [Call-ID]
+CSeq: [newCseqNumber] INFO
+Max-Forwards: 70
+Expires: 3600
+Event: poc-settings
+User-Agent: PoC-client/OMA1.0 Siemens/v2.0
+Accept-Contact: *;+g.poc.talkburst;require;explicit
+Route: <sip:ptt@[remoteSIP];lr;mode=originating>
+Route: <sip:ptt@[localSIP];lr;mode=originating>
+Content-Type: application/dtmf-relay
+Content-Length: 24
+
+Signal=5
+Duration=160]]>
+</sendMessageSIP>
+
+<parameter name="[msgSessionSubsequent1]" operation="protocol.setFromMessage" value="message"/>
+
+<parameter name="[session]" operation="protocol.setFromMessage" value="session"/>
+<log>[session]</log>
+<parameter name="[sessionID]" operation="protocol.setFromMessage" value="session.id"/>
+<test parameter="[sessionID]" condition="string.equals" value="[sessID]"/>
+
+<parameter name="[sessionName]" operation="protocol.setFromMessage" value="session.name"/>
+<test parameter="[sessionName]" condition="string.equals" value="200_out&lt;BR&gt;ACK_in&lt;BR&gt;INFO_out"/>
+
+<parameter name="[msgInit]" operation="protocol.setFromMessage" value="session.initial"/>
+<test parameter="[msgInit]" condition="string.equals" value="[msgSessionInit]"/>
+<parameter name="[msgInitType]" operation="protocol.setFromMessage" value="message.type" value2="[msgInit]"/>           
+<test parameter="[msgInitType]" condition="string.equals" value="INVITE"/>
+<parameter name="[msgInitResult]" operation="protocol.setFromMessage" value="message.result" value2="[msgInit]"/>           
+<test parameter="[msgInitResult]" condition="string.equals" value="200"/>
+
+<parameter name="[msgSubsequents]" operation="protocol.setFromMessage" value="session.subsequents"/>
+<test parameter="[msgSubsequents]" condition="list.size" value="2"/>
+<test parameter="[msgSubsequents(0)]" condition="string.equals" value="[msgSessionSubsequent0]"/>
+<test parameter="[msgSubsequents(1)]" condition="string.equals" value="[msgSessionSubsequent1]"/>
+
+		<receiveMessageSIP name="Wait 200 OK" request="false" type="INFO" result="200">
+		</receiveMessageSIP>
+
+<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
 
 <receiveMessageSIP name="Wait BYE" request="true" type="BYE">
 <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>         

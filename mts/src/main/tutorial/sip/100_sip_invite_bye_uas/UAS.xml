@@ -8,8 +8,8 @@
   <parameter name="[clientName]" operation="set" value="alice"/>
 
   <receiveMessageSIP name="Wait INVITE" request="true" type="INVITE">
-    <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>       
-    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>   
+    <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
     <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
     <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
     <parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
@@ -96,7 +96,7 @@ a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0]]>
   <parameter name="[newBranchId]" operation="string.random" value="10"/>
   <parameter name="[lastCseqNumber]" operation="number.add" value="[lastCseqNumber]" value2="1"/>
     
-  <sendMessageSIP name="Send BYE" destScenario="alice">
+  <sendMessageSIP name="Send BYE">
 <![CDATA[BYE [Request-URI] SIP/2.0
 To: [lastFrom]
 From: [lastTo];tag=[localTag]

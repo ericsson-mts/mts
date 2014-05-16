@@ -11,8 +11,8 @@
   <createListenpointSIP name="listenpointUAS" localHost="[LocalHost(0)]" localPort="[LocalPort(0)]" localPortTLS="[LocalPortTLS(0)]" listenUDP="true" listenTCP="true" listenSCTP="false" listenTLS="true"/>
 
   <receiveMessageSIP name="Wait INVITE" request="true" type="INVITE" listenpoint="listenpointUAS">
-    <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>       
-    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>   
+    <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
     <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
     <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
     <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
@@ -109,14 +109,14 @@ Content-Disposition: recipient-list
   <test parameter="[channelTransport]" condition="string.equalsignorecase" value="UDP"/>
   
     <receiveMessageSIP name="Wait INFO" request="true" type="INFO" listenpoint="listenpointUAS">
-    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>         
-    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
-    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>          
-    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>       
-    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>                 
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
     <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
     <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
-    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>      
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>
   </receiveMessageSIP>
   <test parameter="[channelTransport]" condition="string.equalsignorecase" value="UDP"/>
  
@@ -135,14 +135,14 @@ Content-Length: 0
   </sendMessageSIP>
 
   <receiveMessageSIP name="Wait BYE" request="true" type="BYE" listenpoint="listenpointUAS">
-    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>         
-    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
-    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>          
-    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>       
-    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>                 
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
     <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
     <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
-    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>    
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>
   </receiveMessageSIP>  
   <test parameter="[channelTransport]" condition="string.equalsignorecase" value="udp"/>
   
@@ -161,6 +161,6 @@ Content-Length: 0
   </sendMessageSIP>
 
   <!-- blocking on LINUX because of SCTP -->
-  <removeListenpointSIP name="listenpointUAS"/>        
+  <removeListenpointSIP name="listenpointUAS"/>
   
 </scenario>

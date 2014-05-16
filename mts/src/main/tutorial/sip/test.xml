@@ -2,7 +2,7 @@
 <test description="SIP regression tests" name="SIP">
     
     <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
-	
+
     <parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortSIP]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
@@ -46,29 +46,29 @@
     <parameter name="[retransmitTimers(10)]" operation="set" value="4000"/>
     
     <testcase description="test sip" name="001_stats" state="true">
-        <scenario file="001_stats/UAC.xml" name="alice" routingName="alice"/>
-        <scenario file="001_stats/UAS.xml" name="bob" routingName="bob"/>
+        <scenario file="001_stats/UAC.xml" name="alice" routingName="nothing"/>
+        <scenario file="001_stats/UAS.xml" name="bob" routingName="SIP"/>
     </testcase>
 
     <testcase description="test sip" name="002_no_parameter" state="true">
-        <scenario file="002_no_parameter/UAC.xml" name="alice" routingName="alice"/>
-        <scenario file="002_no_parameter/UAS.xml" name="bob" routingName="bob"/>
+        <scenario file="002_no_parameter/UAC.xml" name="alice" routingName="nothing"/>
+        <scenario file="002_no_parameter/UAS.xml" name="bob" routingName="[localPortSIP]"/>
     </testcase>
     
     <testcase description="test sip" name="005_set_from_msg" state="true">
-        <scenario file="005_set_from_msg/UAC.xml" name="alice" routingName="alice"/>
-        <scenario file="005_set_from_msg/UAS.xml" name="1234" routingName="1234"/>
+        <scenario file="005_set_from_msg/UAC.xml" name="alice" routingName="nothing"/>
+        <scenario file="005_set_from_msg/UAS.xml" name="1234" routingName="SIP"/>
     </testcase>
 
 
     <testcase description="test sdp" name="006_set_from_sdp" state="true">
         <scenario file="006_set_from_sdp/UAC.xml" name="alice" routingName="alice"/>
-        <scenario file="006_set_from_sdp/UAS.xml" name="bob" routingName="bob"/>
+        <scenario file="006_set_from_sdp/UAS.xml" name="bob" routingName="[localPortSIP]"/>
     </testcase>
 
     <testcase description="test sip" name="009_echo" state="true">
         <scenario file="009_echo/UAC.xml" name="alice" routingName="alice"/>
-        <scenario file="009_echo/UAS.xml" name="bob" routingName="bob"/>
+        <scenario file="009_echo/UAS.xml" name="bob" routingName="SIP"/>
     </testcase>
 
 
@@ -104,7 +104,7 @@
     </testcase>
 
     <testcase description="test sip" name="101_re_invite" state="true">
-        <scenario file="101_sip_reinvite/UAC.xml" name="alice" routingName="alice"/>        
+        <scenario file="101_sip_reinvite/UAC.xml" name="alice" routingName="alice"/>
         <scenario file="101_sip_reinvite/UAS.xml" name="bob" routingName="bob"/>
     </testcase>
 
@@ -119,8 +119,8 @@
     </testcase>
 
     <testcase description="test sip" name="102_register_call" state="true">
-  	    <parameter name="[domainName]" operation="set" value="asterisk"/>
-      	<parameter name="[userTo]" operation="set" value="1111"/>
+        <parameter name="[domainName]" operation="set" value="asterisk"/>
+        <parameter name="[userTo]" operation="set" value="1111"/>
         <parameter name="[userFrom]" operation="set" value="0000"/>
 
         <scenario file="102_sip_register_call/UAC.xml" name="alice" routingName="alice"/>
@@ -155,7 +155,7 @@
 
     <testcase description="test sip" name="107_invite_prack_reinvite" state="true">
         <scenario file="107_sip_invite_prack_reinvite/UAC.xml" name="alice" routingName="alice"/>
-        <scenario file="107_sip_invite_prack_reinvite/UAS.xml" name="7070" routingName="7070"/>
+        <scenario file="107_sip_invite_prack_reinvite/UAS.xml" name="bob" routingName="bob"/>
     </testcase>
 
     <testcase description="test sip" name="107_invite_prack_update" state="true">
@@ -210,7 +210,7 @@
     </testcase>
 
     <testcase description="test sip" name="117_bad" state="true">
-        <scenario file="117_sip_bad/UAC.xml" name="alice" routingName="alice"/>        
+        <scenario file="117_sip_bad/UAC.xml" name="alice" routingName="alice"/>
         <scenario file="117_sip_bad/UAS.xml" name="bob" routingName="bob"/>
     </testcase>
 
@@ -332,15 +332,15 @@
 
         <scenario file="156_sip_supervision/probe.xml" name="probe" routingName="probe"/>
         <scenario file="156_sip_supervision/supervision.xml" name="supervision" routingName="supervision"/>
-    </testcase>    
+    </testcase>
 
     <testcase description="test sip" name="157_probe" state="false">
         <scenario file="130_sip_probe/probe.xml" name="probe" routingName="probe"/>
-    </testcase>   
+    </testcase>
 
     <testcase description="SIP registrar server authentification" name="158_registrar_authentification" state="false">
         <scenario file="158_sip_registrar_authentification/SIP.xml" name="[localPortSIP]" routingName="[localPortSIP]"/>
-    </testcase>	
+    </testcase>
 	
     <testcase description="test sip" name="160_boucle" state="false">
         <scenario file="160_sip_boucle/UAC.xml" name="alice" routingName="alice"/>

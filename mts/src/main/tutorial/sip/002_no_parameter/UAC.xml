@@ -4,7 +4,7 @@
 <scenario>
 <log level="INFO">[localHostSIP]</log>
 
-  <sendRequestSIP name="Send INVITE" destScenario="bob">
+  <sendRequestSIP name="Send INVITE">
 <![CDATA[
 INVITE sip:alice@devoteam.com SIP/2.0
 To: "alice" <sip:alice@devoteam.com>;tag=alice
@@ -57,7 +57,7 @@ Content-Disposition: recipient-list
   <receiveResponseSIP name="Wait 200 OK" method="INVITE" result="200">
   </receiveResponseSIP>
 
-  <sendRequestSIP name="Send ACK" destScenario="bob">
+  <sendRequestSIP name="Send ACK">
 <![CDATA[
 ACK sip:alice@devoteam.com SIP/2.0
 To: "alice" <sip:alice@devoteam.com>;tag=alice
@@ -74,7 +74,7 @@ Content-Length: 0
 ]]>
   </sendRequestSIP>
 
-  <sendRequestSIP name="Send BYE" destScenario="bob">
+  <sendRequestSIP name="Send BYE">
 <![CDATA[
 BYE sip:alice@devoteam.com SIP/2.0
 To: "alice" <sip:alice@devoteam.com>;tag=alice

@@ -49,23 +49,23 @@ a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0
 	</receiveMessageSIP>
 
 	<receiveMessageSIP name="Wait 183 Session Progress" request="false" type="INVITE" result="183">
-		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
-		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
-		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  	 
-		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/> 		 
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/> 
+		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
 		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
 	    	<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
 	    	<parameter name="[CSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
-	    	<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	    	
+	    	<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
 		<parameter name="[RSeq]" operation="protocol.setFromMessage" value="header.RSeq"/>
 		<parameter name="[localTag]" operation="string.random" value="10"/>
 	  	<parameter name="[newBranchId]" operation="string.random" value="10"/>
 	</receiveMessageSIP>
 
 
-    <parameter name="[newBranchId]" operation="string.random" value="10"/>                                  
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
     <parameter name="[CSeqNumber]" operation="number.add" value="[CSeqNumber]" value2="1"/> 
-	<sendMessageSIP name="Send PRACK" destScenario="bob">
+	<sendMessageSIP name="Send PRACK">
 <![CDATA[PRACK [Contact] SIP/2.0
 To: [To]
 From: [From]
@@ -89,9 +89,9 @@ Content-Length: 0
 			 
     <pause name="Pause" seconds="0"/>
 
-    <parameter name="[newBranchId]" operation="string.random" value="10"/>                                  
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
     <parameter name="[CSeqNumber]" operation="number.add" value="[CSeqNumber]" value2="1"/>
-    <sendMessageSIP name="Send UPDATE" destScenario="bob">
+    <sendMessageSIP name="Send UPDATE">
 <![CDATA[UPDATE [Contact] SIP/2.0
 To: [To]
 From: [From]
@@ -122,29 +122,29 @@ a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0
 	</sendMessageSIP>
   
 	<receiveMessageSIP name="Wait 200 OK" request="false" type="UPDATE" result="200">
-	    	<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>                     
-        	<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>                         
-	    	<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>    
-	    	<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq.Number"/> 			
+	    	<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+        	<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+	    	<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+	    	<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
 	</receiveMessageSIP>
 
  	<receiveMessageSIP name="Wait 180 OK" request="false" type="INVITE" result="180">
-		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
-		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
-		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  	 
-		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/> 		 
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
 		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
 	    	<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
 	    	<parameter name="[CSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
-	    	<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	    	
+	    	<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
 		<parameter name="[RSeq]" operation="protocol.setFromMessage" value="header.RSeq"/>
 		<parameter name="[localTag]" operation="string.random" value="10"/>
 	  	<parameter name="[newBranchId]" operation="string.random" value="10"/>
 	</receiveMessageSIP>
 
-    <parameter name="[newBranchId]" operation="string.random" value="10"/>                                  
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
     <parameter name="[CSeqNumber]" operation="number.add" value="[CSeqNumber]" value2="1"/> 
-	<sendMessageSIP name="Send PRACK" destScenario="bob">
+	<sendMessageSIP name="Send PRACK" >
 <![CDATA[PRACK [Contact] SIP/2.0
 To: [To]
 From: [From]
@@ -167,15 +167,15 @@ Content-Length: 0
 	</receiveMessageSIP>
  
  	<receiveMessageSIP name="Wait 200 OK" request="false" type="INVITE" result="200">
-	    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>                     
-	    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>                         
-	    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>    
+	    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+	    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+	    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
 	    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
-	    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq.Number"/> 			
+	    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
 	</receiveMessageSIP>
 
-    <parameter name="[newBranchId]" operation="string.random" value="10"/>                              
-    <sendMessageSIP name="Send ACK" destScenario="bob">
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+    <sendMessageSIP name="Send ACK">
 <![CDATA[ACK [Request-URI] SIP/2.0
 To: [To]
 From: [From]
@@ -192,9 +192,9 @@ Content-Length: 0
  
     <pause name="Pause" seconds="0"/>
 
-    <parameter name="[newBranchId]" operation="string.random" value="10"/>                                  
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
     <parameter name="[CSeqNumber]" operation="number.add" value="[CSeqNumber]" value2="1"/>
-    <sendMessageSIP name="Send BYE" destScenario="bob">
+    <sendMessageSIP name="Send BYE">
 <![CDATA[BYE [Request-URI] SIP/2.0
 To: [To]
 From: [From]

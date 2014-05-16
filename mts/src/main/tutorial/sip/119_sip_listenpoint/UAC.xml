@@ -92,16 +92,16 @@ Content-Disposition: recipient-list
   <test parameter="[channelTransport]" condition="string.equals" value="TCP"/>
 
   <receiveMessageSIP name="Wait 200 OK" type="INVITE" result="200" listenpoint="listenpointUAC">
-    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>                     
-    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>                         
-    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>    
-    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
     <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
-    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>    
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>
   </receiveMessageSIP>
   <test parameter="[channelTransport]" condition="string.equalsignorecase" value="TCP"/>
 
-    <parameter name="[newBranchId]" operation="string.random" value="10"/>                              
+    <parameter name="[newBranchId]" operation="string.random" value="10"/> 
   <sendMessageSIP name="Send ACK" listenpoint="listenpointUAC">
 <![CDATA[ACK [Request-URI] SIP/2.0
 To: [To]
@@ -145,8 +145,8 @@ Content-Length: 0
   </receiveMessageSIP>
   <test parameter="[channelTransport]" condition="string.equalsignorecase" value="TCP"/>
 
-  <parameter name="[CSeqNumber]" operation="number.add" value="[CSeqNumber]" value2="1"/>    
-  <parameter name="[newBranchId]" operation="string.random" value="10"/>                                  
+  <parameter name="[CSeqNumber]" operation="number.add" value="[CSeqNumber]" value2="1"/> 
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>
   <sendMessageSIP name="Send BYE" listenpoint="listenpointUAC">
 <![CDATA[BYE [Request-URI] SIP/2.0
 To: [To]
@@ -166,11 +166,11 @@ Content-Length: 0
                 
   <receiveMessageSIP name="Wait 200 OK" type="BYE" result="200" listenpoint="listenpointUAC">
     <parameter name="[channelProtocol]" operation="protocol.setFromMessage" value="channel.protocol"/>
-    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>    
+    <parameter name="[channelTransport]" operation="protocol.setFromMessage" value="channel.transport"/>
   </receiveMessageSIP>
   <test parameter="[channelTransport]" condition="string.equalsignorecase" value="TCP"/>
 
   <!-- blocking on LINUX because of SCTP -->
-  <removeListenpointSIP name="listenpointUAC"/>        
+  <removeListenpointSIP name="listenpointUAC"/>
   
 </scenario>
