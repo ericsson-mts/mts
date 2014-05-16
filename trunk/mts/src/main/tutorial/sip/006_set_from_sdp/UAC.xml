@@ -12,7 +12,7 @@
   <parameter name="[newBranchId]" operation="string.random" value="10"/>
   <parameter name="[newBranchIdBYE]" operation="string.random" value="10"/>
 
-  <sendMessageSIP name="Send INVITE" destScenario="bob">
+  <sendMessageSIP name="Send INVITE">
 <!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[INVITE sip:[inviteeName1]@[101_DOMAIN_ADDR] SIP/2.0
 From: "[clientName]" <sip:[clientName]@[101_DOMAIN_ADDR]>;tag=[localTag]
@@ -231,7 +231,7 @@ Content-Disposition: recipient-list
 
   <parameter name="[newBranchId]" operation="string.random" value="10"/>
   
-  <sendMessageSIP name="Send ACK" destScenario="bob">
+  <sendMessageSIP name="Send ACK">
 <!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[ACK [Request-URI] SIP/2.0
 To: [To]
@@ -251,7 +251,7 @@ Content-Length: 0]]>
   <parameter name="[CSeqNumber]" operation="number.add" value="[CSeqNumber]" value2="1"/>
   <parameter name="[newBranchId]" operation="string.random" value="10"/>  
 
-  <sendMessageSIP name="Send BYE" destScenario="bob">
+  <sendMessageSIP name="Send BYE">
 <!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[BYE [Request-URI] SIP/2.0
 To: [To]

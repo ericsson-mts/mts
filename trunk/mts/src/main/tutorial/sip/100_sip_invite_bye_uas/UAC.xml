@@ -75,22 +75,19 @@ Content-Disposition: recipient-list
   <receiveMessageSIP name="Wait 180 Ringing" request="false" type="INVITE" result="180">
   </receiveMessageSIP>
 
-    <parameter name="[newBranchId]" operation="string.random" value="10"/>                              
-    
   <receiveMessageSIP name="Wait 200 OK" request="false" type="INVITE" result="200">
-    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>                     
-    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>                         
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
     <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/> 
-    <parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>   
-    <parameter name="[contactURI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
-    <parameter name="[RecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route"/>              
+    <parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+    <parameter name="[contactURI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
+    <parameter name="[RecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route"/>
   </receiveMessageSIP>
 
     <parameter name="[Request-URI]" operation="set" value="[contactURI]"/>
     <parameter name="[Route]" operation="list.revert" value="[RecordRoute]"/>
     <parameter name="[newBranchId]" operation="string.random" value="10"/>
-      	
-  <sendMessageSIP name="Send ACK" destScenario="bob">
+  <sendMessageSIP name="Send ACK" >
 <![CDATA[ACK [Request-URI] SIP/2.0
 To: [To]
 From: [From]

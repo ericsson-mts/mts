@@ -13,7 +13,7 @@
   	
   	<parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
 
-	<sendMessageSIP name="Send REGISTER"  destScenario="bob">
+	<sendMessageSIP name="Send MESSAGE"  destScenario="bob">
 <!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[MESSAGE sip:0033660648607@[domainName] SIP/2.0
 To: sip:0033660648607@[domainName]
@@ -50,11 +50,11 @@ Hello ]]>
 	<then>	
 
 		<parameter name="[UserName]" operation="set" value="33975621672@sip.mobistar.com"/>
-		<parameter name="[Password]" operation="set" value="imt30imt30"/>						
+		<parameter name="[Password]" operation="set" value="imt30imt30"/>
 		<parameter name="[HA1]" operation="string.digest" value2="MD5" value="[UserName]:[WWWAuthRealm]:[Password]" />
 
-		<parameter name="[Method]" operation="set" value="MESSAGE"/>				
-		<parameter name="[URI]"      operation="set" value="sip:sip.mobistar.com:5060" />	
+		<parameter name="[Method]" operation="set" value="MESSAGE"/>
+		<parameter name="[URI]"      operation="set" value="sip:sip.mobistar.com:5060" />
 		<parameter name="[HA2]" operation="string.digest" value2="MD5" value="[Method]:[URI]" />
 		
 		<parameter name="[NonceCount]" operation="set" value="00000001" />
@@ -63,7 +63,7 @@ Hello ]]>
 			
   		<parameter name="[newBranchId]" operation="string.random" value="10"/>
 			
-		<sendMessageSIP name="Send REGISTER"  destScenario="bob">
+		<sendMessageSIP name="Send MESSAGE"  destScenario="bob">
 <!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[[Method] [URI] SIP/2.0
 To: sip:0033660648607@[domainName]

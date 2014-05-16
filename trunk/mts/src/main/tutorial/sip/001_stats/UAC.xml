@@ -27,7 +27,7 @@
   <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
   <parameter name="[newBranchId]" operation="string.random" value="10"/>
   
-  <sendMessageSIP name="Send INVITE" destScenario="bob">
+  <sendMessageSIP name="Send INVITE">
 <![CDATA[INVITE sip:[inviteeName1]@[100_DOMAIN_ADDR] SIP/2.0
 To: sip:[inviteeName1]@[100_DOMAIN_ADDR]
 From: "[clientName]" <sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
@@ -84,7 +84,7 @@ Content-Disposition: recipient-list
 ------=_Part_0--]]>
   </sendMessageSIP>
   
-  <sendMessageSIP name="Send INVITE" destScenario="bob">
+  <sendMessageSIP name="Send INVITE">
 <![CDATA[INVITE sip:[inviteeName1]@[100_DOMAIN_ADDR] SIP/2.0
 To: sip:[inviteeName1]@[100_DOMAIN_ADDR]
 From: "[clientName]" <sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
@@ -175,7 +175,7 @@ Content-Disposition: recipient-list
     <parameter name="[Route]" operation="list.revert" value="[RecordRoute]"/>
     <parameter name="[newBranchId]" operation="string.random" value="10"/>
       	      	
-  <sendMessageSIP name="Send ACK" destScenario="bob">
+  <sendMessageSIP name="Send ACK">
 <![CDATA[ACK [Request-URI] SIP/2.0
 To: [To]
 From: [From]
@@ -195,7 +195,7 @@ Content-Length: 0
   <parameter name="[newBranchId]" operation="string.random" value="10"/>
   <parameter name="[newCseqNumber]" operation="number.add" value="[newCseqNumber]" value2="1"/>
     
-  <sendMessageSIP name="Send BYE" destScenario="bob">
+  <sendMessageSIP name="Send BYE">
 <![CDATA[BYE [Request-URI] SIP/2.0
 To: [To]
 From: [From]
@@ -250,8 +250,5 @@ Content-Length: 0
   <parameter name="[BytesMb]" operation="system.statCounter" value="> transport" value2="Bytes (in Mb)"/>
   <test parameter="[BytesMb.Count]" condition="number.greaterThan" value="0.01"/>
   <test parameter="[BytesMb.Count]" condition="number.lowerThan" value="0.02"/>
-  
-  
-  
   
 </scenario>

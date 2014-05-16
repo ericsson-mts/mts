@@ -75,14 +75,13 @@ Content-Disposition: recipient-list
   </receiveMessageSIP>
 
   <receiveMessageSIP name="Wait 180 Ringing" request="false" type="INVITE" result="180">
-    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>                   
-    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>                       
-    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>                                                  
-    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
   </receiveMessageSIP>
 
   <parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
-  
   <sendMessageSIP name="CANCEL" destScenario="bob">
 <!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[CANCEL [Request-URI] SIP/2.0

@@ -37,45 +37,49 @@ Content-Length: 0
 <!--******************** END MESSAGE *********************-->
 		</sendMessageSIP>
 		<receiveMessageSIP name="Wait 200 OK" request="false" type="SUBSCRIBE" result="200">
+    		<parameter name="[subscribeTo]" operation="protocol.setFromMessage" value="header.To"/>
+    		<parameter name="[subscribeFrom]" operation="protocol.setFromMessage" value="header.From"/>
+    		<parameter name="[subscribeCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    		<parameter name="[subscribeCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    		<parameter name="[subscribeVia]" operation="protocol.setFromMessage" value="header.Via"/>
 		</receiveMessageSIP>
 	
 	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
 	
 		<receiveMessageSIP name="Wait NOTIFY" request="true" type="NOTIFY">
-		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
-		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
-		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  	
-		<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>  	 		
-		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
-		<parameter name="[localTag]" operation="string.random" value="10"/> 
+		<parameter name="[notifyTo]" operation="protocol.setFromMessage" value="header.To"/>
+		<parameter name="[notifyFrom]" operation="protocol.setFromMessage" value="header.From"/>
+		<parameter name="[notifyCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+		<parameter name="[notifyCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		<parameter name="[notifyCSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+		<parameter name="[notifyVia]" operation="protocol.setFromMessage" value="header.Via"/>
 		</receiveMessageSIP>
 
 		<sendMessageSIP name="send 200 OK">
 <!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[SIP/2.0 200 OK
-To: [To]
-From: [From]
-Call-ID: [CallId]
-Via: [Via]
-CSeq: [CSeq]
+To: [notifyTo]
+From: [notifyFrom]
+Call-ID: [notifyCallId]
+Via: [notifyVia]
+CSeq: [notifyCSeq]
 Content-Length: 0
 ]]>
 <!--******************** END MESSAGE *********************-->
 		</sendMessageSIP>
 		
     <parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
-    
- 	<parameter name="[localTag]" operation="string.random" value="10"/> 
-    	<parameter name="[newBranchIdSUBSCRIBE]" operation="string.random" value="10"/>  		
 
-<sendMessageSIP name="Send Subscribe with expires=0" destScenario="bob">
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+    <parameter name="[subscribeCseqNumber]" operation="number.add" value="[notifyCSeqNumber]" value2="1"/>
+<sendMessageSIP name="Send Subscribe with expires=0">
 <!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[SUBSCRIBE sip:[inviteeName1]@[104_DOMAIN_ADDR] SIP/2.0
-To: [To]
-From: [From]
-Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchIdSUBSCRIBE];id=[clientName]
-Call-ID: [newCallId]
-CSeq: [newCseqNumber] SUBSCRIBE
+To: [subscribeTo]
+From: [subscribeFrom]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
+Call-ID: [subscribeCallId]
+CSeq: [subscribeCseqNumber] SUBSCRIBE
 Max-Forwards: 70
 Accept: application/conference-info+xml
 Contact: <sip:[clientName]@[localSIP]>;+g.poc.talkburstst

@@ -78,22 +78,19 @@ Content-Disposition: recipient-list
   <receiveMessageSIP name="Wait 180 Ringing" type="INVITE" result="180">
   </receiveMessageSIP>
 
-    <parameter name="[newBranchId]" operation="string.random" value="10"/>                              
-
   <receiveMessageSIP name="Wait 200 OK" type="INVITE" result="200" timeout="2.0" failedOnTimeout="false" failedOnReceive="true">
   </receiveMessageSIP>
     
   <receiveMessageSIP name="Wait 200 OK" type="INVITE" result="200" timeout="1.0">
-    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>                     
-    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>                         
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
     <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/> 
-    <parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>   
-    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+    <parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
   </receiveMessageSIP>
 
       	<parameter name="[newBranchId]" operation="string.random" value="10"/>
-      	
-  <sendMessageSIP name="Send ACK" destScenario="bob">
+  <sendMessageSIP name="Send ACK">
 <![CDATA[ACK [Request-URI] SIP/2.0
 To: [To]
 From: [From]
@@ -113,8 +110,7 @@ Content-Length: 0
 
       	<parameter name="[newBranchId]" operation="string.random" value="10"/>
   	<parameter name="[newCseqNumber]" operation="number.add" value="[newCseqNumber]" value2="1"/>
-    
-  <sendMessageSIP name="Send BYE" destScenario="bob" delay="0">
+  <sendMessageSIP name="Send BYE" delay="0">
 <![CDATA[BYE [Request-URI] SIP/2.0
 To: [To]
 From: [From]

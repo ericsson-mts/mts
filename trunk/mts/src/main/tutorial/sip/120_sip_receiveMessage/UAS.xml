@@ -4,10 +4,10 @@
 <scenario>
 
   <receiveMessage name="Wait INVITE" request="true" type="INVITE">
-    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>   
-    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
-    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>          
-    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>       
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/> 
     <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
     <parameter name="[NotDefined]" operation="protocol.setFromMessage" value="header.NotDefined"/> 
     <parameter name="[localTag]" operation="string.random" value="10"/>         
@@ -58,19 +58,19 @@ Content-Length: 0]]>
   </sendMessageSIP>
 
   <receiveMessage name="Wait ACK" request="true" type="ACK">
-    <parameter name="[Simple]" operation="protocol.setFromMessage" value="header.Simple"/>                   
+    <parameter name="[Simple]" operation="protocol.setFromMessage" value="header.Simple"/> 
   </receiveMessage>
 
   <test parameter="[Simple]" condition="string.equals" value="bla0123456789bla,0123456789"/>
 
   <receiveMessage name="Wait BYE" request="true" type="BYE">
-    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>   
-    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
-    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>          
-    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>       
-    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>                 
-    <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
-    <parameter name="[Multiple]" operation="protocol.setFromMessage" value="header.Multiple"/>               
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+    <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+    <parameter name="[Multiple]" operation="protocol.setFromMessage" value="header.Multiple"/>
   </receiveMessage>
 
   <test parameter="[Multiple(0)]" condition="string.equals" value="bla123bla, 123"/>
@@ -80,10 +80,10 @@ Content-Length: 0]]>
   <test parameter="[Multiple(4)]" condition="string.equals" value="bla123bla, 123, [unKnown]"/>
   <test parameter="[Multiple(5)]" condition="string.equals" value="bla456bla, 123, [unKnown]"/>
   <test parameter="[Multiple(6)]" condition="string.equals" value="blabla, 123, [unKnown]"/>
-  <test parameter="[Multiple(7)]" condition="string.equals" value="bla789bla, 123, [unKnown]"/>                  
-  <test parameter="[Multiple(8)]" condition="string.equals" value=""/>                   
-  <test parameter="[Multiple(9)]" condition="string.equals" value="bla123bla, 456, , 789"/>                      
-  <test parameter="[Multiple(10)]" condition="string.equals" value="789, [unKnown]"/>                    
+  <test parameter="[Multiple(7)]" condition="string.equals" value="bla789bla, 123, [unKnown]"/>
+  <test parameter="[Multiple(8)]" condition="string.equals" value=""/>
+  <test parameter="[Multiple(9)]" condition="string.equals" value="bla123bla, 456, , 789"/>
+  <test parameter="[Multiple(10)]" condition="string.equals" value="789, [unKnown]"/>
 
   <sendMessageSIP name="Send 200 OK">
 <!--******************* BEGIN MESSAGE ********************-->

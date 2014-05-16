@@ -104,7 +104,7 @@ Content-Disposition: recipient-list
 
   <parameter name="[newBranchId]" operation="string.random" value="10"/>
 
-  <sendMessageSIP name="Send ACK" destScenario="bob" transport="tls">
+  <sendMessageSIP name="Send ACK" transport="tls">
 <![CDATA[ACK [Request-URI] SIP/2.0
 To: [To]
 From: [From]
@@ -125,7 +125,7 @@ Content-Length: 0
     <parameter name="[newBranchId]" operation="string.random" value="10"/>
     <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
 
-  <sendMessageSIP name="Send BYE" transport="tls" destScenario="bob">
+  <sendMessageSIP name="Send BYE" transport="tls">
 <![CDATA[BYE [Request-URI] SIP/2.0
 To: [To]
 From: [From]

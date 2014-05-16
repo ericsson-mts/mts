@@ -12,7 +12,8 @@
   <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
   <parameter name="[newBranchId]" operation="string.random" value="10"/>
   
-  <sendMessageSIP name="Send INVITE" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportRequest]" destScenario="bob">
+  <sendMessageSIP name="Send INVITE" destScenario="bob" 
+  remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportRequest]">
 <![CDATA[INVITE sip:[inviteeName1]@[100_DOMAIN_ADDR] SIP/2.0
 To: sip:[inviteeName1]@[100_DOMAIN_ADDR]
 From: "[clientName]" <sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
@@ -75,19 +76,17 @@ Content-Disposition: recipient-list
   <receiveMessageSIP name="Wait 180 Ringing" request="false" type="INVITE" result="180">
   </receiveMessageSIP>
 
-    <parameter name="[newBranchId]" operation="string.random" value="10"/>                              
-    
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
   <receiveMessageSIP name="Wait 200 OK" request="false" type="INVITE" result="200">
-    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>                     
-    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>                         
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
     <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/> 
-    <parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>   
-    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+    <parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/> 
+    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
   </receiveMessageSIP>
 
       	<parameter name="[newBranchId]" operation="string.random" value="10"/>
-      	
-  <sendMessageSIP name="Send ACK" remotePort="[remotePortSIP]" transport="[transportRequest]" destScenario="bob">
+  <sendMessageSIP name="Send ACK" remotePort="[remotePortSIP]" transport="[transportRequest]">
 <![CDATA[ACK [Request-URI] SIP/2.0
 To: [To]
 From: [From]
@@ -107,8 +106,7 @@ Content-Length: 0
 
     <parameter name="[newBranchId]" operation="string.random" value="10"/>
   	<parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
-    
-  <sendMessageSIP name="Send BYE" destScenario="bob">
+  <sendMessageSIP name="Send BYE">
 <![CDATA[BYE [Request-URI] SIP/2.0
 To: [To]
 From: [From]
