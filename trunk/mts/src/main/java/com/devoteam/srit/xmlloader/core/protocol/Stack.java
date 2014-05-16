@@ -170,7 +170,7 @@ public abstract class Stack
         this.inTransactions = new ExpireHashMap<TransactionId, Trans>("inTransactions", msgLifeTime);
         this.capTransactions = new ExpireHashMap<TransactionId, Trans>("capTransactions", msgLifeTime);
 
-        this.sessLifeTime = (long) (config.getDouble("SESSION_TIME_LIFE", 600) * 1000);               
+        this.sessLifeTime = (long) (config.getDouble("SESSION_TIME_LIFE", 0) * 1000);               
         this.outinSessions = new ExpireHashMap<SessionId, Sess>("outSessions", sessLifeTime);
         this.capSessions = new ExpireHashMap<SessionId, Sess>("capSessions", sessLifeTime);
         
@@ -632,10 +632,9 @@ public abstract class Stack
             }
         }
         
-        
         msg.setTimestamp(System.currentTimeMillis());
         sendMessage(msg);
-        
+
         // stuff about sessions (see later)
         if (msg.getSessionId() != null && !isRetransmission) {
         	// check whether the message belongs to an existing session 
@@ -651,8 +650,8 @@ public abstract class Stack
 	                    float sessionTime = Stack.getTimeDuration(msg, sess.getBeginMsg().getTimestamp());
 			            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Finish a outgoing session (time = ", sessionTime, " s) : ", " (SESSION_ID=", msg.getSessionId(), ")");
 			            
-			    		// sess.onRemove();
-			    		// outinSessions.remove(msg.getSessionId());
+			    		sess.onRemove();
+			    		outinSessions.remove(msg.getSessionId());
 	            	}
             	}
             }
@@ -666,7 +665,7 @@ public abstract class Stack
 	        	}
             }
         }
-                        
+        
         // logs in scenario and application logs as CALLFLOW topic
         processLogsMsgSending(msg, srcRunner, Stack.SEND);
 
@@ -886,8 +885,8 @@ public abstract class Stack
 	                    float sessionTime = Stack.getTimeDuration(msg, sess.getBeginMsg().getTimestamp());
 			            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Finish a outgoing session (time = ", sessionTime, " s) : ", sess.getSummary(), " (SESSION_ID=", msg.getSessionId(), ")");
 			            
-			    		// sess.onRemove();
-			    		// outinSessions.remove(msg.getSessionId());
+			    		sess.onRemove();
+			    		outinSessions.remove(msg.getSessionId());
 	            	}
 	            	
 	                if (routeDefaultSubsequent && sess != null)

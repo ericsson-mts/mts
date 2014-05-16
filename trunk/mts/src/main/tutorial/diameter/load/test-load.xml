@@ -2,7 +2,7 @@
 <test name="Load tests">
 
     <parameter description="number of transaction per second" editable="true" name="[speedTrans]" operation="set" value="10000"/>	
-    <parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="3600"/>
+    <parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="300"/>
     <parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="10"/>
     
     <parameter name="[localHostDIAM]" operation="system.ipaddress"/>
@@ -23,7 +23,7 @@
     
     <parameter description="vendor ID" editable="true" name="[vendorID]" operation="set" value="10415"/>
     
-    <parameter name="[speedTestcase]" operation="divide" value="[speedTrans]" value2="[NumberTestcase]"/>	
+    <parameter name="[speedTestcase]" operation="number.divide" value="[speedTrans]" value2="[NumberTestcase]"/>	
     
     <!--                       -->
     <!-- RUNPROFILE PARAMETERS -->

@@ -4,13 +4,15 @@
 <scenario>
     
     <receiveMessageDIAMETER name="ReceiveRequestMAR" request="true" type="Multimedia-Authentitcation:506">
+        <parameter name="[lastRemoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[lastRemotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
         <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
 
-    <sendMessageDIAMETER name="SendAnswerMAA">
+    <sendMessageDIAMETER name="SendAnswerMAA" remoteURL="diameter://[lastRemoteHost]:[lastRemotePort]">
         <header request="false" command="[commandCode]" applicationId="16777216" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id" value="[sessionId]"/>
         <avp code="Origin-Host" value="[remoteHostDIAM]"/>
