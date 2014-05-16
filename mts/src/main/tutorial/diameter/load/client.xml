@@ -3,7 +3,7 @@
 <!-- name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)" -->
 <scenario>
     
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[sessionId]" operation="string.random" value="20"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIAM]" destScenario="aaa-server">
         <header request="true" command="Multimedia-Authentitcation" applicationId="16777216"/>
         <avp code="Session-Id" value="[sessionId]"/>
