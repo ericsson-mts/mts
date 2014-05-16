@@ -4,7 +4,7 @@
     <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
     
     <parameter name="[localHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter description="local address of the MTS host" editable="true" name="[localHostDIAM]" operation="set" value="[localHostDIAM(1)]"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostDIAM]" operation="set" value="[localHostDIAM(0)]"/>
     <!--parameter name="[localHostDIAM]" operation="set" value="imspcf401-imscore.sip.imsnsn.fr"/-->
     <parameter name="[localPortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
     <parameter name="[localPortDIAM]" operation="set" value="13868"/>
@@ -12,7 +12,7 @@
     <parameter name="[localDIAM]" operation="set" value="[localHostDIAM]:[localPortDIAM]"/>
     
     <parameter name="[remoteHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostDIAM]" operation="set" value="[remoteHostDIAM(1)]"/>
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostDIAM]" operation="set" value="[remoteHostDIAM(0)]"/>
     <!--parameter name="[remoteHostDIAM]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/-->
     <!--parameter name="[remoteHostDIAM]" operation="set" value="172.16.21.32"/-->
     <parameter name="[remotePortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
@@ -20,8 +20,8 @@
     <parameter description="remote port of the SUT host" editable="true" name="[remotePortDIAM]" operation="set" value="[remotePortDIAM]"/>
     <parameter name="[remoteDIAM]" operation="set" value="[remoteHostDIAM]:[remotePortDIAM]"/>
     
-    <parameter name="[speedTestcase]" operation="set" value="500" description="number of session to initiate per seconds" editable="true" />
-    <parameter name="[TestDurationSec]" operation="set" value="3600" description="Duration (in seconde) of the load testing" editable="true" />
+    <parameter name="[speedTestcase]" operation="set" value="300" description="number of session to initiate per seconds" editable="true" />
+    <parameter name="[TestDurationSec]" operation="set" value="5000" description="Duration (in seconde) of the load testing" editable="true" />
         
     <parameter name="[originIPAddress]" operation="set" value="172.18.128.19" editable="true"/>
     <parameter name="[termIPAddress]" operation="set" value="172.18.128.20" editable="true"/>
@@ -37,7 +37,7 @@
     
     <testcase name="----- AF -----" description="Testcase on AF side" state="false"/>
     
-    <testcase name="Loader SendAAR(265)" description="Send the AAR(265) requests" state="true">
+    <testcase name="Loader SendAAR" description="Send the AAR(265) requests" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
       <runProfile>
           <step time="0" frequency="[speedTestcase]"/>
@@ -46,7 +46,7 @@
       <scenario name="client">AF/loader.xml</scenario>
     </testcase>
     
-    <testcase name="Responder RecAAA(265)) RecSTA(275)" description="Send the STRequest(275)" state="true">
+    <testcase name="Responder RecAAA + RecSTA" description="Send the STRequest(275)" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
       <parameter name="[TestDurationSec1]" operation="number.add" value="[TestDurationSec]" value2="30"/>
       <runProfile>
@@ -58,7 +58,7 @@
     
     <testcase name="----- PRCF -----" description="Testcase on PCRF side" state="false"/>
     
-    <testcase name="Responder RecAAR(265) + RecSTR (275)" description="Receive the AA(265) requests and receive/send the ST(275) request" state="true">
+    <testcase name="Responder RecAAR + RecSTR" description="Receive the AA(265) requests and receive/send the ST(275) request" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[termIPAddress]"/>
       <parameter name="[TestDurationSec1]" operation="number.add" value="[TestDurationSec]" value2="30"/>
       <runProfile>
