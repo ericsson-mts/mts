@@ -78,10 +78,12 @@
     <parameter name="[test:contextAFSessions]" operation="list.addLast" value="[test:contextAFSessions]" value2="[lastSessionId]"/>
     <!--log type="Main" level="WARN">[testcaseId(0)] => ADD lastSessionId = [lastSessionId]</log-->
     <!--log type="Main" level="WARN">[testcaseId(0)] => AFTER ADD test:contextAFSessions = [test:contextAFSessions]</log-->
+    <parameter name="[test:contextAFTimestamp_[lastSessionId]]" operation="system.timestamp" value="1970"/>
+    
     
     <!-- Modify the session statistics counter -->
     <stats>
-        <counter name="AFActiveSession" summary="AF Act" complete="Active session on AF side">
+        <counter name="AFSessionActive" summary="AF Act" complete="Active session on AF side">
             <increase>1</increase>
         </counter>
     </stats>
@@ -188,9 +190,18 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
     
     <!-- Modify the session statistics counter -->
     <stats>
-        <counter name="AFActiveSession" summary="AF Act" complete="Active session on AF side">
+        <counter name="AFSessionActive" summary="AF Act" complete="Active session on AF side">
             <increase>-1</increase>
         </counter>
+    </stats>
+    <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+    <parameter name="[duration]" operation="number.substract" value="[timestamp]" value2="[test:contextAFTimestamp_[lastSessionId]]"/>
+    <parameter name="[duration]" operation="number.divide" value="[duration]" value2="1000"/>
+    <!--log type="Main" level="WARN">[testcaseId(0)] => Session duration = [duration] sec.</log-->
+    <stats>
+        <value name="AFSessionDuration" summary="AF Dur" complete="Duration of the session on AF side">
+            <newValue>[duration]</newValue>
+        </value>
     </stats>
 
     <goto name="goto begin" label="begin"/>

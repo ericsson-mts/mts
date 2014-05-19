@@ -102,10 +102,11 @@
     <parameter name="[test:contextPCRFSessions]" operation="list.addLast" value="[test:contextPCRFSessions]" value2="[lastSessionId]"/>
     <!--log type="Main" level="WARN">[testcaseId(0)] => ADD lastSessionId = [lastSessionId]</log-->
     <!--log type="Main" level="WARN">[testcaseId(0)] => AFTER ADD test:contextPCRFSessions = [test:contextPCRFSessions]</log-->
+    <parameter name="[test:contextPCRFTimestamp_[lastSessionId]]" operation="system.timestamp" value="1970"/>
     
     <!-- Modify the session statistics counter -->
     <stats>
-        <counter name="PCRFActiveSession" summary="PCRF Act" complete="Active session on PCRF side">
+        <counter name="PCRFSessionActive" summary="PCRF Act" complete="Active session on PCRF side">
             <increase>1</increase>
         </counter>
     </stats>
@@ -218,9 +219,18 @@ Re-Auth-Answer ::= < Diameter Header: 258, PXY >
     
     <!-- Modify the session statistics counter -->
     <stats>
-        <counter name="PCRFActiveSession" summary="PCRF Act" complete="Active session on PCRF side">
+        <counter name="PCRFSessionActive" summary="PCRF Act" complete="Active session on PCRF side">
             <increase>-1</increase>
         </counter>
+    </stats>
+    <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+    <parameter name="[duration]" operation="number.substract" value="[timestamp]" value2="[test:contextPCRFTimestamp_[lastSessionId]]"/>
+    <parameter name="[duration]" operation="number.divide" value="[duration]" value2="1000"/>
+    <!--log type="Main" level="WARN">[testcaseId(0)] => Session duration = [duration] sec.</log-->
+    <stats>
+        <value name="PCRFSessionDuration" summary="PCRF Dur" complete="Duration of the session on PCRF side">
+            <newValue>[duration]</newValue>
+        </value>
     </stats>
 
 <!--
