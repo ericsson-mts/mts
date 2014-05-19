@@ -20,19 +20,18 @@
     <parameter description="remote port of the SUT host" editable="true" name="[remotePortDIAM]" operation="set" value="[remotePortDIAM]"/>
     <parameter name="[remoteDIAM]" operation="set" value="[remoteHostDIAM]:[remotePortDIAM]"/>
     
-    <parameter name="[speedTestcase]" operation="set" value="300" description="number of session to initiate per seconds" editable="true" />
-    <parameter name="[TestDurationSec]" operation="set" value="5000" description="Duration (in seconde) of the load testing" editable="true" />
-        
+    <parameter name="[speedTestcase]" operation="set" value="50" description="number of session to initiate per seconds" editable="true" />
+    <parameter name="[TestDurationSec]" operation="set" value="90" description="Duration (in seconde) of the load testing" editable="true" />
+    <parameter name="[NumberTestcase]" operation="set" value="1" description="Number of testcase for responders" editable="true" />
+    <parameter name="[responseTime]" operation="set" value="0.1" editable="true"/>
+    <parameter name="[sessionTime]" operation="set" value="30" editable="true"/>
+    
     <parameter name="[originIPAddress]" operation="set" value="172.18.128.19" editable="true"/>
     <parameter name="[termIPAddress]" operation="set" value="172.18.128.20" editable="true"/>
     
     <parameter name="[localRealmDIAM]" operation="set" value="sip.imsnsn.fr" editable="true"/>
     <parameter name="[remoteRealmDIAM]" operation="set" value="sip.imsnsn.fr" editable="true"/>
-    
-    <parameter name="[responseTime]" operation="set" value="0.1" editable="true"/>
-    <parameter name="[sessionTime]" operation="set" value="10" editable="true"/>
-    <parameter name="[stateClient]" operation="set" value="true" editable="true"/>
-    
+        
     <parameter name="[vendorID]" operation="set" value="10415"/>
     
     <testcase name="----- AF -----" description="Testcase on AF side" state="false"/>
@@ -46,26 +45,34 @@
       <scenario name="client">AF/loader.xml</scenario>
     </testcase>
     
-    <testcase name="Responder RecAAA + RecSTA" description="Send the STRequest(275)" state="true">
-      <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
-      <parameter name="[TestDurationSec1]" operation="number.add" value="[TestDurationSec]" value2="30"/>
-      <runProfile>
-          <step time="0" period="0"/>
-          <end delay="[TestDurationSec1]"/>
-      </runProfile>
-      <scenario name="responder" routingName="false">AF/responder.xml</scenario>
-    </testcase>
+    <for from="001" index="[index]" step="1" to="[NumberTestcase]">
+     
+        <testcase name="Responder_RecAAA_STA_[index]" description="Send the STRequest(275)" state="true">
+          <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
+          <parameter name="[TestDurationSec1]" operation="number.add" value="[TestDurationSec]" value2="30"/>
+          <runProfile>
+              <step time="0" period="0"/>
+              <end delay="[TestDurationSec1]"/>
+          </runProfile>
+          <scenario name="responderAF_[index]" routingName="false">AF/responder.xml</scenario>
+        </testcase>
+        
+    </for>
     
     <testcase name="----- PRCF -----" description="Testcase on PCRF side" state="false"/>
     
-    <testcase name="Responder RecAAR + RecSTR" description="Receive the AA(265) requests and receive/send the ST(275) request" state="true">
-      <parameter name="[framedIPAddress]" operation="set" value="[termIPAddress]"/>
-      <parameter name="[TestDurationSec1]" operation="number.add" value="[TestDurationSec]" value2="30"/>
-      <runProfile>
-          <step time="0" period="0"/>
-          <end delay="[TestDurationSec1]"/>
-      </runProfile>
-      <scenario name="responder" routingName="true">PCRF/responder.xml</scenario>
-    </testcase>
+    <for from="001" index="[index]" step="1" to="[NumberTestcase]">
+     
+        <testcase name="Responder_RecAAR_STR_[index]" description="Receive the AA(265) requests and receive/send the ST(275) request" state="true">
+          <parameter name="[framedIPAddress]" operation="set" value="[termIPAddress]"/>
+          <parameter name="[TestDurationSec1]" operation="number.add" value="[TestDurationSec]" value2="30"/>
+          <runProfile>
+              <step time="0" period="0"/>
+              <end delay="[TestDurationSec1]"/>
+          </runProfile>
+          <scenario name="responderPCRF_[index]" routingName="true">PCRF/responder.xml</scenario>
+        </testcase>
+        
+    </for>
     
 </test>

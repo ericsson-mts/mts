@@ -4,22 +4,26 @@
 
     <if>
       <condition>
-        <test parameter="[stateClient]" condition="boolean.equals" value="false"/>
+        <test parameter="[test:contextPCRFSessions]" condition="list.exists" not="true"/>
       </condition>
       <then>
-          <!-- Sortie du client -->
-          <exit name="pas de server"/>
+          <!-- create a listenpoint -->
+          <createListenpointDIAMETER name="lp_server" localHost="[remoteHostDIAM]" localPort="[remotePortDIAM]"/>
+
+          <!-- initiate context -->
+          <parameter name="[test:contextPCRFSessions]" operation="list.create"/>
       </then>
     </if>
 
     <label name="begin"/>
-    
-        <!-- create a listenpoint with no parameter -->
-    <createListenpointDIAMETER name="lp_server" localHost="[remoteHostDIAM]" localPort="[remotePortDIAM]"/>
 
+    <!-- Wait for the a DIAMETER message -->
     <parameter name="[received]" operation="set" value="false"/>
-    <receiveMessageDIAMETER name="Receive message" listenpoint="lp_server" timeout="30" failedOnTimeout="false">
+    <receiveMessageDIAMETER name="Receive message" listenpoint="lp_server" timeout="10" failedOnTimeout="false">
         <parameter name="[received]" operation="set" value="true"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[lastRequest]" operation="protocol.setFromMessage" value="message.request"/>
         <parameter name="[lastCommandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[lastApplicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
         <parameter name="[lastHopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
@@ -30,41 +34,82 @@
         <parameter name="[lastAuthAppliId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id.value"/>
     </receiveMessageDIAMETER>
 
+    <!-- Calculate the remote URL to send the DIAMETER response -->
+    <parameter name="[remoteURL]" operation="set" value="[remoteHost]:[remotePort]"/>
+    <if>
+      <condition>
+        <test parameter="[remoteHost]" condition="list.isEmpty"/>
+      </condition>
+      <then>
+          <parameter name="[remoteURL]" operation="set" value="[localDIAM]"/>
+          <!-- Sortie du scenario  -->
+          <log type="Main" level="WARN">remoteHost=null</log>
+      </then>
+    </if>
+
+    <!-- No message to process => End of the scenario  -->
     <if>
       <condition>
         <test parameter="[received]" condition="boolean.equals" value="true" not="true"/>
       </condition>
       <then>
-          <!-- Sortie du scenario  -->
-          <exit failed="false" description="Success : end of test"/>
+          <log type="Main" level="WARN">[testcaseId(0)] => test:contextPCRFSessions = [test:contextPCRFSessions]</log>
+          <test parameter="[test:contextPCRFSessions]" condition="list.size" value="0"/>
+          <exit failed="false" description="SUCCESS : Normal end of testcase"/>
       </then>
     </if>
 
+    <!-- Receive AAR => stats context send AAA -->
     <if>
       <condition>
+        <test parameter="[lastRequest]" condition="boolean.equals" value="true"/>
         <test parameter="[lastCommandCode]" condition="number.equals" value="265"/>
       </condition>
       <then>
-          <!-- Sortie du client -->
-          <goto name="rec AAR => send AAA" label="recAAR"/>
+          <goto name="receive AAR" label="recAAR"/>
       </then>
     </if>
 
+    <!-- Receive STR => stats context send AAA -->
     <if>
       <condition>
+        <test parameter="[lastRequest]" condition="boolean.equals" value="true"/>
         <test parameter="[lastCommandCode]" condition="number.equals" value="275"/>
       </condition>
       <then>
-          <!-- Sortie du client -->
-          <goto name="rec STR => send STA" label="recSTR"/>
+          <goto name="receive STR" label="recSTR"/>
       </then>
     </if>
 
     <goto name="goto begin" label="begin"/>
 
+    <!-- Receive AAR => stats context send AAA -->
     <label name="recAAR"/>
 
-    <!--parameter name="[test:listSessionId]" operation="list.add" value="[lastSessionId]"-->
+    <!-- Add the session into the contexts-->
+    <parameter name="[indexContextPCRFSessions]" operation="list.find" value="[test:contextPCRFSessions]" value2="[lastSessionId]"/>
+    <parameter name="[indexContextPCRFSessionsSIZE]" operation="list.size" value="[indexContextPCRFSessions]"/>
+    <if>
+      <condition>
+        <test parameter="[indexContextPCRFSessionsSIZE]" condition="number.equals" value="0" not="true"/>
+      </condition>
+      <then>
+          <!--log type="Main" level="WARN">[testcaseId(0)] => test:contextPCRFSessions = [test:contextPCRFSessions]</log-->
+          <log type="Main" level="WARN">[testcaseId(0)] => ERROR : before adding the session into the contexts, then already find the session in the contexts : indexContextPCRFSessionsSIZE = [indexContextPCRFSessionsSIZE], lastSessionId = [lastSessionId]</log>
+          <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+      </then>
+    </if>
+    <parameter name="[test:contextPCRFSessions]" operation="list.addLast" value="[test:contextPCRFSessions]" value2="[lastSessionId]"/>
+    <!--log type="Main" level="WARN">[testcaseId(0)] => ADD lastSessionId = [lastSessionId]</log-->
+    <!--log type="Main" level="WARN">[testcaseId(0)] => AFTER ADD test:contextPCRFSessions = [test:contextPCRFSessions]</log-->
+    
+    <!-- Modify the session statistics counter -->
+    <stats>
+        <counter name="PCRFActiveSession" summary="PCRF Act" complete="Active session on PCRF side">
+            <increase>1</increase>
+        </counter>
+    </stats>
+
 <!--
 From RFC 3588 September 2003 :
 Re-Auth-Answer ::= < Diameter Header: 258, PXY >
@@ -92,7 +137,8 @@ Re-Auth-Answer ::= < Diameter Header: 258, PXY >
 
     <parameter name="[User-Name]" operation="set" value="alice"/>
 
-    <sendMessageDIAMETER name="Send Answer RAA" listenpoint="lp_server">
+    <sendMessageDIAMETER name="Send Answer RAA" listenpoint="lp_server"
+        remoteURL="diam://[remoteURL]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
                 proxiable="true" error="false" retransmit="false"/>        
@@ -150,8 +196,33 @@ Re-Auth-Answer ::= < Diameter Header: 258, PXY >
 
     <goto name="goto begin" label="begin"/>
 
+    <!-- Receive STR => stats context sendAAA-->
     <label name="recSTR"/>
+
+    <!-- Remove the session from the contexts-->
+    <parameter name="[indexContextPCRFSessions]" operation="list.find" value="[test:contextPCRFSessions]" value2="[lastSessionId]"/>
+    <parameter name="[indexContextPCRFSessionsSIZE]" operation="list.size" value="[indexContextPCRFSessions]"/>
+    <if>
+      <condition>
+        <test parameter="[indexContextPCRFSessionsSIZE]" condition="number.equals" value="1" not="true"/>
+      </condition>
+      <then>
+          <!--log type="Main" level="WARN">[testcaseId(0)] => test:contextPCRFSessions = [test:contextPCRFSessions]</log-->
+          <log type="Main" level="WARN">[testcaseId(0)] => ERROR : before removing the session from the contexts, can not find the session in the contexts : indexContextPCRFSessionsSIZE = [indexContextPCRFSessionsSIZE], lastSessionId = [lastSessionId]</log>
+          <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+      </then>
+    </if>
+    <parameter name="[test:contextPCRFSessions]" operation="list.removeAt" value="[test:contextPCRFSessions]" value2="[indexContextPCRFSessions]"/>
+    <!--log type="Main" level="WARN">[testcaseId(0)] => REMOVE lastSessionId = [lastSessionId]</log-->
+    <!--log type="Main" level="WARN">[testcaseId(0)] => AFTER REMOVE test:contextPCRFSessions = [test:contextPCRFSessions]</log-->
     
+    <!-- Modify the session statistics counter -->
+    <stats>
+        <counter name="PCRFActiveSession" summary="PCRF Act" complete="Active session on PCRF side">
+            <increase>-1</increase>
+        </counter>
+    </stats>
+
 <!--
 From RFC 3588 September 2003 :
 Session-Termination-Answer  ::= < Diameter Header: 275, PXY >
@@ -179,7 +250,8 @@ Session-Termination-Answer  ::= < Diameter Header: 275, PXY >
 -->
 
     <!-- Envoi d'une reponse STAnswer -->
-    <sendMessageDIAMETER name="Send Answer STA" listenpoint="lp_server">
+    <sendMessageDIAMETER name="Send Answer STA" listenpoint="lp_server"
+        remoteURL="diam://[remoteURL]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
                 proxiable="true" error="false" retransmit="false"/>

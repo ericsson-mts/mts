@@ -2,21 +2,15 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <scenario>
 
-    <if>
-      <condition>
-        <test parameter="[stateClient]" condition="boolean.equals" value="false"/>
-      </condition>
-      <then>
-          <!-- Sortie du client -->
-          <exit name="pas de server"/>
-      </then>
-    </if>
-
     <label name="begin"/>
 
+    <!-- Wait for the a DIAMETER message -->
     <parameter name="[received]" operation="set" value="false"/>
-    <receiveMessageDIAMETER name="Receive message" listenpoint="lp_client" timeout="30" failedOnTimeout="false">
+    <receiveMessageDIAMETER name="Receive message" listenpoint="lp_client" timeout="10" failedOnTimeout="false">
         <parameter name="[received]" operation="set" value="true"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[lastRequest]" operation="protocol.setFromMessage" value="message.request"/>
         <parameter name="[lastCommandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[lastApplicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
         <parameter name="[lastHopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
@@ -25,31 +19,72 @@
         <parameter name="[lastDestHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
         <parameter name="[lastDestRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
         <parameter name="[lastAuthAppliId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id.value"/>
+        <parameter name="[lastMessage]" operation="protocol.setFromMessage" value="message"/>
     </receiveMessageDIAMETER>
 
+    <!-- No message to process => End of the scenario  -->
     <if>
       <condition>
         <test parameter="[received]" condition="boolean.equals" value="true" not="true"/>
       </condition>
       <then>
-          <!-- Sortie du scenario  -->
-          <exit failed="false" description="Success : end of test"/>
+          <!-- Check that no contexts exists yet -->
+          <log type="Main" level="WARN">[testcaseId(0)] => test:contextAFSessions = [test:contextAFSessions]</log>
+          <test parameter="[test:contextAFSessions]" condition="list.size" value="0"/>
+          <exit failed="false" description="SUCCESS : Normal end of testcase"/>
       </then>
     </if>
 
+    <!-- Receive AAA => stats context send STR -->
     <if>
       <condition>
+        <test parameter="[lastRequest]" condition="boolean.equals" value="false"/>
         <test parameter="[lastCommandCode]" condition="number.equals" value="265"/>
       </condition>
       <then>
-          <!-- Sortie du client -->
-          <goto name="rec AAR => send AAA" label="recAAA"/>
+          <goto name="receive AAA => send STR" label="recAAA"/>
       </then>
     </if>
-    
+
+    <!-- Receive STA => stats context -->
+    <if>
+      <condition>
+        <test parameter="[lastRequest]" condition="boolean.equals" value="false"/>
+        <test parameter="[lastCommandCode]" condition="number.equals" value="275"/>
+      </condition>
+      <then>
+          <goto name="receive STA" label="recSTA"/>
+      </then>
+    </if>
+
     <goto name="goto begin" label="begin"/>
 
+    <!-- Receive AAA => send STR -->
     <label name="recAAA"/>
+
+    <!-- Add the session into the contexts-->
+    <parameter name="[indexContextAFSessions]" operation="list.find" value="[test:contextAFSessions]" value2="[lastSessionId]"/>
+    <parameter name="[indexContextAFSessionsSIZE]" operation="list.size" value="[indexContextAFSessions]"/>
+    <if>
+      <condition>
+        <test parameter="[indexContextAFSessionsSIZE]" condition="number.equals" value="0" not="true"/>
+      </condition>
+      <then>
+          <!--log type="Main" level="WARN">[testcaseId(0)] => test:contextAFSessions = [test:contextAFSessions]</log-->
+          <log type="Main" level="WARN">[testcaseId(0)] => ERROR : before adding the session into the contexts, then already find the session in the contexts : indexContextAFSessionsSIZE = [indexContextAFSessionsSIZE], lastSessionId = [lastSessionId]</log>
+          <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+      </then>
+    </if>
+    <parameter name="[test:contextAFSessions]" operation="list.addLast" value="[test:contextAFSessions]" value2="[lastSessionId]"/>
+    <!--log type="Main" level="WARN">[testcaseId(0)] => ADD lastSessionId = [lastSessionId]</log-->
+    <!--log type="Main" level="WARN">[testcaseId(0)] => AFTER ADD test:contextAFSessions = [test:contextAFSessions]</log-->
+    
+    <!-- Modify the session statistics counter -->
+    <stats>
+        <counter name="AFActiveSession" summary="AF Act" complete="Active session on AF side">
+            <increase>1</increase>
+        </counter>
+    </stats>
 
 <!--
 From RFC 3588 September 2003 :
@@ -130,5 +165,36 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
     </sendMessageDIAMETER>
 
     <goto name="goto begin" label="begin"/>
+
+    <!-- Receive STA => stats context -->
+    <label name="recSTA"/>
+
+    <!-- Remove the session from the contexts-->
+    <parameter name="[indexContextAFSessions]" operation="list.find" value="[test:contextAFSessions]" value2="[lastSessionId]"/>
+    <parameter name="[indexContextAFSessionsSIZE]" operation="list.size" value="[indexContextAFSessions]"/>
+    <if>
+      <condition>
+        <test parameter="[indexContextAFSessionsSIZE]" condition="number.equals" value="1" not="true"/>
+      </condition>
+      <then>
+          <!--log type="Main" level="WARN">[testcaseId(0)] => test:contextAFSessions = [test:contextAFSessions]</log-->
+          <log type="Main" level="WARN">[testcaseId(0)] => ERROR : before removing the session from the contexts, can not find the session in the contexts : indexContextAFSessionsSIZE = [indexContextAFSessionsSIZE], lastSessionId = [lastSessionId]</log>
+          <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+      </then>
+    </if>
+    <parameter name="[test:contextAFSessions]" operation="list.removeAt" value="[test:contextAFSessions]" value2="[indexContextAFSessions]"/>
+    <!--log type="Main" level="WARN">[testcaseId(0)] => REMOVE lastSessionId = [lastSessionId]</log-->
+    <!--log type="Main" level="WARN">[testcaseId(0)] => AFTER REMOVE test:contextAFSessions = [test:contextAFSessions]</log-->
+    
+    <!-- Modify the session statistics counter -->
+    <stats>
+        <counter name="AFActiveSession" summary="AF Act" complete="Active session on AF side">
+            <increase>-1</increase>
+        </counter>
+    </stats>
+
+    <goto name="goto begin" label="begin"/>
+
+
     
 </scenario>
