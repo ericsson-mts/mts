@@ -2,13 +2,14 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <scenario>
 
+    <parameter name="[test:lpPCRFName]" operation="set" value="lp_server"/>
     <if>
       <condition>
         <test parameter="[test:contextPCRFSessions]" condition="list.exists" not="true"/>
       </condition>
       <then>
           <!-- create a listenpoint -->
-          <createListenpointDIAMETER name="lp_server" localHost="[remoteHostDIAM]" localPort="[remotePortDIAM]"/>
+          <createListenpointDIAMETER name="[test:lpPCRFName]" localHost="[remoteHostDIAM]" localPort="[remotePortDIAM]"/>
 
           <!-- initiate context -->
           <parameter name="[test:contextPCRFSessions]" operation="list.create"/>
@@ -19,11 +20,11 @@
 
     <!-- Wait for the a DIAMETER message -->
     <parameter name="[received]" operation="set" value="false"/>
-    <receiveMessageDIAMETER name="Receive message" timeout="10" failedOnTimeout="false">
+    <receiveMessageDIAMETER name="Receive message" timeout="[receiveTimeout]" failedOnTimeout="false">
         <parameter name="[received]" operation="set" value="true"/>
-        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[lastListenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[lastRemoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[lastRemotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[lastRequest]" operation="protocol.setFromMessage" value="message.request"/>
         <parameter name="[lastCommandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[lastApplicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
@@ -50,7 +51,7 @@
     <!-- Test the listenpoint name -->
     <if>
       <condition>
-        <test parameter="[listenpointName]" condition="string.equals" value="lp_server" not="true"/>
+        <test parameter="[lastListenpointName]" condition="string.equals" value="[lpPCRFName]" not="true"/>
       </condition>
       <then>
           <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
@@ -59,14 +60,14 @@
     </if>
 
     <!-- Calculate the remote URL to send the DIAMETER response -->
-    <parameter name="[remoteURL]" operation="set" value="[remoteHost]:[remotePort]"/>
+    <parameter name="[remoteURL]" operation="set" value="[lastRemoteHost]:[lastRemotePort]"/>
     <if>
       <condition>
-        <test parameter="[remoteHost]" condition="list.isEmpty"/>
+        <test parameter="[lastRemoteHost]" condition="list.isEmpty"/>
       </condition>
       <then>
           <parameter name="[remoteURL]" operation="set" value="[localDIAM]"/>
-          <log type="Main" level="WARN">remoteHost=null</log>
+          <log type="Main" level="WARN">lastRemoteHost=null</log>
       </then>
     </if>
 
@@ -176,11 +177,11 @@ Re-Auth-Answer ::= < Diameter Header: 258, PXY >
 
     <parameter name="[User-Name]" operation="set" value="alice"/>
 
-    <sendMessageDIAMETER name="Send Answer RAA" listenpoint="lp_server"
+    <sendMessageDIAMETER name="Send Answer RAA" listenpoint="[test:lpPCRFName]"
         remoteURL="diam://[remoteURL]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
-                proxiable="true" error="false" retransmit="false"/>        
+                proxiable="true" error="false" retransmit="false"/>
           <!-- The Session-Id AVP is used to identify a specific session. -->
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[lastSessionId]"/>
           <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
@@ -303,7 +304,7 @@ Session-Termination-Answer  ::= < Diameter Header: 275, PXY >
 -->
 
     <!-- Envoi d'une reponse STAnswer -->
-    <sendMessageDIAMETER name="Send Answer STA" listenpoint="lp_server"
+    <sendMessageDIAMETER name="Send Answer STA" listenpoint="[test:lpPCRFName]"
         remoteURL="diam://[remoteURL]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
