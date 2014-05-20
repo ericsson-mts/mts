@@ -60,13 +60,13 @@
     </if>
 
     <!-- Calculate the remote URL to send the DIAMETER response -->
-    <parameter name="[remoteURL]" operation="set" value="[lastRemoteHost]:[lastRemotePort]"/>
+    <parameter name="[remoteURL]" operation="set" value="diam://[lastRemoteHost]:[lastRemotePort]"/>
     <if>
       <condition>
         <test parameter="[lastRemoteHost]" condition="list.isEmpty"/>
       </condition>
       <then>
-          <parameter name="[remoteURL]" operation="set" value="[localDIAM]"/>
+          <parameter name="[remoteURL]" operation="set" value="[urlAF]"/>
           <log type="Main" level="WARN">lastRemoteHost=null</log>
       </then>
     </if>
