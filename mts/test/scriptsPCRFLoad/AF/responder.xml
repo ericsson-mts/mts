@@ -6,8 +6,9 @@
 
     <!-- Wait for the a DIAMETER message -->
     <parameter name="[received]" operation="set" value="false"/>
-    <receiveMessageDIAMETER name="Receive message" listenpoint="lp_client" timeout="10" failedOnTimeout="false">
+    <receiveMessageDIAMETER name="Receive message" timeout="10" failedOnTimeout="false">
         <parameter name="[received]" operation="set" value="true"/>
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[lastRequest]" operation="protocol.setFromMessage" value="message.request"/>
@@ -31,7 +32,30 @@
           <!-- Check that no contexts exists yet -->
           <log type="Main" level="WARN">[testcaseId(0)] => test:contextAFSessions = [test:contextAFSessions]</log>
           <test parameter="[test:contextAFSessions]" condition="list.size" value="0"/>
-          <exit failed="false" description="SUCCESS : Normal end of testcase"/>
+          <exit failed="false" exception="SUCCESS : Normal end of testcase : &#x0D;&#x0A;No message to process."/>
+      </then>
+    </if>
+
+    <!-- Test the listenpoint name -->
+    <if>
+      <condition>
+        <test parameter="[listenpointName]" condition="string.equals" value="lp_client" not="true"/>
+      </condition>
+      <then>
+          <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+          <exit failed="true" exception="Un-expected messages (routing problem) : &#x0D;&#x0A;Bad listenpoint receiving the message."/>
+      </then>
+    </if>
+
+    <!-- Calculate the remote URL to send the DIAMETER response -->
+    <parameter name="[remoteURL]" operation="set" value="[remoteHost]:[remotePort]"/>
+    <if>
+      <condition>
+        <test parameter="[remoteHost]" condition="list.isEmpty"/>
+      </condition>
+      <then>
+          <parameter name="[remoteURL]" operation="set" value="[remoteDIAM]"/>
+          <log type="Main" level="WARN">remoteHost=null</log>
       </then>
     </if>
 
@@ -57,6 +81,31 @@
       </then>
     </if>
 
+    <!-- Receive RAR => send RAA -->
+    <if>
+      <condition>
+        <test parameter="[lastRequest]" condition="boolean.equals" value="true"/>
+        <test parameter="[lastCommandCode]" condition="number.equals" value="258"/>
+      </condition>
+      <then>
+          <goto name="receive RAR" label="recRAR"/>
+      </then>
+    </if>
+
+    <!-- Receive ASR => send ASA -->
+    <if>
+      <condition>
+        <test parameter="[lastRequest]" condition="boolean.equals" value="true"/>
+        <test parameter="[lastCommandCode]" condition="number.equals" value="274"/>
+      </condition>
+      <then>
+          <goto name="receive ASR" label="recASR"/>
+      </then>
+    </if>
+
+    <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+    <exit failed="true" exception="Un-expected messages (routing problem) : &#x0D;&#x0A;Bad message request flag or type."/>
+    
     <goto name="goto begin" label="begin"/>
 
     <!-- Receive AAA => send STR -->
@@ -212,6 +261,175 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
 
     <goto name="goto begin" label="begin"/>
 
+    <!-- Receive RAR => send RAA -->
+    <label name="recRAR"/>
 
-    
+    <!--
+From RFC 3588 September 2003 :
+Re-Auth-Answer ::= < Diameter Header: 258, PXY >
+                   < Session-Id >
+                   { Result-Code }
+                   { Origin-Host }
+                   { Origin-Realm }
+                   [ User-Name ]
+                   [ Origin-State-Id ]
+                   [ Error-Message ]
+                   [ Error-Reporting-Host ]
+                 * [ Failed-AVP ]
+                     Failed-AVP ::= < AVP Header: 279 >
+                                 1* {AVP}
+                 * [ Redirect-Host ]
+                   [ Redirect-Host-Usage ]
+                   [ Redirect-Max-Cache-Time ]
+                 * [ Proxy-Info ]
+                     Proxy-Info ::= < AVP Header: 284 >
+                                    { Proxy-Host }
+                                    { Proxy-State }
+                                  * [ AVP ]
+                 * [ AVP ]
+-->
+
+    <parameter name="[User-Name]" operation="set" value="alice"/>
+
+    <sendMessageDIAMETER name="Send Answer RAA" listenpoint="lp_client"
+        remoteURL="diam://[remoteURL]">
+        <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
+                hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
+                proxiable="true" error="false" retransmit="false"/>        
+          <!-- The Session-Id AVP is used to identify a specific session. -->
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[lastSessionId]"/>
+          <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
+          <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
+          <avp code="Auth-Application-Id" value="[lastAuthAppliId]"/>
+          <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[lastDestHost]"/>
+          <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[lastDestHost]"/>
+
+          <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
+          <avp code="User-Name" mandatory="false" type="UTF8String" value="[User-Name]"/>
+
+          <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
+          <avp code="Origin-State-Id" mandatory="false" type="Unsigned32" value="0"/>
+
+          <!-- The Error-Message AVP MAY accompany a Result-Code AVP as a human readable error message. -->
+          <avp code="Error-Message" mandatory="false" type="UTF8String" value="ToBeCompleted"/>
+          <!-- The Error-Reporting-Host AVP contains the identity of the Diameter host that sent the Result-Code AVP to a value other than 2001 (Success). -->
+          <avp code="Error-Reporting-Host" mandatory="false" type="DiameterIdentity" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]"/>
+
+          <!-- The Failed-AVP AVP provides debugging information in cases where a request is rejected or not fully processed due to erroneous information in a specific AVP. -->
+<!--
+          <avp code="Failed-AVP">
+            <avp code="???" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+          </avp>
+          <avp code="Failed-AVP">
+            <avp code="???" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+          </avp>
+-->
+
+          <!-- One or more of instances of this AVP MUST be present if the answer message's 'E' bit is set and the Result-Code AVP is set to DIAMETER_REDIRECT_INDICATION. -->
+          <avp code="Redirect-Host" mandatory="false" type="DiameterURI" value="ToBeCompleted"/>
+          <avp code="Redirect-Host" mandatory="false" type="DiameterURI" value="ToBeCompleted"/>
+          <!-- The Redirect-Host-Usage AVP dictates how the routing entry resulting from the Redirect-Host is to be used. -->
+          <!-- Possible enumerated values : DONT_CACHE(0) / ALL_SESSION(1) / ALL_REALM(2) / REALM_AND_APPLICATION(3) / ALL_APPLICATION(4) / ALL_HOST(5) / ALL_USER(6). -->
+          <avp code="Redirect-Host-Usage" mandatory="false" type="Enumerated" value="Don't Care"/>
+          <!-- The Redirect-Max-Cache-Time AVP MUST be present in answer messages whose 'E' bit is set, the Result-Code AVP is set to DIAMETER_REDIRECT_INDICATION and the Redirect-Host-Usage AVP set to a non-zero value. -->
+          <avp code="Redirect-Max-Cache-Time" mandatory="false" type="Unsigned32" value="0"/>              
+
+          <!-- The Proxy-Host AVP contains the identity of the host that added the Proxy-Info AVP. -->
+          <!-- The Proxy-State AVP contains state local information. -->
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+    </sendMessageDIAMETER>
+
+    <goto name="goto begin" label="begin"/>
+
+    <!-- Receive ASR => send ASA -->
+    <label name="recASR"/>
+
+<!--
+From RFC 3588 September 2003 :
+Abort-Session-Answer ::= < Diameter Header: 274, PXY >
+                         < Session-Id >
+                         { Result-Code }
+                         { Origin-Host }
+                         { Origin-Realm }
+                         [ User-Name ]
+                         [ Origin-State-Id ]
+                         [ Error-Message ]
+                         [ Error-Reporting-Host ]
+                         * [ Failed-AVP ]
+                         * [ Redirect-Host ]
+                         [ Redirect-Host-Usage ]
+                         [ Redirect-Max-Cache-Time ]
+                         * [ Proxy-Info ]
+                         * [ AVP ]
+-->
+
+    <parameter name="[User-Name]" operation="set" value="alice"/>
+
+    <sendMessageDIAMETER name="Send Answer ASA" listenpoint="lp_client">
+        <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
+                hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
+                proxiable="true" error="false" retransmit="false"/>
+          <!-- The Session-Id AVP is used to identify a specific session. -->
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[lastSessionId]"/>
+          <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
+          <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
+          <avp code="Auth-Application-Id" value="[lastAuthAppliId]"/>
+          <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[lastDestHost]"/>
+          <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[lastDestRealm]"/>
+
+          <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
+          <avp code="User-Name" mandatory="false" type="UTF8String" value="[User-Name]"/>
+
+          <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
+          <avp code="Origin-State-Id" mandatory="false" type="Unsigned32" value="0"/>
+
+          <!-- The Error-Message AVP MAY accompany a Result-Code AVP as a human readable error message. -->
+          <avp code="Error-Message" mandatory="false" type="UTF8String" value="ToBeCompleted"/>
+          <!-- The Error-Reporting-Host AVP contains the identity of the Diameter host that sent the Result-Code AVP to a value other than 2001 (Success). -->
+          <avp code="Error-Reporting-Host" mandatory="false" type="DiameterIdentity" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]"/>
+
+          <!-- The Failed-AVP AVP provides debugging information in cases where a request is rejected or not fully processed due to erroneous information in a specific AVP. -->
+<!--
+          <avp code="Failed-AVP">
+            <avp code="???" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+          </avp>
+          <avp code="Failed-AVP">
+            <avp code="???" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+          </avp>
+-->
+
+          <!-- One or more of instances of this AVP MUST be present if the answer message's 'E' bit is set and the Result-Code AVP is set to DIAMETER_REDIRECT_INDICATION. -->
+          <avp code="Redirect-Host" mandatory="false" type="DiameterURI" value="ToBeCompleted"/>
+          <avp code="Redirect-Host" mandatory="false" type="DiameterURI" value="ToBeCompleted"/>
+          <!-- The Redirect-Host-Usage AVP dictates how the routing entry resulting from the Redirect-Host is to be used. -->
+          <!-- Possible enumerated values : DONT_CACHE(0) / ALL_SESSION(1) / ALL_REALM(2) / REALM_AND_APPLICATION(3) / ALL_APPLICATION(4) / ALL_HOST(5) / ALL_USER(6). -->
+          <avp code="Redirect-Host-Usage" mandatory="false" type="Enumerated" value="Don't Care"/>
+          <!-- The Redirect-Max-Cache-Time AVP MUST be present in answer messages whose 'E' bit is set, the Result-Code AVP is set to DIAMETER_REDIRECT_INDICATION and the Redirect-Host-Usage AVP set to a non-zero value. -->
+          <avp code="Redirect-Max-Cache-Time" mandatory="false" type="Unsigned32" value="0"/>              
+
+          <!-- The Proxy-Host AVP contains the identity of the host that added the Proxy-Info AVP. -->
+          <!-- The Proxy-State AVP contains state local information. -->
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Proxy-Info">
+             <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+    </sendMessageDIAMETER>
+
+    <goto name="goto begin" label="begin"/>
+
 </scenario>
