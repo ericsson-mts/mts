@@ -20,11 +20,11 @@
     <parameter description="remote port of the SUT host" editable="true" name="[remotePortDIAM]" operation="set" value="[remotePortDIAM]"/>
     <parameter name="[remoteDIAM]" operation="set" value="[remoteHostDIAM]:[remotePortDIAM]"/>
     
-    <parameter name="[speedTestcase]" operation="set" value="60" description="number of session to initiate per seconds" editable="true" />
-    <parameter name="[TestDurationSec]" operation="set" value="3600" description="Duration (in seconde) of the load testing" editable="true" />
+    <parameter name="[speedTestcase]" operation="set" value="1" description="number of session to initiate per seconds" editable="true" />
+    <parameter name="[TestDurationSec]" operation="set" value="20" description="Duration (in seconde) of the load testing" editable="true" />
     <parameter name="[NumberTestcase]" operation="set" value="1" description="Number of testcase for responders" editable="true" />
     <parameter name="[responseTime]" operation="set" value="0.1" editable="true"/>
-    <parameter name="[sessionTime]" operation="set" value="180" editable="true"/>
+    <parameter name="[sessionTime]" operation="set" value="10" editable="true"/>
     
     <parameter name="[originIPAddress]" operation="set" value="172.18.128.19" editable="true"/>
     <parameter name="[termIPAddress]" operation="set" value="172.18.128.20" editable="true"/>
@@ -54,7 +54,7 @@
               <step time="0" period="0"/>
               <end delay="[TestDurationSec1]"/>
           </runProfile>
-          <scenario name="responderAF_[index]" routingName="false">AF/responder.xml</scenario>
+          <scenario name="responderAF_[index]" routingName="AA:265|false,Session-Termination:275|false,Re-Auth:258|true,Abort-Session:274|true">AF/responder.xml</scenario>
         </testcase>
         
     </for>
@@ -70,9 +70,27 @@
               <step time="0" period="0"/>
               <end delay="[TestDurationSec1]"/>
           </runProfile>
-          <scenario name="responderPCRF_[index]" routingName="true">PCRF/responder.xml</scenario>
+          <scenario name="responderPCRF_[index]" routingName="AA:265|true,Session-Termination:275|true,Re-Auth:258|false,Abort-Session:274|false">PCRF/responder.xml</scenario>
         </testcase>
         
     </for>
     
+    <testcase name="Loader SendRAR" description="Send the RAR(258) requests" state="false">
+      <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
+      <runProfile>
+          <step time="0" frequency="[speedTestcase]"/>
+          <end delay="[TestDurationSec]"/>
+      </runProfile>
+      <scenario name="client">PCRF/loaderRAR.xml</scenario>
+    </testcase>
+    
+    <testcase name="Loader SendASR" description="Send the ASR(274) requests" state="false">
+      <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
+      <runProfile>
+          <step time="0" frequency="[speedTestcase]"/>
+          <end delay="[TestDurationSec]"/>
+      </runProfile>
+      <scenario name="client">PCRF/loaderASR.xml</scenario>
+    </testcase>
+
 </test>

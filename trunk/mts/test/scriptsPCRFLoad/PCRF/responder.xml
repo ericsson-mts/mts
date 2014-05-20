@@ -19,8 +19,9 @@
 
     <!-- Wait for the a DIAMETER message -->
     <parameter name="[received]" operation="set" value="false"/>
-    <receiveMessageDIAMETER name="Receive message" listenpoint="lp_server" timeout="10" failedOnTimeout="false">
+    <receiveMessageDIAMETER name="Receive message" timeout="10" failedOnTimeout="false">
         <parameter name="[received]" operation="set" value="true"/>
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[lastRequest]" operation="protocol.setFromMessage" value="message.request"/>
@@ -34,19 +35,6 @@
         <parameter name="[lastAuthAppliId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id.value"/>
     </receiveMessageDIAMETER>
 
-    <!-- Calculate the remote URL to send the DIAMETER response -->
-    <parameter name="[remoteURL]" operation="set" value="[remoteHost]:[remotePort]"/>
-    <if>
-      <condition>
-        <test parameter="[remoteHost]" condition="list.isEmpty"/>
-      </condition>
-      <then>
-          <parameter name="[remoteURL]" operation="set" value="[localDIAM]"/>
-          <!-- Sortie du scenario  -->
-          <log type="Main" level="WARN">remoteHost=null</log>
-      </then>
-    </if>
-
     <!-- No message to process => End of the scenario  -->
     <if>
       <condition>
@@ -55,7 +43,30 @@
       <then>
           <log type="Main" level="WARN">[testcaseId(0)] => test:contextPCRFSessions = [test:contextPCRFSessions]</log>
           <test parameter="[test:contextPCRFSessions]" condition="list.size" value="0"/>
-          <exit failed="false" description="SUCCESS : Normal end of testcase"/>
+          <exit failed="false" exception="SUCCESS : Normal end of testcase : &#x0D;&#x0A;No message to process."/>
+      </then>
+    </if>
+
+    <!-- Test the listenpoint name -->
+    <if>
+      <condition>
+        <test parameter="[listenpointName]" condition="string.equals" value="lp_server" not="true"/>
+      </condition>
+      <then>
+          <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+          <exit failed="true" exception="Un-expected messages (routing problem) : &#x0D;&#x0A;Bad listenpoint receiving the message."/>
+      </then>
+    </if>
+
+    <!-- Calculate the remote URL to send the DIAMETER response -->
+    <parameter name="[remoteURL]" operation="set" value="[remoteHost]:[remotePort]"/>
+    <if>
+      <condition>
+        <test parameter="[remoteHost]" condition="list.isEmpty"/>
+      </condition>
+      <then>
+          <parameter name="[remoteURL]" operation="set" value="[localDIAM]"/>
+          <log type="Main" level="WARN">remoteHost=null</log>
       </then>
     </if>
 
@@ -80,6 +91,31 @@
           <goto name="receive STR" label="recSTR"/>
       </then>
     </if>
+
+    <!-- Receive RAA => nothing to do -->
+    <if>
+      <condition>
+        <test parameter="[lastRequest]" condition="boolean.equals" value="false"/>
+        <test parameter="[lastCommandCode]" condition="number.equals" value="258"/>
+      </condition>
+      <then>
+          <goto name="receive AAR" label="begin"/>
+      </then>
+    </if>
+
+    <!-- Receive AAA => nothing to do -->
+    <if>
+      <condition>
+        <test parameter="[lastRequest]" condition="boolean.equals" value="false"/>
+        <test parameter="[lastCommandCode]" condition="number.equals" value="274"/>
+      </condition>
+      <then>
+          <goto name="receive AAR" label="begin"/>
+      </then>
+    </if>
+
+    <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+    <exit failed="true" exception="Un-expected messages (routing problem) : &#x0D;&#x0A;Bad message request flag or type."/>
 
     <goto name="goto begin" label="begin"/>
 
