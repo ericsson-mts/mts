@@ -5,7 +5,7 @@
     
     <parameter name="[localHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter description="local address of the MTS host" editable="true" name="[localHostDIAM]" operation="set" value="[localHostDIAM(0)]"/>
-    <!--parameter name="[localHostDIAM]" operation="set" value="imspcf401-imscore.sip.imsnsn.fr"/-->
+    <!--parameter name="[localHostDIAM]" operation="set" value="172.16.21.32"/-->
     <parameter name="[localPortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
     <parameter name="[localPortDIAM]" operation="set" value="13868"/>
     <parameter description="local port of the MTS host" editable="true" name="[localPortDIAM]" operation="set" value="[localPortDIAM]"/>
@@ -20,11 +20,24 @@
     <parameter description="remote port of the SUT host" editable="true" name="[remotePortDIAM]" operation="set" value="[remotePortDIAM]"/>
     <parameter name="[remoteDIAM]" operation="set" value="[remoteHostDIAM]:[remotePortDIAM]"/>
     
-    <parameter name="[speedTestcase]" operation="set" value="1" description="number of session to initiate per seconds" editable="true" />
-    <parameter name="[TestDurationSec]" operation="set" value="20" description="Duration (in seconde) of the load testing" editable="true" />
+    <parameter name="[speedAAR]" operation="set" value="60" description="Speed (in testcase per seconds) of the AAR messages => number of session to initiate per seconds" editable="true" />
+    <parameter name="[speedAAR]" operation="set" value="1" />
+    
+    <parameter name="[speedRAR]" operation="set" value="1" description="Speed (in testcase per seconds) to send the RAR messages" editable="true" />
+    <parameter name="[numberRAR]" operation="set" value="100" description="Number of the RAR messages to send" editable="true" />
+    
+    <parameter name="[speedASR]" operation="set" value="1" description="Speed (in testcase per seconds) to send the ASR messages" editable="true" />
+    <parameter name="[numberASR]" operation="set" value="100" description="Number of the ASR messages to send" editable="true" />
+    
+    <parameter name="[TestDurationSec]" operation="set" value="5000" description="Duration (in secondes) of the load testing" editable="true" />
+    <parameter name="[TestDurationSec]" operation="set" value="20" />
+    
     <parameter name="[NumberTestcase]" operation="set" value="1" description="Number of testcase for responders" editable="true" />
-    <parameter name="[responseTime]" operation="set" value="0.1" editable="true"/>
-    <parameter name="[sessionTime]" operation="set" value="10" editable="true"/>
+    <parameter name="[responseTime]" operation="set" value="0.1" description="Response time for the transactions" editable="true"/>
+    <parameter name="[sessionTime]" operation="set" value="180" description="Duration (in seconds) of the sessions" editable="true"/>
+    <parameter name="[sessionTime]" operation="set" value="10"/>
+    
+    <parameter name="[receiveTimeout]" operation="set" value="10"/>
     
     <parameter name="[originIPAddress]" operation="set" value="172.18.128.19" editable="true"/>
     <parameter name="[termIPAddress]" operation="set" value="172.18.128.20" editable="true"/>
@@ -39,7 +52,7 @@
     <testcase name="Loader SendAAR" description="Send the AAR(265) requests" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
       <runProfile>
-          <step time="0" frequency="[speedTestcase]"/>
+          <step time="0" frequency="[speedAAR]"/>
           <end delay="[TestDurationSec]"/>
       </runProfile>
       <scenario name="client">AF/loaderAAR.xml</scenario>
@@ -49,10 +62,9 @@
      
         <testcase name="Responder_RecAAA_STA_[index]" description="Send the STRequest(275)" state="true">
           <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
-          <parameter name="[TestDurationSec1]" operation="number.add" value="[TestDurationSec]" value2="30"/>
           <runProfile>
               <step time="0" period="0"/>
-              <end delay="[TestDurationSec1]"/>
+              <end delay="[TestDurationSec]"/>
           </runProfile>
           <scenario name="responderAF_[index]" routingName="false|265,false|275,true|258,true|274">AF/responderAF.xml</scenario>
         </testcase>
@@ -65,29 +77,30 @@
      
         <testcase name="Responder_RecAAR_STR_[index]" description="Receive the AA(265) requests and receive/send the ST(275) request" state="true">
           <parameter name="[framedIPAddress]" operation="set" value="[termIPAddress]"/>
-          <parameter name="[TestDurationSec1]" operation="number.add" value="[TestDurationSec]" value2="30"/>
           <runProfile>
               <step time="0" period="0"/>
-              <end delay="[TestDurationSec1]"/>
+              <end delay="[TestDurationSec]"/>
           </runProfile>
           <scenario name="responderPCRF_[index]" routingName="true|265,true|275,false|258,false|274">PCRF/responderPCRF.xml</scenario>
         </testcase>
         
     </for>
     
-    <testcase name="Loader SendRAR" description="Send the RAR(258) requests" state="false">
+    <testcase name="Loader SendRAR" description="Send the RAR(258) requests" number="[numberASR]" state="false">
       <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
       <runProfile>
-          <step time="0" frequency="[speedTestcase]"/>
+          <start delay="[sessionTime]"/>
+          <step time="0" frequency="[speedRAR]"/>
           <end delay="[TestDurationSec]"/>
       </runProfile>
       <scenario name="client">PCRF/loaderRAR.xml</scenario>
     </testcase>
     
-    <testcase name="Loader SendASR" description="Send the ASR(274) requests" state="false">
+    <testcase name="Loader SendASR" description="Send the ASR(274) requests" number="[numberASR]" state="false">
       <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
       <runProfile>
-          <step time="0" frequency="[speedTestcase]"/>
+          <start delay="[sessionTime]"/>
+          <step time="0" frequency="[speedASR]"/>
           <end delay="[TestDurationSec]"/>
       </runProfile>
       <scenario name="client">PCRF/loaderASR.xml</scenario>

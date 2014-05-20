@@ -6,11 +6,11 @@
 
     <!-- Wait for the a DIAMETER message -->
     <parameter name="[received]" operation="set" value="false"/>
-    <receiveMessageDIAMETER name="Receive message" timeout="10" failedOnTimeout="false">
+    <receiveMessageDIAMETER name="Receive message" timeout="[receiveTimeout]" failedOnTimeout="false">
         <parameter name="[received]" operation="set" value="true"/>
-        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
-        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
-        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[lastListenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[lastRemoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[lastRemotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[lastRequest]" operation="protocol.setFromMessage" value="message.request"/>
         <parameter name="[lastCommandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[lastApplicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
@@ -39,7 +39,7 @@
     <!-- Test the listenpoint name -->
     <if>
       <condition>
-        <test parameter="[listenpointName]" condition="string.equals" value="lp_client" not="true"/>
+        <test parameter="[lastListenpointName]" condition="string.equals" value="[test:lpAFName]" not="true"/>
       </condition>
       <then>
           <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
@@ -48,14 +48,14 @@
     </if>
 
     <!-- Calculate the remote URL to send the DIAMETER response -->
-    <parameter name="[remoteURL]" operation="set" value="[remoteHost]:[remotePort]"/>
+    <parameter name="[remoteURL]" operation="set" value="[lastRemoteHost]:[lastRemotePort]"/>
     <if>
       <condition>
-        <test parameter="[remoteHost]" condition="list.isEmpty"/>
+        <test parameter="[lastRemoteHost]" condition="list.isEmpty"/>
       </condition>
       <then>
           <parameter name="[remoteURL]" operation="set" value="[remoteDIAM]"/>
-          <log type="Main" level="WARN">remoteHost=null</log>
+          <log type="Main" level="WARN">lastRemoteHost=null</log>
       </then>
     </if>
 
@@ -163,7 +163,7 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
     <parameter name="[newHopByHop]" operation="number.random" value="1000000000" />
 
     <!-- Envoi d'une requete STRequest -->
-    <sendMessageDIAMETER name="Send Request STR" listenpoint="lp_client" 
+    <sendMessageDIAMETER name="Send Request STR" listenpoint="[test:lpAFName]" 
         remoteURL="diameter://[remoteDIAM]" delay="[sessionTime]">
         <header request="true" command="Session-Termination" applicationId="Diameter Common Messages" 
             hopByHop="[newHopByHop]" endToEnd="[newEndToEnd]" 
@@ -291,7 +291,7 @@ Re-Auth-Answer ::= < Diameter Header: 258, PXY >
 
     <parameter name="[User-Name]" operation="set" value="alice"/>
 
-    <sendMessageDIAMETER name="Send Answer RAA" listenpoint="lp_client"
+    <sendMessageDIAMETER name="Send Answer RAA" listenpoint="[test:lpAFName]"
         remoteURL="diam://[remoteURL]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
@@ -374,7 +374,7 @@ Abort-Session-Answer ::= < Diameter Header: 274, PXY >
 
     <parameter name="[User-Name]" operation="set" value="alice"/>
 
-    <sendMessageDIAMETER name="Send Answer ASA" listenpoint="lp_client">
+    <sendMessageDIAMETER name="Send Answer ASA" listenpoint="[test:lpAFName]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
                 proxiable="true" error="false" retransmit="false"/>
