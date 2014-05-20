@@ -39,6 +39,7 @@ import gp.utils.arrays.RandomArray;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.util.Map;
@@ -301,32 +302,35 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_FROMIP))
                 {
-                	String[] ip = param_1.get(i).toString().split("\\."); 
-                	String ret = "";
-                	if (ip.length != 4)
-                		throw new ParameterException("Error in operation, " + param_1.get(i) + " isn't a valid IP address");
-                	for (int k = 0; k < 4; k++)
-                	{
-                		int val = Integer.parseInt(ip[k]);
-                		String strVal = Integer.toHexString(val);
-                		if (strVal.length() == 1)
-                		{
-                			strVal = "0" + strVal;
-                		}
-                		ret += strVal; 
-                	}
-                	result.add(ret);
+                	String val1 = param_1.get(i).toString();
+                	InetAddress inetAddr = InetAddress.getByName(val1); 
+                	byte[] bytesRes = inetAddr.getAddress();
+                	String strRes =  Array.toHexString(new DefaultArray(bytesRes));
+                	result.add(strRes);
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_TOIP))
                 {
-                	byte[] ip = DatatypeConverter.parseHexBinary(param_1.get(i).toString());
-                	String ret = "";
-                	if (ip.length != 4)
-                		throw new Exception();
-                	for (int j = 0; j < ip.length - 1; j++)
-                		ret += (ip[j] & 0xff) + ".";
-                	ret += (ip[ip.length - 1] & 0xff);
-                	result.add(ret);
+                	String val1 = param_1.get(i).toString();
+                	byte[] bytesVal1 = DefaultArray.fromHexString(val1).getBytes();
+                	if (bytesVal1.length == 16)
+                	{
+                		
+                	}
+                	InetAddress inetAddr = InetAddress.getByAddress(bytesVal1);
+                	String strRes = inetAddr.getHostAddress();
+                	if (bytesVal1.length == 16)
+                	{
+                		strRes = "[" + strRes + "]";
+                	}
+                	strRes = strRes.replaceFirst(":0:", "::");
+                	strRes = strRes.replaceFirst(":0:", ":");
+                	strRes = strRes.replaceFirst(":0:", ":");
+                	strRes = strRes.replaceFirst(":0:", ":");
+                	strRes = strRes.replaceFirst(":0:", ":");
+                	strRes = strRes.replaceFirst(":0:", ":");
+                	strRes = strRes.replaceFirst(":0:", ":");
+                	strRes = strRes.replaceFirst(":0:", ":");
+                	result.add(strRes);
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_TONUMBER))
                 {
