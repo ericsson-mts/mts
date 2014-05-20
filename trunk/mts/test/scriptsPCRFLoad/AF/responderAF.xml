@@ -39,7 +39,7 @@
     <!-- Test the listenpoint name -->
     <if>
       <condition>
-        <test parameter="[lastListenpointName]" condition="string.equals" value="[test:lpAFName]" not="true"/>
+        <test parameter="[lastListenpointName]" condition="string.equals" value="[test:lpNameAF]" not="true"/>
       </condition>
       <then>
           <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
@@ -163,7 +163,7 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
     <parameter name="[newHopByHop]" operation="number.random" value="1000000000" />
 
     <!-- Envoi d'une requete STRequest -->
-    <sendMessageDIAMETER name="Send Request STR" listenpoint="[test:lpAFName]" 
+    <sendMessageDIAMETER name="Send Request STR" listenpoint="[test:lpNameAF]" 
         remoteURL="diameter://[remoteDIAM]" delay="[sessionTime]">
         <header request="true" command="Session-Termination" applicationId="Diameter Common Messages" 
             hopByHop="[newHopByHop]" endToEnd="[newEndToEnd]" 
@@ -172,14 +172,14 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[lastSessionId]"/>
         
           <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[hostAF]"/>
           <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[realmAF]"/>
 
           <!-- The Origin-Host AVP contains the Host of the originator of any Diameter message. -->
-          <avp code="Destination-Host" mandatory="false" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+          <avp code="Destination-Host" mandatory="false" type="DiameterIdentity" value="[hostPCRF]"/>
           <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[realmPCRF]"/>
 
           <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
           <!--avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="0"/-->
@@ -291,7 +291,7 @@ Re-Auth-Answer ::= < Diameter Header: 258, PXY >
 
     <parameter name="[User-Name]" operation="set" value="alice"/>
 
-    <sendMessageDIAMETER name="Send Answer RAA" listenpoint="[test:lpAFName]"
+    <sendMessageDIAMETER name="Send Answer RAA" listenpoint="[test:lpNameAF]"
         remoteURL="diam://[remoteURL]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
@@ -374,7 +374,7 @@ Abort-Session-Answer ::= < Diameter Header: 274, PXY >
 
     <parameter name="[User-Name]" operation="set" value="alice"/>
 
-    <sendMessageDIAMETER name="Send Answer ASA" listenpoint="[test:lpAFName]">
+    <sendMessageDIAMETER name="Send Answer ASA" listenpoint="[test:lpNameAF]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
                 proxiable="true" error="false" retransmit="false"/>
