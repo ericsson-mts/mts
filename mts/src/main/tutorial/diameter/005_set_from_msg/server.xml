@@ -87,16 +87,26 @@
     <test parameter="[avp9val]" condition="list.isEmpty"/>
     
     <parameter name="[avp10val]" operation="protocol.setFromMessage" value="avp.8.value"/>
-    <test parameter="[avp10val]" condition="string.equals" value="[localHostDIAM]"/>
+    <test parameter="[avp10val]" condition="list.size" value="2"/>
+    <test parameter="[avp10val(0)]" condition="string.equals" value="[localHostDIAM]"/>
+    <test parameter="[avp10val(1)]" condition="string.equals" value="2a01:cf00:33:5:0:0:0:6e01"/>
     <parameter name="[avp10bin]" operation="protocol.setFromMessage" value="avp.8.binary"/>
+    <test parameter="[avp10val]" condition="list.size" value="2"/>
     <parameter name="[localHostDIAMBinary]" operation="binary.fromIp" value="[localHostDIAM]"/>
-    <test parameter="[avp10bin]" condition="binary.equals" value="[localHostDIAMBinary]"/>
+    <test parameter="[avp10bin(0)]" condition="binary.equals" value="[localHostDIAMBinary]"/>
+    <parameter name="[localHostDIAMBinary]" operation="binary.fromIp" value="2a01:cf00:33:5::6e01"/>
+    <test parameter="[avp10bin(1)]" condition="string.equals" value="[localHostDIAMBinary]"/>
 
     <parameter name="[avp10val]" operation="protocol.setFromMessage" value="avp.Framed-IP-Address.value"/>
-    <test parameter="[avp10val]" condition="string.equals" value="[localHostDIAM]"/>
+    <test parameter="[avp10val]" condition="list.size" value="2"/>
+    <test parameter="[avp10val(0)]" condition="string.equals" value="[localHostDIAM]"/>
+    <test parameter="[avp10val(1)]" condition="string.equals" value="2a01:cf00:33:5:0:0:0:6e01"/>
     <parameter name="[avp10bin]" operation="protocol.setFromMessage" value="avp.Framed-IP-Address.binary"/>
+    <test parameter="[avp10val]" condition="list.size" value="2"/>
     <parameter name="[localHostDIAMBinary]" operation="binary.fromIp" value="[localHostDIAM]"/>
-    <test parameter="[avp10bin]" condition="string.equals" value="[localHostDIAMBinary]"/>
+    <test parameter="[avp10bin(0)]" condition="string.equals" value="[localHostDIAMBinary]"/>
+    <parameter name="[localHostDIAMBinary]" operation="binary.fromIp" value="[2a01:cf00:33:5:0:0:0:6e01]"/>
+    <test parameter="[avp10bin(1)]" condition="string.equals" value="[localHostDIAMBinary]"/>
 
     <sendMessageDIAMETER name="SendAnswerMAA">
         <header request="false" command="[commandCode]" applicationId="[applicationID]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
