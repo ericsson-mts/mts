@@ -102,6 +102,8 @@
     <parameter name="[test:contextPCRFSessions]" operation="list.addLast" value="[test:contextPCRFSessions]" value2="[lastSessionId]"/>
     <!--log type="Main" level="WARN">[testcaseId(0)] => ADD lastSessionId = [lastSessionId]</log-->
     <!--log type="Main" level="WARN">[testcaseId(0)] => AFTER ADD test:contextPCRFSessions = [test:contextPCRFSessions]</log-->
+    
+    <!-- Add the session timestamp into the contexts-->
     <parameter name="[test:contextPCRFTimestamp_[lastSessionId]]" operation="system.timestamp" value="1970"/>
     
     <!-- Modify the session statistics counter -->
@@ -216,6 +218,15 @@ Re-Auth-Answer ::= < Diameter Header: 258, PXY >
     <parameter name="[test:contextPCRFSessions]" operation="list.removeAt" value="[test:contextPCRFSessions]" value2="[indexContextPCRFSessions]"/>
     <!--log type="Main" level="WARN">[testcaseId(0)] => REMOVE lastSessionId = [lastSessionId]</log-->
     <!--log type="Main" level="WARN">[testcaseId(0)] => AFTER REMOVE test:contextPCRFSessions = [test:contextPCRFSessions]</log-->
+  
+    <!-- Calculate the session duration -->
+    <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+    <parameter name="[duration]" operation="number.substract" value="[timestamp]" value2="[test:contextPCRFTimestamp_[lastSessionId]]"/>
+    <parameter name="[duration]" operation="number.divide" value="[duration]" value2="1000"/>
+    <!--log type="Main" level="WARN">[testcaseId(0)] => Session duration = [duration] sec.</log-->
+   
+    <!-- Remove the session timestamp into the contexts-->
+    <parameter name="[test:contextPCRFTimestamp_[lastSessionId]]" operation="list.remove"/>
     
     <!-- Modify the session statistics counter -->
     <stats>
@@ -223,16 +234,12 @@ Re-Auth-Answer ::= < Diameter Header: 258, PXY >
             <increase>-1</increase>
         </counter>
     </stats>
-    <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
-    <parameter name="[duration]" operation="number.substract" value="[timestamp]" value2="[test:contextPCRFTimestamp_[lastSessionId]]"/>
-    <parameter name="[duration]" operation="number.divide" value="[duration]" value2="1000"/>
-    <!--log type="Main" level="WARN">[testcaseId(0)] => Session duration = [duration] sec.</log-->
     <stats>
         <value name="PCRFSessionDuration" summary="PCRF Dur" complete="Duration of the session on PCRF side">
             <newValue>[duration]</newValue>
         </value>
     </stats>
-
+    
 <!--
 From RFC 3588 September 2003 :
 Session-Termination-Answer  ::= < Diameter Header: 275, PXY >
