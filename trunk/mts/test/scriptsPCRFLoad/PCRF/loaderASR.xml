@@ -34,7 +34,7 @@ Abort-Session-Request ::= < Diameter Header: 274, REQ, PXY >
 -->     
         
     <sendMessageDIAMETER name="Send Request ASR" listenpoint="lp_server" 
-        remoteURL="diameter://[localDIAM]">
+        remoteURL="[urlAF]">
         <header request="true" command="Abort-Session" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
           <!-- The Session-Id AVP is used to identify a specific session. -->
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionID]"/>

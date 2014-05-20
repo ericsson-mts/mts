@@ -38,7 +38,7 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
 -->     
         
     <sendMessageDIAMETER name="Send Request RAR" listenpoint="lp_server" 
-        remoteURL="diameter://[localDIAM]">
+        remoteURL="[urlAF]">
         <header request="true" command="Re-Auth" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
           <!-- The Session-Id AVP is used to identify a specific session. -->
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionID]"/>
