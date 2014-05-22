@@ -44,12 +44,12 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionID]"/>
         
           <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[test:lastDestHost_[framedIPAddress]]"/>
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[hostPCRF(0)]"/>
           <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[test:lastDestRealm_[framedIPAddress]]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[realmPCRF(0)]"/>
           <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[hostAF]"/>
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[realmAF]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[hostAF(0)]"/>
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[realmAF(0)]"/>
           
           <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
           <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777236"/>

@@ -111,6 +111,17 @@
     <!-- Receive AAA => send STR -->
     <label name="recAAA"/>
 
+    <if>
+      <condition>
+        <test parameter="[lastCommandCode]" condition="number.lowerthan" value="2000"/>
+        <test parameter="[lastCommandCode]" condition="number.greaterthan" value="2999"/>
+      </condition>
+      <then>
+          <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+          <goto name="goto begin" label="begin"/>
+      </then>
+    </if>
+
     <!-- Add the session into the contexts-->
     <parameter name="[indexContextAFSessions]" operation="list.find" value="[test:contextAFSessions]" value2="[lastSessionId]"/>
     <parameter name="[indexContextAFSessionsSIZE]" operation="list.size" value="[indexContextAFSessions]"/>
