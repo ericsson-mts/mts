@@ -54,7 +54,7 @@
         <test parameter="[lastRemoteHost]" condition="list.isEmpty"/>
       </condition>
       <then>
-          <parameter name="[remoteURL]" operation="set" value="[remoteDIAM]"/>
+          <parameter name="[remoteURL]" operation="set" value="[urlPRCF]"/>
           <log type="Main" level="WARN">lastRemoteHost=null</log>
       </then>
     </if>
@@ -164,7 +164,7 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
 
     <!-- Envoi d'une requete STRequest -->
     <sendMessageDIAMETER name="Send Request STR" listenpoint="[lastListenpointName]" 
-        remoteURL="diameter://[remoteDIAM(0)]" delay="[sessionTime]">
+        remoteURL="[urlPRCF(0)]" delay="[sessionTime]">
         <header request="true" command="Session-Termination" applicationId="Diameter Common Messages" 
             hopByHop="[newHopByHop]" endToEnd="[newEndToEnd]" 
             proxiable="true" error="false" retransmit="false"/>
@@ -292,7 +292,7 @@ Re-Auth-Answer ::= < Diameter Header: 258, PXY >
     <parameter name="[User-Name]" operation="set" value="alice"/>
 
     <sendMessageDIAMETER name="Send Answer RAA" listenpoint="[lastListenpointName]"
-        remoteURL="diam://[remoteURL]">
+        remoteURL="[remoteURL]" delay="[responseTime]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
                 proxiable="true" error="false" retransmit="false"/>        
@@ -374,7 +374,8 @@ Abort-Session-Answer ::= < Diameter Header: 274, PXY >
 
     <parameter name="[User-Name]" operation="set" value="alice"/>
 
-    <sendMessageDIAMETER name="Send Answer ASA" listenpoint="[lastListenpointName]">
+    <sendMessageDIAMETER name="Send Answer ASA" listenpoint="[lastListenpointName]"
+        remoteURL="[remoteURL]" delay="[responseTime]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
                 proxiable="true" error="false" retransmit="false"/>
