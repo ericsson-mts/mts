@@ -2,7 +2,7 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <scenario>
 
-    <parameter name="[test:lpPCRFName]" operation="set" value="lp_server"/>
+    <parameter name="[test:lpNamePCRF]" operation="set" value="lp_server"/>
     <if>
       <condition>
         <test parameter="[test:contextPCRFSessions]" condition="list.exists" not="true"/>
@@ -12,7 +12,7 @@
           <parameter name="[hostPCRFSize]" operation="list.size" value="[hostPCRF]"/>
           <parameter name="[hostPCRFSize]" operation="number.substract" value="[hostPCRFSize]" value2="1"/>
           <for index="[indexLP]" from="0" to="[hostPCRFSize]">
-              <createListenpointDIAMETER name="[test:lpPCRFName]_[remoteDIAM([indexLP])]" localHost="[hostPCRF([indexLP])]" localPort="[portPCRF([indexLP])]"/>
+              <createListenpointDIAMETER name="[test:lpNamePCRF]_[urlPRCF([indexLP])]" localHost="[hostPCRF([indexLP])]" localPort="[portPCRF([indexLP])]"/>
           </for>
 
           <!-- initiate context -->
@@ -55,7 +55,7 @@
     <!-- Test the listenpoint name -->
     <if>
       <condition>
-        <test parameter="[lastListenpointName]" condition="string.startsWith" value="[test:lpPCRFName]" not="true"/>
+        <test parameter="[lastListenpointName]" condition="string.startsWith" value="[test:lpNamePCRF]" not="true"/>
       </condition>
       <then>
           <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
@@ -182,7 +182,7 @@ Re-Auth-Answer ::= < Diameter Header: 258, PXY >
     <parameter name="[User-Name]" operation="set" value="alice"/>
 
     <sendMessageDIAMETER name="Send Answer RAA" listenpoint="[lastListenpointName]"
-        remoteURL="diam://[remoteURL]">
+        remoteURL="[remoteURL]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
                 proxiable="true" error="false" retransmit="false"/>
@@ -309,7 +309,7 @@ Session-Termination-Answer  ::= < Diameter Header: 275, PXY >
 
     <!-- Envoi d'une reponse STAnswer -->
     <sendMessageDIAMETER name="Send Answer STA" listenpoint="[lastListenpointName]"
-        remoteURL="diam://[remoteURL]">
+        remoteURL="[remoteURL]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
                 proxiable="true" error="false" retransmit="false"/>
