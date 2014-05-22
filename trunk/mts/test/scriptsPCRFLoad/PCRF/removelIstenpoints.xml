@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+    <parameter name="[test:lpNamePCRF]" operation="set" value="lp_server"/>
+    <!-- create the listenpoints -->
+    <parameter name="[hostPCRFSize]" operation="list.size" value="[hostPCRF]"/>
+    <parameter name="[portPCRFSize]" operation="list.size" value="[portPCRF]"/>
+    <parameter name="[minPCRFSize]" operation="number.min" value="[hostPCRFSize]" value2="[portPCRFSize]"/>
+    <parameter name="[minPCRFSize]" operation="number.substract" value="[minPCRFSize]" value2="1"/>
+    <for index="[indexLP]" from="0" to="[minPCRFSize]">
+        <removeListenpointDIAMETER name="[test:lpNamePCRF]_[urlPRCF([indexLP])]"/>
+    </for>
+
+    <!-- block the scenario  -->
+    <pause name="block" seconds="2000000000"/>
+
+    <finally>
+        <for index="[indexLP]" from="0" to="[minPCRFSize]">
+            <createListenpointDIAMETER name="[test:lpNamePCRF]_[urlPRCF([indexLP])]" localHost="[hostPCRF([indexLP])]" localPort="[portPCRF([indexLP])]"/>
+        </for>
+    </finally>
+    
+</scenario>

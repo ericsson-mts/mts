@@ -48,7 +48,7 @@
     </if>
 
     <!-- Calculate the remote URL to send the DIAMETER response -->
-    <parameter name="[remoteURL]" operation="set" value="[lastRemoteHost]:[lastRemotePort]"/>
+    <parameter name="[remoteURL]" operation="set" value="diam://[lastRemoteHost]:[lastRemotePort]"/>
     <if>
       <condition>
         <test parameter="[lastRemoteHost]" condition="list.isEmpty"/>
@@ -299,7 +299,7 @@ Re-Auth-Answer ::= < Diameter Header: 258, PXY >
           <!-- The Session-Id AVP is used to identify a specific session. -->
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[lastSessionId]"/>
           <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
-          <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
+          <avp code="Result-Code" mandatory="true" type="Unsigned32" value="[responseCode]"/>
           <avp code="Auth-Application-Id" value="[lastAuthAppliId]"/>
           <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[lastDestHost]"/>
@@ -382,7 +382,7 @@ Abort-Session-Answer ::= < Diameter Header: 274, PXY >
           <!-- The Session-Id AVP is used to identify a specific session. -->
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[lastSessionId]"/>
           <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
-          <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
+          <avp code="Result-Code" mandatory="true" type="Unsigned32" value="[responseCode]"/>
           <avp code="Auth-Application-Id" value="[lastAuthAppliId]"/>
           <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[lastDestHost]"/>
