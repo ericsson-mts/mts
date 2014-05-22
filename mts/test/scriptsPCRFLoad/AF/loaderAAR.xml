@@ -8,8 +8,12 @@
         <test parameter="[test:contextAFSessions]" condition="list.exists" not="true"/>
       </condition>
       <then>
-          <!-- create a listenpoint -->
-          <createListenpointDIAMETER name="[test:lpNameAF]" localHost="[hostAF]" localPort="[portAF]"/>
+          <!-- create the listenpoints -->
+          <parameter name="[hostAFSize]" operation="list.size" value="[hostAF]"/>
+          <parameter name="[hostAFSize]" operation="number.substract" value="[hostAFSize]" value2="1"/>
+          <for index="[indexLP]" from="0" to="[hostAFSize]">
+              <createListenpointDIAMETER name="[test:lpNameAF]_[urlAF([indexLP])]" localHost="[hostAF([indexLP])]" localPort="[portAF([indexLP])]"/>
+          </for>
 
           <!-- initiate context -->
           <parameter name="[test:contextAFSessions]" operation="list.create"/>
@@ -115,7 +119,8 @@ From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to prov
     <parameter name="[newSessionId]" operation="string.random" value="20" />
 
     <!-- Envoi d'une requete AARequest -->
-    <sendMessageDIAMETER name="SendRequestAAR" listenpoint="[test:lpNameAF]" remoteURL="diameter://[remoteDIAM]">
+    <sendMessageDIAMETER name="SendRequestAAR" listenpoint="[test:lpNameAF]_[urlAF(0)]" 
+        remoteURL="diameter://[remoteDIAM(0)]">
     <header request="true" command="AA" applicationId="[applicationID]" 
             hopByHop="[newHopByHop]" endToEnd="[newEndToEnd]" 
             proxiable="true" error="false" retransmit="false"/>

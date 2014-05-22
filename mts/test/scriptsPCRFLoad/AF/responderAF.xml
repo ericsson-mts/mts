@@ -39,7 +39,7 @@
     <!-- Test the listenpoint name -->
     <if>
       <condition>
-        <test parameter="[lastListenpointName]" condition="string.equals" value="[test:lpNameAF]" not="true"/>
+        <test parameter="[lastListenpointName]" condition="string.startsWith" value="[test:lpNameAF]" not="true"/>
       </condition>
       <then>
           <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
@@ -163,8 +163,8 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
     <parameter name="[newHopByHop]" operation="number.random" value="1000000000" />
 
     <!-- Envoi d'une requete STRequest -->
-    <sendMessageDIAMETER name="Send Request STR" listenpoint="[test:lpNameAF]" 
-        remoteURL="diameter://[remoteDIAM]" delay="[sessionTime]">
+    <sendMessageDIAMETER name="Send Request STR" listenpoint="[lastListenpointName]" 
+        remoteURL="diameter://[remoteDIAM(0)]" delay="[sessionTime]">
         <header request="true" command="Session-Termination" applicationId="Diameter Common Messages" 
             hopByHop="[newHopByHop]" endToEnd="[newEndToEnd]" 
             proxiable="true" error="false" retransmit="false"/>
@@ -291,7 +291,7 @@ Re-Auth-Answer ::= < Diameter Header: 258, PXY >
 
     <parameter name="[User-Name]" operation="set" value="alice"/>
 
-    <sendMessageDIAMETER name="Send Answer RAA" listenpoint="[test:lpNameAF]"
+    <sendMessageDIAMETER name="Send Answer RAA" listenpoint="[lastListenpointName]"
         remoteURL="diam://[remoteURL]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
@@ -374,7 +374,7 @@ Abort-Session-Answer ::= < Diameter Header: 274, PXY >
 
     <parameter name="[User-Name]" operation="set" value="alice"/>
 
-    <sendMessageDIAMETER name="Send Answer ASA" listenpoint="[test:lpNameAF]">
+    <sendMessageDIAMETER name="Send Answer ASA" listenpoint="[lastListenpointName]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
                 proxiable="true" error="false" retransmit="false"/>
