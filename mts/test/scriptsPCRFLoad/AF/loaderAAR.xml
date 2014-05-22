@@ -10,8 +10,10 @@
       <then>
           <!-- create the listenpoints -->
           <parameter name="[hostAFSize]" operation="list.size" value="[hostAF]"/>
-          <parameter name="[hostAFSize]" operation="number.substract" value="[hostAFSize]" value2="1"/>
-          <for index="[indexLP]" from="0" to="[hostAFSize]">
+          <parameter name="[portAFSize]" operation="list.size" value="[portAF]"/>
+          <parameter name="[minAFSize]" operation="number.min" value="[hostAFSize]" value2="[portAFSize]"/>
+          <parameter name="[minAFSize]" operation="number.substract" value="[minAFSize]" value2="1"/>
+          <for index="[indexLP]" from="0" to="[minAFSize]">
               <createListenpointDIAMETER name="[test:lpNameAF]_[urlAF([indexLP])]" localHost="[hostAF([indexLP])]" localPort="[portAF([indexLP])]"/>
           </for>
 
