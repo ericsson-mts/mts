@@ -920,11 +920,10 @@ public abstract class Stack
 	        {
 	            destScenario = DispatcherMsg.dispatchMsg(msg);
 	        }
-	        
+            // logs in scenario and application logs as CALLFLOW topic
+	        processLogsMsgSending(msg, destScenario, Stack.RECEIVE);
 	        if (destScenario != null)
 	        {                	
-	            // logs in scenario and application logs as CALLFLOW topic
-	            processLogsMsgSending(msg, destScenario, Stack.RECEIVE);
 	            destScenario.dispatchMessage(msg);
 	        }
         }
@@ -1149,12 +1148,18 @@ public abstract class Stack
                 action += "(#" + msg.getRetransNumber() + ") ";
             }
             GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, action, msg.toShortString());
-            GlobalLogger.instance().getSessionLogger().info(srcRunner, TextEvent.Topic.CALLFLOW, action, msg.toShortString());
+            if (srcRunner != null) 
+            {
+            	GlobalLogger.instance().getSessionLogger().info(srcRunner, TextEvent.Topic.CALLFLOW, action, msg.toShortString());
+            }
 
             if (GlobalLogger.instance().getLogLevel() <= GlobalLogger.LOG_LEVEL_CONFIG_DEBUG)
             {
                 GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.CALLFLOW, action, msg);
-                GlobalLogger.instance().getSessionLogger().debug(srcRunner, TextEvent.Topic.CALLFLOW, action, msg);
+                if (srcRunner != null)
+                {
+                	GlobalLogger.instance().getSessionLogger().debug(srcRunner, TextEvent.Topic.CALLFLOW, action, msg);
+                }
             }
         }
     }    
