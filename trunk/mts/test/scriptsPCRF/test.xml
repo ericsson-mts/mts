@@ -3,72 +3,80 @@
 
     <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
     
-    <parameter name="[localHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter description="local address of the MTS host" editable="true" name="[localHostDIAM]" operation="set" value="[localHostDIAM(1)]"/>
-    <!--parameter name="[localHostDIAM]" operation="set" value="imspcf401-imscore.sip.imsnsn.fr"/-->
-    <parameter name="[localPortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortDIAM]" operation="set" value="13868"/>
-    <parameter description="local port of the MTS host" editable="true" name="[localPortDIAM]" operation="set" value="[localPortDIAM]"/>
-    <parameter name="[localDIAM]" operation="set" value="[localHostDIAM]:[localPortDIAM]"/>
+    <parameter name="[localHost]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localPort]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
     
-    <parameter name="[remoteHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostDIAM]" operation="set" value="[remoteHostDIAM(1)]"/>
-    <!--parameter name="[remoteHostDIAM]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/-->
-    <!--parameter name="[remoteHostDIAM]" operation="set" value="172.16.21.32"/-->
-    <parameter name="[remotePortDIAM]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[remotePortDIAM]" operation="set" value="3868"/>
-    <parameter description="remote port of the SUT host" editable="true" name="[remotePortDIAM]" operation="set" value="[remotePortDIAM]"/>
-    <parameter name="[remoteDIAM]" operation="set" value="[remoteHostDIAM]:[remotePortDIAM]"/>
+    <parameter name="[hostAF(0)]" operation="set" value="[localHost(0)]" description="local address of the AF host" editable="true"/>
+    <parameter name="[hostAF(1)]" operation="set" value="[localHost(0)]" description="local address of the AF host" editable="true"/>
+    <!--parameter name="[hostAF(0)]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/-->
+    <!--parameter name="[hostAF(1)]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[portAF(0)]" operation="set" value="13868" description="local port of the MTS host" editable="true" />
+    <parameter name="[portAF(1)]" operation="set" value="13869" description="local port of the MTS host" editable="true" />
+    <parameter name="[urlAF]" operation="set" value="diam://[hostAF]:[portAF]"/>
+    
+    <parameter name="[hostPCRF(0)]" operation="set" value="[localHost(0)]" description="remote address of the SUT host" editable="true"/>
+    <parameter name="[hostPCRF(1)]" operation="set" value="[localHost(0)]" description="remote address of the SUT host" editable="true"/>
+    <!--parameter name="[hostPCRF(0)]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/-->
+    <!--parameter name="[hostPCRF(1)]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[portPCRF(0)]" operation="set" value="3868" description="remote port of the SUT host" editable="true"/>
+    <parameter name="[portPCRF(1)]" operation="set" value="3869" description="remote port of the SUT host" editable="true"/>
+    <parameter name="[urlPCRF]" operation="set" value="diam://[hostPCRF]:[portPCRF]"/>
    
     <parameter name="[originIPAddress]" operation="set" value="172.18.128.19" editable="true"/>
+    <parameter name="[originIPAddress]" operation="set" value="fe80:0:0:0:342d:ee:509c:4ad3"/>
     <parameter name="[termIPAddress]" operation="set" value="172.18.128.20" editable="true"/>
+    <parameter name="[termIPAddress]" operation="set" value="fe80:0:0:0:342d:ee:509c:4ad4"/>
     
-    <parameter name="[localRealmDIAM]" operation="set" value="sip.imsnsn.fr" editable="true"/>
-    <parameter name="[remoteRealmDIAM]" operation="set" value="sip.imsnsn.fr" editable="true"/>
+    <parameter name="[realmAF]" operation="set" value="sip.imsnsn.fr" editable="true"/>
+    <parameter name="[realmPCRF]" operation="set" value="sip.imsnsn.fr" editable="true"/>
     
-    <parameter name="[responseTime]" operation="set" value="0.1" editable="true"/>
-    <parameter name="[sessionTime]" operation="set" value="10" editable="true"/>
-    <parameter name="[stateClient]" operation="set" value="true" editable="true"/>
+    <parameter name="[responseCode]" operation="set" value="DIAMETER_SUCCESS" description="Response code to reply to requests" editable="true"/>
+    <parameter name="[responseTime]" operation="set" value="0" description="Response time for the transactions when sending a response" editable="true"/>
+    <parameter name="[sessionTime]" operation="set" value="10" description="Duration (in seconds) of the sessions" editable="true"/>
+
+    <parameter name="[stateAF]" operation="set" value="true" editable="true"/>
+    <parameter name="[statePCRF]" operation="set" value="true" editable="true"/>
+    
     <parameter name="[vendorID]" operation="set" value="10415"/>
     
     <testcase name="----- ORIGINATING -----" description="Testcase on ORIGINATING side" state="false"/>
     
     <testcase name="RecAAR SendAAA + RecSTR SendSTA" description="Receive/send the AA(265) messages and receive/send the ST(275) messages" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
-      <scenario name="client">AA-ST/client.xml</scenario>
-      <scenario name="[originIPAddress],DIAMETER">AA-ST/server.xml</scenario>
+      <scenario name="client" state="[stateAF]">AA-ST/client.xml</scenario>
+      <scenario name="[originIPAddress]|DIAMETER" state="[statePCRF]">AA-ST/server.xml</scenario>
     </testcase>
     
     <testcase name="SendASR RecASA" description="Send the ASRequest(274) and recieved the ASAnswer(274)" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
-      <scenario name="client">AS/client.xml</scenario>
-      <scenario name="274">AS/server.xml</scenario>
+      <scenario name="client" state="[statePCRF]">AS/client.xml</scenario>
+      <scenario name="|274" state="[stateAF]">AS/server.xml</scenario>
     </testcase>
     
     <testcase name="SendRAR RecRAA" description="Send the RARequest(268) and receive the RAAnswer(268)" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
-      <scenario name="client">RA/client.xml</scenario>
-      <scenario name="258">RA/server.xml</scenario>
+      <scenario name="client" state="[statePCRF]">RA/client.xml</scenario>
+      <scenario name="|258" state="[stateAF]">RA/server.xml</scenario>
     </testcase>
     
     <testcase name="----- TERMINATING -----" description="Testcase on TERMINATING side" state="false"/>
     
     <testcase name="RecAAR SendAAA + RecSTR SendSTA" description="Receive/send the AA(265) messages and receive/send the ST(275) messages" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[termIPAddress]"/>
-      <scenario name="client">AA-ST/client.xml</scenario>
-      <scenario name="[termIPAddress],DIAMETER">AA-ST/server.xml</scenario>
+      <scenario name="client"  state="[stateAF]">AA-ST/client.xml</scenario>
+      <scenario name="[termIPAddress]|DIAMETER" state="[statePCRF]">AA-ST/server.xml</scenario>
     </testcase>
     
     <testcase name="SendASR RecASA" description="Send the ASRequest(274) and recieved the ASAnswer(274)" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[termIPAddress]"/>
-      <scenario name="client">AS/client.xml</scenario>
-      <scenario name="274">AS/server.xml</scenario>
+      <scenario name="client" state="[statePCRF]">AS/client.xml</scenario>
+      <scenario name="|274" state="[stateAF]">AS/server.xml</scenario>
     </testcase>
     
     <testcase name="SendRAR RecRAA" description="Send the RARequest(268) and receive the RAAnswer(268)" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[termIPAddress]"/>
-      <scenario name="client">RA/client.xml</scenario>
-      <scenario name="258">RA/server.xml</scenario>
+      <scenario name="client" state="[statePCRF]">RA/client.xml</scenario>
+      <scenario name="|258" state="[stateAF]">RA/server.xml</scenario>
     </testcase>
   
 </test>

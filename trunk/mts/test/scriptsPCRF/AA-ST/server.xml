@@ -4,8 +4,15 @@
 
 <scenario>
 
-    <!-- create a listenpoint with no parameter -->
-    <createListenpointDIAMETER name="lp_server" localHost="[remoteHostDIAM]" localPort="[remotePortDIAM]"/>
+    <!-- create the listenpoints -->
+    <parameter name="[test:lpNamePCRF]" operation="set" value="lp_server"/>
+    <parameter name="[hostPCRFSize]" operation="list.size" value="[hostPCRF]"/>
+    <parameter name="[portPCRFSize]" operation="list.size" value="[portPCRF]"/>
+    <parameter name="[minPCRFSize]" operation="number.min" value="[hostPCRFSize]" value2="[portPCRFSize]"/>
+    <parameter name="[minPCRFSize]" operation="number.substract" value="[minPCRFSize]" value2="1"/>
+    <for index="[indexLP]" from="0" to="[minPCRFSize]">
+        <createListenpointDIAMETER name="[test:lpNamePCRF]_[urlPCRF([indexLP])]" localHost="[hostPCRF([indexLP])]" localPort="[portPCRF([indexLP])]"/>
+    </for>
 
 <!--
 From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to provide it with the Session Information
@@ -35,8 +42,9 @@ From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to prov
 -->
 
     <!-- Attente d'une requete AARequest -->
-    <receiveMessageDIAMETER name="ReceiveRequestAAR" listenpoint="lp_server"
-                            request="true" type="AA" timeout="0">
+    <receiveMessageDIAMETER name="ReceiveRequestAAR" 
+        request="true" type="AA" timeout="0">
+        <parameter name="[lastListenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
         <parameter name="[test:lastRemoteHost_[framedIPAddress]]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[test:lastRemotePort_[framedIPAddress]]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[lastCommandCode]" operation="protocol.setFromMessage" value="header.command"/>
@@ -50,6 +58,18 @@ From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to prov
         <parameter name="[test:lastDestRealm_[framedIPAddress]]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
     </receiveMessageDIAMETER>
 
+    <!-- Calculate the remote URL to send the DIAMETER response -->
+    <parameter name="[remoteURL]" operation="set" value="diam://[lastRemoteHost_[framedIPAddress]]:[lastRemotePort_[framedIPAddress]]"/>
+    <if>
+      <condition>
+        <test parameter="[lastRemoteHost_[framedIPAddress]]" condition="list.isEmpty"/>
+      </condition>
+      <then>
+          <log type="Main" level="WARN">lastRemoteHost=null</log>
+          <parameter name="[remoteURL]" operation="set" value="[urlAF(0)]"/>
+      </then>
+    </if>
+
     <!-- Simulation du temps de reponse -->
     <pause name="response time" seconds="[responseTime]"/>
 
@@ -60,26 +80,27 @@ From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to prov
     <parameter name="[RAT-Type]" operation="set" value="UTRAN"/>
 
     <!-- Envoi de la reponse AAAnswer-->
-    <sendMessageDIAMETER name="SendAnswerAAA" listenpoint="lp_server">
-    <header request="false" command="[lastCommandCode]" applicationId="[lastApplicationId]" 
-            hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
-            proxiable="true" error="false" retransmit="false"/>
-    <avp code="Session-Id" value="[lastSessionId_[framedIPAddress]]"/>
-    <avp code="Auth-Application-Id" value="[lastAuthAppliId]"/>
-    <avp code="Origin-Host" value="[test:lastDestHost_[framedIPAddress]]"/>
-    <avp code="Origin-Realm" value="[test:lastDestRealm_[framedIPAddress]]"/>
-    <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
-    <!--avp code="Experimental-Result">
-        <avp code="Vendor-Id" value="[vendorID]"/>
-        <avp code="Experimental-Result-Code" value="2001" vendorId="[vendorID]"/>
-    </avp-->
-    <avp code="IP-CAN-Type" value="[IP-CAN-Type]"/>
-    <avp code="RAT-Type" value="[RAT-Type]"/>
+    <sendMessageDIAMETER name="SendAnswerAAA" listenpoint="[lastListenpointName]"
+        remoteURL="[remoteURL]">
+        <header request="false" command="[lastCommandCode]" applicationId="[lastApplicationId]" 
+                hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
+                proxiable="true" error="false" retransmit="false"/>
+        <avp code="Session-Id" value="[test:lastSessionId_[framedIPAddress]]"/>
+        <avp code="Auth-Application-Id" value="[lastAuthAppliId]"/>
+        <avp code="Origin-Host" value="[test:lastDestHost_[framedIPAddress]]"/>
+        <avp code="Origin-Realm" value="[test:lastDestRealm_[framedIPAddress]]"/>
+        <avp code="Result-Code" value="[responseCode]"/>
+        <!--avp code="Experimental-Result">
+            <avp code="Vendor-Id" value="[vendorID]"/>
+            <avp code="Experimental-Result-Code" value="2001" vendorId="[vendorID]"/>
+        </avp-->
+        <avp code="IP-CAN-Type" value="[IP-CAN-Type]"/>
+        <avp code="RAT-Type" value="[RAT-Type]"/>
     </sendMessageDIAMETER>
 
     <!-- Attente d'une requete STRequest -->
-    <receiveMessageDIAMETER name="Receive Request STR" listenpoint="lp_server"
-                            request="true" type="Session-Termination:275" timeout="0">
+    <receiveMessageDIAMETER name="Receive Request STR"
+        request="true" type="Session-Termination:275" timeout="0">
         <parameter name="[lastCommandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[lastApplicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
         <parameter name="[lastHopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
@@ -121,7 +142,7 @@ Session-Termination-Answer  ::= < Diameter Header: 275, PXY >
 -->
 
     <!-- Envoi d'une reponse STAnswer -->
-    <sendMessageDIAMETER name="Send Answer STA" listenpoint="lp_server">
+    <sendMessageDIAMETER name="Send Answer STA" listenpoint="[lastListenpointName]">
         <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
                 proxiable="true" error="false" retransmit="false"/>
