@@ -23,7 +23,7 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
                   * [ AVP ]
 -->     
         
-    <sendMessageDIAMETER name="Send Request RAR" listenpoint="lp_server" 
+    <sendMessageDIAMETER name="Send Request RAR" listenpoint="[test:lpNamePCRF]_[urlPCRF(0)]" 
         remoteURL="diameter://[test:lastRemoteHost_[framedIPAddress]]:[test:lastRemotePort_[framedIPAddress]]">
         <header request="true" command="Re-Auth" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
           <!-- The Session-Id AVP is used to identify a specific session. -->
@@ -34,8 +34,8 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
           <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
           <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[test:lastDestRealm_[framedIPAddress]]"/>
           <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[hostAF]"/>
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[realmAF]"/>            
         
           <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
           <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777236"/>
@@ -83,7 +83,7 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
           <!--avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/-->
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="Receive Answer RAA" listenpoint="lp_server" 
+    <receiveMessageDIAMETER name="Receive Answer RAA" 
         request="false" type="Re-Auth:258" result="DIAMETER_SUCCESS:2001">
     </receiveMessageDIAMETER>
 

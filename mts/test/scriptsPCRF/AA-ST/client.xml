@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
 
-    <if>
-      <condition>
-        <test parameter="[stateClient]" condition="boolean.equals" value="false"/>
-      </condition>
-      <then>
-          <!-- Sortie du client -->
-          <exit name="pas de client"/>
-      </then>
-    </if>
-
-    <!-- create a listenpoint with no parameter -->
-    <createListenpointDIAMETER name="lp_client" localHost="[localHostDIAM]" localPort="[localPortDIAM]"/>
+    <!-- create the listenpoints -->
+    <parameter name="[test:lpNameAF]" operation="set" value="lp_client"/>
+    <parameter name="[hostAFSize]" operation="list.size" value="[hostAF]"/>
+    <parameter name="[portAFSize]" operation="list.size" value="[portAF]"/>
+    <parameter name="[minAFSize]" operation="number.min" value="[hostAFSize]" value2="[portAFSize]"/>
+    <parameter name="[minAFSize]" operation="number.substract" value="[minAFSize]" value2="1"/>
+    <for index="[indexLP]" from="0" to="[minAFSize]">
+        <createListenpointDIAMETER name="[test:lpNameAF]_[urlAF([indexLP])]" localHost="[hostAF([indexLP])]" localPort="[portAF([indexLP])]"/>
+    </for>
 
 <!--
 From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to provide it with the Session Information
@@ -112,16 +109,17 @@ From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to prov
     <parameter name="[newSessionId]" operation="string.random" value="20" />
     
     <!-- Envoi d'une requete AARequest -->
-    <sendMessageDIAMETER name="SendRequestAAR" listenpoint="lp_client" remoteURL="diameter://[remoteDIAM]">
+    <sendMessageDIAMETER name="SendRequestAAR" listenpoint="[test:lpNameAF]_[urlAF(0)]" 
+        remoteURL="[urlPCRF(0)]">
     <header request="true" command="AA" applicationId="[applicationID]" 
             hopByHop="[newHopByHop]" endToEnd="[newEndToEnd]" 
             proxiable="true" error="false" retransmit="false"/>
         <avp code="Session-Id" value="[newSessionId]"/>
         <avp code="Auth-Application-Id" value="[applicationID]"/>
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="Origin-Host" value="[hostAF(0)]"/>
+        <avp code="Origin-Realm" value="[realmAF(0)]"/>
+        <avp code="Destination-Host" value="[hostPCRF(0)]"/>
+        <avp code="Destination-Realm" value="[realmPCRF(0)]"/>
         <avp code="Media-Component-Description">
             <avp code="Media-Component-Number" value="[Media-Component-Number]"/>
             <avp code="Media-Sub-Component">
@@ -152,7 +150,7 @@ From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to prov
     </sendMessageDIAMETER>
     
     <!-- Attente de la reponse AAAnswer-->
-    <receiveMessageDIAMETER name="ReceiveAnswerAAA" listenpoint="lp_client" 
+    <receiveMessageDIAMETER name="ReceiveAnswerAAA" 
                             request="false" type="AA" result="DIAMETER_SUCCESS">
         <parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
     </receiveMessageDIAMETER>
@@ -185,7 +183,8 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
     <parameter name="[newHopByHop]" operation="number.random" value="1000000" />
 
     <!-- Envoi d'une requete STRequest -->
-    <sendMessageDIAMETER name="Send Request STR" listenpoint="lp_client" remoteURL="diameter://[remoteDIAM]">
+    <sendMessageDIAMETER name="Send Request STR" listenpoint="[test:lpNameAF]_[urlAF(0)]" 
+        remoteURL="[urlPCRF(0)]">
         <header request="true" command="Session-Termination" applicationId="Diameter Common Messages" 
             hopByHop="[newHopByHop]" endToEnd="[newEndToEnd]" 
             proxiable="true" error="false" retransmit="false"/>
@@ -193,14 +192,14 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[newSessionId]"/>
         
           <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[hostAF(0)]"/>
           <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[realmAF(0)]"/>
 
           <!-- The Origin-Host AVP contains the Host of the originator of any Diameter message. -->
-          <avp code="Destination-Host" mandatory="false" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+          <avp code="Destination-Host" mandatory="false" type="DiameterIdentity" value="[hostPCRF(0)]"/>
           <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[realmPCRF(0)]"/>
 
           <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
           <!--avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="0"/-->
@@ -238,7 +237,7 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
     </sendMessageDIAMETER>
 
     <!-- Attente d'une reponse STAnswer -->
-    <receiveMessageDIAMETER name="Receive Answer STA" listenpoint="lp_client" 
+    <receiveMessageDIAMETER name="Receive Answer STA" 
                             request="false" type="Session-Termination:275" result="DIAMETER_SUCCESS:2001" timeout="0">
     </receiveMessageDIAMETER>
 
