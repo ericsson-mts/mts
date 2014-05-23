@@ -43,40 +43,40 @@
     
     <testcase name="RecAAR SendAAA + RecSTR SendSTA" description="Receive/send the AA(265) messages and receive/send the ST(275) messages" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
-      <scenario name="clientAF" state="[stateAF]">AA-ST/clientAF.xml</scenario>
-      <scenario name="[originIPAddress]|DIAMETER" state="[statePCRF]">AA-ST/serverPCRF.xml</scenario>
+      <scenario name="clientAF" file="AA-ST/clientAF.xml" routingName="nothing" state="[stateAF]"/>
+      <scenario name="serverPCRF" file="AA-ST/serverPCRF.xml" routingName="[originIPAddress]|DIAMETER" state="[statePCRF]"/>
     </testcase>
     
     <testcase name="SendASR RecASA" description="Send the ASRequest(274) and recieved the ASAnswer(274)" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
-      <scenario name="clientPCRF" state="[statePCRF]">AS/clientPCRF.xml</scenario>
-      <scenario name="|274" state="[stateAF]">AS/serverAF.xml</scenario>
+      <scenario name="clientPCRF" file="AS/clientPCRF.xml" routingName="nothing" state="[statePCRF]"/>
+      <scenario name="serverAF" file="AS/serverAF.xml" routingName="|274" state="[stateAF]"/>
     </testcase>
     
     <testcase name="SendRAR RecRAA" description="Send the RARequest(268) and receive the RAAnswer(268)" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[originIPAddress]"/>
-      <scenario name="client" state="[statePCRF]">RA/clientPCRF.xml</scenario>
-      <scenario name="|258" state="[stateAF]">RA/serverAF.xml</scenario>
+      <scenario name="clientPCRF" file="RA/clientPCRF.xml" routingName="nothing" state="[statePCRF]"/>
+      <scenario name="serverAF" file="RA/serverAF.xml" routingName="|258" state="[stateAF]"/>
     </testcase>
     
     <testcase name="----- TERMINATING -----" description="Testcase on TERMINATING side" state="false"/>
     
     <testcase name="RecAAR SendAAA + RecSTR SendSTA" description="Receive/send the AA(265) messages and receive/send the ST(275) messages" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[termIPAddress]"/>
-      <scenario name="client"  state="[stateAF]">AA-ST/clientAF.xml</scenario>
-      <scenario name="[termIPAddress]|DIAMETER" state="[statePCRF]">AA-ST/serverPCRF.xml</scenario>
+      <scenario name="clientAF" file="AA-ST/clientAF.xml" routingName="nothing" state="[stateAF]"/>
+      <scenario name="serverPCRF" file="AA-ST/serverPCRF.xml" routingName="[termIPAddress]|DIAMETER" state="[statePCRF]"/>
     </testcase>
     
     <testcase name="SendASR RecASA" description="Send the ASRequest(274) and recieved the ASAnswer(274)" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[termIPAddress]"/>
-      <scenario name="client" state="[statePCRF]">AS/clientPCRF.xml</scenario>
-      <scenario name="|274" state="[stateAF]">AS/serverAF.xml</scenario>
+      <scenario name="clientPCRF" file="AS/clientPCRF.xml" routingName="nothing" state="[statePCRF]"/>
+      <scenario name="serverAF" file="AS/serverAF.xml" routingName="|274" state="[stateAF]"/>
     </testcase>
     
     <testcase name="SendRAR RecRAA" description="Send the RARequest(268) and receive the RAAnswer(268)" state="true">
       <parameter name="[framedIPAddress]" operation="set" value="[termIPAddress]"/>
-      <scenario name="client" state="[statePCRF]">RA/clientPCRF.xml</scenario>
-      <scenario name="|258" state="[stateAF]">RA/serverAF.xml</scenario>
+      <scenario name="clientPCRF" file="RA/clientPCRF.xml" routingName="nothing" state="[statePCRF]"/>
+      <scenario name="serverAF" file="RA/serverAF.xml" routingName="|258" state="[stateAF]"/>
     </testcase>
   
 </test>

@@ -25,13 +25,13 @@
     <parameter name="[responseCode]" operation="set" value="DIAMETER_SUCCESS" description="Response code to reply to requests" editable="true"/>
     <parameter name="[responseTime]" operation="set" value="0" description="Response time for the transactions when sending a response" editable="true"/>
     <parameter name="[sessionTime]" operation="set" value="180" description="Duration (in seconds) of the sessions" editable="true"/>
-    <!--parameter name="[sessionTime]" operation="set" value="10" description="FOR TESTING"/-->
+    <parameter name="[sessionTime]" operation="set" value="10" description="FOR TESTING"/>
 
     <parameter name="[testDurationSec]" operation="set" value="3600" description="Duration (in secondes) of the load testing" editable="true" />
-    <!--parameter name="[testDurationSec]" operation="set" value="20" description="FOR TESTING"/-->
+    <parameter name="[testDurationSec]" operation="set" value="20" description="FOR TESTING"/>
     
     <parameter name="[speedAAR]" operation="set" value="60" description="Speed (in testcase per seconds) of the AAR messages => number of session to initiate per seconds" editable="true" />
-    <!--parameter name="[speedAAR]" operation="set" value="1" description="FOR TESTING"/-->
+    <parameter name="[speedAAR]" operation="set" value="1" description="FOR TESTING"/>
     
     <parameter name="[speedRAR]" operation="set" value="1" description="Speed (in testcase per seconds) to send the RAR messages" editable="true" />
     <parameter name="[numberRAR]" operation="set" value="1000" description="Number of the RAR messages to send" editable="true" />
@@ -61,7 +61,7 @@
           <step time="0" frequency="[speedAAR]"/>
           <end delay="[testDurationSec]"/>
       </runProfile>
-      <scenario name="loaderAAR">AF/loaderAAR.xml</scenario>
+      <scenario name="loaderAAR" file="AF/loaderAAR.xml" routingName="nothing"/>
     </testcase>
     
     <for from="001" index="[indexTC]" step="1" to="[numberTestcase]">
@@ -72,7 +72,7 @@
               <step time="0" period="0"/>
               <end delay="[testDurationSec]"/>
           </runProfile>
-          <scenario name="responderAF_[indexTC]" routingName="false|265,false|275,true|258,true|274">AF/responderAF.xml</scenario>
+          <scenario name="responderAF_[indexTC]" file="AF/responderAF.xml" routingName="false|265,false|275,true|258,true|274"/>
         </testcase>
         
     </for>
@@ -87,7 +87,7 @@
               <step time="0" period="0"/>
               <end delay="[testDurationSec]"/>
           </runProfile>
-          <scenario name="responderPCRF_[indexTC]" routingName="true|265,true|275,false|258,false|274">PCRF/responderPCRF.xml</scenario>
+          <scenario name="responderPCRF_[indexTC]" file="PCRF/responderPCRF.xml" routingName="true|265,true|275,false|258,false|274"/>
         </testcase>
         
     </for>
@@ -99,7 +99,7 @@
           <step time="0" frequency="[speedRAR]"/>
           <end delay="[testDurationSec]"/>
       </runProfile>
-      <scenario name="loaderRAR">PCRF/loaderRAR.xml</scenario>
+      <scenario name="loaderRAR" file="PCRF/loaderRAR.xml" routingName="nothing"/>
     </testcase>
     
     <testcase name="Loader SendASR" description="Send the ASR(274) requests" number="[numberASR]" state="false">
@@ -109,11 +109,11 @@
           <step time="0" frequency="[speedASR]"/>
           <end delay="[testDurationSec]"/>
       </runProfile>
-      <scenario name="loaderASR">PCRF/loaderASR.xml</scenario>
+      <scenario name="loaderASR" file="PCRF/loaderASR.xml" routingName="nothing"/>
     </testcase>
 
    <testcase name="Close TCP connections" description="Close the TCP connection by removing the listenpoints and opening then when the user clicks on the Stop button" state="false">
-      <scenario name="removeListenpoints">PCRF/removeListenpoints.xml</scenario>
+      <scenario name="removeListenpoints" file="PCRF/removeListenpoints.xml" routingName="nothing"/>
     </testcase>
  
 </test>
