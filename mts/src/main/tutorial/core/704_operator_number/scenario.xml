@@ -301,6 +301,11 @@
 	<parameter name="[Wooteuh]" operation="number.toDate" value="[Woot]" value2="dd/MM HH:mm:ss:SSS" />
 	<test parameter="[Wooteuh]" condition="string.equals" value="02/07 00:00:00:000" />
 	
-	<parameter name="[tobinary]"	operation="number.toBinary"	value="1234567890" />
-	<test parameter="[tobinary]"	condition="string.equals"	value="499602d2" />
+	<parameter name="[tobinary]" operation="number.toBinary"	value="1234567890" />
+	<test parameter="[tobinary]" condition="binary.equals"	value="499602d2" />
+	
+	<parameter name="[max]" operation="number.max" value="1234567890" value2="9876543210"/>
+	<test parameter="[max]" condition="number.equals" value="9876543210" />
+	<parameter name="[min]" operation="number.min" value="1234567890" value2="9876543210"/>
+	<test parameter="[min]" condition="number.equals" value="1234567890" />
 </scenario>
