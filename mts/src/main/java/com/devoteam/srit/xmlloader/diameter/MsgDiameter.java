@@ -274,30 +274,53 @@ public class MsgDiameter extends Msg
         if(null != avpDef) name = avpDef.get_name();
         
         if(type.equalsIgnoreCase("grouped"))
+        {
         	return "grouped" ;
+        }
         else if(type.equalsIgnoreCase("Integer32"))
-        	return Long.toString((new AVP_Integer32(avp)).queryValue());
+        {
+        	long result = new AVP_Integer32(avp).queryValue();
+        	return Long.toString(result);
+        }
         else if(type.equalsIgnoreCase("Integer64"))
-        	return Long.toString((new AVP_Integer64(avp)).queryValue());
-        else if(type.equalsIgnoreCase("Unsigned32"))  
-        	return Long.toString((new AVP_Unsigned32(avp)).queryValue());
+        {
+        	long result = new AVP_Integer64(avp).queryValue();
+        	return Long.toString(result);
+        }
+        else if(type.equalsIgnoreCase("Unsigned32"))
+        {
+        	long result = new AVP_Unsigned32(avp).queryValue();
+        	return Long.toString(result);
+        }
         else if(type.equalsIgnoreCase("Unsigned64"))
-        	return Long.toString((new AVP_Unsigned64(avp)).queryValue());
-        else if(type.equalsIgnoreCase("OctetString")) 
-        	return Utils.toBinaryString(new AVP_OctetString(avp).queryValue(), false);
+        {
+        	long result = new AVP_Unsigned64(avp).queryValue();
+        	return Long.toString(result);
+        }
+        else if(type.equalsIgnoreCase("OctetString"))
+        {
+        	byte[] result = new AVP_OctetString(avp).queryValue();
+        	return Utils.toBinaryString(result, false);
+        }
         else if(type.equalsIgnoreCase("IPAddress"))
         {
-        	String result = InetAddress.getByAddress(new AVP_OctetString(avp).queryValue()).getHostAddress();
-        	// case IPv6 address
-        	if (result.contains(":"))
+        	byte[] result = new AVP_OctetString(avp).queryValue();
+        	String strRes = InetAddress.getByAddress(result).getHostAddress();
+        	if (strRes.contains(":"))
         	{
-        		result="[" + result + "]";
+        		// strRes = "[" + strRes + "]";
         	}
-        	return result;
+        	return strRes;
         }
-        else if(type.equalsIgnoreCase("UTF8String"))  
-        	return new String((new AVP_OctetString(avp)).queryValue());
-        else return null ;
+        else if(type.equalsIgnoreCase("UTF8String"))
+        {
+        	byte[] result = new AVP_OctetString(avp).queryValue();
+        	return new String(result);
+        }
+        else
+        {
+        	return null ;
+        }
     }
             
     /** Get the protocol of this message */
