@@ -12,9 +12,32 @@
           <exit failed="false" description="SUCCESS : Normal end of testcase"/>
       </then>
     </if>
-    <parameter name="[contextPCRFSessionsINDEX]" operation="number.divide" value="[contextPCRFSessionsSIZE]" value2="2"/>
+    <parameter name="[contextPCRFSessionsINDEX]" operation="number.random" value="[contextPCRFSessionsSIZE]"/>
     <parameter name="[contextPCRFSessionsINDEX]" operation="number.round" value="[contextPCRFSessionsINDEX]"/>
-    <parameter name="[sessionID]" operation="list.size" value="[test:contextPCRFSessions([contextPCRFSessionsINDEX])]"/>
+    <parameter name="[sessionID]" operation="set" value="[test:contextPCRFSessions([contextPCRFSessionsINDEX])]"/>
+    
+    <!-- Calculate the remote URL to send the DIAMETER response -->
+    <if>
+      <condition>
+        <or>
+            <test parameter="[test:contextPCRFChannelHost_[sessionID]]" condition="list.exists" not="true"/>
+            <test parameter="[test:contextPCRFChannelPort_[sessionID]]" condition="list.exists" not="true"/>
+        </or>
+      </condition>
+      <then>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          test:contextPCRFChannelHost_[sessionID] or test:contextPCRFChannelPort_[sessionID] does not exist
+          ]]>
+          </log>
+          <parameter name="[remoteURL]" operation="set" value="[urlAF(0)]"/>
+      </then>
+      <else>
+          <parameter name="[remoteHost]" operation="set" value="[test:contextPCRFChannelHost_[sessionID]]"/>
+          <parameter name="[remotePort]" operation="set" value="[test:contextPCRFChannelPort_[sessionID]]"/>
+          <parameter name="[remoteURL]" operation="set" value="diam://[remoteHost]:[remotePort]"/>
+      </else>
+    </if>
     
     <!--
 From RFC 3588 September 2003 :
@@ -38,7 +61,7 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
 -->     
         
     <sendMessageDIAMETER name="Send Request RAR" listenpoint="[test:lpNamePCRF]_[urlPRCF(0)]" 
-        remoteURL="[urlAF(0)]">
+        remoteURL="[remoteURL]">
         <header request="true" command="Re-Auth" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
           <!-- The Session-Id AVP is used to identify a specific session. -->
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionID]"/>
