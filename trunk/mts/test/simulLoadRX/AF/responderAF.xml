@@ -30,7 +30,11 @@
       </condition>
       <then>
           <!-- Check that no contexts exists yet -->
-          <log type="Main" level="WARN">[testcaseId(0)] => test:contextAFSessions = [test:contextAFSessions]</log>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          [testcaseId(0)] => test:contextAFSessions = [test:contextAFSessions]
+          ]]>
+          </log>
           <test parameter="[test:contextAFSessions]" condition="list.size" value="0"/>
           <exit failed="false" exception="SUCCESS : Normal end of testcase : &#x0D;&#x0A;No message to process."/>
       </then>
@@ -42,7 +46,11 @@
         <test parameter="[lastListenpointName]" condition="string.startsWith" value="[test:lpNameAF]" not="true"/>
       </condition>
       <then>
-          <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          lastMessage =  [lastMessage]
+          ]]>
+          </log>
           <exit failed="true" exception="Un-expected messages (routing problem) : &#x0D;&#x0A;Bad listenpoint receiving the message."/>
       </then>
     </if>
@@ -54,7 +62,11 @@
         <test parameter="[lastRemoteHost]" condition="list.isEmpty"/>
       </condition>
       <then>
-          <log type="Main" level="WARN">lastRemoteHost=null</log>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          lastRemoteHost=null
+          ]]>
+          </log>
           <parameter name="[remoteURL]" operation="set" value="[urlPRCF(0)]"/>
       </then>
     </if>
@@ -103,7 +115,11 @@
       </then>
     </if>
 
-    <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+    <log type="Main" level="ERROR">
+    <![CDATA[
+          lastMessage =  [lastMessage]
+    ]]>
+    </log>
     <exit failed="true" exception="Un-expected messages (routing problem) : &#x0D;&#x0A;Bad message request flag or type."/>
     
     <goto name="goto begin" label="begin"/>
@@ -117,7 +133,11 @@
         <test parameter="[lastCommandCode]" condition="number.greaterthan" value="2999"/>
       </condition>
       <then>
-          <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          lastMessage =  [lastMessage]
+          ]]>
+          </log>
           <goto name="goto begin" label="begin"/>
       </then>
     </if>
@@ -130,14 +150,26 @@
         <test parameter="[indexContextAFSessionsSIZE]" condition="number.equals" value="0" not="true"/>
       </condition>
       <then>
-          <!--log type="Main" level="WARN">[testcaseId(0)] => test:contextAFSessions = [test:contextAFSessions]</log-->
-          <log type="Main" level="WARN">[testcaseId(0)] => ERROR : before adding the session into the contexts, then already find the session in the contexts : indexContextAFSessionsSIZE = [indexContextAFSessionsSIZE], lastSessionId = [lastSessionId]</log>
-          <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+          <!--log type="Main" level="WARN">
+          <![CDATA[
+          [testcaseId(0)] => test:contextPCRFSessions = [test:contextPCRFSessions]
+          ]]>
+          </log-->
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          [testcaseId(0)] => ERROR : before adding the session into the contexts, then already find the session in the contexts : indexContextAFSessionsSIZE = [indexContextAFSessionsSIZE], lastSessionId = [lastSessionId]
+          lastMessage =  [lastMessage]
+          ]]>
+          </log>
       </then>
     </if>
     <parameter name="[test:contextAFSessions]" operation="list.addLast" value="[test:contextAFSessions]" value2="[lastSessionId]"/>
-    <!--log type="Main" level="WARN">[testcaseId(0)] => ADD lastSessionId = [lastSessionId]</log-->
-    <!--log type="Main" level="WARN">[testcaseId(0)] => AFTER ADD test:contextAFSessions = [test:contextAFSessions]</log-->
+    <!--log type="Main" level="WARN">
+    <![CDATA[
+    [testcaseId(0)] => ADD lastSessionId = [lastSessionId]
+    [testcaseId(0)] => AFTER ADD test:contextAFSessions = [test:contextAFSessions]
+    ]]>
+    </log-->
     
     <!-- Add the session timestamp into the contexts-->
     <parameter name="[test:contextAFTimestamp_[lastSessionId]]" operation="system.timestamp" value="1970"/>
@@ -240,20 +272,31 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
         <test parameter="[indexContextAFSessionsSIZE]" condition="number.equals" value="1" not="true"/>
       </condition>
       <then>
-          <!--log type="Main" level="WARN">[testcaseId(0)] => test:contextAFSessions = [test:contextAFSessions]</log-->
-          <log type="Main" level="WARN">[testcaseId(0)] => ERROR : before removing the session from the contexts, can not find the session in the contexts : indexContextAFSessionsSIZE = [indexContextAFSessionsSIZE], lastSessionId = [lastSessionId]</log>
-          <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          [testcaseId(0)] => ERROR : before removing the session from the contexts, can not find the session in the contexts : indexContextAFSessionsSIZE = [indexContextAFSessionsSIZE], lastSessionId = [lastSessionId]
+          lastMessage =  [lastMessage]
+          ]]>
+          </log>
       </then>
     </if>
     <parameter name="[test:contextAFSessions]" operation="list.removeAt" value="[test:contextAFSessions]" value2="[indexContextAFSessions]"/>
-    <!--log type="Main" level="WARN">[testcaseId(0)] => REMOVE lastSessionId = [lastSessionId]</log-->
-    <!--log type="Main" level="WARN">[testcaseId(0)] => AFTER REMOVE test:contextAFSessions = [test:contextAFSessions]</log-->
+    <!--log type="Main" level="WARN">
+    <![CDATA[
+    [testcaseId(0)] => REMOVE lastSessionId = [lastSessionId]
+    [testcaseId(0)] => AFTER REMOVE test:contextAFSessions = [test:contextAFSessions]
+    ]]>
+    </log-->
     
     <!-- Calculate the session duration -->
     <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
     <parameter name="[duration]" operation="number.substract" value="[timestamp]" value2="[test:contextAFTimestamp_[lastSessionId]]"/>
     <parameter name="[duration]" operation="number.divide" value="[duration]" value2="1000"/>
-    <!--log type="Main" level="WARN">[testcaseId(0)] => Session duration = [duration] sec.</log-->
+    <!--log type="Main" level="WARN">
+    <![CDATA[
+    [testcaseId(0)] => Session duration = [duration] sec.
+    ]]>
+    </log-->
     
     <!-- Remove the session timestamp into the contexts-->
     <parameter name="[test:contextAFTimestamp_[lastSessionId]]" operation="list.remove"/>

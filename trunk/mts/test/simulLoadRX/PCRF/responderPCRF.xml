@@ -48,7 +48,11 @@
         <test parameter="[received]" condition="boolean.equals" value="true" not="true"/>
       </condition>
       <then>
-          <log type="Main" level="WARN">[testcaseId(0)] => test:contextPCRFSessions = [test:contextPCRFSessions]</log>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          [testcaseId(0)] => test:contextPCRFSessions = [test:contextPCRFSessions]
+          ]]>
+          </log>
           <test parameter="[test:contextPCRFSessions]" condition="list.size" value="0"/>
           <exit failed="false" exception="SUCCESS : Normal end of testcase : &#x0D;&#x0A;No message to process."/>
       </then>
@@ -60,7 +64,11 @@
         <test parameter="[lastListenpointName]" condition="string.startsWith" value="[test:lpNamePCRF]" not="true"/>
       </condition>
       <then>
-          <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          lastMessage =  [lastMessage]
+          ]]>
+          </log>
           <exit failed="true" exception="Un-expected messages (routing problem) : &#x0D;&#x0A;Bad listenpoint receiving the message."/>
       </then>
     </if>
@@ -72,7 +80,11 @@
         <test parameter="[lastRemoteHost]" condition="list.isEmpty"/>
       </condition>
       <then>
-          <log type="Main" level="WARN">lastRemoteHost=null</log>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          lastRemoteHost=null
+          ]]>
+          </log>
           <parameter name="[remoteURL]" operation="set" value="[urlAF(0)]"/>
       </then>
     </if>
@@ -121,7 +133,11 @@
       </then>
     </if>
 
-    <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+    <log type="Main" level="ERROR">
+    <![CDATA[
+    lastMessage =  [lastMessage]
+    ]]>
+    </log>
     <exit failed="true" exception="Un-expected messages (routing problem) : &#x0D;&#x0A;Bad message request flag or type."/>
 
     <goto name="goto begin" label="begin"/>
@@ -137,14 +153,26 @@
         <test parameter="[indexContextPCRFSessionsSIZE]" condition="number.equals" value="0" not="true"/>
       </condition>
       <then>
-          <!--log type="Main" level="WARN">[testcaseId(0)] => test:contextPCRFSessions = [test:contextPCRFSessions]</log-->
-          <log type="Main" level="WARN">[testcaseId(0)] => ERROR : before adding the session into the contexts, then already find the session in the contexts : indexContextPCRFSessionsSIZE = [indexContextPCRFSessionsSIZE], lastSessionId = [lastSessionId]</log>
-          <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+          <!--log type="Main" level="WARN">
+          <![CDATA[
+          [testcaseId(0)] => test:contextPCRFSessions = [test:contextPCRFSessions]
+          ]]>
+          </log-->
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          [testcaseId(0)] => ERROR : before adding the session into the contexts, then already find the session in the contexts : indexContextPCRFSessionsSIZE = [indexContextPCRFSessionsSIZE], lastSessionId = [lastSessionId]
+          lastMessage =  [lastMessage]
+          ]]>
+          </log>
       </then>
     </if>
     <parameter name="[test:contextPCRFSessions]" operation="list.addLast" value="[test:contextPCRFSessions]" value2="[lastSessionId]"/>
-    <!--log type="Main" level="WARN">[testcaseId(0)] => ADD lastSessionId = [lastSessionId]</log-->
-    <!--log type="Main" level="WARN">[testcaseId(0)] => AFTER ADD test:contextPCRFSessions = [test:contextPCRFSessions]</log-->
+    <!--log type="Main" level="WARN">
+    <![CDATA[
+    [testcaseId(0)] => ADD lastSessionId = [lastSessionId]
+    [testcaseId(0)] => AFTER ADD test:contextPCRFSessions = [test:contextPCRFSessions]
+    ]]>
+    </log-->
     
     <!-- Add the session timestamp into the contexts-->
     <parameter name="[test:contextPCRFTimestamp_[lastSessionId]]" operation="system.timestamp" value="1970"/>
@@ -191,18 +219,30 @@
     <parameter name="[indexContextPCRFSessionsSIZE]" operation="list.size" value="[indexContextPCRFSessions]"/>
     <if>
       <condition>
-        <test parameter="[indexContextPCRFSessionsSIZE]" condition="number.equals" value="1" not="true"/>
+        <test parameter="[indexContextPCRFSessionsSIZE]" condition="number.equals" value="0"/>
       </condition>
       <then>
-          <!--log type="Main" level="WARN">[testcaseId(0)] => test:contextPCRFSessions = [test:contextPCRFSessions]</log-->
-          <log type="Main" level="WARN">[testcaseId(0)] => ERROR : before removing the session from the contexts, can not find the session in the contexts : indexContextPCRFSessionsSIZE = [indexContextPCRFSessionsSIZE], lastSessionId = [lastSessionId]</log>
-          <log type="Main" level="WARN">lastMessage =  [lastMessage]</log>
+          <!--log type="Main" level="WARN">
+          <![CDATA[
+          [testcaseId(0)] => test:contextPCRFSessions = [test:contextPCRFSessions]
+          ]]>
+          </log-->
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          [testcaseId(0)] => ERROR : before removing the session from the contexts, can not find the session in the contexts : lastSessionId = [lastSessionId]
+          lastMessage =  [lastMessage]
+          ]]>
+          </log>
       </then>
     </if>
     <parameter name="[test:contextPCRFSessions]" operation="list.removeAt" value="[test:contextPCRFSessions]" value2="[indexContextPCRFSessions]"/>
-    <!--log type="Main" level="WARN">[testcaseId(0)] => REMOVE lastSessionId = [lastSessionId]</log-->
-    <!--log type="Main" level="WARN">[testcaseId(0)] => AFTER REMOVE test:contextPCRFSessions = [test:contextPCRFSessions]</log-->
-  
+    <!--log type="Main" level="WARN">
+    <![CDATA[
+    [testcaseId(0)] => REMOVE lastSessionId = [lastSessionId]
+    [testcaseId(0)] => AFTER REMOVE test:contextPCRFSessions = [test:contextPCRFSessions]
+    ]]>
+    </log-->
+    
     <!-- Calculate the session duration -->
     <if>
       <condition>
@@ -210,27 +250,36 @@
       </condition>
       <then>
          <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
-	 <parameter name="[duration]" operation="number.substract" value="[timestamp]" value2="[test:contextPCRFTimestamp_[lastSessionId]]"/>
-	 <parameter name="[duration]" operation="number.divide" value="[duration]" value2="1000"/>
-	 <!--log type="Main" level="WARN">[testcaseId(0)] => Session duration = [duration] sec.</log-->
-	   
-	 <!-- Remove the session timestamp into the contexts-->
-	 <parameter name="[test:contextPCRFTimestamp_[lastSessionId]]" operation="list.remove"/>
-	    
-	 <!-- Modify the session statistics counter -->
-	 <stats>
-	     <counter name="PCRFSessionActive" summary="PCRF Act" complete="Active session on PCRF side">
-	         <increase>-1</increase>
-	     </counter>
-	 </stats>
-	 <stats>
-	     <value name="PCRFSessionDuration" summary="PCRF Dur" complete="Duration of the session on PCRF side">
-	          <newValue>[duration]</newValue>
-	     </value>
-	 </stats>
+         <parameter name="[duration]" operation="number.substract" value="[timestamp]" value2="[test:contextPCRFTimestamp_[lastSessionId]]"/>
+         <parameter name="[duration]" operation="number.divide" value="[duration]" value2="1000"/>
+         <!--log type="Main" level="WARN">
+         <![CDATA[
+         [testcaseId(0)] => Session duration = [duration] sec.
+         ]]>
+         </log-->
+           
+         <!-- Remove the session timestamp into the contexts-->
+         <parameter name="[test:contextPCRFTimestamp_[lastSessionId]]" operation="list.remove"/>
+            
+         <!-- Modify the session statistics counter -->
+         <stats>
+             <counter name="PCRFSessionActive" summary="PCRF Act" complete="Active session on PCRF side">
+                 <increase>-1</increase>
+             </counter>
+         </stats>
+         <stats>
+             <value name="PCRFSessionDuration" summary="PCRF Dur" complete="Duration of the session on PCRF side">
+                  <newValue>[duration]</newValue>
+             </value>
+         </stats>
       </then>
       <else>
-		<!-- TODO -->
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          [testcaseId(0)] => ERROR : can not find the timestamp session context : [test:contextPCRFTimestamp_[lastSessionId]]
+          lastMessage =  [lastMessage]
+          ]]>
+          </log>
       </else>
     </if>
     
