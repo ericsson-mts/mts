@@ -7,31 +7,31 @@
     <parameter name="[localPort]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
     
     <parameter name="[hostAF(0)]" operation="set" value="[localHost(0)]" description="local address of the AF host" editable="true"/>
-    <parameter name="[hostAF(1)]" operation="set" value="[localHost(0)]" description="local address of the AF host" editable="true"/>
+    <parameter name="[hostAF(1)]" operation="set" value="[localHost(1)]" description="local address of the AF host" editable="true"/>
     <!--parameter name="[hostAF(0)]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/-->
     <!--parameter name="[hostAF(1)]" operation="set" value="172.16.21.32"/-->
     <parameter name="[portAF(0)]" operation="set" value="13868" description="local port of the MTS host" editable="true" />
-    <parameter name="[portAF(1)]" operation="set" value="13869" description="local port of the MTS host" editable="true" />
+    <parameter name="[portAF(1)]" operation="set" value="13868" description="local port of the MTS host" editable="true" />
     <parameter name="[urlAF]" operation="set" value="diam://[hostAF]:[portAF]"/>
     
     <parameter name="[hostPCRF(0)]" operation="set" value="[localHost(0)]" description="remote address of the SUT host" editable="true"/>
-    <parameter name="[hostPCRF(1)]" operation="set" value="[localHost(0)]" description="remote address of the SUT host" editable="true"/>
+    <parameter name="[hostPCRF(1)]" operation="set" value="[localHost(1)]" description="remote address of the SUT host" editable="true"/>
     <!--parameter name="[hostPCRF(0)]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/-->
     <!--parameter name="[hostPCRF(1)]" operation="set" value="172.16.21.32"/-->
     <parameter name="[portPCRF(0)]" operation="set" value="3868" description="remote port of the SUT host" editable="true"/>
-    <parameter name="[portPCRF(1)]" operation="set" value="3869" description="remote port of the SUT host" editable="true"/>
+    <parameter name="[portPCRF(1)]" operation="set" value="3868" description="remote port of the SUT host" editable="true"/>
     <parameter name="[urlPRCF]" operation="set" value="diam://[hostPCRF]:[portPCRF]"/>
     
     <parameter name="[responseCode]" operation="set" value="DIAMETER_SUCCESS" description="Response code to reply to requests" editable="true"/>
     <parameter name="[responseTime]" operation="set" value="0" description="Response time for the transactions when sending a response" editable="true"/>
     <parameter name="[sessionTime]" operation="set" value="180" description="Duration (in seconds) of the sessions" editable="true"/>
-    <parameter name="[sessionTime]" operation="set" value="10" description="FOR TESTING"/>
+    <!--parameter name="[sessionTime]" operation="set" value="10" description="FOR TESTING"/-->
 
-    <parameter name="[testDurationSec]" operation="set" value="3600" description="Duration (in secondes) of the load testing" editable="true" />
-    <parameter name="[testDurationSec]" operation="set" value="20" description="FOR TESTING"/>
+    <parameter name="[testDurationSec]" operation="set" value="5000" description="Duration (in secondes) of the load testing" editable="true" />
+    <!--parameter name="[testDurationSec]" operation="set" value="20" description="FOR TESTING"/-->
     
     <parameter name="[speedAAR]" operation="set" value="60" description="Speed (in testcase per seconds) of the AAR messages => number of session to initiate per seconds" editable="true" />
-    <parameter name="[speedAAR]" operation="set" value="1" description="FOR TESTING"/>
+    <!--parameter name="[speedAAR]" operation="set" value="1" description="FOR TESTING"/-->
     
     <parameter name="[speedRAR]" operation="set" value="1" description="Speed (in testcase per seconds) to send the RAR messages" editable="true" />
     <parameter name="[numberRAR]" operation="set" value="1000" description="Number of the RAR messages to send" editable="true" />
@@ -41,7 +41,7 @@
     
     <parameter name="[numberTestcase]" operation="set" value="1" description="Number of testcase for responders" editable="true" />
     
-    <parameter name="[receiveTimeout]" operation="set" value="10" description="Timeout (in seconds) to wait for a message" editable="true"/>
+    <parameter name="[receiveTimeout]" operation="set" value="15" description="Timeout (in seconds) to wait for a message" editable="true"/>
     
     <parameter name="[originIPAddress]" operation="set" value="172.18.128.19" editable="true"/>
     <parameter name="[originIPAddress]" operation="set" value="fe80:0:0:0:342d:ee:509c:4ad3"/>
