@@ -320,22 +320,22 @@ Session-Termination-Answer  ::= < Diameter Header: 275, PXY >
     <!-- Envoi d'une reponse STAnswer -->
     <sendMessageDIAMETER name="Send Answer STA" listenpoint="[lastListenpointName]"
         remoteURL="[remoteURL]">
-        <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
+        <header request="false" command="[lastCommandCode]" applicationId="[lastApplicationId]" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
                 proxiable="true" error="false" retransmit="false"/>
         <!-- The Session-Id AVP is used to identify a specific session. -->
         <avp code="Session-Id" mandatory="true" type="UTF8String" value="[lastSessionId]"/>
+        <avp code="Auth-Application-Id" value="[lastAuthAppliId]"/>
+        <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
+        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[lastDestHost]"/>
+        <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
+        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[lastDestRealm]"/>
         <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
         <avp code="Result-Code" mandatory="true" type="Unsigned32" value="[responseCode]"/>
         <!--avp code="Experimental-Result">
             <avp code="Vendor-Id" value="[vendorID]"/>
             <avp code="Experimental-Result-Code" value="2001" vendorId="[vendorID]"/>
         </avp-->
-
-        <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
-        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[lastDestHost]"/>
-        <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
-        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[lastDestRealm]"/>
     </sendMessageDIAMETER>
 
     <goto name="goto begin" label="begin"/>
