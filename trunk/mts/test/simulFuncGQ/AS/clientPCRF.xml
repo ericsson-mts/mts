@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+<!--
+From RFC 3588 September 2003 :
+Abort-Session-Request ::= < Diameter Header: 274, REQ, PXY >
+                          < Session-Id >
+                          { Origin-Host }
+                          { Origin-Realm }
+                          { Destination-Realm }
+                          { Destination-Host }
+                          { Auth-Application-Id }
+                          [ User-Name ]
+                          [ Origin-State-Id ]
+                          * [ Proxy-Info ]
+                          * [ Route-Record ]
+                          * [ AVP ]
+-->     
+        
+    <sendMessageDIAMETER name="Send Request ASR" listenpoint="[test:lpNamePCRF]_[urlPCRF(0)]" 
+        remoteURL="diameter://[test:lastRemoteHost_[framedIPAddress]]:[test:lastRemotePort_[framedIPAddress]]">
+        <header request="true" command="Abort-Session" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
+          <!-- The Session-Id AVP is used to identify a specific session. -->
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[test:lastSessionId_[framedIPAddress]]"/>
+        
+          <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[test:lastDestHost_[framedIPAddress]]"/>
+          <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[test:lastDestRealm_[framedIPAddress]]"/>
+          <!-- The Destination-Host AVP identifies the endpoint that originated the Diameter message. -->
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[hostAF]"/>
+          <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[realmAF]"/>
+          
+          <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
+          <!--avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777236"/-->
+          <avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3"/>
+
+          <!-- The Re-Auth-Request-Type AVP is included in application-specific auth answers to inform the client of the action expected upon expiration of the Authorization-Lifetime. -->
+          <!-- Possible enumerated values : AUTHORIZE_ONLY(0) / AUTHORIZE_AUTHENTICATE(1). -->
+          <avp code="Abort-Cause" mandatory="true" type="Enumerated" value="INSUFFICIENT_BEARER_RESOURCES"/>
+
+          <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
+          <!--avp code="User-Name" mandatory="false" type="UTF8String" value="ToBeCompleted"/-->
+          
+          <!--avp code="Framed-IP-Address" value="[framedIPAddress]"/-->
+          
+          <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
+          <!--avp code="Origin-State-Id" mandatory="false" type="Unsigned32" value="0"/-->
+
+          <!-- The Proxy-Host AVP contains the identity of the host that added the Proxy-Info AVP. -->
+          <!-- The Proxy-State AVP contains state local information. -->
+          <!--avp code="Proxy-Info">
+            <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+            <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp-->
+          <!--avp code="Proxy-Info">
+            <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+            <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp-->
+          <!-- The identity added in the Route-Record AVP MUST be the same as the one received in the Origin-Host of the Capabilities Exchange message. -->
+          <!--avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/-->
+          <!--avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/-->
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer ASA" request="false" type="Abort-Session:274" result="DIAMETER_SUCCESS:2001">
+    </receiveMessageDIAMETER>
+
+</scenario>

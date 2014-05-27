@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <!-- create the listenpoints -->
+    <parameter name="[test:lpNameAF]" operation="set" value="lp_client"/>
+    <parameter name="[hostAFSize]" operation="list.size" value="[hostAF]"/>
+    <parameter name="[portAFSize]" operation="list.size" value="[portAF]"/>
+    <parameter name="[minAFSize]" operation="number.min" value="[hostAFSize]" value2="[portAFSize]"/>
+    <parameter name="[minAFSize]" operation="number.substract" value="[minAFSize]" value2="1"/>
+    <for index="[indexLP]" from="0" to="[minAFSize]">
+        <createListenpointDIAMETER name="[test:lpNameAF]_[urlAF([indexLP])]" localHost="[hostAF([indexLP])]" localPort="[portAF([indexLP])]"/>
+    </for>
+
+<!--
+From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to provide it with the Session Information
+<AA-Request> ::= < Diameter Header: 265, REQ, PXY, 16777236 > 
+		< Session-Id > 
+		{ Auth-Application-Id } 
+		{ Origin-Host } 
+		{ Origin-Realm } 
+		{ Destination-Realm } 
+		[ Destination-Host ] 
+		[ AF-Application-Identifier ] 
+	   *[ Media-Component-Description ] 
+		  Media-Component-Description ::= < AVP Header: 517 > 
+											{ Media-Component-Number } ; Ordinal number of the media comp. 
+										   *[ Media-Sub-Component ] ; Set of flows for one flow identifier 
+											  Media-Sub-Component ::= < AVP Header: 519 > 
+																		{ Flow-Number } ; Ordinal number of the IP flow 
+																	 0*2[ Flow-Description ] ; UL and/or DL 
+																		[ Flow-Status ] 
+																		[ Flow-Usage ] 	
+																		[ Max-Requested-Bandwidth-UL ] 
+																		[ Max-Requested-Bandwidth-DL ] 
+																		[ AF-Signalling-Protocol ] 
+																	   *[ AVP ] 
+											[ AF-Application-Identifier ] 
+											[ Media-Type ] 
+											[ Max-Requested-Bandwidth-UL ] 
+											[ Max-Requested-Bandwidth-DL ] 
+											[ Flow-Status ] 
+											[ Reservation-priority ] 
+											[ RS-Bandwidth ] 
+											[ RR-Bandwidth ] 
+										   *[ Codec-Data ]	   
+		[ Service-Info-Status ] 
+		[ AF-Charging-Identifier ] 
+		[ SIP-Forking-Indication ] 
+	   *[ Specific-Action ] 
+	   *[ Subscription-Id ] 
+	      Subscription-Id ::= < AVP Header: 443 >
+								{ Subscription-Id-Type }
+								{ Subscription-Id-Data }
+	   *[ Supported-Features ] 
+		[ Reservation-Priority ] 
+		[ Framed-IP-Address ] 
+		[ Framed-IPv6-Prefix ] 
+		[ Called-Station-Id ] 
+		[ Service-URN ] 
+		[ Sponsored-Connectivity-Data ] 
+		[ MPS-Identifier ] 
+		[ Origin-State-Id ] 
+	   *[ Proxy-Info ] 
+	   *[ Route-Record ] 
+	   *[ AVP ]
+-->
+    
+    <!-- Media-Component-Description -->
+    <parameter name="[Media-Component-Number]" operation="set" value="1"/>
+    
+    <!-- Flow RTP -->
+    <parameter name="[Flow-Number-Rtp]" operation="set" value="1"/>
+    <parameter name="[Flow-Description-Rtp-in]" operation="set" value="permit in 17 from 218.45.37.28 49234 to 192.168.32.24/32 41212"/>
+    <parameter name="[Flow-Description-Rtp-out]" operation="set" value="permit out 17 from 192.168.32.24/32 41212 to 218.45.37.28 49234"/>
+    <parameter name="[Max-Requested-Bandwidth-UL-Rtp]" operation="set" value="28000"/>
+    <parameter name="[Max-Requested-Bandwidth-DL-Rtp]" operation="set" value="28000"/>
+    
+    <!-- Flow RTCP -->
+    <parameter name="[Flow-Number-Rtcp]" operation="set" value="2"/>
+    <parameter name="[Flow-Description-Rtcp-in]" operation="set" value="permit in 17 from 218.45.37.28 49235 to 192.168.32.24/32 41213"/>
+    <parameter name="[Flow-Description-Rtcp-out]" operation="set" value="permit out 17 from 192.168.32.24/32 41213 to 218.45.37.28 49235"/>
+    <parameter name="[Flow-Usage-Rtcp]" operation="set" value="RTCP"/>
+    <parameter name="[Max-Requested-Bandwidth-UL-Rtcp]" operation="set" value="2000"/>
+    <parameter name="[Max-Requested-Bandwidth-DL-Rtcp]" operation="set" value="2000"/>
+    
+    <!-- Media-Type: AUDIO|VIDEO|DATA|APPLICATION|CONTROL|TEXT|MESSAGE|OTHER -->
+    <parameter name="[Media-Type]" operation="set" value="AUDIO"/>
+    
+    <parameter name="[Flow-Status]" operation="set" value="ENABLED"/>
+    
+    <parameter name="[AF-Charging-Identifier]" operation="set" value="19845FGjip"/>
+    
+    <!-- Specific-Action: the P-CSCF shall also subscribe within the same AAR command operation to notifications for 
+    	changes of the IP-CAN type used by the UE. The P-CSCF shall include a Specific-Action AVP in the AAR that 
+    	is set to the value of IPCAN_CHANGE
+    -->
+    <parameter name="[Specific-Action]" operation="set" value="IP-CAN_CHANGE"/>
+    
+    <!-- Subscription-Id - RFC 4006
+    	- Subscription-Id-Type: END_USER_E164|END_USER_IMSI|END_USER_SIP_URI|END_USER_NAI|END_USER_PRIVATE
+    -->
+    <!-- <parameter name="[Subscription-Id-Type]" operation="set" value="END_USER_SIP_URI"/> -->
+    <parameter name="[Subscription-Id-Type]" operation="set" value="2"/>
+    <parameter name="[Subscription-Id-Data]" operation="set" value="sip:+33672225555@orange.fr"/>
+    
+    <parameter name="[applicationID]" operation="set" value="3GPP Gq"/>
+    <parameter name="[newEndToEnd]" operation="number.random" value="1000000" />
+    <parameter name="[newHopByHop]" operation="number.random" value="1000000" />
+    <parameter name="[newSessionId]" operation="string.random" value="20" />
+    
+    <!-- Envoi d'une requete AARequest -->
+    <sendMessageDIAMETER name="SendRequestAAR" listenpoint="[test:lpNameAF]_[urlAF(0)]" 
+        remoteURL="[urlPCRF(0)]">
+    <header request="true" command="AA" applicationId="[applicationID]" 
+            hopByHop="[newHopByHop]" endToEnd="[newEndToEnd]" 
+            proxiable="true" error="false" retransmit="false"/>
+        <avp code="Session-Id" value="[newSessionId]"/>
+        <avp code="Auth-Application-Id" value="[applicationID]"/>
+        <avp code="Origin-Host" value="[hostAF(0)]"/>
+        <avp code="Origin-Realm" value="[realmAF(0)]"/>
+        <avp code="Destination-Host" value="[hostPCRF(0)]"/>
+        <avp code="Destination-Realm" value="[realmPCRF(0)]"/>
+        <avp code="Media-Component-Description">
+            <avp code="Media-Component-Number" value="[Media-Component-Number]"/>
+            <avp code="Media-Sub-Component">
+                <avp code="Flow-Number" value="[Flow-Number-Rtp]"/>
+                <avp code="Flow-Description" value="[Flow-Description-Rtp-in]"/>
+                <avp code="Flow-Description" value="[Flow-Description-Rtp-out]"/>
+                <avp code="Max-Requested-Bandwidth-UL" value="[Max-Requested-Bandwidth-UL-Rtp]"/>
+                <avp code="Max-Requested-Bandwidth-DL" value="[Max-Requested-Bandwidth-DL-Rtp]"/>
+            </avp>
+            <avp code="Media-Sub-Component">
+                <avp code="Flow-Number" value="[Flow-Number-Rtcp]"/>
+                <avp code="Flow-Description" value="[Flow-Description-Rtcp-in]"/>
+                <avp code="Flow-Description" value="[Flow-Description-Rtcp-out]"/>
+                <avp code="Flow-Usage" value="[Flow-Usage-Rtcp]"/>
+                <avp code="Max-Requested-Bandwidth-UL" value="[Max-Requested-Bandwidth-UL-Rtcp]"/>
+                <avp code="Max-Requested-Bandwidth-DL" value="[Max-Requested-Bandwidth-DL-Rtcp]"/>
+            </avp>
+            <avp code="Media-Type" value="[Media-Type]"/>
+            <avp code="Flow-Status" value="[Flow-Status]"/>
+        </avp>
+        <avp code="AF-Charging-Identifier" value="[AF-Charging-Identifier]"/>
+        <avp code="Specific-Action" value="[Specific-Action]"/>
+        <avp code="Subscription-Id">
+            <avp code="Subscription-Id-Type" value="[Subscription-Id-Type]"/>
+            <avp code="Subscription-Id-Data" value="[Subscription-Id-Data]"/>
+        </avp>
+        <avp code="Framed-IP-Address" value="[framedIPAddress]"/>
+    </sendMessageDIAMETER>
+    
+    <!-- Attente de la reponse AAAnswer-->
+    <receiveMessageDIAMETER name="ReceiveAnswerAAA" 
+                            request="false" type="AA" result="DIAMETER_SUCCESS">
+        <parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
+    </receiveMessageDIAMETER>
+
+    <!-- Simulation du temps de la session -->
+    <pause name="response time" seconds="[sessionTime]"/>
+
+<!--
+From RFC 3588 September 2003 :
+Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
+                                < Session-Id >
+                                { Origin-Host }
+                                { Origin-Realm }
+                                { Destination-Realm }
+                                { Auth-Application-Id }
+                                { Termination-Cause }
+                                [ User-Name ]
+                                [ Destination-Host ]
+                              * [ Class ]
+                                [ Origin-State-Id ]
+                              * [ Proxy-Info ]
+                                  Proxy-Info ::= < AVP Header: 284 >
+                                                 { Proxy-Host }
+                                                 { Proxy-State }
+                                               * [ AVP ]
+                              * [ Route-Record ]
+                              * [ AVP ]
+-->     
+    <parameter name="[newEndToEnd]" operation="number.random" value="1000000" />
+    <parameter name="[newHopByHop]" operation="number.random" value="1000000" />
+
+    <!-- Envoi d'une requete STRequest -->
+    <sendMessageDIAMETER name="Send Request STR" listenpoint="[test:lpNameAF]_[urlAF(0)]" 
+        remoteURL="[urlPCRF(0)]">
+        <header request="true" command="Session-Termination" applicationId="Diameter Common Messages" 
+            hopByHop="[newHopByHop]" endToEnd="[newEndToEnd]" 
+            proxiable="true" error="false" retransmit="false"/>
+          <!-- The Session-Id AVP is used to identify a specific session. -->
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[newSessionId]"/>
+        
+          <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[hostAF(0)]"/>
+          <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[realmAF(0)]"/>
+
+          <!-- The Origin-Host AVP contains the Host of the originator of any Diameter message. -->
+          <avp code="Destination-Host" mandatory="false" type="DiameterIdentity" value="[hostPCRF(0)]"/>
+          <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[realmPCRF(0)]"/>
+
+          <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
+          <!--avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="0"/-->
+          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777222"/>
+
+          <!-- The Termination-Cause AVP is used to indicate the reason why a session was terminated on the access device. -->
+          <!-- Possible enumerated values : DIAMETER_LOGOUT(1) / DIAMETER_SERVICE_NOT_PROVIDED(2) / DIAMETER_BAD_ANSWER(3) / DIAMETER_ADMINISTRATIVE(4) / DIAMETER_LINK_BROKEN(5) / DIAMETER_AUTH_EXPIRED(6) / DIAMETER_USER_MOVED(7) / DIAMETER_SESSION_TIMEOUT(8). -->
+          <avp code="Termination-Cause" mandatory="true" type="Enumerated" value="DIAMETER_LOGOUT"/>
+
+          <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
+          <avp code="User-Name" mandatory="false" type="UTF8String" value="ToBeCompleted"/>
+
+          <avp code="Framed-IP-Address" value="[framedIPAddress]"/>
+
+          <!-- The Class AVP is used to by Diameter servers to return state information to the access device. -->
+          <avp code="Class" mandatory="false"  type="OctetString" value="ToBeCompleted"/>
+          <avp code="Class" mandatory="false"  type="OctetString" value="ToBeCompleted"/>
+
+          <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
+          <avp code="Origin-State-Id" mandatory="false" type="Unsigned32" value="0"/>
+
+          <!-- The Proxy-Host AVP contains the identity of the host that added the Proxy-Info AVP. -->
+          <!-- The Proxy-State AVP contains state local information. -->
+          <avp code="Proxy-Info">
+            <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+            <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Proxy-Info">
+            <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+            <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <!-- The identity added in the Route-Record AVP MUST be the same as the one received in the Origin-Host of the Capabilities Exchange message. -->
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+    </sendMessageDIAMETER>
+
+    <!-- Attente d'une reponse STAnswer -->
+    <receiveMessageDIAMETER name="Receive Answer STA" 
+                            request="false" type="Session-Termination:275" result="DIAMETER_SUCCESS:2001" timeout="0">
+    </receiveMessageDIAMETER>
+
+    <finally>
+          <removeListenpointDIAMETER name="lp_client"/>
+    </finally>
+
+</scenario>
