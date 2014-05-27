@@ -306,10 +306,6 @@ public class MsgDiameter extends Msg
         {
         	byte[] result = new AVP_OctetString(avp).queryValue();
         	String strRes = InetAddress.getByAddress(result).getHostAddress();
-        	if (strRes.contains(":"))
-        	{
-        		// strRes = "[" + strRes + "]";
-        	}
         	return strRes;
         }
         else if(type.equalsIgnoreCase("UTF8String"))
