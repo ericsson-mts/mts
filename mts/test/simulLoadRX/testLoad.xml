@@ -22,6 +22,11 @@
     <parameter name="[portPCRF(1)]" operation="set" value="3868" description="remote port of the SUT host" editable="true"/>
     <parameter name="[urlPRCF]" operation="set" value="diam://[hostPCRF]:[portPCRF]"/>
     
+    <parameter name="[originIPAddress]" operation="set" value="172.18.128.19" description="ip address of the terminal on the originating side" editable="true"/>
+    <parameter name="[originIPAddress]" operation="set" value="fe80:0:0:0:342d:ee:509c:4ad3"/>
+    <parameter name="[termIPAddress]" operation="set" value="172.18.128.20" description="ip address of the terminal on the terminating side" editable="true"/>
+    <parameter name="[termIPAddress]" operation="set" value="fe80:0:0:0:342d:ee:509c:4ad4"/>
+    
     <parameter name="[responseCode]" operation="set" value="DIAMETER_SUCCESS" description="Response code to reply to requests" editable="true"/>
     <parameter name="[responseTime]" operation="set" value="0" description="Response time for the transactions when sending a response" editable="true"/>
     <parameter name="[sessionTime]" operation="set" value="180" description="Duration (in seconds) of the sessions" editable="true"/>
@@ -30,24 +35,19 @@
     <parameter name="[testDurationSec]" operation="set" value="5000" description="Duration (in secondes) of the load testing" editable="true" />
     <!--parameter name="[testDurationSec]" operation="set" value="20" description="FOR TESTING"/-->
     
-    <parameter name="[speedAAR]" operation="set" value="60" description="Speed (in testcase per seconds) of the AAR messages => number of session to initiate per seconds" editable="true" />
+    <parameter name="[speedAAR]" operation="set" value="60" description="Speed (in messages per second) of the AAR messages = number of session to initiate per second (for AF side)" editable="true" />
     <!--parameter name="[speedAAR]" operation="set" value="1" description="FOR TESTING"/-->
     
-    <parameter name="[speedRAR]" operation="set" value="1" description="Speed (in testcase per seconds) to send the RAR messages" editable="true" />
-    <parameter name="[numberRAR]" operation="set" value="100" description="Number of the RAR messages to send" editable="true" />
+    <parameter name="[speedRAR]" operation="set" value="1" description="Speed (in messages per second) to send the RAR messages (for PCRF side) used in parallel mode ('Run parallel' menu item)" editable="true" />
+    <parameter name="[numberRAR]" operation="set" value="100" description="Number of the RAR messages to send used in manual mode ('Start' button)" editable="true" />
     
-    <parameter name="[speedASR]" operation="set" value="1" description="Speed (in testcase per seconds) to send the ASR messages" editable="true" />
-    <parameter name="[numberASR]" operation="set" value="100" description="Number of the ASR messages to send" editable="true" />
+    <parameter name="[speedASR]" operation="set" value="1" description="Speed (in messages per second) to send the ASR messages (for PCRF side) used in parallel mode ('Run parallel' menu item)" editable="true" />
+    <parameter name="[numberASR]" operation="set" value="100" description="Number of the ASR messages to send used in manual mode ('Start' button)" editable="true" />
     
     <parameter name="[numberTestcase]" operation="set" value="1" description="Number of testcase for responders" editable="true" />
     
     <parameter name="[receiveTimeout]" operation="set" value="30" description="Timeout (in seconds) to wait for a message" editable="true"/>
-    
-    <parameter name="[originIPAddress]" operation="set" value="172.18.128.19" editable="true"/>
-    <parameter name="[originIPAddress]" operation="set" value="fe80:0:0:0:342d:ee:509c:4ad3"/>
-    <parameter name="[termIPAddress]" operation="set" value="172.18.128.20" editable="true"/>
-    <parameter name="[termIPAddress]" operation="set" value="fe80:0:0:0:342d:ee:509c:4ad4"/>
-    
+        
     <parameter name="[realmAF]" operation="set" value="sip.imsnsn.fr" editable="true"/>
     <parameter name="[realmPCRF]" operation="set" value="sip.imsnsn.fr" editable="true"/>
         
