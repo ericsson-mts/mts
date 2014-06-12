@@ -6,7 +6,7 @@
     <parameter name="[contextPCRFSessionsSIZE]" operation="list.size" value="[test:contextPCRFSessions]"/>
     <if>
       <condition>
-        <test parameter="[contextPCRFSessionsSIZE]" condition="number.lowerthan" value="3"/>
+        <test parameter="[contextPCRFSessionsSIZE]" condition="number.lowerthan" value="1"/>
       </condition>
       <then>
           <exit failed="false" description="SUCCESS : Normal end of testcase"/>
@@ -16,6 +16,26 @@
     <parameter name="[contextPCRFSessionsINDEX]" operation="number.round" value="[contextPCRFSessionsINDEX]"/>
     <parameter name="[sessionID]" operation="set" value="[test:contextPCRFSessions([contextPCRFSessionsINDEX])]"/>
     
+    <!-- Calculate the local Host to send the DIAMETER request -->
+    <if>
+      <condition>
+        <or>
+            <test parameter="[test:contextPCRFDestHost_[sessionID]]" condition="list.exists" not="true"/>
+        </or>
+      </condition>
+      <then>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          test:contextAFChannelHost_[sessionID] does not exist
+          ]]>
+          </log>
+	  <parameter name="[localHost]" operation="set" value="[hostPCRF(0)]"/>
+      </then>
+      <else>
+          <parameter name="[localHost]" operation="set" value="[test:contextPCRFDestHost_[sessionID]]"/>
+      </else>
+    </if>
+
     <!-- Calculate the remote URL to send the DIAMETER response -->
     <if>
       <condition>
@@ -31,6 +51,8 @@
           ]]>
           </log>
           <parameter name="[remoteURL]" operation="set" value="[urlAF(0)]"/>
+	  <parameter name="[remoteHost]" operation="set" value="[hostAF(0)]"/>
+	  <parameter name="[remotePort]" operation="set" value="[portAF(0)]"/>
       </then>
       <else>
           <parameter name="[remoteHost]" operation="set" value="[test:contextPCRFChannelHost_[sessionID]]"/>
@@ -59,24 +81,26 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
                   * [ Route-Record ]
                   * [ AVP ]
 -->     
-        
+
+    <parameter name="[applicationId]" operation="set" value="16777236"/>
+
     <sendMessageDIAMETER name="Send Request RAR" listenpoint="[test:lpNamePCRF]_[urlPRCF(0)]" 
         remoteURL="[remoteURL]">
-        <header request="true" command="Re-Auth" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="Re-Auth" applicationId="[applicationId]" proxiable="true" error="false" retransmit="false"/>
           <!-- The Session-Id AVP is used to identify a specific session. -->
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionID]"/>
         
           <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[hostPCRF(0)]"/>
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHost]"/>
           <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
           <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[realmPCRF(0)]"/>
           <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[hostAF(0)]"/>
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[realmAF(0)]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHost]"/>
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[realmAF]"/>
           
           <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
-          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777236"/>
-	  <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3"/-->
+          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationId]"/>
+	  <!--avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="0"/-->
 
           <!-- Specific-Action:513 -->
           <avp code="513" vendorId="10415" mandatory="true" type="Enumerated" value="4"/>

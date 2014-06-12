@@ -179,6 +179,7 @@
     <!-- Add the session timestamp into the contexts-->
     <parameter name="[test:contextPCRFTimestamp_[lastSessionId]]" operation="system.timestamp" value="1970"/>
     <!-- Add the channel host/port into the session contexts-->
+    <parameter name="[test:contextPCRFDestHost_[lastSessionId]]" operation="set" value="[lastDestHost]"/>
     <parameter name="[test:contextPCRFChannelHost_[lastSessionId]]" operation="set" value="[lastChannelHost]"/>
     <parameter name="[test:contextPCRFChannelPort_[lastSessionId]]" operation="set" value="[lastChannelPort]"/>
     
@@ -266,6 +267,7 @@
          <!-- Remove the timestamp contexts-->
          <parameter name="[test:contextPCRFTimestamp_[lastSessionId]]" operation="list.remove"/>
          <!-- Remove the channel host/port into the session contexts-->
+         <parameter name="[test:contextPCRFDestHost_[lastSessionId]]" operation="list.remove"/>
          <parameter name="[test:contextPCRFChannelHost_[lastSessionId]]" operation="list.remove"/>
          <parameter name="[test:contextPCRFChannelPort_[lastSessionId]]" operation="list.remove"/>
             
