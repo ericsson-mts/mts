@@ -777,7 +777,7 @@ public abstract class Stack
                         destScenario = message.getDestScenario();
                         if (destScenario != null)
                         {
-                        	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: route the received request by MESSAGE_ID to \"", destScenario.getName(), "\" because of destScenario attribute (MESSAGE_ID=", msg.getMessageId(), ").");
+                        	GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Routing: route the received request by MESSAGE_ID to \"", destScenario.getName(), "\" because of destScenario attribute (MESSAGE_ID=", msg.getMessageId(), ").");
                         }
                     }
                 }
@@ -832,7 +832,7 @@ public abstract class Stack
                 destScenario = trans.getScenarioRunner();
                 if (destScenario != null)
                 {
-                    GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: route the received response by TRANSACTION_ID to \"", destScenario.getName(), "\" (TRANSACTION_ID=", msg.getTransactionId(),").");
+                    GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Routing: route the received response by TRANSACTION_ID to \"", destScenario.getName(), "\" (TRANSACTION_ID=", msg.getTransactionId(),").");
                 }
             }
                         
@@ -858,7 +858,7 @@ public abstract class Stack
 	                        destScenario = message.getDestScenario();
 	                        if (destScenario != null)
 	                        {
-	                        	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: route the received response by MESSAGE_ID to \"", destScenario.getName(),"\" because of destScenario attribute (MESSAGE_ID=", msg.getMessageId(), ").");
+	                        	GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Routing: route the received response by MESSAGE_ID to \"", destScenario.getName(),"\" because of destScenario attribute (MESSAGE_ID=", msg.getMessageId(), ").");
 	                        }
                         }
                     }
@@ -866,10 +866,11 @@ public abstract class Stack
             }
         }
 
+        Sess sess = null; 
         if (msg.getSessionId() != null && !isRetransmission)
         {
         	// check whether the message belongs to an existing session 
-        	Sess sess = outinSessions.get(msg.getSessionId());
+        	sess = outinSessions.get(msg.getSessionId());
             if (sess != null)
             {
             	if (msg.isRequest())
@@ -891,13 +892,18 @@ public abstract class Stack
 	            	
 	                if (routeDefaultSubsequent && sess != null)
 	                {
-	                    destScenario = sess.getScenarioRunner();
-	                    if (destScenario != null)
-	                    {
-	                        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: route the message by SESSION_ID to \"", destScenario.getName(), "\" (SESSION_ID=", msg.getSessionId(), ").");
-	                    }
+	                	if (destScenario == null)
+	                	{
+	                		destScenario = sess.getScenarioRunner();
+	                		if (destScenario != null)
+	                		{
+	                			GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Routing: route the message by SESSION_ID to \"", destScenario.getName(), "\" (SESSION_ID=", msg.getSessionId(), ").");
+	                		}
+	                	}
 	                }
             	}
+            	// case the message is not the initial message
+                sess = null;
             }
             else
             {
@@ -905,7 +911,6 @@ public abstract class Stack
 	        	if (msg.beginSession())
 	        	{
 		            sess = new Sess(this, msg);
-		            sess.setScenarioRunner(destScenario);
 		            outinSessions.put(msg.getSessionId(), sess);
 		            GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Create a new incoming session : ", sess.getSummary(), " sessionsId=", msg.getSessionId());
 	        	}
@@ -923,8 +928,13 @@ public abstract class Stack
             // logs in scenario and application logs as CALLFLOW topic
 	        processLogsMsgSending(msg, destScenario, Stack.RECEIVE);
 	        if (destScenario != null)
-	        {                	
+	        {
 	            destScenario.dispatchMessage(msg);
+	            // case the message is the initial message
+	            if (sess != null)
+	            {
+	            	sess.setScenarioRunner(destScenario);
+	            }
 	        }
         }
         
@@ -991,7 +1001,7 @@ public abstract class Stack
                         }
 
                         destScenario = message.getDestScenario();
-                        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: route the captured request by MESSAGE_ID to \"", destScenario.getName(), "\" because of destScenario attribute (MESSAGE_ID=", msg.getMessageId(), ").");
+                        GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Routing: route the captured request by MESSAGE_ID to \"", destScenario.getName(), "\" because of destScenario attribute (MESSAGE_ID=", msg.getMessageId(), ").");
                     }
                 }
 
@@ -1096,7 +1106,7 @@ public abstract class Stack
                         }
                         
                         destScenario = message.getDestScenario();
-                        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: route the captured response by MessageId to \"", destScenario.getName(), "\" because of destScenario attribute.");
+                        GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Routing: route the captured response by MessageId to \"", destScenario.getName(), "\" because of destScenario attribute.");
                     }
                 }
                 if (null != destScenario)
@@ -1112,7 +1122,7 @@ public abstract class Stack
 
                         if (null != destScenario)
                         {
-                            GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Routing: route the captured response by TRANSACTION_ID to \"", destScenario.getName(), "\" (TRANSACTION_ID=", msg.getTransactionId(), ") (MESSAGE_ID=", msg.getMessageId(), ").");
+                            GlobalLogger.instance().getApplicationLogger().info(Topic.PROTOCOL, "Routing: route the captured response by TRANSACTION_ID to \"", destScenario.getName(), "\" (TRANSACTION_ID=", msg.getTransactionId(), ") (MESSAGE_ID=", msg.getMessageId(), ").");
                         }
                     }
 

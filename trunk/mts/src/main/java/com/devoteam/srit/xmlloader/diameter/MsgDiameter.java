@@ -410,6 +410,12 @@ public class MsgDiameter extends Msg
             } 
     	}
     	
+        String type = getType();
+        if ("Session-Termination:275".equalsIgnoreCase(type))
+        {
+            return false;
+        }
+    	
         // get Session-Id:263
         Parameter var = getParameter("avp.263.value");
         if ((var != null) && (var.length() > 0)) 
