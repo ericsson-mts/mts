@@ -141,9 +141,11 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
         HashSet<String> hashSet = new HashSet();
         for (Element element : elementsParameterEditable) {
             String nameAttribute = (String) element.selectObject("string(./@name)");
+            /* Suppression d'un controle inutile
             if (hashSet.contains(nameAttribute)) {
-                throw new ParsingException("The name of the 'editable' parameters should be unique\n" + element.asXML());
+                // throw new ParsingException("The name of the 'editable' parameters should be unique\n" + element.asXML());
             }
+            */
             hashSet.add(nameAttribute);
         }
 
