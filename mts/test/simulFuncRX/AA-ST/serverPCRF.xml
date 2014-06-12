@@ -73,7 +73,7 @@ From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to prov
 	   *[ Failed-AVP ] 
 		[ Origin-State-Id ] 
 	   *[ Redirect-Host ] 
-		[ Redirect-Host-Usage ] 
+		[ Redirect-Host-Usage ] lastRemoteHost
 		[ Redirect-Max-Cache-Time ] 
 	   *[ Proxy-Info ] 
 	   *[ AVP ] 
@@ -101,6 +101,8 @@ From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to prov
     <!-- Attente d'une requete STRequest -->
     <receiveMessageDIAMETER name="Receive Request STR"
         request="true" type="Session-Termination:275" timeout="0">
+        <parameter name="[test:lastRemoteHost_[framedIPAddress]]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[test:lastRemotePort_[framedIPAddress]]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[lastCommandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[lastApplicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
         <parameter name="[lastHopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
@@ -156,7 +158,7 @@ Session-Termination-Answer  ::= < Diameter Header: 275, PXY >
     <!-- Envoi d'une reponse STAnswer -->
     <sendMessageDIAMETER name="Send Answer STA" listenpoint="[lastListenpointName]"
         remoteURL="[remoteURL]">
-        <header request="false" command="[lastCommandCode]" applicationId="Diameter Common Messages" 
+        <header request="false" command="[lastCommandCode]" applicationId="[lastApplicationId]" 
                 hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
                 proxiable="true" error="false" retransmit="false"/>
         <!-- The Session-Id AVP is used to identify a specific session. -->
