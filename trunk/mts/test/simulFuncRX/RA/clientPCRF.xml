@@ -22,11 +22,13 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
                   * [ Route-Record ]
                   * [ AVP ]
 -->     
-        
+    
+    <parameter name="[applicationId]" operation="set" value="3GPP Rx"/>
+
     <sendMessageDIAMETER name="Send Request RAR" listenpoint="[test:lpNamePCRF]_[urlPCRF(0)]" 
         remoteURL="diameter://[test:lastRemoteHost_[framedIPAddress]]:[test:lastRemotePort_[framedIPAddress]]"
         destScenario="serverAF">
-        <header request="true" command="Re-Auth" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="Re-Auth" applicationId="[applicationId]" proxiable="true" error="false" retransmit="false"/>
           <!-- The Session-Id AVP is used to identify a specific session. -->
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[test:lastSessionId_[framedIPAddress]]"/>
         
@@ -35,11 +37,11 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
           <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
           <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[test:lastDestRealm_[framedIPAddress]]"/>
           <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[hostAF]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[hostAF(0)]"/>
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[realmAF]"/>
         
           <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
-          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777236"/>
+          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationId]"/>
 	  <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3"/-->
 
           <!-- Specific-Action:513 -->

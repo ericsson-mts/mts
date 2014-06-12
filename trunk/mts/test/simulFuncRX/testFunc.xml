@@ -6,8 +6,9 @@
     <parameter name="[localHost]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[localPort]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
     
-    <parameter name="[hostAF(0)]" operation="set" value="[localHost(0)]" description="local address of the AF host" editable="true"/>
-    <parameter name="[hostAF(1)]" operation="set" value="[localHost(1)]" description="local address of the AF host" editable="true"/>
+    <!-- penser a inverser les 2 addresses IP si un message d erreur apparait a l envoides RAR ou ASR (No capable peer) -->
+    <parameter name="[hostAF(0)]" operation="set" value="[localHost(1)]" description="local address of the AF host" editable="true"/>
+    <parameter name="[hostAF(1)]" operation="set" value="[localHost(0)]" description="local address of the AF host" editable="true"/>
     <!--parameter name="[hostAF(0)]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/-->
     <!--parameter name="[hostAF(1)]" operation="set" value="172.16.21.32"/-->
     <parameter name="[portAF(0)]" operation="set" value="13868" description="local port of the MTS host" editable="true" />
@@ -15,9 +16,10 @@
     <parameter name="[simulAF]" operation="set" value="false" description="flag to simulate or not the AF side" editable="true"/>
     <parameter name="[urlAF]" operation="set" value="diam://[hostAF]:[portAF]"/>
     <parameter name="[realmAF]" operation="set" value="sip.imsnsn.fr" description="domain name = realm for the AF side" editable="true"/>
-    
-    <parameter name="[hostPCRF(0)]" operation="set" value="[localHost(0)]" description="remote address of the SUT host" editable="true"/>
-    <parameter name="[hostPCRF(1)]" operation="set" value="[localHost(1)]" description="remote address of the SUT host" editable="true"/>
+
+    <!-- penser a inverser les 2 addresses IP si un message d erreur apparait a l envoides RAR ou ASR (No capable peer) -->
+    <parameter name="[hostPCRF(0)]" operation="set" value="[localHost(1)]" description="remote address of the SUT host" editable="true"/>
+    <parameter name="[hostPCRF(1)]" operation="set" value="[localHost(0)]" description="remote address of the SUT host" editable="true"/>
     <!--parameter name="[hostPCRF(0)]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/-->
     <!--parameter name="[hostPCRF(1)]" operation="set" value="172.16.21.32"/-->
     <parameter name="[portPCRF(0)]" operation="set" value="3868" description="remote port of the SUT host" editable="true"/>
