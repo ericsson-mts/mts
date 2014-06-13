@@ -6,7 +6,7 @@
     <parameter name="[localHost]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[localPort]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
     
-    <!-- penser a inverser les 2 addresses IP si un message d erreur apparait a l envoides RAR ou ASR (No capable peer) -->
+    <!-- penser a inverser les 2 addresses IP si un message d erreur apparait lors de l envoi des RAR ou ASR (No capable peer) -->
     <parameter name="[hostAF(0)]" operation="set" value="[localHost(1)]" description="local address of the AF host" editable="true"/>
     <parameter name="[hostAF(1)]" operation="set" value="[localHost(0)]" description="local address of the AF host" editable="true"/>
     <!--parameter name="[hostAF(0)]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/-->
@@ -17,7 +17,7 @@
     <parameter name="[urlAF]" operation="set" value="diam://[hostAF]:[portAF]"/>
     <parameter name="[realmAF]" operation="set" value="sip.imsnsn.fr" description="domain name = realm for the AF side" editable="true"/>
 
-    <!-- penser a inverser les 2 addresses IP si un message d erreur apparait a l envoides RAR ou ASR (No capable peer) -->
+    <!-- penser a inverser les 2 addresses IP si un message d erreur apparait lors de l envoi des RAR ou ASR (No capable peer) -->
     <parameter name="[hostPCRF(0)]" operation="set" value="[localHost(1)]" description="remote address of the SUT host" editable="true"/>
     <parameter name="[hostPCRF(1)]" operation="set" value="[localHost(0)]" description="remote address of the SUT host" editable="true"/>
     <!--parameter name="[hostPCRF(0)]" operation="set" value="[fe80:0:0:0:342d:ee:509c:4ad3]"/-->

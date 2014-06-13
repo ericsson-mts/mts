@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+    <parameter name="[test:lpNamePCRF]" operation="set" value="lp_server"/>
+
+    <removeListenpointDIAMETER name="[test:lpNamePCRF]_[urlPRCF([indexLP])]"/>
+
+    <!-- block the scenario  -->
+    <pause name="block" seconds="2000000000"/>
+
+    <finally>
+        <createListenpointDIAMETER name="[test:lpNamePCRF]_[urlPRCF([indexLP])]" localHost="[hostPCRF([indexLP])]" localPort="[portPCRF([indexLP])]"/>
+    </finally>
+    
+</scenario>
