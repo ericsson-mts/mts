@@ -54,6 +54,11 @@
     <parameter name="[realmPCRF]" operation="set" value="sip.imsnsn.fr" editable="true"/>
         
     <parameter name="[vendorID]" operation="set" value="10415"/>
+
+    <parameter name="[hostPCRFSize]" operation="list.size" value="[hostPCRF]"/>
+    <parameter name="[portPCRFSize]" operation="list.size" value="[portPCRF]"/>
+    <parameter name="[minPCRFSize]" operation="number.min" value="[hostPCRFSize]" value2="[portPCRFSize]"/>
+    <parameter name="[minPCRFSize]" operation="number.substract" value="[minPCRFSize]" value2="1"/>
     
     <testcase name="----- AF -----" description="Testcase on AF side" state="false"/>
     
@@ -117,5 +122,11 @@
    <testcase name="Close TCP connections" description="Close the TCP connection by removing the listenpoints and opening then when the user clicks on the Stop button" state="false">
       <scenario name="removeListenpoints" file="PCRF/removeListenpoints.xml" routingName="nothing"/>
     </testcase>
- 
+
+   <for index="[indexLP]" from="0" to="[minPCRFSize]">
+       <testcase name="Close TCP connections One Listenpoint ([indexLP])" description="Close the TCP connection by removing one listenpoint and opening then when the user clicks on the Stop button" state="false">
+          <scenario name="removeListenpoint" file="PCRF/removeOneListenpoint.xml" routingName="nothing"/>
+       </testcase>
+   </for>
+
 </test>
