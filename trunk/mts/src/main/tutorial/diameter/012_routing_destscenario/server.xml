@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!--  name="Send 3GPP CX Multimedia Authentication answer (MAR/MAA)"-->
+<scenario>
+
+    <receiveMessageDIAMETER name="ReceiveRequestMAR" request="true" type="Multimedia-Authentitcation:506">
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+    </receiveMessageDIAMETER>
+
+    <sendMessageDIAMETER name="SendAnswerMAA">
+        <header request="false" command="[commandCode]" applicationId="3GPP Cx" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Origin-Host" value="[remoteHostDIAM]"/>
+        <avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" value="TGPP"/>
+            <avp code="Auth-Application-Id" value="3GPP Cx"/>
+        </avp>
+        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>		
+        <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr"/>
+        <avp code="Number-Authentication-Items" value="1"/>
+        <avp code="Auth-Data-Item">
+                <avp code="Item-Number" value="0"/>
+                <avp code="Authentication-Scheme" value="DIGEST"/>
+                <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+                <avp code="Authentication-Context" value="INVITE"/>
+        </avp>
+    </sendMessageDIAMETER>
+    
+</scenario>
