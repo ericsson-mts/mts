@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)" -->
+
+<scenario>
+
+    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="SendRequestMAR" 
+        remoteURL="diameter://[remoteDIAM]" destScenario="Scenario server">
+        <header request="true" command="Multimedia-Authentitcation" applicationId="3GPP Cx"/>
+        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>		
+        <avp code="Vendor-Specific-Application-Id">
+              <avp code="Vendor-Id" value="TGPP"/>
+              <avp code="Auth-Application-Id" value="3GPP Cx"/>
+        </avp>
+        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
+        <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
+        <avp code="Auth-Data-Item" vendorId="TGPP">
+            <avp code="Item-Number" value="0" vendorId="TGPP"/>
+            <avp code="Authentication-Scheme" value="DIGEST" vendorId="TGPP"/>
+            <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5' vendorId="TGPP"/>
+            <avp code="Authentication-Context" value="INVITE" vendorId="TGPP"/>
+        </avp>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer (MAA)" request="false" type="Multimedia-Authentitcation:506" result="DIAMETER_SUCCESS:2001">
+        <parameter name="[code]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[resultCode]" operation="protocol.setFromMessage" value="avp.Result-Code.value"/>
+        <test parameter="[code]" condition="string.equals" value="506"/>
+        <test parameter="[resultCode]" condition="string.equals" value="2001"/>
+    </receiveMessageDIAMETER>
+
+</scenario>
