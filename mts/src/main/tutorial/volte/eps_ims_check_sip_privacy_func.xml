@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<scenario>
+<function name="check-sip-privacy">
+
+<input>
+	<parameter name="[SIP-Privacy]" /> 
+	<parameter name="[SIP-From]" /> 
+</input>
+
+<do>
+	<!-- Check that Privacy field is "id" -->
+
+	<if>
+		<condition>
+			<not>
+				<test parameter="[SIP-Privacy]" condition="string.equals" value="id" />
+			</not>
+		</condition>
+		<then>
+	  		<exit failed="true" name="check-sip-privacy - Invalid Privacy SIP header field"/>
+		</then>
+	</if>
+
+	<!-- Check that From field contains "sip:anonymous@anonymous.invalid" -->
+	<if>
+		<condition>
+			<not>
+				<test parameter="[SIP-From]" condition="string.contains" value="sip:anonymous@anonymous.invalid" />
+			</not>
+		</condition>
+		<then>
+	  		<exit failed="true" name="check-sip-privacy - From SIP header field not anonymous"/>
+		</then>
+	</if>
+
+</do>
+
+<output>
+</output>
+
+</function>
+
+</scenario>
