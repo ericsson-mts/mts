@@ -121,25 +121,19 @@
 		Allow: [Allow]
                 P-Access-Network-Info: [P-Access-Network-Info]
 		P-Early-Media: supported
-                Content-Length: x
+                Content-Length: 228
 
-		v=[SdpVersion]
-		o=[SdpUsername] [SdpSess-id] [SdpSess-version] [SdpNettype] [SdpAddrtype] [SdpUnicast-address]
-		s=[SdpSession-name]
-		c=[SdpNettype] [SdpAddrtype] [SdpUnicast-address]
-		t=[SdpStart-time] [SdpStop-time]
-		m=[SdpMediaAudio] [SdpPortAudio] [SdpProtoAudio] 97 96
-		b=AS:[SdpBwAudioAS]
-		a=rtpmap:97 [RTPAudio-type]
-		a=fmtp:97 [RTPAudio-params]
-		a=rtpmap:96 telephone-event
-		a=curr:qos local none
-		a=curr:qos remote none
-		a=des:qos mandatory local sendrecv
-		a=des:qos mandatory remote sendrecv
-		a=sendrecv
-		a=ptime:[SdpAudioPtime]
-		a=maxptime:[SdpAudioMaxptime]
+		v=0
+		o=- 3613215573 3613215573 IN IP4 [localHostSIP]
+		s=cpc_med
+		c=IN IP4 [localHostSIP]
+		t=0 0
+		m=audio [SdpPortAudio] RTP/AVP 103 101
+        a=sendrecv
+		a=rtpmap:103 AMR-WB/16000
+		a=rtpmap:101 telephone-event
+		a=fmtp:101 0-15
+		a=ptime:20
   		]]> 
   	</sendMessageSIP>
 

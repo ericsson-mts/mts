@@ -6,7 +6,7 @@
     	<parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" description="local address of the MTS host" editable="true" />
 	<!--parameter name="[localHostSIP]" operation="set" value="[2001:db8::fef5:a35e]"/--> <!-- MTS IPv6 -->
 
- 	<parameter name="[remoteHostSIP]" operation="set" value="192.168.90.218"/> <!-- PCSCF IPv4 -->
+ 	<parameter name="[remoteHostSIP]" operation="set" value="10.32.0.5"/> <!-- PCSCF IPv4 -->
 	<!--parameter name="[remoteHostSIP]" operation="set" value="[2001:db8::fea4:db0c]"/--> <!-- PCSCF IPv6 -->
 	<parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP]" description="remote address of the SUT host" editable="true" />
 	<parameter name="[remotePortSIP]" operation="set" value="5060"/> <!-- PCSCF PORT -->
@@ -15,36 +15,40 @@
 
   <parameter name="[callDuration]" operation="set" value="10" description="Call duration in seconds" editable="true"/>
 
-	<parameter description="User 1 port" editable="true" name="[Port-User1]" operation="set" value="7072"/>
-	<parameter description="User 2 port" editable="true" name="[Port-User2]" operation="set" value="7074"/>
+	<parameter description="User 1 port" editable="true" name="[Port-User1]" operation="set" value="7074"/>
+	<parameter description="User 2 port" editable="true" name="[Port-User2]" operation="set" value="7072"/>
 	<parameter description="User 1 port RTP Audio" editable="true" name="[Port-RTP-User1]" operation="set" value="10000"/>
 	<parameter description="User 2 port RTP Audio" editable="true" name="[Port-RTP-User2]" operation="set" value="11000"/>
 	<parameter description="User 1 port RTP Video" editable="true" name="[Port-RTP-Video-User1]" operation="set" value="12000"/>
 	<parameter description="User 2 port RTP Video" editable="true" name="[Port-RTP-Video-User2]" operation="set" value="14000"/>
-	<parameter description="User 1 name" editable="true" name="[User1]" operation="set" value="alice"/>
-	<parameter description="User 2 name" editable="true" name="[User2]" operation="set" value="bob"/>
+	<parameter description="User 1 name" editable="true" name="[User1]" operation="set" value="abonne 0001"/>
+	<parameter description="User 2 name" editable="true" name="[User2]" operation="set" value="abonne 0002"/>
 	<parameter description="User 1 MSIN" editable="true" name="[MSIN-User1]" operation="set" value="7777777777"/>
 	<parameter description="User 2 MSIN" editable="true" name="[MSIN-User2]" operation="set" value="8888888888"/>
-	<parameter description="User 1 MSISDN" editable="true" name="[MSISDN-User1]" operation="set" value="+33677777777"/>
-	<parameter description="User 2 MSISDN" editable="true" name="[MSISDN-User2]" operation="set" value="+33688888888"/>
-	<parameter description="User 1 IMEI" editable="true" name="[IMEI-User1]" operation="set" value="35800104-532274-6"/>
-	<parameter description="User 2 IMEI" editable="true" name="[IMEI-User2]" operation="set" value="35800104-532275-6"/>
+	<parameter description="User 1 MSISDN" editable="true" name="[MSISDN-User1]" operation="set" value="+33638060000"/>
+	<parameter description="User 2 MSISDN" editable="true" name="[MSISDN-User2]" operation="set" value="+33638060001"/>
+    <parameter description="ID Authentication SIP 1" editable="true" name="[IDAuth-User1]" operation="set" value="33638060000"/>
+    <parameter description="ID Authentication SIP 2" editable="true" name="[IDAuth-User2]" operation="set" value="+33638060001"/>
+	<parameter description="User 1 IMEI" editable="true" name="[IMEI-User1]" operation="set" value="33638060000"/>
+    <parameter description="User 2 IMEI" editable="true" name="[IMEI-User2]" operation="set" value="+33638060001"/>
+    <parameter description="User 1 Password" editable="true" name="[Password-User1]" operation="set" value="com4innov"/>    
+	<parameter description="User 2 Password" editable="true" name="[Password-User2]" operation="set" value="com4innov"/>
  	<parameter description="Mobile Country Code" editable="true" name="[MCC]" operation="set" value="208"/>
  	<parameter description="Mobile Network Code" editable="true" name="[MNC]" operation="set" value="20"/>
  	<parameter description="Mobile Network Code 3 digits" editable="true" name="[MNC3]" operation="set" value="020"/>
 	<!-- <parameter description="domaine name" name="[USIM_DOMAIN_ADDR]" operation="set" value="ims.mnc[MNC3].mcc[MCC].3gppnetwork.org"/> -->
-	<parameter description="domaine name" name="[USIM_DOMAIN_ADDR]" operation="set" value="imslab.fr.am"/>
-	<parameter description="domaine name" name="[100_DOMAIN_ADDR]" operation="set" value="imslab.fr.am"/>
-	<parameter description="User 1 public identity" name="[IMPU-User1]" operation="set" value="read from REGISTER 200"/>
-	<parameter description="User 2 public identity" name="[IMPU-User2]" operation="set" value="read from REGISTER 200"/>
-	<parameter description="User 1 nextnonce" name="[Nextnonce-User1]" operation="set" value=""/>
-	<parameter description="User 2 nextnonce" name="[Nextnonce-User2]" operation="set" value=""/>
+	<parameter description="domaine name" name="[USIM_DOMAIN_ADDR]" operation="set" value="com4innov.com"/>
+	<parameter description="domaine name" name="[100_DOMAIN_ADDR]" operation="set" value="com4innov.com"/>
+	<parameter description="User 1 public identity" name="[IMPU-User1]" operation="set" value="+33638060000"/>
+	<parameter description="User 2 public identity" name="[IMPU-User2]" operation="set" value="+33638060001"/>
+	<parameter description="User 1 nextnonce" name="[Nextnonce-User1]" operation="set" value="NONE"/>
+	<parameter description="User 2 nextnonce" name="[Nextnonce-User2]" operation="set" value="NONE"/>
 
        
     	<parameter description="S-CSCF IP" editable="true" name="[SCSCF]" operation="set" value="192.168.90.220"/> 
 	<parameter description="User Agent" editable="true" name="[UserAgent]" operation="set" value="Fraunhofer FOKUS/NGNI Java IMS UserEndpoint FoJIE 0.1 (jdk1.3)"/> 
 
-  	<parameter name="filePdml" operation="file.readmedia" value="amr_wb.pdml"/>
+  	<parameter name="filePdml" operation="file.readmedia" value="marseillaise.pdml"/>
 	<parameter editable="true" name="[sendRTP]" operation="set" value="true"/>
 
 	<parameter name="[test:payloadList]" operation="set" value="[[filePdml(0)]]"/> 
@@ -58,7 +62,7 @@
 
 	<parameter name="[OsProperty]" operation="system.readproperty" value="os.name"/>
 
-        <testcase name="SIP REGISTER Alice from USIM" state="true">
+        <!--testcase name="SIP REGISTER Alice from USIM" state="true">
         	<scenario file="eps_ims_register_alice_from_usim.xml" name="alice" routingName="alice"/>
         </testcase>
         <testcase name="SIP REGISTER Bob from USIM" state="true">
@@ -75,38 +79,48 @@
         </testcase>
         <testcase name="SIP DE-REGISTER Bob from USIM" state="true">
         	<scenario file="eps_ims_de-register_bob_from_usim.xml" name="bob" routingName="bob"/>
-        </testcase>
-        <testcase name="SIP REGISTER Alice from ISIM" state="true">
+        </testcase-->
+        <!--testcase name="SIP REGISTER Alice from ISIM" state="false">
         	<scenario file="eps_ims_register_alice_from_isim.xml" name="alice" routingName="alice"/>
-        </testcase>
-        <testcase name="SIP REGISTER Bob from ISIM" state="true">
+        </testcase-->
+        <testcase name="SIP REGISTER Bob from ISIM" state="false">
         	<scenario file="eps_ims_register_bob_from_isim.xml" name="bob" routingName="bob"/>
         </testcase>
-        <testcase name="SIP RE-REGISTER Alice from ISIM" state="true">
+        <!--testcase name="SIP RE-REGISTER Alice from ISIM" state="false">
         	<scenario file="eps_ims_re-register_alice_from_isim.xml" name="alice" routingName="alice"/>
         </testcase>
-        <testcase name="SIP RE-REGISTER Bob from ISIM" state="true">
+        <testcase name="SIP RE-REGISTER Bob from ISIM" state="false">
         	<scenario file="eps_ims_re-register_bob_from_isim.xml" name="bob" routingName="bob"/>
         </testcase>
-        <testcase name="SIP DE-REGISTER Alice from ISIM" state="true">
+        <testcase name="SIP DE-REGISTER Alice from ISIM" state="false">
         	<scenario file="eps_ims_de-register_alice_from_isim.xml" name="alice" routingName="alice"/>
-        </testcase>
-        <testcase name="SIP DE-REGISTER Bob from ISIM" state="true">
+        </testcase-->
+        <testcase name="SIP DE-REGISTER Bob from ISIM" state="false">
         	<scenario file="eps_ims_de-register_bob_from_isim.xml" name="bob" routingName="bob"/>
         </testcase>
-        <testcase name="SIP SUBSCRIBE REGINFO Alice" state="true">
+        <!--testcase name="SIP SUBSCRIBE REGINFO Alice" state="false">
         	<scenario file="eps_ims_subscribe_reginfo_alice.xml" name="alice" routingName="alice"/>
         </testcase>
-        <testcase name="SIP SUBSCRIBE REGINFO Bob" state="true">
+        <testcase name="SIP SUBSCRIBE REGINFO Bob" state="false">
         	<scenario file="eps_ims_subscribe_reginfo_bob.xml" name="bob" routingName="bob"/>
-        </testcase>
-        <testcase name="SIP INVITE BASIC FROM ALICE - VOICE_MO" state="true">
+        </testcase-->
+        <!--testcase name="SIP INVITE BASIC FROM ALICE - VOICE_MO" state="false">
            <scenario file="eps_ims_invite_basic_alice_voice.xml" name="alice" routingName="alice"/> 
         </testcase>
-        <testcase name="SIP INVITE BASIC BOB - VOICE_MT" state="true"> 
-           <scenario file="eps_ims_invite_basic_bob_voice.xml" name="bob" routingName="bob"/>
+
+        <for from="001" index="[index]" step="1" to="10">
+            <testcase name="SIP INVITE BASIC BOB - VOICE_MT [index]" state="false"> 
+                <scenario file="eps_ims_invite_basic_bob_voice.xml" name="bob" routingName="SIP,RTPFLOW"/>
+            </testcase>
+        </for-->
+
+        <testcase name="SIP INVITE BASIC BOB - LOOPBACK_MT" state="true"> 
+           <scenario file="eps_ims_invite_basic_bob_loopback.xml" name="bob" routingName="SIP,RTP"/>
         </testcase>
-        <testcase name="SIP INVITE BASIC BOB FROM ALICE - VOICE" state="true">
+        <!--testcase name="SIP INVITE BASIC BOB - VIDEO_MT" state="false"> 
+           <scenario file="eps_ims_invite_basic_bob_video.xml" name="bob" routingName="SIP,RTPFLOW"/>
+        </testcase-->
+        <!--testcase name="SIP INVITE BASIC BOB FROM ALICE - VOICE" state="true">
            <scenario file="eps_ims_invite_basic_alice_voice.xml" name="alice" routingName="alice"/> 
            <scenario file="eps_ims_invite_basic_bob_voice.xml" name="bob" routingName="bob"/>
         </testcase>
@@ -168,5 +182,5 @@
         <testcase name="SIP re-INVITE PRACK BOB FROM ALICE - VIDEO hold and resume" state="true">
 	       	<scenario file="eps_ims_re-invite_prack_alice_video_hold_resume.xml" name="alice" routingName="alice"/> 
                 <scenario file="eps_ims_re-invite_prack_bob_video_hold_resume.xml" name="bob" routingName="bob"/>
-        </testcase>
+        </testcase-->
 </test>

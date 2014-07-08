@@ -44,7 +44,7 @@
 	</if>
 
         <parameter name="[SdpUnicast-address]" operation="set" value="[localHostSIP]" />
-        <parameter name="[SdpSession-name]" operation="set" value="VoIP" />
+        <parameter name="[SdpSession-name]" operation="set" value="pjmedia" />
         <parameter name="[SdpStart-time]" operation="set" value="0" />		<!-- MUST BE as in SDP OFFER but set to 0 because basic parser -->
         <parameter name="[SdpStop-time]" operation="set" value="0" />		<!-- MUST BE as in SDP OFFER but set to 0 because basic parser -->
         <parameter name="[SdpMediaAudio]" operation="set" value="audio" />
@@ -64,12 +64,13 @@
 
 
         <parameter name="[RTPAudio-type]" operation="set" value="AMR-WB/16000" />
-        <parameter name="[RTPAudio-params]" operation="set" value="octet-align=[AmrWbOctet-align];mode-set=[AmrWbMode-set];mode-change-period=[AmrWbMode-change-period];mode-change-capability=[AmrWbMode-change-capability];mode-change-neighbor=[AmrWbMode-change-neighbor];max-red=[AmrWbMax-red]" />
+        <!--parameter name="[RTPAudio-params]" operation="set" value="octet-align=[AmrWbOctet-align];mode-set=[AmrWbMode-set];mode-change-period=[AmrWbMode-change-period];mode-change-capability=[AmrWbMode-change-capability];mode-change-neighbor=[AmrWbMode-change-neighbor];max-red=[AmrWbMax-red]" /-->
+        <parameter name="[RTPAudio-params]" operation="set" value="octet-align=[AmrWbOctet-align]" />
 
         <createListenpointSIP name="[scenarioName]" localHost="[LocalHost]" localPort="[LocalPort]" transport="[LocalTransport]" /> 
 
-	<receiveMessageSIP name="Wait INVITE" type="INVITE" request="true">
-                <parameter name="[lastToI]" operation="protocol.setFromMessage" value="header.To" /> 
+	<receiveMessageSIP name="Wait INVITE" type="INVITE" request="true" timeout="0">
+                <parameter name="[lastToI]" operation="protocol.setFromMessage" value="header.To.Address.URI" /> 
                 <parameter name="[lastFromI]" operation="protocol.setFromMessage" value="header.From" /> 
                 <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id" /> 
                 <parameter name="[lastCseqI]" operation="protocol.setFromMessage" value="header.CSeq" /> 
@@ -95,7 +96,7 @@
 	</input>
 	</call-->
         
-        <sendMessageSIP name="Send 100 Trying" listenpoint="[scenarioName]">
+        <!--sendMessageSIP name="Send 100 Trying" listenpoint="[scenarioName]">
         	<![CDATA[ 
                 SIP/2.0 100 Trying
                 To: [lastToI]
@@ -105,14 +106,14 @@
                 CSeq: [lastCseqI]
                 Content-Length: 0
   		]]> 
-    	</sendMessageSIP>
+    	</sendMessageSIP-->
 
-	<sendMessageSIP name="Send 180 Ringing" listenpoint="[scenarioName]">
+	<sendMessageSIP name="Send 180 Ringing" listenpoint="[scenarioName]" transport="TCP">
         	<![CDATA[ 
         	SIP/2.0 180 Ringing
         	Record-Route:[Record-Route]
         	Via: [lastViaI]
-        	To: [lastToI]
+        	To: <[lastToI]>
         	From: [lastFromI]
         	Call-ID: [lastCallId]
         	CSeq: [lastCseqI]
@@ -122,7 +123,7 @@
     	</sendMessageSIP>
       
         <parameter name="[localTag]" operation="string.random" value="10" /> 
-        <parameter name="[lastToI]" operation="set" value="[lastToI];tag=[localTag]" />
+        <parameter name="[lastToI]" operation="set" value="&lt;[lastToI]&gt;;tag=[localTag];user=phone" />
 
 	<!--parameter name="[newRseq]" operation="number.random" value="1000" /> 
         <parameter name="[newRseq]" operation="number.add" value="[newRseq]" value2="1" /> 
@@ -321,39 +322,45 @@
              	Content-Length: 0
 		]]> 
   	</sendMessageSIP-->
-  	<pause name="pause" seconds="3" />
-      	<sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+  	<pause name="pause" seconds="1" />
+      <if>
+    <condition>
+      <test parameter="[sendRTP]" condition="boolean.equals" value="true" />
+    </condition>
+    <then>
+      <createListenpointRTPFLOW name="[scenarioName]" localHost="[LocalHost(0)]" localPort="[LocalPortRTPAudio]"/>
+    </then>
+    </if>
+      	<sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]" transport="TCP">
       		<![CDATA[ 
       		SIP/2.0 200 OK
       		Record-Route:[Record-Route]
       		To: [lastToI]
       		From: [lastFromI]
-      		Via: [lastViaI]
+      		Via: [lastViaI];received=[remoteHostSIP]
       		Call-ID: [lastCallId]
       		CSeq: [lastCseqI]
       		Contact: <[LocalContact]>
+          Allow: PRACK, INVITE, ACK, BYE, CANCEL, UPDATE, INFO, SUBSCRIBE, NOTIFY, REFER, MESSAGE, OPTIONS
+          Supported: replaces, 100rel, timer, norefersub
+          Session-Expires: 3600;refresher=uac
+          Require: timer
+          Content-Type: application/sdp
       		Content-Length: x
-          
-          		v=[SdpVersion]
-		o=[SdpUsername] [SdpSess-id] [SdpSess-version] [SdpNettype] [SdpAddrtype] [SdpUnicast-address]
-		s=[SdpSession-name]
-		c=[SdpNettype] [SdpAddrtype] [SdpUnicast-address]
-		t=[SdpStart-time] [SdpStop-time]
-		m=[SdpMediaAudio] [SdpPortAudio] [SdpProtoAudio] 97 96
-		b=AS:[SdpBwAudioAS]
-		a=rtpmap:97 [RTPAudio-type]
-		a=fmtp:97 [RTPAudio-params]
-		a=rtpmap:96 telephone-event
-		a=curr:qos local sendrecv
-		a=curr:qos remote sendrecv
-		a=des:qos mandatory local sendrecv
-		a=des:qos mandatory remote sendrecv
-		a=sendrecv
-		a=ptime:[SdpAudioPtime]
-		a=maxptime:[SdpAudioMaxptime]
-
-		]]> 
- 	</sendMessageSIP>
+       
+v=[SdpVersion]
+o=- 3612175628 3612175629 IN IP4 [localHostSIP]
+s=cpc_med
+c=IN IP4 [localHostSIP]
+t=0 0
+m=[SdpMediaAudio] [SdpPortAudio] [SdpProtoAudio] 103 101
+a=sendrecv
+a=rtpmap:103 AMR-WB/16000
+a=fmtp:103 octet-align=0
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-15
+a=ptime:20]]>
+</sendMessageSIP>
       	<receiveMessageSIP name="Wait ACK" type="ACK" request="true" />
 
 
@@ -367,11 +374,11 @@
       <parameter name="[nbPacket]" operation="number.multiply" value="[callDuration]" value2="50"/>
 			<sendMessageRTPFLOW listenpoint="[scenarioName]" remoteHost="[RemoteHostRTP]" remotePort="[RemotePortRTPAudio]">    
 						<flow packetNumber="[nbPacket]" deltaTime="[deltaTime]">
-							<header ssrc="[ssrc]" payloadType="[payloadType]" seqnum="[seqList]" timestamp="[timestampList]" mark="[markList]" /> 
+							<header ssrc="[ssrc]" payloadType="103" seqnum="[seqList]" timestamp="[timestampList]" mark="[markList]" /> 
 							<payload format="binary">[payloadList]</payload>
 				</flow>
 			</sendMessageRTPFLOW>
-			<receiveMessageRTPFLOW listenpoint="[scenarioName]" type="97" timeout="30">
+			<receiveMessageRTPFLOW listenpoint="[scenarioName]" type="103" timeout="0">
 				<parameter name="[flowPayloadBinary]" operation="protocol.setFromMessage" value="flow.payload.binary"/>
 			</receiveMessageRTPFLOW>
 			<removeListenpointRTPFLOW name="[scenarioName]"/>

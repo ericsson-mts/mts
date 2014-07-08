@@ -11,7 +11,6 @@
         <parameter name="[LocalHost]" operation="set" value="[localHostSIP]" /> 
         <parameter name="[LocalPort]" operation="set" value="[Port-User2]" /> 
         <parameter name="[LocalPortRTPAudio]" operation="set" value="[Port-RTP-User2]" /> 
-        <parameter name="[LocalPortRTPVideo]" operation="set" value="[Port-RTP-Video-User2]" /> 
         <parameter name="[LocalAddress]" operation="set" value="[LocalHost]:[LocalPort]" /> 
         <parameter name="[LocalTransport]" operation="set" value="[transportSIP]" /> 
  	<parameter name="[LocalContact]" operation="string.split" value="[IMPU-term]" value2="@"/>
@@ -54,12 +53,6 @@
         <parameter name="[SdpAudioPtime]" operation="set" value="20" />	<!-- Media recommended length of time in ms in RTP packet  -->
         <parameter name="[SdpAudioMaxptime]" operation="set" value="240" />	<!-- Media maximum length of time in ms in RTP packet  -->
         <parameter name="[SdpBwAudioAS]" operation="set" value="49" />	<!-- Bandwidth AS -->
-        <parameter name="[SdpMediaVideo]" operation="set" value="video" />
-        <parameter name="[SdpPortVideo]" operation="set" value="[LocalPortRTPVideo]" />
-        <parameter name="[SdpProtoVideo]" operation="set" value="RTP/AVP" />  <!-- RTP/AVP(Audio Visual Profile)|AVPF(feedback)|SAVP(secure) -->
-        <parameter name="[SdpBwVideoAS]" operation="set" value="315" /> 
-        <parameter name="[SdpBwVideoRS]" operation="set" value="0" /> 
-        <parameter name="[SdpBwVideoRR]" operation="set" value="2500" />
       
 	<!-- AMR-WB Parameters - RFC 4867 -->
         <parameter name="[AmrWbOctet-align]" operation="set" value="1" />
@@ -74,8 +67,6 @@
         <!--parameter name="[RTPAudio-params]" operation="set" value="octet-align=[AmrWbOctet-align];mode-set=[AmrWbMode-set];mode-change-period=[AmrWbMode-change-period];mode-change-capability=[AmrWbMode-change-capability];mode-change-neighbor=[AmrWbMode-change-neighbor];max-red=[AmrWbMax-red]" /-->
         <parameter name="[RTPAudio-params]" operation="set" value="octet-align=[AmrWbOctet-align]" />
 
-        <parameter name="[RTPVideo-type]" operation="set" value="H264/90000" />
-        <parameter name="[RTPVideo-params]" operation="set" value="packetization-mode=[H264-packetization-mode];profile-level-id=[H264-profile-level-id];sprop-parameter-sets=[H264-sprop-parameter-sets]" />
         <createListenpointSIP name="[scenarioName]" localHost="[LocalHost]" localPort="[LocalPort]" transport="[LocalTransport]" /> 
 
 	<receiveMessageSIP name="Wait INVITE" type="INVITE" request="true" timeout="0">
@@ -88,7 +79,8 @@
                 <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards" /> 
                 <parameter name="[Record-Route]" operation="protocol.setFromMessage" value="header.Record-Route" /> 
                 <parameter name="[RemoteHostRTP]" operation="protocol.setFromMessage" value="content(0).Sdp.Connection.Address"/>
-                <parameter name="[SDP-MediaPorts]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Port"/>
+                <parameter name="[SDP-MediaPorts]" operation="protocol.setFromMessage" value="content(0).Sdp.Connection.Address"/>
+                <parameter name="[RemotePortRTP]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Port"/>
                 <parameter name="[SDP-MediaTypes]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Type" /> 
                 <parameter name="[SDP-Attributes]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Attribut" /> 
    	</receiveMessageSIP>
@@ -122,16 +114,8 @@
 	</call>
 
   	<pause name="pause" seconds="1" />
-
-    <if>
-    <condition>
-      <test parameter="[sendRTP]" condition="boolean.equals" value="true" />
-    </condition>
-    <then>
-      <createListenpointRTPFLOW name="[scenarioName]" localHost="[LocalHost(0)]" localPort="[LocalPortRTPAudio]"/>
-    </then>
-    </if>
-      	<sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]" transport="TCP">
+    
+  	<sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]" transport="UDP">
       		<![CDATA[ 
       		SIP/2.0 200 OK
       		Record-Route:[Record-Route]
@@ -146,29 +130,20 @@
           Session-Expires: 3600;refresher=uac
           Require: timer
           Content-Type: application/sdp
-      		Content-Length: 277
+      		Content-Length: auto
           
 v=[SdpVersion]
-o=- 3613216055 3613216056 IN IP4 [localHostSIP]
-s=pjmedia
+o=- 3612175628 3612175629 IN IP4 [localHostSIP]
+s=cpc_med
 c=IN IP4 [localHostSIP]
 t=0 0
 m=[SdpMediaAudio] [SdpPortAudio] [SdpProtoAudio] 103 101
-c=IN IP4 [localHostSIP]
-a=rtcp:10001 IN IP4 [localHostSIP]
 a=sendrecv
-a=rtpmap:101 telephone-event/8000
-a=fmtp:101 0-15 
 a=rtpmap:103 AMR-WB/16000
-m=video [SdpPortVideo] RTP/AVP 97
-c=IN IP4 [localHostSIP]
-b=TIAS:200000
-a=sendrecv
-a=rtpmap:97 H264/90000
-a=fmtp:97 profile-level-id=42800d
-a=orient:portrait
-a=rtcp-fb:* nack pli
-]]>
+a=fmtp:103 octet-align=0
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-15
+a=ptime:20]]>
 </sendMessageSIP>
       	<receiveMessageSIP name="Wait ACK" type="ACK" request="true" />
 
@@ -178,22 +153,48 @@ a=rtcp-fb:* nack pli
 			<test parameter="[sendRTP]" condition="boolean.equals" value="true" />
 		</condition>
 		<then>
-			<createListenpointRTPFLOW name="[scenarioName]" localHost="[LocalHost(0)]" localPort="[LocalPortRTPAudio]"/>
-      <parameter name="[ssrc]" operation="number.random" value="10000000"/>
-      <parameter name="[nbPacket]" operation="number.multiply" value="[callDuration]" value2="50"/>
-			<sendMessageRTPFLOW listenpoint="[scenarioName]" remoteHost="[RemoteHostRTP]" remotePort="[RemotePortRTPAudio]">    
-						<flow packetNumber="[nbPacket]" deltaTime="[deltaTime]">
-							<header ssrc="[ssrc]" payloadType="103" seqnum="[seqList]" timestamp="[timestampList]" mark="[markList]" /> 
-							<payload format="binary">[payloadList]</payload>
-				</flow>
-			</sendMessageRTPFLOW>
-			<receiveMessageRTPFLOW listenpoint="[scenarioName]" type="103" timeout="30">
-				<parameter name="[flowPayloadBinary]" operation="protocol.setFromMessage" value="flow.payload.binary"/>
-			</receiveMessageRTPFLOW>
-			<removeListenpointRTPFLOW name="[scenarioName]"/>
-		</then>
+
+    <createListenpointRTP name="lp" localHost="[LocalHost(0)]" localPort="[LocalPortRTPAudio]"/>
+
+    <parameter name="[received]" operation="set" value="true"/>   
+    <while>
+      <condition>
+        <test parameter="[received]" condition="string.equals" value="true"/> 
+      </condition>
+      <do>
+
+        <parameter name="[received]" operation="set" value="false"/>
+        <receiveMessageRTP name="ReceivePacketRTP1" listenpoint="lp" timeout="1" failedOnTimeout="false">
+            <parameter name="[received]" operation="set" value="true"/>   
+        </receiveMessageRTP>
+        
+        <if>
+          <condition>
+              <test parameter="[received]" condition="string.equals" value="true"/> 
+          </condition>
+          <then>
+
+            <parameter name="[ssrc]" operation="protocol.setFromMessage" value="header.ssrc"/>
+            <parameter name="[payloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>
+            <parameter name="[seqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>
+            <parameter name="[timestamp]" operation="protocol.setFromMessage" value="header.timestamp"/>
+            <parameter name="[mark]" operation="protocol.setFromMessage" value="header.mark"/>
+            <parameter name="[payloadBinary]" operation="protocol.setFromMessage" value="payload.binary"/>
+
+            <sendMessageRTP listenpoint="lp" remoteHost="[RemoteHostRTP]" remotePort="[RemotePortRTP]">
+                <header ssrc="[ssrc]" payloadType="[payloadType]" seqnum="[seqnum]" timestamp="[timestamp]" mark="[mark]"/>
+                <payload format="binary">h[payloadBinary]</payload>
+            </sendMessageRTP>
+          </then>
+        </if>
+
+      </do>
+  </while>
+  
+  <removeListenpointRTP name="lp"/>
+
+  </then>
 	</if>
-	
  
 	<receiveMessageSIP name="Wait BYE" type="BYE" request="true">
         	<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To" /> 
