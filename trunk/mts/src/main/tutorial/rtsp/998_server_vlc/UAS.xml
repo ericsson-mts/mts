@@ -2,7 +2,7 @@
 
 <scenario>
 
-<createListenpointRTSP name="sessionVLC" localPort="5554"/>
+<createListenpointRTSP name="sessionVLC" localPort="[remotePortRTSP]"/>
 
 <while>
 <condition />
@@ -53,10 +53,10 @@ a=tool:IMSLoader
 a=range:npt=0-256.000
 m=video 0 RTP/AVP 32
 a=rtpmap:32 MPV/90000
-a=control:rtsp://[localHostRTSP]:5554/vod_1/TrackID=0
+a=control:rtsp://[localHostRTSP]:[remotePortRTSP]/vod_1/TrackID=0
 m=audio 0 RTP/AVP 14
 a=rtpmap:14 MP/90000
-a=control:rtsp://[localHostRTSP]:5554/vod_1/TrackID=1
+a=control:rtsp://[localHostRTSP]:[remotePortRTSP]/vod_1/TrackID=1
 ]]>
         </parameter>
         <parameter name="[contentLength]" operation="string.length" value="[content]"/>
