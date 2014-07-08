@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.core.hybridnio;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketOption;
 //import java.net.SocketOption;
 // import java.net.SocketOption;
 import java.nio.ByteBuffer;
@@ -35,6 +36,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.Set;
 // import java.util.Set;
+
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
@@ -750,7 +752,6 @@ public class SSLSocketChannel extends SocketChannel implements
         return bb != null;
     }
     
-    /*
     public SSLSocketChannel setOption(java.net.SocketOption arg0, Object arg1) throws IOException
     {
     	return null;
@@ -790,5 +791,5 @@ public class SSLSocketChannel extends SocketChannel implements
      {
     	return null;
      }
-     */
+
 }

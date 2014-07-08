@@ -4,14 +4,14 @@
     <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="4"/>
     
     <parameter name="[localHostRTSP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter description="local address of the MTS host" editable="true" name="[localHostRTSP]" operation="set" value="[localHostRTSP(0)]"/>
-    <parameter description="local port of the MTS host" editable="true" name="[localPortRTSP]" operation="set" value="8554"/>
+    <parameter name="[localHostRTSP]" operation="set" value="[localHostRTSP(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter name="[localPortRTSP]" operation="set" value="8554" description="local port of the MTS host" editable="true"/>
     
     <parameter name="[remoteHostRTSP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--<parameter name="[remoteHostRTSP]" operation="set" value="172.16.21.32"/>-->
-    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostRTSP]" operation="set" value="[remoteHostRTSP(0)]"/>
+    <parameter name="[remoteHostRTSP]" operation="set" value="[remoteHostRTSP(0)]" description="remote address of the SUT host" editable="true"/>
     <!--parameter name="[remotePortRTSP]" operation="file.readProperty" value="rtsp.properties" value2="listenpoint.LOCAL_PORT"/-->
-    <parameter description="remote port of the SUT host" editable="true" name="[remotePortRTSP]" operation="set" value="9554"/>
+    <parameter name="[remotePortRTSP]" operation="set" value="9554" description="remote port of the SUT host" editable="true"/>
 
     <!-- timers for the retransmissions-->
     <parameter name="[retransmitNumber]" operation="set" value="4"/>
@@ -28,7 +28,6 @@
     <parameter name="[retransmitTimers(9)]" operation="set" value="4000"/>
     <parameter name="[retransmitTimers(10)]" operation="set" value="4000"/>
 
-    <parameter name="[myIpAddress]" operation="set" value="[localHostRTSP]"/>
     <parameter name="[rtpVideoFile]" operation="set" value="bigbuckvideo.pdml"/>
     <parameter name="[rtpAudioFile]" operation="set" value="bigbuckaudio.pdml"/>
     <parameter name="[rtpAudioFileWav]" operation="set" value="rtpflow.wav"/>
