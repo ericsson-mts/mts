@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.core.hybridnio;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketAddress;
+import java.net.SocketOption;
 //import java.net.SocketOption;
 // import java.net.SocketAddress;
 // import java.net.SocketOption;
@@ -34,6 +35,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Set;
 // import java.util.Set;
+
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -175,31 +177,37 @@ public class SSLServerSocketChannel extends ServerSocketChannel implements Adapt
     {
         socketChannel.configureBlocking(block);
     }
+
+	@Override
+	public SocketAddress getLocalAddress() throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T getOption(SocketOption<T> arg0) throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<SocketOption<?>> supportedOptions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ServerSocketChannel bind(SocketAddress arg0, int arg1)
+			throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> ServerSocketChannel setOption(SocketOption<T> arg0, T arg1)
+			throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
     
-    /*
-    public ServerSocketChannel setOption(java.net.SocketOption arg0, Object arg1) throws IOException
-    {
-    	return null;
-    }
-
-    public Set<SocketOption<?>>  supportedOptions()
-    {
-    	return null;
-    }
-
-    public SocketAddress getLocalAddress() throws IOException
-    {
-    	return null;
-    }
-    
-    public <T> T getOption(SocketOption<T> name) throws IOException
-    {
-    	return null;
-    }
-
-     public ServerSocketChannel bind(SocketAddress local, int backlog)
-     {
-    	return null;
-     }
-     */
 }
