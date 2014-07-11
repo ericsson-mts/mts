@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
 <test name="echo client GTPv2-C">
     	<parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
 
     	<parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
     	<parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" description="local address of the MTS host" editable="true" />
 	<!--parameter name="[localHostSIP]" operation="set" value="[2001:db8::fef5:a35e]"/--> <!-- MTS IPv6 -->
-
- 	<parameter name="[remoteHostSIP]" operation="set" value="10.32.0.5"/> <!-- PCSCF IPv4 -->
+	<!--parameter name="[remoteHostSIP]" operation="set" value="10.32.0.5"/--> <!-- PCSCF COMM4INNOV IPv4 -->
+ 	<parameter name="[remoteHostSIP]" operation="set" value="192.168.90.218"/> <!-- PCSCF OPENIMS IPv4 -->
 	<!--parameter name="[remoteHostSIP]" operation="set" value="[2001:db8::fea4:db0c]"/--> <!-- PCSCF IPv6 -->
 	<parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP]" description="remote address of the SUT host" editable="true" />
 	<parameter name="[remotePortSIP]" operation="set" value="5060"/> <!-- PCSCF PORT -->
@@ -45,10 +46,10 @@
 	<parameter description="User 2 nextnonce" name="[Nextnonce-User2]" operation="set" value="NONE"/>
 
        
-    	<parameter description="S-CSCF IP" editable="true" name="[SCSCF]" operation="set" value="192.168.90.220"/> 
+    <parameter description="S-CSCF IP" editable="true" name="[SCSCF]" operation="set" value="192.168.90.220"/> 
 	<parameter description="User Agent" editable="true" name="[UserAgent]" operation="set" value="Fraunhofer FOKUS/NGNI Java IMS UserEndpoint FoJIE 0.1 (jdk1.3)"/> 
 
-  	<parameter name="filePdml" operation="file.readmedia" value="marseillaise.pdml"/>
+  	<parameter name="filePdml" operation="file.readmedia" value="amr_wb.pdml"/>
 	<parameter editable="true" name="[sendRTP]" operation="set" value="true"/>
 
 	<parameter name="[test:payloadList]" operation="set" value="[[filePdml(0)]]"/> 
@@ -57,8 +58,8 @@
    	<parameter name="[payloadType]" operation="set" value="[[filePdml(3)]]"/> 
    	<parameter name="[deltaTime]" operation="set" value="[[filePdml(4)]]"/> 
    	<parameter name="[markList]" operation="set" value="[[filePdml(5)]]"/> 
-    	<parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/> 
-    	<parameter name="[ssrc]" operation="number.random" value="10000000"/>
+    <parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/> 
+    <parameter name="[ssrc]" operation="number.random" value="10000000"/>
 
 	<parameter name="[OsProperty]" operation="system.readproperty" value="os.name"/>
 
@@ -88,11 +89,11 @@
         </testcase>
         <!--testcase name="SIP RE-REGISTER Alice from ISIM" state="false">
         	<scenario file="eps_ims_re-register_alice_from_isim.xml" name="alice" routingName="alice"/>
-        </testcase>
+        </testcase-->
         <testcase name="SIP RE-REGISTER Bob from ISIM" state="false">
         	<scenario file="eps_ims_re-register_bob_from_isim.xml" name="bob" routingName="bob"/>
         </testcase>
-        <testcase name="SIP DE-REGISTER Alice from ISIM" state="false">
+        <!--testcase name="SIP DE-REGISTER Alice from ISIM" state="false">
         	<scenario file="eps_ims_de-register_alice_from_isim.xml" name="alice" routingName="alice"/>
         </testcase-->
         <testcase name="SIP DE-REGISTER Bob from ISIM" state="false">
@@ -106,13 +107,13 @@
         </testcase-->
         <!--testcase name="SIP INVITE BASIC FROM ALICE - VOICE_MO" state="false">
            <scenario file="eps_ims_invite_basic_alice_voice.xml" name="alice" routingName="alice"/> 
-        </testcase>
+        </testcase-->
 
         <for from="001" index="[index]" step="1" to="10">
             <testcase name="SIP INVITE BASIC BOB - VOICE_MT [index]" state="false"> 
                 <scenario file="eps_ims_invite_basic_bob_voice.xml" name="bob" routingName="SIP,RTPFLOW"/>
             </testcase>
-        </for-->
+        </for>
 
         <testcase name="SIP INVITE BASIC BOB - LOOPBACK_MT" state="true"> 
            <scenario file="eps_ims_invite_basic_bob_loopback.xml" name="bob" routingName="SIP,RTP"/>
