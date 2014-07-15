@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : server.xml
+    Created on : 10/07/2014
+    Author     : fhenry
+    Description: Receive a MAP message
+-->
+
+<scenario>
+
+	<!-- Message encoded value -->
+	<parameter name="[data]" value="010001010000009c0200000800000002000600080077ddd00210007c00000d7a0000100203030004090003070b044301010704430201075c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f0300130008000031ef" />
+
+	<receiveMessageSIGTRAN name="Wait DATA1">
+		<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+	</receiveMessageSIGTRAN>
+	
+	<if>
+		<condition>
+			<test parameter="[data1]" condition="binary.equals" value="[data]"/>
+		</condition>
+		<else>
+			<log level="ERROR">	Message received :	</log>
+			<log level="ERROR">	"[data1]"			</log>
+			<log level="ERROR">	Message expected :	</log>
+			<log level="ERROR">	"[data]"			</log>
+			<exit failed="true"/>
+		</else>
+	</if>
+  
+</scenario>
