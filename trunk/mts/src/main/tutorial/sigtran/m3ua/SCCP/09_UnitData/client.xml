@@ -55,8 +55,8 @@
 	<!-- SCCP MESSAGE UNITDATA WITH DATA FIELD -->
 	<SS7 name="sccp" file="sccp.xml">
 		<header>
-        	        <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
-         	</header>
+      <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
+    </header>
 		<parameter name="Protocol_Class" type="F" littleEndian="false">
 			<field value="0" lengthBit="4" />
 			<field value="0" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
@@ -71,8 +71,8 @@
 			<field name="Signalling_Point_Code" value="258" length="2" />
 			<field name="Subsystem_Number" value="7" length="1" />
 		</parameter>
-		<parameter id="15" name="Data" type="V" littleEndian="true">
-			<field value="46561220f4dc6240d65c141c60e0008861a080808005b406d40140e001859060e02000008000c8407d58141860e02000008080808005b005d00190696aa088240096c86f366485244080804080dc0c382080f020705518b06541bb368c98b46cddbb6201e0894ee6821ae44f" format="binary" length="108" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+		<parameter id="15" name="Data" type="V" littleEndian="false">
+			<field value="626a48042f3b46026b3a2838060700118605010101a02d602b80020780a109060704000001001302be1a2818060704000001010101a00da00b80099656051124006913f66c26a12402010102013b301c04010f040eaa180da682dd6c31192d36bbdd468007917267415827f2" format="binary" length="108" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
 		</parameter>
 	</SS7>
 
