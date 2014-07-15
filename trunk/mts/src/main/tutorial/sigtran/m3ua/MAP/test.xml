@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="SIGTRAN SCCP tests" name="SIGTRAN SCCP">
+    
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    
+    <parameter name="[localHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]"/>
+    <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortM3UA]" operation="set" value="[localPortM3UA]"/>
+    <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>	
+    
+    <parameter name="[remoteHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHostM3UA]" operation="set" value="172.16.21.32"/-->
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]"/>
+    <parameter name="[remotePortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[remotePortM3UA]" operation="set" value="1234"/-->
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]"/>
+    <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>	
+    
+    
+    <testcase name="01_ForwardSM" description="test sigtran SCCP" state="true">
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+    
+</test>
