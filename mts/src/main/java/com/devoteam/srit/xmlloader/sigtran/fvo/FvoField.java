@@ -140,9 +140,21 @@ public class FvoField {
         else if(FvoField.formatBinary.equalsIgnoreCase(_format)) {
             Array value = Array.fromHexString(_value);
             int len = value.length * 8;
-            for (int i = 0; i < len; i++) {
-                target.setBit(toLittleEndianIndexBit(offsetBit, _lengthBit - i - 1, _lengthBit, _littleEndian), value.getBit(i));
-            }
+            if (_littleEndian)
+        	{
+            	// perform littleEndian converting
+            	for (int i = 0; i < len; i++) {
+            		target.setBit(toLittleEndianIndexBit(offsetBit, _lengthBit - i - 1, _lengthBit, _littleEndian), value.getBit(i));
+            	}
+        	}
+            else
+            {
+            	// copy the binary as identical
+            	for (int i = 0; i < len; i = i + 8) {
+            		target.setBits(i, 8, value.getBits(i, 8));
+            	}
+        	}
+
             _lengthBit = len;
         }
     }
