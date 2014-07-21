@@ -18,6 +18,8 @@
 		<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
 	</receiveMessageSIGTRAN>
 	
+  <parameter name="[result]" operation="binary.difference" value="[data1]" value2="[data]"/>
+  
 	<if>
 		<condition>
 			<test parameter="[data1]" condition="binary.equals" value="[data]"/>
