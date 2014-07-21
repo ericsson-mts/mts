@@ -84,4 +84,12 @@
     <parameter name="[binarytoip]" operation="binary.toIp" value="2a01cf00003300050000000000006e01" />
     <test parameter="[binarytoip]" condition="string.equals" value="[2a01:cf00:33:5::6e01]" />
 
+    <parameter name="[diff01]" operation="set" value="123450780090" />
+    <parameter name="[diff02]" operation="set" value="120034567890" />
+    <parameter name="[result]" operation="binary.difference" value="123450780090" value2="[diff02]" />
+    <test parameter="[result]" condition="string.equals" value="  XX  06  XX  " />
+    <!--test parameter="[result]" condition="string.equals" value="003416227800" /-->
+    <test parameter="[diff01]" condition="string.equals" value="123450780090" />
+    <test parameter="[diff02]" condition="string.equals" value="120034567890" />
+    
 </scenario>

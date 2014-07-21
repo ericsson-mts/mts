@@ -423,7 +423,7 @@ public class ParameterPool
         }
     }
 
-    private void traceInfo(String action, String name, Parameter param)
+    public void traceInfo(String action, String name, Parameter param)
     {
     	String nameWithoutBr = name.trim().substring(1, name.trim().length() -1);
         if(null != this.runner)

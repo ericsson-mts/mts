@@ -86,6 +86,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     final private String NAME_BIN_UNCIPHERRTP	= "binary.uncipherRTP";
     final private String NAME_BIN_AUTHRTP	= "binary.authRTP";
     final private String NAME_BIN_RTPKEYDERIVATION = "binary.RTPKeyDerivation";
+    final private String NAME_BIN_DIFFERENCE = "binary.difference";
 
     
     
@@ -119,6 +120,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_BIN_UNCIPHERRTP));
         this.addPluggableName(new PluggableName(NAME_BIN_AUTHRTP));
         this.addPluggableName(new PluggableName(NAME_BIN_RTPKEYDERIVATION));
+        this.addPluggableName(new PluggableName(NAME_BIN_DIFFERENCE));
     }
 
     @Override
@@ -428,36 +430,71 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 {
                 	
                 }
-                /* experimental                
-                else if (name.equalsIgnoreCase(NAME_BIN_STATHISTOVALUE))
+                else if (name.equalsIgnoreCase(NAME_BIN_DIFFERENCE))
                 {
-                    Array array = Array.fromHexString(param_1.get(i).toString());
-                    byte[] data = array.getBytes();
-                    int[] freq = calculeFrequency(data);
-            	    for (int k = 0; k < freq.length; k++)
-            	    {
-            	    	if (freq[k] != 0)
-            	    	{	
-                            byte[] res =  new byte[1];
-            	            res[0] = (byte)(k - 128);
-                            result.add(Array.toHexString(new DefaultArray(res)));
-            	    	}
-            	    }
+                    Array array1 = Array.fromHexString(param_1.get(i).toString());
+                    String string1 = Array.toHexString(array1);
+                    
+                    Parameter param_2 = assertAndGetParameter(operands, "value2");
+                    Array array2 = Array.fromHexString(param_2.get(i).toString());
+                    String string2 = Array.toHexString(array2);
+                    
+                    String stringRes = "";
+                    int j = 0;
+                    while (j < string1.length() - 1 && j < string2.length() - 1)
+                    {
+                    	String sub1 = string1.substring(j, j + 2);
+                    	byte int1 = Byte.decode(sub1);
+                    	
+                    	String sub2 = string2.substring(j, j + 2);
+                    	byte int2 = Byte.decode(sub2);
+                    	
+                    	byte byteRes = (byte) Math.abs(int2 - int1);
+                    	if (byteRes != 0)
+                    	{
+                    		int pos1 = string2.indexOf(sub1, j);
+                    		int pos2 = string1.indexOf(sub2, j);
+                    		if (pos1 > 0 && (pos2 < 0 || pos1 < pos2))
+                    		{
+	                    		String strBefore = string1.substring(0, j);                 
+	                    		String strAfter = string1.substring(j);
+	                    		string1 = strBefore + "  " + strAfter;
+	                    		stringRes += "XX";
+                    		}
+                    		else if (pos2 > 0 && (pos1 < 0 || pos2 < pos1))
+                    		{
+	                    		String strBefore = string2.substring(0, j);                 
+	                    		String strAfter = string2.substring(j);
+	                    		string2 = strBefore + "  " + strAfter;
+	                    		stringRes += "XX";
+                    		}
+	                    	else
+	                    	{
+		                    	String strRes = Byte.toString(byteRes);
+		                    	if (strRes.length() == 1)
+		                    	{
+		                    		stringRes += "0" + strRes;
+		                    	}
+		                    	else
+		                    	{
+		                    		stringRes += strRes;
+		                    	}
+	                    	}
+                    	}
+                    	else
+                    	{
+                    		stringRes += "  ";
+                    	}
+                    	
+                    	j = j + 2;
+                    }
+                    
+                    param_1.set(i, string1);
+                    runner.getParameterPool().traceInfo("SET", "[value ]", param_1);
+                    param_2.set(i, string2);
+                    runner.getParameterPool().traceInfo("SET", "[value2]", param_2);
+                    result.add(stringRes);
                 }
-                else if (name.equalsIgnoreCase(NAME_BIN_STATHISTOFREQ))
-                {
-                    Array array = Array.fromHexString(param_1.get(i).toString());
-                    byte[] data = array.getBytes();
-                    int[] freq = calculeFrequency(data);
-            	    for (int k = 0; k < freq.length; k++)
-            	    {
-            	    	if (freq[k] != 0)
-            	    	{	
-            	    		result.add(formatDouble(((double)freq[k]) / data.length * 100));
-            	    	}
-            	    }
-                }
-                */
                 else
                 {
                     throw new RuntimeException("unsupported operation " + name);
