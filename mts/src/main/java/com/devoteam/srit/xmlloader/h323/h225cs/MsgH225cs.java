@@ -44,11 +44,11 @@ import org.dom4j.Element;
 public class MsgH225cs extends Msg {
 
     MessageQ931 msgQ931;
-    //Asn1Message msgAsn1;
+    Asn1Message msgAsn1;
 
     public MsgH225cs(Element root) throws Exception {
-      //  msgAsn1 = new Asn1Message();
-      //  msgAsn1.parseElement(root);
+    	msgAsn1 = new Asn1Message();
+    	msgAsn1.parseElement(root);
 
         Element ie = root.element("ISDN");
         msgQ931 = new MessageQ931(ie);

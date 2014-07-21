@@ -23,6 +23,9 @@
 
 package com.devoteam.srit.xmlloader.sigtran;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import gp.utils.arrays.Array;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
@@ -36,12 +39,14 @@ import com.devoteam.srit.xmlloader.core.coding.binary.q931.MessageQ931;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
+import com.devoteam.srit.xmlloader.sigtran.fvo.FvoField;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
+import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
 
 public class MsgSigtran extends Msg {
 
     // AP layer (Application part) (spec ITU Q.XXXX)= coding ASN1 
-    private Asn1Message msgASN1;
+    private Asn1Message _asn1Message;
 	
     // ISDN (Integrated Services Digital Network) layer (spec ITU Q.XXXX) = coding IE (Information element) 
     private MessageQ931 _ieMessage;
@@ -60,6 +65,7 @@ public class MsgSigtran extends Msg {
      * Creates a new instance of MsgSigtran
      */
     public MsgSigtran() throws Exception {
+    	_asn1Message = new Asn1Message();
     }
 
     public MsgSigtran(Array msgArray, int protocolIdentifier) throws Exception {
@@ -199,6 +205,7 @@ public class MsgSigtran extends Msg {
     public void setTlvMessage(TlvMessage tlvMessage) {
         _tlvMessage = tlvMessage;
     }
+    
 
     public int getFvoProtocol() {
         return _fvoProtocol;
@@ -220,6 +227,30 @@ public class MsgSigtran extends Msg {
     @Override
     public byte[] getBytesData() {
         try {
+        	if (_asn1Message != null)
+        	{
+        		Array encoded = _asn1Message.encode();
+	        	String val = Array.toHexString(encoded);
+	        	LinkedList<FvoParameter> params = _fvoMessage.getVparameters();
+	        	Iterator iterParam = params.iterator();
+	        	FvoParameter param = null;
+	        	while (iterParam.hasNext())
+	        	{
+	        		param = (FvoParameter) iterParam.next();
+	        		if ("Data".equalsIgnoreCase(param.getName()))
+	        		{
+	        			break;
+	        		}
+	        	}
+	        	LinkedList<FvoField> fields = param.getFields();
+	        	Iterator iterField = fields.iterator();
+	        	FvoField field = null;
+	        	if (iterField.hasNext())
+	        	{
+	        		field = (FvoField) iterField.next();
+	        	}
+	        	field.setValue(val);
+        	}
         	if (_ieMessage != null)
         	{
 	        	Array encoded = _ieMessage.getValue();
