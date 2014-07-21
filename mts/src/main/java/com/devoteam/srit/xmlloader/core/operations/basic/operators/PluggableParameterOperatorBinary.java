@@ -444,10 +444,10 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     while (j < string1.length() - 1 && j < string2.length() - 1)
                     {
                     	String sub1 = string1.substring(j, j + 2);
-                    	byte int1 = Byte.decode(sub1);
+                    	int int1 = Integer.decode("0X" + sub1);
                     	
                     	String sub2 = string2.substring(j, j + 2);
-                    	byte int2 = Byte.decode(sub2);
+                    	int int2 = Integer.decode("0X" + sub2);
                     	
                     	byte byteRes = (byte) Math.abs(int2 - int1);
                     	if (byteRes != 0)
