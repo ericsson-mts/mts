@@ -444,49 +444,82 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     while (j < string1.length() - 1 && j < string2.length() - 1)
                     {
                     	String sub1 = string1.substring(j, j + 2);
-                    	int int1 = Integer.decode("0X" + sub1);
+                    	int int1 = Integer.decode("#" + sub1);
                     	
                     	String sub2 = string2.substring(j, j + 2);
-                    	int int2 = Integer.decode("0X" + sub2);
+                    	int int2 = Integer.decode("#" + sub2);
                     	
                     	byte byteRes = (byte) Math.abs(int2 - int1);
                     	if (byteRes != 0)
                     	{
                     		int pos1 = string2.indexOf(sub1, j);
                     		int pos2 = string1.indexOf(sub2, j);
+                    	
                     		if (pos1 > 0 && (pos2 < 0 || pos1 < pos2))
                     		{
-	                    		String strBefore = string1.substring(0, j);                 
-	                    		String strAfter = string1.substring(j);
-	                    		string1 = strBefore + "  " + strAfter;
-	                    		stringRes += "XX";
+	                    		string1 = insertStringAt(string1, j, "  ");
+	                    		stringRes = insertStringAtEnd(stringRes, "XX", 2);
                     		}
+                    		/*
+                    			int nb = (pos1 - j);
+                            	String substring1 = string1.substring(pos1, pos1 + nb);
+                            	String substring2 = string2.substring(pos1, pos1 + nb);
+                            	if (substring1.equals(substring2))
+                            	{
+	                            	String strBefore = string1.substring(0, j);                 
+		                    		String strAfter = string1.substring(j);
+		                    		string1 = strBefore + "  " + strAfter;
+		                    		for (int k = j; k < pos1; k = k + 2)
+		                    		{
+		                    			stringRes += "XX";
+		                    		}
+                            	}
+                            	else
+                            	{
+    		                    	String strRes = Byte.toString(byteRes);
+    		                    	if (strRes.length() == 1)
+    		                    	{
+    		                    		stringRes += "0" + strRes;
+    		                    	}
+    		                    	else
+    		                    	{
+    		                    		stringRes += strRes;
+    		                    	}
+                            	}
+                    		}
+                    		*/
                     		else if (pos2 > 0 && (pos1 < 0 || pos2 < pos1))
                     		{
-	                    		String strBefore = string2.substring(0, j);                 
-	                    		String strAfter = string2.substring(j);
-	                    		string2 = strBefore + "  " + strAfter;
-	                    		stringRes += "XX";
+	                    		string2 = insertStringAt(string2, j, "  ");
+	                    		stringRes = insertStringAtEnd(stringRes, "XX", 2);
                     		}
+                    		// the bytes are different
 	                    	else
 	                    	{
-		                    	String strRes = Byte.toString(byteRes);
-		                    	if (strRes.length() == 1)
-		                    	{
-		                    		stringRes += "0" + strRes;
-		                    	}
-		                    	else
-		                    	{
-		                    		stringRes += strRes;
-		                    	}
+	                    		stringRes = insertByteAtEnd(stringRes, byteRes);
 	                    	}
                     	}
+                    	// the bytes are equals
                     	else
                     	{
-                    		stringRes += "  ";
+                    		stringRes = insertStringAtEnd(stringRes, "  ", 2);;
                     	}
                     	
                     	j = j + 2;
+                    }
+                    
+                    // normalize the length of both strings
+                    int l1 = string1.length();
+                    int l2 = string2.length();
+                    if (l1 > l2)
+                    {
+                    	string2 = insertStringAtEnd(string2, "  ", l1-l2);
+                    	stringRes = insertStringAtEnd(stringRes, "XX", l1-l2);
+                    }
+                    if (l2 > l1)
+                    {
+                    	string1 = insertStringAtEnd(string1, "  ", l2-l1);
+                    	stringRes = insertStringAtEnd(stringRes, "XX", l2-l1);
                     }
                     
                     param_1.set(i, string1);
@@ -510,6 +543,59 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         return result;
     }
 
+    /**
+     * Insert string pattern at the pos position into a given string and return a new resulting string
+     * 
+     * @param string : the string to replace
+     * @param pos : the position to insert into
+     * @param pattern : the pattern string to insert
+     * @return : the resulting string
+     */
+    private static String insertStringAt(String string, int pos, String pattern)
+    {    
+		String strBefore = string.substring(0, pos);                 
+		String strAfter = string.substring(pos);
+		return strBefore + pattern + strAfter;
+    }
+
+    /**
+     * Insert a byte at the end into a given string and return a new resulting string
+     * 
+     * @param string : the string to replace
+     * @param b : the byte to insert into
+     * @return : the resulting string
+     */
+    private static String insertByteAtEnd(String string, byte b)
+    {    
+    	String strByte = Byte.toString(b);
+    	if (strByte.length() == 1)
+    	{
+    		string += "0" + strByte;
+    	}
+    	else
+    	{
+    		string += strByte;
+    	}
+		return string;
+    }
+
+    /**
+     * Insert string pattern at the end into a given string and return a new resulting string
+     * 
+     * @param string : the string to replacer
+     * @param pattern : the pattern string to insert
+     * @param nb : the number of character to insert into
+     * @return : the resulting string
+     */
+    private static String insertStringAtEnd(String string, String pattern, int nb)
+    {
+		for (int k = 0; k < nb; k = k + pattern.length())
+		{
+			string += pattern;
+		}
+		return string;
+    }
+    
     private static byte calculeAverage(byte[] data)
     {    
 	    int res = data[0];
