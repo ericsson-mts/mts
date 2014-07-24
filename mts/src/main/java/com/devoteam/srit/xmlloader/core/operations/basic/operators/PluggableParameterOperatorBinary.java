@@ -82,8 +82,6 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     final private String NAME_BIN_FROMIP	= "binary.fromIp";
     final private String NAME_BIN_TOIP		= "binary.toIp";
     final private String NAME_BIN_TONUMBER	= "binary.toNumber";
-    final private String NAME_BIN_CIPHERRTP	= "binary.cipherRTP";
-    final private String NAME_BIN_UNCIPHERRTP	= "binary.uncipherRTP";
     final private String NAME_BIN_AUTHRTP	= "binary.authRTP";
     final private String NAME_BIN_RTPKEYDERIVATION = "binary.RTPKeyDerivation";
     final private String NAME_BIN_DIFFERENCE = "binary.difference";
@@ -116,8 +114,6 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_BIN_FROMIP));
         this.addPluggableName(new PluggableName(NAME_BIN_TOIP));
         this.addPluggableName(new PluggableName(NAME_BIN_TONUMBER));
-        this.addPluggableName(new PluggableName(NAME_BIN_CIPHERRTP));
-        this.addPluggableName(new PluggableName(NAME_BIN_UNCIPHERRTP));
         this.addPluggableName(new PluggableName(NAME_BIN_AUTHRTP));
         this.addPluggableName(new PluggableName(NAME_BIN_RTPKEYDERIVATION));
         this.addPluggableName(new PluggableName(NAME_BIN_DIFFERENCE));
@@ -139,8 +135,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
             {
                 if (name.equals(NAME_BIN_EQUALS))
                 {
+                	Array array1 = Array.fromHexString(param_1.get(i).toString());
                     Parameter param_2 = assertAndGetParameter(operands, "value2");
-                    Array array1 = Array.fromHexString(param_1.get(i).toString());
                     Array array2 = Array.fromHexString(param_2.get(i).toString());
                     result.add(array1.equals(array2));
                 }
@@ -419,25 +415,17 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     	ret += String.format("%02x", authTag[a], 16);
                     result.add(ret);
                 }
-                else if (name.equalsIgnoreCase(NAME_BIN_CIPHERRTP))
-                {
-                	// param_1 = tab holding RTP payloads to authenticate 
-                	Parameter param_2 = assertAndGetParameter(operands, "value2"); // tab holding RTP seq num
-                	Parameter param_3 = assertAndGetParameter(operands, "value3"); // encryption key
-                	Parameter param_4 = assertAndGetParameter(operands, "value4"); // ROC
-                }
-                else if (name.equalsIgnoreCase(NAME_BIN_UNCIPHERRTP))
-                {
-                	
-                }
                 else if (name.equalsIgnoreCase(NAME_BIN_DIFFERENCE))
                 {
-                    Array array1 = Array.fromHexString(param_1.get(i).toString());
+                	String str1 = param_1.get(i).toString().replace(" ", "");
+                    Array array1 = Array.fromHexString(str1);
                     String string1 = Array.toHexString(array1);
                     
                     Parameter param_2 = assertAndGetParameter(operands, "value2");
-                    Array array2 = Array.fromHexString(param_2.get(i).toString());
+                    String str2 = param_2.get(i).toString().replace(" ", "");
+                    Array array2 = Array.fromHexString(str2);
                     String string2 = Array.toHexString(array2);
+                    string2 = string2.replaceAll(" ", "");
                     
                     String stringRes = "";
                     int j = 0;
@@ -449,46 +437,20 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     	String sub2 = string2.substring(j, j + 2);
                     	int int2 = Integer.decode("#" + sub2);
                     	
-                    	byte byteRes = (byte) Math.abs(int2 - int1);
+                    	byte byteRes = (byte) (Math.abs(int2 - int1) & 0xff);
                     	if (byteRes != 0)
                     	{
-                    		int pos1 = string2.indexOf(sub1, j);
-                    		int pos2 = string1.indexOf(sub2, j);
+                    		Integer pos1 = j;
+                    		int bene1 = calculateBeneficeToShift(string1, string2, pos1);
+                       		Integer pos2 = j;
+                    		int bene2 = calculateBeneficeToShift(string2, string1, pos2);
                     	
-                    		if (pos1 > 0 && (pos2 < 0 || pos1 < pos2))
+                    		if (bene1 > -999 && bene1 >= bene2)
                     		{
 	                    		string1 = insertStringAt(string1, j, "  ");
 	                    		stringRes = insertStringAtEnd(stringRes, "XX", 2);
                     		}
-                    		/*
-                    			int nb = (pos1 - j);
-                            	String substring1 = string1.substring(pos1, pos1 + nb);
-                            	String substring2 = string2.substring(pos1, pos1 + nb);
-                            	if (substring1.equals(substring2))
-                            	{
-	                            	String strBefore = string1.substring(0, j);                 
-		                    		String strAfter = string1.substring(j);
-		                    		string1 = strBefore + "  " + strAfter;
-		                    		for (int k = j; k < pos1; k = k + 2)
-		                    		{
-		                    			stringRes += "XX";
-		                    		}
-                            	}
-                            	else
-                            	{
-    		                    	String strRes = Byte.toString(byteRes);
-    		                    	if (strRes.length() == 1)
-    		                    	{
-    		                    		stringRes += "0" + strRes;
-    		                    	}
-    		                    	else
-    		                    	{
-    		                    		stringRes += strRes;
-    		                    	}
-                            	}
-                    		}
-                    		*/
-                    		else if (pos2 > 0 && (pos1 < 0 || pos2 < pos1))
+                    		else if (bene2 > -999 && bene2 > bene1)
                     		{
 	                    		string2 = insertStringAt(string2, j, "  ");
 	                    		stringRes = insertStringAtEnd(stringRes, "XX", 2);
@@ -523,10 +485,13 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     }
                     
                     param_1.set(i, string1);
-                    runner.getParameterPool().traceInfo("SET", "[value ]", param_1);
                     param_2.set(i, string2);
-                    runner.getParameterPool().traceInfo("SET", "[value2]", param_2);
                     result.add(stringRes);
+                    if (i == param_1.length() - 1)
+                    {
+	                    runner.getParameterPool().traceInfo("SET", "[value  ]", param_1);
+	                    runner.getParameterPool().traceInfo("SET", "[value2 ]", param_2);
+                    }
                 }
                 else
                 {
@@ -543,6 +508,43 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         return result;
     }
 
+    
+    /**
+     * Calculate the benefice to shift the string1 at the pos position in order to match the string2
+     * and return a new resulting benefice; pos integer contains the new position after shifting
+     * 
+     * @param string : the string to replace
+     * @param pos : the position to insert into
+     * @param pattern : the pattern string to insert
+     * @return : the resulting string
+     */
+    private static int calculateBeneficeToShift(String string1, String string2, Integer pos)
+    {    
+    	String sub = string1.substring(pos, pos + 2);
+    	int posFind = string2.indexOf(sub, pos);
+    	if (posFind > 0  && posFind % 2 == 0) 
+    	{
+    		int ind = posFind + 2; 
+    		while (ind < string1.length() && ind < string2.length())
+    		{
+    			String sub1 = string1.substring(ind, ind + 2);
+    			String sub2 = string2.substring(ind, ind + 2);
+    			if (!sub1.equals(sub2))
+    			{
+    				break;
+    			}
+    			ind = ind + 2;
+    		}
+    		int bene = ind - posFind - (posFind - pos);
+    		pos = posFind;
+    		return bene;
+    	}
+    	else
+    	{
+    		return -1000;
+    	}
+    }
+    
     /**
      * Insert string pattern at the pos position into a given string and return a new resulting string
      * 
@@ -565,9 +567,9 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
      * @param b : the byte to insert into
      * @return : the resulting string
      */
-    private static String insertByteAtEnd(String string, byte b)
-    {    
-    	String strByte = Byte.toString(b);
+    private static String insertByteAtEnd(String string,  byte b)
+    {
+    	String strByte = String.format("%02X", b);
     	if (strByte.length() == 1)
     	{
     		string += "0" + strByte;
