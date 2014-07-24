@@ -84,12 +84,35 @@
     <parameter name="[binarytoip]" operation="binary.toIp" value="2a01cf00003300050000000000006e01" />
     <test parameter="[binarytoip]" condition="string.equals" value="[2a01:cf00:33:5::6e01]" />
 
-    <parameter name="[diff01]" operation="set" value="f0123450780090" />
-    <parameter name="[diff02]" operation="set" value="fedcba1200FF3456789045" />
-    <parameter name="[result]" operation="binary.difference" value="[diff01]" value2="[diff02]" />
-    <test parameter="[result]" condition="string.equals" value="14XXXX  XXXX  06  XX  XX" />
-    <!--test parameter="[result]" condition="string.equals" value="003416227800" /-->
-    <!--test parameter="[diff01]" condition="string.equals" value="f0123450780090" />
-    <test parameter="[diff02]" condition="string.equals" value="fedcba1200FF34567890" /-->
+    <parameter name="[diff01(0)]" operation="set" value="f0123450780090dc" />
+    <parameter name="[diff01(1)]" operation="set" value="f0123450780090dc" />
+    <parameter name="[diff02(0)]" operation="set" value="fedcba1200ff3456789000" />
+    <parameter name="[diff02(1)]" operation="set" value="fedcba1200ff3456789000" />
+    <parameter name="[result]" operation="set" value="0EXXXX  XXXX  06  XX  DC" />
+    <parameter name="[result1]" operation="binary.difference" value="[diff01]" value2="[diff02]" />
+    <test parameter="[result1]" condition="string.equals" value="[result]" />
+    <test parameter="[diff01]" condition="string.equals" value="f0    12    3450780090dc" />
+    <test parameter="[diff02]" condition="string.equals" value="fedcba1200ff345678  9000" />
+    <parameter name="[result2]" operation="binary.difference" value="[diff02]" value2="[diff01]" />
+    <test parameter="[result2]" condition="string.equals" value="[result]" />
+    <test parameter="[diff01]" condition="string.equals" value="f0    12    3450780090dc" />
+    <test parameter="[diff02]" condition="string.equals" value="fedcba1200ff345678  9000" />
+
+    <parameter name="[diff01]" operation="set" value="f0123450780090dc" />
+    <parameter name="[diff02]" operation="set" value="fedcba1200ff3456789000" />
+    <parameter name="[result1]" operation="binary.difference" value="[diff01]" value2="[diff02]" />
+    <test parameter="[result1]" condition="string.equals" value="[result]" />
+    <!--test parameter="[diff01]" condition="string.equals" value="f0    12    3450780090dc" />
+    <test parameter="[diff02]" condition="string.equals" value="fedcba1200ff345678  9000" /-->
+    <parameter name="[result2]" operation="binary.difference" value="[diff02]" value2="[diff01]" />
+    <test parameter="[result2]" condition="string.equals" value="[result]" />
+    <!--test parameter="[diff01]" condition="string.equals" value="f0    12    3450780090dc" />
+    <test parameter="[diff02]" condition="string.equals" value="fedcba1200ff345678  9000" /-->
+    
+    <parameter name="[res]" operation="set" value="0EXXXX  XXXX  06  XX  DC" />
+    <parameter name="[res1]" operation="binary.difference" value="f0123450780090dc" value2="fedcba1200ff3456789000" />
+    <test parameter="[res1]" condition="string.equals" value="[res]" />
+    <parameter name="[res2]" operation="binary.difference" value="fedcba1200ff3456789000" value2="f0123450780090dc" />
+    <test parameter="[res2]" condition="string.equals" value="[res]" />
     
 </scenario>
