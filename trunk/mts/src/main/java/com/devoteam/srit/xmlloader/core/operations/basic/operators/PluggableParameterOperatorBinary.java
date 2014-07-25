@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 import gp.utils.arrays.Array;
 import gp.utils.arrays.Base64Coder;
 import gp.utils.arrays.CipherArray;
@@ -42,6 +43,8 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -445,12 +448,12 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                        		Integer pos2 = j;
                     		int bene2 = calculateBeneficeToShift(string2, string1, pos2);
                     	
-                    		if (bene1 > -999 && bene1 >= bene2)
+                    		if (bene1 > Integer.MIN_VALUE && bene1 > bene2)
                     		{
 	                    		string1 = insertStringAt(string1, j, "  ");
 	                    		stringRes = insertStringAtEnd(stringRes, "XX", 2);
                     		}
-                    		else if (bene2 > -999 && bene2 > bene1)
+                    		else if (bene2 > Integer.MIN_VALUE && bene2 > bene1)
                     		{
 	                    		string2 = insertStringAt(string2, j, "  ");
 	                    		stringRes = insertStringAtEnd(stringRes, "XX", 2);
@@ -508,12 +511,57 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         return result;
     }
 
+    /**
+     * Calculate the maximum benefice to shift at the pos position in order to match the string2
+     * and return a new resulting benefice; pos integer contains the new position after shifting
+     * 
+     * @param stringN : the string to replace
+     * @param pos : the position to insert into
+     * @param pattern : the pattern string to insert
+     * @return : the resulting string
+     */
+    private static int calculateMaximumBenefice(String string1, String string2, Integer pos)
+    {
+    	List<Integer> listPos = new ArrayList<Integer>();
+    	List<Integer> listBenef = new ArrayList<Integer>();
+    	Integer newPos = pos;
+    	Integer newBenef = 0;
+    	while (newBenef != Integer.MIN_VALUE)
+    	{
+    		newBenef = calculateBeneficeToShift(string1, string2, newPos);
+    		if (newBenef != Integer.MIN_VALUE)
+    		{
+    			listPos.add(newPos);
+    			listBenef.add(newBenef);
+    		}
+    		newPos = newPos + 2;
+    	}
+    	
+    	if (!listBenef.isEmpty())
+    	{
+    		int indexMax = 0;
+    		int benefMax = 0; 
+    		for (int k = 0; k < listBenef.size(); k++)
+    		{
+    			int benef = listBenef.get(k); 
+    			if (benef > benefMax)
+    			{
+    				indexMax = k;
+    				benefMax = benef;
+    			}
+    		}
+    		pos = indexMax;
+    		return benefMax;
+    	}
+    	    	
+    	return Integer.MIN_VALUE;
+    }
     
     /**
      * Calculate the benefice to shift the string1 at the pos position in order to match the string2
      * and return a new resulting benefice; pos integer contains the new position after shifting
      * 
-     * @param string : the string to replace
+     * @param stringN : the string to replace
      * @param pos : the position to insert into
      * @param pattern : the pattern string to insert
      * @return : the resulting string
@@ -524,24 +572,26 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     	int posFind = string2.indexOf(sub, pos);
     	if (posFind > 0  && posFind % 2 == 0) 
     	{
-    		int ind = posFind + 2; 
-    		while (ind < string1.length() && ind < string2.length())
+    		int ind1 = pos + 2;
+    		int ind2 = posFind + 2; 
+    		while (ind2 < string1.length() && ind2 < string2.length())
     		{
-    			String sub1 = string1.substring(ind, ind + 2);
-    			String sub2 = string2.substring(ind, ind + 2);
+    			String sub1 = string1.substring(ind1, ind1 + 2);
+    			String sub2 = string2.substring(ind2, ind2 + 2);
     			if (!sub1.equals(sub2))
     			{
     				break;
     			}
-    			ind = ind + 2;
+    			ind1 = ind1 + 2;
+    			ind2 = ind2 + 2;
     		}
-    		int bene = ind - posFind - (posFind - pos);
+    		int bene = ind2 - posFind - (posFind - pos);
     		pos = posFind;
     		return bene;
     	}
     	else
     	{
-    		return -1000;
+    		return Integer.MIN_VALUE;
     	}
     }
     
