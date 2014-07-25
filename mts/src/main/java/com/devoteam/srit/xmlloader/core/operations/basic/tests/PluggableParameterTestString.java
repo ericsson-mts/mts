@@ -90,35 +90,35 @@ public class PluggableParameterTestString extends AbstractPluggableParameterTest
             {
                 if(!param.get(i).toString().equals(testValue.get(i).toString()))
                 {
-                    throw new AssertException("Error in string test " + name + " between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " is not equal to " + testValue.get(i));
+                    throw new AssertException("Error in string test " + name + " between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " is not equal to \n" + testValue.get(i));
                 }
             }
             else if(name.equalsIgnoreCase(NAME_S_EQUALSI))
             {
                 if(!param.get(i).toString().equalsIgnoreCase(testValue.get(i).toString()))
                 {
-                    throw new AssertException("Error in string test " + name + " between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " is not equal to " + testValue.get(i));
+                    throw new AssertException("Error in string test " + name + " between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " is not equal to \n" + testValue.get(i));
                 }
             }
             else if(name.equalsIgnoreCase(NAME_CONTAINS) || name.equalsIgnoreCase(NAME_S_CONTAINS))
             {
                 if(!param.get(i).toString().contains(testValue.get(i).toString()))
                 {
-                    throw new AssertException("Error in string test " + name + " between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " does not contain " + testValue.get(i));
+                    throw new AssertException("Error in string test " + name + " between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " does not contain \n" + testValue.get(i));
                 }
             }
             else if(name.equalsIgnoreCase(NAME_S_STARTSWITH))
             {
                 if(!param.get(i).toString().startsWith(testValue.get(i).toString()))
                 {
-                    throw new AssertException("Error in string test " + name + " between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " does not start with  " + testValue.get(i));
+                    throw new AssertException("Error in string test " + name + " between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " does not start with \n" + testValue.get(i));
                 }
             }
             else if(name.equalsIgnoreCase(NAME_S_ENDSWITH))
             {
                 if(!param.get(i).toString().endsWith(testValue.get(i).toString()))
                 {
-                    throw new AssertException("Error in string test " + name + " between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " does not end with " + testValue.get(i));
+                    throw new AssertException("Error in string test " + name + " between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " does not end with \n" + testValue.get(i));
                 }
             }
             else if(name.equalsIgnoreCase(NAME_MATCHES) || name.equalsIgnoreCase(NAME_S_MATCHES))
@@ -127,7 +127,7 @@ public class PluggableParameterTestString extends AbstractPluggableParameterTest
                 Matcher m = p.matcher(param.get(i).toString());
                 if(!m.find())
                 {
-                    throw new AssertException("Error in string test " + name + " between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " does not matches " + testValue.get(i));
+                    throw new AssertException("Error in string test " + name + " between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " does not match \n" + testValue.get(i));
                 }
             }
             else 
