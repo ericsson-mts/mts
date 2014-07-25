@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
+import com.devoteam.srit.xmlloader.core.utils.GenericWrapper;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import gp.utils.arrays.Array;
@@ -420,82 +421,16 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_DIFFERENCE))
                 {
-                	String str1 = param_1.get(i).toString().replace(" ", "");
-                    Array array1 = Array.fromHexString(str1);
-                    String string1 = Array.toHexString(array1);
+                	String string1 = param_1.get(i).toString().replace(" ", "");
                     
                     Parameter param_2 = assertAndGetParameter(operands, "value2");
-                    String str2 = param_2.get(i).toString().replace(" ", "");
-                    Array array2 = Array.fromHexString(str2);
-                    String string2 = Array.toHexString(array2);
-                    string2 = string2.replaceAll(" ", "");
+                    String string2 = param_2.get(i).toString().replace(" ", "");
                     
-                    String stringRes = "";
-                    int j = 0;
-                    while (j < string1.length() - 1 && j < string2.length() - 1)
-                    {
-                    	String sub1 = string1.substring(j, j + 2);
-                    	int int1 = Integer.decode("#" + sub1);
-                    	
-                    	String sub2 = string2.substring(j, j + 2);
-                    	int int2 = Integer.decode("#" + sub2);
-                    	
-                    	byte byteRes = (byte) (Math.abs(int2 - int1) & 0xff);
-                    	if (byteRes != 0)
-                    	{
-                        	BenefPos benefPos = new BenefPos(); 
-                        	benefPos.pos = j;
-                    		calculateBeneficeToShift(string1, string2, benefPos);
-                    		int bene1 = benefPos.benef;
-                    		int pos1 = benefPos.pos;
-                    		benefPos.pos = j;;
-                    		calculateBeneficeToShift(string2, string1, benefPos);
-                    		int bene2 = benefPos.benef;
-                    		int pos2 = benefPos.pos;
-                    		//if (bene1 > Integer.MIN_VALUE && bene1 > bene2)
-                    		if (bene1 > 0 && bene1 > bene2)
-                    		{
-	                    		string1 = insertStringAt(string1, j, " ", pos1 - j);
-	                    		stringRes = insertStringAtEnd(stringRes, "X", pos1 - j);
-	                    		j = pos1;
-                    		}
-                    		//else if (bene2 > Integer.MIN_VALUE && bene2 > bene1)
-                    		else if (bene2 > 0 && bene2 > bene1)
-                    		{
-	                    		string2 = insertStringAt(string2, j, " ", pos2 - j);
-	                    		stringRes = insertStringAtEnd(stringRes, "X", pos2 - j);
-	                    		j = pos2;
-                    		}
-                    		// the bytes are different
-	                    	else
-	                    	{
-	                    		stringRes = insertByteAtEnd(stringRes, byteRes);
-	                    		j = j + 2;
-	                    	}
-                    		
-                    	}
-                    	// the bytes are equals
-                    	else
-                    	{
-                    		stringRes = insertStringAtEnd(stringRes, " ", 2);;
-                    		j = j + 2;
-                    	}
-                    	
-                    }
-                    
-                    // normalize the length of both strings
-                    int l1 = string1.length();
-                    int l2 = string2.length();
-                    if (l1 > l2)
-                    {
-                    	string2 = insertStringAtEnd(string2, " ", l1-l2);
-                    	stringRes = insertStringAtEnd(stringRes, "X", l1-l2);
-                    }
-                    if (l2 > l1)
-                    {
-                    	string1 = insertStringAtEnd(string1, " ", l2-l1);
-                    	stringRes = insertStringAtEnd(stringRes, "X", l2-l1);
-                    }
+                    GenericWrapper wrapper1 = new GenericWrapper(string1);
+                    GenericWrapper wrapper2 = new GenericWrapper(string2);
+                    String stringRes = calculateDifference(wrapper1, wrapper2);
+                    string1 = (String) wrapper1.getObject();
+                    string2 = (String) wrapper2.getObject();
                     
                     param_1.set(i, string1);
                     param_2.set(i, string2);
@@ -520,19 +455,92 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
 
         return result;
     }
-    
-    /**
-     * Wrapper for the return of benefice calculation methods
-     * @author efabhen
-     *
-     */
-    private class BenefPos 
-    {
-    	public int pos;
-    	public int benef;
-    	
-    }
 
+    /**
+     * Calculate the difference between 2 hexadecimal strings
+     * Use wrapper because String class is immutable
+     * 
+     * @param wrapperN : the wrapper around the string to calculate the difference with
+     * @return : the resulting string
+     */
+    private static String calculateDifference(GenericWrapper wrapper1, GenericWrapper wrapper2)
+    {
+    	String str1 = (String) wrapper1.getObject();
+    	String str2 = (String) wrapper2.getObject();
+    	
+	    String stringRes = "";
+	    int j = 0;
+	    while (j < str1.length() - 1 && j < str2.length() - 1)
+	    {
+	    	String sub1 = str1.substring(j, j + 2);
+	    	int int1 = Integer.decode("#" + sub1);
+	    	
+	    	String sub2 = str2.substring(j, j + 2);
+	    	int int2 = Integer.decode("#" + sub2);
+	    	
+	    	byte byteRes = (byte) (Math.abs(int2 - int1) & 0xff);
+	    	if (byteRes != 0)
+	    	{
+	        	BenefPos benefPos = new BenefPos(); 
+	        	benefPos.pos = j;
+	    		calculateBeneficeToShift(str1, str2, benefPos);
+	    		int bene1 = benefPos.benef;
+	    		int pos1 = benefPos.pos;
+	    		benefPos.pos = j;;
+	    		calculateBeneficeToShift(str2, str1, benefPos);
+	    		int bene2 = benefPos.benef;
+	    		int pos2 = benefPos.pos;
+	    		//if (bene1 > Integer.MIN_VALUE && bene1 > bene2)
+	    		if (bene1 > 0 && bene1 > bene2)
+	    		{
+	        		str1 = insertStringAt(str1, j, " ", pos1 - j);
+	        		stringRes = insertStringAtEnd(stringRes, "X", pos1 - j);
+	        		j = pos1;
+	    		}
+	    		//else if (bene2 > Integer.MIN_VALUE && bene2 > bene1)
+	    		else if (bene2 > 0 && bene2 > bene1)
+	    		{
+	        		str2 = insertStringAt(str2, j, " ", pos2 - j);
+	        		stringRes = insertStringAtEnd(stringRes, "X", pos2 - j);
+	        		j = pos2;
+	    		}
+	    		// the bytes are different
+	        	else
+	        	{
+	        		stringRes = insertByteAtEnd(stringRes, byteRes);
+	        		j = j + 2;
+	        	}
+	    		
+	    	}
+	    	// the bytes are equals
+	    	else
+	    	{
+	    		stringRes = insertStringAtEnd(stringRes, " ", 2);;
+	    		j = j + 2;
+	    	}
+	    	
+	    }
+	    
+	    // normalize the length of both strings
+	    int l1 = str1.length();
+	    int l2 = str2.length();
+	    if (l1 > l2)
+	    {
+	    	str2 = insertStringAtEnd(str2, " ", l1-l2);
+	    	stringRes = insertStringAtEnd(stringRes, "X", l1-l2);
+	    }
+	    if (l2 > l1)
+	    {
+	    	str1 = insertStringAtEnd(str1, " ", l2-l1);
+	    	stringRes = insertStringAtEnd(stringRes, "X", l2-l1);
+	    }
+	   
+	    wrapper1.setObject(str1);
+	    wrapper2.setObject(str2);
+	    
+	    return stringRes;
+    }
+	    	
     /**
      * Calculate the maximum benefice to shift at the pos position in order to match the string2
      * and return a new resulting benefice; pos integer contains the new position after shifting
@@ -863,5 +871,6 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
             e.printStackTrace();
         }
     }
+   
 }
 
