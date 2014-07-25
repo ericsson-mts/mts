@@ -23,21 +23,11 @@
 
 package com.devoteam.srit.xmlloader.h323.h225cs;
 
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.h323.h225cs.XmlToAsn1;
-
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.List;
 
-import org.bn.CoderFactory;
-import org.bn.coders.per.*;
-import org.bn.IEncoder;
-import org.bn.IDecoder;
 import org.dom4j.Element;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.ss7.tcap.asn.ApplicationContextName;
