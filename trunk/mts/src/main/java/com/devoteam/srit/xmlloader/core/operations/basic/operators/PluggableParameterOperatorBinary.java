@@ -443,34 +443,44 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     	byte byteRes = (byte) (Math.abs(int2 - int1) & 0xff);
                     	if (byteRes != 0)
                     	{
-                    		Integer pos1 = j;
-                    		int bene1 = calculateBeneficeToShift(string1, string2, pos1);
-                       		Integer pos2 = j;
-                    		int bene2 = calculateBeneficeToShift(string2, string1, pos2);
-                    	
-                    		if (bene1 > Integer.MIN_VALUE && bene1 > bene2)
+                        	BenefPos benefPos = new BenefPos(); 
+                        	benefPos.pos = j;
+                    		calculateBeneficeToShift(string1, string2, benefPos);
+                    		int bene1 = benefPos.benef;
+                    		int pos1 = benefPos.pos;
+                    		benefPos.pos = j;;
+                    		calculateBeneficeToShift(string2, string1, benefPos);
+                    		int bene2 = benefPos.benef;
+                    		int pos2 = benefPos.pos;
+                    		//if (bene1 > Integer.MIN_VALUE && bene1 > bene2)
+                    		if (bene1 > 0 && bene1 > bene2)
                     		{
-	                    		string1 = insertStringAt(string1, j, "  ");
-	                    		stringRes = insertStringAtEnd(stringRes, "XX", 2);
+	                    		string1 = insertStringAt(string1, j, " ", pos1 - j);
+	                    		stringRes = insertStringAtEnd(stringRes, "X", pos1 - j);
+	                    		j = pos1;
                     		}
-                    		else if (bene2 > Integer.MIN_VALUE && bene2 > bene1)
+                    		//else if (bene2 > Integer.MIN_VALUE && bene2 > bene1)
+                    		else if (bene2 > 0 && bene2 > bene1)
                     		{
-	                    		string2 = insertStringAt(string2, j, "  ");
-	                    		stringRes = insertStringAtEnd(stringRes, "XX", 2);
+	                    		string2 = insertStringAt(string2, j, " ", pos2 - j);
+	                    		stringRes = insertStringAtEnd(stringRes, "X", pos2 - j);
+	                    		j = pos2;
                     		}
                     		// the bytes are different
 	                    	else
 	                    	{
 	                    		stringRes = insertByteAtEnd(stringRes, byteRes);
+	                    		j = j + 2;
 	                    	}
+                    		
                     	}
                     	// the bytes are equals
                     	else
                     	{
-                    		stringRes = insertStringAtEnd(stringRes, "  ", 2);;
+                    		stringRes = insertStringAtEnd(stringRes, " ", 2);;
+                    		j = j + 2;
                     	}
                     	
-                    	j = j + 2;
                     }
                     
                     // normalize the length of both strings
@@ -478,13 +488,13 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     int l2 = string2.length();
                     if (l1 > l2)
                     {
-                    	string2 = insertStringAtEnd(string2, "  ", l1-l2);
-                    	stringRes = insertStringAtEnd(stringRes, "XX", l1-l2);
+                    	string2 = insertStringAtEnd(string2, " ", l1-l2);
+                    	stringRes = insertStringAtEnd(stringRes, "X", l1-l2);
                     }
                     if (l2 > l1)
                     {
-                    	string1 = insertStringAtEnd(string1, "  ", l2-l1);
-                    	stringRes = insertStringAtEnd(stringRes, "XX", l2-l1);
+                    	string1 = insertStringAtEnd(string1, " ", l2-l1);
+                    	stringRes = insertStringAtEnd(stringRes, "X", l2-l1);
                     }
                     
                     param_1.set(i, string1);
@@ -510,10 +520,23 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
 
         return result;
     }
+    
+    /**
+     * Wrapper for the return of benefice calculation methods
+     * @author efabhen
+     *
+     */
+    private class BenefPos 
+    {
+    	public int pos;
+    	public int benef;
+    	
+    }
 
     /**
      * Calculate the maximum benefice to shift at the pos position in order to match the string2
      * and return a new resulting benefice; pos integer contains the new position after shifting
+     * IMPROVMENT but NOT TESTED !
      * 
      * @param stringN : the string to replace
      * @param pos : the position to insert into
@@ -528,7 +551,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     	Integer newBenef = 0;
     	while (newBenef != Integer.MIN_VALUE)
     	{
-    		newBenef = calculateBeneficeToShift(string1, string2, newPos);
+    		// newBenef = calculateBeneficeToShift(string1, string2, newPos);
     		if (newBenef != Integer.MIN_VALUE)
     		{
     			listPos.add(newPos);
@@ -566,15 +589,16 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
      * @param pattern : the pattern string to insert
      * @return : the resulting string
      */
-    private static int calculateBeneficeToShift(String string1, String string2, Integer pos)
+    private static void calculateBeneficeToShift(String string1, String string2, BenefPos benefPos)
     {    
+    	int pos = benefPos.pos;
     	String sub = string1.substring(pos, pos + 2);
     	int posFind = string2.indexOf(sub, pos);
     	if (posFind > 0  && posFind % 2 == 0) 
     	{
     		int ind1 = pos + 2;
     		int ind2 = posFind + 2; 
-    		while (ind2 < string1.length() && ind2 < string2.length())
+    		while (ind1 < string1.length() && ind2 < string2.length())
     		{
     			String sub1 = string1.substring(ind1, ind1 + 2);
     			String sub2 = string2.substring(ind2, ind2 + 2);
@@ -585,13 +609,14 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     			ind1 = ind1 + 2;
     			ind2 = ind2 + 2;
     		}
-    		int bene = ind2 - posFind - (posFind - pos);
-    		pos = posFind;
-    		return bene;
+    		benefPos.pos = posFind;
+    		int benef = ind2 - posFind - (posFind - pos);
+    		benefPos.benef = benef;
     	}
     	else
     	{
-    		return Integer.MIN_VALUE;
+    		benefPos.pos = Integer.MIN_VALUE;
+    	    benefPos.benef = Integer.MIN_VALUE;
     	}
     }
     
@@ -603,11 +628,15 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
      * @param pattern : the pattern string to insert
      * @return : the resulting string
      */
-    private static String insertStringAt(String string, int pos, String pattern)
-    {    
-		String strBefore = string.substring(0, pos);                 
-		String strAfter = string.substring(pos);
-		return strBefore + pattern + strAfter;
+    private static String insertStringAt(String string, int pos, String pattern, int number)
+    {                     
+		String res = string.substring(0, pos);
+		for (int i = 1; i <= number; i++)
+		{
+			res += pattern;
+		}
+		res += string.substring(pos);
+		return res;
     }
 
     /**
@@ -639,9 +668,9 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
      * @param nb : the number of character to insert into
      * @return : the resulting string
      */
-    private static String insertStringAtEnd(String string, String pattern, int nb)
+    private static String insertStringAtEnd(String string, String pattern, int number)
     {
-		for (int k = 0; k < nb; k = k + pattern.length())
+		for (int i = 1; i <= number; i ++)
 		{
 			string += pattern;
 		}
