@@ -75,7 +75,7 @@ public class PluggableParameterTestBinary extends AbstractPluggableParameterTest
 
                     if(!array1.equals(array2))
                     {
-                        throw new AssertException("Error " + name + " test between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " is not equal to " + testValue.get(i));
+                        throw new AssertException("Error " + name + " test between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " is not equal to \n" + testValue.get(i));
                     }
                 }
                 else if (name.equals(NAME_CONTAINS))
@@ -85,7 +85,7 @@ public class PluggableParameterTestBinary extends AbstractPluggableParameterTest
 
                     if(array1.indexOf(array2) == -1)
                     {
-                        throw new AssertException("Error " + name + " test between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " does not contain " + testValue.get(i));
+                        throw new AssertException("Error " + name + " test between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " does not contain \n" + testValue.get(i));
                     }
                 }
                 else 	
