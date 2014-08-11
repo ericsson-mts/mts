@@ -28,8 +28,12 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.AssertException;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.AbstractPluggableParameterOperator;
+import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorBinary;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
+import com.devoteam.srit.xmlloader.core.utils.GenericWrapper;
+
 import gp.utils.arrays.Array;
+
 import java.util.Map;
 
 /**
@@ -69,12 +73,23 @@ public class PluggableParameterTestBinary extends AbstractPluggableParameterTest
         for(int i=0; i<len; i++)
         {
                  if (name.equals(NAME_EQUALS))
-                {
-                    Array array1 = Array.fromHexString(param.get(i).toString());
-                    Array array2 = Array.fromHexString(testValue.get(i).toString());
+                { 
+                	String string1 = param.get(i).toString();
+                    Array array1 = Array.fromHexString(string1);
+                    String string2 = testValue.get(i).toString();
+                    Array array2 = Array.fromHexString(string2);
 
                     if(!array1.equals(array2))
                     {
+                        GenericWrapper wrapper1 = new GenericWrapper(string1);
+                        GenericWrapper wrapper2 = new GenericWrapper(string2);
+                        String stringRes = PluggableParameterOperatorBinary.calculateDifference(wrapper1, wrapper2);
+                        string1 = (String) wrapper1.getObject();
+                        string2 = (String) wrapper2.getObject();
+                        
+    	                runner.getParameterPool().traceInfo("SET", "[param]", string1);
+    	                runner.getParameterPool().traceInfo("SET", "[test ]", string2);
+    	                runner.getParameterPool().traceInfo("SET", "[diff ]", stringRes);
                         throw new AssertException("Error " + name + " test between \n" + param + "and\n" + testValue + "\n" + param.get(i) + " is not equal to \n" + testValue.get(i));
                     }
                 }

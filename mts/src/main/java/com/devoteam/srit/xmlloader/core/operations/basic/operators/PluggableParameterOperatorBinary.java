@@ -31,14 +31,12 @@ import com.devoteam.srit.xmlloader.core.utils.GenericWrapper;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import gp.utils.arrays.Array;
-import gp.utils.arrays.Base64Coder;
 import gp.utils.arrays.CipherArray;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.DigestArray;
 import gp.utils.arrays.MacArray;
 import gp.utils.arrays.RandomArray;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -47,7 +45,6 @@ import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
@@ -437,8 +434,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     result.add(stringRes);
                     if (i == param_1.length() - 1)
                     {
-	                    runner.getParameterPool().traceInfo("SET", "[value  ]", param_1);
-	                    runner.getParameterPool().traceInfo("SET", "[value2 ]", param_2);
+	                    runner.getParameterPool().traceInfo("SET", "[value  ]", param_1.toString());
+	                    runner.getParameterPool().traceInfo("SET", "[value2 ]", param_2.toString());
                     }
                 }
                 else
@@ -463,7 +460,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
      * @param wrapperN : the wrapper around the string to calculate the difference with
      * @return : the resulting string
      */
-    private static String calculateDifference(GenericWrapper wrapper1, GenericWrapper wrapper2)
+    public static String calculateDifference(GenericWrapper wrapper1, GenericWrapper wrapper2)
     {
     	String str1 = (String) wrapper1.getObject();
     	String str2 = (String) wrapper2.getObject();
