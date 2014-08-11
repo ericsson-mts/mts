@@ -118,7 +118,7 @@ public class ParameterPool
         Parameter parameter = new Parameter(name);       
         parameterPool.set(name, parameter);
         
-        traceInfo("CREATE", name, parameter);      
+        traceInfo("CREATE", name, parameter.toString());      
         return parameter ;
     }
     
@@ -219,7 +219,7 @@ public class ParameterPool
         }
         if (parameter.length() > 0)
         {
-        	traceInfo("SET", name, parameter);
+        	traceInfo("SET", name, parameter.toString());
         }
     }
     
@@ -240,7 +240,10 @@ public class ParameterPool
             parameter = parametersByName.get(removeLevel(name));            
             parametersByName.remove(name);
         }
-        traceInfo("REMOVE", name, parameter);
+        if (parameter != null)
+        {
+        	traceInfo("REMOVE", name, parameter.toString());
+        }
     }
     
     public Set<String> getParametersNameLocal()
@@ -423,16 +426,16 @@ public class ParameterPool
         }
     }
 
-    public void traceInfo(String action, String name, Parameter param)
+    public void traceInfo(String action, String name, String message)
     {
     	String nameWithoutBr = name.trim().substring(1, name.trim().length() -1);
         if(null != this.runner)
         {
-            GlobalLogger.instance().getSessionLogger().info((ScenarioRunner)runner, TextEvent.Topic.PARAM, action, " [", this.level, ":", nameWithoutBr, "] => ", param);    
+            GlobalLogger.instance().getSessionLogger().info((ScenarioRunner)runner, TextEvent.Topic.PARAM, action, " [", this.level, ":", nameWithoutBr, "] => ", message);    
         }
         else
         {
-            GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PARAM, action, " [", this.level, ":", nameWithoutBr, "] => ", param);
+            GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PARAM, action, " [", this.level, ":", nameWithoutBr, "] => ", message);
         }
     }
     
