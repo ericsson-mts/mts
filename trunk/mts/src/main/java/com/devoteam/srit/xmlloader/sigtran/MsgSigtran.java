@@ -38,8 +38,10 @@ import com.devoteam.srit.xmlloader.core.coding.binary.q931.MessageQ931;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
-import com.devoteam.srit.xmlloader.sigtran.ap.ApMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.MobicentApMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.APMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.BinaryNotesAPMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.MobicentMAPMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.MobicentTCAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoField;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
@@ -47,7 +49,7 @@ import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
 public class MsgSigtran extends Msg {
 
     // AP layer (Application part) (spec ITU Q.XXXX)= coding ASN1 
-    private ApMessage _apMessage;
+    private APMessage _apMessage;
 	
     // ISDN (Integrated Services Digital Network) layer (spec ITU Q.XXXX) = coding IE (Information element) 
     private MessageQ931 _ieMessage;
@@ -66,8 +68,9 @@ public class MsgSigtran extends Msg {
      * Creates a new instance of MsgSigtran
      */
     public MsgSigtran() throws Exception {
-    	_apMessage = new MobicentApMessage();
-    	// _apMessage = new BinaryNotesApMessage();
+    	_apMessage = new MobicentTCAPMessage();
+    	_apMessage = new MobicentMAPMessage();
+    	//_apMessage = new BinaryNotesApMessage();
     }
 
     public MsgSigtran(Array msgArray, int protocolIdentifier) throws Exception {
