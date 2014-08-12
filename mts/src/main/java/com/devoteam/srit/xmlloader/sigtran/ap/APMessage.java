@@ -47,7 +47,7 @@ import org.mobicents.protocols.ss7.tcap.asn.comp.TCBeginMessage;
  *
  * @author gansquer
  */
-public abstract class ApMessage {
+public abstract class APMessage {
 
     public abstract Array encode() throws Exception; 
 

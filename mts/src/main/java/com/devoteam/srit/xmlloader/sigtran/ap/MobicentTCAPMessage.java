@@ -45,13 +45,13 @@ import org.mobicents.protocols.ss7.tcap.asn.comp.TCBeginMessage;
 
 /**
  *
- * @author gansquer
+ * @author fhenry
  */
-public class MobicentApMessage extends ApMessage {
+public class MobicentTCAPMessage extends APMessage {
 
 	TCBeginMessage tcbm;
 
-    public MobicentApMessage() {
+    public MobicentTCAPMessage() {
     	tcbm = (TCBeginMessageImpl) TcapFactory.createTCBeginMessage();
 
         // build DP
@@ -75,6 +75,7 @@ public class MobicentApMessage extends ApMessage {
                 this.lastUI = event.getUserInformation();
             }
             */
+            dp.setOidValue(new long[] {0,0,17,773,1,1,1});
             tcbm.setDialogPortion(dp);
 
         //    if (this.provider.getStack().getStatisticsEnabled()) {
