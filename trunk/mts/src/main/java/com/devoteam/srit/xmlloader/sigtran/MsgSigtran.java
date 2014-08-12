@@ -34,11 +34,12 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.h323.h225cs.Asn1Message;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.MessageQ931;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
+import com.devoteam.srit.xmlloader.sigtran.ap.ApMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.MobicentApMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoField;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
@@ -46,7 +47,7 @@ import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
 public class MsgSigtran extends Msg {
 
     // AP layer (Application part) (spec ITU Q.XXXX)= coding ASN1 
-    private Asn1Message _asn1Message;
+    private ApMessage _apMessage;
 	
     // ISDN (Integrated Services Digital Network) layer (spec ITU Q.XXXX) = coding IE (Information element) 
     private MessageQ931 _ieMessage;
@@ -65,7 +66,8 @@ public class MsgSigtran extends Msg {
      * Creates a new instance of MsgSigtran
      */
     public MsgSigtran() throws Exception {
-    	_asn1Message = new Asn1Message();
+    	_apMessage = new MobicentApMessage();
+    	// _apMessage = new BinaryNotesApMessage();
     }
 
     public MsgSigtran(Array msgArray, int protocolIdentifier) throws Exception {
@@ -227,9 +229,9 @@ public class MsgSigtran extends Msg {
     @Override
     public byte[] getBytesData() {
         try {
-        	if (_asn1Message != null)
+        	if (_apMessage != null)
         	{
-        		Array encoded = _asn1Message.encode();
+        		Array encoded = _apMessage.encode();
 	        	String val = Array.toHexString(encoded);
 	        	LinkedList<FvoParameter> params = _fvoMessage.getVparameters();
 	        	Iterator iterParam = params.iterator();
