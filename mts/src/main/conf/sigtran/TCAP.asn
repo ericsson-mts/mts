@@ -6,43 +6,43 @@ BEGIN
 -- EXPORTS everything
 -- Transaction Portion fields.
 IMPORTS
-  ROS{}, InvokeId
+  ROS, InvokeId
     FROM Remote-Operations-Generic-ROS-PDUs {joint-iso-itu-t
       remote-operations(4) generic-ROS-PDUs(6) version1(0)}
   OPERATION
     FROM Remote-Operations-Information-Objects {joint-iso-itu-t
       remote-operations(4) informationObjects(5) version1(0)};
 
-TCMessage{OPERATION:Invokable, OPERATION:Returnable} ::= CHOICE {
-  unidirectional  [APPLICATION 1]  Unidirectional{{Invokable}, {Returnable}},
-  begin           [APPLICATION 2]  Begin{{Invokable}, {Returnable}},
-  end             [APPLICATION 4]  End{{Invokable}, {Returnable}},
-  continue        [APPLICATION 5]  Continue{{Invokable}, {Returnable}},
+TCMessage ::= CHOICE {
+  unidirectional  [APPLICATION 1]  Unidirectional,
+  begin           [APPLICATION 2]  Begin,
+  end             [APPLICATION 4]  End,
+  continue        [APPLICATION 5]  Continue,
   abort           [APPLICATION 7]  Abort
 }
 
-Unidirectional{OPERATION:Invokable, OPERATION:Returnable} ::= SEQUENCE {
+Unidirectional ::= SEQUENCE {
   dialoguePortion  DialoguePortion OPTIONAL,
-  components       ComponentPortion{{Invokable}, {Returnable}}
+  components       ComponentPortion
 }
 
-Begin{OPERATION:Invokable, OPERATION:Returnable} ::= SEQUENCE {
+Begin ::= SEQUENCE {
   otid             OrigTransactionID,
   dialoguePortion  DialoguePortion OPTIONAL,
-  components       ComponentPortion{{Invokable}, {Returnable}} OPTIONAL
+  components       ComponentPortion OPTIONAL
 }
 
-End{OPERATION:Invokable, OPERATION:Returnable} ::= SEQUENCE {
+End ::= SEQUENCE {
   dtid             DestTransactionID,
   dialoguePortion  DialoguePortion OPTIONAL,
-  components       ComponentPortion{{Invokable}, {Returnable}} OPTIONAL
+  components       ComponentPortion OPTIONAL
 }
 
-Continue{OPERATION:Invokable, OPERATION:Returnable} ::= SEQUENCE {
+Continue ::= SEQUENCE {
   otid             OrigTransactionID,
   dtid             DestTransactionID,
   dialoguePortion  DialoguePortion OPTIONAL,
-  components       ComponentPortion{{Invokable}, {Returnable}} OPTIONAL
+  components       ComponentPortion OPTIONAL
 }
 
 Abort ::= SEQUENCE {
@@ -68,23 +68,25 @@ DestTransactionID ::= [APPLICATION 9]  OCTET STRING(SIZE (1..4))
 P-AbortCause ::= [APPLICATION 10]  INTEGER {
   unrecognizedMessageType(0), unrecognizedTransactionID(1),
   badlyFormattedTransactionPortion(2), incorrectTransactionPortion(3),
-  resourceLimitation(4)}(0..127)
+  resourceLimitation(4)}
 
 -- COMPONENT PORTION. The last field in the transaction portion of the TCAP message is the 
 -- component portion. The component portion may be absent.
-ComponentPortion{OPERATION:Invokable, OPERATION:Returnable} ::=
+ComponentPortion ::=
   [APPLICATION 12] 
-    SEQUENCE SIZE (1..MAX) OF Component{{Invokable}, {Returnable}}
+    SEQUENCE SIZE (1..MAX) OF Component
+
+Component ::= [APPLICATION 11] EXPLICIT EXTERNAL
 
 -- Component Portion fields
 -- Recommendation X.880 defines four Application Protocol Data Units (APDUs) for invoking
 -- operations, returning results or error, and for the rejection of invalid PDUs.
 -- TCAP adds returnResultNotLast to allow for the segmentation of a result.
-Component{OPERATION:Invokable, OPERATION:Returnable} ::= CHOICE {
-  basicROS             ROS{{TCInvokeIdSet}, {Invokable}, {Returnable}},
-  returnResultNotLast
-    [7]  returnResult < ROS{{TCInvokeIdSet}, {Invokable}, {Returnable}}
-}
+-- Component{OPERATION:Invokable, OPERATION:Returnable} ::= CHOICE {
+--   basicROS             ROS{{TCInvokeIdSet}, {Invokable}, {Returnable}},
+--   returnResultNotLast
+--     [7]  returnResult < ROS{{TCInvokeIdSet}, {Invokable}, {Returnable}}
+-- }
 
 TCInvokeIdSet ::= InvokeId(WITH COMPONENTS {
                              present  (-128..127)
