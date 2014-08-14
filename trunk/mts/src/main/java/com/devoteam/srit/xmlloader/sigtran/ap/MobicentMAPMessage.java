@@ -25,11 +25,29 @@ package com.devoteam.srit.xmlloader.sigtran.ap;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
+import gp.utils.arrays.SupArray;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 import org.dom4j.Element;
+import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
+import org.mobicents.protocols.ss7.map.api.MAPDialog;
+import org.mobicents.protocols.ss7.map.api.MAPMessage;
+import org.mobicents.protocols.ss7.map.api.primitives.AddressNature;
+import org.mobicents.protocols.ss7.map.api.primitives.AddressString;
+import org.mobicents.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.mobicents.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.mobicents.protocols.ss7.map.api.service.sms.SM_RP_DA;
+import org.mobicents.protocols.ss7.map.api.service.sms.SmsSignalInfo;
+import org.mobicents.protocols.ss7.map.primitives.AddressStringImpl;
+import org.mobicents.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.mobicents.protocols.ss7.map.service.sms.MoForwardShortMessageRequestImpl;
+import org.mobicents.protocols.ss7.map.service.sms.SM_RP_DAImpl;
+import org.mobicents.protocols.ss7.map.service.sms.SM_RP_OAImpl;
+import org.mobicents.protocols.ss7.map.service.sms.SmsSignalInfoImpl;
 import org.mobicents.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.mobicents.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
 import org.mobicents.protocols.ss7.tcap.asn.DialogPortion;
@@ -49,12 +67,26 @@ import org.mobicents.protocols.ss7.tcap.asn.comp.TCBeginMessage;
  */
 public class MobicentMAPMessage extends APMessage {
 
-	MAPMessage tcbm;
+	MoForwardShortMessageRequestImpl mapMessage;
+	TCBeginMessage tcbm;
+	
 
     public MobicentMAPMessage() {
+    	
+        AddressString sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "33660650769");
+        SM_RP_DA sm_RP_DA = new SM_RP_DAImpl(sca);
+        ISDNAddressString msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+                "33661307173");
+        SM_RP_OAImpl sm_RP_OA = new SM_RP_OAImpl();
+        sm_RP_OA.setMsisdn(msisdn);
+        SmsSignalInfo sm_RP_UI = new SmsSignalInfoImpl(new byte[] { (byte)0x11, (byte)0x08, (byte)0x0b, (byte)0x91, (byte)0x33, (byte)0x66, (byte)0x60, (byte)0x05, (byte)0x67, (byte)0xf7, (byte)0x00, (byte)0x00, (byte)0xa9, (byte)0x06, (byte)0xf3, (byte)0xf9, (byte)0x7c, (byte)0x3e, (byte)0x9f, (byte)0x03},
+                null);
+        mapMessage = new MoForwardShortMessageRequestImpl(sm_RP_DA, sm_RP_OA, sm_RP_UI, null, null);
+        mapMessage.setInvokeId(1);
+
     	tcbm = (TCBeginMessageImpl) TcapFactory.createTCBeginMessage();
 
-        // build DP
+        // build TCAP layer
 
         //if (event.getApplicationContextName() != null) {
             //this.dpSentInBegin = true;
@@ -93,8 +125,9 @@ public class MobicentMAPMessage extends APMessage {
     	byte[] transID = new byte[]{0,0,0,1};
         tcbm.setOriginatingTransactionId(transID);
         // if (this.scheduledComponentList.size() > 0) {
-            Component[] componentsToSend = new Component[1];
-            componentsToSend[0] = TcapFactory.createComponentInvoke();
+            Component[] componentsToSend = new Component[0];
+            //componentsToSend[0] = TcapFactory.createComponentInvoke();
+            /*
             ((Invoke) componentsToSend[0]).setInvokeId((long) 1);
             // ((Invoke) componentsToSend[0]).setLinkedId((long) 1);
             OperationCode opCode = TcapFactory.createOperationCode();
@@ -124,39 +157,34 @@ public class MobicentMAPMessage extends APMessage {
             param.setParameters(params);
             param.setPrimitive(false);
             ((Invoke) componentsToSend[0]).setParameter(param);
+            */
             tcbm.setComponent(componentsToSend);
         //}
+
 
     }
 
     public Array encode() throws Exception 
     {
     	// Library mobicents
-        AsnOutputStream aos = new AsnOutputStream();
-		tcbm.encode(aos);
-		Array array = new DefaultArray(aos.toByteArray());
-	
-
-    	/* FH ne compile pas
-        IEncoder<com.devoteam.srit.xmlloader.h323.h225v7.H323_UserInformation> encoder;
-        IDecoder decoder;
-        try {
-            encoder = CoderFactory.getInstance().newEncoder("PER/U");
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            encoder.encode((com.devoteam.srit.xmlloader.h323.h225v7.H323_UserInformation) asn1, outputStream);
-            Array returnArray =Array.fromHexString(getHexString(outputStream.toByteArray()));
-
-          	decoder = CoderFactory.getInstance().newDecoder("PER/U");
-          	InputStream inputStream;
-          	H323_UserInformation decodedUserInformation = decoder.decode(inputStream, H323_UserInformation.class);
-            
-            return returnArray;
-        }
-        catch (Exception ex) {
-            GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, ex, "Error ASN1 : ");
-        }
-        */
-        return array;
+        AsnOutputStream aosMAP = new AsnOutputStream();
+		mapMessage.encodeAll(aosMAP);
+		Array arrayMAP = new DefaultArray(aosMAP.toByteArray());
+		
+		AsnInputStream inputStream = new AsnInputStream(aosMAP.toByteArray());
+		//tcbm.getComponent()[0].decode(inputStream);
+		//((Component) tcbm.getComponent()[0]).
+		
+		AsnOutputStream aosTCAP = new AsnOutputStream();
+		tcbm.encode(aosTCAP);
+		Array arrayTCAP = new DefaultArray(aosTCAP.toByteArray());
+		
+		SupArray sup = new SupArray();
+		sup.addFirst(arrayTCAP);
+		Array arraySep = new DefaultArray(new byte[]{(byte) 0xa1, (byte) 0x30, (byte) 0x02, (byte) 0x01, (byte) 0x01, (byte) 0x02, (byte) 0x01, (byte) 0x2e});
+		sup.addLast(arraySep);
+		sup.addLast(arrayMAP);
+        return sup;
     }
 
     public void decode(Array array) throws Exception {

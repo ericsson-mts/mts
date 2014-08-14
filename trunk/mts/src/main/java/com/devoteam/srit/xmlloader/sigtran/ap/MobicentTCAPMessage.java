@@ -135,27 +135,6 @@ public class MobicentTCAPMessage extends APMessage {
         AsnOutputStream aos = new AsnOutputStream();
 		tcbm.encode(aos);
 		Array array = new DefaultArray(aos.toByteArray());
-	
-
-    	/* FH ne compile pas
-        IEncoder<com.devoteam.srit.xmlloader.h323.h225v7.H323_UserInformation> encoder;
-        IDecoder decoder;
-        try {
-            encoder = CoderFactory.getInstance().newEncoder("PER/U");
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            encoder.encode((com.devoteam.srit.xmlloader.h323.h225v7.H323_UserInformation) asn1, outputStream);
-            Array returnArray =Array.fromHexString(getHexString(outputStream.toByteArray()));
-
-          	decoder = CoderFactory.getInstance().newDecoder("PER/U");
-          	InputStream inputStream;
-          	H323_UserInformation decodedUserInformation = decoder.decode(inputStream, H323_UserInformation.class);
-            
-            return returnArray;
-        }
-        catch (Exception ex) {
-            GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, ex, "Error ASN1 : ");
-        }
-        */
         return array;
     }
 
