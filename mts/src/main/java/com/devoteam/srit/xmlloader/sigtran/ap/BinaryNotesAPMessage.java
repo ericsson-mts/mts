@@ -52,6 +52,8 @@ import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage;
 public class BinaryNotesAPMessage extends APMessage {
 
 	TCMessage tcMessage;
+	DialoguePortion dp;
+	ArrayList<Component> comps;
 
     public BinaryNotesAPMessage() {    	
     	Begin begin = new Begin();
@@ -60,15 +62,15 @@ public class BinaryNotesAPMessage extends APMessage {
     	otid.setValue(transID);
     	begin.setOtid(otid);
     	
-    	DialoguePortion dp = new DialoguePortion();
-    	dp.setValue(new byte[]{(byte) 0x6b,(byte) 0x1e,(byte) 0x80,(byte) 0x28,(byte) 0x1c,(byte) 0x06,(byte) 0x07,(byte) 0x00,(byte) 0x11,(byte) 0x86,(byte) 0x05,(byte) 0x01,(byte) 0x01,(byte) 0x01,(byte) 0xa0,(byte) 0x11,(byte) 0x60,(byte) 0x0f,(byte) 0x80, (byte) 0x02, (byte) 0x07, (byte) 0x80, (byte) 0xa1, (byte) 0x09, (byte) 0x06, (byte) 0x07, (byte) 0x04, (byte) 0x00, (byte) 0x00, (byte) 0x01, (byte) 0x00, (byte) 0x15, (byte) 0x02});
+    	this.dp = new DialoguePortion();
+    	dp.setValue(new byte[]{(byte) 0x6b,(byte) 0x1e,(byte) 0x28,(byte) 0x1c,(byte) 0x06,(byte) 0x07,(byte) 0x00,(byte) 0x11,(byte) 0x86,(byte) 0x05,(byte) 0x01,(byte) 0x01,(byte) 0x01,(byte) 0xa0,(byte) 0x11,(byte) 0x60,(byte) 0x0f,(byte) 0x80, (byte) 0x02, (byte) 0x07, (byte) 0x80, (byte) 0xa1, (byte) 0x09, (byte) 0x06, (byte) 0x07, (byte) 0x04, (byte) 0x00, (byte) 0x00, (byte) 0x01, (byte) 0x00, (byte) 0x15, (byte) 0x02});
     	begin.setDialoguePortion(dp);
    
     	ComponentPortion cp = new ComponentPortion();
     	Component comp = new Component();
-    	comp.setValue(new byte[]{(byte) 0x80,(byte) 0x80,(byte) 0x80,(byte) 0x80,(byte) 0x80,(byte) 0x80,(byte) 0x80,(byte) 0x80,(byte) 0x80,(byte) 0x80});
-    	ArrayList<Component> comps = new ArrayList<Component>();
-    	comps.add(comp);
+    	comp.setValue(new byte[]{(byte) 0xa1,(byte) 0x30,(byte) 0x02,(byte) 0x01,(byte) 0x01,(byte) 0x02,(byte) 0x01,(byte) 0x2e,(byte) 0x30,(byte) 0x28, (byte) 0x84,(byte) 0x07,(byte) 0x91,(byte) 0x33,(byte) 0x66,(byte) 0x60,(byte) 0x05,(byte) 0x67,(byte) 0xf9,(byte) 0x82, (byte) 0x07,(byte) 0x91,(byte) 0x33,(byte) 0x66,(byte) 0x31,(byte) 0x70,(byte) 0x71,(byte) 0xf3,(byte) 0x04,(byte) 0x14,(byte) 0x11,(byte) 0x08,(byte) 0x0b,(byte) 0x91,(byte) 0x33,(byte) 0x66,(byte) 0x60,(byte) 0x05,(byte) 0x67,(byte) 0xf7,(byte) 0x00,(byte) 0x00,(byte) 0xa9,(byte) 0x06,(byte) 0xf3,(byte) 0xf9,(byte) 0x7c,(byte) 0x3e,(byte) 0x9f,(byte) 0x03});
+    	this.comps = new ArrayList<Component>();
+    	this.comps.add(comp);
     	cp.setValue(comps);
     	begin.setComponents(cp);
 
