@@ -371,7 +371,15 @@ public class MsgSigtran extends Msg
     public String toXml() 
     {
         String ret = "";
-
+        if (_apMessage != null) 
+        {
+            ret += _apMessage.toXML() + "\n";
+        }
+        if (_tcapMessage != null) 
+        {
+            ret += _tcapMessage.toXML() + "\n";
+        }
+        
         if (_ieMessage != null) 
         {
             ret += _ieMessage.toString() + "\n";
