@@ -27,12 +27,15 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  *
@@ -97,30 +100,35 @@ public class PluggableParameterOperatorSemaphore extends AbstractPluggableParame
              */
             try
             {
-                PluggableParameterOperatorSemaphore.accessMutex.acquire();
+                PluggableParameterOperatorSemaphore.accessMutex.acquire(1);
                 if (runner.getParameterPool().exists(resultant))
                 {
                     Parameter semaphoreParam = runner.getParameterPool().get(resultant);
                     if (null != semaphoreParam && semaphoreParam.length() != 1)
                     {
+                    	//PluggableParameterOperatorSemaphore.accessMutex.release();
                         throw new ParameterException("all semaphore operands should be of size 1");
                     }
 
                     if (semaphoreParam.get(0) instanceof Semaphore)
                     {
                         semaphore = (Semaphore) semaphoreParam.get(0);
+                        //GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PARAM, "name=" + name + " old Semaphore = " + semaphore + resultant);
                     }
                     else
                     {
+                    	//PluggableParameterOperatorSemaphore.accessMutex.release();
                         throw new ParameterException("content of name is not a semaphore !");
                     }
                 }
                 else
                 {
                     semaphore = new Semaphore(0);
+                    //GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PARAM, "name=" + name + " new Semaphore = " + semaphore + resultant);
                     Parameter result = new Parameter();
                     result.add(semaphore);
                     runner.getParameterPool().set(resultant, result);
+                    //PluggableParameterOperatorSemaphore.accessMutex.release();
                 }
             }
             finally
@@ -133,11 +141,15 @@ public class PluggableParameterOperatorSemaphore extends AbstractPluggableParame
             {
                 if(0 == timeout)
                 {
+                	//GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PARAM, "name=" + name + " acquire BEGIN Semaphore = " + semaphore + resultant);
                     semaphore.acquire(permits);
+                    //GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PARAM, "name=" + name + " acquire END Semaphore = " + semaphore + resultant);
                 }
                 else
                 {
-                	boolean result = semaphore.tryAcquire(permits, timeout, TimeUnit.SECONDS);
+                	//GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PARAM, "name=" + name + " tryAcquire BEGIN Semaphore = " + semaphore + resultant);
+                	boolean result = semaphore.tryAcquire(permits, timeout, TimeUnit.SECONDS);                	
+                	//GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PARAM, "name=" + name + " tryAcquire END Semaphore = " + semaphore + resultant);
                 	if (!result)
                 	{
                         throw new ParameterException("Error timeout in semaphore parameter operation");                		
@@ -147,6 +159,7 @@ public class PluggableParameterOperatorSemaphore extends AbstractPluggableParame
             else if (name.equalsIgnoreCase(NAME_NOTIFY_OLD) || name.equalsIgnoreCase(NAME_NOTIFY))
             {
                 semaphore.release(permits);
+                //GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PARAM, "name=" + name + " release Semaphore = " + semaphore + resultant);
             }
             else
             {
