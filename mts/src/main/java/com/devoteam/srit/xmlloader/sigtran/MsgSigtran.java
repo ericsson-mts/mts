@@ -26,7 +26,11 @@ package com.devoteam.srit.xmlloader.sigtran;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.mobicents.protocols.asn.AsnInputStream;
+import org.mobicents.protocols.asn.AsnOutputStream;
+
 import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
@@ -39,18 +43,24 @@ import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
 import com.devoteam.srit.xmlloader.sigtran.ap.APMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.BN_APMessageExperim;
 import com.devoteam.srit.xmlloader.sigtran.ap.BinaryNotesAPMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.HybridMAPMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.MobicentMAPMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.HybridMAPMessageExperim;
+import com.devoteam.srit.xmlloader.sigtran.ap.MB_MAPMessageExperim;
+import com.devoteam.srit.xmlloader.sigtran.ap.MB_TCAPMessageExperim;
 import com.devoteam.srit.xmlloader.sigtran.ap.MobicentTCAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoField;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
 
-public class MsgSigtran extends Msg {
+public class MsgSigtran extends Msg 
+{
 
-    // AP layer (Application part) (spec ITU Q.XXXX)= coding ASN1 
+    // AP layer (Application part) (spec ITU Q.XXXX)= coding ASN1 => Use BinaryNotes library 
     private APMessage _apMessage;
+		
+    // TCAP layer (Application part) (spec ITU Q.XXXX)= coding ASN1 => Use Mobicent library 
+    private MobicentTCAPMessage _tcapMessage;
 	
     // ISDN (Integrated Services Digital Network) layer (spec ITU Q.XXXX) = coding IE (Information element) 
     private MessageQ931 _ieMessage;
@@ -68,11 +78,13 @@ public class MsgSigtran extends Msg {
     /**
      * Creates a new instance of MsgSigtran
      */
-    public MsgSigtran() throws Exception {
+    public MsgSigtran() throws Exception 
+    {
     	//_apMessage = new MobicentTCAPMessage();
     	//_apMessage = new MobicentMAPMessage();
     	//_apMessage = new BinaryNotesAPMessage();
-    	_apMessage = new HybridMAPMessage();
+    	_apMessage = new BinaryNotesAPMessage();
+    	_tcapMessage = new MobicentTCAPMessage();
     }
 
     public MsgSigtran(Array msgArray, int protocolIdentifier) throws Exception 
@@ -106,17 +118,27 @@ public class MsgSigtran extends Msg {
     	FvoParameter paramFvo = _fvoMessage.getVparameters().get(2);
     	if (paramFvo != null)
     	{    		
+    		// decode TCAP layer with Mobicent library
     		Array ieArray = paramFvo.encode();
-    		//_apMessage = new BinaryNotesAPMessage();
-	    	_apMessage.decode(ieArray);
+	    	_tcapMessage.decode(ieArray);
+	    	
+	    	AsnOutputStream aosMAP = new AsnOutputStream();
+	    	_tcapMessage.getTCAPComponent()[0].encode(aosMAP);
+	    	byte[] bytesAP = aosMAP.toByteArray();
+	        Array arrayAP = new DefaultArray(bytesAP);
+
+	        // decode AP layer with BinaryNotes
+	        _apMessage.decode(arrayAP);
     	}	
     }
 
     /** Get a parameter from the message */
     @Override
-    public Parameter getParameter(String path) throws Exception {
+    public Parameter getParameter(String path) throws Exception 
+    {
         Parameter var = super.getParameter(path);
-        if (null != var) {
+        if (null != var) 
+        {
             return var;
         }
 
@@ -124,38 +146,50 @@ public class MsgSigtran extends Msg {
         path = path.trim();
         String[] params = Utils.splitPath(path);
                 
-        if (params.length > 0 && params[0].equalsIgnoreCase("isdn")) {
+        if (params.length > 0 && params[0].equalsIgnoreCase("isdn")) 
+        {
         	this._ieMessage.getParameter(var, params, path);
         }
-        else if (params.length > 0 && params[0].equalsIgnoreCase("ss7")) {
+        else if (params.length > 0 && params[0].equalsIgnoreCase("ss7")) 
+        {
             if (params.length > 1) {
-                if (params[1].equalsIgnoreCase("content")) {
+                if (params[1].equalsIgnoreCase("content")) 
+                {
                     var.add(_fvoMessage);
                 }
-                else {
-                    if (path.contains(":")) {
+                else 
+                {
+                    if (path.contains(":")) 
+                    {
                         // var = _fvoMessage.getParameter(path.substring(path.indexOf(":") + 1));
                     }
-                    else {
+                    else 
+                    {
                         // var = _fvoMessage.getParameter(path.substring(path.indexOf(".") + 1));
                     }
                 }
             }
         }
-        else if(params.length > 0 && params[0].equalsIgnoreCase("ua")) {
-            if (params.length != 1) {
-                if (params[1].equalsIgnoreCase("ppid")) {
+        else if(params.length > 0 && params[0].equalsIgnoreCase("ua")) 
+        {
+            if (params.length != 1) 
+            {
+                if (params[1].equalsIgnoreCase("ppid")) 
+                {
                     var.add(getTlvProtocol());
                 }
-                else if (path.contains(":")) {
+                else if (path.contains(":")) 
+                {
                     var = _tlvMessage.getParameter(path.substring(path.indexOf(":") + 1));
                 }
-                else {
-                        var = _tlvMessage.getParameter(path.substring(path.indexOf(".") + 1));
+                else 
+                {
+                	var = _tlvMessage.getParameter(path.substring(path.indexOf(".") + 1));
                 }
             }         
         }
-        else {
+        else 
+        {
             Parameter.throwBadPathKeywordException(path);
         }
 
@@ -164,92 +198,123 @@ public class MsgSigtran extends Msg {
 
     /** Get the protocol of this message */
     @Override
-    public String getProtocol() {
+    public String getProtocol() 
+    {
         return StackFactory.PROTOCOL_SIGTRAN;
     }
 
     @Override
-    public String getType() throws Exception {
-        if (_fvoMessage != null) {
+    public String getType() throws Exception 
+    {
+        if (_fvoMessage != null) 
+        {
             return "" + _fvoMessage.getMessageType();
         }    	
-        if (_ieMessage != null) {
+        if (_ieMessage != null) 
+        {
             return "" + _ieMessage.getType();
         }
-        if (_tlvMessage != null) {
+        if (_tlvMessage != null) 
+        {
             return _tlvMessage.getName();
         }
-        else {
+        else 
+        {
             return null;
         }
     }
 
     @Override
-    public String getResult() throws Exception {
+    public String getResult() throws Exception 
+    {
         // TODO !!!!!!!!!!!!!!!!!!!!!
         return null;
     }
 
     @Override
-    public int getLength() {
+    public int getLength() 
+    {
         return _tlvMessage.getMessageLength();
     }
 
     @Override
-    public boolean isRequest() {
+    public boolean isRequest() 
+    {
         // TODO !!!!!!!!!!!!!!!!!!!!
         return false;
     }
 
-    public MessageQ931 getIeMessage() {
+    public MessageQ931 getIeMessage() 
+    {
 		return _ieMessage;
 	}
 
-	public void setIeMessage(MessageQ931 ieMessage) {
+	public void setIeMessage(MessageQ931 ieMessage) 
+	{
 		this._ieMessage = ieMessage;
 	}
 
-    public FvoMessage getFvoMessage() {
+    public FvoMessage getFvoMessage() 
+    {
         return _fvoMessage;
     }
 
-    public void setFvoMessage(FvoMessage fvoMessage) {
+    public void setFvoMessage(FvoMessage fvoMessage) 
+    {
         _fvoMessage = fvoMessage;
     }
 
-    public TlvMessage getTlvMessage() {
+    public TlvMessage getTlvMessage() 
+    {
         return _tlvMessage;
     }
 
-    public void setTlvMessage(TlvMessage tlvMessage) {
+    public void setTlvMessage(TlvMessage tlvMessage) 
+    {
         _tlvMessage = tlvMessage;
     }
     
 
-    public int getFvoProtocol() {
+    public int getFvoProtocol() 
+    {
         return _fvoProtocol;
     }
 
-    public void setFvoProtocol(int fvoProtocol) {
+    public void setFvoProtocol(int fvoProtocol) 
+    {
         _fvoProtocol = fvoProtocol;
     }
 
-    public int getTlvProtocol() {
+    public int getTlvProtocol() 
+    {
         return _tlvProtocol;
     }
 
-    public void setTlvProtocol(int tlvProtocol) {
+    public void setTlvProtocol(int tlvProtocol) 
+    {
         _tlvProtocol = tlvProtocol;
     }
 
     /** Get the data (as binary) of this message */
     @Override
-    public byte[] getBytesData() {
-        try {
+    public byte[] getBytesData() 
+    {
+        try 
+        {
         	if (_apMessage != null)
         	{
-        		Array encoded = _apMessage.encode();
-	        	String val = Array.toHexString(encoded);
+        		// encode AP layers with BinaryNotes library
+        		Array arrayAP = _apMessage.encode();
+        		
+        		// 
+        		Array subArray = arrayAP.subArray(1);
+        		AsnInputStream inputStream = new AsnInputStream(subArray.getBytes());
+        		_tcapMessage.getTCAPComponent()[0].decode(inputStream);
+        		
+        		// encode TCAP layer with Mobicent library
+        		Array arrayTCAP = _tcapMessage.encode();
+	        	
+	        	// TODO a déplacer dans FvoMessage
 	        	LinkedList<FvoParameter> params = _fvoMessage.getVparameters();
 	        	Iterator iterParam = params.iterator();
 	        	FvoParameter param = null;
@@ -268,6 +333,7 @@ public class MsgSigtran extends Msg {
 	        	{
 	        		field = (FvoField) iterField.next();
 	        	}
+	        	String val = Array.toHexString(arrayTCAP);
 	        	field.setValue(val);
         	}
         	if (_ieMessage != null)
@@ -278,12 +344,14 @@ public class MsgSigtran extends Msg {
 	        	TlvField field = param.getTlvField("Protocol_Data");
 	        	field.setValue(val);
         	}
-            if(null == _encodedCache){
+            if(null == _encodedCache)
+            {
                 _encodedCache = _tlvMessage.encode().getBytes();
             }
             return _encodedCache;
         }
-        catch (Exception ex) {
+        catch (Exception ex) 
+        {
             GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, ex, "Error while encoding the SIGTRAN message: ");
         }
         return null;
@@ -292,20 +360,24 @@ public class MsgSigtran extends Msg {
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-    public String toShortString() throws Exception {
+    public String toShortString() throws Exception 
+    {
         String str = super.toShortString();
 
-        if (_ieMessage != null) {
+        if (_ieMessage != null) 
+        {
             // str += _ieMessage.toShortString("ISDN") + "\n";
             return str;
         }
 
-        if (_fvoMessage != null) {
+        if (_fvoMessage != null) 
+        {
             str += _fvoMessage.toShortString() + "\n";
             return str;
         }
 
-        if (_tlvMessage != null) {
+        if (_tlvMessage != null) 
+        {
             str += _tlvMessage.toShortString("UA") + "\n";
             return str;
         }
@@ -315,18 +387,22 @@ public class MsgSigtran extends Msg {
     
     /** Get the XML representation of the message; for the genscript module. */
     @Override
-    public String toXml() {
+    public String toXml() 
+    {
         String ret = "";
 
-        if (_ieMessage != null) {
+        if (_ieMessage != null) 
+        {
             ret += _ieMessage.toString() + "\n";
         }
         
-        if (_fvoMessage != null) {
+        if (_fvoMessage != null) 
+        {
             ret += _fvoMessage.toString() + "\n";
         }
 
-        if (_tlvMessage != null) {
+        if (_tlvMessage != null) 
+        {
             ret += _tlvMessage.toString() + "\n";
         }
 
