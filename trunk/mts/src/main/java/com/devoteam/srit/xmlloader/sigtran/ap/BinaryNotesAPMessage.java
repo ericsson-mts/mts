@@ -25,7 +25,6 @@ package com.devoteam.srit.xmlloader.sigtran.ap;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
-import gp.utils.arrays.SupArray;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -36,8 +35,6 @@ import java.util.List;
 import org.bn.CoderFactory;
 import org.bn.IDecoder;
 import org.bn.IEncoder;
-import org.bn.types.BitString;
-import org.bn.types.ObjectIdentifier;
 import org.dom4j.Element;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.ss7.tcap.asn.ApplicationContextName;
@@ -47,12 +44,11 @@ import org.mobicents.protocols.ss7.tcap.asn.DialogRequestAPDU;
 import org.mobicents.protocols.ss7.tcap.asn.TcapFactory;
 
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.IMSI;
+
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.ISDN_AddressString;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Invoke;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.InvokeIdType;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.InvokeParameter;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.LMSI;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Mo_forwardSM_Arg;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Operation;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.OperationLocalvalue;
@@ -60,11 +56,8 @@ import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.ServiceCentreAddress
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Sm_RP_DA;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Sm_RP_OA;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Sm_RP_UI;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.AARQ_apdu;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.AARQ_apdu.AARQ_apduSequenceType;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Begin;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ComponentPortion;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialoguePDU;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialoguePortion;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.OrigTransactionID;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage;
@@ -195,7 +188,7 @@ public class BinaryNotesAPMessage extends APMessage {
 		String str = getHexString(sup.getBytes());
     	*/
     	
-    	// Library mobicents
+    	// Library mobicent
         AsnOutputStream aos = new AsnOutputStream();
 		this.dp.encode(aos);
 		Array sup = new DefaultArray(aos.toByteArray());

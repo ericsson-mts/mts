@@ -40,6 +40,7 @@ import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
 import com.devoteam.srit.xmlloader.sigtran.ap.APMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.BinaryNotesAPMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.HybridMAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.MobicentMAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.MobicentTCAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoField;
@@ -69,8 +70,9 @@ public class MsgSigtran extends Msg {
      */
     public MsgSigtran() throws Exception {
     	//_apMessage = new MobicentTCAPMessage();
-    	_apMessage = new MobicentMAPMessage();
+    	//_apMessage = new MobicentMAPMessage();
     	//_apMessage = new BinaryNotesAPMessage();
+    	_apMessage = new HybridMAPMessage();
     }
 
     public MsgSigtran(Array msgArray, int protocolIdentifier) throws Exception 
