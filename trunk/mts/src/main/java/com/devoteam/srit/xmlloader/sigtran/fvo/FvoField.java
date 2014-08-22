@@ -286,7 +286,7 @@ public class FvoField {
         if(FvoField.formatInteger.equalsIgnoreCase(_format)){
             Integer32Array buff = new Integer32Array(0);
             for(int i=0; i < _lengthBit; i++){
-                buff.setBit((buff.length * 8) - _lengthBit + i, array.getBit(toLittleEndianIndexBit(offsetBit, i, _lengthBit, true)));
+                buff.setBit((buff.length * 8) - _lengthBit + i, array.getBit(toLittleEndianIndexBit(offsetBit, i, _lengthBit, _littleEndian)));
             }
 
             _value = String.valueOf(buff.getValue());
@@ -295,7 +295,7 @@ public class FvoField {
             // offset and length should be multiple of 8
             DefaultArray buff = new DefaultArray(_lengthBit/8);
             for(int i=0; i < _lengthBit; i++){
-                buff.setBit((buff.length * 8) - _lengthBit + i, array.getBit(toLittleEndianIndexBit(offsetBit, i, _lengthBit, true)));
+                buff.setBit((buff.length * 8) - _lengthBit + i, array.getBit(toLittleEndianIndexBit(offsetBit, i, _lengthBit, _littleEndian)));
             }
             _value = Array.toHexString(buff);
         }
@@ -303,7 +303,7 @@ public class FvoField {
             // offset and length should be multiple of 8
             DefaultArray buff = new DefaultArray(_lengthBit/8);
             for(int i=0; i < _lengthBit; i++){
-                buff.setBit((buff.length * 8) - _lengthBit + i, array.getBit(toLittleEndianIndexBit(offsetBit, i, _lengthBit, true)));
+                buff.setBit((buff.length * 8) - _lengthBit + i, array.getBit(toLittleEndianIndexBit(offsetBit, i, _lengthBit, _littleEndian)));
             }
             _value = new String(buff.getBytes());
         }

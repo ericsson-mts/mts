@@ -152,7 +152,7 @@ public class MobicentTCAPMessage extends APMessage
     	return null;
     }
 
-    public Component[] getTCAPComponent()
+    public Component[] getTCAPComponents()
     {
     	return tcbm.getComponent();
     }
