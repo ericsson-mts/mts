@@ -113,9 +113,8 @@ public class MsgSigtran extends Msg
     		}
     	}
         // ie layer 
-    	// get Data V Parameter 
-    	// TODO Select by name instead of third one (name=Data)
-    	FvoParameter paramFvo = _fvoMessage.getVparameters().get(2);
+    	// get "Data" VParameter 
+    	FvoParameter paramFvo = _fvoMessage.getVparameter("Data");
     	if (paramFvo != null)
     	{    		
     		// decode TCAP layer with Mobicent library
@@ -123,7 +122,7 @@ public class MsgSigtran extends Msg
 	    	_tcapMessage.decode(ieArray);
 	    	
 	    	AsnOutputStream aosMAP = new AsnOutputStream();
-	    	_tcapMessage.getTCAPComponent()[0].encode(aosMAP);
+	    	_tcapMessage.getTCAPComponents()[0].encode(aosMAP);
 	    	byte[] bytesAP = aosMAP.toByteArray();
 	        Array arrayAP = new DefaultArray(bytesAP);
 
@@ -309,32 +308,14 @@ public class MsgSigtran extends Msg
         		// 
         		Array subArray = arrayAP.subArray(1);
         		AsnInputStream inputStream = new AsnInputStream(subArray.getBytes());
-        		_tcapMessage.getTCAPComponent()[0].decode(inputStream);
+        		_tcapMessage.getTCAPComponents()[0].decode(inputStream);
         		
         		// encode TCAP layer with Mobicent library
         		Array arrayTCAP = _tcapMessage.encode();
 	        	
-	        	// TODO a déplacer dans FvoMessage
-	        	LinkedList<FvoParameter> params = _fvoMessage.getVparameters();
-	        	Iterator iterParam = params.iterator();
-	        	FvoParameter param = null;
-	        	while (iterParam.hasNext())
-	        	{
-	        		param = (FvoParameter) iterParam.next();
-	        		if ("Data".equalsIgnoreCase(param.getName()))
-	        		{
-	        			break;
-	        		}
-	        	}
-	        	LinkedList<FvoField> fields = param.getFields();
-	        	Iterator iterField = fields.iterator();
-	        	FvoField field = null;
-	        	if (iterField.hasNext())
-	        	{
-	        		field = (FvoField) iterField.next();
-	        	}
-	        	String val = Array.toHexString(arrayTCAP);
-	        	field.setValue(val);
+            	// get "Data" VParameter 
+	        	FvoParameter param = _fvoMessage.getVparameter("Data");
+	        	param.parseArray(arrayTCAP);
         	}
         	if (_ieMessage != null)
         	{

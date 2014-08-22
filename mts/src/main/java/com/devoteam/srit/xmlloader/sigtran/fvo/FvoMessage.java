@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.sigtran.fvo;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Element;
@@ -31,13 +32,14 @@ import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 
-
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.Integer16Array;
 import gp.utils.arrays.SupArray;
+
 import java.util.LinkedList;
+
 import org.dom4j.Attribute;
 
 /**
@@ -227,6 +229,20 @@ public class FvoMessage {
 
     public LinkedList<FvoParameter> getVparameters() {
         return _vparameters;
+    }
+
+    public FvoParameter getVparameter(String name) {
+		Iterator<FvoParameter> iterParam = _vparameters.iterator();
+		FvoParameter param = null;
+		while (iterParam.hasNext())
+		{
+			param = (FvoParameter) iterParam.next();
+			if (name.equalsIgnoreCase(param.getName()))
+			{
+				break;
+			}
+		}
+        return param;
     }
 
     public void setVparameters(LinkedList<FvoParameter> vparameters) {
