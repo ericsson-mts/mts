@@ -31,6 +31,7 @@ import gp.utils.arrays.DefaultArray;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -43,11 +44,13 @@ import org.dom4j.io.SAXReader;
 
 /**
  *
- * @author gansquer
+ * @author fhenry
  */
-public class XmlToAsn1 {
+public class Asn1ToXml 
+{
 
-    public XmlToAsn1() {
+    public Asn1ToXml() 
+    {
     }
 
     public static Document getDocumentXML(final String xmlFileName)
@@ -63,6 +66,88 @@ public class XmlToAsn1 {
             GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, ex, "Wrong ASN1 file : ");
         }
         return document;
+    }
+
+    public String toXML(Object objClass, int indent)  
+    {
+    	String ret = "";
+		try 
+		{
+			if (objClass ==  null)
+	    	{
+	    		return ret;
+	    	}
+
+			String strClass = objClass.getClass().toString();
+	    	int pos = strClass.lastIndexOf('.');
+	    	if (pos >= 0)
+	    	{
+	    		strClass = strClass.substring(pos + 1);
+	    	}
+	    	
+			ret += indent(indent);
+	    	ret += "<";
+	    	ret += strClass;
+	    	ret +=">";
+	    	
+	        // parsing object methods 
+	    	Method[] methods = objClass.getClass().getDeclaredMethods();
+	    	for (int i= methods.length - 1; i >=0; i--)
+	    	{
+    			String name = methods[i].getName();
+    			if (name.startsWith("get") && !"getPreparedData".equals(name))
+    			{
+    				Object subObject = methods[i].invoke(objClass);
+    				if (subObject == null) 
+					{
+    					continue;
+					}
+    				Class subClass = subObject.getClass();
+    				if (subClass != null && subClass.toString().endsWith(".Integer"))
+    				{
+    					ret +=subObject.toString().trim(); 
+    				} 
+    				if (subClass != null && subClass.toString().endsWith(".Long"))
+    				{
+    					ret +=subObject.toString(); 
+    				} 
+    				else
+    				{
+    					ret += "\n";
+    					ret += toXML(subObject, indent + 2);
+    					ret += "\n";
+    				}
+    			}
+    			Class classe = methods[i].getClass();
+				int j=0;
+			}
+	    	
+			ret += indent(indent);
+	    	ret += "</";
+	    	ret += strClass;
+	    	ret += ">";
+	    	
+		} 
+		catch (Exception e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+
+    	return ret;
+    }
+    
+    /**
+     * generates a string of nb*"    " (four spaces nb times), used for intentation in printAvp
+     */
+    private static String indent(int nb)
+    {
+        String str = "";
+        for (int i = 0; i < nb; i++)
+        {
+            str += " ";
+        }
+        return str;
     }
 
     public void initObject(Object objClass, Element root, String ClasseName) throws InvocationTargetException, ClassNotFoundException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InstantiationException 

@@ -45,8 +45,6 @@ import org.mobicents.protocols.ss7.tcap.asn.TCBeginMessageImpl;
 import org.mobicents.protocols.ss7.tcap.asn.TcapFactory;
 import org.mobicents.protocols.ss7.tcap.asn.comp.TCBeginMessage;
 
-import com.devoteam.srit.xmlloader.h323.h225cs.Asn1ToXml;
-import com.devoteam.srit.xmlloader.h323.h225cs.XmlToAsn1;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.ISDN_AddressString;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Invoke;
@@ -66,13 +64,18 @@ import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage;
  *
  * @author fhenry
  */
-public class BinaryNotesAPMessage extends APMessage 
-{
+public class HybridMAPMessageExperim extends APMessage {
 
+	// MAPServiceSms mapMessage;
+	//MoForwardShortMessageRequestImpl mapMessage;
+	
 	// MAP bionarynotes object
 	Component mapComponent; 
+	// TCAP mobicent object
+	TCBeginMessage tcbm;
 	
-    public BinaryNotesAPMessage() 
+
+    public HybridMAPMessageExperim() 
     {
     	// define MAP messages (MAP.asn file)
     	this.mapComponent = new Component();
@@ -110,6 +113,51 @@ public class BinaryNotesAPMessage extends APMessage
     	invokeParameter.setValue(moforwardSM_Arg);
     	this.mapComponent.selectInvoke(invoke);
 
+    	tcbm = (TCBeginMessageImpl) TcapFactory.createTCBeginMessage();
+
+        // build TCAP layer
+
+        //if (event.getApplicationContextName() != null) {
+        //this.dpSentInBegin = true;
+        DialogPortion dp = TcapFactory.createDialogPortion();
+        dp.setUnidirectional(false);
+        DialogRequestAPDU apdu =  TcapFactory.createDialogAPDURequest();
+        // Protocol-version = true
+        apdu.setDoNotSendProtocolVersion(false);
+        dp.setDialogAPDU(apdu);
+        
+        // application-context-name=0.4.0.0.1.0.21.2
+        ApplicationContextName acn = new ApplicationContextNameImpl();
+        acn.setOid(new long[] {0,4,0,0,1,0,21,2});
+        apdu.setApplicationContextName(acn);
+        /*
+        if (event.getUserInformation() != null) {
+            apdu.setUserInformation(event.getUserInformation());
+            this.lastUI = event.getUserInformation();
+        }
+        */
+        dp.setOidValue(new long[] {0,0,17,773,1,1,1});
+        tcbm.setDialogPortion(dp);
+
+        //    if (this.provider.getStack().getStatisticsEnabled()) {
+        //        String acn = ((ApplicationContextNameImpl) event.getApplicationContextName()).getStringValue();
+        //        this.provider.getStack().getCounterProviderImpl().updateOutgoingDialogsPerApplicatioContextName(acn);
+        //    }
+        //} else {
+        //    if (this.provider.getStack().getStatisticsEnabled()) {
+        //        this.provider.getStack().getCounterProviderImpl().updateOutgoingDialogsPerApplicatioContextName("");
+        //    }
+        //}
+
+        // now comps
+    	// transaction ID= 00000001	
+    	byte[] transID = new byte[]{0,0,0,1};
+        tcbm.setOriginatingTransactionId(transID);
+        // if (this.scheduledComponentList.size() > 0) {
+        org.mobicents.protocols.ss7.tcap.asn.comp.Component[] componentsToSend = new org.mobicents.protocols.ss7.tcap.asn.comp.Component[1];
+        componentsToSend[0] = TcapFactory.createComponentInvoke();
+        tcbm.setComponent(componentsToSend);
+        //}
     }
 
     public Array encode() throws Exception 
@@ -122,48 +170,59 @@ public class BinaryNotesAPMessage extends APMessage
         Array arrayMAP = new DefaultArray(bytesMAP);
         String strMAP = getHexString(bytesMAP);
 		
-        return arrayMAP;
+		Array subArray = arrayMAP.subArray(1);
+		AsnInputStream inputStream = new AsnInputStream(subArray.getBytes());
+		tcbm.getComponent()[0].decode(inputStream);
+		
+		AsnOutputStream aosTCAP = new AsnOutputStream();
+		tcbm.encode(aosTCAP);
+		Array arrayTCAP = new DefaultArray(aosTCAP.toByteArray());
+		
+		// Array supArray = arrayTCAP.subArray(1);
+		// AsnInputStream aos = new AsnInputStream(supArray.getBytes());
+    	// tcbm.decode(aos);
+		
+        return arrayTCAP;
     }
           
     
     public void decode(Array array) throws Exception 
     {
+		Array supArray = array.subArray(1);
+    	AsnInputStream aos = new AsnInputStream(supArray.getBytes());
+    	tcbm.decode(aos);
+    	
+    	AsnOutputStream aosMAP = new AsnOutputStream();
+    	tcbm.getComponent()[0].encode(aosMAP);
+    	byte[] bytesMAP = aosMAP.toByteArray();
+        Array arrayMAP = new DefaultArray(bytesMAP);
         
     	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
-        InputStream inputStream = new ByteArrayInputStream(array.getBytes());
+        InputStream inputStream = new ByteArrayInputStream(arrayMAP.getBytes());
         this.mapComponent = decoder.decode(inputStream, Component.class);
-        
     }
 
     public void parseFromXML(Element root) throws Exception 
     {
-        if (root.element("ASN1") != null) 
-        {
+        if (root.element("ASN1") != null) {
             List<Element> children = root.element("ASN1").elements();
             for (Element element : children) 
             {
+            	/* FH ne compile pas
             	XmlToAsn1 xml_asn1 = new XmlToAsn1();
-                String PackageName = " com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component";
-                Component asn1 = (Component) xml_asn1.instanceClass(element.getName(), PackageName);
+                String PackageName = "com.devoteam.srit.xmlloader.h323.h225v7.";
+                asn1 = xml_asn1.instanceClass(element.getName(), PackageName);
                 xml_asn1.initObject(asn1, element, PackageName);
+                */
             }
         }
     }
 
-    public String toXML()
+    public String toXML() 
     {
-    	Asn1ToXml xml_asn1 = new Asn1ToXml();
-        String PackageName = " com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component";
-        String ret = "";
-        ret += "<AP>";
-        ret += "\n";
-        ret += xml_asn1.toXML(this.mapComponent, 0);
-        ret += "\n";
-        ret += "</AP>";
-    	return ret;
+    	return null;
     }
 
-    
     private static String getHexString(byte[] b) throws Exception 
     {
         String result = "";

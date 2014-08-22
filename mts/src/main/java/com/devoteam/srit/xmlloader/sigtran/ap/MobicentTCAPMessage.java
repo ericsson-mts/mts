@@ -147,7 +147,7 @@ public class MobicentTCAPMessage extends APMessage
         }
     }
 
-    public String toXML(Element root) throws Exception 
+    public String toXML()
     {
     	return null;
     }

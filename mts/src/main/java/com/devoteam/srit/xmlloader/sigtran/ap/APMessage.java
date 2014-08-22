@@ -55,6 +55,6 @@ public abstract class APMessage {
 
     public abstract void parseFromXML(Element root) throws Exception;
     
-    public abstract String toXML(Element root) throws Exception;
+    public abstract String toXML();
     	
 }
