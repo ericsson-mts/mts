@@ -69,19 +69,21 @@ public class MsgSigtran extends Msg {
      */
     public MsgSigtran() throws Exception {
     	//_apMessage = new MobicentTCAPMessage();
-    	//_apMessage = new MobicentMAPMessage();
-    	_apMessage = new BinaryNotesAPMessage();
+    	_apMessage = new MobicentMAPMessage();
+    	//_apMessage = new BinaryNotesAPMessage();
     }
 
-    public MsgSigtran(Array msgArray, int protocolIdentifier) throws Exception {
+    public MsgSigtran(Array msgArray, int protocolIdentifier) throws Exception 
+    {
+    	this();
         _tlvProtocol = protocolIdentifier;
         _encodedCache = msgArray.getBytes();
         _tlvMessage = new TlvMessage(this, msgArray, protocolIdentifier);
         // ie layer 
-    	TlvParameter param = _tlvMessage.getTlvParameter("Protocol_Data");
-    	if (param != null)
+    	TlvParameter paramTlv = _tlvMessage.getTlvParameter("Protocol_Data");
+    	if (paramTlv != null)
     	{
-    		TlvField field = param.getTlvField("Protocol_Data");
+    		TlvField field = paramTlv.getTlvField("Protocol_Data");
     		if (field != null)
     		{
         		String ieStr = field.getValue();
@@ -96,6 +98,16 @@ public class MsgSigtran extends Msg {
 	    		}
     		}
     	}
+        // ie layer 
+    	// get Data V Parameter 
+    	// TODO Select by name instead of third one (name=Data)
+    	FvoParameter paramFvo = _fvoMessage.getVparameters().get(2);
+    	if (paramFvo != null)
+    	{    		
+    		Array ieArray = paramFvo.encode();
+    		//_apMessage = new BinaryNotesAPMessage();
+	    	_apMessage.decode(ieArray);
+    	}	
     }
 
     /** Get a parameter from the message */
