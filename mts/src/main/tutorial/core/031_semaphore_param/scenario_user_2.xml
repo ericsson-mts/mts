@@ -4,11 +4,22 @@
 
 <scenario>
 
-
-    <parameter name="[test:sem_test1]" operation="system.semaphorewait" value="1"/>
-    <pause seconds="0.2"/>
-	<parameter name="[testcase:sem_test1]" operation="system.semaphorenotify" value="2"/>
-	
-    <parameter name="[test:sem_test1]" operation="system.semaphorewait" value="1"/>
+    <parameter name="[tsBegin]" operation="system.timestamp"/>
+    <parameter name="[testcase:begin]" operation="system.semaphorenotify"/>
+    <parameter name="[testcase:sema_reg]" operation="system.semaphorewait" value="3"/>
+    <parameter name="[testcase:sema_reg]" operation="list.remove"/>
+    <parameter name="[tsEnd]" operation="system.timestamp"/>
+    
+    <parameter name="[diff]" operation="number.substract" value="[tsEnd]" value2="[tsBegin]"/>
+    <log type="main" level="INFO">diff=[diff]</log>
+    <if>
+      <condition>
+        <test parameter="[diff]" condition="number.greaterEqualThan" value="[testcase:delay]" not="true"/>
+      </condition>
+      <then>
+        <log type="main" level="WARN">diff=[diff]</log>
+      </then>    
+    </if>
+    <test parameter="[diff]" condition="number.greaterEqualThan" value="[testcase:delay]"/>
 
 </scenario>
