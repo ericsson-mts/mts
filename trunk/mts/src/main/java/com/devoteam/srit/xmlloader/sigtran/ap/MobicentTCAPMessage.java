@@ -29,6 +29,7 @@ import gp.utils.arrays.DefaultArray;
 import java.util.List;
 
 import org.dom4j.Element;
+import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.mobicents.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
@@ -125,6 +126,8 @@ public class MobicentTCAPMessage extends APMessage {
             param.setPrimitive(false);
             ((Invoke) componentsToSend[0]).setParameter(param);
             tcbm.setComponent(componentsToSend);
+            
+            
         //}
 
     }
@@ -133,18 +136,31 @@ public class MobicentTCAPMessage extends APMessage {
     {
     	// Library mobicents
         AsnOutputStream aos = new AsnOutputStream();
-		tcbm.encode(aos);
+		this.tcbm.encode(aos);
 		Array array = new DefaultArray(aos.toByteArray());
+		
+		//Array subArray = array.subArray(1);
+		//AsnInputStream ais = new AsnInputStream(subArray.getBytes());
+		//this.tcbm = (TCBeginMessageImpl) TcapFactory.createTCBeginMessage();
+    	//this.tcbm.decode(ais);
+    	
         return array;
     }
 
-    public void decode(Array array) throws Exception {
+    public void decode(Array array) throws Exception 
+    {
+    	Array subArray = array.subArray(1);	
+    	AsnInputStream ais = new AsnInputStream(subArray.getBytes());
+    	tcbm.decode(ais);
     }
 
-    public void parseFromXML(Element root) throws Exception {
-        if (root.element("ASN1") != null) {
+    public void parseFromXML(Element root) throws Exception 
+    {
+        if (root.element("ASN1") != null) 
+        {
             List<Element> children = root.element("ASN1").elements();
-            for (Element element : children) {
+            for (Element element : children) 
+            {
             	/* FH ne compile pas
             	XmlToAsn1 xml_asn1 = new XmlToAsn1();
                 String PackageName = "com.devoteam.srit.xmlloader.h323.h225v7.";

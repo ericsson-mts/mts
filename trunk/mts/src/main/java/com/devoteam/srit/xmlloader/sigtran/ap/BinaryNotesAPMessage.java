@@ -78,10 +78,10 @@ public class BinaryNotesAPMessage extends APMessage {
 
 	// TCAP layer
 	TCMessage tcMessage;
-	Begin tcapBegin;
+	// Begin tcapBegin;
 	// DialoguePDU dialoguePdu;
 	org.mobicents.protocols.ss7.tcap.asn.DialogPortion dp;
-	ArrayList<com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component> comps;
+	// ArrayList<com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component> comps;
 	
 	//MAP layer
 	Component mapComponent; 
@@ -90,17 +90,17 @@ public class BinaryNotesAPMessage extends APMessage {
     {
     	
     	// Define TCMessages (TCAP.asn file)
-    	this.tcapBegin = new Begin();
+    	Begin tcapBegin = new Begin();
     	OrigTransactionID otid = new OrigTransactionID();
     	byte[] transID = new byte[]{0,0,0,1};
-    	otid.setValue(transID);
-    	this.tcapBegin.setOtid(otid);
+    	otid.setValue(transID); 
+    	tcapBegin.setOtid(otid);
     	ComponentPortion cp = new ComponentPortion();
     	com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component comp = new com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component();
-    	this.comps = new ArrayList<com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component>();
-    	this.comps.add(comp);
+    	ArrayList<com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component> comps = new ArrayList<com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component>();
+    	comps.add(comp);
     	cp.setValue(comps);
-    	this.tcapBegin.setComponents(cp);
+    	tcapBegin.setComponents(cp);
     	this.tcMessage = new TCMessage();
     	this.tcMessage.selectBegin(tcapBegin); 
     	// this.dialoguePdu.initWithDefaults();
@@ -203,20 +203,27 @@ public class BinaryNotesAPMessage extends APMessage {
         DialoguePortion dialogPortion = new DialoguePortion();
         dialogPortion.setValue(sup.getBytes());
     	//dp.setValue(new byte[]{(byte) 0x6b,(byte) 0x1e,(byte) 0x28,(byte) 0x1c,(byte) 0x06,(byte) 0x07,(byte) 0x00,(byte) 0x11,(byte) 0x86,(byte) 0x05,(byte) 0x01,(byte) 0x01,(byte) 0x01,(byte) 0xa0,(byte) 0x11,(byte) 0x60,(byte) 0x0f,(byte) 0x80, (byte) 0x02, (byte) 0x07, (byte) 0x80, (byte) 0xa1, (byte) 0x09, (byte) 0x06, (byte) 0x07, (byte) 0x04, (byte) 0x00, (byte) 0x00, (byte) 0x01, (byte) 0x00, (byte) 0x15, (byte) 0x02});
-        this.tcapBegin.setDialoguePortion(dialogPortion);
+        this.tcMessage.getBegin().setDialoguePortion(dialogPortion);
     	
     	IEncoder<com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component> encoderMAP = CoderFactory.getInstance().newEncoder("BER");
     	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         encoderMAP.encode(this.mapComponent, outputStream);
         byte[] bytesMAP = outputStream.toByteArray();
         String strMAP = getHexString(bytesMAP);
-        this.comps.get(0).setValue(bytesMAP);
-    	//this.comps.get(0).setValue(new byte[]{(byte) 0xa1,(byte) 0x30,(byte) 0x02,(byte) 0x01,(byte) 0x01,(byte) 0x02,(byte) 0x01,(byte) 0x2e,(byte) 0x30,(byte) 0x28, (byte) 0x84,(byte) 0x07,(byte) 0x91,(byte) 0x33,(byte) 0x66,(byte) 0x60,(byte) 0x05,(byte) 0x67,(byte) 0xf9,(byte) 0x82, (byte) 0x07,(byte) 0x91,(byte) 0x33,(byte) 0x66,(byte) 0x31,(byte) 0x70,(byte) 0x71,(byte) 0xf3,(byte) 0x04,(byte) 0x14,(byte) 0x11,(byte) 0x08,(byte) 0x0b,(byte) 0x91,(byte) 0x33,(byte) 0x66,(byte) 0x60,(byte) 0x05,(byte) 0x67,(byte) 0xf7,(byte) 0x00,(byte) 0x00,(byte) 0xa9,(byte) 0x06,(byte) 0xf3,(byte) 0xf9,(byte) 0x7c,(byte) 0x3e,(byte) 0x9f,(byte) 0x03});
+        this.tcMessage.getBegin().getComponents().getValue().iterator().next().setValue(bytesMAP);
+        // this.tcMessage.getBegin().getComponents().getValue().iterator().next().setValue(new byte[]{(byte) 0xa1,(byte) 0x30,(byte) 0x02,(byte) 0x01,(byte) 0x01,(byte) 0x02,(byte) 0x01,(byte) 0x2e,(byte) 0x30,(byte) 0x28, (byte) 0x84,(byte) 0x07,(byte) 0x91,(byte) 0x33,(byte) 0x66,(byte) 0x60,(byte) 0x05,(byte) 0x67,(byte) 0xf9,(byte) 0x82, (byte) 0x07,(byte) 0x91,(byte) 0x33,(byte) 0x66,(byte) 0x31,(byte) 0x70,(byte) 0x71,(byte) 0xf3,(byte) 0x04,(byte) 0x14,(byte) 0x11,(byte) 0x08,(byte) 0x0b,(byte) 0x91,(byte) 0x33,(byte) 0x66,(byte) 0x60,(byte) 0x05,(byte) 0x67,(byte) 0xf7,(byte) 0x00,(byte) 0x00,(byte) 0xa9,(byte) 0x06,(byte) 0xf3,(byte) 0xf9,(byte) 0x7c,(byte) 0x3e,(byte) 0x9f,(byte) 0x03});
     	
+        //IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
+        //InputStream inputStream = new ByteArrayInputStream(bytesMAP);
+        //this.mapComponent = decoder.decode(inputStream, Component.class);
+        
     	IEncoder<com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage> encoderTCMessages = CoderFactory.getInstance().newEncoder("BER");
 		outputStream = new ByteArrayOutputStream();
 		encoderTCMessages.encode(this.tcMessage, outputStream);
 		Array array =Array.fromHexString(getHexString(outputStream.toByteArray()));
+		
+		//this.decode(array);
+        
 		return array;
     } 
 
@@ -224,7 +231,13 @@ public class BinaryNotesAPMessage extends APMessage {
     {
     	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
         InputStream inputStream = new ByteArrayInputStream(array.getBytes());
-        tcMessage = decoder.decode(inputStream, TCMessage.class);
+        this.tcMessage = decoder.decode(inputStream, TCMessage.class);
+        byte[] otid = this.tcMessage.getBegin().getOtid().getValue();
+        String strOtid = getHexString(otid);
+        byte[] dialoguePortion = this.tcMessage.getBegin().getDialoguePortion().getValue();
+        String strDP = getHexString(dialoguePortion);
+        ComponentPortion componentPortion = this.tcMessage.getBegin().getComponents();
+        // com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component comp = componentPortion.getValue().iterator().next();
     }
 
     public void parseFromXML(Element root) throws Exception {

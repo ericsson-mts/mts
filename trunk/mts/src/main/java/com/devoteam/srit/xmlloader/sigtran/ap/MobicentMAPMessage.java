@@ -40,6 +40,7 @@ import org.mobicents.protocols.ss7.map.api.primitives.AddressNature;
 import org.mobicents.protocols.ss7.map.api.primitives.AddressString;
 import org.mobicents.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.mobicents.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.mobicents.protocols.ss7.map.api.service.sms.MAPServiceSms;
 import org.mobicents.protocols.ss7.map.api.service.sms.SM_RP_DA;
 import org.mobicents.protocols.ss7.map.api.service.sms.SmsSignalInfo;
 import org.mobicents.protocols.ss7.map.primitives.AddressStringImpl;
@@ -67,12 +68,14 @@ import org.mobicents.protocols.ss7.tcap.asn.comp.TCBeginMessage;
  */
 public class MobicentMAPMessage extends APMessage {
 
+	// MAPServiceSms mapMessage;
 	MoForwardShortMessageRequestImpl mapMessage;
 	TCBeginMessage tcbm;
 	
 
-    public MobicentMAPMessage() {
-    	
+    public MobicentMAPMessage() 
+    {
+    	// mapMessage = new MAPServiceSms();
         AddressString sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "33660650769");
         SM_RP_DA sm_RP_DA = new SM_RP_DAImpl(sca);
         ISDNAddressString msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
@@ -125,8 +128,8 @@ public class MobicentMAPMessage extends APMessage {
     	byte[] transID = new byte[]{0,0,0,1};
         tcbm.setOriginatingTransactionId(transID);
         // if (this.scheduledComponentList.size() > 0) {
-            Component[] componentsToSend = new Component[0];
-            //componentsToSend[0] = TcapFactory.createComponentInvoke();
+            Component[] componentsToSend = new Component[1];
+            componentsToSend[0] = TcapFactory.createComponentInvoke();
             /*
             ((Invoke) componentsToSend[0]).setInvokeId((long) 1);
             // ((Invoke) componentsToSend[0]).setLinkedId((long) 1);
@@ -170,24 +173,40 @@ public class MobicentMAPMessage extends APMessage {
         AsnOutputStream aosMAP = new AsnOutputStream();
 		mapMessage.encodeAll(aosMAP);
 		Array arrayMAP = new DefaultArray(aosMAP.toByteArray());
+
+		SupArray sup = new SupArray();
+		Array arraySep = new DefaultArray(new byte[]{(byte) 0xa1, (byte) 0x30, (byte) 0x02, (byte) 0x01, (byte) 0x01, (byte) 0x02, (byte) 0x01, (byte) 0x2e});
+		sup.addFirst(arraySep);
+		sup.addLast(arrayMAP);
 		
-		AsnInputStream inputStream = new AsnInputStream(aosMAP.toByteArray());
-		//tcbm.getComponent()[0].decode(inputStream);
+		Array subArray = sup.subArray(1);
+		AsnInputStream inputStream = new AsnInputStream(subArray.getBytes());
+		tcbm.getComponent()[0].decode(inputStream);
 		//((Component) tcbm.getComponent()[0]).
 		
 		AsnOutputStream aosTCAP = new AsnOutputStream();
 		tcbm.encode(aosTCAP);
 		Array arrayTCAP = new DefaultArray(aosTCAP.toByteArray());
 		
-		SupArray sup = new SupArray();
-		sup.addFirst(arrayTCAP);
-		Array arraySep = new DefaultArray(new byte[]{(byte) 0xa1, (byte) 0x30, (byte) 0x02, (byte) 0x01, (byte) 0x01, (byte) 0x02, (byte) 0x01, (byte) 0x2e});
-		sup.addLast(arraySep);
-		sup.addLast(arrayMAP);
-        return sup;
+		//SupArray sup = new SupArray();
+		//sup.addFirst(arrayTCAP);
+		//Array arraySep = new DefaultArray(new byte[]{(byte) 0xa1, (byte) 0x30, (byte) 0x02, (byte) 0x01, (byte) 0x01, (byte) 0x02, (byte) 0x01, (byte) 0x2e});
+		//sup.addLast(arraySep);
+		//sup.addLast(arrayMAP);
+		
+		Array supArray = arrayTCAP.subArray(1);
+		AsnInputStream aos = new AsnInputStream(supArray.getBytes());
+    	tcbm.decode(aos);
+		
+        return arrayTCAP;
     }
-
-    public void decode(Array array) throws Exception {
+          
+    
+    public void decode(Array array) throws Exception 
+    {
+		Array supArray = array.subArray(1);
+    	AsnInputStream aos = new AsnInputStream(supArray.getBytes());
+    	tcbm.decode(aos);
     }
 
     public void parseFromXML(Element root) throws Exception {
