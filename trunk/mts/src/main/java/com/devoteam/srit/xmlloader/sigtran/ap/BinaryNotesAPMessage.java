@@ -45,6 +45,7 @@ import org.mobicents.protocols.ss7.tcap.asn.TCBeginMessageImpl;
 import org.mobicents.protocols.ss7.tcap.asn.TcapFactory;
 import org.mobicents.protocols.ss7.tcap.asn.comp.TCBeginMessage;
 
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.h323.h225cs.Asn1ToXml;
 import com.devoteam.srit.xmlloader.h323.h225cs.XmlToAsn1;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component;
@@ -120,7 +121,7 @@ public class BinaryNotesAPMessage extends APMessage
         encoderMAP.encode(this.mapComponent, outputStream);
         byte[] bytesMAP = outputStream.toByteArray();
         Array arrayMAP = new DefaultArray(bytesMAP);
-        String strMAP = getHexString(bytesMAP);
+        // String strMAP = Utils.toHexaString(bytesMAP, null);
 		
         return arrayMAP;
     }
@@ -153,7 +154,6 @@ public class BinaryNotesAPMessage extends APMessage
     public String toXML()
     {
     	Asn1ToXml xml_asn1 = new Asn1ToXml();
-        String PackageName = " com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component";
         String ret = "";
         ret += "<AP>";
         ret += "\n";
@@ -162,15 +162,5 @@ public class BinaryNotesAPMessage extends APMessage
         ret += "</AP>";
     	return ret;
     }
-
     
-    private static String getHexString(byte[] b) throws Exception 
-    {
-        String result = "";
-        for (int i = 0; i < b.length; i++) {
-            result +=
-                    Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
-        }
-        return result;
-    }
 }

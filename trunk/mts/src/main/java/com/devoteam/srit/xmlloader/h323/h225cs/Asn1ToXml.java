@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
+import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
 import java.lang.reflect.Field;
@@ -85,14 +86,15 @@ public class Asn1ToXml
 	    		strClass = strClass.substring(pos + 1);
 	    	}
 	    	
-			ret += indent(indent);
 	    	ret += "<";
 	    	ret += strClass;
 	    	ret +=">";
 	    	
 	        // parsing object methods 
 	    	Method[] methods = objClass.getClass().getDeclaredMethods();
-	    	for (int i= methods.length - 1; i >=0; i--)
+	    	//for (int i= methods.length - 1; i >=0; i--)
+	    	boolean simple = true;
+	    	for (int i= 0; i < methods.length; i++)
 	    	{
     			String name = methods[i].getName();
     			if (name.startsWith("get") && !"getPreparedData".equals(name))
@@ -103,26 +105,42 @@ public class Asn1ToXml
     					continue;
 					}
     				Class subClass = subObject.getClass();
-    				if (subClass != null && subClass.toString().endsWith(".Integer"))
+    				if (subClass != null && subClass.getCanonicalName().equals("java.lang.Boolean"))
     				{
-    					ret +=subObject.toString().trim(); 
+    					ret +=subObject.toString();
     				} 
-    				if (subClass != null && subClass.toString().endsWith(".Long"))
+    				else if (subClass != null && subClass.getCanonicalName().equals("java.lang.Long"))
     				{
-    					ret +=subObject.toString(); 
+    					ret +=subObject.toString();
+    				}
+    				else if (subClass != null && subClass.getCanonicalName().equals("java.lang.Integer"))
+    				{
+    					ret +=subObject.toString();
     				} 
+    				else if (subClass != null && subClass.getCanonicalName().equals("java.lang.String"))
+    				{
+    					ret +=subObject.toString();
+    				}
+    				else if (subClass != null && subClass.getCanonicalName().equals("byte[]"))
+    				{
+    					byte[] bytes = (byte[]) subObject;
+    					ret += Utils.toHexaString(bytes, null);
+    				}
     				else
     				{
     					ret += "\n";
+    					ret += indent(indent);
     					ret += toXML(subObject, indent + 2);
-    					ret += "\n";
-    				}
+    					simple = false;
+       				}
     			}
-    			Class classe = methods[i].getClass();
-				int j=0;
 			}
 	    	
-			ret += indent(indent);
+			if (!simple)
+			{
+		    	ret += "\n";
+		    	ret += indent(indent -2);
+			}
 	    	ret += "</";
 	    	ret += strClass;
 	    	ret += ">";

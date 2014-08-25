@@ -750,7 +750,15 @@ public class Utils
     {
     	return toHexaString(data, 0, -1);
     }
+    public static String toHexaString(byte[] data, String sep)    
+    {
+    	return toHexaString(data, 0, -1, sep);
+    }
     public static String toHexaString(byte[] data, int offset, int length)
+    {
+    	return toHexaString(data, offset, length, ".");
+    }
+    public static String toHexaString(byte[] data, int offset, int length, String sep)
     {
         StringBuffer buffer = new StringBuffer();
         if (length == -1)
@@ -767,7 +775,10 @@ public class Utils
             }
 
             buffer.append(Integer.toHexString(value));
-            buffer.append('.');
+            if (sep != null)
+            {
+            	buffer.append(sep);
+            }
         }
         String res = buffer.toString(); 
         return res;

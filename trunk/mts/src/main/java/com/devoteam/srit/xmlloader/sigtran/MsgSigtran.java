@@ -370,7 +370,7 @@ public class MsgSigtran extends Msg
     @Override
     public String toXml() 
     {
-        String ret = "";
+        String ret = "\n";
         if (_apMessage != null) 
         {
             ret += _apMessage.toXML() + "\n";
