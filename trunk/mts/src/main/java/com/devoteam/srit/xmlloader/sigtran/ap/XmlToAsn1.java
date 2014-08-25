@@ -27,12 +27,10 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
-import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -45,12 +43,12 @@ import org.dom4j.io.SAXReader;
 
 /**
  *
- * @author fhenry
+ * @author gansquer
  */
-public class Asn1ToXml 
+public class XmlToAsn1 
 {
 
-    public Asn1ToXml() 
+    public XmlToAsn1() 
     {
     }
 
@@ -69,116 +67,6 @@ public class Asn1ToXml
         return document;
     }
 
-    public String toXML(Object objClass, int indent)  
-    {
-    	indent = indent + 2;
-    	String ret = "";
-		try 
-		{
-			if (objClass ==  null)
-	    	{
-	    		return ret;
-	    	}
-
-			String strClass = objClass.getClass().toString();
-	    	int pos = strClass.lastIndexOf('.');
-	    	if (pos >= 0)
-	    	{
-	    		strClass = strClass.substring(pos + 1);
-	    	}
-	    	
-			ret += "\n";
-			ret += indent(indent);
-	    	ret += "<";
-	    	ret += strClass;
-	    	ret +=">";
-	    	
-	        // parsing object methods 
-	    	Method[] methods = objClass.getClass().getDeclaredMethods();
-	    	//for (int i= methods.length - 1; i >=0; i--)
-	    	boolean simple = true;
-	    	for (int i= 0; i < methods.length; i++)
-	    	{
-    			String name = methods[i].getName();
-    			if (name.startsWith("get") && !"getPreparedData".equals(name))
-    			{
-    				Object subObject = methods[i].invoke(objClass);
-    				if (subObject == null) 
-					{
-    					continue;
-					}
-    				Class subClass = subObject.getClass();
-    				if (subClass != null && subClass.getCanonicalName().equals("java.lang.Boolean"))
-    				{
-    					ret += "<Boolean>"; 
-    					ret +=subObject.toString();
-    					ret += "</Boolean>";
-    				} 
-    				else if (subClass != null && subClass.getCanonicalName().equals("java.lang.Long"))
-    				{
-    					ret += "<Long>";
-    					ret +=subObject.toString();
-    					ret += "</Long>";
-    				}
-    				else if (subClass != null && subClass.getCanonicalName().equals("java.lang.Integer"))
-    				{
-    					ret += "<Integer>";
-    					ret +=subObject.toString();
-    					ret += "</Integer>";
-    				} 
-    				else if (subClass != null && subClass.getCanonicalName().equals("java.lang.String"))
-    				{
-    					ret += "<String>";
-    					ret +=subObject.toString();
-    					ret += "</String>";
-    				}
-    				else if (subClass != null && subClass.getCanonicalName().equals("byte[]"))
-    				{
-    					byte[] bytes = (byte[]) subObject;
-    					ret += "<Bytes>";
-    					ret += Utils.toHexaString(bytes, "");
-    					ret += "</Bytes>";
-    				}
-    				else
-    				{
-    					ret += toXML(subObject, indent);
-    					simple = false;
-       				}
-    			}
-			}
-	    	
-			if (!simple)
-			{
-		    	ret += "\n";
-		    	ret += indent(indent);
-			}
-	    	ret += "</";
-	    	ret += strClass;
-	    	ret += ">";
-	    	
-		} 
-		catch (Exception e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-
-    	return ret;
-    }
-    
-    /**
-     * generates a string of nb*"    " (four spaces nb times), used for intentation in printAvp
-     */
-    private static String indent(int nb)
-    {
-        String str = "";
-        for (int i = 0; i < nb; i++)
-        {
-            str += " ";
-        }
-        return str;
-    }
-
     public void initObject(Object objClass, Element root, String ClasseName) throws InvocationTargetException, ClassNotFoundException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InstantiationException 
     {
         // parsing XML
@@ -187,7 +75,10 @@ public class Asn1ToXml
         {
             Class thisClass = objClass.getClass();
             Field field = this.findField(objClass, element);
-            initField(objClass, element, field, ClasseName);
+            if (field != null)
+            {
+            	initField(objClass, element, field, ClasseName);
+            }
         }
     }
 
@@ -210,11 +101,17 @@ public class Asn1ToXml
     {
         for (Field field : objClass.getClass().getDeclaredFields()) 
         {
-            if (element.getName().equals("instance")) 
+            if (element.getName().equalsIgnoreCase("instance")) 
             {
                 return field;
             }
-            if (field.getName().equals(element.getName())) {
+            else if (field.getType().getCanonicalName().contains(element.getName())) 
+            {
+                return field;
+            }
+            else if (field.getType().getCanonicalName().equals("byte[]") &&
+            		element.getName().equals("Bytes")) 
+            {
                 return field;
             }
         }

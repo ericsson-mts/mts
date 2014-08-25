@@ -768,13 +768,8 @@ public class Utils
 
         for (int i = offset; i < offset + length; i++)
         {
-            int value = data[i];
-            if (value < 0)
-            {
-                value = 256 + value;
-            }
-
-            buffer.append(Integer.toHexString(value));
+            int value = (data[i] & 0xff) + 0x100;
+            buffer.append(Integer.toString(value, 16).substring(1));
             if (sep != null)
             {
             	buffer.append(sep);

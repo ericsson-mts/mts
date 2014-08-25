@@ -26,12 +26,10 @@ package com.devoteam.srit.xmlloader.sigtran.ap;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.List;
 
 import org.dom4j.Element;
+
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
 import org.mobicents.protocols.ss7.tcap.asn.ApplicationContextName;
@@ -43,7 +41,7 @@ import org.mobicents.protocols.ss7.tcap.asn.TcapFactory;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Component;
 import org.mobicents.protocols.ss7.tcap.asn.comp.TCBeginMessage;
 
-import com.devoteam.srit.xmlloader.h323.h225cs.Asn1ToXml;
+import com.devoteam.srit.xmlloader.sigtran.ap.Asn1ToXml;
 
 /**
  *
@@ -154,7 +152,6 @@ public class MobicentTCAPMessage extends APMessage
     	Asn1ToXml xml_asn1 = new Asn1ToXml();
         String ret = "";
         ret += "<TCAP>";
-        ret += "\n";
         ret += xml_asn1.toXML(this.tcbm, 0);
         ret += "\n";
         ret += "</TCAP>";

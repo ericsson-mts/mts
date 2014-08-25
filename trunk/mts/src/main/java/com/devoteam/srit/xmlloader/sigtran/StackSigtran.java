@@ -46,6 +46,8 @@ import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.MessageQ931;
+import com.devoteam.srit.xmlloader.sigtran.ap.APMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.BinaryNotesAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoDictionary;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvDictionary;
@@ -107,6 +109,14 @@ public class StackSigtran extends Stack {
     @Override
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception {
         MsgSigtran msgSigtran = new MsgSigtran();
+        
+        // AP layer (optional)
+        Element ap = root.element("AP");
+        if (ap != null) {
+        	APMessage apMessage = new BinaryNotesAPMessage();
+        	apMessage.parseFromXML(ap);
+            msgSigtran.setAPMessage(apMessage);
+        }
 
         // ISDN layer (optional)
         Element ie = root.element("ISDN");
