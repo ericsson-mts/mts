@@ -83,7 +83,7 @@ public class MsgSigtran extends Msg
     	//_apMessage = new MobicentTCAPMessage();
     	//_apMessage = new MobicentMAPMessage();
     	//_apMessage = new BinaryNotesAPMessage();
-    	_apMessage = new BinaryNotesAPMessage();
+    	//_apMessage = new BinaryNotesAPMessage();
     	_tcapMessage = new MobicentTCAPMessage();
     }
 
@@ -114,21 +114,27 @@ public class MsgSigtran extends Msg
     	}
         // ie layer 
     	// get "Data" VParameter 
-    	FvoParameter paramFvo = _fvoMessage.getVparameter("Data");
-    	if (paramFvo != null)
-    	{    		
-    		// decode TCAP layer with Mobicent library
-    		Array ieArray = paramFvo.encode();
-	    	_tcapMessage.decode(ieArray);
-	    	
-	    	AsnOutputStream aosMAP = new AsnOutputStream();
-	    	_tcapMessage.getTCAPComponents()[0].encode(aosMAP);
-	    	byte[] bytesAP = aosMAP.toByteArray();
-	        Array arrayAP = new DefaultArray(bytesAP);
-
-	        // decode AP layer with BinaryNotes
-	        _apMessage.decode(arrayAP);
-    	}	
+    	if (_fvoMessage != null)
+    	{
+	    	FvoParameter paramFvo = _fvoMessage.getVparameter("Data");
+	    	if (paramFvo != null && _tcapMessage != null)
+	    	{    		
+	    		// decode TCAP layer with Mobicent library
+	    		Array ieArray = paramFvo.encode();
+		    	_tcapMessage.decode(ieArray);
+		    	
+		    	AsnOutputStream aosMAP = new AsnOutputStream();
+		    	if (_tcapMessage.getTCAPComponents().length > 1)
+		    	{
+			    	_tcapMessage.getTCAPComponents()[0].encode(aosMAP);
+			    	byte[] bytesAP = aosMAP.toByteArray();
+			        Array arrayAP = new DefaultArray(bytesAP);
+		
+			        // decode AP layer with BinaryNotes
+			        _apMessage.decode(arrayAP);
+		    	}
+	    	}
+    	}
     }
 
     /** Get a parameter from the message */
