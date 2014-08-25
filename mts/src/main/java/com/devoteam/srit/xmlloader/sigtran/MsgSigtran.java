@@ -243,6 +243,16 @@ public class MsgSigtran extends Msg
         return false;
     }
 
+    public APMessage getAPMessage() 
+    {
+		return _apMessage;
+	}
+
+	public void setAPMessage(APMessage apMessage) 
+	{
+		this._apMessage = apMessage;
+	}
+
     public MessageQ931 getIeMessage() 
     {
 		return _ieMessage;

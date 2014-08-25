@@ -344,9 +344,11 @@
   	</xs:complexType> 
 
   	<!--                                                                                       AP -->
-	<xs:complexType name="APType" mixed="true">
-		<!--** TODO **-->
-		<xs:attribute name="file" type="xs:string"/>
+	<xs:complexType name="APType">
+      <xs:sequence>
+          <xs:any minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+		  <xs:anyAttribute/>
 	</xs:complexType>
 
      

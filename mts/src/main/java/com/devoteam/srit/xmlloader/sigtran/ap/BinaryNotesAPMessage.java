@@ -34,20 +34,9 @@ import java.util.List;
 import org.bn.CoderFactory;
 import org.bn.IDecoder;
 import org.bn.IEncoder;
-import org.dom4j.Element;
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.mobicents.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.mobicents.protocols.ss7.tcap.asn.DialogPortion;
-import org.mobicents.protocols.ss7.tcap.asn.DialogRequestAPDU;
-import org.mobicents.protocols.ss7.tcap.asn.TCBeginMessageImpl;
-import org.mobicents.protocols.ss7.tcap.asn.TcapFactory;
-import org.mobicents.protocols.ss7.tcap.asn.comp.TCBeginMessage;
 
-import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.h323.h225cs.Asn1ToXml;
-import com.devoteam.srit.xmlloader.h323.h225cs.XmlToAsn1;
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.ISDN_AddressString;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Invoke;
@@ -75,8 +64,10 @@ public class BinaryNotesAPMessage extends APMessage
 	
     public BinaryNotesAPMessage() 
     {
+    	/*
     	// define MAP messages (MAP.asn file)
     	this.mapComponent = new Component();
+
     	Invoke invoke = new Invoke();
     	
     	Operation op = new Operation();
@@ -110,7 +101,7 @@ public class BinaryNotesAPMessage extends APMessage
     	
     	invokeParameter.setValue(moforwardSM_Arg);
     	this.mapComponent.selectInvoke(invoke);
-
+    	*/
     }
 
     public Array encode() throws Exception 
@@ -138,16 +129,13 @@ public class BinaryNotesAPMessage extends APMessage
 
     public void parseFromXML(Element root) throws Exception 
     {
-        if (root.element("ASN1") != null) 
+        List<Element> children = root.elements();
+        for (Element element : children) 
         {
-            List<Element> children = root.element("ASN1").elements();
-            for (Element element : children) 
-            {
-            	XmlToAsn1 xml_asn1 = new XmlToAsn1();
-                String PackageName = " com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component";
-                Component asn1 = (Component) xml_asn1.instanceClass(element.getName(), PackageName);
-                xml_asn1.initObject(asn1, element, PackageName);
-            }
+        	XmlToAsn1 xml_asn1 = new XmlToAsn1();
+            String PackageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
+            this.mapComponent = (Component) xml_asn1.instanceClass(element.getName(), PackageName);
+            xml_asn1.initObject(this.mapComponent, element, PackageName);
         }
     }
 
@@ -156,7 +144,6 @@ public class BinaryNotesAPMessage extends APMessage
     	Asn1ToXml xml_asn1 = new Asn1ToXml();
         String ret = "";
         ret += "<AP>";
-        ret += "\n";
         ret += xml_asn1.toXML(this.mapComponent, 0);
         ret += "\n";
         ret += "</AP>";
