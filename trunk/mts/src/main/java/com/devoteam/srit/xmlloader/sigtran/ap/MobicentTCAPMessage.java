@@ -152,7 +152,7 @@ public class MobicentTCAPMessage extends APMessage
     	Asn1ToXml xml_asn1 = new Asn1ToXml();
         String ret = "";
         ret += "<TCAP>";
-        ret += xml_asn1.toXML(this.tcbm, 0);
+        ret += xml_asn1.toXML(this.tcbm, 0, true);
         ret += "\n";
         ret += "</TCAP>";
     	return ret;

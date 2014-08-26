@@ -72,7 +72,7 @@ public class Asn1ToXml
         return document;
     }
 
-    public String toXML(Object objClass, int indent)  
+    public String toXML(Object objClass, int indent, boolean addReturn)  
     {
     	indent = indent + 2;
     	String ret = "";
@@ -98,7 +98,6 @@ public class Asn1ToXml
 	        // parsing object methods 
 	    	Method[] methods = objClass.getClass().getDeclaredMethods();
 	    	//for (int i= methods.length - 1; i >=0; i--)
-	    	boolean simple = true;
 	    	for (int i= 0; i < methods.length; i++)
 	    	{
     			String name = methods[i].getName();
@@ -116,24 +115,28 @@ public class Asn1ToXml
     					ret += "<Boolean>"; 
     					ret +=subObject.toString();
     					ret += "</Boolean>";
+    					addReturn = false;
     				} 
     				else if (subClass != null && subClass.getCanonicalName().equals("java.lang.Long"))
     				{
     					ret += "<Long>";
     					ret +=subObject.toString();
     					ret += "</Long>";
+    					addReturn = false;
     				}
     				else if (subClass != null && subClass.getCanonicalName().equals("java.lang.Integer"))
     				{
     					ret += "<Integer>";
     					ret +=subObject.toString();
     					ret += "</Integer>";
+    					addReturn = false;
     				} 
     				else if (subClass != null && subClass.getCanonicalName().equals("java.lang.String"))
     				{
     					ret += "<String>";
     					ret +=subObject.toString();
     					ret += "</String>";
+    					addReturn = false;
     				}
     				else if (subClass != null && subClass.getCanonicalName().equals("byte[]"))
     				{
@@ -141,22 +144,21 @@ public class Asn1ToXml
     					ret += "<Bytes>";
     					ret += Utils.toHexaString(bytes, "");
     					ret += "</Bytes>";
+    					addReturn = false;
     				}
-    				else if (subClass != null && subClass.getCanonicalName().equals("java.util.ArrayList"))
+    				else if (subClass != null && subClass.getCanonicalName().equals("java.util.LinkedList"))
     				{
     					Collection coll = (Collection) subObject;
     					Iterator iter = coll.iterator();
-    					indent = indent;
     					ret += "\n" + indent(indent + 2);
-    					ret += "<ArrayList>";
+    					 ret += "<Collection>";
     					while (iter.hasNext())
     					{
     						Object subObj = iter.next();
-    						ret += toXML(subObj, indent + 2);
+    						ret += toXML(subObj, indent + 2, true);
     					}
     					ret += "\n" + indent(indent + 2);
-    					ret += "</ArrayList>";
-    					ret += "\n" + indent(indent);
+    					ret += "</Collection>";
     				}
     				else if (subClass != null && subClass.getCanonicalName().equals("org.bn.types.ObjectIdentifier"))
     				{
@@ -170,13 +172,12 @@ public class Asn1ToXml
     				}
     				else
     				{
-    					ret += toXML(subObject, indent);
-    					simple = false;
+    					ret += toXML(subObject, indent, true);
        				}
     			}
 			}
 	    	
-			if (!simple)
+			if (addReturn)
 			{
 		    	ret += "\n" + indent(indent);
 			}
