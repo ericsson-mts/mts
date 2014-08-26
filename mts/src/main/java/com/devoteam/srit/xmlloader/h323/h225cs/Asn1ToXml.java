@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.sigtran.ap;
+package com.devoteam.srit.xmlloader.h323.h225cs;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -36,6 +36,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Document;
@@ -138,6 +140,18 @@ public class Asn1ToXml
     					ret += "<Bytes>";
     					ret += Utils.toHexaString(bytes, "");
     					ret += "</Bytes>";
+    				}
+    				else if (subClass != null && subClass.getCanonicalName().equals("java.util.Collection"))
+    				{
+    					Collection coll = (Collection) subObject;
+    					Iterator iter = coll.iterator();
+    					ret += "<Collection>";
+    					while (iter.hasNext())
+    					{
+    						Object subObj = iter.next();
+    						ret += toXML(subObj, indent);
+    					}
+    					ret += "</Collection>";
     				}
     				else
     				{

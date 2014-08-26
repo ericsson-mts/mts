@@ -36,8 +36,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
+import org.bn.types.ObjectIdentifier;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -87,8 +90,7 @@ public class Asn1ToXml
 	    		strClass = strClass.substring(pos + 1);
 	    	}
 	    	
-			ret += "\n";
-			ret += indent(indent);
+			ret += "\n" + indent(indent);
 	    	ret += "<";
 	    	ret += strClass;
 	    	ret +=">";
@@ -100,8 +102,9 @@ public class Asn1ToXml
 	    	for (int i= 0; i < methods.length; i++)
 	    	{
     			String name = methods[i].getName();
-    			if (name.startsWith("get") && !"getPreparedData".equals(name))
+    			if (name.startsWith("get") && !name.equals("getIntArray") && !"getPreparedData".equals(name))
     			{
+    				System.out.println(methods[i]);
     				Object subObject = methods[i].invoke(objClass);
     				if (subObject == null) 
 					{
@@ -139,6 +142,32 @@ public class Asn1ToXml
     					ret += Utils.toHexaString(bytes, "");
     					ret += "</Bytes>";
     				}
+    				else if (subClass != null && subClass.getCanonicalName().equals("java.util.ArrayList"))
+    				{
+    					Collection coll = (Collection) subObject;
+    					Iterator iter = coll.iterator();
+    					indent = indent;
+    					ret += "\n" + indent(indent + 2);
+    					ret += "<ArrayList>";
+    					while (iter.hasNext())
+    					{
+    						Object subObj = iter.next();
+    						ret += toXML(subObj, indent + 2);
+    					}
+    					ret += "\n" + indent(indent + 2);
+    					ret += "</ArrayList>";
+    					ret += "\n" + indent(indent);
+    				}
+    				else if (subClass != null && subClass.getCanonicalName().equals("org.bn.types.ObjectIdentifier"))
+    				{
+    					ObjectIdentifier objId = (ObjectIdentifier) subObject;
+    					ret += "\n" + indent(indent + 2);
+    					ret += "<" + name +">";
+    					ret += "<ObjectIdentifier>";
+    					ret += objId.getValue();
+    					ret += "</ObjectIdentifier>";
+    					ret += "</" + name +">";
+    				}
     				else
     				{
     					ret += toXML(subObject, indent);
@@ -149,8 +178,7 @@ public class Asn1ToXml
 	    	
 			if (!simple)
 			{
-		    	ret += "\n";
-		    	ret += indent(indent);
+		    	ret += "\n" + indent(indent);
 			}
 	    	ret += "</";
 	    	ret += strClass;
@@ -179,141 +207,4 @@ public class Asn1ToXml
         return str;
     }
 
-    public void initObject(Object objClass, Element root, String ClasseName) throws InvocationTargetException, ClassNotFoundException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InstantiationException 
-    {
-        // parsing XML
-        List<Element> children = root.elements();
-        for (Element element : children) 
-        {
-            Class thisClass = objClass.getClass();
-            Field field = this.findField(objClass, element);
-            initField(objClass, element, field, ClasseName);
-        }
-    }
-
-    public Object instanceClass(String Classe, String ClasseName) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
-        if (!Classe.contains(ClasseName)) 
-        {
-            ClasseName = ClasseName + Classe;
-        }
-        else 
-        {
-            ClasseName = Classe;
-        }
-        Class thisClass = Class.forName(ClasseName);
-        // get an instance
-        Object iClass = thisClass.newInstance();
-        return iClass;
-    }
-
-    public Field findField(Object objClass, Element element) 
-    {
-        for (Field field : objClass.getClass().getDeclaredFields()) 
-        {
-            if (element.getName().equals("instance")) 
-            {
-                return field;
-            }
-            if (field.getName().equals(element.getName())) {
-                return field;
-            }
-        }
-        return null;
-    }
-
-    public Object parseField(Element element, String type, String className) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException, InstantiationException, InvocationTargetException, NoSuchMethodException 
-    {
-        if (type.equals("java.lang.Boolean")||type.equals("boolean"))  
-        {
-            return Boolean.valueOf(element.getTextTrim()).booleanValue();
-        }
-        else if (type.equals("java.lang.String")||type.equals("String")) 
-        {
-            return element.getTextTrim();
-        }
-        else if (type.equals("java.lang.Integer")||type.equals("int")) 
-        {
-            return Integer.parseInt(element.getTextTrim());
-        }
-        else if (type.equals("java.lang.Float")||type.equals("float"))  
-        {
-            return Float.parseFloat(element.getTextTrim());
-        }
-        else if (type.equals("java.lang.Short")||type.equals("short"))  
-        {
-            return Short.parseShort(element.getTextTrim());
-        }
-        else if (type.equals("java.lang.Long")||type.equals("long"))  
-        {
-            return Long.parseLong(element.getTextTrim());
-        }
-        else if (type.equals("java.lang.Byte")||type.equals("byte"))  
-        {
-            return Byte.parseByte(element.getTextTrim());
-        }
-        else if (type.equals("byte[]")) 
-        {
-            return new DefaultArray(Utils.parseBinaryString("h" + element.getTextTrim())).getBytes();
-        }
-        else 
-        {
-            String classNameCurrent = type.substring(type.lastIndexOf(".") + 1);
-            if ((type.contains(className)) && (!(type.equals(className + classNameCurrent)))) 
-            {
-                // static class : h225.h323_className$staticClass
-                type = type.substring(0, type.lastIndexOf(".")) + "$" + type.substring(type.lastIndexOf(".") + 1);
-            }
-            if (!type.contains(className)) 
-            {
-                className = "";
-            }
-            Object obj = Class.forName(type).newInstance();
-            Object objComplexClass = this.instanceClass(obj.getClass().getName(), className);
-            initObject(objComplexClass, element, className);
-            return objComplexClass;
-        }
-    }
-
-    public void initField(Object objClass, Element element, Field field, String ClasseName) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException, InstantiationException, InvocationTargetException, NoSuchMethodException 
-    {
-        // si le champ est privé, pour y accéder
-        field.setAccessible(true);
-        // pour ne pas traiter les static
-        if (field.toGenericString().contains("static")) 
-        {
-            return;
-        }
-        if (field.getType().getCanonicalName().contains("Collection")) 
-        {
-            // type DANS la collection
-
-            // Récupérer le type des élements de la collection
-            Type[] elementParamTypeTab = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
-
-            // Exception si la collection n'a pas un seul argument
-            if (elementParamTypeTab.length != 1) 
-            {
-                throw new RuntimeException("Message d'erreur");
-            }
-
-            Class collectionElementType = (Class) elementParamTypeTab[0];
-
-            // creer la collection
-            ArrayList<Object> listInstance = new ArrayList<Object>();
-
-            // parcourir les enfants <instance> de element
-            List<Element> children = element.elements("instance");
-            for (Element elementInstance : children) 
-            {
-                // pour chaque <instance>
-                listInstance.add(parseField(elementInstance, collectionElementType.getCanonicalName(), ClasseName));
-            }
-            // set la collection dans le field
-            field.set(objClass, listInstance);
-        }
-        else 
-        {
-            field.set(objClass, parseField(element, field.getType().getCanonicalName(), ClasseName));
-        }
-    }
 }
