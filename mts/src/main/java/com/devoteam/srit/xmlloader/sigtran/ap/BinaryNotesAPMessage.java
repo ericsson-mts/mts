@@ -144,7 +144,7 @@ public class BinaryNotesAPMessage extends APMessage
     	Asn1ToXml xml_asn1 = new Asn1ToXml();
         String ret = "";
         ret += "<AP>";
-        ret += xml_asn1.toXML(this.mapComponent, 0);
+        ret += xml_asn1.toXML(this.mapComponent, 0, true);
         ret += "\n";
         ret += "</AP>";
     	return ret;

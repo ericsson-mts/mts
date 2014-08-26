@@ -36,6 +36,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bn.types.ObjectIdentifier;
@@ -112,7 +113,7 @@ public class SetValueToAsn1
     				}
     				else if (name != null && name.equals("java.lang.Integer"))
     				{
-    					f.set(objClass, Integer.parseInt("7777"));
+    					f.set(objClass, Integer.parseInt("77"));
     				} 
     				else if (name != null && name.equals("java.lang.String"))
     				{
@@ -120,13 +121,27 @@ public class SetValueToAsn1
     				}
     				else if (name != null && name.equals("byte[]"))
     				{
-    					byte[] bytes = new byte[]{0,1,2,3,4,5,6,7,8,9};
+    					byte[] bytes = new byte[]{0,1,2,3,4,5,6,7};
     					f.set(objClass, bytes);
     				}
     				else if (name != null && name.equals("java.util.Collection"))
     				{
-    					ArrayList list = new ArrayList();
-    					f.set(objClass, list);
+    					ParameterizedType genType = (ParameterizedType) f.getGenericType();
+    					Type[] typeActualTypeArg = genType.getActualTypeArguments();
+    					LinkedList list = new LinkedList();
+    					if (typeActualTypeArg.length > 0)
+    					{
+    						String tabClassName = ((Class) typeActualTypeArg[0]).getCanonicalName();
+    						for (int j = 0; j <= 1; j++)
+    						{		
+	    						Class tabClass = Class.forName(tabClassName);
+	    						// get an instance
+	            		        Object tabObject = tabClass.newInstance();
+	            		        setValue(tabObject);
+	            		        list.add(tabObject);
+    						}
+    						f.set(objClass, list);
+    					}
     				}
     				else if (name != null && name.equals("org.bn.types.ObjectIdentifier"))
     				{
