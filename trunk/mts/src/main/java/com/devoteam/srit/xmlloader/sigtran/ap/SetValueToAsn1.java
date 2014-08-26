@@ -87,85 +87,80 @@ public class SetValueToAsn1
 	    		strClass = strClass.substring(pos + 1);
 	    	}
 	    	
-	        // parsing object methods 
-	    	//Method[] methods = objClass.getClass().getDeclaredMethods();
+	        // parsing object object fields 
 	    	Field[] fields = objClass.getClass().getDeclaredFields();
-	    	//for (int i= methods.length - 1; i >=0; i--)
-	    	boolean simple = true;
 	    	for (int i= 0; i < fields.length; i++)
 	    	{
 	    		Field f = fields[i];
-	    		 f.setAccessible(true);
-    			if (true)
-    			{
-    				String name = f.getType().getCanonicalName();
-    				if (name != null && name.equals("org.bn.coders.IASN1PreparedElementData") )
-    				{
-    					// nothing to do
-    				}
-    				else if (name != null && name.equals("java.lang.Boolean"))
-    				{
-    					f.set(objClass, Boolean.valueOf("true").booleanValue());
-    				} 
-    				else if (name != null && name.equals("java.lang.Long"))
-    				{
-    					f.set(objClass, Long.parseLong("11111111111111"));
-    				}
-    				else if (name != null && name.equals("java.lang.Integer"))
-    				{
-    					f.set(objClass, Integer.parseInt("77"));
-    				} 
-    				else if (name != null && name.equals("java.lang.String"))
-    				{
-    					f.set(objClass, "0.1.2.3.4.5.6.7.8.9");
-    				}
-    				else if (name != null && name.equals("byte[]"))
-    				{
-    					byte[] bytes = new byte[]{0,1,2,3,4,5,6,7};
-    					f.set(objClass, bytes);
-    				}
-    				else if (name != null && name.equals("java.util.Collection"))
-    				{
-    					ParameterizedType genType = (ParameterizedType) f.getGenericType();
-    					Type[] typeActualTypeArg = genType.getActualTypeArguments();
-    					LinkedList list = new LinkedList();
-    					if (typeActualTypeArg.length > 0)
-    					{
-    						String tabClassName = ((Class) typeActualTypeArg[0]).getCanonicalName();
-    						for (int j = 0; j <= 1; j++)
-    						{		
-	    						Class tabClass = Class.forName(tabClassName);
-	    						// get an instance
-	            		        Object tabObject = tabClass.newInstance();
-	            		        setValue(tabObject);
-	            		        list.add(tabObject);
-    						}
-    						f.set(objClass, list);
-    					}
-    				}
-    				else if (name != null && name.equals("org.bn.types.ObjectIdentifier"))
-    				{
-    					ObjectIdentifier objId = new ObjectIdentifier();
-    					objId.setValue("0.1.2.3.4.5.6.7.8.9");
-    					f.set(objClass, objId);
-    				}
-    				else
-    				{
-    					try
-    					{
-    						Class thisClass = Class.forName(name);
+	    		f.setAccessible(true);
+
+				String typeField = f.getType().getCanonicalName();
+				if (typeField != null && typeField.equals("org.bn.coders.ASN1PreparedElementData") )
+				{
+					// nothing to do
+				}
+				else if (typeField != null && typeField.equals("java.lang.Boolean"))
+				{
+					f.set(objClass, Boolean.valueOf("true").booleanValue());
+				} 
+				else if (typeField != null && typeField.equals("java.lang.Long"))
+				{
+					f.set(objClass, Long.parseLong("11111111111111"));
+				}
+				else if (typeField != null && typeField.equals("java.lang.Integer"))
+				{
+					f.set(objClass, Integer.parseInt("77"));
+				} 
+				else if (typeField != null && typeField.equals("java.lang.String"))
+				{
+					f.set(objClass, "0.1.2.3.4.5.6.7.8.9");
+				}
+				else if (typeField != null && typeField.equals("byte[]"))
+				{
+					byte[] bytes = new byte[]{0,1,2,3,4,5,6,7};
+					f.set(objClass, bytes);
+				}
+				else if (typeField != null && typeField.equals("java.util.Collection"))
+				{
+					ParameterizedType genType = (ParameterizedType) f.getGenericType();
+					Type[] typeActualTypeArg = genType.getActualTypeArguments();
+					LinkedList list = new LinkedList();
+					if (typeActualTypeArg.length > 0)
+					{
+						String tabClassName = ((Class) typeActualTypeArg[0]).getCanonicalName();
+						for (int j = 0; j <= 1; j++)
+						{		
+    						Class tabClass = Class.forName(tabClassName);
     						// get an instance
-            		        Object iClass = thisClass.newInstance();
-        					setValue(iClass);
-        					f.set(objClass, iClass);
-    					}
-    					catch (Exception e)
-    					{
-    						// nothing to do
-    						break;
-    					}
-       				}
-    			}
+            		        Object tabObject = tabClass.newInstance();
+            		        setValue(tabObject);
+            		        list.add(tabObject);
+						}
+						f.set(objClass, list);
+					}
+				}
+				else if (typeField != null && typeField.equals("org.bn.types.ObjectIdentifier"))
+				{
+					ObjectIdentifier objId = new ObjectIdentifier();
+					objId.setValue("0.1.2.3.4.5.6.7.8.9");
+					f.set(objClass, objId);
+				}
+				else
+				{
+					try
+					{
+						Class thisClass = Class.forName(typeField);
+						// get an instance
+        		        Object iClass = thisClass.newInstance();
+    					setValue(iClass);
+    					f.set(objClass, iClass);
+					}
+					catch (Exception e)
+					{
+						// nothing to do
+						break;
+					}
+   				}
 			}
 		} 
 		catch (Exception e) 

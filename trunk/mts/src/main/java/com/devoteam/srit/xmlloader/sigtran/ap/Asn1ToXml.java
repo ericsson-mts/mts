@@ -95,86 +95,91 @@ public class Asn1ToXml
 	    	ret += strClass;
 	    	ret +=">";
 	    	
-	        // parsing object methods 
-	    	Method[] methods = objClass.getClass().getDeclaredMethods();
-	    	//for (int i= methods.length - 1; i >=0; i--)
-	    	for (int i= 0; i < methods.length; i++)
+	        // parsing object object fields  
+	    	Field[] fields = objClass.getClass().getDeclaredFields();
+	    	//for (int i= fields.length - 1; i >=0; i--)
+	    	for (int i= 0; i < fields.length; i++)
 	    	{
-    			String name = methods[i].getName();
-    			if (name.startsWith("get") && !name.equals("getIntArray") && !"getPreparedData".equals(name))
-    			{
-    				System.out.println(methods[i]);
-    				Object subObject = methods[i].invoke(objClass);
-    				if (subObject == null) 
+    			Field f = fields[i];
+    			f.setAccessible(true);
+    			System.out.println(f);
+    			
+				Object subObject = f.get(objClass);
+				if (subObject == null) 
+				{
+					// nothing to do
+					continue;
+				}
+
+				Class subClass = subObject.getClass();
+				String typeField = subClass.getCanonicalName();
+				if (subClass.getCanonicalName().equals("org.bn.coders.ASN1PreparedElementData") )
+				{
+					// nothing to do
+					continue;
+				}
+				else if (subClass.getCanonicalName().equals("java.lang.Boolean"))
+				{
+					ret += "<Boolean>"; 
+					ret +=subObject.toString();
+					ret += "</Boolean>";
+					addReturn = false;
+				} 
+				else if (subClass.getCanonicalName().equals("java.lang.Long"))
+				{
+					ret += "<Long>";
+					ret +=subObject.toString();
+					ret += "</Long>";
+					addReturn = false;
+				}
+				else if (subClass.getCanonicalName().equals("java.lang.Integer"))
+				{
+					ret += "<Integer>";
+					ret +=subObject.toString();
+					ret += "</Integer>";
+					addReturn = false;
+				} 
+				else if (subClass.getCanonicalName().equals("java.lang.String"))
+				{
+					ret += "<String>";
+					ret +=subObject.toString();
+					ret += "</String>";
+					addReturn = false;
+				}
+				else if (subClass.getCanonicalName().equals("byte[]"))
+				{
+					byte[] bytes = (byte[]) subObject;
+					ret += "<Bytes>";
+					ret += Utils.toHexaString(bytes, "");
+					ret += "</Bytes>";
+					addReturn = false;
+				}
+				else if (subClass.getCanonicalName().equals("java.util.LinkedList"))
+				{
+					Collection coll = (Collection) subObject;
+					Iterator iter = coll.iterator();
+					ret += "\n" + indent(indent + 2);
+					 ret += "<Collection>";
+					while (iter.hasNext())
 					{
-    					continue;
+						Object subObj = iter.next();
+						ret += toXML(subObj, indent + 2, true);
 					}
-    				Class subClass = subObject.getClass();
-    				if (subClass != null && subClass.getCanonicalName().equals("java.lang.Boolean"))
-    				{
-    					ret += "<Boolean>"; 
-    					ret +=subObject.toString();
-    					ret += "</Boolean>";
-    					addReturn = false;
-    				} 
-    				else if (subClass != null && subClass.getCanonicalName().equals("java.lang.Long"))
-    				{
-    					ret += "<Long>";
-    					ret +=subObject.toString();
-    					ret += "</Long>";
-    					addReturn = false;
-    				}
-    				else if (subClass != null && subClass.getCanonicalName().equals("java.lang.Integer"))
-    				{
-    					ret += "<Integer>";
-    					ret +=subObject.toString();
-    					ret += "</Integer>";
-    					addReturn = false;
-    				} 
-    				else if (subClass != null && subClass.getCanonicalName().equals("java.lang.String"))
-    				{
-    					ret += "<String>";
-    					ret +=subObject.toString();
-    					ret += "</String>";
-    					addReturn = false;
-    				}
-    				else if (subClass != null && subClass.getCanonicalName().equals("byte[]"))
-    				{
-    					byte[] bytes = (byte[]) subObject;
-    					ret += "<Bytes>";
-    					ret += Utils.toHexaString(bytes, "");
-    					ret += "</Bytes>";
-    					addReturn = false;
-    				}
-    				else if (subClass != null && subClass.getCanonicalName().equals("java.util.LinkedList"))
-    				{
-    					Collection coll = (Collection) subObject;
-    					Iterator iter = coll.iterator();
-    					ret += "\n" + indent(indent + 2);
-    					 ret += "<Collection>";
-    					while (iter.hasNext())
-    					{
-    						Object subObj = iter.next();
-    						ret += toXML(subObj, indent + 2, true);
-    					}
-    					ret += "\n" + indent(indent + 2);
-    					ret += "</Collection>";
-    				}
-    				else if (subClass != null && subClass.getCanonicalName().equals("org.bn.types.ObjectIdentifier"))
-    				{
-    					ObjectIdentifier objId = (ObjectIdentifier) subObject;
-    					ret += "\n" + indent(indent + 2);
-    					ret += "<" + name +">";
-    					ret += "<ObjectIdentifier>";
-    					ret += objId.getValue();
-    					ret += "</ObjectIdentifier>";
-    					ret += "</" + name +">";
-    				}
-    				else
-    				{
-    					ret += toXML(subObject, indent, true);
-       				}
-    			}
+					ret += "\n" + indent(indent + 2);
+					ret += "</Collection>";
+				}
+				else if (subClass.getCanonicalName().equals("org.bn.types.ObjectIdentifier"))
+				{
+					ObjectIdentifier objId = (ObjectIdentifier) subObject;
+					ret += "\n" + indent(indent + 2);
+					ret += "<ObjectIdentifier>";
+					ret += objId.getValue();
+					ret += "</ObjectIdentifier>";
+				}
+				else
+				{
+					ret += toXML(subObject, indent, true);
+   				}
 			}
 	    	
 			if (addReturn)

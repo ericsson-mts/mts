@@ -84,7 +84,7 @@ public class MsgSigtran extends Msg
     	//_apMessage = new MobicentMAPMessage();
     	//_apMessage = new BinaryNotesAPMessage();
     	//_apMessage = new BinaryNotesAPMessage();
-    	//_tcapMessage = new MobicentTCAPMessage();
+    	_tcapMessage = new MobicentTCAPMessage();
     }
 
     public MsgSigtran(Array msgArray, int protocolIdentifier) throws Exception 
