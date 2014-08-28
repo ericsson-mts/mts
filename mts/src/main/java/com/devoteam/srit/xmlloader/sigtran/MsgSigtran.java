@@ -124,13 +124,14 @@ public class MsgSigtran extends Msg
 		    	_tcapMessage.decode(ieArray);
 		    	
 		    	AsnOutputStream aosMAP = new AsnOutputStream();
-		    	if (_tcapMessage.getTCAPComponents().length > 1)
+		    	if (_tcapMessage.getTCAPComponents().length >= 1)
 		    	{
 			    	_tcapMessage.getTCAPComponents()[0].encode(aosMAP);
 			    	byte[] bytesAP = aosMAP.toByteArray();
 			        Array arrayAP = new DefaultArray(bytesAP);
 		
 			        // decode AP layer with BinaryNotes
+			        _apMessage = new BinaryNotesAPMessage();
 			        _apMessage.decode(arrayAP);
 		    	}
 	    	}
