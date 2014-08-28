@@ -130,12 +130,12 @@ public class BinaryNotesAPMessage extends APMessage
     public void parseFromXML(Element root) throws Exception 
     {
         List<Element> children = root.elements();
-        for (Element element : children) 
+        //for (Element element : children) 
         {
         	XmlToAsn1 xml_asn1 = new XmlToAsn1();
             String PackageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
-            this.mapComponent = (Component) xml_asn1.instanceClass(element.getName(), PackageName);
-            xml_asn1.initObject(this.mapComponent, element, PackageName);
+            this.mapComponent = (Component) xml_asn1.instanceClass("Component", PackageName);
+            xml_asn1.initObject(this.mapComponent, root, PackageName);
         }
     }
 
@@ -144,7 +144,7 @@ public class BinaryNotesAPMessage extends APMessage
     	Asn1ToXml xml_asn1 = new Asn1ToXml();
         String ret = "";
         ret += "<AP>";
-        ret += xml_asn1.toXML(this.mapComponent, 0, true);
+        ret += xml_asn1.toXML(null,this.mapComponent, 0);
         ret += "\n";
         ret += "</AP>";
     	return ret;
