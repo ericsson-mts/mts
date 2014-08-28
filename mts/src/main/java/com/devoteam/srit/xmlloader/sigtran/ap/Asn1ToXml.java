@@ -72,9 +72,8 @@ public class Asn1ToXml
         return document;
     }
 
-    public String toXML(Object objClass, int indent, boolean addReturn)  
+    public String toXML(String name, Object objClass, int indent)  
     {
-    	indent = indent + 2;
     	String ret = "";
 		try 
 		{
@@ -82,27 +81,24 @@ public class Asn1ToXml
 	    	{
 	    		return ret;
 	    	}
-
-			String strClass = objClass.getClass().toString();
-	    	int pos = strClass.lastIndexOf('.');
-	    	if (pos >= 0)
-	    	{
-	    		strClass = strClass.substring(pos + 1);
-	    	}
-	    	
-			ret += "\n" + indent(indent);
-	    	ret += "<";
-	    	ret += strClass;
-	    	ret +=">";
-	    	
-	        // parsing object object fields  
+	 
+			// parsing object object fields  
 	    	Field[] fields = objClass.getClass().getDeclaredFields();
+	    	
+			if (name != null)
+			{
+				ret += "\n" + indent(indent);
+		    	ret += "<" + name + ">";
+			}
+			
+	    	int countFields = 0;
+	    	boolean complex = false; 
 	    	//for (int i= fields.length - 1; i >=0; i--)
 	    	for (int i= 0; i < fields.length; i++)
 	    	{
     			Field f = fields[i];
     			f.setAccessible(true);
-    			System.out.println(f);
+    			//System.out.println(f);
     			
 				Object subObject = f.get(objClass);
 				if (subObject == null) 
@@ -112,7 +108,6 @@ public class Asn1ToXml
 				}
 
 				Class subClass = subObject.getClass();
-				String typeField = subClass.getCanonicalName();
 				if (subClass.getCanonicalName().equals("org.bn.coders.ASN1PreparedElementData") )
 				{
 					// nothing to do
@@ -120,54 +115,74 @@ public class Asn1ToXml
 				}
 				else if (subClass.getCanonicalName().equals("java.lang.Boolean"))
 				{
-					ret += "<Boolean>"; 
+					if (countFields >= 1)
+					{
+						ret += "\n" + indent(indent);
+					}
+					ret += "<boolean>"; 
 					ret +=subObject.toString();
-					ret += "</Boolean>";
-					addReturn = false;
+					ret += "</boolean>";
 				} 
 				else if (subClass.getCanonicalName().equals("java.lang.Long"))
 				{
-					ret += "<Long>";
+					if (countFields >= 1)
+					{
+						ret += "\n" + indent(indent);
+					}
+					ret += "<long>";
 					ret +=subObject.toString();
-					ret += "</Long>";
-					addReturn = false;
+					ret += "</long>";
 				}
 				else if (subClass.getCanonicalName().equals("java.lang.Integer"))
 				{
-					ret += "<Integer>";
+					if (countFields >= 1)
+					{
+						ret += "\n" + indent(indent);
+					}
+					ret += "<integer>";
 					ret +=subObject.toString();
-					ret += "</Integer>";
-					addReturn = false;
+					ret += "</integer>";
 				} 
 				else if (subClass.getCanonicalName().equals("java.lang.String"))
 				{
-					ret += "<String>";
+					if (countFields >= 1)
+					{
+						ret += "\n" + indent(indent);
+					}
+					ret += "<string>";
 					ret +=subObject.toString();
-					ret += "</String>";
-					addReturn = false;
+					ret += "</string>";
 				}
 				else if (subClass.getCanonicalName().equals("byte[]"))
 				{
+					if (countFields >= 1)
+					{
+						ret += "\n" + indent(indent);
+					}
 					byte[] bytes = (byte[]) subObject;
-					ret += "<Bytes>";
+					ret += "<bytes>";
 					ret += Utils.toHexaString(bytes, "");
-					ret += "</Bytes>";
-					addReturn = false;
+					ret += "</bytes>";
 				}
 				else if (subClass.getCanonicalName().equals("java.util.LinkedList"))
 				{
 					Collection coll = (Collection) subObject;
 					Iterator iter = coll.iterator();
-					ret += "\n" + indent(indent + 2);
-					 ret += "<Collection>";
+					ret += "\n" + indent(indent);
+					 ret += "<collection>";
 					while (iter.hasNext())
 					{
 						Object subObj = iter.next();
-						ret += toXML(subObj, indent + 2, true);
+						ret += toXML(f.getName(), subObj, indent + 2);
 					}
-					ret += "\n" + indent(indent + 2);
-					ret += "</Collection>";
+					ret += "\n" + indent(indent);
+					ret += "</collection>";
 				}
+				else if (subClass.getCanonicalName().equals("org.bn.types.NullObject"))
+				{
+					continue;
+				}
+				/*
 				else if (subClass.getCanonicalName().equals("org.bn.types.ObjectIdentifier"))
 				{
 					ObjectIdentifier objId = (ObjectIdentifier) subObject;
@@ -176,20 +191,24 @@ public class Asn1ToXml
 					ret += objId.getValue();
 					ret += "</ObjectIdentifier>";
 				}
+				*/
 				else
 				{
-					ret += toXML(subObject, indent, true);
+					ret += toXML(f.getName(), subObject, indent + 2);
+					complex = true;
    				}
-			}
+				countFields++;
+	    	}
 	    	
-			if (addReturn)
+			if (name != null)
 			{
-		    	ret += "\n" + indent(indent);
+				if (countFields > 1 || complex)
+				{
+					ret += "\n" + indent(indent);
+				}
+				ret += "</" + name + ">";
 			}
-	    	ret += "</";
-	    	ret += strClass;
-	    	ret += ">";
-	    	
+
 		} 
 		catch (Exception e) 
 		{

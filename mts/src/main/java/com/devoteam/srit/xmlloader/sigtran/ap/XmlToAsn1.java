@@ -77,13 +77,21 @@ public class XmlToAsn1
             Field field = this.findField(objClass, element);
             if (field != null)
             {
+            	//Object subObject = instanceClass(field.getType().getCanonicalName(), ClasseName);
+            	//field.setAccessible(true);            	
+            	//field.set(objClass, subObject);
+            	//initObject(subObject, element, ClasseName);
+            	
+            	//field.setAccessible(true); 
+            	//field.set(objClass, parseField(element, field.getType().getCanonicalName(), ClasseName));
+            	
             	initField(objClass, element, field, ClasseName);
             }
         }
     }
 
     public Object instanceClass(String Classe, String ClasseName) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
-        if (!Classe.contains(ClasseName)) 
+        if (!Classe.contains(".")) 
         {
             ClasseName = ClasseName + Classe;
         }
@@ -99,18 +107,20 @@ public class XmlToAsn1
 
     public Field findField(Object objClass, Element element) 
     {
+    	String elementName = element.getName();
         for (Field field : objClass.getClass().getDeclaredFields()) 
         {
-            if (element.getName().equalsIgnoreCase("instance")) 
+        	String name = field.getName(); 
+        	String type = field.getType().getCanonicalName().toLowerCase();
+            if (name.contains(elementName)) 
             {
                 return field;
             }
-            else if (field.getType().getCanonicalName().contains(element.getName())) 
+            else if (type.contains(elementName))
             {
                 return field;
             }
-            else if (field.getType().getCanonicalName().equals("byte[]") &&
-            		element.getName().equals("Bytes")) 
+            else if (type.equals("byte[]") && elementName.equals("bytes")) 
             {
                 return field;
             }
@@ -175,6 +185,8 @@ public class XmlToAsn1
     {
         // si le champ est privé, pour y accéder
         field.setAccessible(true);
+		//System.out.println(f);
+        
         // pour ne pas traiter les static
         if (field.toGenericString().contains("static")) 
         {
