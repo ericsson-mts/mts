@@ -30,13 +30,18 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.log.TextListenerProviderRegistry;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
+import com.devoteam.srit.xmlloader.core.pluggable.PluggableComponentRegistry;
+import com.devoteam.srit.xmlloader.core.pluggable.PluggableParameterOperator;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.ExceptionHandlerSingleton;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.TextExceptionHandler;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
+import com.devoteam.srit.xmlloader.core.utils.maps.HashMap;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.ForwardingInfo;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.SetReportingStateRes;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -49,8 +54,12 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.bn.CoderFactory;
 import org.bn.IDecoder;
@@ -92,41 +101,64 @@ public class TestANS1Object {
 
         //String testFilename = args[0];
         String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
+        //String className = "ForwardingInfo";
         String className = "Component";
-        try 
+		try 
 		{
-        	testProcess(packageName, className);
+			Class classObj = Class.forName(packageName + className);
+			testProcess(packageName, classObj);
 		} 
 		catch (Exception e) 
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-    }
     
-    public static void testProcess(String packageName, String className) throws Exception
+		// inspect the classes for the given package
+    	List<Class> listClasses = ClassInspector.find(packageName);
+    	
+    	// build the hashmap to find the high level classes
+    	Map<String, Class> mapClasses = new HashMap<String, Class>();
+    	for (Class classObj : listClasses)
+    	{
+    		mapClasses.put(classObj.getCanonicalName(), classObj);
+    	}
+    	
+    	Collection<Class> collect = mapClasses.values();
+    	for (Class classObject : collect)
+    	{
+    		try 
+    		{
+    			testProcess(packageName, classObject);
+    		} 
+    		catch (Exception e) 
+    		{
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+
+    	}		
+    }
+            
+    public static void testProcess(String packageName, Class classObj) throws Exception
     {
-        Object iClass = null;
+        String className = classObj.getSimpleName();
+        System.out.println("class = " + className);
 
 		// initialize the ASN1 object
-        Class thisClass = Class.forName(packageName + className);
-        // get an instance
-		iClass = thisClass.newInstance();		
-		SetValueToAsn1 setValueToAsn1 = new SetValueToAsn1();
-        setValueToAsn1.setValue(iClass);
+		Object objectSet = classObj.newInstance();		
+		ASNInitializer.getInstance().setValue(objectSet);
 		
 		// convert the ASN1 object into XML data
-    	Asn1ToXml asn1_xml = new Asn1ToXml();
         String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         retInit += "\n\n";
         retInit += "<AP>";
-        retInit += asn1_xml.toXML(null, iClass, 0);
+        retInit += ASNToXMLConverter.getInstance().toXML(null, objectSet, 0);
         retInit += "\n";
         retInit += "</AP>";
         
         // write XML data into a file
-        File fileWrite = new File(className);
+        File fileWrite = new File("./asn1/" + className + ".xml");
         if(!fileWrite.exists()) fileWrite.createNewFile();
         OutputStream out = new FileOutputStream(fileWrite, false);
         Array array = new DefaultArray(retInit.getBytes());
@@ -134,8 +166,7 @@ public class TestANS1Object {
         out.close();
 
         // read XML data from file
-        Object objectRead = null;
-        File fileRead = new File(className);
+        File fileRead = new File("./asn1/" + className + ".xml");
         if(!fileRead.exists()) fileRead.createNewFile();
         InputStream in = new FileInputStream(fileRead);
         SAXReader reader = new SAXReader(false);
@@ -147,16 +178,15 @@ public class TestANS1Object {
         in.close();
 	        
         // parse ASN1 object from XML file
-    	XmlToAsn1 xml_asn1 = new XmlToAsn1();
-        objectRead = xml_asn1.instanceClass(className, packageName);
-        xml_asn1.initObject(objectRead, root, packageName);
+        Class thisClass = Class.forName(packageName + className);
+        Object objectRead = thisClass.newInstance();
+        XMLToASNParser.getInstance().initObject(objectRead, root, packageName);
 
 		// convert the ASN1 object ibnto XML data
-    	asn1_xml = new Asn1ToXml();
         String retXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         retXML += "\n\n";
         retXML += "<AP>";
-        retXML += asn1_xml.toXML(null, iClass, 0);
+        retXML += ASNToXMLConverter.getInstance().toXML(null, objectSet, 0);
         retXML += "\n";
         retXML += "</AP>";
         
@@ -167,7 +197,7 @@ public class TestANS1Object {
         }
 
         // write XML data into a file
-        File fileWrite1 = new File(className + "XML.xml");
+        File fileWrite1 = new File("./asn1/" + className + "XML.xml");
         if(!fileWrite1.exists()) fileWrite1.createNewFile();
         OutputStream out1 = new FileOutputStream(fileWrite1, false);
         Array array1 = new DefaultArray(retXML.getBytes());
@@ -175,9 +205,9 @@ public class TestANS1Object {
         out1.close();
 
         // encode ASN1 object into binary
-    	IEncoder<com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component> encoderMAP = CoderFactory.getInstance().newEncoder("BER");
+    	IEncoder<Object> encoderMAP = CoderFactory.getInstance().newEncoder("BER");
     	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        encoderMAP.encode((Component) objectRead, outputStream);
+        encoderMAP.encode(objectRead, outputStream);
         byte[] bytesMAP = outputStream.toByteArray();
         Array arrayMAP = new DefaultArray(bytesMAP);
 
@@ -185,19 +215,18 @@ public class TestANS1Object {
         Object objectDecoded =  null;
 		IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
 	    InputStream inputStream = new ByteArrayInputStream(arrayMAP.getBytes());
-	    objectDecoded = decoder.decode(inputStream, Component.class);
+	    objectDecoded = decoder.decode(inputStream, classObj);
 
 		// convert the ASN1 object into XML data
-    	asn1_xml = new Asn1ToXml();
         String retBinary = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         retBinary += "\n\n";
         retBinary += "<AP>";
-        retBinary += asn1_xml.toXML(null, objectDecoded, 0);
+        retBinary += ASNToXMLConverter.getInstance().toXML(null, objectDecoded, 0);
         retBinary += "\n";
         retBinary += "</AP>";
         
         // write XML data into a file
-        File file = new File(packageName + "Binary.xml");
+        File file = new File("./asn1/" + className + "Binary.xml");
         if(!file.exists()) file.createNewFile();
         OutputStream out2 = new FileOutputStream(file, false);
         Array array2 = new DefaultArray(retBinary.getBytes());

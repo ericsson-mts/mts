@@ -50,10 +50,21 @@ import org.dom4j.io.SAXReader;
  *
  * @author fhenry
  */
-public class Asn1ToXml 
+public class ASNToXMLConverter 
 {
 
-    public Asn1ToXml() 
+	static ASNToXMLConverter _instance;
+	    
+    public static ASNToXMLConverter getInstance()
+    {
+    	if (_instance != null)
+    	{
+    		return _instance;
+    	}
+    	return new ASNToXMLConverter();
+    }
+
+    public ASNToXMLConverter() 
     {
     }
 
@@ -143,6 +154,17 @@ public class Asn1ToXml
 					ret +=subObject.toString();
 					ret += "</integer>";
 				} 
+				else if (subClass.getCanonicalName().endsWith("EnumType"))
+				{
+					if (countFields >= 1)
+					{
+						ret += "\n" + indent(indent);
+					}
+
+					ret += "<enumtype>";
+					ret +=subObject.toString();
+					ret += "</enumtype>";
+				}
 				else if (subClass.getCanonicalName().equals("java.lang.String"))
 				{
 					if (countFields >= 1)

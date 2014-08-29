@@ -41,7 +41,7 @@ import org.mobicents.protocols.ss7.tcap.asn.TcapFactory;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Component;
 import org.mobicents.protocols.ss7.tcap.asn.comp.TCBeginMessage;
 
-import com.devoteam.srit.xmlloader.sigtran.ap.Asn1ToXml;
+import com.devoteam.srit.xmlloader.sigtran.ap.ASNToXMLConverter;
 
 /**
  *
@@ -149,10 +149,9 @@ public class MobicentTCAPMessage extends APMessage
 
     public String toXML()
     {
-    	Asn1ToXml xml_asn1 = new Asn1ToXml();
         String ret = "";
         ret += "<TCAP>";
-        ret += xml_asn1.toXML(null, this.tcbm, 0);
+        ret += ASNToXMLConverter.getInstance().toXML(null, this.tcbm, 0);
         ret += "\n";
         ret += "</TCAP>";
     	return ret;
