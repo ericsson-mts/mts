@@ -168,8 +168,9 @@ public class Asn1ToXml
 				{
 					Collection coll = (Collection) subObject;
 					Iterator iter = coll.iterator();
+					indent = indent + 2;
 					ret += "\n" + indent(indent);
-					 ret += "<collection>";
+					ret += "<collection>";
 					while (iter.hasNext())
 					{
 						Object subObj = iter.next();
@@ -177,6 +178,7 @@ public class Asn1ToXml
 					}
 					ret += "\n" + indent(indent);
 					ret += "</collection>";
+					complex = true;
 				}
 				else if (subClass.getCanonicalName().equals("org.bn.types.NullObject"))
 				{
