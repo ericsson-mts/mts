@@ -34,7 +34,6 @@ import java.util.List;
 import org.bn.CoderFactory;
 import org.bn.IDecoder;
 import org.bn.IEncoder;
-
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component;
@@ -132,19 +131,18 @@ public class BinaryNotesAPMessage extends APMessage
         List<Element> children = root.elements();
         //for (Element element : children) 
         {
-        	XmlToAsn1 xml_asn1 = new XmlToAsn1();
-            String PackageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
-            this.mapComponent = (Component) xml_asn1.instanceClass("Component", PackageName);
-            xml_asn1.initObject(this.mapComponent, root, PackageName);
+            String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
+            Class thisClass = Class.forName(packageName + "Component");
+            this.mapComponent = (Component) thisClass.newInstance();
+            XMLToASNParser.getInstance().initObject(this.mapComponent, root, packageName);
         }
     }
 
     public String toXML()
     {
-    	Asn1ToXml xml_asn1 = new Asn1ToXml();
         String ret = "";
         ret += "<AP>";
-        ret += xml_asn1.toXML(null,this.mapComponent, 0);
+        ret += ASNToXMLConverter.getInstance().toXML(null,this.mapComponent, 0);
         ret += "\n";
         ret += "</AP>";
     	return ret;

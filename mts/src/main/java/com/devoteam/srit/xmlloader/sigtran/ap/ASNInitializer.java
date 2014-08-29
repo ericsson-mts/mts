@@ -49,10 +49,21 @@ import org.dom4j.io.SAXReader;
  *
  * @author fhenry
  */
-public class SetValueToAsn1 
+public class ASNInitializer 
 {
 
-    public SetValueToAsn1() 
+	static ASNInitializer _instance;
+    
+    public static ASNInitializer getInstance()
+    {
+    	if (_instance != null)
+    	{
+    		return _instance;
+    	}
+    	return new ASNInitializer();
+    }
+
+    public ASNInitializer() 
     {
     }
 
@@ -109,7 +120,7 @@ public class SetValueToAsn1
 				}
 				else if (typeField != null && typeField.equals("java.lang.Integer"))
 				{
-					f.set(objClass, Integer.parseInt("77"));
+					f.set(objClass, Integer.parseInt("11"));
 				} 
 				else if (typeField != null && typeField.equals("java.lang.String"))
 				{
@@ -118,6 +129,7 @@ public class SetValueToAsn1
 				else if (typeField != null && typeField.equals("byte[]"))
 				{
 					byte[] bytes = new byte[]{0,1,2,3,4,5,6,7};
+					//byte[] bytes = new byte[]{1};
 					f.set(objClass, bytes);
 				}
 				else if (typeField != null && typeField.equals("java.util.Collection"))
@@ -145,6 +157,16 @@ public class SetValueToAsn1
 					objId.setValue("0.1.2.3.4.5.6.7.8.9");
 					f.set(objClass, objId);
 				}
+				else if (typeField != null && typeField.endsWith("EnumType"))
+				{
+					Class[] classes = objClass.getClass().getClasses();
+					Object[] objects = null;
+					if (classes.length >= 1)
+					{
+						objects = classes[0].getEnumConstants();
+						f.set(objClass, objects[0]);
+					}
+				} 
 				else
 				{
 					try

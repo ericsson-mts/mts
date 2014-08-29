@@ -45,10 +45,22 @@ import org.dom4j.io.SAXReader;
  *
  * @author gansquer
  */
-public class XmlToAsn1 
+public class XMLToASNParser 
 {
 
-    public XmlToAsn1() 
+	static XMLToASNParser _instance;
+	
+    
+    public static XMLToASNParser getInstance()
+    {
+    	if (_instance != null)
+    	{
+    		return _instance;
+    	}
+    	return new XMLToASNParser();
+    }
+
+    public XMLToASNParser() 
     {
     }
 
@@ -100,7 +112,6 @@ public class XmlToAsn1
             ClasseName = Classe;
         }
         Class thisClass = Class.forName(ClasseName);
-        // get an instance
         Object iClass = thisClass.newInstance();
         return iClass;
     }
@@ -128,7 +139,7 @@ public class XmlToAsn1
         return null;
     }
 
-    public Object parseField(Element element, String type, String className) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException, InstantiationException, InvocationTargetException, NoSuchMethodException 
+    public Object parseField(Element element, String type, Object object, String className) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException, InstantiationException, InvocationTargetException, NoSuchMethodException 
     {
         if (type.equals("java.lang.Boolean")||type.equals("boolean"))  
         {
@@ -161,6 +172,26 @@ public class XmlToAsn1
         else if (type.equals("byte[]")) 
         {
             return new DefaultArray(Utils.parseBinaryString("h" + element.getTextTrim())).getBytes();
+        }
+        else if (type.contains("EnumType"))  
+        {
+			Class[] classes = object.getClass().getClasses();
+			Object[] objects = null;
+			if (classes.length >= 1)
+			{
+				objects = classes[0].getEnumConstants();
+				Object objFind = null;
+				for (int i=0; i <objects.length; i++)
+				{
+					objFind = objects[i];
+					if (objFind.toString().equals(element.getTextTrim()))
+					{
+						break;
+					}
+				}
+				return objFind;
+			}
+            return null;
         }
         else 
         {
@@ -211,18 +242,27 @@ public class XmlToAsn1
             ArrayList<Object> listInstance = new ArrayList<Object>();
 
             // parcourir les enfants <instance> de element
-            List<Element> children = element.elements("instance");
+            List<Element> children = element.elements("collection");
             for (Element elementInstance : children) 
             {
                 // pour chaque <instance>
-                listInstance.add(parseField(elementInstance, collectionElementType.getCanonicalName(), ClasseName));
+                listInstance.add(parseField(elementInstance, collectionElementType.getCanonicalName(), objClass, ClasseName));
             }
+            /*
+            List<Element> children1 = element.elements("value");
+            for (Element elementInstance : children1) 
+            {
+                // pour chaque <instance>
+                listInstance.add(parseField(elementInstance, collectionElementType.getCanonicalName(), objClass, ClasseName));
+            }
+            */
+            
             // set la collection dans le field
             field.set(objClass, listInstance);
         }
         else 
         {
-            field.set(objClass, parseField(element, field.getType().getCanonicalName(), ClasseName));
+            field.set(objClass, parseField(element, field.getType().getCanonicalName(), objClass, ClasseName));
         }
     }
 }
