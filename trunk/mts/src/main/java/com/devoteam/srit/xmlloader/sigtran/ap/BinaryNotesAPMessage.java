@@ -37,17 +37,6 @@ import org.bn.IEncoder;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.ISDN_AddressString;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Invoke;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.InvokeIdType;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.InvokeParameter;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Mo_forwardSM_Arg;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Operation;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.OperationLocalvalue;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.ServiceCentreAddress;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Sm_RP_DA;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Sm_RP_OA;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Sm_RP_UI;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage;
 
 

@@ -23,25 +23,13 @@
 
 package com.devoteam.srit.xmlloader.sigtran.ap;
 
-import com.devoteam.srit.xmlloader.core.PropertiesEnhanced;
 import com.devoteam.srit.xmlloader.core.log.FileTextListenerProvider;
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.log.TextListenerProviderRegistry;
-import com.devoteam.srit.xmlloader.core.newstats.StatPool;
-import com.devoteam.srit.xmlloader.core.pluggable.PluggableComponentRegistry;
-import com.devoteam.srit.xmlloader.core.pluggable.PluggableParameterOperator;
-import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.ExceptionHandlerSingleton;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.TextExceptionHandler;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import com.devoteam.srit.xmlloader.core.utils.maps.HashMap;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.ForwardingInfo;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.SetReportingStateRes;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -98,22 +86,13 @@ public class TestANS1Object {
          * Register the File logger provider
          */
         TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
-
+    
         //String testFilename = args[0];
         String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
         //String className = "ForwardingInfo";
-        String className = "Component";
-		try 
-		{
-			Class classObj = Class.forName(packageName + className);
-			testProcess(packageName, classObj);
-		} 
-		catch (Exception e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    
+        //String className = "Component";
+        String className = "AnyTimeSubscriptionInterrogationRes";
+
 		// inspect the classes for the given package
     	List<Class> listClasses = ClassInspector.find(packageName);
     	
@@ -121,15 +100,48 @@ public class TestANS1Object {
     	Map<String, Class> mapClasses = new HashMap<String, Class>();
     	for (Class classObj : listClasses)
     	{
-    		mapClasses.put(classObj.getCanonicalName(), classObj);
+    		if (!classObj.isEnum() && !classObj.isMemberClass())
+            {
+    			mapClasses.put(classObj.getCanonicalName(), classObj);
+            }
     	}
     	
+		try 
+		{
+			Class classObj = Class.forName(packageName + className);
+			Object obj = classObj.newInstance();
+			ASNReferenceFinder.getInstance().findAndRemoveReferences(mapClasses, obj);
+			testProcess(packageName, classObj);
+		} 
+		catch (Exception e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    	// remove the reference into the hashmap
+    	for (Class classObj : listClasses)
+    	{
+    		try 
+    		{
+	            if (!classObj.isEnum())
+	            {
+		    		Object object = classObj.newInstance();
+		    		ASNReferenceFinder.getInstance().findAndRemoveReferences(mapClasses, object);
+	            }
+       		} 
+    		catch (Exception e) 
+    		{
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+    	}
     	Collection<Class> collect = mapClasses.values();
     	for (Class classObject : collect)
     	{
     		try 
     		{
-    			testProcess(packageName, classObject);
+    			//testProcess(packageName, classObject);
     		} 
     		catch (Exception e) 
     		{
