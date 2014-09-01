@@ -202,10 +202,12 @@ public class ASNToXMLConverter
 					ret += "</collection>";
 					complex = true;
 				}
+				/*
 				else if (subClass.getCanonicalName().equals("org.bn.types.NullObject"))
 				{
 					continue;
 				}
+				*/
 				/*
 				else if (subClass.getCanonicalName().equals("org.bn.types.ObjectIdentifier"))
 				{

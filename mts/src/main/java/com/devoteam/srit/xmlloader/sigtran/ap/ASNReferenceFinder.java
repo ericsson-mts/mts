@@ -25,37 +25,48 @@ package com.devoteam.srit.xmlloader.sigtran.ap;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
-import java.lang.reflect.Constructor;
+import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
+
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.bn.types.ObjectIdentifier;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 /**
  *
  * @author fhenry
  */
-public class ASNInitializer 
+public class ASNReferenceFinder 
 {
 
-	static ASNInitializer _instance;
+	static ASNReferenceFinder _instance;
     
-    public static ASNInitializer getInstance()
+    public static ASNReferenceFinder getInstance()
     {
     	if (_instance != null)
     	{
     		return _instance;
     	}
-    	return new ASNInitializer();
+    	return new ASNReferenceFinder();
     }
 
-    public ASNInitializer() 
+    public ASNReferenceFinder() 
     {
     }
 
@@ -74,65 +85,46 @@ public class ASNInitializer
         return document;
     }
 
-    public void setValue(Object objClass)  
+    public void findAndRemoveReferences(Map<String, Class> classes, Object obj)  
     {
 		try 
 		{
-		if (objClass ==  null)
-    	{
-	    		return;
-	    	}
-
-			String strClass = objClass.getClass().toString();
-	    	int pos = strClass.lastIndexOf('.');
-	    	if (pos >= 0)
-	    	{
-	    		strClass = strClass.substring(pos + 1);
-	    	}
-	    	
 	        // parsing object object fields 
-	    	Field[] fields = objClass.getClass().getDeclaredFields();
+	    	Field[] fields = obj.getClass().getDeclaredFields();
 	    	for (int i= 0; i < fields.length; i++)
 	    	{
 	    		Field f = fields[i];
 	    		f.setAccessible(true);
-	    		//System.out.println(f);
 
 				String typeField = f.getType().getCanonicalName();
-				if (typeField != null && typeField.equals("org.bn.coders.IASN1PreparedElementData") )
+				if (typeField != null && typeField.equals("org.bn.coders.ASN1PreparedElementData") )
 				{
-					continue;
 					// nothing to do
 				}
-				else if (typeField != null && typeField.equals("byte[]"))
+				else if (typeField != null && typeField.equals("java.lang.Boolean"))
 				{
-					byte[] bytes = new byte[]{0,1,0,1,0,1,0,1};
-					//byte[] bytes = new byte[]{1};
-					f.set(objClass, bytes);
-					continue;
-				}
-				else if (typeField != null && (typeField.equals("java.lang.Boolean") || typeField.equals("boolean")))
-				{
-					f.set(objClass, Boolean.valueOf("true").booleanValue());
 					continue;
 				} 
-				else if (typeField != null && (typeField.equals("java.lang.Long") || typeField.equals("long")))
+				else if (typeField != null && typeField.equals("java.lang.Long"))
 				{
-					f.set(objClass, Long.parseLong("11111111111111"));
 					continue;
 				}
-				else if (typeField != null && (typeField.equals("java.lang.Integer") || typeField.equals("int")))
+				else if (typeField != null && typeField.equals("java.lang.Integer"))
 				{
-					f.set(objClass, Integer.parseInt("11"));
 					continue;
 				} 
 				else if (typeField != null && typeField.equals("java.lang.String"))
 				{
-					f.set(objClass, "0.1.2.3.4.5.6.7.8.9");
+					continue;
+				}
+				else if (typeField != null && typeField.equals("byte[]"))
+				{
 					continue;
 				}
 				else if (typeField != null && typeField.equals("java.util.Collection"))
 				{
+					continue;
+					/*
 					ParameterizedType genType = (ParameterizedType) f.getGenericType();
 					Type[] typeActualTypeArg = genType.getActualTypeArguments();
 					LinkedList list = new LinkedList();
@@ -140,55 +132,38 @@ public class ASNInitializer
 					{
 						String tabClassName = ((Class) typeActualTypeArg[0]).getCanonicalName();
 						for (int j = 0; j <= 1; j++)
-						{		
-    						Class tabClass = Class.forName(tabClassName);
-
-							Object tabObject = null;
-							Constructor constr = tabClass.getConstructor();
-							if (constr !=null)
-							{
-								constr.setAccessible(true);
-								tabObject = constr.newInstance();
-							}
-							else
-							{
-								tabObject = tabClass.newInstance();
-							}
-            		        setValue(tabObject);
-            		        list.add(tabObject);
+						{	
+							Class tabClass = Class.forName(typeField);
+							// get an instance
+	        		        Object objClass = tabClass.newInstance();
+	    					f.set(objClass, objClass);
+            		        findAndRemoveReferences(classes, tabClass);
 						}
-						f.set(objClass, list);
 					}
-					continue;
+					*/
 				}
 				else if (typeField != null && typeField.equals("org.bn.types.ObjectIdentifier"))
 				{
-					ObjectIdentifier objId = new ObjectIdentifier();
-					objId.setValue("0.1.2.3.4.5.6.7.8.9");
-					f.set(objClass, objId);
 					continue;
 				}
 				else if (typeField != null && typeField.endsWith("EnumType"))
 				{
-					Class[] classes = objClass.getClass().getClasses();
-					Object[] objects = null;
-					if (classes.length >= 1)
-					{
-						objects = classes[0].getEnumConstants();
-						f.set(objClass, objects[0]);
-					}
 					continue;
+				} 
+				else if (classes.containsKey(typeField))
+				{
+					classes.remove(typeField);
 				}
+				/*
 				else
 				{
-					Class subClass = f.getType();
-					Constructor constr = subClass.getConstructor();
-					constr.setAccessible(true);
-					Object subObj = constr.newInstance();
-					setValue(subObj);
-					f.set(objClass, subObj);
-					continue;
-				}
+					Class subClass = Class.forName(typeField);
+					// get an instance
+    		        Object subObj =subClass.newInstance();
+					f.set(obj, subObj);
+					findAndRemoveReferences(classes, subClass);
+   				}
+   				*/
 			}
 		} 
 		catch (Exception e) 
