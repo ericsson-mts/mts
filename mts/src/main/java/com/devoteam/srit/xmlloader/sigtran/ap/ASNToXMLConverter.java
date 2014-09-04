@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -92,147 +93,91 @@ public class ASNToXMLConverter
 	    	{
 	    		return ret;
 	    	}
-	 
-			// parsing object object fields  
+
 	    	Field[] fields = objClass.getClass().getDeclaredFields();
+	    	int countFields = 0;
+	    	boolean complex = true;
 	    	
 			if (name != null)
 			{
-				ret += "\n" + indent(indent);
-		    	ret += "<" + name + ">";
-			}
-			
-	    	int countFields = 0;
-	    	boolean complex = false; 
-	    	//for (int i= fields.length - 1; i >=0; i--)
-	    	for (int i= 0; i < fields.length; i++)
-	    	{
-    			Field f = fields[i];
-    			f.setAccessible(true);
-    			//System.out.println(f);
-    			
-				Object subObject = f.get(objClass);
-				if (subObject == null) 
+				if (!objClass.getClass().getCanonicalName().startsWith("java.lang."))
 				{
-					// nothing to do
-					continue;
-				}
-
-				Class subClass = subObject.getClass();
-				if (subClass.getCanonicalName().equals("org.bn.coders.ASN1PreparedElementData") )
-				{
-					// nothing to do
-					continue;
-				}
-				else if (subClass.getCanonicalName().equals("java.lang.Boolean"))
-				{
-					if (countFields >= 1)
-					{
-						ret += "\n" + indent(indent);
-					}
-					ret += "<boolean>"; 
-					ret +=subObject.toString();
-					ret += "</boolean>";
-				} 
-				else if (subClass.getCanonicalName().equals("java.lang.Long"))
-				{
-					if (countFields >= 1)
-					{
-						ret += "\n" + indent(indent);
-					}
-					ret += "<long>";
-					ret +=subObject.toString();
-					ret += "</long>";
-				}
-				else if (subClass.getCanonicalName().equals("java.lang.Integer"))
-				{
-					if (countFields >= 1)
-					{
-						ret += "\n" + indent(indent);
-					}
-					ret += "<integer>";
-					ret +=subObject.toString();
-					ret += "</integer>";
-				} 
-				else if (subClass.getCanonicalName().endsWith("EnumType"))
-				{
-					if (countFields >= 1)
-					{
-						ret += "\n" + indent(indent);
-					}
-
-					ret += "<enumtype>";
-					ret +=subObject.toString();
-					ret += "</enumtype>";
-				}
-				else if (subClass.getCanonicalName().equals("java.lang.String"))
-				{
-					if (countFields >= 1)
-					{
-						ret += "\n" + indent(indent);
-					}
-					ret += "<string>";
-					ret +=subObject.toString();
-					ret += "</string>";
-				}
-				else if (subClass.getCanonicalName().equals("byte[]"))
-				{
-					if (countFields >= 1)
-					{
-						ret += "\n" + indent(indent);
-					}
-					byte[] bytes = (byte[]) subObject;
-					ret += "<bytes>";
-					ret += Utils.toHexaString(bytes, "");
-					ret += "</bytes>";
-				}
-				else if (subClass.getCanonicalName().equals("java.util.LinkedList"))
-				{
-					Collection coll = (Collection) subObject;
-					Iterator iter = coll.iterator();
-					indent = indent + 2;
 					ret += "\n" + indent(indent);
-					ret += "<collection>";
-					while (iter.hasNext())
-					{
-						Object subObj = iter.next();
-						ret += toXML(f.getName(), subObj, indent + 2);
-					}
-					ret += "\n" + indent(indent);
-					ret += "</collection>";
-					complex = true;
 				}
-				/*
-				else if (subClass.getCanonicalName().equals("org.bn.types.NullObject"))
+				if ("value".equals(name))
 				{
-					continue;
+					ret += "<" + returnClassName(objClass) + ">";
 				}
-				*/
-				/*
-				else if (subClass.getCanonicalName().equals("org.bn.types.ObjectIdentifier"))
-				{
-					ObjectIdentifier objId = (ObjectIdentifier) subObject;
-					ret += "\n" + indent(indent + 2);
-					ret += "<ObjectIdentifier>";
-					ret += objId.getValue();
-					ret += "</ObjectIdentifier>";
-				}
-				*/
 				else
 				{
-					ret += toXML(f.getName(), subObject, indent + 2);
-					complex = true;
-   				}
-				countFields++;
+					ret += "<" + name + ">";
+				}
+			}
+				    	
+	    	String retObject = returnXMLObject(objClass, indent);
+	    	if (retObject != null)
+	    	{
+	    		ret += retObject;
+	    		complex = false;
+	    	}
+	    	else
+	    	{
+				// parsing object object fields  
+		    	//for (int i= fields.length - 1; i >=0; i--)
+		    	for (int i= 0; i < fields.length; i++)
+		    	{
+	    			Field f = fields[i];
+	    			f.setAccessible(true);
+	    			//System.out.println(f);
+	    			
+					Object subObject = f.get(objClass);
+					
+					String typeField = f.getType().getCanonicalName();
+					if (subObject == null)
+			    	{
+			    		// nothing to do
+			    	}
+					else if (typeField != null && typeField.equals("org.bn.coders.IASN1PreparedElementData") )
+			    	{
+			    		// nothing to do
+			    	}
+					else if (typeField != null && typeField.equals("java.util.Collection"))
+					{
+						Collection coll = (Collection) subObject;
+						Iterator iter = coll.iterator();
+						indent = indent + 2;
+						ret += "\n" + indent(indent);
+						ret += "<Collection>";
+						while (iter.hasNext())
+						{
+							Object subObj = iter.next();
+							ret += toXML(f.getName(), subObj, indent + 2);
+						}
+						ret += "\n" + indent(indent);
+						ret += "</Collection>";
+					}
+					else
+					{
+						ret += toXML(f.getName(), subObject, indent + 2);
+	   				}
+					countFields++;
+		    	}
 	    	}
 	    	
 			if (name != null)
 			{
-				if (countFields > 1 || complex)
+				if (!objClass.getClass().getCanonicalName().startsWith("java.lang.") && fields.length > 2 && complex)
 				{
 					ret += "\n" + indent(indent);
 				}
-				ret += "</" + name + ">";
+				if ("value".equals(name))
+				{
+					ret += "</" + returnClassName(objClass) + ">";
+				}
+				else
+				{
+					ret += "</" + name + ">";
+				}
 			}
 
 		} 
@@ -243,6 +188,57 @@ public class ASNToXMLConverter
 		} 
 
     	return ret;
+    }
+    
+    private String returnClassName(Object objClass) throws Exception
+    {
+    	String ret = objClass.getClass().getSimpleName();
+    	ret = ret.replace("[]", "s");
+    	return ret;
+    }
+    private String returnXMLObject(Object subObject, int indent) throws Exception
+    {
+    	String ret = "";
+    	Class subClass = subObject.getClass();
+    	String type = subClass.getCanonicalName();
+    	if (type == null)
+    	{
+    		return null;
+    	}
+    	if (type.equals("byte[]"))
+    	{
+			byte[] bytes = (byte[]) subObject;
+			ret += Utils.toHexaString(bytes, "");
+			return ret;
+
+    	}
+    	else if (type.equals("java.lang.Boolean") || type.equals("boolean"))
+    	{
+			ret +=subObject.toString();
+			return ret;
+
+    	}
+		else if (type.equals("java.lang.Long") || type.equals("long"))
+		{
+			ret +=subObject.toString();
+			return ret;
+		}
+		else if (type.equals("java.lang.Integer") || type.equals("int"))
+		{
+			ret +=subObject.toString();
+			return ret;
+		} 
+		else if (type.equals("java.lang.String"))
+		{
+			ret +=subObject.toString();
+			return ret;
+		}
+		else if (type.endsWith("EnumType"))
+		{
+			ret +=subObject.toString();
+			return ret;
+		}
+		return null;
     }
     
     /**

@@ -25,6 +25,7 @@ package com.devoteam.srit.xmlloader.sigtran.ap;
 
 import com.devoteam.srit.xmlloader.core.log.FileTextListenerProvider;
 import com.devoteam.srit.xmlloader.core.log.TextListenerProviderRegistry;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.ExceptionHandlerSingleton;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.TextExceptionHandler;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
@@ -91,7 +92,10 @@ public class TestANS1Object {
         String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
         //String className = "ForwardingInfo";
         //String className = "Component";
-        String className = "AnyTimeSubscriptionInterrogationRes";
+        //String className = "NoteMM_EventRes";
+        //String className = "AnyTimeSubscriptionInterrogationRes";
+        //String className = "ReportSM_DeliveryStatusArg";
+        String className = "UnauthorizedLCSClient_Param";
 
 		// inspect the classes for the given package
     	List<Class> listClasses = ClassInspector.find(packageName);
@@ -141,7 +145,7 @@ public class TestANS1Object {
     	{
     		try 
     		{
-    			//testProcess(packageName, classObject);
+    			testProcess(packageName, classObject);
     		} 
     		catch (Exception e) 
     		{
@@ -198,7 +202,7 @@ public class TestANS1Object {
         String retXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         retXML += "\n\n";
         retXML += "<AP>";
-        retXML += ASNToXMLConverter.getInstance().toXML(null, objectSet, 0);
+        retXML += ASNToXMLConverter.getInstance().toXML(null, objectRead, 0);
         retXML += "\n";
         retXML += "</AP>";
         
@@ -215,7 +219,7 @@ public class TestANS1Object {
         Array array1 = new DefaultArray(retXML.getBytes());
         out1.write(array1.getBytes());
         out1.close();
-
+        
         // encode ASN1 object into binary
     	IEncoder<Object> encoderMAP = CoderFactory.getInstance().newEncoder("BER");
     	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -223,6 +227,9 @@ public class TestANS1Object {
         byte[] bytesMAP = outputStream.toByteArray();
         Array arrayMAP = new DefaultArray(bytesMAP);
 
+        
+        Array arrayMAP1 = new DefaultArray(Utils.parseBinaryString("h302c040a04080001020304050607040a040800010203040506070a010080010ba102a1000500050084010085010b"));
+        //Array arrayMAP = new DefaultArray(Utils.parseBinaryString("h302C040A04080001020304050607040A040800010203040506070A010080010BA102A1008200830084010085010B"));
         // 	decode ASN1 object from binary
         Object objectDecoded =  null;
 		IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");

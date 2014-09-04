@@ -122,7 +122,7 @@ public class XMLToASNParser
         for (Field field : objClass.getClass().getDeclaredFields()) 
         {
         	String name = field.getName(); 
-        	String type = field.getType().getCanonicalName().toLowerCase();
+        	String type = field.getType().getCanonicalName();
             if (name.contains(elementName)) 
             {
                 return field;
@@ -242,7 +242,7 @@ public class XMLToASNParser
             ArrayList<Object> listInstance = new ArrayList<Object>();
 
             // parcourir les enfants <instance> de element
-            List<Element> children = element.elements("collection");
+            List<Element> children = element.elements();
             for (Element elementInstance : children) 
             {
                 // pour chaque <instance>
