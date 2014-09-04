@@ -95,7 +95,8 @@ public class TestANS1Object {
         //String className = "NoteMM_EventRes";
         //String className = "AnyTimeSubscriptionInterrogationRes";
         //String className = "ReportSM_DeliveryStatusArg";
-        String className = "UnauthorizedLCSClient_Param";
+        //String className = "UnauthorizedLCSClient_Param";
+        String className = "UpdateLocationRes";
 
 		// inspect the classes for the given package
     	List<Class> listClasses = ClassInspector.find(packageName);
@@ -228,7 +229,7 @@ public class TestANS1Object {
         Array arrayMAP = new DefaultArray(bytesMAP);
 
         
-        Array arrayMAP1 = new DefaultArray(Utils.parseBinaryString("h302c040a04080001020304050607040a040800010203040506070a010080010ba102a1000500050084010085010b"));
+        Array arrayMAP1 = new DefaultArray(Utils.parseBinaryString("h3045040A04080001020304050607040A040800010203040506070A010080010BA11AA0173015060901020304050607080904080001020304050607A1000500050084010085010B"));
         //Array arrayMAP = new DefaultArray(Utils.parseBinaryString("h302C040A04080001020304050607040A040800010203040506070A010080010BA102A1008200830084010085010B"));
         // 	decode ASN1 object from binary
         Object objectDecoded =  null;

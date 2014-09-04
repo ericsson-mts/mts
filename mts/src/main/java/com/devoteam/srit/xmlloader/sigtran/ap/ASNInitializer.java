@@ -106,7 +106,7 @@ public class ASNInitializer
 	    	{
 	    		// nothing to do
 	    	}
-        	else if (typeName != null && typeName.equals("privateExtensionList") )
+        	else if (typeName != null && typeName.equals("integerForm") )
 	    	{
         		// nothing to do
         		// because error when decoding this field
@@ -130,7 +130,7 @@ public class ASNInitializer
 				LinkedList list = new LinkedList();
 				if (typeActualTypeArg.length > 0)
 				{
-					for (int j = 0; j <= 2; j++)
+					for (int j = 0; j <= 0; j++)
 					{		
 						Class tabClass = (Class) typeActualTypeArg[0];
 						Object tabObject = getSubObject(objClass, tabClass);	
