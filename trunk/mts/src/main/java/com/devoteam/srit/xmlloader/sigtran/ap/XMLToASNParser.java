@@ -173,7 +173,7 @@ public class XMLToASNParser
         {
             return new DefaultArray(Utils.parseBinaryString("h" + element.getTextTrim())).getBytes();
         }
-        else if (type.contains("EnumType"))  
+        else if (type.endsWith(".EnumType"))  
         {
 			Class[] classes = object.getClass().getClasses();
 			Object[] objects = null;

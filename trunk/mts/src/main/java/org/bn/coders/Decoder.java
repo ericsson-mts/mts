@@ -323,7 +323,13 @@ public abstract class Decoder implements IDecoder, IASN1TypesDecoder {
         ElementInfo info = createSequenceFieldInfo(elementInfo, sequenceObj, field, fieldIdx);            
             
         if(CoderUtils.isNullField(field,info)) {
-            return decodeNull(fieldTag,field.getType(),info, stream);
+        	// FHModif
+        	DecodedObject value = decodeNull(fieldTag,field.getType(),info, stream);
+            if(value!=null) {                
+                invokeSetterMethodForField(field, sequenceObj, value.getValue(),info);
+            }
+            return value;
+            // End
         }
         else {            
             DecodedObject value = decodeClassType(fieldTag,field.getType(),info,stream);

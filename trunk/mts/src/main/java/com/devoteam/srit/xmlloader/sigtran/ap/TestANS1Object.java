@@ -31,6 +31,8 @@ import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.TextExceptionHand
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import com.devoteam.srit.xmlloader.core.utils.maps.HashMap;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.UnknownSubscriberParam;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.UnknownSubscriberParam.UnknownSubscriberDiagnosticEnumType;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -96,7 +98,11 @@ public class TestANS1Object {
         //String className = "AnyTimeSubscriptionInterrogationRes";
         //String className = "ReportSM_DeliveryStatusArg";
         //String className = "UnauthorizedLCSClient_Param";
-        String className = "UpdateLocationRes";
+        //String className = "UpdateLocationRes";
+        //String className = "ShortTermDenialParam";
+        //String className = "MAP_Protocol";
+        //String className = "UnknownSubscriberParam";
+        String className = "AnyTimeInterrogationArg";
 
 		// inspect the classes for the given package
     	List<Class> listClasses = ClassInspector.find(packageName);
@@ -116,7 +122,7 @@ public class TestANS1Object {
 			Class classObj = Class.forName(packageName + className);
 			Object obj = classObj.newInstance();
 			ASNReferenceFinder.getInstance().findAndRemoveReferences(mapClasses, obj);
-			testProcess(packageName, classObj);
+			testProcess(1, packageName, classObj);
 		} 
 		catch (Exception e) 
 		{
@@ -142,11 +148,12 @@ public class TestANS1Object {
     		}
     	}
     	Collection<Class> collect = mapClasses.values();
+    	int i = 0;
     	for (Class classObject : collect)
     	{
     		try 
-    		{
-    			testProcess(packageName, classObject);
+    		{	i++;
+    			testProcess(i, packageName, classObject);
     		} 
     		catch (Exception e) 
     		{
@@ -157,27 +164,28 @@ public class TestANS1Object {
     	}		
     }
             
-    public static void testProcess(String packageName, Class classObj) throws Exception
+    public static void testProcess(int i, String packageName, Class classObj) throws Exception
     {
         String className = classObj.getSimpleName();
-        System.out.println("class = " + className);
 
 		// initialize the ASN1 object
-		Object objectSet = classObj.newInstance();		
-		ASNInitializer.getInstance().setValue(objectSet);
+		Object objectInit = classObj.newInstance();		
+		ASNInitializer.getInstance().setValue(objectInit);
 		
 		// convert the ASN1 object into XML data
         String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         retInit += "\n\n";
         retInit += "<AP>";
-        retInit += ASNToXMLConverter.getInstance().toXML(null, objectSet, 0);
+        retInit += ASNToXMLConverter.getInstance().toXML(null, objectInit, 0);
         retInit += "\n";
         retInit += "</AP>";
         
+        System.out.print("Process class[" + i + "] = " + className + ".xml (" + retInit.length() + ") => ");
+        
         // write XML data into a file
-        File fileWrite = new File("./asn1/" + className + ".xml");
-        if(!fileWrite.exists()) fileWrite.createNewFile();
-        OutputStream out = new FileOutputStream(fileWrite, false);
+        File fileInit = new File("./asn1/" + className + ".xml");
+        fileInit.delete();
+        OutputStream out = new FileOutputStream(fileInit, false);
         Array array = new DefaultArray(retInit.getBytes());
         out.write(array.getBytes());
         out.close();
@@ -191,74 +199,78 @@ public class TestANS1Object {
         Element root = document.getRootElement();
         //Element apElement = root.elements("AP");
         List<Element> elements = root.elements();
-        Element apElement = (Element) elements.get(0); 
+        if (elements.size() > 0)
+        {
+        	Element apElement = (Element) elements.get(0);
+        }
         in.close();
 	        
         // parse ASN1 object from XML file
         Class thisClass = Class.forName(packageName + className);
-        Object objectRead = thisClass.newInstance();
-        XMLToASNParser.getInstance().initObject(objectRead, root, packageName);
+        Object objectXML = thisClass.newInstance();
+        XMLToASNParser.getInstance().initObject(objectXML, root, packageName);
 
 		// convert the ASN1 object ibnto XML data
         String retXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         retXML += "\n\n";
         retXML += "<AP>";
-        retXML += ASNToXMLConverter.getInstance().toXML(null, objectRead, 0);
+        retXML += ASNToXMLConverter.getInstance().toXML(null, objectXML, 0);
         retXML += "\n";
         retXML += "</AP>";
-        
+
+        File fileXML = new File("./asn1/" + className + "_XML ");
+        fileXML.delete();
+
         // test with initial value
         if (!retInit.equals(retXML))
         {
-        	System.out.println("KO : problem after encodind / decoding to XML format.");
+        	System.out.print("KO : XML format,");
+        	
+            // write XML data into a file
+            OutputStream out1 = new FileOutputStream(fileXML, false);
+            Array array1 = new DefaultArray(retXML.getBytes());
+            out1.write(array1.getBytes());
+            out1.close();
         }
-
-        // write XML data into a file
-        File fileWrite1 = new File("./asn1/" + className + "XML.xml");
-        if(!fileWrite1.exists()) fileWrite1.createNewFile();
-        OutputStream out1 = new FileOutputStream(fileWrite1, false);
-        Array array1 = new DefaultArray(retXML.getBytes());
-        out1.write(array1.getBytes());
-        out1.close();
         
         // encode ASN1 object into binary
     	IEncoder<Object> encoderMAP = CoderFactory.getInstance().newEncoder("BER");
     	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        encoderMAP.encode(objectRead, outputStream);
+        encoderMAP.encode(objectXML, outputStream);
         byte[] bytesMAP = outputStream.toByteArray();
         Array arrayMAP = new DefaultArray(bytesMAP);
 
         
-        Array arrayMAP1 = new DefaultArray(Utils.parseBinaryString("h3045040A04080001020304050607040A040800010203040506070A010080010BA11AA0173015060901020304050607080904080001020304050607A1000500050084010085010B"));
-        //Array arrayMAP = new DefaultArray(Utils.parseBinaryString("h302C040A04080001020304050607040A040800010203040506070A010080010BA102A1008200830084010085010B"));
+        // Array arrayMAP1 = new DefaultArray(Utils.parseBinaryString("h3045040A04080001020304050607040A040800010203040506070A010080010BA11AA0173015060901020304050607080904080001020304050607A1000500050084010085010B"));
         // 	decode ASN1 object from binary
-        Object objectDecoded =  null;
 		IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
 	    InputStream inputStream = new ByteArrayInputStream(arrayMAP.getBytes());
-	    objectDecoded = decoder.decode(inputStream, classObj);
+	    Object objectBin = decoder.decode(inputStream, classObj);
 
 		// convert the ASN1 object into XML data
-        String retBinary = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        retBinary += "\n\n";
-        retBinary += "<AP>";
-        retBinary += ASNToXMLConverter.getInstance().toXML(null, objectDecoded, 0);
-        retBinary += "\n";
-        retBinary += "</AP>";
+        String retBin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+        retBin += "\n\n";
+        retBin += "<AP>";
+        retBin += ASNToXMLConverter.getInstance().toXML(null, objectBin, 0);
+        retBin += "\n";
+        retBin += "</AP>";
         
         // write XML data into a file
-        File file = new File("./asn1/" + className + "Binary.xml");
-        if(!file.exists()) file.createNewFile();
-        OutputStream out2 = new FileOutputStream(file, false);
-        Array array2 = new DefaultArray(retBinary.getBytes());
-        out2.write(array2.getBytes());
-        out2.close();
-
+        File fileBin = new File("./asn1/" + className + "_BINARY.xml");
+        fileBin.delete();
+        
         // test with initial value
-        if (!retInit.equals(retBinary))
+        if (!retInit.equals(retBin))
         {
-        	System.out.println("KO : problem after encodind / decoding to binary data.");
+        	System.out.print("KO : BINARY.");
+        	
+	        OutputStream out2 = new FileOutputStream(fileBin, false);
+	        Array array2 = new DefaultArray(retBin.getBytes());
+	        out2.write(array2.getBytes());
+	        out2.close();
         }
-
+        
+        System.out.println("");
     }
 
     static public void usage(String message) {
