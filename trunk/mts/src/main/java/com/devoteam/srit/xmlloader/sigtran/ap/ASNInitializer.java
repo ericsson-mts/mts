@@ -25,6 +25,12 @@ package com.devoteam.srit.xmlloader.sigtran.ap;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+
+import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
+import gp.utils.arrays.RandomArray;
+import gp.utils.arrays.SupArray;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -32,6 +38,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.LinkedList;
 
+import org.bn.types.BitString;
 import org.bn.types.ObjectIdentifier;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -111,18 +118,6 @@ public class ASNInitializer
         		// nothing to do
         		// because error when decoding this field
 	    	}
-        	/*
-        	else if (typeName != null && typeName.equals("extId") )
-	    	{
-        		// nothing to do
-        		// because error when decoding this field
-	    	}
-        	else if (typeName != null && typeName.equals("extType") )
-	    	{
-        		// nothing to do
-        		// because error when decoding this field
-	    	}
-	    	*/	    	
         	else if (typeField != null && typeField.equals("java.util.Collection"))
 			{
 				ParameterizedType genType = (ParameterizedType) f.getGenericType();
@@ -166,30 +161,49 @@ public class ASNInitializer
     	}
     	else if (type.equals("byte[]"))
     	{
-    		byte[] bytes = new byte[]{4,8,0,1,2,3,4,5,6,7};
-    		//byte[] bytes = new byte[]{1};
-    		return bytes;
+    		int numByte = (int) Utils.randomLong(0, 20L);
+    		Array data = new RandomArray(numByte);
+    		SupArray supArray = new SupArray();
+    		supArray.addLast(data);
+    		// add a tag to be compliant with asn1 data
+    		Array tag = new DefaultArray(new byte[]{4, (byte)numByte});
+    		supArray.addFirst(tag);
+    		return supArray.getBytes();
     	}
     	else if (type.equals("java.lang.Boolean") || type.equals("boolean"))
     	{
-			return Boolean.valueOf("true").booleanValue();
+			return Utils.randomBoolean();
 		} 
 		else if (type.equals("java.lang.Long") || type.equals("long"))
 		{
-			return Long.parseLong("11111111111111");
+			long l = Utils.randomLong(0, 1000000000000000000L);
+			return l;
 		}
 		else if (type.equals("java.lang.Integer") || type.equals("int"))
 		{
-			return Integer.parseInt("11");
+			return (int) Utils.randomLong(0, 1000000000L);
 		} 
 		else if (type.equals("java.lang.String"))
 		{
-			return "0.1.2.3.4.5.6.7.8.9";
+			int numChar = (int) Utils.randomLong(0, 20L);
+			return Utils.randomString(numChar);
+		}
+		else if (type.equals("org.bn.types.BitString"))
+		{
+			int numBit = (int) Utils.randomLong(0, 20L);
+    		Array data = new RandomArray(numBit);
+			String str = new String(data.getBytes());
+			BitString bstr = new BitString();
+			bstr.setValue(str.getBytes());
+			return bstr;
 		}
 		else if (type.equals("org.bn.types.ObjectIdentifier"))
 		{
+			int numInt = (int) Utils.randomLong(0L, 10L);
 			ObjectIdentifier objId = new ObjectIdentifier();
-			objId.setValue("0.1.2.3.4.5.6.7.8.9");
+			String str = randomObjectIdentifier(numInt);
+			// oid shall start with some predeined prefixes
+			objId.setValue("0.1.2" + str);
 			return  objId;
 		}
 		else if (type.endsWith(".EnumType"))
@@ -201,7 +215,8 @@ public class ASNInitializer
 				objects = classes[0].getEnumConstants();
 				if (objects !=null && objects.length > 0)
 				{
-					return objects[0];
+					int numChar = (int) Utils.randomLong(0, objects.length - 1);
+					return objects[numChar];
 				}
 				else
 				{
@@ -209,30 +224,13 @@ public class ASNInitializer
 					objects = subClasses[0].getEnumConstants();
 					if (objects !=null && objects.length > 0)
 					{
-						return objects[0];
+						int numChar = (int) Utils.randomLong(0, objects.length - 1);
+						return objects[numChar];
 					}
 				}
 			}
 			return null;
 		}
-    	/*
-		else if (type.equals("UnknownSubscriberParam"))
-		{
-			Class[] classes = obj.getClass().getClasses();
-			Object[] objects = null;
-			if (classes.length >= 1)
-			{
-				objects = classes[0].getEnumConstants();
-			}
-			if (objects !=null && objects.length > 0)
-			{
-				return objects[0];
-			}
-			else
-			{
-				return null;
-			}
-		}*/
 		else
 		{
 			Constructor constr = subClass.getConstructor();
@@ -242,5 +240,20 @@ public class ASNInitializer
 			return subObj;
 		}
     }
+    
+	public static String randomObjectIdentifier(int numInt)
+	{
+	    StringBuilder strBuilder = new StringBuilder();
+	    for (int j = 0; j < numInt; j++)
+	    {
+	    	int b = (byte) Utils.randomLong(0, 128L) & 0x00FF;	    	
+	    	strBuilder.append(String.valueOf(b));
+	    	if (j != numInt - 1)
+	    	{
+	    		strBuilder.append('.');
+	    	}
+	    }
+	    return strBuilder.toString();
+	}
     
 }

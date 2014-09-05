@@ -31,7 +31,9 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.ExceptionHandlerSingleton;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
+
 import gp.utils.arrays.DefaultArray;
+
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -52,7 +54,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1431,4 +1432,49 @@ public class Utils
     	return str.substring(i);
     }
 
+	public static String randomString(int numChar)
+	{
+	    StringBuilder s = new StringBuilder();
+	    for (int j = 0; j < numChar; j++)
+	    {
+	        int nextChar = (int) (Math.random() * 62);
+	        if (nextChar < 10) //0-9
+	        {
+	            s.append(nextChar);
+	        }
+	        else if (nextChar < 36) //a-z
+	        {
+	            s.append((char) (nextChar - 10 + 'a'));
+	        }
+	        else //A-Z
+	        {
+	            s.append((char) (nextChar - 36 + 'A'));
+	        }
+	    }
+	    return s.toString();
+	}
+    
+	public static long randomLong(long min, long max)
+	{	
+		
+		double d = Math.random() * (max - min) + min;
+		return Math.round(d);
+	}
+
+	public static boolean randomBoolean()
+	{	
+		long l = Utils.randomLong(0, 1L);
+		boolean b; 
+		if (l == 1)
+		{
+			b = true;
+		}
+		else
+		{
+			b = false;
+		}
+		return b;
+	}
+
+	
 }
