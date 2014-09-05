@@ -130,7 +130,7 @@ public class ASNInitializer
 				LinkedList list = new LinkedList();
 				if (typeActualTypeArg.length > 0)
 				{
-					for (int j = 0; j <= 0; j++)
+				for (int j = 0; j <= 2; j++)
 					{		
 						Class tabClass = (Class) typeActualTypeArg[0];
 						Object tabObject = getSubObject(objClass, tabClass);	
@@ -192,7 +192,31 @@ public class ASNInitializer
 			objId.setValue("0.1.2.3.4.5.6.7.8.9");
 			return  objId;
 		}
-		else if (type.endsWith("EnumType"))
+		else if (type.endsWith(".EnumType"))
+		{
+			Class[] classes = obj.getClass().getClasses();
+			Object[] objects = null;
+			if (classes.length >= 1)
+			{
+				objects = classes[0].getEnumConstants();
+				if (objects !=null && objects.length > 0)
+				{
+					return objects[0];
+				}
+				else
+				{
+					Class[] subClasses = classes[0].getClasses();
+					objects = subClasses[0].getEnumConstants();
+					if (objects !=null && objects.length > 0)
+					{
+						return objects[0];
+					}
+				}
+			}
+			return null;
+		}
+    	/*
+		else if (type.equals("UnknownSubscriberParam"))
 		{
 			Class[] classes = obj.getClass().getClasses();
 			Object[] objects = null;
@@ -200,8 +224,15 @@ public class ASNInitializer
 			{
 				objects = classes[0].getEnumConstants();
 			}
-			return objects[0];
-		}
+			if (objects !=null && objects.length > 0)
+			{
+				return objects[0];
+			}
+			else
+			{
+				return null;
+			}
+		}*/
 		else
 		{
 			Constructor constr = subClass.getConstructor();

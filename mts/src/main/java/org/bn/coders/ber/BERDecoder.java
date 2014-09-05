@@ -116,8 +116,9 @@ public class BERDecoder extends Decoder {
             result =  super.decodeSequence(decodedTag,objectClass,elementInfo,stream);
         else
             result =  decodeSet(decodedTag,objectClass,elementInfo,len.getValue(),stream);
-        if(result.getSize()!= len.getValue())
-            throw new  IllegalArgumentException ("Sequence '" + objectClass.toString() + "' size is incorrect! Must be: "+len.getValue()+". Received: "+result.getSize());
+        // FHModif
+        //if(result.getSize()!= len.getValue())
+        //    throw new  IllegalArgumentException ("Sequence '" + objectClass.toString() + "' size is incorrect! Must be: "+len.getValue()+". Received: "+result.getSize());
         result.setSize(result.getSize() + len.getSize());
         elementInfo.setMaxAvailableLen(saveMaxAvailableLen );
         return result;
@@ -242,8 +243,9 @@ public class BERDecoder extends Decoder {
     public DecodedObject decodeNull(DecodedObject decodedTag, Class objectClass, 
                                        ElementInfo elementInfo, 
                                 InputStream stream) throws Exception {
-        if(!checkTagForObject(decodedTag, TagClass.Universal, ElementType.Primitive, UniversalTag.Null, elementInfo))
-            return null;
+    	// FHModif
+        //if(!checkTagForObject(decodedTag, TagClass.Universal, ElementType.Primitive, UniversalTag.Null, elementInfo))
+        //    return null;
         stream.read ( ); // ignore null length
         DecodedObject result = new DecodedObject(objectClass.newInstance(),1);
         return result;
@@ -456,6 +458,7 @@ public class BERDecoder extends Decoder {
         byte[] byteBuf = new byte[len.getValue()];
         stream.read(byteBuf, 0, byteBuf.length);
         String dottedDecimal = BERObjectIdentifier.Decode(byteBuf);
-        return new DecodedObject<Object>(new ObjectIdentifier(dottedDecimal));
+        // FHModif
+        return new DecodedObject<Object>(new ObjectIdentifier(dottedDecimal), len.getValue() + len.getSize());
     }
 }

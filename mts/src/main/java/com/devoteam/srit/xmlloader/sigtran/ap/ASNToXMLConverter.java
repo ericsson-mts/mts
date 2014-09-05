@@ -233,7 +233,7 @@ public class ASNToXMLConverter
 			ret +=subObject.toString();
 			return ret;
 		}
-		else if (type.endsWith("EnumType"))
+		else if (type.endsWith(".EnumType"))
 		{
 			ret +=subObject.toString();
 			return ret;

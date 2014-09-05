@@ -174,10 +174,11 @@ public class CoderUtils {
     }
     
     public static void checkConstraints(long value, ElementInfo elementInfo) throws Exception {
+    	/* FHModif
         if(elementInfo.hasPreparedInfo()) {
             if(elementInfo.getPreparedInfo().hasConstraint())
                 if(!elementInfo.getPreparedInfo().getConstraint().checkValue(value))
-                    throw new Exception("Value of '"+elementInfo.getAnnotatedClass().toString()+"' out of bounds");
+                    //throw new Exception("Value of '"+elementInfo.getAnnotatedClass().toString()+"' out of bounds");
         }
         else {
             if(elementInfo.getAnnotatedClass().isAnnotationPresent(ASN1ValueRangeConstraint.class)) {
@@ -191,6 +192,7 @@ public class CoderUtils {
                     throw new Exception("Value of '"+elementInfo.getAnnotatedClass().toString()+"' out of bounds");
             }        
         }
+        */
     }
     
     /*public static boolean isImplements(Class<?> objectClass, Class<?> interfaceClass) {        
@@ -252,9 +254,11 @@ public class CoderUtils {
     
     
     public static void checkForOptionalField(Field field, ElementInfo elementInfo) throws Exception {
+    	/* FHModif
         if( isOptionalField(field, elementInfo) )
                 return;
         throw new  IllegalArgumentException ("The mandatory field '" + field.getName() + "' does not have a value!");
+        */
     }
         
         
