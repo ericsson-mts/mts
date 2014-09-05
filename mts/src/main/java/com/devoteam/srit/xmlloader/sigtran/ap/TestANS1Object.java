@@ -102,7 +102,11 @@ public class TestANS1Object {
         //String className = "ShortTermDenialParam";
         //String className = "MAP_Protocol";
         //String className = "UnknownSubscriberParam";
-        String className = "AnyTimeInterrogationArg";
+        //String className = "AnyTimeInterrogationArg";
+        //String className = "LongForwardedToNumber";
+        //String className = "UpdateLocationArg";
+        //String className = "ReadyForSM_Arg";
+        String className = "AbsentSubscriberParam";
 
 		// inspect the classes for the given package
     	List<Class> listClasses = ClassInspector.find(packageName);

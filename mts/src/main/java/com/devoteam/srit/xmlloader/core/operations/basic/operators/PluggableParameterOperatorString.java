@@ -192,24 +192,8 @@ public class PluggableParameterOperatorString extends AbstractPluggableParameter
             }
             else if (name.equalsIgnoreCase(NAME_S_RANDOM))
             {
-                StringBuilder s = new StringBuilder();
-                for (int j = 0; j < Integer.valueOf(param1.get(i).toString()); j++)
-                {
-                    int nextChar = (int) (Math.random() * 62);
-                    if (nextChar < 10) //0-9
-                    {
-                        s.append(nextChar);
-                    }
-                    else if (nextChar < 36) //a-z
-                    {
-                        s.append((char) (nextChar - 10 + 'a'));
-                    }
-                    else //A-Z
-                    {
-                        s.append((char) (nextChar - 36 + 'A'));
-                    }
-                }
-                result.add(s.toString());
+            	int numChar = Integer.valueOf(param1.get(i).toString());
+            	String str = Utils.randomString(numChar);
             }
             else if (name.equalsIgnoreCase(NAME_S_DIGEST))
             {
