@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

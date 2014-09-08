@@ -216,6 +216,7 @@ public class ASNInitializer
 				if (objects !=null && objects.length > 0)
 				{
 					int numChar = (int) Utils.randomLong(0, objects.length - 1);
+					Field[] fields = objects[numChar].getClass().getDeclaredFields();
 					return objects[numChar];
 				}
 				else

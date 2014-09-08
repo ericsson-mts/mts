@@ -93,7 +93,7 @@ public class TestANS1Object {
         //String testFilename = args[0];
         String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
         //String className = "ForwardingInfo";
-        //String className = "Component";
+        String className = "Component";
         //String className = "NoteMM_EventRes";
         //String className = "AnyTimeSubscriptionInterrogationRes";
         //String className = "ReportSM_DeliveryStatusArg";
@@ -106,7 +106,7 @@ public class TestANS1Object {
         //String className = "LongForwardedToNumber";
         //String className = "UpdateLocationArg";
         //String className = "ReadyForSM_Arg";
-        String className = "AbsentSubscriberParam";
+        //String className = "AbsentSubscriberParam";
 
 		// inspect the classes for the given package
     	List<Class> listClasses = ClassInspector.find(packageName);
@@ -184,6 +184,7 @@ public class TestANS1Object {
         retInit += "\n";
         retInit += "</AP>";
         
+
         System.out.print("Process class[" + i + "] = " + className + ".xml (" + retInit.length() + ") => ");
         
         // write XML data into a file
