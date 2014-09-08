@@ -18,11 +18,13 @@ package org.bn.coders.ber;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-
 import java.lang.reflect.*;
 import java.util.Collection;
 import java.util.LinkedList;
+
 import org.bn.coders.*;
+import org.bn.coders.ber.BERCoderUtils;
+import org.bn.coders.ber.BERObjectIdentifier;
 import org.bn.metadata.ASN1SequenceOfMetadata;
 import org.bn.types.*;
 

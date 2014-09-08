@@ -18,8 +18,10 @@ package org.bn.coders;
 
 import java.io.InputStream;
 import java.lang.reflect.*;
+
 import org.bn.IDecoder;
 import org.bn.annotations.*;
+import org.bn.coders.DecodedObject;
 import org.bn.metadata.*;
 import org.bn.types.*;
 
