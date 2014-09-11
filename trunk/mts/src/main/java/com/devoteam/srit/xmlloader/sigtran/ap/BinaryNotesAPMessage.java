@@ -29,6 +29,7 @@ import gp.utils.arrays.DefaultArray;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 
 import org.bn.CoderFactory;
@@ -36,7 +37,8 @@ import org.bn.IDecoder;
 import org.bn.IEncoder;
 import org.dom4j.Element;
 
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component;
+//import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Parameter;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage;
 
 
@@ -47,10 +49,10 @@ import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage;
 public class BinaryNotesAPMessage extends APMessage 
 {
 
-	// MAP bionarynotes object
-	Component mapComponent; 
+	// ASN1 binarynotes object
+	private Object apObject;
 	
-    public BinaryNotesAPMessage() 
+    public BinaryNotesAPMessage()
     {
     	/*
     	// define MAP messages (MAP.asn file)
@@ -95,9 +97,9 @@ public class BinaryNotesAPMessage extends APMessage
     public Array encode() throws Exception 
     {
     	// Library binarynotes
-    	IEncoder<com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Component> encoderMAP = CoderFactory.getInstance().newEncoder("BER");
+    	IEncoder<java.lang.Object> encoderMAP = CoderFactory.getInstance().newEncoder("BER");
     	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        encoderMAP.encode(this.mapComponent, outputStream);
+        encoderMAP.encode(this.apObject, outputStream);
         byte[] bytesMAP = outputStream.toByteArray();
         Array arrayMAP = new DefaultArray(bytesMAP);
         // String strMAP = Utils.toHexaString(bytesMAP, null);
@@ -111,19 +113,27 @@ public class BinaryNotesAPMessage extends APMessage
         
     	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
         InputStream inputStream = new ByteArrayInputStream(array.getBytes());
-        this.mapComponent = decoder.decode(inputStream, Component.class);
+        this.apObject = decoder.decode(inputStream, Component.class);
         
     }
 
     public void parseFromXML(Element root) throws Exception 
     {
+    	this.className = root.attributeValue("className");
+    	
         List<Element> children = root.elements();
-        //for (Element element : children) 
+        for (Element element : children) 
         {
-            String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
-            Class thisClass = Class.forName(packageName + "Component");
-            this.mapComponent = (Component) thisClass.newInstance();
-            XMLToASNParser.getInstance().initObject(this.mapComponent, root, packageName);
+            Class thisClass = Class.forName(className);
+            int pos = className.lastIndexOf('.');
+            String packageName = "";
+            if (pos > 0)
+            {
+            	packageName = className.substring(0, pos + 1);
+            }
+            // String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map."; 
+            this.apObject = thisClass.newInstance();
+            XMLToASNParser.getInstance().initObject(this.apObject, element, packageName);
         }
     }
 
@@ -131,10 +141,18 @@ public class BinaryNotesAPMessage extends APMessage
     {
         String ret = "";
         ret += "<AP>";
-        ret += ASNToXMLConverter.getInstance().toXML(null,this.mapComponent, 0);
+        ret += ASNToXMLConverter.getInstance().toXML(null,this.apObject, 0);
         ret += "\n";
         ret += "</AP>";
     	return ret;
     }
+    
+    public Collection<Component> getTCAPComponents()
+    {
+    	return ((TCMessage) apObject).getBegin().getComponents().getValue();
+    } 
+
+    
+    
     
 }

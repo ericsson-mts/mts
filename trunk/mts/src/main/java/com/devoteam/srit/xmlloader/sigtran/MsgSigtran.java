@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.sigtran;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -32,8 +33,8 @@ import org.mobicents.protocols.asn.AsnOutputStream;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
-import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
@@ -49,6 +50,7 @@ import com.devoteam.srit.xmlloader.sigtran.ap.HybridMAPMessageExperim;
 import com.devoteam.srit.xmlloader.sigtran.ap.MB_MAPMessageExperim;
 import com.devoteam.srit.xmlloader.sigtran.ap.MB_TCAPMessageExperim;
 import com.devoteam.srit.xmlloader.sigtran.ap.MobicentTCAPMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoField;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
@@ -60,8 +62,9 @@ public class MsgSigtran extends Msg
     private APMessage _apMessage;
 		
     // TCAP layer (Application part) (spec ITU Q.XXXX)= coding ASN1 => Use Mobicent library 
-    private MobicentTCAPMessage _tcapMessage;
-	
+    //private MobicentTCAPMessage _tcapMessage;
+    private APMessage _tcapMessage;
+    
     // ISDN (Integrated Services Digital Network) layer (spec ITU Q.XXXX) = coding IE (Information element) 
     private MessageQ931 _ieMessage;
 
@@ -84,7 +87,7 @@ public class MsgSigtran extends Msg
     	//_apMessage = new MobicentMAPMessage();
     	//_apMessage = new BinaryNotesAPMessage();
     	//_apMessage = new BinaryNotesAPMessage();
-    	_tcapMessage = new MobicentTCAPMessage();
+    	//_tcapMessage = new BinaryNotesAPMessage();
     }
 
     public MsgSigtran(Array msgArray, int protocolIdentifier) throws Exception 
@@ -122,12 +125,13 @@ public class MsgSigtran extends Msg
 	    		// decode TCAP layer with Mobicent library
 	    		Array ieArray = paramFvo.encode();
 		    	_tcapMessage.decode(ieArray);
-		    	
-		    	AsnOutputStream aosMAP = new AsnOutputStream();
-		    	if (_tcapMessage.getTCAPComponents().length >= 1)
+		  
+		    	Collection<Component> tcapComponents = _tcapMessage.getTCAPComponents();
+		    	Component[] tableComponents = (Component[]) tcapComponents.toArray(); 
+		    	if (tableComponents.length >= 1)
 		    	{
-			    	_tcapMessage.getTCAPComponents()[0].encode(aosMAP);
-			    	byte[] bytesAP = aosMAP.toByteArray();
+		    		AsnOutputStream aosMAP = new AsnOutputStream();
+		    		byte[] bytesAP = tableComponents[0].getInvoke().getParameter();
 			        Array arrayAP = new DefaultArray(bytesAP);
 		
 			        // decode AP layer with BinaryNotes
@@ -250,7 +254,15 @@ public class MsgSigtran extends Msg
         return false;
     }
 
-    public APMessage getAPMessage() 
+    public APMessage getTCAPMessage() {
+		return _tcapMessage;
+	}
+
+	public void setTCAPMessage(APMessage tcapMessage) {
+		this._tcapMessage = tcapMessage;
+	}
+
+	public APMessage getAPMessage() 
     {
 		return _apMessage;
 	}
@@ -323,9 +335,13 @@ public class MsgSigtran extends Msg
         		Array arrayAP = _apMessage.encode();
         		
         		// 
-        		Array subArray = arrayAP.subArray(1);
-        		AsnInputStream inputStream = new AsnInputStream(subArray.getBytes());
-        		_tcapMessage.getTCAPComponents()[0].decode(inputStream);
+        		//Array subArray = arrayAP.subArray(1);
+		    	Collection<Component> tcapComponents = _tcapMessage.getTCAPComponents();
+		    	Object[] tableComponents = tcapComponents.toArray(); 
+		    	if (tableComponents.length >= 1 )
+		    	{
+		    		((Component) tableComponents[0]).getInvoke().setParameter(arrayAP.getBytes());
+		    	}
         		
         		// encode TCAP layer with Mobicent library
         		Array arrayTCAP = _tcapMessage.encode();

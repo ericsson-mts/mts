@@ -91,9 +91,12 @@ public class TestANS1Object {
         TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
     
         //String testFilename = args[0];
-        String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
+        //String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
+        String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.";
+        
+        String className = "TCMessage";
+        //String className = "Components";
         //String className = "ForwardingInfo";
-        String className = "Component";
         //String className = "NoteMM_EventRes";
         //String className = "AnyTimeSubscriptionInterrogationRes";
         //String className = "ReportSM_DeliveryStatusArg";

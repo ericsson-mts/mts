@@ -26,28 +26,32 @@ package com.devoteam.srit.xmlloader.sigtran.ap;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.dom4j.Element;
-import org.mobicents.protocols.asn.AsnOutputStream;
-import org.mobicents.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.mobicents.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
-import org.mobicents.protocols.ss7.tcap.asn.DialogPortion;
-import org.mobicents.protocols.ss7.tcap.asn.DialogRequestAPDU;
-import org.mobicents.protocols.ss7.tcap.asn.TCBeginMessageImpl;
-import org.mobicents.protocols.ss7.tcap.asn.TcapFactory;
-import org.mobicents.protocols.ss7.tcap.asn.comp.Component;
-import org.mobicents.protocols.ss7.tcap.asn.comp.Invoke;
-import org.mobicents.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.mobicents.protocols.ss7.tcap.asn.comp.Parameter;
-import org.mobicents.protocols.ss7.tcap.asn.comp.TCBeginMessage;
 
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component;
 
 /**
  *
- * @author gansquer
+ * @author fhenry
  */
-public abstract class APMessage {
+public abstract class APMessage 
+{
+
+    public String getClassName()
+    {
+    	return this.className;
+    }
+
+	public void setClassName(String className) 
+	{
+		this.className = className;
+	}
+
+	// Class name for the root object
+	protected String className; 
 
     public abstract Array encode() throws Exception; 
 
@@ -56,5 +60,7 @@ public abstract class APMessage {
     public abstract void parseFromXML(Element root) throws Exception;
     
     public abstract String toXML();
-    	
+    
+    public abstract Collection<Component> getTCAPComponents();
+    
 }

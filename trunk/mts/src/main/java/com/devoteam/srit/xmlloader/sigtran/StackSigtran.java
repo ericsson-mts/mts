@@ -30,6 +30,7 @@ import gp.utils.arrays.SupArray;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 
 import org.dom4j.Element;
 
@@ -107,15 +108,44 @@ public class StackSigtran extends Stack {
     
     /** Creates a specific Msg */
     @Override
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception {
+    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception 
+    {
         MsgSigtran msgSigtran = new MsgSigtran();
         
-        // AP layer (optional)
-        Element ap = root.element("AP");
-        if (ap != null) {
+        List<Element> listAps = root.elements("AP");
+        Object[] tabAps = listAps.toArray();
+        if (tabAps.length >= 1)
+        {
         	APMessage apMessage = new BinaryNotesAPMessage();
-        	apMessage.parseFromXML(ap);
-            msgSigtran.setAPMessage(apMessage);
+        	apMessage.parseFromXML(((Element) tabAps[0]));
+        	String className = apMessage.getClassName(); 
+        	if (className.contains(".tcap."))
+        	{
+                // TCAP layer (optional)
+        		msgSigtran.setTCAPMessage(apMessage);
+        	}
+        	else
+        	{
+                // generic AP layer (optional)
+        		msgSigtran.setAPMessage(apMessage);
+        	}
+        }
+        
+        if (tabAps.length >= 2)
+        {
+        	APMessage apMessage = new BinaryNotesAPMessage();
+        	apMessage.parseFromXML(((Element) tabAps[1]));
+        	String className = apMessage.getClassName();
+        	if (className.contains(".tcap."))
+        	{
+                // TCAP layer (optional)
+        		msgSigtran.setTCAPMessage(apMessage);
+        	}
+        	else
+        	{
+                // generic AP layer (optional)
+        		msgSigtran.setAPMessage(apMessage);
+        	}
         }
 
         // ISDN layer (optional)
