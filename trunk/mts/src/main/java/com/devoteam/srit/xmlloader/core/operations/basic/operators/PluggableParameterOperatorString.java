@@ -194,6 +194,7 @@ public class PluggableParameterOperatorString extends AbstractPluggableParameter
             {
             	int numChar = Integer.valueOf(param1.get(i).toString());
             	String str = Utils.randomString(numChar);
+            	result.add(str);
             }
             else if (name.equalsIgnoreCase(NAME_S_DIGEST))
             {
