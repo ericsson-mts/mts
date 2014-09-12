@@ -10,11 +10,11 @@ BEGIN
 ExternalPDU ::= [UNIVERSAL 8] IMPLICIT SEQUENCE
 					{
 					oid OBJECT IDENTIFIER,
-					dialog [0] IMPLICIT Dialog1 
-					}
-					
+					dialog [0] IMPLICIT DialoguePDU 
+					}				
 							
-Dialog1 ::= OCTET STRING
+DialoguePDU ::= OCTET STRING
+
 -- End WS
 -- Transaction Portion fields
 
@@ -22,7 +22,7 @@ TCMessage ::= CHOICE
         {
 				begin						[APPLICATION 2]		IMPLICIT Begin,
 				end							[APPLICATION 4]		IMPLICIT End,
-				continue					[APPLICATION 5]		IMPLICIT Continue,
+				continue1					[APPLICATION 5]		IMPLICIT Continue,
 				abort						[APPLICATION 7]		IMPLICIT Abort,
                 unidirectional				[APPLICATION 1]		IMPLICIT Unidirectional
         }
@@ -73,16 +73,16 @@ Reason ::= CHOICE
 -- APDU, or by the TC-User in which case it could be either an ABRT APDU or data in some user-defined
 -- abstract syntax.
 
--- DialoguePortion ::= [APPLICATION 11] EXPLICIT EXTERNAL
+--DialoguePortion ::= [APPLICATION 11] EXPLICIT EXTERNAL
 
 -- WS adaptation
-DialoguePortion ::= [APPLICATION 11] IMPLICIT DialogueOC
+-- DialoguePortion ::= [APPLICATION 11] IMPLICIT ExternalPDU
 
--- FH DialoguePortion ::= CHOICE 
--- FH    {
--- FH		  dialogueOC						[APPLICATION 13] IMPLICIT DialogueOC,
---FH      externalPDU           [APPLICATION 11] IMPLICIT ExternalPDU
--- FH    }
+DialoguePortion ::= CHOICE 
+    {
+		  dialogueOC						[APPLICATION 13] IMPLICIT DialogueOC,
+      externalPDU           [APPLICATION 11] IMPLICIT ExternalPDU
+    }
 
 DialogueOC ::= OCTET STRING						
 
