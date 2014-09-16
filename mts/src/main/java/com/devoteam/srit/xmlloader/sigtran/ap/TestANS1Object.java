@@ -247,9 +247,7 @@ public class TestANS1Object {
         encoderMAP.encode(objectXML, outputStream);
         byte[] bytesMAP = outputStream.toByteArray();
         Array arrayMAP = new DefaultArray(bytesMAP);
-
         
-        // Array arrayMAP1 = new DefaultArray(Utils.parseBinaryString("h3045040A04080001020304050607040A040800010203040506070A010080010BA11AA0173015060901020304050607080904080001020304050607A1000500050084010085010B"));
         // 	decode ASN1 object from binary
 		IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
 	    InputStream inputStream = new ByteArrayInputStream(arrayMAP.getBytes());
