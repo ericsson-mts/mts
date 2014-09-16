@@ -19,10 +19,12 @@ ObjectDescriptor1 ::= OCTET STRING
     
 EmbeddedObject ::= CHOICE 
         { 
-        single-ASN1-type [0] IMPLICIT EXTERNAL, 
+        single-ASN1-type [0] EmbeddedData, 
         octet-aligned [1] IMPLICIT OCTET STRING, 
         arbitrary [2] IMPLICIT BIT STRING 
         } 
+
+EmbeddedData ::= OCTET STRING
 
 -- End WS
 -- Transaction Portion fields
@@ -75,7 +77,7 @@ Reason ::= CHOICE{
 -- APDU, or by the TC-User in which case it could be either an ABRT APDU or data in some user-defined
 -- abstract syntax.
 
-DialoguePortion ::= [APPLICATION 11] OCTET STRING
+-- DialoguePortion ::= [APPLICATION 11] OCTET STRING
 
 -- WS adaptation
 DialoguePortion ::= [APPLICATION  11] DialogueOC
@@ -122,7 +124,7 @@ Invoke ::=		SEQUENCE {
 				invokeID		InvokeIdType,
 				linkedID		[0] IMPLICIT InvokeIdType OPTIONAL,
 				opCode			OPERATION1,
-				parameter	 	ANY OPTIONAL } -- FH parameter	 Parameter OPTIONAL }
+				parameter	 	EXTERNAL OPTIONAL } -- FH parameter	 Parameter OPTIONAL }
  
 -- ANY is filled by the single ASN.1 data type following the keyword PARAMETER or the keyword ARGUMENT
 -- in the type definition of a particular operation.
@@ -131,7 +133,7 @@ ReturnResult ::=	SEQUENCE {
 	invokeID				InvokeIdType,
 	resultretres			SEQUENCE {
 		opCode			OPERATION1,
-		parameter		ANY OPTIONAL -- FH parameter		Parameter OPTIONAL
+		parameter		EXTERNAL OPTIONAL -- FH parameter		Parameter OPTIONAL
 		} OPTIONAL
 	}
 

@@ -28,6 +28,9 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueOC;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialoguePortion;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.EmbeddedData;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.EmbeddedObject;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ObjectId;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -199,7 +202,7 @@ public class XMLToASNParser
 			}
             return null;
         }
-        else if (type.contains("DialogueOC"))
+        else if (type.endsWith(".DialogueOC"))
         {
             Object obj = Class.forName(type).newInstance();
 
@@ -218,6 +221,46 @@ public class XMLToASNParser
             
             return obj;
         }
+        else if (type.endsWith(".EmbeddedObject"))
+        {
+            Object obj = Class.forName(type).newInstance();
+
+            Object objEmbeded = Class.forName(className + "DialoguePDU").newInstance();
+            Object objEmbbededClass = this.instanceClass(objEmbeded.getClass().getName(), className);
+            initObject(objEmbbededClass, (Element) element.elements().get(0), className);
+        	
+            // encode ASN1 object into binary
+        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
+        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        	encoderEmbedded.encode(objEmbbededClass, outputStream);
+            byte[] bytesEmbedded = outputStream.toByteArray();
+            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+            
+            EmbeddedData embeddedData = new EmbeddedData();
+            embeddedData.setValue(bytesEmbedded);
+            ((EmbeddedObject) obj).selectSingle_ASN1_type(embeddedData);
+            
+            return obj;
+        }
+        else if (type.endsWith(".ObjectId"))
+        {
+            Object obj = Class.forName(type).newInstance();
+
+            Object objEmbeded = Class.forName("org.bn.types.ObjectIdentifier").newInstance();
+            Object objEmbbededClass = this.instanceClass(objEmbeded.getClass().getName(), className);
+            initObject(objEmbbededClass, (Element) element.elements().get(0), className);
+        	
+            // encode ASN1 object into binary
+        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
+        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        	encoderEmbedded.encode(objEmbbededClass, outputStream);
+            byte[] bytesEmbedded = outputStream.toByteArray();
+            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+            
+            ((ObjectId) obj).setValue(bytesEmbedded);
+            
+            return obj;
+        }     
         else 
         {
             String classNameCurrent = type.substring(type.lastIndexOf(".") + 1);

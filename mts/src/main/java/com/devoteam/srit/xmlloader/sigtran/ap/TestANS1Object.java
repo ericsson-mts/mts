@@ -94,7 +94,8 @@ public class TestANS1Object {
         //String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
         String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.";
         
-        String className = "TCMessage";
+        //String className = "TCMessage";
+        String className = "DialoguePDU";
         //String className = "Components";
         //String className = "ForwardingInfo";
         //String className = "NoteMM_EventRes";
