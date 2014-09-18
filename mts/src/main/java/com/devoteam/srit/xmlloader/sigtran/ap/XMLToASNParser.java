@@ -260,7 +260,7 @@ public class XMLToASNParser
             ((ObjectId) obj).setValue(bytesEmbedded);
             
             return obj;
-        }     
+        }
         else 
         {
             String classNameCurrent = type.substring(type.lastIndexOf(".") + 1);
