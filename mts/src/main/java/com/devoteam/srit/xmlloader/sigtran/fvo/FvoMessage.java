@@ -239,10 +239,10 @@ public class FvoMessage {
 			param = (FvoParameter) iterParam.next();
 			if (name.equalsIgnoreCase(param.getName()))
 			{
-				break;
+				return param;
 			}
 		}
-        return param;
+        return null;
     }
 
     public void setVparameters(LinkedList<FvoParameter> vparameters) {

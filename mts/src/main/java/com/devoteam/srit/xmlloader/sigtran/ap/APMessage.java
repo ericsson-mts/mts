@@ -39,6 +39,17 @@ import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component;
  */
 public abstract class APMessage 
 {
+	// Class name for the root object
+	protected String className; 
+
+	public APMessage()
+	{
+	}
+	
+	public APMessage(String className)
+	{
+		this.className = className;
+    }
 
     public String getClassName()
     {
@@ -49,9 +60,6 @@ public abstract class APMessage
 	{
 		this.className = className;
 	}
-
-	// Class name for the root object
-	protected String className; 
 
     public abstract Array encode() throws Exception; 
 

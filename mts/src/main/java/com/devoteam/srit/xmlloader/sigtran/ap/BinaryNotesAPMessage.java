@@ -52,8 +52,18 @@ public class BinaryNotesAPMessage extends APMessage
 	// ASN1 binarynotes object
 	private Object apObject;
 	
-    public BinaryNotesAPMessage()
+	public BinaryNotesAPMessage()
     {
+		super();
+    }
+	
+    public BinaryNotesAPMessage(String className) throws Exception
+    {
+    	super(className);
+    	
+        Class cl = Class.forName(className);
+        this.apObject = cl.newInstance();
+
     	/*
     	// define MAP messages (MAP.asn file)
     	this.mapComponent = new Component();
@@ -113,7 +123,9 @@ public class BinaryNotesAPMessage extends APMessage
         
     	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
         InputStream inputStream = new ByteArrayInputStream(array.getBytes());
-        this.apObject = decoder.decode(inputStream, Component.class);
+        Class cl = Class.forName(className);
+        this.apObject = cl.newInstance();
+        this.apObject = decoder.decode(inputStream, cl);
         
     }
 
