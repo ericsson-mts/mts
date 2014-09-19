@@ -31,8 +31,8 @@ import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.TextExceptionHand
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import com.devoteam.srit.xmlloader.core.utils.maps.HashMap;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.UnknownSubscriberParam;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.UnknownSubscriberParam.UnknownSubscriberDiagnosticEnumType;
+//import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.UnknownSubscriberParam;
+//import com.devoteam.srit.xmlloader.sigtran.ap.generated.map.UnknownSubscriberParam.UnknownSubscriberDiagnosticEnumType;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -92,11 +92,12 @@ public class TestANS1Object {
     
         //String testFilename = args[0];
         //String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
-        String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.";
+        String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
         
         //String className = "TCMessage";
-        String className = "DialoguePDU";
+        //String className = "DialoguePDU";
         //String className = "Components";
+        String className = "RoutingInfoForLCS_Arg";
         //String className = "ForwardingInfo";
         //String className = "NoteMM_EventRes";
         //String className = "AnyTimeSubscriptionInterrogationRes";
@@ -161,7 +162,7 @@ public class TestANS1Object {
     	{
     		try 
     		{	i++;
-    			testProcess(i, packageName, classObject);
+    			//testProcess(i, packageName, classObject);
     		} 
     		catch (Exception e) 
     		{

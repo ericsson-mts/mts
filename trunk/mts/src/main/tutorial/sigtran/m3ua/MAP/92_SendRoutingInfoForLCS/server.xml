@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : server.xml
+    Created on : 10/07/2014
+    Author     : fhenry
+    Description: Receive a MAP message
+-->
+
+<scenario>
+
+	<!-- Message encoded value -->
+	<parameter name="[data]" value="010001010000007c021000740000375800003715030200040900030e180b12060012046895112233580a129100120468951114864762454804f78203016b1e281c060700118605010101a011600f80020780a1090607040000010025036c1da11b02010002015530138006916895111486a109810791689511223358" />
+  <parameter name="[length]" operation="string.length" value="[data]"/>
+
+	<receiveMessageSIGTRAN name="Wait DATA1" timeout="5">
+		<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+	</receiveMessageSIGTRAN>
+	
+  <parameter name="[result ]" operation="binary.difference" value="[data1]" value2="[data]"/>
+  
+	<if>
+		<condition>
+			<test parameter="[data1]" condition="binary.equals" value="[data]"/>
+		</condition>
+		<else>
+			<log level="ERROR">	Message received :	</log>
+			<log level="ERROR">	"[data1]"			</log>
+			<log level="ERROR">	Message expected :	</log>
+			<log level="ERROR">	"[data]"			</log>
+		</else>
+	</if>
+  
+  <test parameter="[data1]" condition="binary.equals" value="[data]"/>
+  
+</scenario>

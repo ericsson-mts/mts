@@ -292,6 +292,7 @@ public class FvoField {
             _value = String.valueOf(buff.getValue());
         }
         else if(FvoField.formatBinary.equalsIgnoreCase(_format)){
+        	_lengthBit = array.length * 8;
             // offset and length should be multiple of 8
             DefaultArray buff = new DefaultArray(_lengthBit/8);
             for(int i=0; i < _lengthBit; i++){
@@ -300,6 +301,7 @@ public class FvoField {
             _value = Array.toHexString(buff);
         }
         else if(FvoField.formatString.equalsIgnoreCase(_format)){
+        	_lengthBit = array.length * 8;
             // offset and length should be multiple of 8
             DefaultArray buff = new DefaultArray(_lengthBit/8);
             for(int i=0; i < _lengthBit; i++){

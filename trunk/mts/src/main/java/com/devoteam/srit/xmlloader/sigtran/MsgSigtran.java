@@ -51,6 +51,7 @@ import com.devoteam.srit.xmlloader.sigtran.ap.MB_MAPMessageExperim;
 import com.devoteam.srit.xmlloader.sigtran.ap.MB_TCAPMessageExperim;
 import com.devoteam.srit.xmlloader.sigtran.ap.MobicentTCAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Invoke;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoField;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
@@ -120,23 +121,35 @@ public class MsgSigtran extends Msg
     	if (_fvoMessage != null)
     	{
 	    	FvoParameter paramFvo = _fvoMessage.getVparameter("Data");
-	    	if (paramFvo != null && _tcapMessage != null)
+	    	_tcapMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage");
+	    	if (paramFvo != null)
 	    	{    		
 	    		// decode TCAP layer with Mobicent library
 	    		Array ieArray = paramFvo.encode();
 		    	_tcapMessage.decode(ieArray);
 		  
 		    	Collection<Component> tcapComponents = _tcapMessage.getTCAPComponents();
-		    	Component[] tableComponents = (Component[]) tcapComponents.toArray(); 
+		    	Object[] tableComponents = (Object[])tcapComponents.toArray(); 
 		    	if (tableComponents.length >= 1)
 		    	{
 		    		AsnOutputStream aosMAP = new AsnOutputStream();
-		    		byte[] bytesAP = tableComponents[0].getInvoke().getParameter();
-			        Array arrayAP = new DefaultArray(bytesAP);
-		
-			        // decode AP layer with BinaryNotes
-			        _apMessage = new BinaryNotesAPMessage();
-			        _apMessage.decode(arrayAP);
+		    		Invoke invoke = ((Component) tableComponents[0]).getInvoke();
+		    		long opCode = invoke.getOpCode().getLocalValue();
+		    		byte[] bytesAP = invoke.getParameter();
+		    		Array arrayAP = new DefaultArray(bytesAP);
+		    		if (opCode == 46)
+		    		{
+				        // decode AP layer with BinaryNotes
+				        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Mo_forwardSM_Arg");
+				        _apMessage.decode(arrayAP);
+		    		}
+		    		if (opCode == 85)
+		    		{
+				        // decode AP layer with BinaryNotes
+				        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Arg");
+				        _apMessage.decode(arrayAP);
+		    		}
+
 		    	}
 	    	}
     	}
