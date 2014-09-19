@@ -97,7 +97,7 @@ public class MsgSigtran extends Msg
         _tlvProtocol = protocolIdentifier;
         _encodedCache = msgArray.getBytes();
         _tlvMessage = new TlvMessage(this, msgArray, protocolIdentifier);
-        // ie layer 
+        // Q931 layer 
     	TlvParameter paramTlv = _tlvMessage.getTlvParameter("Protocol_Data");
     	if (paramTlv != null)
     	{
@@ -116,16 +116,16 @@ public class MsgSigtran extends Msg
 	    		}
     		}
     	}
-        // ie layer 
-    	// get "Data" VParameter 
+        // TCAP/AP layers
     	if (_fvoMessage != null)
     	{
+        	// get "Data" VParameter from 
 	    	FvoParameter paramFvo = _fvoMessage.getVparameter("Data");
-	    	_tcapMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage");
 	    	if (paramFvo != null)
 	    	{    		
 	    		// decode TCAP layer with Mobicent library
 	    		Array ieArray = paramFvo.encode();
+	    		_tcapMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage");
 		    	_tcapMessage.decode(ieArray);
 		  
 		    	Collection<Component> tcapComponents = _tcapMessage.getTCAPComponents();
@@ -356,10 +356,10 @@ public class MsgSigtran extends Msg
 		    		((Component) tableComponents[0]).getInvoke().setParameter(arrayAP.getBytes());
 		    	}
         		
-        		// encode TCAP layer with Mobicent library
+        		// encode TCAP layer with BN library
         		Array arrayTCAP = _tcapMessage.encode();
 	        	
-            	// get "Data" VParameter 
+            	// get SS7 "Data" VParameter 
 	        	FvoParameter param = _fvoMessage.getVparameter("Data");
 	        	param.parseArray(arrayTCAP);
         	}

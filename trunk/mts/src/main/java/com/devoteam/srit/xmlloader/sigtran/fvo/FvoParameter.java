@@ -150,6 +150,7 @@ public class FvoParameter {
 
     public void parseElement(Element root) throws Exception {
         String id = root.attributeValue("id");
+        String name = root.attributeValue("name");
         String longParameter = root.attributeValue("longParameter");
         String type = root.attributeValue("type");
         String littleEndian = root.attributeValue("littleEndian");
@@ -173,6 +174,9 @@ public class FvoParameter {
 
         //TODO case pointerLength>2
         //Create the FvoParameter
+        if (id != null) {
+            setName(name);
+        }
         if (id != null) {
             setId(Integer.decode(id));
         }
@@ -210,14 +214,15 @@ public class FvoParameter {
             LinkedList<FvoField> fieldsToParse = _fields;
             _fields = new LinkedList<FvoField>();
             for(FvoField field:fieldsToParse){
-                if(offsetBit + field.getLengthBit() <= array.length * 8){
+                //if(offsetBit + field.getLengthBit() <= array.length * 8)
+                {
                     field.parseArray(array, offsetBit);
                     offsetBit += field.getLengthBit();
                     _fields.addLast(field);
                 }
-                else{
-                    break;
-                }
+                //else{
+                //    break;
+                //}
             }
 
             // if there is still undecoded data at the end of the parameter
