@@ -76,7 +76,8 @@ public class FvoDictionary {
 
         //HEADER
         Node headerNode = document.selectSingleNode("/dictionary/header");
-        if (headerNode != null) {
+        if (headerNode != null) 
+        {
             Element root = (Element) headerNode;
             header = parseParameter(root);
             header.setMessageLength(Integer.decode(root.attributeValue("length")));
@@ -84,7 +85,8 @@ public class FvoDictionary {
 
         //MESSAGES
         List listMessages = document.selectNodes("/dictionary/messages/message");
-        for (Object object:listMessages) {
+        for (Object object:listMessages) 
+        {
             Element root = (Element) object;
             FvoMessage message = new FvoMessage(null, this);
 
@@ -94,29 +96,39 @@ public class FvoDictionary {
             message.setMessageType(Integer.decode(typeCode));
             List parameters = root.elements("parameter");
             //PARAMETER OF EACH MESSAGE
-            for (int j = 0; j < parameters.size(); j++) {
+            for (int j = 0; j < parameters.size(); j++) 
+            {
                 Element param = (Element) parameters.get(j);
 
                 String name = param.attributeValue("name");
-                String length = param.attributeValue("length");
-                String type = param.attributeValue("type");
-                String littleEndian = param.attributeValue("littleEndian");
-
+                
                 FvoParameter parameter;
                 // try to find a detailed definition of the parameter
                 Element def = (Element) document.selectSingleNode("/dictionary/parameters/parameter[@name=\"" + name + "\"]");
-                if(null != def){
+                if(null != def)
+                {
                     parameter = parseParameter(def);
                 }
-                else{
+                else
+                {
                     parameter = new FvoParameter(null);
                 }
-
-                parameter.setName(name);
-                parameter.setType(type);
-                parameter.setMessageLength(Integer.decode(length));
-
-                if(null != littleEndian){
+                if (name != null)
+                {
+                	parameter.setName(name);
+                }
+                String type = param.attributeValue("type");
+                if (type != null)
+                {
+                	parameter.setType(type);
+                }
+                String length = param.attributeValue("length");
+                if (length != null)
+                {
+                	parameter.setMessageLength(Integer.decode(length));
+                }
+                String littleEndian = param.attributeValue("littleEndian");
+                if(littleEndian != null){
                     parameter.setLittleEndian(Boolean.parseBoolean(littleEndian));
                 }
 

@@ -221,18 +221,27 @@ public class FvoField {
 
     public void parseElement(Element root) throws Exception {
         String name = root.attributeValue("name");
-        String length = root.attributeValue("length");
-        String lengthBit = root.attributeValue("lengthBit");
+        if(name == null)
+        {
+        	//throw new ExecutionException("A name is required for fvo fields\n" + root.asXML());
+        }
+        else
+        {
+            _name = name;
+        }
         String value = root.attributeValue("value");
-        String format = root.attributeValue("format");
-
-        // field info should already have been completed from dicionary, using constructor that clones
-
         // test for errors (value is mandatory attribute)
-        if (value == null) {
-            throw new ExecutionException("a value is required for fvo fields\n" + root.asXML());
+        if (value == null) 
+        {
+            throw new ExecutionException("A value is required for fvo fields\n" + root.asXML());
+        }
+        else
+        {
+        	this._value = value;
         }
 
+        String format = root.attributeValue("format");
+        // field info should already have been completed from dicionary, using constructor that clones
         // test for errors (value is mandatory attribute)
         if (format != null &&
                 !format.equalsIgnoreCase(FvoField.formatBinary) &&
@@ -244,21 +253,11 @@ public class FvoField {
                     FvoField.formatString + ". Error in XML :\n" + root.asXML());
         }
         else{
-            _format = format;
+            this._format = format;
         }
 
-        if(null != name){
-            _name = name;
-        }
-
-        if(null != format){
-            _format = format;
-        }
-
-        if(null != value){
-            _value = value;
-        }
-
+        String length = root.attributeValue("length");
+        String lengthBit = root.attributeValue("lengthBit");
         if(null != length || null != lengthBit){
             _lengthBit = 0;
             if(null != length){
