@@ -325,7 +325,7 @@ public abstract class Decoder implements IDecoder, IASN1TypesDecoder {
         ElementInfo info = createSequenceFieldInfo(elementInfo, sequenceObj, field, fieldIdx);            
             
         if(CoderUtils.isNullField(field,info)) {
-        	// FHModif
+        	// FHModif : new lines
         	DecodedObject value = decodeNull(fieldTag,field.getType(),info, stream);
             if(value!=null) {                
                 invokeSetterMethodForField(field, sequenceObj, value.getValue(),info);

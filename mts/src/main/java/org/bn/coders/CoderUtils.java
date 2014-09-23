@@ -174,7 +174,7 @@ public class CoderUtils {
     }
     
     public static void checkConstraints(long value, ElementInfo elementInfo) throws Exception {
-    	/* FHModif
+    	/* FHModif : remove lines
         if(elementInfo.hasPreparedInfo()) {
             if(elementInfo.getPreparedInfo().hasConstraint())
                 if(!elementInfo.getPreparedInfo().getConstraint().checkValue(value))
@@ -254,7 +254,7 @@ public class CoderUtils {
     
     
     public static void checkForOptionalField(Field field, ElementInfo elementInfo) throws Exception {
-    	/* FHModif
+    	/* FHModif : remove line
         if( isOptionalField(field, elementInfo) )
                 return;
         throw new  IllegalArgumentException ("The mandatory field '" + field.getName() + "' does not have a value!");
