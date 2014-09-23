@@ -26,10 +26,16 @@ package com.devoteam.srit.xmlloader.sigtran.ap;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueOC;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.EmbeddedData;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ObjectId;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -42,6 +48,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bn.CoderFactory;
+import org.bn.IDecoder;
+import org.bn.IEncoder;
 import org.bn.types.ObjectIdentifier;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -206,6 +215,47 @@ public class ASNToXMLConverter
     	{
     		return null;
     	}
+        else if (type.endsWith(".DialogueOC"))
+        {
+        	byte[] bytesEmbedded = ((DialogueOC) subObject).getValue();
+        	Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+        	
+        	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
+            InputStream inputStream = new ByteArrayInputStream(bytesEmbedded);
+            Class cl = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ExternalPDU");
+            Object obj = cl.newInstance();
+            obj = decoder.decode(inputStream, cl);         
+            ret += toXML("ExternalPDU", obj, indent + 2);
+            return ret;
+        }
+        else if (type.endsWith(".EmbeddedData"))
+        {
+        	byte[] bytesEmbedded = ((EmbeddedData) subObject).getValue();
+        	Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+        	
+        	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
+            InputStream inputStream = new ByteArrayInputStream(bytesEmbedded);
+            Class cl = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialoguePDU");
+            Object obj = cl.newInstance();
+            obj = decoder.decode(inputStream, cl);           
+            ret += toXML("DialoguePDU", obj, indent + 2);
+            return ret;
+        }
+
+        else if (type.endsWith(".ObjectId"))
+        {
+        	byte[] bytesEmbedded = ((ObjectId) subObject).getValue();
+        	Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+        	
+        	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
+            InputStream inputStream = new ByteArrayInputStream(bytesEmbedded);
+            Class cl = Class.forName("org.bn.types.ObjectIdentifier");
+            Object obj = cl.newInstance();
+            obj = decoder.decode(inputStream, cl);
+            
+            ret += toXML("org.bn.types.ObjectIdentifier", obj, indent + 2);
+            return ret;
+        }
     	if (type.equals("byte[]"))
     	{
 			byte[] bytes = (byte[]) subObject;

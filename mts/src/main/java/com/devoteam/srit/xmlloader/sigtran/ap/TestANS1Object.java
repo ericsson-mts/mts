@@ -93,9 +93,9 @@ public class TestANS1Object {
         //String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
         
         //String className = "TCMessage";
-        //String className = "DialoguePDU";
+        String className = "DialoguePDU";
         //tring className = "ObjectId";
-        String className = "AARQ_apdu";
+        //String className = "AARQ_apdu";
         //String className = "Components";
         //String className = "ProvideSubscriberInfoArg";
         //String className = "ForwardingInfo";
@@ -192,7 +192,6 @@ public class TestANS1Object {
 
         System.out.print("Process class[" + i + "] = " + className + ".xml (" + retInit.length() + ") => ");
 
-        /*
         // write XML data into a file
         File fileInit = new File("./asn1/" + className + ".xml");
         fileInit.delete();
@@ -243,7 +242,6 @@ public class TestANS1Object {
             out1.write(array1.getBytes());
             out1.close();
         }
-        */
         
         // encode ASN1 object into binary
     	IEncoder<Object> encoderMAP = CoderFactory.getInstance().newEncoder("BER");

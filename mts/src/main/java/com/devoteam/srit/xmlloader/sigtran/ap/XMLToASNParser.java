@@ -290,23 +290,6 @@ public class XMLToASNParser
         {
             return;
         }
-        /*
-        else if (field.getType().getCanonicalName().contains("DialoguePortion"))
-        {
-            Object obj = Class.forName(className + "ExternalPDU").newInstance();
-            Object objEmbbededClass = this.instanceClass(obj.getClass().getName(), className);
-            initObject(objEmbbededClass, (Element) element.elements().get(0), className);
-        	
-            // encode ASN1 object into binary
-        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
-        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        	encoderEmbedded.encode(objEmbbededClass, outputStream);
-            byte[] bytesEmbedded = outputStream.toByteArray();
-            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
-            
-            ((DialoguePortion) objClass).setValue(bytesEmbedded);
-        }
-        */
         else if (field.getType().getCanonicalName().contains("Collection")) 
         {
             // type DANS la collection
