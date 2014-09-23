@@ -69,6 +69,6 @@ public abstract class APMessage
     
     public abstract String toXML();
     
-    public abstract Collection<Component> getTCAPComponents();
+    // public abstract Collection<Component> getTCAPComponents();
     
 }

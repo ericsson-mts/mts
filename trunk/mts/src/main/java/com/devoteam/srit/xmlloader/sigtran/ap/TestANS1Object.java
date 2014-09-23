@@ -89,13 +89,15 @@ public class TestANS1Object {
         TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
     
         //String testFilename = args[0];
+        String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.";
         //String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
-        String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
         
         //String className = "TCMessage";
         //String className = "DialoguePDU";
+        //tring className = "ObjectId";
+        String className = "AARQ_apdu";
         //String className = "Components";
-        String className = "ProvideSubscriberInfoArg";
+        //String className = "ProvideSubscriberInfoArg";
         //String className = "ForwardingInfo";
         //String className = "NoteMM_EventRes";
         //String className = "AnyTimeSubscriptionInterrogationRes";
@@ -160,7 +162,7 @@ public class TestANS1Object {
     	{
     		try 
     		{	i++;
-    			testProcess(i, packageName, classObject);
+    			//testProcess(i, packageName, classObject);
     		} 
     		catch (Exception e) 
     		{
@@ -189,7 +191,8 @@ public class TestANS1Object {
         
 
         System.out.print("Process class[" + i + "] = " + className + ".xml (" + retInit.length() + ") => ");
-        
+
+        /*
         // write XML data into a file
         File fileInit = new File("./asn1/" + className + ".xml");
         fileInit.delete();
@@ -240,11 +243,12 @@ public class TestANS1Object {
             out1.write(array1.getBytes());
             out1.close();
         }
+        */
         
         // encode ASN1 object into binary
     	IEncoder<Object> encoderMAP = CoderFactory.getInstance().newEncoder("BER");
     	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        encoderMAP.encode(objectXML, outputStream);
+        encoderMAP.encode(objectInit, outputStream);
         byte[] bytesMAP = outputStream.toByteArray();
         Array arrayMAP = new DefaultArray(bytesMAP);
         

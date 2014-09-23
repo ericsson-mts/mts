@@ -24,10 +24,13 @@
 package com.devoteam.srit.xmlloader.sigtran.fvo;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
+
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer32Array;
+
 import org.dom4j.Element;
 
 /**
@@ -36,7 +39,7 @@ import org.dom4j.Element;
  */
 public class FvoField {
 
-    private MsgSigtran _msg;
+    private Msg _msg;
 
     private String _name = null;
     private String _format = null;
@@ -54,11 +57,11 @@ public class FvoField {
     // - binary
     static public final String formatBinary = "binary";
 
-    public FvoField(MsgSigtran msg) {
+    public FvoField(Msg msg) {
         _msg = msg;
     }
 
-    public FvoField(MsgSigtran msg, FvoField other) {
+    public FvoField(Msg msg, FvoField other) {
         this(msg);
         _name = other._name;
         _lengthBit = other._lengthBit;

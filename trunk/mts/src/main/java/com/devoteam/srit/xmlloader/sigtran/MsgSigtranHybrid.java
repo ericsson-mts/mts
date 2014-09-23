@@ -44,19 +44,13 @@ import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
 import com.devoteam.srit.xmlloader.sigtran.ap.APMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.BN_APMessageExperim;
 import com.devoteam.srit.xmlloader.sigtran.ap.BinaryNotesAPMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.HybridMAPMessageExperim;
-import com.devoteam.srit.xmlloader.sigtran.ap.MB_MAPMessageExperim;
-import com.devoteam.srit.xmlloader.sigtran.ap.MB_TCAPMessageExperim;
 import com.devoteam.srit.xmlloader.sigtran.ap.MobicentTCAPMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Invoke;
-import com.devoteam.srit.xmlloader.sigtran.fvo.FvoField;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
 
-public class MsgSigtran extends Msg 
+public class MsgSigtranHybrid extends Msg 
 {
 
     // AP layer (Application part) (spec ITU Q.XXXX)= coding ASN1 => Use BinaryNotes library 
@@ -82,16 +76,16 @@ public class MsgSigtran extends Msg
     /**
      * Creates a new instance of MsgSigtran
      */
-    public MsgSigtran() throws Exception 
+    public MsgSigtranHybrid() throws Exception 
     {
-    	//_apMessage = new MobicentTCAPMessage();
+    	_tcapMessage = new MobicentTCAPMessage();
     	//_apMessage = new MobicentMAPMessage();
     	//_apMessage = new BinaryNotesAPMessage();
     	//_apMessage = new BinaryNotesAPMessage();
     	//_tcapMessage = new BinaryNotesAPMessage();
     }
 
-    public MsgSigtran(Array msgArray, int protocolIdentifier) throws Exception 
+    public MsgSigtranHybrid(Array msgArray, int protocolIdentifier) throws Exception 
     {
     	this();
         _tlvProtocol = protocolIdentifier;
@@ -125,17 +119,18 @@ public class MsgSigtran extends Msg
 	    	{    		
 	    		// decode TCAP layer with Mobicent library
 	    		Array ieArray = paramFvo.encode();
-	    		_tcapMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage");
+	    		//_tcapMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage");
+	    		_tcapMessage = new MobicentTCAPMessage();
 		    	_tcapMessage.decode(ieArray);
 		  
-		    	Collection<Component> tcapComponents = ((BinaryNotesAPMessage) _tcapMessage).getTCAPComponents();
-		    	Object[] tableComponents = (Object[])tcapComponents.toArray(); 
+		    	org.mobicents.protocols.ss7.tcap.asn.comp.Component[] tcapComponents = ((MobicentTCAPMessage) _tcapMessage).getTCAPComponents();
+		    	Object[] tableComponents = (Object[])tcapComponents; 
 		    	if (tableComponents.length >= 1)
 		    	{
 		    		AsnOutputStream aosMAP = new AsnOutputStream();
-		    		Invoke invoke = ((Component) tableComponents[0]).getInvoke();
-		    		long opCode = invoke.getOpCode().getLocalValue();
-		    		byte[] bytesAP = invoke.getParameter();
+		    		org.mobicents.protocols.ss7.tcap.asn.comp.Invoke invoke = ((org.mobicents.protocols.ss7.tcap.asn.comp.Invoke) tableComponents[0]);
+		    		long opCode = invoke.getOperationCode().getLocalOperationCode();
+		    		byte[] bytesAP = invoke.getParameter().getData();
 		    		Array arrayAP = new DefaultArray(bytesAP);
 		    		if (opCode == 46)
 		    		{
@@ -349,11 +344,13 @@ public class MsgSigtran extends Msg
         		
         		// 
         		//Array subArray = arrayAP.subArray(1);
-		    	Collection<Component> tcapComponents = ((BinaryNotesAPMessage) _tcapMessage).getTCAPComponents();
-		    	Object[] tableComponents = tcapComponents.toArray(); 
+		    	org.mobicents.protocols.ss7.tcap.asn.comp.Component[] tcapComponents = ((MobicentTCAPMessage)_tcapMessage).getTCAPComponents();
+		    	Object[] tableComponents = tcapComponents; 
 		    	if (tableComponents.length >= 1 )
 		    	{
-		    		((Component) tableComponents[0]).getInvoke().setParameter(arrayAP.getBytes());
+		    		org.mobicents.protocols.ss7.tcap.asn.comp.Parameter param = new org.mobicents.protocols.ss7.tcap.asn.ParameterImpl();
+		    		param.setData(arrayAP.getBytes());
+		    		((org.mobicents.protocols.ss7.tcap.asn.comp.Invoke) tableComponents[0]).setParameter(param);
 		    	}
         		
         		// encode TCAP layer with BN library

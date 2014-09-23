@@ -24,15 +24,18 @@
 package com.devoteam.srit.xmlloader.sigtran.tlv;
 
 import java.util.List;
+
 import org.dom4j.Element;
 
 import gp.utils.arrays.*;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
 import com.devoteam.srit.xmlloader.sigtran.StackSigtran;
+
 import java.util.LinkedList;
 
 /**
@@ -41,7 +44,7 @@ import java.util.LinkedList;
  */
 public class TlvMessage {
 
-    private MsgSigtran _msg;
+    private Msg _msg;
     private TlvDictionary _dictionary;
     private String name;
 
@@ -59,7 +62,7 @@ public class TlvMessage {
 
     private LinkedList<TlvParameter> _parameters = new LinkedList();
 
-    public TlvMessage(MsgSigtran msg, TlvDictionary dictionary) {
+    public TlvMessage(Msg msg, TlvDictionary dictionary) {
         _msg = msg;
         _dictionary = dictionary;
         _version = new Integer08Array(1);
@@ -69,7 +72,7 @@ public class TlvMessage {
         _messageLength = new Integer32Array(0);
     }
 
-    public TlvMessage(MsgSigtran msg, Array array, int protocolIdentifier) throws Exception {
+    public TlvMessage(Msg msg, Array array, int protocolIdentifier) throws Exception {
         _msg = msg;
 
         // TODO : move to message class later for cleaner separation
