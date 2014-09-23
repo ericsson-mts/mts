@@ -118,7 +118,7 @@ public class BERDecoder extends Decoder {
             result =  super.decodeSequence(decodedTag,objectClass,elementInfo,stream);
         else
             result =  decodeSet(decodedTag,objectClass,elementInfo,len.getValue(),stream);
-        // FHModif
+        // FHModif : remove lines
         //if(result.getSize()!= len.getValue())
         //    throw new  IllegalArgumentException ("Sequence '" + objectClass.toString() + "' size is incorrect! Must be: "+len.getValue()+". Received: "+result.getSize());
         result.setSize(result.getSize() + len.getSize());
@@ -245,7 +245,7 @@ public class BERDecoder extends Decoder {
     public DecodedObject decodeNull(DecodedObject decodedTag, Class objectClass, 
                                        ElementInfo elementInfo, 
                                 InputStream stream) throws Exception {
-    	// FHModif
+    	// FHModif : remove lines
         //if(!checkTagForObject(decodedTag, TagClass.Universal, ElementType.Primitive, UniversalTag.Null, elementInfo))
         //    return null;
         stream.read ( ); // ignore null length
@@ -372,7 +372,11 @@ public class BERDecoder extends Decoder {
     public DecodedObject decodeOctetString(DecodedObject decodedTag, Class objectClass, 
                                               ElementInfo elementInfo, 
                                        InputStream stream) throws Exception {
-        if(!checkTagForObject(decodedTag, TagClass.Universal, ElementType.Primitive, UniversalTag.OctetString, elementInfo))
+    	// FHModif : remove line
+    	// if (!checkTagForObject(decodedTag, TagClass.Universal, ElementType.Primitive, UniversalTag.OctetString, elementInfo))
+    	// FHModif : new lines
+        if (!checkTagForObject(decodedTag, TagClass.Universal, ElementType.Primitive, UniversalTag.OctetString, elementInfo) &&
+    		!checkTagForObject(decodedTag, TagClass.Universal, ElementType.Constructed, UniversalTag.OctetString, elementInfo))
             return null;
         DecodedObject<Integer> len = decodeLength(stream);
         CoderUtils.checkConstraints(len.getValue(),elementInfo);

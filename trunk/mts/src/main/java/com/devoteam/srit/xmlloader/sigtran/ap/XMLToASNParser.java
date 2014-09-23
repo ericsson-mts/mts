@@ -221,7 +221,7 @@ public class XMLToASNParser
             
             return obj;
         }
-        else if (type.endsWith(".EmbeddedObject"))
+        else if (type.endsWith(".EmbeddedData"))
         {
             Object obj = Class.forName(type).newInstance();
 
@@ -236,9 +236,7 @@ public class XMLToASNParser
             byte[] bytesEmbedded = outputStream.toByteArray();
             Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
             
-            EmbeddedData embeddedData = new EmbeddedData();
-            embeddedData.setValue(bytesEmbedded);
-            ((EmbeddedObject) obj).selectSingle_ASN1_type(embeddedData);
+            ((EmbeddedData) obj).setValue(bytesEmbedded);
             
             return obj;
         }
