@@ -187,7 +187,10 @@ public class ParameterImpl implements Parameter {
         try {
             primitive = ais.isTagPrimitive();
             tagClass = ais.getTagClass();
-            data = ais.readSequence();
+            // FHUpdate : remove line
+            // data = ais.readSequence();
+            // FHUpdate : new line
+            data = ais.readIndefinite();
             this.encodingLength = data.length;
             if (singleParameterInAsn && ais.available() > 0) { // extra data found after main array
                 byte[] buf = new byte[data.length + ais.available()];
@@ -196,10 +199,14 @@ public class ParameterImpl implements Parameter {
                 data = buf;
             }
 
-        } catch (IOException e) {
+        } 
+        catch (IOException e) 
+        {
             throw new ParseException(null, GeneralProblemType.BadlyStructuredComponent,
                     "IOException while decoding the parameter: " + e.getMessage(), e);
-        } catch (AsnException e) {
+        }  
+        catch (AsnException e) 
+        {
             throw new ParseException(null, GeneralProblemType.BadlyStructuredComponent,
                     "AsnException while decoding the parameter: " + e.getMessage(), e);
         }
@@ -216,7 +223,8 @@ public class ParameterImpl implements Parameter {
         }
 
         try {
-            aos.writeTag(tagClass, primitive, tag);
+            //FHUpdate : remove line 
+        	// aos.writeTag(tagClass, primitive, tag);
             if (data == null) {
 
                 AsnOutputStream localAos = new AsnOutputStream();
@@ -226,14 +234,23 @@ public class ParameterImpl implements Parameter {
                 data = localAos.toByteArray();
             }
 
-            if (this.encodingLength >= 0)
-                aos.writeLength(this.encodingLength);
-            else
-                aos.writeLength(data.length);
+            //FHUpdate : remove lines
+            // if (this.encodingLength >= 0)
+            //    aos.writeLength(this.encodingLength);
+            // else
+            //    aos.writeLength(data.length);
             aos.write(data);
-        } catch (IOException e) {
-            throw new EncodeException(e);
-        } catch (AsnException e) {
+        }
+        //FHUpdate : remove lines
+        // catch (IOException e) 
+        // {
+        //    throw new EncodeException(e);
+        // } 
+        //FHUpdate : remove line
+        // catch (AsnException e)
+        //FHUpdate : new line
+        catch (Exception e)
+        {
             throw new EncodeException(e);
         }
     }

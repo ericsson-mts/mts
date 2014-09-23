@@ -29,6 +29,7 @@ import java.util.List;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 
@@ -47,7 +48,7 @@ import org.dom4j.Attribute;
  * @author Julien Brisseau
  */
 public class FvoMessage {
-    private MsgSigtran _msg;
+    private Msg _msg;
     private String _name;
     private int _messageType;
     
@@ -59,7 +60,7 @@ public class FvoMessage {
 
     private Array _encodedCache;
 
-    public FvoMessage(MsgSigtran msg, FvoDictionary dictionary) {
+    public FvoMessage(Msg msg, FvoDictionary dictionary) {
         _msg = msg;
         _dictionary = dictionary;
         _messageType = 0;

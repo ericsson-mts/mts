@@ -31,8 +31,10 @@ import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
+import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
+
 import java.util.LinkedList;
 
 /**
@@ -41,7 +43,7 @@ import java.util.LinkedList;
  */
 public class TlvParameter {
 
-    private MsgSigtran _msg;
+    private Msg _msg;
     private TlvDictionary _dictionary;
     private String _name;
     private Integer16Array _tag;
@@ -56,7 +58,7 @@ public class TlvParameter {
      * 
      * @param msg		: Sigtran message
      */
-    public TlvParameter(MsgSigtran msg, TlvDictionary dictionary) {
+    public TlvParameter(Msg msg, TlvDictionary dictionary) {
         this._msg = msg;
         this._dictionary = dictionary;
         this._name = null;
@@ -144,7 +146,7 @@ public class TlvParameter {
      *
      * @return	: the Sigtran message
      */
-    public MsgSigtran getMsg() {
+    public Msg getMsg() {
         return _msg;
     }
 
@@ -153,7 +155,7 @@ public class TlvParameter {
      *
      * @param msg		: the Sigtran message
      */
-    public void setMsg(MsgSigtran msg) {
+    public void setMsg(Msg msg) {
         this._msg = msg;
     }
 

@@ -28,6 +28,7 @@ import org.dom4j.Element;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
+import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
 import com.devoteam.srit.xmlloader.sigtran.StackSigtran;
@@ -42,7 +43,7 @@ import gp.utils.arrays.*;
  */
 public class TlvField {
 
-    private MsgSigtran _msg;
+    private Msg _msg;
     private TlvDictionary _dictionary;
     private String _name = null;
     private int _length = -1;
@@ -54,7 +55,7 @@ public class TlvField {
      * Constructor
      * @param msg		: Sigtran message
      */
-    public TlvField(MsgSigtran msg, TlvDictionary dictionary) {
+    public TlvField(Msg msg, TlvDictionary dictionary) {
         this._msg = msg;
         this._dictionary = dictionary;
     }
@@ -192,7 +193,7 @@ public class TlvField {
         this._value = value;
     }
 
-    public MsgSigtran getMsg() {
+    public Msg getMsg() {
         return _msg;
     }
 

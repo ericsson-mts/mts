@@ -32,6 +32,8 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
 import com.devoteam.srit.xmlloader.sigtran.StackSigtran;
 
@@ -52,7 +54,7 @@ public class TlvDictionary {
     private int _ppid;
 
 
-    public TlvDictionary(InputStream stream, StackSigtran stack) throws Exception {
+    public TlvDictionary(InputStream stream, Stack stack) throws Exception {
 
 
         this.messageClassValue = new HashMap<String, Integer>();
@@ -243,7 +245,7 @@ public class TlvDictionary {
         return parameterName.get(tagValue);
     }
 
-    public TlvParameter parameter(int tagValue, MsgSigtran msg) {
+    public TlvParameter parameter(int tagValue, Msg msg) {
         String tagName = parameterName.get(tagValue);
         TlvParameter param = parameter.get(tagName);
         if (param != null) {
@@ -252,7 +254,7 @@ public class TlvDictionary {
         return param;
     }
 
-    public TlvParameter parameter(String tagName, MsgSigtran msg) {
+    public TlvParameter parameter(String tagName, Msg msg) {
         try {
             int tagValue = Integer.decode(tagName);
             return parameter(tagValue, msg);

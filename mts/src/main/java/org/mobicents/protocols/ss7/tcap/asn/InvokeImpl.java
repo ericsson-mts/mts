@@ -228,7 +228,8 @@ public class InvokeImpl implements Invoke {
             // It could be PARAMETER
             if (localAis.available() == 0)
                 return;
-            tag = localAis.readTag();
+            //FHUpdate: remove line
+            // tag = localAis.readTag();
             this.parameter = TcapFactory.createParameter(tag, localAis, true);
 
         } catch (IOException e) {

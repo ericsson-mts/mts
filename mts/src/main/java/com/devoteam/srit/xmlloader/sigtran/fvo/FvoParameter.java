@@ -24,12 +24,17 @@
 package com.devoteam.srit.xmlloader.sigtran.fvo;
 
 import java.util.List;
+
 import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
+import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
+
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
+
 import java.util.LinkedList;
 
 /**
@@ -37,7 +42,7 @@ import java.util.LinkedList;
  * @author Julien Brisseau
  */
 public class FvoParameter {
-    private MsgSigtran _msg;
+    private Msg _msg;
     private int _id;
     private String _name;
     private int _messageLength = 0;
@@ -46,11 +51,11 @@ public class FvoParameter {
     private String _type = "F";
     private LinkedList<FvoField> _fields = new LinkedList();
 
-    public FvoParameter(MsgSigtran msg) {
+    public FvoParameter(Msg msg) {
         _msg = msg;
     }
     
-    public FvoParameter(MsgSigtran msg, FvoParameter other) {
+    public FvoParameter(Msg msg, FvoParameter other) {
         _msg = msg;
         _id = other._id;
         _name = other._name;
