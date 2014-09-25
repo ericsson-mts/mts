@@ -69,6 +69,14 @@ public abstract class APMessage
     
     public abstract String toXML();
     
+    public abstract boolean isRequest();
+   
+    public abstract String getType();
+    
+    public abstract String getResult();
+    
+    public abstract String getTransactionId();
+    
     // public abstract Collection<Component> getTCAPComponents();
     
 }
