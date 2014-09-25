@@ -242,7 +242,7 @@ public class ASNToXMLConverter
             return ret;
         }
 
-        else if (type.endsWith(".ObjectId"))
+        else if (type.endsWith(".Object_Identifier"))
         {
         	byte[] bytesEmbedded = ((ObjectId) subObject).getValue();
         	Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
