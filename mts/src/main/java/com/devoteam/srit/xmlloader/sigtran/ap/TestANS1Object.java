@@ -177,6 +177,9 @@ public class TestANS1Object {
     {
         String className = classObj.getSimpleName();
 
+        //System.out.print("Process class[" + i + "] = " + className + ".xml (" + retInit.length() + ") => ");
+        System.out.print("Process class[" + i + "] = " + className + ".xml => ");
+        
 		// initialize the ASN1 object
 		Object objectInit = classObj.newInstance();		
 		ASNInitializer.getInstance().setValue(objectInit);
@@ -188,9 +191,6 @@ public class TestANS1Object {
         retInit += ASNToXMLConverter.getInstance().toXML(null, objectInit, 0);
         retInit += "\n";
         retInit += "</AP>";
-        
-
-        System.out.print("Process class[" + i + "] = " + className + ".xml (" + retInit.length() + ") => ");
 
         // write XML data into a file
         File fileInit = new File("./asn1/" + className + ".xml");

@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.sigtran.ap;
 
+import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -125,18 +126,18 @@ public class XMLToASNParser
         return iClass;
     }
 
-    public Field findField(Object objClass, Element element) 
+    public Field findField(Object objClass, Element element) throws Exception
     {
     	String elementName = element.getName();
         for (Field field : objClass.getClass().getDeclaredFields()) 
         {
         	String name = field.getName(); 
         	String type = field.getType().getCanonicalName();
-            if (name.contains(elementName)) 
+            if (name.equals(elementName)) 
             {
                 return field;
             }
-            else if (type.contains(elementName))
+            else if (type.endsWith("." + elementName))
             {
                 return field;
             }
@@ -145,7 +146,7 @@ public class XMLToASNParser
                 return field;
             }
         }
-        return null;
+        throw new ParsingException ("Can not find the attribute '" + elementName + "' in the ASN object '" + objClass.getClass().getName());
     }
 
     public Object parseField(Element element, String type, Object object, String className) throws Exception 
