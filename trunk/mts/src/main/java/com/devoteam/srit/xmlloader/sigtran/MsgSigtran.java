@@ -346,9 +346,7 @@ public class MsgSigtran extends Msg
         	{
         		// encode AP layers with BinaryNotes library
         		Array arrayAP = _apMessage.encode();
-        		
-        		// 
-        		//Array subArray = arrayAP.subArray(1);
+        	
 		    	Collection<Component> tcapComponents = ((BinaryNotesAPMessage) _tcapMessage).getTCAPComponents();
 		    	Object[] tableComponents = tcapComponents.toArray(); 
 		    	if (tableComponents.length >= 1 )
@@ -356,19 +354,24 @@ public class MsgSigtran extends Msg
 		    		((Component) tableComponents[0]).getInvoke().setParameter(arrayAP.getBytes());
 		    	}
         		
-        		// encode TCAP layer with BN library
-        		Array arrayTCAP = _tcapMessage.encode();
-	        	
-            	// get SS7 "Data" VParameter 
-	        	FvoParameter param = _fvoMessage.getVparameter("Data");
-	        	param.parseArray(arrayTCAP);
         	}
+        	
+        	if (_tcapMessage != null)
+        	{
+	        	// encode TCAP layer with BN library
+	    		Array arrayTCAP = _tcapMessage.encode();
+	    	
+	        	// get SS7 "Data" VParameter 
+	        	FvoParameter paramFvo = _fvoMessage.getVparameter("Data");
+	        	paramFvo.parseArray(arrayTCAP);
+        	}
+        	
         	if (_ieMessage != null)
         	{
 	        	Array encoded = _ieMessage.getValue();
 	        	String val = Array.toHexString(encoded);
-	        	TlvParameter param = _tlvMessage.getTlvParameter("Protocol_Data");
-	        	TlvField field = param.getTlvField("Protocol_Data");
+	        	TlvParameter paramTlv = _tlvMessage.getTlvParameter("Protocol_Data");
+	        	TlvField field = paramTlv.getTlvField("Protocol_Data");
 	        	field.setValue(val);
         	}
             if(null == _encodedCache)

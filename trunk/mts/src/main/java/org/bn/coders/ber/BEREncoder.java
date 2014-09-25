@@ -216,7 +216,7 @@ public class BEREncoder<T> extends Encoder<T> {
         {
         	eltType = ElementType.Constructed;
         }
-        if (type != null && type.endsWith("ObjectId"))
+        if (type != null && type.endsWith(".ObjectId"))
         {
         	eltType = ElementType.Constructed;
         }
