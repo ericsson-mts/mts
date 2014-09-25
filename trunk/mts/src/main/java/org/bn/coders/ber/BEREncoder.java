@@ -228,6 +228,14 @@ public class BEREncoder<T> extends Encoder<T> {
         {
         	eltType = ElementType.Constructed;
         }
+        if (type != null && type.endsWith(".DialogueServiceUser"))
+        {
+        	eltType = ElementType.Constructed;
+        }
+        if (type != null && type.endsWith(".DialogueServiceProvider"))
+        {
+        	eltType = ElementType.Constructed;
+        }
         // FHModif : end
         // FHModif : remove line 
         //resultSize += encodeTag(BERCoderUtils.getTagValueForElement(elementInfo,TagClass.Universal, ElementType.Primitive, UniversalTag.OctetString), stream);

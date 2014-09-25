@@ -30,6 +30,8 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.AssSourceDiagnostic;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueOC;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialoguePortion;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueServiceProvider;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueServiceUser;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.EmbeddedData;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.EmbeddedObject;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ObjectId;
@@ -218,7 +220,7 @@ public class XMLToASNParser
         	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         	encoderEmbedded.encode(objEmbbededClass, outputStream);
             byte[] bytesEmbedded = outputStream.toByteArray();
-            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+            //Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
             
             ((DialogueOC) obj).setValue(bytesEmbedded);
             
@@ -237,7 +239,7 @@ public class XMLToASNParser
         	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         	encoderEmbedded.encode(objEmbbededClass, outputStream);
             byte[] bytesEmbedded = outputStream.toByteArray();
-            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+            //Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
             
             ((EmbeddedData) obj).setValue(bytesEmbedded);
             
@@ -256,7 +258,7 @@ public class XMLToASNParser
         	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         	encoderEmbedded.encode(objEmbbededClass, outputStream);
             byte[] bytesEmbedded = outputStream.toByteArray();
-            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+            //Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
             
             ((ObjectId) obj).setValue(bytesEmbedded);
             
@@ -275,7 +277,7 @@ public class XMLToASNParser
         	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         	encoderEmbedded.encode(objEmbbededClass, outputStream);
             byte[] bytesEmbedded = outputStream.toByteArray();
-            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+            //Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
             
             ((AssResult) obj).setValue(bytesEmbedded);
             
@@ -294,9 +296,47 @@ public class XMLToASNParser
         	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         	encoderEmbedded.encode(objEmbbededClass, outputStream);
             byte[] bytesEmbedded = outputStream.toByteArray();
-            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+            //Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
             
             ((AssSourceDiagnostic) obj).setValue(bytesEmbedded);
+            
+            return obj;
+        }
+        else if (type.endsWith(".DialogueServiceUser"))
+        {
+            Object obj = Class.forName(type).newInstance();
+
+            Object objEmbeded = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Dialogue_service_user").newInstance();
+            Object objEmbbededClass = this.instanceClass(objEmbeded.getClass().getName(), className);
+            initObject(objEmbbededClass, (Element) element.elements().get(0), className);
+        	
+            // encode ASN1 object into binary
+        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
+        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        	encoderEmbedded.encode(objEmbbededClass, outputStream);
+            byte[] bytesEmbedded = outputStream.toByteArray();
+            //Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+            
+            ((DialogueServiceUser) obj).setValue(bytesEmbedded);
+            
+            return obj;
+        }
+        else if (type.endsWith(".DialogueServiceProvider"))
+        {
+            Object obj = Class.forName(type).newInstance();
+
+            Object objEmbeded = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Dialogue_service_provider").newInstance();
+            Object objEmbbededClass = this.instanceClass(objEmbeded.getClass().getName(), className);
+            initObject(objEmbbededClass, (Element) element.elements().get(0), className);
+        	
+            // encode ASN1 object into binary
+        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
+        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        	encoderEmbedded.encode(objEmbbededClass, outputStream);
+            byte[] bytesEmbedded = outputStream.toByteArray();
+            //Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+            
+            ((DialogueServiceProvider) obj).setValue(bytesEmbedded);
             
             return obj;
         }

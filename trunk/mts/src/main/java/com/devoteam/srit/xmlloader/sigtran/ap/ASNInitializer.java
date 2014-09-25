@@ -32,6 +32,10 @@ import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Associate_result;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Associate_source_diagnostic;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueOC;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialoguePDU;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueServiceProvider;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueServiceUser;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Dialogue_service_provider;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Dialogue_service_user;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.EmbeddedData;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ExternalPDU;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ObjectId;
@@ -206,7 +210,6 @@ public class ASNInitializer
             
             return subObject;
         }
-
         else if (type.endsWith(".ObjectId"))
         {
         	ObjectIdentifier objEmbedded = (ObjectIdentifier) getSubObject(null, ObjectIdentifier.class);
@@ -255,7 +258,38 @@ public class ASNInitializer
             
             return subObject;
         }
-
+        else if (type.endsWith(".DialogueServiceUser"))
+        {
+        	Dialogue_service_user objEmbedded = (Dialogue_service_user) getSubObject(null, Dialogue_service_user.class);
+        	
+            // encode ASN1 object into binary
+        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
+        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        	encoderEmbedded.encode(objEmbedded, outputStream);
+            byte[] bytesEmbedded = outputStream.toByteArray();
+            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+            
+            DialogueServiceUser subObject = new DialogueServiceUser();
+            subObject.setValue(bytesEmbedded);
+            
+            return subObject;
+        }
+        else if (type.endsWith(".DialogueServiceProvider"))
+        {
+        	Dialogue_service_provider objEmbedded = (Dialogue_service_provider) getSubObject(null, Dialogue_service_provider.class);
+        	
+            // encode ASN1 object into binary
+        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
+        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        	encoderEmbedded.encode(objEmbedded, outputStream);
+            byte[] bytesEmbedded = outputStream.toByteArray();
+            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+            
+            DialogueServiceProvider subObject = new DialogueServiceProvider();
+            subObject.setValue(bytesEmbedded);
+            
+            return subObject;
+        }
     	else if (type.equals("byte[]"))
     	{
     		int numByte = (int) Utils.randomLong(0, 20L);

@@ -52,6 +52,9 @@ import com.devoteam.srit.xmlloader.sigtran.ap.MB_TCAPMessageExperim;
 import com.devoteam.srit.xmlloader.sigtran.ap.MobicentTCAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Invoke;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Reject;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ReturnError;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ReturnResult;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoField;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
@@ -133,21 +136,63 @@ public class MsgSigtran extends Msg
 		    	if (tableComponents.length >= 1)
 		    	{
 		    		AsnOutputStream aosMAP = new AsnOutputStream();
-		    		Invoke invoke = ((Component) tableComponents[0]).getInvoke();
-		    		long opCode = invoke.getOpCode().getLocalValue();
-		    		byte[] bytesAP = invoke.getParameter();
-		    		Array arrayAP = new DefaultArray(bytesAP);
-		    		if (opCode == 46)
+		    		Component component =  ((Component) tableComponents[0]);
+		    		long opCode = -1;
+		    		byte[] bytesAP = null; 
+		    		if (component.isInvokeSelected())
 		    		{
-				        // decode AP layer with BinaryNotes
-				        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Mo_forwardSM_Arg");
-				        _apMessage.decode(arrayAP);
+		    			 Invoke invoke = component.getInvoke();
+		    			 opCode = invoke.getOpCode().getLocalValue();
+		    			 bytesAP = invoke.getParameter();
 		    		}
-		    		if (opCode == 85)
+		    		else if (component.isReturnResultLastSelected())
 		    		{
-				        // decode AP layer with BinaryNotes
-				        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Arg");
-				        _apMessage.decode(arrayAP);
+						 ReturnResult returnResult = component.getReturnResultLast();
+						 if (returnResult.getResultretres() != null)
+						 {
+							 opCode = returnResult.getResultretres().getOpCode().getLocalValue();
+							 bytesAP = returnResult.getResultretres().getParameter();
+						 }
+		    		}
+		    		else if (component.isReturnResultNotLastSelected())
+		    		{
+		    			 ReturnResult returnResult = component.getReturnResultNotLast();
+						 if (returnResult.getResultretres() != null)
+						 {	
+			    			 opCode = returnResult.getResultretres().getOpCode().getLocalValue();
+			    			 bytesAP = returnResult.getResultretres().getParameter();
+						 }
+		    		}
+		    		else if (component.isReturnErrorSelected())
+		    		{
+		    			 ReturnError returnError = component.getReturnError();
+		    			 //opCode = returnError.getErrorCode().getNationaler();
+		    			 //opCode = returnError.getErrorCode().getPrivateer();
+		    			 bytesAP = returnError.getParameter();
+		    		}
+		    		else if (component.isRejectSelected())
+		    		{
+		    			 Reject reject = component.getReject();
+		    			 //opCode = returnError.getErrorCode().getNationaler();
+		    			 //opCode = returnError.getErrorCode().getPrivateer();
+		    			 //bytesAP = reject.getParameter();
+		    		}
+
+		    		if (bytesAP != null)
+		    		{
+			    		Array arrayAP = new DefaultArray(bytesAP);
+			    		if (opCode == 46)
+			    		{
+					        // decode AP layer with BinaryNotes
+					        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Mo_forwardSM_Arg");
+					        _apMessage.decode(arrayAP);
+			    		}
+			    		if (opCode == 85)
+			    		{
+					        // decode AP layer with BinaryNotes
+					        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Arg");
+					        _apMessage.decode(arrayAP);
+			    		}
 		    		}
 
 		    	}
