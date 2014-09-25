@@ -27,8 +27,8 @@ AARE-apdu ::= [APPLICATION 1] IMPLICIT SEQUENCE {
   protocol-version
     [0] IMPLICIT BIT STRING {version1(0)} DEFAULT {version1},
   application-context-name  [1]  ObjectId,
-  result                    [2]  Associate-result,
-  result-source-diagnostic  [3]  Associate-source-diagnostic,
+  result                    [2]  AssResult,
+  result-source-diagnostic  [3]  AssSourceDiagnostic,
   user-information          [30] IMPLICIT SEQUENCE OF EXTERNAL OPTIONAL
 }
 
@@ -57,15 +57,19 @@ ABRT-apdu ::= [APPLICATION 4] IMPLICIT SEQUENCE {
 ABRT-source ::= INTEGER {dialogue-service-user(0), dialogue-service-provider(1)
 }
 
+AssResult ::= OCTET STRING 
 Associate-result ::= INTEGER {accepted(0), reject-permanent(1)}
 
+AssSourceDiagnostic ::= OCTET STRING 
 Associate-source-diagnostic ::= CHOICE {
-  dialogue-service-user
-    [1]  INTEGER {null(0), no-reason-given(1),
-                  application-context-name-not-supported(2)},
-  dialogue-service-provider
-    [2]  INTEGER {null(0), no-reason-given(1), no-common-dialogue-portion(2)}
+  dialogue-service-user     [1]  DialogueServiceUser,
+  dialogue-service-provider [2]  DialogueServiceProvider
 }
+
+DialogueServiceUser ::= INTEGER {null(0), no-reason-given(1),
+                  application-context-name-not-supported(2)}
+                  
+DialogueServiceProvider ::= INTEGER {null(0), no-reason-given(1), no-common-dialogue-portion(2)}
 
 -- Release-request-reason is currently not used.
 -- It is included for completeness only.

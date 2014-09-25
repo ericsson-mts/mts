@@ -26,6 +26,10 @@ package com.devoteam.srit.xmlloader.sigtran.ap;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.AssResult;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.AssSourceDiagnostic;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Associate_result;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Associate_source_diagnostic;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueOC;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialoguePDU;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.EmbeddedData;
@@ -219,6 +223,39 @@ public class ASNInitializer
             
             return subObject;
         }
+        else if (type.endsWith(".AssResult"))
+        {
+        	Associate_result objEmbedded = (Associate_result) getSubObject(null, Associate_result.class);
+        	
+            // encode ASN1 object into binary
+        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
+        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        	encoderEmbedded.encode(objEmbedded, outputStream);
+            byte[] bytesEmbedded = outputStream.toByteArray();
+            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+         
+            AssResult subObject = new AssResult();
+            subObject.setValue(bytesEmbedded);
+            
+            return subObject;
+        }
+        else if (type.endsWith(".AssSourceDiagnostic"))
+        {
+        	Associate_source_diagnostic objEmbedded = (Associate_source_diagnostic) getSubObject(null, Associate_source_diagnostic.class);
+        	
+            // encode ASN1 object into binary
+        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
+        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        	encoderEmbedded.encode(objEmbedded, outputStream);
+            byte[] bytesEmbedded = outputStream.toByteArray();
+            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+         
+            AssSourceDiagnostic subObject = new AssSourceDiagnostic();
+            subObject.setValue(bytesEmbedded);
+            
+            return subObject;
+        }
+
     	else if (type.equals("byte[]"))
     	{
     		int numByte = (int) Utils.randomLong(0, 20L);

@@ -27,11 +27,13 @@ import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.AssSourceDiagnostic;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueOC;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialoguePortion;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.EmbeddedData;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.EmbeddedObject;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ObjectId;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.AssResult;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -257,6 +259,44 @@ public class XMLToASNParser
             Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
             
             ((ObjectId) obj).setValue(bytesEmbedded);
+            
+            return obj;
+        }
+        else if (type.endsWith(".AssResult"))
+        {
+            Object obj = Class.forName(type).newInstance();
+
+            Object objEmbeded = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Associate_result").newInstance();
+            Object objEmbbededClass = this.instanceClass(objEmbeded.getClass().getName(), className);
+            initObject(objEmbbededClass, (Element) element.elements().get(0), className);
+        	
+            // encode ASN1 object into binary
+        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
+        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        	encoderEmbedded.encode(objEmbbededClass, outputStream);
+            byte[] bytesEmbedded = outputStream.toByteArray();
+            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+            
+            ((AssResult) obj).setValue(bytesEmbedded);
+            
+            return obj;
+        }
+        else if (type.endsWith(".AssSourceDiagnostic"))
+        {
+            Object obj = Class.forName(type).newInstance();
+
+            Object objEmbeded = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Associate_source_diagnostic").newInstance();
+            Object objEmbbededClass = this.instanceClass(objEmbeded.getClass().getName(), className);
+            initObject(objEmbbededClass, (Element) element.elements().get(0), className);
+        	
+            // encode ASN1 object into binary
+        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
+        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        	encoderEmbedded.encode(objEmbbededClass, outputStream);
+            byte[] bytesEmbedded = outputStream.toByteArray();
+            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+            
+            ((AssSourceDiagnostic) obj).setValue(bytesEmbedded);
             
             return obj;
         }
