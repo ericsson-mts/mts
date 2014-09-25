@@ -29,6 +29,8 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueOC;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.EmbeddedData;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ObjectId;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.AssResult;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.AssSourceDiagnostic;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -242,7 +244,7 @@ public class ASNToXMLConverter
             return ret;
         }
 
-        else if (type.endsWith(".Object_Identifier"))
+        else if (type.endsWith(".ObjectId"))
         {
         	byte[] bytesEmbedded = ((ObjectId) subObject).getValue();
         	Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
@@ -253,10 +255,38 @@ public class ASNToXMLConverter
             Object obj = cl.newInstance();
             obj = decoder.decode(inputStream, cl);
             
-            ret += toXML("org.bn.types.ObjectIdentifier", obj, indent + 2);
+            ret += toXML("ObjectIdentifier", obj, indent + 2);
             return ret;
         }
-    	if (type.equals("byte[]"))
+        else if (type.endsWith(".AssResult"))
+        {
+        	byte[] bytesEmbedded = ((AssResult) subObject).getValue();
+        	Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+        	
+        	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
+            InputStream inputStream = new ByteArrayInputStream(bytesEmbedded);
+            Class cl = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Associate_result");
+            Object obj = cl.newInstance();
+            obj = decoder.decode(inputStream, cl);
+            
+            ret += toXML("Associate_result", obj, indent + 2);
+            return ret;
+        }
+        else if (type.endsWith(".AssSourceDiagnostic"))
+        {
+        	byte[] bytesEmbedded = ((AssSourceDiagnostic) subObject).getValue();
+        	Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+        	
+        	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
+            InputStream inputStream = new ByteArrayInputStream(bytesEmbedded);
+            Class cl = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Associate_source_diagnostic");
+            Object obj = cl.newInstance();
+            obj = decoder.decode(inputStream, cl);
+            
+            ret += toXML("Associate_source_diagnostic", obj, indent + 2);
+            return ret;
+        }
+        else if (type.equals("byte[]"))
     	{
 			byte[] bytes = (byte[]) subObject;
 			ret += Utils.toHexaString(bytes, "");
