@@ -59,17 +59,18 @@ ABRT-source ::= INTEGER {dialogue-service-user(0), dialogue-service-provider(1)
 
 AssResult ::= OCTET STRING 
 Associate-result ::= INTEGER {accepted(0), reject-permanent(1)}
-
+ 
 AssSourceDiagnostic ::= OCTET STRING 
 Associate-source-diagnostic ::= CHOICE {
   dialogue-service-user     [1]  DialogueServiceUser,
   dialogue-service-provider [2]  DialogueServiceProvider
 }
 
-DialogueServiceUser ::= INTEGER {null(0), no-reason-given(1),
-                  application-context-name-not-supported(2)}
-                  
-DialogueServiceProvider ::= INTEGER {null(0), no-reason-given(1), no-common-dialogue-portion(2)}
+DialogueServiceUser ::= OCTET STRING
+Dialogue-service-user ::= INTEGER {null(0), no-reason-given(1), application-context-name-not-supported(2)}
+
+DialogueServiceProvider ::= OCTET STRING
+Dialogue-service-provider ::= INTEGER {null(0), no-reason-given(1), no-common-dialogue-portion(2)}
 
 -- Release-request-reason is currently not used.
 -- It is included for completeness only.

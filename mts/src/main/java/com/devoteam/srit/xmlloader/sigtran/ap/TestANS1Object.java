@@ -89,18 +89,18 @@ public class TestANS1Object {
         TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
     
         //String testFilename = args[0];
-        String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.";
-        //String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
+        //String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.";
+        String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
         
         //String className = "TCMessage";
-        String className = "DialoguePDU";
+        //String className = "DialoguePDU";
         //tring className = "ObjectId";
         //String className = "AARQ_apdu";
         //String className = "Components";
         //String className = "DeactivateTraceModeArg";
         //String className = "ForwardingInfo";
         //String className = "NoteMM_EventRes";
-        //String className = "AnyTimeSubscriptionInterrogationRes";
+        String className = "AnyTimeSubscriptionInterrogationRes";
         //String className = "ReportSM_DeliveryStatusArg";
         //String className = "UnauthorizedLCSClient_Param";
         //String className = "UpdateLocationRes";

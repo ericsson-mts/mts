@@ -27,6 +27,8 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueOC;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueServiceProvider;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueServiceUser;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.EmbeddedData;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ObjectId;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.AssResult;
@@ -243,7 +245,6 @@ public class ASNToXMLConverter
             ret += toXML("DialoguePDU", obj, indent + 2);
             return ret;
         }
-
         else if (type.endsWith(".ObjectId"))
         {
         	byte[] bytesEmbedded = ((ObjectId) subObject).getValue();
@@ -284,6 +285,34 @@ public class ASNToXMLConverter
             obj = decoder.decode(inputStream, cl);
             
             ret += toXML("Associate_source_diagnostic", obj, indent + 2);
+            return ret;
+        }
+        else if (type.endsWith(".DialogueServiceUser"))
+        {
+        	byte[] bytesEmbedded = ((DialogueServiceUser) subObject).getValue();
+        	Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+        	
+        	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
+            InputStream inputStream = new ByteArrayInputStream(bytesEmbedded);
+            Class cl = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Dialogue_service_user");
+            Object obj = cl.newInstance();
+            obj = decoder.decode(inputStream, cl);
+            
+            ret += toXML("DialogueServiceUser", obj, indent + 2);
+            return ret;
+        }
+        else if (type.endsWith(".DialogueServiceProvider"))
+        {
+        	byte[] bytesEmbedded = ((DialogueServiceProvider) subObject).getValue();
+        	Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+        	
+        	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
+            InputStream inputStream = new ByteArrayInputStream(bytesEmbedded);
+            Class cl = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Dialogue_service_provider");
+            Object obj = cl.newInstance();
+            obj = decoder.decode(inputStream, cl);
+            
+            ret += toXML("DialogueServiceProvider", obj, indent + 2);
             return ret;
         }
         else if (type.equals("byte[]"))

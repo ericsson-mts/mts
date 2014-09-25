@@ -161,10 +161,27 @@ public class BinaryNotesAPMessage extends APMessage
     
     public Collection<Component> getTCAPComponents()
     {
-    	return ((TCMessage) apObject).getBegin().getComponents().getValue();
+    	if (((TCMessage) apObject).isBeginSelected())
+    	{
+    		return ((TCMessage) apObject).getBegin().getComponents().getValue();
+    	}
+    	else if (((TCMessage) apObject).isEndSelected())
+    	{
+    		return ((TCMessage) apObject).getEnd().getComponents().getValue();
+    	}
+    	else if (((TCMessage) apObject).isContinue1Selected())
+    	{
+    		return ((TCMessage) apObject).getContinue1().getComponents().getValue();
+    	}
+    	else if (((TCMessage) apObject).isAbortSelected())
+    	{
+    		return null;
+    	}
+    	else if (((TCMessage) apObject).isUnidirectionalSelected())
+    	{
+    		return ((TCMessage) apObject).getUnidirectional().getComponents().getValue();
+    	}
+    	return null;
     } 
-
-    
-    
     
 }
