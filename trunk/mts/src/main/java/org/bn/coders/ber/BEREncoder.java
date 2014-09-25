@@ -201,17 +201,22 @@ public class BEREncoder<T> extends Encoder<T> {
         CoderUtils.checkConstraints(sizeOfString,elementInfo);
         resultSize += encodeLength(sizeOfString, stream);
         // FHModif : set the ElementType to EllementType.Constructed for embedded objects
-        String type = elementInfo.getPreparedInstance().getClass().getCanonicalName();
+        String type = null;
+        if ((elementInfo != null) && (elementInfo.getPreparedInstance() != null) &&
+        	(elementInfo.getPreparedInstance().getClass() != null))
+        {
+        	type = elementInfo.getPreparedInstance().getClass().getCanonicalName();
+        }
         int eltType = ElementType.Primitive;
-        if (type.endsWith(".DialogueOC"))
+        if (type != null && type.endsWith(".DialogueOC"))
         {
         	eltType = ElementType.Constructed;
         }
-        if (type.endsWith(".EmbeddedData"))
+        if (type != null && type.endsWith(".EmbeddedData"))
         {
         	eltType = ElementType.Constructed;
         }
-        if (type.endsWith("ObjectId"))
+        if (type != null && type.endsWith("ObjectId"))
         {
         	eltType = ElementType.Constructed;
         }
