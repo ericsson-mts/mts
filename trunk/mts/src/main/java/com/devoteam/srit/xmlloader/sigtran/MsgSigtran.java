@@ -38,6 +38,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.MessageQ931;
@@ -273,27 +274,44 @@ public class MsgSigtran extends Msg
     @Override
     public String getType() throws Exception 
     {
+    	String type = null;
         if (_tcapMessage != null) 
         {
-            return "" + _tcapMessage.getType();
+            type = _tcapMessage.getType();
         }    	
-        if (_fvoMessage != null) 
+        else if (_fvoMessage != null) 
         {
-            return "" + _fvoMessage.getMessageType();
+            type = Integer.toString(_fvoMessage.getMessageType());
         }    	
-        if (_ieMessage != null) 
+        else if (_ieMessage != null) 
         {
-            return "" + _ieMessage.getType();
+            type = _ieMessage.getType();
         }
-        if (_tlvMessage != null) 
+        else if (_tlvMessage != null) 
         {
-            return _tlvMessage.getName();
+            type = _tlvMessage.getName();
         }
-        else 
+        if (type != null)
+    	{
+        	return type;
+    	}
+        // for response
+        if (!isRequest())
         {
-            return null;
+			Trans trans = getTransaction(); 
+	    	if (trans == null)
+	    	{
+	    		return "null";
+	    	}
+	    	Msg request = trans.getBeginMsg();
+	    	if (request == null)
+	    	{
+	    		return "null";
+	    	}
+	    	return request.getType();
         }
-    }
+        return "null";
+	}
 
     @Override
     public String getResult() throws Exception 
@@ -323,16 +341,23 @@ public class MsgSigtran extends Msg
         // TODO !!!!!!!!!!!!!!!!!!!!
         return false;
     }
-    
+
+
     /** Get the transaction Identifier of this message */
+    @Override
     public TransactionId getTransactionId() throws Exception
     {
-    	if (_tcapMessage != null) 
+    	if (!this.isTransactionIdSet)
         {
-            return new TransactionId(_tcapMessage.getTransactionId());
-        }    	
-        // TODO !!!!!!!!!!!!!!!!!!!!
-        return null;
+    		String transID = "null";
+	    	if (_tcapMessage != null) 
+	        {
+	    		transID = _tcapMessage.getTransactionId();
+	        }
+	    	this.transactionId = new TransactionId(transID);
+	        this.isTransactionIdSet = true;	
+        }
+    	return this.transactionId;
     }
 
     public APMessage getTCAPMessage() {

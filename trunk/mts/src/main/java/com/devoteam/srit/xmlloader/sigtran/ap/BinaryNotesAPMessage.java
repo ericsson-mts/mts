@@ -297,30 +297,32 @@ public class BinaryNotesAPMessage extends APMessage
     public String getTransactionId()
     {
     	TCMessage tcMessage = (TCMessage) apObject;
+    	byte[] bytes = null;
     	if (tcMessage.isBeginSelected())
     	{
-    		return new String(tcMessage.getBegin().getOtid().getValue());
+    		bytes = tcMessage.getBegin().getOtid().getValue();
     	}
     	else if (tcMessage.isEndSelected())
         {
-    		return new String(tcMessage.getEnd().getDtid().getValue());
+    		bytes = tcMessage.getEnd().getDtid().getValue();
     	}
     	else if (tcMessage.isContinue1Selected())
         {
     		if (tcMessage.getContinue1().getOtid() != null)
     		{
-    			return new String(tcMessage.getContinue1().getOtid().getValue());
+    			bytes = tcMessage.getContinue1().getOtid().getValue();
     		}
     		else if (tcMessage.getContinue1().getDtid() != null)
     		{
-    			return new String(tcMessage.getContinue1().getDtid().getValue());
+    			bytes = tcMessage.getContinue1().getDtid().getValue();
     		}
         }
     	else if (tcMessage.isAbortSelected())
         {
-    		return new String(tcMessage.getAbort().getDtid().getValue());
+    		bytes = tcMessage.getAbort().getDtid().getValue();
     	}
-    	return null;
+    	Array array = new DefaultArray(bytes);
+    	return Array.toHexString(array);
     }
     
     public Collection<Component> getTCAPComponents()
