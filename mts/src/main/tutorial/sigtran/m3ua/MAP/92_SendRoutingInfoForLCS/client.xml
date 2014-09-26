@@ -9,48 +9,8 @@
     Description: Send a MAP message
 -->
 
-<!--
-    INFOS : M3UA LAYER 
-    
-    The following scenarios send the same message "DATA" (class = 1, type = 1) as
-    descibed in the RFC 4666 paragraph 3.3.1 with different ways to describe it.
-    
-    
-       0                   1                   2                   3
-       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |Tag=0x0200 (Network_Appearence)|          Length = 8           |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |                       Network Appearance = 2                  |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |Tag = 0x0006 (Routing_Context) |          Length = 8           |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |                        Routing Context = 7855568              |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |Tag = 0x0210 (Protocol_Data)   |             Length            |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |                     Originating_Point_Code = 3450             |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |                     Destination_Point_Code = 4098             |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      | SI = 3 (SCCP) |     NI = 3    |     MP = 0    |    SLS = 4    |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      \                                                               \
-      /       User Protocol Data : SCCP, Connection_Request(1)        /
-      \                                                               \
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |Tag = 0x0013 (Correlation_Id)  |          Length = 8           |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |                        Correlation_Id = 12783                 |
-      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      
-
-    
--->
-
 <scenario>
-			
-	
+				
     <sendMessageSIGTRAN name="Send DATA1" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]" destScenario="SIGTRAN">
     
     <!-- AP LAYER -->
@@ -59,29 +19,8 @@
         <mlcNumber>
           <bytes>916895111486</bytes></mlcNumber>
         <targetMS>
-          <!--imsi>
-            <bytes>04054a742ba221</bytes></imsi-->
-          <msisdn>
-            <bytes>91689511223358</bytes></msisdn>
+          <msisdn><bytes>91689511223358</bytes></msisdn>
         </targetMS>
-        <!--extensionContainer>
-          <privateExtensionList>
-            <Collection>
-              <PrivateExtension>
-                <extId><oidString>0.1.210</oidString></extId>
-                <extType>0405fd3c7e809c</extType>
-              </PrivateExtension>
-              <PrivateExtension>
-                <extId><oidString>0.1.223.88.49</oidString></extId>
-                <extType>0402bc5f</extType>
-              </PrivateExtension>
-              <PrivateExtension>
-                <extId><oidString>0.1.220.37.20.32.13</oidString></extId>
-                <extType>0400</extType>
-              </PrivateExtension>
-            </Collection></privateExtensionList>
-          <pcsExtensions></pcsExtensions>
-        </extensionContainer-->
       </RoutingInfoForLCS_Arg>
     </AP>
     
@@ -95,10 +34,7 @@
               <ExternalPDU>
                 <ExternalPDUSequenceType>
                   <direct_reference><oidString>0.0.17.773.1.1.1</oidString></direct_reference>
-                  <!--indirect_reference>12675566079394130</indirect_reference-->
-                  <!--data_value_descriptor><bytes>040c71bd6647c51b59ede37e5ebe</bytes></data_value_descriptor-->
                   <encoding>
-                    <!--single_ASN1_type>A011600F80020780A109060704000001001502</single_ASN1_type-->
                     <EmbeddedData>
                       <dialoguePDU>
                         <dialogueRequest>
@@ -106,42 +42,10 @@
                             <protocol_version>
                               <bitStrValue>80</bitStrValue><trailBitsCnt>07</trailBitsCnt></protocol_version>
                               <application_context_name><ObjectIdentifier><oidString>0.4.0.0.1.0.37.3</oidString></ObjectIdentifier></application_context_name>
-                            <!--Collection>
-                              <user_information>04051adfdf922e</user_information>
-                              <user_information>04097d473481ed68277994</user_information>
-                              <user_information>0406ae84f94cfe27</user_information>
-                            </Collection-->
                             </AARQ_apduSequenceType>
                         </dialogueRequest>
-                        <!--dialogueResponse>
-                          <AARE_apduSequenceType>
-                            <protocol_version>
-                              <bitStrValue>b65b38ca999ef3fb860ae814018905</bitStrValue><trailBitsCnt>0</trailBitsCnt></protocol_version>
-                            <application_context_name><oidString>0.1.2105.127.83.102.28.85.50</oidString></application_context_name>
-                            <result><Long>367927955958955200</Long></result>
-                            <result_source_diagnostic><dialogue_service_user>963585942613352704</dialogue_service_user><dialogue_service_provider>827236401166461952</dialogue_service_provider>
-                            </result_source_diagnostic>
-                            <Collection>
-                              <user_information>0406cb4917042c80</user_information>
-                              <user_information>040149</user_information>
-                              <user_information>040d92b7c5a15ead73c710be11d200</user_information>
-                            </Collection>
-                            </AARE_apduSequenceType>
-                          </dialogueResponse-->
-                        <!--dialogueAbort>
-                          <ABRT_apduSequenceType>
-                            <abort_source><Long>957882347076168192</Long></abort_source>
-                            <Collection>
-                              <user_information>04093897f336781bb32564</user_information>
-                              <user_information>0413ac2aa5c2ce4502ae4c6d63413f32dd1932f11e</user_information>
-                              <user_information>040a40d6514c93c0150b3e31</user_information>
-                            </Collection>
-                            </ABRT_apduSequenceType>
-                        </dialogueAbort-->
                       </dialoguePDU>
                     </EmbeddedData>
-                    <!--octet_aligned>040174</octet_aligned-->
-                    <!--arbitrary><bitStrValue>1bc64aab357d183f6c41f93b9acee6042b</bitStrValue><trailBitsCnt>0</trailBitsCnt></arbitrary-->
                   </encoding>
                 </ExternalPDUSequenceType>
               </ExternalPDU>
@@ -153,10 +57,8 @@
               <Component>
                 <invoke>
                   <invokeID><Integer>0</Integer></invokeID>
-                  <!--linkedID><Integer>170676764</Integer></linkedID-->
                   <opCode>
                     <localValue>85</localValue>
-                    <!--globalValue><oidString>0.1.20.44.126.3.103</oidString></globalValue-->
                   </opCode>
                   <parameter>
                     <bytes></bytes></parameter>
@@ -233,4 +135,161 @@
 
     <parameter name="[result ]" operation="binary.difference" value="[data1]" value2="[data]"/>
     
+            <!-- Message encoded value -->
+  	<parameter name="[data]" value="01000101000000a8021000a00000375800003715030200050900030d170a120800120468950100300a129100120468951114867462724804f88203016b1e281c060700118605010101a011600f80020780a1090607040000010026036c4aa148020100020153304030038001010406916895111486a016800101a1058003910810a40a80010f8205431cac1503820842904900003023f3860101a70880010da3030a0101890201fe" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>			
+			
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]" destScenario="SIGTRAN">
+    
+    <!-- AP LAYER -->
+    <AP className="com.devoteam.srit.xmlloader.sigtran.ap.generated.map.ProvideSubscriberLocation_Arg">
+      <ProvideSubscriberLocation_Arg>
+        <locationType>
+          <locationEstimateType>
+            <EnumType>currentOrLastKnownLocation</EnumType>
+          </locationEstimateType>
+        </locationType>
+        <mlc_Number>
+          <bytes>916895111486</bytes></mlc_Number>
+        <lcs_ClientID>
+          <lcsClientType>
+            <EnumType>valueAddedServices</EnumType>
+          </lcsClientType>
+          <lcsClientExternalID>
+            <externalAddress>
+              <bytes>910810</bytes>
+            </externalAddress>
+          </lcsClientExternalID>
+          <lcsClientName>
+            <dataCodingScheme>
+              <bytes>0f</bytes></dataCodingScheme>
+            <nameString>
+              <USSD_String><bytes>431cac1503</bytes></USSD_String>
+            </nameString>
+          </lcsClientName>
+        </lcs_ClientID>
+        <imsi>
+          <bytes>42904900003023f3</bytes></imsi>
+        <lcs_Priority>
+          <bytes>01</bytes></lcs_Priority>
+        <lcs_QoS>
+          <horizontal_accuracy><bytes>0d</bytes></horizontal_accuracy>
+          <responseTime>
+            <responseTimeCategory>
+              <EnumType>delaytolerant</EnumType>
+            </responseTimeCategory>
+          </responseTime>
+        </lcs_QoS>
+        <supportedGADShapes>
+          <BitString>
+            <bitStrValue>fe</bitStrValue><trailBitsCnt>1</trailBitsCnt>
+          </BitString>
+          </supportedGADShapes>
+      </ProvideSubscriberLocation_Arg>
+    </AP>
+    
+    <!-- TCAP LAYER -->
+    <AP className="com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage">
+      <TCMessage>
+        <begin>
+          <otid><bytes>f8820301</bytes></otid>
+          <dialoguePortion>
+            <DialogueOC>
+              <ExternalPDU>
+                <ExternalPDUSequenceType>
+                  <direct_reference><oidString>0.0.17.773.1.1.1</oidString></direct_reference>
+                  <encoding>
+                    <EmbeddedData>
+                      <dialoguePDU>
+                        <dialogueRequest>
+                          <AARQ_apduSequenceType>
+                            <protocol_version>
+                              <bitStrValue>80</bitStrValue><trailBitsCnt>07</trailBitsCnt></protocol_version>
+                              <application_context_name><ObjectIdentifier><oidString>0.4.0.0.1.0.38.3</oidString></ObjectIdentifier></application_context_name>
+                            </AARQ_apduSequenceType>
+                        </dialogueRequest>
+                      </dialoguePDU>
+                    </EmbeddedData>
+                  </encoding>
+                </ExternalPDUSequenceType>
+              </ExternalPDU>
+            </DialogueOC>
+          </dialoguePortion>
+          
+          <components>
+            <Collection>
+              <Component>
+                <invoke>
+                  <invokeID><Integer>0</Integer></invokeID>
+                  <opCode>
+                    <localValue>83</localValue>
+                  </opCode>
+                  <parameter>
+                    <bytes></bytes></parameter>
+                </invoke>
+              </Component>
+            </Collection>
+          </components>
+        </begin>
+      </TCMessage>
+    </AP>
+    
+	  <!-- SCCP LAYER  -->
+  	<SS7 name="sccp" file="sccp.xml">
+  		<header>
+          <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
+      </header>
+  		<parameter name="Protocol_Class" type="F" littleEndian="false">
+  			<field value="0" lengthBit="4" />
+  			<field value="0" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
+  		</parameter>
+  		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="false">
+  			<!--field name="Address_Indicator" value="18" length="1" /-->
+  			<!--field name="Signalling_Point_Code" value="2" length="2" /-->
+  			<!--field name="Subsystem_Number" value="6" length="1" /-->
+        <field name="Global_Title" value="12080012046895010030" format="binary" length="9" />
+  		</parameter>
+  		<parameter   id="4" type="V" name="Calling_Party_Address" littleEndian="false">
+  			<!--field name="Address_Indicator" value="18" length="1" /-->
+  			<!--field name="Signalling_Point_Code" value="145" length="2" /-->
+  			<!--field name="Subsystem_Number" value="8" length="1" /-->
+        <field name="Global_Title" value="12910012046895111486" format="binary" length="9" />
+  		</parameter>
+  		<parameter id="15" name="Data" type="V" littleEndian="false">
+  			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+        <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+  		</parameter>
+  	</SS7>
+
+    <UA name="m3ua" file="m3ua.xml">
+        <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
+				
+        <!--parameter tag="Network_Appearence">
+            <field name="Network_Appearence"  format="Integer" value="102"/>
+        </parameter-->
+
+
+        <!--parameter tag="Routing_Context">
+            <field name="Routing_Context" format="Integer"  value="101"/>
+        </parameter-->
+
+        <parameter tag="Protocol_Data">
+            <field value="14168" name="Originating_Point_Code"/>
+            <field value="14101" name="Destination_Point_Code" />
+            <field value="SCCP"	name="SI"/>
+            <field value="2"	name="NI"/>
+            <field value="0"	name="MP"/>
+            <field value="5"	name="SLS"/>
+            <field name="DATA"	format="fvo"/>
+        </parameter>
+	
+        <!--parameter tag="Correlation_Id">
+            <field name="Correlation_Id" format="Integer"  value="12783"/>
+        </parameter-->
+    </UA>
+    </sendMessageSIGTRAN>
+
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
+
 </scenario>
