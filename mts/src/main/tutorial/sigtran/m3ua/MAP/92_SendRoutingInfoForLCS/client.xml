@@ -222,4 +222,15 @@
         </parameter-->
     </UA>
     </sendMessageSIGTRAN>
+    
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="01000101000000940210008a0000371500003758030200010980030d170a529100120468951114860a120600120468950100205e645c4904f78203016b2a2828060700118605010101a01d611b80020780a109060704000001002503a203020100a305a1030201006c28a2260201003021020155301ca00a800842904900003023f3a10e04069168950100308100840204f00000" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>
+
+    <receiveMessageSIGTRAN name="Wait DATA1" request="false" type="85" result="OK">
+		    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+
+    <parameter name="[result ]" operation="binary.difference" value="[data1]" value2="[data]"/>
+    
 </scenario>

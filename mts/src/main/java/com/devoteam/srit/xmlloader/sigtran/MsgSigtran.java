@@ -57,6 +57,7 @@ import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Invoke;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Reject;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ReturnError;
 import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ReturnResult;
+import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ReturnResult.ResultretresSequenceType;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoField;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
@@ -179,20 +180,27 @@ public class MsgSigtran extends Msg
 		    			 //bytesAP = reject.getParameter();
 		    		}
 
+			        // decode AP layer with BinaryNotes
 		    		if (bytesAP != null)
 		    		{
 			    		Array arrayAP = new DefaultArray(bytesAP);
 			    		if (opCode == 46)
 			    		{
-					        // decode AP layer with BinaryNotes
 					        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Mo_forwardSM_Arg");
 					        _apMessage.decode(arrayAP);
 			    		}
 			    		if (opCode == 85)
 			    		{
-					        // decode AP layer with BinaryNotes
-					        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Arg");
-					        _apMessage.decode(arrayAP);
+			    			if (isRequest())
+			    			{
+						        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Arg");
+						        _apMessage.decode(arrayAP);
+			    			}
+			    			else
+			    			{
+						        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Res");
+						        _apMessage.decode(arrayAP);			    				
+			    			}
 			    		}
 			    	}
 		    	}
@@ -444,7 +452,36 @@ public class MsgSigtran extends Msg
 		    	Object[] tableComponents = tcapComponents.toArray(); 
 		    	if (tableComponents.length >= 1 )
 		    	{
-		    		((Component) tableComponents[0]).getInvoke().setParameter(arrayAP.getBytes());
+		    		Component component = ((Component) tableComponents[0]);
+		    		if (component.isInvokeSelected())
+		    		{
+		    			component.getInvoke().setParameter(arrayAP.getBytes());
+		    		}
+		    		else if (component.isReturnResultLastSelected())
+		    		{
+		    			 ReturnResult returnResult = component.getReturnResultLast();
+						 if (returnResult.getResultretres() != null)
+						 {	
+			    			 returnResult.getResultretres().setParameter(arrayAP.getBytes());
+						 }
+		    		}
+		    		else if (component.isReturnResultNotLastSelected())
+		    		{
+		    			 ReturnResult returnResult = component.getReturnResultNotLast();
+						 if (returnResult.getResultretres() != null)
+						 {	
+			    			 returnResult.getResultretres().setParameter(arrayAP.getBytes());
+						 }
+		    		}
+		    		else if (component.isReturnErrorSelected())
+		    		{
+		    			component.getReturnError().setParameter(arrayAP.getBytes());
+		    		}
+		    		else if (component.isRejectSelected())
+		    		{
+		    			// Nothing to do
+		    		}
+
 		    	}
         		
         	}
