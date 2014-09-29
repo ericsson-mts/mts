@@ -46,19 +46,12 @@ import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
 import com.devoteam.srit.xmlloader.sigtran.ap.APMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.BN_APMessageExperim;
 import com.devoteam.srit.xmlloader.sigtran.ap.BinaryNotesAPMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.HybridMAPMessageExperim;
-import com.devoteam.srit.xmlloader.sigtran.ap.MB_MAPMessageExperim;
-import com.devoteam.srit.xmlloader.sigtran.ap.MB_TCAPMessageExperim;
-import com.devoteam.srit.xmlloader.sigtran.ap.MobicentTCAPMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Invoke;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Reject;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ReturnError;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ReturnResult;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ReturnResult.ResultretresSequenceType;
-import com.devoteam.srit.xmlloader.sigtran.fvo.FvoField;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Component;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Invoke;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Reject;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ReturnError;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ReturnResult;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
 
@@ -131,7 +124,7 @@ public class MsgSigtran extends Msg
 	    	{    		
 	    		// decode TCAP layer with Mobicent library
 	    		Array ieArray = paramFvo.encode();
-	    		_tcapMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage");
+	    		_tcapMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage");
 		    	_tcapMessage.decode(ieArray);
 		  
 		    	Collection<Component> tcapComponents = ((BinaryNotesAPMessage) _tcapMessage).getTCAPComponents();
