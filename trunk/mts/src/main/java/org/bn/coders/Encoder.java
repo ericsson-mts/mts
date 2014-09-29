@@ -212,13 +212,13 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
         //    return encodeNull(object,stream,elementInfo);
         //} else 
         //{
-            Object invokeObjResult = invokeGetterMethodForField(field,object, info);
+        Object invokeObjResult = invokeGetterMethodForField(field,object, info);
             
-            if(invokeObjResult!=null) {
-                resultSize += encodeClassType(invokeObjResult, stream, info);
-            }
-            else
-                CoderUtils.checkForOptionalField(field, info);
+        if(invokeObjResult!=null) {
+            resultSize += encodeClassType(invokeObjResult, stream, info);
+        }
+        else
+            CoderUtils.checkForOptionalField(field, info);
         //}
         return resultSize;
     }
