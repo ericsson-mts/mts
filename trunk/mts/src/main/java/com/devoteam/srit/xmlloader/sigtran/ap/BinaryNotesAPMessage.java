@@ -37,13 +37,12 @@ import org.bn.IDecoder;
 import org.bn.IEncoder;
 import org.dom4j.Element;
 
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Invoke;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Reject;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ReturnError;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ReturnResult;
-//import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Parameter;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Component;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Invoke;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Reject;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ReturnError;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ReturnResult;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage;
 
 
 /**
@@ -147,7 +146,6 @@ public class BinaryNotesAPMessage extends APMessage
             {
             	packageName = className.substring(0, pos + 1);
             }
-            // String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map."; 
             this.apObject = thisClass.newInstance();
             XMLToASNParser.getInstance().initObject(this.apObject, element, packageName);
         }

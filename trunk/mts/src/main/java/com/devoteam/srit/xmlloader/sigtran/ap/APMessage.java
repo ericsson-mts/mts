@@ -24,14 +24,9 @@
 package com.devoteam.srit.xmlloader.sigtran.ap;
 
 import gp.utils.arrays.Array;
-import gp.utils.arrays.DefaultArray;
-
-import java.util.Collection;
-import java.util.List;
 
 import org.dom4j.Element;
 
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Component;
 
 /**
  *

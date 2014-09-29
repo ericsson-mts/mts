@@ -27,17 +27,14 @@ import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.AssSourceDiagnostic;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueOC;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialoguePortion;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueServiceProvider;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.DialogueServiceUser;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.EmbeddedData;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.EmbeddedObject;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.ObjectId;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.AssResult;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssSourceDiagnostic;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueOC;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceUser;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ObjectId;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult;
 
-import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
 import java.io.ByteArrayOutputStream;
@@ -268,7 +265,7 @@ public class XMLToASNParser
         {
             Object obj = Class.forName(type).newInstance();
 
-            Object objEmbeded = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Associate_result").newInstance();
+            Object objEmbeded = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_result").newInstance();
             Object objEmbbededClass = this.instanceClass(objEmbeded.getClass().getName(), className);
             initObject(objEmbbededClass, (Element) element.elements().get(0), className);
         	
@@ -287,7 +284,7 @@ public class XMLToASNParser
         {
             Object obj = Class.forName(type).newInstance();
 
-            Object objEmbeded = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Associate_source_diagnostic").newInstance();
+            Object objEmbeded = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_source_diagnostic").newInstance();
             Object objEmbbededClass = this.instanceClass(objEmbeded.getClass().getName(), className);
             initObject(objEmbbededClass, (Element) element.elements().get(0), className);
         	
@@ -306,7 +303,7 @@ public class XMLToASNParser
         {
             Object obj = Class.forName(type).newInstance();
 
-            Object objEmbeded = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Dialogue_service_user").newInstance();
+            Object objEmbeded = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_user").newInstance();
             Object objEmbbededClass = this.instanceClass(objEmbeded.getClass().getName(), className);
             initObject(objEmbbededClass, (Element) element.elements().get(0), className);
         	
@@ -325,7 +322,7 @@ public class XMLToASNParser
         {
             Object obj = Class.forName(type).newInstance();
 
-            Object objEmbeded = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Dialogue_service_provider").newInstance();
+            Object objEmbeded = Class.forName("com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider").newInstance();
             Object objEmbbededClass = this.instanceClass(objEmbeded.getClass().getName(), className);
             initObject(objEmbbededClass, (Element) element.elements().get(0), className);
         	

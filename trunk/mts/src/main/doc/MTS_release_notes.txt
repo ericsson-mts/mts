@@ -3,19 +3,26 @@
 				  M.T.S.
 -------------------------------------------------------------------------------
 
+			Version : 6.0.0_beta (revision SVN ?)
+
+Evolutions :
+  * Ajout du protocol MAP en se basant sur la library BinaryNotes (Partial 3 
+    messages only) : see <install_dir/tutorial/sigtran/m3ua/MAP directory)
+
+Fault report :
+
+Migration :
+
+-------------------------------------------------------------------------------
+				RELEASE NOTE
+				  M.T.S.
+-------------------------------------------------------------------------------
+
 			Version : 5.8.4 (revision SVN 1033)
 
 Evolutions :
   * Ajout operation number.min number.max
-
-Fault report :
-  * Supprimer le controle d'unicité sur les <parameter> editable (Jose Doree)
-  * Remplacer \ par / pour compatibilité Linux dans le tutorial IMS (Vincent Roudil)
-  * Quand le message SIP commence par des lignes blanches le header 
-    "Content-Length" est ajouté à la fin du message après le contenu. Il s'agit 
-    d'une régression de la version 5.8.2 par rapport à la version 5.8.1 à cause 
-    d'un besoin en RTSP pour le VMS voxpilot
-  * Support des session en Diameter
+  * Support des session en Diameter  
   * Routage en se basant sur les sessions de façon générique pour Diameter et 
     SIP (non testé)
   * Ajout d'un attribut "state" sur la balise <scenario>; si la valeur est positionnée 
@@ -25,7 +32,15 @@ Fault report :
     asynchrone en DIAMETER).
   * Dissocier l'information nom du scenario (utilisée dans les logs) et routage du 
     scenario (attribut routingName) utilisé pour le mécasnisme de routage 
-    (config route.SCENATIO_NAME)  
+    (config route.SCENARIO_NAME)  
+
+Fault report :
+  * Supprimer le controle d'unicité sur les <parameter> editable (Jose Doree)
+  * Remplacer \ par / pour compatibilité Linux dans le tutorial IMS (Vincent Roudil)
+  * Quand le message SIP commence par des lignes blanches le header 
+    "Content-Length" est ajouté à la fin du message après le contenu. Il s'agit 
+    d'une régression de la version 5.8.2 par rapport à la version 5.8.1 à cause 
+    d'un besoin en RTSP pour le VMS voxpilot
 
 Migration :
 

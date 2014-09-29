@@ -88,92 +88,94 @@ public class TestANS1Object {
          */
         TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
     
-        //String testFilename = args[0];
-        //String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.";
-        String packageName = "com.devoteam.srit.xmlloader.sigtran.ap.generated.map.";
+        String name = args[0];
+        String dest = args[1];
         
-        //String className = "TCMessage";
-        //String className = "DialoguePDU";
-        //tring className = "ObjectId";
-        //String className = "AARQ_apdu";
-        //String className = "Components";
-        //String className = "DeactivateTraceModeArg";
-        //String className = "ForwardingInfo";
-        //String className = "NoteMM_EventRes";
-        String className = "AnyTimeSubscriptionInterrogationRes";
-        //String className = "ReportSM_DeliveryStatusArg";
-        //String className = "UnauthorizedLCSClient_Param";
-        //String className = "UpdateLocationRes";
-        //String className = "ShortTermDenialParam";
-        //String className = "MAP_Protocol";
-        //String className = "UnknownSubscriberParam";
-        //String className = "AnyTimeInterrogationArg";
-        //String className = "LongForwardedToNumber";
-        //String className = "UpdateLocationArg";
-        //String className = "ReadyForSM_Arg";
-        //String className = "AbsentSubscriberParam";
-
-		// inspect the classes for the given package
-    	List<Class> listClasses = ClassInspector.find(packageName);
-    	
-    	// build the hashmap to find the high level classes
-    	Map<String, Class> mapClasses = new HashMap<String, Class>();
-    	for (Class classObj : listClasses)
-    	{
-    		if (!classObj.isEnum() && !classObj.isMemberClass())
-            {
-    			mapClasses.put(classObj.getCanonicalName(), classObj);
-            }
-    	}
-    	
-		try 
-		{
-			Class classObj = Class.forName(packageName + className);
-			Object obj = classObj.newInstance();
-			ASNReferenceFinder.getInstance().findAndRemoveReferences(mapClasses, obj);
-			testProcess(1, packageName, classObj);
-		} 
-		catch (Exception e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-    	// remove the reference into the hashmap
-    	for (Class classObj : listClasses)
-    	{
+        // create the directory
+        File dir = new File(dest);
+        dir.delete();
+        try
+        {
+        	dir.mkdirs();
+        }
+        catch (Exception e)
+        {
+        }
+        
+        // case the user enters a class name
+        if (!name.endsWith("."))
+        {
+        	String className = name;
+        	int pos = className.lastIndexOf('.');
+        	String packageName = className.substring(0, pos + 1);
+        	
     		try 
     		{
-	            if (!classObj.isEnum())
-	            {
-		    		Object object = classObj.newInstance();
-		    		ASNReferenceFinder.getInstance().findAndRemoveReferences(mapClasses, object);
-	            }
-       		} 
-    		catch (Exception e) 
-    		{
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-    	}
-    	Collection<Class> collect = mapClasses.values();
-    	int i = 0;
-    	for (Class classObject : collect)
-    	{
-    		try 
-    		{	i++;
-    			testProcess(i, packageName, classObject);
+    			Class classObj = Class.forName(className);
+    			Object obj = classObj.newInstance();
+    			//ASNReferenceFinder.getInstance().findAndRemoveReferences(mapClasses, obj);
+    			testProcess(1, packageName, classObj, dest);
     		} 
     		catch (Exception e) 
     		{
     			// TODO Auto-generated catch block
     			e.printStackTrace();
     		}
-
-    	}		
+        }
+        // case the user enters a package name
+        else
+        {
+        	String packageName = name;        
+       
+			// inspect the classes for the given package
+	    	List<Class> listClasses = ClassInspector.find(packageName);
+	    	
+	    	// build the hashmap to find the high level classes
+	    	Map<String, Class> mapClasses = new HashMap<String, Class>();
+	    	for (Class classObj : listClasses)
+	    	{
+	    		if (!classObj.isEnum() && !classObj.isMemberClass())
+	            {
+	    			mapClasses.put(classObj.getCanonicalName(), classObj);
+	            }
+	    	}
+	    	
+	    	// remove the reference into the hashmap
+	    	for (Class classObj : listClasses)
+	    	{
+	    		try 
+	    		{
+		            if (!classObj.isEnum())
+		            {
+			    		Object object = classObj.newInstance();
+			    		ASNReferenceFinder.getInstance().findAndRemoveReferences(mapClasses, object);
+		            }
+	       		} 
+	    		catch (Exception e) 
+	    		{
+	    			// TODO Auto-generated catch block
+	    			e.printStackTrace();
+	    		}
+	    	}
+	    	Collection<Class> collect = mapClasses.values();
+	    	int i = 0;
+	    	for (Class classObject : collect)
+	    	{
+	    		try 
+	    		{	i++;
+	    			testProcess(i, packageName, classObject, dest);
+	    		} 
+	    		catch (Exception e) 
+	    		{
+	    			// TODO Auto-generated catch block
+	    			e.printStackTrace();
+	    		}
+	
+	    	}
+        }
     }
             
-    public static void testProcess(int i, String packageName, Class classObj) throws Exception
+    public static void testProcess(int i, String packageName, Class classObj, String dest) throws Exception
     {
         String className = classObj.getSimpleName();
 
@@ -193,7 +195,7 @@ public class TestANS1Object {
         retInit += "</AP>";
 
         // write XML data into a file
-        File fileInit = new File("./asn1/" + className + ".xml");
+        File fileInit = new File(dest + className + ".xml");
         fileInit.delete();
         OutputStream out = new FileOutputStream(fileInit, false);
         Array array = new DefaultArray(retInit.getBytes());
@@ -201,7 +203,7 @@ public class TestANS1Object {
         out.close();
 
         // read XML data from file
-        File fileRead = new File("./asn1/" + className + ".xml");
+        File fileRead = new File(dest + className + ".xml");
         if(!fileRead.exists()) fileRead.createNewFile();
         InputStream in = new FileInputStream(fileRead);
         SAXReader reader = new SAXReader(false);
@@ -228,7 +230,7 @@ public class TestANS1Object {
         retXML += "\n";
         retXML += "</AP>";
 
-        File fileXML = new File("./asn1/" + className + "_XML ");
+        File fileXML = new File(dest + className + "_XML ");
         fileXML.delete();
 
         // test with initial value
@@ -264,7 +266,7 @@ public class TestANS1Object {
         retBin += "</AP>";
         
         // write XML data into a file
-        File fileBin = new File("./asn1/" + className + "_BINARY.xml");
+        File fileBin = new File(dest + className + "_BINARY.xml");
         fileBin.delete();
         
         // test with initial value

@@ -46,7 +46,6 @@ import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
 import com.devoteam.srit.xmlloader.sigtran.ap.APMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.BinaryNotesAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.MobicentTCAPMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.Invoke;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
 
@@ -119,7 +118,6 @@ public class MsgSigtranHybrid extends Msg
 	    	{    		
 	    		// decode TCAP layer with Mobicent library
 	    		Array ieArray = paramFvo.encode();
-	    		//_tcapMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.tcap.TCMessage");
 	    		_tcapMessage = new MobicentTCAPMessage();
 		    	_tcapMessage.decode(ieArray);
 		  
