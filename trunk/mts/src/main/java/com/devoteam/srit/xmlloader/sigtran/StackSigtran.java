@@ -48,6 +48,7 @@ import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.MessageQ931;
 import com.devoteam.srit.xmlloader.sigtran.ap.ASNMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.BN_APMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.BN_ASNMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.BN_TCAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoDictionary;
@@ -92,6 +93,7 @@ public class StackSigtran extends Stack {
         return tlvDictionaries.get(name);
     }
 
+    
     public FvoDictionary getFvoDictionnary(String name) throws Exception{
         if(!fvoDictionaries.containsKey(name)){
             fvoDictionaries.put(name, new FvoDictionary(SingletonFSInterface.instance().getInputStream(new URI("../conf/sigtran/"+name))));
@@ -115,38 +117,26 @@ public class StackSigtran extends Stack {
         
         List<Element> listAps = root.elements("AP");
         Object[] tabAps = listAps.toArray();
+        
+        ASNMessage tcapMessage = null;
         if (tabAps.length >= 1)
         {
-        	ASNMessage apMessage = new BN_TCAPMessage();
-        	apMessage.parseFromXML(((Element) tabAps[0]));
-        	String className = apMessage.getClassName(); 
-        	if (className.contains(".tcap."))
-        	{
-                // TCAP layer (optional)
-        		msgSigtran.setTCAPMessage(apMessage);
-        	}
-        	else
-        	{
-                // generic AP layer (optional)
-        		msgSigtran.setAPMessage(apMessage);
-        	}
+        	Element elementTCAP = (Element) tabAps[tabAps.length - 1];
+        	tcapMessage = new BN_TCAPMessage();
+        	tcapMessage.parseFromXML(elementTCAP);
+        	String className = tcapMessage.getClassName(); 
+            // TCAP layer (optional)
+        	msgSigtran.setTCAPMessage((BN_TCAPMessage) tcapMessage);
         }
-        
+
         if (tabAps.length >= 2)
         {
-        ASNMessage apMessage = new BN_TCAPMessage();
-        	apMessage.parseFromXML(((Element) tabAps[1]));
-        	String className = apMessage.getClassName();
-        	if (className.contains(".tcap."))
-        	{
-                // TCAP layer (optional)
-        		msgSigtran.setTCAPMessage(apMessage);
-        	}
-        	else
-        	{
-                // generic AP layer (optional)
-        		msgSigtran.setAPMessage(apMessage);
-        	}
+        	Element elementAP = (Element) tabAps[0];
+        	ASNMessage apMessage = new BN_APMessage(tcapMessage);
+        	apMessage.parseFromXML(elementAP);
+        	String className = apMessage.getClassName(); 
+            // TCAP layer (optional)
+        	msgSigtran.setAPMessage((BN_APMessage) apMessage);
         }
 
         // ISDN layer (optional)

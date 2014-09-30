@@ -24,11 +24,6 @@
 package com.devoteam.srit.xmlloader.sigtran;
 
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-
-import org.mobicents.protocols.asn.AsnInputStream;
-import org.mobicents.protocols.asn.AsnOutputStream;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -46,7 +41,7 @@ import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
 import com.devoteam.srit.xmlloader.sigtran.ap.ASNMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.BN_ASNMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.BN_APMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.BN_TCAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Component;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Invoke;
@@ -60,7 +55,7 @@ public class MsgSigtran extends Msg
 {
 
     // AP layer (Application part) (spec ITU Q.XXXX)= coding ASN1 => Use BinaryNotes library 
-    private BN_TCAPMessage _apMessage;
+    private BN_APMessage _apMessage;
 		
     // TCAP layer (Application part) (spec ITU Q.XXXX)= coding ASN1 => Use Mobicent library 
     //private MobicentTCAPMessage _tcapMessage;
@@ -131,8 +126,7 @@ public class MsgSigtran extends Msg
 		    	Collection<Component> tcapComponents = ((BN_TCAPMessage) _tcapMessage).getTCAPComponents();
 		    	Object[] tableComponents = (Object[])tcapComponents.toArray(); 
 		    	if (tableComponents.length >= 1)
-		    	{
-		    		AsnOutputStream aosMAP = new AsnOutputStream();
+		    	{	
 		    		Component component =  ((Component) tableComponents[0]);
 		    		long opCode = -1;
 		    		byte[] bytesAP = null; 
@@ -180,19 +174,19 @@ public class MsgSigtran extends Msg
 			    		Array arrayAP = new DefaultArray(bytesAP);
 			    		if (opCode == 46)
 			    		{
-					        _apMessage = new BN_TCAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Mo_forwardSM_Arg");
+					        _apMessage = new BN_APMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Mo_forwardSM_Arg", _tcapMessage);
 					        _apMessage.decode(arrayAP);
 			    		}
 			    		if (opCode == 85)
 			    		{
 			    			if (isRequest())
 			    			{
-						        _apMessage = new BN_TCAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Arg");
+						        _apMessage = new BN_APMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Arg", _tcapMessage);
 						        _apMessage.decode(arrayAP);
 			    			}
 			    			else
 			    			{
-						        _apMessage = new BN_TCAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Res");
+						        _apMessage = new BN_APMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Res", _tcapMessage);
 						        _apMessage.decode(arrayAP);			    				
 			    			}
 			    		}
@@ -362,22 +356,22 @@ public class MsgSigtran extends Msg
     	return this.transactionId;
     }
 
-    public ASNMessage getTCAPMessage() {
+    public BN_TCAPMessage getTCAPMessage() {
 		return _tcapMessage;
 	}
 
-	public void setTCAPMessage(ASNMessage tcapMessage) {
+	public void setTCAPMessage(BN_TCAPMessage tcapMessage) {
 		this._tcapMessage = (BN_TCAPMessage) tcapMessage;
 	}
 
-	public ASNMessage getAPMessage() 
+	public BN_APMessage getAPMessage() 
     {
 		return _apMessage;
 	}
 
-	public void setAPMessage(ASNMessage apMessage) 
+	public void setAPMessage(BN_APMessage apMessage) 
 	{
-		this._apMessage = (BN_TCAPMessage) apMessage;
+		this._apMessage = (BN_APMessage) apMessage;
 	}
 
     public MessageQ931 getIeMessage() 
