@@ -190,7 +190,7 @@ public class TestANS1Object {
         String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         retInit += "\n\n";
         retInit += "<AP>";
-        retInit += ASNToXMLConverter.getInstance().toXML(null, objectInit, 0);
+        retInit += ASNToXMLConverter.getInstance().toXML(null, objectInit, null, 0);
         retInit += "\n";
         retInit += "</AP>";
 
@@ -226,7 +226,7 @@ public class TestANS1Object {
         String retXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         retXML += "\n\n";
         retXML += "<AP>";
-        retXML += ASNToXMLConverter.getInstance().toXML(null, objectXML, 0);
+        retXML += ASNToXMLConverter.getInstance().toXML(null, objectXML, null, 0);
         retXML += "\n";
         retXML += "</AP>";
 
@@ -261,7 +261,7 @@ public class TestANS1Object {
         String retBin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         retBin += "\n\n";
         retBin += "<AP>";
-        retBin += ASNToXMLConverter.getInstance().toXML(null, objectBin, 0);
+        retBin += ASNToXMLConverter.getInstance().toXML(null, objectBin, null, 0);
         retBin += "\n";
         retBin += "</AP>";
         

@@ -168,7 +168,7 @@ public class MobicentTCAPMessage extends ASNMessage
     {
         String ret = "";
         ret += "<TCAP>";
-        ret += ASNToXMLConverter.getInstance().toXML(null, this.tcbm, 0);
+        ret += ASNToXMLConverter.getInstance().toXML(null, this.tcbm, null, 0);
         ret += "\n";
         ret += "</TCAP>";
     	return ret;
