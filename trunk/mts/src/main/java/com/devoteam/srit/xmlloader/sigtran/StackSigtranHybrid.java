@@ -47,7 +47,7 @@ import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.MessageQ931;
-import com.devoteam.srit.xmlloader.sigtran.ap.APMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.ASNMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.BinaryNotesAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.MobicentTCAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoDictionary;
@@ -117,7 +117,7 @@ public class StackSigtranHybrid extends Stack {
         Object[] tabAps = listAps.toArray();
         if (tabAps.length >= 1)
         {
-    		APMessage apMessage = new BinaryNotesAPMessage();
+    		ASNMessage apMessage = new BinaryNotesAPMessage();
         	apMessage.parseFromXML(((Element) tabAps[0]));
         	String className = apMessage.getClassName(); 
         	if (className.contains(".tcap."))
@@ -134,7 +134,7 @@ public class StackSigtranHybrid extends Stack {
         
         if (tabAps.length >= 2)
         {
-        	APMessage apMessage = new MobicentTCAPMessage();
+        	ASNMessage apMessage = new MobicentTCAPMessage();
         	apMessage.parseFromXML(((Element) tabAps[1]));
         	String className = apMessage.getClassName();
         	if (className.contains(".tcap."))
