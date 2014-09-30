@@ -44,7 +44,8 @@ import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
 import com.devoteam.srit.xmlloader.sigtran.ap.ASNMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.BinaryNotesAPMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.BN_ASNMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.BN_TCAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.MobicentTCAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
@@ -133,13 +134,13 @@ public class MsgSigtranHybrid extends Msg
 		    		if (opCode == 46)
 		    		{
 				        // decode AP layer with BinaryNotes
-				        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Mo_forwardSM_Arg");
+				        _apMessage = new BN_TCAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Mo_forwardSM_Arg");
 				        _apMessage.decode(arrayAP);
 		    		}
 		    		if (opCode == 85)
 		    		{
 				        // decode AP layer with BinaryNotes
-				        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Arg");
+				        _apMessage = new BN_TCAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Arg");
 				        _apMessage.decode(arrayAP);
 		    		}
 
