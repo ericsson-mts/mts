@@ -46,6 +46,7 @@ import java.util.Iterator;
 import org.bn.CoderFactory;
 import org.bn.IDecoder;
 import org.bn.coders.ASN1PreparedElementData;
+import org.bn.coders.TagClass;
 import org.bn.metadata.ASN1ElementMetadata;
 import org.bn.metadata.ASN1Metadata;
 import org.dom4j.Document;
@@ -107,9 +108,12 @@ public class ASNToXMLConverter {
 				preparedDataField.setAccessible(true);
 				objPreparedEltData = (ASN1PreparedElementData) preparedDataField.get(objClass);
 			}
-			//ASN1ElementMetadata elementInfo = objPreparedEltData.getASN1ElementInfo();
-			//ASN1Metadata objPreparedMetadata1 = objPreparedEltData.getTypeMetadata();
 
+			ASN1Metadata objPreparedMetadata = null;
+			if (objPreparedEltData != null)
+			{
+				objPreparedMetadata = objPreparedEltData.getTypeMetadata();
+			}
 			int countFields = 0;
 			boolean complex = true;
 
@@ -120,7 +124,7 @@ public class ASNToXMLConverter {
 				{
 					ret += "\n" + indent(indent);
 				}
-				ret += "<" + returnClassName(objClass, name, objElementInfo) + ">";
+				ret += "<" + returnClassName(objClass, name, objElementInfo, objPreparedMetadata) + ">";
 			}
 			
 
@@ -186,12 +190,13 @@ public class ASNToXMLConverter {
 				}
 			}
 
-			if (name != null) {
+			if (name != null) 
+			{
 				if (!objClass.getClass().getCanonicalName().startsWith("java.lang.") && fields.length > 2 && complex) 
 				{
 					ret += "\n" + indent(indent);
 				}
-				ret += "</" + returnClassName(objClass, name, objElementInfo) + ">";
+				ret += "</" + returnClassName(objClass, name, objElementInfo, objPreparedMetadata) + ">";
 			}
 
 		} catch (Exception e) {
@@ -202,24 +207,104 @@ public class ASNToXMLConverter {
 		return ret;
 	}
 
-	private String returnClassName(Object objClass, String name, ASN1ElementMetadata objElementInfo) throws Exception 
+	private String returnClassName(Object objClass, String name, ASN1ElementMetadata objElementInfo, ASN1Metadata objPreparedMetadata1) throws Exception 
 	{
+		String ret;
+		if ("value".equals(name)) 
+		{
+			ret = objClass.getClass().getSimpleName();
+			ret = ret.replace("[]", "s");		
+		}
+		else
+		{
+			ret = name;
+		}
+		
+		// Add the tag information of the ASN1 object coming from the annotation (class tag imp^licit default)
+		String tagAnnotation = null;
+		int tagClass = -1;
+		if (objElementInfo != null && objElementInfo.hasTag())
+		{
+			tagClass = objElementInfo.getTagClass();
+		}
+		String strTagClass = null;
+		if (tagClass == TagClass.Application)
+		{
+			strTagClass = "A";
+		}
+		else if (tagClass == TagClass.ContextSpecific)
+		{
+			strTagClass = "C";
+		}
+		else if (tagClass == TagClass.Private)
+		{
+			strTagClass = "P";
+		}
+		else if (tagClass == TagClass.Universal)
+		{
+			strTagClass = "U";
+		}
+		if (strTagClass != null)
+		{
+			tagAnnotation = strTagClass;
+		}
+		
 		int tag = -1; 
 		if (objElementInfo != null && objElementInfo.hasTag())
 		{
 			tag = objElementInfo.getTag();
 		}
+		if (tag != -1)
+		{
+			tagAnnotation += tag;
+		}
+		
+		boolean implicitTag = true;
+		if (objElementInfo != null && objElementInfo.hasTag())
+		{
+			implicitTag = objElementInfo.isImplicitTag();
+		}
+		if (!implicitTag)
+		{
+			tagAnnotation += "e";
+		}
 
-		if ("value".equals(name)) 
+		boolean defaultValue = false;
+		if (objElementInfo != null && objElementInfo.hasDefaultValue())
 		{
-			String ret = objClass.getClass().getSimpleName();
-			ret = ret.replace("[]", "s");
-			return ret;
+			defaultValue = true;
 		}
-		else
+		if (defaultValue)
 		{
-			return name;
+			tagAnnotation += "d";
 		}
+		
+		if (tagAnnotation!= null)
+		{
+			ret += ".";
+			ret += tagAnnotation;
+		}
+		
+		// Add the type of ASN1 object coming from the annotation (choice sequence boxedType ...)
+		if (objPreparedMetadata1 != null)
+		{
+			String strDataType = objPreparedMetadata1.getClass().getSimpleName();
+			if (strDataType != null)
+			{
+				if (strDataType.startsWith("ASN1"))
+				{
+					strDataType = strDataType.substring(4);
+				}
+				if (strDataType.endsWith("Metadata"))
+				{
+					strDataType = strDataType.substring(0, strDataType.length() - 8);
+				}
+				ret += ".";
+				ret += strDataType;
+			}
+			
+		}
+		return ret;
 	}
 
 	private String returnXMLObject(Object subObject, ASN1ElementMetadata objElementInfo, int indent)
