@@ -32,16 +32,16 @@ import org.dom4j.Element;
  *
  * @author fhenry
  */
-public abstract class APMessage 
+public abstract class ASNMessage 
 {
 	// Class name for the root object
 	protected String className; 
 
-	public APMessage()
+	public ASNMessage()
 	{
 	}
 	
-	public APMessage(String className)
+	public ASNMessage(String className)
 	{
 		this.className = className;
     }

@@ -43,7 +43,7 @@ import com.devoteam.srit.xmlloader.core.coding.binary.q931.MessageQ931;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
-import com.devoteam.srit.xmlloader.sigtran.ap.APMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.ASNMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.BinaryNotesAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.MobicentTCAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
@@ -53,11 +53,11 @@ public class MsgSigtranHybrid extends Msg
 {
 
     // AP layer (Application part) (spec ITU Q.XXXX)= coding ASN1 => Use BinaryNotes library 
-    private APMessage _apMessage;
+    private ASNMessage _apMessage;
 		
     // TCAP layer (Application part) (spec ITU Q.XXXX)= coding ASN1 => Use Mobicent library 
     //private MobicentTCAPMessage _tcapMessage;
-    private APMessage _tcapMessage;
+    private ASNMessage _tcapMessage;
     
     // ISDN (Integrated Services Digital Network) layer (spec ITU Q.XXXX) = coding IE (Information element) 
     private MessageQ931 _ieMessage;
@@ -260,20 +260,20 @@ public class MsgSigtranHybrid extends Msg
         return false;
     }
 
-    public APMessage getTCAPMessage() {
+ public ASNMessage getTCAPMessage() {
 		return _tcapMessage;
 	}
 
-	public void setTCAPMessage(APMessage tcapMessage) {
+	public void setTCAPMessage(ASNMessage tcapMessage) {
 		this._tcapMessage = tcapMessage;
 	}
 
-	public APMessage getAPMessage() 
+	public ASNMessage getAPMessage() 
     {
 		return _apMessage;
 	}
 
-	public void setAPMessage(APMessage apMessage) 
+	public void setAPMessage(ASNMessage apMessage) 
 	{
 		this._apMessage = apMessage;
 	}

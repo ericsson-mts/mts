@@ -52,7 +52,7 @@ import com.devoteam.srit.xmlloader.sigtran.ap.ASNToXMLConverter;
  *
  * @author fhenry
  */
-public class MobicentTCAPMessage extends APMessage 
+public class MobicentTCAPMessage extends ASNMessage 
 {
 
 	// TCAP mobicent object
