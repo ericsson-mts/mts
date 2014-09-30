@@ -49,7 +49,7 @@ import com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage;
  *
  * @author fhenry
  */
-public class BinaryNotesAPMessage extends APMessage 
+public class BinaryNotesAPMessage extends ASNMessage 
 {
 
 	// ASN1 binarynotes object
