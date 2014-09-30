@@ -46,7 +46,8 @@ import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
 import com.devoteam.srit.xmlloader.sigtran.ap.ASNMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.BinaryNotesAPMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.BN_ASNMessage;
+import com.devoteam.srit.xmlloader.sigtran.ap.BN_TCAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Component;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Invoke;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Reject;
@@ -59,11 +60,11 @@ public class MsgSigtran extends Msg
 {
 
     // AP layer (Application part) (spec ITU Q.XXXX)= coding ASN1 => Use BinaryNotes library 
-    private ASNMessage _apMessage;
+    private BN_TCAPMessage _apMessage;
 		
     // TCAP layer (Application part) (spec ITU Q.XXXX)= coding ASN1 => Use Mobicent library 
     //private MobicentTCAPMessage _tcapMessage;
-    private ASNMessage _tcapMessage;
+    private BN_TCAPMessage _tcapMessage;
     
     // ISDN (Integrated Services Digital Network) layer (spec ITU Q.XXXX) = coding IE (Information element) 
     private MessageQ931 _ieMessage;
@@ -124,10 +125,10 @@ public class MsgSigtran extends Msg
 	    	{    		
 	    		// decode TCAP layer with Mobicent library
 	    		Array ieArray = paramFvo.encode();
-	    		_tcapMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage");
+	    		_tcapMessage = new BN_TCAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage");
 		    	_tcapMessage.decode(ieArray);
 		  
-		    	Collection<Component> tcapComponents = ((BinaryNotesAPMessage) _tcapMessage).getTCAPComponents();
+		    	Collection<Component> tcapComponents = ((BN_TCAPMessage) _tcapMessage).getTCAPComponents();
 		    	Object[] tableComponents = (Object[])tcapComponents.toArray(); 
 		    	if (tableComponents.length >= 1)
 		    	{
@@ -179,19 +180,19 @@ public class MsgSigtran extends Msg
 			    		Array arrayAP = new DefaultArray(bytesAP);
 			    		if (opCode == 46)
 			    		{
-					        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Mo_forwardSM_Arg");
+					        _apMessage = new BN_TCAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Mo_forwardSM_Arg");
 					        _apMessage.decode(arrayAP);
 			    		}
 			    		if (opCode == 85)
 			    		{
 			    			if (isRequest())
 			    			{
-						        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Arg");
+						        _apMessage = new BN_TCAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Arg");
 						        _apMessage.decode(arrayAP);
 			    			}
 			    			else
 			    			{
-						        _apMessage = new BinaryNotesAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Res");
+						        _apMessage = new BN_TCAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Res");
 						        _apMessage.decode(arrayAP);			    				
 			    			}
 			    		}
@@ -366,7 +367,7 @@ public class MsgSigtran extends Msg
 	}
 
 	public void setTCAPMessage(ASNMessage tcapMessage) {
-		this._tcapMessage = tcapMessage;
+		this._tcapMessage = (BN_TCAPMessage) tcapMessage;
 	}
 
 	public ASNMessage getAPMessage() 
@@ -376,7 +377,7 @@ public class MsgSigtran extends Msg
 
 	public void setAPMessage(ASNMessage apMessage) 
 	{
-		this._apMessage = apMessage;
+		this._apMessage = (BN_TCAPMessage) apMessage;
 	}
 
     public MessageQ931 getIeMessage() 
@@ -441,7 +442,7 @@ public class MsgSigtran extends Msg
         		// encode AP layers with BinaryNotes library
         		Array arrayAP = _apMessage.encode();
         	
-		    	Collection<Component> tcapComponents = ((BinaryNotesAPMessage) _tcapMessage).getTCAPComponents();
+		    	Collection<Component> tcapComponents = ((BN_TCAPMessage) _tcapMessage).getTCAPComponents();
 		    	Object[] tableComponents = tcapComponents.toArray(); 
 		    	if (tableComponents.length >= 1 )
 		    	{

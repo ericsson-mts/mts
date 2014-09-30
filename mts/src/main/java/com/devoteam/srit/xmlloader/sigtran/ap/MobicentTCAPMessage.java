@@ -187,4 +187,29 @@ public class MobicentTCAPMessage extends ASNMessage
     	return comps;
     }
     
+    public boolean isRequest()
+    {
+    	// TODO
+    	return false;
+    }
+    
+    public String getType()
+    {
+    	// TODO
+    	return null;
+    }
+
+    
+    public String getResult()
+    {
+    	// TODO
+    	return null;
+    }
+    
+    public String getTransactionId()
+    {
+    	// TODO
+    	return null;
+    }
+
 }
