@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.asn1;
 
+import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
+import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -175,115 +177,26 @@ public class ASNInitializer
     		return null;
     		// nothing to do
     	}
-        else if (type.endsWith(".DialogueOC"))
-        {
-        	ExternalPDU objEmbedded = (ExternalPDU) getSubObject(null, ExternalPDU.class);
+		// manage the embedded objects
+    	Embedded embedded = ASNDictionary.getInstance().getEmbeddedByInitial(type);
+		if (embedded != null) 
+		{
+			String replace = embedded.getReplace();
+			Class cl = Class.forName(replace);
+        	Object objEmbedded = getSubObject(obj, cl);
         	
-            // encode ASN1 object into binary
         	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
         	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         	encoderEmbedded.encode(objEmbedded, outputStream);
             byte[] bytesEmbedded = outputStream.toByteArray();
-            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
-         
-            DialogueOC subObject = new DialogueOC();
-            subObject.setValue(bytesEmbedded);
+            // Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
             
-            return subObject;
-        }
-        else if (type.endsWith(".EmbeddedData"))
-        {
-        	DialoguePDU objEmbedded = (DialoguePDU) getSubObject(null, DialoguePDU.class);
-        	
-            // encode ASN1 object into binary
-        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
-        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        	encoderEmbedded.encode(objEmbedded, outputStream);
-            byte[] bytesEmbedded = outputStream.toByteArray();
-            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
-         
-            EmbeddedData subObject = new EmbeddedData();
-            subObject.setValue(bytesEmbedded);
-            
-            return subObject;
-        }
-        else if (type.endsWith(".ObjectId"))
-        {
-        	ObjectIdentifier objEmbedded = (ObjectIdentifier) getSubObject(null, ObjectIdentifier.class);
-        	
-            // encode ASN1 object into binary
-        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
-        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        	encoderEmbedded.encode(objEmbedded, outputStream);
-            byte[] bytesEmbedded = outputStream.toByteArray();
-            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
-         
-        	ObjectId subObject = new ObjectId();
-            subObject.setValue(bytesEmbedded);
-            
-            return subObject;
-        }
-        else if (type.endsWith(".AssResult"))
-        {
-        	Associate_result objEmbedded = (Associate_result) getSubObject(null, Associate_result.class);
-        	
-            // encode ASN1 object into binary
-        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
-        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        	encoderEmbedded.encode(objEmbedded, outputStream);
-            byte[] bytesEmbedded = outputStream.toByteArray();
-            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
-         
-            AssResult subObject = new AssResult();
-            subObject.setValue(bytesEmbedded);
-            
-            return subObject;
-        }
-        else if (type.endsWith(".AssSourceDiagnostic"))
-        {
-        	Associate_source_diagnostic objEmbedded = (Associate_source_diagnostic) getSubObject(null, Associate_source_diagnostic.class);
-        	
-            // encode ASN1 object into binary
-        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
-        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        	encoderEmbedded.encode(objEmbedded, outputStream);
-            byte[] bytesEmbedded = outputStream.toByteArray();
-            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
-         
-            AssSourceDiagnostic subObject = new AssSourceDiagnostic();
-            subObject.setValue(bytesEmbedded);
-            
-            return subObject;
-        }
-        else if (type.endsWith(".DialogueServiceUser"))
-        {
-        	Dialogue_service_user objEmbedded = (Dialogue_service_user) getSubObject(null, Dialogue_service_user.class);
-        	
-            // encode ASN1 object into binary
-        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
-        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        	encoderEmbedded.encode(objEmbedded, outputStream);
-            byte[] bytesEmbedded = outputStream.toByteArray();
-            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
-            
-            DialogueServiceUser subObject = new DialogueServiceUser();
-            subObject.setValue(bytesEmbedded);
-            
-            return subObject;
-        }
-        else if (type.endsWith(".DialogueServiceProvider"))
-        {
-        	Dialogue_service_provider objEmbedded = (Dialogue_service_provider) getSubObject(null, Dialogue_service_provider.class);
-        	
-            // encode ASN1 object into binary
-        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
-        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        	encoderEmbedded.encode(objEmbedded, outputStream);
-            byte[] bytesEmbedded = outputStream.toByteArray();
-            Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
-            
-            DialogueServiceProvider subObject = new DialogueServiceProvider();
-            subObject.setValue(bytesEmbedded);
+            Constructor constr = subClass.getConstructor();
+			constr.setAccessible(true);
+			Object subObject = constr.newInstance();
+			Field[] fields = subObject.getClass().getDeclaredFields();
+			fields[0].setAccessible(true);
+			fields[0].set(subObject, bytesEmbedded);
             
             return subObject;
         }
