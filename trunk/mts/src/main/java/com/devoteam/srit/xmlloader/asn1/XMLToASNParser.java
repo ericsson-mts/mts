@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.sigtran.ap;
+package com.devoteam.srit.xmlloader.asn1;
 
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;

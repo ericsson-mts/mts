@@ -30,6 +30,8 @@ import gp.utils.arrays.DefaultArray;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.asn1.ASNMessage;
+import com.devoteam.srit.xmlloader.asn1.BN_ASNMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Component;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Invoke;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Reject;

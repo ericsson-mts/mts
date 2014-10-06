@@ -46,7 +46,8 @@ import org.mobicents.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Parameter;
 import org.mobicents.protocols.ss7.tcap.asn.comp.TCBeginMessage;
 
-import com.devoteam.srit.xmlloader.sigtran.ap.ASNToXMLConverter;
+import com.devoteam.srit.xmlloader.asn1.ASNMessage;
+import com.devoteam.srit.xmlloader.asn1.ASNToXMLConverter;
 
 /**
  *
