@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.sigtran.ap;
+package com.devoteam.srit.xmlloader.asn1;
 
 import gp.utils.arrays.Array;
 
