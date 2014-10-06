@@ -64,11 +64,11 @@ public class XMLToASNParser
     
     public static XMLToASNParser getInstance()
     {
-    	if (_instance != null)
+    	if (_instance == null)
     	{
-    		return _instance;
+    		_instance = new XMLToASNParser();
     	}
-    	return new XMLToASNParser();
+    	return _instance;
     }
 
     public XMLToASNParser() 

@@ -38,21 +38,82 @@ public class ASNDictionary
     
 	private static HashMap<String, Embedded> embeddedsByIniial = new HashMap<String, Embedded> ();
 	
-    public static ASNDictionary getInstance()
+    public ASNDictionary()
     {
-    	if (_instance != null)
-    	{
-    		return _instance;
-    	}
-    	return new ASNDictionary();
+		Embedded embedded = null;
+		embedded = new Embedded(
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueOC", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.ExternalPDU",
+				null); 
+		addEmbedded(embedded);
+		embedded = new Embedded(
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialoguePDU",
+				null); 
+		addEmbedded(embedded);
+		embedded = new Embedded(
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.ObjectId", 
+				"org.bn.types.ObjectIdentifier",
+				null); 
+		addEmbedded(embedded);
+		embedded = new Embedded(
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_result",
+				null); 
+		addEmbedded(embedded);
+		embedded = new Embedded(
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssSourceDiagnostic", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_source_diagnostic",
+				null); 
+		addEmbedded(embedded);
+		embedded = new Embedded(
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceUser", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_user",
+				null); 
+		addEmbedded(embedded);
+		embedded = new Embedded(
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_result",
+				null); 
+		addEmbedded(embedded);
+		embedded = new Embedded(
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider",
+				null); 
+		addEmbedded(embedded);
+		embedded = new Embedded(
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider",
+				null); 
+		addEmbedded(embedded);
+		embedded = new Embedded(
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider",
+				null); 
+		addEmbedded(embedded);
+
     }
 	
-	public static void addEmbedded(Embedded embedded) 
+	public static ASNDictionary getInstance()
+    {
+    	if (_instance == null)
+    	{
+    		_instance = new ASNDictionary();
+    	}
+    	return _instance;
+    }
+	
+    public Embedded getEmbeddedByInitial(String initial) 
+	{
+		return embeddedsByIniial.get(initial);
+	}
+    
+	public void addEmbedded(Embedded embedded) 
 	{
 		embeddedsByIniial.put(embedded.getInitial(), embedded);
 	}
     
-	public static void removeEmbedded(Embedded embedded) 
+	public void removeEmbedded(Embedded embedded) 
 	{
 		embeddedsByIniial.remove(embedded.getInitial());
 	}

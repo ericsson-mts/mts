@@ -42,8 +42,6 @@ public abstract class ASNMessage
 
 	public ASNMessage()
 	{
-		// Embedded embedded = new Embedded("") 
-		// ASNDictionary.getInstance().addEmbedded(embedded);
 	}
 	
 	public ASNMessage(String className)
