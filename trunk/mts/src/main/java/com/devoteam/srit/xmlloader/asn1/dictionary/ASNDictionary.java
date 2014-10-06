@@ -38,6 +38,8 @@ public class ASNDictionary
     
 	private static HashMap<String, Embedded> embeddedsByIniial = new HashMap<String, Embedded> ();
 	
+	private static HashMap<String, Embedded> embeddedsByReplace = new HashMap<String, Embedded> ();
+	
     public ASNDictionary()
     {
 		Embedded embedded = null;
@@ -107,15 +109,22 @@ public class ASNDictionary
 	{
 		return embeddedsByIniial.get(initial);
 	}
-    
+
+    public Embedded getEmbeddedByReplace(String replace) 
+	{
+		return null;
+	}
+
 	public void addEmbedded(Embedded embedded) 
 	{
 		embeddedsByIniial.put(embedded.getInitial(), embedded);
+		//embeddedsByIniial.put(embedded.getReplace(), embedded);
 	}
     
 	public void removeEmbedded(Embedded embedded) 
 	{
 		embeddedsByIniial.remove(embedded.getInitial());
+		//embeddedsByReplace.remove(embedded.getReplace());
 	}
     
 }
