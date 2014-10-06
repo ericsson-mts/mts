@@ -59,11 +59,11 @@ public class ASNReferenceFinder
     
     public static ASNReferenceFinder getInstance()
     {
-    	if (_instance != null)
+    	if (_instance == null)
     	{
-    		return _instance;
+    		_instance = new ASNReferenceFinder();
     	}
-    	return new ASNReferenceFinder();
+    	return _instance;
     }
 
     public ASNReferenceFinder() 

@@ -63,8 +63,8 @@ public abstract class BN_ASNMessage extends ASNMessage
 	
     public BN_ASNMessage(String className) throws Exception
     {
-    	super(className);
-    	
+    	super();
+    	this.className = className;
         Class cl = Class.forName(className);
         this.apObject = cl.newInstance();
     }
