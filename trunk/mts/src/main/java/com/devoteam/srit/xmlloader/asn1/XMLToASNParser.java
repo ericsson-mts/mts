@@ -59,7 +59,7 @@ import org.dom4j.io.SAXReader;
 public class XMLToASNParser 
 {
 
-	static XMLToASNParser _instance;
+	private static XMLToASNParser _instance;
 	
     
     public static XMLToASNParser getInstance()

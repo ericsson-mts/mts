@@ -67,7 +67,7 @@ import org.dom4j.io.SAXReader;
 public class ASNInitializer 
 {
 
-	static ASNInitializer _instance;
+	private static ASNInitializer _instance;
     
     public static ASNInitializer getInstance()
     {

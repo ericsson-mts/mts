@@ -27,6 +27,9 @@ import gp.utils.arrays.Array;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
+import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
+
 
 /**
  *
@@ -39,6 +42,8 @@ public abstract class ASNMessage
 
 	public ASNMessage()
 	{
+		// Embedded embedded = new Embedded("") 
+		// ASNDictionary.getInstance().addEmbedded(embedded);
 	}
 	
 	public ASNMessage(String className)

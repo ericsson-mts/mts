@@ -55,7 +55,7 @@ import org.dom4j.io.SAXReader;
 public class ASNReferenceFinder 
 {
 
-	static ASNReferenceFinder _instance;
+	private static ASNReferenceFinder _instance;
     
     public static ASNReferenceFinder getInstance()
     {

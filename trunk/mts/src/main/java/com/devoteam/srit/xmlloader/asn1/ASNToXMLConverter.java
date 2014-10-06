@@ -59,7 +59,7 @@ import org.dom4j.io.SAXReader;
  */
 public class ASNToXMLConverter {
 
-	static ASNToXMLConverter _instance;
+	private static ASNToXMLConverter _instance;
 
 	public static ASNToXMLConverter getInstance() {
 		if (_instance != null) {
@@ -314,7 +314,7 @@ public class ASNToXMLConverter {
 		String type = subClass.getCanonicalName();
 		if (type == null) {
 			return null;
-		} else if (type.endsWith(".DialogueOC")) {
+		} else if (type.equals("com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueOC")) {
 			byte[] bytesEmbedded = ((DialogueOC) subObject).getValue();
 			Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
 
@@ -326,7 +326,7 @@ public class ASNToXMLConverter {
 			obj = decoder.decode(inputStream, cl);
 			ret += toXML("ExternalPDU", obj, objElementInfo, indent + 2);
 			return ret;
-		} else if (type.endsWith(".EmbeddedData")) {
+		} else if (type.equals("com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData")) {
 			byte[] bytesEmbedded = ((EmbeddedData) subObject).getValue();
 			Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
 
@@ -338,7 +338,7 @@ public class ASNToXMLConverter {
 			obj = decoder.decode(inputStream, cl);
 			ret += toXML("DialoguePDU", obj, objElementInfo, indent + 2);
 			return ret;
-		} else if (type.endsWith(".ObjectId")) {
+		} else if (type.equals("com.devoteam.srit.xmlloader.sigtran.ap.tcap.ObjectId")) {
 			byte[] bytesEmbedded = ((ObjectId) subObject).getValue();
 			Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
 
@@ -350,7 +350,7 @@ public class ASNToXMLConverter {
 
 			ret += toXML("ObjectIdentifier", obj, objElementInfo, indent + 2);
 			return ret;
-		} else if (type.endsWith(".AssResult")) {
+		} else if (type.equals("com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult")) {
 			byte[] bytesEmbedded = ((AssResult) subObject).getValue();
 			Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
 
@@ -363,7 +363,7 @@ public class ASNToXMLConverter {
 
 			ret += toXML("Associate_result", obj, objElementInfo, indent + 2);
 			return ret;
-		} else if (type.endsWith(".AssSourceDiagnostic")) {
+		} else if (type.equals("com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssSourceDiagnostic")) {
 			byte[] bytesEmbedded = ((AssSourceDiagnostic) subObject).getValue();
 			Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
 
@@ -376,7 +376,7 @@ public class ASNToXMLConverter {
 
 			ret += toXML("Associate_source_diagnostic", obj, objElementInfo, indent + 2);
 			return ret;
-		} else if (type.endsWith(".DialogueServiceUser")) {
+		} else if (type.equals("com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceUser")) {
 			byte[] bytesEmbedded = ((DialogueServiceUser) subObject).getValue();
 			Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
 
@@ -390,7 +390,7 @@ public class ASNToXMLConverter {
 			ret += toXML("DialogueServiceUser", obj, objElementInfo, indent + 2);
 			return ret;
 		} 
-		else if (type.endsWith(".DialogueServiceProvider")) {
+		else if (type.equals("com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider")) {
 			byte[] bytesEmbedded = ((DialogueServiceProvider) subObject)
 					.getValue();
 			Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
