@@ -67,6 +67,7 @@ public abstract class ASNMessage
     
     public abstract String toXML();
     
+    /*
     public abstract boolean isRequest();
    
     public abstract String getType();
@@ -74,7 +75,7 @@ public abstract class ASNMessage
     public abstract String getResult();
     
     public abstract String getTransactionId();
-    
+    */
     // public abstract Collection<Component> getTCAPComponents();
     
 }
