@@ -41,29 +41,31 @@
 
 <scenario>
 
-	<sendMessageSIGTRAN	name="Send ASPAC1"
-						destScenario="SIGTRAN"
-						remoteHost="[localHostM3UA]"
-						remotePort="[localPortM3UA]">
-
-		<UA name="m3ua" file="m3ua.xml">
-			<header		messageClass="ASP_Traffic_Maintenance_Messages"
-						messageType="ASP_Active"/>
-
-			<parameter tag="Traffic_Mode_Type">
-                <field name="Traffic_Mode_Type" value="3"/>
-            </parameter>
-
-			<parameter tag="Routing_Context">
-				<field name="Routing_Context" value="7864455"/>
-				<field name="Routing_Context" value="75788"/>
-			</parameter>
-
-			<parameter tag="INFO_String" format="string">
-                <field name="INFO_String" value="ASPAC"/>
-            </parameter>
-
-		</UA>
-	</sendMessageSIGTRAN>
+    <sendMessageSIGTRAN	name="Send ASPAC1" destScenario="SIGTRAN" remoteHost="[localHostM3UA]" remotePort="[localPortM3UA]">
+    	<UA name="m3ua" file="m3ua.xml">
+        <header messageClass="ASP_Traffic_Maintenance_Messages" messageType="ASP_Active"/>
+    
+    		<parameter tag="Traffic_Mode_Type">
+            <field name="Traffic_Mode_Type" value="3"/>
+        </parameter>
+    
+    		<parameter tag="Routing_Context">
+    			<field name="Routing_Context" value="7864455"/>
+    			<field name="Routing_Context" value="75788"/>
+    		</parameter>
+    
+    		<parameter tag="INFO_String" format="string">
+          <field name="INFO_String" value="ASPAC"/>
+        </parameter>
+    	</UA>
+    </sendMessageSIGTRAN>
+    
+    <!--parameter name="[reference]" value="0100040100000028000b0008000000030006000c007800870001280c000400094153504143000000" />
+    
+    <receiveMessageSIGTRAN name="Wait ASPAC1">
+    	  <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+    
+    <test parameter="[binary]" condition="binary.equals" value="[reference]"/-->
 
 </scenario>
