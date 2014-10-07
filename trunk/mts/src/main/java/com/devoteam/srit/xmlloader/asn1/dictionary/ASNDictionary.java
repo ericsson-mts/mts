@@ -38,7 +38,7 @@ public class ASNDictionary
     
 	private static HashMap<String, Embedded> embeddedsByIniial = new HashMap<String, Embedded> ();
 	
-	private static HashMap<String, Embedded> embeddedsByReplace = new HashMap<String, Embedded> ();
+	private static HashMap<String, Embedded> embeddedsByCondition = new HashMap<String, Embedded> ();
 	
     public ASNDictionary()
     {
@@ -50,8 +50,13 @@ public class ASNDictionary
 		addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.UniDialoguePDU",
+				"oidString=0.0.17.773.1.2.1"); 
+		addEmbedded(embedded);
+		embedded = new Embedded(
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialoguePDU",
-				null); 
+				"oidString=0.0.17.773.1.1.1"); 
 		addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.ObjectId", 
@@ -110,21 +115,21 @@ public class ASNDictionary
 		return embeddedsByIniial.get(initial);
 	}
 
-    public Embedded getEmbeddedByReplace(String replace) 
+    public Embedded getEmbeddedByCondition(String condition) 
 	{
-		return null;
+    	return embeddedsByCondition.get(condition);
 	}
 
 	public void addEmbedded(Embedded embedded) 
 	{
 		embeddedsByIniial.put(embedded.getInitial(), embedded);
-		//embeddedsByIniial.put(embedded.getReplace(), embedded);
+		embeddedsByCondition.put(embedded.getCondition(), embedded);
 	}
     
 	public void removeEmbedded(Embedded embedded) 
 	{
 		embeddedsByIniial.remove(embedded.getInitial());
-		//embeddedsByReplace.remove(embedded.getReplace());
+		embeddedsByCondition.remove(embedded.getCondition());
 	}
     
 }
