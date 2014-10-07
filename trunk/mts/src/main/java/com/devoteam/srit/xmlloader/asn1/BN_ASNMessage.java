@@ -50,11 +50,11 @@ import com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage;
  * @author fhenry
  */
 
-public abstract class BN_ASNMessage extends ASNMessage 
+public class BN_ASNMessage extends ASNMessage 
 {
 
 	// ASN1 binarynotes object
-	protected Object apObject;
+	protected Object asnObject;
 	
 	public BN_ASNMessage()
     {
@@ -63,18 +63,28 @@ public abstract class BN_ASNMessage extends ASNMessage
 	
     public BN_ASNMessage(String className) throws Exception
     {
-    	super();
-    	this.className = className;
+    	super(className);
         Class cl = Class.forName(className);
-        this.apObject = cl.newInstance();
+        this.asnObject = cl.newInstance();
     }
+
+    public BN_ASNMessage(Object asnObject) throws Exception
+    {
+    	super(asnObject.getClass().getCanonicalName()); 
+    	this.asnObject = asnObject;
+    }
+
+	public Object getAsnObject() 
+	{
+		return asnObject;
+	}
 
     public Array encode() throws Exception 
     {
     	// Library binarynotes
     	IEncoder<java.lang.Object> encoderMAP = CoderFactory.getInstance().newEncoder("BER");
     	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        encoderMAP.encode(this.apObject, outputStream);
+        encoderMAP.encode(this.asnObject, outputStream);
         byte[] bytesMAP = outputStream.toByteArray();
         Array arrayMAP = new DefaultArray(bytesMAP);
         // String strMAP = Utils.toHexaString(bytesMAP, null);
@@ -89,8 +99,8 @@ public abstract class BN_ASNMessage extends ASNMessage
     	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
         InputStream inputStream = new ByteArrayInputStream(array.getBytes());
         Class cl = Class.forName(className);
-        this.apObject = cl.newInstance();
-        this.apObject = decoder.decode(inputStream, cl);
+        this.asnObject = cl.newInstance();
+        this.asnObject = decoder.decode(inputStream, cl);
         
     }
 
@@ -108,21 +118,22 @@ public abstract class BN_ASNMessage extends ASNMessage
             {
             	packageName = className.substring(0, pos + 1);
             }
-            this.apObject = thisClass.newInstance();
-            XMLToASNParser.getInstance().initObject(this.apObject, element, packageName);
+            this.asnObject = thisClass.newInstance();
+            XMLToASNParser.getInstance().initObject(this.asnObject, element, packageName);
         }
     }
 
     public String toXML()
     {
         String ret = "";
-        ret += "<AP>";
-        ret += ASNToXMLConverter.getInstance().toXML(null,this.apObject, null, 0);
+        ret += "<AP className=\"" + className + "\">";
+        ret += ASNToXMLConverter.getInstance().toXML("value",this.asnObject, null, 0);
         ret += "\n";
         ret += "</AP>";
     	return ret;
     }
     
+    /*
     public abstract boolean isRequest();
     
     public abstract String getType();
@@ -130,5 +141,5 @@ public abstract class BN_ASNMessage extends ASNMessage
     public abstract String getResult();
     
     public abstract String getTransactionId();
-        
+    */    
 }

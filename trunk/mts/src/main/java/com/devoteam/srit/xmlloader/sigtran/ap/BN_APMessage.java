@@ -206,7 +206,7 @@ public class BN_APMessage extends BN_ASNMessage
     
     public String getTransactionId()
     {
-    	TCMessage tcMessage = (TCMessage) apObject;
+    	TCMessage tcMessage = (TCMessage) asnObject;
     	byte[] bytes = null;
     	if (tcMessage.isBeginSelected())
     	{
@@ -237,25 +237,25 @@ public class BN_APMessage extends BN_ASNMessage
 
     public Collection<Component> getTCAPComponents()
     {
-    	if (((TCMessage) apObject).isBeginSelected())
+    	if (((TCMessage) asnObject).isBeginSelected())
     	{
-    		return ((TCMessage) apObject).getBegin().getComponents().getValue();
+    		return ((TCMessage) asnObject).getBegin().getComponents().getValue();
     	}
-    	else if (((TCMessage) apObject).isEndSelected())
+    	else if (((TCMessage) asnObject).isEndSelected())
     	{
-    		return ((TCMessage) apObject).getEnd().getComponents().getValue();
+    		return ((TCMessage) asnObject).getEnd().getComponents().getValue();
     	}
-    	else if (((TCMessage) apObject).isContinue1Selected())
+    	else if (((TCMessage) asnObject).isContinue1Selected())
     	{
-    		return ((TCMessage) apObject).getContinue1().getComponents().getValue();
+    		return ((TCMessage) asnObject).getContinue1().getComponents().getValue();
     	}
-    	else if (((TCMessage) apObject).isAbortSelected())
+    	else if (((TCMessage) asnObject).isAbortSelected())
     	{
     		return null;
     	}
-    	else if (((TCMessage) apObject).isUnidirectionalSelected())
+    	else if (((TCMessage) asnObject).isUnidirectionalSelected())
     	{
-    		return ((TCMessage) apObject).getUnidirectional().getComponents().getValue();
+    		return ((TCMessage) asnObject).getUnidirectional().getComponents().getValue();
     	}
     	return null;
     } 

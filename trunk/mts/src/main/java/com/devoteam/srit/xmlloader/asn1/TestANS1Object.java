@@ -119,6 +119,7 @@ public class TestANS1Object {
     		catch (Exception e) 
     		{
     			// TODO Auto-generated catch block
+    	        System.out.println("");
     			e.printStackTrace();
     		}
         }
@@ -168,6 +169,7 @@ public class TestANS1Object {
 	    		catch (Exception e) 
 	    		{
 	    			// TODO Auto-generated catch block
+	    	        System.out.println("");
 	    			e.printStackTrace();
 	    		}
 	
@@ -187,12 +189,9 @@ public class TestANS1Object {
 		ASNInitializer.getInstance().setValue(objectInit);
 		
 		// convert the ASN1 object into XML data
-        String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        retInit += "\n\n";
-        retInit += "<AP>";
-        retInit += ASNToXMLConverter.getInstance().toXML(null, objectInit, null, 0);
-        retInit += "\n";
-        retInit += "</AP>";
+		BN_ASNMessage msgInit = new BN_ASNMessage(objectInit);
+        String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
+        retInit += msgInit.toXML();
 
         // write XML data into a file
         File fileInit = new File(dest + className + ".xml");
@@ -209,26 +208,22 @@ public class TestANS1Object {
         SAXReader reader = new SAXReader(false);
         Document document = reader.read(in);	 
         Element root = document.getRootElement();
-        //Element apElement = root.elements("AP");
         List<Element> elements = root.elements();
+        Element apElement = null;
         if (elements.size() > 0)
         {
-        	Element apElement = (Element) elements.get(0);
+        	apElement = (Element) elements.get(0);
         }
         in.close();
 	        
         // parse ASN1 object from XML file
-        Class thisClass = Class.forName(packageName + className);
-        Object objectXML = thisClass.newInstance();
-        XMLToASNParser.getInstance().initObject(objectXML, root, packageName);
+		BN_ASNMessage msgXML = new BN_ASNMessage(packageName + className);
+        msgXML.parseFromXML(root);
+        // Object objectXML = msgParseFromXML.getAsnObject(); 
 
-		// convert the ASN1 object ibnto XML data
-        String retXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        retXML += "\n\n";
-        retXML += "<AP>";
-        retXML += ASNToXMLConverter.getInstance().toXML(null, objectXML, null, 0);
-        retXML += "\n";
-        retXML += "</AP>";
+		// convert the ASN1 object into XML data
+        String retXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
+        retXML += msgXML.toXML();
 
         File fileXML = new File(dest + className + "_XML ");
         fileXML.delete();
@@ -246,24 +241,15 @@ public class TestANS1Object {
         }
         
         // encode ASN1 object into binary
-    	IEncoder<Object> encoderMAP = CoderFactory.getInstance().newEncoder("BER");
-    	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        encoderMAP.encode(objectInit, outputStream);
-        byte[] bytesMAP = outputStream.toByteArray();
-        Array arrayMAP = new DefaultArray(bytesMAP);
+        Array arrayInit = msgInit.encode();
         
         // 	decode ASN1 object from binary
-		IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
-	    InputStream inputStream = new ByteArrayInputStream(arrayMAP.getBytes());
-	    Object objectBin = decoder.decode(inputStream, classObj);
+        BN_ASNMessage msgBin = new BN_ASNMessage(packageName + className);
+        msgBin.decode(arrayInit);
 
 		// convert the ASN1 object into XML data
-        String retBin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        retBin += "\n\n";
-        retBin += "<AP>";
-        retBin += ASNToXMLConverter.getInstance().toXML(null, objectBin, null, 0);
-        retBin += "\n";
-        retBin += "</AP>";
+        String retBin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
+        retBin += msgBin.toXML();
         
         // write XML data into a file
         File fileBin = new File(dest + className + "_BINARY.xml");
