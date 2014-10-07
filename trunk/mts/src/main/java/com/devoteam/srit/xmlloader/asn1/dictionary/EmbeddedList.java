@@ -25,96 +25,99 @@ package com.devoteam.srit.xmlloader.asn1.dictionary;
 
 import java.util.HashMap;
 
+import com.devoteam.srit.xmlloader.asn1.ASNInitializer;
 
 /**
  *
  * @author fhenry
  */
-public class ASNDictionary 
-{
-
-	private static ASNDictionary _instance;
-    
-	private static EmbeddedList embeddedList;
+public class EmbeddedList 
+{    
+	private HashMap<String, Embedded> embeddedsByIniial = new HashMap<String, Embedded> ();
 	
-    public ASNDictionary()
+	private HashMap<String, Embedded> embeddedsByCondition = new HashMap<String, Embedded> ();
+	
+    public EmbeddedList()
     {
-		embeddedList = new EmbeddedList();
-		Embedded embedded = new Embedded(
+		Embedded embedded = null;
+		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueOC", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.ExternalPDU",
 				null); 
-		embeddedList.addEmbedded(embedded);
+		addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.UniDialoguePDU",
 				"oidString=0.0.17.773.1.2.1"); 
-		embeddedList.addEmbedded(embedded);
+		addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialoguePDU",
 				"oidString=0.0.17.773.1.1.1"); 
-		embeddedList.addEmbedded(embedded);
+		addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.ObjectId", 
 				"org.bn.types.ObjectIdentifier",
 				null); 
-		embeddedList.addEmbedded(embedded);
+		addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_result",
 				null); 
-		embeddedList.addEmbedded(embedded);
+		addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssSourceDiagnostic", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_source_diagnostic",
 				null); 
-		embeddedList.addEmbedded(embedded);
+		addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceUser", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_user",
 				null); 
-		embeddedList.addEmbedded(embedded);
+		addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_result",
 				null); 
-		embeddedList.addEmbedded(embedded);
+		addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider",
 				null); 
-		embeddedList.addEmbedded(embedded);
+		addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider",
 				null); 
-		embeddedList.addEmbedded(embedded);
+		addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider",
 				null); 
-		embeddedList.addEmbedded(embedded);
+		addEmbedded(embedded);
 
     }
-	
-	public static ASNDictionary getInstance()
-    {
-    	if (_instance == null)
-    	{
-    		_instance = new ASNDictionary();
-    	}
-    	return _instance;
-    }
-	
-    public static Embedded getEmbeddedByInitial(String initial) 
+		
+    public Embedded getEmbeddedByInitial(String initial) 
 	{
-		return embeddedList.getEmbeddedByInitial(initial);
+		return embeddedsByIniial.get(initial);
 	}
 
     public Embedded getEmbeddedByCondition(String condition) 
 	{
-    	return embeddedList.getEmbeddedByCondition(condition);
+    	return embeddedsByCondition.get(condition);
 	}
 
+	public void addEmbedded(Embedded embedded) 
+	{
+		embeddedsByIniial.put(embedded.getInitial(), embedded);
+		embeddedsByCondition.put(embedded.getCondition(), embedded);
+	}
+    
+	public void removeEmbedded(Embedded embedded) 
+	{
+		embeddedsByIniial.remove(embedded.getInitial());
+		embeddedsByCondition.remove(embedded.getCondition());
+	}
+    
 }

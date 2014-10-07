@@ -323,7 +323,7 @@ public class ASNToXMLConverter {
 			Class<?> cl = Class.forName(replace);
 			Object obj = cl.newInstance();
 			obj = decoder.decode(inputStream, cl);
-			ret += toXML(replace, obj, objElementInfo, indent + 2);
+			ret += toXML("value", obj, objElementInfo, indent + 2);
 			return ret;
 		} 
 		else if (type.equals("byte[]")) 
