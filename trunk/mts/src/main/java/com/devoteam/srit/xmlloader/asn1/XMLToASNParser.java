@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.asn1;
 
+import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
+import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -38,6 +40,7 @@ import com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult;
 import gp.utils.arrays.DefaultArray;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -157,7 +160,33 @@ public class XMLToASNParser
 
     public Object parseField(Element element, String type, Object object, String className) throws Exception 
     {
-        if (type.equals("java.lang.Boolean")||type.equals("boolean"))  
+    	// manage the embedded objects
+    	Embedded embedded = ASNDictionary.getInstance().getEmbeddedByInitial(type);
+		if (embedded != null) 
+		{            
+            String replace = embedded.getReplace();
+            
+            Class subClass = Class.forName(replace);
+            Object objEmbbeded = subClass.newInstance();
+            initObject(objEmbbeded, (Element) element.elements().get(0), className);
+        	
+        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
+        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        	encoderEmbedded.encode(objEmbbeded, outputStream);
+            byte[] bytesEmbedded = outputStream.toByteArray();
+            //Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+         
+            Class cl = Class.forName(type);
+            Constructor constr = cl.getConstructor();
+			constr.setAccessible(true);
+			Object obj = constr.newInstance();
+			Field[] fields = cl.getDeclaredFields();
+			fields[0].setAccessible(true);
+			fields[0].set(obj, bytesEmbedded);
+            return obj;
+
+		}
+		else if (type.equals("java.lang.Boolean")||type.equals("boolean"))  
         {
             return Boolean.valueOf(element.getTextTrim()).booleanValue();
         }
@@ -356,7 +385,6 @@ public class XMLToASNParser
                 className = "";
             }
             Object obj = Class.forName(type).newInstance();
-            //Object objComplexClass = this.instanceClass(obj.getClass().getName(), className);
             initObject(obj, element, className);
             return obj;
         }

@@ -73,11 +73,11 @@ public class ASNInitializer
     
     public static ASNInitializer getInstance()
     {
-    	if (_instance != null)
+    	if (_instance == null)
     	{
-    		return _instance;
+    		_instance = new ASNInitializer();
     	}
-    	return new ASNInitializer();
+    	return _instance;
     }
 
     public ASNInitializer() 
