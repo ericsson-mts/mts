@@ -19,6 +19,7 @@ package org.bn.coders.ber;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+
 import org.bn.annotations.*;
 import org.bn.coders.CoderUtils;
 import org.bn.coders.DecodedObject;
@@ -31,6 +32,9 @@ import org.bn.metadata.ASN1SequenceOfMetadata;
 import org.bn.types.BitString;
 import org.bn.types.ObjectIdentifier;
 import org.bn.utils.ReverseByteArrayOutputStream;
+
+import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
+import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 
 public class BEREncoder<T> extends Encoder<T> {
     
@@ -208,32 +212,10 @@ public class BEREncoder<T> extends Encoder<T> {
         	type = elementInfo.getPreparedInstance().getClass().getCanonicalName();
         }
         int eltType = ElementType.Primitive;
-        if (type != null && type.endsWith(".DialogueOC"))
-        {
-        	eltType = ElementType.Constructed;
-        }
-        if (type != null && type.endsWith(".EmbeddedData"))
-        {
-        	eltType = ElementType.Constructed;
-        }
-        if (type != null && type.endsWith(".ObjectId"))
-        {
-        	eltType = ElementType.Constructed;
-        }
-        if (type != null && type.endsWith(".AssResult"))
-        {
-        	eltType = ElementType.Constructed;
-        }
-        if (type != null && type.endsWith(".AssSourceDiagnostic"))
-        {
-        	eltType = ElementType.Constructed;
-        }
-        if (type != null && type.endsWith(".DialogueServiceUser"))
-        {
-        	eltType = ElementType.Constructed;
-        }
-        if (type != null && type.endsWith(".DialogueServiceProvider"))
-        {
+    	// manage the embedded objects
+    	Embedded embedded = ASNDictionary.getInstance().getEmbeddedByInitial(type);
+		if (embedded != null) 
+		{            
         	eltType = ElementType.Constructed;
         }
         // FHModif : end
