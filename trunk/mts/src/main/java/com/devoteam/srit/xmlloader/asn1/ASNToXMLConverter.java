@@ -61,7 +61,6 @@ public class ASNToXMLConverter {
 	}
 
 	public ASNToXMLConverter() {
-		ASNDictionary.getInstance();
 	}
 
 	public static Document getDocumentXML(final String xmlFileName) {
