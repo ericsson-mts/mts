@@ -11,24 +11,28 @@
 
 <scenario>
 
-	<!-- Message encoded value -->
-	<parameter name="[ASPUP]" value="010003010000001c00110008000b884b000400094153505550000000" />
+    <parameter name="[reference]" value="010003010000001c00110008000b884b000400094153505550000000" />
+    
+    <receiveMessageSIGTRAN name="Wait ASPUP1">
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+    
+    <test parameter="[reference]" condition="binary.equals" value="[binary]"/>
+    
+    <sendMessageSIGTRAN	name="Send ASPUP1" destScenario="client" remoteHost="[localHostM3UA]" remotePort="[localPortM3UA]">
+    
+        <UA name="m3ua" file="m3ua.xml">
+            <header version="1" reserved="0" messageClass="3" messageType="4"/>
+    				
+            <parameter tag="17" >
+                <field name="ASP_Identifier" format="Integer" value="19" length="4"/>
+            </parameter>
+    	
+            <parameter tag="INFO_String">
+                <field name="INFO_String" format="String" value="ASPUP"/>
+            </parameter>
+        </UA>
+        
+    </sendMessageSIGTRAN>
 
-	<receiveMessageSIGTRAN name="Wait ASPUP1">
-		<parameter name="[ASPUP1]" operation="protocol.setFromMessage" value="message.binary"/>
-	</receiveMessageSIGTRAN>
-	
-	<if>
-		<condition>
-			<test parameter="[ASPUP1]" condition="binary.equals" value="[ASPUP]"/>
-		</condition>
-		<else>
-			<log level="ERROR">	Message received :	</log>
-			<log level="ERROR">	"[ASPUP1]"			</log>
-			<log level="ERROR">	Message expected :	</log>
-			<log level="ERROR">	"[ASPUP]"			</log>
-			<exit failed="true"/>
-		</else>
-	</if>
-	
 </scenario>
