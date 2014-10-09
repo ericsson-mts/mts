@@ -203,6 +203,8 @@ public class Parameter {
 			xml = xml.replaceAll("<[a-zA-Z\\.0-9_]+:", "<");
 			xml = xml.replaceAll("</[a-zA-Z\\.0-9_]+:", "</");
 		}
+		// remove doctype information (dtd files for the XML syntax)
+		xml = xml.replaceAll("<!DOCTYPE\\s+\\w+\\s+\\w+\\s+[^>]+>", "");
 		
 		InputStream input = new ByteArrayInputStream(xml.getBytes());
 	    SAXReader reader = new SAXReader(false);
