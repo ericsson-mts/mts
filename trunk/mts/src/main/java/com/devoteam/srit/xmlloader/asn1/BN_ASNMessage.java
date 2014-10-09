@@ -119,7 +119,7 @@ public class BN_ASNMessage extends ASNMessage
             	packageName = className.substring(0, pos + 1);
             }
             this.asnObject = thisClass.newInstance();
-            XMLToASNParser.getInstance().initObject(this.asnObject, element, packageName);
+            XMLToASNParser.getInstance().parseFromXML(this, this.asnObject, element, packageName);
         }
     }
 
@@ -127,19 +127,10 @@ public class BN_ASNMessage extends ASNMessage
     {
         String ret = "";
         ret += "<AP className=\"" + className + "\">";
-        ret += ASNToXMLConverter.getInstance().toXML("value",this.asnObject, null, 0);
+        ret += ASNToXMLConverter.getInstance().toXML(this, "value",this.asnObject, null, 0);
         ret += "\n";
         ret += "</AP>";
     	return ret;
     }
     
-    /*
-    public abstract boolean isRequest();
-    
-    public abstract String getType();
-    
-    public abstract String getResult();
-    
-    public abstract String getTransactionId();
-    */    
 }

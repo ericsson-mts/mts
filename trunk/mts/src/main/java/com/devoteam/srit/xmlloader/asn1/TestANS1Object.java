@@ -185,11 +185,11 @@ public class TestANS1Object {
         System.out.print("Process class[" + i + "] = " + className + ".xml => ");
         
 		// initialize the ASN1 object
-		Object objectInit = classObj.newInstance();		
-		ASNInitializer.getInstance().setValue(objectInit);
+		Object objectInit = classObj.newInstance();
+		BN_ASNMessage msgInit = new BN_ASNMessage(objectInit);
+		ASNInitializer.getInstance().setValue(msgInit, objectInit);
 		
 		// convert the ASN1 object into XML data
-		BN_ASNMessage msgInit = new BN_ASNMessage(objectInit);
         String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
         retInit += msgInit.toXML();
 

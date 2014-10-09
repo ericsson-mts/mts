@@ -93,7 +93,7 @@ public class XMLToASNParser
         return document;
     }
 
-    public void initObject(Object objClass, Element root, String ClasseName) throws Exception 
+    public void parseFromXML(ASNMessage message, Object objClass, Element root, String ClasseName) throws Exception 
     {
         // parsing XML
         List<Element> children = root.elements();
@@ -111,7 +111,7 @@ public class XMLToASNParser
             	//field.setAccessible(true); 
             	//field.set(objClass, parseField(element, field.getType().getCanonicalName(), ClasseName));
             	
-            	initField(objClass, element, field, ClasseName);
+            	initField(message, objClass, element, field, ClasseName);
             }
         }
     }
@@ -158,17 +158,17 @@ public class XMLToASNParser
         throw new ParsingException ("Can not find the attribute '" + elementName + "' in the ASN object '" + objClass.getClass().getName());
     }
 
-    public Object parseField(Element element, String type, Object object, String className) throws Exception 
+    public Object parseField(ASNMessage message, Element element, String type, Object object, String className) throws Exception 
     {
     	// manage the embedded objects
-    	Embedded embedded = ASNDictionary.getInstance().getEmbeddedByInitial(type);
+    	Embedded embedded = message.getEmbeddedByInitial(type);
 		if (embedded != null) 
 		{            
             String replace = embedded.getReplace();
             
             Class subClass = Class.forName(replace);
             Object objEmbbeded = subClass.newInstance();
-            initObject(objEmbbeded, (Element) element.elements().get(0), className);
+            parseFromXML(message, objEmbbeded, (Element) element.elements().get(0), className);
         	
         	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
         	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -253,12 +253,12 @@ public class XMLToASNParser
             }
             Object obj = Class.forName(type).newInstance();
             //Object objComplexClass = this.instanceClass(obj.getClass().getName(), className);
-            initObject(obj, element, className);
+            parseFromXML(message, obj, element, className);
             return obj;
         }
     }
 
-    public void initField(Object objClass, Element element, Field field, String className) throws Exception 
+    public void initField(ASNMessage message, Object objClass, Element element, Field field, String className) throws Exception 
     {
         // si le champ est privé, pour y accéder
         field.setAccessible(true);
@@ -292,7 +292,7 @@ public class XMLToASNParser
             for (Element elementInstance : children) 
             {
                 // pour chaque <instance>
-                listInstance.add(parseField(elementInstance, collectionElementType.getCanonicalName(), objClass, className));
+                listInstance.add(parseField(message, elementInstance, collectionElementType.getCanonicalName(), objClass, className));
             }
             /*
             List<Element> children1 = element.elements("value");
@@ -308,7 +308,7 @@ public class XMLToASNParser
         }
         else 
         {
-            field.set(objClass, parseField(element, field.getType().getCanonicalName(), objClass, className));
+            field.set(objClass, parseField(message, element, field.getType().getCanonicalName(), objClass, className));
         }
     }
 }
