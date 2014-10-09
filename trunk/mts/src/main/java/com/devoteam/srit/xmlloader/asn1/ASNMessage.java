@@ -29,6 +29,7 @@ import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
+import com.devoteam.srit.xmlloader.asn1.dictionary.EmbeddedList;
 
 
 /**
@@ -39,6 +40,9 @@ public abstract class ASNMessage
 {
 	// Class name for the root object
 	protected String className; 
+
+	// list of embedded objects
+	private EmbeddedList embeddedList;
 
 	public ASNMessage()
 	{
@@ -66,6 +70,16 @@ public abstract class ASNMessage
     public abstract void parseFromXML(Element root) throws Exception;
     
     public abstract String toXML();
+    
+    public Embedded getEmbeddedByInitial(String initial) 
+ 	{
+     	Embedded init = this.embeddedList.getEmbeddedByInitial(initial);
+     	if (init ==  null)
+     	{
+     		init = ASNDictionary.getInstance().getEmbeddedByInitial(initial);
+     	}
+     	return init;
+ 	}
     
     /*
     public abstract boolean isRequest();

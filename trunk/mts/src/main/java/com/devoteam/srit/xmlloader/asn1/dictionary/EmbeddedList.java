@@ -25,20 +25,21 @@ package com.devoteam.srit.xmlloader.asn1.dictionary;
 
 import java.util.HashMap;
 
-import com.devoteam.srit.xmlloader.asn1.ASNInitializer;
-
 /**
  *
  * @author fhenry
  */
 public class EmbeddedList 
 {    
-	private HashMap<String, Embedded> embeddedsByIniial = new HashMap<String, Embedded> ();
+	private HashMap<String, Embedded> embeddedsByIniial;
 	
 	private HashMap<String, Embedded> embeddedsByCondition = new HashMap<String, Embedded> ();
 	
     public EmbeddedList()
     {
+    	this.embeddedsByIniial = new HashMap<String, Embedded> ();
+    	this.embeddedsByCondition = new HashMap<String, Embedded> ();
+    	/*
 		Embedded embedded = null;
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueOC", 
@@ -47,7 +48,7 @@ public class EmbeddedList
 		addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData", 
-				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.UniDialoguePDU",
+				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.UniDialoguePDU1",
 				"oidString=0.0.17.773.1.2.1"); 
 		addEmbedded(embedded);
 		embedded = new Embedded(
@@ -95,12 +96,12 @@ public class EmbeddedList
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider",
 				null); 
 		addEmbedded(embedded);
-
+		*/
     }
 		
     public Embedded getEmbeddedByInitial(String initial) 
 	{
-		return embeddedsByIniial.get(initial);
+    	return this.embeddedsByIniial.get(initial);
 	}
 
     public Embedded getEmbeddedByCondition(String condition) 
