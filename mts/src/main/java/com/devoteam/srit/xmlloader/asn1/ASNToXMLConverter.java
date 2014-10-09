@@ -75,7 +75,7 @@ public class ASNToXMLConverter {
 		return document;
 	}
 
-	public String toXML(String name, Object objClass, ASN1ElementMetadata objElementInfo, int indent) 
+	public String toXML(ASNMessage message, String name, Object objClass, ASN1ElementMetadata objElementInfo, int indent) 
 	{
 		String ret = "";
 		try {
@@ -120,7 +120,7 @@ public class ASNToXMLConverter {
 			}
 			
 
-			String retObject = returnXMLObject(objClass, objElementInfo, indent);
+			String retObject = returnXMLObject(message, objClass, objElementInfo, indent);
 			if (retObject != null) 
 			{
 				ret += retObject;
@@ -169,14 +169,14 @@ public class ASNToXMLConverter {
 						while (iter.hasNext()) 
 						{
 							Object subObj = iter.next();
-							ret += toXML(f.getName(), subObj, subobjElementInfo, indent + 2);
+							ret += toXML(message, f.getName(), subObj, subobjElementInfo, indent + 2);
 						}
 						ret += "\n" + indent(indent);
 						ret += "</Collection>";
 					} 
 					else 
 					{
-						ret += toXML(f.getName(), subObject, subobjElementInfo, indent + 2);
+						ret += toXML(message, f.getName(), subObject, subobjElementInfo, indent + 2);
 					}
 					countFields++;
 				}
@@ -299,7 +299,7 @@ public class ASNToXMLConverter {
 		return ret;
 	}
 
-	private String returnXMLObject(Object subObject, ASN1ElementMetadata objElementInfo, int indent)
+	private String returnXMLObject(ASNMessage message, Object subObject, ASN1ElementMetadata objElementInfo, int indent)
 			throws Exception {
 		String ret = "";
 		Class subClass = subObject.getClass();
@@ -309,7 +309,7 @@ public class ASNToXMLConverter {
 			return null;
 		}
 		// manage the embedded objects
-		Embedded embedded = ASNDictionary.getInstance().getEmbeddedByInitial(type);
+		Embedded embedded = message.getEmbeddedByInitial(type);
 		if (embedded != null) 
 		{
 			Field[] fields = subObject.getClass().getDeclaredFields();
@@ -323,7 +323,7 @@ public class ASNToXMLConverter {
 			Class<?> cl = Class.forName(replace);
 			Object obj = cl.newInstance();
 			obj = decoder.decode(inputStream, cl);
-			ret += toXML("value", obj, objElementInfo, indent + 2);
+			ret += toXML(message, "value", obj, objElementInfo, indent + 2);
 			return ret;
 		} 
 		else if (type.equals("byte[]")) 

@@ -86,7 +86,7 @@ public class ASNInitializer
         return document;
     }
 
-    public void setValue(Object objClass) throws Exception  
+    public void setValue(ASNMessage message, Object objClass) throws Exception  
     {
 		if (objClass ==  null)
     	{
@@ -133,7 +133,7 @@ public class ASNInitializer
 				for (int j = 0; j <= 2; j++)
 					{		
 						Class tabClass = (Class) typeActualTypeArg[0];
-						Object tabObject = getSubObject(objClass, tabClass);	
+						Object tabObject = getSubObject(message, objClass, tabClass);	
 			    		if (tabObject != null)
 			    		{
 			    			list.add(tabObject);
@@ -144,7 +144,7 @@ public class ASNInitializer
 			}
 			else
 			{
-	    		Object subObject = getSubObject(objClass, f.getType());
+	    		Object subObject = getSubObject(message, objClass, f.getType());
 	    		if (subObject != null)
 	    		{
 	    			f.set(objClass, subObject);
@@ -156,7 +156,7 @@ public class ASNInitializer
     
     
     
-    private Object getSubObject(Object obj, Class subClass) throws Exception
+    private Object getSubObject(ASNMessage message, Object obj, Class subClass) throws Exception
     {
     	String type = subClass.getCanonicalName();
     	if (type.equals("org.bn.coders.IASN1PreparedElementData") )
@@ -165,12 +165,12 @@ public class ASNInitializer
     		// nothing to do
     	}
 		// manage the embedded objects
-    	Embedded embedded = ASNDictionary.getInstance().getEmbeddedByInitial(type);
+    	Embedded embedded = message.getEmbeddedByInitial(type);
 		if (embedded != null) 
 		{
 			String replace = embedded.getReplace();
 			Class cl = Class.forName(replace);
-        	Object objEmbedded = getSubObject(obj, cl);
+        	Object objEmbedded = getSubObject(message, obj, cl);
         	
         	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
         	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -265,7 +265,7 @@ public class ASNInitializer
 			Constructor constr = subClass.getConstructor();
 			constr.setAccessible(true);
 			Object subObj = constr.newInstance();
-			setValue(subObj);
+			setValue(message, subObj);
 			return subObj;
 		}
     }

@@ -46,10 +46,12 @@ public abstract class ASNMessage
 
 	public ASNMessage()
 	{
+		this.embeddedList = new EmbeddedList();
 	}
 	
 	public ASNMessage(String className)
 	{
+		this();
 		this.className = className;
     }
 
@@ -80,16 +82,5 @@ public abstract class ASNMessage
      	}
      	return init;
  	}
-    
-    /*
-    public abstract boolean isRequest();
-   
-    public abstract String getType();
-    
-    public abstract String getResult();
-    
-    public abstract String getTransactionId();
-    */
-    // public abstract Collection<Component> getTCAPComponents();
     
 }
