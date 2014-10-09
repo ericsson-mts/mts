@@ -35,6 +35,7 @@ public class ASNDictionary
 
 	private static ASNDictionary _instance;
     
+	// list of embedded objects
 	private static EmbeddedList embeddedList;
 	
     public ASNDictionary()
@@ -107,7 +108,7 @@ public class ASNDictionary
     	return _instance;
     }
 	
-    public static Embedded getEmbeddedByInitial(String initial) 
+    public Embedded getEmbeddedByInitial(String initial) 
 	{
 		return embeddedList.getEmbeddedByInitial(initial);
 	}
