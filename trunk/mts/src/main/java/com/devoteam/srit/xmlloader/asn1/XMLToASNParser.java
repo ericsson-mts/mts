@@ -29,6 +29,13 @@ import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssSourceDiagnostic;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueOC;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceUser;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ObjectId;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult;
 
 import gp.utils.arrays.DefaultArray;
 
@@ -179,7 +186,7 @@ public class XMLToASNParser
             return obj;
 
 		}
-		else if (type.equals("java.lang.Boolean")||type.equals("boolean"))  
+        if (type.equals("java.lang.Boolean")||type.equals("boolean"))  
         {
             return Boolean.valueOf(element.getTextTrim()).booleanValue();
         }
@@ -245,6 +252,7 @@ public class XMLToASNParser
                 className = "";
             }
             Object obj = Class.forName(type).newInstance();
+            //Object objComplexClass = this.instanceClass(obj.getClass().getName(), className);
             initObject(obj, element, className);
             return obj;
         }
