@@ -80,7 +80,16 @@ public abstract class ASNMessage
      	{
      		init = ASNDictionary.getInstance().getEmbeddedByInitial(initial);
      	}
-     	return init;
+     	if (init != null && init.getCondition() == null)
+     	{
+     		return init;
+     	}
+     	return null;
  	}
     
+    public void addConditionalEmbedded(Embedded embedded) 
+ 	{
+    	this.embeddedList.addEmbedded(embedded);
+    	embedded.setCondition(null);
+ 	}
 }

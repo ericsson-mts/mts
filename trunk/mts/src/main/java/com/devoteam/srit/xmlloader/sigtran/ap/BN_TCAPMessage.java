@@ -226,8 +226,12 @@ public class BN_TCAPMessage extends BN_ASNMessage
         {
     		bytes = tcMessage.getAbort().getDtid().getValue();
     	}
-    	Array array = new DefaultArray(bytes);
-    	return Array.toHexString(array);
+    	if (bytes != null)
+    	{
+	    	Array array = new DefaultArray(bytes);
+	    	return Array.toHexString(array);
+    	}
+    	return "";
     }
 
     public Collection<Component> getTCAPComponents()

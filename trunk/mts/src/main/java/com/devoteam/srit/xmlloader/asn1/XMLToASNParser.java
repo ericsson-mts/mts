@@ -308,7 +308,15 @@ public class XMLToASNParser
         }
         else 
         {
-            field.set(objClass, parseField(message, element, field.getType().getCanonicalName(), objClass, className));
+        	// we add a embedded record in the list 
+        	Object value = parseField(message, element, field.getType().getCanonicalName(), objClass, className);
+        	String condition = field.getName() + "=" + value;
+        	Embedded embedded = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
+        	if (embedded != null)
+        	{
+        		message.addConditionalEmbedded(embedded);
+        	}
+            field.set(objClass, value);
         }
     }
 }

@@ -15,9 +15,12 @@ UniDialoguePDU ::= CHOICE {unidialoguePDU  AUDT-apdu
 AUDT-apdu ::= [APPLICATION 0] IMPLICIT SEQUENCE {
   protocol-version
     [0] IMPLICIT BIT STRING {version1(0)} DEFAULT {version1},
-  application-context-name  [1]  OBJECT IDENTIFIER,
+  application-context-name  [1]  ObjectId,
   user-information          [30] IMPLICIT SEQUENCE OF EXTERNAL OPTIONAL
 }
+
+-- ObjectId ::= OBJECT IDENTIFIER
+ObjectId ::= OCTET STRING
 
 END -- UNIDialoguePDU
 
