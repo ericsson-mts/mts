@@ -109,6 +109,8 @@ public class ASNToXMLConverter {
 			int countFields = 0;
 			boolean complex = true;
 
+			String fieldName = returnClassName(objClass, name, objElementInfo, objPreparedMetadata);
+			
 			if (name != null) 
 			{
 				if (!objClass.getClass().getCanonicalName()
@@ -116,13 +118,21 @@ public class ASNToXMLConverter {
 				{
 					ret += "\n" + indent(indent);
 				}
-				ret += "<" + returnClassName(objClass, name, objElementInfo, objPreparedMetadata) + ">";
+				ret += "<" + fieldName + ">";
 			}
 			
 
 			String retObject = returnXMLObject(message, objClass, objElementInfo, indent);
 			if (retObject != null) 
 			{
+	        	// we add a embedded record in the list 
+	        	String condition = fieldName + "=" + retObject;
+	        	Embedded embedded = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
+	        	if (embedded != null)
+	        	{
+	        		message.addConditionalEmbedded(embedded);
+	        	}
+
 				ret += retObject;
 				complex = false;
 			} 
@@ -188,7 +198,7 @@ public class ASNToXMLConverter {
 				{
 					ret += "\n" + indent(indent);
 				}
-				ret += "</" + returnClassName(objClass, name, objElementInfo, objPreparedMetadata) + ">";
+				ret += "</" + fieldName + ">";
 			}
 
 		} catch (Exception e) {
