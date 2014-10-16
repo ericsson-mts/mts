@@ -133,7 +133,7 @@ public class XMLToASNParser
     public Field findField(Object objClass, Element element) throws Exception
     {
     	String elementName = element.getName();
-    	int pos = elementName.indexOf(".");
+    	int pos = elementName.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
     	if (pos > 0)
     	{
     		elementName = elementName.substring(0, pos);
