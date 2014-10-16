@@ -51,6 +51,8 @@ import org.dom4j.io.SAXReader;
  */
 public class ASNToXMLConverter {
 
+	public static char TAG_SEPARATOR = '.';
+	
 	private static ASNToXMLConverter _instance;
 
 	public static ASNToXMLConverter getInstance() {
@@ -283,7 +285,7 @@ public class ASNToXMLConverter {
 		
 		if (tagAnnotation!= null)
 		{
-			ret += ".";
+			ret += TAG_SEPARATOR;
 			ret += tagAnnotation;
 		}
 		
@@ -301,7 +303,7 @@ public class ASNToXMLConverter {
 				{
 					strDataType = strDataType.substring(0, strDataType.length() - 8);
 				}
-				ret += ".";
+				ret += TAG_SEPARATOR;
 				ret += strDataType;
 			}
 			
