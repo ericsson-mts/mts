@@ -37,6 +37,7 @@ import java.util.Iterator;
 
 import org.bn.CoderFactory;
 import org.bn.IDecoder;
+import org.bn.annotations.ASN1EnumItem;
 import org.bn.coders.ASN1PreparedElementData;
 import org.bn.coders.TagClass;
 import org.bn.metadata.ASN1ElementMetadata;
@@ -115,8 +116,7 @@ public class ASNToXMLConverter {
 			
 			if (name != null) 
 			{
-				if (!objClass.getClass().getCanonicalName()
-						.startsWith("java.lang.")) 
+				if (!objClass.getClass().getCanonicalName().startsWith("java.lang.")) 
 				{
 					ret += "\n" + indent(indent);
 				}
@@ -357,8 +357,19 @@ public class ASNToXMLConverter {
 		} else if (type.equals("java.lang.String")) {
 			ret += subObject.toString();
 			return ret;
-		} else if (type.endsWith(".EnumType")) {
-			ret += subObject.toString();
+		}
+		else if (type.endsWith(".EnumType")) {
+			ASN1EnumItem enumObj = null;
+	        Class enumClass = subObject.getClass();
+            for(Field enumItem: enumClass.getDeclaredFields()) {
+                if(enumItem.isAnnotationPresent(ASN1EnumItem.class)) {
+                    if(enumItem.getName().equals(subObject.toString())) {
+                    	enumObj = enumItem.getAnnotation(ASN1EnumItem.class);
+                        break;
+                    }
+                }
+            }
+			ret += subObject.toString() + TAG_SEPARATOR + enumObj.tag();
 			return ret;
 		}
 		return null;

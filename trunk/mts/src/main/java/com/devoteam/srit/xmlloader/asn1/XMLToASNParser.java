@@ -220,6 +220,13 @@ public class XMLToASNParser
         }
         else if (type.endsWith(".EnumType"))  
         {
+        	String elementText = element.getTextTrim();
+        	int pos = elementText.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
+        	if (pos > 0)
+        	{
+        		elementText = elementText.substring(0, pos);
+        	}
+
 			Class[] classes = object.getClass().getClasses();
 			Object[] objects = null;
 			if (classes.length >= 1)
@@ -229,7 +236,7 @@ public class XMLToASNParser
 				for (int i=0; i <objects.length; i++)
 				{
 					objFind = objects[i];
-					if (objFind.toString().equals(element.getTextTrim()))
+					if (objFind.toString().equals(elementText))
 					{
 						break;
 					}
