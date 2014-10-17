@@ -126,8 +126,8 @@ public class BN_ASNMessage extends ASNMessage
     public String toXML()
     {
         String ret = "";
-        ret += "<AP className=\"" + className + "\">";
-        ret += ASNToXMLConverter.getInstance().toXML(this, "value",this.asnObject, null, 0);
+        ret += "<AP className=\"" + className + "\">\n  ";
+        ret += ASNToXMLConverter.getInstance().toXML(this, "value", this.asnObject, null, 4);
         ret += "\n";
         ret += "</AP>";
     	return ret;
