@@ -42,6 +42,7 @@ import org.bn.coders.ASN1PreparedElementData;
 import org.bn.coders.TagClass;
 import org.bn.metadata.ASN1ElementMetadata;
 import org.bn.metadata.ASN1Metadata;
+import org.bn.types.ObjectIdentifier;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
@@ -81,17 +82,52 @@ public class ASNToXMLConverter {
 	public String toXML(ASNMessage message, String name, Object objClass, ASN1ElementMetadata objElementInfo, int indent) 
 	{
 		String ret = "";
-		try {
-			if (objClass == null) {
+		try 
+		{
+			if (objClass == null) 
+			{
 				return ret;
 			}
 
-			// get the preparedData coming from annotations
 			Field[] fields = objClass.getClass().getDeclaredFields();
+			int fieldsSize = fields.length;
+			/*
+			int j = 0;
+			while (j < fields.length)
+			{
+				fields[j].setAccessible(true);
+				Object subObject = fields[j].get(objClass);
+				String typeField = fields[j].getType().getCanonicalName();
+				j = j + 1;
+				if (subObject == null) 
+				{
+					continue;
+					// nothing to do
+				} 
+				else if (typeField != null && typeField.equals("org.bn.coders.IASN1PreparedElementData")) 
+				{
+					continue;
+					// nothing to do
+				} 
+				else if (typeField != null && typeField.equals("java.util.Collection")) 
+				{
+					complexObject = true;
+				} 
+				String retObject = returnXMLObject(message, subObject, objElementInfo, indent);
+				if (retObject == null)
+				{
+					complexObject = true;
+					break;
+				}
+			}
+			*/			
+			//boolean complexObject = (retObject == null || fieldsSize == 1);
+			// get the preparedData coming from annotations
 			Field preparedDataField = null;
 			try
 			{
 				preparedDataField = objClass.getClass().getDeclaredField("preparedData");
+				fieldsSize = fieldsSize - 1; 
 			}
 			catch (Exception e)
 			{
@@ -103,28 +139,34 @@ public class ASNToXMLConverter {
 				preparedDataField.setAccessible(true);
 				objPreparedEltData = (ASN1PreparedElementData) preparedDataField.get(objClass);
 			}
-
 			ASN1Metadata objPreparedMetadata = null;
 			if (objPreparedEltData != null)
 			{
 				objPreparedMetadata = objPreparedEltData.getTypeMetadata();
 			}
-			int countFields = 0;
-			boolean complex = true;
-
-			String fieldName = returnClassName(objClass, name, objElementInfo, objPreparedMetadata);
 			
+			String retObject = returnXMLObject(message, objClass, objElementInfo, indent);
+			
+			boolean complexObject = true;
+			if (retObject != null || fieldsSize == 1)
+			{
+				complexObject = false;
+			}
+
+			String fieldName = returnClassName(objClass, name, objElementInfo, objPreparedMetadata);			
 			if (name != null) 
 			{
-				if (!objClass.getClass().getCanonicalName().startsWith("java.lang.")) 
+				ret += "<" + fieldName + ">";
+				if (complexObject) 
 				{
 					ret += "\n" + indent(indent);
 				}
-				ret += "<" + fieldName + ">";
+				else
+				{
+					int l = 0;
+				}
 			}
 			
-
-			String retObject = returnXMLObject(message, objClass, objElementInfo, indent);
 			if (retObject != null) 
 			{
 	        	// we add a embedded record in the list 
@@ -136,7 +178,6 @@ public class ASNToXMLConverter {
 	        	}
 
 				ret += retObject;
-				complex = false;
 			} 
 			else 
 			{
@@ -168,42 +209,57 @@ public class ASNToXMLConverter {
 					} 
 					else if (typeField != null && typeField.equals("org.bn.coders.IASN1PreparedElementData")) 
 					{
-						int j = 0;
+						int k = 0;
 						// nothing to do
 					} 
 					else if (typeField != null && typeField.equals("java.util.Collection")) 
 					{
 						Collection<?> coll = (Collection<?>) subObject;
 						Iterator<?> iter = coll.iterator();
-						indent = indent + 2;
 						ret += "\n" + indent(indent);
+						indent = indent + 2;
 						ret += "<Collection>";
+						ret += "\n" + indent(indent);
+						int k = 0;
 						while (iter.hasNext()) 
 						{
 							Object subObj = iter.next();
+							if (k > 0)
+							{
+								ret += "\n" + indent(indent);
+							}
 							ret += toXML(message, f.getName(), subObj, subobjElementInfo, indent + 2);
+							k = k + 1;
 						}
+						indent = indent - 2;
 						ret += "\n" + indent(indent);
 						ret += "</Collection>";
+						ret += "\n" + indent(indent - 2);
 					} 
 					else 
 					{
+						if (i > 0)
+						{
+							ret += "\n" + indent(indent);
+						}
+
 						ret += toXML(message, f.getName(), subObject, subobjElementInfo, indent + 2);
 					}
-					countFields++;
 				}
 			}
 
 			if (name != null) 
 			{
-				if (!objClass.getClass().getCanonicalName().startsWith("java.lang.") && fields.length > 2 && complex) 
+				//if (fieldsSize > 1 || !objClass.getClass().getCanonicalName().startsWith("java.lang."))
+				if (complexObject)
 				{
-					ret += "\n" + indent(indent);
+					ret += "\n" + indent(indent - 2);
 				}
 				ret += "</" + fieldName + ">";
 			}
 
-		} catch (Exception e) {
+		} catch (Exception e) 
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -335,7 +391,9 @@ public class ASNToXMLConverter {
 			Class<?> cl = Class.forName(replace);
 			Object obj = cl.newInstance();
 			obj = decoder.decode(inputStream, cl);
+			ret += "\n" + indent(indent);
 			ret += toXML(message, "value", obj, objElementInfo, indent + 2);
+			ret += "\n" + indent(indent);
 			return ret;
 		} 
 		else if (type.equals("byte[]")) 
@@ -356,6 +414,14 @@ public class ASNToXMLConverter {
 			return ret;
 		} else if (type.equals("java.lang.String")) {
 			ret += subObject.toString();
+			return ret;
+		}
+		else if (type.endsWith(".NullObject")) {
+			ret += "";
+			return ret;
+		}
+		else if (type.endsWith(".ObjectIdentifier")) {
+			ret += "<ObjectIdentifier>" + ((ObjectIdentifier) subObject).getValue() + "</ObjectIdentifier>";
 			return ret;
 		}
 		else if (type.endsWith(".EnumType")) {

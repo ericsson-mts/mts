@@ -154,6 +154,10 @@ public class XMLToASNParser
             {
                 return field;
             }
+            else if (name.equals("oidString") && elementName.endsWith("ObjectIdentifier")) 
+            {
+                return field;
+            }
         }
         throw new ParsingException ("Can not find the attribute '" + elementName + "' in the ASN object '" + objClass.getClass().getName());
     }
