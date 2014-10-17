@@ -141,20 +141,20 @@ public class XMLToASNParser
         for (Field field : objClass.getClass().getDeclaredFields()) 
         {
         	String name = field.getName(); 
-        	String type = field.getType().getCanonicalName();
+        	String type = field.getType().getSimpleName();
             if (name.equals(elementName)) 
             {
                 return field;
             }
-            else if (type.endsWith("." + elementName))
+            else if (type.equalsIgnoreCase(elementName))
             {
                 return field;
             }
-            else if (type.equals("byte[]") && elementName.equals("bytes")) 
+            else if (type.equals("byte[]") && elementName.equalsIgnoreCase(ASNToXMLConverter.LABEL_TABLE_BYTE)) 
             {
                 return field;
             }
-            else if (name.equals("oidString") && elementName.endsWith("ObjectIdentifier")) 
+            else if (name.equalsIgnoreCase("oidString") && elementName.equalsIgnoreCase("ObjectIdentifier")) 
             {
                 return field;
             }

@@ -55,6 +55,8 @@ public class ASNToXMLConverter {
 
 	public static char TAG_SEPARATOR = '.';
 	
+	public static String LABEL_TABLE_BYTE = "Bytes";
+	
 	private static ASNToXMLConverter _instance;
 
 	public static ASNToXMLConverter getInstance() {
@@ -250,7 +252,6 @@ public class ASNToXMLConverter {
 
 			if (name != null) 
 			{
-				//if (fieldsSize > 1 || !objClass.getClass().getCanonicalName().startsWith("java.lang."))
 				if (complexObject)
 				{
 					ret += "\n" + indent(indent - 2);
@@ -273,7 +274,7 @@ public class ASNToXMLConverter {
 		if ("value".equals(name)) 
 		{
 			ret = objClass.getClass().getSimpleName();
-			ret = ret.replace("[]", "s");		
+			ret = ret.replace("byte[]", "Bytes");		
 		}
 		else
 		{
