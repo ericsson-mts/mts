@@ -51,11 +51,14 @@ import org.dom4j.io.SAXReader;
  * 
  * @author fhenry
  */
-public class ASNToXMLConverter {
+public class ASNToXMLConverter 
+{
 
 	public static char TAG_SEPARATOR = '.';
 	
 	public static String LABEL_TABLE_BYTE = "Bytes";
+	
+	public static int NUMBER_SPACE_TABULATION = 3;
 	
 	private static ASNToXMLConverter _instance;
 
@@ -219,7 +222,7 @@ public class ASNToXMLConverter {
 						Collection<?> coll = (Collection<?>) subObject;
 						Iterator<?> iter = coll.iterator();
 						ret += "\n" + indent(indent);
-						indent = indent + 2;
+						indent = indent + NUMBER_SPACE_TABULATION;
 						ret += "<Collection>";
 						ret += "\n" + indent(indent);
 						int k = 0;
@@ -230,13 +233,13 @@ public class ASNToXMLConverter {
 							{
 								ret += "\n" + indent(indent);
 							}
-							ret += toXML(message, f.getName(), subObj, subobjElementInfo, indent + 2);
+							ret += toXML(message, f.getName(), subObj, subobjElementInfo, indent + NUMBER_SPACE_TABULATION);
 							k = k + 1;
 						}
-						indent = indent - 2;
+						indent = indent - NUMBER_SPACE_TABULATION;
 						ret += "\n" + indent(indent);
 						ret += "</Collection>";
-						ret += "\n" + indent(indent - 2);
+						ret += "\n" + indent(indent - NUMBER_SPACE_TABULATION);
 					} 
 					else 
 					{
@@ -245,7 +248,7 @@ public class ASNToXMLConverter {
 							ret += "\n" + indent(indent);
 						}
 
-						ret += toXML(message, f.getName(), subObject, subobjElementInfo, indent + 2);
+						ret += toXML(message, f.getName(), subObject, subobjElementInfo, indent + NUMBER_SPACE_TABULATION);
 					}
 				}
 			}
@@ -254,7 +257,7 @@ public class ASNToXMLConverter {
 			{
 				if (complexObject)
 				{
-					ret += "\n" + indent(indent - 2);
+					ret += "\n" + indent(indent - NUMBER_SPACE_TABULATION);
 				}
 				ret += "</" + fieldName + ">";
 			}
@@ -393,7 +396,7 @@ public class ASNToXMLConverter {
 			Object obj = cl.newInstance();
 			obj = decoder.decode(inputStream, cl);
 			ret += "\n" + indent(indent);
-			ret += toXML(message, "value", obj, objElementInfo, indent + 2);
+			ret += toXML(message, "value", obj, objElementInfo, indent + NUMBER_SPACE_TABULATION);
 			ret += "\n" + indent(indent);
 			return ret;
 		} 
@@ -417,11 +420,11 @@ public class ASNToXMLConverter {
 			ret += subObject.toString();
 			return ret;
 		}
-		else if (type.endsWith(".NullObject")) {
+		else if (type.equals("org.bn.utils.NullObject")) {
 			ret += "";
 			return ret;
 		}
-		else if (type.endsWith(".ObjectIdentifier")) {
+		else if (type.equals("org.bn.utils.ObjectIdentifier")) {
 			ret += "<ObjectIdentifier>" + ((ObjectIdentifier) subObject).getValue() + "</ObjectIdentifier>";
 			return ret;
 		}
@@ -439,6 +442,10 @@ public class ASNToXMLConverter {
 			ret += subObject.toString() + TAG_SEPARATOR + enumObj.tag();
 			return ret;
 		}
+		else if (type.endsWith(".PcsExtensions")) {
+			ret += "";
+			return ret;
+		}
 		return null;
 	}
 
@@ -446,7 +453,7 @@ public class ASNToXMLConverter {
 	 * generates a string of nb*"    " (four spaces nb times), used for
 	 * intentation in printAvp
 	 */
-	private static String indent(int nb) {
+	public static String indent(int nb) {
 		String str = "";
 		for (int i = 0; i < nb; i++) {
 			str += " ";
