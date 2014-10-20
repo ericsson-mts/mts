@@ -53,33 +53,41 @@ import org.dom4j.io.SAXReader;
  */
 public class ASNToXMLConverter 
 {
-
+	// separator for the XML tag between object attribute or type and the ASN1 tag and ASN1 object type
 	public static char TAG_SEPARATOR = '.';
 	
+	// keyword to convert into XML the byte[] object
 	public static String LABEL_TABLE_BYTE = "Bytes";
 	
+	// number of space used to make the tabulation for XML readable presentation
 	public static int NUMBER_SPACE_TABULATION = 3;
 	
 	private static ASNToXMLConverter _instance;
 
-	public static ASNToXMLConverter getInstance() {
-		if (_instance == null) {
+	public static ASNToXMLConverter getInstance() 
+	{
+		if (_instance == null) 
+		{
 			_instance = new ASNToXMLConverter();
 		}
 		return _instance;
 	}
 
-	public ASNToXMLConverter() {
+	public ASNToXMLConverter() 
+	{
 	}
 
-	public static Document getDocumentXML(final String xmlFileName) {
+	public static Document getDocumentXML(final String xmlFileName) 
+	{
 		Document document = null;
 		SAXReader reader = new SAXReader();
-		try {
+		try 
+		{
 			document = reader.read(xmlFileName);
-		} catch (DocumentException ex) {
-			GlobalLogger.instance().getApplicationLogger()
-					.error(TextEvent.Topic.CORE, ex, "Wrong ASN1 file : ");
+		} 
+		catch (DocumentException ex) 
+		{
+			GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, ex, "Wrong ASN1 file : ");
 		}
 		return document;
 	}
@@ -96,36 +104,7 @@ public class ASNToXMLConverter
 
 			Field[] fields = objClass.getClass().getDeclaredFields();
 			int fieldsSize = fields.length;
-			/*
-			int j = 0;
-			while (j < fields.length)
-			{
-				fields[j].setAccessible(true);
-				Object subObject = fields[j].get(objClass);
-				String typeField = fields[j].getType().getCanonicalName();
-				j = j + 1;
-				if (subObject == null) 
-				{
-					continue;
-					// nothing to do
-				} 
-				else if (typeField != null && typeField.equals("org.bn.coders.IASN1PreparedElementData")) 
-				{
-					continue;
-					// nothing to do
-				} 
-				else if (typeField != null && typeField.equals("java.util.Collection")) 
-				{
-					complexObject = true;
-				} 
-				String retObject = returnXMLObject(message, subObject, objElementInfo, indent);
-				if (retObject == null)
-				{
-					complexObject = true;
-					break;
-				}
-			}
-			*/			
+
 			//boolean complexObject = (retObject == null || fieldsSize == 1);
 			// get the preparedData coming from annotations
 			Field preparedDataField = null;
@@ -186,6 +165,8 @@ public class ASNToXMLConverter
 			} 
 			else 
 			{
+				// get whether the field is the first one which is not null
+				boolean first = true;
 				// parsing object object fields
 				for (int i = 0; i < fields.length; i++) 
 				{
@@ -243,12 +224,16 @@ public class ASNToXMLConverter
 					} 
 					else 
 					{
-						if (i > 0)
+						if (!first)
 						{
 							ret += "\n" + indent(indent);
 						}
 
 						ret += toXML(message, f.getName(), subObject, subobjElementInfo, indent + NUMBER_SPACE_TABULATION);
+					}
+					if (subObject != null)
+					{
+						first = false;
 					}
 				}
 			}
@@ -406,34 +391,43 @@ public class ASNToXMLConverter
 			ret += Utils.toHexaString(bytes, "");
 			return ret;
 
-		} else if (type.equals("java.lang.Boolean") || type.equals("boolean")) {
+		} 
+		else if (type.equals("java.lang.Boolean") || type.equals("boolean")) 
+		{
 			ret += subObject.toString();
 			return ret;
 
-		} else if (type.equals("java.lang.Long") || type.equals("long")) {
+		} 
+		else if (type.equals("java.lang.Long") || type.equals("long")) 
+		{
 			ret += subObject.toString();
 			return ret;
-		} else if (type.equals("java.lang.Integer") || type.equals("int")) {
+		} 
+		else if (type.equals("java.lang.Integer") || type.equals("int")) 
+		{
 			ret += subObject.toString();
 			return ret;
-		} else if (type.equals("java.lang.String")) {
+		} 
+		else if (type.equals("java.lang.String")) 
+		{
 			ret += subObject.toString();
 			return ret;
 		}
-		else if (type.equals("org.bn.utils.NullObject")) {
-			ret += "";
-			return ret;
-		}
-		else if (type.equals("org.bn.utils.ObjectIdentifier")) {
+		else if (type.equals("org.bn.types.ObjectIdentifier")) 
+		{
 			ret += "<ObjectIdentifier>" + ((ObjectIdentifier) subObject).getValue() + "</ObjectIdentifier>";
 			return ret;
 		}
-		else if (type.endsWith(".EnumType")) {
+		else if (type.endsWith(".EnumType")) 
+		{
 			ASN1EnumItem enumObj = null;
 	        Class enumClass = subObject.getClass();
-            for(Field enumItem: enumClass.getDeclaredFields()) {
-                if(enumItem.isAnnotationPresent(ASN1EnumItem.class)) {
-                    if(enumItem.getName().equals(subObject.toString())) {
+            for(Field enumItem: enumClass.getDeclaredFields()) 
+            {
+                if(enumItem.isAnnotationPresent(ASN1EnumItem.class)) 
+                {
+                    if(enumItem.getName().equals(subObject.toString())) 
+                    {
                     	enumObj = enumItem.getAnnotation(ASN1EnumItem.class);
                         break;
                     }
@@ -442,7 +436,13 @@ public class ASNToXMLConverter
 			ret += subObject.toString() + TAG_SEPARATOR + enumObj.tag();
 			return ret;
 		}
-		else if (type.endsWith(".PcsExtensions")) {
+		else if (type.equals("org.bn.types.NullObject")) 
+		{
+			ret += "";
+			return ret;
+		}
+		else if (type.endsWith(".PcsExtensions")) 
+		{
 			ret += "";
 			return ret;
 		}
