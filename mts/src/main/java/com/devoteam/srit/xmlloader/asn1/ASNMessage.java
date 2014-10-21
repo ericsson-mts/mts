@@ -23,13 +23,15 @@
 
 package com.devoteam.srit.xmlloader.asn1;
 
+import java.util.List;
+
 import gp.utils.arrays.Array;
 
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
-import com.devoteam.srit.xmlloader.asn1.dictionary.EmbeddedList;
+import com.devoteam.srit.xmlloader.asn1.dictionary.EmbeddedMap;
 
 
 /**
@@ -42,11 +44,11 @@ public abstract class ASNMessage
 	protected String className; 
 
 	// list of embedded objects
-	private EmbeddedList embeddedList;
+	private EmbeddedMap embeddedList;
 
 	public ASNMessage()
 	{
-		this.embeddedList = new EmbeddedList();
+		this.embeddedList = new EmbeddedMap();
 	}
 	
 	public ASNMessage(String className)
@@ -87,9 +89,13 @@ public abstract class ASNMessage
      	return null;
  	}
     
-    public void addConditionalEmbedded(Embedded embedded) 
+    public void addConditionalEmbedded(List<Embedded> embeddeds) 
  	{
-    	this.embeddedList.addEmbedded(embedded);
-    	embedded.setCondition(null);
+    	for( int i = 0; i < embeddeds.size(); i++)
+    	{
+    		Embedded embedded = embeddeds.get(i);
+	    	this.embeddedList.addEmbedded(embedded);
+	    	embedded.setCondition(null);
+    	}
  	}
 }

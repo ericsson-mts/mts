@@ -197,6 +197,11 @@ public class BEREncoder<T> extends Encoder<T> {
     public int encodeOctetString(Object object, OutputStream stream, 
                                     ElementInfo elementInfo) throws Exception {
         int resultSize = 0, sizeOfString = 0;
+        // FHmodif to debug
+        if (!(object instanceof byte[]))
+        {
+        	System.out.println("invalid cast for byte[] : " + elementInfo);
+        }
         byte[] buffer = (byte[])object;
         stream.write( buffer );
         sizeOfString = buffer.length;

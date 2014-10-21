@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.asn1.dictionary;
 
 import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -36,11 +37,12 @@ public class ASNDictionary
 	private static ASNDictionary _instance;
     
 	// list of embedded objects
-	private static EmbeddedList embeddedList;
+	private static EmbeddedMap embeddedList;
 	
     public ASNDictionary()
     {
-		embeddedList = new EmbeddedList();
+    	// TCAP dico
+		embeddedList = new EmbeddedMap();
 		Embedded embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueOC", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.ExternalPDU",
@@ -96,7 +98,37 @@ public class ASNDictionary
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider",
 				null); 
 		embeddedList.addEmbedded(embedded);
-
+		// MAP dico
+		embedded = new Embedded(
+				"invokeparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg",
+				"OperationLocalvalue=46"); 
+		embeddedList.addEmbedded(embedded);
+		embedded = new Embedded(
+				"returnparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Res",
+				"OperationLocalvalue=46"); 
+		embeddedList.addEmbedded(embedded);
+		embedded = new Embedded(
+				"invokeparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.ProvideSubscriberLocation_Arg",
+				"OperationLocalvalue=83"); 
+		embeddedList.addEmbedded(embedded);
+		embedded = new Embedded(
+				"returnparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.ProvideSubscriberLocation_Res",
+				"OperationLocalvalue=83"); 
+		embeddedList.addEmbedded(embedded);
+		embedded = new Embedded(
+				"invokeparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForLCS_Arg",
+				"OperationLocalvalue=85");
+		embeddedList.addEmbedded(embedded);
+		embedded = new Embedded(
+				"returnparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForLCS_Res",
+				"OperationLocalvalue=85");
+		embeddedList.addEmbedded(embedded);
     }
 	
 	public static ASNDictionary getInstance()
@@ -113,7 +145,7 @@ public class ASNDictionary
 		return embeddedList.getEmbeddedByInitial(initial);
 	}
 
-    public Embedded getEmbeddedByCondition(String condition) 
+    public List<Embedded> getEmbeddedByCondition(String condition) 
 	{
     	return embeddedList.getEmbeddedByCondition(condition);
 	}

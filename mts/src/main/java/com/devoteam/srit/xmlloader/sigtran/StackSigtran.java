@@ -134,7 +134,7 @@ public class StackSigtran extends Stack {
         	ASNMessage apMessage = new BN_APMessage(tcapMessage);
         	apMessage.parseFromXML(elementAP);
         	String className = apMessage.getClassName(); 
-            // TCAP layer (optional)
+            // AP layer (optional)
         	msgSigtran.setAPMessage((BN_APMessage) apMessage);
         }
 
