@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.bn.CoderFactory;
 import org.bn.IDecoder;
@@ -155,10 +156,10 @@ public class ASNToXMLConverter
 			{
 	        	// we add a embedded record in the list 
 	        	String condition = fieldName + "=" + retObject;
-	        	Embedded embedded = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
-	        	if (embedded != null)
+	        	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
+	        	if (embeddedList != null)
 	        	{
-	        		message.addConditionalEmbedded(embedded);
+	        		message.addConditionalEmbedded(embeddedList);
 	        	}
 
 				ret += retObject;

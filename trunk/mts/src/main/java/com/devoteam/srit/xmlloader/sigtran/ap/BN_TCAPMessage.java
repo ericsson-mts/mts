@@ -23,15 +23,24 @@
 
 package com.devoteam.srit.xmlloader.sigtran.ap;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
+import org.bn.CoderFactory;
+import org.bn.IDecoder;
+import org.bn.IEncoder;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.asn1.BN_ASNMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Component;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ComponentPortion;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Invoke;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Reject;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ReturnError;
@@ -68,6 +77,12 @@ public class BN_TCAPMessage extends BN_ASNMessage
     public boolean isRequest()
     {
         {
+        	if (((TCMessage) asnObject).isEndSelected())
+        	{
+        		return false;
+        	}
+        	return true;
+        	/*
         	Collection<Component> tcapComponents = getTCAPComponents();
         	Object[] tableComponents = (Object[])tcapComponents.toArray();
         	if (tableComponents.length >= 1)
@@ -83,11 +98,34 @@ public class BN_TCAPMessage extends BN_ASNMessage
         		}
         	}
         	return false;
+        	*/
         }
     }
    
     public String getType()
     {
+    	if (((TCMessage) asnObject).isUnidirectionalSelected())
+    	{
+    		return "Unidirectional:1";
+    	}
+    	if (((TCMessage) asnObject).isBeginSelected())
+    	{
+    		return "Begin:2";
+    	}
+    	else if (((TCMessage) asnObject).isEndSelected())
+    	{
+    		return "End:4";
+    	}
+    	else if (((TCMessage) asnObject).isContinue1Selected())
+    	{
+    		return "Continue:5";
+    	}
+    	else if (((TCMessage) asnObject).isAbortSelected())
+    	{
+    		return "Abort:7";
+    	}
+    	return null;
+    	/*
     	Collection<Component> tcapComponents = getTCAPComponents();
     	Object[] tableComponents = (Object[])tcapComponents.toArray();
     	if (tableComponents.length >= 1)
@@ -129,10 +167,13 @@ public class BN_TCAPMessage extends BN_ASNMessage
     		}
     	}
     	return null;
+    	*/
     }
     
     public String getResult()
     {
+    	return "OK";
+    	/*
     	Collection<Component> tcapComponents = getTCAPComponents();
     	Object[] tableComponents = (Object[])tcapComponents.toArray();
     	if (tableComponents.length >= 1)
@@ -195,7 +236,8 @@ public class BN_TCAPMessage extends BN_ASNMessage
     			}
     		}
     	}
-    	return "KO";    	
+    	return "KO";
+    	*/    	
     }
 
     
@@ -234,29 +276,85 @@ public class BN_TCAPMessage extends BN_ASNMessage
     	return "";
     }
 
-    public Collection<Component> getTCAPComponents()
+    public Array getTCAPComponents() throws Exception
     {
+    	Collection<Component> comps = null;
     	if (((TCMessage) asnObject).isBeginSelected())
     	{
-    		return ((TCMessage) asnObject).getBegin().getComponents().getValue();
+    		comps = ((TCMessage) asnObject).getBegin().getComponents().getValue();
     	}
     	else if (((TCMessage) asnObject).isEndSelected())
     	{
-    		return ((TCMessage) asnObject).getEnd().getComponents().getValue();
+    		comps = ((TCMessage) asnObject).getEnd().getComponents().getValue();
     	}
     	else if (((TCMessage) asnObject).isContinue1Selected())
     	{
-    		return ((TCMessage) asnObject).getContinue1().getComponents().getValue();
+    		comps = ((TCMessage) asnObject).getContinue1().getComponents().getValue();
     	}
     	else if (((TCMessage) asnObject).isAbortSelected())
     	{
-    		return null;
+    		// nothing 
     	}
     	else if (((TCMessage) asnObject).isUnidirectionalSelected())
     	{
-    		return ((TCMessage) asnObject).getUnidirectional().getComponents().getValue();
+    		comps = ((TCMessage) asnObject).getUnidirectional().getComponents().getValue();
     	}
-    	return null;
+    	
+    	Component component = null;
+    	Iterator iter = comps.iterator();
+    	while (iter.hasNext())
+    	{
+    		component = (Component) iter.next();
+    	}
+    	
+    	Array arrayMAP = null;
+    	if (component != null)
+    	{
+	    	// Library binarynotes
+	    	IEncoder<java.lang.Object> encoderMAP = CoderFactory.getInstance().newEncoder("BER");
+	    	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	        encoderMAP.encode(component, outputStream);
+	        byte[] bytesMAP = outputStream.toByteArray();
+	        arrayMAP = new DefaultArray(bytesMAP);
+	        // String strMAP = Utils.toHexaString(bytesMAP, null);
+    	}
+    	
+        return arrayMAP;
+    } 
+
+    public void setTCAPComponents(Array array) throws Exception
+    {
+    	Collection<Component> comps = new ArrayList<Component>();
+    	Component component = new Component();
+    	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
+        InputStream inputStream = new ByteArrayInputStream(array.getBytes());
+        Class cl = Class.forName(Component.class.getCanonicalName());
+        component = (Component) cl.newInstance();
+        component = decoder.decode(inputStream, cl);
+        comps.add(component);
+        
+        ComponentPortion compPortion = new ComponentPortion();
+        compPortion.setValue(comps);
+        if (((TCMessage) asnObject).isUnidirectionalSelected())
+    	{
+    		((TCMessage) asnObject).getUnidirectional().setComponents(compPortion);
+    	} 
+        else if (((TCMessage) asnObject).isBeginSelected())
+    	{
+    		((TCMessage) asnObject).getBegin().setComponents(compPortion);
+    	}
+    	else if (((TCMessage) asnObject).isEndSelected())
+    	{
+    		((TCMessage) asnObject).getEnd().setComponents(compPortion);
+    	}
+    	else if (((TCMessage) asnObject).isContinue1Selected())
+    	{
+    		((TCMessage) asnObject).getContinue1().setComponents(compPortion);
+    	}
+    	else if (((TCMessage) asnObject).isAbortSelected())
+    	{
+    		// nothing;
+    	}
     } 
     
     

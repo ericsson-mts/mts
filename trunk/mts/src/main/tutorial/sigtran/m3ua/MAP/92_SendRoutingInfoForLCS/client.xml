@@ -14,14 +14,24 @@
     <sendMessageSIGTRAN name="Send DATA1" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]" destScenario="SIGTRAN">
     
     <!-- AP LAYER -->
-    <AP className="com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Arg">
-      <RoutingInfoForLCS_Arg>
-        <mlcNumber>
-          <Bytes>916895111486</Bytes></mlcNumber>
-        <targetMS>
-          <msisdn><Bytes>91689511223358</Bytes></msisdn>
-        </targetMS>
-      </RoutingInfoForLCS_Arg>
+    <AP className="com.devoteam.srit.xmlloader.sigtran.ap.map.Component">
+      <Component>
+        <invoke>
+          <invokeID><Integer>0</Integer></invokeID>
+          <opCode>
+            <OperationLocalvalue><Long>85</Long></OperationLocalvalue>
+          </opCode>
+          <invokeparameter>
+            <RoutingInfoForLCS_Arg>
+              <mlcNumber>
+                <Bytes>916895111486</Bytes></mlcNumber>
+              <targetMS>
+                <msisdn><Bytes>91689511223358</Bytes></msisdn>
+              </targetMS>
+            </RoutingInfoForLCS_Arg>
+          </invokeparameter>
+        </invoke>
+      </Component>
     </AP>
     
     <!-- TCAP LAYER -->
@@ -51,21 +61,6 @@
               </ExternalPDU>
             </DialogueOC>
           </dialoguePortion>
-          
-          <components>
-            <Collection>
-              <Component>
-                <invoke>
-                  <invokeID><Integer>0</Integer></invokeID>
-                  <opCode>
-                    <localValue>85</localValue>
-                  </opCode>
-                  <parameter>
-                    <Bytes></Bytes></parameter>
-                </invoke>
-              </Component>
-            </Collection>
-          </components>
         </begin>
       </TCMessage>
     </AP>
@@ -129,7 +124,7 @@
     <parameter name="[data]" value="01000101000000940210008a0000371500003758030200010980030d170a529100120468951114860a120600120468950100205e645c4904f78203016b2a2828060700118605010101a01d611b80020780a109060704000001002503a203020100a305a1030201006c28a2260201003021020155301ca00a800842904900003023f3a10e04069168950100308100840204f00000" />
     <parameter name="[length]" operation="string.length" value="[data]"/>
 
-    <receiveMessageSIGTRAN name="Wait DATA1" request="false" type="85" result="OK">
+    <receiveMessageSIGTRAN name="Wait DATA1" request="false" type="End:4" result="OK">
 		    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
     </receiveMessageSIGTRAN>
 
@@ -142,50 +137,60 @@
     <sendMessageSIGTRAN name="Send DATA1" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]" destScenario="SIGTRAN">
     
     <!-- AP LAYER -->
-    <AP className="com.devoteam.srit.xmlloader.sigtran.ap.generated.map.ProvideSubscriberLocation_Arg">
-      <ProvideSubscriberLocation_Arg>
-        <locationType>
-          <locationEstimateType>
-            <EnumType>currentOrLastKnownLocation.1</EnumType>
-          </locationEstimateType>
-        </locationType>
-        <mlc_Number>
-          <Bytes>916895111486</Bytes></mlc_Number>
-        <lcs_ClientID>
-          <lcsClientType>
-            <EnumType>valueAddedServices.1</EnumType>
-          </lcsClientType>
-          <lcsClientExternalID>
-            <externalAddress>
-              <Bytes>910810</Bytes>
-            </externalAddress>
-          </lcsClientExternalID>
-          <lcsClientName>
-            <dataCodingScheme>
-              <Bytes>0f</Bytes></dataCodingScheme>
-            <nameString>
-              <USSD_String><Bytes>431cac1503</Bytes></USSD_String>
-            </nameString>
-          </lcsClientName>
-        </lcs_ClientID>
-        <imsi>
-          <Bytes>42904900003023f3</Bytes></imsi>
-        <lcs_Priority>
-          <Bytes>01</Bytes></lcs_Priority>
-        <lcs_QoS>
-          <horizontal_accuracy><Bytes>0d</Bytes></horizontal_accuracy>
-          <responseTime>
-            <responseTimeCategory>
-              <EnumType>delaytolerant.1</EnumType>
-            </responseTimeCategory>
-          </responseTime>
-        </lcs_QoS>
-        <supportedGADShapes>
-          <BitString>
-            <bitStrValue>fe</bitStrValue><trailBitsCnt>1</trailBitsCnt>
-          </BitString>
-          </supportedGADShapes>
-      </ProvideSubscriberLocation_Arg>
+    <AP className="com.devoteam.srit.xmlloader.sigtran.ap.map.Component">
+      <Component>
+        <invoke>
+          <invokeID><Integer>0</Integer></invokeID>
+          <opCode>
+            <OperationLocalvalue><Long>83</Long></OperationLocalvalue>
+          </opCode>
+          <invokeparameter>
+            <ProvideSubscriberLocation_Arg>
+              <locationType>
+                <locationEstimateType>
+                  <EnumType>currentOrLastKnownLocation.1</EnumType>
+                </locationEstimateType>
+              </locationType>
+              <mlc_Number>
+                <Bytes>916895111486</Bytes></mlc_Number>
+              <lcs_ClientID>
+                <lcsClientType>
+                  <EnumType>valueAddedServices.1</EnumType>
+                </lcsClientType>
+                <lcsClientExternalID>
+                  <externalAddress>
+                    <Bytes>910810</Bytes>
+                  </externalAddress>
+                </lcsClientExternalID>
+                <lcsClientName>
+                  <dataCodingScheme>
+                    <Bytes>0f</Bytes></dataCodingScheme>
+                  <nameString>
+                    <USSD_String><Bytes>431cac1503</Bytes></USSD_String>
+                  </nameString>
+                </lcsClientName>
+              </lcs_ClientID>
+              <imsi>
+                <Bytes>42904900003023f3</Bytes></imsi>
+              <lcs_Priority>
+                <Bytes>01</Bytes></lcs_Priority>
+              <lcs_QoS>
+                <horizontal_accuracy><Bytes>0d</Bytes></horizontal_accuracy>
+                <responseTime>
+                  <responseTimeCategory>
+                    <EnumType>delaytolerant.1</EnumType>
+                  </responseTimeCategory>
+                </responseTime>
+              </lcs_QoS>
+              <supportedGADShapes>
+                <BitString>
+                  <bitStrValue>fe</bitStrValue><trailBitsCnt>1</trailBitsCnt>
+                </BitString>
+                </supportedGADShapes>
+            </ProvideSubscriberLocation_Arg>
+          </invokeparameter>
+        </invoke>
+      </Component>
     </AP>
     
     <!-- TCAP LAYER -->
@@ -215,21 +220,6 @@
               </ExternalPDU>
             </DialogueOC>
           </dialoguePortion>
-          
-          <components>
-            <Collection>
-              <Component>
-                <invoke>
-                  <invokeID><Integer>0</Integer></invokeID>
-                  <opCode>
-                    <localValue>83</localValue>
-                  </opCode>
-                  <parameter>
-                    <Bytes></Bytes></parameter>
-                </invoke>
-              </Component>
-            </Collection>
-          </components>
         </begin>
       </TCMessage>
     </AP>
@@ -291,5 +281,19 @@
 
     <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
     <test parameter="[data1]" condition="binary.equals" value="[data]"/>
+
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="01000101000000940210008a0000371500003758030200010980030d170a529100120468951114860a120600120468950100205e645c4904f78203016b2a2828060700118605010101a01d611b80020780a109060704000001002503a203020100a305a1030201006c28a2260201003021020155301ca00a800842904900003023f3a10e04069168950100308100840204f00000" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>
+
+    <receiveMessageSIGTRAN name="Wait DATA1" request="false" type="End:4" result="OK">
+		    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+
+    <parameter name="[result ]" operation="binary.difference" value="[data1]" value2="[data]"/>
+    
+            <!-- Message encoded value -->
+  	<parameter name="[data]" value="01000101000000a8021000a00000375800003715030200050900030d170a120800120468950100300a129100120468951114867462724804f88203016b1e281c060700118605010101a011600f80020780a1090607040000010026036c4aa148020100020153304030038001010406916895111486a016800101a1058003910810a40a80010f8205431cac1503820842904900003023f3860101a70880010da3030a0101890201fe" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>			
 
 </scenario>

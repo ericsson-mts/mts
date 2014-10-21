@@ -18,47 +18,60 @@
     <sendMessageSIGTRAN name="Send DATA1" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]" destScenario="SIGTRAN">
     
     <!-- AP LAYER -->
-    <AP className="com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Mo_forwardSM_Arg">
-      <Mo_forwardSM_Arg>
-        <sm_RP_DA>
-          <!--imsi>
-            <Bytes>04080001020304050607</Bytes></imsi-->
-          <!--lmsi>
-            <Bytes>04080001020304050607</Bytes></lmsi-->
-          <serviceCentreAddressDA>
-            <Bytes>913366600567f9</Bytes></serviceCentreAddressDA>
-          <!--noSM_RP_DA></noSM_RP_DA-->
-        </sm_RP_DA>
-        <sm_RP_OA>
-          <msisdn>
-            <Bytes>913366317071f3</Bytes></msisdn>
-          <!--serviceCentreAddressOA>
-            <Bytes>04080001020304050607</Bytes></serviceCentreAddressOA>
-          <noSM_RP_OA></noSM_RP_OA-->
-        </sm_RP_OA>
-        <sm_RP_UI>
-          <Bytes>11080b913366600567f70000a906f3f97c3e9f03</Bytes></sm_RP_UI>
-        <!--extensionContainer>
-          <privateExtensionList>
-            <Collection>
-              <PrivateExtension>
-                <extId><oidString>0.1.2.3.4.5.6.7.8.9</oidString></extId>
-                <extType>04080001020304050607</extType>
-              </PrivateExtension>
-              <PrivateExtension>
-                <extId><oidString>0.1.2.3.4.5.6.7.8.9</oidString></extId>
-                <extType>04080001020304050607</extType>
-              </PrivateExtension>
-              <PrivateExtension>
-                <extId><oidString>0.1.2.3.4.5.6.7.8.9</oidString></extId>
-                <extType>04080001020304050607</extType>
-              </PrivateExtension>
-            </Collection></privateExtensionList>
-          <pcsExtensions></pcsExtensions>
-        </extensionContainer-->
-        <!--imsi>
-          <Bytes>04080001020304050607</Bytes></imsi-->
-      </Mo_forwardSM_Arg>
+    <AP className="com.devoteam.srit.xmlloader.sigtran.ap.map.Component">
+              
+      <Component>
+        <invoke>
+          <invokeID><Integer>1</Integer></invokeID>
+          <!--linkedID><Integer>170676764</Integer></linkedID-->
+          <opCode>
+            <OperationLocalvalue><Long>46</Long></OperationLocalvalue>
+            <!--globalValue><oidString>0.1.20.44.126.3.103</oidString></globalValue-->
+          </opCode>
+          <invokeparameter>
+            <Mo_forwardSM_Arg>
+              <sm_RP_DA>
+                <!--imsi>
+                  <Bytes>04080001020304050607</Bytes></imsi-->
+                <!--lmsi>
+                  <Bytes>04080001020304050607</Bytes></lmsi-->
+                <serviceCentreAddressDA>
+                  <Bytes>913366600567f9</Bytes></serviceCentreAddressDA>
+                <!--noSM_RP_DA></noSM_RP_DA-->
+              </sm_RP_DA>
+              <sm_RP_OA>
+                <msisdn>
+                  <Bytes>913366317071f3</Bytes></msisdn>
+                <!--serviceCentreAddressOA>
+                  <Bytes>04080001020304050607</Bytes></serviceCentreAddressOA>
+                <noSM_RP_OA></noSM_RP_OA-->
+              </sm_RP_OA>
+              <sm_RP_UI>
+                <Bytes>11080b913366600567f70000a906f3f97c3e9f03</Bytes></sm_RP_UI>
+              <!--extensionContainer>
+                <privateExtensionList>
+                  <Collection>
+                    <PrivateExtension>
+                      <extId><oidString>0.1.2.3.4.5.6.7.8.9</oidString></extId>
+                      <extType>04080001020304050607</extType>
+                    </PrivateExtension>
+                    <PrivateExtension>
+                      <extId><oidString>0.1.2.3.4.5.6.7.8.9</oidString></extId>
+                      <extType>04080001020304050607</extType>
+                    </PrivateExtension>
+                    <PrivateExtension>
+                      <extId><oidString>0.1.2.3.4.5.6.7.8.9</oidString></extId>
+                      <extType>04080001020304050607</extType>
+                    </PrivateExtension>
+                  </Collection></privateExtensionList>
+                <pcsExtensions></pcsExtensions>
+              </extensionContainer-->
+              <!--imsi>
+                <Bytes>04080001020304050607</Bytes></imsi-->
+            </Mo_forwardSM_Arg>
+          </invokeparameter>
+        </invoke>
+      </Component>
     </AP>
     
     <!-- TCAP LAYER -->
@@ -123,23 +136,6 @@
               </ExternalPDU>
             </DialogueOC>
           </dialoguePortion>
-          
-          <components>
-            <Collection>
-              <Component>
-                <invoke>
-                  <invokeID><Integer>1</Integer></invokeID>
-                  <!--linkedID><Integer>170676764</Integer></linkedID-->
-                  <opCode>
-                    <localValue>46</localValue>
-                    <!--globalValue><oidString>0.1.20.44.126.3.103</oidString></globalValue-->
-                  </opCode>
-                  <parameter>
-                    <Bytes></Bytes></parameter>
-                </invoke>
-              </Component>
-            </Collection>
-          </components>
         </begin>
       </TCMessage>
     </AP>
@@ -204,7 +200,7 @@
 	<parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
   <parameter name="[length]" operation="string.length" value="[data]"/>
 
-	<receiveMessageSIGTRAN name="Wait DATA1" request="false" type="46" result="OK">
+	<receiveMessageSIGTRAN name="Wait DATA1" request="false" type="End:4" result="OK">
 		<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
 	</receiveMessageSIGTRAN>
 	

@@ -123,11 +123,17 @@ public class MsgSigtran extends Msg
 	    		_tcapMessage = new BN_TCAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage");
 		    	_tcapMessage.decode(ieArray);
 		  
-		    	Collection<Component> tcapComponents = ((BN_TCAPMessage) _tcapMessage).getTCAPComponents();
+		    	Array arrayAP = ((BN_TCAPMessage) _tcapMessage).getTCAPComponents();
+				_apMessage = new BN_APMessage("com.devoteam.srit.xmlloader.sigtran.ap.map.Component", _tcapMessage);
+				_apMessage.decode(arrayAP);
+
+		    	/*
 		    	Object[] tableComponents = (Object[])tcapComponents.toArray(); 
 		    	if (tableComponents.length >= 1)
 		    	{	
 		    		Component component =  ((Component) tableComponents[0]);
+		    		
+		    		
 		    		long opCode = -1;
 		    		byte[] bytesAP = null; 
 		    		if (component.isInvokeSelected())
@@ -167,31 +173,8 @@ public class MsgSigtran extends Msg
 		    			 //opCode = reject.getProblem();
 		    			 //bytesAP = reject.getParameter();
 		    		}
-
-			        // decode AP layer with BinaryNotes
-		    		if (bytesAP != null)
-		    		{
-			    		Array arrayAP = new DefaultArray(bytesAP);
-			    		if (opCode == 46)
-			    		{
-					        _apMessage = new BN_APMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.Mo_forwardSM_Arg", _tcapMessage);
-					        _apMessage.decode(arrayAP);
-			    		}
-			    		if (opCode == 85)
-			    		{
-			    			if (isRequest())
-			    			{
-						        _apMessage = new BN_APMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Arg", _tcapMessage);
-						        _apMessage.decode(arrayAP);
-			    			}
-			    			else
-			    			{
-						        _apMessage = new BN_APMessage("com.devoteam.srit.xmlloader.sigtran.ap.generated.map.RoutingInfoForLCS_Res", _tcapMessage);
-						        _apMessage.decode(arrayAP);			    				
-			    			}
-			    		}
-			    	}
 		    	}
+		    */
 	    	}
     	}
     }
@@ -435,43 +418,9 @@ public class MsgSigtran extends Msg
         	{
         		// encode AP layers with BinaryNotes library
         		Array arrayAP = _apMessage.encode();
-        	
-		    	Collection<Component> tcapComponents = ((BN_TCAPMessage) _tcapMessage).getTCAPComponents();
-		    	Object[] tableComponents = tcapComponents.toArray(); 
-		    	if (tableComponents.length >= 1 )
-		    	{
-		    		Component component = ((Component) tableComponents[0]);
-		    		if (component.isInvokeSelected())
-		    		{
-		    			component.getInvoke().setParameter(arrayAP.getBytes());
-		    		}
-		    		else if (component.isReturnResultLastSelected())
-		    		{
-		    			 ReturnResult returnResult = component.getReturnResultLast();
-						 if (returnResult.getResultretres() != null)
-						 {	
-			    			 returnResult.getResultretres().setParameter(arrayAP.getBytes());
-						 }
-		    		}
-		    		else if (component.isReturnResultNotLastSelected())
-		    		{
-		    			 ReturnResult returnResult = component.getReturnResultNotLast();
-						 if (returnResult.getResultretres() != null)
-						 {	
-			    			 returnResult.getResultretres().setParameter(arrayAP.getBytes());
-						 }
-		    		}
-		    		else if (component.isReturnErrorSelected())
-		    		{
-		    			component.getReturnError().setParameter(arrayAP.getBytes());
-		    		}
-		    		else if (component.isRejectSelected())
-		    		{
-		    			// Nothing to do
-		    		}
-
-		    	}
         		
+        		// set the data in TCAP layer
+		    	_tcapMessage.setTCAPComponents(arrayAP);        		
         	}
         	
         	if (_tcapMessage != null)

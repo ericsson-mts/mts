@@ -146,7 +146,7 @@ public class XMLToASNParser
             {
                 return field;
             }
-            else if (type.equalsIgnoreCase(elementName))
+            else if (type.equals(elementName))
             {
                 return field;
             }
@@ -162,10 +162,14 @@ public class XMLToASNParser
         throw new ParsingException ("Can not find the attribute '" + elementName + "' in the ASN object '" + objClass.getClass().getName());
     }
 
-    public Object parseField(ASNMessage message, Element element, String type, Object object, String className) throws Exception 
+    public Object parseField(ASNMessage message, Element element, Field field, String type, Object object, String className) throws Exception 
     {
     	// manage the embedded objects
     	Embedded embedded = message.getEmbeddedByInitial(type);
+    	if (embedded == null && field != null)
+    	{
+    		embedded = message.getEmbeddedByInitial(field.getName());
+    	}
 		if (embedded != null) 
 		{            
             String replace = embedded.getReplace();
@@ -180,13 +184,39 @@ public class XMLToASNParser
             byte[] bytesEmbedded = outputStream.toByteArray();
             //Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
          
-            Class cl = Class.forName(type);
-            Constructor constr = cl.getConstructor();
-			constr.setAccessible(true);
-			Object obj = constr.newInstance();
-			Field[] fields = cl.getDeclaredFields();
-			fields[0].setAccessible(true);
-			fields[0].set(obj, bytesEmbedded);
+            Object obj = null;
+            if (type.equals("byte[]"))
+            {
+            	obj = bytesEmbedded;
+            	//field.set(obj, bytesEmbedded);
+            }
+            else
+            {
+                Class cl = Class.forName(type);
+            	Constructor constr = cl.getConstructor();
+				constr.setAccessible(true);
+				obj = constr.newInstance();
+				Field[] fields = cl.getDeclaredFields();
+				fields[0].setAccessible(true);
+				fields[0].set(obj, bytesEmbedded);
+            }
+            /*
+			if (field == null)
+			{
+				Class cl = Class.forName(type);
+				Field[] fields = cl.getDeclaredFields();
+				fields[0].setAccessible(true);
+				fields[0].set(obj, bytesEmbedded);
+			}
+			else
+			{
+				//Class cl = Class.forName(type);
+				//Field[] fields = cl.getDeclaredFields();
+				//fields[0].setAccessible(true);
+				//fields[0].set(obj, bytesEmbedded);
+				field.set(obj, bytesEmbedded);
+			}
+			*/
             return obj;
 
 		}
@@ -252,7 +282,7 @@ public class XMLToASNParser
         else 
         {
             String classNameCurrent = type.substring(type.lastIndexOf(".") + 1);
-            if ((type.contains(className)) && (!(type.equals(className + classNameCurrent)))) 
+            if (!className.equals("") && (type.contains(className)) && (!(type.equals(className + classNameCurrent)))) 
             {
                 // static class : h225.h323_className$staticClass
                 type = type.substring(0, type.lastIndexOf(".")) + "$" + type.substring(type.lastIndexOf(".") + 1);
@@ -260,7 +290,7 @@ public class XMLToASNParser
          
             if (!type.contains(className)) 
             {
-                className = "";
+                // className = "";
             }
             Object obj = Class.forName(type).newInstance();
             //Object objComplexClass = this.instanceClass(obj.getClass().getName(), className);
@@ -303,7 +333,7 @@ public class XMLToASNParser
             for (Element elementInstance : children) 
             {
                 // pour chaque <instance>
-                listInstance.add(parseField(message, elementInstance, collectionElementType.getCanonicalName(), objClass, className));
+                listInstance.add(parseField(message, elementInstance, null, collectionElementType.getCanonicalName(), objClass, className));
             }
             /*
             List<Element> children1 = element.elements("value");
@@ -320,12 +350,17 @@ public class XMLToASNParser
         else 
         {
         	// we add a embedded record in the list 
-        	Object value = parseField(message, element, field.getType().getCanonicalName(), objClass, className);
+        	Object value = parseField(message, element, field, field.getType().getCanonicalName(), objClass, className);
         	String condition = field.getName() + "=" + value;
-        	Embedded embedded = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
-        	if (embedded != null)
+        	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
+        	if (embeddedList == null)
         	{
-        		message.addConditionalEmbedded(embedded);
+        		condition = objClass.getClass().getSimpleName() + "=" + value;
+        		embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
+        	}
+        	if (embeddedList != null)
+        	{
+        		message.addConditionalEmbedded(embeddedList);
         	}
             field.set(objClass, value);
         }
