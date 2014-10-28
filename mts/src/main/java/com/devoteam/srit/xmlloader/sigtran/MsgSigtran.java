@@ -79,11 +79,6 @@ public class MsgSigtran extends Msg
      */
     public MsgSigtran() throws Exception 
     {
-    	//_apMessage = new MobicentTCAPMessage();
-    	//_apMessage = new MobicentMAPMessage();
-    	//_apMessage = new BinaryNotesAPMessage();
-    	//_apMessage = new BinaryNotesAPMessage();
-    	//_tcapMessage = new BinaryNotesAPMessage();
     }
 
     public MsgSigtran(Array msgArray, int protocolIdentifier) throws Exception 
@@ -126,55 +121,6 @@ public class MsgSigtran extends Msg
 		    	Array arrayAP = ((BN_TCAPMessage) _tcapMessage).getTCAPComponents();
 				_apMessage = new BN_APMessage("com.devoteam.srit.xmlloader.sigtran.ap.map.Component", _tcapMessage);
 				_apMessage.decode(arrayAP);
-
-		    	/*
-		    	Object[] tableComponents = (Object[])tcapComponents.toArray(); 
-		    	if (tableComponents.length >= 1)
-		    	{	
-		    		Component component =  ((Component) tableComponents[0]);
-		    		
-		    		
-		    		long opCode = -1;
-		    		byte[] bytesAP = null; 
-		    		if (component.isInvokeSelected())
-		    		{
-		    			 Invoke invoke = component.getInvoke();
-		    			 opCode = invoke.getOpCode().getLocalValue();
-		    			 bytesAP = invoke.getParameter();
-		    		}
-		    		else if (component.isReturnResultLastSelected())
-		    		{
-						 ReturnResult returnResult = component.getReturnResultLast();
-						 if (returnResult.getResultretres() != null)
-						 {
-							 opCode = returnResult.getResultretres().getOpCode().getLocalValue();
-							 bytesAP = returnResult.getResultretres().getParameter();
-						 }
-		    		}
-		    		else if (component.isReturnResultNotLastSelected())
-		    		{
-		    			 ReturnResult returnResult = component.getReturnResultNotLast();
-						 if (returnResult.getResultretres() != null)
-						 {	
-			    			 opCode = returnResult.getResultretres().getOpCode().getLocalValue();
-			    			 bytesAP = returnResult.getResultretres().getParameter();
-						 }
-		    		}
-		    		else if (component.isReturnErrorSelected())
-		    		{
-		    			 ReturnError returnError = component.getReturnError();
-		    			 //opCode = returnError.getErrorCode().getNationaler();
-		    			 //opCode = returnError.getErrorCode().getPrivateer();
-		    			 bytesAP = returnError.getParameter();
-		    		}
-		    		else if (component.isRejectSelected())
-		    		{
-		    			 Reject reject = component.getReject();
-		    			 //opCode = reject.getProblem();
-		    			 //bytesAP = reject.getParameter();
-		    		}
-		    	}
-		    */
 	    	}
     	}
     }

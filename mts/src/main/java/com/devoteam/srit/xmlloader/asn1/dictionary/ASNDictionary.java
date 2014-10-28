@@ -99,18 +99,40 @@ public class ASNDictionary
 				null); 
 		embeddedList.addEmbedded(embedded);
 		// MAP dico
+		// sendRoutingInfoForSM MESSAGE 
+		embedded = new Embedded(
+				"invokeparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForSMArg",
+				"localValue=45");
 		embeddedList.addEmbedded(embedded);
+		embedded = new Embedded(
+				"returnparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForSM_Res",
+				"localValue=45");
+		embeddedList.addEmbedded(embedded);
+		// mo-forwardSM MESSAGE
 		embedded = new Embedded(
 				"invokeparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg",
 				"localValue=46");
-				//"localValue=46");
 		embeddedList.addEmbedded(embedded);
 		embedded = new Embedded(
 				"returnparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Res",
 				"localValue=46");
 		embeddedList.addEmbedded(embedded);
+		// readyForSM MESSAGE
+		embedded = new Embedded(
+				"invokeparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.ReadyForSM_Arg",
+				"localValue=66");
+		embeddedList.addEmbedded(embedded);
+		embedded = new Embedded(
+				"returnparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.ReadyForSM_Res",
+				"localValue=66");
+		embeddedList.addEmbedded(embedded);
+		// provideSubscriberLocation MESSAGE
 		embedded = new Embedded(
 				"invokeparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.ProvideSubscriberLocation_Arg",
@@ -120,6 +142,7 @@ public class ASNDictionary
 				"returnparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.ProvideSubscriberLocation_Res",
 				"localValue=83"); 
+		// subscriberLocationReport MESSAGE
 		embeddedList.addEmbedded(embedded);
 		embedded = new Embedded(
 				"invokeparameter", 
