@@ -93,7 +93,7 @@ public class ASNToXMLConverter
 		return document;
 	}
 
-	public String toXML(ASNMessage message, String name, Object objClass, ASN1ElementMetadata objElementInfo, int indent) 
+	public String toXML(String resultPath, ASNMessage message, String name, Object objClass, ASN1ElementMetadata objElementInfo, int indent) 
 	{
 		String ret = "";
 		try 
@@ -130,20 +130,23 @@ public class ASNToXMLConverter
 				objPreparedMetadata = objPreparedEltData.getTypeMetadata();
 			}
 			
-        	// we add a embedded record in the list 
-        	String condition = name + "=" + objClass;
+			 // get the condition for embedded objects
+	        String elementName = resultPath;
+	        int iPos = resultPath.lastIndexOf(".");
+	        if (iPos > 0)
+	        {
+	        	elementName = resultPath.substring(iPos + 1);
+	        }
+	        
+        	// we add a embedded record in the list			
+        	String condition = elementName + "=" + objClass;
         	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
-        	if (embeddedList == null)
-        	{
-        		condition = objClass.getClass().getSimpleName() + "=" + objClass;
-        		embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
-        	}
         	if (embeddedList != null)
         	{
         		message.addConditionalEmbedded(embeddedList);
         	}
 			
-			String retObject = returnXMLObject(message, objClass, name, objElementInfo, indent);
+			String retObject = returnXMLObject(resultPath, message, objClass, name, objElementInfo, indent);
 			
 			boolean complexObject = true;
 			if (retObject != null || fieldsSize == 1)
@@ -164,6 +167,15 @@ public class ASNToXMLConverter
 					int l = 0;
 				}
 			}
+			
+			// calculate the element name to build the result path
+        	elementName = fieldName;
+        	iPos = elementName.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
+        	if (iPos > 0)
+        	{
+        		elementName = elementName.substring(0, iPos);
+        	}
+        	resultPath = resultPath + "." + elementName;
 			
 			if (retObject != null) 
 			{
@@ -220,7 +232,7 @@ public class ASNToXMLConverter
 							{
 								ret += "\n" + indent(indent);
 							}
-							ret += toXML(message, f.getName(), subObj, subobjElementInfo, indent + NUMBER_SPACE_TABULATION);
+							ret += toXML(resultPath, message, f.getName(), subObj, subobjElementInfo, indent + NUMBER_SPACE_TABULATION);
 							k = k + 1;
 						}
 						indent = indent - NUMBER_SPACE_TABULATION;
@@ -235,7 +247,7 @@ public class ASNToXMLConverter
 							ret += "\n" + indent(indent);
 						}
 
-						ret += toXML(message, f.getName(), subObject, subobjElementInfo, indent + NUMBER_SPACE_TABULATION);
+						ret += toXML(resultPath, message, f.getName(), subObject, subobjElementInfo, indent + NUMBER_SPACE_TABULATION);
 					}
 					if (subObject != null)
 					{
@@ -264,13 +276,9 @@ public class ASNToXMLConverter
 
 	private String returnClassName(Object objClass, String name, ASN1ElementMetadata objElementInfo, ASN1Metadata objPreparedMetadata1) throws Exception 
 	{
-		String ret;
-		if ("value".equals(name)) 
-		{
-			ret = objClass.getClass().getSimpleName();
-			ret = ret.replace("byte[]", "Bytes");		
-		}
-		else
+		String ret = objClass.getClass().getSimpleName();
+		ret = ret.replace("byte[]", "Bytes");
+		if (!"value".equals(name) || "ObjectIdentifier".equals(ret)) 
 		{
 			ret = name;
 		}
@@ -362,7 +370,7 @@ public class ASNToXMLConverter
 		return ret;
 	}
 
-	private String returnXMLObject(ASNMessage message, Object subObject, String name, ASN1ElementMetadata objElementInfo, int indent)
+	private String returnXMLObject(String resultPath, ASNMessage message, Object subObject, String name, ASN1ElementMetadata objElementInfo, int indent)
 			throws Exception {
 		String ret = "";
 		Class subClass = subObject.getClass();
@@ -399,7 +407,7 @@ public class ASNToXMLConverter
 			Object obj = cl.newInstance();
 			obj = decoder.decode(inputStream, cl);
 			ret += "\n" + indent(indent);
-			ret += toXML(message, "value", obj, objElementInfo, indent + NUMBER_SPACE_TABULATION);
+			ret += toXML(resultPath, message, "value", obj, objElementInfo, indent + NUMBER_SPACE_TABULATION);
 			ret += "\n" + indent(indent - NUMBER_SPACE_TABULATION);
 			return ret;
 		} 
