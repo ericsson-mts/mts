@@ -44,6 +44,22 @@
 	
     <sendMessageSIGTRAN name="Send DATA1" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]" destScenario="SIGTRAN">
         
+    <!-- AP LAYER -->
+    <AP className="com.devoteam.srit.xmlloader.sigtran.ap.map.Component">
+      <Component.Choice>
+        <returnResultLast.C2.Sequence>
+           <invokeID.BoxedType><Integer>1</Integer></invokeID.BoxedType>
+           <!--resultretres>
+              <opCode.Choice>
+                 <localValue.BoxedType><Long>651121441133113856</Long></localValue.BoxedType>
+                 <globalValue><ObjectIdentifier>0.1.227.111</ObjectIdentifier></globalValue>
+              </opCode.Choice>
+              <returnparameter>04032dcb71</returnparameter>
+           </resultretres-->
+        </returnResultLast.C2.Sequence>
+      </Component.Choice>
+    </AP>
+    
     <!-- TCAP LAYER -->
     <AP className="com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage">
       <TCMessage>
@@ -89,21 +105,6 @@
               </ExternalPDU>
             </DialogueOC>
           </dialoguePortion>
-          <components>
-            <Collection>
-              <Component>
-                <returnResultLast>
-                  <invokeID><Integer>1</Integer></invokeID>
-                  <!--resultretres>
-                    <opCode><localValue>819169144093387648</localValue>
-                      <globalValue><oidString>0.1.241.38.54</oidString></globalValue>
-                    </opCode>
-                    <parameter>040b2051ae829f67784e777f7e</parameter>
-                  </resultretres-->
-                </returnResultLast>
-              </Component>
-            </Collection>
-          </components>
         </end>
       </TCMessage>
     </AP>

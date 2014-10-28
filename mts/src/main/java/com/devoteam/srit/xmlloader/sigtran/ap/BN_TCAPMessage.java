@@ -318,7 +318,6 @@ public class BN_TCAPMessage extends BN_ASNMessage
 	        arrayMAP = new DefaultArray(bytesMAP);
 	        // String strMAP = Utils.toHexaString(bytesMAP, null);
     	}
-    	
         return arrayMAP;
     } 
 
@@ -326,6 +325,8 @@ public class BN_TCAPMessage extends BN_ASNMessage
     {
     	Collection<Component> comps = new ArrayList<Component>();
     	Component component = new Component();
+    	//component.setValue(array.getBytes());
+    	
     	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
         InputStream inputStream = new ByteArrayInputStream(array.getBytes());
         Class cl = Class.forName(Component.class.getCanonicalName());

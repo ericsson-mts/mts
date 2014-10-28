@@ -106,14 +106,16 @@ P-AbortCause ::= [APPLICATION 10] IMPLICIT INTEGER {
 
 ComponentPortion ::= [APPLICATION 12]	IMPLICIT SEQUENCE SIZE (1..MAX) OF Component
 
+-- Component ::= OCTET STRING
+ 
 -- Component Portion fields
 -- Recommendation X.880 defines four Application Protocol Data Units (APDUs) for invoking
 -- operations, returning results or error, and for the rejection of invalid PDUs.
 -- TCAP adds returnResultNotLast to allow for the segmentation of a result.
-
+ 
 Component ::=	CHOICE {
 	invoke					[1] IMPLICIT Invoke,
-	returnResultLast		[2] IMPLICIT ReturnResult,
+  returnResultLast		[2] IMPLICIT ReturnResult,
 	returnError				[3] IMPLICIT ReturnError,
 	reject					[4] IMPLICIT Reject,
 	returnResultNotLast		[7] IMPLICIT ReturnResult 

@@ -102,12 +102,20 @@ public class ASNDictionary
 		embedded = new Embedded(
 				"invokeparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg",
-				"OperationLocalvalue=46"); 
+				//"OperationLocalvalue=46");
+				"value=46");
+		embeddedList.addEmbedded(embedded);
+		embedded = new Embedded(
+				"invokeparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg",
+				"OperationLocalvalue=46");
+				//"localValue=46");
 		embeddedList.addEmbedded(embedded);
 		embedded = new Embedded(
 				"returnparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Res",
-				"OperationLocalvalue=46"); 
+				//"OperationLocalvalue=46");
+				"localValue=46");
 		embeddedList.addEmbedded(embedded);
 		embedded = new Embedded(
 				"invokeparameter", 
