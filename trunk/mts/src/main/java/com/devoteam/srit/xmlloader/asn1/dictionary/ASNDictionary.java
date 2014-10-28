@@ -99,13 +99,6 @@ public class ASNDictionary
 				null); 
 		embeddedList.addEmbedded(embedded);
 		// MAP dico
-		/*
-		embedded = new Embedded(
-				"invokeparameter", 
-				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg",
-				//"OperationLocalvalue=46");
-				"value=46");
-		*/
 		embeddedList.addEmbedded(embedded);
 		embedded = new Embedded(
 				"invokeparameter", 

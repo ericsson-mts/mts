@@ -15,7 +15,7 @@
     <parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
     <parameter name="[length]" operation="string.length" value="[data]"/>
     
-<receiveMessageSIGTRAN name="Wait DATA1" request="true" type="46">
+    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="Begin:2">
       <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
       <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
       <parameter name="[result]" operation="protocol.setFromMessage" value="message.result"/>
@@ -46,66 +46,65 @@
         
     <!-- TCAP LAYER -->
     <AP className="com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage">
-      <TCMessage>
-        <end>
-          <dtid><Bytes>00000001</Bytes></dtid>
-          <dialoguePortion>
-            <DialogueOC>
-              <ExternalPDU>
-                <ExternalPDUSequenceType>
-                  <direct_reference><oidString>0.0.17.773.1.1.1</oidString></direct_reference>
-                  <!--indirect_reference>856649051904125184</indirect_reference-->
-                  <!--data_value_descriptor><Bytes>0402aa40</Bytes></data_value_descriptor-->
-                  <encoding>
-                    <single_ASN1_type>
-                      <DialoguePDU>
-                        <dialogueResponse>
-                          <AARE_apduSequenceType>
-                            <protocol_version>
-                              <bitStrValue>80</bitStrValue><trailBitsCnt>7</trailBitsCnt>
-                            </protocol_version>
-                            <application_context_name>
-                              <org.bn.types.ObjectIdentifier><oidString>0.4.0.0.1.0.21.2</oidString></org.bn.types.ObjectIdentifier>
-                            </application_context_name>
-                            <result><Associate_result><Long>0</Long></Associate_result></result>
-                            <result_source_diagnostic>
-                              <Associate_source_diagnostic>
-                                <dialogue_service_user>
-                                  <DialogueServiceUser><Long>0</Long></DialogueServiceUser>
-                                </dialogue_service_user>
-                              </Associate_source_diagnostic>
-                            </result_source_diagnostic>
-                            <!--Collection>
-                              <user_information>040ca70f5e0f024d3b3c34b26588</user_information>
-                              <user_information>04120aef3699f398f0a04000761bab86be69191c</user_information>
-                              <user_information>0403d079a4</user_information>
-                            </Collection-->
-                          </AARE_apduSequenceType>
-                        </dialogueResponse>
-                      </DialoguePDU>
-                    </single_ASN1_type>
-                  </encoding>
-                </ExternalPDUSequenceType>
-              </ExternalPDU>
-            </DialogueOC>
-          </dialoguePortion>
-          <components>
-            <Collection>
-              <Component>
-                <returnResultLast>
-                  <invokeID><Integer>1</Integer></invokeID>
-                  <!--resultretres>
-                    <opCode><localValue>819169144093387648</localValue>
-                      <globalValue><oidString>0.1.241.38.54</oidString></globalValue>
-                    </opCode>
-                    <parameter>040b2051ae829f67784e777f7e</parameter>
-                  </resultretres-->
-                </returnResultLast>
-              </Component>
-            </Collection>
-          </components>
-        </end>
-      </TCMessage>
+      <TCMessage.Choice>
+        <end.A4.Sequence>
+           <dtid.BoxedType><Bytes.A8>00000001</Bytes.A8></dtid.BoxedType>
+           <dialoguePortion.BoxedType><DialogueOC.A11.BoxedType>
+                 <ExternalPDU.A11.BoxedType><ExternalPDUSequenceType.U8>
+                       <direct_reference><ObjectIdentifier>0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
+                       <!--indirect_reference>135135546236608288</indirect_reference-->
+                       <!--data_value_descriptor.BoxedType><Bytes>040d64f86f057d306aba7055bc9634</Bytes></data_value_descriptor.BoxedType-->
+                       <encoding.Choice>
+                          <single_ASN1_type.C0.BoxedType>
+                            <DialoguePDU.Choice>
+                              <dialogueResponse.A1.BoxedType><AARE_apduSequenceType.A1>
+                                <protocol_version>
+                                   <bitStrValue>80</bitStrValue>
+                                   <trailBitsCnt>7</trailBitsCnt>
+                                </protocol_version>
+                                <application_context_name.BoxedType>
+                                   <value><ObjectIdentifier>0.4.0.0.1.0.21.2</ObjectIdentifier></value>
+                                </application_context_name.BoxedType>
+                                <result.BoxedType>
+                                   <Associate_result.BoxedType><Long>0</Long></Associate_result.BoxedType>
+                                </result.BoxedType>
+                                <result_source_diagnostic.BoxedType>
+                                   <Associate_source_diagnostic.Choice>
+                                      <dialogue_service_user.C1.BoxedType>
+                                         <Dialogue_service_user.C1.BoxedType><Long>0</Long></Dialogue_service_user.C1.BoxedType>
+                                      </dialogue_service_user.C1.BoxedType>
+                                   </Associate_source_diagnostic.Choice>
+                                </result_source_diagnostic.BoxedType>
+                                <!--Collection>
+                                   <user_information>040ea1445ab7ef5e17f84ea581e9a7bf</user_information>
+                                   <user_information>04034a5e1a</user_information>
+                                   <user_information>040f69b58bd0c39e5b8cfc795fe571108b</user_information>
+                                </Collection-->
+                              </AARE_apduSequenceType.A1></dialogueResponse.A1.BoxedType>
+                           </DialoguePDU.Choice>
+                          </single_ASN1_type.C0.BoxedType>
+                       </encoding.Choice>
+                  </ExternalPDUSequenceType.U8></ExternalPDU.A11.BoxedType>
+            </DialogueOC.A11.BoxedType></dialoguePortion.BoxedType>
+            
+            <components>
+              <Collection>  
+                <Component.Choice>
+                  <returnResultLast.C2.Sequence>
+                    <invokeID.BoxedType><Integer>00000001</Integer></invokeID.BoxedType>
+                    <!--resultretres>
+                      <opCode><localValue>819169144093387648</localValue>
+                        <globalValue><oidString>0.1.241.38.54</oidString></globalValue>
+                      </opCode>
+                      <parameter>040b2051ae829f67784e777f7e</parameter>
+                    </resultretres-->
+                  </returnResultLast.C2.Sequence>
+                </Component.Choice>
+              </Collection>          
+            </components>
+
+        </end.A4.Sequence>
+      </TCMessage.Choice>
     </AP>
     
 	  <!-- SCCP LAYER  -->
