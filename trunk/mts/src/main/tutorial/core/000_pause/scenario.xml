@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <scenario>
-    <pause name="pause"     seconds="0.1"  state="true"/>    <!-- pauses for 100 ms -->
+    <pause name="pause" seconds="0.1"/>    <!-- pauses for 0.1 s -->
     
-    <parameter name="[aParameter]" operation="set" value="0.5" />
+    <parameter name="[aParameter]" operation="set" value="50" />
+    <parameter name="[aState]" operation="set" value="false" />
 
-    <pause name="pause"     seconds="[aParameter]"  state="true"/>    <!-- pauses for 100 ms -->
+    <pause name="pause" milliseconds="[aParameter]" state="[aState]"/>    <!-- pauses for 50 ms -->
 
 </scenario>
