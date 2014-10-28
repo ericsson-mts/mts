@@ -110,6 +110,17 @@ public class ASNDictionary
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForSM_Res",
 				"localValue=45");
 		embeddedList.addEmbedded(embedded);
+		// mt-forwardSM MESSAGE
+		embedded = new Embedded(
+				"invokeparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mt_forwardSM_Arg",
+				"localValue=44");
+		embeddedList.addEmbedded(embedded);
+		embedded = new Embedded(
+				"returnparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mt_forwardSM_Res",
+				"localValue=44");
+		embeddedList.addEmbedded(embedded);
 		// mo-forwardSM MESSAGE
 		embedded = new Embedded(
 				"invokeparameter", 
@@ -120,6 +131,17 @@ public class ASNDictionary
 				"returnparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Res",
 				"localValue=46");
+		embeddedList.addEmbedded(embedded);
+		// reportSM-DeliveryStatus MESSAGE
+		embedded = new Embedded(
+				"invokeparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.ReportSM_DeliveryStatusArg",
+				"localValue=47");
+		embeddedList.addEmbedded(embedded);
+		embedded = new Embedded(
+				"returnparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.ReportSM_DeliveryStatusRes",
+				"localValue=47");
 		embeddedList.addEmbedded(embedded);
 		// readyForSM MESSAGE
 		embedded = new Embedded(
