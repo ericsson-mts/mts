@@ -163,16 +163,7 @@ public class XMLToASNParser
     }
 
     public Object parseField(String resultPath, ASNMessage message, Element element, Field field, String type, Object object, String className) throws Exception 
-    {
-    	// calculate the element name to build the result path
-    	String elementName = element.getName();
-    	int iPos = elementName.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
-    	if (iPos > 0)
-    	{
-    		elementName = elementName.substring(0, iPos);
-    	}
-    	resultPath = resultPath + "." + elementName;
-    	
+    {    	
     	// manage the embedded objects
     	Embedded embedded = message.getEmbeddedByInitial(type);
     	if (embedded == null && field != null)
@@ -211,36 +202,38 @@ public class XMLToASNParser
             return obj;
 
 		}
+		Object value = null;
         if (type.equals("java.lang.Boolean")||type.equals("boolean"))  
         {
-            return Boolean.valueOf(element.getTextTrim()).booleanValue();
+            value = Boolean.valueOf(element.getTextTrim()).booleanValue();
         }
         else if (type.equals("java.lang.String")||type.equals("String")) 
         {
-            return element.getTextTrim();
+            value =  element.getTextTrim();
         }
         else if (type.equals("java.lang.Integer")||type.equals("int")) 
         {
-            return Integer.parseInt(element.getTextTrim());
+            value = Integer.parseInt(element.getTextTrim());
         }
         else if (type.equals("java.lang.Float")||type.equals("float"))  
         {
-            return Float.parseFloat(element.getTextTrim());
+            value = Float.parseFloat(element.getTextTrim());
         }
         else if (type.equals("java.lang.Short")||type.equals("short"))  
         {
-            return Short.parseShort(element.getTextTrim());
+            value = Short.parseShort(element.getTextTrim());
         }
         else if (type.equals("java.lang.Long")||type.equals("long"))  
         {
-            return Long.parseLong(element.getTextTrim());
+            value = Long.parseLong(element.getTextTrim());
         }
         else if (type.equals("java.lang.Byte")||type.equals("byte"))  
         {
-            return Byte.parseByte(element.getTextTrim());
+            value = Byte.parseByte(element.getTextTrim());
         }
         else if (type.equals("byte[]")) 
         {
+        	// not a simple value so return
             return new DefaultArray(Utils.parseBinaryString("h" + element.getTextTrim())).getBytes();
         }
         else if (type.endsWith(".EnumType"))  
@@ -266,6 +259,7 @@ public class XMLToASNParser
 						break;
 					}
 				}
+				// not a simple value so return
 				return objFind;
 			}
             return null;
@@ -279,11 +273,37 @@ public class XMLToASNParser
                 type = type.substring(0, type.lastIndexOf(".")) + "$" + type.substring(type.lastIndexOf(".") + 1);
             }
 
+        	// calculate the element name to build the result path
+        	String elementName = element.getName();
+        	int iPos = elementName.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
+        	if (iPos > 0)
+        	{
+        		elementName = elementName.substring(0, iPos);
+        	}
+        	resultPath = resultPath + "." + elementName;
+
             Object obj = Class.forName(type).newInstance();
             //Object objComplexClass = this.instanceClass(obj.getClass().getName(), className);
             parseFromXML(resultPath, message, obj, element, className);
+            // not a simple value so return
             return obj;
         }
+        
+        // get the condition for embedded objects
+        String elementName = resultPath;
+        int iPos = resultPath.lastIndexOf(".");
+        if (iPos > 0)
+        {
+        	elementName = resultPath.substring(iPos + 1);
+        }
+    	String condition = elementName + "=" + value;
+    	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
+    	if (embeddedList != null)
+    	{
+    		message.addConditionalEmbedded(embeddedList);
+    	}
+    	
+    	return value;
     }
 
     public void initField(String resultPath, ASNMessage message, Object objClass, Element element, Field field, String className) throws Exception 
@@ -339,18 +359,6 @@ public class XMLToASNParser
         {
         	// we add a embedded record in the list 
         	Object value = parseField(resultPath, message, element, field, field.getType().getCanonicalName(), objClass, className);
-        	String elementName = resultPath;
-        	int iPos = resultPath.lastIndexOf(".");
-        	if (iPos > 0)
-        	{
-        		elementName = resultPath.substring(iPos + 1);
-        	}
-        	String condition = elementName + "=" + value;
-        	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
-        	if (embeddedList != null)
-        	{
-        		message.addConditionalEmbedded(embeddedList);
-        	}
             field.set(objClass, value);
         }
     }
