@@ -82,23 +82,6 @@ public class BN_TCAPMessage extends BN_ASNMessage
         		return false;
         	}
         	return true;
-        	/*
-        	Collection<Component> tcapComponents = getTCAPComponents();
-        	Object[] tableComponents = (Object[])tcapComponents.toArray();
-        	if (tableComponents.length >= 1)
-        	{
-        		Component component =  ((Component) tableComponents[0]);
-        		if (component.isInvokeSelected())
-        		{
-        			return true;
-        		}
-        		else
-        		{
-        			return false;
-        		}
-        	}
-        	return false;
-        	*/
         }
     }
    
