@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.core.newstats;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -101,10 +102,26 @@ public final class StatKeyPattern
         
         for(int i=0; i<patterns.length; i++)
         {
-            if(!patterns[i].matcher(keyAttributes[i]).matches())
-            {
-                return false;
-            }
+        	Matcher matcherI = null;
+        	if (patterns[i] != null && keyAttributes[i] != null)
+        	{
+        		matcherI = patterns[i].matcher(keyAttributes[i]);
+        		if (matcherI != null)
+        		{
+        			if (!matcherI.matches())
+        			{
+        				return false;
+        			}
+        		}
+        		else
+        		{
+        			System.out.println("NullPointerException : key = " + key.toString());
+        		}
+        	}
+        	else
+        	{
+        		System.out.println("NullPointerException : key = " + key.toString());
+        	}
         }
         
         return true;
