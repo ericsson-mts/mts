@@ -119,7 +119,8 @@ public class BN_ASNMessage extends ASNMessage
             	packageName = className.substring(0, pos + 1);
             }
             this.asnObject = thisClass.newInstance();
-            XMLToASNParser.getInstance().parseFromXML(this, this.asnObject, element, packageName);
+            String result = "";
+            XMLToASNParser.getInstance().parseFromXML(result, this, this.asnObject, element, packageName);
         }
     }
 

@@ -93,7 +93,7 @@ public class XMLToASNParser
         return document;
     }
 
-    public void parseFromXML(ASNMessage message, Object objClass, Element root, String ClasseName) throws Exception 
+    public void parseFromXML(String result, ASNMessage message, Object objClass, Element root, String ClasseName) throws Exception 
     {
         // parsing XML
         List<Element> children = root.elements();
@@ -111,7 +111,7 @@ public class XMLToASNParser
             	//field.setAccessible(true); 
             	//field.set(objClass, parseField(element, field.getType().getCanonicalName(), ClasseName));
             	
-            	initField(message, objClass, element, field, ClasseName);
+            	initField(result, message, objClass, element, field, ClasseName);
             }
         }
     }
@@ -162,8 +162,16 @@ public class XMLToASNParser
         throw new ParsingException ("Can not find the attribute '" + elementName + "' in the ASN object '" + objClass.getClass().getName());
     }
 
-    public Object parseField(ASNMessage message, Element element, Field field, String type, Object object, String className) throws Exception 
+    public Object parseField(String result, ASNMessage message, Element element, Field field, String type, Object object, String className) throws Exception 
     {
+    	String elementName = element.getName();
+    	int iPos = elementName.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
+    	if (iPos > 0)
+    	{
+    		elementName = elementName.substring(0, iPos);
+    	}
+    	result = result + "." + elementName;
+    	
     	// manage the embedded objects
     	Embedded embedded = message.getEmbeddedByInitial(type);
     	if (embedded == null && field != null)
@@ -176,7 +184,7 @@ public class XMLToASNParser
             
             Class subClass = Class.forName(replace);
             Object objEmbbeded = subClass.newInstance();
-            parseFromXML(message, objEmbbeded, (Element) element.elements().get(0), className);
+            parseFromXML(result, message, objEmbbeded, (Element) element.elements().get(0), className);
         	
         	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
         	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -272,12 +280,12 @@ public class XMLToASNParser
 
             Object obj = Class.forName(type).newInstance();
             //Object objComplexClass = this.instanceClass(obj.getClass().getName(), className);
-            parseFromXML(message, obj, element, className);
+            parseFromXML(result, message, obj, element, className);
             return obj;
         }
     }
 
-    public void initField(ASNMessage message, Object objClass, Element element, Field field, String className) throws Exception 
+    public void initField(String result, ASNMessage message, Object objClass, Element element, Field field, String className) throws Exception 
     {
         // si le champ est privé, pour y accéder
         field.setAccessible(true);
@@ -310,8 +318,9 @@ public class XMLToASNParser
             List<Element> children = element.elements();
             for (Element elementInstance : children) 
             {
+            	Object value = parseField(result, message, elementInstance, null, collectionElementType.getCanonicalName(), objClass, className);
                 // pour chaque <instance>
-                listInstance.add(parseField(message, elementInstance, null, collectionElementType.getCanonicalName(), objClass, className));
+                listInstance.add(value);
             }
             /*
             List<Element> children1 = element.elements("value");
@@ -328,14 +337,15 @@ public class XMLToASNParser
         else 
         {
         	// we add a embedded record in the list 
-        	Object value = parseField(message, element, field, field.getType().getCanonicalName(), objClass, className);
-        	String condition = field.getName() + "=" + value;
-        	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
-        	if (embeddedList == null)
+        	Object value = parseField(result, message, element, field, field.getType().getCanonicalName(), objClass, className);
+        	String elementName = result;
+        	int iPos = result.lastIndexOf(".");
+        	if (iPos > 0)
         	{
-        		condition = objClass.getClass().getSimpleName() + "=" + value;
-        		embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
+        		elementName = result.substring(iPos + 1);
         	}
+        	String condition = elementName + "=" + value;
+        	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
         	if (embeddedList != null)
         	{
         		message.addConditionalEmbedded(embeddedList);
