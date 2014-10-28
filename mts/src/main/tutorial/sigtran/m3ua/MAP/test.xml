@@ -17,6 +17,10 @@
     <parameter description="remote port of the SUT host" editable="true" name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]"/>
     <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>	
     
+    <testcase name="045_sendRoutingInfoForSM" description="test sigtran TCAP" state="true">
+        <scenario name="client" file="045_sendRoutingInfoForSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="045_sendRoutingInfoForSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
     
     <testcase name="01_ForwardSM" description="test sigtran MAP" state="true">
         <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
