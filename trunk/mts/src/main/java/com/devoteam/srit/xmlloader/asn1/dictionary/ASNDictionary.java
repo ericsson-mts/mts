@@ -51,12 +51,12 @@ public class ASNDictionary
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.UniDialoguePDU",
-				"oidString=0.0.17.773.1.2.1"); 
+				"direct_reference=0.0.17.773.1.2.1"); 
 		embeddedList.addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialoguePDU",
-				"oidString=0.0.17.773.1.1.1"); 
+				"direct_reference=0.0.17.773.1.1.1"); 
 		embeddedList.addEmbedded(embedded);
 		embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.ObjectId", 
@@ -99,43 +99,44 @@ public class ASNDictionary
 				null); 
 		embeddedList.addEmbedded(embedded);
 		// MAP dico
+		/*
 		embedded = new Embedded(
 				"invokeparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg",
 				//"OperationLocalvalue=46");
 				"value=46");
+		*/
 		embeddedList.addEmbedded(embedded);
 		embedded = new Embedded(
 				"invokeparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg",
-				"OperationLocalvalue=46");
+				"localValue=46");
 				//"localValue=46");
 		embeddedList.addEmbedded(embedded);
 		embedded = new Embedded(
 				"returnparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Res",
-				//"OperationLocalvalue=46");
 				"localValue=46");
 		embeddedList.addEmbedded(embedded);
 		embedded = new Embedded(
 				"invokeparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.ProvideSubscriberLocation_Arg",
-				"OperationLocalvalue=83"); 
+				"localValue=83"); 
 		embeddedList.addEmbedded(embedded);
 		embedded = new Embedded(
 				"returnparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.ProvideSubscriberLocation_Res",
-				"OperationLocalvalue=83"); 
+				"localValue=83"); 
 		embeddedList.addEmbedded(embedded);
 		embedded = new Embedded(
 				"invokeparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForLCS_Arg",
-				"OperationLocalvalue=85");
+				"localValue=85");
 		embeddedList.addEmbedded(embedded);
 		embedded = new Embedded(
 				"returnparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForLCS_Res",
-				"OperationLocalvalue=85");
+				"localValue=85");
 		embeddedList.addEmbedded(embedded);
     }
 	
