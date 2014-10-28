@@ -10,7 +10,11 @@
 -->
 
 <scenario>
-				
+
+    <!-- Message encoded value -->
+  	<parameter name="[data]" value="010001010000007c021000740000375800003715030200040900030e180b12060012046895112233580a129100120468951114864762454804f78203016b1e281c060700118605010101a011600f80020780a1090607040000010025036c1da11b02010002015530138006916895111486a109810791689511223358" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>			
+
     <sendMessageSIGTRAN name="Send DATA1" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]" destScenario="SIGTRAN">
     
     <!-- AP LAYER -->
@@ -51,7 +55,9 @@
                           <AARQ_apduSequenceType>
                             <protocol_version>
                               <bitStrValue>80</bitStrValue><trailBitsCnt>07</trailBitsCnt></protocol_version>
-                              <application_context_name><ObjectIdentifier><oidString>0.4.0.0.1.0.37.3</oidString></ObjectIdentifier></application_context_name>
+                              <application_context_name>
+                                  <direct_reference><ObjectIdentifier>0.4.0.0.1.0.37.3</ObjectIdentifier></direct_reference>
+                              </application_context_name>
                             </AARQ_apduSequenceType>
                         </dialogueRequest>
                       </dialoguePDU>
@@ -120,6 +126,9 @@
     </UA>
     </sendMessageSIGTRAN>
     
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
+    
     <!-- Message encoded value -->
     <parameter name="[data]" value="01000101000000940210008a0000371500003758030200010980030d170a529100120468951114860a120600120468950100205e645c4904f78203016b2a2828060700118605010101a01d611b80020780a109060704000001002503a203020100a305a1030201006c28a2260201003021020155301ca00a800842904900003023f3a10e04069168950100308100840204f00000" />
     <parameter name="[length]" operation="string.length" value="[data]"/>
@@ -129,8 +138,9 @@
     </receiveMessageSIGTRAN>
 
     <parameter name="[result ]" operation="binary.difference" value="[data1]" value2="[data]"/>
+    <parameter name="[length]" operation="string.length" value="[data]"/>
     
-            <!-- Message encoded value -->
+    <!-- Message encoded value -->
   	<parameter name="[data]" value="01000101000000a8021000a00000375800003715030200050900030d170a120800120468950100300a129100120468951114867462724804f88203016b1e281c060700118605010101a011600f80020780a1090607040000010026036c4aa148020100020153304030038001010406916895111486a016800101a1058003910810a40a80010f8205431cac1503820842904900003023f3860101a70880010da3030a0101890201fe" />
     <parameter name="[length]" operation="string.length" value="[data]"/>			
 			
@@ -210,7 +220,9 @@
                           <AARQ_apduSequenceType>
                             <protocol_version>
                               <bitStrValue>80</bitStrValue><trailBitsCnt>07</trailBitsCnt></protocol_version>
-                              <application_context_name><ObjectIdentifier><oidString>0.4.0.0.1.0.38.3</oidString></ObjectIdentifier></application_context_name>
+                              <application_context_name>
+                                  <direct_reference><ObjectIdentifier>0.4.0.0.1.0.38.3</ObjectIdentifier></direct_reference>
+                              </application_context_name>
                             </AARQ_apduSequenceType>
                         </dialogueRequest>
                       </dialoguePDU>
@@ -291,8 +303,9 @@
     </receiveMessageSIGTRAN>
 
     <parameter name="[result ]" operation="binary.difference" value="[data1]" value2="[data]"/>
+    <parameter name="[length]" operation="string.length" value="[data]"/>
     
-            <!-- Message encoded value -->
+    <!-- Message encoded value -->
   	<parameter name="[data]" value="01000101000000a8021000a00000375800003715030200050900030d170a120800120468950100300a129100120468951114867462724804f88203016b1e281c060700118605010101a011600f80020780a1090607040000010026036c4aa148020100020153304030038001010406916895111486a016800101a1058003910810a40a80010f8205431cac1503820842904900003023f3860101a70880010da3030a0101890201fe" />
     <parameter name="[length]" operation="string.length" value="[data]"/>			
 
