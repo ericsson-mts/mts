@@ -16,12 +16,27 @@
     <!--parameter name="[remotePortM3UA]" operation="set" value="1234"/-->
     <parameter description="remote port of the SUT host" editable="true" name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]"/>
     <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>	
+
+    <testcase name="044_mt-forwardSM" description="test sigtran TCAP" state="true">
+        <scenario name="client" file="044_mt-forwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="044_mt-forwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
     
     <testcase name="045_sendRoutingInfoForSM" description="test sigtran TCAP" state="true">
         <scenario name="client" file="045_sendRoutingInfoForSM/client.xml" routingName="client"/>
         <scenario name="SIGTRAN" file="045_sendRoutingInfoForSM/server.xml" routingName="SIGTRAN"/>
     </testcase>
 
+    <testcase name="046_mo-forwardSM" description="test sigtran TCAP" state="true">
+        <scenario name="client" file="046_mo-forwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="046_mo-forwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="047_reportSM-DeliveryStatus" description="test sigtran TCAP" state="true">
+        <scenario name="client" file="047_reportSM-DeliveryStatus/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="047_reportSM-DeliveryStatus/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+    
     <testcase name="066_readyForSM" description="test sigtran TCAP" state="true">
         <scenario name="client" file="066_readyForSM/client.xml" routingName="client"/>
         <scenario name="SIGTRAN" file="066_readyForSM/server.xml" routingName="SIGTRAN"/>
