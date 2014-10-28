@@ -185,14 +185,9 @@ public class XMLToASNParser
             //Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
          
             Object obj = null;
-            if (type.equals("byte[]"))
+            if (!type.equals("byte[]"))
             {
-            	obj = bytesEmbedded;
-            	//field.set(obj, bytesEmbedded);
-            }
-            else
-            {
-                Class cl = Class.forName(type);
+            	Class cl = Class.forName(type);
             	Constructor constr = cl.getConstructor();
 				constr.setAccessible(true);
 				obj = constr.newInstance();
@@ -200,23 +195,10 @@ public class XMLToASNParser
 				fields[0].setAccessible(true);
 				fields[0].set(obj, bytesEmbedded);
             }
-            /*
-			if (field == null)
-			{
-				Class cl = Class.forName(type);
-				Field[] fields = cl.getDeclaredFields();
-				fields[0].setAccessible(true);
-				fields[0].set(obj, bytesEmbedded);
-			}
-			else
-			{
-				//Class cl = Class.forName(type);
-				//Field[] fields = cl.getDeclaredFields();
-				//fields[0].setAccessible(true);
-				//fields[0].set(obj, bytesEmbedded);
-				field.set(obj, bytesEmbedded);
-			}
-			*/
+            else
+            {
+            	obj = bytesEmbedded;
+            }
             return obj;
 
 		}
@@ -287,11 +269,7 @@ public class XMLToASNParser
                 // static class : h225.h323_className$staticClass
                 type = type.substring(0, type.lastIndexOf(".")) + "$" + type.substring(type.lastIndexOf(".") + 1);
             }
-         
-            if (!type.contains(className)) 
-            {
-                // className = "";
-            }
+
             Object obj = Class.forName(type).newInstance();
             //Object objComplexClass = this.instanceClass(obj.getClass().getName(), className);
             parseFromXML(message, obj, element, className);

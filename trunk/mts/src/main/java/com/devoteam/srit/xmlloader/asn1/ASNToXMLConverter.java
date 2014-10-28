@@ -130,7 +130,20 @@ public class ASNToXMLConverter
 				objPreparedMetadata = objPreparedEltData.getTypeMetadata();
 			}
 			
-			String retObject = returnXMLObject(message, objClass, objElementInfo, indent);
+        	// we add a embedded record in the list 
+        	String condition = name + "=" + objClass;
+        	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
+        	if (embeddedList == null)
+        	{
+        		condition = objClass.getClass().getSimpleName() + "=" + objClass;
+        		embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
+        	}
+        	if (embeddedList != null)
+        	{
+        		message.addConditionalEmbedded(embeddedList);
+        	}
+			
+			String retObject = returnXMLObject(message, objClass, name, objElementInfo, indent);
 			
 			boolean complexObject = true;
 			if (retObject != null || fieldsSize == 1)
@@ -154,14 +167,6 @@ public class ASNToXMLConverter
 			
 			if (retObject != null) 
 			{
-	        	// we add a embedded record in the list 
-	        	String condition = fieldName + "=" + retObject;
-	        	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
-	        	if (embeddedList != null)
-	        	{
-	        		message.addConditionalEmbedded(embeddedList);
-	        	}
-
 				ret += retObject;
 			} 
 			else 
@@ -357,7 +362,7 @@ public class ASNToXMLConverter
 		return ret;
 	}
 
-	private String returnXMLObject(ASNMessage message, Object subObject, ASN1ElementMetadata objElementInfo, int indent)
+	private String returnXMLObject(ASNMessage message, Object subObject, String name, ASN1ElementMetadata objElementInfo, int indent)
 			throws Exception {
 		String ret = "";
 		Class subClass = subObject.getClass();
@@ -368,13 +373,25 @@ public class ASNToXMLConverter
 		}
 		// manage the embedded objects
 		Embedded embedded = message.getEmbeddedByInitial(type);
+		if (embedded == null && name != null)
+    	{
+    		embedded = message.getEmbeddedByInitial(name);
+    	}
 		if (embedded != null) 
 		{
-			Field[] fields = subObject.getClass().getDeclaredFields();
-			fields[0].setAccessible(true);
-			byte[] bytesEmbedded = (byte[]) fields[0].get(subObject);
-			// Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
-
+			byte[] bytesEmbedded = null;
+            if (!type.equals("byte[]"))
+            {
+				Field[] fields = subObject.getClass().getDeclaredFields();
+				fields[0].setAccessible(true);
+				bytesEmbedded = (byte[]) fields[0].get(subObject);
+				// Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+            }
+            else
+            {
+            	bytesEmbedded = (byte[]) subObject;
+            }
+            
 			IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
 			InputStream inputStream = new ByteArrayInputStream(bytesEmbedded);
 			String replace = embedded.getReplace();
@@ -383,7 +400,7 @@ public class ASNToXMLConverter
 			obj = decoder.decode(inputStream, cl);
 			ret += "\n" + indent(indent);
 			ret += toXML(message, "value", obj, objElementInfo, indent + NUMBER_SPACE_TABULATION);
-			ret += "\n" + indent(indent);
+			ret += "\n" + indent(indent - NUMBER_SPACE_TABULATION);
 			return ret;
 		} 
 		else if (type.equals("byte[]")) 
