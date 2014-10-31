@@ -48,8 +48,7 @@
 
 <scenario>
 			
-    <sendMessageSIGTRAN name="Send DATA1" destScenario="SIGTRAN" 
-    			remoteHost="[localHostV5UA]" remotePort="[localPortV5UA]">    		
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostV5UA]" remotePort="[localPortV5UA]">    		
                 
         <UA name="V5UA" file="v5ua.xml">
         
@@ -58,7 +57,7 @@
             <!-- integer interface identifier -->
             <parameter tag="Integer_Interface_Identifier">
                 <field name="Link_Identifier"  value="2000"/>
-		<field name="Channel_Identifier"  value="2"/>                
+		            <field name="Channel_Identifier"  value="2"/>                
             </parameter>
             
             <parameter tag="DLCI">
@@ -80,8 +79,7 @@
     
     <pause seconds="0.1"/>
     
-    <sendMessageSIGTRAN name="Send DATA1" destScenario="SIGTRAN" 
-    			remoteHost="[localHostV5UA]" remotePort="[localPortV5UA]">    		
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostV5UA]" remotePort="[localPortV5UA]">    		
                 
         <UA name="V5UA" file="v5ua.xml">
         
@@ -90,17 +88,17 @@
             <!-- integer interface identifier -->
             <parameter tag="Integer_Interface_Identifier">
                 <field name="Link_Identifier"  value="2000"/>
-		<field name="Channel_Identifier"  value="2"/>                
+		            <field name="Channel_Identifier"  value="2"/>                
             </parameter>
             
             <parameter tag="DLCI">
-            	    <field name="SAPI" value="0"/>
+            	<field name="SAPI" value="0"/>
 	            <field name="Spare_Bit" value="0"/>
 	            <field name="Zero_Bit" value="0"/>
 	            <field name="TEI" value="1"/>
 	            <field name="Un_Bit" value="1"/>
 	            <field name="EFA" value="ISDN_PROTOCOL"/>
-	    </parameter>
+	         </parameter>
 	    
             <parameter tag="Reason">
             	    <field name="Reason" value="RELEASE_PHYS:Physical layer alarm generated release"/>
@@ -112,8 +110,7 @@
     
     <pause seconds="0.1"/>
     
-    <sendMessageSIGTRAN name="Send DATA1" destScenario="SIGTRAN" 
-    			remoteHost="[localHostV5UA]" remotePort="[localPortV5UA]">    		
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostV5UA]" remotePort="[localPortV5UA]">    		
                 
         <UA name="V5UA" file="v5ua.xml">
         
@@ -125,13 +122,13 @@
             </parameter>
                         
             <parameter tag="DLCI">
-            	    <field name="SAPI" value="0"/>
+            	<field name="SAPI" value="0"/>
 	            <field name="Spare_Bit" value="0"/>
 	            <field name="Zero_Bit" value="0"/>
 	            <field name="TEI" value="1"/>
 	            <field name="Un_Bit" value="1"/>
 	            <field name="EFA" value="ISDN_PROTOCOL"/>
-	    </parameter>
+	         </parameter>
 
             <parameter tag="Reason">
             	    <field name="Reason" value="RELEASE_MGMT:Management layer generated release"/>
