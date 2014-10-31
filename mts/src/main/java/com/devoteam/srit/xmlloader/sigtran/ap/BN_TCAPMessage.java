@@ -108,119 +108,11 @@ public class BN_TCAPMessage extends BN_ASNMessage
     		return "Abort:7";
     	}
     	return null;
-    	/*
-    	Collection<Component> tcapComponents = getTCAPComponents();
-    	Object[] tableComponents = (Object[])tcapComponents.toArray();
-    	if (tableComponents.length >= 1)
-    	{
-    		Component component =  ((Component) tableComponents[0]);
-    		if (component.isInvokeSelected())
-    		{
-    			Invoke invoke = component.getInvoke();
-   			 	return Long.toString(invoke.getOpCode().getLocalValue());
-    		}
-    		else if (component.isReturnResultLastSelected())
-        	{
-    			ReturnResult returnResult = component.getReturnResultNotLast();
-				if (returnResult != null && returnResult.getResultretres() != null)
-				{	
-					return Long.toString(returnResult.getResultretres().getOpCode().getLocalValue());
-				}
-				else
-				{
-					return null;
-				}
-        	}
-    		else if (component.isReturnResultNotLastSelected())
-        	{
-    			ReturnResult returnResult = component.getReturnResultNotLast();
-				if (returnResult != null && returnResult.getResultretres() != null)
-				{	
-					return Long.toString(returnResult.getResultretres().getOpCode().getLocalValue());
-				}
-				else
-				{
-					return null;
-				}
-        	}
-    		else
-    		{
-    			// TO DO use the transaction
-    			return null;
-    		}
-    	}
-    	return null;
-    	*/
     }
     
     public String getResult()
     {
     	return "OK";
-    	/*
-    	Collection<Component> tcapComponents = getTCAPComponents();
-    	Object[] tableComponents = (Object[])tcapComponents.toArray();
-    	if (tableComponents.length >= 1)
-    	{
-    		Component component =  ((Component) tableComponents[0]);
-    		if (component.isInvokeSelected())
-    		{
-				return null;
-			}
-    		else if (component.isReturnResultLastSelected())
-    		{
-    			ReturnResult returnResult = component.getReturnResultLast();
-				return "OK";
-			}
-    		else if (component.isReturnResultNotLastSelected())
-    		{
-    			Invoke invoke = component.getInvoke();
-    			return "ok";
-    		}
-    		else if (component.isReturnErrorSelected())
-    		{
-    			ReturnError returnError = component.getReturnError();
-    			if (returnError.getErrorCode() != null)
-    			{
-    				if (returnError.getErrorCode().isNationalerSelected())
-    				{
-    					return Long.toString(returnError.getErrorCode().getNationaler());
-    				}
-    				if (returnError.getErrorCode().isPrivateerSelected())
-    				{
-    					return Long.toString(returnError.getErrorCode().getPrivateer());
-    				}
-    				else
-    				{
-    					return "KO";
-    				}
-    			}
-    		}
-    		else if (component.isRejectSelected())
-    		{
-    			Reject reject = component.getReject();
-    			if (reject.getProblem() != null)
-    			{
-    				if (reject.getProblem().isGeneralProblemSelected())
-    				{
-    					return Long.toString(reject.getProblem().getGeneralProblem().getValue());
-    				}
-    				else if (reject.getProblem().isInvokeProblemSelected())
-    				{
-    					return Long.toString(reject.getProblem().getInvokeProblem().getValue());
-    				}
-    				else if (reject.getProblem().isReturnErrorProblemSelected())
-    				{
-    					return Long.toString(reject.getProblem().getReturnErrorProblem().getValue());
-    				}
-    				else if (reject.getProblem().isReturnResultProblemSelected())
-    				{
-    					return Long.toString(reject.getProblem().getReturnResultProblem().getValue());
-    				}
-    			}
-    		}
-    	}
-    	return "KO";
-    	*/    	
     }
 
     
