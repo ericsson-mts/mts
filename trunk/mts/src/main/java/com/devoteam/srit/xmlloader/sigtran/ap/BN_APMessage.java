@@ -32,13 +32,11 @@ import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.asn1.ASNMessage;
 import com.devoteam.srit.xmlloader.asn1.BN_ASNMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Component;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Invoke;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Reject;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ReturnError;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ReturnResult;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage;
-
+import com.devoteam.srit.xmlloader.sigtran.ap.map.Component;
+import com.devoteam.srit.xmlloader.sigtran.ap.map.Invoke;
+import com.devoteam.srit.xmlloader.sigtran.ap.map.Reject;
+import com.devoteam.srit.xmlloader.sigtran.ap.map.ReturnError;
+import com.devoteam.srit.xmlloader.sigtran.ap.map.ReturnResult;
 
 /**
  *
@@ -46,18 +44,13 @@ import com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage;
  */
 public class BN_APMessage extends BN_ASNMessage
 {
-	// TCAP layer
-	private ASNMessage tcapMessage;
-	
 	public BN_APMessage(ASNMessage tcapMessage)
 	{
-		this.tcapMessage = tcapMessage;
 	}
 	
-	public BN_APMessage(String className, ASNMessage tcapMessage) throws Exception
+	public BN_APMessage(String className) throws Exception
 	{
 		super(className);
-		this.tcapMessage = tcapMessage;
     }
 
     public String getClassName()
@@ -72,169 +65,135 @@ public class BN_APMessage extends BN_ASNMessage
     
     public boolean isRequest()
     {
+    	Component apMessage = (Component) asnObject;
+    	if (apMessage.isInvokeSelected())
+    	{
+    		return true;
+    	}
+    	else if (apMessage.isReturnResultLastSelected())
         {
-        	Collection<Component> tcapComponents = getTCAPComponents();
-        	Object[] tableComponents = (Object[])tcapComponents.toArray();
-        	if (tableComponents.length >= 1)
-        	{
-        		Component component =  ((Component) tableComponents[0]);
-        		if (component.isInvokeSelected())
-        		{
-        			return true;
-        		}
-        		else
-        		{
-        			return false;
-        		}
-        	}
-        	return false;
+    		return false;
+    	}
+    	else if (apMessage.isRejectSelected())
+        {
+    		return false;
+    	}
+    	else if (apMessage.isReturnErrorSelected())
+        {
+    		return false;
         }
+    	return false;
+
     }
    
     public String getType()
     {
-    	Collection<Component> tcapComponents = getTCAPComponents();
-    	Object[] tableComponents = (Object[])tcapComponents.toArray();
-    	if (tableComponents.length >= 1)
+    	Component apMessage = (Component) asnObject;
+		if (apMessage.isInvokeSelected())
+		{
+			Invoke invoke = apMessage.getInvoke();
+		 	return Long.toString(invoke.getOpCode().getLocalValue().getValue());
+		}
+		else if (apMessage.isReturnResultLastSelected())
     	{
-    		Component component =  ((Component) tableComponents[0]);
-    		if (component.isInvokeSelected())
-    		{
-    			Invoke invoke = component.getInvoke();
-   			 	return Long.toString(invoke.getOpCode().getLocalValue());
-    		}
-    		else if (component.isReturnResultLastSelected())
-        	{
-    			ReturnResult returnResult = component.getReturnResultNotLast();
-				if (returnResult != null && returnResult.getResultretres() != null)
-				{	
-					return Long.toString(returnResult.getResultretres().getOpCode().getLocalValue());
-				}
-				else
-				{
-					return null;
-				}
-        	}
-    		else if (component.isReturnResultNotLastSelected())
-        	{
-    			ReturnResult returnResult = component.getReturnResultNotLast();
-				if (returnResult != null && returnResult.getResultretres() != null)
-				{	
-					return Long.toString(returnResult.getResultretres().getOpCode().getLocalValue());
-				}
-				else
-				{
-					return null;
-				}
-        	}
-    		else
-    		{
-    			// TO DO use the transaction
-    			return null;
-    		}
+			ReturnResult returnResult = apMessage.getReturnResultLast();
+			if (returnResult != null && returnResult.getResultretres() != null)
+			{	
+				return Long.toString(returnResult.getResultretres().getOpCode().getLocalValue().getValue());
+			}
+			else
+			{
+				return null;
+			}
     	}
-    	return null;
+		else
+		{
+			// TO DO use the transaction
+			return null;
+		}
     }
     
     public String getResult()
     {
-    	Collection<Component> tcapComponents = getTCAPComponents();
-    	Object[] tableComponents = (Object[])tcapComponents.toArray();
-    	if (tableComponents.length >= 1)
-    	{
-    		Component component =  ((Component) tableComponents[0]);
-    		if (component.isInvokeSelected())
-    		{
-				return null;
+    	Component apMessage = (Component) asnObject;
+		if (apMessage.isInvokeSelected())
+		{
+			return null;
+		}
+		else if (apMessage.isReturnResultLastSelected())
+		{
+			ReturnResult returnResult = apMessage.getReturnResultLast();
+			return "OK";
+		}
+		else if (apMessage.isReturnErrorSelected())
+		{
+			ReturnError returnError = apMessage.getReturnError();
+			if (returnError.getErrorCode() != null)
+			{
+				if (returnError.getErrorCode().isGlobalValueSelected())
+				{
+					return returnError.getErrorCode().getGlobalValue().getValue();
+				}
+				if (returnError.getErrorCode().isLocalValueSelected())
+				{
+					return Long.toString(returnError.getErrorCode().getLocalValue().getValue());
+				}
+				else
+				{
+					return "KO";
+				}
 			}
-    		else if (component.isReturnResultLastSelected())
-    		{
-    			ReturnResult returnResult = component.getReturnResultLast();
-				return "OK";
+		}
+		else if (apMessage.isRejectSelected())
+		{
+			Reject reject = apMessage.getReject();
+			if (reject.getProblem() != null)
+			{
+				if (reject.getProblem().isGeneralProblemSelected())
+				{
+					return Long.toString(reject.getProblem().getGeneralProblem().getValue());
+				}
+				else if (reject.getProblem().isInvokeProblemSelected())
+				{
+					return Long.toString(reject.getProblem().getInvokeProblem().getValue());
+				}
+				else if (reject.getProblem().isReturnErrorProblemSelected())
+				{
+					return Long.toString(reject.getProblem().getReturnErrorProblem().getValue());
+				}
+				else if (reject.getProblem().isReturnResultProblemSelected())
+				{
+					return Long.toString(reject.getProblem().getReturnResultProblem().getValue());
+				}
 			}
-    		else if (component.isReturnResultNotLastSelected())
-    		{
-    			Invoke invoke = component.getInvoke();
-    			return "ok";
-    		}
-    		else if (component.isReturnErrorSelected())
-    		{
-    			ReturnError returnError = component.getReturnError();
-    			if (returnError.getErrorCode() != null)
-    			{
-    				if (returnError.getErrorCode().isNationalerSelected())
-    				{
-    					return Long.toString(returnError.getErrorCode().getNationaler());
-    				}
-    				if (returnError.getErrorCode().isPrivateerSelected())
-    				{
-    					return Long.toString(returnError.getErrorCode().getPrivateer());
-    				}
-    				else
-    				{
-    					return "KO";
-    				}
-    			}
-    		}
-    		else if (component.isRejectSelected())
-    		{
-    			Reject reject = component.getReject();
-    			if (reject.getProblem() != null)
-    			{
-    				if (reject.getProblem().isGeneralProblemSelected())
-    				{
-    					return Long.toString(reject.getProblem().getGeneralProblem().getValue());
-    				}
-    				else if (reject.getProblem().isInvokeProblemSelected())
-    				{
-    					return Long.toString(reject.getProblem().getInvokeProblem().getValue());
-    				}
-    				else if (reject.getProblem().isReturnErrorProblemSelected())
-    				{
-    					return Long.toString(reject.getProblem().getReturnErrorProblem().getValue());
-    				}
-    				else if (reject.getProblem().isReturnResultProblemSelected())
-    				{
-    					return Long.toString(reject.getProblem().getReturnResultProblem().getValue());
-    				}
-    			}
-    		}
     	}
     	return "KO";    	
     }
-
-    
+   
     public String getTransactionId()
     {
-    	TCMessage tcMessage = (TCMessage) asnObject;
-    	byte[] bytes = null;
-    	if (tcMessage.isBeginSelected())
+    	Component apMessage = (Component) asnObject;
+    	String transId = null;
+    	if (apMessage.isInvokeSelected())
     	{
-    		bytes = tcMessage.getBegin().getOtid().getValue();
+    		transId = String.valueOf(apMessage.getInvoke().getInvokeID().getValue());
     	}
-    	else if (tcMessage.isEndSelected())
+    	else if (apMessage.isReturnResultLastSelected())
         {
-    		bytes = tcMessage.getEnd().getDtid().getValue();
+    		transId = String.valueOf(apMessage.getReturnResultLast().getInvokeID().getValue());
     	}
-    	else if (tcMessage.isContinue1Selected())
+    	else if (apMessage.isRejectSelected())
         {
-    		if (tcMessage.getContinue1().getOtid() != null)
-    		{
-    			bytes = tcMessage.getContinue1().getOtid().getValue();
-    		}
-    		else if (tcMessage.getContinue1().getDtid() != null)
-    		{
-    			bytes = tcMessage.getContinue1().getDtid().getValue();
-    		}
+    		transId = null;
+    	}
+    	else if (apMessage.isReturnErrorSelected())
+        {
+    		transId = String.valueOf(apMessage.getReturnError().getInvokeID().getValue());
         }
-    	else if (tcMessage.isAbortSelected())
-        {
-    		bytes = tcMessage.getAbort().getDtid().getValue();
-    	}
-    	Array array = new DefaultArray(bytes);
-    	return Array.toHexString(array);
+    	return transId;
     }
 
+    /*
     public Collection<Component> getTCAPComponents()
     {
     	if (((TCMessage) asnObject).isBeginSelected())
@@ -259,6 +218,6 @@ public class BN_APMessage extends BN_ASNMessage
     	}
     	return null;
     } 
-    
+    */
     
 }

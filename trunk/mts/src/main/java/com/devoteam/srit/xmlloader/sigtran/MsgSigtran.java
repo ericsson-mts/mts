@@ -119,7 +119,7 @@ public class MsgSigtran extends Msg
 		    	_tcapMessage.decode(ieArray);
 		  
 		    	Array arrayAP = ((BN_TCAPMessage) _tcapMessage).getTCAPComponents();
-				_apMessage = new BN_APMessage("com.devoteam.srit.xmlloader.sigtran.ap.map.Component", _tcapMessage);
+				_apMessage = new BN_APMessage("com.devoteam.srit.xmlloader.sigtran.ap.map.Component");
 				_apMessage.decode(arrayAP);
 	    	}
     	}
@@ -200,19 +200,23 @@ public class MsgSigtran extends Msg
     public String getType() throws Exception 
     {
     	String type = null;
-        if (_tcapMessage != null) 
+        if (_apMessage != null) 
+        {
+            type = _apMessage.getType();
+        }  
+        if (type == null && _tcapMessage != null) 
         {
             type = _tcapMessage.getType();
         }    	
-        else if (_fvoMessage != null) 
+        if (type == null && _fvoMessage != null) 
         {
             type = Integer.toString(_fvoMessage.getMessageType());
         }    	
-        else if (_ieMessage != null) 
+        if (type == null && _ieMessage != null) 
         {
             type = _ieMessage.getType();
         }
-        else if (_tlvMessage != null) 
+        if (type == null && _tlvMessage != null) 
         {
             type = _tlvMessage.getName();
         }
