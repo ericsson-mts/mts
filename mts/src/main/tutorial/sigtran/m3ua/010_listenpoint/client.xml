@@ -14,8 +14,7 @@
     <parameter name="[testcase:localPortClient]" operation="number.add" value="[localPortM3UA]" value2="10000"/>
     <createListenpointSIGTRAN name="lp_client" localHost="[localHostM3UA]" localPort="[testcase:localPortClient]"/>
     
-    <sendMessageSIGTRAN name="Send Notify1" listenpoint="lp_client" destScenario="SIGTRAN" 
-                        remoteHost="[localHostM3UA]" remotePort="[testcase:localPortServer]">
+    <sendMessageSIGTRAN name="Send Notify1" listenpoint="lp_client" remoteHost="[localHostM3UA]" remotePort="[testcase:localPortServer]">
       <UA name="m3ua" file="m3ua.xml">
         <header version="1" reserved="0" messageClass="0" messageType="1"/>
         
