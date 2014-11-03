@@ -95,7 +95,7 @@ public class BN_ASNMessage extends ASNMessage
     
     public void decode(Array array) throws Exception 
     {
-        
+    	// Library binarynotes        
     	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
         InputStream inputStream = new ByteArrayInputStream(array.getBytes());
         Class cl = Class.forName(className);

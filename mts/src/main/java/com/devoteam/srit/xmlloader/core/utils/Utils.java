@@ -29,7 +29,6 @@ import com.devoteam.srit.xmlloader.core.exception.ParsingInputStreamException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
-import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.ExceptionHandlerSingleton;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 
 import gp.utils.arrays.DefaultArray;
@@ -38,6 +37,7 @@ import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -56,6 +56,9 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.dom4j.Document;
+import org.dom4j.io.SAXReader;
 
 /**
  * Utility functions
@@ -1476,5 +1479,41 @@ public class Utils
 		return b;
 	}
 
+	public static Document stringParseXML(String xml, boolean deleteNS) throws Exception
+	{
+		// remove beginning to '<' character
+		int iPosBegin = xml.indexOf('<');
+		if (iPosBegin > 0)
+		{
+			xml = xml.substring(iPosBegin);
+		}
+		// remove from '>' character to the end
+		int iPosEnd = xml.lastIndexOf('>');
+		if ((iPosEnd > 0) && (iPosEnd < xml.length() - 1))
+		{
+			xml = xml.substring(0, iPosEnd + 1);
+		}
+		
+		int iPosXMLLine = xml.indexOf("<?xml");
+		if (iPosXMLLine < 0)
+		{
+			xml = "<?xml version='1.0'?>" + xml;
+		}
+		
+		// remove the namespace because the parser does not support them if there are not declare in the root node
+		if (deleteNS)
+		{
+			xml = xml.replaceAll("<[a-zA-Z\\.0-9_]+:", "<");
+			xml = xml.replaceAll("</[a-zA-Z\\.0-9_]+:", "</");
+		}
+		// remove doctype information (dtd files for the XML syntax)
+		xml = xml.replaceAll("<!DOCTYPE\\s+\\w+\\s+\\w+\\s+[^>]+>", "");
+		
+		InputStream input = new ByteArrayInputStream(xml.getBytes());
+	    SAXReader reader = new SAXReader(false);
+	    reader.setEntityResolver(new XMLLoaderEntityResolver());
+	    Document document = reader.read(input);
+	    return document;
+	}
 	
 }

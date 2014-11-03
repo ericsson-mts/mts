@@ -138,14 +138,17 @@ public class ASNToXMLConverter
 	        	elementName = resultPath.substring(iPos + 1);
 	        }
 	        
-        	// we add a embedded record in the list			
-        	String condition = elementName + "=" + objClass;
-        	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
-        	if (embeddedList != null)
-        	{
-        		message.addConditionalEmbedded(embeddedList);
-        	}
-			
+        	// we add a embedded record in the list		
+	        if (message !=null)
+	        {
+	        	String condition = elementName + "=" + objClass;
+	        	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
+	        	if (embeddedList != null)
+	        	{
+	        		message.addConditionalEmbedded(embeddedList);
+	        	}
+	        }
+	        
 			String retObject = returnXMLObject(resultPath, message, objClass, name, objElementInfo, indent);
 			
 			boolean complexObject = true;
@@ -379,12 +382,16 @@ public class ASNToXMLConverter
 		{
 			return null;
 		}
-		// manage the embedded objects
-		Embedded embedded = message.getEmbeddedByInitial(type);
-		if (embedded == null && name != null)
-    	{
-    		embedded = message.getEmbeddedByInitial(name);
-    	}
+		Embedded embedded = null;
+		if (message != null)
+		{
+			// manage the embedded objects
+			embedded = message.getEmbeddedByInitial(type);
+			if (embedded == null && name != null)
+	    	{
+	    		embedded = message.getEmbeddedByInitial(name);
+	    	}
+		}
 		if (embedded != null) 
 		{
 			byte[] bytesEmbedded = null;

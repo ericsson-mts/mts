@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-    <!-- test exists / create / delete -->
 
+    <!-- test exists / create / delete -->
     <parameter name="[result1]" operation="string.tobinary"   value="123" />
     <parameter name="[result2]" operation="binary.parse"      value="h31 h32 h33" />
     <test parameter="[result1]" condition="binary.equals"     value="[result2]"/>
@@ -125,5 +125,44 @@
     <test parameter="[res1]" condition="string.equals" value="[res]" />
     <parameter name="[res2]" operation="binary.difference" value="fedcba123456120078345678900011" value2="f0123456781200780090001155" />
     <test parameter="[res2]" condition="string.equals" value="[res]" />
+    
+    <parameter name="[xml]" operation="set">
+<![CDATA[<Mo_forwardSM_Arg.Sequence>
+   <sm_RP_DA.Choice>
+      <serviceCentreAddressDA.C4.BoxedType><Bytes>913366600567f9</Bytes></serviceCentreAddressDA.C4.BoxedType>
+   </sm_RP_DA.Choice>
+   <sm_RP_OA.Choice>
+      <msisdn.C2.BoxedType><Bytes>913366317071f3</Bytes></msisdn.C2.BoxedType>
+   </sm_RP_OA.Choice>
+   <sm_RP_UI.BoxedType><Bytes>11080b913366600567f70000a906f3f97c3e9f03</Bytes></sm_RP_UI.BoxedType>
+   <extensionContainer.Sequence>
+      <privateExtensionList.C0.BoxedType>
+         <Collection>
+            <PrivateExtension.Sequence>
+               <extId><ObjectIdentifier>0.1.222.35.11.52.104.22.123</ObjectIdentifier></extId>
+               <extType>04085c922b75c6ded44d</extType>
+            </PrivateExtension.Sequence>
+            <PrivateExtension.Sequence>
+               <extId><ObjectIdentifier>0.1.245</ObjectIdentifier></extId>
+               <extType>04063d8915be8dde</extType>
+            </PrivateExtension.Sequence>
+            <PrivateExtension.Sequence>
+               <extId><ObjectIdentifier>0.1.274.17.8.71.43.36</ObjectIdentifier></extId>
+               <extType>041026cf0456a92341cb4a61c30bd6afcda5</extType>
+            </PrivateExtension.Sequence>
+        </Collection>
+      </privateExtensionList.C0.BoxedType>
+      <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+   </extensionContainer.Sequence>
+   <imsi.BoxedType><Bytes>0412a7e4d2d8403c48e55e751d4f5f5ef0d57a55</Bytes></imsi.BoxedType>
+</Mo_forwardSM_Arg.Sequence>]]></parameter>
+    <parameter name="[asn]" operation="set" value="3081888407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f033048a0443015060901815e230b3468167b04085c922b75c6ded44d300d060301817504063d8915be8dde301c06080182121108472b24041026cf0456a92341cb4a61c30bd6afcda5a10004140412a7e4d2d8403c48e55e751d4f5f5ef0d57a55"/>
+    
+    <parameter name="[asnresult]" operation="binary.xmlToAsn" value="[xml]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" />
+    <test parameter="[asnresult]" condition="binary.equals" value="[asn]" />
+    <parameter name="[xmlresult]" operation="binary.asnToXml" value="[asn]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" />
+    <parameter name="[xml]" operation="string.regexReplaces" value="[xml]" value2=" " value3=""/>
+    <parameter name="[xmlresult]" operation="string.regexReplaces" value="[xmlresult]" value2=" " value3=""/>
+    <test parameter="[xmlresult]" condition="string.equals" value="[xml]" />
     
 </scenario>
