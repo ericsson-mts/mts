@@ -165,10 +165,14 @@ public class XMLToASNParser
     public Object parseField(String resultPath, ASNMessage message, Element element, Field field, String type, Object object, String className) throws Exception 
     {    	
     	// manage the embedded objects
-    	Embedded embedded = message.getEmbeddedByInitial(type);
-    	if (embedded == null && field != null)
+    	Embedded embedded = null;
+    	if (message != null)
     	{
-    		embedded = message.getEmbeddedByInitial(field.getName());
+    		embedded = message.getEmbeddedByInitial(type);
+	    	if (embedded == null && field != null)
+	    	{
+	    		embedded = message.getEmbeddedByInitial(field.getName());
+	    	}
     	}
 		if (embedded != null) 
 		{            
@@ -290,19 +294,21 @@ public class XMLToASNParser
         }
         
         // get the condition for embedded objects
-        String elementName = resultPath;
-        int iPos = resultPath.lastIndexOf(".");
-        if (iPos > 0)
+        if (message != null)
         {
-        	elementName = resultPath.substring(iPos + 1);
+	        String elementName = resultPath;
+	        int iPos = resultPath.lastIndexOf(".");
+	        if (iPos > 0)
+	        {
+	        	elementName = resultPath.substring(iPos + 1);
+	        }
+	    	String condition = elementName + "=" + value;
+	    	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
+	    	if (embeddedList != null)
+	    	{
+	    		message.addConditionalEmbedded(embeddedList);
+	    	}
         }
-    	String condition = elementName + "=" + value;
-    	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
-    	if (embeddedList != null)
-    	{
-    		message.addConditionalEmbedded(embeddedList);
-    	}
-    	
     	return value;
     }
 
