@@ -16,6 +16,7 @@
     <parameter name="[length]" operation="string.length" value="[data]"/>
     
     <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="45">
+      <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
       <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
       <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
       <parameter name="[result]" operation="protocol.setFromMessage" value="message.result"/>
@@ -28,7 +29,7 @@
   	<parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
     <parameter name="[length]" operation="string.length" value="[data]"/>			
 	
-    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]">
+    <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
         
     <!-- AP LAYER -->
     <AP className="com.devoteam.srit.xmlloader.sigtran.ap.map.Component">

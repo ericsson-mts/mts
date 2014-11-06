@@ -11,11 +11,14 @@
 
 <scenario>
 
+    <openChannelSIGTRAN name="channel" localHost="[localHostM3UA]" localPort="[localPortM3UA]" 
+                                       remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]"/>
+
     <!-- Message encoded value -->
   	<parameter name="[data]" value="010001010000007c021000740000375800003715030200040900030e180b12060012046895112233580a129100120468951114864762454804f78203016b1e281c060700118605010101a011600f80020780a1090607040000010025036c1da11b02010002015530138006916895111486a109810791689511223358" />
     <parameter name="[length]" operation="string.length" value="[data]"/>			
 
-    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]">
+    <sendMessageSIGTRAN name="Send DATA1" channel="channel">
     
     <!-- AP LAYER -->
     <AP className="com.devoteam.srit.xmlloader.sigtran.ap.map.Component">
@@ -133,7 +136,7 @@
     <parameter name="[data]" value="01000101000000940210008a0000371500003758030200010980030d170a529100120468951114860a120600120468950100205e645c4904f78203016b2a2828060700118605010101a01d611b80020780a109060704000001002503a203020100a305a1030201006c28a2260201003021020155301ca00a800842904900003023f3a10e04069168950100308100840204f00000" />
     <parameter name="[length]" operation="string.length" value="[data]"/>
 
-    <receiveMessageSIGTRAN name="Wait DATA1" request="false" type="85" result="OK">
+    <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="false" type="85" result="OK">
 		    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
     </receiveMessageSIGTRAN>
 
@@ -144,7 +147,7 @@
   	<parameter name="[data]" value="01000101000000a8021000a00000375800003715030200050900030d170a120800120468950100300a129100120468951114867462724804f88203016b1e281c060700118605010101a011600f80020780a1090607040000010026036c4aa148020100020153304030038001010406916895111486a016800101a1058003910810a40a80010f8205431cac1503820842904900003023f3860101a70880010da3030a0101890201fe" />
     <parameter name="[length]" operation="string.length" value="[data]"/>			
 			
-    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]">
+    <sendMessageSIGTRAN name="Send DATA1" channel="channel">
     
     <!-- AP LAYER -->
     <AP className="com.devoteam.srit.xmlloader.sigtran.ap.map.Component">
@@ -298,7 +301,7 @@
     <parameter name="[data]" value="01000101000000940210008a0000371500003758030200010980030d170a529100120468951114860a120600120468950100205e645c4904f78203016b2a2828060700118605010101a01d611b80020780a109060704000001002503a203020100a305a1030201006c28a2260201003021020155301ca00a800842904900003023f3a10e04069168950100308100840204f00000" />
     <parameter name="[length]" operation="string.length" value="[data]"/>
 
-    <receiveMessageSIGTRAN name="Wait DATA1" request="false" type="83" result="OK">
+    <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="false" type="83" result="OK">
 		    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
     </receiveMessageSIGTRAN>
 
@@ -308,5 +311,8 @@
     <!-- Message encoded value -->
   	<parameter name="[data]" value="01000101000000a8021000a00000375800003715030200050900030d170a120800120468950100300a129100120468951114867462724804f88203016b1e281c060700118605010101a011600f80020780a1090607040000010026036c4aa148020100020153304030038001010406916895111486a016800101a1058003910810a40a80010f8205431cac1503820842904900003023f3860101a70880010da3030a0101890201fe" />
     <parameter name="[length]" operation="string.length" value="[data]"/>			
+
+    <!-- remove pb of TIME_WAIT state -->
+    <!--closeChannelSIGTRAN name="channel"/-->
 
 </scenario>

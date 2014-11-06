@@ -28,6 +28,7 @@ import gp.utils.arrays.Integer32Array;
 import gp.utils.arrays.SupArray;
 
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +48,7 @@ import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.MessageQ931;
+import com.devoteam.srit.xmlloader.gtp.ChannelGtp;
 import com.devoteam.srit.xmlloader.asn1.ASNMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.BN_APMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.BN_TCAPMessage;
@@ -168,6 +170,31 @@ public class StackSigtran extends Stack {
         
 
         return msgSigtran;
+    }
+
+    /** Creates a Channel specific to each Stack */
+    @Override
+    public Channel parseChannelFromXml(Element root, String protocol) throws Exception
+    {
+        String name       = root.attributeValue("name");
+        String localHost  = root.attributeValue("localHost");
+        String localPort  = root.attributeValue("localPort");
+        String remoteHost = root.attributeValue("remoteHost");
+        String remotePort = root.attributeValue("remotePort");
+
+        if (existsChannel(name))
+        {
+            return getChannel(name);
+        }
+        else
+        {
+            if(null != localHost) localHost = InetAddress.getByName(localHost).getHostAddress();
+            else                  localHost = "0.0.0.0";
+
+            if(null != remoteHost) remoteHost = InetAddress.getByName(remoteHost).getHostAddress();
+
+            return new ChannelSigtran(name, localHost, localPort, remoteHost, remotePort, protocol);
+        }
     }
 
     /** 
