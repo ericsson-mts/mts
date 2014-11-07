@@ -70,52 +70,57 @@ public class MsgSctp extends Msg{
 
         if(params[0].equalsIgnoreCase("header")) 
         {
-            if(params[1].equalsIgnoreCase("stream")) 
-            {
-            	var.add(Integer.toString(this.sctpData.sndrcvinfo.sinfo_stream));
-            }
-            else if(params[1].equalsIgnoreCase("ssn")) 
-            {
-            	var.add(Integer.toString(this.sctpData.sndrcvinfo.sinfo_ssn));
-            }
-            else if(params[1].equalsIgnoreCase("ppid")) 
-            {
-            	int ppid = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_ppid);
-            	var.add(Integer.toString(ppid));
-            }
-            else if(params[1].equalsIgnoreCase("tsn")) 
-            {
-            	int tsn = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_tsn);
-            	var.add(Long.toString(tsn));
-            }
-            else if(params[1].equalsIgnoreCase("aid")) 
-            {
-            	int aid = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_assoc_id.hashCode());
-            	var.add(Integer.toString(aid));
-				setAidFromMsg();
-            }
-            else if(params[1].equalsIgnoreCase("sourceHost")) 
-            {
-				SocketSctp socketSctp=((ChannelSctp) getChannel()).getSocketSctp();
-				Collection<InetAddress> col = socketSctp.getSctpSocket().getPeerInetAddresses(sctpData.sndrcvinfo.sinfo_assoc_id);
-				for(InetAddress ia : col)
-				{	if (ia instanceof Inet4Address)
-					{
-						var.add(ia.getHostAddress());
-						break;
+        	if (this.sctpData != null && this.sctpData.sndrcvinfo != null)
+        	{
+	            if(params[1].equalsIgnoreCase("stream")) 
+	            {
+	            	var.add(Integer.toString(this.sctpData.sndrcvinfo.sinfo_stream));
+	            }
+	            else if(params[1].equalsIgnoreCase("ssn")) 
+	            {
+	            	var.add(Integer.toString(this.sctpData.sndrcvinfo.sinfo_ssn));
+	            }
+	            else if(params[1].equalsIgnoreCase("ppid")) 
+	            {
+	            	int ppid = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_ppid);
+	            	var.add(Integer.toString(ppid));
+	            }
+	            else if(params[1].equalsIgnoreCase("tsn")) 
+	            {
+	            	int tsn = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_tsn);
+	            	var.add(Long.toString(tsn));
+	            }
+	            else if(params[1].equalsIgnoreCase("aid")) 
+	            {
+	            	int aid = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_assoc_id.hashCode());
+	            	var.add(Integer.toString(aid));
+					setAidFromMsg();
+	            }
+	            else if(params[1].equalsIgnoreCase("sourceHost")) 
+		        {
+					SocketSctp socketSctp=((ChannelSctp) getChannel()).getSocketSctp();
+					Collection<InetAddress> col = socketSctp.getSctpSocket().getPeerInetAddresses(sctpData.sndrcvinfo.sinfo_assoc_id);
+					for(InetAddress ia : col)
+					{	
+						// support IPV6 address
+						// if (ia instanceof Inet4Address)
+						{
+							var.add(ia.getHostAddress());
+							break;
+						}
 					}
-				}
-            }
-            else if(params[1].equalsIgnoreCase("sourcePort")) 
-            {
-				ChannelSctp connSctp =((ChannelSctp) getChannel());
-				int port=connSctp.getSocketSctp().getSctpSocket().getPeerInetPort(sctpData.sndrcvinfo.sinfo_assoc_id);
-				var.add(Integer.toString(port));
-            }
-            else 
-            {
-            	Parameter.throwBadPathKeywordException(path);
-            }
+		        }
+		        else if(params[1].equalsIgnoreCase("sourcePort")) 
+		        {
+					ChannelSctp connSctp =((ChannelSctp) getChannel());
+					int port=connSctp.getSocketSctp().getSctpSocket().getPeerInetPort(sctpData.sndrcvinfo.sinfo_assoc_id);
+					var.add(Integer.toString(port));
+		        }
+		        else 
+		        {
+		        	Parameter.throwBadPathKeywordException(path);
+		        }
+        	}
         }
         else if(params[0].equalsIgnoreCase("data")) 
         {
