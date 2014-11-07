@@ -120,7 +120,7 @@ public class TextMessage {
         // parsing of the content of the message
         Header contentType = parser.getHeader("Content-Type");
         Header boundary = contentType.parseParameter("boundary", ";", '=', "<>", "\"\"");
-        contentParser = new ContentParser(protocol, content.trim(), boundary.getHeader(0));
+        contentParser = new ContentParser(protocol, content, boundary.getHeader(0));
 
         // calculate the complete message
         StringBuilder buff = new StringBuilder(this.headers);
