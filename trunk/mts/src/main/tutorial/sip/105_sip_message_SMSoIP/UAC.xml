@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <parameter name="[xmlMAPMessage]" operation="set">
+<![CDATA[<Mo_forwardSM_Arg.Sequence>
+   <sm_RP_DA.Choice>
+      <serviceCentreAddressDA.C4.BoxedType><Bytes>913366600567f9</Bytes></serviceCentreAddressDA.C4.BoxedType>
+   </sm_RP_DA.Choice>
+   <sm_RP_OA.Choice>
+      <msisdn.C2.BoxedType><Bytes>913366317071f3</Bytes></msisdn.C2.BoxedType>
+   </sm_RP_OA.Choice>
+   <sm_RP_UI.BoxedType><Bytes>11080b913366600567f70000a906f3f97c3e9f03</Bytes></sm_RP_UI.BoxedType>
+   <extensionContainer.Sequence>
+      <privateExtensionList.C0.BoxedType>
+         <Collection>
+            <PrivateExtension.Sequence>
+               <extId><ObjectIdentifier>0.1.222.35.11.52.104.22.123</ObjectIdentifier></extId>
+               <extType>04085c922b75c6ded44d</extType>
+            </PrivateExtension.Sequence>
+            <PrivateExtension.Sequence>
+               <extId><ObjectIdentifier>0.1.245</ObjectIdentifier></extId>
+               <extType>04063d8915be8dde</extType>
+            </PrivateExtension.Sequence>
+            <PrivateExtension.Sequence>
+               <extId><ObjectIdentifier>0.1.274.17.8.71.43.36</ObjectIdentifier></extId>
+               <extType>041026cf0456a92341cb4a61c30bd6afcda5</extType>
+            </PrivateExtension.Sequence>
+        </Collection>
+      </privateExtensionList.C0.BoxedType>
+      <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+   </extensionContainer.Sequence>
+   <imsi.BoxedType><Bytes>0412a7e4d2d8403c48e55e751d4f5f5ef0d57a55</Bytes></imsi.BoxedType>
+</Mo_forwardSM_Arg.Sequence>]]></parameter>
+    
+    <parameter name="[binMAPMessage]" operation="binary.xmlToAsn" value="[xmlMAPMessage]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" />
+    <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/> 
+
+    <parameter name="[inviteeName1]" operation="set" value="bob"/>
+    <parameter name="[105_DOMAIN_ADDR]" operation="set" value="devoteam.com"/>
+    <parameter name="[clientName]" operation="set" value="alice"/>
+    <parameter name="[clientAddr]" operation="set" value="192.168.56.32"/>
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+    <parameter name="[newCallId]" operation="number.random" value="10000000"/>
+    <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+		<sendMessageSIP name="Send MESSAGE" destScenario="bob">
+<![CDATA[MESSAGE sip:[inviteeName1]@[105_DOMAIN_ADDR] SIP/2.0
+To: sip:[inviteeName1]@[105_DOMAIN_ADDR]
+From: "[clientName]"<sip:[clientName]@[105_DOMAIN_ADDR]>;tag=[localTag]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] MESSAGE
+Contact: <sip:bob@[localSIP]>;+g.poc.talkburst
+Max-Forwards: 70
+User-Agent: PoC-client/OMA1.0 Siemens/v2.0
+Accept-Contact: +g.poc.groupad;require;explicit
+Server: PoC-client/OMA1.0 Siemens/v2.0
+Route: <sip:[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:[localSIP];lr;id=[inviteeName1]>
+Expires: 0
+Content-Type: application/vnd.3gpp.sms
+Content-Length: x
+
+[strMAPMessage]
+]]>
+		</sendMessageSIP>
+		<receiveMessageSIP name="Wait 200 OK" request="false" type="MESSAGE" result="200">
+		</receiveMessageSIP>
+
+</scenario>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+    
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+    
+		<receiveMessageSIP name="Wait MESSAGE" request="true" type="MESSAGE">
+    		<parameter name="[to]" operation="protocol.setFromMessage" value="header.To"/>
+    		<parameter name="[from]" operation="protocol.setFromMessage" value="header.From"/>
+    		<parameter name="[callId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    		<parameter name="[cSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    		<parameter name="[localTag]" operation="string.random" value="10"/>
+    		<parameter name="[via]" operation="protocol.setFromMessage" value="header.Via"/>
+        <parameter name="[content]" operation="protocol.setFromMessage" value="header.Via"/>
+		</receiveMessageSIP>
+    
+    <parameter name="[xmlresult]" operation="binary.asnToXml" value="[content]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" />
+    
+		<sendMessageSIP name="Send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+Via: [Via]
+CSeq: [CSeq]
+Content-Length: 0
+]]>		
+    </sendMessageSIP>
+</scenario>
