@@ -51,7 +51,6 @@ public abstract class Channel
     public Channel(String name)
     {
         this.name = name;
-        // this.UID = Utils.newUID();
     }
 
     /** Creates a new instance of Channel */

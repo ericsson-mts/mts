@@ -178,22 +178,32 @@ public class StackSigtran extends Stack {
     {
         String name       = root.attributeValue("name");
         String localHost  = root.attributeValue("localHost");
+        if (localHost ==  null)
+        {
+        	localHost = InetAddress.getByName(localHost).getHostAddress();
+        }
         String localPort  = root.attributeValue("localPort");
+        
         String remoteHost = root.attributeValue("remoteHost");
+        if (remoteHost == null)
+        {
+        	remoteHost = InetAddress.getByName(remoteHost).getHostAddress();
+        }
         String remotePort = root.attributeValue("remotePort");
+        
+        String transport = root.attributeValue("transport");
+        if (transport == null)
+        {
+        	transport = getConfig().getString("listenpoint.TRANSPORT");
+        }
 
         if (existsChannel(name))
         {
             return getChannel(name);
         }
         else
-        {
-            if(null != localHost) localHost = InetAddress.getByName(localHost).getHostAddress();
-            else                  localHost = "0.0.0.0";
-
-            if(null != remoteHost) remoteHost = InetAddress.getByName(remoteHost).getHostAddress();
-
-            return new ChannelSigtran(name, localHost, localPort, remoteHost, remotePort, protocol);
+        {            	
+            return new ChannelSigtran(name, localHost, localPort, remoteHost, remotePort, protocol, transport);
         }
     }
 
