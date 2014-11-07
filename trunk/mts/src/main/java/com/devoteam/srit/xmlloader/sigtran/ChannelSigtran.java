@@ -26,44 +26,57 @@ package com.devoteam.srit.xmlloader.sigtran;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
-
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.msrp.MsgMsrp;
+import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
 import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
+import com.devoteam.srit.xmlloader.tls.ChannelTls;
+import com.devoteam.srit.xmlloader.udp.ChannelUdp;
+
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class ChannelSigtran extends Channel
 {
-    private ChannelTcp channel = null;
-
-    // --- constructeur --- //
-    public ChannelSigtran(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception {
-    	super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        channel = new ChannelTcp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-    }
-
-    public ChannelSigtran(String name, Listenpoint listenpoint, Socket socket) throws Exception
+    private Channel channel = null;
+    private String transport = null;
+    
+    // --- constructure --- //
+    public ChannelSigtran(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, String aTransport) throws Exception 
     {
-        super(
-                name,
-                ((InetSocketAddress)socket.getLocalSocketAddress()).getAddress().getHostAddress(),
-                Integer.toString(((InetSocketAddress)socket.getLocalSocketAddress()).getPort()),
-                ((InetSocketAddress)socket.getRemoteSocketAddress()).getAddress().getHostAddress(),
-                Integer.toString(((InetSocketAddress)socket.getRemoteSocketAddress()).getPort()),
-                listenpoint.getProtocol()
-        );
-        channel = new ChannelTcp(name, listenpoint, socket);
+    	super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+
+        transport = aTransport;
+        if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
+        {
+        	channel = new ChannelTcp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+        }
+        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_TLS))
+        {
+        	channel = new ChannelTls(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+        }
+        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
+        {
+        	channel = new ChannelSctp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+        }
+        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_UDP))
+        {
+        	channel = new ChannelUdp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol,true);
+        }
+        else
+        {
+        	throw new Exception("openChannelSIGTRAN operation : Bad transport value for " + transport);
+        }
+
     }
 
     // --- basic methods --- //
     public boolean open() throws Exception {
-        boolean result = channel.open();
-
-        return result;
+        return channel.open();
     }
-
+    
     /** Send a Msg to Channel */
-    public boolean sendMessage(Msg msg) throws Exception{
+    public boolean sendMessage(Msg msg) throws Exception{ 
         if (null == channel)
             throw new Exception("Channel is null, has one channel been opened ?");
 
@@ -71,26 +84,24 @@ public class ChannelSigtran extends Channel
             msg.setChannel(this);
 
         channel.sendMessage(msg);
+
         return true;
     }
-
+    
     public boolean close(){
         try {
-            channel.close();
+        	channel.close();
         } catch (Exception e) {
             // nothing to do
         }
         channel = null;
         return true;
     }
-
-    @Override
-    public String getTransport() {
-        return StackFactory.PROTOCOL_TCP;
+    
+    /** Get the transport protocol of this message */
+    public String getTransport() 
+    {
+        return transport;
     }
-
-    public boolean isServer(){
-        return (channel.getListenpointTcp() != null);
-    }
-
+    
 }
