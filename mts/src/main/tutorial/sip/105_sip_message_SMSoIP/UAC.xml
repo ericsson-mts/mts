@@ -3,7 +3,7 @@
 
 <scenario>
 
-    <parameter name="[xmlMAPMessage]" operation="set">
+    <!--parameter name="[xmlMAPMessage]" operation="set">
 <![CDATA[<Mo_forwardSM_Arg.Sequence>
    <sm_RP_DA.Choice>
       <serviceCentreAddressDA.C4.BoxedType><Bytes>913366600567f9</Bytes></serviceCentreAddressDA.C4.BoxedType>
@@ -34,7 +34,9 @@
    <imsi.BoxedType><Bytes>0412a7e4d2d8403c48e55e751d4f5f5ef0d57a55</Bytes></imsi.BoxedType>
 </Mo_forwardSM_Arg.Sequence>]]></parameter>
     
-    <parameter name="[binMAPMessage]" operation="binary.xmlToAsn" value="[xmlMAPMessage]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" />
+    <parameter name="[binMAPMessage]" operation="binary.xmlToAsn" value="[xmlMAPMessage]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" /-->
+    
+    <parameter name="[binMAPMessage]" operation="set" value="010807913366317071f307913366600567f706f3f97c3e9f03"/>
     <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/> 
 
     <parameter name="[inviteeName1]" operation="set" value="bob"/>
@@ -66,9 +68,8 @@ Expires: 0
 Content-Type: application/vnd.3gpp.sms
 Content-Length: x
 
-[strMAPMessage]
-]]>
-		</sendMessageSIP>
+[strMAPMessage]]]></sendMessageSIP>
+
 		<receiveMessageSIP name="Wait 200 OK" request="false" type="MESSAGE" result="200">
 		</receiveMessageSIP>
 
