@@ -55,7 +55,10 @@ class SCTPNode extends NodeImplementation {
 		events.sctp_association_event = true;
 		sctp_socket.subscribeEvents(events);
 		if(settings.port()!=0) {
-			sctp_socket.bind(settings.port());
+			// FH modif 
+			// sctp_socket.bind(settings.port());
+			InetAddress inetAddr = InetAddress.getByName(settings.hostId());
+			sctp_socket.bind(inetAddr, settings.port());
 			sctp_socket.listen();
 		} else {
 			sctp_socket.bind();
