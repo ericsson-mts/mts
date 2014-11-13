@@ -116,11 +116,30 @@ public class MsgSigtran extends Msg
 	    		// decode TCAP layer with Mobicent library
 	    		Array ieArray = paramFvo.encode();
 	    		_tcapMessage = new BN_TCAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage");
-		    	_tcapMessage.decode(ieArray);
+	    		try
+	    		{
+	    			_tcapMessage.decode(ieArray);
+	    		}
+	    		catch (Exception e)
+	    		{
+	    			// nothing to do : man not an AP layer (ASN1)
+	    			_tcapMessage = null;
+	    		}
 		  
-		    	Array arrayAP = ((BN_TCAPMessage) _tcapMessage).getTCAPComponents();
-				_apMessage = new BN_APMessage("com.devoteam.srit.xmlloader.sigtran.ap.map.Component");
-				_apMessage.decode(arrayAP);
+	    		if (_tcapMessage != null)
+	    		{
+			    	Array arrayAP = ((BN_TCAPMessage) _tcapMessage).getTCAPComponents();
+					_apMessage = new BN_APMessage("com.devoteam.srit.xmlloader.sigtran.ap.map.Component");
+		    		try
+		    		{
+						_apMessage.decode(arrayAP);
+		    		}
+		    		catch (Exception e)
+		    		{
+		    			// nothing to do : man not an AP layer (ASN1)
+		    			_apMessage = null;
+		    		}
+	    		}
 	    	}
     	}
     }
