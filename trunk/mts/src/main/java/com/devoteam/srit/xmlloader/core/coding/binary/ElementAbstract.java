@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+
 import org.dom4j.Element;
 
 
@@ -108,19 +109,22 @@ public abstract class ElementAbstract implements Cloneable
             {
             	tagStr = elementRoot.attributeValue("tag");
             }
-    		tagStr = tagStr.trim();
-        	int iPos = tagStr.indexOf(":");
-        	String label = null;
-        	String value = tagStr;
-        	if (iPos >= 0)
-        	{
-        		label = tagStr.substring(0, iPos);
-        		value = tagStr.substring(iPos + 1);
-        	}
-    		
-        	int tagInt = getTagValueFromBinary(value);
-        	this.tag = tagInt;
-        	this.label = label;	
+            if (tagStr != null)
+            {
+	    		tagStr = tagStr.trim();
+	        	int iPos = tagStr.indexOf(":");
+	        	String label = null;
+	        	String value = tagStr;
+	        	if (iPos >= 0)
+	        	{
+	        		label = tagStr.substring(0, iPos);
+	        		value = tagStr.substring(iPos + 1);
+	        	}
+	    		
+	        	int tagInt = getTagValueFromBinary(value);
+	        	this.tag = tagInt;
+	        	this.label = label;
+            }
     	}
     	
     	// for Q931 protocols
@@ -155,9 +159,11 @@ public abstract class ElementAbstract implements Cloneable
         }
         
         // initiate the Array containing the fields
-        this.fieldsArray = new SupArray();
+        SupArray tempArray = new SupArray();
         Array emptyArray = new DefaultArray(getLengthElem() / 8);
-       	this.fieldsArray.addFirst(emptyArray);
+        tempArray.addFirst(emptyArray);
+       	this.fieldsArray = tempArray;
+       	
        	this.subelementsArray = new SupArray();
        	
         // set the value for each fields
@@ -474,4 +480,15 @@ public abstract class ElementAbstract implements Cloneable
 		return this.label;
 	}
 
+	// do not use experimental for development
+	public void setLabel(String label) {
+		this.label = label;
+	}
+	
+	// do not use experimental for development
+	public void addField(FieldAbstract field) {
+		fields.add(field);
+		fieldsByName.put(label, field);
+	}
+	
 }

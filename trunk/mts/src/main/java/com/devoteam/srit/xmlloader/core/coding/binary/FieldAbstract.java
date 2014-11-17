@@ -154,7 +154,12 @@ public abstract class FieldAbstract
         	// GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Exception in toString() method for field " + this._name);
         	// nothing to do 
         }
-        elemString.append("type=\"" + this.getClass().getSimpleName().split("Field")[0] + "\" ");
+        String type = this.getClass().getSimpleName().split("Field")[0];
+        if ("NumberBCD".equalsIgnoreCase(type))
+        {
+        	type = "Number_BCD";
+        }
+        elemString.append("type=\"" + type + "\" ");
         elemString.append("lengthBit=\"" + this.length + "\" ");
         elemString.append("/>\n");
         return elemString.toString();
@@ -213,5 +218,15 @@ public abstract class FieldAbstract
     	Array array = new DefaultArray(0);
     	return toXml(array);
     }
+
+    // do not use experimental for development
+	public void setName(String name) {
+		this.name = name;
+	}
+
+    // do not use experimental for development
+	public void setLength(int length) {
+		this.length = length;
+	}
 
 }

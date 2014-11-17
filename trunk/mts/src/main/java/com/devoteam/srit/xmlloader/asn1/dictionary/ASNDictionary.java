@@ -26,6 +26,12 @@ package com.devoteam.srit.xmlloader.asn1.dictionary;
 import java.util.HashMap;
 import java.util.List;
 
+import com.devoteam.srit.xmlloader.core.coding.binary.BooleanField;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementSimple;
+import com.devoteam.srit.xmlloader.core.coding.binary.IntegerField;
+import com.devoteam.srit.xmlloader.core.coding.binary.NumberBCDField;
+
 
 /**
  *
@@ -38,11 +44,16 @@ public class ASNDictionary
     
 	// list of embedded objects
 	private static EmbeddedMap embeddedList;
-	
+
+	// list of binary objects
+	private HashMap<String, ElementAbstract> binaryByLabel;
+
     public ASNDictionary()
     {
-    	// TCAP dico
 		embeddedList = new EmbeddedMap();
+		binaryByLabel = new HashMap<String, ElementAbstract>();
+		
+    	// TCAP dico
 		Embedded embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueOC", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.ExternalPDU",
@@ -176,6 +187,31 @@ public class ASNDictionary
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForLCS_Res",
 				"localValue=85");
 		embeddedList.addEmbedded(embedded);
+		
+		// binary field
+		ElementSimple binary = new ElementSimple();
+		binary.setLabel("ISDN_AddressString");
+		BooleanField extension = new BooleanField();
+		extension.setName("extension");
+		extension.setLength(1);
+		extension.setOffset(0);
+		binary.addField(extension);
+		IntegerField natureAddress = new IntegerField();
+		natureAddress.setName("nature of address");
+		natureAddress.setLength(3);
+		natureAddress.setOffset(1);
+		binary.addField(natureAddress);
+		IntegerField numberingPlan = new IntegerField();
+		numberingPlan.setName("numbering plan");
+		numberingPlan.setLength(4);
+		numberingPlan.setOffset(4);
+		binary.addField(numberingPlan);
+		NumberBCDField digits = new NumberBCDField();
+		digits.setName("digits");
+		//digits.setLength(1);
+		digits.setOffset(8);
+		binary.addField(digits);
+		binaryByLabel.put(binary.getLabel(), binary);
     }
 	
 	public static ASNDictionary getInstance()
@@ -195,6 +231,11 @@ public class ASNDictionary
     public List<Embedded> getEmbeddedByCondition(String condition) 
 	{
     	return embeddedList.getEmbeddedByCondition(condition);
+	}
+
+    public ElementAbstract getBinaryByLabel(String label) 
+	{
+    	return binaryByLabel.get(label);
 	}
 
 }

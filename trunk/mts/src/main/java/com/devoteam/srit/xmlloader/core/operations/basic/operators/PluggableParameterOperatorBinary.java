@@ -502,7 +502,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     
                     String ret = "";
                     String resultPath = "";
-                    ret += ASNToXMLConverter.getInstance().toXML(resultPath, null, "value", objASN, null, ASNToXMLConverter.NUMBER_SPACE_TABULATION * 2);
+                    ret += ASNToXMLConverter.getInstance().toXML(resultPath, null, null, "value", objASN, null, ASNToXMLConverter.NUMBER_SPACE_TABULATION * 2);
                     result.add(ret);
                 }
                 else
