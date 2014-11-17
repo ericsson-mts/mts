@@ -129,7 +129,7 @@ public class BN_ASNMessage extends ASNMessage
         String ret = "";
         ret += "<AP className=\"" + className + "\">\n" + ASNToXMLConverter.indent(ASNToXMLConverter.NUMBER_SPACE_TABULATION);
         String resultPath = "";
-        ret += ASNToXMLConverter.getInstance().toXML(resultPath, this, "value", this.asnObject, null, ASNToXMLConverter.NUMBER_SPACE_TABULATION * 2);
+        ret += ASNToXMLConverter.getInstance().toXML(resultPath, this, null, "value", this.asnObject, null, ASNToXMLConverter.NUMBER_SPACE_TABULATION * 2);
         ret += "\n";
         ret += "</AP>";
     	return ret;

@@ -25,9 +25,14 @@ package com.devoteam.srit.xmlloader.asn1;
 
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementSimple;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+
+import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -93,7 +98,7 @@ public class ASNToXMLConverter
 		return document;
 	}
 
-	public String toXML(String resultPath, ASNMessage message, String name, Object objClass, ASN1ElementMetadata objElementInfo, int indent) 
+	public String toXML(String resultPath, ASNMessage message, Object parentObj, String name, Object objClass, ASN1ElementMetadata objElementInfo, int indent) 
 	{
 		String ret = "";
 		try 
@@ -149,7 +154,7 @@ public class ASNToXMLConverter
 	        	}
 	        }
 	        
-			String retObject = returnXMLObject(resultPath, message, objClass, name, objElementInfo, indent);
+			String retObject = returnXMLObject(resultPath, message, parentObj, objClass, name, objElementInfo, indent);
 			
 			boolean complexObject = true;
 			if (retObject != null || fieldsSize == 1)
@@ -235,7 +240,7 @@ public class ASNToXMLConverter
 							{
 								ret += "\n" + indent(indent);
 							}
-							ret += toXML(resultPath, message, f.getName(), subObj, subobjElementInfo, indent + NUMBER_SPACE_TABULATION);
+							ret += toXML(resultPath, message, objClass, f.getName(), subObj, subobjElementInfo, indent + NUMBER_SPACE_TABULATION);
 							k = k + 1;
 						}
 						indent = indent - NUMBER_SPACE_TABULATION;
@@ -250,7 +255,7 @@ public class ASNToXMLConverter
 							ret += "\n" + indent(indent);
 						}
 
-						ret += toXML(resultPath, message, f.getName(), subObject, subobjElementInfo, indent + NUMBER_SPACE_TABULATION);
+						ret += toXML(resultPath, message, objClass, f.getName(), subObject, subobjElementInfo, indent + NUMBER_SPACE_TABULATION);
 					}
 					if (subObject != null)
 					{
@@ -373,7 +378,7 @@ public class ASNToXMLConverter
 		return ret;
 	}
 
-	private String returnXMLObject(String resultPath, ASNMessage message, Object subObject, String name, ASN1ElementMetadata objElementInfo, int indent)
+	private String returnXMLObject(String resultPath, ASNMessage message, Object parentObj, Object subObject, String name, ASN1ElementMetadata objElementInfo, int indent)
 			throws Exception {
 		String ret = "";
 		Class subClass = subObject.getClass();
@@ -414,16 +419,41 @@ public class ASNToXMLConverter
 			Object obj = cl.newInstance();
 			obj = decoder.decode(inputStream, cl);
 			ret += "\n" + indent(indent);
-			ret += toXML(resultPath, message, "value", obj, objElementInfo, indent + NUMBER_SPACE_TABULATION);
+			ret += toXML(resultPath, message, subObject, "value", obj, objElementInfo, indent + NUMBER_SPACE_TABULATION);
 			ret += "\n" + indent(indent - NUMBER_SPACE_TABULATION);
 			return ret;
 		} 
 		else if (type.equals("byte[]")) 
 		{
 			byte[] bytes = (byte[]) subObject;
-			ret += Utils.toHexaString(bytes, "");
-			return ret;
-
+        	// manage binary objects as list of field
+        	String simpleName = parentObj.getClass().getSimpleName();
+        	ElementAbstract binaryDico = ASNDictionary.getInstance().getBinaryByLabel(simpleName);
+        	if (binaryDico != null)
+        	{
+        		//ElementSimple binary = binaryDico.copyToClone();
+        		Array array = new DefaultArray(bytes);
+        		binaryDico.decodeFromArray(array, null);
+        		ret = binaryDico.toXml().trim();
+        		// remove <element> tag
+        		int pos = ret.indexOf('\n');
+        		if (pos >= 0)
+        		{
+        			ret = ret.substring(pos);
+        		}
+        		// remove </element> tag
+        		pos = ret.lastIndexOf('\n');
+        		if (pos >= 0)
+        		{
+        			ret = ret.substring(0, pos) +'\n';
+        		}
+        		return ret;
+        	}
+        	else
+        	{
+				ret += Utils.toHexaString(bytes, "");
+				return ret;
+        	}
 		} 
 		else if (type.equals("java.lang.Boolean") || type.equals("boolean")) 
 		{

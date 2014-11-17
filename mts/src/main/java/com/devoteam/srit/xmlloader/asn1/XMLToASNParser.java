@@ -25,6 +25,8 @@ package com.devoteam.srit.xmlloader.asn1;
 
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementSimple;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -37,6 +39,7 @@ import com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ObjectId;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult;
 
+import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
 import java.io.ByteArrayOutputStream;
@@ -237,8 +240,22 @@ public class XMLToASNParser
         }
         else if (type.equals("byte[]")) 
         {
-        	// not a simple value so return
-            return new DefaultArray(Utils.parseBinaryString("h" + element.getTextTrim())).getBytes();
+        	// manage binary objects as list of field
+        	String simpleName = object.getClass().getSimpleName();
+        	ElementAbstract binary = ASNDictionary.getInstance().getBinaryByLabel(simpleName);
+        	if (binary != null)
+        	{
+        		binary = new ElementSimple();
+	        	binary.parseFromXML(element, null, null);
+	        	Array array = binary.encodeToArray();
+	        	return array.getBytes();
+        	}
+        	else
+        	{
+            	// not a simple value so return
+        		Array array = new DefaultArray(Utils.parseBinaryString("h" + element.getTextTrim()));
+        		return array.getBytes();
+        	}
         }
         else if (type.endsWith(".EnumType"))  
         {
