@@ -131,9 +131,17 @@ public class ASNInitializer
 				if (typeActualTypeArg.length > 0)
 				{
 				for (int j = 0; j <= 2; j++)
-					{		
-						Class tabClass = (Class) typeActualTypeArg[0];
-						Object tabObject = getSubObject(message, objClass, tabClass);	
+					{	
+						Object tabObject = null;
+						if ("byte[]".equals(typeActualTypeArg[0].toString()))
+						{
+							tabObject = randomBytes();
+						}
+						else
+						{
+							Class tabClass = (Class) typeActualTypeArg[0];
+							tabObject = getSubObject(message, objClass, tabClass);
+						}
 			    		if (tabObject != null)
 			    		{
 			    			list.add(tabObject);
@@ -189,14 +197,7 @@ public class ASNInitializer
         }
     	else if (type.equals("byte[]"))
     	{
-    		int numByte = (int) Utils.randomLong(0, 20L);
-    		Array data = new RandomArray(numByte);
-    		SupArray supArray = new SupArray();
-    		supArray.addLast(data);
-    		// add a tag to be compliant with asn1 data
-    		Array tag = new DefaultArray(new byte[]{4, (byte)numByte});
-    		supArray.addFirst(tag);
-    		return supArray.getBytes();
+    		return randomBytes();
     	}
     	else if (type.equals("java.lang.Boolean") || type.equals("boolean"))
     	{
@@ -284,5 +285,16 @@ public class ASNInitializer
 	    }
 	    return strBuilder.toString();
 	}
-    
+
+	public static byte[] randomBytes()
+	{	
+		int numByte = (int) Utils.randomLong(0, 20L);
+		Array data = new RandomArray(numByte);
+		SupArray supArray = new SupArray();
+		supArray.addLast(data);
+		// add a tag to be compliant with asn1 data
+		Array tag = new DefaultArray(new byte[]{4, (byte)numByte});
+		supArray.addFirst(tag);
+		return supArray.getBytes();
+	}
 }

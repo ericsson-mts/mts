@@ -342,18 +342,25 @@ public class XMLToASNParser
         }
         else if (field.getType().getCanonicalName().contains("Collection")) 
         {
-            // type DANS la collection
-
             // Récupérer le type des élements de la collection
-            Type[] elementParamTypeTab = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
+        	ParameterizedType genType = (ParameterizedType) field.getGenericType();
+			Type[] typeActualTypeArg = genType.getActualTypeArguments();
 
             // Exception si la collection n'a pas un seul argument
-            if (elementParamTypeTab.length != 1) 
+            if (typeActualTypeArg.length != 1) 
             {
                 throw new RuntimeException("Message d'erreur");
             }
 
-            Class collectionElementType = (Class) elementParamTypeTab[0];
+            String nameClass = null; 
+			if ("byte[]".equals(typeActualTypeArg[0].toString()))
+			{
+				 nameClass = typeActualTypeArg[0].toString();
+			}
+			else
+			{	
+				nameClass = ((Class) typeActualTypeArg[0]).getCanonicalName();
+			}
 
             // creer la collection
             ArrayList<Object> listInstance = new ArrayList<Object>();
@@ -362,7 +369,7 @@ public class XMLToASNParser
             List<Element> children = element.elements();
             for (Element elementInstance : children) 
             {
-            	Object value = parseField(resultPath, message, elementInstance, null, collectionElementType.getCanonicalName(), objClass, className);
+            	Object value = parseField(resultPath, message, elementInstance, null, nameClass, objClass, className);
                 // pour chaque <instance>
                 listInstance.add(value);
             }
