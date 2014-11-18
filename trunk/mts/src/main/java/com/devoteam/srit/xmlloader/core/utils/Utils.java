@@ -435,7 +435,7 @@ public class Utils
 	}
     
     /**
-     * generates a string of nb*"    " (four spaces nb times), used for intentation in printAvp
+     * generates a string of nb*"    " (four spaces nb times), used for indentation in printAvp
      */
     public static String indent(int nb)
     {

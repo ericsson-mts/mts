@@ -434,19 +434,8 @@ public class ASNToXMLConverter
         		//ElementSimple binary = binaryDico.copyToClone();
         		Array array = new DefaultArray(bytes);
         		binaryDico.decodeFromArray(array, null);
-        		ret = binaryDico.toXml().trim();
-        		// remove <element> tag
-        		int pos = ret.indexOf('\n');
-        		if (pos >= 0)
-        		{
-        			ret = ret.substring(pos);
-        		}
-        		// remove </element> tag
-        		pos = ret.lastIndexOf('\n');
-        		if (pos >= 0)
-        		{
-        			ret = ret.substring(0, pos) +'\n';
-        		}
+        		ret += binaryDico.fieldsToXml(indent);
+        		ret += indent(indent - 2 * NUMBER_SPACE_TABULATION);
         		return ret;
         	}
         	else
@@ -513,8 +502,7 @@ public class ASNToXMLConverter
 	}
 
 	/**
-	 * generates a string of nb*"    " (four spaces nb times), used for
-	 * intentation in printAvp
+	 * generates a string of nb*"    " (four spaces nb times), used for indentation in printAvp
 	 */
 	public static String indent(int nb) {
 		String str = "";

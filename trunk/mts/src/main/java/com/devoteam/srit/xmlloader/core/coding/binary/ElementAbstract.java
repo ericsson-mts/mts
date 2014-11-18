@@ -440,13 +440,23 @@ public abstract class ElementAbstract implements Cloneable
         }
         elemString.append("\">");
         
+        elemString.append(fieldsToXml(4));
+                
+        elemString.append("</element>");
         elemString.append("\n");
         
+        return elemString.toString();
+    }
+
+    public String fieldsToXml(int indent) 
+    {
+        StringBuilder elemString = new StringBuilder();
+        elemString.append("\n");
 		Iterator<FieldAbstract> iterField = this.fields.iterator();
 		while (iterField.hasNext())
 		{
 			FieldAbstract field = (FieldAbstract) iterField.next();
-            elemString.append(field.toXml(this.fieldsArray));
+            elemString.append(field.toXml(this.fieldsArray, indent));
         }
         
         Iterator<ElementAbstract> iterElem = this.elements.iterator();
@@ -457,8 +467,6 @@ public abstract class ElementAbstract implements Cloneable
             elemString.append(elemInfo.toString());
         }
         
-        elemString.append("</element>");
-        elemString.append("\n");
         return elemString.toString();
     }
 
