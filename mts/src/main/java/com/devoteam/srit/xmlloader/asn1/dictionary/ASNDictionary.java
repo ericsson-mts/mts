@@ -212,6 +212,31 @@ public class ASNDictionary
 		digits.setOffset(8);
 		binary.addField(digits);
 		binaryByLabel.put(binary.getLabel(), binary);
+		
+		binary = new ElementSimple();
+		binary.setLabel("ServiceCentreAddress");
+		extension = new BooleanField();
+		extension.setName("extension");
+		extension.setLength(1);
+		extension.setOffset(0);
+		binary.addField(extension);
+		natureAddress = new IntegerField();
+		natureAddress.setName("nature of address");
+		natureAddress.setLength(3);
+		natureAddress.setOffset(1);
+		binary.addField(natureAddress);
+		numberingPlan = new IntegerField();
+		numberingPlan.setName("numbering plan");
+		numberingPlan.setLength(4);
+		numberingPlan.setOffset(4);
+		binary.addField(numberingPlan);
+		digits = new NumberBCDField();
+		digits.setName("digits");
+		//digits.setLength(1);
+		digits.setOffset(8);
+		binary.addField(digits);
+		binaryByLabel.put(binary.getLabel(), binary);
+
     }
 	
 	public static ASNDictionary getInstance()

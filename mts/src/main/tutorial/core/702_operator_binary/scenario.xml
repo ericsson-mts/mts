@@ -129,15 +129,20 @@
     <parameter name="[xml]" operation="set">
 <![CDATA[<Mo_forwardSM_Arg.Sequence>
    <sm_RP_DA.Choice>
-      <serviceCentreAddressDA.C4.BoxedType><Bytes>913366600567f9</Bytes></serviceCentreAddressDA.C4.BoxedType>
+      <serviceCentreAddressDA.C4.BoxedType><Bytes>
+            <field name="extension" value="1" type="Boolean" lengthBit="1"/>
+            <field name="nature of address" value="1" type="Integer" lengthBit="3"/>
+            <field name="numbering plan" value="1" type="Integer" lengthBit="4"/>
+            <field name="digits" value="33660650769" type="Number_BCD" lengthBit="0"/>      
+      </Bytes></serviceCentreAddressDA.C4.BoxedType>
    </sm_RP_DA.Choice>
    <sm_RP_OA.Choice>
       <msisdn.C2.BoxedType><Bytes>
-          <field name="extension" value="1" type="Boolean" lengthBit="1"/>
-          <field name="nature of address" value="1" type="Integer" lengthBit="3"/>
-          <field name="numbering plan" value="1" type="Integer" lengthBit="4"/>
-          <field name="digits" value="33661307173" type="Number_BCD" lengthBit="0"/>
-        </Bytes></msisdn.C2.BoxedType>
+            <field name="extension" value="1" type="Boolean" lengthBit="1"/>
+            <field name="nature of address" value="1" type="Integer" lengthBit="3"/>
+            <field name="numbering plan" value="1" type="Integer" lengthBit="4"/>
+            <field name="digits" value="33661307173" type="Number_BCD" lengthBit="0"/>
+      </Bytes></msisdn.C2.BoxedType>
    </sm_RP_OA.Choice>
    <sm_RP_UI.BoxedType><Bytes>11080b913366600567f70000a906f3f97c3e9f03</Bytes></sm_RP_UI.BoxedType>
    <extensionContainer.Sequence>

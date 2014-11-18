@@ -28,7 +28,9 @@ import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
 
+import com.devoteam.srit.xmlloader.asn1.ASNToXMLConverter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import org.dom4j.Element;
 
@@ -140,10 +142,11 @@ public abstract class FieldAbstract
     	this.offset = source.offset;
     }
     
-    public String toXml(Array array) {
+    public String toXml(Array array, int indent) {
 
         StringBuilder elemString = new StringBuilder();
-        elemString.append("    <field ");
+        elemString.append(ASNToXMLConverter.indent(indent));
+        elemString.append("<field ");
         elemString.append("name=\"" + this.name + "\" ");
         try
         {
@@ -216,7 +219,7 @@ public abstract class FieldAbstract
     public String toString() 
     {
     	Array array = new DefaultArray(0);
-    	return toXml(array);
+    	return toXml(array, 4);
     }
 
     // do not use experimental for development
