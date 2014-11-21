@@ -165,6 +165,17 @@ public class ASNDictionary
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.ReadyForSM_Res",
 				"localValue=66");
 		embeddedList.addEmbedded(embedded);
+		// 70=provideSubscriberInfo MESSAGE
+		embedded = new Embedded(
+				"invokeparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.ProvideSubscriberInfoArg",
+				"localValue=70");
+		embeddedList.addEmbedded(embedded);
+		embedded = new Embedded(
+				"returnparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.ProvideSubscriberInfoRes",
+				"localValue=70");
+		embeddedList.addEmbedded(embedded);
 		// 83=provideSubscriberLocation MESSAGE
 		embedded = new Embedded(
 				"invokeparameter", 
