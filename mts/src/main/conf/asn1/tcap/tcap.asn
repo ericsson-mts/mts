@@ -143,7 +143,7 @@ ReturnResult ::=	SEQUENCE {
 
 ReturnError ::=	SEQUENCE {
 				invokeID				InvokeIdType,
-				errorCode				ErrorCode,
+				errorCode				ERROR1, -- FH ErrorCode,
 				parameter				ANY  OPTIONAL } -- FH parameter				Parameter  OPTIONAL }
  
 -- ANY is filled by the single ASN.1 data type following the keyword PARAMETER in the type definition
@@ -161,14 +161,15 @@ Reject ::=		SEQUENCE {
 
 InvokeIdType ::=	INTEGER (-128..127)
 
-
+-- FH change/modify
 OPERATION1	::=	CHOICE {
 							localValue INTEGER,
 							globalValue OBJECT IDENTIFIER } 
 
--- FH ERROR	::=	CHOICE {
--- FH			localValue INTEGER,
--- FH			globalValue OBJECT IDENTIFIER } 
+-- FH change/modify
+ERROR1	::=	CHOICE {
+			localValue INTEGER,
+			globalValue OBJECT IDENTIFIER } 
 
 -- OPERATIONS
 

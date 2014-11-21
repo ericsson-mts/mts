@@ -204,9 +204,9 @@ public class BN_TCAPMessage extends BN_ASNMessage
     	
     	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
         InputStream inputStream = new ByteArrayInputStream(array.getBytes());
-        Class cl = Class.forName(Component.class.getCanonicalName());
+        Class<?> cl = Class.forName(Component.class.getCanonicalName());
         component = (Component) cl.newInstance();
-        component = decoder.decode(inputStream, cl);
+        component = (Component) decoder.decode(inputStream, cl);
         comps.add(component);
         
         ComponentPortion compPortion = new ComponentPortion();

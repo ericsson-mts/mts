@@ -110,7 +110,7 @@ public class ASNDictionary
 				null); 
 		embeddedList.addEmbedded(embedded);
 		// MAP dico
-		// sendRoutingInfoForSM MESSAGE 
+		// 45=sendRoutingInfoForSM MESSAGE 
 		embedded = new Embedded(
 				"invokeparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForSMArg",
@@ -121,7 +121,7 @@ public class ASNDictionary
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForSM_Res",
 				"localValue=45");
 		embeddedList.addEmbedded(embedded);
-		// mt-forwardSM MESSAGE
+		// 44=mt-forwardSM MESSAGE
 		embedded = new Embedded(
 				"invokeparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mt_forwardSM_Arg",
@@ -132,7 +132,7 @@ public class ASNDictionary
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mt_forwardSM_Res",
 				"localValue=44");
 		embeddedList.addEmbedded(embedded);
-		// mo-forwardSM MESSAGE
+		// 46=mo-forwardSM MESSAGE
 		embedded = new Embedded(
 				"invokeparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg",
@@ -143,7 +143,7 @@ public class ASNDictionary
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Res",
 				"localValue=46");
 		embeddedList.addEmbedded(embedded);
-		// reportSM-DeliveryStatus MESSAGE
+		// 47=reportSM-DeliveryStatus MESSAGE
 		embedded = new Embedded(
 				"invokeparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.ReportSM_DeliveryStatusArg",
@@ -154,7 +154,7 @@ public class ASNDictionary
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.ReportSM_DeliveryStatusRes",
 				"localValue=47");
 		embeddedList.addEmbedded(embedded);
-		// readyForSM MESSAGE
+		// 66=readyForSM MESSAGE
 		embedded = new Embedded(
 				"invokeparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.ReadyForSM_Arg",
@@ -165,7 +165,7 @@ public class ASNDictionary
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.ReadyForSM_Res",
 				"localValue=66");
 		embeddedList.addEmbedded(embedded);
-		// provideSubscriberLocation MESSAGE
+		// 83=provideSubscriberLocation MESSAGE
 		embedded = new Embedded(
 				"invokeparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.ProvideSubscriberLocation_Arg",
@@ -175,7 +175,7 @@ public class ASNDictionary
 				"returnparameter", 
 				"com.devoteam.srit.xmlloader.sigtran.ap.map.ProvideSubscriberLocation_Res",
 				"localValue=83"); 
-		// subscriberLocationReport MESSAGE
+		// 85=subscriberLocationReport MESSAGE
 		embeddedList.addEmbedded(embedded);
 		embedded = new Embedded(
 				"invokeparameter", 
@@ -188,7 +188,15 @@ public class ASNDictionary
 				"localValue=85");
 		embeddedList.addEmbedded(embedded);
 		
+		// 1=UnknownSubscriberParam ERROR
+		embedded = new Embedded(
+				"errorparameter", 
+				"com.devoteam.srit.xmlloader.sigtran.ap.map.UnknownSubscriberParam",
+				"localValue=1");
+		embeddedList.addEmbedded(embedded);
+
 		// binary field
+		/*
 		ElementSimple binary = new ElementSimple();
 		binary.setLabel("ISDN_AddressString");
 		BooleanField extension = new BooleanField();
@@ -236,7 +244,7 @@ public class ASNDictionary
 		digits.setOffset(8);
 		binary.addField(digits);
 		binaryByLabel.put(binary.getLabel(), binary);
-
+		*/
     }
 	
 	public static ASNDictionary getInstance()
