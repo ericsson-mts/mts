@@ -427,12 +427,10 @@ public class MsgSigtran extends Msg
 	        	FvoParameter paramFvo = _fvoMessage.getVparameter("Data");
 	        	if (paramFvo ==  null)
 	        	{
+	        		// get SS7 "Long_Data" VParameter => BUG does not work ! why ? 
 	        		paramFvo = _fvoMessage.getVparameter("Long_Data");
 	        	}
-	        	if (paramFvo != null)
-	        	{
-	        		paramFvo.parseArray(arrayTCAP);
-	        	}
+	        	paramFvo.parseArray(arrayTCAP);
         	}
         	
         	if (_ieMessage != null)
