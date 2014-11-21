@@ -6,20 +6,19 @@
     <parameter name="[localHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]"/>
     <!--parameter name="[localHostM3UA]" operation="set" value="164.48.85.81"/-->
-    <parameter description="local address of the MTS host" editable="true" name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]"/>
+    <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
     <parameter name="[localPortM3UA]" operation="number.add" value="[localPortM3UA]" value2="10000"/>
-    <parameter description="local port of the MTS host" editable="true" name="[localPortM3UA]" operation="set" value="[localPortM3UA]"/>
-    <!--parameter name="[localPortM3UA]" operation="number.add" value="[localPortM3UA]" value2="1000"/-->
+    <parameter name="[localPortM3UA]" operation="set" value="[localPortM3UA]" description="local port of the MTS host" editable="true" />
     <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>	
     
     <parameter name="[remoteHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]"/>
     <!--parameter name="[remoteHostM3UA]" operation="set" value="164.48.85.83"/-->
-    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]"/>
+    <parameter name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]" description="remote address of the SUT host" editable="true"/>
     <!--parameter name="[remotePortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/-->
     <parameter name="[remotePortM3UA]" operation="set" value="2905"/>
-    <parameter description="remote port of the SUT host" editable="true" name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]"/>
+    <parameter name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]" description="remote port of the SUT host" editable="true"/>
     <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>
     
     <parameter name="[transport]" operation="set" value="TCP" editable="true"/>		
@@ -52,6 +51,11 @@
     <testcase name="066_readyForSM" description="test sigtran TCAP" state="true">
         <scenario name="client" file="066_readyForSM/client.xml" routingName="client"/>
         <scenario name="server" file="066_readyForSM/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.UA"/>
+    </testcase>
+
+    <testcase name="070_provideSubscriberInfo" description="test sigtran TCAP" state="true">
+        <scenario name="client" file="070_provideSubscriberInfo/client.xml" routingName="client"/>
+        <scenario name="server" file="070_provideSubscriberInfo/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.UA"/>
     </testcase>
     
     <testcase name="801_Mobicent_simulator" description="test sigtran MAP" state="true">
