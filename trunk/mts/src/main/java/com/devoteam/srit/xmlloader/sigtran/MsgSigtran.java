@@ -278,7 +278,11 @@ public class MsgSigtran extends Msg
     @Override
     public String getResult() throws Exception 
     {
-        if (_tcapMessage != null) 
+    	if (_apMessage != null) 
+        {
+            return "" + _apMessage.getResult();
+        } 
+    	else if (_tcapMessage != null) 
         {
             return "" + _tcapMessage.getResult();
         }    	
@@ -296,6 +300,10 @@ public class MsgSigtran extends Msg
     @Override
     public boolean isRequest()
     {
+        if (_apMessage != null) 
+        {
+            return _apMessage.isRequest();
+        }    	
         if (_tcapMessage != null) 
         {
             return _tcapMessage.isRequest();
@@ -312,7 +320,11 @@ public class MsgSigtran extends Msg
     	if (!this.isTransactionIdSet)
         {
     		String transID = "null";
-	    	if (_tcapMessage != null) 
+	    	if (_apMessage != null) 
+	        {
+	    		transID = _apMessage.getTransactionId();
+	        }
+	    	else if (_tcapMessage != null) 
 	        {
 	    		transID = _tcapMessage.getTransactionId();
 	        }

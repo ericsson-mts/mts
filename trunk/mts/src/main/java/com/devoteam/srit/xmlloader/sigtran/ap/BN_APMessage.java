@@ -37,6 +37,7 @@ import com.devoteam.srit.xmlloader.sigtran.ap.map.Invoke;
 import com.devoteam.srit.xmlloader.sigtran.ap.map.Reject;
 import com.devoteam.srit.xmlloader.sigtran.ap.map.ReturnError;
 import com.devoteam.srit.xmlloader.sigtran.ap.map.ReturnResult;
+import com.devoteam.srit.xmlloader.sigtran.ap.map.ReturnResult.ResultretresSequenceType;
 
 /**
  *
@@ -92,25 +93,34 @@ public class BN_APMessage extends BN_ASNMessage
 		if (apMessage.isInvokeSelected())
 		{
 			Invoke invoke = apMessage.getInvoke();
-		 	return Long.toString(invoke.getOpCode().getLocalValue().getValue());
+			if (invoke.getOpCode() != null && invoke.getOpCode().getLocalValue() != null)
+			{
+				return Long.toString(invoke.getOpCode().getLocalValue().getValue());
+			}
 		}
 		else if (apMessage.isReturnResultLastSelected())
     	{
 			ReturnResult returnResult = apMessage.getReturnResultLast();
 			if (returnResult != null && returnResult.getResultretres() != null)
-			{	
-				return Long.toString(returnResult.getResultretres().getOpCode().getLocalValue().getValue());
-			}
-			else
 			{
-				return null;
+				ResultretresSequenceType resultretresSequenceType = returnResult.getResultretres(); 
+				if (resultretresSequenceType.getOpCode() != null && resultretresSequenceType.getOpCode().getLocalValue() != null)
+				{
+					return Long.toString(returnResult.getResultretres().getOpCode().getLocalValue().getValue());
+				}
 			}
     	}
-		else
-		{
-			// TO DO use the transaction
+		else if (apMessage.isReturnErrorSelected())
+    	{
+			
 			return null;
-		}
+    	}
+		else if (apMessage.isRejectSelected())
+    	{
+			
+			return null;
+    	}
+		return null;
     }
     
     public String getResult()
@@ -132,15 +142,15 @@ public class BN_APMessage extends BN_ASNMessage
 			{
 				if (returnError.getErrorCode().isGlobalValueSelected())
 				{
-					return returnError.getErrorCode().getGlobalValue().getValue();
+					return "Error:" + returnError.getErrorCode().getGlobalValue().getValue();
 				}
 				if (returnError.getErrorCode().isLocalValueSelected())
 				{
-					return Long.toString(returnError.getErrorCode().getLocalValue().getValue());
+					return "Error:" + Long.toString(returnError.getErrorCode().getLocalValue().getValue());
 				}
 				else
 				{
-					return "KO";
+					return "Error";
 				}
 			}
 		}
@@ -151,19 +161,23 @@ public class BN_APMessage extends BN_ASNMessage
 			{
 				if (reject.getProblem().isGeneralProblemSelected())
 				{
-					return Long.toString(reject.getProblem().getGeneralProblem().getValue());
+					return "Reject:General:" + Long.toString(reject.getProblem().getGeneralProblem().getValue());
 				}
 				else if (reject.getProblem().isInvokeProblemSelected())
 				{
-					return Long.toString(reject.getProblem().getInvokeProblem().getValue());
+					return "Reject:Invoke:" + Long.toString(reject.getProblem().getInvokeProblem().getValue());
 				}
 				else if (reject.getProblem().isReturnErrorProblemSelected())
 				{
-					return Long.toString(reject.getProblem().getReturnErrorProblem().getValue());
+					return "Reject:Error:" + Long.toString(reject.getProblem().getReturnErrorProblem().getValue());
 				}
 				else if (reject.getProblem().isReturnResultProblemSelected())
 				{
-					return Long.toString(reject.getProblem().getReturnResultProblem().getValue());
+					return "Reject:Result:" + Long.toString(reject.getProblem().getReturnResultProblem().getValue());
+				}
+				else
+				{
+					return "Reject";
 				}
 			}
     	}
@@ -192,32 +206,5 @@ public class BN_APMessage extends BN_ASNMessage
         }
     	return transId;
     }
-
-    /*
-    public Collection<Component> getTCAPComponents()
-    {
-    	if (((TCMessage) asnObject).isBeginSelected())
-    	{
-    		return ((TCMessage) asnObject).getBegin().getComponents().getValue();
-    	}
-    	else if (((TCMessage) asnObject).isEndSelected())
-    	{
-    		return ((TCMessage) asnObject).getEnd().getComponents().getValue();
-    	}
-    	else if (((TCMessage) asnObject).isContinue1Selected())
-    	{
-    		return ((TCMessage) asnObject).getContinue1().getComponents().getValue();
-    	}
-    	else if (((TCMessage) asnObject).isAbortSelected())
-    	{
-    		return null;
-    	}
-    	else if (((TCMessage) asnObject).isUnidirectionalSelected())
-    	{
-    		return ((TCMessage) asnObject).getUnidirectional().getComponents().getValue();
-    	}
-    	return null;
-    } 
-    */
-    
+   
 }
