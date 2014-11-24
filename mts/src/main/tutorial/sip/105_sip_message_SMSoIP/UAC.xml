@@ -36,6 +36,7 @@
     
     <parameter name="[binMAPMessage]" operation="binary.xmlToAsn" value="[xmlMAPMessage]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" /-->
     
+    <!-- send RP-DATA -->
     <parameter name="[binMAPMessage]" operation="set" value="010807913366317071f307913366600567f706f3f97c3e9f03"/>
     <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/> 
 
@@ -47,8 +48,6 @@
     <parameter name="[newBranchId]" operation="string.random" value="10"/>
     <parameter name="[newCallId]" operation="number.random" value="10000000"/>
     <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
-
-    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
 
 		<sendMessageSIP name="Send MESSAGE" destScenario="bob">
 <![CDATA[MESSAGE sip:[inviteeName1]@[105_DOMAIN_ADDR] SIP/2.0
@@ -73,4 +72,34 @@ Content-Length: x
 		<receiveMessageSIP name="Wait 200 OK" request="false" type="MESSAGE" result="200">
 		</receiveMessageSIP>
 
+<receiveMessageSIP name="Wait MESSAGE" request="true" type="MESSAGE">
+    		<parameter name="[to]" operation="protocol.setFromMessage" value="header.To"/>
+    		<parameter name="[from]" operation="protocol.setFromMessage" value="header.From"/>
+    		<parameter name="[callId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    		<parameter name="[cSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    		<parameter name="[via]" operation="protocol.setFromMessage" value="header.Via"/>
+        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+		</receiveMessageSIP>
+    
+    <!--parameter name="[xmlresult]" operation="binary.asnToXml" value="[content]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" /-->
+    
+    <!-- receive RP-ACK -->    
+    <parameter name="[binMAPMessage]" operation="set" value="0208"/>
+    <!-- send RP-ERROR -->
+    <parameter name="[binMAPMessage]" operation="set" value="0408016F"/>
+    <parameter name="[content]" operation="string.toBinary" value="[content]"/>
+    <!--test parameter="[content]" condition="binary.equals" value="[binMAPMessage]"/-->
+    
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+		<sendMessageSIP name="Send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [to];tag=[localTag]
+From: [from]
+Call-ID: [callId]
+Via: [via]
+CSeq: [cSeq]
+Content-Length: 0
+]]>		
+    </sendMessageSIP>
+    
 </scenario>
