@@ -341,6 +341,11 @@ public class TlvMessage {
         }
     }
     
+    public String getProtocol() 
+    {
+    	return "SIGTRAN." + _dictionary.get_layer();
+    }
+    
     public boolean isRequest()
     {
     	String typeName = _dictionary.messageTypeName(getMessageClass(), getMessageType());
