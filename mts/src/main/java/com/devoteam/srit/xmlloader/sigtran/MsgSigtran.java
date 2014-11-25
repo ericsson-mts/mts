@@ -270,7 +270,7 @@ public class MsgSigtran extends Msg
         }
         if (type == null && _tlvMessage != null) 
         {
-            type = _tlvMessage.getName();
+            type = _tlvMessage.getType();
         }
         return type;
 	}
@@ -285,8 +285,11 @@ public class MsgSigtran extends Msg
     	else if (_tcapMessage != null) 
         {
             return "" + _tcapMessage.getResult();
-        }    	
-
+        }
+    	else if (_tlvMessage != null) 
+        {
+            return "" + _tlvMessage.getResult();
+        }
         // TODO !!!!!!!!!!!!!!!!!!!!!
         return null;
     }
@@ -304,10 +307,14 @@ public class MsgSigtran extends Msg
         {
             return _apMessage.isRequest();
         }    	
-        if (_tcapMessage != null) 
+        else if (_tcapMessage != null) 
         {
             return _tcapMessage.isRequest();
-        }    	
+        }
+        else if (_tlvMessage != null) 
+        {
+            return _tlvMessage.isRequest();
+        }
         // TODO !!!!!!!!!!!!!!!!!!!!
         return false;
     }
