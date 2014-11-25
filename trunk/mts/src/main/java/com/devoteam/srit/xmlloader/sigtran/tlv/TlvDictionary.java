@@ -43,6 +43,9 @@ import com.devoteam.srit.xmlloader.sigtran.StackSigtran;
  */
 public class TlvDictionary {
 
+    private int _ppid;
+    private String _layer;
+    
     private HashMap<String, Integer> messageClassValue;
     private HashMap<Integer, String> messageClassName;
     private HashMap<String, String> messageTypeValue;
@@ -51,8 +54,6 @@ public class TlvDictionary {
     private HashMap<Integer, String> parameterName;
     private HashMap<String, String> enumerationFromCode;
     private HashMap<String, String> enumerationFromName;
-    private int _ppid;
-
 
     public TlvDictionary(InputStream stream, Stack stack) throws Exception {
 
@@ -81,6 +82,7 @@ public class TlvDictionary {
         Element root = (Element) document.selectSingleNode("/dictionary");
         String ppidStr = root.attributeValue("ppid");
         _ppid = Integer.parseInt(ppidStr);
+        _layer = root.attributeValue("layer");
 
         //Class and type
         List listClassType = document.selectNodes("/dictionary/classType/class");
@@ -223,7 +225,11 @@ public class TlvDictionary {
         return _ppid;
     }
 
-    public String messageClassName(int classValue) {
+    public String get_layer() {
+		return _layer;
+	}
+
+	public String messageClassName(int classValue) {
         return messageClassName.get(classValue);
     }
 
@@ -277,21 +283,4 @@ public class TlvDictionary {
         return enumerationFromName.get(fieldName + ":" + enumCode);
     }
 
-//    public TlvParameter enumeration(String enumerationName, int code, MsgSigtran msg) {
-//        String enumerationName_code = enumerationName + ":" + ((Integer) code).toString();
-//        TlvParameter param = enumerationFromCode.get(enumerationName_code);
-//        if (param != null) {
-//            param.setMsg(msg);
-//        }
-//        return param;
-//    }
-//
-//    public TlvParameter enumeration(String enumerationName,String valueName, MsgSigtran msg) {
-//        String enumerationName_name = enumerationName + ":" + valueName;
-//        TlvParameter param = enumerationFromName.get(enumerationName_name);
-//        if (param != null) {
-//            param.setMsg(msg);
-//        }
-//        return param;
-//    }
 }

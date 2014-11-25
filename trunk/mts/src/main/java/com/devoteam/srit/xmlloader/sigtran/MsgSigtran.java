@@ -230,7 +230,8 @@ public class MsgSigtran extends Msg
         }
         if (type == null && _tlvMessage != null) 
         {
-        	return StackFactory.PROTOCOL_SIGTRAN + ".UA";
+        	return _tlvMessage.getProtocol();
+        	// return StackFactory.PROTOCOL_SIGTRAN + ".UA";
         }
         return StackFactory.PROTOCOL_SIGTRAN;
     }
