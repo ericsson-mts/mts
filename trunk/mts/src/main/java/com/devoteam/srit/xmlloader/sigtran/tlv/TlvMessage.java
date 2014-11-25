@@ -340,6 +340,27 @@ public class TlvMessage {
             getParameters().add(parameter);
         }
     }
+    
+    public boolean isRequest()
+    {
+    	String typeName = _dictionary.messageTypeName(getMessageClass(), getMessageType());
+    	if (typeName.contains("Ack"))
+    	{
+    		return false;
+    	}
+    	return true;
+    }
+
+    public String getType() throws Exception 
+    {
+    	String typeName = _dictionary.messageTypeName(getMessageClass(), getMessageType());
+    	return typeName;
+    }
+    
+    public String getResult() throws Exception 
+    {
+    	return "OK";
+    }
 
     public String toShortString(String layer) {
         String layerUpper = layer.toUpperCase();
