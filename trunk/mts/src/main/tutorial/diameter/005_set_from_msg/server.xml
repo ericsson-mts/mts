@@ -25,6 +25,44 @@
     <test parameter="[request2]" condition="string.equals" value="true"/>
     <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
     <test parameter="[type]" condition="string.equals" value="Multimedia-Authentitcation:506"/>
+    <parameter name="[text]" operation="protocol.setFromMessage" value="message.text"/>
+    <parameter name="[binary]" operation="string.toBinary" value="[text]"/>
+    <parameter name="[binReference]" operation="set" value="01000278800001fa000010e106f8ad4e06f8ad4d000001074000001c653466363738396631626666653961363437343300000108600000143133372e35382e38342e37380000012840000011636c69656e742e667200000000000125400000143133372e35382e38342e37380000011b40000011636c69656e742e667200000000000104400000200000010a6000000c000028af000001024000000c000010e1000001156000000c0000000100000002e0000029000028af7369703a2b3333383735363331393735407369702e70666465762e667200000000000402e0000010000028af00000001000003fae0000138000028af000003fde0000010000028af00000000000003fce0000010000028af00000002000003fbe00000f8000028af44696765737420757365726e616d653d5c223333383735363331393735407369702e70666465762e66725c222c7265616c6d3d5c227369702e70666465762e66725c222c636e6f6e63653d5c2234306231386363665c222c6e633d30303030303030312c716f703d617574682c7572693d5c227369703a7369702e70666465762e66725c222c6e6f6e63653d5c2232316263323736373964646163386664366330303838383137633861653338355c222c726573706f6e73653d5c2233383137396439396363333463653061643030326163346437306533376330615c222c616c676f726974686d3d4d443500000400e0000012000028af494e5649544500000000036cc0000034000028af0000035ec0000010000028af00127ed90000033fc0000015000028af62616456616c756535000000000000086000000c893a544e00000008600000182a01cf00003300050000000000006e01"/>
+    <!--test parameter="[text]" condition="binary.equals" value="[binReference]"/-->
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
+    <parameter name="[xml]" operation="string.regexReplaces" value="[xml]" value2=" " value3=""/>
+    <parameter name="[xml]" operation="string.regexReplaces" value="[xml]" value2="hopByHop=&quot;[0-9]*&quot;" value3="X"/>
+    <parameter name="[xml]" operation="string.regexReplaces" value="[xml]" value2="endToEnd=&quot;[0-9]*&quot;" value3="X"/>
+    <parameter name="[xml]" operation="string.regexReplaces" value="[xml]" value2="code=&quot;263&quot;value=&quot;[0-9,a,b,c,d,e,f]*&quot;" value3="X"/>
+    <parameter name="[xmlReference]" operation="set"><![CDATA[<header command="506" applicationId="4321" X X request="true" proxiable="false" error="false" retransmit="false"/>
+<avp X type="UTF8String" vendorId="0" mandatory="true" private="false"/>
+<avp code="264" value="137.58.84.78" type="UTF8String" vendorId="0" mandatory="true" private="true"/>
+<avp code="296" value="client.fr" type="UTF8String" vendorId="0" mandatory="true" private="false"/>
+<avp code="293" value="137.58.84.78" type="UTF8String" vendorId="0" mandatory="true" private="false"/>
+<avp code="283" value="client.fr" type="UTF8String" vendorId="0" mandatory="true" private="false"/>
+<avp code="260" value="grouped" type="grouped" vendorId="0" mandatory="true" private="false">
+   <avp code="266" value="10415" type="Integer32" vendorId="0" mandatory="true" private="true"/>
+   <avp code="258" value="4321" type="Integer32" vendorId="0" mandatory="true" private="false"/>
+</avp>
+<avp code="277" value="1" type="Unsigned32" vendorId="0" mandatory="true" private="true"/>
+<avp code="2" value="h73 h69 h70 h3a h2b h33 h33 h38 h37 h35 h36 h33 h31 h39 h37 h35 h40 h73 h69 h70 h2e h70 h66 h64 h65 h76 h2e h66 h72 " type="OctetString" vendorId="10415" mandatory="true" private="true"/>
+<avp code="1026" value="1" type="Unsigned32" vendorId="10415" mandatory="true" private="true"/>
+<avp code="1018" value="grouped" type="grouped" vendorId="10415" mandatory="true" private="true">
+   <avp code="1021" value="0" type="Unsigned32" vendorId="10415" mandatory="true" private="true"/>
+   <avp code="1020" value="2" type="Unsigned32" vendorId="10415" mandatory="true" private="true"/>
+   <avp code="1019" value="h44 h69 h67 h65 h73 h74 h20 h75 h73 h65 h72 h6e h61 h6d h65 h3d h5c h22 h33 h33 h38 h37 h35 h36 h33 h31 h39 h37 h35 h40 h73 h69 h70 h2e h70 h66 h64 h65 h76 h2e h66 h72 h5c h22 h2c h72 h65 h61 h6c h6d h3d h5c h22 h73 h69 h70 h2e h70 h66 h64 h65 h76 h2e h66 h72 h5c h22 h2c h63 h6e h6f h6e h63 h65 h3d h5c h22 h34 h30 h62 h31 h38 h63 h63 h66 h5c h22 h2c h6e h63 h3d h30 h30 h30 h30 h30 h30 h30 h31 h2c h71 h6f h70 h3d h61 h75 h74 h68 h2c h75 h72 h69 h3d h5c h22 h73 h69 h70 h3a h73 h69 h70 h2e h70 h66 h64 h65 h76 h2e h66 h72 h5c h22 h2c h6e h6f h6e h63 h65 h3d h5c h22 h32 h31 h62 h63 h32 h37 h36 h37 h39 h64 h64 h61 h63 h38 h66 h64 h36 h63 h30 h30 h38 h38 h38 h31 h37 h63 h38 h61 h65 h33 h38 h35 h5c h22 h2c h72 h65 h73 h70 h6f h6e h73 h65 h3d h5c h22 h33 h38 h31 h37 h39 h64 h39 h39 h63 h63 h33 h34 h63 h65 h30 h61 h64 h30 h30 h32 h61 h63 h34 h64 h37 h30 h65 h33 h37 h63 h30 h61 h5c h22 h2c h61 h6c h67 h6f h72 h69 h74 h68 h6d h3d h4d h44 h35 " type="OctetString" vendorId="10415" mandatory="true" private="true"/>
+   <avp code="1024" value="h49 h4e h56 h49 h54 h45 " type="OctetString" vendorId="10415" mandatory="true" private="true"/>
+</avp>
+<avp code="876" value="grouped" type="grouped" vendorId="10415" mandatory="true" private="false">
+   <avp code="862" value="1212121" type="Unsigned32" vendorId="10415" mandatory="true" private="false"/>
+   <avp code="831" value="badValue5" type="UTF8String" vendorId="10415" mandatory="true" private="false"/>
+</avp>
+<avp code="8" value="137.58.84.78" type="IPAddress" vendorId="0" mandatory="true" private="true"/>
+<avp code="8" value="2a01:cf00:33:5:0:0:0:6e01" type="IPAddress" vendorId="0" mandatory="true" private="true"/>
+]]>
+    </parameter>
+    <parameter name="[xmlReference]" operation="string.regexReplaces" value="[xmlReference]" value2=" " value3=""/>
+    <!--test parameter="[xml]" condition="string.equals" value="[xmlReference]"/-->
     
     <parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/>
     <test parameter="[protocol]" condition="string.equals" value="DIAMETER"/>
