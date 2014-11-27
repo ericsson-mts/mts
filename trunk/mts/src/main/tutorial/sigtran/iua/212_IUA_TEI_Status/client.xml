@@ -28,51 +28,35 @@
 
 <scenario>
 			
-    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		
-                
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		         
         <UA name="IUA" file="iua.xml">
-        
-            <header messageClass="MGMT:Management" messageType="TEI_Status_Request"/>						
-
+            <header messageClass="MGMT:Management" messageType="TEI_Status_Request"/>
             <parameter tag="Status">
-	        <field name="Status" value="ASSIGNED:TEI is considered assigned by Q.921"/>
-	    </parameter>
-            
+	              <field name="Status" value="ASSIGNED:TEI is considered assigned by Q.921"/>
+	          </parameter>
         </UA>	
-
     </sendMessageSIGTRAN>
 
-    <pause seconds="0.1"/>
-    
-    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		
-                
+  	<parameter name="[data]" value="0100000300000010000a000800000001" />
+  	<receiveMessageSIGTRAN name="Wait DATA1"/>
+  	
+  	<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+  	<test parameter="[data1]" condition="binary.equals" value="[data]"/>
+
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		         
         <UA name="IUA" file="iua.xml">
-        
-            <header messageClass="MGMT:Management" messageType="TEI_Status_Confirm"/>						
-
+            <header messageClass="MGMT:Management" messageType="TEI_Status_Request"/>
             <parameter tag="Status">
-	        <field name="Status" value="UNASSIGNED:TEI is considered unassigned by Q.921"/>
-	    </parameter>
-            
+	              <field name="Status" value="ASSIGNED:TEI is considered assigned by Q.921"/>
+	          </parameter>
         </UA>	
-
     </sendMessageSIGTRAN>
 
-    <pause seconds="0.1"/>
-
-    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		
-                
-        <UA name="IUA" file="iua.xml">
-        
-            <header messageClass="MGMT:Management" messageType="TEI_Status_Indication"/>						
-
-            <parameter tag="Status">
-	        <field name="Status" value="ASSIGNED:TEI is considered assigned by Q.921"/>
-	    </parameter>
-            
-        </UA>	
-
-    </sendMessageSIGTRAN>
+  	<parameter name="[data]" value="0100000400000010000a000800000000" />
+  	<receiveMessageSIGTRAN name="Wait DATA1"/>
+  	
+  	<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+  	<test parameter="[data1]" condition="binary.equals" value="[data]"/>
 
 
 </scenario>

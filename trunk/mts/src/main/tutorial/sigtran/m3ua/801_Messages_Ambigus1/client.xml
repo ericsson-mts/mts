@@ -4,7 +4,7 @@
 <scenario>
 
 
-    <sendMessageSIGTRAN name="Send INVITE" destScenario="SIGTRAN" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]">
+    <sendMessageSIGTRAN name="Send INVITE" destScenario="server" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]">
         <UA name="m3ua" file="m3ua.xml">
             <header messageClass="1" messageType="Payload_Data"/>
             <parameter tag="512">
@@ -24,7 +24,7 @@
     <test parameter="[message]" condition="binary.contains" value="02000008000000020210"/>
     <test parameter="[message]" condition="binary.contains" value="0000100200000d7a0d030001"/>
 	 
-    <sendMessageSIGTRAN name="Send INVITE2" destScenario="SIGTRAN" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]">
+    <sendMessageSIGTRAN name="Send INVITE2" destScenario="server" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]">
         <UA name="m3ua" file="m3ua.xml">
             <header messageClass="2" messageType="4"/>
             <parameter tag="512">
@@ -58,7 +58,7 @@
     <test parameter="[message2]" condition="binary.contains" value="010002040000003802000008000000020012000C000008880000102302060008000028AB02050008000000020004000B626F6E6A6F757200"/>
     
     
-    <sendMessageSIGTRAN name="Send INVITE3" destScenario="SIGTRAN" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]">
+    <sendMessageSIGTRAN name="Send INVITE3" destScenario="server" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]">
         <SS7 name="sccp" file="sccp.xml">
             <header>
                 <field name="Message_Type" length="1" value="6" />
@@ -89,7 +89,7 @@
     <parameter name="[message3]" operation="protocol.setFromMessage" value="message.binary"/>
     <test parameter="[message3]" condition="binary.contains" value="01000101000000280200000800000002021000170000100200000d7a0303000106ae424c00010000"/>
 	
-    <sendMessageSIGTRAN name="Send INVITE4" destScenario="SIGTRAN" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]">
+    <sendMessageSIGTRAN name="Send INVITE4" destScenario="server" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]">
         <SS7 name="sccp" file="sccp.xml">
             <header>
                 <field name="Message_Type" length="1" value="1" />

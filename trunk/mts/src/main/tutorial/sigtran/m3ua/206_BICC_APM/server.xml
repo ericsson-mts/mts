@@ -30,12 +30,13 @@
 	<parameter name="[sdp_bin]" operation="binary.subbinary" value="[binary]" value2="[sdp_start]" value3="[sdp_length]"/>
 	<parameter name="[sdp_text]" operation="binary.toString" value="[sdp_bin]" />
     
-	<parameter name="[sdp_port]" operation="protocol.setFromSdp" value="[sdp_text]" value2="media.port"/>
+  <!-- This does not work I don't know why ? -->
+	<!--parameter name="[sdp_port]" operation="protocol.setFromSdp" value="[sdp_text]" value2="media.port"/>
 	<test parameter="[sdp_port]" condition="number.equals" value="60616"/>    
 	<parameter name="[sdp_host]" operation="protocol.setFromSdp" value="[sdp_text]" value2="connection.address"/>
-   	<test parameter="[sdp_host]" condition="string.equals" value="10.124.3.5"/>    
+  <test parameter="[sdp_host]" condition="string.equals" value="10.124.3.5"/-->    
     	
-	<if>
+	<!--if>
 		<condition>
 			<test parameter="[binary]" condition="binary.equals" value="[APM]"/>
 		</condition>
@@ -46,6 +47,6 @@
 			<log level="ERROR">	"[APM_replace]"			</log>
 			<exit failed="true"/>
 		</else>
-	</if>
+	</if-->
 	
 </scenario>

@@ -32,49 +32,18 @@
 <scenario>
 			
     <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		
-                
         <UA name="IUA" file="iua.xml">
-        
-            <header messageClass="ASPSM:ASP State Maintenance" messageType="ASP_Up_Ack"/>						
-            	    
-            <parameter tag="Info_String">
-                <field name="Info_String" value="abcdefghij"/>
-            </parameter>
-            
-        </UA>	
-
-    </sendMessageSIGTRAN>
-
-    <pause seconds="0.1"/>
-
-    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		
-                
-        <UA name="IUA" file="iua.xml">
-        
             <header messageClass="ASPSM:ASP State Maintenance" messageType="ASP_Down"/>						
-            	    
             <parameter tag="Info_String">
                 <field name="Info_String" value="abcdefghij"/>
             </parameter>
-            
         </UA>	
-
     </sendMessageSIGTRAN>
-
-    <pause seconds="0.1"/>
             
-    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		
-                
-        <UA name="IUA" file="iua.xml">
-        
-            <header messageClass="ASPSM:ASP State Maintenance" messageType="ASP_Down_Ack"/>						
-            	    
-            <parameter tag="Info_String">
-                <field name="Info_String" value="abcdefghij"/>
-            </parameter>
-            
-        </UA>	
-
-    </sendMessageSIGTRAN>
+  	<parameter name="[data]" value="01000305000000180004000e6162636465666768696a0000" />
+  	<receiveMessageSIGTRAN name="Wait DATA1"/>
+  	
+  	<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+  	<test parameter="[data1]" condition="binary.equals" value="[data]"/>
         
 </scenario>

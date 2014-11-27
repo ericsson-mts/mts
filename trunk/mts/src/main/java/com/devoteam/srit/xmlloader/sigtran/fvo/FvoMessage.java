@@ -49,11 +49,14 @@ import org.dom4j.Attribute;
  */
 public class FvoMessage {
     private Msg _msg;
+    
     private String _name;
     private int _messageType;
     
     private FvoDictionary _dictionary;
+    
     private FvoParameter _header;
+    
     private LinkedList<FvoParameter> _fparameters;
     private LinkedList<FvoParameter> _vparameters;
     private LinkedList<FvoParameter> _oparameters;
@@ -322,10 +325,6 @@ public class FvoMessage {
             if("Message_Type".equalsIgnoreCase(field.getName())){
                 _messageType = Integer.decode(field.getValue());
             }
-        }
-
-        if(-1 == _messageType){
-            // TODO : some error
         }
 
         // get the list of parameters for this message from dictionary
