@@ -367,12 +367,13 @@ public class TlvMessage {
     public String getType() throws Exception 
     {
     	String typeName = _dictionary.messageTypeName(getMessageClass(), getMessageType());
+    	String type = typeName;
     	if (typeName !=  null && typeName.contains("_Request"))
     	{
     		int pos = typeName.indexOf("_Request");
-    		return typeName.substring(0, pos);
+    		type = typeName.substring(0, pos);
     	}
-    	return typeName;
+    	return type + ":" + getMessageClass() + "_" + getMessageType();
     }
     
     public String getResult() throws Exception 
