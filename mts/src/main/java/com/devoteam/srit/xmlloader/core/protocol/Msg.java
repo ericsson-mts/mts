@@ -215,6 +215,10 @@ public abstract class Msg extends MsgLight implements Removable
             {
             	var.add(new String(getBytesData()));
             }
+            else if (params[1].equalsIgnoreCase("xml"))
+            {
+            	var.add(toXml());
+            }
             else
             {
             	Parameter.throwBadPathKeywordException(path);
