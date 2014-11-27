@@ -222,7 +222,7 @@ public class MsgSigtran extends Msg
         }    	
         if (type == null && _fvoMessage != null) 
         {
-        	return StackFactory.PROTOCOL_SIGTRAN + ".SS7";
+        	return _fvoMessage.getProtocol();
         }    	
         if (type == null && _ieMessage != null) 
         {
@@ -231,7 +231,6 @@ public class MsgSigtran extends Msg
         if (type == null && _tlvMessage != null) 
         {
         	return _tlvMessage.getProtocol();
-        	// return StackFactory.PROTOCOL_SIGTRAN + ".UA";
         }
         return StackFactory.PROTOCOL_SIGTRAN;
     }
