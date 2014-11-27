@@ -32,21 +32,18 @@
 <scenario>
 			
     <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		
-                
-        <UA name="IUA" file="iua.xml">
-        
+        <UA name="IUA" file="iua.xml">       
             <header messageClass="ASPSM:ASP State Maintenance" messageType="ASP_Up"/>						
-            	    
             <parameter tag="ASP_Identifier">
                 <field name="ASP_Identifier" value="100000"/>
             </parameter>
-
             <parameter tag="Info_String">
                 <field name="Info_String" value="abcdefghij"/>
             </parameter>
-            
         </UA>	
-
     </sendMessageSIGTRAN>
-        
+    
+    <parameter name="[data]" value="01000304000000180004000e6162636465666768696a0000" />
+  	<receiveMessageSIGTRAN name="Wait DATA1"/>
+
 </scenario>

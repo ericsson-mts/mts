@@ -32,6 +32,7 @@ import gp.utils.arrays.*;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
 import com.devoteam.srit.xmlloader.sigtran.StackSigtran;
@@ -46,7 +47,6 @@ public class TlvMessage {
 
     private Msg _msg;
     private TlvDictionary _dictionary;
-    private String name;
 
     // protocol identifier (used in SCTP payload protocol identifier) only way to discriminate
     public static final int IUA = 1;
@@ -119,14 +119,6 @@ public class TlvMessage {
 
     public TlvDictionary getDictionary(){
         return _dictionary;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getMessageClass() {
@@ -343,13 +335,29 @@ public class TlvMessage {
     
     public String getProtocol() 
     {
-    	return "SIGTRAN." + _dictionary.get_layer();
+    	return StackFactory.PROTOCOL_SIGTRAN + "." + _dictionary.get_layer();
     }
     
     public boolean isRequest()
     {
     	String typeName = _dictionary.messageTypeName(getMessageClass(), getMessageType());
-    	if (typeName.contains("Ack"))
+    	if (typeName !=  null && typeName.contains("_Ack"))
+    	{
+    		return false;
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_Confirm"))
+    	{
+    		return false;
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_Indication"))
+    	{
+    		return false;
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_Status"))
+    	{
+    		return false;
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_Stop_Reporting"))
     	{
     		return false;
     	}
@@ -359,12 +367,44 @@ public class TlvMessage {
     public String getType() throws Exception 
     {
     	String typeName = _dictionary.messageTypeName(getMessageClass(), getMessageType());
+    	if (typeName !=  null && typeName.contains("_Request"))
+    	{
+    		int pos = typeName.indexOf("_Request");
+    		return typeName.substring(0, pos);
+    	}
     	return typeName;
     }
     
     public String getResult() throws Exception 
     {
-    	return "OK";
+    	String typeName = _dictionary.messageTypeName(getMessageClass(), getMessageType());
+    	if (typeName !=  null && typeName.contains("_Ack"))
+    	{
+    		int pos = typeName.indexOf("_Ack");
+    		return typeName.substring(pos + 1);
+    		//return typeName;
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_Confirm"))
+    	{
+    		int pos = typeName.indexOf("_Confirm");
+    		return typeName.substring(pos + 1);
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_Indication"))
+    	{
+    		int pos = typeName.indexOf("_Indication");
+    		return typeName.substring(pos + 1);
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_Status"))
+    	{
+    		int pos = typeName.indexOf("_Status");
+    		return typeName.substring(pos + 1);
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_Stop_Reporting"))
+    	{
+    		int pos = typeName.indexOf("_Stop_Reporting");
+    		return typeName.substring(pos + 1);
+    	}
+    	return typeName;
     }
 
     public String toShortString(String layer) {

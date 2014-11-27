@@ -219,15 +219,15 @@ public class FvoParameter {
             LinkedList<FvoField> fieldsToParse = _fields;
             _fields = new LinkedList<FvoField>();
             for(FvoField field:fieldsToParse){
-                if(offsetBit + field.getLengthBit() <= array.length * 8)
+                //if(offsetBit + field.getLengthBit() <= array.length * 8)
                 {
                     field.parseArray(array, offsetBit);
                     offsetBit += field.getLengthBit();
                     _fields.addLast(field);
                 }
-                else{
-                    break;
-                }
+                //else{
+                //    break;
+                //}
             }
 
             // if there is still undecoded data at the end of the parameter

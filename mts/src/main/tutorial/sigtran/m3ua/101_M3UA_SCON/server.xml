@@ -14,7 +14,7 @@
 	<!-- Message encoded value -->
 	<parameter name="[SCON]" operation="set" value="010002040000004002000008000000020006000c007800870001280c0012000c000008880000102302060008000028ab02050008000000020004000853434f4e" />
 
-	<receiveMessageSIGTRAN name="Wait SCON1">
+	<receiveMessageSIGTRAN name="Wait SCON1" request="true" type="Signalling_Congestion">
 		<parameter name="[SCON1]" operation="protocol.setFromMessage" value="message.binary"/>
 	</receiveMessageSIGTRAN>
 	
@@ -31,7 +31,7 @@
 		</else>
 	</if>
 	
-	<receiveMessageSIGTRAN name="Wait SCON2">
+	<receiveMessageSIGTRAN name="Wait SCON2" request="true" type="Signalling_Congestion">
 		<parameter name="[SCON2]" operation="protocol.setFromMessage" value="message.binary"/>
 	</receiveMessageSIGTRAN>
 	
