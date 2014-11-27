@@ -382,7 +382,6 @@ public class TlvMessage {
     	{
     		int pos = typeName.indexOf("_Ack");
     		return typeName.substring(pos + 1);
-    		//return typeName;
     	}
     	else if (typeName !=  null && typeName.endsWith("_Confirm"))
     	{

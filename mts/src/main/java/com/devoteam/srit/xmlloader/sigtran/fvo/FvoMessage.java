@@ -30,6 +30,7 @@ import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 
@@ -415,6 +416,89 @@ public class FvoMessage {
                 }
             }
         }
+    }
+
+    public String getProtocol() 
+    {
+    	return StackFactory.PROTOCOL_SIGTRAN + "." + _dictionary.get_layer();
+    }
+    
+    public boolean isRequest()
+    {
+    	return true;
+    	/*
+    	String typeName = _dictionary.getMessage(getMessageType()).getName();
+    	if (typeName !=  null && typeName.endsWith("_confirm"))
+    	{
+    		return false;
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_refused"))
+    	{
+    		return false;
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_complete"))
+    	{
+    		return false;
+    	}
+    	else if (typeName !=  null && typeName.contains("_Ack"))
+    	{
+    		return false;
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_Service"))
+    	{
+    		return false;
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_Error"))
+    	{
+    		return false;
+    	}
+    	return true;
+    	*/
+    }
+
+    public String getType() throws Exception 
+    {
+    	String typeName = _dictionary.getMessage(getMessageType()).getName();
+    	return typeName;
+    }
+    
+    public String getResult() throws Exception 
+    {
+    	return null;
+    	/*
+    	String typeName = _dictionary.getMessage(getMessageType()).getName();
+    	if (typeName !=  null && typeName.endsWith("_confirm"))
+    	{
+    		int pos = typeName.indexOf("_confirm");
+    		return typeName.substring(pos + 1);
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_refused"))
+    	{
+    		int pos = typeName.indexOf("_refused");
+    		return typeName.substring(pos + 1);
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_complete"))
+    	{
+    		int pos = typeName.indexOf("_complete");
+    		return typeName.substring(pos + 1);
+    	}
+    	else if (typeName !=  null && typeName.contains("_Ack"))
+    	{
+    		int pos = typeName.indexOf("_Ack");
+    		return typeName.substring(pos + 1);
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_Service"))
+    	{
+    		int pos = typeName.indexOf("_Service");
+    		return typeName.substring(pos + 1);
+    	}
+    	else if (typeName !=  null && typeName.endsWith("_Error"))
+    	{
+    		int pos = typeName.indexOf("_Error");
+    		return typeName.substring(pos + 1);
+    	}
+    	return typeName;
+    	*/
     }
 
     public String toShortString() {
