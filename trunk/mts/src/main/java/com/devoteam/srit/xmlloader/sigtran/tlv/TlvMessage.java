@@ -379,32 +379,33 @@ public class TlvMessage {
     public String getResult() throws Exception 
     {
     	String typeName = _dictionary.messageTypeName(getMessageClass(), getMessageType());
+    	String type = typeName;
     	if (typeName !=  null && typeName.contains("_Ack"))
     	{
     		int pos = typeName.indexOf("_Ack");
-    		return typeName.substring(pos + 1);
+    		type = typeName.substring(pos + 1);
     	}
     	else if (typeName !=  null && typeName.endsWith("_Confirm"))
     	{
     		int pos = typeName.indexOf("_Confirm");
-    		return typeName.substring(pos + 1);
+    		type = typeName.substring(pos + 1);
     	}
     	else if (typeName !=  null && typeName.endsWith("_Indication"))
     	{
     		int pos = typeName.indexOf("_Indication");
-    		return typeName.substring(pos + 1);
+    		type = typeName.substring(pos + 1);
     	}
     	else if (typeName !=  null && typeName.endsWith("_Status"))
     	{
     		int pos = typeName.indexOf("_Status");
-    		return typeName.substring(pos + 1);
+    		type = typeName.substring(pos + 1);
     	}
     	else if (typeName !=  null && typeName.endsWith("_Stop_Reporting"))
     	{
     		int pos = typeName.indexOf("_Stop_Reporting");
-    		return typeName.substring(pos + 1);
+    		type = typeName.substring(pos + 1);
     	}
-    	return typeName;
+    	return type  + ":" + getMessageClass() + "_" + getMessageType();
     }
 
     public String toShortString(String layer) {

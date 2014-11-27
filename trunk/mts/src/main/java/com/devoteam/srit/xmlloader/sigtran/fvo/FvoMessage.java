@@ -459,7 +459,7 @@ public class FvoMessage {
     public String getType() throws Exception 
     {
     	String typeName = _dictionary.getMessage(getMessageType()).getName();
-    	return typeName;
+    	return typeName  + ":" + getMessageType();
     }
     
     public String getResult() throws Exception 
