@@ -232,7 +232,8 @@ public class MsgSigtranHybrid extends Msg
         }
         if (_tlvMessage != null) 
         {
-            return _tlvMessage.getName();
+        	return null;
+            //return _tlvMessage.getName();
         }
         else 
         {

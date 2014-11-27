@@ -32,7 +32,9 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+
 import java.util.LinkedList;
+
 import org.dom4j.Node;
 
 /**
@@ -41,6 +43,8 @@ import org.dom4j.Node;
  */
 public class FvoDictionary {
 
+    private String _layer;
+    
     private FvoParameter header;
     private HashMap<Integer, FvoMessage> codeToMessage;
 
@@ -73,6 +77,11 @@ public class FvoDictionary {
     final void parseFile(InputStream stream) throws Exception {
         SAXReader reader = new SAXReader();
         Document document = reader.read(stream);
+
+        //DICTIONARY level
+        Element rootDictionary = (Element) document.selectSingleNode("/dictionary");
+        String ppidStr = rootDictionary.attributeValue("ppid");
+        _layer = rootDictionary.attributeValue("layer");
 
         //HEADER
         Node headerNode = document.selectSingleNode("/dictionary/header");
@@ -231,7 +240,11 @@ public class FvoDictionary {
         return field;
     }
 
-    /**
+    public String get_layer() {
+		return this._layer;
+	}
+
+	/**
      * Return the FvoMessage from the id of the message
      * 
      * @param messageType	: id of the message
