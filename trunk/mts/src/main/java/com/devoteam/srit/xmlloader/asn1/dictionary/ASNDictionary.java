@@ -207,6 +207,7 @@ public class ASNDictionary
 		embeddedList.addEmbedded(embedded);
 
 		// binary field
+		/*
 		ElementSimple binary = new ElementSimple();
 		binary.setLabel("ISDN_AddressString");
 		BooleanField extension = new BooleanField();
@@ -254,6 +255,7 @@ public class ASNDictionary
 		digits.setOffset(8);
 		binary.addField(digits);
 		binaryByLabel.put(binary.getLabel(), binary);
+		*/
     }
 	
 	public static ASNDictionary getInstance()
