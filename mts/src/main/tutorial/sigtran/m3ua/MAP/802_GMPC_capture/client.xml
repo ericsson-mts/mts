@@ -31,14 +31,12 @@
             </parameter>
         </UA>
     </sendMessageSIGTRAN>
-    
-    <parameter name="[reference]" value="010003010000001c00110008000b884b000400094153505550000000" />
         
-    <!--<receiveMessageSIGTRAN name="Wait ASPUPACK1">
+    <receiveMessageSIGTRAN name="Wait ASPUPACK1" request="false" type="ASP_Up:3_1" result="ASP_Up_Acknowledgement:3_4">
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
-    </receiveMessageSIGTRAN -->
+    </receiveMessageSIGTRAN>
     
-    <pause seconds="1"/>
+    <pause seconds="0.1"/>
 
     <!-- Message encoded value -->
   	<parameter name="[data]" value="010001010000007c021000740000375800003715030200040900030e180b12060012046895112233580a129100120468951114864762454804f78203016b1e281c060700118605010101a011600f80020780a1090607040000010025036c1da11b02010002015530138006916895111486a109810791689511223358" />
@@ -56,10 +54,21 @@
           </opCode>
           <invokeparameter>
             <RoutingInfoForLCS_Arg>
-              <mlcNumber>
-                <Bytes>916895111486</Bytes></mlcNumber>
+              <mlcNumber><Bytes>
+                <field name="extension" value="1" type="Boolean" lengthBit="1"/>
+                <field name="nature of address" value="1" type="Integer" lengthBit="3"/>
+                <field name="numbering plan" value="1" type="Integer" lengthBit="4"/>
+                <field name="digits" value="8659114168" type="Number_BCD" lengthBit="0"/>
+                <!--916895111486-->
+              </Bytes></mlcNumber>
               <targetMS>
-                <msisdn><Bytes>91689511223358</Bytes></msisdn>
+                <msisdn><Bytes>
+                  <field name="extension" value="1" type="Boolean" lengthBit="1"/>
+                  <field name="nature of address" value="1" type="Integer" lengthBit="3"/>
+                  <field name="numbering plan" value="1" type="Integer" lengthBit="4"/>
+                  <field name="digits" value="865911223385" type="Number_BCD" lengthBit="0"/>
+                <!--91689511223358-->
+                </Bytes></msisdn>
               </targetMS>
             </RoutingInfoForLCS_Arg>
           </invokeparameter>
@@ -189,16 +198,25 @@
                   <EnumType>currentOrLastKnownLocation.1</EnumType>
                 </locationEstimateType>
               </locationType>
-              <mlc_Number>
-                <Bytes>916895111486</Bytes></mlc_Number>
+              <mlc_Number><Bytes>
+                <field name="extension" value="1" type="Boolean" lengthBit="1"/>
+                <field name="nature of address" value="1" type="Integer" lengthBit="3"/>
+                <field name="numbering plan" value="1" type="Integer" lengthBit="4"/>
+                <field name="digits" value="8659114168" type="Number_BCD" lengthBit="0"/>
+              <!--916895111486-->
+              </Bytes></mlc_Number>
               <lcs_ClientID>
                 <lcsClientType>
                   <EnumType>valueAddedServices.1</EnumType>
                 </lcsClientType>
                 <lcsClientExternalID>
-                  <externalAddress>
-                    <Bytes>910810</Bytes>
-                  </externalAddress>
+                  <externalAddress><Bytes>
+                    <field name="extension" value="1" type="Boolean" lengthBit="1"/>
+                    <field name="nature of address" value="1" type="Integer" lengthBit="3"/>
+                    <field name="numbering plan" value="1" type="Integer" lengthBit="4"/>
+                    <field name="digits" value="8001" type="Number_BCD" lengthBit="0"/>
+                    <!--910810-->
+                  </Bytes></externalAddress>
                 </lcsClientExternalID>
                 <lcsClientName>
                   <dataCodingScheme>
