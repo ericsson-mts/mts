@@ -322,7 +322,7 @@ public abstract class ElementAbstract implements Cloneable
     	return newElement;
     }
     
-    protected void copyToCLone(ElementAbstract source) throws Exception
+    public void copyToClone(ElementAbstract source) throws Exception
     {
     	this.tag = source.tag;
     	this.label = source.label;
@@ -336,7 +336,7 @@ public abstract class ElementAbstract implements Cloneable
 			this.elements.add(elemNew);
 		}
 		Iterator<FieldAbstract> iterField = source.fields.iterator();
-		while (iter.hasNext())
+		while (iterField.hasNext())
 		{
 			FieldAbstract fieldOld = (FieldAbstract) iterField.next();
 			FieldAbstract fieldNew = fieldOld.clone();

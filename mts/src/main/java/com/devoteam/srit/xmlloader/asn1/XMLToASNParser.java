@@ -166,7 +166,11 @@ public class XMLToASNParser
     }
 
     public Object parseField(String resultPath, ASNMessage message, Element element, Field field, String type, Object object, String className) throws Exception 
-    {    	
+    { 
+    	// manage binary objects as list of field
+    	String simpleName = object.getClass().getSimpleName();
+    	ElementAbstract binaryDico = ASNDictionary.getInstance().getBinaryByLabel(simpleName);
+
     	// manage the embedded objects
     	Embedded embedded = null;
     	if (message != null)
@@ -240,22 +244,19 @@ public class XMLToASNParser
         }
         else if (type.equals("byte[]")) 
         {
-        	// manage binary objects as list of field
-        	String simpleName = object.getClass().getSimpleName();
-        	ElementAbstract binary = ASNDictionary.getInstance().getBinaryByLabel(simpleName);
-        	if (binary != null)
+        	if (binaryDico != null)
         	{
-        		binary = new ElementSimple();
-	        	binary.parseFromXML(element, null, null);
+        		ElementAbstract binary = new ElementSimple();
+	        	binary.parseFromXML(element, null, binaryDico);
 	        	Array array = binary.encodeToArray();
-	        	return array.getBytes();
+	        	if (array.length > 0)
+	        	{
+	        		return array.getBytes();
+	        	}
         	}
-        	else
-        	{
-            	// not a simple value so return
-        		Array array = new DefaultArray(Utils.parseBinaryString("h" + element.getTextTrim()));
-        		return array.getBytes();
-        	}
+        	// not a simple value so return
+    		Array array = new DefaultArray(Utils.parseBinaryString("h" + element.getTextTrim()));
+    		return array.getBytes();
         }
         else if (type.endsWith(".EnumType"))  
         {

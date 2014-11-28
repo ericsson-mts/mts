@@ -276,7 +276,7 @@ public class ASNToXMLConverter
 		} catch (Exception e) 
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, e, "Exception in ASNToXMLConverter : ");
 		}
 
 		return ret;
@@ -379,7 +379,8 @@ public class ASNToXMLConverter
 	}
 
 	private String returnXMLObject(String resultPath, ASNMessage message, Object parentObj, Object subObject, String name, ASN1ElementMetadata objElementInfo, int indent)
-			throws Exception {
+			throws Exception 
+	{
 		String ret = "";
 		Class subClass = subObject.getClass();
 		String type = subClass.getCanonicalName();
@@ -387,6 +388,15 @@ public class ASNToXMLConverter
 		{
 			return null;
 		}
+		
+    	// prepare binary objects as list of field
+		ElementAbstract binaryDico = null;
+		if (parentObj != null)
+		{
+	    	String simpleName = parentObj.getClass().getSimpleName();
+	    	binaryDico = ASNDictionary.getInstance().getBinaryByLabel(simpleName);
+		}
+		
 		Embedded embedded = null;
 		if (message != null)
 		{
@@ -426,15 +436,13 @@ public class ASNToXMLConverter
 		else if (type.equals("byte[]")) 
 		{
 			byte[] bytes = (byte[]) subObject;
-        	// manage binary objects as list of field
-        	String simpleName = parentObj.getClass().getSimpleName();
-        	ElementAbstract binaryDico = ASNDictionary.getInstance().getBinaryByLabel(simpleName);
         	if (binaryDico != null)
         	{
-        		//ElementSimple binary = binaryDico.copyToClone();
+        		ElementSimple binary = new ElementSimple(); 
+        		binary.copyToClone(binaryDico);
         		Array array = new DefaultArray(bytes);
-        		binaryDico.decodeFromArray(array, null);
-        		ret += binaryDico.fieldsToXml(indent);
+        		binary.decodeFromArray(array, null);
+        		ret += binary.fieldsToXml(indent);
         		ret += indent(indent - 2 * NUMBER_SPACE_TABULATION);
         		return ret;
         	}
