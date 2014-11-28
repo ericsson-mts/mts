@@ -367,45 +367,47 @@ public class TlvMessage {
     public String getType() throws Exception 
     {
     	String typeName = _dictionary.messageTypeName(getMessageClass(), getMessageType());
-    	String type = typeName;
+    	/*
     	if (typeName !=  null && typeName.contains("_Request"))
     	{
     		int pos = typeName.indexOf("_Request");
-    		type = typeName.substring(0, pos);
+    		typeName = typeName.substring(0, pos);
     	}
-    	return type + ":" + getMessageClass() + "_" + getMessageType();
+    	*/
+    	return typeName + ":" + getMessageClass() + "_" + getMessageType();
     }
     
     public String getResult() throws Exception 
     {
     	String typeName = _dictionary.messageTypeName(getMessageClass(), getMessageType());
-    	String type = typeName;
+    	/*
     	if (typeName !=  null && typeName.contains("_Ack"))
     	{
     		int pos = typeName.indexOf("_Ack");
-    		type = typeName.substring(pos + 1);
+    		typeName = typeName.substring(pos + 1);
     	}
     	else if (typeName !=  null && typeName.endsWith("_Confirm"))
     	{
     		int pos = typeName.indexOf("_Confirm");
-    		type = typeName.substring(pos + 1);
+    		typeName = typeName.substring(pos + 1);
     	}
     	else if (typeName !=  null && typeName.endsWith("_Indication"))
     	{
     		int pos = typeName.indexOf("_Indication");
-    		type = typeName.substring(pos + 1);
+    		typeName = typeName.substring(pos + 1);
     	}
     	else if (typeName !=  null && typeName.endsWith("_Status"))
     	{
     		int pos = typeName.indexOf("_Status");
-    		type = typeName.substring(pos + 1);
+    		typeName = typeName.substring(pos + 1);
     	}
     	else if (typeName !=  null && typeName.endsWith("_Stop_Reporting"))
     	{
     		int pos = typeName.indexOf("_Stop_Reporting");
-    		type = typeName.substring(pos + 1);
+    		typeName = typeName.substring(pos + 1);
     	}
-    	return type  + ":" + getMessageClass() + "_" + getMessageType();
+    	*/
+    	return typeName  + ":" + getMessageClass() + "_" + getMessageType();
     }
 
     public String toShortString(String layer) {

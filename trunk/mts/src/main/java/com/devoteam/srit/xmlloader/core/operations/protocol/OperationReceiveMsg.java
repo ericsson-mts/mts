@@ -96,7 +96,7 @@ public class OperationReceiveMsg extends Operation
         
         if(null != result)
         {
-            addParameterTestTag(root, "string.contains", "message.resultComparison", result);
+            addParameterTestTag(root, "string.contains", "message.resultComparison", ":" + result + ":");
         }
         
         parse(root);

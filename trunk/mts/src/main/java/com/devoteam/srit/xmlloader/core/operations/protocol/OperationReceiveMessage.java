@@ -112,7 +112,7 @@ public class OperationReceiveMessage extends Operation {
         }
 
         if (null != result) {
-            addParameterTestTag(rootNode, "string.contains", "message.resultComparison", result);
+            addParameterTestTag(rootNode, "string.contains", "message.resultComparison", ":" + result + ":");
         }
         
         if (null != probe) {
