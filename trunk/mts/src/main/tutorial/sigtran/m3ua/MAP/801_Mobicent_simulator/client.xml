@@ -31,14 +31,12 @@
             </parameter>
         </UA>
     </sendMessageSIGTRAN>
-    
-    <parameter name="[reference]" value="010003010000001c00110008000b884b000400094153505550000000" />
         
-    <!--<receiveMessageSIGTRAN name="Wait ASPUPACK1">
+    <receiveMessageSIGTRAN name="Wait ASPUPACK1" request="false" type="ASP_Up:3_1" result="ASP_Up_Acknowledgement:3_4">
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
-    </receiveMessageSIGTRAN -->
+    </receiveMessageSIGTRAN>
     
-    <pause seconds="1"/>
+    <pause seconds="0.1"/>
 
     <!-- Message encoded value -->
   	<parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
@@ -61,11 +59,21 @@
                 <sm_RP_DA.Choice>
                    <!--imsi.C0.BoxedType><Bytes>04108600daae8c7aca98a6adf6be2505ed54</Bytes></imsi.C0.BoxedType-->
                    <!--lmsi.C1.BoxedType><Bytes>040866e7dee5eba8494f</Bytes></lmsi.C1.BoxedType-->
-                   <serviceCentreAddressDA.C4.BoxedType><Bytes>913366600567f9</Bytes></serviceCentreAddressDA.C4.BoxedType>
+                   <serviceCentreAddressDA.C4.BoxedType><Bytes>
+                      <field name="extension" value="1" type="Boolean" lengthBit="1"/>
+                      <field name="nature of address" value="1" type="Integer" lengthBit="3"/>
+                      <field name="numbering plan" value="1" type="Integer" lengthBit="4"/>
+                      <field name="digits" value="33660650769" type="Number_BCD" lengthBit="0"/>      
+                   </Bytes></serviceCentreAddressDA.C4.BoxedType>
                    <noSM_RP_DA.C5></noSM_RP_DA.C5>
                 </sm_RP_DA.Choice>
                 <sm_RP_OA.Choice>
-                   <msisdn.C2.BoxedType><Bytes>913366317071f3</Bytes></msisdn.C2.BoxedType>
+                   <msisdn.C2.BoxedType><Bytes>
+                      <field name="extension" value="1" type="Boolean" lengthBit="1"/>
+                      <field name="nature of address" value="1" type="Integer" lengthBit="3"/>
+                      <field name="numbering plan" value="1" type="Integer" lengthBit="4"/>
+                      <field name="digits" value="33661307173" type="Number_BCD" lengthBit="0"/>
+                   </Bytes></msisdn.C2.BoxedType>
                    <!--serviceCentreAddressOA.C4.BoxedType><Bytes>040fa9adecf03e56a0e23772440be14542</Bytes></serviceCentreAddressOA.C4.BoxedType-->
                    <!--noSM_RP_OA.C5></noSM_RP_OA.C5-->
                 </sm_RP_OA.Choice>

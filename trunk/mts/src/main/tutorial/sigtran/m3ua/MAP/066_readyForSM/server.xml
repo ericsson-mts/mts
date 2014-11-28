@@ -11,12 +11,9 @@
 
 <scenario>
 
-    <receiveMessageSIGTRAN name="Wait ASPUP1">
-    
-	 <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
-       
+    <receiveMessageSIGTRAN name="Wait ASPUP1" request="true" type="ASP_Up:3_1">
+	       <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
     </receiveMessageSIGTRAN>
-    
    
     
     <sendMessageSIGTRAN	name="Send ASPUP1" destScenario="client" channel="[channelName]">

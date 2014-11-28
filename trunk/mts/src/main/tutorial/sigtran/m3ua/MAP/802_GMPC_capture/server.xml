@@ -11,14 +11,11 @@
 
 <scenario>
 
-    <receiveMessageSIGTRAN name="Wait ASPUP1">
-    
-	 <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
-       
+    <receiveMessageSIGTRAN name="Wait ASPUP1" request="true" type="ASP_Up:3_1">
+	     <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
     </receiveMessageSIGTRAN>
-    
-   
-    
+
+
     <sendMessageSIGTRAN	name="Send ASPUP1" destScenario="client" channel="[channelName]">
     
         <UA name="m3ua" file="m3ua.xml">
@@ -83,9 +80,13 @@
                   </imsi>
                 </targetMS>
                 <lcsLocationInfo>
-                  <networkNode_Number>
-                    <Bytes>916895010030</Bytes>
-                  </networkNode_Number>
+                  <networkNode_Number><Bytes>
+                    <field name="extension" value="1" type="Boolean" lengthBit="1"/>
+                    <field name="nature of address" value="1" type="Integer" lengthBit="3"/>
+                    <field name="numbering plan" value="1" type="Integer" lengthBit="4"/>
+                    <field name="digits" value="8659100003" type="Number_BCD" lengthBit="0"/>
+                  <!--916895010030-->
+                  </Bytes></networkNode_Number>
                   <supportedLCS_CapabilitySets>
                     <BitString>
                       <bitStrValue>f0</bitStrValue>

@@ -16,7 +16,7 @@
                                        transport="[transport]"/>
                                        
                                        
-         <sendMessageSIGTRAN	name="Send ASPUP1" channel="channel">	
+      <sendMessageSIGTRAN	name="Send ASPUP1" channel="channel">	
    
         <UA name="m3ua" file="m3ua.xml">
             <header 	version="1" reserved="0" messageClass="3" messageType="1"/>
@@ -30,14 +30,12 @@
             </parameter>
         </UA>
     </sendMessageSIGTRAN>
-    
-    <parameter name="[reference]" value="010003010000001c00110008000b884b000400094153505550000000" />
         
-    <!--<receiveMessageSIGTRAN name="Wait ASPUPACK1">
+    <receiveMessageSIGTRAN name="Wait ASPUPACK1" request="false" type="ASP_Up:3_1" result="ASP_Up_Acknowledgement:3_4">
         <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
-    </receiveMessageSIGTRAN -->
+    </receiveMessageSIGTRAN>
     
-    <pause seconds="1"/>
+    <pause seconds="0.1"/>
 
     <!-- Message encoded value -->
   	<parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
