@@ -425,8 +425,6 @@ public class FvoMessage {
     
     public boolean isRequest()
     {
-    	return true;
-    	/*
     	String typeName = _dictionary.getMessage(getMessageType()).getName();
     	if (typeName !=  null && typeName.endsWith("_confirm"))
     	{
@@ -453,52 +451,57 @@ public class FvoMessage {
     		return false;
     	}
     	return true;
-    	*/
     }
 
     public String getType() throws Exception 
     {
     	String typeName = _dictionary.getMessage(getMessageType()).getName();
-    	return typeName  + ":" + getMessageType();
+    	/*
+    	if (typeName !=  null && typeName.contains("_request"))
+    	{
+    		int pos = typeName.indexOf("_Request");
+    		typeName = typeName.substring(0, pos);
+    	}
+    	*/
+    	return typeName + ":" + getMessageType();
     }
     
     public String getResult() throws Exception 
     {
-    	return null;
-    	/*
     	String typeName = _dictionary.getMessage(getMessageType()).getName();
+    	/*
     	if (typeName !=  null && typeName.endsWith("_confirm"))
     	{
     		int pos = typeName.indexOf("_confirm");
-    		return typeName.substring(pos + 1);
+    		typeName = typeName.substring(pos + 1);
     	}
     	else if (typeName !=  null && typeName.endsWith("_refused"))
     	{
     		int pos = typeName.indexOf("_refused");
-    		return typeName.substring(pos + 1);
+    		typeName = typeName.substring(pos + 1);
     	}
     	else if (typeName !=  null && typeName.endsWith("_complete"))
     	{
     		int pos = typeName.indexOf("_complete");
-    		return typeName.substring(pos + 1);
+    		typeName = typeName.substring(pos + 1);
     	}
     	else if (typeName !=  null && typeName.contains("_Ack"))
     	{
     		int pos = typeName.indexOf("_Ack");
-    		return typeName.substring(pos + 1);
+    		typeName = typeName.substring(pos + 1);
     	}
     	else if (typeName !=  null && typeName.endsWith("_Service"))
     	{
     		int pos = typeName.indexOf("_Service");
-    		return typeName.substring(pos + 1);
+    		typeName = typeName.substring(pos + 1);
     	}
     	else if (typeName !=  null && typeName.endsWith("_Error"))
     	{
     		int pos = typeName.indexOf("_Error");
-    		return typeName.substring(pos + 1);
+    		typeName = typeName.substring(pos + 1);
     	}
-    	return typeName;
     	*/
+    	return typeName  + ":" + getMessageType();
     }
 
     public String toShortString() {
