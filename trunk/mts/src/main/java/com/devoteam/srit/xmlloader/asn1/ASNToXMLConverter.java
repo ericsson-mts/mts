@@ -147,7 +147,7 @@ public class ASNToXMLConverter
 	        if (message !=null)
 	        {
 	        	String condition = elementName + "=" + objClass;
-	        	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
+	        	List<Embedded> embeddedList = message.getEmbeddedByCondition(condition);
 	        	if (embeddedList != null)
 	        	{
 	        		message.addConditionalEmbedded(embeddedList);
@@ -394,7 +394,7 @@ public class ASNToXMLConverter
 		if (parentObj != null)
 		{
 	    	String simpleName = parentObj.getClass().getSimpleName();
-	    	binaryDico = ASNDictionary.getInstance().getBinaryByLabel(simpleName);
+	    	binaryDico = message.getBinaryByLabel(simpleName);
 		}
 		
 		Embedded embedded = null;

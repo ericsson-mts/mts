@@ -169,7 +169,7 @@ public class XMLToASNParser
     { 
     	// manage binary objects as list of field
     	String simpleName = object.getClass().getSimpleName();
-    	ElementAbstract binaryDico = ASNDictionary.getInstance().getBinaryByLabel(simpleName);
+    	ElementAbstract binaryDico = message.getBinaryByLabel(simpleName);
 
     	// manage the embedded objects
     	Embedded embedded = null;
@@ -321,7 +321,7 @@ public class XMLToASNParser
 	        	elementName = resultPath.substring(iPos + 1);
 	        }
 	    	String condition = elementName + "=" + value;
-	    	List<Embedded> embeddedList = ASNDictionary.getInstance().getEmbeddedByCondition(condition);
+	    	List<Embedded> embeddedList = message.getEmbeddedByCondition(condition);
 	    	if (embeddedList != null)
 	    	{
 	    		message.addConditionalEmbedded(embeddedList);

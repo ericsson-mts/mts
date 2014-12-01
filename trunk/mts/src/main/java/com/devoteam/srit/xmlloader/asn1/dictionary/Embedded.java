@@ -23,6 +23,11 @@
 
 package com.devoteam.srit.xmlloader.asn1.dictionary;
 
+import org.dom4j.Element;
+
+import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
+
 /**
  * Represent an embedded object; use in the dictionary classes
  *  
@@ -40,6 +45,10 @@ public class Embedded
 	// the condition for performing the replacement
 	private String condition;
 	
+	public Embedded()
+	{
+		
+	}
 
 	public Embedded(String initial, String replace, String condition) {
 		super();
@@ -73,7 +82,12 @@ public class Embedded
 		this.condition = condition;
 	}
 	
-	
-    
+    public void parseFromXML(Element elementRoot, Dictionary dictionary) throws Exception 
+    {
+        this.initial = elementRoot.attributeValue("initial");
+        this.replace = elementRoot.attributeValue("replace");
+        this.condition = elementRoot.attributeValue("condition");
+    }
+      
     
 }

@@ -118,6 +118,7 @@ public class MsgSigtran extends Msg
 	    		_tcapMessage = new BN_TCAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage");
 	    		try
 	    		{
+	    			_tcapMessage.initDictionary("TCAP");
 	    			_tcapMessage.decode(ieArray);
 	    		}
 	    		catch (Exception e)
@@ -132,6 +133,7 @@ public class MsgSigtran extends Msg
 					_apMessage = new BN_APMessage("com.devoteam.srit.xmlloader.sigtran.ap.map.Component");
 		    		try
 		    		{
+		    			_apMessage.initDictionary("MAP");
 						_apMessage.decode(arrayAP);
 		    		}
 		    		catch (Exception e)

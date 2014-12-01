@@ -217,6 +217,7 @@ public class BEREncoder<T> extends Encoder<T> {
         	type = elementInfo.getPreparedInstance().getClass().getCanonicalName();
         }
         int eltType = ElementType.Primitive;
+        // FHModif begin 
     	// manage the embedded objects
     	Embedded embedded = ASNDictionary.getInstance().getEmbeddedByInitial(type);
 		if (embedded != null) 
