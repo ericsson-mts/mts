@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Document   : dictionnary.xml
+    Created on : 1 decembre 2012, 08:58
+    Author     : fhenry
+    Description: MAP/TCAP dictionary
+
+-->
+
+<dictionary>
+
+    <!-- TCAP -->
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueOC" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.ExternalPDU"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.UniDialoguePDU"
+        condition="direct_reference=0.0.17.773.1.2.1"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialoguePDU"
+        condition="direct_reference=0.0.17.773.1.1.1"
+    />
+    
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.ObjectId" 
+        replace="org.bn.types.ObjectIdentifier"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_result"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssSourceDiagnostic" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_source_diagnostic"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceUser" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_user"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_result"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_result"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider"
+    />
+
+    <!-- MAP -->
+    // 45=sendRoutingInfoForSM MESSAGE 
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForSMArg"
+        condition="localValue=45"
+    /> 
+    <embedded 
+        initial="returnparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForSM_Res"
+        condition="localValue=45"
+    />
+
+    // 44=mt-forwardSM MESSAGE 
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.Mt_forwardSM_Arg"
+        condition="localValue=44"
+    /> 
+    <embedded 
+        initial="returnparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.Mt_forwardSM_Res"
+        condition="localValue=44"
+    />
+
+    // 46=mo-forwardSM MESSAGE
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg"
+        condition="localValue=46"
+    /> 
+    <embedded 
+        initial="returnparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Res"
+        condition="localValue=46"
+    />
+
+    // 47=reportSM-DeliveryStatus MESSAGE
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.ReportSM_DeliveryStatusArg"
+        condition="localValue=47"
+    /> 
+    <embedded 
+        initial="returnparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.ReportSM_DeliveryStatusRes"
+        condition="localValue=47"
+    />
+
+    // 66=readyForSM MESSAGE
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.ReadyForSM_Arg"
+        condition="localValue=66"
+    /> 
+    <embedded 
+        initial="returnparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.ReadyForSM_Res"
+        condition="localValue=66"
+    />
+
+    // 70=provideSubscriberInfo MESSAGE
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.ProvideSubscriberInfoArg"
+        condition="localValue=70"
+    /> 
+    <embedded 
+        initial="returnparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.ProvideSubscriberInfoRes"
+        condition="localValue=70"
+    />
+
+    // 83=provideSubscriberLocation MESSAGE
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.ProvideSubscriberLocation_Arg"
+        condition="localValue=83"
+    /> 
+    <embedded 
+        initial="returnparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.ProvideSubscriberLocation_Res"
+        condition="localValue=83"
+    />
+
+    // 85=subscriberLocationReport MESSAGE
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForLCS_Arg"
+        condition="localValue=85"
+    /> 
+    <embedded 
+        initial="returnparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForLCS_Res"
+        condition="localValue=85"
+    />
+
+    // 1=UnknownSubscriberParam ERROR
+    <embedded 
+        initial="errorparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.UnknownSubscriberParam"
+        condition="localValue=1"
+    /> 
+    
+
+    <!-- International Subscriber Distinguish Name (ISDN) adress string -->
+    <element tag="ISDN_AddressString:001" description="International Mobile Subscriber Identity address string">
+    		<field name="extension" type="boolean" lengthBit="1" description="extension"/>
+        <field name="nature of address" type="integer" lengthBit="3" description="nature of address"/>
+        <field name="numbering plan" type="integer" lengthBit="4" description="numbering plan"/>
+        <field name="digits" type="number_bcd" description="digits"/>
+    </element>
+
+    <!-- Service Centre Address (similar to IMSI address string) -->
+    <element tag="ServiceCentreAddress:002" description="International Mobile Subscriber Identity address string">
+    		<field name="extension" type="boolean" lengthBit="1" description="extension"/>
+        <field name="nature of address" type="integer" lengthBit="3" description="nature of address"/>
+        <field name="numbering plan" type="integer" lengthBit="4" description="numbering plan"/>
+        <field name="digits" type="number_bcd" description="digits"/>
+    </element>
+
+</dictionary>

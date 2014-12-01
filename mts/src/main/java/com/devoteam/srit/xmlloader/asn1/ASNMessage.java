@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.asn1;
 
+import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 
 import gp.utils.arrays.Array;
@@ -32,6 +34,9 @@ import org.dom4j.Element;
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.asn1.dictionary.EmbeddedMap;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.XMLDoc;
+import com.devoteam.srit.xmlloader.gtp.data.MessageGTP;
 
 
 /**
@@ -40,6 +45,13 @@ import com.devoteam.srit.xmlloader.asn1.dictionary.EmbeddedMap;
  */
 public abstract class ASNMessage 
 {
+	
+	public static HashMap<String, ASNDictionary> dictionaries = new  HashMap<String, ASNDictionary>();
+	
+	private String syntax;
+	
+	private ASNDictionary dictionary;
+	
 	// Class name for the root object
 	protected String className; 
 
@@ -80,7 +92,7 @@ public abstract class ASNMessage
      	Embedded init = this.embeddedList.getEmbeddedByInitial(initial);
      	if (init ==  null)
      	{
-     		init = ASNDictionary.getInstance().getEmbeddedByInitial(initial);
+     		init = this.dictionary.getEmbeddedByInitial(initial);
      	}
      	if (init != null && init.getCondition() == null)
      	{
@@ -88,6 +100,16 @@ public abstract class ASNMessage
      	}
      	return null;
  	}
+    
+    public ElementAbstract getBinaryByLabel(String label)
+    {
+    	return this.dictionary.getBinaryByLabel(label);
+    }
+    
+    public List<Embedded> getEmbeddedByCondition(String condition) 
+	{
+    	return this.dictionary.getEmbeddedByCondition(condition);
+	}
     
     public void addConditionalEmbedded(List<Embedded> embeddeds) 
  	{
@@ -98,4 +120,14 @@ public abstract class ASNMessage
 	    	embedded.setCondition(null);
     	}
  	}
+    
+	public void initDictionary(String syntax) throws Exception 
+	{
+		this.dictionary = dictionaries.get(syntax);
+		if (this.dictionary == null)
+		{
+	        this.dictionary = new ASNDictionary(syntax);
+	        dictionaries.put(syntax, dictionary);
+		}
+	}
 }

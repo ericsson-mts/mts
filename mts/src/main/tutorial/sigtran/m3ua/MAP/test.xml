@@ -8,7 +8,7 @@
     <!--parameter name="[localHostM3UA]" operation="set" value="164.48.85.81"/-->
     <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortM3UA]" operation="number.add" value="[localPortM3UA]" value2="10000"/>
+    <parameter name="[localPortM3UA]" operation="number.add" value="[localPortM3UA]" value2="20000"/>
     <parameter name="[localPortM3UA]" operation="set" value="[localPortM3UA]" description="local port of the MTS host" editable="true" />
     <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>	
     
@@ -25,7 +25,7 @@
 
     <testcase name="044_mt-forwardSM" description="test sigtran TCAP" state="true">
         <scenario name="client" file="044_mt-forwardSM/client.xml" routingName="client"/>
-        <scenario name="server" file="044_mt-forwardSM/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+        <scenario name="server" file="044_mt-forwardSM/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA"/>
     </testcase>
     
     <testcase name="045_sendRoutingInfoForSM" description="test sigtran TCAP" state="true">

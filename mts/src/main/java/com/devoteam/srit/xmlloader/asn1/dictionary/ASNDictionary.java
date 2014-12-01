@@ -23,14 +23,19 @@
 
 package com.devoteam.srit.xmlloader.asn1.dictionary;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
+
+import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.BooleanField;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementSimple;
+import com.devoteam.srit.xmlloader.core.coding.binary.EnumerationField;
 import com.devoteam.srit.xmlloader.core.coding.binary.IntegerField;
 import com.devoteam.srit.xmlloader.core.coding.binary.NumberBCDField;
+import com.devoteam.srit.xmlloader.core.coding.binary.XMLDoc;
 
 
 /**
@@ -53,6 +58,7 @@ public class ASNDictionary
 		embeddedList = new EmbeddedMap();
 		binaryByLabel = new HashMap<String, ElementAbstract>();
 		
+		/*
     	// TCAP dico
 		Embedded embedded = new Embedded(
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueOC", 
@@ -99,16 +105,17 @@ public class ASNDictionary
 				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider",
 				null); 
 		embeddedList.addEmbedded(embedded);
-		embedded = new Embedded(
-				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider", 
-				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider",
-				null); 
-		embeddedList.addEmbedded(embedded);
-		embedded = new Embedded(
-				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider", 
-				"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider",
-				null); 
-		embeddedList.addEmbedded(embedded);
+		//embedded = new Embedded(
+		//		"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider", 
+		//		"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider",
+		//		null); 
+		//embeddedList.addEmbedded(embedded);
+		//embedded = new Embedded(
+		//		"com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider", 
+		//		"com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider",
+		//		null); 
+		//embeddedList.addEmbedded(embedded);
+		
 		// MAP dico
 		// 45=sendRoutingInfoForSM MESSAGE 
 		embedded = new Embedded(
@@ -254,17 +261,51 @@ public class ASNDictionary
 		digits.setOffset(8);
 		binary.addField(digits);
 		binaryByLabel.put(binary.getLabel(), binary);
+		*/
     }
 	
-	public static ASNDictionary getInstance()
+	public static ASNDictionary getInstance() throws Exception
     {
     	if (_instance == null)
     	{
-    		_instance = new ASNDictionary();
+    		_instance = new ASNDictionary("TCAP");
     	}
     	return _instance;
     }
+
+    public ASNDictionary(String syntax) throws Exception 
+    {
+    	this();
+		XMLDoc xml = new XMLDoc();
+	    String file = "../conf/sigtran/" + syntax.toLowerCase() + "/dictionary_" + syntax.toUpperCase() + ".xml";
+	    xml.setXMLFile(new URI(file));
+	    xml.parse();
+	    Element rootDico = xml.getDocument().getRootElement();
+	    parseFromXML(rootDico, syntax);
+    }
 	
+    public void parseFromXML(Element root, String syntax) throws Exception 
+    {
+        List<Element> listEmbedded = root.elements("embedded");
+        for (Element elem : listEmbedded) 
+        {
+            Embedded embedded = new Embedded();            
+            embedded.parseFromXML(elem, null);
+            
+            embeddedList.addEmbedded(embedded);
+        }
+
+        List<Element> listElement = root.elements("element");
+        for (Element elem : listElement) 
+        {
+            ElementSimple elemInfo = new ElementSimple();            
+            elemInfo.parseFromXML(elem, null, null);
+            
+            binaryByLabel.put(elemInfo.getLabel(), elemInfo);
+        }
+
+    }
+    
     public Embedded getEmbeddedByInitial(String initial) 
 	{
 		return embeddedList.getEmbeddedByInitial(initial);

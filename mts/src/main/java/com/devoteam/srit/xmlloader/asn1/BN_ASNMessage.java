@@ -107,6 +107,8 @@ public class BN_ASNMessage extends ASNMessage
     public void parseFromXML(Element root) throws Exception 
     {
     	this.className = root.attributeValue("className");
+    	String syntax = root.attributeValue("file");
+    	initDictionary(syntax);
     	
         List<Element> children = root.elements();
         for (Element element : children) 

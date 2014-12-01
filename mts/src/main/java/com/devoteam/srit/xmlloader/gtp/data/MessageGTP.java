@@ -347,7 +347,7 @@ public class MessageGTP
 	        xml.parse();
 	        Element rootDico = xml.getDocument().getRootElement();
 	        this.dictionary = new Dictionary(rootDico, syntax);
-	        MessageGTP.dictionaries.put(syntax, dictionary);
+	        dictionaries.put(syntax, dictionary);
 		}
 	}
 	
