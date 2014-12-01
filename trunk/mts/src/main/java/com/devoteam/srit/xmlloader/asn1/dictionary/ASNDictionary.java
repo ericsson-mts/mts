@@ -48,7 +48,7 @@ public class ASNDictionary
 	private static ASNDictionary _instance;
     
 	// list of embedded objects
-	private static EmbeddedMap embeddedList;
+	private EmbeddedMap embeddedList;
 
 	// list of binary objects
 	private HashMap<String, ElementAbstract> binaryByLabel;
