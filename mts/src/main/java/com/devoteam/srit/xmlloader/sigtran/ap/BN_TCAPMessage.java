@@ -59,6 +59,11 @@ public class BN_TCAPMessage extends BN_ASNMessage
 		super();
 	}
 		    
+	public BN_TCAPMessage(String dictionaryFile) throws Exception
+	{
+		super(dictionaryFile);
+	}
+	
     public boolean isRequest()
     {
         {

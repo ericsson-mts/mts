@@ -48,19 +48,21 @@ public abstract class ASNMessage
 	
 	public static HashMap<String, ASNDictionary> dictionaries = new  HashMap<String, ASNDictionary>();
 	
-	//private String syntax;
-	
 	protected ASNDictionary dictionary;
 	
-	// Class name for the root object
-	//protected String className; 
-
 	// list of embedded objects
 	private EmbeddedMap embeddedList;
 
 	public ASNMessage()
 	{
 		this.embeddedList = new EmbeddedMap();
+	}
+	
+	public ASNMessage(String dictionaryFile) throws Exception
+	{
+		this();
+		initDictionary(dictionaryFile);
+		
 	}
 	
     public String getClassName()
@@ -70,9 +72,19 @@ public abstract class ASNMessage
 
     public abstract Array encode() throws Exception; 
 
-    public abstract void decode(Array array) throws Exception;
+    public abstract void decode(Array array, String className) throws Exception;
+    
+    public void decode(Array array) throws Exception
+    {
+    	decode(array, this.dictionary.getClassName());
+    }
 
-    public abstract void parseFromXML(Element root) throws Exception;
+    public abstract void parseFromXML(Element root, String className) throws Exception;
+    
+    public void parseFromXML(Element root) throws Exception
+    {
+    	parseFromXML(root, this.dictionary.getClassName());
+    }
     
     public abstract String toXML();
     

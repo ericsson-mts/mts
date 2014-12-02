@@ -111,7 +111,7 @@ public class TestANS1Object {
         	
     		try 
     		{
-    			Class classObj = Class.forName(className);
+    			Class<?> classObj = Class.forName(className);
     			Object obj = classObj.newInstance();
     			//ASNReferenceFinder.getInstance().findAndRemoveReferences(mapClasses, obj);
     			testProcess(1, packageName, classObj, dest);
@@ -133,7 +133,7 @@ public class TestANS1Object {
 	    	
 	    	// build the hashmap to find the high level classes
 	    	Map<String, Class> mapClasses = new HashMap<String, Class>();
-	    	for (Class classObj : listClasses)
+	    	for (Class<?> classObj : listClasses)
 	    	{
 	    		if (!classObj.isEnum() && !classObj.isMemberClass())
 	            {
@@ -142,7 +142,7 @@ public class TestANS1Object {
 	    	}
 	    	
 	    	// remove the reference into the hashmap
-	    	for (Class classObj : listClasses)
+	    	for (Class<?> classObj : listClasses)
 	    	{
 	    		try 
 	    		{
@@ -160,7 +160,7 @@ public class TestANS1Object {
 	    	}
 	    	Collection<Class> collect = mapClasses.values();
 	    	int i = 0;
-	    	for (Class classObject : collect)
+	    	for (Class<?> classObject : collect)
 	    	{
 	    		try 
 	    		{	i++;
@@ -177,16 +177,25 @@ public class TestANS1Object {
         }
     }
             
-    public static void testProcess(int i, String packageName, Class classObj, String dest) throws Exception
+    public static void testProcess(int i, String packageName, Class<?> classObj, String dest) throws Exception
     {
-        String className = classObj.getSimpleName();
+        String className = classObj.getSimpleName();       
+        String dictionaryFile = null;
+        if (packageName.endsWith("map."))
+        {
+        	dictionaryFile = "MAP/dictionary_MAP.xml";
+        }
+        else if (packageName.endsWith("tcap."))
+        {
+        	dictionaryFile = "TCAP/dictionary_TCAP.xml";
+        }
 
         //System.out.print("Process class[" + i + "] = " + className + ".xml (" + retInit.length() + ") => ");
         System.out.print("Process class[" + i + "] = " + className + ".xml => ");
         
 		// initialize the ASN1 object
 		Object objectInit = classObj.newInstance();
-		BN_ASNMessage msgInit = new BN_ASNMessage(objectInit);
+		BN_ASNMessage msgInit = new BN_ASNMessage(dictionaryFile, objectInit);
 		ASNInitializer.getInstance().setValue(msgInit, objectInit);
 		
 		// convert the ASN1 object into XML data
@@ -217,8 +226,10 @@ public class TestANS1Object {
         in.close();
 	        
         // parse ASN1 object from XML file
-		BN_ASNMessage msgXML = new BN_ASNMessage(packageName + className);
-        msgXML.parseFromXML(root);
+		// initialize the ASN1 object
+		Object objectXML = classObj.newInstance();
+		BN_ASNMessage msgXML = new BN_ASNMessage(dictionaryFile, objectXML);
+        msgXML.parseFromXML(root, packageName + className);
         // Object objectXML = msgParseFromXML.getAsnObject(); 
 
 		// convert the ASN1 object into XML data
@@ -244,8 +255,10 @@ public class TestANS1Object {
         Array arrayInit = msgInit.encode();
         
         // 	decode ASN1 object from binary
-        BN_ASNMessage msgBin = new BN_ASNMessage(packageName + className);
-        msgBin.decode(arrayInit);
+		// initialize the ASN1 object
+		Object objectBin = classObj.newInstance();
+        BN_ASNMessage msgBin = new BN_ASNMessage(dictionaryFile, objectBin);
+        msgBin.decode(arrayInit, packageName + className);
 
 		// convert the ASN1 object into XML data
         String retBin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";

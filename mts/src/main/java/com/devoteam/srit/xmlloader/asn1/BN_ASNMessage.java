@@ -61,18 +61,14 @@ public class BN_ASNMessage extends ASNMessage
 		super();
     }
 	
-	/*
-    public BN_ASNMessage(String className) throws Exception
+	public BN_ASNMessage(String dictionaryFile) throws Exception
+	{
+		super(dictionaryFile);
+	}
+		
+    public BN_ASNMessage(String dictionaryFile, Object asnObject) throws Exception
     {
-    	super();
-        Class cl = Class.forName(className);
-        this.asnObject = cl.newInstance();
-    }
-	*/
-	
-    public BN_ASNMessage(Object asnObject) throws Exception
-    {
-    	super();
+    	super(dictionaryFile);
     	this.asnObject = asnObject;
     }
 	
@@ -95,25 +91,24 @@ public class BN_ASNMessage extends ASNMessage
     }
           
     
-    public void decode(Array array) throws Exception 
+    public void decode(Array array, String className) throws Exception 
     {
     	// Library binarynotes        
     	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
         InputStream inputStream = new ByteArrayInputStream(array.getBytes());
-        Class cl = Class.forName(dictionary.getClassName());
+        Class cl = Class.forName(className);
         this.asnObject = cl.newInstance();
         this.asnObject = decoder.decode(inputStream, cl);
         
     }
 
-    public void parseFromXML(Element root) throws Exception 
+    public void parseFromXML(Element root, String className) throws Exception 
     {
     	String dictionaryFile = root.attributeValue("dictionary");
     	if (dictionaryFile != null)
     	{
     		initDictionary(dictionaryFile);
     	}
-    	String className = this.dictionary.getClassName();
     	
         List<Element> children = root.elements();
         for (Element element : children) 
