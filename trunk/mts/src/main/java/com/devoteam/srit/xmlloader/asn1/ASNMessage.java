@@ -48,12 +48,12 @@ public abstract class ASNMessage
 	
 	public static HashMap<String, ASNDictionary> dictionaries = new  HashMap<String, ASNDictionary>();
 	
-	private String syntax;
+	//private String syntax;
 	
-	private ASNDictionary dictionary;
+	protected ASNDictionary dictionary;
 	
 	// Class name for the root object
-	protected String className; 
+	//protected String className; 
 
 	// list of embedded objects
 	private EmbeddedMap embeddedList;
@@ -63,21 +63,10 @@ public abstract class ASNMessage
 		this.embeddedList = new EmbeddedMap();
 	}
 	
-	public ASNMessage(String className)
-	{
-		this();
-		this.className = className;
-    }
-
     public String getClassName()
     {
-    	return this.className;
+    	return this.dictionary.getClassName();
     }
-
-	public void setClassName(String className) 
-	{
-		this.className = className;
-	}
 
     public abstract Array encode() throws Exception; 
 
@@ -121,13 +110,13 @@ public abstract class ASNMessage
     	}
  	}
     
-	public void initDictionary(String syntax) throws Exception 
+	public void initDictionary(String dictionaryFile) throws Exception 
 	{
-		this.dictionary = dictionaries.get(syntax);
+		this.dictionary = dictionaries.get(dictionaryFile);
 		if (this.dictionary == null)
 		{
-	        this.dictionary = new ASNDictionary(syntax);
-	        dictionaries.put(syntax, dictionary);
+	        this.dictionary = new ASNDictionary(dictionaryFile);
+	        dictionaries.put(dictionaryFile, dictionary);
 		}
 	}
 }

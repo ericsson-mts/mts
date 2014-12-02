@@ -45,25 +45,15 @@ import com.devoteam.srit.xmlloader.sigtran.ap.map.ReturnResult.ResultretresSeque
  */
 public class BN_APMessage extends BN_ASNMessage
 {
+	public BN_APMessage()
+	{
+		super();
+	}
+	
 	public BN_APMessage(ASNMessage tcapMessage)
 	{
 	}
-	
-	public BN_APMessage(String className) throws Exception
-	{
-		super(className);
-    }
-
-    public String getClassName()
-    {
-    	return this.className;
-    }
-
-	public void setClassName(String className) 
-	{
-		this.className = className;
-	}
-    
+		    
     public boolean isRequest()
     {
     	Component apMessage = (Component) asnObject;

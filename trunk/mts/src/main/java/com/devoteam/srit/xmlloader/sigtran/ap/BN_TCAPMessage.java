@@ -58,22 +58,7 @@ public class BN_TCAPMessage extends BN_ASNMessage
 	{
 		super();
 	}
-	
-	public BN_TCAPMessage(String className) throws Exception
-	{
-		super(className);
-    }
-
-    public String getClassName()
-    {
-    	return this.className;
-    }
-
-	public void setClassName(String className) 
-	{
-		this.className = className;
-	}
-    
+		    
     public boolean isRequest()
     {
         {
