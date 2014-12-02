@@ -136,7 +136,7 @@ public class MobicentTCAPMessage extends ASNMessage
     }
           
     
-    public void decode(Array array) throws Exception 
+    public void decode(Array array, String className) throws Exception 
     {
     	
 		Array supArray = array.subArray(1);
@@ -145,7 +145,7 @@ public class MobicentTCAPMessage extends ASNMessage
     	
     }
 
-    public void parseFromXML(Element root) throws Exception
+    public void parseFromXML(Element root, String className) throws Exception
     {
     	//this.className =".tcap.";
     	/*

@@ -109,7 +109,7 @@ public class MsgSigtran extends Msg
 	    	{    		
 	    		// decode TCAP layer with Mobicent library
 	    		Array ieArray = paramFvo.encode();
-	    		_tcapMessage = new BN_TCAPMessage();
+	    		_tcapMessage = new BN_TCAPMessage("tcap/dictionary_TCAP.xml");
 	    		try
 	    		{
 	    			_tcapMessage.initDictionary("tcap/dictionary_TCAP.xml");
