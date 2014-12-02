@@ -61,19 +61,21 @@ public class BN_ASNMessage extends ASNMessage
 		super();
     }
 	
+	/*
     public BN_ASNMessage(String className) throws Exception
     {
-    	super(className);
+    	super();
         Class cl = Class.forName(className);
         this.asnObject = cl.newInstance();
     }
-
+	*/
+	
     public BN_ASNMessage(Object asnObject) throws Exception
     {
-    	super(asnObject.getClass().getCanonicalName()); 
+    	super();
     	this.asnObject = asnObject;
     }
-
+	
 	public Object getAsnObject() 
 	{
 		return asnObject;
@@ -98,7 +100,7 @@ public class BN_ASNMessage extends ASNMessage
     	// Library binarynotes        
     	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
         InputStream inputStream = new ByteArrayInputStream(array.getBytes());
-        Class cl = Class.forName(className);
+        Class cl = Class.forName(dictionary.getClassName());
         this.asnObject = cl.newInstance();
         this.asnObject = decoder.decode(inputStream, cl);
         
@@ -106,9 +108,12 @@ public class BN_ASNMessage extends ASNMessage
 
     public void parseFromXML(Element root) throws Exception 
     {
-    	this.className = root.attributeValue("className");
-    	String syntax = root.attributeValue("file");
-    	initDictionary(syntax);
+    	String dictionaryFile = root.attributeValue("dictionary");
+    	if (dictionaryFile != null)
+    	{
+    		initDictionary(dictionaryFile);
+    	}
+    	String className = this.dictionary.getClassName();
     	
         List<Element> children = root.elements();
         for (Element element : children) 
@@ -129,7 +134,7 @@ public class BN_ASNMessage extends ASNMessage
     public String toXML()
     {
         String ret = "";
-        ret += "<AP className=\"" + className + "\">\n" + ASNToXMLConverter.indent(ASNToXMLConverter.NUMBER_SPACE_TABULATION);
+        ret += "<AP layer=\"" + this.dictionary.getLayer() + "\">\n" + ASNToXMLConverter.indent(ASNToXMLConverter.NUMBER_SPACE_TABULATION);
         String resultPath = "";
         ret += ASNToXMLConverter.getInstance().toXML(resultPath, this, null, "value", this.asnObject, null, ASNToXMLConverter.NUMBER_SPACE_TABULATION * 2);
         ret += "\n";

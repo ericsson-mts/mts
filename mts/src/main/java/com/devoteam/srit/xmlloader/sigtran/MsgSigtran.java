@@ -40,14 +40,8 @@ import com.devoteam.srit.xmlloader.core.coding.binary.q931.MessageQ931;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
-import com.devoteam.srit.xmlloader.asn1.ASNMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.BN_APMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.BN_TCAPMessage;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Component;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Invoke;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Reject;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ReturnError;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ReturnResult;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
 
@@ -115,10 +109,10 @@ public class MsgSigtran extends Msg
 	    	{    		
 	    		// decode TCAP layer with Mobicent library
 	    		Array ieArray = paramFvo.encode();
-	    		_tcapMessage = new BN_TCAPMessage("com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage");
+	    		_tcapMessage = new BN_TCAPMessage();
 	    		try
 	    		{
-	    			_tcapMessage.initDictionary("TCAP");
+	    			_tcapMessage.initDictionary("tcap/dictionary_TCAP.xml");
 	    			_tcapMessage.decode(ieArray);
 	    		}
 	    		catch (Exception e)
@@ -130,10 +124,10 @@ public class MsgSigtran extends Msg
 	    		if (_tcapMessage != null)
 	    		{
 			    	Array arrayAP = ((BN_TCAPMessage) _tcapMessage).getTCAPComponents();
-					_apMessage = new BN_APMessage("com.devoteam.srit.xmlloader.sigtran.ap.map.Component");
+					_apMessage = new BN_APMessage();
 		    		try
 		    		{
-		    			_apMessage.initDictionary("MAP");
+		    			_apMessage.initDictionary("map/dictionary_MAP.xml");
 						_apMessage.decode(arrayAP);
 		    		}
 		    		catch (Exception e)
@@ -218,19 +212,19 @@ public class MsgSigtran extends Msg
         {
             return StackFactory.PROTOCOL_SIGTRAN + ".MAP";
         }  
-        if (type == null && _tcapMessage != null) 
+        if (_tcapMessage != null) 
         {
         	return StackFactory.PROTOCOL_SIGTRAN + ".TCAP";
         }    	
-        if (type == null && _fvoMessage != null) 
+        if (_fvoMessage != null) 
         {
         	return _fvoMessage.getProtocol();
         }    	
-        if (type == null && _ieMessage != null) 
+        if (_ieMessage != null) 
         {
         	return StackFactory.PROTOCOL_SIGTRAN + ".Q931";
         }
-        if (type == null && _tlvMessage != null) 
+        if (_tlvMessage != null) 
         {
         	return _tlvMessage.getProtocol();
         }

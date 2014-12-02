@@ -125,7 +125,6 @@ public class StackSigtran extends Stack {
         	Element elementTCAP = (Element) tabAps[tabAps.length - 1];
         	tcapMessage = new BN_TCAPMessage();
         	tcapMessage.parseFromXML(elementTCAP);
-        	String className = tcapMessage.getClassName(); 
             // TCAP layer (optional)
         	msgSigtran.setTCAPMessage((BN_TCAPMessage) tcapMessage);
         }
@@ -133,9 +132,8 @@ public class StackSigtran extends Stack {
         if (tabAps.length >= 2)
         {
         	Element elementAP = (Element) tabAps[0];
-        	ASNMessage apMessage = new BN_APMessage(tcapMessage);
+        	ASNMessage apMessage = new BN_APMessage();
         	apMessage.parseFromXML(elementAP);
-        	String className = apMessage.getClassName(); 
             // AP layer (optional)
         	msgSigtran.setAPMessage((BN_APMessage) apMessage);
         }

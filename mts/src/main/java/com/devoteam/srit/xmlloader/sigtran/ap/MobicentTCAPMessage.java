@@ -61,7 +61,7 @@ public class MobicentTCAPMessage extends ASNMessage
 
     public MobicentTCAPMessage() 
     {
-    	this.className =".tcap.";
+    	//this.className =".tcap.";
     	// Mobicent TCAP message
     	this.tcbm = (TCBeginMessageImpl) TcapFactory.createTCBeginMessage();
 
@@ -147,7 +147,7 @@ public class MobicentTCAPMessage extends ASNMessage
 
     public void parseFromXML(Element root) throws Exception
     {
-    	this.className =".tcap.";
+    	//this.className =".tcap.";
     	/*
         if (root.element("ASN1") != null) 
         {

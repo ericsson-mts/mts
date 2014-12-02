@@ -47,6 +47,9 @@ public class ASNDictionary
 
 	private static ASNDictionary _instance;
     
+	private String layer;
+	private String className;
+	
 	// list of embedded objects
 	private EmbeddedMap embeddedList;
 
@@ -268,24 +271,35 @@ public class ASNDictionary
     {
     	if (_instance == null)
     	{
-    		_instance = new ASNDictionary("TCAP");
+    		_instance = new ASNDictionary("tcap/dictionary_TCAP.xml");
     	}
     	return _instance;
     }
 
-    public ASNDictionary(String syntax) throws Exception 
+    public String getLayer() {
+		return layer;
+	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public ASNDictionary(String file) throws Exception 
     {
     	this();
 		XMLDoc xml = new XMLDoc();
-	    String file = "../conf/sigtran/" + syntax.toLowerCase() + "/dictionary_" + syntax.toUpperCase() + ".xml";
-	    xml.setXMLFile(new URI(file));
+		String path = "../conf/sigtran/" + file;
+	    xml.setXMLFile(new URI(path));
 	    xml.parse();
 	    Element rootDico = xml.getDocument().getRootElement();
-	    parseFromXML(rootDico, syntax);
+	    parseFromXML(rootDico);
     }
 	
-    public void parseFromXML(Element root, String syntax) throws Exception 
+    public void parseFromXML(Element root) throws Exception 
     {
+    	this.layer = root.attributeValue("layer");
+    	this.className = root.attributeValue("className");
+    	
         List<Element> listEmbedded = root.elements("embedded");
         for (Element elem : listEmbedded) 
         {
