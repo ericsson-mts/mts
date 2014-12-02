@@ -479,6 +479,11 @@ public abstract class ElementAbstract implements Cloneable
         return fieldsByName.get(name);
     }
 
+    public FieldAbstract getField(int index) 
+    {
+        return fields.get(index);
+    }
+    
     public int getTag() 
     {
         return this.tag;

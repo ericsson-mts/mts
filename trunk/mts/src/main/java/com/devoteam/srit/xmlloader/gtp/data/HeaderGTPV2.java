@@ -104,10 +104,10 @@ public class HeaderGTPV2 extends HeaderAbstract
         if (strType != null)
         {
             EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
-            this.type = field.getEnumValue(strType);
+            this.type = (int) field.getEnumValue(strType);
         }
         EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
-        this.label = field.getEnumLabelByValue(this.type);
+        this.label = field.getEnumLabelByValue((long) this.type);
 
         String attribute;
         String attrFlag;
@@ -225,7 +225,7 @@ public class HeaderGTPV2 extends HeaderAbstract
 		int offset = 4;
 		
     	EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
-	    this.label = field.getEnumLabelByValue(this.type);    	
+	    this.label = field.getEnumLabelByValue((long) this.type);    	
         
         if (this.teidFlag != 0)
     	{

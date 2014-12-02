@@ -47,8 +47,8 @@ import org.dom4j.Element;
 public class EnumerationField extends IntegerField
 {
 	
-    private Map<Integer, String> labelsByValue = new HashMap<Integer, String>();
-    private Map<String, Integer> valuesByLabel = new HashMap<String, Integer>();
+    private Map<Long, String> labelsByValue = new HashMap<Long, String>();
+    private Map<String, Long> valuesByLabel = new HashMap<String, Long>();
 
     private List<EnumRange> ranges = new ArrayList<EnumRange>();
 	
@@ -73,7 +73,7 @@ public class EnumerationField extends IntegerField
         	else
         	{
 	        	byte[] valueBytes = Utils.parseBinaryString(valueStr);
-	        	int value = (int) valueBytes[0] & 0xFF;
+	        	long value = (long) valueBytes[0] & 0xFF;
 	            this.valuesByLabel.put(nameStr, value);
 	            this.labelsByValue.put(value, nameStr);
         	}
@@ -85,15 +85,15 @@ public class EnumerationField extends IntegerField
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this.offset = offset;
-        Integer integerValue = this.getEnumValue(value);
-        array.setBits(offset, this.length, integerValue.byteValue() & 0xff);
+        Long longValue = this.getEnumLong(value);
+        array.setBits(offset, this.length, longValue.byteValue() & 0xff);
     }
     
     @Override
     public String getValue(Array array) throws Exception 
     {
         String value = super.getValue(array);
-    	String name = getEnumLabelByValue(new Integer(value));
+    	String name = getEnumLabelByValue(new Long(value));
     	String ret = "";
     	if (name != null)
     	{
@@ -103,12 +103,12 @@ public class EnumerationField extends IntegerField
     	return ret;
     }
     
-    public Integer getEnumValueByLabel(String name) 
+    public Long getEnumValueByLabel(String name) 
     {
         return this.valuesByLabel.get(name);
     }
 
-    public String getEnumLabelByValue(Integer value) 
+    public String getEnumLabelByValue(Long value) 
     {
     	String found = this.labelsByValue.get(value);
     	if (found != null)
@@ -127,7 +127,7 @@ public class EnumerationField extends IntegerField
         return null;
     }
     
-    public Integer getEnumValue(String text) throws Exception
+    public long getEnumLong(String text) throws Exception
     {
     	text = text.trim();
     	int iPos = text.indexOf(":");
@@ -141,16 +141,16 @@ public class EnumerationField extends IntegerField
     	}
     	try
     	{
-    		int val = Integer.parseInt(value);
+    		long val = Long.parseLong(value);
    			if (!label.equalsIgnoreCase(getEnumLabelByValue(val)) && !label.equals(text))
    			{
    				GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "For the enumeration field \"" + this.name + "\", the value \"" + value + "\"  does not match the label \"" + label + "\"");
    			}    		
-    		return (Integer) val;
+    		return val;
     	}
     	catch (NumberFormatException e)
     	{
-    		Integer val = this.valuesByLabel.get(value);
+    		Long val = this.valuesByLabel.get(value);
 	        if (val == null)
 	        {
 	        	throw new ExecutionException("For the enumeration field \"" + this.name + "\", the value \"" + value + "\" is not numeric or valid according to the dictionary.");
@@ -159,4 +159,17 @@ public class EnumerationField extends IntegerField
     		return val;
     	}
     }
+    
+    public String getEnumValueLong(long value) throws Exception 
+    {
+    	String name = getEnumLabelByValue(value);
+    	String ret = "";
+    	if (name != null)
+    	{
+    		ret = name + ":";
+    	}
+    	ret += value;
+    	return ret;
+    }
+
 }

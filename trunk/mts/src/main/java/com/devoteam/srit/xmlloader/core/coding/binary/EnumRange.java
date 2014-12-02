@@ -32,19 +32,18 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
  */
 public class EnumRange 
 {
-    private int begin;
+    private long begin;
 
-	private int end;
+	private long end;
 
 	private String name;
 
-
-	public int getBegin()
+	public long getBegin()
 	{
 		return begin;
 	}
 
-    public int getEnd() 
+    public long getEnd() 
     {
 		return end;
 	}
@@ -61,7 +60,7 @@ public class EnumRange
     	this.name = name;
     }
 
-	public boolean isEnclosedInto(int value)
+	public boolean isEnclosedInto(long value)
 	{
 		if ((value >= begin) && (value <= end))
 		{
