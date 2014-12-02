@@ -123,11 +123,98 @@
     </element>
 
     <!-- Service Centre Address (similar to IMSI address string) -->
-    <element tag="ServiceCentreAddress:002" description="International Mobile Subscriber Identity address string">
+    <element tag="ServiceCentreAddress:002" description="Service Centre Address (similar to IMSI address string)">
     		<field name="extension" type="boolean" lengthBit="1" description="extension"/>
         <field name="nature of address" type="integer" lengthBit="3" description="nature of address"/>
         <field name="numbering plan" type="integer" lengthBit="4" description="numbering plan"/>
         <field name="digits" type="number_bcd" description="digits"/>
+    </element>
+
+    <!-- Operation code local value -->
+    <element tag="opCode.localValue:003" description="Operation code local value">
+    		<field name="localValue" type="enumeration" lengthBit="32" description="operation code">
+            <enum name="updateLocation" value="2"/>
+          	<enum name="cancelLocation" value="3"/>
+          	<enum name="provideRoamingNumber" value="4"/>
+          	<enum name="noteSubscriberDataModified" value="5"/>
+          	<enum name="resumeCallHandling" value="6"/>
+          	<enum name="insertSubscriberData" value="7"/>
+          	<enum name="deleteSubscriberData" value="8"/>
+          	<enum name="sendParameters" value="9"/>
+          	<enum name="registerSS" value="10"/>
+          	<enum name="eraseSS" value="11"/>
+          	<enum name="activateSS" value="12"/>
+          	<enum name="deactivateSS" value="13"/>
+          	<enum name="interrogateSS" value="14"/>
+          	<enum name="authenticationFailureReport" value="15"/>
+          	<enum name="registerPassword" value="17"/>
+          	<enum name="getPassword" value="18"/>
+          	<enum name="processUnstructuredSS-Data" value="19"/>
+          	<enum name="releaseResources" value="20"/>
+          	<enum name="sendRoutingInfo" value="22"/>
+          	<enum name="updateGprsLocation" value="23"/>
+          	<enum name="sendRoutingInfoForGprs" value="24"/>
+          	<enum name="failureReport" value="25"/>
+          	<enum name="noteMsPresentForGprs" value="26"/>
+          	<enum name="performHandover" value="28"/>
+          	<enum name="sendEndSignal" value="29"/>
+          	<enum name="performSubsequentHandover" value="30"/>
+          	<enum name="provideSIWFSNumber" value="31"/>
+          	<enum name="sIWFSSignallingModify" value="32"/>
+          	<enum name="processAccessSignalling" value="33"/>
+          	<enum name="forwardAccessSignalling" value="34"/>
+          	<enum name="noteInternalHandover" value="35"/>
+          	<enum name="reset" value="37"/>
+          	<enum name="forwardCheckSS" value="38"/>
+          	<enum name="prepareGroupCall" value="39"/>
+          	<enum name="sendGroupCallEndSignal" value="40"/>
+          	<enum name="processGroupCallSignalling" value="41"/>
+          	<enum name="forwardGroupCallSignalling" value="42"/>
+          	<enum name="checkIMEI" value="43"/>
+          	<enum name="mt-forwardSM" value="44"/>
+          	<enum name="sendRoutingInfoForSM" value="45"/>
+          	<enum name="mo-forwardSM" value="46"/>
+          	<enum name="reportSM-DeliveryStatus" value="47"/>
+          	<enum name="noteSubscriberPresent" value="48"/>
+          	<enum name="alertServiceCentreWithoutResult" value="49"/>
+          	<enum name="activateTraceMode" value="50"/>
+          	<enum name="deactivateTraceMode" value="51"/>
+          	<enum name="traceSubscriberActivity" value="52"/>
+          	<enum name="beginSubscriberActivity" value="54"/>
+          	<enum name="sendIdentification" value="55"/>
+          	<enum name="sendAuthenticationInfo" value="56"/>
+          	<enum name="restoreData" value="57"/>
+          	<enum name="sendIMSI" value="58"/>
+          	<enum name="processUnstructuredSS-Request" value="59"/>
+          	<enum name="unstructuredSS-Request" value="60"/>
+          	<enum name="unstructuredSS-Notify" value="61"/>
+          	<enum name="anyTimeSubscriptionInterrogation" value="62"/>
+          	<enum name="informServiceCentre" value="63"/>
+          	<enum name="alertServiceCentre" value="64"/>
+          	<enum name="anyTimeModification" value="65"/>
+          	<enum name="readyForSM" value="66"/>
+          	<enum name="purgeMS" value="67"/>
+          	<enum name="prepareHandover" value="68"/>
+          	<enum name="prepareSubsequentHandover" value="69"/>
+          	<enum name="provideSubscriberInfo" value="70"/>
+          	<enum name="anyTimeInterrogation" value="71"/>
+          	<enum name="ss-InvocationNotification" value="72"/>
+          	<enum name="setReportingState" value="73"/>
+          	<enum name="statusReport" value="74"/>
+          	<enum name="remoteUserFree" value="75"/>
+          	<enum name="registerCC-Entry" value="76"/>
+          	<enum name="eraseCC-Entry" value="77"/>
+          	<enum name="secureTransportClass1" value="78"/>
+          	<enum name="secureTransportClass2" value="79"/>
+          	<enum name="secureTransportClass3" value="80"/>
+          	<enum name="secureTransportClass4" value="81"/>
+          	<enum name="provideSubscriberLocation" value="83"/>
+          	<enum name="sendRoutingInfoForLCS" value="85"/>
+          	<enum name="subscriberLocationReport" value="86"/>
+          	<enum name="ist-Alert" value="87"/>
+          	<enum name="ist-Command" value="88"/>
+          	<enum name="noteMM-Event" value="89"/>
+        </field>
     </element>
 
 </dictionary>

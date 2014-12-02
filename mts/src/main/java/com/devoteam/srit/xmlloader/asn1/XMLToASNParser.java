@@ -27,6 +27,8 @@ import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementSimple;
+import com.devoteam.srit.xmlloader.core.coding.binary.EnumerationField;
+import com.devoteam.srit.xmlloader.core.coding.binary.FieldAbstract;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -41,6 +43,7 @@ import com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
+import gp.utils.arrays.SupArray;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Constructor;
@@ -168,9 +171,21 @@ public class XMLToASNParser
     public Object parseField(String resultPath, ASNMessage message, Element element, Field field, String type, Object object, String className) throws Exception 
     { 
     	// manage binary objects as list of field
-    	String simpleName = object.getClass().getSimpleName();
-    	ElementAbstract binaryDico = message.getBinaryByLabel(simpleName);
-
+    	String simpleClassName = object.getClass().getSimpleName();
+    	ElementAbstract elementDico = message.getBinaryByLabel(simpleClassName);
+    	if (elementDico == null)
+    	{
+	    	String pathName = resultPath;
+	    	int pos = resultPath.lastIndexOf('.');
+	    	if (pos >= 0)
+	    	{
+	    		pos = resultPath.lastIndexOf('.', pos - 1);
+	    		if (pos >= 0)
+	    		pathName = resultPath.substring(pos + 1);
+	    	}
+	    	elementDico = message.getBinaryByLabel(pathName);
+    	}
+    	
     	// manage the embedded objects
     	Embedded embedded = null;
     	if (message != null)
@@ -218,37 +233,50 @@ public class XMLToASNParser
         {
             value = Boolean.valueOf(element.getTextTrim()).booleanValue();
         }
-        else if (type.equals("java.lang.String")||type.equals("String")) 
+        else if (type.equals("java.lang.Byte")||type.equals("byte"))  
         {
-            value =  element.getTextTrim();
+            value = Byte.parseByte(element.getTextTrim());
+        }
+
+        else if (type.equals("java.lang.Short")||type.equals("short"))  
+        {
+            value = Short.parseShort(element.getTextTrim());
         }
         else if (type.equals("java.lang.Integer")||type.equals("int")) 
         {
             value = Integer.parseInt(element.getTextTrim());
         }
+        else if (type.equals("java.lang.Long")||type.equals("long"))  
+        {
+        	if (elementDico != null)
+        	{
+	        	EnumerationField fld = (EnumerationField) elementDico.getField(0);
+	        	value = fld.getEnumLong(element.getTextTrim());
+        	}
+        	else
+        	{
+        		value = Long.parseLong(element.getTextTrim());
+        	}
+        }
         else if (type.equals("java.lang.Float")||type.equals("float"))  
         {
             value = Float.parseFloat(element.getTextTrim());
         }
-        else if (type.equals("java.lang.Short")||type.equals("short"))  
+        else if (type.equals("java.lang.Double")||type.equals("double"))  
         {
-            value = Short.parseShort(element.getTextTrim());
+            value = Double.parseDouble(element.getTextTrim());
         }
-        else if (type.equals("java.lang.Long")||type.equals("long"))  
+        else if (type.equals("java.lang.String")||type.equals("String")) 
         {
-            value = Long.parseLong(element.getTextTrim());
-        }
-        else if (type.equals("java.lang.Byte")||type.equals("byte"))  
-        {
-            value = Byte.parseByte(element.getTextTrim());
+            value =  element.getTextTrim();
         }
         else if (type.equals("byte[]")) 
         {
-        	if (binaryDico != null)
+        	if (elementDico != null)
         	{
-        		ElementAbstract binary = new ElementSimple();
-	        	binary.parseFromXML(element, null, binaryDico);
-	        	Array array = binary.encodeToArray();
+        		ElementAbstract elmt = new ElementSimple();
+	        	elmt.parseFromXML(element, null, elementDico);
+	        	Array array = elmt.encodeToArray();
 	        	if (array.length > 0)
 	        	{
 	        		return array.getBytes();
@@ -261,10 +289,10 @@ public class XMLToASNParser
         else if (type.endsWith(".EnumType"))  
         {
         	String elementText = element.getTextTrim();
-        	int pos = elementText.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
-        	if (pos > 0)
+        	int position = elementText.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
+        	if (position > 0)
         	{
-        		elementText = elementText.substring(0, pos);
+        		elementText = elementText.substring(0, position);
         	}
 
 			Class[] classes = object.getClass().getClasses();

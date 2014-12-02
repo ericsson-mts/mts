@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementSimple;
+import com.devoteam.srit.xmlloader.core.coding.binary.EnumerationField;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -396,6 +397,18 @@ public class ASNToXMLConverter
 	    	String simpleName = parentObj.getClass().getSimpleName();
 	    	binaryDico = message.getBinaryByLabel(simpleName);
 		}
+    	if (binaryDico == null)
+    	{
+	    	String pathName = resultPath;
+	    	int pos = resultPath.lastIndexOf('.');
+	    	if (pos >= 0)
+	    	{
+	    		pos = resultPath.lastIndexOf('.', pos - 1);
+	    		if (pos >= 0)
+	    		pathName = resultPath.substring(pos + 1);
+	    	}
+	    	binaryDico = message.getBinaryByLabel(pathName);
+    	}
 		
 		Embedded embedded = null;
 		if (message != null)
@@ -460,6 +473,13 @@ public class ASNToXMLConverter
 		} 
 		else if (type.equals("java.lang.Long") || type.equals("long")) 
 		{
+        	if (binaryDico != null)
+        	{
+	        	EnumerationField fld = (EnumerationField) binaryDico.getField(0);
+	        	ret = fld.getEnumValueLong((Long) subObject);
+	        	return ret;
+        	}
+
 			ret += subObject.toString();
 			return ret;
 		} 
