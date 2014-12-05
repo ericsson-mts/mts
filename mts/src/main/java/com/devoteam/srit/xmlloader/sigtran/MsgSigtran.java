@@ -232,44 +232,71 @@ public class MsgSigtran extends Msg
     }
 
     @Override
-    public String getType() throws Exception 
+    public boolean isRequest()
     {
+        if (_apMessage != null) 
+        {
+            return _apMessage.isRequest();
+        }    	
+        if (_tcapMessage != null) 
+        {
+            return _tcapMessage.isRequest();
+        }
+        if (_ieMessage != null) 
+        {
+        	return _ieMessage.isRequest();
+        }
+        if (_fvoMessage != null) 
+        {
+            return _fvoMessage.isRequest();
+        }
+        if (_tlvMessage != null) 
+        {
+            return _tlvMessage.isRequest();
+        }
+        return true;
+    }
+
+    @Override
+    public String getType() throws Exception 
+    {    	
+    	String type = null;
         // for response message
-        if (!isRequest())
+        if (type == null && !isRequest())
         {
 			Trans trans = getTransaction(); 
-	    	if (trans != null)
+	    	if (type == null && trans != null)
 	    	{
 		    	Msg request = trans.getBeginMsg();
 		    	if (request != null)
 		    	{
-		    		return request.getType();
+		    		type = request.getType();
 		    	}
 	    	}
         }
+    	
+        if (type == null && _apMessage != null) 
+        {
+            type = _apMessage.getType();
+        }
+        else if (type == null && _tcapMessage != null) 
+        {
+        	type = _tcapMessage.getType();
+        }
+        else if (type == null && _ieMessage != null) 
+        {
+        	type = _ieMessage.getType();
+        }
+        else if (type == null && _fvoMessage != null) 
+        {
+        	type = _fvoMessage.getType();
+        }    	
+        else if (type == null && _tlvMessage != null) 
+        {
+        	type = _tlvMessage.getType();
+        }
         
-        // for request message
-        if (_apMessage != null) 
-        {
-            return _apMessage.getType();
-        }
-        if (_tcapMessage != null) 
-        {
-        	return _tcapMessage.getType();
-        }    	
-        if (_fvoMessage != null) 
-        {
-        	return _fvoMessage.getType();
-        }    	
-        if (_ieMessage != null) 
-        {
-        	return _ieMessage.getType();
-        }
-        if (_tlvMessage != null) 
-        {
-        	return _tlvMessage.getType();
-        }
-        return null;
+        return type;
 	}
 
     @Override
@@ -279,51 +306,24 @@ public class MsgSigtran extends Msg
         {
             return _apMessage.getResult();
         } 
-    	else if (_tcapMessage != null) 
+    	if (_tcapMessage != null) 
         {
             return _tcapMessage.getResult();
         }
-    	else if (_fvoMessage != null) 
+    	if (_ieMessage != null) 
+        {
+        	return _ieMessage.getResult();
+        }
+    	if (_fvoMessage != null) 
         {
             return _fvoMessage.getResult();
         }
-    	else if (_tlvMessage != null) 
+    	if (_tlvMessage != null) 
         {
             return _tlvMessage.getResult();
         }
-        // TODO !!!!!!!!!!!!!!!!!!!!!
         return null;
     }
-
-    @Override
-    public int getLength() 
-    {
-        return _tlvMessage.getMessageLength();
-    }
-
-    @Override
-    public boolean isRequest()
-    {
-        if (_apMessage != null) 
-        {
-            return _apMessage.isRequest();
-        }    	
-        else if (_tcapMessage != null) 
-        {
-            return _tcapMessage.isRequest();
-        }
-        else if (_fvoMessage != null) 
-        {
-            return _fvoMessage.isRequest();
-        }
-        else if (_tlvMessage != null) 
-        {
-            return _tlvMessage.isRequest();
-        }
-        // TODO !!!!!!!!!!!!!!!!!!!!
-        return false;
-    }
-
 
     /** Get the transaction Identifier of this message */
     @Override
@@ -331,15 +331,32 @@ public class MsgSigtran extends Msg
     {
     	if (!this.isTransactionIdSet)
         {
-    		String transID = "null";
+    		String transID = "";
 	    	if (_apMessage != null) 
 	        {
-	    		transID = _apMessage.getTransactionId();
+	    		transID += _apMessage.getTransactionId();
 	        }
-	    	else if (_tcapMessage != null) 
+	    	if (_tcapMessage != null) 
 	        {
-	    		transID = _tcapMessage.getTransactionId();
+	    		transID += _tcapMessage.getTransactionId();
 	        }
+	    	if (_ieMessage != null) 
+	        {
+	    		transID += _ieMessage.getTransactionId();
+	        }
+	    	if (_fvoMessage != null) 
+	        {
+	    		transID += _fvoMessage.getTransactionId();
+	        }
+	    	if (_tlvMessage != null) 
+	        {
+	    		transID += _tlvMessage.getTransactionId();
+	        }
+	    	if (channel != null)
+	    	{
+	    		//BUG when we don't open channel with <openChannel>
+	    		//transID = this.channel.getName() + "|" + transID;
+	    	}
 	    	this.transactionId = new TransactionId(transID);
 	        this.isTransactionIdSet = true;	
         }

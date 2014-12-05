@@ -410,6 +410,11 @@ public class TlvMessage {
     	return typeName  + ":" + getMessageClass() + "_" + getMessageType();
     }
 
+    public String getTransactionId()
+    {
+    	return "";
+    }
+
     @Override
     public String toString() {
     	StringBuilder messageToString = new StringBuilder();
