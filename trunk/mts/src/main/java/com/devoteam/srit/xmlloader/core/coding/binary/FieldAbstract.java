@@ -88,7 +88,7 @@ public abstract class FieldAbstract
         } 
         else if (type.equalsIgnoreCase("enumeration")) 
         {
-        	newField = new EnumerationField(fieldRoot);
+        	newField = new EnumLongField(fieldRoot);
         } 
         else if (type.equalsIgnoreCase("string")) 
         {	

@@ -53,7 +53,7 @@ public class Dictionary
         List<Element> listElem=root.element("header").elements("field"); 
         for (Element element : listElem) 
         {
-        	fieldsMapHeader.put(element.attributeValue("name"), new EnumerationField(element));
+        	fieldsMapHeader.put(element.attributeValue("name"), new EnumLongField(element));
         }
         
         List<Element> list=root.elements("element");

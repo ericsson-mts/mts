@@ -27,7 +27,7 @@ import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
-import com.devoteam.srit.xmlloader.core.coding.binary.EnumerationField;
+import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
 import com.devoteam.srit.xmlloader.core.coding.binary.HeaderAbstract;
 
 import gp.utils.arrays.Array;
@@ -91,10 +91,10 @@ public class HeaderGTPPrime extends HeaderAbstract
         String strType = header.attributeValue("type");
         if (strType != null)
         {
-            EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
+            EnumLongField field = (EnumLongField) dictionary.getHeaderFieldByName("Message Type");
             this.type = (int) field.getEnumLong(strType);
         }
-        EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
+        EnumLongField field = (EnumLongField) dictionary.getHeaderFieldByName("Message Type");
         this.label = field.getEnumLabelByValue((long) this.type);
         
         String attribute;
@@ -157,7 +157,7 @@ public class HeaderGTPPrime extends HeaderAbstract
 		this.dictionary = dictionary;
 		int offset = 4;
 		
-    	EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
+    	EnumLongField field = (EnumLongField) dictionary.getHeaderFieldByName("Message Type");
     	this.label = field.getEnumLabelByValue((long) this.type);
     	
     	Array seqnumArray = array.subArray(offset, 2); 	
