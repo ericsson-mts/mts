@@ -128,13 +128,19 @@ public class BN_ASNMessage extends ASNMessage
 
     public String toXML()
     {
-        String ret = "";
-        ret += "<AP layer=\"" + this.dictionary.getLayer() + "\">\n" + ASNToXMLConverter.indent(ASNToXMLConverter.NUMBER_SPACE_TABULATION);
+        StringBuilder messageToString = new StringBuilder();
+        messageToString.append("<AP ");
+        messageToString.append("layer=\"");
+        messageToString.append(this.dictionary.getLayer());
+        messageToString.append("\"");
+        messageToString.append("/>\n");
+
+        messageToString.append(ASNToXMLConverter.indent(ASNToXMLConverter.NUMBER_SPACE_TABULATION));
         String resultPath = "";
-        ret += ASNToXMLConverter.getInstance().toXML(resultPath, this, null, "value", this.asnObject, null, ASNToXMLConverter.NUMBER_SPACE_TABULATION * 2);
-        ret += "\n";
-        ret += "</AP>";
-    	return ret;
+        messageToString.append(ASNToXMLConverter.getInstance().toXML(resultPath, this, null, "value", this.asnObject, null, ASNToXMLConverter.NUMBER_SPACE_TABULATION * 2));
+
+        messageToString.append("\n</AP>");
+    	return messageToString.toString();
     }
     
 }

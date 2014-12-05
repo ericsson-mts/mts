@@ -504,40 +504,42 @@ public class FvoMessage {
     	return typeName  + ":" + getMessageType();
     }
 
-    public String toShortString() {
-        String str = new String();
-        str += "<SS7 type=\"";
-        str += this._messageType;
-        if (_name != null) {
-            str += "/(" + this._name;
-        }
-        str += "\")/>";
-        return str;
-    }
-
     public String toString() {
-        String str = new String();
-        str += "<SS7 typeCode=\"" + this._messageType + "\">";
-        if (_name != null) {
-            str += "\n name=\"" + this._name + "\">";
+    	StringBuilder messageToString = new StringBuilder();
+    	messageToString.append("<SS7 ");
+    	messageToString.append("layer=\"");
+        messageToString.append(this._dictionary.get_layer());
+        messageToString.append("\"");
+        messageToString.append("/>\n");
+        
+        if (_name != null) 
+        {
+        	messageToString.append("\n name=\"");
+        	messageToString.append(this._name);
+        	messageToString.append("\">");
         }
-        if (_header != null) {
-            str += "\n   <header>";
-            for (int i = 0; i < _header.getFields().size(); i++) {
-                str += _header.getFields().get(i).toString();
+        if (_header != null) 
+        {
+        	messageToString.append("   <header>");
+            for (int i = 0; i < _header.getFields().size(); i++) 
+            {
+            	messageToString.append(_header.getFields().get(i).toString());
             }
-            str += "\n   </header>";
+            messageToString.append("\n   </header>");
         }
-        for (int i = 0; i < _fparameters.size(); i++) {
-            str += _fparameters.get(i).toString();
+        for (int i = 0; i < _fparameters.size(); i++) 
+        {
+        	messageToString.append(_fparameters.get(i).toString());
         }
-        for (int i = 0; i < _vparameters.size(); i++) {
-            str += _vparameters.get(i).toString();
+        for (int i = 0; i < _vparameters.size(); i++) 
+        {
+        	messageToString.append(_vparameters.get(i).toString());
         }
-        for (int i = 0; i < _oparameters.size(); i++) {
-            str += _oparameters.get(i).toString();
+        for (int i = 0; i < _oparameters.size(); i++) 
+        {
+        	messageToString.append(_oparameters.get(i).toString());
         }
-        str += "\n</SS7>";
-        return str;
+        messageToString.append("\n</SS7>");
+        return messageToString.toString();
     }
 }

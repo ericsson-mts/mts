@@ -174,7 +174,12 @@ public class MessageQ931
     public String toString() 
     {
         StringBuilder messageToString = new StringBuilder();
-        messageToString.append("<ISDN>");
+        messageToString.append("<ISDN ");
+        messageToString.append("layer=\"");
+        messageToString.append(this.dictionary.get_layer());
+        messageToString.append("\"");
+        messageToString.append("/>\n");
+        
         messageToString.append(header.toXml());
 
 	    Iterator<ElementAbstract> iter = this.elements.iterator();

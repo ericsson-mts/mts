@@ -410,54 +410,46 @@ public class TlvMessage {
     	return typeName  + ":" + getMessageClass() + "_" + getMessageType();
     }
 
-    public String toShortString(String layer) {
-        String layerUpper = layer.toUpperCase();
-        String str = new String();
-        str += "<" + layerUpper + " class/type=\"";
-        String className = _dictionary.messageClassName(getMessageClass());
-        if (className != null) {
-            str += className;
-        }
-        str += "(" + getMessageClass() + ")";
-        String typeName = _dictionary.messageTypeName(getMessageClass(), getMessageType());
-        if (typeName != null) {
-            str += "/" + typeName;
-        }
-        str += "(" + getMessageType() + ")";
-        str += "\"/>";
-        return str;
-    }
-
     @Override
     public String toString() {
-        String str = new String();
-        str += "<UA>";
-        str += "<header";
-        str += " version=\"" + getVersion() + "\"";
-        str += " reserved=\"" + getReserved() + "\"";
+    	StringBuilder messageToString = new StringBuilder();
+    	messageToString.append("<UA ");
+    	messageToString.append("layer=\"");
+        messageToString.append(this._dictionary.get_layer());
+        messageToString.append("\"");
+        messageToString.append("/>\n");
+        
+        messageToString.append("   <header");
+        messageToString.append(" version=\"" + getVersion() + "\"");
+        messageToString.append(" reserved=\"" + getReserved() + "\"");
         String className = _dictionary.messageClassName(getMessageClass());
-        if (className != null) {
-            str += " messageClass=\"" + className + "\"";
+        if (className != null) 
+        {
+        	messageToString.append(" messageClass=\"" + className + "\"");
         }
-        else {
-            str += " messageClass=\"" + getMessageClass() + "\"";
+        else 
+        {
+        	messageToString.append(" messageClass=\"" + getMessageClass() + "\"");
         }
         String typeName = _dictionary.messageTypeName(getMessageClass(), getMessageType());
-        if (typeName != null) {
-            str += " messageType=\"" + typeName + "\"";
+        if (typeName != null) 
+        {
+        	messageToString.append(" messageType=\"" + typeName + "\"");
         }
         else {
-            str += "messageType=\"" + getMessageLength() + "\"";
+        	messageToString.append("messageType=\"" + getMessageLength() + "\"");
         }
-        if (getMessageLength() != 0) {
-            str += " messageLength=\"" + getMessageLength() + "\"";
+        if (getMessageLength() != 0) 
+        {
+        	messageToString.append(" messageLength=\"" + getMessageLength() + "\"");
         }
-        str += "/>";
+        messageToString.append("/>");
 
-        for (int i = 0; i < _parameters.size(); i++) {
-            str += _parameters.get(i).toString();
+        for (int i = 0; i < _parameters.size(); i++) 
+        {
+        	messageToString.append(_parameters.get(i).toString());
         }
-        str += "\n</UA>";
-        return str;
+        messageToString.append("\n</UA>");
+        return messageToString.toString();
     }
 }
