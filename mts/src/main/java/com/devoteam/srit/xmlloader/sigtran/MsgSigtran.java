@@ -222,7 +222,7 @@ public class MsgSigtran extends Msg
         }    	
         if (_ieMessage != null) 
         {
-        	return StackFactory.PROTOCOL_SIGTRAN + ".Q931";
+        	return _ieMessage.getProtocol();
         }
         if (_tlvMessage != null) 
         {

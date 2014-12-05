@@ -34,6 +34,14 @@
         </UA>
     </sendMessageSIGTRAN>
     
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="01000e0800000020000100080000fa020081000800031fef000f000800000002" />
+
+    <receiveMessageSIGTRAN name="Wait SIGTRAN"/>            
+    
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>     
+    
     <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostV5UA]" remotePort="[localPortV5UA]">    		
         <UA name="V5UA" file="v5ua.xml">
             <header messageClass="V5PTM:V5 Boundary Primitives Transport" messageType="Release_Indication"/>						

@@ -80,10 +80,10 @@ public class FvoDictionary {
 
         //DICTIONARY level
         Element rootDictionary = (Element) document.selectSingleNode("/dictionary");
-        String ppidStr = rootDictionary.attributeValue("ppid");
+        
         _layer = rootDictionary.attributeValue("layer");
 
-        //HEADER
+        //HEADER level
         Node headerNode = document.selectSingleNode("/dictionary/header");
         if (headerNode != null) 
         {
@@ -92,7 +92,7 @@ public class FvoDictionary {
             header.setMessageLength(Integer.decode(root.attributeValue("length")));
         }
 
-        //MESSAGES
+        //MESSAGES level
         List listMessages = document.selectNodes("/dictionary/messages/message");
         for (Object object:listMessages) 
         {

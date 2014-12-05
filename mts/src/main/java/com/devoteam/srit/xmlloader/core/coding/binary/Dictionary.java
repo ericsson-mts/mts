@@ -39,6 +39,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
  */
 public class Dictionary 
 {
+    private String _layer;
 	
     private Map<String,ElementAbstract> elementsMapByLabel = new HashMap<String, ElementAbstract>();
     private Map<Integer,ElementAbstract> elementsMapByTag = new HashMap<Integer, ElementAbstract>();
@@ -47,7 +48,9 @@ public class Dictionary
     public Dictionary(Element root, String syntax) throws Exception 
     {
      
-        List<Element> listElem=root.element("header").elements("field");
+        _layer = root.attributeValue("layer");
+        
+        List<Element> listElem=root.element("header").elements("field"); 
         for (Element element : listElem) 
         {
         	fieldsMapHeader.put(element.attributeValue("name"), new EnumerationField(element));
@@ -75,6 +78,10 @@ public class Dictionary
 
     }
     
+    public String get_layer() {
+		return this._layer;
+	}
+
     public ElementAbstract getElementByTag(Integer tag) 
     {
         return elementsMapByTag.get(tag);

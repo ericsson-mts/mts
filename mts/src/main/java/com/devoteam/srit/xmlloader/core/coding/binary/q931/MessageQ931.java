@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.HeaderAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.XMLDoc;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import gp.utils.arrays.Array;
@@ -42,6 +43,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
+
 import org.dom4j.Element;
 
 
@@ -156,6 +158,11 @@ public class MessageQ931
             array.addLast(elem.encodeToArray());
         }
         return array;
+    }
+
+    public String getProtocol() 
+    {
+    	return StackFactory.PROTOCOL_SIGTRAN + "." + dictionary.get_layer();
     }
 
     public String getType() 
