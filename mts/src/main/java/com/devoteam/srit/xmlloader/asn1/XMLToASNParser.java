@@ -27,7 +27,7 @@ import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementSimple;
-import com.devoteam.srit.xmlloader.core.coding.binary.EnumerationField;
+import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
 import com.devoteam.srit.xmlloader.core.coding.binary.FieldAbstract;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
@@ -254,7 +254,7 @@ public class XMLToASNParser
         {
         	if (elementDico != null)
         	{
-	        	EnumerationField fld = (EnumerationField) elementDico.getField(0);
+	        	EnumLongField fld = (EnumLongField) elementDico.getField(0);
 	        	value = fld.getEnumLong(element.getTextTrim());
         	}
         	else

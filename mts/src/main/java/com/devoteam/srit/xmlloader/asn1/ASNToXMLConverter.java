@@ -27,7 +27,7 @@ import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementSimple;
-import com.devoteam.srit.xmlloader.core.coding.binary.EnumerationField;
+import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -477,7 +477,7 @@ public class ASNToXMLConverter
 		{
         	if (binaryDico != null)
         	{
-	        	EnumerationField fld = (EnumerationField) binaryDico.getField(0);
+	        	EnumLongField fld = (EnumLongField) binaryDico.getField(0);
 	        	ret = fld.getEnumValueLong((Long) subObject);
 	        	return ret;
         	}

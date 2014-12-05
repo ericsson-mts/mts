@@ -27,7 +27,7 @@ import java.io.InputStream;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
-import com.devoteam.srit.xmlloader.core.coding.binary.EnumerationField;
+import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
 import com.devoteam.srit.xmlloader.core.coding.binary.HeaderAbstract;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -74,7 +74,7 @@ public class HeaderQ931 extends HeaderAbstract {
     @Override
     public String getType() 
     {
-	    EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message type");
+	    EnumLongField field = (EnumLongField) dictionary.getHeaderFieldByName("Message type");
 	    String name = field.getEnumLabelByValue((long) _typeArray.getValue());
 	    return name + ":" + _typeArray.getValue();
     }
@@ -94,7 +94,7 @@ public class HeaderQ931 extends HeaderAbstract {
             _typeArray = new Integer08Array((Utils.parseBinaryString(header.attributeValue("type")))[0]);
         } else 
         {
-        	EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message type");
+        	EnumLongField field = (EnumLongField) dictionary.getHeaderFieldByName("Message type");
         	long longValue = field.getEnumValueByLabel(header.attributeValue("type"));
            _typeArray = new Integer08Array((int) longValue);
         }
@@ -105,7 +105,7 @@ public class HeaderQ931 extends HeaderAbstract {
             _discrimArray = new Integer08Array((Utils.parseBinaryString(discriminator))[0]);
         } catch (Exception e) 
         {
-        	EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Protocol discriminator");
+        	EnumLongField field = (EnumLongField) dictionary.getHeaderFieldByName("Protocol discriminator");
         	long longValue = field.getEnumValueByLabel(discriminator);
             _discrimArray = new Integer08Array((int) longValue);
         }
