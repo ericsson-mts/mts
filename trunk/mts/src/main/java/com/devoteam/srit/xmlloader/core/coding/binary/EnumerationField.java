@@ -44,7 +44,7 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class EnumerationField extends IntegerField
+public class EnumLongField extends IntegerField
 {
 	
     private Map<Long, String> labelsByValue = new HashMap<Long, String>();
@@ -52,11 +52,11 @@ public class EnumerationField extends IntegerField
 
     private List<EnumRange> ranges = new ArrayList<EnumRange>();
 	
-	public EnumerationField() 
+	public EnumLongField() 
     {
     }
 
-    public EnumerationField(Element rootXML) 
+    public EnumLongField(Element rootXML) 
     {
         super(rootXML);
         
