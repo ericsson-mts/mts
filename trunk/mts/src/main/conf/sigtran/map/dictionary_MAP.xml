@@ -114,25 +114,71 @@
         condition="localValue=1"
     /> 
     
-    <!-- International Subscriber Distinguish Name (ISDN) adress string -->
-    <element tag="ISDN_AddressString:001" description="International Mobile Subscriber Identity address string">
-    		<field name="extension" type="boolean" lengthBit="1" description="extension"/>
-        <field name="nature of address" type="integer" lengthBit="3" description="nature of address"/>
-        <field name="numbering plan" type="integer" lengthBit="4" description="numbering plan"/>
+    <!-- International Subscriber Distinguish Name (ISDN) adress string => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 456 -->
+    <element tag="ISDN_AddressString" description="International Mobile Subscriber Identity address string">
+    		<field name="extension" type="enumeration" lengthBit="1" description="extension">
+            <enum name="no extension" value="1"/>
+        </field>
+        <field name="nature of address" type="enumeration" lengthBit="3" description="nature of address">
+            <enum name="unknown" value="b000"/>
+            <enum name="international number" value="b001"/>
+            <enum name="national significant number" value="b010"/>
+            <enum name="network specific number" value="b011"/>
+            <enum name="subscriber number" value="b100"/>
+            <enum name="reserved" value="b101"/>
+            <enum name="abbreviated number" value="b110"/>
+            <enum name="reserved for extension" value="b111"/>
+        </field>
+        <field name="numbering plan" type="enumeration" lengthBit="4" description="numbering plan">
+            <enum name="unknown" value="b0000"/>
+            <enum name="ISDN/Telephony Numbering Plan (Rec ITU-T E.164)" value="b0001"/>
+            <enum name="spare" value="b0010"/>
+            <enum name="data numbering plan (ITU-T Rec X.121)" value="b0011"/>
+            <enum name="telex numbering plan (ITU-T Rec F.69)" value="b0100"/>
+            <enum name="spare" value="b0101"/>
+            <enum name="land mobile numbering plan (ITU-T Rec E.212)" value="b0110"/>
+            <enum name="spare" value="b0111"/>
+            <enum name="national numbering plan" value="b1000"/>
+            <enum name="private numbering plan" value="b1001"/>
+            <enum name="reserved for extension" value="b1111"/>
+        </field>
         <field name="digits" type="number_bcd" description="digits"/>
     </element>
 
-    <!-- Service Centre Address (similar to IMSI address string) -->
-    <element tag="ServiceCentreAddress:002" description="Service Centre Address (similar to IMSI address string)">
-    		<field name="extension" type="boolean" lengthBit="1" description="extension"/>
-        <field name="nature of address" type="integer" lengthBit="3" description="nature of address"/>
-        <field name="numbering plan" type="integer" lengthBit="4" description="numbering plan"/>
+    <!-- Service Centre Address (similar to Address string) => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 456 -->
+    <element tag="ServiceCentreAddress" description="Service Centre Address (similar to IMSI address string)">
+    		<field name="extension" type="enumeration" lengthBit="1" description="extension">
+            <enum name="no extension" value="1"/>
+        </field>
+        <field name="nature of address" type="enumeration" lengthBit="3" description="nature of address">
+            <enum name="unknown" value="b000"/>
+            <enum name="international number" value="b001"/>
+            <enum name="national significant number" value="b010"/>
+            <enum name="network specific number" value="b011"/>
+            <enum name="subscriber number" value="b100"/>
+            <enum name="reserved" value="b101"/>
+            <enum name="abbreviated number" value="b110"/>
+            <enum name="reserved for extension" value="b111"/>
+        </field>
+        <field name="numbering plan" type="enumeration" lengthBit="4" description="numbering plan">
+            <enum name="unknown" value="b0000"/>
+            <enum name="ISDN/Telephony Numbering Plan (Rec ITU-T E.164)" value="b0001"/>
+            <enum name="spare" value="b0010"/>
+            <enum name="data numbering plan (ITU-T Rec X.121)" value="b0011"/>
+            <enum name="telex numbering plan (ITU-T Rec F.69)" value="b0100"/>
+            <enum name="spare" value="b0101"/>
+            <enum name="land mobile numbering plan (ITU-T Rec E.212)" value="b0110"/>
+            <enum name="spare" value="b0111"/>
+            <enum name="national numbering plan" value="b1000"/>
+            <enum name="private numbering plan" value="b1001"/>
+            <enum name="reserved for extension" value="b1111"/>
+        </field>
         <field name="digits" type="number_bcd" description="digits"/>
     </element>
 
-    <!-- Operation code local value -->
-    <element tag="opCode.localValue:003" description="Operation code local value">
-    		<field name="localValue" type="enumeration" lengthBit="32" description="operation code">
+    <!-- Operation code local value => MAP.asn line 76 -->
+    <element tag="opCode.localValue" description="Operation code local value">
+    		<field name="localValue" type="enumeration" lengthBit="8" description="operation code">
             <enum name="updateLocation" value="2"/>
           	<enum name="cancelLocation" value="3"/>
           	<enum name="provideRoamingNumber" value="4"/>
@@ -217,4 +263,66 @@
         </field>
     </element>
 
+    <!-- Error code local value => MAP.asn line 164 -->
+    <element tag="errorCode.localValue" description="Error code local value">
+    		<field name="localValue" type="enumeration" lengthBit="8" description="error code">
+            <enum name="unknownSubscriber" value="1"/>
+            <enum name="unknownMSC" value="3"/>
+            <enum name="secureTransportError" value="4"/>
+            <enum name="unidentifiedSubscriber" value="5"/>
+            <enum name="absentSubscriberSM" value="6"/>
+            <enum name="unknownEquipment" value="7"/>
+            <enum name="roamingNotAllowed" value="8"/>
+            <enum name="illegalSubscriber" value="9"/>
+            <enum name="bearerServiceNotProvisioned" value="10"/>
+            <enum name="teleserviceNotProvisioned" value="11"/>
+            <enum name="illegalEquipment" value="12"/>
+            <enum name="callBarred" value="13"/>
+            <enum name="forwardingViolation" value="14"/>
+            <enum name="cug-Reject" value="15"/>
+            <enum name="illegalSS-Operation" value="16"/>
+            <enum name="ss-ErrorStatus" value="17"/>
+            <enum name="ss-NotAvailable" value="18"/>
+            <enum name="ss-SubscriptionViolatio" value="19"/>
+            <enum name="ss-Incompatibility" value="20"/>
+            <enum name="facilityNotSupported" value="21"/>
+            <enum name="noHandoverNumberAvailable" value="25"/>
+            <enum name="subsequentHandoverFailure" value="26"/>
+            <enum name="absentSubscriber" value="27"/>
+            <enum name="incompatibleTerminal" value="28"/>
+            <enum name="shortTermDenial" value="29"/>
+            <enum name="longTermDenial" value="30"/>
+            <enum name="subscriberBusyForMT-SMS" value="31"/>
+            <enum name="sm-DeliveryFailure" value="32"/>
+            <enum name="messageWaitingListFull" value="33"/>
+            <enum name="systemFailure" value="34"/>
+            <enum name="dataMissing" value="35"/>
+            <enum name="unexpectedDataValue" value="36"/>
+            <enum name="pw-RegistrationFailur" value="37"/>
+	          <enum name="negativePW-Check" value="38"/>
+            <enum name="noRoamingNumberAvailable" value="39"/>
+            <enum name="tracingBufferFull" value="40"/>
+            <enum name="targetCellOutsideGroupCallArea" value="42"/>
+            <enum name="numberOfPW-AttemptsViolation" value="43"/>
+            <enum name="numberChanged" value="44"/>
+            <enum name="busySubscriber" value="45"/>
+            <enum name="noSubscriberReply" value="46"/>
+            <enum name="forwardingFailed" value="47"/>
+            <enum name="or-NotAllowed" value="48"/>
+            <enum name="ati-NotAllowed" value="49"/>
+            <enum name="noGroupCallNumberAvailable" value="50"/>
+            <enum name="resourceLimitation" value="51"/>
+            <enum name="unauthorizedRequestingNetwork" value="52"/>
+            <enum name="unauthorizedLCSClient" value="53"/>
+            <enum name="positionMethodFailure" value="54"/>
+            <enum name="unknownOrUnreachableLCSClient" value="58"/>
+            <enum name="mm-EventNotSupported" value="59"/>
+            <enum name="tsi-NotAllowed" value="60"/>
+            <enum name="atm-NotAllowed" value="61"/>
+            <enum name="informationNotAvailabl" value="62"/>
+            <enum name="unknownAlphabe" value="71"/>
+	          <enum name="ussd-Busy" value="72"/>
+        </field>
+    </element>
+    
 </dictionary>

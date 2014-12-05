@@ -116,7 +116,7 @@ public class HeaderGTPV1 extends HeaderAbstract
         if (strType != null)
         {
             EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
-            this.type = (int) field.getEnumValue(strType);
+            this.type = (int) field.getEnumLong(strType);
         }
         EnumerationField field = (EnumerationField) dictionary.getHeaderFieldByName("Message Type");
         this.label = field.getEnumLabelByValue((long) this.type);
