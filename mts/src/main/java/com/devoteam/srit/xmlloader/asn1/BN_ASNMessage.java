@@ -133,7 +133,7 @@ public class BN_ASNMessage extends ASNMessage
         messageToString.append("layer=\"");
         messageToString.append(this.dictionary.getLayer());
         messageToString.append("\"");
-        messageToString.append("/>\n");
+        messageToString.append(">\n");
 
         messageToString.append(ASNToXMLConverter.indent(ASNToXMLConverter.NUMBER_SPACE_TABULATION));
         String resultPath = "";
