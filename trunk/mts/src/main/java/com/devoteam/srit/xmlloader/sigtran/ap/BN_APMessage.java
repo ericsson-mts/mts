@@ -32,6 +32,7 @@ import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.asn1.ASNMessage;
 import com.devoteam.srit.xmlloader.asn1.BN_ASNMessage;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.sigtran.ap.map.Component;
 import com.devoteam.srit.xmlloader.sigtran.ap.map.Invoke;
 import com.devoteam.srit.xmlloader.sigtran.ap.map.Reject;
@@ -54,7 +55,12 @@ public class BN_APMessage extends BN_ASNMessage
 	{
 		super(dictionaryFile);
 	}
-		    
+	
+	public String getProtocol()
+    {
+		return StackFactory.PROTOCOL_SIGTRAN + "." + this.dictionary.getLayer();
+    }
+	
     public boolean isRequest()
     {
     	Component apMessage = (Component) asnObject;
@@ -124,7 +130,7 @@ public class BN_APMessage extends BN_ASNMessage
 		else if (apMessage.isReturnResultLastSelected())
 		{
 			ReturnResult returnResult = apMessage.getReturnResultLast();
-			return "OK";
+			return "Result";
 		}
 		else if (apMessage.isReturnErrorSelected())
 		{

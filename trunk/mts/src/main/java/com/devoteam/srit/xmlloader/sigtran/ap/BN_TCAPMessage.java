@@ -39,6 +39,7 @@ import org.bn.IEncoder;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.asn1.BN_ASNMessage;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Component;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ComponentPortion;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Invoke;
@@ -63,6 +64,11 @@ public class BN_TCAPMessage extends BN_ASNMessage
 	{
 		super(dictionaryFile);
 	}
+	
+	public String getProtocol()
+    {
+		return StackFactory.PROTOCOL_SIGTRAN + "." + this.dictionary.getLayer();
+    }
 	
     public boolean isRequest()
     {

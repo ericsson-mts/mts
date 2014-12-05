@@ -26,8 +26,6 @@ package com.devoteam.srit.xmlloader.core.hybridnio;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.net.SocketOption;
-//import java.net.SocketOption;
 // import java.net.SocketOption;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channel;

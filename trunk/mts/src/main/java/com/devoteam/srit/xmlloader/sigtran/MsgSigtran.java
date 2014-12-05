@@ -210,11 +210,11 @@ public class MsgSigtran extends Msg
     {
         if (_apMessage != null) 
         {
-            return StackFactory.PROTOCOL_SIGTRAN + ".MAP";
+            return _apMessage.getProtocol();
         }  
         if (_tcapMessage != null) 
         {
-        	return StackFactory.PROTOCOL_SIGTRAN + ".TCAP";
+        	return _tcapMessage.getProtocol();
         }    	
         if (_fvoMessage != null) 
         {
@@ -234,12 +234,7 @@ public class MsgSigtran extends Msg
     @Override
     public String getType() throws Exception 
     {
-    	String type = null;
-        if (_apMessage != null) 
-        {
-            type = _apMessage.getType();
-        }
-        // for response
+        // for response message
         if (!isRequest())
         {
 			Trans trans = getTransaction(); 
@@ -252,23 +247,29 @@ public class MsgSigtran extends Msg
 		    	}
 	    	}
         }
-        if (type == null && _tcapMessage != null) 
+        
+        // for request message
+        if (_apMessage != null) 
         {
-            type = _tcapMessage.getType();
-        }    	
-        if (type == null && _fvoMessage != null) 
-        {
-            type = _fvoMessage.getType();
-        }    	
-        if (type == null && _ieMessage != null) 
-        {
-            type = _ieMessage.getType();
+            return _apMessage.getType();
         }
-        if (type == null && _tlvMessage != null) 
+        if (_tcapMessage != null) 
         {
-            type = _tlvMessage.getType();
+        	return _tcapMessage.getType();
+        }    	
+        if (_fvoMessage != null) 
+        {
+        	return _fvoMessage.getType();
+        }    	
+        if (_ieMessage != null) 
+        {
+        	return _ieMessage.getType();
         }
-        return type;
+        if (_tlvMessage != null) 
+        {
+        	return _tlvMessage.getType();
+        }
+        return null;
 	}
 
     @Override
