@@ -282,7 +282,7 @@ public class FvoParameter {
         for (int i = 0; i < _fields.size(); i++) {
             str += _fields.get(i).toString();
         }
-        str += "\n    </parameter>";
+        str += "\n   </parameter>";
         return str;
     }
 }

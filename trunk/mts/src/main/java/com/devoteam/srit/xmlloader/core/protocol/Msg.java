@@ -725,7 +725,6 @@ public abstract class Msg extends MsgLight implements Removable
         {
         	ret += " > " + getResultComplete();
         }
-        ret += "\n";
         return ret;
     }
     
