@@ -379,34 +379,6 @@ public class MsgSigtranHybrid extends Msg
         }
         return null;
     }
-
-    /** Returns a short description of the message. Used for logging as INFO level */
-    /** This methods HAS TO be quick to execute for performance reason */
-    @Override
-    public String toShortString() throws Exception 
-    {
-        String str = super.toShortString();
-
-        if (_ieMessage != null) 
-        {
-            // str += _ieMessage.toShortString("ISDN") + "\n";
-            return str;
-        }
-
-        if (_fvoMessage != null) 
-        {
-            str += _fvoMessage.toShortString() + "\n";
-            return str;
-        }
-
-        if (_tlvMessage != null) 
-        {
-            str += _tlvMessage.toShortString("UA") + "\n";
-            return str;
-        }
-
-        return str;
-    }
     
     /** Get the XML representation of the message; for the genscript module. */
     @Override

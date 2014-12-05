@@ -225,7 +225,7 @@ public class TlvDictionary {
         return _ppid;
     }
 
-    public String get_layer() {
+    public String getLayer() {
 		return _layer;
 	}
 

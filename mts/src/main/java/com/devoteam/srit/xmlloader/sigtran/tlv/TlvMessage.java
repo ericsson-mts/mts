@@ -335,7 +335,7 @@ public class TlvMessage {
     
     public String getProtocol() 
     {
-    	return StackFactory.PROTOCOL_SIGTRAN + "." + _dictionary.get_layer();
+    	return StackFactory.PROTOCOL_SIGTRAN + "." + _dictionary.getLayer();
     }
     
     public boolean isRequest()
@@ -415,7 +415,7 @@ public class TlvMessage {
     	StringBuilder messageToString = new StringBuilder();
     	messageToString.append("<UA ");
     	messageToString.append("layer=\"");
-        messageToString.append(this._dictionary.get_layer());
+        messageToString.append(this._dictionary.getLayer());
         messageToString.append("\"");
         messageToString.append("/>\n");
         
