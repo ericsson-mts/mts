@@ -52,6 +52,10 @@ public class EnumerationField extends IntegerField
 
     private List<EnumRange> ranges = new ArrayList<EnumRange>();
 	
+	public EnumerationField() 
+    {
+    }
+
     public EnumerationField(Element rootXML) 
     {
         super(rootXML);

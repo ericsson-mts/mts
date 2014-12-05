@@ -120,10 +120,19 @@ public abstract class ElementAbstract implements Cloneable
 	        		label = tagStr.substring(0, iPos);
 	        		value = tagStr.substring(iPos + 1);
 	        	}
-	    		
-	        	int tagInt = getTagValueFromBinary(value);
-	        	this.tag = tagInt;
-	        	this.label = label;
+	        	if (value != null)
+	        	{
+	        		Integer intTag = getTagValueFromBinary(value);
+	        		if (intTag !=  null)
+	        		{
+	        			this.tag = intTag;
+	        			this.label = label;
+	        		}
+	        		else
+	        		{
+	        			this.label = value;
+	        		}
+	        	}
             }
     	}
     	

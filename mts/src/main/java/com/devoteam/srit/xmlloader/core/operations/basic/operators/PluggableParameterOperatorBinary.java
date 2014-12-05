@@ -23,7 +23,9 @@
 
 package com.devoteam.srit.xmlloader.core.operations.basic.operators;
 
+import com.devoteam.srit.xmlloader.asn1.ASNMessage;
 import com.devoteam.srit.xmlloader.asn1.ASNToXMLConverter;
+import com.devoteam.srit.xmlloader.asn1.BN_ASNMessage;
 import com.devoteam.srit.xmlloader.asn1.XMLToASNParser;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
@@ -458,14 +460,17 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 	String string1 = param_1.get(i).toString();
                 	
                 	Parameter param_2 = assertAndGetParameter(operands, "value2");
-                    String string2 = param_2.get(i).toString().replace(" ", "");
+                    String className = param_2.get(i).toString().replace(" ", "");
                     
-                    Class thisClass = Class.forName(string2);
-                    int pos = string2.lastIndexOf('.');
+                    Parameter param_3 = assertAndGetParameter(operands, "value3");
+                    String dictionary = param_3.get(i).toString().replace(" ", "");
+                    
+                    Class thisClass = Class.forName(className);
+                    int pos = className.lastIndexOf('.');
                     String packageName = "";
                     if (pos > 0)
                     {
-                    	packageName = string2.substring(0, pos + 1);
+                    	packageName = className.substring(0, pos + 1);
                     }
                     
                     Document doc = Utils.stringParseXML(string1, false);
@@ -474,7 +479,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     Object objASN;
                     objASN = thisClass.newInstance();
                     String resultPath = "";
-                    XMLToASNParser.getInstance().parseFromXML(resultPath, null, objASN, element, packageName);
+                    ASNMessage message = new BN_ASNMessage(dictionary); 
+                    XMLToASNParser.getInstance().parseFromXML(resultPath, message, objASN, element, packageName);
 
                     // Library binarynotes
                 	IEncoder<java.lang.Object> encoderMAP = CoderFactory.getInstance().newEncoder("BER");
@@ -491,18 +497,22 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 	Array array = Array.fromHexString(param_1.get(i).toString());
                     
                     Parameter param_2 = assertAndGetParameter(operands, "value2");
-                    String string2 = param_2.get(i).toString().replace(" ", "");
-                	
+                    String className = param_2.get(i).toString().replace(" ", "");
+                    
+                    Parameter param_3 = assertAndGetParameter(operands, "value3");
+                    String dictionary = param_3.get(i).toString().replace(" ", "");
+                    
                     // Library binarynotes
                 	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
                     InputStream inputStream = new ByteArrayInputStream(array.getBytes());
-                    Class<?> cl = Class.forName(string2);
+                    Class<?> cl = Class.forName(className);
                     Object objASN = cl.newInstance();
                     objASN = decoder.decode(inputStream, cl);
                     
                     String ret = "";
                     String resultPath = "";
-                    ret += ASNToXMLConverter.getInstance().toXML(resultPath, null, null, "value", objASN, null, ASNToXMLConverter.NUMBER_SPACE_TABULATION * 2);
+                    ASNMessage message = new BN_ASNMessage(dictionary); 
+                    ret += ASNToXMLConverter.getInstance().toXML(resultPath, message, null, "value", objASN, null, ASNToXMLConverter.NUMBER_SPACE_TABULATION * 2);
                     result.add(ret);
                 }
                 else

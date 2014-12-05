@@ -172,18 +172,22 @@ public class XMLToASNParser
     { 
     	// manage binary objects as list of field
     	String simpleClassName = object.getClass().getSimpleName();
-    	ElementAbstract elementDico = message.getBinaryByLabel(simpleClassName);
-    	if (elementDico == null)
+    	ElementAbstract elementDico = null;
+    	if (message != null)
     	{
-	    	String pathName = resultPath;
-	    	int pos = resultPath.lastIndexOf('.');
-	    	if (pos >= 0)
+	    	elementDico = message.getBinaryByLabel(simpleClassName);
+	    	if (elementDico == null)
 	    	{
-	    		pos = resultPath.lastIndexOf('.', pos - 1);
-	    		if (pos >= 0)
-	    		pathName = resultPath.substring(pos + 1);
+		    	String pathName = resultPath;
+		    	int pos = resultPath.lastIndexOf('.');
+		    	if (pos >= 0)
+		    	{
+		    		pos = resultPath.lastIndexOf('.', pos - 1);
+		    		if (pos >= 0)
+		    		pathName = resultPath.substring(pos + 1);
+		    	}
+		    	elementDico = message.getBinaryByLabel(pathName);
 	    	}
-	    	elementDico = message.getBinaryByLabel(pathName);
     	}
     	
     	// manage the embedded objects

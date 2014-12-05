@@ -546,7 +546,7 @@
 				<xs:complexType>
 					<xs:attribute name="name" type="xs:string" use="required">
 						<xs:annotation>
-							<xs:documentation>Contains the difference resulting value; XX means shift.</xs:documentation>
+							<xs:documentation>The difference resulting value; XX means shift.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 					<xs:attribute name="value" type="xs:string" use="required">
@@ -557,6 +557,50 @@
 					<xs:attribute name="value2" type="xs:string" use="required">
 						<xs:annotation>
 							<xs:documentation>The second operande.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+      <xs:element name="binary.xmlToAsn">
+				<xs:annotation>
+					<xs:documentation>Parse XML data and encode them into ASN1 for a given class name and according to a given dictionary file. </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The XML data to process.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The class name for java object; see into ../tutorial/asn1/templates.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value2" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The file name for the dictionary; it contains the embedded object description and the element description for enumeration and binary data.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>																											
+      <xs:element name="binary.asnToXml">
+				<xs:annotation>
+					<xs:documentation>Decode binary data from ASN1 and convert them into XML format for a given class name and according to a given dictionary file. </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The binary data to process.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The class name for java object; see into ../tutorial/asn1/templates.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value2" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The file name for the dictionary; it contains the embedded object description and the element description for enumeration and binary data.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>

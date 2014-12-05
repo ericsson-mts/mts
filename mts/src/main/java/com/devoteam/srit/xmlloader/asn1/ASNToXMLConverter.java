@@ -451,8 +451,10 @@ public class ASNToXMLConverter
 			byte[] bytes = (byte[]) subObject;
         	if (binaryDico != null)
         	{
-        		ElementSimple binary = new ElementSimple(); 
-        		binary.copyToClone(binaryDico);
+        		// bug dans la fonction copyToClone() : retourne toujours un IntegerField
+        		//ElementSimple binary = new ElementSimple(); 
+        		//binary.copyToClone(binaryDico);
+        		ElementSimple binary = (ElementSimple) binaryDico;
         		Array array = new DefaultArray(bytes);
         		binary.decodeFromArray(array, null);
         		ret += binary.fieldsToXml(indent);
