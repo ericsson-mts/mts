@@ -126,13 +126,13 @@ public class BN_TCAPMessage extends BN_ASNMessage
     	}
     	else if (tcMessage.isContinue1Selected())
         {
-    		if (tcMessage.getContinue1().getOtid() != null)
-    		{
-    			bytes = tcMessage.getContinue1().getOtid().getValue();
-    		}
-    		else if (tcMessage.getContinue1().getDtid() != null)
+    		if (tcMessage.getContinue1().getDtid() != null)
     		{
     			bytes = tcMessage.getContinue1().getDtid().getValue();
+    		}
+    		else if (tcMessage.getContinue1().getOtid() != null)
+    		{
+    			bytes = tcMessage.getContinue1().getOtid().getValue();
     		}
         }
     	else if (tcMessage.isAbortSelected())
@@ -144,7 +144,7 @@ public class BN_TCAPMessage extends BN_ASNMessage
 	    	Array array = new DefaultArray(bytes);
 	    	return Array.toHexString(array);
     	}
-    	return "";
+    	return null;
     }
 
     public Array getTCAPComponents() throws Exception

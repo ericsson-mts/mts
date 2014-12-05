@@ -130,7 +130,7 @@ public class BN_APMessage extends BN_ASNMessage
 		else if (apMessage.isReturnResultLastSelected())
 		{
 			ReturnResult returnResult = apMessage.getReturnResultLast();
-			return "Result";
+			return "RESULT";
 		}
 		else if (apMessage.isReturnErrorSelected())
 		{
@@ -139,15 +139,15 @@ public class BN_APMessage extends BN_ASNMessage
 			{
 				if (returnError.getErrorCode().isGlobalValueSelected())
 				{
-					return "Error:" + returnError.getErrorCode().getGlobalValue().getValue();
+					return "ERROR:" + returnError.getErrorCode().getGlobalValue().getValue();
 				}
 				if (returnError.getErrorCode().isLocalValueSelected())
 				{
-					return "Error:" + Long.toString(returnError.getErrorCode().getLocalValue().getValue());
+					return "ERROR:" + Long.toString(returnError.getErrorCode().getLocalValue().getValue());
 				}
 				else
 				{
-					return "Error";
+					return "ERROR";
 				}
 			}
 		}
@@ -158,23 +158,23 @@ public class BN_APMessage extends BN_ASNMessage
 			{
 				if (reject.getProblem().isGeneralProblemSelected())
 				{
-					return "Reject:General:" + Long.toString(reject.getProblem().getGeneralProblem().getValue());
+					return "REJECT:General:" + Long.toString(reject.getProblem().getGeneralProblem().getValue());
 				}
 				else if (reject.getProblem().isInvokeProblemSelected())
 				{
-					return "Reject:Invoke:" + Long.toString(reject.getProblem().getInvokeProblem().getValue());
+					return "REJECT:Invoke:" + Long.toString(reject.getProblem().getInvokeProblem().getValue());
 				}
 				else if (reject.getProblem().isReturnErrorProblemSelected())
 				{
-					return "Reject:Error:" + Long.toString(reject.getProblem().getReturnErrorProblem().getValue());
+					return "REJECT:Error:" + Long.toString(reject.getProblem().getReturnErrorProblem().getValue());
 				}
 				else if (reject.getProblem().isReturnResultProblemSelected())
 				{
-					return "Reject:Result:" + Long.toString(reject.getProblem().getReturnResultProblem().getValue());
+					return "REJECT:Result:" + Long.toString(reject.getProblem().getReturnResultProblem().getValue());
 				}
 				else
 				{
-					return "Reject";
+					return "REJECT";
 				}
 			}
     	}
@@ -183,6 +183,8 @@ public class BN_APMessage extends BN_ASNMessage
    
     public String getTransactionId()
     {
+    	return "";
+    	/*
     	Component apMessage = (Component) asnObject;
     	String transId = null;
     	if (apMessage.isInvokeSelected())
@@ -202,6 +204,7 @@ public class BN_APMessage extends BN_ASNMessage
     		transId = String.valueOf(apMessage.getReturnError().getInvokeID().getValue());
         }
     	return transId;
+    	*/
     }
    
 }

@@ -503,6 +503,11 @@ public class FvoMessage {
     	*/
     	return typeName  + ":" + getMessageType();
     }
+    
+    public String getTransactionId()
+    {
+    	return "";
+    }
 
     public String toString() {
     	StringBuilder messageToString = new StringBuilder();

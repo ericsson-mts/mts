@@ -88,14 +88,14 @@
         </UA>	
     </sendMessageSIGTRAN>
 
-    <receiveMessageSIGTRAN name="Wait SIGTRAN ALERTING" listenpoint="[listenpointCaller]" type="SETUP:5">
+    <receiveMessageSIGTRAN name="Wait SIGTRAN ALERTING" listenpoint="[listenpointCaller]" type="ALERTING:1">
     	<parameter name="[lastCallReference]" operation="protocol.setFromMessage" value="isdn.header.callReference"/>    
     	<parameter name="[lastInterfaceId]" operation="protocol.setFromMessage" value="ua.parameter.Integer_Interface_Identifier.field.Interface_Identifier.value"/>        	
     </receiveMessageSIGTRAN>
     <test parameter="[lastCallReference]" condition="number.equals" value="[newCallReference]"/>
     <test parameter="[lastInterfaceId]" condition="number.equals" value="[newInterfaceId]"/>    
 
-    <receiveMessageSIGTRAN name="Wait SIGTRAN ALERTING" listenpoint="[listenpointCaller]" type="SETUP:5">
+    <receiveMessageSIGTRAN name="Wait SIGTRAN ALERTING" listenpoint="[listenpointCaller]" type="CONNECT:7">
     	<parameter name="[lastCallReference]" operation="protocol.setFromMessage" value="isdn.header.callReference"/>    
     	<parameter name="[lastInterfaceId]" operation="protocol.setFromMessage" value="ua.parameter.Integer_Interface_Identifier.field.Interface_Identifier.value"/>        	
     </receiveMessageSIGTRAN>

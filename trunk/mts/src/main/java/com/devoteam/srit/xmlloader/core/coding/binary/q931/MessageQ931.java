@@ -159,15 +159,30 @@ public class MessageQ931
         }
         return array;
     }
-
+    
     public String getProtocol() 
     {
     	return StackFactory.PROTOCOL_SIGTRAN + "." + dictionary.get_layer();
     }
 
+    public boolean isRequest() 
+    {
+    	return true;
+    }
+
     public String getType() 
     {
 	    return header.getType();
+    }
+    
+    public String getResult() 
+    {
+	    return null;
+    }
+    
+    public String getTransactionId()
+    {
+    	return "";
     }
     
     @Override
