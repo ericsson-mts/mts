@@ -412,6 +412,7 @@ public class TlvMessage {
 
     public String getTransactionId()
     {
+    	// TODO add the Routing_Context element
     	return "";
     }
 

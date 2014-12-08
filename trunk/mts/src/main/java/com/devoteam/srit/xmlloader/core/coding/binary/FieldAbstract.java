@@ -78,18 +78,22 @@ public abstract class FieldAbstract
      	{
      		throw new ExecutionException("ERROR : The type attribute for the field \"" + name + "\" is mandatory because the element he belongs to is not present in the dictionary.");
      	}
-     	if (type.equalsIgnoreCase("integer")) 
-        {
-            newField = new IntegerField(fieldRoot);
-        } 
-        else if (type.equalsIgnoreCase("boolean")) 
+    	else if (type.equalsIgnoreCase("boolean")) 
         {
         	newField = new BooleanField(fieldRoot);
+        } 
+        else if (type.equalsIgnoreCase("integer")) 
+        {
+            newField = new IntegerField(fieldRoot);
         } 
         else if (type.equalsIgnoreCase("enumeration")) 
         {
         	newField = new EnumLongField(fieldRoot);
-        } 
+        }
+        else if (type.equalsIgnoreCase("enum_string")) 
+        {
+        	newField = new EnumStringField(fieldRoot);
+        }
         else if (type.equalsIgnoreCase("string")) 
         {	
         	newField = new StringField(fieldRoot);	

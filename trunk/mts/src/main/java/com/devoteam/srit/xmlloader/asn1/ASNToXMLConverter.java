@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementSimple;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
+import com.devoteam.srit.xmlloader.core.coding.binary.EnumStringField;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -440,7 +441,14 @@ public class ASNToXMLConverter
 			String replace = embedded.getReplace();
 			Class<?> cl = Class.forName(replace);
 			Object obj = cl.newInstance();
-			obj = decoder.decode(inputStream, cl);
+			try
+			{
+				obj = decoder.decode(inputStream, cl);
+			}
+			catch (Exception e)
+			{
+				return "";
+			}
 			ret += "\n" + indent(indent);
 			ret += toXML(resultPath, message, subObject, "value", obj, objElementInfo, indent + NUMBER_SPACE_TABULATION);
 			ret += "\n" + indent(indent - NUMBER_SPACE_TABULATION);
@@ -478,7 +486,7 @@ public class ASNToXMLConverter
         	if (binaryDico != null)
         	{
 	        	EnumLongField fld = (EnumLongField) binaryDico.getField(0);
-	        	ret = fld.getEnumValueLong((Long) subObject);
+	        	ret = fld.getEnumValue((Long) subObject);
 	        	return ret;
         	}
 
@@ -492,14 +500,23 @@ public class ASNToXMLConverter
 		} 
 		else if (type.equals("java.lang.String")) 
 		{
+        	if (binaryDico != null)
+        	{
+	        	EnumStringField fld = (EnumStringField) binaryDico.getField(0);
+	        	ret = fld.getEnumValue((String) subObject);
+	        	return ret;
+        	}
+
 			ret += subObject.toString();
 			return ret;
 		}
+		/*
 		else if (type.equals("org.bn.types.ObjectIdentifier")) 
 		{
 			ret += "<ObjectIdentifier>" + ((ObjectIdentifier) subObject).getValue() + "</ObjectIdentifier>";
 			return ret;
 		}
+		*/
 		else if (type.endsWith(".EnumType")) 
 		{
 			ASN1EnumItem enumObj = null;
