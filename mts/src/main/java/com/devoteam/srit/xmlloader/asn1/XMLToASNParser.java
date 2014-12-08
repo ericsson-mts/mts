@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementSimple;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
+import com.devoteam.srit.xmlloader.core.coding.binary.EnumStringField;
 import com.devoteam.srit.xmlloader.core.coding.binary.FieldAbstract;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
@@ -272,7 +273,15 @@ public class XMLToASNParser
         }
         else if (type.equals("java.lang.String")||type.equals("String")) 
         {
-            value =  element.getTextTrim();
+        	if (elementDico != null)
+        	{
+	        	EnumStringField fld = (EnumStringField) elementDico.getField(0);
+	        	value = fld.getEnumString(element.getTextTrim());
+        	}
+        	else
+        	{
+        		value =  element.getTextTrim();
+        	}
         }
         else if (type.equals("byte[]")) 
         {

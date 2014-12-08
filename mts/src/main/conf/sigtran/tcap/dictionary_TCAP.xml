@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
-    Document   : dictionnary.xml
-    Created on : 1 decembre 2012, 08:58
+    Document   : dictionnary_TCAP.xml
+    Created on : 1 decembre 2014, 08:58
     Author     : fhenry
-    Description: MAP/TCAP dictionary
-
+    Description: Dictionary for the TCAP layer containing the embedded objects and the field enumerations
+    Reference document : 
+        TCAP.asn => provided in ../conf/sigtran/tcap/ directory
+        29002-c60.doc => 3GPP Mobile Application Part (Release 12) 
+        ...
 -->
 
 <dictionary layer="TCAP" className="com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage">
@@ -67,5 +70,95 @@
         initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider"
     />
+
+
+    <!-- direct reference => DialoguePDUs.asn & UniDialoguePDUs.asn  -->
+    <element tag="ExternalPDUSequenceType.direct_reference" description="direct reference">
+    		<field name="direct_reference" type="enum_string" description="direct reference">
+            <enum name="dialogue-as-id" value="0.0.17.773.1.1.1"/> <!-- {itu-t recommendation q 773 as(1) dialogue-as(1) version1(1)} -->
+            <enum name="uniDialogue-as-id" value="0.0.17.773.1.2.1"/> <!-- {itu-t recommendation q 773 as(1) unidialogue-as(2) version1(1)} -->
+        </field>
+    </element>
+
+    <!-- application contexte name => TODO  -->
+    <element tag="application_contexte_name.value" description="application contexte name">
+    		<field name="application_contexte_name" type="enum_string" description="application contexte name">
+            <enum name="dialogue-as-id" value="0.0.17.773.1.1.1"/> <!-- {itu-t recommendation q 773 as(1) dialogue-as(1) version1(1)} -->
+            <enum name="networkLocUpContext-v3" value="0.0.17.773.1.1.1"/> <!-- {map-ac networkLocUp(1) version3(3)} -->
+            <enum name="locationCancellationContext-v3" value="0.0.17.773.1.1.1"/> <!-- {map-ac locationCancel(2) version3(3)}
+            <enum name="roamingNumberEnquiryContext-v3" value="0.0.17.773.1.1.1"/> <!-- {map-ac roamingNbEnquiry(3) version3(3)}
+            <enum name="authenticationFailureReportContext-v3" value="0.0.17.773.1.1.1"/> <!-- {map-ac authenticationFailureReport(39) version3(3)}
+            <enum name="locationInfoRetrievalContext-v3" value="0.0.17.773.1.1.1"/> <!-- {map-ac locInfoRetrieval(5) version3(3)}
+            <enum name="resetContext-v2" value="0.0.17.773.1.1.1"/> <!-- {map-ac reset(10) version2(2)}
+            <enum name="handoverControlContext-v3" value="0.0.17.773.1.1.1"/> <!-- {map-ac handoverControl(11) version3(3)}
+            <enum name="equipmentMngtContext-v3" value="0.0.17.773.1.1.1"/> <!-- {map-ac equipmentMngt(13) version3(3)}
+            <enum name="infoRetrievalContext-v3" value="0.0.17.773.1.1.1"/> <!-- {map-ac infoRetrieval(14) version3(3)}
+            <enum name="interVlrInfoRetrievalContext-v3" value="0.0.17.773.1.1.1"/> <!-- {map-ac interVlrInfoRetrieval(15) version3(3)}
+            <enum name="subscriberDataMngtContext-v3" value="0.0.17.773.1.1.1"/> <!-- {map-ac subscriberDataMngt(16) version3(3)}
+            <enum name="tracingContext-v3" value="0.0.17.773.1.1.1"/> <!-- {map-ac tracing(17) version3(3)}
+            <enum name="networkFunctionalSsContext-v2" value="0.0.17.773.1.1.1"/> <!-- {map-ac networkFunctionalSs(18) version2(2)}
+            <enum name="networkUnstructuredSsContext-v2" value="0.0.17.773.1.1.1"/> <!-- {map-ac networkUnstructuredSs(19) version2(2)}
+            <enum name="shortMsgGatewayContext-v3  OBJECT IDENTIFIER ::={map-ac shortMsgGateway(20) version3(3)}
+            <enum name="shortMsgMO-RelayContext-v3  OBJECT IDENTIFIER ::={map-ac shortMsgMO-Relay(21) version3(3)}
+            <enum name="shortMsgAlertContext-v2  OBJECT IDENTIFIER ::={map-ac shortMsgAlert(23) version2(2)}
+            <enum name="mwdMngtContext-v3  OBJECT IDENTIFIER ::={map-ac mwdMngt(24) version3(3)}
+            <enum name="shortMsgMT-RelayContext-v3  OBJECT IDENTIFIER ::={map-ac shortMsgMT-Relay(25) version3(3)
+            <enum name="shortMsgMT-Relay-VGCS-Context-v3  OBJECT IDENTIFIER ::={map-ac shortMsgMT-Relay-VGCS(41) version3(3)}
+            <enum name="imsiRetrievalContext-v2  OBJECT IDENTIFIER ::={map-ac imsiRetrieval(26) version2(2)}
+            <enum name="msPurgingContext-v3  OBJECT IDENTIFIER ::={map-ac msPurging(27) version3(3)
+            <enum name="subscriberInfoEnquiryContext-v3  OBJECT IDENTIFIER ::={map-ac subscriberInfoEnquiry(28) version3(3)}
+            <enum name="anyTimeInfoEnquiryContext-v3  OBJECT IDENTIFIER ::={map-ac anyTimeInfoEnquiry(29) version3(3)}
+            <enum name="callControlTransferContext-v4  OBJECT IDENTIFIER ::={map-ac callControlTransfer(6) version4(4)}
+            <enum name="ss-InvocationNotificationContext-v3  OBJECT IDENTIFIER ::={map-ac ss-InvocationNotification(36) version3(3)}
+            <enum name="groupCallControlContext-v3  OBJECT IDENTIFIER ::={map-ac groupCallControl(31) version3(3)}
+            <enum name="groupCallInfoRetrievalContext-v3  OBJECT IDENTIFIER ::={map-ac groupCallInfoRetrieval(45) version3(3)}
+            <enum name="gprsLocationUpdateContext-v3  OBJECT IDENTIFIER ::={map-ac gprsLocationUpdate(32) version3(3)}
+            <enum name="gprsLocationInfoRetrievalContext-v4  OBJECT IDENTIFIER ::={map-ac gprsLocationInfoRetrieval(33) version4(4)}
+            <enum name="failureReportContext-v3  OBJECT IDENTIFIER ::={map-ac failureReport(34) version3(3)}
+            <enum name="gprsNotifyContext-v3  OBJECT IDENTIFIER ::={map-ac gprsNotify(35) version3(3)}
+            <enum name="reportingContext-v3  OBJECT IDENTIFIER ::={map-ac reporting(7) version3(3)}
+            <enum name="callCompletionContext-v3  OBJECT IDENTIFIER ::={map-ac callCompletion(8) version3(3)}
+            <enum name="istAlertingContext-v3  OBJECT IDENTIFIER ::={map-ac istAlerting(4) version3(3)}
+            <enum name="serviceTerminationContext-v3  OBJECT IDENTIFIER ::={map-ac immediateTermination(9) version3(3)}
+            <enum name="locationSvcGatewayContext-v3  OBJECT IDENTIFIER ::={map-ac locationSvcGateway(37) version3(3)}
+            <enum name="locationSvcEnquiryContext-v3  OBJECT IDENTIFIER ::={map-ac locationSvcEnquiry(38) version3(3)}
+            <enum name="mm-EventReportingContext-v3  OBJECT IDENTIFIER ::={map-ac mm-EventReporting(42) version3(3)}
+            <enum name="anyTimeInfoHandlingContext-v3  OBJECT IDENTIFIER ::={map-ac anyTimeInfoHandling(43) version3(3)}
+            <enum name="subscriberDataModificationNotificationContext-v3  OBJECT IDENTIFIER ::={map-ac subscriberDataModificationNotification(22) version3(3)}
+            <enum name="resourceManagementContext-v3  OBJECT IDENTIFIER ::={map-ac resourceManagement(44) version3(3)}
+            <enum name="networkLocUpContext-v1	map-ac networkLocUp (1)	version1 (1)
+            <enum name="networkLocUpContext-v2	map-ac networkLocUp (1)	version2 (2)
+            <enum name="locationCancellationContext-v1	map-ac locationCancellation (2)	version1 (1)
+            <enum name="locationCancellationContext-v2	map-ac locationCancellation (2)	version2 (2)
+            <enum name="roamingNumberEnquiryContext-v1	map-ac roamingNumberEnquiry (3)	version1 (1)
+            <enum name="roamingNumberEnquiryContext-v2	map-ac roamingNumberEnquiry (3)	version2 (2)
+            <enum name="locationInfoRetrievalContext-v1	map-ac locationInfoRetrieval (5)	version1 (1)
+            <enum name="locationInfoRetrievalContext-v2	map-ac locationInfoRetrieval (5)	version2 (2)
+            <enum name="resetContext-v1	map-ac reset (10)	version1 (1)
+            <enum name="handoverControlContext-v1	map-ac handoverControl (11)	version1 (1)
+            <enum name="handoverControlContext-v2	map-ac handoverControl (11)	version2 (2)
+            <enum name="sIWFSAllocationContext-v3	map-ac sIWFSAllocation (12)	version3 (3)
+            <enum name="equipmentMngtContext-v1	map-ac equipmentMngt (13)	version1 (1)
+            <enum name="equipmentMngtContext-v2	map-ac equipmentMngt (13)	version2 (2)
+            <enum name="infoRetrievalContext-v1	map-ac infoRetrieval (14)	version1 (1) 
+            <enum name="infoRetrievalContext-v2	map-ac infoRetrieval (14)	version2 (2)
+            <enum name="interVlrInfoRetrievalContext-v2	map-ac interVlrInfoRetrieval (15)	version2 (2)
+            <enum name="subscriberDataMngtContext-v1	map-ac subscriberDataMngt (16)	version1 (1)
+            <enum name="subscriberDataMngtContext-v2	map-ac subscriberDataMngt (16)	version2 (2)
+            <enum name="tracingContext-v1	map-ac tracing (17)	version1 (1)
+            <enum name="tracingContext-v2	map-ac tracing (17)	version2 (2)
+            <enum name="networkFunctionalSsContext-v1	map-ac networkFunctionalSs (18)	version1 (1)
+            <enum name="shortMsgGatewayContext-v1	map-ac shortMsgGateway (20)	version1 (1)
+            <enum name="shortMsgGatewayContext-v2	map-ac shortMsgGateway (20)	version2 (2)
+            <enum name="shortMsgRelayContext-v1	map-ac shortMsgRelay (21)	version1 (1)
+            <enum name="shortMsgAlertContext-v1	map-ac shortMsgAlert (23)	version1 (1)
+            <enum name="mwdMngtContext-v1	map-ac mwdMngt (24)	version1 (1)
+            <enum name="mwdMngtContext-v2	map-ac mwdMngt (24)	version2 (2)
+            <enum name="shortMsgMT-RelayContext-v2	map-ac shortMsgMT-Relay (25)	version2 (2)
+            <enum name="msPurgingContext-v2	map-ac msPurging (27)	version2 (2) 
+            <enum name="callControlTransferContext-v3	map-ac callControlTransferContext (6)	version3 (3) 
+            <enum name="gprsLocationInfoRetrievalContext-v3	map-ac gprsLocationInfoRetrievalContext (33) version3 (3) 
+        </field>
+    </element>
 
 </dictionary>

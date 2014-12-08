@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
 
 import java.util.ArrayList;
@@ -44,19 +45,19 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class EnumLongField extends IntegerField
+public class EnumStringField extends IntegerField
 {
 	
-    private Map<Long, String> labelsByValue = new HashMap<Long, String>();
-    private Map<String, Long> valuesByLabel = new HashMap<String, Long>();
+    private Map<String, String> labelsByValue = new HashMap<String, String>();
+    private Map<String, String> valuesByLabel = new HashMap<String, String>();
 
     private List<EnumRange> ranges = new ArrayList<EnumRange>();
 	
-	public EnumLongField() 
+	public EnumStringField() 
     {
     }
 
-    public EnumLongField(Element rootXML) 
+    public EnumStringField(Element rootXML) 
     {
         super(rootXML);
         
@@ -65,22 +66,8 @@ public class EnumLongField extends IntegerField
         {
         	String valueStr = elemEnum.attributeValue("value");
         	String nameStr = elemEnum.attributeValue("name");
-        	int iPos = valueStr.indexOf('-');
-        	if (iPos >= 0)
-        	{
-        		String beginStr = valueStr.substring(0, iPos);
-        		String endStr = valueStr.substring(iPos + 1);
-        		EnumRange range = new EnumRange(beginStr, endStr, nameStr);
-        		ranges.add(range);
-	            this.valuesByLabel.put(nameStr, range.getBegin());
-        	}
-        	else
-        	{
-	        	byte[] valueBytes = Utils.parseBinaryString(valueStr);
-	        	long value = (long) valueBytes[0] & 0xFF;
-	            this.valuesByLabel.put(nameStr, value);
-	            this.labelsByValue.put(value, nameStr);
-        	}
+            this.valuesByLabel.put(nameStr, valueStr);
+            this.labelsByValue.put(valueStr, nameStr);
         }
 
     }
@@ -89,15 +76,15 @@ public class EnumLongField extends IntegerField
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this.offset = offset;
-        Long longValue = this.getEnumLong(value);
-        array.setBits(offset, this.length, longValue.byteValue() & 0xff);
+    	Array valueArray = new DefaultArray(value.getBytes());
+    	super.setValueFromArray( valueArray, offset, array);
     }
     
     @Override
     public String getValue(Array array) throws Exception 
     {
         String value = super.getValue(array);
-    	String name = getEnumLabelByValue(new Long(value));
+    	String name = getEnumLabelByValue(new String(value));
     	String ret = "";
     	if (name != null)
     	{
@@ -107,31 +94,18 @@ public class EnumLongField extends IntegerField
     	return ret;
     }
     
-    public Long getEnumValueByLabel(String name) 
+    public String getEnumValueByLabel(String name) 
     {
         return this.valuesByLabel.get(name);
     }
 
-    public String getEnumLabelByValue(Long value) 
+    public String getEnumLabelByValue(String value) 
     {
     	String found = this.labelsByValue.get(value);
-    	if (found != null)
-    	{
-    		return found;
-    	}
-		Iterator<EnumRange> iter = ranges.iterator();
-	    while (iter.hasNext())
-	    {
-	    	EnumRange range = (EnumRange) iter.next();
-	    	if (range.isEnclosedInto(value))
-	    	{
-	    		return range.getName();
-	    	}
-	    }
-        return null;
+    	return found;
     }
     
-    public long getEnumLong(String text) throws Exception
+    public String getEnumString(String text) throws Exception
     {
     	text = text.trim();
     	int iPos = text.indexOf(":");
@@ -145,7 +119,7 @@ public class EnumLongField extends IntegerField
     	}
     	try
     	{
-    		long val = Long.parseLong(value);
+    		String val = value;
    			if (!label.equalsIgnoreCase(getEnumLabelByValue(val)) && !label.equals(text))
    			{
    				GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "For the enumeration field \"" + this.name + "\", the value \"" + value + "\"  does not match the label \"" + label + "\"");
@@ -154,7 +128,7 @@ public class EnumLongField extends IntegerField
     	}
     	catch (NumberFormatException e)
     	{
-    		Long val = this.valuesByLabel.get(value);
+    		String val = this.valuesByLabel.get(value);
 	        if (val == null)
 	        {
 	        	throw new ExecutionException("For the enumeration field \"" + this.name + "\", the value \"" + value + "\" is not numeric or valid according to the dictionary.");
@@ -164,7 +138,7 @@ public class EnumLongField extends IntegerField
     	}
     }
     
-    public String getEnumValue(long value) throws Exception 
+    public String getEnumValue(String value) throws Exception 
     {
     	String name = getEnumLabelByValue(value);
     	String ret = "";
