@@ -156,36 +156,28 @@ public class ASNToXMLConverter
 	        	}
 	        }
 	        
-			String retObject = returnXMLObject(resultPath, message, parentObj, objClass, name, objElementInfo, indent);
-			
+	        String XMLTag = returnXMLTag(objClass, name);
+	        
+			String retObject = returnXMLObject(resultPath, message, parentObj, objClass, name, objElementInfo, indent);			
 			boolean complexObject = true;
 			if (retObject != null || fieldsSize == 1)
 			{
 				complexObject = false;
 			}
 
-			String fieldName = returnClassName(objClass, name, objElementInfo, objPreparedMetadata);			
+			String metadata = returnMetadata(objElementInfo, objPreparedMetadata);
+			
 			if (name != null) 
 			{
-				ret += "<" + fieldName + ">";
+				ret += "<" + XMLTag + metadata + ">";
 				if (complexObject) 
 				{
 					ret += "\n" + indent(indent);
 				}
-				else
-				{
-					int l = 0;
-				}
 			}
 			
 			// calculate the element name to build the result path
-        	elementName = fieldName;
-        	iPos = elementName.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
-        	if (iPos > 0)
-        	{
-        		elementName = elementName.substring(0, iPos);
-        	}
-        	resultPath = resultPath + "." + elementName;
+        	resultPath = resultPath + "." + XMLTag;
 			
 			if (retObject != null) 
 			{
@@ -272,7 +264,7 @@ public class ASNToXMLConverter
 				{
 					ret += "\n" + indent(indent - NUMBER_SPACE_TABULATION);
 				}
-				ret += "</" + fieldName + ">";
+				ret += "</" + XMLTag + metadata + ">";
 			}
 
 		} catch (Exception e) 
@@ -284,14 +276,20 @@ public class ASNToXMLConverter
 		return ret;
 	}
 
-	private String returnClassName(Object objClass, String name, ASN1ElementMetadata objElementInfo, ASN1Metadata objPreparedMetadata1) throws Exception 
+	private String returnXMLTag(Object objClass, String name) throws Exception 
 	{
-		String ret = objClass.getClass().getSimpleName();
-		ret = ret.replace("byte[]", "Bytes");
 		if (!"value".equals(name)) 
 		{
-			ret = name;
+			return name;
 		}
+		String ret = objClass.getClass().getSimpleName();
+		ret = ret.replace("byte[]", "Bytes");
+		return ret;
+	}
+	
+	private String returnMetadata(ASN1ElementMetadata objElementInfo, ASN1Metadata objPreparedMetadata1) throws Exception 
+	{
+		String ret = "";
 		
 		// Add the tag information of the ASN1 object coming from the annotation (class tag imp^licit default)
 		String tagAnnotation = null;
@@ -390,7 +388,26 @@ public class ASNToXMLConverter
 		{
 			return null;
 		}
-				
+		
+    	// prepare binary objects as list of field
+		ElementAbstract binaryDico = null;
+		if (name != null)
+		{
+	    	binaryDico = message.getBinaryByLabel(name);
+		}
+    	if (binaryDico == null)
+    	{
+	    	String pathName = resultPath;
+	    	int pos = resultPath.lastIndexOf('.');
+	    	if (pos >= 0)
+	    	{
+	    		pos = resultPath.lastIndexOf('.', pos - 1);
+	    		if (pos >= 0)
+	    		pathName = resultPath.substring(pos + 1);
+	    	}
+	    	binaryDico = message.getBinaryByLabel(pathName);
+    	}
+
 		Embedded embedded = null;
 		if (message != null)
 		{
@@ -435,26 +452,6 @@ public class ASNToXMLConverter
 			return ret;
 		}
 		
-    	// prepare binary objects as list of field
-		ElementAbstract binaryDico = null;
-		if (parentObj != null)
-		{
-	    	String simpleName = parentObj.getClass().getSimpleName();
-	    	binaryDico = message.getBinaryByLabel(simpleName);
-		}
-    	if (binaryDico == null)
-    	{
-	    	String pathName = resultPath;
-	    	int pos = resultPath.lastIndexOf('.');
-	    	if (pos >= 0)
-	    	{
-	    		pos = resultPath.lastIndexOf('.', pos - 1);
-	    		if (pos >= 0)
-	    		pathName = resultPath.substring(pos + 1);
-	    	}
-	    	binaryDico = message.getBinaryByLabel(pathName);
-    	}
-
 		if (type.equals("byte[]")) 
 		{
 			byte[] bytes = (byte[]) subObject;
