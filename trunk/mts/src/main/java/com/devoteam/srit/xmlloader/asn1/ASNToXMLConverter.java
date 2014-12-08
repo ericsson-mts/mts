@@ -288,7 +288,7 @@ public class ASNToXMLConverter
 	{
 		String ret = objClass.getClass().getSimpleName();
 		ret = ret.replace("byte[]", "Bytes");
-		if (!"value".equals(name) || "ObjectIdentifier".equals(ret)) 
+		if (!"value".equals(name)) 
 		{
 			ret = name;
 		}
@@ -390,27 +390,7 @@ public class ASNToXMLConverter
 		{
 			return null;
 		}
-		
-    	// prepare binary objects as list of field
-		ElementAbstract binaryDico = null;
-		if (parentObj != null)
-		{
-	    	String simpleName = parentObj.getClass().getSimpleName();
-	    	binaryDico = message.getBinaryByLabel(simpleName);
-		}
-    	if (binaryDico == null)
-    	{
-	    	String pathName = resultPath;
-	    	int pos = resultPath.lastIndexOf('.');
-	    	if (pos >= 0)
-	    	{
-	    		pos = resultPath.lastIndexOf('.', pos - 1);
-	    		if (pos >= 0)
-	    		pathName = resultPath.substring(pos + 1);
-	    	}
-	    	binaryDico = message.getBinaryByLabel(pathName);
-    	}
-		
+				
 		Embedded embedded = null;
 		if (message != null)
 		{
@@ -453,8 +433,29 @@ public class ASNToXMLConverter
 			ret += toXML(resultPath, message, subObject, "value", obj, objElementInfo, indent + NUMBER_SPACE_TABULATION);
 			ret += "\n" + indent(indent - NUMBER_SPACE_TABULATION);
 			return ret;
-		} 
-		else if (type.equals("byte[]")) 
+		}
+		
+    	// prepare binary objects as list of field
+		ElementAbstract binaryDico = null;
+		if (parentObj != null)
+		{
+	    	String simpleName = parentObj.getClass().getSimpleName();
+	    	binaryDico = message.getBinaryByLabel(simpleName);
+		}
+    	if (binaryDico == null)
+    	{
+	    	String pathName = resultPath;
+	    	int pos = resultPath.lastIndexOf('.');
+	    	if (pos >= 0)
+	    	{
+	    		pos = resultPath.lastIndexOf('.', pos - 1);
+	    		if (pos >= 0)
+	    		pathName = resultPath.substring(pos + 1);
+	    	}
+	    	binaryDico = message.getBinaryByLabel(pathName);
+    	}
+
+		if (type.equals("byte[]")) 
 		{
 			byte[] bytes = (byte[]) subObject;
         	if (binaryDico != null)
