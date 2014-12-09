@@ -546,6 +546,7 @@ public class MsgH248 extends Msg
     @Override
     public String toShortString() throws Exception {
     	String ret = super.toShortString();
+    	ret += "\n";
     	Parameter param = getParameter("descr.*.name");
     	if (param.length() > 0)
     	{

@@ -277,10 +277,7 @@ public class MsgStun extends Msg {
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
     public String toShortString() throws Exception {
-        StringBuilder StringBuilder = new StringBuilder();
-        StringBuilder.append(super.toShortString());
-        StringBuilder.append("<MESSAGE type= \"" + this.getType() + "\"/>");
-        return StringBuilder.toString();
+        return super.toShortString();
     }
     
     /** Get the XML representation of the message; for the genscript module. */

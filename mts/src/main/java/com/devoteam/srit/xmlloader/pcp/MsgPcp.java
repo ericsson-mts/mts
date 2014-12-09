@@ -169,6 +169,7 @@ public class MsgPcp extends Msg
     @Override
 	public String toShortString() throws Exception {
     	String ret = super.toShortString();
+    	ret += "\n";
         ret += this.flist.asString();
         return ret;
 	}

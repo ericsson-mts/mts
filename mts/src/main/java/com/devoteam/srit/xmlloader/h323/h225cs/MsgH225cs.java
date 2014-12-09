@@ -124,7 +124,7 @@ public class MsgH225cs extends Msg {
     @Override
     public String toShortString() throws Exception {
     	String ret = super.toShortString();
-        ret += msgQ931.toString();
+        ret += msgQ931.toShortString();
         return ret; 
     }
 

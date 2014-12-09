@@ -257,6 +257,7 @@ public class MsgSmpp extends Msg
     @Override
     public String toShortString() throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("\n");
         stringBuilder.append(super.toShortString());
         if(smppMessage.getLogError().length() != 0)
         {

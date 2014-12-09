@@ -226,6 +226,7 @@ public class MsgPop extends Msg
     @Override
 	public String toShortString() throws Exception {
     	String ret = super.toShortString();
+    	ret += "\n";
         ret += new String(dataRaw.getBytes(), 0, Math.min(dataRaw.length(), 100), "UTF8");
 		return ret;
     }

@@ -200,6 +200,7 @@ public class MsgSctp extends Msg{
     @Override
 	public String toShortString() throws Exception {
     	String ret = super.toShortString();
+    	ret += "\n";
 		try
 		{
             ret += Utils.toStringBinary(sctpData.getData(), Math.min(sctpData.getData().length, 100));

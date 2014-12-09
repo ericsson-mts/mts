@@ -222,6 +222,7 @@ public class MsgGtpp extends Msg
     {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(super.toShortString());
+        stringBuilder.append("\n");
         if(message.getLogError().length() != 0)
         {
             stringBuilder.append("<MESSAGE MALFORMED name= \"" + message.getHeader().getName() + "\"");
