@@ -20,8 +20,8 @@
     <!--test parameter="[content]" condition="binary.equals" value="[binMAPMessage]"/-->
     
     <parameter name="[localTag]" operation="string.random" value="10"/>
-		<sendMessageSIP name="Send 200 OK">
-<![CDATA[SIP/2.0 200 OK
+		<sendMessageSIP name="Send 202 Accepted">
+<![CDATA[SIP/2.0 202 Accepted
 To: [to];tag=[localTag]
 From: [from]
 Call-ID: [callId]
@@ -32,34 +32,30 @@ Content-Length: 0
     </sendMessageSIP>
     
     <!-- send RP-ACK -->
-    <parameter name="[binMAPMessage]" operation="set" value="0208"/>
+    <parameter name="[binMAPMessage]" operation="set" value="0300"/>
     <!-- send RP-ERROR -->
-    <parameter name="[binMAPMessage]" operation="set" value="0408016F"/>
+    <!--parameter name="[binMAPMessage]" operation="set" value="0408016F"/-->
     <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/> 
 
-    <parameter name="[inviteeName1]" operation="set" value="bob"/>
-    <parameter name="[105_DOMAIN_ADDR]" operation="set" value="devoteam.com"/>
-    <parameter name="[clientName]" operation="set" value="alice"/>
-    <parameter name="[clientAddr]" operation="set" value="192.168.56.32"/>
+    <parameter name="[inviteeName1]" operation="set" value="+46708000708"/>
+    <parameter name="[105_DOMAIN_ADDR]" operation="set" value="com4innov.com"/>
+    <parameter name="[clientName]" operation="set" value="+33638060004"/>
     <parameter name="[localTag]" operation="string.random" value="10"/>
     <parameter name="[newBranchId]" operation="string.random" value="10"/>
     <parameter name="[newCallId]" operation="number.random" value="10000000"/>
     <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
 
 		<sendMessageSIP name="Send MESSAGE" destScenario="alice">
-<![CDATA[MESSAGE sip:[inviteeName1]@[105_DOMAIN_ADDR] SIP/2.0
-To: sip:[inviteeName1]@[105_DOMAIN_ADDR]
-From: "[clientName]"<sip:[clientName]@[105_DOMAIN_ADDR]>;tag=[localTag]
+<![CDATA[MESSAGE sip:[clientName]@[105_DOMAIN_ADDR] SIP/2.0
+To: sip:[clientName]@[105_DOMAIN_ADDR]
+From: "[inviteeName1]" <tel:[inviteeName1]>;tag=[localTag]
 Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
 Call-ID: [newCallId]
 CSeq: [newCseqNumber] MESSAGE
-Contact: <sip:bob@[localSIP]>;+g.poc.talkburst
+Contact: <sip:[inviteeName1]@[localSIP]>
 Max-Forwards: 70
-User-Agent: PoC-client/OMA1.0 Siemens/v2.0
-Accept-Contact: +g.poc.groupad;require;explicit
-Server: PoC-client/OMA1.0 Siemens/v2.0
+User-Agent: MTS v6.0.3_beta : Multiprotocol Test Suite
 Route: <sip:[remoteSIP];transport=[transportRequest];lr>
-Route: <sip:[localSIP];lr;id=[inviteeName1]>
 Expires: 0
 Content-Type: application/vnd.3gpp.sms
 Content-Length: x
