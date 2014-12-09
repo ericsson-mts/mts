@@ -373,7 +373,7 @@ public class MsgRadius extends Msg
     public String toShortString() throws Exception {
         StringBuilder StringBuilder = new StringBuilder();
         StringBuilder.append(super.toShortString());
-        StringBuilder.append("<MESSAGE commandCode= \"" + this.radiusMessage.getCode() + "\"");
+        StringBuilder.append("\n<MESSAGE commandCode= \"" + this.radiusMessage.getCode() + "\"");
         StringBuilder.append(" identifier=\"" + this.radiusMessage.getIdentifier() + "\"");
         StringBuilder.append(" authenticator=\"" + this.radiusMessage.getAuthenticator() + "\"/>");
         return StringBuilder.toString();

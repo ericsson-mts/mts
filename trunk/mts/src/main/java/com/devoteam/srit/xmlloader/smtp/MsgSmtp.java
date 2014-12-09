@@ -290,6 +290,7 @@ public class MsgSmtp extends Msg {
     @Override
 	public String toShortString() throws Exception {
     	String ret = super.toShortString();
+    	ret += "\n";
     	ret += new String(data.getBytes(), 0, Math.min(data.substring(0,data.indexOf("\n")).length(), 100 ), "UTF8");
 		return ret;
 	}

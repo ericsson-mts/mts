@@ -241,6 +241,7 @@ public class MsgMsrp extends Msg
     @Override
 	public String toShortString() throws Exception {
     	String ret = super.toShortString();
+    	ret += "\n";
         ret += this.message.getFirstline().getLine();
         return ret;
 	}

@@ -486,6 +486,7 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
     @Override
     public String toShortString() throws Exception {
     	String ret = super.toShortString();    	
+        ret += "\n";
         ret += headerToString();
         return ret;
     }

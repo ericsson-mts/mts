@@ -750,10 +750,8 @@ public class MsgSipLight extends MsgSip
     public String toShortString() throws Exception 
     {
     	String ret = super.toShortString();
-    	String firstline = ((FirstLine)(message.getGenericfirstline())).getLine().trim();
-    	ret += firstline;
 	    String transId = getTransactionId().toString();
-	    ret += "<transactionId=\"" + transId + "\">"; 
+	    ret += "\n<transactionId=\"" + transId + "\">"; 
 	    String dialogId = getDialogId();
 	    ret+= "<DialogId=\"" + dialogId + "\">";
         return ret;

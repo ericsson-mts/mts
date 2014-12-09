@@ -184,16 +184,23 @@ public class MessageQ931
     {
     	return "";
     }
-    
-    @Override
-    public String toString() 
+
+    public String toShortString() 
     {
         StringBuilder messageToString = new StringBuilder();
         messageToString.append("<ISDN ");
         messageToString.append("layer=\"");
         messageToString.append(this.dictionary.get_layer());
-        messageToString.append("\"");
-        messageToString.append("/>\n");
+        messageToString.append("\">");
+        return messageToString.toString();
+    }
+
+    @Override
+    public String toString() 
+    {
+        StringBuilder messageToString = new StringBuilder();
+        messageToString.append(toShortString());
+        messageToString.append("\n");
         
         messageToString.append(header.toXml());
 

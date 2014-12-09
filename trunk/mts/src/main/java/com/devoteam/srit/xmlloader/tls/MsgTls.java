@@ -146,6 +146,7 @@ public class MsgTls extends Msg
     @Override
     public String toShortString()throws Exception {
     	String ret = super.toShortString();
+    	ret += "\n";
     	ret += Utils.toStringBinary(data, Math.min(data.length, 100));
         return ret;
     }

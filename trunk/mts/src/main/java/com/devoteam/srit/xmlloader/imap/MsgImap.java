@@ -479,6 +479,7 @@ public class MsgImap extends Msg {
     @Override
 	public String toShortString() throws Exception {
     	String ret = super.toShortString();
+    	ret += "\n";
         if(messages != null)
             ret += new String(messages.lastElement().getBytes(), 0, Math.min(messages.lastElement().length(), 100), "UTF8");
         else

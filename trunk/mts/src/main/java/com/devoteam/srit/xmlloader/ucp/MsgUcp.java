@@ -247,6 +247,7 @@ public class MsgUcp extends Msg
     public String toShortString() throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(super.toShortString());
+        stringBuilder.append("\n");
         if(ucpMessage.getLogError().length() != 0)
         {
             stringBuilder.append("<MESSAGE MALFORMED name= \"" + ucpMessage.getName() + "\"");

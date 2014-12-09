@@ -181,7 +181,7 @@ public class MsgMgcp extends Msg {
     public String toShortString() throws Exception {
     	String ret = super.toShortString();
         String commandline = ((MGCPCommandLine) (message.getGenericfirstline())).getLine();
-        ret += "<" + commandline + ">";
+        ret += "\n<" + commandline + ">";
         String transId = ((MGCPCommandLine) (message.getGenericfirstline())).getTransactionId().toString();
         ret += "<transactionId=\"" + transId + "\">";
         return ret;

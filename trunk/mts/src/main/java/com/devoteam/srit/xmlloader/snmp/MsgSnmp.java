@@ -350,7 +350,7 @@ public class MsgSnmp extends Msg
     @Override
 	public String toShortString() throws Exception {
     	String ret = super.toShortString();
-        ret += "type: " + PDU.getTypeString(pdu.getType()) + ", requestId: " + pdu.getRequestID();
+        ret += "\ntype: " + PDU.getTypeString(pdu.getType()) + ", requestId: " + pdu.getRequestID();
         if(pdu.getType() != PDU.GETBULK)
             ret += ", errorStatus: " + pdu.getErrorStatusText() + ", errorIndex: " + pdu.getErrorIndex();
         else

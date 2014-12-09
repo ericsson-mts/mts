@@ -236,6 +236,7 @@ public class MsgRtp extends Msg {
     @Override
     public String toShortString() throws Exception {
     	String ret = super.toShortString();
+    	ret += "\n";
         ret += headerToString(rtpPackets.get(0));
         return ret;
     }

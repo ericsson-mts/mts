@@ -502,7 +502,7 @@ public class MsgDiameter extends Msg
     @Override
     public String toShortString() throws Exception {          
     	String ret = super.toShortString();
-  		ret += "<header "; 	
+  		ret += "\n<header "; 	
     	ret += "applicationId=\"" + getApplicationIdString() + "(" + message.hdr.application_id + ")\" ";
     	ret += "hopByHop=\"" + message.hdr.hop_by_hop_identifier + "\" ";
     	ret += "endToEnd=\"" + message.hdr.end_to_end_identifier + "\">";	    	
