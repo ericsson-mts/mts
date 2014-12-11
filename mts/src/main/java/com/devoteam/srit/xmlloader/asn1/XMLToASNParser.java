@@ -57,6 +57,7 @@ import java.util.List;
 
 import org.bn.CoderFactory;
 import org.bn.IEncoder;
+import org.bn.types.ObjectIdentifier;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -145,6 +146,7 @@ public class XMLToASNParser
     	{
     		elementName = elementName.substring(0, pos);
     	}
+
         for (Field field : objClass.getClass().getDeclaredFields()) 
         {
         	String name = field.getName(); 
@@ -170,7 +172,16 @@ public class XMLToASNParser
     }
 
     public Object parseField(String resultPath, ASNMessage message, Element element, Field field, String type, Object object, String className) throws Exception 
-    { 
+    {
+    	// calculate the element name to build the result path
+    	String elementName = element.getName();
+    	int iPos = elementName.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
+    	if (iPos > 0)
+    	{
+    		elementName = elementName.substring(0, iPos);
+    	}
+    	resultPath = resultPath + "." + elementName;
+
     	// manage binary objects as list of field
     	String simpleClassName = object.getClass().getSimpleName();
     	ElementAbstract elementDico = null;
@@ -208,7 +219,7 @@ public class XMLToASNParser
             Class subClass = Class.forName(replace);
             Object objEmbbeded = subClass.newInstance();
             parseFromXML(resultPath, message, objEmbbeded, (Element) element.elements().get(0), className);
-        	
+            
         	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
         	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         	encoderEmbedded.encode(objEmbbeded, outputStream);
@@ -233,58 +244,86 @@ public class XMLToASNParser
             return obj;
 
 		}
-		Object value = null;
+		Object obj = null;
+		String value = null;
         if (type.equals("java.lang.Boolean")||type.equals("boolean"))  
         {
-            value = Boolean.valueOf(element.getTextTrim()).booleanValue();
+        	value = element.getTextTrim();
+            obj = Boolean.valueOf(value).booleanValue();
         }
         else if (type.equals("java.lang.Byte")||type.equals("byte"))  
         {
-            value = Byte.parseByte(element.getTextTrim());
+        	value = element.getTextTrim();
+            obj = Byte.parseByte(value);
+            value = obj.toString();
         }
 
         else if (type.equals("java.lang.Short")||type.equals("short"))  
         {
-            value = Short.parseShort(element.getTextTrim());
+        	value = element.getTextTrim();
+            obj = Short.parseShort(value);
+            value = obj.toString();
         }
         else if (type.equals("java.lang.Integer")||type.equals("int")) 
         {
-            value = Integer.parseInt(element.getTextTrim());
+        	value = element.getTextTrim();
+            obj = Integer.parseInt(value);
+            value = obj.toString();
         }
         else if (type.equals("java.lang.Long")||type.equals("long"))  
         {
+        	value = element.getTextTrim();
         	if (elementDico != null)
         	{
 	        	EnumLongField fld = (EnumLongField) elementDico.getField(0);
-	        	value = fld.getEnumLong(element.getTextTrim());
+	        	obj = fld.getEnumLong(value);
         	}
         	else
         	{
-        		value = Long.parseLong(element.getTextTrim());
+        		obj = Long.parseLong(value);
         	}
+        	value = obj.toString();
         }
         else if (type.equals("java.lang.Float")||type.equals("float"))  
         {
-            value = Float.parseFloat(element.getTextTrim());
+        	value = element.getTextTrim();
+            obj = Float.parseFloat(value);
+            value = obj.toString();
         }
         else if (type.equals("java.lang.Double")||type.equals("double"))  
         {
-            value = Double.parseDouble(element.getTextTrim());
+        	value = element.getTextTrim();
+            obj = Double.parseDouble(value);
+            value = obj.toString();
         }
         else if (type.equals("java.lang.String")||type.equals("String")) 
         {
+        	value = element.getTextTrim();
         	if (elementDico != null)
         	{
 	        	EnumStringField fld = (EnumStringField) elementDico.getField(0);
-	        	value = fld.getEnumString(element.getTextTrim());
-        	}
-        	else
+	        	value = fld.getEnumString(value);
+        	}        	
+        	obj =  value;
+        }
+        else if (type.equals("org.bn.types.ObjectIdentifier")) 
+        {
+        	Element elt = element.element("ObjectIdentifier");
+        	if (elt != null)
         	{
-        		value =  element.getTextTrim();
+        		value = elt.getTextTrim();
         	}
+        	if (elementDico != null)
+        	{
+	        	EnumStringField fld = (EnumStringField) elementDico.getField(0);
+	        	value = fld.getEnumString(value);
+        	}
+        	obj =  new ObjectIdentifier();
+        	((ObjectIdentifier) obj).setValue(value);
         }
         else if (type.equals("byte[]")) 
         {
+        	value = element.getTextTrim();
         	if (elementDico != null)
         	{
         		ElementAbstract elmt = new ElementSimple();
@@ -296,16 +335,16 @@ public class XMLToASNParser
 	        	}
         	}
         	// not a simple value so return
-    		Array array = new DefaultArray(Utils.parseBinaryString("h" + element.getTextTrim()));
+    		Array array = new DefaultArray(Utils.parseBinaryString("h" + value));
     		return array.getBytes();
         }
         else if (type.endsWith(".EnumType"))  
         {
-        	String elementText = element.getTextTrim();
-        	int position = elementText.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
+        	value = element.getTextTrim();
+        	int position = value.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
         	if (position > 0)
         	{
-        		elementText = elementText.substring(0, position);
+        		value = value.substring(0, position);
         	}
 
 			Class[] classes = object.getClass().getClasses();
@@ -317,7 +356,7 @@ public class XMLToASNParser
 				for (int i=0; i <objects.length; i++)
 				{
 					objFind = objects[i];
-					if (objFind.toString().equals(elementText))
+					if (objFind.toString().equals(value))
 					{
 						break;
 					}
@@ -336,31 +375,16 @@ public class XMLToASNParser
                 type = type.substring(0, type.lastIndexOf(".")) + "$" + type.substring(type.lastIndexOf(".") + 1);
             }
 
-        	// calculate the element name to build the result path
-        	String elementName = element.getName();
-        	int iPos = elementName.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
-        	if (iPos > 0)
-        	{
-        		elementName = elementName.substring(0, iPos);
-        	}
-        	resultPath = resultPath + "." + elementName;
-
-            Object obj = Class.forName(type).newInstance();
+            obj = Class.forName(type).newInstance();
             //Object objComplexClass = this.instanceClass(obj.getClass().getName(), className);
             parseFromXML(resultPath, message, obj, element, className);
             // not a simple value so return
             return obj;
         }
-        
+            	
         // get the condition for embedded objects
         if (message != null)
         {
-	        String elementName = resultPath;
-	        int iPos = resultPath.lastIndexOf(".");
-	        if (iPos > 0)
-	        {
-	        	elementName = resultPath.substring(iPos + 1);
-	        }
 	    	String condition = elementName + "=" + value;
 	    	List<Embedded> embeddedList = message.getEmbeddedByCondition(condition);
 	    	if (embeddedList != null)
@@ -368,7 +392,7 @@ public class XMLToASNParser
 	    		message.addConditionalEmbedded(embeddedList);
 	    	}
         }
-    	return value;
+    	return obj;
     }
 
     public void initField(String resultPath, ASNMessage message, Object objClass, Element element, Field field, String className) throws Exception 
@@ -415,14 +439,6 @@ public class XMLToASNParser
                 // pour chaque <instance>
                 listInstance.add(value);
             }
-            /*
-            List<Element> children1 = element.elements("value");
-            for (Element elementInstance : children1) 
-            {
-                // pour chaque <instance>
-                listInstance.add(parseField(elementInstance, collectionElementType.getCanonicalName(), objClass, ClasseName));
-            }
-            */
             
             // set la collection dans le field
             field.set(objClass, listInstance);
