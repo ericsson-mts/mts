@@ -113,7 +113,6 @@ public class ASNToXMLConverter
 			Field[] fields = objClass.getClass().getDeclaredFields();
 			int fieldsSize = fields.length;
 
-			//boolean complexObject = (retObject == null || fieldsSize == 1);
 			// get the preparedData coming from annotations
 			Field preparedDataField = null;
 			try
@@ -136,18 +135,20 @@ public class ASNToXMLConverter
 			{
 				objPreparedMetadata = objPreparedEltData.getTypeMetadata();
 			}
-			
-			 // get the condition for embedded objects
-	        String elementName = resultPath;
-	        int iPos = resultPath.lastIndexOf(".");
-	        if (iPos > 0)
-	        {
-	        	elementName = resultPath.substring(iPos + 1);
-	        }
+
+			// get the XML tag
+	        String XMLTag = getXMLTag(objClass, name);
 	        
         	// we add a embedded record in the list		
 	        if (message !=null)
 	        {
+				// get the condition for embedded objects
+		        String elementName = resultPath;
+		        int iPos = resultPath.lastIndexOf(".");
+		        if (iPos > 0)
+		        {
+		        	elementName = resultPath.substring(iPos + 1);
+		        }
 	        	String condition = elementName + "=" + objClass;
 	        	List<Embedded> embeddedList = message.getEmbeddedByCondition(condition);
 	        	if (embeddedList != null)
@@ -155,17 +156,20 @@ public class ASNToXMLConverter
 	        		message.addConditionalEmbedded(embeddedList);
 	        	}
 	        }
-	        
-	        String XMLTag = returnXMLTag(objClass, name);
-	        
+
+			// calculate resultPath
+	        resultPath = resultPath + "." + XMLTag; 
+
+	        // return the object as XML
 			String retObject = returnXMLObject(resultPath, message, parentObj, objClass, name, objElementInfo, indent);			
 			boolean complexObject = true;
 			if (retObject != null || fieldsSize == 1)
 			{
 				complexObject = false;
 			}
-
-			String metadata = returnMetadata(objElementInfo, objPreparedMetadata);
+	        
+			// calculate the metadata for the object 
+			String metadata = calculateMetadata(objElementInfo, objPreparedMetadata);
 			
 			if (name != null) 
 			{
@@ -175,10 +179,7 @@ public class ASNToXMLConverter
 					ret += "\n" + indent(indent);
 				}
 			}
-			
-			// calculate the element name to build the result path
-        	resultPath = resultPath + "." + XMLTag;
-			
+						
 			if (retObject != null) 
 			{
 				ret += retObject;
@@ -276,7 +277,7 @@ public class ASNToXMLConverter
 		return ret;
 	}
 
-	private String returnXMLTag(Object objClass, String name) throws Exception 
+	private String getXMLTag(Object objClass, String name) throws Exception 
 	{
 		if (!"value".equals(name)) 
 		{
@@ -287,7 +288,7 @@ public class ASNToXMLConverter
 		return ret;
 	}
 	
-	private String returnMetadata(ASN1ElementMetadata objElementInfo, ASN1Metadata objPreparedMetadata1) throws Exception 
+	private String calculateMetadata(ASN1ElementMetadata objElementInfo, ASN1Metadata objPreparedMetadata1) throws Exception 
 	{
 		String ret = "";
 		
@@ -508,13 +509,20 @@ public class ASNToXMLConverter
 			ret += subObject.toString();
 			return ret;
 		}
-		/*
 		else if (type.equals("org.bn.types.ObjectIdentifier")) 
 		{
-			ret += "<ObjectIdentifier>" + ((ObjectIdentifier) subObject).getValue() + "</ObjectIdentifier>";
-			return ret;
+			String value = ((ObjectIdentifier) subObject).getValue();
+        	if (binaryDico != null)
+        	{
+	        	EnumStringField fld = (EnumStringField) binaryDico.getField(0);
+	        	ret = fld.getEnumValue(value);
+        	}
+        	else
+        	{
+        		ret = value;
+        	}
+        	return "<ObjectIdentifier>" + ret + "</ObjectIdentifier>";
 		}
-		*/
 		else if (type.endsWith(".EnumType")) 
 		{
 			ASN1EnumItem enumObj = null;

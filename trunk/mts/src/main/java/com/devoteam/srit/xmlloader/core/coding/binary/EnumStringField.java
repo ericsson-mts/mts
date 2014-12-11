@@ -101,8 +101,7 @@ public class EnumStringField extends IntegerField
 
     public String getEnumLabelByValue(String value) 
     {
-    	String found = this.labelsByValue.get(value);
-    	return found;
+    	return this.labelsByValue.get(value);
     }
     
     public String getEnumString(String text) throws Exception
@@ -117,25 +116,16 @@ public class EnumStringField extends IntegerField
     		label = text.substring(0, iPos);
     		value = text.substring(iPos + 1);
     	}
-    	try
-    	{
-    		String val = value;
-   			if (!label.equalsIgnoreCase(getEnumLabelByValue(val)) && !label.equals(text))
-   			{
-   				GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "For the enumeration field \"" + this.name + "\", the value \"" + value + "\"  does not match the label \"" + label + "\"");
-   			}    		
-    		return val;
-    	}
-    	catch (NumberFormatException e)
-    	{
-    		String val = this.valuesByLabel.get(value);
-	        if (val == null)
-	        {
-	        	throw new ExecutionException("For the enumeration field \"" + this.name + "\", the value \"" + value + "\" is not numeric or valid according to the dictionary.");
-	        }
-
-    		return val;
-    	}
+    	String val = this.valuesByLabel.get(label);
+        if (val == null)
+        {
+        	val = value;
+        }
+		if (!label.equalsIgnoreCase(getEnumLabelByValue(val)) && !label.equals(text))
+		{
+			GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "For the enumeration field \"" + this.name + "\", the value \"" + value + "\"  does not match the label \"" + label + "\"");
+		}    		
+		return val;
     }
     
     public String getEnumValue(String value) throws Exception 
