@@ -158,7 +158,7 @@ public class ASNToXMLConverter
 	        }
 
 	        // return the object as XML
-			String retObject = returnXMLObject(resultPath, message, parentObj, objClass, name, objElementInfo, indent);			
+			String retObject = processSimpleObject(resultPath, message, parentObj, objClass, name, objElementInfo, indent);			
 			boolean complexObject = true;
 			if (retObject != null || fieldsSize == 1)
 			{
@@ -276,7 +276,7 @@ public class ASNToXMLConverter
 
 		return ret;
 	}
-
+	
 	private String getSignificantXMLTag(Object objClass, String name) throws Exception 
 	{
 		if (!"value".equals(name)) 
@@ -378,8 +378,9 @@ public class ASNToXMLConverter
 		}
 		return ret;
 	}
-
-	private String returnXMLObject(String resultPath, ASNMessage message, Object parentObj, Object object, String name, ASN1ElementMetadata objElementInfo, int indent)
+	
+	// get the XML data for simple object : null means a complex object
+	private String processSimpleObject(String resultPath, ASNMessage message, Object parentObj, Object object, String name, ASN1ElementMetadata objElementInfo, int indent)
 			throws Exception 
 	{
 		String type = object.getClass().getCanonicalName();
@@ -397,7 +398,7 @@ public class ASNToXMLConverter
 		    String XMLTag = getSignificantXMLTag(object, name);
 		    resultPath = resultPath + "." + XMLTag;
 		    
-		    Object obj = processEmbedded(embedded, object);
+		    Object obj = processEmbeddedObject(embedded, object);
 		    
 			String ret = "\n" + indent(indent);
 			ret += toXML(resultPath, message, object, "value", obj, objElementInfo, indent + NUMBER_SPACE_TABULATION);
@@ -529,7 +530,7 @@ public class ASNToXMLConverter
 		return str;
 	}
 
-	public static Object processEmbedded(Embedded embedded, Object object) throws Exception
+public static Object processEmbeddedObject(Embedded embedded, Object object) throws Exception
 	{
 		String type = object.getClass().getCanonicalName();
 		

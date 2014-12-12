@@ -204,34 +204,12 @@ public class XMLToASNParser
             resultPath = resultPath + "." + getSignificantXMLTag(element);
             
             String replace = embedded.getReplace();
-            Class subClass = Class.forName(replace);
-            Object objEmbbeded = subClass.newInstance();
+            Class<?> subClass = Class.forName(replace);
+            Object objEmbedded = subClass.newInstance();
                        
-            parseFromXML(resultPath, message, objEmbbeded, (Element) element.elements().get(0), className);
+            parseFromXML(resultPath, message, objEmbedded, (Element) element.elements().get(0), className);
             
-        	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
-        	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        	encoderEmbedded.encode(objEmbbeded, outputStream);
-            byte[] bytesEmbedded = outputStream.toByteArray();
-            //Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
-         
-            Object obj = null;
-            if (!type.equals("byte[]"))
-            {
-            	Class cl = Class.forName(type);
-            	Constructor constr = cl.getConstructor();
-				constr.setAccessible(true);
-				obj = constr.newInstance();
-				Field[] fields = cl.getDeclaredFields();
-				fields[0].setAccessible(true);
-				fields[0].set(obj, bytesEmbedded);
-            }
-            else
-            {
-            	obj = bytesEmbedded;
-            }
-            return obj;
-
+            return processEmbeddedObject(objEmbedded, type);
 		}
 		
 		Object obj = null;
@@ -244,6 +222,7 @@ public class XMLToASNParser
         else if (type.equals("java.lang.Byte")||type.equals("byte"))  
         {
         	value = element.getTextTrim();
+        	obj = processLongEnum(resultPath, message, object, value);
             obj = Byte.parseByte(value);
             value = obj.toString();
         }
@@ -251,30 +230,22 @@ public class XMLToASNParser
         else if (type.equals("java.lang.Short")||type.equals("short"))  
         {
         	value = element.getTextTrim();
+        	obj = processLongEnum(resultPath, message, object, value);
             obj = Short.parseShort(value);
             value = obj.toString();
         }
         else if (type.equals("java.lang.Integer")||type.equals("int")) 
         {
         	value = element.getTextTrim();
+        	obj = processLongEnum(resultPath, message, object, value);
             obj = Integer.parseInt(value);
             value = obj.toString();
         }
         else if (type.equals("java.lang.Long")||type.equals("long"))  
         {
-        	// get the element definition (enumeration binary data) from the dictionary
-        	ElementAbstract elementDico = null;
-        	if (message != null)
-        	{
-    	    	elementDico = message.getElementFromDico(object, resultPath);
-        	}
         	value = element.getTextTrim();
-        	if (elementDico != null)
-        	{
-	        	EnumLongField fld = (EnumLongField) elementDico.getField(0);
-	        	obj = fld.getEnumLong(value);
-        	}
-        	else
+        	obj = processLongEnum(resultPath, message, object, value);
+        	if (obj == null)
         	{
         		obj = Long.parseLong(value);
         	}
@@ -294,13 +265,13 @@ public class XMLToASNParser
         }
         else if (type.equals("java.lang.String")||type.equals("String")) 
         {
+        	value = element.getTextTrim();
         	// get the element definition (enumeration binary data) from the dictionary
         	ElementAbstract elementDico = null;
         	if (message != null)
         	{
     	    	elementDico = message.getElementFromDico(object, resultPath);
         	}
-        	value = element.getTextTrim();
         	if (elementDico != null)
         	{
 	        	EnumStringField fld = (EnumStringField) elementDico.getField(0);
@@ -466,5 +437,48 @@ public class XMLToASNParser
         	Object value = parseField(resultPath, message, element, field, field.getType().getCanonicalName(), objClass, className);
             field.set(objClass, value);
         }
+    }
+    
+    public static Object processEmbeddedObject(Object objEmbedded, String type) throws Exception
+	{    
+		IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		encoderEmbedded.encode(objEmbedded, outputStream);
+	    byte[] bytesEmbedded = outputStream.toByteArray();
+	    //Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
+	 
+	    Object obj = null;
+	    if (!type.equals("byte[]"))
+	    {
+	    	Class cl = Class.forName(type);
+	    	Constructor constr = cl.getConstructor();
+			constr.setAccessible(true);
+			obj = constr.newInstance();
+			Field[] fields = cl.getDeclaredFields();
+			fields[0].setAccessible(true);
+			fields[0].set(obj, bytesEmbedded);
+	    }
+	    else
+	    {
+	    	obj = bytesEmbedded;
+	    }
+	    return obj;
+	}
+
+    public static Object processLongEnum(String resultPath, ASNMessage message, Object object, String value) throws Exception
+    {
+    	Object obj = null;
+		// get the element definition (enumeration binary data) from the dictionary
+		ElementAbstract elementDico = null;
+		if (message != null)
+		{
+	    	elementDico = message.getElementFromDico(object, resultPath);
+		}
+		if (elementDico != null)
+		{
+	    	EnumLongField fld = (EnumLongField) elementDico.getField(0);
+	    	obj = fld.getEnumLong(value);
+		}
+		return obj;
     }
 }
