@@ -116,7 +116,7 @@ public class StackSigtran extends Stack {
     {
         MsgSigtran msgSigtran = new MsgSigtran();
         
-        List<Element> listAps = root.elements("AP");
+        List<Element> listAps = root.elements("ASN");
         Object[] tabAps = listAps.toArray();
         
         ASNMessage tcapMessage = null;

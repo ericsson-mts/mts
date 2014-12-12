@@ -63,7 +63,7 @@
     <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
     
     <!-- AP LAYER -->
-    <AP dictionary="map/dictionary_MAP.xml">
+    <ASN dictionary="map/dictionary_MAP.xml">
       <Component.Choice>
         <returnError.C3.Sequence>
            <invokeID.BoxedType><Integer>1</Integer></invokeID.BoxedType>
@@ -99,10 +99,10 @@
            </errorparameter.BoxedType>
         </returnError.C3.Sequence>
       </Component.Choice>
-    </AP>
+    </ASN>
     
     <!-- TCAP LAYER -->
-    <AP dictionary="tcap/dictionary_TCAP.xml">
+    <ASN dictionary="tcap/dictionary_TCAP.xml">
       <TCMessage>
         <continue1.A5.Sequence>
            <otid.BoxedType><Bytes.A8>0000000a</Bytes.A8></otid.BoxedType>
@@ -139,7 +139,7 @@
             </dialoguePortion.BoxedType>
         </continue1.A5.Sequence>
       </TCMessage>
-    </AP>
+    </ASN>
     
 	  <!-- SCCP LAYER  -->
   	<SS7 name="sccp" file="sccp.xml">
