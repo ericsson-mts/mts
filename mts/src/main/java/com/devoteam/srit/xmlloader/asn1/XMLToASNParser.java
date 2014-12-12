@@ -180,7 +180,6 @@ public class XMLToASNParser
     	{
     		elementName = elementName.substring(0, iPos);
     	}
-    	resultPath = resultPath + "." + elementName;
 
     	// manage binary objects as list of field
     	String simpleClassName = object.getClass().getSimpleName();
@@ -192,13 +191,20 @@ public class XMLToASNParser
 	    	{
 		    	String pathName = resultPath;
 		    	int pos = resultPath.lastIndexOf('.');
-		    	if (pos >= 0)
-		    	{
-		    		pos = resultPath.lastIndexOf('.', pos - 1);
-		    		if (pos >= 0)
-		    		pathName = resultPath.substring(pos + 1);
-		    	}
+		    	pathName = resultPath.substring(pos + 1);
 		    	elementDico = message.getBinaryByLabel(pathName);
+		    	if (elementDico == null)
+		    	{
+			    	if (pos >= 0)
+			    	{
+			    		pos = resultPath.lastIndexOf('.', pos - 1);
+			    		if (pos >= 0)
+			    		{
+			    			pathName = resultPath.substring(pos + 1);
+			    		}
+			    	}
+			    	elementDico = message.getBinaryByLabel(pathName);
+		    	}
 	    	}
     	}
     	
@@ -216,8 +222,18 @@ public class XMLToASNParser
 		{            
             String replace = embedded.getReplace();
             
+            // calculate resultPath
+            String XMLTag = element.getName();
+            int pos = XMLTag.indexOf('.');
+	    	if (pos >= 0)
+	    	{
+	    		XMLTag = XMLTag.substring(0, pos);
+	    	}
+            resultPath = resultPath + "." + XMLTag;
+            
             Class subClass = Class.forName(replace);
             Object objEmbbeded = subClass.newInstance();
+                       
             parseFromXML(resultPath, message, objEmbbeded, (Element) element.elements().get(0), className);
             
         	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
@@ -306,6 +322,7 @@ public class XMLToASNParser
         	}        	
         	obj =  value;
         }
+        /*
         else if (type.equals("org.bn.types.ObjectIdentifier")) 
         {
         	Element elt = element.element("ObjectIdentifier");
@@ -321,6 +338,7 @@ public class XMLToASNParser
         	obj =  new ObjectIdentifier();
         	((ObjectIdentifier) obj).setValue(value);
         }
+        */
         else if (type.equals("byte[]")) 
         {
         	value = element.getTextTrim();
@@ -368,6 +386,9 @@ public class XMLToASNParser
         }
         else 
         {
+        	// calculate resultPath
+        	resultPath = resultPath + "." + elementName;
+        	
             String classNameCurrent = type.substring(type.lastIndexOf(".") + 1);
             if (!className.equals("") && (type.contains(className)) && (!(type.equals(className + classNameCurrent)))) 
             {
@@ -385,7 +406,13 @@ public class XMLToASNParser
         // get the condition for embedded objects
         if (message != null)
         {
-	    	String condition = elementName + "=" + value;
+	    	String XMLTag = resultPath;
+	    	int pos = resultPath.lastIndexOf('.');
+	    	if (pos >= 0)
+	    	{
+	    		XMLTag = resultPath.substring(pos + 1);
+	    	}
+	    	String condition = XMLTag + "=" + value;
 	    	List<Embedded> embeddedList = message.getEmbeddedByCondition(condition);
 	    	if (embeddedList != null)
 	    	{
