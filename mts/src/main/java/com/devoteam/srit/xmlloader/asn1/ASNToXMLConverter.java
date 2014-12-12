@@ -391,11 +391,14 @@ public class ASNToXMLConverter
 		}
 		
     	// prepare binary objects as list of field
-		String simpleClassName = subObject.getClass().getSimpleName();
 		ElementAbstract elementDico = null;
     	if (message != null)
     	{
-	    	elementDico = message.getBinaryByLabel(simpleClassName);
+    		if (parentObj != null)
+    		{
+	    		String simpleClassName = parentObj.getClass().getSimpleName();
+		    	elementDico = message.getBinaryByLabel(simpleClassName);
+    		}
 	    	if (elementDico == null)
 	    	{
 		    	String pathName = resultPath;
@@ -433,19 +436,6 @@ public class ASNToXMLConverter
 			
 			// calculate resultPath
             String XMLTag = getXMLTag(subObject, name);
-            /*
-            int pos = XMLTag.lastIndexOf('.');
-	    	if (pos >= 0)
-	    	{
-	    		XMLTag = XMLTag.substring(pos + 1);
-	    	}
-	    	*/
-	    	/*
-	    	if (XMLTag.equals("ObjectIdentifier"))
-	    	{
-	    		XMLTag = name;
-	    	}
-	    	*/
             resultPath = resultPath + "." + XMLTag;
 			
 			byte[] bytesEmbedded = null;
@@ -484,7 +474,8 @@ public class ASNToXMLConverter
 			byte[] bytes = (byte[]) subObject;
         	if (elementDico != null)
         	{
-        		// bug dans la fonction copyToClone() : retourne toujours un IntegerField
+        		// TODO bug dans la fonction copyToClone() : retourne toujours un IntegerField
+        		// Est ce que c'est réellement un pb ? a voir à l'usage
         		//ElementSimple binary = new ElementSimple(); 
         		//binary.copyToClone(binaryDico);
         		ElementSimple binary = (ElementSimple) elementDico;

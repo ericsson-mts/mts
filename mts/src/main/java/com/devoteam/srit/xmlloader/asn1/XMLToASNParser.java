@@ -103,6 +103,16 @@ public class XMLToASNParser
 
     public void parseFromXML(String resultPath, ASNMessage message, Object objClass, Element root, String ClasseName) throws Exception 
     {
+    	// calculate the element name to build the result path
+    	String elementName = root.getName();
+    	int iPos = elementName.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
+    	if (iPos > 0)
+    	{
+    		elementName = elementName.substring(0, iPos);
+    	}
+    	// calculate resultPath
+    	resultPath = resultPath + "." + elementName;
+
         // parsing XML
         List<Element> children = root.elements();
         for (Element element : children) 
@@ -173,14 +183,6 @@ public class XMLToASNParser
 
     public Object parseField(String resultPath, ASNMessage message, Element element, Field field, String type, Object object, String className) throws Exception 
     {
-    	// calculate the element name to build the result path
-    	String elementName = element.getName();
-    	int iPos = elementName.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
-    	if (iPos > 0)
-    	{
-    		elementName = elementName.substring(0, iPos);
-    	}
-
     	// manage binary objects as list of field
     	String simpleClassName = object.getClass().getSimpleName();
     	ElementAbstract elementDico = null;
@@ -220,8 +222,6 @@ public class XMLToASNParser
     	}
 		if (embedded != null) 
 		{            
-            String replace = embedded.getReplace();
-            
             // calculate resultPath
             String XMLTag = element.getName();
             int pos = XMLTag.indexOf('.');
@@ -231,6 +231,7 @@ public class XMLToASNParser
 	    	}
             resultPath = resultPath + "." + XMLTag;
             
+            String replace = embedded.getReplace();
             Class subClass = Class.forName(replace);
             Object objEmbbeded = subClass.newInstance();
                        
@@ -385,10 +386,7 @@ public class XMLToASNParser
             return null;
         }
         else 
-        {
-        	// calculate resultPath
-        	resultPath = resultPath + "." + elementName;
-        	
+        {        	
             String classNameCurrent = type.substring(type.lastIndexOf(".") + 1);
             if (!className.equals("") && (type.contains(className)) && (!(type.equals(className + classNameCurrent)))) 
             {
