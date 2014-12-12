@@ -112,7 +112,7 @@ public class StackSigtranHybrid extends Stack {
     {
         MsgSigtranHybrid msgSigtran = new MsgSigtranHybrid();
         
-        List<Element> listAps = root.elements("AP");
+        List<Element> listAps = root.elements("ASN");
         Object[] tabAps = listAps.toArray();
         if (tabAps.length >= 1)
         {
