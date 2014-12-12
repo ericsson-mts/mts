@@ -29,8 +29,10 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -77,7 +79,9 @@ public class EnumLongField extends IntegerField
         	else
         	{
 	        	byte[] valueBytes = Utils.parseBinaryString(valueStr);
-	        	long value = (long) valueBytes[0] & 0xFF;
+	        	Array array = new DefaultArray(valueBytes);
+	        	BigInteger n = new BigInteger(array.toString(), 16);
+	        	long value = Long.parseLong(n.toString());
 	            this.valuesByLabel.put(nameStr, value);
 	            this.labelsByValue.put(value, nameStr);
         	}

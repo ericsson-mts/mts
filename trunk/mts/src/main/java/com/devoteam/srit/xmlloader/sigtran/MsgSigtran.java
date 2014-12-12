@@ -354,7 +354,9 @@ public class MsgSigtran extends Msg
 	        }
 	    	if (channel != null)
 	    	{
-	    		//BUG when we don't open channel with <openChannel>
+	    		// TODO bug when we don't open channel with <openChannel>
+	    		// A investiguer dans la stack generique voir si la creation du channel
+	    		// et l'envoi du message est fait avant ou après le traitement generique
 	    		//transID = this.channel.getName() + "|" + transID;
 	    	}
 	    	this.transactionId = new TransactionId(transID);
