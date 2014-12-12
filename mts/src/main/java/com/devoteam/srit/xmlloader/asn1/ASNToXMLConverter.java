@@ -379,76 +379,49 @@ public class ASNToXMLConverter
 		return ret;
 	}
 
-	private String returnXMLObject(String resultPath, ASNMessage message, Object parentObj, Object subObject, String name, ASN1ElementMetadata objElementInfo, int indent)
+	private String returnXMLObject(String resultPath, ASNMessage message, Object parentObj, Object object, String name, ASN1ElementMetadata objElementInfo, int indent)
 			throws Exception 
 	{
 		String ret = "";
-		Class subClass = subObject.getClass();
+		Class subClass = object.getClass();
 		String type = subClass.getCanonicalName();
 		if (type == null) 
 		{
 			return null;
 		}
 		
-    	// prepare binary objects as list of field
-		ElementAbstract elementDico = null;
+		// get the element definition (enumeration binary data) from the dictionary
+    	ElementAbstract elementDico = null;
     	if (message != null)
     	{
-    		if (parentObj != null)
-    		{
-	    		String simpleClassName = parentObj.getClass().getSimpleName();
-		    	elementDico = message.getBinaryByLabel(simpleClassName);
-    		}
-	    	if (elementDico == null)
-	    	{
-		    	String pathName = resultPath;
-		    	int pos = resultPath.lastIndexOf('.');
-		    	pathName = resultPath.substring(pos + 1);
-		    	elementDico = message.getBinaryByLabel(pathName);
-		    	if (elementDico == null)
-		    	{
-			    	if (pos >= 0)
-			    	{
-			    		pos = resultPath.lastIndexOf('.', pos - 1);
-			    		if (pos >= 0)
-			    		{
-			    			pathName = resultPath.substring(pos + 1);
-			    		}
-			    	}
-			    	elementDico = message.getBinaryByLabel(pathName);
-		    	}
-	    	}
+	    	elementDico = message.getElementFromDico(parentObj, resultPath);
     	}
-    	
-		Embedded embedded = null;
-		if (message != null)
-		{
-			// manage the embedded objects
-			embedded = message.getEmbeddedByInitial(type);
-			if (embedded == null && name != null)
-	    	{
-	    		embedded = message.getEmbeddedByInitial(name);
-	    	}
-		}
+
+    	// get the embedded definition form the message (for conditional) and the dictionary
+    	Embedded embedded =  null; 
+    	if (message != null)
+    	{
+    		embedded =  message.getEmbeddedFromDico(name, type);
+    	}
 		if (embedded != null) 
 		{
 			String replace = embedded.getReplace();
 			
 			// calculate resultPath
-            String XMLTag = getXMLTag(subObject, name);
+            String XMLTag = getXMLTag(object, name);
             resultPath = resultPath + "." + XMLTag;
 			
 			byte[] bytesEmbedded = null;
             if (!type.equals("byte[]"))
             {
-				Field[] fields = subObject.getClass().getDeclaredFields();
+				Field[] fields = object.getClass().getDeclaredFields();
 				fields[0].setAccessible(true);
-				bytesEmbedded = (byte[]) fields[0].get(subObject);
+				bytesEmbedded = (byte[]) fields[0].get(object);
 				// Array arraybytesEmbedded = new DefaultArray(bytesEmbedded);
             }
             else
             {
-            	bytesEmbedded = (byte[]) subObject;
+            	bytesEmbedded = (byte[]) object;
             }
             
 			IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
@@ -464,14 +437,14 @@ public class ASNToXMLConverter
 				return "";
 			}
 			ret += "\n" + indent(indent);
-			ret += toXML(resultPath, message, subObject, "value", obj, objElementInfo, indent + NUMBER_SPACE_TABULATION);
+			ret += toXML(resultPath, message, object, "value", obj, objElementInfo, indent + NUMBER_SPACE_TABULATION);
 			ret += "\n" + indent(indent - NUMBER_SPACE_TABULATION);
 			return ret;
 		}
 		
 		if (type.equals("byte[]")) 
 		{
-			byte[] bytes = (byte[]) subObject;
+			byte[] bytes = (byte[]) object;
         	if (elementDico != null)
         	{
         		// TODO bug dans la fonction copyToClone() : retourne toujours un IntegerField
@@ -493,7 +466,7 @@ public class ASNToXMLConverter
 		} 
 		else if (type.equals("java.lang.Boolean") || type.equals("boolean")) 
 		{
-			ret += subObject.toString();
+			ret += object.toString();
 			return ret;
 
 		} 
@@ -502,16 +475,16 @@ public class ASNToXMLConverter
         	if (elementDico != null)
         	{
 	        	EnumLongField fld = (EnumLongField) elementDico.getField(0);
-	        	ret = fld.getEnumValue((Long) subObject);
+	        	ret = fld.getEnumValue((Long) object);
 	        	return ret;
         	}
 
-			ret += subObject.toString();
+			ret += object.toString();
 			return ret;
 		} 
 		else if (type.equals("java.lang.Integer") || type.equals("int")) 
 		{
-			ret += subObject.toString();
+			ret += object.toString();
 			return ret;
 		} 
 		else if (type.equals("java.lang.String")) 
@@ -519,11 +492,11 @@ public class ASNToXMLConverter
         	if (elementDico != null)
         	{
 	        	EnumStringField fld = (EnumStringField) elementDico.getField(0);
-	        	ret = fld.getEnumValue((String) subObject);
+	        	ret = fld.getEnumValue((String) object);
 	        	return ret;
         	}
 
-			ret += subObject.toString();
+			ret += object.toString();
 			return ret;
 		}
 		/*
@@ -545,19 +518,19 @@ public class ASNToXMLConverter
 		else if (type.endsWith(".EnumType")) 
 		{
 			ASN1EnumItem enumObj = null;
-	        Class enumClass = subObject.getClass();
+	        Class enumClass = object.getClass();
             for(Field enumItem: enumClass.getDeclaredFields()) 
             {
                 if(enumItem.isAnnotationPresent(ASN1EnumItem.class)) 
                 {
-                    if(enumItem.getName().equals(subObject.toString())) 
+                    if(enumItem.getName().equals(object.toString())) 
                     {
                     	enumObj = enumItem.getAnnotation(ASN1EnumItem.class);
                         break;
                     }
                 }
             }
-			ret += subObject.toString() + TAG_SEPARATOR + enumObj.tag();
+			ret += object.toString() + TAG_SEPARATOR + enumObj.tag();
 			return ret;
 		}
 		else if (type.equals("org.bn.types.NullObject")) 

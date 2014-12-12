@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.asn1;
 
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -122,6 +123,48 @@ public abstract class ASNMessage
     	}
  	}
     
+	// get the element definition (enumeration binary data) from the dictionary
+    public ElementAbstract getElementFromDico(Object parentObject, String resultPath) 
+ 	{    
+		ElementAbstract elementDico = null;
+		if (parentObject != null)
+		{
+    		String simpleClassName = parentObject.getClass().getSimpleName();
+	    	elementDico = getBinaryByLabel(simpleClassName);
+		}
+    	if (elementDico == null)
+    	{
+	    	String pathName = resultPath;
+	    	int pos = resultPath.lastIndexOf('.');
+	    	pathName = resultPath.substring(pos + 1);
+	    	elementDico = getBinaryByLabel(pathName);
+	    	if (elementDico == null)
+	    	{
+		    	if (pos >= 0)
+		    	{
+		    		pos = resultPath.lastIndexOf('.', pos - 1);
+		    		if (pos >= 0)
+		    		{
+		    			pathName = resultPath.substring(pos + 1);
+		    		}
+		    	}
+		    	elementDico = getBinaryByLabel(pathName);
+	    	}
+		}
+    	return elementDico;
+ 	}
+    
+    // get the embedded definition form the message (for conditional) and the dictionary
+    public Embedded getEmbeddedFromDico(String name, String type) 
+ 	{
+    	Embedded embedded = getEmbeddedByInitial(type);
+    	if (embedded == null)
+    	{
+    		embedded = getEmbeddedByInitial(name);
+    	}
+    	return embedded;
+ 	}
+	
 	public void initDictionary(String dictionaryFile) throws Exception 
 	{
 		this.dictionary = dictionaries.get(dictionaryFile);
@@ -131,4 +174,5 @@ public abstract class ASNMessage
 	        dictionaries.put(dictionaryFile, dictionary);
 		}
 	}
+
 }

@@ -183,42 +183,21 @@ public class XMLToASNParser
 
     public Object parseField(String resultPath, ASNMessage message, Element element, Field field, String type, Object object, String className) throws Exception 
     {
-    	// manage binary objects as list of field
-    	String simpleClassName = object.getClass().getSimpleName();
+    	// get the element definition (enumeration binary data) from the dictionary
     	ElementAbstract elementDico = null;
     	if (message != null)
     	{
-	    	elementDico = message.getBinaryByLabel(simpleClassName);
-	    	if (elementDico == null)
-	    	{
-		    	String pathName = resultPath;
-		    	int pos = resultPath.lastIndexOf('.');
-		    	pathName = resultPath.substring(pos + 1);
-		    	elementDico = message.getBinaryByLabel(pathName);
-		    	if (elementDico == null)
-		    	{
-			    	if (pos >= 0)
-			    	{
-			    		pos = resultPath.lastIndexOf('.', pos - 1);
-			    		if (pos >= 0)
-			    		{
-			    			pathName = resultPath.substring(pos + 1);
-			    		}
-			    	}
-			    	elementDico = message.getBinaryByLabel(pathName);
-		    	}
-	    	}
+	    	elementDico = message.getElementFromDico(object, resultPath);
     	}
     	
-    	// manage the embedded objects
-    	Embedded embedded = null;
+    	// get the embedded definition form the message (for conditional) and the dictionary
+    	Embedded embedded =  null; 
     	if (message != null)
     	{
-    		embedded = message.getEmbeddedByInitial(type);
-	    	if (embedded == null && field != null)
-	    	{
-	    		embedded = message.getEmbeddedByInitial(field.getName());
-	    	}
+    		if (field != null)
+    		{
+    			embedded =  message.getEmbeddedFromDico(field.getName(), type);
+    		}
     	}
 		if (embedded != null) 
 		{            
