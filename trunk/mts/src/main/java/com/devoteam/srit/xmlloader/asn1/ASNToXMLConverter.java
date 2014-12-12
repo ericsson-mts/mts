@@ -157,9 +157,6 @@ public class ASNToXMLConverter
 	        	}
 	        }
 
-			// calculate resultPath
-	        resultPath = resultPath + "." + XMLTag; 
-
 	        // return the object as XML
 			String retObject = returnXMLObject(resultPath, message, parentObj, objClass, name, objElementInfo, indent);			
 			boolean complexObject = true;
@@ -168,6 +165,9 @@ public class ASNToXMLConverter
 				complexObject = false;
 			}
 	        
+			// calculate resultPath
+	        resultPath = resultPath + "." + XMLTag; 
+
 			// calculate the metadata for the object 
 			String metadata = calculateMetadata(objElementInfo, objPreparedMetadata);
 			
@@ -391,24 +391,32 @@ public class ASNToXMLConverter
 		}
 		
     	// prepare binary objects as list of field
-		ElementAbstract binaryDico = null;
-		if (name != null)
-		{
-	    	binaryDico = message.getBinaryByLabel(name);
-		}
-    	if (binaryDico == null)
+		String simpleClassName = subObject.getClass().getSimpleName();
+		ElementAbstract elementDico = null;
+    	if (message != null)
     	{
-	    	String pathName = resultPath;
-	    	int pos = resultPath.lastIndexOf('.');
-	    	if (pos >= 0)
+	    	elementDico = message.getBinaryByLabel(simpleClassName);
+	    	if (elementDico == null)
 	    	{
-	    		pos = resultPath.lastIndexOf('.', pos - 1);
-	    		if (pos >= 0)
-	    		pathName = resultPath.substring(pos + 1);
+		    	String pathName = resultPath;
+		    	int pos = resultPath.lastIndexOf('.');
+		    	pathName = resultPath.substring(pos + 1);
+		    	elementDico = message.getBinaryByLabel(pathName);
+		    	if (elementDico == null)
+		    	{
+			    	if (pos >= 0)
+			    	{
+			    		pos = resultPath.lastIndexOf('.', pos - 1);
+			    		if (pos >= 0)
+			    		{
+			    			pathName = resultPath.substring(pos + 1);
+			    		}
+			    	}
+			    	elementDico = message.getBinaryByLabel(pathName);
+		    	}
 	    	}
-	    	binaryDico = message.getBinaryByLabel(pathName);
     	}
-
+    	
 		Embedded embedded = null;
 		if (message != null)
 		{
@@ -421,6 +429,25 @@ public class ASNToXMLConverter
 		}
 		if (embedded != null) 
 		{
+			String replace = embedded.getReplace();
+			
+			// calculate resultPath
+            String XMLTag = getXMLTag(subObject, name);
+            /*
+            int pos = XMLTag.lastIndexOf('.');
+	    	if (pos >= 0)
+	    	{
+	    		XMLTag = XMLTag.substring(pos + 1);
+	    	}
+	    	*/
+	    	/*
+	    	if (XMLTag.equals("ObjectIdentifier"))
+	    	{
+	    		XMLTag = name;
+	    	}
+	    	*/
+            resultPath = resultPath + "." + XMLTag;
+			
 			byte[] bytesEmbedded = null;
             if (!type.equals("byte[]"))
             {
@@ -436,7 +463,6 @@ public class ASNToXMLConverter
             
 			IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
 			InputStream inputStream = new ByteArrayInputStream(bytesEmbedded);
-			String replace = embedded.getReplace();
 			Class<?> cl = Class.forName(replace);
 			Object obj = cl.newInstance();
 			try
@@ -456,12 +482,12 @@ public class ASNToXMLConverter
 		if (type.equals("byte[]")) 
 		{
 			byte[] bytes = (byte[]) subObject;
-        	if (binaryDico != null)
+        	if (elementDico != null)
         	{
         		// bug dans la fonction copyToClone() : retourne toujours un IntegerField
         		//ElementSimple binary = new ElementSimple(); 
         		//binary.copyToClone(binaryDico);
-        		ElementSimple binary = (ElementSimple) binaryDico;
+        		ElementSimple binary = (ElementSimple) elementDico;
         		Array array = new DefaultArray(bytes);
         		binary.decodeFromArray(array, null);
         		ret += binary.fieldsToXml(indent);
@@ -482,9 +508,9 @@ public class ASNToXMLConverter
 		} 
 		else if (type.equals("java.lang.Long") || type.equals("long")) 
 		{
-        	if (binaryDico != null)
+        	if (elementDico != null)
         	{
-	        	EnumLongField fld = (EnumLongField) binaryDico.getField(0);
+	        	EnumLongField fld = (EnumLongField) elementDico.getField(0);
 	        	ret = fld.getEnumValue((Long) subObject);
 	        	return ret;
         	}
@@ -499,9 +525,9 @@ public class ASNToXMLConverter
 		} 
 		else if (type.equals("java.lang.String")) 
 		{
-        	if (binaryDico != null)
+        	if (elementDico != null)
         	{
-	        	EnumStringField fld = (EnumStringField) binaryDico.getField(0);
+	        	EnumStringField fld = (EnumStringField) elementDico.getField(0);
 	        	ret = fld.getEnumValue((String) subObject);
 	        	return ret;
         	}
@@ -509,12 +535,13 @@ public class ASNToXMLConverter
 			ret += subObject.toString();
 			return ret;
 		}
+		/*
 		else if (type.equals("org.bn.types.ObjectIdentifier")) 
 		{
 			String value = ((ObjectIdentifier) subObject).getValue();
-        	if (binaryDico != null)
+        	if (elementDico != null)
         	{
-	        	EnumStringField fld = (EnumStringField) binaryDico.getField(0);
+	        	EnumStringField fld = (EnumStringField) elementDico.getField(0);
 	        	ret = fld.getEnumValue(value);
         	}
         	else
@@ -523,6 +550,7 @@ public class ASNToXMLConverter
         	}
         	return "<ObjectIdentifier>" + ret + "</ObjectIdentifier>";
 		}
+		*/
 		else if (type.endsWith(".EnumType")) 
 		{
 			ASN1EnumItem enumObj = null;
