@@ -103,15 +103,8 @@ public class XMLToASNParser
 
     public void parseFromXML(String resultPath, ASNMessage message, Object objClass, Element root, String ClasseName) throws Exception 
     {
-    	// calculate the element name to build the result path
-    	String elementName = root.getName();
-    	int iPos = elementName.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
-    	if (iPos > 0)
-    	{
-    		elementName = elementName.substring(0, iPos);
-    	}
     	// calculate resultPath
-    	resultPath = resultPath + "." + elementName;
+        resultPath = resultPath + "." + getSignificantXMLTag(root);
 
         // parsing XML
         List<Element> children = root.elements();
@@ -134,7 +127,8 @@ public class XMLToASNParser
         }
     }
 
-    public Object instanceClass(String Classe, String ClasseName) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
+    public Object instanceClass(String Classe, String ClasseName) throws Exception
+    {
         if (!Classe.contains(".")) 
         {
             ClasseName = ClasseName + Classe;
@@ -181,15 +175,19 @@ public class XMLToASNParser
         throw new ParsingException ("Can not find the attribute '" + elementName + "' in the ASN object '" + objClass.getClass().getName());
     }
 
-    public Object parseField(String resultPath, ASNMessage message, Element element, Field field, String type, Object object, String className) throws Exception 
-    {
-    	// get the element definition (enumeration binary data) from the dictionary
-    	ElementAbstract elementDico = null;
-    	if (message != null)
+	private String getSignificantXMLTag(Element element) throws Exception 
+	{
+		String XMLTag = element.getName();
+        int pos = XMLTag.indexOf('.');
+    	if (pos >= 0)
     	{
-	    	elementDico = message.getElementFromDico(object, resultPath);
+    		XMLTag = XMLTag.substring(0, pos);
     	}
-    	
+		return XMLTag;
+	}
+
+    public Object parseField(String resultPath, ASNMessage message, Element element, Field field, String type, Object object, String className) throws Exception 
+    {    	
     	// get the embedded definition form the message (for conditional) and the dictionary
     	Embedded embedded =  null; 
     	if (message != null)
@@ -199,16 +197,11 @@ public class XMLToASNParser
     			embedded =  message.getEmbeddedFromDico(field.getName(), type);
     		}
     	}
+    	// process embedded object
 		if (embedded != null) 
 		{            
             // calculate resultPath
-            String XMLTag = element.getName();
-            int pos = XMLTag.indexOf('.');
-	    	if (pos >= 0)
-	    	{
-	    		XMLTag = XMLTag.substring(0, pos);
-	    	}
-            resultPath = resultPath + "." + XMLTag;
+            resultPath = resultPath + "." + getSignificantXMLTag(element);
             
             String replace = embedded.getReplace();
             Class subClass = Class.forName(replace);
@@ -240,6 +233,7 @@ public class XMLToASNParser
             return obj;
 
 		}
+		
 		Object obj = null;
 		String value = null;
         if (type.equals("java.lang.Boolean")||type.equals("boolean"))  
@@ -268,6 +262,12 @@ public class XMLToASNParser
         }
         else if (type.equals("java.lang.Long")||type.equals("long"))  
         {
+        	// get the element definition (enumeration binary data) from the dictionary
+        	ElementAbstract elementDico = null;
+        	if (message != null)
+        	{
+    	    	elementDico = message.getElementFromDico(object, resultPath);
+        	}
         	value = element.getTextTrim();
         	if (elementDico != null)
         	{
@@ -294,6 +294,12 @@ public class XMLToASNParser
         }
         else if (type.equals("java.lang.String")||type.equals("String")) 
         {
+        	// get the element definition (enumeration binary data) from the dictionary
+        	ElementAbstract elementDico = null;
+        	if (message != null)
+        	{
+    	    	elementDico = message.getElementFromDico(object, resultPath);
+        	}
         	value = element.getTextTrim();
         	if (elementDico != null)
         	{
@@ -321,6 +327,12 @@ public class XMLToASNParser
         */
         else if (type.equals("byte[]")) 
         {
+        	// get the element definition (enumeration binary data) from the dictionary
+        	ElementAbstract elementDico = null;
+        	if (message != null)
+        	{
+    	    	elementDico = message.getElementFromDico(object, resultPath);
+        	}
         	value = element.getTextTrim();
         	if (elementDico != null)
         	{
@@ -333,7 +345,8 @@ public class XMLToASNParser
 	        	}
         	}
         	// not a simple value so return
-    		Array array = new DefaultArray(Utils.parseBinaryString("h" + value));
+        	byte[] bytes = Utils.parseBinaryString("h" + value);
+    		Array array = new DefaultArray(bytes);
     		return array.getBytes();
         }
         else if (type.endsWith(".EnumType"))  
