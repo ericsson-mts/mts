@@ -516,13 +516,13 @@ public class ASNToXMLConverter
 	    	{
 		    	elementDico = message.getElementFromDico(parentObj, resultPath);
 	    	}
-
+	    	
+	    	String value = ((ObjectIdentifier) object).getValue();
         	if (elementDico != null)
         	{
 	        	EnumStringField fld = (EnumStringField) elementDico.getField(0);
-	        	return fld.getEnumValue(((ObjectIdentifier) object).getValue());
+	        	value = fld.getEnumValue(value);
         	}
-        	String value = ((ObjectIdentifier) object).getValue();
         	return "<ObjectIdentifier>" + value + "</ObjectIdentifier>";
 		}
 		else if (type.endsWith(".EnumType")) 

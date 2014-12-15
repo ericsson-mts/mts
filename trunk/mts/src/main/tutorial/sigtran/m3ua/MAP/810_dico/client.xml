@@ -15,6 +15,8 @@
                                        remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]"
                                        transport="[transport]"/>
                                        
+   
+   
    <sendMessageSIGTRAN	name="Send ASPUP1" channel="channel">	
    
         <UA name="m3ua" file="m3ua.xml">
@@ -40,8 +42,8 @@
   	<parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
     <parameter name="[length]" operation="string.length" value="[data]"/>			
 	
-    <sendMessageSIGTRAN name="Send DATA1" channel="channel">
-    
+    <sendMessageSIGTRAN name="Send DATA1" channel="channel">    
+
     <!-- AP LAYER -->
     <ASN dictionary="map/dictionary_MAP.xml">
       <Component.Choice>
@@ -49,63 +51,37 @@
            <invokeID.BoxedType><Integer>1</Integer></invokeID.BoxedType>
            <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
            <opCode.Choice>
-              <localValue.BoxedType><Long>provideSubscriberInfo:70</Long></localValue.BoxedType>
+              <localValue.BoxedType><Long>sendRoutingInfoForSM</Long></localValue.BoxedType>
               <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
            </opCode.Choice>
            <invokeparameter>
-             <ProvideSubscriberInfoArg.Sequence>
-                <imsi.C0.BoxedType><Bytes>04036b9f10</Bytes></imsi.C0.BoxedType>
-                <lmsi.C1.BoxedType><Bytes>0410aa12610149d010610327d0d9cbe82ff8</Bytes></lmsi.C1.BoxedType>
-                <requestedInfo.C2.Sequence>
-                   <locationInformation.C0></locationInformation.C0>
-                   <subscriberState.C1></subscriberState.C1>
-                   <extensionContainer.C2.Sequence>
-                      <privateExtensionList.C0.BoxedType>
-                         <Collection>
-                            <PrivateExtension.Sequence>
-                               <extId><ObjectIdentifier>0.1.228.13.25.94</ObjectIdentifier></extId>
-                               <extType>040ad9ef5ac1859748fcb5a3</extType>
-                            </PrivateExtension.Sequence>
-                            <!--PrivateExtension.Sequence>
-                               <extId><ObjectIdentifier>0.1.2112</ObjectIdentifier></extId>
-                               <extType>0407e40c3c453e70c7</extType>
-                            </PrivateExtension.Sequence>
-                            <PrivateExtension.Sequence>
-                               <extId><ObjectIdentifier>0.1.286.116.30.21</ObjectIdentifier></extId>
-                               <extType>040edebe8f2d5eb4a1529e6175ab1d5f</extType>
-                            </PrivateExtension.Sequence-->
-                         </Collection>
-                      </privateExtensionList.C0.BoxedType>
-                      <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
-                   </extensionContainer.C2.Sequence>
-                   <currentLocation.C3></currentLocation.C3>
-                   <requestedDomain.C4.Enum>
-                      <EnumType>cs_Domain.0</EnumType>
-                   </requestedDomain.C4.Enum>
-                   <imei.C6></imei.C6>
-                   <ms_classmark.C5></ms_classmark.C5>
-                   <mnpRequestedInfo.C7></mnpRequestedInfo.C7>
-                </requestedInfo.C2.Sequence>
-                <extensionContainer.C3.Sequence>
+             <RoutingInfoForSMArg.Sequence>
+                <msisdn.C0.BoxedType><Bytes>04065abd2af3f393</Bytes></msisdn.C0.BoxedType>
+                <sm_RP_PRI.C1>false:0</sm_RP_PRI.C1>
+                <serviceCentreAddress.C2.BoxedType><Bytes>040436322c65</Bytes></serviceCentreAddress.C2.BoxedType>
+                <extensionContainer.C6.Sequence>
                    <privateExtensionList.C0.BoxedType>
                       <Collection>
                          <PrivateExtension.Sequence>
-                            <extId><ObjectIdentifier>0.1.25.46.127.54.9.17.55.17.83</ObjectIdentifier></extId>
-                            <extType>040cf2b8f12aa2d5283e64225eab</extType>
-                         </PrivateExtension.Sequence>
-                         <!--PrivateExtension.Sequence>
-                            <extId><ObjectIdentifier>0.1.262.73.114.12.56.96.15.52.88.18</ObjectIdentifier></extId>
-                            <extType>040ee9db38303597dc5fb8c634ea471b</extType>
+                            <extId><ObjectIdentifier>0.1.24.110.78.45.5</ObjectIdentifier></extId>
+                            <extType>040826fcfe479c03592d</extType>
                          </PrivateExtension.Sequence>
                          <PrivateExtension.Sequence>
-                            <extId><ObjectIdentifier>0.1.238.67.67.89.53.4.73.73.98.98</ObjectIdentifier></extId>
-                            <extType>040951eedbdff01be99d41</extType>
-                         </PrivateExtension.Sequence-->
+                            <extId><ObjectIdentifier>0.1.2124.115.11.112.47.62</ObjectIdentifier></extId>
+                            <extType>040cf68db308732eda2a0dc27178</extType>
+                         </PrivateExtension.Sequence>
+                         <PrivateExtension.Sequence>
+                            <extId><ObjectIdentifier>0.1.278.123</ObjectIdentifier></extId>
+                            <extType>040396670f</extType>
+                         </PrivateExtension.Sequence>
                       </Collection>
                    </privateExtensionList.C0.BoxedType>
                    <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
-                </extensionContainer.C3.Sequence>
-             </ProvideSubscriberInfoArg.Sequence>
+                </extensionContainer.C6.Sequence>
+                <gprsSupportIndicator.C7></gprsSupportIndicator.C7>
+                <sm_RP_MTI.C8>823102423</sm_RP_MTI.C8>
+                <sm_RP_SMEA.C9>04040ea11e27</sm_RP_SMEA.C9>
+             </RoutingInfoForSMArg.Sequence>
           </invokeparameter>
         </invoke.C1.Sequence>
       </Component.Choice>
@@ -127,7 +103,7 @@
                               <dialogueRequest.A0.BoxedType><AARQ_apduSequenceType.A0>
                                     <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
                                     <application_context_name.BoxedType>
-                                       <ObjectIdentifier><ObjectIdentifier>subscriberInfoEnquiryContext-v2:0.4.0.0.1.0.28.2</ObjectIdentifier></ObjectIdentifier>
+                                       <direct_reference><ObjectIdentifier>shortMsgRelayContext-v2:0.4.0.0.1.0.21.2</ObjectIdentifier></direct_reference>
                                     </application_context_name.BoxedType>
                                     <!--Collection>
                                        <user_information>040b0ee80b24cfc24d5cf44182</user_information>
@@ -171,6 +147,7 @@
 
     <UA name="m3ua" file="m3ua.xml">
         <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
+	
 				
         <parameter tag="Network_Appearence">
             <field name="Network_Appearence"  format="Integer" value="102"/>
@@ -178,11 +155,11 @@
 
 
         <parameter tag="Routing_Context">
-            <field name="Routing_Context" format="Integer"  value="101"/>
-        </parameter>
+            <field name="Routing_Context" format="Integer"  value="100"/>
+        </parameter> 
 
         <parameter tag="Protocol_Data">
-            <field value="1" name="Originating_Point_Code"/>
+            <field value="7" name="Originating_Point_Code"/>
             <field value="2" name="Destination_Point_Code" />
             <field value="SCCP"	name="SI"/>
             <field value="2"	name="NI"/>
@@ -204,13 +181,13 @@
     <parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
     <parameter name="[length]" operation="string.length" value="[data]"/>
     
-    <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="false" type="70" result="RESULT">
+    <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="false" type="45" result="RESULT">
         <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
     </receiveMessageSIGTRAN>
 	
     <!--test parameter="[data1]" condition="binary.equals" value="[data]"/-->
-
+          
     <!-- remove pb of TIME_WAIT state -->
     <!--closeChannelSIGTRAN name="channel"/-->
-                
+      
 </scenario>
