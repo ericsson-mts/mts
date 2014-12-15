@@ -52,11 +52,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bn.CoderFactory;
 import org.bn.IEncoder;
+import org.bn.types.BitString;
 import org.bn.types.ObjectIdentifier;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -223,7 +225,10 @@ public class XMLToASNParser
         {
         	value = element.getTextTrim();
         	obj = processEnumLong(resultPath, message, object, value);
-            obj = Byte.parseByte(value);
+        	if (obj == null)
+        	{
+        		obj = Byte.parseByte(value);
+        	}
             value = obj.toString();
         }
 
@@ -231,14 +236,20 @@ public class XMLToASNParser
         {
         	value = element.getTextTrim();
         	obj = processEnumLong(resultPath, message, object, value);
-            obj = Short.parseShort(value);
+        	if (obj == null)
+        	{
+        		obj = Short.parseShort(value);
+        	}
             value = obj.toString();
         }
         else if (type.equals("java.lang.Integer")||type.equals("int")) 
         {
         	value = element.getTextTrim();
         	obj = processEnumLong(resultPath, message, object, value);
-            obj = Integer.parseInt(value);
+        	if (obj == null)
+        	{
+        		obj = Integer.parseInt(value);
+        	}
             value = obj.toString();
         }
         else if (type.equals("java.lang.Long")||type.equals("long"))  
@@ -262,6 +273,23 @@ public class XMLToASNParser
         	value = element.getTextTrim();
             obj = Double.parseDouble(value);
             value = obj.toString();
+        }
+        else if (type.equals("org.bn.types.BitString")) 
+        {
+        	// calculate resultPath
+            resultPath = resultPath + "." + field.getName();
+            
+        	Element elt = element.element("BitString");
+        	if (elt != null)
+        	{
+	        	value = elt.attributeValue("value");
+	        	value = processEnumString(resultPath, message, object, value);
+	        	String trailing = elt.attributeValue("trailing");
+	        	int intTrail = Integer.parseInt(trailing);
+	        	obj = new BitString();
+	        	Array array = Array.fromHexString(value);	        		
+	        	((BitString) obj).setValue(array.getBytes(), intTrail);
+        	}
         }
         else if (type.equals("java.lang.String")||type.equals("String")) 
         {

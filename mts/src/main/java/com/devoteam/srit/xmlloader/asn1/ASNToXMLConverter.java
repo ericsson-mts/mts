@@ -50,6 +50,7 @@ import org.bn.coders.ASN1PreparedElementData;
 import org.bn.coders.TagClass;
 import org.bn.metadata.ASN1ElementMetadata;
 import org.bn.metadata.ASN1Metadata;
+import org.bn.types.BitString;
 import org.bn.types.ObjectIdentifier;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -457,7 +458,36 @@ public class ASNToXMLConverter
 	        	return fld.getEnumValue((Long) object);
         	}
 			return object.toString();
-		} 
+		}
+        else if (type.equals("org.bn.types.BitString")) 
+        {
+        	// calculate resultPath
+            resultPath = resultPath + "." + name;
+            
+        	BitString bitStr = (BitString) object;
+            Array array = new DefaultArray(bitStr.getValue());
+        	String strVal = Array.toHexString(array);
+
+			// get the element definition (enumeration binary data) from the dictionary
+	    	ElementAbstract elementDico = null;
+	    	if (message != null)
+	    	{
+		    	elementDico = message.getElementFromDico(parentObj, resultPath);
+	    	}
+
+        	if (elementDico != null)
+        	{
+	        	EnumStringField fld = (EnumStringField) elementDico.getField(0);
+	        	strVal = fld.getEnumValue(strVal);
+        	}
+
+        	String ret = "<BitString value=\"";
+        	ret += strVal;
+        	ret += "\" trailing =\"";
+        	ret += bitStr.getTrailBitsCnt();
+        	ret += "\"/>";
+        	return ret; 
+        }
 		else if (type.equals("java.lang.String")) 
 		{
 			// get the element definition (enumeration binary data) from the dictionary
