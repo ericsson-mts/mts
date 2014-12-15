@@ -51,14 +51,24 @@
            <invokeID.BoxedType><Integer>1</Integer></invokeID.BoxedType>
            <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
            <opCode.Choice>
-              <localValue.BoxedType><Long>sendRoutingInfoForSM</Long></localValue.BoxedType>
+              <localValue.BoxedType><Long>sendRoutingInfoForSM:45</Long></localValue.BoxedType>
               <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
            </opCode.Choice>
            <invokeparameter>
              <RoutingInfoForSMArg.Sequence>
-                <msisdn.C0.BoxedType><Bytes>04065abd2af3f393</Bytes></msisdn.C0.BoxedType>
+                <msisdn.C0.BoxedType><Bytes>
+                  <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
+                  <field name="nature of address" value="unknown:0" type="EnumLong" lengthBit="3" />
+                  <field name="numbering plan" value="telex numbering plan (ITU-T Rec F.69):4" type="EnumLong" lengthBit="4" />
+                  <field name="digits" value="60a5dba23f3f39" type="Number_BCD" lengthBit="0" />                
+                </Bytes></msisdn.C0.BoxedType>
                 <sm_RP_PRI.C1>false:0</sm_RP_PRI.C1>
-                <serviceCentreAddress.C2.BoxedType><Bytes>040436322c65</Bytes></serviceCentreAddress.C2.BoxedType>
+                <serviceCentreAddress.C2.BoxedType><Bytes>
+                  <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
+                  <field name="nature of address" value="unknown:0" type="EnumLong" lengthBit="3" />
+                  <field name="numbering plan" value="telex numbering plan (ITU-T Rec F.69):4" type="EnumLong" lengthBit="4" />
+                  <field name="digits" value="406323c256" type="Number_BCD" lengthBit="0" />
+                </Bytes></serviceCentreAddress.C2.BoxedType>
                 <extensionContainer.C6.Sequence>
                    <privateExtensionList.C0.BoxedType>
                       <Collection>
@@ -94,7 +104,7 @@
            <otid.BoxedType><Bytes.A8>00000001</Bytes.A8></otid.BoxedType>
            <dialoguePortion.BoxedType><DialogueOC.A11.BoxedType>
                  <ExternalPDU.A11.BoxedType><ExternalPDUSequenceType.U8>
-                       <direct_reference><ObjectIdentifier>0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
+                       <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
                        <!--indirect_reference>135135546236608288</indirect_reference-->
                        <!--data_value_descriptor.BoxedType><Bytes>040d64f86f057d306aba7055bc9634</Bytes></data_value_descriptor.BoxedType-->
                        <encoding.Choice>
@@ -103,7 +113,7 @@
                               <dialogueRequest.A0.BoxedType><AARQ_apduSequenceType.A0>
                                     <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
                                     <application_context_name.BoxedType>
-                                       <direct_reference><ObjectIdentifier>0.4.0.0.1.0.21.2</ObjectIdentifier></direct_reference>
+                                       <ObjectIdentifier><ObjectIdentifier>shortMsgRelayContext-v2:0.4.0.0.1.0.21.2</ObjectIdentifier></ObjectIdentifier  >
                                     </application_context_name.BoxedType>
                                     <!--Collection>
                                        <user_information>040b0ee80b24cfc24d5cf44182</user_information>

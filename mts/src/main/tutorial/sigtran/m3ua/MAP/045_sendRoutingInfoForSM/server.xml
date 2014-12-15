@@ -59,14 +59,19 @@
            <invokeID.BoxedType><Integer>1</Integer></invokeID.BoxedType>
            <resultretres>
             <opCode.Choice>
-               <localValue.BoxedType><Long>45</Long></localValue.BoxedType>
+               <localValue.BoxedType><Long>sendRoutingInfoForSM:45</Long></localValue.BoxedType>
                <!--globalValue><ObjectIdentifier>0.1.233.30.41.26.113</ObjectIdentifier></globalValue-->
             </opCode.Choice>
             <returnparameter>
               <RoutingInfoForSM_Res.Sequence>
                 <imsi.BoxedType><Bytes>04074bccf2f6a31907</Bytes></imsi.BoxedType>
                 <locationInfoWithLMSI.C0.Sequence>
-                   <networkNode_Number.C1.BoxedType><Bytes>041378f968b753b9296e0a845c26670875e2feb68f</Bytes></networkNode_Number.C1.BoxedType>
+                   <networkNode_Number.C1.BoxedType><Bytes>
+                      <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
+                      <field name="nature of address" value="unknown:0" type="EnumLong" lengthBit="3" />
+                      <field name="numbering plan" value="telex numbering plan (ITU-T Rec F.69):4" type="EnumLong" lengthBit="4" />
+                      <field name="digits" value="31879f867b359b92e6a048c5627680572eef6bf8" type="Number_BCD" lengthBit="0" />
+                   </Bytes></networkNode_Number.C1.BoxedType>
                    <lmsi.BoxedType><Bytes>040b2ab408b649334315639b9d</Bytes></lmsi.BoxedType>
                    <extensionContainer.Sequence>
                       <privateExtensionList.C0.BoxedType>
@@ -89,7 +94,12 @@
                    </extensionContainer.Sequence>
                    <gprsNodeIndicator.C5></gprsNodeIndicator.C5>
                    <additional_Number.C6.Choice>
-                      <msc_Number.C0.BoxedType><Bytes>0405c1e7daf35d</Bytes></msc_Number.C0.BoxedType>
+                      <msc_Number.C0.BoxedType><Bytes>
+                         <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
+                         <field name="nature of address" value="unknown:0" type="EnumLong" lengthBit="3" />
+                         <field name="numbering plan" value="telex numbering plan (ITU-T Rec F.69):4" type="EnumLong" lengthBit="4" />
+                         <field name="digits" value="501c7ead3fd5" type="Number_BCD" lengthBit="0" />
+                      </Bytes></msc_Number.C0.BoxedType>
                       <sgsn_Number.C1.BoxedType><Bytes>0413e38b79430427441917f001d5e22d639f990519</Bytes></sgsn_Number.C1.BoxedType>
                    </additional_Number.C6.Choice>
                 </locationInfoWithLMSI.C0.Sequence>
@@ -128,7 +138,7 @@
             <DialogueOC>
               <ExternalPDU>
                 <ExternalPDUSequenceType>
-                  <direct_reference><ObjectIdentifier>0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
+                  <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
                   <!--indirect_reference>856649051904125184</indirect_reference-->
                   <!--data_value_descriptor><Bytes>0402aa40</Bytes></data_value_descriptor-->
                   <encoding>
@@ -138,7 +148,7 @@
                           <AARE_apduSequenceType>
                             <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
                             <application_context_name>
-                              <direct_reference><ObjectIdentifier>0.4.0.0.1.0.21.2</ObjectIdentifier></direct_reference>
+                              <ObjectIdentifier><ObjectIdentifier>shortMsgRelayContext-v2:0.4.0.0.1.0.21.2</ObjectIdentifier></ObjectIdentifier>
                             </application_context_name>
                             <result><Associate_result><Long>0</Long></Associate_result></result>
                             <result_source_diagnostic>

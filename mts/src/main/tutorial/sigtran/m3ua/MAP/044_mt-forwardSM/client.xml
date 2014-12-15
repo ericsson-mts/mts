@@ -55,11 +55,21 @@
                 <sm_RP_DA.Choice>
                    <imsi.C0.BoxedType><Bytes>04110bed04c3f1e826a42325ff6ad2186b8807</Bytes></imsi.C0.BoxedType>
                    <lmsi.C1.BoxedType><Bytes>040f4ebc321146d48beb7a0d3a772946e1</Bytes></lmsi.C1.BoxedType>
-                   <serviceCentreAddressDA.C4.BoxedType><Bytes>04136860573ff99feee2e16ec29d7a6f87dd607d34</Bytes></serviceCentreAddressDA.C4.BoxedType>
+                   <serviceCentreAddressDA.C4.BoxedType><Bytes>
+                      <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                      <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3" />
+                      <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
+                      <field name="digits" value="33660650769" type="Number_BCD" lengthBit="0" />
+                   </Bytes></serviceCentreAddressDA.C4.BoxedType>
                    <noSM_RP_DA.C5></noSM_RP_DA.C5>
                 </sm_RP_DA.Choice>
                 <sm_RP_OA.Choice>
-                   <msisdn.C2.BoxedType><Bytes>04124ed975d27e532d1cb9b2f39212e3beeae690</Bytes></msisdn.C2.BoxedType>
+                   <msisdn.C2.BoxedType><Bytes>
+                     <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                     <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3" />
+                     <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
+                     <field name="digits" value="33661307173" type="Number_BCD" lengthBit="0" />
+                   </Bytes></msisdn.C2.BoxedType>
                    <serviceCentreAddressOA.C4.BoxedType><Bytes>0403c03016</Bytes></serviceCentreAddressOA.C4.BoxedType>
                    <noSM_RP_OA.C5></noSM_RP_OA.C5>
                 </sm_RP_OA.Choice>
@@ -97,7 +107,7 @@
            <otid.BoxedType><Bytes.A8>00000001</Bytes.A8></otid.BoxedType>
            <dialoguePortion.BoxedType><DialogueOC.A11.BoxedType>
                  <ExternalPDU.A11.BoxedType><ExternalPDUSequenceType.U8>
-                       <direct_reference><ObjectIdentifier>0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
+                       <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
                        <!--indirect_reference>135135546236608288</indirect_reference-->
                        <!--data_value_descriptor.BoxedType><Bytes>040d64f86f057d306aba7055bc9634</Bytes></data_value_descriptor.BoxedType-->
                        <encoding.Choice>
@@ -106,7 +116,7 @@
                               <dialogueRequest.A0.BoxedType><AARQ_apduSequenceType.A0>
                                     <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
                                     <application_context_name.BoxedType>
-                                       <direct_reference><ObjectIdentifier>0.4.0.0.1.0.21.2</ObjectIdentifier></direct_reference>
+                                       <ObjectIdentifier><ObjectIdentifier>shortMsgRelayContext-v2:0.4.0.0.1.0.21.2</ObjectIdentifier></ObjectIdentifier>
                                     </application_context_name.BoxedType>
                                     <!--Collection>
                                        <user_information>040b0ee80b24cfc24d5cf44182</user_information>

@@ -299,7 +299,7 @@ public class XMLToASNParser
         }
         else if (type.equals("org.bn.types.ObjectIdentifier")) 
         {
-            // calculate resultPath
+        	// calculate resultPath
             resultPath = resultPath + "." + field.getName();
 
         	value = element.element("ObjectIdentifier").getTextTrim();

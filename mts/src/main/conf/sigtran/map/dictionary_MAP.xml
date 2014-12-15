@@ -117,39 +117,10 @@
     /> 
     
     <!-- International Subscriber Distinguish Name (ISDN) adress string => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 456 -->
-    <element tag="ISDN_AddressString" description="International Mobile Subscriber Identity address string">
-    		<field name="extension" type="enumeration" lengthBit="1" description="extension">
-            <enum name="no extension" value="1"/>
-        </field>
-        <field name="nature of address" type="enumeration" lengthBit="3" description="nature of address">
-            <enum name="unknown" value="b000"/>
-            <enum name="international number" value="b001"/>
-            <enum name="national significant number" value="b010"/>
-            <enum name="network specific number" value="b011"/>
-            <enum name="subscriber number" value="b100"/>
-            <enum name="reserved" value="b101"/>
-            <enum name="abbreviated number" value="b110"/>
-            <enum name="reserved for extension" value="b111"/>
-        </field>
-        <field name="numbering plan" type="enumeration" lengthBit="4" description="numbering plan">
-            <enum name="unknown" value="b0000"/>
-            <enum name="ISDN/Telephony Numbering Plan (Rec ITU-T E.164)" value="b0001"/>
-            <enum name="spare" value="b0010"/>
-            <enum name="data numbering plan (ITU-T Rec X.121)" value="b0011"/>
-            <enum name="telex numbering plan (ITU-T Rec F.69)" value="b0100"/>
-            <enum name="spare" value="b0101"/>
-            <enum name="land mobile numbering plan (ITU-T Rec E.212)" value="b0110"/>
-            <enum name="spare" value="b0111"/>
-            <enum name="national numbering plan" value="b1000"/>
-            <enum name="private numbering plan" value="b1001"/>
-            <enum name="reserved for extension" value="b1111"/>
-        </field>
-        <field name="digits" type="number_bcd" description="digits"/>
-    </element>
-
     <!-- Service Centre Address (similar to Address string) => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 456 -->
-    <element tag="ServiceCentreAddress" description="Service Centre Address (similar to IMSI address string)">
+    <element tag="ISDN_AddressString, ServiceCentreAddress" description="International Mobile Subscriber Identity address string, Service Centre Address">
     		<field name="extension" type="enumeration" lengthBit="1" description="extension">
+            <enum name="extension" value="0"/>
             <enum name="no extension" value="1"/>
         </field>
         <field name="nature of address" type="enumeration" lengthBit="3" description="nature of address">
@@ -178,6 +149,26 @@
         <field name="digits" type="number_bcd" description="digits"/>
     </element>
 
+    <!-- International Mobile Subscriber Identity => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 448 -->
+    <!--element tag="IMSI" description="International Mobile Subscriber Identity">
+        <field name="digits" type="number_bcd" description="digits"/>
+    </element-->
+
+    <!-- International Mobile Station equipment Identity => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 449 -->
+    <!--element tag="IMEI" description="International Mobile Station equipment Identity">
+        <field name="digits" type="number_bcd" description="digits"/>
+    </element-->
+
+    <!-- Temporary Mobile Subscriber Identity => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 449 -->
+    <!--element tag="TMSI" description="Temporary Mobile Subscriber Identity">
+        <field name="digits" type="string" description="digits"/>
+    </element-->
+    
+    <!-- Local Mobile Station Identity => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 449 -->
+    <!--element tag="LMSI" description="Local Mobile Station Identity">
+        <field name="digits" type="string" description="digits"/>
+    </element-->
+    
     <!-- Operation code local value => MAP.asn line 76 -->
     <element tag="opCode.localValue" description="Operation code local value">
     		<field name="localValue" type="enumeration" lengthBit="8" description="operation code">
