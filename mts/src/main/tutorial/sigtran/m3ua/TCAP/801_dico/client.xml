@@ -24,16 +24,16 @@
            <otid.BoxedType><Bytes.A8>00000001</Bytes.A8></otid.BoxedType>
            <dialoguePortion.BoxedType><DialogueOC.A11.BoxedType>
                  <ExternalPDU.A11.BoxedType><ExternalPDUSequenceType.U8>
-                       <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
+                       <direct_reference><ObjectIdentifier>0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
                        <!--indirect_reference>135135546236608288</indirect_reference-->
                        <!--data_value_descriptor.BoxedType><Bytes>040d64f86f057d306aba7055bc9634</Bytes></data_value_descriptor.BoxedType-->
                        <encoding.Choice>
                           <single_ASN1_type.C0.BoxedType>
                            <DialoguePDU.Choice>
                               <dialogueRequest.A0.BoxedType><AARQ_apduSequenceType.A0>
-                                    <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
+                                    <protocol_version><BitString value="80" trailing="7"/></protocol_version>
                                     <application_context_name.BoxedType>
-                                       <direct_reference><ObjectIdentifier>shortMsgRelayContext-v2:0.4.0.0.1.0.21.2</ObjectIdentifier></direct_reference>
+                                       <direct_reference><ObjectIdentifier>0.4.0.0.1.0.21.2</ObjectIdentifier></direct_reference>
                                     </application_context_name.BoxedType>
                                     <!--Collection>
                                        <user_information>040b0ee80b24cfc24d5cf44182</user_information>
@@ -123,14 +123,47 @@
     <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
     <test parameter="[data1]" condition="binary.equals" value="[data]"/>
     
-    	<!-- Message encoded value -->
-	<parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
-  <parameter name="[length]" operation="string.length" value="[data]"/>
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;TCAP&quot;&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;begin.A2.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;otid.BoxedType&gt;&lt;Bytes.A8&gt;00000001&lt;/Bytes.A8&gt;&lt;/otid.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;direct_reference&gt;dialogue-as-id:0.0.17.773.1.1.1&lt;/direct_reference&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;BitString value=&quot;Version1:80&quot; trailing=&quot;7&quot;/&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;ObjectIdentifier&gt;shortMsgRelayContext-v2:0.4.0.0.1.0.21.2&lt;/ObjectIdentifier&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/begin.A2.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;invokeID.BoxedType&gt;&lt;Integer&gt;1&lt;/Integer&gt;&lt;/invokeID.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;localValue&gt;46&lt;/localValue&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;parameter&gt;30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03&lt;/parameter&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/> 
+    
+    <!-- Message encoded value -->
+  	<parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>
+  
+  	<receiveMessageSIGTRAN name="Wait DATA1" request="false" type="Begin:2" result="RESULT">
+  		<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+  	</receiveMessageSIGTRAN>
+  	
+    <parameter name="[result ]" operation="binary.difference" value="[data1]" value2="[data]"/>
 
-	<receiveMessageSIGTRAN name="Wait DATA1" request="false" type="Begin:2" result="RESULT">
-		<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
-	</receiveMessageSIGTRAN>
-	
-  <parameter name="[result ]" operation="binary.difference" value="[data1]" value2="[data]"/>
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;MAP&quot;&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;returnResultLast.C2.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;invokeID.BoxedType&gt;&lt;Integer&gt;1&lt;/Integer&gt;&lt;/invokeID.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/returnResultLast.C2.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/> 
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;TCAP&quot;&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;end.A4.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;dtid.BoxedType&gt;&lt;Bytes.A9&gt;00000001&lt;/Bytes.A9&gt;&lt;/dtid.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;direct_reference&gt;dialogue-as-id:0.0.17.773.1.1.1&lt;/direct_reference&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;BitString value=&quot;Version1:80&quot; trailing=&quot;7&quot;/&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;ObjectIdentifier&gt;shortMsgRelayContext-v2:0.4.0.0.1.0.21.2&lt;/ObjectIdentifier&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;Associate_result.BoxedType&gt;&lt;Long&gt;0&lt;/Long&gt;&lt;/Associate_result.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;Dialogue_service_user.C1.BoxedType&gt;&lt;Long&gt;0&lt;/Long&gt;&lt;/Dialogue_service_user.C1.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/end.A4.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;invokeID.BoxedType&gt;&lt;Integer&gt;1&lt;/Integer&gt;&lt;/invokeID.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/> 
             
 </scenario>

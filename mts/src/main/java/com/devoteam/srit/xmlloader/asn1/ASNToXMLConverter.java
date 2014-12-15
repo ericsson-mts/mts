@@ -483,7 +483,7 @@ public class ASNToXMLConverter
 
         	String ret = "<BitString value=\"";
         	ret += strVal;
-        	ret += "\" trailing =\"";
+        	ret += "\" trailing=\"";
         	ret += bitStr.getTrailBitsCnt();
         	ret += "\"/>";
         	return ret; 
@@ -505,9 +505,11 @@ public class ASNToXMLConverter
 
 			return object.toString();
 		}
-		/*
 		else if (type.equals("org.bn.types.ObjectIdentifier")) 
 		{
+		    // calculate resultPath
+            resultPath = resultPath + "." + name;
+
 			// get the element definition (enumeration binary data) from the dictionary
 	    	ElementAbstract elementDico = null;
 	    	if (message != null)
@@ -518,12 +520,11 @@ public class ASNToXMLConverter
         	if (elementDico != null)
         	{
 	        	EnumStringField fld = (EnumStringField) elementDico.getField(0);
-	        	return fld.getEnumValue((String) object);
+	        	return fld.getEnumValue(((ObjectIdentifier) object).getValue());
         	}
         	String value = ((ObjectIdentifier) object).getValue();
         	return "<ObjectIdentifier>" + value + "</ObjectIdentifier>";
 		}
-		*/
 		else if (type.endsWith(".EnumType")) 
 		{
 			ASN1EnumItem enumObj = null;
