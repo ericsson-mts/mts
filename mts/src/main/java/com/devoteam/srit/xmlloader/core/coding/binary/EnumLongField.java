@@ -45,6 +45,8 @@ import org.dom4j.Element;
 /**
  *
  * @author indiaye
+ * BUG les enumeration integer ne sont prévu que pour des entiers sur 1 octets (0-255)
+ * 
  */
 public class EnumLongField extends IntegerField
 {
