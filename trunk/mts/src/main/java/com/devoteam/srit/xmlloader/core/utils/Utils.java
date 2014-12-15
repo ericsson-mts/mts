@@ -376,7 +376,7 @@ public class Utils
     }
 
     /**
-     * Tests if the string is an integer.
+     * Tests if the string is a boolean.
      */
     public static boolean parseBoolean(String text, String data)
     {
@@ -433,7 +433,22 @@ public class Utils
 	    	}
     	}
 	}
-    
+
+    /**
+     * Returns a boolean as a string.
+     */
+    public static String toStringBoolean(boolean bool)
+    {
+    	if (bool)
+    	{
+    		return "true:1";
+    	}
+    	else
+    	{
+    		return "false:0";
+    	}
+    }
+
     /**
      * generates a string of nb*"    " (four spaces nb times), used for indentation in printAvp
      */

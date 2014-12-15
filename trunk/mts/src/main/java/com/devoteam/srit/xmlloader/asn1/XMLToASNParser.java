@@ -217,7 +217,7 @@ public class XMLToASNParser
         if (type.equals("java.lang.Boolean")||type.equals("boolean"))  
         {
         	value = element.getTextTrim();
-            obj = Boolean.valueOf(value).booleanValue();
+        	obj = Utils.parseBoolean(value, field.getName());
         }
         else if (type.equals("java.lang.Byte")||type.equals("byte"))  
         {

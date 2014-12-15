@@ -435,9 +435,10 @@ public class ASNToXMLConverter
 		} 
 		else if (type.equals("java.lang.Boolean") || type.equals("boolean")) 
 		{
-			return object.toString();
+			
+			return Utils.toStringBoolean((Boolean) object);
 
-		} 
+		}  
 		else if (type.equals("java.lang.Integer") || type.equals("int") || 
 				 type.equals("java.lang.Long") || type.equals("long") ||
 				 type.equals("java.lang.Short") || type.equals("short") || 
