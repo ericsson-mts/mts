@@ -272,16 +272,8 @@ public class XMLToASNParser
         /*
         else if (type.equals("org.bn.types.ObjectIdentifier")) 
         {
-        	Element elt = element.element("ObjectIdentifier");
-        	if (elt != null)
-        	{
-        		value = elt.getTextTrim();
-        	}
-        	if (elementDico != null)
-        	{
-	        	EnumStringField fld = (EnumStringField) elementDico.getField(0);
-	        	value = fld.getEnumString(value);
-        	}
+        	value = element.element("ObjectIdentifier").getTextTrim();
+        	value = processEnumString(resultPath, message, object, value);
         	obj =  new ObjectIdentifier();
         	((ObjectIdentifier) obj).setValue(value);
         }
