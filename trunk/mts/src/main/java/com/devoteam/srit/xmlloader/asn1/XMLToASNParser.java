@@ -222,7 +222,7 @@ public class XMLToASNParser
         else if (type.equals("java.lang.Byte")||type.equals("byte"))  
         {
         	value = element.getTextTrim();
-        	obj = processLongEnum(resultPath, message, object, value);
+        	obj = processEnumLong(resultPath, message, object, value);
             obj = Byte.parseByte(value);
             value = obj.toString();
         }
@@ -230,21 +230,21 @@ public class XMLToASNParser
         else if (type.equals("java.lang.Short")||type.equals("short"))  
         {
         	value = element.getTextTrim();
-        	obj = processLongEnum(resultPath, message, object, value);
+        	obj = processEnumLong(resultPath, message, object, value);
             obj = Short.parseShort(value);
             value = obj.toString();
         }
         else if (type.equals("java.lang.Integer")||type.equals("int")) 
         {
         	value = element.getTextTrim();
-        	obj = processLongEnum(resultPath, message, object, value);
+        	obj = processEnumLong(resultPath, message, object, value);
             obj = Integer.parseInt(value);
             value = obj.toString();
         }
         else if (type.equals("java.lang.Long")||type.equals("long"))  
         {
         	value = element.getTextTrim();
-        	obj = processLongEnum(resultPath, message, object, value);
+        	obj = processEnumLong(resultPath, message, object, value);
         	if (obj == null)
         	{
         		obj = Long.parseLong(value);
@@ -266,17 +266,7 @@ public class XMLToASNParser
         else if (type.equals("java.lang.String")||type.equals("String")) 
         {
         	value = element.getTextTrim();
-        	// get the element definition (enumeration binary data) from the dictionary
-        	ElementAbstract elementDico = null;
-        	if (message != null)
-        	{
-    	    	elementDico = message.getElementFromDico(object, resultPath);
-        	}
-        	if (elementDico != null)
-        	{
-	        	EnumStringField fld = (EnumStringField) elementDico.getField(0);
-	        	value = fld.getEnumString(value);
-        	}        	
+        	value = processEnumString(resultPath, message, object, value);
         	obj =  value;
         }
         /*
@@ -298,13 +288,13 @@ public class XMLToASNParser
         */
         else if (type.equals("byte[]")) 
         {
+        	value = element.getTextTrim();
         	// get the element definition (enumeration binary data) from the dictionary
         	ElementAbstract elementDico = null;
         	if (message != null)
         	{
     	    	elementDico = message.getElementFromDico(object, resultPath);
         	}
-        	value = element.getTextTrim();
         	if (elementDico != null)
         	{
         		ElementAbstract elmt = new ElementSimple();
@@ -317,8 +307,11 @@ public class XMLToASNParser
         	}
         	// not a simple value so return
         	byte[] bytes = Utils.parseBinaryString("h" + value);
+        	// TODO bug quand on passe par une enumeration
     		Array array = new DefaultArray(bytes);
-    		return array.getBytes();
+    		value = array.toString(); 
+    		value = processEnumString(resultPath, message, object, value);
+    		return bytes;
         }
         else if (type.endsWith(".EnumType"))  
         {
@@ -465,7 +458,7 @@ public class XMLToASNParser
 	    return obj;
 	}
 
-    public static Object processLongEnum(String resultPath, ASNMessage message, Object object, String value) throws Exception
+    public static Object processEnumLong(String resultPath, ASNMessage message, Object object, String value) throws Exception
     {
     	Object obj = null;
 		// get the element definition (enumeration binary data) from the dictionary
@@ -476,9 +469,33 @@ public class XMLToASNParser
 		}
 		if (elementDico != null)
 		{
-	    	EnumLongField fld = (EnumLongField) elementDico.getField(0);
-	    	obj = fld.getEnumLong(value);
+			FieldAbstract field = elementDico.getField(0);
+			if (field instanceof EnumLongField)
+			{
+				EnumLongField fld = (EnumLongField) elementDico.getField(0);
+				obj = fld.getEnumLong(value);
+			}
 		}
 		return obj;
+    }
+    
+    public static String processEnumString(String resultPath, ASNMessage message, Object object, String value) throws Exception
+    {
+		// get the element definition (enumeration binary data) from the dictionary
+    	ElementAbstract elementDico = null;
+    	if (message != null)
+    	{
+	    	elementDico = message.getElementFromDico(object, resultPath);
+    	}
+    	if (elementDico != null)
+    	{
+    		FieldAbstract field = elementDico.getField(0);
+    		if (field instanceof EnumStringField)
+			{
+    			EnumStringField fld = (EnumStringField) elementDico.getField(0);
+    			value = fld.getEnumString(value);
+			}
+    	}
+    	return value;
     }
 }
