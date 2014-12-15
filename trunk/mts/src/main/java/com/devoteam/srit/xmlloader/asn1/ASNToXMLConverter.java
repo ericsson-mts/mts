@@ -478,18 +478,20 @@ public class ASNToXMLConverter
 		/*
 		else if (type.equals("org.bn.types.ObjectIdentifier")) 
 		{
-			String value = ((ObjectIdentifier) subObject).getValue();
-			String ret;
+			// get the element definition (enumeration binary data) from the dictionary
+	    	ElementAbstract elementDico = null;
+	    	if (message != null)
+	    	{
+		    	elementDico = message.getElementFromDico(parentObj, resultPath);
+	    	}
+
         	if (elementDico != null)
         	{
 	        	EnumStringField fld = (EnumStringField) elementDico.getField(0);
-	        	ret = fld.getEnumValue(value);
+	        	return fld.getEnumValue((String) object);
         	}
-        	else
-        	{
-        		ret = value;
-        	}
-        	return "<ObjectIdentifier>" + ret + "</ObjectIdentifier>";
+        	String value = ((ObjectIdentifier) object).getValue();
+        	return "<ObjectIdentifier>" + value + "</ObjectIdentifier>";
 		}
 		*/
 		else if (type.endsWith(".EnumType")) 
