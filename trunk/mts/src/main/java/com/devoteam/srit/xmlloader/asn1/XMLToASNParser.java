@@ -297,15 +297,16 @@ public class XMLToASNParser
         	value = processEnumString(resultPath, message, object, value);
         	obj =  value;
         }
-        /*
         else if (type.equals("org.bn.types.ObjectIdentifier")) 
         {
+            // calculate resultPath
+            resultPath = resultPath + "." + field.getName();
+
         	value = element.element("ObjectIdentifier").getTextTrim();
         	value = processEnumString(resultPath, message, object, value);
         	obj =  new ObjectIdentifier();
         	((ObjectIdentifier) obj).setValue(value);
         }
-        */
         else if (type.equals("byte[]")) 
         {
         	value = element.getTextTrim();

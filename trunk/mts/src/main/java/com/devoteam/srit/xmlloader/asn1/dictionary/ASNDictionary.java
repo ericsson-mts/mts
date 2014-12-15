@@ -101,7 +101,7 @@ public class ASNDictionary
             Embedded embedded = new Embedded();            
             embedded.parseFromXML(elem, null);
             
-            embeddedList.addEmbedded(embedded);
+            this.embeddedList.addEmbedded(embedded);
         }
 
         List<Element> listElement = root.elements("element");
@@ -110,7 +110,12 @@ public class ASNDictionary
             ElementSimple elemInfo = new ElementSimple();            
             elemInfo.parseFromXML(elem, null, null);
             
-            binaryByLabel.put(elemInfo.getLabel(), elemInfo);
+            String element = elemInfo.getLabel();
+    		String[] initElt = element.split(",");
+    		for (int i=0; i < initElt.length; i++)
+    		{
+    			this.binaryByLabel.put(initElt[i].trim(), elemInfo);
+    		}
         }
 
     }
