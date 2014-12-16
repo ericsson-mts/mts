@@ -308,31 +308,45 @@ public class XMLToASNParser
         	((ObjectIdentifier) obj).setValue(value);
         }
         else if (type.equals("byte[]")) 
-        {
-        	value = element.getTextTrim();
+        {   
+        	String elementName = object.getClass().getSimpleName() + "." + field.getName();
         	// get the element definition (enumeration binary data) from the dictionary
         	ElementAbstract elementDico = null;
         	if (message != null)
         	{
     	    	elementDico = message.getElementFromDico(object, resultPath);
         	}
-        	if (elementDico != null)
+        	boolean logWarn = !elementName.contains("TransactionID.value") && 
+        					  !elementName.equals("Invoke.parameter") &&
+        					  !elementName.equals("ReturnResult.parameter") &&
+        					  !elementName.equals("ReturnError.parameter");
+        	if (elementDico == null && logWarn)
         	{
-        		ElementAbstract elmt = new ElementSimple();
-	        	elmt.parseFromXML(element, null, elementDico);
-	        	Array array = elmt.encodeToArray();
-	        	if (array.length > 0)
-	        	{
-	        		return array.getBytes();
-	        	}
+        		GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, null, 
+        			"The ASN1 element \"" + elementName + "\" is not defined into the dictionary to analyze the received messages more finely.");
         	}
-        	// not a simple value so return
+
+    		ElementAbstract elmt = new ElementSimple();
+        	elmt.parseFromXML(element, null, elementDico);
+        	Array array = elmt.encodeToArray();
+        	if (array.length > 0)
+        	{
+        		return array.getBytes();
+        	}
+        	
+        	if (logWarn)
+        	{
+        		GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, null, 
+        			"The ASN1 element \"" + elementName + "\" is not specified as a list of XML <field> tag.");
+        	}
+        	// not defined as a list of XML <field> tag
+        	value = element.getTextTrim();
         	byte[] bytes = Utils.parseBinaryString("h" + value);
-        	// TODO bug quand on passe par une enumeration
-    		Array array = new DefaultArray(bytes);
-    		value = array.toString(); 
+    		array = new DefaultArray(bytes);
+    		value = Array.toHexString(array);
     		value = processEnumString(resultPath, message, object, value);
-    		return bytes;
+    		array = Array.fromHexString(value);
+    		return array.getBytes();
         }
         else if (type.endsWith(".EnumType"))  
         {
