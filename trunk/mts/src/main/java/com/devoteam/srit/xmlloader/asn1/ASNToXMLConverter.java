@@ -593,7 +593,7 @@ public static Object processEmbeddedObject(Embedded embedded, Object object) thr
 		}
 		catch (Exception e)
 		{
-			return null;
+			return bytesEmbedded;
 		}
 		return obj;
 	}
