@@ -26,7 +26,7 @@ package com.devoteam.srit.xmlloader.asn1;
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
-import com.devoteam.srit.xmlloader.core.coding.binary.ElementSimple;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementV;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumStringField;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
@@ -422,7 +422,7 @@ public class ASNToXMLConverter
         		// Est ce que c'est réellement un pb ? a voir à l'usage
         		//ElementSimple binary = new ElementSimple(); 
         		//binary.copyToClone(binaryDico);
-        		ElementSimple binary = (ElementSimple) elementDico;
+        		ElementV binary = (ElementV) elementDico;
         		Array array = new DefaultArray(bytes);
         		binary.decodeFromArray(array, null);
         		String ret = binary.fieldsToXml(indent);

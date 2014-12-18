@@ -227,7 +227,7 @@ public abstract class ElementAbstract implements Cloneable
             	}
             	else
             	{
-            		elem = new ElementSimple();
+            		elem = new ElementV();
             	}
             	elem.parseFromXML(elemElement, dictionary, subElemDico);
             	this.elements.add(elem);

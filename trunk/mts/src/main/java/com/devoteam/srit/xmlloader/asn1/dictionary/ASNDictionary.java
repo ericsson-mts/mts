@@ -31,7 +31,7 @@ import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.BooleanField;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
-import com.devoteam.srit.xmlloader.core.coding.binary.ElementSimple;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementV;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
 import com.devoteam.srit.xmlloader.core.coding.binary.IntegerField;
 import com.devoteam.srit.xmlloader.core.coding.binary.NumberBCDField;
@@ -107,7 +107,7 @@ public class ASNDictionary
         List<Element> listElement = root.elements("element");
         for (Element elem : listElement) 
         {
-            ElementSimple elemInfo = new ElementSimple();            
+            ElementV elemInfo = new ElementV();            
             elemInfo.parseFromXML(elem, null, null);
             
             String element = elemInfo.getLabel();
