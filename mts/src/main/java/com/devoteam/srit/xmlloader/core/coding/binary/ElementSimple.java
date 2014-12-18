@@ -36,10 +36,10 @@ import gp.utils.arrays.SupArray;
  *
  * @author Fabien Henry
  */
-public class ElementSimple extends ElementAbstract
+public class ElementV extends ElementAbstract
 {
 
-    public ElementSimple()
+    public ElementV()
     {
     }
     
