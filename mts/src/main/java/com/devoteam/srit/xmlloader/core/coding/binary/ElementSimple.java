@@ -54,7 +54,13 @@ public class ElementSimple extends ElementAbstract
 	@Override    
     public SupArray encodeToArray() 
 	{
-        return fieldsArray;
+		this.subelementsArray = super.encodeToArray();
+
+        SupArray sup = new SupArray();
+	    sup.addLast(this.fieldsArray);
+	    sup.addLast(this.subelementsArray);
+	    
+        return sup;
     }
 
 }
