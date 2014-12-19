@@ -422,10 +422,10 @@ public class ASNToXMLConverter
         		// Est ce que c'est réellement un pb ? a voir à l'usage
         		//ElementSimple binary = new ElementSimple(); 
         		//binary.copyToClone(binaryDico);
-        		ElementV binary = (ElementV) elementDico;
+        		// ElementV binary = (ElementV) elementDico;
         		Array array = new DefaultArray(bytes);
-        		binary.decodeFromArray(array, null);
-        		String ret = binary.fieldsToXml(indent);
+        		elementDico.decodeFromArray(array, null);
+        		String ret = elementDico.fieldsElementsToXml(indent - NUMBER_SPACE_TABULATION);
         		ret += indent(indent - 2 * NUMBER_SPACE_TABULATION);
         		return ret;
         	}

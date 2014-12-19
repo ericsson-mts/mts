@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
+import com.devoteam.srit.xmlloader.asn1.ASNToXMLConverter;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.ElementQ931;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
@@ -458,9 +459,10 @@ public abstract class ElementAbstract implements Cloneable
 	    return list;
 	}
 
-    public String toXml() 
+    public String toXml(int indent) 
     {
         StringBuilder elemString = new StringBuilder();
+        elemString.append(ASNToXMLConverter.indent(indent));
         elemString.append("<element ");
         elemString.append("tag=\"");
     	if (this.label != null)
@@ -481,15 +483,15 @@ public abstract class ElementAbstract implements Cloneable
         }
         elemString.append("\">");
         
-        elemString.append(fieldsToXml(4));
-                
-        elemString.append("</element>");
-        elemString.append("\n");
+        elemString.append(fieldsElementsToXml(indent + ASNToXMLConverter.NUMBER_SPACE_TABULATION));
+        
+        elemString.append(ASNToXMLConverter.indent(indent));
+        elemString.append("</element>\n");
         
         return elemString.toString();
     }
 
-    public String fieldsToXml(int indent) 
+    public String fieldsElementsToXml(int indent) 
     {
         StringBuilder elemString = new StringBuilder();
         elemString.append("\n");
@@ -504,8 +506,7 @@ public abstract class ElementAbstract implements Cloneable
 		while (iterElem.hasNext())
 		{
 			ElementAbstract elemInfo = (ElementAbstract) iterElem.next();
-            elemString.append("    ");
-            elemString.append(elemInfo.toString());
+            elemString.append(elemInfo.toXml(indent));
         }
         
         return elemString.toString();
@@ -513,7 +514,7 @@ public abstract class ElementAbstract implements Cloneable
 
     public String toString() 
     {
-    	return toXml();
+    	return toXml(4);
     }
     public FieldAbstract getFieldsByName(String name) 
     {
