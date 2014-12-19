@@ -30,6 +30,7 @@ import java.util.List;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.BooleanField;
+import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementV;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
@@ -42,7 +43,7 @@ import com.devoteam.srit.xmlloader.core.coding.binary.XMLDoc;
  *
  * @author fhenry
  */
-public class ASNDictionary 
+public class ASNDictionary extends Dictionary
 {
 
 	private static ASNDictionary _instance;
@@ -53,13 +54,10 @@ public class ASNDictionary
 	// list of embedded objects
 	private EmbeddedMap embeddedList;
 
-	// list of binary objects
-	private HashMap<String, ElementAbstract> binaryByLabel;
-
     public ASNDictionary()
     {
+    	super();
 		embeddedList = new EmbeddedMap();
-		binaryByLabel = new HashMap<String, ElementAbstract>();
     }
 	
 	public static ASNDictionary getInstance() throws Exception
@@ -95,27 +93,22 @@ public class ASNDictionary
     	this.layer = root.attributeValue("layer");
     	this.className = root.attributeValue("className");
     	
+        List<Element> listElement = root.elements("element");
+        for (Element elem : listElement) 
+        {
+        	String coding = elem.attributeValue("coding");
+        	ElementAbstract elemInfo = ElementAbstract.buildFactory(coding);            
+            elemInfo.parseFromXML(elem, null, null);
+            addElement(elemInfo);
+        }
+
         List<Element> listEmbedded = root.elements("embedded");
         for (Element elem : listEmbedded) 
         {
             Embedded embedded = new Embedded();            
-            embedded.parseFromXML(elem, null);
+            embedded.parseFromXML(elem, this);
             
             this.embeddedList.addEmbedded(embedded);
-        }
-
-        List<Element> listElement = root.elements("element");
-        for (Element elem : listElement) 
-        {
-            ElementV elemInfo = new ElementV();            
-            elemInfo.parseFromXML(elem, null, null);
-            
-            String element = elemInfo.getLabel();
-    		String[] initElt = element.split(",");
-    		for (int i=0; i < initElt.length; i++)
-    		{
-    			this.binaryByLabel.put(initElt[i].trim(), elemInfo);
-    		}
         }
 
     }
@@ -130,9 +123,5 @@ public class ASNDictionary
     	return embeddedList.getEmbeddedByCondition(condition);
 	}
 
-    public ElementAbstract getBinaryByLabel(String label) 
-	{
-    	return binaryByLabel.get(label);
-	}
 
 }

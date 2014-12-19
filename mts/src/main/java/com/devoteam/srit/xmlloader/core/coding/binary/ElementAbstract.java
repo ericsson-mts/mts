@@ -91,6 +91,18 @@ public abstract class ElementAbstract implements Cloneable
 		{
 			newElement = new ElementQ931();
 		}
+		else if ("V".equals(coding))
+		{
+			newElement = new ElementV();
+		}
+		else if ("LV".equals(coding))
+		{
+			newElement = new ElementLV();
+		}
+		else if ("DV".equals(coding))
+		{
+			newElement = new ElementDV();
+		}
 		else
 		{
      		throw new ExecutionException("ERROR : The coding attribute for the element is mandatory because the element is not present in the dictionary.");
@@ -150,7 +162,8 @@ public abstract class ElementAbstract implements Cloneable
         }
 
         List<Element> listField = elementRoot.elements("field");
-        for (Iterator<Element> it = listField.iterator(); it.hasNext();) {
+        for (Iterator<Element> it = listField.iterator(); it.hasNext();) 
+        {
             Element fieldRoot = it.next();
             String name = fieldRoot.attributeValue("name");
             FieldAbstract field = null;
@@ -227,7 +240,19 @@ public abstract class ElementAbstract implements Cloneable
             	}
             	else
             	{
-            		elem = new ElementV();
+            		String coding = elemElement.attributeValue("coding");
+            		if ("LV".equals(coding))
+            		{
+            			elem = new ElementLV();
+            		}
+            		else if ("DV".equals(coding))
+            		{
+            			elem = new ElementDV();
+            		}
+            		else
+            		{
+            			elem = new ElementV();
+            		}
             	}
             	elem.parseFromXML(elemElement, dictionary, subElemDico);
             	this.elements.add(elem);
@@ -311,7 +336,7 @@ public abstract class ElementAbstract implements Cloneable
     
     public abstract int decodeFromArray(Array array, Dictionary dictionary) throws Exception;
     
-    public SupArray encodeToArray()
+    public SupArray encodeToArray() throws Exception
     {
     	SupArray sup = new SupArray();
 		// encode the sub-element
@@ -497,7 +522,11 @@ public abstract class ElementAbstract implements Cloneable
 
     public FieldAbstract getField(int index) 
     {
-        return fields.get(index);
+    	if (index < this.fields.size())
+    	{
+    		return fields.get(index);
+    	}
+        return null;
     }
     
     public int getTag() 

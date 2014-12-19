@@ -101,20 +101,22 @@ public class MsgH225cs extends Msg {
     
     /** Get the data (as binary) of this message */
     @Override
-    public byte[] getBytesData() {
+    public byte[] getBytesData() 
+    {
        // get field and element for ASN1 and set value
+    	SupArray arr = null;
        try
        {
-           List<ElementAbstract> elements_asn1 = msgQ931.getElementsFromTag("126");
+    	   List<ElementAbstract> elements_asn1 = msgQ931.getElementsFromTag("126");
+	       arr = new SupArray();
+	       TPKTPacket tpkt = new TPKTPacket(msgQ931.getLength() + 4);
+	       arr.addLast(tpkt.getValue());
+	       arr.addLast(msgQ931.getValue());
        }
        catch (Exception e)
        {
-
+    	   // Nothing to do
        }
-       SupArray arr = new SupArray();
-        TPKTPacket tpkt = new TPKTPacket(msgQ931.getLength() + 4);
-        arr.addLast(tpkt.getValue());
-        arr.addLast(msgQ931.getValue());
 
         return arr.getBytes();
     }

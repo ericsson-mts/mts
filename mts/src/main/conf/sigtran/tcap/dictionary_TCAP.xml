@@ -73,7 +73,7 @@
 
 
     <!-- direct reference => DialoguePDUs.asn & UniDialoguePDUs.asn  -->
-    <element tag="ExternalPDUSequenceType.direct_reference" description="direct reference">
+    <element tag="ExternalPDUSequenceType.direct_reference" coding="V" description="direct reference">
     		<field name="direct_reference" type="enum_string" description="direct reference">
             <enum name="dialogue-as-id" value="0.0.17.773.1.1.1"/> <!-- {itu-t recommendation q 773 as(1) dialogue-as(1) version1(1)} -->
             <enum name="uniDialogue-as-id" value="0.0.17.773.1.2.1"/> <!-- {itu-t recommendation q 773 as(1) unidialogue-as(2) version1(1)} -->
@@ -81,7 +81,7 @@
     </element>
 
     <!-- application contexte name => MAP_ApplicationContextsV3.asn -->
-    <element tag="application_context_name.ObjectIdentifier,application_context_name.value,application_context_name.direct_reference" description="application context name">
+    <element tag="application_context_name.ObjectIdentifier,application_context_name.value,application_context_name.direct_reference" coding="V" description="application context name">
     		<field name="application_context_name" type="enum_string" description="application context name">
             <enum name="networkLocUpContext-v3" value="0.4.0.0.1.0.1.3"/> <!-- {map-ac networkLocUp(1) version3(3)} -->
             <enum name="locationCancellationContext-v3" value="0.4.0.0.1.0.2.3"/> <!-- {map-ac locationCancel(2) version3(3)} -->
@@ -164,14 +164,14 @@
     </element>
 
     <!-- protocol version => TCAP.asn -->
-    <element tag="protocol_version" description="protocol version">
+    <element tag="protocol_version" coding="V" description="protocol version">
     		<field name="protocol_version" type="enum_string" description="application context name">
             <enum name="Version1" value="80"/> <!-- [0] IMPLICIT BIT STRING {version1(0)} DEFAULT {version1} -->
         </field>
     </element>
 
     <!-- Operation code local value => MAP.asn line 76 -->
-    <element tag="opCode" description="Operation code local value">
+    <element tag="opCode" coding="V" description="Operation code local value">
     		<field name="localValue" type="enumeration" lengthBit="8" description="operation code">
             <enum name="updateLocation" value="2"/>
           	<enum name="cancelLocation" value="3"/>
@@ -258,7 +258,7 @@
     </element>
 
     <!-- Error code local value => MAP.asn line 164 -->
-    <element tag="errorCode" description="Error code local value">
+    <element tag="errorCode" coding="V" description="Error code local value">
     		<field name="localValue" type="enumeration" lengthBit="8" description="error code">
             <enum name="unknownSubscriber" value="1"/>
             <enum name="unknownMSC" value="3"/>

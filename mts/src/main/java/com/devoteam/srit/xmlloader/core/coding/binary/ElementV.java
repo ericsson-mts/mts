@@ -52,7 +52,7 @@ public class ElementV extends ElementAbstract
     }
 
 	@Override    
-    public SupArray encodeToArray() 
+    public SupArray encodeToArray() throws Exception
 	{
 		this.subelementsArray = super.encodeToArray();
 

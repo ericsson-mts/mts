@@ -21,8 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.gtp.data;
-
+package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
@@ -37,54 +36,38 @@ import gp.utils.arrays.SupArray;
  *
  * @author Fabien Henry
  */
-public class ElementTLIV extends ElementAbstract
+public class ElementDV extends ElementAbstract
 {
-	
-    public ElementTLIV()
+
+    public ElementDV()
     {
-    	
     }
     
 	@Override
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
-    {
-        this.tag = new Integer08Array(array.subArray(0, 1)).getValue();
-        int length = new Integer16Array(array.subArray(1, 2)).getValue();
-        this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
+	{
         this.fieldsArray = new SupArray();
-        this.subelementsArray = new SupArray();
-        // cas when there are no field
-        if (this.fieldsByName.size() != 0)
-        {
-            this.fieldsArray.addFirst(array.subArray(4, length));
-        }
-        else
-        {
-        	this.subelementsArray.addFirst(array.subArray(4, length));
-        	elements = ElementAbstract.decodeElementsFromArray(this.subelementsArray, dictionary);
-        }
-        return length + 4;
+		int length = new Integer08Array(array.subArray(0, 1)).getValue();
+		this.fieldsArray = new SupArray();
+        this.fieldsArray.addFirst(array.subArray(1, length));
+        return length / 2 + 1;
     }
 
-	@Override
-    public SupArray encodeToArray()  throws Exception
+	@Override    
+    public SupArray encodeToArray() throws Exception
 	{
-		// encode the sub-element
 		this.subelementsArray = super.encodeToArray();
 
+		String digit = getFieldsByName("digits").getValue(this.fieldsArray);
+		int length = digit.length();
+		
         SupArray sup = new SupArray();
-        Integer08Array idArray = new Integer08Array(this.tag);
-        sup.addLast(idArray);
-        Integer16Array lengthArray = new Integer16Array(this.fieldsArray.length + this.subelementsArray.length);
-        sup.addLast(lengthArray);
-	    Integer08Array instancesArray = new Integer08Array(this.instances);
-	    sup.addLast(instancesArray);
-	    
+        Integer08Array lengthArray = new Integer08Array(length);
+    	sup.addLast(lengthArray);
 	    sup.addLast(this.fieldsArray);
 	    sup.addLast(this.subelementsArray);
 	    
         return sup;
     }
 
-    
 }
