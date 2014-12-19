@@ -41,6 +41,7 @@ public class ElementLV extends ElementAbstract
 
     public ElementLV()
     {
+    	this.coding = "LV";
     }
     
 	@Override

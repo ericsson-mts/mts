@@ -41,29 +41,13 @@ public class ElementV extends ElementAbstract
 
     public ElementV()
     {
+    	this.coding = "V";
     }
     
 	@Override
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
 	{
-		/*
-		int length = getLength();
-        if (this.fieldsByName.size() != 0)
-        {
-            this.fieldsArray.addFirst(array);
-        }
-        else
-        {
-        	for (int i)
-        	this.subelementsArray.addFirst(array.subArray(0, length));
-        	elements = ElementAbstract.decodeElementsFromArray(this.subelementsArray, dictionary);
-        }
-       	*/
 		int length = this.getLengthElem() / 8;
-		if (length <= 0)
-		{
-			length = array.length;
-		}
 		if (!this.elements.isEmpty())
 		{
 			length = super.decodeFromArray(array, dictionary);
@@ -73,7 +57,7 @@ public class ElementV extends ElementAbstract
 		if (!this.fieldsByName.isEmpty())
 		{
 	        this.fieldsArray = new SupArray();
-	        this.fieldsArray.addFirst(array);
+	        this.fieldsArray.addFirst(array.subArray(0, length));
 		}
 		return length;
     }

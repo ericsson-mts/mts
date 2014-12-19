@@ -232,32 +232,18 @@ public abstract class ElementAbstract implements Cloneable
         for (Iterator<Element> it = listElement.iterator(); it.hasNext();) 
         {
             Element elemElement = it.next();
-            //if (dictionary  != null)
-            {
-            	if (dictionary != null)
-            	{
-            		subElemDico = dictionary.getElementFromXML(elemElement);
-            		elem = (ElementAbstract) subElemDico.cloneAttribute();
-            	}
-            	else
-            	{
-            		String coding = elemElement.attributeValue("coding");
-            		if ("LV".equals(coding))
-            		{
-            			elem = new ElementLV();
-            		}
-            		else if ("DV".equals(coding))
-            		{
-            			elem = new ElementDV();
-            		}
-            		else
-            		{
-            			elem = new ElementV();
-            		}
-            	}
-            	elem.parseFromXML(elemElement, dictionary, subElemDico);
-            	this.elements.add(elem);
-            }
+        	if (dictionary != null)
+        	{
+        		subElemDico = dictionary.getElementFromXML(elemElement);
+        		elem = (ElementAbstract) subElemDico.cloneAttribute();
+        	}
+        	else
+        	{
+        		String coding = elemElement.attributeValue("coding");            		
+        		elem = ElementAbstract.buildFactory(coding);
+        	}
+        	elem.parseFromXML(elemElement, dictionary, subElemDico);
+        	this.elements.add(elem);
         }
         
     }
