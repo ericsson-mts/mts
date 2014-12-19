@@ -41,6 +41,7 @@ public class ElementDV extends ElementAbstract
 
     public ElementDV()
     {
+    	this.coding = "DV";
     }
     
 	@Override

@@ -407,38 +407,7 @@ public class ASNToXMLConverter
 			return ret;
 		}
 		
-		if (type.equals("byte[]")) 
-		{
-			byte[] bytes = (byte[]) object;
-			// get the element definition (enumeration binary data) from the dictionary
-	    	ElementAbstract elementDico = null;
-	    	if (message != null)
-	    	{
-		    	elementDico = message.getElementFromDico(parentObj, resultPath);
-	    	}
-        	if (elementDico != null)
-        	{
-        		// TODO bug dans la fonction copyToClone() : retourne toujours un IntegerField
-        		// Est ce que c'est réellement un pb ? a voir à l'usage
-        		//ElementSimple binary = new ElementSimple(); 
-        		//binary.copyToClone(binaryDico);
-        		// ElementV binary = (ElementV) elementDico;
-        		Array array = new DefaultArray(bytes);
-        		try
-        		{
-        			elementDico.decodeFromArray(array, null);
-            		String ret = elementDico.fieldsElementsToXml(indent - NUMBER_SPACE_TABULATION);
-            		ret += indent(indent - 2 * NUMBER_SPACE_TABULATION);
-            		return ret;
-        		}
-        		catch (Exception e)
-        		{
-        			// nothing to do
-        		}
-        	}
-        	return Utils.toHexaString(bytes, "");
-		} 
-		else if (type.equals("java.lang.Boolean") || type.equals("boolean")) 
+		if (type.equals("java.lang.Boolean") || type.equals("boolean")) 
 		{
 			
 			return Utils.toStringBoolean((Boolean) object);
@@ -529,6 +498,37 @@ public class ASNToXMLConverter
         	}
         	return "<ObjectIdentifier>" + value + "</ObjectIdentifier>";
 		}
+		else if (type.equals("byte[]")) 
+		{
+			byte[] bytes = (byte[]) object;
+			// get the element definition (enumeration binary data) from the dictionary
+	    	ElementAbstract elementDico = null;
+	    	if (message != null)
+	    	{
+		    	elementDico = message.getElementFromDico(parentObj, resultPath);
+	    	}
+        	if (elementDico != null)
+        	{
+        		// TODO bug dans la fonction copyToClone() : retourne toujours un IntegerField
+        		// Est ce que c'est réellement un pb ? a voir à l'usage
+        		//ElementSimple binary = new ElementSimple(); 
+        		//binary.copyToClone(binaryDico);
+        		// ElementV binary = (ElementV) elementDico;
+        		Array array = new DefaultArray(bytes);
+        		try
+        		{
+        			elementDico.decodeFromArray(array, null);
+            		String ret = elementDico.fieldsElementsToXml(indent - NUMBER_SPACE_TABULATION);
+            		ret += indent(indent - 2 * NUMBER_SPACE_TABULATION);
+            		return ret;
+        		}
+        		catch (Exception e)
+        		{
+        			// nothing to do
+        		}
+        	}
+        	return Utils.toHexaString(bytes, "");
+		} 
 		else if (type.endsWith(".EnumType")) 
 		{
 			ASN1EnumItem enumObj = null;

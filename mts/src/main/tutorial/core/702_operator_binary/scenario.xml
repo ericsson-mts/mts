@@ -144,7 +144,45 @@
             <field name="digits" value="33661307173" type="Number_BCD" lengthBit="0"/>
       </Bytes></msisdn.C2.BoxedType>
    </sm_RP_OA.Choice>
-   <sm_RP_UI.BoxedType><Bytes>11080b913366600567f70000a906f3f97c3e9f03</Bytes></sm_RP_UI.BoxedType>
+   <sm_RP_UI.BoxedType><Bytes>
+      <element tag="Byte1" coding="V" description="First byte of the data" comment="">
+        <field name="TP-RP" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0" type="enumeration" lengthBit="1" description="TP Reply Path"/>
+        <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="enumeration" lengthBit="1" description="TP User Data Header Indicator" comment="Parameter indicating that the TP UD field contains a Header."/>
+        <field name="TP-SRR" value="A status report is not requested:0" type="enumeration" lengthBit="1" description="TP Status Report Request" comment="Parameter indicating if the MS is requesting a status report."/>
+        <field name="TP-VPF" value="TP VP field present - relative format:2" type="enumeration" lengthBit="2" description="TP Validity Period Format" comment="Parameter indicating whether or not the TP VP field is present."/>
+        <field name="TP-RD" value="Instruct the SC to accept duplicates:0" type="enumeration" lengthBit="1" description="TP Reject Duplicates" comment="Parameter indicating whether or not the SC shall accept an SMS SUBMIT for an SM still held in the SC which has the same TP MR and the same TP DA as a previously submitted SM from the same OA."/>
+        <field name="TP-MTI" value="SMS-SUBMIT / SMS-SUBMIT-REPORT:1" type="enumeration" lengthBit="2" description="TP Message Type Indicator" comment="Parameter describing the message type."/>
+      </element>
+      <element tag="TP-MR" coding="V" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT.">
+        <field name="TP-MR" value="8" type="integer" lengthBit="8" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT."/>
+      </element>
+      <element tag="TP-DA" coding="DV" description="TP Destination Address" comment="Address of the destination SME.">
+        <!--field name="length" value="11" type="integer" lengthBit="8" description="length"/-->
+    		<field name="extension" value="no extension:1" type="enumeration" lengthBit="1" description="extension"/>
+        <field name="nature of address" value="international number:1" type="enumeration" lengthBit="3" description="nature of address"/>
+        <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="enumeration" lengthBit="4" description="numbering plan"/>
+        <field name="digits" value="33660650767" type="number_bcd" description="digits"/>
+      </element>
+      <element tag="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any.">
+    		<field name="assignment" value="Assigns bits 0..5 as defined below:0" type="enumeration" lengthBit="2" description="next bits assignment"/>
+    		<field name="telematic interworking" value="no interworking, but SME to SME protocol:0" type="enumeration" lengthBit="1" description="telematic interworking"/>
+    		<field name="telematic devices" value="implicit device type is specific to this SC,:0" type="enumeration" lengthBit="5" description="telematic devices"/>
+      </element>
+      <element tag="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data.">
+    		<field name="Coding Group Bits" value="General Data Coding indication:0" type="enumeration" lengthBit="2" description="Coding Group Bits"/>
+    		<field name="Compression" value="the text is uncompressed:0" type="enumeration" lengthBit="1" description="Compression"/>
+    		<field name="Bit 1 significance" value="bits 1 to 0 are reserved and have no message class meaning:0" type="enumeration" lengthBit="1" description="Bit 1 significance"/>
+    		<field name="Alphabet" value="Default alphabet:0" type="enumeration" lengthBit="2" description="Alphabet"/>
+    		<field name="Message Class" value="Class 0:0" type="enumeration" lengthBit="2" description="Message Class"/>
+      </element>
+      <element tag="TP-VP" coding="V" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid.">
+        <field name="TP-VP" value="169" type="integer" lengthBit="8" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid."/>
+      </element>
+      <element tag="TP-UD" coding="LV" description="TP User Data" comment="">
+        <!--field name="length" value="6" type="integer" lengthBit="8" description="length"/-->
+        <field name="TP-UD" value="ssssss" type="string" lengthBit="0" description=""/>
+      </element>
+   </Bytes></sm_RP_UI.BoxedType>
    <extensionContainer.Sequence>
       <privateExtensionList.C0.BoxedType>
          <Collection>
@@ -166,7 +204,7 @@
    </extensionContainer.Sequence>
    <imsi.BoxedType><Bytes>0412a7e4d2d8403c48e55e751d4f5f5ef0d57a55</Bytes></imsi.BoxedType>
 </Mo_forwardSM_Arg.Sequence>]]></parameter>
-    <parameter name="[asn]" operation="set" value="3081888407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f033048a0443015060901815e230b3468167b04085c922b75c6ded44d300d060301817504063d8915be8dde301c06080182121108472b24041026cf0456a92341cb4a61c30bd6afcda5a10004140412a7e4d2d8403c48e55e751d4f5f5ef0d57a55"/>
+    <parameter name="[asn]" operation="set" value="3081888407913366600567f98207913366317071f3041411080b913366600567f70000a9067373737373733048a0443015060901815e230b3468167b04085c922b75c6ded44d300d060301817504063d8915be8dde301c06080182121108472b24041026cf0456a92341cb4a61c30bd6afcda5a10004140412a7e4d2d8403c48e55e751d4f5f5ef0d57a55"/>
     
     <parameter name="[asnresult]" operation="binary.xmlToAsn" value="[xml]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" value3="map/dictionary_MAP .xml"/>
     <test parameter="[asnresult]" condition="binary.equals" value="[asn]" />

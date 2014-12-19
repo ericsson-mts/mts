@@ -67,6 +67,11 @@ public abstract class FieldAbstract
         {
             this.length = Integer.parseInt(lengthBit);
         }
+        String length = rootXML.attributeValue("length");
+        if (length != null) 
+        {
+            this.length += Integer.parseInt(length) * 8;
+        }
     }
 
     public static FieldAbstract parseFromXML(Element fieldRoot) throws Exception
