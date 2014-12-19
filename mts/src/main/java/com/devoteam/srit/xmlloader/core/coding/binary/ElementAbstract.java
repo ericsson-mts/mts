@@ -265,11 +265,17 @@ public abstract class ElementAbstract implements Cloneable
     public int getLengthElem() 
     {
         int length = 0;
-		Iterator<FieldAbstract> iter = this.fields.iterator();
-		while (iter.hasNext())
+		Iterator<FieldAbstract> iterF = this.fields.iterator();
+		while (iterF.hasNext())
 		{
-			FieldAbstract field = (FieldAbstract) iter.next();
+			FieldAbstract field = (FieldAbstract) iterF.next();
             length += field.length;
+        }		
+		Iterator<ElementAbstract> iterE = this.elements.iterator();
+		while (iterE.hasNext())
+		{
+			ElementAbstract element= (ElementAbstract) iterE.next();
+            length += element.getLengthElem();
         }
         return length;
     }
@@ -335,7 +341,19 @@ public abstract class ElementAbstract implements Cloneable
 	
 	}
     
-    public abstract int decodeFromArray(Array array, Dictionary dictionary) throws Exception;
+    public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
+    {
+		// encode the sub-element
+		Iterator<ElementAbstract> iter = this.elements.iterator();
+		int index = 0;
+		while (iter.hasNext())
+		{
+			ElementAbstract elemInfo = (ElementAbstract) iter.next();
+			Array subArray = array.subArray(index);
+			index += elemInfo.decodeFromArray(subArray, dictionary);
+		}
+		return index;
+    }
     
     public SupArray encodeToArray() throws Exception
     {
@@ -349,7 +367,6 @@ public abstract class ElementAbstract implements Cloneable
 			sup.addLast(array);
 		}
 		return sup;
-
     }
     
     public ElementAbstract cloneAttribute() throws Exception

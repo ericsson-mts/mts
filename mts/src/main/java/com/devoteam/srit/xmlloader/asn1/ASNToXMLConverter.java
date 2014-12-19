@@ -424,15 +424,19 @@ public class ASNToXMLConverter
         		//binary.copyToClone(binaryDico);
         		// ElementV binary = (ElementV) elementDico;
         		Array array = new DefaultArray(bytes);
-        		elementDico.decodeFromArray(array, null);
-        		String ret = elementDico.fieldsElementsToXml(indent - NUMBER_SPACE_TABULATION);
-        		ret += indent(indent - 2 * NUMBER_SPACE_TABULATION);
-        		return ret;
+        		try
+        		{
+        			elementDico.decodeFromArray(array, null);
+            		String ret = elementDico.fieldsElementsToXml(indent - NUMBER_SPACE_TABULATION);
+            		ret += indent(indent - 2 * NUMBER_SPACE_TABULATION);
+            		return ret;
+        		}
+        		catch (Exception e)
+        		{
+        			// nothing to do
+        		}
         	}
-        	else
-        	{
-				return Utils.toHexaString(bytes, "");
-        	}
+        	return Utils.toHexaString(bytes, "");
 		} 
 		else if (type.equals("java.lang.Boolean") || type.equals("boolean")) 
 		{
