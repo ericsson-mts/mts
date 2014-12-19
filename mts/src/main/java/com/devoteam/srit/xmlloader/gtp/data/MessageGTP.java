@@ -289,6 +289,7 @@ public class MessageGTP
 	public String toXml() 
 	{
 	    StringBuilder messageToString = new StringBuilder();
+	    messageToString.append("\n");
 	    messageToString.append(header.toXml());
 	    messageToString.append("\n");
 	
@@ -298,7 +299,7 @@ public class MessageGTP
 	    	while (iter.hasNext())
 	    	{
 	    		ElementAbstract elem = (ElementAbstract) iter.next();
-	    		messageToString.append(elem.toXml());
+	    		messageToString.append(elem.toXml(0));
 	    	}
 	    }
 	    if (this.tpdu != null)

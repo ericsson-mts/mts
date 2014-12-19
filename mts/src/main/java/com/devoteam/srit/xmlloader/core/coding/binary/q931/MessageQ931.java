@@ -208,7 +208,7 @@ public class MessageQ931
 	    while (iter.hasNext())
 	    {
 	    	ElementAbstract elem = (ElementAbstract) iter.next();
-            messageToString.append(elem.toXml());
+            messageToString.append(elem.toXml(0));
         }
         messageToString.append("</ISDN>");
         return messageToString.toString();
