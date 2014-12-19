@@ -45,6 +45,10 @@ public class Dictionary
     private Map<Integer,ElementAbstract> elementsMapByTag = new HashMap<Integer, ElementAbstract>();
     private Map<String,FieldAbstract> fieldsMapHeader = new HashMap<String, FieldAbstract>();
     
+    public Dictionary() 
+    { 
+    }
+    
     public Dictionary(Element root, String syntax) throws Exception 
     {
      
@@ -72,8 +76,7 @@ public class Dictionary
             
             elemInfo.parseFromXML(elem, null, null);
             
-            elementsMapByLabel.put(elemInfo.getLabel(), elemInfo);
-            elementsMapByTag.put(elemInfo.getTag(), elemInfo);
+            addElement(elemInfo);
         }
 
     }
@@ -92,6 +95,18 @@ public class Dictionary
         return elementsMapByLabel.get(label);
     }
 
+    public void addElement(ElementAbstract elemInfo) 
+    {
+        String element = elemInfo.getLabel();
+		String[] initElt = element.split(",");
+		for (int i=0; i < initElt.length; i++)
+		{
+			// elemInfo.setLabel(initElt[i]);
+	    	elementsMapByLabel.put(initElt[i], elemInfo);
+	        elementsMapByTag.put(elemInfo.getTag(), elemInfo);
+		}
+    }
+    
     public FieldAbstract getHeaderFieldByName(String name) 
     {
         return fieldsMapHeader.get(name);

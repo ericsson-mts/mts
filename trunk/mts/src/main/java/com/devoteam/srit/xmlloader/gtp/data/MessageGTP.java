@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.dom4j.Element;
 
 
@@ -261,7 +262,7 @@ public class MessageGTP
 	    }
 	}
 	
-	public Array encodeToArray() 
+	public Array encodeToArray() throws Exception
 	{
 	    SupArray array = new SupArray();
 	    int imsiV1 = 0;
@@ -314,7 +315,8 @@ public class MessageGTP
 		return toXml();
 	}
 	
-	public int getLength() {
+	public int getLength()  throws Exception 
+	{
 	
 	    int msglength = 0;
 	    msglength = header.encodeToArray().length;

@@ -103,9 +103,9 @@ public abstract class ASNMessage
      	return null;
  	}
     
-    public ElementAbstract getBinaryByLabel(String label)
+    public ElementAbstract getElementByLabel(String label)
     {
-    	return this.dictionary.getBinaryByLabel(label);
+    	return this.dictionary.getElementByLabel(label);
     }
     
     public List<Embedded> getEmbeddedByCondition(String condition) 
@@ -130,14 +130,14 @@ public abstract class ASNMessage
 		if (parentObject != null)
 		{
     		String simpleClassName = parentObject.getClass().getSimpleName();
-	    	elementDico = getBinaryByLabel(simpleClassName);
+	    	elementDico = getElementByLabel(simpleClassName);
 		}
     	if (elementDico == null)
     	{
 	    	String pathName = resultPath;
 	    	int pos = resultPath.lastIndexOf('.');
 	    	pathName = resultPath.substring(pos + 1);
-	    	elementDico = getBinaryByLabel(pathName);
+	    	elementDico = getElementByLabel(pathName);
 	    	if (elementDico == null)
 	    	{
 		    	if (pos >= 0)
@@ -148,7 +148,7 @@ public abstract class ASNMessage
 		    			pathName = resultPath.substring(pos + 1);
 		    		}
 		    	}
-		    	elementDico = getBinaryByLabel(pathName);
+		    	elementDico = getElementByLabel(pathName);
 	    	}
 		}
     	return elementDico;

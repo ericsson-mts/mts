@@ -147,7 +147,7 @@ public class MessageQ931
         }
     }
 
-    public Array getValue() 
+    public Array getValue() throws Exception
     {
         SupArray array = new SupArray();
         array.addLast(header.encodeToArray());
@@ -220,7 +220,7 @@ public class MessageQ931
         return header;
     }
 
-    public int getLength() 
+    public int getLength() throws Exception
     {
 
         int msglength = 0;

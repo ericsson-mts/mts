@@ -152,8 +152,17 @@ public class MsgGtp extends Msg
     
     /** Get the data (as binary) of this message */
     @Override    
-    public byte[] getBytesData(){
-    	return message.encodeToArray().getBytes();
+    public byte[] getBytesData()
+    {
+    	try
+    	{
+    		return message.encodeToArray().getBytes();
+    	}
+    	catch (Exception e)
+    	{
+    		// nothing to do
+    	}
+    	return null;
     }
 
     /** Get the XML representation of the message; for the genscript module. */
