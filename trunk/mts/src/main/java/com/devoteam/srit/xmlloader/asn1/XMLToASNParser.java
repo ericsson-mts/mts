@@ -311,8 +311,12 @@ public class XMLToASNParser
         {   
         	value = element.getTextTrim();
         	
-        	String elementName = object.getClass().getSimpleName() + "." + field.getName();
-        	boolean logWarn = !elementName.contains("TransactionID.value") && 
+        	String elementName = object.getClass().getSimpleName();
+        	if (field != null && !"value".equalsIgnoreCase(field.getName()))
+        	{
+        		elementName = elementName + "." + field.getName();
+        	}
+        	boolean logWarn = !elementName.contains("TransactionID") && 
 					  !elementName.equals("Invoke.parameter") &&
 					  !elementName.equals("ReturnResult.parameter") &&
 					  !elementName.equals("ReturnError.parameter");

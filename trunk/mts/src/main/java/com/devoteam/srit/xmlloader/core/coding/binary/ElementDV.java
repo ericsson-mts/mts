@@ -47,10 +47,10 @@ public class ElementDV extends ElementAbstract
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
 	{
         this.fieldsArray = new SupArray();
-		int length = new Integer08Array(array.subArray(0, 1)).getValue();
+		int length = new Integer08Array(array.subArray(0, 1)).getValue() / 2 + 2;
 		this.fieldsArray = new SupArray();
         this.fieldsArray.addFirst(array.subArray(1, length));
-        return length / 2 + 1;
+        return length + 1;
     }
 
 	@Override    

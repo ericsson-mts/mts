@@ -107,14 +107,14 @@
                 		<field name="Compression" value="the text is uncompressed:0" type="enumeration" lengthBit="1" description="Compression"/>
                 		<field name="Bit 1 significance" value="bits 1 to 0 are reserved and have no message class meaning:0" type="enumeration" lengthBit="1" description="Bit 1 significance"/>
                 		<field name="Alphabet" value="Default alphabet:0" type="enumeration" lengthBit="2" description="Alphabet"/>
-                		<field name="Message Class" value="Default alphabet:0" type="enumeration" lengthBit="2" description="Message Class"/>
+                		<field name="Message Class" value="Class 0:0" type="enumeration" lengthBit="2" description="Message Class"/>
                   </element>
                   <element tag="TP-VP" coding="V" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid.">
                     <field name="TP-VP" value="169" type="integer" lengthBit="8" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid."/>
                   </element>
                   <element tag="TP-UD" coding="LV" description="TP User Data" comment="">
                     <!--field name="length" value="6" type="integer" lengthBit="8" description="length"/-->
-                    <field name="SMS text" value="ssssss" type="string" lengthBit="0" description=""/>
+                    <field name="TP-UD" value="ssssss" type="string" lengthBit="0" description=""/>
                   </element>
                   <!--11080b913366600567f70000a906f3f97c3e9f03-->
                 </Bytes></sm_RP_UI.BoxedType>-->
@@ -233,6 +233,13 @@
     <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
     <test parameter="[data1]" condition="binary.equals" value="[data]"/>
     
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_UI.BoxedType&gt;&lt;Bytes&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;element tag=&quot;Byte1:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-RP&quot; value=&quot;TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-RP&quot; value=&quot;TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/sm_RP_UI.BoxedType&gt;"/>
+
     <!-- Message encoded value -->
     <parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
     <parameter name="[length]" operation="string.length" value="[data]"/>
@@ -242,7 +249,7 @@
     </receiveMessageSIGTRAN>
 	
     <test parameter="[data1]" condition="binary.equals" value="[data]"/>
-
+    
     <!-- remove pb of TIME_WAIT state -->
     <!--closeChannelSIGTRAN name="channel"/-->
                 
