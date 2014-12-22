@@ -55,12 +55,13 @@ public class EnumStringField extends IntegerField
 	
 	public EnumStringField() 
     {
+		super();
     }
 
     public EnumStringField(Element rootXML) 
     {
         super(rootXML);
-        
+		
         List<Element> list = rootXML.elements("enum");
         for (Element elemEnum : list) 
         {
@@ -76,6 +77,7 @@ public class EnumStringField extends IntegerField
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this.offset = offset;
+    	this.length = array.length;
     	Array valueArray = new DefaultArray(value.getBytes());
     	super.setValueFromArray( valueArray, offset, array);
     }

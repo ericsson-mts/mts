@@ -41,11 +41,12 @@ public class LengthStringField extends FieldAbstract
 
 	public LengthStringField() 
     {
+		super();
     }
 	
 	public LengthStringField(Element rootXML) 
     {
-        super(rootXML);      
+        super(rootXML);
     }
 
     @Override

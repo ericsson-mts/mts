@@ -47,21 +47,30 @@ public abstract class FieldAbstract
 	}
 
 	protected String name;
-    protected int length;
+    protected int length = Integer.MIN_VALUE;
+
+	public int getLength() 
+	{
+		if (this.length >= 0)
+		{
+			return length;
+		}
+		return 0;
+	}
 
 	protected int offset;
 
     public FieldAbstract() 
     {
     	this.name = "";
-    	this.length = 0;
+    	this.length = Integer.MIN_VALUE;
     	this.offset = 0;
 	}
 
     public FieldAbstract(Element rootXML) 
     {
-        name = rootXML.attributeValue("name");
-        this.length = 0;
+    	this();
+        this.name = rootXML.attributeValue("name");
         String lengthBit = rootXML.attributeValue("lengthBit");
         if (lengthBit != null) 
         {
@@ -70,7 +79,7 @@ public abstract class FieldAbstract
         String length = rootXML.attributeValue("length");
         if (length != null) 
         {
-            this.length += Integer.parseInt(length) * 8;
+            this.length = Integer.parseInt(length) * 8;
         }
     }
 
@@ -157,22 +166,36 @@ public abstract class FieldAbstract
         elemString.append(ASNToXMLConverter.indent(indent));
         elemString.append("<field ");
         elemString.append("name=\"" + this.name + "\" ");
+        String strVal = null;
         try
         {
-        	elemString.append("value=\"" + this.getValue(array) + "\" ");
+        	strVal = this.getValue(array);
         }
         catch (Exception e)
         {
         	// GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Exception in toString() method for field " + this._name);
         	// nothing to do 
         }
+        elemString.append("value=\"" + strVal + "\" ");
         String type = this.getClass().getSimpleName().split("Field")[0];
         if ("NumberBCD".equalsIgnoreCase(type))
         {
         	type = "Number_BCD";
         }
         elemString.append("type=\"" + type + "\" ");
-        elemString.append("lengthBit=\"" + this.length + "\" ");
+        int intLen = this.length;
+        if (intLen <= 0)
+        { 
+        	intLen = strVal.length() * 8;
+        }
+        if (intLen % 8 == 0)
+        {
+        	elemString.append("length=\"" + intLen / 8 + "\" ");
+        }
+        else
+        {
+        	elemString.append("lengthBit=\"" + intLen + "\" ");
+        }
         elemString.append("/>\n");
         return elemString.toString();
     }
@@ -191,7 +214,7 @@ public abstract class FieldAbstract
 
     protected void setValueFromArray(Array valueArray, int offset, SupArray array)
     {
-		if (length == 0)
+    	if (this.length < 0)
 		{
 			array.addLast(valueArray);
 		}
@@ -205,6 +228,8 @@ public abstract class FieldAbstract
 	    		array.set(pos, bytes[i] & 0xff);
 	    	}	
 		}
+    	this.offset = offset; 
+    	//this.length = valueArray.length * 8;
     }
     
     protected void setValueFromBytes(byte[] values, int offset, SupArray array)
@@ -232,13 +257,17 @@ public abstract class FieldAbstract
     }
 
     // do not use experimental for development
+    /*
 	public void setName(String name) {
 		this.name = name;
 	}
+	*/
 
     // do not use experimental for development
+	/*
 	public void setLength(int length) {
 		this.length = length;
 	}
+	*/
 
 }

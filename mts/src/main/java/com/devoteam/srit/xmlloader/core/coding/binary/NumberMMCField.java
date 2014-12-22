@@ -41,6 +41,8 @@ public class NumberMMCField extends FieldAbstract
 {
 	public NumberMMCField() 
     {
+		super();
+        this.length = 3 * 8;
     }
 	
     public NumberMMCField(Element rootXML) 

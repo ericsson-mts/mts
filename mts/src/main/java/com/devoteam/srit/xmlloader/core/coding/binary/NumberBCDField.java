@@ -42,6 +42,7 @@ public class NumberBCDField extends FieldAbstract
 	
 	public NumberBCDField()
     {
+		super();
     }
 	
 	public NumberBCDField(Element rootXML) 

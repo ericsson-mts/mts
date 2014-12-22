@@ -58,6 +58,7 @@ public class EnumLongField extends IntegerField
 	
 	public EnumLongField() 
     {
+		super();
     }
 
     public EnumLongField(Element rootXML) 

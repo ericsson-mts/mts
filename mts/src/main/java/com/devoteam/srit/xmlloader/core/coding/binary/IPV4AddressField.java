@@ -42,6 +42,8 @@ public class IPV4AddressField extends FieldAbstract
 	
 	public IPV4AddressField() 
     {
+		super();
+        this.length = 4 * 8;
     }
 	
     public IPV4AddressField(Element rootXML) 
