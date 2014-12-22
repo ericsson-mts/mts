@@ -245,6 +245,11 @@ public abstract class ElementAbstract implements Cloneable
         	}
         	elem.parseFromXML(elemElement, dictionary, subElemDico);
         	this.elements.add(elem);
+        	// case when we parse the dictionary itself or an unknown element of the dictionary
+        	if (subElemDico == null)
+        	{
+        		dictionary.addElement(elem);
+        	}
         }
         
     }
@@ -337,12 +342,6 @@ public abstract class ElementAbstract implements Cloneable
 		{
 			ElementAbstract elemInfo = (ElementAbstract) iter.next();
 			int length = elemInfo.getLengthElem() /8;
-			/*
-			if (length < array.length)
-			{
-				length = array.length;
-			}
-			*/
 			Array subArray = array.subArray(index, length);
 			index += elemInfo.decodeFromArray(subArray, dictionary);
 		}

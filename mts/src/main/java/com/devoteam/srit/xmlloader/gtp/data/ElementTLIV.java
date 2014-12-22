@@ -51,15 +51,17 @@ public class ElementTLIV extends ElementAbstract
         this.tag = new Integer08Array(array.subArray(0, 1)).getValue();
         int length = new Integer16Array(array.subArray(1, 2)).getValue();
         this.instances = new Integer08Array(array.subArray(3, 1)).getValue();
-        this.fieldsArray = new SupArray();
-        this.subelementsArray = new SupArray();
-        // cas when there are no field
-        if (this.fieldsByName.size() != 0)
+        
+        // cas when there are some sub fields
+        if (!this.fieldsByName.isEmpty())
         {
+            this.fieldsArray = new SupArray();
             this.fieldsArray.addFirst(array.subArray(4, length));
         }
-        else
+        // cas when there are some sub elements
+        else if (!this.elements.isEmpty())
         {
+            this.subelementsArray = new SupArray();
         	this.subelementsArray.addFirst(array.subArray(4, length));
         	elements = ElementAbstract.decodeElementsFromArray(this.subelementsArray, dictionary);
         }

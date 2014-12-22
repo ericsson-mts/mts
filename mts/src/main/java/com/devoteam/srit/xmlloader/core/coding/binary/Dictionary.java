@@ -74,7 +74,7 @@ public class Dictionary
             	elemInfo = ElementAbstract.buildFactory(coding);
             }
             
-            elemInfo.parseFromXML(elem, null, null);
+            elemInfo.parseFromXML(elem, this, null);
             
             addElement(elemInfo);
         }
@@ -97,15 +97,17 @@ public class Dictionary
 
     public void addElement(ElementAbstract elemInfo) 
     {
-        String element = elemInfo.getLabel();
-		String[] initElt = element.split(",");
-		for (int i=0; i < initElt.length; i++)
-		{
-			// elemInfo.setLabel(initElt[i]);
-	    	elementsMapByLabel.put(initElt[i], elemInfo);
-	        elementsMapByTag.put(elemInfo.getTag(), elemInfo);
-		}
-		
+        String eltLabel = elemInfo.getLabel();
+        if (eltLabel != null)
+        {
+			String[] initElt = eltLabel.split(",");
+			for (int i=0; i < initElt.length; i++)
+			{
+				// elemInfo.setLabel(initElt[i]);
+		    	elementsMapByLabel.put(initElt[i], elemInfo);
+		        elementsMapByTag.put(elemInfo.getTag(), elemInfo);
+			}
+        }
     }
     
     public FieldAbstract getHeaderFieldByName(String name) 

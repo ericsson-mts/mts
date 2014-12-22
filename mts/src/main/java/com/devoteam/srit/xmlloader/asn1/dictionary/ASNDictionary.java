@@ -98,7 +98,7 @@ public class ASNDictionary extends Dictionary
         {
         	String coding = elem.attributeValue("coding");
         	ElementAbstract elemInfo = ElementAbstract.buildFactory(coding);            
-            elemInfo.parseFromXML(elem, null, null);
+            elemInfo.parseFromXML(elem, this, null);
             addElement(elemInfo);
         }
 
