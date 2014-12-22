@@ -23,10 +23,8 @@
 
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -34,7 +32,6 @@ import gp.utils.arrays.SupArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +42,7 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class EnumStringField extends IntegerField
+public class EnumStringField extends StringField
 {
 	
     private Map<String, String> labelsByValue = new HashMap<String, String>();
