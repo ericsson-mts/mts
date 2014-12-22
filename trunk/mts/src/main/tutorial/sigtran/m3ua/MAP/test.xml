@@ -8,7 +8,7 @@
     <!--parameter name="[localHostM3UA]" operation="set" value="164.48.85.81"/-->
     <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortM3UA]" operation="number.add" value="[localPortM3UA]" value2="20000"/>
+    <parameter name="[localPortM3UA]" operation="number.add" value="[localPortM3UA]" value2="10000"/>
     <parameter name="[localPortM3UA]" operation="set" value="[localPortM3UA]" description="local port of the MTS host" editable="true" />
     <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>	
     
@@ -60,6 +60,9 @@
     </testcase>
     
     <testcase name="801_Mobicent_simulator" description="test sigtran MAP" state="true">
+        <parameter name="[smsText]" operation="set" value="ssssss"/>
+        <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]"/>
+
         <scenario name="client" file="801_Mobicent_simulator/client.xml" routingName="client"/>
         <scenario name="server" file="801_Mobicent_simulator/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>

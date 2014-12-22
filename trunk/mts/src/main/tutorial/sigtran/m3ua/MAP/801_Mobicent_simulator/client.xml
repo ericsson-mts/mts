@@ -112,7 +112,7 @@
                     <field name="TP-VP" value="169" type="integer" length="1" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid."/>
                   </element>
                   <element name="TP-UD" coding="LV" description="TP User Data" comment="">
-                    <field name="TP-UD" value="737373737373" type="binary" description=""/>
+                    <field name="TP-UD" value="[smsBinary]" type="binary" description=""/>
                   </element>
                 </Bytes></sm_RP_UI.BoxedType>-->
                 <!--extensionContainer.Sequence>
@@ -233,7 +233,7 @@
     <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_UI.BoxedType&gt;&lt;Bytes&gt;"/>
 
-    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;Byte1:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;Byte1&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-RP&quot; value=&quot;TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-UDHI&quot; value=&quot;The TP UD field contains only the short message:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-SRR&quot; value=&quot;A status report is not requested:0&quot;"/>
@@ -242,24 +242,24 @@
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-MTI&quot; value=&quot;SMS-SUBMIT / SMS-SUBMIT-REPORT:1&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
-    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-MR:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-MR&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-MR&quot; value=&quot;8&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
-    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-DA:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-DA&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;extension&quot; value=&quot;no extension:1&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;nature of address&quot; value=&quot;international number:1&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;numbering plan&quot; value=&quot;ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;digits&quot; value=&quot;33660650767&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
-    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-PID:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-PID&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;assignment&quot; value=&quot;Assigns bits 0..5 as defined below:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;telematic interworking&quot; value=&quot;no interworking, but SME to SME protocol:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;telematic devices&quot; value=&quot;implicit device type is specific to this SC,:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
-    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-DCS:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-DCS&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Coding Group Bits&quot; value=&quot;General Data Coding indication:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Compression&quot; value=&quot;the text is uncompressed:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Bit 1 significance&quot; value=&quot;bits 1 to 0 are reserved and have no message class meaning:0&quot;"/>
@@ -267,12 +267,12 @@
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Message Class&quot; value=&quot;Class 0:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
-    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-VP:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-VP&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-VP&quot; value=&quot;169&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
-    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-UD:0&quot;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-UD&quot; value=&quot;737373737373&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-UD&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-UD&quot; value=&quot;[smsBinary]&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
     <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/sm_RP_UI.BoxedType&gt;"/>
