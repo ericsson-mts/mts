@@ -105,6 +105,7 @@ public class Dictionary
 	    	elementsMapByLabel.put(initElt[i], elemInfo);
 	        elementsMapByTag.put(elemInfo.getTag(), elemInfo);
 		}
+		
     }
     
     public FieldAbstract getHeaderFieldByName(String name) 
@@ -120,7 +121,14 @@ public class Dictionary
         {
         	tag = elementRoot.attributeValue("tag");
         }
-        tag = tag.trim();
+        if (tag == null)
+        {
+        	tag = elementRoot.attributeValue("name");
+        }
+        if (tag != null)
+        {
+        	tag = tag.trim();
+        }
         
         ElementAbstract elemDico = getElementFromTag(tag);
         // the element is present in the dictionary

@@ -118,7 +118,7 @@
     
     <!-- International Subscriber Distinguish Name (ISDN) adress string => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 456 -->
     <!-- Service Centre Address (similar to Address string) => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 456 -->
-    <element tag="ISDN_AddressString,ServiceCentreAddress" coding="V" description="International Mobile Subscriber Identity address string, Service Centre Address">
+    <element name="ISDN_AddressString,ServiceCentreAddress" coding="V" description="International Mobile Subscriber Identity address string, Service Centre Address">
     		<field name="extension" type="enumeration" lengthBit="1" description="extension">
             <enum name="extension" value="0"/>
             <enum name="no extension" value="1"/>
@@ -150,29 +150,29 @@
     </element>
 
     <!-- International Mobile Subscriber Identity => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 448 -->
-    <element tag="IMSI" coding="V" description="International Mobile Subscriber Identity">
+    <element name="IMSI" coding="V" description="International Mobile Subscriber Identity">
         <field name="digits" type="number_bcd" description="digits"/>
     </element>
 
     <!-- International Mobile Station equipment Identity => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 449 -->
-    <element tag="IMEI" coding="V" description="International Mobile Station equipment Identity">
+    <element name="IMEI" coding="V" description="International Mobile Station equipment Identity">
         <field name="digits" type="number_bcd" description="digits"/>
     </element>
 
     <!-- Temporary Mobile Subscriber Identity => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 449 -->
-    <element tag="TMSI" coding="V" description="Temporary Mobile Subscriber Identity">
+    <element name="TMSI" coding="V" description="Temporary Mobile Subscriber Identity">
         <field name="digits" type="binary" description="digits"/>
     </element>
     
     <!-- Local Mobile Station Identity => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 449 -->
-    <element tag="LMSI" coding="V" description="Local Mobile Station Identity">
+    <element name="LMSI" coding="V" description="Local Mobile Station Identity">
         <field name="digits" type="binary" description="digits"/>
     </element>
 
     <!-- sm-RP-UI : SMS-DELIVER => 3GPP TS 03.40 V7.5.0 chapter 9.2.2.1 page 37  -->
     <!-- sm-RP-UI : SMS-DELIVER => 3GPP TS 23.040 V12.2.2 chapter 9.2.2.1 page 50 -->
-    <element tag="Sm_RP_UI" coding="V" description="sm-RP-UI_SMS-SUBMIT/REPORT">
-        <element tag="Byte1" coding="V" description="First byte of the data" comment="">
+    <element name="Sm_RP_UI" coding="V" description="sm-RP-UI_SMS-SUBMIT/REPORT">
+        <element name="Byte1" coding="V" description="First byte of the data" comment="">
             <field name="TP-RP" type="enumeration" lengthBit="1" description="TP Reply Path" comment="Parameter indicating that Reply Path exists.">
               <enum name="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER" value="0"/>
               <enum name="TP Reply Path parameter is set in this SMS SUBMIT/DELIVER" value="1"/>
@@ -202,10 +202,10 @@
               <enum name="Reserved" value="3"/>
             </field>
         </element>
-        <element tag="TP-MR" coding="V" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT.">
+        <element name="TP-MR" coding="V" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT.">
             <field name="TP-MR" type="integer" length="1" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT."/>
         </element>
-        <element tag="TP-DA" coding="DV" description="TP Destination Address" comment="Address of the destination SME.">
+        <element name="TP-DA" coding="DV" description="TP Destination Address" comment="Address of the destination SME.">
       		<field name="extension" type="enumeration" lengthBit="1" description="extension">
               <enum name="extension" value="0"/>
               <enum name="no extension" value="1"/>
@@ -235,7 +235,7 @@
           </field>
           <field name="digits" type="number_bcd" description="digits"/>
         </element>
-        <element tag="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any.">
+        <element name="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any.">
       		<field name="assignment" type="enumeration" lengthBit="2" description="next bits assignment">
               <enum name="Assigns bits 0..5 as defined below" value="0"/>
               <enum name="Assigns bits 0..5 as defined below" value="1"/>
@@ -270,7 +270,7 @@
               <enum name="A GSM mobile station." value="31" comment="The SC converts the SM from the received 	TP Data Coding Scheme to any data coding scheme supported by that MS (e.g. the default)."/>              
           </field>
         </element>
-        <element tag="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data.">
+        <element name="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data.">
       		<field name="Coding Group Bits" type="enumeration" lengthBit="2" description="Coding Group Bits">
               <enum name="General Data Coding indication" value="0" description="b00"/>
               <enum name="Reserved coding groups" value="1-2" description="b01-b10"/>
@@ -297,16 +297,16 @@
               <enum name="Class 3   Default meaning: TE specific" value="3" comment="(see GSM TS 07.05 [8])"/>
           </field>
         </element>
-        <element tag="TP-VP" coding="V" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid.">        
+        <element name="TP-VP" coding="V" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid.">        
             <field name="TP-VP" type="integer" length="1" description="TP User Data" comment=""/>
         </element>
-        <element tag="TP-UD" coding="LV" description="TP User Data" comment="">
-          <field name="TP-UD" type="string" lengthBit="0" description="extension"/>
+        <element name="TP-UD" coding="LV" description="TP User Data" comment="">
+          <field name="TP-UD" type="binary" description="extension"/>
         </element>
     </element>
     
     <!-- Operation code local value => MAP.asn line 76 -->
-    <element tag="opCode.localValue" coding="V" description="Operation code local value">
+    <element name="opCode.localValue" coding="V" description="Operation code local value">
     		<field name="localValue" type="enumeration" length="1" description="operation code">
             <enum name="updateLocation" value="2"/>
           	<enum name="cancelLocation" value="3"/>
@@ -393,7 +393,7 @@
     </element>
 
     <!-- Error code local value => MAP.asn line 164 -->
-    <element tag="errorCode.localValue" coding="V" description="Error code local value">
+    <element name="errorCode.localValue" coding="V" description="Error code local value">
     		<field name="localValue" type="enumeration" length="1" description="error code">
             <enum name="unknownSubscriber" value="1"/>
             <enum name="unknownMSC" value="3"/>

@@ -54,7 +54,7 @@ public abstract class ElementAbstract implements Cloneable
 {
     protected String coding;
 	
-    protected int tag;
+    protected int tag = Integer.MIN_VALUE;
 
     protected String label;
 
@@ -475,13 +475,22 @@ public abstract class ElementAbstract implements Cloneable
         StringBuilder elemString = new StringBuilder();
         elemString.append(ASNToXMLConverter.indent(indent));
         elemString.append("<element ");
-        elemString.append("tag=\"");
-    	if (this.label != null)
-    	{
-    		elemString.append(this.label + ":");
-    	}
-    	elemString.append(this.tag);
-    	elemString.append("\"");
+        if (this.tag >= 0)
+        {
+	        elemString.append("name=\"");
+	    	if (this.label != null)
+	    	{
+	    		elemString.append(this.label + ":");
+	    	}
+	    	elemString.append(this.tag);
+	    	elemString.append("\"");
+        }
+        else
+        {
+	        elemString.append("name=\"");
+	    	elemString.append(this.label);
+	    	elemString.append("\"");        	
+        }
     	elemString.append(" instances=\"");
    		elemString.append(this.instances);
     	elemString.append("\"");
