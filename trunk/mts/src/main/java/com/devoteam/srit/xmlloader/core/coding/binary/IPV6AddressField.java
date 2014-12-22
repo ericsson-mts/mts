@@ -42,12 +42,14 @@ public class IPV6AddressField extends FieldAbstract
 	
 	public IPV6AddressField() 
     {
+		super();
+		this.length = 16 * 8;
     }
 	
 	public IPV6AddressField(Element rootXML) 
     {
         super(rootXML);
-        this.length = 16 * 8;
+		this.length = 16 * 8;
     }
 
     @Override

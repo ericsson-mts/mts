@@ -38,6 +38,7 @@ public class StringField extends FieldAbstract
 	
 	public StringField()
     {
+		super();
     }
 	
     public StringField(Element rootXML) 

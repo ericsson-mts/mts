@@ -43,11 +43,12 @@ public class Length2StringField extends FieldAbstract
     
 	public Length2StringField() 
     {
+		super();
     }
 	
 	public Length2StringField(Element rootXML) 
     {
-        super(rootXML);   
+        super(rootXML);
     }
 
     @Override

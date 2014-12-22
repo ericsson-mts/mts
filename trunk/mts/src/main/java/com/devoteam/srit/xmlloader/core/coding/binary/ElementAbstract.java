@@ -58,7 +58,6 @@ public abstract class ElementAbstract implements Cloneable
 
     protected String label;
 
-	// protected int spare;
 	protected int instances;
 
     protected LinkedHashMap<String, FieldAbstract> fieldsByName = new LinkedHashMap<String, FieldAbstract>();
@@ -183,6 +182,7 @@ public abstract class ElementAbstract implements Cloneable
         
         // initiate the Array containing the fields
         SupArray tempArray = new SupArray();
+        
         Array emptyArray = new DefaultArray(getLengthElem() / 8);
         tempArray.addFirst(emptyArray);
        	this.fieldsArray = tempArray;
@@ -209,8 +209,9 @@ public abstract class ElementAbstract implements Cloneable
             	{
             		field.setOffset(offset);
             	}
-		        int length = field.length;
-		        if (length != 0)
+		        int length = field.getLength();
+		        /// TODO revoir ce truc bizzaroide
+		        if (length > 0)
 		        {
 			        offset += length;
 		        }
@@ -255,7 +256,7 @@ public abstract class ElementAbstract implements Cloneable
 		while (iterF.hasNext())
 		{
 			FieldAbstract field = (FieldAbstract) iterF.next();
-            length += field.length;
+            length += field.getLength();
         }		
 		Iterator<ElementAbstract> iterE = this.elements.iterator();
 		while (iterE.hasNext())
@@ -335,7 +336,14 @@ public abstract class ElementAbstract implements Cloneable
 		while (iter.hasNext())
 		{
 			ElementAbstract elemInfo = (ElementAbstract) iter.next();
-			Array subArray = array.subArray(index);
+			int length = elemInfo.getLengthElem() /8;
+			/*
+			if (length < array.length)
+			{
+				length = array.length;
+			}
+			*/
+			Array subArray = array.subArray(index, length);
 			index += elemInfo.decodeFromArray(subArray, dictionary);
 		}
 		return index;

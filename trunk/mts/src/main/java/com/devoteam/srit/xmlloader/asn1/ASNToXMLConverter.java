@@ -517,7 +517,7 @@ public class ASNToXMLConverter
         		Array array = new DefaultArray(bytes);
         		try
         		{
-        			elementDico.decodeFromArray(array, null);
+        			elementDico.decodeFromArray(array, message.dictionary);
             		String ret = elementDico.fieldsElementsToXml(indent - NUMBER_SPACE_TABULATION);
             		ret += indent(indent - 2 * NUMBER_SPACE_TABULATION);
             		return ret;

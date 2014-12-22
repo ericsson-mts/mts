@@ -40,20 +40,22 @@ public class BinaryField extends FieldAbstract
 	
 	public BinaryField()
     {
+		super();
     }
 	
     public BinaryField(Element rootXML) throws Exception 
     {
         super(rootXML);
+        /*
         if (this.length % 8 != 0) {
             throw new ExecutionException("Wrong length for binary field : \"" + this.name + "\"");
         }
+        */
     }
 
     @Override
     public void setValue(String value, int offset, SupArray array) 
     {
-    	this.offset = offset;    	
         Array valueArray = Array.fromHexString(value);	
         super.setValueFromArray( valueArray, offset, array);
     }
