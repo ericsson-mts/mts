@@ -79,7 +79,7 @@
                    <!--noSM_RP_OA.C5></noSM_RP_OA.C5-->
                 </sm_RP_OA.Choice>
                 <sm_RP_UI.BoxedType><Bytes>
-                  <element tag="Byte1" coding="V" description="First byte of the data" comment="">
+                  <element name="Byte1" coding="V" description="First byte of the data" comment="">
                     <field name="TP-RP" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0" type="enumeration" lengthBit="1" description="TP Reply Path"/>
                     <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="enumeration" lengthBit="1" description="TP User Data Header Indicator" comment="Parameter indicating that the TP UD field contains a Header."/>
                     <field name="TP-SRR" value="A status report is not requested:0" type="enumeration" lengthBit="1" description="TP Status Report Request" comment="Parameter indicating if the MS is requesting a status report."/>
@@ -87,32 +87,32 @@
                     <field name="TP-RD" value="Instruct the SC to accept duplicates:0" type="enumeration" lengthBit="1" description="TP Reject Duplicates" comment="Parameter indicating whether or not the SC shall accept an SMS SUBMIT for an SM still held in the SC which has the same TP MR and the same TP DA as a previously submitted SM from the same OA."/>
                     <field name="TP-MTI" value="SMS-SUBMIT / SMS-SUBMIT-REPORT:1" type="enumeration" lengthBit="2" description="TP Message Type Indicator" comment="Parameter describing the message type."/>
                   </element>
-                  <element tag="TP-MR" coding="V" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT.">
+                  <element name="TP-MR" coding="V" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT.">
                     <field name="TP-MR" value="8" type="integer" length="1" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT."/>
                   </element>
-                  <element tag="TP-DA" coding="DV" description="TP Destination Address" comment="Address of the destination SME.">
+                  <element name="TP-DA" coding="DV" description="TP Destination Address" comment="Address of the destination SME.">
                 		<field name="extension" value="no extension:1" type="enumeration" lengthBit="1" description="extension"/>
                     <field name="nature of address" value="international number:1" type="enumeration" lengthBit="3" description="nature of address"/>
                     <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="enumeration" lengthBit="4" description="numbering plan"/>
                     <field name="digits" value="33660650767" type="number_bcd" description="digits"/>
                   </element>
-                  <element tag="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any.">
+                  <element name="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any.">
                 		<field name="assignment" value="Assigns bits 0..5 as defined below:0" type="enumeration" lengthBit="2" description="next bits assignment"/>
                 		<field name="telematic interworking" value="no interworking, but SME to SME protocol:0" type="enumeration" lengthBit="1" description="telematic interworking"/>
                 		<field name="telematic devices" value="implicit device type is specific to this SC,:0" type="enumeration" lengthBit="5" description="telematic devices"/>
                   </element>
-                  <element tag="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data.">
+                  <element name="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data.">
                 		<field name="Coding Group Bits" value="General Data Coding indication:0" type="enumeration" lengthBit="2" description="Coding Group Bits"/>
                 		<field name="Compression" value="the text is uncompressed:0" type="enumeration" lengthBit="1" description="Compression"/>
                 		<field name="Bit 1 significance" value="bits 1 to 0 are reserved and have no message class meaning:0" type="enumeration" lengthBit="1" description="Bit 1 significance"/>
                 		<field name="Alphabet" value="Default alphabet:0" type="enumeration" lengthBit="2" description="Alphabet"/>
                 		<field name="Message Class" value="Class 0:0" type="enumeration" lengthBit="2" description="Message Class"/>
                   </element>
-                  <element tag="TP-VP" coding="V" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid.">
+                  <element name="TP-VP" coding="V" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid.">
                     <field name="TP-VP" value="169" type="integer" length="1" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid."/>
                   </element>
-                  <element tag="TP-UD" coding="LV" description="TP User Data" comment="">
-                    <field name="TP-UD" value="ssssss" type="string" description=""/>
+                  <element name="TP-UD" coding="LV" description="TP User Data" comment="">
+                    <field name="TP-UD" value="737373737373" type="binary" description=""/>
                   </element>
                 </Bytes></sm_RP_UI.BoxedType>-->
                 <!--extensionContainer.Sequence>
@@ -232,9 +232,49 @@
     
     <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_UI.BoxedType&gt;&lt;Bytes&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;element tag=&quot;Byte1:0&quot;"/>
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;Byte1:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-RP&quot; value=&quot;TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0&quot;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-RP&quot; value=&quot;TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-UDHI&quot; value=&quot;The TP UD field contains only the short message:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-SRR&quot; value=&quot;A status report is not requested:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-VPF&quot; value=&quot;TP VP field present - relative format:2&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-RD&quot; value=&quot;Instruct the SC to accept duplicates:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-MTI&quot; value=&quot;SMS-SUBMIT / SMS-SUBMIT-REPORT:1&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-MR:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-MR&quot; value=&quot;8&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-DA:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;extension&quot; value=&quot;no extension:1&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;nature of address&quot; value=&quot;international number:1&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;numbering plan&quot; value=&quot;ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;digits&quot; value=&quot;33660650767&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-PID:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;assignment&quot; value=&quot;Assigns bits 0..5 as defined below:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;telematic interworking&quot; value=&quot;no interworking, but SME to SME protocol:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;telematic devices&quot; value=&quot;implicit device type is specific to this SC,:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-DCS:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Coding Group Bits&quot; value=&quot;General Data Coding indication:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Compression&quot; value=&quot;the text is uncompressed:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Bit 1 significance&quot; value=&quot;bits 1 to 0 are reserved and have no message class meaning:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Alphabet&quot; value=&quot;Default alphabet:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Message Class&quot; value=&quot;Class 0:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-VP:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-VP&quot; value=&quot;169&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-UD:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-UD&quot; value=&quot;737373737373&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
+
     <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/sm_RP_UI.BoxedType&gt;"/>
 
     <!-- Message encoded value -->

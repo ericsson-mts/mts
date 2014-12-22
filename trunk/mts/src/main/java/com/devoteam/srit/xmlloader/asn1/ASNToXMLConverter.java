@@ -501,6 +501,9 @@ public class ASNToXMLConverter
 		else if (type.equals("byte[]")) 
 		{
 			byte[] bytes = (byte[]) object;
+			
+			String ret = Utils.toHexaString(bytes, "");
+			
 			// get the element definition (enumeration binary data) from the dictionary
 	    	ElementAbstract elementDico = null;
 	    	if (message != null)
@@ -518,16 +521,15 @@ public class ASNToXMLConverter
         		try
         		{
         			elementDico.decodeFromArray(array, message.dictionary);
-            		String ret = elementDico.fieldsElementsToXml(indent - NUMBER_SPACE_TABULATION);
+            		ret += elementDico.fieldsElementsToXml(indent - NUMBER_SPACE_TABULATION);
             		ret += indent(indent - 2 * NUMBER_SPACE_TABULATION);
-            		return ret;
         		}
         		catch (Exception e)
         		{
         			// nothing to do
         		}
         	}
-        	return Utils.toHexaString(bytes, "");
+        	return ret;
 		} 
 		else if (type.endsWith(".EnumType")) 
 		{
