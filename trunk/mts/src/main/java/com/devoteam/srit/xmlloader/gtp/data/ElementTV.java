@@ -48,8 +48,9 @@ public class ElementTV extends ElementAbstract
     {
         this.tag = new Integer08Array(array.subArray(0, 1)).getValue();
         int length = getLengthElem() / 8;
-        this.fieldsArray = new SupArray();
-        this.fieldsArray.addFirst(array.subArray(1, length));
+        
+        Array data = array.subArray(1, length);
+        decodeFieldsTagElementsFromArray(data, dictionary);
         
         return length + 1;
     }

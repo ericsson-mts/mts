@@ -48,11 +48,14 @@ public class ElementQ931Big extends ElementAbstract
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
 	{
         this.tag = new Integer08Array(array.subArray(0, 1)).getValue();
-        if (this.fieldsByName.size() >= 1)
+        
+        if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
         {
         	int length = new Integer16Array(array.subArray(1, 2)).getValue();
-            this.fieldsArray = new SupArray();
-            this.fieldsArray.addFirst(array.subArray(3, length));
+        	
+            Array data = array.subArray(3, length);
+            decodeFieldsTagElementsFromArray(data, dictionary);
+
             return length + 3;
         }
         
