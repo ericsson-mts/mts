@@ -103,7 +103,7 @@ public class MessageQ931
         this.header.decodeFromArray(data, syntax, dictionary);
 
         // does not work like with GTP why ?
-        this.elements = ElementAbstract.decodeElementsFromArray(data.subArray(header.getLength()), this.dictionary);
+        this.elements = ElementAbstract.decodeTagElementsFromArray(data.subArray(header.getLength()), this.dictionary);
     }
 
     /** Get a parameter from the message */

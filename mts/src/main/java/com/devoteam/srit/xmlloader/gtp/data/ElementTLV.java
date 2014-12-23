@@ -55,15 +55,19 @@ public class ElementTLV extends ElementAbstract
     	if (this.tag == 141)
     	{
     		length = new Integer08Array(array.subArray(1, 1)).getValue();
-    		this.fieldsArray = new SupArray();
-            this.fieldsArray.addFirst(array.subArray(2, length));
+    		
+            Array data = array.subArray(2, length);
+            decodeFieldsTagElementsFromArray(data, dictionary);
+
             return length + 2;
     	}
     	else
     	{
     		length = new Integer16Array(array.subArray(1, 2)).getValue();
-    		this.fieldsArray = new SupArray();
-            this.fieldsArray.addFirst(array.subArray(3, length));
+    		
+            Array data = array.subArray(3, length);
+            decodeFieldsTagElementsFromArray(data, dictionary);
+
             return length + 3;
     	}
     }

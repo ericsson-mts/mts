@@ -306,7 +306,10 @@ public abstract class ElementAbstract implements Cloneable
     	return null;
     }
 
-	public static List<ElementAbstract> decodeElementsFromArray(Array data, Dictionary dictionary) throws Exception 
+    /*
+     * Decode the sub-element for element starting with the tag (ElementT*)
+     */
+	public static List<ElementAbstract> decodeTagElementsFromArray(Array data, Dictionary dictionary) throws Exception 
 	{
 		List<ElementAbstract> elements = new ArrayList<ElementAbstract>();
 	    int offset = 0;
@@ -332,7 +335,54 @@ public abstract class ElementAbstract implements Cloneable
 	    return elements;
 	
 	}
+
+	/*
+     * Decode the fields and sub-element for elements starting with the tag (ElementT*)
+     */
+	public void decodeFieldsTagElementsFromArray(Array data, Dictionary dictionary) throws Exception 
+	{
+	    // cas when there are some sub fields
+	    if (!this.fieldsByName.isEmpty())
+	    {
+	        this.fieldsArray = new SupArray();
+	        this.fieldsArray.addFirst(data);
+	    }
+	    // cas when there are some sub elements
+	    else if (!this.elements.isEmpty())
+	    {
+	        this.subelementsArray = new SupArray();
+	    	this.subelementsArray.addFirst(data);
+	    	this.elements = ElementAbstract.decodeTagElementsFromArray(this.subelementsArray, dictionary);
+	    }
+	}
+
+	/*
+     * Decode the fields and sub-element for elements not starting with the tag
+     */
+    public int decodeFieldsNotTagElementsFromArray(Array array, Dictionary dictionary) throws Exception
+	{
+		if (!this.elements.isEmpty())
+		{
+			int length = this.decodeFromArray(array, dictionary);
+			this.subelementsArray = new SupArray();
+	        this.subelementsArray.addFirst(array.subArray(0, length));
+	        return length;
+		}
+		else if (!this.fieldsByName.isEmpty())
+		{
+			int length = this.getLengthElem() / 8;
+			if (length < array.length)
+			{
+				length = array.length;
+			}
+	        this.fieldsArray = new SupArray();
+	        this.fieldsArray.addFirst(array.subArray(0, length));
+	        return length;
+		}
+		return 0;
+	}
     
+    //public int decodeElementsFromArray(Array array, Dictionary dictionary) throws Exception
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
     {
 		// encode the sub-element
@@ -341,7 +391,7 @@ public abstract class ElementAbstract implements Cloneable
 		while (iter.hasNext())
 		{
 			ElementAbstract elemInfo = (ElementAbstract) iter.next();
-			int length = elemInfo.getLengthElem() /8;
+			int length = elemInfo.getLengthElem() / 8;
 			Array subArray = array.subArray(index, length);
 			index += elemInfo.decodeFromArray(subArray, dictionary);
 		}
