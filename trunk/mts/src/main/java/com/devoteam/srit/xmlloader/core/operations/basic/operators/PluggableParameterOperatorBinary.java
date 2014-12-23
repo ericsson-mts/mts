@@ -203,10 +203,23 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 }
                 else if (name.equals(NAME_BIN_SUBBINARY))
                 {
+                	Array arrayValue = Array.fromHexString(param_1.get(i).toString());
+                	
                     int offset = Integer.valueOf(assertAndGetParameter(operands, "value2").get(i).toString()).intValue();
-                    int length = Integer.valueOf(assertAndGetParameter(operands, "value3").get(i).toString()).intValue();
+                    
+                    Parameter paramLength = operands.get("value3");
+                    int length;
+                    if (paramLength != null)
+                    {
+                    	length = Integer.valueOf(paramLength.get(i).toString()).intValue();
+                    }
+                    else
+                    {
+                    	length = arrayValue.length - offset;
+                    }
+                  
 
-                    result.add(Array.toHexString(Array.fromHexString(param_1.get(i).toString()).subArray(offset, length)));
+                    result.add(Array.toHexString(arrayValue.subArray(offset, length)));
                 }
                 else if (name.equals(NAME_BIN_RANDOM))
                 {
@@ -464,6 +477,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     
                     Parameter param_3 = assertAndGetParameter(operands, "value3");
                     String dictionary = param_3.get(i).toString().replace(" ", "");
+                    
                     
                     Class thisClass = Class.forName(className);
                     int pos = className.lastIndexOf('.');
