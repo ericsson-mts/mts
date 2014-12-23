@@ -35,9 +35,13 @@
     <parameter name="[result5]" operation="binary.subbinary"  value="3132333431323334" value2="5" value3="2"/>
     <test parameter="[result5]" condition="binary.equals"     value="3233"/>
 
-    <parameter name="[result]"  operation="binary.random" value="8"/>
-    <parameter name="[result6]" operation="set" value="09d81fa8" />
-
+    <parameter name="[result6]" operation="binary.subbinary"  value="3132333431323334" value2="3"/>
+    <test parameter="[result6]" condition="binary.equals"     value="3431323334"/>
+    
+    <parameter name="[result7]"  operation="binary.random" value="8"/>
+    <parameter name="[result7Length]" operation="binary.length"    value="[result7]"/>
+    <test parameter="[result7Length]" condition="number.equals"     value="8"/>
+    
     <parameter name="[secret]" operation="string.tobinary" value="0123456789012345"/>
     <parameter name="[data]"   operation="string.tobinary" value="myDatas"/>
     <!-- do some padding to datas; need a multiple of 16 bytes -->
@@ -74,8 +78,12 @@
     <test parameter="[statPopular]" condition="binary.equals"     value="f9"/>
     <parameter name="[statPopular]" operation="binary.statMaxFreq" value="[binary]"/>
     <test parameter="[statPopular]" condition="number.equals" value="0.181818"/>
-    <parameter name="[binarytonumber]" operation="binary.toNumber" value="[result6]" />
+    
+    <parameter name="[binary]" operation="set" value="09d81fa8" />
+    <test parameter="[binary]" condition="binary.equals" value="09d81fa8" />
+    <parameter name="[binarytonumber]" operation="binary.toNumber" value="[binary]" />
     <test parameter="[binarytonumber]" condition="number.equals" value="165158824" />
+    
     
     <parameter name="[binaryfromip]" operation="binary.fromIp" value="172.6.21.112" />
     <test parameter="[binaryfromip]" condition="string.equals" value="ac061570" />
