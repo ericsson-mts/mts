@@ -36,10 +36,10 @@ import gp.utils.arrays.SupArray;
  *
  * @author Fabien Henry
  */
-public class ElementDV extends ElementAbstract
+public class ElementDigitV extends ElementAbstract
 {
 
-    public ElementDV()
+    public ElementDigitV()
     {
     	this.coding = "DV";
     }

@@ -32,7 +32,7 @@ import org.dom4j.Element;
 import com.devoteam.srit.xmlloader.core.coding.binary.BooleanField;
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
-import com.devoteam.srit.xmlloader.core.coding.binary.ElementV;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementValue;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
 import com.devoteam.srit.xmlloader.core.coding.binary.IntegerField;
 import com.devoteam.srit.xmlloader.core.coding.binary.NumberBCDField;

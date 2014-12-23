@@ -93,15 +93,15 @@ public abstract class ElementAbstract implements Cloneable
 		}
 		else if ("V".equals(coding))
 		{
-			newElement = new ElementV();
+			newElement = new ElementValue();
 		}
 		else if ("LV".equals(coding))
 		{
-			newElement = new ElementLV();
+			newElement = new ElementLengthV();
 		}
 		else if ("DV".equals(coding))
 		{
-			newElement = new ElementDV();
+			newElement = new ElementDigitV();
 		}
 		else
 		{
