@@ -363,7 +363,7 @@ public abstract class ElementAbstract implements Cloneable
 	{
 		if (!this.elements.isEmpty())
 		{
-			int length = this.decodeFromArray(array, dictionary);
+			int length = this.decodeNotTagElementsFromArray(array, dictionary);
 			this.subelementsArray = new SupArray();
 	        this.subelementsArray.addFirst(array.subArray(0, length));
 	        return length;
@@ -382,8 +382,7 @@ public abstract class ElementAbstract implements Cloneable
 		return 0;
 	}
     
-    //public int decodeElementsFromArray(Array array, Dictionary dictionary) throws Exception
-    public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
+    public int decodeNotTagElementsFromArray(Array array, Dictionary dictionary) throws Exception
     {
 		// encode the sub-element
 		Iterator<ElementAbstract> iter = this.elements.iterator();
@@ -397,6 +396,8 @@ public abstract class ElementAbstract implements Cloneable
 		}
 		return index;
     }
+    
+    public abstract int decodeFromArray(Array array, Dictionary dictionary) throws Exception;
     
     public SupArray encodeToArray() throws Exception
     {
