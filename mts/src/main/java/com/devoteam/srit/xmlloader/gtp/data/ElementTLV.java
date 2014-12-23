@@ -73,26 +73,30 @@ public class ElementTLV extends ElementAbstract
     }
 
 	@Override
-    public SupArray encodeToArray() 
+    public SupArray encodeToArray() throws Exception
 	{
+		this.subelementsArray = super.encodeToArray();
+		
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.tag);
         sup.addLast(idArray);
         /**
          * SPECIAL CASE FOR GTPv1 I.E 141 ExtensionHeaderTypeList => length of length field is 1 byte and not 2.
          */
+        int length = this.fieldsArray.length + this.subelementsArray.length;
         if (this.tag == 141)
         {
-        	Integer08Array lengthArray = new Integer08Array(this.fieldsArray.length);
+        	Integer08Array lengthArray = new Integer08Array(length);
         	sup.addLast(lengthArray);
         }
         else
         {
-        	Integer16Array lengthArray = new Integer16Array(this.fieldsArray.length);
+        	Integer16Array lengthArray = new Integer16Array(length);
         	sup.addLast(lengthArray);
         }
 		
-	    sup.addLast(this.fieldsArray);
+        sup.addLast(this.fieldsArray);
+	    sup.addLast(this.subelementsArray);
 	    
         return sup;
     }

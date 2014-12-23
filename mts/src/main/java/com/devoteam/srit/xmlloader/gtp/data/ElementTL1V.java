@@ -33,15 +33,21 @@ public class ElementTL1V extends ElementAbstract {
     }
 
 	@Override
-    public SupArray encodeToArray() 
+    public SupArray encodeToArray() throws Exception 
 	{
+		// encode the sub-element
+		this.subelementsArray = super.encodeToArray();
+		
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.tag);
         sup.addLast(idArray);
-       	Integer08Array lengthArray = new Integer08Array(this.fieldsArray.length);
+        
+        int length = this.fieldsArray.length + this.subelementsArray.length;
+       	Integer08Array lengthArray = new Integer08Array(length);
        	sup.addLast(lengthArray);
 
-	    sup.addLast(this.fieldsArray);
+       	sup.addLast(this.fieldsArray);
+	    sup.addLast(this.subelementsArray);
 	    
         return sup;
     }

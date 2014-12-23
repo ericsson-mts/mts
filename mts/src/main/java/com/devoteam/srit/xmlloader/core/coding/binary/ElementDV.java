@@ -65,7 +65,8 @@ public class ElementDV extends ElementAbstract
         SupArray sup = new SupArray();
         Integer08Array lengthArray = new Integer08Array(length);
     	sup.addLast(lengthArray);
-	    sup.addLast(this.fieldsArray);
+	    
+    	sup.addLast(this.fieldsArray);
 	    sup.addLast(this.subelementsArray);
 	    
         return sup;
