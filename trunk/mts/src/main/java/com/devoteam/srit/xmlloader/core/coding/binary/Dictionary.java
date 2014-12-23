@@ -74,7 +74,7 @@ public class Dictionary
             	elemInfo = ElementAbstract.buildFactory(coding);
             }
             
-            elemInfo.parseFromXML(elem, this, null);
+            elemInfo.parseFromXML(elem, this, null, true);
             
             addElement(elemInfo);
         }

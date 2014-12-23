@@ -2,25 +2,27 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
 <scenario>
+
+    <parameter name="[remotePortSIP]" operation="set" value="[Port-User1]"/>
+        
+    <createListenpointSIP name="[scenarioName]" localHost="[localHostSIP]" localPort="[Port-User2]" transport="[Transport]"/>
     
     <!-- receive RP-DATA -->
 		<receiveMessageSIP name="Wait MESSAGE" request="true" type="MESSAGE">
     		<parameter name="[to]" operation="protocol.setFromMessage" value="header.To"/>
-    		<parameter name="[from]" operation="protocol.setFromMessage" value="header.From"/>
-    		<parameter name="[callId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    		<parameter name="[toURI]" operation="setFromMessage" value="header.To.Address.URI"/>
+        <parameter name="[fromHost]" operation="setFromMessage" value="header.From.Address.URI.host"/>
+        <parameter name="[fromPort]" operation="setFromMessage" value="header.From.Address.URI.port"/>
+        <parameter name="[from]" operation="protocol.setFromMessage" value="header.From"/>
+    		<parameter name="[fromURI]" operation="protocol.setFromMessage" value="header.From.Address.URI"/>
+        <parameter name="[callId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
     		<parameter name="[cSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
     		<parameter name="[via]" operation="protocol.setFromMessage" value="header.Via"/>
         <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
 		</receiveMessageSIP>
-    
-    <!--parameter name="[xmlresult]" operation="binary.asnToXml" value="[content]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" /-->
         
-    <parameter name="[binMAPMessage]" operation="set" value="010807913366317071f307913366600567f706f3f97c3e9f03"/>
-    <parameter name="[content]" operation="string.toBinary" value="[content]"/>
-    <!--test parameter="[content]" condition="binary.equals" value="[binMAPMessage]"/-->
-    
     <parameter name="[localTag]" operation="string.random" value="10"/>
-		<sendMessageSIP name="Send 202 Accepted">
+		<sendMessageSIP name="Send 202 Accepted" listenpoint="[scenarioName]">
 <![CDATA[SIP/2.0 202 Accepted
 To: [to];tag=[localTag]
 From: [from]
@@ -32,30 +34,28 @@ Content-Length: 0
     </sendMessageSIP>
     
     <!-- send RP-ACK -->
-    <parameter name="[binMAPMessage]" operation="set" value="0300"/>
+    <parameter name="[binMAPMessage]" operation="set" value="020b41020000"/>
     <!-- send RP-ERROR -->
     <!--parameter name="[binMAPMessage]" operation="set" value="0408016F"/-->
     <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/> 
 
-    <parameter name="[inviteeName1]" operation="set" value="+46708000708"/>
-    <parameter name="[105_DOMAIN_ADDR]" operation="set" value="com4innov.com"/>
-    <parameter name="[clientName]" operation="set" value="+33638060004"/>
+    <parameter name="[inviteeName1]" operation="set" value="[MSISDN-User1]"/>
+    <parameter name="[clientName]" operation="set" value="[MSISDN-User2]"/>
     <parameter name="[localTag]" operation="string.random" value="10"/>
     <parameter name="[newBranchId]" operation="string.random" value="10"/>
     <parameter name="[newCallId]" operation="number.random" value="10000000"/>
     <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
 
-		<sendMessageSIP name="Send MESSAGE" destScenario="alice">
-<![CDATA[MESSAGE sip:[clientName]@[105_DOMAIN_ADDR] SIP/2.0
-To: sip:[clientName]@[105_DOMAIN_ADDR]
-From: "[inviteeName1]" <tel:[inviteeName1]>;tag=[localTag]
-Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
+		<sendMessageSIP name="Send MESSAGE" listenpoint="[scenarioName]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+<![CDATA[MESSAGE [fromURI] SIP/2.0
+To: [fromURI]
+From: [toURI];tag=[localTag]
+Via: SIP/2.0/[transportResponse] [remoteHostSIP]:[Port-User2];branch=z9hG4bK[newBranchId];id=[clientName]
 Call-ID: [newCallId]
 CSeq: [newCseqNumber] MESSAGE
-Contact: <sip:[inviteeName1]@[localSIP]>
+Contact: <sip:[inviteeName1]@[localHostSIP]:[Port-User2]>
 Max-Forwards: 70
 User-Agent: MTS v6.0.3_beta : Multiprotocol Test Suite
-Route: <sip:[remoteSIP];transport=[transportRequest];lr>
 Expires: 0
 Content-Type: application/vnd.3gpp.sms
 Content-Length: x

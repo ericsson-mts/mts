@@ -144,8 +144,18 @@
     </testcase>
 
     <testcase description="test sip" name="105_message_SMSoIP" state="true">
-        <scenario file="105_sip_message_SMSoIP/UAC.xml" name="alice" routingName="alice"/>
-        <scenario file="105_sip_message_SMSoIP/UAS.xml" name="bob" routingName="bob"/>
+      	<parameter name="[Port-User1]" operation="set" value="7072" description="User 1 port" editable="true" />
+      	<parameter name="[Port-User2]" operation="set" value="7074" description="User 2 port" editable="true" />
+        
+        <parameter name="[ISIM_DOMAIN_ADDR]" operation="set" value="com4innov.com" description="domaine name" editable="true" />
+        <parameter name="[MSISDN-User1]" operation="set" value="+33638060000" description="User 1 MSISDN" editable="true" />
+       	<parameter name="[MSISDN-User2]" operation="set" value="+33638060002" description="User 2 MSISDN" editable="true" />
+
+        <parameter name="[remotePortSIP]" operation="set" value="[Port-User2]"/>
+        <parameter name="[Transport]" operation="set" value="[transportRequest]"/>
+
+        <scenario file="105_sip_message_SMSoIP/UAC.xml" name="alice" routingName="[Port-User1]"/>
+        <scenario file="105_sip_message_SMSoIP/UAS.xml" name="bob" routingName="[Port-User2]"/>
     </testcase>
 
     <testcase description="test sip" name="105_message_digest" state="true">
