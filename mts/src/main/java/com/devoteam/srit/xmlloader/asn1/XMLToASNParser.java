@@ -309,8 +309,6 @@ public class XMLToASNParser
         }
         else if (type.equals("byte[]")) 
         {   
-        	value = element.getTextTrim();
-        	
         	String elementName = object.getClass().getSimpleName();
         	if (field != null && !"value".equalsIgnoreCase(field.getName()))
         	{
@@ -321,28 +319,25 @@ public class XMLToASNParser
 					  !elementName.equals("ReturnResult.parameter") &&
 					  !elementName.equals("ReturnError.parameter");
 
-        	if (value == null || value.length() <= 0)
+        	// get the element definition (enumeration binary data) from the dictionary
+        	ElementAbstract elementDico = null;
+        	if (message != null)
         	{
-	        	// get the element definition (enumeration binary data) from the dictionary
-	        	ElementAbstract elementDico = null;
-	        	if (message != null)
-	        	{
-	    	    	elementDico = message.getElementFromDico(object, resultPath);
-	        	}
-	        	//if (elementDico == null && logWarn)
-	        	if (elementDico == null && logWarn)
-	        	{
-	        		GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, null, 
-	        			"The ASN1 element \"" + elementName + "\" is not defined into the dictionary to analyze the received messages more finely.");
-	        	}
-	
-	    		ElementAbstract elmt = new ElementValue();
-	        	elmt.parseFromXML(element, message.dictionary, elementDico);
-	        	Array array = elmt.encodeToArray();
-	        	if (array.length > 0)
-	        	{
-	        		return array.getBytes();
-	        	}
+    	    	elementDico = message.getElementFromDico(object, resultPath);
+        	}
+        	//if (elementDico == null && logWarn)
+        	if (elementDico == null && logWarn)
+        	{
+        		GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, null, 
+        			"The ASN1 element \"" + elementName + "\" is not defined into the dictionary to analyze the received messages more finely.");
+        	}
+
+    		ElementAbstract elmt = new ElementValue();
+        	elmt.parseFromXML(element, message.dictionary, elementDico, false);
+        	Array array = elmt.encodeToArray();
+        	if (array.length > 0)
+        	{
+        		return array.getBytes();
         	}
         	
         	if (logWarn)
@@ -353,7 +348,7 @@ public class XMLToASNParser
         	// not defined as a list of XML <field> tag
         	value = element.getTextTrim();
         	byte[] bytes = Utils.parseBinaryString("h" + value);
-    		Array array = new DefaultArray(bytes);
+    		array = new DefaultArray(bytes);
     		value = Array.toHexString(array);
     		value = processEnumString(resultPath, message, object, value);
     		array = Array.fromHexString(value);

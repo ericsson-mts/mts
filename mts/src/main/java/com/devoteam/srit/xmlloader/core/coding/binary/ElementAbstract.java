@@ -114,7 +114,7 @@ public abstract class ElementAbstract implements Cloneable
 		return newElement;
     }
     
-    public void parseFromXML(Element elementRoot, Dictionary dictionary, ElementAbstract elemDico) throws Exception 
+    public void parseFromXML(Element elementRoot, Dictionary dictionary, ElementAbstract elemDico, boolean parseDico) throws Exception 
     {
         //si non present dans le dico on parse le fichier xml
     	if (elemDico == null)
@@ -246,10 +246,10 @@ public abstract class ElementAbstract implements Cloneable
         		String coding = elemElement.attributeValue("coding");            		
         		elem = ElementAbstract.buildFactory(coding);
         	}
-        	elem.parseFromXML(elemElement, dictionary, subElemDico);
+        	elem.parseFromXML(elemElement, dictionary, subElemDico, parseDico);
         	this.elements.add(elem);
-        	// case when we parse the dictionary itself or an unknown element of the dictionary
-        	if (subElemDico == null)
+        	// case when we parse the dictionary itself
+        	if (parseDico)
         	{
         		dictionary.addElement(elem);
         	}

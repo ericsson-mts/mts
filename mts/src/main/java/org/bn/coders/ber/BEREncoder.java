@@ -209,7 +209,7 @@ public class BEREncoder<T> extends Encoder<T> {
         resultSize += sizeOfString;
         CoderUtils.checkConstraints(sizeOfString,elementInfo);
         resultSize += encodeLength(sizeOfString, stream);
-        // FHModif : set the ElementType to EllementType.Constructed for embedded objects
+        // FHModif : set the ElementType to ElementType.Constructed for embedded objects
         String type = null;
         if ((elementInfo != null) && (elementInfo.getPreparedInstance() != null) &&
         	(elementInfo.getPreparedInstance().getClass() != null))
