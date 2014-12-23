@@ -23,10 +23,10 @@
 
 package com.devoteam.srit.xmlloader.asn1;
 
+import com.devoteam.srit.xmlloader.asn1.data.ElementValue;
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
-import com.devoteam.srit.xmlloader.core.coding.binary.ElementValue;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumStringField;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;

@@ -24,6 +24,9 @@
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import com.devoteam.srit.xmlloader.asn1.ASNToXMLConverter;
+import com.devoteam.srit.xmlloader.asn1.data.ElementDigitV;
+import com.devoteam.srit.xmlloader.asn1.data.ElementLengthV;
+import com.devoteam.srit.xmlloader.asn1.data.ElementValue;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.ElementQ931;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
