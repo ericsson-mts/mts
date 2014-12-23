@@ -129,88 +129,68 @@
     <parameter name="[xml]" operation="set">
 <![CDATA[<Mo_forwardSM_Arg.Sequence>
    <sm_RP_DA.Choice>
-      <serviceCentreAddressDA.C4.BoxedType><Bytes>
-            <field name="extension" value="no extension:1" type="Enumeration" lengthBit="1"/>
-            <field name="nature of address" value="international number:1" type="Enumeration" lengthBit="3"/>
-            <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="Enumeration" lengthBit="4"/>
-            <field name="digits" value="33660650769" type="Number_BCD" lengthBit="0"/>      
+      <serviceCentreAddressDA.C4.BoxedType><Bytes>913366600567f9
+            <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
+            <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
+            <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
+            <field name="digits" value="33660650769" type="Number_BCD" length="11"/>      
       </Bytes></serviceCentreAddressDA.C4.BoxedType>
    </sm_RP_DA.Choice>
    <sm_RP_OA.Choice>
-      <msisdn.C2.BoxedType><Bytes>
-            <field name="extension" value="no extension:1" type="Enumeration" lengthBit="1"/>
-            <field name="nature of address" value="international number:1" type="Enumeration" lengthBit="3"/>
-            <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="Enumeration" lengthBit="4"/>
-            <field name="digits" value="33661307173" type="Number_BCD" lengthBit="0"/>
+      <msisdn.C2.BoxedType><Bytes>913366317071f3
+            <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
+            <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
+            <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
+            <field name="digits" value="33661307173" type="Number_BCD" length="11"/>
       </Bytes></msisdn.C2.BoxedType>
    </sm_RP_OA.Choice>
-   <sm_RP_UI.BoxedType><Bytes>
-      <element tag="Byte1" coding="V" description="First byte of the data" comment="">
-        <field name="TP-RP" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0" type="enumeration" lengthBit="1" description="TP Reply Path"/>
-        <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="enumeration" lengthBit="1" description="TP User Data Header Indicator" comment="Parameter indicating that the TP UD field contains a Header."/>
-        <field name="TP-SRR" value="A status report is not requested:0" type="enumeration" lengthBit="1" description="TP Status Report Request" comment="Parameter indicating if the MS is requesting a status report."/>
-        <field name="TP-VPF" value="TP VP field present - relative format:2" type="enumeration" lengthBit="2" description="TP Validity Period Format" comment="Parameter indicating whether or not the TP VP field is present."/>
-        <field name="TP-RD" value="Instruct the SC to accept duplicates:0" type="enumeration" lengthBit="1" description="TP Reject Duplicates" comment="Parameter indicating whether or not the SC shall accept an SMS SUBMIT for an SM still held in the SC which has the same TP MR and the same TP DA as a previously submitted SM from the same OA."/>
-        <field name="TP-MTI" value="SMS-SUBMIT / SMS-SUBMIT-REPORT:1" type="enumeration" lengthBit="2" description="TP Message Type Indicator" comment="Parameter describing the message type."/>
+   <sm_RP_UI.BoxedType><Bytes>11080b913366600567f70000a906737373737373
+      <element name="Byte1" coding="V" value="11">
+        <field name="TP-RP" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0" type="EnumLong" lengthBit="1"/>
+        <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="EnumLong" lengthBit="1"/>
+        <field name="TP-SRR" value="A status report is not requested:0" type="EnumLong" lengthBit="1"/>
+        <field name="TP-VPF" value="TP VP field present - relative format:2" type="EnumLong" lengthBit="2"/>
+        <field name="TP-RD" value="Instruct the SC to accept duplicates:0" type="EnumLong" lengthBit="1"/>
+        <field name="TP-MTI" value="SMS-SUBMIT / SMS-SUBMIT-REPORT:1" type="EnumLong" lengthBit="2"/>
       </element>
-      <element tag="TP-MR" coding="V" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT.">
-        <field name="TP-MR" value="8" type="integer" lengthBit="8" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT."/>
+      <element name="TP-MR" coding="V" value="08">
+        <field name="TP-MR" value="8" type="Integer" length="1"/>
       </element>
-      <element tag="TP-DA" coding="DV" description="TP Destination Address" comment="Address of the destination SME.">
-        <!--field name="length" value="11" type="integer" lengthBit="8" description="length"/-->
-    		<field name="extension" value="no extension:1" type="enumeration" lengthBit="1" description="extension"/>
-        <field name="nature of address" value="international number:1" type="enumeration" lengthBit="3" description="nature of address"/>
-        <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="enumeration" lengthBit="4" description="numbering plan"/>
-        <field name="digits" value="33660650767" type="number_bcd" description="digits"/>
+      <element name="TP-DA" coding="DV" value="913366600567f7">
+        <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
+        <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
+        <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
+        <field name="digits" value="33660650767" type="Number_BCD" length="11"/>
       </element>
-      <element tag="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any.">
-    		<field name="assignment" value="Assigns bits 0..5 as defined below:0" type="enumeration" lengthBit="2" description="next bits assignment"/>
-    		<field name="telematic interworking" value="no interworking, but SME to SME protocol:0" type="enumeration" lengthBit="1" description="telematic interworking"/>
-    		<field name="telematic devices" value="implicit device type is specific to this SC,:0" type="enumeration" lengthBit="5" description="telematic devices"/>
+      <element name="TP-PID" coding="V" value="00">
+        <field name="assignment" value="Assigns bits 0..5 as defined below:0" type="EnumLong" lengthBit="2"/>
+        <field name="telematic interworking" value="no interworking, but SME to SME protocol:0" type="EnumLong" lengthBit="1"/>
+        <field name="telematic devices" value="implicit device type is specific to this SC,:0" type="EnumLong" lengthBit="5"/>
       </element>
-      <element tag="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data.">
-    		<field name="Coding Group Bits" value="General Data Coding indication:0" type="enumeration" lengthBit="2" description="Coding Group Bits"/>
-    		<field name="Compression" value="the text is uncompressed:0" type="enumeration" lengthBit="1" description="Compression"/>
-    		<field name="Bit 1 significance" value="bits 1 to 0 are reserved and have no message class meaning:0" type="enumeration" lengthBit="1" description="Bit 1 significance"/>
-    		<field name="Alphabet" value="Default alphabet:0" type="enumeration" lengthBit="2" description="Alphabet"/>
-    		<field name="Message Class" value="Class 0:0" type="enumeration" lengthBit="2" description="Message Class"/>
+      <element name="TP-DCS" coding="V" value="00">
+        <field name="Coding Group Bits" value="General Data Coding indication:0" type="EnumLong" lengthBit="2"/>
+        <field name="Compression" value="the text is uncompressed:0" type="EnumLong" lengthBit="1"/>
+        <field name="Bit 1 significance" value="bits 1 to 0 are reserved and have no message class meaning:0" type="EnumLong" lengthBit="1"/>
+        <field name="Alphabet" value="Default alphabet:0" type="EnumLong" lengthBit="2"/>
+        <field name="Message Class" value="Class 0:0" type="EnumLong" lengthBit="2"/>
       </element>
-      <element tag="TP-VP" coding="V" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid.">
-        <field name="TP-VP" value="169" type="integer" lengthBit="8" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid."/>
+      <element name="TP-VP" coding="V" value="a9">
+        <field name="TP-VP" value="169" type="Integer" length="1"/>
       </element>
-      <element tag="TP-UD" coding="LV" description="TP User Data" comment="">
-        <!--field name="length" value="6" type="integer" lengthBit="8" description="length"/-->
-        <field name="TP-UD" value="ssssss" type="string" lengthBit="0" description=""/>
+      <element name="TP-UD" coding="LV" value="737373737373">
+        <field name="TP-UD" value="737373737373" type="Binary" length="12"/>
       </element>
    </Bytes></sm_RP_UI.BoxedType>
-   <extensionContainer.Sequence>
-      <privateExtensionList.C0.BoxedType>
-         <Collection>
-            <PrivateExtension.Sequence>
-               <extId><ObjectIdentifier>0.1.222.35.11.52.104.22.123</ObjectIdentifier></extId>
-               <extType>04085c922b75c6ded44d</extType>
-            </PrivateExtension.Sequence>
-            <PrivateExtension.Sequence>
-               <extId><ObjectIdentifier>0.1.245</ObjectIdentifier></extId>
-               <extType>04063d8915be8dde</extType>
-            </PrivateExtension.Sequence>
-            <PrivateExtension.Sequence>
-               <extId><ObjectIdentifier>0.1.274.17.8.71.43.36</ObjectIdentifier></extId>
-               <extType>041026cf0456a92341cb4a61c30bd6afcda5</extType>
-            </PrivateExtension.Sequence>
-        </Collection>
-      </privateExtensionList.C0.BoxedType>
-      <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
-   </extensionContainer.Sequence>
-   <imsi.BoxedType><Bytes>0412a7e4d2d8403c48e55e751d4f5f5ef0d57a55</Bytes></imsi.BoxedType>
 </Mo_forwardSM_Arg.Sequence>]]></parameter>
-    <parameter name="[asn]" operation="set" value="3081888407913366600567f98207913366317071f3041411080b913366600567f70000a9067373737373733048a0443015060901815e230b3468167b04085c922b75c6ded44d300d060301817504063d8915be8dde301c06080182121108472b24041026cf0456a92341cb4a61c30bd6afcda5a10004140412a7e4d2d8403c48e55e751d4f5f5ef0d57a55"/>
+    <parameter name="[asn]" operation="set" value="30288407913366600567f98207913366317071f3041411080b913366600567f70000a906737373737373"/>
     
     <parameter name="[asnresult]" operation="binary.xmlToAsn" value="[xml]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" value3="map/dictionary_MAP .xml"/>
     <test parameter="[asnresult]" condition="binary.equals" value="[asn]" />
     <parameter name="[xmlresult]" operation="binary.asnToXml" value="[asn]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" value3="map/dictionary_MAP.xml"/>
     <parameter name="[xml]" operation="string.regexReplaces" value="[xml]" value2=" " value3=""/>
+    <parameter name="[xml]" operation="string.trim" value="[xml]"/>
     <parameter name="[xmlresult]" operation="string.regexReplaces" value="[xmlresult]" value2=" " value3=""/>
+    <parameter name="[xmlresult]" operation="string.trim" value="[xmlresult]"/>
     <test parameter="[xmlresult]" condition="string.equals" value="[xml]" />
     
 </scenario>

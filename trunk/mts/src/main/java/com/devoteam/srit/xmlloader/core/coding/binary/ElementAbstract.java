@@ -544,9 +544,12 @@ public abstract class ElementAbstract implements Cloneable
 	    	elemString.append(this.label);
 	    	elemString.append("\"");        	
         }
-    	elemString.append(" instances=\"");
-   		elemString.append(this.instances);
-    	elemString.append("\"");
+        if (this.instances != 0)
+        {
+	    	elemString.append(" instances=\"");
+	   		elemString.append(this.instances);
+	    	elemString.append("\"");
+        }
     	elemString.append(" coding=\"");
    		elemString.append(this.coding);
     	elemString.append("\"");
