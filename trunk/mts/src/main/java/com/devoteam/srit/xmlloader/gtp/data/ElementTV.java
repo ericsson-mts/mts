@@ -56,13 +56,17 @@ public class ElementTV extends ElementAbstract
     }
 
 	@Override
-    public SupArray encodeToArray() 
+    public SupArray encodeToArray() throws Exception
 	{
+		// encode the sub-element
+		this.subelementsArray = super.encodeToArray();
+		
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.tag);
         sup.addLast(idArray);
         
 		sup.addLast(fieldsArray);
+		sup.addLast(this.subelementsArray);
 		
         return sup;
     }

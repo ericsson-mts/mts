@@ -63,21 +63,24 @@ public class ElementQ931Big extends ElementAbstract
     }
 
 	@Override    
-    public SupArray encodeToArray() 
+    public SupArray encodeToArray() throws Exception
 	{
+		// encode the sub-element
+		this.subelementsArray = super.encodeToArray();
+
 
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.tag);
         sup.addLast(idArray);
-        if (this.fieldsArray != null)
+        
+        if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
         {
-		    Integer16Array length16 = new Integer16Array(this.fieldsArray.length);
-		    if (length16.getValue() != 0)
-		    {
-		    	sup.addLast(length16);
-		    }
+        	int length = this.fieldsArray.length + this.subelementsArray.length;
+		    Integer16Array lengthArray = new Integer16Array(length);
+		    sup.addLast(lengthArray);
 		    
 		    sup.addLast(this.fieldsArray);
+		    sup.addLast(this.subelementsArray);
         }
         
         return sup;

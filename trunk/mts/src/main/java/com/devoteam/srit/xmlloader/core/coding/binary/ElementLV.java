@@ -62,6 +62,7 @@ public class ElementLV extends ElementAbstract
         SupArray sup = new SupArray();
         Integer08Array lengthArray = new Integer08Array(this.fieldsArray.length);
     	sup.addLast(lengthArray);
+    	
 	    sup.addLast(this.fieldsArray);
 	    sup.addLast(this.subelementsArray);
 	    

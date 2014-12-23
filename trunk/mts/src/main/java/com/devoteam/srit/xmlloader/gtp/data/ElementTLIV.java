@@ -59,7 +59,7 @@ public class ElementTLIV extends ElementAbstract
     }
 
 	@Override
-    public SupArray encodeToArray()  throws Exception
+    public SupArray encodeToArray() throws Exception
 	{
 		// encode the sub-element
 		this.subelementsArray = super.encodeToArray();
@@ -67,8 +67,11 @@ public class ElementTLIV extends ElementAbstract
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.tag);
         sup.addLast(idArray);
-        Integer16Array lengthArray = new Integer16Array(this.fieldsArray.length + this.subelementsArray.length);
+        
+        int length = this.fieldsArray.length + this.subelementsArray.length;
+        Integer16Array lengthArray = new Integer16Array(length);
         sup.addLast(lengthArray);
+        
 	    Integer08Array instancesArray = new Integer08Array(this.instances);
 	    sup.addLast(instancesArray);
 	    
