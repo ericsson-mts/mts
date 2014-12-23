@@ -47,25 +47,7 @@ public class ElementV extends ElementAbstract
 	@Override
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
 	{
-		if (!this.elements.isEmpty())
-		{
-			int length = super.decodeFromArray(array, dictionary);
-			this.subelementsArray = new SupArray();
-	        this.subelementsArray.addFirst(array.subArray(0, length));
-	        return length;
-		}
-		else if (!this.fieldsByName.isEmpty())
-		{
-			int length = this.getLengthElem() / 8;
-			if (length < array.length)
-			{
-				length = array.length;
-			}
-	        this.fieldsArray = new SupArray();
-	        this.fieldsArray.addFirst(array.subArray(0, length));
-	        return length;
-		}
-		return 0;
+		return decodeFieldsNotTagElementsFromArray(array, dictionary);
     }
 
 	@Override    

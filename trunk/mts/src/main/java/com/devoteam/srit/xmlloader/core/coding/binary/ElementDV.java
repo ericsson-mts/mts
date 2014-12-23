@@ -49,9 +49,9 @@ public class ElementDV extends ElementAbstract
 	{
         this.fieldsArray = new SupArray();
 		int length = new Integer08Array(array.subArray(0, 1)).getValue() / 2 + 2;
-		this.fieldsArray = new SupArray();
-        this.fieldsArray.addFirst(array.subArray(1, length));
-        return length + 1;
+		
+		Array subArray = array.subArray(1, length);
+        return decodeFieldsNotTagElementsFromArray(subArray, dictionary) + 1;
     }
 
 	@Override    
