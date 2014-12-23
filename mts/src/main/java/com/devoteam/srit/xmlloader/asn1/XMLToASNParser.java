@@ -26,7 +26,7 @@ package com.devoteam.srit.xmlloader.asn1;
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
-import com.devoteam.srit.xmlloader.core.coding.binary.ElementV;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementValue;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumStringField;
 import com.devoteam.srit.xmlloader.core.coding.binary.FieldAbstract;
@@ -336,7 +336,7 @@ public class XMLToASNParser
 	        			"The ASN1 element \"" + elementName + "\" is not defined into the dictionary to analyze the received messages more finely.");
 	        	}
 	
-	    		ElementAbstract elmt = new ElementV();
+	    		ElementAbstract elmt = new ElementValue();
 	        	elmt.parseFromXML(element, message.dictionary, elementDico);
 	        	Array array = elmt.encodeToArray();
 	        	if (array.length > 0)

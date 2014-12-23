@@ -36,18 +36,22 @@ import gp.utils.arrays.SupArray;
  *
  * @author Fabien Henry
  */
-public class ElementV extends ElementAbstract
+public class ElementLengthV extends ElementAbstract
 {
 
-    public ElementV()
+    public ElementLengthV()
     {
-    	this.coding = "V";
+    	this.coding = "LV";
     }
     
 	@Override
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
 	{
-		return decodeFieldsNotTagElementsFromArray(array, dictionary);
+        this.fieldsArray = new SupArray();
+		int length = new Integer08Array(array.subArray(0, 1)).getValue();
+		
+		Array subArray = array.subArray(1, length);
+        return decodeFieldsNotTagElementsFromArray(subArray, dictionary) + 1;
     }
 
 	@Override    
@@ -56,6 +60,9 @@ public class ElementV extends ElementAbstract
 		this.subelementsArray = super.encodeToArray();
 
         SupArray sup = new SupArray();
+        Integer08Array lengthArray = new Integer08Array(this.fieldsArray.length);
+    	sup.addLast(lengthArray);
+    	
 	    sup.addLast(this.fieldsArray);
 	    sup.addLast(this.subelementsArray);
 	    
