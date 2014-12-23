@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.core.coding.binary;
+package com.devoteam.srit.xmlloader.asn1.data;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
