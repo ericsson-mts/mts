@@ -116,7 +116,23 @@ public class EnumLongField extends IntegerField
     
     public Long getEnumValueByLabel(String name) 
     {
-        return this.valuesByLabel.get(name);
+    	Long found = this.valuesByLabel.get(name);
+    	if (found != null)
+    	{
+    		return found;
+    	}
+    	/*
+		Iterator<EnumRange> iter = ranges.iterator();
+	    while (iter.hasNext())
+	    {
+	    	EnumRange range = (EnumRange) iter.next();
+	    	if (range.isEnclosedFromLabel(name))
+	    	{
+	    		return (long) 1;
+	    	}
+	    }
+	    */
+        return null;        
     }
 
     public String getEnumLabelByValue(Long value) 
@@ -130,7 +146,7 @@ public class EnumLongField extends IntegerField
 	    while (iter.hasNext())
 	    {
 	    	EnumRange range = (EnumRange) iter.next();
-	    	if (range.isEnclosedInto(value))
+	    	if (range.isEnclosedFromValue(value))
 	    	{
 	    		return range.getEnclosedLabel(value);
 	    	}
@@ -161,7 +177,7 @@ public class EnumLongField extends IntegerField
     	}
     	catch (NumberFormatException e)
     	{
-    		Long val = this.valuesByLabel.get(value);
+    		Long val = getEnumValueByLabel(value);
 	        if (val == null)
 	        {
 	        	throw new ExecutionException("For the enumeration field \"" + this.name + "\", the value \"" + value + "\" is not numeric or valid according to the dictionary.");
