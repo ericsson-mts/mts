@@ -83,44 +83,53 @@ public class EnumRange
     	}
     }
 
-	public boolean isEnclosedFromValue(long value)
+	public Long getValueFromLabel(String name)
 	{
-		if ((value >= beginValue) && (value <= endValue))
+		if (!name.startsWith(this.strBeginName))
 		{
-			return true;
+			return null;
+		}
+		if (!name.endsWith(this.strEndName))
+		{
+			return null;
+		}
+		String strName = name.substring(this.strBeginName.length(), name.length() - this.strEndName.length());
+		double doubleLabel = Double.parseDouble(strName.trim());
+		
+		if (doubleLabel < this.beginName)
+		{
+			return null;
+		}
+		if (doubleLabel > this.endName)
+		{
+			return null;
+		}
+		double doubleName = (this.endName - this.beginName);
+		doubleName = (this.endValue - this.beginValue) / doubleName;
+		double doubleValue = (doubleLabel - this.beginName) * doubleName + this.beginValue;
+		
+		return (long) doubleValue;
+	}
+
+	public String getLabelFromValue(long value)
+	{
+		if ((value >= this.beginValue) && (value <= this.endValue))
+		{
+
+			double doubleLabel = (this.endName - this.beginName);
+			doubleLabel = doubleLabel / (this.endValue - this.beginValue);
+			doubleLabel = this.beginName + (value - this.beginValue) * doubleLabel;
+			
+			DecimalFormat df = new DecimalFormat("#.##");
+			df.setRoundingMode(RoundingMode.HALF_UP);
+			String doubleName = df.format(doubleLabel);
+			
+			return this.strBeginName + doubleName + this.strEndName;
 		}
 		else
 		{
-			return false;
+			return null;
 		}
-	}
-	
-	public boolean isEnclosedFromLabel(String label)
-	{
-		/*
-		if ((value >= beginValue) && (value <= endValue))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-		*/
-		return false;
-	}
-
-	public String getEnclosedLabel(long value)
-	{    	
-    	double doubleLabel = (endName - beginName);
-    	doubleLabel = doubleLabel / (endValue - beginValue);
-    	doubleLabel = beginName + (value - beginValue) * doubleLabel;
-    	
-    	DecimalFormat df = new DecimalFormat("#.##");
-    	df.setRoundingMode(RoundingMode.HALF_UP);
-    	String resultLabel = df.format(doubleLabel);
-
-    	return strBeginName + resultLabel + strEndName;
 	}
 	public String toString()
 	{
