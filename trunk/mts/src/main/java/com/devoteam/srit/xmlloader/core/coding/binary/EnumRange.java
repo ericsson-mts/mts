@@ -85,15 +85,31 @@ public class EnumRange
 
 	public Long getValueFromLabel(String name)
 	{
-		if (!name.startsWith(this.strBeginName))
+		String patternBegin = this.strBeginName;
+		int posBeginPattern = this.strBeginName.indexOf('(');
+		if (posBeginPattern >= 0)
+		{
+			patternBegin = patternBegin.substring(0, posBeginPattern).trim();
+		}
+		int posBegin = name.indexOf(patternBegin);
+		if (posBegin < 0)
 		{
 			return null;
 		}
-		if (!name.endsWith(this.strEndName))
+
+		String patternEnd = this.strEndName;
+		int posEndPattern = this.strEndName.indexOf('(');
+		if (posEndPattern >= 0)
+		{
+			patternEnd = patternEnd.substring(0, posEndPattern).trim();
+		}
+		int posEnd = name.lastIndexOf(patternEnd);
+		if (posEnd < 0)
 		{
 			return null;
 		}
-		String strName = name.substring(this.strBeginName.length(), name.length() - this.strEndName.length());
+		
+		String strName = name.substring(this.strBeginName.length(), posEnd);
 		double doubleLabel = Double.parseDouble(strName.trim());
 		
 		if (doubleLabel < this.beginName)
@@ -104,6 +120,7 @@ public class EnumRange
 		{
 			return null;
 		}
+		
 		double doubleName = (this.endName - this.beginName);
 		doubleName = (this.endValue - this.beginValue) / doubleName;
 		double doubleValue = (doubleLabel - this.beginName) * doubleName + this.beginValue;
