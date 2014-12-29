@@ -32,15 +32,15 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
  */
 public class EnumRange 
 {
-    private long begin;
+    private long beginValue;
 
-	private long end;
+	private long endValue;
 
 	private String name;
 
-	public long getBegin()
+	public long getBeginValue()
 	{
-		return begin;
+		return beginValue;
 	}
 
 	public String getName() {
@@ -49,15 +49,15 @@ public class EnumRange
 	public EnumRange(String beginStr, String endStr, String name) 
     {
     	byte[] beginBytes = Utils.parseBinaryString(beginStr.trim());
-    	this.begin = (int) beginBytes[0] & 0xFF;
+    	this.beginValue = (int) beginBytes[0] & 0xFF;
     	byte[] endBytes = Utils.parseBinaryString(endStr.trim());
-    	this.end = (int) endBytes[0] & 0xFF;
+    	this.endValue = (int) endBytes[0] & 0xFF;
     	this.name = name;
     }
 
 	public boolean isEnclosedInto(long value)
 	{
-		if ((value >= begin) && (value <= end))
+		if ((value >= beginValue) && (value <= endValue))
 		{
 			return true;
 		}
@@ -67,10 +67,44 @@ public class EnumRange
 		}
 	}
 	
+	public String getEnclosedLabel(long value)
+	{
+		String strLabel = name;
+		String strNameBegin = name;
+		String strNameEnd = name;
+		int iPosBegin = name.indexOf('[');
+    	if (iPosBegin >= 0)
+    	{
+    		strNameBegin = strLabel.substring(0, iPosBegin);
+    		strLabel = strLabel.substring(iPosBegin);
+    	}
+		int iPosEnd = strLabel.indexOf(']');
+    	if (iPosEnd >= 0)
+    	{
+    		strNameEnd = strLabel.substring(iPosEnd + 1);
+    		strLabel = strLabel.substring(1, iPosEnd);
+    	}
+    	String strLabelBegin = strLabel;
+    	String strLabelEnd = strLabel;
+		int iPosMinus = name.indexOf('-');
+    	if (iPosMinus >= 0)
+    	{
+    		strLabelBegin = strLabel.substring(0, iPosMinus - 1);
+    		strLabelEnd = strLabel.substring(iPosMinus);
+    	}
+    	long labelBegin = Long.parseLong(strLabelBegin);
+    	long labelEnd = Long.parseLong(strLabelEnd);
+    	
+    	double doubleLabel = (labelEnd - labelBegin);
+    	doubleLabel = doubleLabel / (endValue - beginValue);
+    	doubleLabel = labelBegin + (value - beginValue) * doubleLabel;
+    	long intLabel = (long) Math.round(doubleLabel);
+    	return strNameBegin + intLabel + strNameEnd;
+	}
 	public String toString()
 	{
 		String ret = "<enum ";
-		ret += " value=\""+ this.begin + ":"+ this.end + "\"";
+		ret += " value=\""+ this.beginValue + ":"+ this.endValue + "\"";
 		ret += " name=\"" + this.name + "\"";
 		ret += "\"/>";
 		return ret;

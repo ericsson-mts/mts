@@ -77,7 +77,7 @@ public class EnumLongField extends IntegerField
         		String endStr = valueStr.substring(iPos + 1);
         		EnumRange range = new EnumRange(beginStr, endStr, nameStr);
         		ranges.add(range);
-	            this.valuesByLabel.put(nameStr, range.getBegin());
+	            this.valuesByLabel.put(nameStr, range.getBeginValue());
         	}
         	else
         	{
@@ -132,7 +132,7 @@ public class EnumLongField extends IntegerField
 	    	EnumRange range = (EnumRange) iter.next();
 	    	if (range.isEnclosedInto(value))
 	    	{
-	    		return range.getName();
+	    		return range.getEnclosedLabel(value);
 	    	}
 	    }
         return null;
