@@ -23,6 +23,9 @@
 
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 
@@ -96,10 +99,14 @@ public class EnumRange
     	double labelEnd = Double.parseDouble(strLabelEnd);
     	
     	double doubleLabel = (labelEnd - labelBegin);
-    	doubleLabel = doubleLabel / (endValue - beginValue - 1);
+    	doubleLabel = doubleLabel / (endValue - beginValue);
     	doubleLabel = labelBegin + (value - beginValue) * doubleLabel;
-    	//long intLabel = (long) Math.round(doubleLabel);
-    	return strNameBegin + doubleLabel + strNameEnd;
+    	
+    	DecimalFormat df = new DecimalFormat("#.##");
+    	df.setRoundingMode(RoundingMode.HALF_UP);
+    	String resultLabel = df.format(doubleLabel);
+
+    	return strNameBegin + resultLabel + strNameEnd;
 	}
 	public String toString()
 	{
