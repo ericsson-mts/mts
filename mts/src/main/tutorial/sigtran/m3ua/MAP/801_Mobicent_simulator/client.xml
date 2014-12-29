@@ -109,7 +109,7 @@
                 		<field name="Message Class" value="Class 0:0" type="enumeration" lengthBit="2" description="Message Class"/>
                   </element>
                   <element name="TP-VP" coding="V" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid.">
-                    <field name="TP-VP" value="21" type="integer" length="1" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid."/>
+                    <field name="TP-VP" value="3 days:169" type="integer" length="1" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid."/>
                   </element>
                   <element name="TP-UD" coding="LV" description="TP User Data" comment="">
                     <field name="TP-UD" value="[smsBinary]" type="binary" description=""/>
@@ -265,7 +265,7 @@
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
     <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-VP&quot;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-VP&quot; value=&quot;3 days:169&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-VP&quot; value=&quot;3 day(s):169&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
     <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-UD&quot;"/>
