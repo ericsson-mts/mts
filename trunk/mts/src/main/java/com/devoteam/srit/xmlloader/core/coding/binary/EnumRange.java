@@ -36,11 +36,14 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 public class EnumRange 
 {
     private long beginValue;
-
 	private long endValue;
 
-	private String name;
-
+	private String strBeginName;
+	private String strEndName;
+	
+	private double beginName;
+	private double endName;
+	
 	public long getBeginValue()
 	{
 		return beginValue;
@@ -52,7 +55,32 @@ public class EnumRange
     	this.beginValue = (int) beginBytes[0] & 0xFF;
     	byte[] endBytes = Utils.parseBinaryString(endStr.trim());
     	this.endValue = (int) endBytes[0] & 0xFF;
-    	this.name = name;
+    	
+		String strRange = name;
+		this.strBeginName = name;
+		this.strEndName = name;
+		int iPosBegin = name.indexOf('[');
+    	if (iPosBegin >= 0)
+    	{
+    		this.strBeginName = strRange.substring(0, iPosBegin);
+    		strRange = strRange.substring(iPosBegin);
+    	}
+		int iPosEnd = strRange.indexOf(']');
+    	if (iPosEnd >= 0)
+    	{
+    		this.strEndName = strRange.substring(iPosEnd + 1);
+    		strRange = strRange.substring(1, iPosEnd);
+    	}
+    	String strRangeBegin = strRange;
+    	String strRangeEnd = strRange;
+		int iPosMinus = strRange.indexOf('-');
+    	if (iPosMinus >= 0)
+    	{
+    		strRangeBegin = strRange.substring(0, iPosMinus);
+    		this.beginName = Double.parseDouble(strRangeBegin);
+    		strRangeEnd = strRange.substring(iPosMinus + 1);
+        	this.endName = Double.parseDouble(strRangeEnd);
+    	}
     }
 
 	public boolean isEnclosedFromValue(long value)
@@ -83,48 +111,26 @@ public class EnumRange
 	}
 
 	public String getEnclosedLabel(long value)
-	{
-		String strLabel = name;
-		String strNameBegin = name;
-		String strNameEnd = name;
-		int iPosBegin = name.indexOf('[');
-    	if (iPosBegin >= 0)
-    	{
-    		strNameBegin = strLabel.substring(0, iPosBegin);
-    		strLabel = strLabel.substring(iPosBegin);
-    	}
-		int iPosEnd = strLabel.indexOf(']');
-    	if (iPosEnd >= 0)
-    	{
-    		strNameEnd = strLabel.substring(iPosEnd + 1);
-    		strLabel = strLabel.substring(1, iPosEnd);
-    	}
-    	String strLabelBegin = strLabel;
-    	String strLabelEnd = strLabel;
-		int iPosMinus = strLabel.indexOf('-');
-    	if (iPosMinus >= 0)
-    	{
-    		strLabelBegin = strLabel.substring(0, iPosMinus);
-    		strLabelEnd = strLabel.substring(iPosMinus + 1);
-    	}
-    	double labelBegin = Double.parseDouble(strLabelBegin);
-    	double labelEnd = Double.parseDouble(strLabelEnd);
-    	
-    	double doubleLabel = (labelEnd - labelBegin);
+	{    	
+    	double doubleLabel = (endName - beginName);
     	doubleLabel = doubleLabel / (endValue - beginValue);
-    	doubleLabel = labelBegin + (value - beginValue) * doubleLabel;
+    	doubleLabel = beginName + (value - beginValue) * doubleLabel;
     	
     	DecimalFormat df = new DecimalFormat("#.##");
     	df.setRoundingMode(RoundingMode.HALF_UP);
     	String resultLabel = df.format(doubleLabel);
 
-    	return strNameBegin + resultLabel + strNameEnd;
+    	return strBeginName + resultLabel + strEndName;
 	}
 	public String toString()
 	{
 		String ret = "<enum ";
-		ret += " value=\""+ this.beginValue + ":"+ this.endValue + "\"";
-		ret += " name=\"" + this.name + "\"";
+		ret += " value=\""+ this.beginValue + "-"+ this.endValue + "\"";
+		ret += " name=\"" + this.strBeginName + "[";
+    	DecimalFormat df = new DecimalFormat("#.##");
+    	df.setRoundingMode(RoundingMode.HALF_UP);
+    	ret += df.format(beginName) + "-" + df.format(endName);
+    	ret += this.strEndName + "\"";
 		ret += "\"/>";
 		return ret;
 	}
