@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.DigestArray;
@@ -101,7 +102,7 @@ public class PluggableParameterOperatorString extends AbstractPluggableParameter
     }
 
     @Override
-    public Parameter operate(Runner runner, Map<String, Parameter> operands, String name, String resultant) throws ParameterException
+    public Parameter operate(Runner runner, Map<String, Parameter> operands, String name, String resultant) throws Exception
     {
         normalizeParameters(operands);
 
@@ -188,7 +189,18 @@ public class PluggableParameterOperatorString extends AbstractPluggableParameter
             }
             else if (name.equalsIgnoreCase(NAME_S_TOBINARY))
             {
-                result.add(Array.toHexString(new DefaultArray(param1.get(i).toString().getBytes())));
+            	String value1 = param1.get(i).toString();
+            	Parameter paramCharset = operands.get("value2");
+                byte[] bytes = null;
+                if (paramCharset != null)
+                {
+                	bytes = value1.getBytes(paramCharset.get(i).toString());
+                }
+                else
+                {
+                	bytes = value1.getBytes();
+                }
+                result.add(Array.toHexString(new DefaultArray(bytes)));
             }
             else if (name.equalsIgnoreCase(NAME_S_RANDOM))
             {

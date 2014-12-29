@@ -101,6 +101,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     final private String NAME_BIN_DIFFERENCE = "binary.difference";
     final private String NAME_BIN_XMLTOASN = "binary.xmlToAsn";
     final private String NAME_BIN_ASNTOXML = "binary.asnToXml";
+    final private String NAME_BIN_ENDIAN = "binary.endian";
 
     
     
@@ -135,6 +136,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_BIN_DIFFERENCE));
         this.addPluggableName(new PluggableName(NAME_BIN_XMLTOASN));
         this.addPluggableName(new PluggableName(NAME_BIN_ASNTOXML));
+        this.addPluggableName(new PluggableName(NAME_BIN_ENDIAN));
+        
     }
 
     @Override
@@ -528,6 +531,13 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     ASNMessage message = new BN_ASNMessage(dictionary); 
                     ret += ASNToXMLConverter.getInstance().toXML(resultPath, message, null, "value", objASN, null, ASNToXMLConverter.NUMBER_SPACE_TABULATION * 2);
                     result.add(ret);
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_ENDIAN))
+                {
+                	String string1 = param_1.get(i).toString();
+                	Array array = Array.fromHexString(string1);
+                	Array arrayResult = transformEndian(array);
+                	result.add(Array.toHexString(arrayResult));
                 }
                 else
                 {
@@ -959,6 +969,20 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
             e.printStackTrace();
         }
     }
-   
+
+    private static Array transformEndian(Array array)
+    {
+		Array arrayEndian = new DefaultArray(array.length);
+		for (int indexByte = 0; indexByte < array.length; indexByte++)
+		{
+			for (int indexBit = 0; indexBit < 8; indexBit++)
+			{
+				int b = array.getBit(indexByte * 8 + indexBit);
+				arrayEndian.setBit(indexByte * 8 + 7 - indexBit, b);
+			}
+		}
+		return arrayEndian;
+    }
+    
 }
 
