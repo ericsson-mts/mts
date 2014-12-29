@@ -200,5 +200,11 @@
     <parameter name="[xmlresult]" operation="string.regexReplaces" value="[xmlresult]" value2=" " value3=""/>
     <parameter name="[xmlresult]" operation="string.trim" value="[xmlresult]"/>
     <test parameter="[xmlresult]" condition="string.equals" value="[xml]" />
+
+    <parameter name="[binary]" operation="set" value="70717273747576777879"/>
+    <parameter name="[endian]" operation="binary.endian" value="[binary]" />
+    <test parameter="[endian]" condition="binary.equals" value="0E8E4ECE2eae6eee1e9e" />   
     
+    
+     
 </scenario>
