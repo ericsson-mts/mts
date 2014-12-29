@@ -86,20 +86,20 @@ public class EnumRange
     	}
     	String strLabelBegin = strLabel;
     	String strLabelEnd = strLabel;
-		int iPosMinus = name.indexOf('-');
+		int iPosMinus = strLabel.indexOf('-');
     	if (iPosMinus >= 0)
     	{
-    		strLabelBegin = strLabel.substring(0, iPosMinus - 1);
-    		strLabelEnd = strLabel.substring(iPosMinus);
+    		strLabelBegin = strLabel.substring(0, iPosMinus);
+    		strLabelEnd = strLabel.substring(iPosMinus + 1);
     	}
-    	long labelBegin = Long.parseLong(strLabelBegin);
-    	long labelEnd = Long.parseLong(strLabelEnd);
+    	double labelBegin = Double.parseDouble(strLabelBegin);
+    	double labelEnd = Double.parseDouble(strLabelEnd);
     	
     	double doubleLabel = (labelEnd - labelBegin);
-    	doubleLabel = doubleLabel / (endValue - beginValue);
+    	doubleLabel = doubleLabel / (endValue - beginValue - 1);
     	doubleLabel = labelBegin + (value - beginValue) * doubleLabel;
-    	long intLabel = (long) Math.round(doubleLabel);
-    	return strNameBegin + intLabel + strNameEnd;
+    	//long intLabel = (long) Math.round(doubleLabel);
+    	return strNameBegin + doubleLabel + strNameEnd;
 	}
 	public String toString()
 	{
