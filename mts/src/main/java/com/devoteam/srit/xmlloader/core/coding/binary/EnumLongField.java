@@ -121,17 +121,17 @@ public class EnumLongField extends IntegerField
     	{
     		return found;
     	}
-    	/*
+    	
 		Iterator<EnumRange> iter = ranges.iterator();
 	    while (iter.hasNext())
 	    {
 	    	EnumRange range = (EnumRange) iter.next();
-	    	if (range.isEnclosedFromLabel(name))
+	    	Long value = range.getValueFromLabel(name);
+	    	if (value != null)
 	    	{
-	    		return (long) 1;
+	    		return value;
 	    	}
 	    }
-	    */
         return null;        
     }
 
@@ -142,13 +142,15 @@ public class EnumLongField extends IntegerField
     	{
     		return found;
     	}
+    	
 		Iterator<EnumRange> iter = ranges.iterator();
 	    while (iter.hasNext())
 	    {
 	    	EnumRange range = (EnumRange) iter.next();
-	    	if (range.isEnclosedFromValue(value))
+	    	String label = range.getLabelFromValue(value);
+	    	if (label != null)
 	    	{
-	    		return range.getEnclosedLabel(value);
+	    		return label;
 	    	}
 	    }
         return null;
