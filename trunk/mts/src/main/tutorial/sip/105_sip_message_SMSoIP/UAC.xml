@@ -19,14 +19,14 @@
           <!--field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
           <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
           <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
-          <field name="digits" value="33661307173" type="Number_BCD" length="11"/-->
+          <field name="digits" value="[MSISDN-User1]" type="Number_BCD" length="11"/-->
     </Bytes></msisdn.C2.BoxedType>
 </sm_RP_OA.Choice>
 ]]>
 </parameter>
     <parameter name="[RP-Originator-Address_BIN]" operation="binary.xmlToAsn" value="[RP-Originator-Address_XML]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_OA" value3="map/dictionary_MAP .xml"/>
     <parameter name="[RP-Originator-Address_BIN]" operation="binary.subBinary" value="[RP-Originator-Address_BIN]" value2="1"/>
-    <test parameter="[RP-Originator-Address_BIN]" condition="binary.equals" value="00" />        
+    <!--test parameter="[RP-Originator-Address_BIN]" condition="binary.equals" value="00" /-->        
 
     <parameter name="[RP-Destination-Address_XML]" operation="set">
 <![CDATA[
@@ -35,14 +35,14 @@
           <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
           <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
           <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
-          <field name="digits" value="33600000003" type="Number_BCD" length="11"/>
+          <field name="digits" value="[MSISDN-SMSC]" type="Number_BCD" length="11"/>
     </Bytes></serviceCentreAddressDA.C4.BoxedType>
 </sm_RP_DA.Choice>
 ]]>
 </parameter>
     <parameter name="[RP-Destination-Address_BIN]" operation="binary.xmlToAsn" value="[RP-Destination-Address_XML]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_DA" value3="map/dictionary_MAP .xml"/>
     <parameter name="[RP-Destination-Address_BIN]" operation="binary.subBinary" value="[RP-Destination-Address_BIN]" value2="1"/>
-    <test parameter="[RP-Destination-Address_BIN]" condition="binary.equals" value="07913306000000f3" />
+    <!--test parameter="[RP-Destination-Address_BIN]" condition="binary.equals" value="07913306000000f3" /-->
     
     <parameter name="[RP-User-Data_XML]" operation="set">
 <![CDATA[
@@ -50,7 +50,7 @@
   <element name="Byte1" coding="V">
     <field name="TP-RP" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0" type="EnumLong" lengthBit="1"/>
     <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="EnumLong" lengthBit="1"/>
-    <field name="TP-SRR" value="A status report is not requested:1" type="EnumLong" lengthBit="1"/>
+    <field name="TP-SRR" value="[TP-SRR_Status-Report-Indicator]" type="EnumLong" lengthBit="1"/>
     <field name="TP-VPF" value="TP VP field present - relative format:2" type="EnumLong" lengthBit="2"/>
     <field name="TP-RD" value="Instruct the SC to accept duplicates:0" type="EnumLong" lengthBit="1"/>
     <field name="TP-MTI" value="SMS-SUBMIT / SMS-SUBMIT-REPORT:1" type="EnumLong" lengthBit="2"/>
@@ -62,7 +62,7 @@
     <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
     <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
     <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
-    <field name="digits" value="33638060002" type="Number_BCD" length="11"/>
+    <field name="digits" value="[MSISDN-User2]" type="Number_BCD" length="11"/>
   </element>
   <element name="TP-PID" coding="V">
     <field name="assignment" value="Assigns bits 0..5 as defined below:0" type="EnumLong" lengthBit="2"/>
