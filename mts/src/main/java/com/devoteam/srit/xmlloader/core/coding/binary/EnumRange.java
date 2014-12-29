@@ -46,9 +46,6 @@ public class EnumRange
 		return beginValue;
 	}
 
-	public String getName() {
-		return name;
-	}
 	public EnumRange(String beginStr, String endStr, String name) 
     {
     	byte[] beginBytes = Utils.parseBinaryString(beginStr.trim());
@@ -58,7 +55,7 @@ public class EnumRange
     	this.name = name;
     }
 
-	public boolean isEnclosedInto(long value)
+	public boolean isEnclosedFromValue(long value)
 	{
 		if ((value >= beginValue) && (value <= endValue))
 		{
@@ -70,6 +67,21 @@ public class EnumRange
 		}
 	}
 	
+	public boolean isEnclosedFromLabel(String label)
+	{
+		/*
+		if ((value >= beginValue) && (value <= endValue))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		*/
+		return false;
+	}
+
 	public String getEnclosedLabel(long value)
 	{
 		String strLabel = name;
