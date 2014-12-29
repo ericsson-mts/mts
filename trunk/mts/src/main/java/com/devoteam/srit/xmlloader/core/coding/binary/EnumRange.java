@@ -43,11 +43,6 @@ public class EnumRange
 		return begin;
 	}
 
-    public long getEnd() 
-    {
-		return end;
-	}
-
 	public String getName() {
 		return name;
 	}
