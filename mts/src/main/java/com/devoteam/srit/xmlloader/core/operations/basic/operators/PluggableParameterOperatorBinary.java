@@ -102,7 +102,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     final private String NAME_BIN_XMLTOASN = "binary.xmlToAsn";
     final private String NAME_BIN_ASNTOXML = "binary.asnToXml";
     final private String NAME_BIN_ENDIAN = "binary.endian";
-    final private String NAME_BIN_ENCODING = "binary.encoding";
+    final private String NAME_BIN_ENCODE = "binary.encode";
+    final private String NAME_BIN_DECODE = "binary.decode";
 
     
     
@@ -138,7 +139,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_BIN_XMLTOASN));
         this.addPluggableName(new PluggableName(NAME_BIN_ASNTOXML));
         this.addPluggableName(new PluggableName(NAME_BIN_ENDIAN));
-        this.addPluggableName(new PluggableName(NAME_BIN_ENCODING));
+        this.addPluggableName(new PluggableName(NAME_BIN_ENCODE));
+        this.addPluggableName(new PluggableName(NAME_BIN_DECODE));
         
     }
 
@@ -204,7 +206,43 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 }
                 else if (name.equals(NAME_BIN_TOSTRING))
                 {
-                    result.add(new String(Array.fromHexString(param_1.get(i).toString()).getBytes()));
+                	Parameter param1 = PluggableParameterOperatorList.assertAndGetParameter(operands, "value");
+                	String value1 = param1.get(i).toString();
+                	Parameter paramCharset = operands.get("value2");
+                	String alphabet = null;
+                    if (paramCharset != null)
+                    {
+                    	alphabet = paramCharset.get(i).toString();
+                    }
+                    Array array = Array.fromHexString(value1);
+                    // for GSM SMS alphabet perform a 7bits encoding
+                    if (alphabet != null && alphabet.contains("Default alphabet"))
+                    {
+                    	array = PluggableParameterOperatorBinary.decodeNumberBits(array, 7, true);
+                    }
+                    byte[] bytes = array.getBytes();
+                    
+                    String stringResult;
+                    if (paramCharset != null)
+                    {
+                    	String charset = alphabet;
+                    	int posCS = charset.indexOf('{');
+                    	if (posCS >= 0)
+                    	{
+                    		charset = charset.substring(posCS + 1);
+                    	}
+                    	posCS = charset.lastIndexOf('}');
+                    	if (posCS >= 0)
+                    	{
+                    		charset = charset.substring(0, posCS);
+                    	}
+                    	stringResult = new String(bytes, charset);
+                    }
+                    else
+                    {
+                    	stringResult = new String(bytes);
+                    }
+                    result.add(stringResult);
                 }
                 else if (name.equals(NAME_BIN_SUBBINARY))
                 {
@@ -541,19 +579,34 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 	Array arrayResult = transformEndian(array);
                 	result.add(Array.toHexString(arrayResult));
                 }
-                else if (name.equalsIgnoreCase(NAME_BIN_ENCODING))
+                else if (name.equalsIgnoreCase(NAME_BIN_ENCODE))
                 {
                 	String string1 = param_1.get(i).toString();
                 	Array array = Array.fromHexString(string1);
                 	Parameter param_2 = assertAndGetParameter(operands, "value2");
                 	int nbBits = Integer.valueOf(param_2.get(i).toString()).intValue();
                 	Parameter paramEndian = operands.get("value3");
-                    boolean endian = false;
+                    boolean endian = true;
                     if (paramEndian != null)
                     {
                     	endian = Boolean.valueOf(paramEndian.get(i).toString()).booleanValue();
                     }
                     Array arrayResult = encodeNumberBits(array, nbBits, endian);
+                	result.add(Array.toHexString(arrayResult));
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_DECODE))
+                {
+                	String string1 = param_1.get(i).toString();
+                	Array array = Array.fromHexString(string1);
+                	Parameter param_2 = assertAndGetParameter(operands, "value2");
+                	int nbBits = Integer.valueOf(param_2.get(i).toString()).intValue();
+                	Parameter paramEndian = operands.get("value3");
+                    boolean endian = true;
+                    if (paramEndian != null)
+                    {
+                    	endian = Boolean.valueOf(paramEndian.get(i).toString()).booleanValue();
+                    }
+                    Array arrayResult = decodeNumberBits(array, nbBits, endian);
                 	result.add(Array.toHexString(arrayResult));
                 }
                 else
@@ -1008,8 +1061,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
 		for (int indexBit = 0; indexBit < array.length * 8; indexBit++)
 		{
 				int b = array.getBit(indexBit);
-				int indexBit7 = (indexBit / 8) * nbBits + indexBit % 8;
-				arrayResult.setBit(indexBit7, b);
+				int indexBitNew = (indexBit / 8) * nbBits + indexBit % 8;
+				arrayResult.setBit(indexBitNew, b);
 		}
 		return arrayResult;
     }
@@ -1027,5 +1080,33 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
 		}
 		return arrayResult;
     }
+    
+    private static Array decodeBinary(Array array, int nbBits)
+    {
+    	int nbBitsResult = array.length * 8 / nbBits + 1;
+		Array arrayResult = new DefaultArray(nbBitsResult);
+		for (int indexBit = 0; indexBit < array.length * 8; indexBit++)
+		{
+				int b = array.getBit(indexBit);
+				int indexBitNew = (indexBit / nbBits) * 8 + indexBit % nbBits;
+				arrayResult.setBit(indexBitNew, b);
+		}
+		return arrayResult;
+    }
+
+    protected static Array decodeNumberBits(Array array, int nbBits, boolean endian)
+    {
+	    if (endian)
+	    {
+	    	array = transformEndian(array);
+	    }
+		Array arrayResult = decodeBinary(array, nbBits);
+		if (endian)
+		{
+			arrayResult = transformEndian(arrayResult);
+		}
+		return arrayResult;
+    }
+
 }
 
