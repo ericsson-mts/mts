@@ -152,6 +152,13 @@
        	<parameter name="[MSISDN-User2]" operation="set" value="33638060002" description="User 2 MSISDN" editable="true" />
         <parameter name="[MSISDN-SMSC]" operation="set" value="33600000004" description="User 2 MSISDN" editable="true" />
         
+        <parameter name="[smsText]" operation="set" value="Test Emulateur CS MSG"/>
+        <parameter name="[smsAlphabet]" operation="set" value="Default alphabet {SCGSM}:0"/>
+        <!--parameter name="[smsAlphabet]" operation="set" value="8 bit data {UTF-8}:1"/-->
+        <!--parameter name="[smsAlphabet]" operation="set" value="UCS2 (16bit) {UFT-16BE}:2"/-->
+        <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
+        <parameter name="[smsTextLength]" operation="string.length" value="[smsText]"/>
+
         <parameter name="[remotePortSIP]" operation="set" value="[Port-User2]"/>
         <parameter name="[Transport]" operation="set" value="[transportRequest]"/>
         

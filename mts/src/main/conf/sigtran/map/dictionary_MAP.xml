@@ -119,11 +119,11 @@
     <!-- International Subscriber Distinguish Name (ISDN) adress string => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 456 -->
     <!-- Service Centre Address (similar to Address string) => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 456 -->
     <element name="ISDN_AddressString,ServiceCentreAddress" coding="V" description="International Mobile Subscriber Identity address string, Service Centre Address">
-    		<field name="extension" type="enumeration" lengthBit="1" description="extension">
+    		<field name="extension" type="EnumLong" lengthBit="1" description="extension">
             <enum name="extension" value="0"/>
             <enum name="no extension" value="1"/>
         </field>
-        <field name="nature of address" type="enumeration" lengthBit="3" description="nature of address">
+        <field name="nature of address" type="EnumLong" lengthBit="3" description="nature of address">
             <enum name="unknown" value="0" description="b000"/>
             <enum name="international number" value="1" description="b001"/>
             <enum name="national significant number" value="2" description="b010"/>
@@ -133,7 +133,7 @@
             <enum name="abbreviated number" value="6" description="b110"/>
             <enum name="reserved for extension" value="7" description="b111"/>
         </field>
-        <field name="numbering plan" type="enumeration" lengthBit="4" description="numbering plan">
+        <field name="numbering plan" type="EnumLong" lengthBit="4" description="numbering plan">
             <enum name="unknown" value="0" description="b0000"/>
             <enum name="ISDN/Telephony Numbering Plan (Rec ITU-T E.164)" value="1" description="b0001"/>
             <enum name="spare" value="2" description="b0010"/>
@@ -173,29 +173,29 @@
     <!-- sm-RP-UI : SMS-DELIVER => 3GPP TS 23.040 V12.2.2 chapter 9.2.2.1 page 50 -->
     <element name="Sm_RP_UI" coding="V" description="sm-RP-UI_SMS-SUBMIT/REPORT">
         <element name="Byte1" coding="V" description="First byte of the data" comment="">
-            <field name="TP-RP" type="enumeration" lengthBit="1" description="TP Reply Path" comment="Parameter indicating that Reply Path exists.">
+            <field name="TP-RP" type="EnumLong" lengthBit="1" description="TP Reply Path" comment="Parameter indicating that Reply Path exists.">
               <enum name="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER" value="0"/>
               <enum name="TP Reply Path parameter is set in this SMS SUBMIT/DELIVER" value="1"/>
             </field>
-            <field name="TP-UDHI" type="enumeration" lengthBit="1" description="TP User Data Header Indicator" comment="Parameter indicating that the TP UD field contains a Header.">
+            <field name="TP-UDHI" type="EnumLong" lengthBit="1" description="TP User Data Header Indicator" comment="Parameter indicating that the TP UD field contains a Header.">
               <enum name="The TP UD field contains only the short message" value="0"/>
               <enum name="The beginning of the TP UD field contains a Header in addition to the short message" value="1"/>
             </field>
-            <field name="TP-SRR" type="enumeration" lengthBit="1" description="TP Status Report Request" comment="Parameter indicating if the MS is requesting a status report.">
+            <field name="TP-SRR" type="EnumLong" lengthBit="1" description="TP Status Report Request" comment="Parameter indicating if the MS is requesting a status report.">
               <enum name="A status report is not requested" value="0"/>
               <enum name="A status report is requested" value="1"/>
             </field>
-            <field name="TP-VPF" type="enumeration" lengthBit="2" description="TP Validity Period Format" comment="Parameter indicating whether or not the TP VP field is present.">
+            <field name="TP-VPF" type="EnumLong" lengthBit="2" description="TP Validity Period Format" comment="Parameter indicating whether or not the TP VP field is present.">
               <enum name="TP VP field not present" value="0"/>
               <enum name="TP-VP field present - enhanced format" value="1"/>
               <enum name="TP VP field present - relative format" value="2"/>
               <enum name="TP VP field present - absolute format" value="3"/>
             </field>
-            <field name="TP-RD" type="enumeration" lengthBit="1" description="TP Reject Duplicates" comment="Parameter indicating whether or not the SC shall accept an SMS SUBMIT for an SM still held in the SC which has the same TP MR and the same TP DA as a previously submitted SM from the same OA.">
+            <field name="TP-RD" type="EnumLong" lengthBit="1" description="TP Reject Duplicates" comment="Parameter indicating whether or not the SC shall accept an SMS SUBMIT for an SM still held in the SC which has the same TP MR and the same TP DA as a previously submitted SM from the same OA.">
               <enum name="Instruct the SC to accept duplicates" value="0" comment="Instruct the SC to accept an SMS SUBMIT for an SM still held in the SC which has the same TP MR and the same TP DA as a previously 	submitted SM from the same OA."/>
               <enum name="Instruct the SC to reject duplicates" value="1" comment="Instruct the SC to reject an SMS SUBMIT for an SM still held in the SC which has the same TP MR and the same TP DA as the previously submitted SM from the same OA. In this case an appropriate TP FCS value will be returned in the SMS SUBMIT REPORT."/>
             </field>
-            <field name="TP-MTI" type="enumeration" lengthBit="2" description="TP Message Type Indicator" comment="Parameter describing the message type.">
+            <field name="TP-MTI" type="EnumLong" lengthBit="2" description="TP Message Type Indicator" comment="Parameter describing the message type.">
               <enum name="SMS-DELIVER / SMS-DELIVER-REPORT" value="0"/>
               <enum name="SMS-SUBMIT / SMS-SUBMIT-REPORT" value="1"/>
               <enum name="SMS-STATUS-REPORT / SMS-COMMAND" value="2"/>
@@ -206,11 +206,11 @@
             <field name="TP-MR" type="integer" length="1" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT."/>
         </element>
         <element name="TP-DA" coding="DV" description="TP Destination Address" comment="Address of the destination SME.">
-      		<field name="extension" type="enumeration" lengthBit="1" description="extension">
+      		<field name="extension" type="EnumLong" lengthBit="1" description="extension">
               <enum name="extension" value="0"/>
               <enum name="no extension" value="1"/>
           </field>
-          <field name="nature of address" type="enumeration" lengthBit="3" description="nature of address">
+          <field name="nature of address" type="EnumLong" lengthBit="3" description="nature of address">
               <enum name="unknown" value="0" description="b000"/>
               <enum name="international number" value="1" description="b001"/>
               <enum name="national significant number" value="2" description="b010"/>
@@ -220,7 +220,7 @@
               <enum name="abbreviated number" value="6" description="b110"/>
               <enum name="reserved for extension" value="7" description="b111"/>
           </field>
-          <field name="numbering plan" type="enumeration" lengthBit="4" description="numbering plan">
+          <field name="numbering plan" type="EnumLong" lengthBit="4" description="numbering plan">
               <enum name="unknown" value="0" description="b0000"/>
               <enum name="ISDN/Telephony Numbering Plan (Rec ITU-T E.164)" value="1" description="b0001"/>
               <enum name="spare" value="2" description="b0010"/>
@@ -236,17 +236,17 @@
           <field name="digits" type="number_bcd" description="digits"/>
         </element>
         <element name="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any.">
-      		<field name="assignment" type="enumeration" lengthBit="2" description="next bits assignment">
+      		<field name="assignment" type="EnumLong" lengthBit="2" description="next bits assignment">
               <enum name="Assigns bits 0..5 as defined below" value="0"/>
               <enum name="Assigns bits 0..5 as defined below" value="1"/>
               <enum name="reserved" value="2"/>
               <enum name="Assigns bits 0 5 for SC specific use" value="3"/>
           </field>
-      		<field name="telematic interworking" type="enumeration" lengthBit="1" description="telematic interworking">
+      		<field name="telematic interworking" type="EnumLong" lengthBit="1" description="telematic interworking">
               <enum name="no interworking, but SME to SME protocol" value="0"/>
               <enum name="telematic interworking" value="1"/>
           </field>
-      		<field name="telematic devices" type="enumeration" lengthBit="5" description="telematic devices">
+      		<field name="telematic devices" type="EnumLong" lengthBit="5" description="telematic devices">
               <enum name="implicit device type is specific to this SC," value="0" comment=" or can be concluded on the basis of the address"/>
               <enum name="telex (or teletex reduced to telex format)" value="1"/>
               <enum name="group 3 telefax" value="2"/>
@@ -271,26 +271,26 @@
           </field>
         </element>
         <element name="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data.">
-      		<field name="Coding Group Bits" type="enumeration" lengthBit="2" description="Coding Group Bits">
+      		<field name="Coding Group Bits" type="EnumLong" lengthBit="2" description="Coding Group Bits">
               <enum name="General Data Coding indication" value="0" description="b00"/>
               <enum name="Reserved coding groups" value="1-2" description="b01-b10"/>
               <enum name="Message Waiting Indication Group: Discard Message" value="03" description="b11"/>
           </field>
-      		<field name="Compression" type="enumeration" lengthBit="1" description="Compression">
+      		<field name="Compression" type="EnumLong" lengthBit="1" description="Compression">
               <enum name="the text is uncompressed" value="0"/>
               <enum name="the text is compressed using the GSM standard" value="1" comment="the text is compressed using the GSM standard compression algorithm. ( see GSM TS 03.42)"/>
           </field>
-      		<field name="Bit 1 significance" type="enumeration" lengthBit="1" description="Bit 1 significance">
+      		<field name="Bit 1 significance" type="EnumLong" lengthBit="1" description="Bit 1 significance">
               <enum name="bits 1 to 0 are reserved and have no message class meaning" value="0"/>
               <enum name="bits 1 to 0 have a message class meaning" value="1"/>
           </field>
-      		<field name="Alphabet" type="enumeration" lengthBit="2" description="Alphabet">
-              <enum name="Default alphabet" value="0" description="b00"/>
-              <enum name="8 bit data" value="1" description="b01"/>
-              <enum name="UCS2 (16bit)" value="2" description="b10"/>
+      		<field name="Alphabet" type="EnumLong" lengthBit="2" description="Alphabet">
+              <enum name="Default alphabet {SCGSM}" value="0" description="b00"/>
+              <enum name="8 bit data {UTF-8}" value="1" description="b01"/>
+              <enum name="UCS2 (16bit) {UFT-16BE}" value="2" description="b10"/>
               <enum name="Reserved" value="3" description="b11"/>
           </field>
-      		<field name="Message Class" type="enumeration" lengthBit="2" description="Message Class">
+      		<field name="Message Class" type="EnumLong" lengthBit="2" description="Message Class">
               <enum name="Class 0" value="0"/>
               <enum name="Class 1   Default meaning: ME-specific" value="1"/>
               <enum name="Class 2   SIM specific message" value="2"/>
@@ -298,7 +298,7 @@
           </field>
         </element>
         <element name="TP-VP" coding="V" description="TP Validity Period" comment="Parameter identifying the time from where the message is no longer valid.">        
-            <field name="TP-VP" type="enumeration" length="1" description="TP User Data" comment="">
+            <field name="TP-VP" type="EnumLong" length="1" description="TP User Data" comment="">
               <enum name="[5-55] min(uts)" value="0-10"/>
               <enum name="[1-12] h(ours)" value="11-143"/>
               <enum name="[12.5-24] h(ours)" value="144-167"/>
@@ -306,14 +306,15 @@
               <enum name="[5-63] w(eeks)" value="197-255"/>
             </field>
         </element>
-        <element name="TP-UD" coding="LV" description="TP User Data" comment="">
-          <field name="TP-UD" type="binary" description="extension"/>
+        <element name="TP-UD" coding="V" description="TP User Data" comment="">
+          <field name="TP-UDL" type="integer" length="1" description="number of characters in the SMS"/>
+          <field name="TP-UD" type="binary" description="SMS text"/>
         </element>
     </element>
     
     <!-- Operation code local value => MAP.asn line 76 -->
     <element name="opCode.localValue" coding="V" description="Operation code local value">
-    		<field name="localValue" type="enumeration" length="1" description="operation code">
+    		<field name="localValue" type="EnumLong" length="1" description="operation code">
             <enum name="updateLocation" value="2"/>
           	<enum name="cancelLocation" value="3"/>
           	<enum name="provideRoamingNumber" value="4"/>
@@ -400,7 +401,7 @@
 
     <!-- Error code local value => MAP.asn line 164 -->
     <element name="errorCode.localValue" coding="V" description="Error code local value">
-    		<field name="localValue" type="enumeration" length="1" description="error code">
+    		<field name="localValue" type="EnumLong" length="1" description="error code">
             <enum name="unknownSubscriber" value="1"/>
             <enum name="unknownMSC" value="3"/>
             <enum name="secureTransportError" value="4"/>

@@ -61,7 +61,11 @@
     
     <testcase name="801_Mobicent_simulator" description="test sigtran MAP" state="true">
         <parameter name="[smsText]" operation="set" value="ssssss"/>
-        <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]"/>
+        <parameter name="[smsAlphabet]" operation="set" value="Default alphabet {SCGSM}:0"/>
+        <!--parameter name="[smsAlphabet]" operation="set" value="8 bit data {UTF-8}:1"/-->
+        <!--parameter name="[smsAlphabet]" operation="set" value="UCS2 (16bit) {UFT-16BE}:2"/-->
+        <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
+        <parameter name="[smsTextLength]" operation="string.length" value="[smsText]"/>
 
         <scenario name="client" file="801_Mobicent_simulator/client.xml" routingName="client"/>
         <scenario name="server" file="801_Mobicent_simulator/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>

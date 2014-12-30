@@ -191,16 +191,35 @@ public class PluggableParameterOperatorString extends AbstractPluggableParameter
             {
             	String value1 = param1.get(i).toString();
             	Parameter paramCharset = operands.get("value2");
+            	String alphabet = null;
                 byte[] bytes = null;
                 if (paramCharset != null)
                 {
-                	bytes = value1.getBytes(paramCharset.get(i).toString());
+                	alphabet = paramCharset.get(i).toString();
+                	String charset = alphabet;
+                	int posCS = charset.indexOf('{');
+                	if (posCS >= 0)
+                	{
+                		charset = charset.substring(posCS + 1);
+                	}
+                	posCS = charset.lastIndexOf('}');
+                	if (posCS >= 0)
+                	{
+                		charset = charset.substring(0, posCS);
+                	}
+                	bytes = value1.getBytes(charset);
                 }
                 else
                 {
                 	bytes = value1.getBytes();
                 }
-                result.add(Array.toHexString(new DefaultArray(bytes)));
+                Array arrayResult = new DefaultArray(bytes);
+                // for GSM SMS alphabet perform a 7bits encoding
+                if (alphabet != null && alphabet.contains("Default alphabet"))
+                {
+                	arrayResult = PluggableParameterOperatorBinary.encodeNumberBits(arrayResult, 7, true);
+                }
+                result.add(Array.toHexString(arrayResult));
             }
             else if (name.equalsIgnoreCase(NAME_S_RANDOM))
             {

@@ -93,21 +93,50 @@ ErrorList.list={...}
 	<test parameter="[string]" condition="string.equals" value="value" />
 	<test parameter="[string]" condition="list.size" value="3" />
 
+  <!-- Default charset option -Dfile.encoding=ISO-8859-15 on the java command -->
   <parameter name="[string]" operation="list.set" value="[ssssss]" />
-  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="GSM-default-alphabet" />
-  <test parameter="[binary]" condition="binary.equals" value="1b3c7373737373731b3e" />
-  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="GSM_0338" />
-  <test parameter="[binary]" condition="binary.equals" value="1b3c7373737373731b3e" />
-  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="GSM_DEFAULT" />
-  <test parameter="[binary]" condition="binary.equals" value="1b3c7373737373731b3e" />
-  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="GSM7" />
-  <test parameter="[binary]" condition="binary.equals" value="1b3c7373737373731b3e" />
-  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="GSM-7BIT" />
-  <test parameter="[binary]" condition="binary.equals" value="1b3c7373737373731b3e" />
-
   <parameter name="[binary]" operation="string.toBinary" value="[string]" />
   <test parameter="[binary]" condition="binary.equals" value="5b7373737373735d" />
+
+  <!-- see <install_dir>/doc/charset/jcharser-Standart_README.txt -->
+  <parameter name="[string]" operation="list.set" value="[ssssss]" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="ISO-8859-1" />
+  <test parameter="[binary]" condition="binary.equals" value="5b7373737373735d" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="UTF-8" />
+  <test parameter="[binary]" condition="binary.equals" value="5b7373737373735d" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="8 bit data {UTF-8}:1" />
+  <test parameter="[binary]" condition="binary.equals" value="5b7373737373735d" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="UTF-16BE" />
+  <test parameter="[binary]" condition="binary.equals" value="005b007300730073007300730073005d" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="UCS2 (16bit) {UTF-16BE}:2" />
+  <test parameter="[binary]" condition="binary.equals" value="005b007300730073007300730073005d" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="UTF-16LE" />
+  <test parameter="[binary]" condition="binary.equals" value="5b007300730073007300730073005d00" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="UTF-16" />
+  <test parameter="[binary]" condition="binary.equals" value="feff005b007300730073007300730073005d" />
   
+  
+  <!-- see <install_dir>/doc/charset/jcharser-SMS_README.txt -->
+  <parameter name="[string]" operation="list.set" value="[ssssss]" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="UTF-7" />
+  <test parameter="[binary]" condition="binary.equals" value="2b4146732d7373737373732b4146302d" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="UTF-7-OPTIONAL" />
+  <test parameter="[binary]" condition="binary.equals" value="5b7373737373735d" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="SCGSM" />
+  <test parameter="[binary]" condition="binary.equals" value="1b3c7373737373731b3e" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="Default alphabet {SCGSM}:0" />
+  <test parameter="[binary]" condition="binary.equals" value="1bde7c3e9fcfe71b1f" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="hp-roman8" />
+  <test parameter="[binary]" condition="binary.equals" value="5b7373737373735d" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="ISO-8859-8-BIDI" />
+  <test parameter="[binary]" condition="binary.equals" value="5b7373737373735d" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="ISO-8859-6-BIDI" />
+  <test parameter="[binary]" condition="binary.equals" value="5b7373737373735d" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="KOI8-U" />
+  <test parameter="[binary]" condition="binary.equals" value="5b7373737373735d" />
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="MIK" />
+  <test parameter="[binary]" condition="binary.equals" value="5b7373737373735d" />
+    
 	<!-- WWW-Authenticate: Digest realm="sip.mobistar.fr",domain="sip:ttcnserver@sip.mobistar.fr",nonce="1af6e6744f2880715614625e0da87566",stale=false,qop="auth",algorithm=MD5-->
 	<!-- Authorization: Digest username="33975621672@sip.mobistar.com", realm="sip.mobistar.fr", nonce="1af6e6744f2880715614625e0da87566", algorithm=MD5, opaque="", uri="sip:sip.mobistar.com:5060", response="2f7b84fada58e09b82fd42e6cde8c3e5", cnonce="11fc4a0e", qof=auth, nc=00000001 -->
 

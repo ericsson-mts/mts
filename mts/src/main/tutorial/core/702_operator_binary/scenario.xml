@@ -134,6 +134,12 @@
     <parameter name="[res2]" operation="binary.difference" value="fedcba123456120078345678900011" value2="f0123456781200780090001155" />
     <test parameter="[res2]" condition="string.equals" value="[res]" />
     
+    <parameter name="[smsText]" operation="set" value="ssssss"/>
+    <parameter name="[smsAlphabet]" operation="set" value="Default alphabet {SCGSM}:0"/>
+    <!--parameter name="[smsAlphabet]" operation="set" value="8 bit data {UTF-8}:1"/-->
+    <!--parameter name="[smsAlphabet]" operation="set" value="UCS2 (16bit) {UFT-16BE}:2"/-->
+    <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
+    <parameter name="[smsTextLength]" operation="string.length" value="[smsText]"/>
     <parameter name="[xml]" operation="set">
 <![CDATA[<Mo_forwardSM_Arg.Sequence>
    <sm_RP_DA.Choice>
@@ -152,7 +158,7 @@
             <field name="digits" value="33661307173" type="Number_BCD" length="11"/>
       </Bytes></msisdn.C2.BoxedType>
    </sm_RP_OA.Choice>
-   <sm_RP_UI.BoxedType><Bytes>11080b913366600567f70000a906737373737373
+   <sm_RP_UI.BoxedType><Bytes>11080b913366600567f70000a906f3f97c3e9f03
       <element name="Byte1" coding="V" value="11">
         <field name="TP-RP" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0" type="EnumLong" lengthBit="1"/>
         <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="EnumLong" lengthBit="1"/>
@@ -179,18 +185,19 @@
         <field name="Coding Group Bits" value="General Data Coding indication:0" type="EnumLong" lengthBit="2"/>
         <field name="Compression" value="the text is uncompressed:0" type="EnumLong" lengthBit="1"/>
         <field name="Bit 1 significance" value="bits 1 to 0 are reserved and have no message class meaning:0" type="EnumLong" lengthBit="1"/>
-        <field name="Alphabet" value="Default alphabet:0" type="EnumLong" lengthBit="2"/>
+        <field name="Alphabet" value="[smsAlphabet]" type="EnumLong" lengthBit="2"/>
         <field name="Message Class" value="Class 0:0" type="EnumLong" lengthBit="2"/>
       </element>
       <element name="TP-VP" coding="V" value="a9">
         <field name="TP-VP" value="3d(ays):169" type="EnumLong" length="1"/>
       </element>
-      <element name="TP-UD" coding="LV" value="737373737373">
-        <field name="TP-UD" value="737373737373" type="Binary" length="12"/>
+      <element name="TP-UD" coding="V" value="06f3f97c3e9f03">
+        <field name="TP-UDL" value="[smsTextLength]" type="Integer" length="1"/>
+        <field name="TP-UD" value="[smsBinary]" type="Binary" length="12"/>
       </element>
    </Bytes></sm_RP_UI.BoxedType>
 </Mo_forwardSM_Arg.Sequence>]]></parameter>
-    <parameter name="[asn]" operation="set" value="30288407913366600567f98207913366317071f3041411080b913366600567f70000a906737373737373"/>
+    <parameter name="[asn]" operation="set" value="30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03"/>
     
     <parameter name="[asnresult]" operation="binary.xmlToAsn" value="[xml]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" value3="map/dictionary_MAP .xml"/>
     <test parameter="[asnresult]" condition="binary.equals" value="[asn]" />
@@ -203,8 +210,16 @@
 
     <parameter name="[binary]" operation="set" value="70717273747576777879"/>
     <parameter name="[endian]" operation="binary.endian" value="[binary]" />
-    <test parameter="[endian]" condition="binary.equals" value="0E8E4ECE2eae6eee1e9e" />   
+    <test parameter="[endian]" condition="binary.equals" value="0E8E4ECE2eae6eee1e9e" />
+    <parameter name="[binResult]" operation="binary.endian" value="[endian]" />
+    <test parameter="[binResult]" condition="binary.equals" value="[binary]" />
     
-    
-     
+    <parameter name="[binary]" operation="set" value="737373737373"/>
+    <parameter name="[endian]" operation="binary.encoding" value="[binary]" value2="7" value3="true"/>
+    <test parameter="[endian]" condition="binary.equals" value="F3F97C3e9f03" />
+
+    <parameter name="[binary]" operation="set" value="737373737373"/>
+    <parameter name="[endian]" operation="binary.encoding" value="[binary]" value2="9" value3="true"/>
+    <test parameter="[endian]" condition="binary.equals" value="73e6cc9933670e" />
+         
 </scenario>
