@@ -102,6 +102,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     final private String NAME_BIN_XMLTOASN = "binary.xmlToAsn";
     final private String NAME_BIN_ASNTOXML = "binary.asnToXml";
     final private String NAME_BIN_ENDIAN = "binary.endian";
+    final private String NAME_BIN_ENCODING = "binary.encoding";
 
     
     
@@ -137,6 +138,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_BIN_XMLTOASN));
         this.addPluggableName(new PluggableName(NAME_BIN_ASNTOXML));
         this.addPluggableName(new PluggableName(NAME_BIN_ENDIAN));
+        this.addPluggableName(new PluggableName(NAME_BIN_ENCODING));
         
     }
 
@@ -537,6 +539,21 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 	String string1 = param_1.get(i).toString();
                 	Array array = Array.fromHexString(string1);
                 	Array arrayResult = transformEndian(array);
+                	result.add(Array.toHexString(arrayResult));
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_ENCODING))
+                {
+                	String string1 = param_1.get(i).toString();
+                	Array array = Array.fromHexString(string1);
+                	Parameter param_2 = assertAndGetParameter(operands, "value2");
+                	int nbBits = Integer.valueOf(param_2.get(i).toString()).intValue();
+                	Parameter paramEndian = operands.get("value3");
+                    boolean endian = false;
+                    if (paramEndian != null)
+                    {
+                    	endian = Boolean.valueOf(paramEndian.get(i).toString()).booleanValue();
+                    }
+                    Array arrayResult = encodeNumberBits(array, nbBits, endian);
                 	result.add(Array.toHexString(arrayResult));
                 }
                 else
@@ -983,6 +1000,32 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
 		}
 		return arrayEndian;
     }
-    
+
+    private static Array encodeBinary(Array array, int nbBits)
+    {
+    	int nbBitsResult = array.length * nbBits / 8 + 1;
+		Array arrayResult = new DefaultArray(nbBitsResult);
+		for (int indexBit = 0; indexBit < array.length * 8; indexBit++)
+		{
+				int b = array.getBit(indexBit);
+				int indexBit7 = (indexBit / 8) * nbBits + indexBit % 8;
+				arrayResult.setBit(indexBit7, b);
+		}
+		return arrayResult;
+    }
+
+    protected static Array encodeNumberBits(Array array, int nbBits, boolean endian)
+    {
+	    if (endian)
+	    {
+	    	array = transformEndian(array);
+	    }
+		Array arrayResult = encodeBinary(array, nbBits);
+		if (endian)
+		{
+			arrayResult = transformEndian(arrayResult);
+		}
+		return arrayResult;
+    }
 }
 

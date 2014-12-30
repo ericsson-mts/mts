@@ -100,7 +100,7 @@ public abstract class FieldAbstract
         {
             newField = new IntegerField(fieldRoot);
         } 
-        else if (type.equalsIgnoreCase("enumeration")) 
+        else if (type.equalsIgnoreCase("enumlong")) 
         {
         	newField = new EnumLongField(fieldRoot);
         }
