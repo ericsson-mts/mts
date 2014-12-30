@@ -97,19 +97,28 @@
 			</xs:element>
 			<xs:element name="binary.tostring">
 				<xs:annotation>
-					<xs:documentation>Parses the binary data as a string using the default platform charset.</xs:documentation>
+					<xs:documentation>Converts the binary (hexadecimal) data as a string using a given charset "value2"; 
+                            if not specified, then we use the default charset of the java platform.
+                            Please look at the <install_dir>/doc/charset directory to have the supported charset;
+                            you can add you own charset into the <install_dir>/lib directory. </xs:documentation>
 				</xs:annotation>
 				<xs:complexType>
 					<xs:attribute name="name" type="xs:string" use="required">
 						<xs:annotation>
-							<xs:documentation>Contains the resulting string.</xs:documentation>
+							<xs:documentation>Returns the resulting string.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 					<xs:attribute name="value" type="xs:string" use="required">
 						<xs:annotation>
-							<xs:documentation>The binary input data.</xs:documentation>
+							<xs:documentation>The binary data to compute.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
+          <xs:attribute name="value2" type="xs:string" use="optional">
+						<xs:annotation>
+							<xs:documentation>The charset to use.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="binary.frombase64">
@@ -617,7 +626,7 @@
 			</xs:element>
       <xs:element name="binary.endian">
 				<xs:annotation>
-					<xs:documentation>Perform an endian transformation on the binary data. If little indian then the result is big endian and the other. </xs:documentation>
+					<xs:documentation>Perform an endian transformation on the binary data. If little indian then the result is big endian and the reverse. </xs:documentation>
 				</xs:annotation>
 				<xs:complexType>
 					<xs:attribute name="name" type="xs:string" use="required">
@@ -631,7 +640,61 @@
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>
+			</xs:element>
+      <xs:element name="binary.encode">
+				<xs:annotation>
+					<xs:documentation>Perform an encoding of the binary data (8 bits) to a binary data with a given "value2" number of bits. Perform optionally "value3" binary endian transformations before and after.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The resulting binary data.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The binary data to encode.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+          <xs:attribute name="value2" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The number of bits to encode on.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+          <xs:attribute name="value3" type="xs:string" use="optional">
+						<xs:annotation>
+							<xs:documentation>The flag to tell whether we want binary endian transformations before and after (Default value is true is missing).</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
 			</xs:element>																																																						
+      <xs:element name="binary.decode">
+				<xs:annotation>
+					<xs:documentation>Perform a decoding of the binary data on a given ("value2" attribute) number of bits to binary data (8 bits). Perform optionally ("value3" attribute) binary endian transformations before and after.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The resulting binary data.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The binary data to decode.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+          <xs:attribute name="value2" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The number of bits to decode on.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+          <xs:attribute name="value3" type="xs:string" use="optional">
+						<xs:annotation>
+							<xs:documentation>The flag to tell whether we want binary endian transformations before and after (Default value is true is missing).</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>																																																																																																												
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="OperationBoolean">
@@ -2277,22 +2340,25 @@
 			</xs:element>
 			<xs:element name="string.tobinary">
 				<xs:annotation>
-					<xs:documentation>Return an hexadecimal representation of the string "value" using a given charset "value2"; if not specified, then we use the default charset of the java platform.</xs:documentation>
+					<xs:documentation>Return an binary (hexadecimal) data of the string "value" using a given charset "value2"; 
+                            if not specified, then we use the default charset of the java platform.
+                            Please look at the <install_dir>/doc/charset directory to have the supported charset;
+                            you can add you own charset into the <install_dir>/lib directory. </xs:documentation>
 				</xs:annotation>
 				<xs:complexType>
 					<xs:attribute name="name" type="xs:string" use="required">
 						<xs:annotation>
-							<xs:documentation>Resulting hexadecimal data.</xs:documentation>
+							<xs:documentation>Resulting binary data.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 					<xs:attribute name="value" type="xs:string" use="required">
 						<xs:annotation>
-							<xs:documentation>Base string.</xs:documentation>
+							<xs:documentation>The string data to compute.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
-					<xs:attribute name="value2" type="xs:string" use="required">
+					<xs:attribute name="value2" type="xs:string" use="optional">
 						<xs:annotation>
-							<xs:documentation>Charset to use.</xs:documentation>
+							<xs:documentation>The charset to use.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>

@@ -5,14 +5,74 @@
     <!-- test exists / create / delete -->
     <parameter name="[result1]" operation="string.tobinary"   value="123" />
     <parameter name="[result2]" operation="binary.parse"      value="h31 h32 h33" />
-    <test parameter="[result1]" condition="binary.equals"     value="[result2]"/>
+    <test parameter="[result2]" condition="binary.equals"     value="[result1]"/>
     
-    <parameter name= "[result3]" operation ="binary.parse" value="10:4"/>
+    <parameter name= "[result3]" operation = "binary.parse" value="10:4"/>
     <test parameter="[result3]" condition="binary.equals"     value="0000000a"/>
     
-    <parameter name="[result2]" operation="binary.tostring"   value="[result1]" />
+    <parameter name="[result2]" operation="binary.tostring"   value="313233" />
     <test parameter="[result2]" condition="string.equals"     value="123"/>
     
+      <!-- Default charset option -Dfile.encoding=ISO-8859-15 on the java command -->
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+  
+    <!-- see <install_dir>/doc/charset/jcharser-Standart_README.txt -->
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="ISO-8859-1" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="UTF-8" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="8 bit data {UTF-8}:1" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="005b007300730073007300730073005d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="UTF-16BE" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="005b007300730073007300730073005d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="UCS2 (16bit) {UTF-16BE}:2" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b007300730073007300730073005d00" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="UTF-16LE" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="feff005b007300730073007300730073005d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="UTF-16" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    
+    <!-- see <install_dir>/doc/charset/jcharser-SMS_README.txt -->
+    <parameter name="[binary]" operation="list.set" value="2b4146732d7373737373732b4146302d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="UTF-7" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="UTF-7-OPTIONAL" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="1b3c7373737373731b3e" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="SCGSM" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="1bde7c3e9fcfe71b1f" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="Default alphabet {SCGSM}:0" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]@" />
+    <parameter name="[binary]" operation="list.set" value="C8F71D14969741F977FD07" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="Default alphabet {SCGSM}:0" />
+    <test parameter="[string]" condition="string.equals" value="How are you?@" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="hp-roman8" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="ISO-8859-8-BIDI" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="ISO-8859-6-BIDI" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="KOI8-U" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="MIK" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+          
     <parameter name="[result2]" operation="binary.parse"      value="h32" />
     <test parameter="[result1]" condition="binary.contains"   value="[result2]"/>
     
@@ -215,11 +275,19 @@
     <test parameter="[binResult]" condition="binary.equals" value="[binary]" />
     
     <parameter name="[binary]" operation="set" value="737373737373"/>
-    <parameter name="[endian]" operation="binary.encoding" value="[binary]" value2="7" value3="true"/>
+    <parameter name="[endian]" operation="binary.encode" value="[binary]" value2="7"/>
     <test parameter="[endian]" condition="binary.equals" value="F3F97C3e9f03" />
 
     <parameter name="[binary]" operation="set" value="737373737373"/>
-    <parameter name="[endian]" operation="binary.encoding" value="[binary]" value2="9" value3="true"/>
+    <parameter name="[endian]" operation="binary.encode" value="[binary]" value2="9" value3="true"/>
     <test parameter="[endian]" condition="binary.equals" value="73e6cc9933670e" />
-         
+    
+    <parameter name="[binary]" operation="set" value="F3F97C3e9f03"/>
+    <parameter name="[endian]" operation="binary.decode" value="[binary]" value2="7" value3="true"/>
+    <test parameter="[endian]" condition="binary.equals" value="73737373737300" />
+
+    <parameter name="[binary]" operation="set" value="73e6cc9933670e"/>
+    <parameter name="[endian]" operation="binary.decode" value="[binary]" value2="9" value3="true"/>
+    <test parameter="[endian]" condition="binary.equals" value="73737373737300" />
+                  
 </scenario>
