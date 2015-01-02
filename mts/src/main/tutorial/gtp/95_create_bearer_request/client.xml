@@ -163,6 +163,9 @@
 			</element>
 	</sendMessageGTP>
 	
+  <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+  <test parameter="[binary]" condition="binary.equals" value="485f009f3430015e56b6020049000100055d008e0049000100005400260022107e11100a57b341ffffffff3011400457500483217f0e100a57b341ffffffff3011500483570009008180002002ac14462a570009018580002002ac14462a500016004901000000002b000000002b000000002b000000002b5e0004008b00015461000100004e001a008080211001000010810600000000830600000000000d00000a00"/> 
+
 	<receiveMessageGTP name="receive message" request="false" type="Create Bearer Request:95" result="Request accepted:16">
         <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
