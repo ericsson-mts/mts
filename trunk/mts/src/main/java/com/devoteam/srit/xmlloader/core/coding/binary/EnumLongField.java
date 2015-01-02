@@ -77,7 +77,8 @@ public class EnumLongField extends IntegerField
         		String endStr = valueStr.substring(iPos + 1);
         		EnumRange range = new EnumRange(beginStr, endStr, nameStr);
         		ranges.add(range);
-	            this.valuesByLabel.put(nameStr, range.getBeginValue());
+	            //this.valuesByLabel.put(nameStr, range.getBeginValue());
+	            //this.labelsByValue.put(value, nameStr);
         	}
         	else
         	{
