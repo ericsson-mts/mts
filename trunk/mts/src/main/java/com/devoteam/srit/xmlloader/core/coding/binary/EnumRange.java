@@ -38,11 +38,12 @@ public class EnumRange
     private long beginValue;
 	private long endValue;
 
-	private String strBeginName;
-	private String strEndName;
+	private String name = null;
+	private String strBeginName = null;
+	private String strEndName = null;
 	
-	private double beginName;
-	private double endName;
+	private double beginName = Double.MIN_VALUE;
+	private double endName = Double.MIN_VALUE;
 	
 	public long getBeginValue()
 	{
@@ -56,30 +57,37 @@ public class EnumRange
     	byte[] endBytes = Utils.parseBinaryString(endStr.trim());
     	this.endValue = (int) endBytes[0] & 0xFF;
     	
+    	this.name = name;
+    	
 		String strRange = name;
-		this.strBeginName = name;
-		this.strEndName = name;
-		int iPosBegin = name.indexOf('[');
+		int iPosBegin = strRange.indexOf('[');
     	if (iPosBegin >= 0)
     	{
     		this.strBeginName = strRange.substring(0, iPosBegin);
+    		this.name = null;
     		strRange = strRange.substring(iPosBegin);
     	}
-		int iPosEnd = strRange.indexOf(']');
+		int iPosEnd = strRange.lastIndexOf(']');
     	if (iPosEnd >= 0)
     	{
     		this.strEndName = strRange.substring(iPosEnd + 1);
+    		this.name =  null;
     		strRange = strRange.substring(1, iPosEnd);
     	}
-    	String strRangeBegin = strRange;
-    	String strRangeEnd = strRange;
-		int iPosMinus = strRange.indexOf('-');
-    	if (iPosMinus >= 0)
+    	
+    	// we have a range in the label
+    	if (this.name == null)
     	{
-    		strRangeBegin = strRange.substring(0, iPosMinus);
-    		this.beginName = Double.parseDouble(strRangeBegin);
-    		strRangeEnd = strRange.substring(iPosMinus + 1);
-        	this.endName = Double.parseDouble(strRangeEnd);
+	    	String strRangeBegin = strRange;
+	    	String strRangeEnd = strRange;
+			int iPosMinus = strRange.indexOf('-');
+	    	if (iPosMinus >= 0)
+	    	{
+	    		strRangeBegin = strRange.substring(0, iPosMinus);
+	    		this.beginName = Double.parseDouble(strRangeBegin);
+	    		strRangeEnd = strRange.substring(iPosMinus + 1);
+	        	this.endName = Double.parseDouble(strRangeEnd);
+	    	}
     	}
     }
 
@@ -132,16 +140,22 @@ public class EnumRange
 	{
 		if ((value >= this.beginValue) && (value <= this.endValue))
 		{
-
-			double doubleLabel = (this.endName - this.beginName);
-			doubleLabel = doubleLabel / (this.endValue - this.beginValue);
-			doubleLabel = this.beginName + (value - this.beginValue) * doubleLabel;
-			
-			DecimalFormat df = new DecimalFormat("#.##");
-			df.setRoundingMode(RoundingMode.HALF_UP);
-			String doubleName = df.format(doubleLabel);
-			
-			return this.strBeginName + doubleName + this.strEndName;
+			if (this.name != null)
+			{
+				return this.name;
+			}
+			else
+			{
+				double doubleLabel = (this.endName - this.beginName);
+				doubleLabel = doubleLabel / (this.endValue - this.beginValue);
+				doubleLabel = this.beginName + (value - this.beginValue) * doubleLabel;
+				
+				DecimalFormat df = new DecimalFormat("#.##");
+				df.setRoundingMode(RoundingMode.HALF_UP);
+				String doubleName = df.format(doubleLabel);
+				
+				return this.strBeginName + doubleName + this.strEndName;
+			}
 		}
 		else
 		{
@@ -152,12 +166,20 @@ public class EnumRange
 	{
 		String ret = "<enum ";
 		ret += " value=\""+ this.beginValue + "-"+ this.endValue + "\"";
-		ret += " name=\"" + this.strBeginName + "[";
-    	DecimalFormat df = new DecimalFormat("#.##");
-    	df.setRoundingMode(RoundingMode.HALF_UP);
-    	ret += df.format(beginName) + "-" + df.format(endName);
-    	ret += this.strEndName + "\"";
-		ret += "\"/>";
+		if (this.name != null)
+    	{
+			ret += " name=\"" + this.name + "\"";
+    	}
+		// we have a range in the label
+		else
+		{
+			ret += " name=\"" + this.strBeginName + "[";
+	    	DecimalFormat df = new DecimalFormat("#.##");
+	    	df.setRoundingMode(RoundingMode.HALF_UP);
+	    	ret += df.format(beginName) + "-" + df.format(endName);
+	    	ret += "]" + this.strEndName + "\"";
+	    }
+		ret += "/>";
 		return ret;
 	}
 }
