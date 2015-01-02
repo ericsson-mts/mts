@@ -104,6 +104,10 @@ public abstract class FieldAbstract
         {
         	newField = new EnumLongField(fieldRoot);
         }
+        else if (type.equalsIgnoreCase("enumeration")) 
+        {
+        	newField = new EnumLongField(fieldRoot);
+        }
         else if (type.equalsIgnoreCase("enum_string")) 
         {
         	newField = new EnumStringField(fieldRoot);
@@ -170,13 +174,13 @@ public abstract class FieldAbstract
         try
         {
         	strVal = this.getValue(array);
+        	elemString.append("value=\"" + strVal + "\" ");
         }
         catch (Exception e)
         {
         	// GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Exception in toString() method for field " + this._name);
         	// nothing to do 
         }
-        elemString.append("value=\"" + strVal + "\" ");
         String type = this.getClass().getSimpleName().split("Field")[0];
         if ("NumberBCD".equalsIgnoreCase(type))
         {
@@ -184,17 +188,20 @@ public abstract class FieldAbstract
         }
         elemString.append("type=\"" + type + "\" ");
         int intLen = this.length;
-        if (intLen <= 0)
+        if (intLen <= 0 && strVal != null)
         { 
         	intLen = strVal.length() * 8;
         }
-        if (intLen % 8 == 0)
+        if (intLen > 0)
         {
-        	elemString.append("length=\"" + intLen / 8 + "\" ");
-        }
-        else
-        {
-        	elemString.append("lengthBit=\"" + intLen + "\" ");
+	        if (intLen % 8 == 0)
+	        {
+	        	elemString.append("length=\"" + intLen / 8 + "\" ");
+	        }
+	        else
+	        {
+	        	elemString.append("lengthBit=\"" + intLen + "\" ");
+	        }
         }
         elemString.append("/>\n");
         return elemString.toString();
