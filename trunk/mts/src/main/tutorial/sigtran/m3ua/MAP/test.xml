@@ -70,6 +70,18 @@
         <scenario name="client" file="801_Mobicent_simulator_SUBMIT/client.xml" routingName="client"/>
         <scenario name="server" file="801_Mobicent_simulator_SUBMIT/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
+
+    <testcase name="801_Mobicent_simulator_DELIVER" description="test sigtran MAP" state="true">
+        <parameter name="[smsText]" operation="set" value="ssssss"/>
+        <parameter name="[smsAlphabet]" operation="set" value="Default alphabet {SCGSM}:0"/>
+        <!--parameter name="[smsAlphabet]" operation="set" value="8 bit data {UTF-8}:1"/-->
+        <!--parameter name="[smsAlphabet]" operation="set" value="UCS2 (16bit) {UFT-16BE}:2"/-->
+        <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
+        <parameter name="[smsTextLength]" operation="string.length" value="[smsText]"/>
+
+        <scenario name="client" file="801_Mobicent_simulator_DELIVER/client.xml" routingName="client"/>
+        <scenario name="server" file="801_Mobicent_simulator_DELIVER/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
     
     <testcase name="802_GMPC_capture" description="test sigtran MAP" state="true">
         <scenario name="client" file="802_GMPC_capture/client.xml" routingName="client"/>
