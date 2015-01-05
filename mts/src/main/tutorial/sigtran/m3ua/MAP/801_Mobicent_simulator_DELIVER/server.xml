@@ -31,7 +31,7 @@
         
     </sendMessageSIGTRAN>
     
-    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="46">
+    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="44">
       <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
       <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
       <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
@@ -42,20 +42,16 @@
     <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_UI.BoxedType&gt;&lt;Bytes&gt;"/>
 
-    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;SMS-SUBMIT&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;SMS-DELIVER&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-RP&quot; value=&quot;TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-UDHI&quot; value=&quot;The TP UD field contains only the short message:0&quot;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-SRR&quot; value=&quot;A status report is not requested:0&quot;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-VPF&quot; value=&quot;TP VP field present - relative format:2&quot;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-RD&quot; value=&quot;Instruct the SC to accept duplicates:0&quot;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-MTI&quot; value=&quot;SMS-SUBMIT / SMS-SUBMIT-REPORT:1&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-SRI&quot; value=&quot;A status report is not requested:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-LP&quot; value=&quot;The message has not been forwarded and is not a spawned message.:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-MMS&quot; value=&quot;More messages are waiting for the MS in this SC:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-MTI&quot; value=&quot;SMS-DELIVER / SMS-DELIVER-REPORT:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
-    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-MR&quot;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-MR&quot; value=&quot;8&quot;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
-
-    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-DA&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-OA&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;extension&quot; value=&quot;no extension:1&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;nature of address&quot; value=&quot;international number:1&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;numbering plan&quot; value=&quot;ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1&quot;"/>
@@ -76,8 +72,8 @@
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Message Class&quot; value=&quot;Class 0:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
-    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-VP&quot;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-VP&quot; value=&quot;3 d(ays):169&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-SCTS&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-SCTS&quot; value=&quot;67072710101000&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
     <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-UD&quot;"/>
@@ -87,24 +83,6 @@
 
     <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/sm_RP_UI.BoxedType&gt;"/>
 
-    <!-- Message encoded value -->
-    <parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
-    <parameter name="[result ]" operation="binary.difference" value="[data1]" value2="[data]"/>
-    
-    <if>
-    	<condition>
-    		<test parameter="[data1]" condition="binary.equals" value="[data]"/>
-    	</condition>
-    	<else>
-    		<log level="ERROR">	Message received :	</log>
-    		<log level="ERROR">	"[data1]"			</log>
-    		<log level="ERROR">	Message expected :	</log>
-    		<log level="ERROR">	"[data]"			</log>
-    	</else>
-    </if>
-    
-    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
-	
     <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
         
     <!-- AP LAYER -->
@@ -219,10 +197,5 @@
         </parameter-->
     </UA>
     </sendMessageSIGTRAN>
-
-    <!-- Message encoded value -->
-  	<parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />			  
-    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
-    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
-
+  
 </scenario>
