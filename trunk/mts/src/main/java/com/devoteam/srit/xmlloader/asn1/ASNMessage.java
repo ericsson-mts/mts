@@ -122,14 +122,26 @@ public abstract class ASNMessage
 	    	embedded.setCondition(null);
     	}
  	}
-    
+
 	// get the element definition (enumeration binary data) from the dictionary
-    public ElementAbstract getElementFromDico(Object parentObject, String resultPath) 
+    public ElementAbstract getElementFromDico(Object parentObject, String resultPath, byte[] bytes) 
  	{    
 		ElementAbstract elementDico = null;
 		if (parentObject != null)
 		{
     		String simpleClassName = parentObject.getClass().getSimpleName();
+    		if (bytes != null && "Sm_RP_UI".equals(simpleClassName))
+    		{
+    			int TP_MTI = bytes[0] & (byte) 3;
+    			if (TP_MTI == 0)
+    			{
+    				simpleClassName = simpleClassName + "_SMS-DELIVER";
+    			}
+    			if (TP_MTI == 1)
+    			{
+    				simpleClassName = simpleClassName + "_SMS-SUBMIT";
+    			}
+    		}
 	    	elementDico = getElementByLabel(simpleClassName);
 		}
     	if (elementDico == null)
@@ -154,6 +166,12 @@ public abstract class ASNMessage
     	return elementDico;
  	}
     
+	// get the element definition (enumeration binary data) from the dictionary
+    public ElementAbstract getElementFromDico(Object parentObject, String resultPath) 
+ 	{
+    	return getElementFromDico(parentObject, resultPath, null);
+ 	}
+
     // get the embedded definition form the message (for conditional) and the dictionary
     public Embedded getEmbeddedFromDico(String name, String type) 
  	{

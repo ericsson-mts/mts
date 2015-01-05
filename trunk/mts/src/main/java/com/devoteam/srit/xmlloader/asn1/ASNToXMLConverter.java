@@ -508,7 +508,7 @@ public class ASNToXMLConverter
 	    	ElementAbstract elementDico = null;
 	    	if (message != null)
 	    	{
-		    	elementDico = message.getElementFromDico(parentObj, resultPath);
+		    	elementDico = message.getElementFromDico(parentObj, resultPath, bytes);
 	    	}
         	if (elementDico != null)
         	{
