@@ -21,7 +21,7 @@
           <!--field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
           <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
           <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
-          <field name="digits" value="[MSISDN-User1]" type="Number_BCD" length="11"/-->
+          <field name="digits" value="[MSISDN-User1]" type="Number_BCD"/-->
     </Bytes></msisdn.C2.BoxedType>
 </sm_RP_OA.Choice>
 ]]>
@@ -37,7 +37,7 @@
           <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
           <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
           <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
-          <field name="digits" value="[MSISDN-SMSC]" type="Number_BCD" length="11"/>
+          <field name="digits" value="[MSISDN-SMSC]" type="Number_BCD"/>
     </Bytes></serviceCentreAddressDA.C4.BoxedType>
 </sm_RP_DA.Choice>
 ]]>
@@ -79,7 +79,7 @@
     <field name="Message Class" value="Class 0:0" type="EnumLong" lengthBit="2"/>
   </element>
   <element name="TP-VP" coding="V">
-    <field name="TP-VP" value="255" type="Integer" length="1"/>
+    <field name="TP-VP" value="63 w(eeks):255" type="Integer" length="1"/>
   </element>
   <element name="TP-UD" coding="LV">
     <field name="TP-UDL" value="[smsTextLength]" type="integer" length="1"/>
@@ -96,13 +96,9 @@
     <!--parameter name="[asn]" operation="set"    value="00000007913306000000f32131010b913336080600f20000ff13d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
     <!--parameter name="[binMAPMessage]" operation="binary.xmlToAsn" value="[xml]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" value3="map/dictionary_MAP .xml"/-->
     <parameter name="[binMAPMessage]" operation="set" value="[RP-DATA_BIN][RP-Message-Reference_BIN][RP-Originator-Address_BIN][RP-Destination-Address_BIN][RP-User-Data_BIN]"/>
-    <parameter name="[binMAPMessage]" operation="set"    value="00000007913306000000F32131010B913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04"/>
+    <!--parameter name="[binMAPMessage]" operation="set"    value="00000007913306000000F32131010B913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
     <!--parameter name="[binMAPMessage]" operation="set" value="[asn]"/-->
     <!--test parameter="[binMAPMessage]" condition="binary.equals" value="[asn]" /-->
-    <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/> 
-
-    <!-- send RP-DATA -->
-    <parameter name="[binMAPMessage]" operation="set"    value="00000007913306000000F32131010B913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04"/>
     <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/> 
     
     <createListenpointSIP name="[scenarioName]" localHost="[localHostSIP]" localPort="[Port-User1]" transport="[Transport]"/>
@@ -112,6 +108,7 @@
     <parameter name="[newCallId]" operation="number.random" value="10000000"/>
     <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
 
+    <!-- send RP-DATA -->
 		<sendMessageSIP name="Send MESSAGE" listenpoint="[scenarioName]"  remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
     <![CDATA[
     MESSAGE sip:[inviteeName1]@[ISIM_DOMAIN_ADDR] SIP/2.0
