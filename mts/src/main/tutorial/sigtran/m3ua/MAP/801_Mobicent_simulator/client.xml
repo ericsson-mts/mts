@@ -77,7 +77,7 @@
                    <!--noSM_RP_OA.C5></noSM_RP_OA.C5-->
                 </sm_RP_OA.Choice>
                 <sm_RP_UI.BoxedType><Bytes>
-                  <element name="Byte1" coding="V" description="First byte of the data" comment="">
+                  <element name="SMS-SUBMIT" coding="V" description="First byte of the data" comment="">
                     <field name="TP-RP" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0" type="enumeration" lengthBit="1" description="TP Reply Path"/>
                     <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="enumeration" lengthBit="1" description="TP User Data Header Indicator" comment="Parameter indicating that the TP UD field contains a Header."/>
                     <field name="TP-SRR" value="A status report is not requested:0" type="enumeration" lengthBit="1" description="TP Status Report Request" comment="Parameter indicating if the MS is requesting a status report."/>
@@ -238,7 +238,7 @@
     <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_UI.BoxedType&gt;&lt;Bytes&gt;"/>
 
-    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;Byte1&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;SMS-SUBMIT&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-RP&quot; value=&quot;TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-UDHI&quot; value=&quot;The TP UD field contains only the short message:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-SRR&quot; value=&quot;A status report is not requested:0&quot;"/>
