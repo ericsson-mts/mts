@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- useful link to check message encoding http://www.smartposition.nl/resources/sms_pdu.html -->
+<!-- wireshark is able to decode the message and to show in a readable way -->
 
 <scenario>
 
     <parameter name="[clientName]" operation="set" value="[MSISDN-User1]"/>
     <parameter name="[inviteeName1]" operation="set" value="[MSISDN-User2]"/>
-    <parameter name="[remotePortSIP]" operation="set" value="[Port-User2]"/>
+    <!--parameter name="[remotePortSIP]" operation="set" value="[Port-User2]"/-->
 
-    <!-- send RP-DATA -->
-    <!-- useful link to check message encoding http://www.smartposition.nl/resources/sms_pdu.html -->
-    <!-- wireshark is able to decode the message and to show in a readable way -->
+    <createListenpointSIP name="[scenarioName]" localHost="[localHostSIP]" localPort="[Port-User1]" transport="[Transport]"/>
+
+    <!-- send RP-DATA with SMS-SUBMIT from the originating side -->
     <parameter name="[RP-DATA_BIN]" operation="set" value="00"/>
     
     <parameter name="[RP-Message-Reference_BIN]" operation="set" value="00"/>
@@ -49,7 +51,7 @@
     <parameter name="[RP-User-Data_XML]" operation="set">
 <![CDATA[
 <sm_RP_UI.BoxedType><Bytes>
-  <element name="Byte1" coding="V">
+  <element name="SMS-SUBMIT" coding="V">
     <field name="TP-RP" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0" type="EnumLong" lengthBit="1"/>
     <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="EnumLong" lengthBit="1"/>
     <field name="TP-SRR" value="[TP-SRR_Status-Report-Indicator]" type="EnumLong" lengthBit="1"/>
@@ -101,15 +103,13 @@
     <!--test parameter="[binMAPMessage]" condition="binary.equals" value="[asn]" /-->
     <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/> 
     
-    <createListenpointSIP name="[scenarioName]" localHost="[localHostSIP]" localPort="[Port-User1]" transport="[Transport]"/>
-    
     <parameter name="[localTag]" operation="string.random" value="10"/>
     <parameter name="[newBranchId]" operation="string.random" value="10"/>
     <parameter name="[newCallId]" operation="number.random" value="10000000"/>
     <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
 
     <!-- send RP-DATA -->
-		<sendMessageSIP name="Send MESSAGE" listenpoint="[scenarioName]"  remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+		<sendMessageSIP name="Send MESSAGE" listenpoint="[scenarioName]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
     <![CDATA[
     MESSAGE sip:[inviteeName1]@[ISIM_DOMAIN_ADDR] SIP/2.0
     Via: SIP/2.0/[transportResponse] [localHostSIP]:[Port-User1];branch=z9hG4bK[newBranchId]
@@ -130,7 +130,7 @@
     <receiveMessageSIP name="Wait 200 OK" request="false" type="MESSAGE" result="202">
     </receiveMessageSIP>
 
-    <receiveMessageSIP name="Wait MESSAGE" request="true" type="MESSAGE">
+    <receiveMessageSIP name="Wait MESSAGE" listenpoint="[scenarioName]" request="true" type="MESSAGE">
     		<parameter name="[to]" operation="protocol.setFromMessage" value="header.To"/>
     		<parameter name="[from]" operation="protocol.setFromMessage" value="header.From"/>
     		<parameter name="[callId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
@@ -149,7 +149,7 @@
     <!--test parameter="[content]" condition="binary.equals" value="[binMAPMessage]"/-->
     
     <parameter name="[localTag]" operation="string.random" value="10"/>
-		<sendMessageSIP name="Send 200 OK">
+		<sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
 <![CDATA[SIP/2.0 200 OK
 Via: [via]
 From: [from]
@@ -162,7 +162,7 @@ Content-Length: 0
 ]]>		
     </sendMessageSIP>
 
-    <!--receiveMessageSIP name="Wait MESSAGE" request="true" type="MESSAGE">
+    <!--receiveMessageSIP name="Wait MESSAGE" listenpoint="[scenarioName]" request="true" type="MESSAGE">
         <parameter name="[to]" operation="protocol.setFromMessage" value="header.To"/>
         <parameter name="[toURI]" operation="protocol.setFromMessage" value="header.To.Address.URI"/>
         <parameter name="[from]" operation="protocol.setFromMessage" value="header.From"/>
@@ -181,7 +181,7 @@ Content-Length: 0
     <!--test parameter="[content]" condition="binary.equals" value="[binMAPMessage]"/-->
 
     <!--parameter name="[localTag]" operation="string.random" value="10"/>
-    <sendMessageSIP name="Send 202 Accepted">
+    <sendMessageSIP name="Send 202 Accepted" listenpoint="[scenarioName]">
 <![CDATA[SIP/2.0 202 Accepted
 Via: [via]
 From: [from]
@@ -227,7 +227,7 @@ Content-Length: 0
         [strMAPMessage]]]></sendMessageSIP>
 
 
-        <receiveMessageSIP name="Wait 200 OK" request="false" type="MESSAGE" result="200">
+        <receiveMessageSIP name="Wait 200 OK" listenpoint="[scenarioName]" request="false" type="MESSAGE" result="200">
         </receiveMessageSIP-->
 
 
