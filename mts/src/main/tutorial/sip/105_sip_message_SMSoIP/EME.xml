@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- useful link to check message encoding http://www.smartposition.nl/resources/sms_pdu.html -->
+<!-- wireshark is able to decode the message and to show in a readable way -->
+
+<scenario>
+        
+    <!-- receive RP-DATA -->
+		<receiveMessageSIP name="Wait MESSAGE" request="true" type="MESSAGE">
+    		<parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+    		<parameter name="[to]" operation="protocol.setFromMessage" value="header.To"/>
+    		<parameter name="[toURI]" operation="protocol.setFromMessage" value="header.To.Address.URI"/>
+        <parameter name="[fromHost]" operation="protocol.setFromMessage" value="header.From.Address.URI.host"/>
+        <parameter name="[fromPort]" operation="protocol.setFromMessage" value="header.From.Address.URI.port"/>
+        <parameter name="[from]" operation="protocol.setFromMessage" value="header.From"/>
+    		<parameter name="[fromURI]" operation="protocol.setFromMessage" value="header.From.Address.URI"/>
+        <parameter name="[callId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    		<parameter name="[cSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    		<parameter name="[via]" operation="protocol.setFromMessage" value="header.Via"/>
+        <parameter name="[strContent]" operation="protocol.setFromMessage" value="content"/>
+		</receiveMessageSIP>
+    
+    <parameter name="[binContent]" operation="string.toBinary" value="[strContent]"/>
+
+    <parameter name="[index]" operation="set" value="0"/>
+    <parameter name="[RP-DATA_BIN]" operation="binary.subBinary" value="[binContent]" value2="[index]" value3="1"/>
+    <test parameter="[RP-DATA_BIN]" condition="binary.equals" value="00"/>
+    
+    <parameter name="[index]" operation="number.add" value="[index]" value2="1"/>
+    <parameter name="[RP-Message-Reference_BIN]" operation="binary.subBinary" value="[binContent]" value2="[index]" value3="1"/>
+    <test parameter="[RP-Message-Reference_BIN]" condition="binary.equals" value="00"/>
+
+    <parameter name="[index]" operation="number.add" value="[index]" value2="1"/>
+    <parameter name="[RP-Originator-Address_LENBIN]" operation="binary.subBinary" value="[binContent]" value2="[index]" value3="1"/>
+    <parameter name="[RP-Originator-Address_LEN]" operation="binary.toNumber" value="[RP-Originator-Address_LENBIN]"/> 
+    <parameter name="[index]" operation="number.add" value="[index]" value2="1"/>
+    <parameter name="[RP-Originator-Address_BIN]" operation="binary.subBinary" value="[binContent]" value2="[index]" value3="[RP-Originator-Address_LEN]"/>
+    <test parameter="[RP-Originator-Address_BIN]" condition="binary.equals" value=""/>
+    <parameter name="[RP-Originator-Address_XML]" operation="binary.asnToXml" value="82[RP-Originator-Address_LENBIN][RP-Originator-Address_BIN]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_OA" value3="map/dictionary_MAP .xml"/>
+
+    <parameter name="[index]" operation="number.add" value="[index]" value2="[RP-Originator-Address_LEN]"/>
+    <parameter name="[RP-Destination-Address_LENBIN]" operation="binary.subBinary" value="[binContent]" value2="[index]" value3="1"/>
+    <parameter name="[RP-Destination-Address_LEN]" operation="binary.toNumber" value="[RP-Destination-Address_LENBIN]"/>
+    <parameter name="[index]" operation="number.add" value="[index]" value2="1"/>
+    <parameter name="[RP-Destination-Address_BIN]" operation="binary.subBinary" value="[binContent]" value2="[index]" value3="[RP-Destination-Address_LEN]"/>
+    <parameter name="[RP-Destination-Address_XML]" operation="binary.asnToXml" value="84[RP-Destination-Address_LENBIN][RP-Destination-Address_BIN]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_DA" value3="map/dictionary_MAP .xml"/>
+
+    <parameter name="[RP-DA-Extension]" operation="string.xpath" value="[RP-Destination-Address_XML]" value2="//field[@name='extension']"/> 
+    <parameter name="[RP-DA-Extension]" operation="string.xpath" value="[RP-DA-Extension]" value2="//@value"/>
+    <test parameter="[RP-DA-Extension]" condition="string.equals" value="no extension:1"/>
+        
+    <parameter name="[RP-DA-NatureOfAddress]" operation="string.xpath" value="[RP-Destination-Address_XML]" value2="//field[@name='nature of address']"/> 
+    <parameter name="[RP-DA-NatureOfAddress]" operation="string.xpath" value="[RP-DA-NatureOfAddress]" value2="//@value"/>
+    <test parameter="[RP-DA-NatureOfAddress]" condition="string.equals" value="international number:1"/>
+
+    <parameter name="[RP-DA-NumberingPlan]" operation="string.xpath" value="[RP-Destination-Address_XML]" value2="//field[@name='numbering plan']"/> 
+    <parameter name="[RP-DA-NumberingPlan]" operation="string.xpath" value="[RP-DA-NumberingPlan]" value2="//@value"/>
+    <test parameter="[RP-DA-NumberingPlan]" condition="string.equals" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1"/>
+
+    <parameter name="[RP-DA-Digits]" operation="string.xpath" value="[RP-Destination-Address_XML]" value2="//field[@name='digits']"/> 
+    <parameter name="[RP-DA-Digits]" operation="string.xpath" value="[RP-DA-Digits]" value2="//@value"/>
+    <test parameter="[RP-DA-Digits]" condition="string.equals" value="[MSISDN-SMSC]"/>
+
+    <parameter name="[index]" operation="number.add" value="[index]" value2="[RP-Destination-Address_LEN]"/>    
+    <parameter name="[RP-UserData_LENBIN]" operation="binary.subBinary" value="[binContent]" value2="[index]" value3="1"/>
+    <parameter name="[RP-UserData_LEN]" operation="binary.toNumber" value="[RP-UserData_LENBIN]"/>    
+    <parameter name="[index]" operation="number.add" value="[index]" value2="1"/>
+    <parameter name="[RP-UserData_BIN]" operation="binary.subBinary" value="[binContent]" value2="[index]" value3="[RP-UserData_LEN]"/>
+    <parameter name="[RP-UserData_XML]" operation="binary.asnToXml" value="04[RP-UserData_LENBIN][RP-UserData_BIN]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_UI" value3="map/dictionary_MAP .xml"/>
+
+    <parameter name="[RP-UD-TP-RP]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-RP']"/> 
+    <parameter name="[RP-UD-TP-RP]" operation="string.xpath" value="[RP-UD-TP-RP]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-RP]" condition="string.equals" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0"/>
+    <parameter name="[RP-UD-TP-UDHI]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-UDHI']"/> 
+    <parameter name="[RP-UD-TP-UDHI]" operation="string.xpath" value="[RP-UD-TP-UDHI]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-UDHI]" condition="string.equals" value="The TP UD field contains only the short message:0"/>
+    <parameter name="[RP-UD-TP-SRR]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-SRR']"/> 
+    <parameter name="[RP-UD-TP-SRR]" operation="string.xpath" value="[RP-UD-TP-SRR]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-SRR]" condition="string.equals" value="[TP-SRR_Status-Report-Indicator]"/>
+    <parameter name="[RP-UD-TP-VPF]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-VPF']"/> 
+    <parameter name="[RP-UD-TP-VPF]" operation="string.xpath" value="[RP-UD-TP-VPF]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-VPF]" condition="string.equals" value="TP VP field present - relative format:2"/>
+    <parameter name="[RP-UD-TP-RD]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-RD']"/> 
+    <parameter name="[RP-UD-TP-RD]" operation="string.xpath" value="[RP-UD-TP-RD]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-RD]" condition="string.equals" value="Instruct the SC to accept duplicates:0"/>
+    <parameter name="[RP-UD-TP-MTI]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-MTI']"/> 
+    <parameter name="[RP-UD-TP-MTI]" operation="string.xpath" value="[RP-UD-TP-MTI]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-MTI]" condition="string.equals" value="SMS-SUBMIT / SMS-SUBMIT-REPORT:1"/>
+
+    <parameter name="[RP-UD-TP-MR]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-MR']"/> 
+    <parameter name="[RP-UD-TP-MR]" operation="string.xpath" value="[RP-UD-TP-MR]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-MR]" condition="string.equals" value="1"/>
+
+    <parameter name="[RP-UD-TP-DA-Extension]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='extension']"/> 
+    <parameter name="[RP-UD-TP-DA-Extension]" operation="string.xpath" value="[RP-UD-TP-DA-Extension]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-DA-Extension]" condition="string.equals" value="no extension:1"/>
+    <parameter name="[RP-UD-TP-DA-NatureOfAddress]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='nature of address']"/> 
+    <parameter name="[RP-UD-TP-DA-NatureOfAddress]" operation="string.xpath" value="[RP-UD-TP-DA-NatureOfAddress]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-DA-NatureOfAddress]" condition="string.equals" value="international number:1"/>
+    <parameter name="[RP-UD-TP-DA-NumberingPlan]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='numbering plan']"/> 
+    <parameter name="[RP-UD-TP-DA-NumberingPlan]" operation="string.xpath" value="[RP-UD-TP-DA-NumberingPlan]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-DA-NumberingPlan]" condition="string.equals" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1"/>
+    <parameter name="[RP-UD-TP-DA-Digits]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='digits']"/> 
+    <parameter name="[RP-UD-TP-DA-Digits]" operation="string.xpath" value="[RP-UD-TP-DA-Digits]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-DA-Digits]" condition="string.equals" value="[MSISDN-User2]"/>
+
+    <parameter name="[RP-UD-TP-PID-Assignment]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='assignment']"/> 
+    <parameter name="[RP-UD-TP-PID-Assignment]" operation="string.xpath" value="[RP-UD-TP-PID-Assignment]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-PID-Assignment]" condition="string.equals" value="Assigns bits 0..5 as defined below:0"/>
+    
+    <parameter name="[RP-UD-TP-PID-TelematicInterworking]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='telematic interworking']"/> 
+    <parameter name="[RP-UD-TP-PID-TelematicInterworking]" operation="string.xpath" value="[RP-UD-TP-PID-TelematicInterworking]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-PID-TelematicInterworking]" condition="string.equals" value="no interworking, but SME to SME protocol:0"/>
+
+    <parameter name="[RP-UD-TP-PID-TelematicDevices]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='telematic devices']"/> 
+    <parameter name="[RP-UD-TP-PID-TelematicDevices]" operation="string.xpath" value="[RP-UD-TP-PID-TelematicDevices]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-PID-TelematicDevices]" condition="string.equals" value="implicit device type is specific to this SC,:0"/>
+    
+    <parameter name="[RP-UD-TP-DCS-CodingGroupBits]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='Coding Group Bits']"/> 
+    <parameter name="[RP-UD-TP-DCS-CodingGroupBits]" operation="string.xpath" value="[RP-UD-TP-DCS-CodingGroupBits]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-DCS-CodingGroupBits]" condition="string.equals" value="General Data Coding indication:0"/>
+
+    <parameter name="[RP-UD-TP-DCS-Compression]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='Compression']"/> 
+    <parameter name="[RP-UD-TP-DCS-Compression]" operation="string.xpath" value="[RP-UD-TP-DCS-Compression]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-DCS-Compression]" condition="string.equals" value="the text is uncompressed:0"/>
+
+    <parameter name="[RP-UD-TP-DCS-Bit1Significance]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='Bit 1 significance']"/> 
+    <parameter name="[RP-UD-TP-DCS-Bit1Significance]" operation="string.xpath" value="[RP-UD-TP-DCS-Bit1Significance]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-DCS-Bit1Significance]" condition="string.equals" value="bits 1 to 0 are reserved and have no message class meaning:0"/>
+
+    <parameter name="[RP-UD-TP-DCS-Alphabet]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='Alphabet']"/> 
+    <parameter name="[RP-UD-TP-DCS-Alphabet]" operation="string.xpath" value="[RP-UD-TP-DCS-Alphabet]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-DCS-Alphabet]" condition="string.equals" value="[smsAlphabet]"/>
+
+    <parameter name="[RP-UD-TP-DCS-MessageClass]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='Message Class']"/> 
+    <parameter name="[RP-UD-TP-DCS-MessageClass]" operation="string.xpath" value="[RP-UD-TP-DCS-MessageClass]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-DCS-MessageClass]" condition="string.equals" value="Class 0:0"/>
+
+    <parameter name="[RP-UD-TP-VP]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-VP']"/> 
+    <parameter name="[RP-UD-TP-VP]" operation="string.xpath" value="[RP-UD-TP-VP]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-VP]" condition="string.equals" value="63 w(eeks):255"/>
+
+    <!--test parameter="[smsText1]" condition="string.equals" value="[smsText]"/-->
+    
+    <parameter name="[RP-UD-TP-UDL]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-UDL']"/> 
+    <parameter name="[RP-UD-TP-UDL]" operation="string.xpath" value="[RP-UD-TP-UDL]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-UDL]" condition="string.equals" value="[smsTextLength]"/>
+    <parameter name="[RP-UD-TP-UD]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-UD']"/> 
+    <parameter name="[RP-UD-TP-UD]" operation="string.xpath" value="[RP-UD-TP-UD]" value2="//@value"/>
+    <test parameter="[RP-UD-TP-UD]" condition="binary.equals" value="[smsBinary]"/>
+    <parameter name="[RP-UD-TP-UD_Text]" operation="binary.toString" value="[smsBinary]" value2="[RP-UD-TP-DCS-Alphabet]"/>
+    <test parameter="[RP-UD-TP-UD_Text]" condition="string.equals" value="[smsText]"/>
+    
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+		<sendMessageSIP name="Send 202 Accepted">
+<![CDATA[SIP/2.0 202 Accepted 
+To: [to];tag=[localTag]
+From: [from]
+Call-ID: [callId]
+Via: [via]
+CSeq: [cSeq]
+Content-Length: 0
+]]>		
+    </sendMessageSIP>
+    
+    <!-- send RP-ACK -->
+    <parameter name="[binMAPMessage]" operation="set" value="020b41020000"/>
+    <!-- send RP-ERROR -->
+    <!--parameter name="[binMAPMessage]" operation="set" value="0408016F"/-->
+    <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/> 
+
+    <parameter name="[inviteeName1]" operation="set" value="[MSISDN-User1]"/>
+    <parameter name="[clientName]" operation="set" value="[MSISDN-User2]"/>
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+    <parameter name="[newCallId]" operation="number.random" value="10000000"/>
+    <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
+
+		<sendMessageSIP name="Send MESSAGE" remoteHost="[remoteHost]" remotePort="[remotePort]">
+<![CDATA[MESSAGE [fromURI] SIP/2.0
+To: [fromURI]
+From: [toURI];tag=[localTag]
+Via: SIP/2.0/[transportResponse] [remoteHostSIP]:[remotePortSIP];branch=z9hG4bK[newBranchId];id=[clientName]
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] MESSAGE
+Contact: <sip:[inviteeName1]@[localHostSIP]:[Port-User2]>
+Max-Forwards: 70
+User-Agent: MTS v6.0.3_beta : Multiprotocol Test Suite
+Expires: 0
+Content-Type: application/vnd.3gpp.sms
+Content-Length: x
+
+[strMAPMessage]]]></sendMessageSIP>
+
+    <!-- send RP-DATA with SMS-DELIVER to the terminating side -->
+    <parameter name="[RP-DATA_BIN]" operation="set" value="00"/>
+    
+    <parameter name="[RP-Message-Reference_BIN]" operation="set" value="00"/>
+        
+    <parameter name="[RP-Originator-Address_XML]" operation="set">
+<![CDATA[
+<sm_RP_OA.Choice>
+    <msisdn.C2.BoxedType><Bytes>
+          <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
+          <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
+          <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
+          <field name="digits" value="[MSISDN-SMSC]" type="Number_BCD"/>
+    </Bytes></msisdn.C2.BoxedType>
+</sm_RP_OA.Choice>
+]]>
+</parameter>
+    <parameter name="[RP-Originator-Address_BIN]" operation="binary.xmlToAsn" value="[RP-Originator-Address_XML]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_OA" value3="map/dictionary_MAP .xml"/>
+    <parameter name="[RP-Originator-Address_BIN]" operation="binary.subBinary" value="[RP-Originator-Address_BIN]" value2="1"/>
+    <!--test parameter="[RP-Originator-Address_BIN]" condition="binary.equals" value="00" /-->        
+
+    <parameter name="[RP-Destination-Address_XML]" operation="set">
+<![CDATA[
+<sm_RP_DA.Choice>
+    <serviceCentreAddressDA.C4.BoxedType><Bytes>
+          <!--field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
+          <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
+          <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
+          <field name="digits" value="[MSISDN-SMSC]" type="Number_BCD"/-->
+    </Bytes></serviceCentreAddressDA.C4.BoxedType>
+</sm_RP_DA.Choice>
+]]>
+</parameter>
+    <parameter name="[RP-Destination-Address_BIN]" operation="binary.xmlToAsn" value="[RP-Destination-Address_XML]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_DA" value3="map/dictionary_MAP .xml"/>
+    <parameter name="[RP-Destination-Address_BIN]" operation="binary.subBinary" value="[RP-Destination-Address_BIN]" value2="1"/>
+    <!--test parameter="[RP-Destination-Address_BIN]" condition="binary.equals" value="07913306000000f3" /-->
+    
+    <parameter name="[RP-User-Data_XML]" operation="set">
+<![CDATA[
+<sm_RP_UI.BoxedType><Bytes>
+  <element name="SMS-DELIVER" coding="V">
+    <field name="TP-RP" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0" type="EnumLong" lengthBit="1"/>
+    <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="EnumLong" lengthBit="1"/>
+    <field name="TP-SRI" value="A status report is not requested:0" type="EnumLong" lengthBit="1" description="TP Status Report Indication" />
+    <field name="NA" value="0" type="Integer" lengthBit="1" description="Not applicable" />
+    <field name="TP-LP" value="The message has not been forwarded and is not a spawned message:0" type="EnumLong" lengthBit="1" description="TP Loop Prevention" />
+    <field name="TP-MMS" value="No more messages are waiting for the MS in this SC:1" type="EnumLong" lengthBit="1" description="TP More Messages to Send" />
+    <field name="TP-MTI" value="SMS-DELIVER / SMS-DELIVER-REPORT:0" type="EnumLong" lengthBit="2" description="TP Message Type Indicator" />
+  </element>
+  <element name="TP-OA" coding="DV">
+    <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
+    <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
+    <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
+    <field name="digits" value="[MSISDN-User1]" type="Number_BCD" length="11"/>
+  </element>
+  <element name="TP-PID" coding="V">
+    <field name="assignment" value="Assigns bits 0..5 as defined below:0" type="EnumLong" lengthBit="2"/>
+    <field name="telematic interworking" value="no interworking, but SME to SME protocol:0" type="EnumLong" lengthBit="1"/>
+    <field name="telematic devices" value="implicit device type is specific to this SC,:0" type="EnumLong" lengthBit="5"/>
+  </element>
+  <element name="TP-DCS" coding="V">
+    <field name="Coding Group Bits" value="General Data Coding indication:0" type="EnumLong" lengthBit="2"/>
+    <field name="Compression" value="the text is uncompressed:0" type="EnumLong" lengthBit="1"/>
+    <field name="Bit 1 significance" value="bits 1 to 0 are reserved and have no message class meaning:0" type="EnumLong" lengthBit="1"/>
+    <field name="Alphabet" value="[smsAlphabet]" type="EnumLong" lengthBit="2"/>
+    <field name="Message Class" value="Class 0:0" type="EnumLong" lengthBit="2"/>
+  </element>
+  <element name="TP-SCTS" coding="V" description="TP Service Centre Time Stamp">
+    <field name="TP-SCTP" value="76707221436587" type="binary" length="7" description="Service Centre Time Stamp" />
+  </element>
+  <element name="TP-UD" coding="LV">
+    <field name="TP-UDL" value="[smsTextLength]" type="integer" length="1"/>
+    <field name="TP-UD" value="[smsBinary]" type="Binary"/>
+  </element>
+</Bytes></sm_RP_UI.BoxedType>
+]]>
+</parameter>
+    <parameter name="[RP-User-Data_BIN]" operation="binary.xmlToAsn" value="[RP-User-Data_XML]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_UI" value3="map/dictionary_MAP .xml"/>
+    <parameter name="[RP-User-Data_BIN]" operation="binary.subBinary" value="[RP-User-Data_BIN]" value2="1"/>
+    <!-- ERREUR sur le nombre de caracteres de TP-UD -->
+    <!--test parameter="[RP-User-Data_BIN]" condition="binary.equals" value="31010b913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04" /-->
+
+    <!--parameter name="[asn]" operation="set"    value="00000007913306000000f32131010b913336080600f20000ff13d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
+    <!--parameter name="[binMAPMessage]" operation="binary.xmlToAsn" value="[xml]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" value3="map/dictionary_MAP .xml"/-->
+    <parameter name="[binMAPMessage]" operation="set" value="[RP-DATA_BIN][RP-Message-Reference_BIN][RP-Originator-Address_BIN][RP-Destination-Address_BIN][RP-User-Data_BIN]"/>
+    <!--parameter name="[binMAPMessage]" operation="set"    value="00000007913306000000F32131010B913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
+    <!--parameter name="[binMAPMessage]" operation="set" value="[asn]"/-->
+    <!--test parameter="[binMAPMessage]" condition="binary.equals" value="[asn]" /-->
+    <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/> 
+    
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+    <parameter name="[newCallId]" operation="number.random" value="10000000"/>
+    <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
+
+    <!-- send RP-DATA -->
+		<sendMessageSIP name="Send MESSAGE" remoteHost="[remoteHostSIP]" remotePort="[Port-User2]">
+    <![CDATA[
+    MESSAGE sip:[inviteeName1]@[ISIM_DOMAIN_ADDR] SIP/2.0
+    Via: SIP/2.0/[transportResponse] [localHostSIP]:[localPortSIP];branch=z9hG4bK[newBranchId]  
+    Max-Forwards: 70
+    From: "EME server" <sip:EME@[ISIM_DOMAIN_ADDR]>;tag=[localTag]
+    To: [to]
+    Call-ID: [newCallId]
+    CSeq: [newCseqNumber] MESSAGE
+    Accept-Contact: *;+g.oma.sip-im
+    Allow: ACK, BYE, CANCEL, INVITE, MESSAGE, NOTIFY, OPTIONS, PRACK, REFER, SUBSCRIBE, UPDATE
+    User-Agent: MTS v6.0.3_beta : Multiprotocol Test Suite
+    Content-Type: application/vnd.3gpp.sms
+    Content-Length: x
+    
+    [strMAPMessage]]]></sendMessageSIP>
+
+		<receiveMessageSIP name="Wait 200 OK" request="false" type="MESSAGE" result="202">
+		</receiveMessageSIP>
+    
+    <receiveMessageSIP name="Wait MESSAGE" request="true" type="MESSAGE">
+    		<parameter name="[to]" operation="protocol.setFromMessage" value="header.To"/>
+    		<parameter name="[from]" operation="protocol.setFromMessage" value="header.From"/>
+    		<parameter name="[callId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    		<parameter name="[cSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    		<parameter name="[via]" operation="protocol.setFromMessage" value="header.Via"/>
+        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+		</receiveMessageSIP>
+        
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+		<sendMessageSIP name="Send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+Via: [via]
+From: [from]
+To: [to];tag=[localTag]
+Call-ID: [callId]
+CSeq: [cSeq]
+Allow: ACK, BYE, CANCEL, INVITE, MESSAGE, NOTIFY, OPTIONS, PRACK, REFER, SUBSCRIBE, UPDATE
+Server: MTS v6.0.3_beta : Multiprotocol Test Suite
+Content-Length: 0
+]]>		
+    </sendMessageSIP>
+
+
+</scenario>

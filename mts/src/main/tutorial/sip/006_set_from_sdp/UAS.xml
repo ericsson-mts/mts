@@ -26,7 +26,9 @@
     <test parameter="[SDPSDP0]" condition="string.contains" value="t=3034423619 3042462419"/>
     <parameter name="[SDPSDP1]" operation="protocol.setFromMessage" value="content(1).Sdp"/>
     <test parameter="[SDPSDP1]" condition="string.contains" value="resource-lists"/>
-
+    <parameter name="[userURI]" operation="string.xpath" value="[SDPSDP1]" value2="//@uri"/>
+    <test parameter="[userURI]" condition="string.equals" value="bob"/>
+    
     <!-- test content(N):Sdp:Version:xxx -->
     <parameter name="[SDPVersion0]" operation="protocol.setFromMessage" value="content(0).Sdp.Version"/>
     <test parameter="[SDPVersion0]" condition="string.equals" value="0"/>
