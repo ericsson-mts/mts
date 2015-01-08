@@ -172,7 +172,7 @@
     <!-- sm-RP-UI : SMS-SUBMIT => 3GPP TS 03.40 V7.5.0 chapter 9.2.2.2 page 40  -->
     <!-- sm-RP-UI : SMS-SUBMIT => 3GPP TS 23.040 V12.2.2 chapter 9.2.2.2 page 54 -->
     <element name="Sm_RP_UI_SMS-SUBMIT" coding="V" description="sm-RP-UI_SMS-SUBMIT/REPORT">
-        <element name="SMS-SUBMIT" coding="V" description="First byte of the data" comment="">
+        <element name="SMS-SUBMIT" coding="V" description="First byte of the data">
             <field name="TP-RP" type="EnumLong" lengthBit="1" description="TP Reply Path" comment="Parameter indicating that Reply Path exists.">
               <enum name="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER" value="0"/>
               <enum name="TP Reply Path parameter is set in this SMS SUBMIT/DELIVER" value="1"/>
@@ -315,7 +315,7 @@
     <!-- sm-RP-UI : SMS-DELIVER => 3GPP TS 03.40 V7.5.0 chapter 9.2.2.1 page 37  -->
     <!-- sm-RP-UI : SMS-DELIVER => 3GPP TS 23.040 V12.2.2 chapter 9.2.2.1 page 50 -->
     <element name="Sm_RP_UI_SMS-DELIVER" coding="V" description="sm-RP-UI_SMS-SUBMIT/REPORT">
-        <element name="SMS-DELIVER" coding="V" description="First byte of the data" comment="">
+        <element name="SMS-DELIVER" coding="V" description="First byte of the data">
             <field name="TP-RP" type="EnumLong" lengthBit="1" description="TP Reply Path" comment="Parameter indicating that Reply Path exists.">
               <enum name="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER" value="0"/>
               <enum name="TP Reply Path parameter is set in this SMS SUBMIT/DELIVER" value="1"/>
@@ -437,7 +437,7 @@
           </field>
         </element>
         <element name="TP-SCTS" coding="V" description="TP Service Centre Time Stamp" comment="Parameter identifying time when the SC received the message.">        
-            <field name="TP-SCTS" type="binary" length="7" description="Service Centre Time Stamp"/>
+            <field name="TP-SCTS" type="binary" length="7" description="TP Service Centre Time Stamp"/>
         </element>
         <element name="TP-UD" coding="V" description="TP User Data" comment="">
           <field name="TP-UDL" type="integer" length="1" description="number of characters in the SMS"/>
@@ -445,6 +445,206 @@
         </element>
     </element>
     
+    <!-- sm-RP-UI : SMS-STATUS-REPORT => 3GPP TS 03.40 V7.5.0 chapter 9.2.2.3 page 47  -->
+    <!-- sm-RP-UI : SMS-STATUS-REPORT => 3GPP TS 23.040 V12.2.2 chapter 9.2.2.3 page 58 -->
+    <element name="Sm_RP_UI_SMS-STATUS-REPORT" coding="V" description="sm-RP-UI_SMS-STATUS-REPORT">
+        <element name="SMS-STATUS-REPORT" coding="V" description="SMS-STATUS-REPORT">
+            <field name="NA1" type="Integer" lengthBit="1" description="Not applicable" comment="Not used"/>
+            <field name="TP-UDHI" type="EnumLong" lengthBit="1" description="TP User Data Header Indicator" comment="Parameter indicating that the TP UD field contains a Header.">
+              <enum name="The TP UD field contains only the short message" value="0"/>
+              <enum name="The beginning of the TP UD field contains a Header in addition to the short message" value="1"/>
+            </field>
+            <field name="TP-SRQ" type="EnumLong" lengthBit="1" description="TP Status Report Qualifier" comment="Parameter indicating whether the previously submitted TPDU was an SMS-SUBMIT or an SMS COMMAND.">
+              <enum name="The SMS STATUS REPORT is the result of a SMS SUBMIT." value="0"/>
+              <enum name="The SMS STATUS REPORT is the result of an SMS COMMAND e.g. an Enquiry." value="1"/>
+            </field>
+            <field name="NA2" type="Integer" lengthBit="1" description="Not applicable" comment="Not used"/>
+            <field name="TP-LP" type="EnumLong" lengthBit="1" description="TP Loop Prevention" comment="Parameter indicating that SMS applications should inhibit forwarding or automatic message generation that could cause infinite looping.">
+              <enum name="The message has not been forwarded and is not a spawned message" value="0" comment="(or the sending network entity (e.g. an SC) does not support the setting of this bit.)"/>
+              <enum name="The message has either been forwarded or is a spawned message" value="1" comment=""/>
+            </field>
+            <field name="TP-MMS" type="EnumLong" lengthBit="1" description="TP More Messages to Send" comment="Parameter indicating whether or not there are more messages to send.">
+              <enum name="More messages are waiting for the MS in this SC" value="0" comment=""/>
+              <enum name="No more messages are waiting for the MS in this SC" value="1" comment=""/>
+            </field>
+            <field name="TP-MTI" type="EnumLong" lengthBit="2" description="TP Message Type Indicator" comment="Parameter describing the message type.">
+              <enum name="SMS-DELIVER / SMS-DELIVER-REPORT" value="0"/>
+              <enum name="SMS-SUBMIT / SMS-SUBMIT-REPORT" value="1"/>
+              <enum name="SMS-STATUS-REPORT / SMS-COMMAND" value="2"/>
+              <enum name="Reserved" value="3"/>
+            </field>
+        </element>
+        <element name="TP-MR" coding="V" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT.">
+            <field name="TP-MR" type="integer" length="1" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT."/>
+        </element>
+        <element name="TP-RA" coding="DV" description="TP Recipient Address" comment="Address of the recipient of the previously submitted mobile originated short message.">
+      		<field name="extension" type="EnumLong" lengthBit="1" description="extension">
+              <enum name="extension" value="0"/>
+              <enum name="no extension" value="1"/>
+          </field>
+          <field name="nature of address" type="EnumLong" lengthBit="3" description="nature of address">
+              <enum name="unknown" value="0" description="b000"/>
+              <enum name="international number" value="1" description="b001"/>
+              <enum name="national significant number" value="2" description="b010"/>
+              <enum name="network specific number" value="3" description="b011"/>
+              <enum name="subscriber number" value="4" description="b100"/>
+              <enum name="reserved" value="5" description="b101"/>
+              <enum name="abbreviated number" value="6" description="b110"/>
+              <enum name="reserved for extension" value="7" description="b111"/>
+          </field>
+          <field name="numbering plan" type="EnumLong" lengthBit="4" description="numbering plan">
+              <enum name="unknown" value="0" description="b0000"/>
+              <enum name="ISDN/Telephony Numbering Plan (Rec ITU-T E.164)" value="1" description="b0001"/>
+              <enum name="spare" value="2" description="b0010"/>
+              <enum name="data numbering plan (ITU-T Rec X.121)" value="3" description="b0011"/>
+              <enum name="telex numbering plan (ITU-T Rec F.69)" value="4" description="b0100"/>
+              <enum name="spare" value="5" description="b0101"/>
+              <enum name="land mobile numbering plan (ITU-T Rec E.212)" value="6" description="b0110"/>
+              <enum name="spare" value="7" description="b0111"/>
+              <enum name="national numbering plan" value="8" description="b1000"/>
+              <enum name="private numbering plan" value="9" description="b1001"/>
+              <enum name="reserved for extension" value="15" description="b1111"/>
+          </field>
+          <field name="digits" type="number_bcd" description="digits"/>
+        </element>
+        <element name="TP-SCTS" coding="V" description="TP Service Centre Time Stamp" comment="Parameter identifying time when the SC received the message.">        
+            <field name="TP-SCTS" type="binary" length="7" description="TP Service Centre Time Stamp"/>
+        </element>  
+        <element name="TP-DT" coding="V" description="TP Discharge Time" comment="Parameter identifying the time associated with a particular TP ST outcome.">
+            <field name="TP-DT" type="binary" length="7" description="Discharge Time"/>
+        </element>
+        <element name="TP-ST" coding="V" description="TP Status" comment="Parameter identifying the status of the previously sent mobile originated short message.">
+      		<field name="bit7" type="EnumLong" lengthBit="1" description="next bits assignment">
+              <enum name="Bits 0..6 as defined below" value="0" />
+              <enum name="Bits 0..6	reserved" value="1" />
+          </field>
+      		<field name="assignment" type="EnumLong" lengthBit="7" description="next bits assignment">
+              <!-- Short message transaction completed -->
+              <enum name="Short message transaction completed, Short message received by the SME" value="0" description="b0000000"/>
+              <enum name="Short message transaction completed, Short message forwarded by the SC to the SME but the SC is unable to confirm delivery" value="1" description="b0000001"/>
+              <enum name="Short message transaction completed, Short message replaced by the SC" value="2" description="b0000010"/>
+              <enum name="Short message transaction completed, Reserved" value="3-15" description="b0000011-b0001111"/>
+              <enum name="Short message transaction completed, Values specific to each SC" value="16-31" description="b0010000-b0011111"/>
+              <!-- Temporary error, SC still trying to transfer SM -->
+              <enum name="Temporary error, SC still trying to transfer SM, Congestion" value="32" description="b0100000"/>
+              <enum name="Temporary error, SC still trying to transfer SM, SME busy" value="33" description="b0100001"/>
+              <enum name="Temporary error, SC still trying to transfer SM, No response from SME" value="34" description="b0100010"/>
+              <enum name="Temporary error, SC still trying to transfer SM, Service rejected" value="35" description="b0100011"/>
+              <enum name="Temporary error, SC still trying to transfer SM, Quality of service not available" value="36" description="b0100100"/>
+              <enum name="Temporary error, SC still trying to transfer SM, Error in SME" value="37" description="b0100101"/>
+              <enum name="Temporary error, SC still trying to transfer SM,  Reserved" value="38-47" description="b0100110-b0101111"/>
+              <enum name="Temporary error, SC still trying to transfer SM,  Values specific to each SC" value="48-63" description="b0100000-b01011111"/>
+              <!-- Permanent error, SC is not making any more transfer attempts -->
+              <enum name="Permanent error, SC is not making any more transfer attempts, Remote procedure error" value="64" description="b1000000"/>
+              <enum name="Permanent error, SC is not making any more transfer attempts, Incompatible destination" value="65" description="b1000001"/>
+              <enum name="Permanent error, SC is not making any more transfer attempts, Connection rejected by SME" value="66" description="b1000010"/>
+              <enum name="Permanent error, SC is not making any more transfer attempts, Not obtainable" value="67" description="b1000011"/>
+              <enum name="Permanent error, SC is not making any more transfer attempts, Quality of service not available" value="68" description="b1000100"/>
+              <enum name="Permanent error, SC is not making any more transfer attempts, No interworking available" value="69" description="b1000101"/>
+              <enum name="Permanent error, SC is not making any more transfer attempts, SM Validity Period Expired" value="70" description="b1000110"/>
+              <enum name="Permanent error, SC is not making any more transfer attempts, SM Deleted by originating SME" value="71" description="b1000111"/>
+              <enum name="Permanent error, SC is not making any more transfer attempts, SM Deleted by SC Administration" value="72" description="b1001000"/>
+              <enum name="Permanent error, SC is not making any more transfer attempts, SM does not exist " value="73" description="b1001001" comment="(The SM may have previously existed in the SC but the SC no longer has knowledge of it or the SM may never have previously existed in the SC)"/>
+              <enum name="Permanent error, SC is not making any more transfer attempts, Reserved" value="74-79" description="b1001010-b1001111"/>
+              <enum name="Permanent error, SC is not making any more transfer attempts, Values specific to each SC" value="80-95" description="b1010000-b1011111"/>
+              <!-- Temporary error, SC is not making any more transfer attempts -->
+              <enum name="Temporary error, SC is not making any more transfer attempts, Congestion" value="96" description="b1100000"/>
+              <enum name="Temporary error, SC is not making any more transfer attempts, SME busy" value="97" description="b1100001"/>
+              <enum name="Temporary error, SC is not making any more transfer attempts, No response from SME" value="98" description="b1100010"/>
+              <enum name="Temporary error, SC is not making any more transfer attempts, Service rejected" value="99" description="b1100011"/>
+              <enum name="Temporary error, SC is not making any more transfer attempts, Quality of service not available" value="100" description="b1100100"/>
+              <enum name="Temporary error, SC is not making any more transfer attempts, Error in SME" value="101" description="b1100101"/>
+              <enum name="Temporary error, SC is not making any more transfer attempts, Reserved" value="102-105" description="b1100110-b1101001"/>
+              <enum name="Temporary error, SC is not making any more transfer attempts, Reserved" value="106-111" description="b1101010-b1101111"/>
+              <enum name="Temporary error, SC is not making any more transfer attempts, Values specific to each SC" value="112-127" description="b1110000-b1111111"/>
+          </field>
+        </element>
+        <element name="TP-PI" coding="V" description="TP Parameter Indicator" comment="Parameter indicating the presence of any of the optional parameters which follow.">
+      		<field name="Reserved1" type="Integer" lengthBit="1" description="Reserved #1"/>
+          <field name="Reserved2" type="Integer" lengthBit="1" description="Reserved #2"/>
+          <field name="Reserved3" type="Integer" lengthBit="1" description="Reserved #3"/>
+      		<field name="Reserved4" type="Integer" lengthBit="1" description="Reserved #4"/>
+          <field name="Reserved5" type="Integer" lengthBit="1" description="Reserved #1"/>
+      		<field name="TP-UDL present" type="EnumLong" lengthBit="1" description="TP-UDL present">
+              <enum name="absent" value="0"/>
+              <enum name="present" value="1"/>
+          </field>
+      		<field name="TP-DCS present" type="EnumLong" lengthBit="1" description="TP-DCS present">
+              <enum name="absent" value="0"/>
+              <enum name="present" value="1"/>
+          </field>
+      		<field name="TP-PID present" type="EnumLong" lengthBit="1" description="TP-PID present">
+              <enum name="absent" value="0"/>
+              <enum name="present" value="1"/>
+          </field>
+        </element>
+        <!--element name="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any.">
+      		<field name="assignment" type="EnumLong" lengthBit="2" description="next bits assignment">
+              <enum name="Assigns bits 0..5 as defined below" value="0"/>
+              <enum name="Assigns bits 0..5 as defined below" value="1"/>
+              <enum name="reserved" value="2"/>
+              <enum name="Assigns bits 0 5 for SC specific use" value="3"/>
+          </field>
+      		<field name="telematic interworking" type="EnumLong" lengthBit="1" description="telematic interworking">
+              <enum name="no interworking, but SME to SME protocol" value="0"/>
+              <enum name="telematic interworking" value="1"/>
+          </field>
+      		<field name="telematic devices" type="EnumLong" lengthBit="5" description="telematic devices">
+              <enum name="implicit device type is specific to this SC," value="0" comment=" or can be concluded on the basis of the address"/>
+              <enum name="telex (or teletex reduced to telex format)" value="1"/>
+              <enum name="group 3 telefax" value="2"/>
+              <enum name="group 4 telefax" value="3"/>
+              <enum name="voice telephone (i.e. conversion to speech)" value="4"/>
+              <enum name="ERMES (European Radio Messaging System)" value="5"/>
+              <enum name="National Paging system (known to the SC)" value="6"/>
+              <enum name="Videotex (T.100/T.101)" value="7"/>
+              <enum name="teletex, carrier unspecified" value="8"/>
+              <enum name="teletex, in PSPDN" value="9"/>
+              <enum name="teletex, in CSPDN" value="10"/>
+              <enum name="teletex, in analog PSTN" value="11"/>
+              <enum name="teletex, in digital ISDN" value="12"/>
+              <enum name="UCI (Universal Computer Interface, ETSI DE/PS 3 01 3)" value="13"/>
+              <enum name="(reserved, 2 combinations)" value="14-15"/>
+              <enum name="a message handling facility (known to the SC)" value="16"/>
+              <enum name="any public X.400 based message handling system" value="17"/>
+              <enum name="Internet Electronic Mail" value="18"/>
+              <enum name="(reserved, 5 combinations)" value="19-23"/>
+              <enum name="values specific to each SC," value="24-30" comment="usage based on mutual agreement between the SME and the SC 	(7 combinations available for each SC)"/>
+              <enum name="A GSM mobile station." value="31" comment="The SC converts the SM from the received 	TP Data Coding Scheme to any data coding scheme supported by that MS (e.g. the default)."/>              
+          </field>
+        </element-->
+        <!--element name="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data.">
+      		<field name="Coding Group Bits" type="EnumLong" lengthBit="2" description="Coding Group Bits">
+              <enum name="General Data Coding indication" value="0" description="b00"/>
+              <enum name="Reserved coding groups" value="1-2" description="b01-b10"/>
+              <enum name="Message Waiting Indication Group = Discard Message" value="03" description="b11"/>
+          </field>
+      		<field name="Compression" type="EnumLong" lengthBit="1" description="Compression">
+              <enum name="the text is uncompressed" value="0"/>
+              <enum name="the text is compressed using the GSM standard" value="1" comment="the text is compressed using the GSM standard compression algorithm. ( see GSM TS 03.42)"/>
+          </field>
+      		<field name="Bit 1 significance" type="EnumLong" lengthBit="1" description="Bit 1 significance">
+              <enum name="bits 1 to 0 are reserved and have no message class meaning" value="0"/>
+              <enum name="bits 1 to 0 have a message class meaning" value="1"/>
+          </field>
+      		<field name="Alphabet" type="EnumLong" lengthBit="2" description="Alphabet">
+              <enum name="Default alphabet {SCGSM}" value="0" description="b00"/>
+              <enum name="8 bit data {UTF-8}" value="1" description="b01"/>
+              <enum name="UCS2 (16bit) {UTF-16BE}" value="2" description="b10"/>
+              <enum name="Reserved" value="3" description="b11"/>
+          </field>
+      		<field name="Message Class" type="EnumLong" lengthBit="2" description="Message Class">
+              <enum name="Class 0" value="0"/>
+              <enum name="Class 1   Default meaning: ME-specific" value="1"/>
+              <enum name="Class 2   SIM specific message" value="2"/>
+              <enum name="Class 3   Default meaning: TE specific" value="3" comment="(see GSM TS 07.05 [8])"/>
+          </field>
+        </element-->
+        <!--element name="TP-UD" coding="V" description="TP User Data" comment="">
+          <field name="TP-UDL" type="integer" length="1" description="number of characters in the SMS"/>
+          <field name="TP-UD" type="binary" description="SMS text"/>
+        </element-->
+    </element>
     <!-- Operation code local value => MAP.asn line 76 -->
     <element name="opCode.localValue" coding="V" description="Operation code local value">
     		<field name="localValue" type="EnumLong" length="1" description="operation code">
