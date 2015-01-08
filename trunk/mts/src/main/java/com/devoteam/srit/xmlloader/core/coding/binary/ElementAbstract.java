@@ -186,7 +186,8 @@ public abstract class ElementAbstract implements Cloneable
         // initiate the Array containing the fields
         SupArray tempArray = new SupArray();
         
-        Array emptyArray = new DefaultArray(getLengthElem() / 8);
+        int length = getLengthElem() / 8;
+        Array emptyArray = new DefaultArray(length);
         tempArray.addFirst(emptyArray);
        	this.fieldsArray = tempArray;
        	
@@ -212,7 +213,7 @@ public abstract class ElementAbstract implements Cloneable
             	{
             		field.setOffset(offset);
             	}
-		        int length = field.getLength();
+		        length = field.getLength();
 		        /// TODO revoir ce truc bizzaroide
 		        if (length > 0)
 		        {

@@ -141,6 +141,10 @@ public abstract class ASNMessage
     			{
     				simpleClassName = simpleClassName + "_SMS-SUBMIT";
     			}
+    			if (TP_MTI == 2)
+    			{
+    				simpleClassName = simpleClassName + "_SMS-STATUS-REPORT";
+    			}
     		}
 	    	elementDico = getElementByLabel(simpleClassName);
 		}
