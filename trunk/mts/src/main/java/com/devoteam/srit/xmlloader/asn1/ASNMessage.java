@@ -151,11 +151,10 @@ public abstract class ASNMessage
     			{
     				simpleClassName = simpleClassName + "_SMS-SUBMIT";
     			}
-    			/*
     			else if (TP_MTI == 1 && !isRequest())
     			{
     				simpleClassName = simpleClassName + "_SMS-SUBMIT-REPORT";
-    			}*/
+    			}
 
     			else if (TP_MTI == 2)
     			{

@@ -61,6 +61,7 @@ public class BN_APMessage extends BN_ASNMessage
 		return StackFactory.PROTOCOL_SIGTRAN + "." + this.dictionary.getLayer();
     }
 	
+    @Override
     public boolean isRequest()
     {
     	Component apMessage = (Component) asnObject;
@@ -84,6 +85,7 @@ public class BN_APMessage extends BN_ASNMessage
 
     }
    
+    @Override
     public String getType()
     {
     	Component apMessage = (Component) asnObject;
@@ -120,6 +122,7 @@ public class BN_APMessage extends BN_ASNMessage
 		return null;
     }
     
+    @Override
     public String getResult()
     {
     	Component apMessage = (Component) asnObject;
