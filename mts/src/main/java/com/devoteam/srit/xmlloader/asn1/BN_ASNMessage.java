@@ -77,6 +77,7 @@ public class BN_ASNMessage extends ASNMessage
 		return asnObject;
 	}
 
+    @Override
     public Array encode() throws Exception 
     {
     	// Library binarynotes
@@ -90,7 +91,7 @@ public class BN_ASNMessage extends ASNMessage
         return arrayMAP;
     }
           
-    
+    @Override
     public void decode(Array array, String className) throws Exception 
     {
     	// Library binarynotes        
@@ -102,6 +103,7 @@ public class BN_ASNMessage extends ASNMessage
         
     }
 
+    @Override
     public void parseFromXML(Element root, String className) throws Exception 
     {
     	String dictionaryFile = root.attributeValue("dictionary");
@@ -124,6 +126,27 @@ public class BN_ASNMessage extends ASNMessage
             String resultPath = "";
             XMLToASNParser.getInstance().parseFromXML(resultPath, this, this.asnObject, element, packageName);
         }
+    }
+    
+    @Override
+    public boolean isRequest()
+    {
+    	// TODO complete 
+    	return true;
+    }
+    
+    @Override
+    public String getType()
+    {
+    	// TODO complete 
+    	return "TODO";
+    }
+    
+    @Override
+    public String getResult()
+    {
+    	// TODO complete 
+    	return "TODO";
     }
 
     public String toXML()

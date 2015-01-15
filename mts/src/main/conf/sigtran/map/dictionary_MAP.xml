@@ -578,6 +578,7 @@
               <enum name="present" value="1"/>
           </field>
         </element>
+        <!--conditional element : if TP-PID present="present:1"-->
         <!--element name="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any.">
       		<field name="assignment" type="EnumLong" lengthBit="2" description="next bits assignment">
               <enum name="Assigns bits 0..5 as defined below" value="0"/>
@@ -613,6 +614,7 @@
               <enum name="A GSM mobile station." value="31" comment="The SC converts the SM from the received 	TP Data Coding Scheme to any data coding scheme supported by that MS (e.g. the default)."/>              
           </field>
         </element-->
+        <!--conditional element : if TP-DCS present="present:1"-->
         <!--element name="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data.">
       		<field name="Coding Group Bits" type="EnumLong" lengthBit="2" description="Coding Group Bits">
               <enum name="General Data Coding indication" value="0" description="b00"/>
@@ -640,6 +642,7 @@
               <enum name="Class 3   Default meaning: TE specific" value="3" comment="(see GSM TS 07.05 [8])"/>
           </field>
         </element-->
+        <!--conditional element : if TP-UDL present="present:1"-->
         <!--element name="TP-UD" coding="V" description="TP User Data" comment="">
           <field name="TP-UDL" type="integer" length="1" description="number of characters in the SMS"/>
           <field name="TP-UD" type="binary" description="SMS text"/>
@@ -774,6 +777,7 @@
         <element name="TP-SCTS" coding="V" description="TP Service Centre Time Stamp" comment="Parameter identifying time when the SC received the message.">        
             <field name="TP-SCTS" type="binary" length="7" description="TP Service Centre Time Stamp"/>
         </element>  
+        <!--conditional element : if TP-PID present="present:1"-->
         <!--element name="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any.">
       		<field name="assignment" type="EnumLong" lengthBit="2" description="next bits assignment">
               <enum name="Assigns bits 0..5 as defined below" value="0"/>
@@ -809,6 +813,7 @@
               <enum name="A GSM mobile station." value="31" comment="The SC converts the SM from the received 	TP Data Coding Scheme to any data coding scheme supported by that MS (e.g. the default)."/>              
           </field>
         </element-->
+        <!--conditional element : if TP-DCS present="present:1"-->
         <!--element name="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data.">
       		<field name="Coding Group Bits" type="EnumLong" lengthBit="2" description="Coding Group Bits">
               <enum name="General Data Coding indication" value="0" description="b00"/>
@@ -836,11 +841,13 @@
               <enum name="Class 3   Default meaning: TE specific" value="3" comment="(see GSM TS 07.05 [8])"/>
           </field>
         </element-->
+        <!--conditional element : if TP-UDL present="present:1"-->
         <!--element name="TP-UD" coding="V" description="TP User Data" comment="">
           <field name="TP-UDL" type="integer" length="1" description="number of characters in the SMS"/>
           <field name="TP-UD" type="binary" description="SMS text"/>
         </element-->
     </element>
+    
     <!-- Operation code local value => MAP.asn line 76 -->
     <element name="opCode.localValue" coding="V" description="Operation code local value">
     		<field name="localValue" type="EnumLong" length="1" description="operation code">
