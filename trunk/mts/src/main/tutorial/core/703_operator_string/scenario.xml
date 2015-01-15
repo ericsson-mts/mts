@@ -61,6 +61,12 @@
 	<parameter name="[result]" operation="string.regexmatches" value="123456789" value2="[2-8]*"/>
 	<test parameter="[result]" condition="string.equals" value="2345678" />
 
+	<parameter name="[sdp]" operation="set" value="rtpmap:108 bidon"/>
+	<parameter name="[rtpmapNumber]" operation="string.regexmatches" value="[sdp]" value2=":[0-9]* "/>
+  <parameter name="[rtpmapNumber]" operation="string.regexmatches" value="[sdp]" value2="[0-9]*"/>
+	<test parameter="[rtpmapNumber]" condition="string.equals" value="108" />
+
+
 	<parameter name="[content]" operation="set">
 <![CDATA[
 Response: TransactionID=1100000000 ExecutionStatus=6
