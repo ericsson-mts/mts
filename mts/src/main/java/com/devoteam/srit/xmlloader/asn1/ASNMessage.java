@@ -75,6 +75,10 @@ public abstract class ASNMessage
 
     public abstract void decode(Array array, String className) throws Exception;
     
+    public abstract boolean isRequest();
+    public abstract String getType();
+    public abstract String getResult();
+    
     public void decode(Array array) throws Exception
     {
     	decode(array, this.dictionary.getClassName());
@@ -133,18 +137,34 @@ public abstract class ASNMessage
     		if (bytes != null && "Sm_RP_UI".equals(simpleClassName))
     		{
     			int TP_MTI = bytes[0] & (byte) 3;
-    			if (TP_MTI == 0)
+    			if (TP_MTI == 0 && isRequest())
     			{
     				simpleClassName = simpleClassName + "_SMS-DELIVER";
     			}
-    			if (TP_MTI == 1)
+    			/*else if (TP_MTI == 0 && !isRequest())
+    			{
+    				simpleClassName = simpleClassName + "_SMS-DELIVER";
+    			}*/
+    			
+
+    			else if (TP_MTI == 1 && isRequest())
     			{
     				simpleClassName = simpleClassName + "_SMS-SUBMIT";
     			}
-    			if (TP_MTI == 2)
+    			/*
+    			else if (TP_MTI == 1 && !isRequest())
+    			{
+    				simpleClassName = simpleClassName + "_SMS-SUBMIT-REPORT";
+    			}*/
+
+    			else if (TP_MTI == 2)
     			{
     				simpleClassName = simpleClassName + "_SMS-STATUS-REPORT";
     			}
+    			/*else if (TP_MTI == 2 && !isRequest())
+    			{
+    				simpleClassName = simpleClassName + "_SMS-DELIVER";
+    			}*/
     		}
 	    	elementDico = getElementByLabel(simpleClassName);
 		}
