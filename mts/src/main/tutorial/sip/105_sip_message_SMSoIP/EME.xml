@@ -165,7 +165,7 @@ Content-Length: 0
     </sendMessageSIP>
     
     <!-- send RP-ACK -->
-    <parameter name="[binMAPMessage]" operation="set" value="020b41020000"/>
+    <parameter name="[binMAPMessage]" operation="set" value="0300"/>
     <!-- send RP-ERROR -->
     <!--parameter name="[binMAPMessage]" operation="set" value="0408016F"/-->
     <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/> 
@@ -194,7 +194,7 @@ Content-Length: x
 [strMAPMessage]]]></sendMessageSIP>
 
     <!-- send RP-DATA with SMS-DELIVER to the terminating side -->
-    <parameter name="[RP-DATA_BIN]" operation="set" value="00"/>
+    <parameter name="[RP-DATA_BIN]" operation="set" value="01"/>
     
     <parameter name="[RP-Message-Reference_BIN]" operation="set" value="00"/>
         
@@ -272,12 +272,14 @@ Content-Length: x
 </parameter>
     <parameter name="[RP-User-Data_BIN]" operation="binary.xmlToAsn" value="[RP-User-Data_XML]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_UI" value3="map/dictionary_MAP .xml"/>
     <parameter name="[RP-User-Data_BIN]" operation="binary.subBinary" value="[RP-User-Data_BIN]" value2="1"/>
+    <log>RP-User-Data_BIN=[RP-User-Data_BIN]</log>
     <!-- ERREUR sur le nombre de caracteres de TP-UD -->
     <!--test parameter="[RP-User-Data_BIN]" condition="binary.equals" value="31010b913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04" /-->
 
     <!--parameter name="[asn]" operation="set"    value="00000007913306000000f32131010b913336080600f20000ff13d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
     <!--parameter name="[binMAPMessage]" operation="binary.xmlToAsn" value="[xml]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" value3="map/dictionary_MAP .xml"/-->
     <parameter name="[binMAPMessage]" operation="set" value="[RP-DATA_BIN][RP-Message-Reference_BIN][RP-Originator-Address_BIN][RP-Destination-Address_BIN][RP-User-Data_BIN]"/>
+    <log>binMAPMessage=[binMAPMessage]</log>
     <!--parameter name="[binMAPMessage]" operation="set"    value="00000007913306000000F32131010B913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
     <!--parameter name="[binMAPMessage]" operation="set" value="[asn]"/-->
     <!--test parameter="[binMAPMessage]" condition="binary.equals" value="[asn]" /-->
@@ -333,7 +335,7 @@ Content-Length: 0
     </sendMessageSIP>
 
     <!-- send RP-DATA with SMS-DELIVER to the terminating side -->
-    <parameter name="[RP-DATA_BIN]" operation="set" value="00"/>
+    <parameter name="[RP-DATA_BIN]" operation="set" value="01"/>
     
     <parameter name="[RP-Message-Reference_BIN]" operation="set" value="00"/>
         
@@ -431,16 +433,18 @@ Content-Length: 0
 </parameter>
     <parameter name="[RP-User-Data_BIN]" operation="binary.xmlToAsn" value="[RP-User-Data_XML]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_UI" value3="map/dictionary_MAP .xml"/>
     <parameter name="[RP-User-Data_BIN]" operation="binary.subBinary" value="[RP-User-Data_BIN]" value2="1"/>
+    <log>RP-User-Data_BIN=[RP-User-Data_BIN]</log>
     <!-- ERREUR sur le nombre de caracteres de TP-UD -->
     <!--test parameter="[RP-User-Data_BIN]" condition="binary.equals" value="31010b913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04" /-->
 
     <!--parameter name="[asn]" operation="set"    value="00000007913306000000f32131010b913336080600f20000ff13d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
     <!--parameter name="[binMAPMessage]" operation="binary.xmlToAsn" value="[xml]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" value3="map/dictionary_MAP .xml"/-->
     <parameter name="[binMAPMessage]" operation="set" value="[RP-DATA_BIN][RP-Message-Reference_BIN][RP-Originator-Address_BIN][RP-Destination-Address_BIN][RP-User-Data_BIN]"/>
+    <log>binMAPMessage=[binMAPMessage]</log>
     <!--parameter name="[binMAPMessage]" operation="set"    value="00000007913306000000F32131010B913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
     <!--parameter name="[binMAPMessage]" operation="set" value="[asn]"/-->
     <!--test parameter="[binMAPMessage]" condition="binary.equals" value="[asn]" /-->
-    <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/> 
+    <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/>
     
     <parameter name="[localTag]" operation="string.random" value="10"/>
     <parameter name="[newBranchId]" operation="string.random" value="10"/>

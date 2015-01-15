@@ -92,12 +92,12 @@
 </parameter>
     <parameter name="[RP-User-Data_BIN]" operation="binary.xmlToAsn" value="[RP-User-Data_XML]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_UI" value3="map/dictionary_MAP .xml"/>
     <parameter name="[RP-User-Data_BIN]" operation="binary.subBinary" value="[RP-User-Data_BIN]" value2="1"/>
-    <!-- ERREUR sur le nombre de caracteres de TP-UD -->
-    <!--test parameter="[RP-User-Data_BIN]" condition="binary.equals" value="31010b913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04" /-->
+    <log>RP-User-Data_BIN=[RP-User-Data_BIN]</log>
 
     <!--parameter name="[asn]" operation="set"    value="00000007913306000000f32131010b913336080600f20000ff13d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
     <!--parameter name="[binMAPMessage]" operation="binary.xmlToAsn" value="[xml]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" value3="map/dictionary_MAP .xml"/-->
     <parameter name="[binMAPMessage]" operation="set" value="[RP-DATA_BIN][RP-Message-Reference_BIN][RP-Originator-Address_BIN][RP-Destination-Address_BIN][RP-User-Data_BIN]"/>
+    <log>binMAPMessage=[binMAPMessage]</log>
     <!--parameter name="[binMAPMessage]" operation="set"    value="00000007913306000000F32131010B913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
     <!--parameter name="[binMAPMessage]" operation="set" value="[asn]"/-->
     <!--test parameter="[binMAPMessage]" condition="binary.equals" value="[asn]" /-->
@@ -142,11 +142,11 @@
     <!--parameter name="[xmlresult]" operation="binary.asnToXml" value="[content]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" /-->
     
     <!-- receive RP-ACK -->    
-    <parameter name="[binMAPMessage]" operation="set" value="0208"/>
+    <parameter name="[binMAPMessage]" operation="set" value="0300"/>
     <!-- send RP-ERROR -->
-    <parameter name="[binMAPMessage]" operation="set" value="0408016F"/>
+    <!--parameter name="[binMAPMessage]" operation="set" value="0408016F"/-->
     <parameter name="[content]" operation="string.toBinary" value="[content]"/>
-    <!--test parameter="[content]" condition="binary.equals" value="[binMAPMessage]"/-->
+    <test parameter="[content]" condition="binary.equals" value="[binMAPMessage]"/>
     
     <parameter name="[localTag]" operation="string.random" value="10"/>
 		<sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
@@ -162,7 +162,7 @@ Content-Length: 0
 ]]>		
     </sendMessageSIP>
 
-    <!--receiveMessageSIP name="Wait MESSAGE" listenpoint="[scenarioName]" request="true" type="MESSAGE">
+    <receiveMessageSIP name="Wait MESSAGE" listenpoint="[scenarioName]" request="true" type="MESSAGE">
         <parameter name="[to]" operation="protocol.setFromMessage" value="header.To"/>
         <parameter name="[toURI]" operation="protocol.setFromMessage" value="header.To.Address.URI"/>
         <parameter name="[from]" operation="protocol.setFromMessage" value="header.From"/>
@@ -171,7 +171,7 @@ Content-Length: 0
         <parameter name="[cSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
         <parameter name="[via]" operation="protocol.setFromMessage" value="header.Via"/>
         <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
-    </receiveMessageSIP-->
+    </receiveMessageSIP>
 
     <!-- receive RP-ACK -->
     <parameter name="[binMAPMessage]" operation="set" value="0208"/>
@@ -180,7 +180,7 @@ Content-Length: 0
     <parameter name="[strMAPMessage]" operation="string.toBinary" value="[binMAPMessage]"/>
     <!--test parameter="[content]" condition="binary.equals" value="[binMAPMessage]"/-->
 
-    <!--parameter name="[localTag]" operation="string.random" value="10"/>
+    <parameter name="[localTag]" operation="string.random" value="10"/>
     <sendMessageSIP name="Send 202 Accepted" listenpoint="[scenarioName]">
 <![CDATA[SIP/2.0 202 Accepted
 Via: [via]
@@ -192,7 +192,7 @@ Allow: ACK, BYE, CANCEL, INVITE, MESSAGE, NOTIFY, OPTIONS, PRACK, REFER, SUBSCRI
 Server: MTS v6.0.3_beta : Multiprotocol Test Suite
 Content-Length: 0
 ]]>
-    </sendMessageSIP-->
+    </sendMessageSIP>
 
     <!-- receive RP-ACK -->
     <parameter name="[binMAPMessage]" operation="set" value="0208"/>
@@ -208,7 +208,7 @@ Content-Length: 0
     <parameter name="[newCallId]" operation="number.random" value="10000000"/>
     <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
 
-    <!--sendMessageSIP name="Send MESSAGE" listenpoint="[scenarioName]"  remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+    <sendMessageSIP name="Send MESSAGE" listenpoint="[scenarioName]"  remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
         <![CDATA[
         MESSAGE [fromURI] SIP/2.0
         Via: SIP/2.0/[transportResponse] [localHostSIP]:[Port-User1];branch=z9hG4bK[newBranchId]
@@ -228,7 +228,7 @@ Content-Length: 0
 
 
         <receiveMessageSIP name="Wait 200 OK" listenpoint="[scenarioName]" request="false" type="MESSAGE" result="200">
-        </receiveMessageSIP-->
+        </receiveMessageSIP>
 
 
 </scenario>
