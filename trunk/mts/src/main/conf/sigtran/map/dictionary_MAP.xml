@@ -732,6 +732,202 @@
         </field>
     </element>
 
+    <!-- sm-RP-UI : SMS-SUBMIT-REPORT => 3GPP TS 03.40 V7.5.0 chapter 9.2.2.2aii page 45  -->
+    <!-- sm-RP-UI : SMS-SUBMIT-REPORT => 3GPP TS 23.040 V12.2.2 chapter 9.2.2.2aii page 57 -->
+    <element name="Sm_RP_UI_SMS-SUBMIT-REPORT" coding="V" description="sm-RP-UI_SMS-SUBMIT-REPORT">
+        <element name="SMS-SUBMIT-REPORT" coding="V" description="SMS-SUBMIT-REPORT">
+            <field name="NA1" type="Integer" lengthBit="1" description="Not applicable" comment="Not used"/>
+            <field name="TP-UDHI" type="EnumLong" lengthBit="1" description="TP User Data Header Indicator" comment="Parameter indicating that the TP UD field contains a Header.">
+              <enum name="The TP UD field contains only the short message" value="0"/>
+              <enum name="The beginning of the TP UD field contains a Header in addition to the short message" value="1"/>
+            </field>
+            <field name="NA2" type="Integer" lengthBit="1" description="Not applicable" comment="Not used"/>
+            <field name="NA3" type="Integer" lengthBit="1" description="Not applicable" comment="Not used"/>
+            <field name="NA4" type="Integer" lengthBit="1" description="Not applicable" comment="Not used"/>
+            <field name="NA5" type="EnumLong" lengthBit="1" description="Not applicable" comment="Not used"/>
+            <field name="TP-MTI" type="EnumLong" lengthBit="2" description="TP Message Type Indicator" comment="Parameter describing the message type.">
+              <enum name="SMS-DELIVER / SMS-DELIVER-REPORT" value="0"/>
+              <enum name="SMS-SUBMIT / SMS-SUBMIT-REPORT" value="1"/>
+              <enum name="SMS-STATUS-REPORT / SMS-COMMAND" value="2"/>
+              <enum name="Reserved" value="3"/>
+            </field>
+        </element>
+        <element name="TP-PI" coding="V" description="TP Parameter Indicator" comment="Parameter indicating the presence of any of the optional parameters which follow.">
+      		<field name="Reserved1" type="Integer" lengthBit="1" description="Reserved #1"/>
+          <field name="Reserved2" type="Integer" lengthBit="1" description="Reserved #2"/>
+          <field name="Reserved3" type="Integer" lengthBit="1" description="Reserved #3"/>
+      		<field name="Reserved4" type="Integer" lengthBit="1" description="Reserved #4"/>
+          <field name="Reserved5" type="Integer" lengthBit="1" description="Reserved #1"/>
+      		<field name="TP-UDL present" type="EnumLong" lengthBit="1" description="TP-UDL present">
+              <enum name="absent" value="0"/>
+              <enum name="present" value="1"/>
+          </field>
+      		<field name="TP-DCS present" type="EnumLong" lengthBit="1" description="TP-DCS present">
+              <enum name="absent" value="0"/>
+              <enum name="present" value="1"/>
+          </field>
+      		<field name="TP-PID present" type="EnumLong" lengthBit="1" description="TP-PID present">
+              <enum name="absent" value="0"/>
+              <enum name="present" value="1"/>
+          </field>
+        </element>
+        <element name="TP-SCTS" coding="V" description="TP Service Centre Time Stamp" comment="Parameter identifying time when the SC received the message.">        
+            <field name="TP-SCTS" type="binary" length="7" description="TP Service Centre Time Stamp"/>
+        </element>  
+        <!--element name="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any.">
+      		<field name="assignment" type="EnumLong" lengthBit="2" description="next bits assignment">
+              <enum name="Assigns bits 0..5 as defined below" value="0"/>
+              <enum name="Assigns bits 0..5 as defined below" value="1"/>
+              <enum name="reserved" value="2"/>
+              <enum name="Assigns bits 0 5 for SC specific use" value="3"/>
+          </field>
+      		<field name="telematic interworking" type="EnumLong" lengthBit="1" description="telematic interworking">
+              <enum name="no interworking, but SME to SME protocol" value="0"/>
+              <enum name="telematic interworking" value="1"/>
+          </field>
+      		<field name="telematic devices" type="EnumLong" lengthBit="5" description="telematic devices">
+              <enum name="implicit device type is specific to this SC," value="0" comment=" or can be concluded on the basis of the address"/>
+              <enum name="telex (or teletex reduced to telex format)" value="1"/>
+              <enum name="group 3 telefax" value="2"/>
+              <enum name="group 4 telefax" value="3"/>
+              <enum name="voice telephone (i.e. conversion to speech)" value="4"/>
+              <enum name="ERMES (European Radio Messaging System)" value="5"/>
+              <enum name="National Paging system (known to the SC)" value="6"/>
+              <enum name="Videotex (T.100/T.101)" value="7"/>
+              <enum name="teletex, carrier unspecified" value="8"/>
+              <enum name="teletex, in PSPDN" value="9"/>
+              <enum name="teletex, in CSPDN" value="10"/>
+              <enum name="teletex, in analog PSTN" value="11"/>
+              <enum name="teletex, in digital ISDN" value="12"/>
+              <enum name="UCI (Universal Computer Interface, ETSI DE/PS 3 01 3)" value="13"/>
+              <enum name="(reserved, 2 combinations)" value="14-15"/>
+              <enum name="a message handling facility (known to the SC)" value="16"/>
+              <enum name="any public X.400 based message handling system" value="17"/>
+              <enum name="Internet Electronic Mail" value="18"/>
+              <enum name="(reserved, 5 combinations)" value="19-23"/>
+              <enum name="values specific to each SC," value="24-30" comment="usage based on mutual agreement between the SME and the SC 	(7 combinations available for each SC)"/>
+              <enum name="A GSM mobile station." value="31" comment="The SC converts the SM from the received 	TP Data Coding Scheme to any data coding scheme supported by that MS (e.g. the default)."/>              
+          </field>
+        </element-->
+        <!--element name="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data.">
+      		<field name="Coding Group Bits" type="EnumLong" lengthBit="2" description="Coding Group Bits">
+              <enum name="General Data Coding indication" value="0" description="b00"/>
+              <enum name="Reserved coding groups" value="1-2" description="b01-b10"/>
+              <enum name="Message Waiting Indication Group = Discard Message" value="03" description="b11"/>
+          </field>
+      		<field name="Compression" type="EnumLong" lengthBit="1" description="Compression">
+              <enum name="the text is uncompressed" value="0"/>
+              <enum name="the text is compressed using the GSM standard" value="1" comment="the text is compressed using the GSM standard compression algorithm. ( see GSM TS 03.42)"/>
+          </field>
+      		<field name="Bit 1 significance" type="EnumLong" lengthBit="1" description="Bit 1 significance">
+              <enum name="bits 1 to 0 are reserved and have no message class meaning" value="0"/>
+              <enum name="bits 1 to 0 have a message class meaning" value="1"/>
+          </field>
+      		<field name="Alphabet" type="EnumLong" lengthBit="2" description="Alphabet">
+              <enum name="Default alphabet {SCGSM}" value="0" description="b00"/>
+              <enum name="8 bit data {UTF-8}" value="1" description="b01"/>
+              <enum name="UCS2 (16bit) {UTF-16BE}" value="2" description="b10"/>
+              <enum name="Reserved" value="3" description="b11"/>
+          </field>
+      		<field name="Message Class" type="EnumLong" lengthBit="2" description="Message Class">
+              <enum name="Class 0" value="0"/>
+              <enum name="Class 1   Default meaning: ME-specific" value="1"/>
+              <enum name="Class 2   SIM specific message" value="2"/>
+              <enum name="Class 3   Default meaning: TE specific" value="3" comment="(see GSM TS 07.05 [8])"/>
+          </field>
+        </element-->
+        <!--element name="TP-UD" coding="V" description="TP User Data" comment="">
+          <field name="TP-UDL" type="integer" length="1" description="number of characters in the SMS"/>
+          <field name="TP-UD" type="binary" description="SMS text"/>
+        </element-->
+    </element>
+    <!-- Operation code local value => MAP.asn line 76 -->
+    <element name="opCode.localValue" coding="V" description="Operation code local value">
+    		<field name="localValue" type="EnumLong" length="1" description="operation code">
+            <enum name="updateLocation" value="2"/>
+          	<enum name="cancelLocation" value="3"/>
+          	<enum name="provideRoamingNumber" value="4"/>
+          	<enum name="noteSubscriberDataModified" value="5"/>
+          	<enum name="resumeCallHandling" value="6"/>
+          	<enum name="insertSubscriberData" value="7"/>
+          	<enum name="deleteSubscriberData" value="8"/>
+          	<enum name="sendParameters" value="9"/>
+          	<enum name="registerSS" value="10"/>
+          	<enum name="eraseSS" value="11"/>
+          	<enum name="activateSS" value="12"/>
+          	<enum name="deactivateSS" value="13"/>
+          	<enum name="interrogateSS" value="14"/>
+          	<enum name="authenticationFailureReport" value="15"/>
+          	<enum name="registerPassword" value="17"/>
+          	<enum name="getPassword" value="18"/>
+          	<enum name="processUnstructuredSS-Data" value="19"/>
+          	<enum name="releaseResources" value="20"/>
+          	<enum name="sendRoutingInfo" value="22"/>
+          	<enum name="updateGprsLocation" value="23"/>
+          	<enum name="sendRoutingInfoForGprs" value="24"/>
+          	<enum name="failureReport" value="25"/>
+          	<enum name="noteMsPresentForGprs" value="26"/>
+          	<enum name="performHandover" value="28"/>
+          	<enum name="sendEndSignal" value="29"/>
+          	<enum name="performSubsequentHandover" value="30"/>
+          	<enum name="provideSIWFSNumber" value="31"/>
+          	<enum name="sIWFSSignallingModify" value="32"/>
+          	<enum name="processAccessSignalling" value="33"/>
+          	<enum name="forwardAccessSignalling" value="34"/>
+          	<enum name="noteInternalHandover" value="35"/>
+          	<enum name="reset" value="37"/>
+          	<enum name="forwardCheckSS" value="38"/>
+          	<enum name="prepareGroupCall" value="39"/>
+          	<enum name="sendGroupCallEndSignal" value="40"/>
+          	<enum name="processGroupCallSignalling" value="41"/>
+          	<enum name="forwardGroupCallSignalling" value="42"/>
+          	<enum name="checkIMEI" value="43"/>
+          	<enum name="mt-forwardSM" value="44"/>
+          	<enum name="sendRoutingInfoForSM" value="45"/>
+          	<enum name="mo-forwardSM" value="46"/>
+          	<enum name="reportSM-DeliveryStatus" value="47"/>
+          	<enum name="noteSubscriberPresent" value="48"/>
+          	<enum name="alertServiceCentreWithoutResult" value="49"/>
+          	<enum name="activateTraceMode" value="50"/>
+          	<enum name="deactivateTraceMode" value="51"/>
+          	<enum name="traceSubscriberActivity" value="52"/>
+          	<enum name="beginSubscriberActivity" value="54"/>
+          	<enum name="sendIdentification" value="55"/>
+          	<enum name="sendAuthenticationInfo" value="56"/>
+          	<enum name="restoreData" value="57"/>
+          	<enum name="sendIMSI" value="58"/>
+          	<enum name="processUnstructuredSS-Request" value="59"/>
+          	<enum name="unstructuredSS-Request" value="60"/>
+          	<enum name="unstructuredSS-Notify" value="61"/>
+          	<enum name="anyTimeSubscriptionInterrogation" value="62"/>
+          	<enum name="informServiceCentre" value="63"/>
+          	<enum name="alertServiceCentre" value="64"/>
+          	<enum name="anyTimeModification" value="65"/>
+          	<enum name="readyForSM" value="66"/>
+          	<enum name="purgeMS" value="67"/>
+          	<enum name="prepareHandover" value="68"/>
+          	<enum name="prepareSubsequentHandover" value="69"/>
+          	<enum name="provideSubscriberInfo" value="70"/>
+          	<enum name="anyTimeInterrogation" value="71"/>
+          	<enum name="ss-InvocationNotification" value="72"/>
+          	<enum name="setReportingState" value="73"/>
+          	<enum name="statusReport" value="74"/>
+          	<enum name="remoteUserFree" value="75"/>
+          	<enum name="registerCC-Entry" value="76"/>
+          	<enum name="eraseCC-Entry" value="77"/>
+          	<enum name="secureTransportClass1" value="78"/>
+          	<enum name="secureTransportClass2" value="79"/>
+          	<enum name="secureTransportClass3" value="80"/>
+          	<enum name="secureTransportClass4" value="81"/>
+          	<enum name="provideSubscriberLocation" value="83"/>
+          	<enum name="sendRoutingInfoForLCS" value="85"/>
+          	<enum name="subscriberLocationReport" value="86"/>
+          	<enum name="ist-Alert" value="87"/>
+          	<enum name="ist-Command" value="88"/>
+          	<enum name="noteMM-Event" value="89"/>
+        </field>
+    </element>
+
     <!-- Error code local value => MAP.asn line 164 -->
     <element name="errorCode.localValue" coding="V" description="Error code local value">
     		<field name="localValue" type="EnumLong" length="1" description="error code">
