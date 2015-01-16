@@ -241,6 +241,8 @@ public abstract class ElementAbstract implements Cloneable
         	{
         		subElemDico = dictionary.getElementFromXML(elemElement);
         		elem = (ElementAbstract) subElemDico.cloneAttribute();
+        		//elem = (ElementAbstract) subElemDico.cloneAttribute();
+        		//elem.copyToClone(subElemDico);
         	}
         	else
         	{
@@ -449,10 +451,9 @@ public abstract class ElementAbstract implements Cloneable
 		Iterator<FieldAbstract> iterField = source.fields.iterator();
 		while (iterField.hasNext())
 		{
-			FieldAbstract fieldOld = (FieldAbstract) iterField.next();
-			FieldAbstract fieldNew = fieldOld.clone();
-			this.fieldsByName.put(fieldNew.name, fieldNew);
-			this.fields.add(fieldNew);
+			FieldAbstract field = (FieldAbstract) iterField.next();
+			this.fieldsByName.put(field.name, field);
+			this.fields.add(field);
 		}
     }
     

@@ -104,8 +104,14 @@ public class Dictionary
 			for (int i=0; i < initElt.length; i++)
 			{
 				// elemInfo.setLabel(initElt[i]);
-		    	elementsMapByLabel.put(initElt[i], elemInfo);
-		        elementsMapByTag.put(elemInfo.getTag(), elemInfo);
+				if (!elementsMapByLabel.containsKey(initElt[i]))
+				{
+					elementsMapByLabel.put(initElt[i], elemInfo);
+				}
+				if (!elementsMapByTag.containsKey(elemInfo.getTag()))
+				{
+					elementsMapByTag.put(elemInfo.getTag(), elemInfo);
+				}
 			}
         }
     }
