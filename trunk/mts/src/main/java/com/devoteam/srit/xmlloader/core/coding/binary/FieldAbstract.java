@@ -227,11 +227,14 @@ public abstract class FieldAbstract
 		else
 		{
 			byte[] bytes = valueArray.getBytes();
-	    	// for (int i = 0 ; i < this.length; i++)
+	    	//for (int i = 0 ; i < this.length; i++)
 		    for (int i = bytes.length - 1; i >= 0; i--)
 	    	{
 	    		int pos = (offset + length) / 8 - bytes.length + i;
-	    		array.set(pos, bytes[i] & 0xff);
+	    		if (pos >= 0 && pos < array.length)
+	    		{
+	    			array.set(pos, bytes[i] & 0xff);
+	    		}
 	    	}	
 		}
     	this.offset = offset; 

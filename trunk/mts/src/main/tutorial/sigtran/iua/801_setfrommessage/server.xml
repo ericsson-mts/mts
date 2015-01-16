@@ -111,9 +111,9 @@
     <parameter name="[CIInformation channel selection]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Information channel selection"/>
     <test parameter="[CIInformation channel selection]" condition="string.equals" value="B1 channel:1"/>
     <parameter name="[CIext2]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.ext2"/>
-    <test parameter="[CIext2]" condition="list.isEmpty"/>
+    <test parameter="[CIext2]" condition="string.equals" value="1"/>
     <parameter name="[CIInterface identifier]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Interface identifier"/>
-    <test parameter="[CIInterface identifier]" condition="list.isEmpty"/>
+    <test parameter="[CIInterface identifier]" condition="string.equals" value="65"/>
     <parameter name="[CIext3]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.ext3"/>
     <test parameter="[CIext3]" condition="number.equals" value="1"/>
     <parameter name="[CICoding standard]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Coding standard"/>
@@ -123,9 +123,9 @@
     <parameter name="[CIChannel type/map element type]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Channel type/map element type"/>
     <test parameter="[CIChannel type/map element type]" condition="string.equals" value="B-channel units:3"/>
     <parameter name="[CIext4]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.ext4"/>
-    <test parameter="[CIext4]" condition="number.equals" value="1"/>
+    <test parameter="[CIext4]" condition="number.equals" value="0"/>
     <parameter name="[CIChannel number]" operation="protocol.setFromMessage" value="isdn.element.Channel identification.field.Channel number"/>
-    <test parameter="[CIChannel number]" condition="number.equals" value="1"/>
+    <test parameter="[CIChannel number]" condition="number.equals" value="70"/>
 
     <parameter name="[CPNext1]" operation="protocol.setFromMessage" value="isdn.element.Calling party number.field.ext1"/>
     <test parameter="[CPNext1]" condition="number.equals" value="0"/>
@@ -154,7 +154,7 @@
     <test parameter="[KFDisplay identification]" condition="string.equals" value="123"/>
 	
 	
-    <parameter name="[data]" value="01000501000000400001000846a2f7b10005000800030000000e00270802006505a104038090e31803a183816c0c2180313030303030303130312c0331323300" />	
+    <parameter name="[data]" value="01000501000000400001000846a2f7b10005000800030000000e00280802006505a104038090e31804a1c183466c0c2180313030303030303130312c03313233" />	
     <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
     <test parameter="[data1]" condition="binary.equals" value="[data]"/>
 

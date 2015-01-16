@@ -32,10 +32,10 @@ Display 4.5 n u O (Note 2) (Note 3)
 	    
         <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
         
-	    <!-- SETUP ACKNOWLEDGE = b0001101 =hD = d13-->
+	          <!-- SETUP ACKNOWLEDGE = b0001101 =hD = d13-->
             <header discriminator="Recommendation Q.931/I.451" callReference="h77f4"  type="SETUP ACKNOWLEDGE"/>
       
-    	    <!-- Channel identification = b0011000 = h18 = d24-->
+	          <!-- Channel identification = b0011000 = h18 = d24-->
             <element identifier="Channel identification">
                 <field name="ext1" lengthBit="1" type="boolean" value="1"/>
                 <field name="Interface identifier present" lengthBit="1" type="enumeration" value="0"/>
@@ -43,14 +43,15 @@ Display 4.5 n u O (Note 2) (Note 3)
                 <field name="Spare" lengthBit="1" type="integer" value="0"/>
                 <field name="Preferred/Exclusive" lengthBit="1" type="enumeration" value="0"/>
                 <field name="D-channel indicator" lengthBit="1" type="enumeration" value="0"/>
-                <field name="Information channel selection" lengthBit="1" type="enumeration" value="0"/>
+                <field name="Information channel selection" lengthBit="2" type="enumeration" value="0"/>
                 <field name="ext2" lengthBit="1" type="boolean" value="1"/>
-                <field name="Interface identifier" lengthBit="8" type="integer" value="65"/>
+                <field name="Interface identifier" lengthBit="7" type="integer" value="65"/>
                 <field name="ext3" lengthBit="1" type="boolean" value="1"/>
                 <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
                 <field name="Number/map" lengthBit="1" type="enumeration" value="0"/>
                 <field name="Channel type/map element type" lengthBit="4" type="enumeration" value="B-channel units"/>
-                <field name="Channel number" lengthBit="32" type="integer" value="70"/>
+                <field name="ext4" lengthBit="1" type="boolean" value="0"/>
+                <field name="Channel number" lengthBit="7" type="integer" value="70"/>
             </element>
             
     	    <!-- Progress indicator= b0011110 = h1E = d30-->

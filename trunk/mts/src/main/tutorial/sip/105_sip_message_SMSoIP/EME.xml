@@ -246,7 +246,7 @@ Content-Length: x
     <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
     <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
     <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
-    <field name="digits" value="[MSISDN-User1]" type="Number_BCD" length="11"/>
+    <field name="digits" value="[MSISDN-User1]" type="Number_BCD" length="6"/>
   </element>
   <element name="TP-PID" coding="V">
     <field name="assignment" value="Assigns bits 0..5 as defined below:0" type="EnumLong" lengthBit="2"/>
@@ -263,7 +263,7 @@ Content-Length: x
   <element name="TP-SCTS" coding="V" description="TP Service Centre Time Stamp">
     <field name="TP-SCTP" value="76707221436587" type="binary" length="7" description="Service Centre Time Stamp" />
   </element>
-  <element name="TP-UD" coding="LV">
+  <element name="TP-UD" coding="V">
     <field name="TP-UDL" value="[smsTextLength]" type="integer" length="1"/>
     <field name="TP-UD" value="[smsBinary]" type="Binary"/>
   </element>
@@ -375,7 +375,7 @@ Content-Length: 0
 <![CDATA[
 <sm_RP_UI.BoxedType><Bytes>
   <element name="SMS-DELIVER" coding="V">
-    <field name="NA1" value="0" type="EnumLong" lengthBit="1"/>
+    <field name="NA1" value="0" type="Integer" lengthBit="1"/>
     <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="EnumLong" lengthBit="1"/>
     <field name="TP-SRQ" value="The SMS STATUS REPORT is the result of a SMS SUBMIT.:0" type="EnumLong" lengthBit="1" description="TP Status Report Indication" />
     <field name="NA2" value="0" type="Integer" lengthBit="1" description="Not applicable" />
@@ -390,17 +390,17 @@ Content-Length: 0
     <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
     <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
     <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
-    <field name="digits" value="[MSISDN-User2]" type="Number_BCD" length="11"/>
+    <field name="digits" value="[MSISDN-User2]" type="Number_BCD" length="6"/>
   </element>
   <element name="TP-SCTS" coding="V" description="TP Service Centre Time Stamp">
-    <field name="TP-SCTP" value="41219111317400" type="binary" length="7" description="Service Centre Time Stamp" />
+  <field name="TP-SCTP" value="41219111317400" type="binary" length="7" description="Service Centre Time Stamp" />
   </element>
   <element name="TP-DT" coding="V" description="TP Discharge Time">
     <field name="TP-SCTP" value="41219111317400" type="binary" length="7" description="Service Centre Time Stamp" />
   </element>
   <element name="TP-ST" coding="V" description="TP Status">
 		<field name="bit7" value="Bits 0..6 as defined below:0" type="EnumLong" lengthBit="1" />
-		<field name="assignment" value="Short message transaction completed, Short message received by the SME" type="EnumLong" lengthBit="1" />
+		<field name="assignment" value="Short message transaction completed, Short message received by the SME" type="EnumLong" lengthBit="7" />
   </element>
   <element name="TP-PI" coding="V" description="TP Parameter Indicator">
 		<field name="Reserved1" value="0" type="Integer" lengthBit="1" description="Reserved #1"/>
@@ -424,7 +424,7 @@ Content-Length: 0
     <field name="Alphabet" value="[smsAlphabet]" type="EnumLong" lengthBit="2"/>
     <field name="Message Class" value="Class 0:0" type="EnumLong" lengthBit="2"/>
   </element>
-  <element name="TP-UD" coding="LV">
+  <element name="TP-UD" coding="V">
     <field name="TP-UDL" value="[smsTextLength]" type="integer" length="1"/>
     <field name="TP-UD" value="[smsBinary]" type="Binary"/>
   </element-->
