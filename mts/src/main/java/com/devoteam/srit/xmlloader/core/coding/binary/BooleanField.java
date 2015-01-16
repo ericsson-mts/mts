@@ -44,9 +44,10 @@ public class BooleanField extends FieldAbstract
 		this.length = 1;
     }
 	
-    public BooleanField(Element rootXML) 
+	@Override
+    public void parseFromXML(Element rootXML) 
     {
-        super(rootXML);
+        super.parseFromXML(rootXML);
         if (this.length < 0)
         {
         	this.length = 1;

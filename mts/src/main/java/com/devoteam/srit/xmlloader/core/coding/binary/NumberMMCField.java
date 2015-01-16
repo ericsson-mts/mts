@@ -45,9 +45,11 @@ public class NumberMMCField extends FieldAbstract
         this.length = 3 * 8;
     }
 	
-    public NumberMMCField(Element rootXML) 
+	@Override
+    public void parseFromXML(Element rootXML) 
     {
-        super(rootXML);
+        super.parseFromXML(rootXML);
+
         this.length = 3 * 8;
     }
 

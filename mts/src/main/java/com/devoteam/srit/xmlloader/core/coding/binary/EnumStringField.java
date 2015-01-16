@@ -55,9 +55,10 @@ public class EnumStringField extends StringField
 		super();
     }
 
-    public EnumStringField(Element rootXML) 
+	@Override
+    public void parseFromXML(Element rootXML) 
     {
-        super(rootXML);
+        super.parseFromXML(rootXML);
 		
         List<Element> list = rootXML.elements("enum");
         for (Element elemEnum : list) 

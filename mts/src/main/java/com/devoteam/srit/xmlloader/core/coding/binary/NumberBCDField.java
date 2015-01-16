@@ -1,5 +1,6 @@
 /* 
- * Copyright 2012 Devoteam http://www.devoteam.com
+ * Co
+pyright 2012 Devoteam http://www.devoteam.com
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  * 
  * 
@@ -44,12 +45,13 @@ public class NumberBCDField extends FieldAbstract
     {
 		super();
     }
-	
-	public NumberBCDField(Element rootXML) 
-    {
-        super(rootXML);
-    }
 
+    @Override
+    public void parseFromXML(Element rootXML) 
+    {
+    	super.parseFromXML(rootXML);
+    }
+    
     @Override
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {

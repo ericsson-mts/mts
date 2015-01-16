@@ -43,9 +43,11 @@ public class IntegerField extends FieldAbstract
 		this.length = 4 * 8;
     }
 	
-    public IntegerField(Element rootXML) 
+	@Override
+    public void parseFromXML(Element rootXML) 
     {
-        super(rootXML);
+        super.parseFromXML(rootXML);
+    
         if (this.length < 0)
         {
         	this.length = 4 * 8;

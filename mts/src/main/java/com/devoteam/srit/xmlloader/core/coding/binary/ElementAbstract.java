@@ -177,7 +177,8 @@ public abstract class ElementAbstract implements Cloneable
             }
             if (field == null)
             {
-            	field = FieldAbstract.parseFromXML(fieldRoot);
+            	field = FieldAbstract.buildFactory(fieldRoot);
+            	field.parseFromXML(fieldRoot);
             }
             this.fieldsByName.put(name, field);
             this.fields.add(field);

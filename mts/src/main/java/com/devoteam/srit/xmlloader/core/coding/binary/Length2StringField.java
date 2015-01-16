@@ -45,11 +45,6 @@ public class Length2StringField extends FieldAbstract
     {
 		super();
     }
-	
-	public Length2StringField(Element rootXML) 
-    {
-        super(rootXML);
-    }
 
     @Override
     public void setValue(String value, int offset, SupArray array) throws Exception 
