@@ -46,9 +46,10 @@ public class IPV6AddressField extends FieldAbstract
 		this.length = 16 * 8;
     }
 	
-	public IPV6AddressField(Element rootXML) 
+	@Override
+    public void parseFromXML(Element rootXML) 
     {
-        super(rootXML);
+        super.parseFromXML(rootXML);
 		this.length = 16 * 8;
     }
 

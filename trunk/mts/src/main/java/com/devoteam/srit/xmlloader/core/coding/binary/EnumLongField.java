@@ -61,9 +61,10 @@ public class EnumLongField extends IntegerField
 		super();
     }
 
-    public EnumLongField(Element rootXML) 
+	@Override
+    public void parseFromXML(Element rootXML) 
     {
-        super(rootXML);
+        super.parseFromXML(rootXML);
         
         List<Element> list = rootXML.elements("enum");
         for (Element elemEnum : list) 
@@ -202,4 +203,11 @@ public class EnumLongField extends IntegerField
     	return ret;
     }
 
+    @Override
+    public FieldAbstract clone()
+    {
+    	EnumLongField newField = new EnumLongField(); 
+    	newField.copyToClone(this);
+    	return newField;
+    }
 }

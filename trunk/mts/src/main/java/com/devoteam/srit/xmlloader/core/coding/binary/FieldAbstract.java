@@ -67,9 +67,8 @@ public abstract class FieldAbstract
     	this.offset = 0;
 	}
 
-    public FieldAbstract(Element rootXML) 
+    public void parseFromXML(Element rootXML) 
     {
-    	this();
         this.name = rootXML.attributeValue("name");
         String lengthBit = rootXML.attributeValue("lengthBit");
         if (lengthBit != null) 
@@ -83,7 +82,7 @@ public abstract class FieldAbstract
         }
     }
 
-    public static FieldAbstract parseFromXML(Element fieldRoot) throws Exception
+    public static FieldAbstract buildFactory(Element fieldRoot) throws Exception
     {
      	String type = fieldRoot.attributeValue("type");
      	String name = fieldRoot.attributeValue("name");
@@ -94,55 +93,55 @@ public abstract class FieldAbstract
      	}
     	else if (type.equalsIgnoreCase("boolean")) 
         {
-        	newField = new BooleanField(fieldRoot);
+        	newField = new BooleanField();
         } 
         else if (type.equalsIgnoreCase("integer")) 
         {
-            newField = new IntegerField(fieldRoot);
+            newField = new IntegerField();
         } 
         else if (type.equalsIgnoreCase("enumlong")) 
         {
-        	newField = new EnumLongField(fieldRoot);
+        	newField = new EnumLongField();
         }
         else if (type.equalsIgnoreCase("enumeration")) 
         {
-        	newField = new EnumLongField(fieldRoot);
+        	newField = new EnumLongField();
         }
         else if (type.equalsIgnoreCase("enum_string")) 
         {
-        	newField = new EnumStringField(fieldRoot);
+        	newField = new EnumStringField();
         }
         else if (type.equalsIgnoreCase("string")) 
         {	
-        	newField = new StringField(fieldRoot);	
+        	newField = new StringField();	
         }
         else if (type.equalsIgnoreCase("length_string")) 
         {
-        	newField = new LengthStringField(fieldRoot);	
+        	newField = new LengthStringField();	
         }
         else if (type.equalsIgnoreCase("length2_string")) 
         {
-        	newField = new Length2StringField(fieldRoot);	
+        	newField = new Length2StringField();	
         }	            
         else if (type.equalsIgnoreCase("binary")) 
         {
-        	newField = new BinaryField(fieldRoot);
+        	newField = new BinaryField();
         }
         else if (type.equalsIgnoreCase("number_bcd")) 
         {
-        	newField = new NumberBCDField(fieldRoot);
+        	newField = new NumberBCDField();
         }
         else if (type.equalsIgnoreCase("number_mmc")) 
         {
-        	newField = new NumberMMCField(fieldRoot);
+        	newField = new NumberMMCField();
         }	            
         else if (type.equalsIgnoreCase("ipv4_address")) 
         {
-        	newField = new IPV4AddressField(fieldRoot);
+        	newField = new IPV4AddressField();
         }
         else if (type.equalsIgnoreCase("ipv6_address")) 
         {
-        	newField = new IPV6AddressField(fieldRoot);
+        	newField = new IPV6AddressField();
         }	            	            
         else
         {
