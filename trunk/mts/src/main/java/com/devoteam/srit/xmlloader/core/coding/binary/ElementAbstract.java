@@ -370,11 +370,12 @@ public abstract class ElementAbstract implements Cloneable
 		if (!this.elements.isEmpty())
 		{
 			int length = this.decodeNotTagElementsFromArray(array, dictionary);
+			
 			this.subelementsArray = new SupArray();
 	        this.subelementsArray.addFirst(array.subArray(0, length));
 	        return length;
 		}
-		else if (!this.fieldsByName.isEmpty())
+		if (!this.fieldsByName.isEmpty())
 		{
 			int length = this.getLengthElem() / 8;
 			if (length < array.length)
@@ -393,17 +394,21 @@ public abstract class ElementAbstract implements Cloneable
 		// encode the sub-element
 		Iterator<ElementAbstract> iter = this.elements.iterator();
 		int index = 0;
+		List<ElementAbstract> newElements = new ArrayList<ElementAbstract>();
 		while (iter.hasNext())
 		{
 			ElementAbstract elemInfo = (ElementAbstract) iter.next();
-			int length = elemInfo.getLengthElem() / 8;
+			ElementAbstract elemDico = dictionary.getElementByLabel(elemInfo.getLabel());
+			int length = elemDico.getLengthElem() / 8;
 			if (!iter.hasNext())
 			{
 				length = array.length - index;
 			}
 			Array subArray = array.subArray(index, length);
-			index += elemInfo.decodeFromArray(subArray, dictionary);
+			index += elemDico.decodeFromArray(subArray, dictionary);
+			newElements.add(elemDico);
 		}
+		this.elements = newElements;
 		return index;
     }
     
