@@ -100,7 +100,7 @@
                 		<field name="Message Class" value="Class 0:0" type="EnumLong" lengthBit="2" description="Message Class"/>
                   </element>
                   <element name="TP-SCTS" coding="V" description="TP Service Centre Time Stamp">
-                    <field name="TP-SCTP" value="76707221436587" type="binary" length="7" description="Service Centre Time Stamp" />
+                    <field name="TP-SCTP" value="51707270717277" type="binary" length="7" description="Service Centre Time Stamp" />
                   </element>
                   <element name="TP-UD" coding="V" description="TP User Data">
                     <field name="TP-UDL" value="[smsTextLength]" type="integer" length="1" description="number of characters in the SMS"/>
@@ -220,9 +220,9 @@
     </sendMessageSIGTRAN>
     
     <!-- Message encoded value -->
-    <parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />			
+    <parameter name="[data]" value="010001010000009c0200000800000066000600080000006502100081000000010000000203020001090103070b0443020008044301000861625f4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c37a13502010102012c302d8407913366600567f98207913366317071f30419040b913366600567f700005170727071727706f3f97c3e9f03000000" />			
     <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
-    <!--test parameter="[data1]" condition="binary.equals" value="[data]"/-->
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
     
     <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_UI.BoxedType&gt;&lt;Bytes&gt;"/>
@@ -258,7 +258,7 @@
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
     <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-SCTS&quot;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-SCTS&quot; value=&quot;76707221436587&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-SCTS&quot; value=&quot;51707270717277&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
     <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-UD&quot;"/>
