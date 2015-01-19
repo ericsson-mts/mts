@@ -141,10 +141,10 @@ public abstract class ASNMessage
     			{
     				simpleClassName = simpleClassName + "_SMS-DELIVER";
     			}
-    			/*else if (TP_MTI == 0 && !isRequest())
+    			else if (TP_MTI == 0 && !isRequest())
     			{
-    				simpleClassName = simpleClassName + "_SMS-DELIVER";
-    			}*/
+    				simpleClassName = simpleClassName + "_SMS-DELIVER-REPORT";
+    			}
     			
 
     			else if (TP_MTI == 1 && isRequest())
@@ -160,10 +160,12 @@ public abstract class ASNMessage
     			{
     				simpleClassName = simpleClassName + "_SMS-STATUS-REPORT";
     			}
-    			/*else if (TP_MTI == 2 && !isRequest())
+    			/*
+    			else if (TP_MTI == 2 && !isRequest())
     			{
-    				simpleClassName = simpleClassName + "_SMS-DELIVER";
-    			}*/
+    				simpleClassName = simpleClassName + "_SMS-COMMAND";
+    			}
+    			*/
     		}
 	    	elementDico = getElementByLabel(simpleClassName);
 		}

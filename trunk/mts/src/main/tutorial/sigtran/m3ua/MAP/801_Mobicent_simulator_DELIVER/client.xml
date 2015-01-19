@@ -81,7 +81,7 @@
                     <field name="TP-MMS" value="No more messages are waiting for the MS in this SC:1" type="EnumLong" lengthBit="1" description="TP More Messages to Send" />
                     <field name="TP-MTI" value="SMS-DELIVER / SMS-DELIVER-REPORT:0" type="EnumLong" lengthBit="2" description="TP Message Type Indicator" />
                   </element>
-                  <element name="TP-A" coding="DV" description="TP Originating Address">
+                  <element name="TP-OA" coding="DV" description="TP Originating Address">
                 		<field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" description="extension"/>
                     <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3" description="nature of address"/>
                     <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" description="numbering plan"/>
@@ -218,7 +218,12 @@
         </parameter-->
     </UA>
     </sendMessageSIGTRAN>
-        
+    
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />			
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <!--test parameter="[data1]" condition="binary.equals" value="[data]"/-->
+    
     <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_UI.BoxedType&gt;&lt;Bytes&gt;"/>
 
@@ -231,7 +236,7 @@
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-MTI&quot; value=&quot;SMS-DELIVER / SMS-DELIVER-REPORT:0&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
-    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-A&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-DORA&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;extension&quot; value=&quot;no extension:1&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;nature of address&quot; value=&quot;international number:1&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;numbering plan&quot; value=&quot;ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1&quot;"/>
@@ -266,7 +271,53 @@
     <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="false" type="44" result="RESULT">
         <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
     </receiveMessageSIGTRAN>
+
+    <!-- Message encoded value -->			  
+  	<parameter name="[data]" value="01000101000000800200000800000066000600080000006502100066000000020000000103020001090103070b044301000804430200084664444904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c10a20e020101300902012c3004040200000000" />
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
+
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_UI.BoxedType&gt;&lt;Bytes&gt;"/>
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;SMS-DELIVER-REPORT&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-UDHI&quot; value=&quot;The TP UD field contains only the short message:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-MTI&quot; value=&quot;SMS-DELIVER / SMS-DELIVER-REPORT:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
     
+    <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-PI&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Reserved1&quot; value=&quot;0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Reserved2&quot; value=&quot;0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Reserved3&quot; value=&quot;0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Reserved4&quot; value=&quot;0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Reserved5&quot; value=&quot;0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-UDL present&quot; value=&quot;absent:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-DCS present&quot; value=&quot;absent:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-PID present&quot; value=&quot;absent:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
+    
+    <!--test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-PID&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;assignment&quot; value=&quot;Assigns bits 0..5 as defined below:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;telematic interworking&quot; value=&quot;no interworking, but SME to SME protocol:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;telematic devices&quot; value=&quot;implicit device type is specific to this SC,:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/-->
+
+    <!--test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-DCS&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Coding Group Bits&quot; value=&quot;General Data Coding indication:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Compression&quot; value=&quot;the text is uncompressed:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Bit 1 significance&quot; value=&quot;bits 1 to 0 are reserved and have no message class meaning:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Alphabet&quot; value=&quot;[smsAlphabet]&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;Message Class&quot; value=&quot;Class 0:0&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/-->
+
+    <!--test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-UD&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-UDL&quot; value=&quot;[smsTextLength]&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-UD&quot; value=&quot;[smsBinary]&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/-->
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/sm_RP_UI.BoxedType&gt;"/>
+
+  
     <!-- remove pb of TIME_WAIT state -->
     <!--closeChannelSIGTRAN name="channel"/-->
                 

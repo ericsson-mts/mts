@@ -60,6 +60,8 @@ public abstract class ElementAbstract implements Cloneable
     protected int tag = Integer.MIN_VALUE;
 
     protected String label;
+    
+    protected String description;
 
 	protected int instances;
 
@@ -157,6 +159,8 @@ public abstract class ElementAbstract implements Cloneable
         {
         	this.label = labelTag;
         }
+        
+        this.description = elementRoot.attributeValue("description");
         
         String instances = elementRoot.attributeValue("instances");
         if (instances != null)
@@ -399,6 +403,7 @@ public abstract class ElementAbstract implements Cloneable
 		{
 			ElementAbstract elemInfo = (ElementAbstract) iter.next();
 			ElementAbstract elemDico = dictionary.getElementByLabel(elemInfo.getLabel());
+			elemDico.description = elemInfo.description;
 			int length = elemDico.getLengthElem() / 8;
 			if (!iter.hasNext())
 			{
@@ -554,6 +559,12 @@ public abstract class ElementAbstract implements Cloneable
 	        elemString.append("name=\"");
 	    	elemString.append(this.label);
 	    	elemString.append("\"");        	
+        }
+        if (this.description != null)
+        {
+	    	elemString.append(" description=\"");
+	   		elemString.append(this.description);
+	    	elemString.append("\"");
         }
         if (this.instances != 0)
         {
