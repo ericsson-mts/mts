@@ -8,7 +8,7 @@
     <!--parameter name="[localHostM3UA]" operation="set" value="164.48.85.81"/-->
     <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortM3UA]" operation="number.add" value="[localPortM3UA]" value2="20000"/>
+    <parameter name="[localPortM3UA]" operation="number.add" value="[localPortM3UA]" value2="10000"/>
     <parameter name="[localPortM3UA]" operation="set" value="[localPortM3UA]" description="local port of the MTS host" editable="true" />
     <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>	
     
@@ -31,67 +31,69 @@
     <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
     <parameter name="[smsTextLength]" operation="string.length" value="[smsText]"/>
 
-    <testcase name="044_mt-forwardSM" description="test sigtran TCAP" state="true">
+    <parameter name="[nbIter]" operation="set" value="100"/>
+    
+    <testcase name="044_mt-forwardSM" description="test sigtran MAP mt-forwardSM message" number="[nbIter]" state="true">
         <scenario name="client" file="044_mt-forwardSM/client.xml" routingName="client"/>
         <scenario name="server" file="044_mt-forwardSM/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA"/>
     </testcase>
     
-    <testcase name="045_sendRoutingInfoForSM" description="test sigtran TCAP" state="true">
+    <testcase name="045_sendRoutingInfoForSM" description="test sigtran MAP sendRoutingInfoForSM message" number="[nbIter]" state="true">
         <scenario name="client" file="045_sendRoutingInfoForSM/client.xml" routingName="client"/>
         <scenario name="server" file="045_sendRoutingInfoForSM/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
 
-    <testcase name="045_sendRoutingInfoForSM_Error" description="test sigtran TCAP" state="true">
+    <testcase name="045_sendRoutingInfoForSM_Error" description="test sigtran MAP sendRoutingInfoForSM_Error message" number="[nbIter]" state="true">
         <scenario name="client" file="045_sendRoutingInfoForSM_Error/client.xml" routingName="client"/>
         <scenario name="server" file="045_sendRoutingInfoForSM_Error/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
 
-    <testcase name="046_mo-forwardSM" description="test sigtran TCAP" state="true">
+    <testcase name="046_mo-forwardSM" description="test sigtran MAP mo-forwardSM message" number="[nbIter]" state="true">
         <scenario name="client" file="046_mo-forwardSM/client.xml" routingName="client"/>
         <scenario name="server" file="046_mo-forwardSM/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
 
-    <testcase name="047_reportSM-DeliveryStatus" description="test sigtran TCAP" state="true">
+    <testcase name="047_reportSM-DeliveryStatus" description="test sigtran MAP reportSM-DeliveryStatus message" number="[nbIter]" state="true">
         <scenario name="client" file="047_reportSM-DeliveryStatus/client.xml" routingName="client"/>
         <scenario name="server" file="047_reportSM-DeliveryStatus/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
     
-    <testcase name="066_readyForSM" description="test sigtran TCAP" state="true">
+    <testcase name="066_readyForSM" description="test sigtran MAP readyForSM message" number="[nbIter]" state="true">
         <scenario name="client" file="066_readyForSM/client.xml" routingName="client"/>
         <scenario name="server" file="066_readyForSM/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
 
-    <testcase name="070_provideSubscriberInfo" description="test sigtran TCAP" state="true">
+    <testcase name="070_provideSubscriberInfo" description="test sigtran MAP provideSubscriberInfo message" number="[nbIter]" state="true">
         <scenario name="client" file="070_provideSubscriberInfo/client.xml" routingName="client"/>
         <scenario name="server" file="070_provideSubscriberInfo/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
     
-    <testcase name="801_Mobicent_simulator_SUBMIT" description="test sigtran MAP" state="true">
+    <testcase name="801_Mobicent_simulator_SUBMIT" description="test sigtran mobicent capture STATUS-SUBMIT" number="[nbIter]" state="true">
         <scenario name="client" file="801_Mobicent_simulator_SUBMIT/client.xml" routingName="client"/>
         <scenario name="server" file="801_Mobicent_simulator_SUBMIT/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
 
-    <testcase name="801_Mobicent_simulator_DELIVER" description="test sigtran MAP" state="true">
+    <testcase name="801_Mobicent_simulator_DELIVER" description="test sigtran mobicent capture DELIVER" number="[nbIter]" state="true">
         <scenario name="client" file="801_Mobicent_simulator_DELIVER/client.xml" routingName="client"/>
         <scenario name="server" file="801_Mobicent_simulator_DELIVER/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
 
-    <testcase name="801_Mobicent_simulator_STATUSREPORT" description="test sigtran MAP" state="true">
+    <testcase name="801_Mobicent_simulator_STATUSREPORT" description="test sigtran mobicent capture STATUS-REPORT" number="[nbIter]" state="true">
         <scenario name="client" file="801_Mobicent_simulator_STATUSREPORT/client.xml" routingName="client"/>
         <scenario name="server" file="801_Mobicent_simulator_STATUSREPORT/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
     
-    <testcase name="802_GMPC_capture" description="test sigtran MAP" state="true">
+    <testcase name="802_GMPC_capture" description="test sigtran GMPC capture" number="[nbIter]" state="true">
         <scenario name="client" file="802_GMPC_capture/client.xml" routingName="client"/>
         <scenario name="server" file="802_GMPC_capture/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
 
-    <testcase name="803_CSME_emulator" description="test sigtran MAP" state="true">
+    <testcase name="803_CSME_emulator" description="test sigtran CSME capture" number="[nbIter]" state="true">
         <scenario name="client" file="803_CSME_emulator/client.xml" routingName="client"/>
         <scenario name="server" file="803_CSME_emulator/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
 
-    <testcase name="810_dico" description="test sigtran MAP" state="true">
+    <testcase name="810_dico" description="test sigtran dictionary processing" number="[nbIter]" state="true">
         <scenario name="client" file="810_dico/client.xml" routingName="client"/>
         <scenario name="server" file="810_dico/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
