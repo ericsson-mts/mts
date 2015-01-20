@@ -8,7 +8,7 @@
     <!--parameter name="[localHostM3UA]" operation="set" value="164.48.85.81"/-->
     <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortM3UA]" operation="number.add" value="[localPortM3UA]" value2="10000"/>
+    <parameter name="[localPortM3UA]" operation="number.add" value="[localPortM3UA]" value2="20000"/>
     <parameter name="[localPortM3UA]" operation="set" value="[localPortM3UA]" description="local port of the MTS host" editable="true" />
     <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>	
     
@@ -68,19 +68,24 @@
         <scenario name="server" file="070_provideSubscriberInfo/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
     
-    <testcase name="801_Mobicent_simulator_SUBMIT" description="test sigtran mobicent capture STATUS-SUBMIT" number="[nbIter]" state="true">
+    <testcase name="801_Mobicent_simulator_SUBMIT" description="test sigtran mobicent capture SMS-SUBMIT/REPORT" number="[nbIter]" state="true">
         <scenario name="client" file="801_Mobicent_simulator_SUBMIT/client.xml" routingName="client"/>
         <scenario name="server" file="801_Mobicent_simulator_SUBMIT/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
 
-    <testcase name="801_Mobicent_simulator_DELIVER" description="test sigtran mobicent capture DELIVER" number="[nbIter]" state="true">
+    <testcase name="801_Mobicent_simulator_DELIVER" description="test sigtran mobicent capture SMS-DELIVER/REPORT" number="[nbIter]" state="true">
         <scenario name="client" file="801_Mobicent_simulator_DELIVER/client.xml" routingName="client"/>
         <scenario name="server" file="801_Mobicent_simulator_DELIVER/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
 
-    <testcase name="801_Mobicent_simulator_STATUSREPORT" description="test sigtran mobicent capture STATUS-REPORT" number="[nbIter]" state="true">
+    <testcase name="801_Mobicent_simulator_STATUSREPORT" description="test sigtran mobicent capture SMS-STATUS-REPORT" number="[nbIter]" state="true">
         <scenario name="client" file="801_Mobicent_simulator_STATUSREPORT/client.xml" routingName="client"/>
         <scenario name="server" file="801_Mobicent_simulator_STATUSREPORT/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+    <testcase name="801_Mobicent_simulator_COMMAND" description="test sigtran mobicent capture SMS-COMMAND" number="[nbIter]" state="true">
+        <scenario name="client" file="801_Mobicent_simulator_COMMAND/client.xml" routingName="client"/>
+        <scenario name="server" file="801_Mobicent_simulator_COMMAND/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
     
     <testcase name="802_GMPC_capture" description="test sigtran GMPC capture" number="[nbIter]" state="true">
