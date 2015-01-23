@@ -59,7 +59,7 @@ public class MobicentTCAPMessage extends ASNMessage
 	// TCAP mobicent object
 	TCBeginMessage tcbm;
 
-    public MobicentTCAPMessage() 
+    public MobicentTCAPMessage() throws Exception
     {
     	//this.className =".tcap.";
     	// Mobicent TCAP message

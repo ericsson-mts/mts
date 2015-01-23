@@ -46,7 +46,7 @@ import com.devoteam.srit.xmlloader.sigtran.ap.map.ReturnResult.ResultretresSeque
  */
 public class BN_APMessage extends BN_ASNMessage
 {
-	public BN_APMessage()
+	public BN_APMessage() throws Exception
 	{
 		super();
 	}

@@ -37,6 +37,7 @@ import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.asn1.dictionary.EmbeddedMap;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.XMLDoc;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.gtp.data.MessageGTP;
 
 
@@ -49,14 +50,17 @@ public abstract class ASNMessage
 	
 	public static HashMap<String, ASNDictionary> dictionaries = new  HashMap<String, ASNDictionary>();
 	
+	public static boolean configMAPSmsCommand = false;
+	
 	protected ASNDictionary dictionary;
 	
 	// list of embedded objects
 	private EmbeddedMap embeddedList;
 
-	public ASNMessage()
+	public ASNMessage() throws Exception
 	{
 		this.embeddedList = new EmbeddedMap();
+		configMAPSmsCommand = StackFactory.getStack(StackFactory.PROTOCOL_SIGTRAN).getConfig().getBoolean("map.DECODE_SMS_COMMAND", false);
 	}
 	
 	public ASNMessage(String dictionaryFile) throws Exception
@@ -137,35 +141,34 @@ public abstract class ASNMessage
     		if (bytes != null && "Sm_RP_UI".equals(simpleClassName))
     		{
     			int TP_MTI = bytes[0] & (byte) 3;
-    			if (TP_MTI == 0 && isRequest())
+    			boolean request = isRequest();
+    			if (TP_MTI == 0 && request)
     			{
     				simpleClassName = simpleClassName + "_SMS-DELIVER";
     			}
-    			else if (TP_MTI == 0 && !isRequest())
+    			else if (TP_MTI == 0 && !request)
     			{
     				simpleClassName = simpleClassName + "_SMS-DELIVER-REPORT";
     			}
     			
 
-    			else if (TP_MTI == 1 && isRequest())
+    			else if (TP_MTI == 1 && request)
     			{
     				simpleClassName = simpleClassName + "_SMS-SUBMIT";
     			}
-    			else if (TP_MTI == 1 && !isRequest())
+    			else if (TP_MTI == 1 && !request)
     			{
     				simpleClassName = simpleClassName + "_SMS-SUBMIT-REPORT";
     			}
 
-    			else if (TP_MTI == 2)
+    			else if (TP_MTI == 2 & !configMAPSmsCommand)
     			{
     				simpleClassName = simpleClassName + "_SMS-STATUS-REPORT";
     			}
-    			/*
-    			else if (TP_MTI == 2 && !isRequest())
+    			else if (TP_MTI == 2 && configMAPSmsCommand)
     			{
     				simpleClassName = simpleClassName + "_SMS-COMMAND";
     			}
-    			*/
     		}
 	    	elementDico = getElementByLabel(simpleClassName);
 		}

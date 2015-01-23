@@ -332,14 +332,10 @@ public abstract class ElementAbstract implements Cloneable
 				throw new ExecutionException("The element tag \"" + tag + "\" can not be decoded because it is not present in the dictionary.");
 	        }
 
-	        ElementAbstract elemNew = null;
-	        if (elemDico != null)
-	        {
-	        	elemNew = (ElementAbstract) elemDico.clone();
-	        }	        
-	
+	        ElementAbstract elemNew = (ElementAbstract) elemDico.clone();	
 	        int length = elemNew.decodeFromArray(data.subArray(offset), dictionary);
 	        offset += length;
+	        
 	        elements.add(elemNew);
 	    }
 	    return elements;
@@ -403,15 +399,19 @@ public abstract class ElementAbstract implements Cloneable
 		{
 			ElementAbstract elemInfo = (ElementAbstract) iter.next();
 			ElementAbstract elemDico = dictionary.getElementByLabel(elemInfo.getLabel());
-			elemDico.description = elemInfo.description;
-			int length = elemDico.getLengthElem() / 8;
+			elemInfo = ElementAbstract.buildFactory(elemInfo.coding);
+			if (elemDico != null)
+			{
+				elemInfo.copyToClone(elemDico);
+			}
+			int length = elemInfo.getLengthElem() / 8;
 			if (!iter.hasNext())
 			{
 				length = array.length - index;
 			}
 			Array subArray = array.subArray(index, length);
-			index += elemDico.decodeFromArray(subArray, dictionary);
-			newElements.add(elemDico);
+			index += elemInfo.decodeFromArray(subArray, dictionary);
+			newElements.add(elemInfo);
 		}
 		this.elements = newElements;
 		return index;
