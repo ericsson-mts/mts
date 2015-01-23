@@ -55,7 +55,7 @@ import com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage;
  */
 public class BN_TCAPMessage extends BN_ASNMessage
 {
-	public BN_TCAPMessage()
+	public BN_TCAPMessage() throws Exception
 	{
 		super();
 	}

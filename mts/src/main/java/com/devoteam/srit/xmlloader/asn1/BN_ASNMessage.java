@@ -56,7 +56,7 @@ public class BN_ASNMessage extends ASNMessage
 	// ASN1 binarynotes object
 	protected Object asnObject;
 	
-	public BN_ASNMessage()
+	public BN_ASNMessage() throws Exception
     {
 		super();
     }
