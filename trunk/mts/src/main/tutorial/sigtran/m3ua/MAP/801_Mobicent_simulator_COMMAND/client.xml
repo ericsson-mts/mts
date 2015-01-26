@@ -93,10 +93,10 @@
                     <field name="digits" value="33638060002" type="number_bcd" description="digits"/>
                   </element>
                   <element name="TP-SCTS" coding="V" description="TP Discharge Time">
-                      <field name="TP-DT" value="41219111317400" type="binary" length="7" description="Discharge Time"/>
+                      <field name="TP-DT" value="14121911134700" type="number_bcd" length="7" description="Discharge Time"/>
                   </element>
                   <element name="TP-DT" coding="V" description="TP Discharge Time">
-                      <field name="TP-DT" value="41219111317400" type="binary" length="7" description="Discharge Time"/>
+                      <field name="TP-DT" value="13111810124611" type="number_bcd" length="7" description="Discharge Time"/>
                   </element>
                   <element name="TP-ST" coding="V" description="TP Status">
                 		<field name="bit7" value="Bits 0..6 as defined below:0" type="EnumLong" lengthBit="1" />
@@ -255,7 +255,7 @@
     </sendMessageSIGTRAN>
 
     <!-- Message encoded value -->
-    <parameter name="[data]" value="010001010000009c0200000800000066000600080000006502100083000000010000000203020001090103070b044302000804430100086362614804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c39a13702010102012c302f800802281007124312f08207913306000000f3041a06010b913336080600f24121911131740041219111317400000000" />			
+    <parameter name="[data]" value="010001010000009c0200000800000066000600080000006502100083000000010000000203020001090103070b044302000804430100086362614804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c39a13702010102012c302f800802281007124312f08207913306000000f3041a06010b913336080600f24121911131740031118101216411000000" />			
     <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
     <test parameter="[data1]" condition="binary.equals" value="[data]"/>
 
@@ -282,11 +282,11 @@
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
     
     <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-SCTS&quot;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-SCTS&quot; value=&quot;41219111317400&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-SCTS&quot; value=&quot;14121911134700&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
     <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-DT&quot;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-DT&quot; value=&quot;41219111317400&quot;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;TP-DT&quot; value=&quot;13111810124611&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/element&gt;"/>
 
     <test parameter="[xml]" condition="string.contains" value="&lt;element name=&quot;TP-ST&quot;"/>
