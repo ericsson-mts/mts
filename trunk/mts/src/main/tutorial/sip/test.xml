@@ -143,7 +143,7 @@
         <scenario file="105_sip_message/UAS.xml" name="bob" routingName="bob"/>
     </testcase>
 
-    <testcase description="test sip" name="105_message_SMSoIP" state="true">
+    <testcase description="test sip GSM SMS " name="105_message_SMSoIP" state="true">
       	<parameter name="[Port-User1]" operation="set" value="7072" description="User 1 port" editable="true" />
       	<parameter name="[Port-User2]" operation="set" value="7074" description="User 2 port" editable="true" />
         
@@ -163,13 +163,55 @@
         <!--parameter name="[smsText]" operation="set" value="[smsText]12345678"/-->
         <!--parameter name="[smsText]" operation="set" value="Test Emulateur CS MSG"/-->
         <parameter name="[smsAlphabet]" operation="set" value="Default alphabet {SCGSM}:0"/>
-        <parameter name="[smsAlphabet]" operation="set" value="8 bit data {UTF-8}:1"/>
-        <parameter name="[smsAlphabet]" operation="set" value="UCS2 (16bit) {UTF-16BE}:2"/>
+        <!--parameter name="[smsAlphabet]" operation="set" value="8 bit data {UTF-8}:1"/-->
+        <!--parameter name="[smsAlphabet]" operation="set" value="UCS2 (16bit) {UTF-16BE}:2"/-->
         <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
         <parameter name="[smsText]" operation="binary.toString" value="[smsBinary]" value2="[smsAlphabet]"/>
         <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
         
         <parameter name="[smsTextLength]" operation="string.length" value="[smsText]"/>
+        
+        <parameter name="[RP-UD-TP-User-Data-Header-Indicator]" operation="set" value="The TP UD field contains only the short message:0"/>
+        <!--parameter name="[RP-UD-TP-User-Data-Header-Indicator]" operation="set" value="The beginning of the TP UD field contains a Header in addition to the short message:1"/-->
+        
+        <parameter name="[TP-SRR_Status-Report-Indicator]" operation="set" value="A status report is not requested:0"/>
+        <parameter name="[TP-SRR_Status-Report-Indicator]" operation="set" value="A status report is requested:1"/>
+        
+        <scenario file="105_sip_message_SMSoIP/UAC.xml" name="alice" routingName="[Port-User1]"/>
+        <scenario file="105_sip_message_SMSoIP/EME.xml" name="EME proxy" routingName="[localPortSIP]"/>
+        <scenario file="105_sip_message_SMSoIP/UAS.xml" name="bob" routingName="[Port-User2]"/>
+    </testcase>
+
+    <testcase description="test sip GSM SMS long (more than 140 characters) " name="105_message_SMSoIP_long" state="true">
+      	<parameter name="[Port-User1]" operation="set" value="7072" description="User 1 port" editable="true" />
+      	<parameter name="[Port-User2]" operation="set" value="7074" description="User 2 port" editable="true" />
+        
+        <parameter name="[ISIM_DOMAIN_ADDR]" operation="set" value="com4innov.com" description="domaine name" editable="true" />
+        <parameter name="[MSISDN-User1]" operation="set" value="33638060000" description="User 1 MSISDN" editable="true" />
+       	<parameter name="[MSISDN-User2]" operation="set" value="33638060002" description="User 2 MSISDN" editable="true" />
+        <parameter name="[MSISDN-SMSC]" operation="set" value="33600000003" description="User 2 MSISDN" editable="true" />
+        
+        <parameter name="[Transport]" operation="set" value="[transportRequest]"/>
+        
+        <parameter name="[smsTextLength]" operation="number.random" value="153"/> <!-- for "Default alphabet {SCGSM}:0" alphabet -->
+        <!--parameter name="[smsTextLength]" operation="number.random" value="134"/--> <!-- for "8 bit data {UTF-8}:1" alphabet -->
+        <!--parameter name="[smsTextLength]" operation="number.random" value="67"/--> <!-- for "UCS2 (16bit) {UTF-16BE}:2" alphabet -->
+        <parameter name="[smsText]" operation="string.random" value="[smsTextLength]"/>
+        <!--parameter name="[smsText]" operation="set" value="Test Emulateur CS MSG abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789"/-->
+        <!--parameter name="[smsText]" operation="set" value="1234567890" value2="6"/-->
+        <!--parameter name="[smsText]" operation="set" value="[smsText]12345678"/-->
+        <!--parameter name="[smsText]" operation="set" value="Test Emulateur CS MSG"/-->
+        <parameter name="[smsAlphabet]" operation="set" value="Default alphabet {SCGSM}:0"/>
+        <!--parameter name="[smsAlphabet]" operation="set" value="8 bit data {UTF-8}:1"/-->
+        <!--parameter name="[smsAlphabet]" operation="set" value="UCS2 (16bit) {UTF-16BE}:2"/-->
+        <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
+        <parameter name="[smsText]" operation="binary.toString" value="[smsBinary]" value2="[smsAlphabet]"/>
+        <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
+        
+        <parameter name="[smsTextLength]" operation="string.length" value="[smsText]"/>
+        
+        <parameter name="[RP-UD-TP-User-Data-Header-Indicator]" operation="set" value="The TP UD field contains only the short message:0"/>
+        <parameter name="[RP-UD-TP-User-Data-Header-Indicator]" operation="set" value="The beginning of the TP UD field contains a Header in addition to the short message:1"/>
         
         <parameter name="[TP-SRR_Status-Report-Indicator]" operation="set" value="A status report is not requested:0"/>
         <parameter name="[TP-SRR_Status-Report-Indicator]" operation="set" value="A status report is requested:1"/>

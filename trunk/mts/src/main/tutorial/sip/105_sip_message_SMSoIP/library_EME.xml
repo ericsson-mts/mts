@@ -88,7 +88,7 @@
     <test parameter="[RP-UD-TP-RP]" condition="string.equals" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0"/>
     <parameter name="[RP-UD-TP-UDHI]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-UDHI']"/> 
     <parameter name="[RP-UD-TP-UDHI]" operation="string.xpath" value="[RP-UD-TP-UDHI]" value2="//@value"/>
-    <test parameter="[RP-UD-TP-UDHI]" condition="string.equals" value="The TP UD field contains only the short message:0"/>
+    <test parameter="[RP-UD-TP-UDHI]" condition="string.equals" value="[RP-UD-TP-User-Data-Header-Indicator]"/>
     <parameter name="[RP-UD-TP-SRR]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-SRR']"/> 
     <parameter name="[RP-UD-TP-SRR]" operation="string.xpath" value="[RP-UD-TP-SRR]" value2="//@value"/>
     <test parameter="[RP-UD-TP-SRR]" condition="string.equals" value="[TP-SRR_Status-Report-Indicator]"/>
@@ -154,8 +154,6 @@
     <parameter name="[RP-UD-TP-VP]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-VP']"/> 
     <parameter name="[RP-UD-TP-VP]" operation="string.xpath" value="[RP-UD-TP-VP]" value2="//@value"/>
     <test parameter="[RP-UD-TP-VP]" condition="string.equals" value="63 w(eeks):255"/>
-
-    <!--test parameter="[smsText1]" condition="string.equals" value="[smsText]"/-->
     
     <parameter name="[RP-UD-TP-UDL]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-UDL']"/> 
     <parameter name="[RP-UD-TP-UDL]" operation="string.xpath" value="[RP-UD-TP-UDL]" value2="//@value"/>
@@ -249,7 +247,7 @@ Content-Length: x
 <sm_RP_UI.BoxedType><Bytes>
   <element name="SMS-DELIVER" coding="V">
     <field name="TP-RP" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0" type="EnumLong" lengthBit="1"/>
-    <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="EnumLong" lengthBit="1"/>
+    <field name="TP-UDHI" value="[RP-UD-TP-UDHI]" type="EnumLong" lengthBit="1"/>
     <field name="TP-SRI" value="A status report is not requested:0" type="EnumLong" lengthBit="1" description="TP Status Report Indication" />
     <field name="NA" value="0" type="Integer" lengthBit="1" description="Not applicable" />
     <field name="TP-LP" value="The message has not been forwarded and is not a spawned message:0" type="EnumLong" lengthBit="1" description="TP Loop Prevention" />
@@ -278,8 +276,8 @@ Content-Length: x
     <field name="TP-SCTP" value="67072712345678" type="number_bcd" length="7" description="Service Centre Time Stamp" />
   </element>
   <element name="TP-UD" coding="V">
-    <field name="TP-UDL" value="[smsTextLength]" type="integer" length="1"/>
-    <field name="TP-UD" value="[smsBinary]" type="Binary"/>
+    <field name="TP-UDL" value="[RP-UD-TP-UDL]" type="integer" length="1"/>
+    <field name="TP-UD" value="[RP-UD-TP-UD]" type="Binary"/>
   </element>
 </Bytes></sm_RP_UI.BoxedType>
 ]]>
@@ -300,8 +298,6 @@ Content-Length: x
     <!-- ERREUR sur le nombre de caracteres de TP-UD -->
     <!--test parameter="[RP-User-Data_BIN]" condition="binary.equals" value="31010b913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04" /-->
 
-    <!--parameter name="[asn]" operation="set"    value="00000007913306000000f32131010b913336080600f20000ff13d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
-    <!--parameter name="[binMAPMessage]" operation="binary.xmlToAsn" value="[xml]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" value3="map/dictionary_MAP .xml"/-->
     <parameter name="[binMAPMessage]" operation="set" value="[RP-DATA_BIN][RP-Message-Reference_BIN][RP-Originator-Address_BIN][RP-Destination-Address_BIN][RP-User-Data_BIN]"/>
     <log>binMAPMessage=[binMAPMessage]</log>
     <!--parameter name="[binMAPMessage]" operation="set"    value="00000007913306000000F32131010B913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
