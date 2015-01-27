@@ -66,7 +66,19 @@
 
     <parameter name="[index]" operation="number.add" value="[index]" value2="[RP-Destination-Address_LEN]"/>    
     <parameter name="[RP-UserData_LENBIN]" operation="binary.subBinary" value="[binContent]" value2="[index]" value3="1"/>
-    <parameter name="[RP-UserData_LEN]" operation="binary.toNumber" value="[RP-UserData_LENBIN]"/>    
+    <parameter name="[RP-UserData_LEN]" operation="binary.toNumber" value="[RP-UserData_LENBIN]"/>
+    
+    <!-- sometimes the length is encoded on 2 bytes (comes probably from BER ANS.1 encoding) -->
+    <parameter name="[bugLength]" operation="binary.toNumber" value="[RP-UserData_LEN]"/>
+    <if>
+      <condition>
+        <test parameter="[bugLength]" condition="number.greaterThan" value="127" />
+      </condition>
+      <then>
+        <parameter name="[RP-UserData_LENBIN]" operation="set" value="81[RP-UserData_LENBIN]"/>
+      </then>
+    </if>   
+  
     <parameter name="[index]" operation="number.add" value="[index]" value2="1"/>
     <parameter name="[RP-UserData_BIN]" operation="binary.subBinary" value="[binContent]" value2="[index]" value3="[RP-UserData_LEN]"/>
     <parameter name="[RP-UserData_XML]" operation="binary.asnToXml" value="04[RP-UserData_LENBIN][RP-UserData_BIN]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_UI" value3="map/dictionary_MAP .xml"/>
@@ -152,7 +164,7 @@
     <parameter name="[RP-UD-TP-UD]" operation="string.xpath" value="[RP-UD-TP-UD]" value2="//@value"/>
     <test parameter="[RP-UD-TP-UD]" condition="binary.equals" value="[smsBinary]"/>
     <parameter name="[RP-UD-TP-UD_Text]" operation="binary.toString" value="[smsBinary]" value2="[RP-UD-TP-DCS-Alphabet]"/>
-    <test parameter="[RP-UD-TP-UD_Text]" condition="string.equals" value="[smsText]"/>
+    <!--test parameter="[RP-UD-TP-UD_Text]" condition="string.equals" value="[smsText]"/-->
     
     <parameter name="[localTag]" operation="string.random" value="10"/>
 		<sendMessageSIP name="Send 202 Accepted">
@@ -274,6 +286,16 @@ Content-Length: x
 </parameter>
     <parameter name="[RP-User-Data_BIN]" operation="binary.xmlToAsn" value="[RP-User-Data_XML]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_UI" value3="map/dictionary_MAP .xml"/>
     <parameter name="[RP-User-Data_BIN]" operation="binary.subBinary" value="[RP-User-Data_BIN]" value2="1"/>
+    <!-- sometimes the length is encoded on 2 bytes (comes probably from BER ANS.1 encoding) -->
+    <parameter name="[bugLength]" operation="binary.subBinary" value="[RP-User-Data_BIN]" value2="0" value3="1"/>
+    <if>
+      <condition>
+        <test parameter="[bugLength]" condition="binary.equals" value="81" />
+      </condition>
+      <then>
+        <parameter name="[RP-User-Data_BIN]" operation="binary.subBinary" value="[RP-User-Data_BIN]" value2="1"/>
+      </then>
+    </if>
     <log>RP-User-Data_BIN=[RP-User-Data_BIN]</log>
     <!-- ERREUR sur le nombre de caracteres de TP-UD -->
     <!--test parameter="[RP-User-Data_BIN]" condition="binary.equals" value="31010b913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04" /-->
