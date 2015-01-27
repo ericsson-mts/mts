@@ -7,13 +7,21 @@
 
     <function file="105_sip_message_SMSoIP/library_UAC.xml"/>
 
-    <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
-    <parameter name="[smsText]" operation="binary.toString" value="[smsBinary]" value2="[smsAlphabet]"/>
-    <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
-    <parameter name="[smsBinary]" operation="set" value="06080400010101[smsBinary]"/>
+    <parameter name="[smsText1]" operation="string.random" value="[smsTextLengthMax]"/>
+    <!--parameter name="[smsText1]" operation="set" value="[smsText]"/-->
     
-    <parameter name="[smsTextLength]" operation="string.length" value="[smsText]"/>
-    <parameter name="[smsTextLength]" operation="number.add" value="[smsTextLength]" value2="8"/>
+    <parameter name="[smsBinary1]" operation="string.toBinary" value="[smsText1]" value2="[smsAlphabet]"/>
+    <parameter name="[smsText2]" operation="binary.toString" value="[smsBinary1]" value2="[smsAlphabet]"/>
+    <parameter name="[testcase:smsText]" operation="set" value="[smsText2]"/>
+    <parameter name="[testcase:smsBinary]" operation="string.toBinary" value="[testcase:smsText]" value2="[smsAlphabet]"/>
+    <parameter name="[concatSM_referenceNumber]" operation="binary.random" value="2"/>
+    <parameter name="[concatSM_maximumNumberSM]" operation="set" value="01"/>
+    <parameter name="[concatSM_currentSM]" operation="set" value="01"/>
+    <parameter name="[testcase:smsBinary]" operation="set" value="06080400010101[smsBinary]"/>
+    <!--parameter name="[testcase:smsBinary]" operation="set" value="060804[concatSM_referenceNumber][concatSM_maximumNumberSM][concatSM_currentSM][smsBinary]"/-->
+    
+    <parameter name="[testcase:smsTextLength]" operation="string.length" value="[testcase:smsText]"/>
+    <parameter name="[testcase:smsTextLength]" operation="number.add" value="[testcase:smsTextLength]" value2="7"/>
     
   	<call name="send_message" >
       <input>

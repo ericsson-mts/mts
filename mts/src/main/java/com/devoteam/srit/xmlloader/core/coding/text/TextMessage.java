@@ -75,27 +75,28 @@ public class TextMessage {
         this.completeContentLength = completeContentLength;
     }
 
-    public void parse(String msg) throws Exception {
-        // case a header is contining at the next line
-        msg = Utils.trimLeft(msg);
-        msg = Utils.replaceNoRegex(msg, "\r\n", "\n");
-        msg = Utils.replaceNoRegex(msg, "\n", "\r\n");
-
-        msg = msg.replace('\t', ' ');
-        msg = msg.replaceAll(",[ ]*\r\n ", ", ");
-        msg = msg.replaceAll(":[ ]*\r\n ", ": ");
-        msg = msg.replaceAll("\\n[ ]+", "\n");
-
+    public void parse(String msg) throws Exception 
+    {
         // get of the content of the message
-        int iPosContent = msg.indexOf("\r\n\r\n");
-        String content;
-        if (iPosContent > 0) {
-        	content = msg.substring(iPosContent + 4);
+    	msg = Utils.trimLeft(msg);
+    	String content;
+        int iPosContent = msg.indexOf("\n\n");
+        if (iPosContent > 0) 
+        {
+        	content = msg.substring(iPosContent + 2);
         }
         else
         {
-        	content = "";
-        	iPosContent = msg.length();
+        	iPosContent = msg.indexOf("\r\n\r\n");
+            if (iPosContent > 0) 
+            {
+            	content = msg.substring(iPosContent + 4);
+            }
+	        else
+	        {
+	        	content = "";
+	        	iPosContent = msg.length();
+	        }
         }
         if (addCRLFContent > 0 && content.length() > 0) {
             for (int i = 0; i < addCRLFContent; i++) {
@@ -104,7 +105,15 @@ public class TextMessage {
         }
 
         // get of the headers of the message
-        this.headers = msg.substring(0, iPosContent).trim();
+        String header = msg.substring(0, iPosContent).trim();
+        header = Utils.replaceNoRegex(header, "\r\n", "\n");
+        header = Utils.replaceNoRegex(header, "\n", "\r\n");
+        header = header.replace('\t', ' ');
+        // case a header is contining at the next line
+        header = header.replaceAll(",[ ]*\r\n ", ", ");
+        header = header.replaceAll(":[ ]*\r\n ", ": ");
+        header = header.replaceAll("\\n[ ]+", "\n");
+        this.headers = header;
         // Calculate the Content-Length header is not present in the message or has an invalid value
         if (completeContentLength) {
             completeContentLengthHeader(content.length());
@@ -114,16 +123,14 @@ public class TextMessage {
         this.parser = new MsgParser(multiHeader, compressedHeader);
         parser.parse(headers, "\r", ':', "<>", "\"\"");
         parser.processHeaders();
-
-       
-
+        
         // parsing of the content of the message
         Header contentType = parser.getHeader("Content-Type");
         Header boundary = contentType.parseParameter("boundary", ";", '=', "<>", "\"\"");
         contentParser = new ContentParser(protocol, content, boundary.getHeader(0));
 
         // calculate the complete message
-        StringBuilder buff = new StringBuilder(this.headers);
+        StringBuilder buff = new StringBuilder(this.headers.trim());
         buff.append("\r\n\r\n");
         if (content != null) {
             buff.append(content);
