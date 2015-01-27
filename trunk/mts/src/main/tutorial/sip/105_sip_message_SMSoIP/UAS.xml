@@ -14,10 +14,11 @@
         
   	<call name="receive_message" >
       <output>
-          <parameter name="[receivedSmsText]" value="[function:receivedSmsText]"/>
+          <parameter name="[receivedSmsBinary]" value="[function:receivedSmsBinary]"/>
       </output>
     </call>
     
+    <parameter name="[receivedSmsText]" operation="binary.toString" value="[receivedSmsBinary]" value2="[smsAlphabet]"/>
     <parameter name="[receivedSmsTextLength]" operation="string.length" value="[receivedSmsText]"/>
     <test parameter="[receivedSmsTextLength]" condition="string.equals" value="[smsTextLength]"/>
     <test parameter="[receivedSmsText]" condition="string.equals" value="[smsText]"/>
