@@ -99,7 +99,17 @@
     <parameter name="[RP-User-Data_BIN]" operation="binary.xmlToAsn" value="[RP-User-Data_XML]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_UI" value3="map/dictionary_MAP .xml"/>
     <parameter name="[RP-User-Data_BIN]" operation="binary.subBinary" value="[RP-User-Data_BIN]" value2="1"/>
     <log>RP-User-Data_BIN=[RP-User-Data_BIN]</log>
-
+    <!-- sometimes the length is encoded on 2 bytes (comes probably from BER ANS.1 encoding) -->
+    <parameter name="[bugLength]" operation="binary.subBinary" value="[RP-User-Data_BIN]" value2="0" value3="1"/>
+    <if>
+      <condition>
+        <test parameter="[bugLength]" condition="binary.equals" value="81" />
+      </condition>
+      <then>
+        <parameter name="[RP-User-Data_BIN]" operation="binary.subBinary" value="[RP-User-Data_BIN]" value2="1"/>
+      </then>
+    </if>
+    
     <!--parameter name="[asn]" operation="set"    value="00000007913306000000f32131010b913336080600f20000ff13d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
     <!--parameter name="[binMAPMessage]" operation="binary.xmlToAsn" value="[xml]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" value3="map/dictionary_MAP .xml"/-->
     <parameter name="[binMAPMessage]" operation="set" value="[RP-DATA_BIN][RP-Message-Reference_BIN][RP-Originator-Address_BIN][RP-Destination-Address_BIN][RP-User-Data_BIN]"/>
