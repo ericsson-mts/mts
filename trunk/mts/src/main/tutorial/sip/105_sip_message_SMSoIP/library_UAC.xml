@@ -127,21 +127,21 @@
     <!-- send RP-DATA -->
 		<sendMessageSIP name="Send MESSAGE" listenpoint="[scenarioName]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
     <![CDATA[
-    MESSAGE sip:[inviteeName1]@[ISIM_DOMAIN_ADDR] SIP/2.0
-    Via: SIP/2.0/[transportResponse] [localHostSIP]:[Port-User1];branch=z9hG4bK[newBranchId]
-    Route: <sip:[remoteHostSIP]:[remotePortSIP];lr>
-    Max-Forwards: 70
-    From: "[clientName]" <sip:[clientName]@[ISIM_DOMAIN_ADDR]>;tag=[localTag]
-    To: <sip:[inviteeName1]@[ISIM_DOMAIN_ADDR]>
-    Call-ID: [newCallId]
-    CSeq: [newCseqNumber] MESSAGE
-    Accept-Contact: *;+g.oma.sip-im
-    Allow: ACK, BYE, CANCEL, INVITE, MESSAGE, NOTIFY, OPTIONS, PRACK, REFER, SUBSCRIBE, UPDATE
-    User-Agent: MTS v6.0.3_beta : Multiprotocol Test Suite
-    Content-Type: application/vnd.3gpp.sms
-    Content-Length: x
-    
-    [strMAPMessage]]]></sendMessageSIP>
+MESSAGE sip:[inviteeName1]@[ISIM_DOMAIN_ADDR] SIP/2.0
+Via: SIP/2.0/[transportResponse] [localHostSIP]:[Port-User1];branch=z9hG4bK[newBranchId]
+Route: <sip:[remoteHostSIP]:[remotePortSIP];lr>
+Max-Forwards: 70
+From: "[clientName]" <sip:[clientName]@[ISIM_DOMAIN_ADDR]>;tag=[localTag]
+To: <sip:[inviteeName1]@[ISIM_DOMAIN_ADDR]>
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] MESSAGE
+Accept-Contact: *;+g.oma.sip-im
+Allow: ACK, BYE, CANCEL, INVITE, MESSAGE, NOTIFY, OPTIONS, PRACK, REFER, SUBSCRIBE, UPDATE
+User-Agent: MTS v6.0.3_beta : Multiprotocol Test Suite
+Content-Type: application/vnd.3gpp.sms
+Content-Length: x
+
+[strMAPMessage]]]></sendMessageSIP>
 
     <receiveMessageSIP name="Wait 200 OK" request="false" type="MESSAGE" result="202">
     </receiveMessageSIP>
@@ -226,21 +226,21 @@ Content-Length: 0
 
     <sendMessageSIP name="Send MESSAGE" listenpoint="[scenarioName]"  remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
         <![CDATA[
-        MESSAGE [fromURI] SIP/2.0
-        Via: SIP/2.0/[transportResponse] [localHostSIP]:[Port-User1];branch=z9hG4bK[newBranchId]
-        Route: <sip:[remoteHostSIP]:[remotePortSIP];lr>
-        Max-Forwards: 70
-        From: [toURI];tag=[localTag]
-        To: [fromURI]
-        Call-ID: [newCallId]
-        CSeq: [newCseqNumber] MESSAGE
-        Accept-Contact: *;+g.oma.sip-im
-        Allow: ACK, BYE, CANCEL, INVITE, MESSAGE, NOTIFY, OPTIONS, PRACK, REFER, SUBSCRIBE, UPDATE
-        User-Agent: MTS v6.0.3_beta : Multiprotocol Test Suite
-        Content-Type: application/vnd.3gpp.sms
-        Content-Length: x
+MESSAGE [fromURI] SIP/2.0
+Via: SIP/2.0/[transportResponse] [localHostSIP]:[Port-User1];branch=z9hG4bK[newBranchId]
+Route: <sip:[remoteHostSIP]:[remotePortSIP];lr>
+Max-Forwards: 70
+From: [toURI];tag=[localTag]
+To: [fromURI]
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] MESSAGE
+Accept-Contact: *;+g.oma.sip-im
+Allow: ACK, BYE, CANCEL, INVITE, MESSAGE, NOTIFY, OPTIONS, PRACK, REFER, SUBSCRIBE, UPDATE
+User-Agent: MTS v6.0.3_beta : Multiprotocol Test Suite
+Content-Type: application/vnd.3gpp.sms
+Content-Length: x
 
-        [strMAPMessage]]]></sendMessageSIP>
+[strMAPMessage]]]></sendMessageSIP>
 
 
         <receiveMessageSIP name="Wait 200 OK" listenpoint="[scenarioName]" request="false" type="MESSAGE" result="200">
