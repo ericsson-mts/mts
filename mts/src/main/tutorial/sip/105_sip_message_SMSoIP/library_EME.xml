@@ -157,12 +157,10 @@
     
     <parameter name="[RP-UD-TP-UDL]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-UDL']"/> 
     <parameter name="[RP-UD-TP-UDL]" operation="string.xpath" value="[RP-UD-TP-UDL]" value2="//@value"/>
-    <test parameter="[RP-UD-TP-UDL]" condition="string.equals" value="[smsTextLength]"/>
+    <!--test parameter="[RP-UD-TP-UDL]" condition="string.equals" value="[smsTextLength]"/-->
     <parameter name="[RP-UD-TP-UD]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='TP-UD']"/> 
     <parameter name="[RP-UD-TP-UD]" operation="string.xpath" value="[RP-UD-TP-UD]" value2="//@value"/>
-    <test parameter="[RP-UD-TP-UD]" condition="binary.equals" value="[smsBinary]"/>
-    <parameter name="[RP-UD-TP-UD_Text]" operation="binary.toString" value="[smsBinary]" value2="[RP-UD-TP-DCS-Alphabet]"/>
-    <!--test parameter="[RP-UD-TP-UD_Text]" condition="string.equals" value="[smsText]"/-->
+    <!--test parameter="[RP-UD-TP-UD]" condition="binary.equals" value="[smsBinary]"/-->
     
     <parameter name="[localTag]" operation="string.random" value="10"/>
 		<sendMessageSIP name="Send 202 Accepted">

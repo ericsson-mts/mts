@@ -6,6 +6,11 @@
 <scenario>
 
     <function file="105_sip_message_SMSoIP/library_UAC.xml"/>
+
+    <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
+    <parameter name="[smsText]" operation="binary.toString" value="[smsBinary]" value2="[smsAlphabet]"/>
+    <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
+    <parameter name="[smsTextLength]" operation="string.length" value="[smsText]"/>
     
   	<call name="send_message" >
       <input>
