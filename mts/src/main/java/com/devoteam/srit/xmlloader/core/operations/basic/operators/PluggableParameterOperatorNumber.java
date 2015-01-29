@@ -215,7 +215,12 @@ public class PluggableParameterOperatorNumber extends AbstractPluggableParameter
                 else if (name.equalsIgnoreCase(NAME_N_TOBINARY))
                 {
                 	BigInteger n = new BigInteger(param1.get(i).toString());
-                	result.add(n.toString(16));
+                	String strRes = n.toString(16);
+                	if (strRes.length() % 2 == 1)
+                	{
+                		strRes = "0" + strRes;
+                	}
+                	result.add(strRes);
                 }
                 else if (name.equalsIgnoreCase(NAME_N_MAX))
                 {

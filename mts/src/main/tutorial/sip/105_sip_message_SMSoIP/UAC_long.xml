@@ -11,35 +11,40 @@
     <parameter name="[smsText1]" operation="set" value="[smsText]"/>
     <parameter name="[smsTextLength1]" operation="string.length" value="[smsText1]"/>
         
-    <parameter name="[index]" operation="set" value="0"/>
+    <parameter name="[indexChar]" operation="set" value="0"/>
+    <parameter name="[indexMsg]" operation="set" value="1"/>
     <while>
       <condition>
-        <test parameter="[index]" condition="number.lowerThan" value="[smsTextLength]"/>
+        <test parameter="[indexChar]" condition="number.lowerThan" value="[smsTextLength]"/>
       </condition>
       <do>
-        <parameter name="[fin]" operation="number.add" value="[index]" value2="[smsTextLengthMax]"/>
-        <parameter name="[smsTextPartial]" operation="string.substring" value="[smsText1]" value2="[index]" value3="[fin]"/>
+        <parameter name="[indexFin]" operation="number.add" value="[indexChar]" value2="[smsTextLengthMax]"/>
+        <parameter name="[indexFin]" operation="number.substract" value="[indexFin]" value2="1"/>
+        <!--parameter name="[indexChar]" operation="number.add" value="[indexChar]" value2="1"/-->
+        <parameter name="[smsTextPartial]" operation="string.substring" value="[smsText1]" value2="[indexChar]" value3="[indexFin]"/>
+        <log>smsTextPartial = [smsTextPartial]</log>
         
         <parameter name="[testcase:smsBinary]" operation="string.toBinary" value="[smsTextPartial]" value2="[smsAlphabet]"/>
         <parameter name="[concatSM_referenceNumber]" operation="binary.random" value="2"/>
-        <!--parameter name="[concatSM_maximumNumberSM]" operation="number.divide" value="[smsTextLength1]" value2="[smsTextLengthMax]"/>
+        <parameter name="[concatSM_maximumNumberSM]" operation="number.divide" value="[smsTextLength1]" value2="[smsTextLengthMax]"/>
+        <parameter name="[concatSM_maximumNumberSM]" operation="number.floor" value="[concatSM_maximumNumberSM]"/>        
         <parameter name="[concatSM_maximumNumberSM]" operation="number.add" value="[concatSM_maximumNumberSM]" value2="1"/>
-        <parameter name="[concatSM_maximumNumberSM]" operation="number.toBinary" value="[concatSM_maximumNumberSM]"/--> 
-        <parameter name="[concatSM_maximumNumberSM]" operation="set" value="01"/>
-        <parameter name="[concatSM_currentSM]" operation="set" value="01"/>
+        <parameter name="[concatSM_maximumNumberSM]" operation="number.toBinary" value="[concatSM_maximumNumberSM]"/> 
+        <parameter name="[concatSM_currentSM]" operation="number.toBinary" value="[indexMsg]"/>
         <parameter name="[testcase:smsBinary]" operation="set" value="060804[concatSM_referenceNumber][concatSM_maximumNumberSM][concatSM_currentSM][smsBinary]"/>
         
-        <parameter name="[testcase:smsTextLength]" operation="string.length" value="[smsTextPartial]"/>
-        <parameter name="[testcase:smsTextLength]" operation="number.add" value="[testcase:smsTextLength]" value2="7"/>
+        <parameter name="[testcase:smsTextPartialLength]" operation="string.length" value="[smsTextPartial]"/>
+        <parameter name="[testcase:smsTextPartialLength]" operation="number.add" value="[testcase:smsTextPartialLength]" value2="8"/>
         
       	<call name="send_message" >
           <input>
-              <parameter name="[function:smsTextLength]" value="[smsTextLength]"/>
+              <parameter name="[function:smsTextLength]" value="[smsTextPartialLength]"/>
               <parameter name="[function:smsBinary]" value="[smsBinary]"/>
           </input>
         </call>
         
-        <parameter name="[index]" operation="set" value="[fin]"/>
+        <parameter name="[indexChar]" operation="set" value="[indexFin]"/>
+        <parameter name="[indexMsg]" operation="add" value="[indexMsg]" value2="1"/>
         
       </do>
     </while>
