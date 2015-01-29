@@ -7,6 +7,18 @@
         
     <function file="105_sip_message_SMSoIP/library_EME.xml"/>
     
-  	<call name="proxy_message" />
+    <parameter name="[index]" operation="set" value="0"/>
+    <while>
+      <condition>
+        <test parameter="[index]" condition="number.lowerThan" value="[smsTextLength]"/>
+      </condition>
+      <do>
 
+      	<call name="proxy_message" />
+        
+        <parameter name="[index]" operation="number.add" value="[index]" value2="[smsTextLengthMax]"/>
+        
+      </do>
+    </while>
+    
 </scenario>
