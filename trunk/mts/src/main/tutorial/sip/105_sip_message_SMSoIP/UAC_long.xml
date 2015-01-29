@@ -11,7 +11,7 @@
     <parameter name="[smsText1]" operation="set" value="[smsText]"/>
     <parameter name="[smsTextLength1]" operation="string.length" value="[smsText1]"/>
         
-    <parameter name="[indexChar]" operation="set" value="0"/>
+    <parameter name="[indexChar]" operation="set" value="-1"/>
     <parameter name="[indexMsg]" operation="set" value="1"/>
     <while>
       <condition>
@@ -20,7 +20,7 @@
       <do>
         <parameter name="[indexFin]" operation="number.add" value="[indexChar]" value2="[smsTextLengthMax]"/>
         <parameter name="[indexFin]" operation="number.substract" value="[indexFin]" value2="1"/>
-        <!--parameter name="[indexChar]" operation="number.add" value="[indexChar]" value2="1"/-->
+        <parameter name="[indexChar]" operation="number.add" value="[indexChar]" value2="1"/>
         <parameter name="[smsTextPartial]" operation="string.substring" value="[smsText1]" value2="[indexChar]" value3="[indexFin]"/>
         <log>smsTextPartial = [smsTextPartial]</log>
         
