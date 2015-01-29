@@ -3,9 +3,13 @@
 				  M.T.S.
 -------------------------------------------------------------------------------
 
-			Version : 6.0.5_beta (revision SVN ????) le ??/??/201?
+			Version : 6.0.5_beta (revision SVN 1367) le 29/01/2015
 
 Evolutions :
+  * Ajout de scenario dans le tuto pour l'envoi et réception de SMS over IP (SIP 
+    MESSAGE message with binary MAP data)
+  * Ajout de 2 operations de conversion entre XML et ASN1 et inversement  
+  * Gestion des elements/fields pour les données binaires (dictionnaire)  
   * SIGTRAN layer SS7 : protèger le decodage en ASN1 lorsque le contenu n'est pas de l'ASN1
     Ajout de scripts pour les messages SCCP Management (Cédric Hertault)
   * Ajout de la gestion des messages resultError
@@ -15,6 +19,9 @@ Evolutions :
   * Ajout d'un message keyword message.xml qui retourne le message au format XML        
      
 Fault report :
+  * Dans cette version des régressions sur le décodage des blocs SDP dans le contenu 
+    des messages SIP est possible : si vous avez besoin de cette fonctionalité alors 
+    restez en version 6.0.4_beta; ce point sera amélioré dans la prochaine livraison.     
       
 Migration :
   * SIGTRAN : renommer la balise <AP> en <ASN>
