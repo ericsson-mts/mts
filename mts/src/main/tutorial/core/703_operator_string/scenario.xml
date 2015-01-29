@@ -26,14 +26,15 @@
 	<parameter name="[result]" operation="string.indexof" value="[string]" value2="AB"/>
 	<test parameter="[result]" condition="number.equals" value="1" />
 
-	<parameter name="[result]" operation="string.substring" value="[string]" value2="1" value3="2"/>
-	<test parameter="[result]" condition="string.equals" value="AB" />
+  <parameter name="[string]" operation="set" value="12345678901234567890"/>
+	<parameter name="[result]" operation="string.substring" value="[string]" value2="10" value3="20"/>
+	<test parameter="[result]" condition="string.equals" value="1234567890" />
 	<parameter name="[result]" operation="string.substring" value="[string]" value2="0" value3="1"/>
-	<test parameter="[result]" condition="string.equals" value="aA" />
-	<parameter name="[result]" operation="string.substring" value="[string]" value2="1"/>
-	<test parameter="[result]" condition="string.equals" value="ABb" />
-	<parameter name="[result]" operation="string.substring" value="[string]" value2="1" value3="100000"/>
-	<test parameter="[result]" condition="string.equals" value="ABb" />
+	<test parameter="[result]" condition="string.equals" value="12" />
+	<parameter name="[result]" operation="string.substring" value="[string]" value2="16"/>
+	<test parameter="[result]" condition="string.equals" value="7890" />
+	<parameter name="[result]" operation="string.substring" value="[string]" value2="5" value3="100000"/>
+	<test parameter="[result]" condition="string.equals" value="678901234567890" />
 
 	<parameter name="[string]" operation="set">
 	 1aABbxyz           
