@@ -111,7 +111,8 @@
     <test parameter="[RP-UD-TP-OA-NumberingPlan]" condition="string.equals" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1"/>
     <parameter name="[RP-UD-TP-OA-Digits]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='digits']"/> 
     <parameter name="[RP-UD-TP-OA-Digits]" operation="string.xpath" value="[RP-UD-TP-OA-Digits]" value2="//@value"/>
-    <test parameter="[RP-UD-TP-OA-Digits]" condition="string.equals" value="[MSISDN-User1]"/>
+    <parameter name="[MSISDN-User1WithoutPlus]" operation="string.subString" value="[MSISDN-User1]" value2="1"/>
+    <test parameter="[RP-UD-TP-OA-Digits]" condition="string.equals" value="[MSISDN-User1WithoutPlus]"/>
 
     <parameter name="[RP-UD-TP-PID-Assignment]" operation="string.xpath" value="[RP-UserData_XML]" value2="//field[@name='assignment']"/> 
     <parameter name="[RP-UD-TP-PID-Assignment]" operation="string.xpath" value="[RP-UD-TP-PID-Assignment]" value2="//@value"/>
