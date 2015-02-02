@@ -7,12 +7,19 @@
 
     <function file="105_sip_message_SMSoIP/library_UAC.xml"/>
 
-    <!--parameter name="[smsTextLengthMaxMAX]" operation="number.multiply" value="[smsTextLengthMax]" value2="255"/>
-    <parameter name="[testcase:smsTextLength]" operation="number.random" value="[smsTextLengthMaxMAX]"/>
-    <parameter name="[testcase:smsText1]" operation="string.random" value="[smsTextLength]"/-->
-    <parameter name="[testcase:smsText1]" operation="set" value="[smsText]"/>
-    <parameter name="[testcase:smsTextLength]" operation="string.length" value="[smsText1]"/>
-        
+    <if>
+      <condition>
+        <test parameter="[smsText]" condition="string.equals" value=""/>
+      </condition>
+      <then>
+        <parameter name="[smsTextLengthMax255]" operation="number.multiply" value="[smsTextLengthMax]" value2="255"/>
+        <parameter name="[testcase:smsTextLength]" operation="number.random" value="[smsTextLengthMax255]"/>
+        <parameter name="[testcase:smsText]" operation="string.random" value="[testcase:smsTextLength]"/>
+      </then>
+    </if>
+
+    <parameter name="[testcase:smsTextLength]" operation="string.length" value="[testcase:smsText]"/>
+            
     <parameter name="[indexChar]" operation="set" value="-1"/>
     <parameter name="[indexMsg]" operation="set" value="1"/>
     <while>
@@ -21,9 +28,9 @@
       </condition>
       <do>
         <parameter name="[indexFin]" operation="number.add" value="[indexChar]" value2="[smsTextLengthMax]"/>
-        <parameter name="[indexFin]" operation="number.substract" value="[indexFin]" value2="1"/>
+        <!--parameter name="[indexFin]" operation="number.substract" value="[indexFin]" value2="1"/-->
         <parameter name="[indexChar]" operation="number.add" value="[indexChar]" value2="1"/>
-        <parameter name="[smsTextPartial]" operation="string.substring" value="[smsText1]" value2="[indexChar]" value3="[indexFin]"/>
+        <parameter name="[smsTextPartial]" operation="string.substring" value="[testcase:smsText]" value2="[indexChar]" value3="[indexFin]"/>
         <log>smsTextPartial = [smsTextPartial]</log>
         
         <parameter name="[testcase:smsBinary]" operation="string.toBinary" value="[smsTextPartial]" value2="[smsAlphabet]"/>

@@ -7,12 +7,12 @@
 
     <function file="105_sip_message_SMSoIP/library_UAS.xml"/>
     
-    <parameter name="[receivedSmsText1]" operation="set" value=""/>
+    <parameter name="[receivedSmsText]" operation="set" value=""/>
             
     <parameter name="[index]" operation="set" value="0"/>
     <while>
       <condition>
-        <test parameter="[index]" condition="number.lowerThan" value="[smsTextLength]"/>
+        <test parameter="[index]" condition="number.lowerThan" value="[testcase:smsTextLength]"/>
       </condition>
       <do>
         
@@ -27,17 +27,14 @@
         <parameter name="[receivedSmsTextPartial]" operation="binary.toString" value="[receivedSmsBinary]" value2="[smsAlphabet]"/>
         <parameter name="[receivedSmsTextPartialLength]" operation="string.length" value="[receivedSmsTextPartial]"/>
         <parameter name="[receivedSmsTextPartialLength]" operation="number.add" value="[receivedSmsTextPartialLength]" value2="8"/>
-        <!--test parameter="[receivedSmsTextLength]" condition="string.equals" value="[testcase:smsTextLength]"/-->
-        <!--test parameter="[receivedSmsText]" condition="string.equals" value="[testcase:smsText]"/-->
         
-        <parameter name="[receivedSmsText1]" operation="set" value="[receivedSmsText1][receivedSmsTextPartial]"/>
+        <parameter name="[receivedSmsText]" operation="set" value="[receivedSmsText][receivedSmsTextPartial]"/>
         
         <parameter name="[index]" operation="number.add" value="[index]" value2="[smsTextLengthMax]"/>
 
       </do>
     </while>
     
-    <parameter name="[receivedSmsText1]" operation="string.regexReplaces" value="[receivedSmsText1]" value2="@" value3=""/>
-    <test parameter="[receivedSmsText1]" condition="string.equals" value="[testcase:smsText1]"/>
+    <test parameter="[receivedSmsText]" condition="string.equals" value="[testcase:smsText]"/>
     
 </scenario>
