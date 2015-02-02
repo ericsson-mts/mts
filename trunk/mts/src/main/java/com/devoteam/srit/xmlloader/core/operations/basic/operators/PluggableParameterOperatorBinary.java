@@ -245,10 +245,16 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     // for GSM SMS alphabet perform a 7bits encoding
                     if (alphabet != null && alphabet.contains("Default alphabet"))
                     {
+                    	// remove twice the @ character
                     	int lastPos = stringResult.length() - 1;
                     	if (lastPos >= 0 && stringResult.charAt(lastPos) == '@')
                     	{
-                    	stringResult = stringResult.substring(0, lastPos);
+                    		stringResult = stringResult.substring(0, lastPos);
+                    	}
+                    	lastPos = stringResult.length() - 1;
+                    	if (lastPos >= 0 && stringResult.charAt(lastPos) == '@')
+                    	{
+                    		stringResult = stringResult.substring(0, lastPos);
                     	}
                     }
                     result.add(stringResult);

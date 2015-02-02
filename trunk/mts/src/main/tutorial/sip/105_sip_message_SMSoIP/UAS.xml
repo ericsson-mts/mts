@@ -7,7 +7,7 @@
 
     <function file="105_sip_message_SMSoIP/library_UAS.xml"/>
         
-  	<call name="receive_message" >
+    <call name="receive_message" >
       <output>
           <parameter name="[receivedSmsBinary]" value="[function:receivedSmsBinary]"/>
       </output>
@@ -16,7 +16,7 @@
     <test parameter="[receivedSmsBinary]" condition="binary.equals" value="[testcase:smsBinary]"/>
     <parameter name="[receivedSmsText]" operation="binary.toString" value="[receivedSmsBinary]" value2="[smsAlphabet]"/>
     <parameter name="[receivedSmsTextLength]" operation="string.length" value="[receivedSmsText]"/>
-    <test parameter="[receivedSmsTextLength]" condition="string.equals" value="[testcase:smsTextLength]"/>
+    <!--test parameter="[receivedSmsTextLength]" condition="string.equals" value="[testcase:smsTextLength]"/-->
     <test parameter="[receivedSmsText]" condition="string.equals" value="[testcase:smsText]"/>
     
 </scenario>
