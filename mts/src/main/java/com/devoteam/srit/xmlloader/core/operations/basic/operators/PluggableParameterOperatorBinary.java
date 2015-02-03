@@ -251,11 +251,13 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     	{
                     		stringResult = stringResult.substring(0, lastPos);
                     	}
+                    	/*
                     	lastPos = stringResult.length() - 1;
                     	if (lastPos >= 0 && stringResult.charAt(lastPos) == '@')
                     	{
                     		stringResult = stringResult.substring(0, lastPos);
                     	}
+                    	*/
                     }
                     result.add(stringResult);
                 }
@@ -1071,6 +1073,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
 
     private static Array encodeBinary(Array array, int nbBits)
     {
+    	//int nbBitsResult = (array.length * nbBits - 1 ) / 8 + 1;
     	int nbBitsResult = array.length * nbBits / 8 + 1;
 		Array arrayResult = new DefaultArray(nbBitsResult);
 		for (int indexBit = 0; indexBit < array.length * 8; indexBit++)
