@@ -104,7 +104,7 @@ ErrorList.list={...}
   <parameter name="[string]" operation="list.set" value="[ssssss]" />
   <parameter name="[binary]" operation="string.toBinary" value="[string]" />
   <test parameter="[binary]" condition="binary.equals" value="5b7373737373735d" />
-
+  
   <!-- see <install_dir>/doc/charset/jcharser-Standart_README.txt -->
   <parameter name="[string]" operation="list.set" value="[ssssss]" />
   <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="ISO-8859-1" />
@@ -143,7 +143,13 @@ ErrorList.list={...}
   <test parameter="[binary]" condition="binary.equals" value="5b7373737373735d" />
   <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="MIK" />
   <test parameter="[binary]" condition="binary.equals" value="5b7373737373735d" />
-    
+  
+  <parameter name="[string]" operation="list.set" value="1234567890" value2="15"/>
+  <parameter name="[string]" operation="list.set" value="[string]123"/>
+  <parameter name="[binary]" operation="string.toBinary" value="[string]" value2="Default alphabet {SCGSM}:0" />
+  <parameter name="[convertString]" operation="binary.toString" value="[binary]" value2="Default alphabet {SCGSM}:0" />
+  <test parameter="[convertString]" condition="string.equals" value="[string]" />
+
 	<!-- WWW-Authenticate: Digest realm="sip.mobistar.fr",domain="sip:ttcnserver@sip.mobistar.fr",nonce="1af6e6744f2880715614625e0da87566",stale=false,qop="auth",algorithm=MD5-->
 	<!-- Authorization: Digest username="33975621672@sip.mobistar.com", realm="sip.mobistar.fr", nonce="1af6e6744f2880715614625e0da87566", algorithm=MD5, opaque="", uri="sip:sip.mobistar.com:5060", response="2f7b84fada58e09b82fd42e6cde8c3e5", cnonce="11fc4a0e", qof=auth, nc=00000001 -->
 
