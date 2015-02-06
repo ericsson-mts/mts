@@ -40,6 +40,7 @@ public class DispatcherMsg {
 
     /**
      * list of the running scenario runner of the test
+     * 
      */
     private static final Map<String, LinkedList<ScenarioRunner>> scenariosByRoutingName = new HashMap<String, LinkedList<ScenarioRunner>>();
 
@@ -57,7 +58,10 @@ public class DispatcherMsg {
         LinkedList<String> scenarioName = msg.getScenarioName();
         LinkedList<ScenarioRunner> runnerList = null;
         for (int i = 0; (runnerList == null) && (i < scenarioName.size()); i++) {
-            runnerList = scenariosByRoutingName.get(scenarioName.get(i));
+        	if (!"".equalsIgnoreCase(scenarioName.get(i)))
+        	{
+        		runnerList = scenariosByRoutingName.get(scenarioName.get(i));
+        	}
         }
         if (runnerList == null) {
             runnerList = scenariosByRoutingName.get("default");
