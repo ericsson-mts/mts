@@ -38,13 +38,13 @@
     <parameter name="[retransmitTimers(10)]" operation="set" value="4000"/>
     
     <testcase description="test sip" name="001_stats" state="true">
-        <scenario name="alice" routingName="alice">001_stats/UAC.xml</scenario>
-        <scenario name="bob" routingName="bob">001_stats/UAS.xml</scenario>
+        <scenario name="alice" routingName="">001_stats/UAC.xml</scenario>
+        <scenario name="bob" routingName="SIP">001_stats/UAS.xml</scenario>
     </testcase>
 
     <testcase description="test sip" name="002_no_parameter" state="true">
-        <scenario name="alice" routingName="alice">002_no_parameter/UAC.xml</scenario>
-        <scenario name="bob" routingName="bob">002_no_parameter/UAS.xml</scenario>
+        <scenario name="alice" routingName="">002_no_parameter/UAC.xml</scenario>
+        <scenario name="bob" routingName="[localPortSIP]">002_no_parameter/UAS.xml</scenario>
     </testcase>
     
     <testcase description="test sip" name="005_set_from_msg" state="false">
@@ -147,7 +147,7 @@
 
     <testcase description="test sip" name="107_invite_prack_reinvite" state="true">
         <scenario name="alice" routingName="alice">107_sip_invite_prack_reinvite/UAC.xml</scenario>
-        <scenario name="7070" routingName="7070">107_sip_invite_prack_reinvite/UAS.xml</scenario>
+        <scenario name="bob" routingName="7070">107_sip_invite_prack_reinvite/UAS.xml</scenario>
     </testcase>
 
     <testcase description="test sip" name="107_invite_prack_update" state="true">
@@ -226,7 +226,7 @@
         <scenario name="bob" routingName="bob">121_sip_delay/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="130_probe_udp" state="true">
+    <testcase description="test sip" name="130_probe_udp" state="false">
         <parameter name="[waitSemaphore]" operation="set" value="true"/>
         <parameter name="[transportRequest]" operation="set" value="udp"/>
         <parameter name="[transportResponse]" operation="set" value="UDP"/>
@@ -236,7 +236,7 @@
         <scenario name="default" routingName="default">130_sip_probe/probe.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="130_probe_tcp" state="true">
+    <testcase description="test sip" name="130_probe_tcp" state="false">
         <parameter name="[waitSemaphore]" operation="set" value="true"/>
         <parameter name="[transportRequest]" operation="set" value="tcp"/>
         <parameter name="[transportResponse]" operation="set" value="TCP"/>
@@ -246,11 +246,11 @@
         <scenario name="default" routingName="default">130_sip_probe/probe.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="130_probe_file" state="true">
+    <testcase description="test sip" name="130_probe_file" state="false">
         <scenario name="default" routingName="default">130_sip_probe/probe_file.xml</scenario>
     </testcase>
     
-    <testcase description="test sip" name="131_probe_regexfilter" state="true">
+    <testcase description="test sip" name="131_probe_regexfilter" state="false">
         <parameter name="[waitSemaphore]" operation="set" value="true"/>
         
         <scenario name="alice" routingName="alice">100_sip_invite_bye/UAC.xml</scenario>
@@ -258,7 +258,7 @@
         <scenario name="default" routingName="default">131_sip_probe_regexfilter/probe.xml</scenario>
     </testcase>    
 
-    <testcase description="test sip" name="200_invite_bye" state="false">
+    <testcase description="test sip" name="200_invite_bye" state="true">
         <scenario name="alice" routingName="alice">200_sip_invite_bye/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">200_sip_invite_bye/UAS.xml</scenario>
     </testcase>
