@@ -98,24 +98,36 @@ public class TextMessage {
 	        	iPosContent = msg.length();
 	        }
         }
-        if (addCRLFContent > 0 && content.length() > 0) {
-            for (int i = 0; i < addCRLFContent; i++) {
-                content += "\r\n";
-            }
-        }
-
-        // get of the headers of the message
+        
+        // remove special characters of the headers of the message
         String header = msg.substring(0, iPosContent).trim();
         header = Utils.replaceNoRegex(header, "\r\n", "\n");
         header = Utils.replaceNoRegex(header, "\n", "\r\n");
         header = header.replace('\t', ' ');
-        // case a header is contining at the next line
+        // case a header is continuing at the next line
         header = header.replaceAll(",[ ]*\r\n ", ", ");
         header = header.replaceAll(":[ ]*\r\n ", ": ");
         header = header.replaceAll("\\n[ ]+", "\n");
+        header = header.trim();
         this.headers = header;
+        
+        String strType = getHeaderValue(headers, "Content-Type");
+        if (!"application/vnd.3gpp.sms".equalsIgnoreCase(strType))
+        {
+	        // remove special characters of the content of the message
+	        content = Utils.replaceNoRegex(content, "\r\n", "\n");
+	        content = Utils.replaceNoRegex(content, "\n", "\r\n");
+	        content = content.replace('\t', ' ');
+	        // case a header is continuing at the next line
+	        content = content.replaceAll(",[ ]*\r\n ", ", ");
+	        content = content.replaceAll(":[ ]*\r\n ", ": ");
+	        content = content.replaceAll("\\n[ ]+", "\n");
+	        content = content.trim();
+        }
+        
         // Calculate the Content-Length header is not present in the message or has an invalid value
-        if (completeContentLength) {
+        if (completeContentLength) 
+        {
             completeContentLengthHeader(content.length());
         }
 
@@ -129,10 +141,20 @@ public class TextMessage {
         Header boundary = contentType.parseParameter("boundary", ";", '=', "<>", "\"\"");
         contentParser = new ContentParser(protocol, content, boundary.getHeader(0));
 
+        // add CRLF at the end of the content
+        if (addCRLFContent > 0 && content.length() > 0) 
+        {
+            for (int i = 0; i < addCRLFContent; i++) 
+            {
+                content += "\r\n";
+            }
+        }
+
         // calculate the complete message
         StringBuilder buff = new StringBuilder(this.headers.trim());
         buff.append("\r\n\r\n");
-        if (content != null) {
+        if (content != null) 
+        {
             buff.append(content);
         }
         this.msg = buff.toString();
