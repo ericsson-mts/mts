@@ -37,6 +37,8 @@ import org.bn.IDecoder;
 import org.bn.IEncoder;
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Component;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Invoke;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Reject;
@@ -126,6 +128,18 @@ public class BN_ASNMessage extends ASNMessage
             String resultPath = "";
             XMLToASNParser.getInstance().parseFromXML(resultPath, this, this.asnObject, element, packageName);
         }
+    }
+    
+    public Parameter getParameter(String path)
+    {
+        Parameter parameter = null;
+        String[] params = Utils.splitPath(path);
+
+        String resultPath = "";
+        String result = ASNGetParameter.getInstance().getParameter(resultPath, this, null, "value", this.asnObject, null, ASNToXMLConverter.NUMBER_SPACE_TABULATION * 2);
+        parameter = new Parameter();
+        parameter.add(result);
+    	return parameter;
     }
     
     @Override

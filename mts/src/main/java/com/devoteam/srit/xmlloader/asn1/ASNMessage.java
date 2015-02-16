@@ -35,10 +35,9 @@ import org.dom4j.Element;
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.asn1.dictionary.EmbeddedMap;
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
-import com.devoteam.srit.xmlloader.core.coding.binary.XMLDoc;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.gtp.data.MessageGTP;
 
 
 /**
@@ -82,6 +81,8 @@ public abstract class ASNMessage
     public abstract boolean isRequest();
     public abstract String getType();
     public abstract String getResult();
+    
+    public abstract Parameter getParameter(String path);
     
     public void decode(Array array) throws Exception
     {
