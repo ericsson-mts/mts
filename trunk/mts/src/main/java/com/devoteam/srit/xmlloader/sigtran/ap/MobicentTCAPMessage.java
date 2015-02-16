@@ -213,4 +213,10 @@ public class MobicentTCAPMessage extends ASNMessage
     	return null;
     }
 
+	@Override
+	public com.devoteam.srit.xmlloader.core.Parameter getParameter(String path) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

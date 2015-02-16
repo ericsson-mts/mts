@@ -153,8 +153,12 @@ public class MsgSigtran extends Msg
         var = new Parameter();
         path = path.trim();
         String[] params = Utils.splitPath(path);
-                
-        if (params.length > 0 && params[0].equalsIgnoreCase("isdn")) 
+
+        if (params.length > 0 && params[0].equalsIgnoreCase("asn")) 
+        {
+        	return this._apMessage.getParameter(path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("isdn")) 
         {
         	this._ieMessage.getParameter(var, params, path);
         }

@@ -31,28 +31,18 @@
         </UA>
         
     </sendMessageSIGTRAN>
-
-    <!-- Message encoded value -->
-    <parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
-    <parameter name="[length]" operation="string.length" value="[data]"/>
     
     <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="45">
       <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
       <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
       <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
       <parameter name="[result]" operation="protocol.setFromMessage" value="message.result"/>
-    	<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+      <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
     </receiveMessageSIGTRAN>
         
-    <!--test parameter="[data1]" condition="binary.equals" value="[data]"/-->
+    <parameter name="[invokeID]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeID"/>
+    <test parameter="[invokeID]" condition="string.equals" value="1"/>
     
-    <!-- Message encoded value -->
-    <parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
-    <parameter name="[length]" operation="string.length" value="[data]"/>			
-    
-    <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
-    
-    <test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;MAP&quot;&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;Component.Choice&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;invoke.C1.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;invokeID.BoxedType&gt;&lt;Integer&gt;1&lt;/Integer&gt;&lt;/invokeID.BoxedType&gt;"/>
@@ -291,9 +281,9 @@
     </sendMessageSIGTRAN>
   
     <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
-    <!--test parameter="[data1]" condition="binary.equals" value="[data]"/-->
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
 
-    <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
     
     <test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;MAP&quot;&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;Component.Choice&gt;"/>
