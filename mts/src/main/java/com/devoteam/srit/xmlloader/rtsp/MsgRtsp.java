@@ -40,7 +40,7 @@ public class MsgRtsp extends Msg
 
     // --- constructer --- //
     public MsgRtsp(String text, boolean completeContentLength, int addCRLFContent) throws Exception {
-        message = new TextMessage(getProtocol(), completeContentLength, addCRLFContent);
+        message = new TextMessage(getProtocol(), completeContentLength, addCRLFContent, null);
     	message.parse(text);
         this.message.setGenericfirstline(new FirstLine(this.message.getFirstLineString(),getProtocol()));
     	if (((FirstLine)(this.message.getGenericfirstline())).isRequest())

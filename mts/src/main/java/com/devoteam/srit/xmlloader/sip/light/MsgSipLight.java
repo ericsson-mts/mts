@@ -84,10 +84,10 @@ public class MsgSipLight extends MsgSip
 	}
 
     /** Creates a new instance of MsgSip */
-    public MsgSipLight(String text, boolean completeContentLength, int addCRLFContent) throws Exception
+    public MsgSipLight(String text, boolean completeContentLength, int addCRLFContent, String contentBinaryTypes) throws Exception
     {
 		// bug NSN equipment : add a CRLF at the end of the Content
-        this.message = new TextMessage(getProtocol(), completeContentLength, addCRLFContent);
+        this.message = new TextMessage(getProtocol(), completeContentLength, addCRLFContent, contentBinaryTypes);
         this.message.setCompressedHeader(compressedHeader);
         this.message.setMultiHeader(multiHeader);
         this.message.parse(text);

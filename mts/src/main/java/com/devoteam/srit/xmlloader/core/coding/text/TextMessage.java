@@ -35,7 +35,7 @@ public class TextMessage {
     //--- attribut --- //
     private String msg = null;
     private GenericFirstLine genericfirstline = null;
-
+    private String contentBinaryTypes = null;
 
     private String headers = null;
     private ContentParser contentParser = null;
@@ -69,10 +69,11 @@ public class TextMessage {
     private MsgParser parser;
 
     // --- construct --- //
-    public TextMessage(String protocol, boolean completeContentLength, int addCRLFContent) throws Exception {
+    public TextMessage(String protocol, boolean completeContentLength, int addCRLFContent, String contentBinaryTypes) throws Exception {
         this.protocol = protocol;
         this.addCRLFContent = addCRLFContent;
         this.completeContentLength = completeContentLength;
+        this.contentBinaryTypes = contentBinaryTypes; 
     }
 
     public void parse(String msg) throws Exception 
@@ -112,7 +113,7 @@ public class TextMessage {
         this.headers = header;
         
         String strType = getHeaderValue(headers, "Content-Type");
-        if (!"application/vnd.3gpp.sms".equalsIgnoreCase(strType))
+        if (!contentBinaryTypes.contains("," + strType + ","))
         {
 	        // remove special characters of the content of the message
 	        content = Utils.replaceNoRegex(content, "\r\n", "\n");
