@@ -42,7 +42,7 @@ public class MsgMgcp extends Msg {
     private TextMessage message = null;
 
     public MsgMgcp(String text) throws Exception {
-        this.message = new TextMessage("MGCP", true, 0);
+        this.message = new TextMessage("MGCP", true, 0, null);
         this.message.parse(text);
         this.message.setGenericfirstline(new MGCPCommandLine(this.message.getFirstLineString()));
 

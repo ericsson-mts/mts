@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.sip.light;
 
 import com.devoteam.srit.xmlloader.core.Runner;
+
 import java.io.InputStream;
 
 import org.dom4j.Element;
@@ -45,11 +46,14 @@ import dk.i1.sctp.SCTPData;
  */
 public class StackSipLight extends StackSip
 {
+	
+	private String contentBinaryTypes = null;
         
     /** Constructor */
     public StackSipLight() throws Exception
     {
-        super();
+        super();        
+        this.contentBinaryTypes = "," + getConfig().getString("content.BINARY_TYPES", "") + ",";
     }
     
     /** Creates a specific SIP Msg */
@@ -57,7 +61,7 @@ public class StackSipLight extends StackSip
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
         String text = root.getText();
-        MsgSipLight msgSip = new MsgSipLight(text, true, addCRLFContent);
+        MsgSipLight msgSip = new MsgSipLight(text, true, this.addCRLFContent, this.contentBinaryTypes);
 
         // OBSOLETE instanciates the listenpoint (compatibility with old grammar)         
         String listenpointName = root.attributeValue("providerName");
@@ -107,7 +111,7 @@ public class StackSipLight extends StackSip
     	
 		if (text != null && text.contains(StackFactory.PROTOCOL_SIP)) 
 		{
-			MsgSipLight msgSip = new MsgSipLight(text, false, 0);
+			MsgSipLight msgSip = new MsgSipLight(text, false, 0, this.contentBinaryTypes);
 			return msgSip;
 		}
 		else
@@ -128,7 +132,7 @@ public class StackSipLight extends StackSip
     {
     	String str = new String(datas);
     	str = str.substring(0, length);
-    	MsgSipLight msgSip = new MsgSipLight(str, false, 0);
+    	MsgSipLight msgSip = new MsgSipLight(str, false, 0, this.contentBinaryTypes);
     	return msgSip;
     }
 
@@ -141,7 +145,7 @@ public class StackSipLight extends StackSip
     {
     	String str = new String(chunk.getData());
     	str = str.substring(0, chunk.getLength());
-        MsgSipLight msgSig = new MsgSipLight(str, false, 0);
+        MsgSipLight msgSig = new MsgSipLight(str, false, 0, this.contentBinaryTypes);
         return msgSig;            
     }
     

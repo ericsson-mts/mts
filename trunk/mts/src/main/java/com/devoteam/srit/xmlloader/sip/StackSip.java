@@ -79,8 +79,10 @@ public abstract class StackSip extends Stack
             createListenpoint(listenpoint, StackFactory.PROTOCOL_SIP);
         }
         
-        if(getConfig().getBoolean("nsn.ADD_CRLF_CONTENT", false))
-            addCRLFContent++;
+        if (getConfig().getBoolean("nsn.ADD_CRLF_CONTENT", false))
+            this.addCRLFContent++;
+        
+        
     }
 
     /** Creates a Listenpoint specific to each Stack */
