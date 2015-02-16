@@ -43,12 +43,8 @@
     <parameter name="[invokeID]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeID"/>
     <test parameter="[invokeID]" condition="string.equals" value="1"/>
     
-    <test parameter="[xml]" condition="string.contains" value="&lt;Component.Choice&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;invoke.C1.Sequence&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;invokeID.BoxedType&gt;&lt;Integer&gt;1&lt;/Integer&gt;&lt;/invokeID.BoxedType&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;opCode.Choice&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;localValue.BoxedType&gt;&lt;Long&gt;sendRoutingInfoForSM:45&lt;/Long&gt;&lt;/localValue.BoxedType&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/opCode.Choice&gt;"/>
+    <parameter name="[localValue]" operation="protocol.setFromMessage" value="asn.Component.invoke.opCode.localValue"/>
+    <test parameter="[localValue]" condition="string.contains" value="sendRoutingInfoForSM:45"/>
     
     <test parameter="[xml]" condition="string.contains" value="&lt;invokeparameter&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;RoutingInfoForSMArg.Sequence&gt;"/>

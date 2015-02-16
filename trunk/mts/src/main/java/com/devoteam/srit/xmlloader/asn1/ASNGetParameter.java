@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.asn1;
 import com.devoteam.srit.xmlloader.asn1.data.ElementValue;
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumStringField;
@@ -86,56 +87,16 @@ public class ASNGetParameter
 	{
 	}
 
-	public static Document getDocumentXML(final String xmlFileName) 
+	public void getParameter(Parameter parameter, String path, String resultPath, ASNMessage message, Object parentObj, String name, Object objClass) 
 	{
-		Document document = null;
-		SAXReader reader = new SAXReader();
-		try 
-		{
-			document = reader.read(xmlFileName);
-		} 
-		catch (DocumentException ex) 
-		{
-			GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, ex, "Wrong ASN1 file : ");
-		}
-		return document;
-	}
-
-	public String getParameter(String resultPath, ASNMessage message, Object parentObj, String name, Object objClass, ASN1ElementMetadata objElementInfo, int indent) 
-	{
-		String ret = "";
 		try 
 		{
 			if (objClass == null) 
 			{
-				return ret;
+				return;
 			}
 
 			Field[] fields = objClass.getClass().getDeclaredFields();
-			int fieldsSize = fields.length;
-
-			// get the preparedData coming from annotations
-			Field preparedDataField = null;
-			try
-			{
-				preparedDataField = objClass.getClass().getDeclaredField("preparedData");
-				fieldsSize = fieldsSize - 1; 
-			}
-			catch (Exception e)
-			{
-				// Nothing to do
-			}
-			ASN1PreparedElementData objPreparedEltData = null;
-			if (preparedDataField != null)
-			{
-				preparedDataField.setAccessible(true);
-				objPreparedEltData = (ASN1PreparedElementData) preparedDataField.get(objClass);
-			}
-			ASN1Metadata objPreparedMetadata = null;
-			if (objPreparedEltData != null)
-			{
-				objPreparedMetadata = objPreparedEltData.getTypeMetadata();
-			}
 
 			// get the XML tag
 	        String XMLTag = getSignificantXMLTag(objClass, name);
@@ -159,43 +120,27 @@ public class ASNGetParameter
 	        }
 
 	        // return the object as XML
-			String retObject = processSimpleObject(resultPath, message, parentObj, objClass, name, objElementInfo, indent);			
-			boolean complexObject = true;
-			if (retObject != null || fieldsSize == 1)
+			String retObject = processSimpleObject(parameter, path, resultPath, message, parentObj, objClass, name);			
+	        									
+			if (retObject != null)
 			{
-				complexObject = false;
-			}
-	        
-			// calculate resultPath
-	        resultPath = resultPath + "." + XMLTag; 
-									
-			if (retObject != null) 
-			{
-				return retObject;
+				if (path.endsWith(resultPath)) 
+				{
+					parameter.add(retObject);
+				}
+				return;
 			} 
 			else 
 			{
-				// get whether the field is the first one which is not null
-				boolean first = true;
+				// calculate resultPath
+		        resultPath = resultPath + "." + XMLTag; 
+
 				// parsing object object fields
 				for (int i = 0; i < fields.length; i++) 
 				{
 					Field f = fields[i];
 					f.setAccessible(true);
 
-					ASN1ElementMetadata subobjElementInfo = null;
-					if (i < fields.length - 1)
-					{
-						ASN1PreparedElementData objPreparedEltData1 = null;
-						if (objPreparedEltData != null)
-						{
-							objPreparedEltData1 = objPreparedEltData.getFieldMetadata(i);
-						}
-						if (objPreparedEltData1 != null)
-						{
-							subobjElementInfo = objPreparedEltData1.getASN1ElementInfo();
-						}
-					}
 					Object subObject = f.get(objClass);
 
 					String typeField = f.getType().getCanonicalName();
@@ -212,38 +157,17 @@ public class ASNGetParameter
 					{
 						Collection<?> coll = (Collection<?>) subObject;
 						Iterator<?> iter = coll.iterator();
-						ret += "\n" + indent(indent);
-						indent = indent + NUMBER_SPACE_TABULATION;
-						ret += "<Collection>";
-						ret += "\n" + indent(indent);
 						int k = 0;
 						while (iter.hasNext()) 
 						{
 							Object subObj = iter.next();
-							if (k > 0)
-							{
-								ret += "\n" + indent(indent);
-							}
 							k = k + 1;
-							return getParameter(resultPath, message, objClass, f.getName(), subObj, subobjElementInfo, indent + NUMBER_SPACE_TABULATION);
+							getParameter(parameter, path, resultPath, message, objClass, f.getName(), subObj);
 						}
-						indent = indent - NUMBER_SPACE_TABULATION;
-						ret += "\n" + indent(indent);
-						ret += "</Collection>";
-						ret += "\n" + indent(indent - NUMBER_SPACE_TABULATION);
 					} 
 					else 
 					{
-						if (!first)
-						{
-							ret += "\n" + indent(indent);
-						}
-
-						return getParameter(resultPath, message, objClass, f.getName(), subObject, subobjElementInfo, indent + NUMBER_SPACE_TABULATION);
-					}
-					if (subObject != null)
-					{
-						first = false;
+						getParameter(parameter, path, resultPath, message, objClass, f.getName(), subObject);
 					}
 				}
 			}
@@ -254,7 +178,7 @@ public class ASNGetParameter
 			GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, e, "Exception in ASNToXMLConverter : ");
 		}
 
-		return ret;
+		return;
 	}
 	
 	private String getSignificantXMLTag(Object objClass, String name) throws Exception 
@@ -269,7 +193,7 @@ public class ASNGetParameter
 	}
 		
 	// get the XML data for simple object : null means a complex object
-	private String processSimpleObject(String resultPath, ASNMessage message, Object parentObj, Object object, String name, ASN1ElementMetadata objElementInfo, int indent)
+	private String processSimpleObject(Parameter parameter, String path, String resultPath, ASNMessage message, Object parentObj, Object object, String name)
 			throws Exception 
 	{
 		String type = object.getClass().getCanonicalName();
@@ -288,11 +212,8 @@ public class ASNGetParameter
 		    resultPath = resultPath + "." + XMLTag;
 		    
 		    Object obj = processEmbeddedObject(embedded, object);
-		    
-			String ret = "\n" + indent(indent);
-			ret += getParameter(resultPath, message, object, "value", obj, objElementInfo, indent + NUMBER_SPACE_TABULATION);
-			ret += "\n" + indent(indent - NUMBER_SPACE_TABULATION);
-			return ret;
+			getParameter(parameter, path, resultPath, message, object, "value", obj);
+			return null;
 		}
 		
 		if (type.equals("java.lang.Boolean") || type.equals("boolean")) 
@@ -403,8 +324,7 @@ public class ASNGetParameter
         		try
         		{
         			elementDico.decodeFromArray(array, message.dictionary);
-            		ret += elementDico.fieldsElementsToXml(indent - NUMBER_SPACE_TABULATION);
-            		ret += indent(indent - 2 * NUMBER_SPACE_TABULATION);
+            		ret += elementDico.fieldsElementsToXml(0);
         		}
         		catch (Exception e)
         		{
@@ -441,18 +361,7 @@ public class ASNGetParameter
 		return null;
 	}
 
-	/**
-	 * generates a string of nb*"    " (four spaces nb times), used for indentation in printAvp
-	 */
-	public static String indent(int nb) {
-		String str = "";
-		for (int i = 0; i < nb; i++) {
-			str += " ";
-		}
-		return str;
-	}
-
-public static Object processEmbeddedObject(Embedded embedded, Object object) throws Exception
+	public static Object processEmbeddedObject(Embedded embedded, Object object) throws Exception
 	{
 		String type = object.getClass().getCanonicalName();
 		
