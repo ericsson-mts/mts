@@ -133,12 +133,11 @@ public class BN_ASNMessage extends ASNMessage
     public Parameter getParameter(String path)
     {
         Parameter parameter = null;
-        String[] params = Utils.splitPath(path);
 
         String resultPath = "";
-        String result = ASNGetParameter.getInstance().getParameter(resultPath, this, null, "value", this.asnObject, null, ASNToXMLConverter.NUMBER_SPACE_TABULATION * 2);
         parameter = new Parameter();
-        parameter.add(result);
+        ASNGetParameter.getInstance().getParameter(parameter, path, resultPath, this, null, "value", this.asnObject);
+        
     	return parameter;
     }
     
