@@ -46,7 +46,7 @@
     <parameter name="[localValue]" operation="protocol.setFromMessage" value="asn.Component.invoke.opCode.localValue"/>
     <test parameter="[localValue]" condition="string.contains" value="sendRoutingInfoForSM:45"/>
     
-    <test parameter="[xml]" condition="string.contains" value="&lt;invokeparameter&gt;"/>
+    <!--test parameter="[xml]" condition="string.contains" value="&lt;invokeparameter&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;RoutingInfoForSMArg.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;msisdn.C0.BoxedType&gt;&lt;Bytes&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;extension&quot; value=&quot;extension:0&quot; "/>
@@ -89,7 +89,7 @@
     <test parameter="[xml]" condition="string.contains" value="&lt;/invokeparameter&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/invoke.C1.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/Component.Choice&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/> 
+    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/--> 
 
     <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
         
@@ -275,13 +275,10 @@
         </parameter-->
     </UA>
     </sendMessageSIGTRAN>
-  
-    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
-    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
-
+    
     <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
     
-    <test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;MAP&quot;&gt;"/>
+    <!--test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;MAP&quot;&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;Component.Choice&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;returnResultLast.C2.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;invokeID.BoxedType&gt;&lt;Integer&gt;1&lt;/Integer&gt;&lt;/invokeID.BoxedType&gt;"/>
@@ -328,7 +325,7 @@
     <test parameter="[xml]" condition="string.contains" value=" value=&quot;unknown:0&quot; "/>
     <test parameter="[xml]" condition="string.contains" value=" value=&quot;telex numbering plan (ITU-T Rec F.69):4&quot; "/>
     <test parameter="[xml]" condition="string.contains" value=" value=&quot;501c7ead3fd5&quot; "/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/msc_Number.C0.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/msc_Number.C0.BoxedType&gt;"/-->
     
     <!--test parameter="[xml]" condition="string.contains" value="&lt;sgsn_Number.C1.BoxedType&gt;&lt;Bytes&gt;"/>
     <test parameter="[xml]" condition="string.contains" value=" value=&quot;extension:0&quot; "/>
@@ -337,7 +334,7 @@
     <test parameter="[xml]" condition="string.contains" value=" value=&quot;313eb8973440724491710f105d2ed236f9995091&quot; "/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/sgsn_Number.C1.BoxedType.BoxedType&gt;"/-->
     
-    <test parameter="[xml]" condition="string.contains" value="&lt;/additional_Number.C6.Choice&gt;"/>
+    <!--test parameter="[xml]" condition="string.contains" value="&lt;/additional_Number.C6.Choice&gt;"/>
 
     <test parameter="[xml]" condition="string.contains" value="&lt;extensionContainer.C4.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;privateExtensionList.C0.BoxedType&gt;"/>
@@ -358,6 +355,6 @@
     <test parameter="[xml]" condition="string.contains" value="&lt;/returnparameter&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/returnResultLast.C2.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/Component.Choice&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/> 
+    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/--> 
 
 </scenario>
