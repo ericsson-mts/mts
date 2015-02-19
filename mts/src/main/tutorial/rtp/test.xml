@@ -140,7 +140,7 @@
         <scenario file="134_rtp_events/UAS.xml" name="invitee" routingName="invitee"/>
     </testcase>
 
-    <testcase description="RTP probe" name="140_probe_capture" state="false">
+    <testcase description="RTP probe" name="140_probe_capture" state="true">
         <parameter name="[waitSemaphore]" operation="set" value="true"/>        
         <parameter name="[payloadType]" operation="list.set" value="106"/>      	
         <parameter name="[volume]" operation="list.set" value="10"/>
@@ -151,12 +151,12 @@
         <scenario file="140_probe_capture/probe.xml" name="default" routingName="default"/>
     </testcase>
     
-	<testcase name="150_srtp" state="true">
-		<parameter name="[testcase:ssrc]" operation="set" value="1478523690"/>
-		<scenario file="150_srtp/SRTP.xml" name="inviter" routingName="inviter"/>
-		<scenario file="150_srtp/SRTP2.xml" name="invitee" routingName="invitee"/>
-	</testcase>
-	
+    <testcase name="150_srtp" state="true">
+        <parameter name="[testcase:ssrc]" operation="set" value="1478523690"/>
+        <scenario file="150_srtp/SRTP.xml" name="inviter" routingName="inviter"/>
+        <scenario file="150_srtp/SRTP2.xml" name="invitee" routingName="invitee"/>
+    </testcase>
+    
     <testcase name="801_imsloader_talk" state="false">
         <scenario file="801_imsloader_talk/scenario.xml" name="[localPortSIP]" routingName="[localPortSIP]"/>
     </testcase>
