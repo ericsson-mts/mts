@@ -167,17 +167,19 @@ public class MsgRtpFlow extends Msg {
     }
 
     public int getDeltaTime() {
-        if (deltaTimeList != null) {
-            if (deltaTimeList.size() > 1) {
-                return deltaTimeList.get(indexPacketToSend % maxNbPacketInList);
-            }
-            else {
-                return deltaTimeList.get(0);
-            }
+        if (deltaTimeList != null) 
+        {
+
+        	//calculate sum of all array elements
+        	int sum = 0;
+        	for (int i = 0; i < deltaTimeList.size() ; i++)
+        	{
+        	   sum = sum + deltaTimeList.get(i);
+        	}
+        	//calculate average value
+        	return sum / deltaTimeList.size();
         }
-        else {
-            return 0;
-        }
+        return 0;
     }
 
     /*this function is only called for a unique value of deltaTime*/
