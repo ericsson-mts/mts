@@ -161,12 +161,6 @@ public class StackRtpFlow extends StackRtp {
             throw new Exception("one of the attribute <packetNumber> or <duration> of flow tag must be set");
         }
 
-        if ((listPayload.size() > 1)
-                && (packetNumber != null) && (Integer.parseInt(packetNumber) > listPayload.size())
-                && ((listSequm.size() > 1) || (listTimestamp.size() > 1))) {
-            throw new Exception("cannot use greater <packetNumber> than number of payload given when use in coordination with list of sequence number or timestamp");
-        }
-
         if (packetNumber != null) {
             flowRtp.setPacketNumber(Integer.parseInt(packetNumber));
         }
@@ -195,6 +189,7 @@ public class StackRtpFlow extends StackRtp {
         if (duration != null) {
             flowRtp.setDuration(Float.parseFloat(duration));
         }
+        
         if (bitRate != null) {
             flowRtp.setBitRate(Float.parseFloat(bitRate));
         }
@@ -216,9 +211,13 @@ public class StackRtpFlow extends StackRtp {
         else if (packetNumber == null && bitRate == null)//compute packetNumber in function of deltaTimestamp
         {
             int newPacketNumber = (int) (flowRtp.getDuration() * 1000 / flowRtp.getDeltaTime());
-            if ((packetNumber == null) || (newPacketNumber < flowRtp.getPacketNumber())) {
-                flowRtp.setPacketNumber(newPacketNumber);
-            }
+            flowRtp.setPacketNumber(newPacketNumber);
+        }
+
+        if (duration == null) 
+        {
+        	float dur = (float) flowRtp.getPacketNumber() * flowRtp.getDeltaTime() / 1000;
+            flowRtp.setDuration(dur);
         }
 
         if (packetLost != null) {
