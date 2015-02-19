@@ -3,18 +3,25 @@
 
 <scenario>
 
-	<createListenpointRTPFLOW name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]" />
+    <createListenpointRTPFLOW name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]" />
 
-	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
 
     <receiveMessageRTPFLOW listenpoint="invitee" type="DVI4:17" timeout="30">
-        <parameter name="[flowPayloadBinary]" operation="protocol.setFromMessage" value="flow.payload.binary"/>        
+        <parameter name="[flowPayloadBinary]" operation="protocol.setFromMessage" value="flow.payload.binary"/>
+    </receiveMessageRTPFLOW>
+    
+    <parameter name="[testcase:SEM2]" operation="system.semaphorenotify"/>
+    
+    <receiveMessageRTPFLOW listenpoint="invitee" type="DVI4:17" timeout="30">
+        <parameter name="[flowPayloadBinary]" operation="protocol.setFromMessage" value="flow.payload.binary"/>
     </receiveMessageRTPFLOW>
 
     <test parameter="[flowPayloadBinary]" condition="binary.equals" value="[payloadList]"/>
 
     <finally>
-		<removeListenpointRTPFLOW name="invitee" />
-	</finally>
+    
+        <removeListenpointRTPFLOW name="invitee" />
+    </finally>
     
 </scenario>
