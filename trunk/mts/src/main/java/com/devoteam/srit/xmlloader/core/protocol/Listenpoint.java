@@ -35,6 +35,7 @@ import com.devoteam.srit.xmlloader.tls.ListenpointTls;
 import com.devoteam.srit.xmlloader.udp.ListenpointUdp;
 
 import java.util.HashMap;
+
 import org.dom4j.Element;
 
 /**
@@ -534,28 +535,36 @@ public abstract class Listenpoint
         {
         	str += "name=\"\"";
         }
-        str += ", localHost = \"" + host + "\"";
-        str += ", localPort = \"" + port + "\"";
+        str += " localHost=\"" + host + "\"";
+        str += " localPort=\"" + port + "\"";
         if (listenUDP)
         {
-        	str += ", listenUDP = \"true\"";
+        	str += " listenUDP=\"true\"";
         }
         if (listenTCP)
         {
-        	str += ", listenTCP = \"true\"";
+        	str += " listenTCP=\"true\"";
         }
         if (listenSCTP)
         {
-        	str += ", listenSCTP = \"true\"";
+        	str += " listenSCTP=\"true\"";
         }
         if (listenTLS)
         {
-            str += ", portTLS = \"" + portTLS + "\"";
-        	str += ", listenTLS = \"true\"";
+            str += " portTLS=\"" + portTLS + "\"";
+        	str += " listenTLS=\"true\"";
         }
 
         return str;
     }
+    
+    /** display method */
+    //@Override
+    public String toXml()
+    {
+        return "<LISTENPOINT " + this.toString() + "/>";
+    }
+
 
     /** equals method */
     public boolean equals(Listenpoint listenpoint)
@@ -615,45 +624,47 @@ public abstract class Listenpoint
     public Parameter getParameter(String path) throws Exception
     {
         String[] params = Utils.splitPath(path);
-        if (params.length < 2)
-        {
-            return null;
-        }
-
     	Parameter parameter = new Parameter();
-
-        if (params[1].equalsIgnoreCase("name"))
+        if (params.length <= 1)
         {
-            parameter.add(getName());
+        	parameter.add(this);
+        }
+        else if (params[1].equalsIgnoreCase("name"))
+        {
+            parameter.add(this.name);
         }
         else if (params[1].equalsIgnoreCase("UID"))
         {
-        	parameter.add(UID);
+        	parameter.add(this.UID);
         }
         else if (params[1].equalsIgnoreCase("host"))
         {
             GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=\"listenpoint:host\"", "setFromMessage value=\"listenpoint:localHost\"");
-            parameter.add(getHost());
+            parameter.add(this.host);
         }
         else if (params[1].equalsIgnoreCase("localHost"))
         {
-            parameter.add(getHost());
+            parameter.add(this.host);
         } else if (params[1].equalsIgnoreCase("port"))
         {
             GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=\"listenpoint:port\"", "setFromMessage value=\"listenpoint:localPort\"");
-            parameter.add(String.valueOf(getPort()));
+            parameter.add(String.valueOf(this.port));
         }
         else if (params[1].equalsIgnoreCase("localPort"))
         {
-            parameter.add(String.valueOf(getPort()));
+            parameter.add(String.valueOf(this.port));
         }
         else if (params[1].equalsIgnoreCase("localPortTLS"))
         {
-            parameter.add(String.valueOf(getPort()));
+            parameter.add(String.valueOf(this.portTLS));
         }
         else if (params[1].equalsIgnoreCase("protocol"))
         {
-        	parameter.add(getProtocol());
+        	parameter.add(this.protocol);
+        }
+        else if (params[1].equalsIgnoreCase("xml"))
+        {
+            parameter.add(this.toXml());
         }
         else
         {
