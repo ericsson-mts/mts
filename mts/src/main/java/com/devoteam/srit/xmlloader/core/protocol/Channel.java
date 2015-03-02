@@ -240,6 +240,13 @@ public abstract class Channel
         return str;
     }
 
+    /** display method */
+    //@Override
+    public String toXml()
+    {
+        return "<CHANNEL " + this.toString() + "/>";
+    }
+
     /** equals method */
     public boolean equals(Channel channel)
     {
@@ -312,43 +319,46 @@ public abstract class Channel
     public Parameter getParameter(String path) throws Exception
     {       
         String[] params = Utils.splitPath(path);
-        if(params.length < 2)
-        {
-        	return null;
-        }
-        
         Parameter parameter = new Parameter();
-        if(params[1].equalsIgnoreCase("name"))
+        if(params.length <= 1)
         {
-        	parameter.add(getName());
+        	parameter.add(this);
+        }
+        else if(params[1].equalsIgnoreCase("name"))
+        {
+        	parameter.add(this.name);
         }
         else if(params[1].equalsIgnoreCase("UID"))
         {
-        	parameter.add(getUID());
+        	parameter.add(this.UID);
         }
         else if(params[1].equalsIgnoreCase("localHost"))
         {
-        	parameter.add(getLocalHost());
+        	parameter.add(this.localHost);
         }
         else if(params[1].equalsIgnoreCase("localPort"))
         {
-        	parameter.add(String.valueOf(getLocalPort()));
+        	parameter.add(String.valueOf(this.localPort));
         }
         else if(params[1].equalsIgnoreCase("remoteHost"))
         {
-        	parameter.add(getRemoteHost());
+        	parameter.add(this.remoteHost);
         }
         else if(params[1].equalsIgnoreCase("remotePort"))
         {
-        	parameter.add(String.valueOf(getRemotePort()));
+        	parameter.add(String.valueOf(this.remotePort));
         }
         else if(params[1].equalsIgnoreCase("protocol"))
         {
-        	parameter.add(String.valueOf(getProtocol()));
+        	parameter.add(String.valueOf(this.protocol));
         }
         else if(params[1].equalsIgnoreCase("transport"))
         {
         	parameter.add(String.valueOf(getTransport()));
+        }
+        else if(params[1].equalsIgnoreCase("xml"))
+        {
+        	parameter.add(this.toXml());
         }
         else
         {

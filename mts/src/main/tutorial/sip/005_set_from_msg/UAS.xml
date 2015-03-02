@@ -5,7 +5,29 @@
 
 <receiveMessageSIP name="Wait INVITE" request="true" type="INVITE">
 
-<parameter name="[message]" operation="protocol.setFromMessage" value="message"/>  
+<parameter name="[message]" operation="protocol.setFromMessage" value="message"/>
+
+<parameter name="[listenpoint]" operation="protocol.setFromMessage" value="listenpoint"/>
+<test parameter="[listenpoint]" condition="string.contains" value="0.0.0.0"/>
+<test parameter="[listenpoint]" condition="string.contains" value="[localPortSIP]"/>
+<parameter name="[listenpointXML]" operation="protocol.setFromMessage" value="listenpoint.xml"/>
+<test parameter="[listenpointXML]" condition="string.contains" value="LISTENPOINT"/>
+<test parameter="[listenpointXML]" condition="string.contains" value="0.0.0.0"/>
+<test parameter="[listenpointXML]" condition="string.contains" value="[localPortSIP]"/>
+
+<parameter name="[channel]" operation="protocol.setFromMessage" value="channel"/>
+<test parameter="[channel]" condition="string.contains" value="[localHostSIP]"/>
+<test parameter="[channel]" condition="string.contains" value="[localPortSIP]"/>
+<test parameter="[channel]" condition="string.contains" value="[remoteHostSIP]"/>
+<test parameter="[channel]" condition="string.contains" value="[remotePortSIP]"/>
+<test parameter="[channel]" condition="string.contains" value="UDP"/>
+<parameter name="[channelXML]" operation="protocol.setFromMessage" value="channel.xml"/>
+<test parameter="[channelXML]" condition="string.contains" value="CHANNEL"/>
+<test parameter="[channelXML]" condition="string.contains" value="[localHostSIP]"/>
+<test parameter="[channelXML]" condition="string.contains" value="[localPortSIP]"/>
+<test parameter="[channelXML]" condition="string.contains" value="[remoteHostSIP]"/>
+<test parameter="[channelXML]" condition="string.contains" value="[remotePortSIP]"/>
+<test parameter="[channelXML]" condition="string.contains" value="UDP"/>
 
 <parameter name="[receivedMessageLength]" operation="protocol.setFromMessage" value="message.length"/>
 

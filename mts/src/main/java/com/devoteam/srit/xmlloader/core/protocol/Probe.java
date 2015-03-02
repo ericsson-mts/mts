@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.probe.PIPReassembler;
 import com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,6 +44,7 @@ import com.devoteam.srit.xmlloader.ethernet.StackEthernet;
 import com.devoteam.srit.xmlloader.genscript.ScriptGenerator;
 
 import gp.utils.arrays.Array;
+
 import java.util.Map;
 
 import jpcap.JpcapCaptor;
@@ -200,6 +202,14 @@ public class Probe
         }
         return str;
     }
+    
+    /** display method */
+    //@Override
+    public String toXml()
+    {
+        return "<PROBE " + this.toString() + "/>";
+    }
+
 
     /** equals method */
     public boolean equals(Probe probe)
@@ -251,14 +261,12 @@ public class Probe
     public Parameter getParameter(String path) throws Exception
     {
         String[] params = Utils.splitPath(path);
-        if (params.length < 2)
+        Parameter parameter = new Parameter();
+        if (params.length <= 1)
         {
-            return null;
+        	parameter.add(this);
         }
-
-    	Parameter parameter = new Parameter();
-
-        if (params[1].equalsIgnoreCase("name"))
+        else if (params[1].equalsIgnoreCase("name"))
         {
             parameter.add(this.name);
         }
@@ -280,6 +288,10 @@ public class Probe
         }
         else if(params[1].equalsIgnoreCase("promiscuousMode")){
         	parameter.add(this.promiscuousMode);
+        }
+        else if (params[1].equalsIgnoreCase("xml"))
+        {
+            parameter.add(this.toXml());
         }
         else
         {

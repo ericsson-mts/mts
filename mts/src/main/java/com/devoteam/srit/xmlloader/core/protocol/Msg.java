@@ -752,15 +752,15 @@ public abstract class Msg extends MsgLight implements Removable
         // display transport info
 		if (channel != null)
 		{
-			ret += "<CHANNEL " + channel + ">\n";
+			ret += channel.toXml();
 		}
 		if (listenpoint != null)
 		{
-			ret += "<LISTENPOINT " + listenpoint + ">\n";
+			ret += listenpoint.toXml();
 		}
 		if (probe != null)
 		{
-			ret += "<PROBE " + probe + ">\n";
+			ret += probe.toXml();
 		}
 		
         return ret.trim();
