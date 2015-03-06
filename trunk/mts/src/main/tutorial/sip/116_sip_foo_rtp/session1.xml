@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <parameter name="[localHostRTP]" operation="set" value="[localHostSIP]"/>
+    <parameter name="[localPortRTP]" operation="set" value="20000"/>
+    <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostSIP]"/>
+    <parameter name="[remotePortRTP]" operation="set" value="[remotePortSIP]"/>
+    <parameter name="[transport]" operation="set" value="UDP"/>
+    
+    <createListenpointRTP name="inviter" localHost="[localHostRTP(0)]" localPort="[localPortRTP]"/>
+
+    <parameter name="[testcase:ssrc]" operation="number.random" value="2147483647"/>
+    <sendMessageRTP listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortSIP]" transport="[transport]">
+      <header channel="control" ssrc="[ssrc]" payloadType="17" seqnum="0" timestamp="0"/>
+      <payload format="binary">
+      b01010101 b10101010 b11111111 b0 b101
+      h0 h01 h2 h03 h4 h5 h06 h7 h8 h09 hA hb h0C hd hE h0f h10
+      0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+      </payload>
+      <payload format="text">ABCDEFGHIJKLMNOPQRSTUVWXYZ</payload>
+    </sendMessageRTP>
+    
+    <finally>
+    <removeListenpointRTP name="inviter" />
+    </finally>
+    	
+</scenario>
