@@ -286,7 +286,8 @@ public class Probe
         {
         	parameter.add(this.regexFilter);
         }
-        else if(params[1].equalsIgnoreCase("promiscuousMode")){
+        else if(params[1].equalsIgnoreCase("promiscuousMode"))
+        {
         	parameter.add(this.promiscuousMode);
         }
         else if (params[1].equalsIgnoreCase("xml"))
