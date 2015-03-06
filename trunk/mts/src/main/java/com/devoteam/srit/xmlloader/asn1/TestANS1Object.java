@@ -119,7 +119,7 @@ public class TestANS1Object {
     		catch (Exception e) 
     		{
     			// TODO Auto-generated catch block
-    	        System.out.println("");
+    	        System.out.println(e);
     			e.printStackTrace();
     		}
         }
@@ -175,6 +175,8 @@ public class TestANS1Object {
 	
 	    	}
         }
+        
+        System.exit(0);
     }
             
     public static void testProcess(int i, String packageName, Class<?> classObj, String dest) throws Exception
