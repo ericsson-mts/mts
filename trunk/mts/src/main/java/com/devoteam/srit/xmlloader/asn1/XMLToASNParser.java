@@ -325,13 +325,16 @@ public class XMLToASNParser
         	{
     	    	elementDico = message.getElementFromDico(object, resultPath);
         	}
-        	//if (elementDico == null && logWarn)
         	if (elementDico == null && logWarn)
         	{
         		GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, null, 
         			"The ASN1 element \"" + elementName + "\" is not defined into the dictionary to analyze the received messages more finely.");
         	}
 
+        	// TODO bug dans la fonction copyToClone() : retourne toujours un IntegerField
+    		// Est ce que c'est réellement un pb ? a voir à l'usage
+    		//ElementAbstract elementClone = new ElementValue();
+    		//elementClone.copyToClone(elementDico);
     		ElementAbstract elmt = new ElementValue();
         	elmt.parseFromXML(element, message.dictionary, elementDico, false);
         	Array array = elmt.encodeToArray();
@@ -419,7 +422,7 @@ public class XMLToASNParser
 
     public void initField(String resultPath, ASNMessage message, Object objClass, Element element, Field field, String className) throws Exception 
     {
-        // si le champ est privÃ©, pour y accÃ©der
+        // si le champ est privé, pour y accéder
         field.setAccessible(true);
 		//System.out.println(f);
         
@@ -430,7 +433,7 @@ public class XMLToASNParser
         }
         else if (field.getType().getCanonicalName().contains("Collection")) 
         {
-            // RÃ©cupÃ©rer le type des Ã©lements de la collection
+            // Récupérer le type des élements de la collection
         	ParameterizedType genType = (ParameterizedType) field.getGenericType();
 			Type[] typeActualTypeArg = genType.getActualTypeArguments();
 
