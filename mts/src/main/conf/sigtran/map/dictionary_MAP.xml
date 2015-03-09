@@ -237,9 +237,9 @@
         </field>
     		<field name="Message Class" type="EnumLong" lengthBit="2" description="Message Class">
             <enum name="Class 0" value="0"/>
-            <enum name="Class 1   Default meaning: ME-specific" value="1"/>
+            <enum name="Class 1   Default meaning ME-specific" value="1"/>
             <enum name="Class 2   SIM specific message" value="2"/>
-            <enum name="Class 3   Default meaning: TE specific" value="3" comment="(see GSM TS 07.05 [8])"/>
+            <enum name="Class 3   Default meaning TE specific" value="3" comment="(see GSM TS 07.05 [8])"/>
         </field>
     </element>
     
@@ -495,11 +495,11 @@
             <field name="TP-DT" type="number_bcd" length="7" description="Discharge Time"/>
         </element>
         <element name="TP-ST" coding="V" description="TP Status" comment="Parameter identifying the status of the previously sent mobile originated short message.">
-      		<field name="bit7" type="EnumLong" lengthBit="1" description="next bits assignment">
+            <field name="bit7" type="EnumLong" lengthBit="1" description="next bits assignment">
               <enum name="Bits 0..6 as defined below" value="0" />
               <enum name="Bits 0..6	reserved" value="1" />
           </field>
-      		<field name="assignment" type="EnumLong" lengthBit="7" description="next bits assignment">
+          <field name="assignment" type="EnumLong" lengthBit="7" description="next bits assignment">
               <!-- Short message transaction completed -->
               <enum name="Short message transaction completed, Short message received by the SME" value="0" description="b0000000"/>
               <enum name="Short message transaction completed, Short message forwarded by the SC to the SME but the SC is unable to confirm delivery" value="1" description="b0000001"/>
