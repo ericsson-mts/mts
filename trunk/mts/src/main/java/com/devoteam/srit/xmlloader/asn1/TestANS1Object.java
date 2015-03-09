@@ -203,7 +203,7 @@ public class TestANS1Object {
 		// convert the ASN1 object into XML data
         String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
         retInit += msgInit.toXML();
-
+        
         // write XML data into a file
         File fileInit = new File(dest + className + ".xml");
         fileInit.delete();
@@ -211,7 +211,7 @@ public class TestANS1Object {
         Array array = new DefaultArray(retInit.getBytes());
         out.write(array.getBytes());
         out.close();
-
+        
         // read XML data from file
         File fileRead = new File(dest + className + ".xml");
         if(!fileRead.exists()) fileRead.createNewFile();
