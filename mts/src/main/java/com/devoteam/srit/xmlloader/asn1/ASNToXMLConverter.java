@@ -514,9 +514,8 @@ public class ASNToXMLConverter
         	{
         		// TODO bug dans la fonction copyToClone() : retourne toujours un IntegerField
         		// Est ce que c'est réellement un pb ? a voir à l'usage
-        		//ElementSimple binary = new ElementSimple(); 
-        		//binary.copyToClone(binaryDico);
-        		// ElementV binary = (ElementV) elementDico;
+        		//ElementValue elementClone = new ElementValue(); 
+        		//elementClone.copyToClone(elementDico);
         		Array array = new DefaultArray(bytes);
         		try
         		{
