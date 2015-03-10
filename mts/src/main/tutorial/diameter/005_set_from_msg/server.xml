@@ -146,6 +146,46 @@
     <parameter name="[localHostDIAMBinary]" operation="binary.fromIp" value="[2a01:cf00:33:5:0:0:0:6e01]"/>
     <test parameter="[avp10bin(1)]" condition="string.equals" value="[localHostDIAMBinary]"/>
 
+    <parameter name="[avp11code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Item-Number.code"/>
+    <test parameter="[avp11code]" condition="number.equals" value="1021"/>
+    <parameter name="[avp11val]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Item-Number.value"/>
+    <test parameter="[avp11val]" condition="number.equals" value="0"/>
+    <parameter name="[avp11bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Item-Number.binary"/>
+    <test parameter="[avp11bin]" condition="binary.equals" value="00000000"/>
+    <parameter name="[avp11vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Item-Number.vendorId"/>
+    <test parameter="[avp11vendor]" condition="number.equals" value="10415"/>
+
+    <parameter name="[avp12code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.code"/>
+    <test parameter="[avp12code]" condition="number.equals" value="1020"/>
+    <parameter name="[avp12val]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.value"/>
+    <test parameter="[avp12val]" condition="number.equals" value="2"/>
+    <parameter name="[avp12bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.binary"/>
+    <test parameter="[avp12bin]" condition="binary.equals" value="00000002"/>
+    <parameter name="[avp12vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.vendorId"/>
+    <test parameter="[avp12vendor]" condition="number.equals" value="10415"/>
+
+    <parameter name="[avp13code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authenticate.code"/>
+    <test parameter="[avp13code]" condition="number.equals" value="1019"/>
+    <parameter name="[avp13val]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authenticate.value"/>
+    <parameter name="[avp13val]" operation="binary.parse" value="[avp13val]"/>
+    <parameter name="[avp13str]" operation="binary.toString" value="[avp13val]"/>
+    <test parameter="[avp13str]" condition="string.equals" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+    <parameter name="[avp13bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authenticate.binary"/>
+    <test parameter="[avp13bin]" condition="binary.equals" value="[avp13val]"/>
+    <parameter name="[avp13vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authenticate.vendorId"/>
+    <test parameter="[avp13vendor]" condition="number.equals" value="10415"/>
+
+    <parameter name="[avp14code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.code"/>
+    <test parameter="[avp14code]" condition="number.equals" value="1024"/>
+    <parameter name="[avp14val]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.value"/>
+    <parameter name="[avp14val]" operation="binary.parse" value="[avp14val]"/>
+    <parameter name="[avp14str]" operation="binary.toString" value="[avp14val]"/>
+    <test parameter="[avp14str]" condition="string.equals" value="INVITE"/>
+    <parameter name="[avp14bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.binary"/>
+    <test parameter="[avp14bin]" condition="binary.equals" value="[avp14val]"/>
+    <parameter name="[avp14vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.vendorId"/>
+    <test parameter="[avp14vendor]" condition="number.equals" value="10415"/>
+
     <sendMessageDIAMETER name="SendAnswerMAA">
         <header request="false" command="[commandCode]" applicationId="[applicationID]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id" value="[sessionId]"/>
