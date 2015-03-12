@@ -47,9 +47,9 @@ public class NumberBCDField extends FieldAbstract
     }
 
     @Override
-    public void parseFromXML(Element rootXML) 
+    public void parseFromXML(Element rootXML, boolean parseDico) 
     {
-    	super.parseFromXML(rootXML);
+    	super.parseFromXML(rootXML, parseDico);
     }
     
     @Override

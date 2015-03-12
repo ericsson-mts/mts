@@ -62,9 +62,9 @@ public class EnumLongField extends IntegerField
     }
 
 	@Override
-    public void parseFromXML(Element rootXML) 
+    public void parseFromXML(Element rootXML, boolean parseDico) 
     {
-        super.parseFromXML(rootXML);
+        super.parseFromXML(rootXML, parseDico);
         
         List<Element> list = rootXML.elements("enum");
         for (Element elemEnum : list) 

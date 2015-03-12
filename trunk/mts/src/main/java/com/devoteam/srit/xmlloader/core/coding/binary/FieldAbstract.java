@@ -67,16 +67,18 @@ public abstract class FieldAbstract
     	this.offset = 0;
 	}
 
-    public void parseFromXML(Element rootXML) 
+    public void parseFromXML(Element rootXML, boolean parseDico) 
     {
         this.name = rootXML.attributeValue("name");
         String lengthBit = rootXML.attributeValue("lengthBit");
-        if (lengthBit != null && this.length >= 0) 
+        if (lengthBit != null && parseDico)
+        //if (lengthBit != null && this.length >= 0) 
         {
             this.length = Integer.parseInt(lengthBit);
         }
         String length = rootXML.attributeValue("length");
-        if (length != null && this.length >= 0) 
+        if (length != null && parseDico)
+        //if (length != null && this.length >= 0) 
         {
             this.length = Integer.parseInt(length) * 8;
         }
@@ -189,7 +191,7 @@ public abstract class FieldAbstract
         int intLen = this.length;
         if (intLen <= 0 && strVal != null)
         { 
-        	intLen = strVal.length() * 8;
+        	intLen = strVal.length() * 8 / 2;
         }
         if (intLen > 0)
         {
