@@ -58,7 +58,7 @@ public class Dictionary
         for (Element element : listElem) 
         {
         	FieldAbstract fieldHeader = FieldAbstract.buildFactory(element);
-        	fieldHeader.parseFromXML(element);
+        	fieldHeader.parseFromXML(element, true);
         	fieldsMapHeader.put(element.attributeValue("name"), fieldHeader);
         }
         
@@ -76,7 +76,7 @@ public class Dictionary
             	elemInfo = ElementAbstract.buildFactory(coding);
             }
             
-            elemInfo.parseFromXML(elem, this, null, false);
+            elemInfo.parseFromXML(elem, this, null, true);
             
             addElement(elemInfo);
         }

@@ -111,7 +111,7 @@ public class MessageGTP
 	    {
 	        elemDico = this.dictionary.getElementFromXML(elementRoot);
 	        newElement = (ElementAbstract) elemDico.cloneAttribute();
-	        newElement.parseFromXML(elementRoot, this.dictionary, elemDico, false);
+	        newElement.parseFromXML(elementRoot, this.dictionary, elemDico, true);
 	        
 	        this.elements.add(newElement);
 	

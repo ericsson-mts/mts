@@ -183,7 +183,7 @@ public abstract class ElementAbstract implements Cloneable
             {
             	field = FieldAbstract.buildFactory(fieldRoot);
             }
-            field.parseFromXML(fieldRoot);
+            field.parseFromXML(fieldRoot, parseDico);
             this.fieldsByName.put(name, field);
             this.fields.add(field);
         }
@@ -246,6 +246,7 @@ public abstract class ElementAbstract implements Cloneable
         	{
         		subElemDico = dictionary.getElementFromXML(elemElement);
         		elem = (ElementAbstract) subElemDico.cloneAttribute();
+        		//elem = ElementAbstract.buildFactory(subElemDico.coding);
         		//elem.copyToClone(subElemDico);
         	}
         	else
