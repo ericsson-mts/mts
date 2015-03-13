@@ -71,14 +71,14 @@ public abstract class FieldAbstract
     {
         this.name = rootXML.attributeValue("name");
         String lengthBit = rootXML.attributeValue("lengthBit");
-        if (lengthBit != null && parseDico)
-        //if (lengthBit != null && this.length >= 0) 
+        //if (lengthBit != null)
+        if (lengthBit != null && (this.length >= 0 || parseDico)) 
         {
             this.length = Integer.parseInt(lengthBit);
         }
         String length = rootXML.attributeValue("length");
-        if (length != null && parseDico)
-        //if (length != null && this.length >= 0) 
+        //if (length != null)
+        if (length != null && (this.length >= 0 || parseDico)) 
         {
             this.length = Integer.parseInt(length) * 8;
         }
