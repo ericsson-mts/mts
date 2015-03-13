@@ -2,12 +2,12 @@
 
 <scenario>
     
-  	<receiveMessageHTTP name="Wait POST" type="POST" request="true">
-		<parameter name="transaction_id" operation="protocol.setFromMessage" value="message.transactionId"/>
-	</receiveMessageHTTP>
-	
-	<sendMessageHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
-<!--******************* BEGIN MESSAGE ********************-->
+    <receiveMessageHTTP name="Wait POST" type="POST" request="true">
+    
+    <parameter name="transaction_id" operation="protocol.setFromMessage" value="message.transactionId"/>
+    </receiveMessageHTTP>
+
+    <sendMessageHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
 <![CDATA[HTTP/1.1 200 OK
 Accept-charset:text/html
 Content-Type:text/html
@@ -16,7 +16,6 @@ User-Agent:XMLLoader
 Content-Length:12
 
 host message]]>
-<!--******************** END MESSAGE *********************-->
-	</sendMessageHTTP>
-	
+    </sendMessageHTTP>
+
 </scenario>
