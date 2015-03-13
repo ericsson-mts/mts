@@ -8,21 +8,21 @@
 <function name="proxy_message">
   <do>           
     <!-- receive RP-DATA -->
-		<receiveMessageSIP name="Wait MESSAGE" request="true" type="MESSAGE">
-    		<parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+    <receiveMessageSIP name="Wait MESSAGE" request="true" type="MESSAGE">
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
-    		<parameter name="[to]" operation="protocol.setFromMessage" value="header.To"/>
-    		<parameter name="[toURI]" operation="protocol.setFromMessage" value="header.To.Address.URI"/>
+        <parameter name="[to]" operation="protocol.setFromMessage" value="header.To"/>
+        <parameter name="[toURI]" operation="protocol.setFromMessage" value="header.To.Address.URI"/>
         <parameter name="[fromHost]" operation="protocol.setFromMessage" value="header.From.Address.URI.host"/>
         <parameter name="[fromPort]" operation="protocol.setFromMessage" value="header.From.Address.URI.port"/>
         <parameter name="[from]" operation="protocol.setFromMessage" value="header.From"/>
-    		<parameter name="[fromURI]" operation="protocol.setFromMessage" value="header.From.Address.URI"/>
+        <parameter name="[fromURI]" operation="protocol.setFromMessage" value="header.From.Address.URI"/>
         <parameter name="[callId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
-    		<parameter name="[cSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
-    		<parameter name="[via]" operation="protocol.setFromMessage" value="header.Via"/>
+        <parameter name="[cSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+        <parameter name="[via]" operation="protocol.setFromMessage" value="header.Via"/>
         <parameter name="[strContent]" operation="protocol.setFromMessage" value="content"/>
-		</receiveMessageSIP>
-    
+    </receiveMessageSIP>
+  
     <parameter name="[binContent]" operation="string.toBinary" value="[strContent]"/>
 
     <parameter name="[index]" operation="set" value="0"/>
@@ -164,7 +164,7 @@
     <!--test parameter="[RP-UD-TP-UD]" condition="binary.equals" value="[smsBinary]"/-->
     
     <parameter name="[localTag]" operation="string.random" value="10"/>
-		<sendMessageSIP name="Send 202 Accepted">
+    <sendMessageSIP name="Send 202 Accepted">
 <![CDATA[SIP/2.0 202 Accepted 
 To: [to];tag=[localTag]
 From: [from]
@@ -172,7 +172,7 @@ Call-ID: [callId]
 Via: [via]
 CSeq: [cSeq]
 Content-Length: 0
-]]>		
+]]>
     </sendMessageSIP>
     
     <!-- send RP-ACK -->
@@ -328,20 +328,20 @@ Content-Length: x
 
 [strMAPMessage]]]></sendMessageSIP>
 
-		<receiveMessageSIP name="Wait 200 OK" request="false" type="MESSAGE" result="202">
-		</receiveMessageSIP>
+    <receiveMessageSIP name="Wait 200 OK" request="false" type="MESSAGE" result="202">
+    </receiveMessageSIP>
     
     <receiveMessageSIP name="Wait MESSAGE" request="true" type="MESSAGE">
-    		<parameter name="[to]" operation="protocol.setFromMessage" value="header.To"/>
-    		<parameter name="[from]" operation="protocol.setFromMessage" value="header.From"/>
-    		<parameter name="[callId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
-    		<parameter name="[cSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
-    		<parameter name="[via]" operation="protocol.setFromMessage" value="header.Via"/>
+        <parameter name="[to]" operation="protocol.setFromMessage" value="header.To"/>
+        <parameter name="[from]" operation="protocol.setFromMessage" value="header.From"/>
+        <parameter name="[callId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+        <parameter name="[cSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+        <parameter name="[via]" operation="protocol.setFromMessage" value="header.Via"/>
         <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
-		</receiveMessageSIP>
+    </receiveMessageSIP>
         
     <parameter name="[localTag]" operation="string.random" value="10"/>
-		<sendMessageSIP name="Send 200 OK">
+    <sendMessageSIP name="Send 200 OK">
 <![CDATA[SIP/2.0 200 OK
 Via: [via]
 From: [from]
@@ -351,7 +351,7 @@ CSeq: [cSeq]
 Allow: ACK, BYE, CANCEL, INVITE, MESSAGE, NOTIFY, OPTIONS, PRACK, REFER, SUBSCRIBE, UPDATE
 Server: MTS v6.0.3_beta : Multiprotocol Test Suite
 Content-Length: 0
-]]>		
+]]>
     </sendMessageSIP>
 
     <!-- send RP-DATA with SMS-DELIVER to the terminating side -->

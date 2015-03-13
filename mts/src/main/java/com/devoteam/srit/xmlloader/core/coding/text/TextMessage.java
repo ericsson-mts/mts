@@ -76,22 +76,57 @@ public class TextMessage {
         this.contentBinaryTypes = contentBinaryTypes; 
     }
 
+    /**
+     * Return the index of the first occurrence of string pattern, some white characters and the same string pattern
+     * @param msg : the string to search in
+     * @return : the index of the occurrence
+     */
+    private static int indexOfWhiteSpaceBetweenPattern(String str, String pattern) 
+    {
+    	int pos = 0;
+    	while (pos < str.length())
+    	{
+    		pos =  str.indexOf(pattern, pos + 1);
+    		if  (pos < 0)
+    		{
+    			return -1;
+    		}
+    		int nextPos = str.indexOf(pattern, pos + 1);
+    		if (nextPos < 0)
+    		{
+    			return -1;
+    		}
+    		String line = str.substring(pos, nextPos);
+    		if (line.trim().length() == 0)
+    		{
+    			return pos;
+    		}
+    	}
+    	return -1;
+    }
+    
     public void parse(String msg) throws Exception 
     {
         // get of the content of the message
     	msg = Utils.trimLeft(msg);
     	String content;
-        int iPosContent = msg.indexOf("\n\n");
+        int iPosContent = indexOfWhiteSpaceBetweenPattern(msg, "\n");
+    	//int iPosContent = msg.indexOf("\n\n");
         if (iPosContent > 0) 
         {
-        	content = msg.substring(iPosContent + 2);
+        	int iPosEnd = msg.indexOf("\n", iPosContent + 1);
+        	//int iPosEnd = iPosContent + 1;
+        	content = msg.substring(iPosEnd + 1);
         }
         else
         {
-        	iPosContent = msg.indexOf("\r\n\r\n");
+        	iPosContent = indexOfWhiteSpaceBetweenPattern(msg, "\r\n");
+        	//iPosContent = msg.indexOf("\r\n\r\n");
             if (iPosContent > 0) 
             {
-            	content = msg.substring(iPosContent + 4);
+            	int iPosEnd = msg.indexOf("\r\n", iPosContent + 2);
+            	//int iPosEnd = iPosContent + 2;
+            	content = msg.substring(iPosEnd + 2);
             }
 	        else
 	        {
@@ -152,7 +187,7 @@ public class TextMessage {
         }
 
         // calculate the complete message
-        StringBuilder buff = new StringBuilder(this.headers.trim());
+        StringBuilder buff = new StringBuilder(this.headers);
         buff.append("\r\n\r\n");
         if (content != null) 
         {
