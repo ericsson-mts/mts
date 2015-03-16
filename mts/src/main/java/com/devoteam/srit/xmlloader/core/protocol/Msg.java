@@ -595,7 +595,9 @@ public abstract class Msg extends MsgLight implements Removable
     /** Get the complete type (with dictionary conversion) of this message */
     public String getTypeComplete() throws Exception
     {
-    	return getType();
+    	String type = getType();
+    	type = Utils.getPrintableChar(type);
+    	return type;
     }
 
     /** Get the result of this answer (null if request) */
@@ -610,6 +612,8 @@ public abstract class Msg extends MsgLight implements Removable
     /** Get the complete result of this answer (null if request) */
     public String getResultComplete() throws Exception
     {
+    	//String result = getResult();
+    	//result = Utils.getPrintableChar(result);
     	return getResult();
     }
     

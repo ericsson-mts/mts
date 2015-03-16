@@ -27,7 +27,6 @@ import com.devoteam.srit.xmlloader.core.Test;
 import com.devoteam.srit.xmlloader.core.Tester;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.report.CounterReportTemplate;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.DateUtils;
@@ -211,6 +210,7 @@ public class StatPool implements Serializable, Cloneable
      */
     public boolean exists(StatKey statKey)
     {
+    	statKey.keepPrintableChar();
     	return this.statHash.get(statKey) != null;
     }
 
@@ -238,6 +238,7 @@ public class StatPool implements Serializable, Cloneable
     {
         if (activate)
         {
+
             get(statKey).addValue(value, timestamp);
 
             // We mark it with a flag on the RTStatsTimer
@@ -248,7 +249,7 @@ public class StatPool implements Serializable, Cloneable
      * Get the counter (IStatCounter object) given by a StatKey object
      * 
      */
-    public IStatCounter getValue(StatKey statKey)
+    private IStatCounter getValue(StatKey statKey)
     {
         if (activate)
         {
@@ -286,12 +287,12 @@ public class StatPool implements Serializable, Cloneable
             this.lastTimestamp = this.relativeTimeMillis();
         }
         
+        statKey.keepPrintableChar();
         IStatCounter counter = statHash.get(statKey);
         if (counter != null)
         {
             return counter;
         }
-
         // The counter was not found. It will be created and added to the
         // HashMap depending on the boolean shouldBeRefreshed.
 
@@ -335,6 +336,7 @@ public class StatPool implements Serializable, Cloneable
         	Set<StatKey> setStats = this.statHash.keySet();
             for (StatKey statKey : setStats)
             {
+            	statKey.keepPrintableChar();
                 if (statKeyPattern.matchesLax(statKey))
                 {
                     keyResultList.add(statKey);
