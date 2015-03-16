@@ -73,6 +73,11 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
         _parameters = new ParameterPool(null, ParameterPool.Level.testcase, test.getParameterPool());
         _interruptible = Boolean.valueOf(_root.attributeValue("interruptible", "true"));
         _name = _root.attributeValue("name");
+        _name = Utils.replaceFileName(this._name);
+        // assert the name is not empty (can cause problems with log files and stats)
+        if (_name == null || _name.trim().isEmpty()) {
+            throw new ParsingException("testcase name should not be empty " + _root.asXML());
+        }
         _index = index;
         String strNumber= _root.attributeValue("number");
         _number = 1;
@@ -84,12 +89,6 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
         if (strState != null)
         {
         	_state = Boolean.parseBoolean(strState);
-        }
-        _name = Utils.replaceFileName(this._name);
-
-        // assert the name is not empty (can cause problems with log files and stats)
-        if (_name == null || _name.trim().isEmpty()) {
-            throw new ParsingException("testcase name should not be empty " + _root.asXML());
         }
 
         // do 1, 2, 3 in one go because of runner
@@ -224,7 +223,7 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
     }
 
     public String getId() {
-        return this.getParent().attributeValue("name") + this._name;
+        return this.getParent().getName() + this._name;
     }
 
     public int getRunId() {
