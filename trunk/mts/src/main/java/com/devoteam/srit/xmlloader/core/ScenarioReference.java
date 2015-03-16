@@ -27,7 +27,9 @@ package com.devoteam.srit.xmlloader.core;
 
 import com.devoteam.srit.xmlloader.core.utils.URIFactory;
 import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
+
 import org.dom4j.Element;
 
 import java.io.Serializable;
@@ -56,6 +58,7 @@ public class ScenarioReference implements Serializable {
 
     public ScenarioReference(Element elements, Testcase testcase) {
         _name = elements.attributeValue("name");
+        _name = Utils.replaceFileName(this._name);
         _routingName = elements.attributeValue("routingName");
         _description = elements.attributeValue("description");
         String strState = elements.attributeValue("state");
