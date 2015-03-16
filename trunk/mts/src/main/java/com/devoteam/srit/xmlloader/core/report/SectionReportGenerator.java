@@ -208,11 +208,27 @@ public class SectionReportGenerator
 
             }
             sb.append("</tr>");
-
-            String generatedDescendentReport = this.generateReport(descendent);
+            
+            String generatedDescendentReport = null;
+            /*
+            generatedDescendentReport = this.generateReport(descendent);
             NSwriteReportToFile(descName, generatedDescendentReport);
+            */
+            try
+            {
+	            generatedDescendentReport = this.generateReport(descendent);
+            }
+            catch (Exception e)
+            {
+            	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, "Generating the report for level ", descendent, " : Exception = ", e);
+            }
+            
+            if (generatedDescendentReport != null)
+            {
+	            NSwriteReportToFile(descName, generatedDescendentReport);
+            }
         }
-
+        
         // If there a table with short information
         if(templateList.size() > 0)
         {
@@ -264,7 +280,7 @@ public class SectionReportGenerator
         {
             File reportFile = new File(this.directory + "/" + name + ".html");
 
-            GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Generating report (", this.directory, "/", ".html) Please wait...");
+            GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Generating report (", this.directory, "/", name, ".html) Please wait...");
             if (!reportFile.getParentFile().exists())
             {
                 reportFile.getParentFile().mkdirs();
@@ -286,10 +302,9 @@ public class SectionReportGenerator
             pw.close();
             GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Report ready..., see  file://", reportFile.getAbsolutePath());
         }
-        catch (IOException e)
+        catch (Exception e)
         {
-            e.printStackTrace();
-            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Unable to generate report :", e);
+        	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, "Writing the report for file ", name, ".html", " : Exception = ", e);
         }
     }
 }

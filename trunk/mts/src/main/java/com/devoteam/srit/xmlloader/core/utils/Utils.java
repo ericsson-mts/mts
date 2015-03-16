@@ -159,6 +159,7 @@ public class Utils
     	filename = filename.replace("|", "");
     	filename = filename.replace("&gt;", "");
     	filename = filename.replace("&lt;", "");
+    	filename = filename.replace(" ", "_");
     	return filename;
     }
 
@@ -1530,5 +1531,24 @@ public class Utils
 	    Document document = reader.read(input);
 	    return document;
 	}
-	
+
+	private static String charOK = "_:/<>";
+    public static String getPrintableChar(String str)
+    {	
+    	StringBuffer buff = new StringBuffer();
+    	if (str !=  null)
+    	{
+    		for (int i = 0; i < str.length(); i++)
+    		{
+    			Character character = str.charAt(i);
+	    		if (Character.isLetterOrDigit(character) || charOK.indexOf(character) >=0)
+	    		{
+	    			buff.append(character);
+	    		}
+	    	}
+	    	return buff.toString();
+    	}
+    	return null;
+    }
+
 }

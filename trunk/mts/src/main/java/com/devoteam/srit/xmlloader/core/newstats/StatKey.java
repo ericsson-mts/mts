@@ -25,6 +25,8 @@ package com.devoteam.srit.xmlloader.core.newstats;
 
 import java.io.Serializable;
 
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 /**
  * Used as a key in the StatPool for indexing the {@link com.devoteam.srit.xmlloader.core.newstats.IStatCounter}
  * hash key is based on the attributes passed in the constructor.
@@ -141,5 +143,13 @@ public final class StatKey implements Comparable<StatKey>, Serializable
         
         //this should never happen
         throw new RuntimeException("Two statKey doesn't have equal hash codes but all of their attributes are equal");
+    }
+    
+    public void keepPrintableChar()
+    {
+        for (int i = 0; i < attributes.length; i++)
+        {
+        	this.attributes[i] = Utils.getPrintableChar(this.attributes[i]);
+        }
     }
 }
