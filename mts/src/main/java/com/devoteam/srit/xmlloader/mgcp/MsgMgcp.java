@@ -180,10 +180,11 @@ public class MsgMgcp extends Msg {
     @Override
     public String toShortString() throws Exception {
     	String ret = super.toShortString();
-        String commandline = ((MGCPCommandLine) (message.getGenericfirstline())).getLine();
-        ret += "\n<" + commandline + ">";
-        String transId = ((MGCPCommandLine) (message.getGenericfirstline())).getTransactionId().toString();
-        ret += "<transactionId=\"" + transId + "\">";
+    	ret += "\n";
+        ret += ((MGCPCommandLine) (message.getGenericfirstline())).getLine();
+		String transId = ((MGCPCommandLine) (message.getGenericfirstline())).getTransactionId().toString();
+		ret += "\n";
+        ret += "<MESSAGE transactionId=\"" + transId + "\">";
         return ret;
     }
 

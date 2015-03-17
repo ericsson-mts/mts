@@ -33,6 +33,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
+
 import gp.utils.arrays.Array;
 
 /**
@@ -257,8 +258,8 @@ public class MsgSmpp extends Msg
     @Override
     public String toShortString() throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("\n");
         stringBuilder.append(super.toShortString());
+        stringBuilder.append("\n");
         if(smppMessage.getLogError().length() != 0)
         {
             stringBuilder.append("<MESSAGE MALFORMED name= \"" + smppMessage.getName() + "\"");
@@ -271,7 +272,8 @@ public class MsgSmpp extends Msg
         stringBuilder.append(" length=\"" + smppMessage.getLength() + "\"");
         stringBuilder.append(" id=\"" + Integer.toHexString(smppMessage.getId()) + "\"");
         stringBuilder.append(" status=\"" + smppMessage.getStatus() + "\"");
-        stringBuilder.append(" sequence_number=\"" + smppMessage.getSequenceNumber() + "\"/>");
+        stringBuilder.append(" sequence_number=\"" + smppMessage.getSequenceNumber() + "\"");
+        stringBuilder.append("/>");
         return stringBuilder.toString();
     }
 

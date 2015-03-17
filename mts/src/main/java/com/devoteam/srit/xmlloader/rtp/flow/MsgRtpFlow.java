@@ -674,10 +674,12 @@ public class MsgRtpFlow extends Msg {
     @Override
     public String toShortString() throws Exception {
     	String ret = super.toShortString();
-        ret += "\n<flow ";
+        ret += "\n";
+        ret += "<FLOW ";
         ret += "packetNumber=\"" + getPacketNumber() + "\", ";
         ret += "duration=\"" + getDuration() + "\", ";
-        ret += "bitRate=\"" + getBitRate() + "\"/> ";
+        ret += "bitRate=\"" + getBitRate() + "\"";
+        ret += "/> ";
         return ret;
     }
 

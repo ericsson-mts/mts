@@ -259,7 +259,8 @@ public class MsgUcp extends Msg
         stringBuilder.append(" OT=\"" + ucpMessage.getOperationType() + "\"");
         stringBuilder.append(" O/R=\"" + ucpMessage.getMessageType() + "\"");
         stringBuilder.append(" length=\"" + ucpMessage.getLength() + "\"");
-        stringBuilder.append(" TRN=\"" + ucpMessage.getTransactionNumber() + "\"/>");
+        stringBuilder.append(" TRN=\"" + ucpMessage.getTransactionNumber() + "\"");
+        stringBuilder.append("/>");
 
         return stringBuilder.toString();
     }
