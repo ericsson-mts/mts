@@ -3,6 +3,31 @@
 				  M.T.S.
 -------------------------------------------------------------------------------
 
+			Version : 6.0.6_beta (revision SVN 1461) le 17/03/2015
+
+Evolutions :
+  * Correction d'une régression sur le décodage des blocs SDP dans le contenu 
+    des messages SIP est possible. Ajout d'une liste de Content-Type pour lesquels
+    MTS ne fait pas de remplacement texte soit pour les contenus binaires : 
+    paramètre content.BINARY_TYPES dans sip.properties
+  * Améliorer des problèmes dans lers statistiques en particulier lorsque l'on 
+    reçoit des messages binaire en SIP : exception et rapport non généré
+  * Début de l'analyse des messages par l'opération setFromMessage : partiellement
+    implémenté
+
+Fault report :
+
+Migration :
+  * Modification de comportement sur l'operation number.ToBinary : le nombre de caractères
+    hexadécimales retourné est toujours paire (complétion)
+
+
+
+-------------------------------------------------------------------------------
+				RELEASE NOTE
+				  M.T.S.
+-------------------------------------------------------------------------------
+
 			Version : 6.0.5_beta (revision SVN 1367) le 29/01/2015
 
 Evolutions :
@@ -21,7 +46,7 @@ Evolutions :
 Fault report :
   * Dans cette version des régressions sur le décodage des blocs SDP dans le contenu 
     des messages SIP est possible : si vous avez besoin de cette fonctionalité alors 
-    restez en version 6.0.4_beta; ce point sera amélioré dans la prochaine livraison.     
+    restez en version 6.0.4_beta; ce point sera amélioré dans la prochaine livraison.
       
 Migration :
   * SIGTRAN : renommer la balise <AP> en <ASN>
