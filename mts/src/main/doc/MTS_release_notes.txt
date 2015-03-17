@@ -3,17 +3,18 @@
 				  M.T.S.
 -------------------------------------------------------------------------------
 
-			Version : 6.0.6_beta (revision SVN 1432) le 17/03/2015
+			Version : 6.0.6_beta (revision SVN 1436) le 17/03/2015
 
 Evolutions :
-  * Correction d'une régression sur le décodage des blocs SDP dans le contenu 
-    des messages SIP est possible. Ajout d'une liste de Content-Type pour lesquels
-    MTS ne fait pas de remplacement texte soit pour les contenus binaires : 
+  * Correction une régression qui s’était glissée dans le version précédente 
+    sur le parsing des contenu de messages SIP (présence de données binaires => 
+    pas de formatages sur le retour chariot).  Ajout d'une liste de Content-Type 
+    pour lesquels MTS ne fait pas de remplacement texte pour les contenus binaires : 
     paramètre content.BINARY_TYPES dans sip.properties
-  * Améliorer des problèmes dans lers statistiques en particulier lorsque l'on 
-    reçoit des messages binaire en SIP : exception et rapport non généré
-  * Début de l'analyse des messages par l'opération setFromMessage : partiellement
-    implémenté
+  * Amélioration sur les statistiques (temps-réel et rapport) lorsque des messages 
+    SIP arrivent avec des caractères hexadécimaux non imprimables.
+  * Début de l'analyse des messages par l'opération setFromMessage : fonctionnalité
+    partiellement implémentée
 
 Fault report :
 
