@@ -57,6 +57,7 @@ import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggablePara
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromURI;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.coding.text.ContentParser;
+import com.devoteam.srit.xmlloader.core.coding.text.FirstLine;
 import com.devoteam.srit.xmlloader.sip.MsgSip;
 
 /**
@@ -752,10 +753,14 @@ public class MsgSipJain extends MsgSip
     public String toShortString() throws Exception
     {
     	String ret = super.toShortString();
+    	ret += "\n";
+        ret += this.sipMessage.getFirstLine();
+        ret += "\n";
         String transId = getTransactionId().toString();
-        ret += "\n<transactionId=\"" + transId + "\">"; 
+        ret += "<MESSAGE transactionId=\"" + transId + "\""; 
         String dialogId = getDialogId();
-        ret+= "<DialogId=\"" + dialogId + "\">";
+        ret+= " dialogId=\"" + dialogId + "\"";
+        ret+= "/>";
         return ret;
     }
 

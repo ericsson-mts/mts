@@ -230,6 +230,7 @@ public class MsgRtsp extends Msg
     @Override
 	public String toShortString() throws Exception {
     	String ret = super.toShortString();
+    	ret += "\n";
         ret += ((FirstLine)(this.message.getGenericfirstline())).getLine();
         return ret;
 	}

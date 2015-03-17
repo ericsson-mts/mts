@@ -635,9 +635,10 @@ public class MsgHttp extends Msg
     @Override
     public String toShortString() throws Exception {
     	String ret = super.toShortString();
-  		ret += getFirstLine();
   		ret += "\n";
-   		ret += "<transactionId =\"" + getTransactionId() + "\">";    		
+  		ret += getFirstLine();
+		ret += "\n";
+   		ret += "<MESSAGE transactionId =\"" + getTransactionId() + "\">";
     	return ret;
     }
 
