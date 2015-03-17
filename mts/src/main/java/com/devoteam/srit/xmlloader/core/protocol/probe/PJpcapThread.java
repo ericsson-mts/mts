@@ -75,19 +75,26 @@ public class PJpcapThread implements PacketReceiver, Runnable {
         stopSemaphore = new Semaphore(0);
         startSemaphore = new Semaphore(0);
         stopped = false;
-
-        if (probe.getNetworkInterface() != null) {
-        	networkInterface = searchNetworkInterface(probe.getNetworkInterface());
-            captor = JpcapCaptor.openDevice(networkInterface, DEFAULT_SNAPLENGHT, probe.getPromiscuousMode(), 10);
-            sendor = JpcapSender.openDevice(networkInterface);
-            captor.setFilter(probe.getCaptureFilter(), true);
-        }
-        else if (probe.getFilename() != null) {
-            captor = JpcapCaptor.openFile(probe.getFilename());
-            if (probe.getCaptureFilter() != null) {
-                captor.setFilter(probe.getCaptureFilter(), true);
-            }
-        }
+        
+        try
+    	{
+	        if (probe.getNetworkInterface() != null) {
+	        	networkInterface = searchNetworkInterface(probe.getNetworkInterface());
+	            captor = JpcapCaptor.openDevice(networkInterface, DEFAULT_SNAPLENGHT, probe.getPromiscuousMode(), 10);
+	            sendor = JpcapSender.openDevice(networkInterface);
+	            captor.setFilter(probe.getCaptureFilter(), true);
+	        }
+	        else if (probe.getFilename() != null) {
+	        	captor = JpcapCaptor.openFile(probe.getFilename());
+	            if (probe.getCaptureFilter() != null) {
+	                captor.setFilter(probe.getCaptureFilter(), true);
+	            }
+	        }
+    	}
+    	catch (NoSuchMethodError e)
+    	{
+    		// nothing to do
+    	}
 
         captor.setPacketReadTimeout(500);
 
