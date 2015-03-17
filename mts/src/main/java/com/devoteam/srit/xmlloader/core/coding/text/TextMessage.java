@@ -148,7 +148,7 @@ public class TextMessage {
         this.headers = header;
         
         String strType = getHeaderValue(headers, "Content-Type");
-        if (!contentBinaryTypes.contains("," + strType + ","))
+       if (strType == null || contentBinaryTypes == null || !contentBinaryTypes.contains("," + strType + ","))
         {
 	        // remove special characters of the content of the message
 	        content = Utils.replaceNoRegex(content, "\r\n", "\n");
