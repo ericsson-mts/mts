@@ -15,36 +15,38 @@
     <!--parameter name="[remotePortSMTP]" operation="set" value="12222"/-->
     <parameter description="remote port of the SUT host" editable="true" name="[remotePortSMTP]" operation="set" value="[remotePortSMTP]"/>
     
-	<testcase name="smtp/short" state="true">
-		<scenario file="000_test/client.xml" name="Client" routingName="Client"/>
-		<scenario file="000_test/server.xml" name="SMTP" routingName="SMTP"/>
-	</testcase>
-	<testcase name="smtp/normal" state="true">
-		<scenario file="001_test/client.xml" name="Client" routingName="Client"/>
-		<scenario file="001_test/server.xml" name="SMTP" routingName="SMTP"/>
-	</testcase>
-	<testcase name="smtp/dataBeginNumber" state="true">
-		<scenario file="002_test/client.xml" name="Client" routingName="Client"/>
-		<scenario file="002_test/server.xml" name="SMTP" routingName="SMTP"/>
-	</testcase>
-	<testcase name="smtp/TEMPLATE1" state="true">
-		<scenario file="003_test/client.xml" name="Client" routingName="Client"/>
-		<scenario file="003_test/server.xml" name="SMTP" routingName="SMTP"/>
-	</testcase>
-	<testcase name="smtp/short_test" state="true">
-		<scenario file="004_test/client.xml" name="Client" routingName="Client"/>
-		<scenario file="004_test/server.xml" name="SMTP" routingName="SMTP"/>
-	</testcase>	
-	<testcase name="smtp/normal_dataBeginNumber" state="true">
-		<scenario file="005_test/client.xml" name="Client" routingName="Client"/>
-		<scenario file="005_test/server.xml" name="SMTP" routingName="SMTP"/>
-	</testcase>
-	<testcase name="smtp/normal_RSET" state="true">
-		<scenario file="006_test/client.xml" name="Client" routingName="Client"/>
-		<scenario file="006_test/server.xml" name="SMTP" routingName="SMTP"/>
-	</testcase>
-	<testcase name="smtp/normal_TEMPLATE2" state="true">
-		<scenario file="007_test/client.xml" name="Client" routingName="Client"/>
-		<scenario file="007_test/server.xml" name="SMTP" routingName="SMTP"/>
-	</testcase>
+    <testcase name="smtp short" state="true">
+        <scenario file="000_test/client.xml" name="Client" routingName="Client"/>
+        <scenario file="000_test/server.xml" name="SMTP" routingName="SMTP"/>
+    </testcase>
+    <testcase name="smtp normal" state="true">
+        <parameter name="[remotePortSMTP]" operation="number.add" value="[remotePortSMTP]" value2="20000"/>
+        <scenario file="001_test/client.xml" name="Client" routingName="Client"/>
+        <scenario file="001_test/server.xml" name="SMTP" routingName="SMTP"/>
+    </testcase>
+    <testcase name="smtp dataBeginNumber" state="true">
+        <scenario file="002_test/client.xml" name="Client" routingName="Client"/>
+        <scenario file="002_test/server.xml" name="SMTP" routingName="SMTP"/>
+    </testcase>
+    <testcase name="smtp TEMPLATE1" state="true">
+        <scenario file="003_test/client.xml" name="Client" routingName="Client"/>
+        <scenario file="003_test/server.xml" name="SMTP" routingName="SMTP"/>
+    </testcase>
+    <testcase name="smtp short_test" state="true">
+        <scenario file="004_test/client.xml" name="Client" routingName="Client"/>
+        <scenario file="004_test/server.xml" name="SMTP" routingName="SMTP"/>
+    </testcase>	
+    <testcase name="smtp normal_dataBeginNumber" state="true">
+        <scenario file="005_test/client.xml" name="Client" routingName="Client"/>
+        <scenario file="005_test/server.xml" name="SMTP" routingName="SMTP"/>
+    </testcase>
+    <testcase name="smtp normal_RSET" state="true">
+        <scenario file="006_test/client.xml" name="Client" routingName="Client"/>
+        <scenario file="006_test/server.xml" name="SMTP" routingName="SMTP"/>
+    </testcase>
+    <testcase name="smtp normal_TEMPLATE2" state="true">
+        <scenario file="007_test/client.xml" name="Client" routingName="Client"/>
+        <scenario file="007_test/server.xml" name="SMTP" routingName="SMTP"/>
+    </testcase>
+
 </test>
