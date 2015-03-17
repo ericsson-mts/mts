@@ -118,8 +118,6 @@ public class ChannelTls extends Channel {
 		{
 			StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_TLS, getProtocol());
 			this.startTimestamp = System.currentTimeMillis();
-	    				
-			InetAddress localAddr = InetAddress.getByName(getLocalHost());
 
 			TrustManager[] trustAllCerts = new TrustManager[]{
 					new X509TrustManager()
@@ -177,7 +175,17 @@ public class ChannelTls extends Channel {
   	      	SSLContext sslContext = SSLContext.getInstance(certificateSSLVersion);
   	      	sslContext.init(keyManagers, null, null);
   	      	
-  	      	SSLSocket socket = (SSLSocket) sslContext.getSocketFactory().createSocket(getRemoteHost(), getRemotePort(), localAddr, getLocalPort());
+  	      	String localHost = getLocalHost();
+  	      	SSLSocket socket = null; 
+  	      	if (localHost != null)
+  	      	{
+  	      		InetAddress localAddr = InetAddress.getByName(localHost);
+  	      		socket = (SSLSocket) sslContext.getSocketFactory().createSocket(getRemoteHost(), getRemotePort(), localAddr, getLocalPort());
+  	      	}
+  	      	else
+  	      	{
+  	      		socket = (SSLSocket) sslContext.getSocketFactory().createSocket(getRemoteHost(), getRemotePort());
+  	      	}
   	      	
   	      	Config.getConfigForTCPSocket(socket, true);
   	      	
