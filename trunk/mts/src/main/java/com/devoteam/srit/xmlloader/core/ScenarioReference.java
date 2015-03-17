@@ -78,7 +78,6 @@ public class ScenarioReference implements Serializable {
     public void setScenarioRunner(ScenarioRunner value){
         _scenarioRunner = value;
     }
-
     public Testcase getTestcase() {
         return _testcase;
     }
