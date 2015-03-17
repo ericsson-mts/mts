@@ -1531,7 +1531,7 @@ public class Utils
 	    return document;
 	}
 
-	private static String charOK = "_:/<> -";
+	private static String charOK = "_:/<> -.";
     public static String getPrintableChar(String str)
     {	
     	StringBuffer buff = new StringBuffer();
