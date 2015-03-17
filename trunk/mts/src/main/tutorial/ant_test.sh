@@ -1,9 +1,11 @@
 #!/bin/sh
 
-OPTIONS= "-level:DEBUG -stor:file -gen:false -show:false"
+OPTIONS= "-level:WARN -stor:file -gen:false -show:false"
 
 echo "Run the unit tests"
 cd ../bin
+
+rm -rf ../logs/*
 
 echo ******************************************* protocol modules
 sh ./startCmd.sh ../tutorial/core/test.xml -sequential $OPTIONS
