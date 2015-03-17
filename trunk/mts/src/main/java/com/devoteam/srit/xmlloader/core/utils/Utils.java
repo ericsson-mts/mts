@@ -159,7 +159,6 @@ public class Utils
     	filename = filename.replace("|", "");
     	filename = filename.replace("&gt;", "");
     	filename = filename.replace("&lt;", "");
-    	filename = filename.replace(" ", "_");
     	return filename;
     }
 
@@ -1532,7 +1531,7 @@ public class Utils
 	    return document;
 	}
 
-	private static String charOK = "_:/<>";
+	private static String charOK = "_:/<> -";
     public static String getPrintableChar(String str)
     {	
     	StringBuffer buff = new StringBuffer();
