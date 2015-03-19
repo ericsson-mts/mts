@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test description="RTPFLOW regression tests" name="RTPFLOW">
 
-    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
     
     <parameter name="[localHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter description="local address of the MTS host" editable="true" name="[localHostRTP]" operation="set" value="[localHostRTP(0)]"/>
-    <parameter description="local port of the MTS host" editable="true" name="[localPortRTP]" operation="set" value="10000"/>
+    <parameter name="[localHostRTP]" operation="set" value="[localHostRTP(0)]" description="local address of the MTS host" editable="true" />
+    <parameter name="[localPortRTP]" operation="set" value="10000" description="local port of the MTS host" editable="true" />
     
     <parameter name="[remoteHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]"/>
-    <parameter description="remote port of the SUT host" editable="true" name="[remotePortRTP]" operation="set" value="11000"/>
+    <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]" description="remote address of the SUT host" editable="true" />
+    <parameter name="[remotePortRTP]" operation="set" value="20000" description="remote port of the SUT host" editable="true" />
+    <parameter name="[remotePortRTP2]" operation="number.add" value="[remotePortRTP]" value2="2"/>
 
     <parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
      <!--parameter name="[localHostSIP]" operation="set" value="172.16.21.32"/-->
-    <parameter editable="true" name="[localHostSIP]" operation="set" value="[localHostSIP(0)]"/>
+    <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" editable="true" />
     <parameter name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter editable="true" name="[localPortSIP]" operation="set" value="[localPortSIP]"/>
+    <parameter name="[localPortSIP]" operation="set" value="[localPortSIP]" editable="true" />
     <parameter name="[localSIP]" operation="set" value="[localHostSIP]:[localPortSIP]"/>
     <parameter name="[remoteHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[remoteHostSIP]" operation="set" value="172.16.21.32"/-->
-    <parameter editable="true" name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]"/>
+    <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]" editable="true" />
     <parameter name="[remotePortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter editable="true" name="[remotePortSIP]" operation="set" value="[remotePortSIP]"/>
+    <parameter name="[remotePortSIP]" operation="set" value="[remotePortSIP]" editable="true" />
     <parameter name="[remoteSIP]" operation="set" value="[remoteHostSIP]:[remotePortSIP]"/>
     
     <!-- value2 = deltaTime (millisecondes)-->
