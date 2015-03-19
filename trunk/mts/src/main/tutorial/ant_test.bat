@@ -62,6 +62,9 @@ call startGui.bat
 REM ******************************************* master module
 call startMaster.bat
 
+REM ******************************************* master module
+call startSlave.bat
+
 cd ..\..
 
 pause

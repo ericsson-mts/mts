@@ -52,15 +52,18 @@ echo ******************************************* genscript module
 cd ../tutorial/genscript
 REM call genscripttest.bat
 
-REM ******************************************* genscript module
-cd ../tutorial/importsipp
-REM call startTest.bat
+REM ******************************************* importsipp module
+cd ..\tutorial\importsipp
+call startTest.sh
 
 REM ******************************************* gui module
-sh ./startGui.sh
+sh ./startGui.sh &
 
 REM ******************************************* master module
-sh ./startMaster.sh
+sh ./startMaster.sh &
+
+REM ******************************************* master module
+sh ./startSlave.sh &
 
 cd ../..
 
