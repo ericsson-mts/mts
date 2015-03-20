@@ -31,7 +31,10 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 
+import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
+import gp.utils.arrays.RandomArray;
+import gp.utils.arrays.SupArray;
 
 import java.awt.Container;
 import java.awt.Dialog;
@@ -1472,6 +1475,33 @@ public class Utils
 	    return s.toString();
 	}
     
+	public static String randomObjectIdentifier(int numInt)
+	{
+	    StringBuilder strBuilder = new StringBuilder();
+	    for (int j = 0; j < numInt; j++)
+	    {
+	    	int b = (byte) Utils.randomLong(0, 128L) & 0x00FF;	    	
+	    	strBuilder.append(String.valueOf(b));
+	    	if (j != numInt - 1)
+	    	{
+	    		strBuilder.append('.');
+	    	}
+	    }
+	    return strBuilder.toString();
+	}
+
+	public static byte[] randomBytes()
+	{	
+		int numByte = (int) Utils.randomLong(0, 20L);
+		Array data = new RandomArray(numByte);
+		SupArray supArray = new SupArray();
+		supArray.addLast(data);
+		// add a tag to be compliant with asn1 data
+		Array tag = new DefaultArray(new byte[]{4, (byte)numByte});
+		supArray.addFirst(tag);
+		return supArray.getBytes();
+	}
+
 	public static long randomLong(long min, long max)
 	{	
 		

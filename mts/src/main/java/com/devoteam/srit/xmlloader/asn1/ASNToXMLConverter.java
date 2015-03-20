@@ -278,7 +278,7 @@ public class ASNToXMLConverter
 		return ret;
 	}
 	
-	private String getSignificantXMLTag(Object objClass, String name) throws Exception 
+	public static String getSignificantXMLTag(Object objClass, String name) throws Exception 
 	{
 		if (!"value".equals(name)) 
 		{

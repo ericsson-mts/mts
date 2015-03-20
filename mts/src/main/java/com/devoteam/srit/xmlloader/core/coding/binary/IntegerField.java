@@ -27,6 +27,7 @@ import gp.utils.arrays.Array;
 import gp.utils.arrays.SupArray;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import org.dom4j.Element;
 
@@ -55,6 +56,13 @@ public class IntegerField extends FieldAbstract
     }
 
     @Override
+    public String getValue(Array array) throws Exception 
+    {
+    	long valueLong = array.getBitsL(this.offset, this.length);
+    	return Long.toString(valueLong);
+    }
+
+    @Override
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this.offset = offset;
@@ -67,14 +75,15 @@ public class IntegerField extends FieldAbstract
         	throw new ExecutionException("The value \"" + value + "\" for the integer field : \"" + this.name + "\" is not valid.", e);            	            	
         }
     }
-    
+
     @Override
-    public String getValue(Array array) throws Exception 
+    public void initValue(int offset, SupArray array) throws Exception 
     {
-    	long valueLong = array.getBitsL(this.offset, this.length);
-    	return Long.toString(valueLong);
+    	Double max = Math.pow((double) 2, (double) this.length) - 1;
+    	Long integer = Utils.randomLong(0, max.longValue());
+    	this.setValue(integer.toString(), offset, array);
     }
-    
+
     @Override
     public FieldAbstract clone()
     {
