@@ -200,7 +200,6 @@ public abstract class ElementAbstract implements Cloneable
        	
         // set the value for each fields
         listField = elementRoot.elements("field");
-        //boucle pour setter tous les field de elemV
         int offset = 0;
         for (Iterator<Element> it = listField.iterator(); it.hasNext();) 
         {
@@ -263,6 +262,46 @@ public abstract class ElementAbstract implements Cloneable
         	}
         }
         
+    }
+
+    public void initValue() throws Exception 
+    {
+
+    	Iterator<ElementAbstract> iter = elements.iterator();
+        for (Iterator<ElementAbstract> it = elements.iterator(); it.hasNext();) 
+        {
+            ElementAbstract element = it.next();
+	        element.initValue();
+        }
+        
+        // initiate the Array containing the fields
+        SupArray tempArray = new SupArray();
+        
+        int length = getLengthElem() / 8;
+        Array emptyArray = new DefaultArray(length);
+        tempArray.addFirst(emptyArray);
+       	this.fieldsArray = tempArray;
+       	
+       	this.subelementsArray = new SupArray();
+       	
+        // set the value for each fields
+        int offset = 0;
+        for (Iterator<FieldAbstract> it = fields.iterator(); it.hasNext();) 
+        {
+            FieldAbstract field = it.next();
+            field.initValue(offset, this.fieldsArray);
+	        length = field.getLength();
+	        /// TODO revoir ce truc bizzaroide
+	        if (length > 0)
+	        {
+		        offset += length;
+	        }
+	        else
+	        {
+		        offset = this.fieldsArray.length * 8;
+	        }
+        }
+                
     }
 
     public int getLengthElem() 

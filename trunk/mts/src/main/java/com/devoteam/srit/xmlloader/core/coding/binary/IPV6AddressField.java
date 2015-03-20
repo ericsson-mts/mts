@@ -54,15 +54,6 @@ public class IPV6AddressField extends FieldAbstract
     }
 
     @Override
-    public void setValue(String value, int offset, SupArray array) throws Exception 
-    {
-    	this.offset = offset;
-    	InetAddress inetAddr = InetAddress.getByName(value);
-    	byte[] bytes = inetAddr.getAddress();
-    	super.setValueFromBytes( bytes, offset, array);
-    }
-    
-    @Override
     public String getValue(Array array) throws Exception 
     {
     	int pos = this.offset / 8;
@@ -71,7 +62,22 @@ public class IPV6AddressField extends FieldAbstract
     	InetAddress inetAddr = InetAddress.getByAddress(bytes);
     	return inetAddr.getHostAddress();
     }
-    
+
+    @Override
+    public void setValue(String value, int offset, SupArray array) throws Exception 
+    {
+    	this.offset = offset;
+    	InetAddress inetAddr = InetAddress.getByName(value);
+    	byte[] bytes = inetAddr.getAddress();
+    	super.setValueFromBytes( bytes, offset, array);
+    }
+        
+    @Override
+    public void initValue(int offset, SupArray array) throws Exception 
+    {
+    	// TODO for IPV6 address
+    }
+
     @Override
     public FieldAbstract clone()
     {

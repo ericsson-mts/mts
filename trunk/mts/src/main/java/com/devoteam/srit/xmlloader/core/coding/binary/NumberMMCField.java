@@ -54,6 +54,33 @@ public class NumberMMCField extends FieldAbstract
     }
 
     @Override
+    public String getValue(Array array) throws Exception 
+    {
+    	// get the bits
+    	Array arrayValue = array.subArray(this.offset / 8, 3);
+    	String string = Array.toHexString(arrayValue);
+    	
+    	// permute the octet 2 a 2
+    	byte[] bytes = string.getBytes();
+    	permuteByte(bytes);
+    	String value = new String(bytes);
+    	
+    	String mmc = value.substring(0, 3);
+    	String mnc;
+    	String temp = value.substring(3, 6);
+    	
+    	if (temp.charAt(0) == 'f')
+    	{
+    		mnc = ""+ temp.charAt(1) + temp.charAt(2);
+    	}
+    	else
+    	{
+    		mnc = ""+ temp.charAt(1) + temp.charAt(2) + temp.charAt(0);
+    	}
+    	return mmc + ',' + mnc;
+    }
+
+    @Override
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this.offset = offset;
@@ -96,30 +123,9 @@ public class NumberMMCField extends FieldAbstract
     }
     
     @Override
-    public String getValue(Array array) throws Exception 
+    public void initValue(int offset, SupArray array) throws Exception 
     {
-    	// get the bits
-    	Array arrayValue = array.subArray(this.offset / 8, 3);
-    	String string = Array.toHexString(arrayValue);
-    	
-    	// permute the octet 2 a 2
-    	byte[] bytes = string.getBytes();
-    	permuteByte(bytes);
-    	String value = new String(bytes);
-    	
-    	String mmc = value.substring(0, 3);
-    	String mnc;
-    	String temp = value.substring(3, 6);
-    	
-    	if (temp.charAt(0) == 'f')
-    	{
-    		mnc = ""+ temp.charAt(1) + temp.charAt(2);
-    	}
-    	else
-    	{
-    		mnc = ""+ temp.charAt(1) + temp.charAt(2) + temp.charAt(0);
-    	}
-    	return mmc + ',' + mnc;
+    	// TODO 
     }
     
     @Override

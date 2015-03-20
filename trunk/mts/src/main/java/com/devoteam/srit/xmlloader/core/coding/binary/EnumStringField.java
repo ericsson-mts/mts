@@ -72,15 +72,6 @@ public class EnumStringField extends StringField
     }
 
     @Override
-    public void setValue(String value, int offset, SupArray array) throws Exception 
-    {
-    	this.offset = offset;
-    	this.length = array.length;
-    	Array valueArray = new DefaultArray(value.getBytes());
-    	super.setValueFromArray( valueArray, offset, array);
-    }
-    
-    @Override
     public String getValue(Array array) throws Exception 
     {
         String value = super.getValue(array);
@@ -92,6 +83,15 @@ public class EnumStringField extends StringField
     	}
     	ret += value;
     	return ret;
+    }
+    
+    @Override
+    public void setValue(String value, int offset, SupArray array) throws Exception 
+    {
+    	this.offset = offset;
+    	this.length = array.length;
+    	Array valueArray = new DefaultArray(value.getBytes());
+    	super.setValueFromArray( valueArray, offset, array);
     }
     
     public String getEnumValueByLabel(String name) 

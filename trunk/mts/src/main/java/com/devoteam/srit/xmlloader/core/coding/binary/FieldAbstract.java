@@ -156,6 +156,8 @@ public abstract class FieldAbstract
 
     public abstract void setValue(String value, int offset, SupArray array) throws Exception;
     
+    public abstract void initValue(int offset, SupArray array) throws Exception;
+    
     public abstract FieldAbstract clone();
     
     protected void copyToClone(FieldAbstract source) 

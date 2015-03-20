@@ -45,6 +45,14 @@ public class LengthStringField extends FieldAbstract
     }
 	
     @Override
+    public String getValue(Array array) throws Exception 
+    {
+    	int length = array.getBits(this.offset, 8);
+    	Array arrayValue = array.subArray(this.offset / 8 + 1, length);
+        return new String(arrayValue.getBytes());
+    }
+    
+    @Override
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this.offset = offset;	
@@ -52,13 +60,11 @@ public class LengthStringField extends FieldAbstract
         Array valueArray = new DefaultArray(value.getBytes());
         super.setValueFromArray( valueArray, offset, array);
     }
-
+    
     @Override
-    public String getValue(Array array) throws Exception 
+    public void initValue(int offset, SupArray array) throws Exception 
     {
-    	int length = array.getBits(this.offset, 8);
-    	Array arrayValue = array.subArray(this.offset / 8 + 1, length);
-        return new String(arrayValue.getBytes());
+    	// TODO 
     }
     
     @Override

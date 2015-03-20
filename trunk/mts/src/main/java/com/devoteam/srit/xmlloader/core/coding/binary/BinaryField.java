@@ -24,8 +24,10 @@
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
 
 import org.dom4j.Element;
@@ -43,6 +45,13 @@ public class BinaryField extends FieldAbstract
 		super();
     }
 
+	@Override
+    public String getValue(Array array) 
+    {
+    	Array arrayValue = array.subArray(this.offset / 8);
+    	return Array.toHexString(arrayValue);
+    }
+	
     @Override
     public void setValue(String value, int offset, SupArray array) 
     {
@@ -51,12 +60,12 @@ public class BinaryField extends FieldAbstract
     }
 
     @Override
-    public String getValue(Array array) 
+    public void initValue(int offset, SupArray array) throws Exception
     {
-    	Array arrayValue = array.subArray(this.offset / 8);
-    	return Array.toHexString(arrayValue);
+        Array valueArray = new DefaultArray(Utils.randomBytes());	
+        super.setValueFromArray( valueArray, offset, array);
     }
-    
+
     @Override
     public FieldAbstract clone()
     {

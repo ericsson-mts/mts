@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
 
 import org.dom4j.Element;
@@ -55,6 +56,12 @@ public class BooleanField extends FieldAbstract
     }
 
     @Override
+    public String getValue(Array array) throws Exception 
+    {
+        return Integer.toString(array.getBits(this.offset, this.length));
+    }
+
+    @Override
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this.offset = offset;
@@ -70,9 +77,10 @@ public class BooleanField extends FieldAbstract
     }
 
     @Override
-    public String getValue(Array array) throws Exception 
+    public void initValue(int offset, SupArray array) throws Exception
     {
-        return Integer.toString(array.getBits(this.offset, this.length));
+    	Boolean bool = Utils.randomBoolean();	
+        this.setValue(bool.toString(), offset, array);
     }
     
     @Override

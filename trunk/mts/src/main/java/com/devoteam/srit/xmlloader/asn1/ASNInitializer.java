@@ -25,6 +25,7 @@ package com.devoteam.srit.xmlloader.asn1;
 
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -40,6 +41,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.bn.CoderFactory;
 import org.bn.IEncoder;
@@ -86,7 +88,7 @@ public class ASNInitializer
         return document;
     }
 
-    public void setValue(ASNMessage message, Object objClass) throws Exception  
+    public void setValue(String resultPath, ASNMessage message, Object parentObj, String name, Object objClass) throws Exception  
     {
 		if (objClass ==  null)
     	{
@@ -100,6 +102,30 @@ public class ASNInitializer
     		strClass = strClass.substring(pos + 1);
     	}
     	
+		// get the XML tag
+        String XMLTag = ASNToXMLConverter.getSignificantXMLTag(objClass, name);
+    	
+    	// we add a embedded record in the list		
+        if (message !=null)
+        {
+			// get the condition for embedded objects
+	        String elementName = resultPath;
+	        int iPos = resultPath.lastIndexOf(".");
+	        if (iPos > 0)
+	        {
+	        	elementName = resultPath.substring(iPos + 1);
+	        }
+        	String condition = elementName + "=" + objClass;
+        	List<Embedded> embeddedList = message.getEmbeddedByCondition(condition);
+        	if (embeddedList != null)
+        	{
+        		message.addConditionalEmbedded(embeddedList);
+        	}
+        }
+        
+		// calculate resultPath
+        resultPath = resultPath + "." + XMLTag; 
+
         // parsing object object fields 
     	Field[] fields = objClass.getClass().getDeclaredFields();
     	for (int i= 0; i < fields.length; i++)
@@ -135,12 +161,12 @@ public class ASNInitializer
 						Object tabObject = null;
 						if ("byte[]".equals(typeActualTypeArg[0].toString()))
 						{
-							tabObject = randomBytes();
+							tabObject = Utils.randomBytes();
 						}
 						else
 						{
 							Class tabClass = (Class) typeActualTypeArg[0];
-							tabObject = getSubObject(message, objClass, tabClass);
+							tabObject = getSubObject(resultPath, message, parentObj, f.getName(), objClass, tabClass);
 						}
 			    		if (tabObject != null)
 			    		{
@@ -152,7 +178,7 @@ public class ASNInitializer
 			}
 			else
 			{
-	    		Object subObject = getSubObject(message, objClass, f.getType());
+	    		Object subObject = getSubObject(resultPath, message, parentObj, f.getName(), objClass, f.getType());
 	    		if (subObject != null)
 	    		{
 	    			f.set(objClass, subObject);
@@ -164,7 +190,7 @@ public class ASNInitializer
     
     
     
-    private Object getSubObject(ASNMessage message, Object obj, Class subClass) throws Exception
+    private Object getSubObject(String resultPath, ASNMessage message, Object parentObj, String name, Object obj, Class subClass) throws Exception
     {
     	String type = subClass.getCanonicalName();
     	if (type.equals("org.bn.coders.IASN1PreparedElementData") )
@@ -178,7 +204,7 @@ public class ASNInitializer
 		{
 			String replace = embedded.getReplace();
 			Class cl = Class.forName(replace);
-        	Object objEmbedded = getSubObject(message, obj, cl);
+        	Object objEmbedded = getSubObject(resultPath, message, parentObj, name, obj, cl);
         	
         	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
         	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -196,8 +222,33 @@ public class ASNInitializer
             return subObject;
         }
     	else if (type.equals("byte[]"))
-    	{
-    		return randomBytes();
+    	{				
+			// get the element definition (enumeration binary data) from the dictionary
+	    	ElementAbstract elementDico = null;
+	    	if (message != null)
+	    	{
+	    		// TODO propager le parentObj
+		    	elementDico = message.getElementFromDico(obj, resultPath, null);
+	    	}
+        	if (elementDico != null)
+        	{
+        		// TODO bug dans la fonction copyToClone() : retourne toujours un IntegerField
+        		// Est ce que c'est réellement un pb ? a voir à l'usage
+        		//ElementValue elementClone = new ElementValue(); 
+        		//elementClone.copyToClone(elementDico);
+        		elementDico.initValue();
+        		Array array = null;
+        		try
+        		{
+        			array = elementDico.encodeToArray();
+            		return array.getBytes();
+        		}
+        		catch (Exception e)
+        		{
+        			// nothing to do
+        		}
+        	}
+        	return Utils.randomBytes();
     	}
     	else if (type.equals("java.lang.Boolean") || type.equals("boolean"))
     	{
@@ -230,7 +281,7 @@ public class ASNInitializer
 		{
 			int numInt = (int) Utils.randomLong(0L, 10L);
 			ObjectIdentifier objId = new ObjectIdentifier();
-			String str = randomObjectIdentifier(numInt);
+			String str = Utils.randomObjectIdentifier(numInt);
 			// oid shall start with some predeined prefixes
 			objId.setValue("0.1.2" + str);
 			return  objId;
@@ -266,35 +317,9 @@ public class ASNInitializer
 			Constructor constr = subClass.getConstructor();
 			constr.setAccessible(true);
 			Object subObj = constr.newInstance();
-			setValue(message, subObj);
+			setValue(resultPath, message, obj, name, subObj);
 			return subObj;
 		}
     }
     
-	public static String randomObjectIdentifier(int numInt)
-	{
-	    StringBuilder strBuilder = new StringBuilder();
-	    for (int j = 0; j < numInt; j++)
-	    {
-	    	int b = (byte) Utils.randomLong(0, 128L) & 0x00FF;	    	
-	    	strBuilder.append(String.valueOf(b));
-	    	if (j != numInt - 1)
-	    	{
-	    		strBuilder.append('.');
-	    	}
-	    }
-	    return strBuilder.toString();
-	}
-
-	public static byte[] randomBytes()
-	{	
-		int numByte = (int) Utils.randomLong(0, 20L);
-		Array data = new RandomArray(numByte);
-		SupArray supArray = new SupArray();
-		supArray.addLast(data);
-		// add a tag to be compliant with asn1 data
-		Array tag = new DefaultArray(new byte[]{4, (byte)numByte});
-		supArray.addFirst(tag);
-		return supArray.getBytes();
-	}
 }

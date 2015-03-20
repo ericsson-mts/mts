@@ -53,6 +53,21 @@ public class NumberBCDField extends FieldAbstract
     }
     
     @Override
+    public String getValue(Array array) throws Exception 
+    {
+    	Array arrayValue = array.subArray(this.offset / 8);
+    	String string = Array.toHexString(arrayValue);
+    	byte[] bytes = string.getBytes();     	
+    	permuteByte(bytes);
+    	String value = new String(bytes);
+    	if (value.endsWith("f"))
+    	{
+    		value = value.substring(0, value.length() - 1);
+    	}
+    	return value;
+    }
+    
+    @Override
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this.offset = offset;   	
@@ -68,18 +83,11 @@ public class NumberBCDField extends FieldAbstract
     }
     
     @Override
-    public String getValue(Array array) throws Exception 
+    public void initValue(int offset, SupArray array) throws Exception 
     {
-    	Array arrayValue = array.subArray(this.offset / 8);
-    	String string = Array.toHexString(arrayValue);
-    	byte[] bytes = string.getBytes();     	
-    	permuteByte(bytes);
-    	String value = new String(bytes);
-    	if (value.endsWith("f"))
-    	{
-    		value = value.substring(0, value.length() - 1);
-    	}
-    	return value;
+    	Double max = Math.pow((double) 2, (double) 64) - 1;
+    	Long integer = Utils.randomLong(0, max.longValue());
+    	this.setValue(integer.toString(), offset, array);
     }
     
     @Override
