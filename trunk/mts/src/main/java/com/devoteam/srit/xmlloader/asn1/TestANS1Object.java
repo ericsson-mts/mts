@@ -178,10 +178,18 @@ public class TestANS1Object {
         
         System.exit(0);
     }
-            
+
     public static void testProcess(int i, String packageName, Class<?> classObj, String dest) throws Exception
     {
-        String className = classObj.getSimpleName();       
+    	testProcessXML(i, packageName, classObj, dest);
+    	testProcessBIN(i, packageName, classObj, dest);
+    }
+
+    public static void testProcessXML(int i, String packageName, Class<?> classObj, String dest) throws Exception
+    {
+        String className = classObj.getSimpleName();
+        System.out.print("Process class[" + i + "] = " + className + ".xml => ");
+               
         String dictionaryFile = null;
         if (packageName.endsWith("map."))
         {
@@ -191,9 +199,6 @@ public class TestANS1Object {
         {
         	dictionaryFile = "TCAP/dictionary_TCAP.xml";
         }
-
-        //System.out.print("Process class[" + i + "] = " + className + ".xml (" + retInit.length() + ") => ");
-        System.out.print("Process class[" + i + "] = " + className + ".xml => ");
         
 		// initialize the ASN1 object
 		Object objectInit = classObj.newInstance();
@@ -252,7 +257,31 @@ public class TestANS1Object {
             out1.write(array1.getBytes());
             out1.close();
         }
+
+    }
+
+    public static void testProcessBIN(int i, String packageName, Class<?> classObj, String dest) throws Exception
+    {
+        String className = classObj.getSimpleName();       
+        String dictionaryFile = null;
+        if (packageName.endsWith("map."))
+        {
+        	dictionaryFile = "MAP/dictionary_MAP.xml";
+        }
+        else if (packageName.endsWith("tcap."))
+        {
+        	dictionaryFile = "TCAP/dictionary_TCAP.xml";
+        }
         
+		// initialize the ASN1 object
+		Object objectInit = classObj.newInstance();
+		BN_ASNMessage msgInit = new BN_ASNMessage(dictionaryFile, objectInit);
+		ASNInitializer.getInstance().setValue(msgInit, objectInit);
+		
+		// convert the ASN1 object into XML data
+        String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
+        retInit += msgInit.toXML();
+                
         // encode ASN1 object into binary
         Array arrayInit = msgInit.encode();
         
@@ -273,7 +302,7 @@ public class TestANS1Object {
         // test with initial value
         if (!retInit.equals(retBin))
         {
-        	System.out.print("KO : BINARY.");
+        	System.out.print("KO : BIN format");
         	
 	        OutputStream out2 = new FileOutputStream(fileBin, false);
 	        Array array2 = new DefaultArray(retBin.getBytes());
