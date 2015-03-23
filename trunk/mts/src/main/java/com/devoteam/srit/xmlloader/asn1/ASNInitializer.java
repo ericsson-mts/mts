@@ -45,6 +45,8 @@ import java.util.List;
 
 import org.bn.CoderFactory;
 import org.bn.IEncoder;
+import org.bn.coders.ASN1PreparedElementData;
+import org.bn.metadata.ASN1ElementMetadata;
 import org.bn.types.BitString;
 import org.bn.types.ObjectIdentifier;
 import org.dom4j.Document;
@@ -88,7 +90,7 @@ public class ASNInitializer
         return document;
     }
 
-    public void setValue(String resultPath, ASNMessage message, Object parentObj, String name, Object objClass) throws Exception  
+    public void setValue(String resultPath, ASNMessage message, Object parentObj, String name, Object objClass, ASN1ElementMetadata objElementInfo) throws Exception  
     {
 		if (objClass ==  null)
     	{
@@ -126,6 +128,11 @@ public class ASNInitializer
 		// calculate resultPath
         resultPath = resultPath + "." + XMLTag; 
 
+		// get the ASN1PreparedElementData
+		ASN1PreparedElementData objPreparedEltData = ASNToXMLConverter.getASN1PreparedElementData(objClass);
+		// calculate the metadata for the object
+		String metadata = ASNToXMLConverter.calculateMetadata(objElementInfo, objPreparedEltData);
+        
         // parsing object object fields 
     	Field[] fields = objClass.getClass().getDeclaredFields();
     	for (int i= 0; i < fields.length; i++)
@@ -135,6 +142,13 @@ public class ASNInitializer
     		//System.out.println(f);
 
     		String typeField = f.getType().getCanonicalName();
+			ASN1ElementMetadata subobjElementInfo = null;
+			if (typeField != null && !typeField.equals("org.bn.coders.IASN1PreparedElementData"))
+			{
+				// get the PreparedElementSubData for the i index
+				subobjElementInfo = ASNToXMLConverter.getASN1PreparedElementSubData(objPreparedEltData, i);
+			}
+
     		String typeName  = f.getName();
         	if (typeField == null)
         	{
@@ -166,7 +180,7 @@ public class ASNInitializer
 						else
 						{
 							Class tabClass = (Class) typeActualTypeArg[0];
-							tabObject = getSubObject(resultPath, message, parentObj, f.getName(), objClass, tabClass);
+							tabObject = getSubObject(resultPath, message, parentObj, f.getName(), objClass, tabClass, subobjElementInfo);
 						}
 			    		if (tabObject != null)
 			    		{
@@ -178,7 +192,7 @@ public class ASNInitializer
 			}
 			else
 			{
-	    		Object subObject = getSubObject(resultPath, message, parentObj, f.getName(), objClass, f.getType());
+	    		Object subObject = getSubObject(resultPath, message, parentObj, f.getName(), objClass, f.getType(), subobjElementInfo);
 	    		if (subObject != null)
 	    		{
 	    			f.set(objClass, subObject);
@@ -190,7 +204,7 @@ public class ASNInitializer
     
     
     
-    private Object getSubObject(String resultPath, ASNMessage message, Object parentObj, String name, Object obj, Class subClass) throws Exception
+    private Object getSubObject(String resultPath, ASNMessage message, Object parentObj, String name, Object obj, Class subClass, ASN1ElementMetadata objElementInfo) throws Exception
     {
     	String type = subClass.getCanonicalName();
     	if (type.equals("org.bn.coders.IASN1PreparedElementData") )
@@ -204,7 +218,7 @@ public class ASNInitializer
 		{
 			String replace = embedded.getReplace();
 			Class cl = Class.forName(replace);
-        	Object objEmbedded = getSubObject(resultPath, message, parentObj, name, obj, cl);
+        	Object objEmbedded = getSubObject(resultPath, message, parentObj, name, obj, cl, objElementInfo);
         	
         	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
         	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -317,7 +331,7 @@ public class ASNInitializer
 			Constructor constr = subClass.getConstructor();
 			constr.setAccessible(true);
 			Object subObj = constr.newInstance();
-			setValue(resultPath, message, obj, name, subObj);
+			setValue(resultPath, message, obj, name, subObj, objElementInfo);
 			return subObj;
 		}
     }

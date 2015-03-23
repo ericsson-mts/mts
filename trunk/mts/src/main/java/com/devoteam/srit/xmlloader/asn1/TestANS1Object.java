@@ -211,7 +211,7 @@ public class TestANS1Object
 		// initialize the ASN1 object
 		Object objectInit = classObj.newInstance();
 		BN_ASNMessage msgInit = new BN_ASNMessage(dictionaryFile, objectInit);
-		ASNInitializer.getInstance().setValue("", msgInit, null, null, objectInit);
+		ASNInitializer.getInstance().setValue("", msgInit, null, null, objectInit, null);
 		
 		// convert the ASN1 object into XML data
         String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
@@ -286,7 +286,7 @@ public class TestANS1Object
 		// initialize the ASN1 object
 		Object objectInit = classObj.newInstance();
 		BN_ASNMessage msgInit = new BN_ASNMessage(dictionaryFile, objectInit);
-		ASNInitializer.getInstance().setValue("", msgInit, null, null, objectInit);
+		ASNInitializer.getInstance().setValue("", msgInit, null, null, objectInit, null);
 		
 		// convert the ASN1 object into XML data
         String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
