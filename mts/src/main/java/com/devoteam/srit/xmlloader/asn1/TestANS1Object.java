@@ -63,19 +63,10 @@ import org.dom4j.io.SAXReader;
  * fhenry
  */
 public class TestANS1Object {
+	private static String dest = null;
 
     static public void main(String... args) 
-    {
-        //
-        // Handle arguments
-        //
-    	/*
-        if (args.length <= 0) 
-        {
-            usage("At least one argument is required : the test file path");
-        }
-		*/
-    	
+    {    	
         ExceptionHandlerSingleton.setInstance(new TextExceptionHandler());
 
         /*
@@ -89,7 +80,7 @@ public class TestANS1Object {
         TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
     
         String name = args[0];
-        String dest = args[1];
+        dest = args[1];
         
         // create the directory
         File dir = new File(dest);
@@ -114,7 +105,7 @@ public class TestANS1Object {
     			Class<?> classObj = Class.forName(className);
     			Object obj = classObj.newInstance();
     			//ASNReferenceFinder.getInstance().findAndRemoveReferences(mapClasses, obj);
-    			testProcess(1, packageName, classObj, dest);
+    			testProcess(0, packageName, classObj, dest);
     		} 
     		catch (Exception e) 
     		{
@@ -181,11 +172,13 @@ public class TestANS1Object {
 
     public static void testProcess(int i, String packageName, Class<?> classObj, String dest) throws Exception
     {
-    	testProcessXML(i, packageName, classObj, dest);
-    	testProcessBIN(i, packageName, classObj, dest);
+    	testProcessXML(i, packageName, classObj);
+    	testProcessBIN(i, packageName, classObj, "BER");
+    	//testProcessBIN(i, packageName, classObj, "DER");
+    	//testProcessBIN(i, packageName, classObj, "PER");
     }
 
-    public static void testProcessXML(int i, String packageName, Class<?> classObj, String dest) throws Exception
+    public static void testProcessXML(int i, String packageName, Class<?> classObj) throws Exception
     {
         String className = classObj.getSimpleName();
         System.out.print("Process class[" + i + "] = " + className + ".xml => ");
@@ -260,7 +253,7 @@ public class TestANS1Object {
 
     }
 
-    public static void testProcessBIN(int i, String packageName, Class<?> classObj, String dest) throws Exception
+    public static void testProcessBIN(int i, String packageName, Class<?> classObj, String rule) throws Exception
     {
         String className = classObj.getSimpleName();       
         String dictionaryFile = null;
@@ -283,13 +276,13 @@ public class TestANS1Object {
         retInit += msgInit.toXML();
                 
         // encode ASN1 object into binary
-        Array arrayInit = msgInit.encode();
+        Array arrayInit = msgInit.encode(rule);
         
         // 	decode ASN1 object from binary
 		// initialize the ASN1 object
 		Object objectBin = classObj.newInstance();
         BN_ASNMessage msgBin = new BN_ASNMessage(dictionaryFile, objectBin);
-        msgBin.decode(arrayInit, packageName + className);
+        msgBin.decode(arrayInit, packageName + className, rule);
 
 		// convert the ASN1 object into XML data
         String retBin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";

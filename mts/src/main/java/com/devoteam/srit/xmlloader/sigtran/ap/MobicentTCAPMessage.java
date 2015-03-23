@@ -122,7 +122,8 @@ public class MobicentTCAPMessage extends ASNMessage
         //}
     }
 
-    public Array encode() throws Exception 
+     @override
+    public Array encode(String rule) throws Exception 
     {
 		AsnOutputStream aosTCAP = new AsnOutputStream();
 		tcbm.encode(aosTCAP);
@@ -135,8 +136,8 @@ public class MobicentTCAPMessage extends ASNMessage
         return arrayTCAP;
     }
           
-    
-    public void decode(Array array, String className) throws Exception 
+     @override
+    public void decode(Array array, String className, String rule) throws Exception 
     {
     	
 		Array supArray = array.subArray(1);

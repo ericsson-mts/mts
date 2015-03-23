@@ -80,10 +80,10 @@ public class BN_ASNMessage extends ASNMessage
 	}
 
     @Override
-    public Array encode() throws Exception 
+    public Array encode(String rule) throws Exception 
     {
     	// Library binarynotes
-    	IEncoder<java.lang.Object> encoderMAP = CoderFactory.getInstance().newEncoder("BER");
+    	IEncoder<java.lang.Object> encoderMAP = CoderFactory.getInstance().newEncoder(rule);
     	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         encoderMAP.encode(this.asnObject, outputStream);
         byte[] bytesMAP = outputStream.toByteArray();
@@ -94,10 +94,10 @@ public class BN_ASNMessage extends ASNMessage
     }
           
     @Override
-    public void decode(Array array, String className) throws Exception 
+    public void decode(Array array, String className, String rule) throws Exception 
     {
     	// Library binarynotes        
-    	IDecoder decoder = CoderFactory.getInstance().newDecoder("BER");
+    	IDecoder decoder = CoderFactory.getInstance().newDecoder(rule);
         InputStream inputStream = new ByteArrayInputStream(array.getBytes());
         Class cl = Class.forName(className);
         this.asnObject = cl.newInstance();
