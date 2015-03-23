@@ -62,8 +62,15 @@ import org.dom4j.io.SAXReader;
  * @author
  * fhenry
  */
-public class TestANS1Object {
+public class TestANS1Object 
+{
+
+	// destination directory for resulting files
 	private static String dest = null;
+	
+	// error counters
+	private static int errorXML = 0;
+	private static int errorBinary = 0;
 
     static public void main(String... args) 
     {    	
@@ -165,6 +172,8 @@ public class TestANS1Object {
 	    		}
 	
 	    	}
+	    	
+	    	System.out.println("Error : XML = " + errorXML + " BINARY = " + errorBinary);
         }
         
         System.exit(0);
@@ -172,13 +181,19 @@ public class TestANS1Object {
 
     public static void testProcess(int i, String packageName, Class<?> classObj, String dest) throws Exception
     {
-    	testProcessXML(i, packageName, classObj);
-    	testProcessBIN(i, packageName, classObj, "BER");
+    	if (!testProcessXML(i, packageName, classObj))
+    	{
+    		errorXML ++;
+    	}
+    	if (!testProcessBIN(i, packageName, classObj, "BER"))
+    	{
+    		errorBinary ++;
+    	}
     	//testProcessBIN(i, packageName, classObj, "DER");
     	//testProcessBIN(i, packageName, classObj, "PER");
     }
 
-    public static void testProcessXML(int i, String packageName, Class<?> classObj) throws Exception
+    public static boolean testProcessXML(int i, String packageName, Class<?> classObj) throws Exception
     {
         String className = classObj.getSimpleName();
         System.out.print("Process class[" + i + "] = " + className + ".xml => ");
@@ -242,18 +257,20 @@ public class TestANS1Object {
         // test with initial value
         if (!retInit.equals(retXML))
         {
-        	System.out.print("KO : XML format,");
+        	System.out.println("KO : XML format,");
         	
             // write XML data into a file
             OutputStream out1 = new FileOutputStream(fileXML, false);
             Array array1 = new DefaultArray(retXML.getBytes());
             out1.write(array1.getBytes());
             out1.close();
+            return false;
         }
-
+        
+        return true;
     }
 
-    public static void testProcessBIN(int i, String packageName, Class<?> classObj, String rule) throws Exception
+    public static boolean testProcessBIN(int i, String packageName, Class<?> classObj, String rule) throws Exception
     {
         String className = classObj.getSimpleName();       
         String dictionaryFile = null;
@@ -295,15 +312,17 @@ public class TestANS1Object {
         // test with initial value
         if (!retInit.equals(retBin))
         {
-        	System.out.print("KO : BIN format");
+        	System.out.println("KO : BIN format");
         	
 	        OutputStream out2 = new FileOutputStream(fileBin, false);
 	        Array array2 = new DefaultArray(retBin.getBytes());
 	        out2.write(array2.getBytes());
 	        out2.close();
+	        return false;
         }
-        
         System.out.println("");
+        
+        return true;
     }
 
     static public void usage(String message) {

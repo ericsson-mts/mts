@@ -112,30 +112,7 @@ public class ASNToXMLConverter
 			}
 
 			Field[] fields = objClass.getClass().getDeclaredFields();
-			int fieldsSize = fields.length;
-
-			// get the preparedData coming from annotations
-			Field preparedDataField = null;
-			try
-			{
-				preparedDataField = objClass.getClass().getDeclaredField("preparedData");
-				fieldsSize = fieldsSize - 1; 
-			}
-			catch (Exception e)
-			{
-				// Nothing to do
-			}
-			ASN1PreparedElementData objPreparedEltData = null;
-			if (preparedDataField != null)
-			{
-				preparedDataField.setAccessible(true);
-				objPreparedEltData = (ASN1PreparedElementData) preparedDataField.get(objClass);
-			}
-			ASN1Metadata objPreparedMetadata = null;
-			if (objPreparedEltData != null)
-			{
-				objPreparedMetadata = objPreparedEltData.getTypeMetadata();
-			}
+			int fieldsSize = fields.length - 1;
 
 			// get the XML tag
 	        String XMLTag = getSignificantXMLTag(objClass, name);
@@ -169,8 +146,10 @@ public class ASNToXMLConverter
 			// calculate resultPath
 	        resultPath = resultPath + "." + XMLTag; 
 
-			// calculate the metadata for the object 
-			String metadata = calculateMetadata(objElementInfo, objPreparedMetadata);
+			// get the ASN1PreparedElementData
+			ASN1PreparedElementData objPreparedEltData = getASN1PreparedElementData(objClass);
+			// calculate the metadata for the object
+			String metadata = calculateMetadata(objElementInfo, objPreparedEltData);
 			
 			if (name != null) 
 			{
@@ -278,6 +257,27 @@ public class ASNToXMLConverter
 		return ret;
 	}
 	
+	public static ASN1PreparedElementData getASN1PreparedElementData(Object objClass) throws Exception
+	{
+		// get the preparedData coming from annotations
+		Field preparedDataField = null;
+		try
+		{
+			preparedDataField = objClass.getClass().getDeclaredField("preparedData"); 
+		}
+		catch (Exception e)
+		{
+			// Nothing to do
+		}
+		ASN1PreparedElementData objPreparedEltData = null;
+		if (preparedDataField != null)
+		{
+			preparedDataField.setAccessible(true);
+			objPreparedEltData = (ASN1PreparedElementData) preparedDataField.get(objClass);
+		}
+		return objPreparedEltData;
+	}
+	
 	public static String getSignificantXMLTag(Object objClass, String name) throws Exception 
 	{
 		if (!"value".equals(name)) 
@@ -289,9 +289,15 @@ public class ASNToXMLConverter
 		return XMLTag;
 	}
 	
-	private String calculateMetadata(ASN1ElementMetadata objElementInfo, ASN1Metadata objPreparedMetadata1) throws Exception 
+	protected static String calculateMetadata(ASN1ElementMetadata objElementInfo, ASN1PreparedElementData objPreparedEltData) throws Exception 
 	{
 		String ret = "";
+		
+		ASN1Metadata objPreparedMetadata = null;
+		if (objPreparedEltData != null)
+		{
+			objPreparedMetadata = objPreparedEltData.getTypeMetadata();
+		}
 		
 		// Add the tag information of the ASN1 object coming from the annotation (class tag imp^licit default)
 		String tagAnnotation = null;
@@ -359,9 +365,9 @@ public class ASNToXMLConverter
 		}
 		
 		// Add the type of ASN1 object coming from the annotation (choice sequence boxedType ...)
-		if (objPreparedMetadata1 != null)
+		if (objPreparedMetadata != null)
 		{
-			String strDataType = objPreparedMetadata1.getClass().getSimpleName();
+			String strDataType = objPreparedMetadata.getClass().getSimpleName();
 			if (strDataType != null)
 			{
 				if (strDataType.startsWith("ASN1"))
