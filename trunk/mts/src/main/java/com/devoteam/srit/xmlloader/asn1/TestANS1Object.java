@@ -112,7 +112,7 @@ public class TestANS1Object
     			Class<?> classObj = Class.forName(className);
     			Object obj = classObj.newInstance();
     			//ASNReferenceFinder.getInstance().findAndRemoveReferences(mapClasses, obj);
-    			testProcess(0, packageName, classObj, dest);
+    			testProcess(0, packageName, classObj);
     		} 
     		catch (Exception e) 
     		{
@@ -162,7 +162,7 @@ public class TestANS1Object
 	    	{
 	    		try 
 	    		{	i++;
-	    			testProcess(i, packageName, classObject, dest);
+	    			testProcess(i, packageName, classObject);
 	    		} 
 	    		catch (Exception e) 
 	    		{
@@ -179,25 +179,8 @@ public class TestANS1Object
         System.exit(0);
     }
 
-    public static void testProcess(int i, String packageName, Class<?> classObj, String dest) throws Exception
+    public static void testProcess(int classIndex, String packageName, Class<?> classObj) throws Exception
     {
-    	if (!testProcessXML(i, packageName, classObj))
-    	{
-    		errorXML ++;
-    	}
-    	if (!testProcessBIN(i, packageName, classObj, "BER"))
-    	{
-    		errorBinary ++;
-    	}
-    	//testProcessBIN(i, packageName, classObj, "DER");
-    	//testProcessBIN(i, packageName, classObj, "PER");
-    }
-
-    public static boolean testProcessXML(int i, String packageName, Class<?> classObj) throws Exception
-    {
-        String className = classObj.getSimpleName();
-        System.out.print("Process class[" + i + "] = " + className + ".xml => ");
-               
         String dictionaryFile = null;
         if (packageName.endsWith("map."))
         {
@@ -207,7 +190,24 @@ public class TestANS1Object
         {
         	dictionaryFile = "TCAP/dictionary_TCAP.xml";
         }
-        
+    	
+        String className = classObj.getSimpleName();
+        System.out.print("Process class[" + classIndex + "] = " + className + ".xml => ");
+
+    	if (!testProcessXML(dictionaryFile, classObj))
+    	{
+    		errorXML ++;
+    	}
+    	if (!testProcessBIN(dictionaryFile, classObj, "BER"))
+    	{
+    		errorBinary ++;
+    	}
+    	//testProcessBIN(dictionaryFile, classObj, "DER");
+    	//testProcessBIN(dictionaryFile, classObj, "PER");
+    }
+
+    public static boolean testProcessXML(String dictionaryFile, Class<?> classObj) throws Exception
+    {                  
 		// initialize the ASN1 object
 		Object objectInit = classObj.newInstance();
 		BN_ASNMessage msgInit = new BN_ASNMessage(dictionaryFile, objectInit);
@@ -218,7 +218,8 @@ public class TestANS1Object
         retInit += msgInit.toXML();
         
         // write XML data into a file
-        File fileInit = new File(dest + className + ".xml");
+        String simpleClassName = classObj.getSimpleName();
+        File fileInit = new File(dest + simpleClassName + ".xml");
         fileInit.delete();
         OutputStream out = new FileOutputStream(fileInit, false);
         Array array = new DefaultArray(retInit.getBytes());
@@ -226,7 +227,7 @@ public class TestANS1Object
         out.close();
         
         // read XML data from file
-        File fileRead = new File(dest + className + ".xml");
+        File fileRead = new File(dest + simpleClassName + ".xml");
         if(!fileRead.exists()) fileRead.createNewFile();
         InputStream in = new FileInputStream(fileRead);
         SAXReader reader = new SAXReader(false);
@@ -244,14 +245,15 @@ public class TestANS1Object
 		// initialize the ASN1 object
 		Object objectXML = classObj.newInstance();
 		BN_ASNMessage msgXML = new BN_ASNMessage(dictionaryFile, objectXML);
-        msgXML.parseFromXML(root, packageName + className);
+		String className = classObj.getCanonicalName();
+        msgXML.parseFromXML(root, className);
         // Object objectXML = msgParseFromXML.getAsnObject(); 
 
 		// convert the ASN1 object into XML data
         String retXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
         retXML += msgXML.toXML();
 
-        File fileXML = new File(dest + className + "_XML ");
+        File fileXML = new File(dest + simpleClassName + "_XML ");
         fileXML.delete();
 
         // test with initial value
@@ -270,19 +272,8 @@ public class TestANS1Object
         return true;
     }
 
-    public static boolean testProcessBIN(int i, String packageName, Class<?> classObj, String rule) throws Exception
-    {
-        String className = classObj.getSimpleName();       
-        String dictionaryFile = null;
-        if (packageName.endsWith("map."))
-        {
-        	dictionaryFile = "MAP/dictionary_MAP.xml";
-        }
-        else if (packageName.endsWith("tcap."))
-        {
-        	dictionaryFile = "TCAP/dictionary_TCAP.xml";
-        }
-        
+    public static boolean testProcessBIN(String dictionaryFile, Class<?> classObj, String rule) throws Exception
+    {               
 		// initialize the ASN1 object
 		Object objectInit = classObj.newInstance();
 		BN_ASNMessage msgInit = new BN_ASNMessage(dictionaryFile, objectInit);
@@ -297,16 +288,18 @@ public class TestANS1Object
         
         // 	decode ASN1 object from binary
 		// initialize the ASN1 object
+        String className = classObj.getCanonicalName();
 		Object objectBin = classObj.newInstance();
         BN_ASNMessage msgBin = new BN_ASNMessage(dictionaryFile, objectBin);
-        msgBin.decode(arrayInit, packageName + className, rule);
+        msgBin.decode(arrayInit, className, rule);
 
 		// convert the ASN1 object into XML data
         String retBin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
         retBin += msgBin.toXML();
         
         // write XML data into a file
-        File fileBin = new File(dest + className + "_BINARY.xml");
+        String simpleClassName = classObj.getSimpleName();
+        File fileBin = new File(dest + simpleClassName + "_BINARY.xml");
         fileBin.delete();
         
         // test with initial value
