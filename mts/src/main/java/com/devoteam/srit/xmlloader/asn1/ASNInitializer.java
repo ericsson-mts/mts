@@ -90,7 +90,7 @@ public class ASNInitializer
         return document;
     }
 
-    public void setValue(String resultPath, ASNMessage message, Object parentObj, String name, Object objClass, ASN1ElementMetadata objElementInfo) throws Exception  
+    public void setValue(boolean allChoice, int index, String resultPath, ASNMessage message, Object parentObj, String name, Object objClass, ASN1ElementMetadata objElementInfo) throws Exception  
     {
 		if (objClass ==  null)
     	{
@@ -133,78 +133,92 @@ public class ASNInitializer
 		// calculate the metadata for the object
 		String metadata = ASNToXMLConverter.calculateMetadata(objElementInfo, objPreparedEltData);
         
-        // parsing object object fields 
     	Field[] fields = objClass.getClass().getDeclaredFields();
-    	for (int i= 0; i < fields.length; i++)
-    	{
-    		Field f = fields[i];
-    		f.setAccessible(true);
-    		//System.out.println(f);
-
-    		String typeField = f.getType().getCanonicalName();
-			ASN1ElementMetadata subobjElementInfo = null;
-			if (typeField != null && !typeField.equals("org.bn.coders.IASN1PreparedElementData"))
-			{
-				// get the PreparedElementSubData for the i index
-				subobjElementInfo = ASNToXMLConverter.getASN1PreparedElementSubData(objPreparedEltData, i);
-			}
-
-    		String typeName  = f.getName();
-        	if (typeField == null)
-        	{
-        		// nothing to do
-        	}
-        	else if (typeField != null && typeField.equals("org.bn.coders.IASN1PreparedElementData") )
+		if (allChoice || !metadata.equalsIgnoreCase(".choice"))
+		{
+	        // parsing all fields 
+	    	for (int i = 0; i < fields.length; i++)
 	    	{
-	    		// nothing to do
-	    	}
-        	else if (typeName != null && typeName.equals("integerForm") )
-	    	{
-        		// nothing to do
-        		// because error when decoding this field
-	    	}
-        	else if (typeField != null && typeField.equals("java.util.Collection"))
-			{
-				ParameterizedType genType = (ParameterizedType) f.getGenericType();
-				Type[] typeActualTypeArg = genType.getActualTypeArguments();
-				LinkedList list = new LinkedList();
-				if (typeActualTypeArg.length > 0)
-				{
-				for (int j = 0; j <= 2; j++)
-					{	
-						Object tabObject = null;
-						if ("byte[]".equals(typeActualTypeArg[0].toString()))
-						{
-							tabObject = Utils.randomBytes();
-						}
-						else
-						{
-							Class tabClass = (Class) typeActualTypeArg[0];
-							tabObject = getSubObject(resultPath, message, parentObj, f.getName(), objClass, tabClass, subobjElementInfo);
-						}
-			    		if (tabObject != null)
-			    		{
-			    			list.add(tabObject);
-			    		}
-					}
-					f.set(objClass, list);
-				}
+	    		Field field = fields[i];    		
+	    		setValueField(allChoice, i, field, resultPath, message, parentObj, objClass, objPreparedEltData);
 			}
-			else
-			{
-	    		Object subObject = getSubObject(resultPath, message, parentObj, f.getName(), objClass, f.getType(), subobjElementInfo);
-	    		if (subObject != null)
-	    		{
-	    			f.set(objClass, subObject);
-	    		}
-			}				
+		}
+		else
+		{
+			// parsing field # 0
+			index = index % (fields.length - 1);
+    		Field field = fields[index];    		
+    		setValueField(allChoice, index, field, resultPath, message, parentObj, objClass, objPreparedEltData);			
 		}
     }
 
     
+    private void setValueField(boolean allChoice, int index, Field field, String resultPath, ASNMessage message, Object parentObj, Object objClass, ASN1PreparedElementData objElementInfo) throws Exception
+    {
+		field.setAccessible(true);
+		//System.out.println(f);
+		
+		String typeField = field.getType().getCanonicalName();
+		ASN1ElementMetadata subobjElementInfo = null;
+		if (typeField != null && !typeField.equals("org.bn.coders.IASN1PreparedElementData"))
+		{
+			// get the PreparedElementSubData for the i index
+			subobjElementInfo = ASNToXMLConverter.getASN1PreparedElementSubData(objElementInfo, index);
+		}
+
+		String typeName  = field.getName();
+    	if (typeField == null)
+    	{
+    		// nothing to do
+    	}
+    	else if (typeField != null && typeField.equals("org.bn.coders.IASN1PreparedElementData") )
+    	{
+    		// nothing to do
+    	}
+    	else if (typeName != null && typeName.equals("integerForm") )
+    	{
+    		// nothing to do
+    		// because error when decoding this field
+    	}
+    	else if (typeField != null && typeField.equals("java.util.Collection"))
+		{
+			ParameterizedType genType = (ParameterizedType) field.getGenericType();
+			Type[] typeActualTypeArg = genType.getActualTypeArguments();
+			LinkedList list = new LinkedList();
+			if (typeActualTypeArg.length > 0)
+			{
+			for (int j = 0; j <= 2; j++)
+				{	
+					Object tabObject = null;
+					if ("byte[]".equals(typeActualTypeArg[0].toString()))
+					{
+						tabObject = Utils.randomBytes();
+					}
+					else
+					{
+						Class tabClass = (Class) typeActualTypeArg[0];
+						tabObject = getSubObject(allChoice, index, resultPath, message, parentObj, field.getName(), objClass, tabClass, subobjElementInfo);
+					}
+		    		if (tabObject != null)
+		    		{
+		    			list.add(tabObject);
+		    		}
+				}
+				field.set(objClass, list);
+			}
+		}
+		else
+		{
+    		Object subObject = getSubObject(allChoice, index, resultPath, message, parentObj, field.getName(), objClass, field.getType(), subobjElementInfo);
+    		if (subObject != null)
+    		{
+    			field.set(objClass, subObject);
+    		}
+		}				
+    	
+    }
     
-    
-    private Object getSubObject(String resultPath, ASNMessage message, Object parentObj, String name, Object obj, Class subClass, ASN1ElementMetadata objElementInfo) throws Exception
+    private Object getSubObject(boolean allChoice, int index, String resultPath, ASNMessage message, Object parentObj, String name, Object obj, Class subClass, ASN1ElementMetadata objElementInfo) throws Exception
     {
     	String type = subClass.getCanonicalName();
     	if (type.equals("org.bn.coders.IASN1PreparedElementData") )
@@ -218,7 +232,7 @@ public class ASNInitializer
 		{
 			String replace = embedded.getReplace();
 			Class cl = Class.forName(replace);
-        	Object objEmbedded = getSubObject(resultPath, message, parentObj, name, obj, cl, objElementInfo);
+        	Object objEmbedded = getSubObject(allChoice, index, resultPath, message, parentObj, name, obj, cl, objElementInfo);
         	
         	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
         	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -331,7 +345,7 @@ public class ASNInitializer
 			Constructor constr = subClass.getConstructor();
 			constr.setAccessible(true);
 			Object subObj = constr.newInstance();
-			setValue(resultPath, message, obj, name, subObj, objElementInfo);
+			setValue(allChoice, index, resultPath, message, obj, name, subObj, objElementInfo);
 			return subObj;
 		}
     }

@@ -181,6 +181,9 @@ public class TestANS1Object
 
     public static void testProcess(int classIndex, String packageName, Class<?> classObj) throws Exception
     {
+        String className = classObj.getSimpleName();
+        System.out.print("Process class[" + classIndex + "] = " + className + ".xml => ");
+
         String dictionaryFile = null;
         if (packageName.endsWith("map."))
         {
@@ -191,14 +194,11 @@ public class TestANS1Object
         	dictionaryFile = "TCAP/dictionary_TCAP.xml";
         }
     	
-        String className = classObj.getSimpleName();
-        System.out.print("Process class[" + classIndex + "] = " + className + ".xml => ");
-
     	if (!testProcessXML(dictionaryFile, classObj))
     	{
     		errorXML ++;
     	}
-    	if (!testProcessBIN(dictionaryFile, classObj, "BER"))
+    	if (!testProcessBIN(0, dictionaryFile, classObj, "BER"))
     	{
     		errorBinary ++;
     	}
@@ -211,7 +211,7 @@ public class TestANS1Object
 		// initialize the ASN1 object
 		Object objectInit = classObj.newInstance();
 		BN_ASNMessage msgInit = new BN_ASNMessage(dictionaryFile, objectInit);
-		ASNInitializer.getInstance().setValue("", msgInit, null, null, objectInit, null);
+		ASNInitializer.getInstance().setValue(true, 0, "", msgInit, null, null, objectInit, null);
 		
 		// convert the ASN1 object into XML data
         String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
@@ -272,12 +272,12 @@ public class TestANS1Object
         return true;
     }
 
-    public static boolean testProcessBIN(String dictionaryFile, Class<?> classObj, String rule) throws Exception
+    public static boolean testProcessBIN(int index, String dictionaryFile, Class<?> classObj, String rule) throws Exception
     {               
 		// initialize the ASN1 object
 		Object objectInit = classObj.newInstance();
 		BN_ASNMessage msgInit = new BN_ASNMessage(dictionaryFile, objectInit);
-		ASNInitializer.getInstance().setValue("", msgInit, null, null, objectInit, null);
+		ASNInitializer.getInstance().setValue(false, index, "", msgInit, null, null, objectInit, null);
 		
 		// convert the ASN1 object into XML data
         String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
