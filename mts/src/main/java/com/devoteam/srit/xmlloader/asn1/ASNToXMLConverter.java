@@ -23,8 +23,6 @@
 
 package com.devoteam.srit.xmlloader.asn1;
 
-import com.devoteam.srit.xmlloader.asn1.data.ElementValue;
-import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
@@ -174,22 +172,16 @@ public class ASNToXMLConverter
 					Field f = fields[i];
 					f.setAccessible(true);
 
-					ASN1ElementMetadata subobjElementInfo = null;
-					if (i < fields.length - 1)
-					{
-						ASN1PreparedElementData objPreparedEltData1 = null;
-						if (objPreparedEltData != null)
-						{
-							objPreparedEltData1 = objPreparedEltData.getFieldMetadata(i);
-						}
-						if (objPreparedEltData1 != null)
-						{
-							subobjElementInfo = objPreparedEltData1.getASN1ElementInfo();
-						}
-					}
-					Object subObject = f.get(objClass);
-
 					String typeField = f.getType().getCanonicalName();
+					
+					ASN1ElementMetadata subobjElementInfo = null;
+					if (typeField != null && !typeField.equals("org.bn.coders.IASN1PreparedElementData"))
+					{
+						// get the PreparedElementSubData for the i index
+						subobjElementInfo = getASN1PreparedElementSubData(objPreparedEltData, i);
+					}
+					
+					Object subObject = f.get(objClass);
 					if (subObject == null) 
 					{
 						// nothing to do
@@ -277,6 +269,22 @@ public class ASNToXMLConverter
 		}
 		return objPreparedEltData;
 	}
+	
+	public static ASN1ElementMetadata getASN1PreparedElementSubData(ASN1PreparedElementData objPreparedEltData, int i) throws Exception
+	{
+		ASN1PreparedElementData objPreparedEltData1 = null;
+		if (objPreparedEltData != null)
+		{
+			objPreparedEltData1 = objPreparedEltData.getFieldMetadata(i);
+		}
+		ASN1ElementMetadata subobjElementInfo = null;
+		if (objPreparedEltData1 != null)
+		{
+			subobjElementInfo = objPreparedEltData1.getASN1ElementInfo();
+		}
+		return subobjElementInfo;
+	}
+
 	
 	public static String getSignificantXMLTag(Object objClass, String name) throws Exception 
 	{
