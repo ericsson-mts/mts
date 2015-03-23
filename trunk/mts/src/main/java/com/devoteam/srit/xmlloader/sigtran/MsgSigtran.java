@@ -113,7 +113,7 @@ public class MsgSigtran extends Msg
 	    		try
 	    		{
 	    			_tcapMessage.initDictionary("tcap/dictionary_TCAP.xml");
-	    			_tcapMessage.decode(ieArray);
+	    			_tcapMessage.decode(ieArray, "BER");
 	    		}
 	    		catch (Exception e)
 	    		{
@@ -128,7 +128,7 @@ public class MsgSigtran extends Msg
 		    		try
 		    		{
 		    			_apMessage.initDictionary("map/dictionary_MAP.xml");
-						_apMessage.decode(arrayAP);
+						_apMessage.decode(arrayAP, "BER");
 		    		}
 		    		catch (Exception e)
 		    		{
@@ -447,7 +447,7 @@ public class MsgSigtran extends Msg
         	if (_apMessage != null)
         	{
         		// encode AP layers with BinaryNotes library
-        		Array arrayAP = _apMessage.encode();
+        		Array arrayAP = _apMessage.encode("BER");
         		
         		// set the data in TCAP layer
 		    	_tcapMessage.setTCAPComponents(arrayAP);        		
@@ -456,7 +456,7 @@ public class MsgSigtran extends Msg
         	if (_tcapMessage != null)
         	{
 	        	// encode TCAP layer with BN library
-	    		Array arrayTCAP = _tcapMessage.encode();
+	    		Array arrayTCAP = _tcapMessage.encode("BER");
 	    	
 	        	// get SS7 "Data" VParameter 
 	        	FvoParameter paramFvo = _fvoMessage.getVparameter("Data");

@@ -119,7 +119,7 @@ public class MsgSigtranHybrid extends Msg
 	    		// decode TCAP layer with Mobicent library
 	    		Array ieArray = paramFvo.encode();
 	    		_tcapMessage = new MobicentTCAPMessage();
-		    	_tcapMessage.decode(ieArray);
+		    	_tcapMessage.decode(ieArray, "BER");
 		  
 		    	org.mobicents.protocols.ss7.tcap.asn.comp.Component[] tcapComponents = ((MobicentTCAPMessage) _tcapMessage).getTCAPComponents();
 		    	Object[] tableComponents = (Object[])tcapComponents; 
@@ -339,7 +339,7 @@ public class MsgSigtranHybrid extends Msg
         	if (_apMessage != null)
         	{
         		// encode AP layers with BinaryNotes library
-        		Array arrayAP = _apMessage.encode();
+        		Array arrayAP = _apMessage.encode("BER");
         		
         		// 
         		//Array subArray = arrayAP.subArray(1);
@@ -353,7 +353,7 @@ public class MsgSigtranHybrid extends Msg
 		    	}
         		
         		// encode TCAP layer with BN library
-        		Array arrayTCAP = _tcapMessage.encode();
+        		Array arrayTCAP = _tcapMessage.encode("BER");
 	        	
             	// get SS7 "Data" VParameter 
 	        	FvoParameter param = _fvoMessage.getVparameter("Data");

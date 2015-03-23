@@ -74,9 +74,9 @@ public abstract class ASNMessage
     	return this.dictionary.getClassName();
     }
 
-    public abstract Array encode() throws Exception; 
+    public abstract Array encode(String rule) throws Exception; 
 
-    public abstract void decode(Array array, String className) throws Exception;
+    public abstract void decode(Array array, String className, String rule) throws Exception;
     
     public abstract boolean isRequest();
     public abstract String getType();
@@ -84,9 +84,9 @@ public abstract class ASNMessage
     
     public abstract Parameter getParameter(String path);
     
-    public void decode(Array array) throws Exception
+    public void decode(Array array, String rule) throws Exception
     {
-    	decode(array, this.dictionary.getClassName());
+    	decode(array, this.dictionary.getClassName(), rule);
     }
 
     public abstract void parseFromXML(Element root, String className) throws Exception;
