@@ -204,6 +204,8 @@ public class TestANS1Object
     	}
     	//testProcessBIN(dictionaryFile, classObj, "DER");
     	//testProcessBIN(dictionaryFile, classObj, "PER");
+    	
+        System.out.println("");
     }
 
     public static boolean testProcessXML(String dictionaryFile, Class<?> classObj) throws Exception
@@ -247,19 +249,18 @@ public class TestANS1Object
 		BN_ASNMessage msgXML = new BN_ASNMessage(dictionaryFile, objectXML);
 		String className = classObj.getCanonicalName();
         msgXML.parseFromXML(root, className);
-        // Object objectXML = msgParseFromXML.getAsnObject(); 
 
 		// convert the ASN1 object into XML data
         String retXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
         retXML += msgXML.toXML();
 
-        File fileXML = new File(dest + simpleClassName + "_XML ");
+        File fileXML = new File(dest + simpleClassName + "_difference.xml");
         fileXML.delete();
 
         // test with initial value
         if (!retInit.equals(retXML))
         {
-        	System.out.println("KO : XML format,");
+        	System.out.print("KO : XML format,");
         	
             // write XML data into a file
             OutputStream out1 = new FileOutputStream(fileXML, false);
@@ -297,23 +298,31 @@ public class TestANS1Object
         String retBin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
         retBin += msgBin.toXML();
         
-        // write XML data into a file
         String simpleClassName = classObj.getSimpleName();
-        File fileBin = new File(dest + simpleClassName + "_BINARY.xml");
-        fileBin.delete();
+        String fileNameInit = dest + simpleClassName + "_"  + rule;
+        File fileInit = new File(fileNameInit + ".xml");
+        fileInit.delete();
+        String fileNameDiff = fileNameInit + "_difference";
+        File fileDiff = new File(fileNameDiff + ".xml");
+        fileDiff.delete();
         
         // test with initial value
         if (!retInit.equals(retBin))
         {
-        	System.out.println("KO : BIN format");
-        	
-	        OutputStream out2 = new FileOutputStream(fileBin, false);
+        	System.out.print("KO : " + rule + " coding");
+           
+            // write XML data into a file
+            OutputStream out = new FileOutputStream(fileInit, false);
+            Array array = new DefaultArray(retInit.getBytes());
+            out.write(array.getBytes());
+            out.close();
+
+	        OutputStream out2 = new FileOutputStream(fileDiff, false);
 	        Array array2 = new DefaultArray(retBin.getBytes());
 	        out2.write(array2.getBytes());
 	        out2.close();
 	        return false;
         }
-        System.out.println("");
         
         return true;
     }

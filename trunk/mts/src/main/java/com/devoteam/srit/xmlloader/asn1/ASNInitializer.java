@@ -134,7 +134,7 @@ public class ASNInitializer
 		String metadata = ASNToXMLConverter.calculateMetadata(objElementInfo, objPreparedEltData);
         
     	Field[] fields = objClass.getClass().getDeclaredFields();
-		if (allChoice || !metadata.equalsIgnoreCase(".choice"))
+		if (allChoice || !metadata.contains(".Choice"))
 		{
 	        // parsing all fields 
 	    	for (int i = 0; i < fields.length; i++)
