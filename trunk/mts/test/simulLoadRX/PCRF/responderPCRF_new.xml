@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+    <parameter name="[test:lpNamePCRF]" operation="set" value="lp_server"/>
+    <if>
+      <condition>
+        <test parameter="[test:contextPCRFSessions]" condition="list.exists" not="true"/>
+      </condition>
+      <then>
+          <!-- create the listenpoints -->
+          <parameter name="[hostPCRFSize]" operation="list.size" value="[hostPCRF]"/>
+          <parameter name="[portPCRFSize]" operation="list.size" value="[portPCRF]"/>
+          <parameter name="[minPCRFSize]" operation="number.min" value="[hostPCRFSize]" value2="[portPCRFSize]"/>
+          <parameter name="[minPCRFSize]" operation="number.substract" value="[minPCRFSize]" value2="1"/>
+          <for index="[indexLP]" from="0" to="[minPCRFSize]">
+              <createListenpointDIAMETER name="[test:lpNamePCRF]_[urlPRCF([indexLP])]" localHost="[hostPCRF([indexLP])]" localPort="[portPCRF([indexLP])]"/>
+          </for>
+
+          <!-- initiate context -->
+          <parameter name="[test:contextPCRFSessions]" operation="list.create"/>
+      </then>
+    </if>
+
+    <label name="begin"/>
+
+    <!-- Wait for the a DIAMETER message -->
+    <parameter name="[received]" operation="set" value="false"/>
+    <receiveMessageDIAMETER name="Receive message" timeout="[receiveTimeout]" failedOnTimeout="false">
+        <parameter name="[received]" operation="set" value="true"/>
+        <parameter name="[lastMsg]" operation="protocol.setFromMessage" value="message"/>
+        <parameter name="[lastListenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[lastChannelHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[lastChannelPort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[lastRequest]" operation="protocol.setFromMessage" value="message.request"/>
+        <parameter name="[lastCommandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[lastApplicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[lastHopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[lastEndToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[lastSessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[lastDestHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[lastDestRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[lastAuthAppliId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id.value"/>
+        <!--parameter name="[lastFlowUsage]" operation="protocol.setFromMessage" value="avp.Media-Component-Description.Media-Sub-Component.Flow-Usage.value"/-->
+        <parameter name="[lastAFChargingId]" operation="protocol.setFromMessage" value="avp.505.value"/>
+    </receiveMessageDIAMETER>
+
+    <!-- No message to process => End of the scenario  -->
+    <if>
+      <condition>
+        <test parameter="[received]" condition="boolean.equals" value="true" not="true"/>
+      </condition>
+      <then>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          [testcaseId(0)] => test:contextPCRFSessions = [test:contextPCRFSessions]
+          ]]>
+          </log>
+          <test parameter="[test:contextPCRFSessions]" condition="list.size" value="0"/>
+          <exit failed="false" exception="SUCCESS : Normal end of testcase : &#x0D;&#x0A;No message to process."/>
+      </then>
+    </if>
+
+    <!-- Test the listenpoint name -->
+    <if>
+      <condition>
+        <test parameter="[lastListenpointName]" condition="string.startsWith" value="[test:lpNamePCRF]" not="true"/>
+      </condition>
+      <then>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          lastMessage =  [lastMessage]
+          ]]>
+          </log>
+          <exit failed="true" exception="Un-expected messages (routing problem) : &#x0D;&#x0A;Bad listenpoint receiving the message."/>
+      </then>
+    </if>
+
+    <!-- Calculate the remote URL to send the DIAMETER response -->
+    <if>
+      <condition>
+        <test parameter="[lastChannelHost]" condition="list.isEmpty"/>
+      </condition>
+      <then>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          lastChannelHost is empty
+          ]]>
+          </log>
+          <parameter name="[remoteURL]" operation="set" value="[urlAF(0)]"/>
+      </then>
+      <else>
+          <parameter name="[remoteURL]" operation="set" value="diam://[lastChannelHost]:[lastChannelPort]"/>
+      </else>
+    </if>
+
+    <!-- Receive AAR => stats context send AAA -->
+    <if>
+      <condition>
+        <test parameter="[lastRequest]" condition="boolean.equals" value="true"/>
+        <test parameter="[lastCommandCode]" condition="number.equals" value="265"/>
+      </condition>
+      <then>
+          <goto name="receive AAR" label="recAAR"/>
+      </then>
+    </if>
+
+    <!-- Receive STR => stats context send STA -->
+    <if>
+      <condition>
+        <test parameter="[lastRequest]" condition="boolean.equals" value="true"/>
+        <test parameter="[lastCommandCode]" condition="number.equals" value="275"/>
+      </condition>
+      <then>
+          <goto name="receive STR" label="recSTR"/>
+      </then>
+    </if>
+
+    <!-- Receive RAA => nothing to do -->
+    <if>
+      <condition>
+        <test parameter="[lastRequest]" condition="boolean.equals" value="false"/>
+        <test parameter="[lastCommandCode]" condition="number.equals" value="258"/>
+      </condition>
+      <then>
+          <goto name="receive RAA" label="begin"/>
+      </then>
+    </if>
+
+    <!-- Receive ASA => nothing to do -->
+    <if>
+      <condition>
+        <test parameter="[lastRequest]" condition="boolean.equals" value="false"/>
+        <test parameter="[lastCommandCode]" condition="number.equals" value="274"/>
+      </condition>
+      <then>
+          <goto name="receive ASA" label="begin"/>
+      </then>
+    </if>
+
+    <log type="Main" level="ERROR">
+    <![CDATA[
+    lastMessage =  [lastMessage]
+    ]]>
+    </log>
+    <exit failed="true" exception="Un-expected messages (routing problem) : &#x0D;&#x0A;Bad message request flag or type."/>
+
+    <goto name="goto begin" label="begin"/>
+
+    <!-- Receive AAR => stats context send AAA -->
+    <label name="recAAR"/>
+
+    <!-- Do not manage contexts for REGISTER related RX (default bearer) -->
+    <if>
+      <condition>
+        <test parameter="[lastAFChargingId]" condition="list.isempty" not="true"/>
+      </condition>
+      <then>
+
+	    <!--log type="Main" level="ERROR">
+	    <![CDATA[
+	    RX AAR Session Id =  [lastSessionId]
+	    ]]>
+	    </log-->
+
+	    <!-- Add the session into the contexts if it does not already exist -->
+
+	    <if>
+	      <condition>
+		<test parameter="[test:contextPCRFSessionId_[lastSessionId]]" condition="list.exists" not="true"/>
+	      </condition>
+	      <then>
+		    <parameter name="[test:contextPCRFSessionId_[lastSessionId]]" operation="list.set" value="[lastSessionId]"/>
+
+		    <!--log type="Main" level="ERROR">
+		    <![CDATA[
+		    RX add context Session Id =  [lastSessionId]
+		    ]]>
+		    </log-->
+		    
+		    <!-- Add the session timestamp into the contexts-->
+		    <parameter name="[test:contextPCRFTimestamp_[lastSessionId]]" operation="system.timestamp" value="1970"/>
+		    <!-- Add the channel host/port into the session contexts-->
+		    <parameter name="[test:contextPCRFDestHost_[lastSessionId]]" operation="set" value="[lastDestHost]"/>
+		    <parameter name="[test:contextPCRFChannelHost_[lastSessionId]]" operation="set" value="[lastChannelHost]"/>
+		    <parameter name="[test:contextPCRFChannelPort_[lastSessionId]]" operation="set" value="[lastChannelPort]"/>
+		    
+		    <!-- Modify the session statistics counter -->
+		    <stats>
+			<counter name="PCRFSessionActive" summary="PCRF Act" complete="Active session on PCRF side">
+			    <increase>1</increase>
+			</counter>
+		    </stats>
+	      </then>
+	    </if>
+      </then>
+      <else>
+	  <log type="Main" level="ERROR">
+	  <![CDATA[
+	  RX: no context created for default bearer (REGISTER)
+	  ]]>
+	  </log>
+      </else>
+    </if>
+
+    <!-- IP-CAN-Type: 3GPP-GPRS|DOCSIS|xDSL|WiMAX|3GPP2|3GPP-EPS|Non-3GPP-EPS -->
+    <parameter name="[IP-CAN-Type]" operation="set" value="3GPP-EPS"/>
+
+    <!-- RAT-Type: WLAN|VIRTUAL|UTRAN|GERAN|GAN|HSPA_EVOLUTION|EUTRAN|CDMA2000_1X|HRPD|UMB|EHRPD -->
+    <parameter name="[RAT-Type]" operation="set" value="EUTRAN"/>
+
+    <!-- Envoi de la reponse AAAnswer-->
+<try>
+        <do>
+    <parameter name="[error_tx_rx]" operation="set" value="true"/>
+    <sendMessageDIAMETER name="SendAnswerAAA" listenpoint="[lastListenpointName]"
+        remoteURL="[remoteURL]">
+        <header request="false" command="[lastCommandCode]" applicationId="[lastApplicationId]" 
+                hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
+                proxiable="true" error="false" retransmit="false"/>
+        <avp code="Session-Id" value="[lastSessionId]"/>
+        <avp code="Auth-Application-Id" value="[lastAuthAppliId]"/>
+        <avp code="Origin-Host" value="[hostPCRF(0)]"/>
+        <avp code="Origin-Realm" value="[lastDestRealm]"/>
+        <avp code="Result-Code" value="[responseCode]"/>
+        <!--avp code="Experimental-Result">
+            <avp code="Vendor-Id" value="[vendorID]"/>
+            <avp code="Experimental-Result-Code" value="2001" vendorId="[vendorID]"/>
+        </avp-->
+        <avp code="IP-CAN-Type" value="[IP-CAN-Type]"/>
+        <avp code="RAT-Type" value="[RAT-Type]"/>
+    </sendMessageDIAMETER>
+    <parameter name="[error_tx_rx]" operation="set" value="false"/>
+        </do>
+        <finally>
+	    <if>
+	      <condition>
+	        <test parameter="[error_tx_rx]" condition="boolean.equals" value="true"/>
+	      </condition>
+	      <then>
+		<log>Error TXRX lastMsg=[lastMsg]</log>
+	      </then>
+	    </if>
+        </finally>
+</try>
+
+    <goto name="goto begin" label="begin"/>
+
+    <!-- Receive STR => stats context sendSTA-->
+    <label name="recSTR"/>
+
+    <!--log type="Main" level="ERROR">
+    <![CDATA[
+    RX STR Session Id =  [lastSessionId]
+    ]]>
+    </log-->
+
+    <!-- Remove the session from the contexts-->
+    <parameter name="[indexContextPCRFSessions]" operation="list.find" value="[test:contextPCRFSessions]" value2="[lastSessionId]"/>
+    <parameter name="[indexContextPCRFSessionsSIZE]" operation="list.size" value="[indexContextPCRFSessions]"/>
+    <if>
+      <condition>
+	<test parameter="[test:contextPCRFSessionId_[lastSessionId]]" condition="list.exists" not="true"/>
+      </condition>
+      <then>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          [testcaseId(0)] => ERROR : before removing the session from the contexts, can not find the session in the contexts : lastSessionId = [lastSessionId]
+          ]]>
+          </log>
+	  <stats>
+		<counter name="PCRFSessionSTRAbort" summary="PCRF Abort" complete="Aborted session termination on PCRF side">
+			 <increase>1</increase>
+		</counter>
+	  </stats>
+      </then>
+      <else>
+	    <parameter name="[test:contextPCRFSessionId_[lastSessionId]]" operation="list.remove"/>
+      </else>
+    </if>
+    
+    <if>
+      <condition>
+        <test parameter="[test:contextPCRFTimestamp_[lastSessionId]]" condition="list.exists"/>
+      </condition>
+      <then>
+          <!-- Calculate the session duration -->
+         <parameter name="[timestamp]" operation="system.timestamp" value="1970"/>
+         <parameter name="[duration]" operation="number.substract" value="[timestamp]" value2="[test:contextPCRFTimestamp_[lastSessionId]]"/>
+         <parameter name="[duration]" operation="number.divide" value="[duration]" value2="1000"/>
+           
+         <!-- Remove the timestamp contexts-->
+         <parameter name="[test:contextPCRFTimestamp_[lastSessionId]]" operation="list.remove"/>
+         <!-- Remove the channel host/port into the session contexts-->
+         <parameter name="[test:contextPCRFDestHost_[lastSessionId]]" operation="list.remove"/>
+         <parameter name="[test:contextPCRFChannelHost_[lastSessionId]]" operation="list.remove"/>
+         <parameter name="[test:contextPCRFChannelPort_[lastSessionId]]" operation="list.remove"/>
+            
+         <!-- Modify the session statistics counter -->
+         <stats>
+             <counter name="PCRFSessionActive" summary="PCRF Act" complete="Active session on PCRF side">
+                 <increase>-1</increase>
+             </counter>
+         </stats>
+         <stats>
+             <value name="PCRFSessionDuration" summary="PCRF Dur" complete="Duration of the session on PCRF side">
+                  <newValue>[duration]</newValue>
+             </value>
+         </stats>
+      </then>
+      <else>
+          <log type="Main" level="ERROR">
+          <![CDATA[
+          [testcaseId(0)] => ERROR : can not find the timestamp session context : [test:contextPCRFTimestamp_[lastSessionId]]
+          ]]>
+          </log>
+      </else>
+    </if>
+    
+<!--
+From RFC 3588 September 2003 :
+Session-Termination-Answer  ::= < Diameter Header: 275, PXY >
+                                < Session-Id >
+                                { Result-Code }
+                                { Origin-Host }
+                                { Origin-Realm }
+                                [ User-Name ]
+                              * [ Class ]
+                                [ Error-Message ]
+                                [ Error-Reporting-Host ]
+                              * [ Failed-AVP ]
+                                  Failed-AVP ::= < AVP Header: 279 >
+                                              1* {AVP}
+                                [ Origin-State-Id ]
+                              * [ Redirect-Host ]
+                                [ Redirect-Host-Usage ]
+                                [ Redirect-Max-Cache-Time ]
+                              * [ Proxy-Info ]
+                                  Proxy-Info ::= < AVP Header: 284 >
+                                                 { Proxy-Host }
+                                                 { Proxy-State }
+                                               * [ AVP ]
+                              * [ AVP ]
+-->
+
+    <!-- Envoi d'une reponse STAnswer -->
+<try>
+        <do>
+    <parameter name="[error_tx_rx]" operation="set" value="true"/>
+    <sendMessageDIAMETER name="Send Answer STA" listenpoint="[lastListenpointName]"
+        remoteURL="[remoteURL]">
+        <header request="false" command="[lastCommandCode]" applicationId="[lastApplicationId]" 
+                hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
+                proxiable="true" error="false" retransmit="false"/>
+        <!-- The Session-Id AVP is used to identify a specific session. -->
+        <avp code="Session-Id" mandatory="true" type="UTF8String" value="[lastSessionId]"/>
+        <avp code="Auth-Application-Id" value="[lastAuthAppliId]"/>
+        <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
+        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[lastDestHost]"/>
+        <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
+        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[lastDestRealm]"/>
+        <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
+        <avp code="Result-Code" mandatory="true" type="Unsigned32" value="[responseCode]"/>
+        <!--avp code="Experimental-Result">
+            <avp code="Vendor-Id" value="[vendorID]"/>
+            <avp code="Experimental-Result-Code" value="2001" vendorId="[vendorID]"/>
+        </avp-->
+    </sendMessageDIAMETER>
+    <parameter name="[error_tx_rx]" operation="set" value="false"/>
+        </do>
+        <finally>
+	    <if>
+	      <condition>
+	        <test parameter="[error_tx_rx]" condition="boolean.equals" value="true"/>
+	      </condition>
+	      <then>
+		<log>Error TXRX lastMsg=[lastMsg]</log>
+	      </then>
+	    </if>
+        </finally>
+</try>
+
+    <goto name="goto begin" label="begin"/>
+
+</scenario>
