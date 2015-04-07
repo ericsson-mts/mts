@@ -82,35 +82,36 @@ public class NodeSettings {
 		int i;
 		if(host_id==null)
 			throw new InvalidSettingException("null host_id");
-		i = host_id.indexOf('.');
-		if(i==-1)
+		// FH i = host_id.indexOf('.');
+		// FH if(i==-1)
 			// FH remove an blocking control 
 			// FH throw new InvalidSettingException("host_id must contains at least 2 dots");
-		if(host_id.indexOf('.',i+1)==-1)
+		// FH if(host_id.indexOf('.',i+1)==-1)
 			// FH remove an blocking control
 			// FH throw new InvalidSettingException("host_id must contains at least 2 dots");
 		this.host_id = host_id;
 		
-		i = realm.indexOf('.');
-		if(i==-1)
+		// FH i = realm.indexOf('.');
+		//FH if(i==-1)
 			// FH remove an blocking control
 			// FH throw new InvalidSettingException("realm must contain at least 1 dot");
 		this.realm = realm;
 		
-		if(vendor_id==0)
+		// FH if(vendor_id==0)
 			// FH remove an blocking control
 			// FH throw new InvalidSettingException("vendor_id must not be non-zero. (It must be your IANA-assigned \"SMI Network Management Private Enterprise Code\". See http://www.iana.org/assignments/enterprise-numbers)");
 		this.vendor_id = vendor_id;
 		
-		if(capabilities.isEmpty())
+		// FH if(capabilities.isEmpty())
 			// FH remove an blocking control
 			// FH throw new InvalidSettingException("Capabilities must be non-empty");
 		this.capabilities = capabilities;
+		
 		if(port<0 || port>65535)
 			throw new InvalidSettingException("listen-port must be 0..65535");
 		this.port = port;
 		
-		if(product_name==null)
+		// FH if(product_name==null)
 			// FH remove an blocking control
 			//throw new InvalidSettingException("product-name cannot be null");
 		this.product_name = product_name;
