@@ -5,7 +5,7 @@
 <scenario>
 
     <!-- create a listenpoint with no parameter -->
-    <createListenpointDIAMETER name="lp_server" localPort="[Listen-Server-Port]"/>
+    <createListenpointDIAMETER name="lp_server" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]"/>
 
     <receiveMessageDIAMETER name="ReceiveRequestMAR"  listenpoint="lp_server" request="true" type="506" >
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
@@ -39,7 +39,7 @@
     <removeListenpointDIAMETER name="lp_server"/>
 
     <!-- create a listenpoint with all parameters -->
-    <createListenpointDIAMETER name="lp_server" localPort="[Listen-Server-Port]">
+    <createListenpointDIAMETER name="lp_server" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]">
         <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
         <avp code="Origin-Host" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
         <avp code="Origin-Realm" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
@@ -87,6 +87,9 @@
     <removeListenpointDIAMETER name="lp_server"/>
 
     <createListenpointDIAMETER name="lp_server" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]"/>
-    <removeListenpointDIAMETER name="lp_server"/>
+    
+    <finally>
+        <removeListenpointDIAMETER name="lp_server"/>
+    </finally>
         
 </scenario>
