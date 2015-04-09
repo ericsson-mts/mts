@@ -122,7 +122,7 @@ public class MobicentTCAPMessage extends ASNMessage
         //}
     }
 
-     @override
+     @Override
     public Array encode(String rule) throws Exception 
     {
 		AsnOutputStream aosTCAP = new AsnOutputStream();
@@ -136,7 +136,7 @@ public class MobicentTCAPMessage extends ASNMessage
         return arrayTCAP;
     }
           
-     @override
+     @Override
     public void decode(Array array, String className, String rule) throws Exception 
     {
     	

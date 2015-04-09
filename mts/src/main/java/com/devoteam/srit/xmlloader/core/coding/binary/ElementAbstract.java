@@ -265,23 +265,22 @@ public abstract class ElementAbstract implements Cloneable
         
     }
 
-    public void initValue() throws Exception 
+    public void initValue(Dictionary dictionary) throws Exception 
     {
-
-    	Iterator<ElementAbstract> iter = elements.iterator();
+    	List<ElementAbstract> newElements = new ArrayList<ElementAbstract>();
         for (Iterator<ElementAbstract> it = elements.iterator(); it.hasNext();) 
         {
 			ElementAbstract elemInfo = (ElementAbstract) it.next();
-			/*
 			ElementAbstract elemDico = dictionary.getElementByLabel(elemInfo.getLabel());
 			elemInfo = ElementAbstract.buildFactory(elemInfo.coding);
 			if (elemDico != null)
 			{
 				elemInfo.copyToClone(elemDico);
 			}
-			*/
-	        elemInfo.initValue();
+	        elemInfo.initValue(dictionary);
+	        newElements.add(elemInfo);
         }
+        this.elements = newElements;
         
         // initiate the Array containing the fields
         SupArray tempArray = new SupArray();
@@ -321,13 +320,15 @@ public abstract class ElementAbstract implements Cloneable
 		{
 			FieldAbstract field = (FieldAbstract) iterF.next();
             length += field.getLength();
-        }		
+        }
+		/*
 		Iterator<ElementAbstract> iterE = this.elements.iterator();
 		while (iterE.hasNext())
 		{
 			ElementAbstract element= (ElementAbstract) iterE.next();
             length += element.getLengthElem();
         }
+        */
         return length;
     }
 
