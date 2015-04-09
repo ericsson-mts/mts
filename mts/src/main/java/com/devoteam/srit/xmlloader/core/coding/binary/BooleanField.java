@@ -77,7 +77,7 @@ public class BooleanField extends FieldAbstract
     }
 
     @Override
-    public void initValue(int offset, SupArray array) throws Exception
+    public void initValue(int index, int offset, SupArray array) throws Exception
     {
     	Boolean bool = Utils.randomBoolean();	
         this.setValue(bool.toString(), offset, array);

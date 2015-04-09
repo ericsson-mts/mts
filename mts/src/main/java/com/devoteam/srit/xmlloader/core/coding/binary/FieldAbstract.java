@@ -30,7 +30,6 @@ import gp.utils.arrays.SupArray;
 
 import com.devoteam.srit.xmlloader.asn1.ASNToXMLConverter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import org.dom4j.Element;
 
@@ -154,7 +153,7 @@ public abstract class FieldAbstract
 
     public abstract void setValue(String value, int offset, SupArray array) throws Exception;
     
-    public abstract void initValue(int offset, SupArray array) throws Exception;
+    public abstract void initValue(int index, int offset, SupArray array) throws Exception;
     
     public abstract FieldAbstract clone();
     

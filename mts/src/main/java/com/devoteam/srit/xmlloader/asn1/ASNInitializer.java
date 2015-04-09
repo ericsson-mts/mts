@@ -32,7 +32,6 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import gp.utils.arrays.Array;
-import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.RandomArray;
 import gp.utils.arrays.SupArray;
 
@@ -91,7 +90,7 @@ public class ASNInitializer
         return document;
     }
 
-    public void setValue(int indexChoice, int index, String resultPath, ASNMessage message, Object parentObj, String name, Object objClass, ASN1ElementMetadata objElementInfo) throws Exception  
+    public void initValue(int indexChoice, int index, String resultPath, ASNMessage message, Object parentObj, String name, Object objClass, ASN1ElementMetadata objElementInfo) throws Exception  
     {
 		if (objClass ==  null)
     	{
@@ -267,7 +266,7 @@ public class ASNInitializer
         		// Est ce que c'est réellement un pb ? a voir à l'usage
         		//ElementValue elementClone = new ElementValue(); 
         		//elementClone.copyToClone(elementDico);
-        		elementDico.initValue(message.dictionary);
+        		elementDico.initValue(index, message.dictionary);
         		
         		// case of the PM-UI element
         		String simpleClassName = obj.getClass().getSimpleName();
@@ -360,7 +359,7 @@ public class ASNInitializer
 			Constructor constr = subClass.getConstructor();
 			constr.setAccessible(true);
 			Object subObj = constr.newInstance();
-			setValue(indexChoice, index, resultPath, message, obj, name, subObj, objElementInfo);
+			initValue(indexChoice, index, resultPath, message, obj, name, subObj, objElementInfo);
 			return subObj;
 		}
     }

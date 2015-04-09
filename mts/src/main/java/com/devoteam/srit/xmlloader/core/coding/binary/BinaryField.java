@@ -60,7 +60,7 @@ public class BinaryField extends FieldAbstract
     }
 
     @Override
-    public void initValue(int offset, SupArray array) throws Exception
+    public void initValue(int index, int offset, SupArray array) throws Exception
     {
         Array valueArray = new DefaultArray(Utils.randomBytes());	
         super.setValueFromArray( valueArray, offset, array);

@@ -62,7 +62,7 @@ public class LengthStringField extends FieldAbstract
     }
     
     @Override
-    public void initValue(int offset, SupArray array) throws Exception 
+    public void initValue(int index, int offset, SupArray array) throws Exception 
     {
     	// TODO 
     }

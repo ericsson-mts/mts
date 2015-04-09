@@ -265,7 +265,7 @@ public abstract class ElementAbstract implements Cloneable
         
     }
 
-    public void initValue(Dictionary dictionary) throws Exception 
+    public void initValue(int index, Dictionary dictionary) throws Exception 
     {
     	List<ElementAbstract> newElements = new ArrayList<ElementAbstract>();
         for (Iterator<ElementAbstract> it = elements.iterator(); it.hasNext();) 
@@ -277,7 +277,7 @@ public abstract class ElementAbstract implements Cloneable
 			{
 				elemInfo.copyToClone(elemDico);
 			}
-	        elemInfo.initValue(dictionary);
+	        elemInfo.initValue(index, dictionary);
 	        newElements.add(elemInfo);
         }
         this.elements = newElements;
@@ -297,7 +297,7 @@ public abstract class ElementAbstract implements Cloneable
         for (Iterator<FieldAbstract> it = fields.iterator(); it.hasNext();) 
         {
             FieldAbstract field = it.next();
-            field.initValue(offset, this.fieldsArray);
+            field.initValue(index, offset, this.fieldsArray);
 	        length = field.getLength();
 	        /// TODO revoir ce truc bizzaroide
 	        if (length > 0)
