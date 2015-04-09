@@ -25,6 +25,7 @@ package com.devoteam.srit.xmlloader.asn1;
 
 import com.devoteam.srit.xmlloader.core.log.FileTextListenerProvider;
 import com.devoteam.srit.xmlloader.core.log.TextListenerProviderRegistry;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.ExceptionHandlerSingleton;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.TextExceptionHandler;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
@@ -57,6 +58,8 @@ public class TestANS1Object
 
 	// destination directory for resulting files
 	private static String dest = null;
+	
+	private static int MAX_ITERATION = 10;
 	
 	// error counters
 	private static int errorXML = 0;
@@ -226,6 +229,7 @@ public class TestANS1Object
 		// initialize the ASN1 object
 		Object objectInit = classObj.newInstance();
 		BN_ASNMessage msgInit = new BN_ASNMessage(dictionaryFile, objectInit);
+		int index = (int) Utils.randomLong(0, MAX_ITERATION);
 		ASNInitializer.getInstance().setValue(-1, 0, "", msgInit, null, null, objectInit, null);
 		
 		// convert the ASN1 object into XML data
@@ -287,7 +291,7 @@ public class TestANS1Object
     public static boolean testProcessAllIndexBIN(String dictionaryFile, Class<?> classObj, String rule) throws Exception
     {          
     	boolean result = true;
-    	for (int i = 0; i <= 9; i++)
+    	for (int i = 0; i <= MAX_ITERATION; i++)
     	{
     		if (!testProcessBIN(i, dictionaryFile, classObj, rule))
     		{

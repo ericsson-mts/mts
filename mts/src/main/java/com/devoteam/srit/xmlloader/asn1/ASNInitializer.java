@@ -257,8 +257,9 @@ public class ASNInitializer
 	    	if (message != null)
 	    	{
 	    		// TODO propager le parentObj
+	    		index = (byte) Utils.randomLong(0, 3);
 	    		byte byteIndex = (byte) index;
-		    	elementDico = message.getElementFromDico(obj, resultPath, new byte[]{0});
+		    	elementDico = message.getElementFromDico(obj, resultPath, new byte[]{byteIndex});
 	    	}
         	if (elementDico != null)
         	{
@@ -268,13 +269,15 @@ public class ASNInitializer
         		//elementClone.copyToClone(elementDico);
         		elementDico.initValue(message.dictionary);
         		
-        		
+        		// case of the PM-UI element
+        		String simpleClassName = obj.getClass().getSimpleName();
         		ElementAbstract element0 = elementDico.getElement(0);
-        		if (element0 != null)
+        		if (element0 != null && "Sm_RP_UI".equals(simpleClassName))
         		{
 	        		SupArray arrayElement0 = element0.getFieldsArray();
 	        		FieldAbstract fieldTPMTI = element0.getFieldsByName("TP-MTI");
-	        		fieldTPMTI.setValue("0", 6, arrayElement0);
+	        		String strIndex = new Integer(index).toString();
+	        		fieldTPMTI.setValue(strIndex, 6, arrayElement0);
         		}
         		
         		Array array = null;
