@@ -266,7 +266,7 @@ public class ASNInitializer
         		// Est ce que c'est réellement un pb ? a voir à l'usage
         		//ElementValue elementClone = new ElementValue(); 
         		//elementClone.copyToClone(elementDico);
-        		elementDico.initValue();
+        		elementDico.initValue(message.dictionary);
         		
         		
         		ElementAbstract element0 = elementDico.getElement(0);
