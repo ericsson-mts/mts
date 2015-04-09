@@ -71,7 +71,8 @@ public abstract class ElementAbstract implements Cloneable
     protected List<ElementAbstract> elements = new ArrayList<ElementAbstract>();
     
     protected SupArray fieldsArray;
-    protected SupArray subelementsArray;
+    
+	protected SupArray subelementsArray;
 
     public static ElementAbstract buildFactory(String coding) throws Exception
     {
@@ -270,8 +271,16 @@ public abstract class ElementAbstract implements Cloneable
     	Iterator<ElementAbstract> iter = elements.iterator();
         for (Iterator<ElementAbstract> it = elements.iterator(); it.hasNext();) 
         {
-            ElementAbstract element = it.next();
-	        element.initValue();
+			ElementAbstract elemInfo = (ElementAbstract) it.next();
+			/*
+			ElementAbstract elemDico = dictionary.getElementByLabel(elemInfo.getLabel());
+			elemInfo = ElementAbstract.buildFactory(elemInfo.coding);
+			if (elemDico != null)
+			{
+				elemInfo.copyToClone(elemDico);
+			}
+			*/
+	        elemInfo.initValue();
         }
         
         // initiate the Array containing the fields
@@ -670,6 +679,14 @@ public abstract class ElementAbstract implements Cloneable
         return null;
     }
     
+    public ElementAbstract getElement(int index) 
+    {
+    	if (index < this.elements.size())
+    	{
+    		return elements.get(index);
+    	}
+        return null;
+    }
     public int getTag() 
     {
         return this.tag;
@@ -689,5 +706,10 @@ public abstract class ElementAbstract implements Cloneable
 		fields.add(field);
 		fieldsByName.put(label, field);
 	}
-	
+
+    public SupArray getFieldsArray() 
+    {
+		return fieldsArray;
+	}
+
 }

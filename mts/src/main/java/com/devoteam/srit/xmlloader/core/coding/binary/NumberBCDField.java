@@ -85,8 +85,7 @@ public class NumberBCDField extends FieldAbstract
     @Override
     public void initValue(int offset, SupArray array) throws Exception 
     {
-    	Double max = Math.pow((double) 2, (double) 64) - 1;
-    	Long integer = Utils.randomLong(0, max.longValue());
+    	Long integer = Utils.randomLong(0, Integer.MAX_VALUE);
     	this.setValue(integer.toString(), offset, array);
     }
     

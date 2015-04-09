@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.asn1;
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.FieldAbstract;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -256,7 +257,8 @@ public class ASNInitializer
 	    	if (message != null)
 	    	{
 	    		// TODO propager le parentObj
-		    	elementDico = message.getElementFromDico(obj, resultPath, null);
+	    		byte byteIndex = (byte) index;
+		    	elementDico = message.getElementFromDico(obj, resultPath, new byte[]{0});
 	    	}
         	if (elementDico != null)
         	{
@@ -265,6 +267,16 @@ public class ASNInitializer
         		//ElementValue elementClone = new ElementValue(); 
         		//elementClone.copyToClone(elementDico);
         		elementDico.initValue();
+        		
+        		
+        		ElementAbstract element0 = elementDico.getElement(0);
+        		if (element0 != null)
+        		{
+	        		SupArray arrayElement0 = element0.getFieldsArray();
+	        		FieldAbstract fieldTPMTI = element0.getFieldsByName("TP-MTI");
+	        		fieldTPMTI.setValue("0", 6, arrayElement0);
+        		}
+        		
         		Array array = null;
         		try
         		{

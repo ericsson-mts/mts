@@ -190,25 +190,34 @@ public class TestANS1Object
         {
         	dictionaryFile = "TCAP/dictionary_TCAP.xml";
         }
-    	
+        
+        boolean error = false;
     	if (!testProcessXML(dictionaryFile, classObj))
     	{
-    		System.out.print("XML");
+    		System.out.print("ERROR XML");
     		errorXML ++;
+    		error = true;
     	}
     	if (!testProcessAllIndexBIN(dictionaryFile, classObj, "BER"))
     	{
     		errorBER ++;
+    		error = true;
     	}
     	if (!testProcessAllIndexBIN(dictionaryFile, classObj, "DER"))
     	{
     		errorDER ++;
+    		error = true;
     	}
-    	// if (!testProcessAllIndexBIN(dictionaryFile, classObj, "PER"))
+    	//if (!testProcessAllIndexBIN(dictionaryFile, classObj, "PER"))
     	{
     		errorPER ++;
+    		//error = true;
     	}
     	
+    	if (!error)
+    	{
+            System.out.print("OK");
+    	}
         System.out.println("");
     }
 
