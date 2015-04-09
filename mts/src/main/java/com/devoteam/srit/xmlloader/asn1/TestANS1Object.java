@@ -25,7 +25,6 @@ package com.devoteam.srit.xmlloader.asn1;
 
 import com.devoteam.srit.xmlloader.core.log.FileTextListenerProvider;
 import com.devoteam.srit.xmlloader.core.log.TextListenerProviderRegistry;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.ExceptionHandlerSingleton;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.TextExceptionHandler;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
@@ -35,24 +34,15 @@ import com.devoteam.srit.xmlloader.core.utils.maps.HashMap;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.Vector;
 
-import org.bn.CoderFactory;
-import org.bn.IDecoder;
-import org.bn.IEncoder;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -70,7 +60,9 @@ public class TestANS1Object
 	
 	// error counters
 	private static int errorXML = 0;
-	private static int errorBinary = 0;
+	private static int errorBER = 0;
+	private static int errorDER = 0;
+	private static int errorPER = 0;
 
     static public void main(String... args) 
     {    	
@@ -173,7 +165,12 @@ public class TestANS1Object
 	
 	    	}
 	    	
-	    	System.out.println("Error : XML = " + errorXML + " BINARY = " + errorBinary);
+	    	System.out.print("ERROR");
+	    	System.out.print(" XML=" + errorXML + "/" + collect.size() + ", ");
+	    	System.out.print(" BER=" + errorBER + "/" + collect.size() + ", ");
+	    	System.out.print(" DER=" + errorDER + "/" + collect.size() + ", ");
+	    	System.out.print(" PER=" + errorPER + "/" + collect.size());
+	    	System.out.println();
         }
         
         System.exit(0);
@@ -196,14 +193,21 @@ public class TestANS1Object
     	
     	if (!testProcessXML(dictionaryFile, classObj))
     	{
+    		System.out.print("XML");
     		errorXML ++;
     	}
-    	if (!testProcessBIN(0, dictionaryFile, classObj, "BER"))
+    	if (!testProcessAllIndexBIN(dictionaryFile, classObj, "BER"))
     	{
-    		errorBinary ++;
+    		errorBER ++;
     	}
-    	//testProcessBIN(dictionaryFile, classObj, "DER");
-    	//testProcessBIN(dictionaryFile, classObj, "PER");
+    	if (!testProcessAllIndexBIN(dictionaryFile, classObj, "DER"))
+    	{
+    		errorDER ++;
+    	}
+    	// if (!testProcessAllIndexBIN(dictionaryFile, classObj, "PER"))
+    	{
+    		errorPER ++;
+    	}
     	
         System.out.println("");
     }
@@ -213,7 +217,7 @@ public class TestANS1Object
 		// initialize the ASN1 object
 		Object objectInit = classObj.newInstance();
 		BN_ASNMessage msgInit = new BN_ASNMessage(dictionaryFile, objectInit);
-		ASNInitializer.getInstance().setValue(true, 0, "", msgInit, null, null, objectInit, null);
+		ASNInitializer.getInstance().setValue(-1, 0, "", msgInit, null, null, objectInit, null);
 		
 		// convert the ASN1 object into XML data
         String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
@@ -259,9 +263,7 @@ public class TestANS1Object
 
         // test with initial value
         if (!retInit.equals(retXML))
-        {
-        	System.out.print("KO : XML format,");
-        	
+        {	
             // write XML data into a file
             OutputStream out1 = new FileOutputStream(fileXML, false);
             Array array1 = new DefaultArray(retXML.getBytes());
@@ -273,12 +275,26 @@ public class TestANS1Object
         return true;
     }
 
+    public static boolean testProcessAllIndexBIN(String dictionaryFile, Class<?> classObj, String rule) throws Exception
+    {          
+    	boolean result = true;
+    	for (int i = 0; i <= 9; i++)
+    	{
+    		if (!testProcessBIN(i, dictionaryFile, classObj, rule))
+    		{
+    			System.out.print(rule + "(" + i + ") ");
+    			result = false;
+    		}
+    	}
+    	return result;
+    }
+
     public static boolean testProcessBIN(int index, String dictionaryFile, Class<?> classObj, String rule) throws Exception
     {               
 		// initialize the ASN1 object
 		Object objectInit = classObj.newInstance();
 		BN_ASNMessage msgInit = new BN_ASNMessage(dictionaryFile, objectInit);
-		ASNInitializer.getInstance().setValue(false, index, "", msgInit, null, null, objectInit, null);
+		ASNInitializer.getInstance().setValue(index, index, "", msgInit, null, null, objectInit, null);
 		
 		// convert the ASN1 object into XML data
         String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
@@ -299,7 +315,7 @@ public class TestANS1Object
         retBin += msgBin.toXML();
         
         String simpleClassName = classObj.getSimpleName();
-        String fileNameInit = dest + simpleClassName + "_"  + rule;
+        String fileNameInit = dest + simpleClassName + "_"  + rule + "_" + index;
         File fileInit = new File(fileNameInit + ".xml");
         fileInit.delete();
         String fileNameDiff = fileNameInit + "_difference";
@@ -309,8 +325,6 @@ public class TestANS1Object
         // test with initial value
         if (!retInit.equals(retBin))
         {
-        	System.out.print("KO : " + rule + " coding");
-           
             // write XML data into a file
             OutputStream out = new FileOutputStream(fileInit, false);
             Array array = new DefaultArray(retInit.getBytes());

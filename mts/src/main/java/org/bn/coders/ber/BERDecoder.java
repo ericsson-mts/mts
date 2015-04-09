@@ -245,9 +245,8 @@ public class BERDecoder extends Decoder {
     public DecodedObject decodeNull(DecodedObject decodedTag, Class objectClass, 
                                        ElementInfo elementInfo, 
                                 InputStream stream) throws Exception {
-    	// FHModif : remove lines
-        //if(!checkTagForObject(decodedTag, TagClass.Universal, ElementType.Primitive, UniversalTag.Null, elementInfo))
-        //    return null;
+        if(!checkTagForObject(decodedTag, TagClass.Universal, ElementType.Primitive, UniversalTag.Null, elementInfo))
+            return null;
         stream.read ( ); // ignore null length
         DecodedObject result = new DecodedObject(objectClass.newInstance(),1);
         return result;
@@ -324,7 +323,8 @@ public class BERDecoder extends Decoder {
                                    InputStream stream) throws Exception {   
         
         if((elementInfo.hasPreparedInfo() && elementInfo.hasPreparedASN1ElementInfo() && elementInfo.getPreparedASN1ElementInfo().hasTag())
-           || (elementInfo.getASN1ElementInfo()!=null && elementInfo.getASN1ElementInfo().hasTag() )) {
+           || (elementInfo.getASN1ElementInfo()!=null && elementInfo.getASN1ElementInfo().hasTag() )) 
+           {
             if(!checkTagForObject(decodedTag, TagClass.ContextSpecific, ElementType.Constructed, UniversalTag.LastUniversal, elementInfo))
                 return null;
             DecodedObject<Integer> lenOfChild = decodeLength(stream);

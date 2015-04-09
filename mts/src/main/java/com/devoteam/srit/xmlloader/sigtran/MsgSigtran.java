@@ -457,15 +457,18 @@ public class MsgSigtran extends Msg
         	{
 	        	// encode TCAP layer with BN library
 	    		Array arrayTCAP = _tcapMessage.encode("BER");
-	    	
-	        	// get SS7 "Data" VParameter 
-	        	FvoParameter paramFvo = _fvoMessage.getVparameter("Data");
-	        	if (paramFvo ==  null)
-	        	{
-	        		// get SS7 "Long_Data" VParameter => BUG does not work ! why ? 
-	        		paramFvo = _fvoMessage.getVparameter("Long_Data");
-	        	}
-	        	paramFvo.parseArray(arrayTCAP);
+	    		
+	    		if (arrayTCAP != null)
+	    		{
+		        	// get SS7 "Data" VParameter 
+		        	FvoParameter paramFvo = _fvoMessage.getVparameter("Data");
+		        	if (paramFvo ==  null)
+		        	{
+		        		// get SS7 "Long_Data" VParameter => BUG does not work ! why ? 
+		        		paramFvo = _fvoMessage.getVparameter("Long_Data");
+		        	}
+		        	paramFvo.parseArray(arrayTCAP);
+	    		}
         	}
         	
         	if (_ieMessage != null)
