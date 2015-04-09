@@ -83,7 +83,7 @@ public class NumberBCDField extends FieldAbstract
     }
     
     @Override
-    public void initValue(int offset, SupArray array) throws Exception 
+    public void initValue(int index, int offset, SupArray array) throws Exception 
     {
     	Long integer = Utils.randomLong(0, Integer.MAX_VALUE);
     	this.setValue(integer.toString(), offset, array);
