@@ -48,7 +48,7 @@ public class ElementDigitV extends ElementAbstract
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
 	{
         this.fieldsArray = new SupArray();
-		int length = new Integer08Array(array.subArray(0, 1)).getValue() / 2 + 2;
+		int length = (new Integer08Array(array.subArray(0, 1)).getValue() + 1) / 2 + 1;
 		
 		Array subArray = array.subArray(1, length);
         return decodeFieldsNotTagElementsFromArray(subArray, dictionary) + 1;

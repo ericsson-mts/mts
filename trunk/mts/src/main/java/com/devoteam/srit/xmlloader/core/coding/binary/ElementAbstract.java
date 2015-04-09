@@ -321,14 +321,6 @@ public abstract class ElementAbstract implements Cloneable
 			FieldAbstract field = (FieldAbstract) iterF.next();
             length += field.getLength();
         }
-		/*
-		Iterator<ElementAbstract> iterE = this.elements.iterator();
-		while (iterE.hasNext())
-		{
-			ElementAbstract element= (ElementAbstract) iterE.next();
-            length += element.getLengthElem();
-        }
-        */
         return length;
     }
 
