@@ -170,12 +170,19 @@ public class BN_TCAPMessage extends BN_ASNMessage
     	{
     		comps = ((TCMessage) asnObject).getUnidirectional().getComponents().getValue();
     	}
+    	else
+    	{
+    		return null;
+    	}
     	
     	Component component = null;
-    	Iterator iter = comps.iterator();
-    	while (iter.hasNext())
+    	if (comps != null)
     	{
-    		component = (Component) iter.next();
+	    	Iterator<Component> iter = comps.iterator();
+	    	while (iter.hasNext())
+	    	{
+	    		component = (Component) iter.next();
+	    	}
     	}
     	
     	Array arrayMAP = null;

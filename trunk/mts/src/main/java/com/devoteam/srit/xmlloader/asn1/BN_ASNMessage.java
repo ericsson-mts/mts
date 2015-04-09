@@ -85,7 +85,15 @@ public class BN_ASNMessage extends ASNMessage
     	// Library binarynotes
     	IEncoder<java.lang.Object> encoderMAP = CoderFactory.getInstance().newEncoder(rule);
     	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        encoderMAP.encode(this.asnObject, outputStream);
+    	try
+    	{
+    		encoderMAP.encode(this.asnObject, outputStream);
+    	}
+    	catch (Exception e)
+    	{
+    		return null;
+    	}
+    	
         byte[] bytesMAP = outputStream.toByteArray();
         Array arrayMAP = new DefaultArray(bytesMAP);
         // String strMAP = Utils.toHexaString(bytesMAP, null);
@@ -101,8 +109,10 @@ public class BN_ASNMessage extends ASNMessage
         InputStream inputStream = new ByteArrayInputStream(array.getBytes());
         Class cl = Class.forName(className);
         this.asnObject = cl.newInstance();
-        this.asnObject = decoder.decode(inputStream, cl);
-        
+        if (array.length > 0)
+        {
+        	this.asnObject = decoder.decode(inputStream, cl);
+        }
     }
 
     @Override

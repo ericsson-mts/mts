@@ -40,9 +40,10 @@ public abstract class Encoder<T> implements IEncoder<T>, IASN1TypesEncoder {
             sizeOfEncodedBytes = encodeClassType(object, stream, elemInfo);
         }
         
-        if( sizeOfEncodedBytes == 0) {
-           throw new IllegalArgumentException("Unable to find any supported annotation for class type: " + object.getClass().toString());
-        };
+        // FHModif remove lines
+        //if( sizeOfEncodedBytes == 0) {
+        //   throw new IllegalArgumentException("Unable to find any supported annotation for class type: " + object.getClass().toString());
+        //};
         
     }
 

@@ -90,7 +90,7 @@ public class ASNInitializer
         return document;
     }
 
-    public void setValue(boolean allChoice, int index, String resultPath, ASNMessage message, Object parentObj, String name, Object objClass, ASN1ElementMetadata objElementInfo) throws Exception  
+    public void setValue(int indexChoice, int index, String resultPath, ASNMessage message, Object parentObj, String name, Object objClass, ASN1ElementMetadata objElementInfo) throws Exception  
     {
 		if (objClass ==  null)
     	{
@@ -134,26 +134,26 @@ public class ASNInitializer
 		String metadata = ASNToXMLConverter.calculateMetadata(objElementInfo, objPreparedEltData);
         
     	Field[] fields = objClass.getClass().getDeclaredFields();
-		if (allChoice || !metadata.contains(".Choice"))
+		if (indexChoice < 0 || !metadata.contains(".Choice"))
 		{
 	        // parsing all fields 
 	    	for (int i = 0; i < fields.length; i++)
 	    	{
 	    		Field field = fields[i];    		
-	    		setValueField(allChoice, i, field, resultPath, message, parentObj, objClass, objPreparedEltData);
+	    		setValueField(indexChoice, i, field, resultPath, message, parentObj, objClass, objPreparedEltData);
 			}
 		}
 		else
 		{
 			// parsing field # 0
-			index = index % (fields.length - 1);
+			index = indexChoice % (fields.length - 1);
     		Field field = fields[index];    		
-    		setValueField(allChoice, index, field, resultPath, message, parentObj, objClass, objPreparedEltData);			
+    		setValueField(indexChoice, index, field, resultPath, message, parentObj, objClass, objPreparedEltData);			
 		}
     }
 
     
-    private void setValueField(boolean allChoice, int index, Field field, String resultPath, ASNMessage message, Object parentObj, Object objClass, ASN1PreparedElementData objElementInfo) throws Exception
+    private void setValueField(int indexChoice, int index, Field field, String resultPath, ASNMessage message, Object parentObj, Object objClass, ASN1PreparedElementData objElementInfo) throws Exception
     {
 		field.setAccessible(true);
 		//System.out.println(f);
@@ -197,7 +197,7 @@ public class ASNInitializer
 					else
 					{
 						Class tabClass = (Class) typeActualTypeArg[0];
-						tabObject = getSubObject(allChoice, index, resultPath, message, parentObj, field.getName(), objClass, tabClass, subobjElementInfo);
+						tabObject = getSubObject(indexChoice, index, resultPath, message, parentObj, field.getName(), objClass, tabClass, subobjElementInfo);
 					}
 		    		if (tabObject != null)
 		    		{
@@ -209,7 +209,7 @@ public class ASNInitializer
 		}
 		else
 		{
-    		Object subObject = getSubObject(allChoice, index, resultPath, message, parentObj, field.getName(), objClass, field.getType(), subobjElementInfo);
+    		Object subObject = getSubObject(indexChoice, index, resultPath, message, parentObj, field.getName(), objClass, field.getType(), subobjElementInfo);
     		if (subObject != null)
     		{
     			field.set(objClass, subObject);
@@ -218,7 +218,7 @@ public class ASNInitializer
     	
     }
     
-    private Object getSubObject(boolean allChoice, int index, String resultPath, ASNMessage message, Object parentObj, String name, Object obj, Class subClass, ASN1ElementMetadata objElementInfo) throws Exception
+    private Object getSubObject(int indexChoice, int index, String resultPath, ASNMessage message, Object parentObj, String name, Object obj, Class subClass, ASN1ElementMetadata objElementInfo) throws Exception
     {
     	String type = subClass.getCanonicalName();
     	if (type.equals("org.bn.coders.IASN1PreparedElementData") )
@@ -232,7 +232,7 @@ public class ASNInitializer
 		{
 			String replace = embedded.getReplace();
 			Class cl = Class.forName(replace);
-        	Object objEmbedded = getSubObject(allChoice, index, resultPath, message, parentObj, name, obj, cl, objElementInfo);
+        	Object objEmbedded = getSubObject(indexChoice, index, resultPath, message, parentObj, name, obj, cl, objElementInfo);
         	
         	IEncoder<Object> encoderEmbedded = CoderFactory.getInstance().newEncoder("BER");
         	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -345,7 +345,7 @@ public class ASNInitializer
 			Constructor constr = subClass.getConstructor();
 			constr.setAccessible(true);
 			Object subObj = constr.newInstance();
-			setValue(allChoice, index, resultPath, message, obj, name, subObj, objElementInfo);
+			setValue(indexChoice, index, resultPath, message, obj, name, subObj, objElementInfo);
 			return subObj;
 		}
     }

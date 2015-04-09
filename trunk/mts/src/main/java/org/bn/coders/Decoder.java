@@ -325,6 +325,8 @@ public abstract class Decoder implements IDecoder, IASN1TypesDecoder {
         ElementInfo info = createSequenceFieldInfo(elementInfo, sequenceObj, field, fieldIdx);            
             
         if(CoderUtils.isNullField(field,info)) {
+        	// FHModif : remove lines
+        	// return decodeNull(fieldTag,field.getType(),info, stream);
         	// FHModif : new lines
         	DecodedObject value = decodeNull(fieldTag,field.getType(),info, stream);
             if(value!=null) {                
@@ -363,8 +365,9 @@ public abstract class Decoder implements IDecoder, IASN1TypesDecoder {
                 else
                     info.setASN1ElementInfoForClass(field);
                 if(CoderUtils.isMemberClass(field.getType(),info)) {
-                //if(field.getType().isMemberClass()) {
-                    info.setParentObject(choice);
+                	//if(field.getType().isMemberClass()) {
+                		info.setParentObject(choice);
+                	//}
                 }                
                 info.setGenericInfo(field.getGenericType());
                 
@@ -377,10 +380,11 @@ public abstract class Decoder implements IDecoder, IASN1TypesDecoder {
                 
             }            
         }
-        if(value == null && !CoderUtils.isOptional(elementInfo)) {
-            throw new  IllegalArgumentException ("The choice '" + objectClass.toString() + "' does not have a selected item!");
-        }
-        else
+        // FHModif remove lines
+        // if(value == null && !CoderUtils.isOptional(elementInfo)) {
+        //    throw new  IllegalArgumentException ("The choice '" + objectClass.toString() + "' does not have a selected item!");
+        // }
+        //else
             return new DecodedObject(choice, value!=null ? value.getSize(): 0);
     }
         

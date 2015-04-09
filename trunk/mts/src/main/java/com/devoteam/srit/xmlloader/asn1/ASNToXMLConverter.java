@@ -257,10 +257,23 @@ public class ASNToXMLConverter
 		{
 			preparedDataField = objClass.getClass().getDeclaredField("preparedData"); 
 		}
-		catch (Exception e)
+		catch (NoSuchFieldException e)
 		{
-			// Nothing to do
+			//nothing to do
 		}
+		if (preparedDataField == null)
+		{
+			try
+			{
+				String className = objClass.getClass().getSimpleName();
+				preparedDataField = objClass.getClass().getDeclaredField("preparedData_" + className);
+			}
+			catch (NoSuchFieldException e)
+			{
+				//nothing to do
+			}			
+		}
+
 		ASN1PreparedElementData objPreparedEltData = null;
 		if (preparedDataField != null)
 		{
