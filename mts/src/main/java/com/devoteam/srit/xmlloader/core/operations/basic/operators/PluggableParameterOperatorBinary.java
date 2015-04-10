@@ -283,7 +283,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 }
                 else if (name.equals(NAME_BIN_RANDOM))
                 {
-                    result.add(Array.toHexString(new RandomArray(new Integer(param_1.get(i).toString()))));
+                	Array random = new RandomArray(new Integer(param_1.get(i).toString()));
+                    result.add(Array.toHexString(random));
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_DIGEST))
                 {
