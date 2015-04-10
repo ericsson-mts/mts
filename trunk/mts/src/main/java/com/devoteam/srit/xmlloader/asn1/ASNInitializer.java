@@ -192,7 +192,8 @@ public class ASNInitializer
 					Object tabObject = null;
 					if ("byte[]".equals(typeActualTypeArg[0].toString()))
 					{
-						tabObject = Utils.randomBytes();
+						int numByte = (int) Utils.randomLong(1, 10L);
+						tabObject = Utils.randomBytes(numByte);
 					}
 					else
 					{
@@ -290,7 +291,8 @@ public class ASNInitializer
         			// nothing to do
         		}
         	}
-        	return Utils.randomBytes();
+        	int numByte = (int) Utils.randomLong(1, 10L);
+        	return Utils.randomBytes(numByte);
     	}
     	else if (type.equals("java.lang.Boolean") || type.equals("boolean"))
     	{
