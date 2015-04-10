@@ -86,11 +86,13 @@
                   <element name="TP-MR" coding="V" description="TP Message Reference">
                     <field name="TP-MR" value="1" type="integer" length="1" description="TP Message Reference" />
                   </element>
-                  <element name="TP-RA" coding="DV" description="TP Recipient Address">
-                		<field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" description="extension"/>
-                    <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3" description="nature of address"/>
-                    <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" description="numbering plan"/>
-                    <field name="digits" value="33638060002" type="number_bcd" description="digits"/>
+                  <element name="TP-RA" coding="V" description="TP Recipient Address">
+                    <element name="Address" coding="DV" description="Generic Address" comment="Address of the function.">
+                  		<field name="extension" value="no extension:1" type="enumeration" lengthBit="1" description="extension"/>
+                      <field name="nature of address" value="international number:1" type="enumeration" lengthBit="3" description="nature of address"/>
+                      <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="enumeration" lengthBit="4" description="numbering plan"/>
+                      <field name="digits" value="33638060002" type="number_bcd" description="digits"/>
+                    </element>
                   </element>
                   <element name="TP-SCTS" coding="V" description="TP Discharge Time">
                       <field name="TP-DT" value="14121911134700" type="number_bcd" length="7" description="Discharge Time"/>

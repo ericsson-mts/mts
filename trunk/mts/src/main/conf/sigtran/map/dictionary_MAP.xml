@@ -169,13 +169,9 @@
         <field name="digits" type="binary" description="digits"/>
     </element>
     
-    <!-- TP-MR => 3GPP TS 03.40 V7.5.0 chapter 9.2.3.6 page 51  -->
-    <!-- TP-MR => 3GPP TS 23.040 V12.2.2 chapter 9.2.3.6 page 62 -->
-    <element name="TP-MR" coding="V" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT.">
-        <field name="TP-MR" type="integer" length="1" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT."/>
-    </element>
-    
-    <element name="TP-Address" coding="DV" description="Generic Address" comment="Address of the function.">
+        <!-- TP-MR => 3GPP TS 03.40 V7.5.0 chapter x.y.z page ppp  -->
+    <!-- TP-MR => 3GPP TS 23.040 V12.2.0 chapter 9.1.2.5 page 47 -->    
+    <element name="Address" coding="DV" description="Generic Address" comment="Address of the function.">
         <field name="extension" type="EnumLong" lengthBit="1" description="extension">
             <enum name="extension" value="0"/>
             <enum name="no extension" value="1"/>
@@ -204,6 +200,12 @@
             <enum name="reserved for extension" value="15" description="b1111"/>
         </field>
         <field name="digits" type="number_bcd" description="digits"/>
+    </element>
+
+    <!-- TP-MR => 3GPP TS 03.40 V7.5.0 chapter 9.2.3.6 page 51  -->
+    <!-- TP-MR => 3GPP TS 23.040 V12.2.2 chapter 9.2.3.6 page 62 -->
+    <element name="TP-MR" coding="V" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT.">
+        <field name="TP-MR" type="integer" length="1" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT."/>
     </element>
         
     <!-- TP-MR => 3GPP TS 03.40 V7.5.0 chapter 9.2.3.9 page 52  -->
@@ -346,7 +348,7 @@
         <!-- TP-MR => 3GPP TS 03.40 V7.5.0 chapter 9.2.3.7 page 52  -->
         <!-- TP-MR => 3GPP TS 23.040 V12.2.2 chapter 9.2.3.7 page 63 -->
         <element name="TP-DA" coding="V" description="TP Destination Address" comment="Address of the destination SME.">
-            <element name="TP-Address" coding="DV" description="Generic Address" comment="Address of the function."/>
+            <element name="Address" coding="DV" description="Generic Address" comment="Address of the function."/>
         </element>
         <element name="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any."/>
         <element name="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data."/>
@@ -396,35 +398,8 @@
         </element>
         <!-- TP-MR => 3GPP TS 03.40 V7.5.0 chapter 9.2.3.8 page 52  -->     
         <!-- TP-MR => 3GPP TS 23.040 V12.2.2 chapter 9.2.3.8 page 63 -->
-        <element name="TP-OA" coding="DV" description="TP Originating Address" comment="Address of the originating SME.">
-        		<field name="extension" type="EnumLong" lengthBit="1" description="extension">
-                <enum name="extension" value="0"/>
-                <enum name="no extension" value="1"/>
-            </field>
-            <field name="nature of address" type="EnumLong" lengthBit="3" description="nature of address">
-                <enum name="unknown" value="0" description="b000"/>
-                <enum name="international number" value="1" description="b001"/>
-                <enum name="national significant number" value="2" description="b010"/>
-                <enum name="network specific number" value="3" description="b011"/>
-                <enum name="subscriber number" value="4" description="b100"/>
-                <enum name="reserved" value="5" description="b101"/>
-                <enum name="abbreviated number" value="6" description="b110"/>
-                <enum name="reserved for extension" value="7" description="b111"/>
-            </field>
-            <field name="numbering plan" type="EnumLong" lengthBit="4" description="numbering plan">
-                <enum name="unknown" value="0" description="b0000"/>
-                <enum name="ISDN/Telephony Numbering Plan (Rec ITU-T E.164)" value="1" description="b0001"/>
-                <enum name="spare" value="2" description="b0010"/>
-                <enum name="data numbering plan (ITU-T Rec X.121)" value="3" description="b0011"/>
-                <enum name="telex numbering plan (ITU-T Rec F.69)" value="4" description="b0100"/>
-                <enum name="spare" value="5" description="b0101"/>
-                <enum name="land mobile numbering plan (ITU-T Rec E.212)" value="6" description="b0110"/>
-                <enum name="spare" value="7" description="b0111"/>
-                <enum name="national numbering plan" value="8" description="b1000"/>
-                <enum name="private numbering plan" value="9" description="b1001"/>
-                <enum name="reserved for extension" value="15" description="b1111"/>
-            </field>
-            <field name="digits" type="number_bcd" description="digits"/>
+        <element name="TP-OA" coding="V" description="TP Originating Address" comment="Address of the originating SME.">
+            <element name="Address" coding="DV" description="Generic Address" comment="Address of the function."/>
         </element>
         <element name="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any."/>
         <element name="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data."/>
@@ -464,35 +439,8 @@
         <element name="TP-MR" coding="V" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT."/>
         <!-- TP-MR => 3GPP TS 03.40 V7.5.0 chapter 9.2.3.14 page 55  -->
         <!-- TP-MR => 3GPP TS 23.040 V12.2.2 chapter 9.2.3.14 page 67 -->
-        <element name="TP-RA" coding="DV" description="TP Recipient Address" comment="Address of the recipient of the previously submitted mobile originated short message.">
-            <field name="extension" type="EnumLong" lengthBit="1" description="extension">
-                <enum name="extension" value="0"/>
-                <enum name="no extension" value="1"/>
-            </field>
-            <field name="nature of address" type="EnumLong" lengthBit="3" description="nature of address">
-                <enum name="unknown" value="0" description="b000"/>
-                <enum name="international number" value="1" description="b001"/>
-                <enum name="national significant number" value="2" description="b010"/>
-                <enum name="network specific number" value="3" description="b011"/>
-                <enum name="subscriber number" value="4" description="b100"/>
-                <enum name="reserved" value="5" description="b101"/>
-                <enum name="abbreviated number" value="6" description="b110"/>
-                <enum name="reserved for extension" value="7" description="b111"/>
-            </field>
-            <field name="numbering plan" type="EnumLong" lengthBit="4" description="numbering plan">
-                <enum name="unknown" value="0" description="b0000"/>
-                <enum name="ISDN/Telephony Numbering Plan (Rec ITU-T E.164)" value="1" description="b0001"/>
-                <enum name="spare" value="2" description="b0010"/>
-                <enum name="data numbering plan (ITU-T Rec X.121)" value="3" description="b0011"/>
-                <enum name="telex numbering plan (ITU-T Rec F.69)" value="4" description="b0100"/>
-                <enum name="spare" value="5" description="b0101"/>
-                <enum name="land mobile numbering plan (ITU-T Rec E.212)" value="6" description="b0110"/>
-                <enum name="spare" value="7" description="b0111"/>
-                <enum name="national numbering plan" value="8" description="b1000"/>
-                <enum name="private numbering plan" value="9" description="b1001"/>
-                <enum name="reserved for extension" value="15" description="b1111"/>
-            </field>
-            <field name="digits" type="number_bcd" description="digits"/>
+        <element name="TP-RA" coding="V" description="TP Recipient Address" comment="Address of the recipient of the previously submitted mobile originated short message.">
+            <element name="Address" coding="DV" description="Generic Address" comment="Address of the function."/>
         </element>
         <element name="TP-SCTS" coding="V" description="TP Service Centre Time Stamp" comment="Parameter identifying time when the SC received the message."/>        
         <element name="TP-DT" coding="V" description="TP Discharge Time" comment="Parameter identifying the time associated with a particular TP ST outcome.">
