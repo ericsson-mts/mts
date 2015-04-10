@@ -621,9 +621,11 @@ public abstract class ElementAbstract implements Cloneable
     	elemString.append("\"");
     	if (fieldsArray != null)
         {
-            elemString.append(" value=\"" + Array.toHexString(fieldsArray));
+    		elemString.append(" value=\"");
+            elemString.append(Array.toHexString(fieldsArray));
+            elemString.append("\"");
         }
-        elemString.append("\">");
+    	elemString.append(">");
         
         elemString.append(fieldsElementsToXml(indent + ASNToXMLConverter.NUMBER_SPACE_TABULATION));
         
