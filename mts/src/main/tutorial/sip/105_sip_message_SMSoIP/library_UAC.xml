@@ -69,11 +69,13 @@
   <element name="TP-MR" coding="V">
     <field name="TP-MR" value="1" type="Integer" length="1"/>
   </element>
-  <element name="TP-DA" coding="DV">
-    <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
-    <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
-    <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
-    <field name="digits" value="[MSISDN-User2WithoutPlus]" type="Number_BCD" length="6"/>
+  <element name="TP-DA" coding="V">
+    <element name="Address" coding="DV" description="Generic Address" comment="Address of the function.">
+  		<field name="extension" value="no extension:1" type="enumeration" lengthBit="1" description="extension"/>
+      <field name="nature of address" value="international number:1" type="enumeration" lengthBit="3" description="nature of address"/>
+      <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="enumeration" lengthBit="4" description="numbering plan"/>
+      <field name="digits" value="[MSISDN-User2WithoutPlus]" type="number_bcd" description="digits"/>
+    </element>
   </element>
   <element name="TP-PID" coding="V">
     <field name="assignment" value="Assigns bits 0..5 as defined below:0" type="EnumLong" lengthBit="2"/>
