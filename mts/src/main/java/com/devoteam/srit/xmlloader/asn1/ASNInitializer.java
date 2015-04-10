@@ -256,7 +256,7 @@ public class ASNInitializer
 	    	if (message != null)
 	    	{
 	    		// TODO propager le parentObj
-	    		index = (byte) Utils.randomLong(0, 3);
+	    		index = (byte) Utils.randomLong(0, 2);
 	    		byte byteIndex = (byte) index;
 		    	elementDico = message.getElementFromDico(obj, resultPath, new byte[]{byteIndex});
 	    	}
