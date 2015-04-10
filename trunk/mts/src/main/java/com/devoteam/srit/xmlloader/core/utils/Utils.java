@@ -1492,14 +1492,15 @@ public class Utils
 
 	public static byte[] randomBytes()
 	{	
-		int numByte = (int) Utils.randomLong(0, 20L);
+		int numByte = (int) Utils.randomLong(0, 20L) + 1;
 		Array data = new RandomArray(numByte);
 		SupArray supArray = new SupArray();
 		supArray.addLast(data);
 		// add a tag to be compliant with asn1 data
 		Array tag = new DefaultArray(new byte[]{4, (byte)numByte});
 		supArray.addFirst(tag);
-		return supArray.getBytes();
+		return data.getBytes();
+		//return supArray.getBytes();
 	}
 
 	public static long randomLong(long min, long max)
