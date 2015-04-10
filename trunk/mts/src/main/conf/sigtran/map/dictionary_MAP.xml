@@ -175,6 +175,37 @@
         <field name="TP-MR" type="integer" length="1" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT."/>
     </element>
     
+    <element name="TP-Address" coding="DV" description="Generic Address" comment="Address of the function.">
+        <field name="extension" type="EnumLong" lengthBit="1" description="extension">
+            <enum name="extension" value="0"/>
+            <enum name="no extension" value="1"/>
+        </field>
+        <field name="nature of address" type="EnumLong" lengthBit="3" description="nature of address">
+            <enum name="unknown" value="0" description="b000"/>
+            <enum name="international number" value="1" description="b001"/>
+            <enum name="national significant number" value="2" description="b010"/>
+            <enum name="network specific number" value="3" description="b011"/>
+            <enum name="subscriber number" value="4" description="b100"/>
+            <enum name="reserved" value="5" description="b101"/>
+            <enum name="abbreviated number" value="6" description="b110"/>
+            <enum name="reserved for extension" value="7" description="b111"/>
+        </field>
+        <field name="numbering plan" type="EnumLong" lengthBit="4" description="numbering plan">
+            <enum name="unknown" value="0" description="b0000"/>
+            <enum name="ISDN/Telephony Numbering Plan (Rec ITU-T E.164)" value="1" description="b0001"/>
+            <enum name="spare" value="2" description="b0010"/>
+            <enum name="data numbering plan (ITU-T Rec X.121)" value="3" description="b0011"/>
+            <enum name="telex numbering plan (ITU-T Rec F.69)" value="4" description="b0100"/>
+            <enum name="spare" value="5" description="b0101"/>
+            <enum name="land mobile numbering plan (ITU-T Rec E.212)" value="6" description="b0110"/>
+            <enum name="spare" value="7" description="b0111"/>
+            <enum name="national numbering plan" value="8" description="b1000"/>
+            <enum name="private numbering plan" value="9" description="b1001"/>
+            <enum name="reserved for extension" value="15" description="b1111"/>
+        </field>
+        <field name="digits" type="number_bcd" description="digits"/>
+    </element>
+        
     <!-- TP-MR => 3GPP TS 03.40 V7.5.0 chapter 9.2.3.9 page 52  -->
     <!-- TP-MR => 3GPP TS 23.040 V12.2.2 chapter 9.2.3.9 page 63 -->
     <element name="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any.">
@@ -314,35 +345,8 @@
         <element name="TP-MR" coding="V" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT."/>
         <!-- TP-MR => 3GPP TS 03.40 V7.5.0 chapter 9.2.3.7 page 52  -->
         <!-- TP-MR => 3GPP TS 23.040 V12.2.2 chapter 9.2.3.7 page 63 -->
-        <element name="TP-DA" coding="DV" description="TP Destination Address" comment="Address of the destination SME.">
-        		<field name="extension" type="EnumLong" lengthBit="1" description="extension">
-                <enum name="extension" value="0"/>
-                <enum name="no extension" value="1"/>
-            </field>
-            <field name="nature of address" type="EnumLong" lengthBit="3" description="nature of address">
-                <enum name="unknown" value="0" description="b000"/>
-                <enum name="international number" value="1" description="b001"/>
-                <enum name="national significant number" value="2" description="b010"/>
-                <enum name="network specific number" value="3" description="b011"/>
-                <enum name="subscriber number" value="4" description="b100"/>
-                <enum name="reserved" value="5" description="b101"/>
-                <enum name="abbreviated number" value="6" description="b110"/>
-                <enum name="reserved for extension" value="7" description="b111"/>
-            </field>
-            <field name="numbering plan" type="EnumLong" lengthBit="4" description="numbering plan">
-                <enum name="unknown" value="0" description="b0000"/>
-                <enum name="ISDN/Telephony Numbering Plan (Rec ITU-T E.164)" value="1" description="b0001"/>
-                <enum name="spare" value="2" description="b0010"/>
-                <enum name="data numbering plan (ITU-T Rec X.121)" value="3" description="b0011"/>
-                <enum name="telex numbering plan (ITU-T Rec F.69)" value="4" description="b0100"/>
-                <enum name="spare" value="5" description="b0101"/>
-                <enum name="land mobile numbering plan (ITU-T Rec E.212)" value="6" description="b0110"/>
-                <enum name="spare" value="7" description="b0111"/>
-                <enum name="national numbering plan" value="8" description="b1000"/>
-                <enum name="private numbering plan" value="9" description="b1001"/>
-                <enum name="reserved for extension" value="15" description="b1111"/>
-            </field>
-            <field name="digits" type="number_bcd" description="digits"/>
+        <element name="TP-DA" coding="V" description="TP Destination Address" comment="Address of the destination SME.">
+            <element name="TP-Address" coding="DV" description="Generic Address" comment="Address of the function."/>
         </element>
         <element name="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any."/>
         <element name="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data."/>
@@ -643,7 +647,7 @@
         <!--conditional element : if TP-UDL present="present:1"-->
         <!--element name="TP-UD" coding="V" description="TP User Data" -->
     </element>
-
+    
     <!-- Operation code local value => MAP.asn line 76 -->
     <element name="opCode.localValue" coding="V" description="Operation code local value">
     		<field name="localValue" type="EnumLong" length="1" description="operation code">

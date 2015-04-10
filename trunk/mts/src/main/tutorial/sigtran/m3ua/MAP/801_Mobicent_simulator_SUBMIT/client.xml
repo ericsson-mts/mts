@@ -83,11 +83,13 @@
                   <element name="TP-MR" coding="V" description="TP Message Reference">
                     <field name="TP-MR" value="8" type="integer" length="1" description="TP Message Reference" />
                   </element>
-                  <element name="TP-DA" coding="DV" description="TP Destination Address">
-                		<field name="extension" value="no extension:1" type="enumeration" lengthBit="1" description="extension"/>
-                    <field name="nature of address" value="international number:1" type="enumeration" lengthBit="3" description="nature of address"/>
-                    <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="enumeration" lengthBit="4" description="numbering plan"/>
-                    <field name="digits" value="33660650767" type="number_bcd" description="digits"/>
+                  <element name="TP-DA" coding="V" description="TP Destination Address">
+                    <element name="TP-Address" coding="DV" description="Generic Address" comment="Address of the function.">
+                  		<field name="extension" value="no extension:1" type="enumeration" lengthBit="1" description="extension"/>
+                      <field name="nature of address" value="international number:1" type="enumeration" lengthBit="3" description="nature of address"/>
+                      <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="enumeration" lengthBit="4" description="numbering plan"/>
+                      <field name="digits" value="33660650767" type="number_bcd" description="digits"/>
+                    </element>
                   </element>
                   <element name="TP-PID" coding="V" description="TP Protocol Identifier">
                 		<field name="assignment" value="Assigns bits 0..5 as defined below:0" type="enumeration" lengthBit="2" description="next bits assignment"/>
