@@ -7,7 +7,7 @@
   <parameter name="[IPAddressDIAM]" operation="set" value="[IPAddressDIAM(0)]"/>
   
   <parameter name="[network]" operation="set" value="[IPAddressDIAM]"/>  
-  <parameter name="[filter]" operation="set" value="(src host [IPAddressDIAM]) and (dst host [IPAddressDIAM]) and ((src port [localPortDIAM]) or (dst port [remotePortDIAM]))"/>
+  <parameter name="[filter]" operation="set" value="((src host [IPAddressDIAM]) or (dst host [IPAddressDIAM])) and ((src port [localPortDIAM]) or (dst port [remotePortDIAM]))"/>
 
   <createProbeDIAMETER name="probe" networkInterface="[network]" captureFilter="[filter]"/>
 

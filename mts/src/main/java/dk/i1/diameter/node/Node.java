@@ -186,13 +186,14 @@ public class Node {
 		} catch(java.lang.InterruptedException ex) {}
 		reconnect_thread = null;
 		//close all connections not already closed
-		//(todo) if a connection's out-buffer is non-empty we should wait for it to empty.
 		synchronized(map_key_conn) {
 			for(Map.Entry<ConnectionKey,Connection> e : map_key_conn.entrySet()) {
 				Connection conn = e.getValue();
-				closeConnection(conn);
+				closeConnectionWithoutRemove(conn, false);
 			}
 		}
+		map_key_conn.clear();
+
 		//other cleanup
 		synchronized(obj_conn_wait) {
 			obj_conn_wait.notifyAll();
@@ -624,7 +625,17 @@ public class Node {
 		}
 		connection_listener.handle(conn.key, conn.peer, false);
 	}
-	
+
+	void closeConnectionWithoutRemove(Connection conn, boolean reset) {
+		if(conn.state==Connection.State.closed) return;
+		logger.log(Level.INFO,"Closing connection to " + (conn.peer!=null ? conn.peer.toString() : conn.host_id));
+		synchronized(map_key_conn) {
+			conn.node_impl.close(conn,reset);
+			conn.state = Connection.State.closed;
+		}
+		connection_listener.handle(conn.key, conn.peer, false);
+	}
+
 	//Send a DPR with the specified disconnect-cause, want change the state to 'closing'
 	private void initiateConnectionClose(Connection conn, int why) {
 		if(conn.state!=Connection.State.ready)
@@ -754,17 +765,30 @@ public class Node {
 			}
 			avp = msg.find(ProtocolConstants.DI_VENDOR_SPECIFIC_APPLICATION_ID);
 			if(avp!=null) {
-				AVP g[] = new AVP_Grouped(avp).queryAVPs();
-				if(g.length==2 &&
-				   g[0].code==ProtocolConstants.DI_VENDOR_ID) {
-					int vendor_id = new AVP_Unsigned32(g[0]).queryValue();
-					int app = new AVP_Unsigned32(g[1]).queryValue();
-					if(logger.isLoggable(Level.FINE))
-						logger.log(Level.FINE,"vendor-id="+vendor_id+", app="+app);
-					if(g[1].code==ProtocolConstants.DI_AUTH_APPLICATION_ID)
-						return peer.capabilities.isAllowedAuthApp(vendor_id,app);
-					if(g[1].code==ProtocolConstants.DI_ACCT_APPLICATION_ID)
-						return peer.capabilities.isAllowedAcctApp(vendor_id,app);
+				AVP avpVendor_id = findSubAVPWithCode(avp, ProtocolConstants.DI_VENDOR_ID);
+				if (avpVendor_id != null)
+				{
+					int vendor_id = new AVP_Unsigned32(avpVendor_id).queryValue();
+					AVP avpAuthApp_id = findSubAVPWithCode(avp, ProtocolConstants.DI_AUTH_APPLICATION_ID);
+					if (avpAuthApp_id != null)
+					{
+						int authApp_id = new AVP_Unsigned32(avpAuthApp_id).queryValue();
+						boolean result = peer.capabilities.isAllowedAuthApp(vendor_id, authApp_id);
+						if (result)
+						{
+							return true;
+						}
+					}
+					AVP avpAcctApp_id = findSubAVPWithCode(avp, ProtocolConstants.DI_ACCT_APPLICATION_ID);
+					if (avpAcctApp_id != null)
+					{
+						int acctApp_id = new AVP_Unsigned32(avpAcctApp_id).queryValue();
+						boolean result = peer.capabilities.isAllowedAuthApp(vendor_id, acctApp_id);
+						if (result)
+						{
+							return true;
+						}
+					}
 				}
 				return false;
 			}
@@ -773,6 +797,20 @@ public class Node {
 			logger.log(Level.INFO,"Encountered invalid AVP length while looking at application-id",ex);
 		}
 		return false;
+	}
+	private static AVP findSubAVPWithCode(AVP avp, int code) throws InvalidAVPLengthException
+	{
+		AVP avps[] = new AVP_Grouped(avp).queryAVPs();
+		int i = 0;
+		while(i < avps.length)
+		{
+			if (avps[i].code==code)
+			{
+				return avps[i];
+			}
+			i = i + 1;
+		}
+		return null;
 	}
 	private void rejectDisallowedRequest(Message msg, Connection conn) {
 		logger.log(Level.WARNING,"Rejecting request  from " + conn.peer.host() + " (command=" + msg.hdr.command_code + ") because it is not allowed.");
@@ -1029,28 +1067,32 @@ public class Node {
 					reported_capabilities.addAcctApp(app);
 			}
 			for(AVP a : msg.subset(ProtocolConstants.DI_VENDOR_SPECIFIC_APPLICATION_ID)) {
-				AVP_Grouped ag = new AVP_Grouped(a);
-				AVP g[] = ag.queryAVPs();
-				if(g.length>=2 && g[0].code==ProtocolConstants.DI_VENDOR_ID) {
-					int vendor_id = new AVP_Unsigned32(g[0]).queryValue();
-					int app = new AVP_Unsigned32(g[1]).queryValue();
-					if(g[1].code==ProtocolConstants.DI_AUTH_APPLICATION_ID) {
-						reported_capabilities.addVendorAuthApp(vendor_id,app);
-					} else if(g[1].code==ProtocolConstants.DI_ACCT_APPLICATION_ID) {
-						reported_capabilities.addVendorAcctApp(vendor_id,app);
-					} else
+				AVP_Grouped avp = new AVP_Grouped(a);
+				AVP avpVendor_id = findSubAVPWithCode(avp, ProtocolConstants.DI_VENDOR_ID);
+				if (avpVendor_id != null)
+				{
+					int vendor_id = new AVP_Unsigned32(avpVendor_id).queryValue();
+					AVP avpAuthApp_id = findSubAVPWithCode(avp, ProtocolConstants.DI_AUTH_APPLICATION_ID);
+					AVP avpAcctApp_id = findSubAVPWithCode(avp, ProtocolConstants.DI_ACCT_APPLICATION_ID);
+					if (avpAuthApp_id != null)
+					{
+						int authApp_id = new AVP_Unsigned32(avpAuthApp_id).queryValue();
+						reported_capabilities.addVendorAuthApp(vendor_id, authApp_id);
+					}
+					else if (avpAcctApp_id != null)
+					{
+						int acctApp_id = new AVP_Unsigned32(avpAcctApp_id).queryValue();
+						reported_capabilities.addVendorAuthApp(vendor_id, acctApp_id);
+					}
+					else
+					{
 						throw new InvalidAVPValueException(a);
-				} else if(g.length>=2 && g[1].code==ProtocolConstants.DI_VENDOR_ID) {
-					int vendor_id = new AVP_Unsigned32(g[1]).queryValue();
-					int app = new AVP_Unsigned32(g[0]).queryValue();
-					if(g[0].code==ProtocolConstants.DI_AUTH_APPLICATION_ID) {
-						reported_capabilities.addVendorAuthApp(vendor_id,app);
-					} else if(g[0].code==ProtocolConstants.DI_ACCT_APPLICATION_ID) {
-						reported_capabilities.addVendorAcctApp(vendor_id,app);
-					} else
-						throw new InvalidAVPValueException(a);
-				} else
+					}
+				}
+				else
+				{
 					throw new InvalidAVPValueException(a);
+				}				
 			}
 
 			Capability result_capabilities = node_validator.authorizeNode(conn.host_id, settings, reported_capabilities);
