@@ -186,14 +186,42 @@
     <parameter name="[avp14vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.vendorId"/>
     <test parameter="[avp14vendor]" condition="number.equals" value="10415"/>
 
+    <parameter name="[avp15code]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.code"/>
+    <test parameter="[avp15code]" condition="number.equals" value="260"/>
+    <parameter name="[avp15vendor]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.vendorId"/>
+    <test parameter="[avp15vendor]" condition="number.equals" value="0"/>
+    <parameter name="[avp15Acct]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Acct-Application-Id.value"/>
+    <test parameter="[avp15Acct]" condition="number.equals" value="[applicationID]"/>
+    <parameter name="[avp15Auth]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>
+    <test parameter="[avp15Auth]" condition="number.equals" value="[applicationID]"/>    
+    <parameter name="[avp15VendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>
+    <test parameter="[avp15VendorId]" condition="number.equals" value="10415"/>        
+    <parameter name="[avp15999]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.999999999.binary"/>
+    <test parameter="[avp15999]" condition="list.size" value="4"/>    
+    <test parameter="[avp15999]" condition="binary.equals" value="499602d2"/>    
+
+    <parameter name="[avp16code]" operation="protocol.setFromMessage" value="avp.99999999.code"/>
+    <test parameter="[avp16code]" condition="number.equals" value="99999999"/>
+    <parameter name="[avp16val]" operation="protocol.setFromMessage" value="avp.99999999.value"/>
+    <test parameter="[avp16val]" condition="list.isEmpty"/>
+    <parameter name="[avp16bin]" operation="protocol.setFromMessage" value="avp.99999999.binary"/>
+    <test parameter="[avp16bin]" condition="binary.equals" value="499602d2"/>
+    <parameter name="[avp16vendor]" operation="protocol.setFromMessage" value="avp.99999999.vendorId"/>
+    <test parameter="[avp16vendor]" condition="number.equals" value="10415"/>
+
     <sendMessageDIAMETER name="SendAnswerMAA">
         <header request="false" command="[commandCode]" applicationId="[applicationID]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id" value="[sessionId]"/>
         <avp code="Origin-Host" value="[remoteHostDIAM]"/>
         <avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
-        <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" value="[vendorID]"/>
+        <avp code="Vendor-Specific-Application-Id">                                      
+            <avp code="999999999" mandatory="true" type="Unsigned32" value="1234567890"/>              
+            <avp code="Acct-Application-Id" value="[applicationID]"/>
+            <avp code="999999999" mandatory="true" type="Unsigned32" value="1234567890"/>
             <avp code="Auth-Application-Id" value="[applicationID]"/>
+            <avp code="999999999" mandatory="true" type="Unsigned32" value="1234567890"/>
+            <avp code="Vendor-Id" value="TGPP"/>
+            <avp code="999999999" mandatory="true" type="Unsigned32" value="1234567890"/>
         </avp>
         <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
         <avp code="Result-Code" value="2001"/>		

@@ -16,9 +16,14 @@
           <avp code="Origin-Realm" value="[localRealmDIAM]"/>
           <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
           <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>		
-          <avp code="Vendor-Specific-Application-Id">
-              <avp code="Vendor-Id" value="TGPP"/>
+          <avp code="Vendor-Specific-Application-Id">                                      
+              <avp code="999999999" mandatory="true" type="Unsigned32" value="1234567890"/>              
+              <avp code="Acct-Application-Id" value="[applicationID]"/>
+              <avp code="999999999" mandatory="true" type="Unsigned32" value="1234567890"/>
               <avp code="Auth-Application-Id" value="[applicationID]"/>
+              <avp code="999999999" mandatory="true" type="Unsigned32" value="1234567890"/>
+              <avp code="Vendor-Id" value="TGPP"/>
+              <avp code="999999999" mandatory="true" type="Unsigned32" value="1234567890"/>
           </avp>
           <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
           <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
@@ -29,7 +34,8 @@
               <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5' vendorId="TGPP"/>
               <avp code="Authentication-Context" value="INVITE" vendorId="TGPP"/>
           </avp>
-          <avp code="10000" value="badValue" vendorId="TGPP" state="false"/>
+          <avp code="99999999" value="1234567890" vendorId="TGPP" state="true"/>
+          <avp code="99999999" value="1111111111" vendorId="TGPP" state="false"/>
           <avp code="IMS-Information" vendorId="TGPP" state="true">
               <avp code="Event-Type" value="badValue1" vendorId="TGPP" state="false"/>
               <avp code="Role-Of-Node" value="[emptyList]" vendorId="TGPP" state="false"/>
