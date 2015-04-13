@@ -62,11 +62,13 @@ class TCPNode extends NodeImplementation {
 	}
 	
 	void closeIO() {
-		logger.log(Level.FINEST,"Closing server channel, etc.");
+		logger.log(Level.FINEST,"Closing server channel");
 		if(serverChannel!=null) {
 			try {
 				serverChannel.close();
-			} catch(java.io.IOException ex) {}
+			} catch(java.io.IOException ex) {
+				logger.log(Level.WARNING,"Closing server channel : ", ex);
+			}
 		}
 		serverChannel=null;
 		try {

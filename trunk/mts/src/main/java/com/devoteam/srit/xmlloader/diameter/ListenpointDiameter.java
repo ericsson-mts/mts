@@ -127,6 +127,7 @@ public class ListenpointDiameter extends Listenpoint
     	}
         catch (Exception e ) 
         {
+        	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Exception in diameterNode.reset() ", e);
         	// nothing to do
         }
     	diameterNode = null;
