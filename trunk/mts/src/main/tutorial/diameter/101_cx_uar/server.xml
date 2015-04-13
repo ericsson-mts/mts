@@ -57,9 +57,9 @@ User-Authorization-Answer> ::= < Diameter Header: 300, PXY, 16777216 >
         <header request="false" command="[commandCode]" applicationId="[applicationID]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
           <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
             <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
             <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
           </avp>
 
           <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
