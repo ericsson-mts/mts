@@ -252,46 +252,52 @@ public class ASNInitializer
         }
     	else if (type.equals("byte[]"))
     	{				
+    		String simpleClassName = obj.getClass().getSimpleName();
 			// get the element definition (enumeration binary data) from the dictionary
 	    	ElementAbstract elementDico = null;
+	    	byte[] bytes = null;
 	    	if (message != null)
 	    	{
-	    		// TODO propager le parentObj
-	    		index = (byte) Utils.randomLong(0, 2);
-	    		byte byteIndex = (byte) index;
-		    	elementDico = message.getElementFromDico(obj, resultPath, new byte[]{byteIndex});
+	    		if ("Sm_RP_UI".equals(simpleClassName))
+		    	{
+	        		// case of the Sm-RP-UI element
+		    		index = (byte) Utils.randomLong(0, 2);
+		    		byte byteIndex = (byte) index;
+		    		bytes = new byte[]{byteIndex};
+		    	}
+		    	elementDico = message.getElementFromDico(name, obj, resultPath, bytes);
+	        	if (elementDico != null)
+	        	{
+	        		// TODO bug dans la fonction copyToClone() : retourne toujours un IntegerField
+	        		// Est ce que c'est réellement un pb ? a voir à l'usage
+	        		//ElementValue elementClone = new ElementValue(); 
+	        		//elementClone.copyToClone(elementDico);
+	        		elementDico.initValue(index, message.dictionary);
+	        		
+	        		// case of the Sm-RP-UI element
+	        		ElementAbstract element0 = elementDico.getElement(0);
+	        		if (element0 != null && "Sm_RP_UI".equals(simpleClassName))
+	        		{
+		        		SupArray arrayElement0 = element0.getFieldsArray();
+		        		FieldAbstract fieldTPMTI = element0.getFieldsByName("TP-MTI");
+		        		String strIndex = new Integer(index).toString();
+		        		fieldTPMTI.setValue(strIndex, 6, arrayElement0);
+	        		}
+	        		
+	        		Array array = null;
+	        		try
+	        		{
+	        			array = elementDico.encodeToArray();
+	            		return array.getBytes();
+	        		}
+	        		catch (Exception e)
+	        		{
+	        			// nothing to do
+	        		}
+	        	}
 	    	}
-        	if (elementDico != null)
-        	{
-        		// TODO bug dans la fonction copyToClone() : retourne toujours un IntegerField
-        		// Est ce que c'est réellement un pb ? a voir à l'usage
-        		//ElementValue elementClone = new ElementValue(); 
-        		//elementClone.copyToClone(elementDico);
-        		elementDico.initValue(index, message.dictionary);
-        		
-        		// case of the PM-UI element
-        		String simpleClassName = obj.getClass().getSimpleName();
-        		ElementAbstract element0 = elementDico.getElement(0);
-        		if (element0 != null && "Sm_RP_UI".equals(simpleClassName))
-        		{
-	        		SupArray arrayElement0 = element0.getFieldsArray();
-	        		FieldAbstract fieldTPMTI = element0.getFieldsByName("TP-MTI");
-	        		String strIndex = new Integer(index).toString();
-	        		fieldTPMTI.setValue(strIndex, 6, arrayElement0);
-        		}
-        		
-        		Array array = null;
-        		try
-        		{
-        			array = elementDico.encodeToArray();
-            		return array.getBytes();
-        		}
-        		catch (Exception e)
-        		{
-        			// nothing to do
-        		}
-        	}
-        	int numByte = (int) Utils.randomLong(1, 10L);
+	    	
+	        int numByte = (int) Utils.randomLong(1, 10L);
         	return Utils.randomBytes(numByte);
     	}
     	else if (type.equals("java.lang.Boolean") || type.equals("boolean"))

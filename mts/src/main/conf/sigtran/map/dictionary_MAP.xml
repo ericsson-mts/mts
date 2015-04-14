@@ -13,18 +13,6 @@
 
 <dictionary layer="MAP" className="com.devoteam.srit.xmlloader.sigtran.ap.map.Component">
 
-    // 45=sendRoutingInfoForSM MESSAGE 
-    <embedded 
-        initial="invokeparameter" 
-        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForSMArg"
-        condition="localValue=45"
-    /> 
-    <embedded 
-        initial="returnparameter" 
-        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForSM_Res"
-        condition="localValue=45"
-    />
-
     // 44=mt-forwardSM MESSAGE 
     <embedded 
         initial="invokeparameter" 
@@ -35,6 +23,18 @@
         initial="returnparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.map.Mt_forwardSM_Res"
         condition="localValue=44"
+    />
+
+    // 45=sendRoutingInfoForSM MESSAGE 
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForSMArg"
+        condition="localValue=45"
+    /> 
+    <embedded 
+        initial="returnparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.RoutingInfoForSM_Res"
+        condition="localValue=45"
     />
 
     // 46=mo-forwardSM MESSAGE
@@ -595,6 +595,93 @@
         <!--conditional element : if TP-UDL present="present:1"-->
         <!--element name="TP-UD" coding="V" description="TP User Data" -->
     </element>
+    
+    <!-- sm_RP_MTI => 3GPP TS 03.40 V7.5.0 chapter x.y.z page ppp  -->     
+    <!-- sm_RP_MTI => 3GPP TS 23.040 V12.2.2 chapter 9.3.2.2 page 100 -->
+    <element name="sm_RP_MTI" coding="V" description="RP-Message Type Indicator" comment="Parameter indicating if the TPDU is a SMS Deliver or a SMS Status Report.">
+        <field name="sm_RP_MTI" type="EnumLong" length="1" description="RP-Message Type Indicator" comment="Parameter indicating if the TPDU is a SMS Deliver or a SMS Status Report.">
+          <enum name="SMS Deliver" value="0"/>
+          <enum name="SMS Status Report" value="1"/>
+        </field>
+    </element>
+
+    <!-- sm_RP_SMEA => 3GPP TS 03.40 V7.5.0 chapter x.y.z page ppp  -->     
+    <!-- sm_RP_SMEA => 3GPP TS 23.040 V12.2.2 chapter 9.3.2.2 page 100 -->
+    <element name="sm_RP_SMEA" coding="V" description="RP-originating SME-Address" comment="Address of the originating SME.">
+        <element name="Address" coding="DV" description="Generic Address" comment="Address of the function."/>
+    </element>
+     
+    <!-- geographicalInformation => 3GPP TS 23.032 V12.0.0 chapter 7.1 page 14 -->
+    <element name="geographicalInformation" coding="V" description="Type of Shape" comment="Refers to geographical Information defined in 3GPP TS 23.032.">
+        <field name="TypeOfShape" type="EnumLong" lengthBit="4" description="RP-Message Type Indicator" comment="Field identifies the type which is being coded in the Shape Description.">
+          <enum name="Ellipsoid Point" value="b0000"/>
+          <enum name="Ellipsoid point with uncertainty Circle" value="b0001"/>
+          <enum name="Reserved for future use" value="b0010"/>
+          <enum name="Ellipsoid point with uncertainty Ellipse" value="b0011"/>
+          <enum name="Reserved for future use" value="b0100"/>
+          <enum name="Polygon" value="b0101"/>
+          <enum name="Reserved for future use" value="b0110-b0111"/>
+          <enum name="Ellipsoid point with altitude" value="b1000"/>
+          <enum name="Ellipsoid point with altitude and uncertainty Ellipsoid" value="b1001"/>
+          <enum name="Ellipsoid Arc" value="b1010"/>
+          <enum name="Reserved for future use" value="b1011-b1111"/>
+        </field>
+        <field name="spare" type="Integer" lengthBit="4" description="Not used"/>
+        <field name="DegreesOfLatitude" type="Integer" length="3" description="Degrees of latitude"/>
+        <field name="DegreesOfLongitude" type="Integer" length="3" description="Degrees of longitude"/>
+        <field name="UncertaintyCode" type="Integer" length="1" description="UncertaintyCode"/>
+    </element>
+
+        <!-- International Subscriber Distinguish Name (ISDN) adress string => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 456 -->
+    <!-- Service Centre Address (similar to Address string) => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 456 -->
+    <element name="locationNumber" coding="V" description="Location number">
+    		<field name="Odd/even" type="EnumLong" lengthBit="1" description="Odd/even indicator (O/E)">
+            <enum name="even number of address signals" value="0"/>
+            <enum name="odd number of address signals" value="1"/>
+        </field>
+        <field name="Nature of address" type="EnumLong" lengthBit="7" description="Nature of address indicator">
+            <enum name="spare" value="0" description="b0000000"/>
+            <enum name="subscriber number (national use)" value="1" description="b0000001"/>
+            <enum name="unknown (national use)" value="2" description="b0000010"/>
+            <enum name="national (significant) number" value="3" description="b0000011"/>
+            <enum name="international number" value="4" description="b0000100"/>
+            <enum name="network-specific number (national use)" value="5" description="b0000101"/>
+            <enum name="network routing number in national (significant) number format (national use)" value="6" description="b0000110"/>
+            <enum name="network routing number in network-specific number format (national use)" value="7" description="b0000111"/>
+            <enum name="network routing number concatenated with Called Directory Number (national use)" value="8" description="b0001000"/>
+            <enum name="spare" value="9-111" description="b0001001-b1101111"/>
+            <enum name="reserved for national use" value="112-126" description="b1110000-b1111110"/>
+            <enum name="reserved for extension" value="127" description="b1111111"/>
+        </field>
+        <field name="Internal Network Number" type="EnumLong" lengthBit="1" description="Internal Network Number indicator (INN)">
+            <enum name="routing to internal number allowed" value="0"/>
+            <enum name="routing to internal number not allowed" value="1"/>
+        </field>
+        <field name="Numbering plan" type="EnumLong" lengthBit="3" description="Numbering plan indicator">
+            <enum name="spare" value="0" description="b000"/>
+            <enum name="ISDN (telephony) numbering plan (ITU-T Recommendation E.164)" value="1" description="b001"/>
+            <enum name="spare" value="2" description="b010"/>
+            <enum name="Data numbering plan (ITU-T Recommendation X.121)" value="3" description="b011"/>
+            <enum name="Telex numbering plan (ITU-T Recommendation F.69)" value="4" description="b100"/>
+            <enum name="private numbering plan" value="5" description="b101"/>
+            <enum name="reserved for national use" value="6" description="b110"/>
+            <enum name="spare" value="7" description="b111"/>
+        </field>
+        <field name="Address presentation restricted" type="EnumLong" lengthBit="2" description="Address presentation restricted indicator">
+            <enum name="presentation allowed" value="0" description="b00"/>
+            <enum name="presentation restricted" value="1" description="b01"/>
+            <enum name="address not available (national use)" value="2" description="b10"/>
+            <enum name="spare" value="3" description="b11"/>
+        </field>
+        <field name="Screening" type="EnumLong" lengthBit="2" description="Screening indicator">
+            <enum name="reserved" value="0" description="b00"/>
+            <enum name="user provided, verified and passed" value="1" description="b01"/>
+            <enum name="reserved" value="2" description="b10"/>
+            <enum name="network provided" value="3" description="b11"/>
+        </field>
+        <field name="digits" type="number_bcd" description="digits"/>
+    </element>
+
     
     <!-- Operation code local value => MAP.asn line 76 -->
     <element name="opCode.localValue" coding="V" description="Operation code local value">

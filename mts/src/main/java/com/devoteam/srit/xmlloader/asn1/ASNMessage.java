@@ -133,10 +133,12 @@ public abstract class ASNMessage
  	}
 
 	// get the element definition (enumeration binary data) from the dictionary
-    public ElementAbstract getElementFromDico(Object parentObject, String resultPath, byte[] bytes) 
+    public ElementAbstract getElementFromDico(String name, Object parentObject, String resultPath, byte[] bytes) 
  	{    
-		ElementAbstract elementDico = null;
-		if (parentObject != null)
+    	// find using the name of the field
+		ElementAbstract elementDico = getElementByLabel(name);
+		// find using the type of the parent object
+		if (elementDico == null && parentObject != null)
 		{
     		String simpleClassName = parentObject.getClass().getSimpleName();
     		if (bytes != null && "Sm_RP_UI".equals(simpleClassName))
@@ -173,6 +175,7 @@ public abstract class ASNMessage
     		}
 	    	elementDico = getElementByLabel(simpleClassName);
 		}
+		// find using the end of the returnPath value (before the last dot or the before-last dot)
     	if (elementDico == null)
     	{
 	    	String pathName = resultPath;
@@ -198,7 +201,7 @@ public abstract class ASNMessage
 	// get the element definition (enumeration binary data) from the dictionary
     public ElementAbstract getElementFromDico(Object parentObject, String resultPath) 
  	{
-    	return getElementFromDico(parentObject, resultPath, null);
+    	return getElementFromDico(null, parentObject, resultPath, null);
  	}
 
     // get the embedded definition form the message (for conditional) and the dictionary

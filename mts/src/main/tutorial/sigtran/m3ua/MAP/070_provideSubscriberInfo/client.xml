@@ -54,8 +54,12 @@
            </opCode.Choice>
            <invokeparameter>
              <ProvideSubscriberInfoArg.Sequence>
-                <imsi.C0.BoxedType><Bytes>04036b9f10</Bytes></imsi.C0.BoxedType>
-                <lmsi.C1.BoxedType><Bytes>0410aa12610149d010610327d0d9cbe82ff8</Bytes></lmsi.C1.BoxedType>
+                <imsi.C0.BoxedType><Bytes>4171316874
+                      <field name="digits" value="1417138647" type="Number_BCD" length="5" />
+                   </Bytes></imsi.C0.BoxedType>
+                <lmsi.C1.BoxedType><Bytes>89b14ee8f0d54c54
+                      <field name="digits" value="89b14ee8f0d54c54" type="Binary" length="8" />
+                   </Bytes></lmsi.C1.BoxedType>
                 <requestedInfo.C2.Sequence>
                    <locationInformation.C0></locationInformation.C0>
                    <subscriberState.C1></subscriberState.C1>
@@ -63,17 +67,17 @@
                       <privateExtensionList.C0.BoxedType>
                          <Collection>
                             <PrivateExtension.Sequence>
-                               <extId><ObjectIdentifier>0.1.228.13.25.94</ObjectIdentifier></extId>
-                               <extType>040ad9ef5ac1859748fcb5a3</extType>
-                            </PrivateExtension.Sequence>
-                            <!--PrivateExtension.Sequence>
-                               <extId><ObjectIdentifier>0.1.2112</ObjectIdentifier></extId>
-                               <extType>0407e40c3c453e70c7</extType>
+                               <extId><ObjectIdentifier>0.1.2</ObjectIdentifier></extId>
+                               <extType>7daa7e</extType>
                             </PrivateExtension.Sequence>
                             <PrivateExtension.Sequence>
-                               <extId><ObjectIdentifier>0.1.286.116.30.21</ObjectIdentifier></extId>
-                               <extType>040edebe8f2d5eb4a1529e6175ab1d5f</extType>
-                            </PrivateExtension.Sequence-->
+                               <extId><ObjectIdentifier>0.1.282.112.53.59.19.45.75.84</ObjectIdentifier></extId>
+                               <extType>009eed952a</extType>
+                            </PrivateExtension.Sequence>
+                            <PrivateExtension.Sequence>
+                               <extId><ObjectIdentifier>0.1.231.119.28.98.108.97.94</ObjectIdentifier></extId>
+                               <extType>4e069cb2</extType>
+                            </PrivateExtension.Sequence>
                          </Collection>
                       </privateExtensionList.C0.BoxedType>
                       <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
@@ -90,17 +94,17 @@
                    <privateExtensionList.C0.BoxedType>
                       <Collection>
                          <PrivateExtension.Sequence>
-                            <extId><ObjectIdentifier>0.1.25.46.127.54.9.17.55.17.83</ObjectIdentifier></extId>
-                            <extType>040cf2b8f12aa2d5283e64225eab</extType>
-                         </PrivateExtension.Sequence>
-                         <!--PrivateExtension.Sequence>
-                            <extId><ObjectIdentifier>0.1.262.73.114.12.56.96.15.52.88.18</ObjectIdentifier></extId>
-                            <extType>040ee9db38303597dc5fb8c634ea471b</extType>
+                            <extId><ObjectIdentifier>0.1.298.39.1.102</ObjectIdentifier></extId>
+                            <extType>93c3ba5c80</extType>
                          </PrivateExtension.Sequence>
                          <PrivateExtension.Sequence>
-                            <extId><ObjectIdentifier>0.1.238.67.67.89.53.4.73.73.98.98</ObjectIdentifier></extId>
-                            <extType>040951eedbdff01be99d41</extType>
-                         </PrivateExtension.Sequence-->
+                            <extId><ObjectIdentifier>0.1.232.77</ObjectIdentifier></extId>
+                            <extType>c532d1</extType>
+                         </PrivateExtension.Sequence>
+                         <PrivateExtension.Sequence>
+                            <extId><ObjectIdentifier>0.1.248.85.68.69.39.33.5.103</ObjectIdentifier></extId>
+                            <extType>0ee023b5ab55</extType>
+                         </PrivateExtension.Sequence>
                       </Collection>
                    </privateExtensionList.C0.BoxedType>
                    <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
@@ -146,27 +150,27 @@
     
 	  <!-- SCCP LAYER  -->
   	<SS7 name="sccp" file="sccp.xml">
-  		<header>
-          <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
-      </header>
-  		<parameter name="Protocol_Class" type="F" littleEndian="false">
-  			<field value="0" lengthBit="4" />
-  			<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
-  		</parameter>
-  		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
-  			<field name="Address_Indicator" value="67" length="1" />
-  			<field name="Signalling_Point_Code" value="2" length="2" />
-  			<field name="Subsystem_Number" value="8" length="1" />	
-  		</parameter>
-  		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
-  			<field name="Address_Indicator" value="67" length="1" />
-  			<field name="Signalling_Point_Code" value="1" length="2" />
-  			<field name="Subsystem_Number" value="8" length="1" />
-  		</parameter>
-  		<parameter id="15" name="Data" type="V" littleEndian="false">
-  			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
-        <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
-  		</parameter>
+    		<header>
+            <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
+        </header>
+    		<parameter name="Protocol_Class" type="F" littleEndian="false">
+    			<field value="0" lengthBit="4" />
+    			<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
+    		</parameter>
+    		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
+    			<field name="Address_Indicator" value="67" length="1" />
+    			<field name="Signalling_Point_Code" value="1" length="2" />
+    			<field name="Subsystem_Number" value="8" length="1" />	
+    		</parameter>
+    		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
+    			<field name="Address_Indicator" value="67" length="1" />
+    			<field name="Signalling_Point_Code" value="2" length="2" />
+    			<field name="Subsystem_Number" value="8" length="1" />
+    		</parameter>
+    		<parameter id="15" name="Data" type="V" littleEndian="false">
+    			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+          <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+    		</parameter>
   	</SS7>
 
     <UA name="m3ua" file="m3ua.xml">
