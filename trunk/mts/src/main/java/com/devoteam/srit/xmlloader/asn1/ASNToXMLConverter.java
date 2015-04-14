@@ -535,7 +535,7 @@ public class ASNToXMLConverter
 	    	ElementAbstract elementDico = null;
 	    	if (message != null)
 	    	{
-		    	elementDico = message.getElementFromDico(parentObj, resultPath, bytes);
+		    	elementDico = message.getElementFromDico(name, parentObj, resultPath, bytes);
 	    	}
         	if (elementDico != null)
         	{
@@ -547,8 +547,8 @@ public class ASNToXMLConverter
         		try
         		{
         			elementDico.decodeFromArray(array, message.dictionary);
-            		ret += elementDico.fieldsElementsToXml(indent - NUMBER_SPACE_TABULATION);
-            		ret += indent(indent - 2 * NUMBER_SPACE_TABULATION);
+            		ret += elementDico.fieldsElementsToXml(indent);
+            		ret += indent(indent - NUMBER_SPACE_TABULATION);
         		}
         		catch (Exception e)
         		{

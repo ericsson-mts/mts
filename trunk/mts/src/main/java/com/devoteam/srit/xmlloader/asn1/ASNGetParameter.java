@@ -311,7 +311,7 @@ public class ASNGetParameter
 	    	ElementAbstract elementDico = null;
 	    	if (message != null)
 	    	{
-		    	elementDico = message.getElementFromDico(parentObj, resultPath, bytes);
+		    	elementDico = message.getElementFromDico(name, parentObj, resultPath, bytes);
 	    	}
         	if (elementDico != null)
         	{
