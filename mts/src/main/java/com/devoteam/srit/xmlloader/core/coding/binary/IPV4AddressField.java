@@ -29,6 +29,7 @@ import gp.utils.arrays.Array;
 import gp.utils.arrays.SupArray;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import org.dom4j.Element;
 
@@ -75,7 +76,8 @@ public class IPV4AddressField extends FieldAbstract
     @Override
     public void initValue(int index, int offset, SupArray array) throws Exception 
     {
-    	// TODO for IPV4 address
+    	byte[] bytes = Utils.randomBytes(4);
+    	super.setValueFromBytes( bytes, offset, array);
     }
 
     @Override

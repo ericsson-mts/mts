@@ -61,7 +61,8 @@ public class StringField extends FieldAbstract
     @Override
     public void initValue(int index, int offset, SupArray array) throws Exception 
     {
-    	String str = Utils.randomString(this.length);
+    	int numByte = (int) Utils.randomLong(1, 10L);
+    	String str = Utils.randomString(numByte);
     	this.setValue(str, offset, array);
     }
     

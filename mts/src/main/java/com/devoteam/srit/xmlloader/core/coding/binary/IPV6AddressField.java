@@ -29,6 +29,7 @@ import gp.utils.arrays.Array;
 import gp.utils.arrays.SupArray;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import org.dom4j.Element;
 
@@ -60,7 +61,7 @@ public class IPV6AddressField extends FieldAbstract
     	byte[] bytes = new byte[16];
     	array.getBytes(pos, bytes, 0, 16);
     	InetAddress inetAddr = InetAddress.getByAddress(bytes);
-    	return inetAddr.getHostAddress();
+    	return "[" + inetAddr.getHostAddress() + "]";
     }
 
     @Override
@@ -75,7 +76,8 @@ public class IPV6AddressField extends FieldAbstract
     @Override
     public void initValue(int index, int offset, SupArray array) throws Exception 
     {
-    	// TODO for IPV6 address
+    	byte[] bytes = Utils.randomBytes(16);
+    	super.setValueFromBytes( bytes, offset, array);
     }
 
     @Override

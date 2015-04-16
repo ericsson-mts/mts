@@ -127,8 +127,8 @@
     <test parameter="[F-TEID.IPv4 address(1)]" condition="string.equals" value="98.76.54.32"/>
     <parameter name="[F-TEID.IPv6 address]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.IPv6 address"/>
     <test parameter="[F-TEID.IPv6 address]" condition="list.size" value="2"/>
-    <test parameter="[F-TEID.IPv6 address(0)]" condition="string.equals" value="1234:5678:90ab:cdef:fedc:ba09:8765:4321"/>
-    <test parameter="[F-TEID.IPv6 address(1)]" condition="string.equals" value="fedc:ba98:7654:3210:123:4567:89ab:cdef"/>
+    <test parameter="[F-TEID.IPv6 address(0)]" condition="string.equals" value="[1234:5678:90ab:cdef:fedc:ba09:8765:4321]"/>
+    <test parameter="[F-TEID.IPv6 address(1)]" condition="string.equals" value="[fedc:ba98:7654:3210:123:4567:89ab:cdef]"/>
     <parameter name="[F-TEID]" operation="protocol.setFromMessage" value="element.F-TEID:87"/>
     <test parameter="[F-TEID]" condition="list.size" value="2"/>
     <test parameter="[F-TEID(0)]" condition="binary.equals" value="c6ffffffff7b2d43591234567890abcdeffedcba0987654321"/>
@@ -151,7 +151,7 @@
     <test parameter="[F-TEID.IPv4 address]" condition="string.equals" value="98.76.54.32"/>
     <parameter name="[F-TEID.IPv6 address]" operation="protocol.setFromMessage" value="element.F-TEID:87,1.field.IPv6 address"/>
     <test parameter="[F-TEID.IPv6 address]" condition="list.size" value="1"/>
-    <test parameter="[F-TEID.IPv6 address]" condition="string.equals" value="fedc:ba98:7654:3210:123:4567:89ab:cdef"/>
+    <test parameter="[F-TEID.IPv6 address]" condition="string.equals" value="[fedc:ba98:7654:3210:123:4567:89ab:cdef]"/>
     <parameter name="[F-TEID]" operation="protocol.setFromMessage" value="element.F-TEID:87,1"/>
     <test parameter="[F-TEID]" condition="list.size" value="1"/>
     <test parameter="[F-TEID]" condition="binary.equals" value="e600000000624c3620fedcba98765432100123456789abcdef"/>
@@ -188,7 +188,7 @@
     <parameter name="[PAA.IPv6 prefix length]" operation="protocol.setFromMessage" value="element.PAA:79.field.IPv6 prefix length"/>
     <test parameter="[PAA.IPv6 prefix length]" condition="number.equals" value="255"/>            
     <parameter name="[PAA.IPv6 address]" operation="protocol.setFromMessage" value="element.PAA:79.field.IPv6 address"/>
-    <test parameter="[PAA.IPv6 address]" condition="string.equals" value="fedc:ba09:8765:4321:1234:5678:90ab:cdef"/>            
+    <test parameter="[PAA.IPv6 address]" condition="string.equals" value="[fedc:ba09:8765:4321:1234:5678:90ab:cdef]"/>            
     <parameter name="[PAA.IPv4 address]" operation="protocol.setFromMessage" value="element.PAA:79.field.IPv4 address"/>
     <test parameter="[PAA.IPv4 address]" condition="string.equals" value="87.65.43.210"/>
     <parameter name="[PAA]" operation="protocol.setFromMessage" value="element.PAA:79"/>
@@ -315,7 +315,7 @@
     <test parameter="[Bearer Context.FTEID.IPv4 address]" condition="string.equals" value="12.13.14.15"/>
     <parameter name="[Bearer Context.FTEID.IPv6 address]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.IPv6 address"/>
     <test parameter="[Bearer Context.FTEID.IPv6 address]" condition="list.size" value="2"/>
-    <test parameter="[Bearer Context.FTEID.IPv6 address]" condition="string.equals" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/>
+    <test parameter="[Bearer Context.FTEID.IPv6 address]" condition="string.equals" value="[1212:1234:1256:1278:1290:12ab:12cd:12ef]"/>
     <parameter name="[Bearer Context.FTEID]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87"/>
     <test parameter="[Bearer Context.FTEID]" condition="list.size" value="2"/>
     <test parameter="[Bearer Context.FTEID]" condition="binary.equals" value="c4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
@@ -337,7 +337,7 @@
     <test parameter="[Bearer Context.FTEID.IPv4 address]" condition="string.equals" value="12.13.14.15"/>
     <parameter name="[Bearer Context.FTEID.IPv6 address]" operation="protocol.setFromMessage" value="element.Bearer Context:93,0.F-TEID:87,15.field.IPv6 address"/>
     <test parameter="[Bearer Context.FTEID.IPv6 address]" condition="list.size" value="1"/>
-    <test parameter="[Bearer Context.FTEID.IPv6 address]" condition="string.equals" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/>
+    <test parameter="[Bearer Context.FTEID.IPv6 address]" condition="string.equals" value="[1212:1234:1256:1278:1290:12ab:12cd:12ef]"/>
     <parameter name="[Bearer Context.FTEID]" operation="protocol.setFromMessage" value="element.Bearer Context:93,0.F-TEID:87,15"/>
     <test parameter="[Bearer Context.FTEID]" condition="list.size" value="1"/>
     <test parameter="[Bearer Context.FTEID]" condition="binary.equals" value="c4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
