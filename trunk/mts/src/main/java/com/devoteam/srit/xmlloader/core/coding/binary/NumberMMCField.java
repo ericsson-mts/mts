@@ -125,7 +125,9 @@ public class NumberMMCField extends FieldAbstract
     @Override
     public void initValue(int index, int offset, SupArray array) throws Exception 
     {
-    	// TODO 
+    	Long mcc = Utils.randomLong(100, 255);
+    	Long mnc = Utils.randomLong(10, 255);
+    	this.setValue(mcc + "," + mnc, offset, array);
     }
     
     @Override
