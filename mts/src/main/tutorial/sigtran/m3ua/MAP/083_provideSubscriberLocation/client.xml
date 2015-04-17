@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : server.xml
+    Created on : 10/07/2014
+    Author     : fhenry
+    Description: Send a MAP message
+-->
+
+<scenario>
+
+    <openChannelSIGTRAN name="channel" localHost="[localHostM3UA]" localPort="[localPortM3UA]" 
+                                       remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]"
+                                       transport="[transport]"/>
+                                       
+   <sendMessageSIGTRAN	name="Send ASPUP1" channel="channel">	
+   
+        <UA name="m3ua" file="m3ua.xml">
+            <header 	version="1" reserved="0" messageClass="3" messageType="1"/>
+    				
+            <parameter tag="17" >
+                <field name="ASP_Identifier" format="Integer" value="755787" length="4"/>
+            </parameter>
+    	
+            <parameter tag="INFO_String">
+                <field name="INFO_String" format="String" value="ASPUP"/>
+            </parameter>
+        </UA>
+    </sendMessageSIGTRAN>
+        
+    <receiveMessageSIGTRAN name="Wait ASPUPACK1" request="false" type="ASP_Up:3_1" result="ASP_Up_Acknowledgement:3_4">
+        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+    
+    <pause seconds="[pause]"/>
+
+    <!-- Message encoded value -->
+  	<parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>			
+	
+    <sendMessageSIGTRAN name="Send DATA1" channel="channel">
+    
+    <!-- AP LAYER -->
+    <ASN dictionary="map/dictionary_MAP.xml">
+      <Component.Choice>
+        <invoke.C1.Sequence>
+           <invokeID.BoxedType><Integer>1</Integer></invokeID.BoxedType>
+           <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
+           <opCode.Choice>
+              <localValue.BoxedType><Long>provideSubscriberLocation:83</Long></localValue.BoxedType>
+              <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
+           </opCode.Choice>
+           <invokeparameter>
+             <ProvideSubscriberLocation_Arg.Sequence>
+                <locationType.Sequence>
+                   <locationEstimateType.C0.Enum>
+                      <EnumType>activateDeferredLocation.3</EnumType>
+                   </locationEstimateType.C0.Enum>
+                   <deferredLocationEventType.C1.BoxedType><BitString><BitString value="24beb207504e1ee8a2" trailing="0"/></BitString></deferredLocationEventType.C1.BoxedType>
+                </locationType.Sequence>
+                <mlc_Number.BoxedType><Bytes>904145084863
+                      <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                      <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3" />
+                      <field name="numbering plan" value="unknown:0" type="EnumLong" lengthBit="4" />
+                      <field name="digits" value="1454808436" type="Number_BCD" length="5" />
+                   </Bytes></mlc_Number.BoxedType>
+                <lcs_ClientID.C0.Sequence>
+                   <lcsClientType.C0.Enum>
+                      <EnumType>valueAddedServices.1</EnumType>
+                   </lcsClientType.C0.Enum>
+                   <lcsClientExternalID.C1.Sequence>
+                      <externalAddress.C0.BoxedType><Bytes>e68173446946
+                            <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                            <field name="nature of address" value="abbreviated number:6" type="EnumLong" lengthBit="3" />
+                            <field name="numbering plan" value="land mobile numbering plan (ITU-T Rec E.212):6" type="EnumLong" lengthBit="4" />
+                            <field name="digits" value="1837449664" type="Number_BCD" length="5" />
+                         </Bytes></externalAddress.C0.BoxedType>
+                      <extensionContainer.C1.Sequence>
+                         <privateExtensionList.C0.BoxedType>
+                            <Collection>
+                               <PrivateExtension.Sequence>
+                                  <extId><ObjectIdentifier>0.1.2</ObjectIdentifier></extId>
+                                  <extType>b7799b9a267ef8cbb0</extType>
+                               </PrivateExtension.Sequence>
+                               <PrivateExtension.Sequence>
+                                  <extId><ObjectIdentifier>0.1.247.14.74.49.30.114.57.63.86.125</ObjectIdentifier></extId>
+                                  <extType>59c19c5b</extType>
+                               </PrivateExtension.Sequence>
+                               <PrivateExtension.Sequence>
+                                  <extId><ObjectIdentifier>0.1.23.50.107.17.48.3.92.46.50.105</ObjectIdentifier></extId>
+                                  <extType>f8e07b5a3dbe</extType>
+                               </PrivateExtension.Sequence>
+                            </Collection>
+                         </privateExtensionList.C0.BoxedType>
+                         <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                      </extensionContainer.C1.Sequence>
+                   </lcsClientExternalID.C1.Sequence>
+                   <lcsClientDialedByMS.C2.BoxedType><Bytes>00</Bytes></lcsClientDialedByMS.C2.BoxedType>
+                   <lcsClientInternalID.C3.Enum>
+                      <EnumType>o_andM_VPLMN.2</EnumType>
+                   </lcsClientInternalID.C3.Enum>
+                   <lcsClientName.C4.Sequence>
+                      <dataCodingScheme.C0.BoxedType><Bytes>810578d1</Bytes></dataCodingScheme.C0.BoxedType>
+                      <nameString.C2.BoxedType><USSD_String.BoxedType><Bytes>eda4723f</Bytes></USSD_String.BoxedType></nameString.C2.BoxedType>
+                      <lcs_FormatIndicator.C3.Enum>
+                         <EnumType>e_mailAddress.1</EnumType>
+                      </lcs_FormatIndicator.C3.Enum>
+                   </lcsClientName.C4.Sequence>
+                   <lcsAPN.C5.BoxedType><Bytes>44306a
+                         <field name="DNS string" value="D0j" type="String" lengthBit="12" />
+                      </Bytes></lcsAPN.C5.BoxedType>
+                   <lcsRequestorID.C6.Sequence>
+                      <dataCodingScheme.C0.BoxedType><Bytes>64f83eda30e4d9</Bytes></dataCodingScheme.C0.BoxedType>
+                      <requestorIDString.C1.BoxedType><USSD_String.BoxedType><Bytes>e92dede4d6</Bytes></USSD_String.BoxedType></requestorIDString.C1.BoxedType>
+                      <lcs_FormatIndicator.C2.Enum>
+                         <EnumType>e_mailAddress.1</EnumType>
+                      </lcs_FormatIndicator.C2.Enum>
+                   </lcsRequestorID.C6.Sequence>
+                </lcs_ClientID.C0.Sequence>
+                <privacyOverride.C1></privacyOverride.C1>
+                <imsi.C2.BoxedType><Bytes>3103149277
+                      <field name="digits" value="1330412977" type="Number_BCD" length="5" />
+                   </Bytes></imsi.C2.BoxedType>
+                <msisdn.C3.BoxedType><Bytes>2f71763694f0
+                      <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
+                      <field name="nature of address" value="national significant number:2" type="EnumLong" lengthBit="3" />
+                      <field name="numbering plan" value="reserved for extension:15" type="EnumLong" lengthBit="4" />
+                      <field name="digits" value="176763490" type="Number_BCD" lengthBit="36" />
+                   </Bytes></msisdn.C3.BoxedType>
+                <lmsi.C4.BoxedType><Bytes>a9e4dd
+                      <field name="digits" value="a9e4dd" type="Binary" length="3" />
+                   </Bytes></lmsi.C4.BoxedType>
+                <imei.C5.BoxedType><TBCD_STRING.BoxedType><Bytes>0205826913
+                         <field name="digits" value="2050289631" type="Number_BCD" length="5" />
+                      </Bytes></TBCD_STRING.BoxedType></imei.C5.BoxedType>
+                <lcs_Priority.C6.BoxedType><Bytes>bd8d75bfc34c057e</Bytes></lcs_Priority.C6.BoxedType>
+                <lcs_QoS.C7.Sequence>
+                   <horizontal_accuracy.C0.BoxedType><Bytes>fba1330815</Bytes></horizontal_accuracy.C0.BoxedType>
+                   <verticalCoordinateRequest.C1></verticalCoordinateRequest.C1>
+                   <vertical_accuracy.C2.BoxedType><Bytes>516c0a</Bytes></vertical_accuracy.C2.BoxedType>
+                   <responseTime.C3.Sequence><responseTimeCategory.Enum>
+                         <EnumType>delaytolerant.1</EnumType>
+                      </responseTimeCategory.Enum></responseTime.C3.Sequence>
+                   <extensionContainer.C4.Sequence>
+                      <privateExtensionList.C0.BoxedType>
+                         <Collection>
+                            <PrivateExtension.Sequence>
+                               <extId><ObjectIdentifier>0.1.2106.1.94.112.103.5.65</ObjectIdentifier></extId>
+                               <extType>48f31e615456</extType>
+                            </PrivateExtension.Sequence>
+                            <PrivateExtension.Sequence>
+                               <extId><ObjectIdentifier>0.1.217.123</ObjectIdentifier></extId>
+                               <extType>aa57fba64ca3a09f7ed2</extType>
+                            </PrivateExtension.Sequence>
+                            <PrivateExtension.Sequence>
+                               <extId><ObjectIdentifier>0.1.292.93.110.27.68.89.14.5.123</ObjectIdentifier></extId>
+                               <extType>f4818b3600f5fa1d</extType>
+                            </PrivateExtension.Sequence>
+                         </Collection>
+                      </privateExtensionList.C0.BoxedType>
+                      <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                   </extensionContainer.C4.Sequence>
+                </lcs_QoS.C7.Sequence>
+                <extensionContainer.C8.Sequence>
+                   <privateExtensionList.C0.BoxedType>
+                      <Collection>
+                         <PrivateExtension.Sequence>
+                            <extId><ObjectIdentifier>0.1.2126</ObjectIdentifier></extId>
+                            <extType>2fad199cd9e797</extType>
+                         </PrivateExtension.Sequence>
+                         <PrivateExtension.Sequence>
+                            <extId><ObjectIdentifier>0.1.2</ObjectIdentifier></extId>
+                            <extType>fe41321de64b42ca</extType>
+                         </PrivateExtension.Sequence>
+                         <PrivateExtension.Sequence>
+                            <extId><ObjectIdentifier>0.1.284.82.8.65.23.93</ObjectIdentifier></extId>
+                            <extType>96d64827b31f8660</extType>
+                         </PrivateExtension.Sequence>
+                      </Collection>
+                   </privateExtensionList.C0.BoxedType>
+                   <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                </extensionContainer.C8.Sequence>
+                <supportedGADShapes.C9.BoxedType><BitString><BitString value="d31ee00ee486b847114a84355b6f02" trailing="0"/></BitString></supportedGADShapes.C9.BoxedType>
+                <lcs_ReferenceNumber.C10.BoxedType><Bytes>6c525999</Bytes></lcs_ReferenceNumber.C10.BoxedType>
+                <lcsServiceTypeID.C11.BoxedType><Integer>0</Integer></lcsServiceTypeID.C11.BoxedType>
+                <lcsCodeword.C12.Sequence>
+                   <dataCodingScheme.C0.BoxedType><Bytes>f17afbba4beee347</Bytes></dataCodingScheme.C0.BoxedType>
+                   <lcsCodewordString.C1.BoxedType><USSD_String.BoxedType><Bytes>fcba997d1f0c</Bytes></USSD_String.BoxedType></lcsCodewordString.C1.BoxedType>
+                </lcsCodeword.C12.Sequence>
+                <lcs_PrivacyCheck.C13.Sequence>
+                   <callSessionUnrelated.C0.Enum>
+                      <EnumType>allowedWithNotification.1</EnumType>
+                   </callSessionUnrelated.C0.Enum>
+                   <callSessionRelated.C1.Enum>
+                      <EnumType>allowedWithNotification.1</EnumType>
+                   </callSessionRelated.C1.Enum>
+                </lcs_PrivacyCheck.C13.Sequence>
+                <areaEventInfo.C14.Sequence>
+                   <areaDefinition.C0.Sequence><areaList.C0.BoxedType>
+                         <Collection>
+                            <Area.Sequence>
+                               <areaType.C0.Enum>
+                                  <EnumType>routingAreaId.3</EnumType>
+                               </areaType.C0.Enum>
+                               <areaIdentification.C1.BoxedType><Bytes>884c742657bb</Bytes></areaIdentification.C1.BoxedType>
+                            </Area.Sequence>
+                            <Area.Sequence>
+                               <areaType.C0.Enum>
+                                  <EnumType>plmnId.1</EnumType>
+                               </areaType.C0.Enum>
+                               <areaIdentification.C1.BoxedType><Bytes>2772889abb19e2fea9</Bytes></areaIdentification.C1.BoxedType>
+                            </Area.Sequence>
+                            <Area.Sequence>
+                               <areaType.C0.Enum>
+                                  <EnumType>locationAreaId.2</EnumType>
+                               </areaType.C0.Enum>
+                               <areaIdentification.C1.BoxedType><Bytes>d8a3c29843</Bytes></areaIdentification.C1.BoxedType>
+                            </Area.Sequence>
+                         </Collection>
+                      </areaList.C0.BoxedType></areaDefinition.C0.Sequence>
+                   <occurrenceInfo.C1.Enum>
+                      <EnumType>multipleTimeEvent.1</EnumType>
+                   </occurrenceInfo.C1.Enum>
+                   <intervalTime.C2.BoxedType><Integer>0</Integer></intervalTime.C2.BoxedType>
+                </areaEventInfo.C14.Sequence>
+                <h_gmlc_Address.C15.BoxedType><Bytes>7786dac91e
+                      <field name="Address type" value="IPV6:1" type="EnumLong" lengthBit="2" />
+                      <field name="AddressLength" value="55" type="Integer" lengthBit="6" />
+                      <field name="IPV4 address" value="134.218.201.30" type="IPV4Address" length="4" />
+                   </Bytes></h_gmlc_Address.C15.BoxedType>
+             </ProvideSubscriberLocation_Arg.Sequence>
+          </invokeparameter>
+        </invoke.C1.Sequence>
+      </Component.Choice>
+    </ASN>
+    
+    <!-- TCAP LAYER -->
+    <ASN dictionary="tcap/dictionary_TCAP.xml">
+      <TCMessage.Choice>
+        <begin.A2.Sequence>
+           <otid.BoxedType><Bytes.A8>00000001</Bytes.A8></otid.BoxedType>
+           <dialoguePortion.BoxedType><DialogueOC.A11.BoxedType>
+                 <ExternalPDU.A11.BoxedType><ExternalPDUSequenceType.U8>
+                       <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
+                       <!--indirect_reference>135135546236608288</indirect_reference-->
+                       <!--data_value_descriptor.BoxedType><Bytes>040d64f86f057d306aba7055bc9634</Bytes></data_value_descriptor.BoxedType-->
+                       <encoding.Choice>
+                          <single_ASN1_type.C0.BoxedType>
+                           <DialoguePDU.Choice>
+                              <dialogueRequest.A0.BoxedType><AARQ_apduSequenceType.A0>
+                                    <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
+                                    <application_context_name.BoxedType>
+                                       <ObjectIdentifier><ObjectIdentifier>subscriberInfoEnquiryContext-v2:0.4.0.0.1.0.28.2</ObjectIdentifier></ObjectIdentifier>
+                                    </application_context_name.BoxedType>
+                                    <!--Collection>
+                                       <user_information>040b0ee80b24cfc24d5cf44182</user_information>
+                                       <user_information>0404e60be5ae</user_information>
+                                       <user_information>0409db4fba980c312c21d8</user_information>
+                                    </Collection-->
+                              </AARQ_apduSequenceType.A0></dialogueRequest.A0.BoxedType>
+                           </DialoguePDU.Choice>
+                          </single_ASN1_type.C0.BoxedType>
+                       </encoding.Choice>
+                  </ExternalPDUSequenceType.U8></ExternalPDU.A11.BoxedType>
+            </DialogueOC.A11.BoxedType></dialoguePortion.BoxedType>
+        </begin.A2.Sequence>
+      </TCMessage.Choice>
+    </ASN>
+    
+	  <!-- SCCP LAYER  -->
+  	<SS7 name="sccp" file="sccp.xml">
+    		<header>
+            <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
+        </header>
+    		<parameter name="Protocol_Class" type="F" littleEndian="false">
+    			<field value="0" lengthBit="4" />
+    			<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
+    		</parameter>
+    		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
+    			<field name="Address_Indicator" value="67" length="1" />
+    			<field name="Signalling_Point_Code" value="1" length="2" />
+    			<field name="Subsystem_Number" value="8" length="1" />	
+    		</parameter>
+    		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
+    			<field name="Address_Indicator" value="67" length="1" />
+    			<field name="Signalling_Point_Code" value="2" length="2" />
+    			<field name="Subsystem_Number" value="8" length="1" />
+    		</parameter>
+    		<parameter id="15" name="Data" type="V" littleEndian="false">
+    			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+          <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+    		</parameter>
+  	</SS7>
+
+    <UA name="m3ua" file="m3ua.xml">
+        <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
+				
+        <parameter tag="Network_Appearence">
+            <field name="Network_Appearence"  format="Integer" value="102"/>
+        </parameter>
+
+
+        <parameter tag="Routing_Context">
+            <field name="Routing_Context" format="Integer"  value="101"/>
+        </parameter>
+
+        <parameter tag="Protocol_Data">
+            <field value="1" name="Originating_Point_Code"/>
+            <field value="2" name="Destination_Point_Code" />
+            <field value="SCCP"	name="SI"/>
+            <field value="2"	name="NI"/>
+            <field value="0"	name="MP"/>
+            <field value="1"	name="SLS"/>
+            <field name="DATA"	format="fvo"/>
+        </parameter>
+	
+        <!--parameter tag="Correlation_Id">
+            <field name="Correlation_Id" format="Integer"  value="12783"/>
+        </parameter-->
+    </UA>
+    </sendMessageSIGTRAN>
+    
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <!--test parameter="[data1]" condition="binary.equals" value="[data]"/-->
+    
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>
+    
+    <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="false" type="70" result="RESULT">
+        <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+	
+    <!--test parameter="[data1]" condition="binary.equals" value="[data]"/-->
+
+    <!-- remove pb of TIME_WAIT state -->
+    <!--closeChannelSIGTRAN name="channel"/-->
+                
+</scenario>
