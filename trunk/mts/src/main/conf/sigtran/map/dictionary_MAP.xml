@@ -619,6 +619,27 @@
         <element name="Address" coding="DV" description="Generic Address" comment="Address of the function."/>
     </element>
 
+    <!-- AbsentSubscriberDiagnosticSM  => 3GPP TS 23.002 V12.5.0 chapter 17.7.8 page 441 -->
+    <!-- AbsentSubscriberDiagnosticSM  => 3GPP TS 23.040 V12.2.0 chapter 3.3.2 page 24-26 -->
+    <element name="AbsentSubscriberDiagnosticSM" coding="V" description="Age Of Location Information " comment="Refers to geographical Information defined in 3GPP TS 23.032.">
+        <field name="value" type="EnumLong" length="1" description="time in minutes since the last network contact of the mobile station (i.e. the actuality of the location information)." comment="">
+              <enum name="no paging response via the MSC" value="0"/>
+              <enum name="IMSI detached" value="1"/>
+              <enum name="roaming restriction" value="2"/>              
+              <enum name="deregistered in the HLR for non GPRS" value="3"/>              
+              <enum name="MS purged for non GPRS" value="4"/>              
+              <enum name="no paging response via the SGSN" value="5"/>         
+              <enum name="GPRS detached" value="6"/>
+              <enum name="deregistered in the HLR for GPRS" value="7"/>
+              <enum name="MS purged for GPRS" value="8"/>   
+              <enum name="Unidentified subscriber via the MSC" value="9"/>
+              <enum name="Unidentified subscriber via the SGSN" value="10"/>
+              <enum name="deregistered in the HSS/HLR for IMS" value="11"/>
+              <enum name="no response via the IP-SM-GW" value="12"/>
+              <enum name="Reserved" value="13-255"/>
+        </field>
+    </element>
+
     <!-- AgeOfLocationInformation  => 3GPP TS 23.002 V12.5.0 chapter 17.7.8 page 453 -->
     <element name="AgeOfLocationInformation" coding="V" description="Age Of Location Information " comment="Refers to geographical Information defined in 3GPP TS 23.032.">
         <field name="value" type="EnumLong" length="2" description="time in minutes since the last network contact of the mobile station (i.e. the actuality of the location information)." comment="">
