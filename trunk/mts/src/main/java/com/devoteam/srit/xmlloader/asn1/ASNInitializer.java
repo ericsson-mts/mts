@@ -167,7 +167,12 @@ public class ASNInitializer
 			subobjElementInfo = ASNToXMLConverter.getASN1PreparedElementSubData(objElementInfo, index);
 		}
 
-		String typeName  = field.getName();
+		String name  = null;
+		if (field != null)
+		{
+			name = field.getName();
+		}
+		
     	if (typeField == null)
     	{
     		// nothing to do
@@ -176,7 +181,7 @@ public class ASNInitializer
     	{
     		// nothing to do
     	}
-    	else if (typeName != null && typeName.equals("integerForm") )
+    	else if (name != null && name.equals("integerForm") )
     	{
     		// nothing to do
     		// because error when decoding this field
@@ -199,7 +204,7 @@ public class ASNInitializer
 					else
 					{
 						Class tabClass = (Class) typeActualTypeArg[0];
-						tabObject = getSubObject(indexChoice, index, resultPath, message, parentObj, field.getName(), objClass, tabClass, subobjElementInfo);
+						tabObject = getSubObject(indexChoice, index, resultPath, message, parentObj, name, objClass, tabClass, subobjElementInfo);
 					}
 		    		if (tabObject != null)
 		    		{
@@ -211,7 +216,7 @@ public class ASNInitializer
 		}
 		else
 		{
-    		Object subObject = getSubObject(indexChoice, index, resultPath, message, parentObj, field.getName(), objClass, field.getType(), subobjElementInfo);
+    		Object subObject = getSubObject(indexChoice, index, resultPath, message, parentObj, name, objClass, field.getType(), subobjElementInfo);
     		if (subObject != null)
     		{
     			field.set(objClass, subObject);
@@ -336,7 +341,8 @@ public class ASNInitializer
         	}
         	*/
 
-			return (int) Utils.randomLong(0, 65735L);
+			//return (int) Utils.randomLong(0, 265735L);
+			return (int) Utils.randomLong(0, 2L);
 		} 
 		else if (type.equals("java.lang.String"))
 		{
@@ -396,27 +402,5 @@ public class ASNInitializer
 			return subObj;
 		}
     }
-    
-    public static Long processEnumLong(String resultPath, ASNMessage message, Object object, String value) throws Exception
-    {
-    	Long obj = null;
-		// get the element definition (enumeration binary data) from the dictionary
-		ElementAbstract elementDico = null;
-		if (message != null)
-		{
-	    	elementDico = message.getElementFromDico(object, resultPath);
-		}
-		if (elementDico != null)
-		{
-			FieldAbstract field = elementDico.getField(0);
-			if (field instanceof EnumLongField)
-			{
-				EnumLongField fld = (EnumLongField) elementDico.getField(0);
-				obj = fld.getEnumLong(value);
-			}
-		}
-		return obj;
-    }
-
-    
+        
 }

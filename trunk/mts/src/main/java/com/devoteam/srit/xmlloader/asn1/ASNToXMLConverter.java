@@ -449,7 +449,7 @@ public class ASNToXMLConverter
 	    	ElementAbstract elementDico = null;
 	    	if (message != null)
 	    	{
-		    	elementDico = message.getElementFromDico(parentObj, resultPath);
+		    	elementDico = message.getElementFromDico(name, parentObj, resultPath);
 	    	}
 
         	if (elementDico != null)
@@ -473,7 +473,7 @@ public class ASNToXMLConverter
 	    	ElementAbstract elementDico = null;
 	    	if (message != null)
 	    	{
-		    	elementDico = message.getElementFromDico(parentObj, resultPath);
+		    	elementDico = message.getElementFromDico(name, parentObj, resultPath);
 	    	}
 
         	if (elementDico != null)
@@ -495,7 +495,7 @@ public class ASNToXMLConverter
 	    	ElementAbstract elementDico = null;
 	    	if (message != null)
 	    	{
-		    	elementDico = message.getElementFromDico(parentObj, resultPath);
+		    	elementDico = message.getElementFromDico(name, parentObj, resultPath);
 	    	}
 
         	if (elementDico != null)
@@ -515,7 +515,7 @@ public class ASNToXMLConverter
 	    	ElementAbstract elementDico = null;
 	    	if (message != null)
 	    	{
-		    	elementDico = message.getElementFromDico(parentObj, resultPath);
+		    	elementDico = message.getElementFromDico(name, parentObj, resultPath);
 	    	}
 	    	
 	    	String value = ((ObjectIdentifier) object).getValue();
