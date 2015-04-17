@@ -297,7 +297,7 @@ public abstract class ElementAbstract implements Cloneable
         for (Iterator<FieldAbstract> it = fields.iterator(); it.hasNext();) 
         {
             FieldAbstract field = it.next();
-            field.initValue(index, offset, this.fieldsArray);
+             field.initValue(index, offset, this.fieldsArray);
 	        length = field.getLength();
 	        /// TODO revoir ce truc bizzaroide
 	        if (length > 0)

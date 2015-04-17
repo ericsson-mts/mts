@@ -113,7 +113,7 @@ public class EnumLongField extends IntegerField
     {
     	this.offset = offset;
         Long longValue = this.getEnumLong(value);
-        array.setBits(offset, this.length, longValue.byteValue() & 0xff);
+        array.setBits(offset, this.length, longValue.intValue());
     }
     
     @Override
@@ -143,6 +143,12 @@ public class EnumLongField extends IntegerField
     	super.initValue(index, offset, array);
     }
 
+    public Long getLongValue(Array array) throws Exception 
+    {
+    	String value = super.getValue(array);
+    	long l = Long.parseLong(value);
+        return l;
+    }
 
     public Long getEnumValueByLabel(String name) 
     {

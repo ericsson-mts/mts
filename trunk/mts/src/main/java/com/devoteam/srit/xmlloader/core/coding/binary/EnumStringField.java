@@ -25,6 +25,7 @@ package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -94,6 +95,33 @@ public class EnumStringField extends StringField
     	super.setValueFromArray( valueArray, offset, array);
     }
     
+    @Override
+    public void initValue(int index, int offset, SupArray array) throws Exception 
+    {
+    	if (ranges.size() > 0)
+    	{
+    		int indexRange = (int) Utils.randomLong(0, ranges.size() - 1);
+    		EnumRange range = ranges.get(indexRange);
+    		Long l = range.getRandomValue();
+    		this.setValue(l.toString(), offset, array);
+    		if (Utils.randomBoolean())
+    		{
+    			return;
+    		}
+    	}
+    	if (valuesByLabel.size() > 0)
+    	{
+    		int indexLabel = (int) Utils.randomLong(0, valuesByLabel.size() - 1);
+    		Long l = (Long) valuesByLabel.values().toArray()[indexLabel];
+        	this.setValue(l.toString(), offset, array);
+    		if (Utils.randomBoolean())
+    		{
+    			return;
+    		}
+    	}
+    	super.initValue(index, offset, array);
+    }
+
     public String getEnumValueByLabel(String name) 
     {
         return this.valuesByLabel.get(name);

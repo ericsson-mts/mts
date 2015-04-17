@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.asn1;
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
 import com.devoteam.srit.xmlloader.core.coding.binary.FieldAbstract;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -306,12 +307,36 @@ public class ASNInitializer
 		} 
 		else if (type.equals("java.lang.Long") || type.equals("long"))
 		{
-			long l = Utils.randomLong(0, 1000000000000000000L);
+			long l = Utils.randomLong(0, 4294967295L);
 			return l;
 		}
 		else if (type.equals("java.lang.Integer") || type.equals("int"))
 		{
-			return (int) Utils.randomLong(0, 2000000000L);
+			/* TODO
+	    	ElementAbstract elementDico = null;
+	    	if (message != null)
+	    	{
+		    	elementDico = message.getElementFromDico(obj, resultPath);
+	    	}
+
+        	if (elementDico != null)
+        	{
+        		elementDico.initValue(index, message.dictionary);
+        		FieldAbstract field = elementDico.getField(0);
+        		
+    			if (field instanceof EnumLongField)
+    			{
+    				Long objLong = ((EnumLongField) field).getLongValue(elementDico.getFieldsArray());
+	        		if (objLong != null)
+	            	{
+	            		obj = new Integer(objLong.byteValue());
+	            		return obj;
+	            	}
+    			}
+        	}
+        	*/
+
+			return (int) Utils.randomLong(0, 65735L);
 		} 
 		else if (type.equals("java.lang.String"))
 		{
@@ -371,5 +396,27 @@ public class ASNInitializer
 			return subObj;
 		}
     }
+    
+    public static Long processEnumLong(String resultPath, ASNMessage message, Object object, String value) throws Exception
+    {
+    	Long obj = null;
+		// get the element definition (enumeration binary data) from the dictionary
+		ElementAbstract elementDico = null;
+		if (message != null)
+		{
+	    	elementDico = message.getElementFromDico(object, resultPath);
+		}
+		if (elementDico != null)
+		{
+			FieldAbstract field = elementDico.getField(0);
+			if (field instanceof EnumLongField)
+			{
+				EnumLongField fld = (EnumLongField) elementDico.getField(0);
+				obj = fld.getEnumLong(value);
+			}
+		}
+		return obj;
+    }
+
     
 }
