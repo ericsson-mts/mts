@@ -199,9 +199,9 @@ public abstract class ASNMessage
  	}
     
 	// get the element definition (enumeration binary data) from the dictionary
-    public ElementAbstract getElementFromDico(Object parentObject, String resultPath) 
+    public ElementAbstract getElementFromDico(String name, Object parentObject, String resultPath) 
  	{
-    	return getElementFromDico(null, parentObject, resultPath, null);
+    	return getElementFromDico(name, parentObject, resultPath, null);
  	}
 
     // get the embedded definition form the message (for conditional) and the dictionary

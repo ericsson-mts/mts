@@ -192,11 +192,16 @@ public class XMLToASNParser
     {    	
     	// get the embedded definition form the message (for conditional) and the dictionary
     	Embedded embedded =  null; 
+    	String name = null;
+    	if (field != null)
+    	{
+    		name = field.getName();
+    	}
     	if (message != null)
     	{
     		if (field != null)
     		{
-    			embedded =  message.getEmbeddedFromDico(field.getName(), type);
+    			embedded =  message.getEmbeddedFromDico(name, type);
     		}
     	}
     	// process embedded object
@@ -219,12 +224,12 @@ public class XMLToASNParser
         if (type.equals("java.lang.Boolean") || type.equals("boolean"))  
         {
         	value = element.getTextTrim();
-        	obj = Utils.parseBoolean(value, field.getName());
+        	obj = Utils.parseBoolean(value, name);
         }
         else if (type.equals("java.lang.Byte") || type.equals("byte"))  
         {
         	value = element.getTextTrim();
-        	Long objLong = processEnumLong(resultPath, message, object, value);
+        	Long objLong = processEnumLong(name, resultPath, message, object, value);
         	if (objLong != null)
         	{
         		obj = new Byte(objLong.byteValue());
@@ -239,7 +244,7 @@ public class XMLToASNParser
         else if (type.equals("java.lang.Short") || type.equals("short"))  
         {
         	value = element.getTextTrim();
-        	Long objLong = processEnumLong(resultPath, message, object, value);
+        	Long objLong = processEnumLong(name, resultPath, message, object, value);
         	if (objLong != null)
         	{
         		obj = new Short(objLong.shortValue());
@@ -253,7 +258,7 @@ public class XMLToASNParser
         else if (type.equals("java.lang.Integer") || type.equals("int")) 
         {
         	value = element.getTextTrim();
-        	Long objLong = processEnumLong(resultPath, message, object, value);
+        	Long objLong = processEnumLong(name, resultPath, message, object, value);
         	if (objLong != null)
         	{
         		obj = new Integer(objLong.intValue());
@@ -267,7 +272,7 @@ public class XMLToASNParser
         else if (type.equals("java.lang.Long") || type.equals("long"))  
         {
         	value = element.getTextTrim();
-        	obj = processEnumLong(resultPath, message, object, value);
+        	obj = processEnumLong(name, resultPath, message, object, value);
         	if (obj == null)
         	{
         		obj = Long.parseLong(value);
@@ -289,13 +294,13 @@ public class XMLToASNParser
         else if (type.equals("org.bn.types.BitString")) 
         {
         	// calculate resultPath
-            resultPath = resultPath + "." + field.getName();
+            resultPath = resultPath + "." + name;
             
         	Element elt = element.element("BitString");
         	if (elt != null)
         	{
 	        	value = elt.attributeValue("value");
-	        	value = processEnumString(resultPath, message, object, value);
+	        	value = processEnumString(name, resultPath, message, object, value);
 	        	String trailing = elt.attributeValue("trailing");
 	        	int intTrail = Integer.parseInt(trailing);
 	        	obj = new BitString();
@@ -306,25 +311,25 @@ public class XMLToASNParser
         else if (type.equals("java.lang.String")||type.equals("String")) 
         {
         	value = element.getTextTrim();
-        	value = processEnumString(resultPath, message, object, value);
+        	value = processEnumString(name, resultPath, message, object, value);
         	obj =  value;
         }
         else if (type.equals("org.bn.types.ObjectIdentifier")) 
         {
         	// calculate resultPath
-            resultPath = resultPath + "." + field.getName();
+            resultPath = resultPath + "." + name;
 
         	value = element.element("ObjectIdentifier").getTextTrim();
-        	value = processEnumString(resultPath, message, object, value);
+        	value = processEnumString(name, resultPath, message, object, value);
         	obj =  new ObjectIdentifier();
         	((ObjectIdentifier) obj).setValue(value);
         }
         else if (type.equals("byte[]")) 
         {   
         	String elementName = object.getClass().getSimpleName();
-        	if (field != null && !"value".equalsIgnoreCase(field.getName()))
+        	if (field != null && !"value".equalsIgnoreCase(name))
         	{
-        		elementName = elementName + "." + field.getName();
+        		elementName = elementName + "." + name;
         	}
         	boolean logWarn = !elementName.contains("TransactionID") && 
 					  !elementName.equals("Invoke.parameter") &&
@@ -335,7 +340,7 @@ public class XMLToASNParser
         	ElementAbstract elementDico = null;
         	if (message != null)
         	{
-    	    	elementDico = message.getElementFromDico(object, resultPath);
+    	    	elementDico = message.getElementFromDico(name, object, resultPath);
         	}
         	if (elementDico == null && logWarn)
         	{
@@ -365,7 +370,7 @@ public class XMLToASNParser
         	byte[] bytes = Utils.parseBinaryString("h" + value);
     		array = new DefaultArray(bytes);
     		value = Array.toHexString(array);
-    		value = processEnumString(resultPath, message, object, value);
+    		value = processEnumString(name, resultPath, message, object, value);
     		array = Array.fromHexString(value);
     		return array.getBytes();
         }
@@ -514,14 +519,14 @@ public class XMLToASNParser
 	    return obj;
 	}
 
-    public static Long processEnumLong(String resultPath, ASNMessage message, Object object, String value) throws Exception
+    public static Long processEnumLong(String name, String resultPath, ASNMessage message, Object object, String value) throws Exception
     {
     	Long obj = null;
 		// get the element definition (enumeration binary data) from the dictionary
 		ElementAbstract elementDico = null;
 		if (message != null)
 		{
-	    	elementDico = message.getElementFromDico(object, resultPath);
+	    	elementDico = message.getElementFromDico(name, object, resultPath);
 		}
 		if (elementDico != null)
 		{
@@ -535,13 +540,13 @@ public class XMLToASNParser
 		return obj;
     }
     
-    public static String processEnumString(String resultPath, ASNMessage message, Object object, String value) throws Exception
+    public static String processEnumString(String name, String resultPath, ASNMessage message, Object object, String value) throws Exception
     {
 		// get the element definition (enumeration binary data) from the dictionary
     	ElementAbstract elementDico = null;
     	if (message != null)
     	{
-	    	elementDico = message.getElementFromDico(object, resultPath);
+	    	elementDico = message.getElementFromDico(name, object, resultPath);
     	}
     	if (elementDico != null)
     	{
