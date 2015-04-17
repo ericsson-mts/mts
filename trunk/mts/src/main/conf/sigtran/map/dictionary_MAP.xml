@@ -159,6 +159,7 @@
     <!-- International Mobile Station equipment Identity => 3GPP TS 29.003 V9.3.0 chapter 6.2 page 26 -->    
     <element name="IMEI,TBCD_STRING" coding="V" description="International Mobile Station equipment Identity">
         <field name="digits" type="number_bcd" description="digits"/>
+        <!--field name="digits" type="number_bcd" length="8" description="digits"/--> <!-- NOt SUPPORTED -->
         <!-- NOT SUPPORTED
         <field name="TAC" type="number_bcd" length="4" description="Type Allocation Code"/>
         <field name="SNR" type="number_bcd" length="3" description="Serial Number"/>
@@ -617,7 +618,17 @@
     <element name="sm_RP_SMEA" coding="V" description="RP-originating SME-Address" comment="Address of the originating SME.">
         <element name="Address" coding="DV" description="Generic Address" comment="Address of the function."/>
     </element>
-     
+
+    <!-- AgeOfLocationInformation  => 3GPP TS 23.002 V12.5.0 chapter 17.7.8 page 453 -->
+    <element name="AgeOfLocationInformation" coding="V" description="Age Of Location Information " comment="Refers to geographical Information defined in 3GPP TS 23.032.">
+        <field name="value" type="EnumLong" length="2" description="time in minutes since the last network contact of the mobile station (i.e. the actuality of the location information)." comment="">
+              <enum name="0 minut : currently in contact" value="0"/>
+              <enum name="[1-32766] minuts" value="1-32766"/>              
+              <enum name="at least 32767 minuts old" value="32767"/>
+              <enum name="invalid value" value="32768-65535"/>
+        </field>
+    </element>
+    
     <!-- Geographical Information => 3GPP TS 23.032 V12.0.0 chapter 7.1.2 page 14-16 -->
     <element name="GeographicalInformation" coding="V" description="Geographical Information" comment="Refers to geographical Information defined in 3GPP TS 23.032.">
         <field name="TypeOfShape" type="EnumLong" lengthBit="4" description="RP-Message Type Indicator" comment="Identify the type which is being coded in the Shape Description.">
@@ -758,9 +769,9 @@
     <element name="PDP_Type" coding="V" description="PDP Type">
         <field name="spare" type="Integer" lengthBit="4" description="Not used"/> 
         <field name="PDP type organisation" type="Enumeration" lengthBit="4" description="PDP Type Organisation">
-            <enum name="ETSI" value="0" description="b00000000"/>
-            <enum name="IETF" value="1" description="b00000001"/>
-            <enum name="reserved" value="2-255" description="b00000010-b11111111"/>                    
+            <enum name="ETSI" value="0" description="b0000"/>
+            <enum name="IETF" value="1" description="b0001"/>
+            <enum name="reserved" value="2-15" description="b0010-b1111"/>                    
         </field>
         <field name="PDP type number" type="Enumeration" lengthBit="8" description="PDP Type Number">
             <enum name="PPP" value="1" description="b00000001"/>
@@ -1050,93 +1061,140 @@
         <field name="Charging Value" type="Integer" length="1" description="Charging Value"/>
     </element>
 
-    <!-- Operation code local value => MAP.asn line 76 -->
-    <element name="opCode.localValue" coding="V" description="Operation code local value">
-    		<field name="localValue" type="EnumLong" length="1" description="operation code">
-            <enum name="updateLocation" value="2"/>
-          	<enum name="cancelLocation" value="3"/>
-          	<enum name="provideRoa mingNumber" value="4"/>
-          	<enum name="noteSubscriberDataModified" value="5"/>
-          	<enum name="resumeCallHandling" value="6"/>
-          	<enum name="insertSubscriberData" value="7"/>
-          	<enum name="deleteSubscriberData" value="8"/>
-          	<enum name="sendParameters" value="9"/>
-          	<enum name="registerSS" value="10"/>
-          	<enum name="eraseSS" value="11"/>
-          	<enum name="activateSS" value="12"/>
-          	<enum name="deactivateSS" value="13"/>
-          	<enum name="interrogateSS" value="14"/>
-          	<enum name="authenticationFailureReport" value="15"/>
-          	<enum name="registerPassword" value="17"/>
-          	<enum name="getPassword" value="18"/>
-          	<enum name="processUnstructuredSS-Data" value="19"/>
-          	<enum name="releaseResources" value="20"/>
-          	<enum name="sendRoutingInfo" value="22"/>
-          	<enum name="updateGprsLocation" value="23"/>
-          	<enum name="sendRoutingInfoForGprs" value="24"/>
-          	<enum name="failureReport" value="25"/>
-          	<enum name="noteMsPresentForGprs" value="26"/>
-          	<enum name="performHandover" value="28"/>
-          	<enum name="sendEndSignal" value="29"/>
-          	<enum name="performSubsequentHandover" value="30"/>
-          	<enum name="provideSIWFSNumber" value="31"/>
-          	<enum name="sIWFSSignallingModify" value="32"/>
-          	<enum name="processAccessSignalling" value="33"/>
-          	<enum name="forwardAccessSignalling" value="34"/>
-          	<enum name="noteInternalHandover" value="35"/>
-          	<enum name="reset" value="37"/>
-          	<enum name="forwardCheckSS" value="38"/>
-          	<enum name="prepareGroupCall" value="39"/>
-          	<enum name="sendGroupCallEndSignal" value="40"/>
-          	<enum name="processGroupCallSignalling" value="41"/>
-          	<enum name="forwardGroupCallSignalling" value="42"/>
-          	<enum name="checkIMEI" value="43"/>
-          	<enum name="mt-forwardSM" value="44"/>
-          	<enum name="sendRoutingInfoForSM" value="45"/>
-          	<enum name="mo-forwardSM" value="46"/>
-          	<enum name="reportSM-DeliveryStatus" value="47"/>
-          	<enum name="noteSubscriberPresent" value="48"/>
-          	<enum name="alertServiceCentreWithoutResult" value="49"/>
-          	<enum name="activateTraceMode" value="50"/>
-          	<enum name="deactivateTraceMode" value="51"/>
-          	<enum name="traceSubscriberActivity" value="52"/>
-          	<enum name="beginSubscriberActivity" value="54"/>
-          	<enum name="sendIdentification" value="55"/>
-          	<enum name="sendAuthenticationInfo" value="56"/>
-          	<enum name="restoreData" value="57"/>
-          	<enum name="sendIMSI" value="58"/>
-          	<enum name="processUnstructuredSS-Request" value="59"/>
-          	<enum name="unstructuredSS-Request" value="60"/>
-          	<enum name="unstructuredSS-Notify" value="61"/>
-          	<enum name="anyTimeSubscriptionInterrogation" value="62"/>
-          	<enum name="informServiceCentre" value="63"/>
-          	<enum name="alertServiceCentre" value="64"/>
-          	<enum name="anyTimeModification" value="65"/>
-          	<enum name="readyForSM" value="66"/>
-          	<enum name="purgeMS" value="67"/>
-          	<enum name="prepareHandover" value="68"/>
-          	<enum name="prepareSubsequentHandover" value="69"/>
-          	<enum name="provideSubscriberInfo" value="70"/>
-          	<enum name="anyTimeInterrogation" value="71"/>
-          	<enum name="ss-InvocationNotification" value="72"/>
-          	<enum name="setReportingState" value="73"/>
-          	<enum name="statusReport" value="74"/>
-          	<enum name="remoteUserFree" value="75"/>
-          	<enum name="registerCC-Entry" value="76"/>
-          	<enum name="eraseCC-Entry" value="77"/>
-          	<enum name="secureTransportClass1" value="78"/>
-          	<enum name="secureTransportClass2" value="79"/>
-          	<enum name="secureTransportClass3" value="80"/>
-          	<enum name="secureTransportClass4" value="81"/>
-          	<enum name="provideSubscriberLocation" value="83"/>
-          	<enum name="sendRoutingInfoForLCS" value="85"/>
-          	<enum name="subscriberLocationReport" value="86"/>
-          	<enum name="ist-Alert" value="87"/>
-          	<enum name="ist-Command" value="88"/>
-          	<enum name="noteMM-Event" value="89"/>
+    <!-- MS_Classmark1 => 3GPP TS 29.002 V12.5.0 chapter 17.1.1 page 405 -->
+    <!-- MS_Classmark2 => 3GPP TS 24.008 V13.1.0 chapter 10.5.1.5 page 443-445 -->
+    <element name="MS_Classmark1" coding="V" description="Mobile Station Classmark 1">
+        <!-- Octet #3 -->
+        <field name="spare1" type="Integer" lengthBit="1" description="Not used"/>    
+        <field name="Revision level" type="Enumeration" lengthBit="2" description="Revision level" comment="" >
+            <enum name="Reserved for GSM phase 1" value="0" description="b00"/>
+            <enum name="Used by GSM phase 2 mobile stations" value="1" description="b01"/>
+            <enum name="Used by mobile stations supporting R99 or later versions of the protocol" value="2" description="b10"/>
+            <enum name="Reserved for future use." value="3" description="b11"/>
+        </field>
+        <field name="ES IND" type="Enumeration" lengthBit="1" description="Controlled Early Classmark Sending" comment="" >
+            <enum name="ES IND option is not implemented in the MS" value="0" description="b0"/>
+            <enum name="ES IND option is implemented in the MS (if A/Gb mode supported)" value="1" description="b1"/>
+        </field>
+        <field name="A5/1 algorithm supported " type="Enumeration" lengthBit="1" description="encryption A5/1 algorithm supported " comment="" >
+            <enum name="available" value="0" description="b0"/>
+            <enum name="not available (if A/Gb mode supported)" value="1" description="b1"/>
+        </field>
+        <field name="RF Power Capability" type="Enumeration" lengthBit="3" description="RF Power Capability" comment="" >
+            <enum name="class 1 (GSM)" value="1" description="b000"/>
+            <enum name="class 2 (GSM)" value="2" description="b001"/>
+            <enum name="class 3 (GSM)" value="3" description="b010"/>
+            <enum name="class 4 (GSM1800 or GSM1900)" value="4" description="b011"/>
+            <enum name="class 5 (GSM1800 or GSM1900)" value="5" description="b100"/>
+            <enum name="reserved" value="5-6" description="b110-b110"/>
+            <enum name="irrelevant (UMTS or E-TRAN)" value="7" description="b111"/>            
         </field>
     </element>
+    
+    <!-- MS_Classmark2 => 3GPP TS 29.002 V12.5.0 chapter 17.1.1 page 405 -->
+    <!-- MS_Classmark2 => 3GPP TS 24.008 V13.1.0 chapter 10.5.1.6 page 445-448 -->
+    <element name="MS_Classmark2" coding="V" description="Mobile Station Classmark 2">
+        <!-- Octet #3 -->
+        <field name="spare1" type="Integer" lengthBit="1" description="Not used"/>    
+        <field name="Revision level" type="Enumeration" lengthBit="2" description="Revision level" comment="" >
+            <enum name="Reserved for GSM phase 1" value="0" description="b00"/>
+            <enum name="Used by GSM phase 2 mobile stations" value="1" description="b01"/>
+            <enum name="Used by mobile stations supporting R99 or later versions of the protocol" value="2" description="b10"/>
+            <enum name="Reserved for future use." value="3" description="b11"/>
+        </field>
+        <field name="ES IND" type="Enumeration" lengthBit="1" description="Controlled Early Classmark Sending" comment="" >
+            <enum name="ES IND option is not implemented in the MS" value="0" description="b0"/>
+            <enum name="ES IND option is implemented in the MS (if A/Gb mode supported)" value="1" description="b1"/>
+        </field>
+        <field name="A5/1 algorithm supported " type="Enumeration" lengthBit="1" description="encryption A5/1 algorithm supported " comment="" >
+            <enum name="available" value="0" description="b0"/>
+            <enum name="not available (if A/Gb mode supported)" value="1" description="b1"/>
+        </field>
+        <field name="RF Power Capability" type="Enumeration" lengthBit="3" description="RF Power Capability" comment="" >
+            <enum name="class 1 (GSM)" value="1" description="b000"/>
+            <enum name="class 2 (GSM)" value="2" description="b001"/>
+            <enum name="class 3 (GSM)" value="3" description="b010"/>
+            <enum name="class 4 (GSM1800 or GSM1900)" value="4" description="b011"/>
+            <enum name="class 5 (GSM1800 or GSM1900)" value="5" description="b100"/>
+            <enum name="reserved" value="5-6" description="b110-b110"/>
+            <enum name="irrelevant (UMTS or E-TRAN)" value="7" description="b111"/>            
+        </field>
+        <!-- Octet #4 -->
+        <field name="spare2" type="Integer" lengthBit="1" description="Not used"/>    
+        <field name="PS capability" type="Enumeration" lengthBit="1" description="pseudo-synchronization capability" comment="" >
+            <enum name="not present" value="0" description="b0"/>
+            <enum name="present (if A/Gb mode supported)" value="1" description="b1"/>
+        </field>
+        <!-- SS Screening Indicator => 3GPP TS 24.080 V12.0.0 chapter 7.1 page 17 -->
+        <field name="SS Screening Indicator" type="Enumeration" lengthBit="2" description="SS Screening Indicator" comment="" >
+            <enum name="default value of phase 1" value="0" description="b00"/>
+            <enum name="capability of handling of ellipsis notation and phase 2 error handling" value="1" description="b01"/>
+            <enum name="for future use " value="2-3" description="b10-b11"/>
+        </field>
+        <field name="SM capability" type="Enumeration" lengthBit="1" description="MT SMS pt to pt capability" comment="" >
+            <enum name="does not support" value="0" description="b0"/>
+            <enum name="supports" value="1" description="b1"/>
+        </field>
+        <field name="VBS notification reception" type="Enumeration" lengthBit="1" description="VBS notification reception" comment="" >
+            <enum name="no notification wanted" value="0" description="b0"/>
+            <enum name="notification wanted (if A/Gb mode supported)" value="1" description="b1"/>
+        </field>
+        <field name="VGCS notification reception" type="Enumeration" lengthBit="1" description="VGCS notification reception" comment="" >
+            <enum name="no notification wanted" value="0" description="b0"/>
+            <enum name="notification wanted (if A/Gb mode supported)" value="1" description="b1"/>
+        </field>
+        <field name="FC Frequency Capability" type="Enumeration" lengthBit="1" description="FC Frequency Capability" comment="" >
+            <enum name="does not support the E-GSM or R-GSM band" value="0" description="b0"/>
+            <enum name="support the E-GSM or R-GSM band (GSM900 only)" value="1" description="b1"/>
+        </field>
+        <!-- Octet #5 -->    
+        <field name="CM3" type="Enumeration" lengthBit="1" description="" comment="" >
+            <enum name="does not support" value="0" description="b0"/>
+            <enum name="supports" value="1" description="b1"/>
+        </field>
+        <field name="spare3" type="Integer" lengthBit="1" description="Not used"/>
+        <field name="LCS VA capability" type="Enumeration" lengthBit="1" description="LCS (Location via CS domain) value added location request notification capability" comment="" >
+            <enum name="request notification not supported" value="0" description="b0"/>
+            <enum name="request notification supported" value="1" description="b1"/>
+        </field>
+        <field name="UCS2 treatment" type="Enumeration" lengthBit="1" description="likely treatment by the mobile station of UCS2 encoded character strings" comment="" >
+            <enum name="a preference for the default alphabet" value="0" description="b0"/>
+            <enum name="no preference for the default alphabet " value="1" description="b1"/>
+        </field>
+        <field name="SoLSA" type="Enumeration" lengthBit="1" description="" comment="" >
+            <enum name="does not support" value="0" description="b0"/>
+            <enum name="supports (if A/Gb mode supported)" value="1" description="b1"/>
+        </field>
+        <field name="CM Service Prompt (CMSP)" type="Enumeration" lengthBit="1" description="Network initiated MO CM connection request" comment="" >
+            <enum name="not supported" value="0" description="b0"/>
+            <enum name="supported at least one CM protocol" value="1" description="b1"/>
+        </field>
+        <field name="A5/3 algorithm supported" type="Enumeration" lengthBit="1" description="encryption A5/3 algorithm supported" comment="" >
+            <enum name="not available" value="0" description="b0"/>
+            <enum name="available (if A/Gb mode supported)" value="1" description="b1"/>
+        </field>
+        <field name="A5/2 algorithm supported" type="Enumeration" lengthBit="1" description="encryption A5/3 algorithm supported" comment="" >
+            <enum name="not available" value="0" description="b0"/>
+            <enum name="Not used" value="1" description="b1"/>
+        </field>
+    </element>
+    
+    <!-- MSNetworkCapability => 3GPP TS 29.002 V12.5.0 chapter 17.1.1 page 405 -->
+    <!-- MSNetworkCapability => 3GPP TS 24.008 V13.1.0 chapter 10.5.5.12 page 547-551 -->
+    <element name="MSNetworkCapability" coding="V" description="MS network capability">
+        <!-- Octet #3 -->
+        <field name="value" type="Binary" description="value"/>
+        <!--field name="value" type="binary" length="8" description="value"/--> <!-- NOt SUPPORTED -->    
+    </element>    
 
+    <!-- MSRadioAccessCapability => 3GPP TS 29.002 V12.5.0 chapter 17.1.1 page 405 -->
+    <!-- MSRadioAccessCapability => 3GPP TS 24.008 V13.1.0 chapter 10.5.5.12 page 547-551 -->
+    <element name="MSRadioAccessCapability" coding="V" description="MS Radio Access capability">
+        <!-- Octet #3 -->
+        <field name="value" type="Binary" description="value"/>    
+        <!--field name="value" type="binary" length="50" description="value"/--> <!-- NOt SUPPORTED -->
+    </element>    
+    
     <!-- Operation code local value => MAP.asn line 76 -->
     <element name="opCode.localValue" coding="V" description="Operation code local value">
     		<field name="localValue" type="EnumLong" length="1" description="operation code">

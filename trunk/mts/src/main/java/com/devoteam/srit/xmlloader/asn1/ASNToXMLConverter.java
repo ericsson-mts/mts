@@ -455,7 +455,8 @@ public class ASNToXMLConverter
         	if (elementDico != null)
         	{
 	        	EnumLongField fld = (EnumLongField) elementDico.getField(0);
-	        	return fld.getEnumValue((Long) object);
+	        	Number number = (Number) object;
+	        	return fld.getEnumValue(number.longValue());
         	}
 			return object.toString();
 		}
