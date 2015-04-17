@@ -23,6 +23,11 @@
 
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
+import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
+import gp.utils.arrays.SupArray;
+
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
@@ -53,10 +58,10 @@ public class EnumRange
 	public EnumRange(String beginStr, String endStr, String name) 
     {
     	byte[] beginBytes = Utils.parseBinaryString(beginStr.trim());
-    	this.beginValue = (int) beginBytes[0] & 0xFF;
+    	this.beginValue = toLong(beginBytes);
     	byte[] endBytes = Utils.parseBinaryString(endStr.trim());
-    	this.endValue = (int) endBytes[0] & 0xFF;
-    	
+    	this.endValue = toLong(endBytes);
+
     	this.name = name;
     	
 		String strRange = name;
@@ -162,6 +167,12 @@ public class EnumRange
 			return null;
 		}
 	}
+
+    public long getRandomValue() throws Exception 
+    {
+    	return Utils.randomLong(beginValue, endValue);
+    }
+	
 	public String toString()
 	{
 		String ret = "<enum ";
@@ -182,4 +193,14 @@ public class EnumRange
 		ret += "/>";
 		return ret;
 	}
+	
+	public static long toLong(byte[] bytes)
+	{	
+		Array array = new DefaultArray(bytes);
+		String hexa = Array.toHexString(array);
+		BigInteger BI = new BigInteger(hexa, 16);
+		//BigInteger BI = new BigInteger(array.getBytes()); DON'T WORK because signed values
+		return BI.longValue();
+	}
+
 }

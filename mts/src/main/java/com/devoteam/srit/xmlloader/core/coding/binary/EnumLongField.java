@@ -33,6 +33,7 @@ import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
 
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -84,9 +85,8 @@ public class EnumLongField extends IntegerField
         	else
         	{
 	        	byte[] valueBytes = Utils.parseBinaryString(valueStr);
-	        	Array array = new DefaultArray(valueBytes);
-	        	BigInteger n = new BigInteger(array.toString(), 16);
-	        	long value = Long.parseLong(n.toString());
+	        	long value = EnumRange.toLong(valueBytes);
+
 	            this.valuesByLabel.put(nameStr, value);
 	            this.labelsByValue.put(value, nameStr);
         	}
@@ -115,6 +115,34 @@ public class EnumLongField extends IntegerField
         Long longValue = this.getEnumLong(value);
         array.setBits(offset, this.length, longValue.byteValue() & 0xff);
     }
+    
+    @Override
+    public void initValue(int index, int offset, SupArray array) throws Exception 
+    {
+    	if (ranges.size() > 0)
+    	{
+    		int indexRange = (int) Utils.randomLong(0, ranges.size() - 1);
+    		EnumRange range = ranges.get(indexRange);
+    		Long l = range.getRandomValue();
+    		this.setValue(l.toString(), offset, array);
+    		if (Utils.randomBoolean())
+    		{
+    			return;
+    		}
+    	}
+    	if (valuesByLabel.size() > 0)
+    	{
+    		int indexLabel = (int) Utils.randomLong(0, valuesByLabel.size() - 1);
+    		Long l = (Long) valuesByLabel.values().toArray()[indexLabel];
+        	this.setValue(l.toString(), offset, array);
+    		if (Utils.randomBoolean())
+    		{
+    			return;
+    		}
+    	}
+    	super.initValue(index, offset, array);
+    }
+
 
     public Long getEnumValueByLabel(String name) 
     {

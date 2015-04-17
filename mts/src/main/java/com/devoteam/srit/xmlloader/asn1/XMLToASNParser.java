@@ -216,43 +216,55 @@ public class XMLToASNParser
 		
 		Object obj = null;
 		String value = null;
-        if (type.equals("java.lang.Boolean")||type.equals("boolean"))  
+        if (type.equals("java.lang.Boolean") || type.equals("boolean"))  
         {
         	value = element.getTextTrim();
         	obj = Utils.parseBoolean(value, field.getName());
         }
-        else if (type.equals("java.lang.Byte")||type.equals("byte"))  
+        else if (type.equals("java.lang.Byte") || type.equals("byte"))  
         {
         	value = element.getTextTrim();
-        	obj = processEnumLong(resultPath, message, object, value);
-        	if (obj == null)
+        	Long objLong = processEnumLong(resultPath, message, object, value);
+        	if (objLong != null)
+        	{
+        		obj = new Byte(objLong.byteValue());
+        	} 
+        	else
         	{
         		obj = Byte.parseByte(value);
         	}
             value = obj.toString();
         }
 
-        else if (type.equals("java.lang.Short")||type.equals("short"))  
+        else if (type.equals("java.lang.Short") || type.equals("short"))  
         {
         	value = element.getTextTrim();
-        	obj = processEnumLong(resultPath, message, object, value);
-        	if (obj == null)
+        	Long objLong = processEnumLong(resultPath, message, object, value);
+        	if (objLong != null)
+        	{
+        		obj = new Short(objLong.shortValue());
+        	} 
+        	else
         	{
         		obj = Short.parseShort(value);
         	}
             value = obj.toString();
         }
-        else if (type.equals("java.lang.Integer")||type.equals("int")) 
+        else if (type.equals("java.lang.Integer") || type.equals("int")) 
         {
         	value = element.getTextTrim();
-        	obj = processEnumLong(resultPath, message, object, value);
-        	if (obj == null)
+        	Long objLong = processEnumLong(resultPath, message, object, value);
+        	if (objLong != null)
+        	{
+        		obj = new Integer(objLong.intValue());
+        	} 
+        	else
         	{
         		obj = Integer.parseInt(value);
         	}
             value = obj.toString();
         }
-        else if (type.equals("java.lang.Long")||type.equals("long"))  
+        else if (type.equals("java.lang.Long") || type.equals("long"))  
         {
         	value = element.getTextTrim();
         	obj = processEnumLong(resultPath, message, object, value);
@@ -262,13 +274,13 @@ public class XMLToASNParser
         	}
         	value = obj.toString();
         }
-        else if (type.equals("java.lang.Float")||type.equals("float"))  
+        else if (type.equals("java.lang.Float") || type.equals("float"))  
         {
         	value = element.getTextTrim();
             obj = Float.parseFloat(value);
             value = obj.toString();
         }
-        else if (type.equals("java.lang.Double")||type.equals("double"))  
+        else if (type.equals("java.lang.Double") || type.equals("double"))  
         {
         	value = element.getTextTrim();
             obj = Double.parseDouble(value);
@@ -502,9 +514,9 @@ public class XMLToASNParser
 	    return obj;
 	}
 
-    public static Object processEnumLong(String resultPath, ASNMessage message, Object object, String value) throws Exception
+    public static Long processEnumLong(String resultPath, ASNMessage message, Object object, String value) throws Exception
     {
-    	Object obj = null;
+    	Long obj = null;
 		// get the element definition (enumeration binary data) from the dictionary
 		ElementAbstract elementDico = null;
 		if (message != null)

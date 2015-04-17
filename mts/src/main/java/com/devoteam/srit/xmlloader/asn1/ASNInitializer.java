@@ -311,7 +311,7 @@ public class ASNInitializer
 		}
 		else if (type.equals("java.lang.Integer") || type.equals("int"))
 		{
-			return (int) Utils.randomLong(0, 1000000000L);
+			return (int) Utils.randomLong(0, 2000000000L);
 		} 
 		else if (type.equals("java.lang.String"))
 		{
