@@ -331,10 +331,13 @@ public class XMLToASNParser
         	{
         		elementName = elementName + "." + name;
         	}
-        	boolean logWarn = !elementName.contains("TransactionID") && 
+        	boolean logWarn = !elementName.equals("OrigTransactionID") &&
+        			  !elementName.equals("DestTransactionID") &&
 					  !elementName.equals("Invoke.parameter") &&
 					  !elementName.equals("ReturnResult.parameter") &&
-					  !elementName.equals("ReturnError.parameter");
+					  !elementName.equals("ReturnError.parameter") &&
+					  !elementName.equals("Sm_RP_UI") &&
+					  !elementName.equals("PrivateExtension.extType");
 
         	// get the element definition (enumeration binary data) from the dictionary
         	ElementAbstract elementDico = null;
@@ -344,11 +347,8 @@ public class XMLToASNParser
         	}
         	if (elementDico == null && logWarn)
         	{
-        		if (!"PrivateExtension.extType".equals(elementName))
-        		{
-        			GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, null, 
-        					"The ASN1 element \"" + elementName + "\" is not defined into the dictionary to analyze the received messages more finely.");
-        		}
+        		GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, null, 
+        			"The ASN1 element \"" + elementName + "\" is not defined into the dictionary to analyze the received messages more finely.");
         	}
 
         	// TODO bug dans la fonction copyToClone() : retourne toujours un IntegerField
@@ -363,6 +363,12 @@ public class XMLToASNParser
         		return array.getBytes();
         	}
         	
+        	if (logWarn)
+        	{
+        		GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, null, 
+        			"The ASN1 element \"" + elementName + "\" is not specified as a list of XML <field> tag.");
+        	}
+
         	// not defined as a list of XML <field> tag
         	value = element.getTextTrim();
         	byte[] bytes = Utils.parseBinaryString("h" + value);
