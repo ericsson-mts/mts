@@ -42,6 +42,7 @@ import com.devoteam.srit.xmlloader.asn1.BN_ASNMessage;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Component;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ComponentPortion;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.End;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Invoke;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Reject;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ReturnError;
@@ -139,6 +140,7 @@ public class BN_TCAPMessage extends BN_ASNMessage
         {
     		bytes = tcMessage.getAbort().getDtid().getValue();
     	}
+    	
     	if (bytes != null)
     	{
 	    	Array array = new DefaultArray(bytes);
@@ -156,7 +158,11 @@ public class BN_TCAPMessage extends BN_ASNMessage
     	}
     	else if (((TCMessage) asnObject).isEndSelected())
     	{
-    		comps = ((TCMessage) asnObject).getEnd().getComponents().getValue();
+    		End end = ((TCMessage) asnObject).getEnd();
+    		if (end.getComponents() != null)
+    		{
+    			comps = ((TCMessage) asnObject).getEnd().getComponents().getValue();
+    		}
     	}
     	else if (((TCMessage) asnObject).isContinue1Selected())
     	{
