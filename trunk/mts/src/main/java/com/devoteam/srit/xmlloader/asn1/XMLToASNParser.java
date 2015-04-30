@@ -344,8 +344,11 @@ public class XMLToASNParser
         	}
         	if (elementDico == null && logWarn)
         	{
-        		GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, null, 
-        			"The ASN1 element \"" + elementName + "\" is not defined into the dictionary to analyze the received messages more finely.");
+        		if (!"PrivateExtension.extType".equals(elementName))
+        		{
+        			GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, null, 
+        					"The ASN1 element \"" + elementName + "\" is not defined into the dictionary to analyze the received messages more finely.");
+        		}
         	}
 
         	// TODO bug dans la fonction copyToClone() : retourne toujours un IntegerField
@@ -360,11 +363,6 @@ public class XMLToASNParser
         		return array.getBytes();
         	}
         	
-        	if (logWarn)
-        	{
-        		GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, null, 
-        			"The ASN1 element \"" + elementName + "\" is not specified as a list of XML <field> tag.");
-        	}
         	// not defined as a list of XML <field> tag
         	value = element.getTextTrim();
         	byte[] bytes = Utils.parseBinaryString("h" + value);

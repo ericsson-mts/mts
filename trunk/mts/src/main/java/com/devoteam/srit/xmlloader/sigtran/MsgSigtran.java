@@ -119,6 +119,7 @@ public class MsgSigtran extends Msg
 	    		{
 	    			// nothing to do : man not an AP layer (ASN1)
 	    			_tcapMessage = null;
+	    			e.printStackTrace();
 	    		}
 		  
 	    		if (_tcapMessage != null)
@@ -134,6 +135,7 @@ public class MsgSigtran extends Msg
 		    		{
 		    			// nothing to do : man not an AP layer (ASN1)
 		    			_apMessage = null;
+		    			e.printStackTrace();
 		    		}
 	    		}
 	    	}

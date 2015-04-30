@@ -37,7 +37,7 @@
     <parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
     <parameter name="[length]" operation="string.length" value="[data]"/>
     
-    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="70">
+    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="85">
       <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
       <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
       <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
@@ -60,43 +60,109 @@
            <invokeID.BoxedType><Integer>1</Integer></invokeID.BoxedType>
            <resultretres>
             <opCode.Choice>
-               <localValue.BoxedType><Long>subscriberLocationReport:85</Long></localValue.BoxedType>
+               <localValue.BoxedType><Long>sendRoutingInfoForLCS:85</Long></localValue.BoxedType>
                <!--globalValue><ObjectIdentifier>0.1.233.30.41.26.113</ObjectIdentifier></globalValue-->
             </opCode.Choice>
             <returnparameter>
-               <SubscriberLocationReport_Res.Sequence>
-                  <extensionContainer.Sequence>
+               <RoutingInfoForLCS_Res.Sequence>
+                  <targetMS.C0.Choice>
+                     <imsi.C0.BoxedType><Bytes>84868013f6
+                           <field name="digits" value="486808316" type="Number_BCD" lengthBit="36" />
+                        </Bytes></imsi.C0.BoxedType>
+                     <msisdn.C1.BoxedType><Bytes>c387594644f9
+                           <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                           <field name="nature of address" value="subscriber number:4" type="EnumLong" lengthBit="3" />
+                           <field name="numbering plan" value="data numbering plan (ITU-T Rec X.121):3" type="EnumLong" lengthBit="4" />
+                           <field name="digits" value="789564449" type="Number_BCD" lengthBit="36" />
+                        </Bytes></msisdn.C1.BoxedType>
+                  </targetMS.C0.Choice>
+                  <lcsLocationInfo.C1.Sequence>
+                     <networkNode_Number.BoxedType><Bytes>762130880982
+                           <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
+                           <field name="nature of address" value="reserved for extension:7" type="EnumLong" lengthBit="3" />
+                           <field name="numbering plan" value="land mobile numbering plan (ITU-T Rec E.212):6" type="EnumLong" lengthBit="4" />
+                           <field name="digits" value="1203889028" type="Number_BCD" length="5" />
+                        </Bytes></networkNode_Number.BoxedType>
+                     <lmsi.C0.BoxedType><Bytes>ef4570354bd3
+                           <field name="digits" value="ef4570354bd3" type="Binary" length="6" />
+                        </Bytes></lmsi.C0.BoxedType>
+                     <!--extensionContainer.C1.Sequence>
+                        <privateExtensionList.C0.BoxedType>
+                           <Collection>
+                              <PrivateExtension.Sequence>
+                                 <extId><ObjectIdentifier>0.1.2100.116.34.80.93.120.116.5.109</ObjectIdentifier></extId>
+                                 <extType>47d4ed25</extType>
+                              </PrivateExtension.Sequence>
+                              <PrivateExtension.Sequence>
+                                 <extId><ObjectIdentifier>0.1.251.119.99.104.69</ObjectIdentifier></extId>
+                                 <extType>8191c7ba60e6</extType>
+                              </PrivateExtension.Sequence>
+                              <PrivateExtension.Sequence>
+                                 <extId><ObjectIdentifier>0.1.252</ObjectIdentifier></extId>
+                                 <extType>f82e838c</extType>
+                              </PrivateExtension.Sequence>
+                           </Collection>
+                        </privateExtensionList.C0.BoxedType>
+                        <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                     </extensionContainer.C1.Sequence-->
+                     <gprsNodeIndicator.C2></gprsNodeIndicator.C2>
+                     <additional_Number.C3.Choice>
+                        <msc_Number.C0.BoxedType><Bytes>a143437298f5
+                              <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                              <field name="nature of address" value="national significant number:2" type="EnumLong" lengthBit="3" />
+                              <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
+                              <field name="digits" value="343427895" type="Number_BCD" lengthBit="36" />
+                           </Bytes></msc_Number.C0.BoxedType>
+                        <sgsn_Number.C1.BoxedType><Bytes>e65122332412
+                              <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                              <field name="nature of address" value="abbreviated number:6" type="EnumLong" lengthBit="3" />
+                              <field name="numbering plan" value="land mobile numbering plan (ITU-T Rec E.212):6" type="EnumLong" lengthBit="4" />
+                              <field name="digits" value="1522334221" type="Number_BCD" length="5" />
+                           </Bytes></sgsn_Number.C1.BoxedType>
+                     </additional_Number.C3.Choice>
+                     <supportedLCS_CapabilitySets.C4.BoxedType><BitString><BitString value="39aee532a0adceac2132" trailing="0"/></BitString></supportedLCS_CapabilitySets.C4.BoxedType>
+                     <additional_LCS_CapabilitySets.C5.BoxedType><BitString><BitString value="c29fac9977b0e2eb2474f6518b7d6122e7110a" trailing="0"/></BitString></additional_LCS_CapabilitySets.C5.BoxedType>
+                  </lcsLocationInfo.C1.Sequence>
+                  <extensionContainer.C2.Sequence>
                      <privateExtensionList.C0.BoxedType>
                         <Collection>
                            <PrivateExtension.Sequence>
-                              <extId><ObjectIdentifier>0.1.246.114.22.71.94.22.29.90.37</ObjectIdentifier></extId>
-                              <extType>5b370abf</extType>
+                              <extId><ObjectIdentifier>0.1.2102.78.108.53.11.45.127</ObjectIdentifier></extId>
+                              <extType>83a46360a4ea910e</extType>
                            </PrivateExtension.Sequence>
                            <PrivateExtension.Sequence>
-                              <extId><ObjectIdentifier>0.1.289.15.106.96.115</ObjectIdentifier></extId>
-                              <extType>dd8f0fe753c33bab</extType>
+                              <extId><ObjectIdentifier>0.1.27.122.8.5.12.86.77.116</ObjectIdentifier></extId>
+                              <extType>be04ab15</extType>
                            </PrivateExtension.Sequence>
                            <PrivateExtension.Sequence>
-                              <extId><ObjectIdentifier>0.1.2108.86</ObjectIdentifier></extId>
-                              <extType>0247d5a2bd</extType>
+                              <extId><ObjectIdentifier>0.1.28.56.47.59</ObjectIdentifier></extId>
+                              <extType>a9</extType>
                            </PrivateExtension.Sequence>
                         </Collection>
                      </privateExtensionList.C0.BoxedType>
                      <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
-                  </extensionContainer.Sequence>
-                  <na_ESRK.C0.BoxedType><Bytes>4938094436f7
-                        <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
-                        <field name="nature of address" value="subscriber number:4" type="EnumLong" lengthBit="3" />
-                        <field name="numbering plan" value="private numbering plan:9" type="EnumLong" lengthBit="4" />
-                        <field name="digits" value="839044637" type="Number_BCD" lengthBit="36" />
-                     </Bytes></na_ESRK.C0.BoxedType>
-                  <na_ESRD.C1.BoxedType><Bytes>9832159895f1
-                        <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
-                        <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3" />
-                        <field name="numbering plan" value="national numbering plan:8" type="EnumLong" lengthBit="4" />
-                        <field name="digits" value="235189591" type="Number_BCD" lengthBit="36" />
-                     </Bytes></na_ESRD.C1.BoxedType>
-               </SubscriberLocationReport_Res.Sequence>
+                  </extensionContainer.C2.Sequence>
+                  <v_gmlc_Address.C3.BoxedType><Bytes>bb443a78c6
+                        <field name="Address type" value="2" type="EnumLong" lengthBit="2" />
+                        <field name="AddressLength" value="59" type="Integer" lengthBit="6" />
+                        <field name="IPV4 address" value="68.58.120.198" type="IPV4Address" length="4" />
+                     </Bytes></v_gmlc_Address.C3.BoxedType>
+                  <h_gmlc_Address.C4.BoxedType><Bytes>53ab41e97d
+                        <field name="Address type" value="IPV6:1" type="EnumLong" lengthBit="2" />
+                        <field name="AddressLength" value="19" type="Integer" lengthBit="6" />
+                        <field name="IPV4 address" value="171.65.233.125" type="IPV4Address" length="4" />
+                     </Bytes></h_gmlc_Address.C4.BoxedType>
+                  <ppr_Address.C5.BoxedType><Bytes>0dbb24c6ff
+                        <field name="Address type" value="IPV4:0" type="EnumLong" lengthBit="2" />
+                        <field name="AddressLength" value="13" type="Integer" lengthBit="6" />
+                        <field name="IPV4 address" value="187.36.198.255" type="IPV4Address" length="4" />
+                     </Bytes></ppr_Address.C5.BoxedType>
+                  <additional_v_gmlc_Address.C6.BoxedType><Bytes>b535484ed4
+                        <field name="Address type" value="2" type="EnumLong" lengthBit="2" />
+                        <field name="AddressLength" value="53" type="Integer" lengthBit="6" />
+                        <field name="IPV4 address" value="53.72.78.212" type="IPV4Address" length="4" />
+                     </Bytes></additional_v_gmlc_Address.C6.BoxedType>
+               </RoutingInfoForLCS_Res.Sequence>
             </returnparameter>
          </resultretres>
         </returnResultLast.C2.Sequence>

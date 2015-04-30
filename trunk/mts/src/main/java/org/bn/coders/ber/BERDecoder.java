@@ -440,6 +440,10 @@ public class BERDecoder extends Decoder {
                 }
             
                 DecodedObject itemTag = decodeTag(stream);
+                if (itemTag == null)
+                {
+                	break;
+                }
                 DecodedObject item=decodeClassType(itemTag,paramType,info,stream);
                 if(item!=null) {
                     lenOfItems+=item.getSize()+itemTag.getSize();
