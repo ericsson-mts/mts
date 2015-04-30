@@ -652,8 +652,9 @@
         </field>
     </element>
     
+    <!-- Geographical Information => 3GPP TS 29.002 V12.5.0 chapter 17.7.1 page 407 -->
     <!-- Geographical Information => 3GPP TS 23.032 V12.0.0 chapter 7.1.2 page 14-16 -->
-    <element name="GeographicalInformation" coding="V" description="Geographical Information" comment="Refers to geographical Information defined in 3GPP TS 23.032.">
+    <element name="GeographicalInformation,Ext_GeographicalInformation" coding="V" description="Geographical Information" comment="Refers to geographical Information defined in 3GPP TS 23.032.">
         <field name="TypeOfShape" type="EnumLong" lengthBit="4" description="RP-Message Type Indicator" comment="Identify the type which is being coded in the Shape Description.">
           <enum name="Ellipsoid Point" value="b0000"/>
           <enum name="Ellipsoid point with uncertainty Circle" value="b0001"/>
@@ -672,6 +673,72 @@
         <field name="DegreesOfLatitude" type="Integer" length="3" description="Degrees of latitude"/>
         <field name="DegreesOfLongitude" type="Integer" length="3" description="Degrees of longitude"/>
         <field name="UncertaintyCode" type="Integer" length="1" description="Uncertainty Code"/>
+    </element>
+
+    <!-- Ext-Geographical Information => 3GPP TS 29.002 V12.5.0 chapter 17.7.13 page 467 -->
+    <!-- Ext-Geographical Information => 3GPP TS 23.032 V12.0.0 chapter 7 page 14-21 -->    
+    <element name="Ext_GeographicalInformation" coding="V" description="Extended Geographical Information" comment="Refers to geographical Information defined in 3GPP TS 23.032.">
+        <field name="TypeOfShape" type="EnumLong" lengthBit="4" description="RP-Message Type Indicator" comment="Identify the type which is being coded in the Shape Description.">
+          <enum name="Ellipsoid Point" value="b0000"/>
+          <enum name="Ellipsoid point with uncertainty Circle" value="b0001"/>
+          <enum name="Reserved for future use" value="b0010"/>
+          <enum name="Ellipsoid point with uncertainty Ellipse" value="b0011"/>
+          <enum name="Reserved for future use" value="b0100"/>
+          <enum name="Polygon" value="b0101"/>
+          <enum name="Reserved for future use" value="b0110-b0111"/>
+          <enum name="Ellipsoid point with altitude" value="b1000"/>
+          <enum name="Ellipsoid point with altitude and uncertainty Ellipsoid" value="b1001"/>
+          <enum name="Ellipsoid Arc" value="b1010"/>
+          <enum name="Reserved for future use" value="b1011-b1111"/>
+        </field>
+        <!-- Shape Description -->
+        <field name="spare" type="Integer" lengthBit="4" description="Not used"/>
+        <field name="DegreesOfLatitude" type="Integer" length="3" description="Degrees of latitude"/>
+        <field name="DegreesOfLongitude" type="Integer" length="3" description="Degrees of longitude"/>
+        <!-- field name="UncertaintyCode" type="Integer" length="1" description="Uncertainty Code"/-->      <!-- conditional field if "TypeOfShape" == 'b0001'-->
+        <field name="Altitude" type="Integer" length="2" description="Altitude"/>      <!-- conditional field if "TypeOfShape" == 'b1001'-->
+        <field name="UncertaintySemi-MajorAxis" type="Integer" length="1" description="Uncertainty semi-major axis"/>         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1001'-->
+        <field name="UncertaintySemi-MinorAxis" type="Integer" length="1" description="Uncertainty semi-minor axis"/>         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1001'-->
+        <field name="AngleOfMajorAxis" type="Integer" length="1" description="Angle of major axis"/>         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1001'-->
+        <field name="UncertaintyAltitude" type="Integer" length="1" description="Uncertainty altitude"/>      <!-- conditional field if "TypeOfShape" == 'b1001'-->
+        <!--field name="InnerRadius" type="Integer" length="1" description="Inner radius"/-->      <!-- conditional field if "TypeOfShape" == 'b1010'-->                
+        <!--field name="UncertaintyRadius" type="Integer" length="2" description="Uncertainty radius"/-->      <!-- conditional field if "TypeOfShape" == 'b1010'-->
+        <!--field name="OffsetAngle" type="Integer" length="1" description="Offset angle"/-->      <!-- conditional field if "TypeOfShape" == 'b1010'-->
+        <!--field name="IncludedAngle" type="Integer" length="1" description="Included angle"/-->      <!-- conditional field if "TypeOfShape" == 'b1010'-->
+        <field name="Confidence" type="Integer" length="1" description="Confidence"/>         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1010' -->
+    </element>
+
+    <!-- Add-Geographical Information => 3GPP TS 29.002 V12.5.0 chapter 17.7.13 page 469 -->
+    <!-- Add-Geographical Information => 3GPP TS 23.032 V12.0.0 chapter 7 page 14-21 -->    
+    <element name="Add_GeographicalInformation" coding="V" description="Additional Geographical Information" comment="Refers to geographical Information defined in 3GPP TS 23.032.">
+        <field name="TypeOfShape" type="EnumLong" lengthBit="4" description="RP-Message Type Indicator" comment="Identify the type which is being coded in the Shape Description.">
+          <enum name="Ellipsoid Point" value="b0000"/>
+          <enum name="Ellipsoid point with uncertainty Circle" value="b0001"/>
+          <enum name="Reserved for future use" value="b0010"/>
+          <enum name="Ellipsoid point with uncertainty Ellipse" value="b0011"/>
+          <enum name="Reserved for future use" value="b0100"/>
+          <enum name="Polygon" value="b0101"/>
+          <enum name="Reserved for future use" value="b0110-b0111"/>
+          <enum name="Ellipsoid point with altitude" value="b1000"/>
+          <enum name="Ellipsoid point with altitude and uncertainty Ellipsoid" value="b1001"/>
+          <enum name="Ellipsoid Arc" value="b1010"/>
+          <enum name="Reserved for future use" value="b1011-b1111"/>
+        </field>
+        <!-- Shape Description -->
+        <field name="spare" type="Integer" lengthBit="4" description="Not used"/>
+        <field name="DegreesOfLatitude" type="Integer" length="3" description="Degrees of latitude"/>
+        <field name="DegreesOfLongitude" type="Integer" length="3" description="Degrees of longitude"/>
+        <!-- field name="UncertaintyCode" type="Integer" length="1" description="Uncertainty Code"/-->      <!-- conditional field if "TypeOfShape" == 'b0001'-->
+        <!--field name="Altitude" type="Integer" length="2" description="Altitude"/-->      <!-- conditional field if "TypeOfShape" == 'b1001'-->
+        <!--field name="UncertaintySemi-MajorAxis" type="Integer" length="1" description="Uncertainty semi-major axis"/-->         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1001'-->
+        <!--field name="UncertaintySemi-MinorAxis" type="Integer" length="1" description="Uncertainty semi-minor axis"/-->         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1001'-->
+        <!--field name="AngleOfMajorAxis" type="Integer" length="1" description="Angle of major axis"/-->         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1001'-->
+        <!--field name="UncertaintyAltitude" type="Integer" length="1" description="Uncertainty altitude"/-->      <!-- conditional field if "TypeOfShape" == 'b1001'-->
+        <field name="InnerRadius" type="Integer" length="1" description="Inner radius"/>      <!-- conditional field if "TypeOfShape" == 'b1010'-->                
+        <field name="UncertaintyRadius" type="Integer" length="2" description="Uncertainty radius"/>      <!-- conditional field if "TypeOfShape" == 'b1010'-->
+        <field name="OffsetAngle" type="Integer" length="1" description="Offset angle"/>      <!-- conditional field if "TypeOfShape" == 'b1010'-->
+        <field name="IncludedAngle" type="Integer" length="1" description="Included angle"/>      <!-- conditional field if "TypeOfShape" == 'b1010'-->
+        <field name="Confidence" type="Integer" length="1" description="Confidence"/>         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1010' -->
     </element>
 
     <!-- Geodetic Information  => ITU Q.763 V12/1999 chapter 3.88.2 page 14 -->
@@ -757,17 +824,25 @@
         <field name="digits" type="number_bcd" description="digits"/>
     </element>
 
-    <!-- Local Area Identification (LAI) => 3GPP TS 29.003 V9.0.3 chapter 4.1 page 21 -->
+    <!-- Local Area Identification (LAI) => 3GPP TS 23.003 V9.0.3 chapter 4.1 page 21 -->
     <element name="LAIFixedLength" coding="V" description="Location Area Identification (LAI)">
     		<field name="MMC" type="Number_MMC" length="3" description="MCC (Mobile Country Code) + MNC (Mobile National Code)"/>
         <field name="LAC" type="Integer" length="2" description="Location Area Code (LAC)"/>
     </element>    
 
-    <!-- Routeing Area Identity (RAI) => 3GPP TS 29.003 V9.0.3 chapter 4.2 page 22 -->
+    <!-- Routeing Area Identity (RAI) => 3GPP TS 23.003 V9.0.3 chapter 4.2 page 22 -->
     <element name="RAIdentity" coding="V" description="Routeing Area Identity (RAI)">
     		<field name="MMC" type="Number_MMC" length="3" description="MCC (Mobile Country Code) + MNC (Mobile National Code)"/>
         <field name="LAC" type="Integer" length="2" description="Location Area Code (LAC)"/>
         <field name="RAC" type="Integer" length="1" description="Routing Area Code (RAC)"/>        
+    </element>    
+
+    <!-- AreaIdentification => 3GPP TS 29.002 V12.5.9 chapter 17.7.13 page 465 -->
+    <element name="AreaIdentification" coding="V" description="Area Identification">
+    		<field name="MMC" type="Number_MMC" length="3" description="MCC (Mobile Country Code) + MNC (Mobile National Code)"/>
+        <field name="LAC" type="Integer" length="2" description="Location Area Code (LAC)"/>
+        <field name="RAC" type="Integer" length="1" description="Routing Area Code (RAC)"/> 
+        <field name="CI" type="Integer" length="2" description="Cell Identity (CI)"/>               
     </element>    
 
     <!-- Cell Global Identification (CGI) => 3GPP TS 29.003 V9.0.3 chapter 4.3 page 22 -->
@@ -1223,9 +1298,9 @@
     <element name="USSD_DataCodingScheme" coding="V" description="CBS/USSD/MMI Data Coding Scheme" comment="Parameter identifying the coding scheme within the CBS/USSD/MMI String.">
     		<field name="Coding Group Bits" type="EnumLong" lengthBit="4" description="Coding Group Bits">
             <enum name="Language using the GSM 7 bit default alphabet #1" value="0" description="b0000"/>
-            <enum name="Message preceded by language indication" value="1" description="b0001"/>
             <enum name="Language using the GSM 7 bit default alphabet #2" value="2" description="b0010"/>
             <enum name="Language using the GSM 7 bit default alphabet #3" value="3" description="b0011"/>
+            <enum name="Message preceded by language indication" value="1" description="b0001"/>
             <enum name="General Data Coding indication" value="4-7" description="b0100-b0111"/>
             <enum name="Reserved coding groups" value="8" description="b1000"/>
             <enum name="Message with User Data Header (UDH) structure" value="9" description="b1001"/>
@@ -1254,12 +1329,24 @@
     </element>
 
     <!-- LCS_Priority => 3GPP TS 29.002 V12.5.0 chapter 17.7.13 page 463 -->
-    <element name="LCS_Priority" coding="V" description="Mobile Station Classmark 1">    
+    <element name="LCS_Priority" coding="V" description="LCS priority">    
         <field name="LCS_Priority" type="Enumeration" length="1" description="LCS_Priority" comment="" >
             <enum name="highest priority" value="0" description="h00"/>
             <enum name="normal priority" value="1" description="h01-hFF"/>
         </field>
     </element>
+    
+    <!-- LCS_ReferenceNumber => 3GPP TS 29.002 V12.5.0 chapter 17.7.13 page 463 -->    
+    <element name="LCS_ReferenceNumber" coding="V" description="LCS reference number">    
+        <field name="LCS_ReferenceNumber" type="Integer" length="1" description="LCS_ReferenceNumber" />
+    </element>
+
+    <!-- Horizontal_Accurary,Vertical_Accurary => 3GPP TS 29.002 V12.5.0 chapter 17.7.13 page 46 -->
+    <!-- Horizontal_Accurary,Vertical_Accurary => 3GPP TS 23.032 V12.0.0 chapter 6.2 page 12 -->
+    <element name="Horizontal_Accuracy,Vertical_Accuracy" coding="V" description="Accurary">    
+        <field name="Accuracy" type="Integer" length="1" description="Accuracy" />
+    </element>
+
     
     <!-- Operation code local value => MAP.asn line 76 -->
     <element name="opCode.localValue" coding="V" description="Operation code local value">
