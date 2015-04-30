@@ -260,24 +260,25 @@
     <element name="TP-DCS" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data.">
     		<field name="Coding Group Bits" type="EnumLong" lengthBit="2" description="Coding Group Bits">
             <enum name="General Data Coding indication" value="0" description="b00"/>
-            <enum name="Reserved coding groups" value="1-2" description="b01-b10"/>
-            <enum name="Message Waiting Indication Group = Discard Message" value="03" description="b11"/>
+            <enum name="Message Marked for Automatic Deletion Group" value="1" description="b01"/>
+            <enum name="Reserved coding groups" value="2" description="b10"/>
+            <enum name="Message Waiting Indication Group" value="03" description="b11"/>
         </field>
-    		<field name="Compression" type="EnumLong" lengthBit="1" description="Compression">
+    		<field name="Compression" type="EnumLong" lengthBit="1" description="Compression">    <!-- conditional field if "Coding Group Bits" == 'b00' OR "Coding Group Bits" == 'b01' -->
             <enum name="the text is uncompressed" value="0"/>
             <enum name="the text is compressed using the GSM standard" value="1" comment="the text is compressed using the GSM standard compression algorithm. ( see GSM TS 03.42)"/>
         </field>
-    		<field name="Bit 1-0 significance" type="EnumLong" lengthBit="1" description="Bit 1 to 0 significance">
+    		<field name="Bit 1-0 significance" type="EnumLong" lengthBit="1" description="Bit 1 to 0 significance">     <!-- conditional field if "Coding Group Bits" == 'b00' OR "Coding Group Bits" == 'b01' -->
             <enum name="bits 1 to 0 are reserved and have no message class meaning" value="0"/>
             <enum name="bits 1 to 0 have a message class meaning" value="1"/>
         </field>
-    		<field name="Alphabet" type="EnumLong" lengthBit="2" description="Alphabet">
+    		<field name="Alphabet" type="EnumLong" lengthBit="2" description="Alphabet">      <!-- conditional field if "Bit 1 significance" == 'b1' -->
             <enum name="Default alphabet {SCGSM}" value="0" description="b00"/>
             <enum name="8 bit data {UTF-8}" value="1" description="b01"/>
             <enum name="UCS2 (16bit) {UTF-16BE}" value="2" description="b10"/>
             <enum name="Reserved" value="3" description="b11"/>
         </field>
-    		<field name="Message Class" type="EnumLong" lengthBit="2" description="Message Class">
+    		<field name="Message Class" type="EnumLong" lengthBit="2" description="Message Class">      <!-- conditional field if "Bit 1 significance" == 'b1' -->
             <enum name="Class 0" value="0"/>
             <enum name="Class 1 Default meaning ME-specific" value="1"/>
             <enum name="Class 2 SIM specific message" value="2"/>
@@ -1219,30 +1220,30 @@
     
     <!-- USSD_DataCodingScheme => 3GPP TS 29.002 V12.5.0 chapter 17.7.4 page 430 -->
     <!-- USSD_DataCodingScheme => 3GPP TS 23.038 V12.2.0 chapter 5 page 11 -->
-    <element name="USSD_DataCodingScheme" coding="V" description="TP Data Coding Scheme" comment="Parameter identifying the coding scheme within the TP User Data.">
-    		<field name="Coding Group Bits" type="EnumLong" lengthBit="2" description="Coding Group Bits">
-            <enum name="General Data Coding indication" value="0" description="b00"/>
-            <enum name="Reserved coding groups" value="1-2" description="b01-b10"/>
-            <enum name="Message Waiting Indication Group = Discard Message" value="03" description="b11"/>
+    <element name="USSD_DataCodingScheme" coding="V" description="CBS/USSD/MMI Data Coding Scheme" comment="Parameter identifying the coding scheme within the CBS/USSD/MMI String.">
+    		<field name="Coding Group Bits" type="EnumLong" lengthBit="4" description="Coding Group Bits">
+            <enum name="Language using the GSM 7 bit default alphabet #1" value="0" description="b0000"/>
+            <enum name="Message preceded by language indication" value="1" description="b0001"/>
+            <enum name="Language using the GSM 7 bit default alphabet #2" value="2" description="b0010"/>
+            <enum name="Language using the GSM 7 bit default alphabet #3" value="3" description="b0011"/>
+            <enum name="General Data Coding indication" value="4-7" description="b0100-b0111"/>
+            <enum name="Reserved coding groups" value="8" description="b1000"/>
+            <enum name="Message with User Data Header (UDH) structure" value="9" description="b1001"/>
+            <enum name="Reserved coding groups" value="10-12" description="b1010-b1100"/>
+            <enum name="I1 protocol message defined in 3GPP TS 24.294" value="13" description="b1101"/>
+            <enum name="Defined by the WAP Forum" value="14" description="b1110"/>
+            <enum name="Data coding / message handling " value="15" description="b1111"/>
         </field>
-    		<field name="Compression" type="EnumLong" lengthBit="1" description="Compression">
-            <enum name="the text is uncompressed" value="0"/>
-            <enum name="the text is compressed using the GSM standard" value="1" comment="the text is compressed using the GSM standard compression algorithm. ( see GSM TS 03.42)"/>
-        </field>
-    		<field name="Bit 1 significance" type="EnumLong" lengthBit="1" description="Bit 1 significance">
-            <enum name="bits 1 to 0 are reserved and have no message class meaning" value="0"/>
-            <enum name="bits 1 to 0 have a message class meaning" value="1"/>
-        </field>
-    		<field name="Alphabet" type="EnumLong" lengthBit="2" description="Alphabet">
+    		<field name="Alphabet" type="EnumLong" lengthBit="2" description="Alphabet">      <!-- conditional field if "Coding Group Bits" == 'b0100' OR "Coding Group Bits" == 'b0110' -->
             <enum name="Default alphabet {SCGSM}" value="0" description="b00"/>
             <enum name="8 bit data {UTF-8}" value="1" description="b01"/>
             <enum name="UCS2 (16bit) {UTF-16BE}" value="2" description="b10"/>
             <enum name="Reserved" value="3" description="b11"/>
         </field>
-    		<field name="Message Class" type="EnumLong" lengthBit="2" description="Message Class">
+    		<field name="Message Class" type="EnumLong" lengthBit="2" description="Message Class">      <!-- conditional field if "Coding Group Bits" == 'b0100' OR "Coding Group Bits" == 'b0110' -->
             <enum name="Class 0" value="0"/>
             <enum name="Class 1 Default meaning ME-specific" value="1"/>
-            <enum name="Class 2 SIM specific message" value="2"/>
+            <enum name="Class 2 (U)SIM specific message" value="2"/>
             <enum name="Class 3 Default meaning TE specific" value="3" comment="(see GSM TS 07.05 [8])"/>
         </field>
     </element>
