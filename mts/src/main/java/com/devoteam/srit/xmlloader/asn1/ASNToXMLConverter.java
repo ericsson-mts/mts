@@ -553,6 +553,7 @@ public class ASNToXMLConverter
         		}
         		catch (Exception e)
         		{
+        			GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, e, "Error while decoding ASN.1 data : ");	
         			// nothing to do
         		}
         	}
