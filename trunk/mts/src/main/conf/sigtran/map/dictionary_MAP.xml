@@ -605,7 +605,54 @@
         <!--conditional element : if TP-UDL present="present:1"-->
         <!--element name="TP-UD" coding="V" description="TP User Data" -->
     </element>
-    
+
+    <!-- sm-RP-UI : SMS-COMMAND => 3GPP TS 03.40 V7.5.0 chapter 9.2.2.1aii page 40  -->
+    <!-- sm-RP-UI : SMS-COMMAND => 3GPP TS 23.040 V12.2.2 chapter 9.2.4 page 60 -->
+    <element name="Sm_RP_UI_SMS-COMMAND" coding="V" description="sm-RP-UI_SMS-COMMAND">
+        <element name="SMS-COMMAND" coding="V" description="SMS-COMMAND">
+            <field name="NA1" type="Integer" lengthBit="1" description="Not applicable" comment="Not used"/>
+            <field name="TP-UDHI" type="EnumLong" lengthBit="1" description="TP User Data Header Indicator" comment="Parameter indicating that the TP UD field contains a Header.">
+              <enum name="The TP UD field contains only the short message" value="0"/>
+              <enum name="The beginning of the TP UD field contains a Header in addition to the short message" value="1"/>
+            </field>
+            <field name="TP-SRR" type="EnumLong" lengthBit="1" description="TP Status Report Request" comment="Parameter indicating if the MS is requesting a status report.">
+              <enum name="A status report is not requested" value="0"/>
+              <enum name="A status report is requested" value="1"/>
+            </field>
+            <field name="NA2" type="Integer" lengthBit="1" description="Not applicable" comment="Not used"/>
+            <field name="NA3" type="Integer" lengthBit="1" description="Not applicable" comment="Not used"/>
+            <field name="NA4" type="EnumLong" lengthBit="1" description="Not applicable" comment="Not used"/>
+            <field name="TP-MTI" type="EnumLong" lengthBit="2" description="TP Message Type Indicator" comment="Parameter describing the message type.">
+              <enum name="SMS-DELIVER / SMS-DELIVER-REPORT" value="0"/>
+              <enum name="SMS-SUBMIT / SMS-SUBMIT-REPORT" value="1"/>
+              <enum name="SMS-STATUS-REPORT / SMS-COMMAND" value="2"/>
+              <enum name="Reserved" value="3"/>
+            </field>
+        </element>
+        <element name="TP-MR" coding="V" description="TP Message Reference" comment="Parameter identifying the SMS SUBMIT."/>
+        <element name="TP-PID" coding="V" description="TP Protocol Identifier" comment="Parameter identifying the above layer protocol, if any."/>
+        <element name="TP-CT" coding="V" description="TP Command Type" comment="Parameter specifying which operation is to be performed on a SM.">
+          <field name="TP-CT" type="EnumLong" lengthBit="8" description="TP Command Type" comment="Parameter specifying which operation is to be performed on a SM.">
+              <enum name="Enquiry relating to previously submitted short message" value="0" description="b00000000" />
+              <enum name="Cancel Status Report Request relating to previously submitted short message" value="1" description="b00000001" />
+              <enum name="Delete previously submitted Short Message" value="2" description="b00000010" />
+              <enum name="Enable Status Report Request relating to previously submitted short message" value="3" description="b00000011" />
+              <enum name="Reserved" value="4-223" description="b00011111-b11011111" />
+              <enum name="Values specific for each SC" value="224-255" description="b11100000-b11111111"/>
+            </field>
+        </element>         
+        <element name="TP-MN" coding="V" description="TP Message Number" comment="Parameter indicating which SM in the SC to operate on.">         
+          <field name="TP-MN" type="Integer" length="1" description="TP Message Type Indicator" comment="Parameter indicating which SM in the SC to operate on."/>           
+        </element>    
+        <element name="TP-DA" coding="V" description="TP Destination Address" comment="Address of the destination SME.">
+            <element name="Address" coding="DV" description="Generic Address" comment="Address of the function."/>
+        </element> 
+        <element name="TP-CD" coding="V" description="TP Command Data">
+            <field name="TP-CDL" type="integer" length="1" description="Parameter indicating the length of the TP CD field in octets."/>
+            <field name="TP-CD" type="binary" description="Parameter containing user data"/>
+        </element>
+    </element>
+        
     <!-- sm_RP_MTI => 3GPP TS 03.40 V7.5.0 chapter x.y.z page ppp  -->     
     <!-- sm_RP_MTI => 3GPP TS 23.040 V12.2.2 chapter 9.3.2.2 page 100 -->
     <element name="sm_RP_MTI" coding="V" description="RP-Message Type Indicator" comment="Parameter indicating if the TPDU is a SMS Deliver or a SMS Status Report.">
