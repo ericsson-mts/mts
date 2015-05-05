@@ -195,7 +195,7 @@ public class EnumLongField extends IntegerField
     public long getEnumLong(String text) throws Exception
     {
     	text = text.trim();
-    	int iPos = text.indexOf(":");
+    	int iPos = text.lastIndexOf(":");
     	String label = text;
     	String value= text;
     	

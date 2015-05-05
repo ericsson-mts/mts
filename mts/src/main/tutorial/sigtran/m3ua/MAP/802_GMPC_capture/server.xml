@@ -75,9 +75,9 @@
             <returnparameter>
               <RoutingInfoForLCS_Res>
                 <targetMS>
-                  <imsi>
-                    <Bytes>42904900003023f3</Bytes>
-                  </imsi>
+                  <imsi><Bytes>42904900003023f3
+                    <field name="digits" value="240994000003323" type="Number_BCD" />
+                  </Bytes></imsi>
                 </targetMS>
                 <lcsLocationInfo>
                   <networkNode_Number><Bytes>
@@ -220,13 +220,30 @@
               <localValue><Long>provideSubscriberLocation:83</Long></localValue>
             </opCode>
             <returnparameter>
-              <ProvideSubscriberLocation_Arg>
-                <locationEstimate>
-                  <Bytes>a02c6758564b290037314b3b50</Bytes></locationEstimate>
-                <ageOfLocationEstimate><Integer>0</Integer></ageOfLocationEstimate>
-                <geranPositioningData>
-                  <Bytes>0003</Bytes></geranPositioningData>
-              </ProvideSubscriberLocation_Arg>            
+              <ProvideSubscriberLocation_Res>
+                <locationEstimate.BoxedType><Bytes>a02c6758564b290037314b3b50
+                    <field name="TypeOfShape" value="Ellipsoid Arc:10" type="EnumLong" lengthBit="4" />
+                    <field name="spare" value="0" type="Integer" lengthBit="4" />
+                    <field name="DegreesOfLatitude" value="2910040" type="Integer" length="3" />
+                    <field name="DegreesOfLongitude" value="5655337" type="Integer" length="3" />
+                    <field name="Altitude" value="55" type="Integer" length="2" description="Altitude"/>      <!-- conditional field if "TypeOfShape" == 'b1001'-->
+                    <field name="UncertaintySemi-MajorAxis" value="49" type="Integer" length="1" description="Uncertainty semi-major axis"/>         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1001'-->
+                    <field name="UncertaintySemi-MinorAxis" value="75" type="Integer" length="1" description="Uncertainty semi-minor axis"/>         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1001'-->
+                    <field name="AngleOfMajorAxis" value="59" type="Integer" length="1" description="Angle of major axis"/>         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1001'-->
+                    <field name="UncertaintyAltitude" value="80" type="Integer" length="1" description="Uncertainty altitude"/>      <!-- conditional field if "TypeOfShape" == 'b1001'-->
+                    <!--field name="Confidence" value="0" type="Integer" length="1" description="Confidence" /-->         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1010' -->
+                 </Bytes></locationEstimate.BoxedType>
+                <ageOfLocationEstimate><Integer>0 minut = currently in contact:0</Integer></ageOfLocationEstimate>
+                <geranPositioningData.C4.BoxedType><Bytes>0003
+                      <field name="spare" value="0" type="Integer" lengthBit="4" />
+                      <field name="Discriminator" value="one method and usage:0" type="EnumLong" lengthBit="4" />
+                      <field name="Method1" value="Timing Advance:0" type="EnumLong" lengthBit="5" />
+                      <field name="Usage1" value="Attempted successfully: results used to generate location:3" type="EnumLong" lengthBit="3" />
+                </Bytes></geranPositioningData.C4.BoxedType>
+
+                <!--geranPositioningData>
+                  <Bytes>0003</Bytes></geranPositioningData-->
+              </ProvideSubscriberLocation_Res>            
             </returnparameter>
           </resultretres>
         </returnResultLast>
