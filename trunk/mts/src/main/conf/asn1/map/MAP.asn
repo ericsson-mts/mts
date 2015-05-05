@@ -25,9 +25,9 @@ Invoke ::=		SEQUENCE {
 				invokeID			InvokeIdType,
 				linkedID			[0] IMPLICIT InvokeIdType OPTIONAL,
 				opCode				Operation,
-				invokeparameter	EXTERNAL OPTIONAL
+				invokeparameter	 	InvokeParameter OPTIONAL
 }
--- InvokeParameter ::= EXTERNAL OPTIONAL
+InvokeParameter ::= OCTET STRING
 
  
 -- ANY is filled by the single ASN.1 data type following the keyword PARAMETER or the keyword ARGUMENT
@@ -37,11 +37,11 @@ ReturnResult ::=	SEQUENCE {
 				invokeID				InvokeIdType,
 				resultretres			SEQUENCE {
 				opCode					Operation,
-				returnparameter	EXTERNAL OPTIONAL
+				returnparameter				ReturnResultParameter OPTIONAL
 				} OPTIONAL
 			}
 
--- ReturnResultParameter ::= EXTERNAL OPTIONAL
+ReturnResultParameter ::= OCTET STRING
 
 -- ANY is filled by the single ASN.1 data type following the keyword RESULT in the type definition
 -- of a particular operation.
@@ -49,9 +49,9 @@ ReturnResult ::=	SEQUENCE {
 ReturnError ::=	SEQUENCE {
 				invokeID				InvokeIdType,
 				errorCode				Error,
-				errorparameter	EXTERNAL  OPTIONAL }
+				parameter				ReturnErrorParameter  OPTIONAL }
 
--- ReturnErrorParameter ::= EXTERNAL OPTIONAL
+ReturnErrorParameter ::= OCTET STRING
  
 -- ANY is filled by the single ASN.1 data type following the keyword PARAMETER in the type definition
 -- of a particular error.

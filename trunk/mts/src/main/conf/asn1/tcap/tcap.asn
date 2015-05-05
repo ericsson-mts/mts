@@ -105,15 +105,15 @@ P-AbortCause ::= [APPLICATION 10] IMPLICIT INTEGER {
 -- The Component Portion may be absent.
 
 ComponentPortion ::= [APPLICATION 12]	IMPLICIT SEQUENCE SIZE (1..MAX) OF Component
- 
+
 -- Component Portion fields
 -- Recommendation X.880 defines four Application Protocol Data Units (APDUs) for invoking
 -- operations, returning results or error, and for the rejection of invalid PDUs.
 -- TCAP adds returnResultNotLast to allow for the segmentation of a result.
- 
+
 Component ::=	CHOICE {
 	invoke					[1] IMPLICIT Invoke,
-  returnResultLast		[2] IMPLICIT ReturnResult,
+	returnResultLast		[2] IMPLICIT ReturnResult,
 	returnError				[3] IMPLICIT ReturnError,
 	reject					[4] IMPLICIT Reject,
 	returnResultNotLast		[7] IMPLICIT ReturnResult 
@@ -143,7 +143,7 @@ ReturnResult ::=	SEQUENCE {
 
 ReturnError ::=	SEQUENCE {
 				invokeID				InvokeIdType,
-				errorCode				ERROR1, -- FH ErrorCode,
+				errorCode				ErrorCode,
 				parameter				ANY  OPTIONAL } -- FH parameter				Parameter  OPTIONAL }
  
 -- ANY is filled by the single ASN.1 data type following the keyword PARAMETER in the type definition
@@ -161,15 +161,14 @@ Reject ::=		SEQUENCE {
 
 InvokeIdType ::=	INTEGER (-128..127)
 
--- FH change/modify
+
 OPERATION1	::=	CHOICE {
 							localValue INTEGER,
 							globalValue OBJECT IDENTIFIER } 
 
--- FH change/modify
-ERROR1	::=	CHOICE {
-			localValue INTEGER,
-			globalValue OBJECT IDENTIFIER } 
+-- FH ERROR	::=	CHOICE {
+-- FH			localValue INTEGER,
+-- FH			globalValue OBJECT IDENTIFIER } 
 
 -- OPERATIONS
 
