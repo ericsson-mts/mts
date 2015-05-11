@@ -48,7 +48,7 @@ ActivateTraceModeArg ::= SEQUENCE {
 	traceType		[2] TraceType,
 	omc-Id		[3] AddressString	OPTIONAL,
 	extensionContainer	[4] ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif ...,
 	traceReference2	[5] TraceReference2	OPTIONAL,
 	traceDepthList	[6] TraceDepthList	OPTIONAL,
 	traceNE-TypeList	[7] TraceNE-TypeList	OPTIONAL,
@@ -70,7 +70,7 @@ MDT-Configuration ::= SEQUENCE {
 	loggingInterval	[3] LoggingInterval	OPTIONAL,
 	loggingDuration	[4] LoggingDuration	OPTIONAL,
 	extensionContainer	[5] ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif ...,
 	measurementPeriodUMTS	[6] PeriodUMTS	OPTIONAL,
 	measurementPeriodLTE	[7] PeriodLTE	OPTIONAL,
 	collectionPeriodRRM-UMTS	[8] PeriodUMTS	OPTIONAL,
@@ -130,8 +130,9 @@ AreaScope ::= SEQUENCE {
 	routingAreaId-List	[2] RoutingAreaId-List	OPTIONAL,
 	locationAreaId-List	[3] LocationAreaId-List	OPTIONAL,
 	trackingAreaId-List	[4] TrackingAreaId-List	OPTIONAL,
-	extensionContainer	[5] ExtensionContainer	OPTIONAL,
-	... }
+	extensionContainer	[5] ExtensionContainer	OPTIONAL
+  -- FHModif , ... 
+  }
 
 CGI-List ::= SEQUENCE SIZE (1..32) OF
 				GlobalCellId
@@ -236,7 +237,7 @@ TraceDepthList ::= SEQUENCE {
 	ggsn-TraceDepth	[3] TraceDepth	OPTIONAL,
 	rnc-TraceDepth	[4] TraceDepth	OPTIONAL,
 	bmsc-TraceDepth	[5] TraceDepth	OPTIONAL,
-	... ,
+	-- FHModif ... ,
 	mme-TraceDepth	[6] TraceDepth	OPTIONAL,
 	sgw-TraceDepth	[7] TraceDepth	OPTIONAL,
 	pgw-TraceDepth	[8] TraceDepth	OPTIONAL,
@@ -261,16 +262,18 @@ TraceDepthList ::= SEQUENCE {
 TraceDepth ::= ENUMERATED {
 	minimum (0),
 	medium (1),
-	maximum (2),
-	...}
+	maximum (2)
+  -- FHModif , ...
+  }
 -- The value medium is applicable only for RNC. For other network elements, if value medium
 -- is received, value minimum shall be applied.
 
 TraceDepthExtension ::= ENUMERATED {
 	minimumWithoutVendorSpecificExtension (0),
 	mediumWithoutVendorSpecificExtension (1),
-	maximumWithoutVendorSpecificExtension (2),
-	...}
+	maximumWithoutVendorSpecificExtension (2)
+  -- FHModif , ...
+  }                                       
 -- The value mediumWithoutVendorSpecificExtension is applicable only for RNC. For other 
 -- network elements, if value mediumWithoutVendorSpecificExtension is received, value
 -- minimumWithoutVendorSpecificExtension shall be applied.
@@ -295,7 +298,7 @@ TraceInterfaceList ::= SEQUENCE {
 	ggsn-List		[3] GGSN-InterfaceList	OPTIONAL,
 	rnc-List		[4] RNC-InterfaceList	OPTIONAL,
 	bmsc-List		[5] BMSC-InterfaceList	OPTIONAL,
-	...,
+	-- FHModif ...,
 	mme-List		[6] MME-InterfaceList	OPTIONAL,
 	sgw-List		[7] SGW-InterfaceList	OPTIONAL,
 	pgw-List		[8] PGW-InterfaceList	OPTIONAL,
@@ -390,7 +393,7 @@ TraceEventList ::= SEQUENCE {
 	sgsn-List		[2] SGSN-EventList	OPTIONAL,
 	ggsn-List		[3] GGSN-EventList	OPTIONAL,
 	bmsc-List		[4] BMSC-EventList	OPTIONAL,
-	...,
+	-- FHModif ...,
 	mme-List		[5] MME-EventList	OPTIONAL,
 	sgw-List		[6] SGW-EventList	OPTIONAL,
 	pgw-List		[7] PGW-EventList	OPTIONAL}
@@ -457,7 +460,7 @@ TracePropagationList ::= SEQUENCE {
 	mgw-TraceDepth	[9] TraceDepth	OPTIONAL,
 	mgw-InterfaceList	[10] MGW-InterfaceList	OPTIONAL,
 	mgw-EventList	[11] MGW-EventList	OPTIONAL,
-	...,
+	-- FHModif ...,
 	rnc-TraceDepthExtension	[12] TraceDepthExtension	OPTIONAL,
 	msc-s-TraceDepthExtension	[13] TraceDepthExtension	OPTIONAL,
 	mgw-TraceDepthExtension	[14] TraceDepthExtension	OPTIONAL
@@ -470,7 +473,7 @@ TracePropagationList ::= SEQUENCE {
 
 ActivateTraceModeRes ::= SEQUENCE {
 	extensionContainer	[0] ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif ...,
 	traceSupportIndicator	[1]	NULL		OPTIONAL
 	}
 
@@ -478,12 +481,13 @@ DeactivateTraceModeArg ::= SEQUENCE {
 	imsi			[0] IMSI		OPTIONAL,
 	traceReference	[1] TraceReference,
 	extensionContainer	[2] ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif ...,
 	traceReference2	[3] TraceReference2	OPTIONAL
 	}
 
 DeactivateTraceModeRes ::= SEQUENCE {
-	extensionContainer	[0] ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[0] ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 END

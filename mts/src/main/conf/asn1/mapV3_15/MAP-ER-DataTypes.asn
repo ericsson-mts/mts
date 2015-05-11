@@ -98,15 +98,16 @@ FROM MAP-ExtensionDataTypes {
 RoamingNotAllowedParam ::= SEQUENCE {
 	roamingNotAllowedCause	RoamingNotAllowedCause,
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif ...,
 	additionalRoamingNotAllowedCause	[0] AdditionalRoamingNotAllowedCause OPTIONAL }
 
 --	if the additionalRoamingNotallowedCause is received by the MSC/VLR or SGSN then the 
 --	roamingNotAllowedCause shall be discarded.
 
 AdditionalRoamingNotAllowedCause ::= ENUMERATED {
-	supportedRAT-TypesNotAllowed (0),
-	...}
+	supportedRAT-TypesNotAllowed (0)
+  -- FHModif , ...
+  }
 
 RoamingNotAllowedCause ::= ENUMERATED {
 	plmnRoamingNotAllowed  (0),
@@ -126,7 +127,7 @@ CallBarringCause ::= ENUMERATED {
 ExtensibleCallBarredParam ::= SEQUENCE {
 	callBarringCause	CallBarringCause	OPTIONAL,
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	... ,
+	-- FHModif ... ,
 	unauthorisedMessageOriginator	[1] NULL		OPTIONAL,
 	anonymousCallRejection	[2] NULL		OPTIONAL }
 
@@ -135,8 +136,9 @@ ExtensibleCallBarredParam ::= SEQUENCE {
 
 CUG-RejectParam ::= SEQUENCE {
 	cug-RejectCause	CUG-RejectCause	OPTIONAL,
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 CUG-RejectCause ::= ENUMERATED {
 	incomingCallsBarredWithinCUG  (0),
@@ -147,8 +149,9 @@ CUG-RejectCause ::= ENUMERATED {
 SS-IncompatibilityCause ::= SEQUENCE {
 	ss-Code		[1] SS-Code	OPTIONAL,
 	basicService	BasicServiceCode	OPTIONAL,
-	ss-Status		[4] SS-Status	OPTIONAL,
-	...}
+	ss-Status		[4] SS-Status	OPTIONAL
+  -- FHModif , ...
+  }
 
 PW-RegistrationFailureCause ::= ENUMERATED {
 	undetermined  (0),
@@ -167,15 +170,16 @@ SM-EnumeratedDeliveryFailureCause ::= ENUMERATED {
 SM-DeliveryFailureCause ::= SEQUENCE {
 	sm-EnumeratedDeliveryFailureCause	SM-EnumeratedDeliveryFailureCause,
 	diagnosticInfo	SignalInfo	OPTIONAL,
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 AbsentSubscriberSM-Param ::= SEQUENCE {
 	absentSubscriberDiagnosticSM	AbsentSubscriberDiagnosticSM	OPTIONAL,
 	-- AbsentSubscriberDiagnosticSM can be either for non-GPRS 
 	-- or for GPRS
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif ...,
 	additionalAbsentSubscriberDiagnosticSM  	[0] 	AbsentSubscriberDiagnosticSM	OPTIONAL,
 	-- if received, additionalAbsentSubscriberDiagnosticSM 
 	-- is for GPRS and absentSubscriberDiagnosticSM is 
@@ -197,92 +201,103 @@ SystemFailureParam ::= CHOICE {
 ExtensibleSystemFailureParam ::= SEQUENCE {
 	networkResource	NetworkResource	OPTIONAL,
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif ...,
 	additionalNetworkResource	[0] AdditionalNetworkResource	OPTIONAL,
 	failureCauseParam	[1] FailureCauseParam	OPTIONAL }
 
 FailureCauseParam ::= ENUMERATED {
-	limitReachedOnNumberOfConcurrentLocationRequests (0),
-	... }
+	limitReachedOnNumberOfConcurrentLocationRequests (0)
+  -- FHModif , ... 
+  }
 	-- if unknown value is received in FailureCauseParam it shall be ignored
 
 
 DataMissingParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 UnexpectedDataParam ::= SEQUENCE {
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif ...,
 	unexpectedSubscriber [0]	NULL			OPTIONAL}
 -- the unexpectedSubscriber indication in the unexpectedDataValue error shall not be used
 -- for operations that allow the unidentifiedSubscriber error.
 
 FacilityNotSupParam ::= SEQUENCE {
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif ...,
 	shapeOfLocationEstimateNotSupported [0]	NULL		OPTIONAL,
 	neededLcsCapabilityNotSupportedInServingNode [1] NULL	OPTIONAL }
 
 OR-NotAllowedParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 UnknownSubscriberParam ::= SEQUENCE {
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif ...,
 	unknownSubscriberDiagnostic	UnknownSubscriberDiagnostic	OPTIONAL}
 
 UnknownSubscriberDiagnostic ::= ENUMERATED {
 	imsiUnknown  (0),
 	gprs-eps-SubscriptionUnknown  (1),
-	...,
+	-- FHModif ...,
 	npdbMismatch  (2)}
 	-- if unknown values are received in 	
 	-- UnknownSubscriberDiagnostic they shall be discarded
 
 NumberChangedParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 UnidentifiedSubParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 IllegalSubscriberParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 IllegalEquipmentParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 BearerServNotProvParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 TeleservNotProvParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 TracingBufferFullParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 NoRoamingNbParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 AbsentSubscriberParam ::= SEQUENCE {
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif ...,
 	absentSubscriberReason	[0] AbsentSubscriberReason	OPTIONAL}
 
 AbsentSubscriberReason ::= ENUMERATED {
 	imsiDetach (0),
 	restrictedArea (1),
 	noPageResponse (2),
-	... ,
+	-- FHModif ... ,
 	purgedMS (3),
 	mtRoamingRetry (4),
 	busySubscriber (5)}
@@ -299,87 +314,105 @@ AbsentSubscriberReason ::= ENUMERATED {
 
 BusySubscriberParam ::= SEQUENCE {
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif ...,
 	ccbs-Possible	[0] NULL		OPTIONAL,
 	ccbs-Busy		[1] NULL		OPTIONAL}
 
 NoSubscriberReplyParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 ForwardingViolationParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 ForwardingFailedParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 ATI-NotAllowedParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 ATSI-NotAllowedParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 ATM-NotAllowedParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 IllegalSS-OperationParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 SS-NotAvailableParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 SS-SubscriptionViolationParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 InformationNotAvailableParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 SubBusyForMT-SMS-Param ::= SEQUENCE {
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	... ,
+	-- FHModif ... ,
 	gprsConnectionSuspended	NULL			OPTIONAL }
 	-- If GprsConnectionSuspended is not understood it shall 
 	-- be discarded
 
 MessageWaitListFullParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 ResourceLimitationParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 NoGroupCallNbParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 IncompatibleTerminalParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 ShortTermDenialParam ::= SEQUENCE {
-	...}
+	-- FHModif ...
+  }
 
 LongTermDenialParam ::= SEQUENCE {
-	...}
+	-- FHModif ...
+  }
 
 UnauthorizedRequestingNetwork-Param ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 UnauthorizedLCSClient-Param ::= SEQUENCE {
 	unauthorizedLCSClient-Diagnostic	[0] UnauthorizedLCSClient-Diagnostic	OPTIONAL,
-	extensionContainer	[1] ExtensionContainer			OPTIONAL,
-	... }
+	extensionContainer	[1] ExtensionContainer			OPTIONAL
+  -- FHModif , ... 
+  }
 
 UnauthorizedLCSClient-Diagnostic ::= ENUMERATED {
 	noAdditionalInformation (0),
@@ -387,7 +420,7 @@ UnauthorizedLCSClient-Diagnostic ::= ENUMERATED {
 	callToClientNotSetup (2),
 	privacyOverrideNotApplicable (3),
 	disallowedByLocalRegulatoryRequirements (4),
-	...,
+	-- FHModif ...,
 	unauthorizedPrivacyClass (5),
 	unauthorizedCallSessionUnrelatedExternalClient (6),
 	unauthorizedCallSessionRelatedExternalClient (7) }
@@ -396,8 +429,9 @@ UnauthorizedLCSClient-Diagnostic ::= ENUMERATED {
 
 PositionMethodFailure-Param ::= SEQUENCE {
 	positionMethodFailure-Diagnostic	[0] PositionMethodFailure-Diagnostic	OPTIONAL,
-	extensionContainer	[1] ExtensionContainer			OPTIONAL,
-	... }
+	extensionContainer	[1] ExtensionContainer			OPTIONAL
+  -- FHModif , ... 
+  }
 
 PositionMethodFailure-Diagnostic ::= ENUMERATED {
 	congestion  (0),
@@ -408,26 +442,31 @@ PositionMethodFailure-Diagnostic ::= ENUMERATED {
 	locationProcedureNotSupportedByTargetMS  (5),
 	qoSNotAttainable  (6),
 	positionMethodNotAvailableInNetwork	(7),
-	positionMethodNotAvailableInLocationArea	(8),
-	... }
+	positionMethodNotAvailableInLocationArea	(8)
+  -- FHModif , ... 
+  }
 --	exception handling:
 --	any unrecognized value shall be ignored
 
 UnknownOrUnreachableLCSClient-Param ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 MM-EventNotSupported-Param ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 TargetCellOutsideGCA-Param ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 OngoingGroupCallParam ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif , ...
+  }
 
 
 END
