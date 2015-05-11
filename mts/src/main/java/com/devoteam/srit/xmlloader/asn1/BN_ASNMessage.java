@@ -91,6 +91,7 @@ public class BN_ASNMessage extends ASNMessage
     	}
     	catch (Exception e)
     	{
+    		e.printStackTrace();
     		return null;
     	}
     	

@@ -6,6 +6,7 @@ del /F/Q binaryNotes\classes
 del /F/Q ..\lib\BN_classes_%1.jar
 
 set /p JDK_HOME=< jdk_home
+echo %JDK_HOME%
   
 rem "Compile classes"
 "%JDK_HOME%\javac"  -cp binaryNotes\lib\java\binarynotes.jar -d binaryNotes\classes binaryNotes\java\com\devoteam\srit\xmlloader\sigtran\ap\%1\*.java
