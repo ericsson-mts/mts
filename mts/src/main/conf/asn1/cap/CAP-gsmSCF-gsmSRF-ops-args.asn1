@@ -25,11 +25,11 @@ FROM CAP-operationcodes operationcodes
 -- The CAP Operation identifiers for CAP V4 in Rel-6 are the same as the CAP Operation
 -- identifiers for CAP V4 in Rel-5.
 
-	CallSegmentID {},
+	CallSegmentID, -- FHModif remove {}
 	CollectedInfo,
-	Digits {},
-	Extensions {},
-	InformationToSend {}
+	Digits, -- FHModif remove {}
+	Extensions, -- FHModif remove {}
+	InformationToSend -- FHModif remove {}
 FROM CAP-datatypes datatypes
 -- For Rel-6, the CAP-datatypes module is updated to version8(7); Object Identifier 'datatypes'
 -- is also updated to version8(7). As a result, the present module uses Rel-6 data type definitions.
@@ -63,21 +63,22 @@ umts-network(1) modules(3) cap-object-identifiers(100) version8(7)}
 
 ;
 
-playAnnouncement {PARAMETERS-BOUND : bound} OPERATION ::= {
-	ARGUMENT		PlayAnnouncementArg {bound}
-	RETURN RESULT	FALSE
-	ERRORS			{canceled |
-					missingParameter |
-					parameterOutOfRange |
-					systemFailure |
-					taskRefused |
-					unexpectedComponentSequence |
-					unexpectedDataValue |
-					unexpectedParameter |
-					unavailableResource |
-					unknownCSID}
-	LINKED			{specializedResourceReport}
-	CODE			opcode-playAnnouncement}
+-- FHModif Remove OPERATION {ARGUMENT RETURN ERRORS CODE}
+--playAnnouncement {PARAMETERS-BOUND : bound} OPERATION ::= {
+--	ARGUMENT		PlayAnnouncementArg {bound}
+--	RETURN RESULT	FALSE
+--	ERRORS			{canceled |
+--					missingParameter |
+--					parameterOutOfRange |
+--					systemFailure |
+--					taskRefused |
+--					unexpectedComponentSequence |
+--					unexpectedDataValue |
+--					unexpectedParameter |
+--					unavailableResource |
+--					unknownCSID}
+--	LINKED			{specializedResourceReport}
+--	CODE			opcode-playAnnouncement}
 -- Direction: gsmSCF -> gsmSRF, Timer: Tpa
 -- This operation is to be used after Establish Temporary Connection (assist procedure
 -- with a second gsmSSF) or a Connect to Resource (no assist) operation. It may be used
@@ -88,54 +89,59 @@ playAnnouncement {PARAMETERS-BOUND : bound} OPERATION ::= {
 -- Any error is returned to the gsmSCF. The timer associated with this operation must
 -- be of a sufficient duration to allow its linked operation to be correctly correlated.
 
-PlayAnnouncementArg {PARAMETERS-BOUND : bound}::= SEQUENCE {
-	informationToSend					[0] InformationToSend {bound},
+-- FHModif Remove {PARAMETER-BOUND : bound}
+PlayAnnouncementArg ::= SEQUENCE {
+	informationToSend					[0] InformationToSend, -- FHModif {bound}
 	disconnectFromIPForbidden			[1] BOOLEAN DEFAULT TRUE,
 	requestAnnouncementCompleteNotification	[2] BOOLEAN DEFAULT TRUE,
-	extensions							[3] Extensions {bound}						OPTIONAL,
-	callSegmentID						[5] CallSegmentID {bound}					OPTIONAL,
-	requestAnnouncementStartedNotification	[51] BOOLEAN DEFAULT FALSE,
-	...
+	extensions							[3] Extensions						OPTIONAL, -- FHModif {bound}
+	callSegmentID						[5] CallSegmentID					OPTIONAL, -- FHModif {bound}
+	requestAnnouncementStartedNotification	[51] BOOLEAN DEFAULT FALSE
+  -- FHModif, ...
 	}
 
-promptAndCollectUserInformation {PARAMETERS-BOUND : bound} OPERATION ::= {
-	ARGUMENT		PromptAndCollectUserInformationArg {bound}
-	RESULT			ReceivedInformationArg {bound}
-	ERRORS			{canceled |
-					improperCallerResponse |
-					missingParameter |
-					parameterOutOfRange |
-					systemFailure |
-					taskRefused |
-					unexpectedComponentSequence |
-					unavailableResource |
-					unexpectedDataValue |
-					unexpectedParameter |
-					unknownCSID}
-	LINKED			{specializedResourceReport}
-	CODE			opcode-promptAndCollectUserInformation}
+-- FHModif Remove OPERATION {ARGUMENT RETURN ERRORS CODE}
+--promptAndCollectUserInformation {PARAMETERS-BOUND : bound} OPERATION ::= {
+--	ARGUMENT		PromptAndCollectUserInformationArg {bound}
+--	RESULT			ReceivedInformationArg {bound}
+--	ERRORS			{canceled |
+--					improperCallerResponse |
+--					missingParameter |
+--					parameterOutOfRange |
+--					systemFailure |
+--					taskRefused |
+--					unexpectedComponentSequence |
+--					unavailableResource |
+--					unexpectedDataValue |
+--					unexpectedParameter |
+--					unknownCSID}
+--	LINKED			{specializedResourceReport}
+--	CODE			opcode-promptAndCollectUserInformation}
 -- Direction: gsmSCF -> gsmSRF, Timer: Tpc
 -- This operation is used to interact with a user to collect information.
 
-PromptAndCollectUserInformationArg {PARAMETERS-BOUND : bound}::= SEQUENCE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+PromptAndCollectUserInformationArg ::= SEQUENCE {
 	collectedInfo						[0] CollectedInfo,
 	disconnectFromIPForbidden			[1] BOOLEAN	DEFAULT TRUE,
-	informationToSend					[2] InformationToSend {bound}				OPTIONAL,
-	extensions							[3] Extensions {bound}						OPTIONAL,
-	callSegmentID						[4]	CallSegmentID {bound}					OPTIONAL,
-	requestAnnouncementStartedNotification [51] BOOLEAN DEFAULT FALSE,
-	...
+	informationToSend					[2] InformationToSend 				OPTIONAL, -- FHModif {bound}
+	extensions							[3] Extensions 						OPTIONAL, -- FHModif {bound}
+	callSegmentID						[4]	CallSegmentID 					OPTIONAL, -- FHModif {bound}
+	requestAnnouncementStartedNotification [51] BOOLEAN DEFAULT FALSE
+  -- FHModif, ...
 	}
 
-ReceivedInformationArg {PARAMETERS-BOUND : bound}::= CHOICE {
-	digitsResponse						[0] Digits {bound}
+-- FHModif Remove {PARAMETER-BOUND : bound}
+ReceivedInformationArg ::= CHOICE {
+	digitsResponse						[0] Digits -- FHModif {bound}
 	}
 
-specializedResourceReport OPERATION ::= {
-	ARGUMENT		SpecializedResourceReportArg
-	RETURN RESULT	FALSE
-	ALWAYS RESPONDS	FALSE
-	CODE			opcode-specializedResourceReport}
+-- FHModif Remove OPERATION {ARGUMENT RETURN ERRORS CODE}
+--specializedResourceReport OPERATION ::= {
+--	ARGUMENT		SpecializedResourceReportArg
+--	RETURN RESULT	FALSE
+--	ALWAYS RESPONDS	FALSE
+--	CODE			opcode-specializedResourceReport}
 -- Direction: gsmSRF -> gsmSCF, Timer: Tsrr
 -- This operation is used as the response to a PlayAnnouncement operation when the announcement
 -- completed report indication is set.

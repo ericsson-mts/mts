@@ -25,37 +25,37 @@ BEGIN
 
 
 -- FHmodif 
--- IMPORTS
+IMPORTS
 
---	CellGlobalIdOrServiceAreaIdFixedLength,
---	Ext-BasicServiceCode,
---	IMEI,
---	IMSI,
---	LAIFixedLength
+  CellGlobalIdOrServiceAreaIdFixedLength,
+  Ext-BasicServiceCode,
+  IMEI,
+	IMSI,
+	LAIFixedLength
 
---FROM MAP-CommonDataTypes {itu-t(0) identified-organization(4) etsi(0) mobileDomain(0)
---gsm-Network(1) modules(3) map-CommonDataTypes(18) version9(9)}
+  FROM MAP-CommonDataTypes {itu-t(0) identified-organization(4) etsi(0) mobileDomain(0)
+  gsm-Network(1) modules(3) map-CommonDataTypes(18) version9(9)}
 
---        CUG-Index,
---        CUG-Interlock,
---	Ext-QoS-Subscribed,
---	Ext2-QoS-Subscribed,
---	GeographicalInformation,
---	GSN-Address,
---	LocationInformation,
---	LSAIdentity,
---	MS-Classmark2,
---	QoS-Subscribed,
---	RAIdentity,
---	GPRSChargingID
---FROM MAP-MS-DataTypes {itu-t(0) identified-organization(4) etsi(0) mobileDomain(0)
---gsm-Network(1) modules(3) map-MS-DataTypes(11) version9(9)}
+    CUG-Index,
+    CUG-Interlock,
+  	Ext-QoS-Subscribed,
+  	Ext2-QoS-Subscribed,
+  	GeographicalInformation,
+  	GSN-Address,
+  	LocationInformation,
+  	LSAIdentity,
+  	MS-Classmark2,
+  	QoS-Subscribed,
+  	RAIdentity,
+  	GPRSChargingID
+FROM MAP-MS-DataTypes {itu-t(0) identified-organization(4) etsi(0) mobileDomain(0)
+gsm-Network(1) modules(3) map-MS-DataTypes(11) version9(9)}
 
---	UU-Data
---FROM MAP-CH-DataTypes {itu-t(0) identified-organization(4) etsi(0) mobileDomain(0)
---  gsm-Network(1) modules(3) map-CH-DataTypes(13) version9(9)}
+	UU-Data
+FROM MAP-CH-DataTypes {itu-t(0) identified-organization(4) etsi(0) mobileDomain(0)
+  gsm-Network(1) modules(3) map-CH-DataTypes(13) version9(9)}
 
--- ;
+;
 
 -- ================================
 -- MACRO OPERATION
@@ -416,7 +416,7 @@ BearerCapability ::= CHOICE
     bearerCap  [0] BearerCap
 }
 
-BearerCap ::= OCTET STRING (SIZE (2..cAPSpecificBoundSetmaxBearerCapabilityLength ))
+BearerCap ::= OCTET STRING (SIZE (2..11 ))
 
 -- Indicates the type of bearer capability connection to the user. For bearerCap, the ISUP User
 -- Service Information, ETSI EN 300 356-1 [23]

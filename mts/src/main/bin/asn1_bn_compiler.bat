@@ -1,5 +1,5 @@
 echo off
-echo Process the ASN files in the directory ../conf/sigtran/%1 : please confirm ?
+echo Process the ASN files in the directory ../conf/asn1/%1 : please confirm ?
 pause
 
 del /F /Q .\binaryNotes\java\com\devoteam\srit\xmlloader\sigtran\ap\%1
