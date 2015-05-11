@@ -193,6 +193,10 @@ public class TestANS1Object
         {
         	dictionaryFile = "TCAP/dictionary_TCAP.xml";
         }
+        else if (packageName.endsWith("cap."))
+        {
+        	dictionaryFile = "CAP/dictionary_CAP.xml";
+        }
         
         boolean error = false;
     	if (!testProcessXML(dictionaryFile, classObj))
