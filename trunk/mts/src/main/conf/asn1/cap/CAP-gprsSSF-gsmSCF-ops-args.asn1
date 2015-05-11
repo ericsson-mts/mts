@@ -87,7 +87,7 @@ FROM CAP-operationcodes operationcodes
 	GPRSEvent,
 	GPRSEventType,
 	LocationInformationGPRS,
-	PDPID,
+	PDPId,
 	PDPInitiationType,
 	QualityOfService,
   SCIGPRSBillingChargingCharacteristics, -- FHModif remove {}
@@ -145,7 +145,7 @@ FROM CAP-errortypes errortypes
 ApplyChargingGPRSArg ::= SEQUENCE { 
 	chargingCharacteristics				[0] ChargingCharacteristics,
 	tariffSwitchInterval				[1] INTEGER (1..86400)						OPTIONAL,
-	pDPID								[2] PDPID									OPTIONAL
+	pDPId								[2] PDPId									OPTIONAL
   -- FHModif, ...
 	}
 -- tariffSwitchInterval is measured in 1 second units.
@@ -171,7 +171,7 @@ ApplyChargingReportGPRSArg ::= SEQUENCE {
 	chargingResult						[0] ChargingResult,
 	qualityOfService					[1] QualityOfService						OPTIONAL,
 	active								[2] BOOLEAN DEFAULT TRUE,
-	pDPID								[3] PDPID									OPTIONAL,
+	pDPId								[3] PDPId									OPTIONAL,
 	-- FHModif...,
 	chargingRollOver					[4]	ChargingRollOver						OPTIONAL
 	}
@@ -189,7 +189,7 @@ ApplyChargingReportGPRSArg ::= SEQUENCE {
 --	i.e. all EDPs and reports can be cancelled by the gsmSCF.
 
 CancelGPRSArg ::= SEQUENCE {
-	pDPID								[0] PDPID 									OPTIONAL
+	pDPId								[0] PDPId 									OPTIONAL
   -- FHModif, ...
 	}
 
@@ -212,7 +212,7 @@ CancelGPRSArg ::= SEQUENCE {
 -- FHModif Remove {PARAMETER-BOUND : bound}
 ConnectGPRSArg ::= SEQUENCE {
   accessPointName		[0] AccessPointName, -- FHModif {bound}
-	pdpID		[1] PDPID			OPTIONAL
+	pdpId		[1] PDPId			OPTIONAL
   -- FHModif, ...
 	}
 
@@ -231,7 +231,7 @@ ConnectGPRSArg ::= SEQUENCE {
 --	state model) substituting new data from the gsmSCF.
 
 ContinueGPRSArg ::= SEQUENCE {
-	pDPID								[0] PDPID									OPTIONAL
+	pDPId								[0] PDPId									OPTIONAL
   -- FHModif, ...
 }
 
@@ -253,7 +253,7 @@ ContinueGPRSArg ::= SEQUENCE {
 -- FHModif Remove {PARAMETER-BOUND : bound}
 EntityReleasedGPRSArg ::= SEQUENCE {
 	gPRSCause							[0] GPRSCause, -- FHModif {bound}
-	pDPID								[1] PDPID									OPTIONAL
+	pDPId								[1] PDPId									OPTIONAL
   -- FHModif, ...
 	}
 
@@ -273,7 +273,7 @@ EventReportGPRSArg ::= SEQUENCE {
 	gPRSEventType						[0] GPRSEventType,
 	miscGPRSInfo						[1] MiscCallInfo DEFAULT {messageType request},
   gPRSEventSpecificInformation		[2]	GPRSEventSpecificInformation OPTIONAL, -- FHModif {bound}
-	pDPID								[3]	PDPID OPTIONAL
+	pDPId								[3]	PDPId OPTIONAL
   -- FHModif, ...
 	}
 
@@ -357,7 +357,7 @@ InitialDPGPRSArg ::= SEQUENCE {
 -- FHModif Remove {PARAMETER-BOUND : bound}
 ReleaseGPRSArg ::= SEQUENCE {
 	gprsCause							[0] GPRSCause, -- FHModif {bound}
-	pDPID								[1]	PDPID									OPTIONAL
+	pDPId								[1]	PDPId									OPTIONAL
   -- FHModif, ...
 	}
 
@@ -382,7 +382,7 @@ ReleaseGPRSArg ::= SEQUENCE {
 -- FHModif Remove {PARAMETER-BOUND : bound}
 RequestReportGPRSEventArg ::= SEQUENCE {
 	gPRSEvent							[0] SEQUENCE SIZE (1..10) OF GPRSEvent,
-	pDPID								[1]	PDPID									OPTIONAL
+	pDPId								[1]	PDPId									OPTIONAL
   -- FHModif, ...
 	}
 -- Indicates the GPRS related events for notification.

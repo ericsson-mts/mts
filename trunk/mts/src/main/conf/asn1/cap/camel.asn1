@@ -80,7 +80,9 @@ Invoke ::= SEQUENCE {
   opCode		OPERATION,
   invokeparameter 	InvokeParameter OPTIONAL
 }
-InvokeParameter ::= ANY
+-- FHModif remove ANY
+-- InvokeParameter ::= ANY 
+InvokeParameter ::= OCTET STRING
 
 
 -- ANY is filled by the single ASN.1 data type following the keyword PARAMETER or the keyword ARGUMENT
@@ -94,7 +96,9 @@ ReturnResult ::= SEQUENCE {
   } OPTIONAL
 }
 
-ReturnResultParameter ::= ANY
+-- FHModif remove ANY 
+-- ReturnResultParameter ::= ANY
+ReturnResultParameter ::= OCTET STRING
 
 -- ANY is filled by the single ASN.1 data type following the keyword RESULT in the type definition
 -- of a particular operation.
@@ -104,7 +108,9 @@ ReturnError ::= SEQUENCE {
   errorCode	ERROR,
   parameter	ReturnErrorParameter  OPTIONAL }
 
-ReturnErrorParameter ::= ANY
+  -- FHModif remove ANY 
+-- ReturnErrorParameter ::= ANY
+ReturnErrorParameter ::= OCTET STRING
 
 -- ANY is filled by the single ASN.1 data type following the keyword PARAMETER in the type definition
 -- of a particular error.
@@ -590,7 +596,7 @@ SEQUENCE
     fCIBCCCAMELsequence2 [0]  SEQUENCE
     {
         freeFormatData       [0] FreeFormatData,
-        pDPID                [1] PDPId OPTIONAL,
+        pDPId                [1] PDPId OPTIONAL,
         appendFreeFormatData [2] AppendFreeFormatData DEFAULT overwrite
     }
 }
@@ -628,8 +634,8 @@ CamelSCIGPRSBillingChargingCharacteristics ::=
 
  SEQUENCE
 {
-    aOCGPRS [0] AOCGprs,
-    pDPID   [1] PDPId   OPTIONAL
+    aOCGprs [0] AOCGprs,
+    pDPId   [1] PDPId   OPTIONAL
 }
 
 -- Carrier notes: not recursive, exported,
@@ -1600,9 +1606,7 @@ OCTET STRING (SIZE (cAPSpecificBoundSetminOriginalCalledPartyIDLength ..cAPSpeci
 
 -- PDPId notes: not recursive, exported,
 -- locally refd 11 times, import refd 0 times
-PDPId ::=
-
-OCTET STRING (SIZE (1))
+PDPId ::= OCTET STRING (SIZE (1))
 
 -- PDPInitiationType notes: not recursive, exported,
 -- locally refd 2 times, import refd 0 times
@@ -2255,7 +2259,7 @@ ConnectGPRSArg ::=
  SEQUENCE
 {
     accessPointName [0] AccessPointName,
-    pdpID           [1] PDPId           OPTIONAL
+    pdpId           [1] PDPId           OPTIONAL
     -- FHModif, ...
 }
 
@@ -2268,7 +2272,7 @@ EntityReleasedGPRSArg ::=
  SEQUENCE
 {
     gPRSCause [0] GPRSCause,
-    pDPID     [1] PDPId      OPTIONAL
+    pDPId     [1] PDPId      OPTIONAL
     -- FHModif, ...
 }
 
@@ -2279,7 +2283,7 @@ ReleaseGPRSArg ::=
  SEQUENCE
 {
     gprsCause [0] GPRSCause,
-    pDPID     [1] PDPId     OPTIONAL
+    pDPId     [1] PDPId     OPTIONAL
     -- FHModif, ...
 }
 
@@ -2290,7 +2294,7 @@ RequestReportGPRSEventArg ::=
  SEQUENCE
 {
     gPRSEvent [0] GPRSEventArray,
-    pDPID     [1] PDPId     OPTIONAL
+    pDPId     [1] PDPId     OPTIONAL
     -- FHModif, ...
 }
 
@@ -2466,7 +2470,7 @@ EventReportGPRSArg ::=
     gPRSEventType                [0] GPRSEventType,
     miscGPRSInfo                 [1] MiscCallInfo                 OPTIONAL,
     gPRSEventSpecificInformation [2] GPRSEventSpecificInformation OPTIONAL,
-    pDPID                        [3] PDPId                        OPTIONAL
+    pDPId                        [3] PDPId                        OPTIONAL
     -- FHModif, ...
 }
 
@@ -2981,7 +2985,7 @@ ApplyChargingGPRSArg ::= SEQUENCE
 {
     chargingCharacteristics [0] ChargingCharacteristics,
     tariffSwitchInterval    [1] INTEGER (1..86400)      OPTIONAL,
-    pDPID                   [2] PDPId                   OPTIONAL
+    pDPId                   [2] PDPId                   OPTIONAL
     -- FHModif, ...
 }
 	    
@@ -3002,7 +3006,7 @@ ApplyChargingReportGPRSArg ::=
     chargingResult   [0] ChargingResult,
     qualityOfService [1] QualityOfService OPTIONAL,
     active           [2] BOOLEAN          DEFAULT TRUE,
-    pDPID            [3] PDPId            OPTIONAL,
+    pDPId            [3] PDPId            OPTIONAL,
     -- FHModif...,
     chargingRollOver [4] ChargingRollOver OPTIONAL
 }
@@ -3013,7 +3017,7 @@ CancelGPRSArg ::=
 
  SEQUENCE
 {
-     pDPID [0] PDPId OPTIONAL
+     pDPId [0] PDPId OPTIONAL
      -- FHModif, ...
 }
 
@@ -3023,7 +3027,7 @@ ContinueGPRSArg ::=
 
  SEQUENCE
 {
-     pDPID [0] PDPId OPTIONAL
+     pDPId [0] PDPId OPTIONAL
      -- FHModif, ...
 }
 
