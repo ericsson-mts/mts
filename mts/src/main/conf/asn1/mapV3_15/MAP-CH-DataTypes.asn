@@ -93,8 +93,9 @@ FROM MAP-ExtensionDataTypes {
 CUG-CheckInfo ::= SEQUENCE {
 	cug-Interlock	CUG-Interlock,
 	cug-OutgoingAccess	NULL			OPTIONAL,
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 NumberOfForwarding ::= INTEGER (1..5)
 
@@ -113,7 +114,7 @@ SendRoutingInfoArg ::= SEQUENCE {
 	camelInfo		[11] CamelInfo	OPTIONAL,
 	suppressionOfAnnouncement	[12] SuppressionOfAnnouncement 	OPTIONAL,
 	extensionContainer	[13] ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif ...,
 	alertingPattern	[14] AlertingPattern	OPTIONAL,
 	ccbs-Call		[15] NULL			OPTIONAL,
 	supportedCCBS-Phase	[16]	 SupportedCCBS-Phase	OPTIONAL,
@@ -177,7 +178,7 @@ SendRoutingInfoRes ::= [3] SEQUENCE {
 	forwardingInterrogationRequired	[4] NULL		OPTIONAL,
 	vmsc-Address	[2] ISDN-AddressString	OPTIONAL,
 	extensionContainer	[0] ExtensionContainer	OPTIONAL,
-	... ,
+	-- FHModif ... ,
 	naea-PreferredCI	[10] NAEA-PreferredCI	OPTIONAL,
 	-- naea-PreferredCI is included at the discretion of the HLR operator.
 	ccbs-Indicators	[11] CCBS-Indicators	OPTIONAL,
@@ -208,8 +209,10 @@ UnavailabilityCause ::= ENUMERATED {
 	absentSubscriber	(3),
 	busySubscriber	(4),
 	callBarred	(5),
-	cug-Reject	(6),
-	...}
+	cug-Reject	(6)
+  -- FHModif, ...
+  }
+  
 	--	exception handling: 
 	--	Reception of other values than the ones listed shall result in the service
 	--	being unavailable for that call.
@@ -217,8 +220,9 @@ UnavailabilityCause ::= ENUMERATED {
 CCBS-Indicators ::= SEQUENCE {
 	ccbs-Possible	[0]	NULL		OPTIONAL,
 	keepCCBS-CallIndicator	[1]	NULL		OPTIONAL,
-	extensionContainer	[2]	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[2]	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 RoutingInfo ::= CHOICE {
 	roamingNumber	ISDN-AddressString,
@@ -232,7 +236,7 @@ ForwardingData ::= SEQUENCE {
 	forwardedToSubaddress	[4] ISDN-SubaddressString	OPTIONAL,
 	forwardingOptions	[6] ForwardingOptions	OPTIONAL,
 	extensionContainer	[7] ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif...,
 	longForwardedToNumber	[8] FTN-AddressString	OPTIONAL}
 
 ProvideRoamingNumberArg ::= SEQUENCE {
@@ -247,7 +251,7 @@ ProvideRoamingNumberArg ::= SEQUENCE {
 	callReferenceNumber	[9] CallReferenceNumber	OPTIONAL,
 	or-Interrogation	[10] NULL		OPTIONAL,
 	extensionContainer	[11] ExtensionContainer	OPTIONAL,
-	... ,
+	-- FHModif ... ,
 	alertingPattern	[12] AlertingPattern	OPTIONAL,
 	ccbs-Call		[13] NULL		OPTIONAL,
 	supportedCamelPhasesInInterrogatingNode	[15] SupportedCamelPhases	OPTIONAL,
@@ -268,7 +272,7 @@ ProvideRoamingNumberArg ::= SEQUENCE {
 ProvideRoamingNumberRes ::= SEQUENCE {
 	roamingNumber	ISDN-AddressString,
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif ...,
 	releaseResourcesSupported	NULL			OPTIONAL,
 	vmsc-Address	ISDN-AddressString	OPTIONAL }
 
@@ -284,7 +288,7 @@ ResumeCallHandlingArg ::= SEQUENCE {
 	msisdn		[9]	ISDN-AddressString	OPTIONAL,
 	uu-Data		[10] UU-Data	OPTIONAL,
 	allInformationSent	[11] NULL		OPTIONAL,
-	...,
+	-- FHModif ...,
 	d-csi		[12]	D-CSI	OPTIONAL,
 	o-BcsmCamelTDPCriteriaList 	[13]	O-BcsmCamelTDPCriteriaList 	OPTIONAL,
 	basicServiceGroup2	[14] Ext-BasicServiceCode	OPTIONAL,
@@ -295,8 +299,9 @@ UU-Data ::= SEQUENCE {
 	uuIndicator	[0] UUIndicator	OPTIONAL,
 	uui			[1] UUI		OPTIONAL,
 	uusCFInteraction	[2] NULL		OPTIONAL,
-	extensionContainer	[3] ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[3] ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 UUIndicator ::= OCTET STRING (SIZE (1))
 	-- Octets are coded according to ETS 300 356
@@ -305,14 +310,15 @@ UUI  ::= OCTET STRING (SIZE (1..131))
 	-- Octets are coded according to ETS 300 356
 
 ResumeCallHandlingRes ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 CamelInfo ::= SEQUENCE {
 	supportedCamelPhases	SupportedCamelPhases,
 	suppress-T-CSI	NULL			OPTIONAL,
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	... ,
+	-- FHModif... ,
 	offeredCamel4CSIs	[0] OfferedCamel4CSIs	OPTIONAL }
 
 ExtendedRoutingInfo ::= CHOICE {
@@ -322,14 +328,15 @@ ExtendedRoutingInfo ::= CHOICE {
 CamelRoutingInfo ::= SEQUENCE {
 	forwardingData	ForwardingData	OPTIONAL,
 	gmscCamelSubscriptionInfo	[0] GmscCamelSubscriptionInfo,
-	extensionContainer	[1] ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[1] ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 GmscCamelSubscriptionInfo ::= SEQUENCE {
 	t-CSI		[0] T-CSI	OPTIONAL,
 	o-CSI		[1] O-CSI	OPTIONAL,
 	extensionContainer	[2] ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif...,
 	o-BcsmCamelTDP-CriteriaList	[3] O-BcsmCamelTDPCriteriaList	OPTIONAL,
 	t-BCSM-CAMEL-TDP-CriteriaList	[4]	T-BCSM-CAMEL-TDP-CriteriaList	OPTIONAL,
 	d-csi		[5]	D-CSI	OPTIONAL}
@@ -338,27 +345,32 @@ SetReportingStateArg ::= SEQUENCE {
 	imsi			[0]	IMSI		OPTIONAL,
 	lmsi			[1]	LMSI		OPTIONAL,
 	ccbs-Monitoring	[2]	ReportingState	OPTIONAL,
-	extensionContainer	[3]	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[3]	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 ReportingState ::= ENUMERATED {
 	stopMonitoring	(0),
-	startMonitoring	(1),
-	...}
+	startMonitoring	(1)
+  -- FHModif, ...
+  }
+  
 	-- exception handling:
 	-- reception of values 2-10 shall be mapped to 'stopMonitoring' 
 	-- reception of values > 10 shall be mapped to 'startMonitoring'
 
 SetReportingStateRes ::= SEQUENCE{
 	ccbs-SubscriberStatus 	[0]	CCBS-SubscriberStatus	OPTIONAL,
-	extensionContainer	[1]	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[1]	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 CCBS-SubscriberStatus ::= ENUMERATED {
 	ccbsNotIdle 	(0),
 	ccbsIdle 		(1),
-	ccbsNotReachable	(2),
-	...}
+	ccbsNotReachable	(2)
+  -- FHModif, ...
+  }
 	--  exception handling: 
 	--  reception of values 3-10 shall be mapped to 'ccbsNotIdle'
 	--  reception of values 11-20 shall be mapped to 'ccbsIdle'
@@ -368,24 +380,28 @@ StatusReportArg ::= SEQUENCE{
 	imsi 		[0]	IMSI,
 	eventReportData	[1]	EventReportData	OPTIONAL,
 	callReportdata	[2]	CallReportData	OPTIONAL,
-	extensionContainer	[3]	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[3]	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 EventReportData ::= SEQUENCE{
 	ccbs-SubscriberStatus	[0]	CCBS-SubscriberStatus	OPTIONAL,
-	extensionContainer	[1]	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[1]	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 CallReportData ::= SEQUENCE{
 	monitoringMode	[0]	MonitoringMode	OPTIONAL,
 	callOutcome	[1]	CallOutcome	OPTIONAL,
-	extensionContainer	[2]	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[2]	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 MonitoringMode ::= ENUMERATED {
 	a-side		(0),
-	b-side		(1),
-	...}
+	b-side		(1)
+  -- FHModif, ...
+  }
 	--	exception handling: 
 	--  reception of values 2-10 shall be mapped 'a-side'
 	--  reception of values > 10 shall be mapped to 'b-side'
@@ -393,16 +409,18 @@ MonitoringMode ::= ENUMERATED {
 CallOutcome ::= ENUMERATED {
 	success		(0),
 	failure		(1),
-	busy			(2),
-	...}
+	busy			(2)
+  -- FHModif, ...
+  }
 	--	exception handling: 
 	--  reception of values 3-10 shall be mapped to 'success'
 	--  reception of values 11-20 shall be mapped to 'failure'
 	--  reception of values > 20 shall be mapped to 'busy'
 
 StatusReportRes ::= SEQUENCE {
-	extensionContainer	[0]	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[0]	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 RemoteUserFreeArg ::= SEQUENCE{
 	imsi			[0]	IMSI,
@@ -411,13 +429,15 @@ RemoteUserFreeArg ::= SEQUENCE{
 	translatedB-Number	[3]	ISDN-AddressString,
 	replaceB-Number	[4] 	NULL		OPTIONAL,
 	alertingPattern	[5]	AlertingPattern	OPTIONAL,
-	extensionContainer	[6]	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[6]	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 RemoteUserFreeRes ::= SEQUENCE{
 	ruf-Outcome	[0]	RUF-Outcome,
-	extensionContainer	[1]	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[1]	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 RUF-Outcome ::= ENUMERATED{
 	accepted (0),
@@ -425,8 +445,9 @@ RUF-Outcome ::= ENUMERATED{
 	noResponseFromFreeMS (2), -- T4 Expiry
 	noResponseFromBusyMS (3), -- T10 Expiry
 	udubFromFreeMS (4),
-	udubFromBusyMS (5),
-	...}
+	udubFromBusyMS (5)
+  -- FHModif, ...
+  }
 	-- exception handling:
 	-- reception of values 6-20 shall be mapped to 'accepted'
 	-- reception of values 21-30 shall be mapped to 'rejected'
@@ -437,29 +458,34 @@ RUF-Outcome ::= ENUMERATED{
 
 IST-AlertArg ::= SEQUENCE{
 	imsi			[0]	IMSI,
-	extensionContainer	[1]	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[1]	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 IST-AlertRes ::= SEQUENCE{
 	istAlertTimer	[0]	IST-AlertTimerValue 	OPTIONAL,
 	istInformationWithdraw	[1]	NULL		OPTIONAL,
 	callTerminationIndicator	[2]	CallTerminationIndicator	OPTIONAL,
-	extensionContainer	[3]	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[3]	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 IST-CommandArg ::= SEQUENCE{
 	imsi			[0]	IMSI,
-	extensionContainer	[1]	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	[1]	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 IST-CommandRes ::= SEQUENCE{
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 CallTerminationIndicator ::= ENUMERATED {
 	terminateCallActivityReferred	(0),
-	terminateAllCallActivities	(1),
-	...}
+	terminateAllCallActivities	(1)
+  -- FHModif, ...
+  }
 	-- exception handling:
 	-- reception of values 2-10 shall be mapped to ' terminateCallActivityReferred ' 
 	-- reception of values > 10 shall be mapped to ' terminateAllCallActivities '
@@ -469,12 +495,14 @@ CallTerminationIndicator ::= ENUMERATED {
 
 ReleaseResourcesArg ::= SEQUENCE{
 	msrn			ISDN-AddressString, 
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 ReleaseResourcesRes ::= SEQUENCE{
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 
 END

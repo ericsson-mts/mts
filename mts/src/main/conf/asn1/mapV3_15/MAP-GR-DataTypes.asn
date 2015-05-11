@@ -73,7 +73,7 @@ PrepareGroupCallArg ::= SEQUENCE {
 	priority		[2] EMLPP-Priority	OPTIONAL,
 	uplinkFree	[3] NULL		OPTIONAL,
 	extensionContainer	[4] ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif...,
 	vstk			[5] VSTK		OPTIONAL,
 	vstk-rand		[6] VSTK-RAND	OPTIONAL,
 	talkerChannelParameter	[7] NULL		OPTIONAL,
@@ -87,13 +87,14 @@ VSTK-RAND ::= OCTET STRING (SIZE (5))
 
 PrepareGroupCallRes ::= SEQUENCE {
 	groupCallNumber	ISDN-AddressString,
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 SendGroupCallEndSignalArg ::= SEQUENCE {
 	imsi			IMSI			OPTIONAL,
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif...,
 	talkerPriority	[0]TalkerPriority	OPTIONAL,
 	additionalInfo	[1]AdditionalInfo	OPTIONAL }
 
@@ -103,8 +104,9 @@ TalkerPriority ::= ENUMERATED {
 	emergency  (2)}
 
 SendGroupCallEndSignalRes ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 ForwardGroupCallSignallingArg ::= SEQUENCE {
 	imsi			IMSI			OPTIONAL,
@@ -114,7 +116,7 @@ ForwardGroupCallSignallingArg ::= SEQUENCE {
 	uplinkSeizedCommand	[3] NULL		OPTIONAL,
 	uplinkReleaseCommand	[4] NULL		OPTIONAL,
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	..., 
+	-- FHModif..., 
 	stateAttributes	[5] StateAttributes	OPTIONAL,
 	talkerPriority	[6] TalkerPriority	OPTIONAL,
 	additionalInfo	[7] AdditionalInfo	OPTIONAL,
@@ -128,7 +130,7 @@ ProcessGroupCallSignallingArg ::= SEQUENCE {
 	uplinkReleaseIndication	[1] NULL		OPTIONAL,
 	releaseGroupCall	[2] NULL		OPTIONAL,
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif...,
 	talkerPriority	[3] TalkerPriority	OPTIONAL,
 	additionalInfo	[4] AdditionalInfo	OPTIONAL,
 	emergencyModeResetCommandFlag	[5] NULL		OPTIONAL,
@@ -174,13 +176,15 @@ SendGroupCallInfoArg ::= SEQUENCE {
 	additionalInfo	[3] AdditionalInfo	OPTIONAL,
 	talkerPriority	[4] TalkerPriority	OPTIONAL,
 	cksn			[5] Cksn		OPTIONAL,
-	extensionContainer	[6] ExtensionContainer	OPTIONAL,
-	... }
+	extensionContainer	[6] ExtensionContainer	OPTIONAL
+  -- FHModif, ... 
+  }
 
 RequestedInfo ::= ENUMERATED {
 	anchorMSC-AddressAndASCI-CallReference			(0),
-	imsiAndAdditionalInfoAndAdditionalSubscription		(1),
-	... }
+	imsiAndAdditionalInfoAndAdditionalSubscription		(1)
+  -- FHModif, ... 
+  }
 --	exception handling:
 --	an unrecognized value shall be rejected by the receiver with a return error cause of 
 --	unexpected data value
@@ -192,8 +196,9 @@ SendGroupCallInfoRes ::= SEQUENCE {
 	additionalInfo	[3] AdditionalInfo	OPTIONAL,
 	additionalSubscriptions	[4] AdditionalSubscriptions	OPTIONAL,
 	kc			[5] Kc		OPTIONAL,
-	extensionContainer	[6] ExtensionContainer	OPTIONAL,
-	... }
+	extensionContainer	[6] ExtensionContainer	OPTIONAL
+  -- FHModif, ... 
+  }
 
 
 END

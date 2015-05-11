@@ -84,7 +84,7 @@ NotifySS-Arg ::= SEQUENCE{
 	mpty-Indicator				[16]	NULL OPTIONAL,
 	cug-Index					[17]	CUG-Index OPTIONAL,
 	clirSuppressionRejected		[18]	NULL OPTIONAL,
-	... ,
+	-- FHModif... ,
 	ect-Indicator				[19]	ECT-Indicator OPTIONAL,
 	nameIndicator				[20]	NameIndicator OPTIONAL,
 	ccbs-Feature				[21]	CCBS-Feature OPTIONAL,
@@ -99,8 +99,9 @@ Multicall-Indicator	::= ENUMERATED {
 
 ForwardChargeAdviceArg ::= SEQUENCE{
 	ss-Code						[0]		SS-Code,
-	chargingInformation			[1]		ChargingInformation,
-	...}
+	chargingInformation			[1]		ChargingInformation
+  -- FHModif, ...
+  }
 
 SS-Notification ::= OCTET STRING (SIZE (1))
 
@@ -128,8 +129,9 @@ ChargingInformation ::= SEQUENCE{
 	e4	[4] E4 OPTIONAL,
 	e5	[5] E5 OPTIONAL,
 	e6	[6] E6 OPTIONAL,
-	e7	[7] E7 OPTIONAL,
-	...}
+	e7	[7] E7 OPTIONAL
+  -- FHModif,...
+  }
 
 E1 ::= INTEGER (0..max10TimesUnitsPerTime)
 max10TimesUnitsPerTime INTEGER ::= 8191
@@ -159,21 +161,24 @@ CallOnHold-Indicator	::= ENUMERATED {
 ForwardCUG-InfoArg ::= SEQUENCE {
 	cug-Index			[0]	CUG-Index OPTIONAL,
 	suppressPrefCUG		[1]	NULL OPTIONAL,
-	suppressOA			[2]	NULL OPTIONAL,
-	...}
+	suppressOA			[2]	NULL OPTIONAL
+  -- FHModif, ...
+  }
 
 ECT-Indicator	::= SEQUENCE {
 	ect-CallState		[0]	ECT-CallState,
-	rdn	[1]	RDN OPTIONAL,
-	...}
+	rdn	[1]	RDN OPTIONAL
+  -- FHModif, ...
+  }
 
 ECT-CallState	::= ENUMERATED {
 		alerting (0),
 		active (1)}
 
 	NameIndicator ::= SEQUENCE {
-		callingName		[0] Name OPTIONAL,
-		...}
+		callingName		[0] Name OPTIONAL
+    -- FHModif, ...
+    }
 
 	Name ::= CHOICE {
 		namePresentationAllowed		[0] NameSet,
@@ -184,8 +189,9 @@ ECT-CallState	::= ENUMERATED {
 	NameSet ::= SEQUENCE {
 		dataCodingScheme 		[0] USSD-DataCodingScheme,
 		lengthInCharacters 		[1] INTEGER,
-		nameString				[2] USSD-String,
-		...}
+		nameString				[2] USSD-String
+    -- FHModif, ...
+    }
 
 -- NameIndicator, Name and NameSet are defined because of CNAP.
 -- The USSD-DataCodingScheme shall indicate use of the default alphabet through the
@@ -201,27 +207,32 @@ RDN	::= CHOICE {
 
 RemotePartyNumber	::= SEQUENCE {
 	partyNumber				[0]	ISDN-AddressString,
-	partyNumberSubaddress	[1]	ISDN-SubaddressString OPTIONAL,
-	...}
+	partyNumberSubaddress	[1]	ISDN-SubaddressString OPTIONAL
+  -- FHModif, ...
+  }
 
 AccessRegisterCCEntryArg	::= SEQUENCE {
-	...}
+	-- FHModif...
+  }
 
 CallDeflectionArg	::= SEQUENCE {
 	deflectedToNumber		[0]	AddressString,
-	deflectedToSubaddress	[1]	ISDN-SubaddressString OPTIONAL,
-	...}
+	deflectedToSubaddress	[1]	ISDN-SubaddressString OPTIONAL
+  -- FHModif, ...
+  }
 
 UserUserServiceArg ::= SEQUENCE {
 	uUS-Service		[0]	UUS-Service,
-	uUS-Required	[1]	BOOLEAN,
-	... }
+	uUS-Required	[1]	BOOLEAN
+  -- FHModif, ... 
+  }
 
 UUS-Service ::= ENUMERATED {
 	uUS1 (1),
 	uUS2 (2),
-	uUS3 (3),
-	... }
+	uUS3 (3)
+  -- FHModif, ... 
+  }
 
 -- exception handling:
 -- In case of UUS-Service with any other value, indicated as "UUS required",
@@ -232,7 +243,7 @@ LocationNotificationArg	::= SEQUENCE {
 	locationType		[1]	LocationType,
 	lcsClientExternalID	[2] LCSClientExternalID		OPTIONAL,
 	lcsClientName		[3]	LCSClientName			OPTIONAL,
-	... ,
+	-- FHModif... ,
 	lcsRequestorID		[4] LCSRequestorID			OPTIONAL,
 	lcsCodeword			[5]	LCSCodeword				OPTIONAL,
 	lcsServiceTypeID	[6]	LCSServiceTypeID		OPTIONAL }
@@ -278,13 +289,15 @@ LocationNotificationArg	::= SEQUENCE {
 
 
 LocationNotificationRes	::= SEQUENCE {
-	verificationResponse		[0]	VerificationResponse OPTIONAL,
-	...}
+	verificationResponse		[0]	VerificationResponse OPTIONAL
+  -- FHModif, ...
+  }
 
 VerificationResponse::= ENUMERATED {
 	permissionDenied	(0),
-	permissionGranted	(1),
-	... }
+	permissionGranted	(1)
+  -- FHModif, ... 
+  }
 
 -- exception handling:
 -- an unrecognized value shall be treated the same as value 0 (permissionDenied)
@@ -296,7 +309,7 @@ LCS-MOLRArg	::= SEQUENCE {
 	lcsClientExternalID	[3] LCSClientExternalID		OPTIONAL,
 	mlc-Number			[4]	ISDN-AddressString		OPTIONAL,
 	gpsAssistanceData	[5]	GPSAssistanceData		OPTIONAL,
-	...,
+	-- FHModif ...,
 	supportedGADShapes	[6]	SupportedGADShapes		OPTIONAL,
 	lcsServiceTypeID	[7]	LCSServiceTypeID		OPTIONAL,
 	ageOfLocationInfo	[8]	AgeOfLocationInformation	OPTIONAL,
@@ -341,7 +354,7 @@ MOLR-Type::= ENUMERATED {
 	locationEstimate			(0),
 	assistanceData				(1),
 	deCipheringKeys				(2),
-	... ,
+	-- FHModif... ,
 	deferredMo-lrTTTPInitiation	(3),
 	deferredMo-lrSelfLocationInitiation (4),
 	deferredMt-lrOrmo-lrTTTPLocationEstimate (5),
@@ -356,7 +369,7 @@ LocationMethod::= ENUMERATED {
 	msBasedEOTD			(0),
 	msAssistedEOTD		(1),
 	assistedGPS			(2),
-	...,
+	-- FHModif...,
 	msBasedOTDOA		(3),
 	assistedGANSS		(4),
 	assistedGPSandGANSS (5)
@@ -375,16 +388,20 @@ GPSAssistanceData::= OCTET STRING (SIZE (1..38))
 -- Octets 1 to 38 are coded in the same way as the octets 3 to 7+2n of Requested GPS Data IE
 -- in 3GPP TS 49.031 [14].
 
+
 GANSSAssistanceData::= OCTET STRING (SIZE (1..40))
 -- Octets 1 to 40 are coded in the same way as the octets 3 to 9+2n of Requested GANSS Data IE
 -- in 3GPP TS 49.031 [14] .
 
 TerminationCause ::= ENUMERATED {
 	subscriberTermination  (0),
-	uETermination     (1),
-	...} 
+	uETermination     (1)
+  -- FHModif, ...
+  } 
 
-MultiplePositioningProtocolPDUs ::= SEQUENCE (SIZE (1..maxNumLPPMsg)) OF PositioningProtocolPDU
+-- FHModif remove (SIZE ( )))
+-- MultiplePositioningProtocolPDUs ::= SEQUENCE (SIZE (1..maxNumLPPMsg)) OF PositioningProtocolPDU
+MultiplePositioningProtocolPDUs ::= SEQUENCE OF PositioningProtocolPDU
 
 PositioningProtocolPDU ::= OCTET STRING
 -- PositioningProtocolPDU contains a LPP message defined in 3GPP TS 36.355 [17].
@@ -396,7 +413,7 @@ maxNumLPPMsg INTEGER ::= 3
 LCS-MOLRRes::= SEQUENCE {
 	locationEstimate		[0]	Ext-GeographicalInformation		OPTIONAL,
 	decipheringKeys			[1] DecipheringKeys					OPTIONAL,
-	...,
+	-- FHModif...,
 	add-LocationEstimate	[2]	Add-GeographicalInformation 		OPTIONAL,
 	velocityEstimate		[3] VelocityEstimate		OPTIONAL,
 	referenceNumber 		[4] LCS-ReferenceNumber 	OPTIONAL,
@@ -435,20 +452,23 @@ LCS-AreaEventRequestArg	::= SEQUENCE {
 	referenceNumber				[0]	LCS-ReferenceNumber,
 	h-gmlc-address				[1]	GSN-Address,
 	deferredLocationEventType	[3] DeferredLocationEventType,
-	areaEventInfo				[4]	AreaEventInfo,
-	... }
+	areaEventInfo				[4]	AreaEventInfo
+  -- FHModif, ... 
+  }
 
 -- the msAvailableValue in the DeferredLocationEventType is not applicable for this procedure 
 
 LCS-AreaEventReportArg	::= SEQUENCE {
 	referenceNumber				[0]	LCS-ReferenceNumber,
-	h-gmlc-address				[1]	GSN-Address,
-	... }
+	h-gmlc-address				[1]	GSN-Address
+  -- FHModif, ... 
+  }
 
 LCS-AreaEventCancellationArg	::= SEQUENCE {
 	referenceNumber				[0]	LCS-ReferenceNumber,
-	h-gmlc-address				[1]	GSN-Address,
-	... }
+	h-gmlc-address				[1]	GSN-Address
+  -- FHModif, ... 
+  }
 
 
 LCS-PeriodicLocationRequestArg	::= SEQUENCE {
@@ -458,33 +478,38 @@ LCS-PeriodicLocationRequestArg	::= SEQUENCE {
 	qoS					[3] LCS-QoS					OPTIONAL,
 	h-gmlc-address		[4]	GSN-Address				OPTIONAL,
 	mo-lrShortCircuit	[5]	NULL					OPTIONAL,
-	reportingPLMNList	[6]	ReportingPLMNList		OPTIONAL,
-	... }
+	reportingPLMNList	[6]	ReportingPLMNList		OPTIONAL
+  -- FHModif, ... 
+  }
 
 
 LCS-PeriodicLocationRequestRes	::= SEQUENCE {
-	mo-lrShortCircuit	[0]	NULL					OPTIONAL,
-	... }
+	mo-lrShortCircuit	[0]	NULL					OPTIONAL
+  -- FHModif, ... 
+  }
 
 
 LCS-LocationUpdateArg	::= SEQUENCE {
 	referenceNumber		[0] LCS-ReferenceNumber		OPTIONAL,
 	add-LocationEstimate[1] Add-GeographicalInformation 		OPTIONAL,
 	velocityEstimate	[2] VelocityEstimate		OPTIONAL,
-	sequenceNumber		[3]	SequenceNumber			OPTIONAL,
-	... }
+	sequenceNumber		[3]	SequenceNumber			OPTIONAL
+  -- FHModif, ... 
+  }
 -- add-LocationEstimate shall be included if and only if a location estimate was successfully
 -- transferred towards an External LCS Client or was successfully obtained for UE self location
 -- velocityEstimate may only be included if add-LocationEstimate is included
 
 LCS-LocationUpdateRes	::= SEQUENCE {
-	terminationCause 	[0] TerminationCause 		OPTIONAL,
-	... }
+	terminationCause 	[0] TerminationCause 		OPTIONAL
+  -- FHModif, ... 
+  }
 
 LCS-PeriodicLocationCancellationArg	::= SEQUENCE {
 	referenceNumber		[0] LCS-ReferenceNumber,
-	h-gmlc-address		[1]	GSN-Address				OPTIONAL,
-	... }
+	h-gmlc-address		[1]	GSN-Address				OPTIONAL
+  -- FHModif, ... 
+  }
 
 
 END

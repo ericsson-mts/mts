@@ -110,17 +110,17 @@ AlertingPattern ::= OCTET STRING (SIZE(3))
 -- The receiving side shall ignore the leading two OCTETS.
 
 AOCBeforeAnswer ::= SEQUENCE {
-	aOCInitial							[0] CAI-GSM0224,
+	aOCInitial							[0] CAI-Gsm0224,
 	aOCSubsequent						[1] AOCSubsequent							OPTIONAL
 	}
 
-AOCGPRS ::= SEQUENCE {
-	aOCInitial							[0] CAI-GSM0224,
+AOCGprs ::= SEQUENCE {
+	aOCInitial							[0] CAI-Gsm0224,
 	aOCSubsequent						[1] AOCSubsequent							OPTIONAL
 	}
 
 AOCSubsequent ::= SEQUENCE {
-	cAI-GSM0224							[0] CAI-GSM0224	,
+	cAI-GSM0224							[0] CAI-Gsm0224	,
 	tariffSwitchInterval				[1] INTEGER (1..86400)						OPTIONAL
 	}
 -- tariffSwitchInterval is measured in 1 second units
@@ -219,7 +219,7 @@ BurstList ::= SEQUENCE {
 	}
 -- warningPeriod is measured in 1 second units.
 
-CAI-GSM0224 ::= SEQUENCE {
+CAI-Gsm0224 ::= SEQUENCE {
 	e1									[0] INTEGER (0..8191)						OPTIONAL,
 	e2									[1] INTEGER (0..8191)						OPTIONAL,
 	e3									[2] INTEGER (0..8191)						OPTIONAL,
@@ -339,7 +339,7 @@ CAMEL-FCIGPRSBillingChargingCharacteristics ::= SEQUENCE{
 	fCIBCCCAMELsequence1				[0] SEQUENCE {
 		freeFormatData						[0] OCTET STRING (SIZE(
 			1 .. 160)),
-		pDPID								[1] PDPID OPTIONAL,
+		pDPId								[1] PDPId OPTIONAL,
 		appendFreeFormatData				[2] AppendFreeFormatData DEFAULT overwrite
 		-- FHModif, ...
 		}
@@ -366,8 +366,8 @@ CAMEL-SCIBillingChargingCharacteristicsAlt ::= SEQUENCE {
 --	This datatype is for extension in future releases.
 
 CAMEL-SCIGPRSBillingChargingCharacteristics ::= SEQUENCE {
-	aOCGPRS								[0] AOCGPRS,
-	pDPID								[1] PDPID									OPTIONAL
+	aOCGprs								[0] AOCGprs,
+	pDPId								[1] PDPId									OPTIONAL
 	-- FHModif, ...
 	}
 
@@ -1274,7 +1274,7 @@ OriginalCalledPartyID ::= OCTET STRING (SIZE(
 --  Indicates the original called number. Refer to ETSI EN 300 356 1 [23] Original Called Number
 --  for encoding.
 
-PDPID ::= OCTET STRING (SIZE (1))
+PDPId ::= OCTET STRING (SIZE (1))
 --	PDP Identifier is a counter used to identify a specific PDP Context within a control
 --	relationship between gprsSSF and gsmSCF.
 

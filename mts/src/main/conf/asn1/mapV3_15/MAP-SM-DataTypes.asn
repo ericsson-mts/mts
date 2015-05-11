@@ -66,7 +66,7 @@ RoutingInfoForSM-Arg ::= SEQUENCE {
 	sm-RP-PRI		[1] BOOLEAN,
 	serviceCentreAddress	[2] AddressString,
 	extensionContainer	[6] ExtensionContainer	OPTIONAL,
-	... ,
+	-- FHModif... ,
 	gprsSupportIndicator	[7]	NULL		OPTIONAL,
 	-- gprsSupportIndicator is set only if the SMS-GMSC supports
 	-- receiving of two numbers from the HLR
@@ -81,8 +81,9 @@ RoutingInfoForSM-Arg ::= SEQUENCE {
 
 SM-DeliveryNotIntended ::= ENUMERATED {
 	onlyIMSI-requested  (0),
-	onlyMCC-MNC-requested  (1),
-	...}
+	onlyMCC-MNC-requested  (1) 
+  -- FHModif, ...
+  }
 
 SM-RP-MTI ::= INTEGER (0..10)
 	-- 0 SMS Deliver 
@@ -101,20 +102,21 @@ RoutingInfoForSM-Res ::= SEQUENCE {
 	imsi			IMSI,
 	locationInfoWithLMSI	[0] LocationInfoWithLMSI,
 	extensionContainer	[4] ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif...,
 	ip-sm-gwGuidance	[5] IP-SM-GW-Guidance	OPTIONAL }
 
 IP-SM-GW-Guidance ::= SEQUENCE {
 	minimumDeliveryTimeValue	SM-DeliveryTimerValue,
 	recommendedDeliveryTimeValue	SM-DeliveryTimerValue,
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 LocationInfoWithLMSI ::= SEQUENCE {
 	networkNode-Number	[1] ISDN-AddressString,
 	lmsi			LMSI			OPTIONAL,
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif...,
 	gprsNodeIndicator	[5]	NULL		OPTIONAL,
 	-- gprsNodeIndicator is set only if the SGSN number is sent as the 
 	-- Network Node Number
@@ -140,7 +142,7 @@ MO-ForwardSM-Arg ::= SEQUENCE {
 	sm-RP-OA		SM-RP-OA,
 	sm-RP-UI		SignalInfo,
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	... ,
+	-- FHModif... ,
 	imsi			IMSI 		OPTIONAL,
 	correlationID	[0] CorrelationID	OPTIONAL,
 	sm-DeliveryOutcome	[1] SM-DeliveryOutcome	OPTIONAL
@@ -148,8 +150,9 @@ MO-ForwardSM-Arg ::= SEQUENCE {
 
 MO-ForwardSM-Res ::= SEQUENCE {
 	sm-RP-UI		SignalInfo 	OPTIONAL,
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 MT-ForwardSM-Arg ::= SEQUENCE {
 	sm-RP-DA		SM-RP-DA,
@@ -157,7 +160,7 @@ MT-ForwardSM-Arg ::= SEQUENCE {
 	sm-RP-UI		SignalInfo,
 	moreMessagesToSend	NULL			OPTIONAL,
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif...,
 	smDeliveryTimer	SM-DeliveryTimerValue	OPTIONAL,
 	smDeliveryStartTime	Time			OPTIONAL,
 	smsOverIP-OnlyIndicator	[0] NULL		OPTIONAL,
@@ -174,8 +177,9 @@ SIP-URI ::= OCTET STRING
 
 MT-ForwardSM-Res ::= SEQUENCE {
 	sm-RP-UI		SignalInfo	OPTIONAL,
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 SM-RP-DA ::= CHOICE {
 	imsi			[0] IMSI,
@@ -197,7 +201,7 @@ ReportSM-DeliveryStatusArg ::= SEQUENCE {
 	absentSubscriberDiagnosticSM	[0] AbsentSubscriberDiagnosticSM
 							OPTIONAL,
 	extensionContainer	[1] ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif...,
 	gprsSupportIndicator	[2]	NULL		OPTIONAL,
 	-- gprsSupportIndicator is set only if the SMS-GMSC supports 
 	-- handling of two delivery outcomes
@@ -234,13 +238,14 @@ SM-DeliveryOutcome ::= ENUMERATED {
 
 ReportSM-DeliveryStatusRes ::= SEQUENCE {
 	storedMSISDN	ISDN-AddressString	OPTIONAL,
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 AlertServiceCentreArg ::= SEQUENCE {
 	msisdn		ISDN-AddressString,
 	serviceCentreAddress	AddressString,
-	...,
+	-- FHModif...,
 	imsi			IMSI			OPTIONAL,
 	correlationID	CorrelationID	OPTIONAL }
 
@@ -248,7 +253,7 @@ InformServiceCentreArg ::= SEQUENCE {
 	storedMSISDN	ISDN-AddressString	OPTIONAL,
 	mw-Status	MW-Status	OPTIONAL,
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	... ,
+	-- FHModif... ,
 	absentSubscriberDiagnosticSM	AbsentSubscriberDiagnosticSM	OPTIONAL,
 	additionalAbsentSubscriberDiagnosticSM	[0]	AbsentSubscriberDiagnosticSM	OPTIONAL }
 	-- additionalAbsentSubscriberDiagnosticSM may be present only if 
@@ -271,15 +276,16 @@ ReadyForSM-Arg ::= SEQUENCE {
 	-- alertReasonIndicator is set only when the alertReason 
 	-- sent to HLR is for GPRS
 	extensionContainer	ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif...,
 	additionalAlertReasonIndicator	[1] NULL		OPTIONAL
 	-- additionalAlertReasonIndicator is set only when the alertReason
 	-- sent to HLR is for IP-SM-GW
 	}
 
 ReadyForSM-Res ::= SEQUENCE {
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 AlertReason ::= ENUMERATED {
 	ms-Present  (0),
@@ -289,15 +295,16 @@ MT-ForwardSM-VGCS-Arg ::= SEQUENCE {
 	asciCallReference	ASCI-CallReference,
 	sm-RP-OA		SM-RP-OA,
 	sm-RP-UI		SignalInfo,
-	extensionContainer	ExtensionContainer	OPTIONAL,
-	...}
+	extensionContainer	ExtensionContainer	OPTIONAL
+  -- FHModif, ...
+  }
 
 MT-ForwardSM-VGCS-Res ::= SEQUENCE {
 	sm-RP-UI		[0] SignalInfo	OPTIONAL,
 	dispatcherList	[1] DispatcherList	OPTIONAL,
 	ongoingCall	NULL			OPTIONAL,
 	extensionContainer	[2] ExtensionContainer	OPTIONAL,
-	...,
+	-- FHModif...,
 	additionalDispatcherList	[3] AdditionalDispatcherList	OPTIONAL }
 	-- additionalDispatcherList shall be absent if dispatcherList is absent or 
 	-- contains less than 5 ISDN-AddressStrings

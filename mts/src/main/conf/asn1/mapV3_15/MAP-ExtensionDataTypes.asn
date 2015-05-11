@@ -27,10 +27,10 @@ EXPORTS
 
 -- IOC for private MAP extensions
 
-
-MAP-EXTENSION  ::= CLASS {
-	&ExtensionType				OPTIONAL,
-	&extensionId 	OBJECT IDENTIFIER }
+-- FHModif CLASS{} WITH SYNTAX {}
+--MAP-EXTENSION  ::= CLASS {
+--	&ExtensionType				OPTIONAL,
+--	&extensionId 	OBJECT IDENTIFIER }
 	-- The length of the Object Identifier shall not exceed 16 octets and the
 	-- number of components of the Object Identifier shall not exceed 16
 
@@ -38,36 +38,41 @@ MAP-EXTENSION  ::= CLASS {
 
 ExtensionContainer ::= SEQUENCE {
 	privateExtensionList	[0]PrivateExtensionList	OPTIONAL, 
-	pcs-Extensions	[1]PCS-Extensions	OPTIONAL,
-	...}
+	pcs-Extensions	[1]PCS-Extensions	OPTIONAL
+  -- FHModif, ...
+  }
 
 SLR-ArgExtensionContainer ::= SEQUENCE {
 	privateExtensionList	[0]PrivateExtensionList	OPTIONAL, 
-	slr-Arg-PCS-Extensions	[1]SLR-Arg-PCS-Extensions	OPTIONAL,
-	...}
+	slr-Arg-PCS-Extensions	[1]SLR-Arg-PCS-Extensions	OPTIONAL
+  -- FHModif, ...
+  }
 
 PrivateExtensionList ::= SEQUENCE SIZE (1..maxNumOfPrivateExtensions) OF
 				PrivateExtension
 
+-- FHModif CLASS{} WITH SYNTAX {}
 PrivateExtension ::= SEQUENCE {
-	extId		MAP-EXTENSION.&extensionId
-				({ExtensionSet}),
-	extType		MAP-EXTENSION.&ExtensionType
-				({ExtensionSet}{@extId})	OPTIONAL}
+	extId	   OBJECT IDENTIFIER, -- FHModif MAP-EXTENSION.&extensionId ({ExtensionSet}),
+	extType  ANY OPTIONAL		    -- FHModif MAP-EXTENSION.&ExtensionType ({ExtensionSet}{@extId})	OPTIONAL
+  }
 
 maxNumOfPrivateExtensions  INTEGER ::= 10
 
-ExtensionSet		MAP-EXTENSION ::=
-		{...
+-- FHModif CLASS{} WITH SYNTAX {}
+--ExtensionSet		MAP-EXTENSION ::=
+--		{
+--    ...
 		 -- ExtensionSet is the set of all defined private extensions
-	}
+--	}
 	-- Unsupported private extensions shall be discarded if received.
 
 PCS-Extensions ::= SEQUENCE {
-	...}
+	-- FHModif...
+  }
 
 SLR-Arg-PCS-Extensions ::= SEQUENCE {
-	...,
+	-- FHModif...,
 	na-ESRK-Request	[0]	NULL		OPTIONAL }
 
 END
