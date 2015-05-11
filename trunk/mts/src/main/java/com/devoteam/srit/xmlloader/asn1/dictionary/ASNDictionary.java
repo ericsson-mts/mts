@@ -76,7 +76,7 @@ public class ASNDictionary extends Dictionary
     {
     	this();
 		XMLDoc xml = new XMLDoc();
-		String path = "../conf/sigtran/" + file;
+		String path = "../conf/asn1/" + file;
 	    xml.setXMLFile(new URI(path));
 	    xml.parse();
 	    Element rootDico = xml.getDocument().getRootElement();
