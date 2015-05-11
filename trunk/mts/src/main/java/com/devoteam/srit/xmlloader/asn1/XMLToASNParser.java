@@ -407,14 +407,14 @@ public class XMLToASNParser
             return null;
         }
         else 
-        {        	
-            String classNameCurrent = type.substring(type.lastIndexOf(".") + 1);
-            if (!className.equals("") && (type.contains(className)) && (!(type.equals(className + classNameCurrent)))) 
-            {
-                // static class : h225.h323_className$staticClass
-                type = type.substring(0, type.lastIndexOf(".")) + "$" + type.substring(type.lastIndexOf(".") + 1);
-            }
-
+        {      
+        	// case of static inner classes
+        	if (type.startsWith(className))
+        	{
+	            String typeWithoutPackage = type.substring(className.length());
+	            typeWithoutPackage = typeWithoutPackage.replace('.', '$');
+	            type = className + typeWithoutPackage;
+        	}
             obj = Class.forName(type).newInstance();
             //Object objComplexClass = this.instanceClass(obj.getClass().getName(), className);
             parseFromXML(resultPath, message, obj, element, className);
