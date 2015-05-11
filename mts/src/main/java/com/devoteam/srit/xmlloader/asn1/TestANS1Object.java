@@ -187,15 +187,15 @@ public class TestANS1Object
         String dictionaryFile = null;
         if (packageName.endsWith("map."))
         {
-        	dictionaryFile = "MAP/dictionary_MAP.xml";
+        	dictionaryFile = "map/dictionary_MAP.xml";
         }
         else if (packageName.endsWith("tcap."))
         {
-        	dictionaryFile = "TCAP/dictionary_TCAP.xml";
+        	dictionaryFile = "tcap/dictionary_TCAP.xml";
         }
         else if (packageName.endsWith("cap."))
         {
-        	dictionaryFile = "CAP/dictionary_CAP.xml";
+        	dictionaryFile = "cap/dictionary_CAP.xml";
         }
         
         boolean error = false;
