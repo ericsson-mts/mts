@@ -70,17 +70,20 @@ gsm-Network(1) modules(3) map-ExtensionDataTypes(21) version12(12)}
 
 ;
 
-AccessPointName {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minAccessPointNameLength .. bound.&maxAccessPointNameLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+AccessPointName ::= OCTET STRING (SIZE(
+	1 .. 100))
 -- Indicates the AccessPointName, refer to 3GPP TS 24.008 [9] for the encoding.
 -- It shall be coded as in the value part defined in 3GPP TS 24.008,
 -- i.e. the 3GPP TS 24.008 IEI and 3GPP TS 24.008 octet length indicator
 -- shall not be included.
 
-AChBillingChargingCharacteristics {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE
-	(bound.&minAChBillingChargingLength .. bound.&maxAChBillingChargingLength))
-	(CONSTRAINED BY {-- shall be the result of the BER-encoded value of the type --
-	CAMEL-AChBillingChargingCharacteristics {bound}})
+-- FHModif Remove {PARAMETER-BOUND : bound}
+AChBillingChargingCharacteristics ::= OCTET STRING (SIZE
+	(5 .. 177))
+-- FHModif Remove CONSTRAINED BY{}
+--	(CONSTRAINED BY { shall be the result of the BER-encoded value of the type
+--	CAMEL-AChBillingChargingCharacteristics {bound}})
 -- The AChBillingChargingCharacteristics parameter specifies the charging related information
 -- to be provided by the gsmSSF and the conditions on which this information has to be reported
 -- back to the gsmSCF with the ApplyChargingReport operation. The value of the
@@ -89,12 +92,14 @@ AChBillingChargingCharacteristics {PARAMETERS-BOUND : bound} ::= OCTET STRING (S
 -- value.
 -- The violation of the UserDefinedConstraint shall be handled as an ASN.1 syntax error.
 
-AChChargingAddress {PARAMETERS-BOUND : bound} ::= CHOICE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+AChChargingAddress ::= CHOICE {
 	legID				[2] LegID,
-	srfConnection		[50] CallSegmentID {bound}
+	srfConnection		[50] CallSegmentID -- FHModif {bound}
 	}
 
-AdditionalCallingPartyNumber {PARAMETERS-BOUND : bound} ::= Digits {bound}
+-- FHModif Remove {PARAMETER-BOUND : bound}
+AdditionalCallingPartyNumber ::= Digits -- FHModif {bound}
 -- Indicates the Additional Calling Party Number.
 
 AlertingPattern ::= OCTET STRING (SIZE(3))
@@ -128,7 +133,8 @@ AppendFreeFormatData ::= ENUMERATED {
 ApplicationTimer ::=INTEGER (0..2047)
 -- Used by the gsmSCF to set a timer in the gsmSSF. The timer is in seconds.
 
-AssistingSSPIPRoutingAddress {PARAMETERS-BOUND : bound} ::= Digits {bound}
+-- FHModif Remove {PARAMETER-BOUND : bound}
+AssistingSSPIPRoutingAddress ::= Digits -- FHModif {bound}
 -- Indicates the destination address of the gsmSRF for the assist procedure.
 
 AudibleIndicator ::= CHOICE {
@@ -142,26 +148,27 @@ BackwardServiceInteractionInd ::= SEQUENCE {
 	-- rejectConferenceRequest	'xxxx xx10'B
 	-- if absent from Connect or ContinueWithArgument,
 	-- then CAMEL service does not affect conference treatement
-	callCompletionTreatmentIndicator	 [2] OCTET STRING (SIZE(1))					OPTIONAL,
+	callCompletionTreatmentIndicator	 [2] OCTET STRING (SIZE(1))					OPTIONAL
 	-- acceptCallCompletionServiceRequest	'xxxx xx01'B,
 	-- rejectCallCompletionServiceRequest	'xxxx xx10'B
 	-- if absent from Connect or ContinueWithArgument,
 	-- then CAMEL service does not affect call completion treatment
-	...
+	-- FHModif , ...
 	}
 
-BasicGapCriteria {PARAMETERS-BOUND : bound} ::= CHOICE {
-	calledAddressValue					[0] Digits {bound},
+-- FHModif Remove {PARAMETER-BOUND : bound}
+BasicGapCriteria ::= CHOICE {
+	calledAddressValue					[0] Digits, -- FHModif {bound}
 	gapOnService						[2] GapOnService,
 	calledAddressAndService				[29] SEQUENCE {
-		calledAddressValue					[0] Digits {bound},
-		serviceKey							[1] ServiceKey,
-		...
+		calledAddressValue					[0] Digits, -- FHModif {bound}
+		serviceKey							[1] ServiceKey
+		-- FHModif , ...
 		},
 	callingAddressAndService			[30] SEQUENCE {
-		callingAddressValue					[0] Digits {bound},
-		serviceKey							[1] ServiceKey,
-		...
+		callingAddressValue					[0] Digits, -- FHModif {bound}
+		serviceKey							[1] ServiceKey
+		-- FHModif , ...
 		}
 	}
 -- Both calledAddressValue and callingAddressValue can be
@@ -169,24 +176,27 @@ BasicGapCriteria {PARAMETERS-BOUND : bound} ::= CHOICE {
 -- For the handling of numbers starting with the same digit string refer to the detailed
 -- procedure of the CallGap operation
 
-BCSMEvent{PARAMETERS-BOUND : bound} ::= SEQUENCE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+BCSMEvent ::= SEQUENCE {
 	eventTypeBCSM						[0] EventTypeBCSM,
 	monitorMode							[1] MonitorMode,
 	legID								[2] LegID									OPTIONAL,
-	dpSpecificCriteria					[30] DpSpecificCriteria {bound}				OPTIONAL,
-	automaticRearm						[50] NULL									OPTIONAL,
-	...
+	dpSpecificCriteria					[30] DpSpecificCriteria 				OPTIONAL, -- FHModif {bound}
+	automaticRearm						[50] NULL									OPTIONAL
+  -- FHModif, ...
 	}
 -- Indicates the BCSM Event information for monitoring.
 
-BCSM-Failure {PARAMETERS-BOUND : bound} ::= SEQUENCE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+BCSM-Failure ::= SEQUENCE {
 	legID								[0]	LegID									OPTIONAL,
-	cause								[2]	Cause {bound}							OPTIONAL,
-	...
+	cause								[2]	Cause							OPTIONAL -- FHModif {bound}
+	-- FHModif , ...
 	}
 
-BearerCapability {PARAMETERS-BOUND : bound} ::= CHOICE {
-	bearerCap							[0] OCTET STRING (SIZE(2..bound.&maxBearerCapabilityLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+BearerCapability ::= CHOICE {
+	bearerCap							[0] OCTET STRING (SIZE(2..boundmaxBearerCapabilityLength))
 	}
 -- Indicates the type of bearer capability connection to the user. For bearerCap, the ISUP User
 -- Service Information, ETSI EN 300 356-1 [23]
@@ -197,15 +207,15 @@ Burst ::= SEQUENCE {
 	burstInterval						[1]	INTEGER	(1..1200)	DEFAULT 2,
 	numberOfTonesInBurst				[2] INTEGER (1..3)		DEFAULT 3,
 	toneDuration						[3]	INTEGER	(1..20)		DEFAULT 2,
-	toneInterval						[4]	INTEGER	(1..20)		DEFAULT 2,
-	...
+	toneInterval						[4]	INTEGER	(1..20)		DEFAULT 2
+	-- FHModif, ...
 	}
 -- burstInterval, toneDurartion and toneInterval are measured in 100 millisecond units
 
 BurstList ::= SEQUENCE {
 	warningPeriod						[0] INTEGER	(1..1200) DEFAULT 30,
-	bursts								[1] Burst,
-	...
+	bursts								[1] Burst
+	-- FHModif ...
 	}
 -- warningPeriod is measured in 1 second units.
 
@@ -221,8 +231,8 @@ CAI-GSM0224 ::= SEQUENCE {
 -- Indicates Charge Advice Information to the Mobile Station. For information regarding
 -- parameter usage, refer to 3GPP TS 22.024 [2].
 
-CalledPartyBCDNumber {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minCalledPartyBCDNumberLength .. bound.&maxCalledPartyBCDNumberLength))
+CalledPartyBCDNumber ::= OCTET STRING (SIZE(
+	1 .. 41))
 -- Indicates the Called Party Number, including service selection information.
 -- Refer to 3GPP TS 24.008 [9] for encoding.
 -- This data type carries only the 'type of number', 'numbering plan
@@ -236,8 +246,9 @@ CalledPartyBCDNumber {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
 -- GSM 7 bit default alphabet definition and the SMS packing rules
 -- as specified in 3GPP TS 23.038 [15] in this case.
 
-CalledPartyNumber {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minCalledPartyNumberLength .. bound.&maxCalledPartyNumberLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+CalledPartyNumber ::= OCTET STRING (SIZE(
+	2 .. 18))
 -- Indicates the Called Party Number. Refer to ETS EN 300 356 1 [23] for encoding.
 
 -- A CalledPartyNumber may contain national-specific values of the Nature Of Address
@@ -250,84 +261,95 @@ CalledPartyNumber {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
 -- (1110100) or no number present, cut-through call to carrier (1110101).
 -- See also see 3GPP TS 23.078 [7].
 
-CallingPartyNumber {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minCallingPartyNumberLength .. bound.&maxCallingPartyNumberLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+CallingPartyNumber ::= OCTET STRING (SIZE(
+	2 .. 18))
 -- Indicates the Calling Party Number. Refer to ETSI EN 300 356 1 [23] for encoding.
 
-CallResult {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minCallResultLength .. bound.&maxCallResultLength))
-	(CONSTRAINED BY {-- shall be the result of the BER-encoded value of type -
-	CAMEL-CallResult {bound}})
+-- FHModif Remove {PARAMETER-BOUND : bound}
+CallResult ::= OCTET STRING (SIZE(
+	2 .. 10))
+-- FHModif Remove CONSTRAINED BY{}  
+--	(CONSTRAINED BY { shall be the result of the BER-encoded value of type --
+--	CAMEL-CallResult {bound}})
 -- The violation of the UserDefinedConstraint shall be handled as an ASN.1 syntax error.
 
 -- This parameter provides the gsmSCF with the charging related information previously requested
 -- using the ApplyCharging operation. This shall include the partyToCharge parameter as
 -- received in the related ApplyCharging operation to correlate the result to the request
 
-CallSegmentFailure {PARAMETERS-BOUND : bound} ::= SEQUENCE {
-	callSegmentID						[0] CallSegmentID {bound}					OPTIONAL,
-	cause								[2]	Cause {bound}							OPTIONAL,
-	...
+-- FHModif Remove {PARAMETER-BOUND : bound}
+CallSegmentFailure ::= SEQUENCE {
+	callSegmentID						[0] CallSegmentID 					OPTIONAL, -- FHModif {bound}
+	cause								[2]	Cause							OPTIONAL -- FHModif {bound}
+	-- FHModif, ...
 	}
 
-CallSegmentID {PARAMETERS-BOUND : bound} ::= INTEGER (1..bound.&numOfCSs)
+-- FHModif Remove {PARAMETER-BOUND : bound}
+CallSegmentID ::= INTEGER (1..127)
 
-CallSegmentToCancel {PARAMETERS-BOUND : bound} ::= SEQUENCE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+CallSegmentToCancel ::= SEQUENCE {
 	invokeID							[0]	InvokeID								OPTIONAL,
-	callSegmentID						[1]	CallSegmentID {bound}					OPTIONAL,
-	...
+	callSegmentID						[1]	CallSegmentID 					OPTIONAL -- FHModif {bound}
+	-- FHModif, ...
 	}
 
-CAMEL-AChBillingChargingCharacteristics {PARAMETERS-BOUND : bound} ::= CHOICE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+CAMEL-AChBillingChargingCharacteristics ::= CHOICE {
 	timeDurationCharging				[0] SEQUENCE {
 		maxCallPeriodDuration				[0] INTEGER (1..864000),
 		releaseIfdurationExceeded			[1] BOOLEAN DEFAULT FALSE,
 		tariffSwitchInterval				[2] INTEGER (1..86400)					OPTIONAL,
 		audibleIndicator					[3] AudibleIndicator DEFAULT tone: FALSE,
-		extensions							[4] Extensions {bound}					OPTIONAL,
-		...
+		extensions							[4] Extensions 					OPTIONAL -- FHModif {bound}
+		-- FHModif, ...
 		}
 	}
 -- tariffSwitchInterval is measured in 1 second units.
 -- maxCallPeriodDuration is measured in 100 millisecond units
 
-CAMEL-CallResult {PARAMETERS-BOUND : bound} ::= CHOICE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+CAMEL-CallResult ::= CHOICE {
 	timeDurationChargingResult			[0] SEQUENCE {
 		partyToCharge						[0] ReceivingSideID,
 		timeInformation						[1] TimeInformation,
 		legActive							[2] BOOLEAN DEFAULT TRUE,
 		callLegReleasedAtTcpExpiry			[3] NULL								OPTIONAL,
-		extensions							[4] Extensions {bound}					OPTIONAL,
-		aChChargingAddress					[5] AChChargingAddress {bound}
-													DEFAULT legID:receivingSideID:leg1,
-		...
+		extensions							[4] Extensions					OPTIONAL, -- FHModif {bound}
+		aChChargingAddress					[5] AChChargingAddress -- FHModif {bound}
+													DEFAULT legID:receivingSideID:leg1
+		-- FHModif, ...
 		}
 	}
 
-CAMEL-FCIBillingChargingCharacteristics {PARAMETERS-BOUND : bound} ::= CHOICE{
+-- FHModif Remove {PARAMETER-BOUND : bound}
+CAMEL-FCIBillingChargingCharacteristics ::= CHOICE{
 	fCIBCCCAMELsequence1				[0] SEQUENCE {
 		freeFormatData						[0] OCTET STRING (SIZE(
-			bound.&minFCIBillingChargingDataLength .. bound.&maxFCIBillingChargingDataLength)),
+			1 .. 160)),
 		partyToCharge						[1] SendingSideID DEFAULT sendingSideID: leg1,
-		appendFreeFormatData				[2] AppendFreeFormatData DEFAULT overwrite,
-		...
+		appendFreeFormatData				[2] AppendFreeFormatData DEFAULT overwrite
+		-- FHModif, ...
 		}
 	}
 
-CAMEL-FCIGPRSBillingChargingCharacteristics {PARAMETERS-BOUND : bound} ::= SEQUENCE{
+-- FHModif Remove {PARAMETER-BOUND : bound}
+CAMEL-FCIGPRSBillingChargingCharacteristics ::= SEQUENCE{
 	fCIBCCCAMELsequence1				[0] SEQUENCE {
 		freeFormatData						[0] OCTET STRING (SIZE(
-			bound.&minFCIBillingChargingDataLength .. bound.&maxFCIBillingChargingDataLength)),
+			1 .. 160)),
 		pDPID								[1] PDPID OPTIONAL,
-		appendFreeFormatData				[2] AppendFreeFormatData DEFAULT overwrite,
-		...
+		appendFreeFormatData				[2] AppendFreeFormatData DEFAULT overwrite
+		-- FHModif, ...
 		}
 	}
 
-CAMEL-FCISMSBillingChargingCharacteristics {PARAMETERS-BOUND : bound} ::= CHOICE{
+-- FHModif Remove {PARAMETER-BOUND : bound}
+CAMEL-FCISMSBillingChargingCharacteristics ::= CHOICE{
 	fCIBCCCAMELsequence1				[0] SEQUENCE {
 		freeFormatData						[0] OCTET STRING (SIZE(
-			bound.&minFCIBillingChargingDataLength .. bound.&maxFCIBillingChargingDataLength)),
+			1 .. 160)),
 		appendFreeFormatData				[1] AppendFreeFormatData DEFAULT overwrite
 		}
 	}
@@ -339,18 +361,19 @@ CAMEL-SCIBillingChargingCharacteristics ::= CHOICE {
 	}
 
 CAMEL-SCIBillingChargingCharacteristicsAlt ::= SEQUENCE {
-	...
+	-- FHModif ...
 	}
 --	This datatype is for extension in future releases.
 
 CAMEL-SCIGPRSBillingChargingCharacteristics ::= SEQUENCE {
 	aOCGPRS								[0] AOCGPRS,
-	pDPID								[1] PDPID									OPTIONAL,
-	...
+	pDPID								[1] PDPID									OPTIONAL
+	-- FHModif, ...
 	}
 
-Carrier {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minCarrierLength .. bound.&maxCarrierLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+Carrier ::= OCTET STRING (SIZE(
+	4 .. 4))
 -- This parameter is used for North America (na) only.
 -- It contains the carrier selection field (first octet) followed by Carrier ID
 -- information (North America (na)).
@@ -372,8 +395,9 @@ Carrier {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
 
 -- Refer to ANSI T1.113-1995 [92] for encoding of na carrier ID information (3 octets).
 
-Cause {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minCauseLength .. bound.&maxCauseLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+Cause ::= OCTET STRING (SIZE(
+	2 .. 32))
 -- Indicates the cause for interface related information.
 -- Refer to ETSI EN 300 356 1 [23] Cause parameter for encoding.
 -- For the use of cause and location values refer to ITU T Recommendation Q.850 [47]
@@ -387,22 +411,25 @@ CGEncountered ::= ENUMERATED {
 	}
 -- Indicates the type of automatic call gapping encountered, if any.
 
-ChangeOfPositionControlInfo {PARAMETERS-BOUND : bound} ::= SEQUENCE SIZE (1..bound.&numOfChangeOfPositionControlInfo) OF ChangeOfLocation {bound}
+-- FHModif Remove {PARAMETER-BOUND : bound}
+ChangeOfPositionControlInfo ::= SEQUENCE SIZE (1..10) OF ChangeOfLocation -- FHModif {bound}
 
-ChangeOfLocation {PARAMETERS-BOUND : bound} ::= CHOICE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+ChangeOfLocation ::= CHOICE {
 	cellGlobalId						[0] CellGlobalIdOrServiceAreaIdFixedLength,
 	serviceAreaId						[1] CellGlobalIdOrServiceAreaIdFixedLength,
 	locationAreaId						[2] LAIFixedLength,
 	inter-SystemHandOver				[3] NULL,
 	inter-PLMNHandOver					[4] NULL,
 	inter-MSCHandOver					[5] NULL,
-	changeOfLocationAlt					[6] ChangeOfLocationAlt {bound}
+	changeOfLocationAlt					[6] ChangeOfLocationAlt -- FHModif {bound}
 }
 -- The cellGlobalId shall contain a Cell Global Identification.
 -- The serviceAreaId shall contain a Service Area Identification.
 
-ChangeOfLocationAlt {PARAMETERS-BOUND : bound} ::= SEQUENCE {
-	...
+-- FHModif Remove {PARAMETER-BOUND : bound}
+ChangeOfLocationAlt ::= SEQUENCE {
+	-- FHModif ...
 	}
 
 ChargeIndicator ::= OCTET STRING (SIZE (1))
@@ -414,7 +441,8 @@ ChargeIndicator ::= OCTET STRING (SIZE (1))
 --  Sending entity shall fill the upper six bits with '0's.
 --  Receiving entity shall ignore the upper six bits.
 
-ChargeNumber {PARAMETERS-BOUND : bound} ::= LocationNumber {bound}
+-- FHModif Remove {PARAMETER-BOUND : bound}
+ChargeNumber ::= LocationNumber -- FHModif {bound}
 -- Information sent in either direction indicating the chargeable number for the call and
 -- consisting of the odd/even indicator, nature of address indicator, numbering plan indicator,
 -- and address signals.
@@ -497,12 +525,14 @@ ControlType ::= ENUMERATED {
 	manuallyInitiated					(1)
 	}
 
-CompoundCriteria {PARAMETERS-BOUND : bound} ::= SEQUENCE {
-	basicGapCriteria					[0] BasicGapCriteria {bound},
-	scfID								[1] ScfID {bound}							OPTIONAL
+  -- FHModif Remove {PARAMETER-BOUND : bound}
+CompoundCriteria ::= SEQUENCE {
+	basicGapCriteria					[0] BasicGapCriteria, -- FHModif {bound}
+	scfID								[1] ScfID 							OPTIONAL -- FHModif {bound}
 	}
 
-CorrelationID {PARAMETERS-BOUND : bound} ::= Digits {bound}
+-- FHModif Remove {PARAMETER-BOUND : bound}
+CorrelationID ::= Digits -- FHModif {bound}
 -- used by gsmSCF for correlation with a previous operation.
 
 DateAndTime ::= OCTET STRING (SIZE(7))
@@ -524,12 +554,14 @@ DateAndTime ::= OCTET STRING (SIZE(7))
 --  and the least seconds significant digit occupies bits 4-7 of the seventh octet.
 --  For the encoding of digits in an octet, refer to the timeAndtimezone parameter.
 
-DestinationRoutingAddress {PARAMETERS-BOUND : bound} ::= SEQUENCE SIZE(1) OF
-													CalledPartyNumber {bound}
+-- FHModif Remove {PARAMETER-BOUND : bound}
+DestinationRoutingAddress ::= SEQUENCE SIZE(1) OF
+													CalledPartyNumber -- FHModif {bound}
 -- Indicates the Called Party Number.
 
-Digits {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minDigitsLength .. bound.&maxDigitsLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+Digits ::= OCTET STRING (SIZE(
+	2 .. 16))
 -- Indicates the address signalling digits.
 -- Refer to ETSI EN 300 356 1 [23] Generic Number & Generic Digits parameters for encoding.
 -- The coding of the subfields 'NumberQualifier' in Generic Number and 'TypeOfDigits' in
@@ -562,10 +594,11 @@ Digits {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
 -- Note that when CorrelationID is transported in Generic Digits, then the digits shall
 -- always be BCD encoded.
 
-DpSpecificCriteria {PARAMETERS-BOUND : bound}::= CHOICE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+DpSpecificCriteria ::= CHOICE {
 	applicationTimer					[1] ApplicationTimer,
 	midCallControlInfo					[2]	MidCallControlInfo,
-	dpSpecificCriteriaAlt				[3] DpSpecificCriteriaAlt {bound}
+	dpSpecificCriteriaAlt				[3] DpSpecificCriteriaAlt -- FHModif {bound}
 	}
 --  Exception handling: reception of DpSpecificCriteriaAlt shall be treated like
 --  reception of no DpSpecificCriteria.
@@ -576,33 +609,35 @@ DpSpecificCriteria {PARAMETERS-BOUND : bound}::= CHOICE {
 --	The gsmSCF may define other criteria in the dpSpecificCriteriaAlt alternative
 --  in future releases.
 
-DpSpecificCriteriaAlt {PARAMETERS-BOUND : bound} ::= SEQUENCE {
-	...,
-	changeOfPositionControlInfo			[0]	ChangeOfPositionControlInfo {bound},
+-- FHModif Remove {PARAMETER-BOUND : bound}
+DpSpecificCriteriaAlt ::= SEQUENCE {
+	-- FHModif ...,
+	changeOfPositionControlInfo			[0]	ChangeOfPositionControlInfo, -- FHModif {bound}
 	numberOfDigits						[1]	NumberOfDigits							OPTIONAL,
 	interDigitTimeout					[2]	INTEGER (1..127)						OPTIONAL
 	}
 -- interDigitTimeout				duration in seconds.
 
-DpSpecificInfoAlt {PARAMETERS-BOUND : bound} ::= SEQUENCE {
-	...,
+-- FHModif Remove {PARAMETER-BOUND : bound}
+DpSpecificInfoAlt ::= SEQUENCE {
+	-- FHModif ...,
 	oServiceChangeSpecificInfo			[0] SEQUENCE {
 		ext-basicServiceCode				[0] Ext-BasicServiceCode				OPTIONAL,
-		...,
+		-- FHModif ...,
 		initiatorOfServiceChange			[1] InitiatorOfServiceChange			OPTIONAL,
 		natureOfServiceChange				[2] NatureOfServiceChange				OPTIONAL
 
 		},
 	tServiceChangeSpecificInfo			[1] SEQUENCE {
 		ext-basicServiceCode				[0] Ext-BasicServiceCode				OPTIONAL,
-		...,
+		-- FHModif ...,
 		initiatorOfServiceChange			[1] InitiatorOfServiceChange			OPTIONAL,
 		natureOfServiceChange				[2] NatureOfServiceChange				OPTIONAL
 		},
 
 	collectedInfoSpecificInfo			[2]	SEQUENCE {
-		calledPartyNumber					[0]	CalledPartyNumber					OPTIONAL,
-		...
+		calledPartyNumber					[0]	CalledPartyNumber					OPTIONAL
+		-- FHModif , ...
 	    }
    }
 --	This datatype is for extension in future releases.
@@ -628,11 +663,12 @@ ElapsedTimeRollOver ::= CHOICE {
 --	rO-TimeGPRSTariffSwitchInterval
 --	present counters indicating the number of parameter range rollovers.
 
-EndUserAddress {PARAMETERS-BOUND: bound} ::= SEQUENCE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+EndUserAddress ::= SEQUENCE {
 	pDPTypeOrganization					[0] OCTET STRING (SIZE(1)),
 	pDPTypeNumber						[1] OCTET STRING (SIZE(1)),
 	pDPAddress							[2] OCTET STRING (SIZE(
-		bound.&minPDPAddressLength .. bound.&maxPDPAddressLength))					OPTIONAL
+		1 .. 63))					OPTIONAL
 	}
 -- Indicates the EndUserAddress, refer to 3GPP TS 29.060 [12] for the encoding.
 -- The pDPTypeOrganization shall use the least significant 4 bits of the octet encoded.
@@ -647,113 +683,114 @@ ErrorTreatment ::= ENUMERATED {
 -- stdErrorAndInfomeans returning the 'ImproperCallerResponse' error in the event of an error
 -- condition during collection of user info.
 
-EventSpecificInformationBCSM {PARAMETERS-BOUND : bound} ::= CHOICE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+EventSpecificInformationBCSM ::= CHOICE {
 	routeSelectFailureSpecificInfo		[2] SEQUENCE {
-		failureCause						[0] Cause {bound}						OPTIONAL,
-		...
+		failureCause						[0] Cause 						OPTIONAL -- FHModif {bound}
+		-- FHModif ...
 		},
 	oCalledPartyBusySpecificInfo		[3] SEQUENCE {
-		busyCause							[0] Cause {bound}						OPTIONAL,
-		...
+		busyCause							[0] Cause					OPTIONAL -- FHModif {bound}
+		-- FHModif, ...
 		},
 	oNoAnswerSpecificInfo				[4] SEQUENCE {
 		-- no specific info defined --
-		...
+		-- FHModif ...
 		},
 	oAnswerSpecificInfo					[5] SEQUENCE {
-		destinationAddress					[50] CalledPartyNumber {bound}			OPTIONAL,
+		destinationAddress					[50] CalledPartyNumber 			OPTIONAL, -- FHModif {bound}
 		or-Call								[51] NULL								OPTIONAL,
 		forwardedCall						[52] NULL								OPTIONAL,
 		chargeIndicator						[53] ChargeIndicator					OPTIONAL,
 		ext-basicServiceCode				[54] Ext-BasicServiceCode				OPTIONAL,
-		ext-basicServiceCode2				[55] Ext-BasicServiceCode				OPTIONAL,
-		...
+		ext-basicServiceCode2				[55] Ext-BasicServiceCode				OPTIONAL
+    -- FHModif, ...
 		},
 	oMidCallSpecificInfo				[6] SEQUENCE {
 		midCallEvents						[1] CHOICE {
-			dTMFDigitsCompleted					[3] Digits {bound},
-			dTMFDigitsTimeOut					[4] Digits {bound}
-			}																		OPTIONAL,
-		...
+			dTMFDigitsCompleted					[3] Digits, -- FHModif {bound}
+			dTMFDigitsTimeOut					[4] Digits -- FHModif {bound}
+			}																		OPTIONAL
+      -- FHModif, ...
 		},
 	oDisconnectSpecificInfo				[7] SEQUENCE {
-		releaseCause						[0] Cause {bound}						OPTIONAL,
-		...
+		releaseCause						[0] Cause 						OPTIONAL -- FHModif {bound}
+		-- FHModif, ...
 		},
 	tBusySpecificInfo					[8] SEQUENCE {
-		busyCause							[0] Cause {bound}						OPTIONAL,
+		busyCause							[0] Cause 						OPTIONAL, -- FHModif {bound}
 		callForwarded						[50] NULL								OPTIONAL,
 		routeNotPermitted					[51] NULL								OPTIONAL,
-		forwardingDestinationNumber			[52] CalledPartyNumber {bound}			OPTIONAL,
-		...
+		forwardingDestinationNumber			[52] CalledPartyNumber 			OPTIONAL -- FHModif {bound}
+		-- FHModif, ...
 		},
 	tNoAnswerSpecificInfo				[9] SEQUENCE {
 		callForwarded						[50] NULL								OPTIONAL,
-		forwardingDestinationNumber			[52] CalledPartyNumber {bound}			OPTIONAL,
-		...
+		forwardingDestinationNumber			[52] CalledPartyNumber 			OPTIONAL -- FHModif {bound}
+		-- FHModif, ...
 		},
 	tAnswerSpecificInfo					[10] SEQUENCE {
-		destinationAddress					[50] CalledPartyNumber {bound}			OPTIONAL,
+		destinationAddress					[50] CalledPartyNumber 			OPTIONAL, -- FHModif {bound}
 		or-Call								[51] NULL								OPTIONAL,
 		forwardedCall						[52] NULL								OPTIONAL,
 		chargeIndicator						[53] ChargeIndicator					OPTIONAL,
 		ext-basicServiceCode				[54] Ext-BasicServiceCode				OPTIONAL,
-		ext-basicServiceCode2				[55] Ext-BasicServiceCode				OPTIONAL,
-		...
+		ext-basicServiceCode2				[55] Ext-BasicServiceCode				OPTIONAL
+		-- FHModif, ...
 		},
 	tMidCallSpecificInfo				[11] SEQUENCE {
 		midCallEvents						[1] CHOICE {
-			dTMFDigitsCompleted					[3] Digits {bound},
-			dTMFDigitsTimeOut					[4] Digits {bound}
-			}																		OPTIONAL,
-		...
+			dTMFDigitsCompleted					[3] Digits, -- FHModif {bound}
+			dTMFDigitsTimeOut					[4] Digits -- FHModif {bound}
+			}																		OPTIONAL
+		-- FHModif, ...
 		},
 	tDisconnectSpecificInfo				[12] SEQUENCE {
-		releaseCause						[0] Cause {bound}						OPTIONAL,
-		...
+		releaseCause						[0] Cause 						OPTIONAL -- FHModif {bound}
+		-- FHModif, ...
 		},
 	oTermSeizedSpecificInfo				[13] SEQUENCE {
-		locationInformation					[50] LocationInformation				OPTIONAL,
-		...
+		locationInformation					[50] LocationInformation				OPTIONAL
+    -- FHModif, ...
 		},
 	callAcceptedSpecificInfo			[20] SEQUENCE {
-		locationInformation					[50] LocationInformation				OPTIONAL,
-		...
+		locationInformation					[50] LocationInformation				OPTIONAL
+		-- FHModif, ...
 		},
 	oAbandonSpecificInfo				[21] SEQUENCE {
-		routeNotPermitted					[50] NULL								OPTIONAL,
-		...
+		routeNotPermitted					[50] NULL								OPTIONAL
+		-- FHModif, ...
 		},
 	oChangeOfPositionSpecificInfo		[50] SEQUENCE {
 		locationInformation					[50] LocationInformation				OPTIONAL,
-		...,
-        metDPCriteriaList                   [51] MetDPCriteriaList {bound}			OPTIONAL
+		-- FHModif ...,
+        metDPCriteriaList                   [51] MetDPCriteriaList 			OPTIONAL -- FHModif {bound}
 		},
 	tChangeOfPositionSpecificInfo		[51] SEQUENCE {
 		locationInformation					[50] LocationInformation				OPTIONAL,
-		...,
-        metDPCriteriaList                   [51] MetDPCriteriaList {bound}			OPTIONAL
+		-- FHModif ...,
+        metDPCriteriaList                   [51] MetDPCriteriaList 			OPTIONAL -- FHModif {bound}
 		},
-	dpSpecificInfoAlt				    [52] DpSpecificInfoAlt {bound}
+	dpSpecificInfoAlt				    [52] DpSpecificInfoAlt -- FHModif {bound}
 	}
 -- Indicates the call related information specific to the event.
 
 EventSpecificInformationSMS ::= CHOICE {
 	o-smsFailureSpecificInfo			[0] SEQUENCE {
-		failureCause						[0] MO-SMSCause							OPTIONAL,
-		...
+		failureCause						[0] MO-SMSCause							OPTIONAL
+		-- FHModif ...
 		},
 	o-smsSubmissionSpecificInfo			[1] SEQUENCE {
 		-- no specific info defined--
-		...
+		-- FHModif ...
 		},
 	t-smsFailureSpecificInfo			[2] SEQUENCE {
-		failureCause						[0] MT-SMSCause							OPTIONAL,
-		...
+		failureCause						[0] MT-SMSCause							OPTIONAL
+		-- FHModif , ...
 		},
 	t-smsDeliverySpecificInfo			[3] SEQUENCE {
 		-- no specific info defined--
-		...
+		-- FHModif ...
 		}
 	}
 
@@ -778,7 +815,7 @@ EventTypeBCSM ::= ENUMERATED {
 	callAccepted						(27),
 	oChangeOfPosition					(50),
 	tChangeOfPosition					(51),
-	...,
+	-- FHModif ...,
 	oServiceChange						(52),
 	tServiceChange						(53)
 	}
@@ -798,35 +835,44 @@ EventTypeSMS ::= ENUMERATED {
 	}
 -- Values sms-CollectedInfo and sms-DeliveryRequested may be used for TDPs only.
 
-Extensions {PARAMETERS-BOUND : bound} ::= SEQUENCE SIZE (1..bound.&numOfExtensions) OF ExtensionField
+-- FHModif Remove {PARAMETER-BOUND : bound}
+Extensions ::= SEQUENCE SIZE (1..10) OF ExtensionField
 ExtensionField ::= SEQUENCE {
-	type								EXTENSION.&id ({SupportedExtensions}),
+-- FHModif 	type								EXTENSION.&id ({SupportedExtensions}),
+	type								Code,
 										-- shall identify the value of an EXTENSION type
 	criticality							CriticalityType DEFAULT ignore,
-	value								[1] EXTENSION.&ExtensionType ({SupportedExtensions}{@type}),
-	...
+-- FHModif	value								[1] EXTENSION.&ExtensionType ({SupportedExtensions}{@type}),
+	value								[1] NULL
+	-- FHModif, ...
 	}
 -- This parameter indicates an extension of an argument data type.
 -- Its content is network operator specific
 
-FCIBillingChargingCharacteristics {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minFCIBillingChargingLength .. bound.&maxFCIBillingChargingLength))
-	(CONSTRAINED BY {-- shall be the result of the BER-encoded value of type --
-	CAMEL-FCIBillingChargingCharacteristics {bound}})
+-- FHModif Remove {PARAMETER-BOUND : bound}
+FCIBillingChargingCharacteristics ::= OCTET STRING (SIZE(
+	5 .. 225))
+-- FHModif Remove CONSTRAINED BY{}  
+--	(CONSTRAINED BY { shall be the result of the BER-encoded value of type --
+--	CAMEL-FCIBillingChargingCharacteristics {bound}})
 -- This parameter indicates the billing and/or charging characteristics.
 -- The violation of the UserDefinedConstraint shall be handled as an ASN.1 syntax error.
 
-FCIGPRSBillingChargingCharacteristics {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minFCIBillingChargingLength .. bound.&maxFCIBillingChargingLength))
-	(CONSTRAINED BY {-- shall be the result of the BER-encoded value of type -
-	CAMEL-FCIGPRSBillingChargingCharacteristics {bound}})
+-- FHModif Remove {PARAMETER-BOUND : bound}
+FCIGPRSBillingChargingCharacteristics ::= OCTET STRING (SIZE(
+	5 .. 225))
+-- FHModif Remove CONSTRAINED BY{}
+--	(CONSTRAINED BY { shall be the result of the BER-encoded value of type -
+--	CAMEL-FCIGPRSBillingChargingCharacteristics {bound}})
 -- This parameter indicates the GPRS billing and/or charging characteristics.
 -- The violation of the UserDefinedConstraint shall be handled as an ASN.1 syntax error.
 
-FCISMSBillingChargingCharacteristics {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minFCIBillingChargingLength .. bound.&maxFCIBillingChargingLength))
-	(CONSTRAINED BY {-- shall be the result of the BER-encoded value of type -
-	CAMEL-FCISMSBillingChargingCharacteristics {bound}})
+-- FHModif Remove {PARAMETER-BOUND : bound}
+FCISMSBillingChargingCharacteristics ::= OCTET STRING (SIZE(
+	5 .. 225))
+-- FHModif Remove CONSTRAINED BY{}
+--	(CONSTRAINED BY { shall be the result of the BER-encoded value of type -
+--	CAMEL-FCISMSBillingChargingCharacteristics {bound}})
 -- This parameter indicates the SMS billing and/or charging characteristics.
 -- The violation of the UserDefinedConstraint shall be handled as an ASN.1 syntax error.
 
@@ -841,43 +887,46 @@ ForwardServiceInteractionInd ::= SEQUENCE {
 	-- callDiversionNotAllowed	'xxxx xx10'B
 	-- if absent from Connect or ContinueWithArgument,
 	-- then CAMEL service does not affect call diversion treatment
-	callingPartyRestrictionIndicator	[4] OCTET STRING (SIZE(1))					OPTIONAL,
+	callingPartyRestrictionIndicator	[4] OCTET STRING (SIZE(1))					OPTIONAL
 	-- noINImpact				'xxxx xx01'B
 	-- presentationRestricted	'xxxx xx10'B
 	-- if absent from Connect or ContinueWithArgument,
 	-- then CAMEL service does not affect calling party restriction treatment
-...
+  -- FHModif, ...
 	}
-
-GapCriteria {PARAMETERS-BOUND : bound}::= CHOICE {
-	basicGapCriteria					BasicGapCriteria {bound},
-	compoundGapCriteria					CompoundCriteria {bound}
+-- FHModif Remove {PARAMETER-BOUND : bound}
+GapCriteria ::= CHOICE {
+	basicGapCriteria					BasicGapCriteria, -- FHModif {bound}
+	compoundGapCriteria					CompoundCriteria -- FHModif {bound}
 	}
 
 GapIndicators ::= SEQUENCE {
 	duration							[0] Duration,
-	gapInterval							[1] Interval,
-	...
+	gapInterval							[1] Interval
+  -- FHModif, ...
 	}
 -- Indicates the call gapping characteristics.
 -- No call gapping when gapInterval equals 0.
 
 GapOnService ::= SEQUENCE {
-	serviceKey							[0] ServiceKey,
-	...
+	serviceKey							[0] ServiceKey
+  -- FHModif, ...                                      
 	}
 
-GapTreatment {PARAMETERS-BOUND : bound} ::= CHOICE {
-	informationToSend					[0] InformationToSend {bound},
-	releaseCause						[1] Cause {bound}
+-- FHModif Remove {PARAMETER-BOUND : bound}
+GapTreatment ::= CHOICE {
+	informationToSend					[0] InformationToSend, -- FHModif {bound}
+	releaseCause						[1] Cause -- FHModif {bound}
 	}
 -- The default value for Cause is the same as in ISUP.
 
-GenericNumber {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minGenericNumberLength .. bound.&maxGenericNumberLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+GenericNumber ::= OCTET STRING (SIZE(
+	3 .. 11))
 -- Indicates a generic number. Refer to ETSI EN 300 356 1 [23] Generic number for encoding.
 
-GenericNumbers {PARAMETERS-BOUND : bound} ::= SET SIZE(1..bound.&numOfGenericNumbers) OF GenericNumber {bound}
+-- FHModif Remove {PARAMETER-BOUND : bound}
+GenericNumbers ::= SET SIZE(1..5) OF GenericNumber -- FHModif {bound}
 
 GPRS-QoS ::= CHOICE {
 	short-QoS-format					[0]	QoS-Subscribed,
@@ -892,12 +941,13 @@ GPRS-QoS ::= CHOICE {
 
 GPRS-QoS-Extension ::= SEQUENCE {
 	supplement-to-long-QoS-format		[0] Ext2-QoS-Subscribed,
-	... ,
+	-- FHModif ... ,
 	additionalSupplement					[1] Ext3-QoS-Subscribed		OPTIONAL
 	}
 
-GPRSCause {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE
-			(bound.&minGPRSCauseLength .. bound.&maxGPRSCauseLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+GPRSCause ::= OCTET STRING (SIZE
+			(1 .. 1))
 -- Shall only include the cause value.
 
 --	00000000   Unspecified
@@ -913,59 +963,60 @@ GPRSEvent ::= SEQUENCE {
 	}
 --  Indicates the GPRS event information for monitoring.
 
-GPRSEventSpecificInformation {PARAMETERS-BOUND : bound} ::= CHOICE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+GPRSEventSpecificInformation ::= CHOICE {
 
 	attachChangeOfPositionSpecificInformation
 										[0] SEQUENCE {
-			locationInformationGPRS			[0] LocationInformationGPRS				OPTIONAL,
-			...
+			locationInformationGPRS			[0] LocationInformationGPRS				OPTIONAL
+			-- FHModif, ...
 			},
 
 	pdp-ContextchangeOfPositionSpecificInformation
 										[1] SEQUENCE {
-			accessPointName					[0]	AccessPointName {bound}				OPTIONAL,
+			accessPointName					[0]	AccessPointName				OPTIONAL, -- FHModif {bound}
 			chargingID						[1]	GPRSChargingID						OPTIONAL,
 			locationInformationGPRS			[2] LocationInformationGPRS 			OPTIONAL,
-			endUserAddress					[3]	EndUserAddress {bound}				OPTIONAL,
+			endUserAddress					[3]	EndUserAddress 				OPTIONAL, -- FHModif {bound}
 			qualityOfService				[4]	QualityOfService					OPTIONAL,
-			timeAndTimeZone					[5]	TimeAndTimezone {bound} 			OPTIONAL,
-			...,
+			timeAndTimeZone					[5]	TimeAndTimezone  			OPTIONAL, -- FHModif {bound}
+			-- FHModif ...,
 			gGSNAddress						[6]	GSN-Address							OPTIONAL
 			},
 
 	detachSpecificInformation			[2] SEQUENCE {
 			initiatingEntity				[0] InitiatingEntity					OPTIONAL,
-			...,
+			-- FHModif ...,
 			routeingAreaUpdate				[1]	NULL								OPTIONAL
 			},
 
 	disconnectSpecificInformation		[3] SEQUENCE {
 			initiatingEntity				[0] InitiatingEntity					OPTIONAL,
-			...,
+			-- FHModif ...,
 			routeingAreaUpdate				[1]	NULL								OPTIONAL
 			},
 
 	pDPContextEstablishmentSpecificInformation
 										[4]	SEQUENCE {
-			accessPointName					[0]	AccessPointName {bound}				OPTIONAL,
-			endUserAddress					[1]	EndUserAddress {bound}				OPTIONAL,
+			accessPointName					[0]	AccessPointName 				OPTIONAL, -- FHModif {bound}
+			endUserAddress					[1]	EndUserAddress 				OPTIONAL, -- FHModif {bound}
 			qualityOfService				[2]	QualityOfService					OPTIONAL,
 			locationInformationGPRS			[3] LocationInformationGPRS 			OPTIONAL,
-			timeAndTimeZone					[4]	TimeAndTimezone {bound} 			OPTIONAL,
+			timeAndTimeZone					[4]	TimeAndTimezone  			OPTIONAL, -- FHModif {bound}
 			pDPInitiationType				[5] PDPInitiationType					OPTIONAL,
-			...,
+			-- FHModif ...,
 			secondaryPDP-context			[6] NULL								OPTIONAL
 			},
 
 	pDPContextEstablishmentAcknowledgementSpecificInformation
 										[5]	SEQUENCE {
-			accessPointName					[0]	AccessPointName {bound}				OPTIONAL,
+			accessPointName					[0]	AccessPointName 				OPTIONAL, -- FHModif {bound}
 			chargingID						[1] GPRSChargingID						OPTIONAL,
-			endUserAddress					[2]	EndUserAddress {bound}				OPTIONAL,
+			endUserAddress					[2]	EndUserAddress 				OPTIONAL, -- FHModif {bound}
 			qualityOfService				[3]	QualityOfService					OPTIONAL,
 			locationInformationGPRS			[4] LocationInformationGPRS 			OPTIONAL,
-			timeAndTimeZone					[5]	TimeAndTimezone {bound} 			OPTIONAL,
-			...,
+			timeAndTimeZone					[5]	TimeAndTimezone  			OPTIONAL, -- FHModif {bound}
+			-- FHModif ...,
 			gGSNAddress						[6]	GSN-Address							OPTIONAL
 			}
 		}
@@ -980,12 +1031,13 @@ GPRSEventType ::= ENUMERATED {
 	pdp-ContextChangeOfPosition			(14)
 	}
 
-InbandInfo {PARAMETERS-BOUND : bound} ::= SEQUENCE {
-	messageID							[0] MessageID {bound},
+-- FHModif Remove {PARAMETER-BOUND : bound}
+InbandInfo ::= SEQUENCE {
+	messageID							[0] MessageID, -- FHModif {bound}
 	numberOfRepetitions					[1] INTEGER (1..127)						OPTIONAL,
 	duration							[2] INTEGER (0..32767)						OPTIONAL,
-	interval							[3] INTEGER (0..32767)						OPTIONAL,
-...
+	interval							[3] INTEGER (0..32767)						OPTIONAL
+  -- FHModif, ...
 	}
 -- Interval is the time in seconds between each repeated announcement. Duration is the total
 -- amount of time in seconds, including repetitions and intervals.
@@ -993,8 +1045,9 @@ InbandInfo {PARAMETERS-BOUND : bound} ::= SEQUENCE {
 -- whatever comes first.
 -- duration with value 0 indicates infinite duration
 
-InformationToSend {PARAMETERS-BOUND : bound} ::= CHOICE {
-	inbandInfo							[0] InbandInfo {bound},
+-- FHModif Remove {PARAMETER-BOUND : bound}
+InformationToSend ::= CHOICE {
+	inbandInfo							[0] InbandInfo, -- FHModif {bound}
 	tone								[1] Tone
 	}
 
@@ -1012,11 +1065,13 @@ InitiatorOfServiceChange ::= ENUMERATED {
 
 InvokeID ::= INTEGER (-128..127)
 
-IPRoutingAddress {PARAMETERS-BOUND : bound} ::= CalledPartyNumber {bound}
+-- FHModif Remove {PARAMETER-BOUND : bound}
+IPRoutingAddress ::= CalledPartyNumber -- FHModif {bound}
 -- Indicates the routeing address for the IP.
 
-IPSSPCapabilities {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minIPSSPCapabilitiesLength .. bound.&maxIPSSPCapabilitiesLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+IPSSPCapabilities ::= OCTET STRING (SIZE(
+	1 .. 4))
 --  Indicates the gsmSRF resources available. The parameter has two parts, a standard and a
 --  bilateral part. The standard part indicates capabilities defined as optional in CAP
 --  that shall be recognised (but not necessarily supported) by a gsmSCF. The bilateral
@@ -1045,8 +1100,9 @@ IPSSPCapabilities {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
 --
 --  Octets 2 to 4			Bilateral Part: Network operator/equipment vendor specific
 
-LegOrCallSegment {PARAMETERS-BOUND : bound} ::= CHOICE {
-	callSegmentID						[0] CallSegmentID {bound},
+-- FHModif Remove {PARAMETER-BOUND : bound}
+LegOrCallSegment ::= CHOICE {
+	callSegmentID						[0] CallSegmentID, -- FHModif {bound}
 	legID								[1] LegID
 	}
 
@@ -1061,7 +1117,7 @@ LocationInformationGPRS		::= SEQUENCE {
 	sgsn-Number							[3] ISDN-AddressString						OPTIONAL,
 	selectedLSAIdentity					[4] LSAIdentity								OPTIONAL,
 	extensionContainer					[5] ExtensionContainer						OPTIONAL,
-	...,
+	-- FHModif ...,
 	sai-Present							[6] NULL									OPTIONAL,
 	userCSGInformation                  [7] UserCSGInformation                      OPTIONAL
 }
@@ -1076,38 +1132,43 @@ LocationInformationGPRS		::= SEQUENCE {
 -- WS define UserCSGInformation
 UserCSGInformation ::= OCTET STRING
 
-LocationNumber {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE (
-	bound.&minLocationNumberLength .. bound.&maxLocationNumberLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+LocationNumber ::= OCTET STRING (SIZE (
+	2 .. 10))
 -- Indicates the Location Number for the calling party.
 -- Refer to ETSI EN 300 356 1 [23] for encoding.
 
-LowLayerCompatibility {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE (
-	bound.&minLowLayerCompatibilityLength .. bound.&maxLowLayerCompatibilityLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+LowLayerCompatibility ::= OCTET STRING (SIZE (
+	1 .. 16))
 -- indicates the LowLayerCompatibility for the calling party.
 -- Refer to 3GPP TS 24.008 [9] for encoding.
 -- It shall be coded as in the value part defined in 3GPP TS 24.008.
 -- i.e. the 3GPP TS 24.008 IEI and 3GPP TS 24.008 octet length indicator
 -- shall not be included.
 
-MessageID {PARAMETERS-BOUND : bound} ::= CHOICE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+MessageID ::= CHOICE {
 	elementaryMessageID					[0] Integer4,
 	text								[1] SEQUENCE {
 		messageContent						[0] IA5String (SIZE(
-			bound.&minMessageContentLength .. bound.&maxMessageContentLength)),
+			1 .. 127)),
 		attributes							[1] OCTET STRING (SIZE(
-			bound.&minAttributesLength .. bound.&maxAttributesLength)) 				OPTIONAL
+			2 .. 10)) 				OPTIONAL
 	},
-	elementaryMessageIDs				[29] SEQUENCE SIZE (1.. bound.&numOfMessageIDs) OF Integer4,
+	elementaryMessageIDs				[29] SEQUENCE SIZE (1.. 16) OF Integer4,
 	variableMessage						[30] SEQUENCE {
 		elementaryMessageID					[0] Integer4,
-		variableParts						[1] SEQUENCE SIZE (1..5) OF VariablePart {bound}
+		variableParts						[1] SEQUENCE SIZE (1..5) OF VariablePart -- FHModif {bound}
 		}
 	}
 -- Use of the text parameter is network operator/equipment vendor specific.
 
-MetDPCriteriaList {PARAMETERS-BOUND : bound} ::= SEQUENCE SIZE (1..bound.&numOfChangeOfPositionControlInfo) OF MetDPCriterion {bound}
+-- FHModif Remove {PARAMETER-BOUND : bound}
+MetDPCriteriaList ::= SEQUENCE SIZE (1..10) OF MetDPCriterion -- FHModif {bound}
 
-MetDPCriterion {PARAMETERS-BOUND : bound} ::= CHOICE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+MetDPCriterion ::= CHOICE {
 	enteringCellGlobalId				[0] CellGlobalIdOrServiceAreaIdFixedLength,
 	leavingCellGlobalId					[1] CellGlobalIdOrServiceAreaIdFixedLength,
 	enteringServiceAreaId				[2] CellGlobalIdOrServiceAreaIdFixedLength,
@@ -1118,13 +1179,14 @@ MetDPCriterion {PARAMETERS-BOUND : bound} ::= CHOICE {
 	inter-SystemHandOverToGSM			[7] NULL,
 	inter-PLMNHandOver					[8] NULL,
 	inter-MSCHandOver					[9] NULL,
-	metDPCriterionAlt					[10] MetDPCriterionAlt {bound}
+	metDPCriterionAlt					[10] MetDPCriterionAlt -- FHModif {bound}
 }
 -- The enteringCellGlobalId and leavingCellGlobalId shall contain a Cell Global Identification.
 -- The enteringServiceAreaId and leavingServiceAreaId shall contain a Service Area Identification.
 
-MetDPCriterionAlt {PARAMETERS-BOUND : bound} ::= SEQUENCE {
-	...
+-- FHModif Remove {PARAMETER-BOUND : bound}
+MetDPCriterionAlt ::= SEQUENCE {
+	-- FHModif ...
 	}
 
 MidCallControlInfo ::= SEQUENCE {
@@ -1133,8 +1195,8 @@ MidCallControlInfo ::= SEQUENCE {
 	endOfReplyDigit						[2]	OCTET STRING (SIZE (1..2))				OPTIONAL,
 	cancelDigit							[3]	OCTET STRING (SIZE (1..2))				OPTIONAL,
 	startDigit							[4]	OCTET STRING (SIZE (1..2))				OPTIONAL,
-	interDigitTimeout					[6]	INTEGER (1..127) DEFAULT 10,
-	...
+	interDigitTimeout					[6]	INTEGER (1..127) DEFAULT 10
+	-- FHModif, ...
 	}
 --
 -- - minimumNumberOfDigits			specifies the minumum number of digits that shall be collected
@@ -1206,8 +1268,9 @@ OCSIApplicable ::= NULL
 --  applied on the outgoing call leg created with a Connect operation. For the use of this
 --  parameter see 3GPP TS 23.078 [7].
 
-OriginalCalledPartyID {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minOriginalCalledPartyIDLength .. bound.&maxOriginalCalledPartyIDLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+OriginalCalledPartyID ::= OCTET STRING (SIZE(
+	2 .. 10))
 --  Indicates the original called number. Refer to ETSI EN 300 356 1 [23] Original Called Number
 --  for encoding.
 
@@ -1224,7 +1287,7 @@ QualityOfService ::= SEQUENCE {
 	requested-QoS						[0]	GPRS-QoS								OPTIONAL,
 	subscribed-QoS						[1]	GPRS-QoS								OPTIONAL,
 	negotiated-QoS						[2]	GPRS-QoS								OPTIONAL,
-	...,
+	-- FHModif ...,
 	requested-QoS-Extension				[3]	GPRS-QoS-Extension						OPTIONAL,
 	subscribed-QoS-Extension			[4]	GPRS-QoS-Extension						OPTIONAL,
 	negotiated-QoS-Extension			[5]	GPRS-QoS-Extension						OPTIONAL
@@ -1235,19 +1298,22 @@ ReceivingSideID ::= CHOICE {
 	}
 -- used to identify LegID in operations sent from gsmSSF to gsmSCF
 
-RedirectingPartyID {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE (
-	bound.&minRedirectingPartyIDLength .. bound.&maxRedirectingPartyIDLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+RedirectingPartyID ::= OCTET STRING (SIZE (
+	2 .. 10))
 -- Indicates redirecting number.
 -- Refer to ETSI EN 300 356 1 [23] Redirecting number for encoding.
 
-RequestedInformationList {PARAMETERS-BOUND : bound} ::= SEQUENCE SIZE (1.. numOfInfoItems) OF RequestedInformation {bound}
+-- FHModif Remove {PARAMETER-BOUND : bound}
+RequestedInformationList ::= SEQUENCE SIZE (1.. numOfInfoItems) OF RequestedInformation -- FHModif {bound}
 
 RequestedInformationTypeList ::= SEQUENCE SIZE (1.. numOfInfoItems) OF RequestedInformationType
 
-RequestedInformation {PARAMETERS-BOUND : bound} ::= SEQUENCE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+RequestedInformation ::= SEQUENCE {
 	requestedInformationType			[0] RequestedInformationType,
-	requestedInformationValue			[1] RequestedInformationValue {bound},
-...
+	requestedInformationValue			[1] RequestedInformationValue -- FHModif {bound}
+  -- FHModif, ...
 	}
 
 RequestedInformationType ::= ENUMERATED {
@@ -1257,11 +1323,12 @@ RequestedInformationType ::= ENUMERATED {
 	releaseCause						(30)
 	}
 
-RequestedInformationValue {PARAMETERS-BOUND : bound} ::= CHOICE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+RequestedInformationValue ::= CHOICE {
 	callAttemptElapsedTimeValue			[0] INTEGER (0..255),
 	callStopTimeValue					[1] DateAndTime,
 	callConnectedElapsedTimeValue		[2] Integer4,
-	releaseCauseValue					[30] Cause {bound}
+	releaseCauseValue					[30] Cause -- FHModif {bound}
 	}
 -- The callAttemptElapsedTimeValue is specified in seconds. The unit for the
 -- callConnectedElapsedTimeValue is 100 milliseconds
@@ -1274,22 +1341,27 @@ RPCause ::= OCTET STRING (SIZE (1))
 -- For a MT-SMS service, the MSC or SGSN shall send the RP Cause to the sending SMS-GMSC.
 -- It shall be used to overwrite the RP-Cause element in the RP-ERROR RPDU.
 
-ScfID {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minScfIDLength .. bound.&maxScfIDLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+ScfID ::= OCTET STRING (SIZE(
+	2 .. 10))
 -- defined by network operator.
 -- Indicates the gsmSCF identity.
 
-SCIBillingChargingCharacteristics {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE (
-	bound.&minSCIBillingChargingLength .. bound.&maxSCIBillingChargingLength))
-	(CONSTRAINED BY {-- shall be the result of the BER-encoded value of type --
-	CAMEL-SCIBillingChargingCharacteristics})
+-- FHModif Remove {PARAMETER-BOUND : bound}
+SCIBillingChargingCharacteristics ::= OCTET STRING (SIZE (
+	4 .. 225))
+-- FHModif Remove CONSTRAINED BY{}
+--	(CONSTRAINED BY { shall be the result of the BER-encoded value of type --
+--	CAMEL-SCIBillingChargingCharacteristics})
 -- Indicates AOC information to be sent to a Mobile Station
 -- The violation of the UserDefinedConstraint shall be handled as an ASN.1 syntax error.
 
-SCIGPRSBillingChargingCharacteristics {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE (
-	bound.&minSCIBillingChargingLength .. bound.&maxSCIBillingChargingLength))
-	(CONSTRAINED BY {-- shall be the result of the BER-encoded value of type -
-	CAMEL-SCIGPRSBillingChargingCharacteristics})
+-- FHModif Remove {PARAMETER-BOUND : bound}
+SCIGPRSBillingChargingCharacteristics ::= OCTET STRING (SIZE (
+	4 .. 225))
+-- FHModif Remove CONSTRAINED BY{}  
+--(CONSTRAINED BY { shall be the result of the BER-encoded value of type -
+--	CAMEL-SCIGPRSBillingChargingCharacteristics})
 -- Indicates AOC information to be sent to a Mobile Station
 -- The violation of the UserDefinedConstraint shall be handled as an ASN.1 syntax error.
 
@@ -1327,13 +1399,13 @@ ServiceInteractionIndicatorsTwo ::= SEQUENCE {
 	-- rejectCw	'xxxx xx10'B
 	-- if absent from Connect or ContinueWithArgument,
 	-- then CAMEL service does not affect call waiting treatment
-	ectTreatmentIndicator				[52] OCTET STRING (SIZE(1))					OPTIONAL,
+	ectTreatmentIndicator				[52] OCTET STRING (SIZE(1))					OPTIONAL
 	-- applicable to InitialDP, Connect and ContinueWithArgument
 	-- acceptEctRequest	'xxxx xx01'B
 	-- rejectEctRequest	'xxxx xx10'B
 	-- if absent from Connect or ContinueWithArgument,
 	-- then CAMEL service does not affect explicit call transfer treatment
-	...
+	-- FHModif, ...
 	}
 
 SGSNCapabilities ::= OCTET STRING (SIZE (1))
@@ -1369,8 +1441,9 @@ SMSEvent ::= SEQUENCE {
 TariffSwitchInterval ::= INTEGER (1 .. 86400)
 -- TariffSwitchInterval is measured in 1 second units
 
-TimeAndTimezone {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-	bound.&minTimeAndTimezoneLength .. bound.&maxTimeAndTimezoneLength))
+-- FHModif Remove {PARAMETER-BOUND : bound}
+TimeAndTimezone ::= OCTET STRING (SIZE(
+	8 .. 8))
 --  Indicates the time and timezone, relative to GMT. This parameter is BCD encoded.
 --  The year digit indicating millenium occupies bits 0-3 of the first octet, and the year
 --  digit indicating century occupies bits 4-7 of the first octet.
@@ -1442,8 +1515,8 @@ TimerValue ::= Integer4
 
 Tone ::= SEQUENCE {
 	toneID								[0] Integer4,
-	duration							[1] Integer4								OPTIONAL,
-...
+	duration							[1] Integer4								OPTIONAL
+  -- FHModif, ...
 	}
 -- The duration specifies the length of the tone in seconds, value 0 indicates infinite duration.
 
@@ -1491,9 +1564,10 @@ UnavailableNetworkResource ::= ENUMERATED {
 	}
 -- Indicates the network resource that failed.
 
-VariablePart {PARAMETERS-BOUND : bound} ::= CHOICE {
+-- FHModif Remove {PARAMETER-BOUND : bound}
+VariablePart ::= CHOICE {
 	integer								[0] Integer4,
-	number								[1] Digits {bound},	-- Generic digits
+	number								[1] Digits ,	-- FHModif {bound} Generic digits
 	time								[2] OCTET STRING (SIZE(2)),	-- HH: MM, BCD coded
 	date								[3] OCTET STRING (SIZE(4)),	-- YYYYMMDD, BCD coded
 	price								[4] OCTET STRING (SIZE(4))

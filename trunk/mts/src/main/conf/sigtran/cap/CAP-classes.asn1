@@ -46,36 +46,40 @@ FROM CS2-datatypes {itu-t(0) identified-organization(4) etsi(0) inDomain(1) in-n
 modules(0) in-cs2-datatypes(0) version1(0)}
 
 ;
-
-gsmSSF ROS-OBJECT-CLASS ::= {
-	INITIATES	{capSsfToScfGeneric|
-				capAssistHandoffssfToScf}
-	RESPONDS	{capScfToSsfGeneric}
-	ID			id-rosObject-gsmSSF}
+-- FHModif Remove ROS-OBJECT-CLASS {INITIATES RESPONDS ID}
+--gsmSSF ROS-OBJECT-CLASS ::= {
+--	INITIATES	{capSsfToScfGeneric|
+--				capAssistHandoffssfToScf}
+--	RESPONDS	{capScfToSsfGeneric}
+--	ID			id-rosObject-gsmSSF}
 -- The Rel-6 'gsmSSF' definition uses the Rel-6 capSsfToScfGeneric, capAssistHandoffssfToScf
 -- and capScfToSsfGeneric CONTRACT definitions.
 
-gsmSRF ROS-OBJECT-CLASS ::= {
-	INITIATES	{gsmSRF-gsmSCF-contract}
-	ID			id-rosObject-gsmSRF}
+-- FHModif Remove ROS-OBJECT-CLASS {INITIATES RESPONDS ID}
+--gsmSRF ROS-OBJECT-CLASS ::= {
+--	INITIATES	{gsmSRF-gsmSCF-contract}
+--	ID			id-rosObject-gsmSRF}
 -- The Rel-6 'gsmSRF' definition uses the Rel-6 gsmSRF-gsmSCF-contract CONTRACT definition.
 
-smsSSF-V3 ROS-OBJECT-CLASS ::= {
-	INITIATES	{cap3SMS}
-	ID			id-rosObject-smsSSF-V3}
+-- FHModif Remove ROS-OBJECT-CLASS {INITIATES RESPONDS ID}
+--smsSSF-V3 ROS-OBJECT-CLASS ::= {
+--	INITIATES	{cap3SMS}
+--	ID			id-rosObject-smsSSF-V3}
 -- The Rel-6 'smsSSF-V3' definition uses the Rel-6 cap3SMS CONTRACT definition. The smsSSF-V3
 -- ROS-OBJECT-CLASS is used for MO SMS control.
 
-smsSSF-V4 ROS-OBJECT-CLASS ::= {
-	INITIATES	{cap4SMS}
-	ID			id-rosObject-smsSSF-V4}
+-- FHModif Remove ROS-OBJECT-CLASS {INITIATES RESPONDS ID}
+--smsSSF-V4 ROS-OBJECT-CLASS ::= {
+--	INITIATES	{cap4SMS}
+--	ID			id-rosObject-smsSSF-V4}
 -- The Rel-6 'smsSSF-V4' definition uses the Rel-6 cap4SMS CONTRACT definition. The smsSSF-V4
 -- ROS-OBJECT-CLASS is used for MT SMS control.
 
-gprsSSF ROS-OBJECT-CLASS ::= {
-	INITIATES	{capGprsSsfToScf}
-	RESPONDS	{capGsmScfToGprsSsf}
-	ID			id-rosObject-gprsSSF}
+-- FHModif Remove ROS-OBJECT-CLASS {INITIATES RESPONDS ID}
+--gprsSSF ROS-OBJECT-CLASS ::= {
+--	INITIATES	{capGprsSsfToScf}
+--	RESPONDS	{capGsmScfToGprsSsf}
+--	ID			id-rosObject-gprsSSF}
 -- The Rel-6 'gprsSSF' definition uses the Rel-6 capGprsSsfTogsmScf and capGsmScfToGprsSsf
 -- CONTRACT definitions.
 
@@ -122,7 +126,9 @@ firstExtension EXTENSION ::= {
 	}
 -- firstExtension is just an example.
 
-SupportedExtensions EXTENSION ::= {firstExtension, ...
+SupportedExtensions EXTENSION ::= {
+    firstExtension
+    -- FHModif, ...
 -- full set of network operator extensions --
 }
 -- SupportedExtension is the full set of the network operator extensions.
