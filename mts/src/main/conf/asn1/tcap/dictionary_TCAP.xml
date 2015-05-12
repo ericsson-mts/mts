@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Document   : dictionnary_TCAP.xml
+    Created on : 1 decembre 2014, 08:58
+    Author     : fhenry
+    Description: Dictionary for the TCAP layer containing the embedded objects and the field enumerations
+    Reference document : 
+        TCAP.asn => provided in ../conf/sigtran/tcap/ directory
+        29002-c60.doc => 3GPP Mobile Application Part (Release 12) 
+        ...
+-->
+
+<dictionary layer="TCAP" className="com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage">
+
+    <!-- TCAP -->
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueOC" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.ExternalPDU"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.UniDialoguePDU"
+        condition="direct_reference=0.0.17.773.1.2.1"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.EmbeddedData" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialoguePDU"
+        condition="direct_reference=0.0.17.773.1.1.1"
+    />
+    
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.ObjectId" 
+        replace="org.bn.types.ObjectIdentifier"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_result"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssSourceDiagnostic" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_source_diagnostic"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceUser" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_user"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_result"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssResult" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Associate_result"
+    />
+
+    <embedded 
+        initial="com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.tcap.Dialogue_service_provider"
+    />
+
+
+    <!-- direct reference => DialoguePDUs.asn & UniDialoguePDUs.asn  -->
+    <element tag="ExternalPDUSequenceType.direct_reference" coding="V" description="direct reference">
+    		<field name="direct_reference" type="enum_string" description="direct reference">
+            <enum name="dialogue-as-id" value="0.0.17.773.1.1.1"/> <!-- {itu-t recommendation q 773 as(1) dialogue-as(1) version1(1)} -->
+            <enum name="uniDialogue-as-id" value="0.0.17.773.1.2.1"/> <!-- {itu-t recommendation q 773 as(1) unidialogue-as(2) version1(1)} -->
+        </field>
+    </element>
+
+    <!-- application contexte name => MAP_ApplicationContextsV3.asn -->
+    <element tag="application_context_name.ObjectIdentifier,application_context_name.value,application_context_name.direct_reference" coding="V" description="application context name">
+    		<field name="application_context_name" type="enum_string" description="application context name">
+            <enum name="networkLocUpContext-v3" value="0.4.0.0.1.0.1.3"/> <!-- {map-ac networkLocUp(1) version3(3)} -->
+            <enum name="locationCancellationContext-v3" value="0.4.0.0.1.0.2.3"/> <!-- {map-ac locationCancel(2) version3(3)} -->
+            <enum name="roamingNumberEnquiryContext-v3" value="0.4.0.0.1.0.3.3"/> <!-- {map-ac roamingNbEnquiry(3) version3(3)} -->
+            <enum name="authenticationFailureReportContext-v3" value="0.4.0.0.1.0.39.3"/> <!-- {map-ac authenticationFailureReport(39) version3(3)} -->
+            <enum name="locationInfoRetrievalContext-v3" value="0.4.0.0.1.0.5.3"/> <!-- {map-ac locInfoRetrieval(5) version3(3)} -->
+            <enum name="resetContext-v2" value="0.4.0.0.1.0.10.2"/> <!-- {map-ac reset(10) version2(2)} -->
+            <enum name="handoverControlContext-v3" value="0.4.0.0.1.0.11.3"/> <!-- {map-ac handoverControl(11) version3(3)} -->
+            <enum name="equipmentMngtContext-v3" value="0.4.0.0.1.0.13.3"/> <!-- {map-ac equipmentMngt(13) version3(3)} -->
+            <enum name="infoRetrievalContext-v3" value="0.4.0.0.1.0.14.3"/> <!-- {map-ac infoRetrieval(14) version3(3)} -->
+            <enum name="interVlrInfoRetrievalContext-v3" value="0.4.0.0.1.0.15.3"/> <!-- {map-ac interVlrInfoRetrieval(15) version3(3)} -->
+            <enum name="subscriberDataMngtContext-v3" value="0.4.0.0.1.0.16.3"/> <!-- {map-ac subscriberDataMngt(16) version3(3)} -->
+            <enum name="tracingContext-v3" value="0.4.0.0.1.0.17.3"/> <!-- {map-ac tracing(17) version3(3)} -->
+            <enum name="networkFunctionalSsContext-v2" value="0.4.0.0.1.0.18.2"/> <!-- {map-ac networkFunctionalSs(18) version2(2)} -->
+            <enum name="networkUnstructuredSsContext-v2" value="0.4.0.0.1.0.19.2"/> <!-- {map-ac networkUnstructuredSs(19) version2(2)} -->
+            <enum name="shortMsgGatewayContext-v3" value="0.4.0.0.1.0.20.3"/> <!-- {map-ac shortMsgGateway(20) version3(3)} -->
+            <enum name="shortMsgMO-RelayContext-v3" value="0.4.0.0.1.0.21.3"/> <!-- {map-ac shortMsgMO-Relay(21) version3(3)} -->
+            <enum name="shortMsgAlertContext-v2" value="0.4.0.0.1.0.23.2"/> <!-- {map-ac shortMsgAlert(23) version2(2)} -->
+            <enum name="mwdMngtContext-v3" value="0.4.0.0.1.0.24.3"/> <!-- {map-ac mwdMngt(24) version3(3)} -->
+            <enum name="shortMsgMT-RelayContext-v3" value="0.4.0.0.1.0.25.3"/> <!-- {map-ac shortMsgMT-Relay(25) version3(3) -->
+            <enum name="shortMsgMT-Relay-VGCS-Context-v3" value="0.4.0.0.1.0.41.3"/> <!-- {map-ac shortMsgMT-Relay-VGCS(41) version3(3)} -->
+            <enum name="imsiRetrievalContext-v2" value="0.4.0.0.1.0.26.2"/> <!-- {map-ac imsiRetrieval(26) version2(2)} -->
+            <enum name="msPurgingContext-v3" value="0.4.0.0.1.0.27.3"/> <!-- {map-ac msPurging(27) version3(3) -->
+            <enum name="subscriberInfoEnquiryContext-v2" value="0.4.0.0.1.0.28.2"/> <!-- {map-ac subscriberInfoEnquiry(28) version3(2)} -->
+            <enum name="subscriberInfoEnquiryContext-v3" value="0.4.0.0.1.0.28.3"/> <!-- {map-ac subscriberInfoEnquiry(28) version3(3)} -->
+            <enum name="anyTimeInfoEnquiryContext-v3" value="0.4.0.0.1.0.29.3"/> <!-- {map-ac anyTimeInfoEnquiry(29) version3(3)} -->
+            <enum name="callControlTransferContext-v4" value="0.4.0.0.1.0.6.4"/> <!-- {map-ac callControlTransfer(6) version4(4)} -->
+            <enum name="ss-InvocationNotificationContext-v3" value="0.4.0.0.1.0.36.3"/> <!-- {map-ac ss-InvocationNotification(36) version3(3)} -->
+            <enum name="groupCallControlContext-v3" value="0.4.0.0.1.0.31.3"/> <!-- {map-ac groupCallControl(31) version3(3)} -->
+            <enum name="groupCallInfoRetrievalContext-v3" value="0.4.0.0.1.0.45.3"/> <!-- {map-ac groupCallInfoRetrieval(45) version3(3)} -->
+            <enum name="gprsLocationUpdateContext-v3" value="0.4.0.0.1.0.32.3"/> <!-- {map-ac gprsLocationUpdate(32) version3(3)} -->
+            <enum name="gprsLocationInfoRetrievalContext-v4" value="0.4.0.0.1.0.33.4"/> <!-- {map-ac gprsLocationInfoRetrieval(33) version4(4)} -->
+            <enum name="failureReportContext-v3" value="0.4.0.0.1.0.34.3"/> <!-- {map-ac failureReport(34) version3(3)} -->
+            <enum name="gprsNotifyContext-v3" value="0.4.0.0.1.0.35.3"/> <!-- {map-ac gprsNotify(35) version3(3)} -->
+            <enum name="reportingContext-v3" value="0.4.0.0.1.0.7.3"/> <!-- {map-ac reporting(7) version3(3)} -->
+            <enum name="callCompletionContext-v3" value="0.4.0.0.1.0.8.3"/> <!-- {map-ac callCompletion(8) version3(3)} -->
+            <enum name="istAlertingContext-v3" value="0.4.0.0.1.0.4.3"/> <!-- {map-ac istAlerting(4) version3(3)} -->
+            <enum name="serviceTerminationContext-v3" value="0.4.0.0.1.0.9.3"/> <!-- {map-ac immediateTermination(9) version3(3)} -->
+            <enum name="locationSvcGatewayContext-v3" value="0.4.0.0.1.0.37.3"/> <!-- {map-ac locationSvcGateway(37) version3(3)} -->
+            <enum name="locationSvcEnquiryContext-v3" value="0.4.0.0.1.0.38.3"/> <!-- {map-ac locationSvcEnquiry(38) version3(3)} -->
+            <enum name="mm-EventReportingContext-v3" value="0.4.0.0.1.0.42.3"/> <!-- {map-ac mm-EventReporting(42) version3(3)} -->
+            <enum name="anyTimeInfoHandlingContext-v3" value="0.4.0.0.1.0.43.3"/> <!-- {map-ac anyTimeInfoHandling(43) version3(3)} -->
+            <enum name="subscriberDataModificationNotificationContext-v3" value="0.4.0.0.1.0.22.3"/> <!-- {map-ac subscriberDataModificationNotification(22) version3(3)} -->
+            <enum name="resourceManagementContext-v3" value="0.4.0.0.1.0.44.3"/> <!-- {map-ac resourceManagement(44) version3(3)} -->
+            <enum name="networkLocUpContext-v1" value="0.4.0.0.1.0.1.1"/> <!-- {map-ac networkLocUp (1)	version1 (1) -->
+            <enum name="networkLocUpContext-v2" value="0.4.0.0.1.0.1.2"/> <!-- {map-ac networkLocUp (1)	version2 (2) -->
+            <enum name="locationCancellationContext-v1" value="0.4.0.0.1.0.2.1"/> <!-- {map-ac locationCancellation (2)	version1 (1) -->
+            <enum name="locationCancellationContext-v2" value="0.4.0.0.1.0.2.2"/> <!-- {map-ac locationCancellation (2)	version2 (2) -->
+            <enum name="roamingNumberEnquiryContext-v1" value="0.4.0.0.1.0.3.1"/> <!-- {map-ac roamingNumberEnquiry (3)	version1 (1) -->
+            <enum name="roamingNumberEnquiryContext-v2" value="0.4.0.0.1.0.3.2"/> <!-- {map-ac roamingNumberEnquiry (3)	version2 (2) -->
+            <enum name="locationInfoRetrievalContext-v1" value="0.4.0.0.1.0.5.1"/> <!-- {map-ac locationInfoRetrieval (5)	version1 (1) -->
+            <enum name="locationInfoRetrievalContext-v2" value="0.4.0.0.1.0.5.2"/> <!-- {map-ac locationInfoRetrieval (5)	version2 (2) -->
+            <enum name="resetContext-v1" value="0.4.0.0.1.0.10.1"/> <!-- {map-ac reset (10)	version1 (1) -->
+            <enum name="handoverControlContext-v1" value="0.4.0.0.1.0.11.1"/> <!-- {map-ac handoverControl (11)	version1 (1) -->
+            <enum name="handoverControlContext-v2" value="0.4.0.0.1.0.11.2"/> <!-- {map-ac handoverControl (11)	version2 (2) -->
+            <enum name="sIWFSAllocationContext-v3" value="0.4.0.0.1.0.12.3"/> <!-- {map-ac sIWFSAllocation (12)	version3 (3) -->
+            <enum name="equipmentMngtContext-v1" value="0.4.0.0.1.0.13.1"/> <!-- {map-ac equipmentMngt (13)	version1 (1) -->
+            <enum name="equipmentMngtContext-v2" value="0.4.0.0.1.0.13.2"/> <!-- {map-ac equipmentMngt (13)	version2 (2) -->
+            <enum name="infoRetrievalContext-v1" value="0.4.0.0.1.0.13.2"/> <!-- {map-ac infoRetrieval (14)	version1 (1) --> 
+            <enum name="infoRetrievalContext-v2" value="0.4.0.0.1.0.14.2"/> <!-- {map-ac infoRetrieval (14)	version2 (2) -->
+            <enum name="interVlrInfoRetrievalContext-v2" value="0.4.0.0.1.0.15.2"/> <!-- {map-ac interVlrInfoRetrieval (15)	version2 (2) -->
+            <enum name="subscriberDataMngtContext-v1" value="0.4.0.0.1.0.16.1"/> <!-- {map-ac subscriberDataMngt (16)	version1 (1) -->
+            <enum name="subscriberDataMngtContext-v2" value="0.4.0.0.1.0.16.2"/> <!-- {map-ac subscriberDataMngt (16)	version2 (2) -->
+            <enum name="tracingContext-v1" value="0.4.0.0.1.0.17.1"/> <!-- {map-ac tracing (17)	version1 (1) -->
+            <enum name="tracingContext-v2" value="0.4.0.0.1.0.17.2"/> <!-- {map-ac tracing (17)	version2 (2) -->
+            <enum name="networkFunctionalSsContext-v1" value="0.4.0.0.1.0.18.1"/> <!-- {map-ac networkFunctionalSs (18)	version1 (1) -->
+            <enum name="shortMsgGatewayContext-v1" value="0.4.0.0.1.0.20.1"/> <!-- {map-ac shortMsgGateway (20)	version1 (1) -->
+            <enum name="shortMsgGatewayContext-v2" value="0.4.0.0.1.0.20.2"/> <!-- {map-ac shortMsgGateway (20)	version2 (2) -->
+            <enum name="shortMsgGatewayContext-v3" value="0.4.0.0.1.0.20.3"/> <!-- {map-ac shortMsgGateway (20)	version2 (3) -->
+            <enum name="shortMsgRelayContext-v1" value="0.4.0.0.1.0.21.1"/> <!-- {map-ac shortMsgRelay (21)	version1 (1) -->
+            <enum name="shortMsgRelayContext-v2" value="0.4.0.0.1.0.21.2"/> <!-- {map-ac shortMsgRelay (21)	version1 (2) -->
+            <enum name="shortMsgAlertContext-v1" value="0.4.0.0.1.0.23.1"/> <!-- {map-ac shortMsgAlert (23)	version1 (1) -->
+            <enum name="mwdMngtContext-v1" value="0.4.0.0.1.0.24.1"/> <!-- {map-ac mwdMngt (24)	version1 (1) -->
+            <enum name="mwdMngtContext-v2" value="0.4.0.0.1.0.24.2"/> <!-- {map-ac mwdMngt (24)	version2 (2) -->
+            <enum name="shortMsgMT-RelayContext-v2" value="0.4.0.0.1.0.25.2"/> <!-- {map-ac shortMsgMT-Relay (25)	version2 (2) -->
+            <enum name="msPurgingContext-v2" value="0.4.0.0.1.0.27.2"/> <!-- {map-ac msPurging (27)	version2 (2)  -->
+            <enum name="callControlTransferContext-v3" value="0.4.0.0.1.0.6.3"/> <!-- {map-ac callControlTransferContext (6)	version3 (3) --> 
+            <enum name="gprsLocationInfoRetrievalContext-v3" value="0.4.0.0.1.0.33.3"/> <!-- {map-ac gprsLocationInfoRetrievalContext (33) version3 (3) --> 
+        </field>
+    </element>
+
+    <!-- protocol version => TCAP.asn -->
+    <element tag="protocol_version" coding="V" description="protocol version">
+    		<field name="protocol_version" type="enum_string" description="protocol version">
+            <enum name="Version1" value="80"/> <!-- [0] IMPLICIT BIT STRING {version1(0)} DEFAULT {version1} -->
+        </field>
+    </element>
+
+    <!-- Operation code local value => MAP.asn line 76 -->
+    <element tag="opCode" coding="V" description="Operation code local value">
+    		<field name="localValue" type="EnumLong" length="1" description="operation code">
+            <enum name="updateLocation" value="2"/>
+          	<enum name="cancelLocation" value="3"/>
+          	<enum name="provideRoamingNumber" value="4"/>
+          	<enum name="noteSubscriberDataModified" value="5"/>
+          	<enum name="resumeCallHandling" value="6"/>
+          	<enum name="insertSubscriberData" value="7"/>
+          	<enum name="deleteSubscriberData" value="8"/>
+          	<enum name="sendParameters" value="9"/>
+          	<enum name="registerSS" value="10"/>
+          	<enum name="eraseSS" value="11"/>
+          	<enum name="activateSS" value="12"/>
+          	<enum name="deactivateSS" value="13"/>
+          	<enum name="interrogateSS" value="14"/>
+          	<enum name="authenticationFailureReport" value="15"/>
+          	<enum name="registerPassword" value="17"/>
+          	<enum name="getPassword" value="18"/>
+          	<enum name="processUnstructuredSS-Data" value="19"/>
+          	<enum name="releaseResources" value="20"/>
+          	<enum name="sendRoutingInfo" value="22"/>
+          	<enum name="updateGprsLocation" value="23"/>
+          	<enum name="sendRoutingInfoForGprs" value="24"/>
+          	<enum name="failureReport" value="25"/>
+          	<enum name="noteMsPresentForGprs" value="26"/>
+          	<enum name="performHandover" value="28"/>
+          	<enum name="sendEndSignal" value="29"/>
+          	<enum name="performSubsequentHandover" value="30"/>
+          	<enum name="provideSIWFSNumber" value="31"/>
+          	<enum name="sIWFSSignallingModify" value="32"/>
+          	<enum name="processAccessSignalling" value="33"/>
+          	<enum name="forwardAccessSignalling" value="34"/>
+          	<enum name="noteInternalHandover" value="35"/>
+          	<enum name="reset" value="37"/>
+          	<enum name="forwardCheckSS" value="38"/>
+          	<enum name="prepareGroupCall" value="39"/>
+          	<enum name="sendGroupCallEndSignal" value="40"/>
+          	<enum name="processGroupCallSignalling" value="41"/>
+          	<enum name="forwardGroupCallSignalling" value="42"/>
+          	<enum name="checkIMEI" value="43"/>
+          	<enum name="mt-forwardSM" value="44"/>
+          	<enum name="sendRoutingInfoForSM" value="45"/>
+          	<enum name="mo-forwardSM" value="46"/>
+          	<enum name="reportSM-DeliveryStatus" value="47"/>
+          	<enum name="noteSubscriberPresent" value="48"/>
+          	<enum name="alertServiceCentreWithoutResult" value="49"/>
+          	<enum name="activateTraceMode" value="50"/>
+          	<enum name="deactivateTraceMode" value="51"/>
+          	<enum name="traceSubscriberActivity" value="52"/>
+          	<enum name="beginSubscriberActivity" value="54"/>
+          	<enum name="sendIdentification" value="55"/>
+          	<enum name="sendAuthenticationInfo" value="56"/>
+          	<enum name="restoreData" value="57"/>
+          	<enum name="sendIMSI" value="58"/>
+          	<enum name="processUnstructuredSS-Request" value="59"/>
+          	<enum name="unstructuredSS-Request" value="60"/>
+          	<enum name="unstructuredSS-Notify" value="61"/>
+          	<enum name="anyTimeSubscriptionInterrogation" value="62"/>
+          	<enum name="informServiceCentre" value="63"/>
+          	<enum name="alertServiceCentre" value="64"/>
+          	<enum name="anyTimeModification" value="65"/>
+          	<enum name="readyForSM" value="66"/>
+          	<enum name="purgeMS" value="67"/>
+          	<enum name="prepareHandover" value="68"/>
+          	<enum name="prepareSubsequentHandover" value="69"/>
+          	<enum name="provideSubscriberInfo" value="70"/>
+          	<enum name="anyTimeInterrogation" value="71"/>
+          	<enum name="ss-InvocationNotification" value="72"/>
+          	<enum name="setReportingState" value="73"/>
+          	<enum name="statusReport" value="74"/>
+          	<enum name="remoteUserFree" value="75"/>
+          	<enum name="registerCC-Entry" value="76"/>
+          	<enum name="eraseCC-Entry" value="77"/>
+          	<enum name="secureTransportClass1" value="78"/>
+          	<enum name="secureTransportClass2" value="79"/>
+          	<enum name="secureTransportClass3" value="80"/>
+          	<enum name="secureTransportClass4" value="81"/>
+          	<enum name="provideSubscriberLocation" value="83"/>
+          	<enum name="sendRoutingInfoForLCS" value="85"/>
+          	<enum name="subscriberLocationReport" value="86"/>
+          	<enum name="ist-Alert" value="87"/>
+          	<enum name="ist-Command" value="88"/>
+          	<enum name="noteMM-Event" value="89"/>
+        </field>
+    </element>
+
+    <!-- Error code local value => MAP.asn line 164 -->
+    <element tag="errorCode" coding="V" description="Error code local value">
+    		<field name="localValue" type="EnumLong" length="1" description="error code">
+            <enum name="unknownSubscriber" value="1"/>
+            <enum name="unknownMSC" value="3"/>
+            <enum name="secureTransportError" value="4"/>
+            <enum name="unidentifiedSubscriber" value="5"/>
+            <enum name="absentSubscriberSM" value="6"/>
+            <enum name="unknownEquipment" value="7"/>
+            <enum name="roamingNotAllowed" value="8"/>
+            <enum name="illegalSubscriber" value="9"/>
+            <enum name="bearerServiceNotProvisioned" value="10"/>
+            <enum name="teleserviceNotProvisioned" value="11"/>
+            <enum name="illegalEquipment" value="12"/>
+            <enum name="callBarred" value="13"/>
+            <enum name="forwardingViolation" value="14"/>
+            <enum name="cug-Reject" value="15"/>
+            <enum name="illegalSS-Operation" value="16"/>
+            <enum name="ss-ErrorStatus" value="17"/>
+            <enum name="ss-NotAvailable" value="18"/>
+            <enum name="ss-SubscriptionViolatio" value="19"/>
+            <enum name="ss-Incompatibility" value="20"/>
+            <enum name="facilityNotSupported" value="21"/>
+            <enum name="noHandoverNumberAvailable" value="25"/>
+            <enum name="subsequentHandoverFailure" value="26"/>
+            <enum name="absentSubscriber" value="27"/>
+            <enum name="incompatibleTerminal" value="28"/>
+            <enum name="shortTermDenial" value="29"/>
+            <enum name="longTermDenial" value="30"/>
+            <enum name="subscriberBusyForMT-SMS" value="31"/>
+            <enum name="sm-DeliveryFailure" value="32"/>
+            <enum name="messageWaitingListFull" value="33"/>
+            <enum name="systemFailure" value="34"/>
+            <enum name="dataMissing" value="35"/>
+            <enum name="unexpectedDataValue" value="36"/>
+            <enum name="pw-RegistrationFailur" value="37"/>
+	          <enum name="negativePW-Check" value="38"/>
+            <enum name="noRoamingNumberAvailable" value="39"/>
+            <enum name="tracingBufferFull" value="40"/>
+            <enum name="targetCellOutsideGroupCallArea" value="42"/>
+            <enum name="numberOfPW-AttemptsViolation" value="43"/>
+            <enum name="numberChanged" value="44"/>
+            <enum name="busySubscriber" value="45"/>
+            <enum name="noSubscriberReply" value="46"/>
+            <enum name="forwardingFailed" value="47"/>
+            <enum name="or-NotAllowed" value="48"/>
+            <enum name="ati-NotAllowed" value="49"/>
+            <enum name="noGroupCallNumberAvailable" value="50"/>
+            <enum name="resourceLimitation" value="51"/>
+            <enum name="unauthorizedRequestingNetwork" value="52"/>
+            <enum name="unauthorizedLCSClient" value="53"/>
+            <enum name="positionMethodFailure" value="54"/>
+            <enum name="unknownOrUnreachableLCSClient" value="58"/>
+            <enum name="mm-EventNotSupported" value="59"/>
+            <enum name="tsi-NotAllowed" value="60"/>
+            <enum name="atm-NotAllowed" value="61"/>
+            <enum name="informationNotAvailabl" value="62"/>
+            <enum name="unknownAlphabe" value="71"/>
+	          <enum name="ussd-Busy" value="72"/>
+        </field>
+    </element>
+
+</dictionary>
