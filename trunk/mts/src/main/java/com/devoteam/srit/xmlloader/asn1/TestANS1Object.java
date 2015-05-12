@@ -64,12 +64,12 @@ public class TestANS1Object
 	private static String destDirectory = "../tutorial/asn1/";	
 	// maximum number of iterations
 	private static int maxIterations = 5;
+	// rules list
+	//private static String listRules = "BER,DER,PER";
+	private static String[] tabRules = {"XML","BER","DER"};
 	
 	// error counters
-	private static int errorXML = 0;
-	private static int errorBER = 0;
-	private static int errorDER = 0;
-	private static int errorPER = 0;
+	private static int[] tabError = {0,0,0,0,0};
 
     static public void main(String... args) 
     {    	
@@ -98,8 +98,6 @@ public class TestANS1Object
         String destPackage = name.substring(index1 + 1, index2);
         
         // destination directory
-
-        
         if (args.length >= 2)
         {	
         	destDirectory = args[1];
@@ -120,6 +118,12 @@ public class TestANS1Object
         	maxIterations = Integer.parseInt(args[2]);
         }
         
+        // maximum number of iterations
+        if (args.length >= 4)
+        {	
+        	tabRules = args[3].split(",");
+        }
+
         // create the directory
         File dir = new File(destDirectory);
         dir.delete();
@@ -188,13 +192,13 @@ public class TestANS1Object
 	    		}
 	    	}
 	    	Collection<Class> collect = mapClasses.values();
-	    	int i = 0;
+	    	int index = 0;
 	    	long beginTT = new GregorianCalendar().getTimeInMillis();
 	    	for (Class<?> classObject : collect)
 	    	{
 	    		try 
-	    		{	i++;
-	    			testProcess(i, packageName, classObject);
+	    		{	index++;
+	    			testProcess(index, packageName, classObject);
 	    		} 
 	    		catch (Exception e) 
 	    		{
@@ -206,15 +210,15 @@ public class TestANS1Object
 	    	}
 	    	
 	    	System.out.print("ERROR");
-	    	System.out.print(" XML=" + errorXML + "/" + collect.size() + ", ");
-	    	System.out.print(" BER=" + errorBER + "/" + collect.size() + ", ");
-	    	System.out.print(" DER=" + errorDER + "/" + collect.size() + ", ");
-	    	System.out.print(" PER=" + errorPER + "/" + collect.size());
+	    	for (int i = 0; i < tabRules.length; i++)
+	        {
+	    		System.out.print(" " + tabRules[i] + "=" + tabError[i] + "/" + collect.size() + ", ");
+	        }
 	    	System.out.println();
 	    	
 	        long endTT = new GregorianCalendar().getTimeInMillis();
 	        float duration = ((float)(endTT - beginTT)) / 1000;
-	        int iter = 2 * maxIterations * i;
+	        int iter = 2 * maxIterations * index;
 	        float flow =  iter / duration;  
 	    	System.out.print(" " +  iter + " iterations, ");
 	        System.out.print("duration = " + duration + " sec, ");
@@ -225,7 +229,7 @@ public class TestANS1Object
         System.exit(0);
     }
 
-    public static void testProcess(int classIndex, String packageName, Class<?> classObj) throws Exception
+    public static void testProcess(int classIndex, String packageName, Class<?> classObj)
     {
         String className = classObj.getSimpleName();
         System.out.print("Process class[" + classIndex + "] = " + className + ".xml => ");
@@ -246,28 +250,35 @@ public class TestANS1Object
         }
         
         boolean error = false;
-    	if (!testProcessAllIndexXML(dictionaryFile, classObj))
-    	{
-    		System.out.print("ERROR XML");
-    		errorXML ++;
-    		error = true;
+        for (int i = 0; i < tabRules.length; i++)
+        {
+        	try	
+	        {
+		    	if (tabRules[i].equalsIgnoreCase("XML")) 
+		    	{
+			    	if (!testProcessAllIndexXML(dictionaryFile, classObj))
+			    	{
+			    		System.out.print("ERROR XML");
+			    		tabError[i] ++;
+			    		error = true;
+			    	}
+		    	}
+		    	else if (!testProcessAllIndexBIN(dictionaryFile, classObj, tabRules[i]))
+		    	{
+		    		tabError[i] ++;
+		    		error = true;
+		    	}
+			} 
+			catch (Exception e) 
+			{
+		        System.out.println("");
+				e.printStackTrace();
+				Utils.pauseMilliseconds(100);
+				tabError[i] ++;
+	    		error = true;
+			}
     	}
-    	if (!testProcessAllIndexBIN(dictionaryFile, classObj, "BER"))
-    	{
-    		errorBER ++;
-    		error = true;
-    	}
-    	if (!testProcessAllIndexBIN(dictionaryFile, classObj, "DER"))
-    	{
-    		errorDER ++;
-    		error = true;
-    	}
-    	//if (!testProcessAllIndexBIN(dictionaryFile, classObj, "PER"))
-    	{
-    		errorPER ++;
-    		//error = true;
-    	}
-    	
+    
     	if (!error)
     	{
             System.out.print("OK");
@@ -276,6 +287,7 @@ public class TestANS1Object
     	{
     		System.out.println("KO : FAILED");
     	}
+    	
         long endTT = new GregorianCalendar().getTimeInMillis();
         float duration = ((float)(endTT - beginTT)) / 1000;
         int iter = 2 * maxIterations;

@@ -259,44 +259,17 @@ public class Utils
     /**
      * Make a pause
      *
-     * @param duration Duration in seconds
-     */
-    public static void pause(int duration) throws ExecutionException
-    {
-        if (Thread.currentThread().isInterrupted())
-        {
-            throw new ExecutionException("Pause interrupted");
-        }
-
-        try
-        {
-            Thread.sleep(duration * 1000);
-        }
-        catch (Exception e)
-        {
-            throw new ExecutionException("Pause interrupted", e);
-        }
-    }
-
-    /**
-     * Make a pause
-     *
      * @param duration Duration in milliseconds
      */
-    public static void pauseMilliseconds(long duration) throws ExecutionException
+    public static void pauseMilliseconds(long duration)
     {
-        if (Thread.currentThread().isInterrupted())
-        {
-            throw new ExecutionException("Pause interrupted");
-        }
-
         try
         {
             Thread.sleep(duration);
         }
         catch (Exception e)
         {
-            throw new ExecutionException("Pause interrupted", e);
+        	 Thread.currentThread().interrupt();
         }
     }
 
