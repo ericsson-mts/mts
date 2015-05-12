@@ -83,11 +83,15 @@ public class BN_ASNMessage extends ASNMessage
     public Array encode(String rule) throws Exception 
     {
     	// Library binarynotes
-    	IEncoder<java.lang.Object> encoderMAP = CoderFactory.getInstance().newEncoder(rule);
+    	IEncoder<java.lang.Object> encoder = CoderFactory.getInstance().newEncoder(rule);
+    	if (encoder == null)
+    	{
+    		throw new Exception("bad value for rule '" + rule + "'");
+    	}
     	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     	try
     	{
-    		encoderMAP.encode(this.asnObject, outputStream);
+    		encoder.encode(this.asnObject, outputStream);
     	}
     	catch (Exception e)
     	{
@@ -107,6 +111,10 @@ public class BN_ASNMessage extends ASNMessage
     {
     	// Library binarynotes        
     	IDecoder decoder = CoderFactory.getInstance().newDecoder(rule);
+    	if (decoder == null)
+    	{
+    		throw new Exception("bad value for rule '" + rule +"'");
+    	}
         InputStream inputStream = new ByteArrayInputStream(array.getBytes());
         Class cl = Class.forName(className);
         this.asnObject = cl.newInstance();
