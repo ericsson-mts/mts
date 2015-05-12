@@ -41,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -56,10 +57,13 @@ import org.dom4j.io.SAXReader;
 public class TestANS1Object 
 {
 
+	// default java package 
+	private static String JAVA_PACKAGE = "com.devoteam.srit.xmlloader.sigtran.ap";
+			
 	// destination directory for resulting files
-	private static String dest = null;
-	
-	private static int MAX_ITERATION = 10;
+	private static String destDirectory = "../tutorial/asn1/";	
+	// maximum number of iterations
+	private static int maxIterations = 5;
 	
 	// error counters
 	private static int errorXML = 0;
@@ -81,11 +85,43 @@ public class TestANS1Object
          */
         TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
     
+        // mandatory
         String name = args[0];
-        dest = args[1];
+        // if the name does not start with '.' character then we add the default package before
+        if (name.startsWith("."))
+        {
+        	name = JAVA_PACKAGE + name;
+        }
+        // default destination package directory
+        int index2 = name.lastIndexOf(".");
+        int index1 = name.lastIndexOf(".", index2 - 1);
+        String destPackage = name.substring(index1 + 1, index2);
+        
+        // destination directory
+
+        
+        if (args.length >= 2)
+        {	
+        	destDirectory = args[1];
+        }
+        else
+        {
+        	destDirectory = destDirectory + destPackage;
+        }
+        destDirectory = destDirectory.replace('\\', '/');
+        if (!destDirectory.endsWith("/"))
+        {
+        	destDirectory = destDirectory + "/"; 
+        }
+        
+        // maximum number of iterations
+        if (args.length >= 3)
+        {	
+        	maxIterations = Integer.parseInt(args[2]);
+        }
         
         // create the directory
-        File dir = new File(dest);
+        File dir = new File(destDirectory);
         dir.delete();
         try
         {
@@ -153,6 +189,7 @@ public class TestANS1Object
 	    	}
 	    	Collection<Class> collect = mapClasses.values();
 	    	int i = 0;
+	    	long beginTT = new GregorianCalendar().getTimeInMillis();
 	    	for (Class<?> classObject : collect)
 	    	{
 	    		try 
@@ -174,6 +211,15 @@ public class TestANS1Object
 	    	System.out.print(" DER=" + errorDER + "/" + collect.size() + ", ");
 	    	System.out.print(" PER=" + errorPER + "/" + collect.size());
 	    	System.out.println();
+	    	
+	        long endTT = new GregorianCalendar().getTimeInMillis();
+	        float duration = ((float)(endTT - beginTT)) / 1000;
+	        int iter = 2 * maxIterations * i;
+	        float flow =  iter / duration;  
+	    	System.out.print(" " +  iter + " iterations, ");
+	        System.out.print("duration = " + duration + " s, ");
+	        System.out.print("flow = " + flow + " iter/s.");
+	        System.out.println();
         }
         
         System.exit(0);
@@ -183,7 +229,8 @@ public class TestANS1Object
     {
         String className = classObj.getSimpleName();
         System.out.print("Process class[" + classIndex + "] = " + className + ".xml => ");
-
+        
+        long beginTT = new GregorianCalendar().getTimeInMillis();
         String dictionaryFile = null;
         if (packageName.endsWith("map."))
         {
@@ -199,7 +246,7 @@ public class TestANS1Object
         }
         
         boolean error = false;
-    	if (!testProcessXML(dictionaryFile, classObj))
+    	if (!testProcessAllIndexXML(dictionaryFile, classObj))
     	{
     		System.out.print("ERROR XML");
     		errorXML ++;
@@ -225,7 +272,29 @@ public class TestANS1Object
     	{
             System.out.print("OK");
     	}
+        long endTT = new GregorianCalendar().getTimeInMillis();
+        float duration = ((float)(endTT - beginTT)) / 1000;
+        int iter = 2 * maxIterations;
+        float flow = iter / duration;
+        System.out.print("          " + iter + " iter, ");
+        System.out.print(duration + " sec, ");
+        System.out.print(flow + " iter/sec.");
+
         System.out.println("");
+    }
+
+    public static boolean testProcessAllIndexXML(String dictionaryFile, Class<?> classObj) throws Exception
+    {          
+    	boolean result = true;
+    	for (int i = 0; i <= maxIterations; i++)
+    	{
+    		if (!testProcessXML(dictionaryFile, classObj))
+    		{
+    			System.out.print("XML");
+    			result = false;
+    		}
+    	}
+    	return result;
     }
 
     public static boolean testProcessXML(String dictionaryFile, Class<?> classObj) throws Exception
@@ -241,7 +310,7 @@ public class TestANS1Object
         
         // write XML data into a file
         String simpleClassName = classObj.getSimpleName();
-        File fileInit = new File(dest + simpleClassName + ".xml");
+        File fileInit = new File(destDirectory + simpleClassName + ".xml");
         fileInit.delete();
         OutputStream out = new FileOutputStream(fileInit, false);
         Array array = new DefaultArray(retInit.getBytes());
@@ -249,7 +318,7 @@ public class TestANS1Object
         out.close();
         
         // read XML data from file
-        File fileRead = new File(dest + simpleClassName + ".xml");
+        File fileRead = new File(destDirectory + simpleClassName + ".xml");
         if(!fileRead.exists()) fileRead.createNewFile();
         InputStream in = new FileInputStream(fileRead);
         SAXReader reader = new SAXReader(false);
@@ -274,7 +343,7 @@ public class TestANS1Object
         String retXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
         retXML += msgXML.toXML();
 
-        File fileXML = new File(dest + simpleClassName + "_difference.xml");
+        File fileXML = new File(destDirectory + simpleClassName + "_difference.xml");
         fileXML.delete();
 
         // test with initial value
@@ -294,7 +363,7 @@ public class TestANS1Object
     public static boolean testProcessAllIndexBIN(String dictionaryFile, Class<?> classObj, String rule) throws Exception
     {          
     	boolean result = true;
-    	for (int i = 0; i <= MAX_ITERATION; i++)
+    	for (int i = 0; i <= maxIterations; i++)
     	{
     		if (!testProcessBIN(i, dictionaryFile, classObj, rule))
     		{
@@ -331,7 +400,7 @@ public class TestANS1Object
         retBin += msgBin.toXML();
         
         String simpleClassName = classObj.getSimpleName();
-        String fileNameInit = dest + simpleClassName + "_"  + rule + "_" + index;
+        String fileNameInit = destDirectory + simpleClassName + "_"  + rule + "_" + index;
         File fileInit = new File(fileNameInit + ".xml");
         fileInit.delete();
         String fileNameDiff = fileNameInit + "_difference";

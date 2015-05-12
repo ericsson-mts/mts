@@ -1,1 +1,1 @@
-startClass com.devoteam.srit.xmlloader.sigtran.ap.TestANS1Object nofork %*
+startClass com.devoteam.srit.xmlloader.asn1.TestANS1Object nofork %*
