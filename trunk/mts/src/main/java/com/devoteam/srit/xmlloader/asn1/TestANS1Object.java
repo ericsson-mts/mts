@@ -217,8 +217,8 @@ public class TestANS1Object
 	        int iter = 2 * maxIterations * i;
 	        float flow =  iter / duration;  
 	    	System.out.print(" " +  iter + " iterations, ");
-	        System.out.print("duration = " + duration + " s, ");
-	        System.out.print("flow = " + flow + " iter/s.");
+	        System.out.print("duration = " + duration + " sec, ");
+	        System.out.print("flow = " + flow + " iter/sec.");
 	        System.out.println();
         }
         
@@ -272,13 +272,17 @@ public class TestANS1Object
     	{
             System.out.print("OK");
     	}
+    	else
+    	{
+    		System.out.println("KO : FAILED");
+    	}
         long endTT = new GregorianCalendar().getTimeInMillis();
         float duration = ((float)(endTT - beginTT)) / 1000;
         int iter = 2 * maxIterations;
         float flow = iter / duration;
-        System.out.print("          " + iter + " iter, ");
-        System.out.print(duration + " sec, ");
-        System.out.print(flow + " iter/sec.");
+        System.out.print("                              " + iter + ", ");
+        System.out.print(duration + " s, ");
+        System.out.print(flow + " /s.");
 
         System.out.println("");
     }
