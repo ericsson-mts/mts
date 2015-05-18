@@ -23,8 +23,6 @@
 
 package com.devoteam.srit.xmlloader.asn1;
 
-import java.lang.reflect.Field;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,7 +36,6 @@ import com.devoteam.srit.xmlloader.asn1.dictionary.EmbeddedMap;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.ap.map.Component;
 
 
@@ -83,11 +80,28 @@ public abstract class ASNMessage
 
     public abstract void decode(Array array, String className, String rule) throws Exception;
     
-    public abstract boolean isRequest();
+    public Parameter getParameter(String path) throws Exception
+    {
+        Parameter parameter = new Parameter();
+    	if (path.endsWith(".binary"))
+    	{
+    		Array array = this.encode("BER");
+    		String str = Array.toHexString(array);
+    		parameter.add(str);
+    		return parameter;
+    	}
+    	else if (path.endsWith(".xml"))
+		{
+    		String str = this.toXML();
+    		parameter.add(str);
+			return parameter;
+		}    	
+    	return null;
+    }
+    
+    public abstract boolean isRequest() throws Exception;
     public abstract String getType() throws Exception;
     public abstract String getResult();
-    
-    public abstract Parameter getParameter(String path);
     
     public void decode(Array array, String rule) throws Exception
     {
