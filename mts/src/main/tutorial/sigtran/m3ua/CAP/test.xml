@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="SIGTRAN SCCP tests" name="SIGTRAN SCCP">
+    
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    
+    <parameter name="[localHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]"/>
+    <!--parameter name="[localHostM3UA]" operation="set" value="164.48.85.81"/-->
+    <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localPortM3UA]" operation="number.add" value="[localPortM3UA]" value2="20000"/>
+    <parameter name="[localPortM3UA]" operation="set" value="[localPortM3UA]" description="local port of the MTS host" editable="true" />
+    <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>	
+    
+    <parameter name="[remoteHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]"/>
+    <!--parameter name="[remoteHostM3UA]" operation="set" value="164.48.85.83"/-->
+    <parameter name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]" description="remote address of the SUT host" editable="true"/>
+    <!--parameter name="[remotePortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/-->
+    <parameter name="[remotePortM3UA]" operation="set" value="2905"/>
+    <parameter name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]" description="remote port of the SUT host" editable="true"/>
+    <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>
+    
+    <parameter name="[transport]" operation="set" value="TCP" editable="true"/>
+    <parameter name="[pause]" operation="set" value="0.0" editable="true"/>
+
+    <parameter name="[smsText]" operation="set" value="ssssss"/>
+    <parameter name="[smsAlphabet]" operation="set" value="Default alphabet {SCGSM}:0"/>
+    <!--parameter name="[smsAlphabet]" operation="set" value="8 bit data {UTF-8}:1"/-->
+    <!--parameter name="[smsAlphabet]" operation="set" value="UCS2 (16bit) {UFT-16BE}:2"/-->
+    <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
+    <parameter name="[smsTextLength]" operation="string.length" value="[smsText]"/>
+
+    <parameter name="[nbIter]" operation="set" value="1"/>
+    
+    <testcase name="044_mt-forwardSM" description="test sigtran MAP mt-forwardSM message" number="[nbIter]" state="true">
+        <scenario name="client" file="044_mt-forwardSM/client.xml" routingName="client"/>
+        <scenario name="server" file="044_mt-forwardSM/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.TCAP,SIGTRAN.M3UA"/>
+    </testcase>
+        
+    <testcase name="801_Wireshark_Sample_camel2" description="test sigtran mobicent capture SMS-SUBMIT/REPORT" number="[nbIter]" state="true">
+        <scenario name="client" file="801_Wireshark_Sample_camel2/client.xml" routingName="client"/>
+        <scenario name="server" file="801_Wireshark_Sample_camel2/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+    <!--testcase name="810_dico" description="test sigtran dictionary processing" number="[nbIter]" state="true">
+        <scenario name="client" file="810_dico/client.xml" routingName="client"/>
+        <scenario name="server" file="810_dico/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.M3UA"/>
+    </testcase-->
+    
+    <!--testcase name="811_set_from_msg" description="test sigtran dictionary processing" number="[nbIter]" state="true">
+        <scenario name="client" file="811_set_from_msg/client.xml" routingName="client"/>
+        <scenario name="server" file="811_set_from_msg/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.M3UA"/>
+    </testcase-->
+
+</test>

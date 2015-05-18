@@ -32,6 +32,7 @@ import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.asn1.ASNMessage;
 import com.devoteam.srit.xmlloader.asn1.BN_ASNMessage;
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.sigtran.ap.map.Component;
 import com.devoteam.srit.xmlloader.sigtran.ap.map.Invoke;
@@ -64,62 +65,32 @@ public class BN_APMessage extends BN_ASNMessage
     @Override
     public boolean isRequest()
     {
-    	Component apMessage = (Component) asnObject;
-    	if (apMessage.isInvokeSelected())
-    	{
-    		return true;
-    	}
-    	else if (apMessage.isReturnResultLastSelected())
+        Parameter param = getParameter("asn.Component.invoke.invokeID");
+        if (param.length() > 0)
         {
-    		return false;
-    	}
-    	else if (apMessage.isRejectSelected())
-        {
-    		return false;
-    	}
-    	else if (apMessage.isReturnErrorSelected())
-        {
-    		return false;
+        	return true;
         }
-    	return false;
-
+        else
+       	{
+       		return false;
+       	}
+    	// return true;
     }
    
     @Override
-    public String getType()
+    public String getType() throws Exception
     {
-    	Component apMessage = (Component) asnObject;
-		if (apMessage.isInvokeSelected())
-		{
-			Invoke invoke = apMessage.getInvoke();
-			if (invoke.getOpCode() != null && invoke.getOpCode().getLocalValue() != null)
-			{
-				return Long.toString(invoke.getOpCode().getLocalValue().getValue());
-			}
-		}
-		else if (apMessage.isReturnResultLastSelected())
-    	{
-			ReturnResult returnResult = apMessage.getReturnResultLast();
-			if (returnResult != null && returnResult.getResultretres() != null)
-			{
-				ResultretresSequenceType resultretresSequenceType = returnResult.getResultretres(); 
-				if (resultretresSequenceType.getOpCode() != null && resultretresSequenceType.getOpCode().getLocalValue() != null)
-				{
-					return Long.toString(returnResult.getResultretres().getOpCode().getLocalValue().getValue());
-				}
-			}
-    	}
-		else if (apMessage.isReturnErrorSelected())
-    	{
-			
-			return null;
-    	}
-		else if (apMessage.isRejectSelected())
-    	{
-			
-			return null;
-    	}
-		return null;
+        Parameter param = getParameter("asn.Component.invoke.opCode.localValue");
+        if (param.length() > 0)
+        {
+        	return param.get(0).toString();
+        }
+        param = getParameter("asn.Component.returnResult.opCode.localValue");
+        if (param.length() > 0)
+        {
+        	return param.get(0).toString();
+        }
+       	return null;
     }
     
     @Override

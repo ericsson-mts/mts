@@ -42,11 +42,8 @@ import com.devoteam.srit.xmlloader.asn1.BN_ASNMessage;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Component;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ComponentPortion;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueOC;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.End;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Invoke;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Reject;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ReturnError;
-import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ReturnResult;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage;
 
 
@@ -149,7 +146,48 @@ public class BN_TCAPMessage extends BN_ASNMessage
     	return null;
     }
 
-    public Array getTCAPComponents() throws Exception
+    // get the Application Context Name
+    public String getTCAPACN() throws Exception
+    {
+    	DialogueOC dialogueOC = getTCAPDialogueOC();
+    	return null;    	
+    }
+   
+    private DialogueOC getTCAPDialogueOC() throws Exception
+    {
+    	DialogueOC dialogueOC = null;
+    	if (((TCMessage) asnObject).isBeginSelected())
+    	{
+    		dialogueOC = ((TCMessage) asnObject).getBegin().getDialoguePortion().getValue();
+    	}
+    	else if (((TCMessage) asnObject).isEndSelected())
+    	{
+    		End end = ((TCMessage) asnObject).getEnd();
+    		if (end.getComponents() != null)
+    		{
+    			dialogueOC = ((TCMessage) asnObject).getEnd().getDialoguePortion().getValue();
+    		}
+    	}
+    	else if (((TCMessage) asnObject).isContinue1Selected())
+    	{
+    		dialogueOC = ((TCMessage) asnObject).getContinue1().getDialoguePortion().getValue();
+    	}
+    	else if (((TCMessage) asnObject).isAbortSelected())
+    	{
+    		// nothing 
+    	}
+    	else if (((TCMessage) asnObject).isUnidirectionalSelected())
+    	{
+    		dialogueOC = ((TCMessage) asnObject).getUnidirectional().getDialoguePortion().getValue();
+    	}
+    	else
+    	{
+    		return null;
+    	}
+    	return dialogueOC;
+    }
+
+    private Component getTCAPComponents() throws Exception
     {
     	Collection<Component> comps = null;
     	if (((TCMessage) asnObject).isBeginSelected())
@@ -185,12 +223,18 @@ public class BN_TCAPMessage extends BN_ASNMessage
     	if (comps != null)
     	{
 	    	Iterator<Component> iter = comps.iterator();
-	    	while (iter.hasNext())
+	    	if (iter.hasNext())
 	    	{
 	    		component = (Component) iter.next();
 	    	}
     	}
-    	
+
+    	return component;
+    }
+
+    public Array getTCAPBinary() throws Exception
+    {
+    	Component component = getTCAPComponents();    	
     	Array arrayMAP = null;
     	if (component != null)
     	{

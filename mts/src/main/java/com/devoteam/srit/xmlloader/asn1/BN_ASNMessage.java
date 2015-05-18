@@ -54,9 +54,6 @@ import com.devoteam.srit.xmlloader.sigtran.ap.tcap.TCMessage;
 
 public class BN_ASNMessage extends ASNMessage 
 {
-
-	// ASN1 binarynotes object
-	protected Object asnObject;
 	
 	public BN_ASNMessage() throws Exception
     {
@@ -168,7 +165,7 @@ public class BN_ASNMessage extends ASNMessage
     }
     
     @Override
-    public String getType()
+    public String getType() throws Exception
     {
     	// TODO complete 
     	return "TODO";
