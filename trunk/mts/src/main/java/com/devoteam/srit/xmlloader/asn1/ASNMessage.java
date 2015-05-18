@@ -38,6 +38,8 @@ import com.devoteam.srit.xmlloader.asn1.dictionary.EmbeddedMap;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.sigtran.ap.map.Component;
 
 
 /**
@@ -48,6 +50,9 @@ public abstract class ASNMessage
 {
 	
 	public static HashMap<String, ASNDictionary> dictionaries = new  HashMap<String, ASNDictionary>();
+
+	// ASN1 object
+	protected Object asnObject;
 	
 	public static boolean configMAPSmsCommand = false;
 	
@@ -79,7 +84,7 @@ public abstract class ASNMessage
     public abstract void decode(Array array, String className, String rule) throws Exception;
     
     public abstract boolean isRequest();
-    public abstract String getType();
+    public abstract String getType() throws Exception;
     public abstract String getResult();
     
     public abstract Parameter getParameter(String path);
@@ -144,7 +149,17 @@ public abstract class ASNMessage
     		if (bytes != null && "Sm_RP_UI".equals(simpleClassName))
     		{
     			int TP_MTI = bytes[0] & (byte) 3;
-    			boolean request = isRequest();
+    			boolean request;
+    			if (this.asnObject instanceof Component)
+    			{
+	    			Component component = ((Component) this.asnObject);
+	    			request = component.isInvokeSelected();
+    			}
+    			else
+    			{
+    				request = true;
+    			}
+    			
     			if (TP_MTI == 0 && request)
     			{
     				simpleClassName = simpleClassName + "_SMS-DELIVER";
@@ -153,7 +168,6 @@ public abstract class ASNMessage
     			{
     				simpleClassName = simpleClassName + "_SMS-DELIVER-REPORT";
     			}
-    			
 
     			else if (TP_MTI == 1 && request)
     			{

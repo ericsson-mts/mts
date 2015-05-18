@@ -46,6 +46,11 @@
     <parameter name="[localValue]" operation="protocol.setFromMessage" value="asn.Component.invoke.opCode.localValue"/>
     <test parameter="[localValue]" condition="string.contains" value="sendRoutingInfoForSM:45"/>
     
+    <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.TCMessage.begin.dialoguePortion.DialoguePDU.dialogueRequest.application_context_name.ObjectIdentifier.ObjectIdentifier"/>
+    <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.TCMessage.begin.dialoguePortion.DialoguePDU"/>
+    <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.TCMessage.begin.dialoguePortion"/>
+    <!--test parameter="[applicationContextName]" condition="string.contains" value="sendRoutingInfoForSM:45"/-->
+    
     <!--test parameter="[xml]" condition="string.contains" value="&lt;invokeparameter&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;RoutingInfoForSMArg.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;msisdn.C0.BoxedType&gt;&lt;Bytes&gt;"/>

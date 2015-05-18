@@ -124,8 +124,9 @@ public class MsgSigtran extends Msg
 		  
 	    		if (_tcapMessage != null)
 	    		{
-			    	Array arrayAP = ((BN_TCAPMessage) _tcapMessage).getTCAPComponents();
+			    	Array arrayAP = ((BN_TCAPMessage) _tcapMessage).getTCAPBinary();
 					_apMessage = new BN_APMessage();
+					// if (_tcapMessage.
 		    		try
 		    		{
 		    			_apMessage.initDictionary("map/dictionary_MAP.xml");
@@ -159,6 +160,14 @@ public class MsgSigtran extends Msg
         if (params.length > 0 && params[0].equalsIgnoreCase("asn")) 
         {
         	return this._apMessage.getParameter(path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("ap")) 
+        {
+        	return this._apMessage.getParameter(path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("tcap")) 
+        {
+        	return this._tcapMessage.getParameter(path);
         }
         else if (params.length > 0 && params[0].equalsIgnoreCase("isdn")) 
         {
