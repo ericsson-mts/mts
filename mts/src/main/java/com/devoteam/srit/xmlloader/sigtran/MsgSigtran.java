@@ -129,7 +129,7 @@ public class MsgSigtran extends Msg
 					// if (_tcapMessage.
 		    		try
 		    		{
-		    			_apMessage.initDictionary("map/dictionary_MAP.xml");
+		    			_apMessage.initDictionary("cap/dictionary_CAP.xml");
 						_apMessage.decode(arrayAP, "BER");
 		    		}
 		    		catch (Exception e)
@@ -247,7 +247,7 @@ public class MsgSigtran extends Msg
     }
 
     @Override
-    public boolean isRequest()
+    public boolean isRequest() throws Exception
     {
         if (_apMessage != null) 
         {

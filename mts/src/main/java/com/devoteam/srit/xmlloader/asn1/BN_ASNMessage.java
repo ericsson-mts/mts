@@ -146,19 +146,24 @@ public class BN_ASNMessage extends ASNMessage
         }
     }
     
-    public Parameter getParameter(String path)
+    @Override
+    public Parameter getParameter(String path) throws Exception
     {
-        Parameter parameter = null;
+    	Parameter var = super.getParameter(path);
+        if (null != var) 
+        {
+            return var;
+        }
 
         String resultPath = "";
-        parameter = new Parameter();
+        Parameter parameter = new Parameter();
         ASNGetParameter.getInstance().getParameter(parameter, path, resultPath, this, null, "value", this.asnObject);
         
     	return parameter;
     }
     
     @Override
-    public boolean isRequest()
+    public boolean isRequest() throws Exception
     {
     	// TODO complete 
     	return true;

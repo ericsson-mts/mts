@@ -63,7 +63,7 @@ public class BN_APMessage extends BN_ASNMessage
     }
 	
     @Override
-    public boolean isRequest()
+    public boolean isRequest() throws Exception
     {
         Parameter param = getParameter("asn.Component.invoke.invokeID");
         if (param.length() > 0)
