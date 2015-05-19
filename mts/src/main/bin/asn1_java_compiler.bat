@@ -3,6 +3,7 @@ echo Compile the ASN classes and archive them in the file ../lib/BN_classes_%1.j
 pause
 
 del /F/Q binaryNotes\classes
+mkdir binaryNotes\classes
 del /F/Q ..\lib\BN_classes_%1.jar
 
 set /p JDK_HOME=< jdk_home
@@ -14,8 +15,5 @@ rem "Compile classes"
 rem "Archive classes"
 cd binaryNotes\classes
 "%JDK_HOME%\jar" cvf BN_classes_%1.jar com\devoteam\srit\xmlloader\sigtran\ap\%1\*.class
-cd ../..
+cd ../.. 
 copy binaryNotes\classes\BN_classes_%1.jar ..\lib
-
-
-

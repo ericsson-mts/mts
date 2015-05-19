@@ -101,7 +101,7 @@ public abstract class ASNMessage
     
     public abstract boolean isRequest() throws Exception;
     public abstract String getType() throws Exception;
-    public abstract String getResult();
+    public abstract String getResult() throws Exception;
     
     public void decode(Array array, String rule) throws Exception
     {

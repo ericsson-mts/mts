@@ -85,7 +85,17 @@ public class BN_APMessage extends BN_ASNMessage
         {
         	return param.get(0).toString();
         }
+        param = getParameter("asn.Component.invoke.opCode.localValue.CAMELOperationLocalvalue");
+        if (param.length() > 0)
+        {
+        	return param.get(0).toString();
+        }
         param = getParameter("asn.Component.returnResult.opCode.localValue");
+        if (param.length() > 0)
+        {
+        	return param.get(0).toString();
+        }
+        param = getParameter("asn.Component.returnResult.opCode.localValue.CAMELOperationLocalvalue");
         if (param.length() > 0)
         {
         	return param.get(0).toString();
@@ -94,18 +104,24 @@ public class BN_APMessage extends BN_ASNMessage
     }
     
     @Override
-    public String getResult()
+    public String getResult() throws Exception
     {
-    	Component apMessage = (Component) asnObject;
-		if (apMessage.isInvokeSelected())
-		{
-			return null;
-		}
-		else if (apMessage.isReturnResultLastSelected())
-		{
-			ReturnResult returnResult = apMessage.getReturnResultLast();
-			return "RESULT";
-		}
+        Parameter param = getParameter("asn.Component.invoke.invokeID");
+        if (param.length() > 0)
+        {
+        	return null;
+        }
+        param = getParameter("asn.Component.returnResultLast.invokeID");
+        if (param.length() > 0)
+        {
+        	return "RESULT";
+        }
+        param = getParameter("asn.Component.returnError.errorCode.localValue");
+        if (param.length() > 0)
+        {
+        	return "ERROR:" + param.get(0).toString();
+        }
+        /*
 		else if (apMessage.isReturnErrorSelected())
 		{
 			ReturnError returnError = apMessage.getReturnError();
@@ -152,6 +168,7 @@ public class BN_APMessage extends BN_ASNMessage
 				}
 			}
     	}
+    	*/
     	return "KO";    	
     }
    
