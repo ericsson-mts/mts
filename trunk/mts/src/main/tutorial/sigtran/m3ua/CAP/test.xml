@@ -8,7 +8,7 @@
     <!--parameter name="[localHostM3UA]" operation="set" value="164.48.85.81"/-->
     <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter name="[localPortM3UA]" operation="number.add" value="[localPortM3UA]" value2="20000"/>
+    <parameter name="[localPortM3UA]" operation="number.add" value="[localPortM3UA]" value2="10000"/>
     <parameter name="[localPortM3UA]" operation="set" value="[localPortM3UA]" description="local port of the MTS host" editable="true" />
     <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>	
     
@@ -35,14 +35,19 @@
     
     <testcase name="001_InitialDP" description="test sigtran CAP 001_InitialDP message" number="[nbIter]" state="true">
         <scenario name="client" file="001_InitialDP/client.xml" routingName="client"/>
-        <scenario name="server" file="001_InitialDP/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.TCAP,SIGTRAN.M3UA"/>
+        <scenario name="server" file="001_InitialDP/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA"/>
     </testcase>
         
     <testcase name="801_Wireshark_Sample_camel2" description="test sigtran mobicent capture SMS-SUBMIT/REPORT" number="[nbIter]" state="true">
         <scenario name="client" file="801_Wireshark_Sample_camel2/client.xml" routingName="client"/>
-        <scenario name="server" file="801_Wireshark_Sample_camel2/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.M3UA"/>
+        <scenario name="server" file="801_Wireshark_Sample_camel2/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.M3UA"/>
     </testcase>
 
+    <testcase name="802_Wireshark_Sample_camel1" description="test sigtran mobicent capture SMS-SUBMIT/REPORT" number="[nbIter]" state="true">
+        <scenario name="client" file="802_Wireshark_Sample_camel1/client.xml" routingName="client"/>
+        <scenario name="server" file="802_Wireshark_Sample_camel1/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+    
     <!--testcase name="810_dico" description="test sigtran dictionary processing" number="[nbIter]" state="true">
         <scenario name="client" file="810_dico/client.xml" routingName="client"/>
         <scenario name="server" file="810_dico/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.M3UA"/>

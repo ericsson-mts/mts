@@ -24,39 +24,37 @@ BEGIN
 
 
 
--- FHmodif 
 IMPORTS
 
-  CellGlobalIdOrServiceAreaIdFixedLength,
-  Ext-BasicServiceCode,
-  IMEI,
+	CellGlobalIdOrServiceAreaIdFixedLength,
+	Ext-BasicServiceCode,
+	IMEI,
 	IMSI,
 	LAIFixedLength
 
-  FROM MAP-CommonDataTypes {itu-t(0) identified-organization(4) etsi(0) mobileDomain(0)
-  gsm-Network(1) modules(3) map-CommonDataTypes(18) version9(9)}
+FROM MAP-CommonDataTypes {itu-t(0) identified-organization(4) etsi(0) mobileDomain(0)
+gsm-Network(1) modules(3) map-CommonDataTypes(18) version9(9)}
 
-    CUG-Index,
-    CUG-Interlock,
-  	Ext-QoS-Subscribed,
-  	Ext2-QoS-Subscribed,
-  	GeographicalInformation,
-  	GSN-Address,
-  	LocationInformation,
-  	LSAIdentity,
-  	MS-Classmark2,
-  	QoS-Subscribed,
-  	RAIdentity,
-  	GPRSChargingID
+        CUG-Index,
+        CUG-Interlock,
+	Ext-QoS-Subscribed,
+	Ext2-QoS-Subscribed,
+	GeographicalInformation,
+	GSN-Address,
+	LocationInformation,
+	LSAIdentity,
+	MS-Classmark2,
+	QoS-Subscribed,
+	RAIdentity,
+	GPRSChargingID
 FROM MAP-MS-DataTypes {itu-t(0) identified-organization(4) etsi(0) mobileDomain(0)
 gsm-Network(1) modules(3) map-MS-DataTypes(11) version9(9)}
 
 	UU-Data
 FROM MAP-CH-DataTypes {itu-t(0) identified-organization(4) etsi(0) mobileDomain(0)
-  gsm-Network(1) modules(3) map-CH-DataTypes(13) version9(9)}
+gsm-Network(1) modules(3) map-CH-DataTypes(13) version9(9)}
 
 ;
-
 -- ================================
 -- MACRO OPERATION
 -- ================================
@@ -77,12 +75,12 @@ Component ::= CHOICE {
 Invoke ::= SEQUENCE {
   invokeID		InvokeIdType,
   linkedID		[0] IMPLICIT InvokeIdType OPTIONAL,
-  opCode		OPERATION1,
-  -- FHModif invokeparameter InvokeParameter OPTIONAL 
-  invokeparameter OCTET STRING OPTIONAL
+  opCode		Operation,
+  -- FHModif invokeparameter InvokeParameter OPTIONAL
+  invokeparameter 	ANY OPTIONAL
 }
 -- FHModif remove ANY
--- InvokeParameter ::= ANY 
+-- InvokeParameter ::= ANY
 
 
 -- ANY is filled by the single ASN.1 data type following the keyword PARAMETER or the keyword ARGUMENT
@@ -91,27 +89,27 @@ Invoke ::= SEQUENCE {
 ReturnResult ::= SEQUENCE {
   invokeID	InvokeIdType,
   resultretres	SEQUENCE {
-    opCode		OPERATION1,
-    -- FHModif returnparameter ReturnResultParameter OPTIONAL
-    returnparameter OCTET STRING OPTIONAL
+    opCode		Operation,
+    -- FHModif returnparameter	ReturnResultParameter OPTIONAL
+    returnparameter	ANY OPTIONAL
   } OPTIONAL
 }
 
--- FHModif remove ANY 
--- ReturnResultParameter ::= ANY
+-- FHModif remove ANY
+-- ReturnResultParameter ::= OCTET STRING
 
 -- ANY is filled by the single ASN.1 data type following the keyword RESULT in the type definition
 -- of a particular operation.
 
 ReturnError ::= SEQUENCE {
   invokeID	InvokeIdType,
-  errorCode	ERROR1,
-  -- FHModif parameter ReturnErrorParameter  OPTIONAL 
-  errorparameter OCTET STRING  OPTIONAL
+  errorCode	Error,
+  -- FHModif parameter	ReturnErrorParameter  OPTIONAL
+  errorparameter	ANY  OPTIONAL 
   }
 
--- FHModif remove ANY 
--- ReturnErrorParameter ::= ANY
+-- FHModif remove ANY
+--ReturnErrorParameter ::= OCTET STRING
 
 -- ANY is filled by the single ASN.1 data type following the keyword PARAMETER in the type definition
 -- of a particular error.
@@ -129,14 +127,13 @@ Reject ::= SEQUENCE {
 InvokeIdType ::= INTEGER (-128..127)
 
 
--- FHModif
--- OPERATION ::= CHOICE {
-OPERATION1 ::= CHOICE {
+Operation ::= CHOICE {
   localValue OperationLocalvalue,
   globalValue OBJECT IDENTIFIER }
 
 
-CAMELOperationLocalvalue ::= INTEGER{
+-- FHModif CAMELOperationLocalvalue ::= INTEGER{
+OperationLocalvalue ::= INTEGER{
   initialDP (0),
   assistRequestInstructions (16),
   establishTemporaryConnection (17),
@@ -193,18 +190,17 @@ CAMELOperationLocalvalue ::= INTEGER{
   entityReleased (96),
   playTone (97)
 }
+-- FHModif remove
+-- OperationLocalvalue ::= CAMELOperationLocalvalue
 
-OperationLocalvalue ::= CAMELOperationLocalvalue
 
-
--- FHModif
--- ERROR ::= CHOICE {
-ERROR1 ::= CHOICE {
+Error ::= CHOICE {
   localErrorValue LocalErrorcode,
   globalErrorValue OBJECT IDENTIFIER
 }
 
-CAMELLocalErrorcode ::= INTEGER{
+-- FHModif CAMELLocalErrorcode ::= INTEGER{
+LocalErrorcode ::= INTEGER{
   canceled (0),
   cancelFailed (1),
   eTCFailed (3),
@@ -223,8 +219,8 @@ CAMELLocalErrorcode ::= INTEGER{
   unknownPDPID (50),
   unknownCSID (51)
 }
-
-LocalErrorcode ::= CAMELLocalErrorcode
+-- FHModif remove
+-- LocalErrorcode ::= CAMELLocalErrorcode
 
 -- PROBLEMS
 
@@ -388,7 +384,7 @@ BasicGapCriteria ::= CHOICE
     {
         callingAddressValue [0] Digits,
         serviceKey          [1] ServiceKey
-        -- FHModif, ...
+        -- FHModif , ...
     }
 }
 -- Both calledAddressValue and callingAddressValue can be
@@ -405,8 +401,8 @@ BCSMEvent ::= SEQUENCE
     monitorMode			[1]  MonitorMode,
     legID6				[2]  LegID              OPTIONAL,
     dpSpecificCriteria  [30] DpSpecificCriteria OPTIONAL,
-	automaticRearm		[50] NULL				OPTIONAL
-  -- FHModif, ...
+	  automaticRearm		[50] NULL				OPTIONAL
+    -- FHModif, ...
 }
 
 -- Indicates the BCSM Event information for monitoring.
@@ -423,7 +419,7 @@ BearerCapability ::= CHOICE
     bearerCap  [0] BearerCap
 }
 
-BearerCap ::= OCTET STRING (SIZE (2..11 ))
+BearerCap ::= OCTET STRING (SIZE (2..cAPSpecificBoundSetmaxBearerCapabilityLength ))
 
 -- Indicates the type of bearer capability connection to the user. For bearerCap, the ISUP User
 -- Service Information, ETSI EN 300 356-1 [23]
@@ -525,7 +521,7 @@ CallSegmentID  ::= INTEGER (1..cAPSpecificBoundsSetnumOfCSs)
 CallSegmentToCancel  ::= SEQUENCE {
 	callInvokeID							[0]	InvokeID						OPTIONAL,
 	callSegmentID						[1]	CallSegmentID 					OPTIONAL
-  -- FHModif, ...
+  -- FHModif, ...                                                            
 	}
 
 -- CAMEL-AChBillingChargingCharacteristics notes: not recursive, exported,
@@ -537,7 +533,7 @@ CAMEL-AChBillingChargingCharacteristics ::=  CHOICE
         maxCallPeriodDuration		[0] INTEGER (1..864000),
         releaseIfdurationExceeded	[1] BOOLEAN               DEFAULT FALSE,
         tariffSwitchInterval		[2] INTEGER (1..86400)    OPTIONAL,
-		audibleIndicator			[3] AudibleIndicator,
+		    audibleIndicator			[3] AudibleIndicator,
         extensions					[4] ExtensionsArray       OPTIONAL
         -- FHModif, ...
     }
@@ -597,7 +593,7 @@ SEQUENCE
     fCIBCCCAMELsequence2 [0]  SEQUENCE
     {
         freeFormatData       [0] FreeFormatData,
-        pDPId                [1] PDPId OPTIONAL,
+        pDPID                [1] PDPId OPTIONAL,
         appendFreeFormatData [2] AppendFreeFormatData DEFAULT overwrite
     }
 }
@@ -625,7 +621,7 @@ CAMEL-SCIBillingChargingCharacteristics ::=  CHOICE
 }
 
 CAMEL-SCIBillingChargingCharacteristicsAlt ::= SEQUENCE {
-	-- FHModif...
+	-- FHModif ...
 	}
 --	This datatype is for extension in future releases.
 
@@ -635,8 +631,8 @@ CamelSCIGPRSBillingChargingCharacteristics ::=
 
  SEQUENCE
 {
-    aOCGprs [0] AOCGprs,
-    pDPId   [1] PDPId   OPTIONAL
+    aOCGPRS [0] AOCGprs,
+    pDPID   [1] PDPId   OPTIONAL
 }
 
 -- Carrier notes: not recursive, exported,
@@ -691,7 +687,7 @@ ChangeOfLocation ::= CHOICE {
 -- The serviceAreaId shall contain a Service Area Identification.
 
 ChangeOfLocationAlt ::= SEQUENCE {
-	-- FHModif...
+	-- FHModif ...
 	}
 
 ChargeIndicator ::= OCTET STRING (SIZE (1))
@@ -870,7 +866,7 @@ DpSpecificCriteria ::= CHOICE
 }
 
 DpSpecificCriteriaAlt ::= SEQUENCE {
-	-- FHModif...,
+	      -- FHModif ...,
         changeOfPositionControlInfo			[0]	ChangeOfPositionControlInfo,
         numberOfDigits                                  [1]     NumberOfDigits                  OPTIONAL,
         interDigitTimeout                               [2]     INTEGER (1..127)                 OPTIONAL
@@ -878,16 +874,16 @@ DpSpecificCriteriaAlt ::= SEQUENCE {
 -- interDigitTimeout  duration in seconds.
 
 DpSpecificInfoAlt ::= SEQUENCE {
-	-- FHModif...,
-	oServiceChangeSpecificInfo			[0] SEQUENCE {
+	  -- FHModif ...,
+	  oServiceChangeSpecificInfo			[0] SEQUENCE {
 		ext-basicServiceCode				[0] Ext-BasicServiceCode				OPTIONAL,
-	  -- FHModif...,
+	  -- FHModif ...,
 	  initiatorOfServiceChange                        [1] InitiatorOfServiceChange                           OPTIONAL,
 	  natureOfServiceChange                           [2] NatureOfServiceChange                               OPTIONAL
 		},
 	tServiceChangeSpecificInfo			[1] SEQUENCE {
 		ext-basicServiceCode				[0] Ext-BasicServiceCode				OPTIONAL,
-	  -- FHModif...,
+	  -- FHModif ...,
 	  initiatorOfServiceChange                        [1] InitiatorOfServiceChange                           OPTIONAL,
 	  natureOfServiceChange                           [2] NatureOfServiceChange                               OPTIONAL
 		}
@@ -955,7 +951,7 @@ EventSpecificInformationBCSM ::= CHOICE
 		},
 	oNoAnswerSpecificInfo				[4] SEQUENCE {
 		-- no specific info defined --
-		-- FHModif...
+		-- FHModif ...
 		},
 	oAnswerSpecificInfo					[5] SEQUENCE {
 		destinationAddress					[50] CalledPartyNumber					OPTIONAL,
@@ -964,7 +960,7 @@ EventSpecificInformationBCSM ::= CHOICE
 		chargeIndicator						[53] ChargeIndicator					OPTIONAL,
 		ext-basicServiceCode				[54] Ext-BasicServiceCode				OPTIONAL,
 		ext-basicServiceCode2				[55] Ext-BasicServiceCode				OPTIONAL
-    -- FHModif, ...                                               
+    -- FHModif, ...
 		},
 	oMidCallSpecificInfo				[6] SEQUENCE {
 		omidCallEvents						[1] CHOICE {
@@ -974,7 +970,7 @@ EventSpecificInformationBCSM ::= CHOICE
       -- FHModif, ...
 		},
 	oDisconnectSpecificInfo				[7] SEQUENCE {
-		releaseCause						[0] Cause								OPTIONAL      
+		releaseCause						[0] Cause								OPTIONAL
     -- FHModif, ...
 		},
 	tBusySpecificInfo					[8] SEQUENCE {
@@ -1022,8 +1018,7 @@ EventSpecificInformationBCSM ::= CHOICE
     -- FHModif, ...
 		},
 	oChangeOfPositionSpecificInfo		[50] SEQUENCE {
-		locationInformation					[50] LocationInformation				OPTIONAL
-    ,
+		locationInformation					[50] LocationInformation				OPTIONAL,
 		-- FHModif...,
         metDPCriteriaList                   [51] MetDPCriteriaList					OPTIONAL
 		},
@@ -1054,7 +1049,7 @@ EventSpecificInformationSMS ::= CHOICE
 		},
 	t-smsDeliverySpecificInfo			[3] SEQUENCE {
 		-- no specific info defined-
-		-- FHModif...
+		-- FHModif ...
 		}
 }
 
@@ -1147,7 +1142,7 @@ ForwardServiceInteractionInd ::=   SEQUENCE
 	-- presentationRestricted	'xxxx xx10'B
 	-- if absent from Connect or ContinueWithArgument,
 	-- then CAMEL service does not affect calling party restriction treatment
--- FHModif, ...
+  -- FHModif, ...
 }
 
 -- GapCriteria notes: not recursive, exported,
@@ -1252,19 +1247,19 @@ GPRSEventSpecificInformation ::= CHOICE
         pDPType                 [3] PDPType                 OPTIONAL,
         qualityOfService        [4] QualityOfService        OPTIONAL,
         timeAndTimeZone         [5] TimeAndTimezone         OPTIONAL,
-		-- FHModif...,
+		    -- FHModif ...,
         gGSNAddress             [6] GSN-Address              OPTIONAL
     },
     detachSpecificInformation [2]  SEQUENCE
     {
         inititatingEntity       [0] InitiatingEntity        OPTIONAL,
-		-- FHModif...,
+		    -- FHModif ...,
         routeingAreaUpdate      [1] NULL                    OPTIONAL
     },
     disconnectSpecificInformation [3]  SEQUENCE
     {
         inititatingEntity       [0] InitiatingEntity        OPTIONAL,
-		-- FHModif...,
+		    -- FHModif ...,
         routeingAreaUpdate      [1] NULL                    OPTIONAL
     },
     pDPContextEstablishmentSpecificInformation [4]  SEQUENCE
@@ -1275,7 +1270,7 @@ GPRSEventSpecificInformation ::= CHOICE
         locationInformationGPRS [3] LocationInformationGPRS OPTIONAL,
         timeAndTimeZone         [4] TimeAndTimezone         OPTIONAL,
         pDPInitiationType       [5] PDPInitiationType       OPTIONAL,
-		-- FHModif...,
+		    -- FHModif ...,
         secondaryPDPContext     [6] NULL                    OPTIONAL
     },
     pDPContextEstablishmentAcknowledgementSpecificInformation [5] SEQUENCE
@@ -1286,7 +1281,7 @@ GPRSEventSpecificInformation ::= CHOICE
         qualityOfService        [3] QualityOfService        OPTIONAL,
         locationInformationGPRS [4] LocationInformationGPRS OPTIONAL,
         timeAndTimeZone         [5] TimeAndTimezone         OPTIONAL,
-		-- FHModif...,
+		    -- FHModif ...,
         gGSNAddress             [6] GSN-Address              OPTIONAL
     }
 }
@@ -1409,7 +1404,7 @@ LocationInformationGPRS ::=   SEQUENCE
     sgsn-Number                      [3] ISDN-AddressString               OPTIONAL,
     selectedLSAIdentity              [4] LSAIdentity                      OPTIONAL,
     extensionContainer               [5] ExtensionContainer               OPTIONAL,
-	-- FHModif...,
+	  -- FHModif ...,
     saiPresent                       [6] NULL                             OPTIONAL
 }
 -- cellGlobalIdOrServiceAreaIdOrLAI shall contain the value part of the
@@ -1478,7 +1473,7 @@ MetDPCriterion ::= CHOICE {
 -- The enteringServiceAreaId and leavingServiceAreaId shall contain a Service Area Identification.
 
 MetDPCriterionAlt ::= SEQUENCE {
-	-- FHModif...
+	-- FHModif ...
 	}
 
 MidCallControlInfo ::= SEQUENCE {
@@ -1607,7 +1602,9 @@ OCTET STRING (SIZE (cAPSpecificBoundSetminOriginalCalledPartyIDLength ..cAPSpeci
 
 -- PDPId notes: not recursive, exported,
 -- locally refd 11 times, import refd 0 times
-PDPId ::= OCTET STRING (SIZE (1))
+PDPId ::=
+
+OCTET STRING (SIZE (1))
 
 -- PDPInitiationType notes: not recursive, exported,
 -- locally refd 2 times, import refd 0 times
@@ -1625,7 +1622,7 @@ QualityOfService ::=
 	requested-QoS						[0]	GPRS-QoS								OPTIONAL,
 	subscribed-QoS						[1]	GPRS-QoS								OPTIONAL,
 	negotiated-QoS						[2]	GPRS-QoS								OPTIONAL,
-	-- FHModif...,
+	-- FHModif ...,
 	requested-QoS-Extension				[3]	GPRS-QoS-Extension						OPTIONAL,
 	subscribed-QoS-Extension			[4]	GPRS-QoS-Extension						OPTIONAL,
 	negotiated-QoS-Extension			[5]	GPRS-QoS-Extension						OPTIONAL
@@ -2260,7 +2257,7 @@ ConnectGPRSArg ::=
  SEQUENCE
 {
     accessPointName [0] AccessPointName,
-    pdpId           [1] PDPId           OPTIONAL
+    pdpID           [1] PDPId           OPTIONAL
     -- FHModif, ...
 }
 
@@ -2273,7 +2270,7 @@ EntityReleasedGPRSArg ::=
  SEQUENCE
 {
     gPRSCause [0] GPRSCause,
-    pDPId     [1] PDPId      OPTIONAL
+    pDPID     [1] PDPId      OPTIONAL
     -- FHModif, ...
 }
 
@@ -2284,7 +2281,7 @@ ReleaseGPRSArg ::=
  SEQUENCE
 {
     gprsCause [0] GPRSCause,
-    pDPId     [1] PDPId     OPTIONAL
+    pDPID     [1] PDPId     OPTIONAL
     -- FHModif, ...
 }
 
@@ -2295,7 +2292,7 @@ RequestReportGPRSEventArg ::=
  SEQUENCE
 {
     gPRSEvent [0] GPRSEventArray,
-    pDPId     [1] PDPId     OPTIONAL
+    pDPID     [1] PDPId     OPTIONAL
     -- FHModif, ...
 }
 
@@ -2307,9 +2304,9 @@ GPRSEventArray ::=
 SendChargingInformationGPRSArg ::=
 
  SEQUENCE
-{                                                                                     
+{
     sCIGPRSBillingChargingCharacteristics [0] SCIGPRSBillingChargingCharacteristics
-    -- FHModif, ...
+    -- FHModif, ...                                                                                 
 }
 
 
@@ -2363,7 +2360,7 @@ InitialDPArgExtension  ::= SEQUENCE {
 	highLayerCompatibility2				[8] HighLayerCompatibility					OPTIONAL,
 	lowLayerCompatibility				[9] LowLayerCompatibility					OPTIONAL,
 	lowLayerCompatibility2				[10] LowLayerCompatibility					OPTIONAL,
-	-- FHModif...,
+	-- FHModif ...,
 	enhancedDialledServicesAllowed		[11] NULL									OPTIONAL,
         uu-Data						[12] UU-Data								OPTIONAL,
         collectInformationAllowed			[13] NULL								OPTIONAL
@@ -2471,7 +2468,7 @@ EventReportGPRSArg ::=
     gPRSEventType                [0] GPRSEventType,
     miscGPRSInfo                 [1] MiscCallInfo                 OPTIONAL,
     gPRSEventSpecificInformation [2] GPRSEventSpecificInformation OPTIONAL,
-    pDPId                        [3] PDPId                        OPTIONAL
+    pDPID                        [3] PDPId                        OPTIONAL
     -- FHModif, ...
 }
 
@@ -2559,7 +2556,7 @@ ConnectArg ::=
     oCSIApplicable                  [56] OCSIApplicable                 OPTIONAL,
 	naOliInfo						[57] NAOliInfo						OPTIONAL,
 	bor-InterrogationRequested		[58] NULL							OPTIONAL,
-    -- FHModif...,
+    -- FHModif ...,
     suppress-N-CSI		[59] NULL								OPTIONAL
 }
 
@@ -2730,7 +2727,7 @@ ResetTimerSMSArg ::=
     timerID    [0] TimerID DEFAULT tssf,
     timervalue [1] TimerValue,
     extensions [2] ExtensionsArray OPTIONAL
-    -- FHModif, ...
+    -- FHModif, ...                                      
 }
 
 
@@ -2941,7 +2938,7 @@ InitialDPSMSArg ::=
     tPDataCodingScheme                  [11] TPDataCodingScheme           OPTIONAL,
     tPValidityPeriod                    [12] TPValidityPeriod             OPTIONAL,
     extensions                          [13] ExtensionsArray              OPTIONAL,
-	-- FHModif...,
+	  -- FHModif ...,
     smsReferenceNumber                  [14] CallReferenceNumber          OPTIONAL,
     mscAddress                          [15] ISDN-AddressString           OPTIONAL,
     sgsnNumber                          [16] ISDN-AddressString           OPTIONAL,
@@ -2986,7 +2983,7 @@ ApplyChargingGPRSArg ::= SEQUENCE
 {
     chargingCharacteristics [0] ChargingCharacteristics,
     tariffSwitchInterval    [1] INTEGER (1..86400)      OPTIONAL,
-    pDPId                   [2] PDPId                   OPTIONAL
+    pDPID                   [2] PDPId                   OPTIONAL
     -- FHModif, ...
 }
 	    
@@ -3007,8 +3004,8 @@ ApplyChargingReportGPRSArg ::=
     chargingResult   [0] ChargingResult,
     qualityOfService [1] QualityOfService OPTIONAL,
     active           [2] BOOLEAN          DEFAULT TRUE,
-    pDPId            [3] PDPId            OPTIONAL,
-    -- FHModif...,
+    pDPID            [3] PDPId            OPTIONAL,
+    -- FHModif ...,
     chargingRollOver [4] ChargingRollOver OPTIONAL
 }
 
@@ -3018,7 +3015,7 @@ CancelGPRSArg ::=
 
  SEQUENCE
 {
-     pDPId [0] PDPId OPTIONAL
+     pDPID [0] PDPId OPTIONAL
      -- FHModif, ...
 }
 
@@ -3028,7 +3025,7 @@ ContinueGPRSArg ::=
 
  SEQUENCE
 {
-     pDPId [0] PDPId OPTIONAL
+     pDPID [0] PDPId OPTIONAL
      -- FHModif, ...
 }
 
