@@ -177,7 +177,7 @@ public class BN_ASNMessage extends ASNMessage
     }
     
     @Override
-    public String getResult()
+    public String getResult() throws Exception
     {
     	// TODO complete 
     	return "TODO";

@@ -77,12 +77,12 @@ Component ::= CHOICE {
 Invoke ::= SEQUENCE {
   invokeID		InvokeIdType,
   linkedID		[0] IMPLICIT InvokeIdType OPTIONAL,
-  opCode		OPERATION,
-  invokeparameter 	InvokeParameter OPTIONAL
+  opCode		OPERATION1,
+  -- FHModif invokeparameter InvokeParameter OPTIONAL 
+  invokeparameter OCTET STRING OPTIONAL
 }
 -- FHModif remove ANY
 -- InvokeParameter ::= ANY 
-InvokeParameter ::= OCTET STRING
 
 
 -- ANY is filled by the single ASN.1 data type following the keyword PARAMETER or the keyword ARGUMENT
@@ -91,26 +91,27 @@ InvokeParameter ::= OCTET STRING
 ReturnResult ::= SEQUENCE {
   invokeID	InvokeIdType,
   resultretres	SEQUENCE {
-    opCode		OPERATION,
-    returnparameter	ReturnResultParameter OPTIONAL
+    opCode		OPERATION1,
+    -- FHModif returnparameter ReturnResultParameter OPTIONAL
+    returnparameter OCTET STRING OPTIONAL
   } OPTIONAL
 }
 
 -- FHModif remove ANY 
 -- ReturnResultParameter ::= ANY
-ReturnResultParameter ::= OCTET STRING
 
 -- ANY is filled by the single ASN.1 data type following the keyword RESULT in the type definition
 -- of a particular operation.
 
 ReturnError ::= SEQUENCE {
   invokeID	InvokeIdType,
-  errorCode	ERROR,
-  parameter	ReturnErrorParameter  OPTIONAL }
+  errorCode	ERROR1,
+  -- FHModif parameter ReturnErrorParameter  OPTIONAL 
+  errorparameter OCTET STRING  OPTIONAL
+  }
 
-  -- FHModif remove ANY 
+-- FHModif remove ANY 
 -- ReturnErrorParameter ::= ANY
-ReturnErrorParameter ::= OCTET STRING
 
 -- ANY is filled by the single ASN.1 data type following the keyword PARAMETER in the type definition
 -- of a particular error.
