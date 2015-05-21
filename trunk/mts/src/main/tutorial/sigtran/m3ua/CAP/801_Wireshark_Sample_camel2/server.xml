@@ -46,33 +46,6 @@
     <parameter name="[data]" value="a173020101020100306b80016e8208839021721090000f830303975785010a8c06831407010900bb0580038090a39c01029d068314070109009e0203619f320806079209100491f9bf35038301119f360513fa3d3dea9f37069122705700709f39080250114231016500bf3b088006912270570070" />    			
     <parameter name="[xmlCAPdata]" operation="protocol.setFromMessage" value="asn.binary"/>
     <test parameter="[xmlCAPdata]" condition="binary.equals" value="[data]"/>
-
-    <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;CAP&quot;&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;Component"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;invoke"/>
-    <parameter name="[invokeID]" operation="string.xpath" value="[xml]" value2="//invokeID.BoxedType"/>
-    <test parameter="[invokeID]" condition="string.contains" value="&gt;1&lt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;opCode"/>
-    <parameter name="[localValue]" operation="string.xpath" value="[xml]" value2="//localValue.BoxedType"/>
-    <test parameter="[localValue]" condition="string.contains" value="&gt;initialDP:0&lt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/opCode"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;invokeparameter"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;InitialDPArg"/>
-    <parameter name="[serviceKey]" operation="string.xpath" value="[xml]" value2="//serviceKey.C0.BoxedType"/>
-    <test parameter="[serviceKey]" condition="string.contains" value="&gt;110&lt;"/>
-    <parameter name="[eventTypeBCSM]" operation="string.xpath" value="[xml]" value2="//eventTypeBCSM.C28.Enum"/>
-    <test parameter="[eventTypeBCSM]" condition="string.contains" value="&gt;collectedInfo.2&lt;"/>
-    <parameter name="[iMSI]" operation="string.xpath" value="[xml]" value2="//iMSI.C50.BoxedType"/>
-    <!--test parameter="[iMSI]" condition="string.contains" value="&gt;110&lt;"/-->
-    <parameter name="[iMSI_Digit]" operation="string.xpath" value="[iMSI]" value2="//field[@name='digits']"/> 
-    <parameter name="[iMSI_Digit]" operation="string.xpath" value="[iMSI_Digit]" value2="//@value"/>
-    <test parameter="[iMSI_Digit]" condition="string.equals" value="607029900140199"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/InitialDPArg"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/invokeparameter"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/invoke"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/Component"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/>
     
     <!-- ESSAI pas concluant d'analyse avec les xpath : pas de wilcards possible -->
     <!--parameter name="[asnChild]" operation="string.xpath" value="[xml]" value2="/ASN/*"/>
@@ -99,6 +72,7 @@
     <test parameter="[invokeChild(1)]" condition="string.startsWith" value="&lt;opCode"/>
     <test parameter="[invokeChild(2)]" condition="string.startsWith" value="&lt;invokeparameter"/-->    
     
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
     <parameter name="[component]" operation="string.xpath" value="[xml]" value2="//Component.Choice"/>
     <test parameter="[component]" condition="list.size" value="1"/>
     <parameter name="[invoke]" operation="string.xpath" value="[component]" value2="//invoke.C1.Sequence"/>
@@ -320,7 +294,7 @@
                        </bcsmEvents.C0.Sequence>
                        <bcsmEvents.C0.Sequence>
                           <eventTypeBCSM.C0.Enum>
-                             <EnumType>oAbandon.9</EnumType>
+                             <EnumType>oAbandon.10</EnumType>
                           </eventTypeBCSM.C0.Enum>
                           <monitorMode.C1.Enum>
                              <EnumType>notifyAndContinue.1</EnumType>
@@ -480,5 +454,469 @@
     <parameter name="[xmlCAPdata]" operation="protocol.setFromMessage" value="asn.binary"/>
     <test parameter="[xmlCAPdata]" condition="binary.equals" value="[data]"/>
 
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
+    <parameter name="[component]" operation="string.xpath" value="[xml]" value2="//Component.Choice"/>
+    <test parameter="[component]" condition="list.size" value="1"/>
+    <parameter name="[invoke]" operation="string.xpath" value="[component]" value2="//invoke.C1.Sequence"/>
+    <test parameter="[invoke]" condition="list.size" value="1"/>
+    <parameter name="[invokeparameter]" operation="string.xpath" value="[invoke]" value2="//invokeparameter"/>
+    <test parameter="[invokeparameter]" condition="list.size" value="1"/>
+    <parameter name="[RequestReportBCSMEventArg]" operation="string.xpath" value="[invokeparameter]" value2="//RequestReportBCSMEventArg.Sequence"/>
+    <test parameter="[RequestReportBCSMEventArg]" condition="list.size" value="1"/>
+    <parameter name="[Collection]" operation="string.xpath" value="[RequestReportBCSMEventArg]" value2="//Collection"/>
+    <test parameter="[Collection]" condition="list.size" value="1"/>
+    <parameter name="[bcsmEvents]" operation="string.xpath" value="[Collection]" value2="//bcsmEvents.C0.Sequence"/>
+    <test parameter="[bcsmEvents]" condition="list.size" value="7"/>
+    <parameter name="[eventTypeBCSM]" operation="string.xpath" value="[bcsmEvents]" value2="//eventTypeBCSM.C0.Enum"/>
+    <test parameter="[eventTypeBCSM]" condition="list.size" value="7"/>
+    <parameter name="[eventTypeBCSMEnumType]" operation="string.xpath" value="[eventTypeBCSM]" value2="//EnumType"/>
+    <test parameter="[eventTypeBCSMEnumType]" condition="list.size" value="7"/>
+    <test parameter="[eventTypeBCSMEnumType(0)]" condition="string.equals" value="&lt;EnumType&gt;routeSelectFailure.4&lt;/EnumType&gt;"/>
+    <test parameter="[eventTypeBCSMEnumType(1)]" condition="string.equals" value="&lt;EnumType&gt;oCalledPartyBusy.5&lt;/EnumType&gt;"/>
+    <test parameter="[eventTypeBCSMEnumType(2)]" condition="string.equals" value="&lt;EnumType&gt;oNoAnswer.6&lt;/EnumType&gt;"/>    
+    <test parameter="[eventTypeBCSMEnumType(3)]" condition="string.equals" value="&lt;EnumType&gt;oAnswer.7&lt;/EnumType&gt;"/>    
+    <test parameter="[eventTypeBCSMEnumType(4)]" condition="string.equals" value="&lt;EnumType&gt;oDisconnect.9&lt;/EnumType&gt;"/>        
+    <test parameter="[eventTypeBCSMEnumType(5)]" condition="string.equals" value="&lt;EnumType&gt;oDisconnect.9&lt;/EnumType&gt;"/>
+    <test parameter="[eventTypeBCSMEnumType(6)]" condition="string.equals" value="&lt;EnumType&gt;oAbandon.10&lt;/EnumType&gt;"/>
+    <parameter name="[monitorMode]" operation="string.xpath" value="[bcsmEvents]" value2="//monitorMode.C1.Enum"/>
+    <test parameter="[monitorMode]" condition="list.size" value="7"/>
+    <parameter name="[monitorModeEnumType]" operation="string.xpath" value="[monitorMode]" value2="//EnumType"/>
+    <test parameter="[monitorModeEnumType]" condition="list.size" value="7"/>
+    <test parameter="[monitorModeEnumType(0)]" condition="string.equals" value="&lt;EnumType&gt;interrupted.0&lt;/EnumType&gt;"/>
+    <test parameter="[monitorModeEnumType(1)]" condition="string.equals" value="&lt;EnumType&gt;interrupted.0&lt;/EnumType&gt;"/>
+    <test parameter="[monitorModeEnumType(2)]" condition="string.equals" value="&lt;EnumType&gt;interrupted.0&lt;/EnumType&gt;"/>    
+    <test parameter="[monitorModeEnumType(3)]" condition="string.equals" value="&lt;EnumType&gt;notifyAndContinue.1&lt;/EnumType&gt;"/>    
+    <test parameter="[monitorModeEnumType(4)]" condition="string.equals" value="&lt;EnumType&gt;interrupted.0&lt;/EnumType&gt;"/>        
+    <test parameter="[monitorModeEnumType(5)]" condition="string.equals" value="&lt;EnumType&gt;interrupted.0&lt;/EnumType&gt;"/>
+    <test parameter="[monitorModeEnumType(6)]" condition="string.equals" value="&lt;EnumType&gt;notifyAndContinue.1&lt;/EnumType&gt;"/>
+    <parameter name="[legID]" operation="string.xpath" value="[bcsmEvents]" value2="//legID.C2.Choice"/>
+    <test parameter="[legID]" condition="list.size" value="7"/>
+    <parameter name="[legIDSendingSideID]" operation="string.xpath" value="[legID]" value2="//sendingSideID.C0.BoxedType"/>
+    <test parameter="[legIDSendingSideID]" condition="list.size" value="7"/>
+    <parameter name="[legIDSendingSideIDBytes]" operation="string.xpath" value="[legIDSendingSideID]" value2="//Bytes"/>
+    <test parameter="[legIDSendingSideIDBytes]" condition="list.size" value="7"/>
+    <test parameter="[legIDSendingSideIDBytes(0)]" condition="string.equals" value="&lt;Bytes&gt;02&lt;/Bytes&gt;"/>
+    <test parameter="[legIDSendingSideIDBytes(1)]" condition="string.equals" value="&lt;Bytes&gt;02&lt;/Bytes&gt;"/>
+    <test parameter="[legIDSendingSideIDBytes(2)]" condition="string.equals" value="&lt;Bytes&gt;02&lt;/Bytes&gt;"/>    
+    <test parameter="[legIDSendingSideIDBytes(3)]" condition="string.equals" value="&lt;Bytes&gt;02&lt;/Bytes&gt;"/>    
+    <test parameter="[legIDSendingSideIDBytes(4)]" condition="string.equals" value="&lt;Bytes&gt;01&lt;/Bytes&gt;"/>        
+    <test parameter="[legIDSendingSideIDBytes(5)]" condition="string.equals" value="&lt;Bytes&gt;02&lt;/Bytes&gt;"/>
+    <test parameter="[legIDSendingSideIDBytes(6)]" condition="string.equals" value="&lt;Bytes&gt;01&lt;/Bytes&gt;"/>
 
+    <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
+        
+    <!-- AP LAYER -->
+    <ASN dictionary="cap/dictionary_CAP.xml">
+      <Component.Choice>
+        <invoke.C1.Sequence>
+           <invokeID.BoxedType><Integer>2</Integer></invokeID.BoxedType>
+            <opCode.Choice>
+               <localValue.BoxedType><Long>connect:20</Long></localValue.BoxedType>
+               <!--globalValue><ObjectIdentifier>0.1.227.111</ObjectIdentifier></globalValue-->
+            </opCode.Choice>
+            <invokeparameter>
+              <ConnectArg.Sequence>
+                <destinationRoutingAddress.C0.BoxedType>
+                   <Collection>
+                      <CalledPartyNumber.BoxedType><Bytes>0210792210</Bytes></CalledPartyNumber.BoxedType>
+                      <!--CalledPartyNumber.BoxedType><Bytes>572d4a</Bytes></CalledPartyNumber.BoxedType-->
+                      <!--CalledPartyNumber.BoxedType><Bytes>b0f7</Bytes></CalledPartyNumber.BoxedType-->
+                   </Collection>
+                </destinationRoutingAddress.C0.BoxedType>
+                <!--alertingPattern.C1.BoxedType><Bytes>c8dfc77c7b5dda3198</Bytes></alertingPattern.C1.BoxedType>
+                <originalCalledPartyID.C6.BoxedType><Bytes>55fa51fca354e89fa9</Bytes></originalCalledPartyID.C6.BoxedType-->
+                <!--extensions.C10.BoxedType>
+                   <Collection>
+                      <ExtensionField.Sequence>
+                         <type.Choice>
+                            <local>1737059511</local>
+                            <global><ObjectIdentifier>0.1.2127.58.44.37.54.115.108</ObjectIdentifier></global>
+                         </type.Choice>
+                         <criticality.nulld.Enum>
+                            <EnumType>ignore.0</EnumType>
+                         </criticality.nulld.Enum>
+                         <NullObject.C1></NullObject.C1>
+                      </ExtensionField.Sequence>
+                      <ExtensionField.Sequence>
+                         <type.Choice>
+                            <local>3712918456</local>
+                            <global><ObjectIdentifier>0.1.2126</ObjectIdentifier></global>
+                         </type.Choice>
+                         <criticality.nulld.Enum>
+                            <EnumType>abort.1</EnumType>
+                         </criticality.nulld.Enum>
+                         <NullObject.C1></NullObject.C1>
+                      </ExtensionField.Sequence>
+                      <ExtensionField.Sequence>
+                         <type.Choice>
+                            <local>4119937936</local>
+                            <global><ObjectIdentifier>0.1.210.64.114.95.90.93.51.107.98.78</ObjectIdentifier></global>
+                         </type.Choice>
+                         <criticality.nulld.Enum>
+                            <EnumType>ignore.0</EnumType>
+                         </criticality.nulld.Enum>
+                         <NullObject.C1></NullObject.C1>
+                      </ExtensionField.Sequence>
+                   </Collection>
+                </extensions.C10.BoxedType-->
+                <!--carrier.C11.BoxedType><Bytes>175dd4c32466e9</Bytes></carrier.C11.BoxedType>
+                <callingPartysCategory.C28.BoxedType><Bytes>f80f98cd</Bytes></callingPartysCategory.C28.BoxedType>
+                <redirectingPartyID.C29.BoxedType><Bytes>4ca9f5d602d9509058</Bytes></redirectingPartyID.C29.BoxedType>
+                <redirectionInformation.C30.BoxedType><Bytes>7c06e7</Bytes></redirectionInformation.C30.BoxedType-->
+                <!--genericNumbers.C14.BoxedType>
+                   <Collection>
+                      <GenericNumber.BoxedType><Bytes>e37ff04f515b59</Bytes></GenericNumber.BoxedType>
+                      <GenericNumber.BoxedType><Bytes>28d780a9ba2deaab</Bytes></GenericNumber.BoxedType>
+                      <GenericNumber.BoxedType><Bytes>5b50</Bytes></GenericNumber.BoxedType>
+                   </Collection>
+                </genericNumbers.C14.BoxedType-->
+                <!--serviceInteractionIndicatorsTwo.C15.Sequence>
+                   <forwardServiceInteractionInd.C0.Sequence>
+                      <conferenceTreatmentIndicator.C1>e68925115dc14ef067</conferenceTreatmentIndicator.C1>
+                      <callDiversionTreatmentIndicator.C2>833a6a97ab69bcda5705</callDiversionTreatmentIndicator.C2>
+                      <callingPartyRestrictionIndicator.C4>6ca695</callingPartyRestrictionIndicator.C4>
+                   </forwardServiceInteractionInd.C0.Sequence>
+                   <backwardServiceInteractionInd.C1.Sequence>
+                      <conferenceTreatmentIndicator.C1>0dde</conferenceTreatmentIndicator.C1>
+                      <callCompletionTreatmentIndicator.C2>c8f2</callCompletionTreatmentIndicator.C2>
+                   </backwardServiceInteractionInd.C1.Sequence>
+                   <bothwayThroughConnectionInd.C2.Enum>
+                      <EnumType>bothwayPathRequired.0</EnumType>
+                   </bothwayThroughConnectionInd.C2.Enum>
+                   <connectedNumberTreatmentInd.C4.Enum>
+                      <EnumType>presentationRestricted.1</EnumType>
+                   </connectedNumberTreatmentInd.C4.Enum>
+                   <nonCUGCall.C13></nonCUGCall.C13>
+                   <holdTreatmentIndicator.C50>7b140a8f4c4872</holdTreatmentIndicator.C50>
+                   <cwTreatmentIndicator.C51>9ec8f824</cwTreatmentIndicator.C51>
+                   <ectTreatmentIndicator.C52>5462384d69311df101</ectTreatmentIndicator.C52>
+                </serviceInteractionIndicatorsTwo.C15.Sequence-->
+                <!--chargeNumber.C19.BoxedType><LocationNumber.BoxedType><Bytes>cb5698272134f4
+                         <field name="Odd/even" value="odd number of address signals:1" type="EnumLong" lengthBit="1" />
+                         <field name="Nature of address" value="spare:75" type="EnumLong" lengthBit="7" />
+                         <field name="Internal Network Number" value="routing to internal number allowed:0" type="EnumLong" lengthBit="1" />
+                         <field name="Numbering plan" value="private numbering plan:5" type="EnumLong" lengthBit="3" />
+                         <field name="Address presentation restricted" value="presentation restricted:1" type="EnumLong" lengthBit="2" />
+                         <field name="Screening" value="reserved:2" type="EnumLong" lengthBit="2" />
+                         <field name="digits" value="897212434" type="Number_BCD" lengthBit="36" />
+                      </Bytes></LocationNumber.BoxedType></chargeNumber.C19.BoxedType-->
+                <!--legToBeConnected.C21.Choice>
+                   <sendingSideID.C0.BoxedType><Bytes>e410e74b97128aff05</Bytes></sendingSideID.C0.BoxedType>
+                   <receivingSideID.C1.BoxedType><Bytes>2bf2684f72ae08</Bytes></receivingSideID.C1.BoxedType>
+                </legToBeConnected.C21.Choice-->
+                <!--cug_Interlock.C31.BoxedType><Bytes>0fb9496a909a48</Bytes></cug_Interlock.C31.BoxedType>
+                <cug_OutgoingAccess.C32></cug_OutgoingAccess.C32-->
+                <!--suppressionOfAnnouncement.C55.Null>
+                   
+                </suppressionOfAnnouncement.C55.Null-->
+                <!--oCSIApplicable.C56.Null>
+                   
+                </oCSIApplicable.C56.Null-->
+                <!--naOliInfo.C57.BoxedType><Bytes>72adad22b33702</Bytes></naOliInfo.C57.BoxedType>
+                <bor_InterrogationRequested.C58></bor_InterrogationRequested.C58>
+                <suppress_N_CSI.C59></suppress_N_CSI.C59-->
+              </ConnectArg.Sequence>
+            </invokeparameter>
+        </invoke.C1.Sequence>
+      </Component.Choice>
+    </ASN>
+    
+    <!-- TCAP LAYER -->
+    <ASN dictionary="tcap/dictionary_TCAP.xml">
+      <TCMessage>
+        <Continue>
+          <otid><Bytes>047b</Bytes></otid>
+          <dtid><Bytes>07000401</Bytes></dtid>
+          <dialoguePortion>
+            <DialogueOC>
+              <ExternalPDU>
+                <ExternalPDUSequenceType>
+                  <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
+                  <!--indirect_reference>856649051904125184</indirect_reference-->
+                  <!--data_value_descriptor><Bytes>0402aa40</Bytes></data_value_descriptor-->
+                  <encoding>
+                    <single_ASN1_type>
+                      <DialoguePDU>
+                        <dialogueResponse>
+                          <AARE_apduSequenceType>
+                            <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
+                            <application_context_name>
+                              <ObjectIdentifier><ObjectIdentifier>CAP-v2-gsmSSF-to-gsmSCF-AC:0.4.0.0.1.0.50.1</ObjectIdentifier></ObjectIdentifier>
+                            </application_context_name>
+                            <result><Associate_result><Long>0</Long></Associate_result></result>
+                            <result_source_diagnostic>
+                              <Associate_source_diagnostic>
+                                <dialogue_service_user>
+                                  <DialogueServiceUser><Long>0</Long></DialogueServiceUser>
+                                </dialogue_service_user>
+                              </Associate_source_diagnostic>
+                            </result_source_diagnostic>
+                            <!--Collection>
+                              <user_information>040ca70f5e0f024d3b3c34b26588</user_information>
+                              <user_information>04120aef3699f398f0a04000761bab86be69191c</user_information>
+                              <user_information>0403d079a4</user_information>
+                            </Collection-->
+                          </AARE_apduSequenceType>
+                        </dialogueResponse>
+                      </DialoguePDU>
+                    </single_ASN1_type>
+                  </encoding>
+                </ExternalPDUSequenceType>
+              </ExternalPDU>
+            </DialogueOC>
+          </dialoguePortion>
+        </Continue>
+      </TCMessage>
+    </ASN>
+    
+	  <!-- SCCP LAYER  -->
+  	<SS7 name="sccp" file="sccp.xml">
+  		<header>
+          <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
+      </header>
+  		<parameter name="Protocol_Class" type="F" littleEndian="false">
+  			<field value="0" lengthBit="4" />
+  			<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
+  		</parameter>
+  		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
+  			<field name="Address_Indicator" value="67" length="1" />
+  			<field name="Signalling_Point_Code" value="1" length="2" />
+  			<field name="Subsystem_Number" value="8" length="1" />	
+  		</parameter>
+  		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
+  			<field name="Address_Indicator" value="67" length="1" />
+  			<field name="Signalling_Point_Code" value="2" length="2" />
+  			<field name="Subsystem_Number" value="8" length="1" />
+  		</parameter>
+  		<parameter id="15" name="Data" type="V" littleEndian="false">
+  			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+        <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+  		</parameter>
+  	</SS7>
+
+    <UA name="m3ua" file="m3ua.xml">
+        <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
+				
+        <parameter tag="Network_Appearence">
+            <field name="Network_Appearence"  format="Integer" value="102"/>
+        </parameter>
+        <parameter tag="Routing_Context">
+            <field name="Routing_Context" format="Integer"  value="101"/>
+        </parameter>
+        <parameter tag="Protocol_Data">
+            <field value="2" name="Originating_Point_Code"/>
+            <field value="1" name="Destination_Point_Code" />
+            <field value="SCCP"	name="SI"/>
+            <field value="2"	name="NI"/>
+            <field value="0"	name="MP"/>
+            <field value="1"	name="SLS"/>
+            <field name="DATA"	format="fvo"/>
+        </parameter>
+	
+        <!--parameter tag="Correlation_Id">
+            <field name="Correlation_Id" format="Integer"  value="12783"/>
+        </parameter-->
+    </UA>
+    </sendMessageSIGTRAN>
+
+    <!-- Message encoded value -->	
+    <parameter name="[data]" value="a1110201020201143009a00704050210792210" />    			
+    <parameter name="[xmlCAPdata]" operation="protocol.setFromMessage" value="asn.binary"/>
+    <test parameter="[xmlCAPdata]" condition="binary.equals" value="[data]"/>
+
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
+    <parameter name="[component]" operation="string.xpath" value="[xml]" value2="//Component.Choice"/>
+    <test parameter="[component]" condition="list.size" value="1"/>
+    <parameter name="[invoke]" operation="string.xpath" value="[component]" value2="//invoke.C1.Sequence"/>
+    <test parameter="[invoke]" condition="list.size" value="1"/>
+    <parameter name="[invokeparameter]" operation="string.xpath" value="[invoke]" value2="//invokeparameter"/>
+    <test parameter="[invokeparameter]" condition="list.size" value="1"/>
+    <!-- TODO -->
+
+    <receiveMessageSIGTRAN name="Wait DATA1" channel="[channelName]" request="true" type="eventReportBCSM:24">
+    </receiveMessageSIGTRAN>
+
+    <!-- Message encoded value -->	
+    <parameter name="[data]" value="a1180201020201183010800104a206a20480028490a303810102" />    			
+    <parameter name="[xmlCAPdata]" operation="protocol.setFromMessage" value="asn.binary"/>
+    <test parameter="[xmlCAPdata]" condition="binary.equals" value="[data]"/>
+
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
+    <parameter name="[component]" operation="string.xpath" value="[xml]" value2="//Component.Choice"/>
+    <test parameter="[component]" condition="list.size" value="1"/>
+    <parameter name="[invoke]" operation="string.xpath" value="[component]" value2="//invoke.C1.Sequence"/>
+    <test parameter="[invoke]" condition="list.size" value="1"/>
+    <parameter name="[invokeparameter]" operation="string.xpath" value="[invoke]" value2="//invokeparameter"/>
+    <test parameter="[invokeparameter]" condition="list.size" value="1"/>
+    <!-- TODO -->
+
+    <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
+        
+    <!-- AP LAYER -->
+    <ASN dictionary="cap/dictionary_CAP.xml">
+      <Component.Choice>
+        <invoke.C1.Sequence>
+           <invokeID.BoxedType><Integer>3</Integer></invokeID.BoxedType>
+            <opCode.Choice>
+               <localValue.BoxedType><Long>releaseCall:22</Long></localValue.BoxedType>
+               <!--globalValue><ObjectIdentifier>0.1.227.111</ObjectIdentifier></globalValue-->
+            </opCode.Choice>
+            <invokeparameter>
+               <ReleaseCallArg.Choice>
+                  <allCallSegments.BoxedType><Cause.BoxedType><Bytes>8495</Bytes></Cause.BoxedType></allCallSegments.BoxedType>
+                  <!--allCallSegmentsWithExtension.C2.Sequence>
+                     <allCallSegments.C0.BoxedType><Cause.BoxedType><Bytes>e4f2fe94ee1c4c</Bytes></Cause.BoxedType></allCallSegments.C0.BoxedType>
+                     <extensions.C1.BoxedType>
+                        <Collection>
+                           <ExtensionField.Sequence>
+                              <type.Choice>
+                                 <local>2687358350</local>
+                                 <global><ObjectIdentifier>0.1.23.69.0.43.16.58.36.38.119</ObjectIdentifier></global>
+                              </type.Choice>
+                              <criticality.nulld.Enum>
+                                 <EnumType>ignore.0</EnumType>
+                              </criticality.nulld.Enum>
+                              <NullObject.C1></NullObject.C1>
+                           </ExtensionField.Sequence>
+                           <ExtensionField.Sequence>
+                              <type.Choice>
+                                 <local>2954294941</local>
+                                 <global><ObjectIdentifier>0.1.2107.108.21</ObjectIdentifier></global>
+                              </type.Choice>
+                              <criticality.nulld.Enum>
+                                 <EnumType>ignore.0</EnumType>
+                              </criticality.nulld.Enum>
+                              <NullObject.C1></NullObject.C1>
+                           </ExtensionField.Sequence>
+                           <ExtensionField.Sequence>
+                              <type.Choice>
+                                 <local>2079269349</local>
+                                 <global><ObjectIdentifier>0.1.258</ObjectIdentifier></global>
+                              </type.Choice>
+                              <criticality.nulld.Enum>
+                                 <EnumType>abort.1</EnumType>
+                              </criticality.nulld.Enum>
+                              <NullObject.C1></NullObject.C1>
+                           </ExtensionField.Sequence>
+                        </Collection>
+                     </extensions.C1.BoxedType>
+                  </allCallSegmentsWithExtension.C2.Sequence-->
+               </ReleaseCallArg.Choice>
+            </invokeparameter>
+        </invoke.C1.Sequence>
+      </Component.Choice>
+    </ASN>
+    
+    <!-- TCAP LAYER -->
+    <ASN dictionary="tcap/dictionary_TCAP.xml">
+      <TCMessage>
+        <Continue>
+          <otid><Bytes>047b</Bytes></otid>
+          <dtid><Bytes>07000401</Bytes></dtid>
+          <dialoguePortion>
+            <DialogueOC>
+              <ExternalPDU>
+                <ExternalPDUSequenceType>
+                  <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
+                  <!--indirect_reference>856649051904125184</indirect_reference-->
+                  <!--data_value_descriptor><Bytes>0402aa40</Bytes></data_value_descriptor-->
+                  <encoding>
+                    <single_ASN1_type>
+                      <DialoguePDU>
+                        <dialogueResponse>
+                          <AARE_apduSequenceType>
+                            <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
+                            <application_context_name>
+                              <ObjectIdentifier><ObjectIdentifier>CAP-v2-gsmSSF-to-gsmSCF-AC:0.4.0.0.1.0.50.1</ObjectIdentifier></ObjectIdentifier>
+                            </application_context_name>
+                            <result><Associate_result><Long>0</Long></Associate_result></result>
+                            <result_source_diagnostic>
+                              <Associate_source_diagnostic>
+                                <dialogue_service_user>
+                                  <DialogueServiceUser><Long>0</Long></DialogueServiceUser>
+                                </dialogue_service_user>
+                              </Associate_source_diagnostic>
+                            </result_source_diagnostic>
+                            <!--Collection>
+                              <user_information>040ca70f5e0f024d3b3c34b26588</user_information>
+                              <user_information>04120aef3699f398f0a04000761bab86be69191c</user_information>
+                              <user_information>0403d079a4</user_information>
+                            </Collection-->
+                          </AARE_apduSequenceType>
+                        </dialogueResponse>
+                      </DialoguePDU>
+                    </single_ASN1_type>
+                  </encoding>
+                </ExternalPDUSequenceType>
+              </ExternalPDU>
+            </DialogueOC>
+          </dialoguePortion>
+        </Continue>
+      </TCMessage>
+    </ASN>
+    
+	  <!-- SCCP LAYER  -->
+  	<SS7 name="sccp" file="sccp.xml">
+  		<header>
+          <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
+      </header>
+  		<parameter name="Protocol_Class" type="F" littleEndian="false">
+  			<field value="0" lengthBit="4" />
+  			<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
+  		</parameter>
+  		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
+  			<field name="Address_Indicator" value="67" length="1" />
+  			<field name="Signalling_Point_Code" value="1" length="2" />
+  			<field name="Subsystem_Number" value="8" length="1" />	
+  		</parameter>
+  		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
+  			<field name="Address_Indicator" value="67" length="1" />
+  			<field name="Signalling_Point_Code" value="2" length="2" />
+  			<field name="Subsystem_Number" value="8" length="1" />
+  		</parameter>
+  		<parameter id="15" name="Data" type="V" littleEndian="false">
+  			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+        <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+  		</parameter>
+  	</SS7>
+
+    <UA name="m3ua" file="m3ua.xml">
+        <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
+				
+        <parameter tag="Network_Appearence">
+            <field name="Network_Appearence"  format="Integer" value="102"/>
+        </parameter>
+        <parameter tag="Routing_Context">
+            <field name="Routing_Context" format="Integer"  value="101"/>
+        </parameter>
+        <parameter tag="Protocol_Data">
+            <field value="2" name="Originating_Point_Code"/>
+            <field value="1" name="Destination_Point_Code" />
+            <field value="SCCP"	name="SI"/>
+            <field value="2"	name="NI"/>
+            <field value="0"	name="MP"/>
+            <field value="1"	name="SLS"/>
+            <field name="DATA"	format="fvo"/>
+        </parameter>
+	
+        <!--parameter tag="Correlation_Id">
+            <field name="Correlation_Id" format="Integer"  value="12783"/>
+        </parameter-->
+    </UA>
+    </sendMessageSIGTRAN>
+
+    <!-- Message encoded value -->	
+    <parameter name="[data]" value="a10a02010302011604028495" />    			
+    <parameter name="[xmlCAPdata]" operation="protocol.setFromMessage" value="asn.binary"/>
+    <test parameter="[xmlCAPdata]" condition="binary.equals" value="[data]"/>
+
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
+    <parameter name="[component]" operation="string.xpath" value="[xml]" value2="//Component.Choice"/>
+    <test parameter="[component]" condition="list.size" value="1"/>
+    <parameter name="[invoke]" operation="string.xpath" value="[component]" value2="//invoke.C1.Sequence"/>
+    <test parameter="[invoke]" condition="list.size" value="1"/>
+    <parameter name="[invokeparameter]" operation="string.xpath" value="[invoke]" value2="//invokeparameter"/>
+    <test parameter="[invokeparameter]" condition="list.size" value="1"/>
+    <!-- TODO -->
+    
 </scenario>
