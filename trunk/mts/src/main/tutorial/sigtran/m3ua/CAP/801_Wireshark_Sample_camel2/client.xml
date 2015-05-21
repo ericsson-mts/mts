@@ -396,7 +396,7 @@
     <ASN dictionary="tcap/dictionary_TCAP.xml">
       <TCMessage.Choice>
         <begin.A2.Sequence>
-           <otid.BoxedType><Bytes.A8>00000001</Bytes.A8></otid.BoxedType>
+           <otid.BoxedType><Bytes.A8>07000401</Bytes.A8></otid.BoxedType>
            <dialoguePortion.BoxedType><DialogueOC.A11.BoxedType>
                  <ExternalPDU.A11.BoxedType><ExternalPDUSequenceType.U8>
                        <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
@@ -506,15 +506,40 @@
     <parameter name="[iMSI_Digit]" operation="string.xpath" value="[iMSI]" value2="//field[@name='digits']"/> 
     <parameter name="[iMSI_Digit]" operation="string.xpath" value="[iMSI_Digit]" value2="//@value"/>
     <test parameter="[iMSI_Digit]" condition="string.equals" value="607029900140199"/>
-        
-    <!-- TODO -->
-    
     <test parameter="[xml]" condition="string.contains" value="&lt;/InitialDPArg"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/invokeparameter"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/invoke"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/Component"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/>
+    <!-- TODO -->
     
+    <parameter name="[component]" operation="string.xpath" value="[xml]" value2="//Component.Choice"/>
+    <test parameter="[component]" condition="list.size" value="1"/>
+    <parameter name="[invoke]" operation="string.xpath" value="[component]" value2="//invoke.C1.Sequence"/>
+    <test parameter="[invoke]" condition="list.size" value="1"/>
+    <parameter name="[invokeID]" operation="string.xpath" value="[invoke]" value2="//invokeID.BoxedType"/>
+    <test parameter="[invokeID]" condition="list.size" value="1"/>
+    <parameter name="[invokeIDint]" operation="string.xpath" value="[invokeID]" value2="//Integer"/>
+    <test parameter="[invokeIDint]" condition="list.size" value="1"/>
+    <test parameter="[invokeIDint]" condition="string.equals" value="&lt;Integer&gt;1&lt;/Integer&gt;"/>
+    <parameter name="[opCode]" operation="string.xpath" value="[invoke]" value2="//opCode.Choice"/>
+    <test parameter="[opCode]" condition="list.size" value="1"/>
+    <parameter name="[opCodeLocalValue]" operation="string.xpath" value="[opCode]" value2="//localValue.BoxedType"/>
+    <test parameter="[opCodeLocalValue]" condition="list.size" value="1"/>
+    <parameter name="[opCodeLocalValueInt]" operation="string.xpath" value="[opCodeLocalValue]" value2="//Long"/>
+    <test parameter="[opCodeLocalValueInt]" condition="list.size" value="1"/>
+    <test parameter="[opCodeLocalValueInt]" condition="string.equals" value="&lt;Long&gt;initialDP:0&lt;/Long&gt;"/>
+    <parameter name="[invokeparameter]" operation="string.xpath" value="[invoke]" value2="//invokeparameter"/>
+    <test parameter="[invokeparameter]" condition="list.size" value="1"/>
+    <parameter name="[InitialDPArg]" operation="string.xpath" value="[invokeparameter]" value2="//InitialDPArg.Sequence"/>
+    <test parameter="[InitialDPArg]" condition="list.size" value="1"/>
+    <parameter name="[serviceKey]" operation="string.xpath" value="[InitialDPArg]" value2="//serviceKey.C0.BoxedType"/>
+    <test parameter="[serviceKey]" condition="list.size" value="1"/>
+    <parameter name="[serviceKeyInt]" operation="string.xpath" value="[serviceKey]" value2="//Integer"/>
+    <test parameter="[serviceKeyInt]" condition="list.size" value="1"/>
+    <test parameter="[serviceKeyInt]" condition="string.equals" value="&lt;Integer&gt;110&lt;/Integer&gt;"/>
+    <!-- TODO -->
+
     <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="false" type="initialDP:0" result="RESULT">
     </receiveMessageSIGTRAN>
 	

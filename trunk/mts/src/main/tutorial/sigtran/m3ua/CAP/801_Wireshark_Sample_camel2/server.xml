@@ -68,38 +68,321 @@
     <parameter name="[iMSI_Digit]" operation="string.xpath" value="[iMSI]" value2="//field[@name='digits']"/> 
     <parameter name="[iMSI_Digit]" operation="string.xpath" value="[iMSI_Digit]" value2="//@value"/>
     <test parameter="[iMSI_Digit]" condition="string.equals" value="607029900140199"/>
-        
-    <!-- TODO -->
-    
     <test parameter="[xml]" condition="string.contains" value="&lt;/InitialDPArg"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/invokeparameter"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/invoke"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/Component"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/>
-	
+    
+    <!-- ESSAI pas concluant d'analyse avec les xpath : pas de wilcards possible -->
+    <!--parameter name="[asnChild]" operation="string.xpath" value="[xml]" value2="/ASN/*"/>
+    <test parameter="[asnChild]" condition="list.size" value="1"/>    
+    <test parameter="[asnChild]" condition="string.startsWith" value="&lt;Component"/>
+    <parameter name="[tag]" operation="string.regexmatches" value="[asnChild]" value2="&lt;Component.*&gt;"/>
+    <test parameter="[tag]" condition="list.size" value="1"/>    
+    <parameter name="[tag]" operation="string.substring" value="[tag]" value2="1"/>
+    <parameter name="[taglength]" operation="string.length" value="[tag]"/>
+    <parameter name="[taglength]" operation="number.substract" value="[taglength]" value2="2"/>
+    <parameter name="[tag]" operation="string.substring" value="[tag]" value2="0" value3="[taglength]"/>    
+    <parameter name="[componentChild]" operation="string.xpath" value="[asnChild]" value2="/[tag]/*"/>
+    <test parameter="[componentChild]" condition="list.size" value="1"/>            
+    <test parameter="[componentChild]" condition="string.startsWith" value="&lt;invoke"/>
+    <parameter name="[tag]" operation="string.regexmatches" value="[componentChild]" value2="&lt;invoke.*&gt;"/>
+    <test parameter="[tag]" condition="list.size" value="3"/>
+    <parameter name="[tag]" operation="string.substring" value="[tag]" value2="1"/>
+    <parameter name="[taglength]" operation="string.length" value="[tag]"/>
+    <parameter name="[taglength]" operation="number.substract" value="[taglength]" value2="2"/>
+    <parameter name="[tag]" operation="string.substring" value="[tag]" value2="0" value3="[taglength]"/>    
+    <parameter name="[invokeChild]" operation="string.xpath" value="[componentChild]" value2="/[tag(0)]/*"/>
+    <test parameter="[invokeChild]" condition="list.size" value="3"/>            
+    <test parameter="[invokeChild(0)]" condition="string.startsWith" value="&lt;invokeID"/>
+    <test parameter="[invokeChild(1)]" condition="string.startsWith" value="&lt;opCode"/>
+    <test parameter="[invokeChild(2)]" condition="string.startsWith" value="&lt;invokeparameter"/-->    
+    
+    <parameter name="[component]" operation="string.xpath" value="[xml]" value2="//Component.Choice"/>
+    <test parameter="[component]" condition="list.size" value="1"/>
+    <parameter name="[invoke]" operation="string.xpath" value="[component]" value2="//invoke.C1.Sequence"/>
+    <test parameter="[invoke]" condition="list.size" value="1"/>
+    <parameter name="[invokeID]" operation="string.xpath" value="[invoke]" value2="//invokeID.BoxedType"/>
+    <test parameter="[invokeID]" condition="list.size" value="1"/>
+    <parameter name="[invokeIDint]" operation="string.xpath" value="[invokeID]" value2="//Integer"/>
+    <test parameter="[invokeIDint]" condition="list.size" value="1"/>
+    <test parameter="[invokeIDint]" condition="string.equals" value="&lt;Integer&gt;1&lt;/Integer&gt;"/>
+    <parameter name="[opCode]" operation="string.xpath" value="[invoke]" value2="//opCode.Choice"/>
+    <test parameter="[opCode]" condition="list.size" value="1"/>
+    <parameter name="[opCodeLocalValue]" operation="string.xpath" value="[opCode]" value2="//localValue.BoxedType"/>
+    <test parameter="[opCodeLocalValue]" condition="list.size" value="1"/>
+    <parameter name="[opCodeLocalValueInt]" operation="string.xpath" value="[opCodeLocalValue]" value2="//Long"/>
+    <test parameter="[opCodeLocalValueInt]" condition="list.size" value="1"/>
+    <test parameter="[opCodeLocalValueInt]" condition="string.equals" value="&lt;Long&gt;initialDP:0&lt;/Long&gt;"/>
+    <parameter name="[invokeparameter]" operation="string.xpath" value="[invoke]" value2="//invokeparameter"/>
+    <test parameter="[invokeparameter]" condition="list.size" value="1"/>
+    <parameter name="[InitialDPArg]" operation="string.xpath" value="[invokeparameter]" value2="//InitialDPArg.Sequence"/>
+    <test parameter="[InitialDPArg]" condition="list.size" value="1"/>
+    <parameter name="[serviceKey]" operation="string.xpath" value="[InitialDPArg]" value2="//serviceKey.C0.BoxedType"/>
+    <test parameter="[serviceKey]" condition="list.size" value="1"/>
+    <parameter name="[serviceKeyInt]" operation="string.xpath" value="[serviceKey]" value2="//Integer"/>
+    <test parameter="[serviceKeyInt]" condition="list.size" value="1"/>
+    <test parameter="[serviceKeyInt]" condition="string.equals" value="&lt;Integer&gt;110&lt;/Integer&gt;"/>
+    <!-- TODO -->
+    	
     <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
         
     <!-- AP LAYER -->
     <ASN dictionary="cap/dictionary_CAP.xml">
       <Component.Choice>
-        <returnResultLast.C2.Sequence>
+        <invoke.C1.Sequence>
            <invokeID.BoxedType><Integer>1</Integer></invokeID.BoxedType>
-           <resultretres>
-              <opCode.Choice>
-                 <localValue.BoxedType><Long>initialDP:0</Long></localValue.BoxedType>
-                 <!--globalValue><ObjectIdentifier>0.1.227.111</ObjectIdentifier></globalValue-->
-              </opCode.Choice>
-              <returnparameter/>
-           </resultretres>
-        </returnResultLast.C2.Sequence>
+            <opCode.Choice>
+               <localValue.BoxedType><Long>requestReportBCSMEvent:23</Long></localValue.BoxedType>
+               <!--globalValue><ObjectIdentifier>0.1.227.111</ObjectIdentifier></globalValue-->
+            </opCode.Choice>
+              <invokeparameter>
+                 <RequestReportBCSMEventArg.Sequence>                    
+                    <Collection>
+                       <bcsmEvents.C0.Sequence>
+                          <eventTypeBCSM.C0.Enum>
+                             <EnumType>routeSelectFailure.4</EnumType>
+                          </eventTypeBCSM.C0.Enum>
+                          <monitorMode.C1.Enum>
+                             <EnumType>interrupted.0</EnumType>
+                          </monitorMode.C1.Enum>
+                          <legID.C2.Choice>
+                             <sendingSideID.C0.BoxedType><Bytes>02</Bytes></sendingSideID.C0.BoxedType>
+                             <!--receivingSideID.C1.BoxedType><Bytes>241c</Bytes></receivingSideID.C1.BoxedType-->
+                          </legID.C2.Choice>
+                          <!--dpSpecificCriteria.C30.Choice>
+                             <applicationTimer.C1.BoxedType><Integer>1</Integer></applicationTimer.C1.BoxedType>
+                             <midCallControlInfo.C2.Sequence>
+                                <minimumNumberOfDigits.C0d>1</minimumNumberOfDigits.C0d>
+                                <maximumNumberOfDigits.C1d>2</maximumNumberOfDigits.C1d>
+                                <endOfReplyDigit.C2>3c19</endOfReplyDigit.C2>
+                                <cancelDigit.C3>a4ee88df3f</cancelDigit.C3>
+                                <startDigit.C4>fa2623ab9559</startDigit.C4>
+                                <interDigitTimeout.C6d>0</interDigitTimeout.C6d>
+                             </midCallControlInfo.C2.Sequence>
+                             <dpSpecificCriteriaAlt.C3.Sequence>
+                                <changeOfPositionControlInfo.C0.BoxedType>
+                                   <Collection>
+                                      <ChangeOfLocation.Choice>
+                                         <cellGlobalId.C0.BoxedType><Bytes>41045242f811ca
+                                               <field name="MMC" value="144,250" type="NumberMMC" length="3" />
+                                               <field name="LAC" value="17144" type="Integer" length="2" />
+                                               <field name="CI_SAC" value="4554" type="Integer" length="2" />
+                                            </Bytes></cellGlobalId.C0.BoxedType>
+                                         <serviceAreaId.C1.BoxedType><Bytes>01491154d86753
+                                               <field name="MMC" value="109,114" type="NumberMMC" length="3" />
+                                               <field name="LAC" value="21720" type="Integer" length="2" />
+                                               <field name="CI_SAC" value="26451" type="Integer" length="2" />
+                                            </Bytes></serviceAreaId.C1.BoxedType>
+                                         <locationAreaId.C2.BoxedType><Bytes>4227811186
+                                               <field name="MMC" value="247,182" type="NumberMMC" length="3" />
+                                               <field name="LAC" value="4486" type="Integer" length="2" />
+                                            </Bytes></locationAreaId.C2.BoxedType>
+                                         <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
+                                         <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
+                                         <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
+                                         <changeOfLocationAlt.C6.Sequence>
+                                            
+                                         </changeOfLocationAlt.C6.Sequence>
+                                      </ChangeOfLocation.Choice>
+                                      <ChangeOfLocation.Choice>
+                                         <cellGlobalId.C0.BoxedType><Bytes>2183917da5afc5
+                                               <field name="MMC" value="123,198" type="NumberMMC" length="3" />
+                                               <field name="LAC" value="32165" type="Integer" length="2" />
+                                               <field name="CI_SAC" value="44997" type="Integer" length="2" />
+                                            </Bytes></cellGlobalId.C0.BoxedType>
+                                         <serviceAreaId.C1.BoxedType><Bytes>416102a592a031
+                                               <field name="MMC" value="141,206" type="NumberMMC" length="3" />
+                                               <field name="LAC" value="42386" type="Integer" length="2" />
+                                               <field name="CI_SAC" value="41009" type="Integer" length="2" />
+                                            </Bytes></serviceAreaId.C1.BoxedType>
+                                         <locationAreaId.C2.BoxedType><Bytes>32f517e72f
+                                               <field name="MMC" value="235,71" type="NumberMMC" length="3" />
+                                               <field name="LAC" value="59183" type="Integer" length="2" />
+                                            </Bytes></locationAreaId.C2.BoxedType>
+                                         <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
+                                         <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
+                                         <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
+                                         <changeOfLocationAlt.C6.Sequence>
+                                            
+                                         </changeOfLocationAlt.C6.Sequence>
+                                      </ChangeOfLocation.Choice>
+                                      <ChangeOfLocation.Choice>
+                                         <cellGlobalId.C0.BoxedType><Bytes>02370157c6bf5a
+                                               <field name="MMC" value="207,103" type="NumberMMC" length="3" />
+                                               <field name="LAC" value="22470" type="Integer" length="2" />
+                                               <field name="CI_SAC" value="48986" type="Integer" length="2" />
+                                            </Bytes></cellGlobalId.C0.BoxedType>
+                                         <serviceAreaId.C1.BoxedType><Bytes>610122b08ae134
+                                               <field name="MMC" value="161,220" type="NumberMMC" length="3" />
+                                               <field name="LAC" value="45194" type="Integer" length="2" />
+                                               <field name="CI_SAC" value="57652" type="Integer" length="2" />
+                                            </Bytes></serviceAreaId.C1.BoxedType>
+                                         <locationAreaId.C2.BoxedType><Bytes>91f9164837
+                                               <field name="MMC" value="199,61" type="NumberMMC" length="3" />
+                                               <field name="LAC" value="18487" type="Integer" length="2" />
+                                            </Bytes></locationAreaId.C2.BoxedType>
+                                         <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
+                                         <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
+                                         <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
+                                         <changeOfLocationAlt.C6.Sequence>
+                                            
+                                         </changeOfLocationAlt.C6.Sequence>
+                                      </ChangeOfLocation.Choice>
+                                   </Collection>
+                                </changeOfPositionControlInfo.C0.BoxedType>
+                                <numberOfDigits.C1.BoxedType><Integer>1</Integer></numberOfDigits.C1.BoxedType>
+                                <interDigitTimeout.C2>1</interDigitTimeout.C2>
+                             </dpSpecificCriteriaAlt.C3.Sequence>
+                          </dpSpecificCriteria.C30.Choice-->
+                          <!--automaticRearm.C50></automaticRearm.C50-->
+                       </bcsmEvents.C0.Sequence>
+                       <bcsmEvents.C0.Sequence>
+                          <eventTypeBCSM.C0.Enum>
+                             <EnumType>oCalledPartyBusy.5</EnumType>
+                          </eventTypeBCSM.C0.Enum>
+                          <monitorMode.C1.Enum>
+                             <EnumType>interrupted.0</EnumType>
+                          </monitorMode.C1.Enum>
+                          <legID.C2.Choice>
+                             <sendingSideID.C0.BoxedType><Bytes>02</Bytes></sendingSideID.C0.BoxedType>
+                             <!--receivingSideID.C1.BoxedType><Bytes>96cf</Bytes></receivingSideID.C1.BoxedType-->
+                          </legID.C2.Choice>
+                          <!--dpSpecificCriteria.C30.Choice>
+                            ...
+                          </dpSpecificCriteria.C30.Choice-->
+                          <!--automaticRearm.C50></automaticRearm.C50-->
+                       </bcsmEvents.C0.Sequence>
+                       <bcsmEvents.C0.Sequence>
+                          <eventTypeBCSM.C0.Enum>
+                             <EnumType>oNoAnswer.6</EnumType>
+                          </eventTypeBCSM.C0.Enum>
+                          <monitorMode.C1.Enum>
+                             <EnumType>interrupted.0</EnumType>
+                          </monitorMode.C1.Enum>
+                          <legID.C2.Choice>
+                             <sendingSideID.C0.BoxedType><Bytes>02</Bytes></sendingSideID.C0.BoxedType>
+                             <!--receivingSideID.C1.BoxedType><Bytes>49428649589767</Bytes></receivingSideID.C1.BoxedType-->
+                          </legID.C2.Choice>
+                          <!--dpSpecificCriteria.C30.Choice>
+                            ...
+                          </dpSpecificCriteria.C30.Choice-->
+                          <!--automaticRearm.C50></automaticRearm.C50-->
+                       </bcsmEvents.C0.Sequence>
+                       <bcsmEvents.C0.Sequence>
+                          <eventTypeBCSM.C0.Enum>
+                             <EnumType>oAnswer.7</EnumType>
+                          </eventTypeBCSM.C0.Enum>
+                          <monitorMode.C1.Enum>
+                             <EnumType>notifyAndContinue.1</EnumType>
+                          </monitorMode.C1.Enum>
+                          <legID.C2.Choice>
+                             <sendingSideID.C0.BoxedType><Bytes>02</Bytes></sendingSideID.C0.BoxedType>
+                             <!--receivingSideID.C1.BoxedType><Bytes>49428649589767</Bytes></receivingSideID.C1.BoxedType-->
+                          </legID.C2.Choice>
+                          <!--dpSpecificCriteria.C30.Choice>
+                            ...
+                          </dpSpecificCriteria.C30.Choice-->
+                          <!--automaticRearm.C50></automaticRearm.C50-->
+                       </bcsmEvents.C0.Sequence>
+                       <bcsmEvents.C0.Sequence>
+                          <eventTypeBCSM.C0.Enum>
+                             <EnumType>oDisconnect.9</EnumType>
+                          </eventTypeBCSM.C0.Enum>
+                          <monitorMode.C1.Enum>
+                             <EnumType>interrupted.0</EnumType>
+                          </monitorMode.C1.Enum>
+                          <legID.C2.Choice>
+                             <sendingSideID.C0.BoxedType><Bytes>01</Bytes></sendingSideID.C0.BoxedType>
+                             <!--receivingSideID.C1.BoxedType><Bytes>49428649589767</Bytes></receivingSideID.C1.BoxedType-->
+                          </legID.C2.Choice>
+                          <!--dpSpecificCriteria.C30.Choice>
+                            ...
+                          </dpSpecificCriteria.C30.Choice-->
+                          <!--automaticRearm.C50></automaticRearm.C50-->
+                       </bcsmEvents.C0.Sequence>
+                       <bcsmEvents.C0.Sequence>
+                          <eventTypeBCSM.C0.Enum>
+                             <EnumType>oDisconnect.9</EnumType>
+                          </eventTypeBCSM.C0.Enum>
+                          <monitorMode.C1.Enum>
+                             <EnumType>interrupted.0</EnumType>
+                          </monitorMode.C1.Enum>
+                          <legID.C2.Choice>
+                             <sendingSideID.C0.BoxedType><Bytes>02</Bytes></sendingSideID.C0.BoxedType>
+                             <!--receivingSideID.C1.BoxedType><Bytes>49428649589767</Bytes></receivingSideID.C1.BoxedType-->
+                          </legID.C2.Choice>
+                          <!--dpSpecificCriteria.C30.Choice>
+                            ...
+                          </dpSpecificCriteria.C30.Choice-->
+                          <!--automaticRearm.C50></automaticRearm.C50-->
+                       </bcsmEvents.C0.Sequence>
+                       <bcsmEvents.C0.Sequence>
+                          <eventTypeBCSM.C0.Enum>
+                             <EnumType>oAbandon.9</EnumType>
+                          </eventTypeBCSM.C0.Enum>
+                          <monitorMode.C1.Enum>
+                             <EnumType>notifyAndContinue.1</EnumType>
+                          </monitorMode.C1.Enum>
+                          <legID.C2.Choice>
+                             <sendingSideID.C0.BoxedType><Bytes>01</Bytes></sendingSideID.C0.BoxedType>
+                             <!--receivingSideID.C1.BoxedType><Bytes>49428649589767</Bytes></receivingSideID.C1.BoxedType-->
+                          </legID.C2.Choice>
+                          <!--dpSpecificCriteria.C30.Choice>
+                            ...
+                          </dpSpecificCriteria.C30.Choice-->
+                          <!--automaticRearm.C50></automaticRearm.C50-->
+                       </bcsmEvents.C0.Sequence>
+
+                    </Collection>
+                 
+                    <!--extensions.C2.BoxedType>
+                       <Collection>
+                          <ExtensionField.Sequence>
+                             <type.Choice>
+                                <local>3280593598</local>
+                                <global><ObjectIdentifier>0.1.234.27.80.17.65</ObjectIdentifier></global>
+                             </type.Choice>
+                             <criticality.nulld.Enum>
+                                <EnumType>abort.1</EnumType>
+                             </criticality.nulld.Enum>
+                             <NullObject.C1></NullObject.C1>
+                          </ExtensionField.Sequence>
+                          <ExtensionField.Sequence>
+                             <type.Choice>
+                                <local>4059403623</local>
+                                <global><ObjectIdentifier>0.1.297.6</ObjectIdentifier></global>
+                             </type.Choice>
+                             <criticality.nulld.Enum>
+                                <EnumType>ignore.0</EnumType>
+                             </criticality.nulld.Enum>
+                             <NullObject.C1></NullObject.C1>
+                          </ExtensionField.Sequence>
+                          <ExtensionField.Sequence>
+                             <type.Choice>
+                                <local>1751147288</local>
+                                <global><ObjectIdentifier>0.1.215.13.50.112.54.4.6.5</ObjectIdentifier></global>
+                             </type.Choice>
+                             <criticality.nulld.Enum>
+                                <EnumType>ignore.0</EnumType>
+                             </criticality.nulld.Enum>
+                             <NullObject.C1></NullObject.C1>
+                          </ExtensionField.Sequence>
+                       </Collection>
+                    </extensions.C2.BoxedType-->
+                 </RequestReportBCSMEventArg.Sequence>
+              </invokeparameter>
+        </invoke.C1.Sequence>
       </Component.Choice>
     </ASN>
     
     <!-- TCAP LAYER -->
     <ASN dictionary="tcap/dictionary_TCAP.xml">
       <TCMessage>
-        <end>
-          <dtid><Bytes>00000001</Bytes></dtid>
+        <Continue>
+          <otid><Bytes>047b</Bytes></otid>
+          <dtid><Bytes>07000401</Bytes></dtid>
           <dialoguePortion>
             <DialogueOC>
               <ExternalPDU>
@@ -138,7 +421,7 @@
               </ExternalPDU>
             </DialogueOC>
           </dialoguePortion>
-        </end>
+        </Continue>
       </TCMessage>
     </ASN>
     
@@ -193,7 +476,7 @@
     </sendMessageSIGTRAN>
 
     <!-- Message encoded value -->	
-    <parameter name="[data]" value="a2080201013003020100" />    			
+    <parameter name="[data]" value="a165020101020117305da05b300b800104810100a203800102300b800105810100a203800102300b800106810100a203800102300b800107810101a203800102300b800109810100a203800101300b800109810100a203800102300b80010a810101a203800101" />    			
     <parameter name="[xmlCAPdata]" operation="protocol.setFromMessage" value="asn.binary"/>
     <test parameter="[xmlCAPdata]" condition="binary.equals" value="[data]"/>
 

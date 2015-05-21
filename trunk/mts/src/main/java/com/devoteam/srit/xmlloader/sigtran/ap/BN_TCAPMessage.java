@@ -124,13 +124,13 @@ public class BN_TCAPMessage extends BN_ASNMessage
     	}
     	else if (tcMessage.isContinue1Selected())
         {
-    		if (tcMessage.getContinue1().getDtid() != null)
-    		{
-    			bytes = tcMessage.getContinue1().getDtid().getValue();
-    		}
-    		else if (tcMessage.getContinue1().getOtid() != null)
+    		if (tcMessage.getContinue1().getOtid() != null)
     		{
     			bytes = tcMessage.getContinue1().getOtid().getValue();
+    		}
+    		else if (tcMessage.getContinue1().getDtid() != null)
+    		{
+    			bytes = tcMessage.getContinue1().getDtid().getValue();
     		}
         }
     	else if (tcMessage.isAbortSelected())
