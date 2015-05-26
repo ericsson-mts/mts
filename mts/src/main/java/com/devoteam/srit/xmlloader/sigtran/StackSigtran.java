@@ -132,7 +132,8 @@ public class StackSigtran extends Stack {
         if (tabAps.length >= 2)
         {
         	Element elementAP = (Element) tabAps[0];
-        	ASNMessage apMessage = new BN_APMessage("cap/dictionary_CAP.xml");
+        	String dictionary = elementAP.attributeValue("dictionary"); 
+        	ASNMessage apMessage = new BN_APMessage(dictionary);
         	apMessage.parseFromXML(elementAP);
             // AP layer (optional)
         	msgSigtran.setAPMessage((BN_APMessage) apMessage);
