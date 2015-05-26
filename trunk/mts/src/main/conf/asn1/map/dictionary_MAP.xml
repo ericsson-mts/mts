@@ -822,9 +822,11 @@
         <field name="Confidence" type="Integer" length="1" description="Confidence"/>        
     </element>
 
-    <!-- Location Number => UTI Q.763 V12/1999 chapter 3.30 page 38 -->
-    <element name="LocationNumber" coding="V" description="Location number">
-    		<field name="Odd/even" type="EnumLong" lengthBit="1" description="Odd/even indicator (O/E)">
+    <!-- Location Number => ITU Q.763 V12/1999 chapter 3.30 page 38 -->
+    <!-- Location Number => ITU Q.763 V12/1999 chapter 3.9 page 22-23 -->
+    <!-- Location Number => ITU Q.763 V12/1999 chapter 3.10 page 24-25 -->    
+    <element name="LocationNumber,CalledPartyNumber,CallingPartyNumber" coding="V" description="Location number, Party Number">
+    		<field name="Odd/even (O/E)" type="EnumLong" lengthBit="1" description="Odd/even indicator (O/E)">
             <enum name="even number of address signals" value="0"/>
             <enum name="odd number of address signals" value="1"/>
         </field>
@@ -842,7 +844,7 @@
             <enum name="reserved for national use" value="112-126" description="b1110000-b1111110"/>
             <enum name="reserved for extension" value="127" description="b1111111"/>
         </field>
-        <field name="Internal Network Number" type="EnumLong" lengthBit="1" description="Internal Network Number indicator (INN)">
+        <field name="Internal Network Number (INN)" type="EnumLong" lengthBit="1" description="Internal Network Number indicator (INN)">
             <enum name="routing to internal number allowed" value="0"/>
             <enum name="routing to internal number not allowed" value="1"/>
         </field>

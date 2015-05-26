@@ -214,8 +214,10 @@ public class XMLToASNParser
             Class<?> subClass = Class.forName(replace);
             Object objEmbedded = subClass.newInstance();
                        
-            parseFromXML(resultPath, message, objEmbedded, (Element) element.elements().get(0), className);
-            
+            if (!element.elements().isEmpty())
+            {
+            	parseFromXML(resultPath, message, objEmbedded, (Element) element.elements().get(0), className);
+            }
             return processEmbeddedObject(objEmbedded, type);
 		}
 		
@@ -329,7 +331,7 @@ public class XMLToASNParser
         	String elementName = object.getClass().getSimpleName();
         	if (field != null && !"value".equalsIgnoreCase(name))
         	{
-        		elementName = elementName + "." + name;
+        		//elementName = elementName + "." + name;
         	}
         	boolean logWarn = !elementName.equals("OrigTransactionID") &&
         			  !elementName.equals("DestTransactionID") &&

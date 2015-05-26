@@ -51,23 +51,48 @@
            <invokeparameter>
              <InitialDPArg.Sequence>
                 <serviceKey.C0.BoxedType><Integer>110</Integer></serviceKey.C0.BoxedType>
-                <calledPartyNumber.C2.BoxedType><Bytes>839021721090000f</Bytes></calledPartyNumber.C2.BoxedType>
-                <callingPartyNumber.C3.BoxedType><Bytes>039757</Bytes></callingPartyNumber.C3.BoxedType>
-                <callingPartysCategory.C5.BoxedType><Bytes>0a</Bytes></callingPartysCategory.C5.BoxedType>
+                <calledPartyNumber.C2.BoxedType><Bytes>
+                    <field name="Odd/even (O/E)" value="odd number of address signals:1" type="EnumLong" lengthBit="1" />
+                    <field name="Nature of address" value="national (significant) number:3" type="EnumLong" lengthBit="7" />
+                    <field name="Internal Network Number (INN)" value="routing to internal number not allowed:1" type="EnumLong" lengthBit="1" />
+                    <field name="Numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="3" />
+                    <field name="spare" value="0" type="Integer" lengthBit="4" />
+                    <field name="digits" value="1227010900F0" type="Number_BCD" length="6" />
+                  </Bytes></calledPartyNumber.C2.BoxedType>
+                <callingPartyNumber.C3.BoxedType><Bytes>
+                    <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1" />
+                    <field name="Nature of address" value="national (significant) number:3" type="EnumLong" lengthBit="7" />
+                    <field name="Number Incomplete (NI)" value="incomplete:1" type="EnumLong" lengthBit="1" />
+                    <field name="Numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="3" />
+                    <field name="Address presentation restricted" value="presentation restricted:1" type="EnumLong" lengthBit="2" />
+                    <field name="Screening" value="network provided:3" type="EnumLong" lengthBit="2" />
+                    <field name="digits" value="75" type="Number_BCD" length="1" />
+                  </Bytes></callingPartyNumber.C3.BoxedType>
+                <callingPartysCategory.C5.BoxedType><Bytes>
+                    <field name="category" value="ordinary calling subscriber:10" type="EnumLong" length="1" />
+                </Bytes></callingPartysCategory.C5.BoxedType>
                 <!--cGEncountered.C7.Enum>
                    <EnumType>manualCGencountered.1</EnumType>
                 </cGEncountered.C7.Enum-->
                 <!--iPSSPCapabilities.C8.BoxedType><Bytes>4a9eb2</Bytes></iPSSPCapabilities.C8.BoxedType-->
                 <!--locationNumber.C10.BoxedType><Bytes>2f637120
-                      <field name="Odd/even" value="even number of address signals:0" type="EnumLong" lengthBit="1" />
+                      <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1" />
                       <field name="Nature of address" value="spare:47" type="EnumLong" lengthBit="7" />
-                      <field name="Internal Network Number" value="routing to internal number allowed:0" type="EnumLong" lengthBit="1" />
+                      <field name="Internal Network Number (INN)" value="routing to internal number allowed:0" type="EnumLong" lengthBit="1" />
                       <field name="Numbering plan" value="reserved for national use:6" type="EnumLong" lengthBit="3" />
                       <field name="Address presentation restricted" value="presentation allowed:0" type="EnumLong" lengthBit="2" />
                       <field name="Screening" value="network provided:3" type="EnumLong" lengthBit="2" />
                       <field name="digits" value="1702" type="Number_BCD" length="5" />
                    </Bytes></locationNumber.C10.BoxedType-->
-                <originalCalledPartyID.C12.BoxedType><Bytes>831407010900</Bytes></originalCalledPartyID.C12.BoxedType>
+                <originalCalledPartyID.C12.BoxedType><Bytes>
+                    <field name="Odd/even (O/E)" value="odd number of address signals:1" type="EnumLong" lengthBit="1" />
+                    <field name="Nature of address" value="national (significant) number:3" type="EnumLong" lengthBit="7" />
+                    <field name="spare1" value="0" type="Integer" lengthBit="1" />
+                    <field name="Numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="3" />
+                    <field name="Address presentation restricted" value="presentation restricted:1" type="EnumLong" lengthBit="2" />
+                    <field name="spare2" value="0" type="Integer" lengthBit="2" />
+                    <field name="digits" value="70109000" type="Number_BCD" length="4" />
+                </Bytes></originalCalledPartyID.C12.BoxedType>
                 <!--extensions.C15.BoxedType>
                    <Collection>
                       <ExtensionField.Sequence>
@@ -104,12 +129,37 @@
                 </extensions.C15.BoxedType-->
                 <!--highLayerCompatibility.C23.BoxedType><Bytes>1975</Bytes></highLayerCompatibility.C23.BoxedType-->
                 <!--additionalCallingPartyNumber.C25.BoxedType><Digits.BoxedType><Bytes>2acf4b</Bytes></Digits.BoxedType></additionalCallingPartyNumber.C25.BoxedType-->
-                <bearerCapability.C27.Choice><bearerCap.C0>8090a3</bearerCap.C0></bearerCapability.C27.Choice>
+                <bearerCapability.C27.Choice><bearerCap.C0>
+                      <field name="ext1" value="last octet:1" type="EnumLong" lengthBit="1" />
+                      <field name="Coding standard" value="ITU-T standardized coding as described below:0" type="EnumLong" lengthBit="2" />
+                      <field name="Information transfer capability" value="Speech:0" type="EnumLong" lengthBit="5" />
+                      <field name="ext2" value="last octet:1" type="EnumLong" lengthBit="1" />
+                      <field name="Transfer mode" value="Circuit mode:0" type="EnumLong" lengthBit="2" />
+                      <field name="Information transfer rate" value="64 kbit/s:16" type="EnumLong" lengthBit="5" />
+                      <field name="ext3" value="last octet:1" type="EnumLong" lengthBit="1" />
+                      <field name="Layer identifier" value="layer 1 ident:1" type="EnumLong" lengthBit="2" />
+                      <field name="User information layer 1 protocol" value="Recommendation G.711 A-law:3" type="EnumLong" lengthBit="5" />
+                </bearerCap.C0></bearerCapability.C27.Choice>
                 <eventTypeBCSM.C28.Enum>
                    <EnumType>collectedInfo.2</EnumType>
                 </eventTypeBCSM.C28.Enum>
-                <redirectingPartyID.C29.BoxedType><Bytes>831407010900</Bytes></redirectingPartyID.C29.BoxedType>
-                <redirectionInformation.C30.BoxedType><Bytes>0361</Bytes></redirectionInformation.C30.BoxedType>
+                <redirectingPartyID.C29.BoxedType><Bytes>
+                      <field name="Odd/even (O/E)" value="odd number of address signals:1" type="EnumLong" lengthBit="1" />
+                      <field name="Nature of address" value="national (significant) number:3" type="EnumLong" lengthBit="7" />
+                      <field name="spare1" value="0" type="Integer" lengthBit="1" />
+                      <field name="Numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="3" />
+                      <field name="Address presentation restricted" value="presentation restricted:1" type="EnumLong" lengthBit="2" />
+                      <field name="spare2" value="0" type="Integer" lengthBit="2" />
+                      <field name="digits" value="70109000" type="Number_BCD" length="5" />
+                </Bytes></redirectingPartyID.C29.BoxedType>
+                <redirectionInformation.C30.BoxedType><Bytes>
+                      <field name="Redirecting reason" value="unknown/not available:0" type="EnumLong" lengthBit="4" />
+                      <field name="spare1" value="0" type="Integer" lengthBit="1" />
+                      <field name="Redirecting indicator" value="call diverted:3" type="EnumLong" lengthBit="3" />
+                      <field name="Original redirection reason" value="mobile subscriber not reachable:6" type="EnumLong" lengthBit="4" />
+                      <field name="spare2" value="0" type="Integer" lengthBit="1" />
+                      <field name="Redirection counter" value="1" type="Integer" lengthBit="3" />
+                </Bytes></redirectionInformation.C30.BoxedType>
                 <!--cause.C17.BoxedType><Bytes>cf646b</Bytes></cause.C17.BoxedType-->
                 <!--serviceInteractionIndicatorsTwo.C32.Sequence>
                    <forwardServiceInteractionInd.C0.Sequence>
@@ -137,8 +187,8 @@
                 <cug_Interlock.C46.BoxedType><Bytes>a99fdb23</Bytes></cug_Interlock.C46.BoxedType>
                 <cug_OutgoingAccess.C47></cug_OutgoingAccess.C47-->
                 <iMSI.C50.BoxedType><TBCD_STRING.BoxedType><Bytes>
-                         <field name="digits" value="607029900140199" type="Number_BCD" lengthBit="60" />
-                      </Bytes></TBCD_STRING.BoxedType></iMSI.C50.BoxedType>
+                    <field name="digits" value="607029900140199" type="Number_BCD" lengthBit="60" />
+                </Bytes></TBCD_STRING.BoxedType></iMSI.C50.BoxedType>
                 <!--subscriberState.C51.Choice>
                    <assumedIdle.C0></assumedIdle.C0>
                    <camelBusy.C1></camelBusy.C1>
@@ -301,25 +351,27 @@
                 </locationInformation.C52.Sequence-->
                 <ext_basicServiceCode.C53.Choice>
                    <!--ext_BearerService.C2.BoxedType><Bytes>11</Bytes></ext_BearerService.C2.BoxedType-->
-                   <ext_Teleservice.C3.BoxedType><Bytes>11</Bytes></ext_Teleservice.C3.BoxedType>
+                   <ext_Teleservice.C3.BoxedType><Bytes>
+                        <field name="Code" value="telephony:17" type="EnumLong" length="1" />
+                   </Bytes></ext_Teleservice.C3.BoxedType>
                 </ext_basicServiceCode.C53.Choice>
                 <callReferenceNumber.C54.BoxedType><Bytes>13fa3d3dea</Bytes></callReferenceNumber.C54.BoxedType>
-                <mscAddress.C55.BoxedType><AddressString.BoxedType><Bytes>6f3109601761
-                         <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
-                         <field name="nature of address" value="International number:1" type="EnumLong" lengthBit="3" />
-                         <field name="numbering plan" value="ISDN/Telephony Numbering (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
-                         <field name="digits" value="2207750007" type="Number_BCD" length="5" />
-                      </Bytes></AddressString.BoxedType></mscAddress.C55.BoxedType>
+                <mscAddress.C55.BoxedType><AddressString.BoxedType><Bytes>
+                     <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                     <field name="nature of address" value="International number:1" type="EnumLong" lengthBit="3" />
+                     <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
+                     <field name="digits" value="2207750007" type="Number_BCD" length="5" />
+                </Bytes></AddressString.BoxedType></mscAddress.C55.BoxedType>
                 <!--calledPartyBCDNumber.C56.BoxedType><Bytes>5a199a</Bytes></calledPartyBCDNumber.C56.BoxedType-->
                 <timeAndTimezone.C57.BoxedType><Bytes>0250114231016500</Bytes></timeAndTimezone.C57.BoxedType>
                 <!--callForwardingSS_Pending.C58></callForwardingSS_Pending.C58-->
                 <initialDPArgExtension.C59.Sequence>
                    <gmscAddress.C0.BoxedType><AddressString.BoxedType><Bytes>
-                            <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
-                            <field name="nature of address" value="International number:1" type="EnumLong" lengthBit="3" />
-                            <field name="numbering plan" value="ISDN/Telephony Numbering (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
-                            <field name="digits" value="2207750007" type="Number_BCD" lengthBit="36" />
-                         </Bytes></AddressString.BoxedType></gmscAddress.C0.BoxedType>
+                        <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                        <field name="nature of address" value="International number:1" type="EnumLong" lengthBit="3" />
+                        <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
+                        <field name="digits" value="2207750007" type="Number_BCD" lengthBit="36" />
+                    </Bytes></AddressString.BoxedType></gmscAddress.C0.BoxedType>
                    <!--forwardingDestinationNumber.C1.BoxedType><Bytes>912270570070</Bytes></forwardingDestinationNumber.C1.BoxedType-->
                    <!--ms_Classmark2.C2.BoxedType><Bytes>cd4118
                          <field name="spare1" value="1" type="Integer" lengthBit="1" />
@@ -598,12 +650,12 @@
                <!--globalValue><ObjectIdentifier>0.1.227.111</ObjectIdentifier></globalValue-->
             </opCode.Choice>
             <invokeparameter>
-               <EventReportBCSMArg.Sequence>
-                  <eventTypeBCSM.C0.Enum>
-                     <EnumType>routeSelectFailure.4</EnumType>
-                  </eventTypeBCSM.C0.Enum>
-                  <eventSpecificInformationBCSM.C2.Choice>
-                     <routeSelectFailureSpecificInfo.C2.Sequence><failureCause.C0.BoxedType><Bytes>8490</Bytes></failureCause.C0.BoxedType></routeSelectFailureSpecificInfo.C2.Sequence>
+              <EventReportBCSMArg.Sequence>
+                <eventTypeBCSM.C0.Enum>
+                   <EnumType>routeSelectFailure.4</EnumType>
+                </eventTypeBCSM.C0.Enum>
+                <eventSpecificInformationBCSM.C2.Choice>
+                   <routeSelectFailureSpecificInfo.C2.Sequence><failureCause.C0.BoxedType><Bytes>8490</Bytes></failureCause.C0.BoxedType></routeSelectFailureSpecificInfo.C2.Sequence>
                      <!--oCalledPartyBusySpecificInfo.C3.Sequence><busyCause.C0.BoxedType><Bytes>d21b37f835dea2</Bytes></busyCause.C0.BoxedType></oCalledPartyBusySpecificInfo.C3.Sequence-->
                      <!--oNoAnswerSpecificInfo.C4.Sequence>
                         

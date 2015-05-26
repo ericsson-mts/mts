@@ -6,8 +6,8 @@
     Author     : fhenry
     Description: Dictionary for the CAP protocol conatining the embedded objects and the field enumerations
     Reference document : 
-        dictionary_CAP.asn => provided in ../conf/asn1/cap/ directory
-        29002-c60.doc => 3GPP Mobile Application Part (Release 12) 
+        camel.asn1 => provided in ../conf/asn1/cap/ directory
+        29078-c60.doc => 3GPP CAMEL Part (Release 12) 
         ...
 -->
 
@@ -770,9 +770,9 @@
         <field name="Confidence" type="Integer" length="1" description="Confidence"/>        
     </element>
 
-    <!-- Location Number => UTI Q.763 V12/1999 chapter 3.30 page 38 -->
-    <element name="LocationNumber" coding="V" description="Location number">
-    		<field name="Odd/even" type="EnumLong" lengthBit="1" description="Odd/even indicator (O/E)">
+    <!-- Called Party Number => ITU Q.763 V12/1999 chapter 3.9 page 22-23 -->    
+    <element name="CalledPartyNumber" coding="V" description="Called Party Number">
+    		<field name="Odd/even (O/E)" type="EnumLong" lengthBit="1" description="Odd/even indicator (O/E)">
             <enum name="even number of address signals" value="0"/>
             <enum name="odd number of address signals" value="1"/>
         </field>
@@ -790,13 +790,51 @@
             <enum name="reserved for national use" value="112-126" description="b1110000-b1111110"/>
             <enum name="reserved for extension" value="127" description="b1111111"/>
         </field>
-        <field name="Internal Network Number" type="EnumLong" lengthBit="1" description="Internal Network Number indicator (INN)">
+        <field name="Internal Network Number (INN)" type="EnumLong" lengthBit="1" description="Internal Network Number indicator (INN)">
             <enum name="routing to internal number allowed" value="0"/>
             <enum name="routing to internal number not allowed" value="1"/>
         </field>
         <field name="Numbering plan" type="EnumLong" lengthBit="3" description="Numbering plan indicator">
             <enum name="spare" value="0" description="b000"/>
-            <enum name="ISDN (telephony) numbering plan (ITU-T Recommendation E.164)" value="1" description="b001"/>
+            <enum name="ISDN/Telephony Numbering Plan (Rec ITU-T E.164)" value="1" description="b001"/>
+            <enum name="spare" value="2" description="b010"/>
+            <enum name="Data numbering plan (ITU-T Recommendation X.121)" value="3" description="b011"/>
+            <enum name="Telex numbering plan (ITU-T Recommendation F.69)" value="4" description="b100"/>
+            <enum name="private numbering plan" value="5" description="b101"/>
+            <enum name="reserved for national use" value="6" description="b110"/>
+            <enum name="spare" value="7" description="b111"/>
+        </field>
+        <field name="spare" type="Integer" lengthBit="4" description="spare"/>
+        <field name="digits" type="number_bcd" description="digits"/>
+    </element>
+    
+    <!-- Calling Party Number => ITU Q.763 V12/1999 chapter 3.10 page 24-25 -->    
+    <element name="CallingPartyNumber" coding="V" description="Calling Party Number">
+    		<field name="Odd/even (O/E)" type="EnumLong" lengthBit="1" description="Odd/even indicator (O/E)">
+            <enum name="even number of address signals" value="0"/>
+            <enum name="odd number of address signals" value="1"/>
+        </field>
+        <field name="Nature of address" type="EnumLong" lengthBit="7" description="Nature of address indicator">
+            <enum name="spare" value="0" description="b0000000"/>
+            <enum name="subscriber number (national use)" value="1" description="b0000001"/>
+            <enum name="unknown (national use)" value="2" description="b0000010"/>
+            <enum name="national (significant) number" value="3" description="b0000011"/>
+            <enum name="international number" value="4" description="b0000100"/>
+            <enum name="network-specific number (national use)" value="5" description="b0000101"/>
+            <enum name="network routing number in national (significant) number format (national use)" value="6" description="b0000110"/>
+            <enum name="network routing number in network-specific number format (national use)" value="7" description="b0000111"/>
+            <enum name="network routing number concatenated with Called Directory Number (national use)" value="8" description="b0001000"/>
+            <enum name="spare" value="9-111" description="b0001001-b1101111"/>
+            <enum name="reserved for national use" value="112-126" description="b1110000-b1111110"/>
+            <enum name="reserved for extension" value="127" description="b1111111"/>
+        </field>
+        <field name="Number Incomplete (NI)" type="EnumLong" lengthBit="1" description="Internal Network Number indicator (INN)">
+            <enum name="complete" value="0"/>
+            <enum name="incomplete" value="1"/>
+        </field>
+        <field name="Numbering plan" type="EnumLong" lengthBit="3" description="Numbering plan indicator">
+            <enum name="spare" value="0" description="b000"/>
+            <enum name="ISDN/Telephony Numbering Plan (Rec ITU-T E.164)" value="1" description="b001"/>
             <enum name="spare" value="2" description="b010"/>
             <enum name="Data numbering plan (ITU-T Recommendation X.121)" value="3" description="b011"/>
             <enum name="Telex numbering plan (ITU-T Recommendation F.69)" value="4" description="b100"/>
@@ -817,6 +855,317 @@
             <enum name="network provided" value="3" description="b11"/>
         </field>
         <field name="digits" type="number_bcd" description="digits"/>
+    </element>
+
+    <!-- Calling Party Category => ITU Q.763 V12/1999 chapter 3.11 page 25-26 -->    
+    <element name="CallingPartysCategory" coding="V" description="Calling Party category">
+        <field name="category" type="EnumLong" length="1" description="category">
+            <enum name="calling party's category unknown at this time (national use)" value="0" description="b00000000"/> 
+            <enum name="operator, language French" value="1" description="b00000001"/> 
+            <enum name="operator, language English" value="2" description="b00000010"/> 
+            <enum name="operator, language German" value="3" description="b00000011"/> 
+            <enum name="operator, language Russian" value="4" description="b00000100"/> 
+            <enum name="operator, language Spanish" value="5" description="b00000101"/> 
+            <enum name="available to Administrations for selection a particular language by mutual agreement" value="6-8" description="b0000110-b00001000"/>
+            <enum name="reserved (see ITU-T Recommendation Q.104) (Note) (national use)" value="9" description="b00001001"/>
+            <enum name="ordinary calling subscriber" value="10" description="b00001010"/>
+            <enum name="calling subscriber with priority" value="11" description="b00001011"/>
+            <enum name="data call (voice band data)" value="12" description="b00001100"/>
+            <enum name="test call" value="13" description="b00001101"/>
+            <enum name="spare" value="14" description="b00001110"/>
+            <enum name="payphone" value="15" description="b00001111"/> 
+            <enum name="spare" value="16-223" description="b00010000-b11011111"/> 
+            <enum name="reserved for national use" value="224-254" description="b11100000"/> 
+            <enum name="spare" value="255" description="b11111111"/> 
+        </field>
+    </element>
+
+    <!-- Location Number => ITU Q.763 V12/1999 chapter 3.30 page 38 -->    
+    <element name="LocationNumber" coding="V" description="Location number">
+    		<field name="Odd/even (O/E)" type="EnumLong" lengthBit="1" description="Odd/even indicator (O/E)">
+            <enum name="even number of address signals" value="0"/>
+            <enum name="odd number of address signals" value="1"/>
+        </field>
+        <field name="Nature of address" type="EnumLong" lengthBit="7" description="Nature of address indicator">
+            <enum name="spare" value="0" description="b0000000"/>
+            <enum name="subscriber number (national use)" value="1" description="b0000001"/>
+            <enum name="unknown (national use)" value="2" description="b0000010"/>
+            <enum name="national (significant) number" value="3" description="b0000011"/>
+            <enum name="international number" value="4" description="b0000100"/>
+            <enum name="network-specific number (national use)" value="5" description="b0000101"/>
+            <enum name="network routing number in national (significant) number format (national use)" value="6" description="b0000110"/>
+            <enum name="network routing number in network-specific number format (national use)" value="7" description="b0000111"/>
+            <enum name="network routing number concatenated with Called Directory Number (national use)" value="8" description="b0001000"/>
+            <enum name="spare" value="9-111" description="b0001001-b1101111"/>
+            <enum name="reserved for national use" value="112-126" description="b1110000-b1111110"/>
+            <enum name="reserved for extension" value="127" description="b1111111"/>
+        </field>
+        <field name="Internal Network Number (INN)" type="EnumLong" lengthBit="1" description="Internal Network Number indicator (INN)">
+            <enum name="routing to internal number allowed" value="0"/>
+            <enum name="routing to internal number not allowed" value="1"/>
+        </field>
+        <field name="Numbering plan" type="EnumLong" lengthBit="3" description="Numbering plan indicator">
+            <enum name="spare" value="0" description="b000"/>
+            <enum name="ISDN/Telephony Numbering Plan (Rec ITU-T E.164)" value="1" description="b001"/>
+            <enum name="spare" value="2" description="b010"/>
+            <enum name="Data numbering plan (ITU-T Recommendation X.121)" value="3" description="b011"/>
+            <enum name="Telex numbering plan (ITU-T Recommendation F.69)" value="4" description="b100"/>
+            <enum name="private numbering plan" value="5" description="b101"/>
+            <enum name="reserved for national use" value="6" description="b110"/>
+            <enum name="spare" value="7" description="b111"/>
+        </field>
+        <field name="Address presentation restricted" type="EnumLong" lengthBit="2" description="Address presentation restricted indicator">
+            <enum name="presentation allowed" value="0" description="b00"/>
+            <enum name="presentation restricted" value="1" description="b01"/>
+            <enum name="address not available (national use)" value="2" description="b10"/>
+            <enum name="spare" value="3" description="b11"/>
+        </field>
+        <field name="Screening" type="EnumLong" lengthBit="2" description="Screening indicator">
+            <enum name="reserved" value="0" description="b00"/>
+            <enum name="user provided, verified and passed" value="1" description="b01"/>
+            <enum name="reserved" value="2" description="b10"/>
+            <enum name="network provided" value="3" description="b11"/>
+        </field>
+        <field name="digits" type="number_bcd" description="digits"/>
+    </element>
+    
+    <!-- Original Called Number => ITU Q.763 V12/1999 chapter 3.39 page 45-46 -->
+    <!-- Original Called Party ID => 3GPP TS 29.078 V12.0.0 chapter 11.20.1.1 page 143 -->
+    <!-- Original Called Number => ITU Q.763 V12/1999 V12.0.0 chapter 3.44 page 49 -->    
+    <!-- Original Called Party ID => 3GPP TS 29.078 chapter 11.20.1.1 page 142 -->        
+    <element name="OriginalCalledNumber,OriginalCalledPartyID,RedirectingNumber,RedirectingPartyID" coding="V" description="Calling Party Number">
+    		<field name="Odd/even (O/E)" type="EnumLong" lengthBit="1" description="Odd/even indicator (O/E)">
+            <enum name="even number of address signals" value="0"/>
+            <enum name="odd number of address signals" value="1"/>
+        </field>
+        <field name="Nature of address" type="EnumLong" lengthBit="7" description="Nature of address indicator">
+            <enum name="spare" value="0" description="b0000000"/>
+            <enum name="subscriber number (national use)" value="1" description="b0000001"/>
+            <enum name="unknown (national use)" value="2" description="b0000010"/>
+            <enum name="national (significant) number" value="3" description="b0000011"/>
+            <enum name="international number" value="4" description="b0000100"/>
+            <enum name="network-specific number (national use)" value="5" description="b0000101"/>
+            <enum name="network routing number in national (significant) number format (national use)" value="6" description="b0000110"/>
+            <enum name="network routing number in network-specific number format (national use)" value="7" description="b0000111"/>
+            <enum name="network routing number concatenated with Called Directory Number (national use)" value="8" description="b0001000"/>
+            <enum name="spare" value="9-111" description="b0001001-b1101111"/>
+            <enum name="reserved for national use" value="112-126" description="b1110000-b1111110"/>
+            <enum name="reserved for extension" value="127" description="b1111111"/>
+        </field>
+        <field name="spare1" type="Integer" lengthBit="1" description="spare1"/>
+        <field name="Numbering plan" type="EnumLong" lengthBit="3" description="Numbering plan indicator">
+            <enum name="spare" value="0" description="b000"/>
+            <enum name="ISDN/Telephony Numbering Plan (Rec ITU-T E.164)" value="1" description="b001"/>
+            <enum name="spare" value="2" description="b010"/>
+            <enum name="Data numbering plan (ITU-T Recommendation X.121)" value="3" description="b011"/>
+            <enum name="Telex numbering plan (ITU-T Recommendation F.69)" value="4" description="b100"/>
+            <enum name="private numbering plan" value="5" description="b101"/>
+            <enum name="reserved for national use" value="6" description="b110"/>
+            <enum name="spare" value="7" description="b111"/>
+        </field>
+        <field name="Address presentation restricted" type="EnumLong" lengthBit="2" description="Address presentation restricted indicator">
+            <enum name="presentation allowed" value="0" description="b00"/>
+            <enum name="presentation restricted" value="1" description="b01"/>
+            <enum name="address not available (national use)" value="2" description="b10"/>
+            <enum name="spare" value="3" description="b11"/>
+        </field>
+        <field name="spare2" type="Integer" lengthBit="2" description="spare2"/>
+        <field name="digits" type="number_bcd" description="digits"/>
+    </element>
+
+    <!-- Redirection Information => ITU Q.763 V12/1999 chapter 3.45 page 49-50 -->
+    <!-- Redirection Information => 3GPP TS 29.078 V12.0.0 chapter 11.20.1.1 page 143 -->
+    <element name="RedirectionInformation" coding="V" description="Redirection Information">
+        <field name="Redirecting reason" type="EnumLong" lengthBit="4" description="Redirecting reason">
+            <enum name="unknown/not available" value="0" description="b0000"/>
+            <enum name="user busy" value="1" description="b0001"/>
+            <enum name="no reply (national use)" value="2" description="b0010"/>
+            <enum name="unconditional (national use)" value="3" description="b0011"/>
+            <enum name="spare" value="4-15" description="b0100-b1111"/>
+        </field>
+        <field name="spare1" type="Integer" lengthBit="1" description="spare1"/>
+    		<field name="Redirecting indicator" type="EnumLong" lengthBit="3" description="Redirecting indicator">
+            <enum name="no redirection (national use)" value="0" description="b000"/>
+            <enum name="call rerouted (national use)" value="1" description="b001"/>
+            <enum name="call rerouted, all redirection information presentation restricted (national use)" value="2" description="b010"/>
+            <enum name="call diverted" value="3" description="b011"/>
+            <enum name="call diverted, all redirection information presentation restricted" value="4" description="b100"/>
+            <enum name="call rerouted, redirection number presentation restricted (national use)" value="5" description="b101"/>
+            <enum name="call diversion, redirection number presentation restricted (national use)" value="6" description="b110"/>
+            <enum name="spare" value="7" description="b111"/>
+        </field>
+        <field name="Original redirection reason" type="EnumLong" lengthBit="4" description="Original redirection reason">
+            <enum name="unknown/not available" value="0" description="b0000"/>
+            <enum name="user busy" value="1" description="b0001"/>
+            <enum name="no reply" value="2" description="b0010"/>
+            <enum name="unconditional" value="3" description="b0011"/>
+            <enum name="deflection during alerting" value="4" description="b0100"/>
+            <enum name="deflection immediate response" value="5" description="b0101"/>            
+            <enum name="mobile subscriber not reachable" value="6" description="b0110"/>
+            <enum name="spare" value="7-15" description="b0111-b1111"/>
+        </field>
+        <field name="spare2" type="Integer" lengthBit="1" description="spare2"/>
+        <field name="Redirection counter" type="Integer" lengthBit="3" description="Redirection counter"/>
+    </element>
+
+    <!-- User Service Information => ITU Q.763 V12/1999 chapter 3.57 page 65 -->    
+    <!-- Bearer Capability => ITU Q.961 V05/98 chapter 4.5.5 page 58 -->
+    <element name="UserServiceInformation,BearerCapability" coding="V" description="User Service Information, Bearer Capability">
+    		<field name="ext1" type="EnumLong" lengthBit="1" description="extension">
+            <enum name="continue" value="0"/>
+            <enum name="last octet" value="1"/>
+        </field>
+        <field name="Coding standard" type="EnumLong" lengthBit="2" description="Coding standard">
+            <enum name="ITU-T standardized coding as described below" value="0" description="b00"/>
+            <enum name="ISO/IEC Standard (Note 1)" value="1" description="b01"/>
+            <enum name="National standard (Note 1)" value="2" description="b10"/>
+            <enum name="Standard defined for the network (either public or private) present on the network side of the interface" value="3" description="b11"/>
+        </field>
+        <field name="Information transfer capability" type="EnumLong" lengthBit="5" description="Information transfer capability">
+            <enum name="Speech" value="0" description="b00000"/>
+            <enum name="reserved" value="1-7" description="b00001-b00111"/> 
+            <enum name="Unrestricted digital information" value="8" description="01000"/> 
+            <enum name="Restricted digital information" value="9" description="01001"/>
+            <enum name="reserved" value="10-15" description="b10010-b01111"/> 
+            <enum name="3.1 kHz audio" value="16" description="10000"/> 
+            <enum name="Unrestricted digital information with tones/announcements (Note 2)" value="17" description="10001"/>
+            <enum name="reserved" value="18-23" description="b10010-b01111"/> 
+            <enum name="Video" value="24" description="11000"/> 
+            <enum name="reserved" value="25-31" description="b11001-b11111"/>
+        </field>
+    		<field name="ext2" type="EnumLong" lengthBit="1" description="extension">
+            <enum name="continue" value="0"/>
+            <enum name="last octet" value="1"/>
+        </field>
+        <field name="Transfer mode" type="EnumLong" lengthBit="2" description="Transfer mode">
+            <enum name="Circuit mode" value="0" description="b00"/>
+            <enum name="Packet mode" value="1" description="b01"/>
+            <enum name="reserved" value="2-3" description="b10-b11"/>
+        </field>
+        <field name="Information transfer rate" type="EnumLong" lengthBit="5" description="Information transfer rate">
+            <enum name="Packet mode only" value="0" description="b00000"/>
+            <enum name="reserved" value="1-15" description="b00001-b01111"/>
+            <enum name="64 kbit/s" value="16" description="b10000"/> 
+            <enum name="2 × 64 kbit/s" value="17" description="b10001"/> 
+            <enum name="reserved" value="18" description="b10010"/>
+            <enum name="384 kbit/s" value="19" description="b10011"/>
+            <enum name="reserved" value="20" description="b10100"/> 
+            <enum name="1536 kbit/s" value="21" description="b10101"/>
+            <enum name="reserved" value="22" description="b10110"/> 
+            <enum name="1920 kbit/s" value="23" description="b10111"/> 
+            <enum name="Multirate (64 kbit/s base rate)" value="24" description="b11000"/> 
+            <enum name="reserved" value="25-31" description="b11001-b11111"/>
+        </field>
+        <!--field name="Rate multiplier" type="Integer" length="1" description="Rate multiplier"/-->      <!-- conditional field if "Information transfer rate" == 'b00' OR "Coding Group Bits" == 'b11000' -->
+    		<field name="ext3" type="EnumLong" lengthBit="1" description="extension">
+            <enum name="continue" value="0"/>
+            <enum name="last octet" value="1"/>
+        </field>
+        <field name="Layer identifier" type="EnumLong" lengthBit="2" description="Layer identifier">
+            <enum name="not applicable" value="0" description="b00 not allowed"/>
+            <enum name="layer 1 ident" value="1" description="b01"/>
+            <enum name="layer 2 ident" value="2" description="b10"/>
+            <enum name="layer 3 ident" value="3" description="b11"/>
+        </field>
+        <field name="User information layer 1 protocol" type="EnumLong" lengthBit="5" description="User information layer 1 protocol">
+            <enum name="reserved" value="0" description="b00000"/>
+            <enum name="ITU-T standardized rate adaption V.110, I.460 and X.30" value="1" description="b00001 This implies the presence of octet 5a and optionally octets 5b, 5c and 5d as defined below"/>
+            <enum name="Recommendation G.711 [10] U-law" value="2" description="b00010"/> 
+            <enum name="Recommendation G.711 A-law" value="3" description="b00011"/> 
+            <enum name="Recommendation G.721 [11] 32 kbit/s ADPCM and Recommendation I.460" value="4" description="b00100"/> 
+            <enum name="Recommendations H.221 and H.242" value="5" description="b00101"/> 
+            <enum name="Recommendations H.223 [92] and H.245" value="6" description="b00110"/>
+            <enum name="Non-ITU-T standardized rate adaption" value="7" description="b00111 This implies the presence of octet 5a and, optionally, octets 5b, 5c and 5d. The use of this codepoint indicates that the user rate specified in octet 5a is defined by the user. Addition ally, octets 5b, 5c and 5d, if present, are defined in accordance with the user specified rate adaption"/>
+            <enum name="ITU-T standardized rate adaption V.120" value="8" description="b01000 This implies the presence of octets 5a and 5b as defined below, and optionally octets 5c and 5d"/>
+            <enum name="ITU-T standardized rate adaption X.31 HDLC flag stuffing" value="9" description="b01001"/>        
+            <enum name="reserved" value="10-31" description="b11010-b11111"/>
+        </field>
+    		<!--field name="ext4" type="EnumLong" lengthBit="1" description="extension">
+            <enum name="continue" value="0"/>
+            <enum name="last octet" value="1"/>
+        </field>
+        <field name="Layer identifier" type="EnumLong" lengthBit="2" description="Layer identifier">
+            <enum name="not available" value="0" description="b00 not allowed"/>
+            <enum name="layer 1 ident" value="1" description="b01"/>
+            <enum name="layer 2 ident" value="2" description="b10"/>
+            <enum name="layer 3 ident" value="3" description="b11"/>
+        </field>
+        <field name="User information layer 2 protocol" type="EnumLong" lengthBit="5" description="User information layer 2 protocol">
+            <enum name="reserved" value="0-1" description="b00000-b00001"/>
+            <enum name="Recommendation Q.921/I.441" value="2" description="b00010"/>
+            <enum name="reserved" value="3-5" description="b00011-b00101"/> 
+            <enum name="Recommendation X.25 [5], link layer" value="6" description="b00110"/>
+            <enum name="reserved" value="7-11" description="b00111-b01011"/>  
+            <enum name="LAN logical link control (ISO/IEC 8802-2) (Note 23)" value="12" description="b01100"/> 
+            <enum name="reserved" value="13-31" description="b1101-b11111"/>
+        </field-->
+    		<!--field name="ext5" type="EnumLong" lengthBit="1" description="extension">
+            <enum name="continue" value="0"/>
+            <enum name="last octet" value="1"/>
+        </field>
+        <field name="Layer identifier" type="EnumLong" lengthBit="2" description="Layer identifier">
+            <enum name="not available" value="0" description="b00 not allowed"/>
+            <enum name="layer 1 ident" value="1" description="b01"/>
+            <enum name="layer 2 ident"." value="2" description="b10"/>
+            <enum name="layer 3 ident" value="3" description="b11"/>
+        </field>
+        <field name="User information layer 3 protocol" type="EnumLong" lengthBit="5" description="User information layer 3 protocol">
+            <enum name="reserved" value="0-1" description="b00000-b00001"/>
+            <enum name="Recommendation Q.931" value="2" description="b00010"/>
+            <enum name="reserved" value="3-5" description="b00011-b00101"/> 
+            <enum name="Recommendation X.25, packet layer" value="6" description="b00110"/>
+            <enum name="reserved" value="7-10" description="b00111-b01010"/>  
+            <enum name="ISO/IEC TR 9577 [82] (Protocol identification in the network layer) (Notes 21 and 23)" value="11" description="b01011"/> 
+            <enum name="reserved" value="12-31" description="b1100-b11111"/>
+        </field-->
+    </element>
+    
+    <!-- Ext-TeleserviceCode => 3GPP TS 22.003 Q.763 V12/1999 chapter 3.45 page 49-50 -->
+    <!-- Ext-TeleserviceCode => 3GPP TS 29.003 V12.0.5 chapter 17.7.9 page x -->
+    <element name="Ext_TeleserviceCode" coding="V" description="Extended Teleservice">
+        <field name="Code" type="EnumLong" length="1" description="Code">
+            <!-- Group : All = 0 -->
+            <enum name="allTeleservices" value="0" description="b00000000"/>
+            <!-- Group : Speech transmission = 1-->
+            <enum name="allSpeechTransmissionServices" value="16" description="b00010000"/>
+            <enum name="telephony" value="17" description="b00010001"/>
+            <enum name="emergencyCalls" value="18" description="b00010010"/>
+            <!-- Group : Short message = 2-->
+            <enum name="allShortMessageServices" value="32" description="b00100000"/>
+            <enum name="shortMessageMT-PP" value="33" description="b00100001"/>
+            <enum name="shortMessageMO-PP" value="34" description="b00100010"/>
+            <!-- Group : Facsimile transmission = 6 -->
+            <enum name="allFacsimileTransmissionServices" value="48" description="b00110000"/>
+            <enum name="facsimileGroup3AndAlterSpeech" value="49" description="b00110001"/>
+            <enum name="automaticFacsimileGroup3" value="50" description="b00110010"/>
+            <enum name="facsimileGroup4" value="51" description="b00110011"/>                        
+            <!-- Group : Data teleservice = 7 -->
+            <enum name="allDataTeleservices" value="112" description="b01110000"/>
+            <!-- Group : All exceptSMS = 8 -->
+            <enum name="allTeleservices-ExeptSMS" value="128" description="b10000000"/>
+            <!-- Group : Voice Group service = 9 -->
+            <enum name="allVoiceGroupCallServices" value="144" description="b10010000"/>
+            <enum name="voiceGroupCall" value="145" description="b10010001"/>
+            <enum name="voiceBroadcastCall" value="146" description="b10010010"/>
+            <!-- Group : PLMN specific = 13 -->            
+            <enum name="allPLMN-specificTS" value="208" description="b11010000"/>
+            <enum name="plmn-specificTS-1" value="209" description="b11010001"/>
+            <enum name="plmn-specificTS-2" value="210" description="b11010010"/>
+            <enum name="plmn-specificTS-3" value="211" description="b11010011"/>
+            <enum name="plmn-specificTS-4" value="212" description="b11010100"/>
+            <enum name="plmn-specificTS-5" value="213" description="b11010101"/>
+            <enum name="plmn-specificTS-6" value="214" description="b11010110"/>
+            <enum name="plmn-specificTS-7" value="215" description="b11010111"/>
+            <enum name="plmn-specificTS-8" value="216" description="b11011000"/>
+            <enum name="plmn-specificTS-9" value="217" description="b11011001"/>
+            <enum name="plmn-specificTS-A" value="218" description="b11011010"/>
+            <enum name="plmn-specificTS-B" value="219" description="b11011011"/>
+            <enum name="plmn-specificTS-C" value="220" description="b11011100"/>
+            <enum name="plmn-specificTS-D" value="221" description="b11011101"/>
+            <enum name="plmn-specificTS-E" value="222" description="b11011110"/>
+            <enum name="plmn-specificTS-F" value="223" description="b11011111"/>            
+        </field>
+        <!--field name="Extension data" type="Binary" length="4" description="reserved for future use"/-->
     </element>
 
     <!-- Local Area Identification (LAI) => 3GPP TS 23.003 V9.0.3 chapter 4.1 page 21 -->
