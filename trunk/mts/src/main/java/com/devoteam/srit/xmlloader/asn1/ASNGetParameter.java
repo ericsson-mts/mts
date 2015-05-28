@@ -124,7 +124,13 @@ public class ASNGetParameter
 	        									
 			if (retObject != null)
 			{
-				if (path.endsWith(resultPath)) 
+				int pos = path.indexOf(TAG_SEPARATOR);
+				String pathWithoutLayer = path; 
+				if (pos >= 0)
+				{
+					pathWithoutLayer = path.substring(pos);
+				}
+				if (resultPath.endsWith(pathWithoutLayer)) 
 				{
 					parameter.add(retObject);
 				}
