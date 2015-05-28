@@ -126,10 +126,23 @@ public class MsgSigtran extends Msg
 	    		{
 			    	Array arrayAP = ((BN_TCAPMessage) _tcapMessage).getTCAPBinary();
 					_apMessage = new BN_APMessage();
-					// if (_tcapMessage.
+					
+					String ACN = null;
+					Parameter param = getParameter("tcap.application_context_name");
+					if (param.length() > 0)
+			        {
+			        	ACN = param.get(0).toString();
+			        }
 		    		try
 		    		{
-		    			_apMessage.initDictionary("cap/dictionary_CAP.xml");
+		    			if (ACN != null && ACN.startsWith("CAP-"))
+		    			{
+		    				_apMessage.initDictionary("cap/dictionary_CAP.xml");
+		    			}
+		    			else 
+		    			{
+		    				_apMessage.initDictionary("map/dictionary_MAP.xml");
+		    			}
 						_apMessage.decode(arrayAP, "BER");
 		    		}
 		    		catch (Exception e)
