@@ -930,9 +930,9 @@
     </element>
     
     <!-- Original Called Number => ITU Q.763 V12/1999 chapter 3.39 page 45-46 -->
-    <!-- Original Called Party ID => 3GPP TS 29.078 V12.0.0 chapter 11.20.1.1 page 143 -->
+    <!-- Original Called Party ID => 3GPP TS 29.078 V9.2.0 chapter 11.20.1.1 page 143 -->
     <!-- Original Called Number => ITU Q.763 V12/1999 V12.0.0 chapter 3.44 page 49 -->    
-    <!-- Original Called Party ID => 3GPP TS 29.078 chapter 11.20.1.1 page 142 -->        
+    <!-- Original Called Party ID => 3GPP TS 29.078 V9.2.0 chapter 11.20.1.1 page 142 -->        
     <element name="OriginalCalledNumber,OriginalCalledPartyID,RedirectingNumber,RedirectingPartyID" coding="V" description="Calling Party Number">
     		<field name="Odd/even (O/E)" type="EnumLong" lengthBit="1" description="Odd/even indicator (O/E)">
             <enum name="even number of address signals" value="0"/>
@@ -974,7 +974,7 @@
     </element>
 
     <!-- Redirection Information => ITU Q.763 V12/1999 chapter 3.45 page 49-50 -->
-    <!-- Redirection Information => 3GPP TS 29.078 V12.0.0 chapter 11.20.1.1 page 143 -->
+    <!-- Redirection Information => 3GPP TS 29.078 V9.2.0 chapter 11.20.1.1 page 143 -->
     <element name="RedirectionInformation" coding="V" description="Redirection Information">
         <field name="Redirecting reason" type="EnumLong" lengthBit="4" description="Redirecting reason">
             <enum name="unknown/not available" value="0" description="b0000"/>
@@ -1006,6 +1006,130 @@
         </field>
         <field name="spare2" type="Integer" lengthBit="1" description="spare2"/>
         <field name="Redirection counter" type="Integer" lengthBit="3" description="Redirection counter"/>
+    </element>
+    
+    <!-- Cause => ITU Q.850 V05/1998 chapter 2 page 1-10 -->    
+    <!-- Cause => 3GPP TS 29.078 V9.2.0 chapter 11.20.1.1 page 143 -->
+    <element name="Cause" coding="V" description="Cause">
+    		<field name="ext1" type="EnumLong" lengthBit="1" description="extension">
+            <enum name="continue" value="0"/>
+            <enum name="last octet" value="1"/>
+        </field>
+        <field name="Coding standard" type="EnumLong" lengthBit="2" description="Coding standard">
+            <enum name="ITU-T standardized coding, as described below" value="0" description="b00"/>
+            <enum name="ISO/IEC Standard (see Note)" value="1" description="b01"/>
+            <enum name="National standard (see Note)" value="2" description="b10"/>
+            <enum name="Standard specific to identified location (see Note)" value="3" description="b11"/>
+        </field>
+        <field name="Spare" type="Integer" lengthBit="1" description="Spare"/>
+        <field name="Location" type="EnumLong" lengthBit="4" description="Location">
+            <enum name="user (U)" value="0" description="b0000"/> 
+            <enum name="private network serving the local user (LPN)" value="1" description="b0001"/> 
+            <enum name="public network serving the local user (LN)" value="2" description="b0010"/> 
+            <enum name="transit network (TN)" value="3" description="b0011"/> 
+            <enum name="public network serving the remote user (RLN)" value="4" description="b0100"/> 
+            <enum name="private network serving the remote user (RPN)" value="5" description="b0101"/>
+            <enum name="spare" value="6" description="b0110"/> 
+            <enum name="international network (INTL)" value="7" description="b0111"/>
+            <enum name="spare" value="8-9" description="b1000-b1001"/> 
+            <enum name="network beyond interworking point (BI)" value="10" description="b1010"/>
+            <enum name="spare" value="11" description="b1011"/> 
+            <enum name="reserved for national use" value="12-15" description="b1100-b1111"/> 
+        </field>
+    		<!--field name="ext2" type="EnumLong" lengthBit="1" description="extension">
+            <enum name="continue" value="0"/>
+            <enum name="last octet" value="1"/>
+        </field>
+        <field name="Recommandation" type="EnumLong" lengthBit="7" description="Recommandation">
+            <enum name="Q.931" value="0" description="b0000000"/> 
+            <enum name="reserved" value="1-2" description="b0000001-b0000010"/>            
+            <enum name="X.21" value="3" description="b0000011"/> 
+            <enum name="X.25" value="4" description="b0000100"/> 
+            <enum name="public land mobile networks, Q.1031/Q.1051" value="5" description="b0000101"/>
+            <enum name="reserved" value="6-127" description="b0000110-b1111111"/>             
+        </field-->
+    		<field name="ext3" type="EnumLong" lengthBit="1" description="extension">
+            <enum name="continue" value="0"/>
+            <enum name="last octet" value="1"/>
+        </field>
+        <field name="Cause value" type="EnumLong" lengthBit="7" description="User information layer 1 protocol">
+            <enum name="Class 000 normal event : Unallocated (unassigned) number" value="1" description="b000 0001 Condition"/>
+            <enum name="Class 000 normal event : No route to specified transit network" value="2" description="b000 0010 Transit network identify"/>
+            <enum name="Class 000 normal event : No route to destination" value="3" description="b000 0011 Condition"/>
+            <enum name="Class 000 normal event : Send special information tone ISUP" value="4" description="b000 0100"/>
+            <enum name="Class 000 normal event : Misdialled trunk prefix" value="5" description="b000 0101 "/>
+            <enum name="Class 000 normal event : Channel unacceptable" value="6" description="b000 0110 "/>
+            <enum name="Class 000 normal event : Call awarded and being delivered in an established channel" value="7" description="b000 0111"/>
+            <enum name="Class 000 normal event : Preemption" value="8" description="b000 1000"/> 
+            <enum name="Class 000 normal event : Preemption – circuit reserved for reuse" value="9" description="b000 1001"/>
+
+            <enum name="Class 001 normal event : Normal call clearing" value="16" description="b001 0000 Condition"/>
+            <enum name="Class 001 normal event : User busy" value="17" description="b001 0001 CCBS indicator"/> 
+            <enum name="Class 001 normal event : No user responding" value="18" description="b001 0010"/>
+            <enum name="Class 001 normal event : No answer from user (user alerted)" value="19" description="b001 0011 "/>
+            <enum name="Class 001 normal event : Subscriber absent" value="20" description="b001 0100"/>
+            <enum name="Class 001 normal event : Call rejected" value="21" description="b001 0101 Call rejected condition"/>
+            <enum name="Class 001 normal event : Number changed" value="22" description="b001 0110 New destination(DSS 1)/Called party number(ISUP)"/>
+            <enum name="Class 001 normal event : Redirection to new destination" value="23" description="b001 0111"/>
+            <enum name="Class 001 normal event : Exchange routing error" value="25" description="b001 1001"/> 
+            <enum name="Class 001 normal event : Non-selected user clearing" value="26" description="b001 1010"/> 
+            <enum name="Class 001 normal event : Destination out of order" value="27" description="b001 1011"/> 
+            <enum name="Class 001 normal event : Invalid number format (address incomplete)" value="28" description="b001 1100"/>
+            <enum name="Class 001 normal event : Facility rejected" value="29" description="b001 1101 Facility identification (DSS1)/Parameter name (ISUP)"/>
+            <enum name="Class 001 normal event : Response to STATUS ENQUIRY" value="30" description="b001 1110"/>
+            <enum name="Class 001 normal event : Normal, unspecified" value="31" description="b001 1111"/>
+ 
+            <enum name="Class 010 resource unavailable : No circuit/channel available" value="34" description="b010 0010 CCBS indicator"/> 
+            <enum name="Class 010 resource unavailable : Network out of order" value="38" description="b010 0110"/> 
+            <enum name="Class 010 resource unavailable : Permanent frame mode connection out of service" value="39" description="b010 0111"/>
+            <enum name="Class 010 resource unavailable : Permanent frame mode connection operational" value="40" description="b010 1000"/>
+            <enum name="Class 010 resource unavailable : Temporary failure" value="41" description="b010 1001"/> 
+            <enum name="Class 010 resource unavailable : Switching equipment congestion" value="42" description="b010 1010"/> 
+            <enum name="Class 010 resource unavailable: Access information discarded" value="43" description="b010 1011 Discarded information element identifier(s)"/>
+            <enum name="Class 010 resource unavailable : Requested circuit/channel not available" value="44" description="b010 1100"/>
+            <enum name="Class 010 resource unavailable : Precedence call blocked" value="46" description="b010 1110"/>
+            <enum name="Class 010 resource unavailable : Resource unavailable, unspecified" value="47" description="b010 1111"/> 
+
+            <enum name="Class 011 service or option not available : Quality of service not available" value="49" description="b011 0001 Condition"/>
+            <enum name="Class 011 service or option not available : Requested facility not subscribed" value="50" description="b011 0010 Facility identification (DSS 1)/Parameter name (ISUP)"/>
+            <enum name="Class 011 service or option not available : Outgoing calls barred within CUG" value="53" description="b011 0101 "/>
+            <enum name="Class 011 service or option not available : Incoming calls barred within CUG" value="55" description="b011 0111"/>
+            <enum name="Class 011 service or option not available : Bearer capability not authorized" value="57" description="b011 1001 Attribute identity"/>
+            <enum name="Class 011 service or option not available : Bearer capability not presently available" value="58" description="b011 1010 Attribute identity"/>
+            <enum name="Class 011 service or option not available : Inconsistency in designated outgoing access information and subscriber class" value="62" description="b011 1110"/>
+            <enum name="Class 011 service or option not available : Service or option not available, unspecified" value="63" description="b011 1111"/>
+
+            <enum name="Class 100 service or option not implemented : Bearer capability not implemented" value="65" description="b100 0001 Attribute identity"/>
+            <enum name="Class 100 service or option not implemented : Channel type not implemented" value="66" description="b100 0010 Channel type"/> 
+            <enum name="Class 100 service or option not implemented : Requested facility not implemented" value="69" description="b100 0101 Facility identification (DSS 1)/Parameter name (ISUP)"/>
+            <enum name="Class 100 service or option not implemented : Only restricted digital information bearer capability is available" value="70" description="b100 0110"/>
+            <enum name="Class 100 service or option not implemented : Service or option not implemented, unspecified" value="79" description="b100 1111"/>
+
+            <enum name="Class 101 invalid message : Invalid call reference value" value="81" description="b101 0001"/> 
+            <enum name="Class 101 invalid message : Identified channel does not exist" value="82" description="b101 0010 Channel identity"/> 
+            <enum name="Class 101 invalid message : A suspended call exists, but this call identity does not" value="83" description="b101 0011"/>
+            <enum name="Class 101 invalid message : Call identity in use" value="84" description="b101 0100"/>
+            <enum name="Class 101 invalid message : No call suspended" value="85" description="b101 0101"/>
+            <enum name="Class 101 invalid message : Call having the requested call identity has been cleared" value="86" description="b101 0110 Clearing cause"/>
+            <enum name="Class 101 invalid message : User not member of CUG" value="87" description="b101 0111"/>
+            <enum name="Class 101 invalid message : Incompatible destination" value="88" description="b101 1000 Incompatible parameter (DSS 1) User-to-user indicators parameter name"/>
+            <enum name="Class 101 invalid message : Non-existent CUG" value="90" description="b101 1010"/>
+            <enum name="Class 101 invalid message : Invalid transit network selection" value="91" description="b101 1011"/> 
+            <enum name="Class 101 invalid message : Invalid message, unspecified" value="95" description="b101 1111"/>
+
+            <enum name="Class 110 protocol error : Mandatory information element is missing" value="96" description="b110 0000 Information element identifier (Note 4)"/>
+            <enum name="Class 110 protocol error : Message type non-existent or not implemented" value="97" description="b110 0001 Message type"/> 
+            <enum name="Class 110 protocol error : Message not compatible with call state or message type non-existent or not implemented" value="98" description="b110 0010 Message type"/>
+            <enum name="Class 110 protocol error : Information element /parameter nonexistent or not implemented" value="99" description="b110 0011 Information element identifier(s) (DSS 1) (Note 4 and Note 5)/Parameter names"/>
+            <enum name="Class 110 protocol error : Invalid information element contents" value="100" description="b110 0100 Information element identifier(s) (Note 4)"/>
+            <enum name="Class 110 protocol error : Message not compatible with call state" value="101" description="b110 0101 Message type"/>
+            <enum name="Class 110 protocol error : Recovery on timer expiry" value="102" description="b110 0110 Timer number"/>
+            <enum name="Class 110 protocol error : Parameter non-existent or not implemented, passed on" value="103" description="b110 0111 Parameter name(s)"/> 
+            <enum name="Class 110 protocol error : Message with unrecognized parameter, discarded" value="110" description="b110 1110 Parameter name(s), message name"/>
+            <enum name="Class 110 protocol error : Protocol error, unspecified" value="111" description="b110 1111"/>
+
+            <enum name="Class 111 interworking : Interworking, unspecified " value="127" description="b111 1111"/> 
+        </field>
     </element>
 
     <!-- User Service Information => ITU Q.763 V12/1999 chapter 3.57 page 65 -->    
@@ -1167,6 +1291,19 @@
         </field>
         <!--field name="Extension data" type="Binary" length="4" description="reserved for future use"/-->
     </element>
+
+    <!-- Time And Timezone => 3GPP TS 29.078 V9.2.0 chapter 5.1 page 45 -->
+    <element name="TimeAndTimezone" coding="V" description="Time and Timezone" comment="">        
+        <field name="TimeAndTimezone" type="number_bcd" length="8" description="Time and Timezone"/>
+    </element>  
+
+    <!-- Leg Type => 3GPP TS 29.078 V9.2.0 chapter 5.1 page 41 -->
+    <element name="LegType" coding="V" description="Leg Type" comment="">        
+        <field name="LegType" type="Enumeration" length="1" description="Leg Type">
+            <enum name="leg1 LegType" value="1" description="b00000001"/>
+            <enum name="leg2 LegType" value="2" description="b00000010"/>
+        </field>        
+    </element>  
 
     <!-- Local Area Identification (LAI) => 3GPP TS 23.003 V9.0.3 chapter 4.1 page 21 -->
     <element name="LAIFixedLength" coding="V" description="Location Area Identification (LAI)">
