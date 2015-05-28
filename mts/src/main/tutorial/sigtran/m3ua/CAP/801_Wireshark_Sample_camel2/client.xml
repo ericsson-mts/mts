@@ -57,7 +57,7 @@
                     <field name="Internal Network Number (INN)" value="routing to internal number not allowed:1" type="EnumLong" lengthBit="1" />
                     <field name="Numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="3" />
                     <field name="spare" value="0" type="Integer" lengthBit="4" />
-                    <field name="digits" value="1227010900F0" type="Number_BCD" length="6" />
+                    <field name="digits" value="1227010900f0" type="Number_BCD" length="6" />
                   </Bytes></calledPartyNumber.C2.BoxedType>
                 <callingPartyNumber.C3.BoxedType><Bytes>
                     <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1" />
@@ -542,29 +542,189 @@
     <test parameter="[component]" condition="list.size" value="1"/>
     <parameter name="[invoke]" operation="string.xpath" value="[component]" value2="//invoke.C1.Sequence"/>
     <test parameter="[invoke]" condition="list.size" value="1"/>
-    <parameter name="[invokeID]" operation="string.xpath" value="[invoke]" value2="//invokeID.BoxedType"/>
-    <test parameter="[invokeID]" condition="list.size" value="1"/>
-    <parameter name="[invokeIDint]" operation="string.xpath" value="[invokeID]" value2="//Integer"/>
-    <test parameter="[invokeIDint]" condition="list.size" value="1"/>
-    <test parameter="[invokeIDint]" condition="string.equals" value="&lt;Integer&gt;1&lt;/Integer&gt;"/>
+    <parameter name="[invokeID]" operation="string.xpath" value="[invoke]" value2="//invokeID.BoxedType/Integer/text()"/>
+    <test parameter="[invokeID]" condition="string.equals" value="1"/>
     <parameter name="[opCode]" operation="string.xpath" value="[invoke]" value2="//opCode.Choice"/>
     <test parameter="[opCode]" condition="list.size" value="1"/>
-    <parameter name="[opCodeLocalValue]" operation="string.xpath" value="[opCode]" value2="//localValue.BoxedType"/>
+    <parameter name="[opCodeLocalValue]" operation="string.xpath" value="[opCode]" value2="//localValue.BoxedType/Long/text()"/>
     <test parameter="[opCodeLocalValue]" condition="list.size" value="1"/>
-    <parameter name="[opCodeLocalValueInt]" operation="string.xpath" value="[opCodeLocalValue]" value2="//Long"/>
-    <test parameter="[opCodeLocalValueInt]" condition="list.size" value="1"/>
-    <test parameter="[opCodeLocalValueInt]" condition="string.equals" value="&lt;Long&gt;initialDP:0&lt;/Long&gt;"/>
+    <test parameter="[opCodeLocalValue]" condition="string.equals" value="initialDP:0"/>
     <parameter name="[invokeparameter]" operation="string.xpath" value="[invoke]" value2="//invokeparameter"/>
     <test parameter="[invokeparameter]" condition="list.size" value="1"/>
     <parameter name="[InitialDPArg]" operation="string.xpath" value="[invokeparameter]" value2="//InitialDPArg.Sequence"/>
     <test parameter="[InitialDPArg]" condition="list.size" value="1"/>
-    <parameter name="[serviceKey]" operation="string.xpath" value="[InitialDPArg]" value2="//serviceKey.C0.BoxedType"/>
+    <parameter name="[serviceKey]" operation="string.xpath" value="[InitialDPArg]" value2="//serviceKey.C0.BoxedType/Integer/text()"/>
     <test parameter="[serviceKey]" condition="list.size" value="1"/>
-    <parameter name="[serviceKeyInt]" operation="string.xpath" value="[serviceKey]" value2="//Integer"/>
-    <test parameter="[serviceKeyInt]" condition="list.size" value="1"/>
-    <test parameter="[serviceKeyInt]" condition="string.equals" value="&lt;Integer&gt;110&lt;/Integer&gt;"/>
-    <!-- TODO -->
+    <test parameter="[serviceKey]" condition="string.equals" value="110"/>
+    
+    <parameter name="[calledPartyNumber]" operation="string.xpath" value="[InitialDPArg]" value2="//calledPartyNumber.C2.BoxedType"/>
+    <test parameter="[calledPartyNumber]" condition="list.size" value="1"/>
+    <parameter name="[calledPartyNumberOddEven]" operation="string.xpath" value="[calledPartyNumber]" value2="//field[@name='Odd/even (O/E)']/attribute::value"/>
+    <test parameter="[calledPartyNumberOddEven]" condition="list.size" value="1"/>
+    <test parameter="[calledPartyNumberOddEven]" condition="string.equals" value="odd number of address signals:1"/>
+    <parameter name="[calledPartyNumberNatureAddress]" operation="string.xpath" value="[calledPartyNumber]" value2="//field[@name='Nature of address']/attribute::value"/>
+    <test parameter="[calledPartyNumberNatureAddress]" condition="list.size" value="1"/>
+    <test parameter="[calledPartyNumberNatureAddress]" condition="string.equals" value="national (significant) number:3"/>
+    <parameter name="[calledPartyNumberInternalNetworkNumber]" operation="string.xpath" value="[calledPartyNumber]" value2="//field[@name='Internal Network Number (INN)']/attribute::value"/>
+    <test parameter="[calledPartyNumberInternalNetworkNumber]" condition="list.size" value="1"/>
+    <test parameter="[calledPartyNumberInternalNetworkNumber]" condition="string.equals" value="routing to internal number not allowed:1"/>
+    <parameter name="[calledPartyNumberNumberingPlan]" operation="string.xpath" value="[calledPartyNumber]" value2="//field[@name='Numbering plan']/attribute::value"/>
+    <test parameter="[calledPartyNumberNumberingPlan]" condition="list.size" value="1"/>
+    <test parameter="[calledPartyNumberNumberingPlan]" condition="string.equals" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1"/>
+    <parameter name="[calledPartyNumberSpare]" operation="string.xpath" value="[calledPartyNumber]" value2="//field[@name='spare']/attribute::value"/>
+    <test parameter="[calledPartyNumberSpare]" condition="list.size" value="1"/>
+    <test parameter="[calledPartyNumberSpare]" condition="string.equals" value="0"/>
+    <parameter name="[calledPartyDigits]" operation="string.xpath" value="[calledPartyNumber]" value2="//field[@name='digits']/attribute::value"/>
+    <test parameter="[calledPartyDigits]" condition="list.size" value="1"/>
+    <test parameter="[calledPartyDigits]" condition="string.equals" value="1227010900f0"/>
 
+    <parameter name="[callingPartyNumber]" operation="string.xpath" value="[InitialDPArg]" value2="//callingPartyNumber.C3.BoxedType"/>
+    <test parameter="[callingPartyNumber]" condition="list.size" value="1"/>
+    <parameter name="[callingPartyNumberOddEven]" operation="string.xpath" value="[callingPartyNumber]" value2="//field[@name='Odd/even (O/E)']/attribute::value"/>
+    <test parameter="[callingPartyNumberOddEven]" condition="list.size" value="1"/>
+    <test parameter="[callingPartyNumberOddEven]" condition="string.equals" value="even number of address signals:0"/>
+    <parameter name="[callingPartyNumberNatureAddress]" operation="string.xpath" value="[callingPartyNumber]" value2="//field[@name='Nature of address']/attribute::value"/>
+    <test parameter="[callingPartyNumberNatureAddress]" condition="list.size" value="1"/>
+    <test parameter="[callingPartyNumberNatureAddress]" condition="string.equals" value="national (significant) number:3"/>
+    <parameter name="[callingPartyNumberNumberIncomplete]" operation="string.xpath" value="[callingPartyNumber]" value2="//field[@name='Number Incomplete (NI)']/attribute::value"/>
+    <test parameter="[callingPartyNumberNumberIncomplete]" condition="list.size" value="1"/>
+    <test parameter="[callingPartyNumberNumberIncomplete]" condition="string.equals" value="incomplete:1"/>
+    <parameter name="[callingPartyNumberingPlan]" operation="string.xpath" value="[callingPartyNumber]" value2="//field[@name='Numbering plan']/attribute::value"/>
+    <test parameter="[callingPartyNumberingPlan]" condition="list.size" value="1"/>
+    <test parameter="[callingPartyNumberingPlan]" condition="string.equals" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1"/>
+    <parameter name="[callingPartyNumberAddressPresentationRestricted]" operation="string.xpath" value="[callingPartyNumber]" value2="//field[@name='Address presentation restricted']/attribute::value"/>
+    <test parameter="[callingPartyNumberAddressPresentationRestricted]" condition="list.size" value="1"/>
+    <test parameter="[callingPartyNumberAddressPresentationRestricted]" condition="string.equals" value="presentation restricted:1"/>
+    <parameter name="[callingPartyScreening]" operation="string.xpath" value="[callingPartyNumber]" value2="//field[@name='Screening']/attribute::value"/>
+    <test parameter="[callingPartyScreening]" condition="list.size" value="1"/>
+    <test parameter="[callingPartyScreening]" condition="string.equals" value="network provided:3"/>
+    <parameter name="[callingPartyDigits]" operation="string.xpath" value="[callingPartyNumber]" value2="//field[@name='digits']/attribute::value"/>
+    <test parameter="[callingPartyDigits]" condition="list.size" value="1"/>
+    <test parameter="[callingPartyDigits]" condition="string.equals" value="75"/>
+
+    <parameter name="[callingPartys]" operation="string.xpath" value="[InitialDPArg]" value2="//callingPartysCategory.C5.BoxedType"/>
+    <test parameter="[callingPartys]" condition="list.size" value="1"/>
+    <parameter name="[callingPartysCategory]" operation="string.xpath" value="[callingPartys]" value2="//field[@name='category']/attribute::value"/>
+    <test parameter="[callingPartysCategory]" condition="list.size" value="1"/>
+    <test parameter="[callingPartysCategory]" condition="string.equals" value="ordinary calling subscriber:10"/>
+
+    <parameter name="[originalCalledPartyID]" operation="string.xpath" value="[InitialDPArg]" value2="//originalCalledPartyID.C12.BoxedType"/>
+    <test parameter="[originalCalledPartyID]" condition="list.size" value="1"/>
+    <parameter name="[originalCalledPartyIDOddEven]" operation="string.xpath" value="[originalCalledPartyID]" value2="//field[@name='Odd/even (O/E)']/attribute::value"/>
+    <test parameter="[originalCalledPartyIDOddEven]" condition="list.size" value="1"/>
+    <test parameter="[originalCalledPartyIDOddEven]" condition="string.equals" value="odd number of address signals:1"/>
+    <parameter name="[originalCalledPartyIDNatureAddress]" operation="string.xpath" value="[originalCalledPartyID]" value2="//field[@name='Nature of address']/attribute::value"/>
+    <test parameter="[originalCalledPartyIDNatureAddress]" condition="list.size" value="1"/>
+    <test parameter="[originalCalledPartyIDNatureAddress]" condition="string.equals" value="national (significant) number:3"/>
+    <parameter name="[originalCalledPartyIDSpare1]" operation="string.xpath" value="[originalCalledPartyID]" value2="//field[@name='spare1']/attribute::value"/>
+    <test parameter="[originalCalledPartyIDSpare1]" condition="list.size" value="1"/>
+    <test parameter="[originalCalledPartyIDSpare1]" condition="string.equals" value="0"/>
+    <parameter name="[originalCalledPartyIDNumberingPlan]" operation="string.xpath" value="[originalCalledPartyID]" value2="//field[@name='Numbering plan']/attribute::value"/>
+    <test parameter="[originalCalledPartyIDNumberingPlan]" condition="list.size" value="1"/>
+    <test parameter="[originalCalledPartyIDNumberingPlan]" condition="string.equals" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1"/>
+    <parameter name="[originalCalledPartyIDNumberAddressPresentationRestricted]" operation="string.xpath" value="[originalCalledPartyID]" value2="//field[@name='Address presentation restricted']/attribute::value"/>
+    <test parameter="[originalCalledPartyIDNumberAddressPresentationRestricted]" condition="list.size" value="1"/>
+    <test parameter="[originalCalledPartyIDNumberAddressPresentationRestricted]" condition="string.equals" value="presentation restricted:1"/>
+    <parameter name="[originalCalledPartyIDSpare2]" operation="string.xpath" value="[originalCalledPartyID]" value2="//field[@name='spare2']/attribute::value"/>
+    <test parameter="[originalCalledPartyIDSpare2]" condition="list.size" value="1"/>
+    <test parameter="[originalCalledPartyIDSpare2]" condition="string.equals" value="0"/>
+    <parameter name="[originalCalledPartyIDDigits]" operation="string.xpath" value="[originalCalledPartyID]" value2="//field[@name='digits']/attribute::value"/>
+    <test parameter="[originalCalledPartyIDDigits]" condition="list.size" value="1"/>
+    <test parameter="[originalCalledPartyIDDigits]" condition="string.equals" value="70109000"/>
+
+    <parameter name="[bearerCapability]" operation="string.xpath" value="[InitialDPArg]" value2="//bearerCapability.C27.Choice"/>
+    <test parameter="[bearerCapability]" condition="list.size" value="1"/>    
+    <parameter name="[bearerCapabilityExt1]" operation="string.xpath" value="[bearerCapability]" value2="//field[@name='ext1']/attribute::value"/>
+    <test parameter="[bearerCapabilityExt1]" condition="list.size" value="1"/>
+    <test parameter="[bearerCapabilityExt1]" condition="string.equals" value="last octet:1"/>
+    <parameter name="[bearerCapabilityCodingStandard]" operation="string.xpath" value="[bearerCapability]" value2="//field[@name='Coding standard']/attribute::value"/>
+    <test parameter="[bearerCapabilityCodingStandard]" condition="list.size" value="1"/>
+    <test parameter="[bearerCapabilityCodingStandard]" condition="string.equals" value="ITU-T standardized coding as described below:0"/>
+    <parameter name="[bearerCapabilityInformationTransferCapability]" operation="string.xpath" value="[bearerCapability]" value2="//field[@name='Information transfer capability']/attribute::value"/>
+    <test parameter="[bearerCapabilityInformationTransferCapability]" condition="list.size" value="1"/>
+    <test parameter="[bearerCapabilityInformationTransferCapability]" condition="string.equals" value="Speech:0"/>
+    <parameter name="[bearerCapabilityExt2]" operation="string.xpath" value="[bearerCapability]" value2="//field[@name='ext2']/attribute::value"/>
+    <test parameter="[bearerCapabilityExt2]" condition="list.size" value="1"/>
+    <test parameter="[bearerCapabilityExt2]" condition="string.equals" value="last octet:1"/>
+    <parameter name="[bearerCapabilityTransferMode]" operation="string.xpath" value="[bearerCapability]" value2="//field[@name='Transfer mode']/attribute::value"/>
+    <test parameter="[bearerCapabilityTransferMode]" condition="list.size" value="1"/>
+    <test parameter="[bearerCapabilityTransferMode]" condition="string.equals" value="Circuit mode:0"/>
+    <parameter name="[bearerCapabilityInformationTransferRate]" operation="string.xpath" value="[bearerCapability]" value2="//field[@name='Information transfer rate']/attribute::value"/>
+    <test parameter="[bearerCapabilityInformationTransferRate]" condition="list.size" value="1"/>
+    <test parameter="[bearerCapabilityInformationTransferRate]" condition="string.equals" value="64 kbit/s:16"/>
+    <parameter name="[bearerCapabilityExt3]" operation="string.xpath" value="[bearerCapability]" value2="//field[@name='ext3']/attribute::value"/>
+    <test parameter="[bearerCapabilityExt3]" condition="list.size" value="1"/>
+    <test parameter="[bearerCapabilityExt3]" condition="string.equals" value="last octet:1"/>
+    <parameter name="[bearerCapabilityLayerIdentifier]" operation="string.xpath" value="[bearerCapability]" value2="//field[@name='Layer identifier']/attribute::value"/>
+    <test parameter="[bearerCapabilityLayerIdentifier]" condition="list.size" value="1"/>
+    <test parameter="[bearerCapabilityLayerIdentifier]" condition="string.equals" value="layer 1 ident:1"/>
+    <parameter name="[bearerCapabilityUserInformationLayer1Protocol]" operation="string.xpath" value="[bearerCapability]" value2="//field[@name='User information layer 1 protocol']/attribute::value"/>
+    <test parameter="[bearerCapabilityUserInformationLayer1Protocol]" condition="list.size" value="1"/>
+    <test parameter="[bearerCapabilityUserInformationLayer1Protocol]" condition="string.equals" value="Recommendation G.711 A-law:3"/>
+
+    <parameter name="[eventTypeBCSMEnumType]" operation="string.xpath" value="[InitialDPArg]" value2="//eventTypeBCSM.C28.Enum/EnumType/text()"/>
+    <test parameter="[eventTypeBCSMEnumType]" condition="list.size" value="1"/>
+    <test parameter="[eventTypeBCSMEnumType]" condition="string.equals" value="collectedInfo.2"/>
+
+    <parameter name="[redirectingPartyID]" operation="string.xpath" value="[InitialDPArg]" value2="//redirectingPartyID.C29.BoxedType"/>
+    <test parameter="[redirectingPartyID]" condition="list.size" value="1"/>
+    <parameter name="[redirectingPartyIDOddEven]" operation="string.xpath" value="[redirectingPartyID]" value2="//field[@name='Odd/even (O/E)']/attribute::value"/>
+    <test parameter="[redirectingPartyIDOddEven]" condition="list.size" value="1"/>
+    <test parameter="[redirectingPartyIDOddEven]" condition="string.equals" value="odd number of address signals:1"/>
+    <parameter name="[redirectingPartyIDNatureAddress]" operation="string.xpath" value="[redirectingPartyID]" value2="//field[@name='Nature of address']/attribute::value"/>
+    <test parameter="[redirectingPartyIDNatureAddress]" condition="list.size" value="1"/>
+    <test parameter="[redirectingPartyIDNatureAddress]" condition="string.equals" value="national (significant) number:3"/>
+    <parameter name="[redirectingPartyIDSpare1]" operation="string.xpath" value="[redirectingPartyID]" value2="//field[@name='spare1']/attribute::value"/>
+    <test parameter="[redirectingPartyIDSpare1]" condition="list.size" value="1"/>
+    <test parameter="[redirectingPartyIDSpare1]" condition="string.equals" value="0"/>
+    <parameter name="[redirectingPartyIDNumberingPlan]" operation="string.xpath" value="[redirectingPartyID]" value2="//field[@name='Numbering plan']/attribute::value"/>
+    <test parameter="[redirectingPartyIDNumberingPlan]" condition="list.size" value="1"/>
+    <test parameter="[redirectingPartyIDNumberingPlan]" condition="string.equals" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1"/>
+    <parameter name="[redirectingPartyIDNumberAddressPresentationRestricted]" operation="string.xpath" value="[redirectingPartyID]" value2="//field[@name='Address presentation restricted']/attribute::value"/>
+    <test parameter="[redirectingPartyIDNumberAddressPresentationRestricted]" condition="list.size" value="1"/>
+    <test parameter="[redirectingPartyIDNumberAddressPresentationRestricted]" condition="string.equals" value="presentation restricted:1"/>
+    <parameter name="[redirectingPartyIDSpare2]" operation="string.xpath" value="[redirectingPartyID]" value2="//field[@name='spare2']/attribute::value"/>
+    <test parameter="[redirectingPartyIDSpare2]" condition="list.size" value="1"/>
+    <test parameter="[redirectingPartyIDSpare2]" condition="string.equals" value="0"/>
+    <parameter name="[redirectingPartyIDDigits]" operation="string.xpath" value="[redirectingPartyID]" value2="//field[@name='digits']/attribute::value"/>
+    <test parameter="[redirectingPartyIDDigits]" condition="list.size" value="1"/>
+    <test parameter="[redirectingPartyIDDigits]" condition="string.equals" value="70109000"/>
+
+    <parameter name="[redirectionInformation]" operation="string.xpath" value="[InitialDPArg]" value2="//redirectionInformation.C30.BoxedType"/>
+    <test parameter="[redirectionInformation]" condition="list.size" value="1"/>    
+    <parameter name="[redirectionInformationRedirectingReason]" operation="string.xpath" value="[redirectionInformation]" value2="//field[@name='Redirecting reason']/attribute::value"/>
+    <test parameter="[redirectionInformationRedirectingReason]" condition="list.size" value="1"/>
+    <test parameter="[redirectionInformationRedirectingReason]" condition="string.equals" value="unknown/not available:0"/>
+    <parameter name="[redirectionInformationSpare1]" operation="string.xpath" value="[redirectionInformation]" value2="//field[@name='spare1']/attribute::value"/>
+    <test parameter="[redirectionInformationSpare1]" condition="list.size" value="1"/>
+    <test parameter="[redirectionInformationSpare1]" condition="string.equals" value="0"/>
+    <parameter name="[redirectionInformationRedirectingIndicator]" operation="string.xpath" value="[redirectionInformation]" value2="//field[@name='Redirecting indicator']/attribute::value"/>
+    <test parameter="[redirectionInformationRedirectingIndicator]" condition="list.size" value="1"/>
+    <test parameter="[redirectionInformationRedirectingIndicator]" condition="string.equals" value="call diverted:3"/>
+    <parameter name="[redirectionInformationOriginalRedirectionReason]" operation="string.xpath" value="[redirectionInformation]" value2="//field[@name='Original redirection reason']/attribute::value"/>
+    <test parameter="[redirectionInformationOriginalRedirectionReason]" condition="list.size" value="1"/>
+    <test parameter="[redirectionInformationOriginalRedirectionReason]" condition="string.equals" value="mobile subscriber not reachable:6"/>
+    <parameter name="[redirectionInformationSpare2]" operation="string.xpath" value="[redirectionInformation]" value2="//field[@name='spare2']/attribute::value"/>
+    <test parameter="[redirectionInformationSpare2]" condition="list.size" value="1"/>
+    <test parameter="[redirectionInformationSpare2]" condition="string.equals" value="0"/>
+    <parameter name="[redirectionInformationRedirectionCounter]" operation="string.xpath" value="[redirectionInformation]" value2="//field[@name='Redirection counter']/attribute::value"/>
+    <test parameter="[redirectionInformationRedirectionCounter]" condition="list.size" value="1"/>
+    <test parameter="[redirectionInformationRedirectionCounter]" condition="string.equals" value="1"/>
+
+    <parameter name="[iMSI_TBCD_STRING]" operation="string.xpath" value="[InitialDPArg]" value2="//iMSI.C50.BoxedType/TBCD_STRING.BoxedType/Bytes"/>
+    <test parameter="[iMSI_TBCD_STRING]" condition="list.size" value="1"/>
+    <parameter name="[iMSI_TBCD_STRINGDigits]" operation="string.xpath" value="[iMSI_TBCD_STRING]" value2="//field[@name='digits']/attribute::value"/>
+    <test parameter="[iMSI_TBCD_STRINGDigits]" condition="list.size" value="1"/>
+    <test parameter="[iMSI_TBCD_STRINGDigits]" condition="string.equals" value="607029900140199"/>
+
+    <parameter name="[ext_Teleservice]" operation="string.xpath" value="[InitialDPArg]" value2="//ext_basicServiceCode.C53.Choice/ext_Teleservice.C3.BoxedType/Bytes"/>
+    <test parameter="[ext_Teleservice]" condition="list.size" value="1"/>
+    <parameter name="[ext_TeleserviceCode]" operation="string.xpath" value="[ext_Teleservice]" value2="//field[@name='Code']/attribute::value"/>
+    <test parameter="[ext_TeleserviceCode]" condition="list.size" value="1"/>
+    <test parameter="[ext_TeleserviceCode]" condition="string.equals" value="telephony:17"/>
+    
+    <!-- TODO -->
+    
     <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="true" type="requestReportBCSMEvent:23">
     </receiveMessageSIGTRAN>
 	
