@@ -330,17 +330,16 @@ public class XMLToASNParser
         else if (type.equals("byte[]")) 
         {   
         	String elementName = object.getClass().getSimpleName();
-        	if (field != null && !"value".equalsIgnoreCase(name))
-        	{
-        		//elementName = elementName + "." + name;
-        	}
         	boolean logWarn = !elementName.equals("OrigTransactionID") &&
         			  !elementName.equals("DestTransactionID") &&
+        			  !elementName.equals("Invoke") &&
 					  !elementName.equals("Invoke.parameter") &&
 					  !elementName.equals("ReturnResult.parameter") &&
 					  !elementName.equals("ReturnError.parameter") &&
 					  !elementName.equals("Sm_RP_UI") &&
-					  !elementName.equals("PrivateExtension.extType");
+					  !elementName.equals("PrivateExtension") &&
+					  !elementName.equals("PrivateExtension.extType") &&
+					  !elementName.equals("CallReferenceNumber");
 
         	// get the element definition (enumeration binary data) from the dictionary
         	ElementAbstract elementDico = null;

@@ -42,14 +42,25 @@
         
     <parameter name="[invokeID]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeID"/>
     <test parameter="[invokeID]" condition="string.equals" value="1"/>
+    <parameter name="[invokeID]" operation="protocol.setFromMessage" value="asn.invokeID"/>
+    <test parameter="[invokeID]" condition="string.equals" value="1"/>
     
     <parameter name="[localValue]" operation="protocol.setFromMessage" value="asn.Component.invoke.opCode.localValue"/>
-    <test parameter="[localValue]" condition="string.contains" value="sendRoutingInfoForSM:45"/>
+    <test parameter="[localValue]" condition="string.equals" value="sendRoutingInfoForSM:45"/>
+    <parameter name="[localValue]" operation="protocol.setFromMessage" value="asn.opCode.localValue"/>
+    <test parameter="[localValue]" condition="string.equals" value="sendRoutingInfoForSM:45"/>
     
-    <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.TCMessage.begin.dialoguePortion.DialoguePDU.dialogueRequest.application_context_name.ObjectIdentifier.ObjectIdentifier"/>
-    <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.TCMessage.begin.dialoguePortion.DialoguePDU"/>
-    <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.TCMessage.begin.dialoguePortion"/>
-    <!--test parameter="[applicationContextName]" condition="string.contains" value="sendRoutingInfoForSM:45"/-->
+    <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.TCMessage.begin.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueRequest.AARQ_apduSequenceType.application_context_name"/>
+    <!-- BUG a voir retourne 2 valeurs Why ?-->
+    <!--test parameter="[applicationContextName]" condition="list.size" value="1"/-->
+    <test parameter="[applicationContextName(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
+    <test parameter="[applicationContextName(1)]" condition="string.equals" value="060704000001001502"/>
+    <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.dialogueRequest.AARQ_apduSequenceType.application_context_name"/>
+    <test parameter="[applicationContextName(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
+    <test parameter="[applicationContextName(1)]" condition="string.equals" value="060704000001001502"/>
+    <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.application_context_name"/>
+    <test parameter="[applicationContextName(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
+    <test parameter="[applicationContextName(1)]" condition="string.equals" value="060704000001001502"/>
     
     <!--test parameter="[xml]" condition="string.contains" value="&lt;invokeparameter&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;RoutingInfoForSMArg.Sequence&gt;"/>

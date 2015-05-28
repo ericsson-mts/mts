@@ -243,7 +243,8 @@ public class ASNGetParameter
         	if (elementDico != null)
         	{
 	        	EnumLongField fld = (EnumLongField) elementDico.getField(0);
-	        	return fld.getEnumValue((Long) object);
+	        	long longValue = ((Number) object).longValue();
+	        	return fld.getEnumValue(longValue);
         	}
 			return object.toString();
 		}

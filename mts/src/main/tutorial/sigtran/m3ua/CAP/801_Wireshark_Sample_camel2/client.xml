@@ -363,7 +363,9 @@
                      <field name="digits" value="2207750007" type="Number_BCD" length="5" />
                 </Bytes></AddressString.BoxedType></mscAddress.C55.BoxedType>
                 <!--calledPartyBCDNumber.C56.BoxedType><Bytes>5a199a</Bytes></calledPartyBCDNumber.C56.BoxedType-->
-                <timeAndTimezone.C57.BoxedType><Bytes>0250114231016500</Bytes></timeAndTimezone.C57.BoxedType>
+                <timeAndTimezone.C57.BoxedType><Bytes>
+                      <field name="TimeAndTimezone" value="2005112413105600" type="Number_BCD" length="8" />
+                </Bytes></timeAndTimezone.C57.BoxedType>
                 <!--callForwardingSS_Pending.C58></callForwardingSS_Pending.C58-->
                 <initialDPArgExtension.C59.Sequence>
                    <gmscAddress.C0.BoxedType><AddressString.BoxedType><Bytes>
@@ -744,11 +746,7 @@
     <test parameter="[RequestReportBCSMEventArg]" condition="list.size" value="1"/>
     <parameter name="[Collection]" operation="string.xpath" value="[RequestReportBCSMEventArg]" value2="//Collection"/>
     <test parameter="[Collection]" condition="list.size" value="1"/>
-    <parameter name="[bcsmEvents]" operation="string.xpath" value="[Collection]" value2="//bcsmEvents.C0.Sequence"/>
-    <test parameter="[bcsmEvents]" condition="list.size" value="7"/>
-    <parameter name="[eventTypeBCSM]" operation="string.xpath" value="[bcsmEvents]" value2="//eventTypeBCSM.C0.Enum"/>
-    <test parameter="[eventTypeBCSM]" condition="list.size" value="7"/>
-    <parameter name="[eventTypeBCSMEnumType]" operation="string.xpath" value="[eventTypeBCSM]" value2="//EnumType"/>
+    <parameter name="[eventTypeBCSMEnumType]" operation="string.xpath" value="[Collection]" value2="//bcsmEvents.C0.Sequence/eventTypeBCSM.C0.Enum/EnumType"/>
     <test parameter="[eventTypeBCSMEnumType]" condition="list.size" value="7"/>
     <test parameter="[eventTypeBCSMEnumType(0)]" condition="string.equals" value="&lt;EnumType&gt;routeSelectFailure.4&lt;/EnumType&gt;"/>
     <test parameter="[eventTypeBCSMEnumType(1)]" condition="string.equals" value="&lt;EnumType&gt;oCalledPartyBusy.5&lt;/EnumType&gt;"/>
@@ -757,9 +755,7 @@
     <test parameter="[eventTypeBCSMEnumType(4)]" condition="string.equals" value="&lt;EnumType&gt;oDisconnect.9&lt;/EnumType&gt;"/>        
     <test parameter="[eventTypeBCSMEnumType(5)]" condition="string.equals" value="&lt;EnumType&gt;oDisconnect.9&lt;/EnumType&gt;"/>
     <test parameter="[eventTypeBCSMEnumType(6)]" condition="string.equals" value="&lt;EnumType&gt;oAbandon.10&lt;/EnumType&gt;"/>
-    <parameter name="[monitorMode]" operation="string.xpath" value="[bcsmEvents]" value2="//monitorMode.C1.Enum"/>
-    <test parameter="[monitorMode]" condition="list.size" value="7"/>
-    <parameter name="[monitorModeEnumType]" operation="string.xpath" value="[monitorMode]" value2="//EnumType"/>
+    <parameter name="[monitorModeEnumType]" operation="string.xpath" value="[Collection]" value2="//bcsmEvents.C0.Sequence/monitorMode.C1.Enum/EnumType"/>
     <test parameter="[monitorModeEnumType]" condition="list.size" value="7"/>
     <test parameter="[monitorModeEnumType(0)]" condition="string.equals" value="&lt;EnumType&gt;interrupted.0&lt;/EnumType&gt;"/>
     <test parameter="[monitorModeEnumType(1)]" condition="string.equals" value="&lt;EnumType&gt;interrupted.0&lt;/EnumType&gt;"/>
@@ -768,19 +764,16 @@
     <test parameter="[monitorModeEnumType(4)]" condition="string.equals" value="&lt;EnumType&gt;interrupted.0&lt;/EnumType&gt;"/>        
     <test parameter="[monitorModeEnumType(5)]" condition="string.equals" value="&lt;EnumType&gt;interrupted.0&lt;/EnumType&gt;"/>
     <test parameter="[monitorModeEnumType(6)]" condition="string.equals" value="&lt;EnumType&gt;notifyAndContinue.1&lt;/EnumType&gt;"/>
-    <parameter name="[legID]" operation="string.xpath" value="[bcsmEvents]" value2="//legID.C2.Choice"/>
-    <test parameter="[legID]" condition="list.size" value="7"/>
-    <parameter name="[legIDSendingSideID]" operation="string.xpath" value="[legID]" value2="//sendingSideID.C0.BoxedType"/>
+    <parameter name="[legIDSendingSideID]" operation="string.xpath" value="[Collection]" value2="//bcsmEvents.C0.Sequence/legID.C2.Choice/sendingSideID.C0.BoxedType/Bytes"/>
     <test parameter="[legIDSendingSideID]" condition="list.size" value="7"/>
-    <parameter name="[legIDSendingSideIDBytes]" operation="string.xpath" value="[legIDSendingSideID]" value2="//Bytes"/>
-    <test parameter="[legIDSendingSideIDBytes]" condition="list.size" value="7"/>
-    <test parameter="[legIDSendingSideIDBytes(0)]" condition="string.equals" value="&lt;Bytes&gt;02&lt;/Bytes&gt;"/>
-    <test parameter="[legIDSendingSideIDBytes(1)]" condition="string.equals" value="&lt;Bytes&gt;02&lt;/Bytes&gt;"/>
-    <test parameter="[legIDSendingSideIDBytes(2)]" condition="string.equals" value="&lt;Bytes&gt;02&lt;/Bytes&gt;"/>    
-    <test parameter="[legIDSendingSideIDBytes(3)]" condition="string.equals" value="&lt;Bytes&gt;02&lt;/Bytes&gt;"/>    
-    <test parameter="[legIDSendingSideIDBytes(4)]" condition="string.equals" value="&lt;Bytes&gt;01&lt;/Bytes&gt;"/>        
-    <test parameter="[legIDSendingSideIDBytes(5)]" condition="string.equals" value="&lt;Bytes&gt;02&lt;/Bytes&gt;"/>
-    <test parameter="[legIDSendingSideIDBytes(6)]" condition="string.equals" value="&lt;Bytes&gt;01&lt;/Bytes&gt;"/>
+    <parameter name="[legIDSendingSideIDLegType]" operation="string.xpath" value="[legIDSendingSideID]" value2="//field[@name='LegType']/attribute::value"/>
+    <test parameter="[legIDSendingSideIDLegType(0)]" condition="string.equals" value="leg2 LegType:2"/>
+    <test parameter="[legIDSendingSideIDLegType(1)]" condition="string.equals" value="leg2 LegType:2"/>
+    <test parameter="[legIDSendingSideIDLegType(2)]" condition="string.equals" value="leg2 LegType:2"/>    
+    <test parameter="[legIDSendingSideIDLegType(3)]" condition="string.equals" value="leg2 LegType:2"/>    
+    <test parameter="[legIDSendingSideIDLegType(4)]" condition="string.equals" value="leg1 LegType:1"/>        
+    <test parameter="[legIDSendingSideIDLegType(5)]" condition="string.equals" value="leg2 LegType:2"/>
+    <test parameter="[legIDSendingSideIDLegType(6)]" condition="string.equals" value="leg1 LegType:1"/>
 
     <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="true" type="connect:20">
     </receiveMessageSIGTRAN>
@@ -815,7 +808,16 @@
                    <EnumType>routeSelectFailure.4</EnumType>
                 </eventTypeBCSM.C0.Enum>
                 <eventSpecificInformationBCSM.C2.Choice>
-                   <routeSelectFailureSpecificInfo.C2.Sequence><failureCause.C0.BoxedType><Bytes>8490</Bytes></failureCause.C0.BoxedType></routeSelectFailureSpecificInfo.C2.Sequence>
+                   <routeSelectFailureSpecificInfo.C2.Sequence><failureCause.C0.BoxedType><Bytes>
+                     <field name="ext1" value="last octet:1" type="EnumLong" lengthBit="1" />
+                     <field name="Coding standard" value="ITU-T standardized coding, as described below:0" type="EnumLong" lengthBit="2" />
+                     <field name="Spare" value="0" type="Integer" lengthBit="1" />
+                     <field name="Location" value="public network serving the remote user (RLN):4" type="EnumLong" lengthBit="4" />
+                     <!--field name="ext2" value="last octet:1" type="EnumLong" lengthBit="1" /-->
+                     <!--field name="Recommandation" value="public land mobile networks, Q.1031/Q.1051:5" type="EnumLong" lengthBit="7" /-->
+                     <field name="ext3" value="last octet:1" type="EnumLong" lengthBit="1" />
+                     <field name="Cause value" value="Class 001 normal event : Normal call clearing:16" type="EnumLong" lengthBit="7" />                                     
+                   </Bytes></failureCause.C0.BoxedType></routeSelectFailureSpecificInfo.C2.Sequence>
                      <!--oCalledPartyBusySpecificInfo.C3.Sequence><busyCause.C0.BoxedType><Bytes>d21b37f835dea2</Bytes></busyCause.C0.BoxedType></oCalledPartyBusySpecificInfo.C3.Sequence-->
                      <!--oNoAnswerSpecificInfo.C4.Sequence>
                         
@@ -1739,7 +1741,9 @@
                         <collectedInfoSpecificInfo.C2.Sequence><calledPartyNumber.C0.BoxedType><Bytes>d9f69c93</Bytes></calledPartyNumber.C0.BoxedType></collectedInfoSpecificInfo.C2.Sequence>
                      </dpSpecificInfoAlt.C52.Sequence-->
                   </eventSpecificInformationBCSM.C2.Choice>
-                  <legID.C3.Choice><receivingSideID.C1.BoxedType><Bytes>02</Bytes></receivingSideID.C1.BoxedType></legID.C3.Choice>
+                  <legID.C3.Choice><receivingSideID.C1.BoxedType><Bytes>
+                      <field name="LegType" value="leg2 LegType:2" type="EnumLong" length="1" />
+                  </Bytes></receivingSideID.C1.BoxedType></legID.C3.Choice>
                   <!--miscCallInfo.C4d.Sequence><messageType.C0.Enum>
                         <EnumType>notification.1</EnumType>
                      </messageType.C0.Enum></miscCallInfo.C4d.Sequence-->
