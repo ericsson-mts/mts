@@ -58,6 +58,7 @@ import java.util.List;
 
 import org.bn.CoderFactory;
 import org.bn.IEncoder;
+import org.bn.annotations.ASN1EnumItem;
 import org.bn.types.BitString;
 import org.bn.types.ObjectIdentifier;
 import org.dom4j.Document;
@@ -384,9 +385,17 @@ public class XMLToASNParser
         {
         	value = element.getTextTrim();
         	int position = value.indexOf(ASNToXMLConverter.TAG_SEPARATOR);
+        	String strVal = null;
+        	int intVal = -1;
         	if (position > 0)
         	{
-        		value = value.substring(0, position);
+        		strVal = value.substring(0, position);
+        		intVal = Integer.parseInt(value.substring(position + 1));
+        	}
+        	else
+        	{
+        		strVal = value;
+        		intVal = Integer.parseInt(value);
         	}
 
 			Class[] classes = object.getClass().getClasses();
@@ -395,13 +404,45 @@ public class XMLToASNParser
 			{
 				objects = classes[0].getEnumConstants();
 				Object objFind = null;
+				boolean found = false;
 				for (int i=0; i <objects.length; i++)
 				{
 					objFind = objects[i];
-					if (objFind.toString().equals(value))
+					if (objFind.toString().equals(strVal))
 					{
+						found = true;
 						break;
 					}
+				}
+				ASN1EnumItem enumObj = null;
+	            for(Field enumItem: objFind.getClass().getDeclaredFields()) 
+	            {
+	                if(enumItem.isAnnotationPresent(ASN1EnumItem.class)) 
+	                {
+	                    if(enumItem.getName().equals(strVal)) 
+	                    {
+	                    	enumObj = enumItem.getAnnotation(ASN1EnumItem.class);
+	                        break;
+	                    }
+	                }
+	            }
+	            if (enumObj != null && enumObj.tag() != intVal)
+	            {
+	            	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, null, 
+	            			"For the ASN1 enumeration \"" + object.getClass().getSimpleName() + "\", the label \"" + strVal + "\" does not match the value \"" + intVal + "\"");
+	            }
+	            
+				if (!found)
+				{
+					String possibleValues = "";
+					for (int i=0; i <objects.length; i++)
+					{
+						possibleValues += objects[i];
+						possibleValues += ",";
+					}
+					possibleValues = possibleValues.substring(0, possibleValues.length() - 1);  
+					throw new ParsingException("For the ANS1 enumeration \"" + object.getClass().getSimpleName() + 
+						"\", the value \"" + value + "\" is not allowed according to the ASN1 file; possible values are one of [" + possibleValues + "]");
 				}
 				// not a simple value so return
 				return objFind;
