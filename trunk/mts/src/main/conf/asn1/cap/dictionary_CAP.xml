@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!--
     Document   : dictionnary_CAP.xml
@@ -63,7 +63,93 @@
         replace="com.devoteam.srit.xmlloader.sigtran.ap.map.UnknownSubscriberParam"
         condition="localValue=1"
     /--> 
+
+        <!-- Operation code local value => camel.asn1 line 138 -->
+    <element name="opCode.localValue" coding="V" description="Operation code local value">
+    		<field name="localValue" type="EnumLong" length="1" description="operation code">
+            <enum name="initialDP" value="0"/>
+            <enum name="assistRequestInstructions" value="16"/>
+            <enum name="establishTemporaryConnection" value="17"/>
+            <enum name="disconnectForwardConnection" value="18"/>
+            <enum name="connectToResource" value="19"/>
+            <enum name="connect" value="20"/>
+            <enum name="releaseCall" value="22"/>
+            <enum name="requestReportBCSMEvent" value="23"/>
+            <enum name="eventReportBCSM" value="24"/>
+            <enum name="collectInformation" value="27"/>
+            <enum name="continue" value="31"/>
+            <enum name="initiateCallAttempt" value="32"/>
+            <enum name="resetTimer" value="33"/>
+            <enum name="furnishChargingInformation" value="34"/>
+            <enum name="applyCharging" value="35"/>
+            <enum name="applyChargingReport" value="36"/>
+            <enum name="callGap" value="41"/>
+            <enum name="callInformationReport" value="44"/>
+            <enum name="callInformationRequest" value="45"/>
+            <enum name="sendChargingInformation" value="46"/>
+            <enum name="playAnnouncement" value="47"/>
+            <enum name="promptAndCollectUserInformation" value="48"/>
+            <enum name="specializedResourceReport" value="49"/>
+            <enum name="cancel" value="53"/>
+            <enum name="activityTest" value="55"/>
+            <enum name="continueWithArgument" value="56"/>
+            <enum name="initialDPSMS" value="60"/>
+            <enum name="furnishChargingInformationSMS" value="61"/>
+            <enum name="connectSMS" value="62"/>
+            <enum name="requestReportSMSEvent" value="63"/>
+            <enum name="eventReportSMS" value="64"/>
+            <enum name="continueSMS" value="65"/>
+            <enum name="releaseSMS" value="66"/>
+            <enum name="resetTimerSMS" value="67"/>
+            <enum name="activityTestGPRS" value="70"/>
+            <enum name="applyChargingGPRS" value="71"/>
+            <enum name="applyChargingReportGPRS" value="72"/>
+            <enum name="cancelGPRS" value="73"/>
+            <enum name="connectGPRS" value="74"/>
+            <enum name="continueGPRS" value="75"/>
+            <enum name="entityReleasedGPRS" value="76"/>
+            <enum name="furnishChargingInformationGPRS" value="77"/>
+            <enum name="initialDPGPRS" value="78"/>
+            <enum name="releaseGPRS" value="79"/>
+            <enum name="eventReportGPRS" value="80"/>
+            <enum name="requestReportGPRSEvent" value="81"/>
+            <enum name="resetTimerGPRS" value="82"/>
+            <enum name="sendChargingInformationGPRS" value="83"/>
+            <enum name="dFCWithArgument" value="86"/>
+            <enum name="continueWithArgument" value="88"/>
+            <enum name="disconnectLeg" value="90"/>
+            <enum name="moveLeg" value="93"/>
+            <enum name="splitLeg" value="95"/>
+            <enum name="entityReleased" value="96"/>
+            <enum name="playTone" value="97"/>
+        </field>
+    </element>
+
+    <!-- Error code local value => Camel.asn1 line 206 -->
+    <element name="errorCode.localValue" coding="V" description="Error code local value">
+    		<field name="localValue" type="EnumLong" length="1" description="error code">
+            <enum name="canceled" value="0"/>
+            <enum name="cancelFailed" value="1"/>
+            <enum name="eTCFailed" value="3"/>
+            <enum name="improperCallerResponse" value="4"/>
+            <enum name="missingCustomerRecord" value="6"/>
+            <enum name="missingParameter" value="7"/>
+            <enum name="parameterOutOfRange" value="8"/>
+            <enum name="requestedInfoError" value="10"/>
+            <enum name="systemFailure" value="11"/>
+            <enum name="taskRefused" value="12"/>
+            <enum name="unavailableResource" value="13"/>
+            <enum name="unexpectedComponentSequence" value="14"/>
+            <enum name="unexpectedDataValue" value="15"/>
+            <enum name="unexpectedParameter" value="16"/>
+            <enum name="unknownLegID" value="17"/>
+            <enum name="unknownPDPID" value="50"/>
+            <enum name="unknownCSID" value="51"/>
+        </field>
+    </element>
     
+    <!-- * Binary elements ***********************************************************************************************--> 
+      
     <!-- International Subscriber Distinguish Name (ISDN) adress string => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 456 -->
     <!-- Service Centre Address (similar to Address string) => 3GPP TS 29.002 V12.6 chapter 17.7.8 page 456 -->
     <element name="AddressString,ISDN_AddressString,ServiceCentreAddress" coding="V" description="International Mobile Subscriber Identity address string, Service Centre Address">
@@ -1067,7 +1153,7 @@
             <enum name="Class 000 normal event : Channel unacceptable" value="6" description="b000 0110 "/>
             <enum name="Class 000 normal event : Call awarded and being delivered in an established channel" value="7" description="b000 0111"/>
             <enum name="Class 000 normal event : Preemption" value="8" description="b000 1000"/> 
-            <enum name="Class 000 normal event : Preemption – circuit reserved for reuse" value="9" description="b000 1001"/>
+            <enum name="Class 000 normal event : Preemption circuit reserved for reuse" value="9" description="b000 1001"/>
 
             <enum name="Class 001 normal event : Normal call clearing" value="16" description="b001 0000 Condition"/>
             <enum name="Class 001 normal event : User busy" value="17" description="b001 0001 CCBS indicator"/> 
@@ -1136,6 +1222,7 @@
 
             <enum name="Class 111 interworking : Interworking, unspecified " value="127" description="b111 1111"/> 
         </field>
+        <!--field name="Diagnostics" type="Binary" length="1" description="Diagnostics"/-->
     </element>
 
     <!-- User Service Information => ITU Q.763 V12/1999 chapter 3.57 page 65 -->    
@@ -1176,7 +1263,7 @@
             <enum name="Packet mode only" value="0" description="b00000"/>
             <enum name="reserved" value="1-15" description="b00001-b01111"/>
             <enum name="64 kbit/s" value="16" description="b10000"/> 
-            <enum name="2 × 64 kbit/s" value="17" description="b10001"/> 
+            <enum name="2 Ã— 64 kbit/s" value="17" description="b10001"/> 
             <enum name="reserved" value="18" description="b10010"/>
             <enum name="384 kbit/s" value="19" description="b10011"/>
             <enum name="reserved" value="20" description="b10100"/> 
@@ -1236,7 +1323,7 @@
         <field name="Layer identifier" type="EnumLong" lengthBit="2" description="Layer identifier">
             <enum name="not available" value="0" description="b00 not allowed"/>
             <enum name="layer 1 ident" value="1" description="b01"/>
-            <enum name="layer 2 ident"." value="2" description="b10"/>
+            <enum name="layer 2 ident" value="2" description="b10"/>
             <enum name="layer 3 ident" value="3" description="b11"/>
         </field>
         <field name="User information layer 3 protocol" type="EnumLong" lengthBit="5" description="User information layer 3 protocol">
@@ -1978,90 +2065,6 @@
             <enum name="Reserved" value="5-7" description="b101-b111"/>
         </field>
         <!--.............-->
-    </element>
-
-    <!-- Operation code local value => camel.asn1 line 138 -->
-    <element name="opCode.localValue" coding="V" description="Operation code local value">
-    		<field name="localValue" type="EnumLong" length="1" description="operation code">
-            <enum name="initialDP" value="0"/>
-            <enum name="assistRequestInstructions" value="16"/>
-            <enum name="establishTemporaryConnection" value="17"/>
-            <enum name="disconnectForwardConnection" value="18"/>
-            <enum name="connectToResource" value="19"/>
-            <enum name="connect" value="20"/>
-            <enum name="releaseCall" value="22"/>
-            <enum name="requestReportBCSMEvent" value="23"/>
-            <enum name="eventReportBCSM" value="24"/>
-            <enum name="collectInformation" value="27"/>
-            <enum name="continue" value="31"/>
-            <enum name="initiateCallAttempt" value="32"/>
-            <enum name="resetTimer" value="33"/>
-            <enum name="furnishChargingInformation" value="34"/>
-            <enum name="applyCharging" value="35"/>
-            <enum name="applyChargingReport" value="36"/>
-            <enum name="callGap" value="41"/>
-            <enum name="callInformationReport" value="44"/>
-            <enum name="callInformationRequest" value="45"/>
-            <enum name="sendChargingInformation" value="46"/>
-            <enum name="playAnnouncement" value="47"/>
-            <enum name="promptAndCollectUserInformation" value="48"/>
-            <enum name="specializedResourceReport" value="49"/>
-            <enum name="cancel" value="53"/>
-            <enum name="activityTest" value="55"/>
-            <enum name="continueWithArgument" value="56"/>
-            <enum name="initialDPSMS" value="60"/>
-            <enum name="furnishChargingInformationSMS" value="61"/>
-            <enum name="connectSMS" value="62"/>
-            <enum name="requestReportSMSEvent" value="63"/>
-            <enum name="eventReportSMS" value="64"/>
-            <enum name="continueSMS" value="65"/>
-            <enum name="releaseSMS" value="66"/>
-            <enum name="resetTimerSMS" value="67"/>
-            <enum name="activityTestGPRS" value="70"/>
-            <enum name="applyChargingGPRS" value="71"/>
-            <enum name="applyChargingReportGPRS" value="72"/>
-            <enum name="cancelGPRS" value="73"/>
-            <enum name="connectGPRS" value="74"/>
-            <enum name="continueGPRS" value="75"/>
-            <enum name="entityReleasedGPRS" value="76"/>
-            <enum name="furnishChargingInformationGPRS" value="77"/>
-            <enum name="initialDPGPRS" value="78"/>
-            <enum name="releaseGPRS" value="79"/>
-            <enum name="eventReportGPRS" value="80"/>
-            <enum name="requestReportGPRSEvent" value="81"/>
-            <enum name="resetTimerGPRS" value="82"/>
-            <enum name="sendChargingInformationGPRS" value="83"/>
-            <enum name="dFCWithArgument" value="86"/>
-            <enum name="continueWithArgument" value="88"/>
-            <enum name="disconnectLeg" value="90"/>
-            <enum name="moveLeg" value="93"/>
-            <enum name="splitLeg" value="95"/>
-            <enum name="entityReleased" value="96"/>
-            <enum name="playTone" value="97"/>
-        </field>
-    </element>
-
-    <!-- Error code local value => Camel.asn1 line 206 -->
-    <element name="errorCode.localValue" coding="V" description="Error code local value">
-    		<field name="localValue" type="EnumLong" length="1" description="error code">
-            <enum name="canceled" value="0"/>
-            <enum name="cancelFailed" value="1"/>
-            <enum name="eTCFailed" value="3"/>
-            <enum name="improperCallerResponse" value="4"/>
-            <enum name="missingCustomerRecord" value="6"/>
-            <enum name="missingParameter" value="7"/>
-            <enum name="parameterOutOfRange" value="8"/>
-            <enum name="requestedInfoError" value="10"/>
-            <enum name="systemFailure" value="11"/>
-            <enum name="taskRefused" value="12"/>
-            <enum name="unavailableResource" value="13"/>
-            <enum name="unexpectedComponentSequence" value="14"/>
-            <enum name="unexpectedDataValue" value="15"/>
-            <enum name="unexpectedParameter" value="16"/>
-            <enum name="unknownLegID" value="17"/>
-            <enum name="unknownPDPID" value="50"/>
-            <enum name="unknownCSID" value="51"/>
-        </field>
     </element>
 
 
