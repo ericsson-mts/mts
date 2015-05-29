@@ -364,7 +364,7 @@
                 </Bytes></AddressString.BoxedType></mscAddress.C55.BoxedType>
                 <!--calledPartyBCDNumber.C56.BoxedType><Bytes>5a199a</Bytes></calledPartyBCDNumber.C56.BoxedType-->
                 <timeAndTimezone.C57.BoxedType><Bytes>
-                      <field name="TimeAndTimezone" value="2005112413105600" type="Number_BCD" length="8" />
+                      <field name="value" value="2005112413105600" type="Number_BCD" length="8" />
                 </Bytes></timeAndTimezone.C57.BoxedType>
                 <!--callForwardingSS_Pending.C58></callForwardingSS_Pending.C58-->
                 <initialDPArgExtension.C59.Sequence>
@@ -545,6 +545,7 @@
     <parameter name="[invoke]" operation="string.xpath" value="[component]" value2="//invoke.C1.Sequence"/>
     <test parameter="[invoke]" condition="list.size" value="1"/>
     <parameter name="[invokeID]" operation="string.xpath" value="[invoke]" value2="//invokeID.BoxedType/Integer/text()"/>
+    <test parameter="[invokeID]" condition="list.size" value="1"/>
     <test parameter="[invokeID]" condition="string.equals" value="1"/>
     <parameter name="[opCode]" operation="string.xpath" value="[invoke]" value2="//opCode.Choice"/>
     <test parameter="[opCode]" condition="list.size" value="1"/>
@@ -724,8 +725,47 @@
     <parameter name="[ext_TeleserviceCode]" operation="string.xpath" value="[ext_Teleservice]" value2="//field[@name='Code']/attribute::value"/>
     <test parameter="[ext_TeleserviceCode]" condition="list.size" value="1"/>
     <test parameter="[ext_TeleserviceCode]" condition="string.equals" value="telephony:17"/>
+
+    <parameter name="[callReferenceNumber]" operation="string.xpath" value="[InitialDPArg]" value2="//callReferenceNumber.C54.BoxedType/Bytes/text()"/>
+    <test parameter="[callReferenceNumber]" condition="list.size" value="1"/>
+    <test parameter="[callReferenceNumber]" condition="string.equals" value="13fa3d3dea"/>
+
+    <parameter name="[mscAddress]" operation="string.xpath" value="[InitialDPArg]" value2="//mscAddress.C55.BoxedType/AddressString.BoxedType/Bytes"/>
+    <test parameter="[mscAddress]" condition="list.size" value="1"/>    
+    <parameter name="[mscAddressExtension]" operation="string.xpath" value="[mscAddress]" value2="//field[@name='extension']/attribute::value"/>
+    <test parameter="[mscAddressExtension]" condition="list.size" value="1"/>
+    <test parameter="[mscAddressExtension]" condition="string.equals" value="no extension:1"/>
+    <parameter name="[mscAddressNatureOfAddress]" operation="string.xpath" value="[mscAddress]" value2="//field[@name='nature of address']/attribute::value"/>
+    <test parameter="[mscAddressNatureOfAddress]" condition="list.size" value="1"/>
+    <test parameter="[mscAddressNatureOfAddress]" condition="string.equals" value="international number:1"/>
+    <parameter name="[mscAddressNumberingPlan]" operation="string.xpath" value="[mscAddress]" value2="//field[@name='numbering plan']/attribute::value"/>
+    <test parameter="[mscAddressNumberingPlan]" condition="list.size" value="1"/>
+    <test parameter="[mscAddressNumberingPlan]" condition="string.equals" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1"/>
+    <parameter name="[mscAddressDigits]" operation="string.xpath" value="[mscAddress]" value2="//field[@name='digits']/attribute::value"/>
+    <test parameter="[mscAddressDigits]" condition="list.size" value="1"/>
+    <test parameter="[mscAddressDigits]" condition="string.equals" value="2207750007"/>
+
+    <parameter name="[timeAndTimezone]" operation="string.xpath" value="[InitialDPArg]" value2="//timeAndTimezone.C57.BoxedType/Bytes"/>
+    <test parameter="[timeAndTimezone]" condition="list.size" value="1"/>    
+    <parameter name="[timeAndTimezoneValue]" operation="string.xpath" value="[timeAndTimezone]" value2="//field[@name='value']/attribute::value"/>
+    <test parameter="[timeAndTimezoneValue]" condition="list.size" value="1"/>
+    <test parameter="[timeAndTimezoneValue]" condition="string.equals" value="2005112413105600"/>
+
+    <parameter name="[gmscAddress]" operation="string.xpath" value="[InitialDPArg]" value2="//initialDPArgExtension.C59.Sequence/gmscAddress.C0.BoxedType/AddressString.BoxedType/Bytes"/>
+    <test parameter="[gmscAddress]" condition="list.size" value="1"/>    
+    <parameter name="[gmscAddressExtension]" operation="string.xpath" value="[gmscAddress]" value2="//field[@name='extension']/attribute::value"/>
+    <test parameter="[gmscAddressExtension]" condition="list.size" value="1"/>
+    <test parameter="[gmscAddressExtension]" condition="string.equals" value="no extension:1"/>
+    <parameter name="[gmscAddressNatureOfAddress]" operation="string.xpath" value="[gmscAddress]" value2="//field[@name='nature of address']/attribute::value"/>
+    <test parameter="[gmscAddressNatureOfAddress]" condition="list.size" value="1"/>
+    <test parameter="[gmscAddressNatureOfAddress]" condition="string.equals" value="international number:1"/>
+    <parameter name="[gmscAddressNumberingPlan]" operation="string.xpath" value="[gmscAddress]" value2="//field[@name='numbering plan']/attribute::value"/>
+    <test parameter="[gmscAddressNumberingPlan]" condition="list.size" value="1"/>
+    <test parameter="[gmscAddressNumberingPlan]" condition="string.equals" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1"/>
+    <parameter name="[gmscAddressDigits]" operation="string.xpath" value="[gmscAddress]" value2="//field[@name='digits']/attribute::value"/>
+    <test parameter="[gmscAddressDigits]" condition="list.size" value="1"/>
+    <test parameter="[gmscAddressDigits]" condition="string.equals" value="2207750007"/>
     
-    <!-- TODO -->
     
     <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="true" type="requestReportBCSMEvent:23">
     </receiveMessageSIGTRAN>
@@ -740,30 +780,38 @@
     <test parameter="[component]" condition="list.size" value="1"/>
     <parameter name="[invoke]" operation="string.xpath" value="[component]" value2="//invoke.C1.Sequence"/>
     <test parameter="[invoke]" condition="list.size" value="1"/>
+    <parameter name="[invokeID]" operation="string.xpath" value="[invoke]" value2="//invokeID.BoxedType/Integer/text()"/>
+    <test parameter="[invokeID]" condition="list.size" value="1"/>
+    <test parameter="[invokeID]" condition="string.equals" value="1"/>
+    <parameter name="[opCode]" operation="string.xpath" value="[invoke]" value2="//opCode.Choice"/>
+    <test parameter="[opCode]" condition="list.size" value="1"/>
+    <parameter name="[opCodeLocalValue]" operation="string.xpath" value="[opCode]" value2="//localValue.BoxedType/Long/text()"/>
+    <test parameter="[opCodeLocalValue]" condition="list.size" value="1"/>
+    <test parameter="[opCodeLocalValue]" condition="string.equals" value="requestReportBCSMEvent:23"/>
     <parameter name="[invokeparameter]" operation="string.xpath" value="[invoke]" value2="//invokeparameter"/>
     <test parameter="[invokeparameter]" condition="list.size" value="1"/>
     <parameter name="[RequestReportBCSMEventArg]" operation="string.xpath" value="[invokeparameter]" value2="//RequestReportBCSMEventArg.Sequence"/>
     <test parameter="[RequestReportBCSMEventArg]" condition="list.size" value="1"/>
     <parameter name="[Collection]" operation="string.xpath" value="[RequestReportBCSMEventArg]" value2="//Collection"/>
     <test parameter="[Collection]" condition="list.size" value="1"/>
-    <parameter name="[eventTypeBCSMEnumType]" operation="string.xpath" value="[Collection]" value2="//bcsmEvents.C0.Sequence/eventTypeBCSM.C0.Enum/EnumType"/>
+    <parameter name="[eventTypeBCSMEnumType]" operation="string.xpath" value="[Collection]" value2="//bcsmEvents.C0.Sequence/eventTypeBCSM.C0.Enum/EnumType/text()"/>
     <test parameter="[eventTypeBCSMEnumType]" condition="list.size" value="7"/>
-    <test parameter="[eventTypeBCSMEnumType(0)]" condition="string.equals" value="&lt;EnumType&gt;routeSelectFailure.4&lt;/EnumType&gt;"/>
-    <test parameter="[eventTypeBCSMEnumType(1)]" condition="string.equals" value="&lt;EnumType&gt;oCalledPartyBusy.5&lt;/EnumType&gt;"/>
-    <test parameter="[eventTypeBCSMEnumType(2)]" condition="string.equals" value="&lt;EnumType&gt;oNoAnswer.6&lt;/EnumType&gt;"/>    
-    <test parameter="[eventTypeBCSMEnumType(3)]" condition="string.equals" value="&lt;EnumType&gt;oAnswer.7&lt;/EnumType&gt;"/>    
-    <test parameter="[eventTypeBCSMEnumType(4)]" condition="string.equals" value="&lt;EnumType&gt;oDisconnect.9&lt;/EnumType&gt;"/>        
-    <test parameter="[eventTypeBCSMEnumType(5)]" condition="string.equals" value="&lt;EnumType&gt;oDisconnect.9&lt;/EnumType&gt;"/>
-    <test parameter="[eventTypeBCSMEnumType(6)]" condition="string.equals" value="&lt;EnumType&gt;oAbandon.10&lt;/EnumType&gt;"/>
-    <parameter name="[monitorModeEnumType]" operation="string.xpath" value="[Collection]" value2="//bcsmEvents.C0.Sequence/monitorMode.C1.Enum/EnumType"/>
+    <test parameter="[eventTypeBCSMEnumType(0)]" condition="string.equals" value="routeSelectFailure.4"/>
+    <test parameter="[eventTypeBCSMEnumType(1)]" condition="string.equals" value="oCalledPartyBusy.5"/>
+    <test parameter="[eventTypeBCSMEnumType(2)]" condition="string.equals" value="oNoAnswer.6"/>    
+    <test parameter="[eventTypeBCSMEnumType(3)]" condition="string.equals" value="oAnswer.7"/>    
+    <test parameter="[eventTypeBCSMEnumType(4)]" condition="string.equals" value="oDisconnect.9"/>        
+    <test parameter="[eventTypeBCSMEnumType(5)]" condition="string.equals" value="oDisconnect.9"/>
+    <test parameter="[eventTypeBCSMEnumType(6)]" condition="string.equals" value="oAbandon.10"/>
+    <parameter name="[monitorModeEnumType]" operation="string.xpath" value="[Collection]" value2="//bcsmEvents.C0.Sequence/monitorMode.C1.Enum/EnumType/text()"/>
     <test parameter="[monitorModeEnumType]" condition="list.size" value="7"/>
-    <test parameter="[monitorModeEnumType(0)]" condition="string.equals" value="&lt;EnumType&gt;interrupted.0&lt;/EnumType&gt;"/>
-    <test parameter="[monitorModeEnumType(1)]" condition="string.equals" value="&lt;EnumType&gt;interrupted.0&lt;/EnumType&gt;"/>
-    <test parameter="[monitorModeEnumType(2)]" condition="string.equals" value="&lt;EnumType&gt;interrupted.0&lt;/EnumType&gt;"/>    
-    <test parameter="[monitorModeEnumType(3)]" condition="string.equals" value="&lt;EnumType&gt;notifyAndContinue.1&lt;/EnumType&gt;"/>    
-    <test parameter="[monitorModeEnumType(4)]" condition="string.equals" value="&lt;EnumType&gt;interrupted.0&lt;/EnumType&gt;"/>        
-    <test parameter="[monitorModeEnumType(5)]" condition="string.equals" value="&lt;EnumType&gt;interrupted.0&lt;/EnumType&gt;"/>
-    <test parameter="[monitorModeEnumType(6)]" condition="string.equals" value="&lt;EnumType&gt;notifyAndContinue.1&lt;/EnumType&gt;"/>
+    <test parameter="[monitorModeEnumType(0)]" condition="string.equals" value="interrupted.0"/>
+    <test parameter="[monitorModeEnumType(1)]" condition="string.equals" value="interrupted.0"/>
+    <test parameter="[monitorModeEnumType(2)]" condition="string.equals" value="interrupted.0"/>    
+    <test parameter="[monitorModeEnumType(3)]" condition="string.equals" value="notifyAndContinue.1"/>    
+    <test parameter="[monitorModeEnumType(4)]" condition="string.equals" value="interrupted.0"/>        
+    <test parameter="[monitorModeEnumType(5)]" condition="string.equals" value="interrupted.0"/>
+    <test parameter="[monitorModeEnumType(6)]" condition="string.equals" value="notifyAndContinue.1"/>
     <parameter name="[legIDSendingSideID]" operation="string.xpath" value="[Collection]" value2="//bcsmEvents.C0.Sequence/legID.C2.Choice/sendingSideID.C0.BoxedType/Bytes"/>
     <test parameter="[legIDSendingSideID]" condition="list.size" value="7"/>
     <parameter name="[legIDSendingSideIDLegType]" operation="string.xpath" value="[legIDSendingSideID]" value2="//field[@name='LegType']/attribute::value"/>
@@ -788,8 +836,40 @@
     <test parameter="[component]" condition="list.size" value="1"/>
     <parameter name="[invoke]" operation="string.xpath" value="[component]" value2="//invoke.C1.Sequence"/>
     <test parameter="[invoke]" condition="list.size" value="1"/>
+    <parameter name="[invokeID]" operation="string.xpath" value="[invoke]" value2="//invokeID.BoxedType/Integer/text()"/>
+    <test parameter="[invokeID]" condition="list.size" value="1"/>
+    <test parameter="[invokeID]" condition="string.equals" value="2"/>
+    <parameter name="[opCode]" operation="string.xpath" value="[invoke]" value2="//opCode.Choice"/>
+    <test parameter="[opCode]" condition="list.size" value="1"/>
+    <parameter name="[opCodeLocalValue]" operation="string.xpath" value="[opCode]" value2="//localValue.BoxedType/Long/text()"/>
+    <test parameter="[opCodeLocalValue]" condition="list.size" value="1"/>
+    <test parameter="[opCodeLocalValue]" condition="string.equals" value="connect:20"/>
     <parameter name="[invokeparameter]" operation="string.xpath" value="[invoke]" value2="//invokeparameter"/>
     <test parameter="[invokeparameter]" condition="list.size" value="1"/>
+    <parameter name="[ConnectArg]" operation="string.xpath" value="[invokeparameter]" value2="//ConnectArg.Sequence"/>
+    <test parameter="[ConnectArg]" condition="list.size" value="1"/>
+    <parameter name="[Collection]" operation="string.xpath" value="[ConnectArg]" value2="//Collection"/>
+    <test parameter="[Collection]" condition="list.size" value="1"/>
+    <parameter name="[CalledPartyNumber]" operation="string.xpath" value="[Collection]" value2="//CalledPartyNumber.BoxedType/Bytes"/>
+    <test parameter="[CalledPartyNumber]" condition="list.size" value="1"/>
+    <parameter name="[CalledPartyNumberOE]" operation="string.xpath" value="[CalledPartyNumber]" value2="//field[@name='Odd/even (O/E)']/attribute::value"/>
+    <test parameter="[CalledPartyNumberOE]" condition="list.size" value="1"/>
+    <test parameter="[CalledPartyNumberOE]" condition="string.equals" value="even number of address signals:0"/>
+    <parameter name="[CalledPartyNumberNatureOfAddress]" operation="string.xpath" value="[CalledPartyNumber]" value2="//field[@name='Nature of address']/attribute::value"/>
+    <test parameter="[CalledPartyNumberNatureOfAddress]" condition="list.size" value="1"/>
+    <test parameter="[CalledPartyNumberNatureOfAddress]" condition="string.equals" value="unknown (national use):2"/>
+    <parameter name="[CalledPartyNumberINN]" operation="string.xpath" value="[CalledPartyNumber]" value2="//field[@name='Internal Network Number (INN)']/attribute::value"/>
+    <test parameter="[CalledPartyNumberINN]" condition="list.size" value="1"/>
+    <test parameter="[CalledPartyNumberINN]" condition="string.equals" value="routing to internal number allowed:0"/>
+    <parameter name="[CalledPartyNumberNumberingPlan]" operation="string.xpath" value="[CalledPartyNumber]" value2="//field[@name='Numbering plan']/attribute::value"/>
+    <test parameter="[CalledPartyNumberNumberingPlan]" condition="list.size" value="1"/>
+    <test parameter="[CalledPartyNumberNumberingPlan]" condition="string.equals" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1"/>
+    <parameter name="[CalledPartyNumberSpare]" operation="string.xpath" value="[CalledPartyNumber]" value2="//field[@name='spare']/attribute::value"/>
+    <test parameter="[CalledPartyNumberSpare]" condition="list.size" value="1"/>
+    <test parameter="[CalledPartyNumberSpare]" condition="string.equals" value="0"/>
+    <parameter name="[CalledPartyNumberDigits]" operation="string.xpath" value="[CalledPartyNumber]" value2="//field[@name='digits']/attribute::value"/>
+    <test parameter="[CalledPartyNumberDigits]" condition="list.size" value="1"/>
+    <test parameter="[CalledPartyNumberDigits]" condition="string.equals" value="972201"/>
         
     <sendMessageSIGTRAN name="Send DATA1" channel="channel">
         
@@ -1895,9 +1975,42 @@
     <test parameter="[component]" condition="list.size" value="1"/>
     <parameter name="[invoke]" operation="string.xpath" value="[component]" value2="//invoke.C1.Sequence"/>
     <test parameter="[invoke]" condition="list.size" value="1"/>
+    <parameter name="[invokeID]" operation="string.xpath" value="[invoke]" value2="//invokeID.BoxedType/Integer/text()"/>
+    <test parameter="[invokeID]" condition="list.size" value="1"/>
+    <test parameter="[invokeID]" condition="string.equals" value="2"/>
+    <parameter name="[opCode]" operation="string.xpath" value="[invoke]" value2="//opCode.Choice"/>
+    <test parameter="[opCode]" condition="list.size" value="1"/>
+    <parameter name="[opCodeLocalValue]" operation="string.xpath" value="[opCode]" value2="//localValue.BoxedType/Long/text()"/>
+    <test parameter="[opCodeLocalValue]" condition="list.size" value="1"/>
+    <test parameter="[opCodeLocalValue]" condition="string.equals" value="eventReportBCSM:24"/>
     <parameter name="[invokeparameter]" operation="string.xpath" value="[invoke]" value2="//invokeparameter"/>
     <test parameter="[invokeparameter]" condition="list.size" value="1"/>
-    <!-- TODO -->
+    <parameter name="[EventReportBCSMArg]" operation="string.xpath" value="[invokeparameter]" value2="//EventReportBCSMArg.Sequence"/>
+    <test parameter="[EventReportBCSMArg]" condition="list.size" value="1"/>
+    <parameter name="[EventTypeBCSM]" operation="string.xpath" value="[EventReportBCSMArg]" value2="//EventReportBCSMArg.Sequence/eventTypeBCSM.C0.Enum/EnumType/text()"/>
+    <test parameter="[EventTypeBCSM]" condition="list.size" value="1"/>
+    <test parameter="[EventTypeBCSM]" condition="string.equals" value="routeSelectFailure.4"/>
+    <parameter name="[routeSelectFailureSpecificInfo]" operation="string.xpath" value="[EventReportBCSMArg]" value2="//routeSelectFailureSpecificInfo.C2.Sequence/failureCause.C0.BoxedType/Bytes"/>
+    <test parameter="[routeSelectFailureSpecificInfo]" condition="list.size" value="1"/>
+    <parameter name="[routeSelectFailureSpecificInfoExt1]" operation="string.xpath" value="[routeSelectFailureSpecificInfo]" value2="//field[@name='ext1']/attribute::value"/>
+    <test parameter="[routeSelectFailureSpecificInfoExt1]" condition="list.size" value="1"/>
+    <test parameter="[routeSelectFailureSpecificInfoExt1]" condition="string.equals" value="last octet:1"/>
+    <parameter name="[routeSelectFailureSpecificInfoCodingStandard]" operation="string.xpath" value="[routeSelectFailureSpecificInfo]" value2="//field[@name='Coding standard']/attribute::value"/>
+    <test parameter="[routeSelectFailureSpecificInfoCodingStandard]" condition="list.size" value="1"/>
+    <test parameter="[routeSelectFailureSpecificInfoCodingStandard]" condition="string.equals" value="ITU-T standardized coding, as described below:0"/>
+    <parameter name="[routeSelectFailureSpecificInfoSpare]" operation="string.xpath" value="[routeSelectFailureSpecificInfo]" value2="//field[@name='Spare']/attribute::value"/>
+    <test parameter="[routeSelectFailureSpecificInfoSpare]" condition="list.size" value="1"/>
+    <test parameter="[routeSelectFailureSpecificInfoSpare]" condition="string.equals" value="0"/>
+    <parameter name="[routeSelectFailureSpecificInfoLocation]" operation="string.xpath" value="[routeSelectFailureSpecificInfo]" value2="//field[@name='Location']/attribute::value"/>
+    <test parameter="[routeSelectFailureSpecificInfoLocation]" condition="list.size" value="1"/>
+    <test parameter="[routeSelectFailureSpecificInfoLocation]" condition="string.equals" value="public network serving the remote user (RLN):4"/>
+    <parameter name="[routeSelectFailureSpecificInfoExt3]" operation="string.xpath" value="[routeSelectFailureSpecificInfo]" value2="//field[@name='ext3']/attribute::value"/>
+    <test parameter="[routeSelectFailureSpecificInfoExt3]" condition="list.size" value="1"/>
+    <test parameter="[routeSelectFailureSpecificInfoExt3]" condition="string.equals" value="last octet:1"/>
+    <parameter name="[routeSelectFailureSpecificInfoCauseValue]" operation="string.xpath" value="[routeSelectFailureSpecificInfo]" value2="//field[@name='Cause value']/attribute::value"/>
+    <test parameter="[routeSelectFailureSpecificInfoCauseValue]" condition="list.size" value="1"/>
+    <test parameter="[routeSelectFailureSpecificInfoCauseValue]" condition="string.equals" value="Class 001 normal event : Normal call clearing:16"/>
+    
 
     <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="true" type="releaseCall:22">
     </receiveMessageSIGTRAN>
@@ -1912,9 +2025,38 @@
     <test parameter="[component]" condition="list.size" value="1"/>
     <parameter name="[invoke]" operation="string.xpath" value="[component]" value2="//invoke.C1.Sequence"/>
     <test parameter="[invoke]" condition="list.size" value="1"/>
+    <parameter name="[invokeID]" operation="string.xpath" value="[invoke]" value2="//invokeID.BoxedType/Integer/text()"/>
+    <test parameter="[invokeID]" condition="list.size" value="1"/>
+    <test parameter="[invokeID]" condition="string.equals" value="3"/>
+    <parameter name="[opCode]" operation="string.xpath" value="[invoke]" value2="//opCode.Choice"/>
+    <test parameter="[opCode]" condition="list.size" value="1"/>
+    <parameter name="[opCodeLocalValue]" operation="string.xpath" value="[opCode]" value2="//localValue.BoxedType/Long/text()"/>
+    <test parameter="[opCodeLocalValue]" condition="list.size" value="1"/>
+    <test parameter="[opCodeLocalValue]" condition="string.equals" value="releaseCall:22"/>
     <parameter name="[invokeparameter]" operation="string.xpath" value="[invoke]" value2="//invokeparameter"/>
     <test parameter="[invokeparameter]" condition="list.size" value="1"/>
-    <!-- TODO -->
+    <parameter name="[ReleaseCallArg]" operation="string.xpath" value="[invokeparameter]" value2="//ReleaseCallArg.Choice"/>
+    <test parameter="[ReleaseCallArg]" condition="list.size" value="1"/>
+    <parameter name="[allCallSegmentsCause]" operation="string.xpath" value="[ReleaseCallArg]" value2="//allCallSegments.BoxedType/Cause.BoxedType/Bytes"/>
+    <test parameter="[allCallSegmentsCause]" condition="list.size" value="1"/>
+    <parameter name="[allCallSegmentsCauseExt1]" operation="string.xpath" value="[allCallSegmentsCause]" value2="//field[@name='ext1']/attribute::value"/>
+    <test parameter="[allCallSegmentsCauseExt1]" condition="list.size" value="1"/>
+    <test parameter="[allCallSegmentsCauseExt1]" condition="string.equals" value="last octet:1"/>
+    <parameter name="[allCallSegmentsCauseCodingStandard]" operation="string.xpath" value="[allCallSegmentsCause]" value2="//field[@name='Coding standard']/attribute::value"/>
+    <test parameter="[allCallSegmentsCauseCodingStandard]" condition="list.size" value="1"/>
+    <test parameter="[allCallSegmentsCauseCodingStandard]" condition="string.equals" value="ITU-T standardized coding, as described below:0"/>
+    <parameter name="[allCallSegmentsCauseSpare]" operation="string.xpath" value="[allCallSegmentsCause]" value2="//field[@name='Spare']/attribute::value"/>
+    <test parameter="[allCallSegmentsCauseSpare]" condition="list.size" value="1"/>
+    <test parameter="[allCallSegmentsCauseSpare]" condition="string.equals" value="0"/>
+    <parameter name="[allCallSegmentsCauseLocation]" operation="string.xpath" value="[allCallSegmentsCause]" value2="//field[@name='Location']/attribute::value"/>
+    <test parameter="[allCallSegmentsCauseLocation]" condition="list.size" value="1"/>
+    <test parameter="[allCallSegmentsCauseLocation]" condition="string.equals" value="public network serving the remote user (RLN):4"/>
+    <parameter name="[allCallSegmentsCauseExt3]" operation="string.xpath" value="[allCallSegmentsCause]" value2="//field[@name='ext3']/attribute::value"/>
+    <test parameter="[allCallSegmentsCauseExt3]" condition="list.size" value="1"/>
+    <test parameter="[allCallSegmentsCauseExt3]" condition="string.equals" value="last octet:1"/>
+    <parameter name="[allCallSegmentsCauseCauseValue]" operation="string.xpath" value="[allCallSegmentsCause]" value2="//field[@name='Cause value']/attribute::value"/>
+    <test parameter="[allCallSegmentsCauseCauseValue]" condition="list.size" value="1"/>
+    <test parameter="[allCallSegmentsCauseCauseValue]" condition="string.equals" value="Class 001 normal event : Call rejected:21"/>
 
         
     <!-- remove pb of TIME_WAIT state -->
