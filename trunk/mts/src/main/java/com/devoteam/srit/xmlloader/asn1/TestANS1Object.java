@@ -304,7 +304,7 @@ public class TestANS1Object
     	boolean result = true;
     	for (int i = 0; i <= maxIterations; i++)
     	{
-    		if (!testProcessXML(dictionaryFile, classObj))
+    		if (!testProcessXML(i, dictionaryFile, classObj))
     		{
     			System.out.print("XML");
     			result = false;
@@ -313,12 +313,12 @@ public class TestANS1Object
     	return result;
     }
 
-    public static boolean testProcessXML(String dictionaryFile, Class<?> classObj) throws Exception
+    public static boolean testProcessXML(int index, String dictionaryFile, Class<?> classObj) throws Exception
     {                  
 		// initialize the ASN1 object
 		Object objectInit = classObj.newInstance();
 		BN_ASNMessage msgInit = new BN_ASNMessage(dictionaryFile, objectInit);
-		ASNInitializer.getInstance().initValue(-1, 0, "", msgInit, null, null, objectInit, null);
+		ASNInitializer.getInstance().initValue(-1, index, "", msgInit, null, null, objectInit, null);
 		
 		// convert the ASN1 object into XML data
         String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
@@ -326,7 +326,9 @@ public class TestANS1Object
         
         // write XML data into a file
         String simpleClassName = classObj.getSimpleName();
-        File fileInit = new File(destDirectory + simpleClassName + ".xml");
+        //String fileNameInit = destDirectory + simpleClassName + "_" + index;
+        String fileNameInit = destDirectory + simpleClassName;
+        File fileInit = new File(fileNameInit + ".xml");
         fileInit.delete();
         OutputStream out = new FileOutputStream(fileInit, false);
         Array array = new DefaultArray(retInit.getBytes());
@@ -334,7 +336,7 @@ public class TestANS1Object
         out.close();
         
         // read XML data from file
-        File fileRead = new File(destDirectory + simpleClassName + ".xml");
+        File fileRead = new File(fileNameInit + ".xml");
         if(!fileRead.exists()) fileRead.createNewFile();
         InputStream in = new FileInputStream(fileRead);
         SAXReader reader = new SAXReader(false);
