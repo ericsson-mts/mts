@@ -419,13 +419,10 @@ public abstract class ElementAbstract implements Cloneable
 		}
 		if (!this.fieldsByName.isEmpty())
 		{
-			int length = this.getLengthElem() / 8;
-			if (length < array.length)
-			{
-				length = array.length;
-			}
+			int length = array.length;
 	        this.fieldsArray = new SupArray();
-	        this.fieldsArray.addFirst(array.subArray(0, length));
+	        Array subArray = array.subArray(0, length);
+	        this.fieldsArray.addFirst(subArray);
 	        return length;
 		}
 		return 0;

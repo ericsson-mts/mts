@@ -330,15 +330,13 @@ public class XMLToASNParser
         else if (type.equals("byte[]")) 
         {   
         	String elementName = object.getClass().getSimpleName();
-        	boolean logWarn = !elementName.equals("OrigTransactionID") &&
+        	boolean logWarn =  
+        			  !elementName.equals("OrigTransactionID") &&
         			  !elementName.equals("DestTransactionID") &&
         			  !elementName.equals("Invoke") &&
-					  !elementName.equals("Invoke.parameter") &&
-					  !elementName.equals("ReturnResult.parameter") &&
-					  !elementName.equals("ReturnError.parameter") &&
-					  !elementName.equals("Sm_RP_UI") &&
+        			  !elementName.equals("ReturnResult") &&
+        			  !elementName.equals("ReturnError") &&
 					  !elementName.equals("PrivateExtension") &&
-					  !elementName.equals("PrivateExtension.extType") &&
 					  !elementName.equals("CallReferenceNumber");
 
         	// get the element definition (enumeration binary data) from the dictionary
@@ -350,7 +348,7 @@ public class XMLToASNParser
         	if (elementDico == null && logWarn)
         	{
         		GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, null, 
-        			"The ASN1 element \"" + elementName + "\" is not defined into the dictionary to analyze the received messages more finely.");
+        			"The ASN1 element \"" + elementName + "." + element.getName() + "\" is not defined into the dictionary to analyze the received messages more finely.");
         	}
 
         	// TODO bug dans la fonction copyToClone() : retourne toujours un IntegerField
@@ -368,7 +366,7 @@ public class XMLToASNParser
         	if (logWarn)
         	{
         		GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, null, 
-        			"The ASN1 element \"" + elementName + "\" is not specified as a list of XML <field> tag.");
+        			"The ASN1 element \"" + elementName + "." + element.getName() + "\" is not specified as a list of XML <field> tag.");
         	}
 
         	// not defined as a list of XML <field> tag
