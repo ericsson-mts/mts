@@ -329,7 +329,7 @@ public class TestANS1Object
         //String fileNameInit = destDirectory + simpleClassName + "_" + index;
         String fileNameInit = destDirectory + simpleClassName;
         File fileInit = new File(fileNameInit + ".xml");
-        fileInit.delete();
+        //fileInit.delete();
         OutputStream out = new FileOutputStream(fileInit, false);
         Array array = new DefaultArray(retInit.getBytes());
         out.write(array.getBytes());
@@ -362,7 +362,7 @@ public class TestANS1Object
         retXML += msgXML.toXML();
 
         File fileXML = new File(destDirectory + simpleClassName + "_difference.xml");
-        fileXML.delete();
+        //fileXML.delete();
 
         // test with initial value
         if (!retInit.equals(retXML))
@@ -420,10 +420,10 @@ public class TestANS1Object
         String simpleClassName = classObj.getSimpleName();
         String fileNameInit = destDirectory + simpleClassName + "_"  + rule + "_" + index;
         File fileInit = new File(fileNameInit + ".xml");
-        fileInit.delete();
+        //fileInit.delete();
         String fileNameDiff = fileNameInit + "_difference";
         File fileDiff = new File(fileNameDiff + ".xml");
-        fileDiff.delete();
+        //fileDiff.delete();
         
         // test with initial value
         if (!retInit.equals(retBin))
