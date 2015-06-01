@@ -61,7 +61,7 @@ public class SocketTcpNIO implements HybridSocketInputHandler
     {
         try
         {
-            outputStream.write(msg.getBytesData());
+            outputStream.write(msg.encode());
             outputStream.flush();
         }
         catch (Exception e)

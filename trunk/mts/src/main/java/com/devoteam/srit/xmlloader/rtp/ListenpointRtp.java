@@ -157,7 +157,7 @@ public class ListenpointRtp extends Listenpoint
 		if (isSecured && this.cipherSender != null)
 		{
 			// Compute RTP datas through Cryptographic context algorithm, add authentication tag at the end of datas and put them back into MsgRtp msg
-			byte[] msgData = msg.getBytesData();
+			byte[] msgData = msg.encode();
 			RawPacket rp = new RawPacket(msgData, 0, msgData.length);
 			
 			rp = this.cipherSender.transform(rp);

@@ -77,6 +77,11 @@ public abstract class ASNMessage
     }
 
     public abstract Array encode(String rule) throws Exception; 
+    
+    public void decode(Array array, String rule) throws Exception
+    {
+    	decode(array, this.dictionary.getClassName(), rule);
+    }
 
     public abstract void decode(Array array, String className, String rule) throws Exception;
     
@@ -103,11 +108,6 @@ public abstract class ASNMessage
     public abstract String getType() throws Exception;
     public abstract String getResult() throws Exception;
     
-    public void decode(Array array, String rule) throws Exception
-    {
-    	decode(array, this.dictionary.getClassName(), rule);
-    }
-
     public abstract void parseFromXML(Element root, String className) throws Exception;
     
     public void parseFromXML(Element root) throws Exception

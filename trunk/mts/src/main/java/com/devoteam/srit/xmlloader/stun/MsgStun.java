@@ -209,10 +209,10 @@ public class MsgStun extends Msg {
                         if (this.longTermCredential) {
                             String key = username + ":" + realm + ":" + child.attributeValue("secret");
                             DigestArray keyarray = new DigestArray(new DefaultArray(key.getBytes()), "HmacMD5");
-                            integrityArray = new MacArray(new DefaultArray(this.getBytesData()), "HmacSHA1", keyarray);
+                            integrityArray = new MacArray(new DefaultArray(this.encode()), "HmacSHA1", keyarray);
                         } else {
                             DefaultArray arraysecret = new DefaultArray(child.attributeValue("secret").getBytes());
-                            integrityArray = new MacArray(new DefaultArray(this.getBytesData()), "HmacSHA1", arraysecret);
+                            integrityArray = new MacArray(new DefaultArray(this.encode()), "HmacSHA1", arraysecret);
                         }
                     }
 
@@ -260,7 +260,7 @@ public class MsgStun extends Msg {
 
     /** Get the data (as binary) of this message */
     @Override
-    public byte[] getBytesData() {
+    public byte[] encode() {
         SupArray array = new SupArray();
         array.addLast(header.getValue());
         for (AttributeStun attributeStun : listAttributeStun) {

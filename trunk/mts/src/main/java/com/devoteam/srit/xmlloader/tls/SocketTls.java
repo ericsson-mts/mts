@@ -154,7 +154,7 @@ public class SocketTls extends Thread
         try
         {
             {
-            	byte[] data = msg.getBytesData();
+            	byte[] data = msg.encode();
             	if (msg instanceof MsgRtp && ((MsgRtp) msg).isCipheredMessage())
                 	data = ((MsgRtp) msg).getCipheredMessage();
                 outputStream.write(data);

@@ -69,11 +69,11 @@ public class MsgTls extends Msg
         {
             if(params[1].equalsIgnoreCase("text")) 
             {
-            	var.add(new String(getBytesData()));
+            	var.add(new String(encode()));
             }
             else if(params[1].equalsIgnoreCase("binary")) 
             {
-            	var.add(Array.toHexString(new DefaultArray(getBytesData())));
+            	var.add(Array.toHexString(new DefaultArray(encode())));
             }
             else 
             {
@@ -136,7 +136,7 @@ public class MsgTls extends Msg
 
     /** Get the data (as binary) of this message */
     @Override
-    public byte[] getBytesData()
+    public byte[] encode()
     {
         return data;
     }

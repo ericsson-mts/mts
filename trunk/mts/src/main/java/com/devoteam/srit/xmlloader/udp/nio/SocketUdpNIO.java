@@ -163,7 +163,7 @@ public class SocketUdpNIO implements DatagramHandler
         try
         {
             currentSendBuffer.clear();
-            currentSendBuffer.put(msg.getBytesData());
+            currentSendBuffer.put(msg.encode());
             currentSendBuffer.flip();
 
             Channel channel = msg.getChannel();
