@@ -92,6 +92,9 @@ public class TextImplementation {
                 GlobalLogger.instance().getApplicationLogger().warn(Topic.CORE, "DEPRECATED : please use -par[allel] option instead of -load");                
                 runnerName = "-par";
             }
+            else if (arg.startsWith("-rand") && "-random".startsWith(arg)) {                
+                runnerName = "-random";
+            }
             else if (arg.startsWith("-testplan")) {
 
                 URI uri = new File(testFilename).toURI();
@@ -188,7 +191,7 @@ public class TextImplementation {
         try {
             URI uri = new File(testFilename).toURI();
             TextTester textTester = new TextTester(uri, runnerName, parameterEditable);
-            System.out.println("Run " + runnerName + " test \"" + testFilename);
+            System.out.println("Run " + runnerName + " test \"" + testFilename + "\"");
             int logLevel = GlobalLogger.instance().getLogLevel();
             int logStorage = GlobalLogger.instance().getLogStorage();
             if ((runnerName.equals("-load")) && (logLevel < TextEvent.WARN) && (logStorage == GlobalLogger.LOG_STORAGE_FILE)) {
@@ -257,7 +260,7 @@ public class TextImplementation {
     static public void usage(String message) {
         System.out.println(message);
         System.out.println("Usage: startCmd <testFile>|<masterFile>\n"
-                + "    -seq[uential]|-par[allel]|<testcaseName>\n"
+                + "    -seq[uential]|-par[allel]|<testcaseName>|<testcaseNumber>|-rand[om]\n"
                 + "    -testplan\n"
                 + "    [-param[eter]:<paramName>+<paramValue>]\n"
                 + "    [-config[uration]:<configName>+<configValue>]\n"

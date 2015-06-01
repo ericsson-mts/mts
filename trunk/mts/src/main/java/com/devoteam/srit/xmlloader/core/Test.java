@@ -431,15 +431,52 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
 		this.beginTime = beginTime;
 	}
 
+	public Testcase getRandomTestcase() {
+        List<Testcase> testcaseList = this.getTestcaseList();
+        
+        for (int i = 0; i < testcaseList.size(); i++)
+        {
+        	int indexTC = (int) Utils.randomLong(0, testcaseList.size() - 1);
+        	Testcase tc = testcaseList.get(indexTC);
+        	if (tc.getState())
+        	{
+        		return tc;
+        	}
+        }
+        return null;
+	}
+	
 	public Testcase getTestcase(String testcaseName) {
         List<Testcase> testcaseList = this.getTestcaseList();
+        
+        if (testcaseName.equalsIgnoreCase("-random"))
+        {
+        	int indexTC = (int) Utils.randomLong(0, testcaseList.size() - 1);
+        	return testcaseList.get(indexTC);
+        }
 
         for (Testcase testcase : testcaseList) {
             if (testcase.getName().equalsIgnoreCase(testcaseName)) {
                 return testcase;
             }
         }
-        return null;
+        
+        try
+        {
+	        int indexTC = Integer.parseInt(testcaseName);
+	        if (indexTC >= 0 || indexTC < testcaseList.size())
+	        {
+	        	return testcaseList.get(indexTC);
+	        }
+	        else
+	        {
+	        	return null;
+	        }
+        }
+        catch (Exception e)
+        {
+        	return null;
+        }
     }
 
     public void report_generate() {
