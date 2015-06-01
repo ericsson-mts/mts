@@ -236,11 +236,11 @@ public class StackRtp extends Stack
     			if (!lrtp.isSecured())
     				break;
     			//Listenpoint is set as secured so we uncipher the msg and replace it 
-            	RawPacket rp = new RawPacket(msg.getBytesData(), 0, msg.getBytesData().length);
+            	RawPacket rp = new RawPacket(msg.encode(), 0, msg.encode().length);
             	rp = lrtp.reverseTransformCipheredMessage(rp);
             	
-            	byte[] uncipheredData = new byte[msg.getBytesData().length - lrtp.getCipheredAuthTagLength(1)];
-            	System.arraycopy(rp.getBuffer(), 0, uncipheredData, 0, msg.getBytesData().length - lrtp.getCipheredAuthTagLength(1));
+            	byte[] uncipheredData = new byte[msg.encode().length - lrtp.getCipheredAuthTagLength(1)];
+            	System.arraycopy(rp.getBuffer(), 0, uncipheredData, 0, msg.encode().length - lrtp.getCipheredAuthTagLength(1));
             	
             	Array uncipheredArray = new ReadOnlyDefaultArray(uncipheredData);
             	msg = null;

@@ -54,7 +54,7 @@ public class MsgEthernet extends Msg
 	}
 
 	@Override
-	public byte[] getBytesData() {
+	public byte[] encode() {
 		// TODO Auto-generated method stub
 		return data;
 	}
@@ -112,7 +112,7 @@ public class MsgEthernet extends Msg
             }
             else if(params[1].equalsIgnoreCase("binary")) 
             {
-            	var.add(Array.toHexString(new DefaultArray(getBytesData()))); 	
+            	var.add(Array.toHexString(new DefaultArray(encode()))); 	
             }
             else 
             {

@@ -269,7 +269,7 @@ public class ListenpointRtpFlow extends Listenpoint {
     {
     	if (this.isSecured && this.cipherSender != null)
     	{
-    		byte[] msgData = msg.getBytesData();
+    		byte[] msgData = msg.encode();
 			
 			RawPacket rp = new RawPacket(msgData, 0, msgData.length);
 			rp = this.cipherSender.transform(rp);

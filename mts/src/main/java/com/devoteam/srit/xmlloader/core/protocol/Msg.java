@@ -209,11 +209,11 @@ public abstract class Msg extends MsgLight implements Removable
             }
             else if (params[1].equalsIgnoreCase("binary"))
             {
-            	var.add(Array.toHexString(new DefaultArray(getBytesData())));
+            	var.add(Array.toHexString(new DefaultArray(encode())));
             }
             else if (params[1].equalsIgnoreCase("text"))
             {
-            	var.add(new String(getBytesData()));
+            	var.add(new String(encode()));
             }
             else if (params[1].equalsIgnoreCase("xml"))
             {
@@ -621,12 +621,12 @@ public abstract class Msg extends MsgLight implements Removable
     public abstract boolean isRequest() throws Exception;
     
     /** Get the data of this message */
-    public abstract byte[] getBytesData();
+    public abstract byte[] encode();
        
     /** Return the length of the message*/
     public int getLength()
     {
-    	return getBytesData().length;
+    	return encode().length;
     }
 
 	public String getRemoteHost() {

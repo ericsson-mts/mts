@@ -132,7 +132,7 @@ public class MsgRtpFlow extends Msg {
         msgRtp.setSequenceNumber(seqnumList.get(0));
         msgRtp.setTimestampRTP(timestampList.get(0));
         //construct it the first time
-        msgRtp.getBytesData();
+        msgRtp.encode();
 
         if (payloadList.size() > 1) {
             maxNbPacketInList = payloadList.size();
@@ -665,8 +665,8 @@ public class MsgRtpFlow extends Msg {
  
     /** Get the data (as binary) of this message */
     @Override
-    public byte[] getBytesData() {
-        return msgRtp.getBytesData();
+    public byte[] encode() {
+        return msgRtp.encode();
     }
 
     /** Returns a short description of the message. Used for logging as INFO level */
@@ -714,7 +714,7 @@ public class MsgRtpFlow extends Msg {
     	Collections.sort(packetsList);
     	for (int i = 0; i < packetsList.size(); i++)
     	{
-    		byte[] data = packetsList.get(i).getBytesData();
+    		byte[] data = packetsList.get(i).encode();
     		
     		RawPacket rp = new RawPacket(data, 0, data.length);
     		rp = transformer.reverseTransform(rp);

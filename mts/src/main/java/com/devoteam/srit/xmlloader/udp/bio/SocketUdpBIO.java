@@ -123,7 +123,7 @@ public class SocketUdpBIO extends Thread {
 
     public synchronized void send(Msg msg, InetSocketAddress remoteDatagramSocketAddress) throws Exception {
     	try {
-            byte[] data = msg.getBytesData();
+            byte[] data = msg.encode();
             if (msg instanceof MsgRtp && ((MsgRtp) msg).isCipheredMessage())
             	data = ((MsgRtp) msg).getCipheredMessage();
             	

@@ -411,7 +411,7 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
 
     /** Get the data (as binary) of this message */
     @Override
-    public byte[] getBytesData() {
+    public byte[] encode() {
         //construct message from header and content if not done
         //header
         if (headerArray == null) {

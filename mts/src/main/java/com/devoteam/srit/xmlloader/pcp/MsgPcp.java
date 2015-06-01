@@ -151,7 +151,7 @@ public class MsgPcp extends Msg
 
     /** Get the data (as binary) of this message */
     @Override
-    public byte[] getBytesData(){
+    public byte[] encode(){
         ObjectOutputStream obj;
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         try {

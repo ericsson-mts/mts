@@ -173,7 +173,7 @@ public class SocketSctp extends Thread {
 		try
 		{	
 			SCTPData data = new SCTPData();
-			data.setData(msg.getBytesData());
+			data.setData(msg.encode());
 
             Config config = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
             

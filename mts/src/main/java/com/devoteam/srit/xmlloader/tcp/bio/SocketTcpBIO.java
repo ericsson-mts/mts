@@ -197,7 +197,7 @@ public class SocketTcpBIO extends Thread
         		{
         			//wait until handshake is done!
         		}
-        		byte[] data = msg.getBytesData();
+        		byte[] data = msg.encode();
         		if (msg instanceof MsgRtp && ((MsgRtp) msg).isCipheredMessage())
                 	data = ((MsgRtp) msg).getCipheredMessage();
 	            outputStream.write(data);

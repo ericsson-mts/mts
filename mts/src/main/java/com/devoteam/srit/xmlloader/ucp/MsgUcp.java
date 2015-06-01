@@ -225,7 +225,7 @@ public class MsgUcp extends Msg
 
     /** Get the data (as binary) of this message */
     @Override
-    public byte[] getBytesData(){
+    public byte[] encode(){
     	
     	/** On masque ici une exception NullPointerException lors de la reception d'un message UCP
     	/** A l'envoi du message il n'y a pas d'exception dans cette methode : le message UCP est sans 
