@@ -112,13 +112,16 @@ public class BN_ASNMessage extends ASNMessage
     	{
     		throw new Exception("bad value for rule '" + rule +"'");
     	}
-        InputStream inputStream = new ByteArrayInputStream(array.getBytes());
-        Class cl = Class.forName(className);
-        this.asnObject = cl.newInstance();
-        if (array.length > 0)
-        {
-        	this.asnObject = decoder.decode(inputStream, cl);
-        }
+    	if (array != null)
+    	{
+	        InputStream inputStream = new ByteArrayInputStream(array.getBytes());
+	        Class cl = Class.forName(className);
+	        this.asnObject = cl.newInstance();
+	        if (array.length > 0)
+	        {
+	        	this.asnObject = decoder.decode(inputStream, cl);
+	        }
+    	}
     }
 
     @Override
