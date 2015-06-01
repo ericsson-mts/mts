@@ -89,9 +89,8 @@ public class TextTester {
             // case with a bad testcase name parameter
             if (testcase == null) {
                 TextImplementation.usage(
-                        "The test \"" + testFilename
-                        + "\" does not contains the testcase \""
-                        + runnerName + "\"");
+                    "The test \"" + testFilename + "\" does not contains the testcase "
+                  + "called \"" + runnerName + "\" or number \"" + runnerName + "\"");
             }
 
             runner = new TestRunnerSingle(test, testcase);
