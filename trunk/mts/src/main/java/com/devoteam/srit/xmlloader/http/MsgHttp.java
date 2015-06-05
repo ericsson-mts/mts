@@ -24,9 +24,11 @@
 package com.devoteam.srit.xmlloader.http;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
@@ -53,6 +55,7 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpVersion;
 import org.apache.http.entity.ByteArrayEntity;
 import org.dom4j.Document;
+import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.XPath;
 import org.dom4j.io.SAXReader;
@@ -73,8 +76,13 @@ public class MsgHttp extends Msg
     
     private String type = null;
     
-    
-    /** Creates a new instance of MsgHttp from a message */
+    /** Creates a new instance */
+    public MsgHttp() 
+    {
+        super();       
+    }
+
+    /** Creates a new instance */
     public MsgHttp(HttpMessage aMessage) throws Exception
     {
         super();
@@ -134,35 +142,184 @@ public class MsgHttp extends Msg
         }
     }
 
-    /** Creates a new instance of MsgHttp from data scenario */
-    public MsgHttp(String data) throws Exception
+    /** Returns the HTTP message without entity */
+    public HttpMessage getMessage()
     {
-    	data = data.trim();
-        BasicHttpResponse response = null;
-        BasicHttpEntityEnclosingRequest request = null;
+        return message;
+    }
+
+    /** Returns the entity of a HTTP message */
+    public String getMessageContent()
+    {
+        return messageContent;
+    }
+
+    /** Get the protocol of this message */
+    public String getProtocol()
+    {
+        return StackFactory.PROTOCOL_HTTP;
+    }
+
+    /** Return true if the message is a request else return false*/
+    public boolean isRequest()
+    {
+        if (message instanceof HttpRequest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    @Override
+    public void setTransactionId(TransactionId transactionId)
+    {
+        super.setTransactionId(transactionId);
+        
+        if(isRequest() && null != getType()) return;
+        
+        try
+        {
+            Trans trans = StackFactory.getStack(StackFactory.PROTOCOL_HTTP).getInTransaction(transactionId);
+            if (trans != null)
+            {
+	            Msg req = trans.getBeginMsg();
+	            this.setType(req.getType());
+            }
+        }
+        catch(Exception e)
+        {
+            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Could not find the request matching this answer", this, "\n and thus, couldn't set the Type of the answer");
+        }
+    }
+    /** Get the command code of this message */
+    public String getType()
+    {
+        if(null == type)
+        {
+            if (message instanceof HttpRequest)
+            {
+                type = ((HttpRequest) message).getRequestLine().getMethod();
+            }
+        }
+        return type;
+    }
+
+    public void setType(String type)
+    {
+        this.type = type;
+    }
+    
+    /** Get the result of this answer (null if request) */
+    public String getResult()
+    {
+        if (message instanceof HttpResponse)
+        {
+            return Integer.toString(((HttpResponse) message).getStatusLine().getStatusCode());
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
+    /** Return the transport of the message*/
+    public String getTransport() {
+    	return StackFactory.PROTOCOL_TCP;
+    }
+
+    private String getTextMessage()
+    {
+        // get the first line
+    	String ret = getFirstLine();            
+        ret += "\r\n";
+
+        // get the headers list
+        Header[] header = message.getAllHeaders();
+        for (int i = 0; i < header.length; i++)
+        {
+            ret += header[i] + "\r\n";
+        }
+        ret += "\r\n";
+        
+        // get the message content
+        if (messageContent != null)
+        {
+        	ret += messageContent;
+        }
+        
+        return ret;
+    }
+
+    private String getFirstLine()
+    {
+        if (this.message instanceof HttpResponse)
+        {
+            return ((HttpResponse) message).getStatusLine().toString();
+        }
+        else
+        {
+            return ((HttpRequest) message).getRequestLine().toString();
+        }
+    }
+
+    /** Get the data (as binary) of this message */
+    @Override
+    public byte[] encode()
+    {
+    	return getTextMessage().getBytes();
+    }
+
+    /** Returns a short description of the message. Used for logging as INFO level */
+    /** This methods HAS TO be quick to execute for performance reason */
+    @Override
+    public String toShortString() throws Exception {
+    	String ret = super.toShortString();
+  		ret += "\n";
+  		ret += getFirstLine();
+		ret += "\n";
+   		ret += "<MESSAGE transactionId =\"" + getTransactionId() + "\">";
+    	return ret;
+    }
+
+    /** Get the XML representation of the message; for the genscript module. */
+    @Override
+    public String toXml() throws Exception {
+		return getTextMessage();
+    }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request1, Element root, Runner runner) throws Exception
+    {
+    	String text = root.getText().trim();
+        BasicHttpResponse responseMessage = null;
+        BasicHttpEntityEnclosingRequest requestMessage = null;
 
         HttpMessage currentMessage = null;
 
         int endOfLine;
         String line;
 
-
-
         //
         // Clean beginning of first line (XML-related control characters)
         //
-        while (data.startsWith("\n") || data.startsWith("\r") || data.startsWith(" ") || data.startsWith("\t"))
+        while (text.startsWith("\n") || text.startsWith("\r") || text.startsWith(" ") || text.startsWith("\t"))
         {
-            data = data.substring(1);
+            text = text.substring(1);
         }
 
-        while (data.endsWith("\n") || data.endsWith("\r") || data.endsWith(" ") || data.endsWith("\t"))
+        while (text.endsWith("\n") || text.endsWith("\r") || text.endsWith(" ") || text.endsWith("\t"))
         {
-            data = data.substring(0, data.length() - 1);
+        	text = text.substring(0, text.length() - 1);
         }
 
-        String headers = data.split("[\\r]?[\\n][\\r]?[\\n]")[0];
-        String datas = data.substring(headers.length());
+        String headers = text.split("[\\r]?[\\n][\\r]?[\\n]")[0];
+        String datas = text.substring(headers.length());
         if(datas.startsWith("\r")) datas = datas.substring(1);
         if(datas.startsWith("\n")) datas = datas.substring(1);
         if(datas.startsWith("\r")) datas = datas.substring(1);
@@ -206,8 +363,8 @@ public class MsgHttp extends Msg
                 phrase = parts[2];
             }
 
-            response = new BasicHttpResponse(httpVersion, Integer.parseInt(parts[1]), phrase);
-            currentMessage = response;
+            responseMessage = new BasicHttpResponse(httpVersion, Integer.parseInt(parts[1]), phrase);
+            currentMessage = responseMessage;
         } // Message is a request
         else
         {
@@ -219,8 +376,8 @@ public class MsgHttp extends Msg
                 httpVersion = HttpVersion.HTTP_1_0;
             }
 
-            request = new BasicHttpEntityEnclosingRequest(parts[0], parts[1], httpVersion);
-            currentMessage = request;
+            requestMessage = new BasicHttpEntityEnclosingRequest(parts[0], parts[1], httpVersion);
+            currentMessage = requestMessage;
         }
 
         //
@@ -272,16 +429,16 @@ public class MsgHttp extends Msg
             //
             // Check if we are allowed to have an entity in this message
             //
-            if (null != request)
+            if (null != requestMessage)
             {
-                if (request.getRequestLine().getMethod().toLowerCase().equals("get") ||
-                        request.getRequestLine().getMethod().toLowerCase().equals("head"))
+                if (requestMessage.getRequestLine().getMethod().toLowerCase().equals("get") ||
+                		requestMessage.getRequestLine().getMethod().toLowerCase().equals("head"))
                 {
-                    throw new ExecutionException("Request " + request.getRequestLine().getMethod() + " is not allowed to contain an entity");
+                    throw new ExecutionException("Request " + requestMessage.getRequestLine().getMethod() + " is not allowed to contain an entity");
                 }
             }
 
-            if (null != response || null != request)
+            if (null != responseMessage || null != requestMessage)
             {
                 messageContent = datas;
             }
@@ -321,36 +478,29 @@ public class MsgHttp extends Msg
             }
 
             HttpEntity entity = new ByteArrayEntity(messageContent.getBytes());
-            if (null != response)
+            if (null != responseMessage)
             {
-                response.setEntity(entity);
+            	responseMessage.setEntity(entity);
             }
-            else if (null != request)
+            else if (null != requestMessage)
             {
-                request.setEntity(entity);
+            	requestMessage.setEntity(entity);
             }
             else
             {
                 entity = null;
             }
-
-
         }
+        
     }
 
-    /** Returns the HTTP message without entity */
-    public HttpMessage getMessage()
-    {
-        return message;
-    }
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
 
-    /** Returns the entity of a HTTP message */
-    public String getMessageContent()
-    {
-        return messageContent;
-    }
-
-    /** Get a parameter from the message */
+    /** 
+     * Get a parameter from the message 
+     */
     public Parameter getParameter(String path) throws Exception
     {
         Parameter var = super.getParameter(path);
@@ -511,140 +661,5 @@ public class MsgHttp extends Msg
         
         return var;
     }
-
-    /** Get the protocol of this message */
-    public String getProtocol()
-    {
-        return StackFactory.PROTOCOL_HTTP;
-    }
-
-    /** Return true if the message is a request else return false*/
-    public boolean isRequest()
-    {
-        if (message instanceof HttpRequest)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    @Override
-    public void setTransactionId(TransactionId transactionId)
-    {
-        super.setTransactionId(transactionId);
-        
-        if(isRequest() && null != getType()) return;
-        
-        try
-        {
-            Trans trans = StackFactory.getStack(StackFactory.PROTOCOL_HTTP).getInTransaction(transactionId);
-            if (trans != null)
-            {
-	            Msg req = trans.getBeginMsg();
-	            this.setType(req.getType());
-            }
-        }
-        catch(Exception e)
-        {
-            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Could not find the request matching this answer", this, "\n and thus, couldn't set the Type of the answer");
-        }
-    }
-    /** Get the command code of this message */
-    public String getType()
-    {
-        if(null == type)
-        {
-            if (message instanceof HttpRequest)
-            {
-                type = ((HttpRequest) message).getRequestLine().getMethod();
-            }
-        }
-        return type;
-    }
-
-    public void setType(String type)
-    {
-        this.type = type;
-    }
     
-    /** Get the result of this answer (null if request) */
-    public String getResult()
-    {
-        if (message instanceof HttpResponse)
-        {
-            return Integer.toString(((HttpResponse) message).getStatusLine().getStatusCode());
-        }
-        else
-        {
-            return null;
-        }
-    }
-    
-    /** Return the transport of the message*/
-    public String getTransport() {
-    	return StackFactory.PROTOCOL_TCP;
-    }
-
-    private String getTextMessage()
-    {
-        // get the first line
-    	String ret = getFirstLine();            
-        ret += "\r\n";
-
-        // get the headers list
-        Header[] header = message.getAllHeaders();
-        for (int i = 0; i < header.length; i++)
-        {
-            ret += header[i] + "\r\n";
-        }
-        ret += "\r\n";
-        
-        // get the message content
-        if (messageContent != null)
-        {
-        	ret += messageContent;
-        }
-        
-        return ret;
-    }
-
-    private String getFirstLine()
-    {
-        if (this.message instanceof HttpResponse)
-        {
-            return ((HttpResponse) message).getStatusLine().toString();
-        }
-        else
-        {
-            return ((HttpRequest) message).getRequestLine().toString();
-        }
-    }
-
-    /** Get the data (as binary) of this message */
-    @Override
-    public byte[] encode()
-    {
-    	return getTextMessage().getBytes();
-    }
-
-    /** Returns a short description of the message. Used for logging as INFO level */
-    /** This methods HAS TO be quick to execute for performance reason */
-    @Override
-    public String toShortString() throws Exception {
-    	String ret = super.toShortString();
-  		ret += "\n";
-  		ret += getFirstLine();
-		ret += "\n";
-   		ret += "<MESSAGE transactionId =\"" + getTransactionId() + "\">";
-    	return ret;
-    }
-
-    /** Get the XML representation of the message; for the genscript module. */
-    @Override
-    public String toXml() throws Exception {
-		return getTextMessage();
-    }
 }

@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.rtp;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -35,9 +36,12 @@ import com.devoteam.srit.xmlloader.rtp.flow.CodecDictionary;
 import com.devoteam.srit.xmlloader.rtp.flow.MosParameters;
 
 import gp.utils.arrays.*;
-import java.util.List;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
+
+import org.dom4j.Element;
 
 public class MsgRtp extends Msg implements Comparable<MsgRtp> {
 
@@ -184,55 +188,6 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
 
     public void setExtensionProfile(int extensionProfile) {
         this.extensionProfile = extensionProfile;
-    }
-
-    /*
-     * Get parameters from the command/reply lines
-     */
-    @Override
-    public Parameter getParameter(String path) throws Exception {
-        Parameter var = super.getParameter(path);
-        if (null != var) {
-            return var;
-        }
-
-        var = new Parameter();
-        path = path.trim();
-        String[] params = Utils.splitPath(path);
-
-        if (params.length > 1 && params[0].equalsIgnoreCase("header")) {
-            if (params[1].equalsIgnoreCase("ssrc")) {
-                var.add(getSsrc());
-            }
-            else if (params[1].equalsIgnoreCase("payloadType")) {
-                var.add(getPayloadType());
-            }
-            else if (params[1].equalsIgnoreCase("seqnum")) {
-                var.add(getSequenceNumber());
-            }
-            else if (params[1].equalsIgnoreCase("timestamp")) {
-                var.add(getTimestampRTP());
-            }
-            else if (params[1].equalsIgnoreCase("mark")) {
-                var.add(getMarker());
-            }
-            else {
-                Parameter.throwBadPathKeywordException(path);
-            }
-        }
-        else if (params.length > 1 && params[0].equalsIgnoreCase("payload")) {
-            if (params[1].equalsIgnoreCase("text")) {
-                var.add(new String(data.getBytes()));
-            }
-            else if (params[1].equalsIgnoreCase("binary")) {
-                var.add(Array.toHexString(new DefaultArray(data.getBytes())));
-            }
-            else {
-                Parameter.throwBadPathKeywordException(path);
-            }
-        }
-
-        return var;
     }
 
     /** Get the transaction Identifier of this message
@@ -497,6 +452,144 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
     	String xml = toStringRTPFlow();
         return xml;
     }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+        if(root.element("packet") != null)
+        {
+        	root = root.element("packet");
+        	GlobalLogger.instance().logDeprecatedMessage("sendMessageRTP ...><packet>...</packet></sendMessageRTP", "sendMessageRTP ...>...</sendMessageRTP");
+        }
+        parsePacketHeader(root, runner);
+        ArrayList<Array> payload = parsePacketPayload(root, runner); 
+        if (payload.size() > 0)
+        {
+        	this.data = payload.get(0);
+        }
+    }
+
+    public void parsePacketHeader(Element packet, Runner runner) throws Exception
+    {
+        Element header = packet.element("header");
+        
+        String ssrc = header.attributeValue("ssrc");
+        if(ssrc != null)
+        {
+            long ssrcLong = Long.parseLong(ssrc);
+            this.ssrc = (int)ssrcLong;
+        }                
+        String payloadType = header.attributeValue("payloadType");
+        if(payloadType != null)
+        {
+            this.payloadType = Integer.parseInt(payloadType);
+        }
+        String seqnum = header.attributeValue("seqnum");
+        if((seqnum != null) && (Utils.isInteger(seqnum)))
+        {
+            this.sequenceNumber = Integer.parseInt(seqnum);
+        }
+        String timestamp = header.attributeValue("timestamp");
+        if((timestamp != null) && (Utils.isInteger(timestamp)))
+        {
+            this.timestamp = Long.parseLong(timestamp);
+        }
+        String mark = header.attributeValue("mark");
+        if((mark != null) && (Utils.isInteger(mark)))
+            this.marker = Integer.parseInt(mark);
+    }
+
+    public ArrayList<Array> parsePacketPayload(Element packet, Runner runner) throws Exception
+    {
+        List<Element> payloads = packet.elements("payload");
+        SupArray data = new SupArray();
+        ArrayList<Array> listPayloadData = new ArrayList<Array>();
+        String format = null;
+        String text = null;
+
+        for(Element element:payloads)
+        {
+            format = element.attributeValue("format");
+            if (format == null)
+            {
+            	format = "binary";
+            }
+            text = element.getTextTrim();
+
+            if(format.equalsIgnoreCase("text"))
+            {
+                data.addLast(new DefaultArray(text.getBytes()));
+            }
+            else if(format.equalsIgnoreCase("binary"))
+            {
+                data.addLast(new DefaultArray(Utils.parseBinaryString(text)));
+            }
+            else
+            {
+                throw new Exception("format of payload <" + format + "> is unknown");
+            }
+        }
+        listPayloadData.add(data);
+        return listPayloadData;
+    }
+
+
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+    
+    /** 
+     * Get a parameter from the message 
+     */
+    @Override
+    public Parameter getParameter(String path) throws Exception {
+        Parameter var = super.getParameter(path);
+        if (null != var) {
+            return var;
+        }
+
+        var = new Parameter();
+        path = path.trim();
+        String[] params = Utils.splitPath(path);
+
+        if (params.length > 1 && params[0].equalsIgnoreCase("header")) {
+            if (params[1].equalsIgnoreCase("ssrc")) {
+                var.add(getSsrc());
+            }
+            else if (params[1].equalsIgnoreCase("payloadType")) {
+                var.add(getPayloadType());
+            }
+            else if (params[1].equalsIgnoreCase("seqnum")) {
+                var.add(getSequenceNumber());
+            }
+            else if (params[1].equalsIgnoreCase("timestamp")) {
+                var.add(getTimestampRTP());
+            }
+            else if (params[1].equalsIgnoreCase("mark")) {
+                var.add(getMarker());
+            }
+            else {
+                Parameter.throwBadPathKeywordException(path);
+            }
+        }
+        else if (params.length > 1 && params[0].equalsIgnoreCase("payload")) {
+            if (params[1].equalsIgnoreCase("text")) {
+                var.add(new String(data.getBytes()));
+            }
+            else if (params[1].equalsIgnoreCase("binary")) {
+                var.add(Array.toHexString(new DefaultArray(data.getBytes())));
+            }
+            else {
+                Parameter.throwBadPathKeywordException(path);
+            }
+        }
+
+        return var;
+    }
+
     
     public boolean isCipheredMessage()
     {

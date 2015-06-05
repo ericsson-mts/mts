@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.pop;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
@@ -31,6 +32,8 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.coding.text.MsgParser;
 
 import java.util.Vector;
+
+import org.dom4j.Element;
 
 public class MsgPop extends Msg
 {
@@ -40,18 +43,16 @@ public class MsgPop extends Msg
     private Boolean         isRequest = null;
     private Vector<String>  arguments = null;
     private String          text = "";
-    
-    public MsgPop(String someData) throws Exception {
-       super();               
-       someData = someData.replace("\r\n", "\n");
-       dataRaw = someData.replace("\n", "\r\n");
 
-       if(!dataRaw.endsWith("\r\n"))
-           dataRaw += "\r\n";
+    /** Creates a new instance */
+    public MsgPop() throws Exception
+    {
+        super();
     }
 
+    /** Creates a new instance */
     public MsgPop(String someData, Channel channel) throws Exception {
-       this(someData);
+       setMessageText(someData);
        setChannel(channel);
     }
     
@@ -114,73 +115,6 @@ public class MsgPop extends Msg
         return isRequest;
     }
 	
-    	
-	// --- get Parameters --- //
-    @Override
-	public synchronized Parameter getParameter(String path) throws Exception 
-	{
-		Parameter var = super.getParameter(path);
-		if (var != null) 
-		{
-			return var;
-		}
-
-		var = new Parameter();
-        path = path.trim();
-		String[] params = Utils.splitPath(path);
-		
-        if (params[0].equalsIgnoreCase("request"))
-		{
-            if(params[1].equalsIgnoreCase("command") && (params.length == 2))
-            {
-                var.add(getType());
-            }
-            else if(params[1].equalsIgnoreCase("arguments") && (params.length == 2))
-            {
-                this.addVector(var, this.getArguments());                
-            }
-            else
-            {
-            	Parameter.throwBadPathKeywordException(path);
-            }
-		}
-        else if (params[0].equalsIgnoreCase("response"))
-		{
-            if(params[1].equalsIgnoreCase("result") && (params.length == 2))
-            {
-                var.add(getResult());
-            }
-            else if(params[1].equalsIgnoreCase("text") && (params.length == 2))
-            {
-                var.add(getText());
-            }
-            else
-            {
-            	Parameter.throwBadPathKeywordException(path);
-            }
-		}
-		//---------------------------------------------------------------------- content(X): -
-        else if (params[0].equalsIgnoreCase("content"))
-		{
-            var.add(dataRaw);
-		}
-        else
-        {
-        	Parameter.throwBadPathKeywordException(path);
-        }
-
-		return var;
-	}
-
-    /** Get the messages Identifier of this messages */
-    private void addVector(Parameter var, Vector vect) throws Exception
-    {
-        for (int i = 0; i < vect.size(); i++)
-        {
-            var.add(vect.get(i).toString());
-        }
-    }
-
     public Vector<String> getArguments() {
         if(isRequest())
         {
@@ -191,15 +125,6 @@ public class MsgPop extends Msg
                             true);
         }
         return arguments;
-    }
-
-    public String getText() {
-        if(text.equalsIgnoreCase(""))
-        {
-            String[] msgSplit = Utils.splitNoRegex(dataRaw.trim(), " ");
-            text = dataRaw.substring(dataRaw.indexOf(msgSplit[1]));
-        }
-        return text;
     }
 
     public boolean shouldResponseBeMultiLine()
@@ -236,7 +161,111 @@ public class MsgPop extends Msg
     public String toXml() throws Exception {
         return dataRaw;
     }
+ 
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+    	String text = root.getText().trim();
+    	setMessageText(text);
+    }
+
+    /** Set the message from text */
+    public String getMessageText() {
+        if(text.equalsIgnoreCase(""))
+        {
+            String[] msgSplit = Utils.splitNoRegex(dataRaw.trim(), " ");
+            text = dataRaw.substring(dataRaw.indexOf(msgSplit[1]));
+        }
+        return text;
+    }
     
+    /** Set the message from text */
+    public void setMessageText(String text) throws Exception
+    {
+        text = text.replace("\r\n", "\n");
+        this.dataRaw = text.replace("\n", "\r\n");
+
+        if(!this.dataRaw.endsWith("\r\n"))
+        {
+            this.dataRaw += "\r\n";
+        }
+    }
+
+	// ------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message 
+     */
+    @Override
+	public synchronized Parameter getParameter(String path) throws Exception 
+	{
+		Parameter var = super.getParameter(path);
+		if (var != null) 
+		{
+			return var;
+		}
+
+		var = new Parameter();
+        path = path.trim();
+		String[] params = Utils.splitPath(path);
+		
+        if (params[0].equalsIgnoreCase("request"))
+		{
+            if(params[1].equalsIgnoreCase("command") && (params.length == 2))
+            {
+                var.add(getType());
+            }
+            else if(params[1].equalsIgnoreCase("arguments") && (params.length == 2))
+            {
+                this.addVector(var, this.getArguments());                
+            }
+            else
+            {
+            	Parameter.throwBadPathKeywordException(path);
+            }
+		}
+        else if (params[0].equalsIgnoreCase("response"))
+		{
+            if(params[1].equalsIgnoreCase("result") && (params.length == 2))
+            {
+                var.add(getResult());
+            }
+            else if(params[1].equalsIgnoreCase("text") && (params.length == 2))
+            {
+                var.add(getMessageText());
+            }
+            else
+            {
+            	Parameter.throwBadPathKeywordException(path);
+            }
+		}
+		//---------------------------------------------------------------------- content(X): -
+        else if (params[0].equalsIgnoreCase("content"))
+		{
+            var.add(dataRaw);
+		}
+        else
+        {
+        	Parameter.throwBadPathKeywordException(path);
+        }
+
+		return var;
+	}
+
+    /** Get the messages Identifier of this messages */
+    private void addVector(Parameter var, Vector vect) throws Exception
+    {
+        for (int i = 0; i < vect.size(); i++)
+        {
+            var.add(vect.get(i).toString());
+        }
+    }
+
     public boolean isSTARTTLS_request()
     {
    		if (dataRaw.toLowerCase().contains("STLS".toLowerCase()))

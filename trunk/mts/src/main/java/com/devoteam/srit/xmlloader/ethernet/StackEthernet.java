@@ -57,10 +57,8 @@ public class StackEthernet extends Stack
 	}
 
 	@Override
-	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception {		
-		//
-        // Parse all <data ... /> tags
-        //
+	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception 
+	{		
 		List<Element> elements = root.elements("data");
 		Element header = root.element("ethernet");
         List<byte[]> datas = new LinkedList<byte[]>();        

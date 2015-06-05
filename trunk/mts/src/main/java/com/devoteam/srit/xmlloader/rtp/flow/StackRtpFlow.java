@@ -130,7 +130,8 @@ public class StackRtpFlow extends StackRtp {
     }
 
     public MsgRtpFlow parseFlow(Element flow, Runner runner) throws Exception {
-        MsgRtp msg = parsePacketHeader(flow, runner);
+        MsgRtp msg = new MsgRtp();
+        msg.parsePacketHeader(flow, runner);
 
         List<Array> listPayload = parsePacketPayload(flow, runner);
         List<Integer> listSequm = parsePacketAttribute(flow, runner, "seqnum");
@@ -281,7 +282,7 @@ public class StackRtpFlow extends StackRtp {
         return listAttributeData;
     }
 
-    @Override
+    //@Override
     public ArrayList<Array> parsePacketPayload(Element packet, Runner runner) throws Exception {
         List<Element> payloads = packet.elements("payload");
         ArrayList<Array> listPayloadData = new ArrayList<Array>();

@@ -98,14 +98,6 @@ public class StackDiameter extends Stack {
         return null;
     }
     
-    /** Creates a specific Msg */
-    @Override
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception {
-        MsgDiameter msg= MsgDiameterParser.getInstance().parseMsgFromXml(request, root);
-                
-        return msg;
-    }
-    
     /** 
      * Creates a Msg specific to each Stack
      * Use for TCP like protocol : to build incoming message

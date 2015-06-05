@@ -23,9 +23,14 @@
 
 package com.devoteam.srit.xmlloader.rtsp;
 
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromURI;
+import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
@@ -36,19 +41,7 @@ import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
 
 public class MsgRtsp extends Msg
 {	
-	private TextMessage message;
-
-    // --- constructer --- //
-    public MsgRtsp(String text, boolean completeContentLength, int addCRLFContent) throws Exception {
-        message = new TextMessage(getProtocol(), completeContentLength, addCRLFContent, null);
-    	message.parse(text);
-        this.message.setGenericfirstline(new FirstLine(this.message.getFirstLineString(),getProtocol()));
-    	if (((FirstLine)(this.message.getGenericfirstline())).isRequest())
-    	{
-    		extractRemoteData();
-    	}
-	}
-   
+	private TextMessage message;   
  
     // --- heritage methods --- //
     public String getProtocol(){
@@ -90,8 +83,111 @@ public class MsgRtsp extends Msg
     public boolean isRequest() {
     	return ((FirstLine)(this.message.getGenericfirstline())).isRequest();
 	}
-	    		
-	// --- get Parameters --- //
+
+	// --- get/set method --- //
+	public TextMessage getMessage(){
+		return this.message;
+	}
+
+    private void extractRemoteData() throws Exception
+    {
+		String strURI = ((FirstLine)(this.message.getGenericfirstline())).getUri();
+		String remoteHost = PluggableParameterOperatorSetFromURI.setFromUri(strURI, "host");
+		setRemoteHost(remoteHost);
+		String rPort = PluggableParameterOperatorSetFromURI.setFromUri(strURI, "port");
+		int remotePort = Integer.parseInt(rPort);
+		setRemotePort(remotePort);
+		String scheme = PluggableParameterOperatorSetFromURI.setFromUri(strURI, "scheme");
+		String transport;
+		if ("rtspu".equalsIgnoreCase(scheme))
+		{
+			transport = StackFactory.PROTOCOL_UDP;
+		}
+		else if ("rtsp".equalsIgnoreCase(scheme))
+		{
+			transport = StackFactory.PROTOCOL_TCP;
+		}
+		else
+		{
+            throw new ExecutionException("Could not determine the transport from the message using the request URI : " + this);
+		}
+		setTransport(transport);
+    }
+
+    /**
+     *  Tell whether the message shall be retransmitted or not
+     * (= true by default)
+     */
+    public boolean shallBeRetransmitted() throws Exception
+    {
+        if(getTransport().equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
+            return false;
+        else if(getTransport().equalsIgnoreCase(StackFactory.PROTOCOL_UDP))
+            return true;
+        else
+            return true;
+    }
+    
+    /** Get the data (as binary) of this message */
+    @Override
+    public byte[] encode(){
+        return this.message.getMessage().getBytes();
+    }
+
+    /** Returns a short description of the message. Used for logging as INFO level */
+    /** This methods HAS TO be quick to execute for performance reason */
+    @Override
+	public String toShortString() throws Exception {
+    	String ret = super.toShortString();
+    	ret += "\n";
+        ret += ((FirstLine)(this.message.getGenericfirstline())).getLine();
+        return ret;
+	}
+
+    /** Get the XML representation of the message; for the genscript module. */
+    @Override
+    public String toXml() throws Exception {
+    	return message.getMessage().toString();
+    }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+        String text = root.getText();
+        StackRtsp stack = (StackRtsp) StackFactory.getStack(StackFactory.PROTOCOL_RTSP);
+        setMessageText(text, true, stack.addCRLFContent);
+    }
+
+    /** Get the message as text */
+    /*
+    public String getMessageText() throws Exception
+    {
+    	return message.toString();
+    }
+    */
+    
+    /** Set the message from text */
+    public void setMessageText(String text, boolean completeContentLength, int addCRLFContent) throws Exception {
+        this.message = new TextMessage(getProtocol(), completeContentLength, addCRLFContent, null);
+    	this.message.parse(text);
+        this.message.setGenericfirstline(new FirstLine(this.message.getFirstLineString(),getProtocol()));
+    	if (((FirstLine)(this.message.getGenericfirstline())).isRequest())
+    	{
+    		extractRemoteData();
+    	}
+	}
+
+	//------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message
+     */
+    @Override
 	public synchronized Parameter getParameter(String path) throws Exception 
 	{
 		Parameter var = super.getParameter(path);	
@@ -174,71 +270,4 @@ public class MsgRtsp extends Msg
 
 		return var;
 	}
-
-	// --- get/set method --- //
-	public TextMessage getMessage(){
-		return this.message;
-	}
-
-    private void extractRemoteData() throws Exception
-    {
-		String strURI = ((FirstLine)(this.message.getGenericfirstline())).getUri();
-		String remoteHost = PluggableParameterOperatorSetFromURI.setFromUri(strURI, "host");
-		setRemoteHost(remoteHost);
-		String rPort = PluggableParameterOperatorSetFromURI.setFromUri(strURI, "port");
-		int remotePort = Integer.parseInt(rPort);
-		setRemotePort(remotePort);
-		String scheme = PluggableParameterOperatorSetFromURI.setFromUri(strURI, "scheme");
-		String transport;
-		if ("rtspu".equalsIgnoreCase(scheme))
-		{
-			transport = StackFactory.PROTOCOL_UDP;
-		}
-		else if ("rtsp".equalsIgnoreCase(scheme))
-		{
-			transport = StackFactory.PROTOCOL_TCP;
-		}
-		else
-		{
-            throw new ExecutionException("Could not determine the transport from the message using the request URI : " + this);
-		}
-		setTransport(transport);
-    }
-
-    /**
-     *  Tell whether the message shall be retransmitted or not
-     * (= true by default)
-     */
-    public boolean shallBeRetransmitted() throws Exception
-    {
-        if(getTransport().equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
-            return false;
-        else if(getTransport().equalsIgnoreCase(StackFactory.PROTOCOL_UDP))
-            return true;
-        else
-            return true;
-    }
-    
-    /** Get the data (as binary) of this message */
-    @Override
-    public byte[] encode(){
-        return this.message.getMessage().getBytes();
-    }
-
-    /** Returns a short description of the message. Used for logging as INFO level */
-    /** This methods HAS TO be quick to execute for performance reason */
-    @Override
-	public String toShortString() throws Exception {
-    	String ret = super.toShortString();
-    	ret += "\n";
-        ret += ((FirstLine)(this.message.getGenericfirstline())).getLine();
-        return ret;
-	}
-
-    /** Get the XML representation of the message; for the genscript module. */
-    @Override
-    public String toXml() throws Exception {
-    	return message.getMessage().toString();
-    }
-
 }

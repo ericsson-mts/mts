@@ -57,7 +57,7 @@ public class StackH248 extends Stack
      * Config parameter
      * which characters to add at the end of a line
      */
-    public String endLineCharacters = "CRLF";
+    public static String endLineCharacters = "CRLF";
 
     /** Constructor */
     public StackH248() throws Exception
@@ -83,31 +83,6 @@ public class StackH248 extends Stack
     { 
         Listenpoint listenpoint = new ListenpointH248(this, root);
         return listenpoint;        
-    }
-
-    /** Creates a specific SIP Msg */
-    @Override
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
-    {
-        String text = root.getText().trim();
-        if ("CRLF".equals(endLineCharacters))
-        {
-            text = Utils.replaceNoRegex(text, "\n", "\r\n");
-        }        
-        else if ("CR".equals(endLineCharacters))
-        {
-            text = Utils.replaceNoRegex(text, "\n", "\r");
-        }        
-        else if ("LF".equals(endLineCharacters))
-        {
-        }
-        else
-        {
-        	throw new ExecutionException("The \"END_LINE_CHARACTERS\" configuration parameter should be a string from the list {CRLF, LF, CR}");
-        }
-        MsgH248 msgH248 = new MsgH248(text);
-              
-        return msgH248;
     }
 
     /** Send the message from the given scenario */
@@ -267,7 +242,8 @@ public class StackH248 extends Stack
     {
     	String str = new String(datas);
     	str = str.substring(0, length);
-    	MsgH248 msgH248 = new MsgH248(str);    	
+    	MsgH248 msgH248 = new MsgH248();
+    	msgH248.setMessageText(str);
     	return msgH248;
     }
 

@@ -104,17 +104,6 @@ public class StackPcp extends Stack {
         }
     }
     
-	/** Creates a specific Msg */
-	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception {
-        XMLToFlist xmltoflist = XMLToFlist.getInstance();
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + root.element("flist").asXML();
-
-        InputSource src = new InputSource(new ByteArrayInputStream(xml.getBytes()));
-        xmltoflist.convert(src);
-        
-        return new MsgPcp(xmltoflist.getFList());
-	}
-
 	/** Returns the Config object to access the protocol config file*/
 	public Config getConfig() throws Exception {
 		return Config.getConfigByName("pcp.properties");
@@ -155,7 +144,9 @@ public class StackPcp extends Stack {
         {
             System.out.println("receive in client case");
         }
-        return new MsgPcp(flist);
+        MsgPcp msg = new MsgPcp();
+        msg.setFList(flist);
+        return msg;
     }
 
 }

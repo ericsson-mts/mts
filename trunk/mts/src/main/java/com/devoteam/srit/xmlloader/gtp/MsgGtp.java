@@ -23,11 +23,12 @@
 
 package com.devoteam.srit.xmlloader.gtp;
 
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.operations.Operation;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
@@ -43,31 +44,17 @@ public class MsgGtp extends Msg
     // based on GTP encryption 
     private MessageGTP message;
 
-    /**
-     * Creates a new instance of MsgGtpp
-     */
+    /** Creates a new instance */
+    public MsgGtp() throws Exception
+    {
+        super();
+    }
+    
+    /** Creates a new instance */
     public MsgGtp(MessageGTP message) throws Exception
     {
+    	this();
         this.message = message;
-    }
-
-    /** Get a parameter from the message */
-    @Override
-    public Parameter getParameter(String path) throws Exception
-    {
-    	String replacePath = Utils.replaceNoRegex(path, ":", "//"); 
-        Parameter var = super.getParameter(replacePath);
-        if (null != var)
-        {
-            return var;
-        }
-        var = new Parameter();
-        path = path.trim();
-        String[] params = Utils.splitNoRegex(path, ".");
-        
-        this.message.getParameter(var, params, path);
-        
-        return var;
     }
 
     /** Get the protocol of this message */
@@ -171,4 +158,39 @@ public class MsgGtp extends Msg
         return message.toXml();
     }
 
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+    	MessageGTP messageGTP = new MessageGTP(root);
+    	this.message = messageGTP;
+    }
+    
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+    
+    /** 
+     * Get a parameter from the message 
+     */
+    @Override
+    public Parameter getParameter(String path) throws Exception
+    {
+    	String replacePath = Utils.replaceNoRegex(path, ":", "//"); 
+        Parameter var = super.getParameter(replacePath);
+        if (null != var)
+        {
+            return var;
+        }
+        var = new Parameter();
+        path = path.trim();
+        String[] params = Utils.splitNoRegex(path, ".");
+        
+        this.message.getParameter(var, params, path);
+        
+        return var;
+    }
+    
 }

@@ -41,6 +41,7 @@ import org.dom4j.Element;
  * @author indiaye
  */
 public  class StackMgcp extends Stack {
+	
       /** Constructor */
     public StackMgcp() throws Exception
     {
@@ -66,31 +67,6 @@ public  class StackMgcp extends Stack {
          return XMLElementTextMsgParser.instance();
     }
 
-    @Override
-    public Msg parseMsgFromXml(Boolean request, org.dom4j.Element root, Runner runner) throws Exception {
-      String text = root.getText();
-        MsgMgcp msgmgcp = new MsgMgcp(text);
-
-        // OBSOLETE instanciates the listenpoint (compatibility with old grammar)
-        String listenpointName = root.attributeValue("providerName");
-        Listenpoint listenpoint = getListenpoint(listenpointName);
-        if (listenpoint == null && listenpointName != null)
-        {
-            throw new ExecutionException("The listenpoint <name=" + listenpointName + "> does not exist");
-        }
-        msgmgcp.setListenpoint(listenpoint);
-
-        if (request != null && request && !msgmgcp.isRequest())
-        {
-            throw new ExecutionException("You specify to send a request using a <sendRequestXXX ...> tag, but the message you will send is not really a request.");
-        }
-        if (request != null && !request && msgmgcp.isRequest())
-        {
-            throw new ExecutionException("You specify to send a response using a <sendResponseXXX ...> tag, but the message you will send is not really a response.");
-        }
-
-        return msgmgcp;
-    }
     /** Creates a Listenpoint specific to each Stack */
     @Override
     public Listenpoint parseListenpointFromXml(Element root) throws Exception
@@ -104,7 +80,8 @@ public  class StackMgcp extends Stack {
     {
     	String str = new String(datas);
     	str = str.substring(0, length);
-    	MsgMgcp msgMgcp = new MsgMgcp(str);
+    	MsgMgcp msgMgcp = new MsgMgcp();
+    	msgMgcp.setMessageText(str);
     	return msgMgcp;
     }
 

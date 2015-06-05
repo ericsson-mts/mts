@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.sip.jain;
 
 import com.devoteam.srit.xmlloader.core.Runner;
+
 import java.io.InputStream;
 
 import org.dom4j.Element;
@@ -35,6 +36,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.sip.MsgSip;
 import com.devoteam.srit.xmlloader.sip.StackSip;
 
 import dk.i1.sctp.SCTPData;
@@ -51,39 +53,7 @@ public class StackSipJain extends StackSip
     {
         super();     
     }
-
-    /** Creates a specific SIP Msg */
-    @Override    
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
-    {
-        String text = root.getText();
-        int addCRLFContent = ((StackSip) StackFactory.getStack(StackFactory.PROTOCOL_SIP)).addCRLFContent;
-        MsgSipJain msgSip = new MsgSipJain(text, addCRLFContent);
-
-        // OBSOLETE instanciates the listenpoint (compatibility with old grammar)        
-        String listenpointName = root.attributeValue("providerName");
-        if (listenpointName != null)
-        {       
-	        Listenpoint listenpoint = getListenpoint(listenpointName);
-	        if (listenpoint == null && listenpointName != null)
-	        {
-	            throw new ExecutionException("The listenpoint <name=" + listenpointName + "> does not exist");
-	        }
-	        msgSip.setListenpoint(listenpoint);
-        }
         
-        if (request != null && request && !msgSip.isRequest())
-        {
-            throw new ExecutionException("You specify to send a request using a <sendRequestXXX ...> tag, but the message you will send is not really a request.");
-        }
-        if (request != null && !request && msgSip.isRequest())
-        {
-            throw new ExecutionException("You specify to send a response using a <sendResponseXXX ...> tag, but the message you will send is not really a response.");
-        }
-                
-        return msgSip;
-    }
-    
     /** Receive a message */
     @Override
     public boolean receiveMessage(Msg msg) throws Exception
@@ -108,7 +78,8 @@ public class StackSipJain extends StackSip
     	
 		if (text != null && text.contains(StackFactory.PROTOCOL_SIP)) 
 		{
-			MsgSipJain msgSip = new MsgSipJain(text, 0);
+			MsgSipJain msgSip = new MsgSipJain();
+	    	msgSip.setMessageText(text, 0);
 			return msgSip;
 		}
 		else
@@ -130,7 +101,8 @@ public class StackSipJain extends StackSip
     {
     	String str = new String(datas);
     	str = str.substring(0, length);
-    	MsgSipJain msgSip = new MsgSipJain(str, 0);
+    	MsgSipJain msgSip = new MsgSipJain();
+    	msgSip.setMessageText(str, 0);
     	return msgSip;
     }
 
@@ -143,8 +115,9 @@ public class StackSipJain extends StackSip
     {
     	String str = new String(chunk.getData());
     	str = str.substring(0, chunk.getLength());
-        MsgSipJain msgSig = new MsgSipJain(str, 0);
-        return msgSig;            
+        MsgSipJain msgSip = new MsgSipJain();
+    	msgSip.setMessageText(str, 0);
+        return msgSip;            
     }
 
 }

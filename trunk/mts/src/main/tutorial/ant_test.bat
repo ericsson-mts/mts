@@ -1,7 +1,7 @@
 echo OFF
 
-set OPTIONS=-level:WARN -stor:file -gen:false -show:false
-set MODE1=-seq  
+set OPTIONS=-level:DEBUG -stor:file -gen:false -show:false
+set MODE1=-seq
 
 rem run the unit tests
 cd ..\bin

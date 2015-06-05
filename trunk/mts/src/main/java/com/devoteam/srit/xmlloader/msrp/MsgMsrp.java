@@ -23,13 +23,18 @@
 
 package com.devoteam.srit.xmlloader.msrp;
 
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromURI;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.coding.text.MsgParser;
+import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
+import com.devoteam.srit.xmlloader.mgcp.MGCPCommandLine;
 import com.devoteam.srit.xmlloader.msrp.data.MSRPFirstLine;
 import com.devoteam.srit.xmlloader.msrp.data.MSRPTextMessage;
 
@@ -41,12 +46,12 @@ public class MsgMsrp extends Msg
     
     private String type = null;
 
-    // --- constructer --- //
-    public MsgMsrp(String text) throws Exception {
-        message = new MSRPTextMessage(getProtocol());
-    	message.parse(text);
-	}
- 
+    /** Creates a new instance */
+    public MsgMsrp() throws Exception
+    {
+        super();
+    }
+     
     // --- heritage methods --- //
     public String getProtocol(){
         return StackFactory.PROTOCOL_MSRP;
@@ -87,8 +92,74 @@ public class MsgMsrp extends Msg
     public boolean isRequest() {
     	return this.message.getFirstline().isRequest();
 	}
-	    		
-	// --- get Parameters --- //   //TODO
+    
+	// --- get/set method --- //
+	public MSRPTextMessage getMessage(){
+		return this.message;
+	}
+
+    public String getMsgRemoteHost() {
+        return msgRemoteHost;
+    }
+
+    public int getMsgRemotePort() {
+        return msgRemotePort;
+    }
+
+    /** Get the data (as binary) of this message */
+    @Override
+    public byte[] encode(){
+        return this.message.getMessage().getBytes();
+    }
+
+    /** Returns a short description of the message. Used for logging as INFO level */
+    /** This methods HAS TO be quick to execute for performance reason */
+    @Override
+	public String toShortString() throws Exception {
+    	String ret = super.toShortString();
+    	ret += "\n";
+        ret += this.message.getFirstline().getLine();
+        return ret;
+	}
+
+    /** Get the XML representation of the message; for the genscript module. */
+    @Override
+    public String toXml() throws Exception {
+        return message.getMessage().toString();
+    }
+
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    { 
+    	String text = root.getText();
+    	setMessageText(text);
+    }
+    
+    /** Get the message as text */
+    /*
+    public String getMessageText() throws Exception
+    {
+    	return message.toString();
+    }
+    */
+    
+    /** Set the message from text */
+    public void setMessageText(String text) throws Exception
+    {
+        message = new MSRPTextMessage(getProtocol());
+    	message.parse(text);
+    }
+
+	// ------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message 
+     */
     @Override
 	public synchronized Parameter getParameter(String path) throws Exception 
 	{
@@ -216,40 +287,5 @@ public class MsgMsrp extends Msg
 
 		return var;
 	}
-
-	// --- get/set method --- //
-	public MSRPTextMessage getMessage(){
-		return this.message;
-	}
-
-    public String getMsgRemoteHost() {
-        return msgRemoteHost;
-    }
-
-    public int getMsgRemotePort() {
-        return msgRemotePort;
-    }
-
-    /** Get the data (as binary) of this message */
-    @Override
-    public byte[] encode(){
-        return this.message.getMessage().getBytes();
-    }
-
-    /** Returns a short description of the message. Used for logging as INFO level */
-    /** This methods HAS TO be quick to execute for performance reason */
-    @Override
-	public String toShortString() throws Exception {
-    	String ret = super.toShortString();
-    	ret += "\n";
-        ret += this.message.getFirstline().getLine();
-        return ret;
-	}
-
-    /** Get the XML representation of the message; for the genscript module. */
-    @Override
-    public String toXml() throws Exception {
-        return message.getMessage().toString();
-    }
 
 }

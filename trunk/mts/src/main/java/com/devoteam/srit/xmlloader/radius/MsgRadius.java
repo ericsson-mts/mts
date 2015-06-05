@@ -24,23 +24,31 @@
 package com.devoteam.srit.xmlloader.radius;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 import gp.net.radius.data.AVPBytes;
 import gp.net.radius.data.AVPInteger;
 import gp.net.radius.data.RadiusMessage;
 import gp.net.radius.data.AVPString;
 import gp.net.radius.data.AVPVendorSpecific;
 import gp.net.radius.dictionary.RadiusAttributes;
+import gp.net.radius.dictionary.RadiusCodes;
 import gp.net.radius.dictionary.RadiusDictionary;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.Integer32Array;
+
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.List;
+
+import org.dom4j.Element;
 
 /**
  *
@@ -109,142 +117,6 @@ public class MsgRadius extends Msg
         return this.radiusDictionary;
     }
     
-    /** Get a parameter from the message */
-    @Override
-    public Parameter getParameter(String path) throws Exception
-    {
-        Parameter var = super.getParameter(path);
-        if ((null != var) && (var.length() > 0))
-        {
-            return var;
-        }
-
-        var = new Parameter();
-        path = path.trim();
-        String[] params = Utils.splitPath(path);
-        
-        if (params[0].equalsIgnoreCase("header"))
-        {
-            if (params[1].equalsIgnoreCase("identifier"))
-            {
-                var.add(Integer.toString(this.radiusMessage.getIdentifier()));
-            }
-            else if (params[1].equalsIgnoreCase("authenticator"))
-            {
-                var.add(this.radiusMessage.getAuthenticator().toString().replace("\n", " ").replace(" ", ""));
-            }
-            else if (params[1].equalsIgnoreCase("code"))
-            {               
-            	var.add(String.valueOf(this.radiusMessage.getCode()));
-            }
-            else
-            {
-            	Parameter.throwBadPathKeywordException(path);
-            }
-        }
-        else if (params[0].equalsIgnoreCase("channel"))
-        {
-            if (params[1].equalsIgnoreCase("remoteHost"))
-            {
-            	var.add(this.radiusMessage.getRemoteAddress().getAddress().getHostAddress());
-            }
-            else if (params[1].equalsIgnoreCase("remotePort"))
-            {
-            	var.add(Integer.toString(this.radiusMessage.getRemoteAddress().getPort()));
-            }
-            else if (params[1].equalsIgnoreCase("UID"))
-            {
-            	if (this.getChannel() != null)
-            	{
-            		var.add(this.getChannel().getUID());
-            	}
-            }
-        }
-	    else if (params[0].equalsIgnoreCase("listenpoint"))
-	    {
-		    if (params[1].equalsIgnoreCase("UID"))
-		    {
-            	if (this.getListenpoint() != null)
-            	{
-            		var.add(this.getListenpoint().getUID());
-            	}
-		    }
-	    }
-        else if(params.length == 2)
-        {
-            /*
-             * Generic case. We assume the path has the following format:
-             * [AVP# or AVPName]:[keyword]
-             * keyword values: text, string, int, octet, ipaddr, length
-             */
-            String avpName = params[0];
-            String keyword = params[1];
-            Integer avpCode;
-            if(Utils.isInteger(avpName))
-            {
-                avpCode = Integer.parseInt(avpName);
-            }
-            else
-            {
-                RadiusAttributes radiusAttributes = getRadiusDictionary().getRadiusAttributes(-1);
-                avpCode = radiusAttributes.getAttributeCode(avpName);
-                if(null == avpCode)
-                {
-                    throw new Exception("unknown avp name " + avpName);
-                }
-            }
-            
-            for(AVPBytes avp: this.radiusMessage.getAVPs())
-            {
-                if(avp.getType() == avpCode)
-                {
-                    if(keyword.equalsIgnoreCase("text") || keyword.equalsIgnoreCase("string"))
-                    {
-                    	var.add(new AVPString(avp, "UTF8").getValue());
-                    }
-                    else if(keyword.equalsIgnoreCase("octet") || keyword.equalsIgnoreCase("byte"))
-                    {
-                    	var.add(avp.getArray().toString().replace(" ", "").replace("\n", ""));
-                    }
-                    else if(keyword.equalsIgnoreCase("int"))
-                    {
-                    	var.add(String.valueOf(new AVPInteger(avp).getValue()));
-                    }
-                    else if(keyword.equalsIgnoreCase("ipaddr"))
-                    {
-                        Array array = avp.getData();
-
-                        if(array.length != 4) throw new Exception("invalid length of data for ipaddr avp");
-                        
-                        StringBuilder builder = new StringBuilder();
-                        
-                        builder.append(new Integer08Array(array.subArray(0,1)).getValue());
-                        builder.append('.');
-                        builder.append(new Integer08Array(array.subArray(1,1)).getValue());
-                        builder.append('.');
-                        builder.append(new Integer08Array(array.subArray(2,1)).getValue());
-                        builder.append('.');
-                        builder.append(new Integer08Array(array.subArray(3,1)).getValue());
-                        
-                        var.add(builder.toString());
-                    }
-                    else if(keyword.equalsIgnoreCase("length"))
-                    {
-                    	var.add(String.valueOf(avp.getLength()));
-                    }
-                    else
-                    {
-                    	Parameter.throwBadPathKeywordException(path);
-                    }
-                }
-            }
-            
-            
-        }
-        
-        return var;
-    }
-
     /** Get the protocol of this message */
     @Override
     public String getProtocol()
@@ -506,4 +378,156 @@ public class MsgRadius extends Msg
         StringBuilder.append("</message>");        
         return StringBuilder.toString();
     }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+    	// never called
+    }
+
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+    
+    /** 
+     * Get a parameter from the message 
+     */
+    @Override
+    public Parameter getParameter(String path) throws Exception
+    {
+        Parameter var = super.getParameter(path);
+        if ((null != var) && (var.length() > 0))
+        {
+            return var;
+        }
+
+        var = new Parameter();
+        path = path.trim();
+        String[] params = Utils.splitPath(path);
+        
+        if (params[0].equalsIgnoreCase("header"))
+        {
+            if (params[1].equalsIgnoreCase("identifier"))
+            {
+                var.add(Integer.toString(this.radiusMessage.getIdentifier()));
+            }
+            else if (params[1].equalsIgnoreCase("authenticator"))
+            {
+                var.add(this.radiusMessage.getAuthenticator().toString().replace("\n", " ").replace(" ", ""));
+            }
+            else if (params[1].equalsIgnoreCase("code"))
+            {               
+            	var.add(String.valueOf(this.radiusMessage.getCode()));
+            }
+            else
+            {
+            	Parameter.throwBadPathKeywordException(path);
+            }
+        }
+        else if (params[0].equalsIgnoreCase("channel"))
+        {
+            if (params[1].equalsIgnoreCase("remoteHost"))
+            {
+            	var.add(this.radiusMessage.getRemoteAddress().getAddress().getHostAddress());
+            }
+            else if (params[1].equalsIgnoreCase("remotePort"))
+            {
+            	var.add(Integer.toString(this.radiusMessage.getRemoteAddress().getPort()));
+            }
+            else if (params[1].equalsIgnoreCase("UID"))
+            {
+            	if (this.getChannel() != null)
+            	{
+            		var.add(this.getChannel().getUID());
+            	}
+            }
+        }
+	    else if (params[0].equalsIgnoreCase("listenpoint"))
+	    {
+		    if (params[1].equalsIgnoreCase("UID"))
+		    {
+            	if (this.getListenpoint() != null)
+            	{
+            		var.add(this.getListenpoint().getUID());
+            	}
+		    }
+	    }
+        else if(params.length == 2)
+        {
+            /*
+             * Generic case. We assume the path has the following format:
+             * [AVP# or AVPName]:[keyword]
+             * keyword values: text, string, int, octet, ipaddr, length
+             */
+            String avpName = params[0];
+            String keyword = params[1];
+            Integer avpCode;
+            if(Utils.isInteger(avpName))
+            {
+                avpCode = Integer.parseInt(avpName);
+            }
+            else
+            {
+                RadiusAttributes radiusAttributes = getRadiusDictionary().getRadiusAttributes(-1);
+                avpCode = radiusAttributes.getAttributeCode(avpName);
+                if(null == avpCode)
+                {
+                    throw new Exception("unknown avp name " + avpName);
+                }
+            }
+            
+            for(AVPBytes avp: this.radiusMessage.getAVPs())
+            {
+                if(avp.getType() == avpCode)
+                {
+                    if(keyword.equalsIgnoreCase("text") || keyword.equalsIgnoreCase("string"))
+                    {
+                    	var.add(new AVPString(avp, "UTF8").getValue());
+                    }
+                    else if(keyword.equalsIgnoreCase("octet") || keyword.equalsIgnoreCase("byte"))
+                    {
+                    	var.add(avp.getArray().toString().replace(" ", "").replace("\n", ""));
+                    }
+                    else if(keyword.equalsIgnoreCase("int"))
+                    {
+                    	var.add(String.valueOf(new AVPInteger(avp).getValue()));
+                    }
+                    else if(keyword.equalsIgnoreCase("ipaddr"))
+                    {
+                        Array array = avp.getData();
+
+                        if(array.length != 4) throw new Exception("invalid length of data for ipaddr avp");
+                        
+                        StringBuilder builder = new StringBuilder();
+                        
+                        builder.append(new Integer08Array(array.subArray(0,1)).getValue());
+                        builder.append('.');
+                        builder.append(new Integer08Array(array.subArray(1,1)).getValue());
+                        builder.append('.');
+                        builder.append(new Integer08Array(array.subArray(2,1)).getValue());
+                        builder.append('.');
+                        builder.append(new Integer08Array(array.subArray(3,1)).getValue());
+                        
+                        var.add(builder.toString());
+                    }
+                    else if(keyword.equalsIgnoreCase("length"))
+                    {
+                    	var.add(String.valueOf(avp.getLength()));
+                    }
+                    else
+                    {
+                    	Parameter.throwBadPathKeywordException(path);
+                    }
+                }
+            }
+            
+            
+        }
+        
+        return var;
+    }
+    
 }

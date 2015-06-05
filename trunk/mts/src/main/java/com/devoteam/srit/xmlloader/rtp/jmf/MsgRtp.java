@@ -29,7 +29,10 @@ import gp.utils.arrays.DefaultArray;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -58,88 +61,7 @@ public class MsgRtp extends Msg {
     public void add(RTPPacket rtpPacket) {
         this.rtpPackets.add(rtpPacket);
     }
-
-    /** Get a parameter from the message */
-    public Parameter getParameter(String path)throws Exception
-    {
-        Parameter var = super.getParameter(path);
-        if (var != null) {
-            return var;
-        }
-        
-        var = new Parameter();
-        String[] params = Utils.splitPath(path);
-        
-        if(params.length>1 && params[0].equalsIgnoreCase("header"))
-        {
-            if(params[1].equalsIgnoreCase("ssrc"))
-            {
-                for (int i = 0; i < rtpPackets.size(); i++) 
-                {
-                    RTPPacket rtpPacket = rtpPackets.get(i);
-                    var.add(Integer.toString(rtpPacket.ssrc));
-                }
-            } 
-            else if(params[1].equalsIgnoreCase("payloadType")) 
-            {
-                for (int i = 0; i < rtpPackets.size(); i++) 
-                {
-                    RTPPacket rtpPacket = rtpPackets.get(i);                 
-                    var.add(Integer.toString(rtpPacket.payloadType));
-                }
-            } 
-            else if(params[1].equalsIgnoreCase("seqnum")) 
-            {
-                for (int i = 0; i < rtpPackets.size(); i++) 
-                {
-                    RTPPacket rtpPacket = rtpPackets.get(i);                 
-                    var.add(Integer.toString(rtpPacket.seqnum));
-                }
-            } 
-            else if(params[1].equalsIgnoreCase("timestamp")) 
-            {
-                for (int i = 0; i < rtpPackets.size(); i++) 
-                {
-                    RTPPacket rtpPacket = rtpPackets.get(i);                 
-                    var.add(Long.toString(rtpPacket.timestamp));
-                }
-            }
-            else
-            {
-            	Parameter.throwBadPathKeywordException(path);
-            }
-        }        
-        else if(params.length>1 && params[0].equalsIgnoreCase("payload"))
-        {
-            if(params[1].equalsIgnoreCase("text"))
-            {
-                for (int i = 0; i < rtpPackets.size(); i++) 
-                {
-                    RTPPacket rtpPacket = rtpPackets.get(i);
-                    var.add(new String(rtpPacket.data, rtpPacket.payloadoffset, rtpPacket.payloadlength));
-                }
-            } 
-            else if(params[1].equalsIgnoreCase("binary")) 
-            {
-                for (int i = 0; i < rtpPackets.size(); i++) 
-                {
-                    RTPPacket rtpPacket = rtpPackets.get(i);
-                	var.add(Array.toHexString(new DefaultArray(rtpPacket.data, rtpPacket.payloadoffset, rtpPacket.payloadlength)));
-                }
-            }
-            else
-            {
-            	Parameter.throwBadPathKeywordException(path);
-            }
-        }
-        else
-        {
-        	Parameter.throwBadPathKeywordException(path);
-        }
-                
-        return var;
-    }            
-
+    
     /** Get the transaction Identifier of this message 
      * Transaction has no sense in RTP because there are no response (stream protocol) */
     public TransactionId getTransactionId(){
@@ -259,5 +181,101 @@ public class MsgRtp extends Msg {
         }
         return xml;
     }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+    	// not used
+    }
+    
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message
+     */
+    public Parameter getParameter(String path)throws Exception
+    {
+        Parameter var = super.getParameter(path);
+        if (var != null) {
+            return var;
+        }
+        
+        var = new Parameter();
+        String[] params = Utils.splitPath(path);
+        
+        if(params.length>1 && params[0].equalsIgnoreCase("header"))
+        {
+            if(params[1].equalsIgnoreCase("ssrc"))
+            {
+                for (int i = 0; i < rtpPackets.size(); i++) 
+                {
+                    RTPPacket rtpPacket = rtpPackets.get(i);
+                    var.add(Integer.toString(rtpPacket.ssrc));
+                }
+            } 
+            else if(params[1].equalsIgnoreCase("payloadType")) 
+            {
+                for (int i = 0; i < rtpPackets.size(); i++) 
+                {
+                    RTPPacket rtpPacket = rtpPackets.get(i);                 
+                    var.add(Integer.toString(rtpPacket.payloadType));
+                }
+            } 
+            else if(params[1].equalsIgnoreCase("seqnum")) 
+            {
+                for (int i = 0; i < rtpPackets.size(); i++) 
+                {
+                    RTPPacket rtpPacket = rtpPackets.get(i);                 
+                    var.add(Integer.toString(rtpPacket.seqnum));
+                }
+            } 
+            else if(params[1].equalsIgnoreCase("timestamp")) 
+            {
+                for (int i = 0; i < rtpPackets.size(); i++) 
+                {
+                    RTPPacket rtpPacket = rtpPackets.get(i);                 
+                    var.add(Long.toString(rtpPacket.timestamp));
+                }
+            }
+            else
+            {
+            	Parameter.throwBadPathKeywordException(path);
+            }
+        }        
+        else if(params.length>1 && params[0].equalsIgnoreCase("payload"))
+        {
+            if(params[1].equalsIgnoreCase("text"))
+            {
+                for (int i = 0; i < rtpPackets.size(); i++) 
+                {
+                    RTPPacket rtpPacket = rtpPackets.get(i);
+                    var.add(new String(rtpPacket.data, rtpPacket.payloadoffset, rtpPacket.payloadlength));
+                }
+            } 
+            else if(params[1].equalsIgnoreCase("binary")) 
+            {
+                for (int i = 0; i < rtpPackets.size(); i++) 
+                {
+                    RTPPacket rtpPacket = rtpPackets.get(i);
+                	var.add(Array.toHexString(new DefaultArray(rtpPacket.data, rtpPacket.payloadoffset, rtpPacket.payloadlength)));
+                }
+            }
+            else
+            {
+            	Parameter.throwBadPathKeywordException(path);
+            }
+        }
+        else
+        {
+        	Parameter.throwBadPathKeywordException(path);
+        }
+                
+        return var;
+    }            
 
 }
