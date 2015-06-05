@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.gtppr;
 
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
+import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import com.devoteam.srit.xmlloader.gtppr.data.GtpHeaderPrime;
 import com.devoteam.srit.xmlloader.gtppr.data.GtppAttribute;
 import com.devoteam.srit.xmlloader.gtppr.data.GtppMessage;
@@ -33,10 +34,13 @@ import com.devoteam.srit.xmlloader.gtppr.data.TagTLV;
 import com.devoteam.srit.xmlloader.gtppr.data.TagTV;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -47,6 +51,8 @@ import org.dom4j.io.SAXReader;
  */
 public class GtppDictionary
 {
+    private static Map<String, GtppDictionary> dictionaries = new HashMap<String, GtppDictionary> ();
+    
     private HashMap<String, GtppMessage> messagesList;
     private HashMap<String, Integer> messageNameToTypeList;
     private HashMap<Integer, String> messageTypeToNameList;
@@ -54,7 +60,7 @@ public class GtppDictionary
     private HashMap<String, Tag> tlvList;
     private HashMap<String, Integer> tlvNameToTagList;
     private HashMap<Integer, String> tlvTagToNameList;
-
+    
     public GtppDictionary(InputStream stream) throws Exception
     {
         this.messagesList = new HashMap<String, GtppMessage>();
@@ -66,6 +72,19 @@ public class GtppDictionary
         this.tlvTagToNameList = new HashMap<Integer, String>();
 
         this.parseFile(stream);
+    }
+    
+    public static GtppDictionary getDictionary(String version) throws Exception
+    {
+    	GtppDictionary dictionary = dictionaries.get(version);
+    	if (dictionaries != null)
+    	{
+    		URI uri = new URI("../conf/gtpp/dictionary_" + version + ".xml");
+    		InputStream inputStream = SingletonFSInterface.instance().getInputStream(uri);
+    		dictionary = new GtppDictionary(inputStream);
+    		
+    	}
+        return dictionary;
     }
 
     public GtppMessage getMessageFromName(String name) {

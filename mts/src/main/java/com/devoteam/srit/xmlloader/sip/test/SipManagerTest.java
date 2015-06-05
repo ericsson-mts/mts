@@ -89,7 +89,8 @@ public class SipManagerTest {
         String request = createRequestREGISTER(0);
         //Jain req = (SIPRequest) msgFact.createRequest(request);
         //Jain MsgSipJain msg = new MsgSipJain(request, false);
-        MsgSipLight msg = new MsgSipLight(request, false, 0, null);
+        MsgSipLight msg = new MsgSipLight();
+        msg.setMessageText(request, false, 0, null);
         msg.setListenpoint(listenpoint);
         System.out.println("length = " + request.length());
         

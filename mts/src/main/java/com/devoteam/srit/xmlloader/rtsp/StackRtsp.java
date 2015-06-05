@@ -24,7 +24,6 @@
 package com.devoteam.srit.xmlloader.rtsp;
 
 
-import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.Tester;
 import org.dom4j.Element;
@@ -45,7 +44,7 @@ import java.io.InputStream;
 
 public class StackRtsp extends Stack {
 
-    private int addCRLFContent = 0;
+    public int addCRLFContent = 0;
 
 	public StackRtsp() throws Exception {
 		super();
@@ -117,8 +116,8 @@ public class StackRtsp extends Stack {
     
 	/** Creates a specific Msg */
 	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception {
-        String text = root.getText();
-        MsgRtsp msg = new MsgRtsp(text, true, addCRLFContent);
+        MsgRtsp msg = new MsgRtsp();
+        msg.parseMsgFromXml(request,  root, runner);
 
         String remoteHostAttr = root.attributeValue("remoteHost");
         if(remoteHostAttr != null){
@@ -181,7 +180,9 @@ public class StackRtsp extends Stack {
 
 		if (text != null && text.contains(StackFactory.PROTOCOL_RTSP))
 		{
-			return new MsgRtsp(text, false, addCRLFContent);
+			MsgRtsp msg = new MsgRtsp();
+			msg.setMessageText(text, false, addCRLFContent);
+			return msg;
 		}
 
         Tester.getGlobalLogger().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Receive an incomplete message; we ignore it : ", text);
@@ -198,8 +199,9 @@ public class StackRtsp extends Stack {
     {
     	String str = new String(datas);
     	str = str.substring(0, length);
-    	MsgRtsp msgRtsp = new MsgRtsp(str, false, addCRLFContent);
-    	return msgRtsp;
+    	MsgRtsp msg = new MsgRtsp();
+		msg.setMessageText(str, false, addCRLFContent);
+    	return msg;
     }
 
     protected String reader(InputStream inputStream) throws Exception {

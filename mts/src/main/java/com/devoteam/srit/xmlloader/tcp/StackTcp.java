@@ -95,65 +95,14 @@ public class StackTcp extends Stack
             return new ChannelTcp(name, localHost, localPort, remoteHost, remotePort, protocol);
         }
     }
-
+    
 	/** Creates a specific Msg */
     @Override
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        //
-        // Parse all <data ... /> tags
-        //
-        List<Element> elements = root.elements("data");
-        List<byte[]> datas = new LinkedList<byte[]>();
-        ;
-        try
-        {
-            for (Element element : elements)
-            {
-                if (element.attributeValue("format").equalsIgnoreCase("text"))
-                {
-                    String text = element.getText();
-                    // change the \n caractère to \r\n caracteres because the dom librairy return only \n.
-                    // this could make some trouble when the length is calculated in the scenario
-                    text = Utils.replaceNoRegex(text, "\r\n","\n");                    
-                    text = Utils.replaceNoRegex(text, "\n","\r\n");                                        
-                    datas.add(text.getBytes("UTF8"));
-                }
-                else if (element.attributeValue("format").equalsIgnoreCase("binary"))
-                {
-                    String text = element.getTextTrim();
-                    datas.add(Utils.parseBinaryString(text));
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            throw new ExecutionException(e);
-        }
-
-        //
-        // Compute total length
-        //
-        int length = 0;
-        for (byte[] data : datas)
-        {
-            length += data.length;
-        }
-
-        byte[] data = new byte[length];
-
-        int i = 0;
-        for (byte[] aData : datas)
-        {
-            for (int j = 0; j < aData.length; j++)
-            {
-                data[i] = aData[j];
-                i++;
-            }
-        }
-
-        MsgTcp msgTcp = new MsgTcp(data);
-
+        MsgTcp msgTcp = new MsgTcp();
+        msgTcp.parseMsgFromXml(request, root, runner);
+        
         // instanciates the channel
         String channelName = root.attributeValue("channel");
         // deprecated part //
@@ -202,7 +151,8 @@ public class StackTcp extends Stack
 	            data[i] = buffer[i];
 	        }
 	
-	        msgTcp = new MsgTcp(data);
+	        msgTcp = new MsgTcp();
+	        msgTcp.setMessageBinary(data);
 	    }
         else
         {
@@ -224,7 +174,8 @@ public class StackTcp extends Stack
     		{
 				// create an empty message
 				byte[] bytes = new byte[0];
-				MsgTcp msg = new MsgTcp(bytes);
+				MsgTcp msg = new MsgTcp();
+				msg.setMessageBinary(bytes);
 				msg.setType(type);
 				msg.setChannel(channel);
 				msg.setListenpoint(listenpoint);

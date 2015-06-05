@@ -92,14 +92,6 @@ public class StackGtp extends Stack
         }
     }
 
-	/** Creates a specific Msg */
-    @Override
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
-    {
-    	MessageGTP message = new MessageGTP(root);
-        return new MsgGtp(message);
-    }
-
     @Override
     public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
     {

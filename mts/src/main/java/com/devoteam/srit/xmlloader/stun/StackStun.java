@@ -62,9 +62,6 @@ public class StackStun extends Stack {
         prop = new Properties();
         InputStream in = SingletonFSInterface.instance().getInputStream(new URI("../conf/stun/typeStun.properties"));
         prop.load(in);
-
-
-
     }
 
     @Override
@@ -77,28 +74,6 @@ public class StackStun extends Stack {
         return XMLElementTextMsgParser.instance();
     }
 
-    @Override
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception {
-
-        MsgStun msgstun = new MsgStun(root);
-
-        // OBSOLETE instanciates the listenpoint (compatibility with old grammar)
-        String listenpointName = root.attributeValue("providerName");
-        Listenpoint listenpoint = getListenpoint(listenpointName);
-        if (listenpoint == null && listenpointName != null) {
-            throw new ExecutionException("The listenpoint <name=" + listenpointName + "> does not exist");
-        }
-        msgstun.setListenpoint(listenpoint);
-
-        if (request != null && request && !msgstun.isRequest()) {
-            throw new ExecutionException("You specify to send a request using a <sendRequestXXX ...> tag, but the message you will send is not really a request.");
-        }
-        if (request != null && !request && msgstun.isRequest()) {
-            throw new ExecutionException("You specify to send a response using a <sendResponseXXX ...> tag, but the message you will send is not really a response.");
-        }
-
-        return msgstun;
-    }
     @Override
      public Msg readFromDatas(byte[] datas, int length) throws Exception
     {

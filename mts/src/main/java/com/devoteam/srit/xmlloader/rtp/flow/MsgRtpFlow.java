@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.rtp.flow;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -48,6 +49,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
+
+import org.dom4j.Element;
 
 public class MsgRtpFlow extends Msg {
 	
@@ -267,145 +270,6 @@ public class MsgRtpFlow extends Msg {
 
     public MsgRtp getPacket() {
         return msgRtp;
-    }
-
-    /*
-     * Get parameters
-     */
-    @Override
-    public Parameter getParameter(String path) throws Exception {
-        Parameter var = super.getParameter(path);
-        if (null != var) {
-            return var;
-        }
-
-        var = new Parameter();
-        path = path.trim();
-        String[] params = Utils.splitPath(path);
-
-        if (params.length >= 1 && params[0].equalsIgnoreCase("header")) {
-            if (params[1].equalsIgnoreCase("ssrc")) {
-                for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
-                    var.add(it.next().getSsrc());
-                }
-            }
-            else if (params[1].equalsIgnoreCase("payloadType")) {
-                for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
-                    var.add(it.next().getPayloadType().toString());
-                }
-            }
-            else if (params[1].equalsIgnoreCase("seqnum")) {
-                for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
-                    var.add(it.next().getSequenceNumber());
-                }
-            }
-            else if (params[1].equalsIgnoreCase("timestamp")) {
-                for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
-                    var.add(it.next().getTimestampRTP());
-                }
-            }
-            else if (params[1].equalsIgnoreCase("mark")) {
-                for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
-                    var.add(it.next().getMarker());
-                }
-            }
-        }
-        else if (params.length >= 1 && params[0].equalsIgnoreCase("payload"))//deprecated
-        {
-            GlobalLogger.instance().getSessionLogger().warn(Topic.PARAM, "path \"payload.xxx\" is deprecated in operation setFromMessage for RTPFLOW protocol, use \"flow.payload.xxx\" instead!");
-            for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
-                Parameter param = it.next().getParameter(path);
-                var.add(param.get(0));
-            }
-        }
-        else if (params.length >= 1 && params[0].equalsIgnoreCase("qos")) {
-            if (!StackFactory.getStack(StackFactory.PROTOCOL_RTPFLOW).getConfig().getBoolean("QOS_MEASURMENT", true)) {
-                Parameter.throwBadPathKeywordException(path + ": This cannot be used as QOS mesure calculation has been disable in configuration.");
-            }
-            else if (params[1].equalsIgnoreCase("bitRate")) {
-                var.add(QoSinfo.getMeanBitRate());
-            }
-            else if (params[1].equalsIgnoreCase("packetLost")) {
-                var.add(QoSinfo.getPacketLost());
-            }
-            else if (params[1].equalsIgnoreCase("packetDuplicated")) {
-                var.add(QoSinfo.getDuplicated());
-            }
-            else if (params[1].equalsIgnoreCase("packetMissSequence")) {
-                var.add(QoSinfo.getPacketMissSequence());
-            }
-            else if (params[1].equalsIgnoreCase("deltaTime")) {
-                var.addAll(QoSinfo.getDelta());
-            }
-            else if (params[1].equalsIgnoreCase("deltaTimeMean")) {
-                var.add(QoSinfo.getMeanDelta());
-            }
-            else if (params[1].equalsIgnoreCase("packetSpacing")) {
-                var.addAll(QoSinfo.getPacketSpacing());
-            }
-            else if (params[1].equalsIgnoreCase("packetSpacingMean")) {
-                var.add(QoSinfo.getMeanPacketSpacing());
-            }
-            else if (params[1].equalsIgnoreCase("jitterDelay")) {
-                var.addAll(QoSinfo.getJitter());
-            }
-            else if (params[1].equalsIgnoreCase("jitterDelayMean")) {
-                var.add(QoSinfo.getMeanJitter());
-            }
-            /**
-             * TODO : This code has to be changed using a sliding window of 1 second for exemple
-             * DO NOT ERASE IT
-             */
-            /*
-            else if(params[1].equalsIgnoreCase("mosMean"))
-            {
-            var.add(QoSinfo.getEModele().getMosMean());
-            }
-             */
-            else if (params[1].equalsIgnoreCase("mos")) {
-                /**
-                 * TODO : This code has to be changed using a sliding window of 1 second for exemple
-                 * DO NOT ERASE IT
-                 */
-                /*
-                var.addAll(QoSinfo.getEModele().getMosRT());
-                 */
-                var.add(QoSinfo.getEModele().getMos());
-            }
-            else {
-                Parameter.throwBadPathKeywordException(path);
-            }
-        }
-        else if (params.length >= 1 && params[0].equalsIgnoreCase("flow")) {
-            if (params.length >= 2 && params[1].equalsIgnoreCase("packetNumber")) {
-                var.add(getPacketNumber());
-            }
-            else if (params.length >= 2 && params[1].equalsIgnoreCase("packetTimestamp")) {
-                getPacketListTimestamp(var);
-            }
-            else if (params.length >= 2 && params[1].equalsIgnoreCase("payload")) {
-                if (params.length >= 3 && params[2].equalsIgnoreCase("binary")) {
-                    getPayload(var, "binary");
-                }
-                else if (params.length >= 3 && params[2].equalsIgnoreCase("text")) {
-                    getPayload(var, "text");
-                }
-                else if (params.length >= 3 && params[2].equalsIgnoreCase("player")) {
-                    getPayloadPlayer(var);
-                }
-                else {
-                    Parameter.throwBadPathKeywordException(path);
-                }
-            }
-            else {
-                Parameter.throwBadPathKeywordException(path);
-            }
-        }
-        else {
-            Parameter.throwBadPathKeywordException(path);
-        }
-
-        return var;
     }
 
     /** Get the transaction Identifier of this message
@@ -708,6 +572,159 @@ public class MsgRtpFlow extends Msg {
         }
         return xml;
     }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+    	// not used
+    }
+    
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message
+     */
+    @Override
+    public Parameter getParameter(String path) throws Exception {
+        Parameter var = super.getParameter(path);
+        if (null != var) {
+            return var;
+        }
+
+        var = new Parameter();
+        path = path.trim();
+        String[] params = Utils.splitPath(path);
+
+        if (params.length >= 1 && params[0].equalsIgnoreCase("header")) {
+            if (params[1].equalsIgnoreCase("ssrc")) {
+                for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
+                    var.add(it.next().getSsrc());
+                }
+            }
+            else if (params[1].equalsIgnoreCase("payloadType")) {
+                for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
+                    var.add(it.next().getPayloadType().toString());
+                }
+            }
+            else if (params[1].equalsIgnoreCase("seqnum")) {
+                for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
+                    var.add(it.next().getSequenceNumber());
+                }
+            }
+            else if (params[1].equalsIgnoreCase("timestamp")) {
+                for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
+                    var.add(it.next().getTimestampRTP());
+                }
+            }
+            else if (params[1].equalsIgnoreCase("mark")) {
+                for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
+                    var.add(it.next().getMarker());
+                }
+            }
+        }
+        else if (params.length >= 1 && params[0].equalsIgnoreCase("payload"))//deprecated
+        {
+            GlobalLogger.instance().getSessionLogger().warn(Topic.PARAM, "path \"payload.xxx\" is deprecated in operation setFromMessage for RTPFLOW protocol, use \"flow.payload.xxx\" instead!");
+            for (Iterator<MsgRtp> it = packetsList.iterator(); it.hasNext();) {
+                Parameter param = it.next().getParameter(path);
+                var.add(param.get(0));
+            }
+        }
+        else if (params.length >= 1 && params[0].equalsIgnoreCase("qos")) {
+            if (!StackFactory.getStack(StackFactory.PROTOCOL_RTPFLOW).getConfig().getBoolean("QOS_MEASURMENT", true)) {
+                Parameter.throwBadPathKeywordException(path + ": This cannot be used as QOS mesure calculation has been disable in configuration.");
+            }
+            else if (params[1].equalsIgnoreCase("bitRate")) {
+                var.add(QoSinfo.getMeanBitRate());
+            }
+            else if (params[1].equalsIgnoreCase("packetLost")) {
+                var.add(QoSinfo.getPacketLost());
+            }
+            else if (params[1].equalsIgnoreCase("packetDuplicated")) {
+                var.add(QoSinfo.getDuplicated());
+            }
+            else if (params[1].equalsIgnoreCase("packetMissSequence")) {
+                var.add(QoSinfo.getPacketMissSequence());
+            }
+            else if (params[1].equalsIgnoreCase("deltaTime")) {
+                var.addAll(QoSinfo.getDelta());
+            }
+            else if (params[1].equalsIgnoreCase("deltaTimeMean")) {
+                var.add(QoSinfo.getMeanDelta());
+            }
+            else if (params[1].equalsIgnoreCase("packetSpacing")) {
+                var.addAll(QoSinfo.getPacketSpacing());
+            }
+            else if (params[1].equalsIgnoreCase("packetSpacingMean")) {
+                var.add(QoSinfo.getMeanPacketSpacing());
+            }
+            else if (params[1].equalsIgnoreCase("jitterDelay")) {
+                var.addAll(QoSinfo.getJitter());
+            }
+            else if (params[1].equalsIgnoreCase("jitterDelayMean")) {
+                var.add(QoSinfo.getMeanJitter());
+            }
+            /**
+             * TODO : This code has to be changed using a sliding window of 1 second for exemple
+             * DO NOT ERASE IT
+             */
+            /*
+            else if(params[1].equalsIgnoreCase("mosMean"))
+            {
+            var.add(QoSinfo.getEModele().getMosMean());
+            }
+             */
+            else if (params[1].equalsIgnoreCase("mos")) {
+                /**
+                 * TODO : This code has to be changed using a sliding window of 1 second for exemple
+                 * DO NOT ERASE IT
+                 */
+                /*
+                var.addAll(QoSinfo.getEModele().getMosRT());
+                 */
+                var.add(QoSinfo.getEModele().getMos());
+            }
+            else {
+                Parameter.throwBadPathKeywordException(path);
+            }
+        }
+        else if (params.length >= 1 && params[0].equalsIgnoreCase("flow")) {
+            if (params.length >= 2 && params[1].equalsIgnoreCase("packetNumber")) {
+                var.add(getPacketNumber());
+            }
+            else if (params.length >= 2 && params[1].equalsIgnoreCase("packetTimestamp")) {
+                getPacketListTimestamp(var);
+            }
+            else if (params.length >= 2 && params[1].equalsIgnoreCase("payload")) {
+                if (params.length >= 3 && params[2].equalsIgnoreCase("binary")) {
+                    getPayload(var, "binary");
+                }
+                else if (params.length >= 3 && params[2].equalsIgnoreCase("text")) {
+                    getPayload(var, "text");
+                }
+                else if (params.length >= 3 && params[2].equalsIgnoreCase("player")) {
+                    getPayloadPlayer(var);
+                }
+                else {
+                    Parameter.throwBadPathKeywordException(path);
+                }
+            }
+            else {
+                Parameter.throwBadPathKeywordException(path);
+            }
+        }
+        else {
+            Parameter.throwBadPathKeywordException(path);
+        }
+
+        return var;
+    }
+
     
     public void uncipherPayloadList(SRTPTransformer transformer, int authTagLength) throws Exception
     {

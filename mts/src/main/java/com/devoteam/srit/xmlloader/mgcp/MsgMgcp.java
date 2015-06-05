@@ -23,7 +23,10 @@
 
 package com.devoteam.srit.xmlloader.mgcp;
 
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -40,13 +43,6 @@ import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
 public class MsgMgcp extends Msg {
 
     private TextMessage message = null;
-
-    public MsgMgcp(String text) throws Exception {
-        this.message = new TextMessage("MGCP", true, 0, null);
-        this.message.parse(text);
-        this.message.setGenericfirstline(new MGCPCommandLine(this.message.getFirstLineString()));
-
-    }
 
     @Override
     public String getProtocol() {
@@ -76,6 +72,64 @@ public class MsgMgcp extends Msg {
         return ((MGCPCommandLine) this.message.getGenericfirstline()).isIsRequest();
     }
 
+    /** Get the data (as binary) of this message */
+    @Override
+    public byte[] encode() {
+        return message.getMessage().getBytes();
+    }
+
+    /** Returns a short description of the message. Used for logging as INFO level */
+    /** This methods HAS TO be quick to execute for performance reason */
+    @Override
+    public String toShortString() throws Exception {
+    	String ret = super.toShortString();
+    	ret += "\n";
+        ret += ((MGCPCommandLine) (message.getGenericfirstline())).getLine();
+		String transId = ((MGCPCommandLine) (message.getGenericfirstline())).getTransactionId().toString();
+		ret += "\n";
+        ret += "<MESSAGE transactionId=\"" + transId + "\">";
+        return ret;
+    }
+
+    /** Get the XML representation of the message; for the genscript module. */
+    @Override
+    public String toXml() throws Exception {
+        return this.message.getMessage().toString();
+    }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    { 
+    	String text = root.getText();
+    	setMessageText(text);
+    }
+    
+    /** Get the message as text */
+    /*
+    public String getMessageText() throws Exception
+    {
+    	return message.toString();
+    }
+    */
+    
+    /** Set the message from text */
+    public void setMessageText(String text) throws Exception
+    {
+        this.message = new TextMessage("MGCP", true, 0, null);
+        this.message.parse(text);
+        this.message.setGenericfirstline(new MGCPCommandLine(this.message.getFirstLineString()));
+    }
+
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message 
+     */
     @Override
     public Parameter getParameter(String path) throws Exception {
         Parameter var = super.getParameter(path);
@@ -169,28 +223,4 @@ public class MsgMgcp extends Msg {
         }
     }
 
-    /** Get the data (as binary) of this message */
-    @Override
-    public byte[] encode() {
-        return message.getMessage().getBytes();
-    }
-
-    /** Returns a short description of the message. Used for logging as INFO level */
-    /** This methods HAS TO be quick to execute for performance reason */
-    @Override
-    public String toShortString() throws Exception {
-    	String ret = super.toShortString();
-    	ret += "\n";
-        ret += ((MGCPCommandLine) (message.getGenericfirstline())).getLine();
-		String transId = ((MGCPCommandLine) (message.getGenericfirstline())).getTransactionId().toString();
-		ret += "\n";
-        ret += "<MESSAGE transactionId=\"" + transId + "\">";
-        return ret;
-    }
-
-    /** Get the XML representation of the message; for the genscript module. */
-    @Override
-    public String toXml() throws Exception {
-        return this.message.getMessage().toString();
-    }
 }

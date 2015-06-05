@@ -24,17 +24,25 @@
 package com.devoteam.srit.xmlloader.pcp;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.msrp.data.MSRPTextMessage;
 import com.portal.pcm.EBufException;
 import com.portal.pcm.FList;
 import com.portal.pcm.Field;
 import com.portal.pcm.SparseArray;
+import com.portal.pcm.XMLToFlist;
+
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Enumeration;
+
+import org.dom4j.Element;
+import org.xml.sax.InputSource;
 
 public class MsgPcp extends Msg
 {	
@@ -44,11 +52,6 @@ public class MsgPcp extends Msg
     private int opcode = 1;
     private String opcodeStr = null;
     
-    // --- constructor --- //
-    public MsgPcp(FList flist) throws Exception {
-        this.flist = flist;
-	}
- 
     // --- heritage methods --- //
     public String getProtocol(){
         return StackFactory.PROTOCOL_PCP;
@@ -74,7 +77,73 @@ public class MsgPcp extends Msg
     	return true;
 	}
 		
-	// --- get Parameters --- //
+    public int getOpCode() {
+        return opcode;
+    }
+
+    /** Get the data (as binary) of this message */
+    @Override
+    public byte[] encode(){
+        ObjectOutputStream obj;
+        ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+        try {
+            obj = new ObjectOutputStream(byteArray);
+            this.flist.writeExternal(obj);
+            obj.flush();
+            obj.close();
+        } catch (IOException e) {
+        }
+        return byteArray.toByteArray();
+    }
+
+    /** Returns a short description of the message. Used for logging as INFO level */
+    /** This methods HAS TO be quick to execute for performance reason */
+    @Override
+	public String toShortString() throws Exception {
+    	String ret = super.toShortString();
+    	ret += "\n";
+        ret += this.flist.asString();
+        return ret;
+	}
+
+    /** Get the XML representation of the message; for the genscript module. */
+    @Override
+    public String toXml() throws Exception {
+    	return flist.asString();
+    }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    { 
+        XMLToFlist xmltoflist = XMLToFlist.getInstance();
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + root.element("flist").asXML();
+
+        InputSource src = new InputSource(new ByteArrayInputStream(xml.getBytes()));
+        xmltoflist.convert(src);
+        setFList(xmltoflist.getFList());
+    }
+    
+    /** Get the message as text */
+    public FList getFList() {
+    	return flist;
+    }
+    
+    /** Set the message from text */
+    public void setFList(FList flist) throws Exception
+    {
+    	this.flist = flist;
+    }
+
+	// ------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message 
+     */
     @Override
 	public synchronized Parameter getParameter(String path) throws Exception 
 	{
@@ -141,42 +210,4 @@ public class MsgPcp extends Msg
         }
     }
 
-    public FList getFlist() {
-        return flist;
-    }
-
-    public int getOpCode() {
-        return opcode;
-    }
-
-    /** Get the data (as binary) of this message */
-    @Override
-    public byte[] encode(){
-        ObjectOutputStream obj;
-        ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-        try {
-            obj = new ObjectOutputStream(byteArray);
-            this.flist.writeExternal(obj);
-            obj.flush();
-            obj.close();
-        } catch (IOException e) {
-        }
-        return byteArray.toByteArray();
-    }
-
-    /** Returns a short description of the message. Used for logging as INFO level */
-    /** This methods HAS TO be quick to execute for performance reason */
-    @Override
-	public String toShortString() throws Exception {
-    	String ret = super.toShortString();
-    	ret += "\n";
-        ret += this.flist.asString();
-        return ret;
-	}
-
-    /** Get the XML representation of the message; for the genscript module. */
-    @Override
-    public String toXml() throws Exception {
-    	return flist.asString();
-    }
 }

@@ -25,7 +25,11 @@ package com.devoteam.srit.xmlloader.h248;
 
 import java.util.HashSet;
 
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
@@ -57,7 +61,7 @@ public class MsgH248 extends Msg
     private TransactionId responseTransactionId;
     private boolean isResponseTransactionIsSet;    
 	
-    /** Creates a new instance of MsgSip */
+    /** Creates a new instance */
     public MsgH248() 
     {
         super();       
@@ -66,47 +70,6 @@ public class MsgH248 extends Msg
         typeDescriptor.add("AV");typeDescriptor.add("AC");typeDescriptor.add("N");typeDescriptor.add("SC");
     }
     
-    /** Creates a new instance of MsgSip */
-    public MsgH248(String text) throws Exception
-    {
-    	this();
-        this.message = text;
-        
-        // remove the comment block : from ";" char to the end of line
-        text = text.replaceAll(";[^\r\n]*", " ");
-        
-        // check the MEGACO token
-		int index = ABNFParser.indexOfKWDictionary(text, ABNFParser.MEGACOP_TOKEN, 0);
-		if (index >= 0)			
-		{
-	        // parse the authentication header
-			String authHeader = text.substring(0, index).trim();
-			if (authHeader.length() > 0)
-			{
-		        this.authHeader = new AuthHeader();
-		        this.authHeader.parseHeader(authHeader + " ", 0);			
-			}
-	        
-	        // parse the message header
-	        this.header = new Header();
-	        index = this.header.parseHeader(text, index);
-	        index = index + 1;
-		}
-		else
-		{
-			index = 0;
-		}
-	        
-		if (index >=0)
-		{
-	        // parse the message descriptors list
-	        String descriptors = text.substring(index, text.length()).trim();
-	        descriptors = "descr{" + descriptors + "}"; 
-	        this.descr = new Descriptor();
-	        this.descr.parseDescriptors(descriptors, 0, false);
-		}
-    }
-
     /** Get the protocol of this message */
     public String getProtocol()
     {
@@ -309,72 +272,6 @@ public class MsgH248 extends Msg
         }
 
         return this.transactionId;
-    }
-
-    /** Get a parameter from the message */
-    public Parameter getParameter(String path) throws Exception
-    {
-        Parameter var = super.getParameter(path);
-        if (var != null)
-        {
-            return var;
-        }
-
-    	var = new Parameter();
-        path = path.trim();
-        String[] params = Utils.splitPath(path);
-
-        if (params[0].equalsIgnoreCase("header"))
-        {
-            if (params.length == 1)
-            {
-            	var.add(header.getLine());
-            }
-            else 
-            {
-            	header.addParameter(var, params[1]);
-            }
-        }
-        else if (params[0].equalsIgnoreCase("authHeader"))
-        {
-            if (params.length == 1)
-            {
-            	var.add(authHeader.getLine());
-            }
-            else 
-            {
-            	authHeader.addParameter(var, params[1]);
-            }
-        }
-        else if (params[0].equalsIgnoreCase("descr"))
-        {
-    	    if (params[1].equalsIgnoreCase("segmentNumber"))
-    	    {
-    	    	var.add(this.getSegmentNumber());
-    	    }
-    	    else if (params[1].equalsIgnoreCase("segmentComplete"))
-    	    {
-    	    	var.add(this.getSegmentComplete());
-    	    }
-    	    else
-    	    {
-	        	Descriptor des = this.descr;
-	        	String [] p = Utils.splitNoRegex(params[0], "=");
-	        	if ((des != null) && (des.getNameValue() != null) && (des.getNameValue().equalsParameter(p)))
-	        	{
-	        		if (!des.findAddParameters(var, params, 1))
-	        		{
-	        			Parameter.throwBadPathKeywordException(path);
-	        		}	
-	        	}
-    	    }
-        }
-        else
-        {
-        	Parameter.throwBadPathKeywordException(path);
-        }
-        
-        return var;
     }
 
     /** Get the segment number of this message */
@@ -595,5 +492,152 @@ public class MsgH248 extends Msg
        		ret += this.descr.toString();
     	}
        	return ret;
+    }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+        String text = root.getText().trim();
+        if ("CRLF".equals(StackH248.endLineCharacters))
+        {
+            text = Utils.replaceNoRegex(text, "\n", "\r\n");
+        }        
+        else if ("CR".equals(StackH248.endLineCharacters))
+        {
+            text = Utils.replaceNoRegex(text, "\n", "\r");
+        }        
+        else if ("LF".equals(StackH248.endLineCharacters))
+        {
+        }
+        else
+        {
+        	throw new ExecutionException("The \"END_LINE_CHARACTERS\" configuration parameter should be a string from the list {CRLF, LF, CR}");
+        }
+
+        setMessageText(text);        
+    }
+    
+    /** Get the message as text */
+    /*
+    public String getMessageText() throws Exception
+    {
+    	return this.message;
+    }
+    */
+    
+    /** Set the message from text */
+    public void setMessageText(String text) throws Exception
+    {
+	    this.message = text;
+	    
+	    // remove the comment block : from ";" char to the end of line
+	    text = text.replaceAll(";[^\r\n]*", " ");
+	    
+	    // check the MEGACO token
+		int index = ABNFParser.indexOfKWDictionary(text, ABNFParser.MEGACOP_TOKEN, 0);
+		if (index >= 0)			
+		{
+	        // parse the authentication header
+			String authHeader = text.substring(0, index).trim();
+			if (authHeader.length() > 0)
+			{
+		        this.authHeader = new AuthHeader();
+		        this.authHeader.parseHeader(authHeader + " ", 0);			
+			}
+	        
+	        // parse the message header
+	        this.header = new Header();
+	        index = this.header.parseHeader(text, index);
+	        index = index + 1;
+		}
+		else
+		{
+			index = 0;
+		}
+	        
+		if (index >=0)
+		{
+	        // parse the message descriptors list
+	        String descriptors = text.substring(index, text.length()).trim();
+	        descriptors = "descr{" + descriptors + "}"; 
+	        this.descr = new Descriptor();
+	        this.descr.parseDescriptors(descriptors, 0, false);
+		}
+    }
+
+    
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message 
+     */
+    public Parameter getParameter(String path) throws Exception
+    {
+        Parameter var = super.getParameter(path);
+        if (var != null)
+        {
+            return var;
+        }
+
+    	var = new Parameter();
+        path = path.trim();
+        String[] params = Utils.splitPath(path);
+
+        if (params[0].equalsIgnoreCase("header"))
+        {
+            if (params.length == 1)
+            {
+            	var.add(header.getLine());
+            }
+            else 
+            {
+            	header.addParameter(var, params[1]);
+            }
+        }
+        else if (params[0].equalsIgnoreCase("authHeader"))
+        {
+            if (params.length == 1)
+            {
+            	var.add(authHeader.getLine());
+            }
+            else 
+            {
+            	authHeader.addParameter(var, params[1]);
+            }
+        }
+        else if (params[0].equalsIgnoreCase("descr"))
+        {
+    	    if (params[1].equalsIgnoreCase("segmentNumber"))
+    	    {
+    	    	var.add(this.getSegmentNumber());
+    	    }
+    	    else if (params[1].equalsIgnoreCase("segmentComplete"))
+    	    {
+    	    	var.add(this.getSegmentComplete());
+    	    }
+    	    else
+    	    {
+	        	Descriptor des = this.descr;
+	        	String [] p = Utils.splitNoRegex(params[0], "=");
+	        	if ((des != null) && (des.getNameValue() != null) && (des.getNameValue().equalsParameter(p)))
+	        	{
+	        		if (!des.findAddParameters(var, params, 1))
+	        		{
+	        			Parameter.throwBadPathKeywordException(path);
+	        		}	
+	        	}
+    	    }
+        }
+        else
+        {
+        	Parameter.throwBadPathKeywordException(path);
+        }
+        
+        return var;
     }
 }

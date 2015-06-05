@@ -38,6 +38,7 @@ import com.devoteam.srit.xmlloader.core.utils.expireshashmap.ExpireHashMap;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 
 import dk.i1.sctp.SCTPData;
+
 import org.dom4j.Element;
 
 import java.io.InputStream;
@@ -411,7 +412,16 @@ public abstract class Stack
     }
 
     /** Creates a Msg specific to each Stack */
-    public abstract Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception;
+    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+    	String stackClassname = this.getClass().getSimpleName();
+    	String packageName = this.getClass().getPackage().getName();
+    	String acronyme = stackClassname.substring(5);
+    	String msgClassname = packageName + ".Msg" + acronyme;
+    	Msg msg = (Msg) Class.forName(msgClassname).newInstance();
+    	msg.parseMsgFromXml(request, root, runner);
+    	return msg;
+    }
 
     /** 
      * Creates a Msg specific to each Stack

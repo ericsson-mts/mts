@@ -23,10 +23,17 @@
 
 package com.devoteam.srit.xmlloader.tls;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.dom4j.Element;
+
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.MessageId;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
@@ -43,53 +50,12 @@ public class MsgTls extends Msg
 
     private String type;
 
-    /**
-     * Creates a new instance of MsgTls from a byte array
-     */
-    public MsgTls(byte[] someData) throws Exception
+    /** Creates a new instance */
+    public MsgTls() throws Exception
     {
-        data = someData;
-        type = "SEQ-ACK"; 
+    	super();
     }
-        
-    /** Get a parameter from the message */
-    public Parameter getParameter(String path) throws Exception
-    {
-        Parameter var = super.getParameter(path);
-        if (null != var)
-        {
-            return var;
-        }
-
-    	var = new Parameter();
-        path = path.trim();
-        String[] params = Utils.splitPath(path);
-        
-        if(params[0].equalsIgnoreCase("data")) 
-        {
-            if(params[1].equalsIgnoreCase("text")) 
-            {
-            	var.add(new String(encode()));
-            }
-            else if(params[1].equalsIgnoreCase("binary")) 
-            {
-            	var.add(Array.toHexString(new DefaultArray(encode())));
-            }
-            else 
-            {
-            	Parameter.throwBadPathKeywordException(path);
-            }
-        }
-        else 
-        {
-        	Parameter.throwBadPathKeywordException(path);
-        }
-
-        return var;
-    }    
     
-    // <editor-fold desc=" generic methods ">
-
     public TransactionId getTransactionId() throws Exception
     {
         return null;
@@ -158,5 +124,119 @@ public class MsgTls extends Msg
     	ret += "\n" + Utils.byteTabToString(data);
     	return ret;
     }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+        List<Element> elements = root.elements("data");
+        List<byte[]> datas = new LinkedList<byte[]>();
+        ;
+        try
+        {
+            for (Element element : elements)
+            {
+                if (element.attributeValue("format").equalsIgnoreCase("text"))
+                {
+                    String text = element.getText();
+                    // change the \n caractère to \r\n caracteres because the dom librairy return only \n.
+                    // this could make some trouble when the length is calculated in the scenario
+                    text = Utils.replaceNoRegex(text, "\r\n","\n");                    
+                    text = Utils.replaceNoRegex(text, "\n","\r\n");                                        
+                    datas.add(text.getBytes("UTF8"));
+                }
+                else if (element.attributeValue("format").equalsIgnoreCase("binary"))
+                {
+                    String text = element.getTextTrim();
+                    datas.add(Utils.parseBinaryString(text));
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            throw new ExecutionException(e);
+        }
+
+        //
+        // Compute total length
+        //
+        int length = 0;
+        for (byte[] data : datas)
+        {
+            length += data.length;
+        }
+
+        byte[] data = new byte[length];
+
+        int i = 0;
+        for (byte[] aData : datas)
+        {
+            for (int j = 0; j < aData.length; j++)
+            {
+                data[i] = aData[j];
+                i++;
+            }
+        }
+        setMessageBinary(data);
+    }
+
+    /** Get the message as binary */
+    /*
+    public String getMessageBinary() throws Exception
+    {
+    	return message.toString();
+    }
+    */
+    
+    /** Set the message from binary */
+    public void setMessageBinary(byte[] binary) throws Exception {
+    	this.data = binary;
+        this.type = "SEQ-ACK";    
+    }
+    
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message
+     */
+    @Override
+    public Parameter getParameter(String path) throws Exception
+    {
+        Parameter var = super.getParameter(path);
+        if (null != var)
+        {
+            return var;
+        }
+
+    	var = new Parameter();
+        path = path.trim();
+        String[] params = Utils.splitPath(path);
+        
+        if(params[0].equalsIgnoreCase("data")) 
+        {
+            if(params[1].equalsIgnoreCase("text")) 
+            {
+            	var.add(new String(encode()));
+            }
+            else if(params[1].equalsIgnoreCase("binary")) 
+            {
+            	var.add(Array.toHexString(new DefaultArray(encode())));
+            }
+            else 
+            {
+            	Parameter.throwBadPathKeywordException(path);
+            }
+        }
+        else 
+        {
+        	Parameter.throwBadPathKeywordException(path);
+        }
+
+        return var;
+    } 
     
 }

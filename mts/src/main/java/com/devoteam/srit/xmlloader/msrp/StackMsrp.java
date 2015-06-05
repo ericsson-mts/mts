@@ -108,12 +108,6 @@ public class StackMsrp extends Stack {
         }
     }
     
-	/** Creates a specific Msg */
-	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception {
-        String text = root.getText();        
-        return new MsgMsrp(text);
-	}
-
     /** Send a Msg to Stack */
     @Override
     public synchronized boolean sendMessage(Msg msg) throws Exception {    	        
@@ -154,7 +148,10 @@ public class StackMsrp extends Stack {
 
 		if (text != null && text.contains(StackFactory.PROTOCOL_MSRP))
 		{
-			return new MsgMsrp(text);
+			
+			MsgMsrp msg = new MsgMsrp();
+			msg.setMessageText(text);
+			return msg;
 		}
 
         Tester.getGlobalLogger().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Receive an incomplete message; we ignore it : ", text);

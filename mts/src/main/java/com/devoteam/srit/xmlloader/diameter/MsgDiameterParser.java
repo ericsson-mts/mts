@@ -71,41 +71,18 @@ public class MsgDiameterParser
     }
     
     /** Creates a new Msg object from the root XML element */
-    public MsgDiameter parseMsgFromXml(Boolean request, Element root) throws Exception
+    public Message parseMsgFromXml(Boolean request, Element root) throws Exception
     {
-        MsgDiameter msgDiameter = new MsgDiameter(new Message());
-
-        //!!deprecated part!!//
-        String server = root.attributeValue("server");
-        if (server != null)
-        {
-       		GlobalLogger.instance().logDeprecatedMessage( root.getName() + " server=\"xxx\" .../", "sendMessageDiameter remoteUrl=\"xxx\" .../");
-       		msgDiameter.setRemoteUrl(server);
-       	}
-        //!!deprecated part!!//
-        
-        // parse the message after we set the channel (for hop-by-hop computing)
-        parseMessage(msgDiameter, request, root);
-
-        return msgDiameter;
-    }
-    
-
-    /** Parses then returns an AVP Message from the XML root element */
-    private Message parseMessage(MsgDiameter msgDiameter, Boolean request, Element root) throws Exception
-    {
-        
-        Message message = msgDiameter.getMessage();
+        Message msgDiameter = new Message();
         
         // parse the <header> XML tag
-        parseMessageHeader(message.hdr, request, root);
+        parseMessageHeader(msgDiameter.hdr, request, root);
         
         // Parse recursively the <avp> XML tags
-        parseAllAVPs(message, root);
+        parseAllAVPs(msgDiameter, root);
         
-        return message ;
+        return msgDiameter;
     }
-    
 
     /** Parses then returns the header from the XML root element */
     private void parseMessageHeader(MessageHeader messageHeader, Boolean request, Element root) throws Exception

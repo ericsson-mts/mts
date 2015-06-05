@@ -280,9 +280,8 @@ public class StackHttp extends Stack
     @Override
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        String text = root.getText();
-
-        MsgHttp msgHttp = new MsgHttp(text);
+        Msg msgHttp = new MsgHttp();
+        msgHttp.parseMsgFromXml(request, root, runner);
 
         //
         // Try to find the channel

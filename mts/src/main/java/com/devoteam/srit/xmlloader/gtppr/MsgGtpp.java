@@ -23,15 +23,29 @@
 
 package com.devoteam.srit.xmlloader.gtppr;
 
+import java.net.InetAddress;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
+import com.devoteam.srit.xmlloader.gtp.data.MessageGTP;
+import com.devoteam.srit.xmlloader.gtppr.data.GtpHeaderPrime;
+import com.devoteam.srit.xmlloader.gtppr.data.GtpHeaderV1;
+import com.devoteam.srit.xmlloader.gtppr.data.GtpHeaderV2;
+import com.devoteam.srit.xmlloader.gtppr.data.GtppAttribute;
 import com.devoteam.srit.xmlloader.gtppr.data.GtppMessage;
+import com.devoteam.srit.xmlloader.gtppr.data.Header;
 import com.devoteam.srit.xmlloader.gtppr.data.Tag;
+import com.devoteam.srit.xmlloader.gtppr.data.TagTLV;
 
 import gp.utils.arrays.Array;
 
@@ -43,18 +57,150 @@ public class MsgGtpp extends Msg
 {
     private GtppMessage message = null;
     private String type = null;
-//    private String typeComplete = null;
     private String result = null;
-    
-    /**
-     * Creates a new instance of MsgGtpp
-     */
+
+    /** Creates a new instance */
+    public MsgGtpp() throws Exception
+    {
+        super();
+    }
+
+    /** Creates a new instance */
     public MsgGtpp(GtppMessage message) throws Exception
     {
+    	this();
         this.message = message;
     }
 
-    /** Get a parameter from the message */
+    private Object formatAttribute(Attribute att)
+    {
+        Object value = att.getValue();
+        if(value instanceof String)
+        {
+        	value = ((String)value).trim();
+        }
+        else if(value instanceof Array)
+        {
+            value = Array.toHexString((Array)value);
+        }
+        return value;
+    }
+
+    /** Get the protocol of this message */
+    public String getProtocol()
+    {
+        return StackFactory.PROTOCOL_GTP;
+    }
+
+    /** Return true if the message is a request else return false*/
+    public boolean isRequest()
+    {
+        return message.getHeader().getName().contains("Request") ? true : false;
+    }
+
+    /** Get the command code of this message */
+    public String getType()
+    {
+        if(type == null)
+        {
+            type = message.getHeader().getName();
+        }
+        return type;
+    }
+
+    /** Get the result of this answer (null if request) */
+    public String getResult()
+    {
+        if(result == null)
+        {
+            // result = Integer.toString(message.getStatus());
+        }
+        return result;
+    }
+    
+    /** Return the length of the message*/
+    @Override
+    public int getLength() {
+        try 
+        {
+        	return message.getArray().length;
+        }
+        catch (Exception ex)
+        {
+                GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Error while trying to get length of GTPP message : " + ex);
+        }
+        return 0;
+
+    }
+    
+    /** Return the transport of the message*/
+    @Override
+    public String getTransport()
+    {
+        return StackFactory.PROTOCOL_TCP;
+    }
+    
+    /** Get the data (as binary) of this message */
+    @Override    
+    public byte[] encode(){
+        try 
+        {
+            return message.getArray().getBytes();
+        }
+        catch (Exception ex)
+        {
+            GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Error while trying to write message GTPP on socket: " + ex);
+        }
+        return null;
+    }
+
+    /** Returns a short description of the message. Used for logging as INFO level */
+    /** This methods HAS TO be quick to execute for performance reason */
+    @Override
+    public String toShortString() throws Exception 
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(super.toShortString());
+        stringBuilder.append("\n");
+        if(message.getLogError().length() != 0)
+        {
+            stringBuilder.append("<MESSAGE MALFORMED name= \"" + message.getHeader().getName() + "\"");
+        }
+        else
+        {
+            stringBuilder.append("<MESSAGE name= \"" + message.getHeader().getName() + "\"");
+        }
+
+        stringBuilder.append(" length=\"" + message.getHeader().getLength() + "\"");
+        stringBuilder.append(" type=\"" + Integer.toHexString(message.getHeader().getMessageType()) + "\"");
+        stringBuilder.append(" sequenceNumber=\"" + message.getHeader().getSequenceNumber() + "\"/>");
+        return stringBuilder.toString();
+    }
+
+    /** Get the XML representation of the message; for the genscript module. */
+    @Override
+    public String toXml() throws Exception {
+        return message.toString();
+    }
+
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+        GtppMessage gtppMessage = new GtppMessage();
+        gtppMessage.parseMsgFromXml(root);
+        this.message = gtppMessage;
+    }
+
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message 
+     */
     @Override
     public Parameter getParameter(String path) throws Exception
     {
@@ -131,117 +277,6 @@ public class MsgGtpp extends Msg
         }
 
         return var;
-    }
-
-    private Object formatAttribute(Attribute att)
-    {
-        Object value = att.getValue();
-        if(value instanceof String)
-        {
-        	value = ((String)value).trim();
-        }
-        else if(value instanceof Array)
-        {
-            value = Array.toHexString((Array)value);
-        }
-        return value;
-    }
-
-    /** Get the protocol of this message */
-    public String getProtocol()
-    {
-        return StackFactory.PROTOCOL_GTP;
-    }
-
-    /** Return true if the message is a request else return false*/
-    public boolean isRequest()
-    {
-        return message.getHeader().getName().contains("Request") ? true : false;
-    }
-
-    /** Get the command code of this message */
-    public String getType()
-    {
-        if(type == null)
-        {
-            type = message.getHeader().getName();
-        }
-        return type;
-    }
-
-    /** Get the result of this answer (null if request) */
-    public String getResult()
-    {
-        if(result == null)
-        {
-//            result = Integer.toString(message.getStatus());
-        }
-        return result;
-    }
-    
-    /** Return the length of the message*/
-    @Override
-    public int getLength() {
-        try 
-        {
-        	return message.getArray().length;
-        }
-        catch (Exception ex)
-        {
-                GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Error while trying to get length of GTPP message : " + ex);
-        }
-        return 0;
-
-    }
-    
-    /** Return the transport of the message*/
-    @Override
-    public String getTransport()
-    {
-        return StackFactory.PROTOCOL_TCP;
-    }
-    
-    /** Get the data (as binary) of this message */
-    @Override    
-    public byte[] encode(){
-        try 
-        {
-            return message.getArray().getBytes();
-        }
-        catch (Exception ex)
-        {
-            GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Error while trying to write message GTPP on socket: " + ex);
-        }
-        return null;
-    }
-
-    /** Returns a short description of the message. Used for logging as INFO level */
-    /** This methods HAS TO be quick to execute for performance reason */
-    @Override
-    public String toShortString() throws Exception 
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(super.toShortString());
-        stringBuilder.append("\n");
-        if(message.getLogError().length() != 0)
-        {
-            stringBuilder.append("<MESSAGE MALFORMED name= \"" + message.getHeader().getName() + "\"");
-        }
-        else
-        {
-            stringBuilder.append("<MESSAGE name= \"" + message.getHeader().getName() + "\"");
-        }
-
-        stringBuilder.append(" length=\"" + message.getHeader().getLength() + "\"");
-        stringBuilder.append(" type=\"" + Integer.toHexString(message.getHeader().getMessageType()) + "\"");
-        stringBuilder.append(" sequenceNumber=\"" + message.getHeader().getSequenceNumber() + "\"/>");
-        return stringBuilder.toString();
-    }
-
-    /** Get the XML representation of the message; for the genscript module. */
-    @Override
-    public String toXml() throws Exception {
-        return message.toString();
     }
 
 }

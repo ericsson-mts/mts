@@ -29,19 +29,32 @@
  */
 package com.devoteam.srit.xmlloader.sip.light;
 
+import gov.nist.javax.sip.message.SIPMessage;
+import gov.nist.javax.sip.message.SIPResponse;
+
 import java.util.HashMap;
 import java.util.HashSet;
 
+import javax.sip.SipFactory;
+import javax.sip.header.ContentTypeHeader;
+import javax.sip.message.MessageFactory;
+
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromAddress;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromURI;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.coding.text.FirstLine;
 import com.devoteam.srit.xmlloader.core.coding.text.MsgParser;
 import com.devoteam.srit.xmlloader.core.coding.text.Header;
 import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
+import com.devoteam.srit.xmlloader.rtsp.StackRtsp;
 import com.devoteam.srit.xmlloader.sip.MsgSip;
+import com.devoteam.srit.xmlloader.sip.StackSip;
 
 /**
  *
@@ -82,10 +95,62 @@ public class MsgSipLight extends MsgSip
 		compressedHeader.put("t", "To");					// rfc 3261
 		compressedHeader.put("v", "via");					// rfc 3261
 	}
+    
+    public boolean isRequest() {
+		return ((FirstLine)(this.message.getGenericfirstline())).isRequest();
+	}
 
-    /** Creates a new instance of MsgSip */
-    public MsgSipLight(String text, boolean completeContentLength, int addCRLFContent, String contentBinaryTypes) throws Exception
+    /** Get the data (as binary) of this message */
+    @Override
+    public byte[] encode()
     {
+         return message.getMessage().getBytes();
+    }
+
+    /** Returns a short description of the message. Used for logging as INFO level */
+    /** This methods HAS TO be quick to execute for performance reason */
+    @Override
+    public String toShortString() throws Exception 
+    {
+    	String ret = super.toShortString();
+    	ret += "\n";
+        ret += ((FirstLine)(this.message.getGenericfirstline())).getLine();
+        ret += "\n";
+        String transId = getTransactionId().toString();
+        ret += "<MESSAGE transactionId=\"" + transId + "\""; 
+        String dialogId = getDialogId();
+        ret+= " dialogId=\"" + dialogId + "\"";
+        ret+= "/>";
+        return ret;
+    }
+    
+    /** Get the XML representation of the message; for the genscript module. */
+    @Override
+    public String toXml() throws Exception {        
+        return message.getMessage().toString();
+    }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+        String text = root.getText();
+        StackSipLight stack = (StackSipLight) StackFactory.getStack(StackFactory.PROTOCOL_SIP);
+        setMessageText(text, true, stack.addCRLFContent, stack.contentBinaryTypes);
+    }
+
+    /** Get the message as text */
+    /*
+    public String getMessageText() throws Exception
+    {
+    	return message.toString();
+    }
+    */
+    
+    /** Set the message from text */
+    public void setMessageText(String text, boolean completeContentLength, int addCRLFContent, String contentBinaryTypes) throws Exception {
 		// bug NSN equipment : add a CRLF at the end of the Content
         this.message = new TextMessage(getProtocol(), completeContentLength, addCRLFContent, contentBinaryTypes);
         this.message.setCompressedHeader(compressedHeader);
@@ -94,7 +159,14 @@ public class MsgSipLight extends MsgSip
         this.message.setGenericfirstline(new FirstLine(this.message.getFirstLineString(),getProtocol()));
     }
     
-    /** Get a parameter from the message */
+    
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message
+     */
     public Parameter getParameter(String path) throws Exception
     {
         Parameter var = super.getParameter(path);
@@ -732,38 +804,5 @@ public class MsgSipLight extends MsgSip
 			}
 		}
     }
-    
-    public boolean isRequest() {
-		return ((FirstLine)(this.message.getGenericfirstline())).isRequest();
-	}
 
-    /** Get the data (as binary) of this message */
-    @Override
-    public byte[] encode()
-    {
-         return message.getMessage().getBytes();
-    }
-
-    /** Returns a short description of the message. Used for logging as INFO level */
-    /** This methods HAS TO be quick to execute for performance reason */
-    @Override
-    public String toShortString() throws Exception 
-    {
-    	String ret = super.toShortString();
-    	ret += "\n";
-        ret += ((FirstLine)(this.message.getGenericfirstline())).getLine();
-        ret += "\n";
-        String transId = getTransactionId().toString();
-        ret += "<MESSAGE transactionId=\"" + transId + "\""; 
-        String dialogId = getDialogId();
-        ret+= " dialogId=\"" + dialogId + "\"";
-        ret+= "/>";
-        return ret;
-    }
-    
-    /** Get the XML representation of the message; for the genscript module. */
-    @Override
-    public String toXml() throws Exception {        
-        return message.getMessage().toString();
-    }
 }

@@ -25,11 +25,14 @@ package com.devoteam.srit.xmlloader.sigtran;
 
 import java.util.Collection;
 
+import org.dom4j.Element;
+
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
@@ -154,82 +157,6 @@ public class MsgSigtran extends Msg
 	    		}
 	    	}
     	}
-    }
-
-    /** Get a parameter from the message */
-    @Override
-    public Parameter getParameter(String path) throws Exception 
-    {
-        Parameter var = super.getParameter(path);
-        if (null != var) 
-        {
-            return var;
-        }
-
-        var = new Parameter();
-        path = path.trim();
-        String[] params = Utils.splitPath(path);
-
-        if (params.length > 0 && params[0].equalsIgnoreCase("asn")) 
-        {
-        	return this._apMessage.getParameter(path);
-        }
-        else if (params.length > 0 && params[0].equalsIgnoreCase("ap")) 
-        {
-        	return this._apMessage.getParameter(path);
-        }
-        else if (params.length > 0 && params[0].equalsIgnoreCase("tcap")) 
-        {
-        	return this._tcapMessage.getParameter(path);
-        }
-        else if (params.length > 0 && params[0].equalsIgnoreCase("isdn")) 
-        {
-        	this._ieMessage.getParameter(var, params, path);
-        }
-        else if (params.length > 0 && params[0].equalsIgnoreCase("ss7")) 
-        {
-            if (params.length > 1) {
-                if (params[1].equalsIgnoreCase("content")) 
-                {
-                    var.add(_fvoMessage);
-                }
-                else 
-                {
-                    if (path.contains(":")) 
-                    {
-                        // var = _fvoMessage.getParameter(path.substring(path.indexOf(":") + 1));
-                    }
-                    else 
-                    {
-                        // var = _fvoMessage.getParameter(path.substring(path.indexOf(".") + 1));
-                    }
-                }
-            }
-        }
-        else if(params.length > 0 && params[0].equalsIgnoreCase("ua")) 
-        {
-            if (params.length != 1) 
-            {
-                if (params[1].equalsIgnoreCase("ppid")) 
-                {
-                    var.add(getTlvProtocol());
-                }
-                else if (path.contains(":")) 
-                {
-                    var = _tlvMessage.getParameter(path.substring(path.indexOf(":") + 1));
-                }
-                else 
-                {
-                	var = _tlvMessage.getParameter(path.substring(path.indexOf(".") + 1));
-                }
-            }         
-        }
-        else 
-        {
-            Parameter.throwBadPathKeywordException(path);
-        }
-
-        return var;
     }
 
     /** Get the protocol of this message */
@@ -547,4 +474,94 @@ public class MsgSigtran extends Msg
 
         return ret;
     }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+    	// not called
+    }
+    
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------    
+    
+    /** Get a parameter from the message */
+    @Override
+    public Parameter getParameter(String path) throws Exception 
+    {
+        Parameter var = super.getParameter(path);
+        if (null != var) 
+        {
+            return var;
+        }
+
+        var = new Parameter();
+        path = path.trim();
+        String[] params = Utils.splitPath(path);
+
+        if (params.length > 0 && params[0].equalsIgnoreCase("asn")) 
+        {
+        	return this._apMessage.getParameter(path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("ap")) 
+        {
+        	return this._apMessage.getParameter(path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("tcap")) 
+        {
+        	return this._tcapMessage.getParameter(path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("isdn")) 
+        {
+        	this._ieMessage.getParameter(var, params, path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("ss7")) 
+        {
+            if (params.length > 1) {
+                if (params[1].equalsIgnoreCase("content")) 
+                {
+                    var.add(_fvoMessage);
+                }
+                else 
+                {
+                    if (path.contains(":")) 
+                    {
+                        // var = _fvoMessage.getParameter(path.substring(path.indexOf(":") + 1));
+                    }
+                    else 
+                    {
+                        // var = _fvoMessage.getParameter(path.substring(path.indexOf(".") + 1));
+                    }
+                }
+            }
+        }
+        else if(params.length > 0 && params[0].equalsIgnoreCase("ua")) 
+        {
+            if (params.length != 1) 
+            {
+                if (params[1].equalsIgnoreCase("ppid")) 
+                {
+                    var.add(getTlvProtocol());
+                }
+                else if (path.contains(":")) 
+                {
+                    var = _tlvMessage.getParameter(path.substring(path.indexOf(":") + 1));
+                }
+                else 
+                {
+                	var = _tlvMessage.getParameter(path.substring(path.indexOf(".") + 1));
+                }
+            }         
+        }
+        else 
+        {
+            Parameter.throwBadPathKeywordException(path);
+        }
+
+        return var;
+    }
+
 }

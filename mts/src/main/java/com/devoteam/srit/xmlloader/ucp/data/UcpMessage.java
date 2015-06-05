@@ -23,12 +23,20 @@
 
 package com.devoteam.srit.xmlloader.ucp.data;
 
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
+import com.devoteam.srit.xmlloader.ucp.StackUcp;
+
 import gp.utils.arrays.*;
+
+import java.util.List;
 import java.util.Vector;
+
+import org.dom4j.Element;
 
 /**
  *
@@ -501,4 +509,105 @@ public class UcpMessage
 
         return str.toString();
     }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    public void parseMsgFromXml(Element root) throws Exception
+    {
+        // header
+        Element header = root.element("header");
+        String msgName = header.attributeValue("name");
+        String msgOT = header.attributeValue("OT");
+
+        if((msgOT != null) && (msgName != null))
+            throw new Exception("OT and name of the message " + msgName + " must not be set both");
+
+        if((msgOT == null) && (msgName == null))
+            throw new Exception("One of the parameter OT and name of the message header must be set");
+
+        StackUcp stack = (StackUcp) StackFactory.getStack(StackFactory.PROTOCOL_UCP);
+        
+        if(msgName != null)
+        {
+            this.name = msgName;
+            this.operationType = stack.ucpDictionary.getMessageOperationTypeFromName(msgName);
+            if(this.operationType == null)
+                throw new Exception("Message <" + msgName + "> is unknown in the dictionary");
+        }
+
+        if(msgOT != null)
+        {
+            this.name = stack.ucpDictionary.getMessageNameFromOperationType(msgOT);
+            if(this.name == null)
+                throw new Exception("Message with OperationType <" + msgOT + "> is unknown in the dictionary");
+            this.operationType = msgOT;
+        }
+
+        this.messageType = header.attributeValue("MT");
+        this.transactionNumber = header.attributeValue("TRN");
+
+        this.parseAttributes(root);
+        this.calculLength();//calcul the length with attribute from the attribute    	
+    }
+    
+    public void parseAttributes(Element root) throws Exception
+    {
+        List<Element> attributes = root.elements("attribute");
+        List<Element> imbricateAttributes = null;
+        List<Element> xserAttributes = null;
+        UcpAttribute att = null;
+        UcpAttribute att2 = null;
+
+        for(Element element:attributes)
+        {
+            att = new UcpAttribute();
+            att.setName(element.attributeValue("name"));
+
+            //check imbricate attribute + extra service(xser) to send
+            imbricateAttributes = element.selectNodes("attribute");
+            xserAttributes = element.selectNodes("xser");
+            
+            if(imbricateAttributes.size() != 0)
+            {
+                att.setValue(new Vector<UcpAttribute>());
+                for(Element element2:imbricateAttributes)
+                {
+                    att2 = new UcpAttribute();
+                    att2.setName(element2.attributeValue("name"));
+                    att2.setValue(element2.attributeValue("value"));
+                    ((Vector<UcpAttribute>)att.getValue()).add(att2);
+                }
+            }
+            else if(xserAttributes.size() != 0)
+            {
+                parseXser(xserAttributes, att);
+            }
+            else
+            {
+                String encoding = element.attributeValue("encoding");
+                if((encoding != null) && (encoding.equalsIgnoreCase("true")))
+                {
+                    att.setFormat("encodedString");
+                }
+                att.setValue(element.attributeValue("value"));
+            }
+            this.addAttribute(att);
+        }
+    }
+
+    public void parseXser(List<Element> list, UcpAttribute att) throws Exception
+    {
+        UcpXser ser = null;
+        att.setValue(new Vector<UcpXser>());
+        for(Element element:list)
+        {
+            ser = new UcpXser();
+            ser.setType(element.attributeValue("type"));
+            ser.setLength(Integer.parseInt(element.attributeValue("length")));
+            ser.setValue(element.attributeValue("value").toUpperCase());
+            ((Vector<UcpXser>)att.getValue()).add(ser);
+        }
+    }
+    
 }

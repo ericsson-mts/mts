@@ -34,25 +34,14 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 
-import dk.i1.sctp.AssociationId;
 import dk.i1.sctp.SCTPData;
 import dk.i1.sctp.sctp_initmsg;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class StackSctp extends Stack
 {
-	private enum DataType
-	{
-		text,
-		binary
-	}
-
 	/** Constructor */
 	public StackSctp() throws Exception
 	{
@@ -113,81 +102,9 @@ public class StackSctp extends Stack
     @Override
 	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
 	{
-		String stream = root.attributeValue("stream");
-		String ssn = root.attributeValue("ssn");
-		String flags = root.attributeValue("flags");
-		String ppid = root.attributeValue("ppid");
-		String context = root.attributeValue("context");
-		String ttl = root.attributeValue("ttl");
-		String tsn = root.attributeValue("tsn");
-		String cumtsn = root.attributeValue("cumtsn");
-		String aid = root.attributeValue("aid");
-		
-		List<Element> elements = root.elements("data");
-		List<byte[]> datas = new LinkedList<byte[]>();
-		try
-		{
-			for(Element element:elements)
-			{
-				switch(DataType.valueOf(element.attributeValue("format")))
-				{
-				case text:
-				{
-					String text = element.getText();
-                    // change the \n caractère to \r\n caracteres because the dom librairy return only \n.
-                    // this could make some trouble when the length is calculated in the scenario
-                    text = text.replace("\r\n","\n");                    
-                    text = text.replace("\n","\r\n");                    					
-					datas.add(text.getBytes("UTF8"));
-					break;
-				}
-				case binary:
-				{
-					String text = element.getTextTrim();
-					datas.add(Utils.parseBinaryString(text));
-				}
-				}
-			}
-		}
-		catch(Exception e)
-		{
-			throw new ExecutionException(e);
-		}
-
-		//
-		// Compute total length
-		//
-		int length = 0;
-		for(byte[] data:datas)
-		{
-			length += data.length;
-		}
-
-		byte[] data = new byte[length];
-
-		int i=0;
-		for(byte[] aData:datas)
-		{
-			for(int j=0; j<aData.length; j++)
-			{
-				data[i] = aData[j];
-				i++;
-			}
-		}
-
-		SCTPData sctpData = new SCTPData(data);
-		
-		if(stream !=null)sctpData.sndrcvinfo.sinfo_stream = (short) Integer.parseInt(stream);
-		if(ssn!=null)sctpData.sndrcvinfo.sinfo_ssn = (short) Integer.parseInt(ssn);
-		if(flags!=null)sctpData.sndrcvinfo.sinfo_flags = (short) Integer.parseInt(flags);
-		if(ppid!=null)sctpData.sndrcvinfo.sinfo_ppid = (short) Integer.parseInt(ppid);
-		if(context!=null)sctpData.sndrcvinfo.sinfo_context = (short) Integer.parseInt(context);
-		if(ttl!=null)sctpData.sndrcvinfo.sinfo_timetolive = (short) Integer.parseInt(ttl);
-		if(tsn!=null)sctpData.sndrcvinfo.sinfo_tsn = (short) Integer.parseInt(tsn);
-		if(cumtsn!=null)sctpData.sndrcvinfo.sinfo_cumtsn = (short) Integer.parseInt(cumtsn);
-		if(aid!=null)sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(Integer.parseInt(aid));		
 			
-		MsgSctp msgSctp = new MsgSctp(sctpData);
+		MsgSctp msgSctp = new MsgSctp();
+		msgSctp.parseMsgFromXml(request, root, runner);
 
 		String channelName = root.attributeValue("channel");
         // deprecated part //

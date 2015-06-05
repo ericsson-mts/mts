@@ -67,7 +67,7 @@ public class ListenpointPcp extends Listenpoint
             msg.setRemoteHost(remoteHost);
             msg.setRemotePort(remotePort);
 		}        
-        ((PCPServerOperation)listenpointTcp.getAttachment()).send(((MsgPcp)msg).getFlist(), ((MsgPcp)msg).getOpCode());
+        ((PCPServerOperation)listenpointTcp.getAttachment()).send(((MsgPcp)msg).getFList(), ((MsgPcp)msg).getOpCode());
 //		return super.sendMessage(msg, remoteHost, remotePort, transport);
         return true;
     }

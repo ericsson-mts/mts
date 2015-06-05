@@ -23,14 +23,21 @@
 
 package com.devoteam.srit.xmlloader.gtppr.data;
 
+import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
 import com.devoteam.srit.xmlloader.gtppr.GtppDictionary;
 
 import gp.utils.arrays.*;
 
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
+
+import org.dom4j.Element;
 
 /**
  *
@@ -180,5 +187,198 @@ public class GtppMessage
         if((tlvs.size() == 0) && (data != null))
             str += "data: " + data.toString();
         return str;
+    }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    public void parseMsgFromXml(Element root) throws Exception
+    {
+        GtppMessage gtppMessage = new GtppMessage();
+        Header gtpHeader = null;
+
+        // header parsing
+        Element xmlHeaderPrime = root.element("headerPrime");
+        Element xmlHeaderV1 = root.element("headerV1");
+        Element xmlHeaderV2 = root.element("headerV2");
+        
+        Element xmlHeader = null;
+        if(xmlHeaderPrime != null)
+        {
+        	gtpHeader = new GtpHeaderPrime();
+        	xmlHeader = xmlHeaderPrime; 
+        }
+        else if(xmlHeaderV1 != null)
+        {
+        	gtpHeader = new GtpHeaderV1();
+        	xmlHeader = xmlHeaderV1;
+        }
+        else if(xmlHeaderV2 != null)
+        {
+        	gtpHeader = new GtpHeaderV2();
+        	xmlHeader = xmlHeaderV2;
+        }        
+        else
+        {
+        	 GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Not GTP message. <header> or <headeP> is missing.");
+        }
+        
+        // get the right dictionary in from of the version
+        GtppDictionary dictionary = GtppDictionary.getDictionary(gtpHeader.getVersionName());
+        
+        gtpHeader.parseXml(xmlHeader, dictionary); 
+    	gtppMessage.setHeader(gtpHeader);
+
+        // dictionary translation
+        String msgName = gtpHeader.getName(); 
+        if((gtpHeader.getMessageType() == 0) || (gtpHeader.getName().equalsIgnoreCase("Unknown message")))
+            gtppMessage.setLogError("Message <" + msgName + "> is not present in the dictionary\r\n");
+        
+        // TLV parsing
+        parseTLVs(root, gtppMessage, dictionary);
+    }
+    
+    private void parseTLVs(Element root, GtppMessage msg, GtppDictionary dictionary) throws Exception
+    {
+        List<Element> tlvs = root.elements();
+        List<Element> attributes = null;
+        Tag tlv = null;
+        String value = null;
+        String length = null;
+
+        for(Element element:tlvs)
+        {
+        	String name = element.getName();
+            if (name.equalsIgnoreCase("tv") || name.equalsIgnoreCase("tlv") || name.equalsIgnoreCase("tliv"))
+            {
+	            value = element.attributeValue("name");
+	            if(value != null)
+	                tlv = dictionary.getTLVFromName(value);
+	            else
+	            {
+	                value = element.attributeValue("tag");
+	                if(value != null)
+	                    tlv = dictionary.getTLVFromTag(Integer.parseInt(value));
+	            }
+	
+	            if(tlv != null)
+	            {   
+	                length = element.attributeValue("length");
+	                if(length != null)
+	                {
+	                    if((tlv.getLength() > 0) && (tlv.getLength() != Integer.parseInt(length)))
+	                    {
+	                        GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "TLV length for " + tlv.toString() + "is not according to size given in dictionary");
+	                    }
+	                    
+	                    if(value.equalsIgnoreCase("auto"))
+	                        tlv.setLength(value.length());
+	                    else
+	                        tlv.setLength(Integer.parseInt(length));
+	                }
+	
+	                value = element.attributeValue("value");
+	                if(value != null)
+	                {
+	                    setAttributeValue((Attribute)tlv, value);
+	                }
+	                else
+	                {
+	                    //check if there is attribute inside the TLV
+	                    attributes = element.elements("attribute");
+	                    parseAtt((Attribute)tlv, attributes);
+	                }
+	
+	                if(tlv.getLength() == -1)//if no size is given in the dictionary
+	                {
+	                    if(!(tlv.getValue() instanceof LinkedList))
+	                        tlv.setLength(((byte[])tlv.getValue()).length);
+	                    else
+	                        tlv.setLength(tlv.getArray().length - 3);//- 3 to remove the tag and length bytes
+	                }
+	            }   
+	            else
+	            {
+	                //add tlv to message even if unknown
+	                value = element.attributeValue("value");
+	                tlv = new TagTLV();
+	                tlv.setName(element.attributeValue("name"));
+	                tlv.setLength(Integer.parseInt(element.attributeValue("length")));
+	                tlv.setValue(value.getBytes());
+	            }
+	            msg.addTLV(tlv);
+	            tlv = null;
+	        }
+        }
+    }
+
+    private void parseAtt(Attribute att, List<Element> attributes) throws Exception
+    {
+        LinkedList<Object> listAtt = null;
+        String value = null;
+
+        for(Element elementAtt:attributes)
+        {
+            value = elementAtt.attributeValue("name");
+            listAtt = ((LinkedList)att.getValue());
+            for(int i = 0; i < listAtt.size(); i++)
+            {
+                if(listAtt.get(i) instanceof GtppAttribute)
+                {
+                    GtppAttribute attribute = (GtppAttribute)listAtt.get(i);
+                    if(attribute.getName().equalsIgnoreCase(value))
+                    {
+                        if(!attribute.getFormat().equalsIgnoreCase("list"))
+                        {
+                            if(attribute.getValueQuality())//duplicate att in case it is already set
+                            {
+                                GtppAttribute duplicateAtt = attribute.clone();
+                                attribute = duplicateAtt;
+                                listAtt.add(attribute);
+                            }
+                            
+                            value = elementAtt.attributeValue("value");
+                            if(attribute.getValueQuality())//if an attribute already exist with the same name, duplicate it in the list
+                            {
+                                listAtt.add(i+1, attribute.clone());
+                                attribute = (GtppAttribute)listAtt.get(i+1);
+                            }
+                            setAttributeValue(attribute, value);
+                            break;
+                        }
+                        else//if this attribute is also a list => recursive call
+                        {
+                            parseAtt(attribute, elementAtt.elements("attribute"));
+                        }
+                    }
+                }
+                else if (listAtt.get(i) instanceof LinkedList)
+                {
+                    LinkedList list = (LinkedList)listAtt.get(i);
+                    for(int j = 0; j < list.size(); j++)
+                        parseAtt((Attribute)list.get(j), elementAtt.elements("attribute"));
+                }
+
+                if(i == listAtt.size())//insert attribute at the place given in this list
+                {
+                    GtppAttribute newAtt = new GtppAttribute();
+                    newAtt.setName(value);
+                    value = elementAtt.attributeValue("value");
+                    newAtt.setValue(value.getBytes());
+                    listAtt.add(attributes.indexOf(elementAtt), newAtt);
+                    break;
+                }
+            }
+        }
+    }
+    
+    private void setAttributeValue(Attribute attribute, String value) throws Exception
+    {
+        if(attribute.getFormat().equals("int"))
+            attribute.setValue(Integer.parseInt(value));
+        else if(attribute.getFormat().equals("ip"))
+            attribute.setValue(InetAddress.getByName(value).getAddress());
+        else
+            attribute.setValue(value.getBytes());
     }
 }

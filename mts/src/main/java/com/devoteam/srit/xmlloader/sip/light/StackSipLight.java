@@ -47,7 +47,7 @@ import dk.i1.sctp.SCTPData;
 public class StackSipLight extends StackSip
 {
 	
-	private String contentBinaryTypes = null;
+	public String contentBinaryTypes = null;
         
     /** Constructor */
     public StackSipLight() throws Exception
@@ -56,37 +56,6 @@ public class StackSipLight extends StackSip
         this.contentBinaryTypes = "," + getConfig().getString("content.BINARY_TYPES", "") + ",";
     }
     
-    /** Creates a specific SIP Msg */
-    @Override
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
-    {
-        String text = root.getText();
-        MsgSipLight msgSip = new MsgSipLight(text, true, this.addCRLFContent, this.contentBinaryTypes);
-
-        // OBSOLETE instanciates the listenpoint (compatibility with old grammar)         
-        String listenpointName = root.attributeValue("providerName");
-        if (listenpointName != null)
-        {
-        	Listenpoint listenpoint = getListenpoint(listenpointName);
-        	if (listenpoint == null && listenpointName != null)
-        	{
-        		throw new ExecutionException("The listenpoint <name=" + listenpointName + "> does not exist");
-        	}
-        	msgSip.setListenpoint(listenpoint);
-        }
-        
-        if (request != null && request && !msgSip.isRequest())
-        {
-            throw new ExecutionException("You specify to send a request using a <sendRequestXXX ...> tag, but the message you will send is not really a request.");
-        }
-        if (request != null && !request && msgSip.isRequest())
-        {
-            throw new ExecutionException("You specify to send a response using a <sendResponseXXX ...> tag, but the message you will send is not really a response.");
-        }
-                
-        return msgSip;
-    }
-
     /** Receive a message */
     @Override
     public boolean receiveMessage(Msg msg) throws Exception
@@ -111,7 +80,8 @@ public class StackSipLight extends StackSip
     	
 		if (text != null && text.contains(StackFactory.PROTOCOL_SIP)) 
 		{
-			MsgSipLight msgSip = new MsgSipLight(text, false, 0, this.contentBinaryTypes);
+			MsgSipLight msgSip = new MsgSipLight();
+			msgSip.setMessageText(text, false, 0, this.contentBinaryTypes);
 			return msgSip;
 		}
 		else
@@ -132,7 +102,8 @@ public class StackSipLight extends StackSip
     {
     	String str = new String(datas);
     	str = str.substring(0, length);
-    	MsgSipLight msgSip = new MsgSipLight(str, false, 0, this.contentBinaryTypes);
+    	MsgSipLight msgSip = new MsgSipLight();
+    	msgSip.setMessageText(str, false, 0, this.contentBinaryTypes);
     	return msgSip;
     }
 
@@ -145,8 +116,9 @@ public class StackSipLight extends StackSip
     {
     	String str = new String(chunk.getData());
     	str = str.substring(0, chunk.getLength());
-        MsgSipLight msgSig = new MsgSipLight(str, false, 0, this.contentBinaryTypes);
-        return msgSig;            
+        MsgSipLight msgSip = new MsgSipLight();
+        msgSip.setMessageText(str, false, 0, this.contentBinaryTypes);
+        return msgSip;            
     }
     
 }

@@ -25,7 +25,10 @@ package com.devoteam.srit.xmlloader.imap;
 
 import java.util.Vector;
 
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.coding.text.MsgParser;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -52,38 +55,21 @@ public class MsgImap extends Msg {
     
     private Vector<String> messages = null;
 
-    public MsgImap(String someData) throws Exception {
-        super();
-
-        someData = someData.replace("\r\n", "\n");
-        dataRaw = someData.replace("\n", "\r\n");
-
-        if(!dataRaw.endsWith("\r\n"))
-            dataRaw += "\r\n";
-
-        dataComplete = dataRaw;
-        messages = new Vector<String>();
-
-        String[] msgSplit = Utils.splitNoRegex(dataRaw, "\r\n");
-        for(int i = 0; i < (msgSplit.length - 1); i++)//msgSplit.length - 1 because the last will be empty with a \r\n
-        {
-            messages.add(msgSplit[i] + "\r\n");
-        }
-
-        checkLiteral();
-
-        //no need to do another processing because this messages is
-        //ready to be sent and no operation to get data on it will be done
-        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Msg Imap is: ", toString());
+    /** Creates a new instance */
+    public MsgImap() 
+    {
+        super();       
     }
 
+    /** Creates a new instance */
     public MsgImap(String someData, Channel channel) throws Exception {
-        this(someData);
+        setMessageText(someData);
         
         setChannel(channel);
         setTransactionId(((ChannelImap)channel).getTransactionId());
     }
 
+    /** Creates a new instance */
 	public MsgImap(Vector<String> someData) throws Exception {
 		super();
 		for(int i = 0; i < someData.size(); i++)
@@ -104,109 +90,6 @@ public class MsgImap extends Msg {
 		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Msg Imap is: ", toString());
 	}
 	
-	/*
-	 * Get parameters from the command/reply lines
-	 */
-    @Override
-	public Parameter getParameter(String path) throws Exception 
-	{	
-		Parameter var = super.getParameter(path);
-		if (null != var) 
-		{
-			return var;
-		}
-
-		var = new Parameter();
-        path = path.trim();
-		String[] params = Utils.splitPath(path);
-		
-		if (params[0].equalsIgnoreCase("request"))
-        {
-            if (params[1].equalsIgnoreCase("tag")) 
-            {
-            	var.add(this.getTag());
-            }
-            else if (params[1].equalsIgnoreCase("command")) 
-            {
-            	var.add(this.getType());
-            }
-            else if (params[1].equalsIgnoreCase("arguments")) 
-            {
-                this.addVector(var, this.getArguments());
-            }
-            else 
-            {
-            	Parameter.throwBadPathKeywordException(path);
-            }
-        }
-		else if (params[0].equalsIgnoreCase("response"))
-		{
-    		if (params[1].equalsIgnoreCase("done")) 
-    		{
-                if (params[2].equalsIgnoreCase("tag")) 
-                {
-                	var.add(this.getTag());
-                }
-                else if (params[2].equalsIgnoreCase("command")) 
-                {
-                	var.add(this.getType());
-                }
-                else if (params[2].equalsIgnoreCase("result")) 
-                {
-                	var.add(this.getResult());
-                }
-                else if (params[2].equalsIgnoreCase("text")) 
-                {
-                	var.add(this.getText());
-                }
-                else 
-                {
-                	Parameter.throwBadPathKeywordException(path);
-                }
-    		}
-    		else if (params[1].equalsIgnoreCase("continue")) 
-    		{
-                if (params[2].equalsIgnoreCase("tag"))
-                {
-                	var.add(this.getTag());
-                }
-                else if (params[2].equalsIgnoreCase("text"))
-                {
-                	var.add(this.getText());
-                }
-                else 
-                {
-                	Parameter.throwBadPathKeywordException(path);
-                }
-    		}
-    		else if (params[1].equalsIgnoreCase("data")) 
-    		{
-                //search for param[2] passed in argument
-                for(int i = 0; i < messages.size(); i++)
-                {
-                    if(messages.elementAt(i).contains(params[2]))
-                    {
-                    	var.add(messages.elementAt(i).trim());
-                    }
-                }
-    		}
-            else 
-            {
-            	Parameter.throwBadPathKeywordException(path);
-            }
-		}
-		else if (params[0].equalsIgnoreCase("data"))
-        {
-			var.add(dataComplete.replace("\0", ""));
-        }
-        else 
-        {
-        	Parameter.throwBadPathKeywordException(path);
-        }
-    	
-		return var;
-	}
-
 	/** Return true if the messages is a request else return false */
 	public boolean isRequest() {
         if(isRequest == null)
@@ -356,30 +239,7 @@ public class MsgImap extends Msg {
         }
         return arguments;        
     }
-    
-    public String getText() {
-        if(text ==  null)
-        {
-            //uniquement pour les reponse continue et les reponse done => derniere ligne
-            String[] msgSplit = Utils.splitNoRegex(messages.lastElement().trim(), " ");
-            if(msgSplit[0].equalsIgnoreCase("+"))
-            {
-            	if (msgSplit.length > 1)
-            	{
-            		text = dataRaw.substring(dataRaw.indexOf(msgSplit[1])).trim();
-            	}
-            }
-            else
-            {
-            	if (msgSplit.length > 2)
-            	{
-            		text = dataRaw.substring(dataRaw.indexOf(msgSplit[2])).trim();
-            	}
-            }
-        }
-        return text;
-    }
-    
+        
     @Override
     public MessageId getMessageId() throws Exception {
         return null;
@@ -494,7 +354,174 @@ public class MsgImap extends Msg {
         String xml = dataComplete.replace("\0", "");        
         return xml;
     }
+
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+        setMessageText(root.getText().trim());
+    }
     
+    /** Get the message as text */
+    public String getMessageText() throws Exception
+    {
+        if(text ==  null)
+        {
+            //uniquement pour les reponse continue et les reponse done => derniere ligne
+            String[] msgSplit = Utils.splitNoRegex(messages.lastElement().trim(), " ");
+            if(msgSplit[0].equalsIgnoreCase("+"))
+            {
+            	if (msgSplit.length > 1)
+            	{
+            		text = dataRaw.substring(dataRaw.indexOf(msgSplit[1])).trim();
+            	}
+            }
+            else
+            {
+            	if (msgSplit.length > 2)
+            	{
+            		text = dataRaw.substring(dataRaw.indexOf(msgSplit[2])).trim();
+            	}
+            }
+        }
+        return text;
+    }
+    
+    /** Set the message from text */
+    public void setMessageText(String text) throws Exception
+    {
+    	text = text.replace("\r\n", "\n");
+        dataRaw = text.replace("\n", "\r\n");
+
+        if(!dataRaw.endsWith("\r\n"))
+            dataRaw += "\r\n";
+
+        dataComplete = dataRaw;
+        messages = new Vector<String>();
+
+        String[] msgSplit = Utils.splitNoRegex(dataRaw, "\r\n");
+        for(int i = 0; i < (msgSplit.length - 1); i++)//msgSplit.length - 1 because the last will be empty with a \r\n
+        {
+            messages.add(msgSplit[i] + "\r\n");
+        }
+
+        checkLiteral();
+
+        //no need to do another processing because this messages is
+        //ready to be sent and no operation to get data on it will be done
+        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Msg Imap is: ", toString());
+
+    }
+
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message 
+     */
+    @Override
+	public Parameter getParameter(String path) throws Exception 
+	{	
+		Parameter var = super.getParameter(path);
+		if (null != var) 
+		{
+			return var;
+		}
+
+		var = new Parameter();
+        path = path.trim();
+		String[] params = Utils.splitPath(path);
+		
+		if (params[0].equalsIgnoreCase("request"))
+        {
+            if (params[1].equalsIgnoreCase("tag")) 
+            {
+            	var.add(this.getTag());
+            }
+            else if (params[1].equalsIgnoreCase("command")) 
+            {
+            	var.add(this.getType());
+            }
+            else if (params[1].equalsIgnoreCase("arguments")) 
+            {
+                this.addVector(var, this.getArguments());
+            }
+            else 
+            {
+            	Parameter.throwBadPathKeywordException(path);
+            }
+        }
+		else if (params[0].equalsIgnoreCase("response"))
+		{
+    		if (params[1].equalsIgnoreCase("done")) 
+    		{
+                if (params[2].equalsIgnoreCase("tag")) 
+                {
+                	var.add(this.getTag());
+                }
+                else if (params[2].equalsIgnoreCase("command")) 
+                {
+                	var.add(this.getType());
+                }
+                else if (params[2].equalsIgnoreCase("result")) 
+                {
+                	var.add(this.getResult());
+                }
+                else if (params[2].equalsIgnoreCase("text")) 
+                {
+                	var.add(this.getMessageText());
+                }
+                else 
+                {
+                	Parameter.throwBadPathKeywordException(path);
+                }
+    		}
+    		else if (params[1].equalsIgnoreCase("continue")) 
+    		{
+                if (params[2].equalsIgnoreCase("tag"))
+                {
+                	var.add(this.getTag());
+                }
+                else if (params[2].equalsIgnoreCase("text"))
+                {
+                	var.add(this.getMessageText());
+                }
+                else 
+                {
+                	Parameter.throwBadPathKeywordException(path);
+                }
+    		}
+    		else if (params[1].equalsIgnoreCase("data")) 
+    		{
+                //search for param[2] passed in argument
+                for(int i = 0; i < messages.size(); i++)
+                {
+                    if(messages.elementAt(i).contains(params[2]))
+                    {
+                    	var.add(messages.elementAt(i).trim());
+                    }
+                }
+    		}
+            else 
+            {
+            	Parameter.throwBadPathKeywordException(path);
+            }
+		}
+		else if (params[0].equalsIgnoreCase("data"))
+        {
+			var.add(dataComplete.replace("\0", ""));
+        }
+        else 
+        {
+        	Parameter.throwBadPathKeywordException(path);
+        }
+    	
+		return var;
+	}
+
     public boolean isSTARTTLS_request()
     {
     	for (String s : this.messages)

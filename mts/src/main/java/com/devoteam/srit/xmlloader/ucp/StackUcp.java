@@ -57,7 +57,8 @@ public class StackUcp extends Stack
     private static final byte STX = 2;
     private static final byte ETX = 3;
     private static final byte SEP = 47;//47 in decimal is 2f in hexa
-    private UcpDictionary ucpDictionary;
+    
+    public UcpDictionary ucpDictionary;
 
     /** Constructor */
     public StackUcp() throws Exception
@@ -104,106 +105,6 @@ public class StackUcp extends Stack
             if(null != remoteHost) remoteHost = InetAddress.getByName(remoteHost).getHostAddress();
 
             return new ChannelUcp(name, localHost, localPort, remoteHost, remotePort, protocol);
-        }
-    }
-
-	/** Creates a specific Msg */
-    @Override
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
-    {
-        UcpMessage ucpMessage = new UcpMessage();
-
-        // header
-        Element header = root.element("header");
-        String msgName = header.attributeValue("name");
-        String msgOT = header.attributeValue("OT");
-
-        if((msgOT != null) && (msgName != null))
-            throw new Exception("OT and name of the message " + msgName + " must not be set both");
-
-        if((msgOT == null) && (msgName == null))
-            throw new Exception("One of the parameter OT and name of the message header must be set");
-
-        if(msgName != null)
-        {
-            ucpMessage.setName(msgName);
-            ucpMessage.setOperationType(ucpDictionary.getMessageOperationTypeFromName(msgName));
-            if(ucpMessage.getOperationType() == null)
-                throw new Exception("Message <" + msgName + "> is unknown in the dictionary");
-        }
-
-        if(msgOT != null)
-        {
-            ucpMessage.setName(ucpDictionary.getMessageNameFromOperationType(msgOT));
-            if(ucpMessage.getName() == null)
-                throw new Exception("Message with OperationType <" + msgOT + "> is unknown in the dictionary");
-            ucpMessage.setOperationType(msgOT);
-        }
-
-        ucpMessage.setMessageType(header.attributeValue("MT"));
-        ucpMessage.setTransactionNumber(header.attributeValue("TRN"));
-
-        parseAttributes(root, ucpMessage);
-        ucpMessage.calculLength();//calcul the length with attribute from the attribute
-        return new MsgUcp(ucpMessage);
-    }
-
-    public void parseAttributes(Element root, UcpMessage msg) throws Exception
-    {
-        List<Element> attributes = root.elements("attribute");
-        List<Element> imbricateAttributes = null;
-        List<Element> xserAttributes = null;
-        UcpAttribute att = null;
-        UcpAttribute att2 = null;
-
-        for(Element element:attributes)
-        {
-            att = new UcpAttribute();
-            att.setName(element.attributeValue("name"));
-
-            //check imbricate attribute + extra service(xser) to send
-            imbricateAttributes = element.selectNodes("attribute");
-            xserAttributes = element.selectNodes("xser");
-            
-            if(imbricateAttributes.size() != 0)
-            {
-                att.setValue(new Vector<UcpAttribute>());
-                for(Element element2:imbricateAttributes)
-                {
-                    att2 = new UcpAttribute();
-                    att2.setName(element2.attributeValue("name"));
-                    att2.setValue(element2.attributeValue("value"));
-                    ((Vector<UcpAttribute>)att.getValue()).add(att2);
-                }
-            }
-            else if(xserAttributes.size() != 0)
-            {
-                parseXser(xserAttributes, att);
-            }
-            else
-            {
-                String encoding = element.attributeValue("encoding");
-                if((encoding != null) && (encoding.equalsIgnoreCase("true")))
-                {
-                    att.setFormat("encodedString");
-                }
-                att.setValue(element.attributeValue("value"));
-            }
-            msg.addAttribute(att);
-        }
-    }
-
-    public void parseXser(List<Element> list, UcpAttribute att) throws Exception
-    {
-        UcpXser ser = null;
-        att.setValue(new Vector<UcpXser>());
-        for(Element element:list)
-        {
-            ser = new UcpXser();
-            ser.setType(element.attributeValue("type"));
-            ser.setLength(Integer.parseInt(element.attributeValue("length")));
-            ser.setValue(element.attributeValue("value").toUpperCase());
-            ((Vector<UcpXser>)att.getValue()).add(ser);
         }
     }
 

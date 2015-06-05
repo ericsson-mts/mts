@@ -24,14 +24,19 @@
 package com.devoteam.srit.xmlloader.snmp;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 import java.util.Vector;
+
 import net.percederberg.mibble.Mib;
 import net.percederberg.mibble.MibValueSymbol;
+
+import org.dom4j.Element;
 import org.snmp4j.AbstractTarget;
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
@@ -50,7 +55,9 @@ public class MsgSnmp extends Msg
     AbstractTarget target;
 
     public MsgSnmp()
-    {}
+    {
+    	super();
+    }
     
 	public MsgSnmp(int version, String community, int requestType, int requestId, Integer errorStatus, Integer errorIndex, Integer nonRepeaters, Integer maxRepetitions) throws Exception {
 		super();
@@ -122,10 +129,106 @@ public class MsgSnmp extends Msg
         this.target = target;
     }
 
+	/** Get the protocol of this message */
+	public String getProtocol() {
+		return StackFactory.PROTOCOL_SNMP;
+	}
+
+	/** Return true if the message is a request else return false */
+	public boolean isRequest() {
+		return pdu.getType() != PDU.RESPONSE;
+	}
+
+	/** Get the command code of this message */
+	public String getType() {
+        return PDU.getTypeString(pdu.getType());
+	}
+
 	/*
-	 * Get parameters from the command/reply lines
+	 * Get the response number
 	 */
+	public String getResult() {
+        return pdu.getErrorStatusText();
+	}
+
     @Override
+    public boolean shallBeRetransmitted() throws Exception
+    {
+        return ((getPdu().getType() == PDU.TRAP) || (getPdu().getType() == PDU.V1TRAP)) ? false : true;
+    }
+	
+	/** Return the transport of the message */
+    @Override
+	public String getTransport() {
+		return StackFactory.PROTOCOL_UDP;
+	}
+
+    /** Get the data (as binary) of this message */
+    @Override
+    public byte[] encode(){
+        //TODO
+        return new byte[3];
+    }
+
+    /** Returns a short description of the message. Used for logging as INFO level */
+    /** This methods HAS TO be quick to execute for performance reason */
+    @Override
+	public String toShortString() throws Exception {
+    	String ret = super.toShortString();
+        ret += "\n";
+        ret += "<MESSAGE type:" + PDU.getTypeString(pdu.getType()) + ", requestId:" + pdu.getRequestID();
+        if(pdu.getType() != PDU.GETBULK)
+            ret += ", errorStatus:" + pdu.getErrorStatusText() + ", errorIndex:" + pdu.getErrorIndex();
+        else
+            ret += ", nonRepeaters:" + pdu.getNonRepeaters() + ", maxRepetitions:" + pdu.getMaxRepetitions();
+        ret += "/>";
+		return ret;
+	}
+
+    /** Get the XML representation of the message; for the genscript module. */
+    @Override
+    public String toXml() throws Exception {
+    	String xml = "";
+		try {
+			xml += "type: " + PDU.getTypeString(pdu.getType()) + ", requestId: " + pdu.getRequestID();
+            if(pdu instanceof PDUv1 && (pdu.getType() == PDU.V1TRAP))//specific for TRAP in SNMPV1
+                xml += ", enterprise: " + ((PDUv1)pdu).getEnterprise() + ", agentAddress: " + ((PDUv1)pdu).getAgentAddress() + 
+                       ", genericTrap: " + ((PDUv1)pdu).getGenericTrap() + ", specificTrap: " + ((PDUv1)pdu).getSpecificTrap() +
+                       ", timestamp: " + ((PDUv1)pdu).getTimestamp();
+            else if(pdu.getType() != PDU.GETBULK)
+            xml += ", errorStatus: " + pdu.getErrorStatusText() + ", errorIndex: " + pdu.getErrorIndex();
+        else
+            xml += ", nonRepeaters: " + pdu.getNonRepeaters() + ", maxRepetitions: " + pdu.getMaxRepetitions();
+
+            xml += "\r\n";
+            if(pdu.getVariableBindings().size() > 0)
+            {
+                xml += "VariableBinding: " + pdu.getVariableBindings().toString();
+            }
+			
+		} catch (Exception e) {
+            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "An error occured while logging the SMTP message : ", xml);
+		}
+		return xml;
+    }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+	    // not called	
+    }
+
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message
+     */
+	@Override
 	public Parameter getParameter(String path) throws Exception 
 	{	
 		Parameter var = null;
@@ -303,87 +406,5 @@ public class MsgSnmp extends Msg
 
 		return var;
 	}
-
-	/** Get the protocol of this message */
-	public String getProtocol() {
-		return StackFactory.PROTOCOL_SNMP;
-	}
-
-	/** Return true if the message is a request else return false */
-	public boolean isRequest() {
-		return pdu.getType() != PDU.RESPONSE;
-	}
-
-	/** Get the command code of this message */
-	public String getType() {
-        return PDU.getTypeString(pdu.getType());
-	}
-
-	/*
-	 * Get the response number
-	 */
-	public String getResult() {
-        return pdu.getErrorStatusText();
-	}
-
-    @Override
-    public boolean shallBeRetransmitted() throws Exception
-    {
-        return ((getPdu().getType() == PDU.TRAP) || (getPdu().getType() == PDU.V1TRAP)) ? false : true;
-    }
 	
-	/** Return the transport of the message */
-    @Override
-	public String getTransport() {
-		return StackFactory.PROTOCOL_UDP;
-	}
-
-    /** Get the data (as binary) of this message */
-    @Override
-    public byte[] encode(){
-        //TODO
-        return new byte[3];
-    }
-
-    /** Returns a short description of the message. Used for logging as INFO level */
-    /** This methods HAS TO be quick to execute for performance reason */
-    @Override
-	public String toShortString() throws Exception {
-    	String ret = super.toShortString();
-        ret += "\n";
-        ret += "<MESSAGE type:" + PDU.getTypeString(pdu.getType()) + ", requestId:" + pdu.getRequestID();
-        if(pdu.getType() != PDU.GETBULK)
-            ret += ", errorStatus:" + pdu.getErrorStatusText() + ", errorIndex:" + pdu.getErrorIndex();
-        else
-            ret += ", nonRepeaters:" + pdu.getNonRepeaters() + ", maxRepetitions:" + pdu.getMaxRepetitions();
-        ret += "/>";
-		return ret;
-	}
-
-    /** Get the XML representation of the message; for the genscript module. */
-    @Override
-    public String toXml() throws Exception {
-    	String xml = "";
-		try {
-			xml += "type: " + PDU.getTypeString(pdu.getType()) + ", requestId: " + pdu.getRequestID();
-            if(pdu instanceof PDUv1 && (pdu.getType() == PDU.V1TRAP))//specific for TRAP in SNMPV1
-                xml += ", enterprise: " + ((PDUv1)pdu).getEnterprise() + ", agentAddress: " + ((PDUv1)pdu).getAgentAddress() + 
-                       ", genericTrap: " + ((PDUv1)pdu).getGenericTrap() + ", specificTrap: " + ((PDUv1)pdu).getSpecificTrap() +
-                       ", timestamp: " + ((PDUv1)pdu).getTimestamp();
-            else if(pdu.getType() != PDU.GETBULK)
-            xml += ", errorStatus: " + pdu.getErrorStatusText() + ", errorIndex: " + pdu.getErrorIndex();
-        else
-            xml += ", nonRepeaters: " + pdu.getNonRepeaters() + ", maxRepetitions: " + pdu.getMaxRepetitions();
-
-            xml += "\r\n";
-            if(pdu.getVariableBindings().size() > 0)
-            {
-                xml += "VariableBinding: " + pdu.getVariableBindings().toString();
-            }
-			
-		} catch (Exception e) {
-            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "An error occured while logging the SMTP message : ", xml);
-		}
-		return xml;
-    }
 }

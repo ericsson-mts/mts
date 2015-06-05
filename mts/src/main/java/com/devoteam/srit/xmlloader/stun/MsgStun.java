@@ -24,9 +24,11 @@
 package com.devoteam.srit.xmlloader.stun;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 import gp.utils.arrays.Array;
 import gp.utils.arrays.ConstantArray;
 import gp.utils.arrays.DefaultArray;
@@ -34,8 +36,10 @@ import gp.utils.arrays.DigestArray;
 import gp.utils.arrays.Integer16Array;
 import gp.utils.arrays.MacArray;
 import gp.utils.arrays.SupArray;
+
 import java.util.LinkedList;
 import java.util.List;
+
 import org.dom4j.Element;
 /**
  *
@@ -50,20 +54,13 @@ public class MsgStun extends Msg {
     private String realm = "";
     private String username = "";
 
-    MsgStun(Element root) {
+    /** Creates a new instance */
+    public MsgStun() throws Exception
+    {
         super();
-        header = new HeaderStun();
-        parseHeader(root.element("header"));
-
-        List<Element> attributes = root.elements("attribute");
-        for (Element attribute : attributes) {
-            if (attribute.attributeValue("type").equalsIgnoreCase("realm")) {
-                this.longTermCredential = true;
-            }
-            parseAttribute(attribute);
-        }
     }
 
+    /** Creates a new instance */
     MsgStun(Array data) throws Exception {
         super();
         header = new HeaderStun(data);
@@ -232,32 +229,6 @@ public class MsgStun extends Msg {
 
     }
 
-    public Parameter getParameter(String path) throws Exception {
-        Parameter var = super.getParameter(path);
-        if ((null != var) && (var.length() > 0)) {
-            return var;
-        }
-        
-        path = path.trim();
-        String[] params = Utils.splitPath(path);
-        
-        if (params[0].equalsIgnoreCase("header")) {
-            if (!params[1].equalsIgnoreCase("")) {
-                var = this.header.getParameterHeader(params[1]);
-            }
-        } else if (params[0].equalsIgnoreCase("attribute") && params.length == 3) {
-            int typeAtt = Integer.valueOf((String) DictionnaryStun.readProperties().get(params[1]), 16).intValue();
-            for (AttributeStun att : this.listAttributeStun) {
-                if (att.getType() == typeAtt) {
-                    var = att.getParameterAtt(params[2]);
-                }
-            }
-        } else {
-            throw new Exception("the value must be header.XX or attribute.XXX.XXX");
-        }
-        return var;
-    }
-
     /** Get the data (as binary) of this message */
     @Override
     public byte[] encode() {
@@ -294,4 +265,57 @@ public class MsgStun extends Msg {
         return message.toString();
 
     }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+        this.header = new HeaderStun();
+        parseHeader(root.element("header"));
+
+        List<Element> attributes = root.elements("attribute");
+        for (Element attribute : attributes) {
+            if (attribute.attributeValue("type").equalsIgnoreCase("realm")) {
+                this.longTermCredential = true;
+            }
+            parseAttribute(attribute);
+        }    	
+    }
+    
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message
+     */
+	@Override
+    public Parameter getParameter(String path) throws Exception {
+        Parameter var = super.getParameter(path);
+        if ((null != var) && (var.length() > 0)) {
+            return var;
+        }
+        
+        path = path.trim();
+        String[] params = Utils.splitPath(path);
+        
+        if (params[0].equalsIgnoreCase("header")) {
+            if (!params[1].equalsIgnoreCase("")) {
+                var = this.header.getParameterHeader(params[1]);
+            }
+        } else if (params[0].equalsIgnoreCase("attribute") && params.length == 3) {
+            int typeAtt = Integer.valueOf((String) DictionnaryStun.readProperties().get(params[1]), 16).intValue();
+            for (AttributeStun att : this.listAttributeStun) {
+                if (att.getType() == typeAtt) {
+                    var = att.getParameterAtt(params[2]);
+                }
+            }
+        } else {
+            throw new Exception("the value must be header.XX or attribute.XXX.XXX");
+        }
+        return var;
+    }
+	
 }

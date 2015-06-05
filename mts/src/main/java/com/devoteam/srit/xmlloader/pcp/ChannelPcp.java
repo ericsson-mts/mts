@@ -79,7 +79,7 @@ public class ChannelPcp extends Channel //implements Runnable
         System.out.println("send message in channel");
         if(!isServer()) {
             try{
-                context.opcode(((MsgPcp)msg).getOpCode(), ((MsgPcp)msg).getFlist());//send an flist to the server
+                context.opcode(((MsgPcp)msg).getOpCode(), ((MsgPcp)msg).getFList());//send an flist to the server
                 //Log that message is sent
             }
             catch(EBufException e)

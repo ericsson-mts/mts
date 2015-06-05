@@ -23,7 +23,12 @@
 
 package com.devoteam.srit.xmlloader.smtp;
 
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.coding.text.FirstLine;
+import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.MessageId;
@@ -31,6 +36,7 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.rtsp.StackRtsp;
 public class MsgSmtp extends Msg {
 	
 	private String data;
@@ -41,6 +47,13 @@ public class MsgSmtp extends Msg {
 	public boolean resultIsSet = false;
 
 	
+    /** Creates a new instance */
+    public MsgSmtp() 
+    {
+        super();  
+    }
+    
+    /** Creates a new instance */	
 	public MsgSmtp(String someData) throws Exception {
 		super();
 		data = someData; 
@@ -123,80 +136,6 @@ public class MsgSmtp extends Msg {
 	public synchronized void setResult(String str) {
 		this.result = str;
 		this.resultIsSet = true;
-	}
-
-	/*
-	 * Get parameters from the command/reply lines
-	 */
-	public Parameter getParameter(String path) throws Exception 
-	{	
-		Parameter var = super.getParameter(path);
-		if (null != var) 
-		{
-			return var;
-		}
-
-    	var = new Parameter();
-        path = path.trim();
-        String[] params = Utils.splitPath(path);
-
-		if (params[0].equalsIgnoreCase("data")) 
-		{
-			if (params[1].equalsIgnoreCase("text")) 
-			{
-				var.add(getData());
-			} 
-			else if (params[1].equalsIgnoreCase("binary")) 
-			{			
-				var.add(getData());
-			} 
-			else 
-			{
-            	Parameter.throwBadPathKeywordException(path);
-			}
-		} 
-		else if (params[0].equalsIgnoreCase("firstline")) 
-		{
-			if (params[1].equalsIgnoreCase("commandName")) 
-			{
-				var.add(this.type);
-			} 
-			else if (params[1].equalsIgnoreCase("string")) 
-			{
-				var.add(this.getString(true));
-			} 
-			else if (params[1].equalsIgnoreCase("from")) 
-			{
-				var.add(this.getFromTo());
-			} 
-			else if (params[1].equalsIgnoreCase("to")) 
-			{
-				var.add(this.getFromTo());
-			} 
-			else if (params[1].equalsIgnoreCase("parameter")) 
-			{
-				var.add(this.getParameterOfCommand());
-			} 
-			else if (params[1].equalsIgnoreCase("replyCode")) 
-			{
-				var.add(this.getResult());
-			} 
-			else if (params[1].equalsIgnoreCase("reasonPhrase")) 
-			{
-				var.add(this.getString(false));
-			} 
-			else 
-			{
-            	Parameter.throwBadPathKeywordException(path);
-			}
-
-		} 
-		else 
-		{
-        	Parameter.throwBadPathKeywordException(path);
-		}
-
-		return var;
 	}
 
 	public MessageId getMessageId() throws Exception {
@@ -300,6 +239,111 @@ public class MsgSmtp extends Msg {
     public String toXml() throws Exception {
     	return data;
     }
+
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+        String text = root.getText();
+        setMessageText(text);	
+    }
+
+    /** Get the message as text */
+    /*
+    public String getMessageText() throws Exception
+    {
+    	return message.toString();
+    }
+    */
+    
+    /** Set the message from text */
+    public void setMessageText(String text) throws Exception {
+		data = text; 
+		data = Utils.replaceNoRegex(data, "\r\n", "\n");
+		data = Utils.replaceNoRegex(data, "\n", "\r\n");
+        if(!data.endsWith("\r\n")) data += "\r\n";    	
+	}
+
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message
+     */
+	@Override
+	public Parameter getParameter(String path) throws Exception 
+	{	
+		Parameter var = super.getParameter(path);
+		if (null != var) 
+		{
+			return var;
+		}
+
+    	var = new Parameter();
+        path = path.trim();
+        String[] params = Utils.splitPath(path);
+
+		if (params[0].equalsIgnoreCase("data")) 
+		{
+			if (params[1].equalsIgnoreCase("text")) 
+			{
+				var.add(getData());
+			} 
+			else if (params[1].equalsIgnoreCase("binary")) 
+			{			
+				var.add(getData());
+			} 
+			else 
+			{
+            	Parameter.throwBadPathKeywordException(path);
+			}
+		} 
+		else if (params[0].equalsIgnoreCase("firstline")) 
+		{
+			if (params[1].equalsIgnoreCase("commandName")) 
+			{
+				var.add(this.type);
+			} 
+			else if (params[1].equalsIgnoreCase("string")) 
+			{
+				var.add(this.getString(true));
+			} 
+			else if (params[1].equalsIgnoreCase("from")) 
+			{
+				var.add(this.getFromTo());
+			} 
+			else if (params[1].equalsIgnoreCase("to")) 
+			{
+				var.add(this.getFromTo());
+			} 
+			else if (params[1].equalsIgnoreCase("parameter")) 
+			{
+				var.add(this.getParameterOfCommand());
+			} 
+			else if (params[1].equalsIgnoreCase("replyCode")) 
+			{
+				var.add(this.getResult());
+			} 
+			else if (params[1].equalsIgnoreCase("reasonPhrase")) 
+			{
+				var.add(this.getString(false));
+			} 
+			else 
+			{
+            	Parameter.throwBadPathKeywordException(path);
+			}
+
+		} 
+		else 
+		{
+        	Parameter.throwBadPathKeywordException(path);
+		}
+
+		return var;
+	}
     
     public boolean isSTARTTLS_request()
     {

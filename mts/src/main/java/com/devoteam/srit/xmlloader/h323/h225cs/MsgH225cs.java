@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.h323.h225cs;
 import java.util.List;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -35,6 +36,7 @@ import com.devoteam.srit.xmlloader.core.coding.tpkt.TPKTPacket;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.SupArray;
+
 import org.dom4j.Element;
 
 /**
@@ -46,14 +48,13 @@ public class MsgH225cs extends Msg {
     MessageQ931 msgQ931;
     Asn1Message msgAsn1;
 
-    public MsgH225cs(Element root) throws Exception {
-    	msgAsn1 = new Asn1Message();
-    	msgAsn1.parseElement(root);
-
-        Element ie = root.element("ISDN");
-        msgQ931 = new MessageQ931(ie);
+    /** Creates a new instance */
+    public MsgH225cs() throws Exception
+    {
+        super();
     }
 
+    /** Creates a new instance */
     public MsgH225cs(Array data) throws Exception {
         msgQ931 = new MessageQ931(data, "../conf/sigtran/q931.xml");
         //réception asn1
@@ -77,26 +78,6 @@ public class MsgH225cs extends Msg {
     @Override
     public boolean isRequest() throws Exception {
     	return msgQ931.getHeader().isRequest();
-    }
-
-    @Override
-    public Parameter getParameter(String path) throws Exception {
-        Parameter var = super.getParameter(path);
-        if ((null != var) && (var.length() > 0)) {
-            return var;
-        }
-        
-        var = new Parameter();
-        path = path.trim();
-        String[] params = Utils.splitPath(path);
-        
-        if (params[0].equalsIgnoreCase("isdn")) {
-        	this.msgQ931.getParameter(var, params, path);
-        }
-        else {
-           	Parameter.throwBadPathKeywordException(path);
-        }
-        return var;
     }
     
     /** Get the data (as binary) of this message */
@@ -135,5 +116,46 @@ public class MsgH225cs extends Msg {
     public String toXml() throws Exception {
         return msgQ931.toString();
     }
+
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+    	this.msgAsn1 = new Asn1Message();
+    	this.msgAsn1.parseElement(root);
+
+        Element ie = root.element("ISDN");
+        this.msgQ931 = new MessageQ931(ie);
+    }
+
+    
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message 
+     */
+    @Override
+    public Parameter getParameter(String path) throws Exception {
+        Parameter var = super.getParameter(path);
+        if ((null != var) && (var.length() > 0)) {
+            return var;
+        }
         
+        var = new Parameter();
+        path = path.trim();
+        String[] params = Utils.splitPath(path);
+        
+        if (params[0].equalsIgnoreCase("isdn")) {
+        	this.msgQ931.getParameter(var, params, path);
+        }
+        else {
+           	Parameter.throwBadPathKeywordException(path);
+        }
+        return var;
+    }
+
 }

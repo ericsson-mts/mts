@@ -50,15 +50,22 @@ import javax.sip.header.Header;
 import javax.sip.header.ViaHeader;
 import javax.sip.message.MessageFactory;
 
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromAddress;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromURI;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.coding.text.ContentParser;
 import com.devoteam.srit.xmlloader.core.coding.text.FirstLine;
+import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
+import com.devoteam.srit.xmlloader.rtsp.StackRtsp;
 import com.devoteam.srit.xmlloader.sip.MsgSip;
+import com.devoteam.srit.xmlloader.sip.StackSip;
 
 /**
  *
@@ -68,56 +75,113 @@ public class MsgSipJain extends MsgSip
 {
     private SIPMessage sipMessage;
     
-    /** Creates a new instance of MsgSip */
+    /** Creates a new instance */
     public MsgSipJain() 
     {
         super();
     }
     
-    /** Creates a new instance of MsgSip */
-    public MsgSipJain(String text, int addCRLFContent) throws Exception
+    /** Return true if the message is a request else return false*/
+    public boolean isRequest()
     {
-    	super();
+        return sipMessage instanceof SIPRequest;
+    }
+    
+    public SIPMessage getSipMessage()
+    {
+        return sipMessage;
+    }
 
-        try
+    /** Get the data (as binary) of this message */
+    @Override
+    public byte[] encode()
+    {
+        return sipMessage.encodeAsBytes();
+    }
+
+    /** Returns a short description of the message. Used for logging as INFO level */
+    /** This methods HAS TO be quick to execute for performance reason */
+    @Override
+    public String toShortString() throws Exception
+    {
+    	String ret = super.toShortString();
+    	ret += "\n";
+        ret += this.sipMessage.getFirstLine();
+        ret += "\n";
+        String transId = getTransactionId().toString();
+        ret += "<MESSAGE transactionId=\"" + transId + "\""; 
+        String dialogId = getDialogId();
+        ret+= " dialogId=\"" + dialogId + "\"";
+        ret+= "/>";
+        return ret;
+    }
+
+    /** Get the XML representation of the message; for the genscript module. */
+    @Override
+    public String toXml() throws Exception {
+    	return sipMessage.toString();
+    }
+ 
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+        String text = root.getText();
+        StackSip stack = (StackSip) StackFactory.getStack(StackFactory.PROTOCOL_SIP);
+        setMessageText(text, stack.addCRLFContent);
+    }
+
+    /** Get the message as text */
+    /*
+    public String getMessageText() throws Exception
+    {
+    	return message.toString();
+    }
+    */
+    
+    /** Set the message from text */
+    public void setMessageText(String text, int addCRLFContent) throws Exception {
+        MessageFactory messageFactory = SipFactory.getInstance().createMessageFactory();
+
+        text = text.trim();
+        text = text.replace("\r\n", "\n");
+        text = text.replace("\n", "\r\n");
+
+        if (text.startsWith("SIP/"))
         {
-            MessageFactory messageFactory = SipFactory.getInstance().createMessageFactory();
-
-            text = text.trim();
-            text = text.replace("\r\n", "\n");
-            text = text.replace("\n", "\r\n");
-
-            if (text.startsWith("SIP/"))
-            {
-                sipMessage = (SIPResponse) messageFactory.createResponse(text + "\r\n\r\n");
-            }
-            else
-            {
-                sipMessage = (SIPMessage) messageFactory.createRequest(text + "\r\n\r\n");
-            }
-
-            int posContent = text.indexOf("\r\n\r\n");
-            if (posContent >= 0)
-            {
-                String contentString = text.substring(posContent).trim();
-                
-                // bug NSN equipment : add a CRLF at the end of the Content
-                if (addCRLFContent == 1)
-                {
-                	contentString = contentString + "\r\n"; 
-                }
-                
-                ContentTypeHeader contentType = sipMessage.getContentTypeHeader();
-                sipMessage.setContent(contentString, contentType);
-            }
+            sipMessage = (SIPResponse) messageFactory.createResponse(text + "\r\n\r\n");
         }
-        catch (Exception e)
+        else
         {
-        	throw new ExecutionException("Can't parse the SIP message : ", e);
+            sipMessage = (SIPMessage) messageFactory.createRequest(text + "\r\n\r\n");
+        }
+
+        int posContent = text.indexOf("\r\n\r\n");
+        if (posContent >= 0)
+        {
+            String contentString = text.substring(posContent).trim();
+            
+            // bug NSN equipment : add a CRLF at the end of the Content
+            if (addCRLFContent == 1)
+            {
+            	contentString = contentString + "\r\n"; 
+            }
+            
+            ContentTypeHeader contentType = sipMessage.getContentTypeHeader();
+            sipMessage.setContent(contentString, contentType);
         }
     }
 
-    /** Get a parameter from the message */
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message
+     */
+    @Override
     public Parameter getParameter(String path) throws Exception
     {
         Parameter var = super.getParameter(path);
@@ -729,45 +793,4 @@ public class MsgSipJain extends MsgSip
 		}
     }
 
-    /** Return true if the message is a request else return false*/
-    public boolean isRequest()
-    {
-        return sipMessage instanceof SIPRequest;
-    }
-    
-    public SIPMessage getSipMessage()
-    {
-        return sipMessage;
-    }
-
-    /** Get the data (as binary) of this message */
-    @Override
-    public byte[] encode()
-    {
-        return sipMessage.encodeAsBytes();
-    }
-
-    /** Returns a short description of the message. Used for logging as INFO level */
-    /** This methods HAS TO be quick to execute for performance reason */
-    @Override
-    public String toShortString() throws Exception
-    {
-    	String ret = super.toShortString();
-    	ret += "\n";
-        ret += this.sipMessage.getFirstLine();
-        ret += "\n";
-        String transId = getTransactionId().toString();
-        ret += "<MESSAGE transactionId=\"" + transId + "\""; 
-        String dialogId = getDialogId();
-        ret+= " dialogId=\"" + dialogId + "\"";
-        ret+= "/>";
-        return ret;
-    }
-
-    /** Get the XML representation of the message; for the genscript module. */
-    @Override
-    public String toXml() throws Exception {
-    	return sipMessage.toString();
-    }
-    
 }

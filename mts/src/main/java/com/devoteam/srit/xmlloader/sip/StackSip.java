@@ -24,10 +24,12 @@
 package com.devoteam.srit.xmlloader.sip;
 
 import java.io.InputStream;
+
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.ParameterPool;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.ScenarioRunner;
 import com.devoteam.srit.xmlloader.core.Tester;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
@@ -44,6 +46,8 @@ import com.devoteam.srit.xmlloader.core.utils.expireshashmap.ExpireHashMap;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.sip.jain.MsgSipJain;
 
 /**
  *
@@ -92,7 +96,37 @@ public abstract class StackSip extends Stack
         Listenpoint listenpoint = new ListenpointSip(this, root);
         return listenpoint;        
     }
+    
+    /** Creates a specific SIP Msg */
+    @Override    
+    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+        MsgSip msgSip = (MsgSip) super.parseMsgFromXml(request, root, runner);
 
+        // OBSOLETE instanciates the listenpoint (compatibility with old grammar)        
+        String listenpointName = root.attributeValue("providerName");
+        if (listenpointName != null)
+        {       
+	        Listenpoint listenpoint = getListenpoint(listenpointName);
+	        if (listenpoint == null && listenpointName != null)
+	        {
+	            throw new ExecutionException("The listenpoint <name=" + listenpointName + "> does not exist");
+	        }
+	        msgSip.setListenpoint(listenpoint);
+        }
+        
+        if (request != null && request && !msgSip.isRequest())
+        {
+            throw new ExecutionException("You specify to send a request using a <sendRequestXXX ...> tag, but the message you will send is not really a request.");
+        }
+        if (request != null && !request && msgSip.isRequest())
+        {
+            throw new ExecutionException("You specify to send a response using a <sendResponseXXX ...> tag, but the message you will send is not really a response.");
+        }
+                
+        return msgSip;
+    }
+    
     /** Send the message from the given scenario */
     @Override
     public synchronized boolean sendMessageException(Msg msg, ScenarioRunner srcRunner, ScenarioRunner destRunner, ScenarioRunner answerHandler) throws Exception {
