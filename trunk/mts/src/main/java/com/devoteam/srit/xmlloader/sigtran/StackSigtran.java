@@ -109,68 +109,6 @@ public class StackSigtran extends Stack {
         return listenpoint;
     }
 
-    
-    /** Creates a specific Msg */
-    @Override
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception 
-    {
-        MsgSigtran msgSigtran = new MsgSigtran();
-        
-        List<Element> listAps = root.elements("ASN");
-        Object[] tabAps = listAps.toArray();
-        
-        ASNMessage tcapMessage = null;
-        if (tabAps.length >= 1)
-        {
-        	Element elementTCAP = (Element) tabAps[tabAps.length - 1];
-        	tcapMessage = new BN_TCAPMessage("tcap/dictionary_TCAP.xml");
-        	tcapMessage.parseFromXML(elementTCAP);
-            // TCAP layer (optional)
-        	msgSigtran.setTCAPMessage((BN_TCAPMessage) tcapMessage);
-        }
-
-        if (tabAps.length >= 2)
-        {
-        	Element elementAP = (Element) tabAps[0];
-        	String dictionary = elementAP.attributeValue("dictionary"); 
-        	ASNMessage apMessage = new BN_APMessage(dictionary);
-        	apMessage.parseFromXML(elementAP);
-            // AP layer (optional)
-        	msgSigtran.setAPMessage((BN_APMessage) apMessage);
-        }
-
-        // ISDN layer (optional)
-        Element ie = root.element("ISDN");
-        if (ie != null) {
-        	MessageQ931 ieMessage = new MessageQ931(ie);
-            msgSigtran.setIeMessage(ieMessage);
-        }
-        
-        // SS7 layer (optional)
-        Element fvo = root.element("SS7");
-        if (fvo != null) {
-        	FvoMessage fvoMessage = new FvoMessage(msgSigtran, getFvoDictionnary(fvo.attributeValue("file")));
-            msgSigtran.setFvoMessage(fvoMessage);
-            fvoMessage.parseElement(fvo);
-        }
-
-        // UA layer (mandatory)
-        Element tlv = root.element("UA");
-        if (tlv != null) {
-            TlvDictionary tlvDictionnary = getTlvDictionnary(tlv.attributeValue("file"));
-            TlvMessage tlvMessage = new TlvMessage(msgSigtran, tlvDictionnary);
-            tlvMessage.parseMsgFromXml(tlv);
-            msgSigtran.setTlvMessage(tlvMessage);
-            msgSigtran.setTlvProtocol(tlvDictionnary.getPpid());
-        }
-        else{
-            // TODO throw some exception
-        }
-        
-
-        return msgSigtran;
-    }
-
     /** Creates a Channel specific to each Stack */
     @Override
     public Channel parseChannelFromXml(Element root, String protocol) throws Exception

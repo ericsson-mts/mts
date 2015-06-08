@@ -24,12 +24,14 @@
 package com.devoteam.srit.xmlloader.sigtran;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.dom4j.Element;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
+import com.devoteam.srit.xmlloader.asn1.ASNMessage;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
@@ -40,11 +42,14 @@ import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.MessageQ931;
+import com.devoteam.srit.xmlloader.rtp.flow.StackRtpFlow;
+import com.devoteam.srit.xmlloader.sigtran.tlv.TlvDictionary;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
 import com.devoteam.srit.xmlloader.sigtran.ap.BN_APMessage;
 import com.devoteam.srit.xmlloader.sigtran.ap.BN_TCAPMessage;
+import com.devoteam.srit.xmlloader.sigtran.fvo.FvoDictionary;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
 
@@ -122,7 +127,7 @@ public class MsgSigtran extends Msg
 	    		{
 	    			// nothing to do : man not an AP layer (ASN1)
 	    			_tcapMessage = null;
-	    			e.printStackTrace();
+	    			//e.printStackTrace();
 	    		}
 		  
 	    		if (_tcapMessage != null)
@@ -152,11 +157,87 @@ public class MsgSigtran extends Msg
 		    		{
 		    			// nothing to do : man not an AP layer (ASN1)
 		    			_apMessage = null;
-		    			e.printStackTrace();
+		    			//e.printStackTrace();
 		    		}
 	    		}
 	    	}
     	}
+    }
+
+    /** Get a parameter from the message */
+    @Override
+    public Parameter getParameter(String path) throws Exception 
+    {
+        Parameter var = super.getParameter(path);
+        if (null != var) 
+        {
+            return var;
+        }
+
+        var = new Parameter();
+        path = path.trim();
+        String[] params = Utils.splitPath(path);
+
+        if (params.length > 0 && params[0].equalsIgnoreCase("asn")) 
+        {
+        	return this._apMessage.getParameter(path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("ap")) 
+        {
+        	return this._apMessage.getParameter(path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("tcap")) 
+        {
+        	return this._tcapMessage.getParameter(path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("isdn")) 
+        {
+        	this._ieMessage.getParameter(var, params, path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("ss7")) 
+        {
+            if (params.length > 1) {
+                if (params[1].equalsIgnoreCase("content")) 
+                {
+                    var.add(_fvoMessage);
+                }
+                else 
+                {
+                    if (path.contains(":")) 
+                    {
+                        // var = _fvoMessage.getParameter(path.substring(path.indexOf(":") + 1));
+                    }
+                    else 
+                    {
+                        // var = _fvoMessage.getParameter(path.substring(path.indexOf(".") + 1));
+                    }
+                }
+            }
+        }
+        else if(params.length > 0 && params[0].equalsIgnoreCase("ua")) 
+        {
+            if (params.length != 1) 
+            {
+                if (params[1].equalsIgnoreCase("ppid")) 
+                {
+                    var.add(getTlvProtocol());
+                }
+                else if (path.contains(":")) 
+                {
+                    var = _tlvMessage.getParameter(path.substring(path.indexOf(":") + 1));
+                }
+                else 
+                {
+                	var = _tlvMessage.getParameter(path.substring(path.indexOf(".") + 1));
+                }
+            }         
+        }
+        else 
+        {
+            Parameter.throwBadPathKeywordException(path);
+        }
+
+        return var;
     }
 
     /** Get the protocol of this message */
@@ -474,94 +555,69 @@ public class MsgSigtran extends Msg
 
         return ret;
     }
-    
+
     /** 
      * Parse the message from XML element 
      */
     @Override
     public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-    	// not called
-    }
-    
-    //------------------------------------------------------
-    // method for the "setFromMessage" <parameter> operation
-    //------------------------------------------------------    
-    
-    /** Get a parameter from the message */
-    @Override
-    public Parameter getParameter(String path) throws Exception 
-    {
-        Parameter var = super.getParameter(path);
-        if (null != var) 
+        List<Element> listAps = root.elements("ASN");
+        Object[] tabAps = listAps.toArray();
+        
+        ASNMessage tcapMessage = null;
+        if (tabAps.length >= 1)
         {
-            return var;
+        	Element elementTCAP = (Element) tabAps[tabAps.length - 1];
+        	tcapMessage = new BN_TCAPMessage("tcap/dictionary_TCAP.xml");
+        	tcapMessage.parseFromXML(elementTCAP);
+            // TCAP layer (optional)
+        	this.setTCAPMessage((BN_TCAPMessage) tcapMessage);
         }
 
-        var = new Parameter();
-        path = path.trim();
-        String[] params = Utils.splitPath(path);
-
-        if (params.length > 0 && params[0].equalsIgnoreCase("asn")) 
+        if (tabAps.length >= 2)
         {
-        	return this._apMessage.getParameter(path);
-        }
-        else if (params.length > 0 && params[0].equalsIgnoreCase("ap")) 
-        {
-        	return this._apMessage.getParameter(path);
-        }
-        else if (params.length > 0 && params[0].equalsIgnoreCase("tcap")) 
-        {
-        	return this._tcapMessage.getParameter(path);
-        }
-        else if (params.length > 0 && params[0].equalsIgnoreCase("isdn")) 
-        {
-        	this._ieMessage.getParameter(var, params, path);
-        }
-        else if (params.length > 0 && params[0].equalsIgnoreCase("ss7")) 
-        {
-            if (params.length > 1) {
-                if (params[1].equalsIgnoreCase("content")) 
-                {
-                    var.add(_fvoMessage);
-                }
-                else 
-                {
-                    if (path.contains(":")) 
-                    {
-                        // var = _fvoMessage.getParameter(path.substring(path.indexOf(":") + 1));
-                    }
-                    else 
-                    {
-                        // var = _fvoMessage.getParameter(path.substring(path.indexOf(".") + 1));
-                    }
-                }
-            }
-        }
-        else if(params.length > 0 && params[0].equalsIgnoreCase("ua")) 
-        {
-            if (params.length != 1) 
-            {
-                if (params[1].equalsIgnoreCase("ppid")) 
-                {
-                    var.add(getTlvProtocol());
-                }
-                else if (path.contains(":")) 
-                {
-                    var = _tlvMessage.getParameter(path.substring(path.indexOf(":") + 1));
-                }
-                else 
-                {
-                	var = _tlvMessage.getParameter(path.substring(path.indexOf(".") + 1));
-                }
-            }         
-        }
-        else 
-        {
-            Parameter.throwBadPathKeywordException(path);
+        	Element elementAP = (Element) tabAps[0];
+        	String dictionary = elementAP.attributeValue("dictionary"); 
+        	ASNMessage apMessage = new BN_APMessage(dictionary);
+        	apMessage.parseFromXML(elementAP);
+            // AP layer (optional)
+        	this.setAPMessage((BN_APMessage) apMessage);
         }
 
-        return var;
+        // ISDN layer (optional)
+        Element ie = root.element("ISDN");
+        if (ie != null) {
+        	MessageQ931 ieMessage = new MessageQ931(ie);
+            this.setIeMessage(ieMessage);
+        }
+        
+        StackSigtran stack = (StackSigtran) StackFactory.getStack(StackFactory.PROTOCOL_SIGTRAN);
+        
+        // SS7 layer (optional)
+        Element fvo = root.element("SS7");
+        if (fvo != null) {
+        	FvoDictionary fvoDictionnary = stack.getFvoDictionnary(fvo.attributeValue("file"));
+        	FvoMessage fvoMessage = new FvoMessage(this,fvoDictionnary);
+            this.setFvoMessage(fvoMessage);
+            fvoMessage.parseElement(fvo);
+        }
+
+        // UA layer (mandatory)
+        Element tlv = root.element("UA");
+        if (tlv != null) {
+        	
+            TlvDictionary tlvDictionnary = stack.getTlvDictionnary(tlv.attributeValue("file"));
+            TlvMessage tlvMessage = new TlvMessage(this, tlvDictionnary);
+            tlvMessage.parseMsgFromXml(tlv);
+            this.setTlvMessage(tlvMessage);
+            this.setTlvProtocol(tlvDictionnary.getPpid());
+        }
+        else
+        {
+            // TODO throw some exception
+        }
     }
 
+    
 }

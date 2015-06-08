@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.RetransmissionId;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Config;
@@ -38,6 +39,7 @@ import com.devoteam.srit.xmlloader.srtp.RawPacket;
 import com.devoteam.srit.xmlloader.srtp.SRTPTransformer;
 
 import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.ReadOnlyDefaultArray;
 import gp.utils.arrays.SupArray;
 
@@ -89,8 +91,13 @@ public class MsgRtpFlow extends Msg {
     private int coefMultSeqNum = 0;
     private int mostRecentReceivedSeqNum = 0;//to keep last seq num and know if coef should be increase even with packet late
 
+    /** Creates a new instance */
+    public MsgRtpFlow() 
+    {
+        super();
+    }
 
-    /*Constructor used for received flow*/
+    /** Creates a new instance */
     public MsgRtpFlow(CodecDictionary dico) throws Exception {
         super();
         this.dico = dico;
@@ -100,7 +107,7 @@ public class MsgRtpFlow extends Msg {
         }
     }
 
-    /*Constructor used for flow to send*/
+    /** Creates a new instance */
     public MsgRtpFlow(CodecDictionary dico, List listPayload, List listSeqnum, List listTimestamp, List listMark, MsgRtp msg) throws Exception {
         this(dico);
         payloadList = listPayload;
@@ -539,9 +546,9 @@ public class MsgRtpFlow extends Msg {
     public String toShortString() throws Exception {
     	String ret = super.toShortString();
         ret += "\n";
-        ret += "<FLOW ";
+        ret += "<flow ";
         ret += "packetNumber=\"" + getPacketNumber() + "\", ";
-        ret += "duration=\"" + getDuration() + "\", ";
+        ret += "duration=\"" + this.duration + "\", ";
         ret += "bitRate=\"" + getBitRate() + "\"";
         ret += "/> ";
         return ret;
@@ -553,7 +560,7 @@ public class MsgRtpFlow extends Msg {
     	
         String xml = "<flow ";
         xml += "packetNumber=\"" + getPacketNumber() + "\", ";
-        xml += "duration=\"" + getDuration() + "\", ";
+        xml += "duration=\"" + this.duration + "\", ";
         xml += "bitRate=\"" + getBitRate() + "\", ";
         xml += "deltaTime=\"" + getDeltaTime() + "\", ";/*not needed in receipt mode*/
         xml += "deltaTimestamp=\"" + getDeltaTimestamp() + "\"/>\n";
@@ -579,9 +586,261 @@ public class MsgRtpFlow extends Msg {
     @Override
     public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-    	// not used
+        if (root.element("flow") != null) {
+            parseFlow(root.element("flow"), runner);
+        }
+        else {
+            throw new Exception("No flow tag in sendMessageRTPFLOW present");
+        }
     }
-    
+
+    public void parseFlow(Element flow, Runner runner) throws Exception 
+    {
+        StackRtpFlow stack = (StackRtpFlow) StackFactory.getStack(StackFactory.PROTOCOL_RTPFLOW);
+        this.dico = stack.dico;
+    	
+    	MsgRtp msg = new MsgRtp();
+    	msg.parsePacketHeader(flow, runner);
+    	this.msgRtp = msg;
+    	
+    	this.payloadList = parsePacketPayload(flow, runner);
+    	this.packetNumber = payloadList.size();
+    	//prepare first packet now =>
+    	this.msgRtp.setData(payloadList.get(0));
+    	    	
+    	this.seqnumList = parsePacketAttribute(flow, runner, "seqnum");
+        this.msgRtp.setSequenceNumber(this.seqnumList.get(0));
+        
+    	this.timestampList = parsePacketAttribute(flow, runner, "timestamp");
+        this.msgRtp.setTimestampRTP(this.timestampList.get(0));
+
+        this.markList = parsePacketAttribute(flow, runner, "mark");
+        if (this.markList.size() == 0) 
+        {
+            this.msgRtp.setMarker(1);
+        }
+        else 
+        {
+            this.msgRtp.setMarker(this.markList.get(0));
+        }
+        if (this.markList.size() == 0)
+        {
+            this.markList = new ArrayList<Integer>();
+            this.markList.add(0);
+        }
+        
+        //construct it the first time
+        this.msgRtp.encode();
+        
+        this.payloadType = this.msgRtp.getPayloadType();
+        this.ssrc = this.msgRtp.getSsrc();
+
+        this.packetsList = new LinkedList<MsgRtp>();
+        if (this.payloadList.size() > 1) {
+            this.maxNbPacketInList = this.payloadList.size();
+        }
+        else if (this.seqnumList.size() > 1) {
+        	this.maxNbPacketInList = this.seqnumList.size();
+        }
+        else if (this.timestampList.size() > 1) {
+        	this.maxNbPacketInList = this.timestampList.size();
+        }
+        else if (this.markList.size() > 1) {
+        	this.maxNbPacketInList = this.markList.size();
+        }
+        else {
+        	this.maxNbPacketInList = 1;
+        }
+
+        //WARNING: part above must be done before setting flow parameter
+
+        String bitRate = flow.attributeValue("bitRate");
+        String deltaTime = flow.attributeValue("deltaTime");
+        String deltaTimestamp = flow.attributeValue("deltaTimestamp");
+        if ((bitRate != null) && (deltaTime != null)) {
+            throw new Exception("attribute <bitRate> and <deltaTime> of flow tag cannot be set in the same time");
+        }
+
+        if ((bitRate == null) && (deltaTime == null)) {
+            throw new Exception("one of the attribute <bitRate> or <deltaTime> of flow tag must be set");
+        }
+
+        String duration = flow.attributeValue("duration");
+        String packetNumber = flow.attributeValue("packetNumber");
+        if ((packetNumber == null) && (duration == null)) {
+            throw new Exception("one of the attribute <packetNumber> or <duration> of flow tag must be set");
+        }
+
+        if (packetNumber != null) {
+            this.packetNumber = Integer.parseInt(packetNumber);
+        }
+        if (deltaTime != null) {
+            LinkedList<String> listAttribute = runner.getParameterPool().parse(deltaTime);
+            if (listAttribute.size() > 0)//if more than one element
+            {
+                ArrayList listAttributeData = new ArrayList();
+
+                int delta;
+                for (Iterator<String> it = listAttribute.iterator(); it.hasNext();) {
+                    delta = Integer.parseInt(it.next());
+                    if (delta < 0)//if delta is negatif, set 0 for the time to send
+                    {
+                        listAttributeData.add(0);
+                    }
+                    else {
+                        listAttributeData.add(delta);
+                    }
+
+                }
+                this.deltaTimeList = listAttributeData;
+            }
+        }
+
+        if (duration != null) {
+            this.duration = Float.parseFloat(duration);
+        }
+        
+        if (bitRate != null) {
+            this.bitRate = Float.parseFloat(bitRate);
+        }
+        if (deltaTimestamp != null) {
+            this.deltaTimestamp = Integer.parseInt(deltaTimestamp);
+        }
+        else {
+            this.deltaTimestamp = (int) this.getDataRTPLength();
+        }
+        String jitterDelay = flow.attributeValue("jitterDelay");
+        if (jitterDelay != null) {
+            this.jitterDelay = Float.parseFloat(jitterDelay);
+        }
+
+        //now compute missing values with values which are given in operation
+        if (packetNumber == null && bitRate != null)//compute packetNumber in function of the bitrate
+        {
+            this.packetNumber = (int) (this.bitRate * 1024 * this.duration / (this.getDataRTPLength() * 8));
+        }
+        else if (packetNumber == null && bitRate == null)//compute packetNumber in function of deltaTimestamp
+        {
+            int newPacketNumber = (int) (this.duration * 1000 / this.getDeltaTime());
+            this.packetNumber = newPacketNumber;
+        }
+
+        if (duration == null) 
+        {
+        	float dur = (float) this.packetNumber * this.getDeltaTime() / 1000;
+            this.duration = dur;
+        }
+
+        String packetLost = flow.attributeValue("packetLost");
+        if (packetLost != null) {
+            float packetLostPercent = Float.parseFloat(packetLost);
+            if ((packetLostPercent < 0) || (packetLostPercent > 100)) {
+                throw new Exception("packetLost attribute is a percentage (between 0 and 100)");
+            }
+
+            this.percentagePacketLost = packetLostPercent;
+            this.setPacketToBeLost();
+        }
+
+        if (bitRate != null)//compute deltaTime in function of bitrate, it is also mandatory to set packetNumber in this case
+        {
+            long size = this.getDataRTPLength() * this.packetNumber * 8;
+            float timeToSend = size / (this.bitRate * 1024);
+
+            int newDeltaTimestamp = (int) Math.round(timeToSend * 1000 / this.packetNumber);
+            if (newDeltaTimestamp == 0) {
+                newDeltaTimestamp = 1;
+            }
+            this.setDeltaTime(newDeltaTimestamp);
+        }
+
+        String synchronous = flow.attributeValue("synchronous");
+        if (synchronous != null) {
+            this.synchronous = Boolean.parseBoolean(synchronous);
+        }
+        
+        if (StackFactory.getStack(StackFactory.PROTOCOL_RTPFLOW).getConfig().getBoolean("QOS_MEASURMENT", true)) {
+            QoSinfo = new QoSRtpFlow(this.dico);
+        }
+    }
+
+    public ArrayList<Array> parsePacketPayload(Element packet, Runner runner) throws Exception {
+        List<Element> payloads = packet.elements("payload");
+        ArrayList<Array> listPayloadData = new ArrayList<Array>();
+        LinkedList<String> listPayload;
+        String format = null;
+        String text = null;
+
+        for (Element element : payloads) {
+            format = element.attributeValue("format");
+            text = element.getTextTrim();
+
+            if(Parameter.matchesParameter(text) && payloads.size() == 1){
+                // optimisation, use cache
+                Parameter parameter = runner.getParameterPool().get(text);
+                if (format.equalsIgnoreCase("text")) {
+                    listPayloadData = (ArrayList<Array>) ParameterCache.getAsAsciiArrayList(parameter);
+                }
+                else if (format.equalsIgnoreCase("binary")) {
+                    listPayloadData = (ArrayList<Array>)  ParameterCache.getAsHexArrayList(parameter);
+                }
+                else {
+                    throw new Exception("format of payload <" + format + "> is unknown");
+                }
+            }
+            else{
+                listPayload = runner.getParameterPool().parse(text);
+                if (format.equalsIgnoreCase("text")) {
+                    for (Iterator<String> it = listPayload.iterator(); it.hasNext();) {
+                        listPayloadData.add(new DefaultArray(it.next().getBytes()));
+                    }
+                }
+                else if (format.equalsIgnoreCase("binary")) {
+                    for (Iterator<String> it = listPayload.iterator(); it.hasNext();) {
+                        listPayloadData.add(Array.fromHexString(it.next()));
+                    }
+                }
+                else {
+                    throw new Exception("format of payload <" + format + "> is unknown");
+                }
+            }
+        }
+        return listPayloadData;
+    }
+
+    public ArrayList parsePacketAttribute(Element packet, Runner runner, String attName) throws Exception {
+        Element header = packet.element("header");
+        ArrayList listAttributeData = new ArrayList();
+        String attribute = header.attributeValue(attName);
+
+        if (attribute != null) {
+            if(Parameter.matchesParameter(attribute)){
+                // optimisation, use cache
+                Parameter parameter = runner.getParameterPool().get(attribute);
+                if (attName.equals("seqnum") || attName.equals("mark")) {
+                    listAttributeData = (ArrayList) ParameterCache.getAsIntegerList(parameter);
+                }
+                else if (attName.equals("timestamp")) {
+                    listAttributeData = (ArrayList) ParameterCache.getAsLongList(parameter);
+                }
+            }
+            else{
+                LinkedList<String> listAttribute = runner.getParameterPool().parse(attribute);
+                if (attName.equals("seqnum") || attName.equals("mark")) {
+                    for (Iterator<String> it = listAttribute.iterator(); it.hasNext();) {
+                        listAttributeData.add(Integer.parseInt(it.next()));
+                    }
+                }
+                else if (attName.equals("timestamp")) {
+                    for (Iterator<String> it = listAttribute.iterator(); it.hasNext();) {
+                        listAttributeData.add(Long.parseLong(it.next()));
+                    }
+                }
+            }
+        }
+        return listAttributeData;
+    }
+
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------

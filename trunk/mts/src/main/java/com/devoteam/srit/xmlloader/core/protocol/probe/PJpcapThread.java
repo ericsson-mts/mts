@@ -70,7 +70,8 @@ public class PJpcapThread implements PacketReceiver, Runnable {
     private boolean stopped;
     private boolean stopPossible = false;
 
-    public PJpcapThread(Probe probe) throws Exception {
+    public PJpcapThread(Probe probe) throws Exception 
+    {
         this.probe = probe;
         stopSemaphore = new Semaphore(0);
         startSemaphore = new Semaphore(0);
@@ -91,7 +92,7 @@ public class PJpcapThread implements PacketReceiver, Runnable {
 	            }
 	        }
     	}
-    	catch (NoSuchMethodError e)
+    	catch (Throwable e)
     	{
     		// nothing to do
     	}

@@ -1,4 +1,5 @@
 /*
+
  * SIP Communicator, the OpenSource Java VoIP and Instant Messaging client.
  *
  * Distributable under LGPL license.
