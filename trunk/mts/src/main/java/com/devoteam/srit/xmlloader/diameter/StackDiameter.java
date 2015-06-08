@@ -103,6 +103,7 @@ public class StackDiameter extends Stack {
      * Use for TCP like protocol : to build incoming message
      * should become ABSTRACT later  
      */
+    @Override
     public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
     {
     	// read the header

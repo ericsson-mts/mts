@@ -121,7 +121,8 @@ public class SocketSctp extends Thread {
                     (SCTPData)chunk).sndrcvinfo.sinfo_assoc_id.hashCode()));
                     setAidFromMsg();
                     */
-                    Msg msg = stack.readFromSCTPData((SCTPData)chunk);
+                    byte[] bytes = ((SCTPData)chunk).getData();
+                    Msg msg = stack.readFromDatas(bytes, bytes.length);
     		    	if (msg != null) 
     		    	{
                         msg.setChannel(channelSctp);
