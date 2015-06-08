@@ -70,10 +70,12 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
     
     private byte[] cipheredMessage = null;
 
+    /** Creates a new instance */
     public MsgRtp() throws Exception {
         super();
     }
 
+    /** Creates a new instance */
     public MsgRtp(Array array) throws Exception {
         super();
         extractDataFromMessage(array);

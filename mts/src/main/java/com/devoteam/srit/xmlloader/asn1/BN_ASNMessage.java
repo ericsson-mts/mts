@@ -38,6 +38,7 @@ import org.bn.IEncoder;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Component;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.Invoke;
@@ -92,7 +93,7 @@ public class BN_ASNMessage extends ASNMessage
     	}
     	catch (Exception e)
     	{
-    		e.printStackTrace();
+    		//e.printStackTrace();
     		return null;
     	}
     	
@@ -110,18 +111,15 @@ public class BN_ASNMessage extends ASNMessage
     	IDecoder decoder = CoderFactory.getInstance().newDecoder(rule);
     	if (decoder == null)
     	{
-    		throw new Exception("bad value for rule '" + rule +"'");
+    		throw new ExecutionException("bad value for rule '" + rule +"'");
     	}
-    	if (array != null)
-    	{
-	        InputStream inputStream = new ByteArrayInputStream(array.getBytes());
-	        Class cl = Class.forName(className);
-	        this.asnObject = cl.newInstance();
-	        if (array.length > 0)
-	        {
-	        	this.asnObject = decoder.decode(inputStream, cl);
-	        }
-    	}
+        InputStream inputStream = new ByteArrayInputStream(array.getBytes());
+        Class cl = Class.forName(className);
+        this.asnObject = cl.newInstance();
+        if (array.length > 0)
+        {
+        	this.asnObject = decoder.decode(inputStream, cl);
+        }
     }
 
     @Override

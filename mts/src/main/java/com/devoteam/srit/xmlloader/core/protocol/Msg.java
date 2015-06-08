@@ -519,7 +519,12 @@ public abstract class Msg extends MsgLight implements Removable
     /** Return the length of the message*/
     public int getLength()
     {
-    	return encode().length;
+    	byte[] array = encode();
+    	if (array != null)
+    	{
+    		return array.length;
+    	}
+    	return 0;
     }
 
     /** Get the data of the message */
