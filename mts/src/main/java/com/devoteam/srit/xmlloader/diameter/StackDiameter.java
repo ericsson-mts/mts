@@ -82,15 +82,7 @@ public class StackDiameter extends Stack {
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "traceLevel : ", traceLevel);
         Node.logger.warning("traceLevel = " + traceLevel);
     }
-    
-    /** Creates a Listenpoint specific to each Stack */
-    @Override
-    public Listenpoint parseListenpointFromXml(Element root) throws Exception 
-    { 
-        Listenpoint listenpoint = new ListenpointDiameter(this, root);
-        return listenpoint;        
-    }
-    
+        
     /** Creates a channel specific to each Stack */
     @Override
     public Channel parseChannelFromXml(Element root, String protocol) throws Exception

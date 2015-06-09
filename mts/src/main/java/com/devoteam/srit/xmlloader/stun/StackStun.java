@@ -56,7 +56,7 @@ public class StackStun extends Stack {
         super();
         int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
         if (port > 0) {
-            Listenpoint listenpoint = new ListenpointStun(this);
+            Listenpoint listenpoint = new Listenpoint(this);
             createListenpoint(listenpoint, StackFactory.PROTOCOL_STUN);
         }
         prop = new Properties();

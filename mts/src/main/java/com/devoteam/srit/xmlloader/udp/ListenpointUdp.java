@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.udp;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
@@ -46,24 +47,28 @@ public class ListenpointUdp extends Listenpoint
     public ListenpointUdp(Stack stack) throws Exception
     {
         super(stack);
-        if(nio) listenpoint = new ListenpointUdpNIO(stack);
-        else listenpoint = new ListenpointUdpBIO(stack);
+        if(nio) 
+    	{
+    	listenpoint = new ListenpointUdpNIO(stack);
+    	}
+        else
+        {
+        	listenpoint = new ListenpointUdpBIO(stack);
+        }
     }
-
-	/** Creates a Listenpoint specific from XML tree*/
-	public ListenpointUdp(Stack stack, Element root) throws Exception	
-	{
-		super(stack, root);
-        if(nio) listenpoint = new ListenpointUdpNIO(stack, root);
-        else listenpoint = new ListenpointUdpBIO(stack, root);
-	}
 
     /** Creates a new instance of Listenpoint */
     public ListenpointUdp(Stack stack, String name, String host, int port) throws Exception
     {
         super(stack, name, host, port);
-        if(nio) listenpoint = new ListenpointUdpNIO(stack, name, host, port);
-        else listenpoint = new ListenpointUdpBIO(stack, name, host, port);
+        if(nio)
+        {
+        	listenpoint = new ListenpointUdpNIO(stack, name, host, port);
+        }
+        else
+        {
+        	listenpoint = new ListenpointUdpBIO(stack, name, host, port);
+        }
     }
 
     public int hashCode()
@@ -173,11 +178,22 @@ public class ListenpointUdp extends Listenpoint
         return listenpoint.create(protocol);
     }
 
-    public Object getAttachment() {
+    /** 
+     * Parse the message from XML element 
+     */
+    public void parseMsgFromXml(Element root, Runner runner) throws Exception
+    {
+    	super.parseMsgFromXml(root, runner);
+    	listenpoint.parseMsgFromXml(root, runner);
+    }
+
+    public Object getAttachment() 
+    {
         return listenpoint.getAttachment();
     }
 
-    public void setAttachment(Object attachment) {
+    public void setAttachment(Object attachment) 
+    {
         listenpoint.setAttachment(attachment);
     }
 }

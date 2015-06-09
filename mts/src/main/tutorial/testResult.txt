@@ -1,62 +1,157 @@
-D:\svnMTS\trunk\src\main\tutorial>echo OFF
+C:\svnMTS\trunk\mts\src\main\tutorial>echo OFF
+
 [param_1]=one
 [param_2]=two
 [param_3]=three
+[param_3_ref]=BAD Berk
 [param_3_ref]=[param_3]
 [interval]=1
 [vmstatInterval]=1
-
-Run -seq test "..\tutorial\core\test.xml
+Run -seq test "..\tutorial\core\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-FAILED: CORE / 081_exit_failed
+FAILED: CORE : bad character /\\:*?\|<> / 081_exit_failed
+
 [IPVersion]=ipv4
 [localHostDIAM]=[localHostDIAM(0)]
 [localPortDIAM]=[localPortDIAM]
 [remoteHostDIAM]=[remoteHostDIAM(0)]
 [remotePortDIAM]=[remotePortDIAM]
-
-Run -seq test "..\tutorial\diameter\test.xml
+[activeClient]=true
+[activeServer]=true
+Run -seq test "..\tutorial\diameter\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-sept. 02, 2013 6:12:41 PM dk.i1.diameter.node.Node start
-Infos: Starting Diameter node
-sept. 02, 2013 6:12:41 PM dk.i1.diameter.node.Node loadTransportProtocol
-Infos: TCP support was loaded
-sept. 02, 2013 6:12:41 PM dk.i1.diameter.node.Node loadTransportProtocol
-Infos: SCTP support was not loaded
-sept. 02, 2013 6:12:41 PM dk.i1.diameter.node.Node start
-Infos: Diameter node started
+juin 08, 2015 6:16:47 PM dk.i1.diameter.node.Node start
+INFO: Starting Diameter node
+juin 08, 2015 6:16:47 PM dk.i1.diameter.node.Node loadTransportProtocol
+INFO: TCP support was loaded
+juin 08, 2015 6:16:47 PM dk.i1.diameter.node.Node loadTransportProtocol
+INFO: SCTP support was not loaded
+juin 08, 2015 6:16:47 PM dk.i1.diameter.node.Node start
+INFO: Diameter node started
+juin 08, 2015 6:16:47 PM com.devoteam.srit.xmlloader.diameter.StackDiameter <ini
+t>
+WARNING: traceLevel = WARNING
+Exception in thread "Thread-88" java.lang.NoSuchMethodError: setRoutingOption
+        at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
+        at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
+        at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
+JpcapThread.java:84)
+        at com.devoteam.srit.xmlloader.core.protocol.Probe.<init>(Probe.java:120
+)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack.parseProbeFromXml(Sta
+ck.java:463)
+        at com.devoteam.srit.xmlloader.core.operations.protocol.OperationCreateP
+robe.execute(OperationCreateProbe.java:63)
+        at com.devoteam.srit.xmlloader.core.operations.Operation.executeAndStat(
+Operation.java:184)
+        at com.devoteam.srit.xmlloader.core.operations.basic.OperationSequence.e
+xecute(OperationSequence.java:88)
+        at com.devoteam.srit.xmlloader.core.Scenario.executeScenario(Scenario.ja
+va:63)
+        at com.devoteam.srit.xmlloader.core.ScenarioRunner.run(ScenarioRunner.ja
+va:254)
+        at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
+9)
+
 [IPVersion]=ipv4
 [localHostSIP]=[localHostSIP(0)]
 [localPortSIP]=[localPortSIP]
 [remoteHostSIP]=[remoteHostSIP(0)]
 [remotePortSIP]=[remotePortSIP]
-
-Run -seq test "..\tutorial\sip\test.xml
+Run -seq test "..\tutorial\sip\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-sept. 02, 2013 6:14:29 PM dk.i1.diameter.node.Node start
-Infos: Starting Diameter node
-sept. 02, 2013 6:14:29 PM dk.i1.diameter.node.Node loadTransportProtocol
-Infos: TCP support was loaded
-sept. 02, 2013 6:14:29 PM dk.i1.diameter.node.Node loadTransportProtocol
-Infos: SCTP support was not loaded
-sept. 02, 2013 6:14:29 PM dk.i1.diameter.node.Node start
-Infos: Diameter node started
+juin 08, 2015 6:18:10 PM dk.i1.diameter.node.Node start
+INFO: Starting Diameter node
+juin 08, 2015 6:18:10 PM dk.i1.diameter.node.Node loadTransportProtocol
+INFO: TCP support was loaded
+juin 08, 2015 6:18:10 PM dk.i1.diameter.node.Node loadTransportProtocol
+INFO: SCTP support was not loaded
+juin 08, 2015 6:18:10 PM dk.i1.diameter.node.Node start
+INFO: Diameter node started
+juin 08, 2015 6:18:10 PM com.devoteam.srit.xmlloader.diameter.StackDiameter <ini
+t>
+WARNING: traceLevel = WARNING
+Exception in thread "Thread-109" java.lang.NoSuchMethodError: setRoutingOption
+        at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
+        at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
+        at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
+JpcapThread.java:84)
+        at com.devoteam.srit.xmlloader.core.protocol.Probe.<init>(Probe.java:120
+)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack.parseProbeFromXml(Sta
+ck.java:463)
+        at com.devoteam.srit.xmlloader.core.operations.protocol.OperationCreateP
+robe.execute(OperationCreateProbe.java:63)
+        at com.devoteam.srit.xmlloader.core.operations.Operation.executeAndStat(
+Operation.java:184)
+        at com.devoteam.srit.xmlloader.core.operations.basic.OperationSequence.e
+xecute(OperationSequence.java:88)
+        at com.devoteam.srit.xmlloader.core.Scenario.executeScenario(Scenario.ja
+va:63)
+        at com.devoteam.srit.xmlloader.core.ScenarioRunner.run(ScenarioRunner.ja
+va:254)
+        at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
+9)
+
 [IPVersion]=ipv4
 [localHostSIP]=[localHostSIP(0)]
 [localPortSIP]=[localPortSIP]
 [remoteHostSIP]=[remoteHostSIP(0)]
 [remotePortSIP]=[remotePortSIP]
-
-Run -seq test "..\tutorial\sip\test.xml
+Run -seq test "..\tutorial\sip\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-sept. 02, 2013 6:16:02 PM dk.i1.diameter.node.Node start
-Infos: Starting Diameter node
-sept. 02, 2013 6:16:02 PM dk.i1.diameter.node.Node loadTransportProtocol
-Infos: TCP support was loaded
-sept. 02, 2013 6:16:02 PM dk.i1.diameter.node.Node loadTransportProtocol
-Infos: SCTP support was not loaded
-sept. 02, 2013 6:16:02 PM dk.i1.diameter.node.Node start
-Infos: Diameter node started
+juin 08, 2015 6:19:32 PM dk.i1.diameter.node.Node start
+INFO: Starting Diameter node
+juin 08, 2015 6:19:32 PM dk.i1.diameter.node.Node loadTransportProtocol
+INFO: TCP support was loaded
+juin 08, 2015 6:19:32 PM dk.i1.diameter.node.Node loadTransportProtocol
+INFO: SCTP support was not loaded
+juin 08, 2015 6:19:32 PM dk.i1.diameter.node.Node start
+INFO: Diameter node started
+juin 08, 2015 6:19:32 PM com.devoteam.srit.xmlloader.diameter.StackDiameter <ini
+t>
+WARNING: traceLevel = WARNING
+Exception in thread "Thread-109" java.lang.NoSuchMethodError: setRoutingOption
+        at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
+        at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
+        at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
+JpcapThread.java:84)
+        at com.devoteam.srit.xmlloader.core.protocol.Probe.<init>(Probe.java:120
+)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack.parseProbeFromXml(Sta
+ck.java:463)
+        at com.devoteam.srit.xmlloader.core.operations.protocol.OperationCreateP
+robe.execute(OperationCreateProbe.java:63)
+        at com.devoteam.srit.xmlloader.core.operations.Operation.executeAndStat(
+Operation.java:184)
+        at com.devoteam.srit.xmlloader.core.operations.basic.OperationSequence.e
+xecute(OperationSequence.java:88)
+        at com.devoteam.srit.xmlloader.core.Scenario.executeScenario(Scenario.ja
+va:63)
+        at com.devoteam.srit.xmlloader.core.ScenarioRunner.run(ScenarioRunner.ja
+va:254)
+        at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
+9)
+
+[IPVersion]=ipv4
+[localHostSIP]=[localHostSIP(0)]
+[localPortSIP]=[localPortSIP]
+[remoteHostSIP]=[remoteHostSIP(0)]
+[remotePortSIP]=[remotePortSIP]
+Run -seq test "..\tutorial\sip\test_jain.xml"
+Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+juin 08, 2015 6:20:01 PM dk.i1.diameter.node.Node start
+INFO: Starting Diameter node
+juin 08, 2015 6:20:01 PM dk.i1.diameter.node.Node loadTransportProtocol
+INFO: TCP support was loaded
+juin 08, 2015 6:20:01 PM dk.i1.diameter.node.Node loadTransportProtocol
+INFO: SCTP support was not loaded
+juin 08, 2015 6:20:01 PM dk.i1.diameter.node.Node start
+INFO: Diameter node started
+juin 08, 2015 6:20:01 PM com.devoteam.srit.xmlloader.diameter.StackDiameter <ini
+t>
+WARNING: traceLevel = WARNING
+
 [IPVersion]=ipv4
 [localHostRTP]=[localHostRTP(0)]
 [localPortRTP]=10000
@@ -67,9 +162,30 @@ Infos: Diameter node started
 [remoteHostSIP]=[remoteHostSIP(0)]
 [remotePortSIP]=[remotePortSIP]
 [domainName]=devoteam.com
-
-Run -seq test "..\tutorial\rtp\test.xml
+Run -seq test "..\tutorial\rtp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+Exception in thread "Thread-5" java.lang.NoSuchMethodError: setRoutingOption
+        at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
+        at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
+        at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
+JpcapThread.java:84)
+        at com.devoteam.srit.xmlloader.core.protocol.Probe.<init>(Probe.java:120
+)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack.parseProbeFromXml(Sta
+ck.java:463)
+        at com.devoteam.srit.xmlloader.core.operations.protocol.OperationCreateP
+robe.execute(OperationCreateProbe.java:63)
+        at com.devoteam.srit.xmlloader.core.operations.Operation.executeAndStat(
+Operation.java:184)
+        at com.devoteam.srit.xmlloader.core.operations.basic.OperationSequence.e
+xecute(OperationSequence.java:88)
+        at com.devoteam.srit.xmlloader.core.Scenario.executeScenario(Scenario.ja
+va:63)
+        at com.devoteam.srit.xmlloader.core.ScenarioRunner.run(ScenarioRunner.ja
+va:254)
+        at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
+9)
+
 [IPVersion]=ipv4
 [localHostRTP]=[localHostRTP(0)]
 [localPortRTP]=10000
@@ -79,21 +195,77 @@ Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 [localPortSIP]=[localPortSIP]
 [remoteHostSIP]=[remoteHostSIP(0)]
 [remotePortSIP]=[remotePortSIP]
-
-Run -seq test "..\tutorial\rtpflow\test.xml
+[domainName]=devoteam.com
+Run 001_jmf_noreg test "..\tutorial\rtp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+No format has been registered for RTP Payload type 8
+
 [IPVersion]=ipv4
 [localHostRTP]=[localHostRTP(0)]
 [localPortRTP]=10000
 [remoteHostRTP]=[remoteHostRTP(0)]
-[remotePortRTP]=11000
+[remotePortRTP]=20000
 [localHostSIP]=[localHostSIP(0)]
 [localPortSIP]=[localPortSIP]
 [remoteHostSIP]=[remoteHostSIP(0)]
 [remotePortSIP]=[remotePortSIP]
-
-Run -seq test "..\tutorial\rtpflow\test.xml
+Run -seq test "..\tutorial\rtpflow\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+Exception in thread "Thread-51" java.lang.NoSuchMethodError: setRoutingOption
+        at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
+        at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
+        at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
+JpcapThread.java:84)
+        at com.devoteam.srit.xmlloader.core.protocol.Probe.<init>(Probe.java:120
+)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack.parseProbeFromXml(Sta
+ck.java:463)
+        at com.devoteam.srit.xmlloader.core.operations.protocol.OperationCreateP
+robe.execute(OperationCreateProbe.java:63)
+        at com.devoteam.srit.xmlloader.core.operations.Operation.executeAndStat(
+Operation.java:184)
+        at com.devoteam.srit.xmlloader.core.operations.basic.OperationSequence.e
+xecute(OperationSequence.java:88)
+        at com.devoteam.srit.xmlloader.core.Scenario.executeScenario(Scenario.ja
+va:63)
+        at com.devoteam.srit.xmlloader.core.ScenarioRunner.run(ScenarioRunner.ja
+va:254)
+        at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
+9)
+
+[IPVersion]=ipv4
+[localHostRTP]=[localHostRTP(0)]
+[localPortRTP]=10000
+[remoteHostRTP]=[remoteHostRTP(0)]
+[remotePortRTP]=20000
+[localHostSIP]=[localHostSIP(0)]
+[localPortSIP]=[localPortSIP]
+[remoteHostSIP]=[remoteHostSIP(0)]
+[remotePortSIP]=[remotePortSIP]
+Run -seq test "..\tutorial\rtpflow\test.xml"
+Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+Exception in thread "Thread-6" java.lang.NoSuchMethodError: setRoutingOption
+        at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
+        at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
+        at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
+JpcapThread.java:84)
+        at com.devoteam.srit.xmlloader.core.protocol.Probe.<init>(Probe.java:120
+)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack.parseProbeFromXml(Sta
+ck.java:463)
+        at com.devoteam.srit.xmlloader.core.operations.protocol.OperationCreateP
+robe.execute(OperationCreateProbe.java:63)
+        at com.devoteam.srit.xmlloader.core.operations.Operation.executeAndStat(
+Operation.java:184)
+        at com.devoteam.srit.xmlloader.core.operations.basic.OperationSequence.e
+xecute(OperationSequence.java:88)
+        at com.devoteam.srit.xmlloader.core.Scenario.executeScenario(Scenario.ja
+va:63)
+        at com.devoteam.srit.xmlloader.core.ScenarioRunner.run(ScenarioRunner.ja
+va:254)
+        at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
+9)
+
 [IPVersion]=ipv4
 [localHostHTTP]=[localHostHTTP(0)]
 [localPortHTTP]=[localPortHTTP(0)]
@@ -103,9 +275,9 @@ Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 [proxyHostHTTP]=[proxyHostHTTP(0)]
 [proxyPortHTTP]=[proxyPortHTTP(0)]
 [proxyPortSecHTTP]=[remotePortSecHTTP(0)]
-
-Run -seq test "..\tutorial\http\test.xml
+Run -seq test "..\tutorial\http\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostHTTP]=[localHostHTTP(0)]
 [localPortHTTP]=[localPortHTTP(0)]
@@ -115,186 +287,233 @@ Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 [proxyHostHTTP]=[proxyHostHTTP(0)]
 [proxyPortHTTP]=[proxyPortHTTP(0)]
 [proxyPortSecHTTP]=[remotePortSecHTTP(0)]
-
-Run -seq test "..\tutorial\http\test.xml
+Run -seq test "..\tutorial\http\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostTCP]=[localHostTCP(0)]
 [localPort]=12345
 [remoteHostTCP]=[remoteHostTCP(0)]
 [remotePortTCP]=[remotePortTCP]
-
-Run -seq test "..\tutorial\tcp\test.xml
+Run -seq test "..\tutorial\tcp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-java.io.FileNotFoundException: ..\logs\tcp001_binary_1\TCP.log (L?opÚration demandÚe n?a pu s?accomplir sur un fichier ayant une section map
-pÚe utilisateur ouverte)
-        at java.io.FileOutputStream.open(Native Method)
-        at java.io.FileOutputStream.<init>(Unknown Source)
-        at java.io.FileWriter.<init>(Unknown Source)
-        at com.devoteam.srit.xmlloader.core.log.FileTextListener.printText(FileTextListener.java:76)
-        at com.devoteam.srit.xmlloader.core.log.GenericLogger.print(GenericLogger.java:125)
-        at com.devoteam.srit.xmlloader.core.log.GenericLogger.info(GenericLogger.java:70)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack.processLogsMsgSending(Stack.java:1181)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack.doReceiveMessage(Stack.java:948)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack$1.run(Stack.java:706)
+
 [IPVersion]=ipv4
 [localHostUDP]=[localHostUDP(0)]
 [localPortUDP]=10000
 [remoteHostUDP]=[remoteHostUDP(0)]
 [remotePort]=12000
-
-Run -seq test "..\tutorial\udp\test.xml
+Run -seq test "..\tutorial\udp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostRAD]=[localHostRAD(0)]
 [localPortRAD]=10000
 [remoteHostRAD]=[remoteHostRAD(0)]
 [remotePortRAD]=65535
-
-Run -seq test "..\tutorial\radius\test.xml
+Run -seq test "..\tutorial\radius\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=4
 [localHostSMTP]=[remoteHostSMTP(0)]
 [localPortSMTP]=[localPortSMTP]
 [remoteHostSMTP]=[remoteHostSMTP(0)]
 [remotePortSMTP]=[remotePortSMTP]
-
-Run -seq test "..\tutorial\smtp\test.xml
+Run -seq test "..\tutorial\smtp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=4
 [localHostRTSP]=[localHostRTSP(0)]
 [localPortRTSP]=8554
 [remoteHostRTSP]=[remoteHostRTSP(0)]
 [remotePortRTSP]=9554
-
-Run -seq test "..\tutorial\rtsp\test.xml
+Run -seq test "..\tutorial\rtsp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostIMAP]=[localHostIMAP(0)]
 [localPortIMAP]=[localPortIMAP]
 [remoteHostIMAP]=[remoteHostIMAP(0)]
 [remotePortIMAP]=[remotePortIMAP]
 [serverPortTLS]=[serverPortTLS]
-
-Run -seq test "..\tutorial\imap\test.xml
+Run -seq test "..\tutorial\imap\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostPOP]=[localHostPOP(0)]
 [localPortPOP]=[localPortPOP]
 [remoteHostPOP]=[remoteHostPOP(0)]
 [remotePortPOP]=[remotePortPOP]
-
-Run -seq test "..\tutorial\pop\test.xml
+Run -seq test "..\tutorial\pop\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [remoteHostSMPP]=[remoteHostSMPP(0)]
 [remotePortSMPP]=[remotePortSMPP]
-
-Run -seq test "..\tutorial\smpp\test.xml
+Run -seq test "..\tutorial\smpp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [remoteHostUCP]=[remoteHostUCP(0)]
 [remotePortUCP]=[remotePortUCP]
-
-Run -seq test "..\tutorial\ucp\test.xml
+Run -seq test "..\tutorial\ucp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostM3UA]=[localHostM3UA(0)]
 [localPortM3UA]=[localPortM3UA]
 [remoteHostM3UA]=[remoteHostM3UA(0)]
 [remotePortM3UA]=[remotePortM3UA]
-
-Run -seq test "..\tutorial\sigtran\m3ua\test.xml
+Run -seq test "..\tutorial\sigtran\m3ua\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostM3UA]=[localHostM3UA(0)]
 [localPortM3UA]=[localPortM3UA]
 [remoteHostM3UA]=[remoteHostM3UA(0)]
 [remotePortM3UA]=[remotePortM3UA]
-
-Run -seq test "..\tutorial\sigtran\m3ua\SCCP\test.xml
+Run -seq test "..\tutorial\sigtran\m3ua\BICC\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+FAILED: SIGTRAN / 001_IAM_Initial_Address
+
+[IPVersion]=ipv4
+[localHostM3UA]=[localHostM3UA(0)]
+[localPortM3UA]=[localPortM3UA]
+[remoteHostM3UA]=[remoteHostM3UA(0)]
+[remotePortM3UA]=[remotePortM3UA]
+Run -seq test "..\tutorial\sigtran\m3ua\SCCP\test.xml"
+Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostIUA]=[localHostIUA(0)]
 [localPortIUA]=[localPortIUA(0)]
 [remoteHostIUA]=[remoteHostIUA(0)]
 [remotePortIUA]=[remotePortIUA(0)]
-
-Run -seq test "..\tutorial\sigtran\iua\test.xml
+Run -seq test "..\tutorial\sigtran\iua\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostV5UA]=[localHostV5UA(0)]
 [localPortV5UA]=[localPortV5UA(0)]
 [remoteHostV5UA]=[remoteHostV5UA(0)]
 [remotePortV5UA]=[remotePortV5UA(0)]
-
-Run -seq test "..\tutorial\sigtran\v5ua\test.xml
+Run -seq test "..\tutorial\sigtran\v5ua\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
+[IPVersion]=ipv4
+[localHostM3UA]=[localHostM3UA(0)]
+[localPortM3UA]=[localPortM3UA]
+[remoteHostM3UA]=[remoteHostM3UA(0)]
+[remotePortM3UA]=[remotePortM3UA]
+Run -seq test "..\tutorial\sigtran\m3ua\TCAP\test.xml"
+Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
+[IPVersion]=ipv4
+[localHostM3UA]=[localHostM3UA(0)]
+[localPortM3UA]=[localPortM3UA]
+[remoteHostM3UA]=[remoteHostM3UA(0)]
+[remotePortM3UA]=[remotePortM3UA]
+[transport]=TCP
+[pause]=0.0
+Run -seq test "..\tutorial\sigtran\m3ua\MAP\test.xml"
+Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
+[IPVersion]=ipv4
+[localHostM3UA]=[localHostM3UA(0)]
+[localPortM3UA]=[localPortM3UA]
+[remoteHostM3UA]=[remoteHostM3UA(0)]
+[remotePortM3UA]=[remotePortM3UA]
+[transport]=TCP
+[pause]=0.0
+Run -seq test "..\tutorial\sigtran\m3ua\CAP\test.xml"
+Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostH323]=[localHostH323(0)]
 [localPortH323]=[localPortH323]
 [remoteHostH323]=[remoteHostH323(0)]
 [remotePortH323]=[remotePortH323]
-
-Run -seq test "..\tutorial\h323\h225CS\test.xml
+Run -seq test "..\tutorial\h323\h225CS\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostTLS]=[localHostTLS(0)]
 [localPortTLS]=12345
 [remoteHostTLS]=[remoteHostTLS(0)]
 [remotePortTLS]=[remotePortTLS]
-
-Run -seq test "..\tutorial\tls\test.xml
+Run -seq test "..\tutorial\tls\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostH248]=[localHostH248(0)]
 [localPortH248]=[localPortH248]
 [remoteHostH248]=[remoteHostH248(0)]
 [remotePortH248]=[remotePortH248]
-
-Run -seq test "..\tutorial\h248\test.xml
+Run -seq test "..\tutorial\h248\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostMSRP]=[localHostMSRP(0)]
 [localPortMSRP]=[localPortMSRP]
 [remoteHostMSRP]=[remoteHostMSRP(0)]
 [remotePortMSRP]=[remotePortMSRP]
 [serverTlsPort]=[serverTlsPort]
-
-Run -seq test "..\tutorial\msrp\test.xml
+Run -seq test "..\tutorial\msrp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [remoteHostSNMP]=[remoteHostSNMP(0)]
 [remotePortSNMP]=[remotePortSNMP]
-
-Run -seq test "..\tutorial\snmp\test.xml
+Run -seq test "..\tutorial\snmp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostMGCP]=[localHostMGCP(0)]
 [localPortMGCP]=[localPortMGCP]
 [remoteHostMGCP]=[remoteHostMGCP(0)]
 [remotePortMGCP]=[remotePortMGCP]
-
-Run -seq test "..\tutorial\mgcp\test.xml
+Run -seq test "..\tutorial\mgcp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostSTUN]=[localHostSTUN(0)]
 [localPortSTUN]=[localPortSTUN]
 [remoteHostSTUN]=[remoteHostSTUN(0)]
 [remotePortSTUN]=[remotePortSTUN]
-
-Run -seq test "..\tutorial\stun\test.xml
+Run -seq test "..\tutorial\stun\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=4
 [remoteHostGTP]=[remoteHostGTP(0)]
 [remotePortGTP]=[remotePortGTP]
-
-Run -seq test "..\tutorial\gtp\test.xml
+Run -seq test "..\tutorial\gtp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+
 [IPVersion]=ipv4
 [localHostETH]=[localHostETH(0)]
 [remoteHostETH]=[remoteHostETH(0)]
-
-Run -seq test "..\tutorial\ethernet\test.xml
+Run -seq test "..\tutorial\ethernet\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-Appuyez sur une touche pour continuer...
+Exception in thread "Thread-5" java.lang.NoSuchMethodError: setRoutingOption
+        at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
+        at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
+        at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
+JpcapThread.java:84)
+        at com.devoteam.srit.xmlloader.core.protocol.Probe.<init>(Probe.java:120
+)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack.parseProbeFromXml(Sta
+ck.java:463)
+        at com.devoteam.srit.xmlloader.core.operations.protocol.OperationCreateP
+robe.execute(OperationCreateProbe.java:63)
+        at com.devoteam.srit.xmlloader.core.operations.Operation.executeAndStat(
+Operation.java:184)
+        at com.devoteam.srit.xmlloader.core.operations.basic.OperationSequence.e
+xecute(OperationSequence.java:88)
+        at com.devoteam.srit.xmlloader.core.Scenario.executeScenario(Scenario.ja
+va:63)
+        at com.devoteam.srit.xmlloader.core.ScenarioRunner.run(ScenarioRunner.ja
+va:254)
+        at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
+9)
+Press any key to continue . . .
+

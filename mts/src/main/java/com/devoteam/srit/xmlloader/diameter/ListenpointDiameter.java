@@ -28,6 +28,7 @@ import java.util.Iterator;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -62,7 +63,7 @@ public class ListenpointDiameter extends Listenpoint
 	private NodeSettings node_settings;
 	
     private DiameterNodeManager diameterNode = null;
-	
+
     /** Creates a new instance of Listenpoint */
     public ListenpointDiameter(Stack stack) throws Exception
     {
@@ -70,22 +71,6 @@ public class ListenpointDiameter extends Listenpoint
         Capability capability = createCapability(null);
         this.node_settings = createNodeSettings(capability, null, null);               
     }
-
-	/** Creates a Listenpoint specific from XML tree*/
-	public ListenpointDiameter(Stack stack, Element root) throws Exception	
-	{
-		super(stack, root);
-
-		MsgDiameterParser.getInstance().doDictionnary(root, "0", true);
-		
-		Message capabilityMessage = new Message();
-		MsgDiameterParser.getInstance().parseAllAVPs(capabilityMessage, root);
-        
-		Element element = root.element("nodeSettings");
-    			
-        Capability capability = createCapability(capabilityMessage);
-        this.node_settings = createNodeSettings(capability, capabilityMessage, element);
-	}
 
     /** create a listenpoint  */
     @Override
@@ -528,5 +513,23 @@ public class ListenpointDiameter extends Listenpoint
 	        }
 	    }
     }
-    
+ 
+    /** 
+     * Parse the message from XML element 
+     */
+    public void parseMsgFromXml(Element root, Runner runner) throws Exception
+    {
+		super.parseMsgFromXml(root, runner);
+
+		MsgDiameterParser.getInstance().doDictionnary(root, "0", true);
+		
+		Message capabilityMessage = new Message();
+		MsgDiameterParser.getInstance().parseAllAVPs(capabilityMessage, root);
+        
+		Element element = root.element("nodeSettings");
+    			
+        Capability capability = createCapability(capabilityMessage);
+        this.node_settings = createNodeSettings(capability, capabilityMessage, element);
+	}
+
 }

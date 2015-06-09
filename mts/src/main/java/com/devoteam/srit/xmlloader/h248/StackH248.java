@@ -71,18 +71,10 @@ public class StackH248 extends Stack
         int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
         if (port > 0)
         {
-        	Listenpoint listenpoint = new ListenpointH248(this);
+        	Listenpoint listenpoint = new Listenpoint(this);
             createListenpoint(listenpoint, StackFactory.PROTOCOL_H248);
         }
         endLineCharacters = getConfig().getString("END_LINE_CHARACTERS", "CRLF");
-    }
-
-    /** Creates a Listenpoint specific to each Stack */
-    @Override
-    public Listenpoint parseListenpointFromXml(Element root) throws Exception 
-    { 
-        Listenpoint listenpoint = new ListenpointH248(this, root);
-        return listenpoint;        
     }
 
     /** Send the message from the given scenario */
@@ -213,11 +205,6 @@ public class StackH248 extends Stack
 
         return true;
     }
-
-
-
-
-
 
 
     /** Returns the Config object to access the protocol config file*/

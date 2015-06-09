@@ -46,12 +46,6 @@ public class ListenpointTcpNIO extends Listenpoint
         super(stack);
     }
 
-    /** Creates a Listenpoint specific from XML tree*/
-    public ListenpointTcpNIO(Stack stack, Element root) throws Exception
-    {
-        super(stack, root);
-    }
-
     /** Creates a new instance of Listenpoint */
     public ListenpointTcpNIO(Stack stack, String name, String host, int port) throws Exception
     {

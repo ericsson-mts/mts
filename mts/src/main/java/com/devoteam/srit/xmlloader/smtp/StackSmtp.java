@@ -32,7 +32,6 @@ import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.pop.ListenpointPop;
 import com.devoteam.srit.xmlloader.sip.ListenpointSip;
 
 import java.io.InputStream;
@@ -48,17 +47,9 @@ public class StackSmtp extends Stack
         int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
         if (port > 0)
         {
-            Listenpoint listenpoint = new ListenpointSmtp(this);
+            Listenpoint listenpoint = new Listenpoint(this);
             createListenpoint(listenpoint, StackFactory.PROTOCOL_SMTP);
         }
-    }
-
-    /** Creates a Listenpoint specific to each Stack */
-    @Override
-    public Listenpoint parseListenpointFromXml(Element root) throws Exception 
-    { 
-        Listenpoint listenpoint = new ListenpointSmtp(this, root);
-        return listenpoint;        
     }
 
 	/** Creates a specific Msg */

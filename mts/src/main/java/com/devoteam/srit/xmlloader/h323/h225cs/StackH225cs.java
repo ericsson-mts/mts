@@ -67,7 +67,7 @@ public class StackH225cs extends Stack {
 
         int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
         if (port > 0) {
-            Listenpoint listenpoint = new ListenpointH225cs(this);
+            Listenpoint listenpoint = new Listenpoint(this);
             createListenpoint(listenpoint, StackFactory.PROTOCOL_H225CS);
         }
     }
@@ -80,11 +80,6 @@ public class StackH225cs extends Stack {
     @Override
     public XMLElementReplacer getElementReplacer() {
         return XMLElementTextMsgParser.instance();
-    }
-
-    @Override
-    public Listenpoint parseListenpointFromXml(Element root) throws Exception {
-        return new ListenpointH225cs(this, root);
     }
 
     @Override

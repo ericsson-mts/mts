@@ -23,7 +23,6 @@
 
 package com.devoteam.srit.xmlloader.core.protocol;
 
-import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.ScenarioRunner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
@@ -42,6 +41,7 @@ import dk.i1.sctp.SCTPData;
 import org.dom4j.Element;
 
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,8 +51,6 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.Timer;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -398,10 +396,65 @@ public abstract class Stack
     	throw new ExecutionException("Bug developpment : method not yet implemented", new Exception());    	
     }
 
+    /** Get the class object for a given string */
+    public static Class<?> getClassFromStack(Class clStack, String type) throws Exception
+    {
+    	String stackClassname = clStack.getSimpleName();
+    	String packageName = clStack.getPackage().getName();
+    	String acronyme = stackClassname.substring(5);
+    	String msgClassname = packageName + "." + type + acronyme;
+    	//java.lang.reflect.Type.GetType(msgClassname)
+    	Class<?> cl = getClassFromCanonicalName(msgClassname);
+    	return cl;
+    }
+
+    /** Get the class object for a given string */
+    public static Class<?> getClassFromCanonicalName(String className) throws Exception
+    {
+		try
+		{
+			//java.lang.reflect.Type.GetType(msgClassname)
+			Class<?> cl = Class.forName(className);
+			return cl;
+    	} 
+    	catch(ClassNotFoundException e) 
+    	{
+    	      // it does not exist on the classpath
+    	}
+    	return null;
+    }
+    
     /** Creates a Listenpoint specific to each Stack */
     public Listenpoint parseListenpointFromXml(Element root) throws Exception 
     {
-    	throw new ExecutionException("Bug developpment : method not yet implemented", new Exception());    	
+    	Class<?> clStack = this.getClass();
+    	Class<?> cl = getClassFromStack(clStack, "Listenpoint");
+    	if (cl != null)
+    	{
+	    	Constructor<?> constr = cl.getConstructor(Stack.class); // obtenir le constructeur (Stack)
+	    	Listenpoint lp  = (Listenpoint) constr.newInstance(this); // appeler le contructeur
+	    	lp.parseMsgFromXml(root, null);
+	    	return lp;
+    	}
+    	Class<?> clSuperStack = this.getClass().getSuperclass();
+    	Class<?> clSuper = getClassFromStack(clSuperStack, "Listenpoint");
+    	if (clSuper != null)
+    	{
+	    	Constructor<?> constr = clSuper.getConstructor(Stack.class); // obtenir le constructeur (Stack)
+	    	Listenpoint lp  = (Listenpoint) constr.newInstance(this); // appeler le contructeur
+	    	lp.parseMsgFromXml(root, null);
+	    	return lp;
+    	}
+    	Class<?> clGenericStack = com.devoteam.srit.xmlloader.core.protocol.Stack.class;
+    	Class<?> clGeneric = getClassFromStack(clGenericStack, "Listenpoint");
+    	if (clGeneric != null)
+    	{
+	    	Constructor<?> constr = clGeneric.getConstructor(Stack.class); // obtenir le constructeur (Stack)
+	    	Listenpoint lp  = (Listenpoint) constr.newInstance(this); // appeler le contructeur
+	    	lp.parseMsgFromXml(root, null);
+	    	return lp;
+    	}    	
+    	return null;
     }
 
     /** Creates a probe specific to each Stack */

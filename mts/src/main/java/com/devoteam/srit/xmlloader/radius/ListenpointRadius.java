@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.radius;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.ThreadPool;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
@@ -34,7 +35,10 @@ import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.diameter.MsgDiameterParser;
 
+import dk.i1.diameter.Message;
+import dk.i1.diameter.node.Capability;
 import gp.net.radius.RadiusSocket;
 import gp.net.radius.data.IdentifierHandler;
 import gp.net.radius.data.RadiusMessage;
@@ -54,17 +58,8 @@ public class ListenpointRadius extends Listenpoint implements Runnable
     public ListenpointRadius(Stack stack) throws Exception
     {
     	super(stack);
-    }
-
-	/** Creates a Listenpoint specific from XML tree*/
-	public ListenpointRadius(Stack stack, Element root) throws Exception	
-	{
-		super(stack, root);
-		
-        String secret     = root.attributeValue("secret");
-        this.secret = new ReadOnlyDefaultArray(secret.getBytes());
         this.identifierHandler = new IdentifierHandler();
-	}
+    }
 
     public Array getSecret()
     {
@@ -198,5 +193,19 @@ public class ListenpointRadius extends Listenpoint implements Runnable
         	// nothing to do
         }
     }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    public void parseMsgFromXml(Element root, Runner runner) throws Exception
+    {
+		super.parseMsgFromXml(root, runner);
+
+        String secret     = root.attributeValue("secret");
+        if (secret !=  null)
+        {
+        	this.secret = new ReadOnlyDefaultArray(secret.getBytes());
+        }
+	}    
 
 }

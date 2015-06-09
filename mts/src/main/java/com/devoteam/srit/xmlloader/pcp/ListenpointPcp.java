@@ -43,12 +43,6 @@ public class ListenpointPcp extends Listenpoint
         super(stack);
     }
     
-	/** Creates a Listenpoint specific from XML tree*/
-	public ListenpointPcp(Stack stack, Element root) throws Exception
-	{
-		super(stack, root);
-	}
-
 	/** Send a Msg to Channel*/
     @Override
     public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
@@ -68,7 +62,7 @@ public class ListenpointPcp extends Listenpoint
             msg.setRemotePort(remotePort);
 		}        
         ((PCPServerOperation)listenpointTcp.getAttachment()).send(((MsgPcp)msg).getFList(), ((MsgPcp)msg).getOpCode());
-//		return super.sendMessage(msg, remoteHost, remotePort, transport);
+		//return super.sendMessage(msg, remoteHost, remotePort, transport);
         return true;
     }
         

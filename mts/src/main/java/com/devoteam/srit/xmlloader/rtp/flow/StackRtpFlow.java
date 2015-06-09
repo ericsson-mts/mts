@@ -108,12 +108,6 @@ public class StackRtpFlow extends StackRtp {
     	this.ssrcAndListenpointName.put(key, value);
     }
     
-    /** Creates a Listenpoint specific to each Stack */
-    @Override
-    public synchronized Listenpoint parseListenpointFromXml(Element root) throws Exception {
-        return new ListenpointRtpFlow(this, root);
-    }
-
     /** override method for the possibility to send a flow */
     @Override
     public boolean sendMessage(Msg msg) throws Exception {

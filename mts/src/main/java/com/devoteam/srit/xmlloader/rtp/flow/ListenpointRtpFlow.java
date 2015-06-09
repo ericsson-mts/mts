@@ -25,7 +25,9 @@ package com.devoteam.srit.xmlloader.rtp.flow;
 
 import gp.utils.arrays.Array;
 
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
+
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.newstats.StatKey;
@@ -56,9 +58,6 @@ public class ListenpointRtpFlow extends Listenpoint {
     protected boolean ignoreReceivedMessages;
     
     private boolean isSecured = false;
-    public boolean isSecured() {
-		return isSecured;
-	}
 
 	private SRTPTransformer cipherSender = null;
     private SRTPTransformer cipherReceiver = null;
@@ -66,109 +65,12 @@ public class ListenpointRtpFlow extends Listenpoint {
     private RtpFlowEndTask _endOfFlowTask = null;
 
     private boolean _removed = false;
-
-    /** Creates a Listenpoint specific from XML tree*/
-    public ListenpointRtpFlow(Stack stack, Element root) throws Exception {
-        super(stack, root);
-
-        Element header = root.element("flow");
-        if (root.element("srtpSender") != null)
-        	this.parseSrtp(root, 0);
-        if (root.element("srtpReceiver") != null)
-        	this.parseSrtp(root, 1);
-
-        this.endTimerNoPacket = ((StackRtpFlow) stack).endTimerNoPacket; // set the default value from config file
-        if (header != null) {
-            String endTimerNoPacketStr = header.attributeValue("endTimerNoPacket");
-            //override value if given in listenpoint creation
-            if (endTimerNoPacketStr != null) {
-                this.endTimerNoPacket = Float.parseFloat(endTimerNoPacketStr); //set time given in attribute in seconds
-            }
-        }
-
-        this.endTimerSilentFlow = ((StackRtpFlow) stack).endTimerSilentFlow; // set the default value from config file
-        if (header != null) {
-
-            String endTimerSilentFlowStr = header.attributeValue("endTimerSilentFlow");
-            if (endTimerSilentFlowStr != null) {
-                endTimerSilentFlow = Float.parseFloat(endTimerSilentFlowStr); //set time given in attribute in seconds
-            }
-        }
-
-        this.endTimerPeriodic = ((StackRtpFlow) stack).endTimerPeriodic; // set the default value from config file
-        if (header != null) {
-            String endTimerPeriodicStr = header.attributeValue("endTimerPeriodic");
-            if (endTimerPeriodicStr != null) {
-                endTimerPeriodic = Float.parseFloat(endTimerPeriodicStr);//set time given in attribute in seconds
-            }
-        }
-
-        this.qosMeasurment = ((StackRtpFlow) stack).qosMeasurment; // set the default value from config file
-        if (header != null) {
-            String qosMeasurmentStr = header.attributeValue("qosMeasurment");
-            if (qosMeasurmentStr != null) {
-                qosMeasurment = Boolean.parseBoolean(qosMeasurmentStr);
-            }
-        }
-
-        this.ignoreReceivedMessages = ((StackRtpFlow) stack).ignoreReceivedMessages; // set the default value from config file
-        if (header != null) {
-            String ignoreReceivedMessagesStr = header.attributeValue("ignoreReceivedMessages");
-            if (ignoreReceivedMessagesStr != null) {
-                ignoreReceivedMessages = Boolean.parseBoolean(ignoreReceivedMessagesStr);
-            }
-        }
-    }
-    
-    private void parseSrtp(Element root, int SR) throws Exception
+        
+	/** Creates a new instance of Listenpoint */
+    public ListenpointRtpFlow(Stack stack) throws Exception
     {
-    	String algorithm = root.element(SR == 0 ? "srtpSender" : "srtpReceiver").attributeValue("algorithm");
-		String[] algoExplode = algorithm.replace('_', ' ').split(" ");
-		String masterKeyAndSalt = root.element(SR == 0 ? "srtpSender" : "srtpReceiver").attributeValue("masterKeyAndSalt");
-		String keyDerivationRate = root.element(SR == 0 ? "srtpSender" : "srtpReceiver").attributeValue("keyDerivationRate");
-		String mki = root.element(SR == 0 ? "srtpSender" : "srtpReceiver").attributeValue("mki");
-
-		if (algoExplode.length != 6)
-			throw new Exception("wrong cipher format : expected CIPHER_MODE_KEYLENGTH_AUTH_AUTHALGO_AUTHTAGLENGTH, got " + algorithm);
-		
-		byte[] masterKey = new byte[16];
-		byte[] masterSalt = new byte[14];
-		byte[] masterKeyAndSaltFromB64 = Array.fromBase64String(masterKeyAndSalt).getBytes();
-		
-		int KDR = 0;
-		try {
-			KDR = (int) (keyDerivationRate != null ? Math.pow(Integer.parseInt(keyDerivationRate.replace('^', ' ').split(" ")[0]), Integer.parseInt(keyDerivationRate.replace('^', ' ').split(" ")[1])) : 0);
-		}
-		catch (Exception e)
-		{
-			try {KDR = Integer.parseInt(keyDerivationRate);}
-			catch (Exception e1) {}
-		}
-		
-		if (masterKeyAndSaltFromB64.length != 30)
-			throw new Exception("masterKeyAndSalt from Base64 has length not equals to 30 bytes : " + new String(masterKeyAndSaltFromB64, "UTF-8"));
-		
-		for (int i = 0; i < 16; i++)
-    		masterKey[i] = masterKeyAndSaltFromB64[i];
-    	for (int i = 0; i < 14; i++)
-    		masterSalt[i] = masterKeyAndSaltFromB64[i + 16];
-		
-    	SRTPPolicy srtpPolicy = new SRTPPolicy(algoExplode);
-		
-		this.setSecured(true);
-		
-		SRTPTransformEngine engine = new SRTPTransformEngine(masterKey, masterSalt, srtpPolicy, srtpPolicy, null);
-		
-		if (SR == 0)
-			this.cipherSender = new SRTPTransformer(engine);
-		if (SR == 1)
-			this.cipherReceiver = new SRTPTransformer(engine);
+        super(stack);
     }
-    
-    private void setSecured(boolean b) {
-		// TODO Auto-generated method stub
-		this.isSecured = b;
-	}
 
 	/** Creates a new instance of Listenpoint */
     public ListenpointRtpFlow(Stack stack, String name, String host, int port) throws Exception
@@ -204,6 +106,10 @@ public class ListenpointRtpFlow extends Listenpoint {
         return _removed;
     }
 
+    public boolean isSecured() {
+		return isSecured;
+	}
+
     public String toString() {
         String ret = super.toString();
         ret += " endTimerNoPacket = " + endTimerNoPacket;
@@ -215,8 +121,6 @@ public class ListenpointRtpFlow extends Listenpoint {
         }
         return ret;
     }
-
-
 
     protected synchronized void receiveMessage(MsgRtp message) throws Exception {
         // get the stack now (simpler)
@@ -302,4 +206,107 @@ public class ListenpointRtpFlow extends Listenpoint {
 			return this.cipherSender;
 		return this.cipherReceiver;
 	}
+	
+    /** 
+     * Parse the message from XML element 
+     */
+    public void parseMsgFromXml(Element root, Runner runner) throws Exception
+    {
+		super.parseMsgFromXml(root, runner);
+		
+        Element header = root.element("flow");
+        if (root.element("srtpSender") != null)
+        	this.parseSrtp(root, 0);
+        if (root.element("srtpReceiver") != null)
+        	this.parseSrtp(root, 1);
+		
+        this.endTimerNoPacket = ((StackRtpFlow) stack).endTimerNoPacket; // set the default value from config file
+        if (header != null) {
+            String endTimerNoPacketStr = header.attributeValue("endTimerNoPacket");
+            //override value if given in listenpoint creation
+            if (endTimerNoPacketStr != null) {
+                this.endTimerNoPacket = Float.parseFloat(endTimerNoPacketStr); //set time given in attribute in seconds
+            }
+        }
+
+        this.endTimerSilentFlow = ((StackRtpFlow) stack).endTimerSilentFlow; // set the default value from config file
+        if (header != null) {
+
+            String endTimerSilentFlowStr = header.attributeValue("endTimerSilentFlow");
+            if (endTimerSilentFlowStr != null) {
+                endTimerSilentFlow = Float.parseFloat(endTimerSilentFlowStr); //set time given in attribute in seconds
+            }
+        }
+
+        this.endTimerPeriodic = ((StackRtpFlow) stack).endTimerPeriodic; // set the default value from config file
+        if (header != null) {
+            String endTimerPeriodicStr = header.attributeValue("endTimerPeriodic");
+            if (endTimerPeriodicStr != null) {
+                endTimerPeriodic = Float.parseFloat(endTimerPeriodicStr);//set time given in attribute in seconds
+            }
+        }
+
+        this.qosMeasurment = ((StackRtpFlow) stack).qosMeasurment; // set the default value from config file
+        if (header != null) {
+            String qosMeasurmentStr = header.attributeValue("qosMeasurment");
+            if (qosMeasurmentStr != null) {
+                qosMeasurment = Boolean.parseBoolean(qosMeasurmentStr);
+            }
+        }
+
+        this.ignoreReceivedMessages = ((StackRtpFlow) stack).ignoreReceivedMessages; // set the default value from config file
+        if (header != null) {
+            String ignoreReceivedMessagesStr = header.attributeValue("ignoreReceivedMessages");
+            if (ignoreReceivedMessagesStr != null) {
+                ignoreReceivedMessages = Boolean.parseBoolean(ignoreReceivedMessagesStr);
+            }
+        }
+
+	}
+
+    private void parseSrtp(Element root, int SR) throws Exception
+    {
+    	String algorithm = root.element(SR == 0 ? "srtpSender" : "srtpReceiver").attributeValue("algorithm");
+		String[] algoExplode = algorithm.replace('_', ' ').split(" ");
+		String masterKeyAndSalt = root.element(SR == 0 ? "srtpSender" : "srtpReceiver").attributeValue("masterKeyAndSalt");
+		String keyDerivationRate = root.element(SR == 0 ? "srtpSender" : "srtpReceiver").attributeValue("keyDerivationRate");
+		String mki = root.element(SR == 0 ? "srtpSender" : "srtpReceiver").attributeValue("mki");
+
+		if (algoExplode.length != 6)
+			throw new Exception("wrong cipher format : expected CIPHER_MODE_KEYLENGTH_AUTH_AUTHALGO_AUTHTAGLENGTH, got " + algorithm);
+		
+		byte[] masterKey = new byte[16];
+		byte[] masterSalt = new byte[14];
+		byte[] masterKeyAndSaltFromB64 = Array.fromBase64String(masterKeyAndSalt).getBytes();
+		
+		int KDR = 0;
+		try {
+			KDR = (int) (keyDerivationRate != null ? Math.pow(Integer.parseInt(keyDerivationRate.replace('^', ' ').split(" ")[0]), Integer.parseInt(keyDerivationRate.replace('^', ' ').split(" ")[1])) : 0);
+		}
+		catch (Exception e)
+		{
+			try {KDR = Integer.parseInt(keyDerivationRate);}
+			catch (Exception e1) {}
+		}
+		
+		if (masterKeyAndSaltFromB64.length != 30)
+			throw new Exception("masterKeyAndSalt from Base64 has length not equals to 30 bytes : " + new String(masterKeyAndSaltFromB64, "UTF-8"));
+		
+		for (int i = 0; i < 16; i++)
+    		masterKey[i] = masterKeyAndSaltFromB64[i];
+    	for (int i = 0; i < 14; i++)
+    		masterSalt[i] = masterKeyAndSaltFromB64[i + 16];
+		
+    	SRTPPolicy srtpPolicy = new SRTPPolicy(algoExplode);
+		
+    	this.isSecured = true;
+		
+		SRTPTransformEngine engine = new SRTPTransformEngine(masterKey, masterSalt, srtpPolicy, srtpPolicy, null);
+		
+		if (SR == 0)
+			this.cipherSender = new SRTPTransformer(engine);
+		if (SR == 1)
+			this.cipherReceiver = new SRTPTransformer(engine);
+    }
+
 }

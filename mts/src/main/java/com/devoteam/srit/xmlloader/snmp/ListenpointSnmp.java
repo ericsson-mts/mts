@@ -51,20 +51,10 @@ public class ListenpointSnmp extends Listenpoint
     Snmp snmp = null;
     ProcessMessage processMessage = null;
 
-    Stack stack;
-
     /** Creates a new instance of Listenpoint */
     public ListenpointSnmp(Stack stack) throws Exception
     {
         super(stack);
-        this.stack = stack;
-    }
-
-    /** Creates a Listenpoint specific from XML tree*/
-    public ListenpointSnmp(Stack stack, Element root) throws Exception
-    {
-        super(stack, root);
-        this.stack = stack;
     }
 
     @Override

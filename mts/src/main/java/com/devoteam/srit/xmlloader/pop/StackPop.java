@@ -53,17 +53,10 @@ public class StackPop extends Stack {
         int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
         if (port > 0)
         {
-        	Listenpoint listenpoint = new ListenpointPop(this);
+        	Listenpoint listenpoint = new Listenpoint(this);
             createListenpoint(listenpoint, StackFactory.PROTOCOL_POP);
         }
 	}
-
-    /** Creates a Listenpoint specific to each Stack */
-    public Listenpoint parseListenpointFromXml(Element root) throws Exception 
-    { 
-        Listenpoint listenpoint = new ListenpointPop(this, root);
-        return listenpoint;        
-    }
 
     /** Creates a Channel specific to each Stack */
     @Override

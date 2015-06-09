@@ -44,12 +44,6 @@ public class ListenpointSctp extends Listenpoint {
     	super(stack);
     }
 
-	/** Creates a Listenpoint specific from XML tree*/
-	public ListenpointSctp(Stack stack, Element root) throws Exception	
-	{
-		super(stack, root);
-	}
-
     /** Creates a new instance of Listenpoint */
     public ListenpointSctp(Stack stack, String name, String host, int port) throws Exception
     {
