@@ -46,6 +46,7 @@ public class ChannelRadius extends Channel implements Runnable
 
     private IdentifierHandler identifierHandler;
 
+    /** Creates a new instance of Channel */
     public ChannelRadius(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, String secret) throws Exception
     {
         super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);

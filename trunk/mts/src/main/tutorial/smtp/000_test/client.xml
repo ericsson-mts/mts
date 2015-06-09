@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario><!--name="Send Request to server"-->
-<openSessionSMTP sessionName="session1" localHost="[localHostSMTP]" remoteHost="[remoteHostSMTP]" remotePort="2220" />
+<openChannelSMTP name="session1" localHost="[localHostSMTP]" remoteHost="[remoteHostSMTP]" remotePort="2220" />
+<!--openCHannelSMTP name="session1" localHost="localhost" localPort="12345" remoteHost="localhost" remotePort="2222" /-->
 
-<!--openSessionSMTP sessionName="session1" localHost="localhost" localPort="12345" remoteHost="localhost" remotePort="2222" /-->
-<sendRequestSMTP name="Send EHLO" sessionName="session1" state= "true"><![CDATA[EHLO gmail.com]]>
-</sendRequestSMTP>
-<receiveResponseSMTP name="Attente reponse" sessionName="session1" state= "true">
-</receiveResponseSMTP>
+<sendMessageSMTP name="Send EHLO" channel="session1"><![CDATA[EHLO gmail.com]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" request="false">
+</receiveMessageSMTP>
 
-<sendRequestSMTP name="Send MAIL FROM" sessionName="session1" state= "true"><![CDATA[MAIL FROM:<Smith@gmail.com>]]>
-</sendRequestSMTP>
-<receiveResponseSMTP name="Attente reponse" sessionName="session1" state= "true">	
-</receiveResponseSMTP>
+<sendMessageSMTP name="Send MAIL FROM" channel="session1"><![CDATA[MAIL FROM:<Smith@gmail.com>]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" request="false">	
+</receiveMessageSMTP>
 
-<sendRequestSMTP name="Send Request RCPT TO" sessionName="session1" state= "true"><![CDATA[RCPT TO:<Jones@hotmail.com>]]>
-</sendRequestSMTP>
-<receiveResponseSMTP name="Attente reponse" sessionName="session1" state= "true">	
-</receiveResponseSMTP>
+<sendMessageSMTP name="Send Request RCPT TO" channel="session1"><![CDATA[RCPT TO:<Jones@hotmail.com>]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" request="false">	
+</receiveMessageSMTP>
 
-<sendRequestSMTP name="Send Request RCPT TO" sessionName="session1" state= "true"><![CDATA[RCPT TO:<Green@hotmail.com>]]>
-</sendRequestSMTP>
-<receiveResponseSMTP name="Attente reponse" sessionName="session1" state= "true">	
-</receiveResponseSMTP>
-<closeSessionSMTP sessionName="session1"/>
+<sendMessageSMTP name="Send Request RCPT TO" channel="session1"><![CDATA[RCPT TO:<Green@hotmail.com>]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" request="false">	
+</receiveMessageSMTP>
+<closeChannelSMTP name="session1"/>
 </scenario>

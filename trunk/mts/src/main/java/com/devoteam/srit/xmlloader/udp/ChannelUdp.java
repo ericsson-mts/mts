@@ -37,6 +37,7 @@ public class ChannelUdp extends Channel
 
     private Channel channel;
 
+    /** Creates a new instance of Channel */
     public ChannelUdp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, boolean aConnected) throws Exception
     {
         super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);

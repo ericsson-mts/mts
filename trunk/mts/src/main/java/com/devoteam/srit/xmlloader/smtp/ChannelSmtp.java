@@ -23,35 +23,30 @@
 
 package com.devoteam.srit.xmlloader.smtp;
 
-//import java.net.InetSocketAddress;
-//import java.net.Socket;
-
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
+
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class ChannelSmtp extends Channel
 {
-    private ChannelTcp channel = null;
     private TransactionId transID;
     private String typeSent;
 
-    /** Creates a new instance of ChannelSmtp */
-    public ChannelSmtp(String name, String aLocalHost, String aLocalPort,
-            String aRemoteHost, String aRemotePort, String aProtocol) throws Exception
+    /** Creates a new instance of Channel */
+    public ChannelSmtp(Stack stack) throws Exception
     {
-        super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        channel = new ChannelTcp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        transID = null;
-        typeSent = null;
+        super(stack);
     }
 
+    /** Creates a new instance of Channel */
     public ChannelSmtp(String name, Listenpoint listenpoint, Socket socket) throws Exception
     {
         super(
@@ -101,37 +96,6 @@ public class ChannelSmtp extends Channel
         }
         return super.receiveMessage(msg);
     }
-
-    public boolean open() throws Exception
-    {
-        boolean result = channel.open();
-
-        if(result && isServer())
-        {
-            String welcomeMsg = StackFactory.getStack(getProtocol()).getConfig().getString("server.WELCOME_MESSAGE");
-            if(!welcomeMsg.equalsIgnoreCase(""))
-            {
-                //send welcome message
-                MsgSmtp msg = new MsgSmtp(welcomeMsg);
-                channel.sendMessage(msg);
-            }
-        }
-        return result;
-    }
-
-    public boolean close()
-    {
-        try
-        {
-            channel.close();
-        }
-        catch (Exception e)
-        {
-            // Nothing to do
-        }
-        channel = null;
-        return true;
-    }
     
     /** Get the transport protocol of this message */
     public String getTransport() 
@@ -140,6 +104,6 @@ public class ChannelSmtp extends Channel
     }
 
     public boolean isServer(){
-        return (channel.getListenpointTcp() != null);
+        return (channel != null);
     }
 }

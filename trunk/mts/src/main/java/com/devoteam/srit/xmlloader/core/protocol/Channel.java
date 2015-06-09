@@ -53,8 +53,8 @@ public class Channel
 	
 	protected Stack stack;
 
-    private Channel channel = null;
-    private String transport = null;
+    protected Channel channel = null;
+    protected String transport = null;
 	
     /** Creates a new instance of Channel*/
     public Channel(Stack stack)
@@ -188,7 +188,11 @@ public class Channel
 	/** Open a channel */
     public boolean open() throws Exception
     {
-        if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
+    	if (transport == null)
+    	{
+    		return true;
+    	}
+    	else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
         {
         	channel = new ChannelTcp(this.name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
         }
@@ -289,24 +293,30 @@ public class Channel
     public void parseFromXml(Element root, String protocol) throws Exception
     {
     	this.protocol = protocol;
-        this.name       = root.attributeValue("name");
+        this.name = root.attributeValue("name");
         String localHost  = root.attributeValue("localHost");
-        if (localHost ==  null)
+        if (localHost !=  null)
         {
         	localHost = InetAddress.getByName(localHost).getHostAddress();
         	this.localHost = Utils.formatIPAddress(localHost);
         }
         String localPort  = root.attributeValue("localPort");
-        this.localPort = Integer.parseInt(localPort);
+        if (localPort != null)
+        {
+        	this.localPort = Integer.parseInt(localPort);
+        }
         
         String remoteHost = root.attributeValue("remoteHost");
-        if (remoteHost == null)
+        if (remoteHost != null)
         {
         	remoteHost = InetAddress.getByName(remoteHost).getHostAddress();
         	this.remoteHost = Utils.formatIPAddress(remoteHost);
         }
         String remotePort = root.attributeValue("remotePort");
-        this.remotePort = Integer.parseInt(remotePort);
+        if (remotePort != null)
+        {
+        	this.remotePort = Integer.parseInt(remotePort);
+        }
         
         String transport = root.attributeValue("transport");
         if (transport == null)

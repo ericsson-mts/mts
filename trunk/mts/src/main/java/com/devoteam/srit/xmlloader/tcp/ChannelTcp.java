@@ -26,12 +26,13 @@ package com.devoteam.srit.xmlloader.tcp;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.tcp.bio.ChannelTcpBIO;
 import com.devoteam.srit.xmlloader.tcp.bio.SocketTcpBIO;
 import com.devoteam.srit.xmlloader.tcp.nio.ChannelTcpNIO;
-import java.net.InetSocketAddress;
 
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
@@ -41,42 +42,50 @@ import java.net.Socket;
 public class ChannelTcp extends Channel {
 
     private boolean nio = Config.getConfigByName("tcp.properties").getBoolean("USE_NIO", false);
-    private Channel channel;
 
     /** Creates a new instance of ChannelTcp */
-    public ChannelTcp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception {
+    public ChannelTcp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception 
+    {
         super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        if (nio) {
+        if (nio) 
+        {
             channel = new ChannelTcpNIO(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
         }
-        else {
+        else 
+        {
             channel = new ChannelTcpBIO(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
         }
     }
 
     /** Creates a new instance of ChannelTcp */
-    public ChannelTcp(String name, Listenpoint listenpoint, Socket socket) throws Exception {
+    public ChannelTcp(String name, Listenpoint listenpoint, Socket socket) throws Exception 
+    {
         super(name,
                 ((InetSocketAddress) socket.getLocalSocketAddress()).getAddress().getHostAddress(),
                 Integer.toString(((InetSocketAddress) socket.getLocalSocketAddress()).getPort()),
                 ((InetSocketAddress) socket.getRemoteSocketAddress()).getAddress().getHostAddress(),
                 Integer.toString(((InetSocketAddress) socket.getRemoteSocketAddress()).getPort()),
                 listenpoint.getProtocol());
-        if (nio) {
+        if (nio) 
+        {
             channel = new ChannelTcpNIO(name, listenpoint, socket);
         }
-        else {
+        else 
+        {
             channel = new ChannelTcpBIO(name, listenpoint, socket);
         }
     }
 
     /** Creates a new instance of ChannelTcp */
-    public ChannelTcp(ListenpointTcp listenpointTcp, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol) {
+    public ChannelTcp(ListenpointTcp listenpointTcp, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol) 
+    {
         super(localHost, localPort, remoteHost, remotePort, aProtocol);
-        if (nio) {
+        if (nio) 
+        {
             channel = new ChannelTcpNIO(listenpointTcp, localHost, localPort, remoteHost, remotePort, aProtocol);
         }
-        else {
+        else 
+        {
             channel = new ChannelTcpBIO(listenpointTcp, localHost, localPort, remoteHost, remotePort, aProtocol);;
         }
     }
@@ -95,24 +104,31 @@ public class ChannelTcp extends Channel {
     }
 
     /** Get the transport protocol of this message */
-    public String getTransport() {
-        return channel.getTransport();
+    public String getTransport() 
+    {
+        return StackFactory.PROTOCOL_TCP;
     }
 
-    public Listenpoint getListenpointTcp() {
-        if(nio){
+    public Listenpoint getListenpointTcp() 
+    {
+        if(nio)
+        {
             return ((ChannelTcpNIO) channel).getListenpointTcp();
         }
-        else{
+        else
+        {
             return ((ChannelTcpBIO) channel).getListenpointTcp();
         }
     }
 
-    public SocketTcpBIO getSocketTcp() {
-        if(nio){
+    public SocketTcpBIO getSocketTcp() 
+    {
+        if(nio)
+        {
             throw new RuntimeException("probably not supported with NIO");
         }
-        else{
+        else
+        {
             return ((ChannelTcpBIO) channel).getSocketTcp();
         }
     }

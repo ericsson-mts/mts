@@ -52,30 +52,6 @@ public class StackSmtp extends Stack
         }
     }
 
-	/** Creates a specific Msg */
-    @Override
-    public Channel parseChannelFromXml(Element root, String protocol) throws Exception
-    {
-        String name = root.attributeValue("name");
-        // deprecated part //
-        if(name == null)
-            name = root.attributeValue("sessionName");
-        // deprecated part //
-        String localHost = root.attributeValue("localHost");
-        String localPort = root.attributeValue("localPort");
-        String remoteHost = root.attributeValue("remoteHost");
-        String remotePort = root.attributeValue("remotePort");
-
-        if (existsChannel(name))
-        {
-            return getChannel(name);
-        }
-        else
-        {
-            return new ChannelSmtp(name, localHost, localPort, remoteHost, remotePort, protocol);
-        }
-    }
-
     /*
      * Get the info for MsgSMTP from xml doc
      */
@@ -85,27 +61,12 @@ public class StackSmtp extends Stack
     	msgSmtp.parseFromXml(request, root, runner);
     	
         String transactionIdStr = root.attributeValue("transactionId");
-
         if (transactionIdStr != null)
         {
             TransactionId transactionId = new TransactionId(transactionIdStr);
             msgSmtp.setTransactionId(transactionId);
             Msg requestSmtp = StackFactory.getStack(StackFactory.PROTOCOL_SMTP).getInTransaction(transactionId).getBeginMsg();
             msgSmtp.setType(requestSmtp.getType());
-        }
-        else
-        {
-            String channelName = root.attributeValue("channel");
-            // deprecated part //
-            if(channelName == null)
-                channelName = root.attributeValue("sessionName");
-            // deprecated part //
-            Channel channel = getChannel(channelName);
-            if (channel == null)
-            {
-                throw new ExecutionException("The channel <name=" + channelName + "> does not exist");
-            }
-            msgSmtp.setChannel(getChannel(channelName));
         }
         return msgSmtp;
     }
