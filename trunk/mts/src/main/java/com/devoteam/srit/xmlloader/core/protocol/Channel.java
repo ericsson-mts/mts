@@ -24,11 +24,14 @@
 package com.devoteam.srit.xmlloader.core.protocol;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
-
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.sigtran.ChannelSigtran;
 
+import java.net.InetAddress;
 import java.net.URI;
+
+import org.dom4j.Element;
 
 /**
  * Interface générique servant a identifier un channel, au minimum, par son URL
@@ -39,14 +42,25 @@ public abstract class Channel
 
     private String UID;
     
-    private String name;
-    private String localHost;
-    private int localPort = 0;
-    private String remoteHost;
-    private int remotePort = 0;
+    protected String name;
+    protected String localHost;
+    protected int localPort = 0;
+    protected String remoteHost;
+    protected int remotePort = 0;
 
-	private String protocol;
-        
+	protected String protocol;
+	
+	protected Stack stack;
+
+	//private String transport;
+	//private Channel channel = null;
+	
+    /** Creates a new instance of Channel*/
+    public Channel(Stack stack)
+    {
+        this.stack = stack;
+    }
+
     /** Creates a new instance of Channel*/
     public Channel(String name)
     {
@@ -54,6 +68,7 @@ public abstract class Channel
     }
 
     /** Creates a new instance of Channel */
+    /*
     public Channel(String name, String remoteUrl, String aProtocol) throws Exception
     {
         this(name);
@@ -70,8 +85,10 @@ public abstract class Channel
         this.remotePort = uri.getPort();
         this.protocol = aProtocol;
     }
+    */
 
     /** Creates a new instance of Channel */
+    /*
     public Channel(String name, String localUrl, String remoteUrl, String aProtocol) throws Exception
     {
         this(name, remoteUrl, aProtocol);
@@ -87,6 +104,7 @@ public abstract class Channel
         this.localHost = Utils.formatIPAddress(uri.getHost());
         this.localPort = uri.getPort();
     }
+    */
 
     /** Creates a new instance of Channel */
     public Channel(String localHost, int localPort, String remoteHost, int remotePort, String aProtocol)
@@ -207,6 +225,31 @@ public abstract class Channel
 
 	/** Open a channel */
     public abstract boolean open() throws Exception;
+    /*
+    {
+        if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
+        {
+        	channel = new ChannelTcp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+        }
+        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_TLS))
+        {
+        	channel = new ChannelTls(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+        }
+        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
+        {
+        	channel = new ChannelSctp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+        }
+        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_UDP))
+        {
+        	channel = new ChannelUdp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol,true);
+        }
+        else
+        {
+        	throw new Exception("openChannelSIGTRAN operation : Bad transport value for " + transport);
+        }
+    	return channel.open();
+    }
+    */
 
     /** Close a channel */
     public abstract boolean close();
@@ -229,6 +272,11 @@ public abstract class Channel
     /** Get the transport protocol of this message */
     public abstract String getTransport();
 
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+    
     /** display method */
     @Override
     public String toString()
@@ -240,13 +288,98 @@ public abstract class Channel
         return str;
     }
 
-    /** display method */
-    //@Override
+    /** 
+     * Convert the channel to XML document 
+     */
     public String toXml()
     {
         return "<CHANNEL " + this.toString() + "/>";
     }
 
+
+    /** 
+     * Parse the channel from XML element 
+     */
+    public void parseChannelFromXml(Element root, String protocol) throws Exception
+    {
+    	this.protocol = protocol;
+        this.name       = root.attributeValue("name");
+        String localHost  = root.attributeValue("localHost");
+        if (localHost ==  null)
+        {
+        	localHost = InetAddress.getByName(localHost).getHostAddress();
+        	this.localHost = Utils.formatIPAddress(localHost);
+        }
+        String localPort  = root.attributeValue("localPort");
+        this.localPort = Integer.parseInt(localPort);
+        
+        String remoteHost = root.attributeValue("remoteHost");
+        if (remoteHost == null)
+        {
+        	remoteHost = InetAddress.getByName(remoteHost).getHostAddress();
+        	this.remoteHost = Utils.formatIPAddress(remoteHost);
+        }
+        String remotePort = root.attributeValue("remotePort");
+        this.remotePort = Integer.parseInt(remotePort);
+    }
+    
+
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    public Parameter getParameter(String path) throws Exception
+    {       
+        String[] params = Utils.splitPath(path);
+        Parameter parameter = new Parameter();
+        if(params.length <= 1)
+        {
+        	parameter.add(this);
+        }
+        else if(params[1].equalsIgnoreCase("name"))
+        {
+        	parameter.add(this.name);
+        }
+        else if(params[1].equalsIgnoreCase("UID"))
+        {
+        	parameter.add(this.UID);
+        }
+        else if(params[1].equalsIgnoreCase("localHost"))
+        {
+        	parameter.add(this.localHost);
+        }
+        else if(params[1].equalsIgnoreCase("localPort"))
+        {
+        	parameter.add(String.valueOf(this.localPort));
+        }
+        else if(params[1].equalsIgnoreCase("remoteHost"))
+        {
+        	parameter.add(this.remoteHost);
+        }
+        else if(params[1].equalsIgnoreCase("remotePort"))
+        {
+        	parameter.add(String.valueOf(this.remotePort));
+        }
+        else if(params[1].equalsIgnoreCase("protocol"))
+        {
+        	parameter.add(String.valueOf(this.protocol));
+        }
+        else if(params[1].equalsIgnoreCase("transport"))
+        {
+        	parameter.add(String.valueOf(getTransport()));
+        }
+        else if(params[1].equalsIgnoreCase("xml"))
+        {
+        	parameter.add(this.toXml());
+        }
+        else
+        {
+        	Parameter.throwBadPathKeywordException(path);
+        }
+            
+        return parameter;
+    }
+    
     /** equals method */
     public boolean equals(Channel channel)
     {
@@ -315,57 +448,5 @@ public abstract class Channel
         
         return true;
     }
-
-    public Parameter getParameter(String path) throws Exception
-    {       
-        String[] params = Utils.splitPath(path);
-        Parameter parameter = new Parameter();
-        if(params.length <= 1)
-        {
-        	parameter.add(this);
-        }
-        else if(params[1].equalsIgnoreCase("name"))
-        {
-        	parameter.add(this.name);
-        }
-        else if(params[1].equalsIgnoreCase("UID"))
-        {
-        	parameter.add(this.UID);
-        }
-        else if(params[1].equalsIgnoreCase("localHost"))
-        {
-        	parameter.add(this.localHost);
-        }
-        else if(params[1].equalsIgnoreCase("localPort"))
-        {
-        	parameter.add(String.valueOf(this.localPort));
-        }
-        else if(params[1].equalsIgnoreCase("remoteHost"))
-        {
-        	parameter.add(this.remoteHost);
-        }
-        else if(params[1].equalsIgnoreCase("remotePort"))
-        {
-        	parameter.add(String.valueOf(this.remotePort));
-        }
-        else if(params[1].equalsIgnoreCase("protocol"))
-        {
-        	parameter.add(String.valueOf(this.protocol));
-        }
-        else if(params[1].equalsIgnoreCase("transport"))
-        {
-        	parameter.add(String.valueOf(getTransport()));
-        }
-        else if(params[1].equalsIgnoreCase("xml"))
-        {
-        	parameter.add(this.toXml());
-        }
-        else
-        {
-        	Parameter.throwBadPathKeywordException(path);
-        }
-            
-        return parameter;
-
-    }
+    
 }

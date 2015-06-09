@@ -50,11 +50,13 @@ public class ChannelDiameter extends Channel
         this.transport = aTransport.toUpperCase();
     }
 
+    /*
     public ChannelDiameter(String anUrl, String aProtocol, String aTransport) throws Exception
     {
         super(null, anUrl, aProtocol);
         this.transport = aTransport.toUpperCase();
     }
+    */
 
     public ChannelDiameter(ConnectionKey connKey, Peer peer) throws Exception
     {

@@ -103,6 +103,7 @@ public class StackSigtran extends Stack {
     }
 
     /** Creates a Channel specific to each Stack */
+    /*
     @Override
     public Channel parseChannelFromXml(Element root, String protocol) throws Exception
     {
@@ -136,6 +137,7 @@ public class StackSigtran extends Stack {
             return new ChannelSigtran(name, localHost, localPort, remoteHost, remotePort, protocol, transport);
         }
     }
+    */
 
     /** 
      * Creates a Msg specific to each Stack
