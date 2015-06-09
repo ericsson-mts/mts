@@ -65,6 +65,7 @@ public class ChannelImap extends Channel
         transport = aTransport;
     }
 
+    /** Creates a new instance of Channel */
     public ChannelImap(String name, Listenpoint listenpoint, Socket socket) throws Exception
     {
         super(name, 

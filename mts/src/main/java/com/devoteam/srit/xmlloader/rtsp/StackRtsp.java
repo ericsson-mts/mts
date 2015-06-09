@@ -62,49 +62,6 @@ public class StackRtsp extends Stack {
             createListenpoint(listenpoint, StackFactory.PROTOCOL_RTSP);
         }
 	}
-
-    /** Creates a Channel specific to each Stack */
-    @Override
-	public synchronized Channel parseChannelFromXml(Element root, String protocol) throws Exception {
-		String name = root.attributeValue("name");
-		String localHost = root.attributeValue("localHost");
-		String localPort = root.attributeValue("localPort");
-        String remoteHost = root.attributeValue("remoteHost");
-		String remotePort = root.attributeValue("remotePort");
-		String transport = root.attributeValue("transport");
-
-		if((remoteHost == null) || (remotePort == null))
-        {
-            throw new Exception("Missing one of the remoteHost or remotePort parameter to create channel.");
-        }
-
-        if(localHost == null)
-        {
-            localHost = Utils.getLocalAddress().getHostAddress();
-        }
-
-        if(null == transport)
-        {
-            transport = getConfig().getString("listenpoint.TRANSPORT");
-            if(null == transport)
-            {
-                throw new Exception("Transport(tcp or udp) not set in openChannelRTSP nor in rtsp.properties");
-            }
-        }
-        else if(!transport.toUpperCase().equals(StackFactory.PROTOCOL_TCP) && !transport.toUpperCase().equals(StackFactory.PROTOCOL_UDP))
-        {
-            throw new Exception("Transport in openChannelRTSP must be tcp or udp");
-        }
-
-        if (existsChannel(name))
-        {
-            return getChannel(name);
-        }
-        else
-        {
-            return new ChannelRtsp(name, localHost, localPort, remoteHost, remotePort, protocol, transport.toUpperCase());
-        }
-    }
     
 	/** Creates a specific Msg */
 	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception {

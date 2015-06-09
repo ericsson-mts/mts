@@ -88,31 +88,6 @@ public class StackSmpp extends Stack
         }
     }
 
-    /** Creates a Channel specific to each Stack */
-    @Override
-    public Channel parseChannelFromXml(Element root, String protocol) throws Exception
-    {
-        String name       = root.attributeValue("name");
-        String localHost  = root.attributeValue("localHost");
-        String localPort  = root.attributeValue("localPort");
-        String remoteHost = root.attributeValue("remoteHost");
-        String remotePort = root.attributeValue("remotePort");
-
-        if (existsChannel(name))
-        {
-            return getChannel(name);
-        }
-        else
-        {
-            if(null != localHost) localHost = InetAddress.getByName(localHost).getHostAddress();
-            else                  localHost = "0.0.0.0";
-
-            if(null != remoteHost) remoteHost = InetAddress.getByName(remoteHost).getHostAddress();
-
-            return new ChannelSmpp(name, localHost, localPort, remoteHost, remotePort, protocol);
-        }
-    }
-
     @Override
     public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
     {

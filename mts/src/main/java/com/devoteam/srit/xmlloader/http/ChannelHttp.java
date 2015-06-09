@@ -48,6 +48,7 @@ public abstract class ChannelHttp extends Channel
 
     protected long startTimestamp = 0;
     
+    /** Creates a new instance of Channel */
     public ChannelHttp(String name, String localHost, String localPort, String remoteHost, String remotePort, String aProtocol, boolean secure) throws Exception
     {
         super(name, localHost, localPort, remoteHost, remotePort, aProtocol);

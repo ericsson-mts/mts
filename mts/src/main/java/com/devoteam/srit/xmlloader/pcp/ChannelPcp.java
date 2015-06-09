@@ -36,12 +36,11 @@ import java.util.Properties;
 
 public class ChannelPcp extends Channel //implements Runnable
 {
-    private Channel channel = null;
     private PortalContext context = null;
     private String infranetConnection = null;
     private String loginType = null;
 
-    // --- constructor --- //
+    // /** Creates a new instance of Channel */
     public ChannelPcp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, String aInfranetConnection, String aLoginType) throws Exception {
     	super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
         channel = new ChannelTcp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);

@@ -23,14 +23,10 @@
 
 package com.devoteam.srit.xmlloader.tcp.nio;
 
-import org.dom4j.Element;
-
-import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 
 public class ListenpointTcpNIO extends Listenpoint
 {

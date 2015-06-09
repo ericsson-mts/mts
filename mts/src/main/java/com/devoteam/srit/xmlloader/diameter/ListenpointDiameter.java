@@ -517,7 +517,8 @@ public class ListenpointDiameter extends Listenpoint
     /** 
      * Parse the listenpoint from XML element 
      */
-    public void parseMsgFromXml(Element root, Runner runner) throws Exception
+    @Override
+    public void parseFromXml(Element root, Runner runner) throws Exception
     {
 		super.parseFromXml(root, runner);
 

@@ -63,7 +63,7 @@ public class ChannelSctp extends Channel
 
     private long startTimestamp = 0;    
     
-    /** Creates a new instance */
+    /** Creates a new instance of Channel */
     public ChannelSctp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception
     {
         super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
@@ -72,6 +72,7 @@ public class ChannelSctp extends Channel
         this.initmsg = new sctp_initmsg();
     }
 
+    /** Creates a new instance of Channel */
     public ChannelSctp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, sctp_initmsg aIm) throws Exception
     {
         super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);

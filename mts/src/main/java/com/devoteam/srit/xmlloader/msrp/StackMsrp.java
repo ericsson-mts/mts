@@ -56,49 +56,6 @@ public class StackMsrp extends Stack {
             createListenpoint(listenpoint, StackFactory.PROTOCOL_MSRP);
         }
 	}
-
-    /** Creates a Channel specific to each Stack */
-    @Override
-	public synchronized Channel parseChannelFromXml(Element root, String protocol) throws Exception {
-		String name = root.attributeValue("name");
-		String localHost = root.attributeValue("localHost");
-		String localPort = root.attributeValue("localPort");
-        String remoteHost = root.attributeValue("remoteHost");
-		String remotePort = root.attributeValue("remotePort");
-		String transport = root.attributeValue("transport");
-
-		if((remoteHost == null) || (remotePort == null))
-        {
-            throw new Exception("Missing one of the remoteHost or remotePort parameter to create channel.");
-        }
-
-        if(localHost == null)
-        {
-            localHost = Utils.getLocalAddress().getHostAddress();
-        }
-
-        if(null == transport)
-        {
-            transport = getConfig().getString("listenpoint.TRANSPORT");
-            if(null == transport)
-            {
-                throw new Exception("Transport(tcp or tls) not set in openChannelMSRP nor in msrp.properties");
-            }
-        }
-        else if(!transport.toUpperCase().equals(StackFactory.PROTOCOL_TCP) && !transport.toUpperCase().equals(StackFactory.PROTOCOL_TLS))
-        {
-            throw new Exception("Transport in openChannelMSRP must be tcp or tls");
-        }
-
-        if (existsChannel(name))
-        {
-            return getChannel(name);
-        }
-        else
-        {
-            return new ChannelMsrp(name, localHost, localPort, remoteHost, remotePort, protocol, transport.toUpperCase());
-        }
-    }
     
     /** Send a Msg to Stack */
     @Override
