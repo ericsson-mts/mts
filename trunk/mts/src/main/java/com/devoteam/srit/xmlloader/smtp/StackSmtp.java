@@ -82,7 +82,7 @@ public class StackSmtp extends Stack
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
     	MsgSmtp msgSmtp = new MsgSmtp();
-    	msgSmtp.parseMsgFromXml(request, root, runner);
+    	msgSmtp.parseFromXml(request, root, runner);
     	
         String transactionIdStr = root.attributeValue("transactionId");
 

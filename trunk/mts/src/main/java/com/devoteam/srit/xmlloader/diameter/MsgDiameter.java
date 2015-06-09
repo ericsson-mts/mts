@@ -671,7 +671,7 @@ public class MsgDiameter extends Msg
      * Parse the message from XML element 
      */
     @Override
-    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
     	this.message = MsgDiameterParser.getInstance().parseMsgFromXml(request, root);
     	    	

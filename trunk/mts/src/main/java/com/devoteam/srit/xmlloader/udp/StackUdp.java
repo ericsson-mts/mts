@@ -92,7 +92,7 @@ public class StackUdp extends Stack
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
         MsgUdp msgUdp = new MsgUdp();
-        msgUdp.parseMsgFromXml(request, root, runner);
+        msgUdp.parseFromXml(request, root, runner);
 
         String remoteHost = root.attributeValue("remoteHost");
         String remotePort = root.attributeValue("remotePort");

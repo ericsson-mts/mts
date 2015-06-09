@@ -36,11 +36,11 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.diameter.MsgDiameterParser;
-import com.devoteam.srit.xmlloader.srtp.RawPacket;
-import com.devoteam.srit.xmlloader.srtp.SRTPCryptoContext;
-import com.devoteam.srit.xmlloader.srtp.SRTPPolicy;
-import com.devoteam.srit.xmlloader.srtp.SRTPTransformEngine;
-import com.devoteam.srit.xmlloader.srtp.SRTPTransformer;
+import com.devoteam.srit.xmlloader.rtp.srtp.RawPacket;
+import com.devoteam.srit.xmlloader.rtp.srtp.SRTPCryptoContext;
+import com.devoteam.srit.xmlloader.rtp.srtp.SRTPPolicy;
+import com.devoteam.srit.xmlloader.rtp.srtp.SRTPTransformEngine;
+import com.devoteam.srit.xmlloader.rtp.srtp.SRTPTransformer;
 
 import dk.i1.diameter.Message;
 import dk.i1.diameter.node.Capability;
@@ -140,11 +140,12 @@ public class ListenpointRtp extends Listenpoint
     }
     
     /** 
-     * Parse the message from XML element 
+     * Parse the listenpoint from XML element 
      */
-    public void parseMsgFromXml(Element root, Runner runner) throws Exception
+    @Override
+    public void parseFromXml(Element root, Runner runner) throws Exception
     {
-		super.parseMsgFromXml(root, runner);
+		super.parseFromXml(root, runner);
 		if (root.element("srtpSender") != null)
 		{
 			this.parseSRTPSender(root, 0);

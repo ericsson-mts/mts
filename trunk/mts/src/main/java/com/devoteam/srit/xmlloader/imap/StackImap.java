@@ -95,7 +95,7 @@ public class StackImap extends Stack
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
         MsgImap msg = new MsgImap();
-        msg.parseMsgFromXml(request, root, runner);
+        msg.parseFromXml(request, root, runner);
 
         String channelName = root.attributeValue("channel");
         if (existsChannel(channelName))

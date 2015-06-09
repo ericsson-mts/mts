@@ -109,7 +109,7 @@ public class StackRtsp extends Stack {
 	/** Creates a specific Msg */
 	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception {
         MsgRtsp msg = new MsgRtsp();
-        msg.parseMsgFromXml(request,  root, runner);
+        msg.parseFromXml(request,  root, runner);
 
         String remoteHostAttr = root.attributeValue("remoteHost");
         if(remoteHostAttr != null){

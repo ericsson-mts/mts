@@ -92,7 +92,7 @@ public class StackPop extends Stack {
 	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception {
 
         MsgPop msg = new MsgPop();
-        msg.parseMsgFromXml(request, root, runner);
+        msg.parseFromXml(request, root, runner);
 
         String channelName = root.attributeValue("channel");
         String transactionId = root.attributeValue("transactionId");

@@ -515,11 +515,11 @@ public class ListenpointDiameter extends Listenpoint
     }
  
     /** 
-     * Parse the message from XML element 
+     * Parse the listenpoint from XML element 
      */
     public void parseMsgFromXml(Element root, Runner runner) throws Exception
     {
-		super.parseMsgFromXml(root, runner);
+		super.parseFromXml(root, runner);
 
 		MsgDiameterParser.getInstance().doDictionnary(root, "0", true);
 		

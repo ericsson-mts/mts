@@ -101,11 +101,12 @@ public class ListenpointSip extends Listenpoint
     }
 
     /** 
-     * Parse the message from XML element 
+     * Parse the listenpoint from XML element 
      */
-    public void parseMsgFromXml(Element root, Runner runner) throws Exception
+    @Override
+    public void parseFromXml(Element root, Runner runner) throws Exception
     {
-		super.parseMsgFromXml(root, runner);
+		super.parseFromXml(root, runner);
 
 		String transportAttr = root.attributeValue("transport");
         if (transportAttr == null)

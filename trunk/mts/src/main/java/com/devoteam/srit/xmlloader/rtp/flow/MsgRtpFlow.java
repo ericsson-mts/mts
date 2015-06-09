@@ -29,14 +29,13 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.RetransmissionId;
-import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.rtp.MsgRtp;
-import com.devoteam.srit.xmlloader.srtp.RawPacket;
-import com.devoteam.srit.xmlloader.srtp.SRTPTransformer;
+import com.devoteam.srit.xmlloader.rtp.srtp.RawPacket;
+import com.devoteam.srit.xmlloader.rtp.srtp.SRTPTransformer;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -584,7 +583,7 @@ public class MsgRtpFlow extends Msg {
      * Parse the message from XML element 
      */
     @Override
-    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
         if (root.element("flow") != null) {
             parseFlow(root.element("flow"), runner);

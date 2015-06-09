@@ -195,11 +195,12 @@ public class ListenpointRadius extends Listenpoint implements Runnable
     }
     
     /** 
-     * Parse the message from XML element 
+     * Parse the listenpoint from XML element 
      */
-    public void parseMsgFromXml(Element root, Runner runner) throws Exception
+    @Override
+    public void parseFromXml(Element root, Runner runner) throws Exception
     {
-		super.parseMsgFromXml(root, runner);
+		super.parseFromXml(root, runner);
 
         String secret     = root.attributeValue("secret");
         if (secret !=  null)

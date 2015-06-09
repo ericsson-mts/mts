@@ -69,45 +69,6 @@ public class Channel
     }
 
     /** Creates a new instance of Channel */
-    /*
-    public Channel(String name, String remoteUrl, String aProtocol) throws Exception
-    {
-        this(name);
-        URI uri = null;
-        try
-        {
-            uri = new URI(remoteUrl);
-        }
-        catch (Exception e)
-        {
-            throw new ExecutionException("Can't create URI from : " + remoteUrl, e);
-        }
-        this.remoteHost = Utils.formatIPAddress(uri.getHost());
-        this.remotePort = uri.getPort();
-        this.protocol = aProtocol;
-    }
-    */
-
-    /** Creates a new instance of Channel */
-    /*
-    public Channel(String name, String localUrl, String remoteUrl, String aProtocol) throws Exception
-    {
-        this(name, remoteUrl, aProtocol);
-        URI uri = null;
-        try
-        {
-            uri = new URI(localUrl);
-        }
-        catch (Exception e)
-        {
-            throw new ExecutionException("Can't create URI from : " + localUrl, e);
-        }
-        this.localHost = Utils.formatIPAddress(uri.getHost());
-        this.localPort = uri.getPort();
-    }
-    */
-
-    /** Creates a new instance of Channel */
     public Channel(String localHost, int localPort, String remoteHost, int remotePort, String aProtocol)
     {
         this("Channel #" + Stack.nextTransactionId());
@@ -325,7 +286,7 @@ public class Channel
     /** 
      * Parse the channel from XML element 
      */
-    public void parseChannelFromXml(Element root, String protocol) throws Exception
+    public void parseFromXml(Element root, String protocol) throws Exception
     {
     	this.protocol = protocol;
         this.name       = root.attributeValue("name");

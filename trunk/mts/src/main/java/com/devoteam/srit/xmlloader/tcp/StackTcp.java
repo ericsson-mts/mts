@@ -70,7 +70,7 @@ public class StackTcp extends Stack
 	{
         //Listenpoint listenpoint = new ListenpointTcp(this, root);
     	Listenpoint listenpoint = new ListenpointTcp(this);
-        listenpoint.parseMsgFromXml(root, null);
+        listenpoint.parseFromXml(root, null);
         return listenpoint;        
 	}
 
@@ -103,7 +103,7 @@ public class StackTcp extends Stack
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
         MsgTcp msgTcp = new MsgTcp();
-        msgTcp.parseMsgFromXml(request, root, runner);
+        msgTcp.parseFromXml(request, root, runner);
         
         // instanciates the channel
         String channelName = root.attributeValue("channel");

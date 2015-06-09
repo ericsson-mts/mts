@@ -179,12 +179,13 @@ public class ListenpointUdp extends Listenpoint
     }
 
     /** 
-     * Parse the message from XML element 
+     * Parse the listenpoint from XML element 
      */
-    public void parseMsgFromXml(Element root, Runner runner) throws Exception
+    @Override
+    public void parseFromXml(Element root, Runner runner) throws Exception
     {
-    	super.parseMsgFromXml(root, runner);
-    	listenpoint.parseMsgFromXml(root, runner);
+    	super.parseFromXml(root, runner);
+    	listenpoint.parseFromXml(root, runner);
     }
 
     public Object getAttachment() 
