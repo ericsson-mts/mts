@@ -390,7 +390,7 @@ public abstract class Stack
         }
     }
 
-    /** Get the class object for a given string */
+   /** Get the class type (Msg, Listenpoint, Channel, Probe) object from the stack class*/
     public static Class<?> getClassFromStack(Class clStack, String type) throws Exception
     {
     	String stackClassname = clStack.getSimpleName();
@@ -402,7 +402,7 @@ public abstract class Stack
     	return cl;
     }
 
-    /** Get the class object for a given string */
+    /** Get the class object for a given className*/
     public static Class<?> getClassFromCanonicalName(String className) throws Exception
     {
 		try
@@ -417,38 +417,41 @@ public abstract class Stack
     	}
     	return null;
     }
-    
+
+    /** Instantiate the object type (Msg, Listenpoint, Channel, Probe) object from the stack class and its parents*/
+    public Object instanceObjectFromStackParents(Class clStack, String type) throws Exception 
+    {
+    	//Class<?> clStack = this.getClass();
+    	Class<?> cl = getClassFromStack(clStack, type);
+    	if (cl != null)
+    	{
+	    	Constructor<?> constr = cl.getConstructor(Stack.class); // obtenir le constructeur (Stack)
+	    	return constr.newInstance(this); // appeler le contructeur
+    	}
+    	Class<?> clSuperStack = clStack.getSuperclass();
+    	Class<?> clSuper = getClassFromStack(clSuperStack, type);
+    	if (clSuper != null)
+    	{
+	    	Constructor<?> constr = clSuper.getConstructor(Stack.class); // obtenir le constructeur (Stack)
+	    	return constr.newInstance(this); // appeler le contructeur
+    	}
+    	Class<?> clGenericStack = com.devoteam.srit.xmlloader.core.protocol.Stack.class;
+    	Class<?> clGeneric = getClassFromStack(clGenericStack, type);
+    	if (clGeneric != null)
+    	{
+	    	Constructor<?> constr = clGeneric.getConstructor(Stack.class); // obtenir le constructeur (Stack)
+	    	return constr.newInstance(this); // appeler le contructeur
+    	}    	
+    	return null;
+    }
+
     /** Creates a Listenpoint specific to each Stack */
     public Listenpoint parseListenpointFromXml(Element root) throws Exception 
     {
     	Class<?> clStack = this.getClass();
-    	Class<?> cl = getClassFromStack(clStack, "Listenpoint");
-    	if (cl != null)
-    	{
-	    	Constructor<?> constr = cl.getConstructor(Stack.class); // obtenir le constructeur (Stack)
-	    	Listenpoint lp  = (Listenpoint) constr.newInstance(this); // appeler le contructeur
-	    	lp.parseMsgFromXml(root, null);
-	    	return lp;
-    	}
-    	Class<?> clSuperStack = this.getClass().getSuperclass();
-    	Class<?> clSuper = getClassFromStack(clSuperStack, "Listenpoint");
-    	if (clSuper != null)
-    	{
-	    	Constructor<?> constr = clSuper.getConstructor(Stack.class); // obtenir le constructeur (Stack)
-	    	Listenpoint lp  = (Listenpoint) constr.newInstance(this); // appeler le contructeur
-	    	lp.parseMsgFromXml(root, null);
-	    	return lp;
-    	}
-    	Class<?> clGenericStack = com.devoteam.srit.xmlloader.core.protocol.Stack.class;
-    	Class<?> clGeneric = getClassFromStack(clGenericStack, "Listenpoint");
-    	if (clGeneric != null)
-    	{
-	    	Constructor<?> constr = clGeneric.getConstructor(Stack.class); // obtenir le constructeur (Stack)
-	    	Listenpoint lp  = (Listenpoint) constr.newInstance(this); // appeler le contructeur
-	    	lp.parseMsgFromXml(root, null);
-	    	return lp;
-    	}    	
-    	return null;
+    	Listenpoint lp  = (Listenpoint) instanceObjectFromStackParents(clStack, "Listenpoint");
+	    lp.parseMsgFromXml(root, null);
+	    return lp;
     }
 
     /** Creates a probe specific to each Stack */
@@ -462,11 +465,9 @@ public abstract class Stack
     public Channel parseChannelFromXml(Element root, String protocol) throws Exception
     {
     	Class<?> clStack = this.getClass();
-    	Class<?> cl = getClassFromStack(clStack, "Channel");
-    	Constructor<?> constr = cl.getConstructor(Stack.class); // obtenir le constructeur (Stack)
-    	Channel channel  = (Channel) constr.newInstance(this); // appeler le contructeur
-    	channel.parseChannelFromXml(root, protocol);
-    	return channel;	
+    	Channel channel  = (Channel) instanceObjectFromStackParents(clStack, "Channel");
+	    channel.parseChannelFromXml(root, protocol);
+	    return channel;
     }
 
     /** Creates a Msg specific to each Stack */

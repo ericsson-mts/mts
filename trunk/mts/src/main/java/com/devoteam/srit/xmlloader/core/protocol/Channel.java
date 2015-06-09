@@ -24,12 +24,13 @@
 package com.devoteam.srit.xmlloader.core.protocol;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.sigtran.ChannelSigtran;
+import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
+import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
+import com.devoteam.srit.xmlloader.tls.ChannelTls;
+import com.devoteam.srit.xmlloader.udp.ChannelUdp;
 
 import java.net.InetAddress;
-import java.net.URI;
 
 import org.dom4j.Element;
 
@@ -37,7 +38,7 @@ import org.dom4j.Element;
  * Interface générique servant a identifier un channel, au minimum, par son URL
  * @author gpasquiers
  */
-public abstract class Channel
+public class Channel
 {
 
     private String UID;
@@ -52,8 +53,8 @@ public abstract class Channel
 	
 	protected Stack stack;
 
-	//private String transport;
-	//private Channel channel = null;
+    private Channel channel = null;
+    private String transport = null;
 	
     /** Creates a new instance of Channel*/
     public Channel(Stack stack)
@@ -224,24 +225,23 @@ public abstract class Channel
 	}
 
 	/** Open a channel */
-    public abstract boolean open() throws Exception;
-    /*
+    public boolean open() throws Exception
     {
         if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
         {
-        	channel = new ChannelTcp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+        	channel = new ChannelTcp(this.name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
         }
         else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_TLS))
         {
-        	channel = new ChannelTls(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+        	channel = new ChannelTls(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
         }
         else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
         {
-        	channel = new ChannelSctp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+        	channel = new ChannelSctp(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
         }
         else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_UDP))
         {
-        	channel = new ChannelUdp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol,true);
+        	channel = new ChannelUdp(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol, true);
         }
         else
         {
@@ -249,13 +249,35 @@ public abstract class Channel
         }
     	return channel.open();
     }
-    */
 
     /** Close a channel */
-    public abstract boolean close();
+    public boolean close(){
+        try 
+        {
+        	channel.close();
+        } 
+        catch (Exception e) 
+        {
+            // nothing to do
+        }
+        channel = null;
+        return true;
+    }
 
     /** Send a Msg to SIP Stack */
-    public abstract boolean sendMessage(Msg msg) throws Exception;
+    public boolean sendMessage(Msg msg) throws Exception
+    {
+        if (null == channel)
+            throw new Exception("Channel is null, has one channel been opened ?");
+
+        if (msg.getChannel() == null)
+            msg.setChannel(this);
+
+        channel.sendMessage(msg);
+
+        return true;
+    }
+
 
     /** Send a Msg to SIP Stack */
 
@@ -270,7 +292,10 @@ public abstract class Channel
     }
 
     /** Get the transport protocol of this message */
-    public abstract String getTransport();
+    public String getTransport()
+    {
+    	return this.transport;
+    }
 
     
     //---------------------------------------------------------------------
@@ -321,6 +346,13 @@ public abstract class Channel
         }
         String remotePort = root.attributeValue("remotePort");
         this.remotePort = Integer.parseInt(remotePort);
+        
+        String transport = root.attributeValue("transport");
+        if (transport == null)
+        {
+        	transport = stack.getConfig().getString("listenpoint.TRANSPORT");
+        }
+        this.transport = transport.toUpperCase(); 
     }
     
 
