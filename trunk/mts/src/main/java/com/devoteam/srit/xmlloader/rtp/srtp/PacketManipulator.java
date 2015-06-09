@@ -5,7 +5,7 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
-package com.devoteam.srit.xmlloader.srtp;
+package com.devoteam.srit.xmlloader.rtp.srtp;
 
 /**
  * PacketManipulator contains methods for parsing RTP packets.
