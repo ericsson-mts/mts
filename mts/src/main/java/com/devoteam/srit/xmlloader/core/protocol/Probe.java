@@ -94,37 +94,10 @@ public class Probe
     
     private ScriptGenerator generator;
     
-    /** Creates a Probe specific from XML tree*/
-    public Probe(Stack stack, Element root) throws Exception
+    /** Creates a new instance of Channel*/
+    public Probe(Stack stack) throws Exception
     {
         this.stack = stack;
-        this.name = root.attributeValue("name");
-        this.networkInterface = root.attributeValue("networkInterface");
-        String capFilter = root.attributeValue("captureFilter");
-        if (capFilter != null)
-        {
-	        capFilter = Utils.replaceNoRegex(capFilter, "[", "");
-	        capFilter = Utils.replaceNoRegex(capFilter, "]", "");
-        }
-        this.captureFilter = capFilter;
-        this.filename = root.attributeValue("filename");
-        this.regexFilter = root.attributeValue("regexFilter");        
-        this.sockets = new ExpireHashMap<String, PTCPSocket>("captured TCP streams", 600000);
-        if(regexFilter != null && !regexFilter.equals("")){
-        	this.pattern =  Pattern.compile(regexFilter);
-        }
-        else{
-            this.pattern = null;
-        }
-        this.promiscuousMode = root.attributeValue("promiscuousMode");
-        this.probeJpcapThread = new PJpcapThread(this);
-        PIPReassembler.start();
-        
-        // ETHERNET protocol only
-        // To avoid using two jpcap capture at the same time
-        // enable isEthernetProbeCreated in EthernetStack
-        if (stack instanceof StackEthernet)
-        	((StackEthernet) stack).setEthernetProbeCreated(true);
     }
 
     public Map<String, PTCPSocket> getPTCPSockets(){
@@ -186,7 +159,185 @@ public class Probe
     	return this.probeJpcapThread.sendETHMessage(msg);
     }
     
-    /** display method */
+    public boolean getPromiscuousMode() 
+    {
+        boolean promisc;
+
+        if(null == promiscuousMode || "".equals(promiscuousMode))
+        {
+                promisc = DEFAULT_PROMISCUOUS_MODE;
+                this.promiscuousMode = Boolean.toString(DEFAULT_PROMISCUOUS_MODE);
+        }
+        else
+        {
+                promisc = new Boolean(this.promiscuousMode);
+        }
+
+        return promisc;
+    }
+
+    /**
+     *
+     * @return true if this data should be captured
+     */
+    private boolean isValidCapture(byte[] data)
+    {
+        // the message is valid because part of an existing transaction or
+        // session
+        boolean result = stack.isValidCapture(data);
+        if (result)
+        {
+        	return true;
+        }
+        // the message is valid because matching the regex filter given by
+        // the user
+        if(null != pattern)
+        {
+            matcher = pattern.matcher(new String(data));
+
+            result = matcher.find();
+            this.matcher.reset();
+        }
+        else
+        {
+            result = true;
+        }
+        if (!result)
+        {
+            return false;
+        }
+
+        return result;
+    }
+	
+    synchronized public void capturedETHPacket(Packet packet) throws Exception 
+    {  	
+    	int length = packet.header.length + packet.data.length - 14; // 14 is the ethernet headder length we have to substract in order to get good length of ethernet frame payload
+    	EthernetPacket eth = (EthernetPacket) packet.datalink;
+    	int type = eth.frametype;
+    	byte[] srcMac = eth.src_mac;
+    	byte[] dstMac = eth.dst_mac;
+    	byte[] data = new byte[length];
+    	MsgEthernet msg = null;
+    	int j = 0;
+    	
+		for (int i = 14; i < packet.header.length; i++) 
+		{
+			data[j++] = packet.header[i];
+		}
+		for (int i = 0; i < packet.data.length; i++) 
+		{
+			data[j++] = packet.data[i];
+		}
+		
+		try 
+		{
+			msg = (MsgEthernet) stack.readFromDatas(data, length);
+			msg.setProbe(this);
+			msg.setType(type);
+			msg.setdstMac(dstMac);
+			msg.setSrcMac(srcMac);
+			stack.captureMessage(msg);
+		} 
+		catch (Exception e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    synchronized public void capturedUDPPacket(PUDPPacket packet) throws Exception 
+    {
+        byte[] data = packet.getData().getBytes();
+        
+        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, Stack.CAPTURE, "the UDP message :\n", packet, "\n", new String(data));
+        
+        boolean result = stack.isValidCapture(data);
+        if (!result)
+        {
+            result = isValidCapture(data);
+        }        
+        if (result)
+        {
+            Msg msg = stack.readFromDatas(data, data.length);            
+            msg.setProbe(this);
+            msg.setChannel(packet); 
+            
+            if(genScript)
+            {
+                msg.setTimestampCaptureFile(packet.getIPHeader().getTimestamp());
+                generator.generateMsg(msg);
+            }
+            else
+            {
+                stack.captureMessage(msg);
+            }
+        }
+    }
+
+    public void handlePTCPSocket(PTCPSocket socket) throws Exception 
+    {
+        Msg msg = stack.readFromStream(socket.getInputStream(), socket);
+        
+        if (msg != null)
+        {
+	        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, Stack.CAPTURE, " TCP message :\n", msg);
+	
+	        msg.setChannel(socket);
+	        msg.setProbe(this);
+	
+	        if(genScript)
+	        {
+	            msg.setTimestampCaptureFile(socket.getLastTimestamp());
+	            generator.generateMsg(msg);
+	        }
+	        else
+	        {
+	            stack.captureMessage(msg);
+	        }
+        }
+    }
+
+    synchronized public void capturedTCPPacket(PTCPPacket packet) throws Exception 
+    {
+    	if (packet.getTCPHeader().ack())
+    	{		    	
+	        // compute capture socket ID
+	        StringBuilder builder = new StringBuilder(12);
+	        builder.append(Array.toHexString(packet.getIPHeader().getSrcIP()));
+	        builder.append(Array.toHexString(packet.getTCPHeader().getSrcPort()));
+	        builder.append(Array.toHexString(packet.getIPHeader().getDstIP()));
+	        builder.append(Array.toHexString(packet.getTCPHeader().getDstPort()));
+	
+	        String socketID = builder.toString();
+	
+	        PTCPSocket socket = sockets.get(socketID);
+	
+	        boolean newData = true;
+	        if(null == socket)
+	        {
+	            socket = new PTCPSocket(packet, this);
+	        }
+	        else
+	        {
+	            newData = socket.addPacket(packet);
+	        }
+	        
+	        if(newData)
+	        {
+	            sockets.remove(socketID);
+	            sockets.put(socketID, socket);
+	        }
+    	}
+    }
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+
+    /** 
+     * Returns the string description of the message. Used for logging as DEBUG level 
+     */
     @Override
     public String toString()
     {
@@ -194,22 +345,113 @@ public class Probe
         str += "name=\"" + this.name + "\"";
         str += ", networkInterface = \"" + this.networkInterface + "\"";
         str += ", captureFilter = \"" + this.captureFilter + "\"";
-        if(null != filename){
+        if(null != filename)
+        {
         	str += ", filename = \"" + this.filename + "\"";
         }
-        if(null != regexFilter && !regexFilter.equals("")){
+        if(null != regexFilter && !regexFilter.equals(""))
+        {
             str += ", regexFilter = \"" + this.regexFilter + "\"";
         }
         return str;
     }
     
-    /** display method */
-    //@Override
+    /** 
+     * Convert the message to XML document 
+     */
     public String toXml()
     {
         return "<PROBE " + this.toString() + "/>";
     }
 
+    /** 
+     * Parse the channel from XML element 
+     */
+    public void parseFromXml(Element root) throws Exception
+    {
+        this.name = root.attributeValue("name");
+        this.networkInterface = root.attributeValue("networkInterface");
+        String capFilter = root.attributeValue("captureFilter");
+        if (capFilter != null)
+        {
+	        capFilter = Utils.replaceNoRegex(capFilter, "[", "");
+	        capFilter = Utils.replaceNoRegex(capFilter, "]", "");
+        }
+        this.captureFilter = capFilter;
+        this.filename = root.attributeValue("filename");
+        this.regexFilter = root.attributeValue("regexFilter");        
+        this.sockets = new ExpireHashMap<String, PTCPSocket>("captured TCP streams", 600000);
+        if(regexFilter != null && !regexFilter.equals(""))
+        {
+        	this.pattern =  Pattern.compile(regexFilter);
+        }
+        else
+        {
+            this.pattern = null;
+        }
+        this.promiscuousMode = root.attributeValue("promiscuousMode");
+        this.probeJpcapThread = new PJpcapThread(this);
+        PIPReassembler.start();
+        
+        // ETHERNET protocol only
+        // To avoid using two jpcap capture at the same time
+        // enable isEthernetProbeCreated in EthernetStack
+        if (stack instanceof StackEthernet)
+        {
+        	((StackEthernet) stack).setEthernetProbeCreated(true);
+        }
+
+    }
+    
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+    
+    /** 
+     * Get a parameter from the message 
+     */
+    public Parameter getParameter(String path) throws Exception
+    {
+        String[] params = Utils.splitPath(path);
+        Parameter parameter = new Parameter();
+        if (params.length <= 1)
+        {
+        	parameter.add(this);
+        }
+        else if (params[1].equalsIgnoreCase("name"))
+        {
+            parameter.add(this.name);
+        }
+        else if (params[1].equalsIgnoreCase("networkInterface"))
+        {
+        	parameter.add(this.networkInterface);
+        }
+        else if (params[1].equalsIgnoreCase("captureFilter"))
+        {
+        	parameter.add(this.captureFilter);
+        }
+        else if (params[1].equalsIgnoreCase("filename"))
+        {
+        	parameter.add(this.filename);
+        }
+        else if (params[1].equalsIgnoreCase("regexFilter"))
+        {
+        	parameter.add(this.regexFilter);
+        }
+        else if(params[1].equalsIgnoreCase("promiscuousMode"))
+        {
+        	parameter.add(this.promiscuousMode);
+        }
+        else if (params[1].equalsIgnoreCase("xml"))
+        {
+            parameter.add(this.toXml());
+        }
+        else
+        {
+        	Parameter.throwBadPathKeywordException(path);
+        }
+        return parameter;
+    }
 
     /** equals method */
     public boolean equals(Probe probe)
@@ -258,209 +500,16 @@ public class Probe
         return true;
     }
 
-    public Parameter getParameter(String path) throws Exception
+    
+    // Methode pour activer le mode genscript de Probe
+    public void genScript(ScriptGenerator sg)
     {
-        String[] params = Utils.splitPath(path);
-        Parameter parameter = new Parameter();
-        if (params.length <= 1)
-        {
-        	parameter.add(this);
-        }
-        else if (params[1].equalsIgnoreCase("name"))
-        {
-            parameter.add(this.name);
-        }
-        else if (params[1].equalsIgnoreCase("networkInterface"))
-        {
-        	parameter.add(this.networkInterface);
-        }
-        else if (params[1].equalsIgnoreCase("captureFilter"))
-        {
-        	parameter.add(this.captureFilter);
-        }
-        else if (params[1].equalsIgnoreCase("filename"))
-        {
-        	parameter.add(this.filename);
-        }
-        else if (params[1].equalsIgnoreCase("regexFilter"))
-        {
-        	parameter.add(this.regexFilter);
-        }
-        else if(params[1].equalsIgnoreCase("promiscuousMode"))
-        {
-        	parameter.add(this.promiscuousMode);
-        }
-        else if (params[1].equalsIgnoreCase("xml"))
-        {
-            parameter.add(this.toXml());
-        }
-        else
-        {
-        	Parameter.throwBadPathKeywordException(path);
-        }
-        return parameter;
-    }
-
-    public boolean getPromiscuousMode() {
-            boolean promisc;
-
-            if(null == promiscuousMode || "".equals(promiscuousMode)){
-                    promisc = DEFAULT_PROMISCUOUS_MODE;
-                    this.promiscuousMode = Boolean.toString(DEFAULT_PROMISCUOUS_MODE);
-            }else{
-                    promisc = new Boolean(this.promiscuousMode);
-            }
-
-            return promisc;
-    }
-
-    /**
-     *
-     * @return true if this data should be captured
-     */
-    private boolean isValidCapture(byte[] data){
-            // the message is valid because part of an existing transaction or
-            // session
-            boolean result = stack.isValidCapture(data);
-            if (result)
-            {
-                    return true;
-            }
-            // the message is valid because matching the regex filter given by
-            // the user
-            if(null != pattern){
-                    matcher = pattern.matcher(new String(data));
-
-                    result = matcher.find();
-                    this.matcher.reset();
-            }
-            else
-            {
-                    result = true;
-            }
-            if (!result)
-            {
-                    return false;
-            }
-
-            return result;
-    }
-	
-    synchronized public void capturedETHPacket(Packet packet) throws Exception {
-    	
-    	int length = packet.header.length + packet.data.length - 14; // 14 is the ethernet headder length we have to substract in order to get good length of ethernet frame payload
-    	EthernetPacket eth = (EthernetPacket) packet.datalink;
-    	int type = eth.frametype;
-    	byte[] srcMac = eth.src_mac;
-    	byte[] dstMac = eth.dst_mac;
-    	byte[] data = new byte[length];
-    	MsgEthernet msg = null;
-    	int j = 0;
-    	
-		for (int i = 14; i < packet.header.length; i++) {
-			data[j++] = packet.header[i];
-		}
-		for (int i = 0; i < packet.data.length; i++) {
-			data[j++] = packet.data[i];
-		}
-		
-		try {
-			msg = (MsgEthernet) stack.readFromDatas(data, length);
-			msg.setProbe(this);
-			msg.setType(type);
-			msg.setdstMac(dstMac);
-			msg.setSrcMac(srcMac);
-			stack.captureMessage(msg);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
-    
-   
-    
-    synchronized public void capturedUDPPacket(PUDPPacket packet) throws Exception {
-        byte[] data = packet.getData().getBytes();
-        
-        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, Stack.CAPTURE, "the UDP message :\n", packet, "\n", new String(data));
-        
-        boolean result = stack.isValidCapture(data);
-        if (!result){
-            result = isValidCapture(data);
-        }        
-        if (result){
-            Msg msg = stack.readFromDatas(data, data.length);            
-            msg.setProbe(this);
-            msg.setChannel(packet); 
-            
-            if(genScript){
-                msg.setTimestampCaptureFile(packet.getIPHeader().getTimestamp());
-                generator.generateMsg(msg);
-            }
-            else{
-                stack.captureMessage(msg);
-            }
-        }
-    }
-
-    public void handlePTCPSocket(PTCPSocket socket) throws Exception {
-
-        Msg msg = stack.readFromStream(socket.getInputStream(), socket);
-        
-        if (msg != null)
-        {
-	        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, Stack.CAPTURE, " TCP message :\n", msg);
-	
-	        msg.setChannel(socket);
-	        msg.setProbe(this);
-	
-	        if(genScript){
-	            msg.setTimestampCaptureFile(socket.getLastTimestamp());
-	            generator.generateMsg(msg);
-	        }
-	        else{
-	            stack.captureMessage(msg);
-	        }
-        }
-    }
-
-    synchronized public void capturedTCPPacket(PTCPPacket packet) throws Exception {
-    	if (packet.getTCPHeader().ack())
-    	{
-    		    	
-	        // compute capture socket ID
-	        StringBuilder builder = new StringBuilder(12);
-	        builder.append(Array.toHexString(packet.getIPHeader().getSrcIP()));
-	        builder.append(Array.toHexString(packet.getTCPHeader().getSrcPort()));
-	        builder.append(Array.toHexString(packet.getIPHeader().getDstIP()));
-	        builder.append(Array.toHexString(packet.getTCPHeader().getDstPort()));
-	
-	        String socketID = builder.toString();
-	
-	        PTCPSocket socket = sockets.get(socketID);
-	
-	        boolean newData = true;
-	        if(null == socket){
-	            socket = new PTCPSocket(packet, this);
-	        }
-	        else{
-	            newData = socket.addPacket(packet);
-	        }
-	        
-	        if(newData){
-	            sockets.remove(socketID);
-	            sockets.put(socketID, socket);
-	        }
-    	}
-    }
-    
-    // Methode pour activer le mode generation de script de Probe
-    public void genScript(ScriptGenerator sg){
         genScript = true;
         generator = sg;        
     }
     
-    public PJpcapThread getProbeJpcapThread(){
+    public PJpcapThread getProbeJpcapThread()
+    {
         return probeJpcapThread;
     }
 }

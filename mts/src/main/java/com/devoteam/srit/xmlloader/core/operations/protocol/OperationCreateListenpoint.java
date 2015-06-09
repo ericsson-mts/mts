@@ -66,7 +66,7 @@ public class OperationCreateListenpoint extends Operation {
         try {
             lockAndReplace(runner);
             GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.PROTOCOL, "Operation after pre-parsing \n", this);
-            listenpoint = StackFactory.getStack(protocol).parseListenpointFromXml(getRootElement());
+            listenpoint = StackFactory.getStack(protocol).parseListenpointFromXml(getRootElement(), runner);
         }
         finally {
             unlockAndRestore();

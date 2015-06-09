@@ -585,6 +585,9 @@ public class Listenpoint
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------
 
+    /** 
+     * Get a parameter from the message 
+     */
     public Parameter getParameter(String path) throws Exception
     {
         String[] params = Utils.splitPath(path);

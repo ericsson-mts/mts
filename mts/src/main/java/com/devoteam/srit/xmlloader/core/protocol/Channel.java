@@ -266,8 +266,10 @@ public class Channel
     //---------------------------------------------------------------------
     // methods for the XML display / parsing of the message
     //---------------------------------------------------------------------
-    
-    /** display method */
+
+    /** 
+     * Returns the string description of the message. Used for logging as DEBUG level 
+     */
     @Override
     public String toString()
     {
@@ -330,7 +332,10 @@ public class Channel
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------
-
+    
+    /** 
+     * Get a parameter from the message 
+     */
     public Parameter getParameter(String path) throws Exception
     {       
         String[] params = Utils.splitPath(path);
