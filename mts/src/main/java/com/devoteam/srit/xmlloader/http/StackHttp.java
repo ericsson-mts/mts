@@ -281,7 +281,7 @@ public class StackHttp extends Stack
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
         Msg msgHttp = new MsgHttp();
-        msgHttp.parseMsgFromXml(request, root, runner);
+        msgHttp.parseFromXml(request, root, runner);
 
         //
         // Try to find the channel

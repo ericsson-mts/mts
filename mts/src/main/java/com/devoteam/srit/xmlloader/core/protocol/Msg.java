@@ -596,7 +596,7 @@ public abstract class Msg extends MsgLight implements Removable
     /** 
      * Parse the message from XML element 
      */
-    public abstract void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception;
+    public abstract void parseFromXml(Boolean request, Element root, Runner runner) throws Exception;
 
     /** summary of the message used for statistics counters */
     public String getSummary(boolean send, boolean prefix) throws Exception

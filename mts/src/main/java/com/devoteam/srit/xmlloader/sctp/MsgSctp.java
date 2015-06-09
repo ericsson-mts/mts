@@ -158,7 +158,7 @@ public class MsgSctp extends Msg{
      * Parse the message from XML element 
      */
     @Override
-    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
 		List<Element> elements = root.elements("data");
 		List<byte[]> datas = new LinkedList<byte[]>();

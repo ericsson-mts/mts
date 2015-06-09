@@ -99,7 +99,7 @@ public class StackRadius extends Stack
         else
         {
             Listenpoint lp = new ListenpointRadius(this);
-            lp.parseMsgFromXml(root, null);
+            lp.parseFromXml(root, null);
             return lp;
         }
 	}

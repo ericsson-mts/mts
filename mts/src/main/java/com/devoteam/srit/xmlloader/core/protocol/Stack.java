@@ -450,7 +450,7 @@ public abstract class Stack
     {
     	Class<?> clStack = this.getClass();
     	Listenpoint lp  = (Listenpoint) instanceObjectFromStackParents(clStack, "Listenpoint");
-	    lp.parseMsgFromXml(root, null);
+	    lp.parseFromXml(root, null);
 	    return lp;
     }
 
@@ -461,12 +461,12 @@ public abstract class Stack
         return probe;        
     }
 
-    /** Creates a Channel specific to each Stack */
+    /** Creates a channel specific to each Stack */
     public Channel parseChannelFromXml(Element root, String protocol) throws Exception
     {
     	Class<?> clStack = this.getClass();
     	Channel channel  = (Channel) instanceObjectFromStackParents(clStack, "Channel");
-	    channel.parseChannelFromXml(root, protocol);
+	    channel.parseFromXml(root, protocol);
 	    return channel;
     }
 
@@ -478,7 +478,7 @@ public abstract class Stack
     	String acronyme = stackClassname.substring(5);
     	String msgClassname = packageName + ".Msg" + acronyme;
     	Msg msg = (Msg) Class.forName(msgClassname).newInstance();
-    	msg.parseMsgFromXml(request, root, runner);
+    	msg.parseFromXml(request, root, runner);
     	return msg;
     }
 

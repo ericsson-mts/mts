@@ -96,7 +96,7 @@ public class StackSctp extends Stack
 	{
 			
 		MsgSctp msgSctp = new MsgSctp();
-		msgSctp.parseMsgFromXml(request, root, runner);
+		msgSctp.parseFromXml(request, root, runner);
 
 		String channelName = root.attributeValue("channel");
         // deprecated part //

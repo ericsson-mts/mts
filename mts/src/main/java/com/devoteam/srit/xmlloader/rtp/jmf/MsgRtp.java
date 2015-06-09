@@ -186,7 +186,7 @@ public class MsgRtp extends Msg {
      * Parse the message from XML element 
      */
     @Override
-    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
     	// not used
     }

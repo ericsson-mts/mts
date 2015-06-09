@@ -459,7 +459,7 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
      * Parse the message from XML element 
      */
     @Override
-    public void parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
         if(root.element("packet") != null)
         {

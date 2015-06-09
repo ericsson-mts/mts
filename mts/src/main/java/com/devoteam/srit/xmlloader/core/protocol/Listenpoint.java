@@ -510,7 +510,7 @@ public class Listenpoint
     /** 
      * Parse the listenpoint from XML element 
      */
-    public void parseMsgFromXml(Element root, Runner runner) throws Exception
+    public void parseFromXml(Element root, Runner runner) throws Exception
     {
         // deprecated message
         this.name = root.attributeValue("providerName");
