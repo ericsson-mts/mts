@@ -4,7 +4,7 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
-package com.devoteam.srit.xmlloader.srtp;
+package com.devoteam.srit.xmlloader.rtp.srtp;
 
 /**
  * When using TransformConnector, a RTP/RTCP packet is represented using 

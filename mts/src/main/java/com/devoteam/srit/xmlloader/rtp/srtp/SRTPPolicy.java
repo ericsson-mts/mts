@@ -5,7 +5,7 @@
  * See terms of license at gnu.org.
  */
 
-package com.devoteam.srit.xmlloader.srtp;
+package com.devoteam.srit.xmlloader.rtp.srtp;
 
 /**
  * SRTPPolicy holds the SRTP encryption / authentication policy of a SRTP
