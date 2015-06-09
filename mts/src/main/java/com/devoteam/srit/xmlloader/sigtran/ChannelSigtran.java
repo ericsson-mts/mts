@@ -26,52 +26,35 @@ package com.devoteam.srit.xmlloader.sigtran;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.msrp.MsgMsrp;
 import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
 import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
 import com.devoteam.srit.xmlloader.tls.ChannelTls;
 import com.devoteam.srit.xmlloader.udp.ChannelUdp;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+
+import org.dom4j.Element;
 
 public class ChannelSigtran extends Channel
 {
     private Channel channel = null;
     private String transport = null;
     
-    // --- constructure --- //
-    public ChannelSigtran(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, String aTransport) throws Exception 
+    /** Creates a new instance of Channel*/
+    public ChannelSigtran(Stack stack)
     {
-    	super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-
-        transport = aTransport;
-        if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
-        {
-        	channel = new ChannelTcp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        }
-        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_TLS))
-        {
-        	channel = new ChannelTls(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        }
-        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
-        {
-        	channel = new ChannelSctp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        }
-        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_UDP))
-        {
-        	channel = new ChannelUdp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol,true);
-        }
-        else
-        {
-        	throw new Exception("openChannelSIGTRAN operation : Bad transport value for " + transport);
-        }
-
+        super(stack);
     }
 
     // --- basic methods --- //
-    public boolean open() throws Exception {
+    public boolean open() throws Exception 
+    {
         return channel.open();
     }
     
@@ -88,10 +71,48 @@ public class ChannelSigtran extends Channel
         return true;
     }
     
+    /** 
+     * Parse the channel from XML element 
+     */
+    public void parseChannelFromXml(Element root, String protocol) throws Exception
+    {
+    	super.parseChannelFromXml(root, protocol);
+    	
+        String transport = root.attributeValue("transport");
+        if (transport == null)
+        {
+        	transport = stack.getConfig().getString("listenpoint.TRANSPORT");
+        }
+        this.transport = transport.toUpperCase(); 
+        if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
+        {
+        	channel = new ChannelTcp(this.name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
+        }
+        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_TLS))
+        {
+        	channel = new ChannelTls(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
+        }
+        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
+        {
+        	channel = new ChannelSctp(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
+        }
+        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_UDP))
+        {
+        	channel = new ChannelUdp(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol, true);
+        }
+        else
+        {
+        	throw new Exception("openChannelSIGTRAN operation : Bad transport value for " + transport);
+        }
+    }
+
     public boolean close(){
-        try {
+        try 
+        {
         	channel.close();
-        } catch (Exception e) {
+        } 
+        catch (Exception e) 
+        {
             // nothing to do
         }
         channel = null;

@@ -390,12 +390,6 @@ public abstract class Stack
         }
     }
 
-    /** Creates a Channel specific to each Stack */
-    public Channel parseChannelFromXml(Element root, String protocol) throws Exception
-    {
-    	throw new ExecutionException("Bug developpment : method not yet implemented", new Exception());    	
-    }
-
     /** Get the class object for a given string */
     public static Class<?> getClassFromStack(Class clStack, String type) throws Exception
     {
@@ -462,6 +456,17 @@ public abstract class Stack
     {
         Probe probe = new Probe(this, root);
         return probe;        
+    }
+
+    /** Creates a Channel specific to each Stack */
+    public Channel parseChannelFromXml(Element root, String protocol) throws Exception
+    {
+    	Class<?> clStack = this.getClass();
+    	Class<?> cl = getClassFromStack(clStack, "Channel");
+    	Constructor<?> constr = cl.getConstructor(Stack.class); // obtenir le constructeur (Stack)
+    	Channel channel  = (Channel) constr.newInstance(this); // appeler le contructeur
+    	channel.parseChannelFromXml(root, protocol);
+    	return channel;	
     }
 
     /** Creates a Msg specific to each Stack */

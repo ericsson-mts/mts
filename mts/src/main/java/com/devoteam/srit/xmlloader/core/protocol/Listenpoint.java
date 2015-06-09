@@ -69,6 +69,7 @@ public class Listenpoint
     
     private Object attachment;
     private HashMap<String, Channel> channels;
+    
     protected Stack stack = null;
 
     /** Creates a new instance of Listenpoint with the config parameters */
@@ -507,7 +508,7 @@ public class Listenpoint
     }
     
     /** 
-     * Parse the message from XML element 
+     * Parse the listenpoint from XML element 
      */
     public void parseMsgFromXml(Element root, Runner runner) throws Exception
     {
@@ -580,6 +581,62 @@ public class Listenpoint
     }
 
 
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    public Parameter getParameter(String path) throws Exception
+    {
+        String[] params = Utils.splitPath(path);
+    	Parameter parameter = new Parameter();
+        if (params.length <= 1)
+        {
+        	parameter.add(this);
+        }
+        else if (params[1].equalsIgnoreCase("name"))
+        {
+            parameter.add(this.name);
+        }
+        else if (params[1].equalsIgnoreCase("UID"))
+        {
+        	parameter.add(this.UID);
+        }
+        else if (params[1].equalsIgnoreCase("host"))
+        {
+            GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=\"listenpoint:host\"", "setFromMessage value=\"listenpoint:localHost\"");
+            parameter.add(this.host);
+        }
+        else if (params[1].equalsIgnoreCase("localHost"))
+        {
+            parameter.add(this.host);
+        } else if (params[1].equalsIgnoreCase("port"))
+        {
+            GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=\"listenpoint:port\"", "setFromMessage value=\"listenpoint:localPort\"");
+            parameter.add(String.valueOf(this.port));
+        }
+        else if (params[1].equalsIgnoreCase("localPort"))
+        {
+            parameter.add(String.valueOf(this.port));
+        }
+        else if (params[1].equalsIgnoreCase("localPortTLS"))
+        {
+            parameter.add(String.valueOf(this.portTLS));
+        }
+        else if (params[1].equalsIgnoreCase("protocol"))
+        {
+        	parameter.add(this.protocol);
+        }
+        else if (params[1].equalsIgnoreCase("xml"))
+        {
+            parameter.add(this.toXml());
+        }
+        else
+        {
+        	Parameter.throwBadPathKeywordException(path);
+        }
+        return parameter;
+    }
+    
     /** equals method */
     public boolean equals(Listenpoint listenpoint)
     {
@@ -635,55 +692,4 @@ public class Listenpoint
         return true;
     }
 
-    public Parameter getParameter(String path) throws Exception
-    {
-        String[] params = Utils.splitPath(path);
-    	Parameter parameter = new Parameter();
-        if (params.length <= 1)
-        {
-        	parameter.add(this);
-        }
-        else if (params[1].equalsIgnoreCase("name"))
-        {
-            parameter.add(this.name);
-        }
-        else if (params[1].equalsIgnoreCase("UID"))
-        {
-        	parameter.add(this.UID);
-        }
-        else if (params[1].equalsIgnoreCase("host"))
-        {
-            GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=\"listenpoint:host\"", "setFromMessage value=\"listenpoint:localHost\"");
-            parameter.add(this.host);
-        }
-        else if (params[1].equalsIgnoreCase("localHost"))
-        {
-            parameter.add(this.host);
-        } else if (params[1].equalsIgnoreCase("port"))
-        {
-            GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=\"listenpoint:port\"", "setFromMessage value=\"listenpoint:localPort\"");
-            parameter.add(String.valueOf(this.port));
-        }
-        else if (params[1].equalsIgnoreCase("localPort"))
-        {
-            parameter.add(String.valueOf(this.port));
-        }
-        else if (params[1].equalsIgnoreCase("localPortTLS"))
-        {
-            parameter.add(String.valueOf(this.portTLS));
-        }
-        else if (params[1].equalsIgnoreCase("protocol"))
-        {
-        	parameter.add(this.protocol);
-        }
-        else if (params[1].equalsIgnoreCase("xml"))
-        {
-            parameter.add(this.toXml());
-        }
-        else
-        {
-        	Parameter.throwBadPathKeywordException(path);
-        }
-        return parameter;
-    }
 }
