@@ -89,11 +89,19 @@ public class StackRadius extends Stack
 	public synchronized Listenpoint parseListenpointFromXml(Element root) throws Exception 
 	{
         String name = root.attributeValue("name");
+        // test the existence of the listenpoint
         Listenpoint listenpoint = getListenpoint(name);
         if (listenpoint != null)
+        {
             return listenpoint;
+        }
+        // create a new listenpoint
         else
-            return new ListenpointRadius(this, root);
+        {
+            Listenpoint lp = new ListenpointRadius(this);
+            lp.parseMsgFromXml(root, null);
+            return lp;
+        }
 	}
 
     /** Creates a Channel specific to each Stack */

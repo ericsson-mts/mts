@@ -88,14 +88,6 @@ public abstract class StackSip extends Stack
         
         
     }
-
-    /** Creates a Listenpoint specific to each Stack */
-    @Override
-    public Listenpoint parseListenpointFromXml(Element root) throws Exception 
-    { 
-        Listenpoint listenpoint = new ListenpointSip(this, root);
-        return listenpoint;        
-    }
     
     /** Creates a specific SIP Msg */
     @Override    

@@ -70,15 +70,7 @@ public class StackRtp extends Stack
     {
     	this.ssrcAndListenpointName.put(key, value);
     }
-    
-	/** Creates a Listenpoint specific to each Stack */
-    @Override
-	public synchronized Listenpoint parseListenpointFromXml(Element root) throws Exception 
-	{
-        Listenpoint listenpoint = new ListenpointRtp(this, root);
-        return listenpoint;        
-	}
-    
+        
 	/**
 	* Creates a Msg specific to each Stack
 	* Use for UDP like protocol : to build incoming message

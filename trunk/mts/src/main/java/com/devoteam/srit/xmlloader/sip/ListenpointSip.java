@@ -27,16 +27,17 @@ import java.util.HashMap;
 
 import javax.sip.address.Hop;
 
-import org.dom4j.Attribute;
 import org.dom4j.Element;
-import org.dom4j.tree.DefaultElement;
-import org.dom4j.tree.DefaultElementInterface;
 
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.diameter.MsgDiameterParser;
+
+import dk.i1.diameter.Message;
+import dk.i1.diameter.node.Capability;
 
 /**
  *
@@ -52,17 +53,6 @@ public class ListenpointSip extends Listenpoint
         this.transport = null;
     }
 
-	/** Creates a Listenpoint specific from XML tree*/
-	public ListenpointSip(Stack stack, Element root) throws Exception	
-	{
-		super(stack, root);
-		String transportAttr = root.attributeValue("transport");
-        if (transportAttr == null)
-        {
-            this.transport = null;
-        }
-	}
-        	
     /** Send a Msg to Connection */
     @Override
     public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
@@ -109,5 +99,19 @@ public class ListenpointSip extends Listenpoint
 
 		return super.sendMessage(msg, remoteHost, remotePort, transport);
     }
-        
+
+    /** 
+     * Parse the message from XML element 
+     */
+    public void parseMsgFromXml(Element root, Runner runner) throws Exception
+    {
+		super.parseMsgFromXml(root, runner);
+
+		String transportAttr = root.attributeValue("transport");
+        if (transportAttr == null)
+        {
+            this.transport = null;
+        }
+	}
+
 }

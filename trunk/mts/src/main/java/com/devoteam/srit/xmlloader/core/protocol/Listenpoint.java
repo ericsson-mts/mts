@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.core.protocol;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -42,7 +43,7 @@ import org.dom4j.Element;
  * Interface generique servant a identifier un listenpoint
  * @author fhenry
  */
-public abstract class Listenpoint
+public class Listenpoint
 {
 
     private String UID;
@@ -53,7 +54,6 @@ public abstract class Listenpoint
     private boolean listenTCP = false;
     private boolean listenSCTP = false;
     private boolean listenTLS = false;
-    private boolean listenIP = false;
     
     private int portTLS = 0;
     protected String transport = null;
@@ -88,82 +88,8 @@ public abstract class Listenpoint
         this.listenTCP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_TCP", false);
         this.listenSCTP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_SCTP", false);
         this.listenTLS = this.stack.getConfig().getBoolean("listenpoint.LISTEN_TLS", false);
-        this.listenIP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_IP", false);
         this.portTLS = this.stack.getConfig().getInteger("listenpoint.LOCAL_PORT_TLS", 0);
         this.transport = stack.getConfig().getString("listenpoint.TRANSPORT", StackFactory.PROTOCOL_UDP);
-    }
-
-    /** Creates a Listenpoint specific from XML tree*/
-    public Listenpoint(Stack stack, Element root) throws Exception
-    {
-        this(stack);
-       
-        // deprecated message
-        this.name = root.attributeValue("providerName");
-        if (this.name == null)
-        {
-        	this.name = root.attributeValue("name");
-        }
-        this.host = Utils.formatIPAddress(root.attributeValue("localHost"));
-        if (null == this.host || this.host.length() <= 0)
-        {
-            this.host = "0.0.0.0";
-        }        
-        String portAttr = root.attributeValue("localPort");
-        if (portAttr != null)
-        {
-            this.port = Integer.parseInt(portAttr);
-        }
-        else
-        {
-            this.port = 0;
-        }
-
-        String listenUDPAttr = root.attributeValue("listenUDP");
-        if (listenUDPAttr != null)
-        {
-            this.listenUDP = Boolean.parseBoolean(listenUDPAttr);
-        }
-        String listenTCPAttr = root.attributeValue("listenTCP");
-        if (listenTCPAttr != null)
-        {
-            this.listenTCP = Boolean.parseBoolean(listenTCPAttr);
-        }
-        String listenSCTPAttr = root.attributeValue("listenSCTP");
-        if (listenSCTPAttr != null)
-        {
-            this.listenSCTP = Boolean.parseBoolean(listenSCTPAttr);
-        }
-        String listenTLSAttr = root.attributeValue("listenTLS");
-        if (listenTLSAttr != null)
-        {
-            this.listenTLS = Boolean.parseBoolean(listenTLSAttr);
-        }
-
-        String localPortTLSAttr = root.attributeValue("localPortTLS");
-        if ((this.listenTLS) && (localPortTLSAttr == null) && (this.portTLS > 0))
-        {	
-            throw new ExecutionException("The attribute \"localPortTLS\" is required because you have asked to listen on TLS; please set this attribute on the <createListenpointPPP> operation.");        	
-        }
-
-        if (localPortTLSAttr != null && Utils.isInteger(localPortTLSAttr))
-        {
-            this.portTLS = Integer.parseInt(localPortTLSAttr);
-        }
-        else
-        {
-        	this.portTLS = 0;
-        }
-        
-        if (this.portTLS <= 0)
-        {
-            this.portTLS = this.port + 1;
-        }
-        String transportAttr = root.attributeValue("transport");
-        if (transportAttr != null)
-        {
-            this.transport = transportAttr;
-        }
     }
 
     /** Creates a new instance of Listenpoint */
@@ -276,7 +202,15 @@ public abstract class Listenpoint
         this.attachment = attachment;
     }
 
-    public String getProtocol()
+    public Stack getStack() {
+		return stack;
+	}
+
+	public void setStack(Stack stack) {
+		this.stack = stack;
+	}
+
+	public String getProtocol()
     {
         return protocol;
     }
@@ -521,8 +455,14 @@ public abstract class Listenpoint
         }
         return res;
     }
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
-    /** display method */
+    /** 
+     * Returns the string description of the message. Used for logging as DEBUG level 
+     */
     @Override
     public String toString()
     {
@@ -558,11 +498,85 @@ public abstract class Listenpoint
         return str;
     }
     
-    /** display method */
-    //@Override
+    /** 
+     * Convert the listenpoint to XML document 
+     */
     public String toXml()
     {
         return "<LISTENPOINT " + this.toString() + "/>";
+    }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    public void parseMsgFromXml(Element root, Runner runner) throws Exception
+    {
+        // deprecated message
+        this.name = root.attributeValue("providerName");
+        if (this.name == null)
+        {
+        	this.name = root.attributeValue("name");
+        }
+        this.host = Utils.formatIPAddress(root.attributeValue("localHost"));
+        if (null == this.host || this.host.length() <= 0)
+        {
+            this.host = "0.0.0.0";
+        }        
+        String portAttr = root.attributeValue("localPort");
+        if (portAttr != null)
+        {
+            this.port = Integer.parseInt(portAttr);
+        }
+        else
+        {
+            this.port = 0;
+        }
+
+        String listenUDPAttr = root.attributeValue("listenUDP");
+        if (listenUDPAttr != null)
+        {
+            this.listenUDP = Boolean.parseBoolean(listenUDPAttr);
+        }
+        String listenTCPAttr = root.attributeValue("listenTCP");
+        if (listenTCPAttr != null)
+        {
+            this.listenTCP = Boolean.parseBoolean(listenTCPAttr);
+        }
+        String listenSCTPAttr = root.attributeValue("listenSCTP");
+        if (listenSCTPAttr != null)
+        {
+            this.listenSCTP = Boolean.parseBoolean(listenSCTPAttr);
+        }
+        String listenTLSAttr = root.attributeValue("listenTLS");
+        if (listenTLSAttr != null)
+        {
+            this.listenTLS = Boolean.parseBoolean(listenTLSAttr);
+        }
+
+        String localPortTLSAttr = root.attributeValue("localPortTLS");
+        if ((this.listenTLS) && (localPortTLSAttr == null) && (this.portTLS > 0))
+        {	
+            throw new ExecutionException("The attribute \"localPortTLS\" is required because you have asked to listen on TLS; please set this attribute on the <createListenpointPPP> operation.");        	
+        }
+
+        if (localPortTLSAttr != null && Utils.isInteger(localPortTLSAttr))
+        {
+            this.portTLS = Integer.parseInt(localPortTLSAttr);
+        }
+        else
+        {
+        	this.portTLS = 0;
+        }
+        
+        if (this.portTLS <= 0)
+        {
+            this.portTLS = this.port + 1;
+        }
+        String transportAttr = root.attributeValue("transport");
+        if (transportAttr != null)
+        {
+            this.transport = transportAttr;
+        }    	
     }
 
 

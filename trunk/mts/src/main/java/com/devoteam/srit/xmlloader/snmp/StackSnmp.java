@@ -142,14 +142,6 @@ public class StackSnmp extends Stack
         return mibLoader;
     }
 
-    /** Creates a Listenpoint specific to each Stack */
-    @Override
-    public Listenpoint parseListenpointFromXml(Element root) throws Exception 
-    { 
-        Listenpoint listenpoint = new ListenpointSnmp(this, root);
-        return listenpoint;        
-    }
-
     @Override
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {

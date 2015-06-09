@@ -58,18 +58,10 @@ public class StackRtsp extends Stack {
         int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
         if (port > 0)
         {
-        	Listenpoint listenpoint = new ListenpointRtsp(this);
+        	Listenpoint listenpoint = new Listenpoint(this);
             createListenpoint(listenpoint, StackFactory.PROTOCOL_RTSP);
         }
 	}
-
-    /** Creates a Listenpoint specific to each Stack */
-    @Override
-    public Listenpoint parseListenpointFromXml(Element root) throws Exception 
-    { 
-        Listenpoint listenpoint = new ListenpointRtsp(this, root);
-        return listenpoint;        
-    }
 
     /** Creates a Channel specific to each Stack */
     @Override

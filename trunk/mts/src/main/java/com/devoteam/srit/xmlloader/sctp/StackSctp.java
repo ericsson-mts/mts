@@ -56,14 +56,6 @@ public class StackSctp extends Stack
         }
 	}
 
-	/** Creates a Listenpoint specific to each Stack */
-    @Override
-	public synchronized Listenpoint parseListenpointFromXml(Element root) throws Exception 
-	{
-        Listenpoint listenpoint = new ListenpointSctp(this, root);
-        return listenpoint;        
-	}
-
     /** Creates a Channel specific to each Stack */
     @Override
 	public Channel parseChannelFromXml(Element root, String protocol) throws Exception

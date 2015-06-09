@@ -50,7 +50,7 @@ public  class StackMgcp extends Stack {
         int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
         if (port > 0)
         {
-        	Listenpoint listenpoint = new ListenpointMgcp(this);
+        	Listenpoint listenpoint = new Listenpoint(this);
                 createListenpoint(listenpoint, StackFactory.PROTOCOL_MGCP);
         }
 
@@ -65,14 +65,6 @@ public  class StackMgcp extends Stack {
     @Override
     public XMLElementReplacer getElementReplacer() {
          return XMLElementTextMsgParser.instance();
-    }
-
-    /** Creates a Listenpoint specific to each Stack */
-    @Override
-    public Listenpoint parseListenpointFromXml(Element root) throws Exception
-    {
-        Listenpoint listenpoint = new ListenpointMgcp(this, root);
-        return listenpoint;
     }
 
     @Override

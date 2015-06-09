@@ -23,7 +23,9 @@
 
 package com.devoteam.srit.xmlloader.tcp;
 
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
+
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
@@ -43,45 +45,43 @@ public class ListenpointTcp extends Listenpoint
     private long startTimestamp = 0;
 
     /** Creates a new instance of Listenpoint */
-    public ListenpointTcp(Stack stack) throws Exception {
+    public ListenpointTcp(Stack stack) throws Exception 
+    {
         super(stack);
-        if (nio) {
+        if (nio) 
+        {
             listenpoint = new ListenpointTcpNIO(stack);
         }
-        else {
+        else 
+        {
             listenpoint = new ListenpointTcpBIO(stack);
         }
     }
 
-    /** Creates a Listenpoint specific from XML tree*/
-    public ListenpointTcp(Stack stack, Element root) throws Exception {
-        super(stack, root);
-        if (nio) {
-            listenpoint = new ListenpointTcpNIO(stack, root);
-        }
-        else {
-            listenpoint = new ListenpointTcpBIO(stack, root);
-        }
-    }
-
     /** Creates a new instance of Listenpoint */
-    public ListenpointTcp(Stack stack, String name, String host, int port) throws Exception {
+    public ListenpointTcp(Stack stack, String name, String host, int port) throws Exception 
+    {
         super(stack, name, host, port);
-        if (nio) {
+        if (nio) 
+        {
             listenpoint = new ListenpointTcpNIO(stack, name, host, port);
         }
-        else {
+        else 
+        {
             listenpoint = new ListenpointTcpBIO(stack, name, host, port);
         }
     }
 
     /** Create a listenpoint to each Stack */
     @Override
-    public boolean create(String protocol) throws Exception {
-        if (nio) {
+    public boolean create(String protocol) throws Exception 
+    {
+        if (nio) 
+        {
             StatPool.beginStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_TCP, protocol);
         }
-        else {
+        else 
+        {
             StatPool.beginStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_TCP, protocol);
         }
         this.startTimestamp = System.currentTimeMillis();
@@ -89,27 +89,43 @@ public class ListenpointTcp extends Listenpoint
     }
 
     @Override
-    public synchronized Channel prepareChannel(Msg msg, String remoteHost, int remotePort, String transport) throws Exception {
+    public synchronized Channel prepareChannel(Msg msg, String remoteHost, int remotePort, String transport) throws Exception 
+    {
         return listenpoint.prepareChannel(msg, remoteHost, remotePort, transport);
     }
 
     @Override
-    public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception {
+    public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception 
+    {
         return prepareChannel(msg, remoteHost, remotePort, transport).sendMessage(msg);
     }
 
     @Override
-    public String getProtocol() {
+    public String getProtocol() 
+    {
         return listenpoint.getProtocol();
     }
 
-    public boolean remove() {
-        if (nio) {
+    public boolean remove() 
+    {
+        if (nio) 
+        {
             StatPool.endStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_TCP, getProtocol(), startTimestamp);
         }
-        else {
+        else 
+        {
             StatPool.endStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_TCP, getProtocol(), startTimestamp);
         }
         return listenpoint.remove();
     }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    public void parseMsgFromXml(Element root, Runner runner) throws Exception
+    {
+    	super.parseMsgFromXml(root, runner);
+    	listenpoint.parseMsgFromXml(root, runner);
+    }
+    
 }

@@ -55,14 +55,6 @@ public class StackRtp extends Stack
         super();
     }
     
-	/** Creates a Listenpoint specific to each Stack */
-    @Override
-	public synchronized Listenpoint parseListenpointFromXml(Element root) throws Exception 
-	{
-        Listenpoint listenpoint = new ListenpointRtp(this, root);
-        return listenpoint;        
-	}
-
     /** Creates a Channel specific to each Stack */
     @Override
     public Channel parseChannelFromXml(Element root, String protocol) throws Exception {
@@ -97,36 +89,59 @@ public class StackRtp extends Stack
         {
             throw new Exception("The JMF RTP stack does not support <flow> tag, use the light RTP stack instead");
         }
-        
-        List<Element> listPackets = root.elements("packet");
-        boolean control = parseChannel(listPackets.get(0));
+
+        RTPPacket rtpPacket = parsePacket(root);
+        if (rtpPacket != null)
+        {
+        	msgRtp.add(rtpPacket);
+        }
+        boolean control = parseChannel(root);
         msgRtp.setControl(control);
-        
+
+        List<Element> listPackets = root.elements("packet");
+        if (listPackets.size() > 0)
+        {
+	        control = parseChannel(listPackets.get(0));
+	        msgRtp.setControl(control);
+        }
         Iterator<Element> iter = listPackets.iterator(); 
         while (iter.hasNext()) {
             Element packet = iter.next();
-            RTPPacket rtpPacket = parsePacket(packet);
-            msgRtp.add(rtpPacket);
+            rtpPacket = parsePacket(packet);
+            if (rtpPacket != null)
+            {
+            	msgRtp.add(rtpPacket);
+            }
         }
         return msgRtp;
     }
-        
-    /** Parses then returns an RTP Packet from the XML root element */
+    
+    /** Parses then returns the channel from the XML root element */
     private boolean parseChannel(Element root) throws Exception
     {    
         Element header = root.element("header");
-        String channel = header.attributeValue("channel");
-        boolean control = false;
-        if (channel !=  null) {
-            if (channel.equalsIgnoreCase("control")) {
-                control = true;
-            } else if (channel.equalsIgnoreCase("data")) {                
-            } else {
-                Exception e = new Exception();
-                throw new ExecutionException("Bad channel attribute " + channel + " for the <header> tag : possible values are <data> or <control>", e);                                
-            }
+        if (header !=  null)
+        {
+	        String channel = header.attributeValue("channel");
+	        boolean control = false;
+	        if (channel !=  null) 
+	        {
+	            if (channel.equalsIgnoreCase("control")) 
+	            {
+	                control = true;
+	            } 
+	            else if (channel.equalsIgnoreCase("data")) 
+	            {                
+	            } 
+	            else 
+	            {
+	                Exception e = new Exception();
+	                throw new ExecutionException("Bad channel attribute " + channel + " for the <header> tag : possible values are <data> or <control>", e);                                
+	            }
+	        }
+	        return control;
         }
-        return control;
+        return false;
     }
 
     /** Parses then returns an RTP Packet from the XML root element */
@@ -176,21 +191,25 @@ public class StackRtp extends Stack
         //
         // Parse header tag
         //
-        Element header = root.element("header");        
-        String ssrc = header.attributeValue("ssrc");        
-        rtpPacket.ssrc = Integer.parseInt(ssrc);
-        String seqnum = header.attributeValue("seqnum");        
-        rtpPacket.seqnum = Integer.parseInt(seqnum);
-        String timestamp = header.attributeValue("timestamp");        
-        rtpPacket.timestamp = Integer.parseInt(timestamp);
-        String payloadType = header.attributeValue("payloadType");        
-        rtpPacket.payloadType = Integer.parseInt(payloadType);
-        rtpPacket.payloadoffset = 12;
-        rtpPacket.payloadlength = data.length - rtpPacket.payloadoffset;
-        rtpPacket.calcLength();
-        rtpPacket.assemble(1, false);
-        
-        return rtpPacket; 
+        Element header = root.element("header");
+        if (header != null)
+        {
+	        String ssrc = header.attributeValue("ssrc");        
+	        rtpPacket.ssrc = Integer.parseInt(ssrc);
+	        String seqnum = header.attributeValue("seqnum");        
+	        rtpPacket.seqnum = Integer.parseInt(seqnum);
+	        String timestamp = header.attributeValue("timestamp");        
+	        rtpPacket.timestamp = Integer.parseInt(timestamp);
+	        String payloadType = header.attributeValue("payloadType");        
+	        rtpPacket.payloadType = Integer.parseInt(payloadType);
+	        rtpPacket.payloadoffset = 12;
+	        rtpPacket.payloadlength = data.length - rtpPacket.payloadoffset;
+	        rtpPacket.calcLength();
+	        rtpPacket.assemble(1, false);
+	        
+	        return rtpPacket;
+        }
+        return null;
     }
 
     /**

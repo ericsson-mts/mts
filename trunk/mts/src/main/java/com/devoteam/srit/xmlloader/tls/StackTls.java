@@ -68,12 +68,14 @@ public class StackTls extends Stack
     }
 
 	/** Creates a Listenpoint specific to each Stack */
+    /*
     @Override
 	public synchronized Listenpoint parseListenpointFromXml(Element root) throws Exception 
 	{
         Listenpoint listenpoint = new ListenpointTls(this, root);
         return listenpoint;        
 	}
+	*/
 
     /** Creates a Channel specific to each Stack */
     @Override

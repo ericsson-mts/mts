@@ -82,7 +82,7 @@ public class StackSigtran extends Stack {
         // initiate a default listenpoint if port is not empty or null
         int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
         if (port > 0) {
-            Listenpoint listenpoint = new ListenpointSigtran(this);
+            Listenpoint listenpoint = new Listenpoint(this);
             createListenpoint(listenpoint, StackFactory.PROTOCOL_SIGTRAN);
         }
     }
@@ -100,13 +100,6 @@ public class StackSigtran extends Stack {
             fvoDictionaries.put(name, new FvoDictionary(SingletonFSInterface.instance().getInputStream(new URI("../conf/sigtran/"+name))));
         }
         return fvoDictionaries.get(name);
-    }
-
-    /** Creates a Listenpoint specific to each Stack */
-    @Override
-    public Listenpoint parseListenpointFromXml(Element root) throws Exception {
-        Listenpoint listenpoint = new ListenpointSigtran(this, root);
-        return listenpoint;
     }
 
     /** Creates a Channel specific to each Stack */

@@ -68,7 +68,9 @@ public class StackTcp extends Stack
     @Override
 	public synchronized Listenpoint parseListenpointFromXml(Element root) throws Exception 
 	{
-        Listenpoint listenpoint = new ListenpointTcp(this, root);
+        //Listenpoint listenpoint = new ListenpointTcp(this, root);
+    	Listenpoint listenpoint = new ListenpointTcp(this);
+        listenpoint.parseMsgFromXml(root, null);
         return listenpoint;        
 	}
 
