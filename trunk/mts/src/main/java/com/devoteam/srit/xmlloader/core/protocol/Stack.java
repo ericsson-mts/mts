@@ -446,19 +446,21 @@ public abstract class Stack
     }
 
     /** Creates a Listenpoint specific to each Stack */
-    public Listenpoint parseListenpointFromXml(Element root) throws Exception 
+    public Listenpoint parseListenpointFromXml(Element root, Runner runner) throws Exception 
     {
     	Class<?> clStack = this.getClass();
     	Listenpoint lp  = (Listenpoint) instanceObjectFromStackParents(clStack, "Listenpoint");
-	    lp.parseFromXml(root, null);
+	    lp.parseFromXml(root, runner);
 	    return lp;
     }
 
     /** Creates a probe specific to each Stack */
     public Probe parseProbeFromXml(Element root) throws Exception 
     {
-        Probe probe = new Probe(this, root);
-        return probe;        
+    	Class<?> clStack = this.getClass();
+    	Probe probe  = (Probe) instanceObjectFromStackParents(clStack, "Probe");
+	    probe.parseFromXml(root);
+	    return probe;
     }
 
     /** Creates a channel specific to each Stack */
