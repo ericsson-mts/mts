@@ -91,8 +91,7 @@ public class StackPop extends Stack {
     @Override
 	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception {
 
-        MsgPop msg = new MsgPop();
-        msg.parseFromXml(request, root, runner);
+        Msg msg = super.parseMsgFromXml(request, root, runner);
 
         String channelName = root.attributeValue("channel");
         String transactionId = root.attributeValue("transactionId");
@@ -162,7 +161,7 @@ public class StackPop extends Stack {
         
 		if (text != null)
 		{
-			return new MsgPop(text, channel);
+			return new MsgPop(this, text, channel);
 		}
 
         Tester.getGlobalLogger().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Receive an incomplete message; we ignore it : ", text);

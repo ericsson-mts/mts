@@ -128,7 +128,7 @@ public class StackSmpp extends Stack
         SmppMessage msg = smppDictionary.getMessageFromId(id);
         msg.parseArray(array);
         
-        return new MsgSmpp(msg);
+        return new MsgSmpp(this, msg);
     }
 
     /** Returns the Config object to access the protocol config file*/

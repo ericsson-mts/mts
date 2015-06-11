@@ -72,7 +72,7 @@ public class StackRtp extends Stack
         System.arraycopy(datas, 0, copyData, 0, length);
 
         Array array = new ReadOnlyDefaultArray(copyData);
-        MsgRtp msg = new MsgRtp(array);
+        MsgRtp msg = new MsgRtp(this, array);
         
         /*
         if (((ListenpointRtp) msg.getListenpoint()).isSecured())
@@ -144,7 +144,7 @@ public class StackRtp extends Stack
             	
             	Array uncipheredArray = new ReadOnlyDefaultArray(uncipheredData);
             	msg = null;
-            	msg = new MsgRtp(uncipheredArray);
+            	msg = new MsgRtp(this, uncipheredArray);
     			break;
     		}
     	}

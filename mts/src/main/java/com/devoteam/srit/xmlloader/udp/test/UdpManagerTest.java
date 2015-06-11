@@ -39,6 +39,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -78,7 +79,9 @@ public class UdpManagerTest {
         port = 20000;
     	transport = Config.getConfigByName("udp.properties").getString("listenpoint.TRANSPORT");
 
-        Listenpoint listenpoint = StackFactory.getStack(StackFactory.PROTOCOL_UDP).getListenpoint(null);
+    	Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_UDP);
+    	
+        Listenpoint listenpoint = stack.getListenpoint(null);
         InetSocketAddress localDatagramSocketAddress = new InetSocketAddress(host, port);
      	DatagramSocket datagramSocket = new DatagramSocket(localDatagramSocketAddress);
                
@@ -86,7 +89,7 @@ public class UdpManagerTest {
     	byte[] data = Utils.parseBinaryString(packet);
         System.out.println("length = " + data.length);
         
-        MsgUdp msg = new MsgUdp(data, data.length);
+        MsgUdp msg = new MsgUdp(stack, data, data.length);
         msg.setListenpoint(listenpoint);
         
         int maxIter = Config.getConfigByName("udp.properties").getInteger("NB_ITERATION", 100000);

@@ -36,6 +36,7 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -52,8 +53,8 @@ public class MsgRtp extends Msg {
     private Vector<RTPPacket> rtpPackets = null;            
     
     /** Creates a new instance of MsgRtp */
-    public MsgRtp() {
-    	super();
+    public MsgRtp(Stack stack) {
+    	super(stack);
         rtpPackets = new Vector<RTPPacket>();
     }
 

@@ -71,7 +71,7 @@ public class StackRtp extends Stack
     /** Creates a specific RTP Msg */
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {                       
-        MsgRtp msgRtp = new MsgRtp();
+        MsgRtp msgRtp = new MsgRtp(this);
          
         // instanciates the channel        
         String channelName = root.attributeValue("sessionName");
@@ -220,7 +220,7 @@ public class StackRtp extends Stack
     @Override
     public Msg readFromDatas(byte[] datas, int length) throws Exception
     {
-        MsgRtp msg = new MsgRtp();
+        MsgRtp msg = new MsgRtp(this);
         msg.add(extractDataFromMessage(datas, length));
     	return msg;
     }

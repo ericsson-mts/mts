@@ -86,7 +86,7 @@ public class StackRadius extends Stack
 
 	/** Creates a Listenpoint specific to each Stack */
     @Override
-	public synchronized Listenpoint parseListenpointFromXml(Element root) throws Exception 
+	public synchronized Listenpoint parseListenpointFromXml(Element root, Runner runner) throws Exception 
 	{
         String name = root.attributeValue("name");
         // test the existence of the listenpoint
@@ -314,7 +314,7 @@ public class StackRadius extends Stack
             radiusMessage.setRemoteAddress(inetSocketAddress);
         }
 
-        MsgRadius msgRadius = new MsgRadius(radiusMessage);
+        MsgRadius msgRadius = new MsgRadius(this, radiusMessage);
         ListenpointRadius listenpoint = null;
         ChannelRadius channel = null;
         

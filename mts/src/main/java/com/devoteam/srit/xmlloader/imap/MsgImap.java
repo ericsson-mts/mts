@@ -36,6 +36,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.MessageId;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
 import com.devoteam.srit.xmlloader.tcp.bio.ChannelTcpBIO;
@@ -56,13 +57,15 @@ public class MsgImap extends Msg {
     private Vector<String> messages = null;
 
     /** Creates a new instance */
-    public MsgImap() 
+    public MsgImap(Stack stack) 
     {
-        super();       
+        super(stack);       
     }
 
     /** Creates a new instance */
-    public MsgImap(String someData, Channel channel) throws Exception {
+    public MsgImap(Stack stack, String someData, Channel channel) throws Exception {
+    	this(stack);
+    	
         setMessageText(someData);
         
         setChannel(channel);

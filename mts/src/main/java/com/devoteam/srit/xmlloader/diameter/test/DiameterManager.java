@@ -25,11 +25,11 @@ package com.devoteam.srit.xmlloader.diameter.test;
 
 import com.devoteam.srit.xmlloader.diameter.MsgDiameter;
 import com.devoteam.srit.xmlloader.diameter.test.IMSDiameterConstants;
-
 import com.devoteam.srit.xmlloader.core.log.GenericLogger;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 
 import dk.i1.diameter.AVP;
 import dk.i1.diameter.AVP_Grouped;
@@ -167,7 +167,16 @@ public class DiameterManager extends NodeManager {
      * Dispatches an answer to threads waiting for it.
      */    
     protected void handleAnswer(Message answer, ConnectionKey answer_connkey, Object state) {
-        MsgDiameter msg = new MsgDiameter(answer);
+    	Stack stack = null; 
+    	try
+    	{
+    		stack = StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER);
+    	}
+    	catch (Exception e)
+    	{
+    		// nothing to do
+    	}
+        MsgDiameter msg = new MsgDiameter(stack, answer);
         try
         {
             logger.debug(TextEvent.Topic.PROTOCOL, Stack.RECEIVE, msg);
@@ -201,10 +210,19 @@ public class DiameterManager extends NodeManager {
      * @param peer The peer that sent the request. This is not the originating peer but the peer directly connected to us that sent us the request.
      */
     protected void handleRequest(Message request, ConnectionKey connkey, Peer peer) {
-        MsgDiameter msg = new MsgDiameter(request);
+    	Stack stack = null; 
+    	try
+    	{
+    		stack = StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER);
+    	}
+    	catch (Exception e)
+    	{
+    		// nothing to do
+    	}
+        MsgDiameter msgRequest = new MsgDiameter(stack, request);
         try
         {
-            logger.debug(TextEvent.Topic.PROTOCOL, Stack.RECEIVE, msg);
+            logger.debug(TextEvent.Topic.PROTOCOL, Stack.RECEIVE, msgRequest);
         }
         catch (Exception e)
         {
@@ -223,8 +241,9 @@ public class DiameterManager extends NodeManager {
             return;
         }
         
+        MsgDiameter msgResponse = new MsgDiameter(stack, response);
         try {
-            logger.debug(TextEvent.Topic.PROTOCOL, "SEND the DIAMETER response : ", new MsgDiameter(response));
+            logger.debug(TextEvent.Topic.PROTOCOL, "SEND the DIAMETER response : ", msgResponse);
         } catch (Exception e) {
             logger.warn(TextEvent.Topic.PROTOCOL, e, "An error occured while logging the diameter response : ", response);
         }    

@@ -14,6 +14,7 @@ import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
@@ -27,9 +28,9 @@ public class MsgEthernet extends Msg
 		
 	
     /** Creates a new instance */
-    public MsgEthernet() throws Exception
+    public MsgEthernet(Stack stack) throws Exception
     {
-        super();
+        super(stack);
     }
 
     /** Creates a new instance */

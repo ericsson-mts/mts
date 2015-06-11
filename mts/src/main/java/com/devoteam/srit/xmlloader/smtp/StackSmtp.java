@@ -57,18 +57,17 @@ public class StackSmtp extends Stack
      */
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-    	MsgSmtp msgSmtp = new MsgSmtp();
-    	msgSmtp.parseFromXml(request, root, runner);
+    	MsgSmtp msg = (MsgSmtp) super.parseMsgFromXml(request, root, runner);
     	
         String transactionIdStr = root.attributeValue("transactionId");
         if (transactionIdStr != null)
         {
             TransactionId transactionId = new TransactionId(transactionIdStr);
-            msgSmtp.setTransactionId(transactionId);
+            msg.setTransactionId(transactionId);
             Msg requestSmtp = StackFactory.getStack(StackFactory.PROTOCOL_SMTP).getInTransaction(transactionId).getBeginMsg();
-            msgSmtp.setType(requestSmtp.getType());
+            msg.setType(requestSmtp.getType());
         }
-        return msgSmtp;
+        return msg;
     }
 
     /** Send a Msg to Stack */
@@ -136,7 +135,7 @@ public class StackSmtp extends Stack
                 
                 if (isLastLine)
                 {
-                    msg = new MsgSmtp(message.toString());
+                    msg = new MsgSmtp(this, message.toString());
                     exit = true;
                 }
             }

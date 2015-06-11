@@ -25,11 +25,10 @@ package com.devoteam.srit.xmlloader.diameter;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-
 
 import dk.i1.diameter.Message;
 import dk.i1.diameter.node.ConnectionKey;
@@ -123,7 +122,8 @@ public class DiameterNodeManager extends NodeManager {
         MsgDiameter msg = null;
         try
         {
-            msg = new MsgDiameter(message);
+        	Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER);
+            msg = new MsgDiameter(stack, message);
             
             msg.setListenpoint(listenpoint);
             GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, null, "peer = " + peer);
@@ -133,7 +133,7 @@ public class DiameterNodeManager extends NodeManager {
                 msg.setChannel(channel);
             }
                                                       
-            StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER).receiveMessage(msg);
+            stack.receiveMessage(msg);
         }
         catch(Exception e)
         {

@@ -65,8 +65,7 @@ public class StackRtsp extends Stack {
     
 	/** Creates a specific Msg */
 	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception {
-        MsgRtsp msg = new MsgRtsp();
-        msg.parseFromXml(request,  root, runner);
+        Msg msg = super.parseMsgFromXml(request, root, runner);
 
         String remoteHostAttr = root.attributeValue("remoteHost");
         if(remoteHostAttr != null){
@@ -129,7 +128,7 @@ public class StackRtsp extends Stack {
 
 		if (text != null && text.contains(StackFactory.PROTOCOL_RTSP))
 		{
-			MsgRtsp msg = new MsgRtsp();
+			MsgRtsp msg = new MsgRtsp(this);
 			msg.setMessageText(text, false, addCRLFContent);
 			return msg;
 		}
@@ -148,7 +147,7 @@ public class StackRtsp extends Stack {
     {
     	String str = new String(datas);
     	str = str.substring(0, length);
-    	MsgRtsp msg = new MsgRtsp();
+    	MsgRtsp msg = new MsgRtsp(this);
 		msg.setMessageText(str, false, addCRLFContent);
     	return msg;
     }

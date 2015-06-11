@@ -35,6 +35,7 @@ import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.UnsignedInt32;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -67,15 +68,15 @@ public class MsgDiameter extends Msg
     private Message message;
     
     /** Creates a new instance */
-    public MsgDiameter()
+    public MsgDiameter(Stack stack)
     {
-    	super();
+    	super(stack);
     }
     
     /** Creates a new instance */
-    public MsgDiameter(Message aMessage)
+    public MsgDiameter(Stack stack, Message aMessage)
     {
-        this();
+        this(stack);
         message = aMessage;
         setListenpoint(StackDiameter.listenpoint); 
     }

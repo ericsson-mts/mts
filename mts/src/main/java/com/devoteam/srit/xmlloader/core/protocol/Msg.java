@@ -67,6 +67,8 @@ public abstract class Msg extends MsgLight implements Removable
     private LinkedList<String> scenarioName = null; 
     private ScenarioRunner destScenario = null;
     
+    protected Stack stack = null;
+    
     // transport elements
     protected Channel channel = null;
     protected Listenpoint listenpoint = null;
@@ -84,6 +86,15 @@ public abstract class Msg extends MsgLight implements Removable
         this.isTransactionIdSet = false;
         this.isRetransmissionIdSet = false;
         this.transaction = null;
+    }
+
+    public Msg(Stack stack)
+    {
+        this.isMessageIdSet = false;
+        this.isTransactionIdSet = false;
+        this.isRetransmissionIdSet = false;
+        this.transaction = null;
+        this.stack = stack;
     }
 
     //--------------------------------------------------------------------------------
@@ -527,9 +538,11 @@ public abstract class Msg extends MsgLight implements Removable
     	return 0;
     }
 
-    /** Get the data of the message */
+    /** encode the message to binary data */
     public abstract byte[] encode();
        
+    /** decode the message from binary data */
+    public abstract byte[] decode();
     
     //---------------------------------------------------------------------
     // methods for the XML display / parsing of the message

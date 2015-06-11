@@ -40,6 +40,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.MessageId;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -55,6 +56,11 @@ public class MsgTcp extends Msg
 
     private String type;
     
+    /** Creates a new instance */
+    public MsgTcp(Stack stack) throws Exception
+    {
+    	super(stack);
+    }
 
     public TransactionId getTransactionId() throws Exception
     {

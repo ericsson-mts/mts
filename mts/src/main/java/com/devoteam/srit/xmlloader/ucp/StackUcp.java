@@ -138,7 +138,7 @@ public class StackUcp extends Stack
         UcpMessage msg = ucpDictionary.getMessage(RR, OT);
         msg.parseArray(msgArray);
 
-        return new MsgUcp(msg);
+        return new MsgUcp(this, msg);
     }
 
     /** Returns the Config object to access the protocol config file*/

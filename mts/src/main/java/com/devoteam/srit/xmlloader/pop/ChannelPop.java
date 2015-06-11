@@ -74,7 +74,7 @@ public class ChannelPop extends Channel
             if(!welcomeMsg.equalsIgnoreCase(""))
             {
                 //send welcome message
-                MsgPop msg = new MsgPop(welcomeMsg, this);
+                MsgPop msg = new MsgPop(this.stack, welcomeMsg, this);
                 channel.sendMessage(msg);
             }
         }

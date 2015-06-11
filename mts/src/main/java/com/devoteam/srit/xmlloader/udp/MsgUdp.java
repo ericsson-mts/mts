@@ -38,6 +38,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.MessageId;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -51,17 +52,19 @@ public class MsgUdp extends Msg
     private byte[] data;
  
     /** Creates a new instance */
-    public MsgUdp() throws Exception
+    public MsgUdp(Stack stack) throws Exception
     {
-    	super();
+    	super(stack);
     }
     
     /** Creates a new instance */
-    public MsgUdp(byte[] datas, int length) throws Exception
+    public MsgUdp(Stack stack, byte[] datas, int length) throws Exception
     {
-    	data = new byte [length];
+    	this(stack);
+    	
+    	this.data = new byte [length];
     	for (int i=0; i<length; i++)
-    		data[i]= datas[i];
+    		this.data[i]= datas[i];
     }
 
     /** Returns the UDP message without entity */

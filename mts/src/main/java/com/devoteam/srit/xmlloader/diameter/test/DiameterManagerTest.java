@@ -30,6 +30,7 @@ package com.devoteam.srit.xmlloader.diameter.test;
  * => 3636 transactions/s  
  */
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 import java.net.URI;
 import java.util.GregorianCalendar;
 import java.util.logging.FileHandler;
@@ -43,6 +44,7 @@ import com.devoteam.srit.xmlloader.core.Tester;
 import com.devoteam.srit.xmlloader.core.log.GenericLogger;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.URIFactory;
@@ -56,7 +58,9 @@ import dk.i1.diameter.node.Capability;
 import dk.i1.diameter.node.NodeSettings;
 import dk.i1.diameter.node.Peer;
 import dk.i1.diameter.node.Peer.TransportProtocol;
+
 import java.io.File;
+
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
@@ -192,10 +196,12 @@ public class DiameterManagerTest extends TestCase {
     public void testXMLParsedClient() throws Exception {       
         Element scElem = readMessageFromXml("../conf/diameter/diameterMessage.xml");
                       
+        Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER);
+        
         String applicationId = scElem.element("header").attributeValue("applicationId");
         MsgDiameterParser.getInstance().doDictionnary(scElem, applicationId, true);
         Message message = MsgDiameterParser.getInstance().parseMsgFromXml(true, scElem);
-        MsgDiameter request = new MsgDiameter(message);
+        MsgDiameter request = new MsgDiameter(stack, message);
         int maxIter = Config.getConfigByName("diameter.properties").getInteger("NB_ITERATION");
         logger.debug(TextEvent.Topic.PROTOCOL, "maxIter : ", maxIter);
         Message resp = null;

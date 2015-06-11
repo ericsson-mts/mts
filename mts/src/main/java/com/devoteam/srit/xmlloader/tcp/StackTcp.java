@@ -66,7 +66,7 @@ public class StackTcp extends Stack
 
 	/** Creates a Listenpoint specific to each Stack */
     @Override
-	public synchronized Listenpoint parseListenpointFromXml(Element root) throws Exception 
+	public synchronized Listenpoint parseListenpointFromXml(Element root, Runner runner) throws Exception 
 	{
         //Listenpoint listenpoint = new ListenpointTcp(this, root);
     	Listenpoint listenpoint = new ListenpointTcp(this);
@@ -102,8 +102,7 @@ public class StackTcp extends Stack
     @Override
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        MsgTcp msgTcp = new MsgTcp();
-        msgTcp.parseFromXml(request, root, runner);
+        Msg msg = super.parseMsgFromXml(request, root, runner);
         
         // instanciates the channel
         String channelName = root.attributeValue("channel");
@@ -116,9 +115,9 @@ public class StackTcp extends Stack
         {
             throw new ExecutionException("The channel <name=" + channelName + "> does not exist");
         }
-        msgTcp.setChannel(getChannel(channelName));
+        msg.setChannel(getChannel(channelName));
 
-        return msgTcp;
+        return msg;
     }
 
     /** Returns the Config object to access the protocol config file*/
@@ -153,7 +152,7 @@ public class StackTcp extends Stack
 	            data[i] = buffer[i];
 	        }
 	
-	        msgTcp = new MsgTcp();
+	        msgTcp = new MsgTcp(this);
 	        msgTcp.setMessageBinary(data);
 	    }
         else
@@ -176,7 +175,7 @@ public class StackTcp extends Stack
     		{
 				// create an empty message
 				byte[] bytes = new byte[0];
-				MsgTcp msg = new MsgTcp();
+				MsgTcp msg = new MsgTcp(this);
 				msg.setMessageBinary(bytes);
 				msg.setType(type);
 				msg.setChannel(channel);

@@ -38,6 +38,7 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.dictionaryElement.Attribute;
@@ -59,14 +60,16 @@ public class MsgSmpp extends Msg
     private String result = null;
     
     /** Creates a new instance */
-    public MsgSmpp() 
+    public MsgSmpp(Stack stack) throws Exception 
     {
-        super();  
+        super(stack);
     }
     
     /** Creates a new instance */
-    public MsgSmpp(SmppMessage message) throws Exception
+    public MsgSmpp(Stack stack, SmppMessage message) throws Exception
     {
+    	this(stack);
+    	
         smppMessage = message;
     }
 

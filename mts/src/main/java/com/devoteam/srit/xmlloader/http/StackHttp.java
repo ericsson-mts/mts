@@ -280,8 +280,7 @@ public class StackHttp extends Stack
     @Override
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        Msg msgHttp = new MsgHttp();
-        msgHttp.parseFromXml(request, root, runner);
+        Msg msg = super.parseMsgFromXml(request, root, runner);
 
         //
         // Try to find the channel
@@ -304,7 +303,7 @@ public class StackHttp extends Stack
         // If the message is not a request, it is a response.
         // The channel to use will be obtained from the
         // channel of the transaction-associated request.
-        if (msgHttp.isRequest())
+        if (msg.isRequest())
         {
             Channel channel = null;
         	// case the channelName is specified
@@ -333,9 +332,9 @@ public class StackHttp extends Stack
             }
             // call to getTransactionId to generate it NOW (important)
             // it can be generated now because this is a request from xml
-            msgHttp.getTransactionId();
+            msg.getTransactionId();
 
-            msgHttp.setChannel(channel);
+            msg.setChannel(channel);
         }
         else
         {        	
@@ -349,7 +348,7 @@ public class StackHttp extends Stack
             }
         }
 
-        return msgHttp;
+        return msg;
     }
 
     /** Send a Msg to Stack */

@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromURI;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -47,9 +48,9 @@ public class MsgMsrp extends Msg
     private String type = null;
 
     /** Creates a new instance */
-    public MsgMsrp() throws Exception
+    public MsgMsrp(Stack stack) throws Exception
     {
-        super();
+        super(stack);
     }
      
     // --- heritage methods --- //

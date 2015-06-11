@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Config;
@@ -71,13 +72,14 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
     private byte[] cipheredMessage = null;
 
     /** Creates a new instance */
-    public MsgRtp() throws Exception {
-        super();
+    public MsgRtp(Stack stack) throws Exception 
+    {
+        super(stack);
     }
 
     /** Creates a new instance */
-    public MsgRtp(Array array) throws Exception {
-        super();
+    public MsgRtp(Stack stack, Array array) throws Exception {
+        this(stack);
         extractDataFromMessage(array);
     }
 
@@ -284,7 +286,7 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
     public MsgRtp clone() {
         MsgRtp msg = null;
         try {
-            msg = new MsgRtp();
+            msg = new MsgRtp(this.stack);
             msg.csrc = this.csrc;
             msg.csrcCount = this.csrcCount;
             msg.data = null;

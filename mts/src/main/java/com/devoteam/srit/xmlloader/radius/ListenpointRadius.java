@@ -147,7 +147,7 @@ public class ListenpointRadius extends Listenpoint implements Runnable
 
                 radiusMessage.setSecret(this.secret);
 
-                MsgRadius msgRadius = new MsgRadius(radiusMessage);
+                MsgRadius msgRadius = new MsgRadius(this.stack, radiusMessage);
                 msgRadius.setListenpoint(this);
 
                 if (!msgRadius.isRequest())

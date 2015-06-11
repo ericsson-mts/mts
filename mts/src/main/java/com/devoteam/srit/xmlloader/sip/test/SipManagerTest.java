@@ -41,6 +41,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
@@ -80,7 +81,9 @@ public class SipManagerTest {
     	port = 6000; 
     	transport = Config.getConfigByName("sip.properties").getString("listenpoint.TRANSPORT");
     	
-        Listenpoint listenpoint = StackFactory.getStack(StackFactory.PROTOCOL_SIP).getListenpoint(null);
+    	Stack stack =  StackFactory.getStack(StackFactory.PROTOCOL_SIP);
+    	
+        Listenpoint listenpoint = stack.getListenpoint(null);
         InetSocketAddress localDatagramSocketAddress = new InetSocketAddress(host, port);
      	DatagramSocket datagramSocket = new DatagramSocket(localDatagramSocketAddress);
         
@@ -89,7 +92,7 @@ public class SipManagerTest {
         String request = createRequestREGISTER(0);
         //Jain req = (SIPRequest) msgFact.createRequest(request);
         //Jain MsgSipJain msg = new MsgSipJain(request, false);
-        MsgSipLight msg = new MsgSipLight();
+        MsgSipLight msg = new MsgSipLight(stack);
         msg.setMessageText(request, false, 0, null);
         msg.setListenpoint(listenpoint);
         System.out.println("length = " + request.length());

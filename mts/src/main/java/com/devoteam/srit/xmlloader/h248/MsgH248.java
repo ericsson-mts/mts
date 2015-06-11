@@ -31,6 +31,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
@@ -62,9 +63,9 @@ public class MsgH248 extends Msg
     private boolean isResponseTransactionIsSet;    
 	
     /** Creates a new instance */
-    public MsgH248() 
+    public MsgH248(Stack stack) 
     {
-        super();       
+        super(stack);       
         
         typeDescriptor.add("A");typeDescriptor.add("MF");typeDescriptor.add("S");typeDescriptor.add("MV");
         typeDescriptor.add("AV");typeDescriptor.add("AC");typeDescriptor.add("N");typeDescriptor.add("SC");

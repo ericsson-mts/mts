@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -60,11 +61,16 @@ public class MsgRadius extends Msg
     private RadiusMessage radiusMessage;
     private RadiusDictionary radiusDictionary;
 
-    /**
-     * Creates a new instance of MsgUdp from a byte array
-     */
-    public MsgRadius(RadiusMessage radiusMessage) throws Exception
+    /** Creates a new instance */
+    public MsgRadius(Stack stack) throws Exception
     {
+        super(stack);
+    }
+
+    /** Creates a new instance */
+    public MsgRadius(Stack stack, RadiusMessage radiusMessage) throws Exception
+    {
+    	this(stack);
         this.radiusMessage = radiusMessage;
         this.radiusDictionary = null;
     }

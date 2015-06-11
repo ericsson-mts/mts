@@ -36,6 +36,7 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.MessageId;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -51,9 +52,9 @@ public class MsgTls extends Msg
     private String type;
 
     /** Creates a new instance */
-    public MsgTls() throws Exception
+    public MsgTls(Stack stack) throws Exception
     {
-    	super();
+    	super(stack);
     }
     
     public TransactionId getTransactionId() throws Exception

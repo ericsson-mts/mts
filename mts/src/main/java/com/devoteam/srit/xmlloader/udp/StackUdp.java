@@ -91,8 +91,7 @@ public class StackUdp extends Stack
     @Override
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        MsgUdp msgUdp = new MsgUdp();
-        msgUdp.parseFromXml(request, root, runner);
+        Msg msgUdp = super.parseMsgFromXml(request, root, runner);
 
         String remoteHost = root.attributeValue("remoteHost");
         String remotePort = root.attributeValue("remotePort");
@@ -159,7 +158,7 @@ public class StackUdp extends Stack
     @Override    
     public Msg readFromDatas(byte[] datas, int length) throws Exception
     {
-    	MsgUdp msg = new MsgUdp(datas, length);    		
+    	MsgUdp msg = new MsgUdp(this, datas, length);    		
     	return msg;
     }
 

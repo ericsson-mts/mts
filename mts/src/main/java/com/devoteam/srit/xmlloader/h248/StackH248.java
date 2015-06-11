@@ -229,7 +229,7 @@ public class StackH248 extends Stack
     {
     	String str = new String(datas);
     	str = str.substring(0, length);
-    	MsgH248 msgH248 = new MsgH248();
+    	MsgH248 msgH248 = new MsgH248(this);
     	msgH248.setMessageText(str);
     	return msgH248;
     }

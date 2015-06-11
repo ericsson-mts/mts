@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -45,15 +46,15 @@ public class MsgGtp extends Msg
     private MessageGTP message;
 
     /** Creates a new instance */
-    public MsgGtp() throws Exception
+    public MsgGtp(Stack stack) throws Exception
     {
-        super();
+        super(stack);
     }
     
     /** Creates a new instance */
-    public MsgGtp(MessageGTP message) throws Exception
+    public MsgGtp(Stack stack, MessageGTP message) throws Exception
     {
-    	this();
+    	this(stack);
         this.message = message;
     }
 
