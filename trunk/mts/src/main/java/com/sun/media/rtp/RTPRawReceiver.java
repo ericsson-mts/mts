@@ -208,7 +208,7 @@ public class RTPRawReceiver extends PacketFilter
         // FH provisoire
         // Call back vers la Stack generic
         try {
-            MsgRtp msgRtp = new MsgRtp();
+            MsgRtp msgRtp = new MsgRtp(null);
             msgRtp.add((RTPPacket) rtppacket);                                               
             
             // InetSocketAddress remoteAddress = (InetSocketAddress) socket.getRemoteSocketAddress();

@@ -32,6 +32,7 @@ import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.MessageId;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.utils.Config;
@@ -48,14 +49,15 @@ public class MsgSmtp extends Msg {
 
 	
     /** Creates a new instance */
-    public MsgSmtp() 
+    public MsgSmtp(Stack stack) throws Exception 
     {
-        super();  
+        super(stack);
     }
     
     /** Creates a new instance */	
-	public MsgSmtp(String someData) throws Exception {
-		super();
+	public MsgSmtp(Stack stack, String someData) throws Exception {
+		this(stack);
+		
 		data = someData; 
 		data = Utils.replaceNoRegex(data, "\r\n", "\n");
 		data = Utils.replaceNoRegex(data, "\n", "\r\n");

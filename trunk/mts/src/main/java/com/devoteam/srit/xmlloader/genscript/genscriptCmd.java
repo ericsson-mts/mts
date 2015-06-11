@@ -135,7 +135,8 @@ public class genscriptCmd {
                 root.addAttribute("captureFilter", captureFilter);
 
                 // Création de l'objet Probe
-                Probe probe = new Probe(stack, root);
+                Probe probe = new Probe(stack);
+                probe.parseFromXml(root);
                 listeProbe.add(probe);
 
                 // On configure le probe pour la génération de script

@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -54,13 +55,13 @@ public class MsgSnmp extends Msg
     PDU pdu;
     AbstractTarget target;
 
-    public MsgSnmp()
+    public MsgSnmp(Stack stack)
     {
-    	super();
+    	super(stack);
     }
     
-	public MsgSnmp(int version, String community, int requestType, int requestId, Integer errorStatus, Integer errorIndex, Integer nonRepeaters, Integer maxRepetitions) throws Exception {
-		super();
+	public MsgSnmp(Stack stack, int version, String community, int requestType, int requestId, Integer errorStatus, Integer errorIndex, Integer nonRepeaters, Integer maxRepetitions) throws Exception {
+		this(stack);
 
         if(version == SnmpConstants.version3)//version 3 not supported actually
         {

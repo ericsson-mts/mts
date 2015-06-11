@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.RetransmissionId;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Config;
@@ -91,76 +92,20 @@ public class MsgRtpFlow extends Msg {
     private int mostRecentReceivedSeqNum = 0;//to keep last seq num and know if coef should be increase even with packet late
 
     /** Creates a new instance */
-    public MsgRtpFlow() 
+    public MsgRtpFlow(Stack stack) 
     {
-        super();
+        super(stack);
     }
 
     /** Creates a new instance */
-    public MsgRtpFlow(CodecDictionary dico) throws Exception {
-        super();
+    public MsgRtpFlow(Stack stack, CodecDictionary dico) throws Exception {
+        this(stack);
+        
         this.dico = dico;
-        packetsList = new LinkedList<MsgRtp>();
+        this.packetsList = new LinkedList<MsgRtp>();
         if (StackFactory.getStack(StackFactory.PROTOCOL_RTPFLOW).getConfig().getBoolean("QOS_MEASURMENT", true)) {
-            QoSinfo = new QoSRtpFlow(this.dico);
+            this.QoSinfo = new QoSRtpFlow(this.dico);
         }
-    }
-
-    /** Creates a new instance */
-    public MsgRtpFlow(CodecDictionary dico, List listPayload, List listSeqnum, List listTimestamp, List listMark, MsgRtp msg) throws Exception {
-        this(dico);
-        payloadList = listPayload;
-        seqnumList = listSeqnum;
-        timestampList = listTimestamp;
-
-        if (listMark.size() == 0) {
-            markList = new ArrayList<Integer>();
-            markList.add(0);
-        }
-        else {
-            markList = listMark;
-        }
-
-        msgRtp = msg;
-        packetNumber = payloadList.size();
-        if (StackFactory.getStack(StackFactory.PROTOCOL_RTPFLOW).getConfig().getBoolean("QOS_MEASURMENT", true)) {
-            QoSinfo = new QoSRtpFlow(this.dico);
-        }
-
-        //prepare first packet now =>
-        msgRtp.setData(payloadList.get(0));
-
-        //in case no mark is specified, first packet is send with mark to 1 and all others with mark to 0
-        if (listMark.size() == 0) {
-            msgRtp.setMarker(1);
-        }
-        else {
-            msgRtp.setMarker(markList.get(0));
-        }
-
-        msgRtp.setSequenceNumber(seqnumList.get(0));
-        msgRtp.setTimestampRTP(timestampList.get(0));
-        //construct it the first time
-        msgRtp.encode();
-
-        if (payloadList.size() > 1) {
-            maxNbPacketInList = payloadList.size();
-        }
-        else if (seqnumList.size() > 1) {
-            maxNbPacketInList = seqnumList.size();
-        }
-        else if (timestampList.size() > 1) {
-            maxNbPacketInList = timestampList.size();
-        }
-        else if (markList.size() > 1) {
-            maxNbPacketInList = timestampList.size();
-        }
-        else {
-            maxNbPacketInList = 1;
-        }
-
-        payloadType = msgRtp.getPayloadType();
-        ssrc = msgRtp.getSsrc();
     }
 
     public QoSRtpFlow getQoSinfo() {
@@ -598,7 +543,7 @@ public class MsgRtpFlow extends Msg {
         StackRtpFlow stack = (StackRtpFlow) StackFactory.getStack(StackFactory.PROTOCOL_RTPFLOW);
         this.dico = stack.dico;
     	
-    	MsgRtp msg = new MsgRtp();
+    	MsgRtp msg = new MsgRtp(stack);
     	msg.parsePacketHeader(flow, runner);
     	this.msgRtp = msg;
     	
@@ -999,7 +944,7 @@ public class MsgRtpFlow extends Msg {
         	
         	Array uncipheredArray = new ReadOnlyDefaultArray(uncipheredData);
         	
-        	MsgRtp msg = new MsgRtp(uncipheredArray);
+        	MsgRtp msg = new MsgRtp(stack, uncipheredArray);
         	packetsList.set(i, msg);        	
     		data = null;
     	}

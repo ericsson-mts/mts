@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.coding.text.MsgParser;
@@ -45,13 +46,14 @@ public class MsgPop extends Msg
     private String          text = "";
 
     /** Creates a new instance */
-    public MsgPop() throws Exception
+    public MsgPop(Stack stack) throws Exception
     {
-        super();
+        super(stack);
     }
 
     /** Creates a new instance */
-    public MsgPop(String someData, Channel channel) throws Exception {
+    public MsgPop(Stack stack, String someData, Channel channel) throws Exception {
+    	this(stack);
        setMessageText(someData);
        setChannel(channel);
     }

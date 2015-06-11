@@ -42,6 +42,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -81,8 +82,9 @@ public class RtpManagerTest {
         port = 10000;
     	transport = Config.getConfigByName("rtp.properties").getString("listenpoint.TRANSPORT");
         
+    	Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_RTP);
         Listenpoint listenpoint = new ListenpointRtp(StackFactory.getStack(StackFactory.PROTOCOL_RTP), "RtpManagerTest", host, port);
-        StackFactory.getStack(StackFactory.PROTOCOL_RTP).createListenpoint(listenpoint, StackFactory.PROTOCOL_RTP);
+        stack.createListenpoint(listenpoint, StackFactory.PROTOCOL_RTP);
 
         InetSocketAddress localDatagramSocketAddress = new InetSocketAddress(host, 20000);
      	DatagramSocket datagramSocket = new DatagramSocket(localDatagramSocketAddress);
@@ -91,7 +93,7 @@ public class RtpManagerTest {
         DefaultArray request = new DefaultArray(Utils.parseBinaryString(packet));
         System.out.println("length = " + request.length);
         
-        MsgRtp msg = new MsgRtp(request);
+        MsgRtp msg = new MsgRtp(stack, request);
         msg.setListenpoint(listenpoint);
         
         int maxIter = Config.getConfigByName("rtp.properties").getInteger("NB_ITERATION", 100000);

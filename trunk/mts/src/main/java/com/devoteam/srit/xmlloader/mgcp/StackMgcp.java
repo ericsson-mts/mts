@@ -72,7 +72,7 @@ public  class StackMgcp extends Stack {
     {
     	String str = new String(datas);
     	str = str.substring(0, length);
-    	MsgMgcp msgMgcp = new MsgMgcp();
+    	MsgMgcp msgMgcp = new MsgMgcp(this);
     	msgMgcp.setMessageText(str);
     	return msgMgcp;
     }

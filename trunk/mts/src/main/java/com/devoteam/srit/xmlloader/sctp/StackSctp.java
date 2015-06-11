@@ -95,8 +95,7 @@ public class StackSctp extends Stack
 	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
 	{
 			
-		MsgSctp msgSctp = new MsgSctp();
-		msgSctp.parseFromXml(request, root, runner);
+		Msg msg = super.parseMsgFromXml(request, root, runner);
 
 		String channelName = root.attributeValue("channel");
         // deprecated part //
@@ -110,9 +109,9 @@ public class StackSctp extends Stack
 		{
 			throw new ExecutionException("The channel <name=" + channelName + "> does not exist");
 		}        
-		msgSctp.setChannel(channel);
+		msg.setChannel(channel);
 
-		return msgSctp;
+		return msg;
 	}
 
 	/** Returns the Config object to access the protocol config file*/
@@ -151,7 +150,7 @@ public class StackSctp extends Stack
     		{
 				// create an empty message
 				byte[] bytes = new byte[0];
-				MsgSctp msg = new MsgSctp(bytes);
+				MsgSctp msg = new MsgSctp(this, bytes);
 				msg.setType(type);
 				msg.setChannel(channel);
 				msg.setListenpoint(listenpoint);

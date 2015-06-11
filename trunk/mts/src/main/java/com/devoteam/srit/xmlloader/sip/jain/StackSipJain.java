@@ -35,6 +35,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.sip.MsgSip;
 import com.devoteam.srit.xmlloader.sip.StackSip;
@@ -78,7 +79,7 @@ public class StackSipJain extends StackSip
     	
 		if (text != null && text.contains(StackFactory.PROTOCOL_SIP)) 
 		{
-			MsgSipJain msgSip = new MsgSipJain();
+			MsgSipJain msgSip = new MsgSipJain(this);
 	    	msgSip.setMessageText(text, 0);
 			return msgSip;
 		}
@@ -101,7 +102,7 @@ public class StackSipJain extends StackSip
     {
     	String str = new String(datas);
     	str = str.substring(0, length);
-    	MsgSipJain msgSip = new MsgSipJain();
+    	MsgSipJain msgSip = new MsgSipJain(this);
     	msgSip.setMessageText(str, 0);
     	return msgSip;
     }
@@ -115,7 +116,7 @@ public class StackSipJain extends StackSip
     {
     	String str = new String(chunk.getData());
     	str = str.substring(0, chunk.getLength());
-        MsgSipJain msgSip = new MsgSipJain();
+        MsgSipJain msgSip = new MsgSipJain(this);
     	msgSip.setMessageText(str, 0);
         return msgSip;            
     }

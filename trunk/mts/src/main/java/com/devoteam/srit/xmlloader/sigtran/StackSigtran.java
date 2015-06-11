@@ -183,7 +183,7 @@ public class StackSigtran extends Stack {
         
         //create the message
         int ppidInt = defaultPayloadProtocolID;
-        MsgSigtran msg = new MsgSigtran(array, ppidInt);
+        MsgSigtran msg = new MsgSigtran(this, array, ppidInt);
         return msg;
 
     }
@@ -211,7 +211,7 @@ public class StackSigtran extends Stack {
         {
         	ppidInt = defaultPayloadProtocolID;
         }
-        MsgSigtran msgSigtran = new MsgSigtran(array, ppidInt);
+        MsgSigtran msgSigtran = new MsgSigtran(this, array, ppidInt);
         return msgSigtran;
     }
 }

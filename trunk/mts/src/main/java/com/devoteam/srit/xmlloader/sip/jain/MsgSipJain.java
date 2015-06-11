@@ -58,6 +58,7 @@ import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromAddress;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromURI;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.coding.text.ContentParser;
@@ -76,9 +77,9 @@ public class MsgSipJain extends MsgSip
     private SIPMessage sipMessage;
     
     /** Creates a new instance */
-    public MsgSipJain() 
+    public MsgSipJain(Stack stack) 
     {
-        super();
+        super(stack);
     }
     
     /** Return true if the message is a request else return false*/

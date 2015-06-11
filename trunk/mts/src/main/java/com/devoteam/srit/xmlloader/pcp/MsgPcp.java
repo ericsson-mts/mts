@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.pcp;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.msrp.data.MSRPTextMessage;
@@ -52,6 +53,12 @@ public class MsgPcp extends Msg
     private int opcode = 1;
     private String opcodeStr = null;
     
+    /** Creates a new instance */
+    public MsgPcp(Stack stack) throws Exception
+    {
+        super(stack);
+    }
+
     // --- heritage methods --- //
     public String getProtocol(){
         return StackFactory.PROTOCOL_PCP;

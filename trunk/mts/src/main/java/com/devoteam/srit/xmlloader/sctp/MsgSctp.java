@@ -38,6 +38,7 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
@@ -56,13 +57,15 @@ public class MsgSctp extends Msg{
 	private SCTPData sctpData;
 
 	/** Creates a new instance */
-    public MsgSctp() throws Exception
+    public MsgSctp(Stack stack) throws Exception
     {
-        super();
+        super(stack);
     }
     
     /** Creates a new instance */
-	public MsgSctp(byte[] bytes) {
+	public MsgSctp(Stack stack, byte[] bytes) throws Exception{
+		this(stack);
+		
 		this.sctpData=new SCTPData(bytes);
 	}
 

@@ -37,6 +37,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
@@ -79,16 +80,19 @@ public class MsgSigtran extends Msg
     /**
      * Creates a new instance of MsgSigtran
      */
-    public MsgSigtran() throws Exception 
+    public MsgSigtran(Stack stack) throws Exception 
     {
+    	super(stack);
     }
 
-    public MsgSigtran(Array msgArray, int protocolIdentifier) throws Exception 
+    public MsgSigtran(Stack stack, Array msgArray, int protocolIdentifier) throws Exception 
     {
-    	this();
+    	this(stack);
+    	
         _tlvProtocol = protocolIdentifier;
         _encodedCache = msgArray.getBytes();
         _tlvMessage = new TlvMessage(this, msgArray, protocolIdentifier);
+        
         // Q931 layer 
     	TlvParameter paramTlv = _tlvMessage.getTlvParameter("Protocol_Data");
     	if (paramTlv != null)
@@ -108,6 +112,7 @@ public class MsgSigtran extends Msg
 	    		}
     		}
     	}
+    	
         // TCAP/AP layers
     	if (_fvoMessage != null)
     	{

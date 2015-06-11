@@ -133,7 +133,7 @@ public class StackTls extends Stack
 	            data[i] = buffer[i];
 	        }
 	
-	        msgtls = new MsgTls();
+	        msgtls = new MsgTls(this);
 	        msgtls.setMessageBinary(data);
 	    }
         else
@@ -157,7 +157,7 @@ public class StackTls extends Stack
     		{
 				// create an empty message
 				byte[] bytes = new byte[0];
-				MsgTls msgTls = new MsgTls();
+				MsgTls msgTls = new MsgTls(this);
 		        msgTls.setMessageBinary(bytes);
 				msgTls.setType(type);
 				msgTls.setChannel(channel);

@@ -98,7 +98,7 @@ public class StackMsrp extends Stack {
 		if (text != null && text.contains(StackFactory.PROTOCOL_MSRP))
 		{
 			
-			MsgMsrp msg = new MsgMsrp();
+			MsgMsrp msg = new MsgMsrp(this);
 			msg.setMessageText(text);
 			return msg;
 		}

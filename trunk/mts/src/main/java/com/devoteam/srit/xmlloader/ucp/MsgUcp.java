@@ -55,15 +55,17 @@ public class MsgUcp extends Msg
     private String result = null;
 
     /** Creates a new instance */
-    public MsgUcp() throws Exception
+    public MsgUcp(Stack stack) throws Exception
     {
-    	super();
+    	super(stack);
     }    
     
     /** Creates a new instance */
-    public MsgUcp(UcpMessage message) throws Exception
+    public MsgUcp(Stack stack, UcpMessage message) throws Exception
     {
-        ucpMessage = message;
+    	this(stack);
+    	
+        this.ucpMessage = message;
     }
 
     /** Get the protocol of this message */

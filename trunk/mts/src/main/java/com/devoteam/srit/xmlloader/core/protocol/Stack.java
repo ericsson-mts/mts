@@ -475,11 +475,8 @@ public abstract class Stack
     /** Creates a Msg specific to each Stack */
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-    	String stackClassname = this.getClass().getSimpleName();
-    	String packageName = this.getClass().getPackage().getName();
-    	String acronyme = stackClassname.substring(5);
-    	String msgClassname = packageName + ".Msg" + acronyme;
-    	Msg msg = (Msg) Class.forName(msgClassname).newInstance();
+    	Class<?> clStack = this.getClass();
+    	Msg msg = (Msg)  instanceObjectFromStackParents(clStack, "Msg");
     	msg.parseFromXml(request, root, runner);
     	return msg;
     }

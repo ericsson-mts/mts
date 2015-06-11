@@ -25,6 +25,7 @@ package com.devoteam.srit.xmlloader.sip;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -40,9 +41,9 @@ public abstract class MsgSip extends Msg
     private boolean isResponseTransactionIsSet;    
     
     /** Creates a new instance of MsgSip */
-    public MsgSip() 
+    public MsgSip(Stack stack) 
     {
-        super();
+        super(stack);
     }
     
     /** Get the transaction Identifier of this message */

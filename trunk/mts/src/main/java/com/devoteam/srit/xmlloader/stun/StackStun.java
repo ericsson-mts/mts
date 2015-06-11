@@ -77,6 +77,6 @@ public class StackStun extends Stack {
     @Override
      public Msg readFromDatas(byte[] datas, int length) throws Exception
     {
-    	return new MsgStun(new DefaultArray(datas,0,length));
+    	return new MsgStun(this, new DefaultArray(datas,0,length));
     }
 }

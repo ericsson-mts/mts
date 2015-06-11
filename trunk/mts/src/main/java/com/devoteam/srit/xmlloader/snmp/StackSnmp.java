@@ -217,7 +217,7 @@ public class StackSnmp extends Stack
         Integer nonRepeatersInt = (nonRepeaters != null) ? Integer.parseInt(nonRepeaters) : null;
         Integer maxRepetitionsInt = (maxRepetitions != null) ? Integer.parseInt(maxRepetitions) : null;
 
-        MsgSnmp msgSmtp = new MsgSnmp(versionInt, community, typeInt, requestIdInt, errorStatusInt, errorIndexInt, nonRepeatersInt, maxRepetitionsInt);
+        MsgSnmp msgSmtp = new MsgSnmp(this, versionInt, community, typeInt, requestIdInt, errorStatusInt, errorIndexInt, nonRepeatersInt, maxRepetitionsInt);
 
         //specific parameter for snmpv1 Trap  to check and add to pdu
         if((msgSmtp.getPdu() instanceof PDUv1) && (typeInt == PDU.V1TRAP))

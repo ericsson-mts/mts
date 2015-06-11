@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.stun;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
@@ -55,14 +56,14 @@ public class MsgStun extends Msg {
     private String username = "";
 
     /** Creates a new instance */
-    public MsgStun() throws Exception
+    public MsgStun(Stack stack) throws Exception
     {
-        super();
+        super(stack);
     }
 
     /** Creates a new instance */
-    MsgStun(Array data) throws Exception {
-        super();
+    MsgStun(Stack stack, Array data) throws Exception {
+        this(stack);
         header = new HeaderStun(data);
         int offset = 20;
         int length = data.length;

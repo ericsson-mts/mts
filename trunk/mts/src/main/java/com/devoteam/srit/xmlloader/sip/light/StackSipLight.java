@@ -35,6 +35,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.sip.StackSip;
 
@@ -80,7 +81,7 @@ public class StackSipLight extends StackSip
     	
 		if (text != null && text.contains(StackFactory.PROTOCOL_SIP)) 
 		{
-			MsgSipLight msgSip = new MsgSipLight();
+			MsgSipLight msgSip = new MsgSipLight(this);
 			msgSip.setMessageText(text, false, 0, this.contentBinaryTypes);
 			return msgSip;
 		}
@@ -102,7 +103,7 @@ public class StackSipLight extends StackSip
     {
     	String str = new String(datas);
     	str = str.substring(0, length);
-    	MsgSipLight msgSip = new MsgSipLight();
+    	MsgSipLight msgSip = new MsgSipLight(this);
     	msgSip.setMessageText(str, false, 0, this.contentBinaryTypes);
     	return msgSip;
     }
@@ -116,7 +117,7 @@ public class StackSipLight extends StackSip
     {
     	String str = new String(chunk.getData());
     	str = str.substring(0, chunk.getLength());
-        MsgSipLight msgSip = new MsgSipLight();
+        MsgSipLight msgSip = new MsgSipLight(this);
         msgSip.setMessageText(str, false, 0, this.contentBinaryTypes);
         return msgSip;            
     }

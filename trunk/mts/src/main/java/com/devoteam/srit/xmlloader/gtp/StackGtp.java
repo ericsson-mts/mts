@@ -64,7 +64,7 @@ public class StackGtp extends Stack
     {
         MessageGTP message = new MessageGTP();
         message.decodeFromStream(inputStream);
-        return new MsgGtp(message);
+        return new MsgGtp(this, message);
     }
 
     /** 
@@ -77,7 +77,7 @@ public class StackGtp extends Stack
     	byte[] newDatas = datas.clone();
         MessageGTP message = new MessageGTP();
         message.decodeFromBytes(newDatas);
-        return new MsgGtp(message);
+        return new MsgGtp(this, message);
     }
     
     /** Returns the Config object to access the protocol config file*/

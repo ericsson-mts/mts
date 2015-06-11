@@ -46,6 +46,7 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromAddress;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromURI;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.coding.text.FirstLine;
@@ -96,6 +97,12 @@ public class MsgSipLight extends MsgSip
 		compressedHeader.put("v", "via");					// rfc 3261
 	}
     
+    /** Creates a new instance */
+    public MsgSipLight(Stack stack) 
+    {
+        super(stack);
+    }
+
     public boolean isRequest() {
 		return ((FirstLine)(this.message.getGenericfirstline())).isRequest();
 	}

@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.coding.text.Header;
@@ -47,6 +48,12 @@ public class MsgMgcp extends Msg {
     @Override
     public String getProtocol() {
         return StackFactory.PROTOCOL_MGCP;
+    }
+    
+    /** Creates a new instance */
+    public MsgMgcp(Stack stack) 
+    {
+        super(stack);       
     }
 
     @Override

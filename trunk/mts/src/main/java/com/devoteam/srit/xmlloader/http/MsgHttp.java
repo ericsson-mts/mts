@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
@@ -77,24 +78,23 @@ public class MsgHttp extends Msg
     private String type = null;
     
     /** Creates a new instance */
-    public MsgHttp() 
+    public MsgHttp(Stack stack) 
     {
-        super();       
+        super(stack);       
     }
 
     /** Creates a new instance */
     public MsgHttp(HttpMessage aMessage) throws Exception
     {
         super();
+        
         this.ignoreContents = Config.getConfigByName("http.properties").getBoolean("message.IGNORE_RECEIVED_CONTENTS", false);
-
-        message = aMessage;
-
-        HttpEntity entity;
+        this.message = aMessage;
 
         //
         // Get the entity
         //
+        HttpEntity entity;
         if (message instanceof HttpResponse)
         {
             entity = ((HttpResponse) message).getEntity();

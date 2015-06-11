@@ -30,6 +30,7 @@ package com.devoteam.srit.xmlloader.h248.test;
 
 
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 import java.util.GregorianCalendar;
 
 import com.devoteam.srit.xmlloader.core.Tester;
@@ -38,6 +39,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
@@ -77,9 +79,11 @@ public class H248ManagerTest {
         String request = createRequest(0);
         System.out.println("length = " + request.length());
         
-        Listenpoint listenpoint = StackFactory.getStack(StackFactory.PROTOCOL_H248).getListenpoint(null);
+        Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_H248);
+        
+        Listenpoint listenpoint = stack.getListenpoint(null);
 
-        MsgH248 msg = new MsgH248();
+        MsgH248 msg = new MsgH248(stack);
         msg.setMessageText(request);
         msg.setListenpoint(listenpoint);
 

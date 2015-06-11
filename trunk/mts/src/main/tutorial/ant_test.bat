@@ -1,6 +1,7 @@
 echo OFF
 
 set OPTIONS=-level:DEBUG -stor:file -gen:false -show:false
+rem set MODE1=0
 set MODE1=-seq
 
 rem run the unit tests
@@ -15,7 +16,7 @@ call startCmd.bat ..\tutorial\sip\test_jain.xml %MODE1% -config:protocol.STACK_C
 call startCmd.bat ..\tutorial\rtp\test.xml %MODE1% %OPTIONS%
 call startCmd.bat ..\tutorial\rtp\test.xml 001_jmf_noreg -config:protocol.STACK_CLASS_NAME_RTP+com.devoteam.srit.xmlloader.rtp.jmf.StackRtp %OPTIONS%
 call startCmd.bat ..\tutorial\rtpflow\test.xml %MODE1% %OPTIONS%
-call startCmd.bat ..\tutorial\rtpflow\test.xml %MODE1% -config:message.KEEP_SENT_MESSAGES+true %OPTIONS%
+call startCmd.bat ..\tutorial\rtpflow\test.xml %MODE1% -config:USE_NIO+true -config:message.KEEP_SENT_MESSAGES+true %OPTIONS%
 call startCmd.bat ..\tutorial\http\test.xml %MODE1% %OPTIONS% 
 call startCmd.bat ..\tutorial\http\test.xml %MODE1% -config:USE_NIO+true %OPTIONS%
 call startCmd.bat ..\tutorial\tcp\test.xml %MODE1% %OPTIONS%

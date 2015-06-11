@@ -136,7 +136,7 @@ public class StackPcp extends Stack {
         {
             System.out.println("receive in client case");
         }
-        MsgPcp msg = new MsgPcp();
+        MsgPcp msg = new MsgPcp(this);
         msg.setFList(flist);
         return msg;
     }

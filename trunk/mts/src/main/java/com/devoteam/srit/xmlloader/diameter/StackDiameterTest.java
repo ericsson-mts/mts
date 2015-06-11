@@ -33,6 +33,7 @@ import org.dom4j.io.SAXReader;
 import com.devoteam.srit.xmlloader.core.ScenarioReference;
 import com.devoteam.srit.xmlloader.core.ScenarioRunner;
 import com.devoteam.srit.xmlloader.core.Tester;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
@@ -80,8 +81,10 @@ public class StackDiameterTest extends TestCase {
               
         Element scElem = readMessageFromXml("../conf/diameter/diameterMessage.xml");
         
-        MsgDiameter request = (MsgDiameter) StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER).parseMsgFromXml(true, scElem, null);
-        MsgDiameter response = new MsgDiameter(prepareResponse(request.getMessage(), ProtocolConstants.DIAMETER_RESULT_SUCCESS));
+        Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER);
+        
+        MsgDiameter request = (MsgDiameter) stack.parseMsgFromXml(true, scElem, null);
+        MsgDiameter response = new MsgDiameter(stack, prepareResponse(request.getMessage(), ProtocolConstants.DIAMETER_RESULT_SUCCESS));
         
         ScenarioReference src = new ScenarioReference("srcScenario");
         ScenarioRunner srcRunner = new ScenarioRunner(null, src);
@@ -115,7 +118,7 @@ public class StackDiameterTest extends TestCase {
                 request = (MsgDiameter) dest.getMsgStack().keySet().iterator().next();
             }                       
             */
-            response = new MsgDiameter(prepareResponse(result.getMessage(), ProtocolConstants.DIAMETER_RESULT_SUCCESS));
+            response = new MsgDiameter(stack, prepareResponse(result.getMessage(), ProtocolConstants.DIAMETER_RESULT_SUCCESS));
             // response.getMessage().hdr.hop_by_hop_identifier = hopByHop;
             // response.getMessage().hdr.end_to_end_identifier = endToEnd;
             StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER).sendMessage(response, srcRunner, destRunner, srcRunner);

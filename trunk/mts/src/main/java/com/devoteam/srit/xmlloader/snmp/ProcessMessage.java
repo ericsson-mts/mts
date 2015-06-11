@@ -56,7 +56,7 @@ public class ProcessMessage implements CommandResponder, ResponseListener {
 
         try {
             //create the SnmpMsg received
-            MsgSnmp msg = new MsgSnmp();
+        	MsgSnmp msg = new MsgSnmp(listenpoint.getStack());
             msg.setPdu(cre.getPDU());
             //TODO: how to know the version here to set communityTarget or UserTarget
             AbstractTarget target = null;
@@ -108,7 +108,7 @@ public class ProcessMessage implements CommandResponder, ResponseListener {
            ((Snmp) source).cancel(re.getRequest(), this);
 
            //create the SnmpMsg received
-           MsgSnmp msg = new MsgSnmp();
+           MsgSnmp msg = new MsgSnmp(listenpoint.getStack());
            msg.setPdu(re.getResponse());
            
            //TODO: how to know the version here to set communityTarget or UserTarget

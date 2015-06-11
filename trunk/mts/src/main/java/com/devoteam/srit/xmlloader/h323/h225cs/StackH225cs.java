@@ -84,7 +84,7 @@ public class StackH225cs extends Stack {
 
     @Override
     public Msg readFromDatas(byte[] datas, int length) throws Exception {
-        return new MsgH225cs(new DefaultArray(datas, 0, length));
+        return new MsgH225cs(this, new DefaultArray(datas, 0, length));
     }
 
     @Override
@@ -95,7 +95,7 @@ public class StackH225cs extends Stack {
         byte[] tabMsg = new byte[length - 4];
         int done = Utils.readFromSocketStream(inputStream, tabMsg);
         Array data = new DefaultArray(tabMsg);
-        return new MsgH225cs(data);
+        return new MsgH225cs(this, data);
     }
 
     public Dictionary getDictionary() {

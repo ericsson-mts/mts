@@ -125,7 +125,7 @@ public class StackDiameter extends Stack {
         Message message = new Message();
         message.decode(arrayMsg.getBytes());
         
-        MsgDiameter msg = new MsgDiameter(message);
+        MsgDiameter msg = new MsgDiameter(this, message);
         return msg;
     }
     

@@ -28,6 +28,7 @@ import java.util.List;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
@@ -49,13 +50,14 @@ public class MsgH225cs extends Msg {
     Asn1Message msgAsn1;
 
     /** Creates a new instance */
-    public MsgH225cs() throws Exception
+    public MsgH225cs(Stack stack) throws Exception
     {
-        super();
+        super(stack);
     }
 
     /** Creates a new instance */
-    public MsgH225cs(Array data) throws Exception {
+    public MsgH225cs(Stack stack, Array data) throws Exception {
+    	this(stack);
         msgQ931 = new MessageQ931(data, "../conf/sigtran/q931.xml");
         //réception asn1
     }

@@ -32,6 +32,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorSetFromURI;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -43,6 +44,12 @@ public class MsgRtsp extends Msg
 {	
 	private TextMessage message;   
  
+    /** Creates a new instance */
+    public MsgRtsp(Stack stack) throws Exception 
+    {
+        super(stack);
+    }
+
     // --- heritage methods --- //
     public String getProtocol(){
         return StackFactory.PROTOCOL_RTSP;
