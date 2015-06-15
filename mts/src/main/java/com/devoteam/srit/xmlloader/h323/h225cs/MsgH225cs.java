@@ -85,7 +85,7 @@ public class MsgH225cs extends Msg {
      * Convert the message to XML document 
      */
     @Override
-    public byte[] encode() 
+    public byte[] encode() throws Exception
     {
        // get field and element for ASN1 and set value
     	SupArray arr = null;

@@ -241,7 +241,7 @@ public class MsgRadius extends Msg
      * encode the message to binary data 
      */    
     @Override
-    public byte[] encode()
+    public byte[] encode() throws Exception
     {    	
     	return radiusMessage.getArray().getBytes();
     }
@@ -255,9 +255,11 @@ public class MsgRadius extends Msg
     	// nothing to do : we use external GP (Gwenhael Pasquiers) HTTP stack to transport messages
     }
     
-    /** Return the length of the message*/
+    /** 
+     * Return the length of the message
+     * */
     @Override
-    public int getLength()
+    public int getLength() throws Exception
     {
         return this.radiusMessage.getLength();
     }

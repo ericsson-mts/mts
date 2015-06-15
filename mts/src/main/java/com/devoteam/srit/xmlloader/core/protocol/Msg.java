@@ -531,15 +531,17 @@ public abstract class Msg extends MsgLight implements Removable
     /** 
      * encode the message to binary data 
      */
-    public abstract byte[] encode();
+    public abstract byte[] encode() throws Exception;
        
     /** 
      * decode the message from binary data 
      */
     public abstract void decode(byte[] data) throws Exception; 
     
-    /** Return the length of the message*/
-    public int getLength()
+    /** 
+     * Return the length of the message
+     */
+    public int getLength() throws Exception
     {
     	byte[] array = encode();
     	if (array != null)

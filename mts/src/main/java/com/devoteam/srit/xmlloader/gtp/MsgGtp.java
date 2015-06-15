@@ -123,21 +123,7 @@ public class MsgGtp extends Msg
 			return message.getType();
 		}
     }
-    
-    /** Return the length of the message*/
-    @Override
-    public int getLength() {
-        try 
-        {
-        	return message.encodeToArray().length;
-        }
-        catch (Exception ex)
-        {
-                GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Error while trying to get length of GTPP message : " + ex);
-        }
-        return 0;
-    }
-    
+        
     
     //-------------------------------------------------
     // methods for the encoding / decoding of the message
@@ -147,17 +133,9 @@ public class MsgGtp extends Msg
      * encode the message to binary data 
      */
     @Override    
-    public byte[] encode()
+    public byte[] encode()  throws Exception
     {
-    	try
-    	{
-    		return message.encodeToArray().getBytes();
-    	}
-    	catch (Exception e)
-    	{
-    		// nothing to do
-    	}
-    	return null;
+    	return message.encodeToArray().getBytes();
     }
     
     /** 
@@ -173,7 +151,7 @@ public class MsgGtp extends Msg
         this.message = message;
     }
 
-
+    
     //---------------------------------------------------------------------
     // methods for the XML display / parsing of the message
     //---------------------------------------------------------------------

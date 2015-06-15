@@ -150,7 +150,7 @@ public class MsgSmpp extends Msg
      * encode the message to binary data 
      */
     @Override    
-    public byte[] encode()
+    public byte[] encode() throws Exception
     {
         try 
         {
@@ -162,23 +162,6 @@ public class MsgSmpp extends Msg
         }
         return null;
     }
-
-    /** Return the length of the message*/
-    /*
-    @Override
-    public int getLength() {
-        try 
-        {
-        	return smppMessage.getArray().length;
-        }
-        catch (Exception ex)
-        {
-                GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Error while trying to write message SMPP on socket: ", ex);
-        }
-        return 0;
-
-    }
-    */
     
     /** 
      * decode the message from binary data 

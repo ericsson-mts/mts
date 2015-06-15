@@ -265,13 +265,6 @@ public class MsgDiameter extends Msg
     // methods for the encoding / decoding of the message
     //-------------------------------------------------
     
-    /** Return the length of the message*/
-    @Override
-    public int getLength() {
-    	return message.encodeSize();
-
-    }
-
     /** 
      * encode the message to binary data 
      */

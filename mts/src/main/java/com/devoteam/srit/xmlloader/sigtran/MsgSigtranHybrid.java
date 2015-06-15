@@ -334,7 +334,7 @@ public class MsgSigtranHybrid extends Msg
 
     /** Get the data (as binary) of this message */
     @Override
-    public byte[] encode() 
+    public byte[] encode() throws Exception 
     {
         try 
         {
