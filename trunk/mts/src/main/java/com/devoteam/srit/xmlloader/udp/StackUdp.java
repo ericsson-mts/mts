@@ -151,15 +151,4 @@ public class StackUdp extends Stack
         return XMLElementTextMsgParser.instance();
     }
     
-    /** 
-     * Creates a Msg specific to each Stack
-     * should become ABSTRACT later  
-     */
-    @Override    
-    public Msg readFromDatas(byte[] datas, int length) throws Exception
-    {
-    	MsgUdp msg = new MsgUdp(this, datas, length);    		
-    	return msg;
-    }
-
 }

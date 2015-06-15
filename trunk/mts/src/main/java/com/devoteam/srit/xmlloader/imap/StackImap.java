@@ -121,6 +121,8 @@ public class StackImap extends Stack
      * Creates a Msg specific to each Channel type
      * should become ABSTRACT later  
      */
+    
+    // TODO delete this => readMessageFromStream()
     @Override    
     public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
     {       

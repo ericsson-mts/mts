@@ -24,9 +24,12 @@
 package com.devoteam.srit.xmlloader.http.nio;
 
 import com.devoteam.srit.xmlloader.core.hybridnio.HybridSocket;
+
 import org.apache.http.impl.DefaultHttpServerConnection;
+
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.hybridnio.HybridSocketInputHandler;
 import com.devoteam.srit.xmlloader.http.MsgHttp;
@@ -78,8 +81,10 @@ public class NIOSocketServerHttp extends SocketServerHttp implements HybridSocke
                 GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "ServerSocketHttp receiving entity");
                 defaultHttpServerConnection.receiveRequestEntity((HttpEntityEnclosingRequest)request);
             }
+            
+            Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_HTTP);
 
-            MsgHttp msgRequest = new MsgHttp(request);
+            MsgHttp msgRequest = new MsgHttp(stack, request);
 
             //
             // Set the channel attached to the msg
@@ -94,7 +99,7 @@ public class NIOSocketServerHttp extends SocketServerHttp implements HybridSocke
             //
             // Call back to the generic stack
             //
-            StackFactory.getStack(StackFactory.PROTOCOL_HTTP).receiveMessage(msgRequest);
+            stack.receiveMessage(msgRequest);
         }
         catch(Exception e)
         {

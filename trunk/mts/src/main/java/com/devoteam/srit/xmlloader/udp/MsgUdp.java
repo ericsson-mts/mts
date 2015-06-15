@@ -56,61 +56,57 @@ public class MsgUdp extends Msg
     {
     	super(stack);
     }
-    
-    /** Creates a new instance */
-    public MsgUdp(Stack stack, byte[] datas, int length) throws Exception
-    {
-    	this(stack);
-    	
-    	this.data = new byte [length];
-    	for (int i=0; i<length; i++)
-    		this.data[i]= datas[i];
-    }
-
-    /** Returns the UDP message without entity */
-    public byte[] getData()
-    {
-        return data;
-    }
-    
+        
+    @Override
     public TransactionId getTransactionId() throws Exception
     {
         return null;
     }
     
+    @Override
     public MessageId getMessageId() throws Exception
     {
         return null;
     }
 
     /** Get the protocol of this message */
+    @Override
     public String getProtocol()
     {
         return StackFactory.PROTOCOL_UDP;
     }
     
     /** Return true if the message is a request else return false*/
+    @Override
     public boolean isRequest()
     {
         return true;
     }
     
     /** Get the command code of this message */
+    @Override
     public String getType()
     {
         return "DATAGRAM";
     }
     
     /** Get the result of this answer (null if request) */
+    @Override
     public String getResult()
     {
         return null;
     }
         
     /** Return the transport of the message*/
+    @Override
     public String getTransport() {
     	return StackFactory.PROTOCOL_UDP;
     }
+    
+    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------    
 
     /** Get the data (as binary) of this message */
     @Override
@@ -119,19 +115,37 @@ public class MsgUdp extends Msg
         return data;
     }
    
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+    	this.data = data;
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+    
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-    public String toShortString() throws Exception {
+    public String toShortString() throws Exception 
+    {
     	String ret = super.toShortString();
     	ret += "\n";
         ret += Utils.toStringBinary(data, Math.min(data.length, 100));
         return ret;
     }
     
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * encode the message to binary data 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
     	String ret = getTypeComplete();
     	ret += "\n" + Utils.byteTabToString(data);
     	return ret;
@@ -227,11 +241,11 @@ public class MsgUdp extends Msg
         {
             if(params[1].equalsIgnoreCase("text")) 
             {
-                var.add(new String(getData()));
+                var.add(new String(this.data));
             }
             else if(params[1].equalsIgnoreCase("binary")) 
             {
-            	var.add(Array.toHexString(new DefaultArray(encode())));
+            	var.add(Array.toHexString(new DefaultArray(this.data)));
             }
             else 
             {

@@ -89,47 +89,9 @@ public class StackSigtran extends Stack {
         return fvoDictionaries.get(name);
     }
 
-    /** Creates a Channel specific to each Stack */
-    /*
-    @Override
-    public Channel parseChannelFromXml(Element root, String protocol) throws Exception
-    {
-        String name       = root.attributeValue("name");
-        String localHost  = root.attributeValue("localHost");
-        if (localHost ==  null)
-        {
-        	localHost = InetAddress.getByName(localHost).getHostAddress();
-        }
-        String localPort  = root.attributeValue("localPort");
-        
-        String remoteHost = root.attributeValue("remoteHost");
-        if (remoteHost == null)
-        {
-        	remoteHost = InetAddress.getByName(remoteHost).getHostAddress();
-        }
-        String remotePort = root.attributeValue("remotePort");
-        
-        String transport = root.attributeValue("transport");
-        if (transport == null)
-        {
-        	transport = getConfig().getString("listenpoint.TRANSPORT");
-        }
-
-        if (existsChannel(name))
-        {
-            return getChannel(name);
-        }
-        else
-        {            	
-            return new ChannelSigtran(name, localHost, localPort, remoteHost, remotePort, protocol, transport);
-        }
-    }
-    */
-
     /** 
      * Creates a Msg specific to each Stack
-     * Use for TCP like protocol : to build incoming message
-     * should become ABSTRACT later  
+     * Use for TCP like protocol : to build incoming message 
      */
     @Override
     public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception {
@@ -187,17 +149,7 @@ public class StackSigtran extends Stack {
         return msg;
 
     }
-
-    /** Returns the Config object to access the protocol config file*/
-    public Config getConfig() throws Exception {
-        return Config.getConfigByName("sigtran.properties");
-    }
-
-    /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer() {
-        return XMLElementTextMsgParser.instance();
-    }
-
+    
     /**
      * Creates a Msg specific to each Stack
      * Use for SCTP like protocol : to build incoming message
@@ -214,4 +166,15 @@ public class StackSigtran extends Stack {
         MsgSigtran msgSigtran = new MsgSigtran(this, array, ppidInt);
         return msgSigtran;
     }
+
+    /** Returns the Config object to access the protocol config file*/
+    public Config getConfig() throws Exception {
+        return Config.getConfigByName("sigtran.properties");
+    }
+
+    /** Returns the replacer used to parse sendMsg Operations */
+    public XMLElementReplacer getElementReplacer() {
+        return XMLElementTextMsgParser.instance();
+    }
+
 }

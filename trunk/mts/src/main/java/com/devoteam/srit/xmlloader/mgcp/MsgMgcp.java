@@ -45,17 +45,17 @@ public class MsgMgcp extends Msg {
 
     private TextMessage message = null;
 
-    @Override
-    public String getProtocol() {
-        return StackFactory.PROTOCOL_MGCP;
-    }
-    
     /** Creates a new instance */
     public MsgMgcp(Stack stack) 
     {
         super(stack);       
     }
 
+    @Override
+    public String getProtocol() {
+        return StackFactory.PROTOCOL_MGCP;
+    }
+    
     @Override
     public String getType() throws Exception {
         String method = "";
@@ -78,13 +78,36 @@ public class MsgMgcp extends Msg {
     public boolean isRequest() throws Exception {
         return ((MGCPCommandLine) this.message.getGenericfirstline()).isIsRequest();
     }
+    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
 
-    /** Get the data (as binary) of this message */
+    /** 
+     * encode the message to binary data 
+     */
     @Override
-    public byte[] encode() {
+    public byte[] encode() 
+    {
         return message.getMessage().getBytes();
     }
-
+    
+    /** 
+     * decode the message from binary data 
+     */
+    public void decode(byte[] data) throws Exception
+    {
+        this.message = new TextMessage("MGCP", true, 0, null);
+        String text = new String(data);
+        this.message.parse(text);
+        this.message.setGenericfirstline(new MGCPCommandLine(this.message.getFirstLineString()));
+    }
+    
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+    
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
@@ -98,9 +121,12 @@ public class MsgMgcp extends Msg {
         return ret;
     }
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
         return this.message.getMessage().toString();
     }
     
@@ -111,25 +137,9 @@ public class MsgMgcp extends Msg {
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     { 
     	String text = root.getText();
-    	setMessageText(text);
+    	decode(text.getBytes());
     }
     
-    /** Get the message as text */
-    /*
-    public String getMessageText() throws Exception
-    {
-    	return message.toString();
-    }
-    */
-    
-    /** Set the message from text */
-    public void setMessageText(String text) throws Exception
-    {
-        this.message = new TextMessage("MGCP", true, 0, null);
-        this.message.parse(text);
-        this.message.setGenericfirstline(new MGCPCommandLine(this.message.getFirstLineString()));
-    }
-
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------

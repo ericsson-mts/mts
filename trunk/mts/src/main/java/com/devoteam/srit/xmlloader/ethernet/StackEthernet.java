@@ -1,5 +1,6 @@
 package com.devoteam.srit.xmlloader.ethernet;
 
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -55,14 +56,7 @@ public class StackEthernet extends Stack
 	public XMLElementReplacer getElementReplacer() {
 		return XMLElementTextMsgParser.instance();
 	}
-
-	@Override    
-    public Msg readFromDatas(byte[] datas, int length) throws Exception
-    {
-    	MsgEthernet msg = new MsgEthernet(datas, length);    		
-    	return msg;
-    }
-	
+		
 	@Override
 	public synchronized boolean sendMessage(Msg msg) throws Exception
     {

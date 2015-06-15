@@ -225,13 +225,6 @@ public class MsgRadius extends Msg
                 return Integer.toString(this.radiusMessage.getCode());
         }
     }
-
-    /** Return the length of the message*/
-    @Override
-    public int getLength()
-    {
-        return this.radiusMessage.getLength();
-    }
  
     @Override
     public boolean shallStopRetransmit()
@@ -239,16 +232,46 @@ public class MsgRadius extends Msg
         return !this.isRequest();
     }
     
-    /** Get the data (as binary) of this message */    
+
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+    
+    /** 
+     * encode the message to binary data 
+     */    
     @Override
-    public byte[] encode(){    	
+    public byte[] encode()
+    {    	
     	return radiusMessage.getArray().getBytes();
     }
+
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+    	// nothing to do : we use external GP (Gwenhael Pasquiers) HTTP stack to transport messages
+    }
+    
+    /** Return the length of the message*/
+    @Override
+    public int getLength()
+    {
+        return this.radiusMessage.getLength();
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-    public String toShortString() throws Exception {
+    public String toShortString() throws Exception 
+    {
         StringBuilder StringBuilder = new StringBuilder();
         StringBuilder.append(super.toShortString());
         StringBuilder.append("\n");
@@ -259,9 +282,12 @@ public class MsgRadius extends Msg
         return StringBuilder.toString();
     }
     
-    /** Get the XML representation of the message; for the genscript module. */    
+    /** 
+     * Convert the message to XML document 
+     */    
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
         RadiusDictionary radiusDictionary = null;
         try
         {

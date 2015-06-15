@@ -46,11 +46,11 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class MsgStun extends Msg {
+public class MsgStun extends Msg 
+{
 
     private HeaderStun header;
     private LinkedList<AttributeStun> listAttributeStun = new LinkedList<AttributeStun>();
-    private Array secret = null;
     private boolean longTermCredential = false;
     private String realm = "";
     private String username = "";
@@ -61,54 +61,6 @@ public class MsgStun extends Msg {
         super(stack);
     }
 
-    /** Creates a new instance */
-    MsgStun(Stack stack, Array data) throws Exception {
-        this(stack);
-        header = new HeaderStun(data);
-        int offset = 20;
-        int length = data.length;
-        while (offset < length) {
-            int typeInt = new Integer16Array(data.subArray(offset, 2)).getValue();
-            // make sure offset is multiple of 4
-            AttributeStun att = null;
-            switch (typeInt) {
-                case 3:
-                    att = new AttributeStunChangeRequest(data.subArray(offset));
-                    break;
-                case 1:
-                case 2:
-                case 4:
-                case 5:
-                case 11:
-                case 32:
-                case 32803:
-                    att = new AttributeStunAddress(data.subArray(offset));
-                    break;
-                case 20:
-                    this.longTermCredential = true;
-                case 6:
-                case 7:
-                case 32802:
-                case 21:
-                    att = new AttributeStunText(data.subArray(offset));
-                    break;
-                case 9:
-                    att = new AttributeStunErrorCode(data.subArray(offset));
-                    break;
-                case 10:
-                    att = new AttributeStunUnknownAttribute(data.subArray(offset));
-                    break;
-                default:
-                    att = new AttributeStunBinary(data.subArray(offset));
-                    break;
-            }
-
-            listAttributeStun.addLast(att);
-            offset += att.getPaddedLength() + 4;
-        }
-
-
-    }
 
     @Override
     public String getProtocol() {
@@ -223,16 +175,20 @@ public class MsgStun extends Msg {
             }
             this.listAttributeStun.add(attribute);
             header.setLength(header.getLength() + attribute.getPaddedLength() + 4);
-
         }
-
-
-
     }
 
-    /** Get the data (as binary) of this message */
+    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+
+    /** 
+     * encode the message to binary data 
+     */
     @Override
-    public byte[] encode() {
+    public byte[] encode() 
+    {
         SupArray array = new SupArray();
         array.addLast(header.getValue());
         for (AttributeStun attributeStun : listAttributeStun) {
@@ -245,16 +201,77 @@ public class MsgStun extends Msg {
         return array.getBytes();
     }
 
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+    	Array array = new DefaultArray(data);
+    	
+        header = new HeaderStun(array);
+        int offset = 20;
+        int length = data.length;
+        while (offset < length) {
+            int typeInt = new Integer16Array(array.subArray(offset, 2)).getValue();
+            // make sure offset is multiple of 4
+            AttributeStun att = null;
+            switch (typeInt) {
+                case 3:
+                    att = new AttributeStunChangeRequest(array.subArray(offset));
+                    break;
+                case 1:
+                case 2:
+                case 4:
+                case 5:
+                case 11:
+                case 32:
+                case 32803:
+                    att = new AttributeStunAddress(array.subArray(offset));
+                    break;
+                case 20:
+                    this.longTermCredential = true;
+                case 6:
+                case 7:
+                case 32802:
+                case 21:
+                    att = new AttributeStunText(array.subArray(offset));
+                    break;
+                case 9:
+                    att = new AttributeStunErrorCode(array.subArray(offset));
+                    break;
+                case 10:
+                    att = new AttributeStunUnknownAttribute(array.subArray(offset));
+                    break;
+                default:
+                    att = new AttributeStunBinary(array.subArray(offset));
+                    break;
+            }
+
+            listAttributeStun.addLast(att);
+            offset += att.getPaddedLength() + 4;
+        }
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+    
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-    public String toShortString() throws Exception {
+    public String toShortString() throws Exception 
+    {
         return super.toShortString();
     }
     
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
         StringBuilder message = new StringBuilder();
         message.append("\r\n");
         message.append(this.header.toString());
@@ -284,6 +301,7 @@ public class MsgStun extends Msg {
             parseAttribute(attribute);
         }    	
     }
+  
     
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation

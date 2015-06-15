@@ -75,6 +75,10 @@ public class StackUcp extends Stack
         }
     }
 
+    /** 
+     * Creates a Msg specific to each Stack
+     * Use for TCP/TLS like protocol : to build incoming message
+     */
     @Override
     public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
     {
@@ -84,7 +88,6 @@ public class StackUcp extends Stack
         int msgLengthToRead = 0;
         String OT = null;
         String RR = null;//reponseResult
-        SupArray msgArray = new SupArray();
         
         synchronized (inputStream)
         {
@@ -125,6 +128,7 @@ public class StackUcp extends Stack
         else if(buf[msgLengthToRead - 1] != ETX)
             throw new Exception("ETX character for end message incorrect");
 
+        SupArray msgArray = new SupArray();
         msgArray.addFirst(new DefaultArray(header));
         msgArray.addLast(new DefaultArray(buf, 0, msgLengthToRead - 1));//to not include ETX in msg
 

@@ -89,7 +89,8 @@ public class UdpManagerTest {
     	byte[] data = Utils.parseBinaryString(packet);
         System.out.println("length = " + data.length);
         
-        MsgUdp msg = new MsgUdp(stack, data, data.length);
+        MsgUdp msg = new MsgUdp(stack);
+        msg.decode(data);
         msg.setListenpoint(listenpoint);
         
         int maxIter = Config.getConfigByName("udp.properties").getInteger("NB_ITERATION", 100000);

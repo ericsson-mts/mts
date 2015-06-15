@@ -10,7 +10,6 @@ import gp.utils.arrays.DefaultArray;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -22,7 +21,7 @@ public class MsgEthernet extends Msg
 {
 
 	private byte[] data;
-	private String[] mac; //dest MAC
+	private String[] dstMac; //dest MAC
 	private String[] srcMac; //src MAC
 	private int type;
 		
@@ -31,18 +30,10 @@ public class MsgEthernet extends Msg
     public MsgEthernet(Stack stack) throws Exception
     {
         super(stack);
+        this.dstMac = new String[6];
+        this.srcMac = new String[6];
+        this.type = 0;
     }
-
-    /** Creates a new instance */
-	public MsgEthernet (byte[] datas, int length) throws Exception
-	{
-		data = new byte [length];
-    	for (int i=0; i<length; i++)
-    		data[i]= datas[i];
-    	setMac(new String[6]);
-    	srcMac = new String[6];
-    	setETHType(0);
-	}
 	
 	@Override
 	public String getProtocol() {
@@ -50,89 +41,96 @@ public class MsgEthernet extends Msg
 	}
 
 	@Override
+	public boolean isRequest() throws Exception {
+		return true;
+	}
+
+	@Override
 	public String getType() throws Exception {
-		// TODO Auto-generated method stub
-		return "0x" + (String.format("%04X", type));
+		return "0x" + String.format("%04X", type);
 	}
 
 	public void setType(int type) {
 		this.type = type;
 	}
 
+	public int getTypeAsInteger()
+	{
+		return type;
+	}
+
 	@Override
 	public String getResult() throws Exception {
-		// TODO Auto-generated method stub
 		return "0x" + String.format("%04X", type);
-	}
-
-	@Override
-	public boolean isRequest() throws Exception {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public byte[] encode() {
-		// TODO Auto-generated method stub
-		return data;
-	}
-
-	/**
-	 * @return the data
-	 */
-	public byte[] getData() {
-		return data;
 	}
 
 	/**
 	 * @param mac the mac to set
 	 */
-	public void setMac(String[] mac) {
-		this.mac = mac;
-	}
-
-	/**
-	 * @param proto the proto to set
-	 */
-	public void setETHType(int type) {
-		this.type = type;
+	public void setDstMac(String[] mac) 
+	{
+		this.dstMac = mac;
 	}
 	
-	public String[] getMac()
+	public String[] getDstMac()
 	{
-		return mac;
+		return this.dstMac;
+	}
+	public void setDstMac(byte[] mac) 
+	{
+		for (int i = 0; i < mac.length; i++)
+		{
+			this.dstMac[i] = String.format("%02X%s", mac[i], (i < mac.length - 1) ? ":" : "");
+		}
+	}
+	
+	public void setSrcMac(byte[] mac)
+	{
+		for (int i = 0; i < mac.length; i++)
+		{
+			this.srcMac[i] = String.format("%02X%s", mac[i], (i < mac.length - 1) ? ":" : "");
+		}
 	}
 
-	public int getETHType()
+	
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+
+    /** 
+     * encode the message to binary data 
+     */
+	@Override
+	public byte[] encode() 
 	{
-		return type;
+		return data;
 	}
-	    
-    /** Get the XML representation of the message; for the genscript module. */
+
+    /** 
+     * decode the message from binary data 
+     */
+    public void decode(byte[] data) throws Exception
+    {
+		this.data = new byte [data.length];
+    	for (int i = 0; i < data.length; i++)
+    	{
+    		this.data[i]= data[i];
+    	}
+	}
+    
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+    	    
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
     	return Utils.byteTabToString(data);
     }
-
-	public void setdstMac(byte[] dstMac) {
-		// TODO Auto-generated method stub
-		for (int i = 0; i < dstMac.length; i++)
-			this.mac[i] = String.format("%02X%s", dstMac[i], (i < dstMac.length - 1) ? ":" : "");
-	}
-	
-	public void setSrcMac(byte[] tmpMac)
-	{
-		for (int i = 0; i < tmpMac.length; i++)
-			this.srcMac[i] = String.format("%02X%s", tmpMac[i], (i < tmpMac.length - 1) ? ":" : "");
-	}
-	
-	private String macToString(String[] mac)
-	{
-		String ret = "";
-		for (int i = 0; i < mac.length; i++)
-			ret += mac[i];
-		return ret;
-	}
 	
     /** 
      * Parse the message from XML element 
@@ -143,29 +141,21 @@ public class MsgEthernet extends Msg
 		List<Element> elements = root.elements("data");
 		Element header = root.element("ethernet");
         List<byte[]> datas = new LinkedList<byte[]>();        
-        try
+        for (Element element : elements)
         {
-            for (Element element : elements)
+            String text = element.getText();
+            if (element.attributeValue("format").equalsIgnoreCase("text"))
             {
-                if (element.attributeValue("format").equalsIgnoreCase("text"))
-                {
-                    String text = element.getText();
-                    // change the \n caractère to \r\n caracteres because the dom librairy return only \n.
-                    // this could make some trouble when the length is calculated in the scenario
-                    text = Utils.replaceNoRegex(text, "\r\n","\n");                    
-                    text = Utils.replaceNoRegex(text, "\n","\r\n");                    
-                    datas.add(text.getBytes("UTF8"));
-                }
-                else if (element.attributeValue("format").equalsIgnoreCase("binary"))
-                {
-                    String text = element.getTextTrim();
-                    datas.add(Utils.parseBinaryString(text));
-                }
+                // change the \n caractère to \r\n caracteres because the dom librairy return only \n.
+                // this could make some trouble when the length is calculated in the scenario
+                text = Utils.replaceNoRegex(text, "\r\n","\n");                    
+                text = Utils.replaceNoRegex(text, "\n","\r\n");                    
+                datas.add(text.getBytes("UTF8"));
             }
-        }
-        catch (Exception e)
-        {
-            throw new ExecutionException("StackIp: Error while parsing data", e);
+            else if (element.attributeValue("format").equalsIgnoreCase("binary"))
+            {
+                datas.add(Utils.parseBinaryString(text));
+            }
         }
         
         //
@@ -199,11 +189,20 @@ public class MsgEthernet extends Msg
             }
         }
                 
-        MsgEthernet msgIp = new MsgEthernet(data, dataLength);
-        this.mac = header.attributeValue("remoteMac").split(":");
+        this.dstMac = header.attributeValue("remoteMac").split(":");
         this.type = Integer.parseInt(header.attributeValue("type"), 16);    
     }
 	
+	private String macToString(String[] mac)
+	{
+		String ret = "";
+		for (int i = 0; i < mac.length; i++)
+		{
+			ret += mac[i];
+		}
+		return ret;
+	}
+
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------
@@ -228,7 +227,7 @@ public class MsgEthernet extends Msg
         {
             if(params[1].equalsIgnoreCase("text")) 
             {
-                var.add(new String(getData()));
+                var.add(new String(encode()));
             }
             else if(params[1].equalsIgnoreCase("binary")) 
             {
@@ -244,7 +243,7 @@ public class MsgEthernet extends Msg
         	if (params[1].equalsIgnoreCase("type"))
         		var.add(String.format("%04X", this.type));
         	else if (params[1].equalsIgnoreCase("dstMac"))
-        		var.add(this.macToString(this.mac));
+        		var.add(this.macToString(this.dstMac));
         	else if (params[1].equalsIgnoreCase("srcMac"))
         		var.add(this.macToString(this.srcMac));
         	else

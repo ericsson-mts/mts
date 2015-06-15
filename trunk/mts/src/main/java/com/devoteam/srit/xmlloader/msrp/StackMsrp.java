@@ -23,13 +23,6 @@
 
 package com.devoteam.srit.xmlloader.msrp;
 
-
-import com.devoteam.srit.xmlloader.core.ParameterPool;
-import com.devoteam.srit.xmlloader.core.Runner;
-import com.devoteam.srit.xmlloader.core.Tester;
-import org.dom4j.Element;
-
-import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -82,12 +75,12 @@ public class StackMsrp extends Stack {
 		return XMLElementTextMsgParser.instance();
 	}
 
-    /**
-     * Creates a Msg specific to each Channel type
-     * should become ABSTRACT later
+    /** 
+     * Read the message data from the stream
+     * Use for TCP/TLS like protocol : to build incoming message  
      */
     @Override
-    public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
+    public byte[] readMessageFromStream(InputStream inputStream) throws Exception
     {
         String text = null;
     	synchronized (inputStream)
@@ -95,19 +88,11 @@ public class StackMsrp extends Stack {
 			text = this.reader(inputStream);
     	}
 
-		if (text != null && text.contains(StackFactory.PROTOCOL_MSRP))
-		{
-			
-			MsgMsrp msg = new MsgMsrp(this);
-			msg.setMessageText(text);
-			return msg;
-		}
-
-        Tester.getGlobalLogger().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Receive an incomplete message; we ignore it : ", text);
-    	return null;
+    	return text.getBytes(); 
     }
 
-    protected String reader(InputStream inputStream) throws Exception {
+    private String reader(InputStream inputStream) throws Exception 
+    {
         StringBuilder message = new StringBuilder();
         String line = "";
 

@@ -63,16 +63,6 @@ public class MsgImap extends Msg {
     }
 
     /** Creates a new instance */
-    public MsgImap(Stack stack, String someData, Channel channel) throws Exception {
-    	this(stack);
-    	
-        setMessageText(someData);
-        
-        setChannel(channel);
-        setTransactionId(((ChannelImap)channel).getTransactionId());
-    }
-
-    /** Creates a new instance */
 	public MsgImap(Vector<String> someData) throws Exception {
 		super();
 		for(int i = 0; i < someData.size(); i++)
@@ -330,13 +320,54 @@ public class MsgImap extends Msg {
             }
         }
     }
+    
+    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
 
-    /** Get the data (as binary) of this message */
+    /** 
+     * encode the message to binary data 
+     */
     @Override
-    public byte[] encode(){
+    public byte[] encode()
+    {
         return this.dataRaw.getBytes();
     }
 
+    /** 
+     * decode the message from binary data 
+     */
+    public void decode(byte[] data) throws Exception
+    {
+    	String text = new String(data);
+    	text = text.replace("\r\n", "\n");
+        dataRaw = text.replace("\n", "\r\n");
+
+        if(!dataRaw.endsWith("\r\n"))
+            dataRaw += "\r\n";
+
+        dataComplete = dataRaw;
+        messages = new Vector<String>();
+
+        String[] msgSplit = Utils.splitNoRegex(dataRaw, "\r\n");
+        for(int i = 0; i < (msgSplit.length - 1); i++)//msgSplit.length - 1 because the last will be empty with a \r\n
+        {
+            messages.add(msgSplit[i] + "\r\n");
+        }
+
+        checkLiteral();
+
+        //no need to do another processing because this messages is
+        //ready to be sent and no operation to get data on it will be done
+        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Msg Imap is: ", toString());    	
+    }
+    
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+ 
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
@@ -351,7 +382,9 @@ public class MsgImap extends Msg {
 		return ret;
 	}
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
     public String toXml() throws Exception {
         String xml = dataComplete.replace("\0", "");        
@@ -364,7 +397,8 @@ public class MsgImap extends Msg {
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        setMessageText(root.getText().trim());
+    	String text = root.getText().trim();
+    	decode(text.getBytes());
     }
     
     /** Get the message as text */
@@ -393,31 +427,12 @@ public class MsgImap extends Msg {
     }
     
     /** Set the message from text */
+    /*
     public void setMessageText(String text) throws Exception
     {
-    	text = text.replace("\r\n", "\n");
-        dataRaw = text.replace("\n", "\r\n");
-
-        if(!dataRaw.endsWith("\r\n"))
-            dataRaw += "\r\n";
-
-        dataComplete = dataRaw;
-        messages = new Vector<String>();
-
-        String[] msgSplit = Utils.splitNoRegex(dataRaw, "\r\n");
-        for(int i = 0; i < (msgSplit.length - 1); i++)//msgSplit.length - 1 because the last will be empty with a \r\n
-        {
-            messages.add(msgSplit[i] + "\r\n");
-        }
-
-        checkLiteral();
-
-        //no need to do another processing because this messages is
-        //ready to be sent and no operation to get data on it will be done
-        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Msg Imap is: ", toString());
-
     }
-
+	*/
+    
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------

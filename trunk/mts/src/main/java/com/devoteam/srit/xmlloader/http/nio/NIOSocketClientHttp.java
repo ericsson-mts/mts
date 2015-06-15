@@ -24,15 +24,18 @@
 package com.devoteam.srit.xmlloader.http.nio;
 
 import com.devoteam.srit.xmlloader.core.hybridnio.HybridSocket;
+
 import org.apache.http.impl.DefaultHttpClientConnection;
+
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-
 import com.devoteam.srit.xmlloader.core.hybridnio.HybridSocketInputHandler;
 import com.devoteam.srit.xmlloader.http.ChannelHttp;
 import com.devoteam.srit.xmlloader.http.MsgHttp;
 import com.devoteam.srit.xmlloader.http.SocketClientHttp;
+
 import org.apache.http.HttpResponse;
 
 /**
@@ -66,7 +69,9 @@ public class NIOSocketClientHttp extends SocketClientHttp implements HybridSocke
                 HttpResponse response = clientConnection.receiveResponseHeader();
                 clientConnection.receiveResponseEntity(response);
 
-                MsgHttp msgResponse = new MsgHttp(response);
+                Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_HTTP);
+                
+                MsgHttp msgResponse = new MsgHttp(stack, response);
 
                 //
                 // Get corresponding msgRequest to read transactionId
@@ -82,7 +87,7 @@ public class NIOSocketClientHttp extends SocketClientHttp implements HybridSocke
                 //
                 // Callback vers la Stack generic
                 //
-                StackFactory.getStack(StackFactory.PROTOCOL_HTTP).receiveMessage(msgResponse);
+                stack.receiveMessage(msgResponse);
             }
             else
             {

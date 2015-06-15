@@ -38,12 +38,8 @@ import org.dom4j.Element;
 
 public class MsgPop extends Msg
 {
-    private String          type = "";
-    private String          result = "";
     private String          dataRaw = "";//just the message to read/write on socket
-    private Boolean         isRequest = null;
     private Vector<String>  arguments = null;
-    private String          text = "";
 
     /** Creates a new instance */
     public MsgPop(Stack stack) throws Exception
@@ -52,9 +48,10 @@ public class MsgPop extends Msg
     }
 
     /** Creates a new instance */
-    public MsgPop(Stack stack, String someData, Channel channel) throws Exception {
+    public MsgPop(Stack stack, String someData, Channel channel) throws Exception 
+    {
     	this(stack);
-       setMessageText(someData);
+       decode(someData.getBytes());
        setChannel(channel);
     }
     
@@ -64,57 +61,44 @@ public class MsgPop extends Msg
     }
 
     public String getType() {
-        if(type.equalsIgnoreCase(""))
+        if(isRequest())//to not try to get command on a response
         {
-            if(isRequest())//to not try to get command on a response
-            {
-                String[] msgSplit = Utils.splitNoRegex(dataRaw.trim(), " ");
-                type = msgSplit[0];
+            String[] msgSplit = Utils.splitNoRegex(dataRaw.trim(), " ");
+            type = msgSplit[0];
+        }
+        else//refer to the transaction request in case of response to get command
+        {
+            try{
+                if(isSend())
+                    type = StackFactory.getStack(getProtocol()).getInTransaction(getTransactionId()).getBeginMsg().getType();
+                else
+                    type = StackFactory.getStack(getProtocol()).getOutTransaction(getTransactionId()).getBeginMsg().getType();
             }
-            else//refer to the transaction request in case of response to get command
-            {
-                try{
-                    if(isSend())
-                        type = StackFactory.getStack(getProtocol()).getInTransaction(getTransactionId()).getBeginMsg().getType();
-                    else
-                        type = StackFactory.getStack(getProtocol()).getOutTransaction(getTransactionId()).getBeginMsg().getType();
-                }
-                catch(Exception e) {}
-            }
+            catch(Exception e) {}
         }
         return type.toUpperCase();
 	}
 
     public String getResult(){
         if (!isRequest()){        	
-        	if(result.equalsIgnoreCase(""))
+            String[] msgSplit1 = Utils.splitNoRegex(dataRaw.trim(), "\r\n");
+            String[] msgSplit2 = Utils.splitNoRegex(msgSplit1[0], " ");
+            if(msgSplit2[0].startsWith("+") || msgSplit2[0].startsWith("-"))
             {
-                String[] msgSplit1 = Utils.splitNoRegex(dataRaw.trim(), "\r\n");
-                String[] msgSplit2 = Utils.splitNoRegex(msgSplit1[0], " ");
-                if(msgSplit2[0].startsWith("+") || msgSplit2[0].startsWith("-"))
-                {
-                    msgSplit2[0] = msgSplit2[0].substring(1);
-                }
-                result = msgSplit2[0];
+                msgSplit2[0] = msgSplit2[0].substring(1);
             }
+            result = msgSplit2[0];
         }
         return result.toUpperCase();
     }
     
     public boolean isRequest() {
-        if(isRequest == null)
+        String[] msgSplit = Utils.splitNoRegex(dataRaw.trim(), " ");
+        if(msgSplit[0].contains("+") || msgSplit[0].contains("-"))
         {
-            String[] msgSplit = Utils.splitNoRegex(dataRaw.trim(), " ");
-            if(msgSplit[0].contains("+") || msgSplit[0].contains("-"))
-            {
-                isRequest = false;
-            }
-            else
-            {
-                isRequest = true;
-            }
+            return false;
         }
-        return isRequest;
+        return true;
     }
 	
     public Vector<String> getArguments() {
@@ -142,25 +126,56 @@ public class MsgPop extends Msg
         return res;
     }
 
-    /** Get the data (as binary) of this message */    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+    
+    /** 
+     * encode the message to binary data 
+     */    
     @Override
-    public byte[] encode(){
+    public byte[] encode()
+    {
         return this.dataRaw.getBytes();
     }
+    
+    /** 
+     * decode the message from binary data 
+     */
+    public void decode(byte[] data) throws Exception
+    {
+    	String text = new String(data);
+        text = text.replace("\r\n", "\n");
+        this.dataRaw = text.replace("\n", "\r\n");
+
+        if(!this.dataRaw.endsWith("\r\n"))
+        {
+            this.dataRaw += "\r\n";
+        }    	
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-	public String toShortString() throws Exception {
+	public String toShortString() throws Exception 
+    {
     	String ret = super.toShortString();
     	ret += "\n";
         ret += new String(dataRaw.getBytes(), 0, Math.min(dataRaw.length(), 100), "UTF8");
 		return ret;
     }
     
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
         return dataRaw;
     }
  
@@ -171,31 +186,16 @@ public class MsgPop extends Msg
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
     	String text = root.getText().trim();
-    	setMessageText(text);
+    	decode(text.getBytes());
     }
 
     /** Set the message from text */
-    public String getMessageText() {
-        if(text.equalsIgnoreCase(""))
-        {
-            String[] msgSplit = Utils.splitNoRegex(dataRaw.trim(), " ");
-            text = dataRaw.substring(dataRaw.indexOf(msgSplit[1]));
-        }
-        return text;
+    public String getMessageText() 
+    {
+        String[] msgSplit = Utils.splitNoRegex(dataRaw.trim(), " ");
+        return  dataRaw.substring(dataRaw.indexOf(msgSplit[1]));
     }
     
-    /** Set the message from text */
-    public void setMessageText(String text) throws Exception
-    {
-        text = text.replace("\r\n", "\n");
-        this.dataRaw = text.replace("\n", "\r\n");
-
-        if(!this.dataRaw.endsWith("\r\n"))
-        {
-            this.dataRaw += "\r\n";
-        }
-    }
-
 	// ------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------

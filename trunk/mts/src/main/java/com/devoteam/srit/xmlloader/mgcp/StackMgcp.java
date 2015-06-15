@@ -53,8 +53,6 @@ public  class StackMgcp extends Stack {
         	Listenpoint listenpoint = new Listenpoint(this);
                 createListenpoint(listenpoint, StackFactory.PROTOCOL_MGCP);
         }
-
-        
     }
 
     @Override
@@ -65,16 +63,6 @@ public  class StackMgcp extends Stack {
     @Override
     public XMLElementReplacer getElementReplacer() {
          return XMLElementTextMsgParser.instance();
-    }
-
-    @Override
-    public Msg readFromDatas(byte[] datas, int length) throws Exception
-    {
-    	String str = new String(datas);
-    	str = str.substring(0, length);
-    	MsgMgcp msgMgcp = new MsgMgcp(this);
-    	msgMgcp.setMessageText(str);
-    	return msgMgcp;
     }
 
 

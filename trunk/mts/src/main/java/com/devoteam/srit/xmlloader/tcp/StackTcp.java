@@ -41,6 +41,7 @@ import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.dom4j.Element;
 
 /**
@@ -134,13 +135,12 @@ public class StackTcp extends Stack
     
     /** 
      * Creates a Msg specific to each Stack
-     * should become ABSTRACT later  
+     * Used for TCP/TLS like protocol : to build incoming message
      */
     @Override    
-    public Msg readFromStream(InputStream  inputStream, Channel channel) throws Exception
+    public byte[] readMessageFromStream(InputStream  inputStream) throws Exception
     {
     	byte[] buffer = new byte[1500]; // MTU
-    	MsgTcp msgTcp = null;
     		
     	int length = inputStream.read(buffer);    
 	    if(length > 0)
@@ -151,15 +151,10 @@ public class StackTcp extends Stack
 	        {
 	            data[i] = buffer[i];
 	        }
-	
-	        msgTcp = new MsgTcp(this);
-	        msgTcp.setMessageBinary(data);
-	    }
-        else
-        {
-            throw new Exception("End of stream detected");
-        }
-    	return msgTcp;
+	        return data;
+	    } 
+	    
+        throw new Exception("End of stream detected");
     }
  
     /** 
@@ -176,7 +171,7 @@ public class StackTcp extends Stack
 				// create an empty message
 				byte[] bytes = new byte[0];
 				MsgTcp msg = new MsgTcp(this);
-				msg.setMessageBinary(bytes);
+				msg.decode(bytes);
 				msg.setType(type);
 				msg.setChannel(channel);
 				msg.setListenpoint(listenpoint);

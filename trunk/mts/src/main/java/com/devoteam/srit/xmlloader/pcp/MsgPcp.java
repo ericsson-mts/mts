@@ -51,7 +51,6 @@ public class MsgPcp extends Msg
     private FList flistSearch = null;
     private String type = null;
     private int opcode = 1;
-    private String opcodeStr = null;
     
     /** Creates a new instance */
     public MsgPcp(Stack stack) throws Exception
@@ -88,9 +87,16 @@ public class MsgPcp extends Msg
         return opcode;
     }
 
-    /** Get the data (as binary) of this message */
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+    
+    /** 
+     * encode the message to binary data 
+     */
     @Override
-    public byte[] encode(){
+    public byte[] encode()
+    {
         ObjectOutputStream obj;
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         try {
@@ -103,6 +109,19 @@ public class MsgPcp extends Msg
         return byteArray.toByteArray();
     }
 
+    /** 
+     * decode the message from binary data 
+     */
+    public void decode(byte[] data) throws Exception
+    {
+    	// nothing to do : never called
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
@@ -113,7 +132,9 @@ public class MsgPcp extends Msg
         return ret;
 	}
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
     public String toXml() throws Exception {
     	return flist.asString();

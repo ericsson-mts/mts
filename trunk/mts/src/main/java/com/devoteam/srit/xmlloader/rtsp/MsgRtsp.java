@@ -135,25 +135,58 @@ public class MsgRtsp extends Msg
             return true;
     }
     
-    /** Get the data (as binary) of this message */
+    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+    
+    /** 
+     * encode the message to binary data 
+     */        
     @Override
-    public byte[] encode(){
+    public byte[] encode()
+    {
         return this.message.getMessage().getBytes();
     }
+    
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+        this.message = new TextMessage(getProtocol(), false, ((StackRtsp) stack).addCRLFContent, null);
+        String text = new String(data);
+    	this.message.parse(text);
+        this.message.setGenericfirstline(new FirstLine(this.message.getFirstLineString(),getProtocol()));
+    	if (((FirstLine)(this.message.getGenericfirstline())).isRequest())
+    	{
+    		extractRemoteData();
+    	}
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-	public String toShortString() throws Exception {
+	public String toShortString() throws Exception 
+    {
     	String ret = super.toShortString();
     	ret += "\n";
         ret += ((FirstLine)(this.message.getGenericfirstline())).getLine();
         return ret;
 	}
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
     	return message.getMessage().toString();
     }
     
@@ -164,17 +197,15 @@ public class MsgRtsp extends Msg
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
         String text = root.getText();
-        StackRtsp stack = (StackRtsp) StackFactory.getStack(StackFactory.PROTOCOL_RTSP);
-        setMessageText(text, true, stack.addCRLFContent);
-    }
+        this.message = new TextMessage(getProtocol(), true, ((StackRtsp) stack).addCRLFContent, null);
+    	this.message.parse(text);
+        this.message.setGenericfirstline(new FirstLine(this.message.getFirstLineString(),getProtocol()));
+    	if (((FirstLine)(this.message.getGenericfirstline())).isRequest())
+    	{
+    		extractRemoteData();
+    	}
 
-    /** Get the message as text */
-    /*
-    public String getMessageText() throws Exception
-    {
-    	return message.toString();
     }
-    */
     
     /** Set the message from text */
     public void setMessageText(String text, boolean completeContentLength, int addCRLFContent) throws Exception {

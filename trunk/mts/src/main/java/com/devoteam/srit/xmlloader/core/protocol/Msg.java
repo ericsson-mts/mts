@@ -522,10 +522,21 @@ public abstract class Msg extends MsgLight implements Removable
     {
     	// nothing to do
     }
-            
+
+    
     //-------------------------------------------------
     // methods for the encoding / decoding of the message
     //-------------------------------------------------
+    
+    /** 
+     * encode the message to binary data 
+     */
+    public abstract byte[] encode();
+       
+    /** 
+     * decode the message from binary data 
+     */
+    public abstract void decode(byte[] data) throws Exception; 
     
     /** Return the length of the message*/
     public int getLength()
@@ -538,11 +549,6 @@ public abstract class Msg extends MsgLight implements Removable
     	return 0;
     }
 
-    /** encode the message to binary data */
-    public abstract byte[] encode();
-       
-    /** decode the message from binary data */
-    public abstract byte[] decode();
     
     //---------------------------------------------------------------------
     // methods for the XML display / parsing of the message

@@ -88,17 +88,55 @@ public class MsgSipJain extends MsgSip
         return sipMessage instanceof SIPRequest;
     }
     
-    public SIPMessage getSipMessage()
-    {
-        return sipMessage;
-    }
+    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
 
-    /** Get the data (as binary) of this message */
+    /** 
+     * encode the message to binary data 
+     */
     @Override
     public byte[] encode()
     {
         return sipMessage.encodeAsBytes();
     }
+    
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+        MessageFactory messageFactory = SipFactory.getInstance().createMessageFactory();
+        
+        String text = new String(data);
+        text = text.trim();
+        text = text.replace("\r\n", "\n");
+        text = text.replace("\n", "\r\n");
+
+        if (text.startsWith("SIP/"))
+        {
+            sipMessage = (SIPResponse) messageFactory.createResponse(text + "\r\n\r\n");
+        }
+        else
+        {
+            sipMessage = (SIPMessage) messageFactory.createRequest(text + "\r\n\r\n");
+        }
+
+        int posContent = text.indexOf("\r\n\r\n");
+        if (posContent >= 0)
+        {
+            String contentString = text.substring(posContent).trim();
+            ContentTypeHeader contentType = sipMessage.getContentTypeHeader();
+            sipMessage.setContent(contentString, contentType);
+        }
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
@@ -117,9 +155,12 @@ public class MsgSipJain extends MsgSip
         return ret;
     }
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
     	return sipMessage.toString();
     }
  
@@ -130,20 +171,6 @@ public class MsgSipJain extends MsgSip
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
         String text = root.getText();
-        StackSip stack = (StackSip) StackFactory.getStack(StackFactory.PROTOCOL_SIP);
-        setMessageText(text, stack.addCRLFContent);
-    }
-
-    /** Get the message as text */
-    /*
-    public String getMessageText() throws Exception
-    {
-    	return message.toString();
-    }
-    */
-    
-    /** Set the message from text */
-    public void setMessageText(String text, int addCRLFContent) throws Exception {
         MessageFactory messageFactory = SipFactory.getInstance().createMessageFactory();
 
         text = text.trim();
@@ -164,8 +191,9 @@ public class MsgSipJain extends MsgSip
         {
             String contentString = text.substring(posContent).trim();
             
+            StackSip stack = (StackSip) StackFactory.getStack(StackFactory.PROTOCOL_SIP);
             // bug NSN equipment : add a CRLF at the end of the Content
-            if (addCRLFContent == 1)
+            if (stack.addCRLFContent == 1)
             {
             	contentString = contentString + "\r\n"; 
             }
@@ -175,6 +203,7 @@ public class MsgSipJain extends MsgSip
         }
     }
 
+    
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------

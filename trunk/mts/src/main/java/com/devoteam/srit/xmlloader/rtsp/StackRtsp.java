@@ -113,43 +113,20 @@ public class StackRtsp extends Stack {
 		return XMLElementTextMsgParser.instance();
 	}
 
-    /**
-     * Creates a Msg specific to each Channel type
-     * should become ABSTRACT later
+    /** 
+     * Read the message data from the stream
+     * Use for TCP/TLS like protocol : to build incoming message  
      */
     @Override
-    public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
+    public byte[] readMessageFromStream(InputStream inputStream) throws Exception
     {
         String text = null;
     	synchronized (inputStream)
     	{
 			text = this.reader(inputStream);
     	}
-
-		if (text != null && text.contains(StackFactory.PROTOCOL_RTSP))
-		{
-			MsgRtsp msg = new MsgRtsp(this);
-			msg.setMessageText(text, false, addCRLFContent);
-			return msg;
-		}
-
-        Tester.getGlobalLogger().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Receive an incomplete message; we ignore it : ", text);
-    	return null;
-    }
-
-    /**
-     * Creates a Msg specific to each Stack
-     * Use for UDP like protocol : to build incoming message
-     * should become ABSTRACT later
-     */
-    @Override
-    public Msg readFromDatas(byte[] datas, int length) throws Exception
-    {
-    	String str = new String(datas);
-    	str = str.substring(0, length);
-    	MsgRtsp msg = new MsgRtsp(this);
-		msg.setMessageText(str, false, addCRLFContent);
-    	return msg;
+    	
+    	return text.getBytes();
     }
 
     protected String reader(InputStream inputStream) throws Exception {

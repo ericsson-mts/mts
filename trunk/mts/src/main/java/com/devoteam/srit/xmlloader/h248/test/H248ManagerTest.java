@@ -84,7 +84,7 @@ public class H248ManagerTest {
         Listenpoint listenpoint = stack.getListenpoint(null);
 
         MsgH248 msg = new MsgH248(stack);
-        msg.setMessageText(request);
+        msg.decode(request.getBytes());
         msg.setListenpoint(listenpoint);
 
         int maxIter = Config.getConfigByName("h248.properties").getInteger("NB_ITERATION", 100000);

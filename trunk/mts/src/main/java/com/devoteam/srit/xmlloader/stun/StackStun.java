@@ -74,9 +74,4 @@ public class StackStun extends Stack {
         return XMLElementTextMsgParser.instance();
     }
 
-    @Override
-     public Msg readFromDatas(byte[] datas, int length) throws Exception
-    {
-    	return new MsgStun(this, new DefaultArray(datas,0,length));
-    }
 }

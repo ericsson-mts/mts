@@ -146,13 +146,34 @@ public class MsgRtp extends Msg {
         this.control = control;
     }
 
-    /** Get the data (as binary) of this message */
+    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+
+    /** 
+     * encode the message to binary data 
+     */
     @Override
-    public byte[] encode(){
+    public byte[] encode()
+    {
     	// only the first element in the list is used
     	RTPPacket rtpPacket = ((RTPPacket) rtpPackets.get(0));
         return rtpPacket.data;
     }
+
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+    	// nothing to do : we use external JMF RTP stack to transport messages
+    } 
+
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
@@ -164,9 +185,12 @@ public class MsgRtp extends Msg {
         return ret;
     }
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
 		String xml = "";
         Iterator<RTPPacket> iter = rtpPackets.iterator(); 
         while (iter.hasNext()) {

@@ -28,9 +28,12 @@ import com.devoteam.srit.xmlloader.diameter.dictionary.AvpDef;
 import com.devoteam.srit.xmlloader.diameter.dictionary.Dictionary;
 import com.devoteam.srit.xmlloader.diameter.dictionary.TypeDef;
 import com.devoteam.srit.xmlloader.diameter.dictionary.VendorDef;
+import com.devoteam.srit.xmlloader.sip.light.StackSipLight;
 import com.devoteam.srit.xmlloader.tcp.ListenpointTcp;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.coding.text.FirstLine;
+import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -269,12 +272,24 @@ public class MsgDiameter extends Msg
 
     }
 
-    /** Get the data (as binary) of this message */
+    /** 
+     * encode the message to binary data 
+     */
     @Override
     public byte[] encode()
     {
     	return message.encode();
     }
+    
+    /** decode the message from binary data */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+        Message message = new Message();
+        message.decode(data);        
+        this.message = message;
+    }
+
     
     //---------------------------------------------------------------------
     // methods for the XML display / parsing of the message
@@ -283,7 +298,8 @@ public class MsgDiameter extends Msg
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-    public String toShortString() throws Exception {          
+    public String toShortString() throws Exception 
+    {          
     	String ret = super.toShortString();
   		ret += "\n";
   		ret += "<HEADER "; 	
@@ -646,7 +662,8 @@ public class MsgDiameter extends Msg
      * Convert the message to XML document 
      */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
         String xml = headerToXml();
         String applicationId = Integer.toString(message.hdr.application_id);
         Iterable<AVP> iterable = message.avps();

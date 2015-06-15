@@ -69,12 +69,6 @@ public class MsgSctp extends Msg{
 		this.sctpData=new SCTPData(bytes);
 	}
 
-    /** Creates a new instance */
-	public MsgSctp(SCTPData aSctpData) {
-		this.sctpData=new SCTPData(aSctpData.sndrcvinfo,aSctpData.getData());
-        this.type = "DATA";
-	}
-
     /** Get the protocol of this message */
     @Override
 	public String getProtocol() {
@@ -115,16 +109,39 @@ public class MsgSctp extends Msg{
 		((ChannelSctp) getChannel()).setAssociationId(sctpData.sndrcvinfo.sinfo_assoc_id);
 	}
 
-    /** Get the data (as binary) of this message */
+	
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+
+    /** 
+     * encode the message to binary data 
+     */
     @Override
-    public byte[] encode(){
+    public byte[] encode()
+    {
         return this.sctpData.getData();
     }
+
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+    	this.sctpData = new SCTPData(data);
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-	public String toShortString() throws Exception {
+	public String toShortString() throws Exception 
+    {
     	String ret = super.toShortString();
     	ret += "\n";
 		try
@@ -139,9 +156,12 @@ public class MsgSctp extends Msg{
 		return ret;
 	}
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
 		String xml = getTypeComplete();
 		xml += "\n";
 		if (sctpData.sndrcvinfo!=null){
@@ -256,10 +276,11 @@ public class MsgSctp extends Msg{
 			sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(Integer.parseInt(aid));
 		}
 				
-		this.sctpData=new SCTPData(sctpData.sndrcvinfo,sctpData.getData());
+		this.sctpData=new SCTPData(sctpData.sndrcvinfo, sctpData.getData());
         this.type = "DATA";
     }
 
+    
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------
@@ -338,11 +359,11 @@ public class MsgSctp extends Msg{
         {
             if(params[1].equalsIgnoreCase("text")) 
             {
-                var.add(new String(encode()));
+                var.add(new String(this.sctpData.getData()));
             }
             else if(params[1].equalsIgnoreCase("binary")) 
             {
-            	var.add(Array.toHexString(new DefaultArray(encode())));
+            	var.add(Array.toHexString(new DefaultArray(this.sctpData.getData())));
             }
             else 
             {

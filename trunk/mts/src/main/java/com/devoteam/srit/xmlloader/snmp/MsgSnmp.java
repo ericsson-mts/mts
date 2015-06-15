@@ -164,17 +164,48 @@ public class MsgSnmp extends Msg
 		return StackFactory.PROTOCOL_UDP;
 	}
 
-    /** Get the data (as binary) of this message */
+    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+
+    /** 
+     * encode the message to binary data 
+     */
     @Override
-    public byte[] encode(){
-        //TODO
+    public byte[] encode()
+    {
+    	// nothing to do : we use external Mibble SNMP stack to encode messages 
         return new byte[3];
     }
 
+    /** 
+     * decode the message from binary data 
+     */
+    public void decode(byte[] data) throws Exception
+    {
+    	// nothing to do : never called
+    	/*
+		this.data = new String(data); 
+		this.data = Utils.replaceNoRegex(this.data, "\r\n", "\n");
+		this.data = Utils.replaceNoRegex(this.data, "\n", "\r\n");
+        if(!this.data.endsWith("\r\n"))
+        {
+        	this.data += "\r\n";
+        }
+        */
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+    
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-	public String toShortString() throws Exception {
+	public String toShortString() throws Exception 
+    {
     	String ret = super.toShortString();
         ret += "\n";
         ret += "<MESSAGE type:" + PDU.getTypeString(pdu.getType()) + ", requestId:" + pdu.getRequestID();
@@ -186,9 +217,12 @@ public class MsgSnmp extends Msg
 		return ret;
 	}
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
     	String xml = "";
 		try {
 			xml += "type: " + PDU.getTypeString(pdu.getType()) + ", requestId: " + pdu.getRequestID();
@@ -219,9 +253,10 @@ public class MsgSnmp extends Msg
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-	    // not called	
+    	// nothing to do : we use external Mibble SNMP stack to transport messages	
     }
 
+    
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------

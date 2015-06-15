@@ -28,6 +28,7 @@ import java.util.Vector;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.sip.light.StackSipLight;
 import com.devoteam.srit.xmlloader.smpp.data.SmppAttribute;
 import com.devoteam.srit.xmlloader.smpp.data.SmppChoice;
 import com.devoteam.srit.xmlloader.smpp.data.SmppGroup;
@@ -35,6 +36,8 @@ import com.devoteam.srit.xmlloader.smpp.data.SmppMessage;
 import com.devoteam.srit.xmlloader.smpp.data.SmppTLV;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.coding.text.FirstLine;
+import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -46,6 +49,7 @@ import com.devoteam.srit.xmlloader.core.utils.gsm.GSMConversion;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
+import gp.utils.arrays.Integer32Array;
 import gp.utils.arrays.SupArray;
 
 /**
@@ -71,11 +75,6 @@ public class MsgSmpp extends Msg
     	this(stack);
     	
         smppMessage = message;
-    }
-
-    protected SmppMessage getSmppMessage()
-    {
-        return this.smppMessage;
     }
 
     private Object formatAttribute(Attribute att)
@@ -135,8 +134,37 @@ public class MsgSmpp extends Msg
         }
         return result;
     }
+        
+    /** Return the transport of the message*/
+    @Override
+    public String getTransport()
+    {
+        return StackFactory.PROTOCOL_TCP;
+    }
+
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
     
+    /** 
+     * encode the message to binary data 
+     */
+    @Override    
+    public byte[] encode()
+    {
+        try 
+        {
+            return smppMessage.getArray().getBytes();
+        }
+        catch (Exception ex)
+        {
+            GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Error while trying to write message SMPP on socket: ", ex);
+        }
+        return null;
+    }
+
     /** Return the length of the message*/
+    /*
     @Override
     public int getLength() {
         try 
@@ -150,32 +178,32 @@ public class MsgSmpp extends Msg
         return 0;
 
     }
+    */
     
-    /** Return the transport of the message*/
-    @Override
-    public String getTransport()
+    /** 
+     * decode the message from binary data 
+     */
+    public void decode(byte[] data) throws Exception
     {
-        return StackFactory.PROTOCOL_TCP;
+        DefaultArray array = new DefaultArray(data);
+        
+        //get id from message to get message from dictionary
+        int id  = new Integer32Array(array.subArray(4, 4)).getValue();
+        SmppMessage message = ((StackSmpp) stack).smppDictionary.getMessageFromId(id);
+        message.parseArray(array);
+        this.smppMessage= message;
     }
 
-    /** Get the data (as binary) of this message */
-    @Override    
-    public byte[] encode(){
-        try 
-        {
-            return smppMessage.getArray().getBytes();
-        }
-        catch (Exception ex)
-        {
-            GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Error while trying to write message SMPP on socket: ", ex);
-        }
-        return null;
-    }
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-    public String toShortString() throws Exception {
+    public String toShortString() throws Exception 
+    {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(super.toShortString());
         stringBuilder.append("\n");
@@ -196,9 +224,12 @@ public class MsgSmpp extends Msg
         return stringBuilder.toString();
     }
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
         return smppMessage.toString();
     }
     
@@ -247,7 +278,7 @@ public class MsgSmpp extends Msg
 
     }
     
-    public void parseAttributes(Element root, SmppMessage msg) throws Exception
+   private void parseAttributes(Element root, SmppMessage msg) throws Exception
     {
         List<Element> attributes = root.elements("attribute");
         List<Element> imbricateAttributesInScenario = null;
@@ -417,7 +448,7 @@ public class MsgSmpp extends Msg
         }
     }
 
-    public void parseTLVs(Element root, SmppMessage msg) throws Exception
+    private void parseTLVs(Element root, SmppMessage msg) throws Exception
     {
         List<Element> tlvs = root.elements("tlv");
         SmppTLV tlv = null;

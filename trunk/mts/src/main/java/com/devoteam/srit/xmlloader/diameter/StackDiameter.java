@@ -23,12 +23,10 @@
 
 package com.devoteam.srit.xmlloader.diameter;
 
-import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
-import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
@@ -36,7 +34,6 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementAVPParser;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 
-import dk.i1.diameter.Message;
 import dk.i1.diameter.node.Node;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -45,7 +42,6 @@ import gp.utils.arrays.SupArray;
 import java.io.InputStream;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.dom4j.Element;
 
@@ -60,8 +56,9 @@ public class StackDiameter extends Stack {
 
     protected static Listenpoint listenpoint = null;
     
-    /** Creates or returns the instance of this stack */
-    public StackDiameter() throws Exception {
+    /** Creates a new instance */
+    public StackDiameter() throws Exception 
+    {
         super();
 
         // initiate a default listenpoint if port is not empty or null
@@ -92,11 +89,10 @@ public class StackDiameter extends Stack {
     
     /** 
      * Creates a Msg specific to each Stack
-     * Use for TCP like protocol : to build incoming message
-     * should become ABSTRACT later  
+     * Use for TCP/TLS like protocol : to build incoming message
      */
     @Override
-    public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
+    public byte[] readMessageFromStream(InputStream inputStream) throws Exception
     {
     	// read the header
         byte[] tab = new byte[20];
@@ -121,12 +117,7 @@ public class StackDiameter extends Stack {
         arrayMsg.addFirst(header);
         arrayMsg.addLast(payload);
                
-        // build a stack Diameter message
-        Message message = new Message();
-        message.decode(arrayMsg.getBytes());
-        
-        MsgDiameter msg = new MsgDiameter(this, message);
-        return msg;
+        return arrayMsg.getBytes();
     }
     
     /** Returns the Config object to access the protocol config file*/
