@@ -9,6 +9,7 @@
     <parameter name="[localPortHTTP]" operation="set" value="8080"/>
     <parameter description="local port of the MTS host" editable="true" name="[localPortHTTP]" operation="set" value="[localPortHTTP(0)]"/>
     <parameter name="[localHTTP]" operation="set" value="[localHostHTTP]:[localPortHTTP]"/>	
+    <parameter name="[localClient]" operation="set" value="true" description="flag to activate the client scenario" editable="true" />
     
     <parameter name="[remoteHostHTTP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[remoteHostHTTP]" operation="set" value="172.16.21.32"/-->
@@ -17,6 +18,7 @@
     <parameter name="[remotePortHTTP]" operation="set" value="8080"/>
     <parameter description="remote port of the SUT host" editable="true" name="[remotePortHTTP]" operation="set" value="[remotePortHTTP(0)]"/>
     <parameter name="[remoteHTTP]" operation="set" value="[remoteHostHTTP]:[remotePortHTTP]"/>
+    <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true"/>
     
     <!--parameter name="[remotePortSecHTTP]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT_TLS"/-->
     <parameter name="[remotePortSecHTTP]" operation="set" value="4430"/>
@@ -44,53 +46,63 @@
     
     <parameter name="[data]" operation="file.readbinary" value="250.txt"/>
 
-    <testcase description="test post" name="100_setFromMessage" state="true">
-        <scenario file="100_setFromMessage/client.xml" name="client" routingName="client"/>
-        <scenario file="100_setFromMessage/server.xml" name="HTTP" routingName="HTTP"/>
+    <testcase description="test post" name="100_http_post" state="true">
+        <scenario file="100_http_post_client_server/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="100_http_post_client_server/server.xml" name="HTTP" state="[remoteServer]" routingName="HTTP"/>
     </testcase>
     
+    <testcase description="test post" name="101_http_get" state="true">
+        <scenario file="101_http_get_client_server/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="101_http_get_client_server/server.xml" name="HTTP" state="[remoteServer]" routingName="HTTP"/>
+    </testcase>
+  
+      <testcase name="110_big_file" state="true">
+        <scenario file="110_http_big_file/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="110_http_big_file/server.xml" name="HTTP" state="[remoteServer]" routingName="HTTP"/>
+    </testcase>
+    
+    <testcase name="120_chunk_close" state="true">
+        <scenario file="120_chunk_close/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="120_chunk_close/server.xml" name="HTTP" state="[remoteServer]" routingName="HTTP"/>
+    </testcase>
+
     <testcase description="test post" name="200_https_post" state="true">
-        <scenario file="200_https_post_client_server/client.xml" name="client" routingName="client"/>
-        <scenario file="200_https_post_client_server/server.xml" name="HTTP" routingName="HTTP"/>
+        <scenario file="200_https_post_client_server/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="200_https_post_client_server/server.xml" name="HTTP" state="[remoteServer]" routingName="HTTP"/>
     </testcase>
 
     <testcase description="test post" name="201_https_get" state="true">
-        <scenario file="201_https_get_client_server/client.xml" name="client" routingName="client"/>
-        <scenario file="201_https_get_client_server/server.xml" name="HTTP" routingName="HTTP"/>
-    </testcase>
-
-    <testcase description="test post" name="202_http_post" state="true">
-        <scenario file="202_http_post_client_server/client.xml" name="client" routingName="client"/>
-        <scenario file="202_http_post_client_server/server.xml" name="HTTP" routingName="HTTP"/>
-    </testcase>
-    
-    <testcase description="test post" name="203_http_get" state="true">
-        <scenario file="203_http_get_client_server/client.xml" name="client" routingName="client"/>
-        <scenario file="203_http_get_client_server/server.xml" name="HTTP" routingName="HTTP"/>
+        <scenario file="201_https_get_client_server/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="201_https_get_client_server/server.xml" name="HTTP" state="[remoteServer]" routingName="HTTP"/>
     </testcase>
   
-    <testcase name="210_big_file" state="true">
-        <scenario file="210_http_big_file/client.xml" name="client" routingName="client"/>
-        <scenario file="210_http_big_file/server.xml" name="HTTP" routingName="HTTP"/>
+    <testcase description="test post" name="801_setFromMessage" state="true">
+        <scenario file="801_setFromMessage/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="801_setFromMessage/server.xml" name="HTTP" state="[remoteServer]" routingName="HTTP"/>
     </testcase>
 
-    <testcase name="300_autoreconnection" state="true">
-        <scenario file="300_autoreconnection/client.xml" name="client" routingName="client"/>
-        <scenario file="300_autoreconnection/server.xml" name="HTTP" routingName="HTTP"/>
+    <testcase description="test post" name="802_setFromMsg_other" state="true">
+        <scenario file="802_setFromMsg_other/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="802_setFromMsg_other/server.xml" name="HTTP" state="[remoteServer]" routingName="HTTP"/>
     </testcase>
 
-    <testcase name="301_channel" state="true">
-        <scenario file="301_channel/client.xml" name="client" routingName="client"/>
-        <scenario file="301_channel/server.xml" name="HTTP" routingName="HTTP"/>
+    <testcase name="811_autoreconnection" state="true">
+        <scenario file="811_autoreconnection/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="811_autoreconnection/server.xml" name="HTTP" state="[remoteServer]" routingName="HTTP"/>
     </testcase>
 
-    <testcase name="302_chunk_close" state="true">
-        <scenario file="302_chunk_close/client.xml" name="client" routingName="client"/>
-        <scenario file="302_chunk_close/server.xml" name="HTTP" routingName="HTTP"/>
+    <testcase name="810_channel" state="true">
+        <scenario file="810_channel/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="810_channel/server.xml" name="HTTP" state="[remoteServer]" routingName="HTTP"/>
     </testcase>
 
-    <testcase description="imsloader web site" name="800_imsloader_web_site" state="false">
-            <scenario file="800_imsloader_web_site/server.xml" name="HTTP" routingName="HTTP"/>
+    <testcase description="test post" name="890_deprecated" state="true">
+        <scenario file="890_deprecated/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="890_deprecated/server.xml" name="HTTP" state="[remoteServer]" routingName="HTTP"/>
+    </testcase>
+
+    <testcase description="imsloader web site" name="901_imsloader_web_site" state="false">
+            <scenario file="901_imsloader_web_site/server.xml" name="HTTP" routingName="HTTP"/>
     </testcase>
 
     <testcase description="test client http" name="992_web_client" state="false">

@@ -281,7 +281,7 @@ public class StackHttp extends Stack
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
         Msg msg = super.parseMsgFromXml(request, root, runner);
-
+        
         //
         // Try to find the channel
         //
@@ -333,7 +333,6 @@ public class StackHttp extends Stack
             // call to getTransactionId to generate it NOW (important)
             // it can be generated now because this is a request from xml
             msg.getTransactionId();
-
             msg.setChannel(channel);
         }
         else
@@ -347,7 +346,6 @@ public class StackHttp extends Stack
                 throw new ExecutionException("You can not specify the \"remoteURL\" attribute while sending a response (provided by the HTTP protocol).");
             }
         }
-
         return msg;
     }
 

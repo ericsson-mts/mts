@@ -3,7 +3,6 @@
 <scenario>
 
 	<sendMessageHTTP name="Send GET" remoteURL="http://[remoteHTTP]">
-		<!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[GET http://[remoteHTTP] HTTP/1.1
 Host: [proxyHTTP]
 Accept-charset: text/html
@@ -11,9 +10,8 @@ Content-Type: text/html
 Content-Encoding: utf-8;iso-8859
 User-Agent: XMLLoader
 ]]>
-		<!--******************** END MESSAGE *********************-->
 	</sendMessageHTTP>
 		
-	<receiveMessageHTTP name="Send 200 OK" result="200">
+	<receiveMessageHTTP name="Send 200 OK" request="false" type="GET" result="200">
 	</receiveMessageHTTP>
 </scenario> 
