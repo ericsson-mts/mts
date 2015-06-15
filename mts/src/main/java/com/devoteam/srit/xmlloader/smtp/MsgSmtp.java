@@ -23,6 +23,9 @@
 
 package com.devoteam.srit.xmlloader.smtp;
 
+import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
+
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
@@ -37,7 +40,7 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.rtsp.StackRtsp;
+
 public class MsgSmtp extends Msg {
 	
 	private String data;
@@ -62,10 +65,6 @@ public class MsgSmtp extends Msg {
 		data = Utils.replaceNoRegex(data, "\r\n", "\n");
 		data = Utils.replaceNoRegex(data, "\n", "\r\n");
         if(!data.endsWith("\r\n")) data += "\r\n";
-	}
-
-	public String getData() {
-		return this.data;
 	}
 
 	/*
@@ -155,7 +154,7 @@ public class MsgSmtp extends Msg {
 		if (str.endsWith("\r\n.\r\n"))
 			return true;
 		else
-			return !Character.isDigit(this.getData().charAt(0));
+			return !Character.isDigit(this.data.charAt(0));
 	}
 
 	/** Get the command code of this message */
@@ -220,25 +219,60 @@ public class MsgSmtp extends Msg {
 		return StackFactory.PROTOCOL_TCP;
 	}
 
-    /** Get the data (as binary) of this message */
-    @Override
-    public byte[] encode(){
+	
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+    
+    /** 
+     * encode the message to binary data 
+     */
+    @Override    
+    public byte[] encode()
+    {
         return this.data.getBytes();
     }
+    
+    /** 
+     * decode the message from binary data 
+     */
+    @Override 
+    public void decode(byte[] data) throws Exception
+    {
+    	// nothing to do : never called
+    	/*
+		this.data = new String(data); 
+		this.data = Utils.replaceNoRegex(this.data, "\r\n", "\n");
+		this.data = Utils.replaceNoRegex(this.data, "\n", "\r\n");
+        if(!this.data.endsWith("\r\n"))
+        {
+        	this.data += "\r\n";
+        }
+        */
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */    
     @Override
-	public String toShortString() throws Exception {
+	public String toShortString() throws Exception 
+    {
     	String ret = super.toShortString();
     	ret += "\n";
     	ret += new String(data.getBytes(), 0, Math.min(data.substring(0,data.indexOf("\n")).length(), 100 ), "UTF8");
 		return ret;
 	}
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
     	return data;
     }
 
@@ -248,26 +282,15 @@ public class MsgSmtp extends Msg {
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        String text = root.getText();
-        setMessageText(text);	
+		this.data = root.getText();
+		this.data = Utils.replaceNoRegex(this.data, "\r\n", "\n");
+		this.data = Utils.replaceNoRegex(this.data, "\n", "\r\n");
+        if(!this.data.endsWith("\r\n"))
+        {
+        	this.data += "\r\n";
+        }
     }
-
-    /** Get the message as text */
-    /*
-    public String getMessageText() throws Exception
-    {
-    	return message.toString();
-    }
-    */
     
-    /** Set the message from text */
-    public void setMessageText(String text) throws Exception {
-		data = text; 
-		data = Utils.replaceNoRegex(data, "\r\n", "\n");
-		data = Utils.replaceNoRegex(data, "\n", "\r\n");
-        if(!data.endsWith("\r\n")) data += "\r\n";    	
-	}
-
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------
@@ -292,11 +315,11 @@ public class MsgSmtp extends Msg {
 		{
 			if (params[1].equalsIgnoreCase("text")) 
 			{
-				var.add(getData());
+				var.add(this.data);
 			} 
 			else if (params[1].equalsIgnoreCase("binary")) 
 			{			
-				var.add(getData());
+				var.add(Array.toHexString(new DefaultArray(this.data.getBytes())));
 			} 
 			else 
 			{

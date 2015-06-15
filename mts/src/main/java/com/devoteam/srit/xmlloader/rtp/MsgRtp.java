@@ -26,15 +26,12 @@ package com.devoteam.srit.xmlloader.rtp;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
-import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.rtp.flow.CodecDictionary;
-import com.devoteam.srit.xmlloader.rtp.flow.MosParameters;
 
 import gp.utils.arrays.*;
 
@@ -283,40 +280,10 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
     }
 
     @Override
-    public MsgRtp clone() {
-        MsgRtp msg = null;
-        try {
-            msg = new MsgRtp(this.stack);
-            msg.csrc = this.csrc;
-            msg.csrcCount = this.csrcCount;
-            msg.data = null;
-            msg.extension = this.extension;
-            msg.extensionData = this.extensionData;
-            msg.extensionLength = this.extensionLength;
-            msg.extensionProfile = this.extensionProfile;
-            msg.marker = this.marker;
-            msg.padding = this.padding;
-            msg.payloadType = this.payloadType;
-            msg.sequenceNumber = this.sequenceNumber;
-            msg.ssrc = this.ssrc;
-            msg.timestamp = this.timestamp;
-        }
-        catch (Exception ex) {
-            GlobalLogger.instance().getApplicationLogger().error(Topic.CORE,ex, "error Msg RTP , clone, can't create a new msg");
-        }
-        return msg;
-    }
-
-    @Override
     public int compareTo(MsgRtp msg) {
         // manage comparison with internal sequence number which allow the test
         // of continuous flow even if the sequence number loop from 65535 to 0
         return (int) (this.getInternalSequenceNumber() - msg.getInternalSequenceNumber());
-    }
-
-    private String getCodec() {
-        CodecDictionary dico = new CodecDictionary();
-        return dico.getCodec(this.getPayloadType());
     }
 
     /*this function is just used by the rtpflow protocol*/
@@ -339,38 +306,18 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
     public void setIsSilence(boolean value) {
         _isSilence = value;
     }    
-    
-    private String generatePayloadBinary(List<Byte> liste){
-        
-        byte[] array = new byte[liste.size()];
-        for(int i=0; i<array.length; i++){
-            array[i] = liste.get(i);
-        }
-        
-        String payload = "";
-        payload += Utils.indent(1) + "<payload format=\"binary\">\n";        
-        payload += Utils.toBinaryString(array) + "\n";
-        payload += Utils.indent(1) + "</payload>\n";
-        return payload;
-    }
-    
-    private String generatePayloadText(List<Byte> liste){
-        
-        byte[] array = new byte[liste.size()];
-        for(int i=0; i<array.length; i++){
-            array[i] = liste.get(i);
-        }
-        
-        String payload = "";
-        payload += Utils.indent(1) + "<payload format=\"text\">\n";
-        payload += new String(array) + "\n";        
-        payload += Utils.indent(1) + "</payload>\n";
-        return payload;
-    }
 
-    /** Get the data (as binary) of this message */
+    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+
+    /** 
+     * encode the message to binary data 
+     */
     @Override
-    public byte[] encode() {
+    public byte[] encode() 
+    {
         //construct message from header and content if not done
         //header
         if (headerArray == null) {
@@ -421,14 +368,19 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
         return msgArray.getBytes();
     }
 
-    private String headerToString() throws Exception {
-    	String ret = "<header payloadType=\"" + payloadType + "\" ";
-        ret += "ssrc=\"" + ssrc + "\" ";
-        ret += "seqnum=\"" + getSequenceNumber() + "\" ";
-        ret += "timestamp=\"" + timestamp + "\" ";
-        ret += "mark=\"" + marker + "\"/>";
-        return ret;
-    }
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+    	// noting to do : never called
+    } 
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
     /** Return the string from RTPFlow protocol */
     public String toStringRTPFlow() throws Exception {
@@ -449,10 +401,23 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
         ret += headerToString();
         return ret;
     }
+    
+    private String headerToString() throws Exception {
+    	String ret = "<header payloadType=\"" + payloadType + "\" ";
+        ret += "ssrc=\"" + ssrc + "\" ";
+        ret += "seqnum=\"" + getSequenceNumber() + "\" ";
+        ret += "timestamp=\"" + timestamp + "\" ";
+        ret += "mark=\"" + marker + "\"/>";
+        return ret;
+    }
 
-    /** Get the XML representation of the message; for the genscript module. */
+
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
     	String xml = toStringRTPFlow();
         return xml;
     }

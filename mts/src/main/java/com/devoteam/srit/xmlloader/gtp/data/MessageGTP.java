@@ -72,7 +72,6 @@ public class MessageGTP
 
 	public MessageGTP()
 	{
-		
 	}
    
 	public MessageGTP(Element root) throws Exception 

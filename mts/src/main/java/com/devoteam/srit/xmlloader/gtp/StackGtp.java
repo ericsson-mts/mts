@@ -59,24 +59,12 @@ public class StackGtp extends Stack
         }
     }
 
+    // TODO delete this
     @Override
     public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
     {
         MessageGTP message = new MessageGTP();
         message.decodeFromStream(inputStream);
-        return new MsgGtp(this, message);
-    }
-
-    /** 
-     * Creates a Msg specific to each Stack
-     * Use for UDP like protocol : to build incoming message
-     * should become ABSTRACT later  
-     */
-    public Msg readFromDatas(byte[] datas, int length) throws Exception
-    {   
-    	byte[] newDatas = datas.clone();
-        MessageGTP message = new MessageGTP();
-        message.decodeFromBytes(newDatas);
         return new MsgGtp(this, message);
     }
     

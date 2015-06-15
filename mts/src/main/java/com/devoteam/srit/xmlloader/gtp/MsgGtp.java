@@ -138,7 +138,14 @@ public class MsgGtp extends Msg
         return 0;
     }
     
-    /** Get the data (as binary) of this message */
+    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+
+    /** 
+     * encode the message to binary data 
+     */
     @Override    
     public byte[] encode()
     {
@@ -152,10 +159,31 @@ public class MsgGtp extends Msg
     	}
     	return null;
     }
+    
+    /** 
+     * decode the message from binary data 
+     */
+    public void decode(byte[] data) throws Exception
+    {
+    	byte[] newData = data.clone();
+        
+    	MessageGTP message = new MessageGTP();
+        message.decodeFromBytes(newData);
+        
+        this.message = message;
+    }
 
-    /** Get the XML representation of the message; for the genscript module. */
+
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
         return message.toXml();
     }
 

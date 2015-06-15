@@ -107,12 +107,38 @@ public class MsgSipLight extends MsgSip
 		return ((FirstLine)(this.message.getGenericfirstline())).isRequest();
 	}
 
-    /** Get the data (as binary) of this message */
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+    
+    /** 
+     * encode the message to binary data 
+     */
     @Override
     public byte[] encode()
     {
          return message.getMessage().getBytes();
     }
+
+    /** 
+     * decode the message from binary data 
+     */
+    @Override 
+    public void decode(byte[] data) throws Exception
+    {
+        StackSipLight stack = (StackSipLight) StackFactory.getStack(StackFactory.PROTOCOL_SIP);
+        this.message = new TextMessage(getProtocol(), false, 0, stack.contentBinaryTypes);
+        this.message.setCompressedHeader(compressedHeader);
+        this.message.setMultiHeader(multiHeader);
+        String text = new String(data);
+        this.message.parse(text);
+        this.message.setGenericfirstline(new FirstLine(this.message.getFirstLineString(),getProtocol()));
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
@@ -131,9 +157,12 @@ public class MsgSipLight extends MsgSip
         return ret;
     }
     
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {        
+    public String toXml() throws Exception 
+    {        
         return message.getMessage().toString();
     }
     
@@ -145,27 +174,13 @@ public class MsgSipLight extends MsgSip
     {
         String text = root.getText();
         StackSipLight stack = (StackSipLight) StackFactory.getStack(StackFactory.PROTOCOL_SIP);
-        setMessageText(text, true, stack.addCRLFContent, stack.contentBinaryTypes);
-    }
-
-    /** Get the message as text */
-    /*
-    public String getMessageText() throws Exception
-    {
-    	return message.toString();
-    }
-    */
-    
-    /** Set the message from text */
-    public void setMessageText(String text, boolean completeContentLength, int addCRLFContent, String contentBinaryTypes) throws Exception {
-		// bug NSN equipment : add a CRLF at the end of the Content
-        this.message = new TextMessage(getProtocol(), completeContentLength, addCRLFContent, contentBinaryTypes);
+        this.message = new TextMessage(getProtocol(), true, stack.addCRLFContent, stack.contentBinaryTypes);
         this.message.setCompressedHeader(compressedHeader);
         this.message.setMultiHeader(multiHeader);
         this.message.parse(text);
         this.message.setGenericfirstline(new FirstLine(this.message.getFirstLineString(),getProtocol()));
     }
-    
+
     
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation

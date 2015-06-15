@@ -62,7 +62,7 @@ import org.dom4j.Element;
  */
 public class StackSmpp extends Stack
 {
-    public SmppDictionary smppDictionary;
+    protected SmppDictionary smppDictionary;
 
     /** Constructor */
     public StackSmpp() throws Exception
@@ -88,8 +88,12 @@ public class StackSmpp extends Stack
         }
     }
 
+    /** 
+     * Read the message data from the stream
+     * Use for TCP/TLS like protocol : to build incoming message  
+     */
     @Override
-    public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
+    public byte[] readMessageFromStream(InputStream inputStream) throws Exception
     {
         byte[] lg = new byte[4];
         byte[] buf = null;
@@ -121,14 +125,8 @@ public class StackSmpp extends Stack
 
         msgArray.addFirst(lgArray);
         msgArray.addLast(new DefaultArray(buf));
-        DefaultArray array = new DefaultArray(msgArray.getBytes());
         
-        //get id from message to get message from dictionary
-        int id  = new Integer32Array(array.subArray(4, 4)).getValue();
-        SmppMessage msg = smppDictionary.getMessageFromId(id);
-        msg.parseArray(array);
-        
-        return new MsgSmpp(this, msg);
+        return msgArray.getBytes();
     }
 
     /** Returns the Config object to access the protocol config file*/

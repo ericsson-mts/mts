@@ -432,17 +432,73 @@ public class MsgH248 extends Msg
         return false;
     }
 
-    /** Get the data (as binary) of this message */
+    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+
+	/** 
+	* encode the message to binary data 
+	*/
     @Override
     public byte[] encode()
     {
         return message.getBytes();
     }
+    
+    /** 
+     * decode the message from binary data 
+     */
+    public void decode(byte[] data) throws Exception
+    {
+	    String text = new String(data);
+    	this.message = text;
+	    
+	    // remove the comment block : from ";" char to the end of line
+	    text = text.replaceAll(";[^\r\n]*", " ");
+	    
+	    // check the MEGACO token
+		int index = ABNFParser.indexOfKWDictionary(text, ABNFParser.MEGACOP_TOKEN, 0);
+		if (index >= 0)			
+		{
+	        // parse the authentication header
+			String authHeader = text.substring(0, index).trim();
+			if (authHeader.length() > 0)
+			{
+		        this.authHeader = new AuthHeader();
+		        this.authHeader.parseHeader(authHeader + " ", 0);			
+			}
+	        
+	        // parse the message header
+	        this.header = new Header();
+	        index = this.header.parseHeader(text, index);
+	        index = index + 1;
+		}
+		else
+		{
+			index = 0;
+		}
+	        
+		if (index >=0)
+		{
+	        // parse the message descriptors list
+	        String descriptors = text.substring(index, text.length()).trim();
+	        descriptors = "descr{" + descriptors + "}"; 
+	        this.descr = new Descriptor();
+	        this.descr.parseDescriptors(descriptors, 0, false);
+		}	
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-    public String toShortString() throws Exception {
+    public String toShortString() throws Exception 
+    {
     	String ret = super.toShortString();
     	ret += "\n";
     	Parameter param = getParameter("descr.*.name");
@@ -476,9 +532,12 @@ public class MsgH248 extends Msg
  	    return ret;
     }
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
     	String ret = null;
        	if (this.authHeader != null)
     	{
@@ -518,57 +577,9 @@ public class MsgH248 extends Msg
         	throw new ExecutionException("The \"END_LINE_CHARACTERS\" configuration parameter should be a string from the list {CRLF, LF, CR}");
         }
 
-        setMessageText(text);        
+        decode(text.getBytes());        
     }
-    
-    /** Get the message as text */
-    /*
-    public String getMessageText() throws Exception
-    {
-    	return this.message;
-    }
-    */
-    
-    /** Set the message from text */
-    public void setMessageText(String text) throws Exception
-    {
-	    this.message = text;
-	    
-	    // remove the comment block : from ";" char to the end of line
-	    text = text.replaceAll(";[^\r\n]*", " ");
-	    
-	    // check the MEGACO token
-		int index = ABNFParser.indexOfKWDictionary(text, ABNFParser.MEGACOP_TOKEN, 0);
-		if (index >= 0)			
-		{
-	        // parse the authentication header
-			String authHeader = text.substring(0, index).trim();
-			if (authHeader.length() > 0)
-			{
-		        this.authHeader = new AuthHeader();
-		        this.authHeader.parseHeader(authHeader + " ", 0);			
-			}
-	        
-	        // parse the message header
-	        this.header = new Header();
-	        index = this.header.parseHeader(text, index);
-	        index = index + 1;
-		}
-		else
-		{
-			index = 0;
-		}
-	        
-		if (index >=0)
-		{
-	        // parse the message descriptors list
-	        String descriptors = text.substring(index, text.length()).trim();
-	        descriptors = "descr{" + descriptors + "}"; 
-	        this.descr = new Descriptor();
-	        this.descr.parseDescriptors(descriptors, 0, false);
-		}
-    }
-
+        
     
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation

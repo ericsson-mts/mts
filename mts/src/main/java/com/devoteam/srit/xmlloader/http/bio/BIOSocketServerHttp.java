@@ -23,12 +23,14 @@
 
 package com.devoteam.srit.xmlloader.http.bio;
 import org.apache.http.impl.DefaultHttpServerConnection;
+
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-
 import com.devoteam.srit.xmlloader.http.MsgHttp;
 import com.devoteam.srit.xmlloader.http.SocketServerHttp;
+
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 /**
@@ -62,7 +64,9 @@ public class BIOSocketServerHttp extends SocketServerHttp implements Runnable
                     defaultHttpServerConnection.receiveRequestEntity((HttpEntityEnclosingRequest)request);
                 }
                 
-                MsgHttp msgRequest = new MsgHttp(request);                
+                Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_HTTP);
+                
+                MsgHttp msgRequest = new MsgHttp(stack, request);                
                 //
                 // Set the connection attached to the msg
                 //
@@ -76,7 +80,7 @@ public class BIOSocketServerHttp extends SocketServerHttp implements Runnable
                 //
                 // Call back to the generic stack
                 //
-                StackFactory.getStack(StackFactory.PROTOCOL_HTTP).receiveMessage(msgRequest);
+                stack.receiveMessage(msgRequest);
             }
         }
         catch(Exception e)

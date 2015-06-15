@@ -106,12 +106,35 @@ public class MsgMsrp extends Msg
     public int getMsgRemotePort() {
         return msgRemotePort;
     }
+    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
 
-    /** Get the data (as binary) of this message */
+    /** 
+     * encode the message to binary data 
+     */
     @Override
-    public byte[] encode(){
+    public byte[] encode()
+    {
         return this.message.getMessage().getBytes();
     }
+    
+    /** 
+     * decode the message from binary data 
+     */
+    public void decode(byte[] data) throws Exception
+    {
+        message = new MSRPTextMessage(getProtocol());
+        String text = new String(data);
+    	message.parse(text);
+    	
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
@@ -123,7 +146,9 @@ public class MsgMsrp extends Msg
         return ret;
 	}
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
     public String toXml() throws Exception {
         return message.getMessage().toString();
@@ -136,23 +161,9 @@ public class MsgMsrp extends Msg
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     { 
     	String text = root.getText();
-    	setMessageText(text);
+    	decode(text.getBytes());
     }
-    
-    /** Get the message as text */
-    /*
-    public String getMessageText() throws Exception
-    {
-    	return message.toString();
-    }
-    */
-    
-    /** Set the message from text */
-    public void setMessageText(String text) throws Exception
-    {
-        message = new MSRPTextMessage(getProtocol());
-    	message.parse(text);
-    }
+      
 
 	// ------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation

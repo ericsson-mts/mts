@@ -54,6 +54,8 @@ import com.devoteam.srit.xmlloader.sigtran.fvo.FvoDictionary;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
 
+import dk.i1.sctp.SCTPData;
+
 public class MsgSigtran extends Msg 
 {
 
@@ -167,82 +169,6 @@ public class MsgSigtran extends Msg
 	    		}
 	    	}
     	}
-    }
-
-    /** Get a parameter from the message */
-    @Override
-    public Parameter getParameter(String path) throws Exception 
-    {
-        Parameter var = super.getParameter(path);
-        if (null != var) 
-        {
-            return var;
-        }
-
-        var = new Parameter();
-        path = path.trim();
-        String[] params = Utils.splitPath(path);
-
-        if (params.length > 0 && params[0].equalsIgnoreCase("asn")) 
-        {
-        	return this._apMessage.getParameter(path);
-        }
-        else if (params.length > 0 && params[0].equalsIgnoreCase("ap")) 
-        {
-        	return this._apMessage.getParameter(path);
-        }
-        else if (params.length > 0 && params[0].equalsIgnoreCase("tcap")) 
-        {
-        	return this._tcapMessage.getParameter(path);
-        }
-        else if (params.length > 0 && params[0].equalsIgnoreCase("isdn")) 
-        {
-        	this._ieMessage.getParameter(var, params, path);
-        }
-        else if (params.length > 0 && params[0].equalsIgnoreCase("ss7")) 
-        {
-            if (params.length > 1) {
-                if (params[1].equalsIgnoreCase("content")) 
-                {
-                    var.add(_fvoMessage);
-                }
-                else 
-                {
-                    if (path.contains(":")) 
-                    {
-                        // var = _fvoMessage.getParameter(path.substring(path.indexOf(":") + 1));
-                    }
-                    else 
-                    {
-                        // var = _fvoMessage.getParameter(path.substring(path.indexOf(".") + 1));
-                    }
-                }
-            }
-        }
-        else if(params.length > 0 && params[0].equalsIgnoreCase("ua")) 
-        {
-            if (params.length != 1) 
-            {
-                if (params[1].equalsIgnoreCase("ppid")) 
-                {
-                    var.add(getTlvProtocol());
-                }
-                else if (path.contains(":")) 
-                {
-                    var = _tlvMessage.getParameter(path.substring(path.indexOf(":") + 1));
-                }
-                else 
-                {
-                	var = _tlvMessage.getParameter(path.substring(path.indexOf(".") + 1));
-                }
-            }         
-        }
-        else 
-        {
-            Parameter.throwBadPathKeywordException(path);
-        }
-
-        return var;
     }
 
     /** Get the protocol of this message */
@@ -475,7 +401,13 @@ public class MsgSigtran extends Msg
         _tlvProtocol = tlvProtocol;
     }
 
-    /** Get the data (as binary) of this message */
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+
+    /** 
+     * encode the message to binary data 
+     */
     @Override
     public byte[] encode() 
     {
@@ -529,7 +461,23 @@ public class MsgSigtran extends Msg
         return null;
     }
     
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+    	// noting to do : not called
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
     public String toXml() 
     {
@@ -624,5 +572,87 @@ public class MsgSigtran extends Msg
         }
     }
 
-    
+
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message
+     */
+    @Override
+    public Parameter getParameter(String path) throws Exception 
+    {
+        Parameter var = super.getParameter(path);
+        if (null != var) 
+        {
+            return var;
+        }
+
+        var = new Parameter();
+        path = path.trim();
+        String[] params = Utils.splitPath(path);
+
+        if (params.length > 0 && params[0].equalsIgnoreCase("asn")) 
+        {
+        	return this._apMessage.getParameter(path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("ap")) 
+        {
+        	return this._apMessage.getParameter(path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("tcap")) 
+        {
+        	return this._tcapMessage.getParameter(path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("isdn")) 
+        {
+        	this._ieMessage.getParameter(var, params, path);
+        }
+        else if (params.length > 0 && params[0].equalsIgnoreCase("ss7")) 
+        {
+            if (params.length > 1) {
+                if (params[1].equalsIgnoreCase("content")) 
+                {
+                    var.add(_fvoMessage);
+                }
+                else 
+                {
+                    if (path.contains(":")) 
+                    {
+                        // var = _fvoMessage.getParameter(path.substring(path.indexOf(":") + 1));
+                    }
+                    else 
+                    {
+                        // var = _fvoMessage.getParameter(path.substring(path.indexOf(".") + 1));
+                    }
+                }
+            }
+        }
+        else if(params.length > 0 && params[0].equalsIgnoreCase("ua")) 
+        {
+            if (params.length != 1) 
+            {
+                if (params[1].equalsIgnoreCase("ppid")) 
+                {
+                    var.add(getTlvProtocol());
+                }
+                else if (path.contains(":")) 
+                {
+                    var = _tlvMessage.getParameter(path.substring(path.indexOf(":") + 1));
+                }
+                else 
+                {
+                	var = _tlvMessage.getParameter(path.substring(path.indexOf(".") + 1));
+                }
+            }         
+        }
+        else 
+        {
+            Parameter.throwBadPathKeywordException(path);
+        }
+
+        return var;
+    }
+
 }

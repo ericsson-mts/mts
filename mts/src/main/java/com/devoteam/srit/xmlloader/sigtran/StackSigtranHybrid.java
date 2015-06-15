@@ -233,17 +233,7 @@ public class StackSigtranHybrid extends Stack {
         return msg;
 
     }
-
-    /** Returns the Config object to access the protocol config file*/
-    public Config getConfig() throws Exception {
-        return Config.getConfigByName("sigtran.properties");
-    }
-
-    /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer() {
-        return XMLElementTextMsgParser.instance();
-    }
-
+    
     /**
      * Creates a Msg specific to each Stack
      * Use for SCTP like protocol : to build incoming message
@@ -260,4 +250,15 @@ public class StackSigtranHybrid extends Stack {
         MsgSigtran msgSigtran = new MsgSigtran(this, array, ppidInt);
         return msgSigtran;
     }
+
+    /** Returns the Config object to access the protocol config file*/
+    public Config getConfig() throws Exception {
+        return Config.getConfigByName("sigtran.properties");
+    }
+
+    /** Returns the replacer used to parse sendMsg Operations */
+    public XMLElementReplacer getElementReplacer() {
+        return XMLElementTextMsgParser.instance();
+    }
+
 }

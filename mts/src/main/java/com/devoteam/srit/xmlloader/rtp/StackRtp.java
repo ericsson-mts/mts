@@ -62,8 +62,7 @@ public class StackRtp extends Stack
         
 	/**
 	* Creates a Msg specific to each Stack
-	* Use for UDP like protocol : to build incoming message
-	* should become ABSTRACT later
+	* Used for UDP like protocol : to build incoming message
 	*/
     @Override
     public Msg readFromDatas(byte[] datas, int length) throws Exception

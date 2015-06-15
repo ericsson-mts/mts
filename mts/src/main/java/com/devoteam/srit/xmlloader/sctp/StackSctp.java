@@ -125,17 +125,6 @@ public class StackSctp extends Stack
 	{
 		return XMLElementTextMsgParser.instance();
 	}
-
-    /**
-     * Creates a Msg specific to each Stack
-     * Use for SCTP like protocol : to build incoming message
-     */
-    @Override
-    public Msg readFromSCTPData(SCTPData chunk)
-    {
-        MsgSctp msgSctp = new MsgSctp(chunk);
-        return msgSctp;
-    }
     
     /** 
      * Create an empty message for transport connection actions (open or close) 
@@ -150,7 +139,8 @@ public class StackSctp extends Stack
     		{
 				// create an empty message
 				byte[] bytes = new byte[0];
-				MsgSctp msg = new MsgSctp(this, bytes);
+				MsgSctp msg = new MsgSctp(this);
+				msg.decode(bytes);
 				msg.setType(type);
 				msg.setChannel(channel);
 				msg.setListenpoint(listenpoint);

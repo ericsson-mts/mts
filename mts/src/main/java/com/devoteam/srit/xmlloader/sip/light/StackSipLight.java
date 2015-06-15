@@ -67,11 +67,10 @@ public class StackSipLight extends StackSip
 
     /** 
      * Creates a Msg specific to each Stack
-     * Use for TCP like protocol : to build incoming message
-     * should become ABSTRACT later  
+     * Used for TCP/TLS like protocol : to build incoming message
      */
     @Override    
-    public Msg readFromStream(InputStream  inputStream, Channel channel) throws Exception
+    public byte[] readMessageFromStream(InputStream  inputStream) throws Exception
     {
     	String text = null;
     	synchronized (inputStream)
@@ -79,47 +78,7 @@ public class StackSipLight extends StackSip
 			text = this.reader(inputStream);
     	}
     	
-		if (text != null && text.contains(StackFactory.PROTOCOL_SIP)) 
-		{
-			MsgSipLight msgSip = new MsgSipLight(this);
-			msgSip.setMessageText(text, false, 0, this.contentBinaryTypes);
-			return msgSip;
-		}
-		else
-		{
-			Tester.getGlobalLogger().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Receive an incomplete message; we ignore it : ", text);			
-		}
-
-    	return null;
+    	return text.getBytes();
     }
-    
-    /** 
-     * Creates a Msg specific to each Stack
-     * Use for UDP like protocol : to build incoming message
-     * should become ABSTRACT later  
-     */
-    @Override	
-    public Msg readFromDatas(byte[] datas, int length) throws Exception
-    {
-    	String str = new String(datas);
-    	str = str.substring(0, length);
-    	MsgSipLight msgSip = new MsgSipLight(this);
-    	msgSip.setMessageText(str, false, 0, this.contentBinaryTypes);
-    	return msgSip;
-    }
-
-    /**
-     * Creates a Msg specific to each Stack
-     * Use for SCTP like protocol : to build incoming message
-     */
-    @Override
-    public Msg readFromSCTPData(SCTPData chunk) throws Exception
-    {
-    	String str = new String(chunk.getData());
-    	str = str.substring(0, chunk.getLength());
-        MsgSipLight msgSip = new MsgSipLight(this);
-        msgSip.setMessageText(str, false, 0, this.contentBinaryTypes);
-        return msgSip;            
-    }
-    
+        
 }

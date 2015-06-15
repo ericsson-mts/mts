@@ -84,9 +84,9 @@ public class MsgHttp extends Msg
     }
 
     /** Creates a new instance */
-    public MsgHttp(HttpMessage aMessage) throws Exception
+    public MsgHttp(Stack stack, HttpMessage aMessage) throws Exception
     {
-        super();
+        this(stack);
         
         this.ignoreContents = Config.getConfigByName("http.properties").getBoolean("message.IGNORE_RECEIVED_CONTENTS", false);
         this.message = aMessage;
@@ -265,17 +265,39 @@ public class MsgHttp extends Msg
         }
     }
 
-    /** Get the data (as binary) of this message */
+    
+	//-------------------------------------------------
+	// methods for the encoding / decoding of the message
+	//-------------------------------------------------
+
+    /** 
+     * encode the message to binary data 
+     */    
     @Override
     public byte[] encode()
     {
     	return getTextMessage().getBytes();
     }
 
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+    	// nothing to do : we use external Tomcat HTTP stack to transport messages
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-    public String toShortString() throws Exception {
+    public String toShortString() throws Exception 
+    {
     	String ret = super.toShortString();
   		ret += "\n";
   		ret += getFirstLine();
@@ -284,9 +306,12 @@ public class MsgHttp extends Msg
     	return ret;
     }
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
 		return getTextMessage();
     }
     

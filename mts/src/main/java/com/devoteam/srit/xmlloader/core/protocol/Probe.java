@@ -235,7 +235,7 @@ public class Probe
 			msg = (MsgEthernet) stack.readFromDatas(data, length);
 			msg.setProbe(this);
 			msg.setType(type);
-			msg.setdstMac(dstMac);
+			msg.setDstMac(dstMac);
 			msg.setSrcMac(srcMac);
 			stack.captureMessage(msg);
 		} 

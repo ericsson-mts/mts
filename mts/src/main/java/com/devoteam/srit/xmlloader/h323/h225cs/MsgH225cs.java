@@ -36,6 +36,7 @@ import com.devoteam.srit.xmlloader.core.coding.binary.q931.MessageQ931;
 import com.devoteam.srit.xmlloader.core.coding.tpkt.TPKTPacket;
 
 import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
 
 import org.dom4j.Element;
@@ -53,13 +54,6 @@ public class MsgH225cs extends Msg {
     public MsgH225cs(Stack stack) throws Exception
     {
         super(stack);
-    }
-
-    /** Creates a new instance */
-    public MsgH225cs(Stack stack, Array data) throws Exception {
-    	this(stack);
-        msgQ931 = new MessageQ931(data, "../conf/sigtran/q931.xml");
-        //réception asn1
     }
 
     @Override
@@ -82,7 +76,14 @@ public class MsgH225cs extends Msg {
     	return msgQ931.getHeader().isRequest();
     }
     
-    /** Get the data (as binary) of this message */
+
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
     public byte[] encode() 
     {
@@ -103,6 +104,16 @@ public class MsgH225cs extends Msg {
 
         return arr.getBytes();
     }
+    
+    /** 
+     * decode the message from binary data 
+     */
+    public void decode(byte[] data) throws Exception
+    {
+    	Array array = new DefaultArray(data);
+        this.msgQ931 = new MessageQ931(array, "../conf/sigtran/q931.xml");
+    }
+
 
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
@@ -113,7 +124,9 @@ public class MsgH225cs extends Msg {
         return ret; 
     }
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
     public String toXml() throws Exception {
         return msgQ931.toString();

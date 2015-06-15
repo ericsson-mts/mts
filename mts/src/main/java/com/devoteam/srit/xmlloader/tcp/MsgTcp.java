@@ -62,11 +62,13 @@ public class MsgTcp extends Msg
     	super(stack);
     }
 
+    @Override
     public TransactionId getTransactionId() throws Exception
     {
         return null;
     }
     
+    @Override
     public MessageId getMessageId() throws Exception
     {
         return null;
@@ -111,26 +113,51 @@ public class MsgTcp extends Msg
     	return StackFactory.PROTOCOL_TCP;
     }
 
-    /** Get the data (as binary) of this message */
-    @Override
+    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+
+    /** 
+     * encode the message to binary data 
+     */
     public byte[] encode()
     {
         return data;
     }
     
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+    	this.data = data;
+    	this.type = "SEQ-ACK";
+    }
+    
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+    
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-    public String toShortString() throws Exception {
+    public String toShortString() throws Exception 
+    {
     	String ret = super.toShortString();
     	ret += "\n";
         ret += Utils.toStringBinary(data, Math.min(data.length, 100));
         return ret;
     }
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
     	String ret = getTypeComplete();
     	ret += "\n" + Utils.byteTabToString(data);
     	return ret;
@@ -190,22 +217,10 @@ public class MsgTcp extends Msg
                 i++;
             }
         }
-        setMessageBinary(data);
+        
+        decode(data);
     }
 
-    /** Get the message as binary */
-    /*
-    public String getMessageBinary() throws Exception
-    {
-    	return message.toString();
-    }
-    */
-    
-    /** Set the message from binary */
-    public void setMessageBinary(byte[] binary) throws Exception {
-    	this.data = binary;
-        this.type = "SEQ-ACK";    
-    }
 
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
@@ -231,11 +246,11 @@ public class MsgTcp extends Msg
         {
             if(params[1].equalsIgnoreCase("text")) 
             {
-                var.add(new String(encode()));
+                var.add(new String(this.data));
             }
             else if(params[1].equalsIgnoreCase("binary")) 
             {
-            	var.add(Array.toHexString(new DefaultArray(encode())));
+            	var.add(Array.toHexString(new DefaultArray(this.data)));
             }
             else 
             {

@@ -382,6 +382,15 @@ public class MsgSigtranHybrid extends Msg
         return null;
     }
     
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+    	// noting to do : not called
+    }
+    
     /** Get the XML representation of the message; for the genscript module. */
     @Override
     public String toXml() 

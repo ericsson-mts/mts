@@ -41,6 +41,8 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
+import dk.i1.sctp.SCTPData;
+
 /**
  *
  * @author fvandecasteele
@@ -57,33 +59,39 @@ public class MsgTls extends Msg
     	super(stack);
     }
     
+    @Override
     public TransactionId getTransactionId() throws Exception
     {
         return null;
     }
     
+    @Override
     public MessageId getMessageId() throws Exception
     {
         return null;
     }
 
     /** Get the protocol of this message */
+    @Override
     public String getProtocol()
     {
         return StackFactory.PROTOCOL_TLS;
     }
     
     /** Return true if the message is a request else return false*/
+    @Override
     public boolean isRequest()
     {
         return true;
     }
         
     /** Get the type of this message */
+    @Override
     public String getType()
     {
         return type;
     }
+    
     /** Set the type of this message */
     public void setType(String type)
     {
@@ -91,36 +99,64 @@ public class MsgTls extends Msg
     }    
     
     /** Get the result of this message */
+    @Override
     public String getResult()
     {
         return null;
     }
     
     /** Return the transport of the message*/
+    @Override
     public String getTransport() {
     	return StackFactory.PROTOCOL_TLS;
     }
+    
+    
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
 
-    /** Get the data (as binary) of this message */
+    /** 
+     * encode the message to binary data 
+     */
     @Override
     public byte[] encode()
     {
         return data;
     }
+    
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+    	this.data = data;
+        this.type = "SEQ-ACK";
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-    public String toShortString()throws Exception {
+    public String toShortString()throws Exception 
+    {
     	String ret = super.toShortString();
     	ret += "\n";
     	ret += Utils.toStringBinary(data, Math.min(data.length, 100));
         return ret;
     }
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
     	String ret = getTypeComplete();
     	ret += "\n" + Utils.byteTabToString(data);
     	return ret;
@@ -134,30 +170,23 @@ public class MsgTls extends Msg
     {
         List<Element> elements = root.elements("data");
         List<byte[]> datas = new LinkedList<byte[]>();
-        ;
-        try
+        
+        for (Element element : elements)
         {
-            for (Element element : elements)
+            if (element.attributeValue("format").equalsIgnoreCase("text"))
             {
-                if (element.attributeValue("format").equalsIgnoreCase("text"))
-                {
-                    String text = element.getText();
-                    // change the \n caractère to \r\n caracteres because the dom librairy return only \n.
-                    // this could make some trouble when the length is calculated in the scenario
-                    text = Utils.replaceNoRegex(text, "\r\n","\n");                    
-                    text = Utils.replaceNoRegex(text, "\n","\r\n");                                        
-                    datas.add(text.getBytes("UTF8"));
-                }
-                else if (element.attributeValue("format").equalsIgnoreCase("binary"))
-                {
-                    String text = element.getTextTrim();
-                    datas.add(Utils.parseBinaryString(text));
-                }
+                String text = element.getText();
+                // change the \n caractere to \r\n caracteres because the dom librairy return only \n.
+                // this could make some trouble when the length is calculated in the scenario
+                text = Utils.replaceNoRegex(text, "\r\n","\n");                    
+                text = Utils.replaceNoRegex(text, "\n","\r\n");                                        
+                datas.add(text.getBytes("UTF8"));
             }
-        }
-        catch (Exception e)
-        {
-            throw new ExecutionException(e);
+            else if (element.attributeValue("format").equalsIgnoreCase("binary"))
+            {
+                String text = element.getTextTrim();
+                datas.add(Utils.parseBinaryString(text));
+            }
         }
 
         //
@@ -180,22 +209,10 @@ public class MsgTls extends Msg
                 i++;
             }
         }
-        setMessageBinary(data);
+        
+        decode(data);
     }
 
-    /** Get the message as binary */
-    /*
-    public String getMessageBinary() throws Exception
-    {
-    	return message.toString();
-    }
-    */
-    
-    /** Set the message from binary */
-    public void setMessageBinary(byte[] binary) throws Exception {
-    	this.data = binary;
-        this.type = "SEQ-ACK";    
-    }
     
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
@@ -221,11 +238,11 @@ public class MsgTls extends Msg
         {
             if(params[1].equalsIgnoreCase("text")) 
             {
-            	var.add(new String(encode()));
+            	var.add(new String(this.data));
             }
             else if(params[1].equalsIgnoreCase("binary")) 
             {
-            	var.add(Array.toHexString(new DefaultArray(encode())));
+            	var.add(Array.toHexString(new DefaultArray(this.data)));
             }
             else 
             {

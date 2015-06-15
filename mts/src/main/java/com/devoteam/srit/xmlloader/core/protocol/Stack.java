@@ -25,6 +25,7 @@ package com.devoteam.srit.xmlloader.core.protocol;
 
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.ScenarioRunner;
+import com.devoteam.srit.xmlloader.core.Tester;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -35,6 +36,7 @@ import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.expireshashmap.ExpireHashMap;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
+import com.devoteam.srit.xmlloader.sip.light.MsgSipLight;
 
 import dk.i1.sctp.SCTPData;
 
@@ -111,7 +113,7 @@ public abstract class Stack
     /** Timer to schedule the retransaction */
     public Timer retransmissionTimer = new Timer();
     
-    /** constructor */
+    /** Creates a new instance */
     public Stack() throws Exception
     {
         Config config = null;
@@ -482,29 +484,55 @@ public abstract class Stack
     }
 
     /** 
-     * Creates a Msg specific to each Stack
-     * Use for TCP like protocol : to build incoming message
-     * should become ABSTRACT later  
+     * Read the message data from the stream
+     * Use for TCP/TLS like protocol : to build incoming message  
      */
-    public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
+    public byte[] readMessageFromStream(InputStream inputStream) throws Exception
     {
-    	throw new ExecutionException("Bug developpment : method not yet implemented", new Exception());
+    	// nothing to do
+    	return new byte[0];
     }
 
     /** 
      * Creates a Msg specific to each Stack
-     * Use for UDP like protocol : to build incoming message
-     * should become ABSTRACT later  
+     * Use for TCP/TLS like protocol : to build incoming message
      */
-    public Msg readFromDatas(byte[] datas, int length) throws Exception
+    public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
     {
-    	throw new ExecutionException("Bug developpment : method not yet implemented", new Exception());
+    	byte[] bytes = null;
+    	synchronized (inputStream)
+    	{
+			bytes = this.readMessageFromStream(inputStream);
+    	}
+    	
+		if (bytes != null) 
+		{
+	    	Class<?> clStack = this.getClass();
+	    	Msg msg = (Msg)  instanceObjectFromStackParents(clStack, "Msg");
+			msg.decode(bytes);
+			return msg;
+		}
+    	return null;
     }
 
+    /** 
+     * Creates a Msg specific to each Stack
+     * Used for UDP like protocol : to build incoming message  
+     */
+    public Msg readFromDatas(byte[] data, int length) throws Exception
+    {
+    	byte[] copyData = new byte[length];
+        System.arraycopy(data, 0, copyData, 0, length);
+
+    	Class<?> clStack = this.getClass();
+    	Msg msg = (Msg)  instanceObjectFromStackParents(clStack, "Msg");
+    	msg.decode(copyData);
+    	return msg;
+    }
+    
     /**
      * Creates a Msg specific to each Stack
-     * Use for SCTP like protocol : to build incoming message
-     * should become ABSTRACT later
+     * Used for SCTP like protocol : to build incoming message
      */
     public Msg readFromSCTPData(SCTPData chunk) throws Exception    
     {
@@ -514,8 +542,7 @@ public abstract class Stack
 
     /** 
      * Creates a channel specific to each Stack
-     * Use for TCP like protocol : to manage the incoming channel (server-side)
-     * should become ABSTRACT later  
+     * Used for TCP/TLS like protocol : to manage the incoming channel (server-side)
      */
     public Channel buildChannelFromSocket(Listenpoint listenpoint, Socket socket) throws Exception {
         // should remove || (socket.getClass().equals(Socket.class)) one hio are ok
@@ -532,7 +559,13 @@ public abstract class Stack
 	        return channelSctp;
     	} 
     }
-        
+    
+    /**
+     * Send a message immediately
+     * @param msg
+     * @return
+     * @throws Exception
+     */
     public synchronized boolean sendMessage(Msg msg) throws Exception
     {
         boolean ret = false;
@@ -557,6 +590,12 @@ public abstract class Stack
         return ret;
     }
     
+    /**
+     * Send a message after a delay value or immediately
+     * @param msg
+     * @return
+     * @throws Exception
+     */
     public synchronized boolean sendMessage(Msg msg, ScenarioRunner srcRunner, ScenarioRunner destRunner, ScenarioRunner answerHandler) throws Exception
     {
         boolean ret = false;
@@ -578,6 +617,12 @@ public abstract class Stack
         return ret;
     }
     
+    /**
+     * Send a message immediately and manage transaction retransmission and session 
+     * @param msg
+     * @return
+     * @throws Exception
+     */
     public synchronized boolean sendMessageException(Msg msg, ScenarioRunner srcRunner, ScenarioRunner destRunner, ScenarioRunner answerHandler) throws Exception {
         boolean isRetransmission = false;        	
         // we are sending a request
@@ -742,7 +787,7 @@ public abstract class Stack
 
 
     // TODO: set a max size to the queue
-    private LinkedBlockingQueue<Msg> routingQueue = new LinkedBlockingQueue();
+    private LinkedBlockingQueue<Msg> routingQueue = new LinkedBlockingQueue<Msg>();
 
     private Thread routingThread = new Thread(){
         @Override
@@ -768,6 +813,13 @@ public abstract class Stack
         return true;
     }
 
+    /**
+     * Process the receipt of a message, manage transaction retransmission and session 
+     * and dispatch it 
+     * @param msg
+     * @return
+     * @throws Exception
+     */
     public boolean doReceiveMessage(Msg msg) throws Exception{
         if (msg.getTimestamp() <= 0) {
             msg.setTimestamp(System.currentTimeMillis());
@@ -1011,6 +1063,13 @@ public abstract class Stack
         return true;
     }
 
+    /**
+     * Process the capture of a message, manage transaction retransmission and session 
+     * and dispatch it 
+     * @param msg
+     * @return
+     * @throws Exception
+     */
     public boolean captureMessage(Msg msg) throws Exception
     {
         boolean isTransactionIdSupported = msg.getTransactionId() != null;
@@ -1215,6 +1274,7 @@ public abstract class Stack
         return true;
     }
 
+    /** process the logs for message action : Stack.SEND, Stack.RECEIVE, Stack.CAPTURE **/
     public void processLogsMsgSending(Msg msg, ScenarioRunner srcRunner, String action) throws Exception
     {
         if (TextListenerProviderRegistry.instance().getTextListenerProviderCount() > 0 &&
@@ -1250,12 +1310,7 @@ public abstract class Stack
         return transTime;
     }
 
-    /**
-     *  increment counters in the transport section
-     * @param msg
-     * @param action
-     * @throws Exception
-     */
+    /** increment counters in the transport section */
     protected void incrStatTransport(Msg msg, String actionRequest, String actionResponse) throws Exception
     {
     	Channel channel = msg.getChannel();
@@ -1277,12 +1332,14 @@ public abstract class Stack
     	}
     }
     
+    /** increment counters in the transaction section for request */
     private void incrStatisticTransRequest(Msg msg, String actionRequest) throws Exception
     {
 
         StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_REQUEST, msg.getProtocol(), msg.getTypeComplete() + actionRequest, "_transRequestNumber"), 1);
     }
 
+    /** increment counters in the transaction section for response */
     private void incrStatisticTransResponse(Trans trans, Msg msg, String actionRequest, String actionResponse) throws Exception
     {
         StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_REQUEST, msg.getProtocol(), msg.getTypeComplete() + actionRequest, msg.getResultComplete() + actionResponse, "_transResponseNumber"), 1);

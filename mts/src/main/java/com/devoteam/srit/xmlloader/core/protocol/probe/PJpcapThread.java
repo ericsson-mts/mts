@@ -107,25 +107,25 @@ public class PJpcapThread implements PacketReceiver, Runnable {
 		MsgEthernet msgEth = (MsgEthernet) msg; // casting abstract Msg class into MsgEthernet as this is the only  message sent here
 
 		Packet p = new Packet();
-		etherPckt.frametype = (short) msgEth.getETHType(); // type of packet embedded in Ethernet frame (0800 = IPv4)
+		etherPckt.frametype = (short) msgEth.getTypeAsInteger(); // type of packet embedded in Ethernet frame (0800 = IPv4)
 
 
 	    etherPckt.src_mac = networkInterface.mac_address; //local MAC address
 	    	    
-        if (msgEth.getMac().length != 6)
+        if (msgEth.getDstMac().length != 6)
         {
-        	if (msgEth.getMac().length == 1 && msgEth.getMac()[0].length() == 12)
+        	if (msgEth.getDstMac().length == 1 && msgEth.getDstMac()[0].length() == 12)
         	{
         		//MAC address is not in form AA:BB:CC:DD:EE:FF but in form AABBCCDDEEFF
         		String[] m = new String[6];
-        		String src = msgEth.getMac()[0];
+        		String src = msgEth.getDstMac()[0];
         		int a = 0;
         		for (int b = 0; b < src.length(); b++)
         		{
         			m[a] = "" + src.charAt(b) + src.charAt(++b);
         			a++;
         		}
-        		msgEth.setMac(m);
+        		msgEth.setDstMac(m);
         	}
         	else
         		throw new ExecutionException("Mac address is malformed, expected format is 	AA:BB:CC:DD:EE:FF");
@@ -133,10 +133,10 @@ public class PJpcapThread implements PacketReceiver, Runnable {
        	// Mac address are 6*8 bits long
        	byte[] mac = new byte[48];
        	for (int j = 0; j < 6; j++)
-       		mac[j] = (byte)Integer.parseInt(msgEth.getMac()[j], 16); // Hex digit to be converted in one single byte
+       		mac[j] = (byte)Integer.parseInt(msgEth.getDstMac()[j], 16); // Hex digit to be converted in one single byte
        	etherPckt.dst_mac = mac;
         
-		p.data = msgEth.getData(); // filling raw packet with Hex datas provided in xml scenario
+		p.data = msgEth.encode(); // filling raw packet with Hex datas provided in xml scenario
 		p.datalink = etherPckt; // setting datalink of raw packet as Ethernet
 
 		sendor.sendPacket(p); // send raw packet

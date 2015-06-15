@@ -82,20 +82,18 @@ public class StackH225cs extends Stack {
         return XMLElementTextMsgParser.instance();
     }
 
+    /** 
+     * Read the message data from the stream
+     * Use for TCP/TLS like protocol : to build incoming message  
+     */
     @Override
-    public Msg readFromDatas(byte[] datas, int length) throws Exception {
-        return new MsgH225cs(this, new DefaultArray(datas, 0, length));
-    }
-
-    @Override
-    public Msg readFromStream(InputStream inputStream, Channel channel)
-            throws Exception {
+    public byte[] readMessageFromStream(InputStream inputStream) throws Exception 
+    {
         TPKTPacket tpkt = new TPKTPacket(inputStream);
         int length = tpkt.getPacketLength();
-        byte[] tabMsg = new byte[length - 4];
-        int done = Utils.readFromSocketStream(inputStream, tabMsg);
-        Array data = new DefaultArray(tabMsg);
-        return new MsgH225cs(this, data);
+        byte[] bytes = new byte[length - 4];
+        Utils.readFromSocketStream(inputStream, bytes);
+        return bytes;
     }
 
     public Dictionary getDictionary() {

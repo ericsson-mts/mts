@@ -50,9 +50,9 @@ import org.dom4j.Element;
 public class MsgUcp extends Msg
 {
     private UcpMessage ucpMessage = null;
-    private String type = null;
-    private String typeComplete = null;
-    private String result = null;
+    //private String type = null;
+    //private String typeComplete = null;
+    //private String result = null;
 
     /** Creates a new instance */
     public MsgUcp(Stack stack) throws Exception
@@ -128,9 +128,16 @@ public class MsgUcp extends Msg
         return StackFactory.PROTOCOL_TCP;
     }
 
-    /** Get the data (as binary) of this message */
+    //-------------------------------------------------
+    // methods for the encoding / decoding of the message
+    //-------------------------------------------------
+
+    /** 
+     * encode the message to binary data 
+     */
     @Override
-    public byte[] encode(){
+    public byte[] encode()
+    {
     	
     	/** On masque ici une exception NullPointerException lors de la reception d'un message UCP
     	/** A l'envoi du message il n'y a pas d'exception dans cette methode : le message UCP est sans 
@@ -146,10 +153,26 @@ public class MsgUcp extends Msg
         return new byte[0];
     }
 
+    
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+    	// noting to do : never called
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
+
     /** Returns a short description of the message. Used for logging as INFO level */
     /** This methods HAS TO be quick to execute for performance reason */
     @Override
-    public String toShortString() throws Exception {
+    public String toShortString() throws Exception 
+    {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(super.toShortString());
         stringBuilder.append("\n");
@@ -170,9 +193,12 @@ public class MsgUcp extends Msg
         return stringBuilder.toString();
     }
 
-    /** Get the XML representation of the message; for the genscript module. */
+    /** 
+     * Convert the message to XML document 
+     */
     @Override
-    public String toXml() throws Exception {
+    public String toXml() throws Exception 
+    {
     	return ucpMessage.toString();
     }
 
@@ -220,7 +246,7 @@ public class MsgUcp extends Msg
         this.ucpMessage.calculLength();//calcul the length with attribute from the attribute    	
     }
 
-    public void parseAttributes(Element root, UcpMessage msg) throws Exception
+    private void parseAttributes(Element root, UcpMessage msg) throws Exception
     {
         List<Element> attributes = root.elements("attribute");
         List<Element> imbricateAttributes = null;
@@ -265,7 +291,7 @@ public class MsgUcp extends Msg
         }
     }
 
-    public void parseXser(List<Element> list, UcpAttribute att) throws Exception
+    private void parseXser(List<Element> list, UcpAttribute att) throws Exception
     {
         UcpXser ser = null;
         att.setValue(new Vector<UcpXser>());
@@ -279,6 +305,7 @@ public class MsgUcp extends Msg
         }
     }
 
+    
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------

@@ -219,21 +219,6 @@ public class StackH248 extends Stack
         return XMLElementTextMsgParser.instance();
     }
 
-    /** 
-     * Creates a Msg specific to each Stack
-     * Use for UDP like protocol : to build incoming message
-     * should become ABSTRACT later  
-     */
-    @Override	
-    public Msg readFromDatas(byte[] datas, int length) throws Exception
-    {
-    	String str = new String(datas);
-    	str = str.substring(0, length);
-    	MsgH248 msgH248 = new MsgH248(this);
-    	msgH248.setMessageText(str);
-    	return msgH248;
-    }
-
     /*
      * Remove eldest entry if instructed, else grow capacity if appropriate
      * in all stack lists
