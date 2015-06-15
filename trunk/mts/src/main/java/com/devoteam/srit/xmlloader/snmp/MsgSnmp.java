@@ -173,10 +173,10 @@ public class MsgSnmp extends Msg
      * encode the message to binary data 
      */
     @Override
-    public byte[] encode()
+    public byte[] encode()  throws Exception
     {
     	// nothing to do : we use external Mibble SNMP stack to encode messages 
-        return new byte[3];
+        return null;
     }
 
     /** 

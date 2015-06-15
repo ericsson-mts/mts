@@ -154,7 +154,7 @@ public class Probe
         return true;
     }
     
-    public boolean sendETHMessage(Msg msg) throws ExecutionException
+    public boolean sendETHMessage(Msg msg) throws Exception
     {
     	return this.probeJpcapThread.sendETHMessage(msg);
     }

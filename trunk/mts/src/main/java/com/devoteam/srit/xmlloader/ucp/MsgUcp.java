@@ -136,7 +136,7 @@ public class MsgUcp extends Msg
      * encode the message to binary data 
      */
     @Override
-    public byte[] encode()
+    public byte[] encode() throws Exception
     {
     	
     	/** On masque ici une exception NullPointerException lors de la reception d'un message UCP

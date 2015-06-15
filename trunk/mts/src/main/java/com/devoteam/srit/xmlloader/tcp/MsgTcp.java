@@ -121,7 +121,7 @@ public class MsgTcp extends Msg
     /** 
      * encode the message to binary data 
      */
-    public byte[] encode()
+    public byte[] encode() throws Exception
     {
         return data;
     }

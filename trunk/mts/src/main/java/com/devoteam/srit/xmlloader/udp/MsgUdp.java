@@ -110,7 +110,7 @@ public class MsgUdp extends Msg
 
     /** Get the data (as binary) of this message */
     @Override
-    public byte[] encode()
+    public byte[] encode() throws Exception
     {
         return data;
     }

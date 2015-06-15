@@ -115,7 +115,7 @@ public class MsgMsrp extends Msg
      * encode the message to binary data 
      */
     @Override
-    public byte[] encode()
+    public byte[] encode() throws Exception
     {
         return this.message.getMessage().getBytes();
     }

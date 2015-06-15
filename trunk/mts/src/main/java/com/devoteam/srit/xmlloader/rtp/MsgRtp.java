@@ -316,7 +316,7 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
      * encode the message to binary data 
      */
     @Override
-    public byte[] encode() 
+    public byte[] encode() throws Exception
     {
         //construct message from header and content if not done
         //header

@@ -228,7 +228,7 @@ public class MsgSmtp extends Msg {
      * encode the message to binary data 
      */
     @Override    
-    public byte[] encode()
+    public byte[] encode() throws Exception
     {
         return this.data.getBytes();
     }
@@ -240,15 +240,6 @@ public class MsgSmtp extends Msg {
     public void decode(byte[] data) throws Exception
     {
     	// nothing to do : never called
-    	/*
-		this.data = new String(data); 
-		this.data = Utils.replaceNoRegex(this.data, "\r\n", "\n");
-		this.data = Utils.replaceNoRegex(this.data, "\n", "\r\n");
-        if(!this.data.endsWith("\r\n"))
-        {
-        	this.data += "\r\n";
-        }
-        */
     }
 
     

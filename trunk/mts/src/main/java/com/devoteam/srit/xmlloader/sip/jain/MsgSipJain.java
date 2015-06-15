@@ -97,7 +97,7 @@ public class MsgSipJain extends MsgSip
      * encode the message to binary data 
      */
     @Override
-    public byte[] encode()
+    public byte[] encode() throws Exception
     {
         return sipMessage.encodeAsBytes();
     }

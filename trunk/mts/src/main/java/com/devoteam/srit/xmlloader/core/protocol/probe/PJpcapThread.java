@@ -101,7 +101,7 @@ public class PJpcapThread implements PacketReceiver, Runnable {
 
     }
     
-    public boolean sendETHMessage(Msg msg) throws ExecutionException
+    public boolean sendETHMessage(Msg msg) throws Exception
     {		
 		EthernetPacket etherPckt = new EthernetPacket(); //create Ethernet packet
 		MsgEthernet msgEth = (MsgEthernet) msg; // casting abstract Msg class into MsgEthernet as this is the only  message sent here
