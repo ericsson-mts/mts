@@ -3,10 +3,10 @@
 
 <scenario>
     
-  	<receiveMessageHTTP type="GET" request="true">
-		<parameter name="[transaction_id]" operation="protocol.setFromMessage" value="message.transactionId"/>
-		<parameter name="[connection_name]" operation="protocol.setFromMessage" value="message.transactionId"/>
-	</receiveMessageHTTP>
+  	<receiveMessageHTTP request="true" type="GET">
+    		<parameter name="[transaction_id]" operation="protocol.setFromMessage" value="message.transactionId"/>
+    		<parameter name="[connection_name]" operation="protocol.setFromMessage" value="message.transactionId"/>
+    </receiveMessageHTTP>
     
     
 	<sendMessageHTTP transactionId="[transaction_id]">
@@ -19,7 +19,7 @@ User-Agent:XMLLoader
 ]]>
 	</sendMessageHTTP>
 	
-  	<receiveMessageHTTP type="GET" request="true">
+  	<receiveMessageHTTP request="true" type="GET">
 		<parameter name="[transaction_id]" operation="protocol.setFromMessage" value="message.transactionId"/>
 		<parameter name="[connection_name]" operation="protocol.setFromMessage" value="message.transactionId"/>
 	</receiveMessageHTTP>

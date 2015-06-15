@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    
+  	<receiveMessageHTTP name="Wait POST" request="true" type="GET">
+		    <parameter name="[transaction_id]" operation="protocol.setFromMessage" value="message.transactionId"/>
+      	<parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/> 
+      	<parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
+    		<parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
+    		<parameter name="[Firstline]" operation="protocol.setFromMessage" value="firstline"/>  	  	
+    		<parameter name="[Method]" operation="protocol.setFromMessage" value="firstline.method"/>  	  		
+    		<parameter name="[Uri]" operation="protocol.setFromMessage" value="firstline.uri"/>  	  		
+    		<parameter name="[Version]" operation="protocol.setFromMessage" value="firstline.version"/>  	  		
+    		<parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.statuscode"/>  	
+    		<parameter name="[ReasonPhrase]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>  	  				      		
+    		<parameter name="[Host]" operation="protocol.setFromMessage" value="header.Host"/>
+    		<parameter name="[AcceptCharset]" operation="protocol.setFromMessage" value="header.Accept-charset"/>
+    		<parameter name="[ContentType]" operation="protocol.setFromMessage" value="header.Content-Type"/>
+    		<parameter name="[ContentEncoding]" operation="protocol.setFromMessage" value="header.Content-Encoding"/>
+    		<parameter name="[UserAgent]" operation="protocol.setFromMessage" value="header.User-Agent"/>
+    		<parameter name="[ContentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>
+    		<parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+  	</receiveMessageHTTP>
+
+    <!-- perform test -->	
+    <test parameter="[protocol]" condition="string.equals" value="HTTP"/>
+    <test parameter="[request]" condition="string.equals" value="true"/>
+    <test parameter="[type]" condition="string.equals" value="GET"/>
+    <test parameter="[Firstline]" condition="string.equals" value="GET http://[remoteHTTP] HTTP/1.1"/>
+    <test parameter="[Method]" condition="string.equals" value="GET"/>            
+    <test parameter="[Uri]" condition="string.equals" value="http://[remoteHTTP]"/>
+    <test parameter="[Version]" condition="string.equals" value="HTTP/1.1"/>
+    <test parameter="[StatusCode]" condition="list.isEmpty"/>
+    <test parameter="[ReasonPhrase]" condition="list.isEmpty"/>            	    
+    <test parameter="[Host]" condition="string.equals" value="[remoteHTTP]"/>
+    <test parameter="[AcceptCharset]" condition="string.equals" value="text/html"/>
+    <test parameter="[ContentType]" condition="string.equals" value="text/html"/>
+    <test parameter="[ContentEncoding]" condition="string.equals" value="utf-8;iso-8859"/>
+    <test parameter="[UserAgent]" condition="string.equals" value="XMLLoader"/>
+    <test parameter="[ContentLength]" condition="list.isEmpty"/>
+    <test parameter="[content]" condition="list.isEmpty"/>
+    
+	<sendMessageHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+<![CDATA[
+HTTP/1.1 200 OK
+Server: IMSloader/5.2
+Content-Type: text/plain;charset=ISO-8859-1
+Transfer-Encoding: chunked
+Date: Mon, 14 Nov 2011 14:52:09 GMT
+
+Response: TransactionID=10070040000099  ExecutionStatus=1
+TransparentData=""
+CalculatedMoney.Currency=EUR
+CalculatedMoney.Amount=0
+ErrorList.noMoneyFlow=true
+ErrorList.list={}
+]]>
+	</sendMessageHTTP>
+
+  	<receiveMessageHTTP name="Wait GET" request="true" type="GET">
+		    <parameter name="[transaction_id]" operation="protocol.setFromMessage" value="message.transactionId"/>
+  		  <parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/> 
+        <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
+  		  <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
+    		<parameter name="[Firstline]" operation="protocol.setFromMessage" value="firstline"/>  	  	
+    		<parameter name="[Method]" operation="protocol.setFromMessage" value="firstline.method"/>  	  		
+    		<parameter name="[Uri]" operation="protocol.setFromMessage" value="firstline.uri"/>  	  		
+    		<parameter name="[Version]" operation="protocol.setFromMessage" value="firstline.version"/>  	  		
+    		<parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.statuscode"/>  	
+    		<parameter name="[ReasonPhrase]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>  	  				      		
+    		<parameter name="[Host]" operation="protocol.setFromMessage" value="header.Host"/>
+    		<parameter name="[AcceptCharset]" operation="protocol.setFromMessage" value="header.Accept-charset"/>
+    		<parameter name="[ContentType]" operation="protocol.setFromMessage" value="header.Content-Type"/>
+    		<parameter name="[ContentEncoding]" operation="protocol.setFromMessage" value="header.Content-Encoding"/>
+    		<parameter name="[UserAgent]" operation="protocol.setFromMessage" value="header.User-Agent"/>
+    		<parameter name="[ContentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>
+    		<parameter name="[Content]" operation="protocol.setFromMessage" value="content"/>
+    </receiveMessageHTTP>
+
+    <!-- perform test -->	
+    <test parameter="[request]" condition="string.equals" value="true"/>
+    <test parameter="[type]" condition="string.equals" value="GET"/>
+    <test parameter="[protocol]" condition="string.equals" value="HTTP"/>
+    <test parameter="[Firstline]" condition="string.equals" value="GET http://[remoteHTTP] HTTP/1.1"/>
+    <test parameter="[Version]" condition="string.equals" value="HTTP/1.1"/>
+    <test parameter="[Method]" condition="string.equals" value="GET"/>            
+    <test parameter="[Uri]" condition="string.equals" value="http://[remoteHTTP]"/>
+    <test parameter="[StatusCode]" condition="list.isEmpty"/>
+    <test parameter="[ReasonPhrase]" condition="list.isEmpty"/>            	    
+    <test parameter="[Host]" condition="string.equals" value="[remoteHTTP]"/>
+    <test parameter="[AcceptCharset]" condition="string.equals" value="text/html"/>
+    <test parameter="[ContentType]" condition="string.equals" value="text/html"/>
+    <test parameter="[ContentEncoding]" condition="string.equals" value="utf-8;iso-8859"/>
+    <test parameter="[UserAgent]" condition="string.equals" value="XMLLoader"/>
+    <test parameter="[ContentLength]" condition="list.isEmpty"/>
+    <test parameter="[Content]" condition="list.isEmpty"/>
+
+	<sendMessageHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+<![CDATA[
+HTTP/1.1 200 OK
+Server: Apache-Coyote/1.1
+Content-Type: text/plain;charset=ISO-8859-1
+Date: Mon, 14 Nov 2011 14:52:09 GMT
+Transfer-Encoding: chunked
+Connection: close
+
+Response: TransactionID=10070010000100  ExecutionStatus=1
+TransparentData=""
+CalculatedMoney.Currency=EUR
+CalculatedMoney.Amount=0
+ErrorList.noMoneyFlow=true
+ErrorList.list={}
+]]>
+	</sendMessageHTTP>
+	
+</scenario>

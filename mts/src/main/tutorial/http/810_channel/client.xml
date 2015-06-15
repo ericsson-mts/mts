@@ -5,7 +5,8 @@
 
     <openChannelHTTP name="myConnection" remoteURL="http://[remoteHTTP]"/>
     
-	<sendMessageHTTP name="Send POST" channel="myConnection">
+    <!-- send message by channel -->
+	<sendMessageHTTP name="Send channel" channel="myConnection">
 <![CDATA[
 GET https://[remoteHTTP] HTTP/1.1
 Host: [remoteHTTP]
@@ -17,11 +18,12 @@ User-Agent: XMLLoader
 	</sendMessageHTTP>
 	
 	
-	<receiveMessageHTTP result="200"/>
+	<receiveMessageHTTP request="false" type="GET" result="200"/>
 
-	<sendMessageHTTP name="Send POST" channel="myConnection">
+    <!-- send message by remoteXXX -->
+	<sendMessageHTTP name="Send remoteXXX" remoteURL="http://[remoteHTTP]">
 <![CDATA[
-GET https://[remoteHTTP]/test HTTP/1.1
+GET https://[remoteHTTP] HTTP/1.1
 Host: [remoteHTTP]
 Accept-charset: text/html
 Content-Type: text/html
@@ -31,5 +33,6 @@ User-Agent: XMLLoader
 	</sendMessageHTTP>
 	
 	
-	<receiveMessageHTTP result="200"/>
+	<receiveMessageHTTP request="false" type="GET" result="200"/>
+
 </scenario> 

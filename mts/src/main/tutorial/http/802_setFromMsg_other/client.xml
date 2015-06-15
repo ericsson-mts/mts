@@ -2,7 +2,7 @@
 
 <scenario>
 
-    <sendRequestHTTP name="Send POST" server="http://[Remote-Address]">
+    <sendMessageHTTP name="Send POST" remoteURL="http://[remoteHTTP]">
 <![CDATA[
 POST / HTTP/1.1
 User-Agent: MTS : Mutilprotocol Test Suite
@@ -21,9 +21,9 @@ Content-Type: application/srgs+xml
     </one-of>
   </rule>
 </grammar>]]>
-    </sendRequestHTTP>
+    </sendMessageHTTP>
     
-    <receiveResponseHTTP name="Send 200 OK" result="200"/>
+    <receiveMessageHTTP name="Send 200 OK" request="false" type="POST" result="200"/>
     
     <!-- perform test -->
     <parameter name="[Content]" operation="protocol.setFromMessage" value="content"/>

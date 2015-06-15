@@ -16,15 +16,14 @@
         </do>
     </while>
     
-	<parameter name="[testcase:parameter generated]" operation="system.semaphorenotify" />
+	  <parameter name="[testcase:parameter generated]" operation="system.semaphorenotify" />
 
-  	<receiveMessageHTTP type="GET" request="true">
-		<parameter name="transaction_id" operation="protocol.setFromMessage" value="message.transactionId"/>
-	</receiveMessageHTTP>
+  	<receiveMessageHTTP request="true" type="GET">
+		    <parameter name="transaction_id" operation="protocol.setFromMessage" value="message.transactionId"/>
+    </receiveMessageHTTP>
 
 	
 	<sendMessageHTTP transactionId="[transaction_id]">
-<!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[
 HTTP/1.1 200 OK
 Accept-charset:text/html
@@ -35,7 +34,6 @@ Content-Length:x
 
 [content]
 ]]>
-<!--******************** END MESSAGE *********************-->
 	</sendMessageHTTP>
 	
 </scenario>
