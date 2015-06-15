@@ -191,9 +191,8 @@ public class MsgSipJain extends MsgSip
         {
             String contentString = text.substring(posContent).trim();
             
-            StackSip stack = (StackSip) StackFactory.getStack(StackFactory.PROTOCOL_SIP);
             // bug NSN equipment : add a CRLF at the end of the Content
-            if (stack.addCRLFContent == 1)
+            if (((StackSip) stack).addCRLFContent == 1)
             {
             	contentString = contentString + "\r\n"; 
             }

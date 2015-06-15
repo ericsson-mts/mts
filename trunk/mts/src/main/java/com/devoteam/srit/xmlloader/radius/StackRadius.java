@@ -127,7 +127,7 @@ public class StackRadius extends Stack
 
             if(null != remoteHost) remoteHost = InetAddress.getByName(remoteHost).getHostAddress();
 
-            return new ChannelRadius(socketName, localHost, localPort, remoteHost, remotePort, protocol, secret);
+            return new ChannelRadius(this, socketName, localHost, localPort, remoteHost, remotePort, protocol, secret);
         }
     }
     // deprecated part //

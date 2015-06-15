@@ -143,7 +143,7 @@ public class ListenpointRtpFlow extends Listenpoint {
 
             // this is the first packet, create the RTPFlow message to receive the RTP packets
             if (null == _currentMessage) {
-                _currentMessage = new MsgRtpFlow(this.stack, ((StackRtpFlow) this.stack).getCodecDict());
+                _currentMessage = new MsgRtpFlow(this.stack);
                 _currentMessage.setChannel(message.getChannel());
                 _currentMessage.setListenpoint(this);            
                 _currentMessage.setProbe(message.getProbe());                

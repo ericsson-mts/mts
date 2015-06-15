@@ -66,11 +66,11 @@ public class MsgRtsp extends Msg
                 try {
                     //get transaction with transactionId associated to the request
                     Msg msgTemp = null;
-                    Trans tr = StackFactory.getStack(StackFactory.PROTOCOL_RTSP).getOutTransaction(getTransactionId());
+                    Trans tr = this.stack.getOutTransaction(getTransactionId());
                     if(tr != null)
                         msgTemp = tr.getBeginMsg();
                     else
-                        msgTemp = StackFactory.getStack(StackFactory.PROTOCOL_RTSP).getInTransaction(getTransactionId()).getBeginMsg();    
+                        msgTemp = this.stack.getInTransaction(getTransactionId()).getBeginMsg();    
                     type = msgTemp.getType();
                 }
                 catch(Exception e)

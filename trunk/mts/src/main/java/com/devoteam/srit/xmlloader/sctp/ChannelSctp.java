@@ -30,10 +30,11 @@ import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 import dk.i1.sctp.OneToOneSCTPSocket;
 import dk.i1.sctp.sctp_initmsg;
 
@@ -42,6 +43,7 @@ import java.net.InetSocketAddress;
 import java.util.Collection;
 
 import dk.i1.sctp.AssociationId;
+
 import java.net.Socket;
 
 /**
@@ -64,31 +66,25 @@ public class ChannelSctp extends Channel
     private long startTimestamp = 0;    
     
     /** Creates a new instance of Channel */
-    public ChannelSctp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception
+    public ChannelSctp(Stack stack, String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception
     {
         super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+        this.stack = stack;
         this.socket = null;
         this.listenpoint = null;
         this.initmsg = new sctp_initmsg();
     }
 
     /** Creates a new instance of Channel */
-    public ChannelSctp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, sctp_initmsg aIm) throws Exception
+    public ChannelSctp(Stack stack, String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, sctp_initmsg aIm) throws Exception
     {
         super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+        this.stack = stack;
         this.socket = null;
         this.listenpoint = null;
         this.initmsg = aIm;
     }
 
-    public ChannelSctp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, SocketSctp aSocketSctp) throws Exception
-    {
-        super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        this.socket = aSocketSctp;
-        this.listenpoint = null;
-        this.initmsg = new sctp_initmsg();
-    }
-    
     public ChannelSctp(ListenpointSctp aListenpoint, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
     {
         super(aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
@@ -97,7 +93,7 @@ public class ChannelSctp extends Channel
         this.initmsg = new sctp_initmsg();
     }
 
-    public ChannelSctp(String name, Listenpoint aListenpoint, Socket aSocket) throws Exception
+    public ChannelSctp(Stack stack, String name, Listenpoint aListenpoint, Socket aSocket) throws Exception
     {
 		super(
         		name,
@@ -156,26 +152,25 @@ public class ChannelSctp extends Channel
             OneToOneSCTPSocket sctpSocket = new OneToOneSCTPSocket();
             sctpSocket.bind(getLocalPort()); 
     		
-    		Config config = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
-    		String ostreams = config.getString("connect.NUM_OSTREAMS");
+    		String ostreams = this.stack.getConfig().getString("connect.NUM_OSTREAMS");
     		if(ostreams != null)
     		{
     			this.initmsg.sinit_num_ostreams = (short) Integer.parseInt(ostreams);
     			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_num_ostreams=", initmsg.sinit_num_ostreams);
     		}
-    		String instreams = config.getString("connect.MAX_INSTREAMS");
+    		String instreams = this.stack.getConfig().getString("connect.MAX_INSTREAMS");
     		if(instreams != null)
     		{
     			this.initmsg.sinit_max_instreams = (short) Integer.parseInt(instreams);
     			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_max_instreams=", initmsg.sinit_max_instreams);
     		}
-    		String attempts = config.getString("connect.MAX_ATTEMPS");
+    		String attempts = this.stack.getConfig().getString("connect.MAX_ATTEMPS");
     		if(attempts != null)
     		{
     			this.initmsg.sinit_max_attempts = (short) Integer.parseInt(attempts);
     			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_max_attempts=", initmsg.sinit_max_attempts);    			
     		}
-    		String timeo = config.getString("connect.MAX_INIT_TIMEO");
+    		String timeo = this.stack.getConfig().getString("connect.MAX_INIT_TIMEO");
     		if(timeo != null)
     		{
     			this.initmsg.sinit_max_init_timeo= (short) Integer.parseInt(timeo);

@@ -63,7 +63,7 @@ public class MsgRtpFlow extends Msg {
     private float duration = 0;
     private int packetNumber = 0;
     private int packetNumberWithFilter = 0;
-    private LinkedList<MsgRtp> packetsList;
+    private LinkedList<MsgRtp> packetsList = new LinkedList<MsgRtp>();
     private int ssrc;
     private int payloadType;
     // Information for flow to send
@@ -93,19 +93,13 @@ public class MsgRtpFlow extends Msg {
     private int mostRecentReceivedSeqNum = 0;//to keep last seq num and know if coef should be increase even with packet late
 
     /** Creates a new instance */
-    public MsgRtpFlow(Stack stack) 
+    public MsgRtpFlow(Stack stack) throws Exception
     {
         super(stack);
-    }
-
-    /** Creates a new instance */
-    public MsgRtpFlow(Stack stack, CodecDictionary dico) throws Exception {
-        this(stack);
-        
-        this.dico = dico;
-        this.packetsList = new LinkedList<MsgRtp>();
-        if (StackFactory.getStack(StackFactory.PROTOCOL_RTPFLOW).getConfig().getBoolean("QOS_MEASURMENT", true)) {
-            this.QoSinfo = new QoSRtpFlow(this.dico);
+        this.dico = ((StackRtpFlow)stack).dico;
+        if (this.stack.getConfig().getBoolean("QOS_MEASURMENT", true)) 
+        {
+            QoSinfo = new QoSRtpFlow(this.dico);
         }
     }
 
@@ -534,7 +528,7 @@ public class MsgRtpFlow extends Msg {
         xml += "deltaTime=\"" + getDeltaTime() + "\", ";/*not needed in receipt mode*/
         xml += "deltaTimestamp=\"" + getDeltaTimestamp() + "\"/>\n";
 
-        boolean qosEnable = ((StackRtpFlow) StackFactory.getStack(StackFactory.PROTOCOL_RTPFLOW)).qosMeasurment;
+        boolean qosEnable = ((StackRtpFlow) this.stack).qosMeasurment;
         if (qosEnable) {
             xml += "<qos ";
             xml += "jitterDelay=\"" + QoSinfo.getMeanJitter() + "\", ";
@@ -564,9 +558,7 @@ public class MsgRtpFlow extends Msg {
     }
 
     public void parseFlow(Element flow, Runner runner) throws Exception 
-    {
-        this.dico = ((StackRtpFlow)stack).dico;
-    	
+    {	
         StackRtp stackRtp = (StackRtp) StackFactory.getStack(StackFactory.PROTOCOL_RTP);
     	MsgRtp msg = new MsgRtp(stackRtp);
     	msg.parsePacketHeader(flow, runner);
@@ -727,11 +719,7 @@ public class MsgRtpFlow extends Msg {
         if (synchronous != null) {
             this.synchronous = Boolean.parseBoolean(synchronous);
         }
-        
-        if (StackFactory.getStack(StackFactory.PROTOCOL_RTPFLOW).getConfig().getBoolean("QOS_MEASURMENT", true)) {
-            QoSinfo = new QoSRtpFlow(this.dico);
-        }
-    }
+   }
 
     public ArrayList<Array> parsePacketPayload(Element packet, Runner runner) throws Exception {
         List<Element> payloads = packet.elements("payload");
@@ -864,7 +852,7 @@ public class MsgRtpFlow extends Msg {
             }
         }
         else if (params.length >= 1 && params[0].equalsIgnoreCase("qos")) {
-            if (!StackFactory.getStack(StackFactory.PROTOCOL_RTPFLOW).getConfig().getBoolean("QOS_MEASURMENT", true)) {
+            if (!this.stack.getConfig().getBoolean("QOS_MEASURMENT", true)) {
                 Parameter.throwBadPathKeywordException(path + ": This cannot be used as QOS mesure calculation has been disable in configuration.");
             }
             else if (params[1].equalsIgnoreCase("bitRate")) {

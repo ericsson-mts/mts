@@ -371,7 +371,7 @@ public class MsgSnmp extends Msg
                 Vector<VariableBinding> variables = pdu.getVariableBindings();
                 if (params[1].equalsIgnoreCase("name"))
                 {
-                    Mib[] mibTab = ((StackSnmp)StackFactory.getStack(StackFactory.PROTOCOL_SNMP)).getMibLoader().getAllMibs();
+                    Mib[] mibTab = ((StackSnmp) this.stack).getMibLoader().getAllMibs();
                     MibValueSymbol symbol = null;
                     for(int i = 0; i < variables.size(); i++)
                     {
@@ -396,7 +396,7 @@ public class MsgSnmp extends Msg
                 }
                 else if (params[1].equalsIgnoreCase("mib"))
                 {
-    				Mib[] mibTab = ((StackSnmp)StackFactory.getStack(StackFactory.PROTOCOL_SNMP)).getMibLoader().getAllMibs();
+    				Mib[] mibTab = ((StackSnmp) this.stack).getMibLoader().getAllMibs();
                     MibValueSymbol symbol = null;
                     for(int i = 0; i < variables.size(); i++)
                     {

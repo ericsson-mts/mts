@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
@@ -86,7 +87,13 @@ public class ChannelImap extends Channel
             transport = "tls";
         }
     }
-    
+
+    /** Set stack attribute of Channel */
+    public void setStack(Stack stack) throws Exception
+    {
+    	this.stack = stack;
+    }
+
     /** Send a Msg to Channel */
     public boolean sendMessage(Msg msg) throws Exception
     {
@@ -199,10 +206,10 @@ public class ChannelImap extends Channel
             MsgImap msgTmp;
             if(isServer())
             {
-                msgTmp = (MsgImap) StackFactory.getStack(StackFactory.PROTOCOL_IMAP).getInTransaction(getTransactionId()).getBeginMsg();
+                msgTmp = (MsgImap) this.stack.getInTransaction(getTransactionId()).getBeginMsg();
             }
             else{
-                msgTmp = (MsgImap) StackFactory.getStack(StackFactory.PROTOCOL_IMAP).getOutTransaction(getTransactionId()).getBeginMsg();
+                msgTmp = (MsgImap) this.stack.getOutTransaction(getTransactionId()).getBeginMsg();
             }
 
             msgTmp.addNewMessage(((MsgImap)msg).getDataRaw());

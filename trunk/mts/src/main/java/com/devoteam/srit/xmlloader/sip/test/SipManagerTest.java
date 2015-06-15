@@ -84,8 +84,8 @@ public class SipManagerTest {
     	Stack stack =  StackFactory.getStack(StackFactory.PROTOCOL_SIP);
     	
         Listenpoint listenpoint = stack.getListenpoint(null);
-        InetSocketAddress localDatagramSocketAddress = new InetSocketAddress(host, port);
-     	DatagramSocket datagramSocket = new DatagramSocket(localDatagramSocketAddress);
+        //InetSocketAddress localDatagramSocketAddress = new InetSocketAddress(host, port);
+     	// DatagramSocket datagramSocket = new DatagramSocket(localDatagramSocketAddress);
         
         // Jain msgFact=SipFactory.getInstance().createMessageFactory();
         // String request = createRequestINVITE(0);

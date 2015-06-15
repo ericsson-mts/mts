@@ -126,8 +126,8 @@ public class MsgSipLight extends MsgSip
     @Override 
     public void decode(byte[] data) throws Exception
     {
-        StackSipLight stack = (StackSipLight) StackFactory.getStack(StackFactory.PROTOCOL_SIP);
-        this.message = new TextMessage(getProtocol(), false, 0, stack.contentBinaryTypes);
+    	StackSipLight stackSip = (StackSipLight) stack;
+        this.message = new TextMessage(getProtocol(), false, 0, stackSip.contentBinaryTypes);
         this.message.setCompressedHeader(compressedHeader);
         this.message.setMultiHeader(multiHeader);
         String text = new String(data);
@@ -173,8 +173,8 @@ public class MsgSipLight extends MsgSip
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
         String text = root.getText();
-        StackSipLight stack = (StackSipLight) StackFactory.getStack(StackFactory.PROTOCOL_SIP);
-        this.message = new TextMessage(getProtocol(), true, stack.addCRLFContent, stack.contentBinaryTypes);
+        StackSipLight stackSip = (StackSipLight) stack;
+        this.message = new TextMessage(getProtocol(), true, stackSip.addCRLFContent, stackSip.contentBinaryTypes);
         this.message.setCompressedHeader(compressedHeader);
         this.message.setMultiHeader(multiHeader);
         this.message.parse(text);

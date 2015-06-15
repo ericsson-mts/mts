@@ -544,12 +544,10 @@ public class MsgSigtran extends Msg
             this.setIeMessage(ieMessage);
         }
         
-        StackSigtran stack = (StackSigtran) StackFactory.getStack(StackFactory.PROTOCOL_SIGTRAN);
-        
         // SS7 layer (optional)
         Element fvo = root.element("SS7");
         if (fvo != null) {
-        	FvoDictionary fvoDictionnary = stack.getFvoDictionnary(fvo.attributeValue("file"));
+        	FvoDictionary fvoDictionnary = ((StackSigtran) this.stack).getFvoDictionnary(fvo.attributeValue("file"));
         	FvoMessage fvoMessage = new FvoMessage(this,fvoDictionnary);
             this.setFvoMessage(fvoMessage);
             fvoMessage.parseElement(fvo);
@@ -559,7 +557,7 @@ public class MsgSigtran extends Msg
         Element tlv = root.element("UA");
         if (tlv != null) {
         	
-            TlvDictionary tlvDictionnary = stack.getTlvDictionnary(tlv.attributeValue("file"));
+            TlvDictionary tlvDictionnary = ((StackSigtran) this.stack).getTlvDictionnary(tlv.attributeValue("file"));
             TlvMessage tlvMessage = new TlvMessage(this, tlvDictionnary);
             tlvMessage.parseMsgFromXml(tlv);
             this.setTlvMessage(tlvMessage);

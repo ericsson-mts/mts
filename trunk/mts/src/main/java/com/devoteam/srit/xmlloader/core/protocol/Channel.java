@@ -202,7 +202,7 @@ public class Channel
         }
         else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
         {
-        	channel = new ChannelSctp(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
+        	channel = new ChannelSctp(stack, name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
         }
         else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_UDP))
         {

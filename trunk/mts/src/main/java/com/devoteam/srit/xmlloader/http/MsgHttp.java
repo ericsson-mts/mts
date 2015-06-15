@@ -182,7 +182,7 @@ public class MsgHttp extends Msg
         
         try
         {
-            Trans trans = StackFactory.getStack(StackFactory.PROTOCOL_HTTP).getInTransaction(transactionId);
+            Trans trans = this.stack.getInTransaction(transactionId);
             if (trans != null)
             {
 	            Msg req = trans.getBeginMsg();

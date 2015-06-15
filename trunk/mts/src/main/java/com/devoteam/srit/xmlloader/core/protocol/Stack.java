@@ -555,7 +555,7 @@ public abstract class Stack
 	        return channelTls;
     	}
     	else {
-    		com.devoteam.srit.xmlloader.sctp.ChannelSctp channelSctp = new com.devoteam.srit.xmlloader.sctp.ChannelSctp("Channel #" + Stack.nextTransactionId(), listenpoint, socket);
+    		com.devoteam.srit.xmlloader.sctp.ChannelSctp channelSctp = new com.devoteam.srit.xmlloader.sctp.ChannelSctp(this, "Channel #" + Stack.nextTransactionId(), listenpoint, socket);
 	        return channelSctp;
     	} 
     }

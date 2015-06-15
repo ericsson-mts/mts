@@ -77,7 +77,7 @@ public class MsgRadius extends Msg
 
     protected boolean hasValidAuthenticator() throws Exception
     {
-        if (StackFactory.getStack(StackFactory.PROTOCOL_RADIUS).getConfig().getBoolean("radius.CHECK_AUTHENTICATOR"))
+        if (this.stack.getConfig().getBoolean("radius.CHECK_AUTHENTICATOR"))
         {
             if (this.isRequest())
             {
@@ -100,7 +100,7 @@ public class MsgRadius extends Msg
     
     protected MsgRadius getAssociatedRequest() throws Exception
     {
-        Trans trans = StackFactory.getStack(StackFactory.PROTOCOL_RADIUS).getOutTransaction(this.getTransactionId());
+        Trans trans = this.stack.getOutTransaction(this.getTransactionId());
         if(null == trans)
         {
             throw new Exception("Could not find response's associated request transactionId=" + this.getTransactionId());
@@ -117,7 +117,7 @@ public class MsgRadius extends Msg
     {
         if(null == this.radiusDictionary)
         {
-            this.radiusDictionary = ((StackRadius)StackFactory.getStack(StackFactory.PROTOCOL_RADIUS)).getRadiusDictionary();
+            this.radiusDictionary = ((StackRadius) this.stack).getRadiusDictionary();
         }
         
         return this.radiusDictionary;

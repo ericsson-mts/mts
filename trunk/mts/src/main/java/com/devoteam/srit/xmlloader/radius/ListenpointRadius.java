@@ -102,7 +102,7 @@ public class ListenpointRadius extends Listenpoint implements Runnable
         }
         
         this.setPort(this.radiusSocket.getLocalPort());
-        int bufferSize = StackFactory.getStack(StackFactory.PROTOCOL_RADIUS).getConfig().getInteger("radius.RECEIVE_BUFFER_LENGTH", 4096);
+        int bufferSize = this.stack.getConfig().getInteger("radius.RECEIVE_BUFFER_LENGTH", 4096);
         this.radiusSocket.setBufferSize(bufferSize);
         
         ThreadPool.reserve().start(this);
@@ -164,7 +164,7 @@ public class ListenpointRadius extends Listenpoint implements Runnable
                 if (msgRadius.hasValidAuthenticator())
                 {
                     GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "ChannelRadius, send radius message to stack");
-                    StackFactory.getStack(StackFactory.PROTOCOL_RADIUS).receiveMessage(msgRadius);
+                    this.stack.receiveMessage(msgRadius);
                 }
                 else
                 {
@@ -184,7 +184,7 @@ public class ListenpointRadius extends Listenpoint implements Runnable
                 if(null != this.radiusSocket)
                 {
                     GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Radius channel : closing ", this.getName());
-                    StackFactory.getStack(StackFactory.PROTOCOL_RADIUS).closeChannel(this.getName());
+                    this.stack.closeChannel(this.getName());
                 }
             }
         }

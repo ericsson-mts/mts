@@ -64,7 +64,7 @@ public class StackSmtp extends Stack
         {
             TransactionId transactionId = new TransactionId(transactionIdStr);
             msg.setTransactionId(transactionId);
-            Msg requestSmtp = StackFactory.getStack(StackFactory.PROTOCOL_SMTP).getInTransaction(transactionId).getBeginMsg();
+            Msg requestSmtp = getInTransaction(transactionId).getBeginMsg();
             msg.setType(requestSmtp.getType());
         }
         return msg;
