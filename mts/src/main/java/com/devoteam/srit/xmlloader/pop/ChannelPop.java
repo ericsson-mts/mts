@@ -26,12 +26,14 @@ package com.devoteam.srit.xmlloader.pop;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
-
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
+
 import java.net.InetSocketAddress;
 import java.net.Socket;
+
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 
 public class ChannelPop extends Channel
@@ -44,13 +46,14 @@ public class ChannelPop extends Channel
     private boolean nextReadMultiLine = false;
     
     // --- constructeur --- //
-    public ChannelPop(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception {
+    public ChannelPop(Stack stack, String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception {
     	super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+    	this.stack = stack;
         channel = new ChannelTcp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        waitWelcomeMessage = StackFactory.getStack(getProtocol()).getConfig().getBoolean("client.WAIT_WELCOME_MESSAGE");
+        waitWelcomeMessage = this.stack.getConfig().getBoolean("client.WAIT_WELCOME_MESSAGE");
     }
 
-    public ChannelPop(String name, Listenpoint listenpoint, Socket socket) throws Exception
+    public ChannelPop(Stack stack, String name, Listenpoint listenpoint, Socket socket) throws Exception
     {
         super(
                 name,
@@ -60,8 +63,9 @@ public class ChannelPop extends Channel
                 Integer.toString(((InetSocketAddress)socket.getRemoteSocketAddress()).getPort()),
                 listenpoint.getProtocol()
         );
+        this.stack = stack;
         channel = new ChannelTcp(name, listenpoint, socket);
-        waitWelcomeMessage = StackFactory.getStack(getProtocol()).getConfig().getBoolean("client.WAIT_WELCOME_MESSAGE");
+        waitWelcomeMessage = this.stack.getConfig().getBoolean("client.WAIT_WELCOME_MESSAGE");
     }
 
     // --- basic methods --- //
@@ -70,7 +74,7 @@ public class ChannelPop extends Channel
 
         if(result && isServer())
         {
-            String welcomeMsg = StackFactory.getStack(getProtocol()).getConfig().getString("server.WELCOME_MESSAGE");
+            String welcomeMsg = this.stack.getConfig().getString("server.WELCOME_MESSAGE");
             if(!welcomeMsg.equalsIgnoreCase(""))
             {
                 //send welcome message

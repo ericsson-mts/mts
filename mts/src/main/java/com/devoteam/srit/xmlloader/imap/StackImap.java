@@ -86,7 +86,9 @@ public class StackImap extends Stack
         }
         else
         {
-            return new ChannelImap(name, localHost, localPort, remoteHost, remotePort, protocol, transport);
+        	ChannelImap channelImap = new ChannelImap(name, localHost, localPort, remoteHost, remotePort, protocol, transport);
+        	channelImap.setStack(this);
+            return channelImap;
         }
     }
 
@@ -186,7 +188,8 @@ public class StackImap extends Stack
             message.add(messageStr);            
         }
         
-        return new MsgImap(message);
+        MsgImap msgImap = new MsgImap(this, message);
+        return msgImap;
     }
     
     private String reader(InputStream inputStream, int nbCharToRead) throws Exception 
@@ -219,6 +222,7 @@ public class StackImap extends Stack
     public Channel buildChannelFromSocket(Listenpoint listenpoint, Socket socket) throws Exception
     {
         ChannelImap channelImap = new ChannelImap("Channel #" + Stack.nextTransactionId(), listenpoint, socket);
+        channelImap.setStack(this);
         return channelImap;
     }
 

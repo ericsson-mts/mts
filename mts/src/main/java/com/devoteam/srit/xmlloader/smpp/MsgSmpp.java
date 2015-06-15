@@ -233,16 +233,14 @@ public class MsgSmpp extends Msg
         if((msgId == null) && (msgName == null))
             throw new Exception("One of the parameter id and name of the message header must be set");
 
-        StackSmpp stack = (StackSmpp) StackFactory.getStack(StackFactory.PROTOCOL_SMPP);
-        
         if(msgName != null)
         {
-            smppMessage = stack.smppDictionary.getMessageFromName(msgName);
-            smppMessage.setId(stack.smppDictionary.getMessageIdFromName(msgName));
+            smppMessage = ((StackSmpp) stack).smppDictionary.getMessageFromName(msgName);
+            smppMessage.setId(((StackSmpp) stack).smppDictionary.getMessageIdFromName(msgName));
         }
 
         if(msgId != null)
-            smppMessage = stack.smppDictionary.getMessageFromId((int)Long.parseLong(msgId, 16));
+            smppMessage = ((StackSmpp) stack).smppDictionary.getMessageFromId((int)Long.parseLong(msgId, 16));
 
         if((smppMessage.getId() == 0) || (smppMessage.getName().equalsIgnoreCase("Unknown message")))
             smppMessage.setLogError("Message <" + msgName + "> is not present in the dictionary\r\n");

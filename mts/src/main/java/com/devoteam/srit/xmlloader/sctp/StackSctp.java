@@ -86,7 +86,7 @@ public class StackSctp extends Stack
 		}
 		else
 		{
-			return new ChannelSctp(name, localHost, localPort, remoteHost, remotePort, protocol, im);
+			return new ChannelSctp(this, name, localHost, localPort, remoteHost, remotePort, protocol, im);
 		}
 	}
 

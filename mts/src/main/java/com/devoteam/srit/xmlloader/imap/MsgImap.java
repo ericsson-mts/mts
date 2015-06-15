@@ -63,8 +63,8 @@ public class MsgImap extends Msg {
     }
 
     /** Creates a new instance */
-	public MsgImap(Vector<String> someData) throws Exception {
-		super();
+	public MsgImap(Stack stack, Vector<String> someData) throws Exception {
+		super(stack);
 		for(int i = 0; i < someData.size(); i++)
 		{
 		    dataRaw += someData.get(i);
@@ -82,7 +82,7 @@ public class MsgImap extends Msg {
         
 		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Msg Imap is: ", toString());
 	}
-	
+		
 	/** Return true if the messages is a request else return false */
 	public boolean isRequest() {
         if(isRequest == null)
@@ -158,29 +158,29 @@ public class MsgImap extends Msg {
             if(isSend())
             {
                 if(((ChannelImap)this.getChannel()).isServer())
-                    msg = (MsgImap) StackFactory.getStack(StackFactory.PROTOCOL_IMAP).getInTransaction(getTransactionId()).getBeginMsg();
+                    msg = (MsgImap) this.stack.getInTransaction(getTransactionId()).getBeginMsg();
                 else
-                    msg = (MsgImap) StackFactory.getStack(StackFactory.PROTOCOL_IMAP).getOutTransaction(getTransactionId()).getBeginMsg();
+                    msg = (MsgImap) this.stack.getOutTransaction(getTransactionId()).getBeginMsg();
             }
             else
             {
                 if(getChannel().getTransport().equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
                 {
                     if(getChannel() instanceof ChannelTcp && ((ChannelTcp) getChannel()).getListenpointTcp() != null)
-                        msg = (MsgImap) StackFactory.getStack(StackFactory.PROTOCOL_IMAP).getInTransaction(getTransactionId()).getBeginMsg();
+                        msg = (MsgImap) this.stack.getInTransaction(getTransactionId()).getBeginMsg();
                     else if(getChannel() instanceof ChannelTcpBIO && ((ChannelTcpBIO) getChannel()).getListenpointTcp() != null)
-                        msg = (MsgImap) StackFactory.getStack(StackFactory.PROTOCOL_IMAP).getInTransaction(getTransactionId()).getBeginMsg();
+                        msg = (MsgImap) this.stack.getInTransaction(getTransactionId()).getBeginMsg();
                     else if(getChannel() instanceof ChannelTcpNIO && ((ChannelTcpNIO) getChannel()).getListenpointTcp() != null)
-                        msg = (MsgImap) StackFactory.getStack(StackFactory.PROTOCOL_IMAP).getInTransaction(getTransactionId()).getBeginMsg();
+                        msg = (MsgImap) this.stack.getInTransaction(getTransactionId()).getBeginMsg();
                     else
-                        msg = (MsgImap) StackFactory.getStack(StackFactory.PROTOCOL_IMAP).getOutTransaction(getTransactionId()).getBeginMsg();
+                        msg = (MsgImap) this.stack.getOutTransaction(getTransactionId()).getBeginMsg();
                 }
                 else
                 {
                     if(((ChannelTls)this.getChannel()).getListenpointTLS() != null)
-                        msg = (MsgImap) StackFactory.getStack(StackFactory.PROTOCOL_IMAP).getInTransaction(getTransactionId()).getBeginMsg();
+                        msg = (MsgImap) this.stack.getInTransaction(getTransactionId()).getBeginMsg();
                     else
-                        msg = (MsgImap) StackFactory.getStack(StackFactory.PROTOCOL_IMAP).getOutTransaction(getTransactionId()).getBeginMsg();
+                        msg = (MsgImap) this.stack.getOutTransaction(getTransactionId()).getBeginMsg();
                 }
             }
             command = msg.getType();

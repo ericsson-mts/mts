@@ -70,9 +70,9 @@ public class MsgPop extends Msg
         {
             try{
                 if(isSend())
-                    type = StackFactory.getStack(getProtocol()).getInTransaction(getTransactionId()).getBeginMsg().getType();
+                    type = this.stack.getInTransaction(getTransactionId()).getBeginMsg().getType();
                 else
-                    type = StackFactory.getStack(getProtocol()).getOutTransaction(getTransactionId()).getBeginMsg().getType();
+                    type = this.stack.getOutTransaction(getTransactionId()).getBeginMsg().getType();
             }
             catch(Exception e) {}
         }

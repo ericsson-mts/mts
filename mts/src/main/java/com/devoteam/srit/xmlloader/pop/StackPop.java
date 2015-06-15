@@ -83,7 +83,8 @@ public class StackPop extends Stack {
         }
         else
         {
-            return new ChannelPop(name, localHost, localPort, remoteHost, remotePort, protocol);
+        	ChannelPop channelPop = new ChannelPop(this, name, localHost, localPort, remoteHost, remotePort, protocol);
+            return channelPop;
         }
 	}
     
@@ -203,7 +204,7 @@ public class StackPop extends Stack {
 //    @Override
     public Channel buildChannelFromSocket(Listenpoint listenpoint, Socket socket) throws Exception
     {
-        ChannelPop channelPop = new ChannelPop("Channel #" + Stack.nextTransactionId(), listenpoint, socket);
+        ChannelPop channelPop = new ChannelPop(this, "Channel #" + Stack.nextTransactionId(), listenpoint, socket);
         return channelPop;
     }
 }

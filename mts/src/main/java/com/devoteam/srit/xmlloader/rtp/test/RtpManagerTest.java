@@ -83,7 +83,7 @@ public class RtpManagerTest {
     	transport = Config.getConfigByName("rtp.properties").getString("listenpoint.TRANSPORT");
         
     	Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_RTP);
-        Listenpoint listenpoint = new ListenpointRtp(StackFactory.getStack(StackFactory.PROTOCOL_RTP), "RtpManagerTest", host, port);
+        Listenpoint listenpoint = new ListenpointRtp(stack, "RtpManagerTest", host, port);
         stack.createListenpoint(listenpoint, StackFactory.PROTOCOL_RTP);
 
         InetSocketAddress localDatagramSocketAddress = new InetSocketAddress(host, 20000);

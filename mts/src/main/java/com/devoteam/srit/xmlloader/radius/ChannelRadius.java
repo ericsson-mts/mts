@@ -30,7 +30,9 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+
 import gp.net.radius.RadiusSocket;
 import gp.net.radius.data.IdentifierHandler;
 import gp.net.radius.data.RadiusMessage;
@@ -47,12 +49,11 @@ public class ChannelRadius extends Channel implements Runnable
     private IdentifierHandler identifierHandler;
 
     /** Creates a new instance of Channel */
-    public ChannelRadius(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, String secret) throws Exception
+    public ChannelRadius(Stack stack, String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, String secret) throws Exception
     {
         super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-
+        this.stack = stack;
         this.secret = new ReadOnlyDefaultArray(secret.getBytes());
-
         this.identifierHandler = new IdentifierHandler();
     }
 
@@ -88,7 +89,7 @@ public class ChannelRadius extends Channel implements Runnable
         }
 
         this.setLocalPort(this.radiusSocket.getLocalPort());
-        int bufferSize = StackFactory.getStack(StackFactory.PROTOCOL_RADIUS).getConfig().getInteger("radius.RECEIVE_BUFFER_LENGTH", 4096);
+        int bufferSize = this.stack.getConfig().getInteger("radius.RECEIVE_BUFFER_LENGTH", 4096);
         this.radiusSocket.setBufferSize(bufferSize);
 
         ThreadPool.reserve().start(this);
@@ -151,7 +152,7 @@ public class ChannelRadius extends Channel implements Runnable
                 if (msgRadius.hasValidAuthenticator())
                 {
                     GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "ChannelRadius, send radius message to stack");
-                    StackFactory.getStack(StackFactory.PROTOCOL_RADIUS).receiveMessage(msgRadius);
+                    this.stack.receiveMessage(msgRadius);
                 }
                 else
                 {
@@ -171,7 +172,7 @@ public class ChannelRadius extends Channel implements Runnable
                 if(null != this.radiusSocket)
                 {
                     GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "ChannelRadius : closing ", this.getName());
-                    StackFactory.getStack(StackFactory.PROTOCOL_RADIUS).closeChannel(this.getName());
+                    this.stack.closeChannel(this.getName());
                 }
             }
         }

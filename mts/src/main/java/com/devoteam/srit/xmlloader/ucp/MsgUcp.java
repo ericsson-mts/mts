@@ -221,19 +221,17 @@ public class MsgUcp extends Msg
         if((msgOT == null) && (msgName == null))
             throw new Exception("One of the parameter OT and name of the message header must be set");
 
-        StackUcp stack = (StackUcp) StackFactory.getStack(StackFactory.PROTOCOL_UCP);
-        
         if(msgName != null)
         {
             this.ucpMessage.setName(msgName);
-            ucpMessage.setOperationType(stack.ucpDictionary.getMessageOperationTypeFromName(msgName));
+            ucpMessage.setOperationType(((StackUcp)stack).ucpDictionary.getMessageOperationTypeFromName(msgName));
             if(ucpMessage.getOperationType() == null)
                 throw new Exception("Message <" + msgName + "> is unknown in the dictionary");
         }
 
         if(msgOT != null)
         {
-            this.ucpMessage.setName(stack.ucpDictionary.getMessageNameFromOperationType(msgOT));
+            this.ucpMessage.setName(((StackUcp)stack).ucpDictionary.getMessageNameFromOperationType(msgOT));
             if(this.ucpMessage.getName() == null)
                 throw new Exception("Message with OperationType <" + msgOT + "> is unknown in the dictionary");
             this.ucpMessage.setOperationType(msgOT);
