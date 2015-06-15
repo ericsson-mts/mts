@@ -23,12 +23,6 @@
 
 package com.devoteam.srit.xmlloader.rtp.flow;
 
-import com.devoteam.srit.xmlloader.core.Parameter;
-import com.devoteam.srit.xmlloader.core.ParameterPool;
-import com.devoteam.srit.xmlloader.core.Runner;
-import com.devoteam.srit.xmlloader.core.exception.ParsingException;
-import org.dom4j.Element;
-
 import com.devoteam.srit.xmlloader.core.newstats.StatKey;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorBinary;
@@ -36,22 +30,17 @@ import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementRTPFLOWParser;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
-import com.devoteam.srit.xmlloader.rtp.ListenpointRtp;
 import com.devoteam.srit.xmlloader.rtp.MsgRtp;
 import com.devoteam.srit.xmlloader.rtp.StackRtp;
 import gp.utils.arrays.Array;
-import gp.utils.arrays.DefaultArray;
 import gp.utils.scheduler.Scheduler;
 import gp.utils.scheduler.Task;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-public class StackRtpFlow extends StackRtp {
+public class StackRtpFlow extends StackRtp 
+{
 
     protected Scheduler scheduler;
     protected CodecDictionary dico = new CodecDictionary();//dictionary of all codec associated with their information (payloadType, frequence...)

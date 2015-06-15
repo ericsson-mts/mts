@@ -35,6 +35,7 @@ import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.rtp.MsgRtp;
+import com.devoteam.srit.xmlloader.rtp.StackRtp;
 import com.devoteam.srit.xmlloader.rtp.srtp.RawPacket;
 import com.devoteam.srit.xmlloader.rtp.srtp.SRTPTransformer;
 
@@ -564,10 +565,10 @@ public class MsgRtpFlow extends Msg {
 
     public void parseFlow(Element flow, Runner runner) throws Exception 
     {
-        StackRtpFlow stack = (StackRtpFlow) StackFactory.getStack(StackFactory.PROTOCOL_RTPFLOW);
-        this.dico = stack.dico;
+        this.dico = ((StackRtpFlow)stack).dico;
     	
-    	MsgRtp msg = new MsgRtp(stack);
+        StackRtp stackRtp = (StackRtp) StackFactory.getStack(StackFactory.PROTOCOL_RTP);
+    	MsgRtp msg = new MsgRtp(stackRtp);
     	msg.parsePacketHeader(flow, runner);
     	this.msgRtp = msg;
     	

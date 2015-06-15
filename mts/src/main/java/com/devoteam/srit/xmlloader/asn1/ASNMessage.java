@@ -243,7 +243,7 @@ public abstract class ASNMessage
     	return embedded;
  	}
 	
-	public void initDictionary(String dictionaryFile) throws Exception 
+	protected void initDictionary(String dictionaryFile) throws Exception 
 	{
 		this.dictionary = dictionaries.get(dictionaryFile);
 		if (this.dictionary == null)
