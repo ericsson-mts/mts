@@ -124,10 +124,9 @@ public class MsgSigtran extends Msg
 	    	{    		
 	    		// decode TCAP layer with Mobicent library
 	    		Array ieArray = paramFvo.encode();
-	    		_tcapMessage = new BN_TCAPMessage("tcap/dictionary_TCAP.xml");
 	    		try
 	    		{
-	    			_tcapMessage.initDictionary("tcap/dictionary_TCAP.xml");
+	    			_tcapMessage = new BN_TCAPMessage("tcap/dictionary_TCAP.xml");
 	    			_tcapMessage.decode(ieArray, "BER");
 	    		}
 	    		catch (Exception e)
@@ -152,11 +151,11 @@ public class MsgSigtran extends Msg
 		    		{
 		    			if (ACN != null && ACN.startsWith("CAP-"))
 		    			{
-		    				_apMessage.initDictionary("cap/dictionary_CAP.xml");
+		    				_apMessage = new BN_APMessage("cap/dictionary_CAP.xml");
 		    			}
 		    			else 
 		    			{
-		    				_apMessage.initDictionary("map/dictionary_MAP.xml");
+		    				_apMessage = new BN_APMessage("map/dictionary_MAP.xml");
 		    			}
 						_apMessage.decode(arrayAP, "BER");
 		    		}
