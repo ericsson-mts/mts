@@ -43,7 +43,7 @@ import com.devoteam.srit.xmlloader.core.utils.Config;
 import org.dom4j.Element;
 
 /**
- * TODO : statistics; request or answer ;
+ * 
  *
  * @author gpasquiers
  */
@@ -90,7 +90,6 @@ public class OperationSendMessage extends Operation {
             lockAndReplace(runner);
             GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.PROTOCOL, "Operation after pre-parsing \n", this);
             Element root = getRootElement();
-            // deprecated 
             
             request = getAttribute("request");
             listenpointName = getAttribute("listenpoint");

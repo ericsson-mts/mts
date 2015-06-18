@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 
@@ -50,6 +51,12 @@ public class ChannelTcpNIO extends Channel
     private Listenpoint listenpoint;
 
     private long startTimestamp = 0;
+    
+    /** Creates a new instance of Channel*/
+    public ChannelTcpNIO(Stack stack)
+    {
+    	super(stack);
+    }
     
     /** Creates a new instance of ChannelTcp */
     public ChannelTcpNIO(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception

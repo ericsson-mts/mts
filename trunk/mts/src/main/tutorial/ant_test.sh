@@ -1,7 +1,8 @@
 #!/bin/sh
 
 OPTIONS= "-level:WARN -stor:file -gen:false -show:false"
-MODE1= -random
+#MODE1=1
+MODE1=-seq
 
 echo "Run the unit tests"
 cd ../bin

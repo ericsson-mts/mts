@@ -55,7 +55,7 @@ public class StackImap extends Stack
 
     /** Creates a Channel specific to each Stack */
     @Override
-    public Channel parseChannelFromXml(Element root, String protocol) throws Exception
+    public Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception
     {
         String name = root.attributeValue("name");
         String localHost = root.attributeValue("localHost");

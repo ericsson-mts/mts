@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.diameter;
 
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
@@ -82,7 +83,7 @@ public class StackDiameter extends Stack {
         
     /** Creates a channel specific to each Stack */
     @Override
-    public Channel parseChannelFromXml(Element root, String protocol) throws Exception
+    public Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception
     {
         return null;
     }

@@ -466,11 +466,11 @@ public abstract class Stack
     }
 
     /** Creates a channel specific to each Stack */
-    public Channel parseChannelFromXml(Element root, String protocol) throws Exception
+    public Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception
     {
     	Class<?> clStack = this.getClass();
     	Channel channel  = (Channel) instanceObjectFromStackParents(clStack, "Channel");
-	    channel.parseFromXml(root, protocol);
+	    channel.parseFromXml(root, runner, protocol);
 	    return channel;
     }
 
@@ -555,7 +555,7 @@ public abstract class Stack
 	        return channelTls;
     	}
     	else {
-    		com.devoteam.srit.xmlloader.sctp.ChannelSctp channelSctp = new com.devoteam.srit.xmlloader.sctp.ChannelSctp(this, "Channel #" + Stack.nextTransactionId(), listenpoint, socket);
+    		com.devoteam.srit.xmlloader.sctp.ChannelSctp channelSctp = new com.devoteam.srit.xmlloader.sctp.ChannelSctp("Channel #" + Stack.nextTransactionId(), listenpoint, socket);
 	        return channelSctp;
     	} 
     }

@@ -23,9 +23,6 @@
 
 package com.devoteam.srit.xmlloader.tls;
 
-import com.devoteam.srit.xmlloader.core.ParameterPool;
-import com.devoteam.srit.xmlloader.core.Runner;
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
@@ -34,17 +31,10 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
-import com.devoteam.srit.xmlloader.sctp.ListenpointSctp;
-import com.devoteam.srit.xmlloader.tcp.ListenpointTcp;
-import com.devoteam.srit.xmlloader.tcp.MsgTcp;
 
 import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-import org.dom4j.Element;
 
 /**
  *
@@ -64,40 +54,6 @@ public class StackTls extends Stack
         {
         	Listenpoint listenpoint = new ListenpointTls(this);
             createListenpoint(listenpoint, StackFactory.PROTOCOL_TLS);
-        }
-    }
-
-	/** Creates a Listenpoint specific to each Stack */
-    /*
-    @Override
-	public synchronized Listenpoint parseListenpointFromXml(Element root) throws Exception 
-	{
-        Listenpoint listenpoint = new ListenpointTls(this, root);
-        return listenpoint;        
-	}
-	*/
-
-    /** Creates a Channel specific to each Stack */
-    @Override
-    public Channel parseChannelFromXml(Element root, String protocol) throws Exception
-    {
-        String name = root.attributeValue("name");
-        // deprecated part //
-        if(name == null)
-            name = root.attributeValue("connectionName");
-        // deprecated part //
-        String localHost = root.attributeValue("localHost");
-        String localPort = root.attributeValue("localPort");
-        String remoteHost = root.attributeValue("remoteHost");
-        String remotePort = root.attributeValue("remotePort");
-
-        if (existsChannel(name))
-        {
-            return getChannel(name);
-        }
-        else
-        {
-            return new ChannelTls(name, localHost, localPort, remoteHost, remotePort, protocol);
         }
     }
     

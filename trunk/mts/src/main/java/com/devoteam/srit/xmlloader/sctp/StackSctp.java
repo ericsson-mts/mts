@@ -57,14 +57,11 @@ public class StackSctp extends Stack
 	}
 
     /** Creates a Channel specific to each Stack */
+	/*
     @Override
-	public Channel parseChannelFromXml(Element root, String protocol) throws Exception
+	public Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception
 	{
 		String name = root.attributeValue("name");
-        // deprecated part //
-        if(name == null)
-            name = root.attributeValue("connectionName");
-        // deprecated part //
 		String localHost = root.attributeValue("localHost");
 		String localPort = root.attributeValue("localPort");
 		String remoteHost = root.attributeValue("remoteHost");
@@ -86,11 +83,13 @@ public class StackSctp extends Stack
 		}
 		else
 		{
-			return new ChannelSctp(this, name, localHost, localPort, remoteHost, remotePort, protocol, im);
+			return new ChannelSctp(name, localHost, localPort, remoteHost, remotePort, protocol, im);
 		}
 	}
+	*/
 
 	/** Creates a specific Msg */
+    /*
     @Override
 	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
 	{
@@ -98,11 +97,7 @@ public class StackSctp extends Stack
 		Msg msg = super.parseMsgFromXml(request, root, runner);
 
 		String channelName = root.attributeValue("channel");
-        // deprecated part //
-        if(channelName == null)
-            channelName = root.attributeValue("connectionName");
-        // deprecated part //
-        
+		
         // instanciates the channel
         Channel channel = getChannel(channelName);
 		if (channel == null)
@@ -113,6 +108,7 @@ public class StackSctp extends Stack
 
 		return msg;
 	}
+	*/
 
 	/** Returns the Config object to access the protocol config file*/
 	public Config getConfig() throws Exception

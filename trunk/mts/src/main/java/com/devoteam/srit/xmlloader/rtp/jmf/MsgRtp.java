@@ -216,6 +216,7 @@ public class MsgRtp extends Msg {
     	// not used
     }
     
+    
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------

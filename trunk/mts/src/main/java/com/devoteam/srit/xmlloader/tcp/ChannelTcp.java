@@ -23,9 +23,11 @@
 
 package com.devoteam.srit.xmlloader.tcp;
 
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.tcp.bio.ChannelTcpBIO;
@@ -35,6 +37,8 @@ import com.devoteam.srit.xmlloader.tcp.nio.ChannelTcpNIO;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import org.dom4j.Element;
+
 /**
  *
  * @author gpasquiers
@@ -42,6 +46,20 @@ import java.net.Socket;
 public class ChannelTcp extends Channel {
 
     private boolean nio = Config.getConfigByName("tcp.properties").getBoolean("USE_NIO", false);
+
+    /** Creates a new instance of Channel*/
+    public ChannelTcp(Stack stack)
+    {
+    	super(stack);
+        if (nio) 
+        {
+            channel = new ChannelTcpNIO(stack);
+        }
+        else 
+        {
+            channel = new ChannelTcpBIO(stack);
+        }
+    }
 
     /** Creates a new instance of ChannelTcp */
     public ChannelTcp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception 
@@ -73,20 +91,6 @@ public class ChannelTcp extends Channel {
         else 
         {
             channel = new ChannelTcpBIO(name, listenpoint, socket);
-        }
-    }
-
-    /** Creates a new instance of ChannelTcp */
-    public ChannelTcp(ListenpointTcp listenpointTcp, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol) 
-    {
-        super(localHost, localPort, remoteHost, remotePort, aProtocol);
-        if (nio) 
-        {
-            channel = new ChannelTcpNIO(listenpointTcp, localHost, localPort, remoteHost, remotePort, aProtocol);
-        }
-        else 
-        {
-            channel = new ChannelTcpBIO(listenpointTcp, localHost, localPort, remoteHost, remotePort, aProtocol);;
         }
     }
 
@@ -132,4 +136,15 @@ public class ChannelTcp extends Channel {
             return ((ChannelTcpBIO) channel).getSocketTcp();
         }
     }
+    
+    /** 
+     * Parse the channel from XML element 
+     */
+    @Override
+    public void parseFromXml(Element root, Runner runner, String protocol) throws Exception
+    {
+    	super.parseFromXml(root, runner, StackFactory.PROTOCOL_TCP);
+    	channel.parseFromXml(root, runner, StackFactory.PROTOCOL_TCP);
+    }
+
 }

@@ -107,7 +107,7 @@ public class StackRadius extends Stack
     /** Creates a Channel specific to each Stack */
     // deprecated part //
     @Override
-    public Channel parseChannelFromXml(Element root, String protocol) throws Exception
+    public Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception
     {
         String socketName = root.attributeValue("socketName");
         String localHost  = root.attributeValue("localHost");
@@ -296,13 +296,13 @@ public class StackRadius extends Stack
         
         String name = root.attributeValue("listenpoint");
         boolean isListenpoint = true;
-        // deprecated part //
+        // DEPRECATED begin
         if(name == null)
         {
             name = root.attributeValue("socketName");
             isListenpoint = false;
         }
-        // deprecated part //
+        // DEPRECATED end
         String remoteHost = root.attributeValue("remoteHost");
         String remotePort = root.attributeValue("remotePort");
 
@@ -337,7 +337,8 @@ public class StackRadius extends Stack
             if(radiusMessage.getIdentifier() == 0) radiusMessage.setIdentifier(listenpoint.getIdentifierHandler().getIdentifier());
             msgRadius.setListenpoint(listenpoint);
         }
-        else// deprecated part //
+        else
+        // DEPRECATED begin
         {
         	channel = (ChannelRadius) getChannel(name);
             if (channel == null)
@@ -347,7 +348,7 @@ public class StackRadius extends Stack
             if(radiusMessage.getIdentifier() == 0) radiusMessage.setIdentifier(channel.getIdentifierHandler().getIdentifier());
             msgRadius.setChannel(channel);
         }
-        // deprecated part //
+        // DEPRECATED end
         
 
         if(isListenpoint)

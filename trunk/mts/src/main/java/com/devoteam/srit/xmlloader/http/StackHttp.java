@@ -200,7 +200,7 @@ public class StackHttp extends Stack
 
     /** Creates a channel specific to each Stack */
     @Override
-    public Channel parseChannelFromXml(Element root, String protocol) throws Exception
+    public Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception
     {
         String channelName = root.attributeValue("name");
 
@@ -321,7 +321,7 @@ public class StackHttp extends Stack
 		            DefaultElement defaultElement = new DefaultElement("openChannelHTTP");
 		            defaultElement.addAttribute("remoteURL", remoteUrl);
 		            defaultElement.addAttribute("name", remoteUrl);
-		            channel = this.parseChannelFromXml(defaultElement, StackFactory.PROTOCOL_HTTP);
+		            channel = this.parseChannelFromXml(defaultElement, runner, StackFactory.PROTOCOL_HTTP);
 		            openChannel(channel);
 	                channel = getChannel(remoteUrl);
             	}

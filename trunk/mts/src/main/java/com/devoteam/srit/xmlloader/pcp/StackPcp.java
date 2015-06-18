@@ -63,7 +63,7 @@ public class StackPcp extends Stack {
 
     /** Creates a Channel specific to each Stack */
     @Override
-	public synchronized Channel parseChannelFromXml(Element root, String protocol) throws Exception {
+	public synchronized Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception {
 		String name = root.attributeValue("name");
 		String localHost = root.attributeValue("localHost");
 		String localPort = root.attributeValue("localPort");
@@ -92,7 +92,7 @@ public class StackPcp extends Stack {
         }
         else
         {
-            return new ChannelPcp(name, localHost, localPort, remoteHost, remotePort, protocol, infranetConnection, loginType);
+            return new ChannelPcp(this, name, localHost, localPort, remoteHost, remotePort, protocol, infranetConnection, loginType);
         }
     }
     

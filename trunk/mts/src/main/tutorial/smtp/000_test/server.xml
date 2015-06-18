@@ -1,43 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
+
 	<!--name="Receive SMTP from Inviter"-->
 	<!--openChannelSMTP sessionName="session1" localHost="localhost" localPort="2222" /-->
 	<!-- <sendMessageSMTP name="Server is well prepared" channel="session1" state= "true">
 	<![CDATA[220 hotmail.com Simple Mail Transfer Service Ready ]]>	
 </sendResponseSMTP-->
 
-<receiveRequestSMTP name="Receive EHLO" state="true">
+<receiveMessageSMTP name="Receive EHLO" request="true" state="true">
 	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
 	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
-</receiveRequestSMTP>
-<sendResponseSMTP name="Receive EHLO" transactionId="[tranid]" state="true"><![CDATA[250-hotmail.com
+</receiveMessageSMTP>
+
+<sendMessageSMTP name="Receive EHLO" transactionId="[tranid]" state="true"><![CDATA[250-hotmail.com
 250-8BITMIME
 250-SIZE
 250 DSN
-]]></sendResponseSMTP>
+]]></sendMessageSMTP>
 	
-	
-<receiveRequestSMTP name="Receive Send MAIL request"  state= "true">	
+<receiveMessageSMTP name="Receive Send MAIL request" request="true" state= "true">	
 	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
 	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
-</receiveRequestSMTP>
-<sendResponseSMTP name="Receive Send MAIL request" transactionId="[tranid]" state= "true"><![CDATA[250 OK]]>
-</sendResponseSMTP>
+</receiveMessageSMTP>
 
+<sendMessageSMTP name="Receive Send MAIL request" transactionId="[tranid]" state= "true"><![CDATA[250 OK]]>
+</sendMessageSMTP>
 		
-<receiveRequestSMTP name="Receive Request RCPT request"  state= "true">	
+<receiveMessageSMTP name="Receive Request RCPT request" request="true" state= "true">	
 	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
 	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
-</receiveRequestSMTP>
-<sendResponseSMTP name="Send Response RCPT request" transactionId="[tranid]" state= "true"><![CDATA[250 OK]]>
-</sendResponseSMTP>
+</receiveMessageSMTP>
 
+<sendMessageSMTP name="Send Response RCPT request" transactionId="[tranid]" state= "true"><![CDATA[250 OK]]>
+</sendMessageSMTP>
 
-<receiveRequestSMTP name="Receive Request RCPT request"  state= "true">	
+<receiveMessageSMTP name="Receive Request RCPT request" request="true" state= "true">	
 	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
 	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
-</receiveRequestSMTP>
-<sendResponseSMTP name="Send Response RCPT request" transactionId="[tranid]" state= "true"><![CDATA[550 No such user here]]>
-</sendResponseSMTP>
+</receiveMessageSMTP>
+
+<sendMessageSMTP name="Send Response RCPT request" transactionId="[tranid]" state= "true"><![CDATA[550 No such user here]]>
+</sendMessageSMTP>
 
 </scenario>

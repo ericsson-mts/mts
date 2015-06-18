@@ -27,8 +27,10 @@ import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.udp.nio.DatagramReactor;
+
 import java.net.InetSocketAddress;
 
 public class ChannelUdpNIO extends Channel
@@ -36,6 +38,12 @@ public class ChannelUdpNIO extends Channel
     private SocketUdpNIO socketUdp;
 
     private long startTimestamp = 0;
+    
+    /** Creates a new instance of Channel*/
+    public ChannelUdpNIO(Stack stack)
+    {
+    	super(stack);
+    }
     
     public ChannelUdpNIO(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, boolean aConnected) throws Exception
     {
@@ -64,17 +72,17 @@ public class ChannelUdpNIO extends Channel
             InetSocketAddress localDatagramSocketAddress;
 
 
-            if (getLocalHost() != null)
+            if (this.localHost != null)
             {
-                localDatagramSocketAddress = new InetSocketAddress(getLocalHost(), getLocalPort());
+                localDatagramSocketAddress = new InetSocketAddress(this.localHost, this.localPort);
             }
             else
             {
-                localDatagramSocketAddress = new InetSocketAddress(getLocalPort());
+                localDatagramSocketAddress = new InetSocketAddress(this.localPort);
             }
 
 
-            this.setLocalPort(localDatagramSocketAddress.getPort());
+            this.localPort = localDatagramSocketAddress.getPort();
 
             socketUdp = new SocketUdpNIO();
             socketUdp.setChannelUdp(this);
@@ -105,7 +113,7 @@ public class ChannelUdpNIO extends Channel
     {
         if (socketUdp != null)
         {
-    		// StatPool.endStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_UDP, getProtocol(), startTimestamp);
+    		StatPool.endStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_UDP, getProtocol(), startTimestamp);
     		
             socketUdp.close();
             socketUdp = null;        	

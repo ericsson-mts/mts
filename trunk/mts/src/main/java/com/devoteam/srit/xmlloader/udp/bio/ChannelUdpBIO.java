@@ -23,14 +23,13 @@
 
 package com.devoteam.srit.xmlloader.udp.bio;
 
-import static java.lang.Integer.parseInt;
-
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 
@@ -43,11 +42,13 @@ public class ChannelUdpBIO extends Channel
     private SocketUdpBIO socketUdp;
 	private InetSocketAddress remoteDatagramSocketAddress = null;
 	
-    // deprecated part //
-    private boolean connected = false;
-    // deprecated part //
-
     private long startTimestamp = 0;
+    
+    /** Creates a new instance of Channel*/
+    public ChannelUdpBIO(Stack stack)
+    {
+    	super(stack);
+    }
     
     public ChannelUdpBIO(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, boolean aConnected) throws Exception
     {
@@ -55,9 +56,6 @@ public class ChannelUdpBIO extends Channel
         this.socketUdp = null; 
         int remotePort = Integer.parseInt(aRemotePort);
 		this.remoteDatagramSocketAddress = new InetSocketAddress(aRemoteHost, remotePort);
-        // deprecated part //
-        connected = aConnected;
-        // deprecated part //
     }
 
     public ChannelUdpBIO(SocketUdpBIO socketUdp, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
@@ -65,10 +63,6 @@ public class ChannelUdpBIO extends Channel
          super(aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
         this.socketUdp = socketUdp;
 		this.remoteDatagramSocketAddress = new InetSocketAddress(aRemoteHost, aRemotePort);				
-
-        // deprecated part //
-        this.connected = false;
-        // deprecated part //
     }
 
     @Override
@@ -87,14 +81,14 @@ public class ChannelUdpBIO extends Channel
 
             DatagramSocket datagramSocket = null;
 
-            if (getLocalHost() != null)
+            if (this.localHost != null)
             {
-                localDatagramSocketAddress = new InetSocketAddress(getLocalHost(), getLocalPort());
+                localDatagramSocketAddress = new InetSocketAddress(this.localHost, this.localPort);
                 datagramSocket = new DatagramSocket(localDatagramSocketAddress);
             }
             else
             {
-                datagramSocket = new DatagramSocket(getLocalPort());
+                datagramSocket = new DatagramSocket(this.localPort);
             }
     		// read all properties for the UDP socket 
     		Config.getConfigForUDPSocket(datagramSocket);
@@ -105,9 +99,9 @@ public class ChannelUdpBIO extends Channel
             }
             // deprecated part //
             // in the last grammar, we don't take account of the connected possibility
-            if (getRemoteHost() != null && getRemotePort() != 0 && connected)
+            if (this.remoteHost != null && this.remotePort != 0)
             {
-                InetSocketAddress remoteDatagramSocketAddress = new InetSocketAddress(getRemoteHost(), getRemotePort());
+                this.remoteDatagramSocketAddress = new InetSocketAddress(getRemoteHost(), getRemotePort());
                 datagramSocket.connect(remoteDatagramSocketAddress);
                 if (datagramSocket.isConnected())
                 {
@@ -118,13 +112,8 @@ public class ChannelUdpBIO extends Channel
                     GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "ChannelUdp: The datagramSocket failed connecting to ", getRemoteHost(), ":", getRemotePort());
                 }
             }
-            else if (connected && (getRemoteHost() == null | getRemotePort() == 0))
-            {
-                GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "ChannelUdp: connect=true with missing arg");
-            }
-            // deprecated part //
             
-            this.setLocalPort(datagramSocket.getLocalPort());
+            this.localPort = datagramSocket.getLocalPort();
 
             socketUdp = new SocketUdpBIO(datagramSocket);
             socketUdp.setChannelUdp(this);
@@ -155,7 +144,7 @@ public class ChannelUdpBIO extends Channel
     {
         if (socketUdp != null)
         {
-    		// StatPool.endStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_UDP, getProtocol(), startTimestamp);
+    		StatPool.endStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_UDP, getProtocol(), startTimestamp);
         	
         	socketUdp.close();
             socketUdp = null;        	
