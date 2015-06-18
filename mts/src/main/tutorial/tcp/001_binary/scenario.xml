@@ -1,33 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-    <openConnectionTCP connectionName="socket" remoteHost="[remoteHostTCP]" remotePort="[remotePortTCP]" />
 
-    <receiveDataTCP connectionName="socket" timeout="1">
+    <openChannelTCP name="channel" remoteHost="[remoteHostTCP]" remotePort="[remotePortTCP]" />
+
+    <receiveMessageTCP request="true" type="SYN-ACK" timeout="1">
         <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
         <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
         <test parameter="[contents]" condition="string.equals" value=""/>
-    </receiveDataTCP>
+    </receiveMessageTCP>
 
-    <sendDataTCP connectionName="socket">
+    <sendMessageTCP channel="channel">
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
         <data format="text">AAAA</data>
-    </sendDataTCP>
+    </sendMessageTCP>
 
-    <receiveDataTCP connectionName="socket" timeout="1">
+    <receiveMessageTCP name="channel" request="true" type="SEQ-ACK" timeout="1">
         <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
         <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
         <test parameter="[contents]" condition="string.equals" value="AAAAAAAAA" />
-    </receiveDataTCP>
+    </receiveMessageTCP>
 
     <finally>
-        <closeConnectionTCP connectionName="socket" />
+        <closeChannelTCP name="channel" />
     
-        <receiveDataTCP connectionName="socket" timeout="1">
+        <receiveMessageTCP name="channel" request="true" type="FIN-ACK" timeout="1">
             <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
             <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
             <test parameter="[contents]" condition="string.equals" value=""/>
-        </receiveDataTCP>
+        </receiveMessageTCP>
     
     </finally>
     

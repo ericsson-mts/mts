@@ -24,10 +24,17 @@
 package com.devoteam.srit.xmlloader.udp;
 
 
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.tcp.bio.ChannelTcpBIO;
+import com.devoteam.srit.xmlloader.tcp.nio.ChannelTcpNIO;
 import com.devoteam.srit.xmlloader.udp.bio.ChannelUdpBIO;
 import com.devoteam.srit.xmlloader.udp.nio.ChannelUdpNIO;
 
@@ -36,6 +43,21 @@ public class ChannelUdp extends Channel
     private boolean nio = Config.getConfigByName("udp.properties").getBoolean("USE_NIO", false);
 
     private Channel channel;
+    
+    /** Creates a new instance of Channel*/
+    public ChannelUdp(Stack stack)
+    {
+    	super(stack);
+        if (nio) 
+        {
+            channel = new ChannelUdpNIO(stack);
+        }
+        else 
+        {
+            channel = new ChannelUdpBIO(stack);
+        }
+    }
+
 
     /** Creates a new instance of Channel */
     public ChannelUdp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, boolean aConnected) throws Exception
@@ -154,4 +176,15 @@ public class ChannelUdp extends Channel
     {
         return channel.close();
     }
+    
+    /** 
+     * Parse the channel from XML element 
+     */
+    @Override
+    public void parseFromXml(Element root, Runner runner, String protocool) throws Exception
+    {
+    	super.parseFromXml(root, runner, StackFactory.PROTOCOL_UDP);
+    	channel.parseFromXml(root, runner, StackFactory.PROTOCOL_UDP);
+    }
+    
 }

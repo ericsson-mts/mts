@@ -28,16 +28,61 @@
 						<xs:documentation>The channel remote port (sometimes called the remote port).</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="transport" type="xs:string" use="optional">
+				<!--xs:attribute name="transport" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>enumeration (UDP, TCP, SCTP, TLS)</xs:appinfo>
 						<xs:documentation>The channel transport.</xs:documentation>
 					</xs:annotation>
+				</xs:attribute-->
+        <xs:attribute name="num_ostreams"      	type="xs:string" >
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>This is an integer number representing the number 
+            of streams that the application wishes to be able to send to.  
+            This number is confirmed in the SCTP_COMM_UP notification and must 
+            be verified since it is a negotiated number with the remote endpoint.  
+            The default value of 0 indicates to use the endpoint default value.
+            </xs:documentation>
+					</xs:annotation>                                                         
 				</xs:attribute>
-                <xs:attribute name="ostreams"      	type="xs:string" />
-                <xs:attribute name="instreams"      type="xs:string" />
-                <xs:attribute name="attempts"     	type="xs:string" />
-                <xs:attribute name="timeo"      	type="xs:string" />
+        <xs:attribute name="max_instreams"      type="xs:string" >
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>This value represents the maximum number of inbound 
+            streams the application is prepared to support. This value is bounded 
+            by the actual implementation.  In other words the user MAY be able to 
+            support more streams than the Operating System.  In such a case, the 
+            Operating System limit overrides the value requested by the user. 
+            The default value of 0 indicates to use the endpoints default value.
+            </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+        <xs:attribute name="max_attempts"     	type="xs:string" >
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>This integer specifies how many attempts the SCTP 
+            endpoint should make at resending the INIT.  This value overrides 
+            the system SCTP 'Max.Init.Retransmits' value.  
+            The default value of 0 indicates to use the endpoints default value.  
+            This is normally set to the system's default 'Max.Init.Retransmit' 
+            value.
+            </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+        <xs:attribute name="max_initTimeo"      	type="xs:string" >
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>This value represents the largest Time-Out or 
+            RTO value (in milliseconds) to use in attempting an INIT.  
+            Normally the 'RTO.Max' is used to limit the doubling of the RTO 
+            upon timeout.  For the INIT message this value MAY override 
+            'RTO.Max'.  This value MUST NOT influence 'RTO.Max' during 
+            data transmission and is only used to bound the initial setup time.  
+            A default value of 0 indicates to use the endpoints default value.  
+            This is normally set to the system's 'RTO.Max' value (60 seconds).
+	          </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -128,24 +173,24 @@
 						<xs:documentation>The listenpoint name to transport the message. Don't use it with channel (incompatible)</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<!--xs:attribute name="request" type="xs:string" use="optional">
+				<xs:attribute name="request" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>Boolean</xs:appinfo>
 						<xs:documentation>True means that we are waiting for a request whereas false means a response. If not specified, then no filtering is required</xs:documentation>
 					</xs:annotation>
-				</xs:attribute-->
+				</xs:attribute>
 				<xs:attribute name="type" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>String</xs:appinfo>
 						<xs:documentation>The message type we are waiting for. If not specified, then no filtering is required</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<!--xs:attribute name="result" type="xs:string" use="optional">
+				<xs:attribute name="result" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>String</xs:appinfo>
 						<xs:documentation>The message result (for response only) we are waiting for. If not specified, then no filtering is required</xs:documentation>
 					</xs:annotation>
-				</xs:attribute-->								
+				</xs:attribute>								
 				<xs:attribute name="timeout" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>Float</xs:appinfo>
@@ -191,72 +236,5 @@
         </xs:restriction>
     </xs:simpleType>
 
-<!--************************************************************************************************-->
-<!--**************************************** OBSOLETE **********************************************-->
-<!--************************************************************************************************-->
-
-<!--                                                                          openConnectionSCTP -->
-    <xs:complexType name="openConnectionSCTPType">
-        <xs:complexContent>
-            <xs:extension base="operationType">
-                <xs:attribute name="connectionName"     type="xs:string" use="required" />
-                <xs:attribute name="localHost"      type="xs:string" />
-                <xs:attribute name="localPort"      type="xs:string" />
-                <xs:attribute name="remoteHost"     type="xs:string" use="required"/>
-                <xs:attribute name="remotePort"     type="xs:string" use="required"/>   
-                <xs:attribute name="ostreams"      	type="xs:string" /> 
-                <xs:attribute name="instreams"      type="xs:string" />
-                <xs:attribute name="attempts"     	type="xs:string" />
-                <xs:attribute name="timeo"      	type="xs:string" />
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
-
-<!--                                                                         closeConnectionSCTP -->
-    <xs:complexType name="closeConnectionSCTPType">
-        <xs:complexContent>
-            <xs:extension base="operationType" >
-                <xs:attribute name="connectionName" 	type="xs:string" use="required" />
-            </xs:extension>
-
-        </xs:complexContent>
-    </xs:complexType>
-
-<!--                                                                                sendDataSCTP -->
-    <xs:complexType name="sendDataSCTPType">
-        <xs:complexContent>
-            <xs:extension base="operationType">
-                <xs:sequence>
-                    <xs:element name="data" type="dataSctpType" minOccurs="0" maxOccurs="unbounded"/>
-                </xs:sequence>
-                <xs:attribute name="connectionName" 	type="xs:string" use="required" />
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
-
-<!--                                                                             receiveDataSCTP -->
-    <xs:complexType name="receiveDataSCTPType">
-        <xs:complexContent>
-            <xs:extension base="operationType">
-                <xs:sequence minOccurs="0" maxOccurs="unbounded">
-                    <xs:element name="parameter"  	type="parameterType" minOccurs="0" maxOccurs="unbounded" />
-                    <xs:element name="test"      	type="testType"      minOccurs="0" maxOccurs="unbounded" />
-                    <xs:element name="and"          type="conditionType" minOccurs="0" maxOccurs="unbounded" />
-                    <xs:element name="or"           type="conditionType" minOccurs="0" maxOccurs="unbounded" />
-                    <xs:element name="not"          type="conditionType" minOccurs="0" maxOccurs="unbounded" />
-                </xs:sequence>
-                <xs:attribute name="connectionName"		type="xs:string" />
-                <xs:attribute name="stream"  	        type="xs:string" />
-                <xs:attribute name="ppid"  		        type="xs:string" />
-                <xs:attribute name="tsn"  		        type="xs:string" />
-                <xs:attribute name="aid"   		        type="xs:string" />
-                <xs:attribute name="sourceHost"   		type="xs:string" />
-                <xs:attribute name="sourcePort" 		type="xs:string" />
-                <xs:attribute name="timeout"    	  	type="xs:string" />
-                <xs:attribute name="failedOnTimeout"    type="xs:string" />
-                <xs:attribute name="failedOnReceive"    type="xs:string" />
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
 
 <!--                                                                        END OF SCTP PROTOCOL -->

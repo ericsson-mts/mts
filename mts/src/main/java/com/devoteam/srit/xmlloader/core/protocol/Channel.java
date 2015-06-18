@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.core.protocol;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
 import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
@@ -188,30 +189,6 @@ public class Channel
 	/** Open a channel */
     public boolean open() throws Exception
     {
-    	if (transport == null)
-    	{
-    		return true;
-    	}
-    	else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
-        {
-        	channel = new ChannelTcp(this.name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
-        }
-        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_TLS))
-        {
-        	channel = new ChannelTls(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
-        }
-        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
-        {
-        	channel = new ChannelSctp(stack, name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
-        }
-        else if (transport.equalsIgnoreCase(StackFactory.PROTOCOL_UDP))
-        {
-        	channel = new ChannelUdp(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol, true);
-        }
-        else
-        {
-        	throw new Exception("openChannelSIGTRAN operation : Bad transport value for " + transport);
-        }
     	return channel.open();
     }
 
@@ -292,7 +269,7 @@ public class Channel
     /** 
      * Parse the channel from XML element 
      */
-    public void parseFromXml(Element root, String protocol) throws Exception
+    public void parseFromXml(Element root, Runner runner, String protocol) throws Exception
     {
     	this.protocol = protocol;
         this.name = root.attributeValue("name");
@@ -326,6 +303,31 @@ public class Channel
         	transport = stack.getConfig().getString("listenpoint.TRANSPORT");
         }
         this.transport = transport.toUpperCase(); 
+        
+        // create the embedded channel for the transport
+        if (!this.transport.equals(""))
+        {
+	        if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
+	        {
+	        	channel = new ChannelTcp(this.name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
+	        }
+	        else if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_TLS))
+	        {
+	        	channel = new ChannelTls(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
+	        }
+	        else if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
+	        {
+	        	channel = new ChannelSctp(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
+	        }
+	        else if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_UDP))
+	        {
+	        	channel = new ChannelUdp(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol, true);
+	        }
+	        else
+	        {
+	        	throw new Exception("openChannelPPP operation : Bad transport value for " + transport);
+	        }
+        }
     }
     
 

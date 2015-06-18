@@ -25,13 +25,14 @@ package com.devoteam.srit.xmlloader.pcp;
 
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
-
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
 import com.portal.pcm.EBufException;
 import com.portal.pcm.FList;
 import com.portal.pcm.PortalContext;
+
 import java.util.Properties;
 
 public class ChannelPcp extends Channel //implements Runnable
@@ -41,8 +42,9 @@ public class ChannelPcp extends Channel //implements Runnable
     private String loginType = null;
 
     // /** Creates a new instance of Channel */
-    public ChannelPcp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, String aInfranetConnection, String aLoginType) throws Exception {
+    public ChannelPcp(Stack stack, String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, String aInfranetConnection, String aLoginType) throws Exception {
     	super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+    	this.stack = stack;
         channel = new ChannelTcp(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
         context = new PortalContext();
         infranetConnection = aInfranetConnection;

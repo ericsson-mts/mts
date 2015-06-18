@@ -686,14 +686,14 @@ public class MsgDiameter extends Msg
     {
     	this.message = MsgDiameterParser.getInstance().parseMsgFromXml(request, root);
     	    	
-        //!!deprecated part!!//
+        // DEPRECATED begin
         String server = root.attributeValue("server");
         if (server != null)
         {
        		GlobalLogger.instance().logDeprecatedMessage( root.getName() + " server=\"xxx\" .../", "sendMessageDiameter remoteUrl=\"xxx\" .../");
        		this.setRemoteUrl(server);
        	}
-        //!!deprecated part!!//
+        // DEPRECATED end
     }
 
     //------------------------------------------------------

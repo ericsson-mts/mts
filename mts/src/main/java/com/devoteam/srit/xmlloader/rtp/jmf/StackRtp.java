@@ -57,7 +57,7 @@ public class StackRtp extends Stack
     
     /** Creates a Channel specific to each Stack */
     @Override
-    public Channel parseChannelFromXml(Element root, String protocol) throws Exception {
+    public Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception {
         String name = root.attributeValue("sessionName");
         String localHost = root.attributeValue("localHost");
         String localPort = root.attributeValue("localPort");

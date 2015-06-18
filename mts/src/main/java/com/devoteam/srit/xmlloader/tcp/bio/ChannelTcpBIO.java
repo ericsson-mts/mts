@@ -28,8 +28,10 @@ import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -46,6 +48,12 @@ public class ChannelTcpBIO extends Channel
     private Listenpoint listenpoint;    
 
     private long startTimestamp = 0;
+    
+    /** Creates a new instance of Channel*/
+    public ChannelTcpBIO(Stack stack)
+    {
+    	super(stack);
+    }
     
     /** Creates a new instance of ChannelTcp */
     public ChannelTcpBIO(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception

@@ -122,10 +122,12 @@ public class ListenpointTcp extends Listenpoint
     /** 
      * Parse the listenpoint from XML element 
      */
+    @Override
     public void parseFromXml(Element root, Runner runner) throws Exception
     {
     	super.parseFromXml(root, runner);
     	listenpoint.parseFromXml(root, runner);
     }
+
     
 }

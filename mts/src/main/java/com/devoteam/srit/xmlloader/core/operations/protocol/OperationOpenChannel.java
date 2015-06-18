@@ -61,7 +61,7 @@ public class OperationOpenChannel extends Operation {
         try {
             lockAndReplace(runner);
             GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.PROTOCOL, "Operation after pre-parsing \n", this);
-            channel = StackFactory.getStack(protocol).parseChannelFromXml(getRootElement(), protocol);
+            channel = StackFactory.getStack(protocol).parseChannelFromXml(getRootElement(), runner, protocol);
         }
         finally {
             unlockAndRestore();

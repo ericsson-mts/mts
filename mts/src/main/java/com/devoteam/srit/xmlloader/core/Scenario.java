@@ -156,7 +156,7 @@ public class Scenario implements Serializable {
             ope = new OperationReceiveMessage(null, root, this);
         }
         //------------------------------------------------------------------------ aaa operations -
-        // deprecated part
+        // DEPRECATED begin
         else if (rootName.equals("sendAnswerAAA")) {
             ope = new OperationSendMsg(StackFactory.PROTOCOL_DIAMETER, false, root);
         }
@@ -169,7 +169,7 @@ public class Scenario implements Serializable {
         else if (rootName.equals("receiveRequestAAA")) {
             ope = parseReceiveAAA(StackFactory.PROTOCOL_DIAMETER, true, root);
         }
-        // deprecated part
+        // DEPRECATED end
         else if (rootName.equals("createListenpointDIAMETER")) {
             ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_DIAMETER, root);
         }
@@ -195,7 +195,7 @@ public class Scenario implements Serializable {
             ope = new OperationReceiveMessage(StackFactory.PROTOCOL_DIAMETER, root, this);
         }
         //------------------------------------------------------------------------ sip operations -
-        // deprecated part
+        // DEPRECATED begin
         else if (rootName.equals("openProviderSIP")) {
             ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_SIP, root);
         }
@@ -214,7 +214,7 @@ public class Scenario implements Serializable {
         else if (rootName.equals("receiveRequestSIP")) {
             ope = parseReceiveSIP(StackFactory.PROTOCOL_SIP, true, root);
         }
-        // deprecated part
+        // DEPRECATED end
         else if (rootName.equals("createListenpointSIP")) {
             ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_SIP, root);
         }
@@ -253,7 +253,7 @@ public class Scenario implements Serializable {
             ope = new OperationReceiveMessage(StackFactory.PROTOCOL_RTSP, root, this);
         }
         //------------------------------------------------------------------------ http operations -
-        // deprecated part
+        // DEPRECATED begin
         else if (rootName.equals("openConnectionHTTP")) {
             ope = new OperationOpenChannel(StackFactory.PROTOCOL_HTTP, root);
         }
@@ -272,7 +272,7 @@ public class Scenario implements Serializable {
         else if (rootName.equals("receiveRequestHTTP")) {
             ope = parseReceiveHTTP(StackFactory.PROTOCOL_HTTP, true, root);
         }
-        // deprecated part
+        // DEPRECATED end
         else if (rootName.equals("openChannelHTTP")) {
             ope = new OperationOpenChannel(StackFactory.PROTOCOL_HTTP, root);
         }
@@ -286,7 +286,7 @@ public class Scenario implements Serializable {
             ope = new OperationReceiveMessage(StackFactory.PROTOCOL_HTTP, root, this);
         }
         //------------------------------------------------------------------------ radius operations -
-        // deprecated part //
+        // DEPRECATED begin //
         else if (rootName.equals("openSocketRadius")) {
             ope = new OperationOpenChannel(StackFactory.PROTOCOL_RADIUS, root);
         }
@@ -305,7 +305,7 @@ public class Scenario implements Serializable {
         else if (rootName.equals("receiveRequestRadius")) {
             ope = parseReceiveRadius(StackFactory.PROTOCOL_RADIUS, true, root);
         }
-        // deprecated part //
+        // DEPRECATED end //
         else if (rootName.equals("createListenpointRADIUS")) {
             ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_RADIUS, root);
         }
@@ -319,7 +319,7 @@ public class Scenario implements Serializable {
             ope = new OperationReceiveMessage(StackFactory.PROTOCOL_RADIUS, root, this);
         }
         //--------------------------------------------------------------------------------- RTP -        
-        // deprecated part //
+        // DEPRECATED begin //
         else if (rootName.equals("openConnectionRTP")) {
             ope = new OperationOpenChannel(StackFactory.PROTOCOL_RTP, root);
         }
@@ -332,7 +332,7 @@ public class Scenario implements Serializable {
         else if (rootName.equals("receivePacketRTP")) {
             ope = parseReceiveRTP(StackFactory.PROTOCOL_RTP, root);
         }
-        // deprecated part //
+        // DEPRECATED end //
         else if (rootName.equals("createListenpointRTP")) {
             ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_RTP, root);
         }
@@ -351,6 +351,7 @@ public class Scenario implements Serializable {
         else if (rootName.equals("receiveMessageRTP")) {
             ope = new OperationReceiveMessage(StackFactory.PROTOCOL_RTP, root, this);
         }
+      //--------------------------------------------------------------------------------- RTPFLOW -
         else if (rootName.equals("createListenpointRTPFLOW")) {
             ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_RTPFLOW, root);
         }
@@ -370,31 +371,11 @@ public class Scenario implements Serializable {
             ope = new OperationReceiveMessage(StackFactory.PROTOCOL_RTPFLOW, root, this);
         }
         //--------------------------------------------------------------------------------- TCP -        
-        // deprecated part //
-        else if (rootName.equals("openConnectionTCP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_TCP, root);
-        }
-        else if (rootName.equals("closeConnectionTCP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_TCP, root);
-        }
-        else if (rootName.equals("sendDataTCP")) {
-            ope = new OperationSendMsg(StackFactory.PROTOCOL_TCP, false, root);
-        }
-        else if (rootName.equals("receiveDataTCP")) {
-            ope = parseReceiveTCP(StackFactory.PROTOCOL_TCP, root);
-        }
-        // deprecated part //
         else if (rootName.equals("openChannelTCP")) {
             ope = new OperationOpenChannel(StackFactory.PROTOCOL_TCP, root);
         }
         else if (rootName.equals("closeChannelTCP")) {
             ope = new OperationCloseChannel(StackFactory.PROTOCOL_TCP, root);
-        }
-        else if (rootName.equals("sendMessageTCP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_TCP, root);
-        }
-        else if (rootName.equals("receiveMessageTCP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_TCP, root, this);
         }
         else if (rootName.equals("createListenpointTCP")) {
             ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_TCP, root);
@@ -402,27 +383,13 @@ public class Scenario implements Serializable {
         else if (rootName.equals("removeListenpointTCP")) {
             ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_TCP, root);
         }
+        else if (rootName.equals("sendMessageTCP")) {
+            ope = new OperationSendMessage(StackFactory.PROTOCOL_TCP, root);
+        }
+        else if (rootName.equals("receiveMessageTCP")) {
+            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_TCP, root, this);
+        }
         //--------------------------------------------------------------------------------- SMTP -
-        // deprecated part
-        else if (rootName.equals("openSessionSMTP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_SMTP, root);
-        }
-        else if (rootName.equals("closeSessionSMTP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_SMTP, root);
-        }
-        else if (rootName.equals("sendRequestSMTP")) {
-            ope = new OperationSendMsg(StackFactory.PROTOCOL_SMTP, true, root);
-        }
-        else if (rootName.equals("receiveRequestSMTP")) {
-            ope = parseReceiveSMTP(StackFactory.PROTOCOL_SMTP, true, root);
-        }
-        else if (rootName.equals("sendResponseSMTP")) {
-            ope = new OperationSendMsg(StackFactory.PROTOCOL_SMTP, false, root);
-        }
-        else if (rootName.equals("receiveResponseSMTP")) {
-            ope = parseReceiveSMTP(StackFactory.PROTOCOL_SMTP, false, root);
-        }
-        // deprecated part
         else if (rootName.equals("openChannelSMTP")) {
             ope = new OperationOpenChannel(StackFactory.PROTOCOL_SMTP, root);
         }
@@ -442,20 +409,12 @@ public class Scenario implements Serializable {
             ope = new OperationReceiveMessage(StackFactory.PROTOCOL_SMTP, root, this);
         }
         //--------------------------------------------------------------------------------- UDP -        
-        // deprecated part //
-        else if (rootName.equals("openSocketUDP")) {
+        else if (rootName.equals("openChannelUDP")) {
             ope = new OperationOpenChannel(StackFactory.PROTOCOL_UDP, root);
         }
-        else if (rootName.equals("closeSocketUDP")) {
+        else if (rootName.equals("closeChannelUDP")) {
             ope = new OperationCloseChannel(StackFactory.PROTOCOL_UDP, root);
         }
-        else if (rootName.equals("sendDataUDP")) {
-            ope = new OperationSendMsg(StackFactory.PROTOCOL_UDP, false, root);
-        }
-        else if (rootName.equals("receiveDataUDP")) {
-            ope = parseReceiveUDP(StackFactory.PROTOCOL_UDP, root);
-        }
-        // deprecated part //
         else if (rootName.equals("createListenpointUDP")) {
             ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_UDP, root);
         }
@@ -469,20 +428,6 @@ public class Scenario implements Serializable {
             ope = new OperationReceiveMessage(StackFactory.PROTOCOL_UDP, root, this);
         }
         //--------------------------------------------------------------------------------- SCTP -        
-        // deprecated part //
-        else if (rootName.equals("openConnectionSCTP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_SCTP, root);
-        }
-        else if (rootName.equals("closeConnectionSCTP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_SCTP, root);
-        }
-        else if (rootName.equals("sendDataSCTP")) {
-            ope = new OperationSendMsg(StackFactory.PROTOCOL_SCTP, false, root);
-        }
-        else if (rootName.equals("receiveDataSCTP")) {
-            ope = parseReceiveSCTP(StackFactory.PROTOCOL_SCTP, root);
-        }
-        // deprecated part //
         else if (rootName.equals("openChannelSCTP")) {
             ope = new OperationOpenChannel(StackFactory.PROTOCOL_SCTP, root);
         }

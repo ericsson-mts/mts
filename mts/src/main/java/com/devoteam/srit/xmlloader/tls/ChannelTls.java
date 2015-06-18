@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.tls;
 
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -30,8 +31,11 @@ import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.tcp.bio.ChannelTcpBIO;
+import com.devoteam.srit.xmlloader.tcp.nio.ChannelTcpNIO;
 import com.devoteam.srit.xmlloader.tls.ListenpointTls;
 import com.devoteam.srit.xmlloader.tls.SocketTls;
 
@@ -51,6 +55,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import org.dom4j.Element;
+
 /**
  *
  * @author fvandecasteele
@@ -63,6 +69,12 @@ public class ChannelTls extends Channel {
 
     private long startTimestamp = 0;
 	
+    /** Creates a new instance of Channel*/
+    public ChannelTls(Stack stack)
+    {
+    	super(stack);
+    }
+
 	/** Creates a new instance of ChannelTls */
 	public ChannelTls(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception
 	{
@@ -72,6 +84,7 @@ public class ChannelTls extends Channel {
 	}
 
 	/** Creates a new instance of ChannelTls */
+	// for IMAP protocol : to delete ?
 	public ChannelTls(String name, Listenpoint listenpoint, Socket socket) throws Exception
 	{
 		super(
@@ -92,6 +105,7 @@ public class ChannelTls extends Channel {
 	}
 
 	/** Creates a new instance of ChannelTls */
+	// for IMAP protocol : to delete ?
 	public ChannelTls(ListenpointTls listenpointTls, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol)
 	{
 		super(localHost, localPort, remoteHost, remotePort, aProtocol);

@@ -23,25 +23,13 @@
 
 package com.devoteam.srit.xmlloader.udp;
 
-import com.devoteam.srit.xmlloader.core.ParameterPool;
-
-import com.devoteam.srit.xmlloader.core.Runner;
-import org.dom4j.Element;
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
-import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  *
@@ -61,82 +49,6 @@ public class StackUdp extends Stack
         	Listenpoint listenpoint = new ListenpointUdp(this);
             createListenpoint(listenpoint, StackFactory.PROTOCOL_UDP);
         }
-    }
-
-    /** Creates a Channel specific to each Stack */
-    // deprecated part //
-    @Override
-    public Channel parseChannelFromXml(Element root, String protocol) throws Exception
-    {
-        String name = root.attributeValue("socketName");
-        String localHost = root.attributeValue("localHost");
-        String localPort = root.attributeValue("localPort");
-        String remoteHost = root.attributeValue("remoteHost");
-        String remotePort = root.attributeValue("remotePort");
-        String connected = root.attributeValue("connected");
-
-        if (existsChannel(name))
-        {
-            return getChannel(name);
-        }
-        else
-        {
-            return new ChannelUdp(name, localHost, localPort, remoteHost, remotePort, protocol, Boolean.parseBoolean(connected));
-        }
-    }
-    // deprecated part //
-
-    
-	/** Creates a specific Msg */
-    @Override
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
-    {
-        Msg msgUdp = super.parseMsgFromXml(request, root, runner);
-
-        String remoteHost = root.attributeValue("remoteHost");
-        String remotePort = root.attributeValue("remotePort");
-
-        // deprecated part //
-        String name = root.attributeValue("socketName");
-        if(name != null)
-        {
-        	Channel channel = getChannel(name);
-            if (channel == null)
-            {
-                throw new ExecutionException("StackUDP: The connection <name=" + name + "> does not exist");
-            }
-
-            if (remoteHost != null)
-            {
-                channel.setRemoteHost(remoteHost);
-            }
-            if (remotePort != null)
-            {
-                channel.setRemotePort(new Integer(remotePort).intValue());
-            }
-            msgUdp.setChannel(channel);
-        }// deprecated part //
-        else
-        {
-            name = root.attributeValue("listenpoint");
-            Listenpoint listenpoint = getListenpoint(name);
-            if (listenpoint == null)
-            {
-                throw new ExecutionException("StackUDP: The listenpoint <name=" + name + "> does not exist");
-            }
-
-            if (remoteHost != null)
-            {
-                msgUdp.setRemoteHost(remoteHost);
-            }
-            if (remotePort != null) 
-            {
-                msgUdp.setRemotePort(new Integer(remotePort).intValue());
-            }
-            msgUdp.setListenpoint(listenpoint);
-        }
-
-        return msgUdp;
     }
 
     /** Returns the Config object to access the protocol config file*/

@@ -95,7 +95,7 @@ public abstract class StackSip extends Stack
     {
         MsgSip msgSip = (MsgSip) super.parseMsgFromXml(request, root, runner);
 
-        // OBSOLETE instanciates the listenpoint (compatibility with old grammar)        
+        // DEPRECATED begin        
         String listenpointName = root.attributeValue("providerName");
         if (listenpointName != null)
         {       
@@ -106,7 +106,6 @@ public abstract class StackSip extends Stack
 	        }
 	        msgSip.setListenpoint(listenpoint);
         }
-        
         if (request != null && request && !msgSip.isRequest())
         {
             throw new ExecutionException("You specify to send a request using a <sendRequestXXX ...> tag, but the message you will send is not really a request.");
@@ -115,6 +114,7 @@ public abstract class StackSip extends Stack
         {
             throw new ExecutionException("You specify to send a response using a <sendResponseXXX ...> tag, but the message you will send is not really a response.");
         }
+        // DEPRECATED end
                 
         return msgSip;
     }

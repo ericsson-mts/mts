@@ -60,7 +60,7 @@ public class StackPop extends Stack {
 
     /** Creates a Channel specific to each Stack */
     @Override
-	public synchronized Channel parseChannelFromXml(Element root, String protocol) throws Exception {
+	public synchronized Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception {
 		String name = root.attributeValue("name");
 		String localHost = root.attributeValue("localHost");
 		String localPort = root.attributeValue("localPort");

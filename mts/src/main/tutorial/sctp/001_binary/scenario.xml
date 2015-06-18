@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-    <openConnectionSCTP connectionName="SCTPConnection" localHost="[localHostSCTP]" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"  ostreams="7" instreams="6" />
+    <openChannelSCTP name="channel" localHost="[localHostSCTP]" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"  num_ostreams="7" max_instreams="6" />
     
-    <receiveMessageSCTP type="INIT-ACK"/>
+    <receiveMessageSCTP channel="channel" request="true" type="INIT-ACK"/>
 
-    <sendDataSCTP connectionName="SCTPConnection">
+    <sendMessageSCTP channel="channel">
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
-    </sendDataSCTP>
+    </sendMessageSCTP>
      
-   <receiveDataSCTP>
+   <receiveMessageSCTP channel="channel" request="true" type="INIT-ACK">
         <parameter name="[stream]" operation="protocol.setFromMessage" value="header.stream"/>
         <parameter name="[ssn]" operation="protocol.setFromMessage" value="header.ssn"/>
         <parameter name="[ppid]" operation="protocol.setFromMessage" value="header.ppid"/>
         <parameter name="[tsn]" operation="protocol.setFromMessage" value="header.tsn"/>
         <parameter name="[aid]" operation="protocol.setFromMessage" value="header.aid"/>
-
-     	<parameter name="[sourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
+     	  <parameter name="[sourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
         <parameter name="[sourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
-  
         <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-    </receiveDataSCTP>
+    </receiveMessageSCTP>
 
     <test parameter="[stream]" condition="number.equals" value="1" />
     <!--test parameter="[ssn]" condition="number.equals" value="255" /-->
@@ -34,9 +32,9 @@
 
     <finally>
 
-	<closeConnectionSCTP connectionName="SCTPConnection"/>
-
-	<receiveMessageSCTP type="ABORT-ACK"/>
+        <closeChannelSCTP name="SCTPConnection"/>
+        
+        <receiveMessageSCTP channel="channel" request="true" type="ABORT-ACK"/>
 	
     </finally>
 
