@@ -49,7 +49,7 @@ public class StackTls extends Stack
         super();
 
         // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
+        int port = getConfig().getInteger("listenpoint.LOCAL_PORT_TLS", 0);
         if (port > 0)
         {
         	Listenpoint listenpoint = new ListenpointTls(this);

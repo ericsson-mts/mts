@@ -13,13 +13,12 @@
     <parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>	
     	
     <sendMessageRTPFLOW listenpoint="invitee2" remoteHost="[localHostRTP(0)]" remotePort="[localPortRTP]">
-	    <flow duration="15" bitRate="[bitRate]" synchronous="true">
+	    <flow duration="1" bitRate="[bitRate]" synchronous="true">
             <header ssrc="7777777777" payloadType="[payloadType]" seqnum="10" timestamp="200"/>
             <payload format="binary">[payloadList]</payload>
 	    </flow>
     </sendMessageRTPFLOW>
 
-			  
     <receiveMessageRTPFLOW listenpoint="invitee" type="[payloadType]">
         <parameter name="[ssrc]" operation="protocol.setFromMessage" value="header.ssrc"/>
         <parameter name="[payloadTypeList]" operation="protocol.setFromMessage" value="header.payloadType"/>
@@ -52,14 +51,14 @@
         <parameter name="[mos]" operation="protocol.setFromMessage" value="qos.mos"/>
     </receiveMessageRTPFLOW>
 
-    <test parameter="[packetNumber]" condition="number.equals" value="246"/>
+    <test parameter="[packetNumber]" condition="number.equals" value="15"/>
 
     <receiveMessageRTPFLOW listenpoint="invitee2" type="[payloadType]">
         <parameter name="[packetNumber]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
     </receiveMessageRTPFLOW>
 
     <!-- there is less packet than sent because of the silent filtering mecanism -->
-    <test parameter="[packetNumber]" condition="number.equals" value="500"/>
+    <test parameter="[packetNumber]" condition="number.equals" value="37"/>
 
     <parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
 

@@ -84,9 +84,7 @@
 	<parameter name="[testcase:payloadList]" operation="set" value="[[fileWave(0)]]"/>
 	<parameter name="[payloadType]" operation="set" value="[[fileWave(1)]]"/>
 	<parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>
-	<parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/>
-	<parameter name="[nbPacket]" operation="number.divide" value="[nbPacket]" value2="1"/>
-	
+	<parameter name="[nbPacket]" operation="set" value="27"/>	
 	
 	<sendMessageRTPFLOW listenpoint="[scenarioName]" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]">    
 	    <flow packetNumber="[nbPacket]" bitRate="[bitRate]" synchronous="true" packetLost="0">

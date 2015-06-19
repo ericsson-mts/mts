@@ -185,10 +185,50 @@ public class Channel
     public String getProtocol() {
 		return protocol;
 	}
+    
+    /** Get the transport protocol of this message */
+    public String getTransport()
+    {
+    	return this.transport;
+    }
 
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+    
 	/** Open a channel */
     public boolean open() throws Exception
     {
+        // create the embedded channel for the transport
+        if (!this.transport.equals(""))
+        {
+	        if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
+	        {
+	        	channel = new ChannelTcp(stack);
+	        	channel.clone(this);
+	        }
+	        else if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_TLS))
+	        {
+	        	channel = new ChannelTls(stack);
+	        	channel.clone(this);
+	        }
+	        else if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
+	        {
+	        	channel = new ChannelSctp(stack);
+	        	channel.clone(this);
+	        }
+	        else if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_UDP))
+	        {
+	        	channel = new ChannelUdp(stack);
+	        	channel.clone(this);
+	        }
+	        else
+	        {
+	        	throw new Exception("openChannelPPP operation : Bad transport value for " + transport);
+	        }
+        }
+
     	return channel.open();
     }
 
@@ -233,15 +273,9 @@ public class Channel
     	return StackFactory.getStack(protocol).receiveMessage(msg);
     }
 
-    /** Get the transport protocol of this message */
-    public String getTransport()
-    {
-    	return this.transport;
-    }
-
     
     //---------------------------------------------------------------------
-    // methods for the XML display / parsing of the message
+    // methods for the XML display / parsing
     //---------------------------------------------------------------------
 
     /** 
@@ -303,31 +337,6 @@ public class Channel
         	transport = stack.getConfig().getString("listenpoint.TRANSPORT");
         }
         this.transport = transport.toUpperCase(); 
-        
-        // create the embedded channel for the transport
-        if (!this.transport.equals(""))
-        {
-	        if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
-	        {
-	        	channel = new ChannelTcp(this.name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
-	        }
-	        else if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_TLS))
-	        {
-	        	channel = new ChannelTls(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
-	        }
-	        else if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
-	        {
-	        	channel = new ChannelSctp(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol);
-	        }
-	        else if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_UDP))
-	        {
-	        	channel = new ChannelUdp(name, this.localHost, new Integer(this.localPort).toString(), this.remoteHost, new Integer(this.remotePort).toString(), this.protocol, true);
-	        }
-	        else
-	        {
-	        	throw new Exception("openChannelPPP operation : Bad transport value for " + transport);
-	        }
-        }
     }
     
 
@@ -389,7 +398,25 @@ public class Channel
             
         return parameter;
     }
-    
+
+    /** clone method */
+    public void clone(Channel channel)
+    {
+    	if (channel == null)
+        {
+            return;
+        }
+    	this.name = channel.getName();
+    	
+    	this.localHost = channel.getLocalHost();
+    	this.localPort = channel.getLocalPort();
+    	
+    	this.remoteHost = channel.getRemoteHost();
+    	this.remotePort = channel.getRemotePort();	
+    	
+    	this.protocol = channel.getProtocol();
+    }
+
     /** equals method */
     public boolean equals(Channel channel)
     {

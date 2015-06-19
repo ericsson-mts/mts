@@ -7,16 +7,16 @@
     <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
 
     <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP]" remotePort="[remotePortRTP]">
-	    <flow packetNumber="50" deltaTime="20" deltaTimestamp="160">
+	    <flow packetNumber="17" deltaTime="20" deltaTimestamp="160">
             <header ssrc="4376" payloadType="8" seqnum="123" timestamp="456"/>
             <payload format="text">test send RTP packet</payload>
 	    </flow>
     </sendMessageRTPFLOW>
 
-    <pause name="wait between RTP flow" seconds="1"/>
+    <pause name="wait between RTP flow" seconds="1.5"/>
 
     <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP]" remotePort="[remotePortRTP]">
-	    <flow packetNumber="50" deltaTime="20" deltaTimestamp="160">
+	    <flow packetNumber="33" deltaTime="20" deltaTimestamp="160">
             <header ssrc="4376" payloadType="8" seqnum="123" timestamp="456"/>
             <payload format="text">test send RTP packet</payload>
 	    </flow>
@@ -25,16 +25,16 @@
     <parameter name="[testcase:SEM2]" operation="system.semaphorewait" />
 
     <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP]" remotePort="[remotePortRTP]">
-	    <flow packetNumber="50" deltaTime="20" deltaTimestamp="160">
+	    <flow packetNumber="10" deltaTime="20" deltaTimestamp="160">
             <header ssrc="4376" payloadType="8" seqnum="123" timestamp="456"/>
             <payload format="text">test send RTP packet</payload>
 	    </flow>
     </sendMessageRTPFLOW>
 
-    <pause name="wait between RTP flow" seconds="4.5"/>
+    <pause name="wait between RTP flow" seconds="0.5"/>
 
     <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP]" remotePort="[remotePortRTP]">
-	    <flow packetNumber="50" deltaTime="20" deltaTimestamp="160">
+	    <flow packetNumber="40" deltaTime="20" deltaTimestamp="160">
             <header ssrc="4376" payloadType="8" seqnum="123" timestamp="456"/>
             <payload format="text">test send RTP packet</payload>
 	    </flow>

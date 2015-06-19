@@ -62,10 +62,10 @@ public class Listenpoint
     /**
      * Listenpoint
      */
-    protected ListenpointUdp listenpointUdp = null;
-    protected ListenpointTcp listenpointTcp = null;
-    protected ListenpointSctp listenpointSctp = null;
-    protected ListenpointTls listenpointTls = null;
+    protected Listenpoint listenpointUdp = null;
+    protected Listenpoint listenpointTcp = null;
+    protected Listenpoint listenpointSctp = null;
+    protected Listenpoint listenpointTls = null;
     
     private Object attachment;
     private HashMap<String, Channel> channels;
@@ -77,20 +77,20 @@ public class Listenpoint
     {
         this.stack = stack;
         // Get the config parameters
+        this.UID = Utils.newUID();
         this.host = stack.getConfig().getString("listenpoint.LOCAL_HOST", "");
         if (this.host.length() <= 0)
         {
             this.host = "0.0.0.0";
         }
 
-        this.UID = Utils.newUID();
         this.port = stack.getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
+        this.portTLS = this.stack.getConfig().getInteger("listenpoint.LOCAL_PORT_TLS", 0);
+        this.transport = stack.getConfig().getString("listenpoint.TRANSPORT", StackFactory.PROTOCOL_UDP);
         this.listenUDP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_UDP", false);
         this.listenTCP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_TCP", false);
         this.listenSCTP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_SCTP", false);
         this.listenTLS = this.stack.getConfig().getBoolean("listenpoint.LISTEN_TLS", false);
-        this.portTLS = this.stack.getConfig().getInteger("listenpoint.LOCAL_PORT_TLS", 0);
-        this.transport = stack.getConfig().getString("listenpoint.TRANSPORT", StackFactory.PROTOCOL_UDP);
     }
 
     /** Creates a new instance of Listenpoint */
@@ -218,25 +218,29 @@ public class Listenpoint
 
     /** create a listenpoint  */
     public boolean create(String protocol) throws Exception
-    {	
+    {	    	
         this.channels = new HashMap<String, Channel>();
         this.protocol = protocol;
         
         if (this.listenUDP)
         {
-            listenpointUdp = new ListenpointUdp(this.stack, this.name, this.host, this.port);
+        	//Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_UDP);
+            listenpointUdp = new ListenpointUdp(this.stack);
+            listenpointUdp.copyToClone(this);
             listenpointUdp.create(protocol);
         }
 
         if (this.listenTCP)
         {
-            listenpointTcp = new ListenpointTcp(this.stack, this.name, this.host, this.port);
+            listenpointTcp = new ListenpointTcp(this.stack);
+            listenpointTcp.copyToClone(this);
             listenpointTcp.create(protocol);
         }
 
         if (this.listenSCTP)
         {
-            listenpointSctp = new ListenpointSctp(this.stack, this.name, this.host, this.port);
+            listenpointSctp = new ListenpointSctp(this.stack);
+            listenpointSctp.copyToClone(this);
             try
             {
                 listenpointSctp.create(protocol);
@@ -254,7 +258,8 @@ public class Listenpoint
         	{
         		this.portTLS = this.port + 1;
         	}
-            listenpointTls = new ListenpointTls(this.stack, this.name, this.host, this.portTLS);
+            listenpointTls = new ListenpointTls(this.stack);
+            listenpointTls.copyToClone(this);
             listenpointTls.create(protocol);
         }
         return true;
@@ -379,6 +384,10 @@ public class Listenpoint
         }
     }
 
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+    
     /** Prepare the channel */
     public Channel prepareChannel(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
     {
@@ -458,7 +467,7 @@ public class Listenpoint
     }
     
     //---------------------------------------------------------------------
-    // methods for the XML display / parsing of the message
+    // methods for the XML display / parsing 
     //---------------------------------------------------------------------
 
     /** 
@@ -467,7 +476,15 @@ public class Listenpoint
     @Override
     public String toString()
     {
-        String str = "";
+    	return toXml();
+    }
+    
+    /** 
+     * Convert the listenpoint to XML document 
+     */
+    public String toXml()
+    {
+    	String str = "<LISTENPOINT ";
         if (name != null)
         {
         	str += "name=\"" + name + "\"";
@@ -495,16 +512,12 @@ public class Listenpoint
             str += " portTLS=\"" + portTLS + "\"";
         	str += " listenTLS=\"true\"";
         }
-
+        if (transport != null)
+        {
+            str += " transport=\"" + transport + "\"";
+        }
+        str += "/>";
         return str;
-    }
-    
-    /** 
-     * Convert the listenpoint to XML document 
-     */
-    public String toXml()
-    {
-        return "<LISTENPOINT " + this.toString() + "/>";
     }
     
     /** 
@@ -512,14 +525,15 @@ public class Listenpoint
      */
     public void parseFromXml(Element root, Runner runner) throws Exception
     {
-        // deprecated message
-        this.name = root.attributeValue("providerName");
+        this.name = root.attributeValue("name");
         if (this.name == null)
         {
-        	this.name = root.attributeValue("name");
+            // DEPRECATED begin
+        	this.name = root.attributeValue("providerName");
+        	// DEPRECATED end
         }
         this.host = Utils.formatIPAddress(root.attributeValue("localHost"));
-        if (null == this.host || this.host.length() <= 0)
+        if (this.host == null || this.host.length() <= 0)
         {
             this.host = "0.0.0.0";
         }        
@@ -538,20 +552,36 @@ public class Listenpoint
         {
             this.listenUDP = Boolean.parseBoolean(listenUDPAttr);
         }
+        else
+        {
+        	this.listenUDP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_UDP", false);
+        }
         String listenTCPAttr = root.attributeValue("listenTCP");
         if (listenTCPAttr != null)
         {
             this.listenTCP = Boolean.parseBoolean(listenTCPAttr);
+        }
+        else
+        {
+        	this.listenTCP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_TCP", false);
         }
         String listenSCTPAttr = root.attributeValue("listenSCTP");
         if (listenSCTPAttr != null)
         {
             this.listenSCTP = Boolean.parseBoolean(listenSCTPAttr);
         }
+        else
+        {
+        	this.listenSCTP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_SCTP", false);
+        }
         String listenTLSAttr = root.attributeValue("listenTLS");
         if (listenTLSAttr != null)
         {
             this.listenTLS = Boolean.parseBoolean(listenTLSAttr);
+        }
+        else
+        {
+        	this.listenTLS = this.stack.getConfig().getBoolean("listenpoint.LISTEN_TLS", false);
         }
 
         String localPortTLSAttr = root.attributeValue("localPortTLS");
@@ -640,7 +670,30 @@ public class Listenpoint
         return parameter;
     }
     
+    /** clone method */
+    //@Override
+    public void copyToClone(Listenpoint listenpoint)
+    {
+    	if (listenpoint == null)
+        {
+            return;
+        }
+    	this.name = listenpoint.getName();
+    	
+    	this.host = listenpoint.getHost();
+    	this.port = listenpoint.getPort();
+    	this.portTLS = listenpoint.getPortTLS();
+    	
+    	this.protocol = listenpoint.getProtocol();
+    	
+        this.listenUDP = false;
+        this.listenTCP = false;
+        this.listenSCTP = false;
+        this.listenTLS = false;
+    }
+    
     /** equals method */
+    //@Override
     public boolean equals(Listenpoint listenpoint)
     {
         if (listenpoint == null)

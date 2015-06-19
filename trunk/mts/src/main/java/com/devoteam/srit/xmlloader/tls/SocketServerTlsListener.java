@@ -69,7 +69,7 @@ public class SocketServerTlsListener extends Thread
         // Set up Tls connection
         try
         {
-            port = listenpoint.getPort();
+            port = listenpoint.getPortTLS();
             localInetAddr = InetAddress.getByName(listenpoint.getHost());
             
             // Create a trust manager that validates all certificates

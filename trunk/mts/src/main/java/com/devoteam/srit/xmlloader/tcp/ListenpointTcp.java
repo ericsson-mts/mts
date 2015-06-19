@@ -41,7 +41,7 @@ public class ListenpointTcp extends Listenpoint
 {
 
     private boolean nio = Config.getConfigByName("tcp.properties").getBoolean("USE_NIO", false);
-    private Listenpoint listenpoint;
+    // private Listenpoint listenpoint;
     private long startTimestamp = 0;
 
     /** Creates a new instance of Listenpoint */
@@ -50,12 +50,13 @@ public class ListenpointTcp extends Listenpoint
         super(stack);
         if (nio) 
         {
-            listenpoint = new ListenpointTcpNIO(stack);
+            listenpointTcp = new ListenpointTcpNIO(stack);
         }
         else 
         {
-            listenpoint = new ListenpointTcpBIO(stack);
+            listenpointTcp = new ListenpointTcpBIO(stack);
         }
+        listenpointTcp.copyToClone(this);
     }
 
     /** Creates a new instance of Listenpoint */
@@ -64,11 +65,11 @@ public class ListenpointTcp extends Listenpoint
         super(stack, name, host, port);
         if (nio) 
         {
-            listenpoint = new ListenpointTcpNIO(stack, name, host, port);
+            listenpointTcp = new ListenpointTcpNIO(stack);
         }
         else 
         {
-            listenpoint = new ListenpointTcpBIO(stack, name, host, port);
+            listenpointTcp = new ListenpointTcpBIO(stack);
         }
     }
 
@@ -78,20 +79,22 @@ public class ListenpointTcp extends Listenpoint
     {
         if (nio) 
         {
-            StatPool.beginStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_TCP, protocol);
+        	StatPool.beginStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_TCP, protocol);
+            
         }
         else 
         {
-            StatPool.beginStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_TCP, protocol);
+        	StatPool.beginStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_TCP, protocol);
         }
-        this.startTimestamp = System.currentTimeMillis();
-        return listenpoint.create(protocol);
+
+        this.startTimestamp = System.currentTimeMillis();        
+        return listenpointTcp.create(protocol);
     }
 
     @Override
     public synchronized Channel prepareChannel(Msg msg, String remoteHost, int remotePort, String transport) throws Exception 
     {
-        return listenpoint.prepareChannel(msg, remoteHost, remotePort, transport);
+        return listenpointTcp.prepareChannel(msg, remoteHost, remotePort, transport);
     }
 
     @Override
@@ -103,9 +106,10 @@ public class ListenpointTcp extends Listenpoint
     @Override
     public String getProtocol() 
     {
-        return listenpoint.getProtocol();
+        return listenpointTcp.getProtocol();
     }
 
+    @Override
     public boolean remove() 
     {
         if (nio) 
@@ -116,7 +120,25 @@ public class ListenpointTcp extends Listenpoint
         {
             StatPool.endStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_TCP, getProtocol(), startTimestamp);
         }
-        return listenpoint.remove();
+        return listenpointTcp.remove();
+    }
+
+    /** 
+     * Returns the string description of the message. Used for logging as DEBUG level 
+     */
+    @Override
+    public String toString()
+    {
+    	return listenpointTcp.toString();
+    }
+
+    /** 
+     * Convert the channel to XML document 
+     */
+    @Override
+    public String toXml()
+    {
+    	return listenpointTcp.toXml();
     }
     
     /** 
@@ -126,8 +148,21 @@ public class ListenpointTcp extends Listenpoint
     public void parseFromXml(Element root, Runner runner) throws Exception
     {
     	super.parseFromXml(root, runner);
-    	listenpoint.parseFromXml(root, runner);
+    	listenpointTcp.parseFromXml(root, runner);
     }
 
+    /** clone method */
+    @Override
+    public void copyToClone(Listenpoint listenpoint)
+    {
+        this.listenpointTcp.copyToClone(listenpoint);
+    }
     
+    /** equals method */
+    @Override
+    public boolean equals(Listenpoint listenpoint)
+    {
+        return this.listenpointTcp.equals(listenpoint);
+    }
+
 }
