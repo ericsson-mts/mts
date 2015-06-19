@@ -112,6 +112,12 @@ public class ChannelSctp extends Channel
         this.socket.setChannelSctp(this);
         this.initmsg = new sctp_initmsg();
     }
+    
+    /** Get the transport protocol of this message */
+    public String getTransport() 
+    {
+    	return StackFactory.PROTOCOL_SCTP;
+    }
 
     public SocketSctp getSocketSctp()
     {
@@ -140,6 +146,7 @@ public class ChannelSctp extends Channel
         return true;
     }
 
+    /** Open a Channel */
     public boolean open() throws Exception
     {
         if (socket == null)
@@ -170,6 +177,7 @@ public class ChannelSctp extends Channel
         return true;
     }
 
+    /** Close a Channel */
     public boolean close()
     {	
     	if (socket != null)
@@ -180,12 +188,6 @@ public class ChannelSctp extends Channel
 	        socket = null;
     	}
         return true;
-    }
-
-    /** Get the transport protocol of this message */
-    public String getTransport() 
-    {
-    	return StackFactory.PROTOCOL_SCTP;
     }
 
 	public Listenpoint getListenpointSctp() {

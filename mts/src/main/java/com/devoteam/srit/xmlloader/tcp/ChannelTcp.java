@@ -147,4 +147,19 @@ public class ChannelTcp extends Channel {
     	channel.parseFromXml(root, runner, StackFactory.PROTOCOL_TCP);
     }
 
+    
+    /** clone method */
+    @Override
+    public void clone(Channel channel)
+    {
+        this.channel.clone(channel);
+    }
+    
+    /** equals method */
+    @Override
+    public boolean equals(Channel channel)
+    {
+        return this.channel.equals(channel);
+    }
+
 }

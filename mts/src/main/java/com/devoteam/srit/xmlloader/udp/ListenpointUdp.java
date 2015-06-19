@@ -40,7 +40,7 @@ import org.dom4j.Element;
 public class ListenpointUdp extends Listenpoint
 {
     private boolean nio = Config.getConfigByName("udp.properties").getBoolean("USE_NIO", false);
-    private Listenpoint  listenpoint;
+    //private Listenpoint  listenpoint;
     private long startTimestamp = 0;
     
     /** Creates a new instance of Listenpoint */
@@ -49,63 +49,41 @@ public class ListenpointUdp extends Listenpoint
         super(stack);
         if(nio) 
     	{
-    	listenpoint = new ListenpointUdpNIO(stack);
+        	listenpointUdp = new ListenpointUdpNIO(stack);
     	}
         else
         {
-        	listenpoint = new ListenpointUdpBIO(stack);
+        	listenpointUdp = new ListenpointUdpBIO(stack);
         }
+        listenpointUdp.copyToClone(this);
     }
 
     /** Creates a new instance of Listenpoint */
     public ListenpointUdp(Stack stack, String name, String host, int port) throws Exception
     {
         super(stack, name, host, port);
-        if(nio)
-        {
-        	listenpoint = new ListenpointUdpNIO(stack, name, host, port);
-        }
-        else
-        {
-        	listenpoint = new ListenpointUdpBIO(stack, name, host, port);
-        }
-    }
-
-    public int hashCode()
-    {
-        return listenpoint.hashCode();
-    }
-
-    public boolean equals(Object obj)
-    {
-        return listenpoint.equals(obj);
-    }
-
-    public String toString()
-    {
-        return listenpoint.toString();
     }
 
     public void setPort(int port)
     {
-        listenpoint.setPort(port);
+        listenpointUdp.setPort(port);
     }
 
     @Override
     public synchronized Channel prepareChannel(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
     {
-        return listenpoint.prepareChannel(msg, remoteHost, remotePort, transport);
+        return listenpointUdp.prepareChannel(msg, remoteHost, remotePort, transport);
     }
 
     @Override
     public boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
     {
-        return listenpoint.sendMessage(msg, remoteHost, remotePort, transport);
+        return listenpointUdp.sendMessage(msg, remoteHost, remotePort, transport);
     }
 
     public synchronized boolean removeConnection(Channel channel)
     {
-        return listenpoint.removeChannel(channel);
+        return listenpointUdp.removeChannel(channel);
     }
 
     public boolean remove()
@@ -120,62 +98,68 @@ public class ListenpointUdp extends Listenpoint
     	}
 
 		
-        return listenpoint.remove();
+        return listenpointUdp.remove();
     }
 
     public boolean openConnection(Channel channel) throws Exception
     {
-        return listenpoint.openChannel(channel);
+        return listenpointUdp.openChannel(channel);
     }
 
     public String getProtocol()
     {
-        return listenpoint.getProtocol();
+        return listenpointUdp.getProtocol();
     }
 
     public int getPort()
     {
-        return listenpoint.getPort();
+        return listenpointUdp.getPort();
     }
 
     public Parameter getParameter(String path) throws Exception
     {
-        return listenpoint.getParameter(path);
+        return listenpointUdp.getParameter(path);
     }
 
     public String getHost()
     {
-        return listenpoint.getHost();
+        return listenpointUdp.getHost();
     }
 
     public Channel getChannel(String name) throws Exception
     {
-        return listenpoint.getChannel(name);
+        return listenpointUdp.getChannel(name);
     }
 
     public boolean existsChannel(String name) throws Exception
     {
-        return listenpoint.existsChannel(name);
+        return listenpointUdp.existsChannel(name);
     }
 
-    public boolean equals(Listenpoint listenpoint)
-    {
-        return this.listenpoint.equals(listenpoint);
-    }
-
+    @Override
     public boolean create(String protocol) throws Exception
     {
-    	if (nio)
-    	{
+        if(nio)
+        {
     		StatPool.beginStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_UDP, protocol);
-    	}
-    	else
-    	{
+        }
+        else
+        {
     		StatPool.beginStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_UDP, protocol);
-    	}
+        }
+
 		this.startTimestamp = System.currentTimeMillis();
-		
-        return listenpoint.create(protocol);
+        return listenpointUdp.create(protocol);
+    }
+
+    
+    /** 
+     * Convert the channel to XML document 
+     */
+    @Override
+    public String toXml()
+    {
+    	return listenpointUdp.toXml();
     }
 
     /** 
@@ -185,16 +169,30 @@ public class ListenpointUdp extends Listenpoint
     public void parseFromXml(Element root, Runner runner) throws Exception
     {
     	super.parseFromXml(root, runner);
-    	listenpoint.parseFromXml(root, runner);
+    	listenpointUdp.parseFromXml(root, runner);
+    }
+
+    /** clone method */
+    public void copyToClone(Listenpoint listenpoint)
+    {
+    	super.copyToClone(listenpoint);
+        this.listenpointUdp.copyToClone(listenpoint);
+    }
+
+    /** equals method */
+    @Override
+    public boolean equals(Object obj)
+    {
+        return listenpointUdp.equals(obj);
     }
 
     public Object getAttachment() 
     {
-        return listenpoint.getAttachment();
+        return listenpointUdp.getAttachment();
     }
 
     public void setAttachment(Object attachment) 
     {
-        listenpoint.setAttachment(attachment);
+        listenpointUdp.setAttachment(attachment);
     }
 }

@@ -12,14 +12,14 @@
     <parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>
 
     <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
-	    <flow duration="5" bitRate="[bitRate]" synchronous="false">
+	    <flow duration="0.5" bitRate="[bitRate]" synchronous="false">
             <header ssrc="987654" payloadType="[payloadType]" seqnum="10" timestamp="200"/>
             <payload format="binary">[payloadList]</payload>
 	    </flow>
     </sendMessageRTPFLOW>
 
     <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP2]">
-	    <flow duration="10" deltaTime="20" synchronous="true">
+	    <flow duration="0.75" deltaTime="20" synchronous="true">
             <header ssrc="1276417" payloadType="[payloadType]" seqnum="1" timestamp="600"/>
             <payload format="text">Packet RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTPPacket RTP</payload>
 	    </flow>
