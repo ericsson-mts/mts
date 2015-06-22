@@ -204,8 +204,8 @@ public class ChannelTls extends Channel {
   	      	Config.getConfigForTCPSocket(socket, true);
   	      	
             
-			this.setLocalPort(socket.getLocalPort());
-			this.setLocalHost(socket.getLocalAddress().getHostAddress());
+			this.localPort = socket.getLocalPort();
+			this.localHost = socket.getLocalAddress().getHostAddress();
 			socketTls = new SocketTls(socket);
 		}
 

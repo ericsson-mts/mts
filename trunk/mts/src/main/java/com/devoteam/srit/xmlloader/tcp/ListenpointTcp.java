@@ -41,7 +41,7 @@ public class ListenpointTcp extends Listenpoint
 {
 
     private boolean nio = Config.getConfigByName("tcp.properties").getBoolean("USE_NIO", false);
-    // private Listenpoint listenpoint;
+    
     private long startTimestamp = 0;
 
     /** Creates a new instance of Listenpoint */
@@ -56,7 +56,7 @@ public class ListenpointTcp extends Listenpoint
         {
             listenpointTcp = new ListenpointTcpBIO(stack);
         }
-        listenpointTcp.copyToClone(this);
+        listenpointTcp.clone(this);
     }
 
     /** Creates a new instance of Listenpoint */
@@ -153,9 +153,10 @@ public class ListenpointTcp extends Listenpoint
 
     /** clone method */
     @Override
-    public void copyToClone(Listenpoint listenpoint)
+    public void clone(Listenpoint listenpoint)
     {
-        this.listenpointTcp.copyToClone(listenpoint);
+    	super.clone(listenpoint);
+        this.listenpointTcp.clone(listenpoint);
     }
     
     /** equals method */

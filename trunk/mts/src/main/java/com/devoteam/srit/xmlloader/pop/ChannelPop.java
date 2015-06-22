@@ -38,14 +38,13 @@ import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 
 public class ChannelPop extends Channel
 {
-    private ChannelTcp channel = null;
 
     private TransactionId transId = null;
     private boolean transactionInProgress = false;
     private boolean waitWelcomeMessage = false;
     private boolean nextReadMultiLine = false;
     
-    // --- constructeur --- //
+    /** Creates a new instance of Channel */
     public ChannelPop(Stack stack, String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception {
     	super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
     	this.stack = stack;
@@ -53,6 +52,7 @@ public class ChannelPop extends Channel
         waitWelcomeMessage = this.stack.getConfig().getBoolean("client.WAIT_WELCOME_MESSAGE");
     }
 
+    /** Creates a new instance of Channel */
     public ChannelPop(Stack stack, String name, Listenpoint listenpoint, Socket socket) throws Exception
     {
         super(
@@ -139,7 +139,7 @@ public class ChannelPop extends Channel
     }
 
     public boolean isServer(){
-        return (channel.getListenpointTcp() != null);
+        return (((ChannelTcp) channel).getListenpointTcp() != null);
     }
 
     public boolean isNextReadMultiLine() {

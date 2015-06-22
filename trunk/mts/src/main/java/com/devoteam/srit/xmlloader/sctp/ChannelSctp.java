@@ -76,15 +76,6 @@ public class ChannelSctp extends Channel
     	super(stack);
     }
 
-    /** Creates a new instance of Channel */
-    public ChannelSctp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception
-    {
-        super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        this.socket = null;
-        this.listenpoint = null;
-        this.initmsg = null;
-    }
-
     public ChannelSctp(ListenpointSctp aListenpoint, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
     {
         super(aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
@@ -163,7 +154,7 @@ public class ChannelSctp extends Channel
             InetSocketAddress remoteSocketAddress = new InetSocketAddress(getRemoteHost(), getRemotePort());
             sctpSocket.connect(remoteSocketAddress);
         
-            this.setLocalPort(sctpSocket.getLocalInetPort());
+            this.localPort = sctpSocket.getLocalInetPort();
             // TODO Take socket LocalAddress into account
             // this.setLocalHost(socket.getLocalAddress().getHostAddress());
 

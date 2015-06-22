@@ -126,29 +126,6 @@ public class Channel
         return localPort;
     }
 
-    /**
-     * This method has been added for protocol specific channels when we know
-     * the local port only after a call to the open() method.
-     * 
-     * It should only be called in the open() method of the Channel sub-types.
-     * @param port
-     */
-    public void setLocalPort(int port)
-    {
-        this.localPort = port;
-    }
-
-    /**
-     * This method has been added for protocol specific channels when we know
-     * the local host only after a call to the open() method.
-     * 
-     * It should only be called in the open() method of the Channel sub-types.
-     * @param port
-     */
-    public void setLocalHost(String host)
-    {
-        this.localHost = Utils.formatIPAddress(host);
-    }
 
     public String getRemoteHost()
     {
@@ -246,7 +223,7 @@ public class Channel
         return true;
     }
 
-    /** Send a Msg to SIP Stack */
+    /** Send a Msg through the channel */
     public boolean sendMessage(Msg msg) throws Exception
     {
         if (null == channel)
@@ -261,8 +238,7 @@ public class Channel
     }
 
 
-    /** Send a Msg to SIP Stack */
-
+    /** Receive a Msg from Channel */
     public boolean receiveMessageNIO(Msg msg) throws Exception
     { 
     	return StackFactory.getStack(protocol).receiveMessageNIO(msg);
@@ -400,6 +376,7 @@ public class Channel
     }
 
     /** clone method */
+    //@Override
     public void clone(Channel channel)
     {
     	if (channel == null)

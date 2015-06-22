@@ -46,20 +46,10 @@ public class ChannelSmtp extends Channel
         super(stack);
     }
 
-    /** Creates a new instance of Channel */
-    public ChannelSmtp(String name, Listenpoint listenpoint, Socket socket) throws Exception
+    /** Get the transport protocol of this message */
+    public String getTransport() 
     {
-        super(
-                name,
-                ((InetSocketAddress)socket.getLocalSocketAddress()).getAddress().getHostAddress(),
-                Integer.toString(((InetSocketAddress)socket.getLocalSocketAddress()).getPort()),
-                ((InetSocketAddress)socket.getRemoteSocketAddress()).getAddress().getHostAddress(),
-                Integer.toString(((InetSocketAddress)socket.getRemoteSocketAddress()).getPort()),
-                listenpoint.getProtocol()
-        );
-        channel = new ChannelTcp(name, listenpoint, socket);
-        transID = null;
-        typeSent = null;
+    	return StackFactory.PROTOCOL_TCP;
     }
 
     /** Send a Msg to Channel */
@@ -97,12 +87,6 @@ public class ChannelSmtp extends Channel
         return super.receiveMessage(msg);
     }
     
-    /** Get the transport protocol of this message */
-    public String getTransport() 
-    {
-    	return StackFactory.PROTOCOL_TCP;
-    }
-
     public boolean isServer(){
         return (channel != null);
     }

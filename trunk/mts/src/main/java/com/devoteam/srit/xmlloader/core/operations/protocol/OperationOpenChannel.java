@@ -79,8 +79,8 @@ public class OperationOpenChannel extends Operation {
 
             if (oldChannel == null) {
                 StackFactory.getStack(protocol).openChannel(channel);
-            	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>OPEN ", protocol, " channel <", channel, ">");
-            	GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>OPEN ", protocol, " channel <", channel, ">");
+            	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW,     ">>>OPEN ", protocol, " <CHANNEL ", channel, ">");
+            	GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>OPEN ", protocol, " <CHANNEL ", channel, ">");
             }
         }
 

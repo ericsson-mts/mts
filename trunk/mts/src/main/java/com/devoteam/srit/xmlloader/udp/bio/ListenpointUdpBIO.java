@@ -45,12 +45,6 @@ public class ListenpointUdpBIO extends Listenpoint {
     {
     	super(stack);
     }
-
-    /** Creates a new instance of Listenpoint */
-    public ListenpointUdpBIO(Stack stack, String name, String host, int port) throws Exception
-    {
-    	super(stack, name, host, port);
-    }
     
 	public boolean create(String protocol) throws Exception {
 		if (!super.create(protocol))

@@ -136,7 +136,7 @@ public class BIOChannelHttp extends ChannelHttp
             socket.setReceiveBufferSize(65536);
             socket.connect(new InetSocketAddress(host, port));
             
-            this.setLocalPort(socket.getLocalPort());
+            this.localPort = socket.getLocalPort();
 
 
             HttpParams params = new BasicHttpParams();

@@ -48,10 +48,10 @@ public class PUDPPacket extends Channel {
         this.udpHeader = new PUDPHeader(array);
         this.data = array.subArray(8); // udp header has a fixed length of "8" src port + dst port + len + checksum
 
-        super.setLocalHost(ipHeader.getSrcIP().getValue());
-        super.setLocalPort(udpHeader.getSrcPort().getValue());
-        super.setRemoteHost(ipHeader.getDstIP().getValue());
-        super.setRemotePort(udpHeader.getDstPort().getValue());
+        super.localHost = ipHeader.getSrcIP().getValue();
+        super.localPort = udpHeader.getSrcPort().getValue();
+        super.remoteHost = ipHeader.getDstIP().getValue();
+        super.remotePort = udpHeader.getDstPort().getValue();
     }
 
     public PIPHeader getIPHeader(){

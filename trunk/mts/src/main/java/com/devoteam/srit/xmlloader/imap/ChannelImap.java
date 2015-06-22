@@ -31,7 +31,6 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
 import com.devoteam.srit.xmlloader.tcp.ListenpointTcp;
@@ -42,15 +41,12 @@ import com.devoteam.srit.xmlloader.tls.ListenpointTls;
 
 public class ChannelImap extends Channel
 {
-    private Channel channel = null;
-        
     private TransactionId transId = null;
     private boolean transactionInProgress = false;
     
     private MsgImap welcomeMsg = null;
     private int nextNbCharToRead = 0;
     private boolean incompleteMessage = false;
-    private String transport = null;
 
     private boolean isAuthenticateMecanismActually = false;
     

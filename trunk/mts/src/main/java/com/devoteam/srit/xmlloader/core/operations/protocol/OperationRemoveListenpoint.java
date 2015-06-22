@@ -88,8 +88,8 @@ public class OperationRemoveListenpoint extends Operation {
         boolean result = StackFactory.getStack(protocol).removeListenpoint(listenpointName);
         if (result)
         {
-        	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " listenpoint <name=\"", listenpointName, "\">");
-        	GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " listenpoint <name=\"", listenpointName, "\">");
+        	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW,     ">>>REMOVE ", protocol, " <LISTENPOINT name=\"", listenpointName, "\">");
+        	GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " <LISTENPOINT name=\"", listenpointName, "\">");
         }
         return null;
     }

@@ -135,8 +135,8 @@ public class ChannelTcpNIO extends Channel
     		// read all properties for the TCP socket 
     		Config.getConfigForTCPSocket(hybridSocket, false);
 
-            this.setLocalPort(hybridSocket.getLocalPort());
-            this.setLocalHost(hybridSocket.getLocalAddress().getHostAddress());
+            this.localPort = hybridSocket.getLocalPort();
+            this.localHost = hybridSocket.getLocalAddress().getHostAddress();
         }
 
 

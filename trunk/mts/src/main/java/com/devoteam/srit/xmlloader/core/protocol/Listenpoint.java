@@ -224,23 +224,22 @@ public class Listenpoint
         
         if (this.listenUDP)
         {
-        	//Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_UDP);
             listenpointUdp = new ListenpointUdp(this.stack);
-            listenpointUdp.copyToClone(this);
+            listenpointUdp.clone(this);
             listenpointUdp.create(protocol);
         }
 
         if (this.listenTCP)
         {
             listenpointTcp = new ListenpointTcp(this.stack);
-            listenpointTcp.copyToClone(this);
+            listenpointTcp.clone(this);
             listenpointTcp.create(protocol);
         }
 
         if (this.listenSCTP)
         {
             listenpointSctp = new ListenpointSctp(this.stack);
-            listenpointSctp.copyToClone(this);
+            listenpointSctp.clone(this);
             try
             {
                 listenpointSctp.create(protocol);
@@ -259,7 +258,7 @@ public class Listenpoint
         		this.portTLS = this.port + 1;
         	}
             listenpointTls = new ListenpointTls(this.stack);
-            listenpointTls.copyToClone(this);
+            listenpointTls.clone(this);
             listenpointTls.create(protocol);
         }
         return true;
@@ -476,15 +475,7 @@ public class Listenpoint
     @Override
     public String toString()
     {
-    	return toXml();
-    }
-    
-    /** 
-     * Convert the listenpoint to XML document 
-     */
-    public String toXml()
-    {
-    	String str = "<LISTENPOINT ";
+        String str = "";
         if (name != null)
         {
         	str += "name=\"" + name + "\"";
@@ -516,8 +507,15 @@ public class Listenpoint
         {
             str += " transport=\"" + transport + "\"";
         }
-        str += "/>";
         return str;
+    }    
+
+    /** 
+     * Convert the listenpoint to XML document 
+     */
+    public String toXml()
+    {
+        return "<LISTENPOINT " + this.toString() + "/>";
     }
     
     /** 
@@ -672,7 +670,7 @@ public class Listenpoint
     
     /** clone method */
     //@Override
-    public void copyToClone(Listenpoint listenpoint)
+    public void clone(Listenpoint listenpoint)
     {
     	if (listenpoint == null)
         {
@@ -685,7 +683,6 @@ public class Listenpoint
     	this.portTLS = listenpoint.getPortTLS();
     	
     	this.protocol = listenpoint.getProtocol();
-    	
         this.listenUDP = false;
         this.listenTCP = false;
         this.listenSCTP = false;

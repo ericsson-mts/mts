@@ -144,7 +144,7 @@ public class ChannelTcp extends Channel {
     public void parseFromXml(Element root, Runner runner, String protocol) throws Exception
     {
     	super.parseFromXml(root, runner, StackFactory.PROTOCOL_TCP);
-    	channel.parseFromXml(root, runner, StackFactory.PROTOCOL_TCP);
+    	this.channel.parseFromXml(root, runner, StackFactory.PROTOCOL_TCP);
     }
 
     
