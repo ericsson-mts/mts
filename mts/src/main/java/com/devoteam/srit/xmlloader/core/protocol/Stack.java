@@ -400,7 +400,7 @@ public abstract class Stack
     	String acronyme = stackClassname.substring(5);
     	String msgClassname = packageName + "." + type + acronyme;
     	//java.lang.reflect.Type.GetType(msgClassname)
-    	Class<?> cl = getClassFromCanonicalName(msgClassname);
+    	Class<?> cl = getClassFromCanonicalName(msgClassname); 
     	return cl;
     }
 
