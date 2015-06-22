@@ -38,7 +38,7 @@ public class RtpFlowEndTask implements Task {
     private final StackRtpFlow _stack;
     private long _minimumInterval;
 
-    public RtpFlowEndTask(ListenpointRtpFlow listenpoint) throws ExecutionException {
+    public RtpFlowEndTask(ListenpointRtpFlow listenpoint) throws Exception {
         _stack = (StackRtpFlow) StackFactory.getStack(StackFactory.PROTOCOL_RTPFLOW);
         _listenpoint = listenpoint;
         _minimumInterval = Long.MAX_VALUE;
