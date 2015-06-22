@@ -55,19 +55,6 @@ public class StackRtp extends Stack
         super();
     }
     
-    /** Creates a Channel specific to each Stack */
-    @Override
-    public Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception {
-        String name = root.attributeValue("sessionName");
-        String localHost = root.attributeValue("localHost");
-        String localPort = root.attributeValue("localPort");
-        String remoteHost = root.attributeValue("remoteHost"); 
-        String remotePort = root.attributeValue("remotePort");
-
-        ChannelRtp channel = new ChannelRtp(name, localHost, localPort, remoteHost, remotePort, protocol); 
-        return channel;
-    }
-
     /** Creates a specific RTP Msg */
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {                       

@@ -40,7 +40,7 @@ import org.dom4j.Element;
 public class ListenpointUdp extends Listenpoint
 {
     private boolean nio = Config.getConfigByName("udp.properties").getBoolean("USE_NIO", false);
-    //private Listenpoint  listenpoint;
+
     private long startTimestamp = 0;
     
     /** Creates a new instance of Listenpoint */
@@ -55,18 +55,14 @@ public class ListenpointUdp extends Listenpoint
         {
         	listenpointUdp = new ListenpointUdpBIO(stack);
         }
-        listenpointUdp.copyToClone(this);
+        listenpointUdp.clone(this);
     }
 
     /** Creates a new instance of Listenpoint */
+    // Not used except for test unit
     public ListenpointUdp(Stack stack, String name, String host, int port) throws Exception
     {
         super(stack, name, host, port);
-    }
-
-    public void setPort(int port)
-    {
-        listenpointUdp.setPort(port);
     }
 
     @Override
@@ -173,10 +169,11 @@ public class ListenpointUdp extends Listenpoint
     }
 
     /** clone method */
-    public void copyToClone(Listenpoint listenpoint)
+    //@Override
+    public void clone(Listenpoint listenpoint)
     {
-    	super.copyToClone(listenpoint);
-        this.listenpointUdp.copyToClone(listenpoint);
+    	super.clone(listenpoint);
+        this.listenpointUdp.clone(listenpoint);
     }
 
     /** equals method */

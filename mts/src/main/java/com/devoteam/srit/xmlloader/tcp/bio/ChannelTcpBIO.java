@@ -124,8 +124,8 @@ public class ChannelTcpBIO extends Channel
     		// read all properties for the TCP socket 
     		Config.getConfigForTCPSocket(socket, false);
     		
-            this.setLocalPort(socket.getLocalPort());
-            this.setLocalHost(socket.getLocalAddress().getHostAddress());
+            this.localPort = socket.getLocalPort();
+            this.localHost = socket.getLocalAddress().getHostAddress();
             
             socketTcp = new SocketTcpBIO(socket);
     	}

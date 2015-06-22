@@ -88,7 +88,7 @@ public class ChannelRadius extends Channel implements Runnable
             this.radiusSocket = new RadiusSocket(this.getLocalHost(), this.getLocalPort());
         }
 
-        this.setLocalPort(this.radiusSocket.getLocalPort());
+        this.localPort = this.radiusSocket.getLocalPort();
         int bufferSize = this.stack.getConfig().getInteger("radius.RECEIVE_BUFFER_LENGTH", 4096);
         this.radiusSocket.setBufferSize(bufferSize);
 
@@ -134,8 +134,8 @@ public class ChannelRadius extends Channel implements Runnable
                 radiusMessage.setSecret(this.secret);
 
                 MsgRadius msgRadius = new MsgRadius(this.stack, radiusMessage);
-                this.setRemoteHost(radiusMessage.getRemoteAddress().getAddress().getHostAddress());
-                this.setRemotePort(radiusMessage.getRemoteAddress().getPort());
+                this.remoteHost = radiusMessage.getRemoteAddress().getAddress().getHostAddress();
+                this.remotePort = radiusMessage.getRemoteAddress().getPort();
                 msgRadius.setChannel(this);
 
                 if (!msgRadius.isRequest())

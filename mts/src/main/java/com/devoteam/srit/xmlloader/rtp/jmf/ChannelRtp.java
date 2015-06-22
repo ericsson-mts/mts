@@ -23,13 +23,17 @@
 
 package com.devoteam.srit.xmlloader.rtp.jmf;
 
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 
 import java.util.Iterator;
 
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.sun.media.rtp.util.RTPPacket;
 
@@ -43,16 +47,17 @@ public class ChannelRtp extends Channel
     private RtpManager rtpManager = null;
         
     /** Creates a new instance of Channel */
-    public ChannelRtp(String name, String localHost, String localPort, String remoteHost, String remotePort, String aProtocol) throws Exception { 
-        super(name, localHost, localPort, remoteHost, remotePort, aProtocol);  
-    }
-
-    /** Creates a new instance of Channel */
-    public ChannelRtp(String localHost, int localPort, String remoteHost, int remotePort, String aProtocol)
+    public ChannelRtp(Stack stack)
     {
-        super(localHost, localPort, remoteHost, remotePort, aProtocol);        
+    	super(stack);
     }
-    
+        
+    /** Get the transport protocol of this message */
+    public String getTransport() 
+    {
+    	return StackFactory.PROTOCOL_UDP;
+    }    
+
     public boolean open() throws Exception {
         rtpManager = new RtpManager(this);        
         rtpManager.open(getLocalHost(), getLocalPort(), getRemoteHost(), getRemotePort());
@@ -81,11 +86,21 @@ public class ChannelRtp extends Channel
         }                          
         return true;
     }
- 
-    /** Get the transport protocol of this message */
-    public String getTransport() 
-    {
-    	return StackFactory.PROTOCOL_UDP;
-    }    
     
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseFromXml(Element root, Runner runner, String protocol) throws Exception
+    {
+    	super.parseFromXml(root, runner, protocol);
+    	
+    	// DEPRECATED begin
+    	String name = root.attributeValue("sessionName");
+    	if (name != null)
+    	{
+    		this.name = name;
+    	}
+    	// DEPRECATED end
+    }
 }

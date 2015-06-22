@@ -50,14 +50,6 @@ public class ChannelUdpBIO extends Channel
     	super(stack);
     }
     
-    public ChannelUdpBIO(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, boolean aConnected) throws Exception
-    {
-        super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        this.socketUdp = null; 
-        int remotePort = Integer.parseInt(aRemotePort);
-		this.remoteDatagramSocketAddress = new InetSocketAddress(aRemoteHost, remotePort);
-    }
-
     public ChannelUdpBIO(SocketUdpBIO socketUdp, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
     {
          super(aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);

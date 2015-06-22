@@ -76,6 +76,7 @@ public class ListenpointRtp extends Listenpoint
     }
 			
     /** Creates a new instance of Listenpoint */
+    // used for unit test only
     public ListenpointRtp(Stack stack, String name, String host, int port) throws Exception
     {
     	super(stack, name, host, port);

@@ -91,7 +91,7 @@ public class SocketTcpBIO extends Thread
 		}
 		catch (Exception e)
 		{
-			return;
+			GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e, "Exception in SocketTcpBIO");
 		}
 
         GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PROTOCOL, "SocketTcp listener thread started : ", channel);

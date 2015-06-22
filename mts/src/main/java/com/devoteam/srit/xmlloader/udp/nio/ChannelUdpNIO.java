@@ -45,12 +45,6 @@ public class ChannelUdpNIO extends Channel
     	super(stack);
     }
     
-    public ChannelUdpNIO(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, boolean aConnected) throws Exception
-    {
-        super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        socketUdp = null;
-    }
-
     public ChannelUdpNIO(SocketUdpNIO socketUdp, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
     {
         super(aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);

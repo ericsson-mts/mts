@@ -48,7 +48,8 @@ import com.devoteam.srit.xmlloader.rtp.srtp.SRTPTransformer;
 /**
  * @author gpasquiers
  */
-public class ListenpointRtpFlow extends Listenpoint {
+public class ListenpointRtpFlow extends Listenpoint 
+{
 
     protected MsgRtpFlow _currentMessage = null;
     protected float endTimerNoPacket;
@@ -73,6 +74,7 @@ public class ListenpointRtpFlow extends Listenpoint {
     }
 
 	/** Creates a new instance of Listenpoint */
+    // used for capture only
     public ListenpointRtpFlow(Stack stack, String name, String host, int port) throws Exception
     {
     	super(stack, name, host, port);
@@ -110,14 +112,17 @@ public class ListenpointRtpFlow extends Listenpoint {
 		return isSecured;
 	}
 
-    public String toString() {
+    public String toString() 
+    {
         String ret = super.toString();
-        ret += " endTimerNoPacket = " + endTimerNoPacket;
-        if (endTimerSilentFlow != 0) {
-            ret += " endTimerSilentFlow = " + endTimerSilentFlow;
+        ret += " endTimerNoPacket=\"" + endTimerNoPacket + "\"";
+        if (endTimerSilentFlow != 0) 
+        {
+            ret += " endTimerSilentFlow=\"" + endTimerSilentFlow + "\"";
         }
-        if (endTimerPeriodic != 0) {
-            ret += " endTimerPeriodic = " + endTimerPeriodic;
+        if (endTimerPeriodic != 0) 
+        {
+            ret += " endTimerPeriodic=\"" + endTimerPeriodic + "\"";
         }
         return ret;
     }
