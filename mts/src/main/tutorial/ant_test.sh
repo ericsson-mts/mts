@@ -1,12 +1,11 @@
 #!/bin/sh
 
-OPTIONS= "-level:WARN -stor:file -gen:false -show:false"
+OPTIONS= "-level:WARN -stor:file -gen:false -show:false -param:[iterations]+10"
 #MODE1=1
 MODE1=-seq
 
 echo "Run the unit tests"
 cd ../bin
-
 rm -rf ../logs/*
 
 echo ******************************************* protocol modules

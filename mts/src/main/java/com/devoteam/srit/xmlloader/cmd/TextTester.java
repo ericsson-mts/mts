@@ -131,7 +131,7 @@ public class TextTester {
             }
 
             if (!find) {
-                TextImplementation.usage("The editable parameter \"" + name + "\" does not exist in the test pool. Please check that point.");
+                System.out.print("WARNING : The editable parameter \"" + name + "\" does not exist in the test pool. Please check that point.");
             }
         }
     }

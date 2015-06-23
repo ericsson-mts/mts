@@ -126,6 +126,9 @@ public class MsgEthernet extends Msg
     	{
     		this.data[i]= data[i];
     	}
+    	setDstMac(new String[6]);
+    	srcMac = new String[6];
+    	setType(0);
 	}
     
     

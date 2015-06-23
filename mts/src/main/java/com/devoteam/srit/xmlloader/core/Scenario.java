@@ -392,7 +392,7 @@ public class Scenario implements Serializable {
     		int length = type.length();
 			String rootNameFirstUpper = rootName.substring(0, length);
 			rootNameFirstUpper = rootNameFirstUpper.substring(0, 1).toUpperCase() + rootNameFirstUpper.substring(1); 
-			String operationClassname = StackFactory.ROOT_PACKAGE + "core.operations.protocol.Operation" + rootNameFirstUpper;
+			String operationClassname = StackFactory.ROOT_PACKAGE + ".core.operations.protocol.Operation" + rootNameFirstUpper;
 			String protocol = rootName.substring(length);
 			Class<?> classObject = ClassLoader.getSystemClassLoader().loadClass(operationClassname);
 			Constructor<?> constr = null;
