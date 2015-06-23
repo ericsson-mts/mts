@@ -66,8 +66,6 @@ public class ListenpointRtp extends Listenpoint
 
 	private SRTPTransformer cipherSender = null;
 	private SRTPTransformer cipherReceiver = null;
-	
-	private SRTPCryptoContext srtpCryptoContext = null;
 
 	/** Creates a new instance of Listenpoint */
     public ListenpointRtp(Stack stack) throws Exception

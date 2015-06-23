@@ -27,63 +27,65 @@
     <parameter name="[remoteRealmDIAM]" operation="set" value="client.fr"/>
     <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true"/>
     
+    <parameter name="[iterations]" operation="set" value="10" description=" iterations number" editable="true"/>
+    
     <parameter name="[vendorID]" operation="set" value="10415"/>
     <!--parameter name="[vendorID]" operation="set" value="TGPP"/-->
   
-    <testcase description="diameter" name="001_no_synchro" state="true">
+    <testcase name="001_no_synchro" state="true" number="[iterations]" description="diameter" >
         <scenario file="001_no_synchro/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="001_no_synchro/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="002_code" state="true">
+    <testcase name="002_code" state="true" number="[iterations]" description="diameter" >
         <scenario file="002_code/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="002_code/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="003_no_dico" state="true">
+    <testcase name="003_no_dico" state="true" number="[iterations]" description="diameter" >
         <scenario file="003_no_dico/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="003_no_dico/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="004_balise_test" state="true">
+    <testcase name="004_balise_test" state="true" number="[iterations]" description="diameter" >
         <scenario file="004_balise_test/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="004_balise_test/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="005_set_from_msg" state="true">
+    <testcase name="005_set_from_msg" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="4321"/>
         <scenario file="005_set_from_msg/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="005_set_from_msg/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="006_server" state="true">
+    <testcase name="006_server" state="true" number="[iterations]" description="diameter" >
         <scenario file="006_server/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="006_server/server-cx-ma.xml" name="506" state="[remoteServer]" routingName="506"/>
         <scenario file="006_server/server-sh-ud.xml" name="306" state="[remoteServer]" routingName="306"/>
     </testcase>
 
-     <testcase description="diameter" name="007_one_scenario" state="true">
+     <testcase name="007_one_scenario" state="true" number="[iterations]" description="diameter" >
         <scenario file="007_one_scenario/client-server.xml" name="client-server" state="true" routingName="client-server"/>
     </testcase>
 
-     <testcase description="diameter" name="008_one_scenario_receiveMessage" state="true">
+     <testcase name="008_one_scenario_receiveMessage" state="true" number="[iterations]" description="diameter" >
         <scenario file="008_one_scenario_receiveMessage/client-server.xml" name="client-server" state="true" routingName="client-server"/>
     </testcase>
 
-     <testcase description="diameter" name="009_echo" state="true">
+     <testcase name="009_echo" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777216"/>
         <scenario file="009_echo/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="009_echo/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="010_probe_capture" state="true">
+    <testcase name="010_probe_capture" state="true" number="[iterations]" description="diameter" >
         <parameter name="[waitSemaphore]" operation="set" value="true"/>
         <scenario file="507_base_ACR/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="507_base_ACR/server.xml" name="server" state="[remoteServer]" routingName="server"/>
         <scenario file="010_probe_capture/probe.xml" name="default" state="true" routingName="default"/>
     </testcase>
 
-    <testcase description="diameter" name="011_listenpoint" state="true">
+    <testcase name="011_listenpoint" state="true" number="[iterations]" description="diameter" >
         <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
         <parameter name="[Listen-Client-Port]" operation="set" value="3880"/>
         <parameter name="[Listen-Server-Host]" operation="set" value="[remoteHostDIAM]"/>
@@ -93,7 +95,7 @@
         <scenario file="011_listenpoint/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="012_routing_scenarioname" state="true">
+    <testcase name="012_routing_scenarioname" state="true" number="[iterations]" description="diameter" >
         <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
         <parameter name="[Listen-Client-Port]" operation="set" value="3870"/>
         <parameter name="[Listen-Server-Host]" operation="set" value="[localHostDIAM]"/>
@@ -105,13 +107,13 @@
         <scenario file="012_routing_scenarioname/server.xml" name="Scenario Server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="012_routing_destscenario" state="true">
+    <testcase name="012_routing_destscenario" state="true" number="[iterations]" description="diameter" >
         <!--routing using MESSAGE_ID (destScenario) -->
         <scenario file="012_routing_destscenario/client.xml" name="Scenario client" state="[localClient]" routingName="nothing"/>
         <scenario file="012_routing_destscenario/server.xml" name="Scenario server" state="[remoteServer]" routingName="nothing"/>
     </testcase>
 
-    <testcase description="diameter" name="013_routing_session" state="true">
+    <testcase name="013_routing_session" state="true" number="[iterations]" description="diameter" >
         <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
         <parameter name="[Listen-Client-Port]" operation="set" value="3880"/>
         <parameter name="[Listen-Server-Host]" operation="set" value="[remoteHostDIAM]"/>
@@ -123,294 +125,294 @@
         <scenario file="013_routing_session/server.xml" name="Scenario server" state="[remoteServer]" routingName="nothing"/>
     </testcase>
 
-    <testcase description="diameter" name="101_cx_uar" state="true">
+    <testcase name="101_cx_uar" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777216"/>
         <!--parameter name="[applicationID]" operation="set" value="IMS_Cx_Dx"/-->
         <scenario file="101_cx_uar/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="101_cx_uar/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="103_cx_sar" state="true">
+    <testcase name="103_cx_sar" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777216"/>
         <scenario file="103_cx_sar/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="103_cx_sar/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="105_cx_lir" state="true">
+    <testcase name="105_cx_lir" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777216"/>
         <scenario file="105_cx_lir/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="105_cx_lir/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="107_cx_mar" state="true">
+    <testcase name="107_cx_mar" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777216"/>
         <scenario file="107_cx_mar/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="107_cx_mar/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="109_cx_rtr" state="true">
+    <testcase name="109_cx_rtr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777216"/>
         <scenario file="109_cx_rtr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="109_cx_rtr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="111_cx_ppr" state="true">
+    <testcase name="111_cx_ppr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777216"/>
         <scenario file="111_cx_ppr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="111_cx_ppr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="201_sh_udr" state="true">
+    <testcase name="201_sh_udr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777217"/>
         <scenario file="201_sh_udr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="201_sh_udr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="203_sh_pur" state="true">
+    <testcase name="203_sh_pur" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777217"/>
         <scenario file="203_sh_pur/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="203_sh_pur/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="205_sh_snr" state="true">
+    <testcase name="205_sh_snr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777217"/>
         <scenario file="205_sh_snr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="205_sh_snr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="207_sh_pnr" state="true">
+    <testcase name="207_sh_pnr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777217"/>
         <scenario file="207_sh_pnr/server.xml" name="server" state="[localClient]" routingName="server"/>
         <scenario file="207_sh_pnr/client.xml" name="client" state="[remoteServer]" routingName="client"/>
     </testcase>
 
-    <testcase description="diameter" name="301_rf_acr" state="true">
+    <testcase name="301_rf_acr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="0"/>
         <scenario file="301_rf_acr/CTF.xml" name="CTF" state="[localClient]" routingName="CTF"/>
         <scenario file="301_rf_acr/CDF.xml" name="CDF" state="[remoteServer]" routingName="CDF"/>
     </testcase>
 
-    <testcase description="diameter" name="302_ro_ccr" state="true">
+    <testcase name="302_ro_ccr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="4"/>
         <scenario file="302_ro_ccr/CTF.xml" name="CTF" state="[localClient]" routingName="CTF"/>
         <scenario file="302_ro_ccr/OCF.xml" name="OCF" state="[remoteServer]" routingName="OCF"/>
     </testcase>
     
-    <testcase description="diameter" name="316_s6_ulr" state="true">
+    <testcase name="316_s6_ulr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777251"/>
         <scenario file="316_s6_ulr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="316_s6_ulr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="317_s6_air" state="true">
+    <testcase name="317_s6_air" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777251"/>
         <scenario file="317_s6_air/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="317_s6_air/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="318_s6_clr" state="true">
+    <testcase name="318_s6_clr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777251"/>
         <scenario file="318_s6_clr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="318_s6_clr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="319_s6_idr" state="true">
+    <testcase name="319_s6_idr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777251"/>
         <scenario file="319_s6_idr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="319_s6_idr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="320_s6_dsr" state="true">
+    <testcase name="320_s6_dsr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777251"/>
         <scenario file="320_s6_dsr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="320_s6_dsr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="321_s6_pur" state="true">
+    <testcase name="321_s6_pur" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777251"/>
         <scenario file="321_s6_pur/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="321_s6_pur/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="322_s6_rsr" state="true">
+    <testcase name="322_s6_rsr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777251"/>
         <scenario file="322_s6_rsr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="322_s6_rsr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="323_s6_nor" state="true">
+    <testcase name="323_s6_nor" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777251"/>
         <scenario file="323_s6_nor/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="323_s6_nor/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="327_s13_ecr" state="true">
+    <testcase name="327_s13_ecr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777252"/>
         <scenario file="327_s13_ecr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="327_s13_ecr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="330_gx_ccr" state="false">
+    <testcase name="330_gx_ccr" state="false" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777238"/>
         <scenario file="330_gx_ccr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="330_gx_ccr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="331_gx_rar" state="false">
+    <testcase name="331_gx_rar" state="false" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777238"/>
         <scenario file="331_gx_rar/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="331_gx_rar/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="335_rx_aar" state="true">
+    <testcase name="335_rx_aar" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777236"/>
         <scenario file="335_rx_aar/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="335_rx_aar/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="336_rx_rar" state="true">
+    <testcase name="336_rx_rar" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777236"/>
         <scenario file="336_rx_rar/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="336_rx_rar/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="337_rx_str" state="true">
+    <testcase name="337_rx_str" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777236"/>
         <scenario file="337_rx_str/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="337_rx_str/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="338_rx_asr" state="true">
+    <testcase name="338_rx_asr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777236"/>
         <scenario file="338_rx_asr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="338_rx_asr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
-    <testcase description="diameter" name="411_e4_udr" state="true">
+    <testcase name="411_e4_udr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777231"/>
         <scenario file="411_e4_udr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="411_e4_udr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="412_e4_pnr" state="true">
+    <testcase name="412_e4_pnr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777231"/>
         <scenario file="412_e4_pnr/server.xml" name="server" state="[localClient]" routingName="server"/>
         <scenario file="412_e4_pnr/client.xml" name="client" state="[remoteServer]" routingName="client"/>
     </testcase>
 
-    <testcase description="diameter" name="421_e2_udr" state="true">
+    <testcase name="421_e2_udr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777231"/>
         <scenario file="421_e2_udr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="421_e2_udr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="431_rq_aar" state="true">
+    <testcase name="431_rq_aar" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777222"/>
         <scenario file="431_rq_aar/SPDF.xml" name="SPDF" state="[localClient]" routingName="SPDF"/>
         <scenario file="431_rq_aar/A-RACF.xml" name="A-RACF" state="[remoteServer]" routingName="A-RACF"/>
     </testcase>
 
-    <testcase description="diameter" name="432_rq_rar" state="true">
+    <testcase name="432_rq_rar" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777222"/>
         <scenario file="432_rq_rar/SPDF.xml" name="SPDF" state="[localClient]" routingName="SPDF"/>
         <scenario file="432_rq_rar/A-RACF.xml" name="A-RACF" state="[remoteServer]" routingName="A-RACF"/>
     </testcase>
 
-    <testcase description="diameter" name="433_rq_str" state="true">
+    <testcase name="433_rq_str" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777222"/>
         <scenario file="433_rq_str/SPDF.xml" name="SPDF" state="[localClient]" routingName="SPDF"/>
         <scenario file="433_rq_str/A-RACF.xml" name="A-RACF" state="[remoteServer]" routingName="A-RACF"/>
     </testcase>
 
-    <testcase description="diameter" name="434_rq_asr" state="true">
+    <testcase name="434_rq_asr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777222"/>
         <scenario file="434_rq_asr/SPDF.xml" name="SPDF" state="[localClient]" routingName="SPDF"/>
         <scenario file="434_rq_asr/A-RACF.xml" name="A-RACF" state="[remoteServer]" routingName="A-RACF"/>
     </testcase>
 
-    <testcase description="diameter" name="441_gqp_aar" state="true">
+    <testcase name="441_gqp_aar" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777222"/>
         <scenario file="441_gqp_aar/AF.xml" name="AF" state="[localClient]" routingName="AF"/>
         <scenario file="441_gqp_aar/SPDF.xml" name="SPDF" state="[remoteServer]" routingName="SPDF"/>
     </testcase>
 
-    <testcase description="diameter" name="442_gqp_rar" state="true">
+    <testcase name="442_gqp_rar" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777222"/>
         <scenario file="442_gqp_rar/AF.xml" name="AF" state="[localClient]" routingName="AF"/>
         <scenario file="442_gqp_rar/SPDF.xml" name="SPDF" state="[remoteServer]" routingName="SPDF"/>
     </testcase>
 
-    <testcase description="diameter" name="443_gqp_str" state="true">
+    <testcase name="443_gqp_str" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777222"/>
         <scenario file="443_gqp_str/AF.xml" name="AF" state="[localClient]" routingName="AF"/>
         <scenario file="443_gqp_str/SPDF.xml" name="SPDF" state="[remoteServer]" routingName="SPDF"/>
     </testcase>
 
-    <testcase description="diameter" name="444_gqp_asr" state="true">
+    <testcase name="444_gqp_asr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777222"/>
         <scenario file="444_gqp_asr/AF.xml" name="AF" state="[localClient]" routingName="AF"/>
         <scenario file="444_gqp_asr/SPDF.xml" name="SPDF" state="[remoteServer]" routingName="SPDF"/>
     </testcase>
 
-    <testcase description="diameter" name="501_base_CER (not runnable)" state="false">
+    <testcase name="501_base_CER (not runnable)" state="false" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="0"/>
         <scenario file="501_base_CER/peer1.xml" name="peer1" state="[localClient]" routingName="peer1"/>
         <scenario file="501_base_CER/peer2.xml" name="peer2" state="[remoteServer]" routingName="peer2"/>
     </testcase>
 
-    <testcase description="diameter" name="502_base_DPR (not runnable)" state="false">
+    <testcase name="502_base_DPR (not runnable)" state="false" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="0"/>
         <scenario file="502_base_DPR/peer1.xml" name="peer1" state="[localClient]" routingName="peer1"/>
         <scenario file="502_base_DPR/peer2.xml" name="peer2" state="[localClient]" routingName="peer2"/>
     </testcase>
 
-    <testcase description="diameter" name="503_base_DWR (not runnable)" state="false">
+    <testcase name="503_base_DWR (not runnable)" state="false" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="0"/>
         <scenario file="503_base_DWR/peer1.xml" name="peer1" state="[localClient]" routingName="peer1"/>
         <scenario file="503_base_DWR/peer2.xml" name="peer2" state="[remoteServer]" routingName="peer2"/>
     </testcase>
 
-    <testcase description="diameter" name="504_base_RAR" state="true">
+    <testcase name="504_base_RAR" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="0"/>
         <scenario file="504_base_RAR/server.xml" name="server" state="[localClient]" routingName="server"/>
         <scenario file="504_base_RAR/client.xml" name="client" state="[remoteServer]" routingName="client"/>
     </testcase>
 
-    <testcase description="diameter" name="505_base_STR" state="true">
+    <testcase name="505_base_STR" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="0"/>
         <scenario file="505_base_STR/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="505_base_STR/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="506_base_ASR" state="true">
+    <testcase name="506_base_ASR" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="0"/>
         <scenario file="506_base_ASR/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="506_base_ASR/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="507_base_ACR" state="true">
+    <testcase name="507_base_ACR" state="true" number="[iterations]" description="diameter" >
         <parameter name="[waitSemaphore]" operation="set" value="false"/>
         <parameter name="[applicationID]" operation="set" value="0"/>
         <scenario file="507_base_ACR/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="507_base_ACR/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="800_QS_test_server" state="false">
-        <scenario file="800_QS_test_server/server.xml" name="server" state="[remoteServer]" routingName="server"/>
+    <testcase name="800_QS_test_server" state="false" description="diameter" >
+        <scenario file="800_QS_test_server/server.xml" name="server" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="941_e4" state="false">
+    <testcase name="941_e4" state="false" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777231"/>
         <scenario file="941_e4/CLF-e4-UDA.xml" name="306" routingName="306"/>
         <scenario file="941_e4/RACF-e4-PNA.xml" name="309" routingName="309"/>
     </testcase>
     
-    <testcase description="diameter" name="942_e2" state="false">
+    <testcase name="942_e2" state="false" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777231"/>
         <scenario file="942_e2/CLF-e2-UDA.xml" name="306" routingName="306"/>
     </testcase>
 
-    <testcase description="diameter" name="943_rq" state="false">
+    <testcase name="943_rq" state="false" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777222"/>
         <scenario file="943_rq/RACF-Rq-AAA.xml" name="265" routingName="265"/>
         <scenario file="943_rq/SPDF-Rq-RAA.xml" name="258" routingName="258"/>
@@ -418,7 +420,7 @@
         <scenario file="943_rq/SPDF-Rq-ASA.xml" name="274" routingName="274"/>
     </testcase>
 
-    <testcase description="diameter" name="944_gqp" state="false">
+    <testcase name="944_gqp" state="false" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777222"/>
         <scenario file="944_gqp/SPDF-Gqp-AAA.xml" name="265" routingName="265"/>
         <scenario file="944_gqp/AF-Gqp-RAA.xml" name="258" routingName="258"/>
@@ -426,7 +428,7 @@
         <scenario file="944_gqp/AF-Gqp-ASA.xml" name="274" routingName="274"/>
     </testcase>
 
-    <testcase description="diameter" name="996_proxy" state="false">
+    <testcase name="996_proxy" state="false" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777216"/>
         <parameter name="[Listen-Proxy-Host]" operation="set" value="[localHostDIAM]"/>
         <parameter name="[Listen-Proxy-Port]" operation="set" value="3880"/>
@@ -437,19 +439,19 @@
         <scenario file="996_proxy/server.xml" name="DIAMETER" routingName="DIAMETER"/>
     </testcase>
 
-    <testcase description="diameter" name="997_boucle" state="false">
+    <testcase name="997_boucle" state="false" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777216"/>
         <scenario file="997_boucle/client.xml" name="client" routingName="client"/>
         <scenario file="997_boucle/server.xml" name="server" routingName="server"/>
     </testcase>
 
-    <testcase description="diameter" name="998_client" state="false">
+    <testcase name="998_client" state="false" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="16777216"/>
         <scenario file="998_client/client-sh-udr.xml" name="client-sh-udr" routingName="client-sh-udr"/>
         <scenario file="998_client/client-cx-mar.xml" name="client-cx-mar" routingName="client-cx-mar"/>
     </testcase>
 
-    <testcase description="diameter" name="999_server" state="false">
+    <testcase name="999_server" state="false" description="diameter" >
         <scenario file="999_server/server-cx-maa.xml" name="506" routingName="506"/>
         <scenario file="999_server/server-sh-uda.xml" name="306" routingName="306"/>
     </testcase>

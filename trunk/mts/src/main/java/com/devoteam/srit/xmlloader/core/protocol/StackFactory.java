@@ -26,7 +26,6 @@ package com.devoteam.srit.xmlloader.core.protocol;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Config;
@@ -45,7 +44,7 @@ public class StackFactory
     // public final static String PREFIX_CAPTURING = "&lt;&lt;&gt;&gt;out";
     public final static String PREFIX_CAPTURING = "_cap";
     
-    public final static String ROOT_PACKAGE = "com.devoteam.srit.xmlloader.";
+    public final static String ROOT_PACKAGE = "com.devoteam.srit.xmlloader";
     
     public final static String PROTOCOL_DIAMETER = "DIAMETER";
     public final static String PROTOCOL_SIP = "SIP";
@@ -123,6 +122,8 @@ public class StackFactory
     public static void getAllStacks()
     {    
     	Stack stack = null;
+    	
+    	// TODO essayer d'utiliser l'introspection pour faire plus générique
         try
         {
             stack = getStack(PROTOCOL_DIAMETER);
@@ -173,10 +174,9 @@ public class StackFactory
     /** Get the class type (Stack, Msg, Listenpoint, Channel, Probe) object from protocol acronym */
     public static String getClassFromProtocol(String protocol, String type) throws Exception
     {
-    	String packageName = ROOT_PACKAGE;
     	String acronymeLower = protocol.toLowerCase();
     	String acronymeFirstUpper = acronymeLower.substring(0, 1).toUpperCase() + acronymeLower.substring(1); 
-    	String classname = packageName + acronymeLower + "." + type + acronymeFirstUpper;
+    	String classname = ROOT_PACKAGE + "."  + acronymeLower + "." + type + acronymeFirstUpper;
     	return classname;
     }
 

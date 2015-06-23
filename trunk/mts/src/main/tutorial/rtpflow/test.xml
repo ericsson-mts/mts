@@ -6,12 +6,14 @@
     <parameter name="[localHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[localHostRTP]" operation="set" value="[localHostRTP(0)]" description="local address of the MTS host" editable="true" />
     <parameter name="[localPortRTP]" operation="set" value="10000" description="local port of the MTS host" editable="true" />
+    <parameter name="[localClient]" operation="set" value="true" description="flag to activate the client scenario" editable="true" />
     
     <parameter name="[remoteHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]" description="remote address of the SUT host" editable="true" />
     <parameter name="[remotePortRTP]" operation="set" value="20000" description="remote port of the SUT host" editable="true" />
     <parameter name="[remotePortRTP2]" operation="number.add" value="[remotePortRTP]" value2="2"/>
-
+    <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true"/>
+    
     <parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
      <!--parameter name="[localHostSIP]" operation="set" value="172.16.21.32"/-->
     <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" editable="true" />
@@ -25,129 +27,131 @@
     <parameter name="[remotePortSIP]" operation="set" value="[remotePortSIP]" editable="true" />
     <parameter name="[remoteSIP]" operation="set" value="[remoteHostSIP]:[remotePortSIP]"/>
     
+    <parameter name="[iterations]" operation="set" value="10" description=" iterations number" editable="true"/>
+    
     <!-- value2 = deltaTime (millisecondes)-->
     <parameter name="fileWave" operation="file.readwave" value="rtpflow.wav" value2="20"/>
 
-    <testcase name="000_sendFlowReceivePacket" state="true">
-        <scenario file="000_sendFlowReceivePacket/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="000_sendFlowReceivePacket/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+    <testcase name="000_sendFlowReceivePacket" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="000_sendFlowReceivePacket/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="000_sendFlowReceivePacket/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="001_sendFlowReceiveFlow" state="true">
-        <scenario file="001_sendFlowReceiveFlow/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="001_sendFlowReceiveFlow/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+    <testcase name="001_sendFlowReceiveFlow" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="001_sendFlowReceiveFlow/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="001_sendFlowReceiveFlow/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="002_testAllParameters" state="true">
-        <scenario file="002_testAllParameters/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="002_testAllParameters/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+    <testcase name="002_testAllParameters" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="002_testAllParameters/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="002_testAllParameters/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="004_sendFlowBitrate" state="true">
-        <scenario file="004_sendFlowBitrate/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="004_sendFlowBitrate/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+    <testcase name="004_sendFlowBitrate" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="004_sendFlowBitrate/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="004_sendFlowBitrate/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="005_sendFlowCSV" state="true">
-        <scenario file="005_sendFlowCSV/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="005_sendFlowCSV/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+    <testcase name="005_sendFlowCSV" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="005_sendFlowCSV/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="005_sendFlowCSV/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="006_sendFlowWithDisturbance" state="true">
-        <scenario file="006_sendFlowWithDisturbance/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="006_sendFlowWithDisturbance/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+    <testcase name="006_sendFlowWithDisturbance" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="006_sendFlowWithDisturbance/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="006_sendFlowWithDisturbance/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="007_sendFlowWithJitter" state="true">
-        <scenario file="007_sendFlowWithJitter/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="007_sendFlowWithJitter/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+    <testcase name="007_sendFlowWithJitter" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="007_sendFlowWithJitter/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="007_sendFlowWithJitter/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="008_sendFilePDMLWireshark" state="true">
-        <scenario file="008_sendFilePDMLWireshark/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="008_sendFilePDMLWireshark/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+    <testcase name="008_sendFilePDMLWireshark" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="008_sendFilePDMLWireshark/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="008_sendFilePDMLWireshark/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 	
-	<testcase name="009_sendFileWAV" state="true">
-        <scenario file="009_sendFileWAV/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="009_sendFileWAV/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+    <testcase name="009_sendFileWAV" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="009_sendFileWAV/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="009_sendFileWAV/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="010_sendPacketsReceiveFlow" state="true">
+    <testcase name="010_sendPacketsReceiveFlow" state="true" number="[iterations]" description="rtpflow" >
         <parameter name="[waitSemaphore]" operation="set" value="false"/>            
-        <scenario file="010_sendPacketsReceiveFlow/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="010_sendPacketsReceiveFlow/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+        <scenario file="010_sendPacketsReceiveFlow/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="010_sendPacketsReceiveFlow/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="011_sendFlowsParallel" state="true">
-        <scenario file="011_sendFlowsParallel/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="011_sendFlowsParallel/session2.xml" name="RTPFLOW" routingName="RTPFLOW"/>
+    <testcase name="011_sendFlowsParallel" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="011_sendFlowsParallel/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="011_sendFlowsParallel/session2.xml" name="RTPFLOW" state="[remoteServer]" routingName="RTPFLOW"/>
     </testcase>
 
-    <testcase name="012_receiveSilentPacket" state="true">
-        <scenario file="012_receiveSilentPacket/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="012_receiveSilentPacket/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+    <testcase name="012_receiveSilentPacket" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="012_receiveSilentPacket/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="012_receiveSilentPacket/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="013_receivePeriodic" state="true">
-        <scenario file="013_receivePeriodic/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="013_receivePeriodic/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+    <testcase name="013_receivePeriodic" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="013_receivePeriodic/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="013_receivePeriodic/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="014_receiveNoPacket" state="true">
-        <scenario file="014_receiveNoPacket/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="014_receiveNoPacket/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+    <testcase name="014_receiveNoPacket" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="014_receiveNoPacket/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="014_receiveNoPacket/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="020_qosMeasurments" state="true">
-        <scenario file="020_qosMeasurments/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="020_qosMeasurments/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+    <testcase name="020_qosMeasurments" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="020_qosMeasurments/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="020_qosMeasurments/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="021_ignoreReceivedData" state="true">
-        <scenario file="021_ignoreReceivedData/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
-        <scenario file="021_ignoreReceivedData/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
+    <testcase name="021_ignoreReceivedData" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="021_ignoreReceivedData/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
+        <scenario file="021_ignoreReceivedData/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="030_probe_capture" state="true">
+    <testcase name="030_probe_capture" state="true" number="[iterations]" description="rtpflow" >
         <parameter name="[waitSemaphore]" operation="set" value="true"/>
-        <scenario file="010_sendPacketsReceiveFlow/session1.xml" name="[localPortRTP]" routingName="[localPortRTP]"/>
+        <scenario file="010_sendPacketsReceiveFlow/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
         <scenario file="010_sendPacketsReceiveFlow/session2.xml" name="[remotePortRTP]" routingName="[remotePortRTP]"/>
-        <scenario file="030_probe_capture/probe.xml" name="default" routingName="default"/>
+        <scenario file="030_probe_capture/probe.xml" name="default" state="[remoteServer]" routingName="default"/>
     </testcase>
 
-    <testcase name="100_call_sip_rtp" state="true">
-        <parameter description="Duration (in sec.) of the call" name="[CallDurationSec]" operation="set" value="1"/>
-        <parameter description="Dialing delay (in seconds) : time between INVITE and 180 response" name="[dialingDelay]" operation="set" value="0.5"/>    	       	       
-        <parameter description="Time spacing (in seconds) : time between real and theorical timestamp" name="[timeSpacing]" operation="set" value="0.005"/>    	       	       
-        <parameter description="Packets lost (in percent)" name="[packetLost]" operation="set" value="0.1"/>
+    <testcase name="100_call_sip_rtp" state="true" number="[iterations]" description="rtpflow" >
+        <parameter name="[CallDurationSec]" operation="set" value="1" description="Duration (in sec.) of the call" />
+        <parameter name="[dialingDelay]" operation="set" value="0.5" description="Dialing delay (in seconds) : time between INVITE and 180 response" />    	       	       
+        <parameter name="[timeSpacing]" operation="set" value="0.005" description="Time spacing (in seconds) : time between real and theorical timestamp" />    	       	       
+        <parameter name="[packetLost]" operation="set" value="0.1" description="Packets lost (in percent)" />
 
         <parameter name="[localPortSIP]" operation="set" value="5070"/>
         <parameter name="[localPortSIP1]" operation="set" value="[localPortSIP]"/>
         <parameter name="[remotePortSIP]" operation="set" value="5080"/>
         <parameter name="[remotePortSIP1]" operation="set" value="[remotePortSIP]"/>
         
-        <parameter description="Domain name for inviter and invitee identities" editable="true" name="[domainName]" operation="set" value="devoteam.com"/>
-        <parameter description="Inviter user name" editable="true" name="[inviter]" operation="set" value="bob"/>
-        <parameter description="Invitee user name" editable="true" name="[invitee]" operation="set" value="alice"/>	
+        <parameter name="[domainName]" operation="set" value="devoteam.com" description="Domain name for inviter and invitee identities" />
+        <parameter name="[inviter]" operation="set" value="bob" description="Inviter user name" />
+        <parameter name="[invitee]" operation="set" value="alice" description="Invitee user name" />	
 
-        <parameter editable="true" name="[filename]" operation="set" value="rtpflow.wav"/>
+        <parameter name="[filename]" operation="set" value="rtpflow.wav" description="wav file for the RTP flow" />
         <parameter name="fileWave" operation="file.readwave" value="[filename]" value2="20"/>
         <parameter name="[payloadList]" operation="set" value="[[fileWave(0)]]"/>
         <parameter name="[payloadType]" operation="set" value="[[fileWave(1)]]"/>
         <parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>
         <parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/>
 
-        <scenario file="100_call_sip_rtp/UAC.xml" name="[localPortSIP1],[localPortRTP]" routingName="[localPortSIP1],[localPortRTP]"/>
-        <scenario file="100_call_sip_rtp/UAS.xml" name="[remotePortSIP1],[remotePortRTP]" routingName="[remotePortSIP1],[remotePortRTP]"/>
+        <scenario file="100_call_sip_rtp/UAC.xml" name="[localPortSIP1],[localPortRTP]" state="[localClient]" routingName="[localPortSIP1],[localPortRTP]"/>
+        <scenario file="100_call_sip_rtp/UAS.xml" name="[remotePortSIP1],[remotePortRTP]" state="[remoteServer]" routingName="[remotePortSIP1],[remotePortRTP]"/>
     </testcase>
 	
-	<testcase name="200_srtp_sendFileWave" state="true">
-		<scenario file="200_srtp_sendFileWave/RTPFLOW.xml" name="inviter" routingName="inviter"/>
-		<scenario file="200_srtp_sendFileWave/RTPFLOW2.xml" name="invitee" routingName="invitee"/>
-	</testcase>
+    <testcase name="200_srtp_sendFileWave" state="true" number="[iterations]" description="rtpflow" >
+        <scenario file="200_srtp_sendFileWave/RTPFLOW.xml" name="inviter" state="[localClient]" routingName="inviter"/>
+        <scenario file="200_srtp_sendFileWave/RTPFLOW2.xml" name="invitee" state="[remoteServer]" routingName="invitee"/>
+    </testcase>
 	
-    <testcase name="rtp/801_imsloader_talk" state="false">
+    <testcase name="rtp/801_imsloader_talk" state="false" description="rtpflow" >
         <scenario file="801_imsloader_talk/scenario.xml" name="[localPortSIP]" routingName="[localPortSIP]"/>
     </testcase>
 

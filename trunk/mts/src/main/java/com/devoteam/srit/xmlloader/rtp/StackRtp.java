@@ -72,25 +72,7 @@ public class StackRtp extends Stack
 
         Array array = new ReadOnlyDefaultArray(copyData);
         MsgRtp msg = new MsgRtp(this, array);
-        
-        /*
-        if (((ListenpointRtp) msg.getListenpoint()).isSecured())
-        {
-        	System.out.println("RECEIVING CIPHERED MESSAGE");
-        	ListenpointRtp lrtp = (ListenpointRtp) msg.getListenpoint();
-        	
-        	RawPacket rp = new RawPacket(copyData, 0, length);
-        	rp = lrtp.reverseTransformCipheredMessage(rp);
-        	
-        	byte[] uncipheredData = new byte[length - lrtp.getCipheredAuthTagLength(1)];
-        	System.arraycopy(rp.getBuffer(), 0, uncipheredData, 0, length - lrtp.getCipheredAuthTagLength(1));
-        	
-        	Array uncipheredArray = new ReadOnlyDefaultArray(uncipheredData);
-        	msg = null;
-        	msg = new MsgRtp(uncipheredArray);
-        }
-        */
-        
+                
         return msg;
     }
 
