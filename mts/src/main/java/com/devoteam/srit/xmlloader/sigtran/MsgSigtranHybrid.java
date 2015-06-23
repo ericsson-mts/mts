@@ -213,15 +213,22 @@ public class MsgSigtranHybrid extends Msg
 
         return var;
     }
-
-    /** Get the protocol of this message */
+    
+    /** 
+     * Return true if the message is a request else return false
+     */
     @Override
-    public String getProtocol() 
+    public boolean isRequest() 
     {
-        return StackFactory.PROTOCOL_SIGTRAN;
+        // TODO !!!!!!!!!!!!!!!!!!!!
+        return false;
     }
 
-    @Override
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
     public String getType() throws Exception 
     {
         if (_fvoMessage != null) 
@@ -243,7 +250,11 @@ public class MsgSigtranHybrid extends Msg
         }
     }
 
-    @Override
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
     public String getResult() throws Exception 
     {
         // TODO !!!!!!!!!!!!!!!!!!!!!
@@ -256,14 +267,7 @@ public class MsgSigtranHybrid extends Msg
         return _tlvMessage.getMessageLength();
     }
 
-    @Override
-    public boolean isRequest() 
-    {
-        // TODO !!!!!!!!!!!!!!!!!!!!
-        return false;
-    }
-
- public ASNMessage getTCAPMessage() {
+    public ASNMessage getTCAPMessage() {
 		return _tcapMessage;
 	}
 

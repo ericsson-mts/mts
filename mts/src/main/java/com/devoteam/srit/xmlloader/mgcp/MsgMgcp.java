@@ -50,14 +50,23 @@ public class MsgMgcp extends Msg {
     {
         super(stack);       
     }
-
-    @Override
-    public String getProtocol() {
-        return StackFactory.PROTOCOL_MGCP;
-    }
     
-    @Override
-    public String getType() throws Exception {
+    /** 
+     * Return true if the message is a request else return false
+     */
+	@Override
+    public boolean isRequest() throws Exception 
+	{
+        return ((MGCPCommandLine) this.message.getGenericfirstline()).isIsRequest();
+    }
+
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
+    public String getType() throws Exception 
+	{
         String method = "";
         if (isRequest()) {
             Parameter commandLineMethod = this.getParameter("MGCPCommandLine.MGCPVerb");
@@ -69,15 +78,16 @@ public class MsgMgcp extends Msg {
 
     }
 
-    @Override
-    public String getResult() throws Exception {
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
+    public String getResult() throws Exception 
+    {
         return getParameter("MGCPCommandLine.responseCode").get(0).toString();
     }
-
-    @Override
-    public boolean isRequest() throws Exception {
-        return ((MGCPCommandLine) this.message.getGenericfirstline()).isIsRequest();
-    }
+    
     
     //-------------------------------------------------
     // methods for the encoding / decoding of the message

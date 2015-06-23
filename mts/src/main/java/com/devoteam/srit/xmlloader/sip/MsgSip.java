@@ -123,15 +123,20 @@ public abstract class MsgSip extends Msg
         return this.responseTransactionId;
     }
 
-    /** Get the protocol of this message */
+    /** 
+     * Get the protocol acronym of the message 
+     */
     @Override
     public String getProtocol()
     {
         return StackFactory.PROTOCOL_SIP;
     }
 
-    /** Get the command code of this message */
-    @Override
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
     public String getType() throws Exception
     {
     	if (isRequest())
@@ -151,6 +156,22 @@ public abstract class MsgSip extends Msg
 	    	}
 	    }
 	    	
+        return null;
+    }
+    
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
+    public String getResult() throws Exception
+    {
+        if (!isRequest())
+        {
+           Parameter status = getParameter("firstline.StatusCode");
+           if (status.length()>0)
+        	return status.get(0).toString();
+        } 
         return null;
     }
 
@@ -251,19 +272,6 @@ public abstract class MsgSip extends Msg
 		        return res;		        
 	    	}
 	    }
-    }
-
-    /** Get the result of this answer (null if request) */
-    @Override
-    public String getResult() throws Exception
-    {
-        if (!isRequest())
-        {
-           Parameter status = getParameter("firstline.StatusCode");
-           if (status.length()>0)
-        	return status.get(0).toString();
-        } 
-        return null;
     }
 
     /**

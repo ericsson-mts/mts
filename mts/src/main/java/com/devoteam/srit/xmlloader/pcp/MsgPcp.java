@@ -57,13 +57,24 @@ public class MsgPcp extends Msg
     {
         super(stack);
     }
+    
+    /** 
+     * Return true if the message is a request else return false
+     */
+	@Override
+	public boolean isRequest() 
+	{
+        //TODO
+    	return true;
+	}
 
-    // --- heritage methods --- //
-    public String getProtocol(){
-        return StackFactory.PROTOCOL_PCP;
-    }
-
-    public String getType() {
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
+    public String getType() 
+    {
         if(null == type)
         {
             //TODO
@@ -71,22 +82,26 @@ public class MsgPcp extends Msg
         return type;
 	}
 
-    public String getResult(){
-        if (!isRequest()){        	
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
+    public String getResult()
+    {
+        if (!isRequest())
+        {        	
             //TODO
         	return "OK";
         }
         return null;
     }
-    public boolean isRequest() {
-        //TODO
-    	return true;
-	}
 		
     public int getOpCode() {
         return opcode;
     }
 
+    
     //-------------------------------------------------
     // methods for the encoding / decoding of the message
     //-------------------------------------------------

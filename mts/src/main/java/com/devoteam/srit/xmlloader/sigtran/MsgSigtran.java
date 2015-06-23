@@ -170,7 +170,9 @@ public class MsgSigtran extends Msg
     	}
     }
 
-    /** Get the protocol of this message */
+    /** 
+     * Get the protocol acronym of the message 
+     */
     @Override
     public String getProtocol() 
     {
@@ -197,6 +199,9 @@ public class MsgSigtran extends Msg
         return StackFactory.PROTOCOL_SIGTRAN;
     }
 
+    /** 
+     * Return true if the message is a request else return false
+     */
     @Override
     public boolean isRequest() throws Exception
     {
@@ -223,7 +228,11 @@ public class MsgSigtran extends Msg
         return true;
     }
 
-    @Override
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
     public String getType() throws Exception 
     {    	
     	String type = null;
@@ -265,7 +274,11 @@ public class MsgSigtran extends Msg
         return type;
 	}
 
-    @Override
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
     public String getResult() throws Exception 
     {
     	if (_apMessage != null) 

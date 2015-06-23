@@ -45,13 +45,14 @@ public class StackFactory
     // public final static String PREFIX_CAPTURING = "&lt;&lt;&gt;&gt;out";
     public final static String PREFIX_CAPTURING = "_cap";
     
-    public final static String PROTOCOL_IP = "IP";
+    public final static String ROOT_PACKAGE = "com.devoteam.srit.xmlloader.";
     
     public final static String PROTOCOL_DIAMETER = "DIAMETER";
     public final static String PROTOCOL_SIP = "SIP";
     public final static String PROTOCOL_HTTP = "HTTP";
     public final static String PROTOCOL_RTP = "RTP";
     public final static String PROTOCOL_RTPFLOW = "RTPFLOW";
+    public final static String STACK_CLASS_RTPFLOW = "com.devoteam.srit.xmlloader.rtp.flow.StackRtpFlow";
     public final static String PROTOCOL_TCP = "TCP";
     public final static String PROTOCOL_UDP = "UDP";
     public final static String PROTOCOL_SCTP = "SCTP";
@@ -72,8 +73,12 @@ public class StackFactory
     public static final String PROTOCOL_MGCP = "MGCP";
     public static final String PROTOCOL_STUN = "STUN";
     public static final String PROTOCOL_H225CS = "H225CS";
+    public final static String STACK_CLASS_H225CS = "com.devoteam.srit.xmlloader.h323.h225cs.StackH225cs";
     public final static String PROTOCOL_ETHERNET = "ETHERNET";
 
+    
+    public final static String PROTOCOL_IP = "IP";
+    
     private static HashMap<String, Stack> listStack = new HashMap<String, Stack>();
 
 
@@ -88,13 +93,22 @@ public class StackFactory
     	}
         Stack stack = listStack.get(protocol);
 
+        
         if (stack == null)
         {
 	    	String propertyName = "protocol.STACK_CLASS_NAME_" + protocol.toUpperCase(); 
 	    	String stackToLoad = Config.getConfigByName("tester.properties").getString(propertyName);
-	    	if (stackToLoad == null)
+	    	if (stackToLoad == null || stackToLoad.length() == 0)
 	    	{
 	    		stackToLoad = StackFactory.getClassFromProtocol(protocol, "Stack");
+	    	}
+	    	if (PROTOCOL_RTPFLOW.equalsIgnoreCase(protocol))
+	    	{
+	    		stackToLoad = STACK_CLASS_RTPFLOW;
+	    	}
+	    	if (PROTOCOL_H225CS.equalsIgnoreCase(protocol))
+	    	{
+	    		stackToLoad = STACK_CLASS_H225CS;
 	    	}
 	        Class<?> aClass = ClassLoader.getSystemClassLoader().loadClass(stackToLoad);
 	        
@@ -159,7 +173,7 @@ public class StackFactory
     /** Get the class type (Stack, Msg, Listenpoint, Channel, Probe) object from protocol acronym */
     public static String getClassFromProtocol(String protocol, String type) throws Exception
     {
-    	String packageName = "com.devoteam.srit.xmlloader.";
+    	String packageName = ROOT_PACKAGE;
     	String acronymeLower = protocol.toLowerCase();
     	String acronymeFirstUpper = acronymeLower.substring(0, 1).toUpperCase() + acronymeLower.substring(1); 
     	String classname = packageName + acronymeLower + "." + type + acronymeFirstUpper;

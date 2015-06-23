@@ -68,19 +68,20 @@ public class MsgUcp extends Msg
         this.ucpMessage = message;
     }
 
-    /** Get the protocol of this message */
-    public String getProtocol()
-    {
-        return StackFactory.PROTOCOL_UCP;
-    }
-
-    /** Return true if the message is a request else return false*/
+    /** 
+     * Return true if the message is a request else return false
+     */
+    @Override
     public boolean isRequest()
     {
         return (ucpMessage.getMessageType().equals("O")) ? true : false;
     }
 
-    /** Get the command code of this message */
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
     public String getType()
     {
         if(type == null)
@@ -101,7 +102,11 @@ public class MsgUcp extends Msg
         return typeComplete;
     }
 
-    /** Get the result of this answer (null if request) */
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
     public String getResult()
     {
         if(result == null)

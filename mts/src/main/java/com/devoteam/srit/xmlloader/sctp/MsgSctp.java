@@ -35,6 +35,7 @@ import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.coding.text.FirstLine;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -75,37 +76,44 @@ public class MsgSctp extends Msg{
 		return StackFactory.PROTOCOL_SCTP;  
 	}
 
-    /** Return true if the message is a request else return false*/
+    /** 
+     * Return true if the message is a request else return false
+     */
 	@Override
-	public boolean isRequest() {
+	public boolean isRequest() 
+	{
 		return true;
 	}
 
-    /** Get the type of this message */
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
 	@Override
-	public String getType() {
+	public String getType() 
+	{
 		return this.type;
 	}
-    /** Set the type of this message */
+    
+	/** Set the type of this message */
     public void setType(String type)
     {
         this.type = type;
     }    
 
-    /** Get the result of this message */
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
 	@Override
-	public String getResult() throws Exception {
+	public String getResult() throws Exception 
+	{
 		return null;
 	}
 
-    /** Return the transport of the message*/
-    @Override
-    public String getTransport() {
-    	return StackFactory.PROTOCOL_SCTP;
-    }
-
 	/// a utiliser
-	public void setAidFromMsg(){
+	public void setAidFromMsg()
+	{
 		((ChannelSctp) getChannel()).setAssociationId(sctpData.sndrcvinfo.sinfo_assoc_id);
 	}
 

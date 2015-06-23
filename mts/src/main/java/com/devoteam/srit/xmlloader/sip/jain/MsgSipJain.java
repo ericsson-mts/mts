@@ -82,7 +82,10 @@ public class MsgSipJain extends MsgSip
         super(stack);
     }
     
-    /** Return true if the message is a request else return false*/
+    /** 
+     * Return true if the message is a request else return false
+     */
+    @Override
     public boolean isRequest()
     {
         return sipMessage instanceof SIPRequest;

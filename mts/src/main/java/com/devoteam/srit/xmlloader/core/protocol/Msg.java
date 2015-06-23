@@ -395,7 +395,11 @@ public abstract class Msg extends MsgLight implements Removable
     /** 
      * Get the protocol acronym of the message 
      */
-    public abstract String getProtocol();
+    public String getProtocol()
+    {
+    	String msgClassname = this.getClass().getSimpleName();
+    	return msgClassname.substring(3).toUpperCase();
+    }
 
     /** 
      * Return true if the message is a request else return false
@@ -404,8 +408,7 @@ public abstract class Msg extends MsgLight implements Removable
 
     /** 
      * Get the type of the message
-     * Used for message filtering with "type" attribute and for statistic counters
-     * eg the command code for aaa, the method for sip, ... 
+     * Used for message filtering with "type" attribute and for statistic counters 
      */
     public abstract String getType() throws Exception;
 

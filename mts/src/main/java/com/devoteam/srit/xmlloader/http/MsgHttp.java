@@ -154,25 +154,6 @@ public class MsgHttp extends Msg
         return messageContent;
     }
 
-    /** Get the protocol of this message */
-    public String getProtocol()
-    {
-        return StackFactory.PROTOCOL_HTTP;
-    }
-
-    /** Return true if the message is a request else return false*/
-    public boolean isRequest()
-    {
-        if (message instanceof HttpRequest)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
     @Override
     public void setTransactionId(TransactionId transactionId)
     {
@@ -194,7 +175,28 @@ public class MsgHttp extends Msg
             GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Could not find the request matching this answer", this, "\n and thus, couldn't set the Type of the answer");
         }
     }
-    /** Get the command code of this message */
+    
+    /** 
+     * Return true if the message is a request else return false
+     */
+	@Override
+    public boolean isRequest()
+    {
+        if (message instanceof HttpRequest)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
     public String getType()
     {
         if(null == type)
@@ -212,7 +214,11 @@ public class MsgHttp extends Msg
         this.type = type;
     }
     
-    /** Get the result of this answer (null if request) */
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
     public String getResult()
     {
         if (message instanceof HttpResponse)
@@ -226,7 +232,8 @@ public class MsgHttp extends Msg
     }
     
     /** Return the transport of the message*/
-    public String getTransport() {
+    public String getTransport() 
+    {
     	return StackFactory.PROTOCOL_TCP;
     }
 

@@ -130,25 +130,32 @@ public class MsgSnmp extends Msg
         this.target = target;
     }
 
-	/** Get the protocol of this message */
-	public String getProtocol() {
-		return StackFactory.PROTOCOL_SNMP;
-	}
-
-	/** Return true if the message is a request else return false */
-	public boolean isRequest() {
+    /** 
+     * Return true if the message is a request else return false
+     */
+    @Override
+	public boolean isRequest() 
+    {
 		return pdu.getType() != PDU.RESPONSE;
 	}
 
-	/** Get the command code of this message */
-	public String getType() {
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
+	public String getType() 
+	{
         return PDU.getTypeString(pdu.getType());
 	}
 
-	/*
-	 * Get the response number
-	 */
-	public String getResult() {
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
+	public String getResult() 
+	{
         return pdu.getErrorStatusText();
 	}
 

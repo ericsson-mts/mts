@@ -85,14 +85,7 @@ public class OperationReceiveMessage extends Operation {
         String result = rootNode.attributeValue("result");
         String probe = rootNode.attributeValue("probe");
         
-        
-        //for DIAMETER Protocol
-        /*
-         * if ((protocol == StackFactory.PROTOCOL_DIAMETER) && (type != null) && (!Utils.isInteger(type))) { // use ApplicationID "base" but will search in all Applications anyway
-         * com.devoteam.srit.xmlloader.diameter.dictionary.CommandDef commandDef = com.devoteam.srit.xmlloader.diameter.dictionary.Dictionary.getInstance().getCommandDefByName(type, "base"); if (null
-         * != commandDef) { type = Integer.toString(commandDef.get_code()); } }
-         */
-        if (null != protocol) {
+                if (null != protocol) {
             addParameterTestTag(rootNode, "string.startsWith", "message.protocol", protocol);
         }
         if (null != request) {
@@ -126,9 +119,6 @@ public class OperationReceiveMessage extends Operation {
      * Executes the operation (retrieve and check message)
      */
     public Operation execute(Runner aRunner) throws Exception {    	
-        //for ETHERNET Protocol -- Start listening to wire right now
-    	//                         getting only one ethernet frame according to capture filter
-    	//                         set by user in xml scenario file        
     	ScenarioRunner runner = (ScenarioRunner) aRunner;
 
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.PROTOCOL, this);

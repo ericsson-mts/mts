@@ -71,13 +71,42 @@ public class MsgH248 extends Msg
         typeDescriptor.add("AV");typeDescriptor.add("AC");typeDescriptor.add("N");typeDescriptor.add("SC");
     }
     
-    /** Get the protocol of this message */
-    public String getProtocol()
-    {
-        return StackFactory.PROTOCOL_H248;
-    }
+    /** 
+     * Return true if the message is a request else return false
+     */
+	@Override
+    public boolean isRequest() throws Exception
+    {	
+    	// errorDescriptor
+    	Parameter param = getParameter("descr.*.n");
+        if (param.length() <= 0)
+        {   
+    		return true;
+    	}
+        String descr = (String) param.get(0);
+    	// errorDescriptor
+        if ("ER".equals(descr))
+        {
+        	return false;
+        }
+    	// ReplyDescriptor
+        if ("P".equals(descr))
+        {
+        	return false;
+        }
+    	// PendingDescriptor
+        if ("PN".equals(descr))
+        {
+        	return false;
+        }
+        return true;
+	}
 
-    /** Get the command code of this message */
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
     public String getType() throws Exception
    {
     	// case Transaction or Reply
@@ -151,7 +180,11 @@ public class MsgH248 extends Msg
 		return complete;
     }
 
-    /** Get the result of this answer (null if request) */
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
     public String getResult() throws Exception
     {
     	// case Error
@@ -199,34 +232,6 @@ public class MsgH248 extends Msg
 		}
 		return complete;
     }
-
-    /** Return true if the message is a request else return false*/
-    public boolean isRequest() throws Exception
-    {	
-    	// errorDescriptor
-    	Parameter param = getParameter("descr.*.n");
-        if (param.length() <= 0)
-        {   
-    		return true;
-    	}
-        String descr = (String) param.get(0);
-    	// errorDescriptor
-        if ("ER".equals(descr))
-        {
-        	return false;
-        }
-    	// ReplyDescriptor
-        if ("P".equals(descr))
-        {
-        	return false;
-        }
-    	// PendingDescriptor
-        if ("PN".equals(descr))
-        {
-        	return false;
-        }
-        return true;
-	}
 
     /** Get the transaction Identifier of this message */
     @Override

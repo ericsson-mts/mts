@@ -230,35 +230,38 @@ public class MsgRtpFlow extends Msg {
         return null;
     }
 
-    /** Get the protocol of this message */
+    /** 
+     * Return true if the message is a request else return false
+     */
     @Override
-    public String getProtocol() {
-        return StackFactory.PROTOCOL_RTPFLOW;
-    }
-
-    /** Return true if the message is a request else return false */
-    @Override
-    public boolean isRequest() {
+    public boolean isRequest() 
+    {
         return true;
     }
 
-    /** Get the command code of this message */
-    //TODO: manage type for stat(packet, flow, rtcp) + getTypeComplete
-    @Override
-    public String getType() {
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
+    public String getType() 
+    {
         return Integer.toString(payloadType);
     }
 
     @Override
-    public String getTypeComplete() {
+    public String getTypeComplete() 
+    {
         return CodecDictionary.instance().getCodec(payloadType) + ":" + Integer.toString(payloadType);    	
     }
-    /*
-     * Get the result response
+    
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
      */
-
-    @Override
-    public String getResult() {
+	@Override
+    public String getResult() 
+    {
         return null;
     }
 

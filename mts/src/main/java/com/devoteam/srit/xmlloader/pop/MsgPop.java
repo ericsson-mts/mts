@@ -55,12 +55,27 @@ public class MsgPop extends Msg
        setChannel(channel);
     }
     
-    // --- heritage methods --- //
-    public String getProtocol(){
-        return StackFactory.PROTOCOL_POP;
+    /** 
+     * Return true if the message is a request else return false
+     */
+	@Override
+    public boolean isRequest() 
+	{
+        String[] msgSplit = Utils.splitNoRegex(dataRaw.trim(), " ");
+        if(msgSplit[0].contains("+") || msgSplit[0].contains("-"))
+        {
+            return false;
+        }
+        return true;
     }
-
-    public String getType() {
+    
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
+    public String getType() 
+    {
         if(isRequest())//to not try to get command on a response
         {
             String[] msgSplit = Utils.splitNoRegex(dataRaw.trim(), " ");
@@ -68,19 +83,30 @@ public class MsgPop extends Msg
         }
         else//refer to the transaction request in case of response to get command
         {
-            try{
+            try
+            {
                 if(isSend())
                     type = this.stack.getInTransaction(getTransactionId()).getBeginMsg().getType();
                 else
                     type = this.stack.getOutTransaction(getTransactionId()).getBeginMsg().getType();
             }
-            catch(Exception e) {}
+            catch(Exception e) 
+            {
+            	
+            }
         }
         return type.toUpperCase();
 	}
 
-    public String getResult(){
-        if (!isRequest()){        	
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
+    public String getResult()
+    {
+        if (!isRequest())
+        {        	
             String[] msgSplit1 = Utils.splitNoRegex(dataRaw.trim(), "\r\n");
             String[] msgSplit2 = Utils.splitNoRegex(msgSplit1[0], " ");
             if(msgSplit2[0].startsWith("+") || msgSplit2[0].startsWith("-"))
@@ -91,16 +117,7 @@ public class MsgPop extends Msg
         }
         return result.toUpperCase();
     }
-    
-    public boolean isRequest() {
-        String[] msgSplit = Utils.splitNoRegex(dataRaw.trim(), " ");
-        if(msgSplit[0].contains("+") || msgSplit[0].contains("-"))
-        {
-            return false;
-        }
-        return true;
-    }
-	
+    	
     public Vector<String> getArguments() {
         if(isRequest())
         {

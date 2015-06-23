@@ -83,8 +83,12 @@ public class MsgImap extends Msg {
 		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Msg Imap is: ", toString());
 	}
 		
-	/** Return true if the messages is a request else return false */
-	public boolean isRequest() {
+    /** 
+     * Return true if the message is a request else return false
+     */
+	@Override
+	public boolean isRequest() 
+	{
         if(isRequest == null)
         {
             if(isSend())
@@ -118,20 +122,16 @@ public class MsgImap extends Msg {
         }
         return isRequest;
 	}
-
-	/** Return the transport of the messages */
-    @Override
-	public String getTransport() {
-		return getChannel().getTransport();
-	}
-	
-    /** Get the protocol of this messages */
-    public String getProtocol() {
-        return StackFactory.PROTOCOL_IMAP;
-    }
-    
-    public String getType() {//cmd
+	    
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
+    public String getType() 
+	{
         if(command.equalsIgnoreCase(""))
+        // cmd
         {
             if(isRequest())//to not try to get command on a response
             {
@@ -142,13 +142,46 @@ public class MsgImap extends Msg {
                     command = msgSplit[1];
                 }
             }
-            else//refer to the transaction request in case of response to get command
+            // refer to the transaction request in case of response to get command
+            else
             {
                 setTypeFromPreviousRequest();
             }
         }
         return command.toUpperCase();
     }
+
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
+    public String getResult() throws Exception 
+    {
+    	//response
+        if(!isRequest())			//to not try to get result on a request
+        {
+            if(result.equalsIgnoreCase(""))
+            {
+                String[] msgSplit = Utils.splitNoRegex(messages.lastElement().trim(), " ");
+                if(msgSplit[0].matches("\\p{Alnum}{1,4}"))
+                {
+                    tag = msgSplit[0];
+                    result = msgSplit[1];
+                    if((msgSplit.length > 2) && msgSplit[2].startsWith("[") && msgSplit[2].endsWith("]"))//resultCode is present
+                        result += " " + msgSplit[2];
+                }
+            }
+        }
+        return result.toUpperCase();
+    }
+    
+	/** Return the transport of the messages */
+    @Override
+	public String getTransport() 
+    {
+		return getChannel().getTransport();
+	}
 
     private void setTypeFromPreviousRequest()
     {
@@ -185,27 +218,10 @@ public class MsgImap extends Msg {
             }
             command = msg.getType();
         }
-        catch(Exception e) {
-//            System.out.println("exception catched while searching type in previous request");
-        }
-    }
-
-    public String getResult() throws Exception {//response
-        if(!isRequest())//to not try to get result on a request
+        catch(Exception e) 
         {
-            if(result.equalsIgnoreCase(""))
-            {
-                String[] msgSplit = Utils.splitNoRegex(messages.lastElement().trim(), " ");
-                if(msgSplit[0].matches("\\p{Alnum}{1,4}"))
-                {
-                    tag = msgSplit[0];
-                    result = msgSplit[1];
-                    if((msgSplit.length > 2) && msgSplit[2].startsWith("[") && msgSplit[2].endsWith("]"))//resultCode is present
-                        result += " " + msgSplit[2];
-                }
-            }
+        	// System.out.println("exception catched while searching type in previous request");
         }
-        return result.toUpperCase();
     }
 
     public String getTag() {
