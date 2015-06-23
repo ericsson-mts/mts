@@ -143,13 +143,12 @@ public class MsgSmtp extends Msg {
 		return null;
 	}
 
-	/** Get the protocol of this message */
-	public String getProtocol() {
-		return StackFactory.PROTOCOL_SMTP;
-	}
-
-	/** Return true if the message is a request else return false */
-	public boolean isRequest() {
+    /** 
+     * Return true if the message is a request else return false
+     */
+    @Override
+	public boolean isRequest() 
+    {
 		String str = new String(this.data);
 		if (str.endsWith("\r\n.\r\n"))
 			return true;
@@ -157,20 +156,29 @@ public class MsgSmtp extends Msg {
 			return !Character.isDigit(this.data.charAt(0));
 	}
 
-	/** Get the command code of this message */
-	public String getType() {
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
+	public String getType() 
+	{
 		if (this.typeIsSet)
 			return this.type;
-		else if (this.data == null) {
+		else if (this.data == null) 
+		{
 			GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PROTOCOL, "***Error in MsgSmtp : Msg is vide !");
 			return null;
-		} else {
+		} 
+		else 
+		{
 			String str = new String(this.data).trim();
 
 			if (SmtpDictionary.instance().containsCommand(str.trim().substring(
 					0,
 					str.trim().contains(" ") ? str.trim().indexOf(" ") : str
-							.trim().length()))) {
+							.trim().length()))) 
+			{
 				this.setType(str.trim().substring(
 						0,
 						str.trim().contains(" ") ? str.trim().indexOf(" ")
@@ -178,14 +186,18 @@ public class MsgSmtp extends Msg {
 				return this.getType();
 			}
 
-			try {
+			try 
+			{
 				String st = this.data;
 
-				if (st.endsWith("\r\n.\r\n")) {
+				if (st.endsWith("\r\n.\r\n")) 
+				{
 					this.setType(SmtpDictionary.DEFINI_CNTT);
 					return this.type;
 				}
-			} catch (Exception e) {
+			} 
+			catch (Exception e) 
+			{
 				GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Exception in getType !");
 			}
 			this.typeIsSet = true;
@@ -193,29 +205,36 @@ public class MsgSmtp extends Msg {
 		}
 	}
 
-	/*
-	 * Get the response number
-	 */
-	public String getResult() {
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
+	public String getResult() 
+	{
 		if (this.resultIsSet)
 			return this.result;
-		else if (this.data == null) {
+		else if (this.data == null) 
+		{
 			GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Error in MsgSmtp : Msg is vide !");
 			return null;
-		} else {
+		} 
+		else 
+		{
 			String str = new String(this.data).trim();
 
-			if (SmtpDictionary.instance().containsResult(str.substring(0, 3))) {
+			if (SmtpDictionary.instance().containsResult(str.substring(0, 3))) 
+			{
 				this.setResult(str.substring(0, 3));
 			}
 			this.resultIsSet = true;
 			return this.getResult();
 		}
-
 	}
 	
 	/** Return the transport of the message */
-	public String getTransport() {
+	public String getTransport() 
+	{
 		return StackFactory.PROTOCOL_TCP;
 	}
 

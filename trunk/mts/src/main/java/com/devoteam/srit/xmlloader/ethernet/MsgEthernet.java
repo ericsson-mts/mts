@@ -35,22 +35,27 @@ public class MsgEthernet extends Msg
         this.type = 0;
     }
 	
+    /** 
+     * Return true if the message is a request else return false
+     */
 	@Override
-	public String getProtocol() {
-		return StackFactory.PROTOCOL_ETHERNET;
-	}
-
-	@Override
-	public boolean isRequest() throws Exception {
+	public boolean isRequest() throws Exception 
+	{
 		return true;
 	}
 
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
 	@Override
-	public String getType() throws Exception {
+	public String getType() throws Exception 
+	{
 		return "0x" + String.format("%04X", type);
 	}
 
-	public void setType(int type) {
+	public void setType(int type) 
+	{
 		this.type = type;
 	}
 
@@ -59,8 +64,13 @@ public class MsgEthernet extends Msg
 		return type;
 	}
 
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
 	@Override
-	public String getResult() throws Exception {
+	public String getResult() throws Exception 
+	{
 		return "0x" + String.format("%04X", type);
 	}
 

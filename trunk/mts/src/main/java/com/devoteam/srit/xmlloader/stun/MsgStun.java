@@ -61,21 +61,45 @@ public class MsgStun extends Msg
         super(stack);
     }
 
-
+    /** 
+     * Return true if the message is a request else return false
+     */
     @Override
-    public String getProtocol() {
-        return StackFactory.PROTOCOL_STUN;
+    public boolean isRequest() throws Exception 
+    {
+
+        if (this.header.getHeader().getBit(7) == 0) 
+        {
+
+            return true;
+        } 
+        else 
+        {
+
+            return false;
+        }
     }
 
-    @Override
-    public String getType() throws Exception {
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
+    public String getType() throws Exception 
+    {
         return Integer.toString(this.header.getType());
     }
 
-    @Override
-    public String getResult() throws Exception {
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
+    public String getResult() throws Exception 
+    {
         int type = this.header.getHeader().getBits(2, 2);
-        switch (type) {
+        switch (type) 
+        {
             case 2:
                 return "SUCCESS";
             case 3:
@@ -87,32 +111,26 @@ public class MsgStun extends Msg
         }
     }
 
-    @Override
-    public boolean isRequest() throws Exception {
-
-        if (this.header.getHeader().getBit(7) == 0) {
-
-            return true;
-        } else {
-
-            return false;
-        }
-    }
-
-    private void parseHeader(Element elem) {
+    private void parseHeader(Element elem) 
+    {
         header.setType(Integer.parseInt(elem.attributeValue("type")));
         header.setTransactionId(Array.fromHexString(elem.attributeValue("transactionID")));
 
     }
 
-    private void parseAttribute(Element elem) {
+    private void parseAttribute(Element elem) 
+    {
         List<Element> children = elem.elements();
-        for (Element child : children) {
+        for (Element child : children) 
+        {
             AttributeStun attribute = null;
             String typeInHexa = (String) DictionnaryStun.readProperties().get(elem.attributeValue("type"));
-            if (child.getName().equalsIgnoreCase("address")) {
+            if (child.getName().equalsIgnoreCase("address")) 
+            {
                 attribute = new AttributeStunAddress(Array.fromHexString(typeInHexa), Integer.parseInt(child.attributeValue("family")), Integer.parseInt(child.attributeValue("port")), child.attributeValue("addressIP"));
-            } else if (child.getName().equalsIgnoreCase("text")) {
+            } 
+            else if (child.getName().equalsIgnoreCase("text")) 
+            {
                 if (elem.attributeValue("type").equalsIgnoreCase("username"))//attribute username
                 {
                     this.username = child.attributeValue("text");
@@ -122,56 +140,69 @@ public class MsgStun extends Msg
                     this.realm = child.attributeValue("text");
                 }
 
-
                 attribute = new AttributeStunText(Array.fromHexString(typeInHexa), child.attributeValue("value"));
-
-            } else if (child.getName().equalsIgnoreCase("binary")) {
+            } 
+            else if (child.getName().equalsIgnoreCase("binary")) 
+            {
                 attribute = new AttributeStunBinary(Array.fromHexString(typeInHexa), Array.fromHexString(child.attributeValue("value")));
 
-            } else if (child.getName().equalsIgnoreCase("errorCode")) {
+            } else if (child.getName().equalsIgnoreCase("errorCode")) 
+            {
                 attribute = new AttributeStunErrorCode(Array.fromHexString(typeInHexa), Integer.parseInt(child.attributeValue("code")), child.attributeValue("reasonPhrase"));
-
-            } else if (child.getName().equalsIgnoreCase("changeRequest")) {
+            } 
+            else if (child.getName().equalsIgnoreCase("changeRequest")) 
+            {
                 attribute = new AttributeStunChangeRequest(Array.fromHexString(typeInHexa), child.attributeValue("changeIP"), child.attributeValue("changePort"));
-
-            } else if (child.getName().equalsIgnoreCase("unknownAttribute")) {
+            } 
+            else if (child.getName().equalsIgnoreCase("unknownAttribute")) 
+            {
                 String[] tab = child.attributeValue("type").split(",");
                 int[] tabType = new int[tab.length];
-                for (int i = 0; i < tabType.length; i++) {
+                for (int i = 0; i < tabType.length; i++) 
+                {
                     tabType[i] = Integer.parseInt(tab[i]);
                 }
                 attribute = new AttributeStunUnknownAttribute(Array.fromHexString(typeInHexa), tabType);
-
-            } else if (child.getName().equalsIgnoreCase("messageIntegrity")) {
-                try {
-
+            } 
+            else if (child.getName().equalsIgnoreCase("messageIntegrity")) 
+            {
+                try 
+                {
                     String valueMessageIntegrity = child.attributeValue("value");
                     Array integrityArray = null;
-                    if (null != valueMessageIntegrity) {
-                        try {
+                    if (null != valueMessageIntegrity) 
+                    {
+                        try 
+                        {
                             integrityArray = Array.fromHexString(valueMessageIntegrity);
-                        } catch (Exception e) {
+                        } 
+                        catch (Exception e) 
+                        {
                             valueMessageIntegrity = null;
                         }
                     }
 
-                    if (null == valueMessageIntegrity) {
-                        if (this.longTermCredential) {
+                    if (null == valueMessageIntegrity) 
+                    {
+                        if (this.longTermCredential) 
+                        {
                             String key = username + ":" + realm + ":" + child.attributeValue("secret");
                             DigestArray keyarray = new DigestArray(new DefaultArray(key.getBytes()), "HmacMD5");
                             integrityArray = new MacArray(new DefaultArray(this.encode()), "HmacSHA1", keyarray);
-                        } else {
+                        } 
+                        else 
+                        {
                             DefaultArray arraysecret = new DefaultArray(child.attributeValue("secret").getBytes());
                             integrityArray = new MacArray(new DefaultArray(this.encode()), "HmacSHA1", arraysecret);
                         }
                     }
 
                     attribute = new AttributeStunBinary(Array.fromHexString(typeInHexa), integrityArray);
-
-                } catch (Exception e) {
+                } 
+                catch (Exception e) 
+                {
                     throw new IllegalArgumentException("The secret can not be empty", e);
                 }
-
             }
             this.listAttributeStun.add(attribute);
             header.setLength(header.getLength() + attribute.getPaddedLength() + 4);

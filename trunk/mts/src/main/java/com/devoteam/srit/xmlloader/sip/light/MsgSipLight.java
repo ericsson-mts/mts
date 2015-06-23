@@ -103,7 +103,12 @@ public class MsgSipLight extends MsgSip
         super(stack);
     }
 
-    public boolean isRequest() {
+    /** 
+     * Return true if the message is a request else return false
+     */
+    @Override
+    public boolean isRequest() 
+    {
 		return ((FirstLine)(this.message.getGenericfirstline())).isRequest();
 	}
 

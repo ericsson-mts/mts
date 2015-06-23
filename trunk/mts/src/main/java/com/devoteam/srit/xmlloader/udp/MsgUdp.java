@@ -68,30 +68,31 @@ public class MsgUdp extends Msg
     {
         return null;
     }
-
-    /** Get the protocol of this message */
-    @Override
-    public String getProtocol()
-    {
-        return StackFactory.PROTOCOL_UDP;
-    }
     
-    /** Return true if the message is a request else return false*/
+    /** 
+     * Return true if the message is a request else return false
+     */
     @Override
     public boolean isRequest()
     {
         return true;
     }
     
-    /** Get the command code of this message */
-    @Override
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
     public String getType()
     {
         return "DATAGRAM";
     }
     
-    /** Get the result of this answer (null if request) */
-    @Override
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
     public String getResult()
     {
         return null;
@@ -99,7 +100,8 @@ public class MsgUdp extends Msg
         
     /** Return the transport of the message*/
     @Override
-    public String getTransport() {
+    public String getTransport() 
+    {
     	return StackFactory.PROTOCOL_UDP;
     }
     

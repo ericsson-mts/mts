@@ -343,15 +343,15 @@ public class Probe
     {
         String str = "";
         str += "name=\"" + this.name + "\"";
-        str += ", networkInterface = \"" + this.networkInterface + "\"";
-        str += ", captureFilter = \"" + this.captureFilter + "\"";
+        str += " networkInterface = \"" + this.networkInterface + "\"";
+        str += " captureFilter = \"" + this.captureFilter + "\"";
         if(null != filename)
         {
-        	str += ", filename = \"" + this.filename + "\"";
+        	str += " filename = \"" + this.filename + "\"";
         }
         if(null != regexFilter && !regexFilter.equals(""))
         {
-            str += ", regexFilter = \"" + this.regexFilter + "\"";
+            str += " regexFilter = \"" + this.regexFilter + "\"";
         }
         return str;
     }

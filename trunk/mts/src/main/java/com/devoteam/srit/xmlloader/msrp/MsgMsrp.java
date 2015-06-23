@@ -52,21 +52,33 @@ public class MsgMsrp extends Msg
     {
         super(stack);
     }
-     
-    // --- heritage methods --- //
-    public String getProtocol(){
-        return StackFactory.PROTOCOL_MSRP;
-    }
+    
+    /** 
+     * Return true if the message is a request else return false
+     */
+	@Override
+    public boolean isRequest() 
+    {
+    	return this.message.getFirstline().isRequest();
+	}
 
-    public String getType() {
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
+    public String getType() 
+    {
         if(null == type)
         {
-            if (isRequest()){
+            if (isRequest())
+            {
                 MSRPFirstLine firstline = this.message.getFirstline();
                 type = firstline.getMethod();
             }
             else {               
-                try {
+                try 
+                {
                     //get transaction with transactionId associated to the request
                     Msg msgTemp = null;
                     Trans tr = this.stack.getOutTransaction(getTransactionId());
@@ -83,29 +95,21 @@ public class MsgMsrp extends Msg
         return type;
 	}
 
-    public String getResult(){
-        if (!isRequest()){        	
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
+    public String getResult()
+    {
+        if (!isRequest())
+        {        	
         	MSRPFirstLine firstline = this.message.getFirstline();
         	return firstline.getStatusCode();
         }
         return null;
     }
-    public boolean isRequest() {
-    	return this.message.getFirstline().isRequest();
-	}
     
-	// --- get/set method --- //
-	public MSRPTextMessage getMessage(){
-		return this.message;
-	}
-
-    public String getMsgRemoteHost() {
-        return msgRemoteHost;
-    }
-
-    public int getMsgRemotePort() {
-        return msgRemotePort;
-    }
     
     //-------------------------------------------------
     // methods for the encoding / decoding of the message

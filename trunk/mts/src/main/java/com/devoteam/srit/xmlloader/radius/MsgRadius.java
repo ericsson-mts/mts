@@ -123,15 +123,10 @@ public class MsgRadius extends Msg
         return this.radiusDictionary;
     }
     
-    /** Get the protocol of this message */
-    @Override
-    public String getProtocol()
-    {
-        return StackFactory.PROTOCOL_RADIUS;
-    }
-
-    /** Return true if the message is a request else return false*/
-    @Override
+    /** 
+     * Return true if the message is a request else return false
+     */
+	@Override
     public boolean isRequest()
     {
         int code = this.radiusMessage.getCode();
@@ -146,8 +141,11 @@ public class MsgRadius extends Msg
         }
     }
 
-    /** Get the type of this message */
-    @Override
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
+	@Override
     public String getType()
     {
         int code = this.radiusMessage.getCode();
@@ -187,8 +185,11 @@ public class MsgRadius extends Msg
         }
     }
 
-    /** Get the result of this answer (null if request) */
-
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
     public String getResult()
     {
         int code = this.radiusMessage.getCode();

@@ -93,22 +93,20 @@ public class MsgDiameter extends Msg
 	//-----------------------------------------------------------------------------------------
 	// generic methods for protocol request type result retransmission, transaction and session
 	//-----------------------------------------------------------------------------------------
-            
-    /** Get the protocol of this message */
-    @Override
-    public String getProtocol()
-    {
-        return StackFactory.PROTOCOL_DIAMETER;
-    }
-    
-    /** Return true if the message is a request else return false*/
+                
+    /** 
+     * Return true if the message is a request else return false
+     */
     @Override
     public boolean isRequest()
     {
         return message.hdr.isRequest();
     }
     
-    /** Get the type of this message*/
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
     @Override
     public String getType()
     {
@@ -138,20 +136,25 @@ public class MsgDiameter extends Msg
 	    return getType();
     }
 
-    /** Get the result of this answer (null if request) */
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
     @Override
     public String getResult() throws Exception
     {
         // get Result-Code value
         Parameter var = getParameter("avp.268.value");
-        if (var.length() > 0) {
+        if (var.length() > 0) 
+        {
             return (String) var.get(0);
         }
         
         // get Experimental-Result:Experimental-Result-Code
         var = getParameter("avp.297.298.value");
         //if (var != null) {
-        if(var != null && var.length()>0){
+        if(var != null && var.length() > 0)
+        {
             return (String) var.get(0);
         }
         

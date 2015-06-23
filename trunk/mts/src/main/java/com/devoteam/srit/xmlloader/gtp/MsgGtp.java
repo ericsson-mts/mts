@@ -58,20 +58,28 @@ public class MsgGtp extends Msg
         this.message = message;
     }
 
-    /** Get the protocol of this message */
+    /** 
+     * Get the protocol acronym of the message 
+     */
+    @Override
     public String getProtocol()
     {
     	return StackFactory.PROTOCOL_GTP + "." + this.message.getSubProtocol();
     }
 
-    /** Return true if the message is a request else return false*/
+    /** 
+     * Return true if the message is a request else return false
+     */
     @Override
     public boolean isRequest() throws Exception
     {
         return this.message.isRequest();
     }
 
-    /** Get the type of this message */
+    /** 
+     * Get the type of the message
+     * Used for message filtering with "type" attribute and for statistic counters 
+     */
     @Override
     public String getType() throws Exception
     {
@@ -95,8 +103,11 @@ public class MsgGtp extends Msg
     	}
     }
 
-    /** Get the result of this answer (null if request) */
-    @Override
+    /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
+	@Override
     public String getResult() throws Exception
     {
     	Parameter causeParam = null;

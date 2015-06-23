@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.operations.Operation;
 import com.devoteam.srit.xmlloader.core.operations.basic.*;
 import com.devoteam.srit.xmlloader.core.operations.protocol.*;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.URIFactory;
 import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
@@ -37,8 +38,11 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
 import com.devoteam.srit.xmlloader.diameter.dictionary.CommandDef;
 import com.devoteam.srit.xmlloader.diameter.dictionary.Dictionary;
+
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
 import java.util.List;
+
 import org.dom4j.Element;
 
 /**
@@ -155,7 +159,7 @@ public class Scenario implements Serializable {
         if (rootName.equals("receiveMessage")) {
             ope = new OperationReceiveMessage(null, root, this);
         }
-        //------------------------------------------------------------------------ aaa operations -
+        //------------------------------------------------------------------------ DIAMETER operations -
         // DEPRECATED begin
         else if (rootName.equals("sendAnswerAAA")) {
             ope = new OperationSendMsg(StackFactory.PROTOCOL_DIAMETER, false, root);
@@ -170,31 +174,7 @@ public class Scenario implements Serializable {
             ope = parseReceiveAAA(StackFactory.PROTOCOL_DIAMETER, true, root);
         }
         // DEPRECATED end
-        else if (rootName.equals("createListenpointDIAMETER")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_DIAMETER, root);
-        }
-        else if (rootName.equals("removeListenpointDIAMETER")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_DIAMETER, root);
-        }
-        else if (rootName.equals("openChannelDIAMETER")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_DIAMETER, root);
-        }
-        else if (rootName.equals("closeChannelDIAMETER")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_DIAMETER, root);
-        }
-        else if (rootName.equals("createProbeDIAMETER")) {
-            ope = new OperationCreateProbe(StackFactory.PROTOCOL_DIAMETER, root);
-        }
-        else if (rootName.equals("removeProbeDIAMETER")) {
-            ope = new OperationRemoveProbe(StackFactory.PROTOCOL_DIAMETER, root);
-        }
-        else if (rootName.equals("sendMessageDIAMETER")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_DIAMETER, root);
-        }
-        else if (rootName.equals("receiveMessageDIAMETER")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_DIAMETER, root, this);
-        }
-        //------------------------------------------------------------------------ sip operations -
+        //------------------------------------------------------------------------ SIP operations -
         // DEPRECATED begin
         else if (rootName.equals("openProviderSIP")) {
             ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_SIP, root);
@@ -215,43 +195,6 @@ public class Scenario implements Serializable {
             ope = parseReceiveSIP(StackFactory.PROTOCOL_SIP, true, root);
         }
         // DEPRECATED end
-        else if (rootName.equals("createListenpointSIP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_SIP, root);
-        }
-        else if (rootName.equals("removeListenpointSIP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_SIP, root);
-        }
-        else if (rootName.equals("createProbeSIP")) {
-            ope = new OperationCreateProbe(StackFactory.PROTOCOL_SIP, root);
-        }
-        else if (rootName.equals("removeProbeSIP")) {
-            ope = new OperationRemoveProbe(StackFactory.PROTOCOL_SIP, root);
-        }
-        else if (rootName.equals("sendMessageSIP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_SIP, root);
-        }
-        else if (rootName.equals("receiveMessageSIP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_SIP, root, this);
-        }
-        //----------------------------------------------------------------------------------- RTSP
-        else if (rootName.equals("openChannelRTSP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_RTSP, root);
-        }
-        else if (rootName.equals("closeChannelRTSP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_RTSP, root);
-        }
-        else if (rootName.equals("createListenpointRTSP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_RTSP, root);
-        }
-        else if (rootName.equals("removeListenpointRTSP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_RTSP, root);
-        }
-        else if (rootName.equals("sendMessageRTSP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_RTSP, root);
-        }
-        else if (rootName.equals("receiveMessageRTSP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_RTSP, root, this);
-        }
         //------------------------------------------------------------------------ http operations -
         // DEPRECATED begin
         else if (rootName.equals("openConnectionHTTP")) {
@@ -273,18 +216,6 @@ public class Scenario implements Serializable {
             ope = parseReceiveHTTP(StackFactory.PROTOCOL_HTTP, true, root);
         }
         // DEPRECATED end
-        else if (rootName.equals("openChannelHTTP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_HTTP, root);
-        }
-        else if (rootName.equals("closeChannelHTTP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_HTTP, root);
-        }
-        else if (rootName.equals("sendMessageHTTP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_HTTP, root);
-        }
-        else if (rootName.equals("receiveMessageHTTP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_HTTP, root, this);
-        }
         //------------------------------------------------------------------------ radius operations -
         // DEPRECATED begin //
         else if (rootName.equals("openSocketRadius")) {
@@ -306,18 +237,6 @@ public class Scenario implements Serializable {
             ope = parseReceiveRadius(StackFactory.PROTOCOL_RADIUS, true, root);
         }
         // DEPRECATED end //
-        else if (rootName.equals("createListenpointRADIUS")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_RADIUS, root);
-        }
-        else if (rootName.equals("removeListenpointRADIUS")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_RADIUS, root);
-        }
-        else if (rootName.equals("sendMessageRADIUS")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_RADIUS, root);
-        }
-        else if (rootName.equals("receiveMessageRADIUS")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_RADIUS, root, this);
-        }
         //--------------------------------------------------------------------------------- RTP -        
         // DEPRECATED begin //
         else if (rootName.equals("openConnectionRTP")) {
@@ -333,448 +252,164 @@ public class Scenario implements Serializable {
             ope = parseReceiveRTP(StackFactory.PROTOCOL_RTP, root);
         }
         // DEPRECATED end //
-        else if (rootName.equals("createListenpointRTP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_RTP, root);
-        }
-        else if (rootName.equals("removeListenpointRTP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_RTP, root);
-        }
-        else if (rootName.equals("createProbeRTP")) {
-            ope = new OperationCreateProbe(StackFactory.PROTOCOL_RTP, root);
-        }
-        else if (rootName.equals("removeProbeRTP")) {
-            ope = new OperationRemoveProbe(StackFactory.PROTOCOL_RTP, root);
-        }
-        else if (rootName.equals("sendMessageRTP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_RTP, root);
-        }
-        else if (rootName.equals("receiveMessageRTP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_RTP, root, this);
-        }
-      //--------------------------------------------------------------------------------- RTPFLOW -
-        else if (rootName.equals("createListenpointRTPFLOW")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_RTPFLOW, root);
-        }
-        else if (rootName.equals("removeListenpointRTPFLOW")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_RTPFLOW, root);
-        }
-        else if (rootName.equals("createProbeRTPFLOW")) {
-            ope = new OperationCreateProbe(StackFactory.PROTOCOL_RTPFLOW, root);
-        }
-        else if (rootName.equals("removeProbeRTPFLOW")) {
-            ope = new OperationRemoveProbe(StackFactory.PROTOCOL_RTPFLOW, root);
-        }
-        else if (rootName.equals("sendMessageRTPFLOW")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_RTPFLOW, root);
-        }
-        else if (rootName.equals("receiveMessageRTPFLOW")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_RTPFLOW, root, this);
-        }
-        //--------------------------------------------------------------------------------- TCP -        
-        else if (rootName.equals("openChannelTCP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_TCP, root);
-        }
-        else if (rootName.equals("closeChannelTCP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_TCP, root);
-        }
-        else if (rootName.equals("createListenpointTCP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_TCP, root);
-        }
-        else if (rootName.equals("removeListenpointTCP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_TCP, root);
-        }
-        else if (rootName.equals("sendMessageTCP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_TCP, root);
-        }
-        else if (rootName.equals("receiveMessageTCP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_TCP, root, this);
-        }
-        //--------------------------------------------------------------------------------- SMTP -
-        else if (rootName.equals("openChannelSMTP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_SMTP, root);
-        }
-        else if (rootName.equals("closeChannelSMTP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_SMTP, root);
-        }
-        else if (rootName.equals("createListenpointSMTP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_SMTP, root);
-        }
-        else if (rootName.equals("removeListenpointSMTP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_SMTP, root);
-        }
-        else if (rootName.equals("sendMessageSMTP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_SMTP, root);
-        }
-        else if (rootName.equals("receiveMessageSMTP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_SMTP, root, this);
-        }
-        //--------------------------------------------------------------------------------- UDP -        
-        else if (rootName.equals("openChannelUDP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_UDP, root);
-        }
-        else if (rootName.equals("closeChannelUDP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_UDP, root);
-        }
-        else if (rootName.equals("createListenpointUDP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_UDP, root);
-        }
-        else if (rootName.equals("removeListenpointUDP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_UDP, root);
-        }
-        else if (rootName.equals("sendMessageUDP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_UDP, root);
-        }
-        else if (rootName.equals("receiveMessageUDP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_UDP, root, this);
-        }
-        //--------------------------------------------------------------------------------- SCTP -        
-        else if (rootName.equals("openChannelSCTP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_SCTP, root);
-        }
-        else if (rootName.equals("closeChannelSCTP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_SCTP, root);
-        }
-        else if (rootName.equals("createListenpointSCTP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_SCTP, root);
-        }
-        else if (rootName.equals("removeListenpointSCTP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_SCTP, root);
-        }
-        else if (rootName.equals("sendMessageSCTP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_SCTP, root);
-        }
-        else if (rootName.equals("receiveMessageSCTP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_SCTP, root, this);
-        }
-        //--------------------------------------------------------------------------------- IMAP -
-        else if (rootName.equals("openChannelIMAP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_IMAP, root);
-        }
-        else if (rootName.equals("closeChannelIMAP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_IMAP, root);
-        }
-        else if (rootName.equals("createListenpointIMAP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_IMAP, root);
-        }
-        else if (rootName.equals("removeListenpointIMAP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_IMAP, root);
-        }
-        else if (rootName.equals("sendMessageIMAP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_IMAP, root);
-        }
-        else if (rootName.equals("receiveMessageIMAP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_IMAP, root, this);
-        }
-        //--------------------------------------------------------------------------------- POP -
-        else if (rootName.equals("openChannelPOP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_POP, root);
-        }
-        else if (rootName.equals("closeChannelPOP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_POP, root);
-        }
-        else if (rootName.equals("createListenpointPOP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_POP, root);
-        }
-        else if (rootName.equals("removeListenpointPOP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_POP, root);
-        }
-        else if (rootName.equals("sendMessagePOP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_POP, root);
-        }
-        else if (rootName.equals("receiveMessagePOP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_POP, root, this);
-        }
-        //--------------------------------------------------------------------------------- SMPP -
-        else if (rootName.equals("openChannelSMPP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_SMPP, root);
-        }
-        else if (rootName.equals("closeChannelSMPP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_SMPP, root);
-        }
-        else if (rootName.equals("createListenpointSMPP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_SMPP, root);
-        }
-        else if (rootName.equals("removeListenpointSMPP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_SMPP, root);
-        }
-        else if (rootName.equals("sendMessageSMPP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_SMPP, root);
-        }
-        else if (rootName.equals("receiveMessageSMPP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_SMPP, root, this);
-        }
-        //--------------------------------------------------------------------------------- UCP -
-        else if (rootName.equals("openChannelUCP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_UCP, root);
-        }
-        else if (rootName.equals("closeChannelUCP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_UCP, root);
-        }
-        else if (rootName.equals("createListenpointUCP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_UCP, root);
-        }
-        else if (rootName.equals("removeListenpointUCP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_UCP, root);
-        }
-        else if (rootName.equals("sendMessageUCP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_UCP, root);
-        }
-        else if (rootName.equals("receiveMessageUCP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_UCP, root, this);
-        }
-        //--------------------------------------------------------------------------------- SIGTRAN -
-        else if (rootName.equals("openChannelSIGTRAN")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_SIGTRAN, root);
-        }
-        else if (rootName.equals("closeChannelSIGTRAN")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_SIGTRAN, root);
-        }
-        else if (rootName.equals("createListenpointSIGTRAN")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_SIGTRAN, root);
-        }
-        else if (rootName.equals("removeListenpointSIGTRAN")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_SIGTRAN, root);
-        }
-        else if (rootName.equals("sendMessageSIGTRAN")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_SIGTRAN, root);
-        }
-        else if (rootName.equals("receiveMessageSIGTRAN")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_SIGTRAN, root, this);
-        }
-        //--------------------------------------------------------------------------------- TLS -
-        else if (rootName.equals("openChannelTLS")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_TLS, root);
-        }
-        else if (rootName.equals("closeChannelTLS")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_TLS, root);
-        }
-        else if (rootName.equals("sendMessageTLS")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_TLS, root);
-        }
-        else if (rootName.equals("receiveMessageTLS")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_TLS, root, this);
-        }
-        else if (rootName.equals("createListenpointTLS")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_TLS, root);
-        }
-        else if (rootName.equals("removeListenpointTLS")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_TLS, root);
-        }
-        //--------------------------------------------------------------------------------- H248 -
-        else if (rootName.equals("openChannelH248")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_H248, root);
-        }
-        else if (rootName.equals("closeChannelH248")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_H248, root);
-        }
-        else if (rootName.equals("sendMessageH248")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_H248, root);
-        }
-        else if (rootName.equals("receiveMessageH248")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_H248, root, this);
-        }
-        else if (rootName.equals("createListenpointH248")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_H248, root);
-        }
-        else if (rootName.equals("removeListenpointH248")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_H248, root);
-        }
-        //--------------------------------------------------------------------------------- PCP -
-        else if (rootName.equals("openChannelPCP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_PCP, root);
-        }
-        else if (rootName.equals("closeChannelPCP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_PCP, root);
-        }
-        else if (rootName.equals("sendMessagePCP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_PCP, root);
-        }
-        else if (rootName.equals("receiveMessagePCP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_PCP, root, this);
-        }
-        else if (rootName.equals("createListenpointPCP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_PCP, root);
-        }
-        else if (rootName.equals("removeListenpointPCP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_PCP, root);
-        }
-        //--------------------------------------------------------------------------------- MSRP -
-        else if (rootName.equals("openChannelMSRP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_MSRP, root);
-        }
-        else if (rootName.equals("closeChannelMSRP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_MSRP, root);
-        }
-        else if (rootName.equals("sendMessageMSRP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_MSRP, root);
-        }
-        else if (rootName.equals("receiveMessageMSRP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_MSRP, root, this);
-        }
-        else if (rootName.equals("createListenpointMSRP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_MSRP, root);
-        }
-        else if (rootName.equals("removeListenpointMSRP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_MSRP, root);
-        }
-        //--------------------------------------------------------------------------------- GTPP -
-        else if (rootName.equals("openChannelGTP")) {
-            ope = new OperationOpenChannel(StackFactory.PROTOCOL_GTP, root);
-        }
-        else if (rootName.equals("closeChannelGTP")) {
-            ope = new OperationCloseChannel(StackFactory.PROTOCOL_GTP, root);
-        }
-        else if (rootName.equals("sendMessageGTP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_GTP, root);
-        }
-        else if (rootName.equals("receiveMessageGTP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_GTP, root, this);
-        }
-        else if (rootName.equals("createListenpointGTP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_GTP, root);
-        }
-        else if (rootName.equals("removeListenpointGTP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_GTP, root);
-        }
-        else if (rootName.equals("createProbeGTP")) {
-            ope = new OperationCreateProbe(StackFactory.PROTOCOL_GTP, root);
-        }
-        else if (rootName.equals("removeProbeGTP")) {
-            ope = new OperationRemoveProbe(StackFactory.PROTOCOL_GTP, root);
-        }
-        //--------------------------------------------------------------------------------- ETHERNET  -
-        else if (rootName.equals("sendMessageETHERNET")) {
-        	ope = new OperationSendMessage(StackFactory.PROTOCOL_ETHERNET, root);
-        }
-        else if (rootName.equals("receiveMessageETHERNET")) {
-        	ope = new OperationReceiveMessage(StackFactory.PROTOCOL_ETHERNET, root, this);
-        }
-        else if (rootName.equals("createProbeETHERNET")) {
-            ope = new OperationCreateProbe(StackFactory.PROTOCOL_ETHERNET, root);
-        }
-        else if (rootName.equals("removeProbeETHERNET")) {
-            ope = new OperationRemoveProbe(StackFactory.PROTOCOL_ETHERNET, root);
-        }
-        //--------------------------------------------------------------------------------- SNMP -
-        else if (rootName.equals("sendMessageSNMP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_SNMP, root);
-        }
-        else if (rootName.equals("receiveMessageSNMP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_SNMP, root, this);
-        }
-        else if (rootName.equals("createListenpointSNMP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_SNMP, root);
-        }
-        else if (rootName.equals("removeListenpointSNMP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_SNMP, root);
-        }
-        //--------------------------------------------------------------------------------- MGCP -
-        else if (rootName.equals("sendMessageMGCP")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_MGCP, root);
-        }
-        else if (rootName.equals("receiveMessageMGCP")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_MGCP, root, this);
-        }
-        else if (rootName.equals("createListenpointMGCP")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_MGCP, root);
-        }
-        else if (rootName.equals("removeListenpointMGCP")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_MGCP, root);
-        }
-        //--------------------------------------------------------------------------------- STUN -
-        else if (rootName.equals("sendMessageSTUN")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_STUN, root);
-        }
-        else if (rootName.equals("receiveMessageSTUN")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_STUN, root, this);
-        }
-        else if (rootName.equals("createListenpointSTUN")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_STUN, root);
-        }
-        else if (rootName.equals("removeListenpointSTUN")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_STUN, root);
-        }
-        //--------------------------------------------------------------------------------- Q931-
-        else if (rootName.equals("sendMessageH225CS")) {
-            ope = new OperationSendMessage(StackFactory.PROTOCOL_H225CS, root);
-        }
-        else if (rootName.equals("receiveMessageH225CS")) {
-            ope = new OperationReceiveMessage(StackFactory.PROTOCOL_H225CS, root, this);
-        }
-        else if (rootName.equals("createListenpointH225CS")) {
-            ope = new OperationCreateListenpoint(StackFactory.PROTOCOL_H225CS, root);
-        }
-        else if (rootName.equals("removeListenpointH225CS")) {
-            ope = new OperationRemoveListenpoint(StackFactory.PROTOCOL_H225CS, root);
-        }
         //--------------------------------------------------------------------------------- core
-        else if (rootName.equals("label")) {
+        else if (rootName.equals("label")) 
+        {
             ope = new OperationLabel(root);
         }
-        else if (rootName.equals("exit")) {
+        else if (rootName.equals("exit")) 
+        {
             ope = new OperationExit(root);
         }
-        else if (rootName.equals("parameter")) {
+        else if (rootName.equals("parameter")) 
+        {
             ope = new OperationParameter(root);
         }
-        else if (rootName.equals("pause")) {
+        else if (rootName.equals("pause")) 
+        {
             ope = new OperationPause(root);
         }
-        else if (rootName.equals("semaphore")) {
+        else if (rootName.equals("semaphore")) 
+        {
             ope = new OperationSemaphore(root);
         }
-        else if (rootName.equals("goto")) {
+        else if (rootName.equals("goto")) 
+        {
             ope = new OperationGoto(root);
         }
-        else if (rootName.equals("if")) {
+        else if (rootName.equals("if")) 
+        {
             ope = new OperationIf(root, this);
         }
-        else if (rootName.equals("switch")) {
+        else if (rootName.equals("switch")) 
+        {
             ope = new OperationSwitch(root, this);
         }
-        else if (rootName.equals("while")) {
+        else if (rootName.equals("while")) 
+        {
             ope = new OperationWhile(root, this);
         }
-        else if (rootName.equals("try")) {
+        else if (rootName.equals("try")) 
+        {
             ope = new OperationTry(root, this);
         }
-        else if (rootName.equals("system")) {
+        else if (rootName.equals("system")) 
+        {
             ope = new OperationSystem(root);
         }
-        else if (rootName.equals("test")) {
+        else if (rootName.equals("test")) 
+        {
             ope = new OperationTest(root);
         }
-        else if (rootName.equals("and")) {
+        else if (rootName.equals("and")) 
+        {
             ope = new OperationTestAnd(root, this);
         }
-        else if (rootName.equals("not")) {
+        else if (rootName.equals("not")) 
+        {
             ope = new OperationTestNot(root, this);
         }
-        else if (rootName.equals("or")) {
+        else if (rootName.equals("or")) 
+        {
             ope = new OperationTestOr(root, this);
         }
-        else if (rootName.equals("log")) {
+        else if (rootName.equals("log")) 
+        {
             ope = new OperationLog(root);
         }
-        else if (rootName.equals("stats")) {
+        else if (rootName.equals("stats")) 
+        {
             ope = new OperationStats(root);
         }
-        else if (rootName.equals("for")) {
+        else if (rootName.equals("for")) 
+        {
             ope = new OperationFor(root, this);
         }
-        else if (rootName.equals("call")) {
+        else if (rootName.equals("call")) 
+        {
             ope = new OperationCall(root);
         }
-        else if (rootName.equals("function")) {
+        else if (rootName.equals("function")) 
+        {
             ope = new OperationFunction(root);
         }
-        else {
-            throw new ParsingException("Unknown operation " + rootName);
+        else 
+        {
+        	ope = getClassFromProtocol("sendMessage", rootName, root);
+        	if (ope != null)
+        	{
+        		return ope;
+        	}
+        	ope = getClassFromProtocol("receiveMessage", rootName, root);
+        	if (ope != null)
+        	{
+        		return ope;
+        	}
+        	ope = getClassFromProtocol("createListenpoint", rootName, root);
+        	if (ope != null)
+        	{
+        		return ope;
+        	}
+        	ope = getClassFromProtocol("removeListenpoint", rootName, root);
+        	if (ope != null)
+        	{
+        		return ope;
+        	}
+        	ope = getClassFromProtocol("openChannel", rootName, root);
+        	if (ope != null)
+        	{
+        		return ope;
+        	}
+        	ope = getClassFromProtocol("closeChannel", rootName, root);
+        	if (ope != null)
+        	{
+        		return ope;
+        	}
+        	ope = getClassFromProtocol("createProbe", rootName, root);
+        	if (ope != null)
+        	{
+        		return ope;
+        	}
+        	ope = getClassFromProtocol("removeProbe", rootName, root);
+        	if (ope != null)
+        	{
+        		return ope;
+        	}
+        	throw new ParsingException("Unknown operation " + rootName);       
         }
 
         return ope;
     }
 
+    /** Get the operation object for the type (sendMessage, receiveMessage, createListenpoint,
+     * removeListenpoint, openChannel, closeChannel, createProbe, removeProbe) depending on the 
+     * root name XML element
+     */
+    public Operation getClassFromProtocol(String type, String rootName, Element root) throws Exception
+    {
+    	if (rootName.startsWith(type))
+    	{
+    		int length = type.length();
+			String rootNameFirstUpper = rootName.substring(0, length);
+			rootNameFirstUpper = rootNameFirstUpper.substring(0, 1).toUpperCase() + rootNameFirstUpper.substring(1); 
+			String operationClassname = StackFactory.ROOT_PACKAGE + "core.operations.protocol.Operation" + rootNameFirstUpper;
+			String protocol = rootName.substring(length);
+			Class<?> classObject = ClassLoader.getSystemClassLoader().loadClass(operationClassname);
+			Constructor<?> constr = null;
+			if ("receiveMessage".startsWith(type))
+			{
+				constr = classObject.getConstructor(String.class, Element.class, Scenario.class);
+				return (Operation) constr.newInstance(protocol, root, this);
+			}
+			else
+			{
+				constr = classObject.getConstructor(String.class, Element.class);
+				return (Operation) constr.newInstance(protocol, root);
+			}
+    	}
+    	return null;
+    }
+    
     /**
      * Parse a ReceiveXXXXXAAA operation
      */
