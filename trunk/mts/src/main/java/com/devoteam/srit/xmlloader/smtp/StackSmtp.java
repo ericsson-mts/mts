@@ -147,8 +147,4 @@ public class StackSmtp extends Stack
         return msg;
     }
 
-    public XMLElementReplacer getElementReplacer()
-    {
-        return XMLElementTextMsgParser.instance();
-    }
 }

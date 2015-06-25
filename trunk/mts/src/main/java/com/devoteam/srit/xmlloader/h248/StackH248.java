@@ -206,13 +206,6 @@ public class StackH248 extends Stack
         return true;
     }
 
-
-    /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer()
-    {
-        return XMLElementTextMsgParser.instance();
-    }
-
     /*
      * Remove eldest entry if instructed, else grow capacity if appropriate
      * in all stack lists

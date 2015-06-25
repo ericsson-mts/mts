@@ -34,6 +34,7 @@ import com.devoteam.srit.xmlloader.core.log.TextListenerProviderRegistry;
 import com.devoteam.srit.xmlloader.core.newstats.StatKey;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.utils.expireshashmap.ExpireHashMap;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.sip.light.MsgSipLight;
@@ -215,7 +216,9 @@ public abstract class Stack
         retransmissionTimer.cancel();
     }
 
-    /** Returns the Config object to access the protocol config file */
+    /** 
+     * Returns the Config object to access the protocol config file 
+     */
     public Config getConfig() throws Exception
     {    	
     	String classname = this.getClass().getSimpleName();
@@ -223,8 +226,17 @@ public abstract class Stack
     	return Config.getConfigByName(configFilename);
     }
 
-    public abstract XMLElementReplacer getElementReplacer();
-
+    /** 
+     * Returns the XML Element Replacer to replace the "[parameter]" string 
+     * in the XML document by the parameter values.
+     * By Default it is a generic replacer for text protocol : it duplicates 
+     * the current line for each value of the parameter 
+     */
+    public XMLElementReplacer getElementReplacer()
+    {
+    	return XMLElementTextMsgParser.instance();
+    }
+    
     /** Open a channel */
     public boolean openChannel(Channel channel) throws Exception
     {

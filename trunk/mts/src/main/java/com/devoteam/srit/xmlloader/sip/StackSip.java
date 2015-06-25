@@ -248,16 +248,13 @@ public abstract class StackSip extends Stack
         return true;
     }
 
-    /** Returns the Config object to access the protocol config file*/
+    /** 
+     * Returns the Config object to access the protocol config file 
+     */
+    @Override
     public Config getConfig() throws Exception
     {
         return Config.getConfigByName("sip.properties");
-    }
-
-    /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer()
-    {
-        return XMLElementTextMsgParser.instance();
     }
 
 	protected String reader(InputStream  inputStream) throws Exception {

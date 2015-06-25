@@ -138,10 +138,4 @@ public class StackUcp extends Stack
         return new MsgUcp(this, msg);
     }
 
-    /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer()
-    {
-        return XMLElementTextMsgParser.instance();
-    }
-
 }

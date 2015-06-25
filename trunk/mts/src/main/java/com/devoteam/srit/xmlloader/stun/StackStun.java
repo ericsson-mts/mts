@@ -64,9 +64,4 @@ public class StackStun extends Stack {
         prop.load(in);
     }
 
-    @Override
-    public XMLElementReplacer getElementReplacer() {
-        return XMLElementTextMsgParser.instance();
-    }
-
 }

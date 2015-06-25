@@ -55,10 +55,4 @@ public  class StackMgcp extends Stack {
         }
     }
 
-    @Override
-    public XMLElementReplacer getElementReplacer() {
-         return XMLElementTextMsgParser.instance();
-    }
-
-
 }

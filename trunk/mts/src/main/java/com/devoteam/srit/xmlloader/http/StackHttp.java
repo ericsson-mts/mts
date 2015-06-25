@@ -365,9 +365,4 @@ public class StackHttp extends Stack
         return super.sendMessage(msg);
     }
 
-    public XMLElementReplacer getElementReplacer()
-    {
-        return XMLElementTextMsgParser.instance();
-    }
-
 }

@@ -167,9 +167,4 @@ public class StackSigtran extends Stack {
         return msgSigtran;
     }
 
-    /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer() {
-        return XMLElementTextMsgParser.instance();
-    }
-
 }
