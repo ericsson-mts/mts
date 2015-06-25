@@ -45,8 +45,11 @@ public class StackRtp extends Stack
 { 
 	
     public boolean ignoreReceivedMessages;
+    
     private HashMap <String, ListenpointRtp> ssrcAndListenpointName;
     
+    
+    /** Creates a new instance */
     public StackRtp() throws Exception
     {
     	super();

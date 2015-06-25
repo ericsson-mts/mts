@@ -63,10 +63,10 @@ import org.dom4j.tree.DefaultElement;
 public class StackHttp extends Stack
 {
     private LinkedList<SocketServerListener> socketServerListeners;
-    private static final String configFileName = "http.properties";
 
     public static IOReactor ioReactor = new IOReactor();
 
+    
     /** Constructor */
     public StackHttp() throws Exception
     {

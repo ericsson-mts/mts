@@ -44,20 +44,14 @@ import org.dom4j.Element;
 import java.io.InputStream;
 import java.net.Socket;
 
-public class StackPop extends Stack {
+public class StackPop extends Stack 
+{
 	
-	public StackPop() throws Exception {
+	public StackPop() throws Exception 
+	{
 		super();
-
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new Listenpoint(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_POP);
-        }
 	}
-
+	
     /** Creates a Channel specific to each Stack */
     @Override
 	public synchronized Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception {

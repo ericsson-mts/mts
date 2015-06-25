@@ -28,7 +28,6 @@ import java.io.InputStream;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.ScenarioRunner;
 import com.devoteam.srit.xmlloader.core.Tester;
@@ -36,18 +35,15 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
-import com.devoteam.srit.xmlloader.core.protocol.Probe;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.expireshashmap.ExpireHashMap;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.sip.jain.MsgSipJain;
+
 
 /**
  *
@@ -59,13 +55,15 @@ public abstract class StackSip extends Stack
     private ExpireHashMap<TransactionId, Trans> outTransactionsResponse;
     private ExpireHashMap<TransactionId, Trans> inTransactionsResponse;
     
+    
     /**
      * Config parameter
      * bug NSN equipment : add a CRLF at the end of the Content
      */
     public int addCRLFContent = 0;
     
-    /** Constructor */
+    
+    /** Creates a new instance */
     public StackSip() throws Exception
     {
         super();
@@ -75,18 +73,19 @@ public abstract class StackSip extends Stack
         
         DefaultRouter.resetInstance();
         
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new ListenpointSip(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_SIP);
-        }
-        
         if (getConfig().getBoolean("nsn.ADD_CRLF_CONTENT", false))
+        {
             this.addCRLFContent++;
-        
-        
+        }
+    }
+    
+    /** 
+     * Get the protocol acronym of the message 
+     */
+    @Override
+    public String getProtocol()
+    {
+        return StackFactory.PROTOCOL_SIP;
     }
     
     /** Creates a specific SIP Msg */

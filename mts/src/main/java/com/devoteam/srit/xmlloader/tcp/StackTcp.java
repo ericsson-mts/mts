@@ -43,18 +43,10 @@ import java.io.InputStream;
 public class StackTcp extends Stack
 {
  	
-    /** Constructor */
+	/** Creates a new instance */
     public StackTcp() throws Exception
     {
         super();
-
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new ListenpointTcp(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_TCP);
-        }
     }
     
     /** 

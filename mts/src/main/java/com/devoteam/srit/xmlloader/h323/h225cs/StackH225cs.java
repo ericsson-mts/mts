@@ -48,33 +48,23 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class StackH225cs extends Stack {
+public class StackH225cs extends Stack 
+{
 
     private Dictionary dictionary;
+    
 
-    public StackH225cs() throws Exception {
+    /** Creates a new instance */
+    public StackH225cs() throws Exception 
+    {
         super();
-        try {
-            XMLDoc xml = new XMLDoc();
-            xml.setXMLFile(new URI("../conf/sigtran/q931.xml"));
-            xml.parse();
-            Element root = xml.getDocument().getRootElement();
-            dictionary = new Dictionary(root, "Q931");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0) {
-            Listenpoint listenpoint = new Listenpoint(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_H225CS);
-        }
-    }
-
-    @Override
-    public XMLElementReplacer getElementReplacer() {
-        return XMLElementTextMsgParser.instance();
+        // initialise dictionary
+        XMLDoc xml = new XMLDoc();
+        xml.setXMLFile(new URI("../conf/sigtran/q931.xml"));
+        xml.parse();
+        Element root = xml.getDocument().getRootElement();
+        dictionary = new Dictionary(root, "Q931");
     }
 
     /** 

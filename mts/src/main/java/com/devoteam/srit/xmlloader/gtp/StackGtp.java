@@ -46,17 +46,10 @@ import org.dom4j.Element;
 public class StackGtp extends Stack
 {
 
-    /** Constructor */
+	/** Creates a new instance */
     public StackGtp() throws Exception
     {
         super();
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new Listenpoint(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_GTP);
-        }
     }
 
     // TODO delete this

@@ -50,25 +50,16 @@ import org.dom4j.Element;
  *
  * @author gpasquiers
  */
-public class StackDiameter extends Stack {
+public class StackDiameter extends Stack 
+{
     
-    /** this instance  */
-    private final static String configFile = "diameter.properties";
-
     protected static Listenpoint listenpoint = null;
+    
     
     /** Creates a new instance */
     public StackDiameter() throws Exception 
     {
         super();
-
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new ListenpointDiameter(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_DIAMETER);
-        }
         
         // configure stack trace parameters
         FileHandler fh = new FileHandler("../logs/diameterStack.log");

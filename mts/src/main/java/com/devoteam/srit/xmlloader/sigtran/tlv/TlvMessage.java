@@ -77,15 +77,16 @@ public class TlvMessage {
 
         // TODO : move to message class later for cleaner separation
         // TODO : read all dico to fill a mapping hashmap between ppid and dictionary
+        StackSigtran stack = (StackSigtran) StackFactory.getStack(StackFactory.PROTOCOL_SIGTRAN);
         switch(protocolIdentifier){
             case IUA:
-                _dictionary = StackSigtran.instance().getTlvDictionnary("iua.xml");
+                _dictionary = stack.getTlvDictionnary("iua.xml");
                 break;
             case M3UA:
-                _dictionary = StackSigtran.instance().getTlvDictionnary("m3ua.xml");
+                _dictionary = stack.getTlvDictionnary("m3ua.xml");
                 break;
             case V5UA:
-                _dictionary = StackSigtran.instance().getTlvDictionnary("v5ua.xml");
+                _dictionary = stack.getTlvDictionnary("v5ua.xml");
                 break;
             default:
             	throw new ExecutionException("Unknown value for protocol indentifier : " + protocolIdentifier);

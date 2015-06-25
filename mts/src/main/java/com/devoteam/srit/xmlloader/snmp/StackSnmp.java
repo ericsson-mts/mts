@@ -71,21 +71,12 @@ public class StackSnmp extends Stack
 {
     private MibLoader mibLoader = null;
     
+    
+    /** Creates a new instance */
     public StackSnmp() throws Exception
     {
         super();
         loadAllMibs();
-
-        //LogFactory.setLogFactory(new Log4jLogFactory());
-        //PropertyConfigurator.configure("log4j.properties");
-        
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-            Listenpoint listenpoint = new ListenpointSnmp(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_SNMP);
-        }
     }
 
     private void loadAllMibs() throws Exception

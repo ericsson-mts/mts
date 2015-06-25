@@ -65,23 +65,16 @@ import java.util.List;
  */
 public class StackRadius extends Stack
 {
+	
     private RadiusDictionary radiusDictionary;
     
-    /** Constructor */
+    
+    /** Creates a new instance */
     public StackRadius() throws Exception
     {
         super();
+    
         this.radiusDictionary = new RadiusDictionary(new File("../conf/radius/dictionary"));
-        
-        // initiate a default listenpoint if port is not empty or null
-        /*
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new ListenpointRadius(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_RADIUS);
-        }
-        */
     }
 
 	/** Creates a Listenpoint specific to each Stack */

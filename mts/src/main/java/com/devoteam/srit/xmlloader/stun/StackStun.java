@@ -48,20 +48,20 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public class StackStun extends Stack {
+public class StackStun extends Stack 
+{
 
-    public static Properties prop;
+    public Properties prop;
 
-    public StackStun() throws Exception {
+    
+    /** Creates a new instance */
+    public StackStun() throws Exception 
+    {
         super();
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0) {
-            Listenpoint listenpoint = new Listenpoint(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_STUN);
-        }
-        prop = new Properties();
+        
+        this.prop = new Properties();
         InputStream in = SingletonFSInterface.instance().getInputStream(new URI("../conf/stun/typeStun.properties"));
-        prop.load(in);
+        this.prop.load(in);
     }
 
 }

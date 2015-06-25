@@ -566,15 +566,15 @@ public class MsgH248 extends Msg
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
         String text = root.getText().trim();
-        if ("CRLF".equals(StackH248.endLineCharacters))
+        if ("CRLF".equals(((StackH248 )this.stack).endLineCharacters))
         {
             text = Utils.replaceNoRegex(text, "\n", "\r\n");
         }        
-        else if ("CR".equals(StackH248.endLineCharacters))
+        else if ("CR".equals(((StackH248 )this.stack).endLineCharacters))
         {
             text = Utils.replaceNoRegex(text, "\n", "\r");
         }        
-        else if ("LF".equals(StackH248.endLineCharacters))
+        else if ("LF".equals(((StackH248 )this.stack).endLineCharacters))
         {
         }
         else

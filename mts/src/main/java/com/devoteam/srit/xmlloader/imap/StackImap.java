@@ -40,17 +40,11 @@ import com.devoteam.srit.xmlloader.core.protocol.Stack;
 
 public class StackImap extends Stack
 {
+	
+	/** Creates a new instance */
     public StackImap() throws Exception
     {        
         super();
-
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new Listenpoint(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_IMAP);
-        }
     }
 
     /** Creates a Channel specific to each Stack */
