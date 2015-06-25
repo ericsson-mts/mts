@@ -444,15 +444,9 @@ public class StackSnmp extends Stack
             else
                 System.out.println("snmpObjectType " + obj.getSyntax().getName());
         }
-//        else
-//            System.out.println("class not found in type research " + ((MibValueSymbol)symb).getType().getClass() + " for value " + symb);
         return type;
     }
     
-    public Config getConfig() throws Exception
-    {
-        return Config.getConfigByName("snmp.properties");
-    }
 
     public XMLElementReplacer getElementReplacer()
     {

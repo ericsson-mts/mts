@@ -209,10 +209,6 @@ public class StackRtpFlow extends StackRtp
         return false;
     }
 
-    public Config getConfig() throws Exception {
-        return Config.getConfigByName("rtpflow.properties");
-    }
-
     public void scheduleTask(Task task, long delay) {
         scheduler.scheduleIn(task, delay);
     }

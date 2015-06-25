@@ -226,12 +226,6 @@ public class StackImap extends Stack
         return channelImap;
     }
 
-    /** Returns the Config object to access the protocol config file*/
-    public Config getConfig() throws Exception
-    {
-        return Config.getConfigByName("imap.properties");
-    }
-
     public XMLElementReplacer getElementReplacer()
     {
         return XMLElementTextMsgParser.instance();

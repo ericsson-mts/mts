@@ -23,16 +23,12 @@
 
 package com.devoteam.srit.xmlloader.ucp;
 
-import com.devoteam.srit.xmlloader.core.ParameterPool;
 
-import com.devoteam.srit.xmlloader.core.Runner;
-import org.dom4j.Element;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 
@@ -41,10 +37,7 @@ import com.devoteam.srit.xmlloader.ucp.data.*;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
 import java.io.InputStream;
-import java.net.InetAddress;
 import java.net.URI;
-import java.util.List;
-import java.util.Vector;
 
 
 /**
@@ -143,12 +136,6 @@ public class StackUcp extends Stack
         msg.parseArray(msgArray);
 
         return new MsgUcp(this, msg);
-    }
-
-    /** Returns the Config object to access the protocol config file*/
-    public Config getConfig() throws Exception
-    {
-        return Config.getConfigByName("ucp.properties");
     }
 
     /** Returns the replacer used to parse sendMsg Operations */
