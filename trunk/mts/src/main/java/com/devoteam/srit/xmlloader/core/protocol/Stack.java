@@ -39,6 +39,7 @@ import com.devoteam.srit.xmlloader.core.utils.expireshashmap.ExpireHashMap;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.diameter.ListenpointDiameter;
 import com.devoteam.srit.xmlloader.sip.light.MsgSipLight;
+import com.devoteam.srit.xmlloader.tls.ListenpointTls;
 
 import dk.i1.sctp.SCTPData;
 
@@ -193,7 +194,12 @@ public abstract class Stack
         	Listenpoint listenpoint  = (Listenpoint) instanceObjectFromStackParents(clStack, "Listenpoint");
             createListenpoint(listenpoint, protocol);
         }
-
+        int portTLS = getConfig().getInteger("listenpoint.LOCAL_PORT_TLS", 0);
+        if (portTLS > 0)
+        {
+        	Listenpoint listenpoint = new ListenpointTls(this);
+            createListenpoint(listenpoint, StackFactory.PROTOCOL_TLS);
+        }
     }
 
     public static synchronized long nextTransactionId()

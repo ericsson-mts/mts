@@ -160,9 +160,7 @@ public class TextTester {
 
                 public void notificationReceived(Notification<String, RunnerState> notification) {
                     if ((notification.getData().isFailed() || notification.getData().isInterrupted()) && notification.getData().isFinished()) {
-                    	if (testcaseRunner.getParent() != null) {
-                    		System.out.println(notification.getData().toLegacyStatus() + ": " + testcaseRunner.getParent().getName() + " / " + testcaseRunner.getName());
-                    	}
+                    	System.out.println(notification.getData().toLegacyStatus() + ": Testcase=" + testcaseRunner.getName());
                         try {
                             testcaseRunner.removeListener(this);
                         }

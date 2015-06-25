@@ -130,12 +130,6 @@ public class ListenpointRadius extends Listenpoint implements Runnable
         return true;
     }
         
-    /** Get the transport protocol of this message */
-    public String getTransport() 
-    {
-    	return StackFactory.PROTOCOL_UDP;
-    }
-
     public void run()
     {
         while (this.radiusSocket != null && this.radiusSocket.isOpen())
