@@ -57,12 +57,6 @@ public class StackTls extends Stack
         }
     }
     
-    /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer()
-    {
-        return XMLElementTextMsgParser.instance();
-    }
-    
     /** 
      * Creates a Msg specific to each Stack
      * should become ABSTRACT later  

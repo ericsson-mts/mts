@@ -136,8 +136,15 @@ public class StackRtpFlow extends StackRtp
         return true;
     }
     
+    /** 
+     * Returns the XML Element Replacer to replace the "[parameter]" string 
+     * in the XML document by the parameter values.
+     * By Default it is a generic replacer for text protocol : it duplicates 
+     * the current line for each value of the parameter 
+     */
     @Override
-    public XMLElementReplacer getElementReplacer() {
+    public XMLElementReplacer getElementReplacer() 
+    {
         return XMLElementRTPFLOWParser.instance();//do not parse text in sendMessageRTPFLOW tag
     }
 

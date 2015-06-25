@@ -27,6 +27,10 @@ public class StackEthernet extends Stack
 	private String captureFilter = null;
 	private boolean isEthernetProbeCreated = false;
 
+	public StackEthernet() throws Exception {
+		super();
+	}
+
 	public boolean isEthernetProbeCreated() {
 		return isEthernetProbeCreated;
 	}
@@ -41,15 +45,6 @@ public class StackEthernet extends Stack
 
 	public void setCaptureFilter(String captureFilter) {
 		this.captureFilter = captureFilter;
-	}
-
-	public StackEthernet() throws Exception {
-		super();
-	}
-
-	@Override
-	public XMLElementReplacer getElementReplacer() {
-		return XMLElementTextMsgParser.instance();
 	}
 		
 	@Override

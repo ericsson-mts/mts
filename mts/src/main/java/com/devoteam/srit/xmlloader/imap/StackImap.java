@@ -226,8 +226,4 @@ public class StackImap extends Stack
         return channelImap;
     }
 
-    public XMLElementReplacer getElementReplacer()
-    {
-        return XMLElementTextMsgParser.instance();
-    }
 }

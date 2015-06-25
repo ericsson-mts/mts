@@ -68,10 +68,4 @@ public class StackGtp extends Stack
         return new MsgGtp(this, message);
     }
     
-    /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer()
-    {
-        return XMLElementTextMsgParser.instance();
-    }
-
 }

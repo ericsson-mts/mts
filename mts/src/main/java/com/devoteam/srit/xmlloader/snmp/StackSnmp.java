@@ -447,9 +447,4 @@ public class StackSnmp extends Stack
         return type;
     }
     
-
-    public XMLElementReplacer getElementReplacer()
-    {
-        return XMLElementTextMsgParser.instance();
-    }
 }

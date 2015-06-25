@@ -120,15 +120,16 @@ public class StackDiameter extends Stack {
                
         return arrayMsg.getBytes();
     }
-    
-    /** Returns the Config object to access the protocol config file*/
-    /*
-    public Config getConfig() throws Exception {
-        return Config.getConfigByName(configFile);
-    }
-    */
-    
-    public XMLElementReplacer getElementReplacer() {
+       
+    /** 
+     * Returns the XML Element Replacer to replace the "[parameter]" string 
+     * in the XML document by the parameter values.
+     * By Default it is a generic replacer for text protocol : it duplicates 
+     * the current line for each value of the parameter 
+     */
+    @Override
+    public XMLElementReplacer getElementReplacer() 
+    {
         return XMLElementAVPParser.instance();
     }
     

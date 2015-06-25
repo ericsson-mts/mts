@@ -129,10 +129,4 @@ public class StackSmpp extends Stack
         return msgArray.getBytes();
     }
 
-    /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer()
-    {
-        return XMLElementTextMsgParser.instance();
-    }
-
 }

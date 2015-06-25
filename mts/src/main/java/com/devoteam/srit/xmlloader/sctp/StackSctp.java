@@ -109,12 +109,6 @@ public class StackSctp extends Stack
 		return msg;
 	}
 	*/
-
-	/** Returns the replacer used to parse sendMsg Operations */
-	public XMLElementReplacer getElementReplacer()
-	{
-		return XMLElementTextMsgParser.instance();
-	}
     
     /** 
      * Create an empty message for transport connection actions (open or close) 

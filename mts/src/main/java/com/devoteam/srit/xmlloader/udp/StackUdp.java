@@ -24,8 +24,6 @@
 package com.devoteam.srit.xmlloader.udp;
 
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 
 
 /**
@@ -40,12 +38,6 @@ public class StackUdp extends Stack
         super();
         
  
-    }
-
-    /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer()
-    {
-        return XMLElementTextMsgParser.instance();
     }
     
 }

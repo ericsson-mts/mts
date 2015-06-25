@@ -137,11 +137,6 @@ public class StackPop extends Stack {
     	return super.sendMessage(msg);        
     }
 
-	/** Returns the replacer used to parse sendMsg Operations */
-	public XMLElementReplacer getElementReplacer() {
-		return XMLElementTextMsgParser.instance();
-	}
-
     /**
      * Creates a Msg specific to each Channel type
      * should become ABSTRACT later

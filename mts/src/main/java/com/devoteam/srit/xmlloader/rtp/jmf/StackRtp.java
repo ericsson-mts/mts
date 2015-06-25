@@ -211,12 +211,6 @@ public class StackRtp extends Stack
     	return msg;
     }
 
-    /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer()
-    {
-        return XMLElementTextMsgParser.instance();
-    }
-
     private RTPPacket extractDataFromMessage(byte[] datas, int length)
     {
         RTPPacket packet = new RTPPacket();

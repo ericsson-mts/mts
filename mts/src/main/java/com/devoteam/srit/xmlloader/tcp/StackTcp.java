@@ -57,12 +57,6 @@ public class StackTcp extends Stack
         }
     }
     
-    /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer()
-    {
-        return XMLElementTextMsgParser.instance();
-    }
-    
     /** 
      * Creates a Msg specific to each Stack
      * Used for TCP/TLS like protocol : to build incoming message

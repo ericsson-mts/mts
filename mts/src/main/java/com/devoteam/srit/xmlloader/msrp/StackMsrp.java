@@ -65,11 +65,6 @@ public class StackMsrp extends Stack {
     	return super.sendMessage(msg);        
     }
 
-	/** Returns the replacer used to parse sendMsg Operations */
-	public XMLElementReplacer getElementReplacer() {
-		return XMLElementTextMsgParser.instance();
-	}
-
     /** 
      * Read the message data from the stream
      * Use for TCP/TLS like protocol : to build incoming message  

@@ -410,12 +410,6 @@ public class StackRadius extends Stack
         return msgRadius;
     }
     
-    /** Returns the replacer used to parse sendMsg Operations */
-    public XMLElementReplacer getElementReplacer()
-    {
-        return XMLElementTextMsgParser.instance();
-    }
-
     public RadiusDictionary getRadiusDictionary()
     {
         return radiusDictionary;
