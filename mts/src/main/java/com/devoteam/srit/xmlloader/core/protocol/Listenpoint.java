@@ -50,12 +50,13 @@ public class Listenpoint
     private String name;
     private String host;
     private int port = 0;
+    private int portTLS = 0;
+    
     private boolean listenUDP = false;
     private boolean listenTCP = false;
     private boolean listenSCTP = false;
     private boolean listenTLS = false;
     
-    private int portTLS = 0;
     protected String transport = null;
     protected String protocol;
     
@@ -503,7 +504,7 @@ public class Listenpoint
             str += " portTLS=\"" + portTLS + "\"";
         	str += " listenTLS=\"true\"";
         }
-        if (transport != null)
+        if (transport != null && !transport.equals(""))
         {
             str += " transport=\"" + transport + "\"";
         }

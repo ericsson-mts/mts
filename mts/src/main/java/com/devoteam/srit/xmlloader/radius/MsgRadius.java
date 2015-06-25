@@ -303,11 +303,7 @@ public class MsgRadius extends Msg
         }
 
         StringBuilder StringBuilder = new StringBuilder();
-        StringBuilder.append("<Channel " + getChannel() + "/>\n");
-
-        StringBuilder.append("<message remoteHost=\"" + this.radiusMessage.getRemoteAddress().getAddress().getHostAddress() + "\", ");
-        StringBuilder.append("remotePort=\"" + this.radiusMessage.getRemoteAddress().getPort() + "\">\n");        
-        StringBuilder.append("    <header ");
+        StringBuilder.append("<header ");
         
         String codeName = radiusDictionary.getRadiusCodes().getName(this.radiusMessage.getCode());
         StringBuilder.append(" code= \"" + codeName + " (" + this.radiusMessage.getCode() + ")\",");
@@ -316,8 +312,6 @@ public class MsgRadius extends Msg
         StringBuilder.append(" authenticator=\"" + this.radiusMessage.getAuthenticator() + "\"/>");
         StringBuilder.append("\n");
 
-
-        
         for(AVPBytes avpBytes:this.radiusMessage.getAVPs())
         {
             int code = avpBytes.getType();
@@ -376,7 +370,7 @@ public class MsgRadius extends Msg
                 StringBuilder.append(" code=\"" + attributeName + "(" + code + ")\"");
                 StringBuilder.append(" type=\"" + attributeType + "\"");
                 StringBuilder.append(" value=\"" + attributeValue + "\"");
-                StringBuilder.append(" />\n");
+                StringBuilder.append("/>\n");
             }
             else
             {
@@ -393,12 +387,9 @@ public class MsgRadius extends Msg
                     attributeValue = radiusDictionary.getRadiusVendors().getVendorName(vendorId);
                     if(null == attributeValue) attributeValue = Integer.toString(vendorId);
 
-
-                    StringBuilder.append(" value=\"" + attributeValue + "\"");
-                    StringBuilder.append(">\n");
+                    StringBuilder.append(" value=\"" + attributeValue + "\">");
 
                     StringBuilder.append(AVPVendorSpecific.getData().subArray(4).toString());
-                    StringBuilder.append("\n");
 
                 }
                 catch(Exception e)
@@ -407,10 +398,9 @@ public class MsgRadius extends Msg
                     StringBuilder.append(" error=\"" + e.toString() + "\"");
                 }
 
-                StringBuilder.append("    </avp>\n");
+                StringBuilder.append("</avp>\n");
             }
-        }
-        StringBuilder.append("</message>");        
+        }        
         return StringBuilder.toString();
     }
     

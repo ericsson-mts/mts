@@ -47,14 +47,6 @@ public class StackTls extends Stack
     public StackTls() throws Exception
     {
         super();
-
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT_TLS", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new ListenpointTls(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_TLS);
-        }
     }
     
     /** 

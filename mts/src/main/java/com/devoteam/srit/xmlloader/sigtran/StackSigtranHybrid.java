@@ -56,32 +56,22 @@ import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 
 import dk.i1.sctp.SCTPData;
 
-public class StackSigtranHybrid extends Stack {
-
-    private static StackSigtranHybrid instance = null;
-    public static StackSigtranHybrid instance(){
-        return instance;
-    }
+public class StackSigtranHybrid extends Stack 
+{
 
     private HashMap<String, TlvDictionary> tlvDictionaries;
     private HashMap<String, FvoDictionary> fvoDictionaries;
 
     private int defaultPayloadProtocolID = getConfig().getInteger("server.DEFAULT_PPID", 1);
         
-    public StackSigtranHybrid() throws Exception {
+    
+    /** Creates a new instance */
+    public StackSigtranHybrid() throws Exception 
+    {
         super();
         
-        StackSigtranHybrid.instance = this;
-        
-        tlvDictionaries = new HashMap();
-        fvoDictionaries = new HashMap();
-
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0) {
-            Listenpoint listenpoint = new Listenpoint(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_SIGTRAN);
-        }
+        this.tlvDictionaries = new HashMap<String, TlvDictionary>();
+        this.fvoDictionaries = new HashMap<String, FvoDictionary>();
     }
 
     public TlvDictionary getTlvDictionnary(String name) throws Exception{
