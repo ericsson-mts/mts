@@ -146,7 +146,8 @@ public class PIPReassembler
                     long timestamp = packet.sec*1000000 + packet.usec;
                     pipPacket.getHeader().setTimestamp(timestamp);
 
-                    if (callback.probe.getProtocol() == StackFactory.PROTOCOL_ETHERNET) {
+                    if (StackFactory.PROTOCOL_ETHERNET.equals(callback.probe.getProtocol())) 
+                    {
                     	callback.probe.capturedETHPacket(packet);
                     }
                     else

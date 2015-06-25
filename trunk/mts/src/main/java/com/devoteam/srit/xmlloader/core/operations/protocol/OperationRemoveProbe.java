@@ -72,8 +72,10 @@ public class OperationRemoveProbe extends Operation
         {
         	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW,     ">>>REMOVE ", protocol, " <PROBE name= \"", probeName, "\">");	        	
         	GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>REMOVE ", protocol, " <PROBE name= \"", probeName, "\">");
-            if (protocol == StackFactory.PROTOCOL_ETHERNET)
+            if (StackFactory.PROTOCOL_ETHERNET.equals(protocol))
+            {
             	((StackEthernet) StackFactory.getStack(protocol)).setEthernetProbeCreated(false);
+            }
         }
         
         return null;
