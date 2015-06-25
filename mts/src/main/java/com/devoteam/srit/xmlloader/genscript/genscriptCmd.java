@@ -32,14 +32,17 @@ import com.devoteam.srit.xmlloader.core.protocol.Probe;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.ExceptionHandlerSingleton;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.TextExceptionHandler;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
+
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.dom4j.Element;
 import org.dom4j.dom.DOMDocument;
 
@@ -147,6 +150,7 @@ public class genscriptCmd {
 
             // Attente de la fin de la capture à partir du fichier
             while (!listeProbe.get(0).getProbeJpcapThread().getStopPossible()) {
+            	Utils.pauseMilliseconds((long) 100);
             }
 
             generator.closeTest();
