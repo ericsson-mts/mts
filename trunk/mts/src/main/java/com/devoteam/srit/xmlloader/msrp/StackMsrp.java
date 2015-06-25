@@ -36,18 +36,13 @@ import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 
 import java.io.InputStream;
 
-public class StackMsrp extends Stack {
-	
-	public StackMsrp() throws Exception {
-		super();
+public class StackMsrp extends Stack 
+{
 
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new Listenpoint(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_MSRP);
-        }
+	/** Creates a new instance */
+	public StackMsrp() throws Exception 
+	{
+		super();
 	}
     
     /** Send a Msg to Stack */

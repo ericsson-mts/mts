@@ -54,12 +54,12 @@ public class StackH248 extends Stack
 	private ExpireHashMap<TransactionId, Trans> inTransactionsResponse;
     
     /**
-     * Config parameter
-     * which characters to add at the end of a line
+     * Config parameter : which characters to add at the end of a line
      */
-    public static String endLineCharacters = "CRLF";
+    public String endLineCharacters = "CRLF";
 
-    /** Constructor */
+    
+    /** Creates a new instance */
     public StackH248() throws Exception
     {
         super();
@@ -67,14 +67,7 @@ public class StackH248 extends Stack
         this.outTransactionsResponse = new ExpireHashMap<TransactionId, Trans>("outTransactionsResponse", this.msgLifeTime);
         this.inTransactionsResponse = new ExpireHashMap<TransactionId, Trans>("inTransactionsResponse", this.msgLifeTime);
 
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new Listenpoint(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_H248);
-        }
-        endLineCharacters = getConfig().getString("END_LINE_CHARACTERS", "CRLF");
+        this.endLineCharacters = getConfig().getString("END_LINE_CHARACTERS", "CRLF");
     }
 
     /** Send the message from the given scenario */

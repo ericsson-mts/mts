@@ -64,28 +64,27 @@ public class StackSmpp extends Stack
 {
     protected SmppDictionary smppDictionary;
 
-    /** Constructor */
+    
+    /** Creates a new instance */
     public StackSmpp() throws Exception
     {
         super();
         String dictionaryVersion = getConfig().getString("smpp.DICTIONARY_VERSION");
 
         if(dictionaryVersion.equalsIgnoreCase("3.4"))
-            dictionaryVersion = "../conf/smpp/dictionary_v3.4.xml";
-        else if(dictionaryVersion.equalsIgnoreCase("5.0"))
-            dictionaryVersion = "../conf/smpp/dictionary_v5.0.xml";
-        else
-            throw new Exception("SMPP dictionary version " + dictionaryVersion + " not supported");
-        
-        smppDictionary = new SmppDictionary(SingletonFSInterface.instance().getInputStream(new URI(dictionaryVersion)));
-        
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
         {
-        	Listenpoint listenpoint = new Listenpoint(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_SMPP);
+            dictionaryVersion = "../conf/smpp/dictionary_v3.4.xml";
         }
+        else if(dictionaryVersion.equalsIgnoreCase("5.0"))
+        {
+            dictionaryVersion = "../conf/smpp/dictionary_v5.0.xml";
+        }
+        else
+        {
+            throw new Exception("SMPP dictionary version " + dictionaryVersion + " not supported");
+        }
+        
+        this.smppDictionary = new SmppDictionary(SingletonFSInterface.instance().getInputStream(new URI(dictionaryVersion)));
     }
 
     /** 

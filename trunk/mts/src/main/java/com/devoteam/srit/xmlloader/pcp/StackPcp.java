@@ -47,18 +47,13 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.xml.sax.InputSource;
 
-public class StackPcp extends Stack {
+public class StackPcp extends Stack 
+{
 
-    public StackPcp() throws Exception {
+	/** Creates a new instance */
+    public StackPcp() throws Exception 
+    {
 		super();
-
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new Listenpoint(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_PCP);
-        }
 	}
 
     /** Creates a Channel specific to each Stack */

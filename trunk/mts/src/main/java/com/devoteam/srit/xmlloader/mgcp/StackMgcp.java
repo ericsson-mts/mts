@@ -40,19 +40,13 @@ import org.dom4j.Element;
  *
  * @author indiaye
  */
-public  class StackMgcp extends Stack {
+public  class StackMgcp extends Stack 
+{
 	
-      /** Constructor */
+	/** Creates a new instance */
     public StackMgcp() throws Exception
     {
         super();
-        
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new Listenpoint(this);
-                createListenpoint(listenpoint, StackFactory.PROTOCOL_MGCP);
-        }
     }
 
 }

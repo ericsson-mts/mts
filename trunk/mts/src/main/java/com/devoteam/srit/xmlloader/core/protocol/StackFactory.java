@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.core.protocol;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -74,9 +75,6 @@ public class StackFactory
     public static final String PROTOCOL_H225CS = "H225CS";
     public final static String STACK_CLASS_H225CS = "com.devoteam.srit.xmlloader.h323.h225cs.StackH225cs";
     public final static String PROTOCOL_ETHERNET = "ETHERNET";
-
-    
-    public final static String PROTOCOL_IP = "IP";
     
     private static HashMap<String, Stack> listStack = new HashMap<String, Stack>();
 
@@ -84,7 +82,7 @@ public class StackFactory
     /** Creates or returns the instance of this stack */
     public synchronized static Stack getStack(String protocol) throws Exception
     {
-    	// remove the subprotocol
+    	// remove the subprotocol if any
     	int iPos = protocol.indexOf('.');
     	if (iPos >= 0)
     	{
@@ -96,20 +94,20 @@ public class StackFactory
         if (stack == null)
         {
 	    	String propertyName = "protocol.STACK_CLASS_NAME_" + protocol.toUpperCase(); 
-	    	String stackToLoad = Config.getConfigByName("tester.properties").getString(propertyName);
-	    	if (stackToLoad == null || stackToLoad.length() == 0)
+	    	String stackClassname = Config.getConfigByName("tester.properties").getString(propertyName);
+	    	if (stackClassname == null || stackClassname.length() == 0)
 	    	{
-	    		stackToLoad = StackFactory.getClassFromProtocol(protocol, "Stack");
+	    		stackClassname = StackFactory.getClassFromProtocol(protocol, "Stack");
 	    	}
 	    	if (PROTOCOL_RTPFLOW.equalsIgnoreCase(protocol))
 	    	{
-	    		stackToLoad = STACK_CLASS_RTPFLOW;
+	    		stackClassname = STACK_CLASS_RTPFLOW;
 	    	}
 	    	if (PROTOCOL_H225CS.equalsIgnoreCase(protocol))
 	    	{
-	    		stackToLoad = STACK_CLASS_H225CS;
+	    		stackClassname = STACK_CLASS_H225CS;
 	    	}
-	        Class<?> aClass = ClassLoader.getSystemClassLoader().loadClass(stackToLoad);
+	        Class<?> aClass = ClassLoader.getSystemClassLoader().loadClass(stackClassname);
 	        
 	        Object anObject = aClass.newInstance();
 	        stack = (Stack) anObject;
@@ -119,56 +117,27 @@ public class StackFactory
         return stack;
     }
 
-    public static void getAllStacks()
+    public static void getAllStacks() throws Exception
     {    
-    	Stack stack = null;
+    	boolean OSLinux = !System.getProperty("os.name").toLowerCase().contains("windows");
     	
-    	// TODO essayer d'utiliser l'introspection pour faire plus générique
-        try
-        {
-            stack = getStack(PROTOCOL_DIAMETER);
-            stack = getStack(PROTOCOL_SIP);
-            stack = getStack(PROTOCOL_HTTP);
-            stack = getStack(PROTOCOL_RTP);
-            stack = getStack(PROTOCOL_TCP);
-            stack = getStack(PROTOCOL_SMTP);
-            stack = getStack(PROTOCOL_UDP);
-            stack = getStack(PROTOCOL_SCTP);
-            stack = getStack(PROTOCOL_RADIUS);
-            stack = getStack(PROTOCOL_RTSP);
-            stack = getStack(PROTOCOL_IMAP);
-            stack = getStack(PROTOCOL_POP);
-            stack = getStack(PROTOCOL_SMPP);
-            stack = getStack(PROTOCOL_UCP);
-            stack = getStack(PROTOCOL_SIGTRAN);
-            stack = getStack(PROTOCOL_TLS);
-            stack = getStack(PROTOCOL_RTPFLOW);
-            stack = getStack(PROTOCOL_TLS);
-            stack = getStack(PROTOCOL_H248);
-            stack = getStack(PROTOCOL_PCP);
-            stack = getStack(PROTOCOL_MSRP);
-            stack = getStack(PROTOCOL_SNMP);
-            stack = getStack(PROTOCOL_MGCP);
-            stack = getStack(PROTOCOL_STUN);            
-            stack = getStack(PROTOCOL_H225CS);
-            stack = getStack(PROTOCOL_ETHERNET);
-        }
-        catch (Exception e)
-        {
-            GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e, "ERROR : loading the stack : ", stack);        	
-        }
-
-        // do not start SCTP stack if os is windows
-        if (System.getProperty("os.name").toLowerCase().indexOf("windows") == -1)
-        {
-            try
-            {
-                getStack(PROTOCOL_SCTP);
-            }
-            catch (Throwable t)
-            {
-            }
-        }
+    	// use the class fields starting with "PROTOCOL_"
+    	Field[] fields = StackFactory.class.getDeclaredFields();
+    	for (int i = 0; i < fields.length; i++) 
+		{
+			Field f = fields[i];
+			f.setAccessible(true);
+			String protocolVarname = f.getName(); 
+			if (protocolVarname.startsWith("PROTOCOL_"))
+			{
+				if (!PROTOCOL_SCTP.equals(protocolVarname) || OSLinux)
+				{
+					String protocol = (String) f.get(StackFactory.class);
+					getStack(protocol);
+				}
+			}
+			
+		}    	
     }
     
     /** Get the class type (Stack, Msg, Listenpoint, Channel, Probe) object from protocol acronym */

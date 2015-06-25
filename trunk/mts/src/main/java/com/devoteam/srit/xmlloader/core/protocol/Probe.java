@@ -136,7 +136,7 @@ public class Probe
     /** create a probe  */
     public boolean create(String protocol) throws Exception
     {
-		StatPool.beginStatisticProtocol(StatPool.PROBE_KEY, "", StackFactory.PROTOCOL_IP, protocol);
+		StatPool.beginStatisticProtocol(StatPool.PROBE_KEY, "", StackFactory.PROTOCOL_ETHERNET, protocol);
 		this.startTimestamp = System.currentTimeMillis();
     	
         this.protocol = protocol;
@@ -148,7 +148,7 @@ public class Probe
     /** Remove a probe */
     public boolean remove()
     {
-		StatPool.endStatisticProtocol(StatPool.PROBE_KEY, "", StackFactory.PROTOCOL_IP, this.protocol, startTimestamp);
+		StatPool.endStatisticProtocol(StatPool.PROBE_KEY, "", StackFactory.PROTOCOL_ETHERNET, this.protocol, startTimestamp);
     		
         this.probeJpcapThread.stop();
         return true;

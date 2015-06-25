@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
 import com.devoteam.srit.xmlloader.sigtran.StackSigtran;
@@ -442,7 +443,8 @@ public class TlvField {
             }
 
             // parse the fvo message and put it into the sigtran message
-            FvoDictionary fvoDictionary = StackSigtran.instance().getFvoDictionnary(dictionaryName);
+            StackSigtran stack = (StackSigtran) StackFactory.getStack(StackFactory.PROTOCOL_SIGTRAN);
+            FvoDictionary fvoDictionary = stack.getFvoDictionnary(dictionaryName);
             _msg.setFvoMessage(new FvoMessage(_msg, fvoDictionary));
             _msg.getFvoMessage().parseArray(array.subArray(offset, fieldLength));
 

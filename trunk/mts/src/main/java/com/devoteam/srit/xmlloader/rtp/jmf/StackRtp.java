@@ -50,8 +50,10 @@ import java.util.LinkedList;
  */
 public class StackRtp extends Stack
 {        
-    /** Creates or returns the instance of this stack */
-    public StackRtp() throws Exception {
+	
+	/** Creates a new instance */
+    public StackRtp() throws Exception 
+    {
         super();
     }
     

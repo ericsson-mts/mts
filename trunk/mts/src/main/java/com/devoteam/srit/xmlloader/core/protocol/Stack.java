@@ -37,6 +37,7 @@ import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.utils.expireshashmap.ExpireHashMap;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
+import com.devoteam.srit.xmlloader.diameter.ListenpointDiameter;
 import com.devoteam.srit.xmlloader.sip.light.MsgSipLight;
 
 import dk.i1.sctp.SCTPData;
@@ -114,6 +115,7 @@ public abstract class Stack
     /** Timer to schedule the retransaction */
     public Timer retransmissionTimer = new Timer();
     
+    
     /** Creates a new instance */
     public Stack() throws Exception
     {
@@ -128,7 +130,7 @@ public abstract class Stack
             // the Stack class is presnt and the config file not
             // example StackSoap 
         }
-
+        
         retransmitManagement = config.getBoolean("retransmit.MANAGEMENT", retransmitManagement);
 
         retransmitFiltering = config.getBoolean("retransmit.FILTERING", retransmitFiltering);
@@ -181,6 +183,17 @@ public abstract class Stack
         this.probes = Collections.synchronizedMap(new HashMap<String, Probe>());
 
         routingThread.start();
+        
+        // initiate a default listenpoint if port is not empty or null
+        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
+        if (port > 0)
+        {
+        	String protocol = getProtocol();
+        	Class<?> clStack = this.getClass();
+        	Listenpoint listenpoint  = (Listenpoint) instanceObjectFromStackParents(clStack, "Listenpoint");
+            createListenpoint(listenpoint, protocol);
+        }
+
     }
 
     public static synchronized long nextTransactionId()
@@ -191,6 +204,15 @@ public abstract class Stack
         }
 
         return transId++;
+    }
+    
+    /** 
+     * Get the protocol acronym of the message 
+     */
+    public String getProtocol()
+    {
+    	String msgClassname = this.getClass().getSimpleName();
+    	return msgClassname.substring(5).toUpperCase();
     }
 
     /** reset the instance of this stack */

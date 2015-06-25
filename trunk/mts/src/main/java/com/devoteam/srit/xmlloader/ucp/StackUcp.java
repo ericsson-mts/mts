@@ -53,19 +53,13 @@ public class StackUcp extends Stack
     
     public UcpDictionary ucpDictionary;
 
-    /** Constructor */
+    
+    /** Creates a new instance */
     public StackUcp() throws Exception
     {
         super();
-        ucpDictionary = new UcpDictionary(SingletonFSInterface.instance().getInputStream(new URI("../conf/ucp/dictionary.xml")));
-
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new Listenpoint(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_UCP);
-        }
+    
+        this.ucpDictionary = new UcpDictionary(SingletonFSInterface.instance().getInputStream(new URI("../conf/ucp/dictionary.xml")));
     }
 
     /** 

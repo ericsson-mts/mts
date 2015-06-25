@@ -42,11 +42,13 @@ import dk.i1.sctp.sctp_initmsg;
 
 public class StackSctp extends Stack
 {
-	/** Constructor */
+	
+	/** Creates a new instance */
 	public StackSctp() throws Exception
 	{
 		super();
         		
+		/*
         // initiate a default listenpoint if port is not empty or null
         int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
         if (port > 0)
@@ -54,6 +56,7 @@ public class StackSctp extends Stack
         	Listenpoint listenpoint = new ListenpointSctp(this);
             createListenpoint(listenpoint, StackFactory.PROTOCOL_SCTP);
         }
+        */
 	}
 
     /** Creates a Channel specific to each Stack */

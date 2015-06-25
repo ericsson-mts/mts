@@ -42,25 +42,22 @@ import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 
 import java.io.InputStream;
 
-public class StackRtsp extends Stack {
+public class StackRtsp extends Stack 
+{
 
     public int addCRLFContent = 0;
 
-	public StackRtsp() throws Exception {
+    
+    /** Creates a new instance */
+	public StackRtsp() throws Exception 
+	{
 		super();
 
         if(getConfig().getBoolean("equipment.ADD_CRLF_CONTENT", false))
-            addCRLFContent++;
-
-        addCRLFContent += getConfig().getInteger("protocol.ADD_SPECIFIC_CONTENT_CRLF", 0);
-
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
         {
-        	Listenpoint listenpoint = new Listenpoint(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_RTSP);
+            this.addCRLFContent++;
         }
+        this.addCRLFContent += getConfig().getInteger("protocol.ADD_SPECIFIC_CONTENT_CRLF", 0);
 	}
     
 	/** Creates a specific Msg */

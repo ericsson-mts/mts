@@ -32,12 +32,11 @@ import com.devoteam.srit.xmlloader.core.protocol.Stack;
  */
 public class StackUdp extends Stack
 {
-    /** Constructor */
+	
+	/** Creates a new instance */
     public StackUdp() throws Exception
     {
         super();
-        
- 
     }
     
 }

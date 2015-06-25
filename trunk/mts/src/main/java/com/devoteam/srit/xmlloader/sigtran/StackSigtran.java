@@ -46,44 +46,37 @@ import com.devoteam.srit.xmlloader.sigtran.tlv.TlvDictionary;
 
 import dk.i1.sctp.SCTPData;
 
-public class StackSigtran extends Stack {
-
-    private static StackSigtran instance = null;
-    public static StackSigtran instance(){
-        return instance;
-    }
+public class StackSigtran extends Stack 
+{
 
     private HashMap<String, TlvDictionary> tlvDictionaries;
     private HashMap<String, FvoDictionary> fvoDictionaries;
 
     private int defaultPayloadProtocolID = getConfig().getInteger("server.DEFAULT_PPID", 1);
         
-    public StackSigtran() throws Exception {
+    
+    public StackSigtran() throws Exception 
+    {
         super();
         
-        StackSigtran.instance = this;
-        
-        tlvDictionaries = new HashMap();
-        fvoDictionaries = new HashMap();
-
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0) {
-            Listenpoint listenpoint = new Listenpoint(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_SIGTRAN);
-        }
+        this.tlvDictionaries = new HashMap<String, TlvDictionary>();
+        this.fvoDictionaries = new HashMap<String, FvoDictionary>();
     }
 
-    public TlvDictionary getTlvDictionnary(String name) throws Exception{
-        if(!tlvDictionaries.containsKey(name)){
+    public TlvDictionary getTlvDictionnary(String name) throws Exception
+    {
+        if(!tlvDictionaries.containsKey(name))
+        {
             tlvDictionaries.put(name, new TlvDictionary(SingletonFSInterface.instance().getInputStream(new URI("../conf/sigtran/"+name)), this));
         }
         return tlvDictionaries.get(name);
     }
 
     
-    public FvoDictionary getFvoDictionnary(String name) throws Exception{
-        if(!fvoDictionaries.containsKey(name)){
+    public FvoDictionary getFvoDictionnary(String name) throws Exception
+    {
+        if(!fvoDictionaries.containsKey(name))
+        {
             fvoDictionaries.put(name, new FvoDictionary(SingletonFSInterface.instance().getInputStream(new URI("../conf/sigtran/"+name))));
         }
         return fvoDictionaries.get(name);

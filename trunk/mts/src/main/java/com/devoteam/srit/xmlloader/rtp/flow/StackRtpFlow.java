@@ -56,7 +56,10 @@ public class StackRtpFlow extends StackRtp
     // for capture reassembling RTP packet mechanism
     Map<String, ListenpointRtpFlow> capture_point = null;
     
-    public StackRtpFlow() throws Exception {
+    
+    /** Creates a new instance */
+    public StackRtpFlow() throws Exception
+    {
         super();
         this.ssrcAndListenpointName = new HashMap<String, ListenpointRtpFlow>();
         int nbThreads = getConfig().getInteger("SCHEDULER_THREAD_NUMBER", 2);
