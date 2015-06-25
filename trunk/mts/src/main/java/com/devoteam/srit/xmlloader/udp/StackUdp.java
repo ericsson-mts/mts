@@ -23,10 +23,7 @@
 
 package com.devoteam.srit.xmlloader.udp;
 
-import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 
@@ -42,19 +39,7 @@ public class StackUdp extends Stack
     {
         super();
         
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new ListenpointUdp(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_UDP);
-        }
-    }
-
-    /** Returns the Config object to access the protocol config file*/
-    public Config getConfig() throws Exception
-    {
-        return Config.getConfigByName("udp.properties");
+ 
     }
 
     /** Returns the replacer used to parse sendMsg Operations */

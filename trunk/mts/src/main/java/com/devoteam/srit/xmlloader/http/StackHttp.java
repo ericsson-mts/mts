@@ -370,9 +370,4 @@ public class StackHttp extends Stack
         return XMLElementTextMsgParser.instance();
     }
 
-    /** Returns the Config object to access the protocol config file*/
-    public Config getConfig() throws Exception
-    {
-        return Config.getConfigByName(configFileName);
-    }
 }

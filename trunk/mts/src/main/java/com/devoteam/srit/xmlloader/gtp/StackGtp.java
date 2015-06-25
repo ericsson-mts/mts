@@ -68,12 +68,6 @@ public class StackGtp extends Stack
         return new MsgGtp(this, message);
     }
     
-    /** Returns the Config object to access the protocol config file*/
-    public Config getConfig() throws Exception
-    {
-        return Config.getConfigByName("gtp.properties");
-    }
-
     /** Returns the replacer used to parse sendMsg Operations */
     public XMLElementReplacer getElementReplacer()
     {

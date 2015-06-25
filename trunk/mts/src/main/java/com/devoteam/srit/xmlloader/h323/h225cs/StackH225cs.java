@@ -73,11 +73,6 @@ public class StackH225cs extends Stack {
     }
 
     @Override
-    public Config getConfig() throws Exception {
-        return Config.getConfigByName("h225cs.properties");
-    }
-
-    @Override
     public XMLElementReplacer getElementReplacer() {
         return XMLElementTextMsgParser.instance();
     }

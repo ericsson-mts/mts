@@ -129,12 +129,6 @@ public class StackSmpp extends Stack
         return msgArray.getBytes();
     }
 
-    /** Returns the Config object to access the protocol config file*/
-    public Config getConfig() throws Exception
-    {
-        return Config.getConfigByName("smpp.properties");
-    }
-
     /** Returns the replacer used to parse sendMsg Operations */
     public XMLElementReplacer getElementReplacer()
     {

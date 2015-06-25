@@ -410,12 +410,6 @@ public class StackRadius extends Stack
         return msgRadius;
     }
     
-    /** Returns the Config object to access the protocol config file*/
-    public Config getConfig() throws Exception
-    {
-        return Config.getConfigByName("radius.properties");
-    }
-
     /** Returns the replacer used to parse sendMsg Operations */
     public XMLElementReplacer getElementReplacer()
     {

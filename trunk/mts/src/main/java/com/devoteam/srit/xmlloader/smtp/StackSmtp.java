@@ -147,12 +147,6 @@ public class StackSmtp extends Stack
         return msg;
     }
 
-
-    public Config getConfig() throws Exception
-    {
-        return Config.getConfigByName("smtp.properties");
-    }
-
     public XMLElementReplacer getElementReplacer()
     {
         return XMLElementTextMsgParser.instance();

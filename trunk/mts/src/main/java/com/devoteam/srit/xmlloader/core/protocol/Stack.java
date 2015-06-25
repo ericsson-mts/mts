@@ -216,7 +216,12 @@ public abstract class Stack
     }
 
     /** Returns the Config object to access the protocol config file */
-    public abstract Config getConfig() throws Exception;
+    public Config getConfig() throws Exception
+    {    	
+    	String classname = this.getClass().getSimpleName();
+    	String configFilename = classname.substring(5).toLowerCase() + ".properties";
+    	return Config.getConfigByName(configFilename);
+    }
 
     public abstract XMLElementReplacer getElementReplacer();
 

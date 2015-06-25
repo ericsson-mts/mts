@@ -56,11 +56,6 @@ public  class StackMgcp extends Stack {
     }
 
     @Override
-    public Config getConfig() throws Exception {
-      return Config.getConfigByName("mgcp.properties");
-    }
-
-    @Override
     public XMLElementReplacer getElementReplacer() {
          return XMLElementTextMsgParser.instance();
     }

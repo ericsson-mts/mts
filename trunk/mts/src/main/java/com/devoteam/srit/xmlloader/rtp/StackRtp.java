@@ -76,11 +76,6 @@ public class StackRtp extends Stack
         return msg;
     }
 
-    public Config getConfig() throws Exception
-    {
-        return Config.getConfigByName("rtp.properties");
-    }
-
     public XMLElementReplacer getElementReplacer()
     {
         return XMLElementTextMsgParser.instance();

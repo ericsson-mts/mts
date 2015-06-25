@@ -65,11 +65,6 @@ public class StackStun extends Stack {
     }
 
     @Override
-    public Config getConfig() throws Exception {
-        return Config.getConfigByName("stun.properties");
-    }
-
-    @Override
     public XMLElementReplacer getElementReplacer() {
         return XMLElementTextMsgParser.instance();
     }
