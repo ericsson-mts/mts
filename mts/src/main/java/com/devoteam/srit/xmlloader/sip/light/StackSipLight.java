@@ -37,7 +37,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.sip.StackSip;
+import com.devoteam.srit.xmlloader.sip.StackSipCommon;
 
 import dk.i1.sctp.SCTPData;
 
@@ -45,15 +45,16 @@ import dk.i1.sctp.SCTPData;
  *
  * @author gpasquiers
  */
-public class StackSipLight extends StackSip
+public class StackSip extends StackSipCommon
 {
 	
 	public String contentBinaryTypes = null;
         
     /** Constructor */
-    public StackSipLight() throws Exception
+    public StackSip() throws Exception
     {
         super();        
+        
         this.contentBinaryTypes = "," + getConfig().getString("content.BINARY_TYPES", "") + ",";
     }
     
@@ -61,7 +62,7 @@ public class StackSipLight extends StackSip
     @Override
     public boolean receiveMessage(Msg msg) throws Exception
     {
-		((MsgSipLight) msg).completeViaTopmostHeader();
+		((MsgSip) msg).completeViaTopmostHeader();
 		return super.receiveMessage(msg);
     }
 

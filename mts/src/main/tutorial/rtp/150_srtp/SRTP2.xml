@@ -3,24 +3,24 @@
 
 <scenario>
 
-	<parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostSIP]" operation="set" value="[localHostRTP(0)]"/>
-    <parameter name="[localPortSIP]" operation="set" value="15060"/>
-	
-	<parameter name="[remoteHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostRTP(0)]"/>
-    <parameter name="[remotePortSIP]" operation="set" value="25060"/>
-	
-	<parameter name="[localHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostRTP]" operation="set" value="[localHostRTP(0)]"/>
-    <parameter name="[localPortRTP]" operation="set" value="10000"/>
-	<parameter name="[transport]" operation="set" value="UDP"/>
-	<parameter name="[remoteHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]"/>
-    <parameter name="[remotePortRTP]" operation="set" value="11000"/>
-
-	<parameter name="[CIPHER_SENDER]" operation="set" value="AES_CM_128_HMAC_SHA1_32" />
-	<parameter name="[KEY_AND_SALT_SENDER]" operation="set" value="WbTBosdVUZqEb6Htqhn+m3z7wUh4RJVR8nE15GbN" />
+  <parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
+  <parameter name="[localHostSIP]" operation="set" value="[localHostRTP(0)]"/>
+  <parameter name="[localPortSIP]" operation="set" value="15060"/>
+  
+  <parameter name="[remoteHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
+  <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostRTP(0)]"/>
+  <parameter name="[remotePortSIP]" operation="set" value="25060"/>
+  
+  <parameter name="[localHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+  <parameter name="[localHostRTP]" operation="set" value="[localHostRTP(0)]"/>
+  <parameter name="[localPortRTP]" operation="set" value="10000"/>
+  <parameter name="[transport]" operation="set" value="UDP"/>
+  <parameter name="[remoteHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+  <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]"/>
+  <parameter name="[remotePortRTP]" operation="set" value="11000"/>
+    
+  <parameter name="[CIPHER_SENDER]" operation="set" value="AES_CM_128_HMAC_SHA1_32" />
+  <parameter name="[KEY_AND_SALT_SENDER]" operation="set" value="WbTBosdVUZqEb6Htqhn+m3z7wUh4RJVR8nE15GbN" />
 
 	<createListenpointSIP name="[scenarioName]" localHost="[remoteHostSIP(0)]" localPort="[remotePortSIP(0)]" transport="[transport]"/>
 
@@ -107,8 +107,9 @@
 	
 	<test parameter="[data]" condition="binary.equals" value="5061636b65742023316162636465666768696a6b6c6d6e6f707172737475767778797a30313233343536373839000102030405060708090a0b0c0d0e0f104142434445464748494a4b4c4d4e4f505152535455565758595a" />
 	
+  <parameter name="[ssrc]" operation="number.random" value="10000000"/>
 	<sendMessageRTP listenpoint="[scenarioName]" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]" transport="[transport]" destScenario="inviter">
-	    <header channel="control" ssrc="1234567890" payloadType="17" seqnum="0" timestamp="0"/>
+	    <header channel="control" ssrc="[ssrc]" payloadType="17" seqnum="0" timestamp="0"/>
 	    <payload format="binary">h[data]</payload>
 	</sendMessageRTP>
 	

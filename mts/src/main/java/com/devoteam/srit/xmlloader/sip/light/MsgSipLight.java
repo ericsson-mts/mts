@@ -54,14 +54,14 @@ import com.devoteam.srit.xmlloader.core.coding.text.MsgParser;
 import com.devoteam.srit.xmlloader.core.coding.text.Header;
 import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
 import com.devoteam.srit.xmlloader.rtsp.StackRtsp;
-import com.devoteam.srit.xmlloader.sip.MsgSip;
-import com.devoteam.srit.xmlloader.sip.StackSip;
+import com.devoteam.srit.xmlloader.sip.MsgSipCommon;
+import com.devoteam.srit.xmlloader.sip.StackSipCommon;
 
 /**
  *
  * @author fhenry
  */
-public class MsgSipLight extends MsgSip
+public class MsgSip extends MsgSipCommon
 {    
 	private TextMessage message = null;
     	
@@ -98,7 +98,7 @@ public class MsgSipLight extends MsgSip
 	}
     
     /** Creates a new instance */
-    public MsgSipLight(Stack stack) 
+    public MsgSip(Stack stack) 
     {
         super(stack);
     }
@@ -131,7 +131,7 @@ public class MsgSipLight extends MsgSip
     @Override 
     public void decode(byte[] data) throws Exception
     {
-    	StackSipLight stackSip = (StackSipLight) stack;
+    	StackSip stackSip = (StackSip) stack;
         this.message = new TextMessage(getProtocol(), false, 0, stackSip.contentBinaryTypes);
         this.message.setCompressedHeader(compressedHeader);
         this.message.setMultiHeader(multiHeader);
@@ -178,7 +178,7 @@ public class MsgSipLight extends MsgSip
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
         String text = root.getText();
-        StackSipLight stackSip = (StackSipLight) stack;
+        StackSip stackSip = (StackSip) stack;
         this.message = new TextMessage(getProtocol(), true, stackSip.addCRLFContent, stackSip.contentBinaryTypes);
         this.message.setCompressedHeader(compressedHeader);
         this.message.setMultiHeader(multiHeader);

@@ -28,7 +28,7 @@ import java.util.Vector;
 
 import org.dom4j.Element;
 
-import com.devoteam.srit.xmlloader.sip.light.StackSipLight;
+import com.devoteam.srit.xmlloader.sip.light.StackSip;
 import com.devoteam.srit.xmlloader.smpp.data.SmppAttribute;
 import com.devoteam.srit.xmlloader.smpp.data.SmppChoice;
 import com.devoteam.srit.xmlloader.smpp.data.SmppGroup;

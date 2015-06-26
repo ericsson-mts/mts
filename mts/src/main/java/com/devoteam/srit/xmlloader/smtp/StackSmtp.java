@@ -32,7 +32,7 @@ import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.sip.ListenpointSip;
+import com.devoteam.srit.xmlloader.sip.ListenpointSipCommon;
 
 import java.io.InputStream;
 import org.dom4j.Element;

@@ -1,8 +1,8 @@
 echo OFF
 
-set OPTIONS=-level:WARN -stor:file -gen:false -show:false -param:[iterations]+1
-set MODE1=1
-rem set MODE1=-seq
+set OPTIONS=-level:WARN -stor:file -gen:false -show:false -param:[iterations]+10
+rem set MODE1=1
+set MODE1=-seq
 
 rem run the unit tests
 cd ..\bin
@@ -13,8 +13,9 @@ call startCmd.bat ..\tutorial\core\test.xml %MODE1% %OPTIONS% -param:param_1+one
 call startCmd.bat ..\tutorial\diameter\test.xml %MODE1% %OPTIONS%
 call startCmd.bat ..\tutorial\sip\test.xml %MODE1% %OPTIONS%
 call startCmd.bat ..\tutorial\sip\test.xml %MODE1% -config:USE_NIO+true %OPTIONS%
-call startCmd.bat ..\tutorial\sip\test_jain.xml %MODE1% -config:protocol.STACK_CLASS_NAME_SIP+com.devoteam.srit.xmlloader.sip.jain.StackSipJain %OPTIONS%
+call startCmd.bat ..\tutorial\sip\test_jain.xml %MODE1% -config:protocol.STACK_CLASS_NAME_SIP+com.devoteam.srit.xmlloader.sip.jain.StackSip %OPTIONS%
 call startCmd.bat ..\tutorial\rtp\test.xml %MODE1% %OPTIONS%
+call startCmd.bat ..\tutorial\rtp\test.xml %MODE1% -config:USE_NIO+true %OPTIONS%
 call startCmd.bat ..\tutorial\rtp\test.xml 001_jmf_noreg -config:protocol.STACK_CLASS_NAME_RTP+com.devoteam.srit.xmlloader.rtp.jmf.StackRtp %OPTIONS%
 call startCmd.bat ..\tutorial\rtpflow\test.xml %MODE1% %OPTIONS%
 call startCmd.bat ..\tutorial\rtpflow\test.xml %MODE1% -config:USE_NIO+true -config:message.KEEP_SENT_MESSAGES+true %OPTIONS%

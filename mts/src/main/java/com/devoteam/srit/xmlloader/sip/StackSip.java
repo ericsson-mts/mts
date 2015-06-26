@@ -49,7 +49,7 @@ import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
  *
  * @author gpasquiers
  */
-public abstract class StackSip extends Stack
+public abstract class StackSipCommon extends Stack
 {
 
     private ExpireHashMap<TransactionId, Trans> outTransactionsResponse;
@@ -64,7 +64,7 @@ public abstract class StackSip extends Stack
     
     
     /** Creates a new instance */
-    public StackSip() throws Exception
+    public StackSipCommon() throws Exception
     {
         super();
         
@@ -78,21 +78,12 @@ public abstract class StackSip extends Stack
             this.addCRLFContent++;
         }
     }
-    
-    /** 
-     * Get the protocol acronym of the message 
-     */
-    @Override
-    public String getProtocol()
-    {
-        return StackFactory.PROTOCOL_SIP;
-    }
-    
+        
     /** Creates a specific SIP Msg */
     @Override    
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        MsgSip msgSip = (MsgSip) super.parseMsgFromXml(request, root, runner);
+        MsgSipCommon msgSip = (MsgSipCommon) super.parseMsgFromXml(request, root, runner);
 
         // DEPRECATED begin        
         String listenpointName = root.attributeValue("providerName");
@@ -133,7 +124,7 @@ public abstract class StackSip extends Stack
         }
 
         // is the message part of an inverted transaction ?
-        MsgSip msgSip = (MsgSip) msg;
+        MsgSipCommon msgSip = (MsgSipCommon) msg;
         boolean isInvertedTransaction = true;
         TransactionId responseTransactionId = msgSip.getResponseTransactionId();
         if(null == responseTransactionId) {
@@ -192,7 +183,7 @@ public abstract class StackSip extends Stack
         }
 
         // is the message part of an inverted transaction ?
-        MsgSip msgSip = (MsgSip) msg;
+        MsgSipCommon msgSip = (MsgSipCommon) msg;
         boolean isInvertedTransaction = true;
         TransactionId responseTransactionId = msgSip.getResponseTransactionId();
         if(null == responseTransactionId) {

@@ -26,18 +26,18 @@ package com.devoteam.srit.xmlloader.sip.jain;
 import java.io.InputStream;
 
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
-import com.devoteam.srit.xmlloader.sip.StackSip;
+import com.devoteam.srit.xmlloader.sip.StackSipCommon;
 
 
 /**
  *
  * @author gpasquiers
  */
-public class StackSipJain extends StackSip
+public class StackSip extends StackSipCommon
 {
 
     /** Constructor */
-    public StackSipJain() throws Exception
+    public StackSip() throws Exception
     {
         super();     
     }
@@ -46,7 +46,7 @@ public class StackSipJain extends StackSip
     @Override
     public boolean receiveMessage(Msg msg) throws Exception
     {
-		((MsgSipJain) msg).completeViaTopmostHeader();
+		((MsgSip) msg).completeViaTopmostHeader();
 		return super.receiveMessage(msg);
     }
 

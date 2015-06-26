@@ -43,11 +43,11 @@ import dk.i1.diameter.node.Capability;
  *
  * @author gpasquiers
  */
-public class ListenpointSip extends Listenpoint
+public class ListenpointSipCommon extends Listenpoint
 {
 
     /** Creates a new instance of Listenpoint */
-    public ListenpointSip(Stack stack) throws Exception
+    public ListenpointSipCommon(Stack stack) throws Exception
     {
         super(stack);
         this.transport = null;
