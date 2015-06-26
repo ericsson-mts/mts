@@ -40,7 +40,7 @@ import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
-import com.devoteam.srit.xmlloader.sip.ListenpointSip;
+import com.devoteam.srit.xmlloader.sip.ListenpointSipCommon;
 
 import gp.net.radius.data.AVPBytes;
 import gp.net.radius.data.AVPInteger;

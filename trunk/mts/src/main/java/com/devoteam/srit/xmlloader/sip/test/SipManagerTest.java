@@ -46,7 +46,7 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
-import com.devoteam.srit.xmlloader.sip.light.MsgSipLight;
+import com.devoteam.srit.xmlloader.sip.light.MsgSip;
 
 
 public class SipManagerTest {
@@ -92,7 +92,7 @@ public class SipManagerTest {
         String request = createRequestREGISTER(0);
         //Jain req = (SIPRequest) msgFact.createRequest(request);
         //Jain MsgSipJain msg = new MsgSipJain(request, false);
-        MsgSipLight msg = new MsgSipLight(stack);
+        MsgSip msg = new MsgSip(stack);
         msg.decode(request.getBytes());
         msg.setListenpoint(listenpoint);
         System.out.println("length = " + request.length());

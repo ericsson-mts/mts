@@ -29,19 +29,19 @@ import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.sip.MsgSip;
+import com.devoteam.srit.xmlloader.sip.MsgSipCommon;
 
 /**
  *
  * @author gpasquiers
  */
-public abstract class MsgSip extends Msg
+public abstract class MsgSipCommon extends Msg
 {
     private TransactionId responseTransactionId;
     private boolean isResponseTransactionIsSet;    
     
     /** Creates a new instance of MsgSip */
-    public MsgSip(Stack stack) 
+    public MsgSipCommon(Stack stack) 
     {
         super(stack);
     }
@@ -121,15 +121,6 @@ public abstract class MsgSip extends Msg
         }
 
         return this.responseTransactionId;
-    }
-
-    /** 
-     * Get the protocol acronym of the message 
-     */
-    @Override
-    public String getProtocol()
-    {
-        return StackFactory.PROTOCOL_SIP;
     }
 
     /** 

@@ -65,19 +65,19 @@ import com.devoteam.srit.xmlloader.core.coding.text.ContentParser;
 import com.devoteam.srit.xmlloader.core.coding.text.FirstLine;
 import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
 import com.devoteam.srit.xmlloader.rtsp.StackRtsp;
-import com.devoteam.srit.xmlloader.sip.MsgSip;
-import com.devoteam.srit.xmlloader.sip.StackSip;
+import com.devoteam.srit.xmlloader.sip.MsgSipCommon;
+import com.devoteam.srit.xmlloader.sip.StackSipCommon;
 
 /**
  *
  * @author gpasquiers
  */
-public class MsgSipJain extends MsgSip
+public class MsgSip extends MsgSipCommon
 {
     private SIPMessage sipMessage;
     
     /** Creates a new instance */
-    public MsgSipJain(Stack stack) 
+    public MsgSip(Stack stack) 
     {
         super(stack);
     }
@@ -195,7 +195,7 @@ public class MsgSipJain extends MsgSip
             String contentString = text.substring(posContent).trim();
             
             // bug NSN equipment : add a CRLF at the end of the Content
-            if (((StackSip) stack).addCRLFContent == 1)
+            if (((StackSipCommon) stack).addCRLFContent == 1)
             {
             	contentString = contentString + "\r\n"; 
             }

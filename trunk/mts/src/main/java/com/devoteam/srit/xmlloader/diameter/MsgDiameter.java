@@ -28,7 +28,7 @@ import com.devoteam.srit.xmlloader.diameter.dictionary.AvpDef;
 import com.devoteam.srit.xmlloader.diameter.dictionary.Dictionary;
 import com.devoteam.srit.xmlloader.diameter.dictionary.TypeDef;
 import com.devoteam.srit.xmlloader.diameter.dictionary.VendorDef;
-import com.devoteam.srit.xmlloader.sip.light.StackSipLight;
+import com.devoteam.srit.xmlloader.sip.light.StackSip;
 import com.devoteam.srit.xmlloader.tcp.ListenpointTcp;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
