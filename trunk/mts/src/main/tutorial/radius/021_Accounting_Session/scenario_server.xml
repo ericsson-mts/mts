@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-    <parameter name="[socket_name]" operation="set" value="[scenarioName]" />
+    <parameter name="[listenpoint]" operation="set" value="[scenarioName]" />
 
-    <createListenpointRADIUS name="[socket_name]" secret="my_secret" localPort="[remotePortRAD]"/>
+    <createListenpointRADIUS name="[listenpoint]" secret="my_secret" localPort="[remotePortRAD]"/>
 
     <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
     <parameter name="[testcase:sem2]" operation="system.semaphorewait" />
@@ -15,7 +15,7 @@
     
     <label name="loop" />
     
-    <receiveMessageRADIUS listenpoint="[socket_name]">
+    <receiveMessageRADIUS listenpoint="[listenpoint]">
         <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost" />
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort" />
@@ -34,12 +34,12 @@
             
         <test parameter="[password]" condition="string.matches" value="password.*" />
  
-            <sendMessageRADIUS listenpoint="[socket_name]" remoteHost="[remoteHost]" remotePort="[remotePort]">
+            <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[remoteHost]" remotePort="[remotePort]">
                 <header code="Access-Accept" identifier="[identifier]" />
             </sendMessageRADIUS>
         </then>
         <else>
-            <sendMessageRADIUS listenpoint="[socket_name]" remoteHost="[remoteHost]" remotePort="[remotePort]">
+            <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[remoteHost]" remotePort="[remotePort]">
                 <header code="Accounting-Response" identifier="[identifier]" />
             </sendMessageRADIUS>
         </else>
@@ -56,6 +56,6 @@
         </else>
     </if>
         
-    <removeListenpointRADIUS name="[socket_name]" />
+    <removeListenpointRADIUS name="[listenpoint]" />
     
 </scenario>

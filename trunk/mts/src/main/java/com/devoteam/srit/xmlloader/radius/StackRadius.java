@@ -77,54 +77,6 @@ public class StackRadius extends Stack
         this.radiusDictionary = new RadiusDictionary(new File("../conf/radius/dictionary"));
     }
 
-	/** Creates a Listenpoint specific to each Stack */
-    @Override
-	public synchronized Listenpoint parseListenpointFromXml(Element root, Runner runner) throws Exception 
-	{
-        String name = root.attributeValue("name");
-        // test the existence of the listenpoint
-        Listenpoint listenpoint = getListenpoint(name);
-        if (listenpoint != null)
-        {
-            return listenpoint;
-        }
-        // create a new listenpoint
-        else
-        {
-            Listenpoint lp = new ListenpointRadius(this);
-            lp.parseFromXml(root, null);
-            return lp;
-        }
-	}
-
-    /** Creates a Channel specific to each Stack */
-    // deprecated part //
-    @Override
-    public Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception
-    {
-        String socketName = root.attributeValue("socketName");
-        String localHost  = root.attributeValue("localHost");
-        String localPort  = root.attributeValue("localPort");
-        String remoteHost = root.attributeValue("remoteHost");
-        String remotePort = root.attributeValue("remotePort");
-        String secret     = root.attributeValue("secret");
-
-        if (existsChannel(socketName))
-        {
-            return getChannel(socketName);
-        }
-        else
-        {
-            if(null != localHost) localHost = InetAddress.getByName(localHost).getHostAddress();
-            else                  localHost = "0.0.0.0";
-
-            if(null != remoteHost) remoteHost = InetAddress.getByName(remoteHost).getHostAddress();
-
-            return new ChannelRadius(this, socketName, localHost, localPort, remoteHost, remotePort, protocol, secret);
-        }
-    }
-    // deprecated part //
-
     private AVPBytes parseAVP(Integer vendorCode, Element avp) throws Exception
     {
         String avpCodeAttribute = avp.attributeValue("code");

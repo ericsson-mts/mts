@@ -8,7 +8,7 @@
     <parameter name="[testcase:sem2]" operation="system.semaphorenotify" />
     <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
 
-    <receiveMessageRADIUS listenpoint="[listenpoint]" type="Access-Request:1">
+    <receiveMessageRADIUS listenpoint="[listenpoint]" request="true" type="Access-Request:1">
         <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
         <parameter name="[remoteHostRAD]" operation="protocol.setFromMessage" value="channel.remoteHost" />
         <parameter name="[remotePortRAD]" operation="protocol.setFromMessage" value="channel.remotePort" />
@@ -22,4 +22,5 @@
     </sendMessageRADIUS>
 
     <!--removeListenpointRADIUS name="[listenpoint]"/-->
+    
 </scenario>

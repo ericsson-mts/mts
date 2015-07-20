@@ -24,6 +24,9 @@
 package com.devoteam.srit.xmlloader.radius;
 
 
+import org.dom4j.Element;
+
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.ThreadPool;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
@@ -54,15 +57,6 @@ public class ChannelRadius extends Channel implements Runnable
     	super(stack);
     }
     
-    /** Creates a new instance of Channel */
-    public ChannelRadius(Stack stack, String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol, String secret) throws Exception
-    {
-        super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        this.stack = stack;
-        this.secret = new ReadOnlyDefaultArray(secret.getBytes());
-        this.identifierHandler = new IdentifierHandler();
-    }
-
     public Array getSecret()
     {
         return this.secret;
@@ -126,6 +120,28 @@ public class ChannelRadius extends Channel implements Runnable
     public String getTransport()
     {
     	return StackFactory.PROTOCOL_UDP;
+    }
+
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseFromXml(Element root, Runner runner, String protocol) throws Exception
+    {
+    	super.parseFromXml(root, runner, protocol);
+    	
+    	String secret     = root.attributeValue("secret");
+    	this.secret = new ReadOnlyDefaultArray(secret.getBytes());
+    	this.identifierHandler = new IdentifierHandler();
+    	
+    	// DEPRECATED begin
+    	String name = root.attributeValue("socketName");
+    	if (name != null)
+    	{
+    		this.name = name;
+    	}
+    	// DEPRECATED end
     }
 
     public void run()
