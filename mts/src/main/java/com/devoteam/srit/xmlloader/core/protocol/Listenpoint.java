@@ -719,7 +719,10 @@ public class Listenpoint
 
         if (this.port != listenpoint.getPort())
         {
-            return false;
+        	if (this.port != 0)
+        	{
+        		return false;
+        	}
         }
         if (this.listenUDP != listenpoint.getListenUDP())
         {

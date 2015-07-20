@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-    <parameter name="[listenpoint]" operation="set" value="[scenarioName]_client" />
+    <parameter name="[listenpoint]" operation="set" value="[scenarioName]" />
 
     <createListenpointRADIUS name="[listenpoint]" secret="my_secret"/>
     <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
@@ -13,9 +13,10 @@
         <avp code="user-password" value="password" />
     </sendMessageRADIUS>
 
-    <receiveMessageRADIUS listenpoint="[listenpoint]" type="Access-Request:1" result="Access-Accept:2">
+    <receiveMessageRADIUS listenpoint="[listenpoint]" request="false" type="Access-Request:1" result="Access-Accept:2">
         <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
     </receiveMessageRADIUS>
 
-    <!--removeListenpointRADIUS name="[listenpoint]"/-->
+  <!--removeListenpointRADIUS name="[listenpoint]"/-->
+    
 </scenario>
