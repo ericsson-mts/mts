@@ -7,48 +7,50 @@
     <parameter name="[localHostRAD]" operation="set" value="[localHostRAD(0)]" description="local address of the MTS host" editable="true" />
     <!--parameter name="[localHostRAD]" operation="file.readProperty" value="radius.properties" value2="listenpoint.LOCAL_PORT"/-->
     <parameter name="[localPortRAD]" operation="set" value="10000" description="local port of the MTS host" editable="true" />
+    <parameter name="[localClient]" operation="set" value="true" description="flag to activate the client scenario" editable="true" />
     
     <parameter name="[remoteHostRAD]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[remoteHostRAD]" operation="set" value="172.16.21.32" /-->
     <parameter name="[remoteHostRAD]" operation="set" value="[remoteHostRAD(0)]" description="remote address of the SUT host" editable="true" />
     <!--parameter name="[remotePortRAD]" operation="file.readProperty" value="radius.properties" value2="listenpoint.LOCAL_PORT"/-->
     <parameter name="[remotePortRAD]" operation="set" value="60000" description="remote port of the SUT host" editable="true" />
+    <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true" />
   
     <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
   
     <testcase name="001_Access_PAP" state="true" number="[iterations]" description="Radius Access-Request / Access-Response messages with PAP avp">
-        <scenario file="001_Access_PAP/scenario_client.xml" name="client" routingName=""/>
-        <scenario file="001_Access_PAP/scenario_server.xml" name="server" routingName="server"/>
+        <scenario file="001_Access_PAP/scenario_client.xml" name="client" state="[localClient]" routingName=""/>
+        <scenario file="001_Access_PAP/scenario_server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="011_Access_CHAP" state="true" number="[iterations]" description="Radius Access-Request / Access-Response messages with CHAP avp">
-        <scenario file="011_Access_CHAP/scenario_client.xml" name="client" routingName=""/>
-        <scenario file="011_Access_CHAP/scenario_server.xml" name="server" routingName="server"/>
+        <scenario file="011_Access_CHAP/scenario_client.xml" name="client" state="[localClient]" routingName=""/>
+        <scenario file="011_Access_CHAP/scenario_server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="012_Access_CHAP_listenpoint" state="true" number="[iterations]" description="Radius Access-Request / Access-Response messages with CHAP avp; many listenpoint opened">
         <parameter name="[tempLocalPortRAD]" operation="set" value="10001"/>
-        <scenario file="012_Access_CHAP_listenpoint/scenario_client.xml" name="client" routingName=""/>
-        <scenario file="012_Access_CHAP_listenpoint/scenario_server.xml" name="server" routingName="server"/>
+        <scenario file="012_Access_CHAP_listenpoint/scenario_client.xml" name="client" state="[localClient]" routingName=""/>
+        <scenario file="012_Access_CHAP_listenpoint/scenario_server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="021_Accounting_Session" state="true" number="[iterations]" description="Radius Accounting-Request / Accounting-Response messages">
-        <scenario file="021_Accounting_Session/scenario_client.xml" name="client" routingName=""/>
-        <scenario file="021_Accounting_Session/scenario_server.xml" name="server" routingName="RADIUS"/>
+        <scenario file="021_Accounting_Session/scenario_client.xml" name="client" state="[localClient]" routingName=""/>
+        <scenario file="021_Accounting_Session/scenario_server.xml" name="server" state="[remoteServer]" routingName="RADIUS"/>
     </testcase>
   
     <testcase name="800_dev" state="true" number="[iterations]" description="Radius first for development purpose">
-        <scenario file="800_dev/scenario.xml" name="client" routingName="client"/>
+        <scenario file="800_dev/scenario.xml" name="client" state="true" routingName="client"/>
     </testcase>
   
     <testcase name="radius_810_retransmissions" state="true" number="[iterations]" description="Radius retransmissions testing">
-        <scenario file="810_retransmissions/client.xml" name="client" routingName=""/>
-        <scenario file="810_retransmissions/server.xml" name="server" routingName="server"/>
+        <scenario file="810_retransmissions/client.xml" name="client" state="[localClient]" routingName=""/>
+        <scenario file="810_retransmissions/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="radius_820_deprecated" state="true" number="[iterations]" description="Radius deprecated syntax">
-        <scenario file="820_deprecated/scenario_client.xml" name="client" routingName=""/>
-        <scenario file="820_deprecated/scenario_server.xml" name="server" routingName="RADIUS"/>
+        <scenario file="820_deprecated/scenario_client.xml" name="client" state="[localClient]" routingName=""/>
+        <scenario file="820_deprecated/scenario_server.xml" name="server" state="[remoteServer]" routingName="RADIUS"/>
     </testcase>
 
     <testcase name="radius_900_client" state="false" number="[iterations]" description="Radius client function">

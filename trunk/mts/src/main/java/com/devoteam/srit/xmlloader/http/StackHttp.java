@@ -267,10 +267,12 @@ public class StackHttp extends Stack
         }
         else
         {
-            if(getConfig().getBoolean("USE_NIO")){
+            if(getConfig().getBoolean("USE_NIO"))
+            {
                 return new NIOChannelHttp(channelName, localHost, localPort, remoteHost, remotePort, protocol, secure);
             }
-            else{
+            else
+            {
                 return new BIOChannelHttp(channelName, localHost, localPort, remoteHost, remotePort, protocol, secure);
             }
         }
