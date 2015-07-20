@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="SIP" description="SIP regression tests" >
     
-    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
 
     <parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" description="local address of the MTS host" editable="true"/>
@@ -348,62 +348,62 @@
         <scenario file="131_sip_probe_regexfilter/probe.xml" name="default" state="[remoteServer]" routingName="default"/>
     </testcase>    
 
-    <testcase name="200_invite_bye" state="true"  number="[iterations]" description="sip" >
+    <testcase name="200_invite_bye" state="true" number="[iterations]" description="sip" >
         <scenario file="200_sip_invite_bye/UAC.xml" name="alice" state="[localClient]" routingName="alice"/>
         <scenario file="200_sip_invite_bye/UAS.xml" name="bob" state="[remoteServer]" routingName="bob"/>
     </testcase>
 
-    <testcase name="252_proxy" state="false" description="sip : agent PROXY" >
+    <testcase name="252_proxy" state="false" number="[iterations]" description="sip : agent PROXY" >
         <scenario file="252_sip_proxy/SIP.xml" name="[localPortSIP]" routingName="[localPortSIP]"/>
     </testcase>
 
-    <testcase name="301_invite_bye" state="false" description="sip : agent UAC" >
+    <testcase name="301_invite_bye" state="false" number="[iterations]" description="sip : agent UAC" >
         <scenario file="301_sip_invite_bye/scenario.xml" name="alice" routingName="alice"/>
     </testcase>
 
-    <testcase name="302_register" state="false" description="sip : agent UAC with REGISTER" >
+    <testcase name="302_register" state="false" number="[iterations]" description="sip : agent UAC with REGISTER" >
         <scenario file="302_sip_register/scenario.xml" name="alice" routingName="alice"/>
     </testcase>
     
-    <testcase name="150_uas" state="false" description="sip : agent UAS " >
+    <testcase name="150_uas" state="false" number="[iterations]" description="sip : agent UAS " >
         <scenario file="150_sip_uas/SIP.xml" name="[localPortSIP]" routingName="[localPortSIP]"/>
         <scenario file="150_sip_uas/uac.xml" name="client" routingName="client"/>
     </testcase>
 
-    <testcase name="150_uas_register" state="false" description="sip : agent UAS with REGISTER" >
+    <testcase name="150_uas_register" state="false" number="[iterations]" description="sip : agent UAS with REGISTER" >
         <scenario file="150_sip_uas_register/SIP.xml" name="[localPortSIP]" routingName="[localPortSIP]"/>
         <scenario file="150_sip_uas_register/uac.xml" name="client" routingName="client"/>
     </testcase>
 
-    <testcase name="151_uac" state="false" description="sip : agent UAC " >
+    <testcase name="151_uac" state="false" number="[iterations]" description="sip : agent UAC " >
         <scenario file="151_sip_uac/uac.xml" name="client" routingName="client"/>
     </testcase>
 
-    <testcase name="151_uac_register" state="false" description="sip : agent UAC with REGISTER" >
+    <testcase name="151_uac_register" state="false" number="[iterations]" description="sip : agent UAC with REGISTER" >
         <scenario file="151_sip_uac_register/uac.xml" name="client" routingName="client"/>
     </testcase>
 
-    <testcase name="152_proxy" state="false" description="sip : agent PROXY" >
+    <testcase name="152_proxy" state="false" number="[iterations]" description="sip : agent PROXY" >
         <scenario file="152_sip_proxy/SIP.xml" name="[localPortSIP]" routingName="[localPortSIP]"/>
     </testcase>
 
-    <testcase name="153_b2b_transparent" state="false" description="sip : agent B2B transparent without filtering on Via and Record-Route headers" >
+    <testcase name="153_b2b_transparent" state="false" number="[iterations]" description="sip : agent B2B transparent without filtering on Via and Record-Route headers" >
         <scenario file="153_sip_b2b_transparent/SIP.xml" name="[localPortSIP]" routingName="[localPortSIP]"/>
     </testcase>
 
-    <testcase name="153_b2b_non_transp" state="false" description="sip : agent B2B transparent with filtering on Via and Record-Route headers" >
+    <testcase name="153_b2b_non_transp" state="false" number="[iterations]" description="sip : agent B2B transparent with filtering on Via and Record-Route headers" >
         <scenario file="153_sip_b2b_non_transp/SIP.xml" name="[localPortSIP]" routingName="[localPortSIP]"/>
     </testcase>
 
-    <testcase name="154_registrar" state="false" description="sip : agent REGISTRAR server" >
+    <testcase name="154_registrar" state="false" number="[iterations]" description="sip : agent REGISTRAR server" >
         <scenario file="154_sip_registrar/SIP.xml" name="[localPortSIP]" routingName="[localPortSIP]"/>
     </testcase>
 
-    <testcase name="155_stateless" state="false" description="sip : agent registrar server stateless" >
+    <testcase name="155_stateless" state="false" number="[iterations]" description="sip : agent registrar server stateless" >
       	<scenario file="155_sip_stateless/SIP.xml" name="[localPortSIP]" routingName="[localPortSIP]"/>
     </testcase>
 
-    <testcase name="156_supervision" state="false" description="sip : supervision" >
+    <testcase name="156_supervision" state="false" number="[iterations]" description="sip : supervision" >
         <parameter name="[LevelSupervision]" operation="set" value="ERROR"/>
         <parameter name="[PeriodSupervision]" operation="set" value="10"/>
 
@@ -416,15 +416,15 @@
         <scenario file="156_sip_supervision/supervision.xml" name="supervision" routingName="supervision"/>
     </testcase>
 
-    <testcase name="157_probe" state="false" description="sip : probe" >
+    <testcase name="157_probe" state="false" number="[iterations]" description="sip : probe" >
         <scenario file="130_sip_probe/probe.xml" name="probe" routingName="probe"/>
     </testcase>
 
-    <testcase name="158_registrar_authentification" state="false" description="sip: registrar server authentification" >
+    <testcase name="158_registrar_authentification" state="false" number="[iterations]" description="sip: registrar server authentification" >
         <scenario file="158_sip_registrar_authentification/SIP.xml" name="[localPortSIP]" routingName="[localPortSIP]"/>
     </testcase>
 	
-    <testcase name="160_boucle" state="false" description="sip : boucle" >
+    <testcase name="160_boucle" state="false" number="[iterations]" description="sip : boucle" >
         <scenario file="160_sip_boucle/UAC.xml" name="alice" routingName="alice"/>
         <scenario file="160_sip_boucle/UAS.xml" name="bob" routingName="bob"/>
     </testcase>

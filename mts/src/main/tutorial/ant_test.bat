@@ -1,12 +1,12 @@
 echo OFF
 
-set OPTIONS=-level:WARN -stor:file -gen:false -show:false -param:[iterations]+10
+set OPTIONS=-level:WARN -stor:file -gen:false -show:false -param:[iterations]+1
 rem set MODE1=1
 set MODE1=-seq
 
 rem run the unit tests
 cd ..\bin
-del /Q /F /S ..\logs\*
+del /Q/F/S ..\logs
 
 REM ******************************************* protocol modules
 call startCmd.bat ..\tutorial\core\test.xml %MODE1% %OPTIONS% -param:param_1+one -param:[param_2]+two -param:[param_3]+three
