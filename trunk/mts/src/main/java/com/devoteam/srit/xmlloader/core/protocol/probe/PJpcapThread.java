@@ -77,28 +77,22 @@ public class PJpcapThread implements PacketReceiver, Runnable {
         startSemaphore = new Semaphore(0);
         stopped = false;
         
-        try
-    	{
-	        if (probe.getNetworkInterface() != null) {
+	    if (probe.getNetworkInterface() != null) 
+	    {
 	        	networkInterface = searchNetworkInterface(probe.getNetworkInterface());
 	            captor = JpcapCaptor.openDevice(networkInterface, DEFAULT_SNAPLENGHT, probe.getPromiscuousMode(), 10);
 	            sendor = JpcapSender.openDevice(networkInterface);
 	            captor.setFilter(probe.getCaptureFilter(), true);
-	        }
-	        else if (probe.getFilename() != null) {
-	        	captor = JpcapCaptor.openFile(probe.getFilename());
-	            if (probe.getCaptureFilter() != null) {
-	                captor.setFilter(probe.getCaptureFilter(), true);
-	            }
-	        }
-    	}
-    	catch (Throwable e)
-    	{
-    		// nothing to do
-    	}
-
+	     }
+        else if (probe.getFilename() != null) 
+        {
+        	captor = JpcapCaptor.openFile(probe.getFilename());
+            if (probe.getCaptureFilter() != null) 
+            {
+                captor.setFilter(probe.getCaptureFilter(), true);
+            }
+        }
         captor.setPacketReadTimeout(500);
-
     }
     
     public boolean sendETHMessage(Msg msg) throws Exception
