@@ -4,7 +4,7 @@
 <scenario>
 
     <!-- attend message USER-->
-    <receiveMessagePOP request="true">
+    <receiveMessagePOP request="true" type="USER">
         <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
         <parameter name="[arg]" operation="protocol.setFromMessage" value="request.arguments" />
         <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
@@ -19,7 +19,7 @@
     </sendMessagePOP>
     
     <!-- attend message PASS-->
-    <receiveMessagePOP request="true">
+    <receiveMessagePOP request="true" type="PASS">
         <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
     </receiveMessagePOP>
 
@@ -31,7 +31,7 @@
     </sendMessagePOP>
 
     <!-- attend message USER-->
-    <receiveMessagePOP request="true">
+    <receiveMessagePOP request="true" type="USER">
         <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
         <parameter name="[argument]" operation="protocol.setFromMessage" value="request.arguments" />
         <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
@@ -46,8 +46,10 @@
     </sendMessagePOP>
     
     <!-- attend message PASS-->
-    <receiveMessagePOP request="true">
+    <receiveMessagePOP request="true" type="PASS">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
         <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="PASS"/>
     </receiveMessagePOP>
 
     <!-- envoi reponse PASS-->
@@ -58,10 +60,10 @@
     </sendMessagePOP>
 
     <!-- attend message NOOP-->
-    <receiveMessagePOP request="true">
+    <receiveMessagePOP request="true" type="NOOP">
         <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
         <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
-        <test parameter="[command]" condition="string.equals" value="NOOP"/>
+        <!--test parameter="[command]" condition="string.equals" value="NOOP"/-->
     </receiveMessagePOP>
 
     <!-- envoi reponse NOOP-->
@@ -72,7 +74,7 @@
     </sendMessagePOP>
 
     <!-- attend message STAT-->
-    <receiveMessagePOP request="true">
+    <receiveMessagePOP request="true" type="STAT">
         <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
         <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
         <test parameter="[command]" condition="string.equals" value="STAT"/>
@@ -86,7 +88,7 @@
     </sendMessagePOP>
 
     <!-- attend message LIST-->
-    <receiveMessagePOP request="true">
+    <receiveMessagePOP request="true" type="LIST">
         <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
         <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
         <test parameter="[command]" condition="string.equals" value="LIST"/>
@@ -100,7 +102,7 @@
     </sendMessagePOP>
 
     <!-- attend message LIST-->
-    <receiveMessagePOP request="true">
+    <receiveMessagePOP request="true" type="LIST">
         <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
         <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
         <test parameter="[command]" condition="string.equals" value="LIST"/>
@@ -115,8 +117,24 @@
 ]]>
     </sendMessagePOP>
 
+    <!-- attend message TOP-->
+    <!--receiveMessagePOP request="true" type="TOP">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+        <test parameter="[command]" condition="string.equals" value="TOP"/>
+    </receiveMessagePOP-->
+
+    <!-- envoi reponse LIST-->
+    <!--sendMessagePOP name="Send TOP response" transactionId="[transactionId]">
+<![CDATA[
++OK 2 messages (320 octets)
+1 120
+2 200
+]]>
+    </sendMessagePOP-->
+    
     <!-- attend message RETR-->
-    <receiveMessagePOP request="true">
+    <receiveMessagePOP request="true" type="RETR">
         <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
         <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
         <test parameter="[command]" condition="string.equals" value="RETR"/>
