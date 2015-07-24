@@ -26,7 +26,7 @@
 
     <if>
         <condition>
-            <test parameter="[messageType]" condition="string.contains" value="Access" />
+            <test parameter="[messageType]" condition="string.startsWith" value="access" />
         </condition>
         <then>
         
@@ -35,12 +35,12 @@
         <test parameter="[password]" condition="string.matches" value="password.*" />
  
             <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[remoteHost]" remotePort="[remotePort]">
-                <header code="Access-Accept" identifier="[identifier]" />
+                <header code="access-accept" identifier="[identifier]" />
             </sendMessageRADIUS>
         </then>
         <else>
             <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[remoteHost]" remotePort="[remotePort]">
-                <header code="Accounting-Response" identifier="[identifier]" />
+                <header code="accounting-response" identifier="[identifier]" />
             </sendMessageRADIUS>
         </else>
     </if>

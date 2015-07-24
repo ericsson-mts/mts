@@ -9,12 +9,12 @@
     <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
 
     <sendRequestRadius socketName="[socket_name]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
-        <header code="Access-Request" />
+        <header code="access-request" />
         <avp code="user-name" value="login" />
         <avp code="user-password" value="password" />
     </sendRequestRadius>
 
-    <receiveResponseRadius socketName="[socket_name]" type="Access-Request:1" result="Access-Accept:2" />
+    <receiveResponseRadius socketName="[socket_name]" type="access-request:1" result="access-accept:2" />
 
     <sendRequestRadius socketName="[socket_name]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
         <header code="Accounting-Request" />
@@ -22,7 +22,7 @@
         <avp code="Acct-Session-Id"  value="123456798" />
     </sendRequestRadius>
 
-    <receiveResponseRadius socketName="[socket_name]" type="Accounting-Request:4" />
+    <receiveResponseRadius socketName="[socket_name]" type="accounting-request:4" />
 
     <sendRequestRadius socketName="[socket_name]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
         <header code="Accounting-Request" />
@@ -30,7 +30,7 @@
         <avp code="Acct-Session-Id"  value="12345679800" />
     </sendRequestRadius>
 
-    <receiveResponseRadius socketName="[socket_name]" type="Accounting-Request:4" />
+    <receiveResponseRadius socketName="[socket_name]" type="accounting-request:4" />
 
     <sendRequestRadius socketName="[socket_name]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
         <header code="Accounting-Request" />
@@ -38,7 +38,7 @@
         <avp code="Acct-Session-Id"  value="12345679800" />
     </sendRequestRadius>
 
-    <receiveResponseRadius socketName="[socket_name]" type="Accounting-Request:4" />
+    <receiveResponseRadius socketName="[socket_name]" type="accounting-request:4" />
     
     <sendRequestRadius socketName="[socket_name]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
         <header code="Accounting-Request" />
@@ -46,7 +46,7 @@
         <avp code="Acct-Session-Id"  value="12345679800" />
     </sendRequestRadius>
 
-    <receiveResponseRadius socketName="[socket_name]" type="Accounting-Request:4" />
+    <receiveResponseRadius socketName="[socket_name]" type="accounting-request:4" />
 
 
     <sendRequestRadius socketName="[socket_name]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
@@ -55,7 +55,7 @@
         <avp code="Acct-Session-Id"  value="123456798" />
     </sendRequestRadius>
 
-    <receiveResponseRadius socketName="[socket_name]" type="Accounting-Request:4" />
+    <receiveResponseRadius socketName="[socket_name]" type="accounting-request:4" />
 
     <closeSocketRadius socketName="[socket_name]" />
     
