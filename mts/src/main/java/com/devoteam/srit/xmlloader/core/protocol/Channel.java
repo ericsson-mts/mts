@@ -178,24 +178,24 @@ public class Channel
     public boolean open() throws Exception
     {
         // create the embedded channel for the transport
-        if (!this.transport.equals(""))
+        if (this.transport != null)
         {
-	        if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_TCP))
+	        if (StackFactory.PROTOCOL_TCP.equalsIgnoreCase(this.transport))
 	        {
 	        	channel = new ChannelTcp(stack);
 	        	channel.clone(this);
 	        }
-	        else if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_TLS))
+	        else if (StackFactory.PROTOCOL_TLS.equalsIgnoreCase(this.transport))
 	        {
 	        	channel = new ChannelTls(stack);
 	        	channel.clone(this);
 	        }
-	        else if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
+	        else if (StackFactory.PROTOCOL_SCTP.equalsIgnoreCase(this.transport))
 	        {
 	        	channel = new ChannelSctp(stack);
 	        	channel.clone(this);
 	        }
-	        else if (this.transport.equalsIgnoreCase(StackFactory.PROTOCOL_UDP))
+	        else if (StackFactory.PROTOCOL_UDP.equalsIgnoreCase(this.transport))
 	        {
 	        	channel = new ChannelUdp(stack);
 	        	channel.clone(this);

@@ -506,7 +506,7 @@ public class Listenpoint
         }
         if (transport != null && !transport.equals(""))
         {
-            str += " transport=\"" + transport + "\"";
+            str += " transport=\"" + transport.toUpperCase() + "\"";
         }
         return str;
     }    
