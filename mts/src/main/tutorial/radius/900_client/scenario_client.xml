@@ -9,12 +9,12 @@
     <parameter name="[testcase:sem2]" operation="system.semaphorewait" />
 
     <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[localHostRAD]" remotePort="[localPortRAD]">
-        <header code="Access-Request" />
+        <header code="access-request" />
         <avp code="user-name" value="login" />
         <avp code="user-password" value="password" />
     </sendMessageRADIUS>
 
-    <receiveMessageRADIUS listenpoint="[listenpoint]" type="Access-Request:1" result="Access-Accept:2">
+    <receiveMessageRADIUS listenpoint="[listenpoint]" type="access-request:1" result="access-accept:2">
         <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
     </receiveMessageRADIUS>
 

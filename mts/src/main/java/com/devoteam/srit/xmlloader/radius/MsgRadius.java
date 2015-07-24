@@ -156,10 +156,10 @@ public class MsgRadius extends Msg
             case 2:
             case 3:
             case 11:
-                return "Access";
+                return "access";
             case 4:
             case 5:
-                return "Accounting";
+                return "accounting";
             default:
                 return Integer.toString(code);
         }
@@ -176,10 +176,10 @@ public class MsgRadius extends Msg
             case 2:
             case 3:
             case 11:
-                return "Access-Request:1";
+                return "access-request:1";
             case 4:
             case 5:
-                return "Accounting-Request:4";
+                return "accounting-request:4";
             default:
                 return Integer.toString(code);
         }
@@ -215,13 +215,13 @@ public class MsgRadius extends Msg
         switch(code)
         {
             case 2:
-            	return "Access-Accept:2";
+            	return "access-accept:2";
             case 3:
-            	return "Access-Reject:3";
+            	return "access-reject:3";
             case 11:
-            	return "Access-Challenge:11";
+            	return "access-challenge:11";
             case 5:
-                return "Accounting-Response:5";
+                return "accounting-response:5";
             default:
                 return Integer.toString(this.radiusMessage.getCode());
         }
