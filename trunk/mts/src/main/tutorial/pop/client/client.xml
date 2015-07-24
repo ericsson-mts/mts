@@ -21,9 +21,37 @@ USER [login]
         <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
         <parameter name="[text]" operation="protocol.setFromMessage" value="response.text" />
         <test parameter="[reponse]" condition="string.equals" value="OK" />
-        <test parameter="[text]" condition="string.contains" value="password" />
+        <test parameter="[text]" condition="string.startsWith" value="[login] is a real hoopy frood" />
     </receiveMessagePOP>
     
+    <!-- envoi requete PASS-->
+    <sendMessagePOP channel="[connection]">
+<![CDATA[
+PASS [password]
+]]>
+    </sendMessagePOP>
+
+    <!-- attend reponse PASS -->
+    <receiveMessagePOP name="Receive PASS" channel="[connection]" request="false">
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
+        <test parameter="[reponse]" condition="string.equals" value="ERR" />
+    </receiveMessagePOP>
+
+        <!-- envoi requete USER -->
+    <sendMessagePOP channel="[connection]">
+<![CDATA[
+USER [login]
+]]>
+    </sendMessagePOP>
+
+    <!-- attend reponse USER -->
+    <receiveMessagePOP name="Receive USER" channel="[connection]" request="false">
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
+        <parameter name="[text]" operation="protocol.setFromMessage" value="response.text" />
+        <test parameter="[reponse]" condition="string.equals" value="OK" />
+        <test parameter="[text]" condition="string.startsWith" value="[login] is a real hoopy frood" />
+    </receiveMessagePOP>
+
     <!-- envoi requete PASS-->
     <sendMessagePOP channel="[connection]">
 <![CDATA[
@@ -73,7 +101,7 @@ LIST 3
     <!-- attend reponse LIST -->
     <receiveMessagePOP name="Receive LIST" channel="[connection]" request="false">
         <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
-        <test parameter="[reponse]" condition="string.equals" value="OK" />
+        <test parameter="[reponse]" condition="string.equals" value="ERR" />
     </receiveMessagePOP>
 
     <!-- envoi requete LIST-->
@@ -89,31 +117,33 @@ LIST
         <test parameter="[reponse]" condition="string.equals" value="OK" />
     </receiveMessagePOP>
 
+    <pause name="pause" seconds="0.1"/>
     <!-- envoi requete TOP-->
-    <sendMessagePOP channel="[connection]">
+    <!--sendMessagePOP channel="[connection]">
 <![CDATA[
 TOP 3 1
 ]]>
-    </sendMessagePOP>
+    </sendMessagePOP-->
 
     <!-- attend reponse TOP -->
-    <receiveMessagePOP name="Receive TOP" channel="[connection]" request="false">
+    <!-- BUG sur la transaction INDETERMINE-->
+    <!--receiveMessagePOP name="Receive TOP" channel="[connection]" request="false">
         <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
         <test parameter="[reponse]" condition="string.equals" value="OK" />
-    </receiveMessagePOP>
+    </receiveMessagePOP-->
 
     <!-- envoi requete RETR-->
-    <!--<sendMessagePOP channel="[connection]">
+    <sendMessagePOP channel="[connection]">
 <![CDATA[
 RETR 1
 ]]>
-    </sendMessagePOP>-->
+    </sendMessagePOP>
 
     <!-- attend reponse RETR -->
-    <!--<receiveMessagePOP name="Receive RETR" channel="[connection]" request="false">
+    <receiveMessagePOP name="Receive RETR" channel="[connection]" request="false">
         <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
         <test parameter="[reponse]" condition="string.equals" value="OK" />
-    </receiveMessagePOP>-->
+    </receiveMessagePOP>
 
     <!-- envoi requete QUIT-->
     <sendMessagePOP channel="[connection]">
