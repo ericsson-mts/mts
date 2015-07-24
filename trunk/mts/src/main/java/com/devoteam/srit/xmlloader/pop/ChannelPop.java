@@ -45,6 +45,12 @@ public class ChannelPop extends Channel
     private boolean nextReadMultiLine = false;
     
     /** Creates a new instance of Channel */
+    public ChannelPop(Stack stack)
+    {
+    	super(stack);
+    }
+
+    /** Creates a new instance of Channel */
     public ChannelPop(Stack stack, String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception {
     	super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
     	this.stack = stack;

@@ -51,6 +51,12 @@ public class ChannelImap extends Channel
     private boolean isAuthenticateMecanismActually = false;
     
     /** Creates a new instance of Channel */
+    public ChannelImap(Stack stack)
+    {
+    	super(stack);
+    }
+
+    /** Creates a new instance of Channel */
     public ChannelImap(String name, String aLocalHost, String aLocalPort,
             String aRemoteHost, String aRemotePort, String aProtocol, String aTransport) throws Exception
     {
