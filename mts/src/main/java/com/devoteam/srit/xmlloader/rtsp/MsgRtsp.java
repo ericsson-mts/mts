@@ -108,31 +108,6 @@ public class MsgRtsp extends Msg
         return null;
     }
     
-    private void extractRemoteData() throws Exception
-    {
-		String strURI = ((FirstLine)(this.message.getGenericfirstline())).getUri();
-		String remoteHost = PluggableParameterOperatorSetFromURI.setFromUri(strURI, "host");
-		setRemoteHost(remoteHost);
-		String rPort = PluggableParameterOperatorSetFromURI.setFromUri(strURI, "port");
-		int remotePort = Integer.parseInt(rPort);
-		setRemotePort(remotePort);
-		String scheme = PluggableParameterOperatorSetFromURI.setFromUri(strURI, "scheme");
-		String transport;
-		if ("rtspu".equalsIgnoreCase(scheme))
-		{
-			transport = StackFactory.PROTOCOL_UDP;
-		}
-		else if ("rtsp".equalsIgnoreCase(scheme))
-		{
-			transport = StackFactory.PROTOCOL_TCP;
-		}
-		else
-		{
-            throw new ExecutionException("Could not determine the transport from the message using the request URI : " + this);
-		}
-		setTransport(transport);
-    }
-
     /**
      *  Tell whether the message shall be retransmitted or not
      * (= true by default)
@@ -216,7 +191,32 @@ public class MsgRtsp extends Msg
     	{
     		extractRemoteData();
     	}
-
+    }
+    
+    // find the remote information from the requestURI
+    private void extractRemoteData() throws Exception
+    {
+		String strURI = ((FirstLine)(this.message.getGenericfirstline())).getUri();
+		String remoteHost = PluggableParameterOperatorSetFromURI.setFromUri(strURI, "host");
+		setRemoteHost(remoteHost);
+		String rPort = PluggableParameterOperatorSetFromURI.setFromUri(strURI, "port");
+		int remotePort = Integer.parseInt(rPort);
+		setRemotePort(remotePort);
+		String scheme = PluggableParameterOperatorSetFromURI.setFromUri(strURI, "scheme");
+		String transport;
+		if ("rtspu".equalsIgnoreCase(scheme))
+		{
+			transport = StackFactory.PROTOCOL_UDP;
+		}
+		else if ("rtsp".equalsIgnoreCase(scheme))
+		{
+			transport = StackFactory.PROTOCOL_TCP;
+		}
+		else
+		{
+            throw new ExecutionException("Could not determine the transport from the message using the request URI : " + this);
+		}
+		setTransport(transport);
     }
     
     /** Set the message from text */

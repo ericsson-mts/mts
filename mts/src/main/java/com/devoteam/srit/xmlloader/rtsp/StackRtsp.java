@@ -61,22 +61,26 @@ public class StackRtsp extends Stack
 	}
     
 	/** Creates a specific Msg */
+	@Override
 	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception 
 	{
         Msg msg = super.parseMsgFromXml(request, root, runner);
         
         String remoteHostAttr = root.attributeValue("remoteHost");
-        if(remoteHostAttr != null){
+        if(remoteHostAttr != null)
+        {
             msg.setRemoteHost(remoteHostAttr);
         }
 
         String remotePortAttr = root.attributeValue("remotePort");
-        if(remotePortAttr != null){
+        if(remotePortAttr != null)
+        {
             msg.setRemotePort(Integer.parseInt(remotePortAttr));
         }
         
         String listenpointAttr = root.attributeValue("listenpoint");
-        if(listenpointAttr != null){
+        if(listenpointAttr != null)
+        {
             Listenpoint listenpoint = getListenpoint(listenpointAttr);
             msg.setListenpoint(listenpoint);
             

@@ -100,19 +100,4 @@ public class ListenpointSipCommon extends Listenpoint
 		return super.sendMessage(msg, remoteHost, remotePort, transport);
     }
 
-    /** 
-     * Parse the listenpoint from XML element 
-     */
-    @Override
-    public void parseFromXml(Element root, Runner runner) throws Exception
-    {
-		super.parseFromXml(root, runner);
-
-		String transportAttr = root.attributeValue("transport");
-        if (transportAttr == null)
-        {
-            this.transport = null;
-        }
-	}
-
 }
