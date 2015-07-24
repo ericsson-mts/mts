@@ -26,20 +26,27 @@ package com.devoteam.srit.xmlloader.rtp.jmf;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
 
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.rtp.flow.CodecDictionary;
+import com.sun.media.rtp.util.Packet;
 import com.sun.media.rtp.util.RTPPacket;
 
 /**
@@ -85,9 +92,18 @@ public class MsgRtp extends Msg {
 	@Override
     public String getType()
     {        
-        return new Integer(rtpPackets.get(0).payloadType).toString();
+		int payloadType = rtpPackets.get(0).payloadType;
+        return new Integer(payloadType).toString();
     }
     
+    /** Get the command code of this message */
+    @Override
+    public String getTypeComplete() 
+    {
+    	int payloadType = rtpPackets.get(0).payloadType;
+        return CodecDictionary.instance().getCodec(payloadType) + ":" + Integer.toString(payloadType);
+    }
+
     /** 
      * Get the result of the message (null if request)
      * Used for message filtering with "result" attribute and for statistic counters 
@@ -118,12 +134,13 @@ public class MsgRtp extends Msg {
     private static String headerToString(RTPPacket rtpPacket)
     {
         String ret = "";
-        ret += "<header payloadType=\"" + rtpPacket.payloadType + "\", ";
-        ret += "ssrc=\"" + rtpPacket.ssrc + "\", ";
-        ret += "seqnum=\"" + rtpPacket.seqnum + "\", ";
-        ret += "timestamp=\"" + rtpPacket.timestamp + "\"/>";
+        ret += "<header payloadType=\"" + rtpPacket.payloadType + "\" ";
+        ret += "ssrc=\"" + rtpPacket.ssrc + "\" ";
+        ret += "seqnum=\"" + rtpPacket.seqnum + "\" ";
+        ret += "timestamp=\"" + rtpPacket.timestamp + "\" ";
+        ret += "mark=\"" + rtpPacket.marker + "\"/>";
         return ret;
-    }    	
+    }    	 
     	
     /**
      * prints as String an avp and it's sub-avps (recursive)
@@ -222,10 +239,132 @@ public class MsgRtp extends Msg {
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-    	// not used
+        RTPPacket rtpPacket = parsePacket(root);
+        if (rtpPacket != null)
+        {
+        	add(rtpPacket);
+        }
+        boolean control = parseChannel(root);
+        setControl(control);
+
+        List<Element> listPackets = root.elements("packet");
+        if (listPackets.size() > 0)
+        {
+	        control = parseChannel(listPackets.get(0));
+	        setControl(control);
+        }
+        Iterator<Element> iter = listPackets.iterator(); 
+        while (iter.hasNext()) {
+            Element packet = iter.next();
+            rtpPacket = parsePacket(packet);
+            if (rtpPacket != null)
+            {
+            	add(rtpPacket);
+            }
+        }
     }
     
-    
+    /** Parses then returns the channel from the XML root element */
+    private boolean parseChannel(Element root) throws Exception
+    {    
+        Element header = root.element("header");
+        if (header !=  null)
+        {
+	        String channel = header.attributeValue("channel");
+	        boolean control = false;
+	        if (channel !=  null) 
+	        {
+	            if (channel.equalsIgnoreCase("control")) 
+	            {
+	                control = true;
+	            } 
+	            else if (channel.equalsIgnoreCase("data")) 
+	            {                
+	            } 
+	            else 
+	            {
+	                Exception e = new Exception();
+	                throw new ExecutionException("Bad channel attribute " + channel + " for the <header> tag : possible values are <data> or <control>", e);                                
+	            }
+	        }
+	        return control;
+        }
+        return false;
+    }
+
+    /** Parses then returns an RTP Packet from the XML root element */
+    private RTPPacket parsePacket(Element root) throws Exception
+    {
+        List<Element> elements = root.elements("payload");
+        List<byte[]> datas = new LinkedList<byte[]>();
+        
+        for(Element element:elements)
+        {
+            if(element.attributeValue("format").equalsIgnoreCase("text")) {
+                String text = element.getTextTrim();
+                datas.add(text.getBytes("UTF8"));
+            }
+            else if(element.attributeValue("format").equalsIgnoreCase("binary")) {
+                String text = element.getTextTrim();
+                datas.add(Utils.parseBinaryString(text));
+            }
+        }
+        
+        //
+        // Compute total length
+        //
+        int length = 0;
+        for(byte[] data:datas)
+        {
+            length += data.length;
+        }
+        
+        byte[] data = new byte[length + 12];
+        
+        int i=0;
+        for(byte[] aData:datas)
+        {
+            for(int j=0; j<aData.length; j++)
+            {
+                data[i + 12] = aData[j];
+                i++;
+            }
+        }
+
+        Packet packet = new Packet();
+        packet.data = data;
+        
+        RTPPacket rtpPacket = new RTPPacket(packet);
+
+        //
+        // Parse header tag
+        //
+        Element header = root.element("header");
+        if (header != null)
+        {
+	        String ssrc = header.attributeValue("ssrc");        
+	        rtpPacket.ssrc = Integer.parseInt(ssrc);
+	        String payloadType = header.attributeValue("payloadType");        
+	        rtpPacket.payloadType = Integer.parseInt(payloadType);
+	        String seqnum = header.attributeValue("seqnum");        
+	        rtpPacket.seqnum = Integer.parseInt(seqnum);
+	        String timestamp = header.attributeValue("timestamp");        
+	        rtpPacket.timestamp = Integer.parseInt(timestamp);
+	        String marker = header.attributeValue("mark"); 
+	        if (marker != null)
+	        {
+	        	rtpPacket.marker = Integer.parseInt(marker);
+	        }
+	        rtpPacket.payloadoffset = 12;
+	        rtpPacket.payloadlength = data.length - rtpPacket.payloadoffset;
+	        rtpPacket.calcLength();
+	        rtpPacket.assemble(1, false);
+	        
+	        return rtpPacket;
+        }
+        return null;
+    }
+
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------
@@ -277,6 +416,14 @@ public class MsgRtp extends Msg {
                     var.add(Long.toString(rtpPacket.timestamp));
                 }
             }
+            else if(params[1].equalsIgnoreCase("mark")) 
+            {
+                for (int i = 0; i < rtpPackets.size(); i++) 
+                {
+                    RTPPacket rtpPacket = rtpPackets.get(i);                 
+                    var.add(Long.toString(rtpPacket.marker));
+                }
+            }            
             else
             {
             	Parameter.throwBadPathKeywordException(path);

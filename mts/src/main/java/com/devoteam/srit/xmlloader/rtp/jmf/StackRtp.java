@@ -25,10 +25,12 @@ package com.devoteam.srit.xmlloader.rtp.jmf;
 
 import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
+
 import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
@@ -41,7 +43,9 @@ import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.rtp.ListenpointRtp;
 import com.sun.media.rtp.util.Packet;
 import com.sun.media.rtp.util.RTPPacket;
+
 import gp.utils.arrays.DefaultArray;
+
 import java.util.LinkedList;
 
 /**
@@ -59,9 +63,9 @@ public class StackRtp extends Stack
     
     /** Creates a specific RTP Msg */
     public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
-    {                       
-        MsgRtp msgRtp = new MsgRtp(this);
-         
+    {                    
+    	Msg msgRtp = super.parseMsgFromXml(request, root, runner);
+    	
         // instanciates the channel        
         String channelName = root.attributeValue("sessionName");
         Channel channel = getChannel(channelName);
@@ -78,129 +82,10 @@ public class StackRtp extends Stack
         {
             throw new Exception("The JMF RTP stack does not support <flow> tag, use the light RTP stack instead");
         }
-
-        RTPPacket rtpPacket = parsePacket(root);
-        if (rtpPacket != null)
-        {
-        	msgRtp.add(rtpPacket);
-        }
-        boolean control = parseChannel(root);
-        msgRtp.setControl(control);
-
-        List<Element> listPackets = root.elements("packet");
-        if (listPackets.size() > 0)
-        {
-	        control = parseChannel(listPackets.get(0));
-	        msgRtp.setControl(control);
-        }
-        Iterator<Element> iter = listPackets.iterator(); 
-        while (iter.hasNext()) {
-            Element packet = iter.next();
-            rtpPacket = parsePacket(packet);
-            if (rtpPacket != null)
-            {
-            	msgRtp.add(rtpPacket);
-            }
-        }
+        
         return msgRtp;
     }
     
-    /** Parses then returns the channel from the XML root element */
-    private boolean parseChannel(Element root) throws Exception
-    {    
-        Element header = root.element("header");
-        if (header !=  null)
-        {
-	        String channel = header.attributeValue("channel");
-	        boolean control = false;
-	        if (channel !=  null) 
-	        {
-	            if (channel.equalsIgnoreCase("control")) 
-	            {
-	                control = true;
-	            } 
-	            else if (channel.equalsIgnoreCase("data")) 
-	            {                
-	            } 
-	            else 
-	            {
-	                Exception e = new Exception();
-	                throw new ExecutionException("Bad channel attribute " + channel + " for the <header> tag : possible values are <data> or <control>", e);                                
-	            }
-	        }
-	        return control;
-        }
-        return false;
-    }
-
-    /** Parses then returns an RTP Packet from the XML root element */
-    private RTPPacket parsePacket(Element root) throws Exception
-    {
-        List<Element> elements = root.elements("payload");
-        List<byte[]> datas = new LinkedList<byte[]>();
-        
-        for(Element element:elements)
-        {
-            if(element.attributeValue("format").equalsIgnoreCase("text")) {
-                String text = element.getTextTrim();
-                datas.add(text.getBytes("UTF8"));
-            }
-            else if(element.attributeValue("format").equalsIgnoreCase("binary")) {
-                String text = element.getTextTrim();
-                datas.add(Utils.parseBinaryString(text));
-            }
-        }
-        
-        //
-        // Compute total length
-        //
-        int length = 0;
-        for(byte[] data:datas)
-        {
-            length += data.length;
-        }
-        
-        byte[] data = new byte[length + 12];
-        
-        int i=0;
-        for(byte[] aData:datas)
-        {
-            for(int j=0; j<aData.length; j++)
-            {
-                data[i + 12] = aData[j];
-                i++;
-            }
-        }
-
-        Packet packet = new Packet();
-        packet.data = data;
-        
-        RTPPacket rtpPacket = new RTPPacket(packet);
-
-        //
-        // Parse header tag
-        //
-        Element header = root.element("header");
-        if (header != null)
-        {
-	        String ssrc = header.attributeValue("ssrc");        
-	        rtpPacket.ssrc = Integer.parseInt(ssrc);
-	        String seqnum = header.attributeValue("seqnum");        
-	        rtpPacket.seqnum = Integer.parseInt(seqnum);
-	        String timestamp = header.attributeValue("timestamp");        
-	        rtpPacket.timestamp = Integer.parseInt(timestamp);
-	        String payloadType = header.attributeValue("payloadType");        
-	        rtpPacket.payloadType = Integer.parseInt(payloadType);
-	        rtpPacket.payloadoffset = 12;
-	        rtpPacket.payloadlength = data.length - rtpPacket.payloadoffset;
-	        rtpPacket.calcLength();
-	        rtpPacket.assemble(1, false);
-	        
-	        return rtpPacket;
-        }
-        return null;
-    }
-
     /**
      * Creates a Msg specific to each Stack
      * Used for UDP like protocol : to build incoming message
