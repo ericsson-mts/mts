@@ -9,6 +9,14 @@
 
     <openChannelPOP name="[connection]" remoteHost="[remoteHostPOP]" remotePort="[remotePortPOP]"/>
 
+    <!-- attend message Welcome -->
+    <!--receiveMessagePOP name="Receive USER" channel="[connection]" request="false">
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
+        <parameter name="[text]" operation="protocol.setFromMessage" value="response.text" />
+        <test parameter="[reponse]" condition="string.equals" value="OK" />
+        <test parameter="[text]" condition="string.startsWith" value="Welcome" />
+    </receiveMessagePOP-->
+    
     <!-- envoi requete USER-->
     <sendMessagePOP name="Send USER" channel="[connection]">
 <![CDATA[
