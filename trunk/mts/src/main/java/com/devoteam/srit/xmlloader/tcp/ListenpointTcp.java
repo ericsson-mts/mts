@@ -59,20 +59,6 @@ public class ListenpointTcp extends Listenpoint
         listenpointTcp.clone(this);
     }
 
-    /** Creates a new instance of Listenpoint */
-    public ListenpointTcp(Stack stack, String name, String host, int port) throws Exception 
-    {
-        super(stack, name, host, port);
-        if (nio) 
-        {
-            listenpointTcp = new ListenpointTcpNIO(stack);
-        }
-        else 
-        {
-            listenpointTcp = new ListenpointTcpBIO(stack);
-        }
-    }
-
     /** Create a listenpoint to each Stack */
     @Override
     public boolean create(String protocol) throws Exception 
