@@ -11,19 +11,19 @@
 	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
 	<parameter name="[reason]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>	
 </receiveMessageSMTP>
-<log level="0">transactionId = [tranid] </log>
+<log level="INFO">transactionId = [tranid] </log>
 <if>
 	<condition>
 		<test parameter="[result]" condition="string.equals" value="250"/>
 	</condition>
 	<then>
 		<parameter name="[res]" operation="set" value="OK"/>
-		<log level="0"> : Response - [result], state - [res]</log>
+		<log level="INFO"> : Response - [result], state - [res]</log>
 	</then>
 	<else>
 		<parameter name="[res]" operation="set" value="KO"/>
 		<parameter name="[comment]" operation="set" value="Failed"/>
-		<log level="0">[result] is [comment] ! In fact, the result should be 250 ! </log>
+		<log level="INFO">[result] is [comment] ! In fact, the result should be 250 ! </log>
 	</else>
 </if>
 <if>
@@ -32,12 +32,12 @@
 	</condition>
 	<then>
 		<parameter name="[res]" operation="set" value="OK"/>
-		<log level="0"> : Reason - [reason], state - [res]</log>
+		<log level="INFO"> : Reason - [reason], state - [res]</log>
 	</then>
 	<else>
 		<parameter name="[res]" operation="set" value="KO"/>
 		<parameter name="[comment]" operation="set" value="Failed"/>
-		<log level="0">"[reason]" is [comment] !  </log>
+		<log level="INFO">"[reason]" is [comment] !  </log>
 	</else>
 </if>
 <!--*************************************MAIL******************************************************-->
@@ -48,19 +48,19 @@
 	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
 	<parameter name="[reason]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>
 </receiveMessageSMTP>
-<log level="0">transactionId = [tranid] </log>
+<log level="INFO">transactionId = [tranid] </log>
 <if>
 	<condition>
 		<test parameter="[result]" condition="string.equals" value="250"/>
 	</condition>
 	<then>
 		<parameter name="[res]" operation="set" value="OK"/>
-		<log level="0"> : Response - [result], state - [res]</log>
+		<log level="INFO"> : Response - [result], state - [res]</log>
 	</then>
 	<else>
 		<parameter name="[res]" operation="set" value="KO"/>
 		<parameter name="[comment]" operation="set" value="Failed"/>
-		<log level="0">[result] is [comment] ! In fact, the result should be 250 ! </log>
+		<log level="INFO">[result] is [comment] ! In fact, the result should be 250 ! </log>
 	</else>
 </if>
 <if>
@@ -69,12 +69,12 @@
 	</condition>
 	<then>
 		<parameter name="[res]" operation="set" value="OK"/>
-		<log level="0"> : Reason - [reason], state - [res]</log>
+		<log level="INFO"> : Reason - [reason], state - [res]</log>
 	</then>
 	<else>
 		<parameter name="[res]" operation="set" value="KO"/>
 		<parameter name="[comment]" operation="set" value="Failed"/>
-		<log level="0">"[reason]" is [comment] !  </log>
+		<log level="INFO">"[reason]" is [comment] !  </log>
 	</else>
 </if>
 <!--*************************************RCPT******************************************************-->
@@ -85,19 +85,19 @@
 	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
 	<parameter name="[reason]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>
 </receiveMessageSMTP>
-<log level="0">transactionId = [tranid] </log>
+<log level="INFO">transactionId = [tranid] </log>
 <if>
 	<condition>
 		<test parameter="[result]" condition="string.equals" value="550"/>
 	</condition>
 	<then>
 		<parameter name="[res]" operation="set" value="OK"/>
-		<log level="0"> : Response - [result], state - [res]</log>
+		<log level="INFO"> : Response - [result], state - [res]</log>
 	</then>
 	<else>
 		<parameter name="[res]" operation="set" value="KO"/>
 		<parameter name="[comment]" operation="set" value="Failed"/>
-		<log level="0">[result] is [comment] ! In fact, the result should be 550 ! </log>
+		<log level="INFO">[result] is [comment] ! In fact, the result should be 550 ! </log>
 	</else>
 </if>
 <if>
@@ -106,12 +106,12 @@
 	</condition>
 	<then>
 		<parameter name="[res]" operation="set" value="OK"/>
-		<log level="0"> : Reason - [reason], state - [res]</log>
+		<log level="INFO"> : Reason - [reason], state - [res]</log>
 	</then>
 	<else>
 		<parameter name="[res]" operation="set" value="KO"/>
 		<parameter name="[comment]" operation="set" value="Failed"/>
-		<log level="0">"[reason]" is [comment] ! should be "No such user here" </log>
+		<log level="INFO">"[reason]" is [comment] ! should be "No such user here" </log>
 	</else>
 </if>
 <!--*************************************DATA***************************************************-->
@@ -122,19 +122,19 @@
 	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
 	<parameter name="[reason]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>
 </receiveMessageSMTP>
-<log level="0">transactionId = [tranid] </log>
+<log level="INFO">transactionId = [tranid] </log>
 <if>
 	<condition>
 		<test parameter="[result]" condition="string.equals" value="354"/>
 	</condition>
 	<then>
 		<parameter name="[res]" operation="set" value="OK"/>
-		<log level="0"> : Response - [result], state - [res]</log>
+		<log level="INFO"> : Response - [result], state - [res]</log>
 	</then>
 	<else>
 		<parameter name="[res]" operation="set" value="KO"/>
 		<parameter name="[comment]" operation="set" value="Failed"/>
-		<log level="0">[result] is [comment] ! In fact, the result should be 354 ! </log>
+		<log level="INFO">[result] is [comment] ! In fact, the result should be 354 ! </log>
 	</else>
 </if>
 <if>
@@ -143,12 +143,12 @@
 	</condition>
 	<then>
 		<parameter name="[res]" operation="set" value="OK"/>
-		<log level="0"> : Reason - [reason], state - [res]</log>
+		<log level="INFO"> : Reason - [reason], state - [res]</log>
 	</then>
 	<else>
 		<parameter name="[res]" operation="set" value="KO"/>
 		<parameter name="[comment]" operation="set" value="Failed"/>
-		<log level="0">"[reason]" is [comment] ! should be "Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;"!  </log>
+		<log level="INFO">"[reason]" is [comment] ! should be "Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;"!  </log>
 	</else>
 </if>
 <!--*************************************1BLA BLA BLA*********************************************-->
@@ -161,19 +161,19 @@ test test
 	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
 	<parameter name="[reason]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>
 </receiveMessageSMTP>
-<log level="0">transactionId = [tranid] </log>
+<log level="INFO">transactionId = [tranid] </log>
 <if>
 	<condition>
 		<test parameter="[result]" condition="string.equals" value="250"/>
 	</condition>
 	<then>
 		<parameter name="[res]" operation="set" value="OK"/>
-		<log level="0"> : Response - [result], state - [res]</log>
+		<log level="INFO"> : Response - [result], state - [res]</log>
 	</then>
 	<else>
 		<parameter name="[res]" operation="set" value="KO"/>
 		<parameter name="[comment]" operation="set" value="Failed"/>
-		<log level="0">[result] is [comment] ! In fact, the result should be 250 ! </log>
+		<log level="INFO">[result] is [comment] ! In fact, the result should be 250 ! </log>
 	</else>
 </if>
 <if>
@@ -182,12 +182,12 @@ test test
 	</condition>
 	<then>
 		<parameter name="[res]" operation="set" value="OK"/>
-		<log level="0"> : Reason - [reason], state - [res]</log>
+		<log level="INFO"> : Reason - [reason], state - [res]</log>
 	</then>
 	<else>
 		<parameter name="[res]" operation="set" value="KO"/>
 		<parameter name="[comment]" operation="set" value="Failed"/>
-		<log level="0">"[reason]" is [comment] ! should be "OK"  </log>
+		<log level="INFO">"[reason]" is [comment] ! should be "OK"  </log>
 	</else>
 </if>
 <!--*************************************QUIT***************************************************-->
@@ -198,19 +198,19 @@ test test
 	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
 	<parameter name="[reason]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>
 </receiveMessageSMTP>
-<log level="0">transactionId = [tranid] </log>
+<log level="INFO">transactionId = [tranid] </log>
 <if>
 	<condition>
 		<test parameter="[result]" condition="string.equals" value="221"/>
 	</condition>
 	<then>
 		<parameter name="[res]" operation="set" value="OK"/>
-		<log level="0"> : Response - [result], state - [res]</log>
+		<log level="INFO"> : Response - [result], state - [res]</log>
 	</then>
 	<else>
 		<parameter name="[res]" operation="set" value="KO"/>
 		<parameter name="[comment]" operation="set" value="Failed"/>
-		<log level="0">[result] is [comment] ! In fact, the result should be 221 ! </log>
+		<log level="INFO">[result] is [comment] ! In fact, the result should be 221 ! </log>
 	</else>
 </if>	
 <if>
@@ -219,12 +219,12 @@ test test
 	</condition>
 	<then>
 		<parameter name="[res]" operation="set" value="OK"/>
-		<log level="0"> : Reason - [reason], state - [res]</log>
+		<log level="INFO"> : Reason - [reason], state - [res]</log>
 	</then>
 	<else>
 		<parameter name="[res]" operation="set" value="KO"/>
 		<parameter name="[comment]" operation="set" value="Failed"/>
-		<log level="0">"[reason]" is [comment] !  </log>
+		<log level="INFO">"[reason]" is [comment] !  </log>
 	</else>
 </if>
 <closeChannelSMTP name="session1"/>

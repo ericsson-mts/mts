@@ -11,19 +11,19 @@
 	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
 	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>	
 </receiveMessageSMTP>
-<log level="0">transactionId = [tranid] </log>
+<log level="INFO">transactionId = [tranid] </log>
 <if>
 	<condition>
 		<test parameter="[result]" condition="string.equals" value="550"/>
 	</condition>
 	<then>
 		<parameter name="[res]" operation="set" value="OK"/>
-		<log level="0"> : Response - [result], state - [res]</log>
+		<log level="INFO"> : Response - [result], state - [res]</log>
 	</then>
 	<else>
 		<parameter name="[res]" operation="set" value="KO"/>
 		<parameter name="[comment]" operation="set" value="Failed"/>
-		<log level="0">[result] is [comment] ! In fact, the result should be 550 ! </log>
+		<log level="INFO">[result] is [comment] ! In fact, the result should be 550 ! </log>
 	</else>
 </if>
 <closeChannelSMTP name="session1"/>
