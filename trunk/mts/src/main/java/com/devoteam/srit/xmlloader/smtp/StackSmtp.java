@@ -23,19 +23,12 @@
 
 package com.devoteam.srit.xmlloader.smtp;
 
-import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.*;
-import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.sip.ListenpointSipCommon;
 
 import java.io.InputStream;
-import org.dom4j.Element;
 
 public class StackSmtp extends Stack
 {
@@ -46,28 +39,10 @@ public class StackSmtp extends Stack
         super();
     }
 
-    /*
-     * Get the info for MsgSMTP from xml doc
-     */
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
-    {
-    	MsgSmtp msg = (MsgSmtp) super.parseMsgFromXml(request, root, runner);
-    	
-        String transactionIdStr = root.attributeValue("transactionId");
-        if (transactionIdStr != null)
-        {
-            TransactionId transactionId = new TransactionId(transactionIdStr);
-            msg.setTransactionId(transactionId);
-            Msg requestSmtp = getInTransaction(transactionId).getBeginMsg();
-            msg.setType(requestSmtp.getType());
-        }
-        return msg;
-    }
-
     /** Send a Msg to Stack */
     @Override
     public synchronized boolean sendMessage(Msg msg) throws Exception
-    {    	        
+    { 
     	// copy the channel from the request into the response using the transaction
         Trans trans = msg.getTransaction();       
         if (trans != null)
