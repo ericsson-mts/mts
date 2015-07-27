@@ -87,7 +87,31 @@ public class StackSigtran extends Stack
      * Use for TCP like protocol : to build incoming message 
      */
     @Override
-    public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception {
+    public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception 
+    {
+    	byte[] bytes = null;
+    	synchronized (inputStream)
+    	{
+			bytes = this.readMessageFromStream(inputStream);
+    	}
+
+    	if (bytes != null)
+    	{
+	        //create the message
+	        int ppidInt = defaultPayloadProtocolID;
+	        MsgSigtran msg = new MsgSigtran(this, ppidInt);
+	        msg.decode(bytes);
+	        return msg;
+    	}
+    	return null;
+    }
+    
+    /** 
+     * Read the message data from the stream
+     * Use for TCP/TLS like protocol : to build incoming message  
+     */
+    public byte[] readMessageFromStream(InputStream inputStream) throws Exception
+    {
         byte[] header = new byte[4];
         byte[] lg = new byte[4];
         byte[] buf = null;
@@ -95,7 +119,6 @@ public class StackSigtran extends Stack
         int msgLength = 0;
         Integer32Array headerArray = null;
         Integer32Array lgArray = null;
-        SupArray msgArray = new SupArray();
 
         synchronized (inputStream) {
             //read the header
@@ -131,18 +154,13 @@ public class StackSigtran extends Stack
             throw new Exception("Not enough char read");
         }
 
+        SupArray msgArray = new SupArray();
         msgArray.addFirst(headerArray);
         msgArray.addLast(lgArray);
         msgArray.addLast(new DefaultArray(buf));
-        DefaultArray array = new DefaultArray(msgArray.getBytes());
-        
-        //create the message
-        int ppidInt = defaultPayloadProtocolID;
-        MsgSigtran msg = new MsgSigtran(this, array, ppidInt);
-        return msg;
-
+    	return msgArray.getBytes();
     }
-    
+
     /**
      * Creates a Msg specific to each Stack
      * Use for SCTP like protocol : to build incoming message
@@ -156,8 +174,9 @@ public class StackSigtran extends Stack
         {
         	ppidInt = defaultPayloadProtocolID;
         }
-        MsgSigtran msgSigtran = new MsgSigtran(this, array, ppidInt);
-        return msgSigtran;
+        MsgSigtran msg = new MsgSigtran(this, ppidInt);
+        msg.decode(array.getBytes());
+        return msg;
     }
 
 }

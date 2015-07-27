@@ -79,95 +79,17 @@ public class MsgSigtran extends Msg
 
     private byte[] _encodedCache = null;
 
-    /**
-     * Creates a new instance of MsgSigtran
-     */
-    public MsgSigtran(Stack stack) throws Exception 
+    /** Creates a new instance of MsgSigtran */
+    public MsgSigtran(Stack  stack) throws Exception 
     {
     	super(stack);
     }
 
-    public MsgSigtran(Stack stack, Array msgArray, int protocolIdentifier) throws Exception 
+    /** Creates a new instance of MsgSigtran */
+    public MsgSigtran(Stack  stack, int protocolIdentifier) throws Exception 
     {
     	this(stack);
-    	
-        _tlvProtocol = protocolIdentifier;
-        _encodedCache = msgArray.getBytes();
-        _tlvMessage = new TlvMessage(this, msgArray, protocolIdentifier);
-        
-        // Q931 layer 
-    	TlvParameter paramTlv = _tlvMessage.getTlvParameter("Protocol_Data");
-    	if (paramTlv != null)
-    	{
-    		TlvField field = paramTlv.getTlvField("Protocol_Data");
-    		if (field != null)
-    		{
-        		String ieStr = field.getValue();
-	    		Array ieArray = Array.fromHexString(ieStr);
-	    		if (_tlvProtocol == 1)
-	    		{
-	    			_ieMessage = new MessageQ931(ieArray, "../conf/sigtran/q931.xml");
-	    		} 
-	    		else if (_tlvProtocol == 6)
-	    		{
-	    			_ieMessage = new MessageQ931(ieArray, "../conf/sigtran/v5x.xml");
-	    		}
-    		}
-    	}
-    	
-        // TCAP/AP layers
-    	if (_fvoMessage != null)
-    	{
-        	// get "Data" VParameter from 
-	    	FvoParameter paramFvo = _fvoMessage.getVparameter("Data");
-	    	if (paramFvo != null)
-	    	{    		
-	    		// decode TCAP layer with Mobicent library
-	    		Array ieArray = paramFvo.encode();
-	    		try
-	    		{
-	    			_tcapMessage = new BN_TCAPMessage("tcap/dictionary_TCAP.xml");
-	    			_tcapMessage.decode(ieArray, "BER");
-	    		}
-	    		catch (Exception e)
-	    		{
-	    			// nothing to do : man not an AP layer (ASN1)
-	    			_tcapMessage = null;
-	    			//e.printStackTrace();
-	    		}
-		  
-	    		if (_tcapMessage != null)
-	    		{
-			    	Array arrayAP = ((BN_TCAPMessage) _tcapMessage).getTCAPBinary();
-					_apMessage = new BN_APMessage();
-					
-					String ACN = null;
-					Parameter param = getParameter("tcap.application_context_name");
-					if (param.length() > 0)
-			        {
-			        	ACN = param.get(0).toString();
-			        }
-		    		try
-		    		{
-		    			if (ACN != null && ACN.startsWith("CAP-"))
-		    			{
-		    				_apMessage = new BN_APMessage("cap/dictionary_CAP.xml");
-		    			}
-		    			else 
-		    			{
-		    				_apMessage = new BN_APMessage("map/dictionary_MAP.xml");
-		    			}
-						_apMessage.decode(arrayAP, "BER");
-		    		}
-		    		catch (Exception e)
-		    		{
-		    			// nothing to do : man not an AP layer (ASN1)
-		    			_apMessage = null;
-		    			//e.printStackTrace();
-		    		}
-	    		}
-	    	}
-    	}
+    	this._tlvProtocol = protocolIdentifier;
     }
 
     /** 
@@ -479,10 +401,85 @@ public class MsgSigtran extends Msg
     @Override
     public void decode(byte[] data) throws Exception
     {
-    	// noting to do : not called
+        _encodedCache = data;
+        Array msgArray = new DefaultArray(data);
+        _tlvMessage = new TlvMessage(this, msgArray, this._tlvProtocol);
+        
+        // Q931 layer 
+    	TlvParameter paramTlv = _tlvMessage.getTlvParameter("Protocol_Data");
+    	if (paramTlv != null)
+    	{
+    		TlvField field = paramTlv.getTlvField("Protocol_Data");
+    		if (field != null)
+    		{
+        		String ieStr = field.getValue();
+	    		Array ieArray = Array.fromHexString(ieStr);
+	    		if (_tlvProtocol == 1)
+	    		{
+	    			_ieMessage = new MessageQ931(ieArray, "../conf/sigtran/q931.xml");
+	    		} 
+	    		else if (_tlvProtocol == 6)
+	    		{
+	    			_ieMessage = new MessageQ931(ieArray, "../conf/sigtran/v5x.xml");
+	    		}
+    		}
+    	}
+    	
+        // TCAP/AP layers
+    	if (_fvoMessage != null)
+    	{
+        	// get "Data" VParameter from 
+	    	FvoParameter paramFvo = _fvoMessage.getVparameter("Data");
+	    	if (paramFvo != null)
+	    	{    		
+	    		// decode TCAP layer with Mobicent library
+	    		Array ieArray = paramFvo.encode();
+	    		try
+	    		{
+	    			_tcapMessage = new BN_TCAPMessage("tcap/dictionary_TCAP.xml");
+	    			_tcapMessage.decode(ieArray, "BER");
+	    		}
+	    		catch (Exception e)
+	    		{
+	    			// nothing to do : man not an AP layer (ASN1)
+	    			_tcapMessage = null;
+	    			//e.printStackTrace();
+	    		}
+		  
+	    		if (_tcapMessage != null)
+	    		{
+			    	Array arrayAP = ((BN_TCAPMessage) _tcapMessage).getTCAPBinary();
+					_apMessage = new BN_APMessage();
+					
+					String ACN = null;
+					Parameter param = getParameter("tcap.application_context_name");
+					if (param.length() > 0)
+			        {
+			        	ACN = param.get(0).toString();
+			        }
+		    		try
+		    		{
+		    			if (ACN != null && ACN.startsWith("CAP-"))
+		    			{
+		    				_apMessage = new BN_APMessage("cap/dictionary_CAP.xml");
+		    			}
+		    			else 
+		    			{
+		    				_apMessage = new BN_APMessage("map/dictionary_MAP.xml");
+		    			}
+						_apMessage.decode(arrayAP, "BER");
+		    		}
+		    		catch (Exception e)
+		    		{
+		    			// nothing to do : man not an AP layer (ASN1)
+		    			_apMessage = null;
+		    			//e.printStackTrace();
+		    		}
+	    		}
+	    	}
+    	}
     }
 
-    
     //---------------------------------------------------------------------
     // methods for the XML display / parsing of the message
     //---------------------------------------------------------------------

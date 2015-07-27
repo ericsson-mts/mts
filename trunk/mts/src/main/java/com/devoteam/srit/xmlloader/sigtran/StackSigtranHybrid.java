@@ -237,7 +237,7 @@ public class StackSigtranHybrid extends Stack
         {
         	ppidInt = defaultPayloadProtocolID;
         }
-        MsgSigtran msgSigtran = new MsgSigtran(this, array, ppidInt);
+        MsgSigtranHybrid msgSigtran = new MsgSigtranHybrid(array, ppidInt);
         return msgSigtran;
     }
 
