@@ -2,7 +2,10 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
 <scenario>
-<log level="INFO">[localHostSIP]</log>
+
+  <parameter name="[RemoteHost]" operation="system.ipaddress" value2="[IPVersion]"/>
+  <parameter name="[RemotePort]" operation="set" value="5080"/>
+  <parameter name="[RemoteAddress]" operation="set" value="[RemoteHost(0)]:[RemotePort(0)]"/>	
 
   <sendRequestSIP name="Send INVITE">
 <![CDATA[
@@ -12,7 +15,7 @@ From: "bob" <sip:bob@devoteam.com>;tag=bob
 Call-ID: 1
 CSeq: 1 INVITE
 Max-Forwards: 70
-Route: <sip:alice@[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:alice@[RemoteAddress];transport=[transportRequest];lr>
 Route: <sip:alice@[localSIP];transport=[transportRequest];lr>
 Contact: <sip:bob@[localSIP]>
 Via: SIP/2.0/[transportResponse] [localSIP];branch=bob
@@ -57,7 +60,7 @@ Content-Disposition: recipient-list
   <receiveResponseSIP name="Wait 200 OK" method="INVITE" result="200">
   </receiveResponseSIP>
 
-  <sendRequestSIP name="Send ACK">
+  <sendRequestSIP name="Send ACK" remoteURL="sip://[RemoteAddress]">
 <![CDATA[
 ACK sip:alice@devoteam.com SIP/2.0
 To: "alice" <sip:alice@devoteam.com>;tag=alice
@@ -74,7 +77,7 @@ Content-Length: 0
 ]]>
   </sendRequestSIP>
 
-  <sendRequestSIP name="Send BYE">
+  <sendRequestSIP name="Send BYE" remoteHost="[RemoteHost(0)]" remotePort="[RemotePort]">
 <![CDATA[
 BYE sip:alice@devoteam.com SIP/2.0
 To: "alice" <sip:alice@devoteam.com>;tag=alice
