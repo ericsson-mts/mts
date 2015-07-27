@@ -29,7 +29,7 @@ import dk.i1.diameter.Message;
 
 /**
  *
- * @author gpasquiers
+ * @author fhenry
  */
 public class MsgDiameter extends MsgDiamCommon
 {
