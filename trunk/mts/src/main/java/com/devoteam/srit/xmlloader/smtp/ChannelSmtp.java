@@ -46,13 +46,13 @@ public class ChannelSmtp extends Channel
         super(stack);
     }
 
-    /** Get the transport protocol of this message */
-    public String getTransport() 
-    {
-    	return StackFactory.PROTOCOL_TCP;
-    }
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
 
     /** Send a Msg to Channel */
+    @Override
     public boolean sendMessage(Msg msg) throws Exception
     {
         if (null == channel)
@@ -87,6 +87,13 @@ public class ChannelSmtp extends Channel
         return super.receiveMessage(msg);
     }
     
+    /** Get the transport protocol */
+    @Override
+    public String getTransport() 
+    {
+    	return StackFactory.PROTOCOL_TCP;
+    }
+
     public boolean isServer(){
         return (channel != null);
     }

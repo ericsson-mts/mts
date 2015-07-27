@@ -67,16 +67,8 @@ public class ChannelRadius extends Channel implements Runnable
         return this.identifierHandler;
     }
 
-    public synchronized boolean close()
-    {
-        if(null != radiusSocket)
-        {
-            this.radiusSocket.close();
-            this.radiusSocket = null;
-        }
-        return true;
-    }
-
+    /** Open a channel */
+    @Override
     public synchronized boolean open() throws Exception
     {
         if(null == this.getLocalHost())
@@ -96,6 +88,20 @@ public class ChannelRadius extends Channel implements Runnable
         return true;
     }
 
+    /** Close a channel */
+    @Override
+    public synchronized boolean close()
+    {
+        if(null != radiusSocket)
+        {
+            this.radiusSocket.close();
+            this.radiusSocket = null;
+        }
+        return true;
+    }
+
+    /** Send a Msg through the channel */
+    @Override
     public synchronized boolean sendMessage(Msg msg) throws Exception
     {
         MsgRadius msgRadius = (MsgRadius) msg;
@@ -116,13 +122,18 @@ public class ChannelRadius extends Channel implements Runnable
         return true;
     }
 
-    /** Get the transport protocol of this message */
+    /** Get the transport protocol */
+    @Override
     public String getTransport()
     {
     	return StackFactory.PROTOCOL_UDP;
     }
 
     
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing
+    //---------------------------------------------------------------------
+
     /** 
      * Parse the message from XML element 
      */

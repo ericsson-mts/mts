@@ -46,6 +46,11 @@ public class NIOChannelHttp extends ChannelHttp
         super(name, localHost, localPort, remoteHost, remotePort, aProtocol, secure);
     }
     
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+
     /** Open a connexion to each Stack */
     public synchronized boolean open() throws Exception
     {

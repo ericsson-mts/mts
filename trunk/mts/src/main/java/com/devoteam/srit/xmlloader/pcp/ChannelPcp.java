@@ -51,7 +51,12 @@ public class ChannelPcp extends Channel //implements Runnable
         loginType = aLoginType;
     }
 
-    // --- basic methods --- //
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+
+	/** Open a channel */
+    @Override
     public boolean open() throws Exception {
         if(!isServer()) {
             Properties prop = new Properties();
@@ -72,7 +77,20 @@ public class ChannelPcp extends Channel //implements Runnable
         return true;
     }
     
+    /** Close a channel */
+    @Override
+    public boolean close(){
+        try {
+            context.close(true);
+        } catch (Exception e) {
+            // nothing to do
+        }
+        context = null;
+        return true;
+    }
+    
     /** Send a Msg to Channel */
+    @Override
     public boolean sendMessage(Msg msg) throws Exception{ 
         if (msg.getChannel() == null)
             msg.setChannel(this);
@@ -96,16 +114,6 @@ public class ChannelPcp extends Channel //implements Runnable
         return true;
     }
     
-    public boolean close(){
-        try {
-            context.close(true);
-        } catch (Exception e) {
-            // nothing to do
-        }
-        context = null;
-        return true;
-    }
-
     public boolean isServer()
     {
         return (((ChannelTcp)channel).getListenpointTcp() != null);
@@ -115,7 +123,7 @@ public class ChannelPcp extends Channel //implements Runnable
         return channel;
     }
 
-    /** Get the transport protocol of this message */
+    /** Get the transport protocol */
     public String getTransport() 
     {
         return StackFactory.PROTOCOL_TCP;

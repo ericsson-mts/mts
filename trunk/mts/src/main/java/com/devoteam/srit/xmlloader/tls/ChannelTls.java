@@ -105,7 +105,6 @@ public class ChannelTls extends Channel {
 	}
 
 	/** Creates a new instance of ChannelTls */
-	// for IMAP protocol : to delete ?
 	public ChannelTls(ListenpointTls listenpointTls, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol)
 	{
 		super(localHost, localPort, remoteHost, remotePort, aProtocol);
@@ -113,19 +112,13 @@ public class ChannelTls extends Channel {
 		this.listenpoint = listenpointTls;        
 	}
 
-	/** Send a Msg to Channel */
-	public synchronized boolean sendMessage(Msg msg) throws Exception
-	{
-		if(null == socketTls)
-		{
-			throw new ExecutionException("SocketTls is null, has the connection been opened ?");
-		}
+	
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
 
-		msg.setChannel(this);
-		socketTls.send(msg);
-		return true;
-	}
-
+	/** Open a channel */
+	@Override
 	public boolean open() throws Exception
 	{
 		if (socketTls == null) 
@@ -216,6 +209,8 @@ public class ChannelTls extends Channel {
 		return true;
 	}
 
+	/** Close a channel */
+	@Override
 	public boolean close()
 	{   		
 		if (socketTls != null)
@@ -229,7 +224,22 @@ public class ChannelTls extends Channel {
 		return true;
 	}
 
-	/** Get the transport protocol of this message */
+	/** Send a Msg to Channel */
+	@Override
+	public synchronized boolean sendMessage(Msg msg) throws Exception
+	{
+		if(null == socketTls)
+		{
+			throw new ExecutionException("SocketTls is null, has the connection been opened ?");
+		}
+
+		msg.setChannel(this);
+		socketTls.send(msg);
+		return true;
+	}
+
+	/** Get the transport protocol */
+	@Override
 	public String getTransport() 
 	{
 		return StackFactory.PROTOCOL_TLS;

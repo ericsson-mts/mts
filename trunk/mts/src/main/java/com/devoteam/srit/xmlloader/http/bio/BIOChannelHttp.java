@@ -48,7 +48,12 @@ public class BIOChannelHttp extends ChannelHttp
     {
         super(name, localHost, localPort, remoteHost, remotePort, aProtocol, secure);
     }
+   
     
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+
     /** Open a connexion to each Stack */
     public boolean open() throws Exception
     {

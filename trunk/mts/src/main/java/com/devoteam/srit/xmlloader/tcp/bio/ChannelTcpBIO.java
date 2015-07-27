@@ -90,20 +90,14 @@ public class ChannelTcpBIO extends Channel
         socketTcp = null;    	    
         this.listenpoint = listenpointTcp;        
     }
-
-    /** Send a Msg to Channel */
-    public synchronized boolean sendMessage(Msg msg) throws Exception
-    {
-        if(null == socketTcp)
-        {
-            throw new ExecutionException("SocketTcp is null, has the connection been opened ?");
-        }
-        
-        msg.setChannel(this);
-        socketTcp.send(msg);
-        return true;
-    }
     
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+
+    /** Open a channel */
+    @Override
     public boolean open() throws Exception
     {
     	if (socketTcp == null) 
@@ -137,6 +131,8 @@ public class ChannelTcpBIO extends Channel
         return true;
     }
     
+    /** Close a channel */
+    @Override
     public boolean close()
     {
         SocketTcpBIO tmp = socketTcp;
@@ -147,8 +143,23 @@ public class ChannelTcpBIO extends Channel
     	}
         return true;
     }
-    
-    /** Get the transport protocol of this message */
+
+    /** Send a Msg to Channel */
+    @Override
+    public synchronized boolean sendMessage(Msg msg) throws Exception
+    {
+        if(null == socketTcp)
+        {
+            throw new ExecutionException("SocketTcp is null, has the connection been opened ?");
+        }
+        
+        msg.setChannel(this);
+        socketTcp.send(msg);
+        return true;
+    }
+
+    /** Get the transport protocol */
+    @Override
     public String getTransport() 
     {
     	return StackFactory.PROTOCOL_TCP;
