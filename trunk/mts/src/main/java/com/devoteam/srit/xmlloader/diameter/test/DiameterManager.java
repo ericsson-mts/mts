@@ -23,7 +23,7 @@
 
 package com.devoteam.srit.xmlloader.diameter.test;
 
-import com.devoteam.srit.xmlloader.diameter.MsgDiameter;
+import com.devoteam.srit.xmlloader.diameter.MsgDiamCommon;
 import com.devoteam.srit.xmlloader.diameter.test.IMSDiameterConstants;
 import com.devoteam.srit.xmlloader.core.log.GenericLogger;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
@@ -128,7 +128,7 @@ public class DiameterManager extends NodeManager {
      * @param    request The request to send
      * @return The answer to the request. Null if there is no answer (all peers down, or other error)
      */
-    public Message sendDiameterRequest(MsgDiameter msg) throws Exception {
+    public Message sendDiameterRequest(MsgDiamCommon msg) throws Exception {
         logger.debug(TextEvent.Topic.PROTOCOL, Stack.SEND, msg);
        
         SyncCall sc = new SyncCall();
@@ -176,7 +176,7 @@ public class DiameterManager extends NodeManager {
     	{
     		// nothing to do
     	}
-        MsgDiameter msg = new MsgDiameter(stack, answer);
+        MsgDiamCommon msg = new MsgDiamCommon(stack, answer);
         try
         {
             logger.debug(TextEvent.Topic.PROTOCOL, Stack.RECEIVE, msg);
@@ -219,7 +219,7 @@ public class DiameterManager extends NodeManager {
     	{
     		// nothing to do
     	}
-        MsgDiameter msgRequest = new MsgDiameter(stack, request);
+        MsgDiamCommon msgRequest = new MsgDiamCommon(stack, request);
         try
         {
             logger.debug(TextEvent.Topic.PROTOCOL, Stack.RECEIVE, msgRequest);
@@ -241,7 +241,7 @@ public class DiameterManager extends NodeManager {
             return;
         }
         
-        MsgDiameter msgResponse = new MsgDiameter(stack, response);
+        MsgDiamCommon msgResponse = new MsgDiamCommon(stack, response);
         try {
             logger.debug(TextEvent.Topic.PROTOCOL, "SEND the DIAMETER response : ", msgResponse);
         } catch (Exception e) {

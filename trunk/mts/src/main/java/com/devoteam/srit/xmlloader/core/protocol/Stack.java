@@ -37,7 +37,7 @@ import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.utils.expireshashmap.ExpireHashMap;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
-import com.devoteam.srit.xmlloader.diameter.ListenpointDiameter;
+import com.devoteam.srit.xmlloader.diameter.ListenpointDiamCommon;
 import com.devoteam.srit.xmlloader.sip.light.MsgSip;
 import com.devoteam.srit.xmlloader.tls.ListenpointTls;
 

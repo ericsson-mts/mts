@@ -38,7 +38,7 @@ import java.util.logging.Level;
 
 import junit.framework.TestCase;
 
-import com.devoteam.srit.xmlloader.diameter.MsgDiameter;
+import com.devoteam.srit.xmlloader.diameter.MsgDiamCommon;
 import com.devoteam.srit.xmlloader.diameter.MsgDiameterParser;
 import com.devoteam.srit.xmlloader.core.Tester;
 import com.devoteam.srit.xmlloader.core.log.GenericLogger;
@@ -201,7 +201,7 @@ public class DiameterManagerTest extends TestCase {
         String applicationId = scElem.element("header").attributeValue("applicationId");
         MsgDiameterParser.getInstance().doDictionnary(scElem, applicationId, true);
         Message message = MsgDiameterParser.getInstance().parseMsgFromXml(true, scElem);
-        MsgDiameter request = new MsgDiameter(stack, message);
+        MsgDiamCommon request = new MsgDiamCommon(stack, message);
         int maxIter = Config.getConfigByName("diameter.properties").getInteger("NB_ITERATION");
         logger.debug(TextEvent.Topic.PROTOCOL, "maxIter : ", maxIter);
         Message resp = null;

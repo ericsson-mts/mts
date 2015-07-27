@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.diameter.dk.MsgDiameter;
 
 import dk.i1.diameter.Message;
 import dk.i1.diameter.node.ConnectionKey;
@@ -78,7 +79,7 @@ public class DiameterNodeManager extends NodeManager {
      * @param    request The request to send
      * @return The answer to the request. Null if there is no answer (all peers down, or other error)
      */
-    public synchronized boolean sendRequest(MsgDiameter msg, Peer peer) throws Exception { 	
+    public synchronized boolean sendRequest(MsgDiamCommon msg, Peer peer) throws Exception { 	
         ConnectionKey connkey = getConnectionKey(peer); 
    	 	Channel channel = new ChannelDiameter(connkey, peer);
         msg.setChannel(channel);
@@ -119,7 +120,7 @@ public class DiameterNodeManager extends NodeManager {
         super.handle(message, connkey, peer);
 
         // Call back vers la Stack generic
-        MsgDiameter msg = null;
+        MsgDiamCommon msg = null;
         try
         {
         	Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER);
