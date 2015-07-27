@@ -66,6 +66,11 @@ public abstract class ChannelHttp extends Channel
     {
         this.socketServerHttp = socketServerHttp;
     }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
     
     /** Open a connexion to each Stack */
     @Override
@@ -124,7 +129,7 @@ public abstract class ChannelHttp extends Channel
         return true;
     }
     
-    /** Get the transport protocol of this message */
+    /** Get the transport protocol */
     @Override
     public String getTransport() 
     {

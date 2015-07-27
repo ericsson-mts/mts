@@ -51,6 +51,11 @@ public class ChannelUdpNIO extends Channel
         this.socketUdp = socketUdp;
     }
 
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+
+    /** Open a channel */
     @Override
     public boolean open() throws Exception
     {
@@ -91,18 +96,8 @@ public class ChannelUdpNIO extends Channel
         }
     }
 
-    public synchronized boolean sendMessage(Msg msg) throws Exception
-    {
-        if (socketUdp == null)
-        {
-            throw new ExecutionException("SocketUdp is null, has the connection been opened ?");
-        }
-
-        msg.setChannel(this);
-        socketUdp.send(msg);
-        return true;
-    }
-
+    /** Close a channel */
+    @Override
     public boolean close()
     {
         if (socketUdp != null)
@@ -116,7 +111,22 @@ public class ChannelUdpNIO extends Channel
         return true;
     }
 
-    /** Get the transport protocol of this message */
+    /** Send a Msg through the channel */
+    @Override
+    public synchronized boolean sendMessage(Msg msg) throws Exception
+    {
+        if (socketUdp == null)
+        {
+            throw new ExecutionException("SocketUdp is null, has the connection been opened ?");
+        }
+
+        msg.setChannel(this);
+        socketUdp.send(msg);
+        return true;
+    }
+
+    /** Get the transport protocol */
+    @Override
     public String getTransport() 
     {
     	return StackFactory.PROTOCOL_UDP;

@@ -56,6 +56,12 @@ public class ChannelImap extends Channel
     	super(stack);
     }
 
+    /** Set stack attribute of Channel */
+    public void setStack(Stack stack) throws Exception
+    {
+    	this.stack = stack;
+    }
+
     /** Creates a new instance of Channel */
     public ChannelImap(String name, String aLocalHost, String aLocalPort,
             String aRemoteHost, String aRemotePort, String aProtocol, String aTransport) throws Exception
@@ -90,13 +96,50 @@ public class ChannelImap extends Channel
         }
     }
 
-    /** Set stack attribute of Channel */
-    public void setStack(Stack stack) throws Exception
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+
+    /** Open a channel */
+    @Override
+    public boolean open() throws Exception
     {
-    	this.stack = stack;
+        boolean result = channel.open();
+        
+        if(result && isServer())
+        {
+            //send welcome message
+            MsgImap msg = new MsgImap(this.stack);
+            String text = "* OK Welcome to M.T.S. (Multiprotocol Test Suite)";
+            msg.decode(text.getBytes());
+            msg.setChannel(this);
+            msg.setTransactionId(this.getTransactionId());
+            
+            this.sendMessage(msg);
+        }
+        return result;
+    }
+
+    /** Close a channel */
+    @Override
+    public boolean close()
+    {
+        try
+        {
+            channel.close();
+        }
+        catch (Exception e)
+        {
+            // Nothing to do
+        }
+
+        channel = null;
+        return true;
     }
 
     /** Send a Msg to Channel */
+    @Override
     public boolean sendMessage(Msg msg) throws Exception
     {
         if (null == channel)
@@ -121,6 +164,7 @@ public class ChannelImap extends Channel
     }
 
     /** receive a Msg from Channel */
+    @Override
     public boolean receiveMessage(Msg msg) throws Exception
     {
         if(isServer())//pour un server (reception d'une requete)
@@ -150,40 +194,8 @@ public class ChannelImap extends Channel
         return super.receiveMessage(msg);
     }
 
-    public boolean open() throws Exception
-    {
-        boolean result = channel.open();
-        
-        if(result && isServer())
-        {
-            //send welcome message
-            MsgImap msg = new MsgImap(this.stack);
-            String text = "* OK Welcome to M.T.S. (Multiprotocol Test Suite)";
-            msg.decode(text.getBytes());
-            msg.setChannel(this);
-            msg.setTransactionId(this.getTransactionId());
-            
-            this.sendMessage(msg);
-        }
-        return result;
-    }
-
-    public boolean close()
-    {
-        try
-        {
-            channel.close();
-        }
-        catch (Exception e)
-        {
-            // Nothing to do
-        }
-
-        channel = null;
-        return true;
-    }
-    
-    /** Get the transport protocol of this message */
+    /** Get the transport protocol */
+    @Override
     public String getTransport() 
     {
     	return transport;

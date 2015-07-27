@@ -99,19 +99,12 @@ public class ChannelTcpNIO extends Channel
         this.listenpoint = listenpointTcp;
     }
 
-    /** Send a Msg to Channel */
-    public synchronized boolean sendMessage(Msg msg) throws Exception
-    {
-        if (null == socketTcp)
-        {
-            throw new ExecutionException("SocketTcp is null, has the channel been opened ?");
-        }
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
 
-        msg.setChannel(this);
-        socketTcp.send(msg);
-        return true;
-    }
-
+    /** Open a channel */
     @Override
     public boolean open() throws Exception
     {
@@ -143,6 +136,8 @@ public class ChannelTcpNIO extends Channel
         return true;
     }
 
+    /** Close a channel */
+    @Override
     public boolean close()
     {
         if (socketTcp != null)
@@ -155,8 +150,23 @@ public class ChannelTcpNIO extends Channel
 
         return true;
     }
+    
+    /** Send a Msg to Channel */
+    @Override
+    public synchronized boolean sendMessage(Msg msg) throws Exception
+    {
+        if (null == socketTcp)
+        {
+            throw new ExecutionException("SocketTcp is null, has the channel been opened ?");
+        }
 
-    /** Get the transport protocol of this message */
+        msg.setChannel(this);
+        socketTcp.send(msg);
+        return true;
+    }
+
+    /** Get the transport protocol */
+    @Override
     public String getTransport()
     {
         return StackFactory.PROTOCOL_TCP;

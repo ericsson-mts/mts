@@ -52,19 +52,21 @@ public class ChannelRtp extends Channel
     	super(stack);
     }
         
-    /** Get the transport protocol of this message */
-    public String getTransport() 
-    {
-    	return StackFactory.PROTOCOL_UDP;
-    }    
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
 
+    /** Close a channel */
+    @Override
     public boolean open() throws Exception {
         rtpManager = new RtpManager(this);        
         rtpManager.open(getLocalHost(), getLocalPort(), getRemoteHost(), getRemotePort());
         return true;
     }
 
-    /** Close a channel to each Stack */
+    /** Close a channel */
+    @Override
     public boolean close() {
         try {
             rtpManager.close();                    
@@ -76,6 +78,7 @@ public class ChannelRtp extends Channel
     
     
     /** Send a Msg to RTP Stack */
+    @Override
     public synchronized boolean sendMessage(Msg msg) throws Exception
     {       
         MsgRtp msgRtp = (MsgRtp) msg; 
@@ -86,7 +89,19 @@ public class ChannelRtp extends Channel
         }                          
         return true;
     }
+
+    /** Get the transport protocol */
+    @Override
+    public String getTransport() 
+    {
+    	return StackFactory.PROTOCOL_UDP;
+    }    
+
     
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing
+    //---------------------------------------------------------------------
+
     /** 
      * Parse the message from XML element 
      */

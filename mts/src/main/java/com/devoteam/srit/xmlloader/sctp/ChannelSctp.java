@@ -104,12 +104,6 @@ public class ChannelSctp extends Channel
         this.initmsg = new sctp_initmsg();
     }
     
-    /** Get the transport protocol of this message */
-    public String getTransport() 
-    {
-    	return StackFactory.PROTOCOL_SCTP;
-    }
-
     public SocketSctp getSocketSctp()
     {
         return socket;
@@ -125,19 +119,8 @@ public class ChannelSctp extends Channel
         this.aid = aid;
     }
 
-    /** Send a Msg to Channel */
-    public synchronized boolean sendMessage(Msg msg) throws Exception
-    {
-        if (socket == null)
-        {
-            throw new ExecutionException("SocketSctp is null, has the connection been opened ?");
-        }
-        msg.setChannel(this);
-        socket.send(msg);
-        return true;
-    }
-
     /** Open a Channel */
+    @Override
     public boolean open() throws Exception
     {
         if (socket == null)
@@ -169,6 +152,7 @@ public class ChannelSctp extends Channel
     }
 
     /** Close a Channel */
+    @Override
     public boolean close()
     {	
     	if (socket != null)
@@ -181,9 +165,35 @@ public class ChannelSctp extends Channel
         return true;
     }
 
+    
+    /** Send a Msg to Channel */
+    @Override
+    public synchronized boolean sendMessage(Msg msg) throws Exception
+    {
+        if (socket == null)
+        {
+            throw new ExecutionException("SocketSctp is null, has the connection been opened ?");
+        }
+        msg.setChannel(this);
+        socket.send(msg);
+        return true;
+    }
+    
+    /** Get the transport protocol */
+    @Override
+    public String getTransport() 
+    {
+    	return StackFactory.PROTOCOL_SCTP;
+    }
+    
 	public Listenpoint getListenpointSctp() {
 		return listenpoint;
 	}
+
+	
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing
+    //---------------------------------------------------------------------
 	
     /** 
      * Parse the message from XML element 

@@ -57,29 +57,9 @@ public class ChannelUdp extends Channel
         }
     }
 
-    public String toString()
+    public String getName()
     {
-        return channel.toString();
-    }
-
-    public boolean sendMessage(Msg msg) throws Exception
-    {
-        return channel.sendMessage(msg);
-    }
-
-    public boolean receiveMessageNIO(Msg msg) throws Exception
-    {
-        return channel.receiveMessageNIO(msg);
-    }
-
-    public boolean receiveMessage(Msg msg) throws Exception
-    {
-        return channel.receiveMessage(msg);
-    }
-
-    public boolean open() throws Exception
-    {
-        return channel.open();
+        return channel.getName();
     }
 
     public String getUID()
@@ -87,9 +67,14 @@ public class ChannelUdp extends Channel
         return channel.getUID();
     }
 
-    public String getTransport()
+    public int getLocalPort()
     {
-        return channel.getTransport();
+        return channel.getLocalPort();
+    }
+
+    public String getLocalHost()
+    {
+        return channel.getLocalHost();
     }
 
     public int getRemotePort()
@@ -107,31 +92,67 @@ public class ChannelUdp extends Channel
         return channel.getProtocol();
     }
 
-    public Parameter getParameter(String path) throws Exception
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+
+    /** Open a channel */
+    @Override
+    public boolean open() throws Exception
     {
-        return channel.getParameter(path);
+        return channel.open();
     }
 
-    public String getName()
-    {
-        return channel.getName();
-    }
-
-    public int getLocalPort()
-    {
-        return channel.getLocalPort();
-    }
-
-    public String getLocalHost()
-    {
-        return channel.getLocalHost();
-    }
-
+    /** Close a channel */
+    @Override
     public boolean close()
     {
         return channel.close();
     }
-    
+
+    /** Send a Msg through the channel */
+    @Override
+    public boolean sendMessage(Msg msg) throws Exception
+    {
+        return channel.sendMessage(msg);
+    }
+
+    /** Receive a Msg from the channel */
+    @Override
+    public boolean receiveMessageNIO(Msg msg) throws Exception
+    {
+        return channel.receiveMessageNIO(msg);
+    }
+
+    /** Receive a Msg from the channel */
+    @Override
+    public boolean receiveMessage(Msg msg) throws Exception
+    {
+        return channel.receiveMessage(msg);
+    }
+
+    /** Get the transport protocol */
+    @Override
+    public String getTransport()
+    {
+        return channel.getTransport();
+    }
+
+        
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing
+    //---------------------------------------------------------------------
+
+    /** 
+     * Returns the string description of the message. Used for logging as DEBUG level 
+     */
+    @Override
+    public String toString()
+    {
+        return channel.toString();
+    }
+
     /** 
      * Parse the channel from XML element 
      */
@@ -142,8 +163,22 @@ public class ChannelUdp extends Channel
     	this.channel.parseFromXml(root, runner, StackFactory.PROTOCOL_UDP);
     }
 
+    
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+    
+    /** 
+     * Get a parameter from the message 
+     */
+    @Override
+    public Parameter getParameter(String path) throws Exception
+    {
+        return channel.getParameter(path);
+    }
+
     /** clone method */
-    //@Override
+    @Override
     public void clone(Channel channel)
     {
     	super.clone(channel);

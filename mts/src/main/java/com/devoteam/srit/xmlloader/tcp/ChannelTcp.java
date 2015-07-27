@@ -62,6 +62,7 @@ public class ChannelTcp extends Channel {
     }
 
     /** Creates a new instance of ChannelTcp */
+    // for IMAP protocol : to delete ?
     public ChannelTcp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception 
     {
         super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
@@ -94,20 +95,31 @@ public class ChannelTcp extends Channel {
         }
     }
 
-    /** Send a Msg to Channel */
-    public synchronized boolean sendMessage(Msg msg) throws Exception {
-        return channel.sendMessage(msg);
-    }
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
 
+    /** Open a channel */
+    @Override
     public boolean open() throws Exception {
         return channel.open();
     }
 
+    /** Close a channel */
+    @Override
     public boolean close() {
         return channel.close();
     }
 
-    /** Get the transport protocol of this message */
+    /** Send a Msg to Channel */
+    @Override
+    public synchronized boolean sendMessage(Msg msg) throws Exception {
+        return channel.sendMessage(msg);
+    }
+
+    /** Get the transport protocol */
+    @Override
     public String getTransport() 
     {
         return StackFactory.PROTOCOL_TCP;
@@ -137,6 +149,20 @@ public class ChannelTcp extends Channel {
         }
     }
     
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing
+    //---------------------------------------------------------------------
+
+    /** 
+     * Returns the string description of the message. Used for logging as DEBUG level 
+     */
+    @Override
+    public String toString()
+    {
+        return channel.toString();
+    }
+
     /** 
      * Parse the channel from XML element 
      */

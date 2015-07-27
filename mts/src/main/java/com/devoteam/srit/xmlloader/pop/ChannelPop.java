@@ -74,7 +74,12 @@ public class ChannelPop extends Channel
         waitWelcomeMessage = this.stack.getConfig().getBoolean("client.WAIT_WELCOME_MESSAGE");
     }
 
-    // --- basic methods --- //
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+    
+	/** Open a channel */
+    @Override
     public boolean open() throws Exception {
         boolean result = channel.open();
 
@@ -91,7 +96,20 @@ public class ChannelPop extends Channel
         return result;
     }
     
+    /** Close a channel */
+    @Override
+    public boolean close(){
+        try {
+            channel.close();
+        } catch (Exception e) {
+            // nothing to do
+        }
+        channel = null;
+        return true;
+    }
+
     /** Send a Msg to Channel */
+    @Override
     public boolean sendMessage(Msg msg) throws Exception{ 
         if (null == channel)
             throw new Exception("Channel is null, has one channel been opened ?");
@@ -129,16 +147,7 @@ public class ChannelPop extends Channel
         return super.receiveMessage(msg);
     }
 
-    public boolean close(){
-        try {
-            channel.close();
-        } catch (Exception e) {
-            // nothing to do
-        }
-        channel = null;
-        return true;
-    }
-
+    /** Get the transport protocol */
     @Override
     public String getTransport() {
         return StackFactory.PROTOCOL_TCP;
