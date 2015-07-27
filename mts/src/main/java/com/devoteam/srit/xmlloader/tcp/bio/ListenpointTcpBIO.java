@@ -40,12 +40,6 @@ public class ListenpointTcpBIO extends Listenpoint {
     {
     	super(stack);
     }
-
-    /** Creates a new instance of Listenpoint */
-    public ListenpointTcpBIO(Stack stack, String name, String host, int port) throws Exception
-    {
-    	super(stack, name, host, port);
-    }
     
     /** Create a listenpoint to each Stack */
     @Override

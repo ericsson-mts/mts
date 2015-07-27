@@ -95,6 +95,8 @@ public class Listenpoint
     }
 
     /** Creates a new instance of Listenpoint */
+    // Not used except for test unit
+    // Used for capture only for RTPFLOW protocol
     public Listenpoint(Stack stack, String name, String host, int port) throws Exception
     {
         this(stack);
