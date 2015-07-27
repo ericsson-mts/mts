@@ -72,6 +72,11 @@ public class ListenpointDiameter extends Listenpoint
         this.node_settings = createNodeSettings(capability, null, null);               
     }
 
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+    
     /** create a listenpoint  */
     @Override
     public boolean create(String protocol) throws Exception    
@@ -118,7 +123,6 @@ public class ListenpointDiameter extends Listenpoint
     	diameterNode = null;
         return true;
     }
-
     
     /** Send a Msg to a given destination with a given transport protocol */
     @Override
@@ -187,7 +191,30 @@ public class ListenpointDiameter extends Listenpoint
 		diameterNode.sendRequest((MsgDiameter) msg, peer);
         return true;
     }	
- 
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing 
+    //---------------------------------------------------------------------
+
+    /** 
+     * Parse the listenpoint from XML element 
+     */
+    @Override
+    public void parseFromXml(Element root, Runner runner) throws Exception
+    {
+		super.parseFromXml(root, runner);
+
+		MsgDiameterParser.getInstance().doDictionnary(root, "0", true);
+		
+		Message capabilityMessage = new Message();
+		MsgDiameterParser.getInstance().parseAllAVPs(capabilityMessage, root);
+        
+		Element element = root.element("nodeSettings");
+    			
+        Capability capability = createCapability(capabilityMessage);
+        this.node_settings = createNodeSettings(capability, capabilityMessage, element);
+	}
+
     /**
      * Create the capability object.
      * @return
@@ -513,24 +540,5 @@ public class ListenpointDiameter extends Listenpoint
 	        }
 	    }
     }
- 
-    /** 
-     * Parse the listenpoint from XML element 
-     */
-    @Override
-    public void parseFromXml(Element root, Runner runner) throws Exception
-    {
-		super.parseFromXml(root, runner);
-
-		MsgDiameterParser.getInstance().doDictionnary(root, "0", true);
-		
-		Message capabilityMessage = new Message();
-		MsgDiameterParser.getInstance().parseAllAVPs(capabilityMessage, root);
-        
-		Element element = root.element("nodeSettings");
-    			
-        Capability capability = createCapability(capabilityMessage);
-        this.node_settings = createNodeSettings(capability, capabilityMessage, element);
-	}
 
 }

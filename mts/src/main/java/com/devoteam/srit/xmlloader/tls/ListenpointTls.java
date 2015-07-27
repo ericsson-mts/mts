@@ -49,7 +49,12 @@ public class ListenpointTls  extends Listenpoint {
     {
     	super(stack);
     }
-  
+
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+
     /** Create a listenpoint to each Stack */
     @Override
 	public boolean create(String protocol) throws Exception {
@@ -109,14 +114,4 @@ public class ListenpointTls  extends Listenpoint {
         return true;
     }
 	
-    /** 
-     * Parse the listenpoint from XML element 
-     */
-    @Override
-    public void parseFromXml(Element root, Runner runner) throws Exception
-    {
-    	super.parseFromXml(root, runner);
-    	// listenpointTls.parseFromXml(root, runner);
-    }
-
 }

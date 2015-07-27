@@ -43,6 +43,11 @@ public class ListenpointPcp extends Listenpoint
         super(stack);
     }
     
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+    
 	/** Send a Msg to Channel*/
     @Override
     public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception

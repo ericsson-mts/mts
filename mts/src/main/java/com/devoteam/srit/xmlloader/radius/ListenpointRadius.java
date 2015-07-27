@@ -70,20 +70,13 @@ public class ListenpointRadius extends Listenpoint implements Runnable
     {
         return this.identifierHandler;
     }
+   
     
-    @Override
-    public synchronized boolean remove()
-    {
-        super.remove();
-        
-        if(null != radiusSocket)
-        {
-            this.radiusSocket.close();
-            this.radiusSocket = null;
-        }
-        return true;
-    }
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
 
+    /** create a listenpoint  */
     @Override
     public synchronized boolean create(String protocol) throws Exception
     {
@@ -109,6 +102,21 @@ public class ListenpointRadius extends Listenpoint implements Runnable
         return true;
     }
 
+    /** Remove a listenpoint */
+    @Override
+    public synchronized boolean remove()
+    {
+        super.remove();
+        
+        if(null != radiusSocket)
+        {
+            this.radiusSocket.close();
+            this.radiusSocket = null;
+        }
+        return true;
+    }
+
+    /** Send a Msg to a given destination with a given transport protocol */
     @Override
     public boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
     {
@@ -187,7 +195,12 @@ public class ListenpointRadius extends Listenpoint implements Runnable
         	// nothing to do
         }
     }
+
     
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing 
+    //---------------------------------------------------------------------
+
     /** 
      * Parse the listenpoint from XML element 
      */
