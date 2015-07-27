@@ -13,19 +13,19 @@
 	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
 	<parameter name="[cmd]" operation="protocol.setFromMessage" value="firstline.commandName"/>
 </receiveMessageSMTP>
-<log level="0">transactionId = [tranid] </log>
+<log level="INFO">transactionId = [tranid] </log>
 <if>
 	<condition>
 		<test parameter="[cmd]" condition="string.equals" value="RCPT"/>
 	</condition>
 	<then>
 		<parameter name="[result]" operation="set" value="OK"/>
-		<log level="0"> : Command - [cmd], state - [result]</log>
+		<log level="INFO"> : Command - [cmd], state - [result]</log>
 	</then>
 	<else>
 		<parameter name="[result]" operation="set" value="KO"/>
 		<parameter name="[comment]" operation="set" value="Failed"/>
-		<log level="0">[result] in Command [cmd] ! [comment] </log>
+		<log level="INFO">[result] in Command [cmd] ! [comment] </log>
 	</else>
 </if>
 <sendMessageSMTP name="Send Response RCPT request" transactionId="[tranid]" ><![CDATA[550 No such user here]]>

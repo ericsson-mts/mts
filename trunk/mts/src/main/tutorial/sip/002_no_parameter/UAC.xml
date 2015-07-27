@@ -7,18 +7,21 @@
   <parameter name="[RemotePort]" operation="set" value="5080"/>
   <parameter name="[RemoteAddress]" operation="set" value="[RemoteHost(0)]:[RemotePort(0)]"/>	
 
+  <parameter name="[CallId]" operation="set" value="1234567890"/>
+  <parameter name="[BranchId]" operation="string.random" value="10"/>
+
   <sendRequestSIP name="Send INVITE">
 <![CDATA[
 INVITE sip:alice@devoteam.com SIP/2.0
 To: "alice" <sip:alice@devoteam.com>;tag=alice
 From: "bob" <sip:bob@devoteam.com>;tag=bob
-Call-ID: 1
+Call-ID: [CallId]
 CSeq: 1 INVITE
 Max-Forwards: 70
 Route: <sip:alice@[RemoteAddress];transport=[transportRequest];lr>
 Route: <sip:alice@[localSIP];transport=[transportRequest];lr>
 Contact: <sip:bob@[localSIP]>
-Via: SIP/2.0/[transportResponse] [localSIP];branch=bob
+Via: SIP/2.0/[transportResponse] [localSIP];branch=[BranchId]
 User-Agent: XmlLoader
 Content-Type: multipart/mixed;boundary="----=_Part_0"
 Content-Length: x
@@ -60,35 +63,39 @@ Content-Disposition: recipient-list
   <receiveResponseSIP name="Wait 200 OK" method="INVITE" result="200">
   </receiveResponseSIP>
 
+  <parameter name="[BranchId]" operation="string.random" value="10"/>
+  
   <sendRequestSIP name="Send ACK" remoteURL="sip://[RemoteAddress]">
 <![CDATA[
 ACK sip:alice@devoteam.com SIP/2.0
 To: "alice" <sip:alice@devoteam.com>;tag=alice
 From: "bob" <sip:bob@devoteam.com>;tag=bob
-Call-ID: 1
+Call-ID: [CallId]
 CSeq: 1 ACK
 Max-Forwards: 70
 Route: <sip:alice@[remoteSIP];transport=[transportRequest];lr>
 Route: <sip:alice@[localSIP];transport=[transportRequest];lr>
 Contact: <sip:bob@[localSIP]>
-Via: SIP/2.0/[transportResponse] [localSIP];branch=bob
+Via: SIP/2.0/[transportResponse] [localSIP];branch=[BranchId]
 User-Agent: XmlLoader
 Content-Length: 0
 ]]>
   </sendRequestSIP>
 
+  <parameter name="[BranchId]" operation="string.random" value="10"/>
+  
   <sendRequestSIP name="Send BYE" remoteHost="[RemoteHost(0)]" remotePort="[RemotePort]">
 <![CDATA[
 BYE sip:alice@devoteam.com SIP/2.0
 To: "alice" <sip:alice@devoteam.com>;tag=alice
 From: "bob" <sip:bob@devoteam.com>;tag=bob
-Call-ID: 1
+Call-ID: [CallId]
 CSeq: 2 BYE
 Max-Forwards: 70
 Route: <sip:alice@[remoteSIP];transport=[transportRequest];lr>
 Route: <sip:alice@[localSIP];transport=[transportRequest];lr>
 Contact: <sip:bob@[localSIP]>
-Via: SIP/2.0/[transportResponse] [localSIP];branch=bob
+Via: SIP/2.0/[transportResponse] [localSIP];branch=[BranchId]
 User-Agent: XmlLoader
 Content-Length: 0
 ]]>
