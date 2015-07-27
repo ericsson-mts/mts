@@ -23,7 +23,6 @@
 
 package com.devoteam.srit.xmlloader.smtp;
 
-import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
@@ -54,12 +53,11 @@ public class StackSmtp extends Stack
     	return super.sendMessage(msg);        
     }
 
-    /**
-     * Creates a Msg specific to each Channel type
-     * should become ABSTRACT later
+    /** 
+     * Read the message data from the stream
+     * Use for TCP/TLS like protocol : to build incoming message  
      */
-    @Override
-    public Msg readFromStream(InputStream inputStream, Channel channel) throws Exception
+    public byte[] readMessageFromStream(InputStream inputStream) throws Exception
     {
         boolean isLastLine = false;
         boolean canBeRequest = true;
@@ -67,7 +65,6 @@ public class StackSmtp extends Stack
         boolean exit = false;
         String line = null;
         StringBuilder message = new StringBuilder();
-        MsgSmtp msg = null;
 
         while (!exit)
         {
@@ -104,16 +101,15 @@ public class StackSmtp extends Stack
                 
                 if (isLastLine)
                 {
-                    msg = new MsgSmtp(this, message.toString());
-                    exit = true;
+                	return message.toString().getBytes();
                 }
             }
             else
             {
-                exit = true;
+                return null;
             }
         }
-        return msg;
+        return null;
     }
 
 }

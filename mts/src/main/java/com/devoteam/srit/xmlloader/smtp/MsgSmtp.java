@@ -57,16 +57,6 @@ public class MsgSmtp extends Msg {
         super(stack);
     }
     
-    /** Creates a new instance */	
-	public MsgSmtp(Stack stack, String someData) throws Exception {
-		this(stack);
-		
-		data = someData; 
-		data = Utils.replaceNoRegex(data, "\r\n", "\n");
-		data = Utils.replaceNoRegex(data, "\n", "\r\n");
-        if(!data.endsWith("\r\n")) data += "\r\n";
-	}
-
 	/*
 	 * Get the string following the commands
 	 * getString is used for : - EHLO & HELO - VRFY - HELP - NOOP - EXPN
@@ -258,7 +248,12 @@ public class MsgSmtp extends Msg {
     @Override 
     public void decode(byte[] data) throws Exception
     {
-    	// nothing to do : never called
+    	String str = new String(data); 
+		str = Utils.replaceNoRegex(str, "\r\n", "\n");
+		str = Utils.replaceNoRegex(str, "\n", "\r\n");
+        if(!str.endsWith("\r\n")) str += "\r\n";
+        
+        this.data = str;
     }
 
     
