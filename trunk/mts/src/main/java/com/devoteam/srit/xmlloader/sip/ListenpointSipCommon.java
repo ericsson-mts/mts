@@ -53,6 +53,10 @@ public class ListenpointSipCommon extends Listenpoint
         this.transport = null;
     }
 
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+
     /** Send a Msg to Connection */
     @Override
     public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
@@ -98,6 +102,27 @@ public class ListenpointSipCommon extends Listenpoint
         }
 
 		return super.sendMessage(msg, remoteHost, remotePort, transport);
+    }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing 
+    //---------------------------------------------------------------------
+
+    /** 
+     * Parse the listenpoint from XML element 
+     */
+    public void parseFromXml(Element root, Runner runner) throws Exception
+    {
+    	super.parseFromXml(root, runner);
+    	
+    	// DEPRECATED begin
+        this.name = root.attributeValue("name");
+        if (this.name == null)
+        {
+        	this.name = root.attributeValue("providerName");
+        }
+        // DEPRECATED end
     }
 
 }

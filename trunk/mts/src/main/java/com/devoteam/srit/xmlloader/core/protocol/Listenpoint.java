@@ -47,7 +47,7 @@ public class Listenpoint
 {
 
     private String UID;
-    private String name;
+    protected String name;
     private String host;
     private int port = 0;
     private int portTLS = 0;
@@ -95,6 +95,7 @@ public class Listenpoint
     }
 
     /** Creates a new instance of Listenpoint */
+    // DON'T USE please 
     // Not used except for test unit
     // Used for capture only for RTPFLOW protocol
     public Listenpoint(Stack stack, String name, String host, int port) throws Exception
@@ -219,6 +220,10 @@ public class Listenpoint
         return protocol;
     }
 
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+		
     /** create a listenpoint  */
     public boolean create(String protocol) throws Exception
     {	    	
@@ -385,10 +390,6 @@ public class Listenpoint
             return channels.containsKey(name);
         }
     }
-
-    //---------------------------------------------------------------------
-    // methods for the transport
-    //---------------------------------------------------------------------
     
     /** Prepare the channel */
     public Channel prepareChannel(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
