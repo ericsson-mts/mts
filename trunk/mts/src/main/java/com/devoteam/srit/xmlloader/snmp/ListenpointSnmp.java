@@ -57,6 +57,11 @@ public class ListenpointSnmp extends Listenpoint
         super(stack);
     }
 
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+
     @Override
     public boolean create(String protocol) throws Exception
     {

@@ -112,11 +112,6 @@ public class ListenpointUdp extends Listenpoint
         return listenpointUdp.getPort();
     }
 
-    public Parameter getParameter(String path) throws Exception
-    {
-        return listenpointUdp.getParameter(path);
-    }
-
     public String getHost()
     {
         return listenpointUdp.getHost();
@@ -149,6 +144,10 @@ public class ListenpointUdp extends Listenpoint
     }
 
     
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing 
+    //---------------------------------------------------------------------
+
     /** 
      * Convert the channel to XML document 
      */
@@ -168,6 +167,21 @@ public class ListenpointUdp extends Listenpoint
     	listenpointUdp.parseFromXml(root, runner);
     }
 
+    
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message 
+     */
+    @Override
+    public Parameter getParameter(String path) throws Exception
+    {
+        return listenpointUdp.getParameter(path);
+    }
+
+    
     /** clone method */
     //@Override
     public void clone(Listenpoint listenpoint)

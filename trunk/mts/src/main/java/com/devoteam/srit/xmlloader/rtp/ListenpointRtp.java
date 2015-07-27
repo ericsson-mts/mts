@@ -80,6 +80,11 @@ public class ListenpointRtp extends Listenpoint
     	super(stack, name, host, port);
     }
 
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+		
     /** Send a Msg to Listenpoint */
     @Override
     public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
@@ -117,19 +122,7 @@ public class ListenpointRtp extends Listenpoint
 		
 		return super.sendMessage(msg, remoteHost, remotePort, transport);    
 	}
-    
-    public RawPacket reverseTransformCipheredMessage(RawPacket rp)
-    {
-    	return this.cipherReceiver.reverseTransform(rp);
-    }
-    
-    public int getCipheredAuthTagLength(int SR)
-    {
-    	if (SR == 0)
-    		return this.cipherSender.getEngine().getSRTPPolicy().getAuthTagLength();
-    	return this.cipherReceiver.getEngine().getSRTPPolicy().getAuthTagLength();
-    }
-    
+            
     public boolean remove()
     {
     	this.cipherReceiver = null;
@@ -137,6 +130,11 @@ public class ListenpointRtp extends Listenpoint
     	this.isSecured = false;
     	return super.remove();
     }
+    
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing 
+    //---------------------------------------------------------------------
     
     /** 
      * Parse the listenpoint from XML element 
@@ -201,5 +199,17 @@ public class ListenpointRtp extends Listenpoint
 		if (SR == 1)
 			this.cipherReceiver = new SRTPTransformer(engine);
 	}
+	
+    public int getCipheredAuthTagLength(int SR)
+    {
+    	if (SR == 0)
+    		return this.cipherSender.getEngine().getSRTPPolicy().getAuthTagLength();
+    	return this.cipherReceiver.getEngine().getSRTPPolicy().getAuthTagLength();
+    }
+
+    public RawPacket reverseTransformCipheredMessage(RawPacket rp)
+    {
+    	return this.cipherReceiver.reverseTransform(rp);
+    }
 
 }

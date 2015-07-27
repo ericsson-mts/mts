@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.tcp;
 
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 
@@ -58,6 +59,11 @@ public class ListenpointTcp extends Listenpoint
         }
         listenpointTcp.clone(this);
     }
+
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
 
     /** Create a listenpoint to each Stack */
     @Override
@@ -109,6 +115,11 @@ public class ListenpointTcp extends Listenpoint
         return listenpointTcp.remove();
     }
 
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing 
+    //---------------------------------------------------------------------
+
     /** 
      * Returns the string description of the message. Used for logging as DEBUG level 
      */
@@ -136,7 +147,22 @@ public class ListenpointTcp extends Listenpoint
     	super.parseFromXml(root, runner);
     	listenpointTcp.parseFromXml(root, runner);
     }
+    
+    
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
 
+    /** 
+     * Get a parameter from the message 
+     */
+    @Override
+    public Parameter getParameter(String path) throws Exception
+    {
+        return listenpointTcp.getParameter(path);
+    }
+
+    
     /** clone method */
     @Override
     public void clone(Listenpoint listenpoint)
@@ -144,7 +170,7 @@ public class ListenpointTcp extends Listenpoint
     	super.clone(listenpoint);
         this.listenpointTcp.clone(listenpoint);
     }
-    
+
     /** equals method */
     @Override
     public boolean equals(Listenpoint listenpoint)

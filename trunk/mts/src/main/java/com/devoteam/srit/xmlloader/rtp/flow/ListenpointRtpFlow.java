@@ -86,7 +86,12 @@ public class ListenpointRtpFlow extends Listenpoint
         this.ignoreReceivedMessages = ((StackRtpFlow) stack).ignoreReceivedMessages; // set the default value from config file
     }
         
-    /** Create a listenpoint to each Stack */
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+
+    /** Create a listenpoint */
     @Override
     public boolean create(String protocol) throws Exception {
         boolean res = super.create(protocol);
@@ -94,7 +99,7 @@ public class ListenpointRtpFlow extends Listenpoint
         return res;
     }
 
-    /** Create a listenpoint to each Stack */
+    /** Remove a listenpoint */
     @Override
     public boolean remove() {
         _removed = true;
@@ -102,29 +107,6 @@ public class ListenpointRtpFlow extends Listenpoint
     	this.cipherSender = null;
     	this.isSecured = false;
         return super.remove();
-    }
-
-    public boolean removed(){
-        return _removed;
-    }
-
-    public boolean isSecured() {
-		return isSecured;
-	}
-
-    public String toString() 
-    {
-        String ret = super.toString();
-        ret += " endTimerNoPacket=\"" + endTimerNoPacket + "\"";
-        if (endTimerSilentFlow != 0) 
-        {
-            ret += " endTimerSilentFlow=\"" + endTimerSilentFlow + "\"";
-        }
-        if (endTimerPeriodic != 0) 
-        {
-            ret += " endTimerPeriodic=\"" + endTimerPeriodic + "\"";
-        }
-        return ret;
     }
 
     protected synchronized void receiveMessage(MsgRtp message) throws Exception {
@@ -192,25 +174,26 @@ public class ListenpointRtpFlow extends Listenpoint
     	}
     	return super.sendMessage(msg, remoteHost, remotePort, transport);
     }
+    
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing 
+    //---------------------------------------------------------------------
 
-	public RawPacket reverseTransformCipheredMessage(RawPacket rp) {
-		// TODO Auto-generated method stub
-		return this.cipherReceiver.reverseTransform(rp);
-	}
-
-	public int getCipheredAuthTagLength(int SR) {
-		// TODO Auto-generated method stub
-		if (SR == 0)
-    		return this.cipherSender.getEngine().getSRTPPolicy().getAuthTagLength();
-    	return this.cipherReceiver.getEngine().getSRTPPolicy().getAuthTagLength();
-	}
-	
-	public SRTPTransformer getSRTPTransformer(int SR)
-	{
-		if (SR == 0)
-			return this.cipherSender;
-		return this.cipherReceiver;
-	}
+    public String toString() 
+    {
+        String ret = super.toString();
+        ret += " endTimerNoPacket=\"" + endTimerNoPacket + "\"";
+        if (endTimerSilentFlow != 0) 
+        {
+            ret += " endTimerSilentFlow=\"" + endTimerSilentFlow + "\"";
+        }
+        if (endTimerPeriodic != 0) 
+        {
+            ret += " endTimerPeriodic=\"" + endTimerPeriodic + "\"";
+        }
+        return ret;
+    }
 	
     /** 
      * Parse the listenpoint from XML element 
@@ -314,5 +297,32 @@ public class ListenpointRtpFlow extends Listenpoint
 		if (SR == 1)
 			this.cipherReceiver = new SRTPTransformer(engine);
     }
+
+	public RawPacket reverseTransformCipheredMessage(RawPacket rp) {
+		// TODO Auto-generated method stub
+		return this.cipherReceiver.reverseTransform(rp);
+	}
+
+	public int getCipheredAuthTagLength(int SR) {
+		// TODO Auto-generated method stub
+		if (SR == 0)
+    		return this.cipherSender.getEngine().getSRTPPolicy().getAuthTagLength();
+    	return this.cipherReceiver.getEngine().getSRTPPolicy().getAuthTagLength();
+	}
+	
+	public SRTPTransformer getSRTPTransformer(int SR)
+	{
+		if (SR == 0)
+			return this.cipherSender;
+		return this.cipherReceiver;
+	}
+	
+    public boolean removed(){
+        return _removed;
+    }
+
+    public boolean isSecured() {
+		return isSecured;
+	}
 
 }

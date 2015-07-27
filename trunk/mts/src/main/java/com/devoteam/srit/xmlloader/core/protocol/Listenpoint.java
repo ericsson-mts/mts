@@ -220,6 +220,7 @@ public class Listenpoint
         return protocol;
     }
 
+	
     //---------------------------------------------------------------------
     // methods for the transport
     //---------------------------------------------------------------------
@@ -468,6 +469,7 @@ public class Listenpoint
         }
         return res;
     }
+ 
     
     //---------------------------------------------------------------------
     // methods for the XML display / parsing 
@@ -528,17 +530,13 @@ public class Listenpoint
     public void parseFromXml(Element root, Runner runner) throws Exception
     {
         this.name = root.attributeValue("name");
-        if (this.name == null)
-        {
-            // DEPRECATED begin
-        	this.name = root.attributeValue("providerName");
-        	// DEPRECATED end
-        }
+
         this.host = Utils.formatIPAddress(root.attributeValue("localHost"));
         if (this.host == null || this.host.length() <= 0)
         {
             this.host = "0.0.0.0";
         }        
+        
         String portAttr = root.attributeValue("localPort");
         if (portAttr != null)
         {

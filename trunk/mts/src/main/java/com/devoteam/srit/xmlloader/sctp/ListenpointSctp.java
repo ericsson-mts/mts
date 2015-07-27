@@ -43,7 +43,12 @@ public class ListenpointSctp extends Listenpoint {
     {
     	super(stack);
     }
+
     
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+
     /** Create a listenpoint to each Stack */
     @Override
 	public boolean create(String protocol) throws Exception

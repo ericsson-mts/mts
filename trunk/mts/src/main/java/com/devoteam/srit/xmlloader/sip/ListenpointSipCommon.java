@@ -23,8 +23,6 @@
 
 package com.devoteam.srit.xmlloader.sip;
 
-import java.util.HashMap;
-
 import javax.sip.address.Hop;
 
 import org.dom4j.Element;
@@ -34,10 +32,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.diameter.MsgDiameterParser;
 
-import dk.i1.diameter.Message;
-import dk.i1.diameter.node.Capability;
 
 /**
  *
