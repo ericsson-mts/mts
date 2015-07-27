@@ -56,7 +56,7 @@ import dk.i1.diameter.node.Peer.TransportProtocol;
  *
  * @author fhenry
  */
-public class ListenpointDiameter extends Listenpoint
+public class ListenpointDiamCommon extends Listenpoint
 {
     private long startTimestamp = 0;
     
@@ -65,7 +65,7 @@ public class ListenpointDiameter extends Listenpoint
     private DiameterNodeManager diameterNode = null;
 
     /** Creates a new instance of Listenpoint */
-    public ListenpointDiameter(Stack stack) throws Exception
+    public ListenpointDiamCommon(Stack stack) throws Exception
     {
         super(stack);
         Capability capability = createCapability(null);
@@ -139,7 +139,7 @@ public class ListenpointDiameter extends Listenpoint
 	    		msg.setChannel(channel);
 
 	    		// send the DIAMETER answer
-	    		diameterNode.sendAnswer(((MsgDiameter) msg).getMessage(), channel.getConnectionKey());
+	    		diameterNode.sendAnswer(((MsgDiamCommon) msg).getMessage(), channel.getConnectionKey());
 	    		return true;
 	    	}
 		}
@@ -188,7 +188,7 @@ public class ListenpointDiameter extends Listenpoint
         Peer peer = new Peer(remoteHost, remotePort, protocol);
         peer.capabilities = node_settings.capabilities();
 
-		diameterNode.sendRequest((MsgDiameter) msg, peer);
+		diameterNode.sendRequest((MsgDiamCommon) msg, peer);
         return true;
     }	
     

@@ -83,8 +83,8 @@ public class StackDiameterTest extends TestCase {
         
         Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER);
         
-        MsgDiameter request = (MsgDiameter) stack.parseMsgFromXml(true, scElem, null);
-        MsgDiameter response = new MsgDiameter(stack, prepareResponse(request.getMessage(), ProtocolConstants.DIAMETER_RESULT_SUCCESS));
+        MsgDiamCommon request = (MsgDiamCommon) stack.parseMsgFromXml(true, scElem, null);
+        MsgDiamCommon response = new MsgDiamCommon(stack, prepareResponse(request.getMessage(), ProtocolConstants.DIAMETER_RESULT_SUCCESS));
         
         ScenarioReference src = new ScenarioReference("srcScenario");
         ScenarioRunner srcRunner = new ScenarioRunner(null, src);
@@ -105,7 +105,7 @@ public class StackDiameterTest extends TestCase {
             int hopByHop = request.getMessage().hdr.hop_by_hop_identifier;
             int endToEnd = request.getMessage().hdr.end_to_end_identifier;
             // wait the requestn to be received            
-            MsgDiameter result = (MsgDiameter) destRunner.getBufferMsg().readMessageFromStack(30000);
+            MsgDiamCommon result = (MsgDiamCommon) destRunner.getBufferMsg().readMessageFromStack(30000);
             destRunner.getBufferMsg().removeMsgFromStack(result);
             
             /*
@@ -118,12 +118,12 @@ public class StackDiameterTest extends TestCase {
                 request = (MsgDiameter) dest.getMsgStack().keySet().iterator().next();
             }                       
             */
-            response = new MsgDiameter(stack, prepareResponse(result.getMessage(), ProtocolConstants.DIAMETER_RESULT_SUCCESS));
+            response = new MsgDiamCommon(stack, prepareResponse(result.getMessage(), ProtocolConstants.DIAMETER_RESULT_SUCCESS));
             // response.getMessage().hdr.hop_by_hop_identifier = hopByHop;
             // response.getMessage().hdr.end_to_end_identifier = endToEnd;
             StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER).sendMessage(response, srcRunner, destRunner, srcRunner);
             // wait the requestn to be received
-            response = (MsgDiameter) srcRunner.getBufferMsg().readMessageFromStack(30000);
+            response = (MsgDiamCommon) srcRunner.getBufferMsg().readMessageFromStack(30000);
             srcRunner.getBufferMsg().removeMsgFromStack(response);
             /*
             while(!src.getMsgStack().keySet().iterator().hasNext()) {            

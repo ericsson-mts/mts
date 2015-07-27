@@ -21,8 +21,11 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.diameter;
+package com.devoteam.srit.xmlloader.diameter.light;
 
+import com.devoteam.srit.xmlloader.diameter.MsgDiamCommon;
+import com.devoteam.srit.xmlloader.diameter.MsgDiameterParser;
+import com.devoteam.srit.xmlloader.diameter.StackDiamCommon;
 import com.devoteam.srit.xmlloader.diameter.dictionary.Application;
 import com.devoteam.srit.xmlloader.diameter.dictionary.AvpDef;
 import com.devoteam.srit.xmlloader.diameter.dictionary.Dictionary;
@@ -64,7 +67,7 @@ import org.dom4j.Element;
  *
  * @author gpasquiers
  */
-public class MsgDiameter extends Msg
+public class MsgDiameter extends MsgDiamCommon
 {
     
     /** diameter message object */
@@ -81,7 +84,7 @@ public class MsgDiameter extends Msg
     {
         this(stack);
         message = aMessage;
-        setListenpoint(StackDiameter.listenpoint); 
+        setListenpoint(StackDiamCommon.listenpoint); 
     }
     
     /** Returns the diameter message of MsgDiameter */

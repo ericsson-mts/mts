@@ -208,7 +208,7 @@ public abstract class Msg extends MsgLight implements Removable
             {
                 this.transactionId = null;
                 this.isTransactionIdSet = false;
-                throw new ExecutionException("Can't get transactionID information " + this, e);
+                throw new Exception("Can't get transactionID information " + this, e);
             }
 
         }
