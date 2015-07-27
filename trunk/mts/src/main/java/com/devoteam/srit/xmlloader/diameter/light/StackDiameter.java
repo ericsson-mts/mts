@@ -49,7 +49,7 @@ import org.dom4j.Element;
 
 /**
  *
- * @author gpasquiers
+ * @author fhenry
  */
 public class StackDiameter extends StackDiamCommon 
 {
