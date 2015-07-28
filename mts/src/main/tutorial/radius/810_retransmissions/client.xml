@@ -8,8 +8,9 @@
     <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
     <parameter name="[testcase:sem2]" operation="system.semaphorewait" />
 
+    <parameter name="[identifier]" operation="number.random" value="1000000"/>
     <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="127.0.0.1" remotePort="18120">
-        <header code="4" identifier="1"/>
+        <header code="4" identifier="[identifier]"/>
         <avp code="user-name" value="login" />
         <avp code="user-password" value="password" />
     </sendMessageRADIUS>
@@ -23,7 +24,7 @@
     <parameter name="[testcase:synchro]" operation="system.semaphorewait" />
 
     <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="127.0.0.1" remotePort="18120">
-        <header code="4"  identifier="1"/>
+        <header code="4"  identifier="[identifier]"/>
         <avp code="user-name" value="login" />
         <avp code="user-password" value="password" />
     </sendMessageRADIUS>
