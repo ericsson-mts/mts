@@ -281,7 +281,7 @@ public class MsgSctp extends Msg{
 		String aid = root.attributeValue("aid");
 		if(aid!=null)
 		{
-			sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(Long.parseInt(aid));
+			sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(Long.parseLong(aid));
 		}
 				
 		this.sctpData=new SCTPData(sctpData.sndrcvinfo, sctpData.getData());

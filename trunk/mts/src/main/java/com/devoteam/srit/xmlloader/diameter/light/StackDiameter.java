@@ -91,16 +91,20 @@ public class StackDiameter extends StackDiamCommon
         length -= 20;
         
         // read the message payload
-        tab = new byte[length];
-        done = Utils.readFromSocketStream(inputStream, tab);
-        Array payload = new DefaultArray(tab,0,done);
-        
-        // concat the header and the payload
-        SupArray arrayMsg = new SupArray();
-        arrayMsg.addFirst(header);
-        arrayMsg.addLast(payload);
-               
-        return arrayMsg.getBytes();
+        if (length > 0)
+        {
+	        tab = new byte[length];
+	        done = Utils.readFromSocketStream(inputStream, tab);
+	        Array payload = new DefaultArray(tab,0,done);
+	        
+	        // concat the header and the payload
+	        SupArray arrayMsg = new SupArray();
+	        arrayMsg.addFirst(header);
+	        arrayMsg.addLast(payload);
+	               
+	        return arrayMsg.getBytes();
+        }
+        return null;
     }
        
     /** 
