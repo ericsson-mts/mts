@@ -1,6 +1,6 @@
 #!/bin/sh
 
-OPTIONS= "-level:WARN -stor:file -gen:false -show:false -param:[iterations]+10"
+OPTIONS= "-level:WARN -stor:file -gen:false -show:false -param:[iterations]+1"
 #MODE1=1
 MODE1=-seq
 
@@ -11,6 +11,7 @@ rm -rf ../logs/*
 echo ******************************************* protocol modules
 sh ./startCmd.sh ../tutorial/core/test.xml -sequential $OPTIONS
 sh ./startCmd.sh ../tutorial/diameter/test.xml %MODE1% $OPTIONS
+sh ./startCmd.sh ../tutorial/diameter/test_light.xml %MODE1% -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.light.StackDiameter %OPTIONS%
 sh ./startCmd.sh ../tutorial/sip/test.xml %MODE1% $OPTIONS
 sh ./startCmd.sh ../tutorial/sip/test.xml %MODE1% -config:USE_NIO+true $OPTIONS
 sh ./startCmd.sh ../tutorial/sip/test_jain.xml %MODE1% -config:protocol.STACK_CLASS_NAME_SIP+com.devoteam.srit.xmlloader.sip.light.StackJainSip %OPTIONS%
