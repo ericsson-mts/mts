@@ -31,15 +31,14 @@
 	    <payload format="text">Packet #3</payload>		
 	</sendMessageRTP>
 	
+  <pause name="Wait remove" seconds="0.01"/>
 	<removeListenpointRTP name="inviter" />
-
-    <pause name="Wait remove" seconds="0.01"/>
 
 	<createListenpointRTP name="inviter" localHost="[localHostRTP(0)]" localPort="10007"/>
 
 	<parameter name="[testcase:semaphore2]" operation="system.semaphorewait"/>
 
-  	<parameter name="[ssrc]" operation="number.random" value="2147483647"/>
+  <parameter name="[ssrc]" operation="number.random" value="2147483647"/>
 	<sendMessageRTP listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
 	    <header ssrc="[ssrc]" payloadType="17" seqnum="0" timestamp="0"/>
 	    <payload format="text">Packet #1</payload>		
@@ -64,7 +63,8 @@
 	</sendMessageRTP>
 
 	<finally>	
-		<removeListenpointRTP name="inviter" />
+      <pause name="Wait remove" seconds="0.01"/>
+		  <removeListenpointRTP name="inviter" />
 	</finally>
     				
 </scenario>
