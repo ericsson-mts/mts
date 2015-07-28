@@ -33,14 +33,14 @@
 	<!-- to avoid lost of packets -->
 	<receiveMessageRTP listenpoint="invitee" type="DVI4:17"/>
 			
+  <pause name="Wait remove" seconds="0.01"/>
 	<removeListenpointRTP name="invitee" />
-
-    <pause name="Wait remove" seconds="0.01"/>
 
 	<createListenpointRTP name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]"/>
 
-	<finally>							
-		<removeListenpointRTP name="invitee" />
+	<finally>	
+      <pause name="Wait remove" seconds="0.01"/>						
+		  <removeListenpointRTP name="invitee" />
 	</finally>
 
 </scenario>

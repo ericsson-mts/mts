@@ -40,6 +40,8 @@ import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.diameter.ChannelDiameter;
+import com.devoteam.srit.xmlloader.diameter.dk.MsgDiameter;
 
 import dk.i1.diameter.AVP;
 import dk.i1.diameter.AVP_Grouped;
@@ -65,4 +67,64 @@ public class ListenpointDiameter extends Listenpoint
         super(stack);
     }
     
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+
+    /** Send a Msg to a given destination with a given transport protocol */
+    @Override
+    public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
+    {
+		if (remoteHost == null || !msg.isRequest())
+		{
+	    	// RFC 3588 : Hop-by-Hop Id is used instead of Destination-Host or Destination-Realm AVP
+	    	Trans trans = msg.getTransaction();
+	    	if (trans != null)
+	    	{
+	    		Msg request = trans.getBeginMsg();
+	    		Channel channel = (Channel) request.getChannel();
+	    		msg.setChannel(channel);
+
+	    		// send the DIAMETER answer
+	    		return stack.sendMessage(msg);
+	    	}
+		}
+    	if (remoteHost == null)
+		{        	
+    		// RFC 3588 : If peer identity == Destination-Host AVP then send that peer, otherwise
+    		Parameter destHost = msg.getParameter("avp.293.value");
+    		if ((destHost != null) && (destHost.length() > 0)) 
+    		{
+    			remoteHost = destHost.get(0).toString();	    			
+    		}
+    		else 
+    		{
+	    		// RFC 3588 : Lookup realm table with Destination-Realm and AppId
+	    		Parameter destRealm = msg.getParameter("avp.283.value");
+	    		if ((destRealm != null) && (destRealm.length() > 0)) 
+	    		{
+	    			remoteHost = destRealm.get(0).toString();	    			
+	    		}	    			
+    		}	    		
+		}
+		if (remoteHost == null)
+		{
+			throw new ExecutionException("Could not determine the remote destination from the message : " + msg);
+		}
+
+		// default port is 3868 (RFC3588) 
+		if (remotePort <=0)
+		{
+			remotePort = 3868; 
+		}
+
+		// default port is 3868 (RFC3588) 
+		if (transport == null)
+		{
+			transport = this.transport; 
+		}
+       	return super.sendMessage(msg, remoteHost, remotePort, transport);
+    }	
+ 
 }
