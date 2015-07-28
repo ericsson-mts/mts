@@ -256,32 +256,32 @@ public class MsgSctp extends Msg{
 		String ppid = root.attributeValue("ppid");
 		if(ppid!=null)
 		{
-			sctpData.sndrcvinfo.sinfo_ppid = (short) Integer.parseInt(ppid);
+			sctpData.sndrcvinfo.sinfo_ppid = Integer.parseInt(ppid);
 		}
 		String context = root.attributeValue("context");
 		if(context!=null)
 		{
-			sctpData.sndrcvinfo.sinfo_context = (short) Integer.parseInt(context);
+			sctpData.sndrcvinfo.sinfo_context = Integer.parseInt(context);
 		}
 		String ttl = root.attributeValue("ttl");
 		if(ttl!=null)
 		{
-			sctpData.sndrcvinfo.sinfo_timetolive = (short) Integer.parseInt(ttl);
+			sctpData.sndrcvinfo.sinfo_timetolive = Integer.parseInt(ttl);
 		}
 		String tsn = root.attributeValue("tsn");
 		if(tsn!=null)
 		{
-			sctpData.sndrcvinfo.sinfo_tsn = (short) Integer.parseInt(tsn);
+			sctpData.sndrcvinfo.sinfo_tsn = Integer.parseInt(tsn);
 		}
 		String cumtsn = root.attributeValue("cumtsn");
 		if(cumtsn!=null)
 		{
-			sctpData.sndrcvinfo.sinfo_cumtsn = (short) Integer.parseInt(cumtsn);
+			sctpData.sndrcvinfo.sinfo_cumtsn = Integer.parseInt(cumtsn);
 		}
 		String aid = root.attributeValue("aid");
 		if(aid!=null)
 		{
-			sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(Integer.parseInt(aid));
+			sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(Long.parseInt(aid));
 		}
 				
 		this.sctpData=new SCTPData(sctpData.sndrcvinfo, sctpData.getData());

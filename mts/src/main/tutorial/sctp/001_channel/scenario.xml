@@ -5,29 +5,40 @@
     
     <receiveMessageSCTP channel="channel" request="true" type="INIT-ACK"/>
 
-    <sendMessageSCTP channel="channel">
+    <sendMessageSCTP channel="channel" stream="11111" ssn="22222" flags="33333" 
+                     ppid="111111111" context="2222222222" ttl="3333333333" 
+                     tsn= "444444444" cmtsn=  "5555555555" aid="666666666">
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
     </sendMessageSCTP>
      
    <receiveMessageSCTP channel="channel" request="true" type="INIT-ACK">
-        <parameter name="[stream]" operation="protocol.setFromMessage" value="header.stream"/>
-        <parameter name="[ssn]" operation="protocol.setFromMessage" value="header.ssn"/>
-        <parameter name="[ppid]" operation="protocol.setFromMessage" value="header.ppid"/>
-        <parameter name="[tsn]" operation="protocol.setFromMessage" value="header.tsn"/>
-        <parameter name="[aid]" operation="protocol.setFromMessage" value="header.aid"/>
-     	  <parameter name="[sourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
-        <parameter name="[sourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
-        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
     </receiveMessageSCTP>
 
-    <test parameter="[stream]" condition="number.equals" value="1" />
-    <!--test parameter="[ssn]" condition="number.equals" value="255" /-->
-    <test parameter="[ppid]" condition="number.equals" value="987654321" />
-    <!--test parameter="[tsn]" condition="number.equals" value="1234567890" /-->
-    <test parameter="[aid]" condition="number.equals" value="33554432" />
+    <parameter name="[stream]" operation="protocol.setFromMessage" value="header.stream"/>
+    <test parameter="[stream]" condition="number.equals" value="11111" />
+    <parameter name="[ssn]" operation="protocol.setFromMessage" value="header.ssn"/>
+    <!--test parameter="[ssn]" condition="number.equals" value="22222" /-->
+    <!--parameter name="[flags]" operation="protocol.setFromMessage" value="header.flags"/>
+    <test parameter="[flags]" condition="number.equals" value="33333" /-->
+    <parameter name="[ppid]" operation="protocol.setFromMessage" value="header.ppid"/>
+    <test parameter="[ppid]" condition="number.equals" value="111111111" />
+    <!--parameter name="[context]" operation="protocol.setFromMessage" value="header.context"/>
+    <test parameter="[context]" condition="number.equals" value="222222222" /-->
+    <!--parameter name="[ttl]" operation="protocol.setFromMessage" value="header.ttl"/>
+    <test parameter="[ttl]" condition="number.equals" value="333333333" /-->
+    <!--parameter name="[tsn]" operation="protocol.setFromMessage" value="header.tsn"/>
+    <test parameter="[tsn]" condition="number.equals" value="444444444" /-->
+    <!--parameter name="[cumtsn]" operation="protocol.setFromMessage" value="header.cumtsn"/>
+    <test parameter="[cumtsn]" condition="number.equals" value="555555555" /-->
+    <parameter name="[aid]" operation="protocol.setFromMessage" value="header.aid"/>
+    <test parameter="[aid]" condition="number.equals" value="666666666" />
 
+    <parameter name="[sourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
     <test parameter="[sourceHost]" condition="string.equals" value="[localHostSCTP]" />
+    <parameter name="[sourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
     <test parameter="[sourcePort]" condition="string.equals" value="[localPortSCTP]" />
+    
+    <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
     <test parameter="[contents]" condition="string.equals" value="AAAAA" />
 
     <finally>
