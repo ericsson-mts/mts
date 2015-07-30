@@ -1,112 +1,130 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test description="GTP (V1 V2 Prime) regression tests" name="GTP">
 
-    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="4"/>
+    <parameter name="[IPVersion]" operation="set" value="4" description="version of the IP protocol" editable="true" />
     
+    <parameter name="[localHostGTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[localHostGTP]" operation="set" value="192.168.140.232"/-->
+    <parameter name="[localHostGTP]" operation="set" value="[localHostGTP(0)]" description="local address of the SUT host" editable="true" />
+    <parameter name="[localPortGTP]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[localPortGTP]" operation="set" value="2123"/-->
+    <parameter name="[localPortGTP]" operation="set" value="[localPortGTP]" description="local port of the SUT host" editable="true" />
+    <parameter name="[localClient]" operation="set" value="true" description="flag to activate the client scenario" editable="true" />
+  
     <parameter name="[remoteHostGTP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[remoteHostGTP]" operation="set" value="192.168.140.232"/-->
-    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostGTP]" operation="set" value="[remoteHostGTP(0)]"/>
+    <parameter name="[remoteHostGTP]" operation="set" value="[remoteHostGTP(0)]" description="remote address of the SUT host" editable="true" />
     <parameter name="[remotePortGTP]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/>
     <!--parameter name="[remotePortGTP]" operation="set" value="2123"/-->
-    <parameter description="remote port of the SUT host" editable="true" name="[remotePortGTP]" operation="set" value="[remotePortGTP]"/>
-
+    <parameter name="[remotePortGTP]" operation="set" value="[remotePortGTP]" description="remote port of the SUT host" editable="true" />
+    <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true" />
+  
     <parameter name="[transportGTP]" operation="set" value="UDP"/>
     <parameter name="[transportGTPPrime]" operation="set" value="TCP"/>
 
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
+
+    
     <testcase name="GTP v2 ------------------------------------------------------" state="false"/>
     
-	 <testcase name="GTP V2 95_create_bearer_request" state="true">
-       <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="95_create_bearer_request/client.xml" name="client" routingName="client"/>
-		<scenario file="95_create_bearer_request/server.xml" name="GTP.V2" routingName="GTP.V2"/>
-     </testcase>
-
-	  <testcase name="GTP V2 96_create_bearer_response" state="true">
-       <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="96_create_bearer_response/client.xml" name="client" routingName="client"/>
-     </testcase>
-	 
-	  <testcase name="GTP V2 97_update_bearer_request" state="true">
-       <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="97_Update_Bearer_Request/client.xml" name="client" routingName="client"/>
-		<scenario file="97_update_bearer_request/server.xml" name="GTP.V2" routingName="GTP.V2"/>
-     </testcase>
-	 <testcase name="GTP V2 98_update_bearer_response" state="true">
-       <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="98_update_bearer_response/client.xml" name="client" routingName="client"/>
-     </testcase>
-	 <testcase name="GTP V2 64_modify_bearer_command" state="true">
-       <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="64_modify_bearer_command/client.xml" name="client" routingName="client"/>
-     </testcase>
-	 <testcase name="GTP V2 65_modify_bearer_failure_Indication" state="true">
-       <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="65_modify_bearer_failure_Indication/client.xml" name="client" routingName="client"/>
-     </testcase>
-	 
-	<testcase name="GTP v2 32_create_session_request" state="true">
+    <testcase name="GTP V2 95_create_bearer_request" state="true" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="32_create_session_request/client.xml" name="client" routingName="client"/>
-        <scenario file="32_create_session_request/server.xml" name="GTP.V2" routingName="GTP.V2"/>
-    </testcase>
-		
-	<testcase name="GTP v2 33_create_session_response" state="true">
-        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="33_create_session_response/client.xml" name="client" routingName="client"/>
-        <!--<scenario name="GTP.V2">33_create_session_response/server.xml</scenario>  -->
-    </testcase>
-    <testcase name="GTP v2 36_delete_session_request" state="true">
-        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="36_delete_session_request/client.xml" name="client" routingName="client"/>
-        <scenario file="36_delete_session_request/server.xml" name="GTP.V2" routingName="GTP.V2"/>
-    </testcase>
-   <testcase name="GTP V2 99_Delete_Bearer_Request" state="true">
-       <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="99_Delete_Bearer_Request/client.xml" name="client" routingName="client"/>
-        <scenario file="99_Delete_Bearer_Request/server.xml" name="GTP.V2" routingName="GTP.V2"/>
-     </testcase>
-   <testcase name="GTP v2 34_modify_bearer_request" state="true">
-        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="34_modify_bearer_request/client.xml" name="client" routingName="client"/>
-        <scenario file="34_modify_bearer_request/server.xml" name="GTP.V2" routingName="GTP.V2"/>
-    </testcase>
-
-    <testcase name="GTP v2 101_call_setup" state="true">
-        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="101_call_setup/client.xml" name="client" routingName="client"/>
-        <scenario file="101_call_setup/server.xml" name="GTP.V2" routingName="GTP.V2"/>
+        <scenario file="95_create_bearer_request/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="95_create_bearer_request/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
     </testcase>
     
-    <testcase name="GTP v2 101_echo" state="true">
+    <testcase name="GTP V2 96_create_bearer_response" state="true" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="101_echo/client.xml" name="client" routingName="client"/>
-        <scenario file="101_echo/server.xml" name="GTP.V2" routingName="GTP.V2"/>
+        <scenario file="96_create_bearer_response/client.xml" name="client" state="[remoteServer]" routingName="client"/>
+    </testcase>
+	 
+	  <testcase name="GTP V2 97_update_bearer_request" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario file="97_Update_Bearer_Request/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="97_update_bearer_request/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
+     </testcase>
+
+    <testcase name="GTP V2 98_update_bearer_response" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario file="98_update_bearer_response/client.xml" name="client" state="[remoteServer]" routingName="client"/>
     </testcase>
 
-	<testcase name="GTP v2 111_create_session_request" state="true">
+    <testcase name="GTP V2 64_modify_bearer_command" state="true" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="111_create_session_request/client.xml" name="client" routingName="client"/>
-        <scenario file="111_create_session_request/server.xml" name="GTP.V2" routingName="GTP.V2"/>
+        <scenario file="64_modify_bearer_command/client.xml" name="client" state="[localClient]" routingName="client"/>
     </testcase>
 
-    <testcase name="GTP v2 111_createSession_all" state="true">
+    <testcase name="GTP V2 65_modify_bearer_failure_Indication" state="true" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="111_createSession_all/client.xml" name="client" routingName="client"/>
-        <scenario file="111_createSession_all/server.xml" name="GTP.V2" routingName="GTP.V2"/>
-    </testcase>
-    <testcase name="GTP v2 112_deleteSession" state="true">
-        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="112_deleteSession/client.xml" name="client" routingName="client"/>
-        <scenario file="112_deleteSession/server.xml" name="GTP.V2" routingName="GTP.V2"/>
+        <scenario file="65_modify_bearer_failure_Indication/client.xml" name="client" state="[localClient]" routingName="client"/>
     </testcase>
     
-    <testcase name="GTP v2 180_set_from_msg" state="true">
+    <testcase name="GTP v2 32_create_session_request" state="true" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="180_set_from_msg/client.xml" name="client" routingName="client"/>
-        <scenario file="180_set_from_msg/server.xml" name="GTP.V2" routingName="GTP.V2"/>
+        <scenario file="32_create_session_request/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="32_create_session_request/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
+    </testcase>
+    
+    <testcase name="GTP v2 33_create_session_response" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario file="33_create_session_response/client.xml" name="client" state="[remoteServer]" routingName="client"/>
+    </testcase>
+    
+    <testcase name="GTP v2 36_delete_session_request" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario file="36_delete_session_request/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="36_delete_session_request/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
     </testcase>
 
-    <testcase name="GTP v2 181_listenpoint" state="true">
+    <testcase name="GTP V2 99_Delete_Bearer_Request" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario file="99_Delete_Bearer_Request/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="99_Delete_Bearer_Request/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
+    </testcase>
+
+    <testcase name="GTP v2 34_modify_bearer_request" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario file="34_modify_bearer_request/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="34_modify_bearer_request/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
+    </testcase>
+    
+    <testcase name="GTP v2 101_call_setup" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario file="101_call_setup/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="101_call_setup/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
+    </testcase>
+    
+    <testcase name="GTP v2 101_echo" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario file="101_echo/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="101_echo/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
+    </testcase>
+    
+    <testcase name="GTP v2 111_create_session_request" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario file="111_create_session_request/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="111_create_session_request/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
+    </testcase>
+    
+    <testcase name="GTP v2 111_createSession_all" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario file="111_createSession_all/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="111_createSession_all/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
+    </testcase>
+
+    <testcase name="GTP v2 112_deleteSession" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario file="112_deleteSession/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="112_deleteSession/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
+    </testcase>
+    
+    <testcase name="GTP v2 180_set_from_msg" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario file="180_set_from_msg/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="180_set_from_msg/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
+    </testcase>
+    
+    <testcase name="GTP v2 181_listenpoint" state="true" number="[iterations]" >
         <parameter name="[listenHost]" operation="system.ipaddress"/>
         <!--parameter name="[listenHost]" operation="set" value="172.20.70.43"/-->    
         <parameter editable="true" name="[listenHost]" operation="set" value="[listenHost(0)]"/>
@@ -115,82 +133,82 @@
         <parameter editable="true" name="[listenPort]" operation="set" value="[listenPort]"/>
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
         
-        <scenario file="181_listenpoint/client.xml" name="client" routingName="client"/>
-        <scenario file="181_listenpoint/server.xml" name="GTP.V2" routingName="GTP.V2"/>
+        <scenario file="181_listenpoint/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="181_listenpoint/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
     </testcase>
     
-    <testcase name="GTP v2 182_no_dico" state="true">
+    <testcase name="GTP v2 182_no_dico" state="true" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="182_no_dico/client.xml" name="client" routingName="client"/>
-        <scenario file="182_no_dico/server.xml" name="GTP.V2" routingName="GTP.V2"/>
+        <scenario file="182_no_dico/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="182_no_dico/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
     </testcase>
     
     <testcase name="GTP v1 ------------------------------------------------------" state="false"/>
-            
-    <testcase name="GTP v1 201_echo" state="true">
+          
+    <testcase name="GTP v1 201_echo" state="true" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="201_echo/client.xml" name="client" routingName="client"/>
-        <scenario file="201_echo/server.xml" name="GTP.V1" routingName="GTP.V1"/>
+        <scenario file="201_echo/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="201_echo/server.xml" name="GTP.V1" state="[remoteServer]" routingName="GTP.V1"/>
     </testcase>
     
-    <testcase name="GTP v1 202_errorIndication KO" state="true">
+    <testcase name="GTP v1 202_errorIndication KO" state="true" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-	      <!-- fonctionne mais la capture wireshark n'est pas bien decode -->
-	      <!-- private extension fait une exception dans les TLSs -->
-        <scenario file="202_errorIndication/client.xml" name="client" routingName="client"/>
-        <scenario file="202_errorIndication/server.xml" name="GTP.V1" routingName="GTP.V1"/>
+        <!-- fonctionne mais la capture wireshark n'est pas bien decode -->
+        <!-- private extension fait une exception dans les TLSs -->
+        <scenario file="202_errorIndication/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="202_errorIndication/server.xml" name="GTP.V1" state="[remoteServer]" routingName="GTP.V1"/>
     </testcase>
     
-    <testcase name="GTP v1 203_supportedExtensionHeadersNotification" state="true">
+    <testcase name="GTP v1 203_supportedExtensionHeadersNotification" state="true" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="203_supportedExtensionHeadersNotification/client.xml" name="client" routingName="client"/>
-        <scenario file="203_supportedExtensionHeadersNotification/server.xml" name="GTP.V1" routingName="GTP.V1"/>
-    </testcase>
-
-    <testcase name="GTP v1 211_packet_data_unit" state="true">
-        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="211_packet_data_unit/client.xml" name="GTP.V1" routingName="GTP.V1"/>
+        <scenario file="203_supportedExtensionHeadersNotification/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="203_supportedExtensionHeadersNotification/server.xml" name="GTP.V1" state="[remoteServer]" routingName="GTP.V1"/>
     </testcase>
     
-    <testcase name="GTP v1 280_set_from_msg" state="true">
+    <testcase name="GTP v1 211_packet_data_unit" state="true" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="280_set_from_msg/client.xml" name="client" routingName="client"/>
-        <scenario file="280_set_from_msg/server.xml" name="GTP.V1" routingName="GTP.V1"/>
+        <scenario file="211_packet_data_unit/client.xml" name="GTP.V1" state="[localClient]" routingName="GTP.V1"/>
     </testcase>
-
+    
+    <testcase name="GTP v1 280_set_from_msg" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+        <scenario file="280_set_from_msg/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="280_set_from_msg/server.xml" name="GTP.V1" state="[remoteServer]" routingName="GTP.V1"/>
+    </testcase>
+    
     <testcase name="GTP Prime ------------------------------------------------------" state="false"/>
     
-    <testcase name="GTP Pr 301_echo" state="true">
+    <testcase name="GTP Pr 301_echo" state="true" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTPPrime]"/>
-        <scenario file="301_echo/client.xml" name="client" routingName="client"/>
-        <scenario file="301_echo/server.xml" name="GTP.Prime" routingName="GTP.Prime"/>
-    </testcase>
-
-    <testcase name="GTP Pr 302_nodeAlive" state="true">
-        <parameter name="[transport]" operation="set" value="[transportGTPPrime]"/>
-        <scenario file="302_nodeAlive/client.xml" name="client" routingName="client"/>
-        <scenario file="302_nodeAlive/server.xml" name="GTP.Prime" routingName="GTP.Prime"/>
-    </testcase>
-
-    <testcase name="GTP Pr 303_redirection" state="true">
-        <parameter name="[transport]" operation="set" value="[transportGTPPrime]"/>
-        <scenario file="303_redirection/client.xml" name="client" routingName="client"/>
-        <scenario file="303_redirection/server.xml" name="GTP.Prime" routingName="GTP.Prime"/>
-    </testcase>
-
-    <testcase name="GTP Pr 304_dataRecordTransfer" state="true">
-        <parameter name="[transport]" operation="set" value="[transportGTPPrime]"/>
-        <scenario file="304_dataRecordTransfer/client.xml" name="client" routingName="client"/>
-        <scenario file="304_dataRecordTransfer/server.xml" name="GTP.Prime" routingName="GTP.Prime"/>
+        <scenario file="301_echo/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="301_echo/server.xml" name="GTP.Prime" state="[remoteServer]" routingName="GTP.Prime"/>
     </testcase>
     
-    <testcase name="GTP Pr 380_set_from_msg" state="true">
+    <testcase name="GTP Pr 302_nodeAlive" state="true" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTPPrime]"/>
-        <scenario file="380_set_from_msg/client.xml" name="client" routingName="client"/>
-        <scenario file="380_set_from_msg/server.xml" name="GTP.Prime" routingName="GTP.Prime"/>
+        <scenario file="302_nodeAlive/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="302_nodeAlive/server.xml" name="GTP.Prime" state="[remoteServer]" routingName="GTP.Prime"/>
     </testcase>
     
-    <testcase name="GTP Pr 381_listenpoint" state="true">
+    <testcase name="GTP Pr 303_redirection" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTPPrime]"/>
+        <scenario file="303_redirection/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="303_redirection/server.xml" name="GTP.Prime" state="[remoteServer]" routingName="GTP.Prime"/>
+    </testcase>
+    
+    <testcase name="GTP Pr 304_dataRecordTransfer" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTPPrime]"/>
+        <scenario file="304_dataRecordTransfer/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="304_dataRecordTransfer/server.xml" name="GTP.Prime" state="[remoteServer]" routingName="GTP.Prime"/>
+    </testcase>
+    
+    <testcase name="GTP Pr 380_set_from_msg" state="true" number="[iterations]" >
+        <parameter name="[transport]" operation="set" value="[transportGTPPrime]"/>
+        <scenario file="380_set_from_msg/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="380_set_from_msg/server.xml" name="GTP.Prime" state="[remoteServer]" routingName="GTP.Prime"/>
+    </testcase>
+    
+    <testcase name="GTP Pr 381_listenpoint" state="true" number="[iterations]" >
         <parameter name="[listenHost]" operation="system.ipaddress"/>
         <!--parameter name="[listenHost]" operation="set" value="172.20.70.43"/-->    
         <parameter editable="true" name="[listenHost]" operation="set" value="[listenHost(0)]"/>
@@ -199,27 +217,27 @@
         <parameter editable="true" name="[listenPort]" operation="set" value="[listenPort]"/>
         <parameter name="[transport]" operation="set" value="[transportGTPPrime]"/>
         
-        <scenario file="381_listenpoint/client.xml" name="client" routingName="client"/>
-        <scenario file="381_listenpoint/server.xml" name="GTP.Prime" routingName="GTP.Prime"/>
+        <scenario file="381_listenpoint/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="381_listenpoint/server.xml" name="GTP.Prime" state="[remoteServer]" routingName="GTP.Prime"/>
     </testcase>
     
-    <testcase name="GTP Pr 382_channel" state="true">
+    <testcase name="GTP Pr 382_channel" state="true" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTPPrime]"/>
-        <scenario file="382_channel/client.xml" name="client" routingName="client"/>
-        <scenario file="382_channel/server.xml" name="GTP.Prime" routingName="GTP.Prime"/>
+        <scenario file="382_channel/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="382_channel/server.xml" name="GTP.Prime" state="[remoteServer]" routingName="GTP.Prime"/>
     </testcase>
     
     <testcase name="GTP server ------------------------------------------------------" state="false"/>
     
-    <testcase name="GTP 901_server" state="false">
+    <testcase name="GTP 901_server" state="false" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="901_server/server.xml" name="GTP.V2" routingName="GTP.V2"/>
-        <scenario file="902_client/client.xml" name="client" routingName="client"/>
+        <scenario file="902_client/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="901_server/server.xml" name="GTP.V2" state="[remoteServer]" routingName="GTP.V2"/>
     </testcase>
-
-    <testcase name="GTP 902_client" state="false">
+    
+    <testcase name="GTP 902_client" state="false" number="[iterations]" >
         <parameter name="[transport]" operation="set" value="[transportGTP]"/>
-        <scenario file="902_client/client.xml" name="client" routingName="client"/>
+        <scenario file="902_client/client.xml" name="client" state="[localClient]" routingName="client"/>
     </testcase>
 
 </test>
