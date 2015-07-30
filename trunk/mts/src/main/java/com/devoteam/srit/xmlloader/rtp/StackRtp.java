@@ -73,8 +73,8 @@ public class StackRtp extends Stack
         byte[] copyData = new byte[length];
         System.arraycopy(datas, 0, copyData, 0, length);
 
-        Array array = new ReadOnlyDefaultArray(copyData);
-        MsgRtp msg = new MsgRtp(this, array);
+        MsgRtp msg = new MsgRtp(this);
+        msg.decode(copyData);
                 
         return msg;
     }
@@ -121,9 +121,9 @@ public class StackRtp extends Stack
             	byte[] uncipheredData = new byte[msg.encode().length - lrtp.getCipheredAuthTagLength(1)];
             	System.arraycopy(rp.getBuffer(), 0, uncipheredData, 0, msg.encode().length - lrtp.getCipheredAuthTagLength(1));
             	
-            	Array uncipheredArray = new ReadOnlyDefaultArray(uncipheredData);
             	msg = null;
-            	msg = new MsgRtp(this, uncipheredArray);
+            	msg = new MsgRtp(this);
+            	msg.decode(uncipheredData);
     			break;
     		}
     	}
