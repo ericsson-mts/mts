@@ -28,12 +28,15 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.URIFactory;
+import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
 
 import java.io.File;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
+
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -89,24 +92,35 @@ public class Dictionary
     {
         XMLDocument dictionaryDocument = new XMLDocument();
         dictionaryDocument.setXMLSchema(URIFactory.newURI("../conf/schemas/diameter-dictionary.xsd"));
-        dictionaryDocument.setXMLFile(URIFactory.newURI(path));
+    	URI filePathURI = null;
+    	// case the path dictionary is test specific
+    	if (path != null && path.length() > 0)
+    	{
+    		filePathURI = URIRegistry.MTS_TEST_HOME.resolve(path.trim());
+    	}
+    	// case the path dictionary is the default one (../conf/diameter/dictionary)
+    	else
+    	{
+    		filePathURI = new URI("../conf/diameter/dictionary.xml");
+    	}
+        dictionaryDocument.setXMLFile(filePathURI);
         dictionaryDocument.parse();
         
         Document document = dictionaryDocument.getDocument();
         
         // parse vendors
         
-        applicationByName = new HashMap();
-        applicationById = new HashMap();
+        applicationByName = new HashMap<String, Application>();
+        applicationById = new HashMap<String, Application>();
         
-        traceDebug("try to parsing application base");
+        traceDebug("parsing of application base");
 
         //
         // base first, important for references from other applications
         //
         parseApplication(document.getRootElement().element("base"));
         
-        traceDebug("try to parsing all application");
+        traceDebug("parsing of all applications");
 
         //
         // all applications
