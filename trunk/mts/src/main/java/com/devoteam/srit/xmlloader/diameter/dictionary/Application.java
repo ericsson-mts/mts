@@ -177,7 +177,7 @@ public class Application
         
         if(code == -1)
         {
-            Dictionary.traceWarning("Missing avp.code, skipping");
+            Dictionary.traceWarning("No \"code\" attribute in <avp> XML tag for AVP \"" + name + "\", skipping this avp");
             return;
         }
         
@@ -198,7 +198,7 @@ public class Application
                 type = Dictionary.getInstance().getTypeDefByName(type_name, _name) ;
                 if(type == null)
                 {
-                    Dictionary.traceWarning("Invalid avp.type (" + type_name + "), skipping");
+                    Dictionary.traceWarning("Invalid \"type-name\" attribute in <type> XML tag for AVP \"" + name + "\", skipping this type : " + type_name);
                 }
             }
         }
@@ -218,26 +218,27 @@ public class Application
                 }
                 else
                 {
-                    Dictionary.traceWarning("No avp.enum.name in " + avpDef.get_name() + ", skipping this enum");
+                    Dictionary.traceWarning("No \"name\" attribute in XML <enum> tag for the \"" + avpDef.get_name() + "\" AVP, skipping this enum");
                     continue ;
                 }
                 
                 int enum_code = -1 ;
-                if(null != element.attribute("code"))
+                String codeValue = element.attributeValue("code"); 
+                if(null != codeValue)
                 {
                     try
                     {
-                        enum_code = Integer.parseInt(element.attributeValue("code"));
+                        enum_code = Integer.parseInt(codeValue);
                     }
                     catch(Exception e)
                     {
-                        Dictionary.traceWarning("Invalid avp.enum.code in " + avpDef.get_name() + ", skipping this enum");
+                        Dictionary.traceWarning("Invalid \"code\" attribute in XML <enum> for the \"" + avpDef.get_name() + "\" AVP, skipping this enum : " + codeValue);
                         continue ;
                     }
                 }
                 else
                 {
-                    Dictionary.traceWarning("No avp.enum.code in " + avpDef.get_name() + ", skipping this enum");
+                    Dictionary.traceWarning("No \"code\" attribute in <enum> XML tag for the \"" + avpDef.get_name() + "\" AVP, skipping this enum");
                     continue ;
                 } 
                 
@@ -349,8 +350,15 @@ public class Application
                 String gAvpDefName = gIterator.next();
                 
                 AvpDef gAvpDef = Dictionary.getInstance().getAvpDefByName(gAvpDefName, _name);
-                if(null != gAvpDef) avpDef.addGroupedAvpDef(gAvpDef);
-                else                Dictionary.traceWarning("no AvpDef found for gavp " + gAvpDefName + " of AvpDef " + avpDef.get_name());
+                
+                if(null != gAvpDef)
+                {
+                	avpDef.addGroupedAvpDef(gAvpDef);
+                }
+                else                
+                {
+                	Dictionary.traceWarning("no AvpDef found for gavp " + gAvpDefName + " of AvpDef " + avpDef.get_name());
+                }
             }
         }
     }

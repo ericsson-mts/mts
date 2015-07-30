@@ -45,10 +45,14 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import dk.i1.diameter.AVP;
 import dk.i1.diameter.AVPInterface;
+import dk.i1.diameter.AVP_Address;
+import dk.i1.diameter.AVP_Float32;
+import dk.i1.diameter.AVP_Float64;
 import dk.i1.diameter.AVP_Grouped;
 import dk.i1.diameter.AVP_Integer32;
 import dk.i1.diameter.AVP_Integer64;
 import dk.i1.diameter.AVP_OctetString;
+import dk.i1.diameter.AVP_Time;
 import dk.i1.diameter.AVP_Unsigned32;
 import dk.i1.diameter.AVP_Unsigned64;
 import dk.i1.diameter.Message;
@@ -925,10 +929,31 @@ public class MsgDiamCommon extends Msg
         	String strRes = InetAddress.getByAddress(result).getHostAddress();
         	return strRes;
         }
+        else if(type.equalsIgnoreCase("Address"))
+        {
+        	byte[] result = new AVP_OctetString(avp).queryValue();
+        	String strRes = InetAddress.getByAddress(result).getHostAddress();
+        	return strRes;
+        }
         else if(type.equalsIgnoreCase("UTF8String"))
         {
         	byte[] result = new AVP_OctetString(avp).queryValue();
         	return new String(result);
+        }
+        else if(type.equalsIgnoreCase("Float32"))
+        {
+        	float result = new AVP_Float32(avp).queryValue();
+        	return Float.toString(result);
+        }
+        else if(type.equalsIgnoreCase("Float64"))
+        {
+        	double result = new AVP_Float64(avp).queryValue();
+        	return Double.toString(result);
+        }
+        else if(type.equalsIgnoreCase("Time"))
+        {
+        	int result = new AVP_Time(avp).queryValue();
+        	return Integer.toString(result);
         }
         else
         {
