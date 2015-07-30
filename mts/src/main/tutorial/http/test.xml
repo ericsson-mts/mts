@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test description="HTTP regression tests" name="HTTP">
 
-    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
     
     <parameter name="[localHostHTTP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[localHostHTTP]" operation="set" value="[localHostHTTP(0)]" description="local address of the MTS host" editable="true"/>	
@@ -44,10 +44,11 @@
     <parameter name="[proxyTarHost]" value="192.168.90.50"/>
     <parameter name="[proxyTarPort]" value="80"/>
     
-    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
-    
     <parameter name="[data]" operation="file.readbinary" value="250.txt"/>
 
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
+    
+    
     <testcase name="100_http_post" state="true" number="[iterations]" description="http" >
         <scenario file="100_http_post_client_server/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="100_http_post_client_server/server.xml" name="HTTP" state="[remoteServer]" routingName="HTTP"/>

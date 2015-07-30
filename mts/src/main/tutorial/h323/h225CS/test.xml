@@ -4,148 +4,153 @@
     <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
     
     <parameter name="[localHostH323]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter description="local address of the MTS host" editable="true" name="[localHostH323]" operation="set" value="[localHostH323(0)]"/>
+    <parameter name="[localHostH323]" operation="set" value="[localHostH323(0)]" description="local address of the MTS host" editable="true" />
     <parameter name="[localPortH323]" operation="file.readProperty" value="h225cs.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter description="local port of the MTS host" editable="true" name="[localPortH323]" operation="set" value="[localPortH323]"/>
+    <parameter name="[localPortH323]" operation="set" value="[localPortH323]" description="local port of the MTS host" editable="true" />
+    <parameter name="[localClient]" operation="set" value="true" description="flag to activate the client scenario" editable="true" />
 
     <parameter name="[remoteHostH323]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostH323]" operation="set" value="[remoteHostH323(0)]"/>
+    <parameter name="[remoteHostH323]" operation="set" value="[remoteHostH323(0)]" description="remote address of the SUT host" editable="true" />
     <parameter name="[remotePortH323]" operation="file.readProperty" value="h225cs.properties" value2="listenpoint.LOCAL_PORT"/>
-    <parameter description="remote port of the SUT host" editable="true" name="[remotePortH323]" operation="set" value="[remotePortH323]"/>
+    <parameter name="[remotePortH323]" operation="set" value="[remotePortH323]" description="remote port of the SUT host" editable="true" />
+	  <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true" />
+  
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
 
-    <testcase description="test a setup request with asn1" name="001_call_setup_asn1" state="false">
-        <scenario file="001_call_setup_asn1/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="001_call_setup_asn1/callee.xml" name="H225CS" routingName="H225CS"/>
-    </testcase>
-    
-    <testcase description="test a alerting request" name="101_Q931_ALERTING" state="true">
-        <scenario file="101_Q931_ALERTING/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="101_Q931_ALERTING/callee.xml" name="H225CS" routingName="H225CS"/>
-    </testcase>
-    
-    <testcase description="test a call proceeding request" name="102_Q931_CALL_PROCEEDING" state="true">
-        <scenario file="102_Q931_CALL_PROCEEDING/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="102_Q931_CALL_PROCEEDING/callee.xml" name="H225CS" routingName="H225CS"/>
-    </testcase>
-    
-    <testcase description="test a call connect request" name="103_Q931_CONNECT" state="true">
-        <scenario file="103_Q931_CONNECT/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="103_Q931_CONNECT/callee.xml" name="H225CS" routingName="H225CS"/>
-    </testcase>
-    
-    <testcase description="test a call connect ack request" name="104_Q931_CONNECT_ACK" state="true">
-        <scenario file="104_Q931_CONNECT_ACK/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="104_Q931_CONNECT_ACK/callee.xml" name="H225CS" routingName="H225CS"/>
-    </testcase>
-    
-    <testcase description="test a call disconnect request" name="105_Q931_DISCONNECT" state="true">
-        <scenario file="105_Q931_DISCONNECT/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="105_Q931_DISCONNECT/callee.xml" name="H225CS" routingName="H225CS"/>
-    </testcase>
 
-    <testcase description="test a call information request" name="106_Q931_INFORMATION" state="true">
-        <scenario file="106_Q931_INFORMATION/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="106_Q931_INFORMATION/callee.xml" name="H225CS" routingName="H225CS"/>
-    </testcase>
-
-    <testcase description="test a call notify request" name="107_Q931_NOTIFY" state="true">
-        <scenario file="107_Q931_NOTIFY/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="107_Q931_NOTIFY/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="001_call_setup_asn1" state="false" number="[iterations]" description="test a setup request with asn1" >
+        <scenario file="001_call_setup_asn1/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="001_call_setup_asn1/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
     
-    <testcase description="test a call progress request" name="108_Q931_PROGRESS" state="true">
-        <scenario file="108_Q931_PROGRESS/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="108_Q931_PROGRESS/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="101_Q931_ALERTING" state="true" number="[iterations]" description="test a alerting request" >
+        <scenario file="101_Q931_ALERTING/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="101_Q931_ALERTING/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
     
-    <testcase description="test a call release request" name="109_Q931_RELEASE" state="true">
-        <scenario file="109_Q931_RELEASE/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="109_Q931_RELEASE/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="102_Q931_CALL_PROCEEDING" state="true" number="[iterations]" description="test a call proceeding request" >
+        <scenario file="102_Q931_CALL_PROCEEDING/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="102_Q931_CALL_PROCEEDING/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
+    </testcase>
+    
+    <testcase name="103_Q931_CONNECT" state="true" number="[iterations]" description="test a call connect request" >
+        <scenario file="103_Q931_CONNECT/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="103_Q931_CONNECT/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
+    </testcase>
+    
+    <testcase name="104_Q931_CONNECT_ACK" state="true" number="[iterations]" description="test a call connect ack request" >
+        <scenario file="104_Q931_CONNECT_ACK/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="104_Q931_CONNECT_ACK/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
+    </testcase>
+    
+    <testcase name="105_Q931_DISCONNECT" state="true" number="[iterations]" description="test a call disconnect request" >
+        <scenario file="105_Q931_DISCONNECT/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="105_Q931_DISCONNECT/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
 
-    <testcase description="test a call release complete request" name="110_Q931_RELEASE_COMPLETE" state="true">
-        <scenario file="110_Q931_RELEASE_COMPLETE/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="110_Q931_RELEASE_COMPLETE/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="106_Q931_INFORMATION" state="true" number="[iterations]" description="test a call information request" >
+        <scenario file="106_Q931_INFORMATION/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="106_Q931_INFORMATION/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
 
-    <testcase description="test a call resume request" name="111_Q931_RESUME" state="true">
-        <scenario file="111_Q931_RESUME/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="111_Q931_RESUME/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="107_Q931_NOTIFY" state="true" number="[iterations]" description="test a call notify request" >
+        <scenario file="107_Q931_NOTIFY/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="107_Q931_NOTIFY/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
+    </testcase>
+    
+    <testcase name="108_Q931_PROGRESS" state="true" number="[iterations]" description="test a call progress request" >
+        <scenario file="108_Q931_PROGRESS/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="108_Q931_PROGRESS/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
+    </testcase>
+    
+    <testcase name="109_Q931_RELEASE" state="true" number="[iterations]" description="test a call release request" >
+        <scenario file="109_Q931_RELEASE/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="109_Q931_RELEASE/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
 
-    <testcase description="test a call resume ack request" name="112_Q931_RESUME_ACK" state="true">
-        <scenario file="112_Q931_RESUME_ACK/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="112_Q931_RESUME_ACK/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="110_Q931_RELEASE_COMPLETE" state="true" number="[iterations]" description="test a call release complete request" >
+        <scenario file="110_Q931_RELEASE_COMPLETE/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="110_Q931_RELEASE_COMPLETE/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
+    </testcase>
+
+    <testcase name="111_Q931_RESUME" state="true" number="[iterations]" description="test a call resume request" >
+        <scenario file="111_Q931_RESUME/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="111_Q931_RESUME/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
+    </testcase>
+
+    <testcase name="112_Q931_RESUME_ACK" state="true" number="[iterations]" description="test a call resume ack request" >
+        <scenario file="112_Q931_RESUME_ACK/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="112_Q931_RESUME_ACK/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
             
-    <testcase description="test a call resume reject request" name="113_Q931_RESUME_REJECT" state="true">
-        <scenario file="113_Q931_RESUME_REJECT/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="113_Q931_RESUME_REJECT/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="113_Q931_RESUME_REJECT" state="true" number="[iterations]" description="test a call resume reject request" >
+        <scenario file="113_Q931_RESUME_REJECT/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="113_Q931_RESUME_REJECT/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
 
-    <testcase description="test a setup request" name="114_Q931_SETUP" state="true">
-        <scenario file="114_Q931_SETUP/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="114_Q931_SETUP/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="114_Q931_SETUP" state="true" number="[iterations]" description="test a setup request" >
+        <scenario file="114_Q931_SETUP/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="114_Q931_SETUP/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
     
-    <testcase description="test a call setup ack request" name="115_Q931_SETUP_ACK" state="true">
-        <scenario file="115_Q931_SETUP_ACK/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="115_Q931_SETUP_ACK/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="115_Q931_SETUP_ACK" state="true" number="[iterations]" description="test a call setup ack request" >
+        <scenario file="115_Q931_SETUP_ACK/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="115_Q931_SETUP_ACK/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
     
-    <testcase description="test a call status request" name="116_Q931_STATUS" state="true">
-        <scenario file="116_Q931_STATUS/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="116_Q931_STATUS/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="116_Q931_STATUS" state="true" number="[iterations]" description="test a call status request" >
+        <scenario file="116_Q931_STATUS/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="116_Q931_STATUS/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
 
-    <testcase description="test a call statusenquiry request" name="117_Q931_STATUS_INQUIRY" state="true">
-        <scenario file="117_Q931_STATUS_INQUIRY/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="117_Q931_STATUS_INQUIRY/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="117_Q931_STATUS_INQUIRY" state="true" number="[iterations]" description="test a call statusenquiry request" >
+        <scenario file="117_Q931_STATUS_INQUIRY/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="117_Q931_STATUS_INQUIRY/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
 
-    <testcase description="test a call suspend request" name="118_Q931_SUSPEND" state="true">
-        <scenario file="118_Q931_SUSPEND/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="118_Q931_SUSPEND/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="118_Q931_SUSPEND" state="true" number="[iterations]" description="test a call suspend request" >
+        <scenario file="118_Q931_SUSPEND/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="118_Q931_SUSPEND/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
     
-    <testcase description="test a call suspend ack request" name="119_Q931_SUSPEND_ACK" state="true">
-        <scenario file="119_Q931_SUSPEND_ACK/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="119_Q931_SUSPEND_ACK/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="119_Q931_SUSPEND_ACK" state="true" number="[iterations]" description="test a call suspend ack request" >
+        <scenario file="119_Q931_SUSPEND_ACK/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="119_Q931_SUSPEND_ACK/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
     
-    <testcase description="test a call suspend reject request" name="120_Q931_SUSPEND_REJECT" state="true">
-        <scenario file="120_Q931_SUSPEND_REJECT/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="120_Q931_SUSPEND_REJECT/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="120_Q931_SUSPEND_REJECT" state="true" number="[iterations]" description="test a call suspend reject request" >
+        <scenario file="120_Q931_SUSPEND_REJECT/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="120_Q931_SUSPEND_REJECT/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
 
-    <testcase description="test a call congestioncontrol request" name="121_Q931_CONGESTION_CONTROL" state="true">
-        <scenario file="121_Q931_CONGESTION_CONTROL/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="121_Q931_CONGESTION_CONTROL/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="121_Q931_CONGESTION_CONTROL" state="true" number="[iterations]" description="test a call congestioncontrol request" >
+        <scenario file="121_Q931_CONGESTION_CONTROL/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="121_Q931_CONGESTION_CONTROL/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
     
-    <testcase description="test a call user information request" name="122_Q931_USER_INFORMATION" state="true">
-        <scenario file="122_Q931_USER_INFORMATION/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="122_Q931_USER_INFORMATION/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="122_Q931_USER_INFORMATION" state="true" number="[iterations]" description="test a call user information request" >
+        <scenario file="122_Q931_USER_INFORMATION/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="122_Q931_USER_INFORMATION/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
             
-    <testcase description="test a call restart request" name="123_Q931_RESTART" state="true">
-        <scenario file="123_Q931_RESTART/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="123_Q931_RESTART/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="123_Q931_RESTART" state="true" number="[iterations]" description="test a call restart request" >
+        <scenario file="123_Q931_RESTART/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="123_Q931_RESTART/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
     
-    <testcase description="test a call restart ack request" name="124_Q931_RESTART_ACK" state="true">
-        <scenario file="124_Q931_RESTART_ACK/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="124_Q931_RESTART_ACK/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="124_Q931_RESTART_ACK" state="true" number="[iterations]" description="test a call restart ack request" >
+        <scenario file="124_Q931_RESTART_ACK/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="124_Q931_RESTART_ACK/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
                
-    <testcase description="test a set from message" name="801_setfrommessage" state="true">
-        <scenario file="801_setfrommessage/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="801_setfrommessage/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="801_setfrommessage" state="true" number="[iterations]" description="test a set from message" >
+        <scenario file="801_setfrommessage/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="801_setfrommessage/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
 
-    <testcase description="test a set from message" name="802_other_element" state="false">
-        <scenario file="802_other_element/caller.xml" name="caller" routingName="caller"/>
-        <scenario file="802_other_element/callee.xml" name="H225CS" routingName="H225CS"/>
+    <testcase name="802_other_element" state="false" number="[iterations]" description="test a set from message" >
+        <scenario file="802_other_element/caller.xml" name="caller" state="[localClient]" routingName="caller"/>
+        <scenario file="802_other_element/callee.xml" name="H225CS" state="[remoteServer]" routingName="H225CS"/>
     </testcase>
 
 </test>
