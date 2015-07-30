@@ -958,9 +958,8 @@ public class MsgRtpFlow extends Msg {
     		byte[] uncipheredData = new byte[data.length - authTagLength];
         	System.arraycopy(rp.getBuffer(), 0, uncipheredData, 0, data.length - authTagLength);
         	
-        	Array uncipheredArray = new ReadOnlyDefaultArray(uncipheredData);
-        	
-        	MsgRtp msg = new MsgRtp(stack, uncipheredArray);
+        	MsgRtp msg = new MsgRtp(stack);
+        	msg.decode(uncipheredData);
         	packetsList.set(i, msg);        	
     		data = null;
     	}

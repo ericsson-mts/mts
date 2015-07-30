@@ -298,11 +298,6 @@ public class ListenpointRtpFlow extends Listenpoint
 			this.cipherReceiver = new SRTPTransformer(engine);
     }
 
-	public RawPacket reverseTransformCipheredMessage(RawPacket rp) {
-		// TODO Auto-generated method stub
-		return this.cipherReceiver.reverseTransform(rp);
-	}
-
 	public int getCipheredAuthTagLength(int SR) {
 		// TODO Auto-generated method stub
 		if (SR == 0)

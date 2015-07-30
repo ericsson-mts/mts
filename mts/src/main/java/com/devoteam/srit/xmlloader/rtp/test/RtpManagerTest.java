@@ -93,7 +93,8 @@ public class RtpManagerTest {
         DefaultArray request = new DefaultArray(Utils.parseBinaryString(packet));
         System.out.println("length = " + request.length);
         
-        MsgRtp msg = new MsgRtp(stack, request);
+        MsgRtp msg = new MsgRtp(stack);
+        msg.decode(request.getBytes());
         msg.setListenpoint(listenpoint);
         
         int maxIter = Config.getConfigByName("rtp.properties").getInteger("NB_ITERATION", 100000);

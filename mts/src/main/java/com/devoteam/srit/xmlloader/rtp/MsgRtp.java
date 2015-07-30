@@ -74,12 +74,6 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
         super(stack);
     }
 
-    /** Creates a new instance */
-    public MsgRtp(Stack stack, Array array) throws Exception {
-        this(stack);
-        extractDataFromMessage(array);
-    }
-
     public int getCsrcCount() {
         return csrcCount;
     }
@@ -232,57 +226,7 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
 	{
         return null;
     }
-    
-    private void extractDataFromMessage(Array array) {
-        padding = array.getBit(2);
-        extension = array.getBit(3);
-        csrcCount = array.getBits(4, 4);
-        marker = array.getBit(8);
-        payloadType = array.getBits(9, 7);
-        sequenceNumber = array.getBits(16, 16);
-        timestamp = array.getBits(32, 32);
-        ssrc = array.getBits(64, 32);
-
-        int i = 0;
-        if (csrcCount != 0) {
-            csrc = new Vector<Array>();
-            for (i = 0; i < csrcCount; i++) {
-                csrc.add(array.subArray(12 + 4 * i, 4));
-            }
-        }
-
-        int headerLength = 12 + 4 * i;
-
-        //get extension if present
-        if (extension != 0) {
-            extensionProfile = array.getBits(headerLength, 16);
-            headerLength += 2;
-            extensionLength = array.getBits(headerLength, 16);
-            headerLength += 2;
-            extensionData = new Vector<Array>();
-            for (i = 0; i < extensionLength; i++) {
-                csrc.add(array.subArray(headerLength + 4 * i, 4));
-            }
-            headerLength += extensionLength * 4;
-        }
-
-        try {
-            // test to not always store data of RTP messages
-            // actually useless because of gp-utils array
-            // if a subArray is used, then the parent array
-            // is kept in memory
-
-            //if (((StackRtp) StackFactory.getStack(StackFactory.PROTOCOL_RTP)).ignoreReceivedMessages) {
-            //    data = new ConstantArray((byte) 0, array.length - headerLength);
-            //}
-            //else{
-                data = array.subArray(headerLength, array.length - headerLength);
-            //}
-        }
-        catch (Exception ex) {
-        }
-    }
-
+   
     @Override
     public int compareTo(MsgRtp msg) {
         // manage comparison with internal sequence number which allow the test
@@ -378,7 +322,62 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
     @Override
     public void decode(byte[] data) throws Exception
     {
-    	// noting to do : never called
+    	Array array = new DefaultArray(data);
+        padding = array.getBit(2);
+        extension = array.getBit(3);
+        csrcCount = array.getBits(4, 4);
+        marker = array.getBit(8);
+        payloadType = array.getBits(9, 7);
+        sequenceNumber = array.getBits(16, 16);
+        timestamp = array.getBits(32, 32);
+        ssrc = array.getBits(64, 32);
+
+        int i = 0;
+        if (csrcCount != 0) 
+        {
+            csrc = new Vector<Array>();
+            for (i = 0; i < csrcCount; i++) 
+            {
+                csrc.add(array.subArray(12 + 4 * i, 4));
+            }
+        }
+
+        int headerLength = 12 + 4 * i;
+
+        //get extension if present
+        if (extension != 0) 
+        {
+            extensionProfile = array.getBits(headerLength, 16);
+            headerLength += 2;
+            extensionLength = array.getBits(headerLength, 16);
+            headerLength += 2;
+            extensionData = new Vector<Array>();
+            for (i = 0; i < extensionLength; i++) 
+            {
+                csrc.add(array.subArray(headerLength + 4 * i, 4));
+            }
+            headerLength += extensionLength * 4;
+        }
+
+        try 
+        {
+            // test to not always store data of RTP messages
+            // actually useless because of gp-utils array
+            // if a subArray is used, then the parent array
+            // is kept in memory
+
+            //if (((StackRtp) StackFactory.getStack(StackFactory.PROTOCOL_RTP)).ignoreReceivedMessages) 
+        	//{
+            //    data = new ConstantArray((byte) 0, array.length - headerLength);
+            //}
+            //else
+        	//{
+                this.data = array.subArray(headerLength, array.length - headerLength);
+            //}
+        }
+        catch (Exception ex) 
+        {
+        }
     } 
 
     
