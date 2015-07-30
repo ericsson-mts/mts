@@ -113,14 +113,14 @@ public class Dictionary
         applicationByName = new HashMap<String, Application>();
         applicationById = new HashMap<String, Application>();
         
-        traceDebug("parsing of application base");
+        traceDebug("Parse of application base");
 
         //
         // base first, important for references from other applications
         //
         parseApplication(document.getRootElement().element("base"));
         
-        traceDebug("parsing of all applications");
+        traceDebug("Parse of all applications");
 
         //
         // all applications
@@ -367,7 +367,7 @@ public class Dictionary
         return null;
     }
     
-    public AvpDef getAvpDefByCode(int code, String applicationId )
+    public AvpDef getAvpDefByCode(int code, String applicationId)
     {
         AvpDef result = null ;
         
