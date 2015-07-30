@@ -137,6 +137,19 @@ public class ListenpointRtp extends Listenpoint
     //---------------------------------------------------------------------
     
     /** 
+     * Returns the string description of the message. Used for logging as DEBUG level 
+     */
+    @Override
+    public String toString()
+    {
+    	String str = super.toString();
+        if (isSecured)
+        {
+             str += " isSecured=\"true\"";
+        }
+        return str;
+    }
+    /** 
      * Parse the listenpoint from XML element 
      */
     @Override
