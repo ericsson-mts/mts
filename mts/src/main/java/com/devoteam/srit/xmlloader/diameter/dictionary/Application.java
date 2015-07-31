@@ -30,9 +30,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import org.dom4j.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -40,8 +37,8 @@ import org.w3c.dom.NodeList;
  */
 public class Application
 {
-    private String  _name ;
-    private int     _id ;
+    private String _name ;
+    private int _id ;
     
     private HashMap<String, CommandDef>   commandDefByName ;
     private HashMap<String, CommandDef>   commandDefByCode ;
@@ -52,9 +49,10 @@ public class Application
     private HashMap<String, VendorDef>    vendorDefByCode ;
     
     private HashMap<String, AvpDef>       avpDefByName ;
-    private HashMap<String, AvpDef>       avpDefByNameVendorId ;
     private HashMap<String, AvpDef>       avpDefByCode ;
     
+    private HashMap<String, AvpDef>       avpDefByNameVendorId ;
+    private HashMap<String, AvpDef>       avpDefByCodeVendorId ;
     
     
     /** Creates a new instance of Application */
@@ -67,9 +65,10 @@ public class Application
         this.typeDefByName = new HashMap<String, TypeDef>();
         this.vendorDefByName = new HashMap<String, VendorDef>();
         this.vendorDefByCode = new HashMap<String, VendorDef>();
-        this.avpDefByNameVendorId = new HashMap<String, AvpDef>();
         this.avpDefByName = new HashMap<String, AvpDef>();
         this.avpDefByCode = new HashMap<String, AvpDef>();
+        this.avpDefByNameVendorId = new HashMap<String, AvpDef>();
+        this.avpDefByCodeVendorId = new HashMap<String, AvpDef>();
     }
     
     
@@ -267,15 +266,23 @@ public class Application
         if(null != getAvpDefByCode(avpDef.get_code())) Dictionary.traceWarning("AvpDef of code " + avpDef.get_code() + " already exists, overwriting");
         if(null != getAvpDefByName(avpDef.get_name())) Dictionary.traceWarning("AvpDef of name " + avpDef.get_name() + " already exists, overwriting");
         
-        avpDefByName.put(avpDef.get_name(), avpDef);
-        avpDefByCode.put(Integer.toString(avpDef.get_code()), avpDef);
+        String avpName = avpDef.get_name();
+        avpDefByName.put(avpName, avpDef);
+        String avpCode = Integer.toString(avpDef.get_code());
+        avpDefByCode.put(avpCode, avpDef);
         
-        // index with the avp.name and the avp.vendorId.code
         VendorDef vendorDef = avpDef.get_vendor_id();
+        // index with the avp.name and the avp.vendorId.code
         if (vendorDef != null)
         {
-        	String key = avpDef.get_name() + "_" + vendorDef.get_code();
+        	String key = avpName + "_" + vendorDef.get_code();
         	avpDefByNameVendorId.put(key, avpDef);
+        }
+        // index with the avp.code and the avp.vendorId.code
+        if (vendorDef != null)
+        {
+        	String key = avpCode + "_" + vendorDef.get_code();
+        	avpDefByCodeVendorId.put(key, avpDef);
         }
     }
     
@@ -408,6 +415,21 @@ public class Application
     public AvpDef getAvpDefByCode(int code)
     {
         return avpDefByCode.get(Integer.toString(code));
+    }
+
+    public AvpDef getAvpDefByCode(int code, String vendorId)
+    {
+    	AvpDef avpDef = null;
+    	if (vendorId != null)
+    	{
+	    	String key = code + "_" + vendorId;
+	        avpDef = avpDefByCodeVendorId.get(key);
+    	}
+    	if (avpDef == null)
+    	{
+    		avpDef = getAvpDefByCode(code);
+    	}
+    	return avpDef;
     }
 
     public AvpDef getAvpDefByName(String name)
