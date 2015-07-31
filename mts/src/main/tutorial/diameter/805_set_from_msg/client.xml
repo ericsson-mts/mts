@@ -8,9 +8,13 @@
     <parameter name="[emptyList]" operation="list.create"/>
     <parameter name="[stateValue]" operation="set" value="true"/>
 
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[stateValue]" operation="set" value="true"/>
+    <parameter name="[testcase:newHopByHop]" operation="number.random" value="1000000000"/>
+    <parameter name="[testcase:newEndToEnd]" operation="number.random" value="1000000000"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
-          <header request="true" command="Multimedia-Authentitcation" applicationId="[applicationID]"/>
+          <header request="true" command="Multimedia-Authentitcation" applicationId="[applicationID]"
+                  hopByHop="[newHopByHop]" endToEnd="[newEndToEnd]"
+                  proxiable="true" error="true" retransmit="true"/>
           <avp code="Session-Id" value="[sessionId]"/>
           <avp code="Origin-Host" value="[localHostDIAM]"/>
           <avp code="Origin-Realm" value="[localRealmDIAM]"/>
@@ -26,7 +30,8 @@
               <avp code="999999999" mandatory="true" type="Unsigned32" value="1234567890"/>
           </avp>
           <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-          <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
+          <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" type="UTF8String" 
+               vendorId="10415" mandatory="false" private="false"/>
           <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
           <avp code="Auth-Data-Item" vendorId="TGPP" state="true">
               <avp code="Item-Number" value="0" vendorId="TGPP"/>
