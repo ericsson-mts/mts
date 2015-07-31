@@ -859,8 +859,14 @@ public class MsgDiamCommon extends Msg
     {
         LinkedList<AVP> result = new LinkedList<AVP>();
         int avpCode = 0 ;
-        if(Utils.isInteger(code)) avpCode = Integer.parseInt(code);
-        else                      avpCode = Dictionary.getInstance().getAvpDefByName(code, Integer.toString(message.hdr.application_id)).get_code();
+        if(Utils.isInteger(code))
+        {
+        	avpCode = Integer.parseInt(code);
+        }
+        else
+        {
+        	avpCode = Dictionary.getInstance().getAvpDefByName(code, Integer.toString(message.hdr.application_id), null).get_code();
+        }
         while(avps.hasNext())
         {
             AVP avp = avps.next();
